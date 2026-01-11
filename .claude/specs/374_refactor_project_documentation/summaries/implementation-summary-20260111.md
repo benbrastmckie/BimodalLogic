@@ -5,13 +5,13 @@
 
 ## Changes Made
 
-Refactored project Documentation/ to move theory-specific content to appropriate theory
-directories (Logos/Documentation/ and Bimodal/Documentation/), leaving only project-wide
-documentation in the root Documentation/ directory.
+Refactored project docs/ to move theory-specific content to appropriate theory
+directories (Logos/docs/ and Bimodal/docs/), leaving only project-wide
+documentation in the root docs/ directory.
 
 ## Files Moved
 
-### To Logos/Documentation/ (5 files)
+### To Logos/docs/ (5 files)
 
 - **Research/RECURSIVE_SEMANTICS.md** - Full Logos semantic specification
 - **Research/LAYER_EXTENSIONS.md** - Extension architecture overview
@@ -19,7 +19,7 @@ documentation in the root Documentation/ directory.
 - **UserGuide/METHODOLOGY.md** - Layer architecture methodology
 - **Reference/GLOSSARY.md** - Terminology and operator definitions
 
-### To Bimodal/Documentation/ (13 files)
+### To Bimodal/docs/ (13 files)
 
 - **Research/MODAL_TEMPORAL_PROOF_SEARCH.md** - Proof search architecture
 - **Research/temporal-logic-automation-research.md** - Temporal tactics
@@ -37,28 +37,28 @@ documentation in the root Documentation/ directory.
 
 ## Files Created
 
-- **Logos/Documentation/Research/README.md** - Research directory overview
-- **Bimodal/Documentation/Research/README.md** - Research directory overview
+- **Logos/docs/Research/README.md** - Research directory overview
+- **Bimodal/docs/Research/README.md** - Research directory overview
 
 ## Files Modified
 
-- **Logos/Documentation/README.md** - Added Research section and new file listings
-- **Bimodal/Documentation/README.md** - Added Research section and new file listings
-- **Documentation/Research/README.md** - Simplified to project-wide research, added theory links
-- **Documentation/README.md** - Updated all sections to reflect new structure
+- **Logos/docs/README.md** - Added Research section and new file listings
+- **Bimodal/docs/README.md** - Added Research section and new file listings
+- **docs/Research/README.md** - Simplified to project-wide research, added theory links
+- **docs/README.md** - Updated all sections to reflect new structure
 
 ## Verification
 
 - All 18 files successfully moved using `git mv` (preserves history)
-- No empty directories in Documentation/
+- No empty directories in docs/
 - Documentation_OLD/ backup preserved
 - All README.md files updated with correct links
 - Theory directories now self-contained for theory-specific documentation
 
 ## Notes
 
-The refactoring follows the pattern established by tasks 360 (Bimodal/Documentation/) and 372
-(Logos/Documentation/). The root Documentation/ now focuses exclusively on project-wide concerns:
+The refactoring follows the pattern established by tasks 360 (Bimodal/docs/) and 372
+(Logos/docs/). The root docs/ now focuses exclusively on project-wide concerns:
 
 - Installation guides
 - Development standards (style, testing, etc.)

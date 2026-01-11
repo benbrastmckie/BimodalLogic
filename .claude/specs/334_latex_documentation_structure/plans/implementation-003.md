@@ -23,21 +23,21 @@ This plan creates LaTeX reference documentation for the Logos system based on RE
 **Status**: [NOT STARTED]
 
 **Objectives**:
-1. Create Documentation/LaTeX/ directory structure
+1. Create docs/LaTeX/ directory structure
 2. Copy and adapt style files from LogicNotes source
 3. Create logos-notation.sty with RECURSIVE_SEMANTICS.md notation
 
 **Files to create**:
-- `Documentation/LaTeX/` - root directory
-- `Documentation/LaTeX/subfiles/` - subfile directory
-- `Documentation/LaTeX/assets/` - style files
-- `Documentation/LaTeX/bibliography/` - bibliography files
-- `Documentation/LaTeX/assets/logos-notation.sty` - custom notation macros
+- `docs/LaTeX/` - root directory
+- `docs/LaTeX/subfiles/` - subfile directory
+- `docs/LaTeX/assets/` - style files
+- `docs/LaTeX/bibliography/` - bibliography files
+- `docs/LaTeX/assets/logos-notation.sty` - custom notation macros
 
 **Steps**:
 1. Create directory structure:
    ```
-   Documentation/LaTeX/
+   docs/LaTeX/
    ├── subfiles/
    ├── assets/
    └── bibliography/
@@ -69,8 +69,8 @@ This plan creates LaTeX reference documentation for the Logos system based on RE
 2. Create 00-Introduction.tex from RECURSIVE_SEMANTICS.md lines 10-62
 
 **Files to modify**:
-- `Documentation/LaTeX/LogosReference.tex` - create
-- `Documentation/LaTeX/subfiles/00-Introduction.tex` - create
+- `docs/LaTeX/LogosReference.tex` - create
+- `docs/LaTeX/subfiles/00-Introduction.tex` - create
 
 **Steps**:
 1. Create LogosReference.tex with:
@@ -106,7 +106,7 @@ This plan creates LaTeX reference documentation for the Logos system based on RE
 3. Include bilateral proposition operations
 
 **Files to modify**:
-- `Documentation/LaTeX/subfiles/01-ConstitutiveFoundation.tex` - create
+- `docs/LaTeX/subfiles/01-ConstitutiveFoundation.tex` - create
 
 **Steps**:
 1. Create section structure per research-003.md:
@@ -151,9 +151,9 @@ This plan creates LaTeX reference documentation for the Logos system based on RE
 3. Create 04-CoreExtension-Axioms.tex (counterfactual logic axioms)
 
 **Files to modify**:
-- `Documentation/LaTeX/subfiles/02-CoreExtension-Syntax.tex` - create
-- `Documentation/LaTeX/subfiles/03-CoreExtension-Semantics.tex` - create
-- `Documentation/LaTeX/subfiles/04-CoreExtension-Axioms.tex` - create
+- `docs/LaTeX/subfiles/02-CoreExtension-Syntax.tex` - create
+- `docs/LaTeX/subfiles/03-CoreExtension-Semantics.tex` - create
+- `docs/LaTeX/subfiles/04-CoreExtension-Axioms.tex` - create
 
 **Steps**:
 
@@ -212,10 +212,10 @@ This plan creates LaTeX reference documentation for the Logos system based on RE
 2. Preserve [DETAILS] and [QUESTION: ...] markers from source
 
 **Files to modify**:
-- `Documentation/LaTeX/subfiles/05-Epistemic.tex` - create
-- `Documentation/LaTeX/subfiles/06-Normative.tex` - create
-- `Documentation/LaTeX/subfiles/07-Spatial.tex` - create
-- `Documentation/LaTeX/subfiles/08-Agential.tex` - create
+- `docs/LaTeX/subfiles/05-Epistemic.tex` - create
+- `docs/LaTeX/subfiles/06-Normative.tex` - create
+- `docs/LaTeX/subfiles/07-Spatial.tex` - create
+- `docs/LaTeX/subfiles/08-Agential.tex` - create
 
 **Steps**:
 1. For each extension stub:
@@ -254,7 +254,7 @@ This plan creates LaTeX reference documentation for the Logos system based on RE
 4. Generate PDF
 
 **Files to modify**:
-- `Documentation/LaTeX/LogosReference.tex` - update subfile includes
+- `docs/LaTeX/LogosReference.tex` - update subfile includes
 - All subfiles - final review
 
 **Steps**:
@@ -273,7 +273,7 @@ This plan creates LaTeX reference documentation for the Logos system based on RE
    ```
 2. Run full compilation:
    ```bash
-   cd Documentation/LaTeX
+   cd docs/LaTeX
    pdflatex LogosReference.tex
    bibtex LogosReference
    pdflatex LogosReference.tex
@@ -314,7 +314,7 @@ This plan creates LaTeX reference documentation for the Logos system based on RE
 
 ## Success Criteria
 
-- [ ] Documentation/LaTeX/ directory structure created
+- [ ] docs/LaTeX/ directory structure created
 - [ ] logos-notation.sty contains all required macros
 - [ ] 9 subfiles created (00-Introduction through 08-Agential)
 - [ ] Complete content for Constitutive Foundation and Core Extension
@@ -326,7 +326,7 @@ This plan creates LaTeX reference documentation for the Logos system based on RE
 ## Rollback Plan
 
 If implementation fails:
-1. Delete Documentation/LaTeX/ directory
+1. Delete docs/LaTeX/ directory
 2. Revert any changes to other files
 3. Document issues encountered for future attempt
 

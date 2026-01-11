@@ -141,7 +141,7 @@ Specifically:
 - `.opencode/context/core/system/artifact-management.md` - No changes needed (no references)
 
 **Architecture Documentation** (1 file):
-- `Documentation/Architecture/ADR-004-Remove-Project-Level-State-Files.md` - This document
+- `docs/Architecture/ADR-004-Remove-Project-Level-State-Files.md` - This document
 
 ### Changes Summary
 

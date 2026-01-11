@@ -52,7 +52,7 @@ Neither is used anywhere else in the codebase. They exist as documentation of th
 
 ### 5. SORRY_REGISTRY Already Documents This
 
-The sorry is properly documented in `Documentation/ProjectInfo/SORRY_REGISTRY.md`:
+The sorry is properly documented in `docs/ProjectInfo/SORRY_REGISTRY.md`:
 - Lines 107-122 explain the fundamental limitation
 - Status is marked as "DOCUMENTED AS INVALID - intentional sorry"
 - Alternative guidance points to `k_dist_diamond`
@@ -72,7 +72,7 @@ They should be removed entirely to eliminate the sorry warning and confusion. Th
 
 If the sorry is kept for educational purposes, it should be:
 1. Renamed to clearly indicate it's invalid (e.g., `diamond_mono_imp_INVALID`)
-2. Moved to an `Examples/` or `Documentation/` file
+2. Moved to an `Examples/` or `docs/` file
 3. Clearly marked with a `#guard_msgs` or similar annotation
 
 ### Option C: No Action Needed
@@ -87,7 +87,7 @@ If this task was created based on a misunderstanding of the issue, it can be clo
 - `Bimodal/Theorems/ModalS5.lean:71-105` - Diamond monotonicity discussion with counter-model
 - `Bimodal/Theorems/ModalS5.lean:316-365` - `k_dist_diamond` implementation
 - `Bimodal/Theorems/Perpetuity/Principles.lean:331-352` - `modal_5` implementation
-- `Documentation/ProjectInfo/SORRY_REGISTRY.md:107-127` - Sorry documentation
+- `docs/ProjectInfo/SORRY_REGISTRY.md:107-127` - Sorry documentation
 - `.claude/specs/reviews/review-20260110-bimodal-mvp.md:65-69` - Review mentioning this issue
 
 ## Next Steps

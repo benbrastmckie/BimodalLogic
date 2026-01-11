@@ -171,10 +171,10 @@ tools:
 permissions:
   allow:
     # Read access to documentation and code
-    - read: ["**/*.md", ".claude/**/*", "Documentation/**/*", "**/*.lean"]
+    - read: ["**/*.md", ".claude/**/*", "docs/**/*", "**/*.lean"]
     
     # Write access to research outputs
-    - write: [".claude/specs/**/*", "Documentation/Research/**/*"]
+    - write: [".claude/specs/**/*", "docs/Research/**/*"]
     
     # Safe bash commands for analysis
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
@@ -203,7 +203,7 @@ tools:
 permissions:
   allow:
     # Read access to specs and documentation
-    - read: ["**/*.md", ".claude/**/*", "Documentation/**/*"]
+    - read: ["**/*.md", ".claude/**/*", "docs/**/*"]
     
     # Write access to plans
     - write: [".claude/specs/**/*"]

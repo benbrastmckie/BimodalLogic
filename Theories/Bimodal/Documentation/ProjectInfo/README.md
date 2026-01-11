@@ -30,10 +30,10 @@ Project status and tracking for the Bimodal TM logic implementation.
 
 ## See Also
 
-- [Project Implementation Status](../../../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) -
+- [Project Implementation Status](../../../docs/ProjectInfo/IMPLEMENTATION_STATUS.md) -
   Project-wide status
-- [Sorry Registry](../../../Documentation/ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking
-- [Feature Registry](../../../Documentation/ProjectInfo/FEATURE_REGISTRY.md) - Feature tracking
+- [Sorry Registry](../../../docs/ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking
+- [Feature Registry](../../../docs/ProjectInfo/FEATURE_REGISTRY.md) - Feature tracking
 
 ## Navigation
 

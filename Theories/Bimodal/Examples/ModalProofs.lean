@@ -48,7 +48,7 @@ includes technique hints referencing the appropriate theorem modules:
 
 * [Axioms.lean](../ProofChecker/ProofSystem/Axioms.lean) - Modal axiom definitions
 * [Derivation.lean](../ProofChecker/ProofSystem/Derivation.lean) - Inference rules
-* [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
+* [ARCHITECTURE.md](../docs/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
 namespace Bimodal.Examples.ModalProofs

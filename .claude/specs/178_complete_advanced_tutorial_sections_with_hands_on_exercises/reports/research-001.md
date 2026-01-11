@@ -13,8 +13,8 @@ Task 178's implementation plan (created 2026-01-11) is largely **obsolete** due 
 ### 1. Path Discrepancy in Plan
 
 The implementation plan references incorrect paths:
-- **Plan says**: `Bimodal/Documentation/UserGuide/`
-- **Actual path**: `Theories/Bimodal/Documentation/UserGuide/`
+- **Plan says**: `Bimodal/docs/UserGuide/`
+- **Actual path**: `Theories/Bimodal/docs/UserGuide/`
 
 The plan was created when the directory structure may have been different or was an oversight.
 
@@ -116,10 +116,10 @@ This better reflects the actual remaining work.
 ## References
 
 - Existing plan: `.claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md`
-- TUTORIAL.md: `Theories/Bimodal/Documentation/UserGuide/TUTORIAL.md`
-- TACTIC_DEVELOPMENT.md: `Theories/Bimodal/Documentation/UserGuide/TACTIC_DEVELOPMENT.md`
-- EXAMPLES.md: `Theories/Bimodal/Documentation/UserGuide/EXAMPLES.md`
-- ARCHITECTURE.md: `Theories/Bimodal/Documentation/UserGuide/ARCHITECTURE.md`
+- TUTORIAL.md: `Theories/Bimodal/docs/UserGuide/TUTORIAL.md`
+- TACTIC_DEVELOPMENT.md: `Theories/Bimodal/docs/UserGuide/TACTIC_DEVELOPMENT.md`
+- EXAMPLES.md: `Theories/Bimodal/docs/UserGuide/EXAMPLES.md`
+- ARCHITECTURE.md: `Theories/Bimodal/docs/UserGuide/ARCHITECTURE.md`
 
 ## Next Steps
 

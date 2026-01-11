@@ -1226,4 +1226,4 @@ This approach provides strong correctness guarantees while maintaining the flexi
 - https://github.com/leanprover-community/plausible
 - https://github.com/leanprover-community/aesop
 - https://github.com/leanprover-community/ProofWidgets4
-- Existing research: `/home/benjamin/Projects/ProofChecker/Documentation/Research/property-based-testing-lean4.md`
+- Existing research: `/home/benjamin/Projects/ProofChecker/docs/Research/property-based-testing-lean4.md`

@@ -25,7 +25,7 @@
    - Show combined modal-temporal search
 
 4. **Phase 4: Documentation Updates** (1-2 hours)
-   - Update `Documentation/UserGuide/EXAMPLES.md`
+   - Update `docs/UserGuide/EXAMPLES.md`
    - Add automation feature references
    - Create cross-links to ProofSearch API
 

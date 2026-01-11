@@ -281,8 +281,8 @@ This plan integrates findings from 1 research report created for this task:
    ```yaml
    permissions:
      allow:
-       - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*", "**/*.lean"]
-       - write: [".opencode/specs/**/*", "Documentation/Research/**/*"]
+       - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
+       - write: [".opencode/specs/**/*", "docs/Research/**/*"]
        - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
    ```
    
@@ -290,7 +290,7 @@ This plan integrates findings from 1 research report created for this task:
    ```yaml
    permissions:
      allow:
-       - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
+       - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
        - write: [".opencode/specs/**/*"]
        - bash: ["git", "grep", "find", "wc", "jq"]
    ```
@@ -475,7 +475,7 @@ This plan integrates findings from 1 research report created for this task:
    ```yaml
    permissions:
      allow:
-       - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
+       - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
        - write: [".opencode/specs/**/*"]
        - bash: ["git", "grep", "find", "wc", "jq"]
      deny:

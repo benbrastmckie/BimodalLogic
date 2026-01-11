@@ -1,13 +1,13 @@
 # Implementation Summary: Task #372
 
-**Task**: Create Logos/Documentation/ and Refactor Root Documentation/
+**Task**: Create Logos/docs/ and Refactor Root docs/
 **Completed**: 2026-01-11
 **Duration**: ~4 hours
 
 ## Overview
 
-Successfully created Logos/Documentation/ directory structure and refactored project-wide
-Documentation/ to be theory-agnostic with minimal overlap and natural cross-linking between
+Successfully created Logos/docs/ directory structure and refactored project-wide
+docs/ to be theory-agnostic with minimal overlap and natural cross-linking between
 theory-specific and project-wide documentation.
 
 ## Key Achievements
@@ -15,9 +15,9 @@ theory-specific and project-wide documentation.
 ### Content Separation Principle
 
 Each document lives in exactly one place:
-- **Project-wide Documentation/**: Content applying to all theories (coding standards, installation,
+- **Project-wide docs/**: Content applying to all theories (coding standards, installation,
   general architecture)
-- **Theory-specific Documentation/**: Content unique to that theory (quick starts, axiom references,
+- **Theory-specific docs/**: Content unique to that theory (quick starts, axiom references,
   implementation status)
 
 ### Cross-Linking Pattern
@@ -33,7 +33,7 @@ Each document lives in exactly one place:
 
 ## Files Created
 
-### Logos/Documentation/ (11 files)
+### Logos/docs/ (11 files)
 
 - `README.md` - Navigation hub with cross-link note
 - `UserGuide/README.md` - UserGuide directory overview
@@ -49,7 +49,7 @@ Each document lives in exactly one place:
 
 ## Files Modified
 
-### Documentation/ (5 files)
+### docs/ (5 files)
 
 - `README.md` - Added "Theory-Specific Documentation" section, changed title to "ProofChecker
   Documentation"
@@ -65,12 +65,12 @@ Each document lives in exactly one place:
 
 ## Phases Completed
 
-1. **Phase 1**: Created Logos/Documentation/ directory structure
+1. **Phase 1**: Created Logos/docs/ directory structure
 2. **Phase 2**: Created Logos UserGuide documents (QUICKSTART.md, CURRENT_STATUS.md)
 3. **Phase 3**: Created Logos Reference documents (AXIOM_REFERENCE.md, EXTENSION_STUBS.md)
 4. **Phase 4**: Created Logos ProjectInfo documents (IMPLEMENTATION_STATUS.md, KNOWN_LIMITATIONS.md,
    ROADMAP.md)
-5. **Phase 5**: Refactored project-wide Documentation/ with theory navigation
+5. **Phase 5**: Refactored project-wide docs/ with theory navigation
 6. **Phase 6**: Updated Logos/README.md with theory-specific sections
 7. **Phase 7**: Completed Task 360 and quality assurance
 
@@ -80,7 +80,7 @@ Task 360 (Bimodal Theory Polish and Documentation System) Phase 5 was blocked pe
 With the completion of Phase 5 here, Task 360 is now fully COMPLETED:
 - All 7 phases of Task 360 are done
 - Theory differentiation documentation complete
-- Cross-linking between Documentation/ and theory-specific docs established
+- Cross-linking between docs/ and theory-specific docs established
 
 ## Verification
 
@@ -91,9 +91,9 @@ With the completion of Phase 5 here, Task 360 is now fully COMPLETED:
 
 ## Success Criteria Met
 
-- [x] Logos/Documentation/ structure created (mirrors Bimodal/Documentation/)
+- [x] Logos/docs/ structure created (mirrors Bimodal/docs/)
 - [x] Minimal overlap: Logos docs redirect to Bimodal for re-exported content
-- [x] Documentation/ has "Theory-Specific Documentation" section
+- [x] docs/ has "Theory-Specific Documentation" section
 - [x] NAVIGATION.md includes theory navigation
 - [x] All cross-links verified working
 - [x] Task 360 marked COMPLETED

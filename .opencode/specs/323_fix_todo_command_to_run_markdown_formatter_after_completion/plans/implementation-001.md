@@ -99,7 +99,7 @@ This plan integrates findings from research-001.md (2026-01-05):
 
 ### Non-Goals
 
-1. Format other markdown files (Documentation/, research reports)
+1. Format other markdown files (docs/, research reports)
 2. Add mdformat as external dependency
 3. Implement pre-commit hooks
 4. Add CI validation for formatting

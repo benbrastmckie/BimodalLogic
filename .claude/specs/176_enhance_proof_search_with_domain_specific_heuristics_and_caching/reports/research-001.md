@@ -2,7 +2,7 @@
 
 **Task**: Enhance Bimodal proof search with success learning and best-first search
 **Date**: 2026-01-11
-**Focus**: Explain what proof search provides for improving ProofChecker/Documentation/
+**Focus**: Explain what proof search provides for improving ProofChecker/docs/
 
 ## Summary
 
@@ -127,25 +127,25 @@ Current documentation exists in multiple locations with varying coverage:
 | Location | Coverage | Gaps |
 |----------|----------|------|
 | `ProofSearch.lean` docstrings | Excellent | None |
-| `Bimodal/Documentation/Research/PROOF_SEARCH_AUTOMATION.md` | Good | Doesn't reflect current implementation |
-| `Bimodal/Documentation/Reference/TACTIC_REFERENCE.md` | Good | Missing search strategy guidance |
-| `Documentation/Reference/API_REFERENCE.md` | Moderate | References old Logos paths |
+| `Bimodal/docs/Research/PROOF_SEARCH_AUTOMATION.md` | Good | Doesn't reflect current implementation |
+| `Bimodal/docs/Reference/TACTIC_REFERENCE.md` | Good | Missing search strategy guidance |
+| `docs/Reference/API_REFERENCE.md` | Moderate | References old Logos paths |
 
 #### 5.1 Recommended Documentation Improvements
 
-1. **ProofChecker/Documentation/README.md**
+1. **ProofChecker/docs/README.md**
    - Add "Automation Capabilities" section highlighting proof search
    - Link to Bimodal automation documentation
 
-2. **Bimodal/Documentation/README.md**
+2. **Bimodal/docs/README.md**
    - Add prominent section on automation features
    - Include quick-start examples for proof search
 
-3. **Documentation/ProjectInfo/FEATURE_REGISTRY.md**
+3. **docs/ProjectInfo/FEATURE_REGISTRY.md**
    - Add detailed entry for proof search automation
    - Document search strategies and when to use each
 
-4. **New: Documentation/UserGuide/AUTOMATION.md**
+4. **New: docs/UserGuide/AUTOMATION.md**
    - Consolidated guide to all automation features
    - Cross-references to Bimodal-specific docs
 
@@ -205,12 +205,12 @@ The Bimodal proof search system provides:
 
 - `Bimodal/Automation/ProofSearch.lean` - Core implementation (739 lines)
 - `BimodalTest/Automation/ProofSearchBenchmark.lean` - Benchmark suite
-- `Bimodal/Documentation/Research/PROOF_SEARCH_AUTOMATION.md` - Research background
-- `Bimodal/Documentation/Reference/TACTIC_REFERENCE.md` - Tactic documentation
+- `Bimodal/docs/Research/PROOF_SEARCH_AUTOMATION.md` - Research background
+- `Bimodal/docs/Reference/TACTIC_REFERENCE.md` - Tactic documentation
 - Korf, R.E. (1985). "Depth-first iterative-deepening: An optimal admissible tree search"
 
 ## Next Steps
 
 1. Proceed to Phase 1 implementation (Success Pattern Learning)
-2. Update Documentation/ProjectInfo/FEATURE_REGISTRY.md with proof search entry
+2. Update docs/ProjectInfo/FEATURE_REGISTRY.md with proof search entry
 3. Consider creating unified automation guide post-implementation

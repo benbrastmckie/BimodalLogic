@@ -171,10 +171,10 @@ tools:
 permissions:
   allow:
     # Read access to documentation and code
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*", "**/*.lean"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
     
     # Write access to research outputs
-    - write: [".opencode/specs/**/*", "Documentation/Research/**/*"]
+    - write: [".opencode/specs/**/*", "docs/Research/**/*"]
     
     # Safe bash commands for analysis
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
@@ -203,7 +203,7 @@ tools:
 permissions:
   allow:
     # Read access to specs and documentation
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
     
     # Write access to plans
     - write: [".opencode/specs/**/*"]

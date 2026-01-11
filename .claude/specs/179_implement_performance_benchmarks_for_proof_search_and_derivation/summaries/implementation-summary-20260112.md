@@ -23,13 +23,13 @@ Extended the Bimodal benchmarking suite with derivation tree and semantic evalua
 
 ### Documentation Files
 
-- `Documentation/Development/BENCHMARKING_GUIDE.md` - Project-wide benchmarking standards
+- `docs/Development/BENCHMARKING_GUIDE.md` - Project-wide benchmarking standards
   - Timing methodology (100+ iterations, median)
   - Correctness validation requirements
   - Regression thresholds (2x time, 50% visits)
   - CI integration patterns
 
-- `Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md` - Theory-specific baselines
+- `Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md` - Theory-specific baselines
   - Proof search: 17 benchmarks, ~170-300ns average
   - Derivation: 15 benchmarks, ~90ns average
   - Semantic: 16 benchmarks, ~91ns average, 100% correct
@@ -50,10 +50,10 @@ Extended the Bimodal benchmarking suite with derivation tree and semantic evalua
 
 ## Files Modified
 
-- `Documentation/Development/QUALITY_METRICS.md` - Added benchmark coverage section
-- `Documentation/Development/README.md` - Added BENCHMARKING_GUIDE.md link
-- `Bimodal/Documentation/ProjectInfo/README.md` - Added PERFORMANCE_TARGETS.md link
-- `Bimodal/Documentation/README.md` - Added Performance Targets quick link
+- `docs/Development/QUALITY_METRICS.md` - Added benchmark coverage section
+- `docs/Development/README.md` - Added BENCHMARKING_GUIDE.md link
+- `Bimodal/docs/ProjectInfo/README.md` - Added PERFORMANCE_TARGETS.md link
+- `Bimodal/docs/README.md` - Added Performance Targets quick link
 
 ## Verification
 
@@ -63,7 +63,7 @@ All acceptance criteria met:
 - [x] Benchmark suite for derivation tree construction created
 - [x] Benchmark suite for semantic evaluation created
 - [x] Project-wide BENCHMARKING_GUIDE.md created
-- [x] Performance targets documented in Bimodal/Documentation/
+- [x] Performance targets documented in Bimodal/docs/
 - [x] CI script for running benchmarks and detecting regressions
 
 ## Build Verification

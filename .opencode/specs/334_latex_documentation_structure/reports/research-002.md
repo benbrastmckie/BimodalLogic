@@ -13,8 +13,8 @@
 **Dependencies**: research-001.md (base research report)
 
 **Sources/Inputs**:
-- Documentation/Research/LAYER_EXTENSIONS.md (Overview section, lines 1-558)
-- Documentation/UserGuide/ARCHITECTURE.md (Layer architecture specification)
+- docs/Research/LAYER_EXTENSIONS.md (Overview section, lines 1-558)
+- docs/UserGuide/ARCHITECTURE.md (Layer architecture specification)
 - .opencode/specs/334_latex_documentation_structure/reports/research-001.md (base research)
 - Logos/Core/Syntax/Formula.lean (Layer 0 implementation reference)
 

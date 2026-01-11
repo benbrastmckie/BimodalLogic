@@ -11,17 +11,17 @@ For documentation specific to each logic theory, see:
 
 | Theory | Description | Documentation |
 |--------|-------------|---------------|
-| **Bimodal** | Propositional intensional logic (active) | [Bimodal/Documentation/](../Bimodal/Documentation/) |
-| **Logos** | Second-order hyperintensional (planned) | [Logos/Documentation/](../Logos/Documentation/) |
+| **Bimodal** | Propositional intensional logic (active) | [Bimodal/docs/](../Bimodal/docs/) |
+| **Logos** | Second-order hyperintensional (planned) | [Logos/docs/](../Logos/docs/) |
 
 ### Quick Access by Need
 
 | Need | Bimodal | Logos |
 |------|---------|-------|
-| Quick start | [Quick Start](../Bimodal/Documentation/UserGuide/QUICKSTART.md) | [Quick Start](../Logos/Documentation/UserGuide/QUICKSTART.md) |
-| Axiom reference | [Axioms](../Bimodal/Documentation/Reference/AXIOM_REFERENCE.md) | [Axioms](../Logos/Documentation/Reference/AXIOM_REFERENCE.md) |
-| Implementation status | [Status](../Bimodal/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) | [Status](../Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) |
-| Known limitations | [Limitations](../Bimodal/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) | [Limitations](../Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) |
+| Quick start | [Quick Start](../Bimodal/docs/UserGuide/QUICKSTART.md) | [Quick Start](../Logos/docs/UserGuide/QUICKSTART.md) |
+| Axiom reference | [Axioms](../Bimodal/docs/Reference/AXIOM_REFERENCE.md) | [Axioms](../Logos/docs/Reference/AXIOM_REFERENCE.md) |
+| Implementation status | [Status](../Bimodal/docs/ProjectInfo/IMPLEMENTATION_STATUS.md) | [Status](../Logos/docs/ProjectInfo/IMPLEMENTATION_STATUS.md) |
+| Known limitations | [Limitations](../Bimodal/docs/ProjectInfo/KNOWN_LIMITATIONS.md) | [Limitations](../Logos/docs/ProjectInfo/KNOWN_LIMITATIONS.md) |
 
 **Theory comparison**: [Research/theory-comparison.md](Research/theory-comparison.md)
 
@@ -56,7 +56,7 @@ Project-wide user documentation:
 - [INTEGRATION.md](UserGuide/INTEGRATION.md) - Integration with model checkers and other tools
 - [MCP_INTEGRATION.md](UserGuide/MCP_INTEGRATION.md) - MCP server integration (advanced)
 
-> **Theory-specific guides**: See [Bimodal/Documentation/UserGuide/](../Bimodal/Documentation/UserGuide/)
+> **Theory-specific guides**: See [Bimodal/docs/UserGuide/](../Bimodal/docs/UserGuide/)
 > for tutorials, examples, and architecture documentation.
 
 **Audience**: Users integrating ProofChecker with external tools
@@ -70,8 +70,8 @@ Project-wide research documents:
 - [dual-verification.md](Research/dual-verification.md) - RL training architecture design
 - [proof-library-design.md](Research/proof-library-design.md) - Theorem caching design
 
-> **Theory-specific research**: See [Logos/Documentation/Research/](../Logos/Documentation/Research/)
-> and [Bimodal/Documentation/Research/](../Bimodal/Documentation/Research/).
+> **Theory-specific research**: See [Logos/docs/Research/](../Logos/docs/Research/)
+> and [Bimodal/docs/Research/](../Bimodal/docs/Research/).
 
 **Audience**: Researchers, architects
 
@@ -127,8 +127,8 @@ Project-wide reference materials:
 - [README.md](Reference/README.md) - Directory overview and quick lookup guide
 - [API_REFERENCE.md](Reference/API_REFERENCE.md) - API documentation
 
-> **Theory-specific reference**: See [Logos/Documentation/Reference/](../Logos/Documentation/Reference/)
-> for Logos glossary and operators, [Bimodal/Documentation/Reference/](../Bimodal/Documentation/Reference/)
+> **Theory-specific reference**: See [Logos/docs/Reference/](../Logos/docs/Reference/)
+> for Logos glossary and operators, [Bimodal/docs/Reference/](../Bimodal/docs/Reference/)
 > for TM operators and axioms.
 
 **Audience**: All users looking up APIs
@@ -152,8 +152,8 @@ Architectural Decision Records (ADRs):
 1. [Installation](Installation/README.md) - Set up ProofChecker
 2. [Claude Code Setup](Installation/CLAUDE_CODE.md) - AI-assisted installation (recommended)
 3. [Getting Started](Installation/GETTING_STARTED.md) - Terminal and editor basics
-4. [Bimodal Tutorial](../Bimodal/Documentation/UserGuide/TUTORIAL.md) - Start writing proofs
-5. [TM Architecture](../Bimodal/Documentation/UserGuide/ARCHITECTURE.md) - Understand TM logic
+4. [Bimodal Tutorial](../Bimodal/docs/UserGuide/TUTORIAL.md) - Start writing proofs
+5. [TM Architecture](../Bimodal/docs/UserGuide/ARCHITECTURE.md) - Understand TM logic
 
 ### For Contributors
 
@@ -175,13 +175,13 @@ Architectural Decision Records (ADRs):
 
 1. [Research Overview](Research/README.md) - Research documentation index
 2. [Theory Comparison](Research/theory-comparison.md) - Bimodal vs Logos
-3. [Logos Methodology](../Logos/Documentation/UserGuide/METHODOLOGY.md) - Philosophical foundations
-4. [Logos Semantics](../Logos/Documentation/Research/recursive-semantics.md) - Full specification
+3. [Logos Methodology](../Logos/docs/UserGuide/METHODOLOGY.md) - Philosophical foundations
+4. [Logos Semantics](../Logos/docs/Research/recursive-semantics.md) - Full specification
 
 ### Quick Reference
 
-- [TM Operators](../Bimodal/Documentation/Reference/OPERATORS.md) - Symbol notation guide
-- [Logos Glossary](../Logos/Documentation/Reference/GLOSSARY.md) - Key concepts
+- [TM Operators](../Bimodal/docs/Reference/OPERATORS.md) - Symbol notation guide
+- [Logos Glossary](../Logos/docs/Reference/GLOSSARY.md) - Key concepts
 
 ## By Use Case
 
@@ -191,15 +191,15 @@ Architectural Decision Records (ADRs):
 1. [Project README](../README.md) - Project overview and motivations
 2. [Theory Comparison](Research/theory-comparison.md) - Bimodal vs Logos differences
 3. Theory-specific documentation:
-   - Bimodal: [Architecture](../Bimodal/Documentation/UserGuide/ARCHITECTURE.md)
-   - Logos: [Methodology](../Logos/Documentation/UserGuide/METHODOLOGY.md)
+   - Bimodal: [Architecture](../Bimodal/docs/UserGuide/ARCHITECTURE.md)
+   - Logos: [Methodology](../Logos/docs/UserGuide/METHODOLOGY.md)
 
 ### I want to write proofs
 
 **Start with**:
 1. Theory quick start:
-   - Bimodal: [Quick Start](../Bimodal/Documentation/UserGuide/QUICKSTART.md)
-   - Logos: [Quick Start](../Logos/Documentation/UserGuide/QUICKSTART.md)
+   - Bimodal: [Quick Start](../Bimodal/docs/UserGuide/QUICKSTART.md)
+   - Logos: [Quick Start](../Logos/docs/UserGuide/QUICKSTART.md)
 2. [LEAN Style Guide](Development/LEAN_STYLE_GUIDE.md) - Coding conventions
 3. Theory-specific tutorials and examples in theory UserGuide/ directories
 
@@ -222,20 +222,20 @@ Architectural Decision Records (ADRs):
 
 When updating documentation:
 
-1. **Theory-specific changes**: Update theory Documentation/ directories
-   - Bimodal changes -> Bimodal/Documentation/
-   - Logos changes -> Logos/Documentation/
+1. **Theory-specific changes**: Update theory docs/ directories
+   - Bimodal changes -> Bimodal/docs/
+   - Logos changes -> Logos/docs/
    - New features/tutorials -> theory UserGuide/
    - Operators/axioms -> theory Reference/
 
-2. **Project-wide changes**: Update this Documentation/ directory
+2. **Project-wide changes**: Update this docs/ directory
    - Installation guides -> Installation/
    - Development standards -> Development/
    - Architecture decisions -> Architecture/
 
 3. **Implementation changes**: Update appropriate ProjectInfo/
    - Theory status -> theory ProjectInfo/IMPLEMENTATION_STATUS.md
-   - Project status -> Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+   - Project status -> docs/ProjectInfo/IMPLEMENTATION_STATUS.md
 
 4. **Style/standard changes**: Update Development/ standards files
    - Coding conventions -> LEAN_STYLE_GUIDE.md

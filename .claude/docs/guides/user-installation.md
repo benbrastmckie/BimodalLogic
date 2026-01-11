@@ -1,6 +1,6 @@
 # User Installation Guide
 
-[Back to Docs](../README.md) | [Detailed Installation](../../../Documentation/installation/README.md)
+[Back to Docs](../README.md) | [Detailed Installation](../../../docs/installation/README.md)
 
 A quick-start guide for installing Claude Code and using it to work with ProofChecker.
 
@@ -417,7 +417,7 @@ claude auth login
 
 ### Project Documentation
 
-- **[Documentation/](../../../Documentation/)** - Project documentation
+- **[docs/](../../../docs/)** - Project documentation
 - **[Logos/](../../../Logos/)** - Lean 4 source code
 
 ### Contributing

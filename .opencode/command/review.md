@@ -58,7 +58,7 @@ Analyzes codebase, updates registries (IMPLEMENTATION_STATUS, SORRY_REGISTRY, TA
          - Valid: lean, docs, all
          - If invalid: Error "Invalid scope: ${scope}. Valid: lean, docs, all"
       
-      2. Load registries from Documentation/ProjectInfo/
+      2. Load registries from docs/ProjectInfo/
          - IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, TACTIC_REGISTRY.md, FEATURE_REGISTRY.md
          - If none found: Error "Registry files not found"
       
@@ -81,10 +81,10 @@ Analyzes codebase, updates registries (IMPLEMENTATION_STATUS, SORRY_REGISTRY, TA
            "review_scope": "${scope}",
            "project_path": "${project_path}",
            "current_registries": {
-             "implementation_status": "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
-             "sorry_registry": "Documentation/ProjectInfo/SORRY_REGISTRY.md",
-             "tactic_registry": "Documentation/ProjectInfo/TACTIC_REGISTRY.md",
-             "feature_registry": "Documentation/ProjectInfo/FEATURE_REGISTRY.md"
+             "implementation_status": "docs/ProjectInfo/IMPLEMENTATION_STATUS.md",
+             "sorry_registry": "docs/ProjectInfo/SORRY_REGISTRY.md",
+             "tactic_registry": "docs/ProjectInfo/TACTIC_REGISTRY.md",
+             "feature_registry": "docs/ProjectInfo/FEATURE_REGISTRY.md"
            },
            "session_id": "${session_id}",
            "delegation_depth": 1,
@@ -194,7 +194,7 @@ Analyzes codebase, updates registries (IMPLEMENTATION_STATUS, SORRY_REGISTRY, TA
 | Error | Message | Recommendation |
 |-------|---------|----------------|
 | Invalid scope | Invalid scope: {scope}. Valid: lean, docs, all | Use valid scope |
-| Registry not found | Registry files not found | Check Documentation/ProjectInfo/ |
+| Registry not found | Registry files not found | Check docs/ProjectInfo/ |
 | state.json error | Failed to read next_project_number | Run /meta |
 | Validation failure | Return validation failed: {details} | Fix reviewer return format |
 | Task creation failure | Failed to create task: {description} | Manually create in TODO.md |
@@ -207,4 +207,4 @@ Analyzes codebase, updates registries (IMPLEMENTATION_STATUS, SORRY_REGISTRY, TA
 - **Atomic Updates**: Registry updates by subagent, task creation by command
 - **Graceful Degradation**: Non-critical failures logged but don't abort
 
-See: `.opencode/agent/subagents/reviewer.md`, `Documentation/ProjectInfo/*_REGISTRY.md`
+See: `.opencode/agent/subagents/reviewer.md`, `docs/ProjectInfo/*_REGISTRY.md`

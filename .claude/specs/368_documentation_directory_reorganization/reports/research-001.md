@@ -6,14 +6,14 @@
 
 ## Summary
 
-The Documentation/ directory has 54 markdown files across 7 subdirectories. The main README.md at the root is well-structured following Template G (Documentation Directory). However, 5 of 7 subdirectories lack README files per the DIRECTORY_README_STANDARD.md. The reorganization should add missing README files with proper back-links and summaries while preserving existing content.
+The docs/ directory has 54 markdown files across 7 subdirectories. The main README.md at the root is well-structured following Template G (Documentation Directory). However, 5 of 7 subdirectories lack README files per the DIRECTORY_README_STANDARD.md. The reorganization should add missing README files with proper back-links and summaries while preserving existing content.
 
 ## Current Structure
 
 ### Directory Inventory
 
 ```
-Documentation/
+docs/
 ├── README.md                  (199 lines) - EXISTS, follows Template G
 ├── NAVIGATION.md              (392 lines) - Navigation guide
 ├── Architecture/              (2 files) - MISSING README
@@ -79,21 +79,21 @@ Documentation/
 
 ### Existing READMEs Analysis
 
-**Documentation/README.md** (Root)
+**docs/README.md** (Root)
 - Well-structured, follows Template G
 - Lists all subdirectories with descriptions
 - Has Quick Links sections by audience
 - Contains documentation update workflow
 - **Status**: Good, minor updates needed to add README links
 
-**Documentation/Installation/README.md**
+**docs/Installation/README.md**
 - Good back-link to parent: `[Back to Documentation](../README.md)`
 - Has navigation table with descriptions
 - Includes recommended reading order
 - Requirements summary table
 - **Status**: Excellent example to follow
 
-**Documentation/Research/README.md**
+**docs/Research/README.md**
 - Comprehensive with document categories
 - Has status indicators for each document
 - Related documentation links
@@ -211,9 +211,9 @@ For each new README:
 
 ## References
 
-- [DIRECTORY_README_STANDARD.md](Documentation/Development/DIRECTORY_README_STANDARD.md) - The governing standard
-- [Installation/README.md](Documentation/Installation/README.md) - Excellent pattern example
-- [Research/README.md](Documentation/Research/README.md) - Good category organization
+- [DIRECTORY_README_STANDARD.md](docs/Development/DIRECTORY_README_STANDARD.md) - The governing standard
+- [Installation/README.md](docs/Installation/README.md) - Excellent pattern example
+- [Research/README.md](docs/Research/README.md) - Good category organization
 
 ## Next Steps
 
@@ -222,5 +222,5 @@ For each new README:
 3. **Create ProjectInfo/README.md** - Status tracking focus
 4. **Create Reference/README.md** - Quick lookup focus
 5. **Create Architecture/README.md** - ADR catalog
-6. **Update Documentation/README.md** - Add README links
+6. **Update docs/README.md** - Add README links
 7. **Verify all links** - Cross-reference validation

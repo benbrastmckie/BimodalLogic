@@ -22,7 +22,7 @@ Logos/                    # Lean 4 source code (layered logic system)
 ├── Layer2/              # Temporal logic
 └── Shared/              # Common definitions
 
-Documentation/           # Project documentation
+docs/           # Project documentation
 .claude/specs/           # Task management artifacts
 .claude/                 # Claude Code configuration
 ```

@@ -86,8 +86,8 @@ The stub should not import Foundation or Explanatory since no implementation exi
 
 - `Theories/Logos/SubTheories/Epistemic.lean` - Pattern for simple stub
 - `Theories/Logos/SubTheories/Normative.lean` - Pattern for simple stub
-- `Theories/Logos/Documentation/Research/recursive-semantics.md` (lines 531-557) - Spatial specification
-- `Theories/Logos/Documentation/Research/layer-extensions.md` (line 11, 322) - Extension listing
+- `Theories/Logos/docs/Research/recursive-semantics.md` (lines 531-557) - Spatial specification
+- `Theories/Logos/docs/Research/layer-extensions.md` (line 11, 322) - Extension listing
 - `Theories/Logos/LaTeX/subfiles/07-Spatial.tex` - LaTeX documentation
 
 ## Next Steps

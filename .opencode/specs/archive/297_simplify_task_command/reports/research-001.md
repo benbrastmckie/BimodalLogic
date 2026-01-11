@@ -154,7 +154,7 @@ Stage 3 (CreateTask):
 **Research Strategy**:
 - Search TODO.md for similar tasks (grep with keywords)
 - Search .opencode/context/ for relevant documentation
-- Search Documentation/ for related topics
+- Search docs/ for related topics
 - Web search for unfamiliar technical terms (fallback, rarely needed)
 
 **Metadata Extraction**:

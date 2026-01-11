@@ -1,18 +1,18 @@
 # Research Report: Task #372
 
-**Task**: Create Logos/Documentation/ and refactor root Documentation/
+**Task**: Create Logos/docs/ and refactor root docs/
 **Date**: 2026-01-11
 **Focus**: General research
 
 ## Summary
 
-This task involves creating a theory-specific documentation structure for Logos (similar to the existing Bimodal/Documentation/) and refactoring the root Documentation/ directory to be theory-agnostic. The research reveals that Bimodal/Documentation/ provides an excellent model to follow, the root Documentation/ currently has some Logos/Bimodal-specific content that should be factored out, and the DIRECTORY_README_STANDARD.md provides clear templates for the new structure.
+This task involves creating a theory-specific documentation structure for Logos (similar to the existing Bimodal/docs/) and refactoring the root docs/ directory to be theory-agnostic. The research reveals that Bimodal/docs/ provides an excellent model to follow, the root docs/ currently has some Logos/Bimodal-specific content that should be factored out, and the DIRECTORY_README_STANDARD.md provides clear templates for the new structure.
 
 ## Findings
 
-### 1. Current Root Documentation/ Structure
+### 1. Current Root docs/ Structure
 
-The root `Documentation/` directory contains 8 subdirectories:
+The root `docs/` directory contains 8 subdirectories:
 - **Architecture/** - ADRs (theory-agnostic)
 - **Development/** - Standards and conventions (theory-agnostic)
 - **Installation/** - Setup guides (theory-agnostic)
@@ -28,9 +28,9 @@ The root `Documentation/` directory contains 8 subdirectories:
 - `Reference/` has theory-specific operator definitions
 - The README.md references "Logos Documentation" as the main hub
 
-### 2. Bimodal/Documentation/ Model
+### 2. Bimodal/docs/ Model
 
-Bimodal/Documentation/ provides an excellent template with 3 subdirectories:
+Bimodal/docs/ provides an excellent template with 3 subdirectories:
 - **UserGuide/** - QUICKSTART.md, PROOF_PATTERNS.md
 - **Reference/** - AXIOM_REFERENCE.md, TACTIC_REFERENCE.md
 - **ProjectInfo/** - IMPLEMENTATION_STATUS.md, KNOWN_LIMITATIONS.md
@@ -39,7 +39,7 @@ Each has a README.md following DIRECTORY_README_STANDARD.md Template G.
 
 **Key Features**:
 - Clear separation of theory-specific vs project-wide content
-- Cross-links to project-wide Documentation/ for shared standards
+- Cross-links to project-wide docs/ for shared standards
 - Note at top directing to project-wide docs for shared content
 - Relationship table showing Bimodal-specific vs project-wide equivalents
 
@@ -50,7 +50,7 @@ The Logos/ directory currently contains:
 - Stubs for planned extensions (Epistemic/, Normative/, Explanatory/)
 - LaTeX/ directory for mathematical documentation
 - README.md with comprehensive implementation overview
-- **No Documentation/ subdirectory**
+- **No docs/ subdirectory**
 
 **Key Insight from THEORY_COMPARISON.md**:
 - Logos is currently a **re-export layer** for Bimodal
@@ -68,7 +68,7 @@ Template G (Documentation Directory) specifies:
 
 ### 5. Content Analysis for Refactoring
 
-**Content that should stay in root Documentation/** (theory-agnostic):
+**Content that should stay in root docs/** (theory-agnostic):
 - Development/ - All files (coding standards apply to all theories)
 - Architecture/ - ADRs for project-wide decisions
 - Installation/ - Setup applies to whole project
@@ -79,18 +79,18 @@ Template G (Documentation Directory) specifies:
 - `UserGuide/TUTORIAL.md` - Has theory-specific examples; should become general with links
 - `Reference/OPERATORS.md` - Theory-specific operators; should link to theory-specific references
 
-**Content that should move/copy to Logos/Documentation/**:
+**Content that should move/copy to Logos/docs/**:
 - Theory-specific implementation status
 - Logos-specific user guide content
 - Logos operator/axiom reference
 
 ## Recommendations
 
-### 1. Create Logos/Documentation/ Structure
+### 1. Create Logos/docs/ Structure
 
-Mirror Bimodal/Documentation/ with:
+Mirror Bimodal/docs/ with:
 ```
-Logos/Documentation/
+Logos/docs/
 ├── README.md
 ├── UserGuide/
 │   ├── README.md
@@ -106,7 +106,7 @@ Logos/Documentation/
     └── KNOWN_LIMITATIONS.md
 ```
 
-### 2. Refactor Root Documentation/
+### 2. Refactor Root docs/
 
 Transform to theory-agnostic hub:
 - Update README.md to be genuinely project-wide
@@ -125,21 +125,21 @@ Since Logos is currently a re-export layer:
 
 ## References
 
-- Bimodal/Documentation/README.md - Model for theory-specific documentation
-- Documentation/Development/DIRECTORY_README_STANDARD.md - Template standards
-- Documentation/Research/THEORY_COMPARISON.md - Theory differentiation
+- Bimodal/docs/README.md - Model for theory-specific documentation
+- docs/Development/DIRECTORY_README_STANDARD.md - Template standards
+- docs/Research/THEORY_COMPARISON.md - Theory differentiation
 - Logos/README.md - Current Logos implementation overview
 
 ## Next Steps
 
-1. **Phase 1**: Create Logos/Documentation/ directory structure with README.md files
+1. **Phase 1**: Create Logos/docs/ directory structure with README.md files
 2. **Phase 2**: Create UserGuide/ documents (QUICKSTART.md, PROOF_PATTERNS.md)
 3. **Phase 3**: Create Reference/ documents (AXIOM_REFERENCE.md, TACTIC_REFERENCE.md)
 4. **Phase 4**: Create ProjectInfo/ documents (IMPLEMENTATION_STATUS.md, KNOWN_LIMITATIONS.md)
-5. **Phase 5**: Refactor root Documentation/ to be theory-agnostic
+5. **Phase 5**: Refactor root docs/ to be theory-agnostic
 6. **Phase 6**: Update cross-links between project-wide and theory-specific docs
 7. **Phase 7**: Verify all links work and documentation is consistent
 
 **Effort Estimate**: 4-8 hours (as specified in task)
 
-**Dependencies**: This task unblocks Task 360 Phase 5 (Update project-wide Documentation/)
+**Dependencies**: This task unblocks Task 360 Phase 5 (Update project-wide docs/)

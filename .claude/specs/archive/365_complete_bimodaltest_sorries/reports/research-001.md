@@ -110,7 +110,7 @@ have himp : ⊢ p.imp (p.or r) := ldi_imp p r  -- Need this helper
 4. **CompletenessTest.lean line 83**: Implement inconsistency proof for `[p, ¬p]`
 5. **PropositionalTest.lean line 193**: Implement context composition using deduction theorem helpers
 
-### Priority 3: Documentation/Defer (optional)
+### Priority 3: docs/Defer (optional)
 6. **CompletenessTest.lean lines 51, 65**: Mark as documentation-only tests (consistency proofs require meta-level reasoning about non-derivability)
 
 ## References

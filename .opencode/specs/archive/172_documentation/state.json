@@ -62,7 +62,7 @@
     },
     {
       "type": "api_reference",
-      "path": "Documentation/Reference/API_REFERENCE.md",
+      "path": "docs/Reference/API_REFERENCE.md",
       "created": "2025-12-24T14:36:00Z",
       "description": "Centralized API reference (manual generation, to be replaced by doc-gen4)"
     },

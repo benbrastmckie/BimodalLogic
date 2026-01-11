@@ -27,7 +27,7 @@ bimodal logic system.
 ## References
 
 * LEAN 4 Metaprogramming: https://github.com/leanprover-community/lean4-metaprogramming-book
-* Tactic Development Guide: Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md
+* Tactic Development Guide: docs/ProjectInfo/TACTIC_DEVELOPMENT.md
 
 ## Example Usage
 

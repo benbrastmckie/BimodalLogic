@@ -3,7 +3,7 @@
 Theory-specific documentation hub for the Bimodal TM (Tense and Modality) logic implementation.
 
 > **Note**: For project-wide documentation applicable to all theories, see
-> [Documentation/](../../Documentation/README.md).
+> [docs/](../../docs/README.md).
 
 ## About Bimodal Logic
 
@@ -14,7 +14,7 @@ Bimodal is a **propositional intensional logic** with:
 - **Logical level**: Propositional (zeroth-order)
 
 For comparison with the planned Logos hyperintensional logic, see
-[theory-comparison.md](../../Documentation/Research/theory-comparison.md).
+[theory-comparison.md](../../docs/Research/theory-comparison.md).
 
 ## Documentation Organization
 
@@ -97,12 +97,12 @@ Most-referenced documents:
 - [TACTIC_REGISTRY](ProjectInfo/TACTIC_REGISTRY.md) - Tactic status
 - [Research/](Research/) - Proof search automation research
 
-**Project-Wide** (in [Documentation/](../../Documentation/)):
-- [STYLE_GUIDE](../../Documentation/Development/LEAN_STYLE_GUIDE.md) - Coding style
-- [TESTING](../../Documentation/Development/TESTING_STANDARDS.md) - Test standards
+**Project-Wide** (in [docs/](../../docs/)):
+- [STYLE_GUIDE](../../docs/Development/LEAN_STYLE_GUIDE.md) - Coding style
+- [TESTING](../../docs/Development/TESTING_STANDARDS.md) - Test standards
 
 ## Navigation
 
 - **Up**: [Bimodal/](../)
-- **Project Documentation**: [Documentation/](../../Documentation/)
-- **Theory Comparison**: [theory-comparison.md](../../Documentation/Research/theory-comparison.md)
+- **Project Documentation**: [docs/](../../docs/)
+- **Theory Comparison**: [theory-comparison.md](../../docs/Research/theory-comparison.md)

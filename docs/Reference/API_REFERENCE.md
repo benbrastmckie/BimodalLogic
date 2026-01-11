@@ -698,9 +698,9 @@ All Logos modules follow these documentation standards:
 
 ## References
 
-- **Architecture Guide**: `Documentation/UserGuide/ARCHITECTURE.md`
-- **Lean Style Guide**: `Documentation/Development/LEAN_STYLE_GUIDE.md`
-- **Tactic Development**: `Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md`
+- **Architecture Guide**: `docs/UserGuide/ARCHITECTURE.md`
+- **Lean Style Guide**: `docs/Development/LEAN_STYLE_GUIDE.md`
+- **Tactic Development**: `docs/ProjectInfo/TACTIC_DEVELOPMENT.md`
 - **JPL Paper**: "The Perpetuity Calculus of Agency" (task semantics specification)
 
 ---

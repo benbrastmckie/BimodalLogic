@@ -67,16 +67,16 @@ There's a two-layer architecture:
 
 ### 4. The logos-original/ Subdirectory
 
-**Purpose**: Historical preservation of original Logos documentation integrated into `/Documentation/` ecosystem.
+**Purpose**: Historical preservation of original Logos documentation integrated into `/docs/` ecosystem.
 
 **Contents**:
 - 5 markdown files (research vision documents)
 - Archived December 2025 as part of Spec 029
 - Content integrated into:
-  - `/Documentation/UserGuide/METHODOLOGY.md`
-  - `/Documentation/Research/DUAL_VERIFICATION.md`
-  - `/Documentation/Research/PROOF_LIBRARY_DESIGN.md`
-  - `/Documentation/Research/LAYER_EXTENSIONS.md`
+  - `/docs/UserGuide/METHODOLOGY.md`
+  - `/docs/Research/DUAL_VERIFICATION.md`
+  - `/docs/Research/PROOF_LIBRARY_DESIGN.md`
+  - `/docs/Research/LAYER_EXTENSIONS.md`
 
 **Assessment**: This subdirectory is purely historical archive. Could be removed or moved to a more explicit archive location, but provides useful reference for documentation evolution.
 
@@ -100,8 +100,8 @@ Multiple files reference outdated paths:
 | TemporalProofStrategies.lean | 50 | `../Logos/Core/Theorems/Perpetuity.lean` | `../Bimodal/Theorems/Perpetuity.lean` |
 
 External Documentation (lower priority):
-- `Documentation/Development/NONCOMPUTABLE_GUIDE.md`: Multiple `Logos.Core` references
-- `Documentation/Development/MODULE_ORGANIZATION.md`: Multiple `Logos/Core` references
+- `docs/Development/NONCOMPUTABLE_GUIDE.md`: Multiple `Logos.Core` references
+- `docs/Development/MODULE_ORGANIZATION.md`: Multiple `Logos/Core` references
 
 ## Recommendations
 
@@ -136,4 +136,4 @@ Options:
 1. Update `Archive/README.md` learning path references (3 paths)
 2. Update `Archive/*ProofStrategies.lean` docstring references (3 files)
 3. Decide on Logos/Examples/ shim architecture
-4. Optionally update Documentation/ files for consistency
+4. Optionally update docs/ files for consistency

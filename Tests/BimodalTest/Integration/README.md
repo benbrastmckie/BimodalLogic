@@ -305,9 +305,9 @@ time lake exe test
 
 ## References
 
-- [Testing Standards](../../../Documentation/Development/TESTING_STANDARDS.md)
-- [Lean Style Guide](../../../Documentation/Development/LEAN_STYLE_GUIDE.md)
-- [Architecture](../../../Documentation/UserGuide/ARCHITECTURE.md)
+- [Testing Standards](../../../docs/Development/TESTING_STANDARDS.md)
+- [Lean Style Guide](../../../docs/Development/LEAN_STYLE_GUIDE.md)
+- [Architecture](../../../docs/UserGuide/ARCHITECTURE.md)
 - [Soundness Theorem](../../Bimodal/Metalogic/Soundness.lean)
 
 ## Contributing
@@ -322,4 +322,4 @@ When adding new integration tests:
 
 ## Questions?
 
-See the main [Testing Standards](../../../Documentation/Development/TESTING_STANDARDS.md) or ask in the project discussion forum.
+See the main [Testing Standards](../../../docs/Development/TESTING_STANDARDS.md) or ask in the project discussion forum.

@@ -172,7 +172,7 @@ ELSE IF language != "lean" AND has_plan == false:
 ```
 
 **Artifacts Created**:
-1. **Implementation Files**: Language-specific paths (e.g., `Logos/Core/*.lean`, `Documentation/*.md`)
+1. **Implementation Files**: Language-specific paths (e.g., `Logos/Core/*.lean`, `docs/*.md`)
 2. **Implementation Summary**: `.opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-{YYYYMMDD}.md`
 
 **Directory Creation Timing**:

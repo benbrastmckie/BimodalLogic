@@ -59,7 +59,7 @@ This module contains 5 exercises marked with `-- EXERCISE:` comments:
 
 * [ModalProofStrategies.lean](ModalProofStrategies.lean) - S5 modal proof patterns
 * [Perpetuity.lean](../Logos/Core/Theorems/Perpetuity.lean) - Helper lemmas
-* [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
+* [ARCHITECTURE.md](../docs/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
 namespace Bimodal.Examples.TemporalProofStrategies

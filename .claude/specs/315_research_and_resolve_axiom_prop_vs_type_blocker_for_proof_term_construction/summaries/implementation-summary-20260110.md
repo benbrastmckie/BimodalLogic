@@ -41,7 +41,7 @@ programmatic proof witness construction.
 ### Documentation Updates
 
 - `Logos/Core/Automation.lean`: Comprehensive usage guide
-- `Documentation/ProjectInfo/TACTIC_REGISTRY.md`: Updated with new tactics
+- `docs/ProjectInfo/TACTIC_REGISTRY.md`: Updated with new tactics
 - `LogosTest/Core/Automation/TacticsTest.lean`: 24 new tests (Tests 111-134)
 
 ## Files Modified
@@ -49,7 +49,7 @@ programmatic proof witness construction.
 - `Logos/Core/Automation/Tactics.lean` - Core implementation (~450 new lines)
 - `Logos/Core/Automation.lean` - Updated documentation
 - `LogosTest/Core/Automation/TacticsTest.lean` - 24 new tests, fixed broken tests 51-58
-- `Documentation/ProjectInfo/TACTIC_REGISTRY.md` - Status updates
+- `docs/ProjectInfo/TACTIC_REGISTRY.md` - Status updates
 - `.claude/specs/315_.../plans/implementation-001.md` - Phase completion markers
 
 ## Verification

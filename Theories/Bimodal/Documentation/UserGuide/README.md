@@ -17,7 +17,7 @@ Documentation for users working with the Bimodal TM logic library.
 ## See Also
 
 - [Bimodal Axiom Reference](../Reference/AXIOM_REFERENCE.md) - Complete axiom schemas
-- [Project Tutorial](../../../Documentation/UserGuide/TUTORIAL.md) - General tutorial
+- [Project Tutorial](../../../docs/UserGuide/TUTORIAL.md) - General tutorial
 - [Bimodal README](../../README.md) - Library overview
 
 ## Navigation

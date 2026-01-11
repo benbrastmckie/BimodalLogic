@@ -89,11 +89,11 @@ Systematically rename `Logos/Core/` to `Logos/Explanatory/` and update all refer
 3. Maintain consistency with theoretical naming
 
 **Files to modify**:
-- `Logos/Documentation/Research/RECURSIVE_SEMANTICS.md`
-- `Logos/Documentation/Research/LAYER_EXTENSIONS.md`
-- `Logos/Documentation/Research/CONCEPTUAL_ENGINEERING.md`
-- `Logos/Documentation/Reference/GLOSSARY.md`
-- `Logos/Documentation/UserGuide/METHODOLOGY.md`
+- `Logos/docs/Research/RECURSIVE_SEMANTICS.md`
+- `Logos/docs/Research/LAYER_EXTENSIONS.md`
+- `Logos/docs/Research/CONCEPTUAL_ENGINEERING.md`
+- `Logos/docs/Reference/GLOSSARY.md`
+- `Logos/docs/UserGuide/METHODOLOGY.md`
 - Other .md files with "Core" references
 
 **Steps**:
@@ -108,8 +108,8 @@ Systematically rename `Logos/Core/` to `Logos/Explanatory/` and update all refer
 4. Review each change for context appropriateness
 
 **Verification**:
-- `grep -ri "Core Extension" Logos/Documentation/` returns no matches
-- `grep -ri "Logos/Core" Logos/Documentation/` returns no matches
+- `grep -ri "Core Extension" Logos/docs/` returns no matches
+- `grep -ri "Logos/Core" Logos/docs/` returns no matches
 - Documentation remains coherent and accurate
 
 ---

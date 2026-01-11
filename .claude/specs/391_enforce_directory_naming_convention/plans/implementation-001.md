@@ -16,7 +16,7 @@ Enforce a consistent directory naming convention across the ProofChecker project
 | `Logos/` | Yes | PascalCase | ✓ |
 | `Theories/` | Yes | PascalCase | ✓ |
 | `Tests/` | Yes | PascalCase | ✓ |
-| `Documentation/` | No (markdown) | PascalCase | ✗ → rename to `docs/` |
+| `docs/` | No (markdown) | PascalCase | ✗ → rename to `docs/` |
 | `LaTeX/` | No (LaTeX/sty) | PascalCase | ✗ → rename to `latex/` |
 | `benchmarks/` | No (scripts) | lowercase | ✓ |
 | `scripts/` | No (scripts) | lowercase | ✓ |
@@ -26,28 +26,28 @@ Enforce a consistent directory naming convention across the ProofChecker project
 ### Phase 1: Rename Documentation/ to docs/
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
-1. Rename `Documentation/` directory to `docs/`
-2. Update all references to `Documentation/` across the codebase
+1. Rename `docs/` directory to `docs/`
+2. Update all references to `docs/` across the codebase
 
 **Files to modify**:
-- `Documentation/` → `docs/` (directory rename)
+- `docs/` → `docs/` (directory rename)
 - `README.md` - update documentation links
 - `.claude/CLAUDE.md` - update project structure reference
 - `.claude/ARCHITECTURE.md` - update if references exist
-- Any other files referencing `Documentation/`
+- Any other files referencing `docs/`
 
 **Steps**:
 1. Use `git mv Documentation docs` to rename with history preservation
-2. Search for all references to `Documentation/` in the codebase
+2. Search for all references to `docs/` in the codebase
 3. Update each reference to use `docs/`
 4. Verify no broken links remain
 
 **Verification**:
-- `ls -la` shows `docs/` not `Documentation/`
-- `grep -r "Documentation/" .` returns no results (excluding .git)
+- `ls -la` shows `docs/` not `docs/`
+- `grep -r "docs/" .` returns no results (excluding .git)
 - All documentation links in README.md work
 
 ---
@@ -139,7 +139,7 @@ This convention ensures:
 
 ## Success Criteria
 
-- [ ] `Documentation/` renamed to `docs/`
+- [ ] `docs/` renamed to `docs/`
 - [ ] `LaTeX/` renamed to `latex/`
 - [ ] All internal references updated
 - [ ] Convention documented in CONTRIBUTING.md

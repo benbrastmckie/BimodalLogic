@@ -49,7 +49,7 @@ Each example includes:
 * [Perpetuity.lean](../Logos/Core/Theorems/Perpetuity.lean) - Helper lemmas and P1-P6
 * [ModalProofStrategies.lean](ModalProofStrategies.lean) - Modal proof patterns
 * [TemporalProofStrategies.lean](TemporalProofStrategies.lean) - Temporal proof patterns
-* [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
+* [ARCHITECTURE.md](../docs/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
 namespace Bimodal.Examples.BimodalProofStrategies

@@ -632,7 +632,7 @@ example (p : Formula) : DerivationTree [] (complex_modal_formula p) := by
    - Add troubleshooting guide
 
    **Files to Modify**:
-   - `Documentation/ProjectInfo/TACTIC_REGISTRY.md`
+   - `docs/ProjectInfo/TACTIC_REGISTRY.md`
    - `Logos/Core/Automation/README.md`
 
    **Expected Outcome**: Clear documentation for all tactics
@@ -682,7 +682,7 @@ example (p : Formula) : DerivationTree [] (complex_modal_formula p) := by
    - Key Insight: Factory pattern for K-rule tactics
 
 2. **TACTIC_REGISTRY.md** (159 lines)
-   - Location: `Documentation/ProjectInfo/TACTIC_REGISTRY.md`
+   - Location: `docs/ProjectInfo/TACTIC_REGISTRY.md`
    - Contains: Tactic implementation status, statistics
    - Key Insight: 10/12 tactics complete (83%)
 
@@ -699,12 +699,12 @@ example (p : Formula) : DerivationTree [] (complex_modal_formula p) := by
 ### Secondary Sources
 
 5. **temporal-logic-automation-research.md** (504 lines)
-   - Location: `Documentation/Research/temporal-logic-automation-research.md`
+   - Location: `docs/Research/temporal-logic-automation-research.md`
    - Contains: LeanLTL framework, Aesop integration, modal logic patterns
    - Key Insight: Aesop provides white-box automation for TM logic
 
 6. **PROOF_SEARCH_AUTOMATION.md** (456 lines)
-   - Location: `Documentation/Research/PROOF_SEARCH_AUTOMATION.md`
+   - Location: `docs/Research/PROOF_SEARCH_AUTOMATION.md`
    - Contains: Proof search strategies, LEAN 4 metaprogramming, heuristics
    - Key Insight: Bounded DFS with caching is standard approach
 
@@ -715,7 +715,7 @@ example (p : Formula) : DerivationTree [] (complex_modal_formula p) := by
    - Contains: Module overview, usage examples, build instructions
 
 8. **TACTIC_DEVELOPMENT.md**
-   - Location: `Documentation/UserGuide/TACTIC_DEVELOPMENT.md`
+   - Location: `docs/UserGuide/TACTIC_DEVELOPMENT.md`
    - Contains: Tactic development guide (referenced but not read)
 
 ### Academic References

@@ -251,7 +251,7 @@ mdformat --wrap keep --end-of-line lf .opencode/specs/TODO.md
 
 **When to reconsider**:
 - Custom formatter has bugs or edge case issues
-- Need to format other markdown files (Documentation/)
+- Need to format other markdown files (docs/)
 - Team prefers industry-standard tools over custom code
 
 ---
@@ -568,7 +568,7 @@ if __name__ == '__main__':
    - Useful for debugging or manual formatting
 
 2. **Extend formatter to other markdown files**
-   - Format Documentation/ files
+   - Format docs/ files
    - Format research reports and plans
    - Add to pre-commit hooks
 

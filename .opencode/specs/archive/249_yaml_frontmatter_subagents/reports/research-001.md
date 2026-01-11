@@ -294,7 +294,7 @@ tools:
 ```yaml
 permissions:
   allow:
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
     - write: [".opencode/specs/**/*", ".opencode/context/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
@@ -688,7 +688,7 @@ permissions:
     - read:
       - "**/*.md"
       - ".opencode/**/*"
-      - "Documentation/**/*"
+      - "docs/**/*"
     
     # Write permissions
     - write:
@@ -1221,7 +1221,7 @@ temperature: 0.3
 tools: [read, write, bash, webfetch, grep, glob]
 permissions:
   allow:
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
     - write: [".opencode/specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
@@ -1345,7 +1345,7 @@ temperature: 0.3
 tools: [read, write, bash, webfetch, grep, glob]
 permissions:
   allow:
-    - read: ["**/*.lean", "**/*.md", ".opencode/**/*", "Documentation/**/*"]
+    - read: ["**/*.lean", "**/*.md", ".opencode/**/*", "docs/**/*"]
     - write: [".opencode/specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir", "loogle"]
   deny:

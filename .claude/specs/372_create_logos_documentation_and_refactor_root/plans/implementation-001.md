@@ -1,14 +1,14 @@
 # Implementation Plan: Task #372
 
-**Task**: Create Logos/Documentation/ and Refactor Root Documentation/
+**Task**: Create Logos/docs/ and Refactor Root docs/
 **Version**: 001
 **Created**: 2026-01-11
 **Language**: general
 
 ## Overview
 
-Create a theory-specific documentation structure for Logos/ (mirroring Bimodal/Documentation/)
-and refactor the root Documentation/ directory to be genuinely theory-agnostic. This unblocks
+Create a theory-specific documentation structure for Logos/ (mirroring Bimodal/docs/)
+and refactor the root docs/ directory to be genuinely theory-agnostic. This unblocks
 Task 360 Phase 5.
 
 Key insight from research: Logos is currently a re-export layer for Bimodal with stubs for
@@ -17,17 +17,17 @@ while preparing for future expansion.
 
 ## Phases
 
-### Phase 1: Create Logos/Documentation/ Directory Structure
+### Phase 1: Create Logos/docs/ Directory Structure
 **Status**: [NOT STARTED]
 **Estimated effort**: 30 minutes
 
 **Objectives**:
-1. Create directory structure mirroring Bimodal/Documentation/
+1. Create directory structure mirroring Bimodal/docs/
 2. Create README.md navigation hub following Template G
 
 **Files to create**:
 ```
-Logos/Documentation/
+Logos/docs/
 ├── README.md
 ├── UserGuide/
 │   └── README.md
@@ -39,7 +39,7 @@ Logos/Documentation/
 
 **Steps**:
 1. Create directory structure with `mkdir -p`
-2. Create Logos/Documentation/README.md following Template G
+2. Create Logos/docs/README.md following Template G
 3. Create UserGuide/README.md with category description
 4. Create Reference/README.md with category description
 5. Create ProjectInfo/README.md with category description
@@ -59,8 +59,8 @@ Logos/Documentation/
 2. Create PROOF_PATTERNS.md or CURRENT_STATUS.md explaining re-export status
 
 **Files to create**:
-- `Logos/Documentation/UserGuide/QUICKSTART.md`
-- `Logos/Documentation/UserGuide/CURRENT_STATUS.md`
+- `Logos/docs/UserGuide/QUICKSTART.md`
+- `Logos/docs/UserGuide/CURRENT_STATUS.md`
 
 **Content notes**:
 - QUICKSTART.md should explain Logos is currently a re-export of Bimodal
@@ -89,8 +89,8 @@ Logos/Documentation/
 2. Create EXTENSION_STUBS.md documenting planned extension modules
 
 **Files to create**:
-- `Logos/Documentation/Reference/AXIOM_REFERENCE.md`
-- `Logos/Documentation/Reference/EXTENSION_STUBS.md`
+- `Logos/docs/Reference/AXIOM_REFERENCE.md`
+- `Logos/docs/Reference/EXTENSION_STUBS.md`
 
 **Content notes**:
 - AXIOM_REFERENCE.md should note re-export of Bimodal axioms
@@ -118,9 +118,9 @@ Logos/Documentation/
 3. Create ROADMAP.md outlining future development
 
 **Files to create**:
-- `Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
-- `Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
-- `Logos/Documentation/ProjectInfo/ROADMAP.md`
+- `Logos/docs/ProjectInfo/IMPLEMENTATION_STATUS.md`
+- `Logos/docs/ProjectInfo/KNOWN_LIMITATIONS.md`
+- `Logos/docs/ProjectInfo/ROADMAP.md`
 
 **Content notes**:
 - Status should clearly indicate re-export layer nature
@@ -139,31 +139,31 @@ Logos/Documentation/
 
 ---
 
-### Phase 5: Refactor Root Documentation/ to Theory-Agnostic
+### Phase 5: Refactor Root docs/ to Theory-Agnostic
 **Status**: [NOT STARTED]
 **Estimated effort**: 1 hour
 
 **Objectives**:
-1. Update Documentation/README.md to be genuinely project-wide
+1. Update docs/README.md to be genuinely project-wide
 2. Update ProjectInfo/IMPLEMENTATION_STATUS.md to overview with links
 3. Update UserGuide/ files to be introductory with theory links
 4. Add "Theory-Specific Documentation" section throughout
 
 **Files to modify**:
-- `Documentation/README.md` - Add theory-specific section
-- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` - Overview only
-- `Documentation/UserGuide/README.md` - Add theory links
-- `Documentation/Reference/README.md` - Add theory links
+- `docs/README.md` - Add theory-specific section
+- `docs/ProjectInfo/IMPLEMENTATION_STATUS.md` - Overview only
+- `docs/UserGuide/README.md` - Add theory links
+- `docs/Reference/README.md` - Add theory links
 
 **Steps**:
-1. Update Documentation/README.md with theory-specific doc links
+1. Update docs/README.md with theory-specific doc links
 2. Refactor IMPLEMENTATION_STATUS.md to overview linking to theory status
 3. Add "Theory-Specific Documentation" sections to relevant README files
 4. Verify no theory-specific content remains without proper context
 
 **Verification**:
-- Documentation/ is genuinely theory-agnostic
-- Clear links to Bimodal/Documentation/ and Logos/Documentation/
+- docs/ is genuinely theory-agnostic
+- Clear links to Bimodal/docs/ and Logos/docs/
 
 ---
 
@@ -173,7 +173,7 @@ Logos/Documentation/
 
 **Objectives**:
 1. Add "Theory-Specific Documentation" section similar to Bimodal/README.md
-2. Update links to point to new Logos/Documentation/
+2. Update links to point to new Logos/docs/
 3. Add note about re-export relationship to Bimodal
 
 **Files to modify**:
@@ -183,7 +183,7 @@ Logos/Documentation/
 1. Add "About Logos Logic" section explaining planned hyperintensional nature
 2. Add "Theory-Specific Documentation" section with links
 3. Update "Related Documentation" section
-4. Update Navigation to include Documentation/
+4. Update Navigation to include docs/
 
 **Verification**:
 - README clearly explains Logos' current and planned status
@@ -199,7 +199,7 @@ Logos/Documentation/
 1. Verify all cross-links between documentation directories
 2. Check 100-character line limits
 3. Verify formatting compliance with DOC_QUALITY_CHECKLIST.md
-4. Complete Task 360 Phase 5 (update project-wide Documentation/)
+4. Complete Task 360 Phase 5 (update project-wide docs/)
 
 **Steps**:
 1. Run link verification across all documentation
@@ -218,7 +218,7 @@ Logos/Documentation/
 ## Dependencies
 
 - None external
-- Unblocks: Task 360 Phase 5 (Update project-wide Documentation/)
+- Unblocks: Task 360 Phase 5 (Update project-wide docs/)
 
 ## Risks and Mitigations
 
@@ -230,9 +230,9 @@ Logos/Documentation/
 
 ## Success Criteria
 
-- [ ] Logos/Documentation/ structure created (mirrors Bimodal/Documentation/)
+- [ ] Logos/docs/ structure created (mirrors Bimodal/docs/)
 - [ ] All README.md files follow DIRECTORY_README_STANDARD.md Template G
-- [ ] Root Documentation/ is theory-agnostic
+- [ ] Root docs/ is theory-agnostic
 - [ ] Theory-specific documentation clearly linked from both roots
 - [ ] THEORY_COMPARISON.md properly cross-referenced
 - [ ] Task 360 Phase 5 unblocked
@@ -243,5 +243,5 @@ Logos/Documentation/
 
 If documentation refactoring causes issues:
 1. Revert changes via git (all changes in single commit per phase)
-2. Restore original Documentation/ structure
-3. Remove Logos/Documentation/ directory
+2. Restore original docs/ structure
+3. Remove Logos/docs/ directory

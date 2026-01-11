@@ -17,7 +17,7 @@ The codebase has evolved significantly since the original plan. Several complete
 | 377 | Created Logos/Foundation/ with real content | Foundation/ must move to SubTheories/ |
 | 377 | Logos/Explanatory/ has stub content | Explanatory/ must move to SubTheories/ |
 | 375 | Created LaTeX/ at project root | Already provides shared LaTeX assets |
-| 378 | Improved Documentation/ structure | Keep at project root |
+| 378 | Improved docs/ structure | Keep at project root |
 | 176 | Added Bimodal/Automation/SuccessPatterns.lean | No structural impact |
 | 179 | Created benchmarks/ directory at root | Keep at project root |
 
@@ -34,7 +34,7 @@ The codebase has evolved significantly since the original plan. Several complete
 ProofChecker/
   lakefile.lean           # Updated with srcDir configuration
   LaTeX/                   # Already exists (shared assets from task 375)
-  Documentation/           # Already exists (project-wide docs from task 378)
+  docs/           # Already exists (project-wide docs from task 378)
   benchmarks/              # Already exists (from task 179)
   Theories/
     Bimodal.lean           # Root module
@@ -46,7 +46,7 @@ ProofChecker/
         Epistemic/         # Move from Logos/Epistemic/
         Normative/         # Move from Logos/Normative/
         Explanatory/       # Move from Logos/Explanatory/
-      Documentation/       # Keep theory-specific docs
+      docs/       # Keep theory-specific docs
       LaTeX/               # Keep theory-specific LaTeX
       Lint/                # Keep utility modules
   Tests/
@@ -118,7 +118,7 @@ ProofChecker/
 **Verification**:
 - `lake build Logos` succeeds
 - `Logos/SubTheories/` contains Foundation/, Epistemic/, Normative/, Explanatory/
-- Original Logos/Documentation/ and Logos/LaTeX/ remain in place
+- Original Logos/docs/ and Logos/LaTeX/ remain in place
 
 ---
 
@@ -290,7 +290,7 @@ ProofChecker/
 
 **Files to modify**:
 - `scripts/*.lean` - Update if they reference moved files
-- `Documentation/Architecture/` - Update path references
+- `docs/Architecture/` - Update path references
 - `README.md` - Update directory structure documentation
 
 **Files to create**:
@@ -315,7 +315,7 @@ ProofChecker/
    - `Bimodal/` - TM bimodal logic (Tense and Modality)
    - `Logos/` - Recursive semantics with layered extensions
      - `SubTheories/` - Theory layers (Foundation, Epistemic, Normative, Explanatory)
-     - `Documentation/` - Theory-specific documentation
+     - `docs/` - Theory-specific documentation
      - `LaTeX/` - Theory-specific LaTeX documentation
    ```
 4. Create `Tests/README.md`:
@@ -327,7 +327,7 @@ ProofChecker/
    - `BimodalTest/` - Tests for Bimodal TM logic
    - `LogosTest/` - Tests for Logos recursive semantics
    ```
-5. Update Documentation/ if it references old file paths
+5. Update docs/ if it references old file paths
 6. Run full build:
    ```bash
    lake clean

@@ -7,15 +7,15 @@
 
 ## Revision Summary
 
-This plan replaces the original task 178 scope (which targeted the general `Documentation/UserGuide/TUTORIAL.md`) with a redesigned scope for the `Bimodal/` theory.
+This plan replaces the original task 178 scope (which targeted the general `docs/UserGuide/TUTORIAL.md`) with a redesigned scope for the `Bimodal/` theory.
 
 ### Previous Scope (Obsolete)
-- Targeted general `Documentation/UserGuide/TUTORIAL.md`
+- Targeted general `docs/UserGuide/TUTORIAL.md`
 - Referenced deprecated dependency on Task 172
-- Files now live in `Bimodal/Documentation/`
+- Files now live in `Bimodal/docs/`
 
 ### New Scope (Current)
-The `Bimodal/Documentation/UserGuide/` already has:
+The `Bimodal/docs/UserGuide/` already has:
 - `QUICKSTART.md` - Basic getting started guide
 - `PROOF_PATTERNS.md` - 10 common proof patterns
 - `README.md` - User guide overview
@@ -27,7 +27,7 @@ This plan creates the **advanced content**:
 
 ## Overview
 
-Create three complementary documents in `Bimodal/Documentation/UserGuide/`:
+Create three complementary documents in `Bimodal/docs/UserGuide/`:
 - **ADVANCED_TUTORIAL.md**: Deep dive into proof automation and metalogic
 - **EXERCISES.md**: Graded exercises from beginner to advanced with solutions
 - **TROUBLESHOOTING.md**: Common errors and their fixes
@@ -45,7 +45,7 @@ Create three complementary documents in `Bimodal/Documentation/UserGuide/`:
 3. Show when to use each search strategy
 
 **Files to create/modify**:
-- `Bimodal/Documentation/UserGuide/ADVANCED_TUTORIAL.md` (new)
+- `Bimodal/docs/UserGuide/ADVANCED_TUTORIAL.md` (new)
 
 **Content sections**:
 
@@ -177,7 +177,7 @@ Create three complementary documents in `Bimodal/Documentation/UserGuide/`:
 3. Cover modal, temporal, and bimodal proofs
 
 **Files to create**:
-- `Bimodal/Documentation/UserGuide/EXERCISES.md` (new)
+- `Bimodal/docs/UserGuide/EXERCISES.md` (new)
 
 **Content structure**:
 
@@ -237,7 +237,7 @@ Implement a proof of □□p → □p manually...
 3. Include diagnostic tips
 
 **Files to create**:
-- `Bimodal/Documentation/UserGuide/TROUBLESHOOTING.md` (new)
+- `Bimodal/docs/UserGuide/TROUBLESHOOTING.md` (new)
 
 **Content structure**:
 

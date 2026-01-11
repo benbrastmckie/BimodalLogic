@@ -28,8 +28,8 @@
 - `.opencode/README.md` - 7 references to /task command
 - `.opencode/QUICK-START.md` - Example usage
 - `.opencode/SYSTEM_SUMMARY.md` - Command table and workflow descriptions
-- `Documentation/ProjectInfo/FEATURE_REGISTRY.md` - Feature descriptions
-- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` - Task status references
+- `docs/ProjectInfo/FEATURE_REGISTRY.md` - Feature descriptions
+- `docs/ProjectInfo/IMPLEMENTATION_STATUS.md` - Task status references
 
 ### 4. Standards and Context Files
 - `.opencode/context/core/standards/tasks.md` - Task execution standards
@@ -93,7 +93,7 @@
 
 **Category 3: Documentation** (10+ files)
 - README.md, QUICK-START.md, SYSTEM_SUMMARY.md
-- Documentation/ProjectInfo/*.md files
+- docs/ProjectInfo/*.md files
 - All user-facing guides and tutorials
 
 **Category 4: Standards and Context** (5+ files)

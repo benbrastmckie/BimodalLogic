@@ -662,7 +662,7 @@ Based on the ProofChecker codebase:
 1. **Generate API reference** - Set up automated doc-gen4 builds
 2. **Create user guide** - Supplement API docs with tutorials and examples
 3. **Document proof patterns** - Create a guide to common proof strategies
-4. **Maintain theory documentation** - Keep `Documentation/Research/` in sync with code
+4. **Maintain theory documentation** - Keep `docs/Research/` in sync with code
 5. **Enable docs# links** - Set up `/find` endpoint for Zulip integration
 
 ## 9. Conclusion

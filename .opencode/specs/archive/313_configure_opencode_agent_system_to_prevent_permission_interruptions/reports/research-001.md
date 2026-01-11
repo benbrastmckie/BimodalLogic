@@ -354,7 +354,7 @@ Based on the research, "permission interruptions" in the OpenCode context likely
    ```yaml
    permissions:
      allow:
-       - write: [".opencode/specs/**/*", "Documentation/**/*", "*.md"]
+       - write: [".opencode/specs/**/*", "docs/**/*", "*.md"]
        - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
    ```
 
@@ -511,7 +511,7 @@ Based on the research, "permission interruptions" in the OpenCode context likely
 # Research agents
 permissions:
   allow:
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
     - write: [".opencode/specs/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq"]
 
@@ -607,10 +607,10 @@ permissions:
   "context": {
     "agent": "researcher",
     "operation": "write",
-    "path": "Documentation/Research/report.md"
+    "path": "docs/Research/report.md"
   },
-  "message": "Permission denied: write to Documentation/Research/report.md",
-  "recommendation": "Add 'Documentation/**/*' to researcher allow list"
+  "message": "Permission denied: write to docs/Research/report.md",
+  "recommendation": "Add 'docs/**/*' to researcher allow list"
 }
 ```
 
@@ -714,8 +714,8 @@ tools:
   - git
 permissions:
   allow:
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*", "**/*.lean"]
-    - write: [".opencode/specs/**/*", "Documentation/Research/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
+    - write: [".opencode/specs/**/*", "docs/Research/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]

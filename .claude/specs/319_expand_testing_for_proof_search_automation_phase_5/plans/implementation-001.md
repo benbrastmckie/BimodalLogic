@@ -148,7 +148,7 @@ This plan creates a comprehensive test suite for the proof search automation sys
 
 **Files to modify**:
 - `LogosTest/Core/Automation/TacticsTest.lean` - Add integration section
-- `Documentation/ProjectInfo/TESTING.md` - Update coverage (if exists) or note in summary
+- `docs/ProjectInfo/TESTING.md` - Update coverage (if exists) or note in summary
 
 **Steps**:
 1. Add section "Integration Tests" to TacticsTest.lean

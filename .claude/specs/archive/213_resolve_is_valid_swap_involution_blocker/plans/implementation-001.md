@@ -173,8 +173,8 @@ Resolve the is_valid_swap_involution blocker by implementing the solution identi
 8. Update IMPLEMENTATION_STATUS.md if needed
 
 **Files Modified**:
-- Documentation/ProjectInfo/SORRY_REGISTRY.md (remove entry)
-- Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md (update if needed)
+- docs/ProjectInfo/SORRY_REGISTRY.md (remove entry)
+- docs/ProjectInfo/IMPLEMENTATION_STATUS.md (update if needed)
 
 **Acceptance Criteria**:
 - [ ] `lake build` completes successfully
@@ -207,8 +207,8 @@ Resolve the is_valid_swap_involution blocker by implementing the solution identi
    - Update status to [COMPLETED] or [ABANDONED] as appropriate
    - Add closure notes explaining resolution path
 
-5. Create resolution summary in Documentation/Research/:
-   - File: Documentation/Research/is_valid_swap_involution_resolution.md
+5. Create resolution summary in docs/Research/:
+   - File: docs/Research/is_valid_swap_involution_resolution.md
    - Content: Executive summary of problem, research findings, solution
    - Lessons learned: Syntactic vs semantic properties, derivability scoping
 
@@ -220,14 +220,14 @@ Resolve the is_valid_swap_involution blocker by implementing the solution identi
 **Files Modified**:
 - .opencode/specs/TODO.md (task 213, 184, 193, 209 status updates)
 - .opencode/specs/state.json (completion tracking)
-- Documentation/Research/is_valid_swap_involution_resolution.md (new)
+- docs/Research/is_valid_swap_involution_resolution.md (new)
 
 **Acceptance Criteria**:
 - [ ] Task 213 marked [COMPLETED] in TODO.md
 - [ ] Completion timestamp added
 - [ ] Implementation artifacts linked
 - [ ] Tasks 184, 193, 209 closed with resolution notes
-- [ ] Resolution summary created in Documentation/Research/
+- [ ] Resolution summary created in docs/Research/
 - [ ] state.json updated with completion data
 - [ ] All acceptance criteria from task 213 marked complete
 

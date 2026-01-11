@@ -397,7 +397,7 @@ Actual: [TO BE MEASURED]
   - **Effort**: 2 hours
   - **Priority**: Medium
   - **Description**: Update user guide with new /implement command examples
-  - **Files**: Documentation/UserGuide/TUTORIAL.md, Documentation/UserGuide/EXAMPLES.md
+  - **Files**: docs/UserGuide/TUTORIAL.md, docs/UserGuide/EXAMPLES.md
   - **Dependencies**: None
   ```
 

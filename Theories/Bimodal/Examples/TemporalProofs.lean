@@ -59,7 +59,7 @@ This module contains 2 exercises marked with `-- EXERCISE:` comments:
 
 * [Axioms.lean](../ProofChecker/ProofSystem/Axioms.lean) - Temporal axiom definitions
 * [Derivation.lean](../ProofChecker/ProofSystem/Derivation.lean) - Temporal K and duality rules
-* [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
+* [ARCHITECTURE.md](../docs/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
 namespace Bimodal.Examples.TemporalProofs

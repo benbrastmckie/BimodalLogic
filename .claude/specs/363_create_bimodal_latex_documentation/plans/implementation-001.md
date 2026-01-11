@@ -255,7 +255,7 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 1. Create build.sh script with latexmk commands
 2. Test full document compilation
 3. Verify all cross-references resolve
-4. Add reference to Documentation/README.md or Bimodal/README.md
+4. Add reference to docs/README.md or Bimodal/README.md
 
 **Verification**:
 - `./build.sh` produces BimodalReference.pdf

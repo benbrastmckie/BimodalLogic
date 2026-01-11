@@ -10,32 +10,32 @@ Created comprehensive installation documentation for ProofChecker, modeled after
 
 ## Files Created
 
-### Documentation/Installation/README.md
+### docs/Installation/README.md
 - Installation overview and quick navigation
 - Requirements summary table
 - Recommended reading order
 
-### Documentation/Installation/CLAUDE_CODE.md (~340 lines)
+### docs/Installation/CLAUDE_CODE.md (~340 lines)
 - AI-assisted installation entry point
 - Claude Code installation for all platforms
 - ProofChecker installation via Claude prompts
 - Agent system setup (.claude/ directory)
 - GitHub CLI (gh) integration
 
-### Documentation/Installation/BASIC_INSTALLATION.md (~200 lines)
+### docs/Installation/BASIC_INSTALLATION.md (~200 lines)
 - Manual installation steps (no editor content per user request)
 - elan installation for all platforms
 - Repository cloning and build process
 - Common issues and troubleshooting
 
-### Documentation/Installation/GETTING_STARTED.md (~380 lines)
+### docs/Installation/GETTING_STARTED.md (~380 lines)
 - Terminal basics for beginners
 - VS Code setup with lean4 extension
 - NeoVim setup with link to https://github.com/benbrastmckie/.config
 - First proof walkthrough
 - Project structure overview
 
-### Documentation/Installation/USING_GIT.md (~450 lines)
+### docs/Installation/USING_GIT.md (~450 lines)
 - Renamed from GIT_GOING.md per user request
 - SSH key generation and GitHub setup
 - Basic Git concepts and commands
@@ -43,7 +43,7 @@ Created comprehensive installation documentation for ProofChecker, modeled after
 
 ## Files Modified
 
-### Documentation/README.md
+### docs/README.md
 - Added Installation/ section to Documentation Organization
 - Added installation links to Quick Links > For New Users
 
@@ -76,7 +76,7 @@ Per user revision request:
 ## Verification
 
 - All cross-references verified
-- Navigation structure consistent with existing Documentation/ patterns
+- Navigation structure consistent with existing docs/ patterns
 - Links tested in both README files
 
 ## Notes

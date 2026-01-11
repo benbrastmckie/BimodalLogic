@@ -35,7 +35,7 @@ example : ⊢ (□p → p) := by
 
 ## References
 
-* [TACTIC_DEVELOPMENT.md](../../../Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md)
+* [TACTIC_DEVELOPMENT.md](../../../docs/ProjectInfo/TACTIC_DEVELOPMENT.md)
 * [Axioms.lean](../ProofSystem/Axioms.lean)
 -/
 

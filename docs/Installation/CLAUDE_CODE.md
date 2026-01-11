@@ -104,7 +104,7 @@ Paste this prompt into Claude Code:
 
 ```
 Please follow the installation instructions at
-https://github.com/benbrastmckie/ProofChecker/blob/master/Documentation/Installation/BASIC_INSTALLATION.md
+https://github.com/benbrastmckie/ProofChecker/blob/master/docs/Installation/BASIC_INSTALLATION.md
 to install ProofChecker and all dependencies. After installation, verify the build succeeds with `lake build`.
 ```
 
@@ -271,7 +271,7 @@ using the existing axioms in Bimodal/Metalogic/SoundnessLemmas.lean
 
 **Reference documentation:**
 ```
-Following the instructions in Documentation/Installation/BASIC_INSTALLATION.md,
+Following the instructions in docs/Installation/BASIC_INSTALLATION.md,
 install ProofChecker and verify it works.
 ```
 

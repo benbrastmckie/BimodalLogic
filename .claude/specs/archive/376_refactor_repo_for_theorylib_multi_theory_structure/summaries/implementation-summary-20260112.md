@@ -13,7 +13,7 @@ Restructured the ProofChecker repository following Option C (Hybrid approach) wi
 ProofChecker/
   lakefile.lean           # Updated with srcDir, roots, theoryLeanOptions
   LaTeX/                   # Shared LaTeX assets (unchanged)
-  Documentation/           # Project documentation (unchanged)
+  docs/           # Project documentation (unchanged)
   benchmarks/              # Performance benchmarks (unchanged)
   Theories/
     README.md              # NEW: Documents theory organization
@@ -26,7 +26,7 @@ ProofChecker/
         Epistemic/         # Epistemic extension (stub)
         Normative/         # Normative extension (stub)
         Explanatory/       # Explanatory extension
-      Documentation/       # Theory-specific docs
+      docs/       # Theory-specific docs
       LaTeX/               # Theory-specific LaTeX
   Tests/
     README.md              # NEW: Documents test organization

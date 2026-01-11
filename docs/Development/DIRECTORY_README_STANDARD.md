@@ -16,7 +16,7 @@ This document establishes standards for directory-level README files in LEAN 4 p
 - LEAN source directories (`Logos/`, `Logos/Syntax/`, etc.)
 - LEAN test directories (`LogosTest/`, `LogosTest/Syntax/`, etc.)
 - LEAN example/archive directories (`Archive/`, `Archive/Examples/`, etc.)
-- Documentation organization directories (`Documentation/`, `Documentation/UserGuide/`, etc.)
+- Documentation organization directories (`docs/`, `docs/UserGuide/`, etc.)
 
 **Out of Scope (Covered Elsewhere)**:
 - `.opencode/` system directories (see [documentation-standards.md](../../../.opencode/context/core/standards/documentation-standards.md))
@@ -39,7 +39,7 @@ This standard **extends** and **complements**:
 1. **Top-level LEAN source directory** (`Logos/`): Module organization overview
 2. **Test directory with 3+ subdirectories** (`LogosTest/`): Test organization and running instructions
 3. **Example/Archive directory** (`Archive/`): Learning paths and pedagogical guidance
-4. **Multi-subdirectory documentation root** (`Documentation/`): Documentation navigation
+4. **Multi-subdirectory documentation root** (`docs/`): Documentation navigation
 
 **✗ README Not Required**:
 1. **Single-module directories** with excellent `.lean` module documentation
@@ -97,12 +97,12 @@ lake env lean Logos/Syntax/Formula.lean
 For detailed API documentation, see:
 - Module overview: [Logos.lean](../Logos.lean)
 - Generated docs: Run `lake build :docs`
-- Architecture guide: [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md)
+- Architecture guide: [ARCHITECTURE.md](../docs/UserGuide/ARCHITECTURE.md)
 
 ## Related Documentation
 
-- [LEAN Style Guide](../Documentation/Development/LEAN_STYLE_GUIDE.md)
-- [Module Organization](../Documentation/Development/MODULE_ORGANIZATION.md)
+- [LEAN Style Guide](../docs/Development/LEAN_STYLE_GUIDE.md)
+- [Module Organization](../docs/Development/MODULE_ORGANIZATION.md)
 ```
 
 **Notes**:
@@ -172,16 +172,16 @@ lake env lean LogosTest/Syntax/FormulaTest.lean
 
 ## Coverage Requirements
 
-See [TESTING_STANDARDS.md](../Documentation/Development/TESTING_STANDARDS.md) for:
+See [TESTING_STANDARDS.md](../docs/Development/TESTING_STANDARDS.md) for:
 - Coverage targets (overall ≥85%, Metalogic ≥90%)
 - Test quality standards
 - Performance benchmarks
 
 ## Related Documentation
 
-- [Testing Standards](../Documentation/Development/TESTING_STANDARDS.md)
+- [Testing Standards](../docs/Development/TESTING_STANDARDS.md)
 - [Code Standards](../../.claude/docs/reference/standards/code-standards.md)
-- [Module Organization](../Documentation/Development/MODULE_ORGANIZATION.md)
+- [Module Organization](../docs/Development/MODULE_ORGANIZATION.md)
 ```
 
 **Notes**:
@@ -253,16 +253,16 @@ import Archive
 New examples should:
 - Have clear docstrings explaining the concept
 - Include step-by-step proof comments
-- Follow [LEAN_STYLE_GUIDE.md](../Documentation/Development/LEAN_STYLE_GUIDE.md)
+- Follow [LEAN_STYLE_GUIDE.md](../docs/Development/LEAN_STYLE_GUIDE.md)
 - Be accessible to learners (avoid overly complex proofs)
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution workflow.
 
 ## Related Documentation
 
-- [Tutorial](../Documentation/UserGuide/TUTORIAL.md) - Getting started guide
-- [Examples](../Documentation/UserGuide/EXAMPLES.md) - Usage examples
-- [Architecture](../Documentation/UserGuide/ARCHITECTURE.md) - System design
+- [Tutorial](../docs/UserGuide/TUTORIAL.md) - Getting started guide
+- [Examples](../docs/UserGuide/EXAMPLES.md) - Usage examples
+- [Architecture](../docs/UserGuide/ARCHITECTURE.md) - System design
 ```
 
 **Notes**:
@@ -479,7 +479,7 @@ Following Template E (Test Directory), this README provides:
 
 **Why Good**: Practical instructions for running and adding tests, appropriate level of detail.
 
-### Good Example: Documentation/README.md
+### Good Example: docs/README.md
 
 Following Template G (Documentation Directory), this README provides:
 - Organization into 4 subdirectories with audience guidance

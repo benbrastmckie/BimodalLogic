@@ -16,7 +16,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*"]
-    - write: [".opencode/specs/**/*", "Documentation/ProjectInfo/**/*"]
+    - write: [".opencode/specs/**/*", "docs/ProjectInfo/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "rm -fr", "sudo", "su"]
@@ -277,10 +277,10 @@ lifecycle:
          
          ## References
          
-         - IMPLEMENTATION_STATUS: Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-         - SORRY_REGISTRY: Documentation/ProjectInfo/SORRY_REGISTRY.md
-         - TACTIC_REGISTRY: Documentation/ProjectInfo/TACTIC_REGISTRY.md
-         - FEATURE_REGISTRY: Documentation/ProjectInfo/FEATURE_REGISTRY.md
+         - IMPLEMENTATION_STATUS: docs/ProjectInfo/IMPLEMENTATION_STATUS.md
+         - SORRY_REGISTRY: docs/ProjectInfo/SORRY_REGISTRY.md
+         - TACTIC_REGISTRY: docs/ProjectInfo/TACTIC_REGISTRY.md
+         - FEATURE_REGISTRY: docs/ProjectInfo/FEATURE_REGISTRY.md
       
       3. Keep summary concise:
          - Overview: 3-5 sentences, <100 tokens
@@ -318,10 +318,10 @@ lifecycle:
       2. Delegate to git-workflow-manager:
          {
            "scope_files": [
-             "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
-             "Documentation/ProjectInfo/SORRY_REGISTRY.md",
-             "Documentation/ProjectInfo/TACTIC_REGISTRY.md",
-             "Documentation/ProjectInfo/FEATURE_REGISTRY.md",
+             "docs/ProjectInfo/IMPLEMENTATION_STATUS.md",
+             "docs/ProjectInfo/SORRY_REGISTRY.md",
+             "docs/ProjectInfo/TACTIC_REGISTRY.md",
+             "docs/ProjectInfo/FEATURE_REGISTRY.md",
              "${project_path}/summaries/review-summary.md"
            ],
            "message_template": "review: update registries and create review summary (task 336)",
@@ -363,22 +363,22 @@ lifecycle:
              },
              {
                "type": "documentation",
-               "path": "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
+               "path": "docs/ProjectInfo/IMPLEMENTATION_STATUS.md",
                "summary": "Updated implementation status registry"
              },
              {
                "type": "documentation",
-               "path": "Documentation/ProjectInfo/SORRY_REGISTRY.md",
+               "path": "docs/ProjectInfo/SORRY_REGISTRY.md",
                "summary": "Updated sorry statement registry"
              },
              {
                "type": "documentation",
-               "path": "Documentation/ProjectInfo/TACTIC_REGISTRY.md",
+               "path": "docs/ProjectInfo/TACTIC_REGISTRY.md",
                "summary": "Updated tactic documentation registry"
              },
              {
                "type": "documentation",
-               "path": "Documentation/ProjectInfo/FEATURE_REGISTRY.md",
+               "path": "docs/ProjectInfo/FEATURE_REGISTRY.md",
                "summary": "Updated feature registry"
              }
            ],
@@ -523,7 +523,7 @@ lifecycle:
     - .opencode/specs/state.json (command updates state)
     
     Reviewer DOES update:
-    - Documentation/ProjectInfo/*_REGISTRY.md (4 registries)
+    - docs/ProjectInfo/*_REGISTRY.md (4 registries)
     - {project_path}/summaries/review-summary.md (artifact)
   </state_separation>
 </integration_notes>
@@ -537,4 +537,4 @@ lifecycle:
 - **Standardized Return**: Follows subagent-return-format.md
 - **Graceful Degradation**: Non-critical failures logged but don't abort
 
-See: `.opencode/command/review.md`, `Documentation/ProjectInfo/*_REGISTRY.md`
+See: `.opencode/command/review.md`, `docs/ProjectInfo/*_REGISTRY.md`

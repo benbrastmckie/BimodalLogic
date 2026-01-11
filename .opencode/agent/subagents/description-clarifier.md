@@ -19,7 +19,7 @@ tools:
   webfetch: true
 permissions:
   allow:
-    - read: [".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/context/**/*", "Documentation/**/*"]
+    - read: [".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/context/**/*", "docs/**/*"]
     - bash: ["grep", "find", "jq"]
     - webfetch: ["*"]
   deny:
@@ -111,7 +111,7 @@ This subagent has been deprecated and replaced by inline description reformulati
       4. Prepare research queries:
          - Query 1: Search TODO.md for similar keywords
          - Query 2: Search context files for domain documentation
-         - Query 3: Search Documentation/ for related topics
+         - Query 3: Search docs/ for related topics
          - Query 4: Web search for unfamiliar technical terms (if needed)
     </process>
     <checkpoint>Rough description validated, research prepared</checkpoint>
@@ -133,7 +133,7 @@ This subagent has been deprecated and replaced by inline description reformulati
            * core/standards/task-management.md - task creation standards
            * core/orchestration/state-management.md - state management
            * domain-specific context files based on detected domain
-         - Check Documentation/ for related topics
+         - Check docs/ for related topics
            * Architecture/ - for architectural tasks
            * Development/ - for development tasks
            * Research/ - for research tasks
@@ -408,7 +408,7 @@ This subagent has been deprecated and replaced by inline description reformulati
       - Confidence: high
       
       RESEARCH SUMMARY:
-      Found LeanSearch API specification in Documentation/Research/LEANSEARCH_API_SPECIFICATION.md. Similar integration tasks (280, 285) took 6-8 hours.
+      Found LeanSearch API specification in docs/Research/LEANSEARCH_API_SPECIFICATION.md. Similar integration tasks (280, 285) took 6-8 hours.
       
       SIMILAR TASKS:
       280, 285
@@ -436,7 +436,7 @@ This subagent has been deprecated and replaced by inline description reformulati
       - Confidence: high
       
       RESEARCH SUMMARY:
-      Found completeness research in Documentation/Research/MODAL_TEMPORAL_PROOF_SEARCH.md. Similar completeness proofs (200, 210) took 12-16 hours.
+      Found completeness research in docs/Research/MODAL_TEMPORAL_PROOF_SEARCH.md. Similar completeness proofs (200, 210) took 12-16 hours.
       
       SIMILAR TASKS:
       200, 210, 220
@@ -465,7 +465,7 @@ This subagent has been deprecated and replaced by inline description reformulati
   Research Strategy:
   1. Search TODO.md for similar tasks (primary source)
   2. Search context files for domain documentation (secondary source)
-  3. Search Documentation/ for related topics (tertiary source)
+  3. Search docs/ for related topics (tertiary source)
   4. Web search for unfamiliar terms (fallback, rarely needed)
   
   Metadata Extraction:

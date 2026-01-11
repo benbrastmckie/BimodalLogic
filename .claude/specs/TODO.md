@@ -79,7 +79,7 @@ This ensures all project directories in specs/archive/ are accounted for by stat
   - .github/workflows/ci.yml (new)
   - .github/workflows/lint.yml (new)
   - .github/workflows/coverage.yml (new)
-  - Documentation/Development/CI_CD_PROCESS.md (new)
+  - docs/Development/CI_CD_PROCESS.md (new)
 - **Description**: Create GitHub Actions workflows for continuous integration and deployment. Currently all tests run manually. CI/CD pipeline should run tests, linting, style checks, coverage reporting, and documentation build checks automatically on every pull request and commit.
 - **Acceptance Criteria**:
   - [ ] GitHub Actions workflow for tests created and passing
@@ -226,8 +226,8 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 **Description**: Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.
 
 **Files Affected**:
-  - Theories/Bimodal/Documentation/UserGuide/TROUBLESHOOTING.md (new)
-  - Theories/Bimodal/Documentation/UserGuide/EXAMPLES.md (modify section 7)
+  - Theories/Bimodal/docs/UserGuide/TROUBLESHOOTING.md (new)
+  - Theories/Bimodal/docs/UserGuide/EXAMPLES.md (modify section 7)
 
 ---
 
@@ -287,12 +287,12 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 
 ### 391. Enforce directory naming convention for Lean projects
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: general
 - **Plan**: [implementation-001.md](.claude/specs/391_enforce_directory_naming_convention/plans/implementation-001.md)
 
-**Description**: Enforce the directory naming convention that only directories containing Lean source code should be capitalized (e.g., `Logos/`, `Theories/`), while all other directories use lowercase (e.g., `docs/`, `scripts/`, `benchmarks/`). This includes: (1) Rename `Documentation/` to `docs/`, (2) Audit all directories for compliance, (3) Document this standard in project-level documentation (e.g., CONTRIBUTING.md or a new CONVENTIONS.md).
+**Description**: Enforce the directory naming convention that only directories containing Lean source code should be capitalized (e.g., `Logos/`, `Theories/`), while all other directories use lowercase (e.g., `docs/`, `scripts/`, `benchmarks/`). This includes: (1) Rename `docs/` to `docs/`, (2) Audit all directories for compliance, (3) Document this standard in project-level documentation (e.g., CONTRIBUTING.md or a new CONVENTIONS.md).
 
 ---
 

@@ -43,9 +43,9 @@ This directory contains comprehensive installation guides for ProofChecker (Logo
 
 ## Related Documentation
 
-- [Bimodal Tutorial](../../Bimodal/Documentation/UserGuide/TUTORIAL.md) - Learn to write proofs
+- [Bimodal Tutorial](../../Bimodal/docs/UserGuide/TUTORIAL.md) - Learn to write proofs
 - [Contributing](../Development/CONTRIBUTING.md) - Contribution guidelines
-- [Bimodal Architecture](../../Bimodal/Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
+- [Bimodal Architecture](../../Bimodal/docs/UserGuide/ARCHITECTURE.md) - TM logic specification
 
 ---
 

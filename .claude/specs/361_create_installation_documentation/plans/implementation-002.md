@@ -25,7 +25,7 @@
 
 ## Overview
 
-Create a comprehensive installation documentation suite in `Documentation/Installation/` with clear separation of concerns:
+Create a comprehensive installation documentation suite in `docs/Installation/` with clear separation of concerns:
 - **CLAUDE_CODE.md** - Entry point for AI-assisted setup
 - **BASIC_INSTALLATION.md** - Pure installation (elan, Lean, Mathlib) without editor setup
 - **GETTING_STARTED.md** - Terminal basics + Editor setup (VS Code and NeoVim) + First proof
@@ -39,15 +39,15 @@ Create a comprehensive installation documentation suite in `Documentation/Instal
 **Status**: [NOT STARTED]
 
 **Objectives**:
-1. Create `Documentation/Installation/` directory
+1. Create `docs/Installation/` directory
 2. Create README.md index file linking to all installation docs
 
 **Files to modify**:
-- `Documentation/Installation/` - Create directory
-- `Documentation/Installation/README.md` - Create index file
+- `docs/Installation/` - Create directory
+- `docs/Installation/README.md` - Create index file
 
 **Steps**:
-1. Create `Documentation/Installation/` directory
+1. Create `docs/Installation/` directory
 2. Write `README.md` with:
    - Overview of installation documentation
    - Quick navigation table to all guides
@@ -73,7 +73,7 @@ Create a comprehensive installation documentation suite in `Documentation/Instal
 3. Use USING_GIT.md (not GIT_GOING.md) for git references
 
 **Files to modify**:
-- `Documentation/Installation/CLAUDE_CODE.md` - Create new file (~300 lines)
+- `docs/Installation/CLAUDE_CODE.md` - Create new file (~300 lines)
 
 **Steps**:
 1. Write Section 1: Getting Started
@@ -126,7 +126,7 @@ Create a comprehensive installation documentation suite in `Documentation/Instal
 3. This is what Claude Code will use for automated installation
 
 **Files to modify**:
-- `Documentation/Installation/BASIC_INSTALLATION.md` - Create new file (~200 lines)
+- `docs/Installation/BASIC_INSTALLATION.md` - Create new file (~200 lines)
 
 **Steps**:
 1. Write Overview section
@@ -184,7 +184,7 @@ Create a comprehensive installation documentation suite in `Documentation/Instal
 3. Guide through first proof experience
 
 **Files to modify**:
-- `Documentation/Installation/GETTING_STARTED.md` - Create new file (~450 lines)
+- `docs/Installation/GETTING_STARTED.md` - Create new file (~450 lines)
 
 **Steps**:
 1. Write Table of Contents
@@ -254,7 +254,7 @@ Create a comprehensive installation documentation suite in `Documentation/Instal
 2. Cover SSH keys, basic commands, contributing workflow
 
 **Files to modify**:
-- `Documentation/Installation/USING_GIT.md` - Create new file (~350 lines)
+- `docs/Installation/USING_GIT.md` - Create new file (~350 lines)
 
 **Steps**:
 1. Write What is GitHub section
@@ -315,15 +315,15 @@ Create a comprehensive installation documentation suite in `Documentation/Instal
 **Status**: [NOT STARTED]
 
 **Objectives**:
-1. Update Documentation/README.md to include Installation section
+1. Update docs/README.md to include Installation section
 2. Update root README.md installation section to link to new docs
 
 **Files to modify**:
-- `Documentation/README.md` - Add Installation section
+- `docs/README.md` - Add Installation section
 - `README.md` - Update Installation section links
 
 **Steps**:
-1. Read Documentation/README.md
+1. Read docs/README.md
 2. Add Installation section with links to:
    - CLAUDE_CODE.md (recommended for AI-assisted setup)
    - BASIC_INSTALLATION.md (manual installation)
@@ -335,7 +335,7 @@ Create a comprehensive installation documentation suite in `Documentation/Instal
 5. Keep Quick Start section but add "For detailed installation guides" link
 
 **Verification**:
-- Documentation/README.md has Installation section
+- docs/README.md has Installation section
 - Root README.md links to new installation docs
 - All links use USING_GIT.md (not GIT_GOING.md)
 - All cross-links work correctly
@@ -346,8 +346,8 @@ Create a comprehensive installation documentation suite in `Documentation/Instal
 
 - ModelChecker reference documentation (read during research)
 - NeoVim config repository: https://github.com/benbrastmckie/.config
-- Existing Documentation/UserGuide/TUTORIAL.md (for cross-links)
-- Existing Documentation/Development/CONTRIBUTING.md (for cross-links)
+- Existing docs/UserGuide/TUTORIAL.md (for cross-links)
+- Existing docs/Development/CONTRIBUTING.md (for cross-links)
 
 ## Risks and Mitigations
 
@@ -359,16 +359,16 @@ Create a comprehensive installation documentation suite in `Documentation/Instal
 
 ## Success Criteria
 
-- [ ] Documentation/Installation/ directory exists with 5 files
+- [ ] docs/Installation/ directory exists with 5 files
 - [ ] CLAUDE_CODE.md references USING_GIT.md (not GIT_GOING.md)
 - [ ] BASIC_INSTALLATION.md has NO editor content
 - [ ] GETTING_STARTED.md covers terminal + VS Code + NeoVim
 - [ ] NeoVim section links to https://github.com/benbrastmckie/.config
 - [ ] USING_GIT.md (not GIT_GOING.md) covers Git/GitHub
-- [ ] Documentation/README.md updated with Installation section
+- [ ] docs/README.md updated with Installation section
 - [ ] Root README.md Installation section links to new docs
 - [ ] All cross-links between documents work
 
 ## Rollback Plan
 
-Delete `Documentation/Installation/` directory and revert changes to Documentation/README.md and root README.md if implementation fails. No existing files are being modified except the two index files.
+Delete `docs/Installation/` directory and revert changes to docs/README.md and root README.md if implementation fails. No existing files are being modified except the two index files.

@@ -12,8 +12,8 @@ Most user documentation is theory-specific. See:
 
 | Theory | Quick Start | Additional Guides |
 |--------|-------------|-------------------|
-| **Bimodal** | [Quick Start](../../Bimodal/Documentation/UserGuide/QUICKSTART.md) | [Tutorial](../../Bimodal/Documentation/UserGuide/TUTORIAL.md), [Examples](../../Bimodal/Documentation/UserGuide/EXAMPLES.md), [Proof Patterns](../../Bimodal/Documentation/UserGuide/PROOF_PATTERNS.md) |
-| **Logos** | [Quick Start](../../Logos/Documentation/UserGuide/QUICKSTART.md) | [Methodology](../../Logos/Documentation/UserGuide/METHODOLOGY.md), [Current Status](../../Logos/Documentation/UserGuide/CURRENT_STATUS.md) |
+| **Bimodal** | [Quick Start](../../Bimodal/docs/UserGuide/QUICKSTART.md) | [Tutorial](../../Bimodal/docs/UserGuide/TUTORIAL.md), [Examples](../../Bimodal/docs/UserGuide/EXAMPLES.md), [Proof Patterns](../../Bimodal/docs/UserGuide/PROOF_PATTERNS.md) |
+| **Logos** | [Quick Start](../../Logos/docs/UserGuide/QUICKSTART.md) | [Methodology](../../Logos/docs/UserGuide/METHODOLOGY.md), [Current Status](../../Logos/docs/UserGuide/CURRENT_STATUS.md) |
 
 ## Project-Wide Integration
 
@@ -43,11 +43,11 @@ This directory contains integration guides applicable across all theories:
 ## Getting Started
 
 For tutorials and examples, see theory-specific UserGuide directories:
-- **Bimodal**: [Tutorial](../../Bimodal/Documentation/UserGuide/TUTORIAL.md), [Examples](../../Bimodal/Documentation/UserGuide/EXAMPLES.md)
-- **Logos**: [Quick Start](../../Logos/Documentation/UserGuide/QUICKSTART.md)
+- **Bimodal**: [Tutorial](../../Bimodal/docs/UserGuide/TUTORIAL.md), [Examples](../../Bimodal/docs/UserGuide/EXAMPLES.md)
+- **Logos**: [Quick Start](../../Logos/docs/UserGuide/QUICKSTART.md)
 
 For advanced tactic development, see:
-- **Bimodal**: [Tactic Development](../../Bimodal/Documentation/UserGuide/TACTIC_DEVELOPMENT.md)
+- **Bimodal**: [Tactic Development](../../Bimodal/docs/UserGuide/TACTIC_DEVELOPMENT.md)
 
 ## Related Documentation
 

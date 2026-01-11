@@ -173,7 +173,7 @@ grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep "Language" | sed
 1. Create implementation files (code, docs, configs):
    - Paths vary by language and task
    - Lean: `Logos/**/*.lean`, `LogosTest/**/*.lean`
-   - Markdown: `Documentation/**/*.md`, `.claude/**/*.md`
+   - Markdown: `docs/**/*.md`, `.claude/**/*.md`
    - Python: `**/*.py`
    - Config: `**/*.json`, `**/*.yaml`, etc.
 2. If multi-file output (>1 file modified/created):

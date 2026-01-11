@@ -19,16 +19,16 @@ Created concise LaTeX standards documentation for contributors and added cross-r
 2. **Cross-reference updates** - Added LATEX_STANDARDS.md to:
    - Development/README.md "Practical Guides" table
    - Development/README.md "For Documentation Authors" reading order
-   - Documentation/README.md Development section list
+   - docs/README.md Development section list
 
 ## Files Created
 
-- `Documentation/Development/LATEX_STANDARDS.md` - New LaTeX standards document
+- `docs/Development/LATEX_STANDARDS.md` - New LaTeX standards document
 
 ## Files Modified
 
-- `Documentation/Development/README.md` - Added LATEX_STANDARDS.md to tables
-- `Documentation/README.md` - Added LATEX_STANDARDS.md to Development list
+- `docs/Development/README.md` - Added LATEX_STANDARDS.md to tables
+- `docs/README.md` - Added LATEX_STANDARDS.md to Development list
 
 ## Verification
 

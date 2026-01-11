@@ -94,7 +94,7 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 - **Tasks**:
   - [ ] Grep .opencode/command/*.md for "/task", "task-executor", and "batch-task-orchestrator" references
   - [ ] Grep .opencode/agent/subagents/*.md for same references
-  - [ ] Grep Documentation/ for "/task" and "task command" references
+  - [ ] Grep docs/ for "/task" and "task command" references
   - [ ] Grep all .md files for "/task" references (including examples, standards, guides)
   - [ ] Read identified files to determine if they consume return formats or just route to subagents
   - [ ] Document current return format contracts (what fields are consumed, how they're used)
@@ -420,7 +420,7 @@ If implementation causes critical issues:
 - .opencode/agent/subagents/task-executor.md
 - .opencode/agent/subagents/batch-task-orchestrator.md
 - All consuming commands identified in Phase 0
-- Documentation/UserGuide/*.md
+- docs/UserGuide/*.md
 - All example files
 - All standards files referencing /task
 - Error messages and user prompts

@@ -425,7 +425,7 @@ No cycle! `Truth.lean` doesn't import `Soundness` or `SoundnessLemmas`.
 **Tasks**:
 
 1. **Create MODULE_HIERARCHY.md** (1 hour)
-   - Path: `Documentation/Architecture/MODULE_HIERARCHY.md`
+   - Path: `docs/Architecture/MODULE_HIERARCHY.md`
    - Document layered architecture:
      ```
      Layer 3: Metalogic (Soundness, Completeness)
@@ -595,7 +595,7 @@ No cycle! `Truth.lean` doesn't import `Soundness` or `SoundnessLemmas`.
 1. **New Files**:
    - `Logos/Core/Metalogic/SoundnessLemmas.lean` (~680 lines)
    - `LogosTest/Core/Metalogic/SoundnessLemmasTest.lean` (~200 lines)
-   - `Documentation/Architecture/MODULE_HIERARCHY.md` (new)
+   - `docs/Architecture/MODULE_HIERARCHY.md` (new)
 
 2. **Modified Files**:
    - `Logos/Core/Semantics/Truth.lean` (reduced from 1277 to ~600 lines)
@@ -605,10 +605,10 @@ No cycle! `Truth.lean` doesn't import `Soundness` or `SoundnessLemmas`.
    - `LogosTest/Core/Metalogic/SoundnessTest.lean` (updated imports)
 
 3. **Documentation Files**:
-   - `Documentation/Development/MODULE_ORGANIZATION.md` (updated)
-   - `Documentation/UserGuide/ARCHITECTURE.md` (updated)
-   - `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` (updated)
-   - `Documentation/ProjectInfo/SORRY_REGISTRY.md` (updated if needed)
+   - `docs/Development/MODULE_ORGANIZATION.md` (updated)
+   - `docs/UserGuide/ARCHITECTURE.md` (updated)
+   - `docs/ProjectInfo/IMPLEMENTATION_STATUS.md` (updated)
+   - `docs/ProjectInfo/SORRY_REGISTRY.md` (updated if needed)
 
 ### Deliverables
 

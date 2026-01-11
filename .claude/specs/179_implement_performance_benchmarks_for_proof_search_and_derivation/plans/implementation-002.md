@@ -233,7 +233,7 @@ def complexBenchmarks : List (String × Formula × Bool) := [
 3. Define regression thresholds
 
 **Files to create**:
-- `Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md` (new)
+- `Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md` (new)
 
 **Steps**:
 

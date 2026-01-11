@@ -302,7 +302,7 @@ ProofChecker/
 ├── Logos/                   # Future extensions (Layers 1-3)
 │   └── LaTeX/               # LaTeX documentation
 │
-├── Documentation/           # User and developer guides
+├── docs/           # User and developer guides
 │   ├── Installation/        # This directory
 │   ├── UserGuide/           # Tutorials and examples
 │   └── Development/         # Contributor guides

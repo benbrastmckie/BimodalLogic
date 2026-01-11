@@ -44,7 +44,7 @@ Successfully updated example files to demonstrate new automation capabilities (P
      - Perpetuity Automation Examples (automated P1-P6 discovery)
      - Combined Modal-Temporal Search (bimodal operator interactions)
 
-4. **Documentation/UserGuide/EXAMPLES.md**
+4. **docs/UserGuide/EXAMPLES.md**
    - **Before**: ~448 lines
    - **After**: 586 lines
    - **Added**: ~138 lines (+30.8%)
@@ -218,7 +218,7 @@ Search Performance Analysis, Custom Heuristic Strategies, Context Transformation
 - [PASS] Archive/ModalProofs.lean: No new errors (imports ProofSearch successfully)
 - [PASS] Archive/TemporalProofs.lean: No new errors (imports ProofSearch successfully)
 - [PASS] Archive/BimodalProofs.lean: No new errors (imports ProofSearch successfully)
-- [PASS] Documentation/UserGuide/EXAMPLES.md: Valid markdown, all links correct
+- [PASS] docs/UserGuide/EXAMPLES.md: Valid markdown, all links correct
 
 **Verification**:
 ```bash
@@ -229,11 +229,11 @@ grep "import Logos.Core.Automation.ProofSearch" Archive/*Proofs.lean
 # Archive/BimodalProofs.lean:import Logos.Core.Automation.ProofSearch
 
 # Line counts exceed planned targets
-wc -l Archive/*Proofs.lean Documentation/UserGuide/EXAMPLES.md
+wc -l Archive/*Proofs.lean docs/UserGuide/EXAMPLES.md
 #   346 Archive/ModalProofs.lean      (planned: 331, +15)
 #   356 Archive/TemporalProofs.lean   (planned: 341, +15)
 #   297 Archive/BimodalProofs.lean    (planned: 246, +51)
-#   586 Documentation/UserGuide/EXAMPLES.md (planned: ~500, +86)
+#   586 docs/UserGuide/EXAMPLES.md (planned: ~500, +86)
 ```
 
 ### Functional Testing (Deferred)
@@ -282,7 +282,7 @@ From TODO.md Task 177:
 1. **Archive/ModalProofs.lean** (346 lines, +105)
 2. **Archive/TemporalProofs.lean** (356 lines, +55)
 3. **Archive/BimodalProofs.lean** (297 lines, +81)
-4. **Documentation/UserGuide/EXAMPLES.md** (586 lines, +138)
+4. **docs/UserGuide/EXAMPLES.md** (586 lines, +138)
 
 ### Planning Artifacts
 1. **plans/implementation-001.md** (500 lines) - Updated with COMPLETED status

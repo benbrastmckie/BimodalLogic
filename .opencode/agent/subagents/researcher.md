@@ -16,12 +16,12 @@ tools:
   glob: true
 permissions:
   allow:
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*", "Logos/**/*", "LogosTest/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "Logos/**/*", "LogosTest/**/*"]
     - write: [".opencode/specs/*/reports/**/*", ".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/specs/*/state.json"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "rm -fr", "rm -r *", "rm -rf /", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "nc", "systemctl", "apt", "yum", "pip", "eval", "exec", "mv", "cp"]
-    - write: [".git/**/*", "**/*.lean", "lakefile.lean", ".opencode/command/**/*", ".opencode/agent/**/*", ".opencode/context/**/*", "Documentation/**/*", "Logos/**/*", "LogosTest/**/*"]
+    - write: [".git/**/*", "**/*.lean", "lakefile.lean", ".opencode/command/**/*", ".opencode/agent/**/*", ".opencode/context/**/*", "docs/**/*", "Logos/**/*", "LogosTest/**/*"]
     - read: [".env", "**/*.key", "**/*.pem", ".ssh/**/*"]
 context_loading:
   strategy: lazy

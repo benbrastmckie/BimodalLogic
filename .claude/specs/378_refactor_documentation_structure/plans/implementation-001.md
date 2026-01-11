@@ -7,7 +7,7 @@
 
 ## Overview
 
-Refactor the Documentation/ directory to eliminate broken links, reduce redundancy, and ensure
+Refactor the docs/ directory to eliminate broken links, reduce redundancy, and ensure
 compliance with DIRECTORY_README_STANDARD.md. The main tasks are: (1) merge NAVIGATION.md into
 README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Reference/, and
 (4) delete stale files.
@@ -26,8 +26,8 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 4. Delete NAVIGATION.md after merge
 
 **Files to modify**:
-- `Documentation/README.md` - Rewrite as comprehensive navigation hub
-- `Documentation/NAVIGATION.md` - Delete after content merged
+- `docs/README.md` - Rewrite as comprehensive navigation hub
+- `docs/NAVIGATION.md` - Delete after content merged
 
 **Steps**:
 1. Read both README.md and NAVIGATION.md completely
@@ -66,13 +66,13 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 3. Ensure compliance with DIRECTORY_README_STANDARD.md templates
 
 **Files to modify**:
-- `Documentation/Architecture/README.md` - Add audience guidance
-- `Documentation/Development/README.md` - Update any stale links
-- `Documentation/Installation/README.md` - Verify links
-- `Documentation/ProjectInfo/README.md` - Remove TACTIC_REGISTRY.md reference
-- `Documentation/Reference/README.md` - Remove GLOSSARY.md, OPERATORS.md references
-- `Documentation/Research/README.md` - Update navigation links
-- `Documentation/UserGuide/README.md` - Remove references to missing files
+- `docs/Architecture/README.md` - Add audience guidance
+- `docs/Development/README.md` - Update any stale links
+- `docs/Installation/README.md` - Verify links
+- `docs/ProjectInfo/README.md` - Remove TACTIC_REGISTRY.md reference
+- `docs/Reference/README.md` - Remove GLOSSARY.md, OPERATORS.md references
+- `docs/Research/README.md` - Update navigation links
+- `docs/UserGuide/README.md` - Remove references to missing files
 
 **Steps**:
 1. **Architecture/README.md**:
@@ -124,9 +124,9 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 3. Update all cross-references
 
 **Files to evaluate**:
-- `Documentation/UserGuide/INTEGRATION.md` - Project-wide, keep
-- `Documentation/UserGuide/MCP_INTEGRATION.md` - Project-wide, keep
-- `Documentation/Reference/API_REFERENCE.md` - Project-wide, keep
+- `docs/UserGuide/INTEGRATION.md` - Project-wide, keep
+- `docs/UserGuide/MCP_INTEGRATION.md` - Project-wide, keep
+- `docs/Reference/API_REFERENCE.md` - Project-wide, keep
 
 **Steps**:
 1. Review remaining files in UserGuide/:
@@ -135,11 +135,11 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
    Both are legitimate project-wide documentation. **Keep UserGuide/ directory**.
 2. Review remaining files in Reference/:
    - API_REFERENCE.md (18KB) - Logos API reference
-   Consider: This references Logos specifically. Should move to Logos/Documentation/Reference/
-3. Decision: **Keep UserGuide/, move API_REFERENCE.md to Logos/Documentation/Reference/**
+   Consider: This references Logos specifically. Should move to Logos/docs/Reference/
+3. Decision: **Keep UserGuide/, move API_REFERENCE.md to Logos/docs/Reference/**
 4. Update UserGuide/README.md to be a thin directory with clear cross-links
 5. Update Reference/README.md to redirect to theory-specific references
-6. Move API_REFERENCE.md to Logos/Documentation/Reference/
+6. Move API_REFERENCE.md to Logos/docs/Reference/
 7. Update any files that reference the moved file
 8. If Reference/ becomes empty (only README.md), consider removing directory
 
@@ -160,7 +160,7 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 2. Verify no orphaned references
 
 **Files to delete**:
-- `Documentation/Research/RESEARCH_SUMMARY.md` - References moved file
+- `docs/Research/RESEARCH_SUMMARY.md` - References moved file
 
 **Steps**:
 1. Delete RESEARCH_SUMMARY.md (references Bimodal research file)
@@ -185,10 +185,10 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 3. Ensure consistent formatting
 
 **Steps**:
-1. Check all internal links in Documentation/:
+1. Check all internal links in docs/:
    ```bash
    # Extract and verify markdown links
-   for file in Documentation/**/*.md Documentation/*.md; do
+   for file in docs/**/*.md docs/*.md; do
      echo "Checking $file..."
      grep -Eo '\[.*\]\(([^)]+)\)' "$file" | grep -Eo '\([^)]+\)' | tr -d '()'
    done
@@ -225,7 +225,7 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 - [ ] UserGuide/ contains only project-wide integration docs
 - [ ] Reference/ either has content or is removed
 - [ ] Research/RESEARCH_SUMMARY.md deleted
-- [ ] Zero broken internal links in Documentation/
+- [ ] Zero broken internal links in docs/
 - [ ] All READMEs comply with DIRECTORY_README_STANDARD.md
 
 ## Rollback Plan

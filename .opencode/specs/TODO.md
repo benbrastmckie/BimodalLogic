@@ -72,8 +72,8 @@ technical_debt:
 - **Blocking**: None
 - **Dependencies**: None
 - **Files Affected**:
-  - Documentation/UserGuide/ARCHITECTURE.md
-  - Documentation/UserGuide/METHODOLOGY.md
+  - docs/UserGuide/ARCHITECTURE.md
+  - docs/UserGuide/METHODOLOGY.md
 - **Description**: Draft a plan for Layer 1 counterfactual operators, defining `box_c` and `diamond_m` semantics and integration points.
 - **Acceptance Criteria**:
   - [ ] Draft plan describing operators, semantics, and required modules
@@ -91,8 +91,8 @@ technical_debt:
 - **Blocking**: None
 - **Dependencies**: None
 - **Files Affected**:
-  - Documentation/UserGuide/ARCHITECTURE.md
-  - Documentation/UserGuide/METHODOLOGY.md
+  - docs/UserGuide/ARCHITECTURE.md
+  - docs/UserGuide/METHODOLOGY.md
 - **Description**: Draft a plan for Layer 2 epistemic operators (`K`, `B`) including semantics and proof obligations.
 - **Acceptance Criteria**:
   - [ ] Draft plan outlines semantics, target theorems, and module impacts
@@ -110,8 +110,8 @@ technical_debt:
 - **Blocking**: None
 - **Dependencies**: None
 - **Files Affected**:
-  - Documentation/UserGuide/ARCHITECTURE.md
-  - Documentation/UserGuide/METHODOLOGY.md
+  - docs/UserGuide/ARCHITECTURE.md
+  - docs/UserGuide/METHODOLOGY.md
 - **Description**: Draft a plan for Layer 3 normative operators (`O`, `P`) including semantics and proof obligations.
 - **Acceptance Criteria**:
   - [ ] Draft plan outlines semantics, target theorems, and module impacts
@@ -249,9 +249,9 @@ technical_debt:
 - **Blocking**: None
 - **Dependencies**: 172
 - **Files Affected**:
-  - Documentation/UserGuide/TUTORIAL.md
-  - Documentation/UserGuide/TUTORIAL_EXERCISES.md (new)
-  - Documentation/UserGuide/TROUBLESHOOTING.md (new)
+  - docs/UserGuide/TUTORIAL.md
+  - docs/UserGuide/TUTORIAL_EXERCISES.md (new)
+  - docs/UserGuide/TROUBLESHOOTING.md (new)
 - **Description**: Enhance TUTORIAL.md with advanced sections on proof search automation, custom tactic development, and metalogic. Add hands-on exercises with solutions and a troubleshooting guide. Current tutorial is basic and lacks advanced topics.
 - **Acceptance Criteria**:
   - [ ] Advanced tutorial section on proof search and automation added
@@ -276,7 +276,7 @@ technical_debt:
   - LogosBench/ProofSearchBench.lean (new)
   - LogosBench/DerivationBench.lean (new)
   - LogosBench/SemanticEvaluationBench.lean (new)
-  - Documentation/Development/PERFORMANCE_TARGETS.md (new)
+  - docs/Development/PERFORMANCE_TARGETS.md (new)
 - **Description**: Create performance benchmark suite for proof search, derivation, and semantic evaluation. Add performance regression testing to CI. Currently no benchmarks exist and performance could regress unnoticed. Document performance targets.
 - **Acceptance Criteria**:
   - [ ] Benchmark suite for proof search created
@@ -299,7 +299,7 @@ technical_debt:
 - **Files Affected**:
   - .github/workflows/coverage.yml
   - scripts/GenerateCoverage.lean (new)
-  - Documentation/Development/TEST_COVERAGE.md (new)
+  - docs/Development/TEST_COVERAGE.md (new)
 - **Description**: Integrate test coverage measurement tool, generate coverage reports, add coverage reporting to CI, and create coverage improvement plan. TESTING_STANDARDS.md defines target of at least 85 percent but no measurement exists.
 - **Acceptance Criteria**:
   - [ ] Coverage measurement tool integrated
@@ -361,7 +361,7 @@ technical_debt:
 - opencode.json (new, MCP server configuration)
 - .opencode/agent/subagents/lean-implementation-agent.md (update to use MCP tool instructions)
 - .opencode/agent/subagents/lean-research-agent.md (update to use MCP tool instructions)
-- Documentation/UserGuide/MCP_INTEGRATION.md (new, user guide)
+- docs/UserGuide/MCP_INTEGRATION.md (new, user guide)
 - .opencode/tool/mcp/client.py (mark deprecated, incompatible with OpenCode architecture)
 
 **Description**:
@@ -747,7 +747,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
   - .github/workflows/ci.yml (new)
   - .github/workflows/lint.yml (new)
   - .github/workflows/coverage.yml (new)
-  - Documentation/Development/CI_CD_PROCESS.md (new)
+  - docs/Development/CI_CD_PROCESS.md (new)
 - **Description**: Create GitHub Actions workflows for continuous integration and deployment. Currently all tests run manually. CI/CD pipeline should run tests, linting, style checks, coverage reporting, and documentation build checks automatically on every pull request and commit.
 - **Acceptance Criteria**:
   - [ ] GitHub Actions workflow for tests created and passing

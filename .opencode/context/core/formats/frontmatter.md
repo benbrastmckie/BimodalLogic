@@ -498,7 +498,7 @@ tools:
   - glob
 permissions:
   allow:
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
     - write: [".opencode/specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:

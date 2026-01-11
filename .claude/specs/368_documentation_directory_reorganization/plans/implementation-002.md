@@ -23,8 +23,8 @@ The original plan focused only on adding missing README files. This revision ana
 
 ### Issue 1: Duplicate MAINTENANCE.md Files
 Two nearly identical files exist:
-- `Documentation/Development/MAINTENANCE.md` (15,234 bytes)
-- `Documentation/ProjectInfo/MAINTENANCE.md` (19,493 bytes)
+- `docs/Development/MAINTENANCE.md` (15,234 bytes)
+- `docs/ProjectInfo/MAINTENANCE.md` (19,493 bytes)
 
 The ProjectInfo version is more complete (Five-Document Model vs Three-Document). **Recommendation**: Keep ProjectInfo version, delete or redirect Development version.
 
@@ -39,7 +39,7 @@ The Research/ directory contains 18 files with inconsistent naming:
 - `Research/Noncomputable/` - noncomputable-research.md, deduction-theorem-necessity-research.md
 
 ### Issue 3: Orphan Navigation Files
-- `Documentation/NAVIGATION.md` (392 lines) duplicates much of README.md content
+- `docs/NAVIGATION.md` (392 lines) duplicates much of README.md content
 - Could be consolidated or transformed into a simpler index
 
 ### Issue 4: MCP_INTEGRATION.md Location
@@ -71,8 +71,8 @@ This revised plan takes a two-phase approach:
 **Steps**:
 1. Verify ProjectInfo/MAINTENANCE.md has all content from Development version
 2. Search for references to `Development/MAINTENANCE.md`
-3. Update Documentation/README.md to reference ProjectInfo version only
-4. Delete `Documentation/Development/MAINTENANCE.md`
+3. Update docs/README.md to reference ProjectInfo version only
+4. Delete `docs/Development/MAINTENANCE.md`
 5. Verify no broken links
 
 **Verification**:
@@ -112,7 +112,7 @@ This revised plan takes a two-phase approach:
 3. Categorize by audience level (beginner → advanced)
 
 **Files to create**:
-- `Documentation/UserGuide/README.md` - New file (~80 lines)
+- `docs/UserGuide/README.md` - New file (~80 lines)
 
 **Steps**:
 1. Create header with back-link: `[Back to Documentation](../README.md)`
@@ -154,7 +154,7 @@ This revised plan takes a two-phase approach:
 2. Organize files by category with clear descriptions
 
 **Files to create**:
-- `Documentation/Development/README.md` - New file (~100 lines)
+- `docs/Development/README.md` - New file (~100 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -203,7 +203,7 @@ This revised plan takes a two-phase approach:
 2. Emphasize the relationship to MAINTENANCE.md workflow
 
 **Files to create**:
-- `Documentation/ProjectInfo/README.md` - New file (~70 lines)
+- `docs/ProjectInfo/README.md` - New file (~70 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -241,7 +241,7 @@ This revised plan takes a two-phase approach:
 2. Follow Template D (lightweight) pattern
 
 **Files to create**:
-- `Documentation/Reference/README.md` - New file (~50 lines)
+- `docs/Reference/README.md` - New file (~50 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -270,7 +270,7 @@ This revised plan takes a two-phase approach:
 3. Explain ADR purpose and naming convention
 
 **Files to create**:
-- `Documentation/Architecture/README.md` - New file (~50 lines)
+- `docs/Architecture/README.md` - New file (~50 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -299,7 +299,7 @@ This revised plan takes a two-phase approach:
 3. Ensure NAVIGATION.md role is clear
 
 **Files to modify**:
-- `Documentation/README.md` - Add README links, update references
+- `docs/README.md` - Add README links, update references
 
 **Steps**:
 1. Read current README.md content
@@ -386,6 +386,6 @@ These were identified but deferred to avoid scope creep:
 If implementation fails:
 1. Restore Development/MAINTENANCE.md from git if deleted
 2. Delete new README.md files
-3. Revert Documentation/README.md via git
+3. Revert docs/README.md via git
 
 The only destructive change is MAINTENANCE.md consolidation, which is easily reversible via git.

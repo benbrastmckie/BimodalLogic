@@ -121,7 +121,7 @@ ProofChecker/
   Bimodal/            # TM logic implementation
   LogosTest/          # Tests for Logos
   BimodalTest/        # Tests for Bimodal
-  Documentation/      # Project documentation
+  docs/      # Project documentation
 ```
 
 Current lakefile already defines multiple `lean_lib` targets with shared options:

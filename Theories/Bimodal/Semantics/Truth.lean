@@ -60,7 +60,7 @@ See task 219 for details on the module hierarchy restructuring.
 
 ## References
 
-* [ARCHITECTURE.md](../../../Documentation/UserGuide/ARCHITECTURE.md) - Truth evaluation
+* [ARCHITECTURE.md](../../../docs/UserGuide/ARCHITECTURE.md) - Truth evaluation
   specification
 * [Formula.lean](../Syntax/Formula.lean) - Formula syntax
 * [TaskModel.lean](TaskModel.lean) - Task model structure

@@ -28,7 +28,7 @@ Completed 4 of 5 phases for Task 218: Fix lean-lsp-mcp integration via OpenCode 
 - Updated degradation tiers to include MCP search tools
 
 ### Phase 4: MCP Integration Documentation (COMPLETED)
-- Created Documentation/UserGuide/MCP_INTEGRATION.md (comprehensive guide)
+- Created docs/UserGuide/MCP_INTEGRATION.md (comprehensive guide)
 - Created .opencode/tool/mcp/README.md (deprecation notice)
 - Documented OpenCode native MCP support patterns
 - Included troubleshooting guide for common issues
@@ -42,7 +42,7 @@ Completed 4 of 5 phases for Task 218: Fix lean-lsp-mcp integration via OpenCode 
 ## Artifacts Created
 
 1. opencode.json - MCP server configuration
-2. Documentation/UserGuide/MCP_INTEGRATION.md - User guide
+2. docs/UserGuide/MCP_INTEGRATION.md - User guide
 3. .opencode/tool/mcp/README.md - Deprecation notice
 
 ## Artifacts Modified

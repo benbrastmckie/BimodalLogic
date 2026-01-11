@@ -44,8 +44,8 @@ See [TACTIC_REFERENCE.md](TACTIC_REFERENCE.md) for usage details.
 
 ## See Also
 
-- [Project Operators Reference](../../../Documentation/Reference/OPERATORS.md) - Symbol notation
-- [Project API Reference](../../../Documentation/Reference/API_REFERENCE.md) - Full API docs
+- [Project Operators Reference](../../../docs/Reference/OPERATORS.md) - Symbol notation
+- [Project API Reference](../../../docs/Reference/API_REFERENCE.md) - Full API docs
 
 ## Navigation
 

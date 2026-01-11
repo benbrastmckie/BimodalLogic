@@ -427,12 +427,12 @@ The temporal_duality case in SoundnessLemmas.lean can be completed **after** the
 ### Documentation Artifacts
 
 1. **SORRY_REGISTRY.md** [PASS]
-   - Location: `Documentation/ProjectInfo/SORRY_REGISTRY.md`
+   - Location: `docs/ProjectInfo/SORRY_REGISTRY.md`
    - Changes: Updated entry for temporal_duality case
    - Status: COMPLETED
 
 2. **LEAN_STYLE_GUIDE.md** [PASS]
-   - Location: `Documentation/Development/LEAN_STYLE_GUIDE.md`
+   - Location: `docs/Development/LEAN_STYLE_GUIDE.md`
    - Changes: Added "Semantic vs Syntactic Properties" section
    - Status: COMPLETED
 
@@ -470,8 +470,8 @@ Since this task involves only documentation changes (no code changes), rollback 
 **Step 2: Revert Documentation**
 - Use git to revert specific documentation files
 - Commands:
-  - `git checkout HEAD -- Documentation/ProjectInfo/SORRY_REGISTRY.md`
-  - `git checkout HEAD -- Documentation/Development/LEAN_STYLE_GUIDE.md`
+  - `git checkout HEAD -- docs/ProjectInfo/SORRY_REGISTRY.md`
+  - `git checkout HEAD -- docs/Development/LEAN_STYLE_GUIDE.md`
 
 **Step 3: Verify Build**
 - Ensure build still succeeds after revert

@@ -449,7 +449,7 @@ Update your agent's documentation to reflect:
 Replace all `/task {number}` with `/implement {number}`:
 ```bash
 # Find all /task references in documentation
-grep -rn "/task [0-9]" Documentation/
+grep -rn "/task [0-9]" docs/
 
 # Update each reference to /implement
 ```

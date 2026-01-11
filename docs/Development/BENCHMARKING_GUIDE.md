@@ -83,7 +83,7 @@ JSON example:
 
 Each theory maintains its own baseline measurements:
 
-- **Bimodal**: [PERFORMANCE_TARGETS.md](../../Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md)
+- **Bimodal**: [PERFORMANCE_TARGETS.md](../../Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md)
 - **Logos**: (planned)
 
 ## Benchmark File Organization
@@ -225,4 +225,4 @@ Prioritize optimizations by:
 
 - [QUALITY_METRICS.md](QUALITY_METRICS.md) - Overall quality standards
 - [TESTING_STANDARDS.md](TESTING_STANDARDS.md) - Testing requirements
-- [Bimodal Performance Targets](../../Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md) - Theory-specific baselines
+- [Bimodal Performance Targets](../../Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md) - Theory-specific baselines

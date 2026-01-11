@@ -350,9 +350,9 @@ caching). Missing: BFS variant, proof term extraction, tactic wrappers.
 - `Logos/Core/Automation/AesopRules.lean` - Aesop integration
 
 ### Research Documentation
-- `Documentation/Research/PROOF_SEARCH_AUTOMATION.md` (456 lines)
-- `Documentation/Research/MODAL_TEMPORAL_PROOF_SEARCH.md`
-- `Documentation/Research/PROOF_LIBRARY_DESIGN.md`
+- `docs/Research/PROOF_SEARCH_AUTOMATION.md` (456 lines)
+- `docs/Research/MODAL_TEMPORAL_PROOF_SEARCH.md`
+- `docs/Research/PROOF_LIBRARY_DESIGN.md`
 
 ### Academic References
 - Blackburn, P., van Benthem, J., & Wolter, F. (2007). *Handbook of Modal Logic*

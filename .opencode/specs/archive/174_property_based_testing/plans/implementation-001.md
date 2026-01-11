@@ -39,7 +39,7 @@ This implementation plan is based on comprehensive research completed on 2025-12
    - Key findings and recommendations
    - Quick reference for implementation
 
-3. **Detailed Findings**: `Documentation/Research/property-based-testing-lean4.md`
+3. **Detailed Findings**: `docs/Research/property-based-testing-lean4.md`
    - 986 lines of comprehensive documentation
    - Complete API reference and examples
    - Integration guide and best practices
@@ -588,9 +588,9 @@ This implementation plan is based on comprehensive research completed on 2025-12
 
 **Files**:
 - `LogosTest/Core/Property/README.md`
-- `Documentation/Development/PROPERTY_TESTING_GUIDE.md` (create)
+- `docs/Development/PROPERTY_TESTING_GUIDE.md` (create)
 - `.github/workflows/property-tests.yml`
-- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
+- `docs/ProjectInfo/IMPLEMENTATION_STATUS.md`
 
 **Approach**:
 1. **Update README.md** with TaskModel generator examples:
@@ -682,7 +682,7 @@ LogosTest/
     Metalogic/
       SoundnessPropertyTest.lean   # Enhanced axiom validity tests
 
-Documentation/
+docs/
   Development/
     PROPERTY_TESTING_GUIDE.md  # New comprehensive guide
   ProjectInfo/
@@ -886,7 +886,7 @@ Documentation/
   - Key findings and recommendations
   - Quick reference for implementation
 
-- [Detailed Findings](Documentation/Research/property-based-testing-lean4.md)
+- [Detailed Findings](docs/Research/property-based-testing-lean4.md)
   - 986 lines of comprehensive documentation
   - Complete API reference and examples
 

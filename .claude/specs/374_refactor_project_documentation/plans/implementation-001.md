@@ -7,9 +7,9 @@
 
 ## Overview
 
-Move theory-specific documentation from ProofChecker/Documentation/ to the appropriate
-theory directories (Logos/Documentation/ or Bimodal/Documentation/), leaving only
-project-wide documentation in the root Documentation/ directory. This follows the
+Move theory-specific documentation from ProofChecker/docs/ to the appropriate
+theory directories (Logos/docs/ or Bimodal/docs/), leaving only
+project-wide documentation in the root docs/ directory. This follows the
 "Move with Links" approach recommended in the research report.
 
 ## Phases
@@ -24,17 +24,17 @@ project-wide documentation in the root Documentation/ directory. This follows th
 2. Ensure all target directories exist before file moves
 
 **Files to create**:
-- `Logos/Documentation/Research/` - new directory
-- `Bimodal/Documentation/Research/` - new directory
+- `Logos/docs/Research/` - new directory
+- `Bimodal/docs/Research/` - new directory
 
 **Steps**:
-1. Create Logos/Documentation/Research/ directory
-2. Create Bimodal/Documentation/Research/ directory
+1. Create Logos/docs/Research/ directory
+2. Create Bimodal/docs/Research/ directory
 3. Verify both directories exist
 
 **Verification**:
-- `ls -la Logos/Documentation/Research/` succeeds
-- `ls -la Bimodal/Documentation/Research/` succeeds
+- `ls -la Logos/docs/Research/` succeeds
+- `ls -la Bimodal/docs/Research/` succeeds
 
 ---
 
@@ -44,15 +44,15 @@ project-wide documentation in the root Documentation/ directory. This follows th
 **Status**: [COMPLETED]
 
 **Objectives**:
-1. Move 5 Logos-specific files to Logos/Documentation/
+1. Move 5 Logos-specific files to Logos/docs/
 2. Preserve git history with `git mv`
 
 **Files to move**:
-- `Documentation/Research/RECURSIVE_SEMANTICS.md` → `Logos/Documentation/Research/`
-- `Documentation/Research/LAYER_EXTENSIONS.md` → `Logos/Documentation/Research/`
-- `Documentation/Research/CONCEPTUAL_ENGINEERING.md` → `Logos/Documentation/Research/`
-- `Documentation/UserGuide/METHODOLOGY.md` → `Logos/Documentation/UserGuide/`
-- `Documentation/Reference/GLOSSARY.md` → `Logos/Documentation/Reference/`
+- `docs/Research/RECURSIVE_SEMANTICS.md` → `Logos/docs/Research/`
+- `docs/Research/LAYER_EXTENSIONS.md` → `Logos/docs/Research/`
+- `docs/Research/CONCEPTUAL_ENGINEERING.md` → `Logos/docs/Research/`
+- `docs/UserGuide/METHODOLOGY.md` → `Logos/docs/UserGuide/`
+- `docs/Reference/GLOSSARY.md` → `Logos/docs/Reference/`
 
 **Steps**:
 1. Move Research files (3 files)
@@ -72,23 +72,23 @@ project-wide documentation in the root Documentation/ directory. This follows th
 **Status**: [COMPLETED]
 
 **Objectives**:
-1. Move 13 Bimodal-specific files to Bimodal/Documentation/
+1. Move 13 Bimodal-specific files to Bimodal/docs/
 2. Preserve git history with `git mv`
 
 **Files to move**:
-- `Documentation/Research/MODAL_TEMPORAL_PROOF_SEARCH.md` → `Bimodal/Documentation/Research/`
-- `Documentation/Research/temporal-logic-automation-research.md` → `Bimodal/Documentation/Research/`
-- `Documentation/Research/PROOF_SEARCH_AUTOMATION.md` → `Bimodal/Documentation/Research/`
-- `Documentation/Research/leansearch-best-first-search.md` → `Bimodal/Documentation/Research/`
-- `Documentation/Research/leansearch-priority-queue.md` → `Bimodal/Documentation/Research/`
-- `Documentation/Research/leansearch-proof-caching-memoization.md` → `Bimodal/Documentation/Research/`
-- `Documentation/Research/LEANSEARCH_API_SPECIFICATION.md` → `Bimodal/Documentation/Research/`
-- `Documentation/UserGuide/ARCHITECTURE.md` → `Bimodal/Documentation/UserGuide/`
-- `Documentation/UserGuide/TUTORIAL.md` → `Bimodal/Documentation/UserGuide/`
-- `Documentation/UserGuide/EXAMPLES.md` → `Bimodal/Documentation/UserGuide/`
-- `Documentation/UserGuide/TACTIC_DEVELOPMENT.md` → `Bimodal/Documentation/UserGuide/`
-- `Documentation/Reference/OPERATORS.md` → `Bimodal/Documentation/Reference/`
-- `Documentation/ProjectInfo/TACTIC_REGISTRY.md` → `Bimodal/Documentation/ProjectInfo/`
+- `docs/Research/MODAL_TEMPORAL_PROOF_SEARCH.md` → `Bimodal/docs/Research/`
+- `docs/Research/temporal-logic-automation-research.md` → `Bimodal/docs/Research/`
+- `docs/Research/PROOF_SEARCH_AUTOMATION.md` → `Bimodal/docs/Research/`
+- `docs/Research/leansearch-best-first-search.md` → `Bimodal/docs/Research/`
+- `docs/Research/leansearch-priority-queue.md` → `Bimodal/docs/Research/`
+- `docs/Research/leansearch-proof-caching-memoization.md` → `Bimodal/docs/Research/`
+- `docs/Research/LEANSEARCH_API_SPECIFICATION.md` → `Bimodal/docs/Research/`
+- `docs/UserGuide/ARCHITECTURE.md` → `Bimodal/docs/UserGuide/`
+- `docs/UserGuide/TUTORIAL.md` → `Bimodal/docs/UserGuide/`
+- `docs/UserGuide/EXAMPLES.md` → `Bimodal/docs/UserGuide/`
+- `docs/UserGuide/TACTIC_DEVELOPMENT.md` → `Bimodal/docs/UserGuide/`
+- `docs/Reference/OPERATORS.md` → `Bimodal/docs/Reference/`
+- `docs/ProjectInfo/TACTIC_REGISTRY.md` → `Bimodal/docs/ProjectInfo/`
 
 **Steps**:
 1. Move Research files (7 files)
@@ -109,51 +109,51 @@ project-wide documentation in the root Documentation/ directory. This follows th
 **Status**: [COMPLETED]
 
 **Objectives**:
-1. Fix relative links in moved files pointing to other Documentation/ files
-2. Fix links in remaining Documentation/ files pointing to moved files
+1. Fix relative links in moved files pointing to other docs/ files
+2. Fix links in remaining docs/ files pointing to moved files
 3. Update theory README.md files with Research/ sections
 
 **Files to modify**:
 - All moved files (18 total) - update relative path links
-- `Logos/Documentation/README.md` - add Research/ section
-- `Bimodal/Documentation/README.md` - add Research/ section
-- `Documentation/Research/README.md` - update to reference theory-specific research
-- `Documentation/UserGuide/README.md` - remove moved files
-- `Documentation/Reference/README.md` - remove moved files
-- `Documentation/ProjectInfo/README.md` - remove TACTIC_REGISTRY reference
+- `Logos/docs/README.md` - add Research/ section
+- `Bimodal/docs/README.md` - add Research/ section
+- `docs/Research/README.md` - update to reference theory-specific research
+- `docs/UserGuide/README.md` - remove moved files
+- `docs/Reference/README.md` - remove moved files
+- `docs/ProjectInfo/README.md` - remove TACTIC_REGISTRY reference
 
 **Steps**:
-1. Update Logos/Documentation/README.md with Research/ directory listing
-2. Update Bimodal/Documentation/README.md with Research/ directory listing
-3. Update Documentation/Research/README.md to point to theory research
-4. Create Logos/Documentation/Research/README.md
-5. Create Bimodal/Documentation/Research/README.md
+1. Update Logos/docs/README.md with Research/ directory listing
+2. Update Bimodal/docs/README.md with Research/ directory listing
+3. Update docs/Research/README.md to point to theory research
+4. Create Logos/docs/Research/README.md
+5. Create Bimodal/docs/Research/README.md
 6. Fix cross-references in moved files (grep for broken links)
 7. Update remaining README.md files
 
 **Verification**:
-- `grep -r "Documentation/Research/RECURSIVE" .` returns no hits in Documentation/
-- `grep -r "Documentation/UserGuide/ARCHITECTURE" .` returns no hits in Documentation/
+- `grep -r "docs/Research/RECURSIVE" .` returns no hits in docs/
+- `grep -r "docs/UserGuide/ARCHITECTURE" .` returns no hits in docs/
 - All README.md files have correct links
 
 ---
 
-### Phase 5: Update Root Documentation/README.md
+### Phase 5: Update Root docs/README.md
 
 **Estimated effort**: 30 minutes
 **Status**: [COMPLETED]
 
 **Objectives**:
-1. Simplify Documentation/README.md to focus on project-wide content
+1. Simplify docs/README.md to focus on project-wide content
 2. Remove references to moved files
 3. Add clear pointers to theory-specific documentation
 
 **Files to modify**:
-- `Documentation/README.md` - simplify and update
-- `Documentation/UserGuide/README.md` - update file listing
+- `docs/README.md` - simplify and update
+- `docs/UserGuide/README.md` - update file listing
 
 **Steps**:
-1. Update Documentation/README.md overview section
+1. Update docs/README.md overview section
 2. Remove moved files from UserGuide section
 3. Update Research section to point to theory research
 4. Remove moved files from Reference section
@@ -161,7 +161,7 @@ project-wide documentation in the root Documentation/ directory. This follows th
 6. Verify all remaining links work
 
 **Verification**:
-- Documentation/README.md contains no broken links
+- docs/README.md contains no broken links
 - All listed files exist
 
 ---
@@ -183,14 +183,14 @@ project-wide documentation in the root Documentation/ directory. This follows th
 4. Create final commit
 
 **Verification**:
-- `find Documentation/ -type d -empty` returns nothing
+- `find docs/ -type d -empty` returns nothing
 - All moved files are accessible from their new locations
 - Git commit succeeds
 
 ## Dependencies
 
-- Task 360: Created Bimodal/Documentation/ (COMPLETED)
-- Task 372: Created Logos/Documentation/ (COMPLETED)
+- Task 360: Created Bimodal/docs/ (COMPLETED)
+- Task 372: Created Logos/docs/ (COMPLETED)
 - Documentation_OLD/ backup exists (user-created)
 
 ## Risks and Mitigations
@@ -204,20 +204,20 @@ project-wide documentation in the root Documentation/ directory. This follows th
 
 ## Success Criteria
 
-- [ ] All 5 Logos-specific files moved to Logos/Documentation/
-- [ ] All 13 Bimodal-specific files moved to Bimodal/Documentation/
+- [ ] All 5 Logos-specific files moved to Logos/docs/
+- [ ] All 13 Bimodal-specific files moved to Bimodal/docs/
 - [ ] All cross-references updated and working
-- [ ] Logos/Documentation/README.md includes Research/ section
-- [ ] Bimodal/Documentation/README.md includes Research/ section
-- [ ] Documentation/README.md simplified to project-wide content
+- [ ] Logos/docs/README.md includes Research/ section
+- [ ] Bimodal/docs/README.md includes Research/ section
+- [ ] docs/README.md simplified to project-wide content
 - [ ] No broken internal links
 
 ## Rollback Plan
 
 1. If issues discovered during implementation:
-   - `git checkout HEAD -- Documentation/` to restore moved files
-   - `git checkout HEAD -- Logos/Documentation/` to restore original state
-   - `git checkout HEAD -- Bimodal/Documentation/` to restore original state
+   - `git checkout HEAD -- docs/` to restore moved files
+   - `git checkout HEAD -- Logos/docs/` to restore original state
+   - `git checkout HEAD -- Bimodal/docs/` to restore original state
 
 2. If issues discovered after commit:
    - Restore from Documentation_OLD/ backup

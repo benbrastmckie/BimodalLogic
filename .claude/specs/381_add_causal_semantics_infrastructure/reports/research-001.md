@@ -76,8 +76,8 @@ From the README theoretical foundations:
 
 ## References
 
-- Theories/Logos/Documentation/Research/recursive-semantics.md - Line 29 mentions causal
-- Theories/Logos/Documentation/Research/layer-extensions.md - Lines 137-140 define causation operator
+- Theories/Logos/docs/Research/recursive-semantics.md - Line 29 mentions causal
+- Theories/Logos/docs/Research/layer-extensions.md - Lines 137-140 define causation operator
 - Brast-McKie, "Counterfactual Worlds" (2025) - Foundation for causal operator semantics
 
 ## Next Steps

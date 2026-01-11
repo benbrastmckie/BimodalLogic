@@ -14,8 +14,8 @@ For theory-specific implementation status, see:
 
 | Theory | Status Documents |
 |--------|------------------|
-| **Bimodal** | [Implementation Status](../../Bimodal/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md), [Known Limitations](../../Bimodal/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md) |
-| **Logos** | [Implementation Status](../../Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md), [Roadmap](../../Logos/Documentation/ProjectInfo/ROADMAP.md) |
+| **Bimodal** | [Implementation Status](../../Bimodal/docs/ProjectInfo/IMPLEMENTATION_STATUS.md), [Known Limitations](../../Bimodal/docs/ProjectInfo/KNOWN_LIMITATIONS.md) |
+| **Logos** | [Implementation Status](../../Logos/docs/ProjectInfo/IMPLEMENTATION_STATUS.md), [Roadmap](../../Logos/docs/ProjectInfo/ROADMAP.md) |
 
 ## Documentation Overview
 
@@ -39,7 +39,7 @@ Registry of features:
 |----------|-------------|
 | [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md) | Feature tracking and capability documentation |
 
-> **Theory-specific tactics**: See [Bimodal/Documentation/ProjectInfo/TACTIC_REGISTRY.md](../../Bimodal/Documentation/ProjectInfo/TACTIC_REGISTRY.md)
+> **Theory-specific tactics**: See [Bimodal/docs/ProjectInfo/TACTIC_REGISTRY.md](../../Bimodal/docs/ProjectInfo/TACTIC_REGISTRY.md)
 > for tactic implementation status and usage patterns.
 
 ## Workflow Documentation

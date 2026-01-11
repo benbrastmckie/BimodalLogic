@@ -138,7 +138,7 @@ Analysis of 24 Logos/Core modules reveals **good overall documentation coverage*
 ## Recommendations
 
 ### 1. Create Centralized API Reference
-Generate `Documentation/Reference/API_REFERENCE.md` from docstrings with:
+Generate `docs/Reference/API_REFERENCE.md` from docstrings with:
 - Module index
 - Function index by category
 - Axiom reference

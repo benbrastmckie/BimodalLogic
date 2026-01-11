@@ -46,7 +46,7 @@ def My_Function_Name (My_Variable : my_type) : my_other_type :=
 
 # LEAN 4 Style Standards - Quick Reference
 
-**Source:** `Documentation/Development/LEAN_STYLE_GUIDE.md`  
+**Source:** `docs/Development/LEAN_STYLE_GUIDE.md`  
 **Purpose:** Essential coding conventions for LEAN 4 code generation in Logos project
 
 ## 1. Naming Conventions
@@ -257,6 +257,6 @@ theorem perpetuity_1 (φ : Formula) : ⊢ (□φ → always φ) := by sorry  -- 
 
 ## References
 
-- Full guide: `Documentation/Development/LEAN_STYLE_GUIDE.md`
+- Full guide: `docs/Development/LEAN_STYLE_GUIDE.md`
 - Mathlib4 Style: https://leanprover-community.github.io/contribute/style.html
 - LEAN 4 Docs: https://lean-lang.org/documentation/

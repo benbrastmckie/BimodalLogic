@@ -26,7 +26,7 @@
       },
       {
         "type": "detailed_findings",
-        "path": "Documentation/Research/property-based-testing-lean4.md",
+        "path": "docs/Research/property-based-testing-lean4.md",
         "created": "2025-12-24T23:00:00Z",
         "description": "Detailed web research findings from specialist subagent"
       }
@@ -121,8 +121,8 @@
     "LogosTest/Core/ProofSystem/DerivationPropertyTest.lean",
     "LogosTest/Core/Semantics/SemanticPropertyTest.lean",
     "LogosTest/Core/Metalogic/SoundnessPropertyTest.lean",
-    "Documentation/Development/PROPERTY_TESTING_GUIDE.md",
-    "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
+    "docs/Development/PROPERTY_TESTING_GUIDE.md",
+    "docs/ProjectInfo/IMPLEMENTATION_STATUS.md",
     ".github/workflows/property-tests.yml"
   ],
   "research_summary": {

@@ -26,7 +26,7 @@ This module provides generators for property-based testing of Logos types.
 ## References
 
 * [Plausible Documentation](https://github.com/leanprover-community/plausible)
-* [Property Testing Guide](../../../Documentation/Development/PROPERTY_TESTING_GUIDE.md)
+* [Property Testing Guide](../../../docs/Development/PROPERTY_TESTING_GUIDE.md)
 -/
 
 namespace BimodalTest.Property.Generators

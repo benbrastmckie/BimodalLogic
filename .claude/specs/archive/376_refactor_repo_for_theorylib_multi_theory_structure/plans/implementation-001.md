@@ -299,7 +299,7 @@ ProofChecker/
 
 **Files to modify**:
 - `scripts/` - Update paths if needed
-- `Documentation/` - Update architecture docs
+- `docs/` - Update architecture docs
 
 **Files to create**:
 - `Theories/README.md` - Document theory organization

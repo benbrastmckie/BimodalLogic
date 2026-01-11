@@ -316,7 +316,7 @@ constrained by a task relation that captures transitions between states.
 ## References
 
 * "Possible Worlds" paper - TM logic specification
-* Logos Architecture Guide - Documentation/UserGuide/ARCHITECTURE.md
+* Logos Architecture Guide - docs/UserGuide/ARCHITECTURE.md
 -/
 ```
 
@@ -564,7 +564,7 @@ This theorem allows moving assumptions from context to implication.
 - `Γ' = A :: Γ` (context equality, undecidable)
 - `φ = A` (formula equality, undecidable)
 
-See [NONCOMPUTABLE_GUIDE.md](../../Documentation/Development/NONCOMPUTABLE_GUIDE.md)
+See [NONCOMPUTABLE_GUIDE.md](../../docs/Development/NONCOMPUTABLE_GUIDE.md)
 for details on why classical logic is necessary for metalogic.
 -/
 noncomputable def deduction_theorem (Γ : Context) (A B : Formula) : ... := ...

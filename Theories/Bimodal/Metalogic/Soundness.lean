@@ -50,7 +50,7 @@ task semantic models. The MF and TF axioms use time-shift invariance
 
 ## References
 
-* [ARCHITECTURE.md](../../../Documentation/UserGuide/ARCHITECTURE.md) - Soundness specification
+* [ARCHITECTURE.md](../../../docs/UserGuide/ARCHITECTURE.md) - Soundness specification
 * [Derivation.lean](../../ProofSystem/Derivation.lean) - Derivability relation
 * [Validity.lean](../../Semantics/Validity.lean) - Semantic validity
 * JPL Paper app:valid (line 1984) - Perpetuity principle validity proofs

@@ -228,7 +228,7 @@ noncomputable def metatheorem (proof : derivation) : result := by
 
 ## References
 
-- **Full Report**: [noncomputable-research.md](../../../Documentation/Research/noncomputable-research.md)
+- **Full Report**: [noncomputable-research.md](../../../docs/Research/noncomputable-research.md)
 - **Original Research**: [research-001.md](../reports/research-001.md)
 - **Lean Documentation**: [Axioms and Computation](https://lean-lang.org/theorem_proving_in_lean4/axioms_and_computation.html)
 - **Source Files**:

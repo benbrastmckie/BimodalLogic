@@ -28,14 +28,14 @@ According to `README-ARCHIVE.md`, this content was integrated in December 2025 a
 
 | Original | Claimed Target | Actual Current Location | Status |
 |----------|----------------|------------------------|--------|
-| `LOGOS_LAYERS.md` | `Documentation/Research/LAYER_EXTENSIONS.md` | `Theories/Logos/Documentation/Research/layer-extensions.md` (340 lines) | **Replaced** - Current version is more detailed and updated |
-| `RL_TRAINING.md` | `Documentation/Research/DUAL_VERIFICATION.md` | `Documentation/Research/dual-verification.md` (291 lines) | **Integrated** - Content refined and incorporated |
-| `PROOF_LIBRARY.md` | `Documentation/Research/PROOF_LIBRARY_DESIGN.md` | `Documentation/Research/proof-library-design.md` (413 lines) | **Integrated** - Similar content, nearly same size |
-| `README.md` | `Documentation/UserGuide/METHODOLOGY.md` | Various places in `Theories/Logos/Documentation/` | **Distributed** |
+| `LOGOS_LAYERS.md` | `docs/Research/LAYER_EXTENSIONS.md` | `Theories/Logos/docs/Research/layer-extensions.md` (340 lines) | **Replaced** - Current version is more detailed and updated |
+| `RL_TRAINING.md` | `docs/Research/DUAL_VERIFICATION.md` | `docs/Research/dual-verification.md` (291 lines) | **Integrated** - Content refined and incorporated |
+| `PROOF_LIBRARY.md` | `docs/Research/PROOF_LIBRARY_DESIGN.md` | `docs/Research/proof-library-design.md` (413 lines) | **Integrated** - Similar content, nearly same size |
+| `README.md` | `docs/UserGuide/METHODOLOGY.md` | Various places in `Theories/Logos/docs/` | **Distributed** |
 
 ### Verification of Supersession
 
-1. **Layer Extensions**: The archived `LOGOS_LAYERS.md` (714 lines) describes Layer 0-3 architecture. The current `Theories/Logos/Documentation/Research/layer-extensions.md` (340 lines) contains a more refined and updated version with proper semantic specifications including:
+1. **Layer Extensions**: The archived `LOGOS_LAYERS.md` (714 lines) describes Layer 0-3 architecture. The current `Theories/Logos/docs/Research/layer-extensions.md` (340 lines) contains a more refined and updated version with proper semantic specifications including:
    - Constitutive Foundation (hyperintensional semantics)
    - Explanatory Extension
    - Epistemic Extension
@@ -43,9 +43,9 @@ According to `README-ARCHIVE.md`, this content was integrated in December 2025 a
    - Spatial Extension (NEW - not in archive)
    - Agential Extension (NEW - not in archive)
 
-2. **Dual Verification**: The archived `RL_TRAINING.md` (589 lines) describes RL training architecture. The current `Documentation/Research/dual-verification.md` (291 lines) contains the essential concepts in a more concise, updated form with proper architecture diagrams.
+2. **Dual Verification**: The archived `RL_TRAINING.md` (589 lines) describes RL training architecture. The current `docs/Research/dual-verification.md` (291 lines) contains the essential concepts in a more concise, updated form with proper architecture diagrams.
 
-3. **Proof Library**: The archived `PROOF_LIBRARY.md` (452 lines) is almost identical in size to the current `Documentation/Research/proof-library-design.md` (413 lines), indicating full content preservation.
+3. **Proof Library**: The archived `PROOF_LIBRARY.md` (452 lines) is almost identical in size to the current `docs/Research/proof-library-design.md` (413 lines), indicating full content preservation.
 
 ### Git History
 
@@ -70,9 +70,9 @@ No active code, documentation, or configuration references these archived files.
 ## References
 
 - Task 354 summary: `.claude/specs/354_refactor_archive_directory/summaries/implementation-summary-20260110.md`
-- Current layer docs: `Theories/Logos/Documentation/Research/layer-extensions.md`
-- Current dual verification: `Documentation/Research/dual-verification.md`
-- Current proof library: `Documentation/Research/proof-library-design.md`
+- Current layer docs: `Theories/Logos/docs/Research/layer-extensions.md`
+- Current dual verification: `docs/Research/dual-verification.md`
+- Current proof library: `docs/Research/proof-library-design.md`
 
 ## Next Steps
 

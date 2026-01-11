@@ -265,7 +265,7 @@ Layer 1: Syntax + ProofSystem (Formula, Derivation)
 
 - **Detailed Research**: [research-001.md](../reports/research-001.md)
 - **Task 213 Analysis**: [circular-dependency-analysis.md](../../213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md)
-- **Module Organization**: [MODULE_ORGANIZATION.md](../../../Documentation/Development/MODULE_ORGANIZATION.md)
+- **Module Organization**: [MODULE_ORGANIZATION.md](../../../docs/Development/MODULE_ORGANIZATION.md)
 - **Mathlib Patterns**: [Mathlib4 Naming Conventions](https://leanprover-community.github.io/contribute/naming.html)
 
 ---

@@ -25,7 +25,7 @@ Before reading this guide, you should have:
 
 1. **Basic LEAN 4 Syntax**: Functions, types, inductive types, pattern matching
 2. **Logos Architecture**: Understanding of `Formula`, `Derivable`, `Axiom`
-   types (see `Documentation/UserGuide/ARCHITECTURE.md`)
+   types (see `docs/UserGuide/ARCHITECTURE.md`)
 3. **Proof System Knowledge**: Familiarity with TM axioms (MT, M4, MB, T4, TA, TL,
    MF, TF) and inference rules (MP, MK, TK, TD)
 

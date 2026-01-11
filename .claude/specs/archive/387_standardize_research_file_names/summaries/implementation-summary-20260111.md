@@ -9,19 +9,19 @@ Standardized 12 research documentation files from inconsistent naming (ALL_CAPS 
 
 ## Files Renamed
 
-### Documentation/Research/ (5 files)
+### docs/Research/ (5 files)
 - `DUAL_VERIFICATION.md` → `dual-verification.md`
 - `PROOF_LIBRARY_DESIGN.md` → `proof-library-design.md`
 - `THEORY_COMPARISON.md` → `theory-comparison.md`
 - `deduction-theorem-necessity-research.md` → `deduction-theorem-necessity.md`
 - `noncomputable-research.md` → `noncomputable.md`
 
-### Theories/Logos/Documentation/Research/ (3 files)
+### Theories/Logos/docs/Research/ (3 files)
 - `CONCEPTUAL_ENGINEERING.md` → `conceptual-engineering.md`
 - `LAYER_EXTENSIONS.md` → `layer-extensions.md`
 - `RECURSIVE_SEMANTICS.md` → `recursive-semantics.md`
 
-### Theories/Bimodal/Documentation/Research/ (4 files)
+### Theories/Bimodal/docs/Research/ (4 files)
 - `LEANSEARCH_API_SPECIFICATION.md` → `leansearch-api-specification.md`
 - `MODAL_TEMPORAL_PROOF_SEARCH.md` → `modal-temporal-proof-search.md`
 - `PROOF_SEARCH_AUTOMATION.md` → `proof-search-automation.md`
@@ -32,34 +32,34 @@ Standardized 12 research documentation files from inconsistent naming (ALL_CAPS 
 ### Top-Level
 - `README.md` - 12 references updated
 
-### Documentation/
-- `Documentation/README.md`
-- `Documentation/Research/README.md`
-- `Documentation/Research/dual-verification.md`
-- `Documentation/Research/proof-library-design.md`
-- `Documentation/Research/deduction-theorem-necessity.md`
-- `Documentation/Development/LEAN_STYLE_GUIDE.md`
-- `Documentation/Development/NONCOMPUTABLE_GUIDE.md`
-- `Documentation/Architecture/ADR-001-Classical-Logic-Noncomputable.md`
+### docs/
+- `docs/README.md`
+- `docs/Research/README.md`
+- `docs/Research/dual-verification.md`
+- `docs/Research/proof-library-design.md`
+- `docs/Research/deduction-theorem-necessity.md`
+- `docs/Development/LEAN_STYLE_GUIDE.md`
+- `docs/Development/NONCOMPUTABLE_GUIDE.md`
+- `docs/Architecture/ADR-001-Classical-Logic-Noncomputable.md`
 
 ### Theories/Logos/
 - `Theories/Logos/README.md`
-- `Theories/Logos/Documentation/README.md`
-- `Theories/Logos/Documentation/Research/README.md`
-- `Theories/Logos/Documentation/Research/*.md` (3 files)
-- `Theories/Logos/Documentation/UserGuide/*.md` (3 files)
-- `Theories/Logos/Documentation/ProjectInfo/ROADMAP.md`
-- `Theories/Logos/Documentation/Reference/*.md` (3 files)
+- `Theories/Logos/docs/README.md`
+- `Theories/Logos/docs/Research/README.md`
+- `Theories/Logos/docs/Research/*.md` (3 files)
+- `Theories/Logos/docs/UserGuide/*.md` (3 files)
+- `Theories/Logos/docs/ProjectInfo/ROADMAP.md`
+- `Theories/Logos/docs/Reference/*.md` (3 files)
 - `Theories/Logos/SubTheories/*.lean` (10+ files)
 - `Theories/Logos/LaTeX/LogosReference.tex`
 - `Theories/Logos/LaTeX/assets/logos-notation.sty`
 
 ### Theories/Bimodal/
 - `Theories/Bimodal/README.md`
-- `Theories/Bimodal/Documentation/README.md`
-- `Theories/Bimodal/Documentation/Research/README.md`
-- `Theories/Bimodal/Documentation/Research/proof-search-automation.md`
-- `Theories/Bimodal/Documentation/UserGuide/*.md` (2 files)
+- `Theories/Bimodal/docs/README.md`
+- `Theories/Bimodal/docs/Research/README.md`
+- `Theories/Bimodal/docs/Research/proof-search-automation.md`
+- `Theories/Bimodal/docs/UserGuide/*.md` (2 files)
 
 ## Verification
 

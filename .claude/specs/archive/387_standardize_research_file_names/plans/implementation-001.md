@@ -11,22 +11,22 @@ Rename 15 research documentation files from inconsistent naming (ALL_CAPS and mi
 
 ## Phases
 
-### Phase 1: Rename Documentation/Research/ files
+### Phase 1: Rename docs/Research/ files
 
 **Estimated effort**: 15 minutes
 **Status**: [NOT STARTED]
 
 **Objectives**:
-1. Rename 5 files in Documentation/Research/ to lowercase-hyphenated format
+1. Rename 5 files in docs/Research/ to lowercase-hyphenated format
 2. Remove redundant "-research" suffixes from 2 files
 3. Preserve git history using `git mv`
 
 **Files to modify**:
-- `Documentation/Research/DUAL_VERIFICATION.md` → `dual-verification.md`
-- `Documentation/Research/PROOF_LIBRARY_DESIGN.md` → `proof-library-design.md`
-- `Documentation/Research/THEORY_COMPARISON.md` → `theory-comparison.md`
-- `Documentation/Research/deduction-theorem-necessity-research.md` → `deduction-theorem-necessity.md`
-- `Documentation/Research/noncomputable-research.md` → `noncomputable.md`
+- `docs/Research/DUAL_VERIFICATION.md` → `dual-verification.md`
+- `docs/Research/PROOF_LIBRARY_DESIGN.md` → `proof-library-design.md`
+- `docs/Research/THEORY_COMPARISON.md` → `theory-comparison.md`
+- `docs/Research/deduction-theorem-necessity-research.md` → `deduction-theorem-necessity.md`
+- `docs/Research/noncomputable-research.md` → `noncomputable.md`
 
 **Steps**:
 1. Run `git mv` for each file rename
@@ -38,7 +38,7 @@ Rename 15 research documentation files from inconsistent naming (ALL_CAPS and mi
 
 ---
 
-### Phase 2: Rename Theories/Logos/Documentation/Research/ files
+### Phase 2: Rename Theories/Logos/docs/Research/ files
 
 **Estimated effort**: 10 minutes
 **Status**: [NOT STARTED]
@@ -47,9 +47,9 @@ Rename 15 research documentation files from inconsistent naming (ALL_CAPS and mi
 1. Rename 3 files in Logos research directory
 
 **Files to modify**:
-- `Theories/Logos/Documentation/Research/CONCEPTUAL_ENGINEERING.md` → `conceptual-engineering.md`
-- `Theories/Logos/Documentation/Research/LAYER_EXTENSIONS.md` → `layer-extensions.md`
-- `Theories/Logos/Documentation/Research/RECURSIVE_SEMANTICS.md` → `recursive-semantics.md`
+- `Theories/Logos/docs/Research/CONCEPTUAL_ENGINEERING.md` → `conceptual-engineering.md`
+- `Theories/Logos/docs/Research/LAYER_EXTENSIONS.md` → `layer-extensions.md`
+- `Theories/Logos/docs/Research/RECURSIVE_SEMANTICS.md` → `recursive-semantics.md`
 
 **Steps**:
 1. Run `git mv` for each file rename
@@ -61,7 +61,7 @@ Rename 15 research documentation files from inconsistent naming (ALL_CAPS and mi
 
 ---
 
-### Phase 3: Rename Theories/Bimodal/Documentation/Research/ files
+### Phase 3: Rename Theories/Bimodal/docs/Research/ files
 
 **Estimated effort**: 10 minutes
 **Status**: [NOT STARTED]
@@ -70,10 +70,10 @@ Rename 15 research documentation files from inconsistent naming (ALL_CAPS and mi
 1. Rename 4 files in Bimodal research directory (3 ALL_CAPS + 1 redundant suffix)
 
 **Files to modify**:
-- `Theories/Bimodal/Documentation/Research/LEANSEARCH_API_SPECIFICATION.md` → `leansearch-api-specification.md`
-- `Theories/Bimodal/Documentation/Research/MODAL_TEMPORAL_PROOF_SEARCH.md` → `modal-temporal-proof-search.md`
-- `Theories/Bimodal/Documentation/Research/PROOF_SEARCH_AUTOMATION.md` → `proof-search-automation.md`
-- `Theories/Bimodal/Documentation/Research/temporal-logic-automation-research.md` → `temporal-logic-automation.md`
+- `Theories/Bimodal/docs/Research/LEANSEARCH_API_SPECIFICATION.md` → `leansearch-api-specification.md`
+- `Theories/Bimodal/docs/Research/MODAL_TEMPORAL_PROOF_SEARCH.md` → `modal-temporal-proof-search.md`
+- `Theories/Bimodal/docs/Research/PROOF_SEARCH_AUTOMATION.md` → `proof-search-automation.md`
+- `Theories/Bimodal/docs/Research/temporal-logic-automation-research.md` → `temporal-logic-automation.md`
 
 **Steps**:
 1. Run `git mv` for each file rename
@@ -92,28 +92,28 @@ Rename 15 research documentation files from inconsistent naming (ALL_CAPS and mi
 
 **Objectives**:
 1. Update all references in README.md (project root)
-2. Update references in Documentation/Research/README.md
-3. Update references in Theories/*/Documentation/**/*.md
+2. Update references in docs/Research/README.md
+3. Update references in Theories/*/docs/**/*.md
 4. Update references in Theories/*/*.lean doc comments
 
 **Files to modify**:
 - `README.md` - ~12 references
-- `Documentation/Research/README.md` - ~18 references
-- `Documentation/README.md` - cross-references
+- `docs/Research/README.md` - ~18 references
+- `docs/README.md` - cross-references
 - `Theories/Logos/README.md` - theory comparison links
-- `Theories/Logos/Documentation/README.md`
-- `Theories/Logos/Documentation/Research/README.md`
-- `Theories/Logos/Documentation/**/*.md` - various references
+- `Theories/Logos/docs/README.md`
+- `Theories/Logos/docs/Research/README.md`
+- `Theories/Logos/docs/**/*.md` - various references
 - `Theories/Logos/SubTheories/*.lean` - doc comments
 - `Theories/Bimodal/README.md`
-- `Theories/Bimodal/Documentation/README.md`
-- `Theories/Bimodal/Documentation/Research/README.md`
-- `Theories/Bimodal/Documentation/**/*.md`
+- `Theories/Bimodal/docs/README.md`
+- `Theories/Bimodal/docs/Research/README.md`
+- `Theories/Bimodal/docs/**/*.md`
 
 **Steps**:
 1. Use grep to find all references to renamed files in active directories
 2. Update each reference using Edit tool with replace_all where appropriate
-3. Focus on directories: README.md, Documentation/, Theories/
+3. Focus on directories: README.md, docs/, Theories/
 
 **Verification**:
 - Grep for old file names returns no hits in active directories
@@ -136,7 +136,7 @@ Rename 15 research documentation files from inconsistent naming (ALL_CAPS and mi
 3. Commit with message format: "task 387 phase 5: complete file standardization"
 
 **Verification**:
-- No grep hits for old ALL_CAPS filenames in Documentation/ or Theories/
+- No grep hits for old ALL_CAPS filenames in docs/ or Theories/
 - Git commit successful
 - Build still works (if applicable)
 
@@ -158,7 +158,7 @@ Rename 15 research documentation files from inconsistent naming (ALL_CAPS and mi
 
 - [ ] 15 files renamed to lowercase-hyphenated format
 - [ ] All active documentation references updated
-- [ ] No broken links in README.md, Documentation/, Theories/
+- [ ] No broken links in README.md, docs/, Theories/
 - [ ] Archive directories unchanged
 - [ ] Git history preserved for renamed files
 

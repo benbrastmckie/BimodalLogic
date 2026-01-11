@@ -1273,7 +1273,7 @@ done
 
 **Files to Update**:
 
-**1. Documentation/Reference/API_REFERENCE.md**:
+**1. docs/Reference/API_REFERENCE.md**:
 ```markdown
 # API Reference
 
@@ -1296,7 +1296,7 @@ This file has been superseded by the auto-generated API documentation.
 - **Last updated**: 2025-12-24
 ```
 
-**2. Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md**:
+**2. docs/ProjectInfo/IMPLEMENTATION_STATUS.md**:
 Update documentation status section:
 ```markdown
 ### Documentation Status
@@ -1409,7 +1409,7 @@ ProofChecker/
 │           ├── Soundness.lean          # UPDATED: Fill gaps
 │           ├── Completeness.lean       # UPDATED: Fill gaps
 │           └── DeductionTheorem.lean   # UPDATED: Fill gaps
-├── Documentation/
+├── docs/
 │   ├── Reference/
 │   │   └── API_REFERENCE.md            # UPDATED: Point to doc-gen4
 │   └── ProjectInfo/

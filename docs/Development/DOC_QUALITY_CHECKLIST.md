@@ -21,7 +21,7 @@ systematic verification
 - [Documentation Standards](.opencode/context/core/standards/documentation-standards.md)
 - [Formal Symbol Backtick Standard](.opencode/context/core/standards/
   documentation-standards.md#formal-symbol-backtick-standard)
-- [Documentation/README.md](../README.md) - Documentation navigation
+- [docs/README.md](../README.md) - Documentation navigation
 
 ---
 
@@ -39,7 +39,7 @@ These checks verify that information is consistent across all documentation file
 TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " Logos/Automation/Tactics.lean)
 
 # Count tactic references in TACTIC_DEVELOPMENT.md
-TACTICS_DOC=$(grep -c "^\#\#\# " Documentation/ProjectInfo/TACTIC_REGISTRY.md)
+TACTICS_DOC=$(grep -c "^\#\#\# " docs/ProjectInfo/TACTIC_REGISTRY.md)
 
 echo "Implementation: $TACTICS_IMPL tactics"
 echo "Documentation: $TACTICS_DOC tactics"
@@ -63,7 +63,7 @@ README.md.
 **Verification**:
 ```bash
 # Check Automation package completion percentage
-grep -n "Automation.*%" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+grep -n "Automation.*%" docs/ProjectInfo/IMPLEMENTATION_STATUS.md
 grep -n "Automation.*%" README.md
 grep -n "Automation.*%" README.md
 
@@ -89,7 +89,7 @@ PERPETUITY_SORRY=$(grep -c "sorry" Logos/Theorems/Perpetuity.lean)
 echo "Perpetuity.lean sorry count: $PERPETUITY_SORRY"
 
 # Check IMPLEMENTATION_STATUS.md Known Limitations section claims
-grep "Perpetuity.lean.*sorry" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+grep "Perpetuity.lean.*sorry" docs/ProjectInfo/IMPLEMENTATION_STATUS.md
 
 # Manual verification: Line numbers in documentation match actual source locations
 ```
@@ -118,7 +118,7 @@ echo "Total sorry placeholders in codebase: $TOTAL_SORRY"
 grep "Total:.*placeholders" TODO.md
 
 # Check IMPLEMENTATION_STATUS.md Known Limitations section
-grep "sorry.*placeholder" Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md | wc -l
+grep "sorry.*placeholder" docs/ProjectInfo/IMPLEMENTATION_STATUS.md | wc -l
 
 # Manual verification: Counts should match
 ```
@@ -163,7 +163,7 @@ LEAN Style Guide format.
 **Verification**:
 ```bash
 # Check for missing README.md files in main directories
-for dir in Logos/*/ LogosTest/*/ Archive/ Documentation/*/; do
+for dir in Logos/*/ LogosTest/*/ Archive/ docs/*/; do
   if [ ! -f "$dir/README.md" ]; then
     echo "Missing README.md in $dir"
   fi
@@ -188,7 +188,7 @@ DIRECTORY_README_STANDARD.md format.
 **Verification**:
 ```bash
 # Check IMPLEMENTATION_STATUS.md Known Limitations section has all modules with incomplete implementation
-grep -E "^### [0-9]+\." Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md | grep -A 5 "Known Limitations"
+grep -E "^### [0-9]+\." docs/ProjectInfo/IMPLEMENTATION_STATUS.md | grep -A 5 "Known Limitations"
 
 # Manual verification: Ensure each limitation has:
 # - Clear description
@@ -289,7 +289,7 @@ Logos API.
 **Verification**:
 ```bash
 # Extract URLs from markdown files and test accessibility
-grep -Eoh 'https?://[^ ]+' Documentation/**/*.md README.md | sort -u > urls.txt
+grep -Eoh 'https?://[^ ]+' docs/**/*.md README.md | sort -u > urls.txt
 
 # Manual verification: Test each URL in browser or with curl
 while read url; do
@@ -312,7 +312,7 @@ done < urls.txt
 **Verification**:
 ```bash
 # Extract markdown links and verify local file references
-for file in Documentation/**/*.md README.md TODO.md; do
+for file in docs/**/*.md README.md TODO.md; do
   echo "Checking $file for broken references..."
   grep -Eo '\[.*\]\(([^)]+)\)' "$file" | grep -Eo '\([^)]+\)' | tr -d '()' | \
   while read ref; do
@@ -348,7 +348,7 @@ These checks verify that documentation follows formatting standards.
 **Verification**:
 ```bash
 # Check all documentation files for line limit violations
-for file in Documentation/**/*.md README.md TODO.md; do
+for file in docs/**/*.md README.md TODO.md; do
   awk -v f="$file" 'length > 100 {print f" line "NR" exceeds 100 chars: "length" chars";
   exit 1}' "$file"
   if [ $? -eq 0 ]; then
@@ -374,7 +374,7 @@ Standard.
 **Verification**:
 ```bash
 # Check for unbacked Unicode symbols
-for file in Documentation/**/*.md README.md TODO.md; do
+for file in docs/**/*.md README.md TODO.md; do
   UNBACKTICKED=$(grep -E "□|◇|△|▽|⊢|⊨" "$file" | grep -v '`' | wc -l)
   if [ "$UNBACKTICKED" -gt 0 ]; then
     echo "FAIL: $file has $UNBACKTICKED unbackticked formal symbols"
@@ -401,7 +401,7 @@ documentation-standards.md#formal-symbol-backtick-standard)
 **Verification**:
 ```bash
 # Check for code blocks without language specification
-for file in Documentation/**/*.md README.md; do
+for file in docs/**/*.md README.md; do
   # Count triple backticks without language
   UNSPECIFIED=$(grep -E "^\`\`\`$" "$file" | wc -l)
   if [ "$UNSPECIFIED" -gt 0 ]; then
@@ -425,7 +425,7 @@ done
 **Verification**:
 ```bash
 # Check for Setext-style heading underlines (=== or ---)
-for file in Documentation/**/*.md README.md TODO.md; do
+for file in docs/**/*.md README.md TODO.md; do
   SETEXT=$(grep -E "^(===+|---+)$" "$file" | wc -l)
   if [ "$SETEXT" -gt 0 ]; then
     echo "FAIL: $file has $SETEXT Setext-style headings"

@@ -498,7 +498,7 @@ tools:
   - glob
 permissions:
   allow:
-    - read: ["**/*.md", ".claude/**/*", "Documentation/**/*"]
+    - read: ["**/*.md", ".claude/**/*", "docs/**/*"]
     - write: [".claude/specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:

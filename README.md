@@ -57,7 +57,7 @@ Training AI systems to reason reliably requires both positive signals (valid inf
 
 By contrast, human reasoning data is limited, inconsistent, and prone to error, providing a poor training source. Beyond pattern matching, reasoning in the Logos provides proof receipts which ensure validity where the semantic theory for the Logos provide interpretability over explicit semantic models, offering scalable oversight for sophisticated forms of AI reasoning with an extensible set of operators.
 
-**See also**: [Dual Verification Research](Documentation/Research/dual-verification.md) | [Integration Guide](Documentation/UserGuide/INTEGRATION.md) | [LogicNotes](https://github.com/benbrastmckie/LogicNotes)
+**See also**: [Dual Verification Research](docs/Research/dual-verification.md) | [Integration Guide](docs/UserGuide/INTEGRATION.md) | [LogicNotes](https://github.com/benbrastmckie/LogicNotes)
 
 ---
 
@@ -71,7 +71,7 @@ Constructing and evaluating plans amounts to identifying and ranking histories t
 
 In addition to tense, historical modal, and counterfactual operators, effective planning under natural conditions also requires constitutive operators for reasoning about constitution, causal operators for reasoning about causation, epistemic operators for reasoning about belief, likelihoods, and indicative conditionals, and normative operators for reasoning about imperatives and preferences. Accordingly both the proof theory and semantics for the Logos are implemented in layers in order to accommodate an extensible range of operators. The layer architecture enables applications to import precisely the operator combinations needed for a given domain without carrying unused overhead.
 
-**See also**: [Conceptual Engineering](Theories/Logos/Documentation/Research/conceptual-engineering.md) | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md)
+**See also**: [Conceptual Engineering](Theories/Logos/docs/Research/conceptual-engineering.md) | [Layer Extensions](Theories/Logos/docs/Research/layer-extensions.md)
 
 ---
 
@@ -79,7 +79,7 @@ In addition to tense, historical modal, and counterfactual operators, effective 
 
 Logos implements a layered operator architecture supporting progressive extensibility. All layers share task semantics where possible worlds are functions from times to world-states constrained by task relations.
 
-**See also**: [Conceptual Engineering](Theories/Logos/Documentation/Research/conceptual-engineering.md) for philosophical motivation | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md) for technical specifications
+**See also**: [Conceptual Engineering](Theories/Logos/docs/Research/conceptual-engineering.md) for philosophical motivation | [Layer Extensions](Theories/Logos/docs/Research/layer-extensions.md) for technical specifications
 
 | Layer              | Operators                                        | Status         |
 | ------------------ | ------------------------------------------------ | -------------- |
@@ -88,7 +88,7 @@ Logos implements a layered operator architecture supporting progressive extensib
 | **Epistemic**      | Belief, probability, indicative                  | Planned        |
 | **Normative**      | Deontic, agential, preferential                  | Planned        |
 
-**See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md)
+**See also**: [Methodology](docs/UserGuide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/docs/Research/layer-extensions.md)
 
 ---
 
@@ -108,7 +108,7 @@ The Causal Layer implements TM (Tense and Modality) - a bimodal logic combining 
 | **Modal**       | `□` (necessity), `◇` (possibility)                                                 | S5 historical modality    |
 | **Temporal**    | `H` (always past), `G` (always future), `P` (sometime past), `F` (sometime future), `△` (always), `▽` (sometimes) | Linear temporal operators   |
 
-**For operator details**: [Operators Glossary](Documentation/Reference/OPERATORS.md) | [Architecture Guide](Documentation/UserGuide/ARCHITECTURE.md)
+**For operator details**: [Operators Glossary](docs/Reference/OPERATORS.md) | [Architecture Guide](docs/UserGuide/ARCHITECTURE.md)
 
 ### Axioms
 
@@ -129,7 +129,7 @@ The Causal Layer implements TM (Tense and Modality) - a bimodal logic combining 
 - MF: `□φ → □Gφ` (necessity persists forward)
 - TF: `□φ → G□φ` (necessity is temporally stable)
 
-**For axiom proofs**: [Architecture Guide](Documentation/UserGuide/ARCHITECTURE.md)
+**For axiom proofs**: [Architecture Guide](docs/UserGuide/ARCHITECTURE.md)
 
 ### Perpetuity Principles
 
@@ -174,13 +174,13 @@ Six theorems connecting modal and temporal operators:
 
 Logos's layered architecture enables incremental extension from core TM logic to explanatory, epistemic, and normative reasoning. Each extension provides independent value while building toward comprehensive AI reasoning capabilities.
 
-**See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md)
+**See also**: [Methodology](docs/UserGuide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/docs/Research/layer-extensions.md)
 
 ### 5. Implementation Status
 
 The Logos methodology comprises three components: (1) an **axiomatic proof theory** for deriving valid inferences, (2) a **recursive semantic theory** for interpreting formulas in explicit models, and (3) a **metalogic** establishing the soundness and completeness of the proof theory over the semantics.
 
-**For detailed status**: [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) | [LEAN Registry](Documentation/ProjectInfo/SORRY_REGISTRY.md) | [TODO](TODO.md)
+**For detailed status**: [Implementation Status](docs/ProjectInfo/IMPLEMENTATION_STATUS.md) | [LEAN Registry](docs/ProjectInfo/SORRY_REGISTRY.md) | [TODO](TODO.md)
 
 ---
 
@@ -204,7 +204,7 @@ Logos and Model-Checker form a **complementary dual verification architecture** 
 - Generates positive RL training signals (valid inferences)
 - Implements task semantics for soundness/completeness theorems
 
-**Current Status**: See [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) for detailed progress
+**Current Status**: See [Implementation Status](docs/ProjectInfo/IMPLEMENTATION_STATUS.md) for detailed progress
 
 ### Model-Checker: Semantic Verification (Complementary Tool)
 
@@ -226,7 +226,7 @@ The dual verification architecture creates comprehensive learning signals withou
 3. **Scalable Oversight**: Both tools scale with computation, enabling unlimited training data
 4. **Mathematical Certainty**: LEAN 4 proofs provide verifiable justifications, Z3 countermodels refute invalid claims
 
-**For training architecture details**: [Dual Verification Research](Documentation/Research/dual-verification.md) | [Integration Guide](Documentation/UserGuide/INTEGRATION.md)
+**For training architecture details**: [Dual Verification Research](docs/Research/dual-verification.md) | [Integration Guide](docs/UserGuide/INTEGRATION.md)
 
 ---
 
@@ -258,7 +258,7 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 - **Epistemic**: Belief operators for modeling other agents' knowledge states
 - **Normative**: Deontic operators (`O`, `P`) for obligations and permissions in negotiation
 
-**See also**: [Methodology](Documentation/UserGuide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md) | [Architecture](Documentation/UserGuide/ARCHITECTURE.md)
+**See also**: [Methodology](docs/UserGuide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/docs/Research/layer-extensions.md) | [Architecture](docs/UserGuide/ARCHITECTURE.md)
 
 ---
 
@@ -273,7 +273,7 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 
 ### Quick Start
 
-**AI-Assisted (Recommended)**: Use [Claude Code](Documentation/Installation/CLAUDE_CODE.md) for automated installation
+**AI-Assisted (Recommended)**: Use [Claude Code](docs/Installation/CLAUDE_CODE.md) for automated installation
 
 **Manual Installation**:
 
@@ -296,12 +296,12 @@ lake test
 
 | Guide | Description |
 |-------|-------------|
-| [Claude Code](Documentation/Installation/CLAUDE_CODE.md) | AI-assisted installation (recommended) |
-| [Basic Installation](Documentation/Installation/BASIC_INSTALLATION.md) | Manual installation steps |
-| [Getting Started](Documentation/Installation/GETTING_STARTED.md) | Terminal basics, VS Code, NeoVim setup |
-| [Using Git](Documentation/Installation/USING_GIT.md) | Git/GitHub configuration |
+| [Claude Code](docs/Installation/CLAUDE_CODE.md) | AI-assisted installation (recommended) |
+| [Basic Installation](docs/Installation/BASIC_INSTALLATION.md) | Manual installation steps |
+| [Getting Started](docs/Installation/GETTING_STARTED.md) | Terminal basics, VS Code, NeoVim setup |
+| [Using Git](docs/Installation/USING_GIT.md) | Git/GitHub configuration |
 
-**For complete setup**: [Installation Overview](Documentation/Installation/README.md)
+**For complete setup**: [Installation Overview](docs/Installation/README.md)
 
 ---
 
@@ -311,47 +311,47 @@ lake test
 
 Getting started and working with Logos:
 
-- [Tutorial](Documentation/UserGuide/TUTORIAL.md) - Getting started guide
-- [Examples](Documentation/UserGuide/EXAMPLES.md) - Modal, temporal, bimodal examples
-- [Architecture Guide](Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
-- [Methodology](Documentation/UserGuide/METHODOLOGY.md) - Philosophical foundations
-- [Integration Guide](Documentation/UserGuide/INTEGRATION.md) - Model-Checker integration
-- [Tactic Development](Documentation/UserGuide/TACTIC_DEVELOPMENT.md) - Custom tactic development
+- [Tutorial](docs/UserGuide/TUTORIAL.md) - Getting started guide
+- [Examples](docs/UserGuide/EXAMPLES.md) - Modal, temporal, bimodal examples
+- [Architecture Guide](docs/UserGuide/ARCHITECTURE.md) - TM logic specification
+- [Methodology](docs/UserGuide/METHODOLOGY.md) - Philosophical foundations
+- [Integration Guide](docs/UserGuide/INTEGRATION.md) - Model-Checker integration
+- [Tactic Development](docs/UserGuide/TACTIC_DEVELOPMENT.md) - Custom tactic development
 
 ### Development Guides
 
 Contributing and extending Logos:
 
-- [Contributing](Documentation/Development/CONTRIBUTING.md) - Contribution guidelines
-- [LEAN Style Guide](Documentation/Development/LEAN_STYLE_GUIDE.md) - Coding conventions
-- [Testing Standards](Documentation/Development/TESTING_STANDARDS.md) - Test requirements
-- [Metaprogramming Guide](Documentation/Development/METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming
-- [Module Organization](Documentation/Development/MODULE_ORGANIZATION.md) - Project structure
-- [Quality Metrics](Documentation/Development/QUALITY_METRICS.md) - Quality targets
-- [Phased Implementation](Documentation/Development/PHASED_IMPLEMENTATION.md) - Implementation roadmap
-- [Directory README Standard](Documentation/Development/DIRECTORY_README_STANDARD.md) - Documentation requirements
-- [Documentation Quality Checklist](Documentation/Development/DOC_QUALITY_CHECKLIST.md) - Quality assurance
+- [Contributing](docs/Development/CONTRIBUTING.md) - Contribution guidelines
+- [LEAN Style Guide](docs/Development/LEAN_STYLE_GUIDE.md) - Coding conventions
+- [Testing Standards](docs/Development/TESTING_STANDARDS.md) - Test requirements
+- [Metaprogramming Guide](docs/Development/METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming
+- [Module Organization](docs/Development/MODULE_ORGANIZATION.md) - Project structure
+- [Quality Metrics](docs/Development/QUALITY_METRICS.md) - Quality targets
+- [Phased Implementation](docs/Development/PHASED_IMPLEMENTATION.md) - Implementation roadmap
+- [Directory README Standard](docs/Development/DIRECTORY_README_STANDARD.md) - Documentation requirements
+- [Documentation Quality Checklist](docs/Development/DOC_QUALITY_CHECKLIST.md) - Quality assurance
 
 ### Project Information
 
 Current status and tracking:
 
-- [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
-- [Known Limitations](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Gaps and workarounds
-- [Sorry Registry](Documentation/ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking
-- [Tactic Registry](Documentation/ProjectInfo/TACTIC_REGISTRY.md) - Tactic implementation status
-- [Maintenance](Documentation/ProjectInfo/MAINTENANCE.md) - TODO management workflow
+- [Implementation Status](docs/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
+- [Known Limitations](docs/ProjectInfo/IMPLEMENTATION_STATUS.md#known-limitations) - Gaps and workarounds
+- [Sorry Registry](docs/ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking
+- [Tactic Registry](docs/ProjectInfo/TACTIC_REGISTRY.md) - Tactic implementation status
+- [Maintenance](docs/ProjectInfo/MAINTENANCE.md) - TODO management workflow
 - [TODO](TODO.md) - Active task tracking
 
 ### Research
 
 Vision and planned architecture:
 
-- [Research Overview](Documentation/Research/README.md) - Research documentation index
-- [Dual Verification](Documentation/Research/dual-verification.md) - RL training architecture
-- [Layer Extensions](Theories/Logos/Documentation/Research/layer-extensions.md) - Layers 1-3 specifications
-- [Proof Library Design](Documentation/Research/proof-library-design.md) - Theorem caching
-- [Conceptual Engineering](Theories/Logos/Documentation/Research/conceptual-engineering.md) - Philosophical methodology
+- [Research Overview](docs/Research/README.md) - Research documentation index
+- [Dual Verification](docs/Research/dual-verification.md) - RL training architecture
+- [Layer Extensions](Theories/Logos/docs/Research/layer-extensions.md) - Layers 1-3 specifications
+- [Proof Library Design](docs/Research/proof-library-design.md) - Theorem caching
+- [Conceptual Engineering](Theories/Logos/docs/Research/conceptual-engineering.md) - Philosophical methodology
 
 ### Reference
 
@@ -359,9 +359,9 @@ Quick reference materials:
 
 ### Documentation Navigation
 
-- [Documentation Hub](Documentation/README.md) - Complete documentation index
-- [Bimodal Operators](Bimodal/Documentation/Reference/OPERATORS.md) - Formal symbols reference
-- [Logos Glossary](Logos/Documentation/Reference/GLOSSARY.md) - Key concepts and definitions
+- [Documentation Hub](docs/README.md) - Complete documentation index
+- [Bimodal Operators](Bimodal/docs/Reference/OPERATORS.md) - Formal symbols reference
+- [Logos Glossary](Logos/docs/Reference/GLOSSARY.md) - Key concepts and definitions
 
 ---
 
@@ -412,7 +412,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Contributing
 
-Contributions welcome! See [Contributing Guide](Documentation/Development/CONTRIBUTING.md) for guidelines.
+Contributions welcome! See [Contributing Guide](docs/Development/CONTRIBUTING.md) for guidelines.
 
 ### Development Setup
 

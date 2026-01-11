@@ -165,15 +165,15 @@ After major updates, verify bidirectional links work:
 
 ```bash
 # Check registry references
-grep -l "SORRY_REGISTRY.md" TODO.md Documentation/ProjectInfo/*.md
-grep -l "FEATURE_REGISTRY.md" TODO.md Documentation/ProjectInfo/*.md
-grep -l "TACTIC_REGISTRY.md" TODO.md Documentation/ProjectInfo/*.md
+grep -l "SORRY_REGISTRY.md" TODO.md docs/ProjectInfo/*.md
+grep -l "FEATURE_REGISTRY.md" TODO.md docs/ProjectInfo/*.md
+grep -l "TACTIC_REGISTRY.md" TODO.md docs/ProjectInfo/*.md
 
 # Check all core docs reference each other appropriately
-for doc in TODO.md Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md \
-           Documentation/ProjectInfo/FEATURE_REGISTRY.md \
-           Documentation/ProjectInfo/SORRY_REGISTRY.md \
-           Documentation/ProjectInfo/TACTIC_REGISTRY.md; do
+for doc in TODO.md docs/ProjectInfo/IMPLEMENTATION_STATUS.md \
+           docs/ProjectInfo/FEATURE_REGISTRY.md \
+           docs/ProjectInfo/SORRY_REGISTRY.md \
+           docs/ProjectInfo/TACTIC_REGISTRY.md; do
   echo "=== $doc ==="
   grep -E "(TODO\.md|IMPLEMENTATION_STATUS|FEATURE_REGISTRY|SORRY_REGISTRY|TACTIC_REGISTRY|MAINTENANCE)" "$doc"
 done
@@ -433,7 +433,7 @@ If SORRY_REGISTRY.md count doesn't match actual:
 grep -rn "sorry" Logos/Core/**/*.lean 2>/dev/null | wc -l
 
 # Compare with registry
-grep -c "^- \*\*.*\.lean:" Documentation/ProjectInfo/SORRY_REGISTRY.md
+grep -c "^- \*\*.*\.lean:" docs/ProjectInfo/SORRY_REGISTRY.md
 ```
 
 Fix by updating SORRY_REGISTRY.md to match actual codebase state.
@@ -458,7 +458,7 @@ If links between documents are broken:
 
 ```bash
 # Check all markdown links
-grep -rn "\[.*\](.*\.md)" Documentation/ProjectInfo/*.md TODO.md
+grep -rn "\[.*\](.*\.md)" docs/ProjectInfo/*.md TODO.md
 
 # Verify linked files exist
 for link in $(grep -oh '\[.*\]([^)]*\.md)' TODO.md | grep -oh '([^)]*)' | tr -d '()'); do
@@ -647,13 +647,13 @@ These instructions are general and apply to any repository using this workflow s
 - All verification checks passed (target files, build, symbols)
 
 **Files Modified**:
-- Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-- Documentation/ProjectInfo/SORRY_REGISTRY.md
+- docs/ProjectInfo/IMPLEMENTATION_STATUS.md
+- docs/ProjectInfo/SORRY_REGISTRY.md
 - .opencode/README.md
 - .opencode/QUICK-START.md
-- Documentation/Development/LEAN_STYLE_GUIDE.md
+- docs/Development/LEAN_STYLE_GUIDE.md
 - context/core/standards/docs.md
-- Documentation/Development/CONTRIBUTING.md
+- docs/Development/CONTRIBUTING.md
 
 **Summary**: .opencode/specs/007_emoji_removal/summaries/implementation-summary.md
 

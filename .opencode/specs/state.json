@@ -979,11 +979,11 @@
       "artifacts": [
         ".opencode/specs/190_improve_maintenance_md_documentation/plans/implementation-002.md",
         ".opencode/specs/190_improve_maintenance_md_documentation/summaries/implementation-summary-20251229.md",
-        "Documentation/Development/MAINTENANCE.md"
+        "docs/Development/MAINTENANCE.md"
       ],
       "estimated_hours": 2.0,
       "files_modified": [
-        "Documentation/Development/MAINTENANCE.md"
+        "docs/Development/MAINTENANCE.md"
       ]
     },
     {

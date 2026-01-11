@@ -1283,7 +1283,7 @@
         ".opencode/agent/subagents/lean-planner.md",
         ".opencode/agent/subagents/reviewer.md",
         ".opencode/context/core/system/state-management.md",
-        "Documentation/Architecture/ADR-004-Remove-Project-Level-State-Files.md"
+        "docs/Architecture/ADR-004-Remove-Project-Level-State-Files.md"
       ],
       "estimated_hours": 8.0,
       "plan_path": ".opencode/specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md",

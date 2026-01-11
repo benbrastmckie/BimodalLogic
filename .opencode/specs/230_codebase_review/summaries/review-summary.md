@@ -59,8 +59,8 @@ Comprehensive codebase review completed for ProofChecker project. Verified actua
 **Documentation Quality**:
 - All core modules have README.md files with module overviews
 - API documentation: Comprehensive docstrings for all public functions
-- User guides: 8 comprehensive guides in Documentation/UserGuide/
-- Development guides: 10 standards documents in Documentation/Development/
+- User guides: 8 comprehensive guides in docs/UserGuide/
+- Development guides: 10 standards documents in docs/Development/
 - Research artifacts: 15 research documents tracking design decisions
 
 ---
@@ -107,10 +107,10 @@ Comprehensive codebase review completed for ProofChecker project. Verified actua
 ## References
 
 **Updated Registries**:
-- Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-- Documentation/ProjectInfo/SORRY_REGISTRY.md
-- Documentation/ProjectInfo/TACTIC_REGISTRY.md
-- Documentation/ProjectInfo/FEATURE_REGISTRY.md
+- docs/ProjectInfo/IMPLEMENTATION_STATUS.md
+- docs/ProjectInfo/SORRY_REGISTRY.md
+- docs/ProjectInfo/TACTIC_REGISTRY.md
+- docs/ProjectInfo/FEATURE_REGISTRY.md
 
 **Build Logs**:
 - Build errors captured from `lake build` output (2025-12-28)

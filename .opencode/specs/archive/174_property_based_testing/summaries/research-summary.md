@@ -16,7 +16,7 @@
 
 - **Plausible Repository**: https://github.com/leanprover-community/plausible
 - **Mathlib4 Documentation**: https://leanprover-community.github.io/mathlib4_docs/Plausible.html
-- **Detailed Research Findings**: Documentation/Research/property-based-testing-lean4.md
+- **Detailed Research Findings**: docs/Research/property-based-testing-lean4.md
 - **Plausible Test Suite**: Examples in Test/Plausible.lean
 
 ## Recommendations

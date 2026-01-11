@@ -46,7 +46,7 @@ have no "gaps" in time.
 
 ## References
 
-* [ARCHITECTURE.md](../../../Documentation/UserGuide/ARCHITECTURE.md) - World history specification
+* [ARCHITECTURE.md](../../../docs/UserGuide/ARCHITECTURE.md) - World history specification
 * [TaskFrame.lean](TaskFrame.lean) - Task frame structure
 * JPL Paper app:TaskSemantics (def:world-history, line 1849) - Formal world history definition
 -/

@@ -29,7 +29,7 @@ The Logos project lacks a comprehensive, readable LaTeX reference document prese
 This plan covers creating Layer 0 (Core TM logic) LaTeX documentation by extracting and reorganizing content from the existing LogicNotes.tex source document (1452 lines). The documentation will mirror the Logos layer architecture with a modular subfile structure.
 
 **In Scope**:
-- Create Documentation/LaTeX/ directory structure with subfile architecture
+- Create docs/LaTeX/ directory structure with subfile architecture
 - Copy source LaTeX assets (formatting.sty, notation.sty, bib_style.bst, glossary.tex)
 - Create logos-notation.sty with Logos-specific macros
 - Extract content from LogicNotes.tex for Layer 0 (Core TM logic)
@@ -59,7 +59,7 @@ This plan covers creating Layer 0 (Core TM logic) LaTeX documentation by extract
 
 ### Definition of Done
 
-- [ ] Directory structure created: Documentation/LaTeX/ with subfiles/, assets/, bibliography/
+- [ ] Directory structure created: docs/LaTeX/ with subfiles/, assets/, bibliography/
 - [ ] Style files copied and tested: formatting.sty, notation.sty, bib_style.bst, glossary.tex
 - [ ] New logos-notation.sty created with Logos-specific macros
 - [ ] Main document LogosReference.tex created with subfile architecture
@@ -165,7 +165,7 @@ This plan integrates findings from 2 research reports created on 2026-01-08:
 **Tasks**:
 1. Create directory structure:
    ```
-   Documentation/LaTeX/
+   docs/LaTeX/
    ├── LogosReference.tex
    ├── subfiles/
    ├── assets/
@@ -173,7 +173,7 @@ This plan integrates findings from 2 research reports created on 2026-01-08:
    └── build/
    ```
 
-2. Copy source assets to Documentation/LaTeX/assets/:
+2. Copy source assets to docs/LaTeX/assets/:
    - formatting.sty (from /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/assets/)
    - notation.sty (from source)
    - bib_style.bst (from source)
@@ -218,7 +218,7 @@ This plan integrates findings from 2 research reports created on 2026-01-08:
 
 **Validation**:
 ```bash
-cd Documentation/LaTeX
+cd docs/LaTeX
 pdflatex LogosReference.tex
 for file in subfiles/*.tex; do pdflatex "$file"; done
 ```
@@ -389,7 +389,7 @@ done
 
 **Validation**:
 ```bash
-cd Documentation/LaTeX
+cd docs/LaTeX
 pdflatex LogosReference.tex
 bibtex LogosReference
 pdflatex LogosReference.tex
@@ -441,7 +441,7 @@ ls -lh build/LogosReference.pdf
 
 **Validation**:
 ```bash
-ls -R Documentation/LaTeX/
+ls -R docs/LaTeX/
 # Should show clean directory structure
 ```
 

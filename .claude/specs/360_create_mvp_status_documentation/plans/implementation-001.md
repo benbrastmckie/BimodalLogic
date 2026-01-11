@@ -15,8 +15,8 @@
 1. Put completeness proof tasks on hold
 2. Polish all elements of Bimodal/ project
 3. Create differentiated documentation for Bimodal (propositional intensional) vs Logos (second-order hyperintensional)
-4. Create project-wide Documentation/ for cross-theory content
-5. Create theory-specific Bimodal/Documentation/ following DIRECTORY_README_STANDARD.md
+4. Create project-wide docs/ for cross-theory content
+5. Create theory-specific Bimodal/docs/ following DIRECTORY_README_STANDARD.md
 6. Cross-link between project-wide and theory-specific documentation
 
 **Reason for Revision**: User expanded scope to comprehensive Bimodal theory documentation system with proper separation from Logos theory.
@@ -24,8 +24,8 @@
 ## Overview
 
 This implementation polishes the Bimodal/ project, improves its tests and documentation, and creates a proper documentation architecture that separates:
-- **Project-wide documentation** in `/Documentation/` (applicable to all theories)
-- **Theory-specific documentation** in `/Bimodal/Documentation/` (Bimodal-specific)
+- **Project-wide documentation** in `/docs/` (applicable to all theories)
+- **Theory-specific documentation** in `/Bimodal/docs/` (Bimodal-specific)
 
 The key differentiation between theories:
 - **Bimodal/**: Propositional intensional logic where primitive elements are *world-states* in the semantics, and sentence letters are interpreted by sets of world-states
@@ -90,10 +90,10 @@ The key differentiation between theories:
 **Objectives**:
 1. Create clear documentation differentiating Bimodal from Logos
 2. Explain semantic primitives and logical level differences
-3. Place in project-wide Documentation/ for cross-theory reference
+3. Place in project-wide docs/ for cross-theory reference
 
 **Files to create**:
-- `Documentation/Research/THEORY_COMPARISON.md` - Bimodal vs Logos comparison
+- `docs/Research/THEORY_COMPARISON.md` - Bimodal vs Logos comparison
 
 **Content structure**:
 ```markdown
@@ -128,7 +128,7 @@ Brief comparison of the two logical systems implemented in ProofChecker.
 
 **Steps**:
 1. Create THEORY_COMPARISON.md with structured comparison
-2. Link from Documentation/README.md
+2. Link from docs/README.md
 3. Link from both Bimodal/README.md and Logos/README.md
 
 **Verification**:
@@ -137,18 +137,18 @@ Brief comparison of the two logical systems implemented in ProofChecker.
 
 ---
 
-### Phase 4: Create Bimodal/Documentation/ Structure
+### Phase 4: Create Bimodal/docs/ Structure
 **Status**: [COMPLETED]
 **Estimated effort**: 1 hour
 
 **Objectives**:
 1. Create theory-specific documentation directory following DIRECTORY_README_STANDARD.md
 2. Organize by documentation type (UserGuide, Reference, Development)
-3. Cross-link with project-wide Documentation/
+3. Cross-link with project-wide docs/
 
 **Directory structure to create**:
 ```
-Bimodal/Documentation/
+Bimodal/docs/
 ├── README.md                    # Navigation hub (Template G style)
 ├── UserGuide/
 │   ├── README.md               # Reading order
@@ -165,10 +165,10 @@ Bimodal/Documentation/
 ```
 
 **Files to create**:
-- `Bimodal/Documentation/README.md` - Main navigation hub
-- `Bimodal/Documentation/UserGuide/README.md` - User guide index
-- `Bimodal/Documentation/Reference/README.md` - Reference index
-- `Bimodal/Documentation/ProjectInfo/README.md` - Project info index
+- `Bimodal/docs/README.md` - Main navigation hub
+- `Bimodal/docs/UserGuide/README.md` - User guide index
+- `Bimodal/docs/Reference/README.md` - Reference index
+- `Bimodal/docs/ProjectInfo/README.md` - Project info index
 - Other files as needed
 
 **Steps**:
@@ -188,32 +188,32 @@ Bimodal/Documentation/
 
 ### Phase 5: Update Project-Wide Documentation
 **Status**: [BLOCKED]
-**Blocked by**: Task 372 (Logos/Documentation/ reorganization)
+**Blocked by**: Task 372 (Logos/docs/ reorganization)
 **Estimated effort**: 45 minutes
 
-**Note**: This phase is on hold to avoid losing Logos-relevant content in Documentation/.
-Task 372 will move Logos-specific content to Logos/Documentation/ first, then this
-phase can update Documentation/ with cross-links to both theory-specific directories.
+**Note**: This phase is on hold to avoid losing Logos-relevant content in docs/.
+Task 372 will move Logos-specific content to Logos/docs/ first, then this
+phase can update docs/ with cross-links to both theory-specific directories.
 
 **Objectives**:
-1. Ensure Documentation/ contains only cross-theory content
-2. Move any Bimodal-specific content to Bimodal/Documentation/
+1. Ensure docs/ contains only cross-theory content
+2. Move any Bimodal-specific content to Bimodal/docs/
 3. Update Navigation links to include theory-specific docs
 
 **Files to modify**:
-- `Documentation/README.md` - Add theory-specific doc links
-- `Documentation/NAVIGATION.md` - Update navigation structure
+- `docs/README.md` - Add theory-specific doc links
+- `docs/NAVIGATION.md` - Update navigation structure
 - Various files as needed
 
 **Steps**:
-1. Audit Documentation/ for Bimodal-specific content
-2. Move Bimodal-specific content to Bimodal/Documentation/ or generalize
-3. Add "Theory-Specific Documentation" section to Documentation/README.md
-4. Link to Bimodal/Documentation/README.md
+1. Audit docs/ for Bimodal-specific content
+2. Move Bimodal-specific content to Bimodal/docs/ or generalize
+3. Add "Theory-Specific Documentation" section to docs/README.md
+4. Link to Bimodal/docs/README.md
 5. Update NAVIGATION.md
 
 **Verification**:
-- Documentation/ contains only cross-theory content
+- docs/ contains only cross-theory content
 - Clear links to theory-specific docs
 
 ---
@@ -224,7 +224,7 @@ phase can update Documentation/ with cross-links to both theory-specific directo
 
 **Objectives**:
 1. Add theory differentiation section
-2. Link to Bimodal/Documentation/
+2. Link to Bimodal/docs/
 3. Update Implementation Status with MVP limitations
 4. Add navigation to theory-specific documentation
 
@@ -242,16 +242,16 @@ Bimodal is a **propositional intensional logic** implementing TM (Tense and Moda
 **Logical Level**: Propositional (zeroth-order)
 
 For comparison with the planned Logos hyperintensional logic, see
-[Theory Comparison](../Documentation/Research/THEORY_COMPARISON.md).
+[Theory Comparison](../docs/Research/THEORY_COMPARISON.md).
 
 ## Theory-Specific Documentation
 
-For Bimodal-specific documentation, see [Documentation/](Documentation/README.md):
-- [Quick Start](Documentation/UserGuide/QUICKSTART.md)
-- [Proof Patterns](Documentation/UserGuide/PROOF_PATTERNS.md)
-- [Axiom Reference](Documentation/Reference/AXIOM_REFERENCE.md)
-- [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
-- [Known Limitations](Documentation/ProjectInfo/KNOWN_LIMITATIONS.md)
+For Bimodal-specific documentation, see [docs/](docs/README.md):
+- [Quick Start](docs/UserGuide/QUICKSTART.md)
+- [Proof Patterns](docs/UserGuide/PROOF_PATTERNS.md)
+- [Axiom Reference](docs/Reference/AXIOM_REFERENCE.md)
+- [Implementation Status](docs/ProjectInfo/IMPLEMENTATION_STATUS.md)
+- [Known Limitations](docs/ProjectInfo/KNOWN_LIMITATIONS.md)
 ```
 
 **Steps**:
@@ -262,7 +262,7 @@ For Bimodal-specific documentation, see [Documentation/](Documentation/README.md
 
 **Verification**:
 - README clearly explains what Bimodal is
-- Navigation to Documentation/ is clear
+- Navigation to docs/ is clear
 - All links work
 
 ---
@@ -271,11 +271,11 @@ For Bimodal-specific documentation, see [Documentation/](Documentation/README.md
 **Status**: [COMPLETED]
 **Estimated effort**: 30 minutes
 
-**Note**: This phase focuses on Bimodal/ and Bimodal/Documentation/ only.
-Documentation/ QA will be done after Task 372 completes.
+**Note**: This phase focuses on Bimodal/ and Bimodal/docs/ only.
+docs/ QA will be done after Task 372 completes.
 
 **Objectives**:
-1. Run DOC_QUALITY_CHECKLIST.md checks on Bimodal/Documentation/
+1. Run DOC_QUALITY_CHECKLIST.md checks on Bimodal/docs/
 2. Verify cross-links work within Bimodal/
 3. Verify formatting compliance
 
@@ -310,9 +310,9 @@ Documentation/ QA will be done after Task 372 completes.
 - [ ] Completeness tasks deprioritized and documented
 - [ ] BimodalTest sorries resolved or documented as exercises
 - [ ] THEORY_COMPARISON.md created and linked
-- [ ] Bimodal/Documentation/ directory structure created
+- [ ] Bimodal/docs/ directory structure created
 - [ ] All READMEs follow DIRECTORY_README_STANDARD.md
-- [ ] Documentation/ contains only cross-theory content
+- [ ] docs/ contains only cross-theory content
 - [ ] Bimodal/README.md updated with theory differentiation
 - [ ] All DOC_QUALITY_CHECKLIST.md checks pass
 - [ ] `lake build` succeeds

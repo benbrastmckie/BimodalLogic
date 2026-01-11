@@ -1,6 +1,6 @@
 # LEAN 4 Tactic Development Patterns - Quick Reference
 
-**Source:** `Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md`  
+**Source:** `docs/ProjectInfo/TACTIC_DEVELOPMENT.md`  
 **Purpose:** Essential patterns for implementing custom tactics in Logos TM logic
 
 ## 1. Tactic Development Approaches
@@ -511,7 +511,7 @@ elab "modal_t_tactic" : tactic => do
 
 ## References
 
-- Full guide: `Documentation/ProjectInfo/TACTIC_DEVELOPMENT.md`
-- Metaprogramming: `Documentation/Development/METAPROGRAMMING_GUIDE.md`
+- Full guide: `docs/ProjectInfo/TACTIC_DEVELOPMENT.md`
+- Metaprogramming: `docs/Development/METAPROGRAMMING_GUIDE.md`
 - LEAN 4 Metaprogramming Book: https://leanprover-community.github.io/lean4-metaprogramming-book/
 - Aesop Documentation: https://github.com/leanprover-community/aesop

@@ -6,7 +6,7 @@
 
 ## Summary
 
-This task requires creating a documentation suite for ProofChecker installation following the pattern from ModelChecker's installation documentation. The documentation needs to be adapted for Lean 4 + Mathlib dependencies rather than Python + pip. A new `Documentation/Installation/` directory should be created with CLAUDE_CODE.md as the entry point, linking to supporting guides for prerequisites.
+This task requires creating a documentation suite for ProofChecker installation following the pattern from ModelChecker's installation documentation. The documentation needs to be adapted for Lean 4 + Mathlib dependencies rather than Python + pip. A new `docs/Installation/` directory should be created with CLAUDE_CODE.md as the entry point, linking to supporting guides for prerequisites.
 
 ## Findings
 
@@ -49,7 +49,7 @@ ProofChecker is a Lean 4 project with different dependencies:
 
 ### Existing ProofChecker Documentation
 
-Current documentation in `Documentation/`:
+Current documentation in `docs/`:
 - `UserGuide/TUTORIAL.md` - Has basic installation section (39 lines)
 - `Development/CONTRIBUTING.md` - Has development setup section
 - `README.md` (root) - Has minimal "Quick Start" section
@@ -111,7 +111,7 @@ Content is largely platform-agnostic and can be adapted:
 ### Directory Structure Recommendation
 
 ```
-Documentation/Installation/
+docs/Installation/
 ├── README.md              # Index linking to all installation docs
 ├── CLAUDE_CODE.md         # Entry point for AI-assisted setup
 ├── BASIC_INSTALLATION.md  # Manual installation guide
@@ -135,7 +135,7 @@ CLAUDE_CODE.md should include instructions for:
 
 ## Recommendations
 
-1. **Create Documentation/Installation/ directory** - New subdirectory for installation-specific documentation
+1. **Create docs/Installation/ directory** - New subdirectory for installation-specific documentation
 
 2. **Adapt, don't copy verbatim** - ModelChecker's structure is excellent but content needs Lean 4 specifics
 
@@ -155,15 +155,15 @@ CLAUDE_CODE.md should include instructions for:
 - `/home/benjamin/Projects/ModelChecker/Docs/installation/GIT_GOING.md`
 - `/home/benjamin/Projects/ProofChecker/README.md`
 - `/home/benjamin/Projects/ProofChecker/lakefile.lean`
-- `/home/benjamin/Projects/ProofChecker/Documentation/UserGuide/TUTORIAL.md`
-- `/home/benjamin/Projects/ProofChecker/Documentation/Development/CONTRIBUTING.md`
+- `/home/benjamin/Projects/ProofChecker/docs/UserGuide/TUTORIAL.md`
+- `/home/benjamin/Projects/ProofChecker/docs/Development/CONTRIBUTING.md`
 - [elan installation](https://github.com/leanprover/elan)
 - [Lean 4 documentation](https://lean-lang.org/documentation/)
 - [lean4 VS Code extension](https://marketplace.visualstudio.com/items?itemName=leanprover.lean4)
 
 ## Next Steps
 
-1. Create `Documentation/Installation/` directory
+1. Create `docs/Installation/` directory
 2. Create `README.md` as index for installation section
 3. Create `CLAUDE_CODE.md` as entry point
 4. Create `BASIC_INSTALLATION.md` with Lean 4 specifics
@@ -171,4 +171,4 @@ CLAUDE_CODE.md should include instructions for:
 6. Create `GIT_GOING.md` with ProofChecker-specific fork/PR workflow
 7. Optionally create `TROUBLESHOOTING.md` for common issues
 8. Update root README.md to link to new installation docs
-9. Update `Documentation/README.md` to include installation section
+9. Update `docs/README.md` to include installation section

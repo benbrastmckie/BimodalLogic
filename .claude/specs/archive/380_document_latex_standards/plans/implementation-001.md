@@ -1,13 +1,13 @@
 # Implementation Plan: Task #380
 
-**Task**: Document LaTeX standards in ProofChecker/Documentation/
+**Task**: Document LaTeX standards in ProofChecker/docs/
 **Version**: 001
 **Created**: 2026-01-11
 **Language**: latex
 
 ## Overview
 
-Create a concise LaTeX standards document for contributors in `Documentation/Development/` and update cross-references. The new document will focus on contributor requirements and reference `LaTeX/README.md` for detailed usage documentation rather than duplicating content.
+Create a concise LaTeX standards document for contributors in `docs/Development/` and update cross-references. The new document will focus on contributor requirements and reference `LaTeX/README.md` for detailed usage documentation rather than duplicating content.
 
 ## Phases
 
@@ -22,7 +22,7 @@ Create a concise LaTeX standards document for contributors in `Documentation/Dev
 3. Include new theory checklist for contributors
 
 **Files to create**:
-- `Documentation/Development/LATEX_STANDARDS.md` - New standards document (~120 lines)
+- `docs/Development/LATEX_STANDARDS.md` - New standards document (~120 lines)
 
 **Content sections**:
 1. Overview and reference to `LaTeX/README.md`
@@ -54,18 +54,18 @@ Create a concise LaTeX standards document for contributors in `Documentation/Dev
 
 **Objectives**:
 1. Add LATEX_STANDARDS.md to Development/README.md
-2. Update Documentation/README.md Development section
+2. Update docs/README.md Development section
 
 **Files to modify**:
-- `Documentation/Development/README.md` - Add to "Practical Guides" table
-- `Documentation/README.md` - Add to Development subsection list
+- `docs/Development/README.md` - Add to "Practical Guides" table
+- `docs/README.md` - Add to Development subsection list
 
 **Steps**:
 1. Add row to Development/README.md "Practical Guides" table:
    ```
    | [LATEX_STANDARDS.md](LATEX_STANDARDS.md) | LaTeX documentation standards and conventions |
    ```
-2. Update Documentation/README.md Development section to include LATEX_STANDARDS.md
+2. Update docs/README.md Development section to include LATEX_STANDARDS.md
 3. Consider adding "For Documentation Authors" entry in reading order
 
 **Verification**:
@@ -111,7 +111,7 @@ Create a concise LaTeX standards document for contributors in `Documentation/Dev
 
 ## Success Criteria
 
-- [ ] `Documentation/Development/LATEX_STANDARDS.md` created
+- [ ] `docs/Development/LATEX_STANDARDS.md` created
 - [ ] Document is concise (< 150 lines) and actionable
 - [ ] All conventions from tasks 375, 378-379, 384 captured
 - [ ] Cross-references added to README files
@@ -121,5 +121,5 @@ Create a concise LaTeX standards document for contributors in `Documentation/Dev
 ## Rollback Plan
 
 If implementation fails:
-1. Delete `Documentation/Development/LATEX_STANDARDS.md`
+1. Delete `docs/Development/LATEX_STANDARDS.md`
 2. Revert changes to README files via `git checkout`

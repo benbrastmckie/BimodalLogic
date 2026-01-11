@@ -5,8 +5,8 @@ Project-wide research documents applicable to all theories in ProofChecker.
 **Audience**: Researchers, architects, contributors interested in design decisions
 
 > **Theory-Specific Research**: For research specific to each logic theory, see:
-> - [Logos/Documentation/Research/](../../Theories/Logos/Documentation/Research/) - Logos semantic architecture
-> - [Bimodal/Documentation/Research/](../../Theories/Bimodal/Documentation/Research/) - Proof search automation
+> - [Logos/docs/Research/](../../Theories/Logos/docs/Research/) - Logos semantic architecture
+> - [Bimodal/docs/Research/](../../Theories/Bimodal/docs/Research/) - Proof search automation
 
 ## Project-Wide Research
 
@@ -82,7 +82,7 @@ Research specific to individual theories has been moved to theory directories:
 
 ### Logos Research
 
-Located in [Logos/Documentation/Research/](../../Theories/Logos/Documentation/Research/):
+Located in [Logos/docs/Research/](../../Theories/Logos/docs/Research/):
 
 - **recursive-semantics.md** - Full Logos semantic specification
 - **layer-extensions.md** - Extension architecture overview
@@ -90,7 +90,7 @@ Located in [Logos/Documentation/Research/](../../Theories/Logos/Documentation/Re
 
 ### Bimodal Research
 
-Located in [Bimodal/Documentation/Research/](../../Theories/Bimodal/Documentation/Research/):
+Located in [Bimodal/docs/Research/](../../Theories/Bimodal/docs/Research/):
 
 - **modal-temporal-proof-search.md** - Proof search architecture
 - **proof-search-automation.md** - Automation strategies
@@ -113,9 +113,9 @@ Located in [Bimodal/Documentation/Research/](../../Theories/Bimodal/Documentatio
 
 ## Navigation
 
-- **Up**: [Documentation/](../README.md)
-- **Logos Research**: [Logos/Documentation/Research/](../../Theories/Logos/Documentation/Research/)
-- **Bimodal Research**: [Bimodal/Documentation/Research/](../../Theories/Bimodal/Documentation/Research/)
+- **Up**: [docs/](../README.md)
+- **Logos Research**: [Logos/docs/Research/](../../Theories/Logos/docs/Research/)
+- **Bimodal Research**: [Bimodal/docs/Research/](../../Theories/Bimodal/docs/Research/)
 
 ---
 

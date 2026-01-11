@@ -22,7 +22,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 3. Add audience-focused navigation (new users, developers, researchers)
 
 **Files to create**:
-- `Documentation/UserGuide/README.md` - New file (~80 lines)
+- `docs/UserGuide/README.md` - New file (~80 lines)
 
 **Steps**:
 1. Create header with back-link: `[Back to Documentation](../README.md)`
@@ -57,7 +57,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 3. Include audience guidance for contributors and developers
 
 **Files to create**:
-- `Documentation/Development/README.md` - New file (~100 lines)
+- `docs/Development/README.md` - New file (~100 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -91,7 +91,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 3. Include guidance for maintainers
 
 **Files to create**:
-- `Documentation/ProjectInfo/README.md` - New file (~60 lines)
+- `docs/ProjectInfo/README.md` - New file (~60 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -121,7 +121,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 2. Follow Template D (lightweight) pattern
 
 **Files to create**:
-- `Documentation/Reference/README.md` - New file (~50 lines)
+- `docs/Reference/README.md` - New file (~50 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -150,7 +150,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 3. Explain ADR purpose and format
 
 **Files to create**:
-- `Documentation/Architecture/README.md` - New file (~50 lines)
+- `docs/Architecture/README.md` - New file (~50 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -178,7 +178,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 3. Verify all cross-references
 
 **Files to modify**:
-- `Documentation/README.md` - Add README links to subdirectory sections
+- `docs/README.md` - Add README links to subdirectory sections
 
 **Steps**:
 1. Read current README.md content
@@ -205,7 +205,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 
 **Files to verify**:
 - All 5 new README.md files
-- Updated Documentation/README.md
+- Updated docs/README.md
 
 **Steps**:
 1. Verify each new README has:
@@ -246,4 +246,4 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 
 ## Rollback Plan
 
-If implementation fails, simply delete the new README.md files. No existing files are modified except Documentation/README.md, which can be reverted via git.
+If implementation fails, simply delete the new README.md files. No existing files are modified except docs/README.md, which can be reverted via git.

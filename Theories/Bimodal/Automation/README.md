@@ -78,10 +78,10 @@ lake env lean Bimodal/Automation/ProofSearch.lean
 For detailed API documentation, see:
 - Module overview: [Automation.lean](../Automation.lean) (parent module re-exports)
 - Generated docs: Run `lake build :docs`
-- Tactic development guide: [TACTIC_DEVELOPMENT.md](../../../Documentation/UserGuide/TACTIC_DEVELOPMENT.md)
+- Tactic development guide: [TACTIC_DEVELOPMENT.md](../../../docs/UserGuide/TACTIC_DEVELOPMENT.md)
 
 ## Related Documentation
 
-- [LEAN Style Guide](../../../Documentation/Development/LEAN_STYLE_GUIDE.md)
-- [Tactic Development](../../../Documentation/UserGuide/TACTIC_DEVELOPMENT.md)
-- [Implementation Status](../../../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md)
+- [LEAN Style Guide](../../../docs/Development/LEAN_STYLE_GUIDE.md)
+- [Tactic Development](../../../docs/UserGuide/TACTIC_DEVELOPMENT.md)
+- [Implementation Status](../../../docs/ProjectInfo/IMPLEMENTATION_STATUS.md)

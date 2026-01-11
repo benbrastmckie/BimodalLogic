@@ -44,8 +44,8 @@
 - `Archive/BimodalProofs.lean` - 216 lines, 0 errors
 
 ### Documentation
-- `Documentation/UserGuide/EXAMPLES.md` - Example patterns
-- `Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md` - Module status
+- `docs/UserGuide/EXAMPLES.md` - Example patterns
+- `docs/ProjectInfo/IMPLEMENTATION_STATUS.md` - Module status
 
 ---
 

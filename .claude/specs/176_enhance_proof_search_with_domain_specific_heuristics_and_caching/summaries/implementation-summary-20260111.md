@@ -54,7 +54,7 @@ Updated documentation across:
   - Heuristic tuning guidelines
   - Benchmark results table
 - `Bimodal/Automation.lean` imports and docstring
-- `Documentation/Reference/API_REFERENCE.md` with new sections
+- `docs/Reference/API_REFERENCE.md` with new sections
 
 ## Files Modified
 
@@ -62,7 +62,7 @@ Updated documentation across:
 - `Bimodal/Automation/ProofSearch.lean` - Best-first search and pattern integration
 - `Bimodal/Automation.lean` - Updated imports and docstring
 - `BimodalTest/Automation/ProofSearchBenchmark.lean` - Enhanced benchmarks
-- `Documentation/Reference/API_REFERENCE.md` - API documentation updates
+- `docs/Reference/API_REFERENCE.md` - API documentation updates
 - `.claude/specs/176.../plans/implementation-001.md` - Plan status updates
 
 ## Benchmark Results

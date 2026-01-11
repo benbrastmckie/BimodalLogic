@@ -2,11 +2,11 @@
 
 **Task**: Refactor Documentation structure with directory standards
 **Date**: 2026-01-11
-**Focus**: Analyze current Documentation/ structure and identify refactoring requirements
+**Focus**: Analyze current docs/ structure and identify refactoring requirements
 
 ## Summary
 
-The Documentation/ directory has significant organizational issues including broken links in
+The docs/ directory has significant organizational issues including broken links in
 NAVIGATION.md, redundant content between README.md and NAVIGATION.md, and missing files that are
 referenced but don't exist. The directory structure is reasonable but subdirectory READMEs need
 updating to comply with DIRECTORY_README_STANDARD.md.
@@ -15,7 +15,7 @@ updating to comply with DIRECTORY_README_STANDARD.md.
 
 ### 1. Current Directory Structure
 
-The Documentation/ directory contains 7 subdirectories with 41 markdown files total:
+The docs/ directory contains 7 subdirectories with 41 markdown files total:
 
 | Directory | Files | Purpose |
 |-----------|-------|---------|
@@ -29,7 +29,7 @@ The Documentation/ directory contains 7 subdirectories with 41 markdown files to
 
 ### 2. Broken Links in NAVIGATION.md
 
-NAVIGATION.md references 10 files that do not exist in Documentation/:
+NAVIGATION.md references 10 files that do not exist in docs/:
 
 | Missing File | Status |
 |--------------|--------|
@@ -44,8 +44,8 @@ NAVIGATION.md references 10 files that do not exist in Documentation/:
 | Research/LAYER_EXTENSIONS.md | Does NOT exist (Logos has one) |
 | ProjectInfo/TACTIC_REGISTRY.md | Does NOT exist (Bimodal has one) |
 
-These files were moved to theory-specific directories (Bimodal/Documentation/ or
-Logos/Documentation/) during tasks 360 and 374, but NAVIGATION.md was not updated.
+These files were moved to theory-specific directories (Bimodal/docs/ or
+Logos/docs/) during tasks 360 and 374, but NAVIGATION.md was not updated.
 
 ### 3. Redundancy Between README.md and NAVIGATION.md
 
@@ -82,10 +82,10 @@ Most subdirectory READMEs partially comply with DIRECTORY_README_STANDARD.md but
 
 ### 5. Content Distribution Analysis
 
-The task 374 refactoring moved theory-specific content to Bimodal/Documentation/ and
-Logos/Documentation/, which was correct. However, several cleanup issues remain:
+The task 374 refactoring moved theory-specific content to Bimodal/docs/ and
+Logos/docs/, which was correct. However, several cleanup issues remain:
 
-**Files that should remain in Documentation/ (project-wide)**:
+**Files that should remain in docs/ (project-wide)**:
 - All Development/ files (standards apply to all theories)
 - All Installation/ files (project-wide setup)
 - Architecture/ ADRs (cross-cutting decisions)
@@ -94,13 +94,13 @@ Logos/Documentation/, which was correct. However, several cleanup issues remain:
 
 **Files with unclear placement**:
 - Research/RESEARCH_SUMMARY.md - References MODAL_TEMPORAL_PROOF_SEARCH.md which is in
-  Bimodal/Documentation/Research/. Should be deleted or moved.
+  Bimodal/docs/Research/. Should be deleted or moved.
 
 ### 6. Theory-Specific Documentation Links
 
 README.md correctly references theory-specific documentation:
-- Bimodal/Documentation/ (active implementation)
-- Logos/Documentation/ (planned implementation)
+- Bimodal/docs/ (active implementation)
+- Logos/docs/ (planned implementation)
 
 But should remove links to non-existent files in project-wide directories and update cross-
 references to point to the correct theory-specific locations.
@@ -140,7 +140,7 @@ into other directories.
 ### 5. Proposed Final Structure
 
 ```
-Documentation/
+docs/
 ├── README.md              # Navigation hub (merged from NAVIGATION.md)
 ├── Architecture/          # ADRs (keep as-is)
 │   ├── README.md
@@ -169,8 +169,8 @@ Consider removing:
 - DIRECTORY_README_STANDARD.md - Templates D, E, F, G for directory READMEs
 - DOC_QUALITY_CHECKLIST.md - Quality verification procedures
 - Task 374 - Previous documentation refactoring that moved theory-specific content
-- Bimodal/Documentation/ - Active theory documentation
-- Logos/Documentation/ - Planned theory documentation
+- Bimodal/docs/ - Active theory documentation
+- Logos/docs/ - Planned theory documentation
 
 ## Next Steps
 

@@ -1008,7 +1008,7 @@ Logos/
 │   └── BimodalProofs.lean                # Combined modal-temporal examples
 ├── Counterexamples/                      # Invalidity demonstrations
 │   └── Counterexamples.lean              # Counterexamples library root
-├── Documentation/                        # User documentation
+├── docs/                        # User documentation
 │   ├── ARCHITECTURE.md                   # System design and TM logic specification
 │   ├── TUTORIAL.md                       # Getting started guide
 │   ├── EXAMPLES.md                       # Usage examples

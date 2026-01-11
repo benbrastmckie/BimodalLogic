@@ -334,7 +334,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 ### ProofChecker Documentation
 - [README.md](../../README.md) - Main project documentation
-- [Documentation/](../../Documentation/) - Project documentation
+- [docs/](../../docs/) - Project documentation
 
 ---
 

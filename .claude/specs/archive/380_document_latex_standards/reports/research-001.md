@@ -1,12 +1,12 @@
 # Research Report: Task #380
 
-**Task**: Document LaTeX standards in ProofChecker/Documentation/
+**Task**: Document LaTeX standards in ProofChecker/docs/
 **Date**: 2026-01-11
 **Focus**: Review implemented LaTeX infrastructure from tasks 375, 378-379, 384
 
 ## Summary
 
-The ProofChecker project has a well-established LaTeX infrastructure following tasks 375, 378-379, and 384. The current documentation in `LaTeX/README.md` is comprehensive for users building documents, but project-wide documentation standards for LaTeX are missing from `Documentation/Development/`. This task should create a concise LaTeX standards document for contributors.
+The ProofChecker project has a well-established LaTeX infrastructure following tasks 375, 378-379, and 384. The current documentation in `LaTeX/README.md` is comprehensive for users building documents, but project-wide documentation standards for LaTeX are missing from `docs/Development/`. This task should create a concise LaTeX standards document for contributors.
 
 ## Findings
 
@@ -105,12 +105,12 @@ Documentation exists in:
 - Task implementation summaries in `.claude/specs/`
 
 Documentation missing:
-- `Documentation/Development/` has no LaTeX-specific standards document
-- No cross-link from `Documentation/README.md` to LaTeX documentation
+- `docs/Development/` has no LaTeX-specific standards document
+- No cross-link from `docs/README.md` to LaTeX documentation
 
 ## Recommendations
 
-### 1. Create Documentation/Development/LATEX_STANDARDS.md
+### 1. Create docs/Development/LATEX_STANDARDS.md
 
 A concise (< 150 lines) standards document covering:
 - Directory structure requirements
@@ -119,7 +119,7 @@ A concise (< 150 lines) standards document covering:
 - Notation package organization
 - Adding a new theory checklist
 
-### 2. Update Documentation/README.md
+### 2. Update docs/README.md
 
 Add LaTeX standards to the Development/ section listing and link to the new document.
 
@@ -137,11 +137,11 @@ The existing `LaTeX/README.md` is well-written and should remain the primary use
 
 ## Next Steps
 
-1. Create `Documentation/Development/LATEX_STANDARDS.md` with:
+1. Create `docs/Development/LATEX_STANDARDS.md` with:
    - Overview referencing `LaTeX/README.md`
    - Required directory structure
    - Package naming conventions
    - Build requirements
    - New theory checklist
-2. Update `Documentation/README.md` to list LATEX_STANDARDS.md
-3. Update `Documentation/Development/README.md` if needed
+2. Update `docs/README.md` to list LATEX_STANDARDS.md
+3. Update `docs/Development/README.md` if needed

@@ -131,8 +131,8 @@ permissions:
 ```yaml
 permissions:
   allow:
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*", "**/*.lean"]
-    - write: [".opencode/specs/**/*", "Documentation/Research/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
+    - write: [".opencode/specs/**/*", "docs/Research/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd", "wget", "curl"]
@@ -265,7 +265,7 @@ git commit -m "todo: archive tasks"
 ```yaml
 permissions:
   allow:
-    - read: ["**/*.md", ".opencode/**/*", "Documentation/**/*"]
+    - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
     - write: [".opencode/specs/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq"]
   deny:

@@ -100,7 +100,7 @@ example (A B C : Formula) : ⊢ (A.imp B).imp ((B.imp C).imp (A.imp C)) :=
 1. **Learn proof patterns**: [PROOF_PATTERNS.md](PROOF_PATTERNS.md)
 2. **Reference axioms**: [AXIOM_REFERENCE.md](../Reference/AXIOM_REFERENCE.md)
 3. **See examples**: [Bimodal/Examples/](../../Examples/)
-4. **General tutorial**: [TUTORIAL.md](../../../Documentation/UserGuide/TUTORIAL.md)
+4. **General tutorial**: [TUTORIAL.md](../../../docs/UserGuide/TUTORIAL.md)
 
 ## Troubleshooting
 

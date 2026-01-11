@@ -1,7 +1,7 @@
 # Implementation Plan: Standardize Command Lifecycle Procedures
 
 **Project Number**: 211  
-**Type**: Documentation/Standardization  
+**Type**: docs/Standardization  
 **Priority**: High  
 **Complexity**: High  
 **Estimated Hours**: 18  

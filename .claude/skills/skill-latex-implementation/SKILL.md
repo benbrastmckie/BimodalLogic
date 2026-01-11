@@ -211,12 +211,12 @@ Check:
   "summary": "Implemented N document sections",
   "artifacts": [
     {
-      "path": "Documentation/output.tex",
+      "path": "docs/output.tex",
       "type": "implementation",
       "description": "LaTeX source"
     },
     {
-      "path": "Documentation/output.pdf",
+      "path": "docs/output.pdf",
       "type": "output",
       "description": "Compiled PDF"
     }
@@ -257,7 +257,7 @@ Check:
 
 ### Directory Structure
 ```
-Documentation/
+docs/
 ├── *.tex           # LaTeX source files
 ├── *.bib           # Bibliography files
 ├── figures/        # Images and diagrams

@@ -217,7 +217,7 @@ Delegate to status-sync-manager with payload:
     },
     {
       "type": "documentation",
-      "path": "Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md",
+      "path": "docs/ProjectInfo/IMPLEMENTATION_STATUS.md",
       "summary": "Updated implementation status"
     },
     // ... other registry artifacts

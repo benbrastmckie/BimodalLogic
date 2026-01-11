@@ -50,7 +50,7 @@ The "Modal 5 blocking dependency" is caused by `diamond_mono_imp` and `diamond_m
 3. Add note about `k_dist_diamond` as the valid alternative
 
 **Files to modify**:
-- `Documentation/ProjectInfo/SORRY_REGISTRY.md` - Update lines 107-127
+- `docs/ProjectInfo/SORRY_REGISTRY.md` - Update lines 107-127
 
 **Steps**:
 1. Read current SORRY_REGISTRY.md section for ModalS5.lean
@@ -113,5 +113,5 @@ The "Modal 5 blocking dependency" is caused by `diamond_mono_imp` and `diamond_m
 
 If removal causes unexpected issues:
 1. Restore ModalS5.lean from git: `git checkout HEAD -- Bimodal/Theorems/ModalS5.lean`
-2. Restore SORRY_REGISTRY: `git checkout HEAD -- Documentation/ProjectInfo/SORRY_REGISTRY.md`
+2. Restore SORRY_REGISTRY: `git checkout HEAD -- docs/ProjectInfo/SORRY_REGISTRY.md`
 3. Re-evaluate whether theorems need different treatment

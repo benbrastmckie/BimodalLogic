@@ -244,7 +244,7 @@ echo "Total: 5 sorry placeholders"
 3. Include regeneration instructions
 
 **Files to create**:
-- `Bimodal/Documentation/ProjectInfo/TEST_COVERAGE.md` (new)
+- `Bimodal/docs/ProjectInfo/TEST_COVERAGE.md` (new)
 
 **Files to modify**:
 - `BimodalTest/README.md` - Add link to TEST_COVERAGE.md
@@ -302,7 +302,7 @@ Could be completed with additional proof work:
 ## Related Documentation
 
 - [PERFORMANCE_TARGETS.md](PERFORMANCE_TARGETS.md) - Benchmark baselines
-- [TESTING_STANDARDS.md](../../../Documentation/Development/TESTING_STANDARDS.md) - Test requirements
+- [TESTING_STANDARDS.md](../../../docs/Development/TESTING_STANDARDS.md) - Test requirements
 - [BimodalTest README](../../../BimodalTest/README.md) - Test organization
 ```
 

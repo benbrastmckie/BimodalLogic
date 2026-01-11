@@ -283,7 +283,7 @@ The research (research-001.md) confirmed that the root cause is NOT broken speci
 **Objective**: Update documentation and perform manual testing to verify fix works.
 
 **Tasks**:
-1. Update Documentation/Development/MAINTENANCE.md:
+1. Update docs/Development/MAINTENANCE.md:
    - Document new validation behavior
    - Document automatic recovery mechanism
    - Document stage_log field
@@ -350,7 +350,7 @@ The research (research-001.md) confirmed that the root cause is NOT broken speci
    - `.opencode/scripts/test-status-updates.sh`
 
 3. **Documentation**:
-   - `Documentation/Development/MAINTENANCE.md` (updated)
+   - `docs/Development/MAINTENANCE.md` (updated)
    - `.opencode/docs/debugging-status-updates.md` (new)
 
 4. **Implementation Summary**:

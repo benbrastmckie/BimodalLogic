@@ -64,10 +64,10 @@ Refactor the /review command and reviewer subagent to follow modern .opencode st
     - Parse scope from $ARGUMENTS: lean, docs, all (default: all)
     - Validate scope is valid enum
     - Load current registries:
-      * Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
-      * Documentation/ProjectInfo/SORRY_REGISTRY.md
-      * Documentation/ProjectInfo/TACTIC_REGISTRY.md
-      * Documentation/ProjectInfo/FEATURE_REGISTRY.md
+      * docs/ProjectInfo/IMPLEMENTATION_STATUS.md
+      * docs/ProjectInfo/SORRY_REGISTRY.md
+      * docs/ProjectInfo/TACTIC_REGISTRY.md
+      * docs/ProjectInfo/FEATURE_REGISTRY.md
     - Read next_project_number from state.json
     - Generate project_path: .opencode/specs/{next_project_number}_codebase_review
     - If zero registries loaded: Return error "Registry files not found"

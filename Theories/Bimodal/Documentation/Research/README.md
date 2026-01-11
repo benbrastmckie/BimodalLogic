@@ -2,7 +2,7 @@
 
 Research and design documents for proof search automation and related features in Bimodal TM logic.
 
-> **Parent**: [Bimodal/Documentation/](../README.md) | **Project Research**: [Documentation/Research/](../../../Documentation/Research/)
+> **Parent**: [Bimodal/docs/](../README.md) | **Project Research**: [docs/Research/](../../../docs/Research/)
 
 ## Documents
 
@@ -61,11 +61,11 @@ invalidation strategies and memory management.
 
 ## Related Documentation
 
-- [theory-comparison.md](../../../Documentation/Research/theory-comparison.md) - Comparison with Logos
+- [theory-comparison.md](../../../docs/Research/theory-comparison.md) - Comparison with Logos
 - [ARCHITECTURE.md](../UserGuide/ARCHITECTURE.md) - TM logic specification
 - [TACTIC_REGISTRY.md](../ProjectInfo/TACTIC_REGISTRY.md) - Tactic implementation status
 
 ## Navigation
 
-- **Up**: [Bimodal/Documentation/](../README.md)
-- **Project Research**: [Documentation/Research/](../../../Documentation/Research/)
+- **Up**: [Bimodal/docs/](../README.md)
+- **Project Research**: [docs/Research/](../../../docs/Research/)

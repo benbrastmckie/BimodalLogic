@@ -29,7 +29,7 @@
   - TaskModel generator implemented with proxy pattern for dependent types
   - All 14 axiom schemas tested for validity (500 test cases for critical properties)
   - Comprehensive derivation, semantic, and formula transformation property tests
-  - Property Testing Guide created at `Documentation/Development/PROPERTY_TESTING_GUIDE.md`
+  - Property Testing Guide created at `docs/Development/PROPERTY_TESTING_GUIDE.md`
   - Summary: `.opencode/specs/174_property_based_testing/summaries/implementation-summary-20251225.md`
 
 ## Previous Changes (2025-12-23)
@@ -256,7 +256,7 @@ instance : SampleableExt (TaskModel (TaskFrame.nat_frame (T := Int))) where
 - Shrinking enabled for minimal counterexamples
 
 **Documentation**:
-- Property Testing Guide: `Documentation/Development/PROPERTY_TESTING_GUIDE.md`
+- Property Testing Guide: `docs/Development/PROPERTY_TESTING_GUIDE.md`
 - Generator patterns and examples: `LogosTest/Core/Property/README.md`
 - Research report: `.opencode/specs/174_property_based_testing/reports/research-001.md`
 

@@ -6,7 +6,7 @@
 
 ## Changes Made
 - Added re-export wrappers in `Logos/Examples/` for modal, temporal, bimodal, and structure examples, plus an aggregator `Logos/Examples.lean`.
-- Updated `Documentation/UserGuide/EXAMPLES.md` to highlight `Logos/Examples` as canonical and refreshed solution links.
+- Updated `docs/UserGuide/EXAMPLES.md` to highlight `Logos/Examples` as canonical and refreshed solution links.
 - Added an active-path notice to `Archive/README.md` to guide future example placement and clarify legacy status.
 
 ## Verification
@@ -16,5 +16,5 @@
 ## Artifact Links
 - Active examples aggregator: `Logos/Examples.lean`
 - Examples wrappers: `Logos/Examples/*.lean`
-- Documentation update: `Documentation/UserGuide/EXAMPLES.md`
+- Documentation update: `docs/UserGuide/EXAMPLES.md`
 - Archive notice update: `Archive/README.md`

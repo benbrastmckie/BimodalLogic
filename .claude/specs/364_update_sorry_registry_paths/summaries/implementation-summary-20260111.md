@@ -9,7 +9,7 @@ Updated SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Lo
 
 ## Files Modified
 
-- `Documentation/ProjectInfo/SORRY_REGISTRY.md` - Updated all paths and references:
+- `docs/ProjectInfo/SORRY_REGISTRY.md` - Updated all paths and references:
   - Changed `Logos/Core/**/*.lean` to `Bimodal/**/*.lean` in all verification commands
   - Changed `Logos` codebase reference to `Bimodal` codebase
   - Updated section headers from `Logos/Core/...` to `Bimodal/...`

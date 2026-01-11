@@ -500,11 +500,11 @@ lifecycle:
     ```json
     {
       "status": "completed",
-      "summary": "Implemented task 197: Add README to Documentation/Research directory. Created README.md with directory overview and file descriptions.",
+      "summary": "Implemented task 197: Add README to docs/Research directory. Created README.md with directory overview and file descriptions.",
       "artifacts": [
         {
           "type": "implementation",
-          "path": "Documentation/Research/README.md",
+          "path": "docs/Research/README.md",
           "summary": "Created README with directory overview"
         },
         {
@@ -525,7 +525,7 @@ lifecycle:
       "errors": [],
       "next_steps": "Review README content and verify all files documented",
       "files_modified": [],
-      "files_created": ["Documentation/Research/README.md"]
+      "files_created": ["docs/Research/README.md"]
     }
     ```
   </example>

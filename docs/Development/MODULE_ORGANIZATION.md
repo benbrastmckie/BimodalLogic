@@ -49,7 +49,7 @@ Logos/
 │   ├── Integration.lean
 │   └── LogosTest.lean
 ├── scripts/                    # Lint and utility scripts (LintAll.lean, LintStyle.lean, RunEnvLinters.lean)
-└── Documentation/              # Documentation (UserGuide/, Development/, ProjectInfo/, Reference/, Research/)
+└── docs/              # Documentation (UserGuide/, Development/, ProjectInfo/, Reference/, Research/)
 ```
 
 ## 2. Namespace Conventions

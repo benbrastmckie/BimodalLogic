@@ -2,76 +2,76 @@
 
 **Task**: Refactor project Documentation to theory-specific directories
 **Date**: 2026-01-11
-**Focus**: Categorize Documentation/ files for sorting into Logos/, Bimodal/, or project-wide locations
+**Focus**: Categorize docs/ files for sorting into Logos/, Bimodal/, or project-wide locations
 
 ## Summary
 
-The ProofChecker/Documentation/ directory contains a mix of theory-specific and project-wide
-documentation. With the creation of Bimodal/Documentation/ and Logos/Documentation/ in tasks
-360 and 372, project-level Documentation/ should become theory-agnostic. This research
+The ProofChecker/docs/ directory contains a mix of theory-specific and project-wide
+documentation. With the creation of Bimodal/docs/ and Logos/docs/ in tasks
+360 and 372, project-level docs/ should become theory-agnostic. This research
 categorizes all files for appropriate redistribution.
 
 ## Current State Analysis
 
 ### Existing Theory-Specific Documentation
 
-**Logos/Documentation/** (11 files):
+**Logos/docs/** (11 files):
 - UserGuide/: CURRENT_STATUS.md, QUICKSTART.md (redirects to Bimodal)
 - Reference/: AXIOM_REFERENCE.md (redirects to Bimodal), EXTENSION_STUBS.md
 - ProjectInfo/: IMPLEMENTATION_STATUS.md, KNOWN_LIMITATIONS.md, ROADMAP.md
 
-**Bimodal/Documentation/** (10 files):
+**Bimodal/docs/** (10 files):
 - UserGuide/: PROOF_PATTERNS.md, QUICKSTART.md
 - Reference/: AXIOM_REFERENCE.md, TACTIC_REFERENCE.md
 - ProjectInfo/: IMPLEMENTATION_STATUS.md, KNOWN_LIMITATIONS.md
 
-### ProofChecker/Documentation/ Structure (49 files)
+### ProofChecker/docs/ Structure (49 files)
 
-The Documentation/ directory contains 8 subdirectories covering Installation, UserGuide,
+The docs/ directory contains 8 subdirectories covering Installation, UserGuide,
 Research, ProjectInfo, Development, Reference, Architecture, and AI System documentation.
 
 ## File Categorization
 
-### Category 1: LOGOS-SPECIFIC (Move to Logos/Documentation/)
+### Category 1: LOGOS-SPECIFIC (Move to Logos/docs/)
 
 These files are specifically about the Logos theory or the planned Logos extensions:
 
 | File | Reason | Target Location |
 |------|--------|-----------------|
-| Research/RECURSIVE_SEMANTICS.md | Describes Logos semantic extensions | Logos/Documentation/Research/ |
-| Research/LAYER_EXTENSIONS.md | Logos extension architecture | Logos/Documentation/Research/ |
-| Research/CONCEPTUAL_ENGINEERING.md | Logos philosophical foundations | Logos/Documentation/Research/ |
-| UserGuide/METHODOLOGY.md | Logos layer architecture methodology | Logos/Documentation/UserGuide/ |
-| Reference/GLOSSARY.md | Logos operator glossary | Logos/Documentation/Reference/ |
+| Research/RECURSIVE_SEMANTICS.md | Describes Logos semantic extensions | Logos/docs/Research/ |
+| Research/LAYER_EXTENSIONS.md | Logos extension architecture | Logos/docs/Research/ |
+| Research/CONCEPTUAL_ENGINEERING.md | Logos philosophical foundations | Logos/docs/Research/ |
+| UserGuide/METHODOLOGY.md | Logos layer architecture methodology | Logos/docs/UserGuide/ |
+| Reference/GLOSSARY.md | Logos operator glossary | Logos/docs/Reference/ |
 
 **Rationale**: These files describe the planned Logos hyperintensional logic, its layer
 architecture, and conceptual foundations. They reference Logos-specific constructs
 (states, hyperintensional semantics, layer extensions).
 
-### Category 2: BIMODAL-SPECIFIC (Move to Bimodal/Documentation/)
+### Category 2: BIMODAL-SPECIFIC (Move to Bimodal/docs/)
 
 These files are specifically about Bimodal TM logic or its proof automation:
 
 | File | Reason | Target Location |
 |------|--------|-----------------|
-| Research/MODAL_TEMPORAL_PROOF_SEARCH.md | TM proof search automation | Bimodal/Documentation/Research/ |
-| Research/temporal-logic-automation-research.md | Bimodal temporal tactics | Bimodal/Documentation/Research/ |
-| Research/PROOF_SEARCH_AUTOMATION.md | Bimodal proof search | Bimodal/Documentation/Research/ |
-| Research/leansearch-best-first-search.md | Bimodal search algorithms | Bimodal/Documentation/Research/ |
-| Research/leansearch-priority-queue.md | Bimodal search structures | Bimodal/Documentation/Research/ |
-| Research/leansearch-proof-caching-memoization.md | Bimodal caching | Bimodal/Documentation/Research/ |
-| Research/LEANSEARCH_API_SPECIFICATION.md | Lean search API | Bimodal/Documentation/Research/ |
-| UserGuide/ARCHITECTURE.md | TM logic specification | Bimodal/Documentation/UserGuide/ |
-| UserGuide/TUTORIAL.md | TM logic tutorial | Bimodal/Documentation/UserGuide/ |
-| UserGuide/EXAMPLES.md | TM logic examples | Bimodal/Documentation/UserGuide/ |
-| UserGuide/TACTIC_DEVELOPMENT.md | Bimodal tactic development | Bimodal/Documentation/UserGuide/ |
-| Reference/OPERATORS.md | TM operators reference | Bimodal/Documentation/Reference/ |
-| ProjectInfo/TACTIC_REGISTRY.md | Bimodal tactic registry | Bimodal/Documentation/ProjectInfo/ |
+| Research/MODAL_TEMPORAL_PROOF_SEARCH.md | TM proof search automation | Bimodal/docs/Research/ |
+| Research/temporal-logic-automation-research.md | Bimodal temporal tactics | Bimodal/docs/Research/ |
+| Research/PROOF_SEARCH_AUTOMATION.md | Bimodal proof search | Bimodal/docs/Research/ |
+| Research/leansearch-best-first-search.md | Bimodal search algorithms | Bimodal/docs/Research/ |
+| Research/leansearch-priority-queue.md | Bimodal search structures | Bimodal/docs/Research/ |
+| Research/leansearch-proof-caching-memoization.md | Bimodal caching | Bimodal/docs/Research/ |
+| Research/LEANSEARCH_API_SPECIFICATION.md | Lean search API | Bimodal/docs/Research/ |
+| UserGuide/ARCHITECTURE.md | TM logic specification | Bimodal/docs/UserGuide/ |
+| UserGuide/TUTORIAL.md | TM logic tutorial | Bimodal/docs/UserGuide/ |
+| UserGuide/EXAMPLES.md | TM logic examples | Bimodal/docs/UserGuide/ |
+| UserGuide/TACTIC_DEVELOPMENT.md | Bimodal tactic development | Bimodal/docs/UserGuide/ |
+| Reference/OPERATORS.md | TM operators reference | Bimodal/docs/Reference/ |
+| ProjectInfo/TACTIC_REGISTRY.md | Bimodal tactic registry | Bimodal/docs/ProjectInfo/ |
 
 **Rationale**: These files describe the implemented Bimodal TM logic, its proof system,
 automation tactics, and operator semantics. They are specific to the working implementation.
 
-### Category 3: SHARED/PROJECT-WIDE (Keep in Documentation/)
+### Category 3: SHARED/PROJECT-WIDE (Keep in docs/)
 
 These files are truly project-agnostic and apply to all theories:
 
@@ -117,11 +117,11 @@ Files that may be redundant with theory-specific versions:
 
 ### Approach 1: Move with Links (Recommended)
 
-Move theory-specific files to their target locations and add cross-links in Documentation/:
+Move theory-specific files to their target locations and add cross-links in docs/:
 
-1. **Create Research/ directories** in Logos/Documentation/ and Bimodal/Documentation/
+1. **Create Research/ directories** in Logos/docs/ and Bimodal/docs/
 2. **Move files** to appropriate theory directories
-3. **Update Documentation/Research/README.md** to link to theory-specific research
+3. **Update docs/Research/README.md** to link to theory-specific research
 4. **Update all cross-references** in moved files
 
 ### Approach 2: Copy with Deprecation Notices
@@ -131,7 +131,7 @@ any external links but creates maintenance overhead.
 
 ### Approach 3: Symlinks (Not Recommended)
 
-Create symlinks from Documentation/ to theory directories. Complex to maintain and
+Create symlinks from docs/ to theory directories. Complex to maintain and
 may not work across all platforms.
 
 ## File Movement Plan
@@ -139,41 +139,41 @@ may not work across all platforms.
 ### Phase 1: Create Target Directories
 
 ```
-mkdir -p Logos/Documentation/Research/
-mkdir -p Bimodal/Documentation/Research/
+mkdir -p Logos/docs/Research/
+mkdir -p Bimodal/docs/Research/
 ```
 
 ### Phase 2: Move Logos-Specific Files
 
 ```
-mv Documentation/Research/RECURSIVE_SEMANTICS.md Logos/Documentation/Research/
-mv Documentation/Research/LAYER_EXTENSIONS.md Logos/Documentation/Research/
-mv Documentation/Research/CONCEPTUAL_ENGINEERING.md Logos/Documentation/Research/
-mv Documentation/UserGuide/METHODOLOGY.md Logos/Documentation/UserGuide/
-mv Documentation/Reference/GLOSSARY.md Logos/Documentation/Reference/
+mv docs/Research/RECURSIVE_SEMANTICS.md Logos/docs/Research/
+mv docs/Research/LAYER_EXTENSIONS.md Logos/docs/Research/
+mv docs/Research/CONCEPTUAL_ENGINEERING.md Logos/docs/Research/
+mv docs/UserGuide/METHODOLOGY.md Logos/docs/UserGuide/
+mv docs/Reference/GLOSSARY.md Logos/docs/Reference/
 ```
 
 ### Phase 3: Move Bimodal-Specific Files
 
 ```
-mv Documentation/Research/MODAL_TEMPORAL_PROOF_SEARCH.md Bimodal/Documentation/Research/
-mv Documentation/Research/temporal-logic-automation-research.md Bimodal/Documentation/Research/
-mv Documentation/Research/PROOF_SEARCH_AUTOMATION.md Bimodal/Documentation/Research/
-mv Documentation/Research/leansearch-*.md Bimodal/Documentation/Research/
-mv Documentation/Research/LEANSEARCH_API_SPECIFICATION.md Bimodal/Documentation/Research/
-mv Documentation/UserGuide/ARCHITECTURE.md Bimodal/Documentation/UserGuide/
-mv Documentation/UserGuide/TUTORIAL.md Bimodal/Documentation/UserGuide/
-mv Documentation/UserGuide/EXAMPLES.md Bimodal/Documentation/UserGuide/
-mv Documentation/UserGuide/TACTIC_DEVELOPMENT.md Bimodal/Documentation/UserGuide/
-mv Documentation/Reference/OPERATORS.md Bimodal/Documentation/Reference/
-mv Documentation/ProjectInfo/TACTIC_REGISTRY.md Bimodal/Documentation/ProjectInfo/
+mv docs/Research/MODAL_TEMPORAL_PROOF_SEARCH.md Bimodal/docs/Research/
+mv docs/Research/temporal-logic-automation-research.md Bimodal/docs/Research/
+mv docs/Research/PROOF_SEARCH_AUTOMATION.md Bimodal/docs/Research/
+mv docs/Research/leansearch-*.md Bimodal/docs/Research/
+mv docs/Research/LEANSEARCH_API_SPECIFICATION.md Bimodal/docs/Research/
+mv docs/UserGuide/ARCHITECTURE.md Bimodal/docs/UserGuide/
+mv docs/UserGuide/TUTORIAL.md Bimodal/docs/UserGuide/
+mv docs/UserGuide/EXAMPLES.md Bimodal/docs/UserGuide/
+mv docs/UserGuide/TACTIC_DEVELOPMENT.md Bimodal/docs/UserGuide/
+mv docs/Reference/OPERATORS.md Bimodal/docs/Reference/
+mv docs/ProjectInfo/TACTIC_REGISTRY.md Bimodal/docs/ProjectInfo/
 ```
 
 ### Phase 4: Update READMEs and Cross-References
 
 Update all README.md files to point to new locations. Update internal links in moved files.
 
-### Phase 5: Update Documentation/README.md
+### Phase 5: Update docs/README.md
 
 Simplify to focus on project-wide documentation only, with clear pointers to
 theory-specific documentation.
@@ -196,8 +196,8 @@ theory-specific documentation.
 
 ## References
 
-- Task 360: Created Bimodal/Documentation/
-- Task 372: Created Logos/Documentation/
-- Documentation/README.md: Current structure
-- Logos/Documentation/README.md: Logos structure
-- Bimodal/Documentation/README.md: Bimodal structure
+- Task 360: Created Bimodal/docs/
+- Task 372: Created Logos/docs/
+- docs/README.md: Current structure
+- Logos/docs/README.md: Logos structure
+- Bimodal/docs/README.md: Bimodal structure

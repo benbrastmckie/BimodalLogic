@@ -1,6 +1,6 @@
 # Research Report: LaTeX Documentation Structure for Logos Layers
 
-**Task**: 334 - Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ with a cleaned up structure that mirrors the Logos layers
+**Task**: 334 - Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/docs/LaTeX/ with a cleaned up structure that mirrors the Logos layers
 
 **Started**: 2026-01-08T19:30:00Z
 
@@ -16,8 +16,8 @@
 - Source LaTeX: /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/LogicNotes.tex (1452 lines)
 - Source assets: /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/assets/ (5 style files)
 - Logos codebase: /home/benjamin/Projects/ProofChecker/Logos/
-- Architecture documentation: Documentation/UserGuide/ARCHITECTURE.md
-- Implementation status: Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+- Architecture documentation: docs/UserGuide/ARCHITECTURE.md
+- Implementation status: docs/ProjectInfo/IMPLEMENTATION_STATUS.md
 
 **Artifacts**:
 - This research report: .opencode/specs/334_latex_documentation_structure/reports/research-001.md
@@ -137,7 +137,7 @@ The source document follows a progressive logic curriculum structure:
 
 ### Finding 2: Logos Layer Architecture
 
-**Source**: Logos/README.md, Documentation/UserGuide/ARCHITECTURE.md
+**Source**: Logos/README.md, docs/UserGuide/ARCHITECTURE.md
 
 Logos implements a **5-layer architecture**:
 
@@ -304,11 +304,11 @@ Logos implements a **5-layer architecture**:
 
 ### Finding 5: Target Documentation Structure
 
-**Target Directory**: /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/
+**Target Directory**: /home/benjamin/Projects/ProofChecker/docs/LaTeX/
 
 **Proposed Structure**:
 ```
-Documentation/LaTeX/
+docs/LaTeX/
 ├── LogosReference.tex              # Main document
 ├── subfiles/
 │   ├── 00-Introduction.tex         # Overview, motivation, perpetuity intuitions
@@ -581,7 +581,7 @@ These principles cannot be captured by modal logic alone...
   % How to use this reference document
   ```
 - **Length**: 2-3 pages
-- **Lean Cross-References**: Logos/README.md, Documentation/UserGuide/ARCHITECTURE.md
+- **Lean Cross-References**: Logos/README.md, docs/UserGuide/ARCHITECTURE.md
 
 **01-Syntax.tex**:
 - **Purpose**: Define the language and formulas of TM logic
@@ -1045,7 +1045,7 @@ The bimodal language $\BL$ extends temporal logic $\TL$ with one modal operator:
 **Recommendation**: Implement documentation generation in 4 phases.
 
 **Phase 1: Setup and Infrastructure** (4-6 hours):
-1. Create target directory structure: Documentation/LaTeX/
+1. Create target directory structure: docs/LaTeX/
 2. Copy source assets: formatting.sty, notation.sty, bib_style.bst, glossary.tex
 3. Create logos-notation.sty with Logos-specific macros
 4. Create main document LogosReference.tex with subfile structure
@@ -1145,7 +1145,7 @@ The bimodal language $\BL$ extends temporal logic $\TL$ with one modal operator:
 # Extract syntax content from source LaTeX
 
 SOURCE="/home/benjamin/Projects/Philosophy/Teaching/LogicNotes/LogicNotes.tex"
-TARGET="Documentation/LaTeX/subfiles/01-Syntax.tex"
+TARGET="docs/LaTeX/subfiles/01-Syntax.tex"
 
 # Extract bimodal syntax section (lines 1124-1140)
 sed -n '1124,1140p' "$SOURCE" > "$TARGET.tmp"
@@ -1324,7 +1324,7 @@ rm "$TARGET.tmp"
 #!/bin/bash
 # Validate LaTeX syntax
 
-for file in Documentation/LaTeX/subfiles/*.tex; do
+for file in docs/LaTeX/subfiles/*.tex; do
   echo "Validating $file..."
   pdflatex -interaction=nonstopmode "$file" > /dev/null 2>&1
   if [ $? -ne 0 ]; then
@@ -1409,7 +1409,7 @@ echo "All subfiles validated successfully"
 
 LEAN_ROOT="/home/benjamin/Projects/ProofChecker"
 
-grep -r "\\leansrc{" Documentation/LaTeX/subfiles/*.tex | while read -r line; do
+grep -r "\\leansrc{" docs/LaTeX/subfiles/*.tex | while read -r line; do
   # Extract module and definition
   module=$(echo "$line" | sed -n 's/.*\\leansrc{\([^}]*\)}.*/\1/p' | cut -d'.' -f1-4)
   file="${module//./\/}.lean"
@@ -1442,12 +1442,12 @@ echo "All Lean cross-references verified"
    - Status: Layer 0 (Core) production-ready, Layers 1-3 planned
 
 3. **Architecture Documentation**:
-   - Path: Documentation/UserGuide/ARCHITECTURE.md
+   - Path: docs/UserGuide/ARCHITECTURE.md
    - Content: TM logic specification, layer architecture, DSL syntax
    - Lines: 150+ (excerpt read)
 
 4. **Implementation Status**:
-   - Path: Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
+   - Path: docs/ProjectInfo/IMPLEMENTATION_STATUS.md
    - Content: Module-by-module status, sorry counts, test coverage
    - Status: Layer 0 MVP complete, all 6 perpetuity principles proven
 

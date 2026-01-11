@@ -55,7 +55,7 @@ This module contains 5 exercises marked with `-- EXERCISE:` comments:
 
 * [ModalProofs.lean](ModalProofs.lean) - Basic modal axiom examples
 * [Perpetuity.lean](../Logos/Core/Theorems/Perpetuity.lean) - Helper lemmas (imp_trans, etc.)
-* [ARCHITECTURE.md](../Documentation/UserGuide/ARCHITECTURE.md) - TM logic specification
+* [ARCHITECTURE.md](../docs/UserGuide/ARCHITECTURE.md) - TM logic specification
 -/
 
 namespace Bimodal.Examples.ModalProofStrategies

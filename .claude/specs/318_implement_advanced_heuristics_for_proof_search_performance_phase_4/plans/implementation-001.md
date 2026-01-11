@@ -290,7 +290,7 @@ structure TunedHeuristicWeights where
    - Add examples demonstrating heuristic usage
 
 4. **Update project documentation** (30 minutes)
-   - File: `Documentation/Development/PROOF_SEARCH_AUTOMATION.md`
+   - File: `docs/Development/PROOF_SEARCH_AUTOMATION.md`
    - Document Phase 4 completion
    - Document heuristic design rationale
    - Document tuning process and results
@@ -307,7 +307,7 @@ structure TunedHeuristicWeights where
 **Files Modified**:
 - `LogosTest/Core/Automation/ProofSearchTest.lean` (new tests, ~80 lines)
 - `Logos/Core/Automation/ProofSearch.lean` (documentation updates)
-- `Documentation/Development/PROOF_SEARCH_AUTOMATION.md` (updates)
+- `docs/Development/PROOF_SEARCH_AUTOMATION.md` (updates)
 
 **Success Metrics**:
 - Integration tests: 4+ tests
@@ -519,9 +519,9 @@ structure TunedHeuristicWeights where
 - `LogosTest/Core/Syntax/FormulaTest.lean` - Formula metric tests
 
 **Documentation Files**:
-- `Documentation/Development/PROOF_SEARCH_AUTOMATION.md` - Proof search documentation
-- `Documentation/Development/LEAN_STYLE_GUIDE.md` - Code style guide
-- `Documentation/Development/TESTING_STANDARDS.md` - Testing standards
+- `docs/Development/PROOF_SEARCH_AUTOMATION.md` - Proof search documentation
+- `docs/Development/LEAN_STYLE_GUIDE.md` - Code style guide
+- `docs/Development/TESTING_STANDARDS.md` - Testing standards
 
 ---
 

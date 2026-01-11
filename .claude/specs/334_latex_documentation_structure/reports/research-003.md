@@ -7,8 +7,8 @@
 **Focus**: Systematic mapping of RECURSIVE_SEMANTICS.md content to LaTeX documentation structure with Lean 4 refactoring considerations
 
 **Sources/Inputs**:
-- Documentation/Research/RECURSIVE_SEMANTICS.md (primary - 591 lines)
-- Documentation/Research/LAYER_EXTENSIONS.md (secondary)
+- docs/Research/RECURSIVE_SEMANTICS.md (primary - 591 lines)
+- docs/Research/LAYER_EXTENSIONS.md (secondary)
 - .claude/specs/334_latex_documentation_structure/reports/research-001.md (prior research)
 - .claude/specs/334_latex_documentation_structure/reports/research-002.md (prior research)
 

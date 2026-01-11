@@ -157,7 +157,7 @@ end BimodalTest.[Module]Test
 
 ### Coverage Requirements
 
-See [TESTING_STANDARDS.md](../Documentation/Development/TESTING_STANDARDS.md) for detailed coverage targets:
+See [TESTING_STANDARDS.md](../docs/Development/TESTING_STANDARDS.md) for detailed coverage targets:
 - **Overall**: >=85% code coverage
 - **Metalogic**: >=90% coverage (soundness/completeness critical)
 - **Automation**: >=80% coverage (tactics and proof search)
@@ -215,20 +215,20 @@ lake build BimodalTest.Metalogic
 lake build BimodalTest.Theorems
 ```
 
-For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md).
+For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../docs/ProjectInfo/IMPLEMENTATION_STATUS.md).
 
 ## Related Documentation
 
-- [Test Coverage Report](../Bimodal/Documentation/ProjectInfo/TEST_COVERAGE.md) - Definition coverage metrics
-- [Testing Standards](../Documentation/Development/TESTING_STANDARDS.md) - Detailed test requirements
-- [LEAN Style Guide](../Documentation/Development/LEAN_STYLE_GUIDE.md) - Code conventions
-- [Implementation Status](../Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module status
+- [Test Coverage Report](../Bimodal/docs/ProjectInfo/TEST_COVERAGE.md) - Definition coverage metrics
+- [Testing Standards](../docs/Development/TESTING_STANDARDS.md) - Detailed test requirements
+- [LEAN Style Guide](../docs/Development/LEAN_STYLE_GUIDE.md) - Code conventions
+- [Implementation Status](../docs/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module status
 - [Property Testing Guide](Property/README.md) - Property-based testing patterns
 - [Integration Testing Guide](Integration/README.md) - Integration test patterns
-- [Performance Targets](../Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md) - Benchmark baselines
+- [Performance Targets](../Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md) - Benchmark baselines
 
 ## Navigation
 
 - **Up**: [Project Root](../)
 - **Source Code**: [Bimodal/](../Bimodal/)
-- **Documentation**: [Documentation/](../Documentation/)
+- **Documentation**: [docs/](../docs/)

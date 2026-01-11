@@ -724,7 +724,7 @@ def create_directories(divide_flag: bool, artifact_type: str):
 **Files**:
 - `.opencode/context/core/system/artifact-management.md`
 - `.opencode/context/core/standards/status-markers.md`
-- `Documentation/NAVIGATION.md`
+- `docs/NAVIGATION.md`
 
 ### Phase 5: Testing and Validation
 

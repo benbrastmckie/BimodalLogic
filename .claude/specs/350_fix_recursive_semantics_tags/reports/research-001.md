@@ -151,9 +151,9 @@ The Constitutive Foundation evaluates identity sentences only. Non-identity sent
 
 - `/home/benjamin/Projects/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex` - Bilattice structure (lines 749-778), identity sentences (line 473)
 - `/home/benjamin/Projects/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex` - World-history equivalence (lines 1822-1842), constraint definitions (lines 1753-1766)
-- `Documentation/Research/LAYER_EXTENSIONS.md` - Current layer architecture
-- `Documentation/UserGuide/METHODOLOGY.md` - Current methodology documentation
-- `Documentation/Reference/GLOSSARY.md` - Current glossary
+- `docs/Research/LAYER_EXTENSIONS.md` - Current layer architecture
+- `docs/UserGuide/METHODOLOGY.md` - Current methodology documentation
+- `docs/Reference/GLOSSARY.md` - Current glossary
 
 ## Next Steps
 

@@ -40,7 +40,7 @@ Created comprehensive new section (70+ lines) documenting:
 
 ## Files Modified
 
-- `Documentation/Development/MAINTENANCE.md` (458 → 571 lines, +113 lines)
+- `docs/Development/MAINTENANCE.md` (458 → 571 lines, +113 lines)
 
 ## Validation
 

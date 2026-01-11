@@ -245,8 +245,8 @@ Options:
 
 ## References
 
-- Logos/Documentation/Research/RECURSIVE_SEMANTICS.md - Full semantic specification
-- Logos/Documentation/Research/LAYER_EXTENSIONS.md - Extension architecture
+- Logos/docs/Research/RECURSIVE_SEMANTICS.md - Full semantic specification
+- Logos/docs/Research/LAYER_EXTENSIONS.md - Extension architecture
 - Bimodal/Semantics/TaskFrame.lean - Current task frame implementation
 - Bimodal/Semantics/Truth.lean - Current truth evaluation
 - Mathlib.Order.CompleteLattice.Defs - Complete lattice structures

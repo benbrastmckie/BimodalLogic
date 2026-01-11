@@ -1,6 +1,6 @@
 # Implementation Plan: Task #372
 
-**Task**: Create Logos/Documentation/ and Refactor Root Documentation/
+**Task**: Create Logos/docs/ and Refactor Root docs/
 **Version**: 002
 **Created**: 2026-01-11
 **Revision of**: implementation-001.md
@@ -9,8 +9,8 @@
 ## Revision Summary
 
 **Reason**: Ensure minimal overlap between theory-specific documentation
-(Logos/Documentation/, Bimodal/Documentation/) and project-wide documentation
-(ProofChecker/Documentation/), with natural cross-linking integration.
+(Logos/docs/, Bimodal/docs/) and project-wide documentation
+(ProofChecker/docs/), with natural cross-linking integration.
 
 ### Previous Plan Issues
 
@@ -28,7 +28,7 @@
 
 ## Content Separation Principle
 
-### Project-Wide Documentation (Documentation/)
+### Project-Wide Documentation (docs/)
 
 Content that applies to **all theories** regardless of implementation:
 
@@ -42,7 +42,7 @@ Content that applies to **all theories** regardless of implementation:
 | UserGuide/ | General concepts | METHODOLOGY.md, ARCHITECTURE.md overview |
 | ProjectInfo/ | Project-wide status | Aggregated status, MAINTENANCE.md |
 
-### Theory-Specific Documentation (Bimodal/Documentation/, Logos/Documentation/)
+### Theory-Specific Documentation (Bimodal/docs/, Logos/docs/)
 
 Content that is **unique to that theory**:
 
@@ -56,27 +56,27 @@ Content that is **unique to that theory**:
 
 ```
 Theory-specific docs → Project-wide docs
-  "For coding standards, see Documentation/Development/LEAN_STYLE_GUIDE.md"
+  "For coding standards, see docs/Development/LEAN_STYLE_GUIDE.md"
 
 Project-wide docs → Theory-specific docs
-  "For Bimodal axioms, see Bimodal/Documentation/Reference/AXIOM_REFERENCE.md"
-  "For Logos status, see Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md"
+  "For Bimodal axioms, see Bimodal/docs/Reference/AXIOM_REFERENCE.md"
+  "For Logos status, see Logos/docs/ProjectInfo/IMPLEMENTATION_STATUS.md"
 ```
 
 ## Phases
 
-### Phase 1: Create Logos/Documentation/ Directory Structure
+### Phase 1: Create Logos/docs/ Directory Structure
 **Status**: [COMPLETED]
 **Estimated effort**: 30 minutes
 
 **Objectives**:
-1. Create directory structure mirroring Bimodal/Documentation/
+1. Create directory structure mirroring Bimodal/docs/
 2. Create README.md navigation hub following Template G
 3. Include note directing to project-wide docs for shared content
 
 **Files to create**:
 ```
-Logos/Documentation/
+Logos/docs/
 ├── README.md                    # Navigation hub with cross-link note
 ├── UserGuide/
 │   └── README.md
@@ -88,7 +88,7 @@ Logos/Documentation/
 
 **Steps**:
 1. Create directory structure
-2. Create Logos/Documentation/README.md with:
+2. Create Logos/docs/README.md with:
    - Note about project-wide docs at top (like Bimodal)
    - About Logos Logic section explaining current/planned status
    - Documentation Organization section
@@ -96,7 +96,7 @@ Logos/Documentation/
 3. Create subdirectory README.md files
 
 **Verification**:
-- Structure mirrors Bimodal/Documentation/
+- Structure mirrors Bimodal/docs/
 - Cross-link note present at top
 
 ---
@@ -110,11 +110,11 @@ Logos/Documentation/
 2. Create CURRENT_STATUS.md (instead of PROOF_PATTERNS.md since Logos is re-export)
 
 **Files to create**:
-- `Logos/Documentation/UserGuide/QUICKSTART.md`
-- `Logos/Documentation/UserGuide/CURRENT_STATUS.md`
+- `Logos/docs/UserGuide/QUICKSTART.md`
+- `Logos/docs/UserGuide/CURRENT_STATUS.md`
 
 **Content notes** (minimal overlap):
-- QUICKSTART.md: Explains Logos re-exports Bimodal, links to Bimodal/Documentation/
+- QUICKSTART.md: Explains Logos re-exports Bimodal, links to Bimodal/docs/
   UserGuide/QUICKSTART.md for actual usage. NO duplicate content.
 - CURRENT_STATUS.md: Unique to Logos - explains planned hyperintensional extensions
 
@@ -138,12 +138,12 @@ Logos/Documentation/
 2. Create EXTENSION_STUBS.md (unique to Logos)
 
 **Files to create**:
-- `Logos/Documentation/Reference/AXIOM_REFERENCE.md`
-- `Logos/Documentation/Reference/EXTENSION_STUBS.md`
+- `Logos/docs/Reference/AXIOM_REFERENCE.md`
+- `Logos/docs/Reference/EXTENSION_STUBS.md`
 
 **Content notes** (minimal overlap):
 - AXIOM_REFERENCE.md: Brief note that Logos re-exports Bimodal axioms, link to
-  Bimodal/Documentation/Reference/AXIOM_REFERENCE.md. NO duplicate axiom content.
+  Bimodal/docs/Reference/AXIOM_REFERENCE.md. NO duplicate axiom content.
 - EXTENSION_STUBS.md: Unique content documenting Epistemic/, Normative/, Explanatory/
 
 **Steps**:
@@ -167,9 +167,9 @@ Logos/Documentation/
 3. Create ROADMAP.md (unique to Logos - hyperintensional development path)
 
 **Files to create**:
-- `Logos/Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md`
-- `Logos/Documentation/ProjectInfo/KNOWN_LIMITATIONS.md`
-- `Logos/Documentation/ProjectInfo/ROADMAP.md`
+- `Logos/docs/ProjectInfo/IMPLEMENTATION_STATUS.md`
+- `Logos/docs/ProjectInfo/KNOWN_LIMITATIONS.md`
+- `Logos/docs/ProjectInfo/ROADMAP.md`
 
 **Content notes** (minimal overlap):
 - Status: Logos-specific only (re-export status, stub modules)
@@ -188,26 +188,26 @@ Logos/Documentation/
 
 ---
 
-### Phase 5: Refactor Project-Wide Documentation/
+### Phase 5: Refactor Project-Wide docs/
 **Status**: [COMPLETED]
 **Estimated effort**: 1 hour
 
 **Note**: This phase also completes Task 360 Phase 5.
 
 **Objectives** (from Task 360 Phase 5 + new requirements):
-1. Ensure Documentation/ contains only cross-theory content
+1. Ensure docs/ contains only cross-theory content
 2. Add "Theory-Specific Documentation" section to key files
 3. Update NAVIGATION.md with theory-specific links
 4. Audit for theory-specific content and generalize or move
 
 **Files to modify**:
-- `Documentation/README.md` - Add theory-specific documentation section
-- `Documentation/NAVIGATION.md` - Add theory navigation
-- `Documentation/ProjectInfo/README.md` - Add links to theory status
-- `Documentation/UserGuide/README.md` - Add links to theory guides
-- `Documentation/Reference/README.md` - Add links to theory references
+- `docs/README.md` - Add theory-specific documentation section
+- `docs/NAVIGATION.md` - Add theory navigation
+- `docs/ProjectInfo/README.md` - Add links to theory status
+- `docs/UserGuide/README.md` - Add links to theory guides
+- `docs/Reference/README.md` - Add links to theory references
 
-**Content to add to Documentation/README.md**:
+**Content to add to docs/README.md**:
 ```markdown
 ## Theory-Specific Documentation
 
@@ -215,21 +215,21 @@ For theory-specific documentation, see:
 
 | Theory | Description | Documentation |
 |--------|-------------|---------------|
-| **Bimodal** | Propositional intensional logic (active) | [Bimodal/Documentation/](../Bimodal/Documentation/) |
-| **Logos** | Second-order hyperintensional (planned) | [Logos/Documentation/](../Logos/Documentation/) |
+| **Bimodal** | Propositional intensional logic (active) | [Bimodal/docs/](../Bimodal/docs/) |
+| **Logos** | Second-order hyperintensional (planned) | [Logos/docs/](../Logos/docs/) |
 
 For comparison between theories, see [THEORY_COMPARISON.md](Research/THEORY_COMPARISON.md).
 ```
 
 **Steps**:
-1. Add "Theory-Specific Documentation" section to Documentation/README.md
+1. Add "Theory-Specific Documentation" section to docs/README.md
 2. Update NAVIGATION.md with theory navigation section
 3. Update ProjectInfo/README.md to link to theory-specific status
 4. Update UserGuide/README.md to link to theory-specific guides
 5. Update Reference/README.md to link to theory-specific references
 6. Audit existing content for theory-specific material:
-   - If Bimodal-specific: Link to Bimodal/Documentation/ instead
-   - If Logos-specific: Link to Logos/Documentation/ instead
+   - If Bimodal-specific: Link to Bimodal/docs/ instead
+   - If Logos-specific: Link to Logos/docs/ instead
    - If genuinely cross-theory: Keep and generalize language
 
 **Verification**:
@@ -266,26 +266,26 @@ Logos is a **planned second-order hyperintensional logic** that will extend beyo
 | **Logical level** | Second-order with first and second-order variables |
 
 For comparison with Bimodal propositional logic, see
-[THEORY_COMPARISON.md](../Documentation/Research/THEORY_COMPARISON.md).
+[THEORY_COMPARISON.md](../docs/Research/THEORY_COMPARISON.md).
 
 ## Theory-Specific Documentation
 
-For Logos-specific guides and references, see [Documentation/](Documentation/README.md):
+For Logos-specific guides and references, see [docs/](docs/README.md):
 
 | Document | Description |
 |----------|-------------|
-| [Quick Start](Documentation/UserGuide/QUICKSTART.md) | Getting started (currently redirects to Bimodal) |
-| [Current Status](Documentation/UserGuide/CURRENT_STATUS.md) | Logos development status |
-| [Extension Stubs](Documentation/Reference/EXTENSION_STUBS.md) | Planned extensions |
-| [Implementation Status](Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md) | Module status |
-| [Roadmap](Documentation/ProjectInfo/ROADMAP.md) | Development roadmap |
+| [Quick Start](docs/UserGuide/QUICKSTART.md) | Getting started (currently redirects to Bimodal) |
+| [Current Status](docs/UserGuide/CURRENT_STATUS.md) | Logos development status |
+| [Extension Stubs](docs/Reference/EXTENSION_STUBS.md) | Planned extensions |
+| [Implementation Status](docs/ProjectInfo/IMPLEMENTATION_STATUS.md) | Module status |
+| [Roadmap](docs/ProjectInfo/ROADMAP.md) | Development roadmap |
 ```
 
 **Steps**:
 1. Add "About Logos Logic" section with table
 2. Add "Theory-Specific Documentation" section
 3. Update "Related Documentation" to distinguish theory-specific vs project-wide
-4. Update Navigation to include Documentation/
+4. Update Navigation to include docs/
 
 **Verification**:
 - README mirrors Bimodal/README.md structure
@@ -334,9 +334,9 @@ For Logos-specific guides and references, see [Documentation/](Documentation/REA
 
 ## Success Criteria
 
-- [ ] Logos/Documentation/ structure created (mirrors Bimodal/Documentation/)
+- [ ] Logos/docs/ structure created (mirrors Bimodal/docs/)
 - [ ] Minimal overlap: Logos docs redirect to Bimodal for re-exported content
-- [ ] Documentation/ has "Theory-Specific Documentation" section
+- [ ] docs/ has "Theory-Specific Documentation" section
 - [ ] NAVIGATION.md includes theory navigation
 - [ ] All cross-links verified working
 - [ ] Task 360 marked COMPLETED
@@ -345,16 +345,16 @@ For Logos-specific guides and references, see [Documentation/](Documentation/REA
 ## Task 360 Phase 5 Checklist
 
 From implementation-001.md Phase 5 objectives:
-- [ ] Documentation/ contains only cross-theory content
+- [ ] docs/ contains only cross-theory content
 - [ ] Bimodal-specific content moved or linked (audit complete)
-- [ ] "Theory-Specific Documentation" section in Documentation/README.md
-- [ ] Link to Bimodal/Documentation/README.md added
-- [ ] Link to Logos/Documentation/README.md added
+- [ ] "Theory-Specific Documentation" section in docs/README.md
+- [ ] Link to Bimodal/docs/README.md added
+- [ ] Link to Logos/docs/README.md added
 - [ ] NAVIGATION.md updated
 
 ## Rollback Plan
 
 If documentation refactoring causes issues:
 1. Revert changes via git
-2. Restore original Documentation/ structure
-3. Remove Logos/Documentation/ directory
+2. Restore original docs/ structure
+3. Remove Logos/docs/ directory

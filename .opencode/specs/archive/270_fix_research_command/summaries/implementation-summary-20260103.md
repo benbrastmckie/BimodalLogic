@@ -29,7 +29,7 @@ Added `<critical_constraints>` section to researcher.md with:
 Updated permissions in researcher.md frontmatter:
 - **Write permissions**: Restricted to `.opencode/specs/*/reports/**/*` and state files only
 - **Denied bash commands**: Added `mv` and `cp` to prevent file operations
-- **Denied write paths**: Added `.opencode/command/**/*`, `.opencode/agent/**/*`, `.opencode/context/**/*`, `Documentation/**/*`, `Logos/**/*`, `LogosTest/**/*`
+- **Denied write paths**: Added `.opencode/command/**/*`, `.opencode/agent/**/*`, `.opencode/context/**/*`, `docs/**/*`, `Logos/**/*`, `LogosTest/**/*`
 
 ### 3. Enhanced Constraints Section
 

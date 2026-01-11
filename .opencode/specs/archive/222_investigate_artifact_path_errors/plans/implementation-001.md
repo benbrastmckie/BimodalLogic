@@ -265,7 +265,7 @@ This implementation will:
 - `.opencode/agent/subagents/lean-research-agent.md` (line 497 fix)
 - `.opencode/specs/TODO.md` (artifact link updates for tasks 213, 215, 218)
 - `.opencode/specs/state.json` (artifact path updates)
-- `Documentation/Reference/artifact-management.md` (path pattern documentation)
+- `docs/Reference/artifact-management.md` (path pattern documentation)
 
 ### Migrated Directories
 - `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/` (from /specs/)
