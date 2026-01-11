@@ -95,9 +95,11 @@ technical_debt:
 
 ### 403. Enforce directory naming convention
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/403_enforce_directory_naming_convention/reports/research-001.md)
 
 **Description**: Research and enforce the naming convention that only directories containing Lean source code should be capitalized. Identify all exceptions like Theories/Bimodal/LaTeX/ and Theories/Logos/LaTeX/ that violate this convention, find all references that need updating, and systematically rename directories to lowercase.
 
