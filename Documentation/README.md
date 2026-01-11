@@ -6,7 +6,8 @@ Comprehensive documentation hub for the Logos project.
 
 ## Documentation Organization
 
-Documentation is organized into seven categories:
+Documentation is organized into eight categories. See also [NAVIGATION.md](NAVIGATION.md) for an
+alternative navigation style with detailed use-case guides.
 
 ### Installation/
 
@@ -22,12 +23,14 @@ Setup and configuration guides:
 
 User-facing documentation for working with Logos:
 
-- [METHODOLOGY.md](UserGuide/METHODOLOGY.md): Philosophical foundations and Logos layer architecture
-- [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md): System design and TM logic specification
-- [TUTORIAL.md](UserGuide/TUTORIAL.md): Getting started guide for new users
-- [EXAMPLES.md](UserGuide/EXAMPLES.md): Usage examples and proof patterns
-- [INTEGRATION.md](UserGuide/INTEGRATION.md): Integration with model checkers and other tools
-- [TACTIC_DEVELOPMENT.md](UserGuide/TACTIC_DEVELOPMENT.md): Guide for developing custom tactics
+- [README.md](UserGuide/README.md) - Directory overview and reading order
+- [METHODOLOGY.md](UserGuide/METHODOLOGY.md) - Philosophical foundations and layer architecture
+- [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md) - System design and TM logic specification
+- [TUTORIAL.md](UserGuide/TUTORIAL.md) - Getting started guide for new users
+- [EXAMPLES.md](UserGuide/EXAMPLES.md) - Usage examples and proof patterns
+- [INTEGRATION.md](UserGuide/INTEGRATION.md) - Integration with model checkers and other tools
+- [MCP_INTEGRATION.md](UserGuide/MCP_INTEGRATION.md) - MCP server integration (advanced)
+- [TACTIC_DEVELOPMENT.md](UserGuide/TACTIC_DEVELOPMENT.md) - Custom tactic development guide
 
 ### Research/
 
@@ -43,6 +46,7 @@ Research vision and planned architecture. For implementation status, see
 
 Project status, feature tracking, and registries:
 
+- [README.md](ProjectInfo/README.md) - Directory overview and Five-Document Model
 - [FEATURE_REGISTRY.md](ProjectInfo/FEATURE_REGISTRY.md) - Feature tracking and capabilities
 - [IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
   tracking with verification commands (includes Known Limitations section)
@@ -56,6 +60,7 @@ Project status, feature tracking, and registries:
 
 Developer standards, conventions, and contribution workflow:
 
+- [README.md](Development/README.md) - Directory overview and reading order
 - [CONTRIBUTING.md](Development/CONTRIBUTING.md) - Contribution guidelines and workflow
 - [DIRECTORY_README_STANDARD.md](Development/DIRECTORY_README_STANDARD.md) -
   Directory-level documentation standard
@@ -67,8 +72,12 @@ Developer standards, conventions, and contribution workflow:
   metaprogramming fundamentals for tactics
 - [MODULE_ORGANIZATION.md](Development/MODULE_ORGANIZATION.md) - Directory structure
   and namespace patterns
+- [NONCOMPUTABLE_GUIDE.md](Development/NONCOMPUTABLE_GUIDE.md) - Handling noncomputable
+  definitions and Classical logic
 - [PHASED_IMPLEMENTATION.md](Development/PHASED_IMPLEMENTATION.md) - Implementation
   roadmap with execution waves
+- [PROPERTY_TESTING_GUIDE.md](Development/PROPERTY_TESTING_GUIDE.md) - Property-based
+  testing patterns and Plausible usage
 - [QUALITY_METRICS.md](Development/QUALITY_METRICS.md) - Quality targets and performance benchmarks
 - [TESTING_STANDARDS.md](Development/TESTING_STANDARDS.md) - Test requirements and coverage targets
 - [VERSIONING.md](Development/VERSIONING.md) - Semantic versioning policy
@@ -77,8 +86,20 @@ Developer standards, conventions, and contribution workflow:
 
 Reference materials:
 
-- [OPERATORS.md](Reference/OPERATORS.md) - Formal symbols reference (Unicode notation guide)
+- [README.md](Reference/README.md) - Directory overview and quick lookup guide
+- [API_REFERENCE.md](Reference/API_REFERENCE.md) - Logos API documentation
 - [GLOSSARY.md](Reference/GLOSSARY.md) - Terminology mapping and key concepts
+- [OPERATORS.md](Reference/OPERATORS.md) - Formal symbols reference (Unicode notation guide)
+
+### Architecture/
+
+Architectural Decision Records (ADRs):
+
+- [README.md](Architecture/README.md) - ADR catalog and guidance
+- [ADR-001-Classical-Logic-Noncomputable.md](Architecture/ADR-001-Classical-Logic-Noncomputable.md) -
+  Classical logic for metalogic
+- [ADR-004-Remove-Project-Level-State-Files.md](Architecture/ADR-004-Remove-Project-Level-State-Files.md) -
+  State file architecture
 
 ### AI System/ (.opencode/)
 
