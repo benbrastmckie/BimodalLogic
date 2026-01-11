@@ -6,11 +6,17 @@
     {
       "project_number": 387,
       "project_name": "standardize_research_file_names",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T20:10:25Z",
-      "last_updated": "2026-01-11T20:13:36Z"
+      "last_updated": "2026-01-11T20:14:43Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/387_standardize_research_file_names/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 386,

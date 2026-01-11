@@ -45,14 +45,16 @@ technical_debt:
 
 ### 385. Refactor /meta command to create tasks instead of direct implementation
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-12
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
+- **Completed**: 2026-01-11
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/385_refactor_meta_command_task_creation/reports/research-001.md)
 - **Plan**: [implementation-002.md](.claude/specs/385_refactor_meta_command_task_creation/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/385_refactor_meta_command_task_creation/summaries/implementation-summary-20260111.md)
 
 **Description**: Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.
 
@@ -79,9 +81,12 @@ technical_debt:
 
 ### 387. Standardize Research/ file names and fix references
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-11
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/387_standardize_research_file_names/reports/research-001.md)
 
 **Description**: Improve and standardize file names in Documentation/Research/ to avoid redundancy (e.g., remove 'RESEARCH' from titles given the directory name). Rename files using consistent lowercase-hyphenated naming convention. Fix all references to these files throughout the repository to avoid broken links.
 
