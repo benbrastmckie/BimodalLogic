@@ -2,12 +2,12 @@
 \begin{document}
 
 % ============================================================================
-% Section: Core Extension Syntax
+% Section: Explanatory Extension Syntax
 % ============================================================================
 
-\section{Core Extension: Syntactic Primitives}\label{sec:core-syntax}
+\section{Explanatory Extension: Syntactic Primitives}\label{sec:core-syntax}
 
-The Core Extension extends the Constitutive Foundation with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. While the hyperintensional foundation remains (distinguishing propositions by their exact verifiers and falsifiers), this extension adds intensional evaluation relative to contextual parameters (world-history, time, variable assignment) to determine truth-values for all Core Extension sentences.
+The Explanatory Extension extends the Constitutive Foundation with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. While the hyperintensional foundation remains (distinguishing propositions by their exact verifiers and falsifiers), this extension adds intensional evaluation relative to contextual parameters (world-history, time, variable assignment) to determine truth-values for all Explanatory Extension sentences.
 
 % ------------------------------------------------------------
 % Additional Syntactic Primitives
@@ -15,7 +15,7 @@ The Core Extension extends the Constitutive Foundation with temporal structure a
 
 \subsection{Additional Syntactic Primitives}\label{sec:additional-syntax}
 
-The Core Extension interprets the following additional syntactic primitives beyond those of the Constitutive Foundation:
+The Explanatory Extension interprets the following additional syntactic primitives beyond those of the Constitutive Foundation:
 
 \begin{itemize}
   \item \textbf{Modal operators}: $\nec$ (necessity), $\poss$ (possibility)
@@ -73,7 +73,7 @@ Store/Recall & $\store{i}\metaA$ & ``Store current time and evaluate $\metaA$'' 
              & $\recall{i}\metaA$ & ``Recall stored time and evaluate $\metaA$'' \\
 \bottomrule
 \end{tabular}
-\caption{Core Extension operators}
+\caption{Explanatory Extension operators}
 \label{tab:core-operators}
 \end{table}
 
@@ -102,6 +102,6 @@ Store/Recall & $\store{i}\metaA$ & ``Store current time and evaluate $\metaA$'' 
 \]
 \end{definition}
 
-See \leansrc{Logos.Core.Syntax}{CoreFormula} for the Lean implementation.
+See \leansrc{Logos.Explanatory.Syntax}{CoreFormula} for the Lean implementation.
 
 \end{document}

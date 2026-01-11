@@ -184,29 +184,29 @@ technical_debt:
 
 ### 180. Add Bimodal test coverage metrics and reporting
 - **Effort**: 4.5 hours (revised from 6)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-12
 - **Planned**: 2026-01-12 (revised)
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 - **Plan**: [implementation-002.md](.claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md)
-- **Previous Plan**: [implementation-001.md](.claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md)
-- **Files Affected**:
-  - scripts/ExtractDefinitions.lean (new - Lean-native definition extraction)
-  - scripts/coverage-analysis.sh (new - coverage mapping)
-  - Bimodal/Documentation/ProjectInfo/TEST_COVERAGE.md (new)
-  - BimodalTest/README.md (add link)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md)
+- **Files Created**:
+  - scripts/coverage-analysis.sh (coverage mapping with sorry audit)
+  - Bimodal/Documentation/ProjectInfo/TEST_COVERAGE.md
+- **Files Modified**:
+  - BimodalTest/README.md (added link to coverage report)
 - **Description**: Create definition-level coverage measurement for Bimodal. Task 179 completed benchmark infrastructure; this task fills the gap: tracking which Bimodal definitions have corresponding tests in BimodalTest/. Sorry audit reduced to 5 actual placeholders.
-- **Revision Summary**: Plan v002 accounts for Task 179 completion (benchmark scripts exist), reduced sorry count (5 vs ~20), and focuses on definition coverage tracking not performance.
 - **Acceptance Criteria**:
   - [x] Testing standards documented (EXISTS: BimodalTest/README.md)
   - [x] Benchmark infrastructure (EXISTS: Task 179 completed)
-  - [ ] Definition extraction script (Lean-native or grep fallback)
-  - [ ] Coverage mapping script with per-module breakdown
-  - [ ] Sorry audit section (5 placeholders categorized)
-  - [ ] TEST_COVERAGE.md with baseline numbers
+  - [x] Definition extraction script (grep-based in coverage-analysis.sh)
+  - [x] Coverage mapping script with per-module breakdown
+  - [x] Sorry audit section (5 placeholders categorized)
+  - [x] TEST_COVERAGE.md with baseline numbers
 - **Impact**: Enables data-driven test improvement by tracking which definitions have tests and identifying sorry placeholders.
 
 ---

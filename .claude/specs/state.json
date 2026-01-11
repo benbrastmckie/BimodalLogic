@@ -339,12 +339,12 @@
       "project_number": 180,
       "project_name": "add_test_coverage_metrics_and_reporting",
       "type": "feature",
-      "phase": "implementing",
-      "status": "implementing",
+      "phase": "completed",
+      "status": "completed",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T03:30:00Z",
+      "last_updated": "2026-01-12T03:45:00Z",
       "effort": "4.5 hours",
       "started": "2026-01-11",
       "plan_version": "002",
@@ -358,9 +358,14 @@
           "type": "plan",
           "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md",
           "description": "Revised plan accounting for Task 179 completion and reduced sorry count"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md"
         }
       ],
-      "description": "Create definition-level coverage measurement for Bimodal. Task 179 completed benchmarks; this focuses on definition coverage tracking."
+      "description": "Create definition-level coverage measurement for Bimodal. Task 179 completed benchmarks; this focuses on definition coverage tracking.",
+      "completed": "2026-01-12"
     },
     {
       "project_number": 257,
