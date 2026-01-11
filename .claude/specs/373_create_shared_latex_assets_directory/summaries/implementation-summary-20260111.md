@@ -5,14 +5,14 @@
 
 ## Changes Made
 
-Created a shared ProofChecker/LaTeX/ directory containing common LaTeX assets that can be imported by all theory-specific documentation.
+Created a shared ProofChecker/latex/ directory containing common LaTeX assets that can be imported by all theory-specific documentation.
 
 ### New Files Created
 
-- `LaTeX/formatting.sty` - Common document formatting (fonts, colors, hyperlinks, headers)
-- `LaTeX/bib_style.bst` - Bibliography style for consistent citations
-- `LaTeX/notation-standards.sty` - Shared notation definitions
-- `LaTeX/README.md` - Usage documentation
+- `latex/formatting.sty` - Common document formatting (fonts, colors, hyperlinks, headers)
+- `latex/bib_style.bst` - Bibliography style for consistent citations
+- `latex/notation-standards.sty` - Shared notation definitions
+- `latex/README.md` - Usage documentation
 
 ### Shared Notation Standards
 
@@ -27,33 +27,33 @@ The `notation-standards.sty` package provides consistent notation across theorie
 
 ### Files Modified
 
-- `Logos/LaTeX/assets/logos-notation.sty` - Now imports notation-standards.sty
-- `Bimodal/LaTeX/assets/bimodal-notation.sty` - Now imports notation-standards.sty
-- `Logos/LaTeX/LogosReference.tex` - Updated import paths to use shared location
-- `Bimodal/LaTeX/BimodalReference.tex` - Updated import paths to use shared location
+- `Logos/latex/assets/logos-notation.sty` - Now imports notation-standards.sty
+- `Bimodal/latex/assets/bimodal-notation.sty` - Now imports notation-standards.sty
+- `Logos/latex/LogosReference.tex` - Updated import paths to use shared location
+- `Bimodal/latex/BimodalReference.tex` - Updated import paths to use shared location
 
 ### Files Removed
 
-- `Logos/LaTeX/assets/formatting.sty` (duplicate)
-- `Logos/LaTeX/assets/bib_style.bst` (duplicate)
-- `Bimodal/LaTeX/assets/formatting.sty` (duplicate)
-- `Bimodal/LaTeX/assets/bib_style.bst` (duplicate)
+- `Logos/latex/assets/formatting.sty` (duplicate)
+- `Logos/latex/assets/bib_style.bst` (duplicate)
+- `Bimodal/latex/assets/formatting.sty` (duplicate)
+- `Bimodal/latex/assets/bib_style.bst` (duplicate)
 
 ## Architecture
 
 ```
 ProofChecker/
-├── LaTeX/                          # Shared assets
+├── latex/                          # Shared assets
 │   ├── formatting.sty
 │   ├── bib_style.bst
 │   ├── notation-standards.sty
 │   └── README.md
-├── Bimodal/LaTeX/
-│   ├── assets/bimodal-notation.sty # Imports ../../LaTeX/notation-standards
-│   └── BimodalReference.tex        # Imports ../../LaTeX/formatting
-└── Logos/LaTeX/
-    ├── assets/logos-notation.sty   # Imports ../../LaTeX/notation-standards
-    └── LogosReference.tex          # Imports ../../LaTeX/formatting
+├── Bimodal/latex/
+│   ├── assets/bimodal-notation.sty # Imports ../../latex/notation-standards
+│   └── BimodalReference.tex        # Imports ../../latex/formatting
+└── Logos/latex/
+    ├── assets/logos-notation.sty   # Imports ../../latex/notation-standards
+    └── LogosReference.tex          # Imports ../../latex/formatting
 ```
 
 ## Verification
@@ -72,6 +72,6 @@ ProofChecker/
 
 ## Notes
 
-- Relative paths work from the main document's directory (e.g., `../../LaTeX/`)
+- Relative paths work from the main document's directory (e.g., `../../latex/`)
 - Theory-specific notation files add specialized definitions on top of standards
 - The README.md documents usage patterns for future theories

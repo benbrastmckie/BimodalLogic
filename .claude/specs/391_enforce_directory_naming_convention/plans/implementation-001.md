@@ -17,7 +17,7 @@ Enforce a consistent directory naming convention across the ProofChecker project
 | `Theories/` | Yes | PascalCase | ✓ |
 | `Tests/` | Yes | PascalCase | ✓ |
 | `docs/` | No (markdown) | PascalCase | ✗ → rename to `docs/` |
-| `LaTeX/` | No (LaTeX/sty) | PascalCase | ✗ → rename to `latex/` |
+| `latex/` | No (latex/sty) | PascalCase | ✗ → rename to `latex/` |
 | `benchmarks/` | No (scripts) | lowercase | ✓ |
 | `scripts/` | No (scripts) | lowercase | ✓ |
 
@@ -55,24 +55,24 @@ Enforce a consistent directory naming convention across the ProofChecker project
 ### Phase 2: Rename LaTeX/ to latex/
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
-1. Rename `LaTeX/` directory to `latex/`
-2. Update all references to `LaTeX/` across the codebase
+1. Rename `latex/` directory to `latex/`
+2. Update all references to `latex/` across the codebase
 
 **Files to modify**:
-- `LaTeX/` → `latex/` (directory rename)
-- Any files referencing `LaTeX/`
+- `latex/` → `latex/` (directory rename)
+- Any files referencing `latex/`
 
 **Steps**:
 1. Use `git mv LaTeX latex` to rename with history preservation
-2. Search for all references to `LaTeX/` in the codebase
+2. Search for all references to `latex/` in the codebase
 3. Update each reference to use `latex/`
 
 **Verification**:
-- `ls -la` shows `latex/` not `LaTeX/`
-- `grep -r "LaTeX/" .` returns no results (excluding .git)
+- `ls -la` shows `latex/` not `latex/`
+- `grep -r "latex/" .` returns no results (excluding .git)
 
 ---
 
@@ -140,7 +140,7 @@ This convention ensures:
 ## Success Criteria
 
 - [ ] `docs/` renamed to `docs/`
-- [ ] `LaTeX/` renamed to `latex/`
+- [ ] `latex/` renamed to `latex/`
 - [ ] All internal references updated
 - [ ] Convention documented in CONTRIBUTING.md
 - [ ] README.md project structure updated

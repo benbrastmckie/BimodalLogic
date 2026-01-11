@@ -118,7 +118,7 @@ The `hyperref` package (already loaded via formatting.sty) provides:
 
 - [LaTeX Templates - Formal Book Title Page](https://www.latextemplates.com/template/formal-book-title-page)
 - [Overleaf - Customising Title Pages](https://www.overleaf.com/learn/latex/How_to_Write_a_Thesis_in_LaTeX_(Part_5)%3A_Customising_Your_Title_Page_and_Abstract)
-- [LaTeX Wikibooks - Title Creation](https://en.wikibooks.org/wiki/LaTeX/Title_Creation)
+- [LaTeX Wikibooks - Title Creation](https://en.wikibooks.org/wiki/latex/Title_Creation)
 - [CTAN - Title Page Examples (PDF)](https://tug.ctan.org/info/latex-samples/TitlePages/titlepages.pdf)
 
 ## Next Steps

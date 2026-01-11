@@ -183,9 +183,9 @@ LaTeX Warning: You have requested package `assets/bimodal-notation',
                but the package provides `bimodal-notation'.
 
 Package: bimodal-notation 2026/01/11 Bimodal TM Logic Notation
-(../../LaTeX/notation-standards.sty
+(../../latex/notation-standards.sty
 
-LaTeX Warning: You have requested package `../../LaTeX/notation-standards',
+LaTeX Warning: You have requested package `../../latex/notation-standards',
                but the package provides `notation-standards'.
 
 Package: notation-standards 2026/01/11 ProofChecker Shared Notation
@@ -228,9 +228,9 @@ Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
 \l_MT_below_shortintertext_sep=\dimen182
 \xmathstrut@box=\box58
 \xmathstrut@dim=\dimen183
-))) (../../LaTeX/formatting.sty
+))) (../../latex/formatting.sty
 
-LaTeX Warning: You have requested package `../../LaTeX/formatting',
+LaTeX Warning: You have requested package `../../latex/formatting',
                but the package provides `problem_set'.
 
 Package: problem_set 2025/01/29 Support for MIT logic texts

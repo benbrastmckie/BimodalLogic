@@ -300,7 +300,7 @@ ProofChecker/
 │   └── ProofSystem/         # Proof system tests
 │
 ├── Logos/                   # Future extensions (Layers 1-3)
-│   └── LaTeX/               # LaTeX documentation
+│   └── latex/               # LaTeX documentation
 │
 ├── docs/           # User and developer guides
 │   ├── Installation/        # This directory

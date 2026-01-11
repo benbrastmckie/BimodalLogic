@@ -22,17 +22,17 @@ Fixed LaTeX compilation warnings and errors in LogosReference.tex by:
    - This integrates properly with latexmk's `$bibtex_fudge` mechanism
 
 4. **Updated documentation** (Phase 5)
-   - Added "Bibliography Path Configuration" section to LaTeX/README.md
+   - Added "Bibliography Path Configuration" section to latex/README.md
    - Explains the `ensure_path()` solution and links to Kpathsea documentation
 
 ## Files Modified
 
 | File | Change |
 |------|--------|
-| `LaTeX/latexmkrc` | Replaced custom `$bibtex` with `ensure_path()` calls |
-| `LaTeX/README.md` | Added bibliography path configuration documentation |
-| `LaTeX/formatting.sty` | Fixed package name (prior phase) |
-| `Logos/LaTeX/LogosReference.tex` | Added `\nocite{*}`, simplified bibliographystyle (prior phase) |
+| `latex/latexmkrc` | Replaced custom `$bibtex` with `ensure_path()` calls |
+| `latex/README.md` | Added bibliography path configuration documentation |
+| `latex/formatting.sty` | Fixed package name (prior phase) |
+| `Logos/latex/LogosReference.tex` | Added `\nocite{*}`, simplified bibliographystyle (prior phase) |
 
 ## Verification
 

@@ -5,7 +5,7 @@
 
 ## Changes Made
 
-Fixed LaTeX compilation errors in Bimodal/LaTeX/BimodalReference.tex that were preventing successful PDF generation.
+Fixed LaTeX compilation errors in Bimodal/latex/BimodalReference.tex that were preventing successful PDF generation.
 
 ### Root Causes
 
@@ -15,17 +15,17 @@ Fixed LaTeX compilation errors in Bimodal/LaTeX/BimodalReference.tex that were p
 
 ## Files Modified
 
-- `Bimodal/LaTeX/assets/bimodal-notation.sty`:
+- `Bimodal/latex/assets/bimodal-notation.sty`:
   - Removed redundant definitions of `\land` and `\lor` (already provided by amssymb)
   - Renamed `\frame` to `\taskframe` to avoid conflicts
   - Added `\RequirePackage{mathtools}` for `\coloneqq` support
 
-- `Bimodal/LaTeX/subfiles/02-Semantics.tex`:
+- `Bimodal/latex/subfiles/02-Semantics.tex`:
   - Replaced Unicode `→` with `$\to$` in type signatures
   - Replaced Unicode `∀` with `$\forall$` in type signatures
   - Updated `\frame` references to `\taskframe`
 
-- `Bimodal/LaTeX/subfiles/03-ProofTheory.tex`:
+- `Bimodal/latex/subfiles/03-ProofTheory.tex`:
   - Replaced Unicode `Γ` with `$\Gamma$` in texttt blocks
   - Replaced Unicode `φ` with `$\varphi$` in texttt blocks
 

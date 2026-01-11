@@ -40,7 +40,7 @@ This is enabled by default (`$bibtex_fudge = 1`), meaning latexmk already handle
 
 ### 4. Why the Current Configuration Fails
 
-The current `LaTeX/latexmkrc` uses:
+The current `latex/latexmkrc` uses:
 ```perl
 $bibtex = "BSTINPUTS='$shared_latex_dir:' BIBINPUTS='$source_dir:' bibtex %O %S";
 ```
@@ -83,7 +83,7 @@ ensure_path('BIBINPUTS', "$source_dir//");
 
 ### Option 2: Copy .bst to Theory Directory
 
-Place `bib_style.bst` in `Logos/LaTeX/bib_style.bst`:
+Place `bib_style.bst` in `Logos/latex/bib_style.bst`:
 - Pro: Eliminates path resolution entirely
 - Con: Duplicates the file (violates DRY)
 
@@ -128,4 +128,4 @@ $aux_dir = '.';
 1. Implement Option 1: Replace custom `$bibtex` with `ensure_path()` calls
 2. Test bibliography generation
 3. If still failing, try Option 2 (copy .bst file)
-4. Document final solution in LaTeX/README.md
+4. Document final solution in latex/README.md

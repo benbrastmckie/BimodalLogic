@@ -11,27 +11,27 @@ Fixed LaTeX package path mismatch warnings by configuring TEXINPUTS in the centr
 
 LaTeX was generating warnings like:
 - "You have requested package 'assets/logos-notation', but the package provides 'logos-notation'"
-- "You have requested package '../../LaTeX/notation-standards', but the package provides 'notation-standards'"
-- "You have requested package '../../LaTeX/formatting', but the package provides 'formatting'"
+- "You have requested package '../../latex/notation-standards', but the package provides 'notation-standards'"
+- "You have requested package '../../latex/formatting', but the package provides 'formatting'"
 
 These occurred because `\usepackage{path/to/package}` doesn't match `\ProvidesPackage{package}`.
 
 ### The Solution
 
-1. Added TEXINPUTS configuration to `LaTeX/latexmkrc` using `ensure_path()` to add:
+1. Added TEXINPUTS configuration to `latex/latexmkrc` using `ensure_path()` to add:
    - `$source_dir/assets//` for theory-specific packages
    - `$shared_latex_dir//` for shared packages
 
 2. Updated package references to use base names:
    - `\usepackage{logos-notation}` instead of `\usepackage{assets/logos-notation}`
-   - `\usepackage{formatting}` instead of `\usepackage{../../LaTeX/formatting}`
-   - `\RequirePackage{notation-standards}` instead of `\RequirePackage{../../LaTeX/notation-standards}`
+   - `\usepackage{formatting}` instead of `\usepackage{../../latex/formatting}`
+   - `\RequirePackage{notation-standards}` instead of `\RequirePackage{../../latex/notation-standards}`
 
 ## Files Modified
 
-- `LaTeX/latexmkrc` - Added TEXINPUTS ensure_path() calls for custom package directories
-- `Logos/LaTeX/LogosReference.tex` - Changed `\usepackage` calls to use base package names
-- `Logos/LaTeX/assets/logos-notation.sty` - Changed `\RequirePackage` to use base package name
+- `latex/latexmkrc` - Added TEXINPUTS ensure_path() calls for custom package directories
+- `Logos/latex/LogosReference.tex` - Changed `\usepackage` calls to use base package names
+- `Logos/latex/assets/logos-notation.sty` - Changed `\RequirePackage` to use base package name
 
 ## Verification
 

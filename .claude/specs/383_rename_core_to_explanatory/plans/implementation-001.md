@@ -126,20 +126,20 @@ Systematically rename `Logos/Core/` to `Logos/Explanatory/` and update all refer
 4. Verify LaTeX builds
 
 **Files to modify**:
-- `Logos/LaTeX/subfiles/02-CoreExtension-Syntax.tex` → `02-ExplanatoryExtension-Syntax.tex`
-- `Logos/LaTeX/subfiles/03-CoreExtension-Semantics.tex` → `03-ExplanatoryExtension-Semantics.tex`
-- `Logos/LaTeX/subfiles/04-CoreExtension-Axioms.tex` → `04-ExplanatoryExtension-Axioms.tex`
-- `Logos/LaTeX/LogosReference.tex` - Update includes and comments
+- `Logos/latex/subfiles/02-CoreExtension-Syntax.tex` → `02-ExplanatoryExtension-Syntax.tex`
+- `Logos/latex/subfiles/03-CoreExtension-Semantics.tex` → `03-ExplanatoryExtension-Semantics.tex`
+- `Logos/latex/subfiles/04-CoreExtension-Axioms.tex` → `04-ExplanatoryExtension-Axioms.tex`
+- `Logos/latex/LogosReference.tex` - Update includes and comments
 
 **Steps**:
 1. Rename LaTeX subfiles using git mv:
    ```bash
-   git mv Logos/LaTeX/subfiles/02-CoreExtension-Syntax.tex \
-          Logos/LaTeX/subfiles/02-ExplanatoryExtension-Syntax.tex
-   git mv Logos/LaTeX/subfiles/03-CoreExtension-Semantics.tex \
-          Logos/LaTeX/subfiles/03-ExplanatoryExtension-Semantics.tex
-   git mv Logos/LaTeX/subfiles/04-CoreExtension-Axioms.tex \
-          Logos/LaTeX/subfiles/04-ExplanatoryExtension-Axioms.tex
+   git mv Logos/latex/subfiles/02-CoreExtension-Syntax.tex \
+          Logos/latex/subfiles/02-ExplanatoryExtension-Syntax.tex
+   git mv Logos/latex/subfiles/03-CoreExtension-Semantics.tex \
+          Logos/latex/subfiles/03-ExplanatoryExtension-Semantics.tex
+   git mv Logos/latex/subfiles/04-CoreExtension-Axioms.tex \
+          Logos/latex/subfiles/04-ExplanatoryExtension-Axioms.tex
    ```
 2. Update `LogosReference.tex`:
    - Change includes to new filenames

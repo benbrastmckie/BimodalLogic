@@ -159,6 +159,6 @@ The Constitutive Foundation evaluates identity sentences only. Non-identity sent
 
 1. Create implementation plan with 6 phases as recommended
 2. Begin with terminology changes as they affect the most content
-3. Test notation changes for LaTeX/markdown/Lean compatibility
+3. Test notation changes for latex/markdown/Lean compatibility
 4. Draft Spatial Extension section before integrating
 5. Update all three related documents after main document is complete

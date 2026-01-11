@@ -17,14 +17,14 @@ Fix the LaTeX package path mismatch warnings by configuring TEXINPUTS in latexmk
 **Status**: [COMPLETED]
 
 **Objectives**:
-1. Add TEXINPUTS configuration to central LaTeX/latexmkrc
+1. Add TEXINPUTS configuration to central latex/latexmkrc
 2. Configure paths for both theory-specific and shared packages
 
 **Files to modify**:
-- `LaTeX/latexmkrc` - Add TEXINPUTS ensure_path() calls
+- `latex/latexmkrc` - Add TEXINPUTS ensure_path() calls
 
 **Steps**:
-1. Open `LaTeX/latexmkrc`
+1. Open `latex/latexmkrc`
 2. Add after the existing `ensure_path()` calls for BSTINPUTS/BIBINPUTS:
    ```perl
    # TEXINPUTS for custom .sty files
@@ -49,16 +49,16 @@ Fix the LaTeX package path mismatch warnings by configuring TEXINPUTS in latexmk
 2. Update logos-notation.sty to use base package name for RequirePackage
 
 **Files to modify**:
-- `Logos/LaTeX/LogosReference.tex` - Change `\usepackage` calls
-- `Logos/LaTeX/assets/logos-notation.sty` - Change `\RequirePackage` call
+- `Logos/latex/LogosReference.tex` - Change `\usepackage` calls
+- `Logos/latex/assets/logos-notation.sty` - Change `\RequirePackage` call
 
 **Steps**:
-1. In `Logos/LaTeX/LogosReference.tex`, change:
+1. In `Logos/latex/LogosReference.tex`, change:
    - `\usepackage{assets/logos-notation}` → `\usepackage{logos-notation}`
-   - `\usepackage{../../LaTeX/formatting}` → `\usepackage{formatting}`
+   - `\usepackage{../../latex/formatting}` → `\usepackage{formatting}`
 
-2. In `Logos/LaTeX/assets/logos-notation.sty`, change:
-   - `\RequirePackage{../../LaTeX/notation-standards}` → `\RequirePackage{notation-standards}`
+2. In `Logos/latex/assets/logos-notation.sty`, change:
+   - `\RequirePackage{../../latex/notation-standards}` → `\RequirePackage{notation-standards}`
 
 **Verification**:
 - File syntax is correct (no path separators in package names)
@@ -76,7 +76,7 @@ Fix the LaTeX package path mismatch warnings by configuring TEXINPUTS in latexmk
 3. Confirm PDF generates correctly
 
 **Files to check**:
-- `Logos/LaTeX/build/LogosReference.log` - Check for warnings
+- `Logos/latex/build/LogosReference.log` - Check for warnings
 
 **Steps**:
 1. Clean previous build: `cd Logos/LaTeX && latexmk -C`
@@ -84,8 +84,8 @@ Fix the LaTeX package path mismatch warnings by configuring TEXINPUTS in latexmk
 3. Grep log for warnings: `grep -i "Warning.*package" build/LogosReference.log`
 4. Verify expected warnings are gone:
    - No "You have requested package 'assets/logos-notation'"
-   - No "You have requested package '../../LaTeX/notation-standards'"
-   - No "You have requested package '../../LaTeX/formatting'"
+   - No "You have requested package '../../latex/notation-standards'"
+   - No "You have requested package '../../latex/formatting'"
 5. Open `build/LogosReference.pdf` to verify document renders correctly
 
 **Verification**:
@@ -120,7 +120,7 @@ Fix the LaTeX package path mismatch warnings by configuring TEXINPUTS in latexmk
 ## Rollback Plan
 
 If the TEXINPUTS approach fails:
-1. Revert changes to `LaTeX/latexmkrc`
+1. Revert changes to `latex/latexmkrc`
 2. Revert changes to `LogosReference.tex`
 3. Revert changes to `logos-notation.sty`
 4. Accept warnings as cosmetic (they don't affect PDF output)

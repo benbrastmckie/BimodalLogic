@@ -5,11 +5,11 @@
 
 ## Changes Made
 
-Integrated a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using the Perl `do` stub pattern. This provides standardized LaTeX compilation across all theory directories while preserving user-specific settings like PDF viewer preferences.
+Integrated a central `latexmkrc` configuration into `ProofChecker/latex/` using the Perl `do` stub pattern. This provides standardized LaTeX compilation across all theory directories while preserving user-specific settings like PDF viewer preferences.
 
 ### Key Design Decisions
 
-1. **Stub Pattern**: Theory directories contain minimal one-line stubs that load the central config via `do '../../LaTeX/latexmkrc';`. This avoids duplication and works with any editor that auto-discovers `latexmkrc`.
+1. **Stub Pattern**: Theory directories contain minimal one-line stubs that load the central config via `do '../../latex/latexmkrc';`. This avoids duplication and works with any editor that auto-discovers `latexmkrc`.
 
 2. **No $pdf_previewer**: The project config intentionally omits `$pdf_previewer` so users' global settings from `~/.latexmkrc` are preserved. Each contributor can use their preferred PDF viewer.
 
@@ -17,14 +17,14 @@ Integrated a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using 
 
 ## Files Created
 
-- `LaTeX/latexmkrc` - Central configuration with XeLaTeX, build directory isolation, and cleanup rules
-- `Bimodal/LaTeX/latexmkrc` - Stub loading central config
-- `Logos/LaTeX/latexmkrc` - Stub loading central config
+- `latex/latexmkrc` - Central configuration with XeLaTeX, build directory isolation, and cleanup rules
+- `Bimodal/latex/latexmkrc` - Stub loading central config
+- `Logos/latex/latexmkrc` - Stub loading central config
 
 ## Files Modified
 
-- `Bimodal/LaTeX/build.sh` - Updated to use latexmk instead of raw pdflatex
-- `LaTeX/README.md` - Added comprehensive latexmk documentation section
+- `Bimodal/latex/build.sh` - Updated to use latexmk instead of raw pdflatex
+- `latex/README.md` - Added comprehensive latexmk documentation section
 
 ## Configuration Settings
 

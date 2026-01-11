@@ -21,10 +21,10 @@ Fix LaTeX compilation warnings and errors that appeared in LogosReference.tex af
 2. Remove stale `%!TEX root` comment referencing non-existent file
 
 **Files to modify**:
-- `LaTeX/formatting.sty` - Fix package declaration and remove stale comment
+- `latex/formatting.sty` - Fix package declaration and remove stale comment
 
 **Steps**:
-1. Read `LaTeX/formatting.sty` to confirm current state
+1. Read `latex/formatting.sty` to confirm current state
 2. Change line 3 from:
    ```latex
    \ProvidesPackage{problem_set}[2025/01/29 Support for MIT logic texts]
@@ -52,16 +52,16 @@ Fix LaTeX compilation warnings and errors that appeared in LogosReference.tex af
 2. Either enable bibliography display or remove unused bibliography infrastructure
 
 **Files to modify**:
-- `Logos/LaTeX/LogosReference.tex` - Add `\nocite{*}` or remove bibliography lines
+- `Logos/latex/LogosReference.tex` - Add `\nocite{*}` or remove bibliography lines
 
 **Steps**:
-1. Read `Logos/LaTeX/LogosReference.tex` to find bibliography configuration
+1. Read `Logos/latex/LogosReference.tex` to find bibliography configuration
 2. Decision: Add `\nocite{*}` to include all bibliography entries without explicit citations
    - This is preferred because the bibliography file exists and may be useful for reference
 3. Add `\nocite{*}` before `\bibliography{...}` line:
    ```latex
    \nocite{*}  % Include all bibliography entries
-   \bibliographystyle{../../LaTeX/bib_style}
+   \bibliographystyle{../../latex/bib_style}
    \bibliography{bibliography/LogosReferences}
    ```
 
@@ -130,10 +130,10 @@ Fix LaTeX compilation warnings and errors that appeared in LogosReference.tex af
 
 ## Success Criteria
 
-- [ ] `LaTeX/formatting.sty` has `\ProvidesPackage{formatting}` declaration
-- [ ] `LaTeX/formatting.sty` has no stale `%!TEX root` comment
-- [ ] `Logos/LaTeX/LogosReference.tex` compiles without BibTeX errors
-- [ ] `Bimodal/LaTeX/BimodalReference.tex` compiles without package warnings
+- [ ] `latex/formatting.sty` has `\ProvidesPackage{formatting}` declaration
+- [ ] `latex/formatting.sty` has no stale `%!TEX root` comment
+- [ ] `Logos/latex/LogosReference.tex` compiles without BibTeX errors
+- [ ] `Bimodal/latex/BimodalReference.tex` compiles without package warnings
 - [ ] Both PDFs generated successfully in `build/` directories
 
 ## Rollback Plan
@@ -141,10 +141,10 @@ Fix LaTeX compilation warnings and errors that appeared in LogosReference.tex af
 If implementation causes issues:
 1. Revert `formatting.sty` changes:
    ```bash
-   git checkout LaTeX/formatting.sty
+   git checkout latex/formatting.sty
    ```
 2. Revert `LogosReference.tex` changes:
    ```bash
-   git checkout Logos/LaTeX/LogosReference.tex
+   git checkout Logos/latex/LogosReference.tex
    ```
 3. Original documents will compile (with the same warnings/errors as before)

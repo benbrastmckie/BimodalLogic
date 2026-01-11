@@ -13,7 +13,7 @@ pdflatex LogosReference.tex
 
 ### Subfile Only
 ```bash
-cd Logos/LaTeX/subfiles
+cd Logos/latex/subfiles
 pdflatex 01-ConstitutiveFoundation.tex
 ```
 
@@ -66,7 +66,7 @@ latexmk -c LogosReference.tex   # Keep PDF
 ## Directory Structure
 
 ```
-Logos/LaTeX/
+Logos/latex/
 ├── LogosReference.tex          # Main document
 ├── LogosReference.pdf          # Output (generated)
 ├── LogosReference.aux          # Auxiliary (generated)

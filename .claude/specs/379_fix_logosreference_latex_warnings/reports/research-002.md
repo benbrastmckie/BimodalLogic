@@ -17,7 +17,7 @@ Phase 1 (formatting.sty fix) and Phase 2 (adding `\nocite{*}`) completed success
 
 ### 2. BibTeX Citation Commands (COMPLETED)
 - Added `\nocite{*}` to LogosReference.tex before `\bibliography`
-- Changed `\bibliographystyle{../../LaTeX/bib_style}` to `\bibliographystyle{bib_style}`
+- Changed `\bibliographystyle{../../latex/bib_style}` to `\bibliographystyle{bib_style}`
 - Committed in `c6e46c1`
 
 ### 3. latexmkrc BSTINPUTS Configuration (PARTIAL)
@@ -90,7 +90,7 @@ The issue appears to be in latexmk's handling of .bbl files when using `$out_dir
 - No functional loss if bibliography entries aren't cited
 
 ### Option B: Copy bib_style.bst to Theory Directories
-- Place copy in `Logos/LaTeX/bib_style.bst` and `Bimodal/LaTeX/bib_style.bst`
+- Place copy in `Logos/latex/bib_style.bst` and `Bimodal/latex/bib_style.bst`
 - Duplicates file but eliminates path resolution issues
 - Violates DRY principle
 
@@ -111,20 +111,20 @@ The issue appears to be in latexmk's handling of .bbl files when using `$out_dir
 
 ## Current File States
 
-### LaTeX/latexmkrc
+### latex/latexmkrc
 ```perl
 # Custom bibtex command with inline environment variables
 $bibtex = "BSTINPUTS='$shared_latex_dir:' BIBINPUTS='$source_dir:' bibtex %O %S";
 ```
 
-### Logos/LaTeX/LogosReference.tex
+### Logos/latex/LogosReference.tex
 ```latex
 \nocite{*}  % Include all bibliography entries without explicit citations
 \bibliographystyle{bib_style}
 \bibliography{bibliography/LogosReferences}
 ```
 
-### LaTeX/formatting.sty
+### latex/formatting.sty
 ```latex
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{formatting}[2026/01/11 ProofChecker shared formatting]
@@ -140,9 +140,9 @@ $bibtex = "BSTINPUTS='$shared_latex_dir:' BIBINPUTS='$source_dir:' bibtex %O %S"
 
 | File | Change | Status |
 |------|--------|--------|
-| `LaTeX/formatting.sty` | Fix ProvidesPackage name | Committed |
-| `Logos/LaTeX/LogosReference.tex` | Add \nocite{*}, simplify bibliographystyle path | Committed |
-| `LaTeX/latexmkrc` | Add BSTINPUTS/BIBINPUTS configuration | Uncommitted |
+| `latex/formatting.sty` | Fix ProvidesPackage name | Committed |
+| `Logos/latex/LogosReference.tex` | Add \nocite{*}, simplify bibliographystyle path | Committed |
+| `latex/latexmkrc` | Add BSTINPUTS/BIBINPUTS configuration | Uncommitted |
 
 ## Next Steps
 

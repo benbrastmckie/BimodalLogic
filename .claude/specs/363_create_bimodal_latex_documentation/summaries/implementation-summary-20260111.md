@@ -6,15 +6,15 @@
 
 ## Overview
 
-Created a comprehensive LaTeX reference manual for the Bimodal TM logic implementation in `Bimodal/LaTeX/`, documenting the Lean implementation with definitions and concise explanations.
+Created a comprehensive LaTeX reference manual for the Bimodal TM logic implementation in `Bimodal/latex/`, documenting the Lean implementation with definitions and concise explanations.
 
 ## Files Created
 
 ### Directory Structure
-- `Bimodal/LaTeX/` - Main LaTeX documentation directory
-- `Bimodal/LaTeX/assets/` - Style files and assets
-- `Bimodal/LaTeX/subfiles/` - Section subfiles
-- `Bimodal/LaTeX/build/` - Build scripts and output
+- `Bimodal/latex/` - Main LaTeX documentation directory
+- `Bimodal/latex/assets/` - Style files and assets
+- `Bimodal/latex/subfiles/` - Section subfiles
+- `Bimodal/latex/build/` - Build scripts and output
 
 ### Main Document
 - `BimodalReference.tex` - Main document with structure and imports

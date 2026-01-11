@@ -32,14 +32,14 @@ Created concise LaTeX standards documentation for contributors and added cross-r
 
 ## Verification
 
-- All internal links verified (README.md, MODULE_ORGANIZATION.md, LaTeX/README.md)
+- All internal links verified (README.md, MODULE_ORGANIZATION.md, latex/README.md)
 - No lines over 100 characters
 - Document follows project standards (DIRECTORY_README_STANDARD.md pattern)
-- No content duplication with existing LaTeX/README.md
+- No content duplication with existing latex/README.md
 
 ## Design Decisions
 
-1. **Reference vs. duplicate**: LATEX_STANDARDS.md references LaTeX/README.md for build
+1. **Reference vs. duplicate**: LATEX_STANDARDS.md references latex/README.md for build
    details rather than duplicating content
 2. **Concise focus**: Document focuses on contributor requirements (what to do) rather
    than usage details (how to build)
@@ -49,4 +49,4 @@ Created concise LaTeX standards documentation for contributors and added cross-r
 
 - The document captures all conventions established in tasks 375, 378-379, and 384
 - New theory checklist provides actionable steps for contributors adding theory documentation
-- LaTeX/README.md remains the primary reference for build commands and latexmk usage
+- latex/README.md remains the primary reference for build commands and latexmk usage

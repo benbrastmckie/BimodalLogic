@@ -42,7 +42,7 @@ Already fixed:
 
 Already fixed:
 - Added `\nocite{*}` before `\bibliography`
-- Changed `\bibliographystyle{../../LaTeX/bib_style}` to `\bibliographystyle{bib_style}`
+- Changed `\bibliographystyle{../../latex/bib_style}` to `\bibliographystyle{bib_style}`
 
 ---
 
@@ -57,10 +57,10 @@ Already fixed:
 3. Ensure BibTeX can find both .bst and .bib files
 
 **Files to modify**:
-- `LaTeX/latexmkrc` - Replace custom bibtex with ensure_path
+- `latex/latexmkrc` - Replace custom bibtex with ensure_path
 
 **Steps**:
-1. Read current `LaTeX/latexmkrc` to confirm current state
+1. Read current `latex/latexmkrc` to confirm current state
 2. Remove the custom `$bibtex` line (line 59):
    ```perl
    # DELETE THIS:
@@ -75,7 +75,7 @@ Already fixed:
 4. Update the comment block to explain the approach
 
 **Verification**:
-- Run `latexmk -verbose LogosReference.tex` from `Logos/LaTeX/`
+- Run `latexmk -verbose LogosReference.tex` from `Logos/latex/`
 - Check that bibtex finds `bib_style.bst` in output
 - Verify `build/LogosReference.bbl` is non-empty (should have ~46 lines)
 - Confirm PDF has bibliography section
@@ -93,17 +93,17 @@ Already fixed:
 2. Eliminate path resolution entirely
 
 **Files to modify**:
-- `Logos/LaTeX/bib_style.bst` (copy from `LaTeX/bib_style.bst`)
+- `Logos/latex/bib_style.bst` (copy from `latex/bib_style.bst`)
 
 **Steps**:
 1. If Phase 3 verification fails, copy .bst file:
    ```bash
-   cp LaTeX/bib_style.bst Logos/LaTeX/bib_style.bst
+   cp latex/bib_style.bst Logos/latex/bib_style.bst
    ```
 2. The `\bibliographystyle{bib_style}` in LogosReference.tex will find local copy
 3. Add comment in copied file noting it's a copy:
    ```
-   % Copy of LaTeX/bib_style.bst for build directory compatibility
+   % Copy of latex/bib_style.bst for build directory compatibility
    % See Task 379 research-003.md for explanation
    ```
 
@@ -120,10 +120,10 @@ Already fixed:
 **Objectives**:
 1. Verify both LogosReference and BimodalReference compile cleanly
 2. Clean up any uncommitted latexmkrc changes from research-002
-3. Document solution in LaTeX/README.md
+3. Document solution in latex/README.md
 
 **Files to modify**:
-- `LaTeX/README.md` - Document BibTeX configuration (if not already documented)
+- `latex/README.md` - Document BibTeX configuration (if not already documented)
 
 **Steps**:
 1. Clean build:
@@ -136,7 +136,7 @@ Already fixed:
    cd ../../Bimodal/LaTeX && rm -rf build && latexmk BimodalReference.tex
    ```
 4. Verify BimodalReference compiles without warnings
-5. Update LaTeX/README.md if needed to document the `ensure_path()` configuration
+5. Update latex/README.md if needed to document the `ensure_path()` configuration
 
 **Verification**:
 - Both PDFs generated successfully
@@ -162,23 +162,23 @@ Already fixed:
 
 ## Success Criteria
 
-- [x] `LaTeX/formatting.sty` has `\ProvidesPackage{formatting}` declaration
-- [x] `LaTeX/formatting.sty` has no stale `%!TEX root` comment
-- [x] `Logos/LaTeX/LogosReference.tex` has `\nocite{*}` and simplified bibliographystyle
-- [ ] `LaTeX/latexmkrc` uses `ensure_path()` instead of custom `$bibtex`
+- [x] `latex/formatting.sty` has `\ProvidesPackage{formatting}` declaration
+- [x] `latex/formatting.sty` has no stale `%!TEX root` comment
+- [x] `Logos/latex/LogosReference.tex` has `\nocite{*}` and simplified bibliographystyle
+- [ ] `latex/latexmkrc` uses `ensure_path()` instead of custom `$bibtex`
 - [ ] `build/LogosReference.bbl` is non-empty after build
-- [ ] `Logos/LaTeX/build/LogosReference.pdf` includes bibliography
-- [ ] `Bimodal/LaTeX/build/BimodalReference.pdf` compiles without warnings
+- [ ] `Logos/latex/build/LogosReference.pdf` includes bibliography
+- [ ] `Bimodal/latex/build/BimodalReference.pdf` compiles without warnings
 
 ## Rollback Plan
 
 If implementation causes issues:
 1. Revert latexmkrc changes:
    ```bash
-   git checkout LaTeX/latexmkrc
+   git checkout latex/latexmkrc
    ```
 2. If Phase 4 fallback was used, remove copied .bst:
    ```bash
-   rm Logos/LaTeX/bib_style.bst
+   rm Logos/latex/bib_style.bst
    ```
 3. Original configuration will restore (with the same warnings as before)

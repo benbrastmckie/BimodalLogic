@@ -1,4 +1,4 @@
 # Bimodal Theory LaTeX Build Configuration
 # Load shared ProofChecker configuration from central location
-# See LaTeX/README.md for documentation
-do '../../LaTeX/latexmkrc';
+# See latex/README.md for documentation
+do '../../latex/latexmkrc';

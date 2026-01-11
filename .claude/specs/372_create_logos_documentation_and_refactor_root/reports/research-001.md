@@ -48,7 +48,7 @@ Each has a README.md following DIRECTORY_README_STANDARD.md Template G.
 The Logos/ directory currently contains:
 - Main implementation files (Core.lean, Syntax.lean, etc.)
 - Stubs for planned extensions (Epistemic/, Normative/, Explanatory/)
-- LaTeX/ directory for mathematical documentation
+- latex/ directory for mathematical documentation
 - README.md with comprehensive implementation overview
 - **No docs/ subdirectory**
 

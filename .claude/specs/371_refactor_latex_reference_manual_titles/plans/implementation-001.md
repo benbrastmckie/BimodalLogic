@@ -29,7 +29,7 @@ Replace the simple `\maketitle` command in both BimodalReference.tex and LogosRe
 5. Add paper reference with PDF link
 
 **Files to modify**:
-- `Bimodal/LaTeX/BimodalReference.tex` - Replace title section
+- `Bimodal/latex/BimodalReference.tex` - Replace title section
 
 **Steps**:
 1. Define `\HRule` command for horizontal rules
@@ -69,7 +69,7 @@ Replace the simple `\maketitle` command in both BimodalReference.tex and LogosRe
 5. Add references to both Springer papers
 
 **Files to modify**:
-- `Logos/LaTeX/LogosReference.tex` - Replace title section
+- `Logos/latex/LogosReference.tex` - Replace title section
 
 **Steps**:
 1. Define `\HRule` command for horizontal rules
@@ -103,8 +103,8 @@ Replace the simple `\maketitle` command in both BimodalReference.tex and LogosRe
 3. Verify all hyperlinks work in generated PDFs
 
 **Files to verify**:
-- `Bimodal/LaTeX/BimodalReference.tex`
-- `Logos/LaTeX/LogosReference.tex`
+- `Bimodal/latex/BimodalReference.tex`
+- `Logos/latex/LogosReference.tex`
 
 **Steps**:
 1. Compile BimodalReference.tex with pdflatex

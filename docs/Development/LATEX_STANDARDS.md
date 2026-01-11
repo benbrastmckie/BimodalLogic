@@ -4,17 +4,17 @@
 
 Standards for creating and maintaining LaTeX documentation in ProofChecker.
 
-> **For build instructions and usage**: See [LaTeX/README.md](../../LaTeX/README.md) for
+> **For build instructions and usage**: See [latex/README.md](../../latex/README.md) for
 > comprehensive build commands, latexmk usage, and PDF viewer configuration.
 
 ## Directory Structure
 
-### Shared Assets (`LaTeX/`)
+### Shared Assets (`latex/`)
 
 Central shared resources for all theory documentation:
 
 ```
-LaTeX/
+latex/
 ├── latexmkrc            # Central build configuration
 ├── formatting.sty       # Shared document formatting (fonts, colors, citations)
 ├── notation-standards.sty  # Shared notation commands
@@ -27,7 +27,7 @@ LaTeX/
 Each theory follows this pattern:
 
 ```
-{Theory}/LaTeX/
+{Theory}/latex/
 ├── latexmkrc            # Stub loading central config
 ├── build.sh             # Build script (optional)
 ├── {Theory}Reference.tex  # Main document
@@ -47,8 +47,8 @@ Each theory follows this pattern:
 Theory directories use a one-line stub to load the central configuration:
 
 ```perl
-# {Theory}/LaTeX/latexmkrc
-do '../../LaTeX/latexmkrc';
+# {Theory}/latex/latexmkrc
+do '../../latex/latexmkrc';
 ```
 
 This provides:
@@ -78,7 +78,7 @@ Always import packages using base names, not relative paths:
 \RequirePackage{notation-standards}
 
 % Incorrect - causes warnings
-\usepackage{../../LaTeX/formatting}
+\usepackage{../../latex/formatting}
 \usepackage{assets/{theory}-notation}
 ```
 
@@ -127,13 +127,13 @@ Checklist for creating LaTeX documentation for a new theory:
 
 1. **Create directory structure**:
    ```bash
-   mkdir -p {Theory}/LaTeX/assets {Theory}/LaTeX/subfiles {Theory}/LaTeX/bib
+   mkdir -p {Theory}/latex/assets {Theory}/latex/subfiles {Theory}/latex/bib
    ```
 
 2. **Create latexmkrc stub**:
    ```perl
-   # {Theory}/LaTeX/latexmkrc
-   do '../../LaTeX/latexmkrc';
+   # {Theory}/latex/latexmkrc
+   do '../../latex/latexmkrc';
    ```
 
 3. **Create notation package** (`assets/{theory}-notation.sty`):
@@ -162,7 +162,7 @@ Checklist for creating LaTeX documentation for a new theory:
 
 ## Related Documentation
 
-- [LaTeX/README.md](../../LaTeX/README.md) - Build instructions and latexmk usage
+- [latex/README.md](../../latex/README.md) - Build instructions and latexmk usage
 - [MODULE_ORGANIZATION.md](MODULE_ORGANIZATION.md) - Project directory structure
 
 ---

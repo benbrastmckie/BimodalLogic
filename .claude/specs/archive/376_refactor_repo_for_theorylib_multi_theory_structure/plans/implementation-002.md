@@ -16,7 +16,7 @@ The codebase has evolved significantly since the original plan. Several complete
 |------|--------|-------------------|
 | 377 | Created Logos/Foundation/ with real content | Foundation/ must move to SubTheories/ |
 | 377 | Logos/Explanatory/ has stub content | Explanatory/ must move to SubTheories/ |
-| 375 | Created LaTeX/ at project root | Already provides shared LaTeX assets |
+| 375 | Created latex/ at project root | Already provides shared LaTeX assets |
 | 378 | Improved docs/ structure | Keep at project root |
 | 176 | Added Bimodal/Automation/SuccessPatterns.lean | No structural impact |
 | 179 | Created benchmarks/ directory at root | Keep at project root |
@@ -24,7 +24,7 @@ The codebase has evolved significantly since the original plan. Several complete
 ### Key Changes from Version 001
 
 1. **Logos/SubTheories/** - New directory to contain Foundation/, Epistemic/, Normative/, Explanatory/ (user request)
-2. **LaTeX/ already exists** - No need to create shared LaTeX structure (task 375 completed)
+2. **latex/ already exists** - No need to create shared LaTeX structure (task 375 completed)
 3. **Shared/ library deferred** - Since theories are not yet sharing Lean code, defer Shared library creation
 4. **Simpler structure** - Focus on organizing existing content rather than creating new infrastructure
 
@@ -33,7 +33,7 @@ The codebase has evolved significantly since the original plan. Several complete
 ```
 ProofChecker/
   lakefile.lean           # Updated with srcDir configuration
-  LaTeX/                   # Already exists (shared assets from task 375)
+  latex/                   # Already exists (shared assets from task 375)
   docs/           # Already exists (project-wide docs from task 378)
   benchmarks/              # Already exists (from task 179)
   Theories/
@@ -47,7 +47,7 @@ ProofChecker/
         Normative/         # Move from Logos/Normative/
         Explanatory/       # Move from Logos/Explanatory/
       docs/       # Keep theory-specific docs
-      LaTeX/               # Keep theory-specific LaTeX
+      latex/               # Keep theory-specific LaTeX
       Lint/                # Keep utility modules
   Tests/
     BimodalTest.lean       # Root module
@@ -118,7 +118,7 @@ ProofChecker/
 **Verification**:
 - `lake build Logos` succeeds
 - `Logos/SubTheories/` contains Foundation/, Epistemic/, Normative/, Explanatory/
-- Original Logos/docs/ and Logos/LaTeX/ remain in place
+- Original Logos/docs/ and Logos/latex/ remain in place
 
 ---
 
@@ -316,7 +316,7 @@ ProofChecker/
    - `Logos/` - Recursive semantics with layered extensions
      - `SubTheories/` - Theory layers (Foundation, Epistemic, Normative, Explanatory)
      - `docs/` - Theory-specific documentation
-     - `LaTeX/` - Theory-specific LaTeX documentation
+     - `latex/` - Theory-specific LaTeX documentation
    ```
 4. Create `Tests/README.md`:
    ```markdown
@@ -354,7 +354,7 @@ ProofChecker/
 | SubTheories/ import path complexity | Medium | Medium | Test imports incrementally after each move |
 | Cross-library imports break | High | Low | Bimodal and Logos are separate lean_lib targets - should work |
 | Scripts assume old paths | Low | Medium | Grep for path references before moving |
-| LaTeX relative paths break | Medium | Low | LaTeX paths already use `../../LaTeX/` which will still work from `Theories/Logos/LaTeX/` |
+| LaTeX relative paths break | Medium | Low | LaTeX paths already use `../../latex/` which will still work from `Theories/Logos/latex/` |
 
 ## Success Criteria
 

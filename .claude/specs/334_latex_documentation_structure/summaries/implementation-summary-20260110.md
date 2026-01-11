@@ -23,7 +23,7 @@ Created `.claude/context/project/latex/` directory with 8 files:
 Updated `skill-latex-implementation/SKILL.md` with context references.
 
 ### Phase 1: Directory Structure and Style Files
-Created `docs/LaTeX/` directory structure:
+Created `docs/latex/` directory structure:
 - `subfiles/` - 9 subfiles
 - `assets/logos-notation.sty` - Custom notation macros (40+ commands)
 - `assets/formatting.sty` - Formatting package (from LogicNotes)
@@ -66,17 +66,17 @@ Created `docs/LaTeX/` directory structure:
 - `.claude/context/project/latex/patterns/cross-references.md`
 - `.claude/context/project/latex/templates/subfile-template.md`
 - `.claude/context/project/latex/tools/compilation-guide.md`
-- `docs/LaTeX/LogosReference.tex`
-- `docs/LaTeX/assets/logos-notation.sty`
-- `docs/LaTeX/subfiles/00-Introduction.tex`
-- `docs/LaTeX/subfiles/01-ConstitutiveFoundation.tex`
-- `docs/LaTeX/subfiles/02-CoreExtension-Syntax.tex`
-- `docs/LaTeX/subfiles/03-CoreExtension-Semantics.tex`
-- `docs/LaTeX/subfiles/04-CoreExtension-Axioms.tex`
-- `docs/LaTeX/subfiles/05-Epistemic.tex`
-- `docs/LaTeX/subfiles/06-Normative.tex`
-- `docs/LaTeX/subfiles/07-Spatial.tex`
-- `docs/LaTeX/subfiles/08-Agential.tex`
+- `docs/latex/LogosReference.tex`
+- `docs/latex/assets/logos-notation.sty`
+- `docs/latex/subfiles/00-Introduction.tex`
+- `docs/latex/subfiles/01-ConstitutiveFoundation.tex`
+- `docs/latex/subfiles/02-CoreExtension-Syntax.tex`
+- `docs/latex/subfiles/03-CoreExtension-Semantics.tex`
+- `docs/latex/subfiles/04-CoreExtension-Axioms.tex`
+- `docs/latex/subfiles/05-Epistemic.tex`
+- `docs/latex/subfiles/06-Normative.tex`
+- `docs/latex/subfiles/07-Spatial.tex`
+- `docs/latex/subfiles/08-Agential.tex`
 
 ## Files Modified
 

@@ -15,8 +15,8 @@ The warnings and errors fall into three categories: (1) package date warnings fr
 **Symptoms:**
 ```
 LaTeX Warning: You have requested package `assets/bimodal-notation',
-LaTeX Warning: You have requested package `../../LaTeX/notation-standards',
-LaTeX Warning: You have requested package `../../LaTeX/formatting',
+LaTeX Warning: You have requested package `../../latex/notation-standards',
+LaTeX Warning: You have requested package `../../latex/formatting',
 ```
 
 **Root Cause:**
@@ -65,7 +65,7 @@ I found no style file---while reading file LogosReference.aux
 **Root Cause:**
 LogosReference.tex includes:
 ```latex
-\bibliographystyle{../../LaTeX/bib_style}
+\bibliographystyle{../../latex/bib_style}
 \bibliography{bibliography/LogosReferences}
 ```
 
@@ -80,7 +80,7 @@ BimodalReference.tex does NOT have these lines, so it doesn't trigger BibTeX.
 **Option A: Remove bibliography lines** (if no citations needed):
 ```latex
 % Remove or comment out:
-% \bibliographystyle{../../LaTeX/bib_style}
+% \bibliographystyle{../../latex/bib_style}
 % \bibliography{bibliography/LogosReferences}
 ```
 
@@ -88,7 +88,7 @@ BimodalReference.tex does NOT have these lines, so it doesn't trigger BibTeX.
 Add `\nocite{*}` before `\bibliography` to include all entries without explicit citations:
 ```latex
 \nocite{*}  % Include all bibliography entries
-\bibliographystyle{../../LaTeX/bib_style}
+\bibliographystyle{../../latex/bib_style}
 \bibliography{bibliography/LogosReferences}
 ```
 

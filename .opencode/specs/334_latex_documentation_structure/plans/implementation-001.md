@@ -37,7 +37,7 @@ The Logos project currently lacks comprehensive LaTeX reference documentation th
 This plan covers creating Layer 0 (Core TM logic) LaTeX documentation by extracting and reorganizing content from LogicNotes.tex. The documentation will mirror the Logos layer architecture with a modular subfile structure.
 
 **In Scope**:
-- Create docs/LaTeX/ directory structure with subfile architecture
+- Create docs/latex/ directory structure with subfile architecture
 - Copy source LaTeX assets (formatting.sty, notation.sty, bib_style.bst, glossary.tex)
 - Create logos-notation.sty with Logos-specific macros
 - Extract content from LogicNotes.tex for Layer 0 (Core TM logic)
@@ -66,7 +66,7 @@ This plan covers creating Layer 0 (Core TM logic) LaTeX documentation by extract
 
 ### Definition of Done
 
-- [ ] docs/LaTeX/ directory structure created
+- [ ] docs/latex/ directory structure created
 - [ ] All source assets copied and adapted
 - [ ] logos-notation.sty created with Layer 0 macros
 - [ ] 6 Layer 0 subfiles created with extracted content
@@ -123,7 +123,7 @@ This plan integrates findings from 2 research reports created on 2026-01-08:
 **Tasks**:
 1. Create directory structure:
    ```
-   docs/LaTeX/
+   docs/latex/
    ├── LogosReference.tex
    ├── subfiles/
    ├── assets/
@@ -131,7 +131,7 @@ This plan integrates findings from 2 research reports created on 2026-01-08:
    └── build/
    ```
 
-2. Copy source assets to docs/LaTeX/assets/:
+2. Copy source assets to docs/latex/assets/:
    - formatting.sty (from LogicNotes/assets/)
    - notation.sty (from LogicNotes/assets/)
    - bib_style.bst (from LogicNotes/assets/)
@@ -520,7 +520,7 @@ done
 **Validation Script** (validate-latex.sh):
 ```bash
 #!/bin/bash
-for file in docs/LaTeX/subfiles/*.tex; do
+for file in docs/latex/subfiles/*.tex; do
   echo "Validating $file..."
   pdflatex -interaction=nonstopmode "$file" > /dev/null 2>&1
   if [ $? -ne 0 ]; then
@@ -593,7 +593,7 @@ echo "All subfiles validated successfully"
 #!/bin/bash
 LEAN_ROOT="/home/benjamin/Projects/ProofChecker"
 
-grep -r "\\leansrc{" docs/LaTeX/subfiles/*.tex | while read -r line; do
+grep -r "\\leansrc{" docs/latex/subfiles/*.tex | while read -r line; do
   module=$(echo "$line" | sed -n 's/.*\\leansrc{\([^}]*\)}.*/\1/p' | cut -d'.' -f1-4)
   file="${module//./\/}.lean"
   

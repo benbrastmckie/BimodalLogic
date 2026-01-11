@@ -16,8 +16,8 @@ After running `latexmk -f -xelatex LogosReference.tex`, the log shows:
 
 1. **Package path mismatch warnings**:
    - `You have requested package 'assets/logos-notation', but the package provides 'logos-notation'`
-   - `You have requested package '../../LaTeX/notation-standards', but the package provides 'notation-standards'`
-   - `You have requested package '../../LaTeX/formatting', but the package provides 'formatting'`
+   - `You have requested package '../../latex/notation-standards', but the package provides 'notation-standards'`
+   - `You have requested package '../../latex/formatting', but the package provides 'formatting'`
 
 2. **Minor float warning**:
    - `'h' float specifier changed to 'ht'` (cosmetic, not addressed in this task)
@@ -36,12 +36,12 @@ According to [LaTeX documentation](https://latexref.xyz/_005cProvidesClass-_0026
 
 ```
 ProofChecker/
-├── LaTeX/
+├── latex/
 │   ├── latexmkrc          # Central build config
 │   ├── notation-standards.sty
 │   └── formatting.sty
-└── Logos/LaTeX/
-    ├── latexmkrc          # Loads ../../LaTeX/latexmkrc
+└── Logos/latex/
+    ├── latexmkrc          # Loads ../../latex/latexmkrc
     ├── LogosReference.tex
     └── assets/
         └── logos-notation.sty  # Requires notation-standards
@@ -52,12 +52,12 @@ ProofChecker/
 In `LogosReference.tex`:
 ```latex
 \usepackage{assets/logos-notation}
-\usepackage{../../LaTeX/formatting}
+\usepackage{../../latex/formatting}
 ```
 
 In `assets/logos-notation.sty`:
 ```latex
-\RequirePackage{../../LaTeX/notation-standards}
+\RequirePackage{../../latex/notation-standards}
 ```
 
 ### Solution: Use TEXINPUTS
@@ -74,8 +74,8 @@ ensure_path('TEXINPUTS', "$shared_latex_dir//");   # Shared packages
 This allows:
 ```latex
 \usepackage{logos-notation}      % Found in assets/
-\usepackage{formatting}          % Found in ../../LaTeX/
-\RequirePackage{notation-standards}  % Found in ../../LaTeX/
+\usepackage{formatting}          % Found in ../../latex/
+\RequirePackage{notation-standards}  % Found in ../../latex/
 ```
 
 ### Alternative Approaches Considered
@@ -92,7 +92,7 @@ The following warnings from the original issue are no longer present in the xela
 
 ## Recommendations
 
-1. **Add TEXINPUTS configuration to LaTeX/latexmkrc**:
+1. **Add TEXINPUTS configuration to latex/latexmkrc**:
    ```perl
    ensure_path('TEXINPUTS', "$source_dir/assets//");
    ensure_path('TEXINPUTS', "$shared_latex_dir//");
@@ -101,12 +101,12 @@ The following warnings from the original issue are no longer present in the xela
 2. **Update LogosReference.tex package loading**:
    ```latex
    \usepackage{logos-notation}  % was: assets/logos-notation
-   \usepackage{formatting}      % was: ../../LaTeX/formatting
+   \usepackage{formatting}      % was: ../../latex/formatting
    ```
 
 3. **Update logos-notation.sty RequirePackage**:
    ```latex
-   \RequirePackage{notation-standards}  % was: ../../LaTeX/notation-standards
+   \RequirePackage{notation-standards}  % was: ../../latex/notation-standards
    ```
 
 4. **Test the build** to confirm warnings are resolved
@@ -121,6 +121,6 @@ The following warnings from the original issue are no longer present in the xela
 ## Next Steps
 
 1. Create implementation plan
-2. Implement TEXINPUTS configuration in LaTeX/latexmkrc
+2. Implement TEXINPUTS configuration in latex/latexmkrc
 3. Update package references to use base names
 4. Verify build succeeds without warnings

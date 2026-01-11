@@ -6,7 +6,7 @@
 
 ## Summary
 
-Research reveals that creating a shared ProofChecker/LaTeX/ directory is the most elegant approach for consolidating common assets. The current setup has identical `formatting.sty` and `bib_style.bst` files duplicated in both `Logos/LaTeX/assets/` and `Bimodal/LaTeX/assets/`. Using relative paths with `../` allows theory-specific documents to import shared assets while maintaining their own notation packages.
+Research reveals that creating a shared ProofChecker/latex/ directory is the most elegant approach for consolidating common assets. The current setup has identical `formatting.sty` and `bib_style.bst` files duplicated in both `Logos/latex/assets/` and `Bimodal/latex/assets/`. Using relative paths with `../` allows theory-specific documents to import shared assets while maintaining their own notation packages.
 
 ## Findings
 
@@ -28,15 +28,15 @@ From [Multi-file LaTeX projects](https://www.overleaf.com/learn/latex/Multi-file
 
 ```
 ProofChecker/
-├── LaTeX/                    # Shared assets (NEW)
+├── latex/                    # Shared assets (NEW)
 │   ├── formatting.sty        # Common formatting
 │   ├── bib_style.bst        # Common bibliography style
 │   └── README.md            # Usage documentation
-├── Logos/LaTeX/
+├── Logos/latex/
 │   ├── assets/
 │   │   └── logos-notation.sty  # Theory-specific
 │   └── LogosReference.tex
-└── Bimodal/LaTeX/
+└── Bimodal/latex/
     ├── assets/
     │   └── bimodal-notation.sty  # Theory-specific
     └── BimodalReference.tex
@@ -48,8 +48,8 @@ From [Kpathsea documentation](https://www.overleaf.com/learn/latex/Articles/An_i
 
 In theory-specific documents, import shared assets using:
 ```latex
-\usepackage{../../LaTeX/formatting}
-\bibliographystyle{../../LaTeX/bib_style}
+\usepackage{../../latex/formatting}
+\bibliographystyle{../../latex/bib_style}
 ```
 
 This approach:
@@ -63,7 +63,7 @@ This approach:
 From [Edinburgh TEXINPUTS guide](https://www2.ph.ed.ac.uk/~wjh/tex/documents/environmental.pdf):
 
 ```bash
-export TEXINPUTS=".:./../../LaTeX//:"
+export TEXINPUTS=".:./../../latex//:"
 ```
 
 **Not recommended** because:
@@ -74,7 +74,7 @@ export TEXINPUTS=".:./../../LaTeX//:"
 
 ### Shared vs Theory-Specific Content
 
-**Should be shared (ProofChecker/LaTeX/):**
+**Should be shared (ProofChecker/latex/):**
 - `formatting.sty` - Document formatting, fonts, hyperref setup, citation commands
 - `bib_style.bst` - Bibliography formatting style
 - Potentially: common theorem environments, proof macros
@@ -86,13 +86,13 @@ export TEXINPUTS=".:./../../LaTeX//:"
 ### Import Order Consideration
 
 The current `formatting.sty` loads hyperref last (correct order). Theory documents should:
-1. Load shared formatting first: `\usepackage{../../LaTeX/formatting}`
+1. Load shared formatting first: `\usepackage{../../latex/formatting}`
 2. Load theory-specific notation: `\usepackage{assets/logos-notation}`
 3. Load cleveref after hyperref (which formatting.sty handles)
 
 ## Recommendations
 
-### 1. Create ProofChecker/LaTeX/ Directory
+### 1. Create ProofChecker/latex/ Directory
 
 Create a new top-level LaTeX directory containing shared assets:
 - `formatting.sty` (moved from either theory directory)
@@ -108,17 +108,17 @@ Change imports in BimodalReference.tex and LogosReference.tex:
 \bibliographystyle{assets/bib_style}
 
 % New:
-\usepackage{../../LaTeX/formatting}
-\bibliographystyle{../../LaTeX/bib_style}
+\usepackage{../../latex/formatting}
+\bibliographystyle{../../latex/bib_style}
 ```
 
 ### 3. Remove Duplicates
 
 Delete from theory-specific assets directories:
-- `Logos/LaTeX/assets/formatting.sty`
-- `Logos/LaTeX/assets/bib_style.bst`
-- `Bimodal/LaTeX/assets/formatting.sty`
-- `Bimodal/LaTeX/assets/bib_style.bst`
+- `Logos/latex/assets/formatting.sty`
+- `Logos/latex/assets/bib_style.bst`
+- `Bimodal/latex/assets/formatting.sty`
+- `Bimodal/latex/assets/bib_style.bst`
 
 ### 4. Consider Future Consolidation
 
@@ -137,7 +137,7 @@ Evaluate whether these could also be shared:
 ## Next Steps
 
 1. Create implementation plan with phases:
-   - Phase 1: Create ProofChecker/LaTeX/ directory structure
+   - Phase 1: Create ProofChecker/latex/ directory structure
    - Phase 2: Move shared files to new location
    - Phase 3: Update import paths in all documents
    - Phase 4: Remove duplicates from theory directories

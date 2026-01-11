@@ -17,20 +17,20 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 **Status**: [NOT STARTED]
 
 **Objectives**:
-1. Create Bimodal/LaTeX/ directory structure
+1. Create Bimodal/latex/ directory structure
 2. Copy and adapt formatting assets from Logos/LaTeX
 3. Create bimodal-notation.sty with TM-specific notation
 
 **Files to create**:
-- `Bimodal/LaTeX/BimodalReference.tex` - Main document skeleton
-- `Bimodal/LaTeX/assets/bimodal-notation.sty` - Custom notation (□, ◇, H, G, △, ▽)
-- `Bimodal/LaTeX/assets/formatting.sty` - Copy from Logos/LaTeX
-- `Bimodal/LaTeX/bibliography/BimodalReferences.bib` - Include JPL paper reference
-- `Bimodal/LaTeX/subfiles/` - Directory for chapter files
+- `Bimodal/latex/BimodalReference.tex` - Main document skeleton
+- `Bimodal/latex/assets/bimodal-notation.sty` - Custom notation (□, ◇, H, G, △, ▽)
+- `Bimodal/latex/assets/formatting.sty` - Copy from Logos/LaTeX
+- `Bimodal/latex/bibliography/BimodalReferences.bib` - Include JPL paper reference
+- `Bimodal/latex/subfiles/` - Directory for chapter files
 
 **Steps**:
-1. Create directory structure: `Bimodal/LaTeX/{assets,bibliography,subfiles,build}`
-2. Copy `formatting.sty` from `Logos/LaTeX/assets/`
+1. Create directory structure: `Bimodal/latex/{assets,bibliography,subfiles,build}`
+2. Copy `formatting.sty` from `Logos/latex/assets/`
 3. Create `bimodal-notation.sty` adapting notation from JPL paper (lines 149-200)
 4. Create skeleton `BimodalReference.tex` with subfiles structure
 5. Create `BimodalReferences.bib` with JPL paper entry
@@ -51,8 +51,8 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 2. Write introduction section
 
 **Files to create/modify**:
-- `Bimodal/LaTeX/BimodalReference.tex` - Complete main document
-- `Bimodal/LaTeX/subfiles/00-Introduction.tex` - TM logic overview
+- `Bimodal/latex/BimodalReference.tex` - Complete main document
+- `Bimodal/latex/subfiles/00-Introduction.tex` - TM logic overview
 
 **Steps**:
 1. Complete BimodalReference.tex with:
@@ -82,7 +82,7 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 2. Include notation table
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/01-Syntax.tex`
+- `Bimodal/latex/subfiles/01-Syntax.tex`
 
 **Steps**:
 1. Document Formula inductive type (6 constructors)
@@ -115,7 +115,7 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 3. Document derivation tree structure
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/02-ProofSystem.tex`
+- `Bimodal/latex/subfiles/02-ProofSystem.tex`
 
 **Steps**:
 1. Document 14 axiom schemata matching paper's sub:Logic:
@@ -145,7 +145,7 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 4. Document time-shift machinery
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/03-Semantics.tex`
+- `Bimodal/latex/subfiles/03-Semantics.tex`
 
 **Steps**:
 1. Document TaskFrame structure (def:frame alignment):
@@ -182,7 +182,7 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 3. Note implementation status
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/04-Metalogic.tex`
+- `Bimodal/latex/subfiles/04-Metalogic.tex`
 
 **Steps**:
 1. Document soundness theorem (thm:TM-soundness alignment):
@@ -216,7 +216,7 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 3. Document S5 modal theorems
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/05-Theorems.tex`
+- `Bimodal/latex/subfiles/05-Theorems.tex`
 
 **Steps**:
 1. Document perpetuity principles (all proven):
@@ -248,7 +248,7 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 3. Update project documentation
 
 **Files to create/modify**:
-- `Bimodal/LaTeX/build.sh` - Build script
+- `Bimodal/latex/build.sh` - Build script
 - `Bimodal/README.md` - Add LaTeX documentation reference
 
 **Steps**:
@@ -266,7 +266,7 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 
 ## Dependencies
 
-- Logos/LaTeX/assets/formatting.sty - Base formatting to copy
+- Logos/latex/assets/formatting.sty - Base formatting to copy
 - JPL paper possible_worlds.tex - Notation reference
 
 ## Risks and Mitigations
@@ -288,4 +288,4 @@ Create a comprehensive LaTeX documentation suite for the Bimodal TM logic implem
 
 ## Rollback Plan
 
-Delete Bimodal/LaTeX/ directory if implementation fails - no existing content affected.
+Delete Bimodal/latex/ directory if implementation fails - no existing content affected.

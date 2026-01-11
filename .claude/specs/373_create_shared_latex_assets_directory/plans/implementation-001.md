@@ -7,7 +7,7 @@
 
 ## Overview
 
-Create a ProofChecker/LaTeX/ directory containing shared assets for all theory-specific LaTeX documentation. This includes:
+Create a ProofChecker/latex/ directory containing shared assets for all theory-specific LaTeX documentation. This includes:
 1. `formatting.sty` - Common document formatting (currently duplicated)
 2. `bib_style.bst` - Bibliography style (currently duplicated)
 3. `notation-standards.sty` - NEW: Common notation definitions shared across theories
@@ -16,24 +16,24 @@ Theory-specific notation files will import notation-standards.sty and add their 
 
 ## Phases
 
-### Phase 1: Create ProofChecker/LaTeX/ Directory Structure
+### Phase 1: Create ProofChecker/latex/ Directory Structure
 
 **Status**: [NOT STARTED]
 
 **Objectives**:
-1. Create ProofChecker/LaTeX/ directory
+1. Create ProofChecker/latex/ directory
 2. Move formatting.sty to shared location
 3. Move bib_style.bst to shared location
 
 **Files to create/modify**:
-- `LaTeX/` - New directory
-- `LaTeX/formatting.sty` - Moved from Logos/LaTeX/assets/
-- `LaTeX/bib_style.bst` - Moved from Logos/LaTeX/assets/
+- `latex/` - New directory
+- `latex/formatting.sty` - Moved from Logos/latex/assets/
+- `latex/bib_style.bst` - Moved from Logos/latex/assets/
 
 **Steps**:
-1. Create `ProofChecker/LaTeX/` directory
-2. Copy `Logos/LaTeX/assets/formatting.sty` to `LaTeX/formatting.sty`
-3. Copy `Logos/LaTeX/assets/bib_style.bst` to `LaTeX/bib_style.bst`
+1. Create `ProofChecker/latex/` directory
+2. Copy `Logos/latex/assets/formatting.sty` to `latex/formatting.sty`
+3. Copy `Logos/latex/assets/bib_style.bst` to `latex/bib_style.bst`
 
 **Verification**:
 - Directory exists with both files
@@ -49,7 +49,7 @@ Theory-specific notation files will import notation-standards.sty and add their 
 2. Include notation used identically across theories
 
 **Files to create**:
-- `LaTeX/notation-standards.sty` - Common notation definitions
+- `latex/notation-standards.sty` - Common notation definitions
 
 **Common notation to include** (shared between logos-notation.sty and bimodal-notation.sty):
 - Modal operators: `\nec` (Box), `\poss` (Diamond)
@@ -85,13 +85,13 @@ Theory-specific notation files will import notation-standards.sty and add their 
 3. Remove duplicated definitions from theory files
 
 **Files to modify**:
-- `Logos/LaTeX/assets/logos-notation.sty` - Import standards, remove duplicates
-- `Bimodal/LaTeX/assets/bimodal-notation.sty` - Import standards, remove duplicates
+- `Logos/latex/assets/logos-notation.sty` - Import standards, remove duplicates
+- `Bimodal/latex/assets/bimodal-notation.sty` - Import standards, remove duplicates
 
 **Steps**:
-1. Add `\RequirePackage{../../LaTeX/notation-standards}` to logos-notation.sty
+1. Add `\RequirePackage{../../latex/notation-standards}` to logos-notation.sty
 2. Remove from logos-notation.sty: nec, poss, satisfies, notsatisfies, proves, context, metaphi, metapsi, metachi, model
-3. Add `\RequirePackage{../../LaTeX/notation-standards}` to bimodal-notation.sty
+3. Add `\RequirePackage{../../latex/notation-standards}` to bimodal-notation.sty
 4. Remove from bimodal-notation.sty: nec, poss, satisfies, notsatisfies, proves, context, metaphi, metapsi, metachi, model
 
 **Verification**:
@@ -110,16 +110,16 @@ Theory-specific notation files will import notation-standards.sty and add their 
 3. Update bibliography style paths
 
 **Files to modify**:
-- `Logos/LaTeX/LogosReference.tex` - Update import paths
-- `Bimodal/LaTeX/BimodalReference.tex` - Update import paths
+- `Logos/latex/LogosReference.tex` - Update import paths
+- `Bimodal/latex/BimodalReference.tex` - Update import paths
 
 **Steps**:
 1. In LogosReference.tex:
-   - Change `\usepackage{assets/formatting}` to `\usepackage{../../LaTeX/formatting}`
-   - Change `\bibliographystyle{assets/bib_style}` to `\bibliographystyle{../../LaTeX/bib_style}`
+   - Change `\usepackage{assets/formatting}` to `\usepackage{../../latex/formatting}`
+   - Change `\bibliographystyle{assets/bib_style}` to `\bibliographystyle{../../latex/bib_style}`
 2. In BimodalReference.tex:
-   - Change `\usepackage{assets/formatting}` to `\usepackage{../../LaTeX/formatting}`
-   - Add `\bibliographystyle{../../LaTeX/bib_style}` if using bibliography
+   - Change `\usepackage{assets/formatting}` to `\usepackage{../../latex/formatting}`
+   - Add `\bibliographystyle{../../latex/bib_style}` if using bibliography
 
 **Verification**:
 - Both documents compile with new paths
@@ -135,16 +135,16 @@ Theory-specific notation files will import notation-standards.sty and add their 
 2. Remove duplicate bib_style.bst files
 
 **Files to delete**:
-- `Logos/LaTeX/assets/formatting.sty`
-- `Logos/LaTeX/assets/bib_style.bst`
-- `Bimodal/LaTeX/assets/formatting.sty`
-- `Bimodal/LaTeX/assets/bib_style.bst`
+- `Logos/latex/assets/formatting.sty`
+- `Logos/latex/assets/bib_style.bst`
+- `Bimodal/latex/assets/formatting.sty`
+- `Bimodal/latex/assets/bib_style.bst`
 
 **Steps**:
-1. Delete `Logos/LaTeX/assets/formatting.sty`
-2. Delete `Logos/LaTeX/assets/bib_style.bst`
-3. Delete `Bimodal/LaTeX/assets/formatting.sty`
-4. Delete `Bimodal/LaTeX/assets/bib_style.bst`
+1. Delete `Logos/latex/assets/formatting.sty`
+2. Delete `Logos/latex/assets/bib_style.bst`
+3. Delete `Bimodal/latex/assets/formatting.sty`
+4. Delete `Bimodal/latex/assets/bib_style.bst`
 
 **Verification**:
 - Files no longer exist in theory-specific assets directories
@@ -160,9 +160,9 @@ Theory-specific notation files will import notation-standards.sty and add their 
 2. Create README.md documenting the shared assets
 
 **Files to create/verify**:
-- `LaTeX/README.md` - Documentation
-- Verify: `Logos/LaTeX/LogosReference.pdf`
-- Verify: `Bimodal/LaTeX/BimodalReference.pdf`
+- `latex/README.md` - Documentation
+- Verify: `Logos/latex/LogosReference.pdf`
+- Verify: `Bimodal/latex/BimodalReference.pdf`
 
 **Steps**:
 1. Compile LogosReference.tex with pdflatex
@@ -194,7 +194,7 @@ Theory-specific notation files will import notation-standards.sty and add their 
 
 ## Success Criteria
 
-- [ ] ProofChecker/LaTeX/ directory created with shared assets
+- [ ] ProofChecker/latex/ directory created with shared assets
 - [ ] notation-standards.sty provides common notation for all theories
 - [ ] logos-notation.sty imports standards and adds Logos-specific notation
 - [ ] bimodal-notation.sty imports standards and adds Bimodal-specific notation
@@ -210,4 +210,4 @@ If implementation fails:
 2. Restore bib_style.bst to both theory directories from git
 3. Revert notation files to pre-import state
 4. Revert document import paths
-5. Delete ProofChecker/LaTeX/ directory
+5. Delete ProofChecker/latex/ directory

@@ -7,7 +7,7 @@ LaTeX-specific context for Logos documentation. Use these files for document str
 ## Canonical Sources
 
 - **Logic notation**: `project/logic/standards/notation-standards.md`
-- **Logos notation**: `Logos/LaTeX/assets/logos-notation.sty`
+- **Logos notation**: `Logos/latex/assets/logos-notation.sty`
 - **Semantic specification**: `docs/Research/RECURSIVE_SEMANTICS.md`
 
 ## LaTeX-Specific Files

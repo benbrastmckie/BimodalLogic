@@ -6,7 +6,7 @@
 
 ## Summary
 
-The ProofChecker project has a well-established LaTeX infrastructure following tasks 375, 378-379, and 384. The current documentation in `LaTeX/README.md` is comprehensive for users building documents, but project-wide documentation standards for LaTeX are missing from `docs/Development/`. This task should create a concise LaTeX standards document for contributors.
+The ProofChecker project has a well-established LaTeX infrastructure following tasks 375, 378-379, and 384. The current documentation in `latex/README.md` is comprehensive for users building documents, but project-wide documentation standards for LaTeX are missing from `docs/Development/`. This task should create a concise LaTeX standards document for contributors.
 
 ## Findings
 
@@ -16,29 +16,29 @@ The project uses a centralized LaTeX build system:
 
 | Component | Location | Purpose |
 |-----------|----------|---------|
-| Central Config | `LaTeX/latexmkrc` | Shared build settings (XeLaTeX, build dir, paths) |
-| Shared Formatting | `LaTeX/formatting.sty` | Fonts, colors, citations, boxes |
-| Shared Notation | `LaTeX/notation-standards.sty` | Modal, proof theory, meta-variable commands |
-| Bibliography Style | `LaTeX/bib_style.bst` | Consistent citation formatting |
+| Central Config | `latex/latexmkrc` | Shared build settings (XeLaTeX, build dir, paths) |
+| Shared Formatting | `latex/formatting.sty` | Fonts, colors, citations, boxes |
+| Shared Notation | `latex/notation-standards.sty` | Modal, proof theory, meta-variable commands |
+| Bibliography Style | `latex/bib_style.bst` | Consistent citation formatting |
 
 Theory directories use a stub pattern to load the central config:
 ```perl
-# Bimodal/LaTeX/latexmkrc, Logos/LaTeX/latexmkrc
-do '../../LaTeX/latexmkrc';
+# Bimodal/latex/latexmkrc, Logos/latex/latexmkrc
+do '../../latex/latexmkrc';
 ```
 
 ### 2. Directory Structure Pattern
 
 ```
 ProofChecker/
-├── LaTeX/                    # Shared LaTeX assets
+├── latex/                    # Shared LaTeX assets
 │   ├── latexmkrc            # Central build config
 │   ├── formatting.sty       # Shared document formatting
 │   ├── notation-standards.sty # Shared notation
 │   ├── bib_style.bst        # Bibliography style
 │   └── README.md            # Comprehensive usage documentation
-├── {Theory}/LaTeX/
-│   ├── latexmkrc            # Stub loading ../../LaTeX/latexmkrc
+├── {Theory}/latex/
+│   ├── latexmkrc            # Stub loading ../../latex/latexmkrc
 │   ├── build.sh             # Build script (optional)
 │   ├── assets/
 │   │   └── {theory}-notation.sty  # Theory-specific notation
@@ -48,7 +48,7 @@ ProofChecker/
 
 ### 3. Build Configuration Standards (Task 375)
 
-Key settings in `LaTeX/latexmkrc`:
+Key settings in `latex/latexmkrc`:
 
 | Setting | Value | Rationale |
 |---------|-------|-----------|
@@ -74,7 +74,7 @@ Package imports use base names instead of relative paths:
 
 % Incorrect (causes warnings)
 \usepackage{assets/logos-notation}
-\usepackage{../../LaTeX/formatting}
+\usepackage{../../latex/formatting}
 ```
 
 ### 5. Theory-Specific Notation Pattern
@@ -101,7 +101,7 @@ Example structure from `bimodal-notation.sty`:
 ### 6. Current Documentation Gap
 
 Documentation exists in:
-- `LaTeX/README.md` - Comprehensive build and usage docs (195 lines)
+- `latex/README.md` - Comprehensive build and usage docs (195 lines)
 - Task implementation summaries in `.claude/specs/`
 
 Documentation missing:
@@ -123,9 +123,9 @@ A concise (< 150 lines) standards document covering:
 
 Add LaTeX standards to the Development/ section listing and link to the new document.
 
-### 3. Keep LaTeX/README.md as Primary Reference
+### 3. Keep latex/README.md as Primary Reference
 
-The existing `LaTeX/README.md` is well-written and should remain the primary user documentation. The new standards document should reference it rather than duplicate content.
+The existing `latex/README.md` is well-written and should remain the primary user documentation. The new standards document should reference it rather than duplicate content.
 
 ## References
 
@@ -133,12 +133,12 @@ The existing `LaTeX/README.md` is well-written and should remain the primary use
 - Task 378: Documentation structure refactoring
 - Task 379: Bibliography path configuration fixes
 - Task 384: Package path warnings resolution
-- `LaTeX/README.md`: Current comprehensive documentation
+- `latex/README.md`: Current comprehensive documentation
 
 ## Next Steps
 
 1. Create `docs/Development/LATEX_STANDARDS.md` with:
-   - Overview referencing `LaTeX/README.md`
+   - Overview referencing `latex/README.md`
    - Required directory structure
    - Package naming conventions
    - Build requirements

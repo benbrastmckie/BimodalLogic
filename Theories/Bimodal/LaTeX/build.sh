@@ -33,7 +33,7 @@ if [[ "$1" == "--full-clean" ]]; then
 fi
 
 # Build the main document using latexmk
-# Configuration is loaded from ./latexmkrc -> ../../LaTeX/latexmkrc
+# Configuration is loaded from ./latexmkrc -> ../../latex/latexmkrc
 echo "Building BimodalReference.tex with latexmk..."
 latexmk BimodalReference.tex
 

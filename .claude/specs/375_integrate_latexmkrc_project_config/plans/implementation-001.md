@@ -7,7 +7,7 @@
 
 ## Overview
 
-Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using the Perl `do` stub pattern. This creates a single source of truth for LaTeX build configuration while preserving user-specific settings (like PDF viewer preferences) from global configs. The implementation involves creating the central config, stub files in theory directories, updating documentation, and modernizing build scripts.
+Integrate a central `latexmkrc` configuration into `ProofChecker/latex/` using the Perl `do` stub pattern. This creates a single source of truth for LaTeX build configuration while preserving user-specific settings (like PDF viewer preferences) from global configs. The implementation involves creating the central config, stub files in theory directories, updating documentation, and modernizing build scripts.
 
 ## Phases
 
@@ -17,14 +17,14 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 **Status**: [COMPLETED]
 
 **Objectives**:
-1. Create portable `LaTeX/latexmkrc` with shared build settings
+1. Create portable `latex/latexmkrc` with shared build settings
 2. Exclude user-specific settings (`$pdf_previewer`) to preserve global config
 
 **Files to modify**:
-- `LaTeX/latexmkrc` - Create new file with portable settings
+- `latex/latexmkrc` - Create new file with portable settings
 
 **Steps**:
-1. Create `LaTeX/latexmkrc` with these settings:
+1. Create `latex/latexmkrc` with these settings:
    - `$pdf_mode = 5` (XeLaTeX)
    - `$out_dir = 'build'` and `$aux_dir = 'build'`
    - `$xelatex` command with `-synctex=1` for editor integration
@@ -36,7 +36,7 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 3. Add header comment explaining the stub pattern for theory directories
 
 **Verification**:
-- File exists at `LaTeX/latexmkrc`
+- File exists at `latex/latexmkrc`
 - File is valid Perl syntax (no syntax errors when sourced)
 
 ---
@@ -51,21 +51,21 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 2. Ensure stubs work from their respective directories
 
 **Files to modify**:
-- `Bimodal/LaTeX/latexmkrc` - Create new stub file
-- `Logos/LaTeX/latexmkrc` - Create new stub file
+- `Bimodal/latex/latexmkrc` - Create new stub file
+- `Logos/latex/latexmkrc` - Create new stub file
 
 **Steps**:
-1. Create `Bimodal/LaTeX/latexmkrc`:
+1. Create `Bimodal/latex/latexmkrc`:
    ```perl
    # Load shared ProofChecker LaTeX build configuration
-   # See LaTeX/README.md for details
-   do '../../LaTeX/latexmkrc';
+   # See latex/README.md for details
+   do '../../latex/latexmkrc';
    ```
-2. Create `Logos/LaTeX/latexmkrc`:
+2. Create `Logos/latex/latexmkrc`:
    ```perl
    # Load shared ProofChecker LaTeX build configuration
-   # See LaTeX/README.md for details
-   do '../../LaTeX/latexmkrc';
+   # See latex/README.md for details
+   do '../../latex/latexmkrc';
    ```
 
 **Verification**:
@@ -81,11 +81,11 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 **Status**: [COMPLETED]
 
 **Objectives**:
-1. Modernize `Bimodal/LaTeX/build.sh` to use latexmk instead of raw pdflatex
+1. Modernize `Bimodal/latex/build.sh` to use latexmk instead of raw pdflatex
 2. Leverage the new latexmkrc configuration
 
 **Files to modify**:
-- `Bimodal/LaTeX/build.sh` - Update to use latexmk
+- `Bimodal/latex/build.sh` - Update to use latexmk
 
 **Steps**:
 1. Replace pdflatex calls with latexmk:
@@ -108,11 +108,11 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 **Status**: [COMPLETED]
 
 **Objectives**:
-1. Document the latexmkrc configuration in `LaTeX/README.md`
+1. Document the latexmkrc configuration in `latex/README.md`
 2. Explain how users can customize their PDF viewer
 
 **Files to modify**:
-- `LaTeX/README.md` - Add latexmk configuration section
+- `latex/README.md` - Add latexmk configuration section
 
 **Steps**:
 1. Add new section "## Build Configuration (latexmk)" to README.md:
@@ -186,11 +186,11 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 
 ## Success Criteria
 
-- [ ] `LaTeX/latexmkrc` exists with portable settings (no `$pdf_previewer`)
-- [ ] `Bimodal/LaTeX/latexmkrc` stub loads central config
-- [ ] `Logos/LaTeX/latexmkrc` stub loads central config
-- [ ] `Bimodal/LaTeX/build.sh` uses latexmk
-- [ ] `LaTeX/README.md` documents latexmk configuration
+- [ ] `latex/latexmkrc` exists with portable settings (no `$pdf_previewer`)
+- [ ] `Bimodal/latex/latexmkrc` stub loads central config
+- [ ] `Logos/latex/latexmkrc` stub loads central config
+- [ ] `Bimodal/latex/build.sh` uses latexmk
+- [ ] `latex/README.md` documents latexmk configuration
 - [ ] Both BimodalReference.tex and LogosReference.tex compile successfully
 - [ ] Build artifacts go to `build/` subdirectory
 - [ ] User's global `$pdf_previewer` setting is preserved
@@ -199,7 +199,7 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 
 If implementation fails:
 1. Delete new `latexmkrc` files (central and stubs)
-2. Restore original `build.sh` from git: `git checkout Bimodal/LaTeX/build.sh`
-3. Revert README.md changes: `git checkout LaTeX/README.md`
+2. Restore original `build.sh` from git: `git checkout Bimodal/latex/build.sh`
+3. Revert README.md changes: `git checkout latex/README.md`
 
 The original pdflatex-based workflow will continue to work since it doesn't depend on latexmkrc files.

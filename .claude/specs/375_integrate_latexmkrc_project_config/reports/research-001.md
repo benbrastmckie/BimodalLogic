@@ -7,7 +7,7 @@
 
 ## Summary
 
-Research reveals that integrating a project-level `latexmkrc` configuration file into `ProofChecker/LaTeX/` will standardize LaTeX compilation across contributors. The recommended approach uses **Perl's `do` function** to create minimal one-line stub files in each theory directory that load the central config. This avoids duplication while preserving user-specific settings (like `$pdf_previewer`) from global configs. The `build/` directory is already gitignored.
+Research reveals that integrating a project-level `latexmkrc` configuration file into `ProofChecker/latex/` will standardize LaTeX compilation across contributors. The recommended approach uses **Perl's `do` function** to create minimal one-line stub files in each theory directory that load the central config. This avoids duplication while preserving user-specific settings (like `$pdf_previewer`) from global configs. The `build/` directory is already gitignored.
 
 ## Findings
 
@@ -39,13 +39,13 @@ The user's `~/.config/latexmk/latexmkrc` contains:
 
 ### Existing Project Infrastructure
 
-**Task 373 created:** `ProofChecker/LaTeX/` with shared assets:
+**Task 373 created:** `ProofChecker/latex/` with shared assets:
 - `formatting.sty` - Document formatting
 - `notation-standards.sty` - Shared notation
 - `bib_style.bst` - Bibliography style
 - `README.md` - Usage documentation
 
-**Existing build scripts:** `Bimodal/LaTeX/build.sh` uses `pdflatex` with `-output-directory=build`, not latexmk. This indicates opportunity for standardization.
+**Existing build scripts:** `Bimodal/latex/build.sh` uses `pdflatex` with `-output-directory=build`, not latexmk. This indicates opportunity for standardization.
 
 **Gitignore status:** The root `.gitignore` already includes:
 ```
@@ -114,18 +114,18 @@ $draft_mode = $ENV{'LATEXMK_DRAFT_MODE'} || 0;
 Add to enable shared asset discovery:
 ```perl
 # Ensure shared LaTeX assets are discoverable
-ensure_path('TEXINPUTS', '../../LaTeX//');
+ensure_path('TEXINPUTS', '../../latex//');
 ```
 
 ### File Placement Options
 
 **Option A: Central config with Perl `do` stubs (RECOMMENDED)**
 
-Create `LaTeX/latexmkrc` with shared settings, then in each theory directory create a one-line stub:
+Create `latex/latexmkrc` with shared settings, then in each theory directory create a one-line stub:
 
 ```perl
-# Bimodal/LaTeX/latexmkrc (or Logos/LaTeX/latexmkrc)
-do '../../LaTeX/latexmkrc';
+# Bimodal/latex/latexmkrc (or Logos/latex/latexmkrc)
+do '../../latex/latexmkrc';
 ```
 
 - Pros: Single source of truth, works with any editor/IDE that auto-discovers `latexmkrc`, no symlink issues on Windows
@@ -134,8 +134,8 @@ do '../../LaTeX/latexmkrc';
 **Option B: Symlinks**
 
 ```bash
-cd Bimodal/LaTeX && ln -s ../../LaTeX/latexmkrc .latexmkrc
-cd Logos/LaTeX && ln -s ../../LaTeX/latexmkrc .latexmkrc
+cd Bimodal/LaTeX && ln -s ../../latex/latexmkrc .latexmkrc
+cd Logos/LaTeX && ln -s ../../latex/latexmkrc .latexmkrc
 ```
 
 - Pros: Zero duplication
@@ -146,7 +146,7 @@ cd Logos/LaTeX && ln -s ../../LaTeX/latexmkrc .latexmkrc
 Update `build.sh` to use latexmk with explicit config:
 
 ```bash
-latexmk -r ../../LaTeX/latexmkrc -xelatex BimodalReference.tex
+latexmk -r ../../latex/latexmkrc -xelatex BimodalReference.tex
 ```
 
 - Pros: No local config files needed
@@ -154,7 +154,7 @@ latexmk -r ../../LaTeX/latexmkrc -xelatex BimodalReference.tex
 
 **Option D: Wrapper script at project root**
 
-Create `LaTeX/latexmk-build` wrapper:
+Create `latex/latexmk-build` wrapper:
 
 ```bash
 #!/bin/bash
@@ -179,9 +179,9 @@ Latexmk reads configuration files in order ([Arch man page](https://man.archlinu
 
 ## Recommendations
 
-1. **Create `LaTeX/latexmkrc`** - Central portable configuration WITHOUT `$pdf_previewer` (preserves user's global setting)
-2. **Create stub files** - One-line `do '../../LaTeX/latexmkrc';` in `Bimodal/LaTeX/latexmkrc` and `Logos/LaTeX/latexmkrc`
-3. **Update `LaTeX/README.md`** - Document latexmkrc usage, stub pattern, and how users can set their preferred viewer
+1. **Create `latex/latexmkrc`** - Central portable configuration WITHOUT `$pdf_previewer` (preserves user's global setting)
+2. **Create stub files** - One-line `do '../../latex/latexmkrc';` in `Bimodal/latex/latexmkrc` and `Logos/latex/latexmkrc`
+3. **Update `latex/README.md`** - Document latexmkrc usage, stub pattern, and how users can set their preferred viewer
 4. **Keep gitignore as-is** - `build/` is already covered
 5. **Update `build.sh` scripts** - Migrate from raw pdflatex to latexmk for consistency
 
@@ -197,10 +197,10 @@ Latexmk reads configuration files in order ([Arch man page](https://man.archlinu
 
 ## Next Steps
 
-1. Create `LaTeX/latexmkrc` with portable settings (no `$pdf_previewer`)
-2. Create `Bimodal/LaTeX/latexmkrc` stub: `do '../../LaTeX/latexmkrc';`
-3. Create `Logos/LaTeX/latexmkrc` stub: `do '../../LaTeX/latexmkrc';`
-4. Update `LaTeX/README.md` with latexmk usage section
-5. Update `Bimodal/LaTeX/build.sh` to use latexmk
+1. Create `latex/latexmkrc` with portable settings (no `$pdf_previewer`)
+2. Create `Bimodal/latex/latexmkrc` stub: `do '../../latex/latexmkrc';`
+3. Create `Logos/latex/latexmkrc` stub: `do '../../latex/latexmkrc';`
+4. Update `latex/README.md` with latexmk usage section
+5. Update `Bimodal/latex/build.sh` to use latexmk
 6. Test compilation in both theory directories
 7. Verify user's global `$pdf_previewer` setting is preserved

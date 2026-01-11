@@ -18,9 +18,9 @@ This directory contains shared LaTeX assets used across all theory-specific docu
 Import shared assets using relative paths from theory LaTeX directories:
 
 ```latex
-% In Bimodal/LaTeX/BimodalReference.tex or Logos/LaTeX/LogosReference.tex
-\usepackage{../../LaTeX/formatting}
-\bibliographystyle{../../LaTeX/bib_style}
+% In Bimodal/latex/BimodalReference.tex or Logos/latex/LogosReference.tex
+\usepackage{../../latex/formatting}
+\bibliographystyle{../../latex/bib_style}
 ```
 
 ### In Theory-Specific Notation Files
@@ -28,8 +28,8 @@ Import shared assets using relative paths from theory LaTeX directories:
 Notation files should import the shared standards:
 
 ```latex
-% In Bimodal/LaTeX/assets/bimodal-notation.sty
-\RequirePackage{../../LaTeX/notation-standards}
+% In Bimodal/latex/assets/bimodal-notation.sty
+\RequirePackage{../../latex/notation-standards}
 ```
 
 ## notation-standards.sty
@@ -67,14 +67,14 @@ Provides consistent notation across all theories:
 
 When creating documentation for a new theory:
 
-1. Create `Theory/LaTeX/` directory structure
-2. Create `Theory/LaTeX/assets/theory-notation.sty`:
+1. Create `Theory/latex/` directory structure
+2. Create `Theory/latex/assets/theory-notation.sty`:
    ```latex
    \NeedsTeXFormat{LaTeX2e}
    \ProvidesPackage{theory-notation}[YYYY/MM/DD Theory Notation]
 
    % Import shared standards
-   \RequirePackage{../../LaTeX/notation-standards}
+   \RequirePackage{../../latex/notation-standards}
 
    % Add theory-specific notation here
    \newcommand{\myoperator}{\diamond}
@@ -82,7 +82,7 @@ When creating documentation for a new theory:
 3. Create main document importing shared formatting:
    ```latex
    \usepackage{assets/theory-notation}
-   \usepackage{../../LaTeX/formatting}
+   \usepackage{../../latex/formatting}
    ```
 
 ## Build Configuration (latexmk)
@@ -94,9 +94,9 @@ This directory contains the shared `latexmkrc` configuration for consistent LaTe
 Theory directories use a "stub pattern" to load the central config:
 
 ```
-LaTeX/latexmkrc                    # Central configuration (this directory)
-Bimodal/LaTeX/latexmkrc            # Stub: do '../../LaTeX/latexmkrc';
-Logos/LaTeX/latexmkrc              # Stub: do '../../LaTeX/latexmkrc';
+latex/latexmkrc                    # Central configuration (this directory)
+Bimodal/latex/latexmkrc            # Stub: do '../../latex/latexmkrc';
+Logos/latex/latexmkrc              # Stub: do '../../latex/latexmkrc';
 ```
 
 This provides a single source of truth while allowing latexmk to auto-discover the config in each directory.
@@ -174,21 +174,21 @@ All auxiliary files (`*.aux`, `*.log`, `*.toc`, etc.) and the PDF are placed in 
 
 ```
 ProofChecker/
-├── LaTeX/                          # This directory (shared assets)
+├── latex/                          # This directory (shared assets)
 │   ├── latexmkrc                   # Shared build configuration
 │   ├── formatting.sty
 │   ├── bib_style.bst
 │   ├── notation-standards.sty
 │   └── README.md
-├── Bimodal/LaTeX/
-│   ├── latexmkrc                   # Stub loading ../../LaTeX/latexmkrc
+├── Bimodal/latex/
+│   ├── latexmkrc                   # Stub loading ../../latex/latexmkrc
 │   ├── build.sh                    # Build script using latexmk
 │   ├── assets/
 │   │   └── bimodal-notation.sty    # Imports notation-standards
-│   └── BimodalReference.tex        # Imports ../../LaTeX/formatting
-└── Logos/LaTeX/
-    ├── latexmkrc                   # Stub loading ../../LaTeX/latexmkrc
+│   └── BimodalReference.tex        # Imports ../../latex/formatting
+└── Logos/latex/
+    ├── latexmkrc                   # Stub loading ../../latex/latexmkrc
     ├── assets/
     │   └── logos-notation.sty      # Imports notation-standards
-    └── LogosReference.tex          # Imports ../../LaTeX/formatting
+    └── LogosReference.tex          # Imports ../../latex/formatting
 ```

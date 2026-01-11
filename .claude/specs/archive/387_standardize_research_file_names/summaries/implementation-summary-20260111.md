@@ -51,8 +51,8 @@ Standardized 12 research documentation files from inconsistent naming (ALL_CAPS 
 - `Theories/Logos/docs/ProjectInfo/ROADMAP.md`
 - `Theories/Logos/docs/Reference/*.md` (3 files)
 - `Theories/Logos/SubTheories/*.lean` (10+ files)
-- `Theories/Logos/LaTeX/LogosReference.tex`
-- `Theories/Logos/LaTeX/assets/logos-notation.sty`
+- `Theories/Logos/latex/LogosReference.tex`
+- `Theories/Logos/latex/assets/logos-notation.sty`
 
 ### Theories/Bimodal/
 - `Theories/Bimodal/README.md`

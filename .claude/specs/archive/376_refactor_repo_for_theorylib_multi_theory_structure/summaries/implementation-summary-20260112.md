@@ -12,7 +12,7 @@ Restructured the ProofChecker repository following Option C (Hybrid approach) wi
 ```
 ProofChecker/
   lakefile.lean           # Updated with srcDir, roots, theoryLeanOptions
-  LaTeX/                   # Shared LaTeX assets (unchanged)
+  latex/                   # Shared LaTeX assets (unchanged)
   docs/           # Project documentation (unchanged)
   benchmarks/              # Performance benchmarks (unchanged)
   Theories/
@@ -27,7 +27,7 @@ ProofChecker/
         Normative/         # Normative extension (stub)
         Explanatory/       # Explanatory extension
       docs/       # Theory-specific docs
-      LaTeX/               # Theory-specific LaTeX
+      latex/               # Theory-specific LaTeX
   Tests/
     README.md              # NEW: Documents test organization
     BimodalTest.lean       # Root module

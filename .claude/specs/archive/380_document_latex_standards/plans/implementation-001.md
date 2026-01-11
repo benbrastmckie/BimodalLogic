@@ -7,7 +7,7 @@
 
 ## Overview
 
-Create a concise LaTeX standards document for contributors in `docs/Development/` and update cross-references. The new document will focus on contributor requirements and reference `LaTeX/README.md` for detailed usage documentation rather than duplicating content.
+Create a concise LaTeX standards document for contributors in `docs/Development/` and update cross-references. The new document will focus on contributor requirements and reference `latex/README.md` for detailed usage documentation rather than duplicating content.
 
 ## Phases
 
@@ -25,9 +25,9 @@ Create a concise LaTeX standards document for contributors in `docs/Development/
 - `docs/Development/LATEX_STANDARDS.md` - New standards document (~120 lines)
 
 **Content sections**:
-1. Overview and reference to `LaTeX/README.md`
+1. Overview and reference to `latex/README.md`
 2. Directory Structure Requirements
-   - Shared assets in `LaTeX/`
+   - Shared assets in `latex/`
    - Theory-specific structure pattern
 3. Build Configuration Standards
    - latexmkrc stub pattern
@@ -42,7 +42,7 @@ Create a concise LaTeX standards document for contributors in `docs/Development/
 
 **Verification**:
 - Document is clear and actionable
-- No duplication of content from `LaTeX/README.md`
+- No duplication of content from `latex/README.md`
 - All conventions from tasks 375, 378-379, 384 captured
 
 ---
@@ -106,7 +106,7 @@ Create a concise LaTeX standards document for contributors in `docs/Development/
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Content overlap with LaTeX/README.md | Low | Medium | Reference instead of duplicate |
+| Content overlap with latex/README.md | Low | Medium | Reference instead of duplicate |
 | Missing conventions | Medium | Low | Research report comprehensive |
 
 ## Success Criteria

@@ -15,7 +15,7 @@ The Bimodal theory implements TM (Tense and Modality) logic in Lean 4, combining
 The existing Logos/LaTeX documentation has this structure:
 
 ```
-Logos/LaTeX/
+Logos/latex/
 ├── LogosReference.tex          # Main document
 ├── assets/
 │   ├── logos-notation.sty      # Custom notation macros
@@ -139,7 +139,7 @@ Need a `bimodal-notation.sty` similar to `logos-notation.sty` with:
 ## Proposed Structure
 
 ```
-Bimodal/LaTeX/
+Bimodal/latex/
 ├── BimodalReference.tex        # Main document
 ├── assets/
 │   ├── bimodal-notation.sty    # TM-specific notation
@@ -157,14 +157,14 @@ Bimodal/LaTeX/
 
 ## References
 
-- Logos/LaTeX/LogosReference.tex - Template for structure
+- Logos/latex/LogosReference.tex - Template for structure
 - Bimodal/Bimodal.lean - Module documentation
 - Bimodal/Theorems/Perpetuity.lean - Implementation status
 - Bimodal/Metalogic/Soundness.lean - Proof completion status
 
 ## Next Steps
 
-1. Create directory structure for Bimodal/LaTeX/
+1. Create directory structure for Bimodal/latex/
 2. Adapt notation package for TM-specific operators
 3. Write main document with appropriate sections
 4. Create subfiles documenting each component

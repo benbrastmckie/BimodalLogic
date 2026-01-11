@@ -37,19 +37,19 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 **Status**: [NOT STARTED]
 
 **Objectives**:
-1. Create Bimodal/LaTeX/ directory structure
+1. Create Bimodal/latex/ directory structure
 2. Copy and adapt formatting assets from Logos/LaTeX
 3. Create bimodal-notation.sty with TM-specific notation
 
 **Files to create**:
-- `Bimodal/LaTeX/BimodalReference.tex` - Main document skeleton
-- `Bimodal/LaTeX/assets/bimodal-notation.sty` - Custom notation (Box, Diamond, H, G, Triangle, InvTriangle)
-- `Bimodal/LaTeX/assets/formatting.sty` - Copy from Logos/LaTeX
-- `Bimodal/LaTeX/subfiles/` - Directory for chapter files
+- `Bimodal/latex/BimodalReference.tex` - Main document skeleton
+- `Bimodal/latex/assets/bimodal-notation.sty` - Custom notation (Box, Diamond, H, G, Triangle, InvTriangle)
+- `Bimodal/latex/assets/formatting.sty` - Copy from Logos/LaTeX
+- `Bimodal/latex/subfiles/` - Directory for chapter files
 
 **Steps**:
-1. Create directory structure: `Bimodal/LaTeX/{assets,subfiles,build}`
-2. Copy `formatting.sty` from `Logos/LaTeX/assets/`
+1. Create directory structure: `Bimodal/latex/{assets,subfiles,build}`
+2. Copy `formatting.sty` from `Logos/latex/assets/`
 3. Create `bimodal-notation.sty` with TM logic notation macros
 4. Create skeleton `BimodalReference.tex` with subfiles structure
 
@@ -69,8 +69,8 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 2. Write brief introduction section
 
 **Files to create/modify**:
-- `Bimodal/LaTeX/BimodalReference.tex` - Complete main document
-- `Bimodal/LaTeX/subfiles/00-Introduction.tex` - Brief TM logic overview
+- `Bimodal/latex/BimodalReference.tex` - Complete main document
+- `Bimodal/latex/subfiles/00-Introduction.tex` - Brief TM logic overview
 
 **Steps**:
 1. Complete BimodalReference.tex with:
@@ -97,7 +97,7 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 2. Include notation table
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/01-Syntax.tex`
+- `Bimodal/latex/subfiles/01-Syntax.tex`
 
 **Steps**:
 1. Define Formula inductive type (6 constructors):
@@ -136,7 +136,7 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 4. Document time-shift machinery
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/02-Semantics.tex`
+- `Bimodal/latex/subfiles/02-Semantics.tex`
 
 **Steps**:
 1. Define TaskFrame structure:
@@ -177,7 +177,7 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 3. Document derivation tree structure
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/03-ProofTheory.tex`
+- `Bimodal/latex/subfiles/03-ProofTheory.tex`
 
 **Steps**:
 1. Define axiom schemata (14 total):
@@ -208,7 +208,7 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 3. Note implementation status
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/04-Metalogic.tex`
+- `Bimodal/latex/subfiles/04-Metalogic.tex`
 
 **Steps**:
 1. State soundness theorem:
@@ -244,7 +244,7 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 3. Document modal/temporal combinators
 
 **Files to create**:
-- `Bimodal/LaTeX/subfiles/05-Theorems.tex`
+- `Bimodal/latex/subfiles/05-Theorems.tex`
 
 **Steps**:
 1. Define perpetuity principles (all proven):
@@ -277,8 +277,8 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 4. Update project documentation
 
 **Files to create/modify**:
-- `Bimodal/LaTeX/build.sh` - Build script
-- `Bimodal/LaTeX/subfiles/06-Notes.tex` - Implementation notes and discrepancies
+- `Bimodal/latex/build.sh` - Build script
+- `Bimodal/latex/subfiles/06-Notes.tex` - Implementation notes and discrepancies
 - `Bimodal/README.md` - Add LaTeX documentation reference
 
 **Steps**:
@@ -299,7 +299,7 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 
 ## Dependencies
 
-- Logos/LaTeX/assets/formatting.sty - Base formatting to copy
+- Logos/latex/assets/formatting.sty - Base formatting to copy
 
 ## Risks and Mitigations
 
@@ -320,4 +320,4 @@ Create concise, definition-focused LaTeX documentation for the Bimodal TM logic 
 
 ## Rollback Plan
 
-Delete Bimodal/LaTeX/ directory if implementation fails - no existing content affected.
+Delete Bimodal/latex/ directory if implementation fails - no existing content affected.

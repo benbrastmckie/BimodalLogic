@@ -30,12 +30,12 @@ Both documents now include:
 
 ## Files Modified
 
-- `Bimodal/LaTeX/BimodalReference.tex`:
+- `Bimodal/latex/BimodalReference.tex`:
   - Removed `\title`, `\author`, `\date` commands
   - Added `\HRule` command for horizontal rules
   - Replaced `\maketitle` with custom `titlepage` environment
 
-- `Logos/LaTeX/LogosReference.tex`:
+- `Logos/latex/LogosReference.tex`:
   - Removed `\title`, `\author`, `\date` commands
   - Added `\HRule` command for horizontal rules
   - Replaced `\maketitle` with custom `titlepage` environment

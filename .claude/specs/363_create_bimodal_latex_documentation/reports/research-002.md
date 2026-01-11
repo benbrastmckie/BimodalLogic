@@ -140,7 +140,7 @@ Paper's 12 axiom schemata in sub:Logic match Lean's `Axiom` inductive type exact
 Based on paper alignment:
 
 ```
-Bimodal/LaTeX/
+Bimodal/latex/
 ├── BimodalReference.tex           # Main document
 ├── assets/
 │   ├── bimodal-notation.sty       # Match paper notation
