@@ -30,13 +30,16 @@ technical_debt:
 
 ### 355. Fix all Lean build errors for the Bimodal/ theory
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: 352, 353
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Research**: [.claude/specs/355_fix_bimodal_build_errors/reports/research-001.md]
+- **Plan**: [.claude/specs/355_fix_bimodal_build_errors/plans/implementation-001.md]
 
 **Description**: Fix all Lean build errors for the Bimodal/ theory. Some errors are indicated in the implementation summary for task 352 (.claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md).
 
@@ -46,11 +49,13 @@ technical_debt:
 
 ### 361. Create installation documentation
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Research**: [.claude/specs/361_create_installation_documentation/reports/research-001.md]
+- **Plan**: [.claude/specs/361_create_installation_documentation/plans/implementation-001.md]
 
 **Description**: Create installation documentation similar to /home/benjamin/Projects/ModelChecker CLAUDE_CODE.md including dependencies (BASIC_INSTALLATION.md, GETTING_STARTED.md, GIT_GOING.md) so users can start with CLAUDE_CODE.md to systematically install everything for the ProofChecker project.
 
