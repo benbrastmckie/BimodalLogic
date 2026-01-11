@@ -27,30 +27,35 @@
     {
       "project_number": 393,
       "project_name": "remove_incorrect_causal_operator_definition",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.",
       "created": "2026-01-11T21:09:02Z",
-      "last_updated": "2026-01-11T21:09:02Z",
+      "last_updated": "2026-01-12T00:00:00Z",
       "parent_task": 381
     },
     {
       "project_number": 392,
       "project_name": "enhance_todo_command_orphan_tracking",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "description": "Enhance /todo command to track orphaned directories in archive/state.json. Modify detection to check both state.json AND archive/state.json, and add orphan entries to archive/state.json when archiving (not just move directories). This ensures all project directories in specs/archive/ are accounted for by state files.",
       "effort": "2-3 hours",
       "created": "2026-01-12T12:00:00Z",
-      "last_updated": "2026-01-11T21:11:56Z",
+      "last_updated": "2026-01-11T21:25:00Z",
       "artifacts": [
         {
           "type": "research",
           "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/plans/implementation-001.md"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 391,
