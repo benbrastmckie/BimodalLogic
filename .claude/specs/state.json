@@ -6,29 +6,34 @@
     {
       "project_number": 378,
       "project_name": "refactor_documentation_structure",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "description": "Completely refactor Documentation/ to better distribute information between documents and gather documents into subdirectories, where each subdirectory has a README.md that follows the DIRECTORY_README_STANDARD.md and DOC_QUALITY_CHECKLIST.md. Merge NAVIGATION.md into Documentation/README.md. Avoid removing important content while reducing redundancy and improving consistency and organization using cross-linking with brief summaries.",
       "created": "2026-01-11T17:31:13Z",
-      "last_updated": "2026-01-11T17:47:02Z",
+      "last_updated": "2026-01-11T17:53:26Z",
       "started": "2026-01-11",
       "artifacts": [
         {
           "type": "research",
           "path": ".claude/specs/378_refactor_documentation_structure/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/378_refactor_documentation_structure/plans/implementation-001.md"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 377,
       "project_name": "refactor_logos_theory_recursive_semantics",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "description": "Completely refactor the Logos/ theory to be self-contained and align with the theoretical target presented in Logos/Documentation/Research/RECURSIVE_SEMANTICS.md. Currently Logos/ is little more than the remains from extracting the Bimodal/ theory and then re-exporting it to Logos/.",
       "created": "2026-01-11T17:25:18Z",
-      "last_updated": "2026-01-11T17:46:51Z",
+      "last_updated": "2026-01-11T17:52:04Z",
       "started": "2026-01-11",
       "researched": "2026-01-11",
       "artifacts": [
@@ -237,11 +242,11 @@
       "project_name": "enhance_proof_search_with_domain_specific_heuristics_and_caching",
       "type": "feature",
       "phase": "planned",
-      "status": "researched",
+      "status": "implementing",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T23:30:00Z",
+      "last_updated": "2026-01-12T00:00:00Z",
       "effort": "12 hours",
       "started": "2026-01-11",
       "plan_version": "001",
