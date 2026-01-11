@@ -84,10 +84,12 @@ technical_debt:
 
 ### 383. Rename Core/ to Explanatory/
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/383_rename_core_to_explanatory/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md)
 
 **Description**: Rename Logos/Core/ to Logos/Explanatory/ systematically. Core/ and Explanatory/ target the same theory and should be combined under the Explanatory/ name. Update all references in Logos/Documentation/ and Logos/LaTeX/LogosReference.tex without producing cruft or redundancy.
 

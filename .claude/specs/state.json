@@ -26,19 +26,25 @@
     {
       "project_number": 383,
       "project_name": "rename_core_to_explanatory",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Rename Logos/Core/ to Logos/Explanatory/ systematically. Core/ and Explanatory/ target the same theory and should be combined under the Explanatory/ name. Update all references in Logos/Documentation/ and Logos/LaTeX/LogosReference.tex without producing cruft or redundancy.",
       "created": "2026-01-11T18:49:04Z",
-      "last_updated": "2026-01-11T18:54:42Z",
+      "last_updated": "2026-01-11T19:00:21Z",
       "researched": "2026-01-11",
       "artifacts": [
         {
           "type": "research",
           "path": ".claude/specs/383_rename_core_to_explanatory/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md"
         }
-      ]
+      ],
+      "planned": "2026-01-11",
+      "plan_version": "001"
     },
     {
       "project_number": 380,
