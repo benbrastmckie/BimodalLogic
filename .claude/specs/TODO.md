@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T00:40:00Z
-next_project_number: 390
+next_project_number: 391
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -92,6 +92,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 390. Research logos-original archive removal
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Research whether `.claude/archive/logos-original/` can be removed or if the files contain important content not represented elsewhere that should be preserved.
+
+---
 
 ### 389. Standardize {NNN} number format across documentation
 - **Effort**: 2-3 hours

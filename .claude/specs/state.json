@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T00:40:00Z",
-  "next_project_number": 390,
+  "next_project_number": 391,
   "active_projects": [
+    {
+      "project_number": 390,
+      "project_name": "research_logos_original_archive_removal",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "description": "Research whether .claude/archive/logos-original/ can be removed or if the files contain important content not represented elsewhere that should be preserved.",
+      "created": "2026-01-11T20:27:46Z",
+      "last_updated": "2026-01-11T20:27:46Z"
+    },
     {
       "project_number": 389,
       "project_name": "standardize_nnn_number_format",
