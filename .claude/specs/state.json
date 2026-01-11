@@ -65,11 +65,11 @@
     {
       "project_number": 380,
       "project_name": "document_latex_standards",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-11T18:13:43Z",
-      "last_updated": "2026-01-11T19:35:57Z"
+      "last_updated": "2026-01-11T19:41:22Z"
     },
     {
       "project_number": 376,
