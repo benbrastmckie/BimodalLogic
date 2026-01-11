@@ -200,10 +200,10 @@ Property tests run automatically in CI:
 
 ```bash
 # Run all property tests
-lake test LogosTest.Property
+lake test BimodalTest.Property
 
 # Run specific property test file
-lake env lean LogosTest/Core/Property/FormulaPropertyTest.lean
+lake env lean BimodalTest/Property/FormulaPropertyTest.lean
 ```
 
 ## Performance

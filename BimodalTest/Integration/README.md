@@ -71,14 +71,14 @@ lake test -- --verbose
 
 ```bash
 # Run specific integration test file
-lake env lean LogosTest/Core/Integration/ComplexDerivationTest.lean
+lake env lean BimodalTest/Integration/ComplexDerivationTest.lean
 ```
 
 ### Check Build Status
 
 ```bash
 # Verify compilation
-lake build LogosTest.Integration
+lake build BimodalTest.Integration
 ```
 
 ## Test Patterns
@@ -139,9 +139,9 @@ example : True := by
 The `Helpers.lean` module provides reusable utilities:
 
 ```lean
-import LogosTest.Core.Integration.Helpers
+import BimodalTest.Integration.Helpers
 
-open LogosTest.Core.Integration.Helpers
+open BimodalTest.Integration.Helpers
 
 -- Build test formulas
 let φ := mk_atom "p"
@@ -235,7 +235,7 @@ lake build
 lake exe test
 
 # Verify specific file
-lake env lean LogosTest/Core/Integration/YourTestFile.lean
+lake env lean BimodalTest/Integration/YourTestFile.lean
 ```
 
 ### Step 4: Update Coverage
@@ -277,10 +277,10 @@ Update `COVERAGE.md` with:
 
 ```bash
 # Check syntax errors
-lake build LogosTest.Integration
+lake build BimodalTest.Integration
 
 # Check specific file
-lake env lean LogosTest/Core/Integration/YourTestFile.lean
+lake env lean BimodalTest/Integration/YourTestFile.lean
 ```
 
 ### Test Fails at Runtime
@@ -290,7 +290,7 @@ lake env lean LogosTest/Core/Integration/YourTestFile.lean
 lake test -- --verbose
 
 # Check for sorry placeholders
-grep -r "sorry" LogosTest/Core/Integration/
+grep -r "sorry" BimodalTest/Integration/
 ```
 
 ### Slow Test Execution

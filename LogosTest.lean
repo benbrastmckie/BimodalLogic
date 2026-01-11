@@ -4,7 +4,7 @@ import LogosTest.Semantics
 import LogosTest.Metalogic
 import LogosTest.Integration
 import LogosTest.Theorems
-import LogosTest.Core.Property
+import BimodalTest.Property
 
 /-!
 # Logos Test Suite Root
