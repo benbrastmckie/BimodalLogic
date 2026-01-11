@@ -18,6 +18,7 @@
 | Partial | `[PARTIAL]` | Implementation partially complete |
 | Blocked | `[BLOCKED]` | Task blocked by dependency |
 | Abandoned | `[ABANDONED]` | Task abandoned |
+| Expanded | `[EXPANDED]` | Task expanded into subtasks |
 
 ## Valid Transitions
 
@@ -33,6 +34,8 @@
 - `[RESEARCHED]` → `[IMPLEMENTING]` (skip planning)
 
 **Any status** → `[BLOCKED]` or `[ABANDONED]`
+
+**Any non-terminal** → `[EXPANDED]` (when task is divided into subtasks via `/task --divide`)
 
 ## Command → Status Mapping
 

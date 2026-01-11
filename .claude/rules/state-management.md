@@ -29,6 +29,7 @@ TODO.md and state.json MUST stay synchronized. Any update to one requires updati
 
 Any state → [BLOCKED] (with reason)
 Any state → [ABANDONED] (moves to archive)
+Any non-terminal → [EXPANDED] (when divided into subtasks)
 [IMPLEMENTING] → [PARTIAL] (on timeout/error)
 ```
 
@@ -103,6 +104,7 @@ When updating task status:
 | [BLOCKED] | blocked |
 | [ABANDONED] | abandoned |
 | [PARTIAL] | partial |
+| [EXPANDED] | expanded |
 
 ## Artifact Linking
 

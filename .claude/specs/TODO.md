@@ -172,7 +172,7 @@ technical_debt:
 
 ### 402. Rename --divide flag to --expand
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 401

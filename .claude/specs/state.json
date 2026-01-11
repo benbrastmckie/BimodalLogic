@@ -122,13 +122,13 @@
     {
       "project_number": 402,
       "project_name": "rename_divide_flag_to_expand",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "description": "Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).",
       "effort": "2-3 hours",
       "created": "2026-01-11T22:10:38Z",
-      "last_updated": "2026-01-11T22:10:38Z",
+      "last_updated": "2026-01-11T22:34:08Z",
       "dependencies": [
         401
       ]
