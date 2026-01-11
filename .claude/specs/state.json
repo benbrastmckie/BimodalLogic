@@ -110,19 +110,6 @@
       ]
     },
     {
-      "project_number": 366,
-      "project_name": "document_logos_legacy_reexports",
-      "status": "not_started",
-      "language": "markdown",
-      "priority": "low",
-      "type": "documentation",
-      "effort": "30 minutes",
-      "description": "Document in project README that Logos/ is a legacy re-export layer with stubs for planned extensions (Epistemic, Normative, Explanatory), and Bimodal/ contains the active implementation.",
-      "created": "2026-01-11T02:22:16Z",
-      "last_updated": "2026-01-11T02:22:16Z",
-      "review_source": ".claude/specs/reviews/review-20260110.md"
-    },
-    {
       "project_number": 367,
       "project_name": "complete_example_proofs",
       "status": "implementing",

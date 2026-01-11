@@ -188,10 +188,9 @@ Note: Full proof requires propositional disjunction rules not yet in the system.
 This is shown for pedagogical completeness to illustrate the pattern.
 -/
 example (φ ψ : Formula) : ⊢ (φ.or ψ).diamond.imp (φ.diamond.or ψ.diamond) := by
-  -- This would require:
-  -- 1. Propositional reasoning: ¬□¬(φ ∨ ψ) → ¬□(¬φ ∧ ¬ψ) → ¬□¬φ ∨ ¬□¬ψ
-  -- 2. Or use modal distribution properties
-  -- Shown here as a pattern for future implementation
+  -- EXERCISE: Complete this proof (possibility distribution over disjunction)
+  -- Technique: Use De Morgan laws from Propositional and modal distribution
+  -- Hint: ◇(φ ∨ ψ) = ¬□¬(φ ∨ ψ); use demorgan_disj_neg to get ¬□(¬φ ∧ ¬ψ)
   sorry
 
 /-!
@@ -280,11 +279,9 @@ Steps:
 Note: Full proof requires classical negation reasoning.
 -/
 example (φ : Formula) : ⊢ φ.box.diamond.imp φ := by
-  -- This characteristic S5 theorem requires:
-  -- 1. Expanding ◇□φ = ¬□¬□φ
-  -- 2. Using B axiom to derive symmetry properties
-  -- 3. Using T axiom to get φ from □φ
-  -- Shown here as a pattern for pedagogical purposes
+  -- EXERCISE: Complete this proof (S5 characteristic theorem)
+  -- Technique: Use `contraposition` and S5 axioms (T, 4, B)
+  -- Hint: Contrapose B: ¬□◇φ → ¬φ, then use ◇□φ with accessibility symmetry
   sorry
 
 /--
@@ -312,11 +309,9 @@ In S5, nested possibilities collapse. This is because:
 This theorem is specific to S5 (the reverse `◇φ → ◇◇φ` is also true).
 -/
 example (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
-  -- This requires:
-  -- 1. Expanding double diamond: ◇◇φ = ¬□¬¬□¬φ
-  -- 2. Double negation elimination: ¬□¬¬□¬φ → ¬□□¬φ
-  -- 3. Using M4 on □¬φ: □¬φ → □□¬φ, contrapose to get ¬□□¬φ → ¬□¬φ
-  -- Shown here as a characteristic S5 pattern
+  -- EXERCISE: Complete this proof (S5 diamond iteration)
+  -- Technique: Use `contraposition` on modal 4 axiom
+  -- Hint: ◇◇φ = ¬□□¬φ; contrapose □¬φ → □□¬φ to get ¬□□¬φ → ¬□¬φ = ◇φ
   sorry
 
 /-!

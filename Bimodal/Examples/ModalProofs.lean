@@ -151,8 +151,9 @@ Using modus ponens and axioms to derive new modal theorems.
 
 /-- Derived: From `□φ` and `□(φ → ψ)`, derive `□ψ` (modal modus ponens pattern) -/
 example (φ ψ : Formula) (h1 : ⊢ φ.box) (h2 : ⊢ (φ.imp ψ).box) : ⊢ ψ.box := by
-  -- This would require modal K rule and weakening to derive properly
-  -- For now, demonstrating the pattern via axioms
+  -- EXERCISE: Complete this proof using modal K distribution
+  -- Technique: Use `Axiom.modal_k_dist` to distribute □ over implication
+  -- Hint: Apply modal K: □(φ → ψ) → (□φ → □ψ), then use modus ponens twice
   sorry
 
 /-- Combining T and 4: `□φ → φ` and `□φ → □□φ` for iteration -/
@@ -165,8 +166,9 @@ example (φ : Formula) : ⊢ φ.box.imp φ.box := by
 
 /-- S5 characteristic: `◇□φ → φ` (possibility of necessity implies truth) -/
 example (φ : Formula) : ⊢ φ.box.diamond.imp φ := by
-  -- This is derivable in S5 from T, 4, B
-  -- ◇□φ = ¬□¬□φ → φ
+  -- EXERCISE: Complete this proof (S5-specific)
+  -- Technique: Use S5 axioms T, 4, B and `contraposition` from Propositional
+  -- Hint: ◇□φ = ¬□¬□φ; use B axiom (φ → □◇φ) contraposed, then T axiom
   sorry
 
 /-!
@@ -230,13 +232,16 @@ noncomputable example (p q : Formula) : ⊢ (p.box.and (p.imp q).box).imp q.box 
 
 /-- Possibility of conjunction example -/
 example (p q : Formula) : ⊢ (p.and q).diamond.imp (p.diamond.or q.diamond) := by
-  -- ◇(p ∧ q) → (◇p ∨ ◇q) is a valid modal theorem
+  -- EXERCISE: Complete this proof (modal distribution over disjunction)
+  -- Technique: Use `lce_imp`, `rce_imp` for conjunction elimination, and disjunction intro
+  -- Hint: ◇(p ∧ q) → ◇p follows from (p ∧ q) → p lifted through ◇
   sorry
 
 /-- Duality between necessity and possibility -/
 example (φ : Formula) : ⊢ φ.box.imp φ.diamond.neg.neg := by
-  -- □φ → ¬¬◇φ (using ◇φ = ¬□¬φ)
-  -- This is: □φ → ¬¬¬□¬φ
+  -- EXERCISE: Complete this proof (modal duality)
+  -- Technique: Use `dni` (double negation introduction) from Combinators
+  -- Hint: Since ◇φ = ¬□¬φ, this is □φ → ¬¬¬□¬φ; use modal 4 and dni
   sorry
 
 /-!

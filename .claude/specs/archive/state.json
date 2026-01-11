@@ -5,6 +5,20 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 366,
+      "project_name": "document_logos_legacy_reexports",
+      "status": "abandoned",
+      "language": "markdown",
+      "priority": "low",
+      "type": "documentation",
+      "effort": "30 minutes",
+      "description": "Document in project README that Logos/ is a legacy re-export layer with stubs for planned extensions (Epistemic, Normative, Explanatory), and Bimodal/ contains the active implementation.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-11T02:22:16Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "abandoned": "2026-01-11T19:40:44Z"
+    },
+    {
       "project_number": 176,
       "project_name": "enhance_proof_search_with_domain_specific_heuristics_and_caching",
       "type": "feature",
@@ -863,9 +877,18 @@
       "started": "2026-01-11",
       "completed": "2026-01-11",
       "artifacts": [
-        {"type": "research", "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md"},
-        {"type": "plan", "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/plans/implementation-001.md"},
-        {"type": "summary", "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/summaries/implementation-summary-20260111.md"}
+        {
+          "type": "research",
+          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/summaries/implementation-summary-20260111.md"
+        }
       ],
       "archived": "2026-01-12T11:30:00Z"
     },
@@ -880,12 +903,30 @@
       "last_updated": "2026-01-12T04:00:00Z",
       "completed": "2026-01-12",
       "artifacts": [
-        {"type": "research", "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md"},
-        {"type": "research", "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md"},
-        {"type": "research", "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-003.md"},
-        {"type": "plan", "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md"},
-        {"type": "plan", "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-002.md"},
-        {"type": "summary", "path": ".claude/specs/379_fix_logosreference_latex_warnings/summaries/implementation-summary-20260112.md"}
+        {
+          "type": "research",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-003.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/summaries/implementation-summary-20260112.md"
+        }
       ],
       "archived": "2026-01-12T11:30:00Z"
     },
@@ -901,8 +942,14 @@
       "started": "2026-01-11",
       "completed": "2026-01-12",
       "artifacts": [
-        {"type": "research", "path": ".claude/specs/383_rename_core_to_explanatory/reports/research-001.md"},
-        {"type": "plan", "path": ".claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md"}
+        {
+          "type": "research",
+          "path": ".claude/specs/383_rename_core_to_explanatory/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md"
+        }
       ],
       "archived": "2026-01-12T11:30:00Z"
     },
@@ -918,10 +965,22 @@
       "started": "2026-01-11",
       "completed": "2026-01-12",
       "artifacts": [
-        {"type": "plan", "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md"},
-        {"type": "research", "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md"},
-        {"type": "plan", "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md"},
-        {"type": "summary", "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/summaries/implementation-summary-20260112.md"}
+        {
+          "type": "plan",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/summaries/implementation-summary-20260112.md"
+        }
       ],
       "archived": "2026-01-12T11:30:00Z"
     },
@@ -937,9 +996,18 @@
       "started": "2026-01-11",
       "completed": "2026-01-12",
       "artifacts": [
-        {"type": "plan", "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md"},
-        {"type": "plan", "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md"},
-        {"type": "summary", "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md"}
+        {
+          "type": "plan",
+          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md"
+        }
       ],
       "archived": "2026-01-12T11:30:00Z"
     }

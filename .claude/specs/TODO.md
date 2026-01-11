@@ -154,12 +154,13 @@ technical_debt:
 
 ### 366. Document Logos/ as legacy re-exports
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Priority**: Low
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Review Source**: [.claude/specs/reviews/review-20260110.md]
+- **Abandoned**: 2026-01-11
 
 **Description**: Document in project README that Logos/ is a legacy re-export layer with stubs for planned extensions (Epistemic, Normative, Explanatory), and Bimodal/ contains the active implementation.
 

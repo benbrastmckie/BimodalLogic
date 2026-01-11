@@ -339,9 +339,10 @@ example (φ : Formula) : ⊢ φ.imp φ.some_past.some_past.all_future.all_future
     DerivationTree.axiom [] _ (Axiom.temp_a φ.some_past)
 
   -- Step 3: We need to lift ta_2 under G to get G(Pφ) → GG(PPφ)
-  -- This requires temporal K rule: if ⊢ A → B then ⊢ GA → GB
-  -- For pedagogical completeness, we show the pattern structure
-  sorry  -- Requires temporal K application to lift Pφ → G(PPφ) to G(Pφ) → GG(PPφ)
+  -- EXERCISE: Complete this proof using temporal K distribution
+  -- Technique: Use `generalized_temporal_k` from GeneralizedNecessitation
+  -- Hint: Lift Pφ → G(PPφ) through G using temporal K rule
+  sorry
 
 /--
 Connectedness with T4: `φ → GGG(Pφ)`
@@ -403,13 +404,9 @@ Note: Full proof requires showing △φ → G△φ from the definition △φ = H
 Shown here as a characteristic pattern of perpetual truths.
 -/
 example (φ : Formula) : ⊢ φ.always.imp φ.always.all_future := by
-  -- This requires:
-  -- 1. Expanding △φ = Hφ ∧ φ ∧ Gφ
-  -- 2. From Gφ, derive G(Gφ) by T4
-  -- 3. From φ, derive G(φ) by temporal reasoning
-  -- 4. From Hφ, derive G(Hφ) by TL
-  -- 5. Combine using conjunction rules
-  -- Shown here as a pedagogical pattern
+  -- EXERCISE: Complete this proof (perpetuity preservation)
+  -- Technique: Use `lce_imp`, `rce_imp`, `Axiom.temp_4`, and `Axiom.temp_l`
+  -- Hint: Decompose △φ = Hφ ∧ φ ∧ Gφ, lift each component under G, recombine
   sorry
 
 /--
@@ -422,10 +419,10 @@ preserved into the past.
 This demonstrates symmetric temporal reasoning about eternal truths.
 -/
 example (φ : Formula) : ⊢ φ.always.imp φ.always.all_past := by
-  -- This is the dual of △φ → G△φ
-  -- We would prove △φ → G△φ, then apply temporal duality
-  -- to get △φ → H△φ
-  sorry  -- Requires proving △φ → G△φ first, then applying duality
+  -- EXERCISE: Complete this proof (perpetuity in past direction)
+  -- Technique: Use `temporal_duality` from DerivationTree on △φ → G△φ
+  -- Hint: First prove △φ → G△φ (above exercise), then apply temporal duality
+  sorry
 
 /-!
 ## Strategy 6: Temporal Frame Properties
@@ -477,15 +474,9 @@ times s where s > t and t > now, then φ holds at all times s' > now
 Shown here as a pedagogical pattern.
 -/
 example (φ : Formula) : ⊢ φ.all_future.all_future.imp φ.all_future := by
-  -- This requires showing:
-  -- If for all t > now, for all s > t, we have φ at s
-  -- Then for all t > now, we have φ at t
-  --
-  -- Proof: Consider any t > now.
-  -- Take s = t. Then s > t is false, but we can use the semantics
-  -- of G to show this still gives us φ at t.
-  --
-  -- Full proof requires careful use of temporal semantics
+  -- EXERCISE: Complete this proof (future-past iteration)
+  -- Technique: Use `Axiom.temp_4` (T4 axiom) and `imp_trans`
+  -- Hint: GGφ → Gφ follows from T4's transitivity; compose with temp_t
   sorry
 
 /-!
@@ -532,12 +523,10 @@ Note: This pattern requires careful semantic reasoning about the interaction
 of past and future operators. Shown here as an advanced pattern.
 -/
 example (φ : Formula) : ⊢ φ.all_future.all_past.imp φ.all_past.all_future := by
-  -- This requires showing:
-  -- If for all s < now, for all t > s, we have φ at t
-  -- Then for all t > now, for all s < t, we have φ at s
-  --
-  -- In linear time with unbounded past/future, this follows from
-  -- the structure of temporal accessibility.
+  -- EXERCISE: Complete this proof (past-future commutation)
+  -- Technique: Use temporal axioms and `temporal_duality`
+  -- Hint: This is an advanced exercise requiring careful temporal reasoning
+  --       about the structure of linear time accessibility
   sorry
 
 /-!

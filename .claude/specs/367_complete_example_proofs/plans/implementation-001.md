@@ -101,7 +101,7 @@ Complete the 24 sorry placeholders in Bimodal/Examples/ files using a prioritize
 ### Phase 4: Mark Remaining as Exercises (Categories D & E)
 
 **Estimated effort**: 1 hour
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add EXERCISE markers and hints to remaining 11 sorries
