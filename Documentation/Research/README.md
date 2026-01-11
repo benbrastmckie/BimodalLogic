@@ -1,8 +1,23 @@
 # Research Documentation
 
-This directory contains research vision documents describing planned features and future directions for Logos. For current implementation progress, see [IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
+This directory contains research vision documents describing planned features and future directions
+for Logos. For current implementation progress, see
+[IMPLEMENTATION_STATUS.md](../ProjectInfo/IMPLEMENTATION_STATUS.md).
 
 ## Documents
+
+### Theory Foundations
+
+#### THEORY_COMPARISON.md
+
+Comparison of the two logical systems in ProofChecker: **Bimodal** (propositional intensional logic
+with world-state primitives) and **Logos** (planned second-order hyperintensional logic with state
+primitives). Covers semantic frameworks, operators, and intended applications.
+
+**Status**: Complete
+**Related**: [Bimodal README](../../Bimodal/README.md), [Logos README](../../Logos/README.md)
+
+---
 
 ### Noncomputable Logic Research
 
