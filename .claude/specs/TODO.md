@@ -110,7 +110,7 @@ technical_debt:
 - **Language**: latex
 - **Dependencies**: 405
 
-**Description**: Reformat Theories/Bimodal/LaTeX/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
+**Description**: Reformat Theories/Bimodal/latex/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
 
 ---
 
@@ -121,7 +121,7 @@ technical_debt:
 - **Language**: latex
 - **Dependencies**: 405
 
-**Description**: Reformat Theories/Logos/LaTeX/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
+**Description**: Reformat Theories/Logos/latex/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
 
 ---
 
@@ -146,7 +146,7 @@ technical_debt:
 - **Research**: [research-001.md](.claude/specs/403_enforce_directory_naming_convention/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/403_enforce_directory_naming_convention/plans/implementation-001.md)
 
-**Description**: Research and enforce the naming convention that only directories containing Lean source code should be capitalized. Identify all exceptions like Theories/Bimodal/LaTeX/ and Theories/Logos/LaTeX/ that violate this convention, find all references that need updating, and systematically rename directories to lowercase.
+**Description**: Research and enforce the naming convention that only directories containing Lean source code should be capitalized. Identify all exceptions like Theories/Bimodal/latex/ and Theories/Logos/latex/ that violate this convention, find all references that need updating, and systematically rename directories to lowercase.
 
 ---
 

@@ -153,19 +153,19 @@ Theories/Logos/docs/user-guide/    → Theories/Logos/docs/user-guide/
 ### Phase 4: Rename Theory LaTeX directories
 
 **Estimated effort**: 30 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Remove orphaned `.claude/` directories inside LaTeX directories
-2. Rename `Theories/Bimodal/LaTeX/` to `Theories/Bimodal/latex/`
-3. Rename `Theories/Logos/LaTeX/` to `Theories/Logos/latex/`
+2. Rename `Theories/Bimodal/latex/` to `Theories/Bimodal/latex/`
+3. Rename `Theories/Logos/latex/` to `Theories/Logos/latex/`
 4. Update `latex/latexmkrc` and `latex/README.md` references
 
 **Steps**:
 1. Remove orphaned artifacts:
    ```bash
-   rm -rf Theories/Logos/LaTeX/.claude
-   rm -rf Theories/Bimodal/LaTeX/assets/.claude
+   rm -rf Theories/Logos/latex/.claude
+   rm -rf Theories/Bimodal/latex/assets/.claude
    ```
 
 2. Rename LaTeX directories:
@@ -175,8 +175,8 @@ Theories/Logos/docs/user-guide/    → Theories/Logos/docs/user-guide/
    ```
 
 3. Update `latex/README.md`:
-   - Change all `Theories/Bimodal/LaTeX/` → `Theories/Bimodal/latex/`
-   - Change all `Theories/Logos/LaTeX/` → `Theories/Logos/latex/`
+   - Change all `Theories/Bimodal/latex/` → `Theories/Bimodal/latex/`
+   - Change all `Theories/Logos/latex/` → `Theories/Logos/latex/`
 
 4. Update `latex/latexmkrc`:
    - Update any path references to theory LaTeX directories

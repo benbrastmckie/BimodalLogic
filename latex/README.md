@@ -18,7 +18,7 @@ This directory contains shared LaTeX assets used across all theory-specific docu
 The shared assets are available via TEXINPUTS configured in latexmkrc. Import packages by name:
 
 ```latex
-% In Theories/Bimodal/LaTeX/BimodalReference.tex or Theories/Logos/LaTeX/LogosReference.tex
+% In Theories/Bimodal/latex/BimodalReference.tex or Theories/Logos/latex/LogosReference.tex
 \usepackage{bimodal-notation}  % or logos-notation (from assets/)
 \usepackage{formatting}        % From shared latex/
 ```
@@ -28,7 +28,7 @@ The shared assets are available via TEXINPUTS configured in latexmkrc. Import pa
 Notation files should import the shared standards by name (TEXINPUTS resolves the path):
 
 ```latex
-% In Theories/Bimodal/LaTeX/assets/bimodal-notation.sty
+% In Theories/Bimodal/latex/assets/bimodal-notation.sty
 \RequirePackage{notation-standards}
 ```
 
@@ -67,13 +67,13 @@ Provides consistent notation across all theories:
 
 When creating documentation for a new theory:
 
-1. Create `Theories/{Theory}/LaTeX/` directory structure with `assets/` subdirectory
+1. Create `Theories/{Theory}/latex/` directory structure with `assets/` subdirectory
 2. Create stub latexmkrc:
    ```perl
    # {Theory} LaTeX Build Configuration
    do '../../../latex/latexmkrc';
    ```
-3. Create `Theories/{Theory}/LaTeX/assets/theory-notation.sty`:
+3. Create `Theories/{Theory}/latex/assets/theory-notation.sty`:
    ```latex
    \NeedsTeXFormat{LaTeX2e}
    \ProvidesPackage{theory-notation}[YYYY/MM/DD Theory Notation]
@@ -100,8 +100,8 @@ Theory directories use a "stub pattern" to load the central config:
 
 ```
 latex/latexmkrc                           # Central configuration (this directory)
-Theories/Bimodal/LaTeX/latexmkrc          # Stub: do '../../../latex/latexmkrc';
-Theories/Logos/LaTeX/latexmkrc            # Stub: do '../../../latex/latexmkrc';
+Theories/Bimodal/latex/latexmkrc          # Stub: do '../../../latex/latexmkrc';
+Theories/Logos/latex/latexmkrc            # Stub: do '../../../latex/latexmkrc';
 ```
 
 This provides a single source of truth while allowing latexmk to auto-discover the config in each directory.

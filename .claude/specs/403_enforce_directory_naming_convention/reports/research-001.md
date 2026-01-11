@@ -44,7 +44,7 @@ Theories/Bimodal/docs/project-info/      → Theories/Bimodal/docs/project-info/
 Theories/Bimodal/docs/reference/        → Theories/Bimodal/docs/reference/
 Theories/Bimodal/docs/research/         → Theories/Bimodal/docs/research/
 Theories/Bimodal/docs/user-guide/        → Theories/Bimodal/docs/user-guide/
-Theories/Bimodal/LaTeX/                          → Theories/Bimodal/latex/
+Theories/Bimodal/latex/                          → Theories/Bimodal/latex/
 ```
 
 #### Theories/Logos non-Lean directories (6 directories)
@@ -54,7 +54,7 @@ Theories/Logos/docs/project-info/        → Theories/Logos/docs/project-info/
 Theories/Logos/docs/reference/          → Theories/Logos/docs/reference/
 Theories/Logos/docs/research/           → Theories/Logos/docs/research/
 Theories/Logos/docs/user-guide/          → Theories/Logos/docs/user-guide/
-Theories/Logos/LaTeX/                            → Theories/Logos/latex/
+Theories/Logos/latex/                            → Theories/Logos/latex/
 ```
 
 ### References Requiring Updates
@@ -99,8 +99,8 @@ The implementation summary claimed success but the directories still exist with 
 2. **Build output directories**: `Theories/*/LaTeX/build/` should be in .gitignore (or moved)
 3. **latexmkrc paths**: The `latex/latexmkrc` config references theory LaTeX directories
 4. **Nested .claude directories**: Found in:
-   - `Theories/Logos/LaTeX/.claude/specs/` (orphaned task artifacts)
-   - `Theories/Bimodal/LaTeX/assets/.claude/specs/` (orphaned task artifacts)
+   - `Theories/Logos/latex/.claude/specs/` (orphaned task artifacts)
+   - `Theories/Bimodal/latex/assets/.claude/specs/` (orphaned task artifacts)
 
 ## Recommendations
 
