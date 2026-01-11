@@ -71,13 +71,15 @@ technical_debt:
 
 ### 363. Create Bimodal LaTeX documentation
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: latex
 - **Blocking**: None
 - **Dependencies**: None
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Research**: [research-001.md](.claude/specs/363_create_bimodal_latex_documentation/reports/research-001.md), [research-002.md](.claude/specs/363_create_bimodal_latex_documentation/reports/research-002.md)
+- **Plan**: [implementation-001.md](.claude/specs/363_create_bimodal_latex_documentation/plans/implementation-001.md)
 
 **Description**: Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory. Follow JPL paper "The Perpetuity Calculus of Agency" sections sec:Construction, sub:Logic, app:TaskSemantics, sub:ProofTheory, and sub:Soundness.
 

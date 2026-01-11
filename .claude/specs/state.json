@@ -4,27 +4,6 @@
   "next_project_number": 368,
   "active_projects": [
     {
-      "project_number": 364,
-      "project_name": "update_sorry_registry_paths",
-      "status": "completed",
-      "language": "markdown",
-      "priority": "medium",
-      "type": "documentation",
-      "effort": "30 minutes",
-      "description": "Update SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Logos/Core/ paths. Update verification commands to match new directory structure.",
-      "created": "2026-01-11T02:22:16Z",
-      "last_updated": "2026-01-11T02:31:43Z",
-      "review_source": ".claude/specs/reviews/review-20260110.md",
-      "started": "2026-01-11",
-      "completed": "2026-01-11",
-      "artifacts": [
-        {
-          "type": "summary",
-          "path": ".claude/specs/364_update_sorry_registry_paths/summaries/implementation-summary-20260111.md"
-        }
-      ]
-    },
-    {
       "project_number": 365,
       "project_name": "complete_bimodaltest_sorries",
       "status": "not_started",
@@ -66,14 +45,14 @@
     {
       "project_number": 363,
       "project_name": "create_bimodal_latex_documentation",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "type": "documentation",
       "effort": "2-4 hours",
       "description": "Create a Bimodal/LaTeX/ directory with contents similar to Logos/LaTeX/ but focusing on reporting exactly what has been implemented in the Bimodal/ theory.",
       "created": "2026-01-11T02:11:42Z",
-      "last_updated": "2026-01-11T02:21:55Z",
+      "last_updated": "2026-01-11T03:29:53Z",
       "research_completed": "2026-01-11T02:21:55Z",
       "artifacts": [
         {
@@ -83,8 +62,13 @@
         {
           "type": "research",
           "path": ".claude/specs/363_create_bimodal_latex_documentation/reports/research-002.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/363_create_bimodal_latex_documentation/plans/implementation-001.md"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 362,

@@ -720,6 +720,58 @@
       "description": "Complete the temporal_duality case in SoundnessLemmas.lean to remove the last sorry from soundness proofs.",
       "completed": "2026-01-10",
       "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 355,
+      "project_name": "fix_bimodal_build_errors",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-11T00:41:09Z",
+      "last_updated": "2026-01-11T05:30:00Z",
+      "description": "Fix all Lean build errors for the Bimodal/ theory.",
+      "completed": "2026-01-11",
+      "archived": "2026-01-11T06:30:00Z"
+    },
+    {
+      "project_number": 361,
+      "project_name": "create_installation_documentation",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "type": "documentation",
+      "effort": "2-4 hours",
+      "description": "Create installation documentation (CLAUDE_CODE.md, BASIC_INSTALLATION.md, GETTING_STARTED.md, USING_GIT.md).",
+      "created": "2026-01-11T01:30:25Z",
+      "last_updated": "2026-01-11T06:00:00Z",
+      "completed": "2026-01-11",
+      "archived": "2026-01-11T06:30:00Z"
+    },
+    {
+      "project_number": 362,
+      "project_name": "move_latex_to_logos",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Move Documentation/LaTeX/ to Logos/LaTeX/, updating all references.",
+      "created": "2026-01-11T01:56:51Z",
+      "last_updated": "2026-01-11T02:10:18Z",
+      "completed": "2026-01-11",
+      "archived": "2026-01-11T06:30:00Z"
+    },
+    {
+      "project_number": 364,
+      "project_name": "update_sorry_registry_paths",
+      "status": "completed",
+      "language": "markdown",
+      "priority": "medium",
+      "type": "documentation",
+      "effort": "30 minutes",
+      "description": "Update SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Logos/Core/ paths.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-11T02:31:43Z",
+      "completed": "2026-01-11",
+      "archived": "2026-01-11T06:30:00Z"
     }
   ]
 }
