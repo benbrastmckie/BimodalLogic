@@ -58,7 +58,7 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 ### Phase 2: Update Subdirectory READMEs
 
 **Estimated effort**: 2 hours
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Fix broken links in each subdirectory README

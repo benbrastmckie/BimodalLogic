@@ -772,77 +772,75 @@ def bestFirst_search (Γ : Context) (φ : Formula)
 
   -- Main search loop using fuel parameter for termination
   let rec searchLoop (queue : PriorityQueue) (cache : ProofCache) (visited : Visited)
-                     (stats : SearchStats) (expansions : Nat) (fuel : Nat)
-      : Bool × ProofCache × Visited × SearchStats × Nat :=
-    if fuel == 0 then
-      (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
-    else if expansions ≥ maxExpansions then
-      (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
-    else
-      match queue.extractMin with
-      | none =>
-          -- Queue empty, no proof found
-          (false, cache, visited, stats, expansions)
-      | some (node, queue') =>
-          let key : CacheKey := (node.context, node.goal)
+                     (stats : SearchStats) (expansions : Nat) : (fuel : Nat) →
+      Bool × ProofCache × Visited × SearchStats × Nat
+    | 0 => (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
+    | fuel + 1 =>
+        if expansions ≥ maxExpansions then
+          (false, cache, visited, {stats with prunedByLimit := stats.prunedByLimit + 1}, expansions)
+        else
+          match queue.extractMin with
+          | none =>
+              -- Queue empty, no proof found
+              (false, cache, visited, stats, expansions)
+          | some (node, queue') =>
+              let key : CacheKey := (node.context, node.goal)
 
-          -- Skip if already visited (doesn't count as expansion)
-          if visited.contains key then
-            searchLoop queue' cache visited stats expansions (fuel - 1)
-          else
-            let visited' := visited.insert key
-            let stats' := {stats with visited := stats.visited + 1}
+              -- Skip if already visited (doesn't count as expansion)
+              if visited.contains key then
+                searchLoop queue' cache visited stats expansions fuel
+              else
+                let visited' := visited.insert key
+                let stats' := {stats with visited := stats.visited + 1}
 
-            -- Check cache
-            match cache.find? key with
-            | some true =>
-                -- Cached success
-                (true, cache, visited', {stats' with hits := stats'.hits + 1}, expansions + 1)
-            | some false =>
-                -- Cached failure, skip
-                searchLoop queue' cache visited' {stats' with hits := stats'.hits + 1} expansions (fuel - 1)
-            | none =>
-                let stats' := {stats' with misses := stats'.misses + 1}
+                -- Check cache
+                match cache.find? key with
+                | some true =>
+                    -- Cached success
+                    (true, cache, visited', {stats' with hits := stats'.hits + 1}, expansions + 1)
+                | some false =>
+                    -- Cached failure, skip
+                    searchLoop queue' cache visited' {stats' with hits := stats'.hits + 1} expansions fuel
+                | none =>
+                    let stats' := {stats' with misses := stats'.misses + 1}
 
-                -- Check if goal matches axiom
-                if matches_axiom node.goal then
-                  (true, cache.insert key true, visited', stats', expansions + 1)
-                -- Check if goal is in context
-                else if node.context.contains node.goal then
-                  (true, cache.insert key true, visited', stats', expansions + 1)
-                else
-                  -- Expand node: generate successor nodes
+                    -- Check if goal matches axiom
+                    if matches_axiom node.goal then
+                      (true, cache.insert key true, visited', stats', expansions + 1)
+                    -- Check if goal is in context
+                    else if node.context.contains node.goal then
+                      (true, cache.insert key true, visited', stats', expansions + 1)
+                    else
+                      -- Expand node: generate successor nodes
 
-                  -- 1. Modus ponens: find implications (ψ → goal) and add ψ as subgoal
-                  let implications := find_implications_to node.context node.goal
-                  let mpNodes := implications.map fun ψ =>
-                    let h := pattern_aware_score weights node.context ψ patternDb .ModusPonens
-                    { context := node.context, goal := ψ, cost := node.cost + 1, heuristic := h : SearchNode }
+                      -- 1. Modus ponens: find implications (ψ → goal) and add ψ as subgoal
+                      let implications := find_implications_to node.context node.goal
+                      let mpNodes := implications.map fun ψ =>
+                        let h := pattern_aware_score weights node.context ψ patternDb .ModusPonens
+                        { context := node.context, goal := ψ, cost := node.cost + 1, heuristic := h : SearchNode }
 
-                  -- 2. Modal K rule: if goal is □ψ, add ψ with boxed context
-                  let modalNodes := match node.goal with
-                    | .box ψ =>
-                        let ctx' := box_context node.context
-                        let h := pattern_aware_score weights ctx' ψ patternDb .ModalK
-                        [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
-                    | _ => []
+                      -- 2. Modal K rule: if goal is □ψ, add ψ with boxed context
+                      let modalNodes := match node.goal with
+                        | .box ψ =>
+                            let ctx' := box_context node.context
+                            let h := pattern_aware_score weights ctx' ψ patternDb .ModalK
+                            [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
+                        | _ => []
 
-                  -- 3. Temporal K rule: if goal is Gψ, add ψ with future context
-                  let temporalNodes := match node.goal with
-                    | .all_future ψ =>
-                        let ctx' := future_context node.context
-                        let h := pattern_aware_score weights ctx' ψ patternDb .TemporalK
-                        [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
-                    | _ => []
+                      -- 3. Temporal K rule: if goal is Gψ, add ψ with future context
+                      let temporalNodes := match node.goal with
+                        | .all_future ψ =>
+                            let ctx' := future_context node.context
+                            let h := pattern_aware_score weights ctx' ψ patternDb .TemporalK
+                            [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
+                        | _ => []
 
-                  -- Add all successor nodes to queue
-                  let allSuccessors := mpNodes ++ modalNodes ++ temporalNodes
-                  let queue'' := allSuccessors.foldl PriorityQueue.insert queue'
+                      -- Add all successor nodes to queue
+                      let allSuccessors := mpNodes ++ modalNodes ++ temporalNodes
+                      let queue'' := allSuccessors.foldl PriorityQueue.insert queue'
 
-                  -- Continue search
-                  searchLoop queue'' (cache.insert key false) visited' stats' (expansions + 1) (fuel - 1)
-  termination_by fuel
-  decreasing_by all_goals simp_wf; omega
+                      -- Continue search
+                      searchLoop queue'' (cache.insert key false) visited' stats' (expansions + 1) fuel
 
   -- Use maxExpansions * 10 as fuel (allows for skipped visited nodes)
   searchLoop initQueue ProofCache.empty Visited.empty {} 0 (maxExpansions * 10)
