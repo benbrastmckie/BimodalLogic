@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T12:00:00Z
-next_project_number: 395
+next_project_number: 397
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,23 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 396. Fix LaTeX build missing style files
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: latex
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Fix LaTeX build errors in Theories/Logos/LaTeX/LogosReference.tex and Theories/Bimodal/LaTeX/BimodalReference.tex caused by missing style files:
+- `logos-notation.sty` not found (Logos)
+- `../../latex/notation-standards.sty` not found (Bimodal)
+- `assets/bimodal-notation.sty` not found (Bimodal)
+
+Troubleshoot and provide an elegant, high-quality solution for style file paths.
+
+---
 
 ### 392. Enhance /todo command orphan tracking
 - **Effort**: 2-3 hours

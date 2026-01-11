@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T12:00:00Z",
-  "next_project_number": 396,
+  "next_project_number": 397,
   "active_projects": [
+    {
+      "project_number": 396,
+      "project_name": "fix_latex_build_missing_style_files",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "high",
+      "description": "Fix LaTeX build errors in Theories/Logos/LaTeX/LogosReference.tex and Theories/Bimodal/LaTeX/BimodalReference.tex caused by missing style files (logos-notation.sty, notation-standards.sty, bimodal-notation.sty). Troubleshoot and provide elegant solution for style file paths.",
+      "created": "2026-01-11T21:24:04Z",
+      "last_updated": "2026-01-11T21:24:04Z"
+    },
     {
       "project_number": 394,
       "project_name": "research_port_causal_semantics_from_paper",
