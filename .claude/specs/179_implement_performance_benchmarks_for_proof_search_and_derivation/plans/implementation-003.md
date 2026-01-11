@@ -65,7 +65,7 @@ Extend the Bimodal benchmarking suite with derivation tree and semantic evaluati
 
 ### Phase 2: Semantic Evaluation Benchmarks
 
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 **Estimated effort**: 2 hours
 
 *(Unchanged from v002)*
@@ -90,7 +90,7 @@ Extend the Bimodal benchmarking suite with derivation tree and semantic evaluati
 
 ### Phase 3a: Project-Wide Benchmarking Documentation
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 **Estimated effort**: 0.75 hours
 
 **NEW in v003**: Creates project-wide benchmarking guidance applicable to all theories.
