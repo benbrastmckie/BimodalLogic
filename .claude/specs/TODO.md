@@ -1,34 +1,65 @@
 ---
-last_updated: 2026-01-09T12:00:00Z
-next_project_number: 357
+last_updated: 2026-01-10T12:00:00Z
+next_project_number: 361
 repository_health:
-  overall_score: 92
-  production_readiness: excellent
-  last_assessed: 2026-01-05T02:00:00Z
+  overall_score: 85
+  production_readiness: needs-work
+  last_assessed: 2026-01-10T12:00:00Z
 task_counts:
-  active: 44
+  active: 48
   completed: 71
   in_progress: 2
-  not_started: 39
+  not_started: 43
   abandoned: 8
-  total: 124
+  total: 128
 priority_distribution:
-  high: 17
-  medium: 22
+  critical: 2
+  high: 18
+  medium: 24
   low: 14
 technical_debt:
   sorry_count: 6
   axiom_count: 11
-  build_errors: 11
-  status: well-documented
+  build_errors: 150
+  status: critical-needs-fix
 ---
 
 # TODO
 
+## Critical Priority
+
+### 357. Fix ModalS5.lean noncomputable cascade
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Critical
+- **Language**: lean
+- **Blocking**: 355 (build errors depend on this)
+- **Dependencies**: None
+- **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
+
+**Description**: Add `noncomputable` markers to definitions in ModalS5.lean that depend on noncomputable `classical_merge` and `lce_imp` from Propositional.lean. 5 definitions have cascading build errors:
+- Line 63: `box_impl_self`
+- Line 203: `box_disj_intro`
+- Line 379: `box_iff_intro`
+- Line 514: `box_conj_iff`
+- Line 621: `diamond_disj_iff`
 
 ---
 
 ## High Priority
+
+### 358. Fix CompletenessTest.lean import error
+- **Effort**: 5 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
+
+**Description**: Move import statement from line 26 to beginning of file in `BimodalTest/Metalogic/CompletenessTest.lean`. Error: "invalid 'import' command, it must be used in the beginning of the file".
+
+---
 
 ### 355. Fix all Lean build errors for the Bimodal/ theory
 - **Effort**: 1-2 hours
@@ -87,6 +118,36 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 359. Complete temporal_duality soundness case
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
+
+**Description**: Complete the `temporal_duality` case in `Bimodal/Metalogic/SoundnessLemmas.lean:687` to remove the last `sorry` from soundness proofs. This completes the soundness theorem (12/12 axioms proven).
+
+---
+
+### 360. Create MVP status documentation
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Blocking**: None
+- **Dependencies**: 356
+- **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
+
+**Description**: Document known limitations of Bimodal MVP:
+- Completeness proof is infrastructure only (provable_iff_valid has sorry)
+- Modal 5 theorem has blocking dependency
+- Example files contain pedagogical sorries
+Add Implementation Status sections to Bimodal/README.md and BimodalTest/README.md.
+
+---
 
 ### 356. Create systematic documentation for Bimodal/ and BimodalTest/
 - **Effort**: 2-4 hours

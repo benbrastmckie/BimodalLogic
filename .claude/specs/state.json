@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-11T00:00:00Z",
-  "next_project_number": 357,
+  "_last_updated": "2026-01-10T12:00:00Z",
+  "next_project_number": 361,
   "active_projects": [
     {
       "project_number": 356,
@@ -506,6 +506,62 @@
       "last_updated": "2026-01-09T02:30:00Z",
       "effort": "8-12 hours",
       "description": "Refactor the .claude/ agent system to use 'thin wrapper' commands that parse arguments and delegate to corresponding skills for execution, enabling skill reuse across commands and cleaner separation of concerns."
+    },
+    {
+      "project_number": 357,
+      "project_name": "fix_modals5_noncomputable_cascade",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "critical",
+      "language": "lean",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-10T12:00:00Z",
+      "effort": "30 minutes",
+      "description": "Add noncomputable markers to definitions in ModalS5.lean that depend on noncomputable classical_merge and lce_imp from Propositional.lean. Cascading build errors affect 5 definitions.",
+      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md"
+    },
+    {
+      "project_number": 358,
+      "project_name": "fix_completenesstest_import_error",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-10T12:00:00Z",
+      "effort": "5 minutes",
+      "description": "Move import statement from line 26 to beginning of file in BimodalTest/Metalogic/CompletenessTest.lean.",
+      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md"
+    },
+    {
+      "project_number": 359,
+      "project_name": "complete_temporal_duality_soundness",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-10T12:00:00Z",
+      "effort": "1-2 hours",
+      "description": "Complete the temporal_duality case in SoundnessLemmas.lean (line 687) to remove the last sorry from soundness proofs.",
+      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md"
+    },
+    {
+      "project_number": 360,
+      "project_name": "create_mvp_status_documentation",
+      "type": "documentation",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-10T12:00:00Z",
+      "effort": "30 minutes",
+      "description": "Document known limitations of Bimodal MVP including incomplete completeness proof, modal 5 blocking dependency, and example sorries. Add Implementation Status sections to READMEs.",
+      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md"
     },
     {
       "project_number": 352,
