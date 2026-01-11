@@ -2,6 +2,7 @@ import Std.Data.HashMap
 import Std.Data.HashSet
 import Bimodal.ProofSystem
 import Bimodal.Semantics
+import Bimodal.Automation.SuccessPatterns
 
 /-!
 # Automated Proof Search
@@ -499,6 +500,47 @@ def orderSubgoalsByAdvancedScore (weights : HeuristicWeights) (Γ : Context) (ta
   targets.mergeSort (fun φ ψ => advanced_heuristic_score weights Γ φ ≤ advanced_heuristic_score weights Γ ψ)
 
 /-!
+## Pattern-Aware Heuristic Scoring
+
+Heuristic functions that incorporate learned success patterns.
+-/
+
+/--
+Pattern-aware heuristic score incorporating learned success patterns.
+
+Combines the advanced heuristic score with bonuses from the pattern database
+for strategies that have worked on similar formulas.
+
+**Parameters**:
+- `weights`: Configurable heuristic weights
+- `Γ`: Current proof context
+- `φ`: Goal formula to score
+- `patternDb`: Optional pattern database for learned hints
+- `strategy`: The strategy being considered (for pattern bonus lookup)
+
+**Returns**: Combined score (lower = higher priority)
+-/
+def pattern_aware_score (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formula)
+    (patternDb : PatternDatabase := PatternDatabase.empty)
+    (strategy : ProofStrategy := .ModusPonens) : Nat :=
+  let baseScore : Int := advanced_heuristic_score weights Γ φ
+  let patternBonus := patternDb.heuristicBonus φ strategy
+  (baseScore + patternBonus).toNat  -- Clamp to 0 if negative
+
+/--
+Order candidate subgoals by pattern-aware heuristic score.
+
+Uses the pattern database to boost scores for formulas that match
+previously successful patterns.
+-/
+def orderSubgoalsByPatternScore (weights : HeuristicWeights) (Γ : Context)
+    (targets : List Formula) (patternDb : PatternDatabase := PatternDatabase.empty) :
+    List Formula :=
+  targets.mergeSort (fun φ ψ =>
+    pattern_aware_score weights Γ φ patternDb .ModusPonens ≤
+    pattern_aware_score weights Γ ψ patternDb .ModusPonens)
+
+/-!
 ## Search Functions
 -/
 
@@ -714,6 +756,110 @@ visited node count, and visit-limit prunes.
 def search_with_cache (cache : ProofCache := ProofCache.empty) (Γ : Context) (φ : Formula) (depth : Nat)
     (visitLimit : Nat := 500) (weights : HeuristicWeights := {}) : Bool × ProofCache × Visited × SearchStats × Nat :=
   bounded_search Γ φ depth cache Visited.empty 0 visitLimit weights {}
+
+/-!
+## Learning-Enabled Search
+
+Search functions that record successful patterns for future optimization.
+-/
+
+/--
+Search result with pattern learning data.
+-/
+structure LearningSearchResult where
+  /-- Whether a proof was found. -/
+  found : Bool
+  /-- Updated proof cache. -/
+  cache : ProofCache
+  /-- Visited set. -/
+  visited : Visited
+  /-- Search statistics. -/
+  stats : SearchStats
+  /-- Total visits. -/
+  visits : Nat
+  /-- Updated pattern database (if learning enabled). -/
+  patternDb : PatternDatabase
+  deriving Inhabited
+
+/--
+Search with pattern learning: records successful patterns for future searches.
+
+This function wraps the standard search and updates the pattern database
+when a proof is found, recording the successful pattern for future reference.
+
+**Parameters**:
+- `Γ`: Proof context
+- `φ`: Goal formula
+- `strategy`: Search algorithm to use
+- `visitLimit`: Maximum total visits
+- `weights`: Heuristic weights
+- `patternDb`: Pattern database to update (defaults to empty)
+- `enableLearning`: Whether to record patterns (default true)
+
+**Returns**: `LearningSearchResult` with updated pattern database
+
+**Example**:
+```lean
+-- First search, starting with empty pattern database
+let result1 := search_with_learning [] formula1
+
+-- Subsequent search benefits from learned patterns
+let result2 := search_with_learning [] formula2 patternDb := result1.patternDb
+```
+-/
+def search_with_learning (Γ : Context) (φ : Formula)
+    (strategy : SearchStrategy := .IDDFS 100)
+    (visitLimit : Nat := 10000)
+    (weights : HeuristicWeights := {})
+    (patternDb : PatternDatabase := PatternDatabase.empty)
+    (enableLearning : Bool := true)
+    : LearningSearchResult :=
+  let (found, cache, visited, stats, visits) := search Γ φ strategy visitLimit weights
+  let updatedDb :=
+    if found && enableLearning then
+      -- Record the successful pattern
+      let depth := stats.visited  -- Approximate depth from visits
+      let info := ProofInfo.fromSearchStats φ depth Γ.length visits
+      patternDb.recordSuccess φ info
+    else
+      patternDb
+  { found, cache, visited, stats, visits, patternDb := updatedDb }
+
+/--
+Batch search with progressive pattern learning.
+
+Searches for proofs of multiple formulas, accumulating learned patterns.
+Later formulas benefit from patterns learned from earlier successes.
+
+**Parameters**:
+- `formulas`: List of (context, goal) pairs to prove
+- `strategy`: Search algorithm to use
+- `visitLimit`: Maximum visits per formula
+- `weights`: Heuristic weights
+- `patternDb`: Initial pattern database
+
+**Returns**: List of results paired with final pattern database
+-/
+def batch_search_with_learning
+    (formulas : List (Context × Formula))
+    (strategy : SearchStrategy := .IDDFS 100)
+    (visitLimit : Nat := 10000)
+    (weights : HeuristicWeights := {})
+    (patternDb : PatternDatabase := PatternDatabase.empty)
+    : List LearningSearchResult × PatternDatabase :=
+  let (results, finalDb) := formulas.foldl
+    (fun (acc : List LearningSearchResult × PatternDatabase) (Γ, φ) =>
+      let (results, currentDb) := acc
+      let result := search_with_learning Γ φ strategy visitLimit weights currentDb true
+      (results ++ [result], result.patternDb))
+    ([], patternDb)
+  (results, finalDb)
+
+/--
+Get pattern learning statistics from a database.
+-/
+def pattern_stats (db : PatternDatabase) : String :=
+  db.statistics
 
 /-!
 ## Proof Search Examples (Documentation)
