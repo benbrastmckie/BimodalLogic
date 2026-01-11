@@ -1,3 +1,6 @@
+import Bimodal.Metalogic.Completeness
+import Bimodal.ProofSystem
+
 /-!
 # Tests for Completeness Theorems
 
@@ -22,9 +25,6 @@ proofs to be implemented.
 * Completeness Module: ProofChecker/Metalogic/Completeness.lean
 * Soundness Module: ProofChecker/Metalogic/Soundness.lean
 -/
-
-import Bimodal.Metalogic.Completeness
-import Bimodal.ProofSystem
 
 namespace BimodalTest.Metalogic
 

@@ -59,7 +59,9 @@ technical_debt:
 
 ### 358. Fix CompletenessTest.lean import error
 - **Effort**: 5 minutes
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Started**: 2026-01-10
+- **Completed**: 2026-01-10
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -67,8 +69,11 @@ technical_debt:
 - **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
 - **Research**: [.claude/specs/358_fix_completenesstest_import_error/reports/research-001.md]
 - **Plan**: [.claude/specs/358_fix_completenesstest_import_error/plans/implementation-001.md]
+- **Summary**: [.claude/specs/358_fix_completenesstest_import_error/summaries/implementation-summary-20260110.md]
 
 **Description**: Move import statement from line 26 to beginning of file in `BimodalTest/Metalogic/CompletenessTest.lean`. Error: "invalid 'import' command, it must be used in the beginning of the file".
+
+**Outcome**: Moved imports to beginning of file. No more import placement error.
 
 ---
 
@@ -132,7 +137,7 @@ technical_debt:
 
 ### 359. Complete temporal_duality soundness case
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
