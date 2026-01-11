@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T04:30:00Z
-next_project_number: 362
+next_project_number: 363
 repository_health:
   overall_score: 85
   production_readiness: needs-work
@@ -46,6 +46,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 362. Move LaTeX directory to Logos/LaTeX
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Blocking**: None
+- **Dependencies**: None
+
+**Description**: Move /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ to /home/benjamin/Projects/ProofChecker/Logos/LaTeX/ instead, updating all references as need be to avoid broken links.
+
+---
 
 ### 361. Create installation documentation
 - **Effort**: 2-4 hours

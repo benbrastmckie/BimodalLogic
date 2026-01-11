@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T04:30:00Z",
-  "next_project_number": 362,
+  "next_project_number": 363,
   "active_projects": [
+    {
+      "project_number": 362,
+      "project_name": "move_latex_to_logos",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "description": "Move /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ to /home/benjamin/Projects/ProofChecker/Logos/LaTeX/ instead, updating all references as need be to avoid broken links",
+      "created": "2026-01-11T01:56:51Z",
+      "last_updated": "2026-01-11T01:56:51Z"
+    },
     {
       "project_number": 361,
       "project_name": "create_installation_documentation",
