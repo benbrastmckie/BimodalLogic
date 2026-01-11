@@ -147,7 +147,21 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-11T17:06:06Z",
-      "last_updated": "2026-01-11T20:04:05Z"
+      "last_updated": "2026-01-11T20:04:05Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/summaries/implementation-summary-20260112.md"
+        }
+      ]
     },
     {
       "project_number": 365,
