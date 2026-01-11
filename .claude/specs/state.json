@@ -38,14 +38,15 @@
     {
       "project_number": 393,
       "project_name": "remove_incorrect_causal_operator_definition",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "description": "Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.",
       "created": "2026-01-11T21:09:02Z",
-      "last_updated": "2026-01-12T01:15:00Z",
+      "last_updated": "2026-01-12T01:30:00Z",
       "parent_task": 381,
       "plan_version": "001",
+      "implementing_started": "2026-01-12",
       "artifacts": [
         {
           "type": "research",
@@ -342,183 +343,6 @@
       "last_updated": "2026-01-05T01:22:38Z",
       "effort": "40-60 hours",
       "description": "Implement decision procedures for TM logic."
-    },
-    {
-      "project_number": 296,
-      "project_name": "create_sync_command_to_synchronize_todo_md_and_state_json",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "meta",
-      "description": "Create a /sync command that bidirectionally synchronizes .claude/specs/TODO.md and .claude/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.",
-      "created": "2026-01-05T07:51:30Z",
-      "last_updated": "2026-01-05T07:51:30Z"
-    },
-    {
-      "project_number": 306,
-      "project_name": "refactor_/meta_command_to_create_tasks_instead_of_direct_implementation",
-      "type": "feature",
-      "phase": "planning_completed",
-      "status": "planned",
-      "priority": "high",
-      "language": "meta",
-      "description": "Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.",
-      "effort": "8 hours",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-05T08:00:00Z",
-      "last_updated": "2026-01-05",
-      "research_completed": "2026-01-05",
-      "artifacts": [
-        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md",
-        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md",
-        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-002.md",
-        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md"
-      ],
-      "planning_completed": "2026-01-05",
-      "plan_path": ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md",
-      "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 8,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 3,
-        "revision_reason": "User requested single task with detailed plan containing appropriate number of phases (not hardcoded), rather than multiple subtasks"
-      },
-      "plan_revised": "2026-01-05"
-    },
-    {
-      "project_number": 335,
-      "project_name": "refactor_errors_command_and_error_diagnostics_agent",
-      "type": "refactoring",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "general",
-      "description": "Refactor the /errors command and error-diagnostics-agent subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, move all workflow logic from command to subagent, optimize context loading to Level 2, ensure standardized return format.",
-      "effort": "3-4 hours",
-      "blocking": [],
-      "dependencies": [],
-      "created": "2026-01-08T08:50:00Z",
-      "last_updated": "2026-01-08T08:50:00Z",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": ".claude/specs/335_refactor_errors_command/plans/implementation-001.md",
-          "summary": "Implementation plan for refactoring /errors command"
-        }
-      ]
-    },
-    {
-      "project_number": 338,
-      "project_name": "update_task_command_to_use_status_sync_manager_directly",
-      "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "general",
-      "created": "2026-01-08T20:27:20Z",
-      "last_updated": "2026-01-08T20:27:20Z",
-      "effort": "2-3 hours",
-      "description": "Update Stage 3 (CreateTasks) in /task command to delegate directly to status-sync-manager with operation: create_task instead of deprecated task-creator. Follow the pattern from /research and /implement commands (Stage 1.5 Preflight). Add validation gates to verify task creation succeeded. Test with multiple scenarios.",
-      "plan_path": ".claude/specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md"
-    },
-    {
-      "project_number": 339,
-      "project_name": "remove_deprecated_task_creator_subagent",
-      "type": "maintenance",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "general",
-      "created": "2026-01-08T20:27:20Z",
-      "last_updated": "2026-01-08T20:27:20Z",
-      "effort": "1 hour",
-      "description": "Remove .claude/agent/subagents/task-creator.md file since it is deprecated and no longer used. Update any documentation that references it. Verify no other commands depend on it.",
-      "dependencies": [
-        338
-      ],
-      "plan_path": ".claude/specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md"
-    },
-    {
-      "project_number": 340,
-      "project_name": "add_validation_gates_to_all_command_files",
-      "type": "enhancement",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "general",
-      "created": "2026-01-08T20:27:20Z",
-      "last_updated": "2026-01-08T20:27:20Z",
-      "effort": "3-4 hours",
-      "description": "Audit all command files in .claude/command/ to ensure they have proper validation gates that prevent architectural violations. Add pre-execution and post-execution validation following patterns from /research and /implement. Document validation gate patterns in .claude/context/core/standards/validation-gates.md.",
-      "plan_path": ".claude/specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md"
-    },
-    {
-      "project_number": 341,
-      "project_name": "create_deprecation_policy_and_migration_guide",
-      "type": "documentation",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "markdown",
-      "created": "2026-01-08T20:27:20Z",
-      "last_updated": "2026-01-08T20:27:20Z",
-      "effort": "2 hours",
-      "description": "Create .claude/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.",
-      "plan_path": ".claude/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md"
-    },
-    {
-      "project_number": 343,
-      "project_name": "design_command_file_workflow_execution_architecture",
-      "type": "design",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-08T20:45:00Z",
-      "last_updated": "2026-01-08T20:45:00Z",
-      "effort": "3-4 hours",
-      "description": "Design comprehensive architecture for orchestrator to execute command file workflow_execution stages. Define stage parsing mechanism, execution engine design, context passing between stages, error handling and rollback strategy, and integration with existing delegation system.",
-      "dependencies": [
-        342
-      ]
-    },
-    {
-      "project_number": 344,
-      "project_name": "implement_orchestrator_workflow_execution_engine",
-      "type": "implementation",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-08T20:45:00Z",
-      "last_updated": "2026-01-08T20:45:00Z",
-      "effort": "8-12 hours",
-      "description": "Implement orchestrator workflow execution engine that parses command file workflow_execution stages and executes them in sequence. Implement stage parser, execution engine, context passing mechanism, error handling and rollback, and integration with existing delegation system. Ensure Stage 3.5 (Postflight) executes correctly for all workflow commands.",
-      "dependencies": [
-        342,
-        343
-      ]
-    },
-    {
-      "project_number": 345,
-      "project_name": "test_and_validate_all_workflow_commands_with_postflight_execution",
-      "type": "testing",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-08T20:45:00Z",
-      "last_updated": "2026-01-08T20:45:00Z",
-      "effort": "4-6 hours",
-      "description": "Comprehensive testing of all workflow commands (/implement, /research, /plan, /revise) to verify postflight stages execute correctly. Test artifact creation and linking, status updates to completed markers, git commit creation, error handling and rollback, and defense-in-depth verification. Validate that Task 335 scenario is fixed.",
-      "dependencies": [
-        342,
-        343,
-        344
-      ]
     },
     {
       "project_number": 346,
