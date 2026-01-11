@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T21:30:00Z",
-  "next_project_number": 379,
+  "next_project_number": 380,
   "active_projects": [
+    {
+      "project_number": 379,
+      "project_name": "fix_logosreference_latex_warnings",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-11T18:01:49Z",
+      "last_updated": "2026-01-11T18:01:49Z"
+    },
     {
       "project_number": 378,
       "project_name": "refactor_documentation_structure",

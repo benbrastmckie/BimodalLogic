@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T21:30:00Z
-next_project_number: 379
+next_project_number: 380
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -59,6 +59,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 379. Fix LogosReference LaTeX warnings and errors
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Fix LaTeX warnings/errors in LogosReference.tex after task 375 implementation: "no \citation commands", "no style file" (bibtex), package warnings for logos-notation/notation-standards/formatting, and "Label(s) may have changed" cross-reference warnings.
+
+---
 
 ### 378. Refactor Documentation structure with directory standards
 - **Effort**: 4-8 hours
