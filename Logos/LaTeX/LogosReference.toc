@@ -1,66 +1,66 @@
-\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Extension Dependencies}{2}{subsection.1.1}%
-\contentsline {subsection}{\numberline {1.2}Layer Descriptions}{3}{subsection.1.2}%
-\contentsline {subsection}{\numberline {1.3}Document Organization}{3}{subsection.1.3}%
-\contentsline {subsection}{\numberline {1.4}Notation}{3}{subsection.1.4}%
-\contentsline {subsection}{\numberline {1.5}Lean Implementation}{4}{subsection.1.5}%
-\contentsline {section}{\numberline {2}Constitutive Foundation}{4}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Syntactic Primitives}{4}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Constitutive Frame}{5}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Constitutive Model}{5}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Variable Assignment}{6}{subsection.2.4}%
-\contentsline {subsection}{\numberline {2.5}Verification and Falsification Clauses}{6}{subsection.2.5}%
-\contentsline {subsubsection}{\numberline {2.5.1}Atomic Formulas}{6}{subsubsection.2.5.1}%
-\contentsline {subsubsection}{\numberline {2.5.2}Lambda Abstraction}{7}{subsubsection.2.5.2}%
-\contentsline {subsubsection}{\numberline {2.5.3}Negation}{7}{subsubsection.2.5.3}%
-\contentsline {subsubsection}{\numberline {2.5.4}Conjunction}{7}{subsubsection.2.5.4}%
-\contentsline {subsubsection}{\numberline {2.5.5}Disjunction}{7}{subsubsection.2.5.5}%
-\contentsline {subsubsection}{\numberline {2.5.6}Top and Bottom}{8}{subsubsection.2.5.6}%
-\contentsline {subsubsection}{\numberline {2.5.7}Propositional Identity}{8}{subsubsection.2.5.7}%
-\contentsline {subsection}{\numberline {2.6}Essence and Ground}{8}{subsection.2.6}%
-\contentsline {subsection}{\numberline {2.7}Bilateral Propositions}{9}{subsection.2.7}%
-\contentsline {subsection}{\numberline {2.8}Logical Consequence}{9}{subsection.2.8}%
-\contentsline {section}{\numberline {3}Core Extension: Syntactic Primitives}{10}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Additional Syntactic Primitives}{10}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Well-Formed Sentences}{10}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Operator Summary}{11}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Derived Operators}{11}{subsection.3.4}%
-\contentsline {section}{\numberline {4}Core Extension: Semantic Framework}{12}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Core Frame}{12}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}State Modality Definitions}{12}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Task Relation Constraints}{13}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}World-History}{13}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Core Model}{14}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Truth Conditions}{14}{subsection.4.6}%
-\contentsline {subsubsection}{\numberline {4.6.1}Atomic Sentences}{14}{subsubsection.4.6.1}%
-\contentsline {subsubsection}{\numberline {4.6.2}Lambda Abstraction and Quantification}{14}{subsubsection.4.6.2}%
-\contentsline {subsubsection}{\numberline {4.6.3}Actuality Predicate}{14}{subsubsection.4.6.3}%
-\contentsline {subsubsection}{\numberline {4.6.4}Extensional Connectives}{15}{subsubsection.4.6.4}%
-\contentsline {subsubsection}{\numberline {4.6.5}Modal Operators}{15}{subsubsection.4.6.5}%
-\contentsline {subsubsection}{\numberline {4.6.6}Core Tense Operators}{15}{subsubsection.4.6.6}%
-\contentsline {subsubsection}{\numberline {4.6.7}Extended Tense Operators}{16}{subsubsection.4.6.7}%
-\contentsline {subsubsection}{\numberline {4.6.8}Counterfactual Conditional}{16}{subsubsection.4.6.8}%
-\contentsline {subsubsection}{\numberline {4.6.9}Store and Recall Operators}{16}{subsubsection.4.6.9}%
-\contentsline {subsection}{\numberline {4.7}Bimodal Interaction Principles}{17}{subsection.4.7}%
-\contentsline {subsection}{\numberline {4.8}Temporal Frame Constraints}{17}{subsection.4.8}%
-\contentsline {subsection}{\numberline {4.9}Logical Consequence}{17}{subsection.4.9}%
-\contentsline {section}{\numberline {5}Counterfactual Logic Axiom System}{18}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Core Rules}{18}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Counterfactual Axiom Schemata}{18}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Modal Axiom Schemata}{19}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Derived Theorems}{19}{subsection.5.4}%
-\contentsline {subsection}{\numberline {5.5}Soundness and Completeness}{20}{subsection.5.5}%
-\contentsline {section}{\numberline {6}Epistemic Extension}{20}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Frame Extension}{20}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Operators}{20}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Indicative Conditionals}{21}{subsection.6.3}%
-\contentsline {section}{\numberline {7}Normative Extension}{21}{section.7}%
-\contentsline {subsection}{\numberline {7.1}Frame Extension}{21}{subsection.7.1}%
-\contentsline {subsection}{\numberline {7.2}Operators}{21}{subsection.7.2}%
-\contentsline {subsection}{\numberline {7.3}Normative Explanation}{22}{subsection.7.3}%
-\contentsline {section}{\numberline {8}Spatial Extension}{22}{section.8}%
-\contentsline {subsection}{\numberline {8.1}Frame Extension}{22}{subsection.8.1}%
-\contentsline {subsection}{\numberline {8.2}Operators}{22}{subsection.8.2}%
-\contentsline {section}{\numberline {9}Agential Extension}{23}{section.9}%
-\contentsline {subsection}{\numberline {9.1}Frame Extension}{23}{subsection.9.1}%
-\contentsline {subsection}{\numberline {9.2}Multi-Agent Operators}{23}{subsection.9.2}%
+\contentsline {section}{\numberline {1}Introduction}{4}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Extension Dependencies}{4}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Layer Descriptions}{5}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Document Organization}{5}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Notation}{6}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Lean Implementation}{6}{subsection.1.5}%
+\contentsline {section}{\numberline {2}Constitutive Foundation}{6}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Syntactic Primitives}{6}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Constitutive Frame}{7}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Constitutive Model}{7}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Variable Assignment}{8}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Verification and Falsification Clauses}{8}{subsection.2.5}%
+\contentsline {subsubsection}{\numberline {2.5.1}Atomic Formulas}{9}{subsubsection.2.5.1}%
+\contentsline {subsubsection}{\numberline {2.5.2}Lambda Abstraction}{9}{subsubsection.2.5.2}%
+\contentsline {subsubsection}{\numberline {2.5.3}Negation}{9}{subsubsection.2.5.3}%
+\contentsline {subsubsection}{\numberline {2.5.4}Conjunction}{9}{subsubsection.2.5.4}%
+\contentsline {subsubsection}{\numberline {2.5.5}Disjunction}{9}{subsubsection.2.5.5}%
+\contentsline {subsubsection}{\numberline {2.5.6}Top and Bottom}{10}{subsubsection.2.5.6}%
+\contentsline {subsubsection}{\numberline {2.5.7}Propositional Identity}{10}{subsubsection.2.5.7}%
+\contentsline {subsection}{\numberline {2.6}Essence and Ground}{10}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}Bilateral Propositions}{11}{subsection.2.7}%
+\contentsline {subsection}{\numberline {2.8}Logical Consequence}{11}{subsection.2.8}%
+\contentsline {section}{\numberline {3}Core Extension: Syntactic Primitives}{12}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Additional Syntactic Primitives}{12}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Well-Formed Sentences}{12}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Operator Summary}{13}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Derived Operators}{13}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Core Extension: Semantic Framework}{13}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Core Frame}{13}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}State Modality Definitions}{14}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Task Relation Constraints}{14}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}World-History}{15}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Core Model}{15}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Truth Conditions}{15}{subsection.4.6}%
+\contentsline {subsubsection}{\numberline {4.6.1}Atomic Sentences}{16}{subsubsection.4.6.1}%
+\contentsline {subsubsection}{\numberline {4.6.2}Lambda Abstraction and Quantification}{16}{subsubsection.4.6.2}%
+\contentsline {subsubsection}{\numberline {4.6.3}Actuality Predicate}{16}{subsubsection.4.6.3}%
+\contentsline {subsubsection}{\numberline {4.6.4}Extensional Connectives}{16}{subsubsection.4.6.4}%
+\contentsline {subsubsection}{\numberline {4.6.5}Modal Operators}{17}{subsubsection.4.6.5}%
+\contentsline {subsubsection}{\numberline {4.6.6}Core Tense Operators}{17}{subsubsection.4.6.6}%
+\contentsline {subsubsection}{\numberline {4.6.7}Extended Tense Operators}{17}{subsubsection.4.6.7}%
+\contentsline {subsubsection}{\numberline {4.6.8}Counterfactual Conditional}{17}{subsubsection.4.6.8}%
+\contentsline {subsubsection}{\numberline {4.6.9}Store and Recall Operators}{18}{subsubsection.4.6.9}%
+\contentsline {subsection}{\numberline {4.7}Bimodal Interaction Principles}{18}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.8}Temporal Frame Constraints}{19}{subsection.4.8}%
+\contentsline {subsection}{\numberline {4.9}Logical Consequence}{19}{subsection.4.9}%
+\contentsline {section}{\numberline {5}Counterfactual Logic Axiom System}{19}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Core Rules}{19}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Counterfactual Axiom Schemata}{20}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Modal Axiom Schemata}{20}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Derived Theorems}{21}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Soundness and Completeness}{21}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Epistemic Extension}{22}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Frame Extension}{22}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Operators}{22}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Indicative Conditionals}{22}{subsection.6.3}%
+\contentsline {section}{\numberline {7}Normative Extension}{22}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Frame Extension}{23}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Operators}{23}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Normative Explanation}{23}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Spatial Extension}{23}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Frame Extension}{23}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Operators}{24}{subsection.8.2}%
+\contentsline {section}{\numberline {9}Agential Extension}{24}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Frame Extension}{24}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Multi-Agent Operators}{24}{subsection.9.2}%
