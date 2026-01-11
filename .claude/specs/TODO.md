@@ -84,7 +84,7 @@ technical_debt:
 
 ### 380. Document LaTeX standards in ProofChecker/Documentation/
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Priority**: Medium
@@ -155,7 +155,7 @@ technical_debt:
 
 ### 365. Complete BimodalTest sorries
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
@@ -163,8 +163,10 @@ technical_debt:
 - **Review Source**: [.claude/specs/reviews/review-20260110.md]
 - **Started**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Research**: [research-001.md](.claude/specs/365_complete_bimodaltest_sorries/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/365_complete_bimodaltest_sorries/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/365_complete_bimodaltest_sorries/summaries/implementation-summary-20260111.md)
 
 **Description**: Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.
 
