@@ -24,7 +24,7 @@ For comparison with Bimodal propositional logic, see
 
 ## Documentation Organization
 
-Documentation is organized into three categories:
+Documentation is organized into four categories:
 
 ### UserGuide/
 
@@ -33,6 +33,7 @@ User-facing documentation for working with Logos:
 - [README.md](UserGuide/README.md) - Directory overview
 - [QUICKSTART.md](UserGuide/QUICKSTART.md) - Getting started (redirects to Bimodal)
 - [CURRENT_STATUS.md](UserGuide/CURRENT_STATUS.md) - Logos development status
+- [METHODOLOGY.md](UserGuide/METHODOLOGY.md) - Logos layer architecture methodology
 
 **Audience**: Users of the library, learners
 
@@ -43,8 +44,20 @@ Reference materials for Logos logic:
 - [README.md](Reference/README.md) - Directory overview
 - [AXIOM_REFERENCE.md](Reference/AXIOM_REFERENCE.md) - Axioms (redirects to Bimodal)
 - [EXTENSION_STUBS.md](Reference/EXTENSION_STUBS.md) - Planned extension modules
+- [GLOSSARY.md](Reference/GLOSSARY.md) - Logos terminology and operator definitions
 
 **Audience**: All users
+
+### Research/
+
+Research and design documents for Logos:
+
+- [README.md](Research/README.md) - Research overview
+- [RECURSIVE_SEMANTICS.md](Research/RECURSIVE_SEMANTICS.md) - Full semantic specification
+- [LAYER_EXTENSIONS.md](Research/LAYER_EXTENSIONS.md) - Extension architecture
+- [CONCEPTUAL_ENGINEERING.md](Research/CONCEPTUAL_ENGINEERING.md) - Philosophical foundations
+
+**Audience**: Researchers, contributors
 
 ### ProjectInfo/
 
@@ -64,13 +77,20 @@ Most-referenced documents:
 - [Quick Start](UserGuide/QUICKSTART.md) - Get started (via Bimodal)
 - [Current Status](UserGuide/CURRENT_STATUS.md) - Development status
 - [Extension Stubs](Reference/EXTENSION_STUBS.md) - Planned extensions
+- [Methodology](UserGuide/METHODOLOGY.md) - Layer architecture
+- [Recursive Semantics](Research/RECURSIVE_SEMANTICS.md) - Full semantic specification
 - [Roadmap](ProjectInfo/ROADMAP.md) - Future development
 
 ## Relationship to Project Documentation
 
 **Logos-Specific** (unique to this theory):
 - [CURRENT_STATUS](UserGuide/CURRENT_STATUS.md) - Logos development status
+- [METHODOLOGY](UserGuide/METHODOLOGY.md) - Layer architecture methodology
 - [EXTENSION_STUBS](Reference/EXTENSION_STUBS.md) - Planned extensions
+- [GLOSSARY](Reference/GLOSSARY.md) - Terminology and operators
+- [RECURSIVE_SEMANTICS](Research/RECURSIVE_SEMANTICS.md) - Semantic specification
+- [LAYER_EXTENSIONS](Research/LAYER_EXTENSIONS.md) - Extension architecture
+- [CONCEPTUAL_ENGINEERING](Research/CONCEPTUAL_ENGINEERING.md) - Philosophical foundations
 - [ROADMAP](ProjectInfo/ROADMAP.md) - Development roadmap
 
 **Redirects to Bimodal** (re-exported functionality):
@@ -78,7 +98,6 @@ Most-referenced documents:
 - [AXIOM_REFERENCE](Reference/AXIOM_REFERENCE.md) → Bimodal axioms
 
 **Project-Wide** (in [Documentation/](../../Documentation/)):
-- [TUTORIAL](../../Documentation/UserGuide/TUTORIAL.md) - General tutorial
 - [STYLE_GUIDE](../../Documentation/Development/LEAN_STYLE_GUIDE.md) - Coding style
 - [TESTING](../../Documentation/Development/TESTING_STANDARDS.md) - Test standards
 
