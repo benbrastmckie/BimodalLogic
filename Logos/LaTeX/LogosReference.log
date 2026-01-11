@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/nixos.org) (preloaded format=pdflatex 1980.1.1)  10 JAN 2026 14:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/nixos.org) (preloaded format=pdflatex 1980.1.1)  11 JAN 2026 08:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1224,7 +1224,7 @@ Package cleveref Info: `amsthm' support loaded on input line 3026.
 )
 ==> First Aid for cleveref.sty applied!
 \c@definition=\count391
-LaTeX Font Info:    Trying to load font information for T1+ppl on input line 77
+LaTeX Font Info:    Trying to load font information for T1+ppl on input line 76
 .
 
 (/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
@@ -1235,27 +1235,28 @@ File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
 3-texmfdist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-06-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count392
-) (./LogosReference.aux)
+)
+No file LogosReference.aux.
 \openout1 = `LogosReference.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
 
 (/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
 3-texmfdist/tex/context/base/mkii/supp-pdf.mkii
@@ -1286,13 +1287,13 @@ e
 Package microtype Info: Patching varwidth to enable character protrusion.
 \MT@vwid@leftmargin=\dimen347
 \MT@vwid@rightmargin=\dimen348
-LaTeX Info: Redefining \microtypecontext on input line 77.
-Package microtype Info: Applying patch `item' on input line 77.
-Package microtype Info: Applying patch `toc' on input line 77.
-Package microtype Info: Applying patch `eqnum' on input line 77.
-Package microtype Info: Applying patch `footnote' on input line 77.
-Package microtype Info: Applying patch `verbatim' on input line 77.
-LaTeX Info: Redefining \microtypesetup on input line 77.
+LaTeX Info: Redefining \microtypecontext on input line 76.
+Package microtype Info: Applying patch `item' on input line 76.
+Package microtype Info: Applying patch `toc' on input line 76.
+Package microtype Info: Applying patch `eqnum' on input line 76.
+Package microtype Info: Applying patch `footnote' on input line 76.
+Package microtype Info: Applying patch `verbatim' on input line 76.
+LaTeX Info: Redefining \microtypesetup on input line 76.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1304,7 +1305,7 @@ Package microtype Info: Using default expansion set `alltext-nott'.
 LaTeX Warning: Command \showhyphens   has changed.
                Check if current package is valid.
 
-LaTeX Info: Redefining \showhyphens on input line 77.
+LaTeX Info: Redefining \showhyphens on input line 76.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1313,129 +1314,12 @@ Package microtype Info: No adjustment of character kerning.
 3-texmfdist/tex/latex/microtype/mt-ppl.cfg
 File: mt-ppl.cfg 2005/11/16 v1.6 microtype config. file: Palatino (RS)
 )
-Package hyperref Info: Link coloring ON on input line 77.
- (./LogosReference.out)
-(./LogosReference.out)
+Package hyperref Info: Link coloring ON on input line 76.
 \@outlinefile=\write4
 \openout4 = `LogosReference.out'.
 
-
-! Undefined control sequence.
-\maketitle ...space {5pt} \par {\sc \Large \@pset 
-                                                  } \par \vspace {5pt} \par ...
-l.79 \maketitle
-               
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-(./LogosReference.toc
-LaTeX Font Info:    Trying to load font information for OT1+ppl on input line 2
-.
-
-(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
-3-texmfdist/tex/latex/psnfss/ot1ppl.fd
-File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
-)
-LaTeX Font Info:    Trying to load font information for OML+zplm on input line 
-2.
-
-(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
-3-texmfdist/tex/latex/psnfss/omlzplm.fd
-File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
-)
-LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 
-2.
-
-(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
-3-texmfdist/tex/latex/psnfss/omszplm.fd
-File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
-)
-LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 
-2.
-
-(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
-3-texmfdist/tex/latex/psnfss/omxzplm.fd
-File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
-)
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 2.
-
-(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
-3-texmfdist/tex/latex/microtype/mt-msa.cfg
-File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
-)
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 2.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 2.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 2.
-
-(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
-3-texmfdist/tex/latex/microtype/mt-msb.cfg
-File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-)
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 2.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 2.
-LaTeX Font Info:    Trying to load font information for U+stmry on input line 2
-.
-
-(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
-3-texmfdist/tex/latex/stmaryrd/Ustmry.fd)
-LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 
-2.
-
-(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
-3-texmfdist/tex/latex/psnfss/ot1zplm.fd
-File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
-)
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `zplm' (encoding: OT1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-
-
-[1{/nix/store/yg36ilq147awiwvwhymm9768ail8rjhi-texlive-combined-full-2025.20250
-703/share/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/nix/store/a4xk35zqigjp
-qbrdindypnn14fm6id9s-texlive-combined-full-2025.20250703-texmfdist/fonts/enc/dv
-ips/base/8r.enc}
-
-]
-
-[2])
-\tf@toc=\write5
-\openout5 = `LogosReference.toc'.
-
-
-
-[3] (./subfiles/00-Introduction.tex
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 47.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 47.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 47.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 47.
-
-
-[4]
-LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 1
-45.
-
-(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
-3-texmfdist/tex/latex/psnfss/ts1ppl.fd
-File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
-)
-
-[5]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
-51.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 9
+3.
 
 (/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
 3-texmfdist/tex/latex/lm/t1lmtt.fd
@@ -1446,6 +1330,131 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
+
+[1
+
+{/nix/store/yg36ilq147awiwvwhymm9768ail8rjhi-texlive-combined-full-2025.2025070
+3/share/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/nix/store/a4xk35zqigjpqb
+rdindypnn14fm6id9s-texlive-combined-full-2025.20250703-texmfdist/fonts/enc/dvip
+s/base/8r.enc}{/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-ful
+l-2025.20250703-texmfdist/fonts/enc/dvips/lm/lm-ec.enc}]
+No file LogosReference.toc.
+\tf@toc=\write5
+\openout5 = `LogosReference.toc'.
+
+
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.117 \cleardoublepage
+                       [1] (./subfiles/00-Introduction.tex
+LaTeX Font Info:    Trying to load font information for OT1+ppl on input line 3
+1.
+
+(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
+3-texmfdist/tex/latex/psnfss/ot1ppl.fd
+File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
+)
+LaTeX Font Info:    Trying to load font information for OML+zplm on input line 
+31.
+
+(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
+3-texmfdist/tex/latex/psnfss/omlzplm.fd
+File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
+)
+LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 
+31.
+
+(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
+3-texmfdist/tex/latex/psnfss/omszplm.fd
+File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
+)
+LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 
+31.
+
+(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
+3-texmfdist/tex/latex/psnfss/omxzplm.fd
+File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
+)
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 11.40997pt on input line 31.
+
+(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
+3-texmfdist/tex/latex/microtype/mt-msa.cfg
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+)
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 8.33606pt on input line 31.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 31.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 11.40997pt on input line 31.
+
+(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
+3-texmfdist/tex/latex/microtype/mt-msb.cfg
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+)
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 8.33606pt on input line 31.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 31.
+LaTeX Font Info:    Trying to load font information for U+stmry on input line 3
+1.
+
+(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
+3-texmfdist/tex/latex/stmaryrd/Ustmry.fd)
+LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 
+31.
+
+(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
+3-texmfdist/tex/latex/psnfss/ot1zplm.fd
+File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
+)
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `zplm' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 10.42007pt on input line 47.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 7.91925pt on input line 47.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 10.42007pt on input line 47.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 7.91925pt on input line 47.
+
+
+[2
+
+]
+
+LaTeX Warning: Reference `sec:constitutive-foundation' on page 1 undefined on i
+nput line 127.
+
+
+LaTeX Warning: Reference `sec:core-syntax' on page 1 undefined on input line 12
+9.
+
+
+LaTeX Warning: Reference `sec:core-semantics' on page 1 undefined on input line
+ 131.
+
+
+LaTeX Warning: Reference `sec:core-axioms' on page 1 undefined on input line 13
+3.
+
+LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 1
+45.
+
+(/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025070
+3-texmfdist/tex/latex/psnfss/ts1ppl.fd
+File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
+)
+
+[3]
 Overfull \hbox (20.70996pt too wide) in paragraph at lines 163--164
 []\T1/ppl/m/n/10.95 (-20) The im-ple-men-ta-tion can be found in the \T1/lmtt/m
 /n/10.95 Logos/ \T1/ppl/m/n/10.95 (-20) di-rec-tory of the ProofChecker
@@ -1453,10 +1462,9 @@ Overfull \hbox (20.70996pt too wide) in paragraph at lines 163--164
 
 ) (./subfiles/01-ConstitutiveFoundation.tex
 
-[6{/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.20250
-703-texmfdist/fonts/enc/dvips/lm/lm-ec.enc}]
+[4]
 
-[7]
+[5]
 Overfull \hbox (27.26247pt too wide) in paragraph at lines 114--115
 []\T1/ppl/b/n/10.95 (-20) Function ap-pli-ca-tion $\OML/zplm/m/it/10.95 f\OT1/z
 plm/m/n/10.95 (\OML/zplm/m/it/10.95 t[]\OT1/ppl/m/n/10.95 (-20) , [] , \OML/zpl
@@ -1471,7 +1479,7 @@ pl/m/n/10.95 (-20) , [] , \OML/zplm/m/it/10.95 t[]\OT1/zplm/m/n/10.95 )\U/stmry
 
 
 
-[8]
+[6]
 Overfull \hbox (37.13072pt too wide) detected at line 163
 []
  []
@@ -1483,14 +1491,14 @@ Overfull \hbox (37.13072pt too wide) detected at line 173
 
 
 
-[9]
+[7]
 Overfull \hbox (0.68039pt too wide) detected at line 195
 []
  []
 
 
 
-[10]
+[8]
 Overfull \hbox (117.8139pt too wide) detected at line 271
 \OT1/zplm/m/n/10.95 ^^@ \OMS/zplm/m/n/10.95 j[]\OT1/zplm/m/n/10.95 = \OML/zplm/
 m/it/10.95 A  \OMS/zplm/m/n/10.95 ([])  []\OT1/zplm/b/n/10.95 M[]\OML/zplm/m/it
@@ -1503,9 +1511,9 @@ l/m/n/10.95 , \U/msa/m/n/10.95 ^^C ^^M[] \OML/zplm/m/it/10.95 A
 
 
 
-[11]) (./subfiles/02-CoreExtension-Syntax.tex
+[9]) (./subfiles/02-CoreExtension-Syntax.tex
 
-[12]
+[10]
 LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 
 43.
 
@@ -1519,13 +1527,13 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
 
 
-[13{/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025
+[11{/nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.2025
 0703-texmfdist/fonts/enc/dvips/lm/lm-rm.enc}])
 (./subfiles/03-CoreExtension-Semantics.tex
 
-[14]
+[12]
 
-[15]
+[13]
 Overfull \hbox (60.89037pt too wide) detected at line 135
 []
  []
@@ -1539,9 +1547,9 @@ Overfull \hbox (3.64473pt too wide) in paragraph at lines 163--165
 
 
 
-[16]
+[14]
 
-[17]
+[15]
 Overfull \hbox (9.99884pt too wide) in paragraph at lines 226--228
 \T1/ppl/m/n/10.95 (-20) if $\OML/zplm/m/it/10.95 s \OMS/zplm/m/n/10.95 ^^A \OML
 /zplm/m/it/10.95 t \OMS/zplm/m/n/10.95 v \OML/zplm/m/it/10.95 ^^L\OT1/zplm/m/n/
@@ -1557,7 +1565,7 @@ lm/m/n/10.95 (\OML/zplm/m/it/10.95 x\OT1/zplm/m/n/10.95 )[]$\T1/ppl/m/n/10.95 (
 
 
 
-[18]
+[16]
 Overfull \hbox (134.64377pt too wide) in paragraph at lines 287--297
  [][] 
  []
@@ -1581,7 +1589,7 @@ lm/m/it/10.95 ^^[\OT1/ppl/m/n/10.95 , [] \OMS/zplm/m/n/10.95 j[]\OT1/zplm/m/n/1
 
 
 
-[19]) (./subfiles/04-CoreExtension-Axioms.tex
+[17]) (./subfiles/04-CoreExtension-Axioms.tex
 Overfull \hbox (60.20377pt too wide) detected at line 43
 []
  []
@@ -1593,17 +1601,22 @@ Overfull \hbox (2.49023pt too wide) in paragraph at lines 48--49
 
 
 
-[20]
+[18]
 
-[21]) (./subfiles/05-Epistemic.tex
+LaTeX Warning: Reference `thm:excluded-middle' on page 19 undefined on input li
+ne 102.
+
+
+
+[19]) (./subfiles/05-Epistemic.tex
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[22]) (./subfiles/06-Normative.tex
+[20]) (./subfiles/06-Normative.tex
 
-[23]) (./subfiles/07-Spatial.tex
+[21]) (./subfiles/07-Spatial.tex
 Overfull \hbox (1.93114pt too wide) in paragraph at lines 28--30
 []\T1/ppl/m/sc/10.95 (-20) [Open Ques-tion]: \T1/ppl/m/n/10.95 (-20) What spa-t
 ial prim-i-tives are re-quired? Should
@@ -1611,26 +1624,44 @@ ial prim-i-tives are re-quired? Should
 
 ) (./subfiles/08-Agential.tex
 
-[24])
+[22]
+
+LaTeX Warning: Reference `sec:extension-dependencies' on page 1 undefined on in
+put line 15.
+
+)
 No file LogosReference.bbl.
 
 
-[25] (./LogosReference.aux)
+[23] (./LogosReference.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-06-09>
  ***********
-Package rerunfilecheck Info: File `LogosReference.out' has not changed.
-(rerunfilecheck)             Checksum: 0D7428A80CF987A08AF1BF33EC02B3F8;10541.
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `LogosReference.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `LogosReference.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  0D7428A80CF987A08AF1BF33EC02B3F8;10541.
  ) 
 Here is how much of TeX's memory you used:
- 38338 strings out of 467888
- 782778 string characters out of 5405403
- 1222529 words of memory out of 5000000
- 65600 multiletter control sequences out of 15000+600000
- 702825 words of font info for 400 fonts, out of 8000000 for 9000
+ 38283 strings out of 467888
+ 781691 string characters out of 5405403
+ 1222530 words of memory out of 5000000
+ 65535 multiletter control sequences out of 15000+600000
+ 705948 words of font info for 412 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 102i,14n,107p,2511b,918s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 102i,14n,107p,2511b,832s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-2025.20250
 703-texmfdist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></nix/store/a4xk35zqigj
 pqbrdindypnn14fm6id9s-texlive-combined-full-2025.20250703-texmfdist/fonts/type1
@@ -1653,10 +1684,10 @@ lr8a.pfb></nix/store/a4xk35zqigjpqbrdindypnn14fm6id9s-texlive-combined-full-202
 5.20250703-texmfdist/fonts/type1/urw/palatino/uplr8a.pfb></nix/store/a4xk35zqig
 jpqbrdindypnn14fm6id9s-texlive-combined-full-2025.20250703-texmfdist/fonts/type
 1/urw/palatino/uplri8a.pfb>
-Output written on LogosReference.pdf (25 pages, 242378 bytes).
+Output written on LogosReference.pdf (24 pages, 233786 bytes).
 PDF statistics:
- 745 PDF objects out of 1000 (max. 8388607)
- 685 compressed objects within 7 object streams
- 256 named destinations out of 1000 (max. 500000)
- 88093 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 469 PDF objects out of 1000 (max. 8388607)
+ 412 compressed objects within 5 object streams
+ 254 named destinations out of 1000 (max. 500000)
+ 95757 words of extra memory for PDF output out of 106986 (max. 10000000)
 

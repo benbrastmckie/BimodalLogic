@@ -6,21 +6,21 @@
     {
       "project_number": 374,
       "project_name": "refactor_project_documentation",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T16:36:37Z",
-      "last_updated": "2026-01-11T16:36:37Z"
+      "last_updated": "2026-01-11T16:48:14Z"
     },
     {
       "project_number": 373,
       "project_name": "create_shared_latex_assets_directory",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "description": "Create a single ProofChecker/LaTeX/ directory to provide general purpose assets that can be imported and used by Logos/LaTeX/ and Bimodal/LaTeX/ as well as other theories included in the future, instead of maintaining similar latex standards separately.",
       "created": "2026-01-11T16:30:08Z",
-      "last_updated": "2026-01-11T16:43:07Z",
+      "last_updated": "2026-01-11T16:49:10Z",
       "artifacts": [
         {
           "type": "research",
@@ -31,7 +31,8 @@
           "path": ".claude/specs/373_create_shared_latex_assets_directory/plans/implementation-001.md"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "started": "2026-01-11"
     },
     {
       "project_number": 365,

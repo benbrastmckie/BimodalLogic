@@ -30,7 +30,7 @@ technical_debt:
 
 ### 374. Refactor project Documentation to theory-specific directories
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 
@@ -40,7 +40,8 @@ technical_debt:
 
 ### 373. Create shared LaTeX assets directory
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Priority**: Medium
