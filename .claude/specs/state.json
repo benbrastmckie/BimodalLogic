@@ -1,8 +1,24 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T00:00:00Z",
-  "next_project_number": 353,
+  "next_project_number": 354,
   "active_projects": [
+    {
+      "project_number": 353,
+      "project_name": "move_logostest_core_to_bimodaltest",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-11T00:00:19Z",
+      "last_updated": "2026-01-11T00:00:19Z",
+      "effort": "1-2 hours",
+      "description": "Move LogosTest/Core/ to BimodalTest/ to mirror the Bimodal library structure. Follow Lean 4 best practices (Mathlib pattern) with separate test directory. Update imports, lakefile, and namespace references.",
+      "dependencies": [
+        352
+      ]
+    },
     {
       "project_number": 132,
       "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",

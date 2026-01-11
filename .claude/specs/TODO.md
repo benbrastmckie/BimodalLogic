@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-09T12:00:00Z
-next_project_number: 353
+next_project_number: 354
 repository_health:
   overall_score: 92
   production_readiness: excellent
@@ -44,6 +44,18 @@ technical_debt:
 - **Plan**: [.claude/specs/352_rename_logos_core_to_bimodal/plans/implementation-001.md]
 
 **Description**: Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly.
+
+---
+
+### 353. Move LogosTest/Core/ to BimodalTest/
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: 352
+
+**Description**: Move LogosTest/Core/ to BimodalTest/ to mirror the Bimodal library structure. Follow Lean 4 best practices (Mathlib pattern: Mathlib/ + MathlibTest/) with separate test directory. Update imports, lakefile (add `lean_lib BimodalTest`), and namespace references. Ensure test executable still works.
 
 ---
 
