@@ -6,11 +6,11 @@
     {
       "project_number": 356,
       "project_name": "bimodal_directory_documentation",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T00:43:33Z",
-      "last_updated": "2026-01-11T00:53:37Z",
+      "last_updated": "2026-01-11T01:00:01Z",
       "artifacts": [
         {
           "type": "research",
@@ -21,7 +21,8 @@
           "path": ".claude/specs/356_bimodal_directory_documentation/plans/implementation-001.md"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "started": "2026-01-10"
     },
     {
       "project_number": 355,
@@ -512,11 +513,11 @@
       "project_name": "fix_modals5_noncomputable_cascade",
       "type": "bugfix",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researched",
       "priority": "critical",
       "language": "lean",
       "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-10T13:30:00Z",
       "effort": "30 minutes",
       "description": "Add noncomputable markers to definitions in ModalS5.lean that depend on noncomputable classical_merge and lce_imp from Propositional.lean. Cascading build errors affect 5 definitions.",
       "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md"
