@@ -84,7 +84,7 @@ The key differentiation between theories:
 ---
 
 ### Phase 3: Create Theory Comparison Document
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 **Estimated effort**: 30 minutes
 
 **Objectives**:
