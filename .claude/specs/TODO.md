@@ -58,10 +58,12 @@ technical_debt:
 
 ### 378. Refactor Documentation structure with directory standards
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-11
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/378_refactor_documentation_structure/reports/research-001.md)
 
 **Description**: Completely refactor Documentation/ to better distribute information between documents and gather documents into subdirectories, where each subdirectory has a README.md that follows Documentation/Development/DIRECTORY_README_STANDARD.md and Documentation/Development/DOC_QUALITY_CHECKLIST.md. Merge NAVIGATION.md into Documentation/README.md. Avoid removing important content while reducing redundancy and improving consistency and organization using cross-linking with brief summaries.
 
