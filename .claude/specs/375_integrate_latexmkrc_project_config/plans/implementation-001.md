@@ -78,7 +78,7 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 ### Phase 3: Update Build Script
 
 **Estimated effort**: 10 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Modernize `Bimodal/LaTeX/build.sh` to use latexmk instead of raw pdflatex
