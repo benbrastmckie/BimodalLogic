@@ -15,11 +15,11 @@
     {
       "project_number": 379,
       "project_name": "fix_logosreference_latex_warnings",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-11T18:01:49Z",
-      "last_updated": "2026-01-11T23:55:00Z",
+      "last_updated": "2026-01-12T00:00:00Z",
       "researched": "2026-01-11",
       "planned": "2026-01-11",
       "plan_version": "001",

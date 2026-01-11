@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T21:30:00Z
-next_project_number: 380
+next_project_number: 381
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -59,6 +59,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 380. Document LaTeX standards in ProofChecker/Documentation/
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Having implemented tasks 375 and 378, make sure that the LaTeX standards are clearly and concisely documented in ProofChecker/Documentation/ as appropriate.
+
+---
 
 ### 379. Fix LogosReference LaTeX warnings and errors
 - **Effort**: 1 hour
