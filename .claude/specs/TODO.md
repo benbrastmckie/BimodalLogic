@@ -159,9 +159,10 @@ technical_debt:
 
 ### 382. Create Spatial/ subtheory stub
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
+- **Research**: [research-001.md](.claude/specs/382_create_spatial_subtheory_stub/reports/research-001.md)
 
 **Description**: Create Logos/Spatial/ subtheory stub following the pattern of other extension layers. Task 377 implemented Core but did not create the Spatial extension layer. Create minimal stub structure with appropriate documentation.
 

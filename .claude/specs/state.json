@@ -209,12 +209,18 @@
     {
       "project_number": 382,
       "project_name": "create_spatial_subtheory_stub",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Create Logos/Spatial/ subtheory stub following the pattern of other extension layers. Task 377 implemented Core but did not create the Spatial extension layer. Create minimal stub structure with appropriate documentation.",
       "created": "2026-01-11T18:49:04Z",
-      "last_updated": "2026-01-11T20:32:52Z"
+      "last_updated": "2026-01-11T20:34:46Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/382_create_spatial_subtheory_stub/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 380,
