@@ -1,8 +1,47 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T06:30:00Z",
-  "next_project_number": 405,
+  "next_project_number": 408,
   "active_projects": [
+    {
+      "project_number": 405,
+      "project_name": "document_latex_one_line_per_sentence_convention",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.",
+      "effort": "1 hour",
+      "created": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-11T22:25:49Z"
+    },
+    {
+      "project_number": 406,
+      "project_name": "enforce_convention_bimodal_reference_tex",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Reformat Theories/Bimodal/LaTeX/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-11T22:25:49Z",
+      "dependencies": [
+        405
+      ]
+    },
+    {
+      "project_number": 407,
+      "project_name": "enforce_convention_logos_reference_tex",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Reformat Theories/Logos/LaTeX/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-11T22:25:49Z",
+      "dependencies": [
+        405
+      ]
+    },
     {
       "project_number": 404,
       "project_name": "enhance_todo_to_archive_orphaned_specs_directories",

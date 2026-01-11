@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T06:35:00Z
-next_project_number: 405
+next_project_number: 408
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -92,6 +92,38 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 405. Document LaTeX one-line-per-sentence convention
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+
+**Description**: Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.
+
+---
+
+### 406. Enforce convention in BimodalReference.tex
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+- **Dependencies**: 405
+
+**Description**: Reformat Theories/Bimodal/LaTeX/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
+
+---
+
+### 407. Enforce convention in LogosReference.tex
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+- **Dependencies**: 405
+
+**Description**: Reformat Theories/Logos/LaTeX/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
+
+---
 
 ### 404. Enhance /todo to archive orphaned specs directories
 - **Effort**: 1-2 hours
