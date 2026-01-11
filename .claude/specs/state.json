@@ -6,13 +6,20 @@
     {
       "project_number": 384,
       "project_name": "fix_latex_package_path_warnings",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "description": "Fix LaTeX package path warnings in LogosReference.tex: warnings about logos-notation, notation-standards, and formatting packages. Also handle showhyphens command change and cross-reference warnings.",
       "created": "2026-01-11T19:11:13Z",
-      "last_updated": "2026-01-11T19:13:35Z",
-      "started": "2026-01-11"
+      "last_updated": "2026-01-11T19:17:39Z",
+      "started": "2026-01-11",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/384_fix_latex_package_path_warnings/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 381,

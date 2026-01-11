@@ -6,12 +6,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 29
+  active: 24
   completed: 90
   in_progress: 0
   not_started: 25
   abandoned: 8
-  total: 128
+  total: 123
 priority_distribution:
   critical: 0
   high: 9
@@ -67,10 +67,12 @@ technical_debt:
 
 ### 384. Fix LaTeX package path warnings in LogosReference.tex
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-11
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/384_fix_latex_package_path_warnings/reports/research-001.md)
 
 **Description**: Fix LaTeX package path warnings in LogosReference.tex: warnings about logos-notation, notation-standards, and formatting packages. Also handle showhyphens command change and cross-reference warnings.
 
@@ -83,29 +85,6 @@ technical_debt:
 - **Language**: latex
 
 **Description**: Having implemented tasks 375 and 378, make sure that the LaTeX standards are clearly and concisely documented in ProofChecker/Documentation/ as appropriate.
-
----
-
-### 379. Fix LogosReference LaTeX warnings and errors
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Plan Revised**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md)
-- **Implementation Findings**: [research-002.md](.claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md)
-- **Best Practices Research**: [research-003.md](.claude/specs/379_fix_logosreference_latex_warnings/reports/research-003.md)
-- **Plan (v1)**: [implementation-001.md](.claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md)
-- **Plan (v2)**: [implementation-002.md](.claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/379_fix_logosreference_latex_warnings/summaries/implementation-summary-20260112.md)
-
-**Description**: Fix LaTeX warnings/errors in LogosReference.tex after task 375 implementation: "no \citation commands", "no style file" (bibtex), package warnings for logos-notation/notation-standards/formatting, and "Label(s) may have changed" cross-reference warnings.
-
-**Resolution**: Used latexmk's `ensure_path()` function to add BSTINPUTS and BIBINPUTS search paths, which integrates properly with latexmk's `$bibtex_fudge` mechanism. The .bbl file now generates correctly with 46 lines of bibliography content.
 
 ---
 
@@ -133,69 +112,6 @@ technical_debt:
 - **Impact**: Improves onboarding by providing comprehensive learning path from basics to advanced Bimodal topics with practical exercises.
 
 ---
-
-### 179. Extend Bimodal benchmarks with derivation, semantics, and CI integration
-- **Effort**: 7.75 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-12
-- **Planned**: 2026-01-11
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md)
-- **Plan**: [implementation-003.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/summaries/implementation-summary-20260112.md)
-- **Files Created**:
-  - BimodalTest/ProofSystem/DerivationBenchmark.lean (15 benchmarks)
-  - BimodalTest/Semantics/SemanticBenchmark.lean (16 benchmarks)
-  - Documentation/Development/BENCHMARKING_GUIDE.md
-  - Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md
-  - scripts/run-benchmarks.sh
-  - scripts/check-regression.sh
-  - benchmarks/baseline.json
-- **Description**: Extend the existing ProofSearchBenchmark.lean suite with derivation and semantic evaluation benchmarks. Add CI integration for performance regression testing. Add project-wide benchmarking documentation with cross-links to theory-specific targets. The proof search benchmark already exists and is comprehensive—this task adds the remaining components.
-- **Acceptance Criteria**:
-  - [x] Benchmark suite for proof search created (EXISTS: ProofSearchBenchmark.lean)
-  - [x] Benchmark suite for derivation tree construction created
-  - [x] Benchmark suite for semantic evaluation created
-  - [x] Project-wide BENCHMARKING_GUIDE.md created
-  - [x] Performance targets documented in Bimodal/Documentation/
-  - [x] CI script for running benchmarks and detecting regressions
-- **Impact**: Ensures performance doesn't regress and provides data for optimization efforts. Completes benchmarking coverage beyond proof search.
-
----
-
-### 180. Add Bimodal test coverage metrics and reporting
-- **Effort**: 4.5 hours (revised from 6)
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-11
-- **Completed**: 2026-01-12
-- **Planned**: 2026-01-12 (revised)
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Plan**: [implementation-002.md](.claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md)
-- **Files Created**:
-  - scripts/coverage-analysis.sh (coverage mapping with sorry audit)
-  - Bimodal/Documentation/ProjectInfo/TEST_COVERAGE.md
-- **Files Modified**:
-  - BimodalTest/README.md (added link to coverage report)
-- **Description**: Create definition-level coverage measurement for Bimodal. Task 179 completed benchmark infrastructure; this task fills the gap: tracking which Bimodal definitions have corresponding tests in BimodalTest/. Sorry audit reduced to 5 actual placeholders.
-- **Acceptance Criteria**:
-  - [x] Testing standards documented (EXISTS: BimodalTest/README.md)
-  - [x] Benchmark infrastructure (EXISTS: Task 179 completed)
-  - [x] Definition extraction script (grep-based in coverage-analysis.sh)
-  - [x] Coverage mapping script with per-module breakdown
-  - [x] Sorry audit section (5 placeholders categorized)
-  - [x] TEST_COVERAGE.md with baseline numbers
-- **Impact**: Enables data-driven test improvement by tracking which definitions have tests and identifying sorry placeholders.
-
----
-
 
 ## Low Priority
 
