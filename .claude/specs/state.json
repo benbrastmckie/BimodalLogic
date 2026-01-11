@@ -542,17 +542,24 @@
     },
     {
       "project_number": 360,
-      "project_name": "create_mvp_status_documentation",
+      "project_name": "bimodal_polish_and_documentation_system",
       "type": "documentation",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
-      "language": "markdown",
+      "language": "general",
       "created": "2026-01-10T12:00:00Z",
-      "last_updated": "2026-01-10T12:00:00Z",
-      "effort": "30 minutes",
-      "description": "Document known limitations of Bimodal MVP including incomplete completeness proof, modal 5 blocking dependency, and example sorries. Add Implementation Status sections to READMEs.",
-      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md"
+      "last_updated": "2026-01-11T16:00:00Z",
+      "effort": "4-6 hours",
+      "description": "Comprehensive Bimodal theory polish and documentation system: (1) Deprioritize completeness tasks, (2) Polish Bimodal tests and docs, (3) Create theory differentiation (Bimodal propositional intensional vs Logos second-order hyperintensional), (4) Create Bimodal/Documentation/ following DIRECTORY_README_STANDARD.md, (5) Cross-link with project-wide Documentation/.",
+      "review_source": ".claude/specs/reviews/review-20260110-bimodal-mvp.md",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/360_create_mvp_status_documentation/plans/implementation-001.md"
+        }
+      ],
+      "plan_version": "001"
     }
   ]
 }

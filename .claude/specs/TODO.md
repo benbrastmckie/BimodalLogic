@@ -98,20 +98,31 @@ technical_debt:
 
 ---
 
-### 360. Create MVP status documentation
-- **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+### 360. Bimodal Theory Polish and Documentation System
+- **Effort**: 4-6 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
-- **Language**: markdown
+- **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
 - **Review Source**: [.claude/specs/reviews/review-20260110-bimodal-mvp.md]
+- **Plan**: [implementation-001.md](.claude/specs/360_create_mvp_status_documentation/plans/implementation-001.md)
 
-**Description**: Document known limitations of Bimodal MVP:
-- Completeness proof is infrastructure only (provable_iff_valid has sorry)
-- Modal 5 theorem has blocking dependency
-- Example files contain pedagogical sorries
-Add Implementation Status sections to Bimodal/README.md and BimodalTest/README.md.
+**Description**: Comprehensive Bimodal theory polish and documentation system:
+1. Deprioritize completeness proof tasks (put on hold)
+2. Polish Bimodal/ tests and documentation
+3. Create theory differentiation documentation (Bimodal: propositional intensional logic with world-state primitives vs Logos: second-order hyperintensional logic with state primitives)
+4. Create Bimodal/Documentation/ following DIRECTORY_README_STANDARD.md
+5. Cross-link between project-wide Documentation/ and theory-specific Bimodal/Documentation/
+
+**Phases**:
+- Phase 1: Deprioritize completeness tasks
+- Phase 2: Bimodal test improvements
+- Phase 3: Create theory comparison document
+- Phase 4: Create Bimodal/Documentation/ structure
+- Phase 5: Update project-wide Documentation/
+- Phase 6: Update Bimodal/README.md
+- Phase 7: Quality assurance
 
 ---
 
