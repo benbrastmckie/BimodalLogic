@@ -30,9 +30,12 @@ technical_debt:
 
 ### 377. Refactor Logos theory for recursive semantics
 - **Effort**: 8-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Started**: 2026-01-11
+- **Researched**: 2026-01-11
 - **Priority**: High
 - **Language**: lean
+- **Research**: [research-001.md](.claude/specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md)
 
 **Description**: Completely refactor the Logos/ theory to be self-contained and align with the theoretical target presented in Logos/Documentation/Research/RECURSIVE_SEMANTICS.md. Currently Logos/ is little more than the remains from extracting the Bimodal/ theory and then re-exporting it to Logos/.
 
@@ -55,7 +58,8 @@ technical_debt:
 
 ### 378. Refactor Documentation structure with directory standards
 - **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 

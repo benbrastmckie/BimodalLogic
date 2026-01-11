@@ -6,22 +6,31 @@
     {
       "project_number": 378,
       "project_name": "refactor_documentation_structure",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "description": "Completely refactor Documentation/ to better distribute information between documents and gather documents into subdirectories, where each subdirectory has a README.md that follows the DIRECTORY_README_STANDARD.md and DOC_QUALITY_CHECKLIST.md. Merge NAVIGATION.md into Documentation/README.md. Avoid removing important content while reducing redundancy and improving consistency and organization using cross-linking with brief summaries.",
       "created": "2026-01-11T17:31:13Z",
-      "last_updated": "2026-01-11T17:31:13Z"
+      "last_updated": "2026-01-11T17:44:54Z",
+      "started": "2026-01-11"
     },
     {
       "project_number": 377,
       "project_name": "refactor_logos_theory_recursive_semantics",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Completely refactor the Logos/ theory to be self-contained and align with the theoretical target presented in Logos/Documentation/Research/RECURSIVE_SEMANTICS.md. Currently Logos/ is little more than the remains from extracting the Bimodal/ theory and then re-exporting it to Logos/.",
       "created": "2026-01-11T17:25:18Z",
-      "last_updated": "2026-01-11T17:25:18Z"
+      "last_updated": "2026-01-11T17:46:51Z",
+      "started": "2026-01-11",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 376,
