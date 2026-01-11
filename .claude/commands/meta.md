@@ -113,13 +113,13 @@ active_tasks=$(jq '.active_projects | length' .claude/specs/state.json)
 ## Existing .claude/ System Detected
 
 **Components**:
-- Commands: {NNN}
-- Skills: {NNN}
-- Rules: {NNN}
-- Active Tasks: {NNN}
+- Commands: {N}
+- Skills: {N}
+- Rules: {N}
+- Active Tasks: {N}
 
 **Related Existing Tasks** (if any match prompt keywords):
-- Task #{NNN}: {title} [{status}]
+- Task #{N}: {title} [{status}]
 ```
 
 **Checkpoint**: Existing system analyzed
@@ -216,7 +216,7 @@ Let's begin!
 - **Capture**: task_list[], dependency_order[]
 
 **Checkpoint**: Tasks identified with dependencies
-- [ ] Task count determined ({NNN} tasks)
+- [ ] Task count determined ({N} tasks)
 - [ ] Dependencies mapped
 - [ ] Each task is discrete and actionable
 
@@ -258,12 +258,12 @@ Let's begin!
 **Purpose**: {purpose}
 **Scope**: {affected_components}
 
-**Tasks to Create** ({NNN} total):
+**Tasks to Create** ({N} total):
 
 | # | Title | Language | Priority | Effort | Dependencies |
 |---|-------|----------|----------|--------|--------------|
-| {NNN} | {title} | {lang} | {pri} | {hrs} | None |
-| {NNN} | {title} | {lang} | {pri} | {hrs} | #{NNN} |
+| {N} | {title} | {lang} | {pri} | {hrs} | None |
+| {N} | {title} | {lang} | {pri} | {hrs} | #{N} |
 
 **Total Estimated Effort**: {sum} hours
 
@@ -282,7 +282,7 @@ AskUserQuestion:
   header: "Confirm"
   options:
     - label: "Yes, create tasks"
-      description: "Create {NNN} tasks in TODO.md and state.json"
+      description: "Create {N} tasks in TODO.md and state.json"
     - label: "Revise"
       description: "Go back and adjust the task breakdown"
     - label: "Cancel"
@@ -302,7 +302,7 @@ AskUserQuestion:
 **Process** (for each task):
 
 ```bash
-# 1. Get next task number (will become {NNN})
+# 1. Get next task number (will become {N})
 next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
 
 # 2. Create slug from title (lowercase, underscores, max 50 chars)
@@ -338,12 +338,12 @@ sed -i "s/^next_project_number: [0-9]*/next_project_number: $((next_num + 1))/" 
 
 **TODO.md Entry Format**:
 ```markdown
-### {NNN}. {Title}
+### {N}. {Title}
 - **Effort**: {estimate}
 - **Status**: [NOT STARTED]
 - **Priority**: {priority}
 - **Language**: {language}
-- **Dependencies**: Task #{NNN}, Task #{NNN}
+- **Dependencies**: Task #{N}, Task #{N}
 
 **Description**: {description}
 
@@ -353,10 +353,10 @@ sed -i "s/^next_project_number: [0-9]*/next_project_number: $((next_num + 1))/" 
 **Git Commit**:
 ```bash
 git add .claude/specs/
-git commit -m "meta: create {NNN} tasks for {domain}"
+git commit -m "meta: create {N} tasks for {domain}"
 ```
 
-Note: {NNN} in commit message is the COUNT of tasks created.
+Note: {N} in commit message is the COUNT of tasks created.
 
 **Checkpoint**: Tasks created successfully
 - [ ] All task directories created
@@ -372,30 +372,30 @@ Note: {NNN} in commit message is the COUNT of tasks created.
 ```
 ## Tasks Created
 
-Created {NNN} task(s) for {domain}:
+Created {N} task(s) for {domain}:
 
 **High Priority**:
-- Task #{NNN}: {title}
-  Path: .claude/specs/{NNN}_{slug}/
+- Task #{N}: {title}
+  Path: .claude/specs/{N}_{slug}/
 
 **Medium Priority**:
-- Task #{NNN}: {title} (depends on #{NNN})
-  Path: .claude/specs/{NNN}_{slug}/
+- Task #{N}: {title} (depends on #{N})
+  Path: .claude/specs/{N}_{slug}/
 
 **Low Priority**:
-- Task #{NNN}: {title}
-  Path: .claude/specs/{NNN}_{slug}/
+- Task #{N}: {title}
+  Path: .claude/specs/{N}_{slug}/
 
 ---
 
 **Next Steps**:
 1. Review tasks in TODO.md
-2. Run `/research {NNN}` to begin research on first task
+2. Run `/research {N}` to begin research on first task
 3. Progress through /research → /plan → /implement cycle
 
 **Suggested Order** (respecting dependencies):
-1. Task #{NNN} (no dependencies)
-2. Task #{NNN} (depends on #{NNN})
+1. Task #{N} (no dependencies)
+2. Task #{N} (depends on #{N})
 ```
 
 ---
@@ -407,24 +407,24 @@ Examine existing .claude/ structure (read-only):
 ```
 Current .claude/ Structure:
 
-Commands ({NNN}):
+Commands ({N}):
 - /{command1} - {description}
 - /{command2} - {description}
 
-Skills ({NNN}):
+Skills ({N}):
 - {skill1} - {description}
 - {skill2} - {description}
 
-Rules ({NNN}):
+Rules ({N}):
 - {rule1}.md - {paths}
 
-Active Tasks ({NNN}):
-- #{NNN}: {title} [{status}]
-- #{NNN}: {title} [{status}]
+Active Tasks ({N}):
+- #{N}: {title} [{status}]
+- #{N}: {title} [{status}]
 
 Context Files:
-- core/: {NNN} files
-- project/: {NNN} files
+- core/: {N} files
+- project/: {N} files
 
 Recommendations:
 1. {suggestion based on analysis}
