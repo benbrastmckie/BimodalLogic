@@ -29,9 +29,10 @@ Hands-on guides for specific development tasks:
 | Document | Description |
 |----------|-------------|
 | [BENCHMARKING_GUIDE.md](BENCHMARKING_GUIDE.md) | Performance benchmarking standards and CI integration |
+| [LATEX_STANDARDS.md](LATEX_STANDARDS.md) | LaTeX documentation standards and conventions |
 | [METAPROGRAMMING_GUIDE.md](METAPROGRAMMING_GUIDE.md) | Lean 4 metaprogramming fundamentals for tactics |
-| [PROPERTY_TESTING_GUIDE.md](PROPERTY_TESTING_GUIDE.md) | Property-based testing patterns and Plausible usage |
 | [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) | Handling noncomputable definitions and Classical logic |
+| [PROPERTY_TESTING_GUIDE.md](PROPERTY_TESTING_GUIDE.md) | Property-based testing patterns and Plausible usage |
 
 ## Project Organization
 
@@ -79,6 +80,7 @@ Documentation quality and review processes:
 1. **[DIRECTORY_README_STANDARD.md](DIRECTORY_README_STANDARD.md)** - README patterns
 2. **[DOC_QUALITY_CHECKLIST.md](DOC_QUALITY_CHECKLIST.md)** - Quality requirements
 3. **[LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md)** - Docstring conventions
+4. **[LATEX_STANDARDS.md](LATEX_STANDARDS.md)** - LaTeX documentation conventions
 
 ## Related Documentation
 

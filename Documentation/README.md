@@ -100,6 +100,8 @@ Developer standards, conventions, and contribution workflow:
   documentation standard
 - [DOC_QUALITY_CHECKLIST.md](Development/DOC_QUALITY_CHECKLIST.md) - Documentation quality
   assurance checklist
+- [LATEX_STANDARDS.md](Development/LATEX_STANDARDS.md) - LaTeX documentation standards and
+  conventions
 - [LEAN_STYLE_GUIDE.md](Development/LEAN_STYLE_GUIDE.md) - Coding conventions and documentation
   requirements
 - [METAPROGRAMMING_GUIDE.md](Development/METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming
