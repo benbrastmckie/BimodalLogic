@@ -44,7 +44,7 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 ### Phase 2: Create Theory Directory Stubs
 
 **Estimated effort**: 10 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Create minimal stub files that load the central config
