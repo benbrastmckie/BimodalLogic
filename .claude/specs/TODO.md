@@ -42,7 +42,8 @@ technical_debt:
 
 ### 375. Integrate latexmkrc into project LaTeX assets
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
 
@@ -132,28 +133,29 @@ technical_debt:
 
 ---
 
-### 179. Implement performance benchmarks for proof search and derivation
-- **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+### 179. Extend Bimodal benchmarks with derivation, semantics, and CI integration
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
+- **Started**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Plan**: [implementation-001.md](.claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md)
 - **Files Affected**:
-  - LogosBench/ (new directory)
-  - LogosBench/ProofSearchBench.lean (new)
-  - LogosBench/DerivationBench.lean (new)
-  - LogosBench/SemanticEvaluationBench.lean (new)
-  - Documentation/Development/PERFORMANCE_TARGETS.md (new)
-- **Description**: Create performance benchmark suite for proof search, derivation, and semantic evaluation. Add performance regression testing to CI. Currently no benchmarks exist and performance could regress unnoticed. Document performance targets.
+  - BimodalTest/Automation/ProofSearchBenchmark.lean (enhance)
+  - BimodalTest/ProofSystem/DerivationBenchmark.lean (new)
+  - BimodalTest/Semantics/SemanticBenchmark.lean (new)
+  - Bimodal/Documentation/ProjectInfo/PERFORMANCE_TARGETS.md (new)
+- **Description**: Extend the existing ProofSearchBenchmark.lean suite with derivation and semantic evaluation benchmarks. Add CI integration for performance regression testing. The proof search benchmark already exists and is comprehensive—this task adds the remaining components.
 - **Acceptance Criteria**:
-  - [ ] Benchmark suite for proof search created
-  - [ ] Benchmark suite for derivation created
+  - [x] Benchmark suite for proof search created (EXISTS: ProofSearchBenchmark.lean)
+  - [ ] Benchmark suite for derivation tree construction created
   - [ ] Benchmark suite for semantic evaluation created
-  - [ ] Performance regression testing added to CI
-  - [ ] Performance targets documented
-  - [ ] Baseline performance measurements recorded
-- **Impact**: Ensures performance doesn't regress and provides data for optimization efforts. Critical for maintaining usable proof search times.
+  - [ ] Performance targets documented in Bimodal/Documentation/
+  - [ ] CI script for running benchmarks and detecting regressions
+- **Impact**: Ensures performance doesn't regress and provides data for optimization efforts. Completes benchmarking coverage beyond proof search.
 
 ---
 
