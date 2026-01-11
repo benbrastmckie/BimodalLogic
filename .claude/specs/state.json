@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-12T12:00:00Z",
-  "next_project_number": 400,
+  "_last_updated": "2026-01-12T14:30:00Z",
+  "next_project_number": 401,
   "active_projects": [
+    {
+      "project_number": 400,
+      "project_name": "investigate_explanatory_truth_build_performance",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.",
+      "created": "2026-01-11T21:55:51Z",
+      "last_updated": "2026-01-11T21:55:51Z"
+    },
     {
       "project_number": 398,
       "project_name": "port_causal_semantics_to_recursive_semantics_md",
@@ -31,40 +41,13 @@
     {
       "project_number": 397,
       "project_name": "enhance_revise_to_update_description_when_no_plan_exists",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "description": "Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status not_started or researched (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.",
       "effort": "1-2 hours",
       "created": "2026-01-11T21:42:42Z",
-      "last_updated": "2026-01-11T22:15:00Z"
-    },
-    {
-      "project_number": 396,
-      "project_name": "fix_latex_build_missing_style_files",
-      "status": "completed",
-      "language": "latex",
-      "priority": "high",
-      "description": "Fix LaTeX build errors in Theories/Logos/LaTeX/LogosReference.tex and Theories/Bimodal/LaTeX/BimodalReference.tex caused by missing style files (logos-notation.sty, notation-standards.sty, bimodal-notation.sty). Troubleshoot and provide elegant solution for style file paths.",
-      "created": "2026-01-11T21:24:04Z",
-      "last_updated": "2026-01-11T21:49:59Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".claude/specs/396_fix_latex_build_missing_style_files/reports/research-001.md"
-        },
-        {
-          "type": "plan",
-          "path": ".claude/specs/396_fix_latex_build_missing_style_files/plans/implementation-001.md"
-        },
-        {
-          "type": "summary",
-          "path": ".claude/specs/396_fix_latex_build_missing_style_files/summaries/implementation-summary-20260111.md"
-        }
-      ],
-      "plan_version": "001",
-      "started": "2026-01-11",
-      "completed": "2026-01-11T21:48:00Z"
+      "last_updated": "2026-01-11T22:30:00Z"
     },
     {
       "project_number": 394,

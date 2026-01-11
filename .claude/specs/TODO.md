@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T12:00:00Z
-next_project_number: 400
+next_project_number: 401
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -156,6 +156,16 @@ This ensures all project directories in specs/archive/ are accounted for by stat
 ---
 
 ## Medium Priority
+
+### 400. Investigate Explanatory/Truth.lean build performance
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.
+
+---
 
 ### 397. Enhance /revise to update description when no plan exists
 - **Effort**: 1-2 hours

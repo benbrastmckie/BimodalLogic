@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-12T11:45:00Z",
+  "_last_updated": "2026-01-12T14:30:00Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -1551,6 +1551,189 @@
         }
       ],
       "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 396,
+      "project_name": "fix_latex_build_missing_style_files",
+      "status": "completed",
+      "language": "latex",
+      "priority": "high",
+      "description": "Fix LaTeX build errors in Theories/Logos/LaTeX/LogosReference.tex and Theories/Bimodal/LaTeX/BimodalReference.tex caused by missing style files (logos-notation.sty, notation-standards.sty, bimodal-notation.sty). Troubleshoot and provide elegant solution for style file paths.",
+      "created": "2026-01-11T21:24:04Z",
+      "last_updated": "2026-01-11T21:49:59Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/396_fix_latex_build_missing_style_files/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/396_fix_latex_build_missing_style_files/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/396_fix_latex_build_missing_style_files/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "plan_version": "001",
+      "started": "2026-01-11",
+      "completed": "2026-01-11T21:48:00Z",
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 393,
+      "project_name": "remove_incorrect_causal_operator_definition",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "description": "Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.",
+      "created": "2026-01-11T21:09:02Z",
+      "last_updated": "2026-01-12T02:00:00Z",
+      "parent_task": 381,
+      "plan_version": "001",
+      "implementing_started": "2026-01-12",
+      "completed": "2026-01-12T02:00:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 392,
+      "project_name": "enhance_todo_command_orphan_tracking",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Enhance /todo command to track orphaned directories in archive/state.json. Modify detection to check both state.json AND archive/state.json, and add orphan entries to archive/state.json when archiving (not just move directories). This ensures all project directories in specs/archive/ are accounted for by state files.",
+      "effort": "2-3 hours",
+      "created": "2026-01-12T12:00:00Z",
+      "last_updated": "2026-01-11T21:45:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "plan_version": "001",
+      "implementing_started": "2026-01-11",
+      "completed": "2026-01-11T21:45:00Z",
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 391,
+      "project_name": "enforce_directory_naming_convention",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-11T20:42:13Z",
+      "last_updated": "2026-01-11T21:16:26Z",
+      "completed": "2026-01-11T21:16:26Z",
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 382,
+      "project_name": "create_spatial_subtheory_stub",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Create Logos/Spatial/ subtheory stub following the pattern of other extension layers. Task 377 implemented Core but did not create the Spatial extension layer. Create minimal stub structure with appropriate documentation.",
+      "created": "2026-01-11T18:49:04Z",
+      "last_updated": "2026-01-11T20:45:09Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/382_create_spatial_subtheory_stub/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/382_create_spatial_subtheory_stub/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/382_create_spatial_subtheory_stub/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-11T20:45:09Z",
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 381,
+      "project_name": "add_causal_semantics_infrastructure",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.",
+      "created": "2026-01-11T18:49:04Z",
+      "last_updated": "2026-01-11T21:09:23Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/381_add_causal_semantics_infrastructure/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/381_add_causal_semantics_infrastructure/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/381_add_causal_semantics_infrastructure/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "planned": "2026-01-12",
+      "plan_version": "001",
+      "completed": "2026-01-12",
+      "subtasks": [
+        393,
+        394
+      ],
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 178,
+      "project_name": "complete_advanced_tutorial_sections_with_hands_on_exercises",
+      "type": "feature",
+      "phase": "planned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-11T21:10:49Z",
+      "effort": "10 hours",
+      "started": "2026-01-11",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md"
+        },
+        {
+          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "description": "Create advanced Bimodal tutorial covering proof search tactics, custom tactic development, and metalogic with hands-on exercises.",
+      "abandoned_reason": "Superseded by existing documentation. ~80% of planned content already exists in TUTORIAL.md, TACTIC_DEVELOPMENT.md, EXAMPLES.md. New targeted task created for remaining gaps.",
+      "archived": "2026-01-12T14:30:00Z"
     }
   ]
 }
