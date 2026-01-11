@@ -84,11 +84,12 @@ technical_debt:
 
 ### 380. Document LaTeX standards in ProofChecker/Documentation/
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
 
-**Description**: Having implemented tasks 375 and 378, make sure that the LaTeX standards are clearly and concisely documented in ProofChecker/Documentation/ as appropriate.
+**Description**: Having implemented tasks 375, 378-379, and 384, make sure that the LaTeX standards are clearly and concisely documented in ProofChecker/Documentation/ as appropriate.
 
 ---
 
@@ -121,7 +122,7 @@ technical_debt:
 
 ### 367. Complete example proofs
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11

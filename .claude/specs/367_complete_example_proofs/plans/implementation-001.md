@@ -14,7 +14,7 @@ Complete the 24 sorry placeholders in Bimodal/Examples/ files using a prioritize
 ### Phase 1: Complete Trivial Proofs (Category A)
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Complete the 3 trivial sorries using `identity` and `imp_trans`

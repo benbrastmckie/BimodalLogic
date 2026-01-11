@@ -1,5 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
+import Bimodal.Theorems.Combinators
 -- import Bimodal.Automation.ProofSearch  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
 
 /-!
@@ -58,6 +59,7 @@ namespace Bimodal.Examples.TemporalProofs
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
+open Bimodal.Theorems.Combinators
 -- open Bimodal.Automation (ProofSearch)  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
 
 /-!
@@ -153,9 +155,8 @@ example (φ : Formula) (h : ⊢ φ) : ⊢ φ.swap_temporal :=
 
 /-- Duality preserves theoremhood -/
 example : ⊢ (Formula.atom "p").all_future.imp (Formula.atom "p").all_future := by
-  -- Trivial future formula (by weakening or axioms)
-  -- Demonstrates pattern for duality application
-  sorry
+  -- Trivial identity - Gp → Gp
+  exact identity (Formula.atom "p").all_future
 
 /-!
 ## Temporal K Rule
@@ -220,12 +221,12 @@ Combining temporal axioms for complex derivations.
 
 /-- Chaining temporal operators: `FFFφ` via T4 -/
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future.all_future := by
-  -- F φ → FF φ by T4
+  -- Gφ → GGφ by T4
   have h1 := DerivationTree.axiom [] _ (Axiom.temp_4 φ)
-  -- FF φ → FFF φ by T4 applied to F φ
+  -- GGφ → GGGφ by T4 applied to Gφ
   have h2 := DerivationTree.axiom [] _ (Axiom.temp_4 φ.all_future)
-  -- Would need imp_trans to compose these
-  sorry
+  -- Compose using transitivity: Gφ → GGφ → GGGφ
+  exact imp_trans h1 h2
 
 /-- Temporal iteration: applying T4 repeatedly -/
 example : ⊢ (Formula.atom "perpetual").all_future.imp (Formula.atom "perpetual").all_future.all_future := by

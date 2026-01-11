@@ -1,5 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
+import Bimodal.Theorems.Combinators
 -- import Bimodal.Automation.ProofSearch  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
 
 /-!
@@ -42,6 +43,7 @@ namespace Bimodal.Examples.ModalProofs
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
+open Bimodal.Theorems.Combinators
 -- open Bimodal.Automation (ProofSearch)  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
 
 /-!
@@ -153,11 +155,11 @@ example (φ ψ : Formula) (h1 : ⊢ φ.box) (h2 : ⊢ (φ.imp ψ).box) : ⊢ ψ.
 
 /-- Combining T and 4: `□φ → φ` and `□φ → □□φ` for iteration -/
 example (φ : Formula) : ⊢ φ.box.imp φ.box := by
-  -- Trivial identity, but shows combining T and 4
-  have h1 := DerivationTree.axiom [] _ (Axiom.modal_t φ.box)  -- □□φ → □φ
-  have h2 := DerivationTree.axiom [] _ (Axiom.modal_4 φ)      -- □φ → □□φ
-  -- Would compose these to get □φ → □φ (identity)
-  sorry
+  -- Trivial identity - can be proven directly via identity combinator
+  -- Or by composing T and 4: □φ → □□φ → □φ
+  have h1 := DerivationTree.axiom [] _ (Axiom.modal_4 φ)       -- □φ → □□φ
+  have h2 := DerivationTree.axiom [] _ (Axiom.modal_t φ.box)   -- □□φ → □φ
+  exact imp_trans h1 h2
 
 /-- S5 characteristic: `◇□φ → φ` (possibility of necessity implies truth) -/
 example (φ : Formula) : ⊢ φ.box.diamond.imp φ := by
