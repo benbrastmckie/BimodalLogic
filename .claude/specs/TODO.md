@@ -69,11 +69,13 @@ technical_debt:
 
 ### 354. Research and refactor Archive/ directory
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: 352, 353
+- **Researched**: 2026-01-11
+- **Research**: [.claude/specs/354_refactor_archive_directory/reports/research-001.md]
 
 **Description**: Research and refactor the Archive/ directory given the tasks 352-353 (Logos/Core/ to Bimodal/ migration) in progress. Provide a clear description of intent for the Archive/ directory structure and contents.
 
