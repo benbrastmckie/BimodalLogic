@@ -308,7 +308,7 @@ time lake exe test
 - [Testing Standards](../../../Documentation/Development/TESTING_STANDARDS.md)
 - [Lean Style Guide](../../../Documentation/Development/LEAN_STYLE_GUIDE.md)
 - [Architecture](../../../Documentation/UserGuide/ARCHITECTURE.md)
-- [Soundness Theorem](../../../Logos/Core/Metalogic/Soundness.lean)
+- [Soundness Theorem](../../Bimodal/Metalogic/Soundness.lean)
 
 ## Contributing
 
