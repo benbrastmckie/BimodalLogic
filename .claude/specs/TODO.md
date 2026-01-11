@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T21:30:00Z
-next_project_number: 378
+next_project_number: 379
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -52,6 +52,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 378. Refactor Documentation structure with directory standards
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Completely refactor Documentation/ to better distribute information between documents and gather documents into subdirectories, where each subdirectory has a README.md that follows Documentation/Development/DIRECTORY_README_STANDARD.md and Documentation/Development/DOC_QUALITY_CHECKLIST.md. Merge NAVIGATION.md into Documentation/README.md. Avoid removing important content while reducing redundancy and improving consistency and organization using cross-linking with brief summaries.
+
+---
 
 ### 375. Integrate latexmkrc into project LaTeX assets
 - **Effort**: 1-2 hours
