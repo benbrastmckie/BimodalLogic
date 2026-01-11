@@ -4,18 +4,24 @@
 %
 % Based on RECURSIVE_SEMANTICS.md specification
 % Compatible with LaTeX, markdown, and Lean notation conventions
+%
+% Imports shared notation from ProofChecker/LaTeX/notation-standards.sty
 % ============================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{logos-notation}[2026/01/10 Logos Logic Notation]
+\ProvidesPackage{logos-notation}[2026/01/11 Logos Logic Notation]
 
-% Required packages
-\RequirePackage{amsmath}
-\RequirePackage{amssymb}
+% ============================================================================
+% Import Shared Notation Standards
+% ============================================================================
+
+\RequirePackage{../../../LaTeX/notation-standards}
+
+% Additional required packages for Logos-specific notation
 \RequirePackage{stmaryrd}  % for \llbracket, \rrbracket
 
 % ============================================================================
-% Constitutive Foundation
+% Constitutive Foundation (Logos-specific)
 % ============================================================================
 
 % --- State Space ---
@@ -46,7 +52,7 @@
 \newcommand{\sem}[1]{\llbracket #1 \rrbracket}
 
 % ============================================================================
-% Core Extension
+% Core Extension (Logos-specific)
 % ============================================================================
 
 % --- Temporal Order ---
@@ -72,14 +78,6 @@
 
 % --- Temporal Index ---
 \newcommand{\tempindex}{\vec{\imath}}
-
-% --- Truth Evaluation ---
-\newcommand{\satisfies}{\models}
-\newcommand{\notsatisfies}{\not\models}
-
-% --- Modal Operators ---
-\newcommand{\nec}{\Box}
-\newcommand{\poss}{\Diamond}
 
 % --- Core Tense Operators ---
 \newcommand{\always}{H}           % always past
@@ -107,37 +105,21 @@
 \newcommand{\actual}{\mathsf{Act}}
 
 % ============================================================================
-% Model Notation
+% Model Notation (Logos-specific extensions)
 % ============================================================================
 
 \newcommand{\mframe}{\mathbf{F}}
-\newcommand{\model}{\mathbf{M}}
+% \model is provided by notation-standards.sty
 \newcommand{\interp}{I}
 
 % ============================================================================
-% Meta-Variables
+% Meta-Variables (Logos-specific extensions)
 % ============================================================================
 
 \newcommand{\metaA}{A}
 \newcommand{\metaB}{B}
 \newcommand{\metaC}{C}
-\newcommand{\metaphi}{\varphi}
-\newcommand{\metapsi}{\psi}
-\newcommand{\metachi}{\chi}
-
-% ============================================================================
-% Cross-References to Lean
-% ============================================================================
-
-\newcommand{\leansrc}[2]{\texttt{#1.#2}}
-\newcommand{\leanref}[1]{\texttt{#1}}
-
-% ============================================================================
-% Proof Theory
-% ============================================================================
-
-\newcommand{\proves}{\vdash}
-\newcommand{\context}{\Gamma}
+% \metaphi, \metapsi, \metachi provided by notation-standards.sty
 
 % ============================================================================
 % End of Package
