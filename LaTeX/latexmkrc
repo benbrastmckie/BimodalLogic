@@ -1,0 +1,57 @@
+# ProofChecker Shared LaTeX Build Configuration
+# =============================================
+#
+# This is the central latexmkrc configuration for the ProofChecker project.
+# It standardizes LaTeX compilation across all theory directories.
+#
+# USAGE:
+#   Theory directories (Bimodal/LaTeX/, Logos/LaTeX/) have stub files that
+#   load this config via: do '../../LaTeX/latexmkrc';
+#
+# USER SETTINGS:
+#   This config intentionally omits $pdf_previewer so your personal
+#   ~/.latexmkrc setting is preserved. Set your preferred viewer there:
+#     $pdf_previewer = 'sioyek %S';      # Sioyek
+#     $pdf_previewer = 'zathura %S';     # Zathura
+#     $pdf_previewer = 'evince %S';      # Evince
+#     $pdf_previewer = 'open -a Skim';   # macOS Skim
+#
+# See LaTeX/README.md for complete documentation.
+
+# PDF Generation Mode
+# 1 = pdflatex, 4 = lualatex, 5 = xelatex
+$pdf_mode = 5;  # XeLaTeX for Unicode and modern font support
+
+# XeLaTeX Configuration
+# -interaction=nonstopmode: Don't stop on errors
+# -file-line-error: Better error messages
+# -synctex=1: Enable editor synchronization
+$xelatex = 'xelatex -interaction=nonstopmode -file-line-error -synctex=1 %O %S';
+
+# Build Directory
+# Isolates all auxiliary files from source files
+# Both directories should match for simplicity
+$out_dir = 'build';
+$aux_dir = 'build';
+
+# Auxiliary File Handling
+# Faster handling of .aux files
+$emulate_aux = 1;
+
+# Compilation Loop Prevention
+# Maximum number of recompilation attempts
+$max_repeat = 5;
+
+# BibTeX/BibLaTeX Configuration
+# 2 = Use biber for biblatex (modern bibliography)
+$bibtex_use = 2;
+
+# Cleanup Rules
+# Files to remove with latexmk -c (clean)
+@generated_exts = qw(aux bbl bcf blg fdb_latexmk fls log nav out run.xml snm synctex.gz toc vrb);
+
+# Files to remove with latexmk -C (clean all, including PDF)
+$clean_ext = "bbl nav snm vrb run.xml synctex.gz";
+
+# NOTE: $pdf_previewer is intentionally NOT set here
+# This preserves user's personal viewer preference from ~/.latexmkrc

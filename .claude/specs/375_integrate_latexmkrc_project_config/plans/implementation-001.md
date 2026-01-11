@@ -14,7 +14,7 @@ Integrate a central `latexmkrc` configuration into `ProofChecker/LaTeX/` using t
 ### Phase 1: Create Central latexmkrc Configuration
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Create portable `LaTeX/latexmkrc` with shared build settings
