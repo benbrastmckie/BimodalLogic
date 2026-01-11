@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T23:30:00Z",
-  "next_project_number": 387,
+  "next_project_number": 388,
   "active_projects": [
+    {
+      "project_number": 387,
+      "project_name": "standardize_research_file_names",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-11T20:10:25Z",
+      "last_updated": "2026-01-11T20:10:25Z"
+    },
     {
       "project_number": 386,
       "project_name": "fix_command_artifact_linking_in_todo_md",

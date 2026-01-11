@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T21:30:00Z
-next_project_number: 387
+next_project_number: 388
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -76,6 +76,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 387. Standardize Research/ file names and fix references
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Improve and standardize file names in Documentation/Research/ to avoid redundancy (e.g., remove 'RESEARCH' from titles given the directory name). Rename files using consistent lowercase-hyphenated naming convention. Fix all references to these files throughout the repository to avoid broken links.
+
+---
 
 ### 381. Add causal semantics infrastructure
 - **Effort**: 2-3 hours
