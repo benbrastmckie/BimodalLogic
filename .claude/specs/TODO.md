@@ -32,8 +32,9 @@ technical_debt:
 
 ### 352. Rename Logos/Core/ to Bimodal/
 - **Effort**: 2-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-10
+- **Completed**: 2026-01-10
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None
@@ -42,8 +43,11 @@ technical_debt:
 - **Planned**: 2026-01-10
 - **Research**: [.claude/specs/352_rename_logos_core_to_bimodal/reports/research-001.md]
 - **Plan**: [.claude/specs/352_rename_logos_core_to_bimodal/plans/implementation-001.md]
+- **Summary**: [.claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md]
 
 **Description**: Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project. This refactoring prepares the repository for the Logos extensions detailed in RECURSIVE_SEMANTICS.md and LAYER_EXTENSIONS.md. Focus on moving Core/ to Bimodal/ and ensuring everything builds correctly.
+
+**Outcome**: Successfully moved Logos/Core/ to Bimodal/, updated all 32 internal files with new namespace, updated 96+ external import references, added lean_lib Bimodal target, created backwards-compatible Logos/Core.lean re-export layer. Clean build succeeds.
 
 ---
 

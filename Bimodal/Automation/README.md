@@ -65,12 +65,12 @@ example : ⊢ (□p → p) := by
 
 ```bash
 # Build automation module
-lake build Logos.Core.Automation
+lake build Bimodal.Automation
 
 # Type-check specific file
-lake env lean Logos/Core/Automation/Tactics.lean
-lake env lean Logos/Core/Automation/AesopRules.lean
-lake env lean Logos/Core/Automation/ProofSearch.lean
+lake env lean Bimodal/Automation/Tactics.lean
+lake env lean Bimodal/Automation/AesopRules.lean
+lake env lean Bimodal/Automation/ProofSearch.lean
 ```
 
 ## API Documentation

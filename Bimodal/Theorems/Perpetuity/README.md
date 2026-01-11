@@ -36,12 +36,12 @@ Proofs of perpetuity principles P1-P6, establishing fundamental connections betw
 
 ```bash
 # Build perpetuity module
-lake build Logos.Core.Theorems.Perpetuity
+lake build Bimodal.Theorems.Perpetuity
 
 # Type-check specific file
-lake env lean Logos/Core/Theorems/Perpetuity/Principles.lean
-lake env lean Logos/Core/Theorems/Perpetuity/Helpers.lean
-lake env lean Logos/Core/Theorems/Perpetuity/Bridge.lean
+lake env lean Bimodal/Theorems/Perpetuity/Principles.lean
+lake env lean Bimodal/Theorems/Perpetuity/Helpers.lean
+lake env lean Bimodal/Theorems/Perpetuity/Bridge.lean
 ```
 
 ## API Documentation
