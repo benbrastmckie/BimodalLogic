@@ -107,9 +107,11 @@ technical_debt:
 
 ### 401. Add [EXPANDED] status for parent tasks
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/401_add_expanded_status_for_parent_tasks/reports/research-001.md)
 
 **Description**: Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.
 
