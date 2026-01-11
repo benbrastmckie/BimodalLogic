@@ -237,6 +237,16 @@ technical_debt:
 
 ---
 
+### 391. Rename Documentation/ to docs/
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Rename Documentation/ directory to docs/ to follow standard project conventions. The lowercase `docs/` is the standard convention across most software projects, including Lean 4 projects, for non-source directories. This aligns with keeping `scripts/` and `benchmarks/` lowercase while source directories like `Logos/` remain uppercase.
+
+---
+
 ### 260. Proof Search
 - **Effort**: 40-60 hours
 - **Status**: [BLOCKED]
