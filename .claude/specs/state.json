@@ -6,16 +6,22 @@
     {
       "project_number": 379,
       "project_name": "fix_logosreference_latex_warnings",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-11T18:01:49Z",
-      "last_updated": "2026-01-11T23:45:00Z",
+      "last_updated": "2026-01-11T23:55:00Z",
       "researched": "2026-01-11",
+      "planned": "2026-01-11",
+      "plan_version": "001",
       "artifacts": [
         {
           "type": "research",
           "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md"
         }
       ]
     },

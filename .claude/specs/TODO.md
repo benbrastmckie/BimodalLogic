@@ -62,12 +62,14 @@ technical_debt:
 
 ### 379. Fix LogosReference LaTeX warnings and errors
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md)
 
 **Description**: Fix LaTeX warnings/errors in LogosReference.tex after task 375 implementation: "no \citation commands", "no style file" (bibtex), package warnings for logos-notation/notation-standards/formatting, and "Label(s) may have changed" cross-reference warnings.
 
