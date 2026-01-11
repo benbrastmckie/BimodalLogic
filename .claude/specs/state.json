@@ -45,13 +45,13 @@
     {
       "project_number": 404,
       "project_name": "enhance_todo_to_archive_orphaned_specs_directories",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "description": "Enhance /todo command to detect orphaned project directories in specs/ that are not tracked in TODO.md or state.json, and offer to move them to specs/archive/ while updating archive/state.json accordingly.",
       "effort": "1-2 hours",
       "created": "2026-01-11T22:20:12Z",
-      "last_updated": "2026-01-11T22:29:30Z",
+      "last_updated": "2026-01-12T06:40:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md",
@@ -62,13 +62,13 @@
     {
       "project_number": 403,
       "project_name": "enforce_directory_naming_convention",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "description": "Enforce the naming convention that only directories containing Lean source code should be capitalized. Renamed 19 directories (docs/ subdirectories, Theories/*/Documentation/, Theories/*/LaTeX/) to lowercase and updated all references.",
       "effort": "2-3 hours",
       "created": "2026-01-11T22:13:04Z",
-      "last_updated": "2026-01-11T22:26:48Z",
+      "last_updated": "2026-01-11T22:32:17Z",
       "artifacts": [
         {
           "path": ".claude/specs/403_enforce_directory_naming_convention/reports/research-001.md",
@@ -77,10 +77,15 @@
         {
           "path": ".claude/specs/403_enforce_directory_naming_convention/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/403_enforce_directory_naming_convention/summaries/implementation-summary-20260111.md",
+          "type": "summary"
         }
       ],
       "plan_version": "001",
-      "implementing_started": "2026-01-11T22:26:48Z"
+      "implementing_started": "2026-01-11T22:26:48Z",
+      "completed": "2026-01-11T22:32:17Z"
     },
     {
       "project_number": 401,

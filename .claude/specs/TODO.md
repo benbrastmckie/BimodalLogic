@@ -127,7 +127,7 @@ technical_debt:
 
 ### 404. Enhance /todo to archive orphaned specs directories
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
@@ -139,14 +139,16 @@ technical_debt:
 
 ### 403. Enforce directory naming convention
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/403_enforce_directory_naming_convention/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/403_enforce_directory_naming_convention/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/403_enforce_directory_naming_convention/summaries/implementation-summary-20260111.md)
 
-**Description**: Research and enforce the naming convention that only directories containing Lean source code should be capitalized. Identify all exceptions like Theories/Bimodal/latex/ and Theories/Logos/latex/ that violate this convention, find all references that need updating, and systematically rename directories to lowercase.
+**Description**: Enforced directory naming convention: PascalCase for Lean source directories, lowercase for all others. Renamed 19 directories (docs/ subdirectories, Theories/*/Documentation/, Theories/*/LaTeX/) and updated all references.
 
 ---
 
