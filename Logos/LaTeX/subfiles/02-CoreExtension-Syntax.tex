@@ -1,0 +1,107 @@
+\documentclass[../LogosReference.tex]{subfiles}
+\begin{document}
+
+% ============================================================================
+% Section: Core Extension Syntax
+% ============================================================================
+
+\section{Core Extension: Syntactic Primitives}\label{sec:core-syntax}
+
+The Core Extension extends the Constitutive Foundation with temporal structure and a task relation, enabling evaluation of truth relative to world-histories and times. While the hyperintensional foundation remains (distinguishing propositions by their exact verifiers and falsifiers), this extension adds intensional evaluation relative to contextual parameters (world-history, time, variable assignment) to determine truth-values for all Core Extension sentences.
+
+% ------------------------------------------------------------
+% Additional Syntactic Primitives
+% ------------------------------------------------------------
+
+\subsection{Additional Syntactic Primitives}\label{sec:additional-syntax}
+
+The Core Extension interprets the following additional syntactic primitives beyond those of the Constitutive Foundation:
+
+\begin{itemize}
+  \item \textbf{Modal operators}: $\nec$ (necessity), $\poss$ (possibility)
+  \item \textbf{Temporal operators}: $\always$ (always past), $\willalways$ (always future), $\waspast$ (some past), $\willfuture$ (some future)
+  \item \textbf{Extended temporal operators}: $\since$ (since), $\until$ (until)
+  \item \textbf{Counterfactual conditional}: $\boxright$ (would-counterfactual)
+  \item \textbf{Store/recall operators}: $\store{i}$ (store), $\recall{i}$ (recall)
+\end{itemize}
+
+% ------------------------------------------------------------
+% Well-Formed Sentences
+% ------------------------------------------------------------
+
+\subsection{Well-Formed Sentences}\label{sec:well-formed-sentences}
+
+A well-formed sentence at this extension includes:
+\begin{enumerate}
+  \item All Constitutive Foundation sentences (atomic formulas, $\neg$, $\land$, $\lor$, $\top$, $\bot$, $\propid$)
+  \item Modal sentences: $\nec\metaA$, $\poss\metaA$
+  \item Temporal sentences: $\always\metaA$, $\willalways\metaA$, $\waspast\metaA$, $\willfuture\metaA$
+  \item Extended temporal sentences: $\metaA \since \metaB$, $\metaA \until \metaB$
+  \item Counterfactual sentences: $\metaphi \boxright \metaC$
+  \item Indexed sentences: $\store{i}\metaA$, $\recall{i}\metaA$
+  \item Universal quantification: $\forall x.\metaA$
+  \item Actuality predicate: $\actual(t)$
+\end{enumerate}
+
+% ------------------------------------------------------------
+% Operator Summary
+% ------------------------------------------------------------
+
+\subsection{Operator Summary}\label{sec:operator-summary}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Category} & \textbf{Symbol} & \textbf{Reading} \\
+\midrule
+Modal & $\nec\metaA$ & ``Necessarily $\metaA$'' \\
+      & $\poss\metaA$ & ``Possibly $\metaA$'' \\
+\midrule
+Past Temporal & $\always\metaA$ & ``It has always been that $\metaA$'' \\
+              & $\waspast\metaA$ & ``It was the case that $\metaA$'' \\
+\midrule
+Future Temporal & $\willalways\metaA$ & ``It will always be that $\metaA$'' \\
+                & $\willfuture\metaA$ & ``It will be the case that $\metaA$'' \\
+\midrule
+Extended & $\metaA \since \metaB$ & ``$\metaA$ since $\metaB$'' \\
+         & $\metaA \until \metaB$ & ``$\metaA$ until $\metaB$'' \\
+\midrule
+Counterfactual & $\metaphi \boxright \metaC$ & ``If $\metaphi$ were the case, then $\metaC$'' \\
+\midrule
+Store/Recall & $\store{i}\metaA$ & ``Store current time and evaluate $\metaA$'' \\
+             & $\recall{i}\metaA$ & ``Recall stored time and evaluate $\metaA$'' \\
+\bottomrule
+\end{tabular}
+\caption{Core Extension operators}
+\label{tab:core-operators}
+\end{table}
+
+% ------------------------------------------------------------
+% Derived Operators
+% ------------------------------------------------------------
+
+\subsection{Derived Operators}\label{sec:derived-operators}
+
+\begin{definition}[Derived Temporal Operators]\label{def:derived-temporal}
+\begin{align}
+\alwaystemporal\metaA &:= \always\metaA \land \metaA \land \willalways\metaA && \text{``Always $\metaA$'' (at all times)} \\
+\sometimestemporal\metaA &:= \waspast\metaA \lor \metaA \lor \willfuture\metaA && \text{``Sometimes $\metaA$'' (at some time)}
+\end{align}
+\end{definition}
+
+\begin{definition}[Material Conditional]\label{def:material-conditional}
+\[
+\metaA \to \metaB := \neg\metaA \lor \metaB
+\]
+\end{definition}
+
+\begin{definition}[Biconditional]\label{def:biconditional}
+\[
+\metaA \leftrightarrow \metaB := (\metaA \to \metaB) \land (\metaB \to \metaA)
+\]
+\end{definition}
+
+See \leansrc{Logos.Core.Syntax}{CoreFormula} for the Lean implementation.
+
+\end{document}

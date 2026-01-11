@@ -4,7 +4,7 @@
 
 ### Full Build
 ```bash
-cd Documentation/LaTeX
+cd Logos/LaTeX
 pdflatex LogosReference.tex
 bibtex LogosReference
 pdflatex LogosReference.tex
@@ -13,7 +13,7 @@ pdflatex LogosReference.tex
 
 ### Subfile Only
 ```bash
-cd Documentation/LaTeX/subfiles
+cd Logos/LaTeX/subfiles
 pdflatex 01-ConstitutiveFoundation.tex
 ```
 
@@ -66,7 +66,7 @@ latexmk -c LogosReference.tex   # Keep PDF
 ## Directory Structure
 
 ```
-Documentation/LaTeX/
+Logos/LaTeX/
 ├── LogosReference.tex          # Main document
 ├── LogosReference.pdf          # Output (generated)
 ├── LogosReference.aux          # Auxiliary (generated)

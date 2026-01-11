@@ -6,13 +6,20 @@
     {
       "project_number": 362,
       "project_name": "move_latex_to_logos",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
-      "description": "Move /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ to /home/benjamin/Projects/ProofChecker/Logos/LaTeX/ instead, updating all references as need be to avoid broken links",
+      "description": "Move Documentation/LaTeX/ to Logos/LaTeX/, updating all references to avoid broken links",
       "created": "2026-01-11T01:56:51Z",
-      "last_updated": "2026-01-11T02:07:23Z",
-      "started": "2026-01-11"
+      "last_updated": "2026-01-11T02:10:18Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "summary",
+          "path": ".claude/specs/362_move_latex_to_logos/summaries/implementation-summary-20260111.md"
+        }
+      ]
     },
     {
       "project_number": 361,

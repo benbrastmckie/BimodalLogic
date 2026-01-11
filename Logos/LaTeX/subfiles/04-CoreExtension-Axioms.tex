@@ -1,0 +1,121 @@
+\documentclass[../LogosReference.tex]{subfiles}
+\begin{document}
+
+% ============================================================================
+% Section: Core Extension Axioms
+% ============================================================================
+
+\section{Counterfactual Logic Axiom System}\label{sec:core-axioms}
+
+This section presents the axiom system for the counterfactual logic of the Core Extension.
+
+% ------------------------------------------------------------
+% Core Rules
+% ------------------------------------------------------------
+
+\subsection{Core Rules}\label{sec:core-rules}
+
+\begin{definition}[Closure Under Deduction]\label{def:closure-deduction}
+\[
+\textbf{R1}: \quad \text{If } \context \proves \metaC, \text{ then } \metaphi \boxright \context \proves \metaphi \boxright \metaC
+\]
+\end{definition}
+
+\begin{remark}
+This rule states that if $\metaC$ is derivable from $\context$, then for any antecedent $\metaphi$, the counterfactual with consequent $\metaC$ is derivable from the counterfactuals with consequents from $\context$.
+\end{remark}
+
+% ------------------------------------------------------------
+% Counterfactual Axiom Schemata
+% ------------------------------------------------------------
+
+\subsection{Counterfactual Axiom Schemata}\label{sec:counterfactual-axioms}
+
+\begin{definition}[Counterfactual Axioms]\label{def:counterfactual-axioms}
+\begin{align}
+\textbf{C1}: \quad &\metaphi \boxright \metaphi && \text{(Identity)} \\
+\textbf{C2}: \quad &\metaphi, \metaphi \boxright \metaA \proves \metaA && \text{(Counterfactual Modus Ponens)} \\
+\textbf{C3}: \quad &\metaphi \boxright \metapsi, \metaphi \land \metapsi \boxright \metaA \proves \metaphi \boxright \metaA && \text{(Weakened Transitivity)} \\
+\textbf{C4}: \quad &\metaphi \lor \metapsi \boxright \metaA \proves \metaphi \land \metapsi \boxright \metaA && \text{(Disjunction-Conjunction)} \\
+\textbf{C5}: \quad &\metaphi \lor \metapsi \boxright \metaA \proves \metaphi \boxright \metaA && \text{(Simplification Left)} \\
+\textbf{C6}: \quad &\metaphi \lor \metapsi \boxright \metaA \proves \metapsi \boxright \metaA && \text{(Simplification Right)} \\
+\textbf{C7}: \quad &\metaphi \boxright \metaA, \metapsi \boxright \metaA, \metaphi \land \metapsi \boxright \metaA \proves \metaphi \lor \metapsi \boxright \metaA && \text{(Disjunction Introduction)}
+\end{align}
+\end{definition}
+
+\begin{remark}[Explanation of Counterfactual Axioms]
+\begin{itemize}
+  \item \textbf{C1} (Identity): Every proposition counterfactually implies itself.
+  \item \textbf{C2} (Modus Ponens): If $\metaphi$ is actually true and $\metaphi$ would imply $\metaA$, then $\metaA$ is true.
+  \item \textbf{C3} (Weakened Transitivity): This weaker form of transitivity avoids the problematic full transitivity principle.
+  \item \textbf{C4-C7} govern the interaction between counterfactuals and Boolean operations on antecedents.
+\end{itemize}
+\end{remark}
+
+% ------------------------------------------------------------
+% Modal Axiom Schemata
+% ------------------------------------------------------------
+
+\subsection{Modal Axiom Schemata}\label{sec:modal-axioms}
+
+\begin{definition}[Modal Axioms]\label{def:modal-axioms}
+\begin{align}
+\textbf{M1}: \quad &\top && \text{(Truth)} \\
+\textbf{M2}: \quad &\neg\bot && \text{(Non-Contradiction)} \\
+\textbf{M3}: \quad &\metaA \to \nec\poss\metaA && \text{(Brouwer)} \\
+\textbf{M4}: \quad &\nec\metaA \to \nec\nec\metaA && \text{(S4 Transitivity)} \\
+\textbf{M5}: \quad &\nec(\metaphi \to \metaA) \proves \metaphi \boxright \metaA && \text{(Strict-to-Counterfactual)}
+\end{align}
+\end{definition}
+
+\begin{remark}[S5 Modal Logic]
+The combination of M3 and M4 yields an S5 modal logic, which is characterized by an equivalence relation on possible worlds. In the task semantics, this arises from the structure of world-histories: any world-history is accessible from any other at any given time.
+\end{remark}
+
+\begin{remark}[Strict-to-Counterfactual]
+Axiom M5 states that if $\metaA$ is a strict consequence of $\metaphi$ (i.e., necessarily, if $\metaphi$ then $\metaA$), then $\metaphi$ counterfactually implies $\metaA$. This connects the modal operator with the counterfactual conditional.
+\end{remark}
+
+% ------------------------------------------------------------
+% Derived Theorems
+% ------------------------------------------------------------
+
+\subsection{Derived Theorems}\label{sec:derived-theorems}
+
+\begin{theorem}[Counterfactual Strengthening]\label{thm:cf-strengthening}
+If $\metaphi \boxright \metaA$ and $\metaphi \boxright \metapsi$, then $\metaphi \boxright (\metaA \land \metapsi)$.
+\end{theorem}
+
+\begin{theorem}[Counterfactual Weakening]\label{thm:cf-weakening}
+If $\metaphi \boxright \metaA$ and $\metaA \proves \metaB$, then $\metaphi \boxright \metaB$.
+\end{theorem}
+
+\begin{theorem}[Necessity Introduction]\label{thm:necessity-intro}
+$\top \boxright \metaA$ is equivalent to $\nec\metaA$.
+\end{theorem}
+
+\begin{theorem}[Excluded Middle]\label{thm:excluded-middle}
+$(\metaphi \boxright \metaA) \lor (\metaphi \boxright \neg\metaA)$ is \emph{not} generally valid.
+\end{theorem}
+
+\begin{remark}
+The failure of excluded middle for counterfactuals (Theorem~\ref{thm:excluded-middle}) reflects the mereological structure: when imposing an antecedent $\metaphi$ on the actual world, there may be multiple ways to do so, leading to different worlds where $\metaA$ or $\neg\metaA$ holds. The counterfactual is true only when the consequent holds in \emph{all} such imposed worlds.
+\end{remark}
+
+% ------------------------------------------------------------
+% Soundness and Completeness
+% ------------------------------------------------------------
+
+\subsection{Soundness and Completeness}\label{sec:soundness-completeness}
+
+\begin{theorem}[Soundness]\label{thm:soundness}
+If $\context \proves \metaA$ using the axiom system above, then $\context \satisfies \metaA$.
+\end{theorem}
+
+\begin{question}
+Completeness of the axiom system with respect to the mereological counterfactual semantics remains an open problem. The main challenge is showing that every consistent set of formulas has a model with the required mereological structure.
+\end{question}
+
+See \leansrc{Logos.Core.Axioms}{CounterfactualAxioms} for the Lean implementation.
+
+\end{document}

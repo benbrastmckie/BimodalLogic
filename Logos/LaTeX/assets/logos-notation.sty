@@ -1,0 +1,144 @@
+% ============================================================================
+% logos-notation.sty
+% Notation package for Logos logic system documentation
+%
+% Based on RECURSIVE_SEMANTICS.md specification
+% Compatible with LaTeX, markdown, and Lean notation conventions
+% ============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{logos-notation}[2026/01/10 Logos Logic Notation]
+
+% Required packages
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{stmaryrd}  % for \llbracket, \rrbracket
+
+% ============================================================================
+% Constitutive Foundation
+% ============================================================================
+
+% --- State Space ---
+\newcommand{\statespace}{S}
+\newcommand{\nullstate}{\square}
+\newcommand{\fullstate}{\blacksquare}
+\newcommand{\fusion}[2]{#1 \cdot #2}
+\newcommand{\parthood}{\sqsubseteq}
+
+% --- Verification and Falsification ---
+\newcommand{\verifies}{\Vdash^+}
+\newcommand{\falsifies}{\Vdash^-}
+\newcommand{\verifierset}[1]{v_{#1}}
+\newcommand{\falsifierset}[1]{f_{#1}}
+
+% --- Propositional Operations ---
+\newcommand{\product}{\otimes}
+\newcommand{\psum}{\oplus}
+\newcommand{\propid}{\equiv}
+
+% --- Derived Relations ---
+\newcommand{\essence}{\sqsubseteq}
+\newcommand{\ground}{\leq}
+
+% --- Variable Assignment ---
+\newcommand{\assignment}{\sigma}
+\newcommand{\assignsub}[2]{\sigma[#1/#2]}
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+
+% ============================================================================
+% Core Extension
+% ============================================================================
+
+% --- Temporal Order ---
+\newcommand{\temporalorder}{D}
+\newcommand{\timelt}{<}
+\newcommand{\timeleq}{\leq}
+
+% --- Task Relation ---
+\newcommand{\task}[3]{#1 \Rightarrow_{#2} #3}
+\newcommand{\taskrel}{\Rightarrow}
+
+% --- State Modality ---
+\newcommand{\possible}{P}
+\newcommand{\compatible}{\circ}
+\newcommand{\connected}{\sim}
+\newcommand{\worldstates}{W}
+\newcommand{\necessary}{N}
+\newcommand{\maxcompat}[2]{#1_{#2}}
+
+% --- World-History ---
+\newcommand{\history}{\tau}
+\newcommand{\historyspace}{H_\mathbf{F}}
+
+% --- Temporal Index ---
+\newcommand{\tempindex}{\vec{\imath}}
+
+% --- Truth Evaluation ---
+\newcommand{\satisfies}{\models}
+\newcommand{\notsatisfies}{\not\models}
+
+% --- Modal Operators ---
+\newcommand{\nec}{\Box}
+\newcommand{\poss}{\Diamond}
+
+% --- Core Tense Operators ---
+\newcommand{\always}{H}           % always past
+\newcommand{\willalways}{G}       % always future
+\newcommand{\waspast}{P}          % some past
+\newcommand{\willfuture}{F}       % some future
+
+% --- Derived Tense Operators ---
+\newcommand{\alwaystemporal}{\triangle}       % at all times
+\newcommand{\sometimestemporal}{\triangledown} % at some time
+
+% --- Extended Tense Operators ---
+\newcommand{\since}{\triangleleft}
+\newcommand{\until}{\triangleright}
+
+% --- Counterfactual ---
+\newcommand{\boxright}{\Box\!\to}
+\newcommand{\imposition}[2]{#1 \to_{#2}}
+
+% --- Store/Recall ---
+\newcommand{\store}[1]{\uparrow^{#1}}
+\newcommand{\recall}[1]{\downarrow^{#1}}
+
+% --- Actuality ---
+\newcommand{\actual}{\mathsf{Act}}
+
+% ============================================================================
+% Model Notation
+% ============================================================================
+
+\newcommand{\mframe}{\mathbf{F}}
+\newcommand{\model}{\mathbf{M}}
+\newcommand{\interp}{I}
+
+% ============================================================================
+% Meta-Variables
+% ============================================================================
+
+\newcommand{\metaA}{A}
+\newcommand{\metaB}{B}
+\newcommand{\metaC}{C}
+\newcommand{\metaphi}{\varphi}
+\newcommand{\metapsi}{\psi}
+\newcommand{\metachi}{\chi}
+
+% ============================================================================
+% Cross-References to Lean
+% ============================================================================
+
+\newcommand{\leansrc}[2]{\texttt{#1.#2}}
+\newcommand{\leanref}[1]{\texttt{#1}}
+
+% ============================================================================
+% Proof Theory
+% ============================================================================
+
+\newcommand{\proves}{\vdash}
+\newcommand{\context}{\Gamma}
+
+% ============================================================================
+% End of Package
+% ============================================================================

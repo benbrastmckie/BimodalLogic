@@ -1,0 +1,56 @@
+\documentclass[../LogosReference.tex]{subfiles}
+\begin{document}
+
+% ============================================================================
+% Section: Spatial Extension
+% ============================================================================
+
+\section{Spatial Extension}\label{sec:spatial}
+
+\textsc{[Details pending development]}
+
+The Spatial Extension extends the Core Extension with structures for spatial reasoning and location.
+
+% ------------------------------------------------------------
+% Frame Extension
+% ------------------------------------------------------------
+
+\subsection{Frame Extension}\label{sec:spatial-frame}
+
+\textsc{[Details pending development]}
+
+The spatial frame extends the core frame with:
+\begin{itemize}
+  \item \textbf{Location space} $L$ = set of spatial locations
+  \item \textbf{Spatial relations}: adjacency, containment, distance
+\end{itemize}
+
+\begin{question}
+What spatial primitives are required? Should locations be mereological (with parts) or set-theoretic?
+\end{question}
+
+% ------------------------------------------------------------
+% Operators
+% ------------------------------------------------------------
+
+\subsection{Operators}\label{sec:spatial-operators}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Operator} & \textbf{Intended Reading} \\
+\midrule
+$\textbf{Here}(\metaA)$ & $\metaA$ holds at the current location \\
+$\textbf{Somewhere}(\metaA)$ & $\metaA$ holds at some location \\
+$\textbf{Everywhere}(\metaA)$ & $\metaA$ holds at all locations \\
+$\textbf{Near}(\metaA)$ & $\metaA$ holds at an adjacent location \\
+\bottomrule
+\end{tabular}
+\caption{Spatial operators}
+\label{tab:spatial-operators}
+\end{table}
+
+\textsc{[Full semantic clauses for spatial operators pending specification]}
+
+\end{document}

@@ -53,14 +53,18 @@ technical_debt:
 
 ### 362. Move LaTeX directory to Logos/LaTeX
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: None
+- **Summary**: [.claude/specs/362_move_latex_to_logos/summaries/implementation-summary-20260111.md]
 
-**Description**: Move /home/benjamin/Projects/ProofChecker/Documentation/LaTeX/ to /home/benjamin/Projects/ProofChecker/Logos/LaTeX/ instead, updating all references as need be to avoid broken links.
+**Description**: Move Documentation/LaTeX/ to Logos/LaTeX/, updating all references to avoid broken links.
+
+**Outcome**: Moved LaTeX documentation to Logos/LaTeX/ and updated all references in .claude/ and .opencode/ context files.
 
 ---
 
