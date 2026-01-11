@@ -208,14 +208,13 @@ User-facing documentation for working with Logos:
 - [TACTIC_DEVELOPMENT.md](UserGuide/TACTIC_DEVELOPMENT.md) - Custom tactic development
 - [TUTORIAL.md](UserGuide/TUTORIAL.md) - Getting started guide
 
-### Development/ (11 files)
+### Development/ (10 files)
 Developer standards, conventions, and contribution workflow:
 
 - [CONTRIBUTING.md](Development/CONTRIBUTING.md) - Contribution guidelines
 - [DIRECTORY_README_STANDARD.md](Development/DIRECTORY_README_STANDARD.md) - Documentation standard
 - [DOC_QUALITY_CHECKLIST.md](Development/DOC_QUALITY_CHECKLIST.md) - Quality assurance
 - [LEAN_STYLE_GUIDE.md](Development/LEAN_STYLE_GUIDE.md) - Coding conventions
-- [MAINTENANCE.md](Development/MAINTENANCE.md) - TODO management workflow
 - [METAPROGRAMMING_GUIDE.md](Development/METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming
 - [MODULE_ORGANIZATION.md](Development/MODULE_ORGANIZATION.md) - Project structure
 - [PHASED_IMPLEMENTATION.md](Development/PHASED_IMPLEMENTATION.md) - Implementation roadmap
@@ -223,9 +222,10 @@ Developer standards, conventions, and contribution workflow:
 - [TESTING_STANDARDS.md](Development/TESTING_STANDARDS.md) - Test requirements
 - [VERSIONING.md](Development/VERSIONING.md) - Semantic versioning policy
 
-### ProjectInfo/ (3 files)
+### ProjectInfo/ (5 files)
 Project status and tracking:
 
+- [FEATURE_REGISTRY.md](ProjectInfo/FEATURE_REGISTRY.md) - Feature tracking and capabilities
 - [IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
 - [MAINTENANCE.md](ProjectInfo/MAINTENANCE.md) - TODO management workflow
 - [SORRY_REGISTRY.md](ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking

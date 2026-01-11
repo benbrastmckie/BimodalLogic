@@ -48,7 +48,8 @@ technical_debt:
 
 ### 368. Refactor Documentation directory structure
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None

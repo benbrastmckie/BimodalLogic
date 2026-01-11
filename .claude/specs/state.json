@@ -16,11 +16,12 @@
     {
       "project_number": 368,
       "project_name": "documentation_directory_reorganization",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T03:33:51Z",
-      "last_updated": "2026-01-11T03:53:18Z"
+      "last_updated": "2026-01-11T09:00:00Z",
+      "started": "2026-01-11"
     },
     {
       "project_number": 365,

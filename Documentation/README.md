@@ -41,10 +41,13 @@ Research vision and planned architecture. For implementation status, see
 
 ### ProjectInfo/
 
-Project status and tactic registry:
+Project status, feature tracking, and registries:
 
+- [FEATURE_REGISTRY.md](ProjectInfo/FEATURE_REGISTRY.md) - Feature tracking and capabilities
 - [IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md) - Module-by-module status
   tracking with verification commands (includes Known Limitations section)
+- [MAINTENANCE.md](ProjectInfo/MAINTENANCE.md) - TODO management workflow (git-based history
+  model, Five-Document Model)
 - [SORRY_REGISTRY.md](ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry
   placeholders with resolution context)
 - [TACTIC_REGISTRY.md](ProjectInfo/TACTIC_REGISTRY.md) - Registry of planned and completed tactics
@@ -60,7 +63,6 @@ Developer standards, conventions, and contribution workflow:
   quality assurance checklist
 - [LEAN_STYLE_GUIDE.md](Development/LEAN_STYLE_GUIDE.md) - Coding conventions and
   documentation requirements
-- [MAINTENANCE.md](Development/MAINTENANCE.md) - TODO management workflow (git-based history model)
 - [METAPROGRAMMING_GUIDE.md](Development/METAPROGRAMMING_GUIDE.md) - LEAN 4
   metaprogramming fundamentals for tactics
 - [MODULE_ORGANIZATION.md](Development/MODULE_ORGANIZATION.md) - Directory structure
