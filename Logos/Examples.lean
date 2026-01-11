@@ -1,19 +1,40 @@
-import Logos.Examples.ModalProofs
-import Logos.Examples.ModalProofStrategies
-import Logos.Examples.TemporalProofs
-import Logos.Examples.TemporalProofStrategies
-import Logos.Examples.BimodalProofs
-import Logos.Examples.BimodalProofStrategies
-import Logos.Examples.TemporalStructures
+import Bimodal.Examples
 
 /-!
-# Logos Examples
+# Logos Examples Aggregator
 
-Active entry point for Logos example modules. Importing this file makes the re-exported
-examples available under the `Logos.Examples` namespace while preserving the legacy
-`Archive.*` paths for backward compatibility.
+Imports examples from all Logos layers.
+
+## Current Examples
+
+- `Bimodal.Examples` - TM Logic (Layer 0) examples
+  - Modal proof examples (S5 logic)
+  - Temporal proof examples (linear temporal logic)
+  - Bimodal proof examples (perpetuity principles)
+  - Proof strategy tutorials
+
+## Future Layer Examples
+
+- `Logos.Explanatory.Examples` (Layer 1) - Causal reasoning examples
+- `Logos.Epistemic.Examples` (Layer 2) - Knowledge reasoning examples
+- `Logos.Normative.Examples` (Layer 3) - Normative reasoning examples
+
+## Usage
+
+Import all examples:
+```lean
+import Logos.Examples
+```
+
+Import specific example categories:
+```lean
+import Bimodal.Examples.ModalProofs
+import Bimodal.Examples.TemporalProofs
+import Bimodal.Examples.BimodalProofs
+```
 -/
 
 namespace Logos.Examples
 -- Intentionally empty: importing this module provides the example namespaces.
+-- Examples are now provided via Bimodal.Examples.
 end Logos.Examples

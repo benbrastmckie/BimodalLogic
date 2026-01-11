@@ -71,7 +71,7 @@ Move all pedagogical example files from `Archive/` to `Bimodal/Examples/`, estab
 ### Phase 3: Update Bimodal Library Integration
 
 **Estimated effort**: 20 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update `Bimodal/Examples.lean` with actual imports
@@ -100,7 +100,7 @@ Move all pedagogical example files from `Archive/` to `Bimodal/Examples/`, estab
 ### Phase 4: Update Logos/Examples Aggregator
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Repurpose `Logos/Examples.lean` to import `Bimodal.Examples`
@@ -146,7 +146,7 @@ Move all pedagogical example files from `Archive/` to `Bimodal/Examples/`, estab
 ### Phase 5: Remove Archive/ Directory
 
 **Estimated effort**: 20 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Move `Archive/logos-original/` to `.claude/archive/logos-original/`
