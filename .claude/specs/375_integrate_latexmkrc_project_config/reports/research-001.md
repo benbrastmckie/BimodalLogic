@@ -2,11 +2,12 @@
 
 **Task**: Integrate latexmkrc into project LaTeX assets
 **Date**: 2026-01-11
-**Focus**: Best practices for latexmk configuration with build directory isolation and gitignore patterns
+**Revised**: 2026-01-11
+**Focus**: Best practices for latexmk configuration with build directory isolation, central config sharing, and gitignore patterns
 
 ## Summary
 
-Research reveals that integrating a project-level `latexmkrc` configuration file into `ProofChecker/LaTeX/` will standardize LaTeX compilation across contributors. The current global configuration at `~/.config/latexmk/latexmkrc` provides an excellent foundation. Key improvements include: confirming the `build/` directory is already gitignored, removing viewer-specific settings for portability, and documenting draft mode usage.
+Research reveals that integrating a project-level `latexmkrc` configuration file into `ProofChecker/LaTeX/` will standardize LaTeX compilation across contributors. The recommended approach uses **Perl's `do` function** to create minimal one-line stub files in each theory directory that load the central config. This avoids duplication while preserving user-specific settings (like `$pdf_previewer`) from global configs. The `build/` directory is already gitignored.
 
 ## Findings
 
@@ -118,40 +119,88 @@ ensure_path('TEXINPUTS', '../../LaTeX//');
 
 ### File Placement Options
 
-**Option A: Single project-level config at `LaTeX/latexmkrc`**
-- Pros: Central location, follows task 373 pattern
-- Cons: Requires copying or symlinking to theory directories
+**Option A: Central config with Perl `do` stubs (RECOMMENDED)**
 
-**Option B: Config in each theory's LaTeX directory**
-- Pros: Works directly where latexmk is run
-- Cons: Potential duplication
+Create `LaTeX/latexmkrc` with shared settings, then in each theory directory create a one-line stub:
 
-**Option C: Template at `LaTeX/latexmkrc` + symlinks**
-- Pros: Single source of truth, works in place
-- Cons: Requires symlink management
+```perl
+# Bimodal/LaTeX/latexmkrc (or Logos/LaTeX/latexmkrc)
+do '../../LaTeX/latexmkrc';
+```
 
-**Recommendation**: Option A with documentation on copying to theory directories or running latexmk with explicit config path.
+- Pros: Single source of truth, works with any editor/IDE that auto-discovers `latexmkrc`, no symlink issues on Windows
+- Cons: Requires one-line stub per directory (trivial)
+
+**Option B: Symlinks**
+
+```bash
+cd Bimodal/LaTeX && ln -s ../../LaTeX/latexmkrc .latexmkrc
+cd Logos/LaTeX && ln -s ../../LaTeX/latexmkrc .latexmkrc
+```
+
+- Pros: Zero duplication
+- Cons: Symlinks fragile on Windows, some editors don't follow them
+
+**Option C: Use `-r` flag in build scripts**
+
+Update `build.sh` to use latexmk with explicit config:
+
+```bash
+latexmk -r ../../LaTeX/latexmkrc -xelatex BimodalReference.tex
+```
+
+- Pros: No local config files needed
+- Cons: Must use the script, raw `latexmk` won't find config
+
+**Option D: Wrapper script at project root**
+
+Create `LaTeX/latexmk-build` wrapper:
+
+```bash
+#!/bin/bash
+latexmk -r "$(dirname "$0")/latexmkrc" "$@"
+```
+
+- Pros: Single entry point
+- Cons: Non-standard workflow
+
+**Recommendation**: Option A (stub with `do`) - minimal maintenance, works everywhere, preserves user's global `$pdf_previewer`.
+
+### Config Loading Order and User Settings
+
+Latexmk reads configuration files in order ([Arch man page](https://man.archlinux.org/man/latexmk.1)):
+
+1. System RC file (`/opt/local/share/latexmk/LatexMk` or similar)
+2. User RC file (`~/.latexmkrc`)
+3. Current directory RC file (`latexmkrc` or `.latexmkrc`)
+4. Command-line `-r` files
+
+**Key insight**: If the project `latexmkrc` does NOT set `$pdf_previewer`, the user's setting from `~/.latexmkrc` is preserved. This allows each contributor to use their preferred PDF viewer while sharing all other build settings.
 
 ## Recommendations
 
-1. **Create `LaTeX/latexmkrc`** - Portable configuration without viewer settings
-2. **Add `LaTeX/latexmkrc.user.template`** - Template for user-specific settings
-3. **Update `LaTeX/README.md`** - Document latexmkrc usage and configuration
+1. **Create `LaTeX/latexmkrc`** - Central portable configuration WITHOUT `$pdf_previewer` (preserves user's global setting)
+2. **Create stub files** - One-line `do '../../LaTeX/latexmkrc';` in `Bimodal/LaTeX/latexmkrc` and `Logos/LaTeX/latexmkrc`
+3. **Update `LaTeX/README.md`** - Document latexmkrc usage, stub pattern, and how users can set their preferred viewer
 4. **Keep gitignore as-is** - `build/` is already covered
-5. **Consider updating `build.sh`** - Migrate from raw pdflatex to latexmk
+5. **Update `build.sh` scripts** - Migrate from raw pdflatex to latexmk for consistency
 
 ## References
 
 - [latexmk documentation](https://mg.readthedocs.io/latexmk.html) - Official usage guide
+- [Arch Linux latexmk man page](https://man.archlinux.org/man/latexmk.1) - Config loading order and `-r` option
 - [Luke Naylor's latexmk guide](https://lukideangeometry.xyz/blog/latexmk) - Project configuration patterns
 - [Overleaf latexmkrc docs](https://docs.overleaf.com/managing-projects-and-files/the-latexmkrc-file) - Team collaboration patterns
 - [GitHub TeX.gitignore](https://github.com/github/gitignore/blob/main/TeX.gitignore) - Standard LaTeX gitignore
 - [latexmk v4.87 release notes](https://www.cantab.net/users/johncollins/latexmk/versions.html) - Recent aux_dir improvements
+- [LaTeX Workshop subfiles discussion](https://github.com/James-Yu/LaTeX-Workshop/issues/1895) - Symlink vs stub approaches
 
 ## Next Steps
 
-1. Create `LaTeX/latexmkrc` with portable settings
-2. Create `LaTeX/latexmkrc.user.template` for viewer/draft settings
-3. Update `LaTeX/README.md` with latexmk usage section
-4. Test compilation in Bimodal/LaTeX/ and Logos/LaTeX/
-5. Optionally update theory-specific `build.sh` scripts to use latexmk
+1. Create `LaTeX/latexmkrc` with portable settings (no `$pdf_previewer`)
+2. Create `Bimodal/LaTeX/latexmkrc` stub: `do '../../LaTeX/latexmkrc';`
+3. Create `Logos/LaTeX/latexmkrc` stub: `do '../../LaTeX/latexmkrc';`
+4. Update `LaTeX/README.md` with latexmk usage section
+5. Update `Bimodal/LaTeX/build.sh` to use latexmk
+6. Test compilation in both theory directories
+7. Verify user's global `$pdf_previewer` setting is preserved
