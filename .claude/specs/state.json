@@ -17,11 +17,11 @@
       "project_name": "move_logostest_core_to_bimodaltest",
       "type": "refactor",
       "phase": "not_started",
-      "status": "planned",
+      "status": "implementing",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-11T00:00:19Z",
-      "last_updated": "2026-01-11T00:16:43Z",
+      "last_updated": "2026-01-11T00:22:23Z",
       "effort": "1-2 hours",
       "description": "Move LogosTest/Core/ to BimodalTest/ to mirror the Bimodal library structure. Follow Lean 4 best practices (Mathlib pattern) with separate test directory. Update imports, lakefile, and namespace references.",
       "dependencies": [

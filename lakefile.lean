@@ -26,6 +26,13 @@ lean_lib Bimodal where
 
 lean_lib LogosTest
 
+-- BimodalTest library - tests for Bimodal TM logic
+lean_lib BimodalTest where
+  leanOptions := #[
+    ⟨`pp.unicode.fun, true⟩,
+    ⟨`autoImplicit, false⟩
+  ]
+
 lean_lib Archive
 
 lean_exe test where

@@ -53,7 +53,8 @@ technical_debt:
 
 ### 353. Move LogosTest/Core/ to BimodalTest/
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-10
 - **Priority**: High
 - **Language**: lean
 - **Blocking**: None

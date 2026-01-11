@@ -18,7 +18,7 @@ Move the `LogosTest/Core/` directory to a new top-level `BimodalTest/` directory
 ### Phase 1: Physical Move and Lakefile Update
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Move LogosTest/Core/ to BimodalTest/ preserving git history
