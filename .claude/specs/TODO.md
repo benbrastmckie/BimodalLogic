@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T14:30:00Z
-next_project_number: 403
+next_project_number: 404
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -92,6 +92,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 403. Enforce directory naming convention
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Research and enforce the naming convention that only directories containing Lean source code should be capitalized. Identify all exceptions like Theories/Bimodal/LaTeX/ and Theories/Logos/LaTeX/ that violate this convention, find all references that need updating, and systematically rename directories to lowercase.
+
+---
 
 ### 401. Add [EXPANDED] status for parent tasks
 - **Effort**: 1-2 hours
