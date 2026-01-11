@@ -95,7 +95,7 @@ technical_debt:
 
 ### 405. Document LaTeX one-line-per-sentence convention
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 

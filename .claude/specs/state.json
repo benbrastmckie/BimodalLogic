@@ -6,13 +6,13 @@
     {
       "project_number": 405,
       "project_name": "document_latex_one_line_per_sentence_convention",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "description": "Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.",
       "effort": "1 hour",
       "created": "2026-01-11T22:25:49Z",
-      "last_updated": "2026-01-11T22:25:49Z"
+      "last_updated": "2026-01-11T22:30:58Z"
     },
     {
       "project_number": 406,
@@ -65,7 +65,7 @@
       "status": "implementing",
       "language": "general",
       "priority": "medium",
-      "description": "Research and enforce the naming convention that only directories containing Lean source code should be capitalized. Identify all exceptions like Theories/Bimodal/LaTeX/ and Theories/Logos/LaTeX/ that violate this convention, find all references that need updating, and systematically rename directories to lowercase.",
+      "description": "Enforce the naming convention that only directories containing Lean source code should be capitalized. Renamed 19 directories (docs/ subdirectories, Theories/*/Documentation/, Theories/*/LaTeX/) to lowercase and updated all references.",
       "effort": "2-3 hours",
       "created": "2026-01-11T22:13:04Z",
       "last_updated": "2026-01-11T22:26:48Z",

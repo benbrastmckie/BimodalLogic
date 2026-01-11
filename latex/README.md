@@ -199,13 +199,13 @@ ProofChecker/
 │   ├── notation-standards.sty
 │   └── README.md
 └── Theories/
-    ├── Bimodal/LaTeX/
+    ├── Bimodal/latex/
     │   ├── latexmkrc                   # Stub: do '../../../latex/latexmkrc';
     │   ├── build.sh                    # Build script using latexmk
     │   ├── assets/
     │   │   └── bimodal-notation.sty    # \RequirePackage{notation-standards}
     │   └── BimodalReference.tex        # \usepackage{bimodal-notation}
-    └── Logos/LaTeX/
+    └── Logos/latex/
         ├── latexmkrc                   # Stub: do '../../../latex/latexmkrc';
         ├── assets/
         │   └── logos-notation.sty      # \RequirePackage{notation-standards}
