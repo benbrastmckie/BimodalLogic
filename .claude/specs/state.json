@@ -6,11 +6,17 @@
     {
       "project_number": 356,
       "project_name": "bimodal_directory_documentation",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-11T00:43:33Z",
-      "last_updated": "2026-01-11T00:48:32Z"
+      "last_updated": "2026-01-11T00:50:12Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/356_bimodal_directory_documentation/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 355,
