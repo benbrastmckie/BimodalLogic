@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-11T21:30:00Z
-next_project_number: 376
+next_project_number: 377
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -25,6 +25,18 @@ technical_debt:
 ---
 
 # TODO
+
+## High Priority
+
+### 376. Refactor repo for TheoryLib multi-theory structure
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+
+**Description**: Create a ProofChecker/TheoryLib/ directory to contain all the various theories (Bimodal, Logos, and future theories) and their test directories following best practices for developing Lean 4 projects. The Bimodal/ theory has been extracted from Logos/ and Logos/ is being refactored to be stand-alone. Design the structure with the ultimate goal of abstracting common resources that can be imported by each theory.
+
+---
 
 ## Medium Priority
 

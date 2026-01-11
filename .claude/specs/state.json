@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-11T21:30:00Z",
-  "next_project_number": 376,
+  "next_project_number": 377,
   "active_projects": [
+    {
+      "project_number": 376,
+      "project_name": "refactor_repo_for_theorylib_multi_theory_structure",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-11T17:06:06Z",
+      "last_updated": "2026-01-11T17:06:06Z"
+    },
     {
       "project_number": 375,
       "project_name": "integrate_latexmkrc_project_config",
