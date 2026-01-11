@@ -21,12 +21,18 @@
     {
       "project_number": 388,
       "project_name": "fix_todo_command_directory_archiving",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "description": "Fix /todo command to move project directories (.claude/specs/{N}_{SLUG}/) to archive directory (.claude/specs/archive/{N}_{SLUG}/) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.",
       "created": "2026-01-12T00:40:00Z",
-      "last_updated": "2026-01-12T00:40:00Z"
+      "last_updated": "2026-01-12T00:45:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/388_fix_todo_command_directory_archiving/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 387,
