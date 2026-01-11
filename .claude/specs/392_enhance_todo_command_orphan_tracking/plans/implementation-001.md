@@ -107,7 +107,7 @@ Enhance the `/todo` command to properly track orphaned directories in `archive/s
 
 ### Phase 4: Add Orphan State Entries (Step 5.E Enhancement)
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. When archiving orphans, create entries in `archive/state.json`

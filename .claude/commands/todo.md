@@ -224,20 +224,57 @@ Track:
 - directories_moved: list of successfully moved directories
 - directories_skipped: list of tasks without directories
 
-**E. Move Orphaned Directories (if approved in Step 4.5)**
+**E. Track Orphaned Directories (if approved in Step 4.5)**
 
-If user selected "Archive all orphans" (archive_orphans = true):
+If user selected "Track all orphans" (track_orphans = true):
+
+**Step E.1: Move orphaned directories from specs/ to archive/**
 ```bash
-for orphan_dir in "${orphaned_dirs[@]}"; do
+for orphan_dir in "${orphaned_in_specs[@]}"; do
   dir_name=$(basename "$orphan_dir")
   mv "$orphan_dir" ".claude/specs/archive/${dir_name}"
   echo "Moved orphan: ${dir_name} -> archive/"
 done
 ```
 
-Track orphan moves for output reporting.
+**Step E.2: Add state entries for ALL orphans (both moved and existing in archive/)**
+```bash
+for orphan_dir in "${orphaned_dirs[@]}"; do
+  dir_name=$(basename "$orphan_dir")
+  project_num=$(echo "$dir_name" | cut -d_ -f1)
+  project_name=$(echo "$dir_name" | cut -d_ -f2-)
 
-**Note**: Orphaned directories are moved but NOT added to archive/state.json since they have no task metadata. They can be manually inspected in archive/ if needed.
+  # Determine archive path (after potential move)
+  archive_path=".claude/specs/archive/${dir_name}"
+
+  # Scan for existing artifacts
+  artifacts="[]"
+  [ -d "$archive_path/reports" ] && artifacts=$(echo "$artifacts" | jq '. + ["reports/"]')
+  [ -d "$archive_path/plans" ] && artifacts=$(echo "$artifacts" | jq '. + ["plans/"]')
+  [ -d "$archive_path/summaries" ] && artifacts=$(echo "$artifacts" | jq '. + ["summaries/"]')
+
+  # Add entry to archive/state.json
+  jq --arg num "$project_num" \
+     --arg name "$project_name" \
+     --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+     --argjson arts "$artifacts" \
+     '.completed_projects += [{
+       project_number: ($num | tonumber),
+       project_name: $name,
+       status: "orphan_archived",
+       archived: $date,
+       source: "orphan_recovery",
+       detected_artifacts: $arts
+     }]' .claude/specs/archive/state.json > .claude/specs/archive/state.json.tmp \
+  && mv .claude/specs/archive/state.json.tmp .claude/specs/archive/state.json
+
+  echo "Added state entry for orphan: ${dir_name}"
+done
+```
+
+Track orphan operations for output reporting:
+- orphans_moved: count of directories moved from specs/ to archive/
+- orphans_tracked: count of state entries added to archive/state.json
 
 ### 6. Git Commit
 
@@ -246,9 +283,9 @@ git add .claude/specs/
 git commit -m "todo: archive {N} completed tasks"
 ```
 
-Include orphan count in message if orphans were archived:
+Include orphan count in message if orphans were tracked:
 ```bash
-git commit -m "todo: archive {N} tasks and {M} orphaned directories"
+git commit -m "todo: archive {N} tasks and track {M} orphaned directories"
 ```
 
 ### 7. Output
@@ -267,9 +304,9 @@ Directories moved to archive: {N}
 - {N1}_{SLUG1}/ -> archive/
 - {N2}_{SLUG2}/ -> archive/
 
-Orphaned directories archived: {N}
-- {N4}_{SLUG4}/ -> archive/ (orphan)
-- {N5}_{SLUG5}/ -> archive/ (orphan)
+Orphaned directories tracked: {N}
+- {N4}_{SLUG4}/ (moved to archive/, state entry added)
+- {N5}_{SLUG5}/ (already in archive/, state entry added)
 
 Skipped (no directory): {N}
 - Task #{N6}
