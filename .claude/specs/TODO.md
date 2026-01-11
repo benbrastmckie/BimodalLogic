@@ -18,7 +18,7 @@ priority_distribution:
   medium: 18
   low: 14
 technical_debt:
-  sorry_count: 20
+  sorry_count: 19
   axiom_count: 11
   build_errors: 0
   status: manageable
