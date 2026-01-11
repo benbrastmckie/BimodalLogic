@@ -127,9 +127,9 @@ Current documentation exists in multiple locations with varying coverage:
 | Location | Coverage | Gaps |
 |----------|----------|------|
 | `ProofSearch.lean` docstrings | Excellent | None |
-| `Bimodal/docs/Research/PROOF_SEARCH_AUTOMATION.md` | Good | Doesn't reflect current implementation |
-| `Bimodal/docs/Reference/TACTIC_REFERENCE.md` | Good | Missing search strategy guidance |
-| `docs/Reference/API_REFERENCE.md` | Moderate | References old Logos paths |
+| `Bimodal/docs/research/PROOF_SEARCH_AUTOMATION.md` | Good | Doesn't reflect current implementation |
+| `Bimodal/docs/reference/TACTIC_REFERENCE.md` | Good | Missing search strategy guidance |
+| `docs/reference/API_REFERENCE.md` | Moderate | References old Logos paths |
 
 #### 5.1 Recommended Documentation Improvements
 
@@ -141,11 +141,11 @@ Current documentation exists in multiple locations with varying coverage:
    - Add prominent section on automation features
    - Include quick-start examples for proof search
 
-3. **docs/ProjectInfo/FEATURE_REGISTRY.md**
+3. **docs/project-info/FEATURE_REGISTRY.md**
    - Add detailed entry for proof search automation
    - Document search strategies and when to use each
 
-4. **New: docs/UserGuide/AUTOMATION.md**
+4. **New: docs/user-guide/AUTOMATION.md**
    - Consolidated guide to all automation features
    - Cross-references to Bimodal-specific docs
 
@@ -205,12 +205,12 @@ The Bimodal proof search system provides:
 
 - `Bimodal/Automation/ProofSearch.lean` - Core implementation (739 lines)
 - `BimodalTest/Automation/ProofSearchBenchmark.lean` - Benchmark suite
-- `Bimodal/docs/Research/PROOF_SEARCH_AUTOMATION.md` - Research background
-- `Bimodal/docs/Reference/TACTIC_REFERENCE.md` - Tactic documentation
+- `Bimodal/docs/research/PROOF_SEARCH_AUTOMATION.md` - Research background
+- `Bimodal/docs/reference/TACTIC_REFERENCE.md` - Tactic documentation
 - Korf, R.E. (1985). "Depth-first iterative-deepening: An optimal admissible tree search"
 
 ## Next Steps
 
 1. Proceed to Phase 1 implementation (Success Pattern Learning)
-2. Update docs/ProjectInfo/FEATURE_REGISTRY.md with proof search entry
+2. Update docs/project-info/FEATURE_REGISTRY.md with proof search entry
 3. Consider creating unified automation guide post-implementation

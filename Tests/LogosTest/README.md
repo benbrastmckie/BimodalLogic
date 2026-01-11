@@ -137,7 +137,7 @@ end BimodalTest.[Module]Test
 
 ### Coverage Requirements
 
-See [TESTING_STANDARDS.md](../docs/Development/TESTING_STANDARDS.md) for detailed coverage targets:
+See [TESTING_STANDARDS.md](../docs/development/TESTING_STANDARDS.md) for detailed coverage targets:
 - **Overall**: >=85% code coverage
 - **Metalogic**: >=90% coverage (soundness/completeness critical)
 - **Automation**: >=80% coverage (tactics and proof search)
@@ -168,13 +168,13 @@ Each module should have tests for:
 - Automation: Tactic tests (when tactics implemented)
 - Metalogic: Completeness tests (when completeness proven)
 
-For detailed status, see [IMPLEMENTATION_STATUS.md](../docs/ProjectInfo/IMPLEMENTATION_STATUS.md).
+For detailed status, see [IMPLEMENTATION_STATUS.md](../docs/project-info/IMPLEMENTATION_STATUS.md).
 
 ## Related Documentation
 
-- [Testing Standards](../docs/Development/TESTING_STANDARDS.md) - Detailed test requirements
-- [LEAN Style Guide](../docs/Development/LEAN_STYLE_GUIDE.md) - Code conventions
-- [Implementation Status](../docs/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module status
+- [Testing Standards](../docs/development/TESTING_STANDARDS.md) - Detailed test requirements
+- [LEAN Style Guide](../docs/development/LEAN_STYLE_GUIDE.md) - Code conventions
+- [Implementation Status](../docs/project-info/IMPLEMENTATION_STATUS.md) - Module status
 
 ## Navigation
 

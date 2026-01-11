@@ -174,7 +174,7 @@ permissions:
     - read: ["**/*.md", ".claude/**/*", "docs/**/*", "**/*.lean"]
     
     # Write access to research outputs
-    - write: [".claude/specs/**/*", "docs/Research/**/*"]
+    - write: [".claude/specs/**/*", "docs/research/**/*"]
     
     # Safe bash commands for analysis
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]

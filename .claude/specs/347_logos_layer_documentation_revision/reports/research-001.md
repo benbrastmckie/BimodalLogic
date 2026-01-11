@@ -166,11 +166,11 @@ Based on analysis of the FIX comment and existing documentation:
 
 ## References
 
-- docs/Research/LAYER_EXTENSIONS.md (lines 9-36 - FIX comment)
-- docs/Reference/GLOSSARY.md
-- docs/UserGuide/METHODOLOGY.md
-- docs/UserGuide/ARCHITECTURE.md
-- docs/Research/CONCEPTUAL_ENGINEERING.md
+- docs/research/LAYER_EXTENSIONS.md (lines 9-36 - FIX comment)
+- docs/reference/GLOSSARY.md
+- docs/user-guide/METHODOLOGY.md
+- docs/user-guide/ARCHITECTURE.md
+- docs/research/CONCEPTUAL_ENGINEERING.md
 
 ## Next Steps
 

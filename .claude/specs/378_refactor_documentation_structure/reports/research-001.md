@@ -94,7 +94,7 @@ Logos/docs/, which was correct. However, several cleanup issues remain:
 
 **Files with unclear placement**:
 - Research/RESEARCH_SUMMARY.md - References MODAL_TEMPORAL_PROOF_SEARCH.md which is in
-  Bimodal/docs/Research/. Should be deleted or moved.
+  Bimodal/docs/research/. Should be deleted or moved.
 
 ### 6. Theory-Specific Documentation Links
 

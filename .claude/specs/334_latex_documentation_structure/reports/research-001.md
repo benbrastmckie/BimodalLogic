@@ -16,8 +16,8 @@
 - Source LaTeX: /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/LogicNotes.tex (1452 lines)
 - Source assets: /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/assets/ (5 style files)
 - Logos codebase: /home/benjamin/Projects/ProofChecker/Logos/
-- Architecture documentation: docs/UserGuide/ARCHITECTURE.md
-- Implementation status: docs/ProjectInfo/IMPLEMENTATION_STATUS.md
+- Architecture documentation: docs/user-guide/ARCHITECTURE.md
+- Implementation status: docs/project-info/IMPLEMENTATION_STATUS.md
 
 **Artifacts**:
 - This research report: .opencode/specs/334_latex_documentation_structure/reports/research-001.md
@@ -137,7 +137,7 @@ The source document follows a progressive logic curriculum structure:
 
 ### Finding 2: Logos Layer Architecture
 
-**Source**: Logos/README.md, docs/UserGuide/ARCHITECTURE.md
+**Source**: Logos/README.md, docs/user-guide/ARCHITECTURE.md
 
 Logos implements a **5-layer architecture**:
 
@@ -581,7 +581,7 @@ These principles cannot be captured by modal logic alone...
   % How to use this reference document
   ```
 - **Length**: 2-3 pages
-- **Lean Cross-References**: Logos/README.md, docs/UserGuide/ARCHITECTURE.md
+- **Lean Cross-References**: Logos/README.md, docs/user-guide/ARCHITECTURE.md
 
 **01-Syntax.tex**:
 - **Purpose**: Define the language and formulas of TM logic
@@ -1442,12 +1442,12 @@ echo "All Lean cross-references verified"
    - Status: Layer 0 (Core) production-ready, Layers 1-3 planned
 
 3. **Architecture Documentation**:
-   - Path: docs/UserGuide/ARCHITECTURE.md
+   - Path: docs/user-guide/ARCHITECTURE.md
    - Content: TM logic specification, layer architecture, DSL syntax
    - Lines: 150+ (excerpt read)
 
 4. **Implementation Status**:
-   - Path: docs/ProjectInfo/IMPLEMENTATION_STATUS.md
+   - Path: docs/project-info/IMPLEMENTATION_STATUS.md
    - Content: Module-by-module status, sorry counts, test coverage
    - Status: Layer 0 MVP complete, all 6 perpetuity principles proven
 

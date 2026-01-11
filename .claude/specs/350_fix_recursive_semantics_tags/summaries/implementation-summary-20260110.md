@@ -48,12 +48,12 @@ Successfully addressed all 18 FIX tags in RECURSIVE_SEMANTICS.md through 6 phase
 ## Files Modified
 
 ### Primary Document
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Main document with all FIX tags addressed
+- `docs/research/RECURSIVE_SEMANTICS.md` - Main document with all FIX tags addressed
 
 ### Cross-Document Updates
-- `docs/Research/LAYER_EXTENSIONS.md` - Renamed to Logos Extensions
-- `docs/UserGuide/METHODOLOGY.md` - Updated Extension terminology
-- `docs/Reference/GLOSSARY.md` - Updated terminology, added temporal index, actuality predicate
+- `docs/research/LAYER_EXTENSIONS.md` - Renamed to Logos Extensions
+- `docs/user-guide/METHODOLOGY.md` - Updated Extension terminology
+- `docs/reference/GLOSSARY.md` - Updated terminology, added temporal index, actuality predicate
 
 ## Verification
 

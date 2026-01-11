@@ -190,8 +190,8 @@ Move all pedagogical example files from `Archive/` to `Bimodal/Examples/`, estab
 3. Test import paths
 
 **Files to potentially update**:
-- `docs/Development/MODULE_ORGANIZATION.md` - update structure docs
-- `docs/Development/NONCOMPUTABLE_GUIDE.md` - update path references
+- `docs/development/MODULE_ORGANIZATION.md` - update structure docs
+- `docs/development/NONCOMPUTABLE_GUIDE.md` - update path references
 
 **Steps**:
 1. Run `lake clean && lake build` to verify clean build

@@ -48,7 +48,7 @@ Enhanced cross-references throughout the document to include new registries:
 
 ## Files Modified
 
-- **docs/ProjectInfo/MAINTENANCE.md**: 4 sections updated, 1 new section added (~100 lines added)
+- **docs/project-info/MAINTENANCE.md**: 4 sections updated, 1 new section added (~100 lines added)
 
 ## Files Created
 

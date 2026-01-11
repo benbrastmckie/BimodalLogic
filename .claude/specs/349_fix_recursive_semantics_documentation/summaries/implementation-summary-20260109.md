@@ -37,8 +37,8 @@ Successfully addressed all 25 [FIX] tags in RECURSIVE_SEMANTICS.md while maintai
 
 ## Files Modified
 
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Main semantic specification (all 25 [FIX] tags removed)
-- `docs/Reference/GLOSSARY.md` - Updated with new entries:
+- `docs/research/RECURSIVE_SEMANTICS.md` - Main semantic specification (all 25 [FIX] tags removed)
+- `docs/reference/GLOSSARY.md` - Updated with new entries:
   - Since (◁), Until (▷) operators
   - Lambda Abstraction
   - Interpretation Function (I)

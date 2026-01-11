@@ -82,7 +82,7 @@ Task 212 implemented a custom Python MCP client that is fundamentally incompatib
 - [COMPLETED] Per-agent tool enablement configured for lean-research-agent
 - [COMPLETED] `lean-implementation-agent.md` updated with natural language MCP tool instructions
 - [COMPLETED] `lean-research-agent.md` updated with natural language MCP tool instructions
-- [COMPLETED] `docs/UserGuide/MCP_INTEGRATION.md` created with comprehensive guide
+- [COMPLETED] `docs/user-guide/MCP_INTEGRATION.md` created with comprehensive guide
 - [COMPLETED] `.opencode/tool/mcp/README.md` updated documenting deprecation for OpenCode agents
 - [COMPLETED] Test Lean task successfully uses lean-lsp-mcp tools via configuration
 - [COMPLETED] No Python import errors (using configuration-based approach)
@@ -304,7 +304,7 @@ Task 212 implemented a custom Python MCP client that is fundamentally incompatib
 - Provide troubleshooting guidance
 
 **Tasks**:
-1. Create `docs/UserGuide/MCP_INTEGRATION.md` with sections:
+1. Create `docs/user-guide/MCP_INTEGRATION.md` with sections:
    - Overview of OpenCode native MCP support
    - Configuration guide (opencode.json format following OpenCode patterns)
    - Tool management (global vs per-agent enablement)
@@ -322,14 +322,14 @@ Task 212 implemented a custom Python MCP client that is fundamentally incompatib
    - Deprecation notice for OpenCode agent usage
 
 **Acceptance Criteria**:
-- `docs/UserGuide/MCP_INTEGRATION.md` created with comprehensive guide
+- `docs/user-guide/MCP_INTEGRATION.md` created with comprehensive guide
 - `.opencode/tool/mcp/README.md` updated documenting deprecation for OpenCode agents
 - All sections complete with examples
 - Troubleshooting guide covers common issues
 - References to OpenCode documentation included
 
 **Files Modified**:
-- `docs/UserGuide/MCP_INTEGRATION.md` (new)
+- `docs/user-guide/MCP_INTEGRATION.md` (new)
 - `.opencode/tool/mcp/README.md` (update)
 
 ---
@@ -442,7 +442,7 @@ Task 212 implemented a custom Python MCP client that is fundamentally incompatib
 ### Documentation Artifacts
 
 1. **MCP_INTEGRATION.md**
-   - **Location**: `docs/UserGuide/MCP_INTEGRATION.md`
+   - **Location**: `docs/user-guide/MCP_INTEGRATION.md`
    - **Purpose**: User guide for MCP integration in OpenCode
    - **Format**: Markdown
    - **Size**: ~600 lines
@@ -619,7 +619,7 @@ From https://opencode.ai/docs/mcp-servers/:
 - `.opencode/agent/subagents/lean-implementation-agent.md` - Implementation agent
 - `.opencode/agent/subagents/lean-research-agent.md` - Research agent
 - `.opencode/tool/mcp/client.py` - Custom MCP client (deprecated for OpenCode agents)
-- `docs/Research/LEANSEARCH_API_SPECIFICATION.md` - MCP tools guide
+- `docs/research/LEANSEARCH_API_SPECIFICATION.md` - MCP tools guide
 
 ---
 

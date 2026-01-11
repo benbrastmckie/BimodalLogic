@@ -147,7 +147,7 @@ Could be resolved with additional proof work:
 ## Related Documentation
 
 - [PERFORMANCE_TARGETS.md](PERFORMANCE_TARGETS.md) - Benchmark baselines and performance goals
-- [TESTING_STANDARDS.md](../../../docs/Development/TESTING_STANDARDS.md) - Test requirements and conventions
+- [TESTING_STANDARDS.md](../../../docs/development/TESTING_STANDARDS.md) - Test requirements and conventions
 - [BimodalTest README](../../../BimodalTest/README.md) - Test organization and running tests
 - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module implementation status
 

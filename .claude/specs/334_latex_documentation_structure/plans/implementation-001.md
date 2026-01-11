@@ -894,10 +894,10 @@ echo "All Lean cross-references verified"
    - Core/ directory (for Lean cross-references)
    - README.md (for architecture description)
 
-3. **Documentation**: docs/UserGuide/ARCHITECTURE.md
+3. **Documentation**: docs/user-guide/ARCHITECTURE.md
    - Layer architecture specification
 
-4. **Research**: docs/Research/LAYER_EXTENSIONS.md
+4. **Research**: docs/research/LAYER_EXTENSIONS.md
    - Layer 1 operator specifications
 
 ### Tool Dependencies

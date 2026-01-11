@@ -181,8 +181,8 @@ Cons:
 
 - `lakefile.lean` - Build configuration
 - `Logos/Core/Core.lean` - Main module structure
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Semantic architecture
-- `docs/Research/LAYER_EXTENSIONS.md` - Extension layer design
+- `docs/research/RECURSIVE_SEMANTICS.md` - Semantic architecture
+- `docs/research/LAYER_EXTENSIONS.md` - Extension layer design
 
 ## Next Steps
 

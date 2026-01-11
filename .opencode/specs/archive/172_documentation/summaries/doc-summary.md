@@ -26,7 +26,7 @@ Task 172 has been **successfully completed**. Analysis of all 24 Logos/Core modu
    - 2 modules excluded due to build errors (not documentation issues)
 
 2. **[PASS] Centralized API Reference**
-   - Created `docs/Reference/API_REFERENCE.md`
+   - Created `docs/reference/API_REFERENCE.md`
    - Complete module index with cross-references
    - Function/theorem/tactic reference by category
    - Usage examples for all major components
@@ -102,7 +102,7 @@ All have appropriate documentation for their implementation status.
 
 ### New Files Created
 
-1. **`docs/Reference/API_REFERENCE.md`** (NEW)
+1. **`docs/reference/API_REFERENCE.md`** (NEW)
    - Centralized API reference for all Logos/Core modules
    - 500+ lines of comprehensive documentation
    - Module index, function reference, usage examples
@@ -273,7 +273,7 @@ All 24 Logos/Core modules were analyzed and found to have excellent documentatio
 ### For Users
 
 1. **Use API Reference**
-   - Start with `docs/Reference/API_REFERENCE.md`
+   - Start with `docs/reference/API_REFERENCE.md`
    - Navigate to specific modules for detailed docs
    - Check usage examples for common patterns
 
@@ -293,7 +293,7 @@ All 24 Logos/Core modules were analyzed and found to have excellent documentatio
 
 ### Primary Artifacts
 
-1. **API Reference**: `docs/Reference/API_REFERENCE.md`
+1. **API Reference**: `docs/reference/API_REFERENCE.md`
    - 500+ lines of comprehensive API documentation
    - Module index, function reference, usage examples
    - Cross-references and version history

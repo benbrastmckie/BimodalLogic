@@ -34,8 +34,8 @@
   - `Archive/BimodalProofs.lean` (216 lines - actual examples)
 
 - **Documentation**: 2 files reviewed
-  - `docs/UserGuide/EXAMPLES.md` (448 lines)
-  - `docs/ProjectInfo/IMPLEMENTATION_STATUS.md` (209 lines)
+  - `docs/user-guide/EXAMPLES.md` (448 lines)
+  - `docs/project-info/IMPLEMENTATION_STATUS.md` (209 lines)
 
 - **Build Verification**: Successful compilation confirmed
   - All modules build without errors
@@ -555,19 +555,19 @@ lake build 2>&1 | grep -i "error"
 ### Documentation
 
 **User Guides**:
-- `docs/UserGuide/EXAMPLES.md` - Example patterns
-- `docs/UserGuide/TUTORIAL.md` - Getting started
-- `docs/UserGuide/ARCHITECTURE.md` - TM logic spec
+- `docs/user-guide/EXAMPLES.md` - Example patterns
+- `docs/user-guide/TUTORIAL.md` - Getting started
+- `docs/user-guide/ARCHITECTURE.md` - TM logic spec
 
 **Development Guides**:
-- `docs/Development/LEAN_STYLE_GUIDE.md` - Code style
-- `docs/Development/TESTING_STANDARDS.md` - Test patterns
-- `docs/Development/MODULE_ORGANIZATION.md` - File structure
+- `docs/development/LEAN_STYLE_GUIDE.md` - Code style
+- `docs/development/TESTING_STANDARDS.md` - Test patterns
+- `docs/development/MODULE_ORGANIZATION.md` - File structure
 
 **Reference**:
-- `docs/Reference/API_REFERENCE.md` - API documentation
-- `docs/ProjectInfo/TACTIC_REGISTRY.md` - Tactic catalog
-- `docs/ProjectInfo/IMPLEMENTATION_STATUS.md` - Module status
+- `docs/reference/API_REFERENCE.md` - API documentation
+- `docs/project-info/TACTIC_REGISTRY.md` - Tactic catalog
+- `docs/project-info/IMPLEMENTATION_STATUS.md` - Module status
 
 ### Code Examples
 

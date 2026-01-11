@@ -504,7 +504,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "implementation",
-          "path": "docs/Research/README.md",
+          "path": "docs/research/README.md",
           "summary": "Created README with directory overview"
         },
         {
@@ -525,7 +525,7 @@ lifecycle:
       "errors": [],
       "next_steps": "Review README content and verify all files documented",
       "files_modified": [],
-      "files_created": ["docs/Research/README.md"]
+      "files_created": ["docs/research/README.md"]
     }
     ```
   </example>

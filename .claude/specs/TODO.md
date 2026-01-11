@@ -77,7 +77,7 @@ technical_debt:
   - .github/workflows/ci.yml (new)
   - .github/workflows/lint.yml (new)
   - .github/workflows/coverage.yml (new)
-  - docs/Development/CI_CD_PROCESS.md (new)
+  - docs/development/CI_CD_PROCESS.md (new)
 - **Description**: Create GitHub Actions workflows for continuous integration and deployment. Currently all tests run manually. CI/CD pipeline should run tests, linting, style checks, coverage reporting, and documentation build checks automatically on every pull request and commit.
 - **Acceptance Criteria**:
   - [ ] GitHub Actions workflow for tests created and passing
@@ -137,7 +137,7 @@ technical_debt:
 
 ### 403. Enforce directory naming convention
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
@@ -191,8 +191,8 @@ technical_debt:
 **Description**: Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.
 
 **Files Affected**:
-  - Theories/Bimodal/docs/UserGuide/TROUBLESHOOTING.md (new)
-  - Theories/Bimodal/docs/UserGuide/EXAMPLES.md (modify section 7)
+  - Theories/Bimodal/docs/user-guide/TROUBLESHOOTING.md (new)
+  - Theories/Bimodal/docs/user-guide/EXAMPLES.md (modify section 7)
 
 ---
 

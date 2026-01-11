@@ -282,7 +282,7 @@ This plan integrates findings from 1 research report created for this task:
    permissions:
      allow:
        - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
-       - write: [".opencode/specs/**/*", "docs/Research/**/*"]
+       - write: [".opencode/specs/**/*", "docs/research/**/*"]
        - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
    ```
    

@@ -86,14 +86,14 @@ docs/
 - Contains documentation update workflow
 - **Status**: Good, minor updates needed to add README links
 
-**docs/Installation/README.md**
+**docs/installation/README.md**
 - Good back-link to parent: `[Back to Documentation](../README.md)`
 - Has navigation table with descriptions
 - Includes recommended reading order
 - Requirements summary table
 - **Status**: Excellent example to follow
 
-**docs/Research/README.md**
+**docs/research/README.md**
 - Comprehensive with document categories
 - Has status indicators for each document
 - Related documentation links
@@ -211,9 +211,9 @@ For each new README:
 
 ## References
 
-- [DIRECTORY_README_STANDARD.md](docs/Development/DIRECTORY_README_STANDARD.md) - The governing standard
-- [Installation/README.md](docs/Installation/README.md) - Excellent pattern example
-- [Research/README.md](docs/Research/README.md) - Good category organization
+- [DIRECTORY_README_STANDARD.md](docs/development/DIRECTORY_README_STANDARD.md) - The governing standard
+- [Installation/README.md](docs/installation/README.md) - Excellent pattern example
+- [Research/README.md](docs/research/README.md) - Good category organization
 
 ## Next Steps
 

@@ -10,32 +10,32 @@ Created comprehensive installation documentation for ProofChecker, modeled after
 
 ## Files Created
 
-### docs/Installation/README.md
+### docs/installation/README.md
 - Installation overview and quick navigation
 - Requirements summary table
 - Recommended reading order
 
-### docs/Installation/CLAUDE_CODE.md (~340 lines)
+### docs/installation/CLAUDE_CODE.md (~340 lines)
 - AI-assisted installation entry point
 - Claude Code installation for all platforms
 - ProofChecker installation via Claude prompts
 - Agent system setup (.claude/ directory)
 - GitHub CLI (gh) integration
 
-### docs/Installation/BASIC_INSTALLATION.md (~200 lines)
+### docs/installation/BASIC_INSTALLATION.md (~200 lines)
 - Manual installation steps (no editor content per user request)
 - elan installation for all platforms
 - Repository cloning and build process
 - Common issues and troubleshooting
 
-### docs/Installation/GETTING_STARTED.md (~380 lines)
+### docs/installation/GETTING_STARTED.md (~380 lines)
 - Terminal basics for beginners
 - VS Code setup with lean4 extension
 - NeoVim setup with link to https://github.com/benbrastmckie/.config
 - First proof walkthrough
 - Project structure overview
 
-### docs/Installation/USING_GIT.md (~450 lines)
+### docs/installation/USING_GIT.md (~450 lines)
 - Renamed from GIT_GOING.md per user request
 - SSH key generation and GitHub setup
 - Basic Git concepts and commands

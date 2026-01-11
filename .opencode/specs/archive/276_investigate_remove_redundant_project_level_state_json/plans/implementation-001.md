@@ -215,7 +215,7 @@ Research findings confirm that project-level state.json files are redundant:
 **Objective**: Document migration decision in Architecture Decision Record.
 
 **Tasks**:
-1. Create `docs/Architecture/ADR-004-Remove-Project-Level-State-Files.md`
+1. Create `docs/architecture/ADR-004-Remove-Project-Level-State-Files.md`
 2. Document context: duplicate data, write-only overhead, schema drift
 3. Document decision: remove project-level state.json creation, use central state.json only
 4. Document consequences: simplifies state management, reduces file I/O, eliminates two sources of truth
@@ -349,7 +349,7 @@ Research findings confirm that project-level state.json files are redundant:
    - `.opencode/context/core/system/artifact-management.md`
 
 3. **Architecture Decision Record**:
-   - `docs/Architecture/ADR-004-Remove-Project-Level-State-Files.md`
+   - `docs/architecture/ADR-004-Remove-Project-Level-State-Files.md`
 
 ### Supporting Artifacts
 

@@ -25,7 +25,7 @@
 
 ## Overview
 
-Create a comprehensive installation documentation suite in `docs/Installation/` with clear separation of concerns:
+Create a comprehensive installation documentation suite in `docs/installation/` with clear separation of concerns:
 - **CLAUDE_CODE.md** - Entry point for AI-assisted setup
 - **BASIC_INSTALLATION.md** - Pure installation (elan, Lean, Mathlib) without editor setup
 - **GETTING_STARTED.md** - Terminal basics + Editor setup (VS Code and NeoVim) + First proof
@@ -39,15 +39,15 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 **Status**: [NOT STARTED]
 
 **Objectives**:
-1. Create `docs/Installation/` directory
+1. Create `docs/installation/` directory
 2. Create README.md index file linking to all installation docs
 
 **Files to modify**:
-- `docs/Installation/` - Create directory
-- `docs/Installation/README.md` - Create index file
+- `docs/installation/` - Create directory
+- `docs/installation/README.md` - Create index file
 
 **Steps**:
-1. Create `docs/Installation/` directory
+1. Create `docs/installation/` directory
 2. Write `README.md` with:
    - Overview of installation documentation
    - Quick navigation table to all guides
@@ -73,7 +73,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 3. Use USING_GIT.md (not GIT_GOING.md) for git references
 
 **Files to modify**:
-- `docs/Installation/CLAUDE_CODE.md` - Create new file (~300 lines)
+- `docs/installation/CLAUDE_CODE.md` - Create new file (~300 lines)
 
 **Steps**:
 1. Write Section 1: Getting Started
@@ -126,7 +126,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 3. This is what Claude Code will use for automated installation
 
 **Files to modify**:
-- `docs/Installation/BASIC_INSTALLATION.md` - Create new file (~200 lines)
+- `docs/installation/BASIC_INSTALLATION.md` - Create new file (~200 lines)
 
 **Steps**:
 1. Write Overview section
@@ -184,7 +184,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 3. Guide through first proof experience
 
 **Files to modify**:
-- `docs/Installation/GETTING_STARTED.md` - Create new file (~450 lines)
+- `docs/installation/GETTING_STARTED.md` - Create new file (~450 lines)
 
 **Steps**:
 1. Write Table of Contents
@@ -254,7 +254,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 2. Cover SSH keys, basic commands, contributing workflow
 
 **Files to modify**:
-- `docs/Installation/USING_GIT.md` - Create new file (~350 lines)
+- `docs/installation/USING_GIT.md` - Create new file (~350 lines)
 
 **Steps**:
 1. Write What is GitHub section
@@ -346,8 +346,8 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 
 - ModelChecker reference documentation (read during research)
 - NeoVim config repository: https://github.com/benbrastmckie/.config
-- Existing docs/UserGuide/TUTORIAL.md (for cross-links)
-- Existing docs/Development/CONTRIBUTING.md (for cross-links)
+- Existing docs/user-guide/TUTORIAL.md (for cross-links)
+- Existing docs/development/CONTRIBUTING.md (for cross-links)
 
 ## Risks and Mitigations
 
@@ -359,7 +359,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 
 ## Success Criteria
 
-- [ ] docs/Installation/ directory exists with 5 files
+- [ ] docs/installation/ directory exists with 5 files
 - [ ] CLAUDE_CODE.md references USING_GIT.md (not GIT_GOING.md)
 - [ ] BASIC_INSTALLATION.md has NO editor content
 - [ ] GETTING_STARTED.md covers terminal + VS Code + NeoVim
@@ -371,4 +371,4 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 
 ## Rollback Plan
 
-Delete `docs/Installation/` directory and revert changes to docs/README.md and root README.md if implementation fails. No existing files are being modified except the two index files.
+Delete `docs/installation/` directory and revert changes to docs/README.md and root README.md if implementation fails. No existing files are being modified except the two index files.

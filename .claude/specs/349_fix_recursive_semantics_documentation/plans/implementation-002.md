@@ -40,7 +40,7 @@ Systematically address all 25 [FIX] tags in RECURSIVE_SEMANTICS.md while maintai
 3. Keep `I` for interpretation function throughout
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Lines 47, 54, 56-59, 63-69, 73
+- `docs/research/RECURSIVE_SEMANTICS.md` - Lines 47, 54, 56-59, 63-69, 73
 
 **Steps**:
 
@@ -83,7 +83,7 @@ Systematically address all 25 [FIX] tags in RECURSIVE_SEMANTICS.md while maintai
 3. Specify syntactic primitives and update [FIX] tag at line 26
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Lines 26, 75-126
+- `docs/research/RECURSIVE_SEMANTICS.md` - Lines 26, 75-126
 
 **Steps**:
 
@@ -149,7 +149,7 @@ Systematically address all 25 [FIX] tags in RECURSIVE_SEMANTICS.md while maintai
 4. Update causal model notation - keep `I` interpretation
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Lines 157-215
+- `docs/research/RECURSIVE_SEMANTICS.md` - Lines 157-215
 
 **Steps**:
 
@@ -223,7 +223,7 @@ Systematically address all 25 [FIX] tags in RECURSIVE_SEMANTICS.md while maintai
 7. Fix imposition notation
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Lines 217-354
+- `docs/research/RECURSIVE_SEMANTICS.md` - Lines 217-354
 
 **Steps**:
 
@@ -308,8 +308,8 @@ Systematically address all 25 [FIX] tags in RECURSIVE_SEMANTICS.md while maintai
 4. Verify markdown rendering
 
 **Files to modify**:
-- `docs/Reference/GLOSSARY.md` - Extended Tense Operators section, new Lambda entry
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Final cleanup
+- `docs/reference/GLOSSARY.md` - Extended Tense Operators section, new Lambda entry
+- `docs/research/RECURSIVE_SEMANTICS.md` - Final cleanup
 
 **Steps**:
 

@@ -2,7 +2,7 @@
 
 Theory-specific performance baselines and regression thresholds for Bimodal TM logic.
 
-> **Methodology**: See [BENCHMARKING_GUIDE.md](../../../docs/Development/BENCHMARKING_GUIDE.md)
+> **Methodology**: See [BENCHMARKING_GUIDE.md](../../../docs/development/BENCHMARKING_GUIDE.md)
 > for project-wide benchmarking standards.
 
 *Last updated: 2026-01-12*

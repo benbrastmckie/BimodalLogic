@@ -151,7 +151,7 @@ def runSemanticBenchmark (name : String) (eval : Unit → Bool) : IO SemanticBen
 3. Document optimization recommendations
 
 **Files to create**:
-- `Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md` (new)
+- `Bimodal/docs/project-info/PERFORMANCE_TARGETS.md` (new)
 
 **Content structure**:
 

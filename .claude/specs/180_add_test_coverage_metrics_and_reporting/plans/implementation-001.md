@@ -10,7 +10,7 @@
 This plan replaces the original task 180 scope (which assumed no testing standards existed) with a scope that builds on the existing comprehensive BimodalTest infrastructure.
 
 ### Previous Scope (Obsolete)
-- Targeted `docs/Development/TEST_COVERAGE.md` (general)
+- Targeted `docs/development/TEST_COVERAGE.md` (general)
 - Dependency on Task 175 (CI/CD pipeline)
 - 9 hours effort
 
@@ -201,7 +201,7 @@ echo "  Uncategorized: $(grep -r "sorry" BimodalTest --include="*.lean" | grep -
 3. Identify improvement priorities
 
 **Files to create**:
-- `Bimodal/docs/ProjectInfo/TEST_COVERAGE.md` (new)
+- `Bimodal/docs/project-info/TEST_COVERAGE.md` (new)
 
 **Content structure**:
 
@@ -254,7 +254,7 @@ These could be completed with additional proof work:
 ## Regenerating This Report
 
 ```bash
-./scripts/coverage-report.sh > Bimodal/docs/ProjectInfo/TEST_COVERAGE.md
+./scripts/coverage-report.sh > Bimodal/docs/project-info/TEST_COVERAGE.md
 ```
 ```
 

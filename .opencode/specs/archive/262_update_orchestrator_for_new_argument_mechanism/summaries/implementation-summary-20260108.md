@@ -49,7 +49,7 @@ The valid form is fully implemented:
 
 Verified the following files contain complete documentation:
 1. `Logos/Core/Theorems/ModalS5.lean` - Lines 71-94, 96-104, 298-366
-2. `docs/ProjectInfo/SORRY_REGISTRY.md` - Lines 111-124
+2. `docs/project-info/SORRY_REGISTRY.md` - Lines 111-124
 
 ## Acceptance Criteria Status
 
@@ -69,7 +69,7 @@ No code changes required. Documentation is comprehensive and accurate.
 ## Files Verified
 
 - `Logos/Core/Theorems/ModalS5.lean` (877 lines)
-- `docs/ProjectInfo/SORRY_REGISTRY.md` (207 lines)
+- `docs/project-info/SORRY_REGISTRY.md` (207 lines)
 
 ## Next Steps
 

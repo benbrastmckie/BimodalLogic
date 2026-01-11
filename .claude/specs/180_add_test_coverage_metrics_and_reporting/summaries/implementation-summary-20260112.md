@@ -16,7 +16,7 @@ Implemented a definition-level coverage measurement system for the Bimodal theor
    - Supports both human-readable and JSON output formats
    - Color-coded output for quick assessment
 
-2. **Coverage Documentation** (`Bimodal/docs/ProjectInfo/TEST_COVERAGE.md`)
+2. **Coverage Documentation** (`Bimodal/docs/project-info/TEST_COVERAGE.md`)
    - Baseline coverage metrics: 42% (148/348 definitions)
    - Module-by-module breakdown with priority recommendations
    - Sorry audit summary: 5 placeholders (3 blocked, 2 could be completed)
@@ -32,7 +32,7 @@ Implemented a definition-level coverage measurement system for the Bimodal theor
 | File | Description |
 |------|-------------|
 | `scripts/coverage-analysis.sh` | Coverage analysis script (170 lines) |
-| `Bimodal/docs/ProjectInfo/TEST_COVERAGE.md` | Coverage documentation |
+| `Bimodal/docs/project-info/TEST_COVERAGE.md` | Coverage documentation |
 
 ## Files Modified
 
@@ -107,5 +107,5 @@ Based on coverage analysis, potential future work includes:
 ## Related
 
 - Plan: [implementation-002.md](../plans/implementation-002.md)
-- Coverage Report: [TEST_COVERAGE.md](../../../../Bimodal/docs/ProjectInfo/TEST_COVERAGE.md)
+- Coverage Report: [TEST_COVERAGE.md](../../../../Bimodal/docs/project-info/TEST_COVERAGE.md)
 - Task 179: Benchmark infrastructure (complementary)

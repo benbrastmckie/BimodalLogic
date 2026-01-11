@@ -54,8 +54,8 @@ Comprehensive codebase review completed for Logos MVP Layer 0 (Core TM). The rev
 
 ## References
 
-- IMPLEMENTATION_STATUS.md: docs/ProjectInfo/IMPLEMENTATION_STATUS.md
-- SORRY_REGISTRY.md: docs/ProjectInfo/SORRY_REGISTRY.md
-- TACTIC_REGISTRY.md: docs/ProjectInfo/TACTIC_REGISTRY.md
-- FEATURE_REGISTRY.md: docs/ProjectInfo/FEATURE_REGISTRY.md
+- IMPLEMENTATION_STATUS.md: docs/project-info/IMPLEMENTATION_STATUS.md
+- SORRY_REGISTRY.md: docs/project-info/SORRY_REGISTRY.md
+- TACTIC_REGISTRY.md: docs/project-info/TACTIC_REGISTRY.md
+- FEATURE_REGISTRY.md: docs/project-info/FEATURE_REGISTRY.md
 - TODO.md: TODO.md (6 active tasks, 12 completed tasks)

@@ -59,8 +59,8 @@ Logos/docs/
 2. Create PROOF_PATTERNS.md or CURRENT_STATUS.md explaining re-export status
 
 **Files to create**:
-- `Logos/docs/UserGuide/QUICKSTART.md`
-- `Logos/docs/UserGuide/CURRENT_STATUS.md`
+- `Logos/docs/user-guide/QUICKSTART.md`
+- `Logos/docs/user-guide/CURRENT_STATUS.md`
 
 **Content notes**:
 - QUICKSTART.md should explain Logos is currently a re-export of Bimodal
@@ -89,8 +89,8 @@ Logos/docs/
 2. Create EXTENSION_STUBS.md documenting planned extension modules
 
 **Files to create**:
-- `Logos/docs/Reference/AXIOM_REFERENCE.md`
-- `Logos/docs/Reference/EXTENSION_STUBS.md`
+- `Logos/docs/reference/AXIOM_REFERENCE.md`
+- `Logos/docs/reference/EXTENSION_STUBS.md`
 
 **Content notes**:
 - AXIOM_REFERENCE.md should note re-export of Bimodal axioms
@@ -118,9 +118,9 @@ Logos/docs/
 3. Create ROADMAP.md outlining future development
 
 **Files to create**:
-- `Logos/docs/ProjectInfo/IMPLEMENTATION_STATUS.md`
-- `Logos/docs/ProjectInfo/KNOWN_LIMITATIONS.md`
-- `Logos/docs/ProjectInfo/ROADMAP.md`
+- `Logos/docs/project-info/IMPLEMENTATION_STATUS.md`
+- `Logos/docs/project-info/KNOWN_LIMITATIONS.md`
+- `Logos/docs/project-info/ROADMAP.md`
 
 **Content notes**:
 - Status should clearly indicate re-export layer nature
@@ -151,9 +151,9 @@ Logos/docs/
 
 **Files to modify**:
 - `docs/README.md` - Add theory-specific section
-- `docs/ProjectInfo/IMPLEMENTATION_STATUS.md` - Overview only
-- `docs/UserGuide/README.md` - Add theory links
-- `docs/Reference/README.md` - Add theory links
+- `docs/project-info/IMPLEMENTATION_STATUS.md` - Overview only
+- `docs/user-guide/README.md` - Add theory links
+- `docs/reference/README.md` - Add theory links
 
 **Steps**:
 1. Update docs/README.md with theory-specific doc links

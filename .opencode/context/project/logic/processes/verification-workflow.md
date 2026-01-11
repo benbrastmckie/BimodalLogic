@@ -567,4 +567,4 @@ You've successfully verified a proof when:
 - **Temporal Strategies**: `logic/processes/temporal-proof-strategies.md`
 - **Soundness Module**: `Logos/Core/Metalogic/Soundness.lean`
 - **Completeness Module**: `Logos/Core/Metalogic/Completeness.lean`
-- **Sorry Registry**: `docs/ProjectInfo/SORRY_REGISTRY.md`
+- **Sorry Registry**: `docs/project-info/SORRY_REGISTRY.md`

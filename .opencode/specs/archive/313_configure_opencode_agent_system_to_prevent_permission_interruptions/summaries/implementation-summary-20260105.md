@@ -132,7 +132,7 @@ permissions:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
-    - write: [".opencode/specs/**/*", "docs/Research/**/*"]
+    - write: [".opencode/specs/**/*", "docs/research/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd", "wget", "curl"]

@@ -286,11 +286,11 @@ Use this checklist when creating or updating documentation:
 ## Related Standards
 
 ### ProofChecker Project
-- [DIRECTORY_README_STANDARD.md](../../../docs/Development/DIRECTORY_README_STANDARD.md)
+- [DIRECTORY_README_STANDARD.md](../../../docs/development/DIRECTORY_README_STANDARD.md)
   - Directory-level README conventions for LEAN 4 projects
-- [DOC_QUALITY_CHECKLIST.md](../../../docs/Development/DOC_QUALITY_CHECKLIST.md)
+- [DOC_QUALITY_CHECKLIST.md](../../../docs/development/DOC_QUALITY_CHECKLIST.md)
   - Systematic verification procedures for documentation quality
-- [LEAN_STYLE_GUIDE.md](../../../docs/Development/LEAN_STYLE_GUIDE.md)
+- [LEAN_STYLE_GUIDE.md](../../../docs/development/LEAN_STYLE_GUIDE.md)
   - Code-level documentation conventions
 
 ### .opencode System

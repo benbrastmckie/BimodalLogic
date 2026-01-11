@@ -1422,12 +1422,12 @@ done
    - Key Concepts: Unit tests, integration tests, E2E tests, test structure
 
 2. **ProofChecker Testing Standards** (TESTING_STANDARDS.md)
-   - Location: docs/Development/TESTING_STANDARDS.md
+   - Location: docs/development/TESTING_STANDARDS.md
    - Relevance: Test organization, coverage targets, TDD workflow
    - Key Concepts: Test types, naming conventions, coverage requirements
 
 3. **ProofChecker Quality Metrics** (QUALITY_METRICS.md)
-   - Location: docs/Development/QUALITY_METRICS.md
+   - Location: docs/development/QUALITY_METRICS.md
    - Relevance: Quality targets, measurement methods, compliance
    - Key Concepts: Coverage targets, lint compliance, performance benchmarks
 

@@ -368,22 +368,22 @@ Subagents return artifact links + brief summaries (metadata) to calling agents, 
     },
     {
       "type": "documentation",
-      "path": "docs/ProjectInfo/IMPLEMENTATION_STATUS.md",
+      "path": "docs/project-info/IMPLEMENTATION_STATUS.md",
       "summary": "Updated implementation status"
     },
     {
       "type": "documentation",
-      "path": "docs/ProjectInfo/SORRY_REGISTRY.md",
+      "path": "docs/project-info/SORRY_REGISTRY.md",
       "summary": "Updated sorry registry"
     },
     {
       "type": "documentation",
-      "path": "docs/ProjectInfo/TACTIC_REGISTRY.md",
+      "path": "docs/project-info/TACTIC_REGISTRY.md",
       "summary": "Updated tactic registry"
     },
     {
       "type": "documentation",
-      "path": "docs/ProjectInfo/FEATURE_REGISTRY.md",
+      "path": "docs/project-info/FEATURE_REGISTRY.md",
       "summary": "Updated feature registry"
     }
   ],

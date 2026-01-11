@@ -23,13 +23,13 @@ Extended the Bimodal benchmarking suite with derivation tree and semantic evalua
 
 ### Documentation Files
 
-- `docs/Development/BENCHMARKING_GUIDE.md` - Project-wide benchmarking standards
+- `docs/development/BENCHMARKING_GUIDE.md` - Project-wide benchmarking standards
   - Timing methodology (100+ iterations, median)
   - Correctness validation requirements
   - Regression thresholds (2x time, 50% visits)
   - CI integration patterns
 
-- `Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md` - Theory-specific baselines
+- `Bimodal/docs/project-info/PERFORMANCE_TARGETS.md` - Theory-specific baselines
   - Proof search: 17 benchmarks, ~170-300ns average
   - Derivation: 15 benchmarks, ~90ns average
   - Semantic: 16 benchmarks, ~91ns average, 100% correct
@@ -50,9 +50,9 @@ Extended the Bimodal benchmarking suite with derivation tree and semantic evalua
 
 ## Files Modified
 
-- `docs/Development/QUALITY_METRICS.md` - Added benchmark coverage section
-- `docs/Development/README.md` - Added BENCHMARKING_GUIDE.md link
-- `Bimodal/docs/ProjectInfo/README.md` - Added PERFORMANCE_TARGETS.md link
+- `docs/development/QUALITY_METRICS.md` - Added benchmark coverage section
+- `docs/development/README.md` - Added BENCHMARKING_GUIDE.md link
+- `Bimodal/docs/project-info/README.md` - Added PERFORMANCE_TARGETS.md link
 - `Bimodal/docs/README.md` - Added Performance Targets quick link
 
 ## Verification

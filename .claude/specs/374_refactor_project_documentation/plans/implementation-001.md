@@ -24,17 +24,17 @@ project-wide documentation in the root docs/ directory. This follows the
 2. Ensure all target directories exist before file moves
 
 **Files to create**:
-- `Logos/docs/Research/` - new directory
-- `Bimodal/docs/Research/` - new directory
+- `Logos/docs/research/` - new directory
+- `Bimodal/docs/research/` - new directory
 
 **Steps**:
-1. Create Logos/docs/Research/ directory
-2. Create Bimodal/docs/Research/ directory
+1. Create Logos/docs/research/ directory
+2. Create Bimodal/docs/research/ directory
 3. Verify both directories exist
 
 **Verification**:
-- `ls -la Logos/docs/Research/` succeeds
-- `ls -la Bimodal/docs/Research/` succeeds
+- `ls -la Logos/docs/research/` succeeds
+- `ls -la Bimodal/docs/research/` succeeds
 
 ---
 
@@ -48,11 +48,11 @@ project-wide documentation in the root docs/ directory. This follows the
 2. Preserve git history with `git mv`
 
 **Files to move**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` → `Logos/docs/Research/`
-- `docs/Research/LAYER_EXTENSIONS.md` → `Logos/docs/Research/`
-- `docs/Research/CONCEPTUAL_ENGINEERING.md` → `Logos/docs/Research/`
-- `docs/UserGuide/METHODOLOGY.md` → `Logos/docs/UserGuide/`
-- `docs/Reference/GLOSSARY.md` → `Logos/docs/Reference/`
+- `docs/research/RECURSIVE_SEMANTICS.md` → `Logos/docs/research/`
+- `docs/research/LAYER_EXTENSIONS.md` → `Logos/docs/research/`
+- `docs/research/CONCEPTUAL_ENGINEERING.md` → `Logos/docs/research/`
+- `docs/user-guide/METHODOLOGY.md` → `Logos/docs/user-guide/`
+- `docs/reference/GLOSSARY.md` → `Logos/docs/reference/`
 
 **Steps**:
 1. Move Research files (3 files)
@@ -76,19 +76,19 @@ project-wide documentation in the root docs/ directory. This follows the
 2. Preserve git history with `git mv`
 
 **Files to move**:
-- `docs/Research/MODAL_TEMPORAL_PROOF_SEARCH.md` → `Bimodal/docs/Research/`
-- `docs/Research/temporal-logic-automation-research.md` → `Bimodal/docs/Research/`
-- `docs/Research/PROOF_SEARCH_AUTOMATION.md` → `Bimodal/docs/Research/`
-- `docs/Research/leansearch-best-first-search.md` → `Bimodal/docs/Research/`
-- `docs/Research/leansearch-priority-queue.md` → `Bimodal/docs/Research/`
-- `docs/Research/leansearch-proof-caching-memoization.md` → `Bimodal/docs/Research/`
-- `docs/Research/LEANSEARCH_API_SPECIFICATION.md` → `Bimodal/docs/Research/`
-- `docs/UserGuide/ARCHITECTURE.md` → `Bimodal/docs/UserGuide/`
-- `docs/UserGuide/TUTORIAL.md` → `Bimodal/docs/UserGuide/`
-- `docs/UserGuide/EXAMPLES.md` → `Bimodal/docs/UserGuide/`
-- `docs/UserGuide/TACTIC_DEVELOPMENT.md` → `Bimodal/docs/UserGuide/`
-- `docs/Reference/OPERATORS.md` → `Bimodal/docs/Reference/`
-- `docs/ProjectInfo/TACTIC_REGISTRY.md` → `Bimodal/docs/ProjectInfo/`
+- `docs/research/MODAL_TEMPORAL_PROOF_SEARCH.md` → `Bimodal/docs/research/`
+- `docs/research/temporal-logic-automation-research.md` → `Bimodal/docs/research/`
+- `docs/research/PROOF_SEARCH_AUTOMATION.md` → `Bimodal/docs/research/`
+- `docs/research/leansearch-best-first-search.md` → `Bimodal/docs/research/`
+- `docs/research/leansearch-priority-queue.md` → `Bimodal/docs/research/`
+- `docs/research/leansearch-proof-caching-memoization.md` → `Bimodal/docs/research/`
+- `docs/research/LEANSEARCH_API_SPECIFICATION.md` → `Bimodal/docs/research/`
+- `docs/user-guide/ARCHITECTURE.md` → `Bimodal/docs/user-guide/`
+- `docs/user-guide/TUTORIAL.md` → `Bimodal/docs/user-guide/`
+- `docs/user-guide/EXAMPLES.md` → `Bimodal/docs/user-guide/`
+- `docs/user-guide/TACTIC_DEVELOPMENT.md` → `Bimodal/docs/user-guide/`
+- `docs/reference/OPERATORS.md` → `Bimodal/docs/reference/`
+- `docs/project-info/TACTIC_REGISTRY.md` → `Bimodal/docs/project-info/`
 
 **Steps**:
 1. Move Research files (7 files)
@@ -117,23 +117,23 @@ project-wide documentation in the root docs/ directory. This follows the
 - All moved files (18 total) - update relative path links
 - `Logos/docs/README.md` - add Research/ section
 - `Bimodal/docs/README.md` - add Research/ section
-- `docs/Research/README.md` - update to reference theory-specific research
-- `docs/UserGuide/README.md` - remove moved files
-- `docs/Reference/README.md` - remove moved files
-- `docs/ProjectInfo/README.md` - remove TACTIC_REGISTRY reference
+- `docs/research/README.md` - update to reference theory-specific research
+- `docs/user-guide/README.md` - remove moved files
+- `docs/reference/README.md` - remove moved files
+- `docs/project-info/README.md` - remove TACTIC_REGISTRY reference
 
 **Steps**:
 1. Update Logos/docs/README.md with Research/ directory listing
 2. Update Bimodal/docs/README.md with Research/ directory listing
-3. Update docs/Research/README.md to point to theory research
-4. Create Logos/docs/Research/README.md
-5. Create Bimodal/docs/Research/README.md
+3. Update docs/research/README.md to point to theory research
+4. Create Logos/docs/research/README.md
+5. Create Bimodal/docs/research/README.md
 6. Fix cross-references in moved files (grep for broken links)
 7. Update remaining README.md files
 
 **Verification**:
-- `grep -r "docs/Research/RECURSIVE" .` returns no hits in docs/
-- `grep -r "docs/UserGuide/ARCHITECTURE" .` returns no hits in docs/
+- `grep -r "docs/research/RECURSIVE" .` returns no hits in docs/
+- `grep -r "docs/user-guide/ARCHITECTURE" .` returns no hits in docs/
 - All README.md files have correct links
 
 ---
@@ -150,7 +150,7 @@ project-wide documentation in the root docs/ directory. This follows the
 
 **Files to modify**:
 - `docs/README.md` - simplify and update
-- `docs/UserGuide/README.md` - update file listing
+- `docs/user-guide/README.md` - update file listing
 
 **Steps**:
 1. Update docs/README.md overview section

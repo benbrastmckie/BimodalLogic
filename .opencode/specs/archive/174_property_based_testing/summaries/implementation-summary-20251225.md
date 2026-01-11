@@ -59,8 +59,8 @@ Successfully completed all 7 phases of the property-based testing framework inte
 
 7. [PASS] **Phase 7: Documentation & CI Integration** (2-3h)
    - Updated `LogosTest/Core/Property/README.md` with TaskModel examples
-   - Created comprehensive `docs/Development/PROPERTY_TESTING_GUIDE.md`
-   - Updated `docs/ProjectInfo/IMPLEMENTATION_STATUS.md`
+   - Created comprehensive `docs/development/PROPERTY_TESTING_GUIDE.md`
+   - Updated `docs/project-info/IMPLEMENTATION_STATUS.md`
    - Updated implementation plan status markers
 
 ---
@@ -118,7 +118,7 @@ Successfully completed all 7 phases of the property-based testing framework inte
    - Updated examples section with all test files
    - Added hash-based valuation explanation
 
-7. **docs/Development/PROPERTY_TESTING_GUIDE.md** (NEW)
+7. **docs/development/PROPERTY_TESTING_GUIDE.md** (NEW)
    - Comprehensive 500+ line guide
    - Plausible framework overview
    - Generator patterns (size control, shrinking, proxy pattern)
@@ -128,7 +128,7 @@ Successfully completed all 7 phases of the property-based testing framework inte
    - CI/CD integration
    - Complete examples for all patterns
 
-8. **docs/ProjectInfo/IMPLEMENTATION_STATUS.md**
+8. **docs/project-info/IMPLEMENTATION_STATUS.md**
    - Updated "Last Updated" to 2025-12-25
    - Added Task 174 to Latest Changes
    - Added new "Testing Infrastructure" section
@@ -226,7 +226,7 @@ lake env lean LogosTest/Core/Metalogic/SoundnessPropertyTest.lean
 cat LogosTest/Core/Property/Generators.lean | grep -A 20 "TaskModelProxy"
 
 # Verify documentation
-cat docs/Development/PROPERTY_TESTING_GUIDE.md | wc -l  # Should be 500+ lines
+cat docs/development/PROPERTY_TESTING_GUIDE.md | wc -l  # Should be 500+ lines
 ```
 
 ---
@@ -306,6 +306,6 @@ The property-based testing framework integration is complete and production-read
 
 - **Implementation Plan**: `.opencode/specs/174_property_based_testing/plans/implementation-001.md`
 - **Research Report**: `.opencode/specs/174_property_based_testing/reports/research-001.md`
-- **Property Testing Guide**: `docs/Development/PROPERTY_TESTING_GUIDE.md`
+- **Property Testing Guide**: `docs/development/PROPERTY_TESTING_GUIDE.md`
 - **Plausible Framework**: https://github.com/leanprover-community/plausible
-- **Implementation Status**: `docs/ProjectInfo/IMPLEMENTATION_STATUS.md`
+- **Implementation Status**: `docs/project-info/IMPLEMENTATION_STATUS.md`

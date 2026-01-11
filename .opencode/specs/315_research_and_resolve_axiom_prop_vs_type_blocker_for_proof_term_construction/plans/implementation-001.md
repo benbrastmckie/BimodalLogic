@@ -738,17 +738,17 @@ This plan implements a **hybrid strategy** to resolve the Axiom Prop vs Type blo
 ### Phase 1 Artifacts
 - `Logos/Core/Automation/Tactics.lean` - Tactic implementations
 - `LogosTest/Core/Automation/TacticsTest.lean` - Tactic tests
-- `docs/UserGuide/TUTORIAL.md` - Tactic tutorial section
-- `docs/ProjectInfo/TACTIC_REGISTRY.md` - Tactic registry entry
+- `docs/user-guide/TUTORIAL.md` - Tactic tutorial section
+- `docs/project-info/TACTIC_REGISTRY.md` - Tactic registry entry
 
 ### Phase 2 Artifacts
 - `Logos/Core/ProofSystem/Axioms.lean` - Refactored Axiom definition
 - `Logos/Core/ProofSystem/AxiomUniqueness.lean` - Uniqueness lemmas
 - `Logos/Core/Automation/ProofSearch.lean` - Programmatic API
 - `Logos/Core/Automation/TrainingDataGen.lean` - Training data generation
-- `docs/UserGuide/ARCHITECTURE.md` - Refactor documentation
-- `docs/Reference/API_REFERENCE.md` - API documentation
-- `docs/Research/DUAL_VERIFICATION.md` - Training pipeline integration
+- `docs/user-guide/ARCHITECTURE.md` - Refactor documentation
+- `docs/reference/API_REFERENCE.md` - API documentation
+- `docs/research/DUAL_VERIFICATION.md` - Training pipeline integration
 
 ### Plan Artifacts
 - `plans/implementation-001.md` - This plan

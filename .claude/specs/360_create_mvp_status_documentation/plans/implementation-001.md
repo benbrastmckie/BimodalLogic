@@ -93,7 +93,7 @@ The key differentiation between theories:
 3. Place in project-wide docs/ for cross-theory reference
 
 **Files to create**:
-- `docs/Research/THEORY_COMPARISON.md` - Bimodal vs Logos comparison
+- `docs/research/THEORY_COMPARISON.md` - Bimodal vs Logos comparison
 
 **Content structure**:
 ```markdown
@@ -166,9 +166,9 @@ Bimodal/docs/
 
 **Files to create**:
 - `Bimodal/docs/README.md` - Main navigation hub
-- `Bimodal/docs/UserGuide/README.md` - User guide index
-- `Bimodal/docs/Reference/README.md` - Reference index
-- `Bimodal/docs/ProjectInfo/README.md` - Project info index
+- `Bimodal/docs/user-guide/README.md` - User guide index
+- `Bimodal/docs/reference/README.md` - Reference index
+- `Bimodal/docs/project-info/README.md` - Project info index
 - Other files as needed
 
 **Steps**:
@@ -242,16 +242,16 @@ Bimodal is a **propositional intensional logic** implementing TM (Tense and Moda
 **Logical Level**: Propositional (zeroth-order)
 
 For comparison with the planned Logos hyperintensional logic, see
-[Theory Comparison](../docs/Research/THEORY_COMPARISON.md).
+[Theory Comparison](../docs/research/THEORY_COMPARISON.md).
 
 ## Theory-Specific Documentation
 
 For Bimodal-specific documentation, see [docs/](docs/README.md):
-- [Quick Start](docs/UserGuide/QUICKSTART.md)
-- [Proof Patterns](docs/UserGuide/PROOF_PATTERNS.md)
-- [Axiom Reference](docs/Reference/AXIOM_REFERENCE.md)
-- [Implementation Status](docs/ProjectInfo/IMPLEMENTATION_STATUS.md)
-- [Known Limitations](docs/ProjectInfo/KNOWN_LIMITATIONS.md)
+- [Quick Start](docs/user-guide/QUICKSTART.md)
+- [Proof Patterns](docs/user-guide/PROOF_PATTERNS.md)
+- [Axiom Reference](docs/reference/AXIOM_REFERENCE.md)
+- [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md)
+- [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md)
 ```
 
 **Steps**:

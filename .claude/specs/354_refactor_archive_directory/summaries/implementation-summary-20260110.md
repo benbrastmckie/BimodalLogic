@@ -78,8 +78,8 @@ The example files have pre-existing build errors related to unqualified identifi
 
 Documentation references to `Archive/` remain in several files:
 - LogosTest/README.md
-- docs/Development/*.md
-- docs/UserGuide/*.md
+- docs/development/*.md
+- docs/user-guide/*.md
 
 These can be updated as part of ongoing documentation maintenance.
 

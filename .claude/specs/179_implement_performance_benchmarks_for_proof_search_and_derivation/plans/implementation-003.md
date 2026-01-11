@@ -27,9 +27,9 @@ This revision adds a documentation phase that properly separates project-wide gu
 
 | Location | Content Type | Audience |
 |----------|--------------|----------|
-| `docs/Development/BENCHMARKING_GUIDE.md` | Project-wide methodology, standards | All contributors |
-| `docs/Development/QUALITY_METRICS.md` | Add benchmarking section | All contributors |
-| `Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md` | Theory-specific baselines | Bimodal developers |
+| `docs/development/BENCHMARKING_GUIDE.md` | Project-wide methodology, standards | All contributors |
+| `docs/development/QUALITY_METRICS.md` | Add benchmarking section | All contributors |
+| `Bimodal/docs/project-info/PERFORMANCE_TARGETS.md` | Theory-specific baselines | Bimodal developers |
 | `Bimodal/docs/README.md` | Add link to performance targets | Bimodal users |
 
 ## Overview
@@ -101,9 +101,9 @@ Extend the Bimodal benchmarking suite with derivation tree and semantic evaluati
 3. Establish cross-link pattern for theory-specific docs
 
 **Files to create/modify**:
-- `docs/Development/BENCHMARKING_GUIDE.md` (new)
-- `docs/Development/QUALITY_METRICS.md` (update)
-- `docs/Development/README.md` (update link list)
+- `docs/development/BENCHMARKING_GUIDE.md` (new)
+- `docs/development/QUALITY_METRICS.md` (update)
+- `docs/development/README.md` (update link list)
 
 **BENCHMARKING_GUIDE.md content**:
 
@@ -152,8 +152,8 @@ All theories should benchmark these operation types:
 ## Theory-Specific Targets
 
 Each theory maintains its own baseline measurements:
-- **Bimodal**: [PERFORMANCE_TARGETS.md](../../Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md)
-- **Logos**: [PERFORMANCE_TARGETS.md](../../Logos/docs/ProjectInfo/PERFORMANCE_TARGETS.md) (planned)
+- **Bimodal**: [PERFORMANCE_TARGETS.md](../../Bimodal/docs/project-info/PERFORMANCE_TARGETS.md)
+- **Logos**: [PERFORMANCE_TARGETS.md](../../Logos/docs/project-info/PERFORMANCE_TARGETS.md) (planned)
 
 ## CI Integration
 
@@ -211,8 +211,8 @@ For complete benchmarking methodology, see [BENCHMARKING_GUIDE.md](BENCHMARKING_
 3. Cross-link to project-wide methodology
 
 **Files to create/modify**:
-- `Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md` (new)
-- `Bimodal/docs/ProjectInfo/README.md` (update)
+- `Bimodal/docs/project-info/PERFORMANCE_TARGETS.md` (new)
+- `Bimodal/docs/project-info/README.md` (update)
 - `Bimodal/docs/README.md` (add to quick links)
 
 **PERFORMANCE_TARGETS.md content**:
@@ -222,7 +222,7 @@ For complete benchmarking methodology, see [BENCHMARKING_GUIDE.md](BENCHMARKING_
 
 Theory-specific performance baselines and regression thresholds for Bimodal TM logic.
 
-> **Methodology**: See [BENCHMARKING_GUIDE.md](../../../docs/Development/BENCHMARKING_GUIDE.md)
+> **Methodology**: See [BENCHMARKING_GUIDE.md](../../../docs/development/BENCHMARKING_GUIDE.md)
 > for project-wide benchmarking standards.
 
 *Last updated: 2026-01-11*
@@ -304,7 +304,7 @@ lake env lean --run BimodalTest/Semantics/SemanticBenchmark.lean
 
 **Updates to existing files**:
 
-1. `Bimodal/docs/ProjectInfo/README.md` - Add:
+1. `Bimodal/docs/project-info/README.md` - Add:
    ```markdown
    - [PERFORMANCE_TARGETS.md](PERFORMANCE_TARGETS.md) - Performance baselines and thresholds
    ```
@@ -377,9 +377,9 @@ Phase 2 ──┘        │              ▲
 - [ ] `lake build BimodalTest.ProofSystem.DerivationBenchmark` succeeds
 - [ ] `lake build BimodalTest.Semantics.SemanticBenchmark` succeeds
 - [ ] All semantic benchmarks report `correct = true`
-- [ ] `docs/Development/BENCHMARKING_GUIDE.md` exists
-- [ ] `docs/Development/QUALITY_METRICS.md` has benchmarking section
-- [ ] `Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md` contains measured baselines
+- [ ] `docs/development/BENCHMARKING_GUIDE.md` exists
+- [ ] `docs/development/QUALITY_METRICS.md` has benchmarking section
+- [ ] `Bimodal/docs/project-info/PERFORMANCE_TARGETS.md` contains measured baselines
 - [ ] All cross-links between project and theory docs work
 - [ ] `./scripts/run-benchmarks.sh` produces valid JSON
 - [ ] `./scripts/check-regression.sh` exits 0 on matching baseline

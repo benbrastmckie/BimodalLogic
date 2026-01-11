@@ -105,7 +105,7 @@ See [.claude/README.md](../../README.md) for AI system details.
 
 ### LEAN 4 Code Quality
 
-- **Style**: Follow [LEAN Style Guide](../../../docs/Development/LEAN_STYLE_GUIDE.md)
+- **Style**: Follow [LEAN Style Guide](../../../docs/development/LEAN_STYLE_GUIDE.md)
 - **Proof Readability**: Clear tactic sequences, meaningful names
 - **Documentation**: Inline doc comments for all public definitions
 - **Testing**: Comprehensive test coverage in LogosTest/
@@ -196,15 +196,15 @@ lake update                  # Update dependencies
 - Advanced automation
 - Integration with Model-Checker
 
-See [IMPLEMENTATION_STATUS.md](../../../docs/ProjectInfo/IMPLEMENTATION_STATUS.md) for details.
+See [IMPLEMENTATION_STATUS.md](../../../docs/project-info/IMPLEMENTATION_STATUS.md) for details.
 
 ## Related Resources
 
 **Documentation**:
 - [Project README](../../../README.md) - Overview and theoretical foundations
-- [Architecture Guide](../../../docs/UserGuide/ARCHITECTURE.md) - System architecture
-- [Tutorial](../../../docs/UserGuide/TUTORIAL.md) - Getting started
-- [Examples](../../../docs/UserGuide/EXAMPLES.md) - Example proofs
+- [Architecture Guide](../../../docs/user-guide/ARCHITECTURE.md) - System architecture
+- [Tutorial](../../../docs/user-guide/TUTORIAL.md) - Getting started
+- [Examples](../../../docs/user-guide/EXAMPLES.md) - Example proofs
 
 **AI System**:
 - [.claude/README.md](../../README.md) - AI system overview

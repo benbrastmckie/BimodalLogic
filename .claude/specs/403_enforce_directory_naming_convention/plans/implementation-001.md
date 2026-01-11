@@ -14,7 +14,7 @@ Rename 19 capitalized directories that contain no Lean source code to lowercase,
 ### Phase 1: Rename docs/ subdirectories
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Rename 7 PascalCase subdirectories in `docs/` to lowercase
@@ -22,13 +22,13 @@ Rename 19 capitalized directories that contain no Lean source code to lowercase,
 
 **Directories to rename**:
 ```
-docs/Architecture/   → docs/architecture/
-docs/Development/    → docs/development/
-docs/Installation/   → docs/installation/
-docs/ProjectInfo/    → docs/project-info/
-docs/Reference/      → docs/reference/
-docs/Research/       → docs/research/
-docs/UserGuide/      → docs/user-guide/
+docs/architecture/   → docs/architecture/
+docs/development/    → docs/development/
+docs/installation/   → docs/installation/
+docs/project-info/    → docs/project-info/
+docs/reference/      → docs/reference/
+docs/research/       → docs/research/
+docs/user-guide/      → docs/user-guide/
 ```
 
 **Steps**:

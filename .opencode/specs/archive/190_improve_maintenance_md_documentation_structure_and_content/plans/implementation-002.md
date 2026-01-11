@@ -57,8 +57,8 @@ Improve MAINTENANCE.md documentation by adding missing registry references (FEAT
 - **Goal**: Verify current state and prepare for changes
 - **Tasks**:
   - [ ] Read current MAINTENANCE.md content
-  - [ ] Verify FEATURE_REGISTRY.md exists at docs/ProjectInfo/FEATURE_REGISTRY.md
-  - [ ] Verify TACTIC_REGISTRY.md exists at docs/ProjectInfo/TACTIC_REGISTRY.md
+  - [ ] Verify FEATURE_REGISTRY.md exists at docs/project-info/FEATURE_REGISTRY.md
+  - [ ] Verify TACTIC_REGISTRY.md exists at docs/project-info/TACTIC_REGISTRY.md
   - [ ] Identify current Related Documentation section structure
   - [ ] Review existing section organization
   - [ ] Create backup reference of current state
@@ -146,14 +146,14 @@ Improve MAINTENANCE.md documentation by adding missing registry references (FEAT
 
 ## Artifacts & Outputs
 
-- **Modified**: docs/ProjectInfo/MAINTENANCE.md
+- **Modified**: docs/project-info/MAINTENANCE.md
 - **Created**: .opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md (this file)
 - **Created**: .opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/summaries/implementation-summary-20251225.md
 
 ## Rollback/Contingency
 
 If changes introduce issues:
-1. Use `git checkout HEAD -- docs/ProjectInfo/MAINTENANCE.md` to restore original
+1. Use `git checkout HEAD -- docs/project-info/MAINTENANCE.md` to restore original
 2. Review git diff to identify problematic changes
 3. Reapply changes incrementally with validation at each step
 4. If links are broken, verify file paths and update references

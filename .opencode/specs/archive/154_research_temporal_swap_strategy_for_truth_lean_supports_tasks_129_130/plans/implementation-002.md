@@ -72,8 +72,8 @@ Implement Branch B directly in Lean: refactor `derivable_implies_swap_valid` to 
 ### Phase 5: Documentation touchpoints [NOT STARTED]
 - **Goal:** Record the /revise outcome and swap-lemma resolution in project docs.
 - **Tasks:**
-  - [ ] Add a short note to `docs/ProjectInfo/IMPLEMENTATION_STATUS.md` about task 154 plan v2 executing Branch B and retiring 129/130.
-  - [ ] Add a guardrail note to `docs/ProjectInfo/FEATURE_REGISTRY.md` under /revise plan versioning about plan v2 for task 154.
+  - [ ] Add a short note to `docs/project-info/IMPLEMENTATION_STATUS.md` about task 154 plan v2 executing Branch B and retiring 129/130.
+  - [ ] Add a guardrail note to `docs/project-info/FEATURE_REGISTRY.md` under /revise plan versioning about plan v2 for task 154.
 - **Timing:** 0.25h
 - **Verification:** Notes present; no format drift.
 

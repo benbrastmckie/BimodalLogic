@@ -22,7 +22,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 3. Add audience-focused navigation (new users, developers, researchers)
 
 **Files to create**:
-- `docs/UserGuide/README.md` - New file (~80 lines)
+- `docs/user-guide/README.md` - New file (~80 lines)
 
 **Steps**:
 1. Create header with back-link: `[Back to Documentation](../README.md)`
@@ -57,7 +57,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 3. Include audience guidance for contributors and developers
 
 **Files to create**:
-- `docs/Development/README.md` - New file (~100 lines)
+- `docs/development/README.md` - New file (~100 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -91,7 +91,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 3. Include guidance for maintainers
 
 **Files to create**:
-- `docs/ProjectInfo/README.md` - New file (~60 lines)
+- `docs/project-info/README.md` - New file (~60 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -121,7 +121,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 2. Follow Template D (lightweight) pattern
 
 **Files to create**:
-- `docs/Reference/README.md` - New file (~50 lines)
+- `docs/reference/README.md` - New file (~50 lines)
 
 **Steps**:
 1. Create header with back-link
@@ -150,7 +150,7 @@ Create 5 missing README.md files in Documentation subdirectories following the D
 3. Explain ADR purpose and format
 
 **Files to create**:
-- `docs/Architecture/README.md` - New file (~50 lines)
+- `docs/architecture/README.md` - New file (~50 lines)
 
 **Steps**:
 1. Create header with back-link

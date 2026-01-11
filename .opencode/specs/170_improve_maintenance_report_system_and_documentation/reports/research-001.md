@@ -185,7 +185,7 @@ This research analyzes the maintenance report system to clarify command responsi
     },
     {
       "type": "documentation",
-      "path": "docs/ProjectInfo/IMPLEMENTATION_STATUS.md",
+      "path": "docs/project-info/IMPLEMENTATION_STATUS.md",
       "summary": "Updated implementation status registry"
     }
   ],
@@ -650,10 +650,10 @@ Atomicity guaranteed across:
     "tasks_created": 5
   },
   "registries_updated": [
-    "docs/ProjectInfo/IMPLEMENTATION_STATUS.md",
-    "docs/ProjectInfo/SORRY_REGISTRY.md",
-    "docs/ProjectInfo/TACTIC_REGISTRY.md",
-    "docs/ProjectInfo/FEATURE_REGISTRY.md"
+    "docs/project-info/IMPLEMENTATION_STATUS.md",
+    "docs/project-info/SORRY_REGISTRY.md",
+    "docs/project-info/TACTIC_REGISTRY.md",
+    "docs/project-info/FEATURE_REGISTRY.md"
   ]
 }
 ```
@@ -781,10 +781,10 @@ Atomicity guaranteed across:
     ".opencode/specs/207_codebase_review/summaries/review-summary.md"
   ],
   "registries_updated": [
-    "docs/ProjectInfo/IMPLEMENTATION_STATUS.md",
-    "docs/ProjectInfo/SORRY_REGISTRY.md",
-    "docs/ProjectInfo/TACTIC_REGISTRY.md",
-    "docs/ProjectInfo/FEATURE_REGISTRY.md"
+    "docs/project-info/IMPLEMENTATION_STATUS.md",
+    "docs/project-info/SORRY_REGISTRY.md",
+    "docs/project-info/TACTIC_REGISTRY.md",
+    "docs/project-info/FEATURE_REGISTRY.md"
   ]
 }
 ```

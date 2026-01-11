@@ -231,7 +231,7 @@ Create detailed architectural plans for:
 **Impact**: Medium  
 **Effort**: 10-15 hours
 
-**Description**: `docs/UserGuide/TUTORIAL.md` provides basic introduction but lacks advanced topics and hands-on exercises.
+**Description**: `docs/user-guide/TUTORIAL.md` provides basic introduction but lacks advanced topics and hands-on exercises.
 
 **Evidence**:
 - File exists but content unknown (not read in analysis)
@@ -261,7 +261,7 @@ Create detailed architectural plans for:
 **Description**: `ARCHITECTURE.md` provides excellent Layer 0 overview but lacks details on automation, metalogic, and extension strategy.
 
 **Evidence**:
-- File: `docs/UserGuide/ARCHITECTURE.md` (lines 1-100 read)
+- File: `docs/user-guide/ARCHITECTURE.md` (lines 1-100 read)
 - Good coverage of syntax, proof system, semantics
 - Missing: automation architecture, proof search design, metalogic details
 
@@ -286,7 +286,7 @@ Create detailed architectural plans for:
 **Description**: `DIRECTORY_README_STANDARD.md` defines requirements but not all directories have READMEs.
 
 **Evidence**:
-- Standard: `docs/Development/DIRECTORY_README_STANDARD.md`
+- Standard: `docs/development/DIRECTORY_README_STANDARD.md`
 - Missing READMEs in some subdirectories
 - Inconsistent README quality
 
@@ -311,7 +311,7 @@ Create detailed architectural plans for:
 **Description**: `DOC_QUALITY_CHECKLIST.md` provides quality criteria but no systematic application process.
 
 **Evidence**:
-- File: `docs/Development/DOC_QUALITY_CHECKLIST.md`
+- File: `docs/development/DOC_QUALITY_CHECKLIST.md`
 - No evidence of systematic quality reviews
 - Documentation quality varies across modules
 
@@ -593,7 +593,7 @@ Create detailed architectural plans for:
 **Description**: `TACTIC_DEVELOPMENT.md` provides guidance but lacks tooling support for tactic development workflow.
 
 **Evidence**:
-- File: `docs/UserGuide/TACTIC_DEVELOPMENT.md`
+- File: `docs/user-guide/TACTIC_DEVELOPMENT.md`
 - No tactic scaffolding tools
 - No tactic testing templates
 
@@ -904,7 +904,7 @@ Create detailed architectural plans for:
 **Description**: Naming conventions generally follow `LEAN_STYLE_GUIDE.md` but some inconsistencies exist.
 
 **Evidence**:
-- File: `docs/Development/LEAN_STYLE_GUIDE.md`
+- File: `docs/development/LEAN_STYLE_GUIDE.md`
 - Some modules use different naming patterns
 - No automated naming convention checks
 

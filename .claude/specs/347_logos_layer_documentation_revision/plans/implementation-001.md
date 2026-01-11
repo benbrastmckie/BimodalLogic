@@ -29,7 +29,7 @@ The approach preserves existing valuable content (examples, motivation) while re
 4. Add placeholder sections for Epistemic, Normative, Agential layers with [DETAILS] tags
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Create new file
+- `docs/research/RECURSIVE_SEMANTICS.md` - Create new file
 
 **Steps**:
 1. Create document with frontmatter linking to LAYER_EXTENSIONS.md and METHODOLOGY.md
@@ -80,7 +80,7 @@ The approach preserves existing valuable content (examples, motivation) while re
 5. Update all internal cross-references
 
 **Files to modify**:
-- `docs/Research/LAYER_EXTENSIONS.md` - Major restructure
+- `docs/research/LAYER_EXTENSIONS.md` - Major restructure
 
 **Steps**:
 1. Read current LAYER_EXTENSIONS.md to identify all sections to preserve
@@ -154,7 +154,7 @@ The approach preserves existing valuable content (examples, motivation) while re
 4. Ensure consistency with LAYER_EXTENSIONS.md and RECURSIVE_SEMANTICS.md
 
 **Files to modify**:
-- `docs/Reference/GLOSSARY.md` - Update layer terminology
+- `docs/reference/GLOSSARY.md` - Update layer terminology
 
 **Steps**:
 1. Read current GLOSSARY.md to understand existing structure
@@ -199,9 +199,9 @@ The approach preserves existing valuable content (examples, motivation) while re
 4. Final quality check on all modified files
 
 **Files to modify**:
-- `docs/Research/LAYER_EXTENSIONS.md` - Minor fixes if needed
-- `docs/Reference/GLOSSARY.md` - Minor fixes if needed
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Minor fixes if needed
+- `docs/research/LAYER_EXTENSIONS.md` - Minor fixes if needed
+- `docs/reference/GLOSSARY.md` - Minor fixes if needed
+- `docs/research/RECURSIVE_SEMANTICS.md` - Minor fixes if needed
 
 **Steps**:
 1. Verify all links from LAYER_EXTENSIONS.md to RECURSIVE_SEMANTICS.md work
@@ -253,6 +253,6 @@ The approach preserves existing valuable content (examples, motivation) while re
 
 If implementation fails or introduces errors:
 1. All three documents are under git version control
-2. Revert to pre-implementation commit: `git checkout HEAD~1 -- docs/Research/LAYER_EXTENSIONS.md docs/Reference/GLOSSARY.md`
+2. Revert to pre-implementation commit: `git checkout HEAD~1 -- docs/research/LAYER_EXTENSIONS.md docs/reference/GLOSSARY.md`
 3. For new file RECURSIVE_SEMANTICS.md: simply delete if rollback needed
 4. Research reports preserved regardless of implementation outcome

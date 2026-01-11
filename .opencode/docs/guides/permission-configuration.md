@@ -174,7 +174,7 @@ permissions:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
     
     # Write access to research outputs
-    - write: [".opencode/specs/**/*", "docs/Research/**/*"]
+    - write: [".opencode/specs/**/*", "docs/research/**/*"]
     
     # Safe bash commands for analysis
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]

@@ -504,12 +504,12 @@ This directory contains a standalone Python MCP client for lean-lsp-mcp.
 For OpenCode agent integration, see:
 - `/opencode.json` - MCP server configuration
 - `.opencode/agent/subagents/lean-implementation-agent.md` - Tool usage examples
-- docs/Research/LEANSEARCH_API_SPECIFICATION.md - MCP tools guide
+- docs/research/LEANSEARCH_API_SPECIFICATION.md - MCP tools guide
 ```
 
 #### Step 4: Update Documentation
 
-**Create**: `docs/UserGuide/MCP_INTEGRATION.md`
+**Create**: `docs/user-guide/MCP_INTEGRATION.md`
 
 ```markdown
 # MCP Server Integration in OpenCode
@@ -632,7 +632,7 @@ The LLM automatically invokes the appropriate MCP tools based on these instructi
 **Build**:
 - `lean_build` - Rebuild project
 
-See `docs/Research/LEANSEARCH_API_SPECIFICATION.md` for detailed tool documentation.
+See `docs/research/LEANSEARCH_API_SPECIFICATION.md` for detailed tool documentation.
 
 ## Troubleshooting
 
@@ -896,7 +896,7 @@ Increase timeout in MCP server config:
 1. **Create opencode.json** in project root with lean-lsp-mcp configuration
 2. **Update lean-implementation-agent.md** with tool usage instructions (remove Python imports)
 3. **Update lean-research-agent.md** with MCP search tool usage
-4. **Document MCP integration** in `docs/UserGuide/MCP_INTEGRATION.md`
+4. **Document MCP integration** in `docs/user-guide/MCP_INTEGRATION.md`
 5. **Add README to .opencode/tool/mcp/** explaining it's not used by OpenCode agents
 
 #### Short-Term Improvements (Next 1-2 weeks)
@@ -966,9 +966,9 @@ Increase timeout in MCP server config:
 #### Phase 3: Documentation (Day 2-3)
 
 **Actions**:
-1. Create `docs/UserGuide/MCP_INTEGRATION.md`
+1. Create `docs/user-guide/MCP_INTEGRATION.md`
 2. Add README to `.opencode/tool/mcp/`
-3. Update `docs/Research/LEANSEARCH_API_SPECIFICATION.md`
+3. Update `docs/research/LEANSEARCH_API_SPECIFICATION.md`
 4. Document migration in task summary
 
 **Validation**: Documentation is complete and accurate.
@@ -1061,7 +1061,7 @@ Increase timeout in MCP server config:
 - `.opencode/agent/subagents/lean-implementation-agent.md` - Implementation agent
 - `.opencode/agent/subagents/lean-research-agent.md` - Research agent
 - `.opencode/tool/mcp/client.py` - Custom MCP client (not used by OpenCode agents)
-- `docs/Research/LEANSEARCH_API_SPECIFICATION.md` - MCP tools guide
+- `docs/research/LEANSEARCH_API_SPECIFICATION.md` - MCP tools guide
 
 ### Related Tasks
 - Task 212: Research lean-lsp-mcp usage (implemented wrong approach)

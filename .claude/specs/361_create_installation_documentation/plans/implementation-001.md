@@ -7,7 +7,7 @@
 
 ## Overview
 
-Create a comprehensive installation documentation suite in `docs/Installation/` following the pattern from ModelChecker's documentation. The suite includes CLAUDE_CODE.md as the entry point (for AI-assisted installation), plus supporting guides for manual installation, getting started, and Git/GitHub workflows. All content is adapted for Lean 4 + Mathlib requirements.
+Create a comprehensive installation documentation suite in `docs/installation/` following the pattern from ModelChecker's documentation. The suite includes CLAUDE_CODE.md as the entry point (for AI-assisted installation), plus supporting guides for manual installation, getting started, and Git/GitHub workflows. All content is adapted for Lean 4 + Mathlib requirements.
 
 ## Phases
 
@@ -17,15 +17,15 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 **Status**: [NOT STARTED]
 
 **Objectives**:
-1. Create `docs/Installation/` directory
+1. Create `docs/installation/` directory
 2. Create README.md index file linking to all installation docs
 
 **Files to modify**:
-- `docs/Installation/` - Create directory
-- `docs/Installation/README.md` - Create index file
+- `docs/installation/` - Create directory
+- `docs/installation/README.md` - Create index file
 
 **Steps**:
-1. Create `docs/Installation/` directory
+1. Create `docs/installation/` directory
 2. Write `README.md` with:
    - Overview of installation documentation
    - Quick navigation table to all guides
@@ -48,7 +48,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 2. Adapt ModelChecker's structure for Lean 4 specifics
 
 **Files to modify**:
-- `docs/Installation/CLAUDE_CODE.md` - Create new file (~300 lines)
+- `docs/installation/CLAUDE_CODE.md` - Create new file (~300 lines)
 
 **Steps**:
 1. Write Section 1: Getting Started
@@ -100,7 +100,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 2. Cover elan, Lake, Mathlib, VS Code setup
 
 **Files to modify**:
-- `docs/Installation/BASIC_INSTALLATION.md` - Create new file (~250 lines)
+- `docs/installation/BASIC_INSTALLATION.md` - Create new file (~250 lines)
 
 **Steps**:
 1. Write Overview section
@@ -153,7 +153,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 2. Adapt ModelChecker's terminal tutorial for Lean context
 
 **Files to modify**:
-- `docs/Installation/GETTING_STARTED.md` - Create new file (~400 lines)
+- `docs/installation/GETTING_STARTED.md` - Create new file (~400 lines)
 
 **Steps**:
 1. Write Table of Contents
@@ -212,7 +212,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 2. Cover SSH keys, basic commands, contributing workflow
 
 **Files to modify**:
-- `docs/Installation/GIT_GOING.md` - Create new file (~350 lines)
+- `docs/installation/GIT_GOING.md` - Create new file (~350 lines)
 
 **Steps**:
 1. Write What is GitHub section
@@ -302,8 +302,8 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 ## Dependencies
 
 - ModelChecker reference documentation (read during research)
-- Existing docs/UserGuide/TUTORIAL.md (for cross-links)
-- Existing docs/Development/CONTRIBUTING.md (for cross-links)
+- Existing docs/user-guide/TUTORIAL.md (for cross-links)
+- Existing docs/development/CONTRIBUTING.md (for cross-links)
 
 ## Risks and Mitigations
 
@@ -315,7 +315,7 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 
 ## Success Criteria
 
-- [ ] docs/Installation/ directory exists with 5 files
+- [ ] docs/installation/ directory exists with 5 files
 - [ ] CLAUDE_CODE.md is complete entry point (~300 lines)
 - [ ] BASIC_INSTALLATION.md covers Lean 4 + Lake setup
 - [ ] GETTING_STARTED.md covers terminal, editor, first proof
@@ -326,4 +326,4 @@ Create a comprehensive installation documentation suite in `docs/Installation/` 
 
 ## Rollback Plan
 
-Delete `docs/Installation/` directory and revert changes to docs/README.md and root README.md if implementation fails. No existing files are being modified except the two index files.
+Delete `docs/installation/` directory and revert changes to docs/README.md and root README.md if implementation fails. No existing files are being modified except the two index files.

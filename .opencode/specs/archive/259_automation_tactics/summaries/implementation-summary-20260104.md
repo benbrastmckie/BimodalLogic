@@ -29,7 +29,7 @@ lake build Logos.Core.Automation.AesopRules
 ### Documentation Updates ✅ COMPLETED
 
 **Files Modified**:
-1. `docs/ProjectInfo/TACTIC_REGISTRY.md`
+1. `docs/project-info/TACTIC_REGISTRY.md`
    - Updated tm_auto status to reflect noncomputable fixes and remaining issues
    - Updated modal_search and temporal_search status to clarify delegation to tm_auto
    - Updated TMLogic rule set status
@@ -95,7 +95,7 @@ However, tests don't actually use tm_auto, modal_search, or temporal_search tact
 ## Files Modified
 
 1. `Logos/Core/Automation/AesopRules.lean` - Fixed 2 noncomputable errors
-2. `docs/ProjectInfo/TACTIC_REGISTRY.md` - Updated status
+2. `docs/project-info/TACTIC_REGISTRY.md` - Updated status
 3. `Logos/Core/Automation/README.md` - Added recent updates section
 4. `.opencode/specs/TODO.md` - Updated task status to [IMPLEMENTING]
 

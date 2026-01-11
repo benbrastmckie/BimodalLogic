@@ -37,14 +37,14 @@ documentation in the root docs/ directory.
 
 ## Files Created
 
-- **Logos/docs/Research/README.md** - Research directory overview
-- **Bimodal/docs/Research/README.md** - Research directory overview
+- **Logos/docs/research/README.md** - Research directory overview
+- **Bimodal/docs/research/README.md** - Research directory overview
 
 ## Files Modified
 
 - **Logos/docs/README.md** - Added Research section and new file listings
 - **Bimodal/docs/README.md** - Added Research section and new file listings
-- **docs/Research/README.md** - Simplified to project-wide research, added theory links
+- **docs/research/README.md** - Simplified to project-wide research, added theory links
 - **docs/README.md** - Updated all sections to reflect new structure
 
 ## Verification

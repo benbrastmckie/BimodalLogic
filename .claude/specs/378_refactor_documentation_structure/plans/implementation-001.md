@@ -66,13 +66,13 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 3. Ensure compliance with DIRECTORY_README_STANDARD.md templates
 
 **Files to modify**:
-- `docs/Architecture/README.md` - Add audience guidance
-- `docs/Development/README.md` - Update any stale links
-- `docs/Installation/README.md` - Verify links
-- `docs/ProjectInfo/README.md` - Remove TACTIC_REGISTRY.md reference
-- `docs/Reference/README.md` - Remove GLOSSARY.md, OPERATORS.md references
-- `docs/Research/README.md` - Update navigation links
-- `docs/UserGuide/README.md` - Remove references to missing files
+- `docs/architecture/README.md` - Add audience guidance
+- `docs/development/README.md` - Update any stale links
+- `docs/installation/README.md` - Verify links
+- `docs/project-info/README.md` - Remove TACTIC_REGISTRY.md reference
+- `docs/reference/README.md` - Remove GLOSSARY.md, OPERATORS.md references
+- `docs/research/README.md` - Update navigation links
+- `docs/user-guide/README.md` - Remove references to missing files
 
 **Steps**:
 1. **Architecture/README.md**:
@@ -124,9 +124,9 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 3. Update all cross-references
 
 **Files to evaluate**:
-- `docs/UserGuide/INTEGRATION.md` - Project-wide, keep
-- `docs/UserGuide/MCP_INTEGRATION.md` - Project-wide, keep
-- `docs/Reference/API_REFERENCE.md` - Project-wide, keep
+- `docs/user-guide/INTEGRATION.md` - Project-wide, keep
+- `docs/user-guide/MCP_INTEGRATION.md` - Project-wide, keep
+- `docs/reference/API_REFERENCE.md` - Project-wide, keep
 
 **Steps**:
 1. Review remaining files in UserGuide/:
@@ -135,11 +135,11 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
    Both are legitimate project-wide documentation. **Keep UserGuide/ directory**.
 2. Review remaining files in Reference/:
    - API_REFERENCE.md (18KB) - Logos API reference
-   Consider: This references Logos specifically. Should move to Logos/docs/Reference/
-3. Decision: **Keep UserGuide/, move API_REFERENCE.md to Logos/docs/Reference/**
+   Consider: This references Logos specifically. Should move to Logos/docs/reference/
+3. Decision: **Keep UserGuide/, move API_REFERENCE.md to Logos/docs/reference/**
 4. Update UserGuide/README.md to be a thin directory with clear cross-links
 5. Update Reference/README.md to redirect to theory-specific references
-6. Move API_REFERENCE.md to Logos/docs/Reference/
+6. Move API_REFERENCE.md to Logos/docs/reference/
 7. Update any files that reference the moved file
 8. If Reference/ becomes empty (only README.md), consider removing directory
 
@@ -160,7 +160,7 @@ README.md, (2) update subdirectory READMEs, (3) consolidate UserGuide/ and Refer
 2. Verify no orphaned references
 
 **Files to delete**:
-- `docs/Research/RESEARCH_SUMMARY.md` - References moved file
+- `docs/research/RESEARCH_SUMMARY.md` - References moved file
 
 **Steps**:
 1. Delete RESEARCH_SUMMARY.md (references Bimodal research file)

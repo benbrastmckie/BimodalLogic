@@ -40,9 +40,9 @@ Successfully revised the Logos layer documentation to reflect the new five-layer
 
 | File | Change Type |
 |------|-------------|
-| docs/Research/RECURSIVE_SEMANTICS.md | Created (new) |
-| docs/Research/LAYER_EXTENSIONS.md | Major restructure |
-| docs/Reference/GLOSSARY.md | Updated terminology |
+| docs/research/RECURSIVE_SEMANTICS.md | Created (new) |
+| docs/research/LAYER_EXTENSIONS.md | Major restructure |
+| docs/reference/GLOSSARY.md | Updated terminology |
 | .claude/specs/347_*/plans/implementation-002.md | Updated phase statuses |
 
 ## Key Decisions

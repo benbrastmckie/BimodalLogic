@@ -407,7 +407,7 @@ theorem derivable_implies_swap_valid :
 - `Logos/Core/Semantics/Validity.lean` - Validity definition
 
 ### Documentation
-- `docs/UserGuide/ARCHITECTURE.md` - TM logic specification
+- `docs/user-guide/ARCHITECTURE.md` - TM logic specification
 - JPL Paper "The Perpetuity Calculus of Agency" (app:TaskSemantics)
 
 ### Related Concepts

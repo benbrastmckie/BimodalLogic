@@ -24,7 +24,7 @@ This plan systematically addresses 18 FIX tags in RECURSIVE_SEMANTICS.md through
 5. Update section headers and references
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - All terminology changes
+- `docs/research/RECURSIVE_SEMANTICS.md` - All terminology changes
 
 **Steps**:
 1. Replace "Constitutive Layer" with "Constitutive Foundation" (preserve meaning)
@@ -53,7 +53,7 @@ This plan systematically addresses 18 FIX tags in RECURSIVE_SEMANTICS.md through
 3. Change imposition notation from "⊳" to "→"
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - All notation changes
+- `docs/research/RECURSIVE_SEMANTICS.md` - All notation changes
 
 **Steps**:
 1. Replace "a̅" with "v" for variable assignments (lines 88-96, etc.)
@@ -83,7 +83,7 @@ This plan systematically addresses 18 FIX tags in RECURSIVE_SEMANTICS.md through
 3. Ensure consistent formatting throughout
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - All formatting fixes
+- `docs/research/RECURSIVE_SEMANTICS.md` - All formatting fixes
 
 **Steps**:
 1. Line 215-217: Remove "**Note**:" label, integrate explanation into paragraph
@@ -115,7 +115,7 @@ This plan systematically addresses 18 FIX tags in RECURSIVE_SEMANTICS.md through
 7. Add universal quantifier and actuality predicate semantics
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Content additions
+- `docs/research/RECURSIVE_SEMANTICS.md` - Content additions
 
 **Steps**:
 
@@ -196,7 +196,7 @@ The unrestricted universal quantifier validates the Barcan formulas, while the a
 5. Add dependency diagram
 
 **Files to modify**:
-- `docs/Research/RECURSIVE_SEMANTICS.md` - Structural reorganization
+- `docs/research/RECURSIVE_SEMANTICS.md` - Structural reorganization
 
 **Steps**:
 
@@ -312,9 +312,9 @@ The Constitutive Foundation and Core Extension form the required base. The Epist
 3. Update GLOSSARY.md with new terminology and notation
 
 **Files to modify**:
-- `docs/Research/LAYER_EXTENSIONS.md`
-- `docs/UserGuide/METHODOLOGY.md`
-- `docs/Reference/GLOSSARY.md`
+- `docs/research/LAYER_EXTENSIONS.md`
+- `docs/user-guide/METHODOLOGY.md`
+- `docs/reference/GLOSSARY.md`
 
 **Steps**:
 

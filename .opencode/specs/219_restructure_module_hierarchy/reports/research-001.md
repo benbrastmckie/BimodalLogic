@@ -847,9 +847,9 @@ end Logos.Core.Metalogic.SoundnessLemmas
 #### 2. Update Architecture Documentation
 
 **Files**:
-- `docs/UserGuide/ARCHITECTURE.md`: Update module hierarchy diagram
-- `docs/Development/MODULE_ORGANIZATION.md`: Add SoundnessLemmas to structure
-- `docs/ProjectInfo/IMPLEMENTATION_STATUS.md`: Update completion status
+- `docs/user-guide/ARCHITECTURE.md`: Update module hierarchy diagram
+- `docs/development/MODULE_ORGANIZATION.md`: Add SoundnessLemmas to structure
+- `docs/project-info/IMPLEMENTATION_STATUS.md`: Update completion status
 
 **Effort**: 1-2 hours
 
@@ -1400,9 +1400,9 @@ lake build LogosTest || exit 1
 ### Internal Documentation
 
 - [Task 213 Circular Dependency Analysis](../../213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md)
-- [Module Organization Guide](../../../docs/Development/MODULE_ORGANIZATION.md)
-- [Architecture Guide](../../../docs/UserGuide/ARCHITECTURE.md)
-- [ADR-001: Classical Logic](../../../docs/Architecture/ADR-001-Classical-Logic-Noncomputable.md)
+- [Module Organization Guide](../../../docs/development/MODULE_ORGANIZATION.md)
+- [Architecture Guide](../../../docs/user-guide/ARCHITECTURE.md)
+- [ADR-001: Classical Logic](../../../docs/architecture/ADR-001-Classical-Logic-Noncomputable.md)
 
 ### External References
 

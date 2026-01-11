@@ -715,7 +715,7 @@ Archive location: .opencode/specs/archive/state.json
 
 ### User Guide
 
-**File**: `docs/UserGuide/TUTORIAL.md` or similar
+**File**: `docs/user-guide/TUTORIAL.md` or similar
 
 **Updates**:
 - Add section on task archival

@@ -126,8 +126,8 @@ Since Logos is currently a re-export layer:
 ## References
 
 - Bimodal/docs/README.md - Model for theory-specific documentation
-- docs/Development/DIRECTORY_README_STANDARD.md - Template standards
-- docs/Research/THEORY_COMPARISON.md - Theory differentiation
+- docs/development/DIRECTORY_README_STANDARD.md - Template standards
+- docs/research/THEORY_COMPARISON.md - Theory differentiation
 - Logos/README.md - Current Logos implementation overview
 
 ## Next Steps

@@ -56,11 +56,11 @@ Content that is **unique to that theory**:
 
 ```
 Theory-specific docs → Project-wide docs
-  "For coding standards, see docs/Development/LEAN_STYLE_GUIDE.md"
+  "For coding standards, see docs/development/LEAN_STYLE_GUIDE.md"
 
 Project-wide docs → Theory-specific docs
-  "For Bimodal axioms, see Bimodal/docs/Reference/AXIOM_REFERENCE.md"
-  "For Logos status, see Logos/docs/ProjectInfo/IMPLEMENTATION_STATUS.md"
+  "For Bimodal axioms, see Bimodal/docs/reference/AXIOM_REFERENCE.md"
+  "For Logos status, see Logos/docs/project-info/IMPLEMENTATION_STATUS.md"
 ```
 
 ## Phases
@@ -110,8 +110,8 @@ Logos/docs/
 2. Create CURRENT_STATUS.md (instead of PROOF_PATTERNS.md since Logos is re-export)
 
 **Files to create**:
-- `Logos/docs/UserGuide/QUICKSTART.md`
-- `Logos/docs/UserGuide/CURRENT_STATUS.md`
+- `Logos/docs/user-guide/QUICKSTART.md`
+- `Logos/docs/user-guide/CURRENT_STATUS.md`
 
 **Content notes** (minimal overlap):
 - QUICKSTART.md: Explains Logos re-exports Bimodal, links to Bimodal/docs/
@@ -138,12 +138,12 @@ Logos/docs/
 2. Create EXTENSION_STUBS.md (unique to Logos)
 
 **Files to create**:
-- `Logos/docs/Reference/AXIOM_REFERENCE.md`
-- `Logos/docs/Reference/EXTENSION_STUBS.md`
+- `Logos/docs/reference/AXIOM_REFERENCE.md`
+- `Logos/docs/reference/EXTENSION_STUBS.md`
 
 **Content notes** (minimal overlap):
 - AXIOM_REFERENCE.md: Brief note that Logos re-exports Bimodal axioms, link to
-  Bimodal/docs/Reference/AXIOM_REFERENCE.md. NO duplicate axiom content.
+  Bimodal/docs/reference/AXIOM_REFERENCE.md. NO duplicate axiom content.
 - EXTENSION_STUBS.md: Unique content documenting Epistemic/, Normative/, Explanatory/
 
 **Steps**:
@@ -167,9 +167,9 @@ Logos/docs/
 3. Create ROADMAP.md (unique to Logos - hyperintensional development path)
 
 **Files to create**:
-- `Logos/docs/ProjectInfo/IMPLEMENTATION_STATUS.md`
-- `Logos/docs/ProjectInfo/KNOWN_LIMITATIONS.md`
-- `Logos/docs/ProjectInfo/ROADMAP.md`
+- `Logos/docs/project-info/IMPLEMENTATION_STATUS.md`
+- `Logos/docs/project-info/KNOWN_LIMITATIONS.md`
+- `Logos/docs/project-info/ROADMAP.md`
 
 **Content notes** (minimal overlap):
 - Status: Logos-specific only (re-export status, stub modules)
@@ -203,9 +203,9 @@ Logos/docs/
 **Files to modify**:
 - `docs/README.md` - Add theory-specific documentation section
 - `docs/NAVIGATION.md` - Add theory navigation
-- `docs/ProjectInfo/README.md` - Add links to theory status
-- `docs/UserGuide/README.md` - Add links to theory guides
-- `docs/Reference/README.md` - Add links to theory references
+- `docs/project-info/README.md` - Add links to theory status
+- `docs/user-guide/README.md` - Add links to theory guides
+- `docs/reference/README.md` - Add links to theory references
 
 **Content to add to docs/README.md**:
 ```markdown
@@ -266,7 +266,7 @@ Logos is a **planned second-order hyperintensional logic** that will extend beyo
 | **Logical level** | Second-order with first and second-order variables |
 
 For comparison with Bimodal propositional logic, see
-[THEORY_COMPARISON.md](../docs/Research/THEORY_COMPARISON.md).
+[THEORY_COMPARISON.md](../docs/research/THEORY_COMPARISON.md).
 
 ## Theory-Specific Documentation
 
@@ -274,11 +274,11 @@ For Logos-specific guides and references, see [docs/](docs/README.md):
 
 | Document | Description |
 |----------|-------------|
-| [Quick Start](docs/UserGuide/QUICKSTART.md) | Getting started (currently redirects to Bimodal) |
-| [Current Status](docs/UserGuide/CURRENT_STATUS.md) | Logos development status |
-| [Extension Stubs](docs/Reference/EXTENSION_STUBS.md) | Planned extensions |
-| [Implementation Status](docs/ProjectInfo/IMPLEMENTATION_STATUS.md) | Module status |
-| [Roadmap](docs/ProjectInfo/ROADMAP.md) | Development roadmap |
+| [Quick Start](docs/user-guide/QUICKSTART.md) | Getting started (currently redirects to Bimodal) |
+| [Current Status](docs/user-guide/CURRENT_STATUS.md) | Logos development status |
+| [Extension Stubs](docs/reference/EXTENSION_STUBS.md) | Planned extensions |
+| [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) | Module status |
+| [Roadmap](docs/project-info/ROADMAP.md) | Development roadmap |
 ```
 
 **Steps**:

@@ -203,7 +203,7 @@ Research identified that lean-lsp-mcp is properly configured in .mcp.json but co
 
 **Project Documentation**:
 - TODO.md (task 212 status updated to [COMPLETED])
-- docs/ProjectInfo/IMPLEMENTATION_STATUS.md (if needed)
+- docs/project-info/IMPLEMENTATION_STATUS.md (if needed)
 
 ## Rollback/Contingency
 

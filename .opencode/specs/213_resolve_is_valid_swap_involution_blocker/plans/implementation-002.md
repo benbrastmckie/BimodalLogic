@@ -389,9 +389,9 @@ theorem derivable_valid_swap_involution (φ : Formula)
 **Objective**: Update all documentation and registries to reflect the resolution.
 
 **Tasks**:
-1. Update `docs/ProjectInfo/SORRY_REGISTRY.md` to remove is_valid_swap_involution entry
+1. Update `docs/project-info/SORRY_REGISTRY.md` to remove is_valid_swap_involution entry
 2. Update `TODO.md` to mark tasks 184, 193, 209, 213 as COMPLETED
-3. Add lessons learned to `docs/Development/LEAN_STYLE_GUIDE.md`
+3. Add lessons learned to `docs/development/LEAN_STYLE_GUIDE.md`
 4. Create resolution summary in research artifacts
 5. Update IMPLEMENTATION_STATUS.md if needed
 
@@ -540,7 +540,7 @@ arguments to ensure type alignment.
 ### Documentation Artifacts
 
 1. **Updated SORRY_REGISTRY.md**
-   - Location: `docs/ProjectInfo/SORRY_REGISTRY.md`
+   - Location: `docs/project-info/SORRY_REGISTRY.md`
    - Changes: Remove is_valid_swap_involution entry
 
 2. **Updated TODO.md**
@@ -548,7 +548,7 @@ arguments to ensure type alignment.
    - Changes: Mark tasks 184, 193, 209, 213 as COMPLETED
 
 3. **Updated LEAN_STYLE_GUIDE.md**
-   - Location: `docs/Development/LEAN_STYLE_GUIDE.md`
+   - Location: `docs/development/LEAN_STYLE_GUIDE.md`
    - Changes: Add section on semantic vs syntactic properties and usage context verification
 
 4. **Resolution Summary**

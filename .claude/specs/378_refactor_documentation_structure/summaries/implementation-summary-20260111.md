@@ -34,18 +34,18 @@ organization following DIRECTORY_README_STANDARD.md guidelines.
 
 ### Deleted
 - `docs/NAVIGATION.md` - Merged into README.md
-- `docs/Research/RESEARCH_SUMMARY.md` - Stale reference
+- `docs/research/RESEARCH_SUMMARY.md` - Stale reference
 
 ### Updated
 - `docs/README.md` - Complete rewrite as navigation hub
-- `docs/Architecture/README.md` - Added audience guidance
-- `docs/Development/README.md` - Added audience guidance
-- `docs/Development/MODULE_ORGANIZATION.md` - Removed NAVIGATION.md reference
-- `docs/Installation/README.md` - Fixed broken theory links
-- `docs/ProjectInfo/README.md` - Removed TACTIC_REGISTRY.md, updated model name
-- `docs/Reference/README.md` - Removed broken links, added theory cross-links
-- `docs/Research/README.md` - Added audience guidance
-- `docs/UserGuide/README.md` - Removed broken links, added theory cross-links
+- `docs/architecture/README.md` - Added audience guidance
+- `docs/development/README.md` - Added audience guidance
+- `docs/development/MODULE_ORGANIZATION.md` - Removed NAVIGATION.md reference
+- `docs/installation/README.md` - Fixed broken theory links
+- `docs/project-info/README.md` - Removed TACTIC_REGISTRY.md, updated model name
+- `docs/reference/README.md` - Removed broken links, added theory cross-links
+- `docs/research/README.md` - Added audience guidance
+- `docs/user-guide/README.md` - Removed broken links, added theory cross-links
 - `README.md` (root) - Fixed Documentation navigation section
 
 ## Final Structure

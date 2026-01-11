@@ -46,7 +46,7 @@ Research revealed that OpenCode has built-in MCP server support that automatical
 - Create `opencode.json` with lean-lsp-mcp server configuration
 - Update `lean-implementation-agent.md` to use natural language MCP tool instructions
 - Update `lean-research-agent.md` to use natural language MCP tool instructions
-- Create `docs/UserGuide/MCP_INTEGRATION.md` user guide
+- Create `docs/user-guide/MCP_INTEGRATION.md` user guide
 - Mark `.opencode/tool/mcp/client.py` as deprecated (incompatible with OpenCode architecture)
 
 **Out of Scope**:
@@ -67,7 +67,7 @@ Research revealed that OpenCode has built-in MCP server support that automatical
 - [NOT STARTED] `opencode.json` created with lean-lsp-mcp server configuration
 - [NOT STARTED] `lean-implementation-agent.md` updated with natural language MCP tool usage instructions
 - [NOT STARTED] `lean-research-agent.md` updated with natural language MCP tool usage instructions
-- [NOT STARTED] `docs/UserGuide/MCP_INTEGRATION.md` created with comprehensive guide
+- [NOT STARTED] `docs/user-guide/MCP_INTEGRATION.md` created with comprehensive guide
 - [NOT STARTED] `.opencode/tool/mcp/README.md` created documenting deprecation for OpenCode agents
 - [NOT STARTED] Test Lean task successfully uses lean-lsp-mcp tools via configuration
 - [NOT STARTED] No Python import errors (using configuration-based approach)
@@ -241,7 +241,7 @@ Research revealed that OpenCode has built-in MCP server support that automatical
 - Provide troubleshooting guidance
 
 **Tasks**:
-1. Create `docs/UserGuide/MCP_INTEGRATION.md` with sections:
+1. Create `docs/user-guide/MCP_INTEGRATION.md` with sections:
    - Overview of OpenCode native MCP support
    - Configuration guide (opencode.json format)
    - Tool management (global vs per-agent enablement)
@@ -256,13 +256,13 @@ Research revealed that OpenCode has built-in MCP server support that automatical
    - Reference to MCP_INTEGRATION.md for usage guide
 
 **Acceptance Criteria**:
-- `docs/UserGuide/MCP_INTEGRATION.md` created with comprehensive guide
+- `docs/user-guide/MCP_INTEGRATION.md` created with comprehensive guide
 - `.opencode/tool/mcp/README.md` created documenting deprecation for OpenCode agents
 - All sections complete with examples
 - Troubleshooting guide covers common issues
 
 **Files Modified**:
-- `docs/UserGuide/MCP_INTEGRATION.md` (new)
+- `docs/user-guide/MCP_INTEGRATION.md` (new)
 - `.opencode/tool/mcp/README.md` (new)
 
 ---
@@ -334,7 +334,7 @@ Research revealed that OpenCode has built-in MCP server support that automatical
 ### Documentation Artifacts
 
 1. **MCP_INTEGRATION.md**
-   - **Location**: `docs/UserGuide/MCP_INTEGRATION.md`
+   - **Location**: `docs/user-guide/MCP_INTEGRATION.md`
    - **Purpose**: User guide for MCP integration in OpenCode
    - **Format**: Markdown
    - **Size**: ~500 lines
@@ -494,7 +494,7 @@ Selective per-agent tool enablement is critical:
 - `.opencode/agent/subagents/lean-implementation-agent.md` - Implementation agent
 - `.opencode/agent/subagents/lean-research-agent.md` - Research agent
 - `.opencode/tool/mcp/client.py` - Custom MCP client (deprecated for OpenCode agents)
-- `docs/Research/LEANSEARCH_API_SPECIFICATION.md` - MCP tools guide
+- `docs/research/LEANSEARCH_API_SPECIFICATION.md` - MCP tools guide
 
 ---
 

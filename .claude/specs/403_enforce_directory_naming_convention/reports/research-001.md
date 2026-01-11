@@ -28,13 +28,13 @@ lowercase:
 
 #### Top-level `docs/` subdirectories (7 directories)
 ```
-docs/Architecture/          → docs/architecture/
-docs/Development/           → docs/development/
-docs/Installation/          → docs/installation/
-docs/ProjectInfo/           → docs/project-info/
-docs/Reference/             → docs/reference/
-docs/Research/              → docs/research/
-docs/UserGuide/             → docs/user-guide/
+docs/architecture/          → docs/architecture/
+docs/development/           → docs/development/
+docs/installation/          → docs/installation/
+docs/project-info/           → docs/project-info/
+docs/reference/             → docs/reference/
+docs/research/              → docs/research/
+docs/user-guide/             → docs/user-guide/
 ```
 
 #### Theories/Bimodal non-Lean directories (6 directories)

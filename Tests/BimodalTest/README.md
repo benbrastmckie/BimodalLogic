@@ -157,7 +157,7 @@ end BimodalTest.[Module]Test
 
 ### Coverage Requirements
 
-See [TESTING_STANDARDS.md](../docs/Development/TESTING_STANDARDS.md) for detailed coverage targets:
+See [TESTING_STANDARDS.md](../docs/development/TESTING_STANDARDS.md) for detailed coverage targets:
 - **Overall**: >=85% code coverage
 - **Metalogic**: >=90% coverage (soundness/completeness critical)
 - **Automation**: >=80% coverage (tactics and proof search)
@@ -215,17 +215,17 @@ lake build BimodalTest.Metalogic
 lake build BimodalTest.Theorems
 ```
 
-For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../docs/ProjectInfo/IMPLEMENTATION_STATUS.md).
+For detailed implementation status, see [IMPLEMENTATION_STATUS.md](../docs/project-info/IMPLEMENTATION_STATUS.md).
 
 ## Related Documentation
 
-- [Test Coverage Report](../Bimodal/docs/ProjectInfo/TEST_COVERAGE.md) - Definition coverage metrics
-- [Testing Standards](../docs/Development/TESTING_STANDARDS.md) - Detailed test requirements
-- [LEAN Style Guide](../docs/Development/LEAN_STYLE_GUIDE.md) - Code conventions
-- [Implementation Status](../docs/ProjectInfo/IMPLEMENTATION_STATUS.md) - Module status
+- [Test Coverage Report](../Bimodal/docs/project-info/TEST_COVERAGE.md) - Definition coverage metrics
+- [Testing Standards](../docs/development/TESTING_STANDARDS.md) - Detailed test requirements
+- [LEAN Style Guide](../docs/development/LEAN_STYLE_GUIDE.md) - Code conventions
+- [Implementation Status](../docs/project-info/IMPLEMENTATION_STATUS.md) - Module status
 - [Property Testing Guide](Property/README.md) - Property-based testing patterns
 - [Integration Testing Guide](Integration/README.md) - Integration test patterns
-- [Performance Targets](../Bimodal/docs/ProjectInfo/PERFORMANCE_TARGETS.md) - Benchmark baselines
+- [Performance Targets](../Bimodal/docs/project-info/PERFORMANCE_TARGETS.md) - Benchmark baselines
 
 ## Navigation
 

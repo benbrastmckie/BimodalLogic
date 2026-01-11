@@ -12,7 +12,7 @@ The counter-model documentation was preserved as a comment block explaining why 
 ## Files Modified
 
 - `Bimodal/Theorems/ModalS5.lean` - Removed invalid theorem definitions (lines 91-104), replaced with documentation comment preserving counter-model explanation
-- `docs/ProjectInfo/SORRY_REGISTRY.md` - Updated ModalS5 section to reflect removal, changed status from "DOCUMENTED AS INVALID" to "REMOVED (Task 369, 2026-01-11)"
+- `docs/project-info/SORRY_REGISTRY.md` - Updated ModalS5 section to reflect removal, changed status from "DOCUMENTED AS INVALID" to "REMOVED (Task 369, 2026-01-11)"
 - `.claude/specs/TODO.md` - Updated sorry_count from 20 to 19
 
 ## Verification

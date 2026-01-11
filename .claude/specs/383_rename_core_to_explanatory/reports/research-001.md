@@ -119,7 +119,7 @@ The phrase "Core Extension" appears to be the primary term in formal documentati
 
 - `Logos/Core/` - Current implementation (Frame.lean, Syntax.lean, Truth.lean)
 - `Logos/Explanatory/` - Current stub to be replaced
-- `Logos/docs/Research/RECURSIVE_SEMANTICS.md` - Primary terminology source
+- `Logos/docs/research/RECURSIVE_SEMANTICS.md` - Primary terminology source
 - `Logos/latex/LogosReference.tex` - LaTeX document structure
 
 ## Next Steps

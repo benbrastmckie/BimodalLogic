@@ -245,8 +245,8 @@ All APIs are additive. No patterns need to be avoided or migrated.
 ### Documentation
 - [API Changes Analysis](reports/api-changes-analysis.md) - Detailed API review
 - [Summary Report](reports/summary.md) - Executive summary
-- [ARCHITECTURE.md](../../../docs/UserGuide/ARCHITECTURE.md) - System architecture
-- [EXAMPLES.md](../../../docs/UserGuide/EXAMPLES.md) - Example guide
+- [ARCHITECTURE.md](../../../docs/user-guide/ARCHITECTURE.md) - System architecture
+- [EXAMPLES.md](../../../docs/user-guide/EXAMPLES.md) - Example guide
 
 ### Source Files
 - [ProofSearch.lean](../../../Logos/Core/Automation/ProofSearch.lean)

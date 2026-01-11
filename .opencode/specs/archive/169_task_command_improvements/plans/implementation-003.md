@@ -420,7 +420,7 @@ If implementation causes critical issues:
 - .opencode/agent/subagents/task-executor.md
 - .opencode/agent/subagents/batch-task-orchestrator.md
 - All consuming commands identified in Phase 0
-- docs/UserGuide/*.md
+- docs/user-guide/*.md
 - All example files
 - All standards files referencing /task
 - Error messages and user prompts

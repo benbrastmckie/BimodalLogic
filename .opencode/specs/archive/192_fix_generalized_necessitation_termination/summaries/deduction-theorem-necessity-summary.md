@@ -184,8 +184,8 @@ Add to LEAN_STYLE_GUIDE.md:
 
 ## References
 
-- **Full Report**: [deduction-theorem-necessity-research.md](../../../docs/Research/deduction-theorem-necessity-research.md)
-- **Noncomputable Guide**: [noncomputable-research.md](../../../docs/Research/noncomputable-research.md)
+- **Full Report**: [deduction-theorem-necessity-research.md](../../../docs/research/deduction-theorem-necessity-research.md)
+- **Noncomputable Guide**: [noncomputable-research.md](../../../docs/research/noncomputable-research.md)
 - **DeductionTheorem.lean**: `Logos/Core/Metalogic/DeductionTheorem.lean` (lines 41, 332)
 - **Lean Documentation**: [Axioms and Computation](https://lean-lang.org/theorem_proving_in_lean4/axioms_and_computation.html)
 

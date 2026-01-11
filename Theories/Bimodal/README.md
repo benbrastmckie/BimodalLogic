@@ -14,7 +14,7 @@ Bimodal is a **propositional intensional logic** implementing TM (Tense and Moda
 | **Logical level** | Propositional (zeroth-order) |
 
 For comparison with the planned Logos hyperintensional logic (second-order with state
-primitives), see [theory-comparison.md](../docs/Research/theory-comparison.md).
+primitives), see [theory-comparison.md](../docs/research/theory-comparison.md).
 
 ## Purpose
 
@@ -29,12 +29,12 @@ For Bimodal-specific guides and references, see [docs/](docs/README.md):
 
 | Document | Description |
 |----------|-------------|
-| [Quick Start](docs/UserGuide/QUICKSTART.md) | Get started with Bimodal proofs |
-| [Proof Patterns](docs/UserGuide/PROOF_PATTERNS.md) | Common proof strategies |
-| [Axiom Reference](docs/Reference/AXIOM_REFERENCE.md) | Complete axiom schemas |
-| [Tactic Reference](docs/Reference/TACTIC_REFERENCE.md) | Custom tactic usage |
-| [Implementation Status](docs/ProjectInfo/IMPLEMENTATION_STATUS.md) | Module status |
-| [Known Limitations](docs/ProjectInfo/KNOWN_LIMITATIONS.md) | MVP limitations |
+| [Quick Start](docs/user-guide/QUICKSTART.md) | Get started with Bimodal proofs |
+| [Proof Patterns](docs/user-guide/PROOF_PATTERNS.md) | Common proof strategies |
+| [Axiom Reference](docs/reference/AXIOM_REFERENCE.md) | Complete axiom schemas |
+| [Tactic Reference](docs/reference/TACTIC_REFERENCE.md) | Custom tactic usage |
+| [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) | Module status |
+| [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md) | MVP limitations |
 
 ## Submodules
 
@@ -153,8 +153,8 @@ The Bimodal library follows a layered architecture:
 - Automation: Core tactics implemented
 - ProofSearch: Infrastructure with build issues
 
-For detailed status, see [Bimodal Implementation Status](docs/ProjectInfo/IMPLEMENTATION_STATUS.md).
-For known limitations, see [Known Limitations](docs/ProjectInfo/KNOWN_LIMITATIONS.md).
+For detailed status, see [Bimodal Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md).
+For known limitations, see [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md).
 
 ## API Documentation
 
@@ -162,15 +162,15 @@ For detailed API documentation:
 
 - **Module overview**: See [Bimodal.lean](Bimodal.lean) for top-level re-exports
 - **Generated docs**: Run `lake build :docs` to generate doc-gen4 documentation
-- **Architecture guide**: [ARCHITECTURE.md](../docs/UserGuide/ARCHITECTURE.md)
+- **Architecture guide**: [ARCHITECTURE.md](../docs/user-guide/ARCHITECTURE.md)
 - **Code comments**: All public definitions have comprehensive docstrings
 
 ## Development Guidelines
 
 When working on Bimodal source code:
 
-- **Follow style guide**: [LEAN_STYLE_GUIDE.md](../docs/Development/LEAN_STYLE_GUIDE.md)
-- **Write tests first**: [TESTING_STANDARDS.md](../docs/Development/TESTING_STANDARDS.md)
+- **Follow style guide**: [LEAN_STYLE_GUIDE.md](../docs/development/LEAN_STYLE_GUIDE.md)
+- **Write tests first**: [TESTING_STANDARDS.md](../docs/development/TESTING_STANDARDS.md)
 - **Document thoroughly**: Every public definition requires docstring
 - **Run lint**: Zero `#lint` warnings required
 - **Build successfully**: `lake build` must complete without errors
@@ -208,19 +208,19 @@ When working on Bimodal source code:
 ### Theory-Specific (Bimodal)
 
 - [Bimodal Documentation](docs/README.md) - Theory-specific documentation hub
-- [Quick Start](docs/UserGuide/QUICKSTART.md) - Getting started with Bimodal
-- [Axiom Reference](docs/Reference/AXIOM_REFERENCE.md) - Complete axiom schemas
-- [Known Limitations](docs/ProjectInfo/KNOWN_LIMITATIONS.md) - MVP limitations
+- [Quick Start](docs/user-guide/QUICKSTART.md) - Getting started with Bimodal
+- [Axiom Reference](docs/reference/AXIOM_REFERENCE.md) - Complete axiom schemas
+- [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md) - MVP limitations
 
 ### Project-Wide
 
-- [Theory Comparison](../docs/Research/theory-comparison.md) - Bimodal vs Logos
-- [LEAN Style Guide](../docs/Development/LEAN_STYLE_GUIDE.md) - Coding conventions
-- [Module Organization](../docs/Development/MODULE_ORGANIZATION.md) - Directory structure
-- [Testing Standards](../docs/Development/TESTING_STANDARDS.md) - Test requirements
-- [Architecture Guide](../docs/UserGuide/ARCHITECTURE.md) - TM logic specification
-- [Tutorial](../docs/UserGuide/TUTORIAL.md) - Getting started
-- [Implementation Status](../docs/ProjectInfo/IMPLEMENTATION_STATUS.md) - Project status
+- [Theory Comparison](../docs/research/theory-comparison.md) - Bimodal vs Logos
+- [LEAN Style Guide](../docs/development/LEAN_STYLE_GUIDE.md) - Coding conventions
+- [Module Organization](../docs/development/MODULE_ORGANIZATION.md) - Directory structure
+- [Testing Standards](../docs/development/TESTING_STANDARDS.md) - Test requirements
+- [Architecture Guide](../docs/user-guide/ARCHITECTURE.md) - TM logic specification
+- [Tutorial](../docs/user-guide/TUTORIAL.md) - Getting started
+- [Implementation Status](../docs/project-info/IMPLEMENTATION_STATUS.md) - Project status
 
 ## Navigation
 

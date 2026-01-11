@@ -489,8 +489,8 @@ example : ⊢ some_theorem := by
 **Files to Update**:
 
 1. `Logos/Core/Automation/Tactics.lean` - Update docstrings
-2. `docs/UserGuide/TACTIC_DEVELOPMENT.md` - Add modal_search examples
-3. `docs/ProjectInfo/TACTIC_REGISTRY.md` - Register new tactics
+2. `docs/user-guide/TACTIC_DEVELOPMENT.md` - Add modal_search examples
+3. `docs/project-info/TACTIC_REGISTRY.md` - Register new tactics
 4. `README.md` - Add usage examples
 
 **Documentation Content**:
@@ -758,8 +758,8 @@ def bounded_search (Γ : Context) (φ : Formula) (depth : Nat) ...
 - `.opencode/specs/260_proof_search/reports/research-001.md` - Task 260 research
 - `.opencode/specs/260_proof_search/plans/implementation-001.md` - Task 260 plan
 - `.opencode/specs/260_proof_search/summaries/implementation-summary-20260105.md` - Task 260 status
-- `docs/Research/PROOF_SEARCH_AUTOMATION.md` - Proof search strategies
-- `docs/Research/MODAL_TEMPORAL_PROOF_SEARCH.md` - Modal/temporal automation
+- `docs/research/PROOF_SEARCH_AUTOMATION.md` - Proof search strategies
+- `docs/research/MODAL_TEMPORAL_PROOF_SEARCH.md` - Modal/temporal automation
 
 ### Lean 4 Resources
 

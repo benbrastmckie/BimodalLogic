@@ -18,8 +18,8 @@
   - `.opencode/context/core/standards/status-markers.md`
   - `.opencode/context/core/system/artifact-management.md`
   - `.opencode/context/core/standards/tasks.md`
-  - `docs/Development/LEAN_STYLE_GUIDE.md`
-  - `docs/UserGuide/EXAMPLES.md` (documentation patterns)
+  - `docs/development/LEAN_STYLE_GUIDE.md`
+  - `docs/user-guide/EXAMPLES.md` (documentation patterns)
 - **Language**: lean
 - **Lean Intent**: true
 
@@ -39,7 +39,7 @@ This plan implements enhancements to existing example files to demonstrate new a
 - Add ~90 lines of automation examples to `Archive/ModalProofs.lean` demonstrating `bounded_search`, `search_with_heuristics`, `search_with_cache`
 - Add ~40 lines of temporal automation examples to `Archive/TemporalProofs.lean`
 - Add ~30 lines of perpetuity automation examples to `Archive/BimodalProofs.lean` for principles P1-P6
-- Update `docs/UserGuide/EXAMPLES.md` with automation feature references
+- Update `docs/user-guide/EXAMPLES.md` with automation feature references
 - Maintain 100% backward compatibility (no modifications to existing examples)
 - Follow LEAN_STYLE_GUIDE.md patterns (module docstrings, section headers, example docstrings)
 - Include performance benchmarks and search statistics demonstrations
@@ -256,7 +256,7 @@ import Logos.Core.Automation.Tactics      -- For tactic demonstrations
 ### Phase 4: Documentation Updates [COMPLETED]
 
 **Completed**: 2025-12-25
-**Goal**: Update `docs/UserGuide/EXAMPLES.md` with automation feature references and cross-links.
+**Goal**: Update `docs/user-guide/EXAMPLES.md` with automation feature references and cross-links.
 
 **Tasks**:
 - [ ] Add new subsection to "Modal Logic Examples" section:
@@ -358,7 +358,7 @@ lake build 2>&1 | grep -i "error"
    - New sections: Perpetuity Automation Examples, Combined Modal-Temporal Search
    - New import: `Logos.Core.Automation.ProofSearch`
 
-4. **docs/UserGuide/EXAMPLES.md** (448 → ~500 lines, +~50 lines)
+4. **docs/user-guide/EXAMPLES.md** (448 → ~500 lines, +~50 lines)
    - New subsections for automation features
    - Cross-references to ProofSearch API
    - Links to research documentation
@@ -417,7 +417,7 @@ If implementation encounters critical issues:
    git checkout Archive/ModalProofs.lean
    git checkout Archive/TemporalProofs.lean
    git checkout Archive/BimodalProofs.lean
-   git checkout docs/UserGuide/EXAMPLES.md
+   git checkout docs/user-guide/EXAMPLES.md
    lake build Logos.Examples  # Verify rollback successful
    ```
 
@@ -493,8 +493,8 @@ If implementation encounters critical issues:
 - **Research Summary**: `.opencode/specs/177_examples_update/summaries/research-summary.md` (100 lines)
 - **ProofSearch Implementation**: `Logos/Core/Automation/ProofSearch.lean` (461 lines)
 - **Tactics Implementation**: `Logos/Core/Automation/Tactics.lean` (626 lines)
-- **Style Guide**: `docs/Development/LEAN_STYLE_GUIDE.md`
-- **Example Patterns**: `docs/UserGuide/EXAMPLES.md` (448 lines)
+- **Style Guide**: `docs/development/LEAN_STYLE_GUIDE.md`
+- **Example Patterns**: `docs/user-guide/EXAMPLES.md` (448 lines)
 
 ---
 

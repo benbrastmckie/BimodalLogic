@@ -408,7 +408,7 @@ This subagent has been deprecated and replaced by inline description reformulati
       - Confidence: high
       
       RESEARCH SUMMARY:
-      Found LeanSearch API specification in docs/Research/LEANSEARCH_API_SPECIFICATION.md. Similar integration tasks (280, 285) took 6-8 hours.
+      Found LeanSearch API specification in docs/research/LEANSEARCH_API_SPECIFICATION.md. Similar integration tasks (280, 285) took 6-8 hours.
       
       SIMILAR TASKS:
       280, 285
@@ -436,7 +436,7 @@ This subagent has been deprecated and replaced by inline description reformulati
       - Confidence: high
       
       RESEARCH SUMMARY:
-      Found completeness research in docs/Research/MODAL_TEMPORAL_PROOF_SEARCH.md. Similar completeness proofs (200, 210) took 12-16 hours.
+      Found completeness research in docs/research/MODAL_TEMPORAL_PROOF_SEARCH.md. Similar completeness proofs (200, 210) took 12-16 hours.
       
       SIMILAR TASKS:
       200, 210, 220

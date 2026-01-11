@@ -607,9 +607,9 @@ permissions:
   "context": {
     "agent": "researcher",
     "operation": "write",
-    "path": "docs/Research/report.md"
+    "path": "docs/research/report.md"
   },
-  "message": "Permission denied: write to docs/Research/report.md",
+  "message": "Permission denied: write to docs/research/report.md",
   "recommendation": "Add 'docs/**/*' to researcher allow list"
 }
 ```
@@ -715,7 +715,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
-    - write: [".opencode/specs/**/*", "docs/Research/**/*"]
+    - write: [".opencode/specs/**/*", "docs/research/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]

@@ -73,10 +73,10 @@ There's a two-layer architecture:
 - 5 markdown files (research vision documents)
 - Archived December 2025 as part of Spec 029
 - Content integrated into:
-  - `/docs/UserGuide/METHODOLOGY.md`
-  - `/docs/Research/DUAL_VERIFICATION.md`
-  - `/docs/Research/PROOF_LIBRARY_DESIGN.md`
-  - `/docs/Research/LAYER_EXTENSIONS.md`
+  - `/docs/user-guide/METHODOLOGY.md`
+  - `/docs/research/DUAL_VERIFICATION.md`
+  - `/docs/research/PROOF_LIBRARY_DESIGN.md`
+  - `/docs/research/LAYER_EXTENSIONS.md`
 
 **Assessment**: This subdirectory is purely historical archive. Could be removed or moved to a more explicit archive location, but provides useful reference for documentation evolution.
 
@@ -100,8 +100,8 @@ Multiple files reference outdated paths:
 | TemporalProofStrategies.lean | 50 | `../Logos/Core/Theorems/Perpetuity.lean` | `../Bimodal/Theorems/Perpetuity.lean` |
 
 External Documentation (lower priority):
-- `docs/Development/NONCOMPUTABLE_GUIDE.md`: Multiple `Logos.Core` references
-- `docs/Development/MODULE_ORGANIZATION.md`: Multiple `Logos/Core` references
+- `docs/development/NONCOMPUTABLE_GUIDE.md`: Multiple `Logos.Core` references
+- `docs/development/MODULE_ORGANIZATION.md`: Multiple `Logos/Core` references
 
 ## Recommendations
 

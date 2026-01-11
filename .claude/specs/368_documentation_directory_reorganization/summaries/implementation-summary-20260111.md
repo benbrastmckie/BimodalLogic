@@ -14,8 +14,8 @@ Refactor the docs/ directory structure to improve organization by:
 ## Changes Made
 
 ### Phase 0: Resolve Duplicate MAINTENANCE.md
-- **Deleted**: `docs/Development/MAINTENANCE.md` (540 lines, Three-Document Model)
-- **Kept**: `docs/ProjectInfo/MAINTENANCE.md` (663 lines, Five-Document Model)
+- **Deleted**: `docs/development/MAINTENANCE.md` (540 lines, Three-Document Model)
+- **Kept**: `docs/project-info/MAINTENANCE.md` (663 lines, Five-Document Model)
 - **Updated**: docs/README.md, docs/NAVIGATION.md to remove duplicate reference
 - **Fixed**: NAVIGATION.md file counts (Development 11→10, ProjectInfo 3→5)
 - **Added**: FEATURE_REGISTRY.md to docs/README.md ProjectInfo section
@@ -25,26 +25,26 @@ Refactor the docs/ directory structure to improve organization by:
 - **Rationale**: Content serves both users and developers; noted as "advanced" in README
 
 ### Phase 1: Create UserGuide/README.md
-- **Created**: `docs/UserGuide/README.md` (78 lines)
+- **Created**: `docs/user-guide/README.md` (78 lines)
 - **Organization**: Getting Started, Core Concepts, Integration, Advanced Development
 - **Features**: Recommended reading orders for new users, researchers, and developers
 
 ### Phase 2: Create Development/README.md
-- **Created**: `docs/Development/README.md` (89 lines)
+- **Created**: `docs/development/README.md` (89 lines)
 - **Organization**: Standards, Practical Guides, Project Organization, Contribution Workflow
 - **Features**: Links to ProjectInfo/MAINTENANCE.md for TODO workflow
 
 ### Phase 3: Create ProjectInfo/README.md
-- **Created**: `docs/ProjectInfo/README.md` (79 lines)
+- **Created**: `docs/project-info/README.md` (79 lines)
 - **Organization**: Status Tracking, Feature Tracking, Workflow Documentation
 - **Features**: Documents the Five-Document Model, quick reference section
 
 ### Phase 4: Create Reference/README.md
-- **Created**: `docs/Reference/README.md` (48 lines)
+- **Created**: `docs/reference/README.md` (48 lines)
 - **Organization**: Reference Materials table with quick lookup section
 
 ### Phase 5: Create Architecture/README.md
-- **Created**: `docs/Architecture/README.md` (60 lines)
+- **Created**: `docs/architecture/README.md` (60 lines)
 - **Organization**: ADR catalog with guidance on creating new ADRs
 
 ### Phase 6: Update Root README.md
@@ -64,14 +64,14 @@ Refactor the docs/ directory structure to improve organization by:
 ## Files Modified
 
 **Deleted**:
-- `docs/Development/MAINTENANCE.md`
+- `docs/development/MAINTENANCE.md`
 
 **Created**:
-- `docs/Architecture/README.md`
-- `docs/Development/README.md`
-- `docs/ProjectInfo/README.md`
-- `docs/Reference/README.md`
-- `docs/UserGuide/README.md`
+- `docs/architecture/README.md`
+- `docs/development/README.md`
+- `docs/project-info/README.md`
+- `docs/reference/README.md`
+- `docs/user-guide/README.md`
 
 **Updated**:
 - `docs/README.md` - Added README links, Architecture section, missing files

@@ -294,7 +294,7 @@ def runPropertyTests : IO Unit := do
 
 ## Specialist Reports
 
-- **Web Research**: docs/Research/property-based-testing-lean4.md
+- **Web Research**: docs/research/property-based-testing-lean4.md
   - Comprehensive findings on Plausible framework
   - Detailed integration instructions
   - Code examples for all patterns

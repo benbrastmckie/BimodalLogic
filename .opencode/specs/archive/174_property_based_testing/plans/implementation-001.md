@@ -39,7 +39,7 @@ This implementation plan is based on comprehensive research completed on 2025-12
    - Key findings and recommendations
    - Quick reference for implementation
 
-3. **Detailed Findings**: `docs/Research/property-based-testing-lean4.md`
+3. **Detailed Findings**: `docs/research/property-based-testing-lean4.md`
    - 986 lines of comprehensive documentation
    - Complete API reference and examples
    - Integration guide and best practices
@@ -588,9 +588,9 @@ This implementation plan is based on comprehensive research completed on 2025-12
 
 **Files**:
 - `LogosTest/Core/Property/README.md`
-- `docs/Development/PROPERTY_TESTING_GUIDE.md` (create)
+- `docs/development/PROPERTY_TESTING_GUIDE.md` (create)
 - `.github/workflows/property-tests.yml`
-- `docs/ProjectInfo/IMPLEMENTATION_STATUS.md`
+- `docs/project-info/IMPLEMENTATION_STATUS.md`
 
 **Approach**:
 1. **Update README.md** with TaskModel generator examples:
@@ -886,7 +886,7 @@ docs/
   - Key findings and recommendations
   - Quick reference for implementation
 
-- [Detailed Findings](docs/Research/property-based-testing-lean4.md)
+- [Detailed Findings](docs/research/property-based-testing-lean4.md)
   - 986 lines of comprehensive documentation
   - Complete API reference and examples
 

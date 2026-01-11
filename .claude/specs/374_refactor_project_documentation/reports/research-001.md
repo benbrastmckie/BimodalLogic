@@ -38,11 +38,11 @@ These files are specifically about the Logos theory or the planned Logos extensi
 
 | File | Reason | Target Location |
 |------|--------|-----------------|
-| Research/RECURSIVE_SEMANTICS.md | Describes Logos semantic extensions | Logos/docs/Research/ |
-| Research/LAYER_EXTENSIONS.md | Logos extension architecture | Logos/docs/Research/ |
-| Research/CONCEPTUAL_ENGINEERING.md | Logos philosophical foundations | Logos/docs/Research/ |
-| UserGuide/METHODOLOGY.md | Logos layer architecture methodology | Logos/docs/UserGuide/ |
-| Reference/GLOSSARY.md | Logos operator glossary | Logos/docs/Reference/ |
+| Research/RECURSIVE_SEMANTICS.md | Describes Logos semantic extensions | Logos/docs/research/ |
+| Research/LAYER_EXTENSIONS.md | Logos extension architecture | Logos/docs/research/ |
+| Research/CONCEPTUAL_ENGINEERING.md | Logos philosophical foundations | Logos/docs/research/ |
+| UserGuide/METHODOLOGY.md | Logos layer architecture methodology | Logos/docs/user-guide/ |
+| Reference/GLOSSARY.md | Logos operator glossary | Logos/docs/reference/ |
 
 **Rationale**: These files describe the planned Logos hyperintensional logic, its layer
 architecture, and conceptual foundations. They reference Logos-specific constructs
@@ -54,19 +54,19 @@ These files are specifically about Bimodal TM logic or its proof automation:
 
 | File | Reason | Target Location |
 |------|--------|-----------------|
-| Research/MODAL_TEMPORAL_PROOF_SEARCH.md | TM proof search automation | Bimodal/docs/Research/ |
-| Research/temporal-logic-automation-research.md | Bimodal temporal tactics | Bimodal/docs/Research/ |
-| Research/PROOF_SEARCH_AUTOMATION.md | Bimodal proof search | Bimodal/docs/Research/ |
-| Research/leansearch-best-first-search.md | Bimodal search algorithms | Bimodal/docs/Research/ |
-| Research/leansearch-priority-queue.md | Bimodal search structures | Bimodal/docs/Research/ |
-| Research/leansearch-proof-caching-memoization.md | Bimodal caching | Bimodal/docs/Research/ |
-| Research/LEANSEARCH_API_SPECIFICATION.md | Lean search API | Bimodal/docs/Research/ |
-| UserGuide/ARCHITECTURE.md | TM logic specification | Bimodal/docs/UserGuide/ |
-| UserGuide/TUTORIAL.md | TM logic tutorial | Bimodal/docs/UserGuide/ |
-| UserGuide/EXAMPLES.md | TM logic examples | Bimodal/docs/UserGuide/ |
-| UserGuide/TACTIC_DEVELOPMENT.md | Bimodal tactic development | Bimodal/docs/UserGuide/ |
-| Reference/OPERATORS.md | TM operators reference | Bimodal/docs/Reference/ |
-| ProjectInfo/TACTIC_REGISTRY.md | Bimodal tactic registry | Bimodal/docs/ProjectInfo/ |
+| Research/MODAL_TEMPORAL_PROOF_SEARCH.md | TM proof search automation | Bimodal/docs/research/ |
+| Research/temporal-logic-automation-research.md | Bimodal temporal tactics | Bimodal/docs/research/ |
+| Research/PROOF_SEARCH_AUTOMATION.md | Bimodal proof search | Bimodal/docs/research/ |
+| Research/leansearch-best-first-search.md | Bimodal search algorithms | Bimodal/docs/research/ |
+| Research/leansearch-priority-queue.md | Bimodal search structures | Bimodal/docs/research/ |
+| Research/leansearch-proof-caching-memoization.md | Bimodal caching | Bimodal/docs/research/ |
+| Research/LEANSEARCH_API_SPECIFICATION.md | Lean search API | Bimodal/docs/research/ |
+| UserGuide/ARCHITECTURE.md | TM logic specification | Bimodal/docs/user-guide/ |
+| UserGuide/TUTORIAL.md | TM logic tutorial | Bimodal/docs/user-guide/ |
+| UserGuide/EXAMPLES.md | TM logic examples | Bimodal/docs/user-guide/ |
+| UserGuide/TACTIC_DEVELOPMENT.md | Bimodal tactic development | Bimodal/docs/user-guide/ |
+| Reference/OPERATORS.md | TM operators reference | Bimodal/docs/reference/ |
+| ProjectInfo/TACTIC_REGISTRY.md | Bimodal tactic registry | Bimodal/docs/project-info/ |
 
 **Rationale**: These files describe the implemented Bimodal TM logic, its proof system,
 automation tactics, and operator semantics. They are specific to the working implementation.
@@ -121,7 +121,7 @@ Move theory-specific files to their target locations and add cross-links in docs
 
 1. **Create Research/ directories** in Logos/docs/ and Bimodal/docs/
 2. **Move files** to appropriate theory directories
-3. **Update docs/Research/README.md** to link to theory-specific research
+3. **Update docs/research/README.md** to link to theory-specific research
 4. **Update all cross-references** in moved files
 
 ### Approach 2: Copy with Deprecation Notices
@@ -139,34 +139,34 @@ may not work across all platforms.
 ### Phase 1: Create Target Directories
 
 ```
-mkdir -p Logos/docs/Research/
-mkdir -p Bimodal/docs/Research/
+mkdir -p Logos/docs/research/
+mkdir -p Bimodal/docs/research/
 ```
 
 ### Phase 2: Move Logos-Specific Files
 
 ```
-mv docs/Research/RECURSIVE_SEMANTICS.md Logos/docs/Research/
-mv docs/Research/LAYER_EXTENSIONS.md Logos/docs/Research/
-mv docs/Research/CONCEPTUAL_ENGINEERING.md Logos/docs/Research/
-mv docs/UserGuide/METHODOLOGY.md Logos/docs/UserGuide/
-mv docs/Reference/GLOSSARY.md Logos/docs/Reference/
+mv docs/research/RECURSIVE_SEMANTICS.md Logos/docs/research/
+mv docs/research/LAYER_EXTENSIONS.md Logos/docs/research/
+mv docs/research/CONCEPTUAL_ENGINEERING.md Logos/docs/research/
+mv docs/user-guide/METHODOLOGY.md Logos/docs/user-guide/
+mv docs/reference/GLOSSARY.md Logos/docs/reference/
 ```
 
 ### Phase 3: Move Bimodal-Specific Files
 
 ```
-mv docs/Research/MODAL_TEMPORAL_PROOF_SEARCH.md Bimodal/docs/Research/
-mv docs/Research/temporal-logic-automation-research.md Bimodal/docs/Research/
-mv docs/Research/PROOF_SEARCH_AUTOMATION.md Bimodal/docs/Research/
-mv docs/Research/leansearch-*.md Bimodal/docs/Research/
-mv docs/Research/LEANSEARCH_API_SPECIFICATION.md Bimodal/docs/Research/
-mv docs/UserGuide/ARCHITECTURE.md Bimodal/docs/UserGuide/
-mv docs/UserGuide/TUTORIAL.md Bimodal/docs/UserGuide/
-mv docs/UserGuide/EXAMPLES.md Bimodal/docs/UserGuide/
-mv docs/UserGuide/TACTIC_DEVELOPMENT.md Bimodal/docs/UserGuide/
-mv docs/Reference/OPERATORS.md Bimodal/docs/Reference/
-mv docs/ProjectInfo/TACTIC_REGISTRY.md Bimodal/docs/ProjectInfo/
+mv docs/research/MODAL_TEMPORAL_PROOF_SEARCH.md Bimodal/docs/research/
+mv docs/research/temporal-logic-automation-research.md Bimodal/docs/research/
+mv docs/research/PROOF_SEARCH_AUTOMATION.md Bimodal/docs/research/
+mv docs/research/leansearch-*.md Bimodal/docs/research/
+mv docs/research/LEANSEARCH_API_SPECIFICATION.md Bimodal/docs/research/
+mv docs/user-guide/ARCHITECTURE.md Bimodal/docs/user-guide/
+mv docs/user-guide/TUTORIAL.md Bimodal/docs/user-guide/
+mv docs/user-guide/EXAMPLES.md Bimodal/docs/user-guide/
+mv docs/user-guide/TACTIC_DEVELOPMENT.md Bimodal/docs/user-guide/
+mv docs/reference/OPERATORS.md Bimodal/docs/reference/
+mv docs/project-info/TACTIC_REGISTRY.md Bimodal/docs/project-info/
 ```
 
 ### Phase 4: Update READMEs and Cross-References

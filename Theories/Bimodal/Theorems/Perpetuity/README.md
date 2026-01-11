@@ -49,10 +49,10 @@ lake env lean Bimodal/Theorems/Perpetuity/Bridge.lean
 For detailed API documentation, see:
 - Module overview: [Perpetuity.lean](../../Theorems.lean) (parent module re-exports)
 - Generated docs: Run `lake build :docs`
-- Architecture guide: [ARCHITECTURE.md](../../../../docs/UserGuide/ARCHITECTURE.md)
+- Architecture guide: [ARCHITECTURE.md](../../../../docs/user-guide/ARCHITECTURE.md)
 
 ## Related Documentation
 
-- [LEAN Style Guide](../../../../docs/Development/LEAN_STYLE_GUIDE.md)
-- [Module Organization](../../../../docs/Development/MODULE_ORGANIZATION.md)
-- [Implementation Status](../../../../docs/ProjectInfo/IMPLEMENTATION_STATUS.md)
+- [LEAN Style Guide](../../../../docs/development/LEAN_STYLE_GUIDE.md)
+- [Module Organization](../../../../docs/development/MODULE_ORGANIZATION.md)
+- [Implementation Status](../../../../docs/project-info/IMPLEMENTATION_STATUS.md)

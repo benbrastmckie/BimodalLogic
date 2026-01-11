@@ -329,9 +329,9 @@ grep -c "example\|theorem" LogosTest/Core/Automation/TacticsTest.lean
 7. Verify all documentation is accurate and complete
 
 **Files Modified**:
-- `docs/ProjectInfo/TACTIC_REGISTRY.md`
+- `docs/project-info/TACTIC_REGISTRY.md`
 - `Logos/Core/Automation/README.md`
-- `docs/ProjectInfo/FEATURE_REGISTRY.md` (if needed)
+- `docs/project-info/FEATURE_REGISTRY.md` (if needed)
 
 **Acceptance Criteria**:
 - [ ] TACTIC_REGISTRY.md shows 12/12 tactics complete
@@ -344,7 +344,7 @@ grep -c "example\|theorem" LogosTest/Core/Automation/TacticsTest.lean
 **Validation**:
 ```bash
 # Verify TACTIC_REGISTRY.md updated
-grep "12/12" docs/ProjectInfo/TACTIC_REGISTRY.md
+grep "12/12" docs/project-info/TACTIC_REGISTRY.md
 
 # Verify README.md has examples
 grep -c "example" Logos/Core/Automation/README.md
@@ -438,7 +438,7 @@ grep -c "example" Logos/Core/Automation/README.md
 ### Documentation Artifacts
 
 1. **TACTIC_REGISTRY.md** (updated)
-   - Location: `docs/ProjectInfo/TACTIC_REGISTRY.md`
+   - Location: `docs/project-info/TACTIC_REGISTRY.md`
    - Changes: Update status to 12/12 complete
    - Status: [NOT STARTED]
 
@@ -603,7 +603,7 @@ This plan integrates key findings from research-001.md:
 ### References
 
 - Research Report: `.opencode/specs/259_automation_tactics/reports/research-001.md`
-- TACTIC_REGISTRY.md: `docs/ProjectInfo/TACTIC_REGISTRY.md`
+- TACTIC_REGISTRY.md: `docs/project-info/TACTIC_REGISTRY.md`
 - ProofSearch.lean: `Logos/Core/Automation/ProofSearch.lean`
 - Tactics.lean: `Logos/Core/Automation/Tactics.lean`
 - AesopRules.lean: `Logos/Core/Automation/AesopRules.lean`

@@ -541,8 +541,8 @@ example (p : Formula) : ⊢ p.box.imp p.box.box := by
 
 ### Documentation
 
-- `docs/UserGuide/PROOF_SEARCH.md` - User guide (new)
-- `docs/Development/PROOF_SEARCH_INTERNALS.md` - Developer guide (new)
+- `docs/user-guide/PROOF_SEARCH.md` - User guide (new)
+- `docs/development/PROOF_SEARCH_INTERNALS.md` - Developer guide (new)
 
 ## Rollback
 

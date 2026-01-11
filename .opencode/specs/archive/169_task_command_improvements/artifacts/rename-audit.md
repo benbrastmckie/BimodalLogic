@@ -130,19 +130,19 @@
 
 ### Low Priority (Feature Registry & Status)
 
-16. **`docs/ProjectInfo/FEATURE_REGISTRY.md`**
+16. **`docs/project-info/FEATURE_REGISTRY.md`**
     - Multiple /task feature descriptions
     - Update: All /task references to /implement
 
-17. **`docs/ProjectInfo/IMPLEMENTATION_STATUS.md`**
+17. **`docs/project-info/IMPLEMENTATION_STATUS.md`**
     - Task status references mentioning /task
     - Update: All /task references to /implement
 
-18. **`docs/ProjectInfo/TACTIC_REGISTRY.md`**
+18. **`docs/project-info/TACTIC_REGISTRY.md`**
     - Standards updated section mentions /task
     - Update: All /task references to /implement
 
-19. **`docs/ProjectInfo/SORRY_REGISTRY.md`**
+19. **`docs/project-info/SORRY_REGISTRY.md`**
     - Registry update requirements mention /task
     - Update: All /task references to /implement
 

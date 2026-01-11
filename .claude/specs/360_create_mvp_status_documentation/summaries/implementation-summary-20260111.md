@@ -24,11 +24,11 @@ creation. Phase 5 is blocked pending Task 372 (Logos/docs/ reorganization).
 - Updated BimodalTest/README.md with Implementation Status section
 
 ### Phase 3: Create Theory Comparison Document
-- Created `docs/Research/THEORY_COMPARISON.md`
+- Created `docs/research/THEORY_COMPARISON.md`
 - Documented key differences:
   - Bimodal: Propositional intensional logic, world-state primitives
   - Logos: Second-order hyperintensional logic, state primitives
-- Updated docs/Research/README.md with link
+- Updated docs/research/README.md with link
 
 ### Phase 4: Create Bimodal/docs/ Structure
 Created full directory structure following DIRECTORY_README_STANDARD.md:
@@ -69,17 +69,17 @@ Bimodal/docs/
 
 ## Files Created
 
-- `docs/Research/THEORY_COMPARISON.md`
+- `docs/research/THEORY_COMPARISON.md`
 - `Bimodal/docs/README.md`
-- `Bimodal/docs/UserGuide/README.md`
-- `Bimodal/docs/UserGuide/QUICKSTART.md`
-- `Bimodal/docs/UserGuide/PROOF_PATTERNS.md`
-- `Bimodal/docs/Reference/README.md`
-- `Bimodal/docs/Reference/AXIOM_REFERENCE.md`
-- `Bimodal/docs/Reference/TACTIC_REFERENCE.md`
-- `Bimodal/docs/ProjectInfo/README.md`
-- `Bimodal/docs/ProjectInfo/IMPLEMENTATION_STATUS.md`
-- `Bimodal/docs/ProjectInfo/KNOWN_LIMITATIONS.md`
+- `Bimodal/docs/user-guide/README.md`
+- `Bimodal/docs/user-guide/QUICKSTART.md`
+- `Bimodal/docs/user-guide/PROOF_PATTERNS.md`
+- `Bimodal/docs/reference/README.md`
+- `Bimodal/docs/reference/AXIOM_REFERENCE.md`
+- `Bimodal/docs/reference/TACTIC_REFERENCE.md`
+- `Bimodal/docs/project-info/README.md`
+- `Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md`
+- `Bimodal/docs/project-info/KNOWN_LIMITATIONS.md`
 
 ## Files Modified
 
@@ -89,7 +89,7 @@ Bimodal/docs/
 - `BimodalTest/Metalogic/CompletenessTest.lean` - Added pending comments
 - `BimodalTest/Theorems/PropositionalTest.lean` - Added pending comments
 - `BimodalTest/Theorems/PerpetuityTest.lean` - Added pending comments
-- `docs/Research/README.md` - Added THEORY_COMPARISON.md link
+- `docs/research/README.md` - Added THEORY_COMPARISON.md link
 - `Bimodal/README.md` - Major update with theory documentation
 
 ## Dependencies

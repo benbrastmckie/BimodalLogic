@@ -31,7 +31,7 @@ Lean-specific overlay that sits on top of the canonical logic conventions in `pr
 
 ### Sorry Policy (Lean)
 - No `sorry` or `admit` in main; development branches must document registry links.
-- If a temporary sorry is unavoidable during local work: add a docstring TODO and reference `docs/ProjectInfo/SORRY_REGISTRY.md`, then remove before merge.
+- If a temporary sorry is unavoidable during local work: add a docstring TODO and reference `docs/project-info/SORRY_REGISTRY.md`, then remove before merge.
 
 ### Tests & Regeneration
 - Add/maintain tests in `LogosTest/` when proofs or semantics change.
