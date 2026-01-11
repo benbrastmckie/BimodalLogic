@@ -6,12 +6,12 @@
     {
       "project_number": 372,
       "project_name": "create_logos_documentation_and_refactor_root",
-      "status": "researched",
+      "status": "planning",
       "language": "general",
       "priority": "medium",
       "description": "Create Logos/Documentation/ directory similar to Bimodal/Documentation/ to contain Logos-specific documentation, and refactor ProofChecker/Documentation/ to be theory agnostic.",
       "created": "2026-01-11T15:33:52Z",
-      "last_updated": "2026-01-11T18:30:00Z",
+      "last_updated": "2026-01-11T19:45:00Z",
       "artifacts": [
         {
           "type": "research",
@@ -22,20 +22,25 @@
     {
       "project_number": 371,
       "project_name": "refactor_latex_reference_manual_titles",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "type": "enhancement",
       "effort": "1 hour",
       "description": "Refactor LaTeX title formatting in BimodalReference.tex and LogosReference.tex for professional academic manual appearance. BimodalReference: main title \"Reference Manual\", subtitle \"Bimodal Logic for Tense and Modality\", author Benjamin Brast-McKie with website link (www.benbrastmckie.com), reference to paper \"The Construction of Possible Worlds\" with PDF link. LogosReference: same format plus references to two published Springer papers.",
       "created": "2026-01-11T15:21:50Z",
-      "last_updated": "2026-01-11T15:29:34Z",
+      "last_updated": "2026-01-11T15:47:47Z",
       "artifacts": [
         {
           "type": "research",
           "path": ".claude/specs/371_refactor_latex_reference_manual_titles/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/371_refactor_latex_reference_manual_titles/plans/implementation-001.md"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 370,
@@ -603,7 +608,9 @@
         }
       ],
       "plan_version": "001",
-      "dependencies": [372],
+      "dependencies": [
+        372
+      ],
       "dependency_note": "Phase 5 blocked pending Task 372 (Logos/Documentation/ reorganization)",
       "started": "2026-01-11",
       "phases_completed": "1, 2, 3, 4, 6, 7",
