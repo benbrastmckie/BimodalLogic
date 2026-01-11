@@ -6,18 +6,19 @@
     {
       "project_number": 390,
       "project_name": "research_logos_original_archive_removal",
-      "status": "researched",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "description": "Research whether .claude/archive/logos-original/ can be removed or if the files contain important content not represented elsewhere that should be preserved.",
       "created": "2026-01-11T20:27:46Z",
-      "last_updated": "2026-01-11T20:31:37Z",
+      "last_updated": "2026-01-11T20:35:02Z",
       "artifacts": [
         {
           "type": "research",
           "path": ".claude/specs/390_research_logos_original_archive_removal/reports/research-001.md"
         }
-      ]
+      ],
+      "completed": "2026-01-11"
     },
     {
       "project_number": 389,

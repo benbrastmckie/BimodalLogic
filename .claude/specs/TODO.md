@@ -99,9 +99,10 @@ technical_debt:
 
 ### 390. Research logos-original archive removal
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/390_research_logos_original_archive_removal/reports/research-001.md)
