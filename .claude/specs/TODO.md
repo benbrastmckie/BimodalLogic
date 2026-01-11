@@ -97,10 +97,12 @@ technical_debt:
 
 ### 390. Research logos-original archive removal
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-11
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/390_research_logos_original_archive_removal/reports/research-001.md)
 
 **Description**: Research whether `.claude/archive/logos-original/` can be removed or if the files contain important content not represented elsewhere that should be preserved.
 

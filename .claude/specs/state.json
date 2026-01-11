@@ -6,21 +6,27 @@
     {
       "project_number": 390,
       "project_name": "research_logos_original_archive_removal",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "description": "Research whether .claude/archive/logos-original/ can be removed or if the files contain important content not represented elsewhere that should be preserved.",
       "created": "2026-01-11T20:27:46Z",
-      "last_updated": "2026-01-11T20:29:01Z"
+      "last_updated": "2026-01-11T20:31:37Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/390_research_logos_original_archive_removal/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 389,
       "project_name": "standardize_nnn_number_format",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-11T20:22:45Z",
-      "last_updated": "2026-01-11T20:29:04Z",
+      "last_updated": "2026-01-11T20:31:56Z",
       "artifacts": [
         {
           "type": "research",
@@ -177,12 +183,12 @@
     {
       "project_number": 381,
       "project_name": "add_causal_semantics_infrastructure",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.",
       "created": "2026-01-11T18:49:04Z",
-      "last_updated": "2026-01-11T18:49:04Z"
+      "last_updated": "2026-01-11T20:31:37Z"
     },
     {
       "project_number": 382,
