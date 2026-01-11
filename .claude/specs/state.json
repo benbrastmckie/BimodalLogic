@@ -6,12 +6,18 @@
     {
       "project_number": 373,
       "project_name": "create_shared_latex_assets_directory",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "description": "Create a single ProofChecker/LaTeX/ directory to provide general purpose assets that can be imported and used by Logos/LaTeX/ and Bimodal/LaTeX/ as well as other theories included in the future, instead of maintaining similar latex standards separately.",
       "created": "2026-01-11T16:30:08Z",
-      "last_updated": "2026-01-11T16:31:41Z"
+      "last_updated": "2026-01-11T16:34:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/373_create_shared_latex_assets_directory/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 372,

@@ -62,9 +62,11 @@ technical_debt:
 
 ### 373. Create shared LaTeX assets directory
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/373_create_shared_latex_assets_directory/reports/research-001.md)
 
 **Description**: Create a single ProofChecker/LaTeX/ directory to provide general purpose assets that can be imported and used by Logos/LaTeX/ and Bimodal/LaTeX/ as well as other theories included in the future, instead of maintaining similar latex standards separately.
 
