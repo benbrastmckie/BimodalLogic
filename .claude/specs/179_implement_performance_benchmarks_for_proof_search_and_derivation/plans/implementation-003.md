@@ -200,7 +200,7 @@ For complete benchmarking methodology, see [BENCHMARKING_GUIDE.md](BENCHMARKING_
 
 ### Phase 3b: Theory-Specific Performance Targets
 
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 **Estimated effort**: 1 hour
 
 **Prerequisite**: Phase 1 and 2 must be complete (needs actual measurements).
@@ -323,7 +323,7 @@ lake env lean --run BimodalTest/Semantics/SemanticBenchmark.lean
 
 ### Phase 4: CI Integration (Minimal)
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 **Estimated effort**: 1.5 hours
 
 *(Unchanged from v002)*

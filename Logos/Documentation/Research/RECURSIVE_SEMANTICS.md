@@ -26,7 +26,7 @@ The following diagram shows the dependency structure among extensions:
                         ▼
 ┌─────────────────────────────────────────────────┐
 │              Core Extension                     │
-│    (modal, temporal, counterfactual operators)  │
+│    (modal, temporal, counterfactual, causal)    │
 └───────────────────────┬─────────────────────────┘
                         │
        ┌────────────────┼────────────────┐

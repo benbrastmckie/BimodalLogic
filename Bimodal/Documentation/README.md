@@ -82,6 +82,7 @@ Most-referenced documents:
 - [Operators](Reference/OPERATORS.md) - Operator reference
 - [Implementation Status](ProjectInfo/IMPLEMENTATION_STATUS.md) - Current status
 - [Known Limitations](ProjectInfo/KNOWN_LIMITATIONS.md) - MVP limitations
+- [Performance Targets](ProjectInfo/PERFORMANCE_TARGETS.md) - Benchmark baselines
 
 ## Relationship to Project Documentation
 

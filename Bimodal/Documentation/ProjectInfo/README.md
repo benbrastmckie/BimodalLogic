@@ -8,6 +8,8 @@ Project status and tracking for the Bimodal TM logic implementation.
 |----------|-------------|
 | [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) | Module-by-module implementation status |
 | [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) | Current MVP limitations and workarounds |
+| [PERFORMANCE_TARGETS.md](PERFORMANCE_TARGETS.md) | Performance baselines and regression thresholds |
+| [TACTIC_REGISTRY.md](TACTIC_REGISTRY.md) | Available tactics and automation |
 
 ## Quick Status
 
