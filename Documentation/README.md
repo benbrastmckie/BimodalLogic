@@ -42,30 +42,31 @@ Setup and configuration guides:
 
 ### UserGuide/
 
-User-facing documentation for working with Logos:
+Project-wide user documentation:
 
 - [README.md](UserGuide/README.md) - Directory overview and reading order
-- [METHODOLOGY.md](UserGuide/METHODOLOGY.md) - Philosophical foundations and layer architecture
-- [ARCHITECTURE.md](UserGuide/ARCHITECTURE.md) - System design and TM logic specification
-- [TUTORIAL.md](UserGuide/TUTORIAL.md) - Getting started guide for new users
-- [EXAMPLES.md](UserGuide/EXAMPLES.md) - Usage examples and proof patterns
 - [INTEGRATION.md](UserGuide/INTEGRATION.md) - Integration with model checkers and other tools
 - [MCP_INTEGRATION.md](UserGuide/MCP_INTEGRATION.md) - MCP server integration (advanced)
-- [TACTIC_DEVELOPMENT.md](UserGuide/TACTIC_DEVELOPMENT.md) - Custom tactic development guide
+
+> **Theory-specific guides**: See [Bimodal/Documentation/UserGuide/](../Bimodal/Documentation/UserGuide/)
+> for tutorials, examples, and architecture documentation.
 
 ### Research/
 
-Research vision and planned architecture. For implementation status, see
+Project-wide research documents. For implementation status, see
 [ProjectInfo/IMPLEMENTATION_STATUS.md](ProjectInfo/IMPLEMENTATION_STATUS.md).
 
 - [README.md](Research/README.md) - Research documentation overview
+- [THEORY_COMPARISON.md](Research/THEORY_COMPARISON.md) - Comparison of Bimodal and Logos
 - [DUAL_VERIFICATION.md](Research/DUAL_VERIFICATION.md) - RL training architecture design
 - [PROOF_LIBRARY_DESIGN.md](Research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
-- [LAYER_EXTENSIONS.md](Research/LAYER_EXTENSIONS.md) - Layers 1-3 extension specifications
+
+> **Theory-specific research**: See [Logos/Documentation/Research/](../Logos/Documentation/Research/)
+> and [Bimodal/Documentation/Research/](../Bimodal/Documentation/Research/).
 
 ### ProjectInfo/
 
-Project status, feature tracking, and registries:
+Project-wide status and tracking:
 
 - [README.md](ProjectInfo/README.md) - Directory overview and Five-Document Model
 - [FEATURE_REGISTRY.md](ProjectInfo/FEATURE_REGISTRY.md) - Feature tracking and capabilities
@@ -75,7 +76,8 @@ Project status, feature tracking, and registries:
   model, Five-Document Model)
 - [SORRY_REGISTRY.md](ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking (sorry
   placeholders with resolution context)
-- [TACTIC_REGISTRY.md](ProjectInfo/TACTIC_REGISTRY.md) - Registry of planned and completed tactics
+
+> **Theory-specific status**: See theory ProjectInfo directories for implementation status.
 
 ### Development/
 
@@ -105,12 +107,14 @@ Developer standards, conventions, and contribution workflow:
 
 ### Reference/
 
-Reference materials:
+Project-wide reference materials:
 
 - [README.md](Reference/README.md) - Directory overview and quick lookup guide
-- [API_REFERENCE.md](Reference/API_REFERENCE.md) - Logos API documentation
-- [GLOSSARY.md](Reference/GLOSSARY.md) - Terminology mapping and key concepts
-- [OPERATORS.md](Reference/OPERATORS.md) - Formal symbols reference (Unicode notation guide)
+- [API_REFERENCE.md](Reference/API_REFERENCE.md) - API documentation
+
+> **Theory-specific reference**: See [Logos/Documentation/Reference/](../Logos/Documentation/Reference/)
+> for Logos glossary and operators, [Bimodal/Documentation/Reference/](../Bimodal/Documentation/Reference/)
+> for TM operators and axioms.
 
 ### Architecture/
 
@@ -141,9 +145,8 @@ Context-aware development system for automated workflows:
 - [Installation](Installation/README.md) - Set up ProofChecker
 - [Claude Code Setup](Installation/CLAUDE_CODE.md) - AI-assisted installation (recommended)
 - [Getting Started](Installation/GETTING_STARTED.md) - Terminal and editor basics
-- [Tutorial](UserGuide/TUTORIAL.md) - Start writing proofs
-- [Architecture Overview](UserGuide/ARCHITECTURE.md) - Understand TM logic
-- [Usage Examples](UserGuide/EXAMPLES.md) - Learn by example
+- [Bimodal Tutorial](../Bimodal/Documentation/UserGuide/TUTORIAL.md) - Start writing proofs
+- [TM Architecture](../Bimodal/Documentation/UserGuide/ARCHITECTURE.md) - Understand TM logic
 
 ### For Contributors
 
@@ -159,8 +162,6 @@ Context-aware development system for automated workflows:
 
 - [Testing Standards](Development/TESTING_STANDARDS.md) - Test requirements
 - [Module Organization](Development/MODULE_ORGANIZATION.md) - Project structure
-- [Tactic Development](UserGuide/TACTIC_DEVELOPMENT.md) - Custom tactic development guide
-- [Tactic Registry](ProjectInfo/TACTIC_REGISTRY.md) - Tactic implementation status
 - [Metaprogramming Guide](Development/METAPROGRAMMING_GUIDE.md) - LEAN 4 tactics
 - [Phased Implementation](Development/PHASED_IMPLEMENTATION.md) - Execution roadmap
 - [Quality Metrics](Development/QUALITY_METRICS.md) - Quality targets
@@ -168,15 +169,15 @@ Context-aware development system for automated workflows:
 
 ### Quick Reference
 
-- [Operators Reference](Reference/OPERATORS.md) - Symbol notation guide
-- [Terminology Glossary](Reference/GLOSSARY.md) - Key concepts and definitions
+- [TM Operators](../Bimodal/Documentation/Reference/OPERATORS.md) - Symbol notation guide
+- [Logos Glossary](../Logos/Documentation/Reference/GLOSSARY.md) - Key concepts
 
 ### For Researchers
 
-- [Logos Methodology](UserGuide/METHODOLOGY.md) - Philosophical foundations
 - [Research Overview](Research/README.md) - Research documentation index
-- [Dual Verification](Research/DUAL_VERIFICATION.md) - RL training architecture
-- [Layer Extensions](Research/LAYER_EXTENSIONS.md) - Layers 1-3 specifications
+- [Theory Comparison](Research/THEORY_COMPARISON.md) - Bimodal vs Logos
+- [Logos Methodology](../Logos/Documentation/UserGuide/METHODOLOGY.md) - Philosophical foundations
+- [Logos Semantics](../Logos/Documentation/Research/RECURSIVE_SEMANTICS.md) - Full specification
 
 ### For AI-Assisted Development
 
@@ -190,20 +191,20 @@ Context-aware development system for automated workflows:
 
 When updating documentation:
 
-1. **User-facing changes**: Update relevant UserGuide/ files first
-   - New features → TUTORIAL.md and EXAMPLES.md
-   - Logic changes → ARCHITECTURE.md
-   - Integration changes → INTEGRATION.md
+1. **Theory-specific changes**: Update theory Documentation/ directories
+   - Bimodal changes → Bimodal/Documentation/
+   - Logos changes → Logos/Documentation/
+   - New features/tutorials → theory UserGuide/
+   - Operators/axioms → theory Reference/
 
-2. **Implementation changes**: Update ProjectInfo/IMPLEMENTATION_STATUS.md
-   - Mark modules as complete when fully implemented
-   - Update completion percentages
-   - Add verification commands
+2. **Project-wide changes**: Update this Documentation/ directory
+   - Installation guides → Installation/
+   - Development standards → Development/
+   - Architecture decisions → Architecture/
 
-3. **New limitations**: Document in ProjectInfo/IMPLEMENTATION_STATUS.md Known Limitations section
-   - Explain why limitation exists
-   - Provide workarounds
-   - Add to roadmap
+3. **Implementation changes**: Update appropriate ProjectInfo/
+   - Theory status → theory ProjectInfo/IMPLEMENTATION_STATUS.md
+   - Project status → Documentation/ProjectInfo/IMPLEMENTATION_STATUS.md
 
 4. **Style/standard changes**: Update Development/ standards files
    - Coding conventions → LEAN_STYLE_GUIDE.md
@@ -212,7 +213,7 @@ When updating documentation:
 
 5. **Cross-references**: Ensure all links remain valid
    - Check links in updated files
-   - Update README.md if structure changes
+   - Update README.md files if structure changes
    - Run link checker if available
 
 ## Documentation Standards

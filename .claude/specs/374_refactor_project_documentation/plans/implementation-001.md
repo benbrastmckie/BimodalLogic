@@ -141,7 +141,7 @@ project-wide documentation in the root Documentation/ directory. This follows th
 ### Phase 5: Update Root Documentation/README.md
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Simplify Documentation/README.md to focus on project-wide content
