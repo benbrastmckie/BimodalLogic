@@ -105,14 +105,14 @@
     {
       "project_number": 367,
       "project_name": "complete_example_proofs",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "type": "enhancement",
       "effort": "4-6 hours",
       "description": "Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.",
       "created": "2026-01-11T02:22:16Z",
-      "last_updated": "2026-01-11T11:23:44-08:00",
+      "last_updated": "2026-01-11T11:24:48-08:00",
       "review_source": ".claude/specs/reviews/review-20260110.md"
     },
     {

@@ -119,15 +119,17 @@ technical_debt:
 
 ### 367. Complete example proofs
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-11
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 - **Review Source**: [.claude/specs/reviews/review-20260110.md]
 - **Research**: [research-001.md](.claude/specs/367_complete_example_proofs/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/367_complete_example_proofs/plans/implementation-001.md)
 
 **Description**: Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.
 
