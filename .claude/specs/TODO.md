@@ -137,9 +137,11 @@ technical_debt:
 
 ### 361. Create installation documentation
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
+- **Researched**: 2026-01-11
+- **Research**: [.claude/specs/361_create_installation_documentation/reports/research-001.md]
 
 **Description**: Create installation documentation similar to /home/benjamin/Projects/ModelChecker CLAUDE_CODE.md including dependencies (BASIC_INSTALLATION.md, GETTING_STARTED.md, GIT_GOING.md) so users can start with CLAUDE_CODE.md to systematically install everything for the ProofChecker project.
 
