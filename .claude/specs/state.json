@@ -6,22 +6,22 @@
     {
       "project_number": 386,
       "project_name": "fix_command_artifact_linking_in_todo_md",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "description": "Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.",
       "created": "2026-01-11T19:58:51Z",
-      "last_updated": "2026-01-11T19:58:51Z"
+      "last_updated": "2026-01-11T22:00:00Z"
     },
     {
       "project_number": 385,
       "project_name": "refactor_meta_command_task_creation",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "description": "Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.",
       "created": "2026-01-11T19:39:55Z",
-      "last_updated": "2026-01-11T19:48:50Z",
+      "last_updated": "2026-01-11T20:01:39Z",
       "started": "2026-01-12",
       "researched": "2026-01-12",
       "artifacts": [
@@ -32,8 +32,14 @@
         {
           "type": "research",
           "path": ".claude/specs/385_refactor_meta_command_task_creation/reports/research-002.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/plans/implementation-001.md"
         }
-      ]
+      ],
+      "planned": "2026-01-12",
+      "plan_version": 1
     },
     {
       "project_number": 384,
