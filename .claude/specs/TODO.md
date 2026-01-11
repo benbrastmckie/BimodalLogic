@@ -30,13 +30,15 @@ technical_debt:
 
 ### 388. Fix /todo command directory archiving
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/388_fix_todo_command_directory_archiving/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/388_fix_todo_command_directory_archiving/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/388_fix_todo_command_directory_archiving/summaries/implementation-summary-20260112.md)
 
 **Description**: Fix /todo command to move project directories (`.claude/specs/{N}_{SLUG}/`) to archive directory (`.claude/specs/archive/{N}_{SLUG}/`) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.
 
