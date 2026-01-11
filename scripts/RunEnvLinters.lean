@@ -5,7 +5,7 @@ Authors: Logos Contributors
 
 Executable for running environment linters on compiled Logos modules.
 This uses the Batteries linting infrastructure to execute @[env_linter]
-annotated linters defined in Logos/Lint/EnvLinters.lean.
+annotated linters defined in Theories/Logos/Lint/EnvLinters.lean.
 -/
 
 import Batteries.Tactic.Lint.Frontend

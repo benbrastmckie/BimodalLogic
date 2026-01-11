@@ -6,12 +6,19 @@
     {
       "project_number": 386,
       "project_name": "fix_command_artifact_linking_in_todo_md",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "description": "Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.",
       "created": "2026-01-11T19:58:51Z",
-      "last_updated": "2026-01-11T22:00:00Z"
+      "last_updated": "2026-01-11T20:03:29Z",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 385,
