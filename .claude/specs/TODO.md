@@ -90,12 +90,13 @@ technical_debt:
 
 ### 356. Create systematic documentation for Bimodal/ and BimodalTest/
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Blocking**: None
 - **Dependencies**: 352, 353
 - **Research**: [.claude/specs/356_bimodal_directory_documentation/reports/research-001.md]
+- **Plan**: [.claude/specs/356_bimodal_directory_documentation/plans/implementation-001.md]
 
 **Description**: Create systematic documentation for Bimodal/ and BimodalTest/ following /home/benjamin/Projects/ProofChecker/Documentation/Development/DIRECTORY_README_STANDARD.md
 
