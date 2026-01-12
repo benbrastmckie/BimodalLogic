@@ -89,11 +89,13 @@ technical_debt:
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/reports/research-001.md)
 - **Files Affected**:
   - .github/workflows/ci.yml (new)
   - .github/workflows/lint.yml (new)
@@ -278,7 +280,7 @@ technical_debt:
 
 ### 420. Upgrade Mathlib version
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 400
