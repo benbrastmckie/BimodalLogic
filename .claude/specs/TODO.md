@@ -226,11 +226,13 @@ technical_debt:
 
 ### 445. Maximal consistent set properties
 - **Effort**: 10-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 444
+- **Research**: [research-001.md](.claude/specs/445_maximal_consistent_set_properties/reports/research-001.md)
 - **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 2)
 
 **Description**: Phase 2 of completeness proofs: Prove key properties of maximal consistent sets. Prove maximal_consistent_closed, maximal_negation_complete, implication/conjunction/disjunction properties, modal and temporal saturation lemmas.
