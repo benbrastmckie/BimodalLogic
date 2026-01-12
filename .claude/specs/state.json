@@ -284,14 +284,20 @@
       "project_number": 132,
       "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",
       "type": "feature",
-      "phase": "on_hold",
-      "status": "on_hold",
+      "phase": "researched",
+      "status": "researched",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T16:30:00Z",
+      "last_updated": "2026-01-12T22:52:00Z",
       "effort": "3 hours",
-      "on_hold_reason": "Pending Bimodal polish (Task 360)"
+      "on_hold_reason": "Pending Bimodal polish (Task 360)",
+      "artifacts": [
+        {
+          "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 133,
