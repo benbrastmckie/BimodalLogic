@@ -119,7 +119,7 @@ If emojis found, replace with text alternatives from table above.
 ## Version History
 
 - v5.0.0 (2026-01-05): Optimized with direct delegation
-- v4.0.0 (2026-01-05): Full refactor with --divide flag
+- v4.0.0 (2026-01-05): Full refactor with --expand flag
 - v3.0.0 (2026-01-05): Simplified to direct implementation
 ```
 

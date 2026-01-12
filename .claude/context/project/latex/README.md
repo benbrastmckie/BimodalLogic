@@ -13,9 +13,12 @@ LaTeX-specific context for Logos documentation. Use these files for document str
 ## LaTeX-Specific Files
 
 ### Standards
-- `standards/latex-style-guide.md` - Document class, packages, formatting rules
+- `standards/latex-style-guide.md` - Document class, packages, formatting rules, **semantic linefeeds**
 - `standards/notation-conventions.md` - Mathematical symbols and logos-notation.sty usage
 - `standards/document-structure.md` - Main document and subfile organization
+
+### Rules (Auto-Loaded)
+- `../../rules/latex.md` - Formatting rules triggered automatically for `.tex` files
 
 ### Patterns
 - `patterns/theorem-environments.md` - Definition, theorem, proof, remark usage
@@ -34,6 +37,8 @@ Load these files when:
 2. Adding mathematical content to existing documents
 3. Setting up new subfiles
 4. Troubleshooting compilation issues
+
+**Note**: The `.claude/rules/latex.md` rules file loads automatically when editing `.tex` files, enforcing semantic linefeeds and other formatting conventions.
 
 ## Related Context
 

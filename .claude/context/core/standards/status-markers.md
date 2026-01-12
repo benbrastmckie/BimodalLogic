@@ -255,7 +255,7 @@ This document defines the complete set of status markers used throughout the Pro
     ▼
 [ABANDONED]
 
-Any non-terminal ──(/task --divide)──> [EXPANDED] (delegates to subtasks)
+Any non-terminal ──(/task --expand)──> [EXPANDED] (delegates to subtasks)
 ```
 
 ---
