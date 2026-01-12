@@ -95,7 +95,7 @@ technical_debt:
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 
@@ -146,25 +146,29 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking Resolved**: Yes (via AxiomWitness pattern)
 - **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/260_proof_search/reports/research-001.md), [research-002.md](.claude/specs/260_proof_search/reports/research-002.md)
+- **Research**: [research-001.md](.claude/specs/260_proof_search/reports/research-001.md), [research-002.md](.claude/specs/260_proof_search/reports/research-002.md), [research-003.md](.claude/specs/260_proof_search/reports/research-003.md)
 - **Plan**: [Implementation Plan](.claude/specs/260_proof_search/plans/implementation-001.md)
 - **Implementation**: [Implementation Summary](.claude/specs/260_proof_search/summaries/implementation-summary-20260105.md)
 
 **Description**: Implement automated proof search for TM logic with proof term construction.
 
-**Blocking Resolution** (research-002): Create parallel `AxiomWitness : Formula -> Type` that mirrors `Axiom` constructors, following Mathlib ITauto pattern. This enables witness extraction for proof term construction while preserving `Axiom : Prop` for metalogic proofs.
+**Blocking Resolution** (research-003 definitive analysis): AxiomWitness pattern is definitively recommended:
+1. Existing metalogic proofs (Soundness, SoundnessLemmas) use `cases` on Axiom producing Prop results - unaffected by Axiom universe
+2. Proof irrelevance for Axiom is never used in the codebase
+3. AI training requires verifiable DerivationTree objects, not Axiom constructor identity
+4. AxiomWitness preserves semantic distinction between "is an axiom" (Prop) and "specific axiom construction" (Type)
 
 **Recommended Approach**:
 1. Create `AxiomWitness` inductive in `Type` mirroring all 14 axiom constructors
 2. Add `AxiomWitness.toAxiom` conversion function for soundness
-3. Implement `matchAxiomWitness : Formula -> Option (AxiomWitness phi)`
+3. Implement `matchAxiomWitness : Formula -> Option (Sigma AxiomWitness)`
 4. Update `bounded_search` to return `Option (DerivationTree Gamma phi)`
 
 **Files**:
@@ -178,7 +182,7 @@ technical_debt:
 - [ ] Tests verify proof term validity
 - [ ] Documentation updated
 
-**Impact**: Enables automated proof discovery returning actual proof terms for TM logic.
+**Impact**: Enables automated proof discovery returning actual proof terms for TM logic, suitable for both metalogic proofs and AI training signals.
 
 ---
 
