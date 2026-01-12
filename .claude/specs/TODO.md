@@ -175,15 +175,15 @@ technical_debt:
 ### 257. Completeness Proofs
 
  **Effort**: 57-76 hours (revised down from 70-90)
- **Status**: [RESEARCHING]
+ **Status**: [RESEARCHED]
  **Researched**: 2026-01-12
  **Priority**: Low
  **Language**: lean
  **Blocking**: None (Decidability complete)
  **Dependencies**: Soundness (Complete), Deduction Theorem (Complete), Proof Search (Complete), Decidability (Complete)
- **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md), [research-003.md](.claude/specs/257_completeness_proofs/reports/research-003.md)
+ **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md), [research-003.md](.claude/specs/257_completeness_proofs/reports/research-003.md), [research-004.md](.claude/specs/257_completeness_proofs/reports/research-004.md)
 
-**Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Theories/Bimodal/Metalogic/Completeness.lean`. Research-002 analyzes impact of completed tasks 260 (Proof Search) and 261 (Decidability) - both provide new tooling that reduces effort estimate.
+**Description**: Implement the completeness proof for TM logic using the canonical model method. Research-004 clarifies the key approach: use **relativized completeness** where times are a type parameter T (not constructed from syntax), while worlds (maximal consistent sets) and task relations ARE constructed from syntax. This matches the polymorphic validity definition and remains agnostic about discrete/dense/continuous time.
 
 **Action Items**:
 1. Implement `lindenbaum` lemma (extend consistent sets to maximal consistent sets using Zorn's lemma).
