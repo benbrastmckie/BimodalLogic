@@ -111,6 +111,8 @@ def temporal_equiv (φ ψ : Formula) : Prop :=
 - No axioms force discreteness, density, or continuity
 - The syntactic quotient would be "maximally abstract"
 
+NOTE: there are axioms (or should be) for totality of the temporal order, reflexivity, transitivity, linearity, that there is an additive identity time, etc., to get all the structure of a totally ordered commutative group
+
 ## The Standard Solution: Frame Class Completeness
 
 The standard approach in modal/temporal logic is **frame class completeness**:
