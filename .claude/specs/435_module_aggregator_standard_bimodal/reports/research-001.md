@@ -140,7 +140,7 @@ Apply consistent documentation pattern to all aggregators:
 
 Based on best practices observed in the codebase:
 
-```lean
+````lean
 import Parent.Module.Submodule1
 import Parent.Module.Submodule2
 -- ... all submodules in logical order
@@ -183,7 +183,7 @@ namespace Parent.Module
 -- Re-exported definitions or version constants
 
 end Parent.Module
-```
+````
 
 ## Files to Modify
 
