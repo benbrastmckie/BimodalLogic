@@ -30,9 +30,11 @@ technical_debt:
 
 ### 432. Fix artifact linking in TODO.md and state.json
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md)
 
 **Description**: After running `/implement 429`, the summary was not linked in task 429's TODO.md entry. Identify the root cause and fix this and any similar issues throughout the agent system to ensure that artifacts (research reports, plans, summaries) are appropriately appended to tasks in TODO.md and in state.json once they are created.
 
@@ -48,6 +50,7 @@ technical_debt:
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/429_extend_command_skill_agent_integration_to_meta/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/429_extend_command_skill_agent_integration_to_meta/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/429_extend_command_skill_agent_integration_to_meta/summaries/implementation-summary-20260112.md)
 
 **Description**: Extend the command-skill-agent integration approach (established in task 427) to /meta. Create `skill-meta` and `meta-builder-agent` following the thin wrapper pattern. Refactor `/meta` command to delegate to skill instead of direct execution. Maintain backward compatibility with all three modes (interactive, prompt, analyze).
 
@@ -150,7 +153,7 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-12
 - **Priority**: Medium
