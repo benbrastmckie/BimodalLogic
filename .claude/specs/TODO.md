@@ -104,10 +104,12 @@ technical_debt:
 ## Medium Priority
 
 ### 439. Address TODO and NOTE tags in 02-Semantics.tex
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 5.5-8 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/439_address_todo_note_tags_semantics_tex/reports/research-001.md)
 
 **Description**: Address the TODO and NOTE tags in Theories/Bimodal/latex/subfiles/02-Semantics.tex
 
