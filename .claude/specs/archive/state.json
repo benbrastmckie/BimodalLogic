@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-12T14:20:00Z",
+  "_last_updated": "2026-01-12T19:00:00Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -2935,6 +2935,258 @@
           "type": "summary"
         }
       ]
+    },
+    {
+      "project_number": 436,
+      "project_name": "update_license_to_modelchecker_standard",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T17:28:42Z",
+      "last_updated": "2026-01-12T17:58:44Z",
+      "plan_version": "001",
+      "completed": "2026-01-12T17:58:44Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/436_update_license_to_modelchecker_standard/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/436_update_license_to_modelchecker_standard/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 435,
+      "project_name": "module_aggregator_standard_bimodal",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-12T17:16:42Z",
+      "last_updated": "2026-01-12T17:45:36Z",
+      "description": "Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation",
+      "plan_version": "001",
+      "completed": "2026-01-12T17:45:36Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/435_module_aggregator_standard_bimodal/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/435_module_aggregator_standard_bimodal/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/435_module_aggregator_standard_bimodal/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 434,
+      "project_name": "refactor_readme_for_investors_and_researchers",
+      "status": "completed",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T16:54:47Z",
+      "last_updated": "2026-01-12T18:00:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 433,
+      "project_name": "refine_readme_title_and_bimodal_section",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T15:47:36Z",
+      "last_updated": "2026-01-12T16:36:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 430,
+      "project_name": "refactor_documentation_general_framework",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T14:28:44Z",
+      "last_updated": "2026-01-12T19:25:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/430_refactor_documentation_general_framework/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/430_refactor_documentation_general_framework/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/430_refactor_documentation_general_framework/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 429,
+      "project_name": "extend_command_skill_agent_integration_to_meta",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-12T06:02:46Z",
+      "last_updated": "2026-01-12T14:30:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 260,
+      "project_name": "proof_search",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T16:07:39Z",
+      "effort": "16-22 hours",
+      "description": "Implement automated proof search for TM logic with proof term construction using Direct Refactor approach (Axiom: Prop -> Type).",
+      "planning_completed": "2026-01-12T23:30:00Z",
+      "implementation_completed": "2026-01-12T23:45:00Z",
+      "plan_path": ".claude/specs/260_proof_search/plans/implementation-002.md",
+      "plan_version": "002",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 22,
+        "complexity": "medium",
+        "research_integrated": true,
+        "language": "lean",
+        "proof_strategy": "Direct Refactor (Axiom: Prop -> Type) with matchAxiom and proof term construction",
+        "supersedes": "implementation-001.md",
+        "approach": "Direct Refactor (recommended by research-004)"
+      },
+      "estimated_hours": 22,
+      "artifacts": [
+        {
+          "path": ".claude/specs/260_proof_search/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/reports/research-003.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/reports/research-004.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/plans/implementation-001.md",
+          "type": "plan",
+          "status": "superseded"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/plans/implementation-002.md",
+          "type": "plan",
+          "status": "current"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "started": "2026-01-05",
+      "blocking_resolved": true,
+      "blocking_resolution": "Research-004 provides balanced re-analysis. RECOMMENDS Direct Refactor (Axiom: Prop -> Type) over AxiomWitness pattern. Reasons: (1) simplicity - single source of truth, (2) zero code relies on proof irrelevance, (3) no maintenance burden of parallel types, (4) ITauto precedent not applicable (different context).",
+      "completed": "2026-01-12T16:07:39Z",
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 261,
+      "project_name": "decidability",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T22:30:00Z",
+      "effort": "40-50 hours",
+      "description": "Implement decision procedures for TM logic. Research-002 analyzes implications of Type-based axiom refactor from task 260.",
+      "plan_version": "001",
+      "completed": "2026-01-12T22:30:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/261_decidability/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/261_decidability/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/261_decidability/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/261_decidability/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
     }
   ]
 }
