@@ -49,7 +49,7 @@ Key findings from research-001.md integrated into this plan:
 
 ## Implementation Phases
 
-### Phase 1: Add Countability Instances [NOT STARTED]
+### Phase 1: Add Countability Instances [COMPLETED]
 
 **Goal**: Establish `Countable Formula` instance with all prerequisites.
 
@@ -72,7 +72,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 2: Create Set-Based CanonicalWorldState [NOT STARTED]
+### Phase 2: Create Set-Based CanonicalWorldState [COMPLETED]
 
 **Goal**: Refactor CanonicalWorldState to use SetMaximalConsistent instead of MaximalConsistent.
 
@@ -91,7 +91,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 3: Update Canonical Valuation Signature [NOT STARTED]
+### Phase 3: Update Canonical Valuation Signature [COMPLETED]
 
 **Goal**: Update canonical_valuation to work with set-based world states.
 
@@ -110,7 +110,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 4: Update Task Relation and Frame [NOT STARTED]
+### Phase 4: Update Task Relation and Frame [IN PROGRESS]
 
 **Goal**: Update canonical_task_rel to use set-based CanonicalWorldState.
 

@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:34:26Z
-next_project_number: 453
+next_project_number: 454
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -91,6 +91,16 @@ technical_debt:
 - **Language**: general
 
 **Description**: Use 'D' instead of 'T' for the totally ordered commutative group of durations (also called times relative to a world history) consistently throughout the latex files in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/ and throughout the Lean Code in Logos/ to match the notation used in /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex.
+
+---
+
+### 453. Add Ability and Free Choice Modal Extension to Logos
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Building on task 451, add an extension layer for ability and free choice modals to the middle layer while also acknowledging that there are many other potential extensions that could be added to the middle layer. As with task 451, the aim is to characterize and create stubs in the lean code to match the 'Epistemic Extension' and other extension layers that remain to be developed, while nevertheless updating all the relevant documentation.
 
 ---
 
@@ -199,7 +209,7 @@ technical_debt:
 
 ### 444. Formula countability and set-list bridge
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Low
