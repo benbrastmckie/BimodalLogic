@@ -95,15 +95,17 @@ technical_debt:
 
 ### 405. Document LaTeX one-line-per-sentence convention
 - **Effort**: 1 hour
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/summaries/implementation-summary-20260112.md)
 
-**Description**: Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.
+**Description**: Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Created style guide section, rules file, and README updates.
 
 ---
 
