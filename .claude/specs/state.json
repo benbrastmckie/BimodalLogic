@@ -6,19 +6,24 @@
     {
       "project_number": 405,
       "project_name": "document_latex_one_line_per_sentence_convention",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "description": "Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.",
       "effort": "1 hour",
       "created": "2026-01-11T22:25:49Z",
-      "last_updated": "2026-01-12T07:00:00Z",
+      "last_updated": "2026-01-12T07:02:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 406,
