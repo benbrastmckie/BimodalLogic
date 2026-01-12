@@ -152,10 +152,11 @@ technical_debt:
 
 ### 413. Create implementation-agent subagents (lean/general/latex)
 - **Effort**: 4-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
+- **Plan**: [implementation-001.md](.claude/specs/413_create_implementation_agent_subagents/plans/implementation-001.md)
 
 **Description**: Create `.claude/agents/lean-implementation-agent.md`, `general-implementation-agent.md`, and `latex-implementation-agent.md` subagents. Each loads language-specific context only when executing phases. Returns phase completion status and artifact paths. Integrates with respective implementation skills via forked subagent pattern.
 
