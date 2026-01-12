@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T09:00:00Z
-next_project_number: 426
+next_project_number: 427
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -113,6 +113,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 426. CovariantClass vs IsOrderedAddMonoid comparison
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Compare CovariantClass (originally intended in task 417) vs IsOrderedAddMonoid (used in task 420) for representing time as a totally ordered commutative group. Analyze whether using IsOrderedAddMonoid loses expressiveness or accuracy in stating that time is a totally ordered commutative group. Document pros/cons of each approach.
+
+---
 
 ### 424. Complete the TODOs in 01-Syntax.tex
 - **Effort**: 30 minutes

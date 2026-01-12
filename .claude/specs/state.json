@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T09:00:00Z",
-  "next_project_number": 426,
+  "next_project_number": 427,
   "active_projects": [
+    {
+      "project_number": 426,
+      "project_name": "covariantclass_vs_isorderedaddmonoid_comparison",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Compare CovariantClass (originally intended in task 417) vs IsOrderedAddMonoid (used in task 420) for representing time as a totally ordered commutative group. Analyze whether using IsOrderedAddMonoid loses expressiveness or accuracy in stating that time is a totally ordered commutative group. Document pros/cons of each approach.",
+      "created": "2026-01-12T05:35:04Z",
+      "last_updated": "2026-01-12T05:35:04Z"
+    },
     {
       "project_number": 425,
       "project_name": "update_command_files_to_delegate_to_skill_subagent",
