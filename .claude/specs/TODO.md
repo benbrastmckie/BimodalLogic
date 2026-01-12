@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 431
+next_project_number: 432
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -82,6 +82,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 431. WezTerm tab color notification for Claude Code input needed
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Set up WezTerm tab color notification when Claude Code needs input. Using Claude Code in neovim via a plugin and WezTerm for the terminal on NixOS (software managed in ~/.dotfiles/). Configure so that when Claude Code completes or needs input, the numbered tab in WezTerm turns a visible color to indicate which tabs need attention.
+
+---
 
 ### 430. Refactor documentation to present ProofChecker as general framework
 - **Effort**: 3-4 hours

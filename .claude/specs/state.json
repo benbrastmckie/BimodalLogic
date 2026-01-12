@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T05:36:33.618239Z",
-  "next_project_number": 431,
+  "next_project_number": 432,
   "active_projects": [
+    {
+      "project_number": 431,
+      "project_name": "wezterm_tab_color_notification",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T14:38:20Z",
+      "last_updated": "2026-01-12T14:38:20Z"
+    },
     {
       "project_number": 430,
       "project_name": "refactor_documentation_general_framework",
