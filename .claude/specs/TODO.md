@@ -298,16 +298,16 @@ technical_debt:
 
 ### 257. Completeness Proofs
 
- **Effort**: 70-90 hours
- **Status**: [RESEARCHING]
+ **Effort**: 57-76 hours (revised down from 70-90)
+ **Status**: [RESEARCHED]
  **Researched**: 2026-01-12
  **Priority**: Low
  **Language**: lean
- **Blocking**: Decidability
- **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
- **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md)
+ **Blocking**: None (Decidability complete)
+ **Dependencies**: Soundness (Complete), Deduction Theorem (Complete), Proof Search (Complete), Decidability (Complete)
+ **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md)
 
-**Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
+**Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Theories/Bimodal/Metalogic/Completeness.lean`. Research-002 analyzes impact of completed tasks 260 (Proof Search) and 261 (Decidability) - both provide new tooling that reduces effort estimate.
 
 **Action Items**:
 1. Implement `lindenbaum` lemma (extend consistent sets to maximal consistent sets using Zorn's lemma).
