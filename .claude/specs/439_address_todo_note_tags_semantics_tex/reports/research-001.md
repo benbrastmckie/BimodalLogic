@@ -31,6 +31,8 @@ The 02-Semantics.tex file contains 23 TODO/NOTE tags requiring attention. The TO
 - Paper uses: `τ` and `σ` consistently
 - Recommendation: Use `\tau` and `\sigma` throughout
 
+FIX: use `I` for the interpretation function instead of `V`
+
 **Interpretation Function** (Lines 112-116):
 - Current: `V` for "valuation"
 - Paper uses: `|·|` notation with `|p_i| ⊆ W` (line 889)
