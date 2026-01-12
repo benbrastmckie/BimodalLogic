@@ -116,7 +116,7 @@ technical_debt:
 
 ### 421. Look up formal term definitions and revise research report
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Related Task**: 398
@@ -177,9 +177,10 @@ technical_debt:
 
 ### 408. Define \proofchecker LaTeX command
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: latex
+- **Plan**: [implementation-001.md](.claude/specs/408_define_proofchecker_latex_command/plans/implementation-001.md)
 
 **Description**: Define a \proofchecker command for \href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}} in /home/benjamin/Projects/ProofChecker/latex/notation-standards.sty and use this command to replace all occurrences of ProofChecker in the existing LaTeX documents.
 
