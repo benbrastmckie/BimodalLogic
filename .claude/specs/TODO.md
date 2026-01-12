@@ -1,17 +1,17 @@
 ---
-last_updated: 2026-01-12T08:00:00Z
+last_updated: 2026-01-12T00:43:19Z
 next_project_number: 421
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 23
-  completed: 77
+  active: 30
+  completed: 84
   in_progress: 1
   not_started: 17
   abandoned: 7
-  total: 107
+  total: 114
 priority_distribution:
   critical: 0
   high: 6
@@ -147,51 +147,9 @@ technical_debt:
 
 ---
 
-### 405. Document LaTeX one-line-per-sentence convention
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/summaries/implementation-summary-20260112.md)
-
-**Description**: Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Created style guide section, rules file, and README updates.
-
----
-
-### 406. Enforce convention in BimodalReference.tex
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: latex
-- **Dependencies**: 405
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/406_enforce_convention_bimodal_reference_tex/summaries/implementation-summary-20260112.md)
-
-**Description**: Reformatted BimodalReference.tex and all 7 subfiles to follow the semantic linefeeds convention.
-
----
-
-### 407. Enforce convention in LogosReference.tex
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: latex
-- **Dependencies**: 405
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/407_enforce_convention_logos_reference_tex/summaries/implementation-summary-20260112.md)
-
-**Description**: Reformatted LogosReference.tex and all 9 subfiles to follow the semantic linefeeds convention.
-
----
-
 ### 415. Fix LaTeX sentence line breaks
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Medium
@@ -214,70 +172,6 @@ technical_debt:
 
 ---
 
-### 404. Enhance /todo to archive orphaned specs directories
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/summaries/implementation-summary-20260112.md)
-
-**Description**: Enhanced /todo command to detect and handle misplaced directories (in specs/ but tracked in archive/state.json). Added Step 2.6 detection, Step 4.6 user prompts, Step 5F move logic, and comprehensive documentation.
-
----
-
-### 403. Enforce directory naming convention
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/403_enforce_directory_naming_convention/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/403_enforce_directory_naming_convention/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/403_enforce_directory_naming_convention/summaries/implementation-summary-20260111.md)
-
-**Description**: Enforced directory naming convention: PascalCase for Lean source directories, lowercase for all others. Renamed 19 directories (docs/ subdirectories, Theories/*/Documentation/, Theories/*/LaTeX/) and updated all references.
-
----
-
-### 401. Add [EXPANDED] status for parent tasks
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/401_add_expanded_status_for_parent_tasks/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/401_add_expanded_status_for_parent_tasks/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/401_add_expanded_status_for_parent_tasks/summaries/implementation-summary-20260112.md)
-
-**Description**: Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.
-
----
-
-### 402. Rename --divide flag to --expand
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: meta
-- **Dependencies**: 401
-- **Research**: [research-001.md](.claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/402_rename_divide_flag_to_expand/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/402_rename_divide_flag_to_expand/summaries/implementation-summary-20260112.md)
-
-**Description**: Renamed --divide flag to --expand across .claude/ system for consistency with [EXPANDED] status. Updated 10 files including CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, status-markers.md, status-transitions.md, documentation.md, and routing.md. Preserved /research --divide (different feature).
-
----
-
 ### 400. Investigate Explanatory/Truth.lean build performance
 - **Effort**: 2-3 hours
 - **Status**: [EXPANDED]
@@ -293,7 +187,7 @@ technical_debt:
 
 ### 416. Quick performance fixes for Explanatory/Truth.lean
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 400
