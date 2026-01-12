@@ -283,11 +283,11 @@
       "project_name": "proof_search",
       "type": "feature",
       "phase": "researched",
-      "status": "researching",
+      "status": "researched",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T15:11:59Z",
+      "last_updated": "2026-01-12T23:45:00Z",
       "effort": "40-60 hours",
       "description": "Implement automated proof search for TM logic with proof term construction.",
       "planning_completed": "2026-01-05T08:07:35-08:00",
@@ -321,6 +321,10 @@
           "type": "research"
         },
         {
+          "path": ".claude/specs/260_proof_search/reports/research-004.md",
+          "type": "research"
+        },
+        {
           "path": ".claude/specs/260_proof_search/plans/implementation-001.md",
           "type": "plan"
         },
@@ -331,7 +335,7 @@
       ],
       "started": "2026-01-05",
       "blocking_resolved": true,
-      "blocking_resolution": "Research-003 definitively recommends AxiomWitness pattern. Analysis confirmed: (1) existing metalogic proofs unaffected by Axiom universe, (2) proof irrelevance unused, (3) AI training needs verifiable DerivationTree not Axiom constructor identity."
+      "blocking_resolution": "Research-004 provides balanced re-analysis. RECOMMENDS Direct Refactor (Axiom: Prop -> Type) over AxiomWitness pattern. Reasons: (1) simplicity - single source of truth, (2) zero code relies on proof irrelevance, (3) no maintenance burden of parallel types, (4) ITauto precedent not applicable (different context)."
     },
     {
       "project_number": 261,

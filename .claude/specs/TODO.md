@@ -153,39 +153,41 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: lean
-- **Blocking Resolved**: Yes (via AxiomWitness pattern)
+- **Blocking Resolved**: Yes (via Direct Refactor)
 - **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/260_proof_search/reports/research-001.md), [research-002.md](.claude/specs/260_proof_search/reports/research-002.md), [research-003.md](.claude/specs/260_proof_search/reports/research-003.md)
+- **Research**: [research-001.md](.claude/specs/260_proof_search/reports/research-001.md), [research-002.md](.claude/specs/260_proof_search/reports/research-002.md), [research-003.md](.claude/specs/260_proof_search/reports/research-003.md), [research-004.md](.claude/specs/260_proof_search/reports/research-004.md)
 - **Plan**: [Implementation Plan](.claude/specs/260_proof_search/plans/implementation-001.md)
 - **Implementation**: [Implementation Summary](.claude/specs/260_proof_search/summaries/implementation-summary-20260105.md)
 
 **Description**: Implement automated proof search for TM logic with proof term construction.
 
-**Blocking Resolution** (research-003 definitive analysis): AxiomWitness pattern is definitively recommended:
-1. Existing metalogic proofs (Soundness, SoundnessLemmas) use `cases` on Axiom producing Prop results - unaffected by Axiom universe
-2. Proof irrelevance for Axiom is never used in the codebase
-3. AI training requires verifiable DerivationTree objects, not Axiom constructor identity
-4. AxiomWitness preserves semantic distinction between "is an axiom" (Prop) and "specific axiom construction" (Type)
+**Blocking Resolution** (research-004 balanced re-analysis): **Direct Refactor (Axiom: Prop -> Type)** is recommended over AxiomWitness:
+1. **Simplicity**: Single source of truth, no code duplication
+2. **Zero risk**: No code in this codebase relies on proof irrelevance for Axiom
+3. **No maintenance burden**: No parallel type (AxiomWitness) to synchronize
+4. **ITauto precedent not applicable**: ITauto uses intermediate representation; Axiom is actual type used in soundness proofs
+5. **Data richness**: Type enables `deriving Repr, DecidableEq`
 
 **Recommended Approach**:
-1. Create `AxiomWitness` inductive in `Type` mirroring all 14 axiom constructors
-2. Add `AxiomWitness.toAxiom` conversion function for soundness
-3. Implement `matchAxiomWitness : Formula -> Option (Sigma AxiomWitness)`
+1. Change `inductive Axiom : Formula -> Prop` to `inductive Axiom : Formula -> Type` in Axioms.lean
+2. Add `deriving Repr, DecidableEq` to Axiom
+3. Implement `matchAxiom : Formula -> Option (Sigma Axiom)` for pattern matching
 4. Update `bounded_search` to return `Option (DerivationTree Gamma phi)`
 
 **Files**:
-- `Theories/Bimodal/Automation/ProofSearch.lean`
-- `Theories/Bimodal/ProofSystem/Axioms.lean` (add AxiomWitness)
+- `Theories/Bimodal/ProofSystem/Axioms.lean` (change Prop to Type)
+- `Theories/Bimodal/Automation/ProofSearch.lean` (add matchAxiom, update search)
 
 **Acceptance Criteria**:
-- [ ] AxiomWitness type created with all 14 constructors
-- [ ] matchAxiomWitness function implemented
+- [ ] Axiom changed from Prop to Type
+- [ ] matchAxiom function implemented
 - [ ] Proof search returns DerivationTree (not just Bool)
+- [ ] Existing metalogic proofs (Soundness, SoundnessLemmas) still compile
 - [ ] Tests verify proof term validity
 - [ ] Documentation updated
 
