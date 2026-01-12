@@ -165,12 +165,14 @@ technical_debt:
 
 ### 406. Enforce convention in BimodalReference.tex
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
 - **Dependencies**: 405
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/406_enforce_convention_bimodal_reference_tex/summaries/implementation-summary-20260112.md)
 
-**Description**: Reformat Theories/Bimodal/latex/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
+**Description**: Reformatted BimodalReference.tex and all 7 subfiles to follow the semantic linefeeds convention.
 
 ---
 
