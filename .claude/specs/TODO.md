@@ -121,11 +121,13 @@ technical_debt:
 
 ### 438. Refactor Bimodal README for systematic documentation
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/438_refactor_bimodal_readme/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/438_refactor_bimodal_readme/plans/implementation-001.md)
 
 **Description**: Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference.
 
