@@ -85,8 +85,8 @@ technical_debt:
 ## Medium Priority
 
 ### 428. Complete TODOs in Bimodal syntax LaTeX file
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 1-2 hours
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: latex
 
@@ -96,14 +96,15 @@ technical_debt:
 
 ### 427. Document command, skill, and subagent framework
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
-- **Planned**: 2026-01-12
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/427_document_command_skill_subagent_framework/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/427_document_command_skill_subagent_framework/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/427_document_command_skill_subagent_framework/summaries/implementation-summary-20260112.md)
 
-**Description**: Systematically document the framework for using commands, skills, and subagents in conjunction. Update `.claude/context/core/` files where appropriate and create documentation in `.claude/docs/` to support the development and refinement of this approach. Build on the patterns established in task 425 and its dependencies.
+**Description**: Systematically documented the framework for using commands, skills, and subagents. Created component selection guide, skill creation guide, agent creation guide, and integration examples. Updated existing documentation with correct paths and cross-references.
 
 ---
 

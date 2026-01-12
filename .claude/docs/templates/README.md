@@ -8,9 +8,10 @@ This directory contains templates for creating new commands and agents in the Pr
 
 ### Command Template
 
-**File**: `command-template.md`  
-**Purpose**: Template for creating new command files  
+**File**: `command-template.md`
+**Purpose**: Template for creating new command files
 **Use When**: Adding a new user-facing command to the system
+**Guide**: See [Creating Commands](../guides/creating-commands.md) for step-by-step instructions
 
 **Key Features**:
 - Frontmatter delegation pattern
@@ -20,18 +21,39 @@ This directory contains templates for creating new commands and agents in the Pr
 - File size requirements (<300 lines)
 
 **Usage**:
-1. Copy `command-template.md` to `.claude/command/<command-name>.md`
+1. Copy `command-template.md` to `.claude/commands/<command-name>.md`
 2. Replace all `<placeholders>` with actual values
 3. Fill in all sections (Purpose, Usage, Workflow, etc.)
 4. Ensure frontmatter specifies correct agent
 5. Validate using checklist at end of template
 6. Test command with valid and invalid inputs
 
+### Skill Template (Thin Wrapper Pattern)
+
+**File**: `.claude/context/core/templates/thin-wrapper-skill.md`
+**Purpose**: Template for creating new skill files
+**Use When**: Adding a new skill that delegates to an agent
+**Guide**: See [Creating Skills](../guides/creating-skills.md) for step-by-step instructions
+
+**Key Features**:
+- `context: fork` for token efficiency
+- 5-step validation and delegation flow
+- Input validation patterns
+- Return format validation
+
+**Usage**:
+1. Create `.claude/skills/skill-<name>/SKILL.md`
+2. Use `context: fork` and specify target agent
+3. Implement 5-step validation and delegation flow
+4. Validate return matches subagent-return.md
+5. Test with corresponding agent
+
 ### Agent Template
 
-**File**: `agent-template.md`  
-**Purpose**: Template for creating new agent files  
-**Use When**: Adding a new agent to handle command execution
+**File**: `agent-template.md`
+**Purpose**: Template for creating new agent files
+**Use When**: Adding a new agent to handle execution
+**Guide**: See [Creating Agents](../guides/creating-agents.md) for step-by-step instructions
 
 **Key Features**:
 - Complete 8-stage workflow implementation
@@ -41,7 +63,7 @@ This directory contains templates for creating new commands and agents in the Pr
 - Validation checklist
 
 **Usage**:
-1. Copy `agent-template.md` to `.claude/skills/<agent-name>.md`
+1. Copy `agent-template.md` to `.claude/agents/<agent-name>.md`
 2. Replace all `<placeholders>` with actual values
 3. Implement all 8 workflow stages
 4. **Ensure Stage 7 is fully implemented** (critical for reliability)
@@ -304,12 +326,21 @@ Analyzes code for potential issues and suggests improvements.
 
 ## Related Documentation
 
+### Guides
+- [Component Selection](../guides/component-selection.md) - When to create command vs skill vs agent
+- [Creating Commands](../guides/creating-commands.md) - Step-by-step command creation
+- [Creating Skills](../guides/creating-skills.md) - Step-by-step skill creation
+- [Creating Agents](../guides/creating-agents.md) - Step-by-step agent creation
+
+### Standards
+- **Return Format**: `.claude/context/core/formats/subagent-return.md`
+- **Skill Template**: `.claude/context/core/templates/thin-wrapper-skill.md`
+
+### Migration History
 - **Migration Guide**: `.claude/docs/migrations/001-openagents-migration/README.md`
 - **ADR-001: Context Index**: `.claude/docs/migrations/001-openagents-migration/adr/ADR-001-context-index.md`
 - **ADR-002: Agent Workflow Ownership**: `.claude/docs/migrations/001-openagents-migration/adr/ADR-002-agent-workflow-ownership.md`
 - **ADR-003: Frontmatter Delegation**: `.claude/docs/migrations/001-openagents-migration/adr/ADR-003-frontmatter-delegation.md`
-- **Workflow Standard**: `.claude/context/core/standards/agent-workflow.md`
-- **Return Format**: `.claude/context/core/standards/subagent-return-format.md`
 
 ---
 

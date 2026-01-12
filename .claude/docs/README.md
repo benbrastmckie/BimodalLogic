@@ -14,9 +14,14 @@ This documentation provides comprehensive coverage of the `.claude/` agent syste
 ├── guides/                      # How-to guides
 │   ├── user-installation.md    # Quick-start for new users
 │   ├── copy-claude-directory.md # Copy .claude/ to another project
+│   ├── component-selection.md  # When to create command vs skill vs agent
 │   ├── creating-commands.md    # How to create commands
+│   ├── creating-skills.md      # How to create skills
+│   ├── creating-agents.md      # How to create agents
 │   ├── context-loading-best-practices.md # Context loading patterns
 │   └── permission-configuration.md # Permission setup
+├── examples/                    # Integration examples
+│   └── research-flow-example.md # End-to-end research flow
 ├── templates/                   # Reusable templates
 │   ├── README.md               # Template overview
 │   ├── command-template.md     # Command template
@@ -119,9 +124,9 @@ See [`.claude/commands/`](../commands/) for command definitions.
 
 ---
 
-## Skills (8)
+## Skills (9)
 
-Skills are specialized agents invoked by commands or the orchestrator.
+Skills are specialized agents invoked by commands or the orchestrator. They use the **thin wrapper pattern** to delegate to agents.
 
 ### Core Skills
 
@@ -133,20 +138,38 @@ Skills are specialized agents invoked by commands or the orchestrator.
 
 ### Research Skills
 
-| Skill | Purpose |
-|-------|---------|
-| skill-researcher | General web and codebase research |
-| skill-lean-research | Lean 4/Mathlib research with MCP tools |
+| Skill | Agent |
+|-------|-------|
+| skill-researcher | general-research-agent |
+| skill-lean-research | lean-research-agent |
 
 ### Implementation Skills
 
-| Skill | Purpose |
-|-------|---------|
-| skill-planner | Create phased implementation plans |
-| skill-implementer | General implementation |
-| skill-lean-implementation | Lean 4 theorem proving |
+| Skill | Agent |
+|-------|-------|
+| skill-planner | planner-agent |
+| skill-implementer | general-implementation-agent |
+| skill-lean-implementation | lean-implementation-agent |
+| skill-latex-implementation | latex-implementation-agent |
 
 See [`.claude/skills/`](../skills/) for skill definitions.
+
+---
+
+## Agents (6)
+
+Agents are execution components invoked by skills via the Task tool.
+
+| Agent | Purpose |
+|-------|---------|
+| general-research-agent | Web/codebase research for general tasks |
+| lean-research-agent | Lean 4/Mathlib research with MCP tools |
+| planner-agent | Create phased implementation plans |
+| general-implementation-agent | General file implementation |
+| lean-implementation-agent | Lean proof implementation |
+| latex-implementation-agent | LaTeX document implementation |
+
+See [`.claude/agents/`](../agents/) for agent definitions.
 
 ---
 
@@ -328,9 +351,15 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 - [ARCHITECTURE.md](../ARCHITECTURE.md) - Detailed system architecture
 - [CLAUDE.md](../CLAUDE.md) - Quick reference entry point
 
-### Guides
-- [Creating Commands](guides/creating-commands.md) - How to create new commands
+### Component Development
+- [Component Selection](guides/component-selection.md) - When to create command vs skill vs agent
+- [Creating Commands](guides/creating-commands.md) - How to create commands
+- [Creating Skills](guides/creating-skills.md) - How to create skills (thin wrapper pattern)
+- [Creating Agents](guides/creating-agents.md) - How to create agents (execution components)
 - [Context Loading](guides/context-loading-best-practices.md) - Context loading patterns
+
+### Examples
+- [Research Flow Example](examples/research-flow-example.md) - End-to-end command flow
 
 ### ProofChecker Documentation
 - [README.md](../../README.md) - Main project documentation

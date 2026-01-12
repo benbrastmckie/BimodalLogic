@@ -114,12 +114,36 @@ Load for: Review, task breakdown, sessions
 
 Load for: Creating new agents, commands, orchestrators
 
+- **thin-wrapper-skill.md** - Template for creating new skills (thin wrapper pattern)
 - **subagent-template.md** - Template for creating new agents
 - **command-template.md** - Template for creating new commands
 - **orchestrator-template.md** - Template for orchestrator patterns
 - **meta-guide.md** - Meta-documentation guide
 - **state-template.json** - State file template
 - **subagent-frontmatter-template.yaml** - Frontmatter template
+
+---
+
+## Documentation Guides (docs/guides/)
+
+Load for: Component development and architecture understanding
+
+**Component Development**:
+- **component-selection.md** - Decision tree for command vs skill vs agent
+- **creating-commands.md** - Step-by-step command creation
+- **creating-skills.md** - Step-by-step skill creation (thin wrapper pattern)
+- **creating-agents.md** - Step-by-step agent creation (8-stage workflow)
+
+**Context Loading**:
+- **context-loading-best-practices.md** - Lazy loading patterns
+
+**Examples**:
+- **examples/research-flow-example.md** - End-to-end /research command flow
+
+**When to Load**:
+- Load component-selection.md when deciding what to create
+- Load creating-*.md when implementing new component
+- Load research-flow-example.md for understanding flow patterns
 
 ---
 
@@ -345,11 +369,19 @@ Language-specific:
 
 ## Quick Navigation
 
-**For Delegation**: → `core/standards/delegation.md`  
-**For State Management**: → `core/system/state-management.md`  
-**For Artifacts**: → `core/system/artifact-management.md`  
-**For Git Commits**: → `core/system/git-commits.md`  
-**For Task Format**: → `core/standards/tasks.md`  
-**For Plan Format**: → `core/standards/plan.md`  
-**For Lean Style**: → `project/lean4/standards/lean4-style-guide.md`  
-**For Proof Conventions**: → `project/logic/standards/proof-conventions.md`
+**For Component Development**:
+- **Component Selection**: → `docs/guides/component-selection.md`
+- **Creating Commands**: → `docs/guides/creating-commands.md`
+- **Creating Skills**: → `docs/guides/creating-skills.md`
+- **Creating Agents**: → `docs/guides/creating-agents.md`
+- **Skill Template**: → `core/templates/thin-wrapper-skill.md`
+
+**For Standards**:
+- **For Delegation**: → `core/standards/delegation.md`
+- **For State Management**: → `core/system/state-management.md`
+- **For Artifacts**: → `core/system/artifact-management.md`
+- **For Git Commits**: → `core/system/git-commits.md`
+- **For Task Format**: → `core/standards/tasks.md`
+- **For Plan Format**: → `core/standards/plan.md`
+- **For Lean Style**: → `project/lean4/standards/lean4-style-guide.md`
+- **For Proof Conventions**: → `project/logic/standards/proof-conventions.md`

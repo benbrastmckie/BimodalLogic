@@ -14,9 +14,10 @@ Before creating a new command, understand:
 4. **Language Routing**: Lean tasks route to lean-specific agents
 
 **Required Reading**:
-- `.claude/agent/orchestrator.md` - Hybrid architecture (v6.1)
-- `.claude/specs/opencode-invocation-diagnostic-plan.md` - Architecture rationale
-- `.claude/context/core/standards/delegation.md` - Subagent return format
+- `.claude/skills/skill-orchestrator/SKILL.md` - Orchestrator skill
+- `.claude/context/core/formats/subagent-return.md` - Subagent return format
+- [Creating Skills](creating-skills.md) - For skill delegation patterns
+- [Creating Agents](creating-agents.md) - For agent implementation
 
 ## ProofChecker vs OpenAgents
 
@@ -59,7 +60,7 @@ ProofChecker uses a **hybrid architecture** (v6.1):
 
 ### Step 2: Create Command File
 
-Create `.claude/command/{command-name}.md` with this structure:
+Create `.claude/commands/{command-name}.md` with this structure:
 
 **Task-Based Command Template**:
 
@@ -102,7 +103,7 @@ routing:
 | lean | lean-{command}-agent | {lean-specific tools} |
 | general | {command}er | {general tools} |
 
-See `.claude/agent/subagents/{agent}.md` for details.
+See `.claude/agents/{agent}.md` for details.
 ```
 
 **Key Points**:
@@ -294,12 +295,19 @@ routing:
 ## Examples
 
 See existing implementations:
-- `.claude/command/implement.md` - Language-based command
-- `.claude/command/research.md` - Language-based command
-- `.claude/command/plan.md` - Language-based command
-- `.claude/agent/orchestrator.md` - Hybrid orchestrator (v6.1)
-- `.claude/agent/subagents/implementer.md` - Subagent with validated inputs
-- `.claude/agent/subagents/lean-implementation-agent.md` - Lean-specific agent
+- `.claude/commands/implement.md` - Language-based command
+- `.claude/commands/research.md` - Language-based command
+- `.claude/commands/plan.md` - Language-based command
+- `.claude/skills/skill-orchestrator/SKILL.md` - Orchestrator skill
+- `.claude/skills/skill-implementer/SKILL.md` - General implementer skill
+- `.claude/agents/general-implementation-agent.md` - General implementation agent
+- `.claude/agents/lean-implementation-agent.md` - Lean-specific agent
+
+## Related Guides
+
+- [Component Selection](component-selection.md) - When to create a command vs skill vs agent
+- [Creating Skills](creating-skills.md) - How to create skills that commands delegate to
+- [Creating Agents](creating-agents.md) - How to create agents that skills invoke
 
 ## Troubleshooting
 
