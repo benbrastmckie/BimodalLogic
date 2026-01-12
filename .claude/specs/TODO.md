@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:34:26Z
-next_project_number: 452
+next_project_number: 453
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -83,6 +83,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 452. Use 'D' notation for duration group consistently
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Use 'D' instead of 'T' for the totally ordered commutative group of durations (also called times relative to a world history) consistently throughout the latex files in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/ and throughout the Lean Code in Logos/ to match the notation used in /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex.
+
+---
 
 ### 451. Add Reflection Extension to Logos layer extensions
 - **Effort**: 2-3 hours
