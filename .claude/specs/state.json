@@ -15,11 +15,17 @@
     {
       "project_number": 430,
       "project_name": "refactor_documentation_general_framework",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T14:28:44Z",
-      "last_updated": "2026-01-12T14:28:44Z"
+      "last_updated": "2026-01-12T15:10:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/430_refactor_documentation_general_framework/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 429,
