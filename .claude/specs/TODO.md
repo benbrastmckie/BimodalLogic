@@ -167,7 +167,7 @@ technical_debt:
 - **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
-- **Subtasks**: 417, 418, 419 (416, 420 completed)
+- **Subtasks**: 419 (416, 417, 418, 420 completed)
 - **Research**: [research-001.md](.claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md)
 
 **Description**: Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.
@@ -176,19 +176,22 @@ technical_debt:
 
 ### 417. Split typeclass constraints in Explanatory
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 400
 - **Dependencies**: 416
 - **Research**: [research-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-001.md), [research-002.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-002.md)
 - **Plan**: [implementation-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/plans/implementation-001.md)
+- **Benchmark**: [benchmark-results.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/benchmark-results.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/417_split_typeclass_constraints_explanatory/summaries/implementation-summary-20260111.md)
 
 **Description**: Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.
 
-**Note**: Task 420 (Mathlib upgrade) already implemented unbundling using `[AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]` instead of the originally recommended `CovariantClass` approach. This plan creates a benchmarked comparison by reverting to the bundled approach to empirically validate the performance benefit.
+**Outcome**: Benchmark comparison was impossible because `LinearOrderedAddCommGroup` has been deprecated and removed from Mathlib v4.27.0. The unbundled approach (`[AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]`) implemented by task 420 is now the only compatible approach. Task validated as complete - unbundling is mandatory for modern Mathlib.
 
 ---
 
