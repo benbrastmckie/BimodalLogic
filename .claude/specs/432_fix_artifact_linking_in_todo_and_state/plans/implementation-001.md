@@ -252,7 +252,7 @@ This plan implements a systematic overhaul of the .claude/ agent system based on
 ### Phase 6: Enhance Error Tracking
 
 **Estimated effort**: 1-2 hours
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Extend errors.json schema with context, trajectory, and recovery fields

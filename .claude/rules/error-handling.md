@@ -38,13 +38,30 @@ Record in errors.json:
   "severity": "critical|high|medium|low",
   "message": "Error description",
   "context": {
+    "session_id": "sess_1736700000_abc123",
     "command": "/implement",
     "task": 259,
-    "phase": 2
+    "phase": 2,
+    "checkpoint": "GATE_OUT"
+  },
+  "trajectory": {
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "failed_at_depth": 3
+  },
+  "recovery": {
+    "suggested_action": "Run /implement 259 to resume from phase 2",
+    "auto_recoverable": true
   },
   "fix_status": "unfixed"
 }
 ```
+
+### Session-Aware Error Aggregation
+
+Errors with the same session_id belong to the same operation. Use session_id to:
+- Link related errors in multi-step operations
+- Identify recurring patterns across operations
+- Enable trajectory reconstruction for debugging
 
 ### 2. Preserve Progress
 - Never lose completed work
