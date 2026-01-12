@@ -218,11 +218,13 @@ technical_debt:
 
 ### 417. Split typeclass constraints in Explanatory
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 400
 - **Dependencies**: 416
+- **Research**: [research-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-001.md)
 
 **Description**: Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.
 
