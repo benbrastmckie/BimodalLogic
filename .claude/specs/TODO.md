@@ -149,11 +149,13 @@ technical_debt:
 
 ### 436. Update license to ModelChecker standard
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/436_update_license_to_modelchecker_standard/plans/implementation-001.md)
 
 **Description**: Update the license from MIT to the same standard used in the ModelChecker package: /home/benjamin/Projects/ModelChecker/README.md
 

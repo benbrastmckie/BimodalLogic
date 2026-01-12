@@ -21,15 +21,20 @@
     {
       "project_number": 436,
       "project_name": "update_license_to_modelchecker_standard",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T17:28:42Z",
-      "last_updated": "2026-01-12T17:43:19Z",
+      "last_updated": "2026-01-12T23:15:00Z",
+      "plan_version": "001",
       "artifacts": [
         {
           "path": ".claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/436_update_license_to_modelchecker_standard/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
