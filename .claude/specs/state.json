@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T19:30:00Z",
-  "next_project_number": 441,
+  "next_project_number": 442,
   "active_projects": [
+    {
+      "project_number": 441,
+      "project_name": "prove_completeness_relativized_approach",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-12T21:34:20Z",
+      "last_updated": "2026-01-12T21:34:20Z",
+      "description": "Prove completeness following Approach 2 Relativized Completeness from research-004.md. The syntactic construction yields the free ordered abelian group on one generator, isomorphic to Z. Adding density axioms yields Q, completeness axioms approaches R."
+    },
     {
       "project_number": 440,
       "project_name": "revise_logos_readme",

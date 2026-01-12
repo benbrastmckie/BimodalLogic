@@ -14,6 +14,8 @@ This report investigates a novel approach to syntactic time construction: modeli
 
 ### Core Idea
 
+NOTE: sets of MCSs might not be enough on its own since an singleton set of one MCS is a duration of length zero, so there are then multiple durations of length zero. We would then need to gather these into an equivalence class according to their measure. If we did this, then duration ordering is given by subset inclusion of members so that if x < y, then every chain in x is a subset of a member of y, and every member of y has a member of x as a subset. This gives us at least the positive durations which can be used along with a marker symbol to construct all of the inverses.
+
 The proposal suggests:
 1. **World states** = Maximal Consistent Sets (MCSs)
 2. **Durations** = Totally ordered sets (chains) of MCSs
