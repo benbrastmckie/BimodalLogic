@@ -145,7 +145,7 @@ This task addresses 6 TODOs in the Bimodal syntax documentation file. The change
 ### Phase 4: Restructure Temporal Swap Definition (TODOs 5, 6)
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace `\text{swap}` with `\swap` macro
