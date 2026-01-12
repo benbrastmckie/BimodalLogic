@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T05:36:33.618239Z",
-  "next_project_number": 439,
+  "next_project_number": 440,
   "active_projects": [
+    {
+      "project_number": 439,
+      "project_name": "fix_session_id_and_agent_system_robustness",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-12T20:49:18Z",
+      "last_updated": "2026-01-12T20:49:18Z",
+      "description": "Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. Systematically fix all fragile patterns in .claude/ agent system."
+    },
     {
       "project_number": 438,
       "project_name": "research_skill_execution_architecture",
@@ -340,14 +350,13 @@
       "project_number": 133,
       "project_name": "build_canonical_model_constructors_in_completeness.lean",
       "type": "feature",
-      "phase": "on_hold",
-      "status": "on_hold",
+      "phase": "not_started",
+      "status": "not_started",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
       "last_updated": "2026-01-11T16:30:00Z",
-      "effort": "3 hours",
-      "on_hold_reason": "Pending Bimodal polish (Task 360)"
+      "effort": "3 hours"
     },
     {
       "project_number": 134,

@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 439
+next_project_number: 440
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,21 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 439. Fix session ID generation and agent system robustness
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. The command `xxd: command not found` caused a malformed session ID and subsequent crash. Systematically fix all fragile patterns in .claude/ agent system.
+
+**Issues to fix**:
+1. Session ID generation uses `xxd` which is not universally available
+2. No fallback when session ID generation fails
+3. Potential cascading failures from malformed session IDs
+
+---
 
 ### 438. Research skill/agent execution architecture
 - **Effort**: 4 hours
@@ -418,7 +433,7 @@ Research should analyze tradeoffs around token efficiency, reliability, maintain
 
 ### 133. Build canonical model constructors in Completeness.lean
 - **Effort**: 3 hours
-- **Status**: [ON HOLD]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
