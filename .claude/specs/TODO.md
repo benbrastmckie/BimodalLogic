@@ -30,7 +30,7 @@ technical_debt:
 
 ### 432. Systematic agent system overhaul for robustness
 - **Effort**: 11-17 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
@@ -98,13 +98,15 @@ technical_debt:
 
 ### 433. Refine README title and consolidate Bimodal documentation
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/433_refine_readme_title_and_bimodal_section/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/433_refine_readme_title_and_bimodal_section/plans/implementation-001.md)
 
-**Description**: Refine documentation from task 430. Change README.md title to 'Logos: A Logic for Interpreted and Verified AI Reasoning' (from LogosReference.tex). Expand the 'Bimodal Theory (TM Logic)' section in README.md into a full document at docs/research/theory-comparison.md (rename for clarity) that presents the Bimodal theory along with comparison to Logos. Replace the Bimodal section in README.md with a brief mention and link to the detailed document. Focus should be on presenting Logos since Bimodal will later be extracted to its own repository for independent development.
+**Description**: Refine documentation from task 430. Change README.md title to 'Logos: A Logic for Interpreted and Verified AI Reasoning' (from LogosReference.tex). Create new `docs/research/bimodal-logic.md` titled "A Bimodal Logic for Tense and Modality" as the authoritative Bimodal presentation, replacing `theory-comparison.md`. Condense the Bimodal section in README.md to a brief summary with link. Update all 20+ cross-references across the codebase.
 
 ---
 

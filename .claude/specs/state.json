@@ -6,26 +6,31 @@
     {
       "project_number": 433,
       "project_name": "refine_readme_title_and_bimodal_section",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T15:47:36Z",
-      "last_updated": "2026-01-12T16:15:00Z",
+      "last_updated": "2026-01-12T16:45:00Z",
+      "plan_version": "001",
       "artifacts": [
         {
           "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
     {
       "project_number": 432,
       "project_name": "fix_artifact_linking_in_todo_and_state",
-      "status": "researched",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T14:48:15Z",
-      "last_updated": "2026-01-12T16:04:37Z",
+      "last_updated": "2026-01-12T20:30:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md",
@@ -37,6 +42,10 @@
         },
         {
           "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-003.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-004.md",
           "type": "research"
         }
       ]
