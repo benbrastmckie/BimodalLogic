@@ -6,12 +6,13 @@
     {
       "project_number": 439,
       "project_name": "address_todo_note_tags_semantics_tex",
-      "status": "planned",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-12T18:46:59Z",
-      "last_updated": "2026-01-12T20:36:08Z",
-      "description": "Address the TODO and NOTE tags in Theories/Bimodal/latex/subfiles/02-Semantics.tex"
+      "last_updated": "2026-01-12T20:56:00Z",
+      "description": "Address the TODO and NOTE tags in Theories/Bimodal/latex/subfiles/02-Semantics.tex",
+      "completed": "2026-01-12T20:56:00Z"
     },
     {
       "project_number": 438,
