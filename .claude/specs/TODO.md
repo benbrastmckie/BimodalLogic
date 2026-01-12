@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:34:26Z
-next_project_number: 454
+next_project_number: 455
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -79,6 +79,16 @@ technical_debt:
 - **Dependencies**: 398
 
 **Description**: Implement the causal operator semantics in Lean based on the approved recursive-semantics.md specification. Extend CoreFrame with closeness ordering, define Evolution and ExpectedEvolution structures, implement CausalContext with background assumptions, and replace the current counterfactual-based definition in Truth.lean with the three-condition hyperintensional semantics.
+
+---
+
+### 454. Fix temporal quantification to match paper
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+
+**Description**: The Lean implementation restricts temporal quantification to times in the world history's domain dom(τ) despite the fact the source paper /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (lines 896-7 and lines 1862-1872) quantifies over all times. It is also important that the times are unrestricted in the definition of logical consequence in line 924 and 2273. Fix the lean source code to match the paper exactly.
 
 ---
 
