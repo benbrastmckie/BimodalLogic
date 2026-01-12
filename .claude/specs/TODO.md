@@ -177,11 +177,13 @@ technical_debt:
 
 ### 444. Formula countability and set-list bridge
 - **Effort**: 8-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
 - **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 1)
+- **Research**: [research-001.md](.claude/specs/444_formula_countability_set_list_bridge/reports/research-001.md)
 
 **Description**: Phase 1 of completeness proofs: Establish bridge between set-based and list-based consistency. Prove Formula is countable, implement enumeration, define setToContext, prove set-list consistency equivalence, complete lindenbaum proof.
 
