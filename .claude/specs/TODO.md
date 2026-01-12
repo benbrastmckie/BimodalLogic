@@ -116,14 +116,16 @@ technical_debt:
 
 ### 422. Complete TODOs in Introduction.tex
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/422_complete_introduction_todos/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/422_complete_introduction_todos/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/422_complete_introduction_todos/summaries/implementation-summary-20260112.md)
 
-**Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/00-Introduction.tex
+**Description**: Restructured Introduction.tex by merging Implementation Status and Source Code into a single Project Structure subsection with brief explanations and status for each directory. Added Deduction Theorem status.
 
 ---
 
@@ -276,7 +278,7 @@ technical_debt:
 
 ### 420. Upgrade Mathlib version
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 400

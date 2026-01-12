@@ -6,11 +6,11 @@
     {
       "project_number": 422,
       "project_name": "complete_introduction_todos",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-12T01:17:56Z",
-      "last_updated": "2026-01-12T01:45:00Z",
+      "last_updated": "2026-01-12T01:50:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/422_complete_introduction_todos/reports/research-001.md",
@@ -19,9 +19,14 @@
         {
           "path": ".claude/specs/422_complete_introduction_todos/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/422_complete_introduction_todos/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-12T01:50:00Z"
     },
     {
       "project_number": 421,
@@ -114,7 +119,7 @@
     {
       "project_number": 420,
       "project_name": "upgrade_mathlib_version",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "description": "Upgrade Mathlib from v4.14.0 to a newer version (4.22+) that includes significant compiler and instance caching improvements. Requires testing for breaking changes and API migrations.",
