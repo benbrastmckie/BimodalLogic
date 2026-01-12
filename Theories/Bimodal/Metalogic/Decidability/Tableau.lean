@@ -127,7 +127,7 @@ inductive RuleResult : Type where
 Try to decompose a formula as negation (A → ⊥).
 Returns `some A` if the formula is `A.imp .bot`, otherwise `none`.
 -/
-def Formula.asNeg? : Formula → Option Formula
+def asNeg? : Formula → Option Formula
   | .imp φ .bot => some φ
   | _ => none
 
@@ -136,7 +136,7 @@ Try to decompose a formula as conjunction (¬(A → ¬B)).
 Note: A ∧ B = (A.imp B.neg).neg = (A.imp (B.imp .bot)).imp .bot
 Returns `some (A, B)` if it matches the pattern, otherwise `none`.
 -/
-def Formula.asAnd? : Formula → Option (Formula × Formula)
+def asAnd? : Formula → Option (Formula × Formula)
   | .imp (.imp φ (.imp ψ .bot)) .bot => some (φ, ψ)
   | _ => none
 
@@ -145,7 +145,7 @@ Try to decompose a formula as disjunction (¬A → B).
 Note: A ∨ B = A.neg.imp B = (A.imp .bot).imp B
 Returns `some (A, B)` if it matches the pattern, otherwise `none`.
 -/
-def Formula.asOr? : Formula → Option (Formula × Formula)
+def asOr? : Formula → Option (Formula × Formula)
   | .imp (.imp φ .bot) ψ => some (φ, ψ)
   | _ => none
 
@@ -154,7 +154,7 @@ Try to decompose a formula as diamond (¬□¬A).
 Note: ◇A = A.neg.box.neg = ((A.imp .bot).box).imp .bot
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
-def Formula.asDiamond? : Formula → Option Formula
+def asDiamond? : Formula → Option Formula
   | .imp (.box (.imp φ .bot)) .bot => some φ
   | _ => none
 
@@ -163,7 +163,7 @@ Try to decompose a formula as some_past (¬H¬A).
 Note: PA = A.neg.all_past.neg = ((A.imp .bot).all_past).imp .bot
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
-def Formula.asSomePast? : Formula → Option Formula
+def asSomePast? : Formula → Option Formula
   | .imp (.all_past (.imp φ .bot)) .bot => some φ
   | _ => none
 
@@ -172,7 +172,7 @@ Try to decompose a formula as some_future (¬G¬A).
 Note: FA = A.neg.all_future.neg = ((A.imp .bot).all_future).imp .bot
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
-def Formula.asSomeFuture? : Formula → Option Formula
+def asSomeFuture? : Formula → Option Formula
   | .imp (.all_future (.imp φ .bot)) .bot => some φ
   | _ => none
 
@@ -186,19 +186,19 @@ Check if a specific rule is applicable to a signed formula.
 def isApplicable (rule : TableauRule) (sf : SignedFormula) : Bool :=
   match rule, sf.sign, sf.formula with
   -- Propositional rules
-  | .andPos, .pos, φ => φ.asAnd?.isSome
-  | .andNeg, .neg, φ => φ.asAnd?.isSome
-  | .orPos, .pos, φ => φ.asOr?.isSome
-  | .orNeg, .neg, φ => φ.asOr?.isSome
+  | .andPos, .pos, φ => (asAnd? φ).isSome
+  | .andNeg, .neg, φ => (asAnd? φ).isSome
+  | .orPos, .pos, φ => (asOr? φ).isSome
+  | .orNeg, .neg, φ => (asOr? φ).isSome
   | .impPos, .pos, .imp _ _ => true
   | .impNeg, .neg, .imp _ _ => true
-  | .negPos, .pos, φ => φ.asNeg?.isSome
-  | .negNeg, .neg, φ => φ.asNeg?.isSome
+  | .negPos, .pos, φ => (asNeg? φ).isSome
+  | .negNeg, .neg, φ => (asNeg? φ).isSome
   -- Modal rules
   | .boxPos, .pos, .box _ => true
   | .boxNeg, .neg, .box _ => true
-  | .diamondPos, .pos, φ => φ.asDiamond?.isSome
-  | .diamondNeg, .neg, φ => φ.asDiamond?.isSome
+  | .diamondPos, .pos, φ => (asDiamond? φ).isSome
+  | .diamondNeg, .neg, φ => (asDiamond? φ).isSome
   -- Temporal rules
   | .allFuturePos, .pos, .all_future _ => true
   | .allFutureNeg, .neg, .all_future _ => true
@@ -218,22 +218,22 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) : RuleResult :=
   match rule, sf.sign, sf.formula with
   -- T(A ∧ B) → T(A), T(B)
   | .andPos, .pos, φ =>
-      match φ.asAnd? with
+      match asAnd? φ with
       | some (ψ, χ) => .linear [SignedFormula.pos ψ, SignedFormula.pos χ]
       | none => .notApplicable
   -- F(A ∧ B) → F(A) | F(B)
   | .andNeg, .neg, φ =>
-      match φ.asAnd? with
+      match asAnd? φ with
       | some (ψ, χ) => .branching [[SignedFormula.neg ψ], [SignedFormula.neg χ]]
       | none => .notApplicable
   -- T(A ∨ B) → T(A) | T(B)
   | .orPos, .pos, φ =>
-      match φ.asOr? with
+      match asOr? φ with
       | some (ψ, χ) => .branching [[SignedFormula.pos ψ], [SignedFormula.pos χ]]
       | none => .notApplicable
   -- F(A ∨ B) → F(A), F(B)
   | .orNeg, .neg, φ =>
-      match φ.asOr? with
+      match asOr? φ with
       | some (ψ, χ) => .linear [SignedFormula.neg ψ, SignedFormula.neg χ]
       | none => .notApplicable
   -- T(A → B) → F(A) | T(B)
@@ -244,12 +244,12 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) : RuleResult :=
       .linear [SignedFormula.pos ψ, SignedFormula.neg χ]
   -- T(¬A) → F(A)
   | .negPos, .pos, φ =>
-      match φ.asNeg? with
+      match asNeg? φ with
       | some ψ => .linear [SignedFormula.neg ψ]
       | none => .notApplicable
   -- F(¬A) → T(A)
   | .negNeg, .neg, φ =>
-      match φ.asNeg? with
+      match asNeg? φ with
       | some ψ => .linear [SignedFormula.pos ψ]
       | none => .notApplicable
   -- T(□A) → T(A) (S5: reflexivity gives us truth at current world)
@@ -260,12 +260,12 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) : RuleResult :=
       .linear [SignedFormula.neg ψ]
   -- T(◇A) → T(A) (S5: if possibly A, then A at some accessible world)
   | .diamondPos, .pos, φ =>
-      match φ.asDiamond? with
+      match asDiamond? φ with
       | some ψ => .linear [SignedFormula.pos ψ]
       | none => .notApplicable
   -- F(◇A) → F(A) (S5: if not possibly A, then ¬A everywhere, so F(A))
   | .diamondNeg, .neg, φ =>
-      match φ.asDiamond? with
+      match asDiamond? φ with
       | some ψ => .linear [SignedFormula.neg ψ]
       | none => .notApplicable
   -- T(GA) → T(A) (temporal: if always future A, then A now)

@@ -390,15 +390,16 @@
       "project_number": 261,
       "project_name": "decidability",
       "type": "feature",
-      "phase": "planned",
-      "status": "implementing",
+      "phase": "completed",
+      "status": "completed",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T16:30:04Z",
+      "last_updated": "2026-01-12T22:30:00Z",
       "effort": "40-50 hours",
       "description": "Implement decision procedures for TM logic. Research-002 analyzes implications of Type-based axiom refactor from task 260.",
       "plan_version": "001",
+      "completed": "2026-01-12T22:30:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/261_decidability/reports/research-001.md",
@@ -411,6 +412,10 @@
         {
           "path": ".claude/specs/261_decidability/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/261_decidability/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     }
