@@ -16,192 +16,121 @@ Execute implementation plan with automatic resume support by delegating to the a
 
 ## Execution
 
-### 1. Parse and Validate
+### CHECKPOINT 1: GATE IN
 
-```
-task_number = first token from $ARGUMENTS
-force_mode = "--force" in $ARGUMENTS
-```
+1. **Generate Session ID**
+   ```
+   session_id = sess_{timestamp}_{random}
+   ```
 
-**Lookup task via jq**:
-```bash
-task_data=$(jq -r --arg num "$task_number" \
-  '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+2. **Lookup Task**
+   ```bash
+   task_data=$(jq -r --arg num "$task_number" \
+     '.active_projects[] | select(.project_number == ($num | tonumber))' \
+     .claude/specs/state.json)
+   ```
 
-# Validate task exists
-if [ -z "$task_data" ]; then
-  echo "Error: Task $task_number not found in state.json"
-  exit 1
-fi
+3. **Validate**
+   - Task exists (ABORT if not)
+   - Status allows implementation: planned, implementing, partial, researched, not_started
+   - If completed: ABORT unless --force
+   - If abandoned: ABORT "Recover task first"
 
-# Extract fields
-language=$(echo "$task_data" | jq -r '.language // "general"')
-status=$(echo "$task_data" | jq -r '.status')
-project_name=$(echo "$task_data" | jq -r '.project_name')
-```
+4. **Load Implementation Plan**
+   Find latest: `.claude/specs/{N}_{SLUG}/plans/implementation-{LATEST}.md`
 
-### 2. Validate Status
+   If no plan: ABORT "No implementation plan found. Run /plan {N} first."
 
-Allowed: planned, implementing, partial, researched, not_started
-- If completed: Error unless --force
-- If abandoned: Error "Recover task first"
-- If implementing: Resume from last incomplete phase
+5. **Detect Resume Point**
+   Scan plan for phase status markers:
+   - [NOT STARTED] → Start here
+   - [IN PROGRESS] → Resume here
+   - [COMPLETED] → Skip
+   - [PARTIAL] → Resume here
 
-### 3. Load Implementation Plan
+   If all [COMPLETED]: Task already done
 
-Find latest plan:
-```
-.claude/specs/{N}_{SLUG}/plans/implementation-{LATEST}.md
-```
+6. **Update Status (via skill-status-sync)**
+   Invoke skill-status-sync: `preflight_update(task_number, "implementing", session_id)`
 
-Use Glob to find plan files, Read to get content.
+7. **Verify** status is now "implementing"
 
-### 4. Detect Resume Point
+**ABORT** if any validation fails. **PROCEED** if all pass.
 
-Scan plan for phases with status markers:
-- [NOT STARTED] → Start here
-- [IN PROGRESS] → Resume here
-- [COMPLETED] → Skip
-- [PARTIAL] → Resume here
+### STAGE 2: DELEGATE
 
-If all phases [COMPLETED]: Task already done
+Route by language (see routing.md):
 
-### 5. Update Status to IMPLEMENTING
+| Language | Skill |
+|----------|-------|
+| lean | skill-lean-implementation |
+| latex | skill-latex-implementation |
+| general/meta/markdown | skill-implementer |
 
-Update both files atomically:
-
-**state.json** (via jq):
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: "implementing",
-    last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
-```
-
-**TODO.md** (via Edit tool):
-Update the status marker from current status to `[IMPLEMENTING]`
-
-### 6. Route by Language and Invoke Skill
-
-Based on task language, invoke the appropriate skill via the **Skill tool**:
-
-**If language == "lean":**
-```
-Invoke skill-lean-implementation with:
+Invoke skill with:
 - task_number: {N}
 - plan_path: {path to implementation plan}
 - resume_phase: {phase number to resume from, if any}
-```
+- session_id: {session_id}
 
-The skill will spawn `lean-implementation-agent` via Task tool which will:
-- Use Lean MCP tools (lean_goal, lean_diagnostic_messages, etc.)
-- Execute plan phases sequentially
-- Create implementation summary
-- Return JSON result
+Skill spawns appropriate agent which:
+- Executes plan phases sequentially
+- Updates phase markers in plan file
+- Creates commits per phase
+- Creates implementation summary
+- Returns structured result
 
-**If language == "latex":**
-```
-Invoke skill-latex-implementation with:
-- task_number: {N}
-- plan_path: {path to implementation plan}
-- resume_phase: {phase number to resume from, if any}
-```
+### CHECKPOINT 2: GATE OUT
 
-The skill will spawn `latex-implementation-agent` via Task tool which will:
-- Use LaTeX build tools (pdflatex, latexmk)
-- Execute plan phases sequentially
-- Create implementation summary
-- Return JSON result
+1. **Validate Return**
+   Required fields: status, summary, artifacts, metadata (phases_completed, phases_total)
 
-**If language is general, meta, markdown, or other:**
-```
-Invoke skill-implementer with:
-- task_number: {N}
-- plan_path: {path to implementation plan}
-- resume_phase: {phase number to resume from, if any}
-```
+2. **Verify Artifacts**
+   Check summary file exists on disk (if completed)
 
-The skill will spawn `general-implementation-agent` via Task tool which will:
-- Use Read, Write, Edit, Bash for file operations
-- Execute plan phases sequentially
-- Create implementation summary
-- Return JSON result
+3. **Update Status (via skill-status-sync)**
 
-### 7. Handle Skill Result
+   **If result.status == "completed":**
+   Invoke skill-status-sync: `postflight_update(task_number, "completed", artifacts, session_id)`
 
-The skill returns a JSON result:
+   **If result.status == "partial":**
+   Keep status as "implementing", note resume point
 
-```json
-{
-  "status": "completed|partial|failed",
-  "summary": "Implemented all N phases successfully",
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": ".claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
-      "summary": "Implementation completion summary"
-    }
-  ],
-  "metadata": {
-    "phases_completed": 3,
-    "phases_total": 3
-  },
-  "next_steps": "Task complete" | "Run /implement {N} to resume"
-}
-```
+4. **Verify** status and artifact links
 
-**On completed**: Proceed to step 8 with completed state
-**On partial**: Proceed to step 8 with partial state (keep status as implementing)
-**On failed**: Log error, output error message
+**PROCEED** to commit. **RETRY** skill if validation fails.
 
-### 8. Update Status Based on Result
-
-**If result.status == "completed":**
-
-Update both files atomically:
-
-**state.json** (via jq):
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: "completed",
-    completed: $ts,
-    last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
-```
-
-**TODO.md** (via Edit tool):
-- Update status marker to `[COMPLETED]`
-- Add Completed date
-- Add Summary link
-
-**If result.status == "partial":**
-- Keep status as [IMPLEMENTING]
-- Note resume point for next invocation
-
-### 9. Git Commit
+### CHECKPOINT 3: COMMIT
 
 **On completion:**
 ```bash
 git add -A
-git commit -m "task {N}: complete implementation
+git commit -m "$(cat <<'EOF'
+task {N}: complete implementation
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+Session: {session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
 ```
 
 **On partial:**
 ```bash
 git add -A
-git commit -m "task {N}: partial implementation (phases 1-{M} of {N})
+git commit -m "$(cat <<'EOF'
+task {N}: partial implementation (phases 1-{M} of {total})
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+Session: {session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
 ```
 
-### 10. Output
+Commit failure is non-blocking (log and continue).
+
+## Output
 
 **On Completion:**
 ```
@@ -227,26 +156,20 @@ Next: /implement {N} (will resume from Phase {M+1})
 
 ## Error Handling
 
-### Skill Invocation Failure
-If the Skill tool fails to invoke:
-1. Log the error
-2. Keep status as [IMPLEMENTING]
-3. Output error message with recovery instructions
+### GATE IN Failure
+- Task not found: Return error with guidance
+- No plan found: Return error "Run /plan {N} first"
+- Invalid status: Return error with current status
 
-### Subagent Timeout
-If the subagent times out:
-1. Skill returns partial status
-2. Progress is preserved in plan phase markers
-3. User can re-run /implement to continue
+### DELEGATE Failure
+- Skill fails: Keep [IMPLEMENTING], log error
+- Timeout: Progress preserved in plan phase markers, user can re-run
+
+### GATE OUT Failure
+- Missing artifacts: Log warning, continue with available
+- Link failure: Non-blocking warning
 
 ### Build Errors
-If build/verification fails:
-1. Skill returns partial or failed status
-2. Error details included in result
-3. User can fix issues and re-run /implement
-
-### Task Not Found
-Return immediately with clear error message.
-
-### Plan Not Found
-Error: "No implementation plan found. Run /plan {N} first."
+- Skill returns partial/failed status
+- Error details included in result
+- User can fix issues and re-run /implement

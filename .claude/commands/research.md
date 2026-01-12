@@ -16,134 +16,83 @@ Conduct research for a task by delegating to the appropriate research skill/suba
 
 ## Execution
 
-### 1. Parse and Validate
+### CHECKPOINT 1: GATE IN
 
-```
-task_number = first token from $ARGUMENTS
-focus_prompt = remaining tokens (optional)
-```
+1. **Generate Session ID**
+   ```
+   session_id = sess_{timestamp}_{random}
+   ```
 
-**Lookup task via jq**:
-```bash
-task_data=$(jq -r --arg num "$task_number" \
-  '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+2. **Lookup Task**
+   ```bash
+   task_data=$(jq -r --arg num "$task_number" \
+     '.active_projects[] | select(.project_number == ($num | tonumber))' \
+     .claude/specs/state.json)
+   ```
 
-# Validate task exists
-if [ -z "$task_data" ]; then
-  echo "Error: Task $task_number not found in state.json"
-  exit 1
-fi
+3. **Validate**
+   - Task exists (ABORT if not)
+   - Status allows research: not_started, planned, partial, blocked, researched
+   - If completed/abandoned: ABORT with recommendation
 
-# Extract fields
-language=$(echo "$task_data" | jq -r '.language // "general"')
-status=$(echo "$task_data" | jq -r '.status')
-project_name=$(echo "$task_data" | jq -r '.project_name')
-```
+4. **Update Status (via skill-status-sync)**
+   Invoke skill-status-sync: `preflight_update(task_number, "researching", session_id)`
 
-### 2. Validate Status
+5. **Verify** status is now "researching"
 
-Allowed statuses: not_started, planned, partial, blocked
-- If completed/abandoned: Error with recommendation
-- If researching: Warn about stale status, continue
-- If already researched: Note existing report, continue (will create new version)
+**ABORT** if any validation fails. **PROCEED** if all pass.
 
-### 3. Update Status to RESEARCHING
+### STAGE 2: DELEGATE
 
-Update both files atomically:
+Route by language (see routing.md):
 
-**state.json** (via jq):
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: "researching",
-    last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
-```
+| Language | Skill |
+|----------|-------|
+| lean | skill-lean-research |
+| other | skill-researcher |
 
-**TODO.md** (via Edit tool):
-Update the status marker from current status to `[RESEARCHING]`
-
-### 4. Route by Language and Invoke Skill
-
-Based on task language, invoke the appropriate skill via the **Skill tool**:
-
-**If language == "lean":**
-```
-Invoke skill-lean-research with:
+Invoke skill with:
 - task_number: {N}
 - focus_prompt: {optional focus}
-```
+- session_id: {session_id}
 
-The skill will spawn `lean-research-agent` via Task tool which will:
-- Use Lean MCP tools (leansearch, loogle, leanfinder)
-- Create research report in `.claude/specs/{N}_{SLUG}/reports/`
-- Return JSON result
+Skill spawns appropriate agent which:
+- Conducts research using language-appropriate tools
+- Creates report in `.claude/specs/{N}_{SLUG}/reports/`
+- Returns structured result
 
-**If language != "lean" (general, meta, markdown, latex, etc.):**
-```
-Invoke skill-researcher with:
-- task_number: {N}
-- focus_prompt: {optional focus}
-```
+### CHECKPOINT 2: GATE OUT
 
-The skill will spawn `general-research-agent` via Task tool which will:
-- Use WebSearch, WebFetch, Read, Grep, Glob
-- Create research report in `.claude/specs/{N}_{SLUG}/reports/`
-- Return JSON result
+1. **Validate Return**
+   Required fields: status, summary, artifacts
 
-### 5. Handle Skill Result
+2. **Verify Artifacts**
+   Check each artifact path exists on disk
 
-The skill returns a JSON result:
+3. **Update Status (via skill-status-sync)**
+   Invoke skill-status-sync: `postflight_update(task_number, "researched", artifacts, session_id)`
 
-```json
-{
-  "status": "completed|partial|failed",
-  "summary": "Brief summary of research findings",
-  "artifacts": [
-    {
-      "type": "research",
-      "path": ".claude/specs/{N}_{SLUG}/reports/research-{NNN}.md",
-      "summary": "Research report description"
-    }
-  ],
-  "next_steps": "Run /plan {N} to create implementation plan"
-}
-```
+4. **Verify** status is "researched" and artifacts are linked
 
-**On completed**: Proceed to step 6
-**On partial**: Log partial status, proceed to step 6 with partial state
-**On failed**: Log error, keep status as researching, output error
+**PROCEED** to commit. **RETRY** skill if validation fails.
 
-### 6. Update Status to RESEARCHED
-
-Update both files atomically:
-
-**state.json** (via jq):
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: "researched",
-    last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
-```
-
-**TODO.md** (via Edit tool):
-- Update status marker to `[RESEARCHED]`
-- Add research report link if not already present
-
-### 7. Git Commit
+### CHECKPOINT 3: COMMIT
 
 ```bash
-git add .claude/specs/
-git commit -m "task {N}: complete research
+git add -A
+git commit -m "$(cat <<'EOF'
+task {N}: complete research
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+Session: {session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
 ```
 
-### 8. Output
+Commit failure is non-blocking (log and continue).
+
+## Output
 
 ```
 Research completed for Task #{N}
@@ -158,17 +107,14 @@ Next: /plan {N}
 
 ## Error Handling
 
-### Skill Invocation Failure
-If the Skill tool fails to invoke:
-1. Log the error
-2. Keep status as [RESEARCHING]
-3. Output error message with recovery instructions
+### GATE IN Failure
+- Task not found: Return error with guidance
+- Invalid status: Return error with current status
 
-### Subagent Timeout
-If the subagent times out:
-1. Skill returns partial status
-2. Partial research is preserved
-3. User can re-run /research to continue
+### DELEGATE Failure
+- Skill fails: Keep [RESEARCHING], log error
+- Timeout: Partial research preserved, user can re-run
 
-### Task Not Found
-Return immediately with clear error message.
+### GATE OUT Failure
+- Missing artifacts: Log warning, continue with available
+- Link failure: Non-blocking warning
