@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T09:45:00Z
-next_project_number: 429
+next_project_number: 430
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 429. Extend command-skill-agent integration to /meta
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Extend the command-skill-agent integration approach (established in task 427) to /meta. Carefully design and optimize the /meta command so that it can revise the agent system or build other agent systems. The /meta command should load the appropriate context created by task 427 (command, skill, and subagent framework documentation) to make good use of these agent patterns.
+
+---
 
 ### 423. CI skip by default, trigger via commit message
 - **Effort**: 2-3 hours
