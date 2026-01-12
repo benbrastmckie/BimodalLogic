@@ -88,11 +88,11 @@
     {
       "project_number": 432,
       "project_name": "fix_artifact_linking_in_todo_and_state",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T14:48:15Z",
-      "last_updated": "2026-01-12T17:38:41Z",
+      "last_updated": "2026-01-12T17:50:29Z",
       "plan_version": "001",
       "artifacts": [
         {
@@ -119,7 +119,8 @@
           "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/plans/implementation-001.md",
           "type": "plan"
         }
-      ]
+      ],
+      "completed": "2026-01-12T17:50:29Z"
     },
     {
       "project_number": 431,
