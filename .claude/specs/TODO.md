@@ -1,21 +1,21 @@
 ---
-last_updated: 2026-01-12T06:35:00Z
-next_project_number: 409
+last_updated: 2026-01-12T08:00:00Z
+next_project_number: 415
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 17
+  active: 23
   completed: 77
   in_progress: 1
-  not_started: 11
+  not_started: 17
   abandoned: 7
-  total: 101
+  total: 107
 priority_distribution:
   critical: 0
-  high: 4
-  medium: 3
+  high: 6
+  medium: 7
   low: 10
 technical_debt:
   sorry_count: 19
@@ -27,6 +27,27 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 409. Convert workflow skills to forked subagent pattern
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Update skill-lean-research, skill-researcher, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation to use `context: fork` and `agent:` field in frontmatter. Convert skills to thin wrappers that spawn subagents for token-heavy work. Define standardized return format for artifacts (status, artifact_path, summary).
+
+---
+
+### 410. Remove eager context loading from skill frontmatter
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Dependencies**: 409
+
+**Description**: Remove `context:` arrays from all skill frontmatter files. Document lazy loading pattern using @-references. Ensure context/index.md is referenced for on-demand lookup. Update CLAUDE.md if needed. This enables skills to load context only when subagents actually need it.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -92,6 +113,39 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 411. Create lean-research-agent subagent with lazy context
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Dependencies**: 410
+
+**Description**: Create `.claude/agents/lean-research-agent.md` subagent with lean-lsp MCP tools and search decision tree. Loads mcp-tools-guide.md, leansearch-api.md, loogle-api.md only when needed via @-references. Returns structured JSON with artifact path and summary. Integrates with skill-lean-research via the forked subagent pattern.
+
+---
+
+### 412. Create general-research-agent subagent with lazy context
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Dependencies**: 410
+
+**Description**: Create `.claude/agents/general-research-agent.md` subagent with WebSearch, WebFetch, Read, Grep tools. Loads report-format.md on-demand. Returns structured JSON with artifact path and summary. Integrates with skill-researcher via the forked subagent pattern.
+
+---
+
+### 413. Create implementation-agent subagents (lean/general/latex)
+- **Effort**: 4-5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Dependencies**: 410
+
+**Description**: Create `.claude/agents/lean-implementation-agent.md`, `general-implementation-agent.md`, and `latex-implementation-agent.md` subagents. Each loads language-specific context only when executing phases. Returns phase completion status and artifact paths. Integrates with respective implementation skills via forked subagent pattern.
+
+---
 
 ### 405. Document LaTeX one-line-per-sentence convention
 - **Effort**: 1 hour
@@ -190,16 +244,18 @@ technical_debt:
 
 ### 402. Rename --divide flag to --expand
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 401
 - **Research**: [research-001.md](.claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/402_rename_divide_flag_to_expand/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/402_rename_divide_flag_to_expand/summaries/implementation-summary-20260112.md)
 
-**Description**: Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).
+**Description**: Renamed --divide flag to --expand across .claude/ system for consistency with [EXPANDED] status. Updated 10 files including CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, status-markers.md, status-transitions.md, documentation.md, and routing.md. Preserved /research --divide (different feature).
 
 ---
 
@@ -263,6 +319,17 @@ technical_debt:
 ---
 
 ## Low Priority
+
+### 414. Create planner-agent subagent with lazy context
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: meta
+- **Dependencies**: 410
+
+**Description**: Create `.claude/agents/planner-agent.md` subagent that loads plan-format.md and task-breakdown.md on-demand. Returns structured JSON with plan path and summary. Integrates with skill-planner via `context: fork` pattern.
+
+---
 
 ### 346. Refactor commands to delegate to skills
 - **Effort**: 8-12 hours
