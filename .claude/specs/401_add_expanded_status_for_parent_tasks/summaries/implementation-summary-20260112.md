@@ -51,5 +51,5 @@ Added the `[EXPANDED]` status marker for parent tasks that have been divided int
 ## Notes
 
 - `[EXPANDED]` is a terminal-like status (no outward transitions)
-- The `/task --divide` command will now automatically set parent tasks to `[EXPANDED]`
-- Task 402 (rename --divide to --expand) is a follow-up task
+- The `/task --expand` command will automatically set parent tasks to `[EXPANDED]`
+- Task 402 completed the rename from --divide to --expand

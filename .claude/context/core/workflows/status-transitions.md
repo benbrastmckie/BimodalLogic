@@ -35,7 +35,7 @@
 
 **Any status** → `[BLOCKED]` or `[ABANDONED]`
 
-**Any non-terminal** → `[EXPANDED]` (when task is divided into subtasks via `/task --divide`)
+**Any non-terminal** → `[EXPANDED]` (when task is expanded into subtasks via `/task --expand`)
 
 ## Command → Status Mapping
 
