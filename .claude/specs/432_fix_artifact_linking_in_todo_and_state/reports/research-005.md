@@ -252,7 +252,16 @@ Industry sources recommend:
 
 **Gap Identified**: Validation is currently schema-only (does return match format?). It doesn't assess quality.
 
-**Recommendation**: Keep validation schema-only for efficiency. Quality assessment should remain the user's responsibility. Adding a reviewer agent would significantly increase complexity and token cost without clear benefit for our use case.
+**Design Decision: Schema-Only Validation**
+
+Keep validation schema-only for efficiency. Quality assessment remains the user's responsibility. This is a deliberate architectural choice:
+
+1. **Efficiency**: Schema validation is deterministic and fast; quality review requires another LLM call
+2. **Token cost**: A reviewer agent would double token usage for every operation
+3. **User agency**: The user reviews artifacts and decides next steps—this is the natural quality gate
+4. **Complexity avoidance**: Reviewer agents require their own context, error handling, and potential disagreement resolution
+
+Adding a reviewer agent would significantly increase complexity and token cost without clear benefit. The human-in-the-loop at phase boundaries (`/research` → `/plan` → `/implement`) provides sufficient quality control.
 
 ### 5. Git Workflow Patterns
 
