@@ -30,9 +30,11 @@ technical_debt:
 
 ### 429. Extend command-skill-agent integration to /meta
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/429_extend_command_skill_agent_integration_to_meta/reports/research-001.md)
 
 **Description**: Extend the command-skill-agent integration approach (established in task 427) to /meta. Carefully design and optimize the /meta command so that it can revise the agent system or build other agent systems. The /meta command should load the appropriate context created by task 427 (command, skill, and subagent framework documentation) to make good use of these agent patterns.
 
