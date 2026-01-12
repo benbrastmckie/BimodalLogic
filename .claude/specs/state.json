@@ -6,11 +6,17 @@
     {
       "project_number": 422,
       "project_name": "complete_introduction_todos",
-      "status": "not_started",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-12T01:17:56Z",
-      "last_updated": "2026-01-12T01:17:56Z"
+      "last_updated": "2026-01-12T01:35:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/422_complete_introduction_todos/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 421,

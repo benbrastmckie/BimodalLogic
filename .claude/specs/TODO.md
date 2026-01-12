@@ -116,9 +116,11 @@ technical_debt:
 
 ### 422. Complete TODOs in Introduction.tex
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/422_complete_introduction_todos/reports/research-001.md)
 
 **Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/00-Introduction.tex
 
