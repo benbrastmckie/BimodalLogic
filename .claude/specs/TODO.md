@@ -182,15 +182,17 @@ Research should analyze tradeoffs around token efficiency, reliability, maintain
 
 ### 440. Revise Logos README to reflect current structure and ambitions
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/440_revise_logos_readme/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/440_revise_logos_readme/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/440_revise_logos_readme/summaries/implementation-summary-20260112.md)
 
-**Description**: Revise /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md to accurately reflect the current ambitions and structure of the Logos/ as outlined in /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md and implemented (at least with stubs) in Lean.
+**Description**: Completely replaced the outdated Logos README with an accurate description of the hyperintensional logic system. Removed all references to "re-exporting Bimodal" and Layer 0-4 architecture. Added philosophy section explaining hyperintensionality, extension architecture diagram, core concepts (bilateral propositions, task relation, world-histories), accurate implementation status, directory structure matching SubTheories/, operators reference, and links to recursive-semantics.md.
 
 ---
 
@@ -278,7 +280,7 @@ Research should analyze tradeoffs around token efficiency, reliability, maintain
  **Language**: lean
  **Blocking**: None (Decidability complete)
  **Dependencies**: Soundness (Complete), Deduction Theorem (Complete), Proof Search (Complete), Decidability (Complete)
- **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md), [research-003.md](.claude/specs/257_completeness_proofs/reports/research-003.md), [research-004.md](.claude/specs/257_completeness_proofs/reports/research-004.md), [research-005.md](.claude/specs/257_completeness_proofs/reports/research-005.md), [research-006.md](.claude/specs/257_completeness_proofs/reports/research-006.md), [research-007.md](.claude/specs/257_completeness_proofs/reports/research-007.md)
+ **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md), [research-003.md](.claude/specs/257_completeness_proofs/reports/research-003.md), [research-004.md](.claude/specs/257_completeness_proofs/reports/research-004.md), [research-005.md](.claude/specs/257_completeness_proofs/reports/research-005.md), [research-006.md](.claude/specs/257_completeness_proofs/reports/research-006.md), [research-007.md](.claude/specs/257_completeness_proofs/reports/research-007.md), [research-008.md](.claude/specs/257_completeness_proofs/reports/research-008.md)
 
 **Description**: Implement the completeness proof for TM logic using the canonical model method. Research-004 clarifies the key approach: use **relativized completeness** where times are a type parameter T (not constructed from syntax), while worlds (maximal consistent sets) and task relations ARE constructed from syntax. This matches the polymorphic validity definition and remains agnostic about discrete/dense/continuous time.
 

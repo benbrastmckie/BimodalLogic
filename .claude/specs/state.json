@@ -71,11 +71,12 @@
     {
       "project_number": 440,
       "project_name": "revise_logos_readme",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T21:16:41Z",
-      "last_updated": "2026-01-12T22:45:00Z",
+      "last_updated": "2026-01-12T22:10:00Z",
+      "completed": "2026-01-12T22:10:00Z",
       "plan_version": "001",
       "artifacts": [
         {
@@ -85,6 +86,10 @@
         {
           "path": ".claude/specs/440_revise_logos_readme/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/440_revise_logos_readme/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },
@@ -425,7 +430,7 @@
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T21:41:27Z",
+      "last_updated": "2026-01-12T22:15:00Z",
       "effort": "70-90 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.",
       "artifacts": [
@@ -455,6 +460,10 @@
         },
         {
           "path": ".claude/specs/257_completeness_proofs/reports/research-007.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/257_completeness_proofs/reports/research-008.md",
           "type": "research"
         }
       ]
