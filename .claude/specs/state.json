@@ -1,8 +1,21 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T05:36:33.618239Z",
-  "next_project_number": 438,
+  "next_project_number": 439,
   "active_projects": [
+    {
+      "project_number": 438,
+      "project_name": "research_skill_execution_architecture",
+      "type": "research",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-12T19:44:35Z",
+      "last_updated": "2026-01-12T19:44:35Z",
+      "effort": "4 hours",
+      "description": "Research the skill/agent execution architecture to determine optimal approach for systematic improvements. Analyze three options: (A) Make skills executable with automatic subagent delegation, (B) Inline critical patterns in command files removing skill indirection, (C) Use Task tool with explicit prompts including all skill context. Evaluate tradeoffs around token efficiency, reliability, maintainability, and Claude Code constraints."
+    },
     {
       "project_number": 437,
       "project_name": "improve_readme_consistency_with_recursive_semantics",

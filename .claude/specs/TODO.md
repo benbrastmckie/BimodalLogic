@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 438
+next_project_number: 439
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,23 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 438. Research skill/agent execution architecture
+- **Effort**: 4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Research the skill/agent execution architecture to determine optimal approach for systematic improvements identified in task 432 post-implementation analysis. Ten issues were identified including: fragile session ID generation, Skill tool loading documentation without executing, named agent delegation failures, premature success returns, unstructured skill returns, subagent context isolation not working, inconsistent artifact linking, no timeout handling, and manual status updates bypassing skill-status-sync.
+
+Evaluate three architectural options:
+- **Option A**: Make skills executable with automatic subagent delegation
+- **Option B**: Inline critical patterns in command files, removing skill indirection layer
+- **Option C**: Use Task tool with explicit prompts including all skill context (since named agents don't exist)
+
+Research should analyze tradeoffs around token efficiency, reliability, maintainability, and Claude Code platform constraints. Recommend an approach with migration path.
+
+---
 
 ### 437. Improve README consistency with recursive-semantics.md
 - **Effort**: 2-3 hours
