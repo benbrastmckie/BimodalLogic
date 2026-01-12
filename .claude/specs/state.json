@@ -1,8 +1,20 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T00:42:34Z",
-  "next_project_number": 421,
+  "next_project_number": 422,
   "active_projects": [
+    {
+      "project_number": 421,
+      "project_name": "lookup_formal_term_definitions_revise_research",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "description": "Look up all formal terms and terms of art used in .claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md that are defined in /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex. Revise research-001.md to ensure all terms are defined before they are used.",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:45:38Z",
+      "last_updated": "2026-01-12T00:45:38Z",
+      "related_task": 398
+    },
     {
       "project_number": 416,
       "project_name": "quick_performance_fixes_explanatory_truth",
@@ -78,13 +90,13 @@
     {
       "project_number": 415,
       "project_name": "fix_latex_sentence_line_breaks",
-      "status": "planned",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "description": "Fix LaTeX sentence line breaks introduced by task 405/406 refactor. Sentences should remain on single numbered lines (semantic linefeeds), not be broken across lines as seen in 00-Introduction.tex lines 9-10.",
       "effort": "1-2 hours",
       "created": "2026-01-12T00:32:09Z",
-      "last_updated": "2026-01-12T00:40:03Z",
+      "last_updated": "2026-01-12T00:45:38Z",
       "dependencies": [
         405,
         406
@@ -97,9 +109,14 @@
         {
           "path": ".claude/specs/415_fix_latex_sentence_line_breaks/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/415_fix_latex_sentence_line_breaks/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-12T00:45:38Z"
     },
     {
       "project_number": 414,

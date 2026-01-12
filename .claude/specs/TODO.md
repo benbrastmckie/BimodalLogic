@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T00:43:19Z
-next_project_number: 421
+next_project_number: 422
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -113,6 +113,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 421. Look up formal term definitions and revise research report
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Related Task**: 398
+
+**Description**: Look up all formal terms and terms of art used in .claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md that are defined in /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex. Revise research-001.md to ensure all terms are defined before they are used.
+
+---
 
 ### 411. Create lean-research-agent subagent with lazy context
 - **Effort**: 3-4 hours
