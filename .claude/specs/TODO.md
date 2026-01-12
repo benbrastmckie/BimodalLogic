@@ -138,10 +138,11 @@ technical_debt:
 
 ### 412. Create general-research-agent subagent with lazy context
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
+- **Plan**: [implementation-001.md](.claude/specs/412_create_general_research_agent_subagent/plans/implementation-001.md)
 
 **Description**: Create `.claude/agents/general-research-agent.md` subagent with WebSearch, WebFetch, Read, Grep tools. Loads report-format.md on-demand. Returns structured JSON with artifact path and summary. Integrates with skill-researcher via the forked subagent pattern.
 

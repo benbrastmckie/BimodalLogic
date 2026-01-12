@@ -34,15 +34,22 @@
     {
       "project_number": 412,
       "project_name": "create_general_research_agent_subagent",
-      "status": "not_started",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "description": "Create .claude/agents/general-research-agent.md subagent with WebSearch, WebFetch, Read, Grep tools. Loads report-format.md on-demand. Returns structured JSON with artifact path and summary.",
       "effort": "2-3 hours",
       "created": "2026-01-12T08:00:00Z",
-      "last_updated": "2026-01-12T08:00:00Z",
+      "last_updated": "2026-01-12T01:53:57Z",
       "dependencies": [
         410
+      ],
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/412_create_general_research_agent_subagent/plans/implementation-001.md",
+          "type": "plan"
+        }
       ]
     },
     {
