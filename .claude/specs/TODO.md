@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 430
+next_project_number: 431
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -81,6 +81,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 430. Refactor documentation to present ProofChecker as general framework
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Refactor the ProofChecker documentation (README.md and docs/README.md) to present ProofChecker as a general framework for developing related theories for formal languages with semantics, proof theories, and metalogics. The project now supports two theories: the Bimodal/ theory for tense and modality (entirely intensional) and the Logos/ theory (hyperintensional foundation with layered extensions).
+
+---
 
 ### 400. Investigate Explanatory/Truth.lean build performance
 - **Effort**: 2-3 hours
