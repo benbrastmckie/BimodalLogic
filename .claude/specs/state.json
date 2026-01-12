@@ -286,31 +286,28 @@
       "project_number": 260,
       "project_name": "proof_search",
       "type": "feature",
-      "phase": "researched",
-      "status": "planning",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T15:24:53Z",
-      "effort": "40-60 hours",
-      "description": "Implement automated proof search for TM logic with proof term construction.",
-      "planning_completed": "2026-01-05T08:07:35-08:00",
-      "plan_path": ".claude/specs/260_proof_search/plans/implementation-001.md",
+      "last_updated": "2026-01-12T23:30:00Z",
+      "effort": "16-22 hours",
+      "description": "Implement automated proof search for TM logic with proof term construction using Direct Refactor approach (Axiom: Prop -> Type).",
+      "planning_completed": "2026-01-12T23:30:00Z",
+      "plan_path": ".claude/specs/260_proof_search/plans/implementation-002.md",
+      "plan_version": "002",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 76,
-        "complexity": "medium-high",
+        "total_effort_hours": 22,
+        "complexity": "medium",
         "research_integrated": true,
         "language": "lean",
-        "proof_strategy": "Extend existing bounded DFS with proof term construction, tactic integration, and BFS variant",
-        "mathlib_dependencies": [
-          "Std.Data.HashMap",
-          "Std.Data.HashSet",
-          "Lean.Elab.Tactic",
-          "Aesop"
-        ]
+        "proof_strategy": "Direct Refactor (Axiom: Prop -> Type) with matchAxiom and proof term construction",
+        "supersedes": "implementation-001.md",
+        "approach": "Direct Refactor (recommended by research-004)"
       },
-      "estimated_hours": 76,
+      "estimated_hours": 22,
       "artifacts": [
         {
           "path": ".claude/specs/260_proof_search/reports/research-001.md",
@@ -330,7 +327,13 @@
         },
         {
           "path": ".claude/specs/260_proof_search/plans/implementation-001.md",
-          "type": "plan"
+          "type": "plan",
+          "status": "superseded"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/plans/implementation-002.md",
+          "type": "plan",
+          "status": "current"
         },
         {
           "path": ".claude/specs/260_proof_search/summaries/implementation-summary-20260105.md",

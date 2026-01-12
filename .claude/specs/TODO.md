@@ -154,44 +154,43 @@ technical_debt:
 ---
 
 ### 260. Proof Search
-- **Effort**: 40-60 hours
-- **Status**: [PLANNING]
+- **Effort**: 16-22 hours
+- **Status**: [PLANNED]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12 (v002)
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking Resolved**: Yes (via Direct Refactor)
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/260_proof_search/reports/research-001.md), [research-002.md](.claude/specs/260_proof_search/reports/research-002.md), [research-003.md](.claude/specs/260_proof_search/reports/research-003.md), [research-004.md](.claude/specs/260_proof_search/reports/research-004.md)
-- **Plan**: [Implementation Plan](.claude/specs/260_proof_search/plans/implementation-001.md)
-- **Implementation**: [Implementation Summary](.claude/specs/260_proof_search/summaries/implementation-summary-20260105.md)
+- **Plan (Current)**: [implementation-002.md](.claude/specs/260_proof_search/plans/implementation-002.md) (Direct Refactor approach)
+- **Plan (Superseded)**: [implementation-001.md](.claude/specs/260_proof_search/plans/implementation-001.md) (AxiomWitness pattern - abandoned)
 
-**Description**: Implement automated proof search for TM logic with proof term construction.
+**Description**: Implement automated proof search for TM logic with proof term construction using Direct Refactor approach (Axiom: Prop -> Type).
 
-**Blocking Resolution** (research-004 balanced re-analysis): **Direct Refactor (Axiom: Prop -> Type)** is recommended over AxiomWitness:
-1. **Simplicity**: Single source of truth, no code duplication
-2. **Zero risk**: No code in this codebase relies on proof irrelevance for Axiom
-3. **No maintenance burden**: No parallel type (AxiomWitness) to synchronize
-4. **ITauto precedent not applicable**: ITauto uses intermediate representation; Axiom is actual type used in soundness proofs
-5. **Data richness**: Type enables `deriving Repr, DecidableEq`
+**Plan v002 Summary** (Direct Refactor approach per research-004):
 
-**Recommended Approach**:
-1. Change `inductive Axiom : Formula -> Prop` to `inductive Axiom : Formula -> Type` in Axioms.lean
-2. Add `deriving Repr, DecidableEq` to Axiom
-3. Implement `matchAxiom : Formula -> Option (Sigma Axiom)` for pattern matching
-4. Update `bounded_search` to return `Option (DerivationTree Gamma phi)`
+| Phase | Description | Hours | Status |
+|-------|-------------|-------|--------|
+| 1 | Axiom Refactor (Prop -> Type) | 1 | [NOT STARTED] |
+| 2 | Proof Term Construction | 6-8 | [NOT STARTED] |
+| 3 | Tactic Integration (optional) | 4-6 | [NOT STARTED] |
+| 4 | BFS Variant (optional) | 3-4 | [NOT STARTED] |
+| 5 | Testing and Validation | 2-3 | [NOT STARTED] |
 
-**Files**:
-- `Theories/Bimodal/ProofSystem/Axioms.lean` (change Prop to Type)
-- `Theories/Bimodal/Automation/ProofSearch.lean` (add matchAxiom, update search)
+**Key Changes from v001**:
+- Abandons AxiomWitness pattern (added complexity, no benefit)
+- Direct refactor: Change `Axiom : Formula -> Prop` to `Axiom : Formula -> Type`
+- Estimated effort reduced from 76 hours to 16-22 hours
 
 **Acceptance Criteria**:
 - [ ] Axiom changed from Prop to Type
-- [ ] matchAxiom function implemented
-- [ ] Proof search returns DerivationTree (not just Bool)
-- [ ] Existing metalogic proofs (Soundness, SoundnessLemmas) still compile
+- [ ] `deriving Repr, DecidableEq` added to Axiom
+- [ ] `matchAxiom : Formula -> Option (Sigma Axiom)` implemented
+- [ ] `bounded_search_with_proof` returns `DerivationTree`
+- [ ] Existing metalogic proofs (Soundness, SoundnessLemmas) compile unchanged
 - [ ] Tests verify proof term validity
-- [ ] Documentation updated
 
 **Impact**: Enables automated proof discovery returning actual proof terms for TM logic, suitable for both metalogic proofs and AI training signals.
 
