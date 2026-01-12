@@ -14,7 +14,7 @@ Rename the `--divide` flag to `--expand` across all active documentation and com
 ### Phase 1: Update Core Command Files
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Update the main task command definition

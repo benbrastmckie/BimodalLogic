@@ -95,7 +95,7 @@ technical_debt:
 
 ### 405. Document LaTeX one-line-per-sentence convention
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Medium
@@ -178,7 +178,7 @@ technical_debt:
 
 ### 402. Rename --divide flag to --expand
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Medium

@@ -1,7 +1,7 @@
 ---
 description: Create, recover, divide, sync, or abandon tasks
 allowed-tools: Read(.claude/specs/*), Edit(.claude/specs/TODO.md), Bash(jq:*), Bash(git:*), Bash(mkdir:*), Bash(mv:*), Bash(date:*), Bash(sed:*)
-argument-hint: "description" | --recover N | --divide N | --sync | --abandon N
+argument-hint: "description" | --recover N | --expand N | --sync | --abandon N
 model: claude-opus-4-5-20251101
 ---
 
@@ -29,7 +29,7 @@ Unified task lifecycle management. Parse $ARGUMENTS to determine operation mode.
 
 Check $ARGUMENTS for flags:
 - `--recover RANGES` → Recover tasks from archive
-- `--divide N [prompt]` → Divide task into subtasks
+- `--expand N [prompt]` → Expand task into subtasks
 - `--sync` → Sync TODO.md with state.json
 - `--abandon RANGES` → Archive tasks
 - No flag → Create new task with description
@@ -163,7 +163,7 @@ Parse task ranges after --recover (e.g., "343-345", "337, 343"):
 
 2. Git commit: "task: recover tasks {ranges}"
 
-## Divide Mode (--divide)
+## Expand Mode (--expand)
 
 Parse task number and optional prompt:
 

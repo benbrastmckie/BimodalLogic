@@ -67,7 +67,7 @@ Tasks have a `Language` field that determines tool selection:
 ```
 /task "Description"          # Create new task
 /task --recover 343-345      # Recover from archive
-/task --divide 326           # Split into subtasks
+/task --expand 326           # Expand into subtasks
 /task --sync                 # Sync TODO.md with state.json
 /task --abandon 343-345      # Archive tasks
 ```

@@ -6,13 +6,14 @@
     {
       "project_number": 405,
       "project_name": "document_latex_one_line_per_sentence_convention",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "description": "Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.",
       "effort": "1 hour",
       "created": "2026-01-11T22:25:49Z",
-      "last_updated": "2026-01-12T07:02:00Z",
+      "last_updated": "2026-01-12T07:05:00Z",
+      "implementing_started": "2026-01-12T07:05:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md",
@@ -138,13 +139,13 @@
     {
       "project_number": 402,
       "project_name": "rename_divide_flag_to_expand",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "description": "Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).",
       "effort": "2-3 hours",
       "created": "2026-01-11T22:10:38Z",
-      "last_updated": "2026-01-12T00:14:54Z",
+      "last_updated": "2026-01-12T00:17:10Z",
       "dependencies": [
         401
       ],
