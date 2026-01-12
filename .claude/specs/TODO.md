@@ -116,14 +116,15 @@ technical_debt:
 
 ### 421. Look up formal term definitions and revise research report
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Related Task**: 398
 - **Research**: [research-001.md](.claude/specs/421_lookup_formal_term_definitions_revise_research/reports/research-001.md)
 
-**Description**: Look up all formal terms and terms of art used in .claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md that are defined in /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex. Revise research-001.md to ensure all terms are defined before they are used.
+**Description**: Extracted 30+ formal definitions from sn-article.tex and revised task 398 research-001.md with a "Formal Definitions" section ensuring all terms are defined before use.
 
 ---
 
@@ -179,12 +180,14 @@ technical_debt:
 
 ### 408. Define \proofchecker LaTeX command
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
 - **Plan**: [implementation-001.md](.claude/specs/408_define_proofchecker_latex_command/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/408_define_proofchecker_latex_command/summaries/implementation-summary-20260112.md)
 
-**Description**: Define a \proofchecker command for \href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}} in /home/benjamin/Projects/ProofChecker/latex/notation-standards.sty and use this command to replace all occurrences of ProofChecker in the existing LaTeX documents.
+**Description**: Defined `\proofchecker` command in notation-standards.sty and replaced all occurrences in LaTeX documents (2 files updated).
 
 ---
 
@@ -203,7 +206,7 @@ technical_debt:
 
 ### 416. Quick performance fixes for Explanatory/Truth.lean
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-11
 - **Planned**: 2026-01-11
 - **Priority**: Medium

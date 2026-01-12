@@ -6,20 +6,21 @@
     {
       "project_number": 421,
       "project_name": "lookup_formal_term_definitions_revise_research",
-      "status": "researched",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "description": "Look up all formal terms and terms of art used in .claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md that are defined in /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex. Revise research-001.md to ensure all terms are defined before they are used.",
       "effort": "1-2 hours",
       "created": "2026-01-12T00:45:38Z",
-      "last_updated": "2026-01-12T00:51:33Z",
+      "last_updated": "2026-01-12T00:54:44Z",
       "related_task": 398,
       "artifacts": [
         {
           "path": ".claude/specs/421_lookup_formal_term_definitions_revise_research/reports/research-001.md",
           "type": "research"
         }
-      ]
+      ],
+      "completed": "2026-01-12T00:54:44Z"
     },
     {
       "project_number": 416,
@@ -214,12 +215,13 @@
     {
       "project_number": 408,
       "project_name": "define_proofchecker_latex_command",
-      "status": "planned",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-12T00:18:17Z",
-      "last_updated": "2026-01-12T00:49:25Z",
-      "plan_version": "001"
+      "last_updated": "2026-01-12T00:55:35Z",
+      "plan_version": "001",
+      "completed": "2026-01-12T00:55:35Z"
     },
     {
       "project_number": 400,
