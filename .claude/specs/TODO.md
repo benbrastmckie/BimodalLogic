@@ -1,22 +1,22 @@
 ---
-last_updated: 2026-01-12T19:00:00Z
+last_updated: 2026-01-12T19:30:00Z
 next_project_number: 439
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 17
-  completed: 113
-  in_progress: 1
+  active: 16
+  completed: 122
+  in_progress: 0
   not_started: 7
   abandoned: 7
-  total: 137
+  total: 145
 priority_distribution:
   critical: 0
-  high: 5
-  medium: 3
-  low: 9
+  high: 4
+  medium: 4
+  low: 8
 technical_debt:
   sorry_count: 19
   axiom_count: 11
@@ -158,52 +158,6 @@ technical_debt:
 
 ---
 
-### 260. Proof Search
-- **Effort**: 16-22 hours (actual: ~3 hours)
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-05
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12 (v002)
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking Resolved**: Yes (via Direct Refactor)
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/260_proof_search/reports/research-001.md), [research-002.md](.claude/specs/260_proof_search/reports/research-002.md), [research-003.md](.claude/specs/260_proof_search/reports/research-003.md), [research-004.md](.claude/specs/260_proof_search/reports/research-004.md)
-- **Plan (Current)**: [implementation-002.md](.claude/specs/260_proof_search/plans/implementation-002.md) (Direct Refactor approach)
-- **Plan (Superseded)**: [implementation-001.md](.claude/specs/260_proof_search/plans/implementation-001.md) (AxiomWitness pattern - abandoned)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/260_proof_search/summaries/implementation-summary-20260112.md)
-
-**Description**: Implement automated proof search for TM logic with proof term construction using Direct Refactor approach (Axiom: Prop -> Type).
-
-**Plan v002 Summary** (Direct Refactor approach per research-004):
-
-| Phase | Description | Hours | Status |
-|-------|-------------|-------|--------|
-| 1 | Axiom Refactor (Prop -> Type) | 1 | [COMPLETED] |
-| 2 | Proof Term Construction | 6-8 | [COMPLETED] |
-| 3 | Tactic Integration (optional) | 4-6 | [DEFERRED] |
-| 4 | BFS Variant (optional) | 3-4 | [DEFERRED] |
-| 5 | Testing and Validation | 2-3 | [COMPLETED] |
-
-**Implementation Highlights**:
-- Changed `Axiom : Formula -> Prop` to `Axiom : Formula -> Type` with zero breaking changes
-- Implemented `matchAxiom` function returning `Option (Sigma Axiom)` for all 14 axiom patterns
-- Implemented `bounded_search_with_proof` returning actual `DerivationTree` proof terms
-- All metalogic modules (Soundness, SoundnessLemmas, Completeness, DeductionTheorem) compile unchanged
-
-**Acceptance Criteria**:
-- [ ] Axiom changed from Prop to Type
-- [ ] `deriving Repr, DecidableEq` added to Axiom
-- [ ] `matchAxiom : Formula -> Option (Sigma Axiom)` implemented
-- [ ] `bounded_search_with_proof` returns `DerivationTree`
-- [ ] Existing metalogic proofs (Soundness, SoundnessLemmas) compile unchanged
-- [ ] Tests verify proof term validity
-
-**Impact**: Enables automated proof discovery returning actual proof terms for TM logic, suitable for both metalogic proofs and AI training signals.
-
----
-
 ## Low Priority
 
 ### 257. Completeness Proofs
@@ -237,51 +191,6 @@ technical_debt:
 - [ ] Weak and strong completeness proven
 
 **Impact**: Completes the metalogic foundation for TM logic by proving completeness, enabling derivability from validity.
-
----
-
-### 261. Decidability
-- **Effort**: 40-50 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/261_decidability/reports/research-001.md), [research-002.md](.claude/specs/261_decidability/reports/research-002.md)
-- **Plan**: [implementation-001.md](.claude/specs/261_decidability/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/261_decidability/summaries/implementation-summary-20260112.md)
-
-**Description**: Implement decision procedures for TM logic using finite model property and tableau methods. Research-002 analyzes implications of the Type-based axiom refactor from task 260, enabling direct proof term construction in decision procedures.
-
-**Research Findings**:
-- TM bimodal logic (S5 modal + linear temporal) is decidable via finite model property
-- Tableau-based satisfiability checking provides countermodels for invalid formulas
-- Existing proof search infrastructure (ProofSearch.lean, 1085 lines) provides foundation
-- Verified decision procedures for modal K/KT/S4 exist in Lean (Wu & Gore)
-
-**Action Items**:
-1. Prove finite model property for TM logic (modal filtration + temporal unraveling)
-2. Implement signed formula tableau rules for all connectives
-3. Prove tableau termination and completeness
-4. Implement decision procedure returning proof or countermodel
-5. Integrate with existing proof search
-
-**Files**:
-- `Bimodal/Metalogic/Decidability/FMP.lean` (finite model property)
-- `Bimodal/Metalogic/Decidability/Tableau.lean` (tableau rules)
-- `Bimodal/Metalogic/Decidability/DecisionProcedure.lean` (main procedure)
-
-**Acceptance Criteria**:
-- [ ] Finite model property proved for TM logic
-- [ ] Tableau method implemented with termination proof
-- [ ] Decision procedure returns `DecisionResult` (valid proof or countermodel)
-- [ ] Tests verify validity of axiom schemata
-- [ ] Tests verify countermodel construction for invalid formulas
-
-**Impact**: Provides complete algorithmic decision procedures for TM logic validity and satisfiability with formal correctness proofs.
 
 ---
 
