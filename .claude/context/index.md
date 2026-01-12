@@ -69,6 +69,11 @@ Load for: Task validation, artifact creation, documentation standards
   - Command → Status mapping
   - Valid transition rules and diagrams
   - Atomic synchronization protocol
+- **ci-workflow.md** (140 lines) - CI workflow standards and trigger criteria
+  - Skip-by-default behavior with `[ci]` marker
+  - Decision criteria for triggering CI
+  - Language-based defaults (lean triggers, meta/markdown skip)
+  - Task lifecycle CI triggers
 - **tasks.md** (227 lines) - Task entry format, required fields, validation rules
 - **documentation.md** (178 lines) - Documentation standards, NO EMOJI policy
 - **plan.md** (104 lines) - Implementation plan structure and requirements

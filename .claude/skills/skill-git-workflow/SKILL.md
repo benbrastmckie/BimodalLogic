@@ -26,14 +26,15 @@ This skill activates when:
 
 ### Task Operations
 
-| Operation | Format |
-|-----------|--------|
-| Create task | `task {N}: create {title}` |
-| Complete research | `task {N}: complete research` |
-| Create plan | `task {N}: create implementation plan` |
-| Complete phase | `task {N} phase {P}: {phase_name}` |
-| Complete task | `task {N}: complete implementation` |
-| Revise plan | `task {N}: revise plan (v{V})` |
+| Operation | Format | CI Triggered |
+|-----------|--------|--------------|
+| Create task | `task {N}: create {title}` | No |
+| Complete research | `task {N}: complete research` | No |
+| Create plan | `task {N}: create implementation plan` | No |
+| Complete phase | `task {N} phase {P}: {phase_name}` | No |
+| Complete task | `task {N}: complete implementation` | No |
+| Complete task (with CI) | `task {N}: complete implementation [ci]` | Yes |
+| Revise plan | `task {N}: revise plan (v{V})` | No |
 
 ### System Operations
 
@@ -114,6 +115,51 @@ Updated plan with phase status
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
 
+## CI Triggering
+
+### Overview
+
+CI is **skipped by default** on push events. To trigger CI, add `[ci]` marker to the commit message.
+
+### trigger_ci Parameter
+
+When creating commits, the `trigger_ci` parameter controls whether CI runs:
+
+| Value | Behavior | Use Case |
+|-------|----------|----------|
+| `false` (default) | No CI marker added | Routine commits, research, planning |
+| `true` | Append `[ci]` to message | Lean changes, implementation completion |
+
+### CI Decision Criteria
+
+Trigger CI (`trigger_ci: true`) when:
+- **Lean files modified** (.lean) - Ensures build passes
+- **Implementation completed** - Final verification before merge
+- **CI configuration changed** (.github/workflows/) - Validate workflow changes
+- **Mathlib dependencies updated** (lakefile.lean, lake-manifest.json) - Ensure compatibility
+- **Critical bug fixes** - Verify fix works
+
+Skip CI (default) when:
+- Documentation changes only (.md files)
+- Research/planning artifacts
+- Configuration changes (non-CI)
+- Routine task management operations
+
+### Commit Message with CI Marker
+
+```
+task {N}: complete implementation [ci]
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+```
+
+### When CI Always Runs
+
+CI runs regardless of marker on:
+- Pull request events (all PRs run CI)
+- Manual workflow_dispatch trigger
+- Commits with `[ci]` marker
+
 ## Execution Commands
 
 ### Standard Commit
@@ -149,7 +195,8 @@ EOF
     "path/to/file1",
     "path/to/file2"
   ],
-  "message": "Full commit message"
+  "message": "Full commit message",
+  "ci_triggered": true|false
 }
 ```
 

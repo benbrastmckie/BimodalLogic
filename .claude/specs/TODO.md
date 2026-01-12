@@ -30,13 +30,15 @@ technical_debt:
 
 ### 423. CI skip by default, trigger via commit message
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/423_ci_skip_by_default_trigger_via_commit_message/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/423_ci_skip_by_default_trigger_via_commit_message/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/423_ci_skip_by_default_trigger_via_commit_message/summaries/implementation-summary-20260112.md)
 
 **Description**: Change CI workflow to skip by default and only run when triggered by a special marker in commit messages (e.g., `[ci]` or `[run-ci]`). Create a git skill and subagent to handle all git commits, which can intelligently decide when to include the CI trigger marker. Add context documentation in `.claude/context/` explaining the git workflow and CI triggering convention. This enables frequent pushes without triggering CI, while still allowing explicit CI runs when warranted and likely to succeed.
 
@@ -84,7 +86,7 @@ technical_debt:
 
 ### 427. Document command, skill, and subagent framework
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
@@ -195,7 +197,7 @@ technical_debt:
 
 ### 261. Decidability
 - **Effort**: 40-60 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None

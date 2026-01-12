@@ -11,6 +11,14 @@ jobs:
   build:
     name: Build, Test, and Lint
     runs-on: ubuntu-latest
+    # Skip CI by default on push, run only when:
+    # 1. Manual workflow_dispatch trigger
+    # 2. Pull request event
+    # 3. Commit message contains [ci] marker
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'pull_request' ||
+      contains(github.event.head_commit.message, '[ci]')
 
     steps:
       - name: Checkout repository

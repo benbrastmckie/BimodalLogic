@@ -6,11 +6,11 @@
     {
       "project_number": 427,
       "project_name": "document_command_skill_subagent_framework",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-12T05:40:23Z",
-      "last_updated": "2026-01-12T09:55:00Z",
+      "last_updated": "2026-01-12T05:50:33Z",
       "artifacts": [
         {
           "path": ".claude/specs/427_document_command_skill_subagent_framework/reports/research-001.md",
@@ -26,11 +26,12 @@
     {
       "project_number": 423,
       "project_name": "ci_skip_by_default_trigger_via_commit_message",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T02:09:50Z",
-      "last_updated": "2026-01-12T05:48:22Z",
+      "last_updated": "2026-01-12T10:15:00Z",
+      "completed": "2026-01-12T10:15:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/423_ci_skip_by_default_trigger_via_commit_message/reports/research-001.md",
@@ -39,6 +40,10 @@
         {
           "path": ".claude/specs/423_ci_skip_by_default_trigger_via_commit_message/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/423_ci_skip_by_default_trigger_via_commit_message/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ],
       "plan_version": "001"
@@ -283,11 +288,11 @@
       "project_name": "decidability",
       "type": "feature",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researching",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T05:50:15Z",
       "effort": "40-60 hours",
       "description": "Implement decision procedures for TM logic."
     }
