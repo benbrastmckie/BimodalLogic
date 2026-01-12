@@ -214,15 +214,17 @@ technical_debt:
 
 ### 419. Refactor mutual recursion in Foundation/Semantics.lean
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 400
 - **Dependencies**: 416
 - **Research**: [research-001.md](.claude/specs/419_refactor_mutual_recursion_semantics/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/419_refactor_mutual_recursion_semantics/plans/implementation-001.md)
 
-**Description**: Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.
+**Description**: Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Replace the `mutual` block with a single `eval` function parameterized by a `Polarity` type, enabling cleaner structural recursion and reducing well-founded recursion elaboration overhead.
 
 ---
 

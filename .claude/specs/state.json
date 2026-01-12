@@ -129,13 +129,13 @@
     {
       "project_number": 419,
       "project_name": "refactor_mutual_recursion_semantics",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "description": "Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.",
       "effort": "4-6 hours",
       "created": "2026-01-12T00:38:44Z",
-      "last_updated": "2026-01-12T02:05:55Z",
+      "last_updated": "2026-01-12T09:15:00Z",
       "parent_task": 400,
       "dependencies": [
         416
@@ -144,8 +144,13 @@
         {
           "path": ".claude/specs/419_refactor_mutual_recursion_semantics/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/419_refactor_mutual_recursion_semantics/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 414,
