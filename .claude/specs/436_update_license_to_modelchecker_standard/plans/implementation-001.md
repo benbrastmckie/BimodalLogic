@@ -14,7 +14,7 @@ Replace the current MIT License with GPL-3.0 to align with the ModelChecker proj
 ### Phase 1: Update LICENSE File
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace MIT License text with GPL-3.0 text matching ModelChecker format
@@ -66,7 +66,7 @@ For the full GPL-3.0 license text, see: https://www.gnu.org/licenses/gpl-3.0.txt
 ### Phase 2: Update README.md License References
 
 **Estimated effort**: 10 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update Table of Contents entry from "MIT License" to "GPL-3.0 License"

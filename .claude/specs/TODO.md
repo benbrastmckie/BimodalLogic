@@ -30,7 +30,7 @@ technical_debt:
 
 ### 437. Improve README consistency with recursive-semantics.md
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: general
@@ -149,13 +149,15 @@ technical_debt:
 
 ### 436. Update license to ModelChecker standard
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/436_update_license_to_modelchecker_standard/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/436_update_license_to_modelchecker_standard/summaries/implementation-summary-20260112.md)
 
 **Description**: Update the license from MIT to the same standard used in the ModelChecker package: /home/benjamin/Projects/ModelChecker/README.md
 

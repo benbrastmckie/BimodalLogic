@@ -60,7 +60,7 @@ See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNote
 - [Theoretical Foundations](#theoretical-foundations) - Academic papers underlying the semantics
 - [Bimodal Theory](#bimodal-theory) - Intensional logic comparison baseline
 - [Citation](#citation) - How to cite this project
-- [License](#license) - MIT License
+- [License](#license) - GPL-3.0 License
 - [Contributing](#contributing) - Guidelines for contributors
 
 ---
@@ -298,7 +298,7 @@ If you use Logos in your research, please cite:
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+This project is licensed under GPL-3.0. See [LICENSE](LICENSE) for details.
 
 ---
 

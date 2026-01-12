@@ -6,11 +6,11 @@
     {
       "project_number": 437,
       "project_name": "improve_readme_consistency_with_recursive_semantics",
-      "status": "researched",
+      "status": "planning",
       "language": "general",
       "priority": "high",
       "created": "2026-01-12T17:34:32Z",
-      "last_updated": "2026-01-12T22:45:00Z",
+      "last_updated": "2026-01-12T17:57:50Z",
       "artifacts": [
         {
           "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
@@ -21,12 +21,13 @@
     {
       "project_number": 436,
       "project_name": "update_license_to_modelchecker_standard",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T17:28:42Z",
-      "last_updated": "2026-01-12T17:53:16Z",
+      "last_updated": "2026-01-12T17:58:44Z",
       "plan_version": "001",
+      "completed": "2026-01-12T17:58:44Z",
       "artifacts": [
         {
           "path": ".claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md",
@@ -35,6 +36,10 @@
         {
           "path": ".claude/specs/436_update_license_to_modelchecker_standard/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/436_update_license_to_modelchecker_standard/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },
