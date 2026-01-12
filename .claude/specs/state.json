@@ -45,13 +45,13 @@
     {
       "project_number": 418,
       "project_name": "cache_typeclass_instances_explanatory",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.",
-      "effort": "2-3 hours",
+      "effort": "1.5-2 hours",
       "created": "2026-01-12T00:38:44Z",
-      "last_updated": "2026-01-12T01:35:13Z",
+      "last_updated": "2026-01-12T03:00:00Z",
       "parent_task": 400,
       "dependencies": [
         416
@@ -59,6 +59,10 @@
       "artifacts": [
         {
           "path": ".claude/specs/418_cache_typeclass_instances_explanatory/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/418_cache_typeclass_instances_explanatory/reports/research-002.md",
           "type": "research"
         }
       ]
