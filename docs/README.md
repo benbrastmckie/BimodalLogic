@@ -33,7 +33,7 @@ For documentation specific to each logic theory, see:
 | Implementation status | [Status](../Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md) | [Status](../Logos/docs/project-info/IMPLEMENTATION_STATUS.md) |
 | Known limitations | [Limitations](../Bimodal/docs/project-info/KNOWN_LIMITATIONS.md) | [Limitations](../Logos/docs/project-info/KNOWN_LIMITATIONS.md) |
 
-**Theory comparison**: [Research/theory-comparison.md](Research/theory-comparison.md)
+**Theory comparison**: [research/bimodal-logic.md](research/bimodal-logic.md) - Bimodal Logic and comparison with Logos
 
 ## Project-Wide Documentation
 
@@ -76,7 +76,7 @@ Project-wide user documentation:
 Project-wide research documents:
 
 - [README.md](Research/README.md) - Research documentation overview
-- [theory-comparison.md](Research/theory-comparison.md) - Comparison of Bimodal and Logos
+- [bimodal-logic.md](research/bimodal-logic.md) - Bimodal Logic and comparison with Logos
 - [dual-verification.md](Research/dual-verification.md) - RL training architecture design
 - [proof-library-design.md](Research/proof-library-design.md) - Theorem caching design
 
@@ -184,7 +184,7 @@ Architectural Decision Records (ADRs):
 ### For Researchers
 
 1. [Research Overview](Research/README.md) - Research documentation index
-2. [Theory Comparison](Research/theory-comparison.md) - Bimodal vs Logos
+2. [Bimodal Logic](research/bimodal-logic.md) - Bimodal vs Logos
 3. [Logos Methodology](../Logos/docs/user-guide/METHODOLOGY.md) - Philosophical foundations
 4. [Logos Semantics](../Logos/docs/research/recursive-semantics.md) - Full specification
 
@@ -199,7 +199,7 @@ Architectural Decision Records (ADRs):
 
 **Start with**:
 1. [Project README](../README.md) - Project overview and motivations
-2. [Theory Comparison](Research/theory-comparison.md) - Bimodal vs Logos differences
+2. [Bimodal Logic](research/bimodal-logic.md) - Bimodal vs Logos differences
 3. Theory-specific documentation:
    - Bimodal: [Architecture](../Bimodal/docs/user-guide/ARCHITECTURE.md)
    - Logos: [Methodology](../Logos/docs/user-guide/METHODOLOGY.md)

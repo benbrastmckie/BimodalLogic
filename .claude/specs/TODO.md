@@ -98,13 +98,15 @@ technical_debt:
 
 ### 433. Refine README title and consolidate Bimodal documentation
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/433_refine_readme_title_and_bimodal_section/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/433_refine_readme_title_and_bimodal_section/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/433_refine_readme_title_and_bimodal_section/summaries/implementation-summary-20260112.md)
 
 **Description**: Refine documentation from task 430. Change README.md title to 'Logos: A Logic for Interpreted and Verified AI Reasoning' (from LogosReference.tex). Create new `docs/research/bimodal-logic.md` titled "A Bimodal Logic for Tense and Modality" as the authoritative Bimodal presentation, replacing `theory-comparison.md`. Condense the Bimodal section in README.md to a brief summary with link. Update all 20+ cross-references across the codebase.
 
@@ -251,7 +253,7 @@ technical_debt:
 
 ### 261. Decidability
 - **Effort**: 40-50 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Low

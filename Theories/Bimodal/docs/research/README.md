@@ -61,7 +61,7 @@ invalidation strategies and memory management.
 
 ## Related Documentation
 
-- [theory-comparison.md](../../../docs/research/theory-comparison.md) - Comparison with Logos
+- [bimodal-logic.md](../../../../docs/research/bimodal-logic.md) - Comparison with Logos
 - [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) - TM logic specification
 - [TACTIC_REGISTRY.md](../project-info/TACTIC_REGISTRY.md) - Tactic implementation status
 

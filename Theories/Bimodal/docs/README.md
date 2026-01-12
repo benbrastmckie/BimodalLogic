@@ -14,7 +14,7 @@ Bimodal is a **propositional intensional logic** with:
 - **Logical level**: Propositional (zeroth-order)
 
 For comparison with the planned Logos hyperintensional logic, see
-[theory-comparison.md](../../docs/research/theory-comparison.md).
+[bimodal-logic.md](../../../docs/research/bimodal-logic.md).
 
 ## Documentation Organization
 
@@ -105,4 +105,4 @@ Most-referenced documents:
 
 - **Up**: [Bimodal/](../)
 - **Project Documentation**: [docs/](../../docs/)
-- **Theory Comparison**: [theory-comparison.md](../../docs/research/theory-comparison.md)
+- **Theory Comparison**: [bimodal-logic.md](../../../docs/research/bimodal-logic.md)

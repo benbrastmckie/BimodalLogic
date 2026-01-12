@@ -6,11 +6,11 @@
     {
       "project_number": 433,
       "project_name": "refine_readme_title_and_bimodal_section",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T15:47:36Z",
-      "last_updated": "2026-01-12T16:45:00Z",
+      "last_updated": "2026-01-12T16:36:00Z",
       "plan_version": "001",
       "artifacts": [
         {
@@ -20,6 +20,10 @@
         {
           "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },
@@ -383,11 +387,11 @@
       "project_name": "decidability",
       "type": "feature",
       "phase": "planned",
-      "status": "planned",
+      "status": "implementing",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T22:45:00Z",
+      "last_updated": "2026-01-12T16:30:04Z",
       "effort": "40-50 hours",
       "description": "Implement decision procedures for TM logic. Research-002 analyzes implications of Type-based axiom refactor from task 260.",
       "plan_version": "001",

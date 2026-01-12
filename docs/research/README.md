@@ -12,11 +12,11 @@ Project-wide research documents applicable to all theories in ProofChecker.
 
 ### Theory Foundations
 
-#### theory-comparison.md
+#### bimodal-logic.md
 
-Comparison of the two logical systems in ProofChecker: **Bimodal** (propositional intensional logic
-with world-state primitives) and **Logos** (planned second-order hyperintensional logic with state
-primitives). Covers semantic frameworks, operators, and intended applications.
+Authoritative presentation of Bimodal, a complete propositional intensional logic combining S5 modal
+and linear temporal operators. Includes comprehensive operator and axiom coverage, perpetuity principles,
+and a comparison section with Logos highlighting hyperintensional advantages.
 
 **Status**: Complete
 **Related**: [Bimodal README](../../Theories/Bimodal/README.md), [Logos README](../../Theories/Logos/README.md)

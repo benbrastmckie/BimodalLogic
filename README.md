@@ -1,4 +1,4 @@
-# Logos: A Framework for Verified Formal Logic in Lean 4
+# Logos: A Logic for Interpreted and Verified AI Reasoning
 
 **Logos** is a formal verification framework in Lean 4 implementing hyperintensional logics for verified AI reasoning. The project develops two theories in parallel:
 
@@ -9,7 +9,7 @@
 
 The contrast between Bimodal's purely intensional semantics and Logos's hyperintensional foundation demonstrates the advantages of hyperintensional semantics for supporting a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
 
-**See also**: [Theory Comparison](docs/research/theory-comparison.md) for detailed differences
+**See also**: [Bimodal Logic](docs/research/bimodal-logic.md) for detailed comparison
 
 ---
 
@@ -40,7 +40,7 @@ See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNote
 **Architecture**
 
 - [Layered Architecture](#layered-architecture)
-- [Core Layer (TM Logic)](#core-layer-tm-logic)
+- [Bimodal Theory](#bimodal-theory)
 - [Core Capabilities](#core-capabilities)
 - [Dual Verification](#dual-verification)
 - [Application Domains](#application-domains)
@@ -111,57 +111,13 @@ The Constitutive Layer provides fundamental descriptive resources---predicates a
 
 The Constitutive Layer leverages Logos's hyperintensional semantics to distinguish constitutive grounding from other necessary connections. Unlike intensional semantics where all necessary truths are equivalent, hyperintensional semantics captures that "being crimson grounds being red" differs from "2+2=4" even though both are necessary.
 
-## Bimodal Theory (TM Logic)
+## Bimodal Theory
 
-The Bimodal theory implements TM (Tense and Modality) logic as a complete, self-contained intensional logic. Developed in parallel with Logos, Bimodal serves as an excellent starting point for understanding modal-temporal reasoning and as a comparison baseline demonstrating the boundaries of purely intensional semantics.
+The project also includes **Bimodal**, a complete propositional intensional logic combining S5 modal and linear temporal operators. Developed in parallel with Logos, Bimodal provides an excellent starting point for understanding modal-temporal reasoning and demonstrates the boundaries of purely intensional semantics.
 
-The Causal Layer implements TM (Tense and Modality) - a bimodal logic combining S5 modal logic (metaphysical necessity/possibility) with linear temporal logic (past/future operators). This layer extends constitutive reasoning with temporal productive relationships, enabling systems to distinguish between timeless constitutive grounding (e.g., being crimson grounds being red) and temporal causal production (e.g., touching a hot stove causes pain).
+For the full presentation of Bimodal and its comparison with Logos, see [A Bimodal Logic for Tense and Modality](docs/research/bimodal-logic.md).
 
-### Operators
-
-| Category        | Operators                                                                          | Meaning                     |
-| --------------- | ---------------------------------------------------------------------------------- | --------------------------- |
-| **Extensional** | `¬`, `∧`, `∨`, `→`, `↔`, `⊥`, `⊤`                                                 | Boolean connectives         |
-| **Modal**       | `□` (necessity), `◇` (possibility)                                                 | S5 historical modality    |
-| **Temporal**    | `H` (always past), `G` (always future), `P` (sometime past), `F` (sometime future), `△` (always), `▽` (sometimes) | Linear temporal operators   |
-
-**For operator details**: [Operators Glossary](docs/reference/OPERATORS.md) | [Architecture Guide](docs/user-guide/ARCHITECTURE.md)
-
-### Axioms
-
-**S5 Modal Axioms**:
-
-- MT: `□φ → φ` (necessity implies actuality)
-- M4: `□φ → □□φ` (necessity iterates)
-- MB: `φ → □◇φ` (actuality implies necessary possibility)
-
-**Temporal Axioms**:
-
-- T4: `Gφ → GGφ` (future is transitive)
-- TA: `φ → GPφ` (present becomes past)
-- TL: `△φ → GPφ` (perpetuity implies past occurrence)
-
-**Bimodal Interaction**:
-
-- MF: `□φ → □Gφ` (necessity persists forward)
-- TF: `□φ → G□φ` (necessity is temporally stable)
-
-**For axiom proofs**: [Architecture Guide](docs/user-guide/ARCHITECTURE.md)
-
-### Perpetuity Principles
-
-Six theorems connecting modal and temporal operators:
-
-- **P1**: `□φ → △φ` (necessary truths are perpetual)
-- **P2**: `▽φ → ◇φ` (occurrence implies possibility)
-- **P3**: `□φ → □△φ` (necessity of perpetuity)
-- **P4**: `◇▽φ → ◇φ` (possible occurrence implies possibility)
-- **P5**: `◇▽φ → △◇φ` (persistent possibility)
-- **P6**: `▽□φ → □△φ` (occurrent necessity is perpetual)
-
-**For formal proofs**: [Perpetuity.lean](Logos/Theorems/Perpetuity.lean)
-
-For hyperintensional extensions beyond Bimodal's intensional semantics, see the Logos theory layers.
+For implementation details, see [Theories/Bimodal/README.md](Theories/Bimodal/README.md).
 
 ---
 
