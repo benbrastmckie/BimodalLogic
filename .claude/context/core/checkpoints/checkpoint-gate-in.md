@@ -7,7 +7,8 @@ The GATE IN checkpoint validates preconditions and updates status before delegat
 ### 1. Generate Session ID
 
 ```bash
-session_id="sess_$(date +%s)_$(head -c 3 /dev/urandom | xxd -p)"
+# Portable command (works on NixOS, macOS, Linux - no xxd dependency)
+session_id="sess_$(date +%s)_$(od -An -N3 -tx1 /dev/urandom | tr -d ' ')"
 ```
 
 Store in memory for use throughout operation.
