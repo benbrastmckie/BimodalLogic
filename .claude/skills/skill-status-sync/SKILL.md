@@ -2,14 +2,19 @@
 name: skill-status-sync
 description: Atomically update task status across TODO.md and state.json. Invoke when task status changes.
 allowed-tools: Read, Write, Edit, Bash
-context:
-  - .claude/context/core/orchestration/state-management.md
-  - .claude/context/core/orchestration/state-lookup.md
+# Context loaded on-demand via @-references (see Context Loading section)
 ---
 
 # Status Sync Skill
 
 Atomic status updates across TODO.md and state.json using efficient jq/grep patterns.
+
+## Context Loading
+
+Load context on-demand when needed:
+- `@.claude/context/core/orchestration/state-management.md` - State management patterns
+- `@.claude/context/core/orchestration/state-lookup.md` - State lookup utilities
+- `@.claude/context/index.md` - Full context discovery index
 
 ## Trigger Conditions
 

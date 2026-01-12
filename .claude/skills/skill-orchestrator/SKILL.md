@@ -2,14 +2,19 @@
 name: skill-orchestrator
 description: Route commands to appropriate workflows based on task language and status. Invoke when executing /task, /research, /plan, /implement commands.
 allowed-tools: Read, Glob, Grep, Task
-context:
-  - .claude/context/core/orchestration/routing.md
-  - .claude/context/core/orchestration/delegation.md
+# Context loaded on-demand via @-references (see Context Loading section)
 ---
 
 # Orchestrator Skill
 
 Central routing intelligence for the task management system.
+
+## Context Loading
+
+Load context on-demand when needed:
+- `@.claude/context/core/orchestration/routing.md` - Routing logic and language mapping
+- `@.claude/context/core/orchestration/delegation.md` - Delegation patterns and return format
+- `@.claude/context/index.md` - Full context discovery index
 
 ## Trigger Conditions
 

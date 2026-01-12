@@ -218,6 +218,15 @@ Domain knowledge (load as needed):
 
 ## Skill Architecture
 
+### Lazy Context Loading
+
+All skills use lazy context loading - context is never loaded eagerly via frontmatter arrays. Instead:
+
+1. **Forked skills** (`context: fork`): Delegate to subagents which load their own context
+2. **Direct skills**: Document required context via @-references in a "Context Loading" section
+
+Reference `@.claude/context/index.md` for the full context discovery index.
+
 ### Forked Subagent Pattern
 
 Workflow skills use a thin wrapper pattern with forked subagents for token efficiency:

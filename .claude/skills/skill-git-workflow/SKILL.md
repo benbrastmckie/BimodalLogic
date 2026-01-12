@@ -2,13 +2,18 @@
 name: skill-git-workflow
 description: Create scoped git commits for task operations. Invoke after task status changes or artifact creation.
 allowed-tools: Bash(git:*)
-context:
-  - .claude/context/core/standards/git-safety.md
+# Context loaded on-demand via @-references (see Context Loading section)
 ---
 
 # Git Workflow Skill
 
 Create properly scoped git commits for task operations.
+
+## Context Loading
+
+Load context on-demand when needed:
+- `@.claude/context/core/standards/git-safety.md` - Git safety rules and best practices
+- `@.claude/context/index.md` - Full context discovery index
 
 ## Trigger Conditions
 
