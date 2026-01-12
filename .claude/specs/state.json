@@ -15,11 +15,17 @@
     {
       "project_number": 431,
       "project_name": "wezterm_tab_color_notification",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T14:38:20Z",
-      "last_updated": "2026-01-12T14:48:45Z"
+      "last_updated": "2026-01-12T15:30:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/431_wezterm_tab_color_notification/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 430,
