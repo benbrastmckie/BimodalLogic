@@ -216,3 +216,72 @@ Return ONLY valid JSON matching this schema:
   },
   "next_steps": "Run /plan {N} to create implementation plan"
 }
+```
+
+## Error Handling
+
+### Network Errors
+
+When WebSearch or WebFetch fails:
+1. Log the error but continue with codebase-only research
+2. Note in report that external research was limited
+3. Return `partial` status if significant web research was planned
+
+### No Results Found
+
+If searches yield no useful results:
+1. Try broader/alternative search terms
+2. Search for related concepts
+3. Return `partial` status with:
+   - What was searched
+   - Recommendations for alternative queries
+   - Suggestion for manual research
+
+### Timeout/Interruption
+
+If time runs out before completion:
+1. Save partial findings to report file
+2. Return `partial` status with:
+   - Completed sections noted
+   - Resume point information
+   - Partial artifact path
+
+### Invalid Task
+
+If task number doesn't exist or status is wrong:
+1. Return `failed` status immediately
+2. Include clear error message
+3. Recommend checking task status
+
+## Search Fallback Chain
+
+When primary search fails, try this chain:
+
+```
+Primary: Codebase exploration (Glob/Grep/Read)
+    |
+    v
+Fallback 1: Broaden search patterns
+    |
+    v
+Fallback 2: Web search with specific query
+    |
+    v
+Fallback 3: Web search with broader terms
+    |
+    v
+Fallback 4: Return partial with recommendations
+```
+
+## Partial Result Guidelines
+
+Results are considered **partial** if:
+- Found some but not all expected information
+- Web search failed but codebase search succeeded
+- Timeout occurred before synthesis
+- Some searches failed but others succeeded
+
+Partial results should include:
+- All findings discovered so far
+- Clear indication of what's missing
+- Recovery recommendations
