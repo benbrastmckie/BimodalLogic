@@ -19,7 +19,7 @@
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T14:38:20Z",
-      "last_updated": "2026-01-12T15:30:00Z",
+      "last_updated": "2026-01-12T14:54:37Z",
       "artifacts": [
         {
           "path": ".claude/specs/431_wezterm_tab_color_notification/reports/research-001.md",
@@ -30,11 +30,11 @@
     {
       "project_number": 430,
       "project_name": "refactor_documentation_general_framework",
-      "status": "researched",
+      "status": "planning",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T14:28:44Z",
-      "last_updated": "2026-01-12T15:10:00Z",
+      "last_updated": "2026-01-12T14:54:40Z",
       "artifacts": [
         {
           "path": ".claude/specs/430_refactor_documentation_general_framework/reports/research-001.md",
