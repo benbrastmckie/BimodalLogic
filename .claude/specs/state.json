@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T06:30:00Z",
-  "next_project_number": 408,
+  "next_project_number": 409,
   "active_projects": [
+    {
+      "project_number": 408,
+      "project_name": "define_proofchecker_latex_command",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T00:18:17Z",
+      "last_updated": "2026-01-12T00:18:17Z"
+    },
     {
       "project_number": 405,
       "project_name": "document_latex_one_line_per_sentence_convention",
