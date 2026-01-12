@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 436
+next_project_number: 437
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -46,7 +46,7 @@ technical_debt:
 
 ### 432. Systematic agent system overhaul for robustness
 - **Effort**: 11-17 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
@@ -132,6 +132,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 436. Update license to ModelChecker standard
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Update the license from MIT to the same standard used in the ModelChecker package: /home/benjamin/Projects/ModelChecker/README.md
+
+---
 
 ### 435. Module Aggregator Standard for Bimodal/
 - **Effort**: 2-3 hours
