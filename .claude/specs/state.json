@@ -18,25 +18,25 @@
     {
       "project_number": 416,
       "project_name": "quick_performance_fixes_explanatory_truth",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Apply quick performance fixes to Explanatory/Truth.lean: fix namespace error in Syntax.lean:34, add @[irreducible] to truthAt, increase synthInstance.maxHeartbeats, and run lake clean. These are low-risk changes that can be applied together.",
       "effort": "1-2 hours",
       "created": "2026-01-12T00:38:44Z",
-      "last_updated": "2026-01-12T00:46:11Z",
+      "last_updated": "2026-01-12T00:47:07Z",
       "parent_task": 400
     },
     {
       "project_number": 417,
       "project_name": "split_typeclass_constraints_explanatory",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.",
       "effort": "3-4 hours",
       "created": "2026-01-12T00:38:44Z",
-      "last_updated": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T00:46:51Z",
       "parent_task": 400,
       "dependencies": [
         416
