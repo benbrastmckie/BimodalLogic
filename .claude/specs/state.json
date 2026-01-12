@@ -6,21 +6,27 @@
     {
       "project_number": 435,
       "project_name": "module_aggregator_standard_bimodal",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-12T17:16:42Z",
-      "last_updated": "2026-01-12T17:16:42Z",
-      "description": "Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation"
+      "last_updated": "2026-01-12T17:45:00Z",
+      "description": "Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation",
+      "artifacts": [
+        {
+          "path": ".claude/specs/435_module_aggregator_standard_bimodal/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 434,
       "project_name": "refactor_readme_for_investors_and_researchers",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "high",
       "created": "2026-01-12T16:54:47Z",
-      "last_updated": "2026-01-12T17:20:00Z",
+      "last_updated": "2026-01-12T17:18:21Z",
       "plan_version": "001",
       "artifacts": [
         {
