@@ -339,10 +339,11 @@ technical_debt:
 
 ### 414. Create planner-agent subagent with lazy context
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: meta
 - **Dependencies**: 410
+- **Research**: [research-001.md](.claude/specs/414_create_planner_agent_subagent/reports/research-001.md)
 
 **Description**: Create `.claude/agents/planner-agent.md` subagent that loads plan-format.md and task-breakdown.md on-demand. Returns structured JSON with plan path and summary. Integrates with skill-planner via `context: fork` pattern.
 
