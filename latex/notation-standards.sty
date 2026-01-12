@@ -20,6 +20,7 @@
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
 \RequirePackage{mathtools}  % For \coloneqq and enhanced math support
+\RequirePackage{hyperref}   % For \href links
 
 % ============================================================================
 % Modal Operators
@@ -70,6 +71,12 @@
 
 \newcommand{\leansrc}[1]{\texttt{#1}}      % Lean source reference (single arg)
 \newcommand{\leanref}[1]{\texttt{#1}}      % Lean reference
+
+% ============================================================================
+% Project References
+% ============================================================================
+
+\newcommand{\proofchecker}{\href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}}}
 
 % ============================================================================
 % End of Package

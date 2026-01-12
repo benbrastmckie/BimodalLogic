@@ -13,7 +13,7 @@ Define a `\proofchecker` command in `notation-standards.sty` that produces a hyp
 
 ### Phase 1: Define \proofchecker command
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add `hyperref` package requirement to notation-standards.sty
