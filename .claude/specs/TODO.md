@@ -297,7 +297,7 @@ technical_debt:
 ### 257. Completeness Proofs
 
  **Effort**: 70-90 hours
- **Status**: [RESEARCHED]
+ **Status**: [RESEARCHING]
  **Researched**: 2026-01-12
  **Priority**: Low
  **Language**: lean
