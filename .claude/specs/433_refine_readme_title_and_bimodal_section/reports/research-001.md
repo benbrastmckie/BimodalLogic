@@ -45,28 +45,21 @@ The current README title emphasizes "Framework" and "Formal Logic" which is accu
 
 **Recommendation**: Replace the detailed Bimodal section with a brief mention (5-10 lines) and link to the consolidated theory comparison document.
 
-### 3. Existing docs/research/theory-comparison.md Analysis
+### 3. New Document: docs/research/bimodal-logic.md
 
-**Current State** (182 lines):
-- Good overview structure (Bimodal vs Logos classification)
-- Semantic primitives comparison
-- Operator tables for both theories
-- "When to Use Each" guidance section
-- Theoretical background with references
-- Navigation links
+**Strategy**: Replace `docs/research/theory-comparison.md` with a new document `docs/research/bimodal-logic.md` titled **"A Bimodal Logic for Tense and Modality"** that:
 
-**Strengths**:
-- Clear side-by-side comparison structure
-- Appropriate level of technical detail
-- Good "when to use" guidance
+1. **Focuses primarily on presenting the Bimodal theory** in careful detail
+2. **Links to existing Bimodal documentation** rather than duplicating:
+   - `Theories/Bimodal/README.md` - Implementation details
+   - `Theories/Bimodal/docs/README.md` - Technical documentation hub
+   - `Theories/Bimodal/docs/reference/AXIOM_REFERENCE.md` - Axiom details
+3. **Includes a comparison section** with Logos after the Bimodal presentation
+4. **Notes the planned extraction** to a separate repository
 
-**Gaps**:
-1. **Title**: "Theory Comparison" is generic; could be renamed for clarity
-2. **Bimodal detail**: Less operator/axiom detail than README.md section
-3. **Logos detail**: Marked as "Planned" with incomplete status
-4. **Implementation status**: Could be more current
+**Rationale**: The current `theory-comparison.md` tries to serve two purposes (Bimodal presentation and comparison) without excelling at either. A Bimodal-focused document with a comparison section at the end better serves users who want to understand Bimodal, while also providing the comparison context.
 
-**Recommendation**: Expand theory-comparison.md to be the canonical Bimodal documentation in the main repository, incorporating the README.md Bimodal section content.
+**Recommendation**: Create `docs/research/bimodal-logic.md` as the canonical Bimodal presentation document, linking to existing detailed documentation in `Theories/Bimodal/`.
 
 ### 4. Content Overlap Analysis
 
@@ -83,98 +76,123 @@ The current README title emphasizes "Framework" and "Formal Logic" which is accu
 
 ### 5. Consolidation Strategy
 
-**Goal**: Single authoritative document for Bimodal theory comparison, replacing README.md duplication.
+**Goal**: Create `docs/research/bimodal-logic.md` titled **"A Bimodal Logic for Tense and Modality"** as the authoritative Bimodal presentation in the main docs/, replacing the generic `theory-comparison.md`.
 
-**Proposed Structure for Expanded theory-comparison.md**:
+**Proposed Structure for bimodal-logic.md**:
 
-1. **Overview** (existing, keep)
-2. **Bimodal Theory** (expanded from current)
-   - Classification (existing)
-   - Semantic primitives (existing)
-   - Operators (incorporate README.md table)
-   - Axiom schemas (incorporate README.md list)
-   - Perpetuity principles (incorporate from README.md)
-   - Implementation status (current)
-3. **Logos Theory** (existing, update status)
-4. **Comparison Tables** (new section)
-   - Semantic grain comparison
-   - Operator coverage
-   - Expressivity boundaries
-5. **When to Use Each** (existing, keep)
-6. **Theoretical Background** (existing, keep)
-7. **Future: Repository Separation** (new section)
-   - Note about planned Bimodal extraction
-   - Migration path
+```markdown
+# A Bimodal Logic for Tense and Modality
+
+## Overview
+Brief introduction to TM bimodal logic combining S5 modality and linear time.
+
+## The Bimodal Theory
+### Classification
+- Propositional intensional logic (zeroth-order)
+- Task-based Kripke semantics
+
+### Operators
+Full operator table (from README.md)
+
+### Axiom Schemas
+- S5 Modal axioms (MT, M4, MB)
+- Temporal axioms (T4, TA, TL)
+- Bimodal interaction axioms (MF, TF)
+(Link to Theories/Bimodal/docs/reference/AXIOM_REFERENCE.md for details)
+
+### Perpetuity Principles
+P1-P6 principles (from README.md)
+
+### Implementation Status
+Current state with links to Theories/Bimodal/README.md
+
+## Comparison with Logos
+### Intensional vs Hyperintensional Semantics
+Why Bimodal's purely intensional semantics cannot express certain distinctions
+
+### Expressivity Boundaries
+What Logos can express that Bimodal cannot (propositional attitudes, grounding, etc.)
+
+### When to Use Each
+Guidance on choosing between theories
+
+## Future: Repository Separation
+Note about planned Bimodal extraction to independent repository
+```
 
 **README.md Bimodal Section Replacement**:
 
 ```markdown
-## Bimodal Theory (TM Logic)
+## Bimodal Theory
 
-The Bimodal theory implements TM (Tense and Modality) logic as a complete,
-self-contained intensional logic. Developed in parallel with Logos, Bimodal
-serves as an excellent starting point for understanding modal-temporal
-reasoning and as a comparison baseline demonstrating the boundaries of purely
-intensional semantics.
+The project also includes **Bimodal**, a complete propositional intensional logic
+combining S5 modal and linear temporal operators. Developed in parallel with Logos,
+Bimodal provides an excellent starting point for understanding modal-temporal
+reasoning and demonstrates the boundaries of purely intensional semantics.
 
-Key characteristics:
-- **Type**: Propositional intensional logic (zeroth-order)
-- **Operators**: S5 modal (Box/Diamond) + linear temporal (Past/Future)
-- **Status**: Complete (syntax, proof system, semantics, soundness proven)
+For the full presentation of Bimodal and its comparison with Logos, see
+[A Bimodal Logic for Tense and Modality](docs/research/bimodal-logic.md).
 
-For detailed Bimodal documentation, see [Theories/Bimodal/README.md](Theories/Bimodal/README.md).
-
-For a comprehensive comparison of Bimodal and Logos theories, see
-[Theory Comparison](docs/research/theory-comparison.md).
+For implementation details, see [Theories/Bimodal/README.md](Theories/Bimodal/README.md).
 ```
 
-### 6. File Location Considerations
+### 6. File Operations
 
-**Current**: `docs/research/theory-comparison.md`
+**Action**: Replace `docs/research/theory-comparison.md` with `docs/research/bimodal-logic.md`
 
-**Alternatives Considered**:
-1. `docs/research/bimodal-logos-comparison.md` - More specific but longer
-2. `Theories/theory-comparison.md` - Closer to implementations but breaks docs structure
-3. Keep current name - Adequate, already linked from README.md
+**Rationale**:
+1. The new name `bimodal-logic.md` clearly indicates the document's primary focus
+2. The title "A Bimodal Logic for Tense and Modality" aligns with academic convention
+3. Bimodal-focused content with a comparison section serves both audiences
+4. Prepares for future extraction of Bimodal to its own repository
 
-**Recommendation**: Keep current location and name. The existing README.md link (line 12) already points to this document. Renaming would require updating multiple references.
+**Links to Update**:
+- README.md line 12 (theory comparison link) → update to bimodal-logic.md
+- docs/README.md theory table → update link
+- Any other cross-references in docs/
 
 ## Recommendations
 
 ### Implementation Plan
 
-**Phase 1: README.md Updates**
-1. Change title to "Logos: A Logic for Interpreted and Verified AI Reasoning"
-2. Replace detailed Bimodal section (lines 114-164) with brief summary (5-10 lines)
-3. Ensure link to theory-comparison.md is prominent
-
-**Phase 2: theory-comparison.md Expansion**
-1. Add complete operator table from README.md
-2. Add axiom schema list from README.md
-3. Add perpetuity principles section from README.md
-4. Update implementation status to current state
+**Phase 1: Create bimodal-logic.md**
+1. Create new `docs/research/bimodal-logic.md` with title "A Bimodal Logic for Tense and Modality"
+2. Write comprehensive Bimodal presentation (operators, axioms, perpetuity principles)
+3. Add links to `Theories/Bimodal/README.md` and `Theories/Bimodal/docs/` for implementation details
+4. Include comparison section with Logos at end
 5. Add "Future: Repository Separation" note
 
-**Phase 3: Verification**
+**Phase 2: README.md Updates**
+1. Change title to "Logos: A Logic for Interpreted and Verified AI Reasoning"
+2. Replace detailed Bimodal section with brief summary (8-10 lines)
+3. Update link to point to new `bimodal-logic.md`
+
+**Phase 3: Remove theory-comparison.md and Update References**
+1. Delete `docs/research/theory-comparison.md`
+2. Update `docs/README.md` theory table to link to `bimodal-logic.md`
+3. Search for and update any other cross-references
+
+**Phase 4: Verification**
 1. Ensure no orphaned internal links
-2. Verify README.md narrative flow without detailed Bimodal section
-3. Confirm theory-comparison.md is comprehensive
+2. Verify README.md narrative focuses on Logos
+3. Confirm bimodal-logic.md is comprehensive with good links to Theories/Bimodal/
 
 ### Risk Assessment
 
 | Risk | Mitigation |
 |------|------------|
-| Losing README.md Bimodal detail | All content preserved in theory-comparison.md |
-| Breaking internal links | Check all Bimodal section links move to new location |
-| Confusion during transition | Clear commit messages; update all cross-references |
+| Losing README.md Bimodal detail | All content preserved in bimodal-logic.md |
+| Breaking internal links | Systematic search and update of all theory-comparison.md references |
+| Confusion during transition | Clear commit messages; atomic file replacement |
 
 ## References
 
 - `/home/benjamin/Projects/ProofChecker/README.md` - Current main README
 - `/home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex` - LaTeX reference with target title
-- `/home/benjamin/Projects/ProofChecker/docs/research/theory-comparison.md` - Existing comparison document
-- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/README.md` - Bimodal theory README
-- `/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/layer-extensions.md` - Logos layer documentation
+- `/home/benjamin/Projects/ProofChecker/docs/research/theory-comparison.md` - To be replaced
+- `/home/benjamin/Projects/ProofChecker/docs/research/bimodal-logic.md` - New document (to create)
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/README.md` - Bimodal implementation README
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/docs/README.md` - Bimodal documentation hub
 
 ## Next Steps
 
