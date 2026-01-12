@@ -48,7 +48,7 @@
     {
       "project_number": 411,
       "project_name": "create_lean_research_agent_subagent",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "description": "Create .claude/agents/lean-research-agent.md subagent with lean-lsp MCP tools and search decision tree. Loads mcp-tools-guide.md, leansearch-api.md, loogle-api.md only when needed. Returns structured JSON with artifact path and summary.",
@@ -66,9 +66,14 @@
         {
           "path": ".claude/specs/411_create_lean_research_agent_subagent/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/411_create_lean_research_agent_subagent/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-12"
     },
     {
       "project_number": 410,

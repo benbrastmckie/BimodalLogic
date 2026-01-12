@@ -123,12 +123,14 @@ technical_debt:
 
 ### 411. Create lean-research-agent subagent with lazy context
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
 - **Research**: [research-001.md](.claude/specs/411_create_lean_research_agent_subagent/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/411_create_lean_research_agent_subagent/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/411_create_lean_research_agent_subagent/summaries/implementation-summary-20260112.md)
+- **Completed**: 2026-01-12
 
 **Description**: Create `.claude/agents/lean-research-agent.md` subagent with lean-lsp MCP tools and search decision tree. Loads mcp-tools-guide.md, leansearch-api.md, loogle-api.md only when needed via @-references. Returns structured JSON with artifact path and summary. Integrates with skill-lean-research via the forked subagent pattern.
 
