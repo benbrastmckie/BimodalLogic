@@ -29,12 +29,14 @@ technical_debt:
 ## High Priority
 
 ### 437. Improve README consistency with recursive-semantics.md
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 2 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: High
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md)
 
 **Description**: Improve /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md for consistency and clarity with the recursive-semantics.md documentation (/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md) which provides an authoritative overview of the base layer and various extensions. Reduce redundancy by presenting layer extensions only once in a high-quality way. Fix any internal discrepancies in README.md. Emphasize the parallel development of Logos in the ModelChecker, including a link to https://github.com/benbrastmckie/ModelChecker where appropriate.
 
