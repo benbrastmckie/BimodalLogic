@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T05:36:33.618239Z",
-  "next_project_number": 438,
+  "next_project_number": 439,
   "active_projects": [
+    {
+      "project_number": 438,
+      "project_name": "refactor_bimodal_readme",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T18:04:54Z",
+      "last_updated": "2026-01-12T18:04:54Z",
+      "description": "Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference."
+    },
     {
       "project_number": 437,
       "project_name": "improve_readme_consistency_with_recursive_semantics",

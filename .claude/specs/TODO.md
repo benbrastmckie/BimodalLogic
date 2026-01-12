@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 438
+next_project_number: 439
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -148,6 +148,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 438. Refactor Bimodal README for systematic documentation
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference.
+
+---
 
 ### 436. Update license to ModelChecker standard
 - **Effort**: 1 hour
