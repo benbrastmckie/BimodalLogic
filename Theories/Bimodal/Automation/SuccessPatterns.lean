@@ -276,9 +276,9 @@ Record a successful proof pattern.
 -/
 def recordSuccess (db : PatternDatabase) (φ : Formula) (info : ProofInfo) : PatternDatabase :=
   let key := PatternKey.fromFormula φ
-  let existingData := db.patterns.find? key |>.getD SuccessData.empty
+  let existingData := db.patterns[key]? |>.getD SuccessData.empty
   let newData := existingData.update info
-  let isNew := db.patterns.find? key |>.isNone
+  let isNew := db.patterns[key]? |>.isNone
   { patterns := db.patterns.insert key newData
   , totalPatterns := if isNew then db.totalPatterns + 1 else db.totalPatterns
   , totalSuccesses := db.totalSuccesses + 1
@@ -297,7 +297,7 @@ Query pattern database for hints on proving a formula.
 def queryPatterns (db : PatternDatabase) (φ : Formula) (_contextSize : Nat := 0)
     : Option SuccessData :=
   let key := PatternKey.fromFormula φ
-  db.patterns.find? key
+  db.patterns[key]?
 
 /--
 Get the best strategy hint for a formula.
@@ -357,7 +357,7 @@ Merge two pattern databases (useful for combining learned patterns).
 -/
 def merge (db1 db2 : PatternDatabase) : PatternDatabase :=
   let mergedPatterns := db2.patterns.fold (init := db1.patterns) fun acc key data2 =>
-    match acc.find? key with
+    match acc[key]? with
     | none => acc.insert key data2
     | some data1 =>
         -- Combine the data (simplified: take the one with more successes)

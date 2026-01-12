@@ -70,12 +70,12 @@ This is a monomorphic definition (fixed to explicit type parameter T) to avoid
 universe level mismatch errors.
 Per research report Option A: Make T explicit to allow type inference at call sites.
 -/
-private def is_valid (T : Type*) [LinearOrderedAddCommGroup T] (φ : Formula) : Prop :=
+private def is_valid (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (φ : Formula) : Prop :=
   ∀ (F : TaskFrame T) (M : TaskModel F) (τ : WorldHistory F) (t : T) (ht : τ.domain t),
     truth_at M τ t ht φ
 
 -- Section variable for theorem signatures
-variable {T : Type*} [LinearOrderedAddCommGroup T]
+variable {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
 
 /--
 Auxiliary lemma: If φ is valid, then for any specific triple (M, τ, t),
@@ -100,36 +100,36 @@ theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
   induction φ generalizing τ t ht with
   | atom p => 
     -- Atom case: swap doesn't change atoms
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     
   | bot => 
     -- Bot case: swap doesn't change bot
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     
   | imp φ ψ ih_φ ih_ψ => 
     -- Implication case: (φ.swap.swap → ψ.swap.swap) ↔ (φ → ψ)
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     constructor <;> intro h <;> intro h_φ
     · exact (ih_ψ τ t ht).mp (h ((ih_φ τ t ht).mpr h_φ))
     · exact (ih_ψ τ t ht).mpr (h ((ih_φ τ t ht).mp h_φ))
     
   | box φ ih => 
     -- Box case: □(φ.swap.swap) ↔ □φ
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     constructor <;> intro h σ hs
     · exact (ih σ t hs).mp (h σ hs)
     · exact (ih σ t hs).mpr (h σ hs)
     
   | all_past φ ih => 
     -- All_past case: all_past φ → all_future φ.swap → all_past φ.swap.swap
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     constructor <;> intro h s hs h_ord
     · exact (ih τ s hs).mp (h s hs h_ord)
     · exact (ih τ s hs).mpr (h s hs h_ord)
     
   | all_future φ ih => 
     -- All_future case: all_future φ → all_past φ.swap → all_future φ.swap.swap
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     constructor <;> intro h s hs h_ord
     · exact (ih τ s hs).mp (h s hs h_ord)
     · exact (ih τ s hs).mpr (h s hs h_ord)
@@ -191,7 +191,7 @@ At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t)
 theorem swap_axiom_mt_valid (φ : Formula) :
     is_valid T ((Formula.box φ).imp φ).swap_past_future := by
   intro F M τ t ht
-  simp only [Formula.swap_past_future, truth_at]
+  simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap_φ
   -- h_box_swap_φ : ∀ (σ : WorldHistory F) (hs : σ.domain t), truth_at M σ t hs φ.swap_past_future
   -- Goal: truth_at M τ t ht φ.swap_past_future
@@ -209,7 +209,7 @@ holds at all histories at t (trivially, as this is a global property).
 theorem swap_axiom_m4_valid (φ : Formula) :
     is_valid T ((Formula.box φ).imp (Formula.box (Formula.box φ))).swap_past_future := by
   intro F M τ t ht
-  simp only [Formula.swap_past_future, truth_at]
+  simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap_φ σ hs
   -- Goal: ∀ (ρ : WorldHistory F) (hρ : ρ.domain t), truth_at M ρ t hρ φ.swap_past_future
   intro ρ hρ
@@ -252,7 +252,7 @@ theorem swap_axiom_t4_valid (φ : Formula) :
       ((Formula.all_future φ).imp
        (Formula.all_future (Formula.all_future φ))).swap_past_future := by
   intro F M τ t ht
-  simp only [Formula.swap_past_future, truth_at]
+  simp only [Formula.swap_temporal, truth_at]
   intro h_past_swap r hr h_r_lt_t u hu h_u_lt_r
   -- h_past_swap : ∀ (s : T) (hs : τ.domain s), s < t → truth_at M τ s hs φ.swap_past_future
   -- Need: truth_at M τ u hu φ.swap_past_future
@@ -312,7 +312,7 @@ theorem swap_axiom_tl_valid (φ : Formula) :
   -- In semantics: if swap φ holds at all times, then at all s < t,
   --               there exists u > s where swap φ holds
   -- This is trivially valid: if swap φ holds everywhere, pick any u > s
-  simp only [Formula.swap_past_future, truth_at]
+  simp only [Formula.swap_temporal, truth_at]
   intro h_always s hs h_s_lt_t u hu h_s_lt_u
   -- h_always encodes: ¬(future(swap φ) → ¬(swap φ ∧ past(swap φ)))
   -- which is classically equivalent to: future(swap φ) ∧ swap φ ∧ past(swap φ)
@@ -379,7 +379,7 @@ at time t, P(swap φ) holds at σ (i.e., swap φ holds at all times s < t in σ)
 theorem swap_axiom_mf_valid (φ : Formula) :
     is_valid T ((Formula.box φ).imp (Formula.box (Formula.all_future φ))).swap_past_future := by
   intro F M τ t ht
-  simp only [Formula.swap_past_future, truth_at]
+  simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap σ hs s hs_s h_s_lt_t
   -- h_box_swap : ∀ (ρ : WorldHistory F) (hρ : ρ.domain t), truth_at M ρ t hρ φ.swap_past_future
   -- Goal: truth_at M σ s hs_s φ.swap_past_future
@@ -412,7 +412,7 @@ and truth preservation establishes the result.
 theorem swap_axiom_tf_valid (φ : Formula) :
     is_valid T ((Formula.box φ).imp (Formula.all_future (Formula.box φ))).swap_past_future := by
   intro F M τ t ht
-  simp only [Formula.swap_past_future, truth_at]
+  simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap s hs h_s_lt_t σ hs_σ
   -- h_box_swap : ∀ (ρ : WorldHistory F) (hρ : ρ.domain t), truth_at M ρ t hρ φ.swap_past_future
   -- Goal: truth_at M σ s hs_σ φ.swap_past_future
@@ -451,7 +451,7 @@ theorem mp_preserves_swap_valid (φ ψ : Formula)
     (h_phi : is_valid T φ.swap_past_future) :
     is_valid T ψ.swap_past_future := by
   intro F M τ t ht
-  simp only [Formula.swap_past_future, truth_at] at h_imp h_phi ⊢
+  simp only [Formula.swap_temporal, truth_at] at h_imp h_phi ⊢
   exact h_imp F M τ t ht (h_phi F M τ t ht)
 
 /--
@@ -466,7 +466,7 @@ theorem modal_k_preserves_swap_valid (φ : Formula)
     (h : is_valid T φ.swap_past_future) :
     is_valid T (Formula.box φ).swap_past_future := by
   intro F M τ t ht
-  simp only [Formula.swap_past_future, truth_at]
+  simp only [Formula.swap_temporal, truth_at]
   intro σ hs
   exact h F M σ t hs
 
@@ -482,7 +482,7 @@ theorem temporal_k_preserves_swap_valid (φ : Formula)
     (h : is_valid T φ.swap_past_future) :
     is_valid T (Formula.all_future φ).swap_past_future := by
   intro F M τ t ht
-  simp only [Formula.swap_past_future, truth_at]
+  simp only [Formula.swap_temporal, truth_at]
   intro s hs h_s_lt_t
   exact h F M τ s hs
 
@@ -520,7 +520,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past
     -- After swap: (ψ.swap → (χ.swap → ρ.swap)) → ((ψ.swap → χ.swap) → (ψ.swap → ρ.swap))
     -- This is still prop_k applied to swapped subformulas
     intro F M τ t ht
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal is a propositional tautology: ((A → (B → C)) → ((A → B) → (A → C)))
     intro h_abc h_ab h_a
     exact h_abc h_a (h_ab h_a)
@@ -529,7 +529,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past
     -- After swap: ψ.swap → (χ.swap → ψ.swap)
     -- This is still prop_s applied to swapped subformulas
     intro F M τ t ht
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal is a propositional tautology: A → (B → A)
     intro h_a _
     exact h_a
@@ -556,7 +556,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past
     -- After swap: ⊥ → ψ.swap
     -- This is still ex_falso applied to swapped subformula (bot unchanged)
     intro F M τ t ht
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal: False → truth_at ... ψ.swap
     intro h_bot
     exfalso
@@ -566,7 +566,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past
     -- After swap: ((ψ.swap → χ.swap) → ψ.swap) → ψ.swap
     -- This is still peirce applied to swapped subformulas
     intro F M τ t ht
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal: ((truth_at ... ψ.swap → truth_at ... χ.swap)
     --        → truth_at ... ψ.swap) → truth_at ... ψ.swap
     intro h_peirce
@@ -583,7 +583,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past
     -- After swap: □(ψ.swap → χ.swap) → (□ψ.swap → □χ.swap)
     -- This is still modal_k_dist applied to swapped subformulas (modal operators unchanged)
     intro F M τ t ht
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal: (∀ σ hs, truth_at ... ψ.swap → truth_at ... χ.swap) →
     --       (∀ σ hs, truth_at ... ψ.swap) → (∀ σ hs, truth_at ... χ.swap)
     intro h_box_imp h_box_psi σ hs
@@ -593,7 +593,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past
     -- After swap: P(ψ.swap → χ.swap) → (Pψ.swap → Pχ.swap)
     -- This is the past version of temp_k_dist (swap exchanges F and P)
     intro F M τ t ht
-    simp only [Formula.swap_past_future, truth_at]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal: (∀ s hs, s < t → truth_at ... ψ.swap → truth_at ... χ.swap) →
     --       (∀ s hs, s < t → truth_at ... ψ.swap) → (∀ s hs, s < t → truth_at ... χ.swap)
     intro h_past_imp h_past_psi s hs hst
@@ -848,7 +848,7 @@ theorem derivable_implies_valid_and_swap_valid :
       intro h_eq
       -- Γ' = [], so h_mem : ψ' ∈ [] is impossible
       rw [h_eq] at h_mem
-      exact False.elim (List.not_mem_nil ψ' h_mem)
+      exact False.elim (List.not_mem_nil h_mem)
 
     | modus_ponens Γ' ψ' χ' h_imp h_ψ' ih_imp ih_ψ' =>
       intro h_eq
@@ -914,9 +914,9 @@ theorem derivable_implies_valid_and_swap_valid :
         cases Γ' with
         | nil => rfl
         | cons head tail =>
-          have : head ∈ Δ' := h_subset (List.mem_cons_self head tail)
+          have : head ∈ Δ' := h_subset List.mem_cons_self
           rw [h_eq] at this
-          exact False.elim (List.not_mem_nil head this)
+          exact False.elim (List.not_mem_nil this)
       exact ih h_gamma_empty
 
   exact h_general [] φ h_deriv rfl

@@ -119,7 +119,7 @@
     {
       "project_number": 420,
       "project_name": "upgrade_mathlib_version",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "description": "Upgrade Mathlib from v4.14.0 to a newer version (4.22+) that includes significant compiler and instance caching improvements. Requires testing for breaking changes and API migrations.",

@@ -616,7 +616,7 @@ def bounded_search (Γ : Context) (φ : Formula) (depth : Nat)
     if visited.contains key then
       (false, cache, visited, stats, visits)
     else
-      match cache.find? key with
+      match cache[key]? with
       | some result => (result, cache, visited, {stats with hits := stats.hits + 1}, visits)
       | none =>
           let visited := visited.insert key
@@ -827,7 +827,7 @@ def bestFirst_search (Γ : Context) (φ : Formula)
                 let stats' := {stats with visited := stats.visited + 1}
 
                 -- Check cache
-                match cache.find? key with
+                match cache[key]? with
                 | some true =>
                     -- Cached success
                     (true, cache, visited', {stats' with hits := stats'.hits + 1}, expansions + 1)
