@@ -1,3 +1,7 @@
+import Mathlib.Tactic.DeriveCountable
+import Mathlib.Data.Countable.Basic
+import Mathlib.Logic.Equiv.List
+
 /-!
 # Formula - Syntax for Bimodal Logic TM
 
@@ -16,6 +20,7 @@ combining S5 modal logic with linear temporal logic.
 ## Main Results
 
 - `DecidableEq Formula`: Formulas have decidable equality
+- `Countable Formula`: Formulas are countable (for completeness proofs)
 - `swap_temporal_involution`: Swapping temporal operators twice gives identity
 
 ## Implementation Notes
@@ -42,6 +47,24 @@ Use method syntax: `φ.all_past`, `φ.some_future`, etc.
 -/
 
 namespace Bimodal.Syntax
+
+/-!
+## Countability Prerequisites
+
+We need `Countable Char` and `Countable String` instances before Formula can derive Countable.
+-/
+
+/-- Char is countable via injection into Nat. -/
+instance : Countable Char := by
+  have h : Function.Injective Char.toNat := by
+    intro c1 c2 heq
+    rw [← Char.ofNat_toNat c1, ← Char.ofNat_toNat c2, heq]
+  exact Function.Injective.countable h
+
+/-- String is countable via injection into List Char. -/
+instance : Countable String := by
+  have h : Function.Injective String.toList := fun _ _ => String.toList_injective
+  exact Function.Injective.countable h
 
 /--
 Formula type for bimodal logic TM.
@@ -72,7 +95,7 @@ inductive Formula : Type where
   | all_past : Formula → Formula
   /-- Universal future (Gφ, "φ will always be true") -/
   | all_future : Formula → Formula
-  deriving Repr, DecidableEq, BEq, Hashable
+  deriving Repr, DecidableEq, BEq, Hashable, Countable
 
 namespace Formula
 

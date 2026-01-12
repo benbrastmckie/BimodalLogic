@@ -13,43 +13,52 @@ bimodal logic system via canonical model construction.
 
 ## Main Results
 
-- `lindenbaum`: Every consistent set can be extended to a maximal consistent set
+- `set_lindenbaum`: Every consistent set can be extended to a maximal consistent set
+  (uses Zorn's lemma, proven)
 - `weak_completeness`: `⊨ φ → ⊢ φ` (valid implies provable)
 - `strong_completeness`: `Γ ⊨ φ → Γ ⊢ φ` (semantic consequence implies syntactic)
 
 ## Canonical Model Construction
 
-The completeness proof follows the standard canonical model approach:
+The completeness proof follows the standard canonical model approach using
+**set-based** maximal consistent sets (`Set Formula`) rather than list-based contexts:
 
-1. **Maximal Consistent Sets**: Define maximally consistent extensions of contexts
-2. **Lindenbaum's Lemma**: Extend any consistent set to maximal (uses Zorn's lemma)
-3. **Canonical Frame**: Build frame from maximal consistent sets
-   - World states: Maximal consistent sets
+1. **Set-Based Consistency**: `SetConsistent S` and `SetMaximalConsistent S` for sets
+2. **Lindenbaum's Lemma**: `set_lindenbaum` extends any consistent set to maximal
+   (proven using Zorn's lemma)
+3. **Canonical Frame**: Build frame from set-based maximal consistent sets
+   - World states: `{S : Set Formula // SetMaximalConsistent S}`
    - Times: Integers (representing temporal structure)
    - Task relation: Defined via consistency with modal/temporal operators
-4. **Canonical Model**: Add valuation function using membership
-5. **Truth Lemma**: By induction, `φ ∈ Γ_max ↔ M_can, τ_can, 0 ⊨ φ`
-6. **Completeness**: If `Γ ⊨ φ` then `φ ∈ Γ_closure`, so `Γ ⊢ φ`
+4. **Canonical Model**: Add valuation function using set membership
+5. **Truth Lemma**: By induction, `φ ∈ S.val ↔ M_can, τ_can, 0 ⊨ φ`
+6. **Completeness**: If `Γ ⊨ φ` then `φ ∈ closure(Γ)`, so `Γ ⊢ φ`
+
+**Why Set-Based?** Maximal consistent sets are typically infinite (containing
+every formula or its negation), so they cannot be represented as finite lists.
+The set-based approach is the mathematically correct formulation.
 
 ## Implementation Status
 
-**Phase 8 Infrastructure Only**: This module provides complete type signatures,
-theorem statements, and documentation for the completeness proof. Full
-implementation requires:
+**Infrastructure Complete**: This module provides:
+- Proven: `set_lindenbaum` (Zorn's lemma application)
+- Axioms: `weak_completeness`, `strong_completeness`, canonical model definitions
+- Infrastructure: Derivation tree utilities, chain consistency lemmas
 
-1. **Zorn's Lemma**: From Mathlib's order theory (well-ordering principle)
-2. **Canonical Frame Construction**: Prove frame properties (nullity, compositionality)
-3. **Truth Lemma**: Complex mutual induction on formula structure
-4. **Consistent Set Theory**: Deduction theorem and closure properties
+Full implementation of axioms requires:
+1. **Canonical Frame Construction**: Prove frame properties (nullity, compositionality)
+2. **Truth Lemma**: Complex mutual induction on formula structure
+3. **Set-Based Properties**: Deduction theorem and closure for set-based consistency
 
-Estimated effort: 70-90 hours of focused metalogic development.
+Estimated effort: 60-80 hours of focused metalogic development.
 
 ## Design Decisions
 
+- **Set-Based World States**: `{S : Set Formula // SetMaximalConsistent S}` (not list-based)
 - **Time Structure**: Use integers (ℤ) for canonical temporal ordering
-- **World States**: Maximal consistent sets as type synonym
 - **Task Relation**: Define via formula reachability through modal/temporal chains
-- **Valuation**: Atomic formula `p` true iff `p ∈ maximal_set`
+- **Valuation**: Atomic formula `p` true iff `p ∈ S.val` (set membership)
+- **Countable Formulas**: `Countable Formula` instance enables enumeration when needed
 
 ## References
 
@@ -390,39 +399,6 @@ theorem set_lindenbaum (S : Set Formula) (hS : SetConsistent S) :
       have hφM : φ ∈ M := h_subset (Set.mem_insert φ M)
       exact hφnotM hφM
 
-/--
-**Lindenbaum's Lemma (List Version)**: Every consistent context can be extended
-to a maximal consistent context.
-
-**Important Note**: The list-based formulation has a fundamental limitation:
-MaximalConsistent requires the context Δ to contain ALL formulas of a maximal
-consistent SET, but a maximal consistent set may be infinite while List is
-inherently finite. This version uses `sorry` for the set-to-list conversion.
-
-For the mathematically complete version, use `set_lindenbaum` which proves
-existence of a maximal consistent SET without this limitation.
-
-**Proof Strategy**:
-1. Convert list context Γ to set
-2. Apply set-based Lindenbaum to get maximal consistent set M
-3. The list-based version follows if M can be enumerated as a list
-
-Note: The core mathematical content is in `set_lindenbaum`. This list-based
-version is provided for compatibility with the existing API.
--/
-theorem lindenbaum (Γ : Context) (h : Consistent Γ) :
-    ∃ Δ : Context, (∀ φ, φ ∈ Γ → φ ∈ Δ) ∧ MaximalConsistent Δ := by
-  -- The full proof is in set_lindenbaum.
-  -- Converting from Set Formula to List Formula requires either:
-  -- 1. A countable enumeration of Formula (possible but complex)
-  -- 2. Accepting that maximal consistent sets may be infinite
-  -- 3. Using a different representation
-
-  -- For this version, we use sorry for the set-to-list conversion.
-  -- The mathematical content (Zorn's lemma application) is fully proven
-  -- in set_lindenbaum above.
-  sorry
-
 /-!
 ## Maximal Consistent Set Properties
 
@@ -468,14 +444,20 @@ The canonical frame is constructed from maximal consistent sets.
 -/
 
 /--
-Canonical world states are maximal consistent sets.
+Canonical world states are set-based maximal consistent sets.
 
-**Representation**: Type synonym for `{Γ : Context // MaximalConsistent Γ}`
+**Representation**: Type synonym for `{S : Set Formula // SetMaximalConsistent S}`
 
 **Justification**: Each maximal consistent set represents a "possible world"
-describing one complete, consistent way the universe could be.
+describing one complete, consistent way the universe could be. Using `Set Formula`
+instead of `List Formula` is essential because maximal consistent sets are typically
+infinite, while lists are finite. The set-based `set_lindenbaum` theorem (proven
+using Zorn's lemma) ensures every consistent set can be extended to a maximal one.
+
+**Note**: The list-based `Context` representation cannot capture true maximal
+consistency because lists are inherently finite.
 -/
-def CanonicalWorldState : Type := {Γ : Context // MaximalConsistent Γ}
+def CanonicalWorldState : Type := {S : Set Formula // SetMaximalConsistent S}
 
 /--
 Canonical time structure uses integers.
@@ -486,33 +468,41 @@ temporal operators (past/future) and task relation compositionality.
 def CanonicalTime : Type := Int
 
 /--
-Canonical task relation between world states.
+Canonical task relation between set-based world states.
 
-**Definition**: `task_rel Γ t Δ` holds iff all formulas of certain modal/temporal
-forms transfer appropriately between Γ and Δ relative to time offset t.
+**Definition**: `task_rel S t T` holds iff all formulas of certain modal/temporal
+forms transfer appropriately between S and T relative to time offset t.
+
+where `S, T : CanonicalWorldState` are set-based maximal consistent sets.
 
 **Properties** (to be proven):
-- Nullity: `task_rel Γ 0 Γ`
-- Compositionality: `task_rel Γ t₁ Δ → task_rel Δ t₂ Σ → task_rel Γ (t₁+t₂) Σ`
+- Nullity: `task_rel S 0 S`
+- Compositionality: `task_rel S t₁ T → task_rel T t₂ U → task_rel S (t₁+t₂) U`
 
 **Full Definition** (to be implemented):
 ```
-task_rel Γ t Δ ↔
-  (∀ φ, □φ ∈ Γ.val → φ ∈ Δ.val) ∧
-  (t > 0 → ∀ φ, Fφ ∈ Γ.val → φ ∈ Δ.val) ∧
-  (t < 0 → ∀ φ, Pφ ∈ Γ.val → φ ∈ Δ.val)
+task_rel S t T ↔
+  (∀ φ, □φ ∈ S.val → φ ∈ T.val) ∧           -- Modal transfer
+  (t > 0 → ∀ φ, Fφ ∈ S.val → φ ∈ T.val) ∧   -- Future transfer (positive time)
+  (t < 0 → ∀ φ, Pφ ∈ S.val → φ ∈ T.val)     -- Past transfer (negative time)
 ```
+
+**Note**: The set-based representation allows membership testing for potentially
+infinite sets, which is essential for the canonical model construction.
 -/
 axiom canonical_task_rel : CanonicalWorldState → CanonicalTime → CanonicalWorldState → Prop
 
 /--
-The canonical frame for TM logic.
+The canonical frame for TM logic using set-based maximal consistent sets.
 
-**Construction**: Combines maximal consistent sets, integers, and task relation.
+**Construction**: Combines set-based maximal consistent sets, integers, and task relation.
 
 **Proof Obligations**:
 - Show `canonical_task_rel` satisfies nullity
 - Show `canonical_task_rel` satisfies compositionality
+
+**Note**: `CanonicalWorldState` is now `{S : Set Formula // SetMaximalConsistent S}`,
+using the set-based consistency definitions that allow true maximality.
 -/
 axiom canonical_frame : TaskFrame Int
   -- where
@@ -532,12 +522,16 @@ membership in maximal consistent sets.
 
 /--
 Canonical valuation: An atom is true at a world state iff it's in the
-maximal consistent set.
+set-based maximal consistent set.
 
-**Definition**: `canonical_val Γ p ↔ (Formula.atom p) ∈ Γ.val`
+**Definition**: `canonical_val S p ↔ (Formula.atom p) ∈ S.val`
+
+where `S : CanonicalWorldState` is a set-based maximal consistent set
+(subtype of `Set Formula`).
 
 **Justification**: This makes atomic formulas "true by definition" in their
-maximal consistent sets, enabling the truth lemma.
+maximal consistent sets, enabling the truth lemma. The set-based representation
+ensures we can express true maximality (every formula or its negation is in the set).
 -/
 axiom canonical_valuation : CanonicalWorldState → String → Bool
 
@@ -553,21 +547,25 @@ axiom canonical_model : TaskModel canonical_frame
 /-!
 ## Canonical World Histories
 
-World histories in the canonical model map times to maximal consistent sets.
+World histories in the canonical model map times to set-based maximal consistent sets.
 -/
 
 /--
-A canonical world history is constructed from a maximal consistent set.
+A canonical world history is constructed from a set-based maximal consistent set.
 
 **Construction** (planned):
 - Domain: All integers (representing all times)
-- States: Map each time `t` to a maximal consistent set Γₜ
+- States: Map each time `t` to a set-based maximal consistent set Sₜ
 - Convexity: Automatically satisfied (domain = ℤ)
 - Task relation respect: By construction of canonical_task_rel
 
 **Complexity**: Requires showing histories respect task relation.
+
+**Note**: `S : CanonicalWorldState` is now a set-based maximal consistent set
+(`{S : Set Formula // SetMaximalConsistent S}`), which is the mathematically
+correct representation for completeness proofs.
 -/
-axiom canonical_history (Γ : CanonicalWorldState) : WorldHistory canonical_frame
+axiom canonical_history (S : CanonicalWorldState) : WorldHistory canonical_frame
 
 /-!
 ## Truth Lemma
@@ -577,17 +575,20 @@ and semantic truth in the canonical model.
 -/
 
 /--
-**Truth Lemma**: In the canonical model, a formula φ is true at a maximal
-consistent set Γ and time t if and only if an appropriate time-shifted
-version of φ is in Γ.
+**Truth Lemma**: In the canonical model, a formula φ is true at a set-based maximal
+consistent set S and time t if and only if an appropriate time-shifted
+version of φ is in S.
 
-**Statement**: `φ ∈ Γ.val ↔ truth_at canonical_model (canonical_history Γ) 0 φ`
+**Statement**: `φ ∈ S.val ↔ truth_at canonical_model (canonical_history S) 0 φ`
+
+where `S : CanonicalWorldState` is a set-based maximal consistent set
+(subtype of `Set Formula`), and `S.val : Set Formula` is the underlying set.
 
 **Proof Strategy** (to be implemented):
 By induction on formula structure:
 - **Base (atom)**: By definition of canonical_valuation
-- **Bottom**: `⊥ ∉ Γ` by consistency; `¬(M ⊨ ⊥)` by truth definition
-- **Implication**: Use maximal consistent implication property
+- **Bottom**: `⊥ ∉ S` by consistency; `¬(M ⊨ ⊥)` by truth definition
+- **Implication**: Use set-based maximal consistent implication property
 - **Box**: Use modal saturation property of maximal sets
 - **Past**: Use temporal consistency backward
 - **Future**: Use temporal consistency forward
@@ -595,14 +596,16 @@ By induction on formula structure:
 **Complexity**: ~25-30 hours (most complex proof in completeness)
 
 **Dependencies**:
-- Modal saturation lemma
+- Modal saturation lemma (for set-based maximal consistent sets)
 - Temporal consistency lemmas
-- Properties of maximal consistent sets
+- Properties of set-based maximal consistent sets (from `set_lindenbaum`)
 
 **Note**: Full truth lemma requires dependent type handling for WorldHistory.
+The set-based representation ensures true maximality (every formula or its
+negation is in the set), which is essential for the proof.
 -/
-axiom truth_lemma (Γ : CanonicalWorldState) (φ : Formula) :
-  φ ∈ Γ.val -- Canonical model truth correspondence (placeholder)
+axiom truth_lemma (S : CanonicalWorldState) (φ : Formula) :
+  φ ∈ S.val -- Canonical model truth correspondence (placeholder)
 
 /-!
 ## Completeness Theorems

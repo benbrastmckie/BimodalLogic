@@ -593,48 +593,64 @@ def semantically_equivalent (φ ψ : Formula) : Prop :=
 
 #### Layer 1 Canonical Model for Completeness
 
-The canonical model construction uses maximal TM-consistent sets as world states and the integers as times.
+The canonical model construction uses **set-based** maximal consistent sets as world states and
+the integers as times. The set-based approach is essential because maximal consistent sets are
+typically infinite, while lists are finite.
 
 ```lean
--- TM-consistency
-def consistent (Γ : Context) : Prop := ¬(Γ ⊢ Formula.bot)
+-- List-based consistency (for finite derivations)
+def Consistent (Γ : Context) : Prop := ¬(Γ ⊢ Formula.bot)
 
-def maximal_consistent (Γ : Context) : Prop :=
-  consistent Γ ∧ ∀ φ, φ ∉ Γ → ¬consistent (φ :: Γ)
+-- Set-based consistency (for canonical model)
+def SetConsistent (S : Set Formula) : Prop :=
+  ∀ L : List Formula, (∀ φ ∈ L, φ ∈ S) → Consistent L
 
--- Canonical task frame for TM
+def SetMaximalConsistent (S : Set Formula) : Prop :=
+  SetConsistent S ∧ ∀ φ : Formula, φ ∉ S → ¬SetConsistent (insert φ S)
+
+-- Canonical world states are SET-based maximal consistent sets
+def CanonicalWorldState : Type := {S : Set Formula // SetMaximalConsistent S}
+
+-- Canonical task frame for TM (set-based)
 def canonical_frame : TaskFrame := {
-  WorldState := {Γ : Context // maximal_consistent Γ},
+  WorldState := CanonicalWorldState,  -- Set-based, not list-based
   Time := ℤ,
   time_group := Int.orderedAddCommGroup,
-  task_rel := λ Γ n Δ =>
-    -- Define task relation from temporal operators in Γ and Δ
-    sorry,
+  task_rel := λ S n T =>
+    -- Define task relation via set membership
+    (∀ φ, □φ ∈ S.val → φ ∈ T.val) ∧           -- Modal transfer
+    (n > 0 → ∀ φ, Fφ ∈ S.val → φ ∈ T.val) ∧   -- Future transfer
+    (n < 0 → ∀ φ, Pφ ∈ S.val → φ ∈ T.val),    -- Past transfer
   nullity := sorry,
   compositionality := sorry
 }
 
 -- Canonical model for completeness proof
 def canonical_model : TaskModel canonical_frame := {
-  valuation := λ p => {Γ : canonical_frame.WorldState | Formula.atom p ∈ Γ.val}
+  valuation := λ p => {S : CanonicalWorldState | Formula.atom p ∈ S.val}
 }
 
--- Canonical history construction from maximal consistent set
-def canonical_history (Γ : {Γ : Context // maximal_consistent Γ}) :
+-- Canonical history construction from set-based maximal consistent set
+def canonical_history (S : CanonicalWorldState) :
   WorldHistory canonical_frame := by
-  sorry -- Recursively construct history satisfying temporal formulas in Γ
+  sorry -- Construct history where each time maps to a maximal consistent set
 
--- Modal saturation lemma for canonical model
-lemma modal_saturation (Γ : {Γ : Context // maximal_consistent Γ}) (φ : Formula) :
-  (diamond φ) ∈ Γ.val → ∃ Δ : {Γ : Context // maximal_consistent Γ}, φ ∈ Δ.val := by
+-- Modal saturation lemma for canonical model (set-based)
+lemma modal_saturation (S : CanonicalWorldState) (φ : Formula) :
+  (diamond φ) ∈ S.val → ∃ T : CanonicalWorldState, φ ∈ T.val := by
   sorry
 
--- Temporal consistency lemma
-lemma temporal_consistency (Γ : {Γ : Context // maximal_consistent Γ}) (ψ : Formula) :
-  (Formula.all_future ψ) ∈ Γ.val →
-  consistent ({ψ} ∪ {χ | Formula.all_future χ ∈ Γ.val} ∪ {φ | (some_past φ) ∈ Γ.val}) := by
+-- Temporal consistency lemma (set-based)
+lemma temporal_consistency (S : CanonicalWorldState) (ψ : Formula) :
+  (Formula.all_future ψ) ∈ S.val →
+  SetConsistent ({ψ} ∪ {χ | Formula.all_future χ ∈ S.val} ∪ {φ | (some_past φ) ∈ S.val}) := by
   sorry
 ```
+
+**Why Set-Based?** Maximal consistent sets contain every formula or its negation.
+Since there are infinitely many formulas, these sets are infinite and cannot be
+represented as finite lists. The set-based `set_lindenbaum` theorem (proven using
+Zorn's lemma) ensures every consistent set can be extended to a maximal one.
 
 ## 4. Metalogical Properties
 
@@ -713,106 +729,62 @@ corollary consistent_if_satisfiable (Γ : Context) :
 
 ### 4.2 Layer 1 Completeness
 
-The completeness theorem proves that every valid formula is TM-derivable using canonical model construction.
+The completeness theorem proves that every valid formula is TM-derivable using canonical model
+construction with **set-based** maximal consistent sets.
 
 #### Completeness Theorem
 
 ```lean
--- Lindenbaum's Lemma: extend to maximal TM-consistent set
-lemma extend_to_maximal_consistent (Γ : Context) (h : consistent Γ) :
-  ∃ Δ, Γ ⊆ Δ ∧ maximal_consistent Δ := by
-  sorry -- Use Zorn's lemma on chain of consistent extensions
+-- Set-based Lindenbaum's Lemma (PROVEN using Zorn's lemma)
+-- This is the key result enabling completeness
+theorem set_lindenbaum (S : Set Formula) (hS : SetConsistent S) :
+    ∃ M : Set Formula, S ⊆ M ∧ SetMaximalConsistent M := by
+  -- Apply Zorn's lemma to ConsistentSupersets S
+  -- Chain union consistency: consistent_chain_union
+  -- Upper bound exists for every chain
+  -- Proven in Completeness.lean (lines 342-391)
 
--- Truth lemma for canonical model (key completeness lemma)
-lemma truth_lemma (Γ : {Γ : Context // maximal_consistent Γ}) (t : ℤ) (φ : Formula) :
-  canonical_model, canonical_history Γ, t ⊨ φ ↔ φ ∈ (canonical_history Γ)(t).val := by
-  induction φ with
-  | atom p =>
-    constructor
-    · intro ⟨h_dom, h_val⟩
-      exact h_val
-    · intro h_in
-      constructor
-      · sorry -- t ∈ domain
-      · exact h_in
-  | bot =>
-    constructor
-    · intro h
-      exact False.elim h
-    · intro h_in
-      -- Derive contradiction from ⊥ ∈ maximal consistent set
-      sorry
-  | imp φ ψ ih_φ ih_ψ =>
-    constructor
-    · intro h_imp h_φ
-      have h_φ_in := ih_φ.mp h_φ
-      have h_ψ := h_imp h_φ
-      exact ih_ψ.mpr h_ψ
-    · intro h_imp_in h_φ
-      have h_φ_in := ih_φ.mpr h_φ
-      -- Use deduction theorem and maximality
-      sorry
-  | box φ ih =>
-    constructor
-    · intro h_box
-      -- Use modal saturation: if ◇¬φ ∈ Γ, then ∃Δ with ¬φ ∈ Δ
-      sorry
-    · intro h_box_in σ
-      -- Use □φ ∈ Γ and accessibility to show φ ∈ σ(t)
-      sorry
-  | all_past φ ih =>
-    constructor
-    · intro h_past
-      -- Use temporal consistency
-      sorry
-    · intro h_past_in s h_lt
-      -- Use Hφ ∈ Γ to show φ at all past times
-      sorry
-  | all_future φ ih =>
-    constructor
-    · intro h_future
-      -- Use temporal consistency
-      sorry
-    · intro h_future_in s h_gt
-      -- Use Gφ ∈ Γ to show φ at all future times
-      sorry
+-- Truth lemma for canonical model (key completeness lemma, set-based)
+-- States: φ ∈ S.val ↔ truth_at canonical_model (canonical_history S) 0 φ
+lemma truth_lemma (S : CanonicalWorldState) (φ : Formula) :
+  φ ∈ S.val := by  -- Placeholder for full biconditional
+  -- By induction on formula structure:
+  -- atom: By definition of canonical_valuation
+  -- bot: ⊥ ∉ S by SetConsistent
+  -- imp: By set-based maximal consistent implication property
+  -- box: By modal saturation for set-based maximal consistent sets
+  -- all_past/all_future: By temporal consistency properties
+  sorry
 
 -- Weak completeness: valid implies provable
 theorem weak_completeness (φ : Formula) :
-  ⊨ φ → ⊢ φ := by
-  contrapositive
-  intro h_not_provable
-  -- Show ¬φ is satisfiable
-  have h_consistent : consistent [neg φ] := by
-    sorry -- From unprovability
-  obtain ⟨Δ, h_sub, h_max⟩ := extend_to_maximal_consistent _ h_consistent
-  use canonical_frame, canonical_model, canonical_history ⟨Δ, h_max⟩, (0 : ℤ)
-  intro h_contra
-  have h_neg := truth_lemma ⟨Δ, h_max⟩ 0 φ |>.mpr h_contra
-  have h_neg_in : neg φ ∈ Δ := h_sub (by simp)
-  -- Derive contradiction
+  valid φ → DerivationTree [] φ := by
+  -- Proof sketch:
+  -- 1. Assume valid φ but ¬(⊢ φ)
+  -- 2. {¬φ} is consistent (else would derive φ)
+  -- 3. By set_lindenbaum, extend to SetMaximalConsistent M with ¬φ ∈ M
+  -- 4. Build canonical model with world state M
+  -- 5. By truth lemma, ¬φ true at M, so φ false
+  -- 6. Contradicts validity of φ
   sorry
 
 -- Strong completeness: semantic consequence implies derivability
 theorem strong_completeness (Γ : Context) (φ : Formula) :
-  Γ ⊨ φ → Γ ⊢ φ := by
-  contrapositive
-  intro h_not_derivable
-  -- Show Γ ∪ {¬φ} is satisfiable
-  have h_consistent : consistent (neg φ :: Γ) := by
-    sorry -- From non-derivability
-  obtain ⟨Δ, h_sub, h_max⟩ := extend_to_maximal_consistent _ h_consistent
-  use canonical_frame, canonical_model, canonical_history ⟨Δ, h_max⟩, (0 : ℤ)
-  constructor
-  · intro ψ h_in
-    apply truth_lemma.mpr
-    exact h_sub (Or.inr h_in)
-  · intro h_contra
-    have h_φ_in := truth_lemma.mp h_contra
-    have h_neg_φ_in : neg φ ∈ Δ := h_sub (Or.inl rfl)
-    -- Derive contradiction in maximal consistent set
-    sorry
+  semantic_consequence Γ φ → DerivationTree Γ φ := by
+  -- Proof sketch:
+  -- 1. Assume Γ ⊨ φ but ¬(Γ ⊢ φ)
+  -- 2. contextToSet(Γ) ∪ {¬φ} is SetConsistent
+  -- 3. By set_lindenbaum, extend to SetMaximalConsistent M
+  -- 4. Build canonical model with world state M
+  -- 5. By truth lemma, all of Γ true at M but φ false
+  -- 6. Contradicts semantic consequence
+  sorry
 ```
+
+**Key Implementation Note**: The `set_lindenbaum` theorem is fully proven using Zorn's lemma
+from Mathlib. The proof relies on `consistent_chain_union` which shows that the union of a
+chain of consistent sets is consistent. This is the main mathematical content of the
+completeness proof infrastructure.
 
 ### 4.3 Additional Metalogical Properties
 
