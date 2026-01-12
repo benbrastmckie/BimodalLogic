@@ -30,5 +30,6 @@ jq -r --arg num "$N" '.active_projects[] | select(.project_number == ($num | ton
 ## Session ID
 
 ```bash
-sess_$(date +%s)_$(head -c 3 /dev/urandom | xxd -p)
+# Portable command (works on NixOS, macOS, Linux - no xxd dependency)
+sess_$(date +%s)_$(od -An -N3 -tx1 /dev/urandom | tr -d ' ')
 ```
