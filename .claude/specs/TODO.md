@@ -100,12 +100,14 @@ technical_debt:
 ## Medium Priority
 
 ### 424. Complete the TODOs in 01-Syntax.tex
-- **Effort**: TBD
-- **Status**: [PLANNED]
+- **Effort**: 30 minutes
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/424_complete_todos_01_syntax_tex/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/424_complete_todos_01_syntax_tex/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/424_complete_todos_01_syntax_tex/summaries/implementation-summary-20260111.md)
 
 **Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/01-Syntax.tex
 

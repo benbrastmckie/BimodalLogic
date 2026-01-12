@@ -6,11 +6,11 @@
     {
       "project_number": 424,
       "project_name": "complete_todos_01_syntax_tex",
-      "status": "planned",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-12T03:06:14Z",
-      "last_updated": "2026-01-12T03:21:50Z",
+      "last_updated": "2026-01-12T03:28:38Z",
       "artifacts": [
         {
           "path": ".claude/specs/424_complete_todos_01_syntax_tex/reports/research-001.md",
@@ -19,9 +19,14 @@
         {
           "path": ".claude/specs/424_complete_todos_01_syntax_tex/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/424_complete_todos_01_syntax_tex/summaries/implementation-summary-20260111.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-11"
     },
     {
       "project_number": 423,
