@@ -216,7 +216,7 @@ Some commands support flags:
 | `/plan` | `--phased` | Create phased implementation plan |
 | `/implement` | `--resume` | Resume from incomplete phase |
 | `/task` | `--recover` | Unarchive tasks from archive/ (supports ranges/lists) |
-| `/task` | `--divide` | Divide existing task into subtasks (single task only) |
+| `/task` | `--expand` | Expand existing task into subtasks (single task only) |
 | `/task` | `--sync` | Synchronize TODO.md and state.json (git blame conflict resolution) |
 | `/task` | `--abandon` | Abandon tasks to archive/ (supports ranges/lists) |
 
@@ -230,9 +230,9 @@ The `/task` command uses flag-based routing to different operations:
 if [[ "$ARGUMENTS" =~ --recover ]]; then
   operation="recover"
   args="${ARGUMENTS#*--recover }"  # Extract task ranges
-elif [[ "$ARGUMENTS" =~ --divide ]]; then
-  operation="divide"
-  args="${ARGUMENTS#*--divide }"  # Extract task number and optional prompt
+elif [[ "$ARGUMENTS" =~ --expand ]]; then
+  operation="expand"
+  args="${ARGUMENTS#*--expand }"  # Extract task number and optional prompt
 elif [[ "$ARGUMENTS" =~ --sync ]]; then
   operation="sync"
   args="${ARGUMENTS#*--sync }"  # Extract optional task ranges

@@ -158,7 +158,7 @@ The orchestrator validates **structural correctness** and **safety constraints**
 # Count flags present
 flag_count=0
 [[ "$ARGUMENTS" =~ --recover ]] && ((flag_count++))
-[[ "$ARGUMENTS" =~ --divide ]] && ((flag_count++))
+[[ "$ARGUMENTS" =~ --expand ]] && ((flag_count++))
 [[ "$ARGUMENTS" =~ --sync ]] && ((flag_count++))
 [[ "$ARGUMENTS" =~ --abandon ]] && ((flag_count++))
 

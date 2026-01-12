@@ -76,7 +76,7 @@ Rename the `--divide` flag to `--expand` across all active documentation and com
 ### Phase 3: Update Orchestration Files
 
 **Estimated effort**: 20 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update routing logic for task command
@@ -105,7 +105,7 @@ Rename the `--divide` flag to `--expand` across all active documentation and com
 ### Phase 4: Final Verification
 
 **Estimated effort**: 10 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Verify all task-related --divide references are updated
