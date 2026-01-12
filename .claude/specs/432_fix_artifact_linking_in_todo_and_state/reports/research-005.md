@@ -177,12 +177,22 @@ async def on_checkpoint_restore(self, state: dict[str, Any]) -> None:
 - `[IN PROGRESS]` = current execution point
 - `[COMPLETED]` = checkpoint complete
 
-**Gap Identified**: We don't persist intermediate state within a phase. If a phase fails mid-execution, we restart the entire phase.
+**Design Decision: Phase-Level Checkpointing Only**
 
-**Mitigation**: This is acceptable for our use case because:
-1. Phases are typically atomic (complete or fail)
-2. Re-executing a phase is cheap (just LLM calls)
-3. Adding sub-phase checkpoints would increase complexity without proportional benefit
+Midpoint recovery within phases would add complexity without proportional gain. Instead, the system relies on **plan-file-as-checkpoint**:
+
+1. Implementation agents update the plan file to mark phases:
+   - `[IN PROGRESS]` when starting a phase
+   - `[COMPLETED]`/`[BLOCKED]`/`[PARTIAL]` when finishing
+2. Git commit after each phase completion preserves state
+3. Plan metadata stays current, making resume point discovery trivial
+
+This approach means:
+- If a phase fails mid-execution, restart the entire phase (acceptable: phases are atomic, re-execution is cheap)
+- Resume after session interruption is automatic: agent reads plan, finds first non-completed phase
+- No additional checkpoint infrastructure needed
+
+**Requirement**: All implementer agents (general, lean, latex) must uniformly enforce plan-updating before committing changes. This is the single enforcement point for phase-level state persistence.
 
 #### 3.2 Idempotent Operations
 
