@@ -116,11 +116,12 @@ technical_debt:
 
 ### 422. Complete TODOs in Introduction.tex
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/422_complete_introduction_todos/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/422_complete_introduction_todos/plans/implementation-001.md)
 
 **Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/00-Introduction.tex
 
@@ -249,7 +250,7 @@ technical_debt:
 
 ### 418. Cache typeclass instances in Explanatory
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 400
