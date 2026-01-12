@@ -388,11 +388,11 @@
       "project_number": 257,
       "project_name": "completeness_proofs",
       "type": "feature",
-      "status": "researched",
+      "status": "researching",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T22:30:00Z",
+      "last_updated": "2026-01-12T17:42:55Z",
       "effort": "70-90 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.",
       "artifacts": [
