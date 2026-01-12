@@ -30,9 +30,11 @@ technical_debt:
 
 ### 423. CI skip by default, trigger via commit message
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/423_ci_skip_by_default_trigger_via_commit_message/reports/research-001.md)
 
 **Description**: Change CI workflow to skip by default and only run when triggered by a special marker in commit messages (e.g., `[ci]` or `[run-ci]`). Create a git skill and subagent to handle all git commits, which can intelligently decide when to include the CI trigger marker. Add context documentation in `.claude/context/` explaining the git workflow and CI triggering convention. This enables frequent pushes without triggering CI, while still allowing explicit CI runs when warranted and likely to succeed.
 
@@ -80,7 +82,7 @@ technical_debt:
 
 ### 427. Document command, skill, and subagent framework
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 
@@ -90,7 +92,7 @@ technical_debt:
 
 ### 426. CovariantClass vs IsOrderedAddMonoid comparison
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 
