@@ -37,14 +37,15 @@
     {
       "project_number": 444,
       "project_name": "formula_countability_set_list_bridge",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
-      "effort": "8-10 hours",
+      "effort": "6-8 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-12T23:53:30Z",
+      "last_updated": "2026-01-13T00:05:51Z",
       "parent_task": 257,
-      "session_id": "sess_1768256830_41cbfe",
+      "session_id": "sess_1768257351_8ca43a",
+      "plan_version": "001",
       "description": "Phase 1 of completeness proofs: Establish bridge between set-based and list-based consistency. Prove Formula is countable, implement enumeration, define setToContext, prove set-list consistency equivalence, complete lindenbaum proof.",
       "artifacts": [
         {
@@ -54,6 +55,10 @@
         {
           "path": ".claude/specs/444_formula_countability_set_list_bridge/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/444_formula_countability_set_list_bridge/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
