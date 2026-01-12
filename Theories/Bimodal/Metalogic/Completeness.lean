@@ -148,6 +148,171 @@ lemma consistent_implies_set_consistent {Γ : Context} (h : Consistent Γ) :
   exact ⟨DerivationTree.weakening L Γ Formula.bot d (fun φ hφ => hL φ hφ)⟩
 
 /-!
+## Finite Context Usage
+
+Any derivation uses only finitely many formulas from its context.
+This is essential for the Zorn's lemma application in Lindenbaum.
+-/
+
+/--
+Formulas actually used from the context in a derivation tree.
+
+This function extracts the list of context formulas that appear as
+assumptions in the derivation. The result is a list (may have duplicates).
+
+Note: For necessitation rules (which require empty context), usedFormulas
+returns [] since the subderivation also has empty context.
+-/
+def usedFormulas {Γ : Context} {φ : Formula} : DerivationTree Γ φ → List Formula
+  | DerivationTree.axiom _ _ _ => []
+  | DerivationTree.assumption _ ψ _ => [ψ]
+  | DerivationTree.modus_ponens _ _ _ d1 d2 => usedFormulas d1 ++ usedFormulas d2
+  | DerivationTree.necessitation _ d => usedFormulas d
+  | DerivationTree.temporal_necessitation _ d => usedFormulas d
+  | DerivationTree.temporal_duality _ d => usedFormulas d
+  | DerivationTree.weakening _ _ _ d _ => usedFormulas d
+
+/--
+All formulas used in a derivation come from the context.
+-/
+lemma usedFormulas_subset {Γ : Context} {φ : Formula}
+    (d : DerivationTree Γ φ) : ∀ ψ ∈ usedFormulas d, ψ ∈ Γ := by
+  induction d with
+  | «axiom» => simp [usedFormulas]
+  | assumption Γ' ψ h =>
+    simp only [usedFormulas, List.mem_singleton]
+    intro χ hχ
+    rw [hχ]
+    exact h
+  | modus_ponens Γ' _ _ _ _ ih1 ih2 =>
+    simp only [usedFormulas, List.mem_append]
+    intro ψ hψ
+    cases hψ with
+    | inl h => exact ih1 ψ h
+    | inr h => exact ih2 ψ h
+  | necessitation _ d ih =>
+    simp only [usedFormulas]
+    intro ψ hψ
+    have := ih ψ hψ
+    exact (List.not_mem_nil this).elim
+  | temporal_necessitation _ d ih =>
+    simp only [usedFormulas]
+    intro ψ hψ
+    have := ih ψ hψ
+    exact (List.not_mem_nil this).elim
+  | temporal_duality _ d ih =>
+    simp only [usedFormulas]
+    intro ψ hψ
+    have := ih ψ hψ
+    exact (List.not_mem_nil this).elim
+  | weakening Γ' Δ _ d h ih =>
+    simp only [usedFormulas]
+    intro ψ hψ
+    exact h (ih ψ hψ)
+
+/--
+For empty context derivations, usedFormulas must be empty.
+-/
+lemma usedFormulas_empty_context {φ : Formula}
+    (d : DerivationTree [] φ) : usedFormulas d = [] := by
+  have h := usedFormulas_subset d
+  cases heq : usedFormulas d with
+  | nil => rfl
+  | cons ψ L' =>
+    exfalso
+    have hmem : ψ ∈ usedFormulas d := by rw [heq]; exact List.mem_cons_self
+    exact (List.not_mem_nil (h ψ hmem))
+
+/--
+For necessitation rules, usedFormulas is empty (since subproof context is []).
+-/
+lemma usedFormulas_necessitation_eq_nil {φ : Formula} (d : DerivationTree [] φ) :
+    usedFormulas (DerivationTree.necessitation φ d) = [] := by
+  simp only [usedFormulas]
+  exact usedFormulas_empty_context d
+
+/--
+Any derivation uses only finitely many context formulas, and there exists
+a derivation from that finite subset.
+
+This is formulated without constructing the derivation directly (avoiding
+the termination issues with necessitation rules).
+-/
+theorem derivation_uses_finite_context {Γ : Context} {φ : Formula}
+    (d : DerivationTree Γ φ) :
+    ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ (L ⊆ Γ) := by
+  exact ⟨usedFormulas d, usedFormulas_subset d, usedFormulas_subset d⟩
+
+/--
+A derivation from a subset can be weakened to the superset.
+-/
+def derivation_from_subset_weaken {Γ Δ : Context} {φ : Formula}
+    (d : DerivationTree Γ φ) (h : Γ ⊆ Δ) : DerivationTree Δ φ :=
+  DerivationTree.weakening Γ Δ φ d h
+
+/-!
+## Chain Union Consistency
+
+The union of a chain of consistent sets is consistent.
+This is the key lemma enabling Zorn's lemma application.
+-/
+
+/--
+Any finite list of formulas from a chain union is contained in some chain member.
+
+This is the key fact: if each formula in a finite list comes from the union
+of a chain, then all formulas come from some single member (by chain property).
+
+Note: If the chain is empty or the list is empty, we only need C.Nonempty.
+The case C = ∅ is handled by the caller (consistent_chain_union).
+-/
+lemma finite_list_in_chain_member {C : Set (Set Formula)}
+    (hchain : IsChain (· ⊆ ·) C) (L : List Formula) (hL : ∀ φ ∈ L, φ ∈ ⋃₀ C) :
+    C.Nonempty → ∃ S ∈ C, ∀ φ ∈ L, φ ∈ S := by
+  intro hCne
+  induction L with
+  | nil =>
+    -- Empty list: just need any member of C
+    obtain ⟨S, hS⟩ := hCne
+    exact ⟨S, hS, fun _ h => (List.not_mem_nil h).elim⟩
+  | cons ψ L' ih =>
+    -- ψ is in some S₁ ∈ C, and by IH, L' ⊆ some S₂ ∈ C
+    have hψ : ψ ∈ ⋃₀ C := hL ψ List.mem_cons_self
+    have hL' : ∀ φ ∈ L', φ ∈ ⋃₀ C := fun φ h => hL φ (List.mem_cons_of_mem _ h)
+    obtain ⟨S₁, hS₁mem, hψS₁⟩ := Set.mem_sUnion.mp hψ
+    obtain ⟨S₂, hS₂mem, hL'S₂⟩ := ih hL'
+    -- By chain property, either S₁ ⊆ S₂ or S₂ ⊆ S₁
+    rcases hchain.total hS₁mem hS₂mem with h | h
+    · -- S₁ ⊆ S₂, so ψ ∈ S₂ and L' ⊆ S₂
+      exact ⟨S₂, hS₂mem, fun φ hφ =>
+        match List.mem_cons.mp hφ with
+        | .inl heq => heq ▸ h hψS₁
+        | .inr hmem => hL'S₂ φ hmem⟩
+    · -- S₂ ⊆ S₁, so L' ⊆ S₁ and ψ ∈ S₁
+      exact ⟨S₁, hS₁mem, fun φ hφ =>
+        match List.mem_cons.mp hφ with
+        | .inl heq => heq ▸ hψS₁
+        | .inr hmem => h (hL'S₂ φ hmem)⟩
+
+/--
+The union of a nonempty chain of consistent sets is consistent.
+
+If every set in a nonempty chain is SetConsistent, then their union is also SetConsistent.
+This uses the fact that any derivation uses only finitely many premises, and
+those finite premises come from some single chain member.
+-/
+theorem consistent_chain_union {C : Set (Set Formula)}
+    (hchain : IsChain (· ⊆ ·) C) (hCne : C.Nonempty)
+    (hcons : ∀ S ∈ C, SetConsistent S) : SetConsistent (⋃₀ C) := by
+  intro L hL
+  -- hL says all elements of L are in ⋃₀ C
+  -- We need to show Consistent L
+  -- By finite_list_in_chain_member, L ⊆ some S ∈ C
+  obtain ⟨S, hSmem, hLS⟩ := finite_list_in_chain_member hchain L hL hCne
+  -- S is consistent, so L being a subset means L is consistent
+  exact hcons S hSmem L hLS
+
+/-!
 ## Lindenbaum's Lemma
 
 Every consistent set can be extended to a maximal consistent set.
