@@ -30,7 +30,7 @@ technical_debt:
 
 ### 429. Extend command-skill-agent integration to /meta
 - **Effort**: 3.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: High
@@ -113,7 +113,7 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHING]
 - **Started**: 2026-01-05
 - **Priority**: Medium
 - **Language**: lean
@@ -150,12 +150,13 @@ technical_debt:
 ### 257. Completeness Proofs
 
  **Effort**: 70-90 hours
- **Status**: [ON HOLD]
+ **Status**: [RESEARCHED]
+ **Researched**: 2026-01-12
  **Priority**: Low
  **Language**: lean
  **Blocking**: Decidability
  **Dependencies**: Soundness (Complete), Deduction Theorem (Complete)
- **Note**: On hold pending Bimodal polish and documentation (Task 360)
+ **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md)
 
 **Description**: Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.
 

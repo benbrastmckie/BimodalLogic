@@ -6,11 +6,11 @@
     {
       "project_number": 429,
       "project_name": "extend_command_skill_agent_integration_to_meta",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T06:02:46Z",
-      "last_updated": "2026-01-12T22:30:00Z",
+      "last_updated": "2026-01-12T14:23:10Z",
       "plan_version": "001",
       "artifacts": [
         {
@@ -210,26 +210,30 @@
       "project_number": 257,
       "project_name": "completeness_proofs",
       "type": "feature",
-      "phase": "on_hold",
-      "status": "on_hold",
+      "status": "researched",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T16:30:00Z",
+      "last_updated": "2026-01-12T22:30:00Z",
       "effort": "70-90 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.",
-      "on_hold_reason": "Pending Bimodal polish (Task 360)"
+      "artifacts": [
+        {
+          "path": ".claude/specs/257_completeness_proofs/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 260,
       "project_name": "proof_search",
       "type": "feature",
       "phase": "blocked",
-      "status": "blocked",
+      "status": "researching",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T16:30:00Z",
+      "last_updated": "2026-01-12T14:23:17Z",
       "effort": "40-60 hours",
       "description": "Implement automated proof search for TM logic.",
       "planning_completed": "2026-01-05T08:07:35-08:00",
