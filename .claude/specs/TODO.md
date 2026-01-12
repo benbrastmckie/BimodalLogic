@@ -146,7 +146,7 @@ technical_debt:
  **Language**: lean
  **Blocking**: None (Decidability complete)
  **Dependencies**: Soundness (Complete), Deduction Theorem (Complete), Proof Search (Complete), Decidability (Complete)
- **Subtasks**: 444, 445, 446, 447, 450, 448, 449
+ **Subtasks**: 444, 445, 446, 447, 448, 449, 450
  **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md), [research-003.md](.claude/specs/257_completeness_proofs/reports/research-003.md), [research-004.md](.claude/specs/257_completeness_proofs/reports/research-004.md), [research-005.md](.claude/specs/257_completeness_proofs/reports/research-005.md), [research-006.md](.claude/specs/257_completeness_proofs/reports/research-006.md), [research-007.md](.claude/specs/257_completeness_proofs/reports/research-007.md), [research-008.md](.claude/specs/257_completeness_proofs/reports/research-008.md)
  **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (v002 - added Phase 5 canonical_history)
 
@@ -179,6 +179,7 @@ technical_debt:
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
+- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 1)
 
 **Description**: Phase 1 of completeness proofs: Establish bridge between set-based and list-based consistency. Prove Formula is countable, implement enumeration, define setToContext, prove set-list consistency equivalence, complete lindenbaum proof.
 
@@ -191,6 +192,7 @@ technical_debt:
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 444
+- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 2)
 
 **Description**: Phase 2 of completeness proofs: Prove key properties of maximal consistent sets. Prove maximal_consistent_closed, maximal_negation_complete, implication/conjunction/disjunction properties, modal and temporal saturation lemmas.
 
@@ -203,6 +205,7 @@ technical_debt:
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 445
+- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 3)
 
 **Description**: Phase 3 of completeness proofs: Implement order-type based duration construction from research-008.md. Define TemporalChain, ChainSegment, orderTypeEquiv. Build PositiveDuration quotient with AddCommMonoid. Define Duration via Grothendieck construction with LinearOrder and IsOrderedAddMonoid instances.
 
@@ -215,42 +218,46 @@ technical_debt:
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 446
+- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 4)
 
 **Description**: Phase 4 of completeness proofs: Build canonical frame and model using agnostic Duration type. Define canonical_task_rel with modal/temporal transfer. Prove nullity and compositionality. Implement canonical_frame, canonical_valuation, canonical_model.
 
 ---
 
-### 450. Build canonical_history
+### 448. Build canonical_history
 - **Effort**: 6-8 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 447
+- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 5)
 
 **Description**: Phase 5 of completeness proofs: Build canonical_history construction. Define the history structure that threads MCSs together with the canonical task relation, establishing the temporal backbone for the canonical model. This bridges canonical_frame/model (Phase 4) and truth_lemma (Phase 6).
 
 ---
 
-### 448. Truth lemma
+### 449. Truth lemma
 - **Effort**: 15-20 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
-- **Dependencies**: 450
+- **Dependencies**: 448
+- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 6)
 
 **Description**: Phase 6 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem.
 
 ---
 
-### 449. Completeness theorems
+### 450. Completeness theorems
 - **Effort**: 8-10 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
-- **Dependencies**: 448
+- **Dependencies**: 449
+- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 7)
 
 **Description**: Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using truth lemma. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.
 
