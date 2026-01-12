@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 435
+next_project_number: 436
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -109,6 +109,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 435. Module Aggregator Standard for Bimodal/
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation.
+
+---
 
 ### 433. Refine README title and consolidate Bimodal documentation
 - **Effort**: 2-3 hours

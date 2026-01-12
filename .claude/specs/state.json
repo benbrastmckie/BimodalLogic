@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T05:36:33.618239Z",
-  "next_project_number": 435,
+  "next_project_number": 436,
   "active_projects": [
+    {
+      "project_number": 435,
+      "project_name": "module_aggregator_standard_bimodal",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-12T17:16:42Z",
+      "last_updated": "2026-01-12T17:16:42Z",
+      "description": "Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation"
+    },
     {
       "project_number": 434,
       "project_name": "refactor_readme_for_investors_and_researchers",
