@@ -6,15 +6,20 @@
     {
       "project_number": 437,
       "project_name": "improve_readme_consistency_with_recursive_semantics",
-      "status": "planning",
+      "status": "planned",
       "language": "general",
       "priority": "high",
       "created": "2026-01-12T17:34:32Z",
-      "last_updated": "2026-01-12T17:57:50Z",
+      "last_updated": "2026-01-12T18:10:00Z",
+      "plan_version": "001",
       "artifacts": [
         {
           "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
