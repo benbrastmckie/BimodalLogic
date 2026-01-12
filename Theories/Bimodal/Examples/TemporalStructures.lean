@@ -13,19 +13,19 @@ with ProofChecker's generalized semantics. The polymorphic `TaskFrame T` and
 
 The JPL paper "The Perpetuity Calculus of Agency" (§app:TaskSemantics, def:frame, line 1835)
 specifies that the temporal structure is a "totally ordered abelian group T = ⟨T, +, ≤⟩".
-ProofChecker implements this via the `LinearOrderedAddCommGroup` typeclass, which
-provides exactly this structure.
+ProofChecker implements this via the unbundled typeclasses `[AddCommGroup T] [LinearOrder T]
+[IsOrderedAddMonoid T]`, which provide exactly this structure.
 
 ## Example Temporal Types
 
 ### Integer Time (`Int`)
 - **Use case**: Discrete temporal logic, countable time steps
-- **Instance**: `instLinearOrderedAddCommGroupInt`
+- **Instance**: Uses unbundled instances for AddCommGroup, LinearOrder, IsOrderedAddMonoid
 - **Advantages**: Simple, decidable, standard temporal logic interpretation
 
 ### Polymorphic Examples
 The examples below demonstrate how ProofChecker's polymorphic types work with
-any type `T` that has a `LinearOrderedAddCommGroup` instance. This includes:
+any type `T` that has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid` instances. This includes:
 - `Int`: Discrete integer time
 - `Rat`: Dense rational time (requires additional Mathlib imports)
 - `Real`: Continuous real time (requires additional Mathlib imports)
@@ -94,7 +94,7 @@ def intTimeHistory : WorldHistory intTimeFrame where
 
 section Polymorphic
 
-variable (T : Type*) [LinearOrderedAddCommGroup T]
+variable (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
 
 /--
 Generic polymorphic task frame.
@@ -153,7 +153,7 @@ theorem int_nullity_example : intTimeFrame.task_rel () 0 () :=
 /--
 Generic time satisfies the nullity constraint (polymorphic proof).
 -/
-theorem generic_nullity_example (T : Type*) [LinearOrderedAddCommGroup T] :
+theorem generic_nullity_example (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] :
     (genericTimeFrame T).task_rel () 0 () :=
   (genericTimeFrame T).nullity ()
 
@@ -173,7 +173,7 @@ Generic compositionality theorem (polymorphic).
 For any temporal type `T`, tasks of duration `x` and `y` compose
 to a task of duration `x + y`.
 -/
-theorem generic_compositionality (T : Type*) [LinearOrderedAddCommGroup T] (x y : T) :
+theorem generic_compositionality (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (x y : T) :
     (genericTimeFrame T).task_rel () (x + y) () :=
   (genericTimeFrame T).compositionality () () () x y
     ((genericTimeFrame T).nullity ())
@@ -189,7 +189,7 @@ theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial
 /--
 Generic histories have universal domains (polymorphic).
 -/
-theorem generic_domain_universal (T : Type*) [LinearOrderedAddCommGroup T] (t : T) :
+theorem generic_domain_universal (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (t : T) :
     (genericTimeHistory T).domain t := trivial
 
 end Bimodal.Examples.TemporalStructures

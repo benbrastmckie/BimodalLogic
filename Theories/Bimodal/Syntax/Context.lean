@@ -197,7 +197,7 @@ theorem exists_mem_of_ne_nil {Γ : Context} (h : Γ ≠ []) :
     ∃ φ, φ ∈ Γ := by
   cases Γ with
   | nil => contradiction
-  | cons φ _ => exact ⟨φ, List.mem_cons_self φ _⟩
+  | cons φ _ => exact ⟨φ, List.mem_cons_self ..⟩
 
 end Context
 

@@ -39,7 +39,7 @@ have no "gaps" in time.
 
 ## Implementation Notes
 
-- Type parameter `T` represents temporal durations with `LinearOrderedAddCommGroup` structure
+- Type parameter `T` represents temporal durations with ordered additive group structure
 - Domain is represented as a predicate `T → Prop`
 - Convexity is now formally enforced (matching paper definition exactly)
 - History must respect the task relation (compositionality)
@@ -66,7 +66,7 @@ such that the history respects the task relation of the frame.
 **Paper Alignment**: Matches JPL paper def:world-history (line 1849) with
 explicit convexity constraint on domain.
 -/
-structure WorldHistory {T : Type*} [LinearOrderedAddCommGroup T] (F : TaskFrame T) where
+structure WorldHistory {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (F : TaskFrame T) where
   /-- Domain predicate (which times are in the history) -/
   domain : T → Prop
   /--
@@ -98,7 +98,7 @@ structure WorldHistory {T : Type*} [LinearOrderedAddCommGroup T] (F : TaskFrame 
 
 namespace WorldHistory
 
-variable {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
+variable {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] {F : TaskFrame T}
 
 /--
 Universal world history over all time (requires explicit reflexivity proof).
@@ -149,7 +149,7 @@ Trivial world history for the trivial frame.
 Since trivial frame's task relation is always true, this always works.
 The full domain is convex.
 -/
-def trivial {T : Type*} [LinearOrderedAddCommGroup T] :
+def trivial {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] :
     WorldHistory (TaskFrame.trivial_frame (T := T)) where
   domain := fun _ => True
   convex := by
@@ -169,7 +169,7 @@ This is a variant of `trivial` that allows specifying the constant state
 Since trivialFrame's task relation is always true, any constant history respects the task relation.
 The full domain is convex.
 -/
-def universal_trivialFrame {T : Type*} [LinearOrderedAddCommGroup T]
+def universal_trivialFrame {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     (w : (TaskFrame.trivial_frame (T := T)).WorldState) :
     WorldHistory (TaskFrame.trivial_frame (T := T)) where
   domain := fun _ => True
@@ -190,7 +190,7 @@ any constant history respects the task relation.
 This demonstrates that reflexive frames (where `task_rel w d w` for all `w, d`)
 admit universal constant histories. The full domain is convex.
 -/
-def universal_natFrame {T : Type*} [LinearOrderedAddCommGroup T] (n : Nat) :
+def universal_natFrame {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (n : Nat) :
     WorldHistory (TaskFrame.nat_frame (T := T)) where
   domain := fun _ => True
   convex := by
@@ -240,8 +240,8 @@ def time_shift (σ : WorldHistory F) (Δ : T) : WorldHistory F where
     -- Need: σ.domain (y + Δ)
     -- Have: σ.domain (x + Δ) and σ.domain (z + Δ) with x ≤ y ≤ z
     -- By convexity of σ, need to show (x + Δ) ≤ (y + Δ) ≤ (z + Δ)
-    have hxy' : x + Δ ≤ y + Δ := add_le_add_right hxy Δ
-    have hyz' : y + Δ ≤ z + Δ := add_le_add_right hyz Δ
+    have hxy' : x + Δ ≤ y + Δ := by rw [add_comm x, add_comm y]; exact add_le_add_right hxy Δ
+    have hyz' : y + Δ ≤ z + Δ := by rw [add_comm y, add_comm z]; exact add_le_add_right hyz Δ
     exact σ.convex (x + Δ) (z + Δ) hx hz (y + Δ) hxy' hyz'
   states := fun z hz => σ.states (z + Δ) hz
   respects_task := by
@@ -250,7 +250,7 @@ def time_shift (σ : WorldHistory F) (Δ : T) : WorldHistory F where
     -- We have: σ respects task, so
     -- task_rel (σ.states (s + Δ)) ((t + Δ) - (s + Δ)) (σ.states (t + Δ))
     -- Since (t + Δ) - (s + Δ) = t - s, this is exactly what we need
-    have h_shifted : s + Δ ≤ t + Δ := add_le_add_right hst Δ
+    have h_shifted : s + Δ ≤ t + Δ := by rw [add_comm s, add_comm t]; exact add_le_add_right hst Δ
     have h_duration : (t + Δ) - (s + Δ) = t - s := by
       -- (t + Δ) - (s + Δ) = t - s by group theory
       rw [add_sub_add_right_eq_sub]
@@ -351,11 +351,11 @@ theorem time_shift_time_shift_neg_states (σ : WorldHistory F) (Δ : T) (t : T)
 /-! ## Order Reversal Lemmas
 
 These lemmas establish that group inverse (negation) provides an order-reversing
-automorphism on any `LinearOrderedAddCommGroup`. This is crucial for proving
+automorphism on any ordered additive group. This is crucial for proving
 temporal duality soundness: swapping past and future corresponds to time reversal
 via group inverse.
 
-The key insight is that `LinearOrderedAddCommGroup` structure provides temporal
+The key insight is that ordered additive group structure provides temporal
 symmetry without requiring additional frame constraints.
 -/
 

@@ -4,7 +4,7 @@ open Lake DSL
 package Logos
 
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git" @ "v4.14.0"
+  "https://github.com/leanprover-community/mathlib4.git" @ "v4.27.0-rc1"
 
 require plausible from git
   "https://github.com/leanprover-community/plausible" @ "main"

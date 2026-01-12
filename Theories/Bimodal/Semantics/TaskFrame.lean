@@ -15,8 +15,8 @@ The JPL paper "The Perpetuity Calculus of Agency" defines task frames as tuples
 - `·: W × G → P(W)` is the task relation
 
 **ProofChecker Implementation**:
-This implementation generalizes the time group `G` to any type `T` with a
-`LinearOrderedAddCommGroup` instance, which provides:
+This implementation generalizes the time group `G` to any type `T` with an
+ordered additive commutative group structure, which provides:
 - Additive abelian group structure (zero, addition, inverse)
 - Total linear order (≤ relation)
 - Order compatibility with addition
@@ -32,7 +32,7 @@ This matches the paper's specification exactly and allows for various temporal s
 - Paper's compositionality: If `u ∈ w · d` and `v ∈ u · e` then `v ∈ w · (d + e)`
   corresponds to
   `compositionality : ∀ w u v x y, task_rel w x u → task_rel u y v → task_rel w (x + y) v`
-- `LinearOrderedAddCommGroup T` provides the required abelian group structure with total order
+- The ordered additive group structure provides the required abelian group with total order
 
 ## Main Definitions
 
@@ -46,12 +46,12 @@ This matches the paper's specification exactly and allows for various temporal s
 
 ## Implementation Notes
 
-- Type parameter `T` represents temporal duration with `LinearOrderedAddCommGroup` constraint
+- Type parameter `T` represents temporal duration with ordered additive group structure
 - Task relation `task_rel w x u` means: world state `u` is reachable from `w` by task
   of duration `x`
 - Nullity: zero-duration task is identity (reflexivity)
 - Compositionality: sequential tasks compose (transitivity with addition)
-- Typeclass parameter convention: `(T : Type*)` explicit, `[LinearOrderedAddCommGroup T]` implicit
+- Typeclass parameter convention: `(T : Type*)` explicit, ordered group instances implicit
 
 ## References
 
@@ -66,7 +66,7 @@ Task frame for bimodal logic TM.
 
 A task frame consists of:
 - A type of world states
-- A type `T` of temporal durations with `LinearOrderedAddCommGroup` structure
+- A type `T` of temporal durations with ordered additive group structure
 - A task relation connecting world states via timed tasks
 - Nullity constraint: zero-duration task is identity
 - Compositionality: tasks compose sequentially with additive time
@@ -80,7 +80,7 @@ executing a task of duration `x` can result in world state `u`.
 **Paper Alignment**: Matches JPL paper def:frame (line 1835) exactly with
 `T = ⟨T, +, ≤⟩` as a totally ordered abelian group.
 -/
-structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
+structure TaskFrame (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] where
   /-- Type of world states -/
   WorldState : Type
   /-- Task relation: `task_rel w x u` means u is reachable from w by task of duration x -/
@@ -109,7 +109,7 @@ Simple unit-based task frame for testing.
 World states are Unit (trivial), task relation is always true.
 This is the simplest possible task frame, polymorphic over temporal type `T`.
 -/
-def trivial_frame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
+def trivial_frame {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] : TaskFrame T where
   WorldState := Unit
   task_rel := fun _ _ _ => True
   nullity := fun _ => trivial
@@ -121,7 +121,7 @@ Identity task frame: task relation is identity.
 World states can be any type, task relation holds iff source equals target and time is 0.
 Polymorphic over both world state type and temporal type.
 -/
-def identity_frame (W : Type) {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
+def identity_frame (W : Type) {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] : TaskFrame T where
   WorldState := W
   task_rel := fun w x u => w = u ∧ x = 0
   nullity := fun w => ⟨rfl, rfl⟩
@@ -139,7 +139,7 @@ World states are natural numbers. Task relation: task of duration x from w
 can reach any state (permissive for simplicity).
 Polymorphic over temporal type `T`.
 -/
-def nat_frame {T : Type*} [LinearOrderedAddCommGroup T] : TaskFrame T where
+def nat_frame {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] : TaskFrame T where
   WorldState := Nat
   task_rel := fun _ _ _ => True
   nullity := fun _ => trivial

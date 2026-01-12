@@ -308,6 +308,6 @@ example (p : String) (ψ : Formula) : [ψ] ⊢ (Formula.box (Formula.atom p)).im
   · apply DerivationTree.axiom
     apply Axiom.modal_t
   · intro _ h
-    exact False.elim (List.not_mem_nil _ h)
+    exact False.elim (List.not_mem_nil h)
 
 end Bimodal.ProofSystem

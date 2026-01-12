@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-12T06:30:00Z",
+  "_last_updated": "2026-01-12T00:42:34Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -575,7 +575,7 @@
       "created": "2026-01-05T08:34:20.462436Z",
       "last_updated": "2026-01-10T22:57:38Z",
       "effort": "61-97 hours",
-      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
+      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom \u03c6 is a Prop, not a Type, making it impossible to return Option (Axiom \u03c6) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -833,7 +833,7 @@
       "plan_path": ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
       "plan_metadata": {
         "plan_version": 2,
-        "revision_reason": "Maintain ⟨S, ⊑, I⟩ notation instead of replacing with ⟨S, ⊑, | |⟩"
+        "revision_reason": "Maintain \u27e8S, \u2291, I\u27e9 notation instead of replacing with \u27e8S, \u2291, | |\u27e9"
       },
       "artifacts": [
         ".claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
@@ -2180,6 +2180,197 @@
       "source": "orphan_recovery",
       "archived": "2026-01-12T06:30:00Z",
       "detected_artifacts": []
+    },
+    {
+      "project_number": 405,
+      "project_name": "document_latex_one_line_per_sentence_convention",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.",
+      "effort": "1 hour",
+      "created": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-12T07:10:00Z",
+      "implementing_started": "2026-01-12T07:05:00Z",
+      "completed": "2026-01-12T07:10:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 406,
+      "project_name": "enforce_convention_bimodal_reference_tex",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Reformat Theories/Bimodal/LaTeX/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-12T08:25:00Z",
+      "implementing_started": "2026-01-12T08:15:00Z",
+      "completed": "2026-01-12T08:25:00Z",
+      "dependencies": [
+        405
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/406_enforce_convention_bimodal_reference_tex/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 407,
+      "project_name": "enforce_convention_logos_reference_tex",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Reformat Theories/Logos/LaTeX/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-12T09:00:00Z",
+      "implementing_started": "2026-01-12T08:30:00Z",
+      "completed": "2026-01-12T09:00:00Z",
+      "dependencies": [
+        405
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/407_enforce_convention_logos_reference_tex/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 404,
+      "project_name": "enhance_todo_to_archive_orphaned_specs_directories",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Enhance /todo command to detect orphaned project directories in specs/ that are not tracked in TODO.md or state.json, and offer to move them to specs/archive/ while updating archive/state.json accordingly.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:20:12Z",
+      "last_updated": "2026-01-12T06:50:00Z",
+      "implementing_started": "2026-01-12T06:45:00Z",
+      "completed": "2026-01-12T06:50:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 403,
+      "project_name": "enforce_directory_naming_convention",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Enforce the naming convention that only directories containing Lean source code should be capitalized. Renamed 19 directories (docs/ subdirectories, Theories/*/Documentation/, Theories/*/LaTeX/) to lowercase and updated all references.",
+      "effort": "2-3 hours",
+      "created": "2026-01-11T22:13:04Z",
+      "last_updated": "2026-01-11T22:32:17Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/403_enforce_directory_naming_convention/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/403_enforce_directory_naming_convention/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/403_enforce_directory_naming_convention/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "implementing_started": "2026-01-11T22:26:48Z",
+      "completed": "2026-01-11T22:32:17Z",
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 401,
+      "project_name": "add_expanded_status_for_parent_tasks",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:10:38Z",
+      "last_updated": "2026-01-11T22:36:22Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-11T22:36:22Z",
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 402,
+      "project_name": "rename_divide_flag_to_expand",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).",
+      "effort": "2-3 hours",
+      "created": "2026-01-11T22:10:38Z",
+      "last_updated": "2026-01-12T00:21:12Z",
+      "dependencies": [
+        401
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/402_rename_divide_flag_to_expand/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/402_rename_divide_flag_to_expand/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12",
+      "archived": "2026-01-12T00:42:34Z"
     }
   ]
 }

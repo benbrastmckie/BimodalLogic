@@ -1,17 +1,179 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-12T08:00:00Z",
-  "next_project_number": 416,
+  "_last_updated": "2026-01-12T09:00:00Z",
+  "next_project_number": 426,
   "active_projects": [
     {
-      "project_number": 415,
+      "project_number": 425,
       "project_name": "update_command_files_to_delegate_to_skill_subagent",
-      "status": "completed",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T03:13:55Z",
-      "last_updated": "2026-01-12T03:26:27Z",
-      "completed": "2026-01-12T03:26:27Z"
+      "last_updated": "2026-01-12T03:21:19Z"
+    },
+    {
+      "project_number": 422,
+      "project_name": "complete_introduction_todos",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T01:17:56Z",
+      "last_updated": "2026-01-12T01:50:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/422_complete_introduction_todos/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/422_complete_introduction_todos/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/422_complete_introduction_todos/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12T01:50:00Z"
+    },
+    {
+      "project_number": 421,
+      "project_name": "lookup_formal_term_definitions_revise_research",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Look up all formal terms and terms of art used in .claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md that are defined in /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex. Revise research-001.md to ensure all terms are defined before they are used.",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:45:38Z",
+      "last_updated": "2026-01-12T00:54:44Z",
+      "related_task": 398,
+      "artifacts": [
+        {
+          "path": ".claude/specs/421_lookup_formal_term_definitions_revise_research/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "completed": "2026-01-12T00:54:44Z"
+    },
+    {
+      "project_number": 416,
+      "project_name": "quick_performance_fixes_explanatory_truth",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Apply quick performance fixes to Explanatory/Truth.lean: fix namespace error in Syntax.lean:34, add @[irreducible] to truthAt, increase synthInstance.maxHeartbeats, and run lake clean. These are low-risk changes that can be applied together.",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T01:12:28Z",
+      "parent_task": 400
+    },
+    {
+      "project_number": 417,
+      "project_name": "split_typeclass_constraints_explanatory",
+      "status": "researched",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.",
+      "effort": "3-4 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T02:10:00Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/417_split_typeclass_constraints_explanatory/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/417_split_typeclass_constraints_explanatory/reports/research-002.md",
+          "type": "research"
+        }
+      ]
+    },
+    {
+      "project_number": 418,
+      "project_name": "cache_typeclass_instances_explanatory",
+      "status": "researched",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.",
+      "effort": "2-3 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T01:35:13Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/418_cache_typeclass_instances_explanatory/reports/research-001.md",
+          "type": "research"
+        }
+      ]
+    },
+    {
+      "project_number": 419,
+      "project_name": "refactor_mutual_recursion_semantics",
+      "status": "researching",
+      "language": "lean",
+      "priority": "low",
+      "description": "Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.",
+      "effort": "4-6 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T02:01:33Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ]
+    },
+    {
+      "project_number": 420,
+      "project_name": "upgrade_mathlib_version",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "description": "Upgrade Mathlib from v4.14.0 to a newer version (4.22+) that includes significant compiler and instance caching improvements. Requires testing for breaking changes and API migrations.",
+      "effort": "4-8 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-11T00:00:00Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ]
+    },
+    {
+      "project_number": 415,
+      "project_name": "fix_latex_sentence_line_breaks",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Fix LaTeX sentence line breaks introduced by task 405/406 refactor. Sentences should remain on single numbered lines (semantic linefeeds), not be broken across lines as seen in 00-Introduction.tex lines 9-10.",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:32:09Z",
+      "last_updated": "2026-01-12T00:45:38Z",
+      "dependencies": [
+        405,
+        406
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/415_fix_latex_sentence_line_breaks/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/415_fix_latex_sentence_line_breaks/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/415_fix_latex_sentence_line_breaks/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12T00:45:38Z"
     },
     {
       "project_number": 414,
@@ -26,6 +188,7 @@
       "dependencies": [
         410
       ],
+      "completed": "2026-01-11",
       "artifacts": [
         {
           "path": ".claude/specs/414_create_planner_agent_subagent/reports/research-001.md",
@@ -39,9 +202,7 @@
           "path": ".claude/specs/414_create_planner_agent_subagent/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
-      ],
-      "plan_version": 1,
-      "completed": "2026-01-11"
+      ]
     },
     {
       "project_number": 413,
@@ -56,7 +217,7 @@
       "dependencies": [
         410
       ],
-      "plan_version": "001",
+      "completed": "2026-01-11",
       "artifacts": [
         {
           "path": ".claude/specs/413_create_implementation_agent_subagents/plans/implementation-001.md",
@@ -66,8 +227,7 @@
           "path": ".claude/specs/413_create_implementation_agent_subagents/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
-      ],
-      "completed": "2026-01-11"
+      ]
     },
     {
       "project_number": 412,
@@ -82,7 +242,7 @@
       "dependencies": [
         410
       ],
-      "plan_version": "001",
+      "completed": "2026-01-12",
       "artifacts": [
         {
           "path": ".claude/specs/412_create_general_research_agent_subagent/plans/implementation-001.md",
@@ -92,9 +252,7 @@
           "path": ".claude/specs/412_create_general_research_agent_subagent/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
-      ],
-      "implementing_started": "2026-01-12T01:56:22Z",
-      "completed": "2026-01-12"
+      ]
     },
     {
       "project_number": 411,
@@ -109,6 +267,7 @@
       "dependencies": [
         410
       ],
+      "completed": "2026-01-12",
       "artifacts": [
         {
           "path": ".claude/specs/411_create_lean_research_agent_subagent/reports/research-001.md",
@@ -122,9 +281,7 @@
           "path": ".claude/specs/411_create_lean_research_agent_subagent/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-12"
+      ]
     },
     {
       "project_number": 410,
@@ -139,7 +296,7 @@
       "dependencies": [
         409
       ],
-      "plan_version": "001",
+      "completed": "2026-01-12",
       "artifacts": [
         {
           "path": ".claude/specs/410_remove_eager_context_loading_from_skill_frontmatter/plans/implementation-001.md",
@@ -149,8 +306,7 @@
           "path": ".claude/specs/410_remove_eager_context_loading_from_skill_frontmatter/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
-      ],
-      "completed": "2026-01-12"
+      ]
     },
     {
       "project_number": 409,
@@ -162,6 +318,7 @@
       "effort": "4-6 hours",
       "created": "2026-01-12T08:00:00Z",
       "last_updated": "2026-01-12T11:00:00Z",
+      "completed": "2026-01-12T11:00:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/409_convert_workflow_skills_to_forked_subagent_pattern/reports/research-001.md",
@@ -175,196 +332,41 @@
           "path": ".claude/specs/409_convert_workflow_skills_to_forked_subagent_pattern/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-12T11:00:00Z"
+      ]
     },
     {
       "project_number": 408,
       "project_name": "define_proofchecker_latex_command",
-      "status": "not_started",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-12T00:18:17Z",
-      "last_updated": "2026-01-12T00:18:17Z"
-    },
-    {
-      "project_number": 405,
-      "project_name": "document_latex_one_line_per_sentence_convention",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "description": "Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.",
-      "effort": "1 hour",
-      "created": "2026-01-11T22:25:49Z",
-      "last_updated": "2026-01-12T07:10:00Z",
-      "implementing_started": "2026-01-12T07:05:00Z",
-      "completed": "2026-01-12T07:10:00Z",
-      "artifacts": [
-        {
-          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001"
-    },
-    {
-      "project_number": 406,
-      "project_name": "enforce_convention_bimodal_reference_tex",
-      "status": "not_started",
-      "language": "latex",
-      "priority": "medium",
-      "description": "Reformat Theories/Bimodal/LaTeX/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
-      "effort": "1-2 hours",
-      "created": "2026-01-11T22:25:49Z",
-      "last_updated": "2026-01-11T22:25:49Z",
-      "dependencies": [
-        405
-      ]
-    },
-    {
-      "project_number": 407,
-      "project_name": "enforce_convention_logos_reference_tex",
-      "status": "not_started",
-      "language": "latex",
-      "priority": "medium",
-      "description": "Reformat Theories/Logos/LaTeX/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
-      "effort": "1-2 hours",
-      "created": "2026-01-11T22:25:49Z",
-      "last_updated": "2026-01-11T22:25:49Z",
-      "dependencies": [
-        405
-      ]
-    },
-    {
-      "project_number": 404,
-      "project_name": "enhance_todo_to_archive_orphaned_specs_directories",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "description": "Enhance /todo command to detect orphaned project directories in specs/ that are not tracked in TODO.md or state.json, and offer to move them to specs/archive/ while updating archive/state.json accordingly.",
-      "effort": "1-2 hours",
-      "created": "2026-01-11T22:20:12Z",
-      "last_updated": "2026-01-12T06:50:00Z",
-      "implementing_started": "2026-01-12T06:45:00Z",
-      "completed": "2026-01-12T06:50:00Z",
-      "artifacts": [
-        {
-          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001"
-    },
-    {
-      "project_number": 403,
-      "project_name": "enforce_directory_naming_convention",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "description": "Enforce the naming convention that only directories containing Lean source code should be capitalized. Renamed 19 directories (docs/ subdirectories, Theories/*/Documentation/, Theories/*/LaTeX/) to lowercase and updated all references.",
-      "effort": "2-3 hours",
-      "created": "2026-01-11T22:13:04Z",
-      "last_updated": "2026-01-11T22:32:17Z",
-      "artifacts": [
-        {
-          "path": ".claude/specs/403_enforce_directory_naming_convention/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/403_enforce_directory_naming_convention/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/403_enforce_directory_naming_convention/summaries/implementation-summary-20260111.md",
-          "type": "summary"
-        }
-      ],
+      "last_updated": "2026-01-12T00:55:35Z",
       "plan_version": "001",
-      "implementing_started": "2026-01-11T22:26:48Z",
-      "completed": "2026-01-11T22:32:17Z"
-    },
-    {
-      "project_number": 401,
-      "project_name": "add_expanded_status_for_parent_tasks",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "description": "Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.",
-      "effort": "1-2 hours",
-      "created": "2026-01-11T22:10:38Z",
-      "last_updated": "2026-01-11T22:36:22Z",
-      "artifacts": [
-        {
-          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-11T22:36:22Z"
-    },
-    {
-      "project_number": 402,
-      "project_name": "rename_divide_flag_to_expand",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "description": "Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).",
-      "effort": "2-3 hours",
-      "created": "2026-01-11T22:10:38Z",
-      "last_updated": "2026-01-12T00:21:12Z",
-      "dependencies": [
-        401
-      ],
-      "artifacts": [
-        {
-          "path": ".claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/402_rename_divide_flag_to_expand/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/402_rename_divide_flag_to_expand/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-12"
+      "completed": "2026-01-12T00:55:35Z"
     },
     {
       "project_number": 400,
       "project_name": "investigate_explanatory_truth_build_performance",
-      "status": "researching",
+      "status": "expanded",
       "language": "lean",
       "priority": "medium",
       "description": "Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.",
       "created": "2026-01-11T21:55:51Z",
-      "last_updated": "2026-01-11T22:03:18Z"
+      "last_updated": "2026-01-12T00:38:44Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "subtasks": [
+        416,
+        417,
+        418,
+        419,
+        420
+      ]
     },
     {
       "project_number": 398,
@@ -505,12 +507,13 @@
       "project_name": "establish_ci/cd_pipeline_with_automated_testing_and_linting",
       "type": "feature",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
-      "effort": "13 hours"
+      "last_updated": "2026-01-12T02:02:55Z",
+      "effort": "13 hours",
+      "completed": "2026-01-12"
     },
     {
       "project_number": 257,
@@ -562,18 +565,18 @@
       ],
       "started": "2026-01-05",
       "completed": "2026-01-05",
-      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom φ) from witness function."
+      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom \u03c6) from witness function."
     },
     {
       "project_number": 261,
       "project_name": "decidability",
       "type": "feature",
       "phase": "not_started",
-      "status": "researching",
+      "status": "not_started",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T12:00:00Z",
+      "last_updated": "2026-01-05T01:22:38Z",
       "effort": "40-60 hours",
       "description": "Implement decision procedures for TM logic."
     },

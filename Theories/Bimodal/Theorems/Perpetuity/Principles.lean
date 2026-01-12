@@ -834,7 +834,6 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
         (φ.diamond.box.imp φ.diamond).all_past := by
         -- Expand definitions and apply involution/commutation lemmas
         simp only [Formula.swap_temporal, Formula.swap_temporal_involution]
-        rfl
       rw [← eq1]
       exact past_mt_raw
     -- Use past K distribution: H(□◇φ → ◇φ) → (H□◇φ → H◇φ)

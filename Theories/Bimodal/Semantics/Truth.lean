@@ -71,7 +71,7 @@ namespace Bimodal.Semantics
 
 open Bimodal.Syntax
 
-variable {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
+variable {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] {F : TaskFrame T}
 
 /--
 Truth of a formula at a model-history-time triple.
@@ -110,7 +110,7 @@ namespace Truth
 Bot (⊥) is false everywhere.
 -/
 theorem bot_false
-    {T : Type*} [LinearOrderedAddCommGroup T]
+    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
     {t : T} {ht : τ.domain t} :
     ¬(truth_at M τ t ht Formula.bot) := by
@@ -121,7 +121,7 @@ theorem bot_false
 Truth of implication is material conditional.
 -/
 theorem imp_iff
-    {T : Type*} [LinearOrderedAddCommGroup T]
+    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
     {t : T} {ht : τ.domain t}
     (φ ψ : Formula) :
@@ -133,7 +133,7 @@ theorem imp_iff
 Truth of atom depends on valuation at current state.
 -/
 theorem atom_iff
-    {T : Type*} [LinearOrderedAddCommGroup T]
+    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
     {t : T} {ht : τ.domain t}
     (p : String) :
@@ -145,7 +145,7 @@ theorem atom_iff
 Truth of box: formula true at all histories at current time.
 -/
 theorem box_iff
-    {T : Type*} [LinearOrderedAddCommGroup T]
+    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
     {t : T} {ht : τ.domain t}
     (φ : Formula) :
@@ -157,7 +157,7 @@ theorem box_iff
 Truth of past: formula true at all earlier times in history.
 -/
 theorem past_iff
-    {T : Type*} [LinearOrderedAddCommGroup T]
+    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
     {t : T} {ht : τ.domain t}
     (φ : Formula) :
@@ -169,7 +169,7 @@ theorem past_iff
 Truth of future: formula true at all later times in history.
 -/
 theorem future_iff
-    {T : Type*} [LinearOrderedAddCommGroup T]
+    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
     {t : T} {ht : τ.domain t}
     (φ : Formula) :
@@ -457,7 +457,10 @@ theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y 
       have h_s_lt_y : s' + (y - x) < y := by
         have h := add_lt_add_right h_s'_lt_x (y - x)
         -- Use group lemmas: s' < x implies s' + (y-x) < x + (y-x) = y
-        calc s' + (y - x) < x + (y - x) := h
+        -- Note: add_lt_add_right produces (y-x) + s' < (y-x) + x, so use commutativity
+        calc s' + (y - x) = (y - x) + s' := add_comm s' (y - x)
+          _ < (y - x) + x := h
+          _ = x + (y - x) := add_comm (y - x) x
           _ = y := by rw [add_sub, add_sub_cancel_left]
       have h_truth_orig := h_past (s' + (y - x)) hs h_s_lt_y
       -- Apply IH: need shift amount = (s' + (y - x)) - s' = y - x
@@ -525,12 +528,15 @@ theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y 
         exact hs'
       have h_y_lt_s : y < s' + (y - x) := by
         have h := add_lt_add_right h_x_lt_s' (y - x)
-        -- h : x + (y - x) < s' + (y - x)
+        -- h : (y - x) + x < (y - x) + s'  (from add_lt_add_right)
         -- Need: y < s' + (y - x)
         -- Since x + (y - x) = y
         have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
+        -- Use commutativity to match the argument order
         calc y = x + (y - x) := h_eq.symm
-          _ < s' + (y - x) := h
+          _ = (y - x) + x := add_comm x (y - x)
+          _ < (y - x) + s' := h
+          _ = s' + (y - x) := add_comm (y - x) s'
       have h_truth_orig := h_future (s' + (y - x)) hs h_y_lt_s
       -- Apply IH with shift amount (s' + (y - x)) - s' = y - x
       have h_shift_eq : (s' + (y - x)) - s' = y - x :=

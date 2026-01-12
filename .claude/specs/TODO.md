@@ -1,17 +1,17 @@
 ---
-last_updated: 2026-01-12T08:00:00Z
-next_project_number: 416
+last_updated: 2026-01-12T09:00:00Z
+next_project_number: 426
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 23
-  completed: 77
+  active: 30
+  completed: 84
   in_progress: 1
   not_started: 17
   abandoned: 7
-  total: 107
+  total: 114
 priority_distribution:
   critical: 0
   high: 6
@@ -28,15 +28,15 @@ technical_debt:
 
 ## High Priority
 
-### 415. Update command files to delegate to skill/subagent system
+### 425. Update command files to delegate to skill/subagent system
 - **Effort**: 2-3 hours
 - **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 409, 410, 411, 412, 413, 414
-- **Research**: [research-001.md](.claude/specs/415_update_command_files_to_delegate_to_skill_subagent/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/415_update_command_files_to_delegate_to_skill_subagent/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/415_update_command_files_to_delegate_to_skill_subagent/summaries/implementation-summary-20260112.md)
+- **Research**: [research-001.md](.claude/specs/425_update_command_files_to_delegate_to_skill_subagent/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/425_update_command_files_to_delegate_to_skill_subagent/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/425_update_command_files_to_delegate_to_skill_subagent/summaries/implementation-summary-20260112.md)
 - **Completed**: 2026-01-12
 
 **Description**: Update `.claude/commands/research.md`, `.claude/commands/plan.md`, and `.claude/commands/implement.md` to delegate to the skill/subagent system instead of executing inline. Commands should look up task language, then invoke the appropriate skill (e.g., `skill-lean-research` or `skill-researcher`) via the Skill tool, which will spawn subagents via Task tool. This completes the forked subagent pattern by connecting the entry points (commands) to the infrastructure (skills → agents).
@@ -48,10 +48,6 @@ technical_debt:
 - **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
-- **Research**: [research-001.md](.claude/specs/409_convert_workflow_skills_to_forked_subagent_pattern/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/409_convert_workflow_skills_to_forked_subagent_pattern/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/409_convert_workflow_skills_to_forked_subagent_pattern/summaries/implementation-summary-20260112.md)
-- **Completed**: 2026-01-12
 
 **Description**: Update skill-lean-research, skill-researcher, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation to use `context: fork` and `agent:` field in frontmatter. Convert skills to thin wrappers that spawn subagents for token-heavy work. Define standardized return format for artifacts (status, artifact_path, summary).
 
@@ -63,9 +59,6 @@ technical_debt:
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 409
-- **Plan**: [implementation-001.md](.claude/specs/410_remove_eager_context_loading_from_skill_frontmatter/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/410_remove_eager_context_loading_from_skill_frontmatter/summaries/implementation-summary-20260112.md)
-- **Completed**: 2026-01-12
 
 **Description**: Remove `context:` arrays from all skill frontmatter files. Document lazy loading pattern using @-references. Ensure context/index.md is referenced for on-demand lookup. Update CLAUDE.md if needed. This enables skills to load context only when subagents actually need it.
 
@@ -111,30 +104,54 @@ technical_debt:
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Researched**: 2026-01-11
+- **Completed**: 2026-01-12
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/summaries/implementation-summary-20260112.md)
 - **Files Affected**:
   - .github/workflows/ci.yml (new)
-  - .github/workflows/lint.yml (new)
-  - .github/workflows/coverage.yml (new)
   - docs/development/CI_CD_PROCESS.md (new)
-- **Description**: Create GitHub Actions workflows for continuous integration and deployment. Currently all tests run manually. CI/CD pipeline should run tests, linting, style checks, coverage reporting, and documentation build checks automatically on every pull request and commit.
-- **Acceptance Criteria**:
-  - [ ] GitHub Actions workflow for tests created and passing
-  - [ ] Linting and style checks integrated into CI
-  - [ ] Coverage reporting integrated into CI
-  - [ ] Documentation build checks integrated into CI
-  - [ ] CI runs on all pull requests and commits to main
-  - [ ] CI failure blocks merge
-  - [ ] CI/CD process documented in CI_CD_PROCESS.md
-- **Impact**: Ensures code quality automatically, prevents regressions, and enables confident merging of pull requests. Essential for maintaining production-ready code.
+
+**Description**: Created GitHub Actions CI/CD pipeline using leanprover/lean-action@v1 with build, test, and lint steps. Mathlib cache enabled for faster builds. Coverage reporting deferred pending tooling availability.
 
 ---
 
 ## Medium Priority
+
+### 422. Complete TODOs in Introduction.tex
+- **Effort**: 1-2 hours
+- **Status**: [COMPLETED]
+- **Researched**: 2026-01-12
+- **Completed**: 2026-01-12
+- **Priority**: Medium
+- **Language**: latex
+- **Research**: [research-001.md](.claude/specs/422_complete_introduction_todos/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/422_complete_introduction_todos/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/422_complete_introduction_todos/summaries/implementation-summary-20260112.md)
+
+**Description**: Restructured Introduction.tex by merging Implementation Status and Source Code into a single Project Structure subsection with brief explanations and status for each directory. Added Deduction Theorem status.
+
+---
+
+### 421. Look up formal term definitions and revise research report
+- **Effort**: 1-2 hours
+- **Status**: [COMPLETED]
+- **Researched**: 2026-01-12
+- **Completed**: 2026-01-12
+- **Priority**: Medium
+- **Language**: general
+- **Related Task**: 398
+- **Research**: [research-001.md](.claude/specs/421_lookup_formal_term_definitions_revise_research/reports/research-001.md)
+
+**Description**: Extracted 30+ formal definitions from sn-article.tex and revised task 398 research-001.md with a "Formal Definitions" section ensuring all terms are defined before use.
+
+---
 
 ### 411. Create lean-research-agent subagent with lazy context
 - **Effort**: 3-4 hours
@@ -142,10 +159,6 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
-- **Research**: [research-001.md](.claude/specs/411_create_lean_research_agent_subagent/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/411_create_lean_research_agent_subagent/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/411_create_lean_research_agent_subagent/summaries/implementation-summary-20260112.md)
-- **Completed**: 2026-01-12
 
 **Description**: Create `.claude/agents/lean-research-agent.md` subagent with lean-lsp MCP tools and search decision tree. Loads mcp-tools-guide.md, leansearch-api.md, loogle-api.md only when needed via @-references. Returns structured JSON with artifact path and summary. Integrates with skill-lean-research via the forked subagent pattern.
 
@@ -157,9 +170,6 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
-- **Plan**: [implementation-001.md](.claude/specs/412_create_general_research_agent_subagent/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/412_create_general_research_agent_subagent/summaries/implementation-summary-20260112.md)
-- **Completed**: 2026-01-12
 
 **Description**: Create `.claude/agents/general-research-agent.md` subagent with WebSearch, WebFetch, Read, Grep tools. Loads report-format.md on-demand. Returns structured JSON with artifact path and summary. Integrates with skill-researcher via the forked subagent pattern.
 
@@ -171,133 +181,126 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
-- **Plan**: [implementation-001.md](.claude/specs/413_create_implementation_agent_subagents/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/413_create_implementation_agent_subagents/summaries/implementation-summary-20260111.md)
-- **Completed**: 2026-01-11
 
-**Description**: Created `.claude/agents/lean-implementation-agent.md`, `general-implementation-agent.md`, and `latex-implementation-agent.md` subagents. Each loads language-specific context only when executing phases. Returns phase completion status and artifact paths. Integrates with respective implementation skills via forked subagent pattern.
+**Description**: Create `.claude/agents/lean-implementation-agent.md`, `general-implementation-agent.md`, and `latex-implementation-agent.md` subagents. Each loads language-specific context only when executing phases. Returns phase completion status and artifact paths. Integrates with respective implementation skills via forked subagent pattern.
 
 ---
 
-### 405. Document LaTeX one-line-per-sentence convention
-- **Effort**: 1 hour
+### 415. Fix LaTeX sentence line breaks
+- **Effort**: 1-2 hours
 - **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Completed**: 2026-01-12
 - **Priority**: Medium
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/405_document_latex_one_line_per_sentence_convention/summaries/implementation-summary-20260112.md)
-
-**Description**: Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Created style guide section, rules file, and README updates.
-
----
-
-### 406. Enforce convention in BimodalReference.tex
-- **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
 - **Language**: latex
-- **Dependencies**: 405
+- **Dependencies**: 405, 406
+- **Research**: [research-001.md](.claude/specs/415_fix_latex_sentence_line_breaks/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/415_fix_latex_sentence_line_breaks/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/415_fix_latex_sentence_line_breaks/summaries/implementation-summary-20260112.md)
 
-**Description**: Reformat Theories/Bimodal/latex/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
-
----
-
-### 407. Enforce convention in LogosReference.tex
-- **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: latex
-- **Dependencies**: 405
-
-**Description**: Reformat Theories/Logos/latex/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
+**Description**: Fixed 22 broken sentences across 11 LaTeX files where sentences were incorrectly split at comma/clause boundaries.
 
 ---
 
 ### 408. Define \proofchecker LaTeX command
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
+- **Plan**: [implementation-001.md](.claude/specs/408_define_proofchecker_latex_command/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/408_define_proofchecker_latex_command/summaries/implementation-summary-20260112.md)
 
-**Description**: Define a \proofchecker command for \href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}} in /home/benjamin/Projects/ProofChecker/latex/notation-standards.sty and use this command to replace all occurrences of ProofChecker in the existing LaTeX documents.
-
----
-
-### 404. Enhance /todo to archive orphaned specs directories
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/summaries/implementation-summary-20260112.md)
-
-**Description**: Enhanced /todo command to detect and handle misplaced directories (in specs/ but tracked in archive/state.json). Added Step 2.6 detection, Step 4.6 user prompts, Step 5F move logic, and comprehensive documentation.
-
----
-
-### 403. Enforce directory naming convention
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/403_enforce_directory_naming_convention/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/403_enforce_directory_naming_convention/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/403_enforce_directory_naming_convention/summaries/implementation-summary-20260111.md)
-
-**Description**: Enforced directory naming convention: PascalCase for Lean source directories, lowercase for all others. Renamed 19 directories (docs/ subdirectories, Theories/*/Documentation/, Theories/*/LaTeX/) and updated all references.
-
----
-
-### 401. Add [EXPANDED] status for parent tasks
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/401_add_expanded_status_for_parent_tasks/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/401_add_expanded_status_for_parent_tasks/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/401_add_expanded_status_for_parent_tasks/summaries/implementation-summary-20260112.md)
-
-**Description**: Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.
-
----
-
-### 402. Rename --divide flag to --expand
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: meta
-- **Dependencies**: 401
-- **Research**: [research-001.md](.claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/402_rename_divide_flag_to_expand/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/402_rename_divide_flag_to_expand/summaries/implementation-summary-20260112.md)
-
-**Description**: Renamed --divide flag to --expand across .claude/ system for consistency with [EXPANDED] status. Updated 10 files including CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, status-markers.md, status-transitions.md, documentation.md, and routing.md. Preserved /research --divide (different feature).
+**Description**: Defined `\proofchecker` command in notation-standards.sty and replaced all occurrences in LaTeX documents (2 files updated).
 
 ---
 
 ### 400. Investigate Explanatory/Truth.lean build performance
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [EXPANDED]
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
+- **Subtasks**: 416, 417, 418, 419, 420
+- **Research**: [research-001.md](.claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md)
 
 **Description**: Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.
+
+---
+
+### 416. Quick performance fixes for Explanatory/Truth.lean
+- **Effort**: 1-2 hours
+- **Status**: [COMPLETED]
+- **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
+- **Completed**: 2026-01-11
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 400
+- **Research**: [research-001.md](.claude/specs/416_quick_performance_fixes_explanatory_truth/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/416_quick_performance_fixes_explanatory_truth/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/416_quick_performance_fixes_explanatory_truth/summaries/implementation-summary-20260111.md)
+
+**Description**: Apply quick performance fixes: fix namespace error in Syntax.lean:34, add @[irreducible] to truthAt, increase synthInstance.maxHeartbeats, and run lake clean. These are low-risk changes that can be applied together.
+
+---
+
+### 417. Split typeclass constraints in Explanatory
+- **Effort**: 3-4 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 400
+- **Dependencies**: 416
+- **Research**: [research-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-001.md), [research-002.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-002.md)
+
+**Description**: Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.
+
+**Note**: Task 420 (Mathlib upgrade) already implemented unbundling using `[AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]` instead of the originally recommended `CovariantClass` approach. See research-002.md for pros/cons analysis.
+
+---
+
+### 418. Cache typeclass instances in Explanatory
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 400
+- **Dependencies**: 416
+- **Research**: [research-001.md](.claude/specs/418_cache_typeclass_instances_explanatory/reports/research-001.md)
+
+**Description**: Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.
+
+---
+
+### 419. Refactor mutual recursion in Foundation/Semantics.lean
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHING]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 400
+- **Dependencies**: 416
+
+**Description**: Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.
+
+---
+
+### 420. Upgrade Mathlib version
+- **Effort**: 4-8 hours
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-11
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 400
+- **Dependencies**: 416
+- **Research**: [.claude/specs/420_upgrade_mathlib_version/reports/research-001.md]
+- **Plan**: [.claude/specs/420_upgrade_mathlib_version/plans/implementation-001.md]
+- **Summary**: [.claude/specs/420_upgrade_mathlib_version/summaries/implementation-summary-20260111.md]
+
+**Description**: Upgraded Mathlib from v4.14.0 to v4.27.0-rc1 with Lean toolchain v4.27.0-rc1. Core libraries (Logos, Bimodal) build successfully. Test suite requires follow-up fixes for API changes.
 
 ---
 
@@ -358,10 +361,6 @@ technical_debt:
 - **Priority**: Low
 - **Language**: meta
 - **Dependencies**: 410
-- **Completed**: 2026-01-11
-- **Research**: [research-001.md](.claude/specs/414_create_planner_agent_subagent/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/414_create_planner_agent_subagent/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/414_create_planner_agent_subagent/summaries/implementation-summary-20260111.md)
 
 **Description**: Create `.claude/agents/planner-agent.md` subagent that loads plan-format.md and task-breakdown.md on-demand. Returns structured JSON with plan path and summary. Integrates with skill-planner via `context: fork` pattern.
 
@@ -414,7 +413,7 @@ technical_debt:
 
 ### 261. Decidability
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
