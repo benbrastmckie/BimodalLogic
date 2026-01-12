@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-12T05:36:33.618239Z",
+  "_last_updated": "2026-01-12T14:20:00Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -2867,6 +2867,74 @@
       ],
       "plan_version": "001",
       "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 423,
+      "project_name": "ci_skip_by_default_trigger_via_commit_message",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-12T02:09:50Z",
+      "completed": "2026-01-12T10:15:00Z",
+      "archived": "2026-01-12T14:20:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/423_ci_skip_by_default_trigger_via_commit_message/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/423_ci_skip_by_default_trigger_via_commit_message/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/423_ci_skip_by_default_trigger_via_commit_message/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 427,
+      "project_name": "document_command_skill_subagent_framework",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-12T05:40:23Z",
+      "completed": "2026-01-12T21:54:00Z",
+      "archived": "2026-01-12T14:20:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/427_document_command_skill_subagent_framework/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/427_document_command_skill_subagent_framework/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/427_document_command_skill_subagent_framework/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 428,
+      "project_name": "complete_todos_bimodal_syntax_latex",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T05:53:50Z",
+      "completed": "2026-01-12T06:04:50Z",
+      "archived": "2026-01-12T14:20:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/428_complete_todos_bimodal_syntax_latex/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/428_complete_todos_bimodal_syntax_latex/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ]
     }
   ]
 }
