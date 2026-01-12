@@ -63,7 +63,7 @@ Axiom schemata for bimodal logic TM.
 A formula `φ` is an axiom if it matches one of the 13 axiom schema patterns.
 Each constructor takes formula parameters representing the schema instantiation.
 -/
-inductive Axiom : Formula → Prop where
+inductive Axiom : Formula → Type where
   /--
   Propositional K axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` (distribution).
 
@@ -259,5 +259,6 @@ inductive Axiom : Formula → Prop where
   Necessary truths will always be necessary.
   -/
   | temp_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.all_future (Formula.box φ)))
+  deriving Repr
 
 end Bimodal.ProofSystem

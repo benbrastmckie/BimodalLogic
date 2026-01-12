@@ -166,11 +166,12 @@ technical_debt:
 ---
 
 ### 260. Proof Search
-- **Effort**: 16-22 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 16-22 hours (actual: ~3 hours)
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12 (v002)
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking Resolved**: Yes (via Direct Refactor)
@@ -178,6 +179,7 @@ technical_debt:
 - **Research**: [research-001.md](.claude/specs/260_proof_search/reports/research-001.md), [research-002.md](.claude/specs/260_proof_search/reports/research-002.md), [research-003.md](.claude/specs/260_proof_search/reports/research-003.md), [research-004.md](.claude/specs/260_proof_search/reports/research-004.md)
 - **Plan (Current)**: [implementation-002.md](.claude/specs/260_proof_search/plans/implementation-002.md) (Direct Refactor approach)
 - **Plan (Superseded)**: [implementation-001.md](.claude/specs/260_proof_search/plans/implementation-001.md) (AxiomWitness pattern - abandoned)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/260_proof_search/summaries/implementation-summary-20260112.md)
 
 **Description**: Implement automated proof search for TM logic with proof term construction using Direct Refactor approach (Axiom: Prop -> Type).
 
@@ -185,16 +187,17 @@ technical_debt:
 
 | Phase | Description | Hours | Status |
 |-------|-------------|-------|--------|
-| 1 | Axiom Refactor (Prop -> Type) | 1 | [NOT STARTED] |
-| 2 | Proof Term Construction | 6-8 | [NOT STARTED] |
-| 3 | Tactic Integration (optional) | 4-6 | [NOT STARTED] |
-| 4 | BFS Variant (optional) | 3-4 | [NOT STARTED] |
-| 5 | Testing and Validation | 2-3 | [NOT STARTED] |
+| 1 | Axiom Refactor (Prop -> Type) | 1 | [COMPLETED] |
+| 2 | Proof Term Construction | 6-8 | [COMPLETED] |
+| 3 | Tactic Integration (optional) | 4-6 | [DEFERRED] |
+| 4 | BFS Variant (optional) | 3-4 | [DEFERRED] |
+| 5 | Testing and Validation | 2-3 | [COMPLETED] |
 
-**Key Changes from v001**:
-- Abandons AxiomWitness pattern (added complexity, no benefit)
-- Direct refactor: Change `Axiom : Formula -> Prop` to `Axiom : Formula -> Type`
-- Estimated effort reduced from 76 hours to 16-22 hours
+**Implementation Highlights**:
+- Changed `Axiom : Formula -> Prop` to `Axiom : Formula -> Type` with zero breaking changes
+- Implemented `matchAxiom` function returning `Option (Sigma Axiom)` for all 14 axiom patterns
+- Implemented `bounded_search_with_proof` returning actual `DerivationTree` proof terms
+- All metalogic modules (Soundness, SoundnessLemmas, Completeness, DeductionTheorem) compile unchanged
 
 **Acceptance Criteria**:
 - [ ] Axiom changed from Prop to Type

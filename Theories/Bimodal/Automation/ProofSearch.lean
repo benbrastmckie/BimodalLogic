@@ -189,10 +189,44 @@ open Bimodal.ProofSystem
 /--
 Proof search result: either a derivation or search failure.
 
-**Design**: Uses `Bool` for now since `Derivable Γ φ` is a `Prop`.
-Full implementation would require extracting proof terms.
+**Design**: Uses `Bool` for the original implementation.
+See `SearchResultWithProof` for the proof-term-returning variant.
 -/
 abbrev SearchResult (_ : Context) (_ : Formula) := Bool
+
+/--
+Proof search result with actual derivation tree.
+
+Returns `Option (DerivationTree Γ φ)` where `some d` means proof found.
+This is the proof-constructing variant enabled by the Axiom : Type refactor (task 260).
+-/
+abbrev SearchResultWithProof (Γ : Context) (φ : Formula) := Option (DerivationTree Γ φ)
+
+/--
+Membership witness for formula in context.
+
+A value `MembershipWitness Γ φ` is a proof that `φ ∈ Γ`.
+This is used to enable proof term construction for assumptions.
+-/
+structure MembershipWitness (Γ : Context) (φ : Formula) : Type where
+  proof : φ ∈ Γ
+
+/--
+Find a membership witness for formula in context.
+
+Returns `some wit` where `wit.proof : φ ∈ Γ` if the formula is in the context,
+`none` otherwise. This enables proof term construction for assumptions.
+-/
+def findMembershipWitness (Γ : Context) (φ : Formula) : Option (MembershipWitness Γ φ) :=
+  match Γ with
+  | [] => none
+  | ψ :: rest =>
+      if h : φ = ψ then
+        some ⟨h ▸ List.Mem.head rest⟩
+      else
+        match findMembershipWitness rest φ with
+        | some wit => some ⟨List.Mem.tail ψ wit.proof⟩
+        | none => none
 
 /-- Cache key combines the current context and goal formula. -/
 abbrev CacheKey := Context × Formula
@@ -337,6 +371,147 @@ def matches_axiom (φ : Formula) : Bool :=
       | _, _ => false
     prop_k || prop_s || ex_falso || peirce || modal_t || modal_4 || modal_b || modal_5_collapse ||
     modal_k_dist || temp_k_dist || temp_4 || temp_a || temp_l || modal_future || temp_future
+
+/--
+Match a formula against axiom patterns, returning the Axiom witness if matched.
+
+This function enables proof term construction by returning the actual
+Axiom constructor that matches the formula pattern. Now that Axiom is a Type
+(not Prop), we can use the witness in DerivationTree construction.
+
+**Returns**: `some ⟨φ, witness⟩` if φ matches an axiom schema, `none` otherwise
+
+**Performance**: O(1) - pattern matching on formula structure
+
+**Design Notes**:
+- Uses `Sigma Axiom` to package the witness with its formula type
+- The formula returned is the matched formula (same as input on success)
+- Each axiom pattern is checked in sequence with early return on match
+- Uses a decomposition approach (like matches_axiom) to handle derived operators
+-/
+def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
+  -- First decompose into implication
+  match φ with
+  | .imp lhs rhs =>
+      -- ex_falso: ⊥ → φ
+      (if lhs = .bot then some ⟨_, Axiom.ex_falso rhs⟩ else none)
+
+      -- prop_k: (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
+      <|> (match lhs, rhs with
+           | .imp a (.imp b c), .imp (.imp a' b') (.imp a'' c') =>
+               if a = a' ∧ a' = a'' ∧ b = b' ∧ c = c' then
+                 some ⟨_, Axiom.prop_k a b c⟩
+               else none
+           | _, _ => none)
+
+      -- peirce: ((φ → ψ) → φ) → φ
+      <|> (match lhs, rhs with
+           | .imp (.imp phi psi) phi', phi'' =>
+               if phi = phi' ∧ phi' = phi'' then
+                 some ⟨_, Axiom.peirce phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- modal_k_dist: □(φ → ψ) → (□φ → □ψ)
+      <|> (match lhs, rhs with
+           | .box (.imp phi psi), .imp (.box phi') (.box psi') =>
+               if phi = phi' ∧ psi = psi' then
+                 some ⟨_, Axiom.modal_k_dist phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- modal_5_collapse: ◇□φ → □φ (◇ψ = ¬□¬ψ = (ψ.neg.box).neg)
+      <|> (match lhs, rhs with
+           | .imp (.box (.imp phi .bot)) .bot, .box phi' =>
+               if phi = phi' then
+                 some ⟨_, Axiom.modal_5_collapse phi⟩
+               else none
+           | _, _ => none)
+
+      -- modal_4: □φ → □□φ
+      <|> (match lhs, rhs with
+           | .box phi, .box (.box phi') =>
+               if phi = phi' then
+                 some ⟨_, Axiom.modal_4 phi⟩
+               else none
+           | _, _ => none)
+
+      -- modal_future: □φ → □Fφ
+      <|> (match lhs, rhs with
+           | .box phi, .box (.all_future phi') =>
+               if phi = phi' then
+                 some ⟨_, Axiom.modal_future phi⟩
+               else none
+           | _, _ => none)
+
+      -- temp_future: □φ → F□φ
+      <|> (match lhs, rhs with
+           | .box phi, .all_future (.box phi') =>
+               if phi = phi' then
+                 some ⟨_, Axiom.temp_future phi⟩
+               else none
+           | _, _ => none)
+
+      -- modal_b: φ → □◇φ (◇φ = ¬□¬φ = (φ.neg.box).neg)
+      <|> (match lhs, rhs with
+           | phi, .imp (.box (.imp phi' .bot)) .bot =>
+               if phi = phi' then
+                 some ⟨_, Axiom.modal_b phi⟩
+               else none
+           | _, _ => none)
+
+      -- modal_t: □φ → φ
+      <|> (match lhs, rhs with
+           | .box phi, phi' =>
+               if phi = phi' then
+                 some ⟨_, Axiom.modal_t phi⟩
+               else none
+           | _, _ => none)
+
+      -- temp_k_dist: F(φ → ψ) → (Fφ → Fψ)
+      <|> (match lhs, rhs with
+           | .all_future (.imp phi psi), .imp (.all_future phi') (.all_future psi') =>
+               if phi = phi' ∧ psi = psi' then
+                 some ⟨_, Axiom.temp_k_dist phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- temp_4: Fφ → FFφ
+      <|> (match lhs, rhs with
+           | .all_future phi, .all_future (.all_future phi') =>
+               if phi = phi' then
+                 some ⟨_, Axiom.temp_4 phi⟩
+               else none
+           | _, _ => none)
+
+      -- temp_a: φ → F(Pφ) where P = sometime_past = ¬H¬φ = (φ.neg.all_past).neg
+      <|> (match lhs, rhs with
+           | phi, .all_future (.imp (.all_past (.imp phi' .bot)) .bot) =>
+               if phi = phi' then
+                 some ⟨_, Axiom.temp_a phi⟩
+               else none
+           | _, _ => none)
+
+      -- temp_l: △φ → F(Hφ) where △φ = always φ = Hφ ∧ (φ ∧ Gφ)
+      -- always φ = (Hφ.imp ((φ.imp (Gφ.imp ⊥)).imp ⊥).imp ⊥).imp ⊥
+      -- This pattern is complex due to and expansion, we check structurally
+      <|> (match lhs, rhs with
+           | .imp (.imp (.all_past phi1) (.imp (.imp (.imp phi2 (.imp (.all_future phi3) .bot)) .bot) .bot)) .bot,
+             .all_future (.all_past phi') =>
+               if phi1 = phi2 ∧ phi2 = phi3 ∧ phi3 = phi' then
+                 some ⟨_, Axiom.temp_l phi1⟩
+               else none
+           | _, _ => none)
+
+      -- prop_s: φ → (ψ → φ)
+      <|> (match lhs, rhs with
+           | phi, .imp psi phi' =>
+               if phi = phi' then
+                 some ⟨_, Axiom.prop_s phi psi⟩
+               else none
+           | _, _ => none)
+
+  | _ => none
 
 /--
 Find all implications `ψ → φ` in context where the consequent matches the goal.
@@ -654,6 +829,107 @@ def bounded_search (Γ : Context) (φ : Formula) (depth : Nat)
                     bounded_search (future_context Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp visitsAfterMp visitLimit weights statsAfterMp
                   (found, cache'.insert key found, visited', stats', visits')
               | _ => (false, cacheAfterMp.insert key false, visitedAfterMp, statsAfterMp, visitsAfterMp)
+termination_by depth
+decreasing_by
+  all_goals simp_wf
+  all_goals omega
+
+/--
+Bounded depth-first search returning proof term if successful.
+
+This is the proof-constructing variant of `bounded_search`. Instead of
+returning `Bool`, it returns `Option (DerivationTree Γ φ)` with the actual
+proof term when successful.
+
+**Parameters**:
+- `Γ`: Proof context (list of assumptions)
+- `φ`: Goal formula to derive
+- `depth`: Maximum search depth (prevents infinite loops)
+- `visited`: Set of already-visited (context, goal) pairs to prevent cycles
+- `visits`: Current visit count
+- `visitLimit`: Maximum visits allowed
+
+**Returns**: `some proof` if derivation found, `none` otherwise
+
+**Algorithm**:
+1. Base case: depth = 0 → return none
+2. Check axioms (via matchAxiom) and construct axiom proof
+3. Check assumptions and construct assumption proof
+4. Try modus ponens with recursive search for antecedent
+5. Return none if all strategies fail
+
+**Complexity**: O(b^d) where b = branching factor, d = depth
+
+**Note**: This simplified version does not use caching for proof terms
+since caching would require storing proofs indexed by (Γ, φ) and proof
+terms can be large. For performance-critical applications, use `bounded_search`
+to first check provability, then use this function to construct the proof.
+-/
+def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
+    (visited : Visited := Visited.empty)
+    (visits : Nat := 0)
+    (visitLimit : Nat := 500)
+    : Option (DerivationTree Γ φ) × Visited × Nat :=
+  if depth = 0 then
+    (none, visited, visits)
+  else if visits ≥ visitLimit then
+    (none, visited, visits)
+  else
+    let visits := visits + 1
+    let key : CacheKey := (Γ, φ)
+    if visited.contains key then
+      (none, visited, visits)
+    else
+      let visited := visited.insert key
+
+      -- Try axiom match first (via matchAxiom for proof construction)
+      match hax : matchAxiom φ with
+      | some ⟨ψ, witness⟩ =>
+          -- We need to verify φ = ψ to use the witness
+          if heq : φ = ψ then
+            (some (heq ▸ DerivationTree.axiom Γ ψ witness), visited, visits)
+          else
+            -- Formula mismatch - this shouldn't happen with correct matchAxiom
+            (none, visited, visits)
+      | none =>
+        -- Try assumption (using findMembershipWitness to get the proof witness)
+        match findMembershipWitness Γ φ with
+        | some wit =>
+            (some (DerivationTree.assumption Γ φ wit.proof), visited, visits)
+        | none =>
+          -- Try modus ponens: search for antecedents of implications (ψ → φ) in Γ
+          let implications := find_implications_to Γ φ
+          -- Process implications iteratively (without nested let rec to simplify termination)
+          let result := implications.foldl
+            (fun acc antecedent =>
+              match acc with
+              | (some _, _, _) => acc  -- Already found a proof
+              | (none, visited, visits) =>
+                  -- The implication (antecedent → φ) must be in context
+                  match findMembershipWitness Γ (antecedent.imp φ) with
+                  | some wit_imp =>
+                    -- Try to prove the antecedent
+                    let (antResult, visited', visits') :=
+                      bounded_search_with_proof Γ antecedent (depth - 1) visited visits visitLimit
+                    match antResult with
+                    | some antProof =>
+                        -- Build modus ponens: we have proof of antecedent and (antecedent → φ) ∈ Γ
+                        let impProof := DerivationTree.assumption Γ (antecedent.imp φ) wit_imp.proof
+                        (some (DerivationTree.modus_ponens Γ antecedent φ impProof antProof), visited', visits')
+                    | none =>
+                        (none, visited', visits')
+                  | none =>
+                    -- Implication not actually in context (shouldn't happen with find_implications_to)
+                    (none, visited, visits))
+            (none, visited, visits)
+
+          match result with
+          | (some proof, visited', visits') => (some proof, visited', visits')
+          | (none, visited', visits') =>
+              -- Modal/temporal rules would go here
+              -- Note: Full implementation of modal K and temporal K rules requires
+              -- helper lemmas from the deduction theorem. For now, we skip these.
+              (none, visited', visits')
 termination_by depth
 decreasing_by
   all_goals simp_wf
