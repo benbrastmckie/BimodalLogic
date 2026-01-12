@@ -843,6 +843,127 @@ The meta system builder is fully integrated into ProofChecker's .claude system:
 
 ---
 
+## Forked Subagent Pattern
+
+### Overview
+
+Version 2.1 introduces a "forked subagent" pattern for workflow skills. This pattern improves token efficiency by loading domain-specific context only in isolated subagent conversations rather than the parent context.
+
+### Pattern Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Parent Context                           │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  Skill (Thin Wrapper)                                │   │
+│  │  - Frontmatter: context: fork, agent: {name}        │   │
+│  │  - Body: Input validation + delegation only          │   │
+│  │  - Context budget: ~100 lines                        │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                            │                                 │
+│                            ▼ Task tool invocation            │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│                    Forked Context (Isolated)                 │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  Subagent (Full Execution)                           │   │
+│  │  - Loads domain context via @-references             │   │
+│  │  - Executes workflow logic                           │   │
+│  │  - Uses specialized tools (MCP, Bash, etc.)          │   │
+│  │  - Returns standardized JSON                         │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Skill Frontmatter Format
+
+```yaml
+---
+name: skill-{name}
+description: {description}
+allowed-tools: Task           # Only Task needed for delegation
+context: fork                 # Signal: don't load context eagerly
+agent: {subagent-name}        # Target subagent to spawn
+# Original context (now loaded by subagent):
+#   - .claude/context/{path1}
+#   - .claude/context/{path2}
+# Original tools (now used by subagent):
+#   - {Tool1}, {Tool2}, ...
+---
+```
+
+### Skill-to-Agent Mapping
+
+| Skill | Agent | Domain |
+|-------|-------|--------|
+| skill-lean-research | lean-research-agent | Lean 4/Mathlib research |
+| skill-researcher | general-research-agent | General web/codebase research |
+| skill-planner | planner-agent | Implementation planning |
+| skill-implementer | general-implementation-agent | General implementation |
+| skill-lean-implementation | lean-implementation-agent | Lean proof implementation |
+| skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
+
+### Thin Wrapper Execution Flow
+
+All forked skills follow this 5-step pattern:
+
+1. **Input Validation**
+   - Verify task exists in state.json
+   - Check status allows operation
+   - Extract optional parameters (focus_prompt, etc.)
+
+2. **Context Preparation**
+   - Generate session_id: `sess_{timestamp}_{random}`
+   - Build delegation context with task details
+   - Prepare timeout (3600s research, 7200s implementation)
+
+3. **Invoke Subagent**
+   - Call Task tool with target agent
+   - Pass delegation context and task parameters
+   - Subagent loads its own context and executes
+
+4. **Return Validation**
+   - Verify return matches `subagent-return.md` schema
+   - Check status, summary, artifacts, metadata fields
+   - Validate session_id matches expected
+
+5. **Return Propagation**
+   - Pass validated result to caller without modification
+   - Errors are passed through verbatim
+
+### Token Efficiency
+
+Before (eager loading):
+```
+Parent context: ~2000 tokens (skill body + context files)
+└── All context loaded even if not all needed
+```
+
+After (forked subagent):
+```
+Parent context: ~100 tokens (thin wrapper only)
+Subagent context: ~2000 tokens (loaded only in fork)
+└── Context isolated, doesn't bloat parent
+```
+
+### Benefits
+
+1. **Token Efficiency**: Context loaded only in subagent
+2. **Isolation**: Subagent context doesn't accumulate in parent
+3. **Reusability**: Same subagent callable from multiple entry points
+4. **Maintainability**: Clear separation (skill = routing, agent = execution)
+5. **Testability**: Subagents testable independently
+
+### Related Files
+
+- `.claude/context/core/templates/thin-wrapper-skill.md` - Template reference
+- `.claude/context/core/formats/subagent-return.md` - Return format standard
+- `.claude/context/core/orchestration/delegation.md` - Delegation patterns
+- `.claude/CLAUDE.md` - Skill architecture section
+
+---
+
 ## Related Documentation
 
 - Quick Start Guide: `.claude/QUICK-START.md`

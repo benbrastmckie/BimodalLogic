@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-12T03:00:00Z
-next_project_number: 425
+last_updated: 2026-01-12T09:00:00Z
+next_project_number: 426
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -28,6 +28,21 @@ technical_debt:
 
 ## High Priority
 
+### 425. Update command files to delegate to skill/subagent system
+- **Effort**: 2-3 hours
+- **Status**: [COMPLETED]
+- **Priority**: High
+- **Language**: meta
+- **Dependencies**: 409, 410, 411, 412, 413, 414
+- **Research**: [research-001.md](.claude/specs/425_update_command_files_to_delegate_to_skill_subagent/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/425_update_command_files_to_delegate_to_skill_subagent/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/425_update_command_files_to_delegate_to_skill_subagent/summaries/implementation-summary-20260112.md)
+- **Completed**: 2026-01-12
+
+**Description**: Update `.claude/commands/research.md`, `.claude/commands/plan.md`, and `.claude/commands/implement.md` to delegate to the skill/subagent system instead of executing inline. Commands should look up task language, then invoke the appropriate skill (e.g., `skill-lean-research` or `skill-researcher`) via the Skill tool, which will spawn subagents via Task tool. This completes the forked subagent pattern by connecting the entry points (commands) to the infrastructure (skills → agents).
+
+---
+
 ### 423. CI skip by default, trigger via commit message
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
@@ -40,7 +55,7 @@ technical_debt:
 
 ### 409. Convert workflow skills to forked subagent pattern
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 
@@ -50,7 +65,7 @@ technical_debt:
 
 ### 410. Remove eager context loading from skill frontmatter
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 409
@@ -115,7 +130,7 @@ technical_debt:
 
 ### 411. Create lean-research-agent subagent with lazy context
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
@@ -126,7 +141,7 @@ technical_debt:
 
 ### 412. Create general-research-agent subagent with lazy context
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
@@ -137,7 +152,7 @@ technical_debt:
 
 ### 413. Create implementation-agent subagents (lean/general/latex)
 - **Effort**: 4-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
@@ -179,15 +194,17 @@ technical_debt:
 
 ### 418. Cache typeclass instances in Explanatory
 - **Effort**: 1.5-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-11
+- **Completed**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 400
 - **Dependencies**: 416
 - **Research**: [research-001.md](.claude/specs/418_cache_typeclass_instances_explanatory/reports/research-001.md), [research-002.md](.claude/specs/418_cache_typeclass_instances_explanatory/reports/research-002.md)
 - **Plan**: [implementation-001.md](.claude/specs/418_cache_typeclass_instances_explanatory/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260111.md](.claude/specs/418_cache_typeclass_instances_explanatory/summaries/implementation-summary-20260111.md)
 
 **Description**: Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.
 
@@ -269,7 +286,7 @@ technical_debt:
 
 ### 414. Create planner-agent subagent with lazy context
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: Low
 - **Language**: meta
 - **Dependencies**: 410

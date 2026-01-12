@@ -216,6 +216,69 @@ Domain knowledge (load as needed):
 3. No manual intervention needed
 ```
 
+## Skill Architecture
+
+### Lazy Context Loading
+
+All skills use lazy context loading - context is never loaded eagerly via frontmatter arrays. Instead:
+
+1. **Forked skills** (`context: fork`): Delegate to subagents which load their own context
+2. **Direct skills**: Document required context via @-references in a "Context Loading" section
+
+Reference `@.claude/context/index.md` for the full context discovery index.
+
+### Forked Subagent Pattern
+
+Workflow skills use a thin wrapper pattern with forked subagents for token efficiency:
+
+```yaml
+---
+name: skill-{name}
+description: {description}
+allowed-tools: Task
+context: fork          # Signals: don't load context eagerly
+agent: {subagent-name} # Target subagent to spawn
+---
+```
+
+**Key fields**:
+- `context: fork` - Indicates skill delegates to subagent (no eager context loading)
+- `agent: {name}` - Name of subagent to invoke via Task tool
+
+### Skill-to-Agent Mapping
+
+| Skill | Agent | Purpose |
+|-------|-------|---------|
+| skill-lean-research | lean-research-agent | Lean 4/Mathlib research |
+| skill-researcher | general-research-agent | General web/codebase research |
+| skill-planner | planner-agent | Implementation plan creation |
+| skill-implementer | general-implementation-agent | General file implementation |
+| skill-lean-implementation | lean-implementation-agent | Lean proof implementation |
+| skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
+
+### Thin Wrapper Execution Flow
+
+All forked skills follow this 5-step pattern:
+
+1. **Input Validation** - Verify task exists, status allows operation
+2. **Context Preparation** - Build delegation context with session_id
+3. **Invoke Subagent** - Call Task tool with target agent
+4. **Return Validation** - Verify return matches `subagent-return.md` schema
+5. **Return Propagation** - Pass validated result to caller
+
+### Benefits
+
+- **Token Efficiency**: Context loaded only in subagent conversation
+- **Isolation**: Subagent context doesn't bloat parent conversation
+- **Reusability**: Same subagent usable from multiple entry points
+- **Maintainability**: Skills = routing, Agents = execution
+
+### Related Documentation
+
+- `.claude/context/core/templates/thin-wrapper-skill.md` - Template reference
+- `.claude/context/core/formats/subagent-return.md` - Return format standard
+- `.claude/context/core/orchestration/delegation.md` - Delegation patterns
+
 ## Important Notes
 
 - Always update status BEFORE starting work (preflight)
