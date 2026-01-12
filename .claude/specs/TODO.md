@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 432
+next_project_number: 433
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 432. Fix artifact linking in TODO.md and state.json
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: After running `/implement 429`, the summary was not linked in task 429's TODO.md entry. Identify the root cause and fix this and any similar issues throughout the agent system to ensure that artifacts (research reports, plans, summaries) are appropriately appended to tasks in TODO.md and in state.json once they are created.
+
+---
 
 ### 429. Extend command-skill-agent integration to /meta
 - **Effort**: 3.5 hours
@@ -136,7 +146,7 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-12
 - **Priority**: Medium

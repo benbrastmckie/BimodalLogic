@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T05:36:33.618239Z",
-  "next_project_number": 432,
+  "next_project_number": 433,
   "active_projects": [
+    {
+      "project_number": 432,
+      "project_name": "fix_artifact_linking_in_todo_and_state",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-12T14:48:15Z",
+      "last_updated": "2026-01-12T14:48:15Z"
+    },
     {
       "project_number": 431,
       "project_name": "wezterm_tab_color_notification",
@@ -257,11 +266,11 @@
       "project_name": "proof_search",
       "type": "feature",
       "phase": "researched",
-      "status": "researched",
+      "status": "researching",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T22:45:00Z",
+      "last_updated": "2026-01-12T14:45:30Z",
       "effort": "40-60 hours",
       "description": "Implement automated proof search for TM logic with proof term construction.",
       "planning_completed": "2026-01-05T08:07:35-08:00",
