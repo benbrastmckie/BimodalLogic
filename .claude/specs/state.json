@@ -6,29 +6,41 @@
     {
       "project_number": 437,
       "project_name": "improve_readme_consistency_with_recursive_semantics",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "priority": "high",
       "created": "2026-01-12T17:34:32Z",
-      "last_updated": "2026-01-12T17:34:32Z"
+      "last_updated": "2026-01-12T22:45:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 436,
       "project_name": "update_license_to_modelchecker_standard",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T17:28:42Z",
-      "last_updated": "2026-01-12T17:28:42Z"
+      "last_updated": "2026-01-12T22:50:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 435,
       "project_name": "module_aggregator_standard_bimodal",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-12T17:16:42Z",
-      "last_updated": "2026-01-12T17:37:10Z",
+      "last_updated": "2026-01-12T17:39:17Z",
       "description": "Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation",
       "plan_version": "001",
       "artifacts": [

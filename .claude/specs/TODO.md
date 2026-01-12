@@ -30,9 +30,11 @@ technical_debt:
 
 ### 437. Improve README consistency with recursive-semantics.md
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md)
 
 **Description**: Improve /home/benjamin/Projects/ProofChecker/README.md for consistency and clarity with the recursive-semantics.md documentation (/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md) which provides an authoritative overview of the base layer and various extensions. Reduce redundancy by presenting layer extensions only once in a high-quality way. Fix any internal discrepancies in README.md. Emphasize the parallel development of Logos in the ModelChecker, including a link to https://github.com/benbrastmckie/ModelChecker where appropriate.
 
@@ -147,9 +149,11 @@ technical_debt:
 
 ### 436. Update license to ModelChecker standard
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md)
 
 **Description**: Update the license from MIT to the same standard used in the ModelChecker package: /home/benjamin/Projects/ModelChecker/README.md
 
@@ -157,7 +161,7 @@ technical_debt:
 
 ### 435. Module Aggregator Standard for Bimodal/
 - **Effort**: 2.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Medium
