@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T03:00:00Z
-next_project_number: 424
+next_project_number: 425
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -98,6 +98,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 424. Complete the TODOs in 01-Syntax.tex
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/01-Syntax.tex
+
+---
 
 ### 411. Create lean-research-agent subagent with lazy context
 - **Effort**: 3-4 hours
@@ -197,7 +207,7 @@ technical_debt:
 
 ### 395. Create Bimodal troubleshooting guide and exercise solutions
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: markdown
 - **Supersedes**: Task 178

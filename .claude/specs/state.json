@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T02:46:56Z",
-  "next_project_number": 424,
+  "next_project_number": 425,
   "active_projects": [
+    {
+      "project_number": 424,
+      "project_name": "complete_todos_01_syntax_tex",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T03:06:14Z",
+      "last_updated": "2026-01-12T03:06:14Z"
+    },
     {
       "project_number": 423,
       "project_name": "ci_skip_by_default_trigger_via_commit_message",
@@ -399,13 +408,13 @@
     {
       "project_number": 395,
       "project_name": "create_bimodal_troubleshooting_and_exercise_solutions",
-      "status": "researched",
+      "status": "planning",
       "language": "markdown",
       "priority": "medium",
       "description": "Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.",
       "effort": "3-4 hours",
       "created": "2026-01-11T21:10:49Z",
-      "last_updated": "2026-01-12T04:10:00Z",
+      "last_updated": "2026-01-12T04:15:00Z",
       "supersedes": 178,
       "artifacts": [
         {
