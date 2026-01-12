@@ -161,7 +161,7 @@ The implementation follows the principle that skills should handle routing/valid
 ### Phase 4: Convert Planning Skill to Thin Wrapper
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace skill-planner body with thin wrapper

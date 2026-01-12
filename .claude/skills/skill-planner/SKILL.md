@@ -13,7 +13,7 @@ agent: planner-agent
 
 # Planner Skill
 
-Create structured, phased implementation plans.
+Thin wrapper that delegates plan creation to `planner-agent` subagent.
 
 ## Trigger Conditions
 
@@ -22,126 +22,123 @@ This skill activates when:
 - /plan command is invoked
 - Implementation approach needs to be formalized
 
-## Planning Strategy
-
-### 1. Context Gathering
-
-Collect all relevant information:
-- Task description and requirements
-- Research reports (if available)
-- Related codebase context
-- Dependencies and constraints
-
-### 2. Scope Analysis
-
-Determine implementation scope:
-- Files to create/modify
-- Dependencies to add
-- Integration points
-- Testing requirements
-
-### 3. Phase Decomposition
-
-Break work into logical phases:
-- Each phase: 1-3 hours of work
-- Each phase: Independently verifiable
-- Each phase: Clear deliverables
-- Typically: 2-5 phases total
-
-### 4. Risk Assessment
-
-Identify potential issues:
-- Technical risks
-- Dependency risks
-- Integration risks
-- Mitigation strategies
-
-## Execution Flow
-
-```
-1. Receive task context
-2. Load research reports if available
-3. Analyze codebase for integration points
-4. Decompose into phases
-5. Define steps for each phase
-6. Identify risks and mitigations
-7. Create plan document
-8. Return results
-```
-
-## Plan Format
-
-Create plan at `.claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md`:
-
-```markdown
-# Implementation Plan: Task #{N}
-
-**Task**: {title}
-**Version**: {NNN}
-**Created**: {date}
-**Language**: {language}
-
-## Overview
-
-{Summary of approach}
-
-## Phases
-
-### Phase 1: {Name}
-
-**Estimated effort**: {hours}
-**Status**: [NOT STARTED]
-
-**Objectives**:
-1. {Objective}
-
-**Files to modify**:
-- `path/to/file` - {changes}
-
-**Steps**:
-1. {Step with detail}
-2. {Step with detail}
-
-**Verification**:
-- {How to verify completion}
-
 ---
 
-### Phase 2: {Name}
-{Same structure}
+## Execution
 
-## Dependencies
+### 1. Input Validation
 
-- {Dependency}
+Validate required inputs:
+- `task_number` - Must be provided and exist in state.json
+- Task status must allow planning
 
-## Risks and Mitigations
+```bash
+# Lookup task
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .claude/specs/state.json)
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| {Risk} | {Level} | {Strategy} |
+# Validate exists
+if [ -z "$task_data" ]; then
+  return error "Task $task_number not found"
+fi
 
-## Success Criteria
+# Extract fields
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+description=$(echo "$task_data" | jq -r '.description // ""')
 
-- [ ] {Criterion}
+# Validate status
+if [ "$status" = "completed" ]; then
+  return error "Task already completed"
+fi
 ```
 
-## Return Format
+### 2. Context Preparation
+
+Prepare delegation context:
 
 ```json
 {
-  "status": "completed",
-  "summary": "Plan created with N phases",
-  "artifacts": [
-    {
-      "path": ".claude/specs/{N}_{SLUG}/plans/implementation-001.md",
-      "type": "plan",
-      "description": "Implementation plan"
-    }
-  ],
-  "phases": [
-    {"name": "Phase 1", "effort": "2 hours"},
-    {"name": "Phase 2", "effort": "1 hour"}
-  ],
-  "total_effort": "3 hours"
+  "session_id": "sess_{timestamp}_{random}",
+  "delegation_depth": 1,
+  "delegation_path": ["orchestrator", "plan", "skill-planner"],
+  "timeout": 1800,
+  "task_context": {
+    "task_number": N,
+    "task_name": "{project_name}",
+    "description": "{description}",
+    "language": "{language}"
+  },
+  "research_path": "{path to research report if exists}"
 }
 ```
+
+### 3. Invoke Subagent
+
+Invoke `planner-agent` via Task tool with:
+- Task context (number, name, description, language)
+- Delegation context (session_id, depth, path)
+- Research report path (if available)
+
+The subagent will:
+- Load planning context files
+- Analyze task requirements and research
+- Decompose into logical phases
+- Identify risks and mitigations
+- Create plan in `.claude/specs/{N}_{SLUG}/plans/`
+- Return standardized JSON result
+
+### 4. Return Validation
+
+Validate return matches `subagent-return.md` schema:
+- Status is one of: completed, partial, failed, blocked
+- Summary is non-empty and <100 tokens
+- Artifacts array present with plan path
+- Metadata contains session_id, agent_type, delegation info
+
+### 5. Return Propagation
+
+Return validated result to caller without modification.
+
+---
+
+## Return Format
+
+See `.claude/context/core/formats/subagent-return.md` for full specification.
+
+Expected successful return:
+```json
+{
+  "status": "completed",
+  "summary": "Created N-phase implementation plan",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": ".claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
+      "summary": "Phased implementation plan"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_...",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "next_steps": "Run /implement {N} to execute the plan"
+}
+```
+
+---
+
+## Error Handling
+
+### Input Validation Errors
+Return immediately with failed status if task not found or status invalid.
+
+### Subagent Errors
+Pass through the subagent's error return verbatim.
+
+### Timeout
+Return partial status if subagent times out (default 1800s).
