@@ -1,37 +1,14 @@
 # Logos: A Logic for Interpreted and Verified AI Reasoning
 
-**Logos** is a formal verification framework in Lean 4 implementing hyperintensional logics for verified AI reasoning. By combining an axiomatic proof system with recursive semantics, Logos generates unlimited self-supervised training data for AI systems---proof receipts for valid inferences and countermodels for invalid ones---without human annotation.
+**Logos** is a formal verification framework in Lean 4 implementing hyperintensional logics for verified AI reasoning. By combining an axiomatic proof system with recursive semantics, Logos generates unlimited self-supervised training data for AI systems, providing proof receipts for valid inferences and countermodels for invalid ones without relying on human annotation.
 
-**Formal Specifications**:
-- **Recursive Semantics** ([markdown](Theories/Logos/docs/research/recursive-semantics.md)) - Compositional truth conditions for all operators
-- **Logos Reference Manual** ([tex](Theories/Logos/latex/LogosReference.tex) | [pdf](Theories/Logos/latex/LogosReference.pdf)) - Complete formal system
-
----
-
-## RL Training
-
-Training AI systems to reason reliably requires both positive signals (valid inferences) and corrective signals (invalid inferences with counterexamples where the premises are true and the conclusion is false). This dual verification approach offers three key advantages:
-
-1. **Unbounded**: Infinite theorems are derivable from the axiom system
-2. **Clean**: Soundness guarantees only valid inferences are derivable
-3. **Justified**: LEAN 4 proofs provide verifiable receipts; Z3 countermodels refute invalid claims
-
-By contrast, human reasoning data is limited, inconsistent, and prone to error, providing a poor training source. Beyond pattern matching, reasoning in the Logos provides proof receipts which ensure validity where the semantic theory for the Logos provide interpretability over explicit semantic models, offering scalable oversight for sophisticated forms of AI reasoning with an extensible set of operators.
-
-| Component               | Role                                                      | Training Signal      |
-| ----------------------- | --------------------------------------------------------- | -------------------- |
-| **LEAN 4 Proof System** | Derives valid theorems with machine-checkable proofs      | Positive RL signal   |
-| **[ModelChecker](https://github.com/benbrastmckie/ModelChecker)**       | Identifies invalid inferences with explicit countermodels | Corrective RL signal |
-
-The [ModelChecker](https://github.com/benbrastmckie/ModelChecker) implements the same Logos semantic theory in Python/Z3, providing Z3-based countermodel generation for invalid inferences. Together, ProofChecker (LEAN) and ModelChecker (Z3) form a complete dual verification system---LEAN proves validity while Z3 finds countermodels.
-
-**See also**: [Dual Verification Research](docs/research/dual-verification.md) | [Integration Guide](docs/user-guide/INTEGRATION.md) | [LogicNotes](https://github.com/benbrastmckie/LogicNotes)
+**Formal Specifications**: [markdown](Theories/Logos/docs/research/recursive-semantics.md) | [pdf](Theories/Logos/latex/LogosReference.pdf) | [tex](Theories/Logos/latex/LogosReference.tex)
 
 ---
 
 ## Overview
 
-The Logos theory is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory. The modular architecture extends the expressive power of the language through progressive layers:
+The Logos theory is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory. The modular architecture extends the expressive power of the language through progressive layer extensions:
 
 - **Constitutive Foundation**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
 - **Explanatory Extension**: Modal, temporal, counterfactual, and causal operators for reasoning about past, future, contingency, and causation.
@@ -40,11 +17,11 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 - **Spatial Extension**: Spatial relations and locations for reasoning about space.
 - **Agential Extension**: Agency, action, and intention operators for multi-agent reasoning.
 
-The Constitutive Foundation and Explanatory Extension form the required base. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension.
+The Constitutive Foundation and Explanatory Extension provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension.
 
 AI reasoning in the Logos is both **verified** by proof receipts for all inferences and **interpreted** by explicit semantic models, providing **scalable oversight** for sophisticated reasoning.
 
-See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNotes](https://github.com/benbrastmckie/LogicNotes) for further details.
+See [Theoretical Foundations](#theoretical-foundations) below and the [Reference Manual](Theories/Logos/latex/LogosReference.pdf) for further details.
 
 ## Table of Contents
 
@@ -68,6 +45,27 @@ See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNote
 - [Citation](#citation) - How to cite this project
 - [License](#license) - GPL-3.0 License
 - [Contributing](#contributing) - Guidelines for contributors
+
+---
+
+## RL Training
+
+Training AI systems to reason reliably requires both positive signals (valid inferences) and corrective signals (invalid inferences with counterexamples where the premises are true and the conclusion is false). This dual verification approach offers three key advantages:
+
+1. **Unbounded**: Infinite theorems are derivable from the axiom system
+2. **Clean**: Soundness guarantees only valid inferences are derivable
+3. **Justified**: LEAN 4 proofs provide verifiable receipts; Z3 countermodels refute invalid claims
+
+By contrast, human reasoning data is limited, inconsistent, and prone to error, providing a poor training source. Beyond pattern matching, reasoning in the Logos provides proof receipts which ensure validity where the semantic theory for the Logos provide interpretability over explicit semantic models, offering scalable oversight for sophisticated forms of AI reasoning with an extensible set of operators.
+
+| Component               | Role                                                      | Training Signal      |
+| ----------------------- | --------------------------------------------------------- | -------------------- |
+| **LEAN 4 Proof System** | Derives valid theorems with machine-checkable proofs      | Positive RL signal   |
+| **[ModelChecker](https://github.com/benbrastmckie/ModelChecker)**       | Identifies invalid inferences with explicit countermodels | Corrective RL signal |
+
+The [ModelChecker](https://github.com/benbrastmckie/ModelChecker) implements the same Logos semantic theory in Python/Z3, providing Z3-based countermodel generation for invalid inferences. Together, ProofChecker (LEAN) and ModelChecker (Z3) form a complete dual verification system---LEAN proves validity while Z3 finds countermodels.
+
+**See also**: [Dual Verification Research](docs/research/dual-verification.md) | [Integration Guide](docs/user-guide/INTEGRATION.md) | [LogicNotes](https://github.com/benbrastmckie/LogicNotes)
 
 ---
 
