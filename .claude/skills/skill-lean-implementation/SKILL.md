@@ -18,7 +18,7 @@ agent: lean-implementation-agent
 
 # Lean Implementation Skill
 
-Execute Lean 4 theorem proving and definition implementation.
+Thin wrapper that delegates Lean proof implementation to `lean-implementation-agent` subagent.
 
 ## Trigger Conditions
 
@@ -27,191 +27,150 @@ This skill activates when:
 - /implement command targets a Lean task
 - Proofs or definitions need to be written
 
-## Core Tools
+---
 
-### lean_goal (Use Constantly!)
-Check proof state at position:
-```
-Omit column for before/after comparison
-"no goals" = proof complete
-```
+## Execution
 
-### lean_diagnostic_messages
-Get compiler errors/warnings:
-```
-Check after every edit
-"no goals to be solved" = remove tactics
-```
+### 1. Input Validation
 
-### lean_hover_info
-Type signatures and docs:
-```
-Column at START of identifier
-Essential for understanding APIs
-```
+Validate required inputs:
+- `task_number` - Must be provided and exist in state.json
+- Task status must allow implementation (planned, implementing, partial)
 
-### lean_completions
-IDE autocomplete:
-```
-Use on incomplete code after . or partial name
-```
-
-### lean_multi_attempt
-Test tactics without editing:
-```
-Try: ["simp", "ring", "omega", "aesop"]
-Returns goal state for each
-```
-
-## Implementation Strategy
-
-### 1. Plan Review
-Load and understand the implementation plan:
-- What theorems/definitions to create
-- What proof approach to use
-- What imports are needed
-
-### 2. File Setup
-Ensure proper structure:
-```lean
-import Mathlib.Tactic
-import Logos.Layer{N}.Dependencies
-
-namespace Logos.Layer{N}
-
--- Implementation goes here
-
-end Logos.Layer{N}
-```
-
-### 3. Iterative Proof Development
-
-For each theorem/definition:
-```
-1. Write initial structure
-2. Check goals with lean_goal
-3. Apply tactics
-4. Check diagnostics
-5. Iterate until complete
-6. Verify no errors
-```
-
-### 4. Tactic Selection
-
-Use lean_multi_attempt to find working tactics:
-```
-Common effective tactics:
-- simp [lemma1, lemma2]
-- ring, omega (arithmetic)
-- aesop (automated reasoning)
-- exact h, apply lemma
-- constructor, cases, induction
-```
-
-## Execution Flow
-
-```
-1. Receive task context with plan
-2. Load plan and find resume point
-3. Set up or modify .lean file
-4. For each theorem/definition:
-   a. Write initial code
-   b. Check lean_goal for proof state
-   c. Apply tactics iteratively
-   d. Verify with lean_diagnostic_messages
-   e. Continue until "no goals"
-5. Run lake build to verify
-6. Create implementation summary
-7. Return results
-```
-
-## Proof Development Loop
-
-```
-while goals_remain:
-    1. lean_goal → see current state
-    2. Identify what tactic to try
-    3. Edit file with tactic
-    4. lean_diagnostic_messages → check errors
-    5. If error: adjust and retry
-    6. If progress: continue
-    7. lean_goal → verify progress
-```
-
-## Common Patterns
-
-### Simple Proof
-```lean
-theorem simple : P → P := fun h => h
-```
-
-### Tactic Proof
-```lean
-theorem tactic_proof : Statement := by
-  intro h
-  apply lemma
-  exact h
-```
-
-### Complex Proof
-```lean
-theorem complex : ∀ x, P x → Q x := by
-  intro x hP
-  induction x with
-  | base => simp [hP]
-  | step n ih =>
-    apply step_lemma
-    exact ih hP
-```
-
-## Verification
-
-After implementation:
 ```bash
-lake build
+# Lookup task
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .claude/specs/state.json)
+
+# Validate exists
+if [ -z "$task_data" ]; then
+  return error "Task $task_number not found"
+fi
+
+# Extract fields
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+description=$(echo "$task_data" | jq -r '.description // ""')
+
+# Validate language
+if [ "$language" != "lean" ]; then
+  return error "Task $task_number is not a Lean task"
+fi
+
+# Validate status
+if [ "$status" = "completed" ]; then
+  return error "Task already completed"
+fi
 ```
 
-Check:
-- No `sorry` remaining
-- No axioms unless intentional
-- All theorems compile
+### 2. Context Preparation
 
-## Return Format
+Prepare delegation context:
 
 ```json
 {
-  "status": "completed|partial",
-  "summary": "Implemented N theorems",
-  "artifacts": [
-    {
-      "path": "Logos/Layer{N}/File.lean",
-      "type": "implementation",
-      "description": "Lean implementation"
-    }
-  ],
-  "theorems_implemented": [
-    "Namespace.theorem1",
-    "Namespace.theorem2"
-  ],
-  "sorry_count": 0,
-  "build_status": "success"
+  "session_id": "sess_{timestamp}_{random}",
+  "delegation_depth": 1,
+  "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+  "timeout": 7200,
+  "task_context": {
+    "task_number": N,
+    "task_name": "{project_name}",
+    "description": "{description}",
+    "language": "lean"
+  },
+  "plan_path": ".claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md"
 }
 ```
 
+### 3. Invoke Subagent
+
+Invoke `lean-implementation-agent` via Task tool with:
+- Task context (number, name, description, language)
+- Delegation context (session_id, depth, path)
+- Plan path for execution
+
+The subagent will:
+- Load Lean-specific context files
+- Use MCP tools (lean_goal, lean_diagnostic_messages, etc.)
+- Execute proof development loop
+- Create/modify .lean files
+- Run lake build to verify
+- Create implementation summary
+- Return standardized JSON result
+
+### 4. Return Validation
+
+Validate return matches `subagent-return.md` schema:
+- Status is one of: completed, partial, failed, blocked
+- Summary is non-empty and <100 tokens
+- Artifacts array present (implementation files, summary)
+- Metadata contains session_id, agent_type, delegation info
+
+### 5. Return Propagation
+
+Return validated result to caller without modification.
+
+---
+
+## Return Format
+
+See `.claude/context/core/formats/subagent-return.md` for full specification.
+
+Expected successful return:
+```json
+{
+  "status": "completed",
+  "summary": "Implemented N theorems with successful lake build",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": "Logos/Layer{N}/File.lean",
+      "summary": "Lean implementation file"
+    },
+    {
+      "type": "summary",
+      "path": ".claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
+      "summary": "Implementation completion summary"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_...",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"]
+  },
+  "next_steps": "Task complete"
+}
+```
+
+Expected partial return (proof stuck/timeout):
+```json
+{
+  "status": "partial",
+  "summary": "Implemented 2/4 theorems, stuck on theorem3",
+  "artifacts": [...],
+  "errors": [{
+    "type": "execution",
+    "message": "Could not complete proof for theorem3",
+    "recoverable": true,
+    "recommendation": "Try alternative proof approach"
+  }],
+  "next_steps": "Run /implement {N} to resume"
+}
+```
+
+---
+
 ## Error Handling
 
-### Proof Stuck
-1. Use lean_multi_attempt with varied tactics
-2. Search for relevant lemmas
-3. Try different proof approach
-4. Document blocker if truly stuck
+### Input Validation Errors
+Return immediately with failed status if task not found, wrong language, or status invalid.
 
-### Type Mismatch
-1. Use lean_hover_info to check types
-2. Add explicit type annotations
-3. Look for conversion lemmas
+### Subagent Errors
+Pass through the subagent's error return verbatim.
 
-### Missing Import
-1. Search with lean_local_search
-2. Add required import
-3. Rebuild
+### Timeout
+Return partial status if subagent times out (default 7200s).
