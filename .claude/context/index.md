@@ -1,9 +1,9 @@
 # Context Index - Lazy-Loading Quick Map
 
-**Version**: 3.0  
-**Created**: 2025-12-23  
-**Updated**: 2025-12-29 (Task 246 Phase 5 - Post-Consolidation)  
-**Purpose**: Quick reference map for on-demand context loading following OpenAgents patterns
+**Version**: 4.0
+**Created**: 2025-12-23
+**Updated**: 2026-01-12 (Task 432 - Agent System Overhaul)
+**Purpose**: Quick reference map for on-demand context loading following checkpoint-based execution
 
 ---
 
@@ -21,6 +21,48 @@
 
 ---
 
+## Core Checkpoints (core/checkpoints/) **NEW**
+
+**Checkpoint-based execution model** - Reference during command execution
+
+- **checkpoint-gate-in.md** (~200 tokens) - GATE IN preflight validation
+  - Session ID generation
+  - Task existence validation
+  - Status transition validation
+  - Preflight status update via skill-status-sync
+
+- **checkpoint-gate-out.md** (~250 tokens) - GATE OUT postflight validation
+  - Return structure validation
+  - Artifact existence verification
+  - Postflight status update with artifact linking
+  - Idempotency checks for artifact links
+
+- **checkpoint-commit.md** (~150 tokens) - COMMIT finalization
+  - Git commit with session ID
+  - Non-blocking error handling
+  - Final return composition
+
+- **README.md** - Checkpoint model overview
+
+---
+
+## Core Routing/Validation (core/) **NEW**
+
+**Minimal context files for tiered loading**
+
+- **routing.md** (~200 tokens) - Command-level routing
+  - Language → Skill mapping table
+  - Status transitions by command
+  - Session ID format
+
+- **validation.md** (~300 tokens) - Skill-level validation
+  - Return schema (required fields)
+  - Input requirements
+  - Artifact validation patterns
+  - Idempotency checks
+
+---
+
 ## Core Standards (core/standards/)
 
 **Consolidated files** - Load for delegation, return format, validation
@@ -34,9 +76,9 @@
 
 ---
 
-## Core System (core/system/)
+## Core Orchestration (core/orchestration/)
 
-**Consolidated files** - Load for state management, artifacts, git, routing, validation
+**Consolidated files** - Load for state management, routing, validation
 
 - **state-management.md** (535 lines) - Unified state management standard
   - Status markers and transition rules
@@ -45,17 +87,25 @@
   - Status synchronization mechanisms
   - Replaces: status-markers.md, state-schema.md
 
-- **routing-logic.md** (250 lines) - Language extraction and agent mapping
-  - Language extraction priority (state.json → TODO.md → default)
-  - Agent mapping tables (lean → lean-*, default → general)
-  - Routing validation rules
-  - Direct routing patterns
+- **delegation.md** - Delegation patterns and context template
+  - Session tracking
+  - Delegation depth management
+  - Context passing patterns
 
-- **validation-rules.md** (200 lines) - Return format and artifact validation
-  - Required field validation
-  - Artifact existence checks (prevents phantom research)
-  - Error handling patterns
-  - Validation summary logging
+- **state-lookup.md** - State lookup utilities
+  - jq patterns for task lookup
+  - TODO.md grep patterns
+
+---
+
+## Core Formats (core/formats/)
+
+Load for: Artifact creation
+
+- **subagent-return.md** - Return format schema for all agents
+- **plan-format.md** - Implementation plan structure
+- **report-format.md** - Research report structure
+- **summary-format.md** - Implementation summary structure
 
 ---
 

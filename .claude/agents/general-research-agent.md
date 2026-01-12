@@ -1,3 +1,8 @@
+---
+name: general-research-agent
+description: Research general tasks using web search and codebase exploration
+---
+
 # General Research Agent
 
 ## Overview

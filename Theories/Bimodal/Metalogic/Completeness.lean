@@ -2,6 +2,8 @@ import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic.Soundness
 import Mathlib.Algebra.Order.Group.Int
+import Mathlib.Order.Zorn
+import Mathlib.Data.Finite.Defs
 
 /-!
 # Completeness for TM Bimodal Logic
@@ -93,6 +95,224 @@ def MaximalConsistent (Γ : Context) : Prop :=
   Consistent Γ ∧ ∀ φ : Formula, φ ∉ Γ → ¬Consistent (φ :: Γ)
 
 /-!
+## Lindenbaum Infrastructure
+
+Definitions and lemmas supporting the Zorn's lemma application for Lindenbaum's lemma.
+We work with `Set Formula` internally for cleaner chain properties, then convert back
+to `List Formula` for the final result.
+-/
+
+/--
+Set-based consistency: A set of formulas is consistent if listing them doesn't derive ⊥.
+
+We define consistency in terms of finite subsets, since a derivation can only use
+finitely many premises.
+-/
+def SetConsistent (S : Set Formula) : Prop :=
+  ∀ L : List Formula, (∀ φ ∈ L, φ ∈ S) → Consistent L
+
+/--
+Set-based maximal consistency: A set is maximally consistent if it is consistent
+and cannot be properly extended while remaining consistent.
+-/
+def SetMaximalConsistent (S : Set Formula) : Prop :=
+  SetConsistent S ∧ ∀ φ : Formula, φ ∉ S → ¬SetConsistent (insert φ S)
+
+/--
+ConsistentExtensions represents the set of all consistent extensions of a base set.
+-/
+def ConsistentExtensions (base : Set Formula) : Set (Set Formula) :=
+  {S | base ⊆ S ∧ SetConsistent S}
+
+/--
+The base set is in its own consistent extensions (given it's consistent).
+-/
+lemma base_mem_consistent_extensions {base : Set Formula} (h : SetConsistent base) :
+    base ∈ ConsistentExtensions base :=
+  ⟨Set.Subset.refl base, h⟩
+
+/--
+Context to Set conversion: Convert a list-based context to a set.
+-/
+def contextToSet (Γ : Context) : Set Formula := {φ | φ ∈ Γ}
+
+/--
+List-based consistency implies set-based consistency for the corresponding set.
+-/
+lemma consistent_implies_set_consistent {Γ : Context} (h : Consistent Γ) :
+    SetConsistent (contextToSet Γ) := by
+  intro L hL ⟨d⟩
+  apply h
+  -- We need to derive ⊥ from Γ using the derivation from L
+  -- Since all elements of L are in Γ, we can weaken
+  exact ⟨DerivationTree.weakening L Γ Formula.bot d (fun φ hφ => hL φ hφ)⟩
+
+/-!
+## Finite Context Usage
+
+Any derivation uses only finitely many formulas from its context.
+This is essential for the Zorn's lemma application in Lindenbaum.
+-/
+
+/--
+Formulas actually used from the context in a derivation tree.
+
+This function extracts the list of context formulas that appear as
+assumptions in the derivation. The result is a list (may have duplicates).
+
+Note: For necessitation rules (which require empty context), usedFormulas
+returns [] since the subderivation also has empty context.
+-/
+def usedFormulas {Γ : Context} {φ : Formula} : DerivationTree Γ φ → List Formula
+  | DerivationTree.axiom _ _ _ => []
+  | DerivationTree.assumption _ ψ _ => [ψ]
+  | DerivationTree.modus_ponens _ _ _ d1 d2 => usedFormulas d1 ++ usedFormulas d2
+  | DerivationTree.necessitation _ d => usedFormulas d
+  | DerivationTree.temporal_necessitation _ d => usedFormulas d
+  | DerivationTree.temporal_duality _ d => usedFormulas d
+  | DerivationTree.weakening _ _ _ d _ => usedFormulas d
+
+/--
+All formulas used in a derivation come from the context.
+-/
+lemma usedFormulas_subset {Γ : Context} {φ : Formula}
+    (d : DerivationTree Γ φ) : ∀ ψ ∈ usedFormulas d, ψ ∈ Γ := by
+  induction d with
+  | «axiom» => simp [usedFormulas]
+  | assumption Γ' ψ h =>
+    simp only [usedFormulas, List.mem_singleton]
+    intro χ hχ
+    rw [hχ]
+    exact h
+  | modus_ponens Γ' _ _ _ _ ih1 ih2 =>
+    simp only [usedFormulas, List.mem_append]
+    intro ψ hψ
+    cases hψ with
+    | inl h => exact ih1 ψ h
+    | inr h => exact ih2 ψ h
+  | necessitation _ d ih =>
+    simp only [usedFormulas]
+    intro ψ hψ
+    have := ih ψ hψ
+    exact (List.not_mem_nil this).elim
+  | temporal_necessitation _ d ih =>
+    simp only [usedFormulas]
+    intro ψ hψ
+    have := ih ψ hψ
+    exact (List.not_mem_nil this).elim
+  | temporal_duality _ d ih =>
+    simp only [usedFormulas]
+    intro ψ hψ
+    have := ih ψ hψ
+    exact (List.not_mem_nil this).elim
+  | weakening Γ' Δ _ d h ih =>
+    simp only [usedFormulas]
+    intro ψ hψ
+    exact h (ih ψ hψ)
+
+/--
+For empty context derivations, usedFormulas must be empty.
+-/
+lemma usedFormulas_empty_context {φ : Formula}
+    (d : DerivationTree [] φ) : usedFormulas d = [] := by
+  have h := usedFormulas_subset d
+  cases heq : usedFormulas d with
+  | nil => rfl
+  | cons ψ L' =>
+    exfalso
+    have hmem : ψ ∈ usedFormulas d := by rw [heq]; exact List.mem_cons_self
+    exact (List.not_mem_nil (h ψ hmem))
+
+/--
+For necessitation rules, usedFormulas is empty (since subproof context is []).
+-/
+lemma usedFormulas_necessitation_eq_nil {φ : Formula} (d : DerivationTree [] φ) :
+    usedFormulas (DerivationTree.necessitation φ d) = [] := by
+  simp only [usedFormulas]
+  exact usedFormulas_empty_context d
+
+/--
+Any derivation uses only finitely many context formulas, and there exists
+a derivation from that finite subset.
+
+This is formulated without constructing the derivation directly (avoiding
+the termination issues with necessitation rules).
+-/
+theorem derivation_uses_finite_context {Γ : Context} {φ : Formula}
+    (d : DerivationTree Γ φ) :
+    ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ (L ⊆ Γ) := by
+  exact ⟨usedFormulas d, usedFormulas_subset d, usedFormulas_subset d⟩
+
+/--
+A derivation from a subset can be weakened to the superset.
+-/
+def derivation_from_subset_weaken {Γ Δ : Context} {φ : Formula}
+    (d : DerivationTree Γ φ) (h : Γ ⊆ Δ) : DerivationTree Δ φ :=
+  DerivationTree.weakening Γ Δ φ d h
+
+/-!
+## Chain Union Consistency
+
+The union of a chain of consistent sets is consistent.
+This is the key lemma enabling Zorn's lemma application.
+-/
+
+/--
+Any finite list of formulas from a chain union is contained in some chain member.
+
+This is the key fact: if each formula in a finite list comes from the union
+of a chain, then all formulas come from some single member (by chain property).
+
+Note: If the chain is empty or the list is empty, we only need C.Nonempty.
+The case C = ∅ is handled by the caller (consistent_chain_union).
+-/
+lemma finite_list_in_chain_member {C : Set (Set Formula)}
+    (hchain : IsChain (· ⊆ ·) C) (L : List Formula) (hL : ∀ φ ∈ L, φ ∈ ⋃₀ C) :
+    C.Nonempty → ∃ S ∈ C, ∀ φ ∈ L, φ ∈ S := by
+  intro hCne
+  induction L with
+  | nil =>
+    -- Empty list: just need any member of C
+    obtain ⟨S, hS⟩ := hCne
+    exact ⟨S, hS, fun _ h => (List.not_mem_nil h).elim⟩
+  | cons ψ L' ih =>
+    -- ψ is in some S₁ ∈ C, and by IH, L' ⊆ some S₂ ∈ C
+    have hψ : ψ ∈ ⋃₀ C := hL ψ List.mem_cons_self
+    have hL' : ∀ φ ∈ L', φ ∈ ⋃₀ C := fun φ h => hL φ (List.mem_cons_of_mem _ h)
+    obtain ⟨S₁, hS₁mem, hψS₁⟩ := Set.mem_sUnion.mp hψ
+    obtain ⟨S₂, hS₂mem, hL'S₂⟩ := ih hL'
+    -- By chain property, either S₁ ⊆ S₂ or S₂ ⊆ S₁
+    rcases hchain.total hS₁mem hS₂mem with h | h
+    · -- S₁ ⊆ S₂, so ψ ∈ S₂ and L' ⊆ S₂
+      exact ⟨S₂, hS₂mem, fun φ hφ =>
+        match List.mem_cons.mp hφ with
+        | .inl heq => heq ▸ h hψS₁
+        | .inr hmem => hL'S₂ φ hmem⟩
+    · -- S₂ ⊆ S₁, so L' ⊆ S₁ and ψ ∈ S₁
+      exact ⟨S₁, hS₁mem, fun φ hφ =>
+        match List.mem_cons.mp hφ with
+        | .inl heq => heq ▸ hψS₁
+        | .inr hmem => h (hL'S₂ φ hmem)⟩
+
+/--
+The union of a nonempty chain of consistent sets is consistent.
+
+If every set in a nonempty chain is SetConsistent, then their union is also SetConsistent.
+This uses the fact that any derivation uses only finitely many premises, and
+those finite premises come from some single chain member.
+-/
+theorem consistent_chain_union {C : Set (Set Formula)}
+    (hchain : IsChain (· ⊆ ·) C) (hCne : C.Nonempty)
+    (hcons : ∀ S ∈ C, SetConsistent S) : SetConsistent (⋃₀ C) := by
+  intro L hL
+  -- hL says all elements of L are in ⋃₀ C
+  -- We need to show Consistent L
+  -- By finite_list_in_chain_member, L ⊆ some S ∈ C
+  obtain ⟨S, hSmem, hLS⟩ := finite_list_in_chain_member hchain L hL hCne
+  -- S is consistent, so L being a subset means L is consistent
+  exact hcons S hSmem L hLS
+
+/-!
 ## Lindenbaum's Lemma
 
 Every consistent set can be extended to a maximal consistent set.
@@ -100,22 +320,108 @@ This is the key lemma enabling canonical model construction.
 -/
 
 /--
-**Lindenbaum's Lemma**: Every consistent context can be extended to a
-maximal consistent context.
-
-**Statement**: `∀ Γ, Consistent Γ → ∃ Δ, Γ ⊆ Δ ∧ MaximalConsistent Δ`
-
-**Proof Strategy** (to be implemented):
-1. Consider chain of all consistent extensions of Γ
-2. Apply Zorn's lemma to get maximal element
-3. Show maximal element satisfies MaximalConsistent
-
-**Dependencies**: Requires Mathlib's `Zorn.chain_Sup` or `zorn_nonempty_preorder`.
-
-**Complexity**: ~15-20 hours (Zorn's lemma application in LEAN can be tricky)
+The set of consistent extensions of a base set S.
+Used for Zorn's lemma application.
 -/
-axiom lindenbaum (Γ : Context) (h : Consistent Γ) :
-  ∃ Δ : Context, (∀ φ, φ ∈ Γ → φ ∈ Δ) ∧ MaximalConsistent Δ
+def ConsistentSupersets (S : Set Formula) : Set (Set Formula) :=
+  {T | S ⊆ T ∧ SetConsistent T}
+
+/--
+A consistent set is in its own consistent supersets.
+-/
+lemma self_mem_consistent_supersets {S : Set Formula} (h : SetConsistent S) :
+    S ∈ ConsistentSupersets S :=
+  ⟨Set.Subset.refl S, h⟩
+
+/--
+Set-based Lindenbaum's Lemma: Every consistent set can be extended to a
+set-maximal consistent set.
+
+Uses `zorn_subset_nonempty` from Mathlib.Order.Zorn.
+-/
+theorem set_lindenbaum (S : Set Formula) (hS : SetConsistent S) :
+    ∃ M : Set Formula, S ⊆ M ∧ SetMaximalConsistent M := by
+  -- Define the collection of consistent supersets
+  let CS := ConsistentSupersets S
+  -- Show CS satisfies the chain condition for Zorn's lemma
+  have hchain : ∀ C ⊆ CS, IsChain (· ⊆ ·) C → C.Nonempty →
+      ∃ ub ∈ CS, ∀ T ∈ C, T ⊆ ub := by
+    intro C hCsub hCchain hCne
+    -- The upper bound is the union of the chain
+    use ⋃₀ C
+    constructor
+    · -- Show ⋃₀ C ∈ CS, i.e., S ⊆ ⋃₀ C and SetConsistent (⋃₀ C)
+      constructor
+      · -- S ⊆ ⋃₀ C: Since C is nonempty, pick any T ∈ C, then S ⊆ T ⊆ ⋃₀ C
+        obtain ⟨T, hT⟩ := hCne
+        have hST : S ⊆ T := (hCsub hT).1
+        exact Set.Subset.trans hST (Set.subset_sUnion_of_mem hT)
+      · -- SetConsistent (⋃₀ C): Use consistent_chain_union
+        apply consistent_chain_union hCchain hCne
+        intro T hT
+        exact (hCsub hT).2
+    · -- Show ∀ T ∈ C, T ⊆ ⋃₀ C
+      intro T hT
+      exact Set.subset_sUnion_of_mem hT
+  -- Apply Zorn's lemma
+  have hSmem : S ∈ CS := self_mem_consistent_supersets hS
+  obtain ⟨M, hSM, hmax⟩ := zorn_subset_nonempty CS hchain S hSmem
+  -- hmax : Maximal (fun x => x ∈ CS) M
+  -- This means M ∈ CS and ∀ T, M ⊆ T → T ∈ CS → M = T
+  have hMmem : M ∈ CS := hmax.prop
+  obtain ⟨_, hMcons⟩ := hMmem
+  -- M is maximal in CS. Show it's SetMaximalConsistent.
+  use M
+  constructor
+  · exact hSM
+  · -- Show SetMaximalConsistent M
+    constructor
+    · exact hMcons
+    · -- Show ∀ φ ∉ M, ¬SetConsistent (insert φ M)
+      intro φ hφnotM hcons_insert
+      -- If insert φ M were consistent, then insert φ M ∈ CS
+      have h_insert_mem : insert φ M ∈ CS := by
+        constructor
+        · exact Set.Subset.trans hSM (Set.subset_insert φ M)
+        · exact hcons_insert
+      -- M is maximal: if insert φ M ∈ CS and M ⊆ insert φ M, then insert φ M ⊆ M
+      have h_le : M ⊆ insert φ M := Set.subset_insert φ M
+      have h_subset : insert φ M ⊆ M := hmax.le_of_ge h_insert_mem h_le
+      have hφM : φ ∈ M := h_subset (Set.mem_insert φ M)
+      exact hφnotM hφM
+
+/--
+**Lindenbaum's Lemma (List Version)**: Every consistent context can be extended
+to a maximal consistent context.
+
+**Important Note**: The list-based formulation has a fundamental limitation:
+MaximalConsistent requires the context Δ to contain ALL formulas of a maximal
+consistent SET, but a maximal consistent set may be infinite while List is
+inherently finite. This version uses `sorry` for the set-to-list conversion.
+
+For the mathematically complete version, use `set_lindenbaum` which proves
+existence of a maximal consistent SET without this limitation.
+
+**Proof Strategy**:
+1. Convert list context Γ to set
+2. Apply set-based Lindenbaum to get maximal consistent set M
+3. The list-based version follows if M can be enumerated as a list
+
+Note: The core mathematical content is in `set_lindenbaum`. This list-based
+version is provided for compatibility with the existing API.
+-/
+theorem lindenbaum (Γ : Context) (h : Consistent Γ) :
+    ∃ Δ : Context, (∀ φ, φ ∈ Γ → φ ∈ Δ) ∧ MaximalConsistent Δ := by
+  -- The full proof is in set_lindenbaum.
+  -- Converting from Set Formula to List Formula requires either:
+  -- 1. A countable enumeration of Formula (possible but complex)
+  -- 2. Accepting that maximal consistent sets may be infinite
+  -- 3. Using a different representation
+
+  -- For this version, we use sorry for the set-to-list conversion.
+  -- The mathematical content (Zorn's lemma application) is fully proven
+  -- in set_lindenbaum above.
+  sorry
 
 /-!
 ## Maximal Consistent Set Properties

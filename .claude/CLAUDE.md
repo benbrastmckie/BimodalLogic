@@ -61,7 +61,39 @@ Tasks have a `Language` field that determines tool selection:
 | `general` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash |
 | `meta` | Read, Grep, Glob | Write, Edit |
 
+## Checkpoint-Based Execution Model
+
+All workflow commands follow a three-checkpoint pattern:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  CHECKPOINT 1    →    STAGE 2    →    CHECKPOINT 2    →    │
+│   GATE IN             DELEGATE         GATE OUT            │
+│  (Preflight)        (Skill/Agent)    (Postflight)          │
+│                                                 ↓          │
+│                                          CHECKPOINT 3      │
+│                                            COMMIT          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Session Tracking
+
+Each command generates a session ID at GATE IN: `sess_{timestamp}_{random}`
+
+Session ID is:
+- Passed through delegation to skill/agent
+- Included in error logs for traceability
+- Included in git commits for correlation
+
+### Checkpoint Details
+
+Reference: `.claude/context/core/checkpoints/`
+
+---
+
 ## Command Workflows
+
+All commands use checkpoint-based execution via skill-status-sync.
 
 ### /task - Create or manage tasks
 ```
@@ -73,28 +105,22 @@ Tasks have a `Language` field that determines tool selection:
 ```
 
 ### /research N [focus] - Research a task
-1. Validate task exists
-2. Update status to [RESEARCHING]
-3. Execute research (language-routed)
-4. Create report in .claude/specs/{N}_{SLUG}/reports/
-5. Update status to [RESEARCHED]
-6. Git commit
+GATE IN → Validate, update to [RESEARCHING]
+DELEGATE → Route by language (lean→skill-lean-research, other→skill-researcher)
+GATE OUT → Link report artifact, update to [RESEARCHED]
+COMMIT → Git commit with session ID
 
 ### /plan N - Create implementation plan
-1. Validate task is [RESEARCHED] or [NOT STARTED]
-2. Update status to [PLANNING]
-3. Create phased plan with steps
-4. Write to .claude/specs/{N}_{SLUG}/plans/
-5. Update status to [PLANNED]
-6. Git commit
+GATE IN → Validate, update to [PLANNING]
+DELEGATE → skill-planner creates phased plan
+GATE OUT → Link plan artifact, update to [PLANNED]
+COMMIT → Git commit with session ID
 
 ### /implement N - Execute implementation
-1. Validate task is [PLANNED] or [IMPLEMENTING]
-2. Load plan, find resume point
-3. Update status to [IMPLEMENTING]
-4. Execute phases sequentially
-5. Update status to [COMPLETED]
-6. Create summary, git commit
+GATE IN → Validate, find resume point, update to [IMPLEMENTING]
+DELEGATE → Route by language (lean→skill-lean-implementation, etc.)
+GATE OUT → Link summary artifact, update to [COMPLETED]
+COMMIT → Git commit with session ID
 
 ### /revise N - Create new plan version
 Increments plan version (implementation-002.md, etc.)
@@ -140,16 +166,23 @@ Interactive system builder that creates TASKS for .claude/ changes. Uses skill-m
 
 ## Git Commit Conventions
 
-Commits are scoped to task operations:
+Commits are scoped to task operations with session tracking:
 ```
-task {N}: create {title}
-task {N}: complete research
-task {N}: create implementation plan
-task {N} phase {P}: {phase_name}
-task {N}: complete implementation
-todo: archive {N} completed tasks
-errors: create fix plan for {N} errors
+task {N}: {action}
+
+Session: sess_{timestamp}_{random}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
+
+Standard actions:
+- `task {N}: create {title}`
+- `task {N}: complete research`
+- `task {N}: create implementation plan`
+- `task {N} phase {P}: {phase_name}`
+- `task {N}: complete implementation`
+- `todo: archive {N} completed tasks`
+- `errors: create fix plan for {N} errors`
 
 ## Lean 4 Integration
 
@@ -244,6 +277,19 @@ agent: {subagent-name} # Target subagent to spawn
 **Key fields**:
 - `context: fork` - Indicates skill delegates to subagent (no eager context loading)
 - `agent: {name}` - Name of subagent to invoke via Task tool
+
+### Custom Agent Registration
+
+Custom agents in `.claude/agents/` **require YAML frontmatter** to be recognized by Claude Code:
+
+```yaml
+---
+name: {agent-name}
+description: {one-line description}
+---
+```
+
+Without frontmatter, Claude Code silently ignores agent files and they won't appear as valid `subagent_type` values. Agent registration takes effect on session restart.
 
 ### Skill-to-Agent Mapping
 

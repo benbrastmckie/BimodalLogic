@@ -23,6 +23,15 @@ agent: latex-implementation-agent
 
 Thin wrapper that delegates LaTeX document implementation to `latex-implementation-agent` subagent.
 
+## Context Pointers
+
+Reference (do not load eagerly):
+- Path: `.claude/context/core/validation.md`
+- Purpose: Return validation at CHECKPOINT 2
+- Load at: Subagent execution only
+
+Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
+
 ## Trigger Conditions
 
 This skill activates when:

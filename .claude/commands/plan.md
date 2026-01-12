@@ -15,133 +15,85 @@ Create a phased implementation plan for a task by delegating to the planner skil
 
 ## Execution
 
-### 1. Parse and Validate
+### CHECKPOINT 1: GATE IN
 
-```
-task_number = $ARGUMENTS
-```
+1. **Generate Session ID**
+   ```
+   session_id = sess_{timestamp}_{random}
+   ```
 
-**Lookup task via jq**:
-```bash
-task_data=$(jq -r --arg num "$task_number" \
-  '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+2. **Lookup Task**
+   ```bash
+   task_data=$(jq -r --arg num "$task_number" \
+     '.active_projects[] | select(.project_number == ($num | tonumber))' \
+     .claude/specs/state.json)
+   ```
 
-# Validate task exists
-if [ -z "$task_data" ]; then
-  echo "Error: Task $task_number not found in state.json"
-  exit 1
-fi
+3. **Validate**
+   - Task exists (ABORT if not)
+   - Status allows planning: not_started, researched, partial
+   - If planned: Note existing plan, offer --force for revision
+   - If completed: ABORT "Task already completed"
+   - If implementing: ABORT "Task in progress, use /revise instead"
 
-# Extract fields
-language=$(echo "$task_data" | jq -r '.language // "general"')
-status=$(echo "$task_data" | jq -r '.status')
-project_name=$(echo "$task_data" | jq -r '.project_name')
-```
+4. **Load Context**
+   - Task description from state.json
+   - Research reports from `.claude/specs/{N}_{SLUG}/reports/` (if any)
 
-### 2. Validate Status
+5. **Update Status (via skill-status-sync)**
+   Invoke skill-status-sync: `preflight_update(task_number, "planning", session_id)`
 
-Allowed: not_started, researched, partial
-- If planned: Note existing plan, offer --force for revision
-- If completed: Error "Task already completed"
-- If implementing: Error "Task in progress, use /revise instead"
+6. **Verify** status is now "planning"
 
-### 3. Load Context
+**ABORT** if any validation fails. **PROCEED** if all pass.
 
-Gather context for the planner:
-1. **Task description** from state.json
-2. **Research reports** from `.claude/specs/{N}_{SLUG}/reports/` (if any exist)
+### STAGE 2: DELEGATE
 
-### 4. Update Status to PLANNING
-
-Update both files atomically:
-
-**state.json** (via jq):
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: "planning",
-    last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
-```
-
-**TODO.md** (via Edit tool):
-Update the status marker from current status to `[PLANNING]`
-
-### 5. Invoke Planner Skill
-
-Invoke **skill-planner** via the **Skill tool**:
-
-```
-Invoke skill-planner with:
+Invoke **skill-planner** via Skill tool with:
 - task_number: {N}
 - research_path: {path to research report if exists}
-```
+- session_id: {session_id}
 
-The skill will spawn `planner-agent` via Task tool which will:
-- Load planning context files
-- Analyze task requirements and research findings
-- Decompose into logical phases
-- Identify risks and mitigations
-- Create plan in `.claude/specs/{N}_{SLUG}/plans/`
-- Return JSON result
+Skill spawns `planner-agent` which:
+- Loads planning context files
+- Analyzes task requirements and research findings
+- Decomposes into logical phases
+- Identifies risks and mitigations
+- Creates plan in `.claude/specs/{N}_{SLUG}/plans/`
+- Returns structured result
 
-### 6. Handle Skill Result
+### CHECKPOINT 2: GATE OUT
 
-The skill returns a JSON result:
+1. **Validate Return**
+   Required fields: status, summary, artifacts, metadata (phase_count, estimated_hours)
 
-```json
-{
-  "status": "completed|partial|failed",
-  "summary": "Created N-phase implementation plan",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": ".claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
-      "summary": "Phased implementation plan"
-    }
-  ],
-  "metadata": {
-    "phase_count": 3,
-    "estimated_hours": 8
-  },
-  "next_steps": "Run /implement {N} to execute the plan"
-}
-```
+2. **Verify Artifacts**
+   Check plan file exists on disk
 
-**On completed**: Proceed to step 7
-**On partial**: Log partial status, proceed with partial state
-**On failed**: Log error, keep status as planning, output error
+3. **Update Status (via skill-status-sync)**
+   Invoke skill-status-sync: `postflight_update(task_number, "planned", artifacts, session_id)`
 
-### 7. Update Status to PLANNED
+4. **Verify** status is "planned" and plan is linked
 
-Update both files atomically:
+**PROCEED** to commit. **RETRY** skill if validation fails.
 
-**state.json** (via jq):
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: "planned",
-    last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
-```
-
-**TODO.md** (via Edit tool):
-- Update status marker to `[PLANNED]`
-- Add plan link if not already present
-
-### 8. Git Commit
+### CHECKPOINT 3: COMMIT
 
 ```bash
-git add .claude/specs/
-git commit -m "task {N}: create implementation plan
+git add -A
+git commit -m "$(cat <<'EOF'
+task {N}: create implementation plan
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+Session: {session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
 ```
 
-### 9. Output
+Commit failure is non-blocking (log and continue).
+
+## Output
 
 ```
 Plan created for Task #{N}
@@ -157,17 +109,14 @@ Next: /implement {N}
 
 ## Error Handling
 
-### Skill Invocation Failure
-If the Skill tool fails to invoke:
-1. Log the error
-2. Keep status as [PLANNING]
-3. Output error message with recovery instructions
+### GATE IN Failure
+- Task not found: Return error with guidance
+- Invalid status: Return error with current status
 
-### Subagent Timeout
-If the subagent times out:
-1. Skill returns partial status
-2. Partial plan is preserved
-3. User can re-run /plan to continue
+### DELEGATE Failure
+- Skill fails: Keep [PLANNING], log error
+- Timeout: Partial plan preserved, user can re-run
 
-### Task Not Found
-Return immediately with clear error message.
+### GATE OUT Failure
+- Missing artifacts: Log warning, continue with available
+- Link failure: Non-blocking warning

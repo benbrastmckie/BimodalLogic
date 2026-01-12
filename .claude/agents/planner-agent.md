@@ -1,3 +1,8 @@
+---
+name: planner-agent
+description: Create phased implementation plans from research findings
+---
+
 # Planner Agent
 
 ## Overview

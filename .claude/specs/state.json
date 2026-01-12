@@ -1,8 +1,63 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-12T19:30:00Z",
+  "_last_updated": "2026-01-12T22:00:00Z",
   "next_project_number": 442,
   "active_projects": [
+    {
+      "project_number": "439-meta",
+      "project_name": "fix_session_id_and_agent_system_robustness",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-12T20:49:18Z",
+      "last_updated": "2026-01-12T21:05:37Z",
+      "description": "Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. Systematically fix all fragile patterns in .claude/ agent system.",
+      "session_id": "sess_1768251758_a9d38b",
+      "artifacts": [
+        {
+          "path": ".claude/specs/439_fix_session_id_and_agent_system_robustness/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/439_fix_session_id_and_agent_system_robustness/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/439_fix_session_id_and_agent_system_robustness/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12T21:05:37Z"
+    },
+    {
+      "project_number": "438-meta",
+      "project_name": "research_skill_execution_architecture",
+      "type": "research",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-12T19:44:35Z",
+      "last_updated": "2026-01-12T20:30:23Z",
+      "effort": "4 hours",
+      "description": "Research the skill/agent execution architecture to determine optimal approach for systematic improvements. Analyze three options: (A) Make skills executable with automatic subagent delegation, (B) Inline critical patterns in command files removing skill indirection, (C) Use Task tool with explicit prompts including all skill context. Evaluate tradeoffs around token efficiency, reliability, maintainability, and Claude Code constraints.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/438_research_skill_execution_architecture/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/438_research_skill_execution_architecture/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/438_research_skill_execution_architecture/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "session_id": "sess_1768249607_8e0bfe"
+    },
     {
       "project_number": 441,
       "project_name": "prove_completeness_relativized_approach",
@@ -71,13 +126,48 @@
       ]
     },
     {
+      "project_number": 437,
+      "project_name": "improve_readme_consistency_with_recursive_semantics",
+      "status": "not_started",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T19:44:35Z",
+      "last_updated": "2026-01-12T19:44:35Z",
+      "description": "Improve README.md for consistency with recursive-semantics.md documentation."
+    },
+    {
+      "project_number": 434,
+      "project_name": "refactor_readme_for_investors_and_researchers",
+      "status": "completed",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T14:00:00Z",
+      "last_updated": "2026-01-12T18:00:00Z",
+      "completed": "2026-01-12T18:00:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
       "project_number": 432,
       "project_name": "fix_artifact_linking_in_todo_and_state",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T14:48:15Z",
-      "last_updated": "2026-01-12T22:15:00Z",
+      "last_updated": "2026-01-12T17:50:29Z",
       "plan_version": "001",
       "artifacts": [
         {
@@ -104,7 +194,8 @@
           "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/plans/implementation-001.md",
           "type": "plan"
         }
-      ]
+      ],
+      "completed": "2026-01-12T17:50:29Z"
     },
     {
       "project_number": 431,
@@ -220,27 +311,49 @@
       "project_number": 132,
       "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",
       "type": "feature",
-      "phase": "on_hold",
-      "status": "on_hold",
+      "phase": "completed",
+      "status": "completed",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T16:30:00Z",
-      "effort": "3 hours",
-      "on_hold_reason": "Pending Bimodal polish (Task 360)"
+      "last_updated": "2026-01-12T18:40:07Z",
+      "effort": "16 hours",
+      "artifacts": [
+        {
+          "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12T18:40:07Z"
     },
     {
       "project_number": 133,
       "project_name": "build_canonical_model_constructors_in_completeness.lean",
       "type": "feature",
-      "phase": "on_hold",
-      "status": "on_hold",
+      "phase": "researched",
+      "status": "researched",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T16:30:00Z",
-      "effort": "3 hours",
-      "on_hold_reason": "Pending Bimodal polish (Task 360)"
+      "last_updated": "2026-01-12T21:45:00Z",
+      "effort": "25-35 hours",
+      "session_id": "sess_1768253701_259550",
+      "description": "Implement canonical model construction helpers and remove associated axiom stubs. Includes 7 axioms to implement: maximal_consistent_closed, maximal_negation_complete, canonical_task_rel, canonical_frame, canonical_valuation, canonical_model, canonical_history.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/133_build_canonical_model_constructors_in_completeness/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 134,
