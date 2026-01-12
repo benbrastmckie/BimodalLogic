@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 434
+next_project_number: 435
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 434. Refactor README for investors and researchers
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+
+**Description**: Comprehensive refactor of README.md to improve narrative arc and organization. Key changes: (1) Align with current design in recursive-semantics.md and LogosReference.pdf - add links in format **name_of_doc** ([tex](path) | [pdf](path)); (2) TOC should use links with brief descriptions; (3) Lead with RL training application instead of Bimodal comparison - provide brief Logos intro then motivations/applications before moving comparison elsewhere; (4) Introduction should orient and motivate for potential investors while maintaining accuracy for researchers; (5) Improve narrative arc, reduce redundancy, avoid endless bullet points; (6) Provide detailed yet compact presentation showing full scope and applications with links to details; (7) Preserve engaging discussion sections like 'RL Training' and 'Motivations'; (8) Careful refactor preserving and improving existing content.
+
+---
 
 ### 432. Systematic agent system overhaul for robustness
 - **Effort**: 11-17 hours
