@@ -12,7 +12,7 @@ agent: general-research-agent
 
 # Researcher Skill
 
-General-purpose research agent for non-Lean tasks.
+Thin wrapper that delegates general research to `general-research-agent` subagent.
 
 ## Trigger Conditions
 
@@ -21,111 +21,117 @@ This skill activates when:
 - Research is needed for implementation planning
 - Documentation or external resources need to be gathered
 
-## Research Strategy
+---
 
-### 1. Codebase Research
+## Execution
 
-Search the local codebase for:
-- Similar implementations
-- Related patterns
-- Existing utilities to leverage
-- Integration points
+### 1. Input Validation
 
-Tools: `Glob`, `Grep`, `Read`
+Validate required inputs:
+- `task_number` - Must be provided and exist in state.json
+- `focus_prompt` - Optional focus for research direction
 
-### 2. Web Research
+```bash
+# Lookup task
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  .claude/specs/state.json)
 
-Search for external resources:
-- Official documentation
-- Best practices
-- Tutorials and examples
-- Stack Overflow solutions
+# Validate exists
+if [ -z "$task_data" ]; then
+  return error "Task $task_number not found"
+fi
 
-Tools: `WebSearch`, `WebFetch`
-
-### 3. Documentation Research
-
-Find relevant project documentation:
-- README files
-- Architecture docs
-- API specifications
-- Change logs
-
-Tools: `Glob`, `Read`
-
-## Execution Flow
-
-```
-1. Receive task context (description, focus_prompt)
-2. Identify key concepts and search terms
-3. Search codebase for related code
-4. Search web for documentation/examples
-5. Analyze findings and identify patterns
-6. Synthesize recommendations
-7. Create research report
-8. Return results
+# Extract fields
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+description=$(echo "$task_data" | jq -r '.description // ""')
 ```
 
-## Research Report Format
+### 2. Context Preparation
 
-Create report at `.claude/specs/{N}_{SLUG}/reports/research-{NNN}.md`:
-
-```markdown
-# Research Report: Task #{N}
-
-**Task**: {title}
-**Date**: {date}
-**Focus**: {focus_prompt}
-
-## Summary
-
-{2-3 sentence overview}
-
-## Codebase Findings
-
-### Related Files
-- `path/to/file.ext` - {relevance}
-
-### Existing Patterns
-{Description of patterns found}
-
-## External Resources
-
-### Documentation
-- {Link} - {summary}
-
-### Examples
-- {Link} - {summary}
-
-## Recommendations
-
-1. {Approach recommendation}
-2. {Key consideration}
-
-## Next Steps
-
-{Suggested actions}
-```
-
-## Return Format
+Prepare delegation context:
 
 ```json
 {
-  "status": "completed",
-  "summary": "Research completed with N findings",
-  "artifacts": [
-    {
-      "path": ".claude/specs/{N}_{SLUG}/reports/research-001.md",
-      "type": "research",
-      "description": "Research report"
-    }
-  ],
-  "key_findings": [
-    "Finding 1",
-    "Finding 2"
-  ],
-  "recommendations": [
-    "Recommendation 1"
-  ]
+  "session_id": "sess_{timestamp}_{random}",
+  "delegation_depth": 1,
+  "delegation_path": ["orchestrator", "research", "skill-researcher"],
+  "timeout": 3600,
+  "task_context": {
+    "task_number": N,
+    "task_name": "{project_name}",
+    "description": "{description}",
+    "language": "{language}"
+  },
+  "focus_prompt": "{optional focus}"
 }
 ```
+
+### 3. Invoke Subagent
+
+Invoke `general-research-agent` via Task tool with:
+- Task context (number, name, description, language)
+- Delegation context (session_id, depth, path)
+- Focus prompt (if provided)
+
+The subagent will:
+- Search codebase for related patterns
+- Search web for documentation and examples
+- Analyze findings and synthesize recommendations
+- Create research report in `.claude/specs/{N}_{SLUG}/reports/`
+- Return standardized JSON result
+
+### 4. Return Validation
+
+Validate return matches `subagent-return.md` schema:
+- Status is one of: completed, partial, failed, blocked
+- Summary is non-empty and <100 tokens
+- Artifacts array present with research report path
+- Metadata contains session_id, agent_type, delegation info
+
+### 5. Return Propagation
+
+Return validated result to caller without modification.
+
+---
+
+## Return Format
+
+See `.claude/context/core/formats/subagent-return.md` for full specification.
+
+Expected successful return:
+```json
+{
+  "status": "completed",
+  "summary": "Research completed with N findings and recommendations",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": ".claude/specs/{N}_{SLUG}/reports/research-{NNN}.md",
+      "summary": "General research report"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_...",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "next_steps": "Run /plan {N} to create implementation plan"
+}
+```
+
+---
+
+## Error Handling
+
+### Input Validation Errors
+Return immediately with failed status if task not found.
+
+### Subagent Errors
+Pass through the subagent's error return verbatim.
+
+### Timeout
+Return partial status if subagent times out (default 3600s).

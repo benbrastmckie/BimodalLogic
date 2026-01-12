@@ -100,7 +100,7 @@ The implementation follows the principle that skills should handle routing/valid
 ### Phase 3: Convert Research Skills to Thin Wrappers
 
 **Estimated effort**: 1.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace skill-lean-research body with thin wrapper
