@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T00:43:19Z
-next_project_number: 423
+next_project_number: 424
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 423. CI skip by default, trigger via commit message
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Change CI workflow to skip by default and only run when triggered by a special marker in commit messages (e.g., `[ci]` or `[run-ci]`). Create a git skill and subagent to handle all git commits, which can intelligently decide when to include the CI trigger marker. Add context documentation in `.claude/context/` explaining the git workflow and CI triggering convention. This enables frequent pushes without triggering CI, while still allowing explicit CI runs when warranted and likely to succeed.
+
+---
 
 ### 409. Convert workflow skills to forked subagent pattern
 - **Effort**: 4-6 hours
