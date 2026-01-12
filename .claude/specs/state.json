@@ -45,7 +45,7 @@
     {
       "project_number": 418,
       "project_name": "cache_typeclass_instances_explanatory",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.",
@@ -386,19 +386,6 @@
       "last_updated": "2026-01-05T01:22:38Z",
       "effort": "40-60 hours",
       "description": "Implement decision procedures for TM logic."
-    },
-    {
-      "project_number": 346,
-      "project_name": "refactor_commands_to_delegate_to_skills",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "meta",
-      "created": "2026-01-09T02:30:00Z",
-      "last_updated": "2026-01-09T02:30:00Z",
-      "effort": "8-12 hours",
-      "description": "Refactor the .claude/ agent system to use 'thin wrapper' commands that parse arguments and delegate to corresponding skills for execution, enabling skill reuse across commands and cleaner separation of concerns."
     },
     {
       "project_number": 395,

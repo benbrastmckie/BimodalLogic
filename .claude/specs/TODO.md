@@ -253,18 +253,6 @@ technical_debt:
 
 ---
 
-### 346. Refactor commands to delegate to skills
-- **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: meta
-- **Blocking**: None
-- **Dependencies**: None
-
-**Description**: Refactor the .claude/ agent system to use 'thin wrapper' commands that parse arguments and delegate to corresponding skills for execution, enabling skill reuse across commands and cleaner separation of concerns.
-
----
-
 ### 257. Completeness Proofs
 
  **Effort**: 70-90 hours

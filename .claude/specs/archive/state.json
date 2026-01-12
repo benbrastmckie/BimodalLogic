@@ -5,6 +5,20 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 346,
+      "project_name": "refactor_commands_to_delegate_to_skills",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "low",
+      "language": "meta",
+      "created": "2026-01-09T02:30:00Z",
+      "last_updated": "2026-01-09T02:30:00Z",
+      "effort": "8-12 hours",
+      "description": "Refactor the .claude/ agent system to use 'thin wrapper' commands that parse arguments and delegate to corresponding skills for execution, enabling skill reuse across commands and cleaner separation of concerns.",
+      "abandoned": "2026-01-12T02:52:10Z"
+    },
+    {
       "project_number": 397,
       "project_name": "enhance_revise_to_update_description_when_no_plan_exists",
       "status": "completed",
