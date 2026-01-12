@@ -288,12 +288,18 @@
     {
       "project_number": 400,
       "project_name": "investigate_explanatory_truth_build_performance",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.",
       "created": "2026-01-11T21:55:51Z",
-      "last_updated": "2026-01-11T22:03:18Z"
+      "last_updated": "2026-01-11T22:30:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 398,
