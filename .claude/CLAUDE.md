@@ -278,6 +278,19 @@ agent: {subagent-name} # Target subagent to spawn
 - `context: fork` - Indicates skill delegates to subagent (no eager context loading)
 - `agent: {name}` - Name of subagent to invoke via Task tool
 
+### Custom Agent Registration
+
+Custom agents in `.claude/agents/` **require YAML frontmatter** to be recognized by Claude Code:
+
+```yaml
+---
+name: {agent-name}
+description: {one-line description}
+---
+```
+
+Without frontmatter, Claude Code silently ignores agent files and they won't appear as valid `subagent_type` values. Agent registration takes effect on session restart.
+
 ### Skill-to-Agent Mapping
 
 | Skill | Agent | Purpose |

@@ -73,7 +73,7 @@ This plan implements the **Option D (Hybrid)** recommendation from research: fix
 ### Phase 2: Test Agent Registration
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [PARTIAL - requires session restart]
 
 **Objectives**:
 1. Verify agents are recognized as valid subagent_type values
@@ -153,7 +153,7 @@ This plan implements the **Option D (Hybrid)** recommendation from research: fix
 ### Phase 4: Validate End-to-End Workflow
 
 **Estimated effort**: 1 hour
-**Status**: [NOT STARTED]
+**Status**: [PARTIAL - requires session restart]
 
 **Objectives**:
 1. Test complete /research -> /plan -> /implement cycle
@@ -193,7 +193,7 @@ This plan implements the **Option D (Hybrid)** recommendation from research: fix
 ### Phase 5: Update Documentation
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Document the frontmatter requirement for custom agents
