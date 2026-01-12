@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:00:00Z
-next_project_number: 450
+next_project_number: 451
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -143,7 +143,7 @@ technical_debt:
  **Language**: lean
  **Blocking**: None (Decidability complete)
  **Dependencies**: Soundness (Complete), Deduction Theorem (Complete), Proof Search (Complete), Decidability (Complete)
- **Subtasks**: 444, 445, 446, 447, 448, 449
+ **Subtasks**: 444, 445, 446, 447, 450, 448, 449
  **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md), [research-003.md](.claude/specs/257_completeness_proofs/reports/research-003.md), [research-004.md](.claude/specs/257_completeness_proofs/reports/research-004.md), [research-005.md](.claude/specs/257_completeness_proofs/reports/research-005.md), [research-006.md](.claude/specs/257_completeness_proofs/reports/research-006.md), [research-007.md](.claude/specs/257_completeness_proofs/reports/research-007.md), [research-008.md](.claude/specs/257_completeness_proofs/reports/research-008.md)
  **Plan**: [implementation-001.md](.claude/specs/257_completeness_proofs/plans/implementation-001.md)
 
@@ -213,7 +213,19 @@ technical_debt:
 - **Parent**: Task 257
 - **Dependencies**: 446
 
-**Description**: Phase 4 of completeness proofs: Build canonical frame and model using agnostic Duration type. Define canonical_task_rel with modal/temporal transfer. Prove nullity and compositionality. Implement canonical_frame, canonical_valuation, canonical_model, canonical_history.
+**Description**: Phase 4 of completeness proofs: Build canonical frame and model using agnostic Duration type. Define canonical_task_rel with modal/temporal transfer. Prove nullity and compositionality. Implement canonical_frame, canonical_valuation, canonical_model.
+
+---
+
+### 450. Build canonical_history
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 257
+- **Dependencies**: 447
+
+**Description**: Phase 5 of completeness proofs: Build canonical_history construction. Define the history structure that threads MCSs together with the canonical task relation, establishing the temporal backbone for the canonical model. This bridges canonical_frame/model (Phase 4) and truth_lemma (Phase 6).
 
 ---
 
@@ -223,9 +235,9 @@ technical_debt:
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
-- **Dependencies**: 447
+- **Dependencies**: 450
 
-**Description**: Phase 5 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem.
+**Description**: Phase 6 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem.
 
 ---
 
@@ -237,7 +249,7 @@ technical_debt:
 - **Parent**: Task 257
 - **Dependencies**: 448
 
-**Description**: Phase 6 of completeness proofs: Prove weak_completeness and strong_completeness using truth lemma. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.
+**Description**: Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using truth lemma. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.
 
 ---
 

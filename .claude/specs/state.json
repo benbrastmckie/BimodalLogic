@@ -1,8 +1,23 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T22:05:22Z",
-  "next_project_number": 450,
+  "next_project_number": 451,
   "active_projects": [
+    {
+      "project_number": 450,
+      "project_name": "build_canonical_history",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "effort": "6-8 hours",
+      "created": "2026-01-12T22:08:58Z",
+      "last_updated": "2026-01-12T22:08:58Z",
+      "parent_task": 257,
+      "dependencies": [
+        447
+      ],
+      "description": "Phase 5 of completeness proofs: Build canonical_history construction. Define the history structure that threads MCSs together with the canonical task relation, establishing the temporal backbone for the canonical model. This bridges canonical_frame/model (Phase 4) and truth_lemma (Phase 6)."
+    },
     {
       "project_number": 444,
       "project_name": "formula_countability_set_list_bridge",
@@ -68,12 +83,12 @@
       "priority": "low",
       "effort": "15-20 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-12T22:08:58Z",
       "parent_task": 257,
       "dependencies": [
-        447
+        450
       ],
-      "description": "Phase 5 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem."
+      "description": "Phase 6 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem."
     },
     {
       "project_number": 449,
@@ -83,12 +98,12 @@
       "priority": "low",
       "effort": "8-10 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-12T22:08:58Z",
       "parent_task": 257,
       "dependencies": [
         448
       ],
-      "description": "Phase 6 of completeness proofs: Prove weak_completeness and strong_completeness using truth lemma. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean."
+      "description": "Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using truth lemma. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean."
     },
     {
       "project_number": 437,
@@ -317,7 +332,7 @@
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-12T22:08:58Z",
       "effort": "70-90 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.",
       "artifacts": [
@@ -365,6 +380,7 @@
         445,
         446,
         447,
+        450,
         448,
         449
       ]
