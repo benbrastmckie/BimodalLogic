@@ -28,22 +28,6 @@ technical_debt:
 
 ## High Priority
 
-### 437. Improve README consistency with recursive-semantics.md
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: High
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md)
-
-**Description**: Improve /home/benjamin/Projects/ProofChecker/README.md for consistency and clarity with the recursive-semantics.md documentation (/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md) which provides an authoritative overview of the base layer and various extensions. Reduce redundancy by presenting layer extensions only once in a high-quality way. Fix any internal discrepancies in README.md. Emphasize the parallel development of Logos in the ModelChecker, including a link to https://github.com/benbrastmckie/ModelChecker where appropriate.
-
----
-
 ### 432. Systematic agent system overhaul for robustness
 - **Effort**: 11-17 hours
 - **Status**: [PLANNED]
@@ -133,38 +117,6 @@ technical_debt:
 
 ---
 
-### 431. Module Aggregator Standard for Bimodal/
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: Medium
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/435_module_aggregator_standard_bimodal/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/435_module_aggregator_standard_bimodal/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/435_module_aggregator_standard_bimodal/summaries/implementation-summary-20260112.md)
-
-**Description**: Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation.
-
----
-
-### 433. Refine README title and consolidate Bimodal documentation
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/433_refine_readme_title_and_bimodal_section/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/433_refine_readme_title_and_bimodal_section/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/433_refine_readme_title_and_bimodal_section/summaries/implementation-summary-20260112.md)
-
-**Description**: Refine documentation from task 430. Change README.md title to 'Logos: A Logic for Interpreted and Verified AI Reasoning' (from LogosReference.tex). Create new `docs/research/bimodal-logic.md` titled "A Bimodal Logic for Tense and Modality" as the authoritative Bimodal presentation, replacing `theory-comparison.md`. Condense the Bimodal section in README.md to a brief summary with link. Update all 20+ cross-references across the codebase.
-
----
-
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHED]
@@ -174,22 +126,6 @@ technical_debt:
 - **Research**: [research-001.md](.claude/specs/431_wezterm_tab_color_notification/reports/research-001.md)
 
 **Description**: Set up WezTerm tab color notification when Claude Code needs input. Using Claude Code in neovim via a plugin and WezTerm for the terminal on NixOS (software managed in ~/.dotfiles/). Configure so that when Claude Code completes or needs input, the numbered tab in WezTerm turns a visible color to indicate which tabs need attention.
-
----
-
-### 430. Refactor documentation to present ProofChecker as general framework
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/430_refactor_documentation_general_framework/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/430_refactor_documentation_general_framework/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/430_refactor_documentation_general_framework/summaries/implementation-summary-20260112.md)
-
-**Description**: Refactor the ProofChecker documentation (README.md and docs/README.md) to present ProofChecker as a general framework for developing related theories for formal languages with semantics, proof theories, and metalogics. The project now supports two theories: the Bimodal/ theory for tense and modality (entirely intensional) and the Logos/ theory (hyperintensional foundation with layered extensions).
 
 ---
 

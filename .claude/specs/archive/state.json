@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-12T19:00:00Z",
+  "_last_updated": "2026-01-12T19:30:00Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -3187,6 +3187,32 @@
         }
       ],
       "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 437,
+      "project_name": "improve_readme_consistency_with_recursive_semantics",
+      "status": "completed",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T17:34:32Z",
+      "last_updated": "2026-01-12T22:30:00Z",
+      "completed": "2026-01-12T22:30:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:30:00Z"
     }
   ]
 }
