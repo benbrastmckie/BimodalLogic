@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 433
+next_project_number: 434
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -95,6 +95,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 433. Refine README title and consolidate Bimodal documentation
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Refine documentation from task 430. Change README.md title to 'Logos: A Logic for Interpreted and Verified AI Reasoning' (from LogosReference.tex). Expand the 'Bimodal Theory (TM Logic)' section in README.md into a full document at docs/research/theory-comparison.md (rename for clarity) that presents the Bimodal theory along with comparison to Logos. Replace the Bimodal section in README.md with a brief mention and link to the detailed document. Focus should be on presenting Logos since Bimodal will later be extracted to its own repository for independent development.
+
+---
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
