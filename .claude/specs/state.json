@@ -159,17 +159,19 @@
     {
       "project_number": 446,
       "project_name": "agnostic_duration_construction",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "effort": "15-20 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T06:26:00Z",
+      "last_updated": "2026-01-13T06:50:00Z",
       "parent_task": 257,
       "dependencies": [
         445
       ],
       "description": "Phase 3 of completeness proofs: Implement order-type based duration construction from research-008.md. Define TemporalChain, ChainSegment, orderTypeEquiv. Build PositiveDuration quotient with AddCommMonoid. Define Duration via Grothendieck construction with LinearOrder and IsOrderedAddMonoid instances.",
+      "session_id": "sess_1768261793_047cf5",
+      "plan_version": "001",
       "artifacts": [
         {
           "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
@@ -178,9 +180,12 @@
         {
           "path": ".claude/specs/446_agnostic_duration_construction/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/446_agnostic_duration_construction/plans/implementation-001.md",
+          "type": "plan"
         }
-      ],
-      "session_id": "sess_1768260760_23a66d"
+      ]
     },
     {
       "project_number": 447,

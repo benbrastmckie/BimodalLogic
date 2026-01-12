@@ -16,7 +16,7 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 - **Normative Extension**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
 - **Spatial Extension**: Spatial relations and locations for reasoning about space.
 - **Agential Extension**: Agency, action, and intention operators for multi-agent reasoning.
-- **Reflection Extension**: Self-modeling and metacognitive operators for first-person reasoning about one's own beliefs, abilities, and goals.
+- **Reflection Extension**: Self-modeling and metacognitive operators for first-person reasoning about one's own beliefs, abilities, preferences, and goals.
 
 The Constitutive Foundation and Explanatory Extension provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension.
 
@@ -81,62 +81,6 @@ Constructing and evaluating plans amounts to identifying and ranking histories t
 In addition to tense, historical modal, and counterfactual operators, effective planning under natural conditions also requires constitutive operators for reasoning about constitution, causal operators for reasoning about causation, epistemic operators for reasoning about belief, likelihoods, and indicative conditionals, and normative operators for reasoning about imperatives and preferences. Accordingly both the proof theory and semantics for the Logos are implemented in layers in order to accommodate an extensible range of operators. The layer architecture enables applications to import precisely the operator combinations needed for a given domain without carrying unused overhead.
 
 **See also**: [Conceptual Engineering](Theories/Logos/docs/research/conceptual-engineering.md) | [Layer Extensions](Theories/Logos/docs/research/layer-extensions.md)
-
----
-
-## Layered Architecture
-
-Logos implements a layered operator architecture supporting progressive extensibility. All layers share task semantics where possible worlds are functions from times to world-states constrained by task relations.
-
-**See also**: [Conceptual Engineering](Theories/Logos/docs/research/conceptual-engineering.md) for philosophical motivation | [Layer Extensions](Theories/Logos/docs/research/layer-extensions.md) for technical specifications
-
-### Extension Dependency Structure
-
-```
-    Constitutive Foundation (required)
-              |
-              v
-    Explanatory Extension (required)
-              |
-     +--------+--------+
-     v        v        v
- Epistemic Normative Spatial  (optional, composable)
-     +--------+--------+
-              |
-              v
-      Agential Extension  (requires at least one above)
-              |
-              v
-     Reflection Extension  (inherits from Epistemic)
-```
-
-| Layer              | Operators                                        | Status         |
-| ------------------ | ------------------------------------------------ | -------------- |
-| **Constitutive**   | Extensional, constitutive                        | Complete (MVP) |
-| **Explanatory**    | Modal, temporal, counterfactual, causal          | Complete (MVP) |
-| **Epistemic**      | Belief, knowledge, probability, indicative       | Planned        |
-| **Normative**      | Deontic, preferential                            | Planned        |
-| **Spatial**        | Spatial relations, locations                     | Planned        |
-| **Agential**       | Agency, action, intention                        | Planned        |
-| **Reflection**     | I, I_K, I_B, I_Can, metacognition                | Planned        |
-
-**See also**: [Methodology](docs/user-guide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/docs/research/layer-extensions.md)
-
----
-
-## Constitutive Foundation
-
-The Constitutive Foundation provides fundamental descriptive resources---predicates and functions for expressing facts, quantifiers for generalizing over individuals, extensional connectives for truth-functional reasoning, and constitutive operators for expressing what grounds and explains what. This foundational layer enables systems to represent and reason about the basic structure of reality.
-
-The Constitutive Foundation leverages Logos's hyperintensional semantics to distinguish propositions by their exact verification and falsification conditions, not merely by their truth-values across possible worlds. This enables fine-grained reasoning about constitutive grounding---"being crimson grounds being red" differs from "2+2=4" even though both are necessary truths.
-
----
-
-## Implementation Status
-
-The Logos methodology comprises three components: (1) an **axiomatic proof theory** for deriving valid inferences, (2) a **recursive semantic theory** for interpreting formulas in explicit models, and (3) a **metalogic** establishing the soundness and completeness of the proof theory over the semantics.
-
-**For detailed status**: [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) | [LEAN Registry](docs/project-info/SORRY_REGISTRY.md) | [TODO](TODO.md)
 
 ---
 
