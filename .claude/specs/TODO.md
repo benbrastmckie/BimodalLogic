@@ -339,7 +339,7 @@ technical_debt:
 
 ### 414. Create planner-agent subagent with lazy context
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: meta
 - **Dependencies**: 410
