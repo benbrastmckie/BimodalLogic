@@ -95,7 +95,7 @@ technical_debt:
 
 ### 405. Document LaTeX one-line-per-sentence convention
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
@@ -176,12 +176,14 @@ technical_debt:
 
 ### 402. Rename --divide flag to --expand
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 401
 - **Research**: [research-001.md](.claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/402_rename_divide_flag_to_expand/plans/implementation-001.md)
 
 **Description**: Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).
 

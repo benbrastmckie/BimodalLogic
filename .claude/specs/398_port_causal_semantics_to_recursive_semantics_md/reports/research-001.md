@@ -20,7 +20,7 @@ The causal semantics uses the connective `A circleright B` ("A causes B") with a
    - The cause's verifiers are part of background assumptions at time of cause (x)
    - The effect's verifiers are part of background assumptions at time of effect (y)
 
-2. **Production**: For all s in beta(x)^+ and tau in <s>_x, there is some delta sqsubseteq* tau where delta(y) in [B]^+ and for every gamma sqsubseteq* delta, if gamma(y) in [B]^+ then gamma(x) in [A]^+
+2. **Production**: For all s in beta(x)^+ and tau in `<s>_x`, there is some delta sqsubseteq* tau where delta(y) in [B]^+ and for every gamma sqsubseteq* delta, if gamma(y) in [B]^+ then gamma(x) in [A]^+
    - Every expected evolution from the augmented cause has an expected subevolution reaching the effect
    - Minimal subevolutions ensure the cause makes a "substantial contribution"
 
