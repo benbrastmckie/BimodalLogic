@@ -6,11 +6,12 @@
     {
       "project_number": 438,
       "project_name": "refactor_bimodal_readme",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T18:04:54Z",
-      "last_updated": "2026-01-12T23:08:00Z",
+      "last_updated": "2026-01-12T19:45:00Z",
+      "completed": "2026-01-12T19:45:00Z",
       "description": "Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference.",
       "plan_version": "001",
       "artifacts": [
@@ -21,6 +22,10 @@
         {
           "path": ".claude/specs/438_refactor_bimodal_readme/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/438_refactor_bimodal_readme/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },
@@ -262,11 +267,11 @@
       "project_number": 257,
       "project_name": "completeness_proofs",
       "type": "feature",
-      "status": "researched",
+      "status": "researching",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T18:17:59Z",
+      "last_updated": "2026-01-12T18:31:14Z",
       "effort": "70-90 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.",
       "artifacts": [

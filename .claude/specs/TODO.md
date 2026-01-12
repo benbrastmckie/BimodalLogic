@@ -105,13 +105,15 @@ technical_debt:
 
 ### 438. Refactor Bimodal README for systematic documentation
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/438_refactor_bimodal_readme/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/438_refactor_bimodal_readme/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/438_refactor_bimodal_readme/summaries/implementation-summary-20260112.md)
 
 **Description**: Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference.
 
@@ -163,7 +165,7 @@ technical_debt:
 ### 257. Completeness Proofs
 
  **Effort**: 57-76 hours (revised down from 70-90)
- **Status**: [RESEARCHED]
+ **Status**: [RESEARCHING]
  **Researched**: 2026-01-12
  **Priority**: Low
  **Language**: lean

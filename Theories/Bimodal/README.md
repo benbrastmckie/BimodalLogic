@@ -2,6 +2,12 @@
 
 Core library for TM bimodal logic (Tense and Modality) with task semantics.
 
+## Reference Document
+
+For the complete formal specification, see **BimodalReference** ([tex](latex/BimodalReference.tex) | [pdf](latex/BimodalReference.pdf)).
+
+This README provides an overview; BimodalReference contains the detailed specification of syntax, semantics, proof theory, and metalogic.
+
 ## About Bimodal Logic
 
 Bimodal is a **propositional intensional logic** implementing TM (Tense and Modality).
@@ -16,12 +22,86 @@ Bimodal is a **propositional intensional logic** implementing TM (Tense and Moda
 For comparison with the planned Logos hyperintensional logic (second-order with state
 primitives), see [bimodal-logic.md](../../docs/research/bimodal-logic.md).
 
+## Syntax Quick Reference
+
+### Primitive Operators
+
+| Symbol | Lean | Reading |
+|--------|------|---------|
+| `p` | `atom "p"` | propositional variable |
+| `⊥` | `bot` | falsity (bottom) |
+| `φ → ψ` | `imp φ ψ` | implication |
+| `□φ` | `box φ` | necessity ("necessarily φ") |
+| `Hφ` | `all_past φ` | "φ has always been true" |
+| `Gφ` | `all_future φ` | "φ will always be true" |
+
+### Derived Operators
+
+| Symbol | Lean | Definition |
+|--------|------|------------|
+| `¬φ` | `neg φ` | `φ → ⊥` |
+| `φ ∧ ψ` | `and φ ψ` | `¬(φ → ¬ψ)` |
+| `φ ∨ ψ` | `or φ ψ` | `¬φ → ψ` |
+| `◇φ` | `diamond φ` | `¬□¬φ` (possibility) |
+| `Pφ` | `some_past φ` | `¬H¬φ` ("φ was once true") |
+| `Fφ` | `some_future φ` | `¬G¬φ` ("φ will be true") |
+| `△φ` | `always φ` | `Hφ ∧ φ ∧ Gφ` (eternal) |
+| `▽φ` | `sometimes φ` | `¬△¬φ` (sometime) |
+
+See BimodalReference Section 1 for complete syntax details.
+
 ## Purpose
 
 This directory contains the foundational implementation of bimodal logic TM, providing the
 syntax, proof system, semantics, metalogical results, and automation for temporal-modal
 reasoning. The library is designed as an independent, reusable component that can be
 imported by other projects.
+
+## Proof System Overview
+
+### Axiom Schemata (14 total)
+
+| Category | Axioms | Description |
+|----------|--------|-------------|
+| Propositional | K, S, EFQ, Peirce | Classical propositional logic |
+| Modal (S5) | T (`□φ → φ`), 4 (`□φ → □□φ`), B (`φ → □◇φ`), 5 (`◇□φ → □φ`), K (`□(φ→ψ) → (□φ→□ψ)`) | Reflexive, transitive, symmetric |
+| Temporal | K (`G(φ→ψ) → (Gφ→Gψ)`), 4 (`Gφ → GGφ`), A (`φ → GPφ`), L (`△φ → GHφ`) | Linear temporal structure |
+| Interaction | MF (`□φ → □Gφ`), TF (`□φ → G□φ`) | Modal-temporal bridge |
+
+### Inference Rules (7 total)
+
+- **Modus Ponens**: From `⊢ φ → ψ` and `⊢ φ`, derive `⊢ ψ`
+- **Necessitation**: From `⊢ φ`, derive `⊢ □φ`
+- **Temporal Necessitation**: From `⊢ φ`, derive `⊢ Gφ`
+- **Temporal Duality**: From `⊢ φ`, derive `⊢ swap(φ)` (swap H/G, P/F)
+- **Axiom**: Any axiom instance is derivable
+- **Assumption**: Hypotheses in context are derivable
+- **Weakening**: Derivations extend to larger contexts
+
+**Note**: `DerivationTree` is `Type` (not `Prop`) for computability.
+
+See BimodalReference Section 3 for full proof system presentation.
+
+## Semantics Overview
+
+### Task Frame Structure
+
+A task frame `(W, T, R)` consists of:
+- **W**: Set of world-states (metaphysically possible states)
+- **T**: Set of times with linear order `<`
+- **R : W → T → W → Prop**: Task relation (accessibility across time)
+
+Properties: Nullity (reflexive at each time) and Compositionality (forward composition).
+
+### Truth Conditions
+
+- **Atoms**: `M,τ,t ⊨ p` iff `p ∈ V(τ(t))`
+- **Modal**: `M,τ,t ⊨ □φ` iff `∀σ. R(τ,t,σ) → M,σ,t ⊨ φ`
+- **Temporal**: `M,τ,t ⊨ Gφ` iff `∀s > t. M,τ,s ⊨ φ`
+
+The interaction axioms (MF, TF) ensure coherence between modal and temporal reasoning.
+
+See BimodalReference Section 2 for formal semantic definitions.
 
 ## Theory-Specific Documentation
 
@@ -138,25 +218,16 @@ The Bimodal library follows a layered architecture:
 
 ## Implementation Status
 
-**Complete (Layers 0-1)**:
-- Syntax: Formula, Context, derived operators
-- ProofSystem: All 14 axioms and 7 rules defined
-- Semantics: TaskFrame, TaskModel, Truth, Validity
+| Layer | Component | Status |
+|-------|-----------|--------|
+| 0 | Syntax | Complete |
+| 1 | ProofSystem | Complete |
+| 2 | Semantics | Complete |
+| 3 | Metalogic | Partial (Soundness proven) |
+| 4 | Theorems | Partial (P1-P3 complete) |
+| 5 | Automation | Partial |
 
-**Partial (Layer 2)**:
-- Metalogic/Soundness: Soundness theorem proven
-- Metalogic/Completeness: Infrastructure only
-
-**Partial (Layer 3)**:
-- Theorems/Perpetuity: P1-P3 fully proven, P4-P6 partial
-- Modal S4/S5 theorems
-
-**Partial (Layer 4)**:
-- Automation: Core tactics implemented
-- ProofSearch: Infrastructure with build issues
-
-For detailed status, see [Bimodal Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md).
-For known limitations, see [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md).
+For detailed status, see [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md). For known limitations, see [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md).
 
 ## API Documentation
 
@@ -207,27 +278,28 @@ When working on Bimodal source code:
 
 ## Related Documentation
 
-### Theory-Specific (Bimodal)
+### Primary Reference
 
-- [Bimodal Documentation](docs/README.md) - Theory-specific documentation hub
-- [Quick Start](docs/user-guide/QUICKSTART.md) - Getting started with Bimodal
+- **BimodalReference** ([tex](latex/BimodalReference.tex) | [pdf](latex/BimodalReference.pdf)) - Complete formal specification
+
+### User Guides
+
+- [Quick Start](docs/user-guide/QUICKSTART.md) - Getting started with Bimodal proofs
+- [Proof Patterns](docs/user-guide/PROOF_PATTERNS.md) - Common proof strategies
+- [Examples](docs/user-guide/EXAMPLES.md) - Worked examples with solutions
+- [Troubleshooting](docs/user-guide/TROUBLESHOOTING.md) - Common errors and fixes
+
+### Reference
+
 - [Axiom Reference](docs/reference/AXIOM_REFERENCE.md) - Complete axiom schemas
+- [Tactic Reference](docs/reference/TACTIC_REFERENCE.md) - Custom tactic usage
+
+### Project Info
+
+- [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) - Module status
 - [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md) - MVP limitations
-
-### Project-Wide
-
-- [Bimodal Logic](../../docs/research/bimodal-logic.md) - Bimodal vs Logos
-- [LEAN Style Guide](../docs/development/LEAN_STYLE_GUIDE.md) - Coding conventions
-- [Module Organization](../docs/development/MODULE_ORGANIZATION.md) - Directory structure
-- [Testing Standards](../docs/development/TESTING_STANDARDS.md) - Test requirements
-- [Architecture Guide](../docs/user-guide/ARCHITECTURE.md) - TM logic specification
-- [Tutorial](../docs/user-guide/TUTORIAL.md) - Getting started
-- [Implementation Status](../docs/project-info/IMPLEMENTATION_STATUS.md) - Project status
+- [Bimodal vs Logos](../../docs/research/bimodal-logic.md) - Theory comparison
 
 ## Navigation
 
-- **Up**: [Project Root](../)
-- **Theory Docs**: [docs/](docs/) - Bimodal-specific documentation
-- **Tests**: [BimodalTest/](../BimodalTest/)
-- **Project Docs**: [docs/](../docs/) - Project-wide documentation
-- **Examples**: [Examples/](Examples/)
+- [Project Root](../) | [Theory Docs](docs/) | [Examples](Examples/) | [Tests](../BimodalTest/)
