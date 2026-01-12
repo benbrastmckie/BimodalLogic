@@ -30,9 +30,11 @@ technical_debt:
 
 ### 434. Refactor README for investors and researchers
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md)
 
 **Description**: Comprehensive refactor of README.md to improve narrative arc and organization. Key changes: (1) Align with current design in recursive-semantics.md and LogosReference.pdf - add links in format **name_of_doc** ([tex](path) | [pdf](path)); (2) TOC should use links with brief descriptions; (3) Lead with RL training application instead of Bimodal comparison - provide brief Logos intro then motivations/applications before moving comparison elsewhere; (4) Introduction should orient and motivate for potential investors while maintaining accuracy for researchers; (5) Improve narrative arc, reduce redundancy, avoid endless bullet points; (6) Provide detailed yet compact presentation showing full scope and applications with links to details; (7) Preserve engaging discussion sections like 'RL Training' and 'Motivations'; (8) Careful refactor preserving and improving existing content.
 

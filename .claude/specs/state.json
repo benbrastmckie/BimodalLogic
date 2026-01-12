@@ -6,11 +6,17 @@
     {
       "project_number": 434,
       "project_name": "refactor_readme_for_investors_and_researchers",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "priority": "high",
       "created": "2026-01-12T16:54:47Z",
-      "last_updated": "2026-01-12T16:54:47Z"
+      "last_updated": "2026-01-12T22:15:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 433,
