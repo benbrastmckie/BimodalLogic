@@ -115,9 +115,11 @@ technical_debt:
 
 ### 440. Revise Logos README to reflect current structure and ambitions
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/440_revise_logos_readme/reports/research-001.md)
 
 **Description**: Revise /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md to accurately reflect the current ambitions and structure of the Logos/ as outlined in /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md and implemented (at least with stubs) in Lean.
 
