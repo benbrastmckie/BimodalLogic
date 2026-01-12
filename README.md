@@ -16,6 +16,7 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 - **Normative Extension**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
 - **Spatial Extension**: Spatial relations and locations for reasoning about space.
 - **Agential Extension**: Agency, action, and intention operators for multi-agent reasoning.
+- **Reflection Extension**: Self-modeling and metacognitive operators for first-person reasoning about one's own beliefs, abilities, and goals.
 
 The Constitutive Foundation and Explanatory Extension provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension.
 
@@ -104,6 +105,9 @@ Logos implements a layered operator architecture supporting progressive extensib
               |
               v
       Agential Extension  (requires at least one above)
+              |
+              v
+     Reflection Extension  (inherits from Epistemic)
 ```
 
 | Layer              | Operators                                        | Status         |
@@ -114,6 +118,7 @@ Logos implements a layered operator architecture supporting progressive extensib
 | **Normative**      | Deontic, preferential                            | Planned        |
 | **Spatial**        | Spatial relations, locations                     | Planned        |
 | **Agential**       | Agency, action, intention                        | Planned        |
+| **Reflection**     | I, I_K, I_B, I_Can, metacognition                | Planned        |
 
 **See also**: [Methodology](docs/user-guide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/docs/research/layer-extensions.md)
 

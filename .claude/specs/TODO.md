@@ -246,11 +246,13 @@ technical_debt:
 
 ### 446. Agnostic duration construction
 - **Effort**: 15-20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 445
+- **Research**: [research-001.md](.claude/specs/446_agnostic_duration_construction/reports/research-001.md)
 - **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 3)
 
 **Description**: Phase 3 of completeness proofs: Implement order-type based duration construction from research-008.md. Define TemporalChain, ChainSegment, orderTypeEquiv. Build PositiveDuration quotient with AddCommMonoid. Define Duration via Grothendieck construction with LinearOrder and IsOrderedAddMonoid instances.
