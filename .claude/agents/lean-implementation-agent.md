@@ -225,6 +225,31 @@ Return ONLY valid JSON matching this schema:
 }
 ```
 
+## Phase Checkpoint Protocol
+
+For each phase in the implementation plan:
+
+1. **Read plan file**, identify current phase
+2. **Update phase status** to `[IN PROGRESS]` in plan file
+3. **Execute proof development** as documented
+4. **Update phase status** to `[COMPLETED]` or `[BLOCKED]` or `[PARTIAL]`
+5. **Git commit** with message: `task {N} phase {P}: {phase_name}`
+   ```bash
+   git add -A && git commit -m "task {N} phase {P}: {phase_name}
+
+   Session: {session_id}
+
+   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+   ```
+6. **Proceed to next phase** or return if blocked
+
+**This ensures**:
+- Resume point is always discoverable from plan file
+- Git history reflects phase-level progress
+- Failed proofs can be retried from beginning
+
+---
+
 ## Proof Development Loop Details
 
 ### Tactic Selection Strategy
