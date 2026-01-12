@@ -416,11 +416,11 @@
       "project_name": "establish_ci/cd_pipeline_with_automated_testing_and_linting",
       "type": "feature",
       "phase": "not_started",
-      "status": "researched",
+      "status": "planned",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T01:46:24Z",
+      "last_updated": "2026-01-12T01:52:46Z",
       "effort": "13 hours"
     },
     {

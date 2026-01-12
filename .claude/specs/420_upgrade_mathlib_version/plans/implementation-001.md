@@ -22,7 +22,7 @@ Most of the Mathlib upgrade work has already been completed. The toolchain has b
 ### Phase 1: Fix Remaining Build Errors
 
 **Estimated effort**: 30 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Fix the `rfl` error in Perpetuity/Principles.lean
@@ -48,7 +48,7 @@ Most of the Mathlib upgrade work has already been completed. The toolchain has b
 ### Phase 2: Full Build Verification
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Run full project build

@@ -89,13 +89,14 @@ technical_debt:
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-11
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/plans/implementation-001.md)
 - **Files Affected**:
   - .github/workflows/ci.yml (new)
   - .github/workflows/lint.yml (new)
