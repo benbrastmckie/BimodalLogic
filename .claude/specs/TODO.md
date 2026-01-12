@@ -30,9 +30,10 @@ technical_debt:
 
 ### 409. Convert workflow skills to forked subagent pattern
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/409_convert_workflow_skills_to_forked_subagent_pattern/reports/research-001.md)
 
 **Description**: Update skill-lean-research, skill-researcher, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation to use `context: fork` and `agent:` field in frontmatter. Convert skills to thin wrappers that spawn subagents for token-heavy work. Define standardized return format for artifacts (status, artifact_path, summary).
 

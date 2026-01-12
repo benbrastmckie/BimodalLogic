@@ -76,13 +76,19 @@
     {
       "project_number": 409,
       "project_name": "convert_workflow_skills_to_forked_subagent_pattern",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "description": "Update skill-lean-research, skill-researcher, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation to use context: fork and agent: field. Convert skills to thin wrappers that spawn subagents. Define standardized return format for artifacts.",
       "effort": "4-6 hours",
       "created": "2026-01-12T08:00:00Z",
-      "last_updated": "2026-01-12T08:00:00Z"
+      "last_updated": "2026-01-12T09:30:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/409_convert_workflow_skills_to_forked_subagent_pattern/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 408,
