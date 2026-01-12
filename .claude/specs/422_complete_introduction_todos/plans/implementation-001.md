@@ -14,7 +14,7 @@ Restructure the Introduction.tex file by merging the "Implementation Status" and
 ### Phase 1: Restructure Introduction.tex
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Remove the separate "Implementation Status" subsection
