@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T09:45:00Z
-next_project_number: 428
+next_project_number: 429
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -83,6 +83,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 428. Complete TODOs in Bimodal syntax LaTeX file
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/01-Syntax.tex
+
+---
 
 ### 427. Document command, skill, and subagent framework
 - **Effort**: 3-4 hours
