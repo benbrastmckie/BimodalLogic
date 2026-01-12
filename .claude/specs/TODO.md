@@ -433,16 +433,17 @@ Research should analyze tradeoffs around token efficiency, reliability, maintain
 ---
 
 ### 133. Build canonical model constructors in Completeness.lean
-- **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Effort**: 25-35 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
-- **Dependencies**: 132
-- **Note**: On hold pending Bimodal polish (Task 360)
+- **Dependencies**: 132 (completed)
+- **Research**: [research-001.md](.claude/specs/133_build_canonical_model_constructors_in_completeness/reports/research-001.md)
 - **Files Affected**:
-  - Logos/Core/Metalogic/Completeness.lean
-- **Description**: Implement canonical model construction helpers and remove associated axiom stubs.
+  - Theories/Bimodal/Metalogic/Completeness.lean
+- **Description**: Implement canonical model construction helpers and remove associated axiom stubs. Requires implementing 7 axioms: maximal_consistent_closed, maximal_negation_complete, canonical_task_rel, canonical_frame, canonical_valuation, canonical_model, canonical_history.
 - **Acceptance Criteria**:
   - [ ] Canonical model constructors implemented
   - [ ] Corresponding axiom placeholders removed

@@ -367,13 +367,21 @@
       "project_number": 133,
       "project_name": "build_canonical_model_constructors_in_completeness.lean",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "researched",
+      "status": "researched",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T16:30:00Z",
-      "effort": "3 hours"
+      "last_updated": "2026-01-12T21:45:00Z",
+      "effort": "25-35 hours",
+      "session_id": "sess_1768253701_259550",
+      "description": "Implement canonical model construction helpers and remove associated axiom stubs. Includes 7 axioms to implement: maximal_consistent_closed, maximal_negation_complete, canonical_task_rel, canonical_frame, canonical_valuation, canonical_model, canonical_history.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/133_build_canonical_model_constructors_in_completeness/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 134,
