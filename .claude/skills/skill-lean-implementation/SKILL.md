@@ -1,11 +1,19 @@
 ---
 name: skill-lean-implementation
 description: Implement Lean 4 proofs and definitions using lean-lsp tools. Invoke for Lean-language implementation tasks.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(lake *), mcp__lean-lsp__lean_goal, mcp__lean-lsp__lean_diagnostic_messages, mcp__lean-lsp__lean_hover_info, mcp__lean-lsp__lean_completions, mcp__lean-lsp__lean_multi_attempt, mcp__lean-lsp__lean_local_search, mcp__lean-lsp__lean_state_search, mcp__lean-lsp__lean_hammer_premise
-context:
-  - .claude/context/project/lean4/tools/mcp-tools-guide.md
-  - .claude/context/project/lean4/patterns/tactic-patterns.md
-  - .claude/context/project/lean4/standards/lean4-style-guide.md
+allowed-tools: Task
+context: fork
+agent: lean-implementation-agent
+# Original context (now loaded by subagent):
+#   - .claude/context/project/lean4/tools/mcp-tools-guide.md
+#   - .claude/context/project/lean4/patterns/tactic-patterns.md
+#   - .claude/context/project/lean4/standards/lean4-style-guide.md
+# Original tools (now used by subagent):
+#   - Read, Write, Edit, Glob, Grep, Bash(lake *)
+#   - mcp__lean-lsp__lean_goal, mcp__lean-lsp__lean_diagnostic_messages
+#   - mcp__lean-lsp__lean_hover_info, mcp__lean-lsp__lean_completions
+#   - mcp__lean-lsp__lean_multi_attempt, mcp__lean-lsp__lean_local_search
+#   - mcp__lean-lsp__lean_state_search, mcp__lean-lsp__lean_hammer_premise
 ---
 
 # Lean Implementation Skill

@@ -1,10 +1,14 @@
 ---
 name: skill-implementer
 description: Execute general implementation tasks following a plan. Invoke for non-Lean implementation work.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-context:
-  - .claude/context/core/formats/summary-format.md
-  - .claude/context/core/standards/code-patterns.md
+allowed-tools: Task
+context: fork
+agent: general-implementation-agent
+# Original context (now loaded by subagent):
+#   - .claude/context/core/formats/summary-format.md
+#   - .claude/context/core/standards/code-patterns.md
+# Original tools (now used by subagent):
+#   - Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # Implementer Skill
