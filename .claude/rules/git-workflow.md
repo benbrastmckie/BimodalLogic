@@ -100,7 +100,8 @@ Session ID links commits to their originating command execution.
 
 **Generation**:
 ```bash
-session_id="sess_$(date +%s)_$(head -c 3 /dev/urandom | xxd -p)"
+# Portable command (works on NixOS, macOS, Linux - no xxd dependency)
+session_id="sess_$(date +%s)_$(od -An -N3 -tx1 /dev/urandom | tr -d ' ')"
 ```
 
 **Lifecycle**:
