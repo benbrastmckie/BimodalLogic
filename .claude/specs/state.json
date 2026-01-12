@@ -6,13 +6,13 @@
     {
       "project_number": 414,
       "project_name": "create_planner_agent_subagent",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "low",
       "description": "Create .claude/agents/planner-agent.md subagent that loads plan-format.md and task-breakdown.md on-demand. Returns structured JSON with plan path and summary. Integrates with skill-planner via context: fork pattern.",
       "effort": "2-3 hours",
       "created": "2026-01-12T08:00:00Z",
-      "last_updated": "2026-01-12T02:59:59Z",
+      "last_updated": "2026-01-12T03:02:54Z",
       "dependencies": [
         410
       ],
@@ -24,9 +24,14 @@
         {
           "path": ".claude/specs/414_create_planner_agent_subagent/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/414_create_planner_agent_subagent/summaries/implementation-summary-20260111.md",
+          "type": "summary"
         }
       ],
-      "plan_version": 1
+      "plan_version": 1,
+      "completed": "2026-01-11"
     },
     {
       "project_number": 413,
