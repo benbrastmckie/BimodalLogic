@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T05:36:33.618239Z",
-  "next_project_number": 437,
+  "next_project_number": 438,
   "active_projects": [
+    {
+      "project_number": 437,
+      "project_name": "improve_readme_consistency_with_recursive_semantics",
+      "status": "not_started",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T17:34:32Z",
+      "last_updated": "2026-01-12T17:34:32Z"
+    },
     {
       "project_number": 436,
       "project_name": "update_license_to_modelchecker_standard",

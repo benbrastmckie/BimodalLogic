@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T22:00:00Z
-next_project_number: 437
+next_project_number: 438
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 437. Improve README consistency with recursive-semantics.md
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+
+**Description**: Improve /home/benjamin/Projects/ProofChecker/README.md for consistency and clarity with the recursive-semantics.md documentation (/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md) which provides an authoritative overview of the base layer and various extensions. Reduce redundancy by presenting layer extensions only once in a high-quality way. Fix any internal discrepancies in README.md. Emphasize the parallel development of Logos in the ModelChecker, including a link to https://github.com/benbrastmckie/ModelChecker where appropriate.
+
+---
 
 ### 434. Refactor README for investors and researchers
 - **Effort**: 6 hours
