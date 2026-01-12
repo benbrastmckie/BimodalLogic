@@ -208,18 +208,23 @@ technical_debt:
 
 ### 395. Create Bimodal troubleshooting guide and exercise solutions
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: markdown
 - **Supersedes**: Task 178
 - **Research**: [research-001.md](.claude/specs/395_create_bimodal_troubleshooting_and_exercise_solutions/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/395_create_bimodal_troubleshooting_and_exercise_solutions/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/395_create_bimodal_troubleshooting_and_exercise_solutions/summaries/implementation-summary-20260112.md)
 
 **Description**: Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.
 
-**Files Affected**:
-  - Theories/Bimodal/docs/user-guide/TROUBLESHOOTING.md (new)
-  - Theories/Bimodal/docs/user-guide/EXAMPLES.md (modify section 7)
+**Files Created/Modified**:
+  - Theories/Bimodal/docs/user-guide/TROUBLESHOOTING.md (new - 20 error patterns)
+  - Theories/Bimodal/docs/user-guide/EXAMPLES.md (9 exercises with hints and solutions)
+  - Theories/Bimodal/docs/user-guide/README.md (navigation updated)
+  - Theories/Bimodal/docs/user-guide/QUICKSTART.md (navigation updated)
+  - Theories/Bimodal/README.md (documentation table updated)
 
 ---
 
