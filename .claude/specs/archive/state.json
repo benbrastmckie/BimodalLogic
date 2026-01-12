@@ -5,6 +5,23 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 426,
+      "project_name": "covariantclass_vs_isorderedaddmonoid_comparison",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Compare CovariantClass (originally intended in task 417) vs IsOrderedAddMonoid (used in task 420) for representing time as a totally ordered commutative group. Analyze whether using IsOrderedAddMonoid loses expressiveness or accuracy in stating that time is a totally ordered commutative group. Document pros/cons of each approach.",
+      "created": "2026-01-12T05:35:04Z",
+      "last_updated": "2026-01-12T09:52:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/426_covariantclass_vs_isorderedaddmonoid_comparison/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "abandoned": "2026-01-12T05:46:59Z"
+    },
+    {
       "project_number": 346,
       "project_name": "refactor_commands_to_delegate_to_skills",
       "type": "refactor",
@@ -589,7 +606,7 @@
       "created": "2026-01-05T08:34:20.462436Z",
       "last_updated": "2026-01-10T22:57:38Z",
       "effort": "61-97 hours",
-      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom \u03c6 is a Prop, not a Type, making it impossible to return Option (Axiom \u03c6) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
+      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -847,7 +864,7 @@
       "plan_path": ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
       "plan_metadata": {
         "plan_version": 2,
-        "revision_reason": "Maintain \u27e8S, \u2291, I\u27e9 notation instead of replacing with \u27e8S, \u2291, | |\u27e9"
+        "revision_reason": "Maintain ⟨S, ⊑, I⟩ notation instead of replacing with ⟨S, ⊑, | |⟩"
       },
       "artifacts": [
         ".claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
