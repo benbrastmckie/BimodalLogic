@@ -165,7 +165,7 @@ technical_debt:
 
 ### 406. Enforce convention in BimodalReference.tex
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: latex
 - **Dependencies**: 405

@@ -124,13 +124,14 @@
     {
       "project_number": 406,
       "project_name": "enforce_convention_bimodal_reference_tex",
-      "status": "not_started",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "description": "Reformat Theories/Bimodal/LaTeX/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
       "effort": "1-2 hours",
       "created": "2026-01-11T22:25:49Z",
-      "last_updated": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-12T08:15:00Z",
+      "implementing_started": "2026-01-12T08:15:00Z",
       "dependencies": [
         405
       ]
