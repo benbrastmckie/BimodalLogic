@@ -243,17 +243,19 @@ technical_debt:
 
 ### 417. Split typeclass constraints in Explanatory
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-11
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 400
 - **Dependencies**: 416
 - **Research**: [research-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-001.md), [research-002.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-002.md)
+- **Plan**: [implementation-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/plans/implementation-001.md)
 
 **Description**: Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.
 
-**Note**: Task 420 (Mathlib upgrade) already implemented unbundling using `[AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]` instead of the originally recommended `CovariantClass` approach. See research-002.md for pros/cons analysis.
+**Note**: Task 420 (Mathlib upgrade) already implemented unbundling using `[AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]` instead of the originally recommended `CovariantClass` approach. This plan creates a benchmarked comparison by reverting to the bundled approach to empirically validate the performance benefit.
 
 ---
 
