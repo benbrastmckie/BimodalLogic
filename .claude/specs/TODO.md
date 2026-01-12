@@ -116,10 +116,12 @@ technical_debt:
 
 ### 421. Look up formal term definitions and revise research report
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Related Task**: 398
+- **Research**: [research-001.md](.claude/specs/421_lookup_formal_term_definitions_revise_research/reports/research-001.md)
 
 **Description**: Look up all formal terms and terms of art used in .claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md that are defined in /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex. Revise research-001.md to ensure all terms are defined before they are used.
 
