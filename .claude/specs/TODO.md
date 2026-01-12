@@ -96,13 +96,15 @@ technical_debt:
 
 ### 428. Complete TODOs in Bimodal syntax LaTeX file
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Planned**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
 - **Plan**: [implementation-001.md](.claude/specs/428_complete_todos_bimodal_syntax_latex/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/428_complete_todos_bimodal_syntax_latex/summaries/implementation-summary-20260112.md)
 
-**Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/01-Syntax.tex
+**Description**: Completed both TODOs in 01-Syntax.tex: (1) Changed swap notation from parenthesized to prefix form, (2) Restructured definition as clear structural induction.
 
 ---
 
