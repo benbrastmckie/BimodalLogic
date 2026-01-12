@@ -30,7 +30,7 @@ technical_debt:
 
 ### 437. Improve README consistency with recursive-semantics.md
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: High
@@ -151,9 +151,11 @@ technical_debt:
 
 ### 438. Refactor Bimodal README for systematic documentation
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/438_refactor_bimodal_readme/reports/research-001.md)
 
 **Description**: Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference.
 
