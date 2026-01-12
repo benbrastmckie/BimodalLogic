@@ -1,16 +1,25 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T05:36:33.618239Z",
-  "next_project_number": 430,
+  "next_project_number": 431,
   "active_projects": [
+    {
+      "project_number": 430,
+      "project_name": "refactor_documentation_general_framework",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T14:28:44Z",
+      "last_updated": "2026-01-12T14:28:44Z"
+    },
     {
       "project_number": 429,
       "project_name": "extend_command_skill_agent_integration_to_meta",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T06:02:46Z",
-      "last_updated": "2026-01-12T14:23:10Z",
+      "last_updated": "2026-01-12T14:30:00Z",
       "plan_version": "001",
       "artifacts": [
         {
@@ -20,6 +29,10 @@
         {
           "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },
@@ -228,14 +241,14 @@
       "project_number": 260,
       "project_name": "proof_search",
       "type": "feature",
-      "phase": "blocked",
-      "status": "researching",
+      "phase": "researched",
+      "status": "researched",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T14:23:17Z",
+      "last_updated": "2026-01-12T22:45:00Z",
       "effort": "40-60 hours",
-      "description": "Implement automated proof search for TM logic.",
+      "description": "Implement automated proof search for TM logic with proof term construction.",
       "planning_completed": "2026-01-05T08:07:35-08:00",
       "plan_path": ".claude/specs/260_proof_search/plans/implementation-001.md",
       "plan_metadata": {
@@ -254,13 +267,15 @@
       },
       "estimated_hours": 76,
       "artifacts": [
+        ".claude/specs/260_proof_search/reports/research-001.md",
+        ".claude/specs/260_proof_search/reports/research-002.md",
         ".claude/specs/260_proof_search/plans/implementation-001.md",
         ".claude/specs/260_proof_search/summaries/implementation-summary-20260105.md",
-        "Logos/Core/Automation/ProofSearch.lean"
+        "Theories/Bimodal/Automation/ProofSearch.lean"
       ],
       "started": "2026-01-05",
-      "completed": "2026-01-05",
-      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom φ) from witness function."
+      "blocking_resolved": true,
+      "blocking_resolution": "Research-002 recommends parallel AxiomWitness : Type pattern following Mathlib ITauto. This enables witness extraction while preserving Axiom : Prop for metalogic proofs."
     },
     {
       "project_number": 261,

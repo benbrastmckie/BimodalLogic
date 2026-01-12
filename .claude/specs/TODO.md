@@ -113,35 +113,39 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-05
+- **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: lean
-- **Blocking**: Axiom refactor (Prop → Type) or Classical.choice research
+- **Blocking Resolved**: Yes (via AxiomWitness pattern)
 - **Dependencies**: None
-- **Research**: [Research Report](.claude/specs/260_proof_search/reports/research-001.md)
+- **Research**: [research-001.md](.claude/specs/260_proof_search/reports/research-001.md), [research-002.md](.claude/specs/260_proof_search/reports/research-002.md)
 - **Plan**: [Implementation Plan](.claude/specs/260_proof_search/plans/implementation-001.md)
 - **Implementation**: [Implementation Summary](.claude/specs/260_proof_search/summaries/implementation-summary-20260105.md)
 
-**Description**: Implement automated proof search for TM logic.
+**Description**: Implement automated proof search for TM logic with proof term construction.
 
-**Blocking Reason**: Phase 1 (Proof Term Construction) blocked by `Axiom` being `Prop` instead of `Type`. Cannot return `Option (Axiom φ)` from witness function. Need either: (1) Axiom refactor to Type, (2) Classical.choice approach, or (3) pivot to Phase 2 (Tactic Integration).
+**Blocking Resolution** (research-002): Create parallel `AxiomWitness : Formula -> Type` that mirrors `Axiom` constructors, following Mathlib ITauto pattern. This enables witness extraction for proof term construction while preserving `Axiom : Prop` for metalogic proofs.
 
-**Action Items**:
-1. Implement breadth-first proof search.
-2. Implement heuristic-guided search.
+**Recommended Approach**:
+1. Create `AxiomWitness` inductive in `Type` mirroring all 14 axiom constructors
+2. Add `AxiomWitness.toAxiom` conversion function for soundness
+3. Implement `matchAxiomWitness : Formula -> Option (AxiomWitness phi)`
+4. Update `bounded_search` to return `Option (DerivationTree Gamma phi)`
 
 **Files**:
-- `Logos/Core/Automation/ProofSearch.lean`
+- `Theories/Bimodal/Automation/ProofSearch.lean`
+- `Theories/Bimodal/ProofSystem/Axioms.lean` (add AxiomWitness)
 
 **Acceptance Criteria**:
-- [ ] Breadth-first proof search implemented
-- [ ] Heuristic-guided search implemented
-- [ ] Tests added for proof search
-- [ ] Performance benchmarks created
+- [ ] AxiomWitness type created with all 14 constructors
+- [ ] matchAxiomWitness function implemented
+- [ ] Proof search returns DerivationTree (not just Bool)
+- [ ] Tests verify proof term validity
 - [ ] Documentation updated
 
-**Impact**: Enables automated proof discovery for TM logic, reducing manual proof construction effort.
+**Impact**: Enables automated proof discovery returning actual proof terms for TM logic.
 
 ---
 
