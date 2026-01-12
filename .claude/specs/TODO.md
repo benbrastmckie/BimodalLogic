@@ -165,13 +165,15 @@ technical_debt:
 
 ### 418. Cache typeclass instances in Explanatory
 - **Effort**: 1.5-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 400
 - **Dependencies**: 416
 - **Research**: [research-001.md](.claude/specs/418_cache_typeclass_instances_explanatory/reports/research-001.md), [research-002.md](.claude/specs/418_cache_typeclass_instances_explanatory/reports/research-002.md)
+- **Plan**: [implementation-001.md](.claude/specs/418_cache_typeclass_instances_explanatory/plans/implementation-001.md)
 
 **Description**: Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.
 
