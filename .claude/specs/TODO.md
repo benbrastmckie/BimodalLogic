@@ -278,12 +278,13 @@ technical_debt:
 
 ### 420. Upgrade Mathlib version
 - **Effort**: 4-8 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 400
 - **Dependencies**: 416
 - **Research**: [.claude/specs/420_upgrade_mathlib_version/reports/research-001.md]
+- **Plan**: [.claude/specs/420_upgrade_mathlib_version/plans/implementation-001.md]
 
 **Description**: Upgrade Mathlib from v4.14.0 to a newer version (4.22+) that includes significant compiler and instance caching improvements. Requires testing for breaking changes and API migrations.
 
