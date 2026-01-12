@@ -116,6 +116,14 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 
 ---
 
+## Implementation Status
+
+The Logos methodology comprises three components: (1) an **axiomatic proof theory** for deriving valid inferences, (2) a **recursive semantic theory** for interpreting formulas in explicit models, and (3) a **metalogic** establishing the soundness and completeness of the proof theory over the semantics.
+
+**For detailed status**: [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) | [LEAN Registry](docs/project-info/SORRY_REGISTRY.md) | [TODO](TODO.md)
+
+---
+
 ## Installation
 
 ### Requirements
@@ -302,4 +310,3 @@ See [Directory Naming Convention](docs/development/CONTRIBUTING.md#3-directory-n
 ## Related Projects
 
 - **[ModelChecker](https://github.com/benbrastmckie/ModelChecker)** - Parallel implementation of Logos semantic theory in Python/Z3 for countermodel generation and semantic verification. Together with ProofChecker, forms the dual verification architecture for RL training.
-- **[LogicNotes](https://github.com/benbrastmckie/LogicNotes)** - Theoretical foundations for TM logic subsystems
