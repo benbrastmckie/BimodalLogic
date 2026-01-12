@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-12T19:30:00Z",
+  "_last_updated": "2026-01-12T22:05:17Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -3224,6 +3224,223 @@
         }
       ],
       "archived": "2026-01-12T19:30:00Z"
-    }
+    },
+    [
+      {
+        "project_number": 443,
+        "project_name": "fix_session_id_and_agent_system_robustness",
+        "status": "completed",
+        "language": "meta",
+        "priority": "high",
+        "created": "2026-01-12T20:49:18Z",
+        "last_updated": "2026-01-12T21:05:37Z",
+        "description": "Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. Systematically fix all fragile patterns in .claude/ agent system.",
+        "session_id": "sess_1768251758_a9d38b",
+        "artifacts": [
+          {
+            "path": ".claude/specs/443_fix_session_id_and_agent_system_robustness/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/443_fix_session_id_and_agent_system_robustness/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/443_fix_session_id_and_agent_system_robustness/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "001",
+        "completed": "2026-01-12T21:05:37Z",
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 442,
+        "project_name": "research_skill_execution_architecture",
+        "type": "research",
+        "phase": "completed",
+        "status": "completed",
+        "priority": "high",
+        "language": "meta",
+        "created": "2026-01-12T19:44:35Z",
+        "last_updated": "2026-01-12T20:30:23Z",
+        "effort": "4 hours",
+        "description": "Research the skill/agent execution architecture to determine optimal approach for systematic improvements. Analyze three options: (A) Make skills executable with automatic subagent delegation, (B) Inline critical patterns in command files removing skill indirection, (C) Use Task tool with explicit prompts including all skill context. Evaluate tradeoffs around token efficiency, reliability, maintainability, and Claude Code constraints.",
+        "artifacts": [
+          {
+            "path": ".claude/specs/442_research_skill_execution_architecture/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/442_research_skill_execution_architecture/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/442_research_skill_execution_architecture/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "session_id": "sess_1768249607_8e0bfe",
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 440,
+        "project_name": "revise_logos_readme",
+        "status": "completed",
+        "language": "general",
+        "priority": "medium",
+        "created": "2026-01-12T21:16:41Z",
+        "last_updated": "2026-01-12T22:10:00Z",
+        "completed": "2026-01-12T22:10:00Z",
+        "plan_version": "001",
+        "artifacts": [
+          {
+            "path": ".claude/specs/440_revise_logos_readme/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/440_revise_logos_readme/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/440_revise_logos_readme/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 439,
+        "project_name": "address_todo_note_tags_semantics_tex",
+        "status": "completed",
+        "language": "latex",
+        "priority": "medium",
+        "created": "2026-01-12T18:46:59Z",
+        "last_updated": "2026-01-12T20:56:00Z",
+        "description": "Address the TODO and NOTE tags in Theories/Bimodal/latex/subfiles/02-Semantics.tex",
+        "completed": "2026-01-12T20:56:00Z",
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 438,
+        "project_name": "refactor_bimodal_readme",
+        "status": "completed",
+        "language": "general",
+        "priority": "medium",
+        "created": "2026-01-12T18:04:54Z",
+        "last_updated": "2026-01-12T19:45:00Z",
+        "completed": "2026-01-12T19:45:00Z",
+        "description": "Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference.",
+        "plan_version": "001",
+        "artifacts": [
+          {
+            "path": ".claude/specs/438_refactor_bimodal_readme/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/438_refactor_bimodal_readme/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/438_refactor_bimodal_readme/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 434,
+        "project_name": "refactor_readme_for_investors_and_researchers",
+        "status": "completed",
+        "language": "general",
+        "priority": "high",
+        "created": "2026-01-12T14:00:00Z",
+        "last_updated": "2026-01-12T18:00:00Z",
+        "completed": "2026-01-12T18:00:00Z",
+        "plan_version": "001",
+        "artifacts": [
+          {
+            "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 432,
+        "project_name": "fix_artifact_linking_in_todo_and_state",
+        "status": "completed",
+        "language": "meta",
+        "priority": "high",
+        "created": "2026-01-12T14:48:15Z",
+        "last_updated": "2026-01-12T17:50:29Z",
+        "plan_version": "001",
+        "artifacts": [
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-003.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-004.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-005.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/plans/implementation-001.md",
+            "type": "plan"
+          }
+        ],
+        "completed": "2026-01-12T17:50:29Z",
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 132,
+        "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",
+        "type": "feature",
+        "phase": "completed",
+        "status": "completed",
+        "priority": "low",
+        "language": "lean",
+        "created": "2026-01-05T01:22:38Z",
+        "last_updated": "2026-01-12T18:40:07Z",
+        "effort": "16 hours",
+        "artifacts": [
+          {
+            "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "001",
+        "completed": "2026-01-12T18:40:07Z",
+        "archived": "2026-01-12T22:05:12Z"
+      }
+    ]
   ]
 }

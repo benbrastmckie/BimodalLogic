@@ -1,22 +1,22 @@
 ---
-last_updated: 2026-01-12T22:00:00Z
+last_updated: 2026-01-12T23:00:00Z
 next_project_number: 450
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 16
-  completed: 122
+  active: 13
+  completed: 130
   in_progress: 0
   not_started: 7
   abandoned: 7
-  total: 145
+  total: 150
 priority_distribution:
   critical: 0
   high: 4
-  medium: 4
-  low: 8
+  medium: 3
+  low: 6
 technical_debt:
   sorry_count: 19
   axiom_count: 11
@@ -28,45 +28,6 @@ technical_debt:
 
 ## High Priority
 
-### 443. Fix session ID generation and agent system robustness
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: High
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/443_fix_session_id_and_agent_system_robustness/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/443_fix_session_id_and_agent_system_robustness/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/443_fix_session_id_and_agent_system_robustness/summaries/implementation-summary-20260112.md)
-
-**Description**: Fixed session ID generation (xxd dependency) that caused /research 133 to crash. Task 442 Phase 3 fixed checkpoint-gate-in.md but missed three other files: routing.md, git-workflow.md, thin-wrapper-skill.md. All now use portable `od` command.
-
----
-
-### 442. Research skill/agent execution architecture
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: High
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/442_research_skill_execution_architecture/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/442_research_skill_execution_architecture/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/442_research_skill_execution_architecture/summaries/implementation-summary-20260112.md)
-
-**Description**: Research the skill/agent execution architecture to determine optimal approach for systematic improvements identified in task 432 post-implementation analysis. Ten issues were identified including: fragile session ID generation, Skill tool loading documentation without executing, named agent delegation failures, premature success returns, unstructured skill returns, subagent context isolation not working, inconsistent artifact linking, no timeout handling, and manual status updates bypassing skill-status-sync.
-
-Evaluate three architectural options:
-- **Option A**: Make skills executable with automatic subagent delegation
-- **Option B**: Inline critical patterns in command files, removing skill indirection layer
-- **Option C**: Use Task tool with explicit prompts including all skill context (since named agents don't exist)
-
-Research should analyze tradeoffs around token efficiency, reliability, maintainability, and Claude Code platform constraints. Recommend an approach with migration path.
-
----
-
 ### 437. Improve README consistency with recursive-semantics.md
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHED]
@@ -76,59 +37,6 @@ Research should analyze tradeoffs around token efficiency, reliability, maintain
 - **Research**: [research-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md)
 
 **Description**: Improve /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md for consistency and clarity with the recursive-semantics.md documentation (/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md) which provides an authoritative overview of the base layer and various extensions. Reduce redundancy by presenting layer extensions only once in a high-quality way. Fix any internal discrepancies in README.md. Emphasize the parallel development of Logos in the ModelChecker, including a link to https://github.com/benbrastmckie/ModelChecker where appropriate.
-
----
-
-### 434. Refactor README for investors and researchers
-- **Effort**: 6 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: High
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md)
-
-**Description**: Comprehensive refactor of README.md to improve narrative arc and organization. Key changes: (1) Align with current design in recursive-semantics.md and LogosReference.pdf - add links in format **name_of_doc** ([tex](path) | [pdf](path)); (2) TOC should use links with brief descriptions; (3) Lead with RL training application instead of Bimodal comparison - provide brief Logos intro then motivations/applications before moving comparison elsewhere; (4) Introduction should orient and motivate for potential investors while maintaining accuracy for researchers; (5) Improve narrative arc, reduce redundancy, avoid endless bullet points; (6) Provide detailed yet compact presentation showing full scope and applications with links to details; (7) Preserve engaging discussion sections like 'RL Training' and 'Motivations'; (8) Careful refactor preserving and improving existing content.
-
----
-
-### 432. Systematic agent system overhaul for robustness
-- **Effort**: 11-17 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/summaries/implementation-summary-20260112.md)
-- **Priority**: High
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md), [research-002.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md), [research-003.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-003.md), [research-004.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-004.md), [research-005.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-005.md)
-- **Plan**: [implementation-001.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/plans/implementation-001.md)
-
-**Description**: Systematic overhaul of the .claude/ agent system to improve robustness and uniformity while maintaining efficiency. Implementation priorities (from research-001 through research-005):
-
-**Architecture Changes:**
-- Introduce Checkpoint-Based Execution Model with three gates: GATE IN (preflight), GATE OUT (postflight), COMMIT (finalize)
-- Unify all status updates through skill-status-sync (eliminate inline jq in commands)
-- Implement tiered progressive context loading: Commands ~200 tokens (routing), Skills ~300 tokens (validation), Agents ~10k+ tokens (execution)
-- Standardize plan-file-as-checkpoint pattern across all implementer agents (phase markers + git commits)
-
-**Key Fixes (High Priority):**
-- Add idempotency check (grep) before artifact linking
-- Implement 5-stage artifact lifecycle: created → validated → registered → linked → committed
-- Add session_id to git commit messages for traceability
-
-**Design Decisions:**
-- Phase-level checkpointing only (no sub-phase recovery)
-- Schema-only validation at GATE OUT (no quality review agents)
-- Human-in-the-loop at command boundaries provides quality control
-
-**Enhancements (Medium Priority):**
-- Extend errors.json with context, trajectory, and recovery fields
-- Add error pattern aggregation for /errors command
-- Use "Context Pointers" pattern instead of @-references in skills
 
 ---
 
@@ -179,54 +87,6 @@ Research should analyze tradeoffs around token efficiency, reliability, maintain
 - **Language**: lean
 
 **Description**: Prove completeness following Approach 2 'Relativized Completeness' from research-004.md. The syntactic construction yields the "free" ordered abelian group on one generator, isomorphic to ℤ. Adding density axioms yields ℚ, completeness axioms approaches ℝ. References: .claude/specs/257_completeness_proofs/reports/research-004.md and research-006.md.
-
----
-
-### 440. Revise Logos README to reflect current structure and ambitions
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/440_revise_logos_readme/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/440_revise_logos_readme/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/440_revise_logos_readme/summaries/implementation-summary-20260112.md)
-
-**Description**: Completely replaced the outdated Logos README with an accurate description of the hyperintensional logic system. Removed all references to "re-exporting Bimodal" and Layer 0-4 architecture. Added philosophy section explaining hyperintensionality, extension architecture diagram, core concepts (bilateral propositions, task relation, world-histories), accurate implementation status, directory structure matching SubTheories/, operators reference, and links to recursive-semantics.md.
-
----
-
-### 439. Address TODO and NOTE tags in 02-Semantics.tex
-- **Effort**: ~1 hour
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/439_address_todo_note_tags_semantics_tex/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/439_address_todo_note_tags_semantics_tex/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/439_address_todo_note_tags_semantics_tex/summaries/implementation-summary-20260112.md)
-
-**Description**: Address the TODO and NOTE tags in Theories/Bimodal/latex/subfiles/02-Semantics.tex
-
----
-
-### 438. Refactor Bimodal README for systematic documentation
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/438_refactor_bimodal_readme/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/438_refactor_bimodal_readme/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/438_refactor_bimodal_readme/summaries/implementation-summary-20260112.md)
-
-**Description**: Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference.
 
 ---
 
@@ -381,30 +241,6 @@ Research should analyze tradeoffs around token efficiency, reliability, maintain
 
 ---
 
-### 132. Prove Lindenbaum maximal consistency lemma in Completeness.lean
-- **Effort**: 16 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/summaries/implementation-summary-20260112.md)
-- **Files Affected**:
-  - Logos/Core/Metalogic/Completeness.lean
-- **Description**: Formalize and prove the Lindenbaum maximal consistency lemma to eliminate the first axiom placeholder.
-- **Acceptance Criteria**:
-  - [ ] Lindenbaum lemma proven and axiom removed
-  - [ ] Proof integrates with existing canonical model scaffolding
-  - [ ] Related tests added or updated
-- **Impact**: Unlocks subsequent completeness proofs by establishing maximal consistency.
-
----
-
 ### 133. Build canonical model constructors in Completeness.lean
 - **Effort**: 25-35 hours
 - **Status**: [RESEARCHED]
@@ -460,8 +296,6 @@ Research should analyze tradeoffs around token efficiency, reliability, maintain
   - [ ] No remaining axiom or sorry placeholders in Completeness.lean
   - [ ] Completeness tests added or updated
 - **Impact**: Delivers full completeness, enabling derivability from validity.
-
-### Decidability
 
 ---
 
