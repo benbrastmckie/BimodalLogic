@@ -285,3 +285,107 @@ Partial results should include:
 - All findings discovered so far
 - Clear indication of what's missing
 - Recovery recommendations
+
+## Return Format Examples
+
+### Completed Research
+
+```json
+{
+  "status": "completed",
+  "summary": "Found 8 relevant patterns for agent implementation including subagent return format, lazy context loading, and skill-to-agent mapping. Identified report-format.md standard and documented execution flow patterns.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": ".claude/specs/412_general_research/reports/research-001.md",
+      "summary": "Research report with 8 findings and implementation recommendations"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1736689200_abc123",
+    "duration_seconds": 180,
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 8
+  },
+  "next_steps": "Run /plan 412 to create implementation plan"
+}
+```
+
+### Partial Research (Web Search Failed)
+
+```json
+{
+  "status": "partial",
+  "summary": "Found 4 codebase patterns but WebSearch failed due to network error. Report contains local findings with suggested follow-up for external documentation.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": ".claude/specs/412_general_research/reports/research-001.md",
+      "summary": "Partial research report with 4 codebase findings"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1736689200_abc123",
+    "duration_seconds": 120,
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 4
+  },
+  "errors": [
+    {
+      "type": "network",
+      "message": "WebSearch request failed: connection timeout",
+      "recoverable": true,
+      "recommendation": "Retry research or proceed with codebase-only findings"
+    }
+  ],
+  "next_steps": "Review partial findings, then retry research or proceed to planning"
+}
+```
+
+### Failed Research
+
+```json
+{
+  "status": "failed",
+  "summary": "Research failed: Task 999 not found in state.json. Cannot proceed without valid task.",
+  "artifacts": [],
+  "metadata": {
+    "session_id": "sess_1736689200_xyz789",
+    "duration_seconds": 5,
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "errors": [
+    {
+      "type": "validation",
+      "message": "Task 999 not found in state.json",
+      "recoverable": false,
+      "recommendation": "Verify task number with /task --sync or create task first"
+    }
+  ],
+  "next_steps": "Check task exists with /task --sync"
+}
+```
+
+## Critical Requirements
+
+**MUST DO**:
+1. Always return valid JSON (not markdown narrative)
+2. Always include session_id from delegation context
+3. Always create report file before returning completed/partial
+4. Always verify report file exists and is non-empty
+5. Always search codebase before web search (local first)
+6. Always include next_steps in successful returns
+
+**MUST NOT**:
+1. Return plain text instead of JSON
+2. Skip codebase exploration in favor of only web search
+3. Create empty report files
+4. Ignore network errors (log and continue with fallback)
+5. Fabricate findings not actually discovered
+6. Return completed status without creating artifacts
