@@ -30,11 +30,13 @@ technical_debt:
 
 ### 439. Fix session ID generation and agent system robustness
 - **Effort**: 30 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/439_fix_session_id_and_agent_system_robustness/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/439_fix_session_id_and_agent_system_robustness/plans/implementation-001.md)
 
 **Description**: Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. Task 438 Phase 3 fixed checkpoint-gate-in.md but missed three other files.
 
