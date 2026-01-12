@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T09:45:00Z
-next_project_number: 427
+next_project_number: 428
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -77,6 +77,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 427. Document command, skill, and subagent framework
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+
+**Description**: Systematically document the framework for using commands, skills, and subagents in conjunction. Update `.claude/context/core/` files where appropriate and create documentation in `.claude/docs/` to support the development and refinement of this approach. Build on the patterns established in task 425 and its dependencies.
+
+---
 
 ### 426. CovariantClass vs IsOrderedAddMonoid comparison
 - **Effort**: 2-3 hours

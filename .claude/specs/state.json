@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T05:36:33.618239Z",
-  "next_project_number": 427,
+  "next_project_number": 428,
   "active_projects": [
+    {
+      "project_number": 427,
+      "project_name": "document_command_skill_subagent_framework",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-12T05:40:23Z",
+      "last_updated": "2026-01-12T05:40:23Z"
+    },
     {
       "project_number": 426,
       "project_name": "covariantclass_vs_isorderedaddmonoid_comparison",
@@ -255,7 +264,7 @@
       ],
       "started": "2026-01-05",
       "completed": "2026-01-05",
-      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom \u03c6) from witness function."
+      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom φ) from witness function."
     },
     {
       "project_number": 261,
