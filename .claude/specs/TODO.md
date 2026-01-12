@@ -178,12 +178,14 @@ technical_debt:
 
 ### 407. Enforce convention in LogosReference.tex
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
 - **Dependencies**: 405
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/407_enforce_convention_logos_reference_tex/summaries/implementation-summary-20260112.md)
 
-**Description**: Reformat Theories/Logos/latex/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
+**Description**: Reformatted LogosReference.tex and all 9 subfiles to follow the semantic linefeeds convention.
 
 ---
 

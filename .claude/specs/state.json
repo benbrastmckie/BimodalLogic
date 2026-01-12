@@ -161,16 +161,23 @@
     {
       "project_number": 407,
       "project_name": "enforce_convention_logos_reference_tex",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "description": "Reformat Theories/Logos/LaTeX/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
       "effort": "1-2 hours",
       "created": "2026-01-11T22:25:49Z",
-      "last_updated": "2026-01-12T08:30:00Z",
+      "last_updated": "2026-01-12T09:00:00Z",
       "implementing_started": "2026-01-12T08:30:00Z",
+      "completed": "2026-01-12T09:00:00Z",
       "dependencies": [
         405
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/407_enforce_convention_logos_reference_tex/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
       ]
     },
     {
