@@ -207,11 +207,12 @@ technical_debt:
 
 ### 395. Create Bimodal troubleshooting guide and exercise solutions
 - **Effort**: 3-4 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Supersedes**: Task 178
 - **Research**: [research-001.md](.claude/specs/395_create_bimodal_troubleshooting_and_exercise_solutions/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/395_create_bimodal_troubleshooting_and_exercise_solutions/plans/implementation-001.md)
 
 **Description**: Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.
 
