@@ -52,7 +52,28 @@ technical_debt:
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md), [research-002.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md), [research-003.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-003.md), [research-004.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-004.md), [research-005.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-005.md)
 
-**Description**: Systematic overhaul of the agent system to improve robustness and uniformity while maintaining efficiency. Introduces a Checkpoint-Based Execution Model with unified verification gates, consolidates preflight/postflight to checkpoint enforcers, unifies status management through skill-status-sync, and simplifies agent contracts. Research identified six systemic issues: fragmented responsibility delegation, inconsistent preflight/postflight execution, documentation-implementation gaps, redundant verification points, unclear artifact lifecycle, and metadata propagation failures.
+**Description**: Systematic overhaul of the .claude/ agent system to improve robustness and uniformity while maintaining efficiency. Implementation priorities (from research-001 through research-005):
+
+**Architecture Changes:**
+- Introduce Checkpoint-Based Execution Model with three gates: GATE IN (preflight), GATE OUT (postflight), COMMIT (finalize)
+- Unify all status updates through skill-status-sync (eliminate inline jq in commands)
+- Implement tiered progressive context loading: Commands ~200 tokens (routing), Skills ~300 tokens (validation), Agents ~10k+ tokens (execution)
+- Standardize plan-file-as-checkpoint pattern across all implementer agents (phase markers + git commits)
+
+**Key Fixes (High Priority):**
+- Add idempotency check (grep) before artifact linking
+- Implement 5-stage artifact lifecycle: created → validated → registered → linked → committed
+- Add session_id to git commit messages for traceability
+
+**Design Decisions:**
+- Phase-level checkpointing only (no sub-phase recovery)
+- Schema-only validation at GATE OUT (no quality review agents)
+- Human-in-the-loop at command boundaries provides quality control
+
+**Enhancements (Medium Priority):**
+- Extend errors.json with context, trajectory, and recovery fields
+- Add error pattern aggregation for /errors command
+- Use "Context Pointers" pattern instead of @-references in skills
 
 ---
 
