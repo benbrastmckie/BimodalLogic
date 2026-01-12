@@ -71,7 +71,7 @@ Estimated effort: 60-80 hours of focused metalogic development.
 
 namespace Bimodal.Metalogic
 
-open Syntax ProofSystem Semantics
+open Syntax ProofSystem Semantics Theorems.Combinators Theorems.Propositional
 
 /-!
 ## Consistent Sets
@@ -522,6 +522,744 @@ theorem maximal_negation_complete (Γ : Context) (φ : Formula)
   have ⟨h_neg_deriv⟩ := derives_neg_from_inconsistent_extension h_incons
   -- By closure property, ¬φ ∈ Γ
   exact maximal_consistent_closed Γ (Formula.neg φ) h_max h_neg_deriv
+
+/-!
+### Set-Based MCS Properties
+
+These lemmas establish properties of SetMaximalConsistent sets, which are used
+for the canonical model construction. They parallel the list-based properties
+but work with infinite sets of formulas.
+-/
+
+/--
+Helper: If `A ∈ Γ'`, then `A :: Γ'.filter (fun x => decide (x ≠ A))` has the same elements as `Γ'`.
+-/
+private lemma cons_filter_neq_perm {A : Formula} {Γ' : Context}
+    (h_mem : A ∈ Γ') : ∀ x, x ∈ A :: Γ'.filter (fun y => decide (y ≠ A)) ↔ x ∈ Γ' := by
+  intro x
+  constructor
+  · intro h
+    simp only [List.mem_cons] at h
+    cases h with
+    | inl h_eq =>
+      subst h_eq
+      exact h_mem
+    | inr h_in =>
+      simp only [List.mem_filter, decide_eq_true_eq] at h_in
+      exact h_in.1
+  · intro h
+    by_cases hx : x = A
+    · subst hx
+      simp only [List.mem_cons, true_or]
+    · simp only [List.mem_cons, List.mem_filter, decide_eq_true_eq]
+      right
+      exact ⟨h, hx⟩
+
+/--
+Exchange lemma for derivations: If Γ and Γ' have the same elements, derivation is preserved.
+-/
+private def derivation_exchange {Γ Γ' : Context} {φ : Formula}
+    (h : Γ ⊢ φ) (h_perm : ∀ x, x ∈ Γ ↔ x ∈ Γ') : Γ' ⊢ φ :=
+  DerivationTree.weakening Γ Γ' φ h (fun x hx => (h_perm x).mp hx)
+
+/--
+For set-based MCS, derivable formulas are in the set.
+
+If S is SetMaximalConsistent and L ⊆ S derives φ, then φ ∈ S.
+-/
+lemma set_mcs_closed_under_derivation {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ S)
+    (h_deriv : DerivationTree L φ) : φ ∈ S := by
+  -- By contradiction: assume φ ∉ S
+  by_contra h_not_mem
+  -- By SetMaximalConsistent definition, insert φ S is inconsistent
+  have h_incons : ¬SetConsistent (insert φ S) := h_mcs.2 φ h_not_mem
+  -- SetConsistent means all finite subsets are consistent
+  -- We have L ⊆ S and L ⊢ φ
+  unfold SetConsistent at h_incons
+  push_neg at h_incons
+  obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons
+  -- L' ⊆ insert φ S and L' is inconsistent
+  -- If φ ∉ L', then L' ⊆ S, contradicting S consistent.
+  -- So φ ∈ L'. Then by deduction theorem, L' \ {φ} ⊢ φ → ⊥.
+  -- Combined with L ⊢ φ, we can derive ⊥ from L ∪ (L' \ {φ}) ⊆ S.
+  by_cases h_phi_in_L' : φ ∈ L'
+  · -- φ ∈ L'. Use exchange to put φ first, then deduction theorem.
+    -- We have L' ⊢ ⊥ (since L' is inconsistent)
+    have ⟨d_bot⟩ : Nonempty (DerivationTree L' Formula.bot) := by
+      unfold Consistent at h_L'_incons
+      push_neg at h_L'_incons
+      exact h_L'_incons
+    -- Exchange to put φ first: L' has same elements as φ :: L'.filter (fun x => x ≠ φ)
+    let L'_filt := L'.filter (fun y => decide (y ≠ φ))
+    have h_perm := cons_filter_neq_perm h_phi_in_L'
+    have d_bot_reord : DerivationTree (φ :: L'_filt) Formula.bot :=
+      derivation_exchange d_bot (fun x => (h_perm x).symm)
+    -- Apply deduction theorem
+    have d_neg_phi : DerivationTree L'_filt (Formula.neg φ) :=
+      deduction_theorem L'_filt φ Formula.bot d_bot_reord
+    -- L'_filt ⊆ S
+    have h_filt_sub : ∀ ψ, ψ ∈ L'_filt → ψ ∈ S := by
+      intro ψ h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_in_L' : ψ ∈ L' := h_and.1
+      have h_ne : ψ ≠ φ := by
+        simp only [decide_eq_true_eq] at h_and
+        exact h_and.2
+      have := h_L'_sub ψ h_in_L'
+      cases Set.mem_insert_iff.mp this with
+      | inl h_eq => exact absurd h_eq h_ne
+      | inr h_in_S => exact h_in_S
+    -- From L ⊢ φ (weakened) and L'_filt ⊢ ¬φ, derive ⊥ from L ∪ L'_filt
+    -- Weaken both to L ++ L'_filt
+    let Γ := L ++ L'_filt
+    have h_Γ_sub : ∀ ψ ∈ Γ, ψ ∈ S := by
+      intro ψ h_mem
+      cases List.mem_append.mp h_mem with
+      | inl h_L => exact h_sub ψ h_L
+      | inr h_filt => exact h_filt_sub ψ h_filt
+    have d_phi_Γ : DerivationTree Γ φ :=
+      DerivationTree.weakening L Γ φ h_deriv (List.subset_append_left L _)
+    have d_neg_Γ : DerivationTree Γ (Formula.neg φ) :=
+      DerivationTree.weakening L'_filt Γ (Formula.neg φ) d_neg_phi
+        (List.subset_append_right L _)
+    have d_bot_Γ : DerivationTree Γ Formula.bot :=
+      derives_bot_from_phi_neg_phi d_phi_Γ d_neg_Γ
+    -- This contradicts S being consistent
+    exact h_mcs.1 Γ h_Γ_sub ⟨d_bot_Γ⟩
+  · -- φ ∉ L', so L' ⊆ S
+    have h_L'_in_S : ∀ ψ ∈ L', ψ ∈ S := by
+      intro ψ h_mem
+      have := h_L'_sub ψ h_mem
+      cases Set.mem_insert_iff.mp this with
+      | inl h_eq => exact absurd h_eq (fun h' => h_phi_in_L' (h' ▸ h_mem))
+      | inr h_in_S => exact h_in_S
+    -- L' ⊆ S and L' is inconsistent contradicts S consistent
+    unfold Consistent at h_L'_incons
+    push_neg at h_L'_incons
+    exact h_mcs.1 L' h_L'_in_S h_L'_incons
+
+/--
+Set-based MCS implication property: modus ponens is reflected in membership.
+
+If (φ → ψ) ∈ S and φ ∈ S for a SetMaximalConsistent S, then ψ ∈ S.
+-/
+theorem set_mcs_implication_property {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_imp : (φ.imp ψ) ∈ S) (h_phi : φ ∈ S) : ψ ∈ S := by
+  -- Use set_mcs_closed_under_derivation with L = [φ, φ.imp ψ]
+  have h_sub : ∀ χ ∈ [φ, φ.imp ψ], χ ∈ S := by
+    intro χ h_mem
+    simp only [List.mem_cons, List.mem_nil_iff, or_false] at h_mem
+    cases h_mem with
+    | inl h_eq => exact h_eq ▸ h_phi
+    | inr h_eq => exact h_eq ▸ h_imp
+  -- Derive ψ from [φ, φ → ψ]
+  have h_deriv : DerivationTree [φ, φ.imp ψ] ψ := by
+    have h_assume_phi : [φ, φ.imp ψ] ⊢ φ :=
+      DerivationTree.assumption [φ, φ.imp ψ] φ (by simp)
+    have h_assume_imp : [φ, φ.imp ψ] ⊢ φ.imp ψ :=
+      DerivationTree.assumption [φ, φ.imp ψ] (φ.imp ψ) (by simp)
+    exact DerivationTree.modus_ponens [φ, φ.imp ψ] φ ψ h_assume_imp h_assume_phi
+  exact set_mcs_closed_under_derivation h_mcs [φ, φ.imp ψ] h_sub h_deriv
+
+/--
+Set-based MCS: negation completeness.
+
+For SetMaximalConsistent S, either φ ∈ S or (¬φ) ∈ S.
+-/
+theorem set_mcs_negation_complete {S : Set Formula}
+    (h_mcs : SetMaximalConsistent S) (φ : Formula) :
+    φ ∈ S ∨ (Formula.neg φ) ∈ S := by
+  by_cases h : φ ∈ S
+  · left; exact h
+  · right
+    -- If φ ∉ S, then insert φ S is inconsistent
+    have h_incons : ¬SetConsistent (insert φ S) := h_mcs.2 φ h
+    unfold SetConsistent at h_incons
+    push_neg at h_incons
+    obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons
+    -- L' is inconsistent and L' ⊆ insert φ S
+    -- If φ ∉ L', then L' ⊆ S contradicts S consistent
+    -- So φ ∈ L'. By deduction theorem on L' (reordered to have φ first):
+    -- L' \ {φ} ⊢ φ → ⊥, i.e., L' \ {φ} ⊢ ¬φ
+    by_cases h_phi_in_L' : φ ∈ L'
+    · -- φ ∈ L'. Use exchange and deduction theorem.
+      have ⟨d_bot⟩ : Nonempty (DerivationTree L' Formula.bot) := by
+        unfold Consistent at h_L'_incons
+        push_neg at h_L'_incons
+        exact h_L'_incons
+      -- Exchange to put φ first using filter
+      let L'_filt := L'.filter (fun y => decide (y ≠ φ))
+      have h_perm := cons_filter_neq_perm h_phi_in_L'
+      have d_bot_reord : DerivationTree (φ :: L'_filt) Formula.bot :=
+        derivation_exchange d_bot (fun x => (h_perm x).symm)
+      -- Apply deduction theorem
+      have d_neg_phi : DerivationTree L'_filt (Formula.neg φ) :=
+        deduction_theorem L'_filt φ Formula.bot d_bot_reord
+      -- L'_filt ⊆ S
+      have h_filt_sub : ∀ ψ, ψ ∈ L'_filt → ψ ∈ S := by
+        intro ψ h_mem
+        have h_and := List.mem_filter.mp h_mem
+        have h_in_L' : ψ ∈ L' := h_and.1
+        have h_ne : ψ ≠ φ := by
+          simp only [decide_eq_true_eq] at h_and
+          exact h_and.2
+        have := h_L'_sub ψ h_in_L'
+        cases Set.mem_insert_iff.mp this with
+        | inl h_eq => exact absurd h_eq h_ne
+        | inr h_in_S => exact h_in_S
+      -- Now derive ¬φ ∈ S using set_mcs_closed_under_derivation
+      exact set_mcs_closed_under_derivation h_mcs L'_filt h_filt_sub d_neg_phi
+    · -- φ ∉ L', so L' ⊆ S
+      have h_L'_in_S : ∀ ψ ∈ L', ψ ∈ S := by
+        intro ψ h_mem
+        have := h_L'_sub ψ h_mem
+        cases Set.mem_insert_iff.mp this with
+        | inl h_eq => exact absurd h_eq (fun h' => h_phi_in_L' (h' ▸ h_mem))
+        | inr h_in_S => exact h_in_S
+      -- L' ⊆ S and L' is inconsistent contradicts S consistent
+      unfold Consistent at h_L'_incons
+      push_neg at h_L'_incons
+      exact absurd h_L'_incons (h_mcs.1 L' h_L'_in_S)
+
+/--
+Set-based MCS: disjunction property (forward direction).
+
+If φ ∈ S or ψ ∈ S, then (φ ∨ ψ) ∈ S.
+Note: `φ.or ψ = φ.neg.imp ψ`
+-/
+theorem set_mcs_disjunction_intro {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h : φ ∈ S ∨ ψ ∈ S) : (φ.or ψ) ∈ S := by
+  -- φ.or ψ = φ.neg.imp ψ
+  -- We need to show that φ.neg.imp ψ ∈ S
+  cases h with
+  | inl h_phi =>
+    -- φ ∈ S. We derive (¬φ → ψ) from the axiom (φ → ¬φ → ψ) and modus ponens.
+    -- Actually, we derive ¬φ → ψ by: from φ, derive ¬¬φ, then ¬¬φ → (¬φ → ψ) is tautology
+    -- Simpler: by set_mcs_negation_complete, either φ.neg ∈ S or φ.neg.neg ∈ S
+    -- Since φ ∈ S, we show φ.neg ∉ S (else inconsistent)
+    -- So φ.neg.neg ∈ S is not directly helpful...
+    -- Better: use the theorem that derives ¬φ → ψ from φ using weakening
+    -- From [φ, φ.neg] we derive ψ via EFQ. Then φ :: [φ.neg] ⊢ ψ.
+    -- By deduction theorem: [φ] ⊢ φ.neg → ψ, i.e., [φ] ⊢ φ.or ψ
+    -- Then by closure: if [φ] ⊆ S, then φ.or ψ ∈ S.
+    have h_deriv : DerivationTree [φ] (φ.or ψ) := by
+      -- Need: [φ] ⊢ φ.neg.imp ψ
+      -- Use deduction theorem: need φ.neg :: [φ] ⊢ ψ
+      -- From φ.neg :: [φ] we have φ and φ.neg, so we get ⊥, then ψ by EFQ
+      have h_inner : DerivationTree (φ.neg :: [φ]) ψ := by
+        have h_phi_assume : (φ.neg :: [φ]) ⊢ φ :=
+          DerivationTree.assumption _ _ (by simp)
+        have h_neg_assume : (φ.neg :: [φ]) ⊢ φ.neg :=
+          DerivationTree.assumption _ _ (by simp)
+        have h_bot : (φ.neg :: [φ]) ⊢ Formula.bot :=
+          derives_bot_from_phi_neg_phi h_phi_assume h_neg_assume
+        -- EFQ: ⊥ → ψ (via ex_falso axiom, weakened to context)
+        have h_efq_thm : [] ⊢ Formula.bot.imp ψ :=
+          DerivationTree.axiom [] _ (Axiom.ex_falso ψ)
+        have h_efq : (φ.neg :: [φ]) ⊢ Formula.bot.imp ψ :=
+          DerivationTree.weakening [] _ _ h_efq_thm (by intro; simp)
+        exact DerivationTree.modus_ponens _ _ _ h_efq h_bot
+      exact deduction_theorem [φ] φ.neg ψ h_inner
+    have h_sub : ∀ χ ∈ [φ], χ ∈ S := by simp [h_phi]
+    exact set_mcs_closed_under_derivation h_mcs [φ] h_sub h_deriv
+  | inr h_psi =>
+    -- ψ ∈ S. We derive (¬φ → ψ) from the axiom ψ → (¬φ → ψ).
+    have h_deriv : DerivationTree [ψ] (φ.or ψ) := by
+      -- ψ → (φ.neg → ψ) is prop_s axiom (φ → (ψ → φ)) instantiated as ψ → (φ.neg → ψ)
+      have h_prop_s_thm : [] ⊢ ψ.imp (φ.neg.imp ψ) :=
+        DerivationTree.axiom [] _ (Axiom.prop_s ψ φ.neg)
+      have h_prop_s : [ψ] ⊢ ψ.imp (φ.neg.imp ψ) :=
+        DerivationTree.weakening [] _ _ h_prop_s_thm (by intro; simp)
+      have h_psi_assume : [ψ] ⊢ ψ :=
+        DerivationTree.assumption _ _ (by simp)
+      exact DerivationTree.modus_ponens _ _ _ h_prop_s h_psi_assume
+    have h_sub : ∀ χ ∈ [ψ], χ ∈ S := by simp [h_psi]
+    exact set_mcs_closed_under_derivation h_mcs [ψ] h_sub h_deriv
+
+/--
+Set-based MCS: disjunction property (backward direction).
+
+If (φ ∨ ψ) ∈ S, then φ ∈ S or ψ ∈ S.
+-/
+theorem set_mcs_disjunction_elim {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h : (φ.or ψ) ∈ S) : φ ∈ S ∨ ψ ∈ S := by
+  -- By negation completeness: either φ ∈ S or φ.neg ∈ S
+  cases set_mcs_negation_complete h_mcs φ with
+  | inl h_phi => exact Or.inl h_phi
+  | inr h_neg_phi =>
+    -- φ.neg ∈ S and (φ.or ψ) = (φ.neg.imp ψ) ∈ S
+    -- By modus ponens: ψ ∈ S
+    right
+    exact set_mcs_implication_property h_mcs h h_neg_phi
+
+/--
+Set-based MCS: disjunction iff property.
+
+(φ ∨ ψ) ∈ S iff (φ ∈ S or ψ ∈ S).
+-/
+theorem set_mcs_disjunction_iff {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : SetMaximalConsistent S) :
+    (φ.or ψ) ∈ S ↔ (φ ∈ S ∨ ψ ∈ S) :=
+  ⟨set_mcs_disjunction_elim h_mcs, set_mcs_disjunction_intro h_mcs⟩
+
+/--
+Set-based MCS: conjunction property (forward direction).
+
+If φ ∈ S and ψ ∈ S, then (φ ∧ ψ) ∈ S.
+Note: `φ.and ψ = (φ.imp ψ.neg).neg`
+-/
+theorem set_mcs_conjunction_intro {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : (φ.and ψ) ∈ S := by
+  -- φ.and ψ = (φ.imp ψ.neg).neg
+  -- We need (φ.imp ψ.neg).neg ∈ S
+  -- By negation completeness, either (φ.imp ψ.neg) ∈ S or (φ.imp ψ.neg).neg ∈ S
+  -- Assume (φ.imp ψ.neg) ∈ S. Then with φ ∈ S, by implication property: ψ.neg ∈ S.
+  -- But ψ ∈ S, and ψ.neg = ψ.imp ⊥ ∈ S would give ⊥ ∈ S, contradiction.
+  cases set_mcs_negation_complete h_mcs (φ.imp ψ.neg) with
+  | inr h_neg => exact h_neg
+  | inl h_imp =>
+    -- (φ → ¬ψ) ∈ S and φ ∈ S, so ¬ψ ∈ S
+    have h_neg_psi : ψ.neg ∈ S := set_mcs_implication_property h_mcs h_imp h_phi
+    -- ψ ∈ S and ¬ψ ∈ S gives ⊥ derivable from S
+    -- This contradicts consistency
+    exfalso
+    have h_deriv : DerivationTree [ψ, ψ.neg] Formula.bot := by
+      have h_psi_assume : [ψ, ψ.neg] ⊢ ψ :=
+        DerivationTree.assumption _ _ (by simp)
+      have h_neg_assume : [ψ, ψ.neg] ⊢ ψ.neg :=
+        DerivationTree.assumption _ _ (by simp)
+      exact derives_bot_from_phi_neg_phi h_psi_assume h_neg_assume
+    have h_sub : ∀ χ ∈ [ψ, ψ.neg], χ ∈ S := by
+      intro χ h_mem
+      simp only [List.mem_cons, List.mem_nil_iff, or_false] at h_mem
+      cases h_mem with
+      | inl h_eq => exact h_eq ▸ h_psi
+      | inr h_eq => exact h_eq ▸ h_neg_psi
+    have h_bot_in_S : Formula.bot ∈ S :=
+      set_mcs_closed_under_derivation h_mcs [ψ, ψ.neg] h_sub h_deriv
+    -- ⊥ ∈ S contradicts consistency of S
+    have h_cons := h_mcs.1
+    unfold SetConsistent at h_cons
+    have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
+      DerivationTree.assumption _ _ (by simp)
+    have h_bot_sub : ∀ χ ∈ [Formula.bot], χ ∈ S := by simp [h_bot_in_S]
+    exact h_cons [Formula.bot] h_bot_sub ⟨h_bot_deriv⟩
+
+/--
+Set-based MCS: conjunction property (backward direction).
+
+If (φ ∧ ψ) ∈ S, then φ ∈ S and ψ ∈ S.
+-/
+theorem set_mcs_conjunction_elim {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h : (φ.and ψ) ∈ S) : φ ∈ S ∧ ψ ∈ S := by
+  -- (φ.and ψ) = (φ.imp ψ.neg).neg ∈ S
+  -- This means φ → ¬ψ ∉ S (otherwise its negation wouldn't be there)
+  -- By negation completeness and the fact that (φ → ¬ψ).neg ∈ S:
+  -- If (φ → ¬ψ) ∈ S, then (φ → ¬ψ).neg ∉ S (else both in, inconsistent)
+  -- So (φ → ¬ψ) ∉ S
+  -- Now we show φ ∈ S:
+  -- Suppose φ ∉ S. Then φ.neg ∈ S by negation completeness.
+  -- We show this leads to (φ → ¬ψ) derivable from {φ.neg}, which would put it in S
+  -- Actually, we derive φ → ¬ψ from ¬φ via: ¬φ → (φ → ¬ψ) which is a tautology
+  -- Let's verify: from ¬φ, assume φ, then we have φ and ¬φ, derive ⊥, derive anything
+  constructor
+  · -- Show φ ∈ S
+    by_contra h_phi_not
+    have h_neg_phi : φ.neg ∈ S := by
+      cases set_mcs_negation_complete h_mcs φ with
+      | inl h => exact absurd h h_phi_not
+      | inr h => exact h
+    -- From φ.neg we derive φ.imp ψ.neg
+    have h_deriv : DerivationTree [φ.neg] (φ.imp ψ.neg) := by
+      -- Need: [¬φ] ⊢ φ → ¬ψ
+      -- By deduction theorem: need φ :: [¬φ] ⊢ ¬ψ
+      have h_inner : DerivationTree (φ :: [φ.neg]) ψ.neg := by
+        -- From φ and ¬φ we get ⊥, then ¬ψ = ψ → ⊥ via K1 and constant function
+        have h_phi_assume : (φ :: [φ.neg]) ⊢ φ :=
+          DerivationTree.assumption _ _ (by simp)
+        have h_neg_assume : (φ :: [φ.neg]) ⊢ φ.neg :=
+          DerivationTree.assumption _ _ (by simp)
+        have h_bot : (φ :: [φ.neg]) ⊢ Formula.bot :=
+          derives_bot_from_phi_neg_phi h_phi_assume h_neg_assume
+        -- ¬ψ = ψ → ⊥. Need: (φ :: [φ.neg]) ⊢ ψ → ⊥
+        -- Use deduction theorem: need ψ :: φ :: [φ.neg] ⊢ ⊥
+        -- We already have h_bot, weaken it
+        have h_bot_weak : (ψ :: φ :: [φ.neg]) ⊢ Formula.bot :=
+          DerivationTree.weakening (φ :: [φ.neg]) (ψ :: φ :: [φ.neg]) _ h_bot
+            (fun x hx => List.mem_cons_of_mem ψ hx)
+        exact deduction_theorem (φ :: [φ.neg]) ψ Formula.bot h_bot_weak
+      exact deduction_theorem [φ.neg] φ ψ.neg h_inner
+    have h_sub : ∀ χ ∈ [φ.neg], χ ∈ S := by simp [h_neg_phi]
+    have h_imp_in : (φ.imp ψ.neg) ∈ S :=
+      set_mcs_closed_under_derivation h_mcs [φ.neg] h_sub h_deriv
+    -- Now (φ.imp ψ.neg) ∈ S and (φ.imp ψ.neg).neg ∈ S, contradiction
+    have h_deriv_bot : DerivationTree [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] Formula.bot := by
+      have h1 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg) :=
+        DerivationTree.assumption _ _ (by simp)
+      have h2 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg).neg :=
+        DerivationTree.assumption _ _ (by simp)
+      exact derives_bot_from_phi_neg_phi h1 h2
+    have h_sub2 : ∀ χ ∈ [(φ.imp ψ.neg), (φ.imp ψ.neg).neg], χ ∈ S := by
+      intro χ hχ
+      simp only [List.mem_cons, List.mem_nil_iff, or_false] at hχ
+      cases hχ with
+      | inl h_eq => exact h_eq ▸ h_imp_in
+      | inr h_eq => exact h_eq ▸ h
+    have h_bot_in_S : Formula.bot ∈ S :=
+      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+    have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
+      DerivationTree.assumption _ _ (by simp)
+    exact h_mcs.1 [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
+  · -- Show ψ ∈ S (similar argument)
+    by_contra h_psi_not
+    have h_neg_psi : ψ.neg ∈ S := by
+      cases set_mcs_negation_complete h_mcs ψ with
+      | inl h => exact absurd h h_psi_not
+      | inr h => exact h
+    -- From ψ.neg we derive φ.imp ψ.neg via prop_s: ψ.neg → (φ → ψ.neg)
+    have h_deriv : DerivationTree [ψ.neg] (φ.imp ψ.neg) := by
+      have h_prop_s_thm : [] ⊢ ψ.neg.imp (φ.imp ψ.neg) :=
+        DerivationTree.axiom [] _ (Axiom.prop_s ψ.neg φ)
+      have h_prop_s : [ψ.neg] ⊢ ψ.neg.imp (φ.imp ψ.neg) :=
+        DerivationTree.weakening [] _ _ h_prop_s_thm (by intro; simp)
+      have h_assume : [ψ.neg] ⊢ ψ.neg :=
+        DerivationTree.assumption _ _ (by simp)
+      exact DerivationTree.modus_ponens _ _ _ h_prop_s h_assume
+    have h_sub : ∀ χ ∈ [ψ.neg], χ ∈ S := by simp [h_neg_psi]
+    have h_imp_in : (φ.imp ψ.neg) ∈ S :=
+      set_mcs_closed_under_derivation h_mcs [ψ.neg] h_sub h_deriv
+    -- Now (φ.imp ψ.neg) ∈ S and (φ.imp ψ.neg).neg ∈ S, contradiction
+    have h_deriv_bot : DerivationTree [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] Formula.bot := by
+      have h1 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg) :=
+        DerivationTree.assumption _ _ (by simp)
+      have h2 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg).neg :=
+        DerivationTree.assumption _ _ (by simp)
+      exact derives_bot_from_phi_neg_phi h1 h2
+    have h_sub2 : ∀ χ ∈ [(φ.imp ψ.neg), (φ.imp ψ.neg).neg], χ ∈ S := by
+      intro χ hχ
+      simp only [List.mem_cons, List.mem_nil_iff, or_false] at hχ
+      cases hχ with
+      | inl h_eq => exact h_eq ▸ h_imp_in
+      | inr h_eq => exact h_eq ▸ h
+    have h_bot_in_S : Formula.bot ∈ S :=
+      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+    have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
+      DerivationTree.assumption _ _ (by simp)
+    exact h_mcs.1 [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
+
+/--
+Set-based MCS: conjunction iff property.
+
+(φ ∧ ψ) ∈ S iff (φ ∈ S and ψ ∈ S).
+-/
+theorem set_mcs_conjunction_iff {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : SetMaximalConsistent S) :
+    (φ.and ψ) ∈ S ↔ (φ ∈ S ∧ ψ ∈ S) :=
+  ⟨set_mcs_conjunction_elim h_mcs, fun ⟨h1, h2⟩ => set_mcs_conjunction_intro h_mcs h1 h2⟩
+
+/-!
+### Modal Closure Properties
+
+These lemmas establish modal closure properties for SetMaximalConsistent sets,
+using the Modal T axiom (□φ → φ) to derive that necessity implies truth.
+-/
+
+/--
+Set-based MCS: box closure property.
+
+If □φ ∈ S for a SetMaximalConsistent S, then φ ∈ S.
+
+**Proof Strategy**:
+1. Modal T axiom: □φ → φ
+2. With □φ ∈ S, derive φ via modus ponens
+3. By closure: φ ∈ S
+
+This is a fundamental property: what is necessarily true is actually true.
+-/
+theorem set_mcs_box_closure {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_box : Formula.box φ ∈ S) : φ ∈ S := by
+  -- Modal T axiom: □φ → φ
+  have h_modal_t_thm : [] ⊢ (Formula.box φ).imp φ :=
+    DerivationTree.axiom [] _ (Axiom.modal_t φ)
+  -- Weaken to context [□φ]
+  have h_modal_t : [Formula.box φ] ⊢ (Formula.box φ).imp φ :=
+    DerivationTree.weakening [] _ _ h_modal_t_thm (by intro; simp)
+  -- Assume □φ in context
+  have h_box_assume : [Formula.box φ] ⊢ Formula.box φ :=
+    DerivationTree.assumption _ _ (by simp)
+  -- Apply modus ponens to get φ
+  have h_deriv : [Formula.box φ] ⊢ φ :=
+    DerivationTree.modus_ponens _ _ _ h_modal_t h_box_assume
+  -- By closure: φ ∈ S
+  have h_sub : ∀ χ ∈ [Formula.box φ], χ ∈ S := by simp [h_box]
+  exact set_mcs_closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
+
+/--
+Set-based MCS: diamond-box duality (forward direction).
+
+If ¬(□φ) ∈ S, then ◇(¬φ) ∈ S.
+
+Note: ◇ψ = ¬□(¬ψ), so ◇(¬φ) = ¬□(¬¬φ).
+-/
+theorem set_mcs_neg_box_implies_diamond_neg {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h : (Formula.box φ).neg ∈ S) : φ.neg.diamond ∈ S := by
+  -- ◇(¬φ) = ¬□(¬¬φ)
+  -- We have ¬□φ ∈ S. We need ¬□(¬¬φ) ∈ S.
+  -- These are not directly equal, but we can derive the equivalence.
+  -- Actually, ◇(¬φ) = (¬φ).neg.box.neg = ¬□(¬¬φ), which simplifies to ¬□φ
+  -- if we have double negation elimination.
+  -- But actually: ◇(¬φ) = (¬φ).diamond = ((¬φ).neg).box.neg = (φ.neg.neg).box.neg
+  -- So ◇(¬φ) = ¬□(¬¬φ) = ¬□φ under double negation (classically).
+  -- Let's prove: ¬□φ ↔ ◇¬φ classically.
+  -- ◇¬φ = ¬□¬¬φ. So we need ¬□φ → ¬□¬¬φ.
+  -- This follows from □¬¬φ → □φ (by □ distributing over →¬¬φ → φ).
+  -- Actually, let's just unfold diamond: φ.neg.diamond = φ.neg.neg.box.neg
+  -- We need to show: (φ.neg.neg).box.neg ∈ S
+  -- By negation completeness: either (φ.neg.neg).box ∈ S or (φ.neg.neg).box.neg ∈ S
+  -- If (φ.neg.neg).box ∈ S:
+  --   We can derive (φ.neg.neg).box → φ.box (using □(¬¬φ → φ) and modal K distribution)
+  --   Then φ.box ∈ S, contradicting (φ.box).neg ∈ S
+  -- So (φ.neg.neg).box.neg ∈ S
+  unfold Formula.diamond
+  cases set_mcs_negation_complete h_mcs (φ.neg.neg.box) with
+  | inr h_neg => exact h_neg
+  | inl h_dne_box =>
+    -- □(¬¬φ) ∈ S. We derive □φ from this, contradicting ¬□φ ∈ S.
+    exfalso
+    -- We need: □(¬¬φ → φ) which by Modal K gives □(¬¬φ) → □φ
+    -- First, derive ¬¬φ → φ (double negation elimination)
+    have h_dne : ⊢ φ.neg.neg.imp φ := double_negation φ
+    -- Apply necessitation to get □(¬¬φ → φ)
+    have h_nec_dne : ⊢ (φ.neg.neg.imp φ).box := DerivationTree.necessitation _ h_dne
+    -- Modal K distribution: □(A → B) → (□A → □B)
+    have h_modal_k : ⊢ (φ.neg.neg.imp φ).box.imp ((φ.neg.neg.box).imp (φ.box)) :=
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.neg φ)
+    -- Apply modus ponens to get □(¬¬φ) → □φ
+    have h_impl : ⊢ (φ.neg.neg.box).imp (φ.box) :=
+      DerivationTree.modus_ponens [] _ _ h_modal_k h_nec_dne
+    -- Now we have □(¬¬φ) ∈ S and □(¬¬φ) → □φ derivable
+    -- So □φ ∈ S
+    have h_sub : ∀ χ ∈ [φ.neg.neg.box], χ ∈ S := by simp [h_dne_box]
+    have h_impl_ctx : [φ.neg.neg.box] ⊢ (φ.neg.neg.box).imp (φ.box) :=
+      DerivationTree.weakening [] _ _ h_impl (by intro; simp)
+    have h_assume : [φ.neg.neg.box] ⊢ φ.neg.neg.box :=
+      DerivationTree.assumption _ _ (by simp)
+    have h_deriv : [φ.neg.neg.box] ⊢ φ.box :=
+      DerivationTree.modus_ponens _ _ _ h_impl_ctx h_assume
+    have h_box_in_S : φ.box ∈ S :=
+      set_mcs_closed_under_derivation h_mcs [φ.neg.neg.box] h_sub h_deriv
+    -- Now φ.box ∈ S and (φ.box).neg ∈ S, contradiction
+    have h_deriv_bot : DerivationTree [φ.box, (φ.box).neg] Formula.bot := by
+      have h1 : [φ.box, (φ.box).neg] ⊢ φ.box :=
+        DerivationTree.assumption _ _ (by simp)
+      have h2 : [φ.box, (φ.box).neg] ⊢ (φ.box).neg :=
+        DerivationTree.assumption _ _ (by simp)
+      exact derives_bot_from_phi_neg_phi h1 h2
+    have h_sub2 : ∀ χ ∈ [φ.box, (φ.box).neg], χ ∈ S := by
+      intro χ hχ
+      simp only [List.mem_cons, List.mem_nil_iff, or_false] at hχ
+      cases hχ with
+      | inl h_eq => exact h_eq ▸ h_box_in_S
+      | inr h_eq => exact h_eq ▸ h
+    have h_bot_in_S : Formula.bot ∈ S :=
+      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+    have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
+      DerivationTree.assumption _ _ (by simp)
+    exact h_mcs.1 [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
+
+/--
+Set-based MCS: diamond-box duality (backward direction).
+
+If ◇(¬φ) ∈ S, then ¬(□φ) ∈ S.
+-/
+theorem set_mcs_diamond_neg_implies_neg_box {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h : φ.neg.diamond ∈ S) : (Formula.box φ).neg ∈ S := by
+  -- ◇(¬φ) = ¬□(¬¬φ) ∈ S
+  -- We need ¬□φ ∈ S
+  -- By negation completeness: either □φ ∈ S or ¬□φ ∈ S
+  -- If □φ ∈ S, then by box_closure, φ ∈ S
+  -- We show this leads to a contradiction with ◇(¬φ) ∈ S
+  -- Actually, from □φ, we can derive □(¬¬φ) (since φ → ¬¬φ derivable)
+  -- Then □(¬¬φ) ∈ S contradicts ¬□(¬¬φ) = ◇(¬φ) ∈ S
+  unfold Formula.diamond at h
+  cases set_mcs_negation_complete h_mcs (Formula.box φ) with
+  | inr h_neg => exact h_neg
+  | inl h_box =>
+    -- □φ ∈ S. We derive □(¬¬φ), contradicting ¬□(¬¬φ) ∈ S.
+    exfalso
+    -- We need: □(φ → ¬¬φ) which by Modal K gives □φ → □(¬¬φ)
+    -- First derive φ → ¬¬φ (double negation introduction)
+    have h_dni : ⊢ φ.imp φ.neg.neg := dni φ
+    -- Apply necessitation
+    have h_nec_dni : ⊢ (φ.imp φ.neg.neg).box := DerivationTree.necessitation _ h_dni
+    -- Modal K distribution: □(A → B) → (□A → □B)
+    have h_modal_k : ⊢ (φ.imp φ.neg.neg).box.imp ((φ.box).imp (φ.neg.neg.box)) :=
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist φ φ.neg.neg)
+    -- Apply modus ponens to get □φ → □(¬¬φ)
+    have h_impl : ⊢ (φ.box).imp (φ.neg.neg.box) :=
+      DerivationTree.modus_ponens [] _ _ h_modal_k h_nec_dni
+    -- Now we have □φ ∈ S and □φ → □(¬¬φ) derivable
+    -- So □(¬¬φ) ∈ S
+    have h_sub : ∀ χ ∈ [φ.box], χ ∈ S := by simp [h_box]
+    have h_impl_ctx : [φ.box] ⊢ (φ.box).imp (φ.neg.neg.box) :=
+      DerivationTree.weakening [] _ _ h_impl (by intro; simp)
+    have h_assume : [φ.box] ⊢ φ.box :=
+      DerivationTree.assumption _ _ (by simp)
+    have h_deriv : [φ.box] ⊢ φ.neg.neg.box :=
+      DerivationTree.modus_ponens _ _ _ h_impl_ctx h_assume
+    have h_dne_box_in_S : φ.neg.neg.box ∈ S :=
+      set_mcs_closed_under_derivation h_mcs [φ.box] h_sub h_deriv
+    -- Now φ.neg.neg.box ∈ S and (φ.neg.neg.box).neg ∈ S, contradiction
+    have h_deriv_bot : DerivationTree [φ.neg.neg.box, (φ.neg.neg.box).neg] Formula.bot := by
+      have h1 : [φ.neg.neg.box, (φ.neg.neg.box).neg] ⊢ φ.neg.neg.box :=
+        DerivationTree.assumption _ _ (by simp)
+      have h2 : [φ.neg.neg.box, (φ.neg.neg.box).neg] ⊢ (φ.neg.neg.box).neg :=
+        DerivationTree.assumption _ _ (by simp)
+      exact derives_bot_from_phi_neg_phi h1 h2
+    have h_sub2 : ∀ χ ∈ [φ.neg.neg.box, (φ.neg.neg.box).neg], χ ∈ S := by
+      intro χ hχ
+      simp only [List.mem_cons, List.mem_nil_iff, or_false] at hχ
+      cases hχ with
+      | inl h_eq => exact h_eq ▸ h_dne_box_in_S
+      | inr h_eq => exact h_eq ▸ h
+    have h_bot_in_S : Formula.bot ∈ S :=
+      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+    have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
+      DerivationTree.assumption _ _ (by simp)
+    exact h_mcs.1 [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
+
+/--
+Set-based MCS: diamond-box duality iff property.
+
+¬(□φ) ∈ S iff ◇(¬φ) ∈ S.
+
+This establishes the classical duality between box and diamond:
+¬□φ ↔ ◇¬φ (equivalently, □φ ↔ ¬◇¬φ).
+-/
+theorem set_mcs_diamond_box_duality {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S) :
+    (Formula.box φ).neg ∈ S ↔ φ.neg.diamond ∈ S :=
+  ⟨set_mcs_neg_box_implies_diamond_neg h_mcs, set_mcs_diamond_neg_implies_neg_box h_mcs⟩
+
+/-!
+### Saturation Lemmas (Stubs)
+
+These lemmas characterize the saturation properties of maximal consistent sets
+for modal and temporal operators. They are essential for the truth lemma.
+
+**Dependencies**:
+- Modal saturation: Requires canonical frame construction (Task 447)
+- Temporal saturation: Requires canonical history construction (Task 450)
+
+The forward directions are proven where possible; backward directions are
+left as `sorry` placeholders pending the dependent phases.
+-/
+
+/--
+Modal saturation (forward): If □φ ∈ S, then φ holds at all accessible worlds.
+
+**Statement**: For all T accessible from S via canonical_task_rel at time 0,
+if □φ ∈ S then φ ∈ T.
+
+**Note**: This follows from the box closure property: □φ ∈ S implies φ ∈ S
+by Modal T, and the task relation transfers this appropriately.
+
+**Full Version** (with canonical frame):
+```
+SetMaximalConsistent S →
+  (□φ ∈ S ↔ ∀ T : CanonicalWorldState, canonical_task_rel S 0 T → φ ∈ T.val)
+```
+-/
+theorem set_mcs_modal_saturation_forward {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_box : Formula.box φ ∈ S) : φ ∈ S :=
+  -- Forward direction: Use box closure (Modal T axiom)
+  set_mcs_box_closure h_mcs h_box
+
+/--
+Modal saturation (backward): If φ holds at all accessible worlds, then □φ ∈ S.
+
+**Status**: STUB - requires canonical frame construction (Task 447)
+
+**Proof Strategy** (to be implemented):
+1. Assume for all T : CanonicalWorldState, canonical_task_rel S 0 T → φ ∈ T.val
+2. By contrapositive: assume □φ ∉ S
+3. Then (□φ).neg ∈ S by negation completeness
+4. Construct witness T where ¬φ ∈ T.val, contradicting the assumption
+5. The witness construction requires the canonical frame from Task 447
+
+**Dependencies**: Task 447 (Canonical Frame Construction)
+-/
+theorem set_mcs_modal_saturation_backward {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_all : ∀ T : {T : Set Formula // SetMaximalConsistent T},
+      -- Placeholder for canonical_task_rel S 0 T condition
+      True →
+      φ ∈ T.val) :
+    Formula.box φ ∈ S := by
+  -- STUB: Requires canonical frame construction (Task 447)
+  -- The proof needs to construct a witness world from ¬□φ ∈ S
+  sorry
+
+/--
+Temporal future saturation (stub): Fφ ∈ S iff φ holds at some future time.
+
+**Status**: STUB - requires canonical history construction (Task 450)
+
+**Full Statement**:
+```
+SetMaximalConsistent S →
+  (Fφ ∈ S ↔ ∃ t > 0, ∃ h : WorldHistory, φ ∈ (history_at h t).val)
+```
+
+**Proof Strategy** (to be implemented):
+- Forward: If Fφ ∈ S, construct a future world where φ holds
+- Backward: If φ holds at some future time, derive Fφ ∈ S
+
+**Dependencies**: Task 450 (Canonical History Construction)
+-/
+theorem set_mcs_temporal_future_saturation {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S) :
+    Formula.all_future φ ∈ S ↔
+      -- Placeholder condition: true for now, will be replaced with proper temporal semantics
+      (∀ T : {T : Set Formula // SetMaximalConsistent T}, True → φ ∈ T.val) := by
+  -- STUB: Requires canonical history construction (Task 450)
+  sorry
+
+/--
+Temporal past saturation (stub): Hφ ∈ S iff φ holds at some past time.
+
+**Status**: STUB - requires canonical history construction (Task 450)
+
+**Full Statement**:
+```
+SetMaximalConsistent S →
+  (Hφ ∈ S ↔ ∃ t < 0, ∃ h : WorldHistory, φ ∈ (history_at h t).val)
+```
+
+**Proof Strategy** (to be implemented):
+- Forward: If Hφ ∈ S, construct a past world where φ holds
+- Backward: If φ holds at some past time, derive Hφ ∈ S
+
+**Dependencies**: Task 450 (Canonical History Construction)
+-/
+theorem set_mcs_temporal_past_saturation {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S) :
+    Formula.all_past φ ∈ S ↔
+      -- Placeholder condition: true for now, will be replaced with proper temporal semantics
+      (∀ T : {T : Set Formula // SetMaximalConsistent T}, True → φ ∈ T.val) := by
+  -- STUB: Requires canonical history construction (Task 450)
+  sorry
 
 /-!
 ## Canonical Frame

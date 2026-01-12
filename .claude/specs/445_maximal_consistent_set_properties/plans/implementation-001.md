@@ -128,7 +128,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Set-Based Properties - Implication and Boolean [NOT STARTED]
+### Phase 4: Set-Based Properties - Implication and Boolean [COMPLETED]
 
 **Goal**: Add MCS properties for implication, conjunction, and disjunction using set-based definitions.
 
@@ -162,7 +162,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Modal Closure - Basic Box Property [NOT STARTED]
+### Phase 5: Modal Closure - Basic Box Property [COMPLETED]
 
 **Goal**: Prove basic modal closure property using Modal T axiom.
 
@@ -194,7 +194,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 6: Saturation Lemma Stubs [NOT STARTED]
+### Phase 6: Saturation Lemma Stubs [COMPLETED]
 
 **Goal**: State modal and temporal saturation lemmas with partial proofs, marking dependencies on later phases.
 
