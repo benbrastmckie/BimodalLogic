@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T08:00:00Z
-next_project_number: 415
+next_project_number: 416
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -178,12 +178,23 @@ technical_debt:
 
 ### 407. Enforce convention in LogosReference.tex
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: latex
 - **Dependencies**: 405
 
 **Description**: Reformat Theories/Logos/latex/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.
+
+---
+
+### 415. Fix LaTeX sentence line breaks
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+- **Dependencies**: 405, 406
+
+**Description**: Fix LaTeX sentence line breaks introduced by task 405/406 refactor. Sentences should remain on single numbered lines (semantic linefeeds), not be broken across lines as seen in 00-Introduction.tex lines 9-10.
 
 ---
 
