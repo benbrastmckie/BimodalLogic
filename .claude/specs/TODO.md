@@ -253,7 +253,8 @@ technical_debt:
 
 ### 261. Decidability
 - **Effort**: 40-50 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Low
@@ -262,6 +263,7 @@ technical_debt:
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/261_decidability/reports/research-001.md), [research-002.md](.claude/specs/261_decidability/reports/research-002.md)
 - **Plan**: [implementation-001.md](.claude/specs/261_decidability/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/261_decidability/summaries/implementation-summary-20260112.md)
 
 **Description**: Implement decision procedures for TM logic using finite model property and tableau methods. Research-002 analyzes implications of the Type-based axiom refactor from task 260, enabling direct proof term construction in decision procedures.
 
