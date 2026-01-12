@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T19:30:00Z",
-  "next_project_number": 439,
+  "next_project_number": 440,
   "active_projects": [
+    {
+      "project_number": 439,
+      "project_name": "address_todo_note_tags_semantics_tex",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T18:46:59Z",
+      "last_updated": "2026-01-12T18:46:59Z",
+      "description": "Address the TODO and NOTE tags in Theories/Bimodal/latex/subfiles/02-Semantics.tex"
+    },
     {
       "project_number": 438,
       "project_name": "refactor_bimodal_readme",
@@ -267,11 +277,11 @@
       "project_number": 257,
       "project_name": "completeness_proofs",
       "type": "feature",
-      "status": "researching",
+      "status": "researched",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T18:31:14Z",
+      "last_updated": "2026-01-12T18:44:06Z",
       "effort": "70-90 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.",
       "artifacts": [
@@ -285,6 +295,10 @@
         },
         {
           "path": ".claude/specs/257_completeness_proofs/reports/research-003.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/257_completeness_proofs/reports/research-004.md",
           "type": "research"
         }
       ]

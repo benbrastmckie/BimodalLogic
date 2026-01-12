@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T19:30:00Z
-next_project_number: 439
+next_project_number: 440
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -102,6 +102,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 439. Address TODO and NOTE tags in 02-Semantics.tex
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Address the TODO and NOTE tags in Theories/Bimodal/latex/subfiles/02-Semantics.tex
+
+---
 
 ### 438. Refactor Bimodal README for systematic documentation
 - **Effort**: 2-3 hours
