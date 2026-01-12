@@ -5,6 +5,17 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 437,
+      "project_name": "improve_readme_consistency_with_recursive_semantics",
+      "status": "abandoned",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T19:44:35Z",
+      "last_updated": "2026-01-12T19:44:35Z",
+      "description": "Improve README.md for consistency with recursive-semantics.md documentation.",
+      "abandoned": "2026-01-12T21:59:10Z"
+    },
+    {
       "project_number": 426,
       "project_name": "covariantclass_vs_isorderedaddmonoid_comparison",
       "status": "abandoned",
