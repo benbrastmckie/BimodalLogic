@@ -287,14 +287,20 @@
       "project_number": 261,
       "project_name": "decidability",
       "type": "feature",
-      "phase": "not_started",
-      "status": "researching",
+      "phase": "researched",
+      "status": "researched",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T05:50:15Z",
+      "last_updated": "2026-01-12T10:30:00Z",
       "effort": "40-60 hours",
-      "description": "Implement decision procedures for TM logic."
+      "description": "Implement decision procedures for TM logic.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/261_decidability/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     }
   ]
 }

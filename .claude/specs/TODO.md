@@ -197,28 +197,42 @@ technical_debt:
 
 ### 261. Decidability
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
+- **Research**: [research-001.md](.claude/specs/261_decidability/reports/research-001.md)
 
-**Description**: Implement decision procedures for TM logic.
+**Description**: Implement decision procedures for TM logic using finite model property and tableau methods.
+
+**Research Findings**:
+- TM bimodal logic (S5 modal + linear temporal) is decidable via finite model property
+- Tableau-based satisfiability checking provides countermodels for invalid formulas
+- Existing proof search infrastructure (ProofSearch.lean, 1085 lines) provides foundation
+- Verified decision procedures for modal K/KT/S4 exist in Lean (Wu & Gore)
 
 **Action Items**:
-1. Implement tableau method.
-2. Implement satisfiability decision procedure.
+1. Prove finite model property for TM logic (modal filtration + temporal unraveling)
+2. Implement signed formula tableau rules for all connectives
+3. Prove tableau termination and completeness
+4. Implement decision procedure returning proof or countermodel
+5. Integrate with existing proof search
 
 **Files**:
-- `Logos/Core/Metalogic/Decidability.lean` (to be created)
+- `Bimodal/Metalogic/Decidability/FMP.lean` (finite model property)
+- `Bimodal/Metalogic/Decidability/Tableau.lean` (tableau rules)
+- `Bimodal/Metalogic/Decidability/DecisionProcedure.lean` (main procedure)
 
 **Acceptance Criteria**:
-- [ ] Tableau method implemented
-- [ ] Satisfiability decision procedure implemented
-- [ ] Tests added for decision procedures
-- [ ] Documentation updated
+- [ ] Finite model property proved for TM logic
+- [ ] Tableau method implemented with termination proof
+- [ ] Decision procedure returns `DecisionResult` (valid proof or countermodel)
+- [ ] Tests verify validity of axiom schemata
+- [ ] Tests verify countermodel construction for invalid formulas
 
-**Impact**: Provides algorithmic decision procedures for TM logic validity and satisfiability.
+**Impact**: Provides complete algorithmic decision procedures for TM logic validity and satisfiability with formal correctness proofs.
 
 ---
 
