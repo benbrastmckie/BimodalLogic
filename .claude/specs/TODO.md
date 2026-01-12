@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-01-12T23:00:00Z
+last_updated: 2026-01-12T23:34:26Z
 next_project_number: 451
 repository_health:
   overall_score: 90
@@ -137,17 +137,18 @@ technical_debt:
 
 ### 257. Completeness Proofs
 
- **Effort**: 57-76 hours (revised down from 70-90)
+ **Effort**: 65-85 hours (revised from 57-76 to include Phase 5)
  **Status**: [EXPANDED]
  **Researched**: 2026-01-12
  **Planned**: 2026-01-12
+ **Revised**: 2026-01-12
  **Priority**: Low
  **Language**: lean
  **Blocking**: None (Decidability complete)
  **Dependencies**: Soundness (Complete), Deduction Theorem (Complete), Proof Search (Complete), Decidability (Complete)
  **Subtasks**: 444, 445, 446, 447, 450, 448, 449
  **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md), [research-003.md](.claude/specs/257_completeness_proofs/reports/research-003.md), [research-004.md](.claude/specs/257_completeness_proofs/reports/research-004.md), [research-005.md](.claude/specs/257_completeness_proofs/reports/research-005.md), [research-006.md](.claude/specs/257_completeness_proofs/reports/research-006.md), [research-007.md](.claude/specs/257_completeness_proofs/reports/research-007.md), [research-008.md](.claude/specs/257_completeness_proofs/reports/research-008.md)
- **Plan**: [implementation-001.md](.claude/specs/257_completeness_proofs/plans/implementation-001.md)
+ **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (v002 - added Phase 5 canonical_history)
 
 **Description**: Implement the completeness proof for TM logic using the canonical model method. Research-004 clarifies the key approach: use **relativized completeness** where times are a type parameter T (not constructed from syntax), while worlds (maximal consistent sets) and task relations ARE constructed from syntax. This matches the polymorphic validity definition and remains agnostic about discrete/dense/continuous time.
 
