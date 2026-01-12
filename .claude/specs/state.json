@@ -6,11 +6,17 @@
     {
       "project_number": 433,
       "project_name": "refine_readme_title_and_bimodal_section",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T15:47:36Z",
-      "last_updated": "2026-01-12T15:47:36Z"
+      "last_updated": "2026-01-12T16:15:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 432,
@@ -300,11 +306,11 @@
       "project_name": "proof_search",
       "type": "feature",
       "phase": "planned",
-      "status": "planned",
+      "status": "implementing",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T23:30:00Z",
+      "last_updated": "2026-01-12T15:57:26Z",
       "effort": "16-22 hours",
       "description": "Implement automated proof search for TM logic with proof term construction using Direct Refactor approach (Axiom: Prop -> Type).",
       "planning_completed": "2026-01-12T23:30:00Z",
