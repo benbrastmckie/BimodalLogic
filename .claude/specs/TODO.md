@@ -86,9 +86,11 @@ technical_debt:
 
 ### 428. Complete TODOs in Bimodal syntax LaTeX file
 - **Effort**: 1-2 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
+- **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: latex
+- **Plan**: [implementation-001.md](.claude/specs/428_complete_todos_bimodal_syntax_latex/plans/implementation-001.md)
 
 **Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/01-Syntax.tex
 
