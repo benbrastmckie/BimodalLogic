@@ -320,22 +320,108 @@ This is the key lemma enabling canonical model construction.
 -/
 
 /--
-**Lindenbaum's Lemma**: Every consistent context can be extended to a
-maximal consistent context.
-
-**Statement**: `∀ Γ, Consistent Γ → ∃ Δ, Γ ⊆ Δ ∧ MaximalConsistent Δ`
-
-**Proof Strategy** (to be implemented):
-1. Consider chain of all consistent extensions of Γ
-2. Apply Zorn's lemma to get maximal element
-3. Show maximal element satisfies MaximalConsistent
-
-**Dependencies**: Requires Mathlib's `Zorn.chain_Sup` or `zorn_nonempty_preorder`.
-
-**Complexity**: ~15-20 hours (Zorn's lemma application in LEAN can be tricky)
+The set of consistent extensions of a base set S.
+Used for Zorn's lemma application.
 -/
-axiom lindenbaum (Γ : Context) (h : Consistent Γ) :
-  ∃ Δ : Context, (∀ φ, φ ∈ Γ → φ ∈ Δ) ∧ MaximalConsistent Δ
+def ConsistentSupersets (S : Set Formula) : Set (Set Formula) :=
+  {T | S ⊆ T ∧ SetConsistent T}
+
+/--
+A consistent set is in its own consistent supersets.
+-/
+lemma self_mem_consistent_supersets {S : Set Formula} (h : SetConsistent S) :
+    S ∈ ConsistentSupersets S :=
+  ⟨Set.Subset.refl S, h⟩
+
+/--
+Set-based Lindenbaum's Lemma: Every consistent set can be extended to a
+set-maximal consistent set.
+
+Uses `zorn_subset_nonempty` from Mathlib.Order.Zorn.
+-/
+theorem set_lindenbaum (S : Set Formula) (hS : SetConsistent S) :
+    ∃ M : Set Formula, S ⊆ M ∧ SetMaximalConsistent M := by
+  -- Define the collection of consistent supersets
+  let CS := ConsistentSupersets S
+  -- Show CS satisfies the chain condition for Zorn's lemma
+  have hchain : ∀ C ⊆ CS, IsChain (· ⊆ ·) C → C.Nonempty →
+      ∃ ub ∈ CS, ∀ T ∈ C, T ⊆ ub := by
+    intro C hCsub hCchain hCne
+    -- The upper bound is the union of the chain
+    use ⋃₀ C
+    constructor
+    · -- Show ⋃₀ C ∈ CS, i.e., S ⊆ ⋃₀ C and SetConsistent (⋃₀ C)
+      constructor
+      · -- S ⊆ ⋃₀ C: Since C is nonempty, pick any T ∈ C, then S ⊆ T ⊆ ⋃₀ C
+        obtain ⟨T, hT⟩ := hCne
+        have hST : S ⊆ T := (hCsub hT).1
+        exact Set.Subset.trans hST (Set.subset_sUnion_of_mem hT)
+      · -- SetConsistent (⋃₀ C): Use consistent_chain_union
+        apply consistent_chain_union hCchain hCne
+        intro T hT
+        exact (hCsub hT).2
+    · -- Show ∀ T ∈ C, T ⊆ ⋃₀ C
+      intro T hT
+      exact Set.subset_sUnion_of_mem hT
+  -- Apply Zorn's lemma
+  have hSmem : S ∈ CS := self_mem_consistent_supersets hS
+  obtain ⟨M, hSM, hmax⟩ := zorn_subset_nonempty CS hchain S hSmem
+  -- hmax : Maximal (fun x => x ∈ CS) M
+  -- This means M ∈ CS and ∀ T, M ⊆ T → T ∈ CS → M = T
+  have hMmem : M ∈ CS := hmax.prop
+  obtain ⟨_, hMcons⟩ := hMmem
+  -- M is maximal in CS. Show it's SetMaximalConsistent.
+  use M
+  constructor
+  · exact hSM
+  · -- Show SetMaximalConsistent M
+    constructor
+    · exact hMcons
+    · -- Show ∀ φ ∉ M, ¬SetConsistent (insert φ M)
+      intro φ hφnotM hcons_insert
+      -- If insert φ M were consistent, then insert φ M ∈ CS
+      have h_insert_mem : insert φ M ∈ CS := by
+        constructor
+        · exact Set.Subset.trans hSM (Set.subset_insert φ M)
+        · exact hcons_insert
+      -- M is maximal: if insert φ M ∈ CS and M ⊆ insert φ M, then insert φ M ⊆ M
+      have h_le : M ⊆ insert φ M := Set.subset_insert φ M
+      have h_subset : insert φ M ⊆ M := hmax.le_of_ge h_insert_mem h_le
+      have hφM : φ ∈ M := h_subset (Set.mem_insert φ M)
+      exact hφnotM hφM
+
+/--
+**Lindenbaum's Lemma (List Version)**: Every consistent context can be extended
+to a maximal consistent context.
+
+**Important Note**: The list-based formulation has a fundamental limitation:
+MaximalConsistent requires the context Δ to contain ALL formulas of a maximal
+consistent SET, but a maximal consistent set may be infinite while List is
+inherently finite. This version uses `sorry` for the set-to-list conversion.
+
+For the mathematically complete version, use `set_lindenbaum` which proves
+existence of a maximal consistent SET without this limitation.
+
+**Proof Strategy**:
+1. Convert list context Γ to set
+2. Apply set-based Lindenbaum to get maximal consistent set M
+3. The list-based version follows if M can be enumerated as a list
+
+Note: The core mathematical content is in `set_lindenbaum`. This list-based
+version is provided for compatibility with the existing API.
+-/
+theorem lindenbaum (Γ : Context) (h : Consistent Γ) :
+    ∃ Δ : Context, (∀ φ, φ ∈ Γ → φ ∈ Δ) ∧ MaximalConsistent Δ := by
+  -- The full proof is in set_lindenbaum.
+  -- Converting from Set Formula to List Formula requires either:
+  -- 1. A countable enumeration of Formula (possible but complex)
+  -- 2. Accepting that maximal consistent sets may be infinite
+  -- 3. Using a different representation
+
+  -- For this version, we use sorry for the set-to-list conversion.
+  -- The mathematical content (Zorn's lemma application) is fully proven
+  -- in set_lindenbaum above.
+  sorry
 
 /-!
 ## Maximal Consistent Set Properties
