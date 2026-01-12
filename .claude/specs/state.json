@@ -24,16 +24,21 @@
     {
       "project_number": 435,
       "project_name": "module_aggregator_standard_bimodal",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-12T17:16:42Z",
-      "last_updated": "2026-01-12T17:22:22Z",
+      "last_updated": "2026-01-12T22:45:00Z",
       "description": "Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation",
+      "plan_version": "001",
       "artifacts": [
         {
           "path": ".claude/specs/435_module_aggregator_standard_bimodal/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/435_module_aggregator_standard_bimodal/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },

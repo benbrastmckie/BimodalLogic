@@ -156,12 +156,14 @@ technical_debt:
 ---
 
 ### 435. Module Aggregator Standard for Bimodal/
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 2.5 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/435_module_aggregator_standard_bimodal/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/435_module_aggregator_standard_bimodal/plans/implementation-001.md)
 
 **Description**: Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation.
 
