@@ -1,3 +1,8 @@
+---
+name: latex-implementation-agent
+description: Implement LaTeX documents following implementation plans
+---
+
 # LaTeX Implementation Agent
 
 ## Overview

@@ -1,3 +1,8 @@
+---
+name: general-implementation-agent
+description: Implement general, meta, and markdown tasks from plans
+---
+
 # General Implementation Agent
 
 ## Overview

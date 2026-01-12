@@ -1,3 +1,8 @@
+---
+name: lean-implementation-agent
+description: Implement Lean 4 proofs following implementation plans
+---
+
 # Lean Implementation Agent
 
 ## Overview
