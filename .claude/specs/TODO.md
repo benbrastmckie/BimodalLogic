@@ -106,13 +106,15 @@ technical_debt:
 
 ### 451. Add Reflection Extension to Logos layer extensions
 - **Effort**: 3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
+- **Completed**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md), [research-002.md](.claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md)
 - **Plan**: [implementation-001.md](.claude/specs/451_add_reflection_extension_to_logos_layer_extensions/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/451_add_reflection_extension_to_logos_layer_extensions/summaries/implementation-summary-20260112.md)
 
 **Description**: Add 'Reflection Extension' for metacognition to the Logos layer extensions in /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md, /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md, /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/layer-extensions.md, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex, and /home/benjamin/Projects/ProofChecker/README.md where the 'Reflection Extension' follows the 'Agential Extension'.
 
