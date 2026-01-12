@@ -2,6 +2,8 @@ import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic.Soundness
 import Mathlib.Algebra.Order.Group.Int
+import Mathlib.Order.Zorn
+import Mathlib.Data.Finite.Defs
 
 /-!
 # Completeness for TM Bimodal Logic
@@ -91,6 +93,59 @@ Formally: `MaximalConsistent Γ ↔ Consistent Γ ∧ ∀ φ, φ ∉ Γ → ¬Co
 -/
 def MaximalConsistent (Γ : Context) : Prop :=
   Consistent Γ ∧ ∀ φ : Formula, φ ∉ Γ → ¬Consistent (φ :: Γ)
+
+/-!
+## Lindenbaum Infrastructure
+
+Definitions and lemmas supporting the Zorn's lemma application for Lindenbaum's lemma.
+We work with `Set Formula` internally for cleaner chain properties, then convert back
+to `List Formula` for the final result.
+-/
+
+/--
+Set-based consistency: A set of formulas is consistent if listing them doesn't derive ⊥.
+
+We define consistency in terms of finite subsets, since a derivation can only use
+finitely many premises.
+-/
+def SetConsistent (S : Set Formula) : Prop :=
+  ∀ L : List Formula, (∀ φ ∈ L, φ ∈ S) → Consistent L
+
+/--
+Set-based maximal consistency: A set is maximally consistent if it is consistent
+and cannot be properly extended while remaining consistent.
+-/
+def SetMaximalConsistent (S : Set Formula) : Prop :=
+  SetConsistent S ∧ ∀ φ : Formula, φ ∉ S → ¬SetConsistent (insert φ S)
+
+/--
+ConsistentExtensions represents the set of all consistent extensions of a base set.
+-/
+def ConsistentExtensions (base : Set Formula) : Set (Set Formula) :=
+  {S | base ⊆ S ∧ SetConsistent S}
+
+/--
+The base set is in its own consistent extensions (given it's consistent).
+-/
+lemma base_mem_consistent_extensions {base : Set Formula} (h : SetConsistent base) :
+    base ∈ ConsistentExtensions base :=
+  ⟨Set.Subset.refl base, h⟩
+
+/--
+Context to Set conversion: Convert a list-based context to a set.
+-/
+def contextToSet (Γ : Context) : Set Formula := {φ | φ ∈ Γ}
+
+/--
+List-based consistency implies set-based consistency for the corresponding set.
+-/
+lemma consistent_implies_set_consistent {Γ : Context} (h : Consistent Γ) :
+    SetConsistent (contextToSet Γ) := by
+  intro L hL ⟨d⟩
+  apply h
+  -- We need to derive ⊥ from Γ using the derivation from L
+  -- Since all elements of L are in Γ, we can weaken
+  exact ⟨DerivationTree.weakening L Γ Formula.bot d (fun φ hφ => hL φ hφ)⟩
 
 /-!
 ## Lindenbaum's Lemma
