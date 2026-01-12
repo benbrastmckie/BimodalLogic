@@ -110,13 +110,15 @@ technical_debt:
 
 ### 430. Refactor documentation to present ProofChecker as general framework
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-12
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/430_refactor_documentation_general_framework/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/430_refactor_documentation_general_framework/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/430_refactor_documentation_general_framework/summaries/implementation-summary-20260112.md)
 
 **Description**: Refactor the ProofChecker documentation (README.md and docs/README.md) to present ProofChecker as a general framework for developing related theories for formal languages with semantics, proof theories, and metalogics. The project now supports two theories: the Bimodal/ theory for tense and modality (entirely intensional) and the Logos/ theory (hyperintensional foundation with layered extensions).
 
@@ -153,7 +155,7 @@ technical_debt:
 
 ### 260. Proof Search
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Started**: 2026-01-05
 - **Researched**: 2026-01-12
 - **Priority**: Medium

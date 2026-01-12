@@ -1,17 +1,14 @@
 # Theory Comparison: Bimodal vs Logos
 
-This document compares the two logical systems implemented in the ProofChecker project,
-highlighting their theoretical foundations, semantic structures, and intended applications.
+This document compares the two logical systems developed in parallel within the ProofChecker project, highlighting their theoretical foundations, semantic structures, and intended applications.
 
 ## Overview
 
-The ProofChecker project contains two distinct logical theories:
+The ProofChecker project contains two distinct logical theories developed in parallel:
 
-1. **Bimodal**: A propositional intensional logic implementing TM (Tense and Modality) with
-   Kripke-style semantics. This is the actively developed implementation.
+1. **Logos** (primary): A second-order hyperintensional logic that extends beyond possible worlds semantics. This is the primary research direction with layered extensions for explanatory, epistemic, and normative reasoning.
 
-2. **Logos**: A second-order hyperintensional logic (planned) that will extend beyond possible
-   worlds semantics. Currently serves as a re-export layer for Bimodal.
+2. **Bimodal** (comparison baseline): A propositional intensional logic implementing TM (Tense and Modality) with Kripke-style semantics. Bimodal serves as an excellent starting point for understanding modal-temporal reasoning and as a comparison baseline demonstrating the boundaries of purely intensional semantics.
 
 ## Bimodal Theory
 
@@ -108,6 +105,18 @@ Logos is designed to capture distinctions that possible worlds semantics cannot:
 - **Explanatory Relations**: "P explains Q" is hyperintensional
 - **Content**: Distinguishing propositions with same truth conditions
 
+### Hyperintensional Advantages
+
+The contrast between Bimodal's intensional semantics and Logos's hyperintensional foundation demonstrates several key advantages of hyperintensional approaches:
+
+1. **Propositional Attitude Distinctions**: In intensional semantics, believing P and believing Q are equivalent whenever P and Q are necessarily equivalent. Hyperintensional semantics distinguishes these, capturing the intuition that one can believe "2+2=4" without believing "Fermat's Last Theorem is true" even though both are necessary truths.
+
+2. **Explanatory Relations**: Grounding, essence, and constitution are hyperintensional---what grounds what cannot be captured by truth conditions alone. "Being crimson grounds being red" differs from arbitrary necessary connections.
+
+3. **Fine-Grained Content**: Hyperintensional semantics distinguishes propositions that have the same truth conditions but differ in what they are *about*. This enables more expressive reasoning about content and aboutness.
+
+4. **Layered Expressivity**: Logos's hyperintensional foundation supports a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
+
 ### Implementation Status
 
 Currently `/Logos/` serves as a **re-export layer** for Bimodal:
@@ -117,20 +126,26 @@ Currently `/Logos/` serves as a **re-export layer** for Bimodal:
 
 ## When to Use Each
 
-### Use Bimodal For
+### Start with Bimodal
 
-1. **Standard modal reasoning**: Necessity, possibility, and their interactions
-2. **Temporal logic**: Past, future, always, eventually operators
-3. **Modal-temporal combinations**: Interactions between modality and time
-4. **S4/S5 style theorems**: Accessibility relation properties
-5. **Propositional proofs**: When zeroth-order logic suffices
+Bimodal is recommended as a starting point for:
 
-### Use Logos For (Future)
+1. **Learning modal-temporal reasoning**: Complete implementation with tutorials and examples
+2. **Standard modal reasoning**: Necessity, possibility, and their interactions
+3. **Temporal logic**: Past, future, always, eventually operators
+4. **Modal-temporal combinations**: Interactions between modality and time
+5. **S4/S5 style theorems**: Accessibility relation properties
+6. **Propositional proofs**: When zeroth-order logic suffices
+
+### Use Logos For
+
+Logos is appropriate when you need:
 
 1. **Propositional attitude reports**: Belief, knowledge, desire contexts
 2. **Explanation and grounding**: Hyperintensional relations
 3. **Second-order quantification**: Properties of properties
 4. **Fine-grained content**: Distinguishing necessarily equivalent propositions
+5. **Layered extensions**: Epistemic, normative, and explanatory operators
 
 ## Theoretical Background
 

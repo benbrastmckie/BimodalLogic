@@ -5,14 +5,24 @@ Project-wide documentation hub for the ProofChecker formal verification project.
 > **For AI-Assisted Development**: See [.claude/README.md](../.claude/README.md) for the
 > Claude Code configuration and task management system.
 
+## Framework Overview
+
+ProofChecker implements formal logic theories in Lean 4 with shared infrastructure for syntax, proof systems, semantics, and metalogic. The project's primary focus is **Logos**, a hyperintensional logic supporting layered extensions for explanatory, epistemic, and normative reasoning.
+
+**Bimodal** provides a complete intensional logic (TM bimodal) that serves as an excellent starting point for newcomers and a comparison baseline demonstrating what purely intensional semantics can and cannot express.
+
+The contrast between theories illuminates the power of hyperintensional semantics for distinguishing necessarily equivalent propositions.
+
+**Getting Started**: Newcomers may find it helpful to start with Bimodal to understand modal-temporal reasoning, then explore Logos's hyperintensional extensions for more expressive capabilities.
+
 ## Theory-Specific Documentation
 
 For documentation specific to each logic theory, see:
 
 | Theory | Description | Documentation |
 |--------|-------------|---------------|
-| **Bimodal** | Propositional intensional logic (active) | [Bimodal/docs/](../Bimodal/docs/) |
-| **Logos** | Second-order hyperintensional (planned) | [Logos/docs/](../Logos/docs/) |
+| **Logos** (primary) | Second-order hyperintensional logic | [Logos/docs/](../Logos/docs/) |
+| **Bimodal** | Propositional intensional logic (complete) | [Bimodal/docs/](../Bimodal/docs/) |
 
 ### Quick Access by Need
 

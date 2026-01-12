@@ -20,7 +20,7 @@ Refactor README.md and docs/README.md to present ProofChecker as a framework sup
 ### Phase 1: Root README.md Framework Introduction
 
 **Estimated effort**: 1.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update title and opening to present as framework while keeping Logos focus
@@ -82,7 +82,7 @@ The Logos theory is an extensible formal language equipped with...
 ### Phase 2: Update Bimodal Section as Comparison Baseline
 
 **Estimated effort**: 0.75 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Rename "Causal Layer (TM Logic)" to clarify Bimodal as standalone comparison theory
@@ -116,7 +116,7 @@ The Logos theory is an extensible formal language equipped with...
 ### Phase 3: Enhance Logos Section with Hyperintensional Contrast
 
 **Estimated effort**: 0.75 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Strengthen Logos layer descriptions with hyperintensional emphasis
@@ -149,7 +149,7 @@ The Logos theory is an extensible formal language equipped with...
 ### Phase 4: Update docs/README.md with Framework Context
 
 **Estimated effort**: 1 hour
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add "Framework Overview" section explaining multi-theory architecture
@@ -192,7 +192,7 @@ The Logos theory is an extensible formal language equipped with...
 ### Phase 5: Update docs/research/theory-comparison.md
 
 **Estimated effort**: 0.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Enhance contrast between intensional and hyperintensional semantics
@@ -221,7 +221,7 @@ The Logos theory is an extensible formal language equipped with...
 ### Phase 6: Verify Cross-References and Links
 
 **Estimated effort**: 0.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Verify all new links work

@@ -1,6 +1,19 @@
-# Logos: Verified Reasoning in a Formal Language of Thought
+# Logos: A Framework for Verified Formal Logic in Lean 4
 
-The **Logos** is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory in order to provide an unbounded source of data to train AI systems to conduct verified reasoning that is witnessed by proof receipts in LEAN 4. The modular architecture extends the expressive power of the language with the following layers: 
+**Logos** is a formal verification framework in Lean 4 implementing hyperintensional logics for verified AI reasoning. The project develops two theories in parallel:
+
+| Theory | Foundation | Status | Focus |
+|--------|------------|--------|-------|
+| **Logos** | Hyperintensional | Active | Primary research direction with layered extensions |
+| **Bimodal** | Intensional (TM logic) | Complete | Starting point and comparison baseline |
+
+The contrast between Bimodal's purely intensional semantics and Logos's hyperintensional foundation demonstrates the advantages of hyperintensional semantics for supporting a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
+
+**See also**: [Theory Comparison](docs/research/theory-comparison.md) for detailed differences
+
+---
+
+The Logos theory is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory in order to provide an unbounded source of data to train AI systems to conduct verified reasoning that is witnessed by proof receipts in LEAN 4. The modular architecture extends the expressive power of the language with the following layers: 
 
 - **Constitutive Layer**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
 - **Causal Layer**: Historical, counterfactual conditional, tense, and causal operators for reasoning about past and future contingency and causal connections between earlier and later events.
@@ -94,9 +107,13 @@ Logos implements a layered operator architecture supporting progressive extensib
 
 ## Constitutive Layer
 
-The Constitutive Layer provides fundamental descriptive resources—predicates and functions for expressing facts, quantifiers for generalizing over individuals, extensional connectives for truth-functional reasoning, and constitutive operators for expressing what grounds and explains what. This foundational layer enables systems to represent and reason about the basic structure of reality.
+The Constitutive Layer provides fundamental descriptive resources---predicates and functions for expressing facts, quantifiers for generalizing over individuals, extensional connectives for truth-functional reasoning, and constitutive operators for expressing what grounds and explains what. This foundational layer enables systems to represent and reason about the basic structure of reality.
 
-## Causal Layer (TM Logic)
+The Constitutive Layer leverages Logos's hyperintensional semantics to distinguish constitutive grounding from other necessary connections. Unlike intensional semantics where all necessary truths are equivalent, hyperintensional semantics captures that "being crimson grounds being red" differs from "2+2=4" even though both are necessary.
+
+## Bimodal Theory (TM Logic)
+
+The Bimodal theory implements TM (Tense and Modality) logic as a complete, self-contained intensional logic. Developed in parallel with Logos, Bimodal serves as an excellent starting point for understanding modal-temporal reasoning and as a comparison baseline demonstrating the boundaries of purely intensional semantics.
 
 The Causal Layer implements TM (Tense and Modality) - a bimodal logic combining S5 modal logic (metaphysical necessity/possibility) with linear temporal logic (past/future operators). This layer extends constitutive reasoning with temporal productive relationships, enabling systems to distinguish between timeless constitutive grounding (e.g., being crimson grounds being red) and temporal causal production (e.g., touching a hot stove causes pain).
 
@@ -143,6 +160,8 @@ Six theorems connecting modal and temporal operators:
 - **P6**: `▽□φ → □△φ` (occurrent necessity is perpetual)
 
 **For formal proofs**: [Perpetuity.lean](Logos/Theorems/Perpetuity.lean)
+
+For hyperintensional extensions beyond Bimodal's intensional semantics, see the Logos theory layers.
 
 ---
 

@@ -36,11 +36,11 @@
     {
       "project_number": 430,
       "project_name": "refactor_documentation_general_framework",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T14:28:44Z",
-      "last_updated": "2026-01-12T15:30:00Z",
+      "last_updated": "2026-01-12T19:25:00Z",
       "plan_version": "001",
       "artifacts": [
         {
@@ -50,6 +50,10 @@
         {
           "path": ".claude/specs/430_refactor_documentation_general_framework/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/430_refactor_documentation_general_framework/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },
@@ -283,11 +287,11 @@
       "project_name": "proof_search",
       "type": "feature",
       "phase": "researched",
-      "status": "researched",
+      "status": "planning",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T23:45:00Z",
+      "last_updated": "2026-01-12T15:24:53Z",
       "effort": "40-60 hours",
       "description": "Implement automated proof search for TM logic with proof term construction.",
       "planning_completed": "2026-01-05T08:07:35-08:00",
