@@ -88,11 +88,11 @@
     {
       "project_number": 432,
       "project_name": "fix_artifact_linking_in_todo_and_state",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T14:48:15Z",
-      "last_updated": "2026-01-12T22:15:00Z",
+      "last_updated": "2026-01-12T17:38:41Z",
       "plan_version": "001",
       "artifacts": [
         {
