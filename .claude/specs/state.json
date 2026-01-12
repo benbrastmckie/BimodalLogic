@@ -78,13 +78,13 @@
     {
       "project_number": 415,
       "project_name": "fix_latex_sentence_line_breaks",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "description": "Fix LaTeX sentence line breaks introduced by task 405/406 refactor. Sentences should remain on single numbered lines (semantic linefeeds), not be broken across lines as seen in 00-Introduction.tex lines 9-10.",
       "effort": "1-2 hours",
       "created": "2026-01-12T00:32:09Z",
-      "last_updated": "2026-01-12T00:35:17Z",
+      "last_updated": "2026-01-12T00:40:03Z",
       "dependencies": [
         405,
         406
@@ -93,8 +93,13 @@
         {
           "path": ".claude/specs/415_fix_latex_sentence_line_breaks/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/415_fix_latex_sentence_line_breaks/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 414,
