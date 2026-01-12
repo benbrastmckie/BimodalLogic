@@ -30,7 +30,7 @@ technical_debt:
 
 ### 423. CI skip by default, trigger via commit message
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: High
@@ -84,10 +84,12 @@ technical_debt:
 
 ### 427. Document command, skill, and subagent framework
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
+- **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/427_document_command_skill_subagent_framework/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/427_document_command_skill_subagent_framework/plans/implementation-001.md)
 
 **Description**: Systematically document the framework for using commands, skills, and subagents in conjunction. Update `.claude/context/core/` files where appropriate and create documentation in `.claude/docs/` to support the development and refinement of this approach. Build on the patterns established in task 425 and its dependencies.
 
