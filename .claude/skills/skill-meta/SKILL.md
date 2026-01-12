@@ -17,6 +17,15 @@ agent: meta-builder-agent
 
 Thin wrapper that delegates system building to `meta-builder-agent` subagent. This skill handles all three modes of /meta: interactive interview, prompt analysis, and system analysis.
 
+## Context Pointers
+
+Reference (do not load eagerly):
+- Path: `.claude/context/core/validation.md`
+- Purpose: Return validation at CHECKPOINT 2
+- Load at: Subagent execution only
+
+Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
+
 ## Trigger Conditions
 
 This skill activates when:
