@@ -101,7 +101,7 @@ technical_debt:
 
 ### 424. Complete the TODOs in 01-Syntax.tex
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: latex
 
@@ -207,7 +207,7 @@ technical_debt:
 
 ### 395. Create Bimodal troubleshooting guide and exercise solutions
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: markdown
 - **Supersedes**: Task 178

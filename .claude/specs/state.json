@@ -6,11 +6,11 @@
     {
       "project_number": 424,
       "project_name": "complete_todos_01_syntax_tex",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-12T03:06:14Z",
-      "last_updated": "2026-01-12T03:06:14Z"
+      "last_updated": "2026-01-12T03:12:09Z"
     },
     {
       "project_number": 423,
@@ -408,13 +408,13 @@
     {
       "project_number": 395,
       "project_name": "create_bimodal_troubleshooting_and_exercise_solutions",
-      "status": "planned",
+      "status": "implementing",
       "language": "markdown",
       "priority": "medium",
       "description": "Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.",
       "effort": "3-4 hours",
       "created": "2026-01-11T21:10:49Z",
-      "last_updated": "2026-01-12T04:20:00Z",
+      "last_updated": "2026-01-12T04:25:00Z",
       "supersedes": 178,
       "artifacts": [
         {
