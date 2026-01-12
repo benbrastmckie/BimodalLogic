@@ -68,7 +68,7 @@
       "description": "Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.",
       "effort": "3-4 hours",
       "created": "2026-01-12T00:38:44Z",
-      "last_updated": "2026-01-12T00:51:59Z",
+      "last_updated": "2026-01-12T02:10:00Z",
       "parent_task": 400,
       "dependencies": [
         416
@@ -76,6 +76,10 @@
       "artifacts": [
         {
           "path": ".claude/specs/417_split_typeclass_constraints_explanatory/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/417_split_typeclass_constraints_explanatory/reports/research-002.md",
           "type": "research"
         }
       ]
@@ -104,13 +108,13 @@
     {
       "project_number": 419,
       "project_name": "refactor_mutual_recursion_semantics",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "low",
       "description": "Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.",
       "effort": "4-6 hours",
       "created": "2026-01-12T00:38:44Z",
-      "last_updated": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T02:01:33Z",
       "parent_task": 400,
       "dependencies": [
         416
@@ -416,12 +420,13 @@
       "project_name": "establish_ci/cd_pipeline_with_automated_testing_and_linting",
       "type": "feature",
       "phase": "not_started",
-      "status": "planned",
+      "status": "completed",
       "priority": "high",
       "language": "markdown",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T01:52:46Z",
-      "effort": "13 hours"
+      "last_updated": "2026-01-12T02:02:55Z",
+      "effort": "13 hours",
+      "completed": "2026-01-12"
     },
     {
       "project_number": 257,

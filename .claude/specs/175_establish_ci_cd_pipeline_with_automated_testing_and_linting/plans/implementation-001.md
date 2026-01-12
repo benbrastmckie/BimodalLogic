@@ -109,7 +109,7 @@ Implement a GitHub Actions CI/CD pipeline for the ProofChecker project using the
 ### Phase 4: Initial Commit and Push
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Commit workflow and documentation
@@ -137,7 +137,7 @@ Implement a GitHub Actions CI/CD pipeline for the ProofChecker project using the
 ### Phase 5: Update Files Affected in TODO.md
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update task description with final file list

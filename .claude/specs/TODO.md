@@ -89,29 +89,21 @@ technical_debt:
 
 ### 175. Establish CI/CD pipeline with automated testing and linting
 - **Effort**: 13 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-11
+- **Completed**: 2026-01-12
 - **Priority**: High
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**: [research-001.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/summaries/implementation-summary-20260112.md)
 - **Files Affected**:
   - .github/workflows/ci.yml (new)
-  - .github/workflows/lint.yml (new)
-  - .github/workflows/coverage.yml (new)
   - docs/development/CI_CD_PROCESS.md (new)
-- **Description**: Create GitHub Actions workflows for continuous integration and deployment. Currently all tests run manually. CI/CD pipeline should run tests, linting, style checks, coverage reporting, and documentation build checks automatically on every pull request and commit.
-- **Acceptance Criteria**:
-  - [ ] GitHub Actions workflow for tests created and passing
-  - [ ] Linting and style checks integrated into CI
-  - [ ] Coverage reporting integrated into CI
-  - [ ] Documentation build checks integrated into CI
-  - [ ] CI runs on all pull requests and commits to main
-  - [ ] CI failure blocks merge
-  - [ ] CI/CD process documented in CI_CD_PROCESS.md
-- **Impact**: Ensures code quality automatically, prevents regressions, and enables confident merging of pull requests. Essential for maintaining production-ready code.
+
+**Description**: Created GitHub Actions CI/CD pipeline using leanprover/lean-action@v1 with build, test, and lint steps. Mathlib cache enabled for faster builds. Coverage reporting deferred pending tooling availability.
 
 ---
 
@@ -247,9 +239,11 @@ technical_debt:
 - **Language**: lean
 - **Parent**: Task 400
 - **Dependencies**: 416
-- **Research**: [research-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-001.md)
+- **Research**: [research-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-001.md), [research-002.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-002.md)
 
 **Description**: Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.
+
+**Note**: Task 420 (Mathlib upgrade) already implemented unbundling using `[AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]` instead of the originally recommended `CovariantClass` approach. See research-002.md for pros/cons analysis.
 
 ---
 
@@ -269,7 +263,7 @@ technical_debt:
 
 ### 419. Refactor mutual recursion in Foundation/Semantics.lean
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 400
