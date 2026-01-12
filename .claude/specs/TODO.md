@@ -1,21 +1,21 @@
 ---
-last_updated: 2026-01-12T09:00:00Z
+last_updated: 2026-01-12T09:45:00Z
 next_project_number: 427
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 23
-  completed: 91
+  active: 17
+  completed: 102
   in_progress: 0
-  not_started: 17
+  not_started: 11
   abandoned: 7
-  total: 121
+  total: 126
 priority_distribution:
   critical: 0
-  high: 5
-  medium: 7
+  high: 4
+  medium: 3
   low: 10
 technical_debt:
   sorry_count: 19
@@ -28,21 +28,6 @@ technical_debt:
 
 ## High Priority
 
-### 425. Update command files to delegate to skill/subagent system
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Dependencies**: 409, 410, 411, 412, 413, 414
-- **Research**: [research-001.md](.claude/specs/425_update_command_files_to_delegate_to_skill_subagent/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/425_update_command_files_to_delegate_to_skill_subagent/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/425_update_command_files_to_delegate_to_skill_subagent/summaries/implementation-summary-20260112.md)
-- **Completed**: 2026-01-12
-
-**Description**: Update `.claude/commands/research.md`, `.claude/commands/plan.md`, and `.claude/commands/implement.md` to delegate to the skill/subagent system instead of executing inline. Commands should look up task language, then invoke the appropriate skill (e.g., `skill-lean-research` or `skill-researcher`) via the Skill tool, which will spawn subagents via Task tool. This completes the forked subagent pattern by connecting the entry points (commands) to the infrastructure (skills → agents).
-
----
-
 ### 423. CI skip by default, trigger via commit message
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
@@ -50,27 +35,6 @@ technical_debt:
 - **Language**: meta
 
 **Description**: Change CI workflow to skip by default and only run when triggered by a special marker in commit messages (e.g., `[ci]` or `[run-ci]`). Create a git skill and subagent to handle all git commits, which can intelligently decide when to include the CI trigger marker. Add context documentation in `.claude/context/` explaining the git workflow and CI triggering convention. This enables frequent pushes without triggering CI, while still allowing explicit CI runs when warranted and likely to succeed.
-
----
-
-### 409. Convert workflow skills to forked subagent pattern
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-
-**Description**: Update skill-lean-research, skill-researcher, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation to use `context: fork` and `agent:` field in frontmatter. Convert skills to thin wrappers that spawn subagents for token-heavy work. Define standardized return format for artifacts (status, artifact_path, summary).
-
----
-
-### 410. Remove eager context loading from skill frontmatter
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Dependencies**: 409
-
-**Description**: Remove `context:` arrays from all skill frontmatter files. Document lazy loading pattern using @-references. Ensure context/index.md is referenced for on-demand lookup. Update CLAUDE.md if needed. This enables skills to load context only when subagents actually need it.
 
 ---
 
@@ -124,53 +88,6 @@ technical_debt:
 
 ---
 
-### 424. Complete the TODOs in 01-Syntax.tex
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/424_complete_todos_01_syntax_tex/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/424_complete_todos_01_syntax_tex/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/424_complete_todos_01_syntax_tex/summaries/implementation-summary-20260111.md)
-
-**Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/01-Syntax.tex
-
----
-
-### 411. Create lean-research-agent subagent with lazy context
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Dependencies**: 410
-
-**Description**: Create `.claude/agents/lean-research-agent.md` subagent with lean-lsp MCP tools and search decision tree. Loads mcp-tools-guide.md, leansearch-api.md, loogle-api.md only when needed via @-references. Returns structured JSON with artifact path and summary. Integrates with skill-lean-research via the forked subagent pattern.
-
----
-
-### 412. Create general-research-agent subagent with lazy context
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Dependencies**: 410
-
-**Description**: Create `.claude/agents/general-research-agent.md` subagent with WebSearch, WebFetch, Read, Grep tools. Loads report-format.md on-demand. Returns structured JSON with artifact path and summary. Integrates with skill-researcher via the forked subagent pattern.
-
----
-
-### 413. Create implementation-agent subagents (lean/general/latex)
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Dependencies**: 410
-
-**Description**: Create `.claude/agents/lean-implementation-agent.md`, `general-implementation-agent.md`, and `latex-implementation-agent.md` subagents. Each loads language-specific context only when executing phases. Returns phase completion status and artifact paths. Integrates with respective implementation skills via forked subagent pattern.
-
----
-
 ### 400. Investigate Explanatory/Truth.lean build performance
 - **Effort**: 2-3 hours
 - **Status**: [EXPANDED]
@@ -181,47 +98,6 @@ technical_debt:
 - **Research**: [research-001.md](.claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md)
 
 **Description**: Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.
-
----
-
-### 417. Split typeclass constraints in Explanatory
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: lean
-- **Parent**: Task 400
-- **Dependencies**: 416
-- **Research**: [research-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-001.md), [research-002.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/research-002.md)
-- **Plan**: [implementation-001.md](.claude/specs/417_split_typeclass_constraints_explanatory/plans/implementation-001.md)
-- **Benchmark**: [benchmark-results.md](.claude/specs/417_split_typeclass_constraints_explanatory/reports/benchmark-results.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/417_split_typeclass_constraints_explanatory/summaries/implementation-summary-20260111.md)
-
-**Description**: Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.
-
-**Outcome**: Benchmark comparison was impossible because `LinearOrderedAddCommGroup` has been deprecated and removed from Mathlib v4.27.0. The unbundled approach (`[AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]`) implemented by task 420 is now the only compatible approach. Task validated as complete - unbundling is mandatory for modern Mathlib.
-
----
-
-### 418. Cache typeclass instances in Explanatory
-- **Effort**: 1.5-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: lean
-- **Parent**: Task 400
-- **Dependencies**: 416
-- **Research**: [research-001.md](.claude/specs/418_cache_typeclass_instances_explanatory/reports/research-001.md), [research-002.md](.claude/specs/418_cache_typeclass_instances_explanatory/reports/research-002.md)
-- **Plan**: [implementation-001.md](.claude/specs/418_cache_typeclass_instances_explanatory/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/418_cache_typeclass_instances_explanatory/summaries/implementation-summary-20260111.md)
-
-**Description**: Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.
-
-**Note**: Task 420 already addressed `LinearOrderedAddCommGroup T` unbundling. Task 418 now focuses exclusively on `CompleteLattice State` caching, which is orthogonal (different type hierarchy).
 
 ---
 
@@ -238,28 +114,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](.claude/specs/419_refactor_mutual_recursion_semantics/plans/implementation-001.md)
 
 **Description**: Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Replace the `mutual` block with a single `eval` function parameterized by a `Polarity` type, enabling cleaner structural recursion and reducing well-founded recursion elaboration overhead.
-
----
-
-### 395. Create Bimodal troubleshooting guide and exercise solutions
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: markdown
-- **Supersedes**: Task 178
-- **Research**: [research-001.md](.claude/specs/395_create_bimodal_troubleshooting_and_exercise_solutions/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/395_create_bimodal_troubleshooting_and_exercise_solutions/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/395_create_bimodal_troubleshooting_and_exercise_solutions/summaries/implementation-summary-20260112.md)
-
-**Description**: Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.
-
-**Files Created/Modified**:
-  - Theories/Bimodal/docs/user-guide/TROUBLESHOOTING.md (new - 20 error patterns)
-  - Theories/Bimodal/docs/user-guide/EXAMPLES.md (9 exercises with hints and solutions)
-  - Theories/Bimodal/docs/user-guide/README.md (navigation updated)
-  - Theories/Bimodal/docs/user-guide/QUICKSTART.md (navigation updated)
-  - Theories/Bimodal/README.md (documentation table updated)
 
 ---
 
@@ -298,17 +152,6 @@ technical_debt:
 ---
 
 ## Low Priority
-
-### 414. Create planner-agent subagent with lazy context
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Low
-- **Language**: meta
-- **Dependencies**: 410
-
-**Description**: Create `.claude/agents/planner-agent.md` subagent that loads plan-format.md and task-breakdown.md on-demand. Returns structured JSON with plan path and summary. Integrates with skill-planner via `context: fork` pattern.
-
----
 
 ### 257. Completeness Proofs
 
