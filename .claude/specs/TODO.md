@@ -44,10 +44,11 @@ technical_debt:
 
 ### 410. Remove eager context loading from skill frontmatter
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 409
+- **Plan**: [implementation-001.md](.claude/specs/410_remove_eager_context_loading_from_skill_frontmatter/plans/implementation-001.md)
 
 **Description**: Remove `context:` arrays from all skill frontmatter files. Document lazy loading pattern using @-references. Ensure context/index.md is referenced for on-demand lookup. Update CLAUDE.md if needed. This enables skills to load context only when subagents actually need it.
 

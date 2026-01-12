@@ -73,15 +73,22 @@
     {
       "project_number": 410,
       "project_name": "remove_eager_context_loading_from_skill_frontmatter",
-      "status": "not_started",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "description": "Remove context: arrays from all skill frontmatter. Document lazy loading pattern using @-references. Ensure context/index.md is referenced for on-demand lookup. Update CLAUDE.md if needed.",
       "effort": "2-3 hours",
       "created": "2026-01-12T08:00:00Z",
-      "last_updated": "2026-01-12T08:00:00Z",
+      "last_updated": "2026-01-12T01:23:18Z",
       "dependencies": [
         409
+      ],
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/410_remove_eager_context_loading_from_skill_frontmatter/plans/implementation-001.md",
+          "type": "plan"
+        }
       ]
     },
     {
