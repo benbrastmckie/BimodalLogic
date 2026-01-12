@@ -1,66 +1,14 @@
 # Logos: A Logic for Interpreted and Verified AI Reasoning
 
-**Logos** is a formal verification framework in Lean 4 implementing hyperintensional logics for verified AI reasoning. The project develops two theories in parallel:
+**Logos** is a formal verification framework in Lean 4 implementing hyperintensional logics for verified AI reasoning. By combining an axiomatic proof system with recursive semantics, Logos generates unlimited self-supervised training data for AI systems---proof receipts for valid inferences and countermodels for invalid ones---without human annotation.
 
-| Theory | Foundation | Status | Focus |
-|--------|------------|--------|-------|
-| **Logos** | Hyperintensional | Active | Primary research direction with layered extensions |
-| **Bimodal** | Intensional (TM logic) | Complete | Starting point and comparison baseline |
-
-The contrast between Bimodal's purely intensional semantics and Logos's hyperintensional foundation demonstrates the advantages of hyperintensional semantics for supporting a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
-
-**See also**: [Bimodal Logic](docs/research/bimodal-logic.md) for detailed comparison
+**Formal Specifications**:
+- **Recursive Semantics** ([markdown](Theories/Logos/docs/research/recursive-semantics.md)) - Compositional truth conditions for all operators
+- **Logos Reference Manual** ([tex](Theories/Logos/latex/LogosReference.tex) | [pdf](Theories/Logos/latex/LogosReference.pdf)) - Complete formal system
 
 ---
 
-The Logos theory is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory in order to provide an unbounded source of data to train AI systems to conduct verified reasoning that is witnessed by proof receipts in LEAN 4. The modular architecture extends the expressive power of the language with the following layers: 
-
-- **Constitutive Layer**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
-- **Causal Layer**: Historical, counterfactual conditional, tense, and causal operators for reasoning about past and future contingency and causal connections between earlier and later events.
-- **Epistemic Layer**: Epistemic modals, indicative conditionals, and probability, and belief operators for reasoning under uncertainty.
-- **Normative Layer**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
-
-Combining an **axiomatic proof system** implemented in LEAN 4 with a **recursive semantic theory** implemented in the [Model-Checker](https://github.com/benbrastmckie/ModelChecker) creates a dual verification architecture that generates comprehensive training signals without human annotation.
-
-| Component               | Role                                                      | Training Signal      |
-| ----------------------- | --------------------------------------------------------- | -------------------- |
-| **LEAN 4 Proof System** | Derives valid theorems with machine-checkable proofs      | Positive RL signal   |
-| **Model-Checker**       | Identifies invalid inferences with explicit countermodels | Corrective RL signal |
-
-AI reasoning in the Logos is both **verified** by proof receipts for all inferences and **interpreted** by explicit semantic models, providing **scalable oversight** for sophisticated reasoning. The Logos implements a layered operator architecture for modularity and extensibility with the Core Layer (TM bimodal logic) as the foundation for the explanatory, epistemic, and normative layers which provide important extensions.
-
-See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNotes](https://github.com/benbrastmckie/LogicNotes) for further details. The AI agent system documentation, commands, and workflows used to develop this project can be found in [.opencode/README.md](.opencode/README.md).
-
-## Table of Contents
-
-**Overview**
-
-- [Motivations](#motivations)
-
-**Architecture**
-
-- [Layered Architecture](#layered-architecture)
-- [Bimodal Theory](#bimodal-theory)
-- [Core Capabilities](#core-capabilities)
-- [Dual Verification](#dual-verification)
-- [Application Domains](#application-domains)
-
-**Status & Usage**
-
-- [Implementation Status](#implementation-status)
-- [Installation](#installation)
-- [Documentation](#documentation)
-
-**Reference**
-
-- [Theoretical Foundations](#theoretical-foundations)
-- [Citation](#citation)
-- [License](#license)
-- [Contributing](#contributing)
-
----
-
-## RL TRAINING
+## RL Training
 
 Training AI systems to reason reliably requires both positive signals (valid inferences) and corrective signals (invalid inferences with counterexamples where the premises are true and the conclusion is false). This dual verification approach offers three key advantages:
 
@@ -70,7 +18,50 @@ Training AI systems to reason reliably requires both positive signals (valid inf
 
 By contrast, human reasoning data is limited, inconsistent, and prone to error, providing a poor training source. Beyond pattern matching, reasoning in the Logos provides proof receipts which ensure validity where the semantic theory for the Logos provide interpretability over explicit semantic models, offering scalable oversight for sophisticated forms of AI reasoning with an extensible set of operators.
 
+| Component               | Role                                                      | Training Signal      |
+| ----------------------- | --------------------------------------------------------- | -------------------- |
+| **LEAN 4 Proof System** | Derives valid theorems with machine-checkable proofs      | Positive RL signal   |
+| **Model-Checker**       | Identifies invalid inferences with explicit countermodels | Corrective RL signal |
+
 **See also**: [Dual Verification Research](docs/research/dual-verification.md) | [Integration Guide](docs/user-guide/INTEGRATION.md) | [LogicNotes](https://github.com/benbrastmckie/LogicNotes)
+
+---
+
+## Overview
+
+The Logos theory is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory. The modular architecture extends the expressive power of the language through progressive layers:
+
+- **Constitutive Layer**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
+- **Causal Layer**: Historical, counterfactual conditional, tense, and causal operators for reasoning about past and future contingency and causal connections between earlier and later events.
+- **Epistemic Layer**: Epistemic modals, indicative conditionals, and probability, and belief operators for reasoning under uncertainty.
+- **Normative Layer**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
+
+AI reasoning in the Logos is both **verified** by proof receipts for all inferences and **interpreted** by explicit semantic models, providing **scalable oversight** for sophisticated reasoning.
+
+See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNotes](https://github.com/benbrastmckie/LogicNotes) for further details.
+
+## Table of Contents
+
+**Value Proposition**
+- [RL Training](#rl-training) - Dual verification for self-supervised AI learning
+- [Motivations](#motivations) - Philosophical foundations for formal reasoning
+
+**Architecture**
+- [Layered Architecture](#layered-architecture) - Progressive layer system for modal-temporal logic
+- [Constitutive Layer](#constitutive-layer) - Foundational predicates, quantifiers, and grounding
+- [Application Domains](#application-domains) - Medical planning, legal reasoning, multi-agent coordination
+
+**Status & Usage**
+- [Implementation Status](#implementation-status) - Current development progress
+- [Installation](#installation) - Quick start and setup guides
+- [Documentation](#documentation) - User guides, development resources, research
+
+**Reference**
+- [Theoretical Foundations](#theoretical-foundations) - Academic papers underlying the semantics
+- [Bimodal Theory](#bimodal-theory) - Intensional logic comparison baseline
+- [Citation](#citation) - How to cite this project
+- [License](#license) - MIT License
+- [Contributing](#contributing) - Guidelines for contributors
 
 ---
 
@@ -99,7 +90,9 @@ Logos implements a layered operator architecture supporting progressive extensib
 | **Constitutive**   | Extensional, constitutive                        | Complete (MVP) |
 | **Causal**         | Modal, temporal, counterfactual, causal          | Complete (MVP) |
 | **Epistemic**      | Belief, probability, indicative                  | Planned        |
-| **Normative**      | Deontic, agential, preferential                  | Planned        |
+| **Normative**      | Deontic, preferential                            | Planned        |
+| **Spatial**        | Spatial relations, locations                     | Planned        |
+| **Agential**       | Agency, action, intention                        | Planned        |
 
 **See also**: [Methodology](docs/user-guide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/docs/research/layer-extensions.md)
 
@@ -111,97 +104,13 @@ The Constitutive Layer provides fundamental descriptive resources---predicates a
 
 The Constitutive Layer leverages Logos's hyperintensional semantics to distinguish constitutive grounding from other necessary connections. Unlike intensional semantics where all necessary truths are equivalent, hyperintensional semantics captures that "being crimson grounds being red" differs from "2+2=4" even though both are necessary.
 
-## Bimodal Theory
-
-The project also includes **Bimodal**, a complete propositional intensional logic combining S5 modal and linear temporal operators. Developed in parallel with Logos, Bimodal provides an excellent starting point for understanding modal-temporal reasoning and demonstrates the boundaries of purely intensional semantics.
-
-For the full presentation of Bimodal and its comparison with Logos, see [A Bimodal Logic for Tense and Modality](docs/research/bimodal-logic.md).
-
-For implementation details, see [Theories/Bimodal/README.md](Theories/Bimodal/README.md).
-
 ---
 
-## Core Capabilities
-
-### 1. Transparent Reasoning Infrastructure
-
-- **Mathematical Certainty**: LEAN 4 proof receipts provide verifiable justifications
-- **Auditable Inferences**: Every reasoning step can be independently checked
-- **Explicit Semantics**: Task semantic models make world states and possible temporal evolutions explicit
-- **Accountability**: Formal proofs enable trustworthy AI decision-making
-
-### 2. Self-Supervised Training Data Generation
-
-- **Unlimited Theorems**: Systematic derivation from TM axioms generates infinite training data
-- **No Human Annotation**: Proof receipts serve as training signals directly
-- **Positive Reinforcement**: Valid inferences rewarded with mathematical certainty
-- **Systematic Pattern Mastery**: Enables learning logical reasoning systematically
-
-### 3. Dual Verification Architecture
-
-- **Syntactic Proofs**: Logos derives valid theorems from TM axioms with LEAN 4 proof receipts
-- **Semantic Validation**: Model-Checker tests theorems via Z3-based hyperintensional semantics
-- **Complementary Signals**: Proof receipts provide positive reinforcement, counterexamples provide corrective feedback
-- **Rapid Prototyping**: Model-Checker tests theorems before proof attempts, reducing wasted effort
-- **Scalable Oversight**: Verification scales with computation, not human annotation
-
-### 4. Progressive Extension Strategy
-
-Logos's layered architecture enables incremental extension from core TM logic to explanatory, epistemic, and normative reasoning. Each extension provides independent value while building toward comprehensive AI reasoning capabilities.
-
-**See also**: [Methodology](docs/user-guide/METHODOLOGY.md) | [Layer Extensions](Theories/Logos/docs/research/layer-extensions.md)
-
-### 5. Implementation Status
+## Implementation Status
 
 The Logos methodology comprises three components: (1) an **axiomatic proof theory** for deriving valid inferences, (2) a **recursive semantic theory** for interpreting formulas in explicit models, and (3) a **metalogic** establishing the soundness and completeness of the proof theory over the semantics.
 
 **For detailed status**: [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) | [LEAN Registry](docs/project-info/SORRY_REGISTRY.md) | [TODO](TODO.md)
-
----
-
-## Dual Verification
-
-Logos and Model-Checker form a **complementary dual verification architecture** providing comprehensive training signals for AI systems learning to reason in Logos.
-
-### Architecture
-
-| Component               | Role                                              | Output                               |
-| ----------------------- | ------------------------------------------------- | ------------------------------------ |
-| **LEAN 4 Proof System** | Derives valid theorems from TM axioms             | Proof receipts (positive signals)    |
-| **Model-Checker** (Z3)  | Searches for countermodels in finite state spaces | Counterexamples (corrective signals) |
-
-### Logos: Syntactic Verification
-
-**Role**: LEAN 4 proof assistant for Logos
-
-- Derives valid theorems from TM axioms via formal proof
-- Provides proof receipts with mathematical certainty
-- Generates positive RL training signals (valid inferences)
-- Implements task semantics for soundness/completeness theorems
-
-**Current Status**: See [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) for detailed progress
-
-### Model-Checker: Semantic Verification (Complementary Tool)
-
-**Role**: Z3-based semantic verification for Logos ([Model-Checker v.2.12](https://github.com/benbrastmckie/ModelChecker))
-
-- Implements hyperintensional semantics via verifier/falsifier state pairs
-- Generates counterexamples for invalid inferences
-- Provides corrective RL training signals (refuting invalid reasoning)
-- Enables rapid prototyping (test theorems before proof attempts)
-
-**Integration**: Complementary semantic verification tool, not co-equal package in architecture
-
-### Training Signal Generation
-
-The dual verification architecture creates comprehensive learning signals without human annotation:
-
-1. **Positive Signals**: Logos generates valid theorems with proof receipts
-2. **Corrective Signals**: Model-Checker generates counterexamples for invalid inferences
-3. **Scalable Oversight**: Both tools scale with computation, enabling unlimited training data
-4. **Mathematical Certainty**: LEAN 4 proofs provide verifiable justifications, Z3 countermodels refute invalid claims
-
-**For training architecture details**: [Dual Verification Research](docs/research/dual-verification.md) | [Integration Guide](docs/user-guide/INTEGRATION.md)
 
 ---
 
@@ -330,10 +239,6 @@ Vision and planned architecture:
 
 ### Reference
 
-Quick reference materials:
-
-### Documentation Navigation
-
 - [Documentation Hub](docs/README.md) - Complete documentation index
 - [Bimodal Operators](Bimodal/docs/reference/OPERATORS.md) - Formal symbols reference
 - [Logos Glossary](Logos/docs/reference/GLOSSARY.md) - Key concepts and definitions
@@ -361,6 +266,18 @@ Logos implements formal semantics developed in recent research:
   - State-based semantics using verifier/falsifier pairs to capture fine-grained propositional content
   - Enables distinctions between necessarily equivalent propositions based on what they are *about*
   - Theoretical foundation for constitutive explanatory reasoning (grounding `≤`, essence `⊑`, and propositional identity `≡` operators)
+
+---
+
+## Bimodal Theory
+
+The project also includes **Bimodal**, a complete propositional intensional logic combining S5 modal and linear temporal operators. Developed in parallel with Logos, Bimodal provides an excellent starting point for understanding modal-temporal reasoning and demonstrates the boundaries of purely intensional semantics.
+
+The contrast between Bimodal's purely intensional semantics and Logos's hyperintensional foundation demonstrates the advantages of hyperintensional semantics for supporting a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
+
+For the full presentation of Bimodal and its comparison with Logos, see [A Bimodal Logic for Tense and Modality](docs/research/bimodal-logic.md).
+
+For implementation details, see [Theories/Bimodal/README.md](Theories/Bimodal/README.md).
 
 ---
 
