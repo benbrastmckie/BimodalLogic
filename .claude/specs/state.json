@@ -6,13 +6,13 @@
     {
       "project_number": 416,
       "project_name": "quick_performance_fixes_explanatory_truth",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Apply quick performance fixes to Explanatory/Truth.lean: fix namespace error in Syntax.lean:34, add @[irreducible] to truthAt, increase synthInstance.maxHeartbeats, and run lake clean. These are low-risk changes that can be applied together.",
       "effort": "1-2 hours",
       "created": "2026-01-12T00:38:44Z",
-      "last_updated": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T00:44:58Z",
       "parent_task": 400
     },
     {
@@ -410,7 +410,7 @@
       ],
       "started": "2026-01-05",
       "completed": "2026-01-05",
-      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom \u03c6) from witness function."
+      "blocking_reason": "Phase 1 (Proof Term Construction) blocked by Axiom being Prop instead of Type. Cannot return Option (Axiom φ) from witness function."
     },
     {
       "project_number": 261,

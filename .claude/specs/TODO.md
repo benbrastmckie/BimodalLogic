@@ -187,10 +187,12 @@ technical_debt:
 
 ### 416. Quick performance fixes for Explanatory/Truth.lean
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 400
+- **Research**: [research-001.md](.claude/specs/416_quick_performance_fixes_explanatory_truth/reports/research-001.md)
 
 **Description**: Apply quick performance fixes: fix namespace error in Syntax.lean:34, add @[irreducible] to truthAt, increase synthInstance.maxHeartbeats, and run lake clean. These are low-risk changes that can be applied together.
 
