@@ -138,7 +138,7 @@ technical_debt:
 
 ### 412. Create general-research-agent subagent with lazy context
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: 410
