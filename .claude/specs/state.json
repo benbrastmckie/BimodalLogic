@@ -1,8 +1,80 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T08:00:00Z",
-  "next_project_number": 416,
+  "next_project_number": 421,
   "active_projects": [
+    {
+      "project_number": 416,
+      "project_name": "quick_performance_fixes_explanatory_truth",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Apply quick performance fixes to Explanatory/Truth.lean: fix namespace error in Syntax.lean:34, add @[irreducible] to truthAt, increase synthInstance.maxHeartbeats, and run lake clean. These are low-risk changes that can be applied together.",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T00:38:44Z",
+      "parent_task": 400
+    },
+    {
+      "project_number": 417,
+      "project_name": "split_typeclass_constraints_explanatory",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.",
+      "effort": "3-4 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T00:38:44Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ]
+    },
+    {
+      "project_number": 418,
+      "project_name": "cache_typeclass_instances_explanatory",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.",
+      "effort": "2-3 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T00:38:44Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ]
+    },
+    {
+      "project_number": 419,
+      "project_name": "refactor_mutual_recursion_semantics",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "description": "Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.",
+      "effort": "4-6 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T00:38:44Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ]
+    },
+    {
+      "project_number": 420,
+      "project_name": "upgrade_mathlib_version",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "description": "Upgrade Mathlib from v4.14.0 to a newer version (4.22+) that includes significant compiler and instance caching improvements. Requires testing for breaking changes and API migrations.",
+      "effort": "4-8 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T00:38:44Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ]
+    },
     {
       "project_number": 415,
       "project_name": "fix_latex_sentence_line_breaks",
@@ -301,17 +373,24 @@
     {
       "project_number": 400,
       "project_name": "investigate_explanatory_truth_build_performance",
-      "status": "researched",
+      "status": "expanded",
       "language": "lean",
       "priority": "medium",
       "description": "Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.",
       "created": "2026-01-11T21:55:51Z",
-      "last_updated": "2026-01-11T22:30:00Z",
+      "last_updated": "2026-01-12T00:38:44Z",
       "artifacts": [
         {
           "path": ".claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md",
           "type": "research"
         }
+      ],
+      "subtasks": [
+        416,
+        417,
+        418,
+        419,
+        420
       ]
     },
     {

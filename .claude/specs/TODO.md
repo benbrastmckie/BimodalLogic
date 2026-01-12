@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T08:00:00Z
-next_project_number: 416
+next_project_number: 421
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -278,13 +278,73 @@ technical_debt:
 
 ### 400. Investigate Explanatory/Truth.lean build performance
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [EXPANDED]
 - **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
+- **Subtasks**: 416, 417, 418, 419, 420
 - **Research**: [research-001.md](.claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md)
 
 **Description**: Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.
+
+---
+
+### 416. Quick performance fixes for Explanatory/Truth.lean
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 400
+
+**Description**: Apply quick performance fixes: fix namespace error in Syntax.lean:34, add @[irreducible] to truthAt, increase synthInstance.maxHeartbeats, and run lake clean. These are low-risk changes that can be applied together.
+
+---
+
+### 417. Split typeclass constraints in Explanatory
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 400
+- **Dependencies**: 416
+
+**Description**: Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.
+
+---
+
+### 418. Cache typeclass instances in Explanatory
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 400
+- **Dependencies**: 416
+
+**Description**: Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.
+
+---
+
+### 419. Refactor mutual recursion in Foundation/Semantics.lean
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 400
+- **Dependencies**: 416
+
+**Description**: Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.
+
+---
+
+### 420. Upgrade Mathlib version
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 400
+- **Dependencies**: 416
+
+**Description**: Upgrade Mathlib from v4.14.0 to a newer version (4.22+) that includes significant compiler and instance caching improvements. Requires testing for breaking changes and API migrations.
 
 ---
 
