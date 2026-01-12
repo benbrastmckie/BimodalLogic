@@ -6,17 +6,22 @@
     {
       "project_number": 424,
       "project_name": "complete_todos_01_syntax_tex",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-12T03:06:14Z",
-      "last_updated": "2026-01-12T03:16:41Z",
+      "last_updated": "2026-01-12T03:21:50Z",
       "artifacts": [
         {
           "path": ".claude/specs/424_complete_todos_01_syntax_tex/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/424_complete_todos_01_syntax_tex/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 423,
