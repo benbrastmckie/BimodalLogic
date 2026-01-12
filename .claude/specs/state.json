@@ -150,13 +150,14 @@
     {
       "project_number": 437,
       "project_name": "improve_readme_consistency_with_recursive_semantics",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "priority": "high",
       "created": "2026-01-12T00:00:00Z",
-      "last_updated": "2026-01-12T22:42:00Z",
+      "last_updated": "2026-01-12T22:58:00Z",
+      "completed": "2026-01-12T22:58:00Z",
       "description": "Improve /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md for consistency and clarity with the recursive-semantics.md documentation. Reduce redundancy by presenting layer extensions only once. Fix any internal discrepancies. Emphasize the parallel development of Logos in the ModelChecker with link to https://github.com/benbrastmckie/ModelChecker.",
-      "session_id": "sess_1768255761_c087bc",
+      "session_id": "sess_1768256285_f4dc12",
       "plan_version": "001",
       "artifacts": [
         {
@@ -166,6 +167,10 @@
         {
           "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },
