@@ -10,10 +10,14 @@
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T14:48:15Z",
-      "last_updated": "2026-01-12T17:30:00Z",
+      "last_updated": "2026-01-12T15:35:13Z",
       "artifacts": [
         {
           "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md",
           "type": "research"
         }
       ]

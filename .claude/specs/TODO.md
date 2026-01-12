@@ -28,15 +28,15 @@ technical_debt:
 
 ## High Priority
 
-### 432. Fix artifact linking in TODO.md and state.json
-- **Effort**: 2-3 hours
+### 432. Systematic agent system overhaul for robustness
+- **Effort**: 11-17 hours
 - **Status**: [RESEARCHED]
 - **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
-- **Research**: [research-001.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md)
+- **Research**: [research-001.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md), [research-002.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md)
 
-**Description**: After running `/implement 429`, the summary was not linked in task 429's TODO.md entry. Identify the root cause and fix this and any similar issues throughout the agent system to ensure that artifacts (research reports, plans, summaries) are appropriately appended to tasks in TODO.md and in state.json once they are created.
+**Description**: Systematic overhaul of the agent system to improve robustness and uniformity while maintaining efficiency. Introduces a Checkpoint-Based Execution Model with unified verification gates, consolidates preflight/postflight to checkpoint enforcers, unifies status management through skill-status-sync, and simplifies agent contracts. Research identified six systemic issues: fragmented responsibility delegation, inconsistent preflight/postflight execution, documentation-implementation gaps, redundant verification points, unclear artifact lifecycle, and metadata propagation failures.
 
 ---
 
