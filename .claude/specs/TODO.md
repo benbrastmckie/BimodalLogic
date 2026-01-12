@@ -101,9 +101,10 @@ technical_debt:
 
 ### 424. Complete the TODOs in 01-Syntax.tex
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/424_complete_todos_01_syntax_tex/reports/research-001.md)
 
 **Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/01-Syntax.tex
 
