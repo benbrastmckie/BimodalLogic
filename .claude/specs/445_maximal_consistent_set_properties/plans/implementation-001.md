@@ -51,7 +51,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Foundation - Helper Lemmas and EFQ [NOT STARTED]
+### Phase 1: Foundation - Helper Lemmas and EFQ [COMPLETED]
 
 **Goal**: Establish foundational helper lemmas needed for MCS property proofs, including ex falso quodlibet derivation.
 
@@ -74,7 +74,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Core Closure - maximal_consistent_closed [NOT STARTED]
+### Phase 2: Core Closure - maximal_consistent_closed [COMPLETED]
 
 **Goal**: Convert the `maximal_consistent_closed` axiom stub to a proven theorem.
 
@@ -102,7 +102,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Negation Completeness - maximal_negation_complete [NOT STARTED]
+### Phase 3: Negation Completeness - maximal_negation_complete [COMPLETED]
 
 **Goal**: Convert the `maximal_negation_complete` axiom stub to a proven theorem.
 

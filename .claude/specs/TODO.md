@@ -105,12 +105,14 @@ technical_debt:
 ---
 
 ### 451. Add Reflection Extension to Logos layer extensions
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 3 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
+- **Planned**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md), [research-002.md](.claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md)
+- **Plan**: [implementation-001.md](.claude/specs/451_add_reflection_extension_to_logos_layer_extensions/plans/implementation-001.md)
 
 **Description**: Add 'Reflection Extension' for metacognition to the Logos layer extensions in /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md, /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md, /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/layer-extensions.md, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex, and /home/benjamin/Projects/ProofChecker/README.md where the 'Reflection Extension' follows the 'Agential Extension'.
 
@@ -226,7 +228,7 @@ technical_debt:
 
 ### 445. Maximal consistent set properties
 - **Effort**: 10-12 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: Low

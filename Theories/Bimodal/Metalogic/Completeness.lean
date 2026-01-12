@@ -1,6 +1,8 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic.Soundness
+import Bimodal.Metalogic.DeductionTheorem
+import Bimodal.Theorems.Propositional
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Order.Zorn
 import Mathlib.Data.Finite.Defs
@@ -406,6 +408,73 @@ These lemmas establish the deductive closure and completeness properties
 of maximal consistent sets.
 -/
 
+/-!
+### Helper Lemmas for MCS Proofs
+
+These helper lemmas establish foundational facts needed for the main MCS properties.
+They provide bridging between inconsistency, derivation, and the deduction theorem.
+-/
+
+/--
+If a context is inconsistent, it derives bottom.
+
+This is essentially the definition of inconsistency unwrapped into a derivation.
+-/
+lemma inconsistent_derives_bot {Γ : Context} (h : ¬Consistent Γ) :
+    Nonempty (DerivationTree Γ Formula.bot) := by
+  unfold Consistent at h
+  push_neg at h
+  exact h
+
+/--
+If extending a consistent context with φ makes it inconsistent, then the original
+context derives ¬φ (i.e., φ → ⊥).
+
+This is a key lemma for proving MCS closure properties. It uses the deduction theorem.
+-/
+lemma derives_neg_from_inconsistent_extension {Γ : Context} {φ : Formula}
+    (h_incons : ¬Consistent (φ :: Γ)) :
+    Nonempty (DerivationTree Γ (Formula.neg φ)) := by
+  -- Get the derivation of ⊥ from φ :: Γ
+  have ⟨d_bot⟩ := inconsistent_derives_bot h_incons
+  -- Apply deduction theorem: (φ :: Γ) ⊢ ⊥ implies Γ ⊢ φ → ⊥
+  have d_neg : Γ ⊢ φ.imp Formula.bot := deduction_theorem Γ φ Formula.bot d_bot
+  -- φ → ⊥ is exactly neg φ by definition
+  exact ⟨d_neg⟩
+
+/--
+From Γ ⊢ φ and Γ ⊢ ¬φ (i.e., φ → ⊥), derive Γ ⊢ ⊥.
+
+This combines a formula and its negation to produce a contradiction.
+-/
+def derives_bot_from_phi_neg_phi {Γ : Context} {φ : Formula}
+    (h_phi : DerivationTree Γ φ)
+    (h_neg : DerivationTree Γ (Formula.neg φ)) :
+    DerivationTree Γ Formula.bot :=
+  -- neg φ = φ.imp bot, so we apply modus ponens
+  DerivationTree.modus_ponens Γ φ Formula.bot h_neg h_phi
+
+/--
+For maximal consistent sets, if φ ∉ Γ then the extension φ :: Γ is inconsistent.
+
+This is one direction of the maximality definition, made into a lemma for convenience.
+-/
+lemma maximal_extends_inconsistent {Γ : Context} {φ : Formula}
+    (h_max : MaximalConsistent Γ) (h_not_mem : φ ∉ Γ) :
+    ¬Consistent (φ :: Γ) :=
+  h_max.2 φ h_not_mem
+
+/--
+Bridge lemma: SetMaximalConsistent implies consistency for any finite subset.
+
+For any list L whose elements are all in a SetMaximalConsistent set S,
+the list L is Consistent.
+-/
+lemma set_mcs_finite_subset_consistent {S : Set Formula}
+    (h_mcs : SetMaximalConsistent S) (L : List Formula) (h_sub : ∀ φ ∈ L, φ ∈ S) :
+    Consistent L :=
+  h_mcs.1 L h_sub
+
 /--
 Maximal consistent sets are deductively closed.
 
@@ -420,8 +489,19 @@ Maximal consistent sets are deductively closed.
 
 **Note**: Requires deduction theorem for TM logic.
 -/
-axiom maximal_consistent_closed (Γ : Context) (φ : Formula) :
-  MaximalConsistent Γ → DerivationTree Γ φ → φ ∈ Γ
+theorem maximal_consistent_closed (Γ : Context) (φ : Formula)
+    (h_max : MaximalConsistent Γ) (h_deriv : DerivationTree Γ φ) : φ ∈ Γ := by
+  -- Proof by contradiction: assume φ ∉ Γ and derive a contradiction
+  by_contra h_not_mem
+  -- By maximality, (φ :: Γ) is inconsistent
+  have h_incons : ¬Consistent (φ :: Γ) := maximal_extends_inconsistent h_max h_not_mem
+  -- So we can derive ¬φ from Γ (using deduction theorem)
+  have ⟨h_neg_deriv⟩ := derives_neg_from_inconsistent_extension h_incons
+  -- Combine Γ ⊢ φ and Γ ⊢ ¬φ to get Γ ⊢ ⊥
+  have h_bot : DerivationTree Γ Formula.bot :=
+    derives_bot_from_phi_neg_phi h_deriv h_neg_deriv
+  -- This contradicts consistency of Γ
+  exact h_max.1 ⟨h_bot⟩
 
 /--
 Maximal consistent sets are negation complete.
@@ -434,8 +514,14 @@ Maximal consistent sets are negation complete.
 3. By deduction theorem, `Γ ⊢ φ → ⊥`, i.e., `Γ ⊢ ¬φ`
 4. By closure, `¬φ ∈ Γ`
 -/
-axiom maximal_negation_complete (Γ : Context) (φ : Formula) :
-  MaximalConsistent Γ → φ ∉ Γ → Formula.neg φ ∈ Γ
+theorem maximal_negation_complete (Γ : Context) (φ : Formula)
+    (h_max : MaximalConsistent Γ) (h_not_mem : φ ∉ Γ) : Formula.neg φ ∈ Γ := by
+  -- By maximality, (φ :: Γ) is inconsistent
+  have h_incons : ¬Consistent (φ :: Γ) := maximal_extends_inconsistent h_max h_not_mem
+  -- So we can derive ¬φ from Γ (using deduction theorem)
+  have ⟨h_neg_deriv⟩ := derives_neg_from_inconsistent_extension h_incons
+  -- By closure property, ¬φ ∈ Γ
+  exact maximal_consistent_closed Γ (Formula.neg φ) h_max h_neg_deriv
 
 /-!
 ## Canonical Frame
