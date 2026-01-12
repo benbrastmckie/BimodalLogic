@@ -7,14 +7,20 @@
       "project_number": 438,
       "project_name": "research_skill_execution_architecture",
       "type": "research",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "researched",
+      "status": "researched",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-12T19:44:35Z",
-      "last_updated": "2026-01-12T19:44:35Z",
+      "last_updated": "2026-01-12T20:00:51Z",
       "effort": "4 hours",
-      "description": "Research the skill/agent execution architecture to determine optimal approach for systematic improvements. Analyze three options: (A) Make skills executable with automatic subagent delegation, (B) Inline critical patterns in command files removing skill indirection, (C) Use Task tool with explicit prompts including all skill context. Evaluate tradeoffs around token efficiency, reliability, maintainability, and Claude Code constraints."
+      "description": "Research the skill/agent execution architecture to determine optimal approach for systematic improvements. Analyze three options: (A) Make skills executable with automatic subagent delegation, (B) Inline critical patterns in command files removing skill indirection, (C) Use Task tool with explicit prompts including all skill context. Evaluate tradeoffs around token efficiency, reliability, maintainability, and Claude Code constraints.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/438_research_skill_execution_architecture/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 437,
