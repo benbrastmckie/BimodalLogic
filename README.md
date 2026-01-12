@@ -21,7 +21,9 @@ By contrast, human reasoning data is limited, inconsistent, and prone to error, 
 | Component               | Role                                                      | Training Signal      |
 | ----------------------- | --------------------------------------------------------- | -------------------- |
 | **LEAN 4 Proof System** | Derives valid theorems with machine-checkable proofs      | Positive RL signal   |
-| **Model-Checker**       | Identifies invalid inferences with explicit countermodels | Corrective RL signal |
+| **[ModelChecker](https://github.com/benbrastmckie/ModelChecker)**       | Identifies invalid inferences with explicit countermodels | Corrective RL signal |
+
+The [ModelChecker](https://github.com/benbrastmckie/ModelChecker) implements the same Logos semantic theory in Python/Z3, providing Z3-based countermodel generation for invalid inferences. Together, ProofChecker (LEAN) and ModelChecker (Z3) form a complete dual verification system---LEAN proves validity while Z3 finds countermodels.
 
 **See also**: [Dual Verification Research](docs/research/dual-verification.md) | [Integration Guide](docs/user-guide/INTEGRATION.md) | [LogicNotes](https://github.com/benbrastmckie/LogicNotes)
 
@@ -31,10 +33,14 @@ By contrast, human reasoning data is limited, inconsistent, and prone to error, 
 
 The Logos theory is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory. The modular architecture extends the expressive power of the language through progressive layers:
 
-- **Constitutive Layer**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
-- **Causal Layer**: Historical, counterfactual conditional, tense, and causal operators for reasoning about past and future contingency and causal connections between earlier and later events.
-- **Epistemic Layer**: Epistemic modals, indicative conditionals, and probability, and belief operators for reasoning under uncertainty.
-- **Normative Layer**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
+- **Constitutive Foundation**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
+- **Explanatory Extension**: Modal, temporal, counterfactual, and causal operators for reasoning about past, future, contingency, and causation.
+- **Epistemic Extension**: Belief, knowledge, probability, and indicative conditional operators for reasoning under uncertainty.
+- **Normative Extension**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
+- **Spatial Extension**: Spatial relations and locations for reasoning about space.
+- **Agential Extension**: Agency, action, and intention operators for multi-agent reasoning.
+
+The Constitutive Foundation and Explanatory Extension form the required base. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension.
 
 AI reasoning in the Logos is both **verified** by proof receipts for all inferences and **interpreted** by explicit semantic models, providing **scalable oversight** for sophisticated reasoning.
 
@@ -48,7 +54,7 @@ See [Theoretical Foundations](#theoretical-foundations) below and the [LogicNote
 
 **Architecture**
 - [Layered Architecture](#layered-architecture) - Progressive layer system for modal-temporal logic
-- [Constitutive Layer](#constitutive-layer) - Foundational predicates, quantifiers, and grounding
+- [Constitutive Foundation](#constitutive-foundation) - Foundational predicates, quantifiers, and grounding
 - [Application Domains](#application-domains) - Medical planning, legal reasoning, multi-agent coordination
 
 **Status & Usage**
@@ -85,11 +91,28 @@ Logos implements a layered operator architecture supporting progressive extensib
 
 **See also**: [Conceptual Engineering](Theories/Logos/docs/research/conceptual-engineering.md) for philosophical motivation | [Layer Extensions](Theories/Logos/docs/research/layer-extensions.md) for technical specifications
 
+### Extension Dependency Structure
+
+```
+    Constitutive Foundation (required)
+              |
+              v
+    Explanatory Extension (required)
+              |
+     +--------+--------+
+     v        v        v
+ Epistemic Normative Spatial  (optional, composable)
+     +--------+--------+
+              |
+              v
+      Agential Extension  (requires at least one above)
+```
+
 | Layer              | Operators                                        | Status         |
 | ------------------ | ------------------------------------------------ | -------------- |
 | **Constitutive**   | Extensional, constitutive                        | Complete (MVP) |
-| **Causal**         | Modal, temporal, counterfactual, causal          | Complete (MVP) |
-| **Epistemic**      | Belief, probability, indicative                  | Planned        |
+| **Explanatory**    | Modal, temporal, counterfactual, causal          | Complete (MVP) |
+| **Epistemic**      | Belief, knowledge, probability, indicative       | Planned        |
 | **Normative**      | Deontic, preferential                            | Planned        |
 | **Spatial**        | Spatial relations, locations                     | Planned        |
 | **Agential**       | Agency, action, intention                        | Planned        |
@@ -98,11 +121,11 @@ Logos implements a layered operator architecture supporting progressive extensib
 
 ---
 
-## Constitutive Layer
+## Constitutive Foundation
 
-The Constitutive Layer provides fundamental descriptive resources---predicates and functions for expressing facts, quantifiers for generalizing over individuals, extensional connectives for truth-functional reasoning, and constitutive operators for expressing what grounds and explains what. This foundational layer enables systems to represent and reason about the basic structure of reality.
+The Constitutive Foundation provides fundamental descriptive resources---predicates and functions for expressing facts, quantifiers for generalizing over individuals, extensional connectives for truth-functional reasoning, and constitutive operators for expressing what grounds and explains what. This foundational layer enables systems to represent and reason about the basic structure of reality.
 
-The Constitutive Layer leverages Logos's hyperintensional semantics to distinguish constitutive grounding from other necessary connections. Unlike intensional semantics where all necessary truths are equivalent, hyperintensional semantics captures that "being crimson grounds being red" differs from "2+2=4" even though both are necessary.
+The Constitutive Foundation leverages Logos's hyperintensional semantics to distinguish propositions by their exact verification and falsification conditions, not merely by their truth-values across possible worlds. This enables fine-grained reasoning about constitutive grounding---"being crimson grounds being red" differs from "2+2=4" even though both are necessary truths.
 
 ---
 
@@ -118,19 +141,19 @@ The Logos methodology comprises three components: (1) an **axiomatic proof theor
 
 The Logos architecture enables domain-specific operator combinations, demonstrating how planned extensions can be composed for specific use cases:
 
-### Medical Planning (Constitutive + Causal + Epistemic)
+### Medical Planning (Constitutive + Explanatory + Epistemic)
 
 - **Constitutive operators**: Predicates, functions, quantifiers for representing medical facts and relationships
-- **Causal operators**: Modal (`□`, `◇`) + Temporal (`G`, `F`, `H`, `P`) for treatment timelines, Counterfactual (`□→`, `◇→`) for evaluating treatment strategies
+- **Explanatory operators**: Modal (`□`, `◇`) + Temporal (`G`, `F`, `H`, `P`) for treatment timelines, Counterfactual (`□→`, `◇→`) for evaluating treatment strategies
 - **Epistemic operators**: Probability (`Pr`), belief (`B`) for uncertainty quantification in diagnosis and prognosis
 - **Example**: `Prescribe(DrugA) ∧ Taking(MedicationX) □→ F(Normalize(BloodPressure)) ∧ F(Occur(LiverDamage))`
   - Evaluates what would happen under Drug A prescription given current medication
   - Distinguishes necessary consequences (`□→`) from possible consequences (`◇→`)
 
-### Legal Reasoning (Constitutive + Causal + Epistemic + Normative)
+### Legal Reasoning (Constitutive + Explanatory + Epistemic + Normative)
 
 - **Constitutive operators**: Predicates and functions for representing legal facts and evidence
-- **Causal operators**: Modal + Temporal for tracking events and beliefs across time
+- **Explanatory operators**: Modal + Temporal for tracking events and beliefs across time
 - **Epistemic operators**: Belief (`B`), epistemic modals (`Mi`, `Mu`) for evidence analysis
 - **Normative operators**: Obligation (`O`), Permission (`P`) for legal requirements and permissions
 - **Example**: Tracking how evidence reveals agent beliefs and motives, constructing narratives connecting motive to action
@@ -138,7 +161,7 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 ### Multi-Agent Coordination (All Layers)
 
 - **Constitutive**: Predicates and functions for representing agent properties and relationships
-- **Causal**: Modal + Temporal for action timelines and coordination constraints, Counterfactuals for evaluating alternative strategies
+- **Explanatory**: Modal + Temporal for action timelines and coordination constraints, Counterfactuals for evaluating alternative strategies
 - **Epistemic**: Belief operators for modeling other agents' knowledge states
 - **Normative**: Deontic operators (`O`, `P`) for obligations and permissions in negotiation
 
@@ -331,5 +354,5 @@ See [Directory Naming Convention](docs/development/CONTRIBUTING.md#3-directory-n
 
 ## Related Projects
 
-- **[Model-Checker](https://github.com/benbrastmckie/ModelChecker)** - Z3-based semantic verification (v1.2.12)
+- **[ModelChecker](https://github.com/benbrastmckie/ModelChecker)** - Parallel implementation of Logos semantic theory in Python/Z3 for countermodel generation and semantic verification. Together with ProofChecker, forms the dual verification architecture for RL training.
 - **[LogicNotes](https://github.com/benbrastmckie/LogicNotes)** - Theoretical foundations for TM logic subsystems

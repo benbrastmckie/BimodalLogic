@@ -6,11 +6,11 @@
     {
       "project_number": 438,
       "project_name": "refactor_bimodal_readme",
-      "status": "researched",
+      "status": "planning",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T18:04:54Z",
-      "last_updated": "2026-01-12T18:12:02Z",
+      "last_updated": "2026-01-12T18:14:39Z",
       "description": "Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference.",
       "artifacts": [
         {
@@ -22,11 +22,12 @@
     {
       "project_number": 437,
       "project_name": "improve_readme_consistency_with_recursive_semantics",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "high",
       "created": "2026-01-12T17:34:32Z",
-      "last_updated": "2026-01-12T18:08:41Z",
+      "last_updated": "2026-01-12T22:30:00Z",
+      "completed": "2026-01-12T22:30:00Z",
       "plan_version": "001",
       "artifacts": [
         {
@@ -36,6 +37,10 @@
         {
           "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },
@@ -281,7 +286,7 @@
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T17:44:57Z",
+      "last_updated": "2026-01-12T18:17:59Z",
       "effort": "70-90 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.",
       "artifacts": [
@@ -291,6 +296,10 @@
         },
         {
           "path": ".claude/specs/257_completeness_proofs/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/257_completeness_proofs/reports/research-003.md",
           "type": "research"
         }
       ]

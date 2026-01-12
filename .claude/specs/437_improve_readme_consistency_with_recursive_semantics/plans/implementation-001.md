@@ -19,7 +19,7 @@ The approach prioritizes consistency with the authoritative recursive-semantics.
 ### Phase 1: Terminology Alignment
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Change "Causal Layer" to "Explanatory Extension" for consistency with recursive-semantics.md
@@ -44,7 +44,7 @@ The approach prioritizes consistency with the authoritative recursive-semantics.
 ### Phase 2: Align Overview with Table
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Expand the Overview section (lines 32-37) to mention all 6 layers/extensions
@@ -73,7 +73,7 @@ The approach prioritizes consistency with the authoritative recursive-semantics.
 ### Phase 3: Add Dependency Structure Diagram
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add a simplified ASCII dependency diagram showing the extension hierarchy
@@ -111,7 +111,7 @@ Extension Dependency Structure:
 ### Phase 4: Strengthen ModelChecker Integration
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Enhance the RL Training section to emphasize dual verification architecture
@@ -140,7 +140,7 @@ Extension Dependency Structure:
 ### Phase 5: Minor Fixes and Polish
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add "knowledge" to the Epistemic layer operators

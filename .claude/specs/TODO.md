@@ -1,22 +1,22 @@
 ---
-last_updated: 2026-01-12T22:00:00Z
+last_updated: 2026-01-12T19:00:00Z
 next_project_number: 439
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 14
-  completed: 105
-  in_progress: 0
-  not_started: 11
+  active: 17
+  completed: 113
+  in_progress: 1
+  not_started: 7
   abandoned: 7
-  total: 126
+  total: 137
 priority_distribution:
   critical: 0
-  high: 3
-  medium: 1
-  low: 10
+  high: 5
+  medium: 3
+  low: 9
 technical_debt:
   sorry_count: 19
   axiom_count: 11
@@ -30,31 +30,17 @@ technical_debt:
 
 ### 437. Improve README consistency with recursive-semantics.md
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: High
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md)
-
-**Description**: Improve /home/benjamin/Projects/ProofChecker/README.md for consistency and clarity with the recursive-semantics.md documentation (/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md) which provides an authoritative overview of the base layer and various extensions. Reduce redundancy by presenting layer extensions only once in a high-quality way. Fix any internal discrepancies in README.md. Emphasize the parallel development of Logos in the ModelChecker, including a link to https://github.com/benbrastmckie/ModelChecker where appropriate.
-
----
-
-### 434. Refactor README for investors and researchers
-- **Effort**: 6 hours
 - **Status**: [COMPLETED]
 - **Completed**: 2026-01-12
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-12
 - **Priority**: High
 - **Language**: general
-- **Research**: [research-001.md](.claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md)
+- **Research**: [research-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md)
 
-**Description**: Comprehensive refactor of README.md to improve narrative arc and organization. Key changes: (1) Align with current design in recursive-semantics.md and LogosReference.pdf - add links in format **name_of_doc** ([tex](path) | [pdf](path)); (2) TOC should use links with brief descriptions; (3) Lead with RL training application instead of Bimodal comparison - provide brief Logos intro then motivations/applications before moving comparison elsewhere; (4) Introduction should orient and motivate for potential investors while maintaining accuracy for researchers; (5) Improve narrative arc, reduce redundancy, avoid endless bullet points; (6) Provide detailed yet compact presentation showing full scope and applications with links to details; (7) Preserve engaging discussion sections like 'RL Training' and 'Motivations'; (8) Careful refactor preserving and improving existing content.
+**Description**: Improve /home/benjamin/Projects/ProofChecker/README.md for consistency and clarity with the recursive-semantics.md documentation (/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md) which provides an authoritative overview of the base layer and various extensions. Reduce redundancy by presenting layer extensions only once in a high-quality way. Fix any internal discrepancies in README.md. Emphasize the parallel development of Logos in the ModelChecker, including a link to https://github.com/benbrastmckie/ModelChecker where appropriate.
 
 ---
 
@@ -90,22 +76,6 @@ technical_debt:
 - Extend errors.json with context, trajectory, and recovery fields
 - Add error pattern aggregation for /errors command
 - Use "Context Pointers" pattern instead of @-references in skills
-
----
-
-### 429. Extend command-skill-agent integration to /meta
-- **Effort**: 3.5 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: High
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/429_extend_command_skill_agent_integration_to_meta/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/429_extend_command_skill_agent_integration_to_meta/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/429_extend_command_skill_agent_integration_to_meta/summaries/implementation-summary-20260112.md)
-
-**Description**: Extend the command-skill-agent integration approach (established in task 427) to /meta. Create `skill-meta` and `meta-builder-agent` following the thin wrapper pattern. Refactor `/meta` command to delegate to skill instead of direct execution. Maintain backward compatibility with all three modes (interactive, prompt, analyze).
 
 ---
 
@@ -151,7 +121,7 @@ technical_debt:
 
 ### 438. Refactor Bimodal README for systematic documentation
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
@@ -161,23 +131,7 @@ technical_debt:
 
 ---
 
-### 436. Update license to ModelChecker standard
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/436_update_license_to_modelchecker_standard/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/436_update_license_to_modelchecker_standard/summaries/implementation-summary-20260112.md)
-
-**Description**: Update the license from MIT to the same standard used in the ModelChecker package: /home/benjamin/Projects/ModelChecker/README.md
-
----
-
-### 435. Module Aggregator Standard for Bimodal/
+### 431. Module Aggregator Standard for Bimodal/
 - **Effort**: 2.5 hours
 - **Status**: [COMPLETED]
 - **Completed**: 2026-01-12
@@ -317,7 +271,7 @@ technical_debt:
 ### 257. Completeness Proofs
 
  **Effort**: 57-76 hours (revised down from 70-90)
- **Status**: [RESEARCHED]
+ **Status**: [RESEARCHING]
  **Researched**: 2026-01-12
  **Priority**: Low
  **Language**: lean
