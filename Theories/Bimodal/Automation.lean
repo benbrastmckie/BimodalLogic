@@ -72,4 +72,11 @@ Search strategies (in order):
 3. Modus ponens decomposition (backward chaining)
 4. Modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
 5. Temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
+
+## References
+
+* [Tactics.lean](Automation/Tactics.lean) - Custom proof tactics
+* [ProofSearch.lean](Automation/ProofSearch.lean) - Native search functions
+* [SuccessPatterns.lean](Automation/SuccessPatterns.lean) - Pattern learning database
+* [AesopRules.lean](Automation/AesopRules.lean) - Aesop rule configuration
 -/

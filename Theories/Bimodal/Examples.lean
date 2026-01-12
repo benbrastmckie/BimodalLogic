@@ -46,4 +46,14 @@ import Bimodal.Examples.TemporalProofs
 
 These examples were originally in `Archive/` and have been moved to
 be co-located with the Bimodal library following Lean 4/Mathlib conventions.
+
+## References
+
+* [ModalProofs.lean](Examples/ModalProofs.lean) - S5 modal proofs
+* [ModalProofStrategies.lean](Examples/ModalProofStrategies.lean) - Modal strategies
+* [TemporalProofs.lean](Examples/TemporalProofs.lean) - Temporal proofs
+* [TemporalProofStrategies.lean](Examples/TemporalProofStrategies.lean) - Temporal strategies
+* [BimodalProofs.lean](Examples/BimodalProofs.lean) - Combined proofs
+* [BimodalProofStrategies.lean](Examples/BimodalProofStrategies.lean) - Bimodal strategies
+* [TemporalStructures.lean](Examples/TemporalStructures.lean) - Temporal structure examples
 -/
