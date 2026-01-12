@@ -30,11 +30,12 @@ technical_debt:
 
 ### 415. Update command files to delegate to skill/subagent system
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Dependencies**: 409, 410, 411, 412, 413, 414
 - **Research**: [research-001.md](.claude/specs/415_update_command_files_to_delegate_to_skill_subagent/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/415_update_command_files_to_delegate_to_skill_subagent/plans/implementation-001.md)
 
 **Description**: Update `.claude/commands/research.md`, `.claude/commands/plan.md`, and `.claude/commands/implement.md` to delegate to the skill/subagent system instead of executing inline. Commands should look up task language, then invoke the appropriate skill (e.g., `skill-lean-research` or `skill-researcher`) via the Skill tool, which will spawn subagents via Task tool. This completes the forked subagent pattern by connecting the entry points (commands) to the infrastructure (skills → agents).
 
