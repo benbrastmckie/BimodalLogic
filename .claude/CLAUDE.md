@@ -109,7 +109,7 @@ Moves completed/abandoned tasks to archive/
 Reads errors.json, creates fix plans
 
 ### /meta - System builder
-Interactive agent system generator
+Interactive system builder that creates TASKS for .claude/ changes. Uses skill-meta -> meta-builder-agent delegation. Supports three modes: interactive interview, prompt analysis, and system analysis (--analyze).
 
 ## State Synchronization
 
@@ -255,6 +255,7 @@ agent: {subagent-name} # Target subagent to spawn
 | skill-implementer | general-implementation-agent | General file implementation |
 | skill-lean-implementation | lean-implementation-agent | Lean proof implementation |
 | skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
+| skill-meta | meta-builder-agent | System building and task creation |
 
 ### Thin Wrapper Execution Flow
 

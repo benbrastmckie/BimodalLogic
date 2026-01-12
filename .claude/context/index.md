@@ -252,11 +252,17 @@ Load for: Orchestrator and routing patterns
 
 ## Meta Context (Integrated into core/)
 
-Load for: /meta command and system-builder workflows
+Load for: /meta command and meta-builder-agent workflows
 
-**When to Load**: Only when executing /meta command or meta subagents (domain-analyzer, agent-generator, workflow-designer, command-creator, context-organizer)
+**When to Load**: Only when executing /meta command via meta-builder-agent
 
-**Note**: Meta context files have been integrated into core/ subdirectories for better organization (Task 267, 2026-01-03)
+**Note**: /meta now uses the skill-meta -> meta-builder-agent delegation pattern (Task 429, 2026-01-12)
+
+**Component Development Guides** (docs/guides/):
+- **component-selection.md** - Decision tree for what to create (command vs skill vs agent)
+- **creating-commands.md** - Step-by-step command creation guide
+- **creating-skills.md** - Step-by-step skill creation guide (thin wrapper pattern)
+- **creating-agents.md** - Step-by-step agent creation guide (8-stage workflow)
 
 **Interview Patterns** (core/workflows/):
 - **interview-patterns.md** (226 lines) - Progressive disclosure, adaptive questioning, validation checkpoints
@@ -268,11 +274,11 @@ Load for: /meta command and system-builder workflows
 **Agent Templates** (core/templates/):
 - **agent-templates.md** (336 lines) - Orchestrator, research, validation, processing, and generation templates
 
-**Loading Strategy**:
-- Load core/workflows/interview-patterns.md for domain-analyzer (Stage 4)
-- Load core/standards/architecture-principles.md for workflow-designer and agent-generator (Stage 4)
-- Load core/standards/domain-patterns.md for domain-analyzer (Stage 4)
-- Load core/templates/agent-templates.md for agent-generator (Stage 4)
+**Loading Strategy for meta-builder-agent**:
+- **Interactive mode**: Load component-selection.md during interview Stage 2
+- **Prompt mode**: Load component-selection.md for analysis
+- **Analyze mode**: Load CLAUDE.md and index.md for system inventory
+- Load creating-*.md guides when specific component types are being discussed
 - Never load during routing (Stages 1-3)
 
 ---
@@ -328,6 +334,26 @@ Stage 4 loads:
 Language-specific:
 - If lean: @.claude/context/project/lean4/standards/lean4-style-guide.md
 - If lean: @.claude/context/project/lean4/tools/lsp-integration.md
+```
+
+**Meta Workflow (meta-builder-agent)**:
+```
+Stage 2 loads (mode-based):
+- Interactive mode: @.claude/docs/guides/component-selection.md (during interview)
+- Prompt mode: @.claude/docs/guides/component-selection.md
+- Analyze mode: @.claude/CLAUDE.md, @.claude/context/index.md
+
+On-demand loading during interview:
+- When discussing commands: @.claude/docs/guides/creating-commands.md
+- When discussing skills: @.claude/docs/guides/creating-skills.md
+- When discussing agents: @.claude/docs/guides/creating-agents.md
+
+Stage 6 loads:
+- @.claude/context/core/formats/subagent-return.md (for return format)
+
+Stage 7 (Status Updates):
+- @.claude/specs/TODO.md (for task entry creation)
+- @.claude/specs/state.json (for state updates)
 ```
 
 ---
