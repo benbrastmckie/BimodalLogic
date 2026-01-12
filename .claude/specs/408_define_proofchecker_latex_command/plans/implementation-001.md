@@ -38,7 +38,7 @@ Define a `\proofchecker` command in `notation-standards.sty` that produces a hyp
 
 ### Phase 2: Replace occurrences in LaTeX documents
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace all "ProofChecker" references in .tex files with `\proofchecker` command
