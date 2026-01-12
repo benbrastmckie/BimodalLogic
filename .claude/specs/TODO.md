@@ -1,21 +1,21 @@
 ---
-last_updated: 2026-01-12T09:45:00Z
+last_updated: 2026-01-12T22:00:00Z
 next_project_number: 430
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 17
-  completed: 102
+  active: 14
+  completed: 105
   in_progress: 0
   not_started: 11
   abandoned: 7
   total: 126
 priority_distribution:
   critical: 0
-  high: 4
-  medium: 3
+  high: 3
+  medium: 1
   low: 10
 technical_debt:
   sorry_count: 19
@@ -39,22 +39,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](.claude/specs/429_extend_command_skill_agent_integration_to_meta/plans/implementation-001.md)
 
 **Description**: Extend the command-skill-agent integration approach (established in task 427) to /meta. Create `skill-meta` and `meta-builder-agent` following the thin wrapper pattern. Refactor `/meta` command to delegate to skill instead of direct execution. Maintain backward compatibility with all three modes (interactive, prompt, analyze).
-
----
-
-### 423. CI skip by default, trigger via commit message
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: High
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/423_ci_skip_by_default_trigger_via_commit_message/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/423_ci_skip_by_default_trigger_via_commit_message/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/423_ci_skip_by_default_trigger_via_commit_message/summaries/implementation-summary-20260112.md)
-
-**Description**: Change CI workflow to skip by default and only run when triggered by a special marker in commit messages (e.g., `[ci]` or `[run-ci]`). Create a git skill and subagent to handle all git commits, which can intelligently decide when to include the CI trigger marker. Add context documentation in `.claude/context/` explaining the git workflow and CI triggering convention. This enables frequent pushes without triggering CI, while still allowing explicit CI runs when warranted and likely to succeed.
 
 ---
 
@@ -97,34 +81,6 @@ technical_debt:
 ---
 
 ## Medium Priority
-
-### 428. Complete TODOs in Bimodal syntax LaTeX file
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: latex
-- **Plan**: [implementation-001.md](.claude/specs/428_complete_todos_bimodal_syntax_latex/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/428_complete_todos_bimodal_syntax_latex/summaries/implementation-summary-20260112.md)
-
-**Description**: Completed both TODOs in 01-Syntax.tex: (1) Changed swap notation from parenthesized to prefix form, (2) Restructured definition as clear structural induction.
-
----
-
-### 427. Document command, skill, and subagent framework
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/427_document_command_skill_subagent_framework/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/427_document_command_skill_subagent_framework/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/427_document_command_skill_subagent_framework/summaries/implementation-summary-20260112.md)
-
-**Description**: Systematically documented the framework for using commands, skills, and subagents. Created component selection guide, skill creation guide, agent creation guide, and integration examples. Updated existing documentation with correct paths and cross-references.
-
----
 
 ### 400. Investigate Explanatory/Truth.lean build performance
 - **Effort**: 2-3 hours
