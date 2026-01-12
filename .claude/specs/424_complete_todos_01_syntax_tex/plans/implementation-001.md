@@ -18,7 +18,7 @@ This task addresses 6 TODOs in the Bimodal syntax documentation file. The change
 ### Phase 1: Add \swap Macro to Notation Package
 
 **Estimated effort**: 10 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Define `\swap` macro in bimodal-notation.sty
