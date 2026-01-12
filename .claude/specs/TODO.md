@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T08:00:00Z
-next_project_number: 415
+next_project_number: 416
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 415. Update command files to delegate to skill/subagent system
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Dependencies**: 409, 410, 411, 412, 413, 414
+
+**Description**: Update `.claude/commands/research.md`, `.claude/commands/plan.md`, and `.claude/commands/implement.md` to delegate to the skill/subagent system instead of executing inline. Commands should look up task language, then invoke the appropriate skill (e.g., `skill-lean-research` or `skill-researcher`) via the Skill tool, which will spawn subagents via Task tool. This completes the forked subagent pattern by connecting the entry points (commands) to the infrastructure (skills → agents).
+
+---
 
 ### 409. Convert workflow skills to forked subagent pattern
 - **Effort**: 4-6 hours
@@ -399,7 +410,7 @@ technical_debt:
 
 ### 261. Decidability
 - **Effort**: 40-60 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Blocking**: None

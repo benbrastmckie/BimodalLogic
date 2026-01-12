@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T08:00:00Z",
-  "next_project_number": 415,
+  "next_project_number": 416,
   "active_projects": [
+    {
+      "project_number": 415,
+      "project_name": "update_command_files_to_delegate_to_skill_subagent",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-12T03:13:55Z",
+      "last_updated": "2026-01-12T03:13:55Z"
+    },
     {
       "project_number": 414,
       "project_name": "create_planner_agent_subagent",
@@ -559,11 +568,11 @@
       "project_name": "decidability",
       "type": "feature",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researching",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-11T12:00:00Z",
       "effort": "40-60 hours",
       "description": "Implement decision procedures for TM logic."
     },
