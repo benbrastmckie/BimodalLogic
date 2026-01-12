@@ -82,9 +82,10 @@ technical_debt:
 
 ### 427. Document command, skill, and subagent framework
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/427_document_command_skill_subagent_framework/reports/research-001.md)
 
 **Description**: Systematically document the framework for using commands, skills, and subagents in conjunction. Update `.claude/context/core/` files where appropriate and create documentation in `.claude/docs/` to support the development and refinement of this approach. Build on the patterns established in task 425 and its dependencies.
 
