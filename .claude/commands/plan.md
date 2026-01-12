@@ -1,13 +1,13 @@
 ---
 description: Create implementation plan for a task
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), TodoWrite
+allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit
 argument-hint: TASK_NUMBER
 model: claude-opus-4-5-20251101
 ---
 
 # /plan Command
 
-Create a phased implementation plan for a task.
+Create a phased implementation plan for a task by delegating to the planner skill/subagent.
 
 ## Arguments
 
@@ -21,7 +21,7 @@ Create a phased implementation plan for a task.
 task_number = $ARGUMENTS
 ```
 
-**Lookup task via jq** (see skill-status-sync for patterns):
+**Lookup task via jq**:
 ```bash
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
@@ -37,7 +37,6 @@ fi
 language=$(echo "$task_data" | jq -r '.language // "general"')
 status=$(echo "$task_data" | jq -r '.status')
 project_name=$(echo "$task_data" | jq -r '.project_name')
-description=$(echo "$task_data" | jq -r '.description // ""')
 ```
 
 ### 2. Validate Status
@@ -49,141 +48,126 @@ Allowed: not_started, researched, partial
 
 ### 3. Load Context
 
-1. **Task description** from TODO.md
-2. **Research reports** from .claude/specs/{N}_{SLUG}/reports/
-3. **Relevant codebase context**:
-   - For lean: Related .lean files
-   - For general: Related source files
+Gather context for the planner:
+1. **Task description** from state.json
+2. **Research reports** from `.claude/specs/{N}_{SLUG}/reports/` (if any exist)
 
 ### 4. Update Status to PLANNING
 
-**Invoke skill-status-sync** for atomic update:
+Update both files atomically:
+
+**state.json** (via jq):
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: "planning",
+    last_updated: $ts
+  }' .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+```
+
+**TODO.md** (via Edit tool):
+Update the status marker from current status to `[PLANNING]`
+
+### 5. Invoke Planner Skill
+
+Invoke **skill-planner** via the **Skill tool**:
+
+```
+Invoke skill-planner with:
 - task_number: {N}
-- operation: status_update
-- new_status: planning
-
-This updates both files atomically:
-1. state.json: status = "planning" (via jq)
-2. TODO.md: Status: [PLANNING] (via grep + Edit)
-
-### 5. Create Implementation Plan
-
-Create directory if needed:
-```
-mkdir -p .claude/specs/{N}_{SLUG}/plans/
+- research_path: {path to research report if exists}
 ```
 
-Find next plan version (implementation-001.md, implementation-002.md, etc.)
+The skill will spawn `planner-agent` via Task tool which will:
+- Load planning context files
+- Analyze task requirements and research findings
+- Decompose into logical phases
+- Identify risks and mitigations
+- Create plan in `.claude/specs/{N}_{SLUG}/plans/`
+- Return JSON result
 
-Write to `.claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md`:
+### 6. Handle Skill Result
 
-```markdown
-# Implementation Plan: Task #{N}
+The skill returns a JSON result:
 
-**Task**: {title}
-**Version**: {NNN}
-**Created**: {ISO_DATE}
-**Language**: {language}
-
-## Overview
-
-{Summary of implementation approach based on research findings}
-
-## Phases
-
-### Phase 1: {Name}
-
-**Estimated effort**: {X hours}
-**Status**: [NOT STARTED]
-
-**Objectives**:
-1. {Objective}
-2. {Objective}
-
-**Files to modify**:
-- `path/to/file1.ext` - {what changes}
-- `path/to/file2.ext` - {what changes}
-
-**Steps**:
-1. {Detailed step}
-2. {Detailed step}
-3. {Detailed step}
-
-**Verification**:
-- {How to verify this phase is complete}
-
----
-
-### Phase 2: {Name}
-
-**Estimated effort**: {X hours}
-**Status**: [NOT STARTED]
-
-{Same structure as Phase 1}
-
----
-
-### Phase 3: {Name}
-
-{Continue as needed, typically 2-5 phases}
-
-## Dependencies
-
-- {External dependency or prerequisite}
-- {Related task that must complete first}
-
-## Risks and Mitigations
-
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| {Risk} | {High/Med/Low} | {High/Med/Low} | {Strategy} |
-
-## Success Criteria
-
-- [ ] {Measurable criterion 1}
-- [ ] {Measurable criterion 2}
-- [ ] {Tests pass / builds succeed}
-
-## Rollback Plan
-
-{How to revert if implementation fails}
+```json
+{
+  "status": "completed|partial|failed",
+  "summary": "Created N-phase implementation plan",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": ".claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
+      "summary": "Phased implementation plan"
+    }
+  ],
+  "metadata": {
+    "phase_count": 3,
+    "estimated_hours": 8
+  },
+  "next_steps": "Run /implement {N} to execute the plan"
+}
 ```
 
-### 6. Update Status to PLANNED
+**On completed**: Proceed to step 7
+**On partial**: Log partial status, proceed with partial state
+**On failed**: Log error, keep status as planning, output error
 
-**Invoke skill-status-sync** for atomic update:
-- task_number: {N}
-- operation: status_update
-- new_status: planned
-- artifact_path: .claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md
-- artifact_type: plan
-- plan_version: {NNN}
+### 7. Update Status to PLANNED
 
-This updates both files atomically:
-1. state.json: status = "planned", plan_version = NNN, artifacts += [{path, type}] (via jq)
-2. TODO.md: Status: [PLANNED], add Plan link (via grep + Edit)
+Update both files atomically:
 
-### 7. Git Commit
+**state.json** (via jq):
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: "planned",
+    last_updated: $ts
+  }' .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+```
+
+**TODO.md** (via Edit tool):
+- Update status marker to `[PLANNED]`
+- Add plan link if not already present
+
+### 8. Git Commit
 
 ```bash
 git add .claude/specs/
-git commit -m "task {N}: create implementation plan"
+git commit -m "task {N}: create implementation plan
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
 
-### 8. Output
+### 9. Output
 
 ```
 Plan created for Task #{N}
 
-Plan: .claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+Plan: {artifact_path from skill result}
 
-Phases:
-1. {Phase 1 name} - {effort}
-2. {Phase 2 name} - {effort}
-...
-
-Total estimated effort: {sum}
+Phases: {phase_count from metadata}
+Total estimated effort: {estimated_hours from metadata}
 
 Status: [PLANNED]
 Next: /implement {N}
 ```
+
+## Error Handling
+
+### Skill Invocation Failure
+If the Skill tool fails to invoke:
+1. Log the error
+2. Keep status as [PLANNING]
+3. Output error message with recovery instructions
+
+### Subagent Timeout
+If the subagent times out:
+1. Skill returns partial status
+2. Partial plan is preserved
+3. User can re-run /plan to continue
+
+### Task Not Found
+Return immediately with clear error message.
