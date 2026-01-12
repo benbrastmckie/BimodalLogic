@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build, Test, and Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build, test, and lint with Lean
+        id: lean-action
+        uses: leanprover/lean-action@v1
+        with:
+          build: true
+          test: true
+          lint: true
+          use-mathlib-cache: true
+          build-args: "--wfail"
+
+      - name: Report results
+        if: always()
+        run: |
+          echo "Build status: ${{ steps.lean-action.outputs.build-status }}"
+          echo "Test status: ${{ steps.lean-action.outputs.test-status }}"
+          echo "Lint status: ${{ steps.lean-action.outputs.lint-status }}"
