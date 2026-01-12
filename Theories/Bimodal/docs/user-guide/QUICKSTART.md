@@ -126,8 +126,16 @@ variable (p q : Formula)  -- Correct
 Use `lean_goal` or VS Code goal view to see proof state. Apply appropriate
 lemma or tactic.
 
+### More Help
+
+For detailed troubleshooting with 20+ error patterns, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
+For practice problems with hints and solutions, see [EXAMPLES.md](EXAMPLES.md#7-exercises).
+
 ## Navigation
 
 - [Proof Patterns](PROOF_PATTERNS.md) - Common patterns
+- [Examples and Exercises](EXAMPLES.md) - Worked examples with solutions
+- [Troubleshooting Guide](TROUBLESHOOTING.md) - Detailed error solutions
 - [Axiom Reference](../reference/AXIOM_REFERENCE.md) - Complete axiom list
 - [Back to User Guide](README.md)

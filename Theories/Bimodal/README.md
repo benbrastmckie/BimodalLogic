@@ -31,6 +31,8 @@ For Bimodal-specific guides and references, see [docs/](docs/README.md):
 |----------|-------------|
 | [Quick Start](docs/user-guide/QUICKSTART.md) | Get started with Bimodal proofs |
 | [Proof Patterns](docs/user-guide/PROOF_PATTERNS.md) | Common proof strategies |
+| [Examples](docs/user-guide/EXAMPLES.md) | Worked examples with exercises and solutions |
+| [Troubleshooting](docs/user-guide/TROUBLESHOOTING.md) | Common errors and fixes |
 | [Axiom Reference](docs/reference/AXIOM_REFERENCE.md) | Complete axiom schemas |
 | [Tactic Reference](docs/reference/TACTIC_REFERENCE.md) | Custom tactic usage |
 | [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) | Module status |
