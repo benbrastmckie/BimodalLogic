@@ -29,17 +29,19 @@ technical_debt:
 ## High Priority
 
 ### 439. Fix session ID generation and agent system robustness
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Effort**: 30 minutes
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/439_fix_session_id_and_agent_system_robustness/reports/research-001.md)
 
-**Description**: Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. The command `xxd: command not found` caused a malformed session ID and subsequent crash. Systematically fix all fragile patterns in .claude/ agent system.
+**Description**: Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. Task 438 Phase 3 fixed checkpoint-gate-in.md but missed three other files.
 
-**Issues to fix**:
-1. Session ID generation uses `xxd` which is not universally available
-2. No fallback when session ID generation fails
-3. Potential cascading failures from malformed session IDs
+**Files to fix** (still have xxd):
+1. `.claude/context/core/routing.md` - Critical (command reference)
+2. `.claude/rules/git-workflow.md` - High (documentation)
+3. `.claude/context/core/templates/thin-wrapper-skill.md` - High (skill template)
 
 ---
 

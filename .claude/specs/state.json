@@ -6,12 +6,19 @@
     {
       "project_number": 439,
       "project_name": "fix_session_id_and_agent_system_robustness",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T20:49:18Z",
-      "last_updated": "2026-01-12T20:49:18Z",
-      "description": "Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. Systematically fix all fragile patterns in .claude/ agent system."
+      "last_updated": "2026-01-12T20:57:11Z",
+      "description": "Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. Systematically fix all fragile patterns in .claude/ agent system.",
+      "session_id": "sess_1768251296_a037f5",
+      "artifacts": [
+        {
+          "path": ".claude/specs/439_fix_session_id_and_agent_system_robustness/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 438,
