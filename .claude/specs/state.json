@@ -6,15 +6,20 @@
     {
       "project_number": 429,
       "project_name": "extend_command_skill_agent_integration_to_meta",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T06:02:46Z",
-      "last_updated": "2026-01-12T14:07:48Z",
+      "last_updated": "2026-01-12T22:30:00Z",
+      "plan_version": "001",
       "artifacts": [
         {
           "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
