@@ -129,6 +129,16 @@ technical_debt:
 
 ---
 
+### 408. Define \proofchecker LaTeX command
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Define a \proofchecker command for \href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}} in /home/benjamin/Projects/ProofChecker/latex/notation-standards.sty and use this command to replace all occurrences of ProofChecker in the existing LaTeX documents.
+
+---
+
 ### 404. Enhance /todo to archive orphaned specs directories
 - **Effort**: 1-2 hours
 - **Status**: [COMPLETED]
