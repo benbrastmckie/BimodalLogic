@@ -282,7 +282,7 @@
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T20:01:33Z",
+      "last_updated": "2026-01-12T21:06:02Z",
       "effort": "70-90 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.",
       "artifacts": [
@@ -304,6 +304,10 @@
         },
         {
           "path": ".claude/specs/257_completeness_proofs/reports/research-005.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/257_completeness_proofs/reports/research-006.md",
           "type": "research"
         }
       ]
