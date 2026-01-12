@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T22:05:22Z",
-  "next_project_number": 451,
+  "next_project_number": 452,
   "active_projects": [
+    {
+      "project_number": 451,
+      "project_name": "add_reflection_extension_to_logos_layer_extensions",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T22:34:13Z",
+      "last_updated": "2026-01-12T22:34:13Z",
+      "description": "Add Reflection Extension for metacognition to the Logos layer extensions in README.md, recursive-semantics.md, layer-extensions.md, LogosReference.tex, and project README.md where the Reflection Extension follows the Agential Extension"
+    },
     {
       "project_number": 448,
       "project_name": "build_canonical_history",

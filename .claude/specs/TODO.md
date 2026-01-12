@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:34:26Z
-next_project_number: 451
+next_project_number: 452
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -83,6 +83,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 451. Add Reflection Extension to Logos layer extensions
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Add 'Reflection Extension' for metacognition to the Logos layer extensions in /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md, /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md, /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/layer-extensions.md, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex, and /home/benjamin/Projects/ProofChecker/README.md where the 'Reflection Extension' follows the 'Agential Extension'.
+
+---
 
 ### 441. Prove completeness via Relativized Completeness approach
 - **Effort**: TBD
