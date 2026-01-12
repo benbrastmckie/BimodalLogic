@@ -26,11 +26,11 @@
     {
       "project_number": 432,
       "project_name": "fix_artifact_linking_in_todo_and_state",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-12T14:48:15Z",
-      "last_updated": "2026-01-12T20:30:00Z",
+      "last_updated": "2026-01-12T16:22:53Z",
       "artifacts": [
         {
           "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md",
@@ -383,11 +383,11 @@
       "project_name": "decidability",
       "type": "feature",
       "phase": "researched",
-      "status": "researched",
+      "status": "planning",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T16:13:51Z",
+      "last_updated": "2026-01-12T16:22:46Z",
       "effort": "40-50 hours",
       "description": "Implement decision procedures for TM logic. Research-002 analyzes implications of Type-based axiom refactor from task 260.",
       "artifacts": [

@@ -30,7 +30,7 @@ technical_debt:
 
 ### 432. Systematic agent system overhaul for robustness
 - **Effort**: 11-17 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
