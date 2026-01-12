@@ -86,13 +86,35 @@ Modified:
 ```
 {scope}: {action} {description}
 
+Session: {session_id}
+
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
+
+### Session ID
+
+Session ID links commits to their originating command execution.
+
+**Format**: `sess_{unix_timestamp}_{6_char_random}`
+**Example**: `sess_1736700000_a1b2c3`
+
+**Generation**:
+```bash
+session_id="sess_$(date +%s)_$(head -c 3 /dev/urandom | xxd -p)"
+```
+
+**Lifecycle**:
+1. Generated at CHECKPOINT 1 (GATE IN)
+2. Passed through delegation to skill/agent
+3. Included in error logs for traceability
+4. Included in final git commit
 
 ### Examples
 
 ```
 task 334: create LaTeX documentation for Logos system
+
+Session: sess_1736700000_a1b2c3
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
@@ -100,11 +122,15 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
 task 259 phase 2: implement modal semantics evaluator
 
+Session: sess_1736701234_d4e5f6
+
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
 
 ```
 todo: archive 3 completed tasks (336, 337, 338)
+
+Session: sess_1736702000_789abc
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```

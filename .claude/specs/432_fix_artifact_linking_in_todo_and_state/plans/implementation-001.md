@@ -252,7 +252,7 @@ This plan implements a systematic overhaul of the .claude/ agent system based on
 ### Phase 6: Enhance Error Tracking
 
 **Estimated effort**: 1-2 hours
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Extend errors.json schema with context, trajectory, and recovery fields
@@ -311,7 +311,7 @@ This plan implements a systematic overhaul of the .claude/ agent system based on
 ### Phase 7: Add Session-Aware Git Commits
 
 **Estimated effort**: 0.5-1 hour
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update git commit template to include session_id
