@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T19:30:00Z",
-  "next_project_number": 440,
+  "next_project_number": 441,
   "active_projects": [
+    {
+      "project_number": 440,
+      "project_name": "revise_logos_readme",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T21:16:41Z",
+      "last_updated": "2026-01-12T21:16:41Z"
+    },
     {
       "project_number": 439,
       "project_name": "address_todo_note_tags_semantics_tex",

@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T19:30:00Z
-next_project_number: 440
+next_project_number: 441
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -102,6 +102,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 440. Revise Logos README to reflect current structure and ambitions
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Revise /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md to accurately reflect the current ambitions and structure of the Logos/ as outlined in /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md and implemented (at least with stubs) in Lean.
+
+---
 
 ### 439. Address TODO and NOTE tags in 02-Semantics.tex
 - **Effort**: ~1 hour
