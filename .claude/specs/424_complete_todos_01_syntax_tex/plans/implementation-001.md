@@ -43,7 +43,7 @@ This task addresses 6 TODOs in the Bimodal syntax documentation file. The change
 ### Phase 2: Reformat Formula Definition (TODO 1)
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace stacked align* with inline BNF notation
