@@ -552,32 +552,419 @@ theorem deduction_theorem (Γ : Context) (φ ψ : Formula) :
   sorry
 ```
 
-## 7. Exercise Problems
+## 7. Exercises
 
-### Basic Exercises
+Practice problems with progressive hints and solutions. Try each exercise before looking at hints!
 
-1. Prove `⊢ □(P → Q) → (□P → □Q)` (K axiom for necessity)
-2. Prove `[P, P → Q] ⊢ Q` using modus ponens
-3. Prove `⊢ □P → ◇P` from MT and MB
+---
 
-### Intermediate Exercises
+### Exercise 1: Modal K Distribution (Basic)
 
-4. Prove `⊢ ◇◇P → ◇P` in S5
-5. Prove `[always P] ⊢ P` by extracting from conjunction
-6. Show `{□P, □Q}` entails `□(P ∧ Q)`
+**Problem**: Prove `⊢ □(P → Q) → (□P → □Q)`
 
-### Advanced Exercises
+This is the modal K axiom (or distribution axiom) - necessity distributes over implication.
 
-7. Prove perpetuity principle P1: `⊢ □P → always P`
-8. Prove `⊢ always □P ↔ □P` in TM
-9. Construct a canonical model proof for a specific formula
+**Hint 1**: This is a fundamental axiom of modal logic, not a derived theorem.
 
-### Solutions
+**Hint 2**: Look for `Axiom.modal_k_dist` in the axiom definitions.
 
-Solutions are available via the active `Logos/Examples/` modules (legacy `Archive/` paths still work):
-- `Logos/Examples/ModalProofs.lean`
-- `Logos/Examples/TemporalProofs.lean`
-- `Logos/Examples/BimodalProofs.lean`
+<details>
+<summary>Solution</summary>
+
+```lean
+example (P Q : Formula) : ⊢ (P.imp Q).box.imp (P.box.imp Q.box) :=
+  DerivationTree.axiom [] _ (Axiom.modal_k_dist P Q)
+```
+
+**Explanation**: Modal K distribution is one of the 14 TM axiom schemas. It's applied directly via `DerivationTree.axiom` with the `Axiom.modal_k_dist` constructor. This axiom states that if something is necessarily true as an implication, then the necessity of the antecedent implies the necessity of the consequent.
+</details>
+
+---
+
+### Exercise 2: Modus Ponens from Assumptions (Basic)
+
+**Problem**: Prove `[P, P → Q] ⊢ Q`
+
+Derive Q from assumptions P and P → Q using modus ponens.
+
+**Hint 1**: You need to extract both assumptions from the context, then apply modus ponens.
+
+**Hint 2**: Use `DerivationTree.assumption` to get each formula from the context, then `DerivationTree.modusPonens`.
+
+<details>
+<summary>Solution</summary>
+
+```lean
+example (P Q : Formula) : [P, P.imp Q] ⊢ Q := by
+  apply DerivationTree.modusPonens (Γ := [P, P.imp Q]) (φ := P) (ψ := Q)
+  · -- Prove [P, P → Q] ⊢ P → Q
+    apply DerivationTree.assumption
+    simp
+  · -- Prove [P, P → Q] ⊢ P
+    apply DerivationTree.assumption
+    simp
+```
+
+Or in term mode:
+
+```lean
+example (P Q : Formula) : [P, P.imp Q] ⊢ Q :=
+  DerivationTree.modusPonens [P, P.imp Q] P Q
+    (DerivationTree.assumption [P, P.imp Q] (P.imp Q) (by simp))
+    (DerivationTree.assumption [P, P.imp Q] P (by simp))
+```
+
+**Explanation**: `modusPonens` requires two sub-derivations: one for the implication `P → Q` and one for the antecedent `P`. Both are in our context, so we use `assumption` with a membership proof (which `simp` handles).
+</details>
+
+---
+
+### Exercise 3: Necessity Implies Possibility (Basic)
+
+**Problem**: Prove `⊢ □P → ◇P`
+
+If P is necessary (true in all worlds), then P is possible (true in some world).
+
+**Hint 1**: Remember that `◇P` is defined as `¬□¬P`. So the goal is really `□P → ¬□¬P`.
+
+**Hint 2**: Use axiom T (`□P → P`) and axiom B (`P → □◇P`), along with contraposition and transitivity.
+
+<details>
+<summary>Solution</summary>
+
+```lean
+import Bimodal.Theorems.Propositional
+
+open Bimodal.Theorems.Propositional
+
+example (P : Formula) : ⊢ P.box.imp P.diamond := by
+  -- □P → ◇P
+  -- ◇P = ¬□¬P, so we need □P → ¬□¬P
+  -- Strategy: □P → P (T), P → □◇P (B), □◇P = □¬□¬P
+  -- Then: □P → P → □¬□¬P, contrapose inner part
+
+  -- Actually simpler: use T and contraposition
+  -- □P → P (T axiom)
+  -- ¬P → ¬□P (contraposition of T on ¬P)
+  -- But □¬P → ¬P (T on ¬P)
+  -- So □¬P → ¬□P... hmm
+
+  -- Cleaner: Use T directly: □P → P, and ¬P → □¬P contraposed...
+  -- This requires the S5 characteristic theorem.
+  -- For S5: □P → P and P → □◇P give □P → □◇P, then T: □◇P → ◇P
+
+  have t_axiom : ⊢ P.box.imp P := DerivationTree.axiom [] _ (Axiom.modal_t P)
+  have b_axiom : ⊢ P.imp P.diamond.box := DerivationTree.axiom [] _ (Axiom.modal_b P)
+  have t_on_diamond : ⊢ P.diamond.box.imp P.diamond :=
+    DerivationTree.axiom [] _ (Axiom.modal_t P.diamond)
+
+  -- Chain: □P → P → □◇P → ◇P
+  have step1 := imp_trans t_axiom b_axiom  -- □P → □◇P
+  exact imp_trans step1 t_on_diamond       -- □P → ◇P
+```
+
+**Explanation**: We chain three implications: T axiom gives `□P → P`, B axiom gives `P → □◇P`, and T on `◇P` gives `□◇P → ◇P`. Composing these via `imp_trans` yields `□P → ◇P`.
+</details>
+
+---
+
+### Exercise 4: S5 Collapse for Possibility (Intermediate)
+
+**Problem**: Prove `⊢ ◇◇P → ◇P`
+
+In S5 logic, iterated possibility collapses.
+
+**Hint 1**: S5 has "collapse" properties due to the equivalence relation on worlds. Look for an S5-specific axiom.
+
+**Hint 2**: The axiom `modal_5_collapse` directly provides `◇◇φ → ◇φ`.
+
+<details>
+<summary>Solution</summary>
+
+```lean
+example (P : Formula) : ⊢ P.diamond.diamond.imp P.diamond :=
+  DerivationTree.axiom [] _ (Axiom.modal_5_collapse P)
+```
+
+**Explanation**: In S5, the accessibility relation is an equivalence relation, which means `◇◇P → ◇P` holds as an axiom schema. The `modal_5_collapse` axiom directly captures this property.
+</details>
+
+---
+
+### Exercise 5: Extract from Temporal Always (Intermediate)
+
+**Problem**: Prove `[always P] ⊢ P`
+
+The `always` operator is defined as a conjunction of past and future necessity. Extract P from it.
+
+**Hint 1**: `always P` is defined as `P.all_past.and P.all_future`. You need conjunction elimination.
+
+**Hint 2**: First extract `HP` (always was P), then use temporal T axiom `HP → P`.
+
+<details>
+<summary>Solution</summary>
+
+```lean
+import Bimodal.Theorems.Propositional
+
+open Bimodal.Theorems.Propositional
+
+example (P : Formula) : [P.always] ⊢ P := by
+  -- always P = HP ∧ GP where H = all_past, G = all_future
+  -- Need to extract HP from HP ∧ GP, then use temporal T: HP → P
+
+  -- Get HP ∧ GP from context
+  have conj : [P.always] ⊢ P.always := DerivationTree.assumption _ _ (by simp)
+
+  -- Left conjunction elimination: (HP ∧ GP) → HP
+  have lce : ⊢ P.always.imp P.all_past := lce_imp P.all_past P.all_future
+
+  -- Apply to get HP
+  have hp : [P.always] ⊢ P.all_past := by
+    apply DerivationTree.modusPonens
+    · exact DerivationTree.weakening [] [P.always] _ lce (by simp)
+    · exact conj
+
+  -- Temporal T axiom: HP → P
+  have temp_t : ⊢ P.all_past.imp P := DerivationTree.axiom [] _ (Axiom.temp_t P)
+
+  -- Apply to get P
+  apply DerivationTree.modusPonens
+  · exact DerivationTree.weakening [] [P.always] _ temp_t (by simp)
+  · exact hp
+```
+
+**Explanation**: The `always` operator is the conjunction of "always was" (`all_past`) and "always will be" (`all_future`). We use left conjunction elimination to get `HP`, then apply the temporal T axiom (`HP → P`) to extract P.
+</details>
+
+---
+
+### Exercise 6: Distribute Box Over Conjunction (Intermediate)
+
+**Problem**: Show that `{□P, □Q}` entails `□(P ∧ Q)`
+
+From necessity of P and necessity of Q, derive necessity of their conjunction.
+
+**Hint 1**: You'll need to prove `⊢ □P → (□Q → □(P ∧ Q))` first, then apply it to assumptions.
+
+**Hint 2**: Use modal K distribution: `□(P → (Q → P ∧ Q)) → (□P → □(Q → P ∧ Q))`, combined with conjunction introduction `P → (Q → P ∧ Q)`.
+
+<details>
+<summary>Solution</summary>
+
+```lean
+import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Combinators
+
+open Bimodal.Theorems.Propositional
+open Bimodal.Theorems.Combinators
+
+noncomputable example (P Q : Formula) : [P.box, Q.box] ⊢ (P.and Q).box := by
+  -- Strategy:
+  -- 1. Prove ⊢ P → (Q → P ∧ Q) (conjunction introduction theorem)
+  -- 2. Necessitate: ⊢ □(P → (Q → P ∧ Q))
+  -- 3. Use K distribution twice to get ⊢ □P → □(Q → P ∧ Q) and ⊢ □(Q → P ∧ Q) → (□Q → □(P ∧ Q))
+  -- 4. Chain and apply to assumptions
+
+  -- Conjunction introduction theorem
+  have conj_intro : ⊢ P.imp (Q.imp (P.and Q)) := pairing P Q
+
+  -- Necessitate
+  have nec_conj : ⊢ (P.imp (Q.imp (P.and Q))).box :=
+    DerivationTree.necessitation _ conj_intro
+
+  -- First K distribution: □(P → (Q → P ∧ Q)) → (□P → □(Q → P ∧ Q))
+  have k1 : ⊢ (P.imp (Q.imp (P.and Q))).box.imp (P.box.imp (Q.imp (P.and Q)).box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist P (Q.imp (P.and Q)))
+
+  -- Apply to get □P → □(Q → P ∧ Q)
+  have step1 : ⊢ P.box.imp (Q.imp (P.and Q)).box := mp nec_conj k1
+
+  -- Second K distribution: □(Q → P ∧ Q) → (□Q → □(P ∧ Q))
+  have k2 : ⊢ (Q.imp (P.and Q)).box.imp (Q.box.imp (P.and Q).box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist Q (P.and Q))
+
+  -- Chain: □P → □(Q → P ∧ Q) → (□Q → □(P ∧ Q))
+  have step2 : ⊢ P.box.imp (Q.box.imp (P.and Q).box) := imp_trans step1 k2
+
+  -- Now apply to our assumptions
+  have boxP : [P.box, Q.box] ⊢ P.box := DerivationTree.assumption _ _ (by simp)
+  have boxQ : [P.box, Q.box] ⊢ Q.box := DerivationTree.assumption _ _ (by simp)
+
+  -- Weaken step2 into context
+  have step2_weak : [P.box, Q.box] ⊢ P.box.imp (Q.box.imp (P.and Q).box) :=
+    DerivationTree.weakening [] [P.box, Q.box] _ step2 (by simp)
+
+  -- Apply twice
+  have inter : [P.box, Q.box] ⊢ Q.box.imp (P.and Q).box :=
+    DerivationTree.modusPonens _ _ _ step2_weak boxP
+  exact DerivationTree.modusPonens _ _ _ inter boxQ
+```
+
+**Explanation**: This proof uses the "pairing" combinator for conjunction introduction, necessitation to put it under a box, and then two applications of modal K distribution to thread the necessity through. The key insight is that modal K lets us "lift" implications into necessitated form.
+</details>
+
+---
+
+### Exercise 7: Perpetuity Principle P1 (Advanced)
+
+**Problem**: Prove `⊢ □P → always P`
+
+This is perpetuity principle P1: necessity implies eternal truth.
+
+**Hint 1**: `always P = HP ∧ GP`. You need to prove `□P → HP` and `□P → GP` separately.
+
+**Hint 2**: Use the interaction axioms `Axiom.int_1` (`□P → HP`) and `Axiom.int_2` (`□P → GP`), then combine with conjunction introduction.
+
+<details>
+<summary>Solution</summary>
+
+```lean
+import Bimodal.Theorems.Combinators
+
+open Bimodal.Theorems.Combinators
+
+example (P : Formula) : ⊢ P.box.imp P.always := by
+  -- always P = HP ∧ GP
+  -- Need □P → HP ∧ GP
+  -- We have interaction axioms: □P → HP and □P → GP
+
+  -- Interaction axiom 1: □φ → Hφ (necessity implies always-was)
+  have int1 : ⊢ P.box.imp P.all_past :=
+    DerivationTree.axiom [] _ (Axiom.int_1 P)
+
+  -- Interaction axiom 2: □φ → Gφ (necessity implies always-will-be)
+  have int2 : ⊢ P.box.imp P.all_future :=
+    DerivationTree.axiom [] _ (Axiom.int_2 P)
+
+  -- Combine: □P → HP and □P → GP implies □P → (HP ∧ GP)
+  -- Using combine_imp_conj from Combinators
+  exact combine_imp_conj int1 int2
+```
+
+**Explanation**: The TM logic includes interaction axioms that connect modal necessity with temporal operators. `int_1` says necessity implies "always was" (past eternity), and `int_2` says necessity implies "always will be" (future eternity). The `combine_imp_conj` combinator merges two implications with the same antecedent into a conjunction in the consequent.
+</details>
+
+---
+
+### Exercise 8: Bimodal Equivalence (Advanced)
+
+**Problem**: Prove `⊢ always □P ↔ □P` in TM
+
+The necessity of something is equivalent to eternal necessity.
+
+**Hint 1**: A biconditional `A ↔ B` is `(A → B) ∧ (B → A)`. Prove both directions.
+
+**Hint 2**: For `always □P → □P`, extract from conjunction. For `□P → always □P`, use Exercise 7's pattern with `□P` substituted for `P`.
+
+<details>
+<summary>Solution</summary>
+
+```lean
+import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.Propositional
+
+open Bimodal.Theorems.Combinators
+open Bimodal.Theorems.Propositional
+
+-- Forward direction: always □P → □P
+example (P : Formula) : ⊢ P.box.always.imp P.box := by
+  -- always □P = H□P ∧ G□P
+  -- Use temporal T: H□P → □P
+  have lce : ⊢ P.box.always.imp P.box.all_past := lce_imp P.box.all_past P.box.all_future
+  have temp_t : ⊢ P.box.all_past.imp P.box := DerivationTree.axiom [] _ (Axiom.temp_t P.box)
+  exact imp_trans lce temp_t
+
+-- Backward direction: □P → always □P (using P1 pattern)
+example (P : Formula) : ⊢ P.box.imp P.box.always := by
+  -- □□P → always □P by P1 pattern
+  -- But we need □P → □□P first (axiom 4)
+  have modal_4 : ⊢ P.box.imp P.box.box := DerivationTree.axiom [] _ (Axiom.modal_4 P)
+
+  -- Then □□P → always □P by P1
+  have int1 : ⊢ P.box.box.imp P.box.all_past := DerivationTree.axiom [] _ (Axiom.int_1 P.box)
+  have int2 : ⊢ P.box.box.imp P.box.all_future := DerivationTree.axiom [] _ (Axiom.int_2 P.box)
+  have p1 : ⊢ P.box.box.imp P.box.always := combine_imp_conj int1 int2
+
+  exact imp_trans modal_4 p1
+
+-- Full biconditional
+noncomputable example (P : Formula) : ⊢ P.box.always.iff P.box := by
+  -- iff = (A → B) ∧ (B → A)
+  have fwd : ⊢ P.box.always.imp P.box := by
+    have lce : ⊢ P.box.always.imp P.box.all_past := lce_imp P.box.all_past P.box.all_future
+    have temp_t : ⊢ P.box.all_past.imp P.box := DerivationTree.axiom [] _ (Axiom.temp_t P.box)
+    exact imp_trans lce temp_t
+
+  have bwd : ⊢ P.box.imp P.box.always := by
+    have modal_4 : ⊢ P.box.imp P.box.box := DerivationTree.axiom [] _ (Axiom.modal_4 P)
+    have int1 : ⊢ P.box.box.imp P.box.all_past := DerivationTree.axiom [] _ (Axiom.int_1 P.box)
+    have int2 : ⊢ P.box.box.imp P.box.all_future := DerivationTree.axiom [] _ (Axiom.int_2 P.box)
+    have p1 : ⊢ P.box.box.imp P.box.always := combine_imp_conj int1 int2
+    exact imp_trans modal_4 p1
+
+  exact combine_imp_conj fwd bwd
+```
+
+**Explanation**: The forward direction uses temporal T (`HP → P` applied to `□P`). The backward direction uses modal 4 (`□P → □□P`) to get double necessity, then applies the P1 pattern to `□P` instead of `P`. This demonstrates the deep connection between modal and temporal operators in TM.
+</details>
+
+---
+
+### Exercise 9: Canonical Model Understanding (Advanced)
+
+**Problem**: Explain the structure of a canonical model proof for completeness.
+
+This is a conceptual exercise about the completeness proof infrastructure.
+
+**Hint 1**: Review `Bimodal/Metalogic/Completeness.lean` for the scaffolding.
+
+**Hint 2**: The key components are: (1) maximal consistent sets, (2) canonical frame construction, (3) truth lemma.
+
+<details>
+<summary>Discussion</summary>
+
+A canonical model proof for TM completeness follows these steps:
+
+1. **Maximal Consistent Sets (MCS)**: For any consistent set of formulas Γ, extend it to a maximal consistent set using Lindenbaum's lemma. An MCS contains exactly one of `φ` or `¬φ` for every formula.
+
+2. **Canonical Frame**: Define a frame where:
+   - Worlds = maximal consistent sets
+   - Modal accessibility: `w R v` iff for all φ, if `□φ ∈ w` then `φ ∈ v`
+   - Temporal accessibility: similar for `H` and `G` operators
+
+3. **Canonical Model**: Define valuation: `p` is true at world `w` iff `atom p ∈ w`.
+
+4. **Truth Lemma**: Prove by induction on formula complexity:
+   `φ ∈ w` iff `M, w ⊨ φ`
+
+   The modal cases use the definition of accessibility. The key insight is that the axioms guarantee the right frame properties.
+
+5. **Completeness**: If `⊨ φ` (valid), then `⊢ φ` (provable).
+   - Contrapositive: if `⊬ φ`, then `⊭ φ`
+   - If `φ` is not provable, then `{¬φ}` is consistent
+   - Extend to MCS `w`, build canonical model
+   - By truth lemma, `¬φ ∈ w` means `M, w ⊨ ¬φ`, so `M, w ⊭ φ`
+
+The current implementation in `Completeness.lean` has the scaffolding with placeholder `sorry`s. Task 257 tracks completing these proofs.
+
+See also: [KNOWN_LIMITATIONS.md](../project-info/KNOWN_LIMITATIONS.md) for status.
+</details>
+
+---
+
+### Additional Resources
+
+- **Lean Source Files**:
+  - `Bimodal/Examples/ModalProofs.lean` - More modal proof examples
+  - `Bimodal/Examples/TemporalProofs.lean` - Temporal logic examples
+  - `Bimodal/Examples/BimodalProofs.lean` - Combined modal-temporal proofs
+  - `Bimodal/Theorems/Combinators.lean` - Proof combinators used above
+
+- **Reference Guides**:
+  - [Axiom Reference](../reference/AXIOM_REFERENCE.md) - Complete list of TM axioms
+  - [Tactic Reference](../reference/TACTIC_REFERENCE.md) - Custom tactics
+  - [Troubleshooting](TROUBLESHOOTING.md) - Common errors and solutions
 
 ## References
 
