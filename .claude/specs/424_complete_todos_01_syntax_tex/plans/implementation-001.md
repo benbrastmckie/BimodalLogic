@@ -79,7 +79,7 @@ This task addresses 6 TODOs in the Bimodal syntax documentation file. The change
 ### Phase 3: Add Tables for Derived Operators (TODO 3)
 
 **Estimated effort**: 20 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add explanatory table after Propositional definition
