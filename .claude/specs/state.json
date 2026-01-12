@@ -1,8 +1,106 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-12T22:00:00Z",
-  "next_project_number": 444,
+  "_last_updated": "2026-01-12T22:21:30Z",
+  "next_project_number": 450,
   "active_projects": [
+    {
+      "project_number": 444,
+      "project_name": "formula_countability_set_list_bridge",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "effort": "8-10 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-12T22:03:06Z",
+      "parent_task": 257,
+      "description": "Phase 1 of completeness proofs: Establish bridge between set-based and list-based consistency. Prove Formula is countable, implement enumeration, define setToContext, prove set-list consistency equivalence, complete lindenbaum proof."
+    },
+    {
+      "project_number": 445,
+      "project_name": "maximal_consistent_set_properties",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "effort": "10-12 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-12T22:03:06Z",
+      "parent_task": 257,
+      "dependencies": [
+        444
+      ],
+      "description": "Phase 2 of completeness proofs: Prove key properties of maximal consistent sets. Prove maximal_consistent_closed, maximal_negation_complete, implication/conjunction/disjunction properties, modal and temporal saturation lemmas."
+    },
+    {
+      "project_number": 446,
+      "project_name": "agnostic_duration_construction",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "effort": "15-20 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-12T22:03:06Z",
+      "parent_task": 257,
+      "dependencies": [
+        445
+      ],
+      "description": "Phase 3 of completeness proofs: Implement order-type based duration construction from research-008.md. Define TemporalChain, ChainSegment, orderTypeEquiv. Build PositiveDuration quotient with AddCommMonoid. Define Duration via Grothendieck construction with LinearOrder and IsOrderedAddMonoid instances."
+    },
+    {
+      "project_number": 447,
+      "project_name": "canonical_frame_model_construction",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "effort": "12-15 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-12T22:03:06Z",
+      "parent_task": 257,
+      "dependencies": [
+        446
+      ],
+      "description": "Phase 4 of completeness proofs: Build canonical frame and model using agnostic Duration type. Define canonical_task_rel with modal/temporal transfer. Prove nullity and compositionality. Implement canonical_frame, canonical_valuation, canonical_model, canonical_history."
+    },
+    {
+      "project_number": 448,
+      "project_name": "truth_lemma",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "effort": "15-20 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-12T22:03:06Z",
+      "parent_task": 257,
+      "dependencies": [
+        447
+      ],
+      "description": "Phase 5 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem."
+    },
+    {
+      "project_number": 449,
+      "project_name": "completeness_theorems",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "effort": "8-10 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-12T22:03:06Z",
+      "parent_task": 257,
+      "dependencies": [
+        448
+      ],
+      "description": "Phase 6 of completeness proofs: Prove weak_completeness and strong_completeness using truth lemma. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean."
+    },
+    {
+      "project_number": 437,
+      "project_name": "improve_readme_consistency_with_recursive_semantics",
+      "status": "researching",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T00:00:00Z",
+      "last_updated": "2026-01-12T22:21:30Z",
+      "description": "Improve /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md for consistency and clarity with the recursive-semantics.md documentation. Reduce redundancy by presenting layer extensions only once. Fix any internal discrepancies. Emphasize the parallel development of Logos in the ModelChecker with link to https://github.com/benbrastmckie/ModelChecker.",
+      "session_id": "sess_1768255288_58f99e"
+    },
     {
       "project_number": 443,
       "project_name": "fix_session_id_and_agent_system_robustness",
@@ -416,11 +514,11 @@
       "project_number": 257,
       "project_name": "completeness_proofs",
       "type": "feature",
-      "status": "planned",
+      "status": "expanded",
       "priority": "low",
       "language": "lean",
       "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T22:00:10Z",
+      "last_updated": "2026-01-12T22:03:06Z",
       "effort": "70-90 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method. The infrastructure (types and axiom statements) is present in `Logos/Core/Metalogic/Completeness.lean`.",
       "artifacts": [
@@ -462,7 +560,15 @@
         }
       ],
       "session_id": "sess_1768255070_4e3a69",
-      "plan_version": "001"
+      "plan_version": "001",
+      "subtasks": [
+        444,
+        445,
+        446,
+        447,
+        448,
+        449
+      ]
     }
   ]
 }
