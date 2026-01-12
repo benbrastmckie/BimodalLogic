@@ -34,7 +34,7 @@ technical_debt:
 - **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: meta
-- **Research**: [research-001.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md), [research-002.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md)
+- **Research**: [research-001.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md), [research-002.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md), [research-003.md](.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-003.md)
 
 **Description**: Systematic overhaul of the agent system to improve robustness and uniformity while maintaining efficiency. Introduces a Checkpoint-Based Execution Model with unified verification gates, consolidates preflight/postflight to checkpoint enforcers, unifies status management through skill-status-sync, and simplifies agent contracts. Research identified six systemic issues: fragmented responsibility delegation, inconsistent preflight/postflight execution, documentation-implementation gaps, redundant verification points, unclear artifact lifecycle, and metadata propagation failures.
 
