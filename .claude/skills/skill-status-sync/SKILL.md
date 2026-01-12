@@ -9,12 +9,121 @@ allowed-tools: Read, Write, Edit, Bash
 
 Atomic status updates across TODO.md and state.json using efficient jq/grep patterns.
 
-## Context Loading
+## API Operations
 
-Load context on-demand when needed:
-- `@.claude/context/core/orchestration/state-management.md` - State management patterns
-- `@.claude/context/core/orchestration/state-lookup.md` - State lookup utilities
-- `@.claude/context/index.md` - Full context discovery index
+This skill exposes three primary operations for checkpoint-based execution:
+
+| Operation | Purpose | When to Use |
+|-----------|---------|-------------|
+| `preflight_update` | Set in-progress status | GATE IN checkpoint |
+| `postflight_update` | Set completed status + link artifacts | GATE OUT checkpoint |
+| `artifact_link` | Add single artifact link (idempotent) | Post-artifact creation |
+
+### preflight_update
+
+**Input:**
+- `task_number`: Task ID
+- `target_status`: In-progress variant (researching, planning, implementing)
+- `session_id`: Session identifier for traceability
+
+**Execution:**
+```bash
+# Update state.json
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg status "$target_status" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts
+  }' .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+
+# Update TODO.md status marker
+# Use Edit tool: [OLD_STATUS] -> [NEW_STATUS]
+```
+
+**Output:**
+```json
+{
+  "status": "completed|failed",
+  "summary": "Updated task #N to [STATUS]",
+  "previous_status": "not_started",
+  "new_status": "researching"
+}
+```
+
+### postflight_update
+
+**Input:**
+- `task_number`: Task ID
+- `target_status`: Completed variant (researched, planned, completed, partial)
+- `artifacts`: Array of {path, type} to link
+- `session_id`: Session identifier
+
+**Execution:**
+1. Update status in state.json
+2. Add artifacts to state.json artifacts array
+3. Update status marker in TODO.md
+4. Link each artifact in TODO.md (calls artifact_link internally)
+
+**Output:**
+```json
+{
+  "status": "completed|failed",
+  "summary": "Updated task #N to [STATUS] with N artifacts",
+  "artifacts_linked": ["path1", "path2"],
+  "previous_status": "researching",
+  "new_status": "researched"
+}
+```
+
+### artifact_link (Idempotent)
+
+**Input:**
+- `task_number`: Task ID
+- `artifact_path`: Relative path to artifact
+- `artifact_type`: research | plan | summary
+
+**Execution:**
+```bash
+# IDEMPOTENCY CHECK - Skip if link already exists
+if grep -A 30 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "$artifact_path"; then
+  echo "Link already exists for $artifact_path, skipping"
+  exit 0  # Success - idempotent operation
+fi
+
+# Add to state.json artifacts array
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg path "$artifact_path" \
+   --arg type "$artifact_type" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    last_updated: $ts,
+    artifacts: ((.artifacts // []) + [{"path": $path, "type": $type}])
+  }' .claude/specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json .claude/specs/state.json
+
+# Add link to TODO.md using Edit tool
+# Format depends on artifact_type (see Artifact Link Formats below)
+```
+
+**Output:**
+```json
+{
+  "status": "completed|skipped",
+  "summary": "Linked artifact to task #N" | "Link already exists",
+  "artifact_path": "path/to/artifact.md",
+  "artifact_type": "research"
+}
+```
+
+---
+
+## Context Pointers
+
+Reference (do not load eagerly):
+- Path: `.claude/context/core/validation.md`
+- Purpose: Return validation at GATE OUT checkpoint
+- Load at: Agent execution only
+
+Note: This skill executes directly. It does not delegate to a subagent.
 
 ## Trigger Conditions
 
