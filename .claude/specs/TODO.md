@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T00:43:19Z
-next_project_number: 422
+next_project_number: 423
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -113,6 +113,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 422. Complete TODOs in Introduction.tex
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Complete the TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/00-Introduction.tex
+
+---
 
 ### 421. Look up formal term definitions and revise research report
 - **Effort**: 1-2 hours

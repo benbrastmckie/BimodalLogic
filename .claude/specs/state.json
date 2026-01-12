@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T00:42:34Z",
-  "next_project_number": 422,
+  "next_project_number": 423,
   "active_projects": [
+    {
+      "project_number": 422,
+      "project_name": "complete_introduction_todos",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T01:17:56Z",
+      "last_updated": "2026-01-12T01:17:56Z"
+    },
     {
       "project_number": 421,
       "project_name": "lookup_formal_term_definitions_revise_research",
