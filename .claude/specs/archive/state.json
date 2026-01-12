@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-12T00:42:34Z",
+  "_last_updated": "2026-01-12T02:46:35Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -575,7 +575,7 @@
       "created": "2026-01-05T08:34:20.462436Z",
       "last_updated": "2026-01-10T22:57:38Z",
       "effort": "61-97 hours",
-      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom \u03c6 is a Prop, not a Type, making it impossible to return Option (Axiom \u03c6) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
+      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -833,7 +833,7 @@
       "plan_path": ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
       "plan_metadata": {
         "plan_version": 2,
-        "revision_reason": "Maintain \u27e8S, \u2291, I\u27e9 notation instead of replacing with \u27e8S, \u2291, | |\u27e9"
+        "revision_reason": "Maintain ⟨S, ⊑, I⟩ notation instead of replacing with ⟨S, ⊑, | |⟩"
       },
       "artifacts": [
         ".claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
@@ -2371,6 +2371,150 @@
       "plan_version": "001",
       "completed": "2026-01-12",
       "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 422,
+      "project_name": "complete_introduction_todos",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T01:17:56Z",
+      "last_updated": "2026-01-12T01:50:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/422_complete_introduction_todos/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/422_complete_introduction_todos/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/422_complete_introduction_todos/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12T01:50:00Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 421,
+      "project_name": "lookup_formal_term_definitions_revise_research",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Look up all formal terms and terms of art used in task 398 research report.",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:45:38Z",
+      "last_updated": "2026-01-12T00:54:44Z",
+      "related_task": 398,
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/421_lookup_formal_term_definitions_revise_research/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "completed": "2026-01-12T00:54:44Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 416,
+      "project_name": "quick_performance_fixes_explanatory_truth",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Apply quick performance fixes to Explanatory/Truth.lean",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T01:12:28Z",
+      "parent_task": 400,
+      "completed": "2026-01-12T01:12:28Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 420,
+      "project_name": "upgrade_mathlib_version",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "description": "Upgrade Mathlib from v4.14.0 to v4.27.0-rc1",
+      "effort": "4-8 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-11T00:00:00Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ],
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 415,
+      "project_name": "fix_latex_sentence_line_breaks",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Fix LaTeX sentence line breaks introduced by task 405/406 refactor",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:32:09Z",
+      "last_updated": "2026-01-12T00:45:38Z",
+      "dependencies": [
+        405,
+        406
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/415_fix_latex_sentence_line_breaks/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/415_fix_latex_sentence_line_breaks/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/415_fix_latex_sentence_line_breaks/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12T00:45:38Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 408,
+      "project_name": "define_proofchecker_latex_command",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T00:18:17Z",
+      "last_updated": "2026-01-12T00:55:35Z",
+      "plan_version": "001",
+      "completed": "2026-01-12T00:55:35Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 175,
+      "project_name": "establish_ci_cd_pipeline_with_automated_testing_and_linting",
+      "type": "feature",
+      "status": "completed",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T02:02:55Z",
+      "effort": "13 hours",
+      "completed": "2026-01-12",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 260,
+      "project_name": "investigate_claude_code_cli_argument_mechanism",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T02:46:41Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
     }
   ]
 }

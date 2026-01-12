@@ -1,20 +1,20 @@
 ---
-last_updated: 2026-01-12T00:43:19Z
+last_updated: 2026-01-12T03:00:00Z
 next_project_number: 424
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 30
-  completed: 84
-  in_progress: 1
+  active: 23
+  completed: 91
+  in_progress: 0
   not_started: 17
   abandoned: 7
-  total: 114
+  total: 121
 priority_distribution:
   critical: 0
-  high: 6
+  high: 5
   medium: 7
   low: 10
 technical_debt:
@@ -97,56 +97,7 @@ technical_debt:
 
 ---
 
-### 175. Establish CI/CD pipeline with automated testing and linting
-- **Effort**: 13 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-11
-- **Completed**: 2026-01-12
-- **Priority**: High
-- **Language**: markdown
-- **Blocking**: None
-- **Dependencies**: None
-- **Research**: [research-001.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/175_establish_ci_cd_pipeline_with_automated_testing_and_linting/summaries/implementation-summary-20260112.md)
-- **Files Affected**:
-  - .github/workflows/ci.yml (new)
-  - docs/development/CI_CD_PROCESS.md (new)
-
-**Description**: Created GitHub Actions CI/CD pipeline using leanprover/lean-action@v1 with build, test, and lint steps. Mathlib cache enabled for faster builds. Coverage reporting deferred pending tooling availability.
-
----
-
 ## Medium Priority
-
-### 422. Complete TODOs in Introduction.tex
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/422_complete_introduction_todos/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/422_complete_introduction_todos/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/422_complete_introduction_todos/summaries/implementation-summary-20260112.md)
-
-**Description**: Restructured Introduction.tex by merging Implementation Status and Source Code into a single Project Structure subsection with brief explanations and status for each directory. Added Deduction Theorem status.
-
----
-
-### 421. Look up formal term definitions and revise research report
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: general
-- **Related Task**: 398
-- **Research**: [research-001.md](.claude/specs/421_lookup_formal_term_definitions_revise_research/reports/research-001.md)
-
-**Description**: Extracted 30+ formal definitions from sn-article.tex and revised task 398 research-001.md with a "Formal Definitions" section ensuring all terms are defined before use.
-
----
 
 ### 411. Create lean-research-agent subagent with lazy context
 - **Effort**: 3-4 hours
@@ -181,63 +132,16 @@ technical_debt:
 
 ---
 
-### 415. Fix LaTeX sentence line breaks
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: latex
-- **Dependencies**: 405, 406
-- **Research**: [research-001.md](.claude/specs/415_fix_latex_sentence_line_breaks/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/415_fix_latex_sentence_line_breaks/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/415_fix_latex_sentence_line_breaks/summaries/implementation-summary-20260112.md)
-
-**Description**: Fixed 22 broken sentences across 11 LaTeX files where sentences were incorrectly split at comma/clause boundaries.
-
----
-
-### 408. Define \proofchecker LaTeX command
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-12
-- **Priority**: Medium
-- **Language**: latex
-- **Plan**: [implementation-001.md](.claude/specs/408_define_proofchecker_latex_command/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/408_define_proofchecker_latex_command/summaries/implementation-summary-20260112.md)
-
-**Description**: Defined `\proofchecker` command in notation-standards.sty and replaced all occurrences in LaTeX documents (2 files updated).
-
----
-
 ### 400. Investigate Explanatory/Truth.lean build performance
 - **Effort**: 2-3 hours
 - **Status**: [EXPANDED]
 - **Researched**: 2026-01-11
 - **Priority**: Medium
 - **Language**: lean
-- **Subtasks**: 416, 417, 418, 419, 420
+- **Subtasks**: 417, 418, 419 (416, 420 completed)
 - **Research**: [research-001.md](.claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md)
 
 **Description**: Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.
-
----
-
-### 416. Quick performance fixes for Explanatory/Truth.lean
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-11
-- **Planned**: 2026-01-11
-- **Completed**: 2026-01-11
-- **Priority**: Medium
-- **Language**: lean
-- **Parent**: Task 400
-- **Research**: [research-001.md](.claude/specs/416_quick_performance_fixes_explanatory_truth/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/416_quick_performance_fixes_explanatory_truth/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260111.md](.claude/specs/416_quick_performance_fixes_explanatory_truth/summaries/implementation-summary-20260111.md)
-
-**Description**: Apply quick performance fixes: fix namespace error in Syntax.lean:34, add @[irreducible] to truthAt, increase synthInstance.maxHeartbeats, and run lake clean. These are low-risk changes that can be applied together.
 
 ---
 
@@ -284,22 +188,6 @@ technical_debt:
 - **Research**: [research-001.md](.claude/specs/419_refactor_mutual_recursion_semantics/reports/research-001.md)
 
 **Description**: Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.
-
----
-
-### 420. Upgrade Mathlib version
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-11
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 400
-- **Dependencies**: 416
-- **Research**: [.claude/specs/420_upgrade_mathlib_version/reports/research-001.md]
-- **Plan**: [.claude/specs/420_upgrade_mathlib_version/plans/implementation-001.md]
-- **Summary**: [.claude/specs/420_upgrade_mathlib_version/summaries/implementation-summary-20260111.md]
-
-**Description**: Upgraded Mathlib from v4.14.0 to v4.27.0-rc1 with Lean toolchain v4.27.0-rc1. Core libraries (Logos, Bimodal) build successfully. Test suite requires follow-up fixes for API changes.
 
 ---
 
