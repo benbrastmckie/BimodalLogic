@@ -44,12 +44,12 @@
     {
       "project_number": 444,
       "project_name": "formula_countability_set_list_bridge",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "effort": "6-8 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T00:12:23Z",
+      "last_updated": "2026-01-13T00:19:03Z",
       "parent_task": 257,
       "session_id": "sess_1768257943_2a9f5a",
       "plan_version": "001",
@@ -66,6 +66,10 @@
         {
           "path": ".claude/specs/444_formula_countability_set_list_bridge/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/444_formula_countability_set_list_bridge/reports/research-002.md",
+          "type": "research"
         }
       ]
     },
