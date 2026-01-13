@@ -95,12 +95,14 @@ technical_debt:
 ## Medium Priority
 
 ### 456. Address TODOs in Bimodal Semantics LaTeX
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 4 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/456_address_todos_in_bimodal_semantics_latex/plans/implementation-001.md)
 
 **Description**: Address all TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/02-Semantics.tex by rigorously researching each in order to revise the document appropriately, ignoring nothing.
 
