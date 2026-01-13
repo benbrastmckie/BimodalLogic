@@ -2197,19 +2197,53 @@ World histories in the canonical model map times to set-based maximal consistent
 /--
 A canonical world history is constructed from a set-based maximal consistent set.
 
-**Construction** (planned):
-- Domain: All integers (representing all times)
-- States: Map each time `t` to a set-based maximal consistent set Sₜ
-- Convexity: Automatically satisfied (domain = ℤ)
-- Task relation respect: By construction of canonical_task_rel
+**MVP Implementation**: Singleton domain at time 0.
 
-**Complexity**: Requires showing histories respect task relation.
+This minimal viable implementation defines a history with:
+- Domain: Only time 0 (singleton `{0}`)
+- States: Always returns `S` at time 0
+- Convexity: Trivially satisfied (singleton is convex)
+- Task relation respect: Uses `canonical_nullity` (only t - s = 0 case needed)
 
-**Note**: `S : CanonicalWorldState` is now a set-based maximal consistent set
-(`{S : Set Formula // SetMaximalConsistent S}`), which is the mathematically
-correct representation for completeness proofs.
+**Trade-offs**:
+- Sufficient for propositional and modal base cases in truth lemma
+- Temporal operators (Past/Future) will be vacuously true:
+  - Past φ at time 0: No times < 0 in domain, so vacuously satisfied
+  - Future φ at time 0: No times > 0 in domain, so vacuously satisfied
+- For non-trivial temporal reasoning, extension to full domain needed (Phase 5B/5C)
+
+**Extension Path**:
+If the truth lemma (Task 449) requires non-trivial temporal witnesses, this
+construction can be extended to full domain over all Duration values. This would
+require proving forward/backward existence lemmas for canonical_task_rel.
+
+**Note**: `S : CanonicalWorldState` is a set-based maximal consistent set
+(`{S : Set Formula // SetMaximalConsistent S}`).
 -/
-axiom canonical_history (S : CanonicalWorldState) : WorldHistory canonical_frame
+def canonical_history (S : CanonicalWorldState) : WorldHistory canonical_frame where
+  domain := fun t => t = 0
+  convex := by
+    -- Singleton domain is trivially convex
+    intros x z hx hz y hxy hyz
+    simp only at hx hz ⊢
+    -- With x = 0 and z = 0, we have x ≤ y ≤ z means y = 0
+    have hxz : x = z := by rw [hx, hz]
+    have hxy' : x = y := le_antisymm hxy (hxz ▸ hyz)
+    exact hxy' ▸ hx
+  states := fun t ht => by
+    -- At time 0, return S
+    simp only at ht
+    exact ht ▸ S
+  respects_task := by
+    -- For singleton domain, only t = s = 0 case exists
+    intros s t hs ht hst
+    simp only at hs ht
+    -- With s = 0 and t = 0, we have t - s = 0
+    have h_diff : t - s = 0 := by rw [hs, ht]; ring
+    -- canonical_task_rel S 0 S holds by canonical_nullity
+    rw [h_diff]
+    -- The states function returns S (via transport), so we need canonical_nullity S
+    exact canonical_nullity S
 
 /-!
 ## Truth Lemma
