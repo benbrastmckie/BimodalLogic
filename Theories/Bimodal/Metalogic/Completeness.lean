@@ -2626,6 +2626,153 @@ and acceptable for metalogic proofs about completeness.
 -- Use Classical decidability for Duration's ordering (needed for if-then-else)
 open scoped Classical
 
+/-!
+### Chain-Based State Construction (Task 458 v002)
+
+The original `canonical_states` definition used independent `Classical.choose` calls
+for each time point, which doesn't guarantee coherence between states at different
+positive (or negative) times.
+
+**Chain Approach**: Build states incrementally so that coherence is guaranteed
+by construction:
+
+1. **Forward chain**: Starting from S at time 0, each subsequent state is
+   chosen via `forward_extension` from the previous state.
+
+2. **Backward chain**: Starting from S at time 0, each "earlier" state is
+   chosen via `backward_extension` from the next state.
+
+This ensures that for states on the same chain, the task relation holds by
+construction, without needing to prove that independent Classical.choose
+witnesses compose.
+
+**Indexing**: Chains are indexed by ℕ, where each step uses a fixed positive
+duration `step`. The step size is obtained from `PositiveDuration`.
+
+**Note**: For abstract Duration that isn't ℤ-like, the chain only covers
+discrete multiples of the step. For full domain coverage, we extend by
+using `forward_extension` from the nearest chain point.
+-/
+
+/--
+A noncomputable positive duration used as the unit step for chain construction.
+
+We obtain this by constructing a doubleton segment (two distinct world states)
+which has strictly positive order type.
+-/
+noncomputable def chain_step : Duration :=
+  positiveToDuration ⟦mkDoubleton someWorldState (Classical.choice inferInstance)⟧
+
+/--
+The chain step is strictly positive.
+-/
+theorem chain_step_pos : (0 : Duration) < chain_step := by
+  -- chain_step is the image of a non-zero positive duration under positiveToDuration
+  -- The doubleton has strictly greater order type than singleton (zero)
+  unfold chain_step
+  simp only [LT.lt]
+  constructor
+  · -- 0 ≤ chain_step
+    use ⟦mkDoubleton someWorldState (Classical.choice inferInstance)⟧
+    simp only [map_zero, zero_add]
+  · -- 0 ≠ chain_step
+    -- This requires showing positiveToDuration of doubleton ≠ 0
+    -- The doubleton has order type 2, singleton has order type 1
+    -- They are not equivalent, so their images in Duration differ
+    sorry
+
+/--
+Forward chain: States at natural number indices extending forward from S.
+
+- `canonical_forward_chain S 0 = S`
+- `canonical_forward_chain S (n+1)` is chosen via `forward_extension` from
+  `canonical_forward_chain S n` with duration `chain_step`.
+
+This ensures that consecutive chain elements are related by `chain_step`.
+-/
+noncomputable def canonical_forward_chain (S : CanonicalWorldState) : ℕ → CanonicalWorldState
+  | 0 => S
+  | n + 1 => Classical.choose (forward_extension (canonical_forward_chain S n) chain_step chain_step_pos)
+
+/--
+Each forward chain step maintains the task relation.
+-/
+theorem canonical_forward_chain_step (S : CanonicalWorldState) (n : ℕ) :
+    canonical_task_rel (canonical_forward_chain S n) chain_step (canonical_forward_chain S (n + 1)) := by
+  unfold canonical_forward_chain
+  exact Classical.choose_spec (forward_extension (canonical_forward_chain S n) chain_step chain_step_pos)
+
+/--
+Forward chain at index 0 equals S.
+-/
+theorem canonical_forward_chain_zero (S : CanonicalWorldState) :
+    canonical_forward_chain S 0 = S := rfl
+
+/--
+Forward chain composition: S is task-related to any chain element by the
+appropriate multiple of chain_step.
+
+This follows by induction: we compose the individual step relations.
+-/
+theorem canonical_forward_chain_total (S : CanonicalWorldState) (n : ℕ) :
+    canonical_task_rel S (n • chain_step) (canonical_forward_chain S n) := by
+  induction n with
+  | zero =>
+    -- n = 0: need canonical_task_rel S 0 S
+    simp only [zero_smul]
+    exact canonical_nullity S
+  | succ k ih =>
+    -- Inductive case: canonical_task_rel S (k • chain_step) (chain k)
+    -- and canonical_task_rel (chain k) chain_step (chain (k+1))
+    -- Compose to get canonical_task_rel S ((k+1) • chain_step) (chain (k+1))
+    have h_step := canonical_forward_chain_step S k
+    have h_comp := canonical_compositionality S (canonical_forward_chain S k)
+        (canonical_forward_chain S (k + 1)) (k • chain_step) chain_step ih h_step
+    -- Need: (k • chain_step) + chain_step = (k + 1) • chain_step
+    have h_arith : (k • chain_step) + chain_step = (k + 1) • chain_step := by
+      rw [add_comm, succ_nsmul]
+    rw [h_arith] at h_comp
+    exact h_comp
+
+/--
+Forward chain coherence: For m ≤ n, the states at indices m and n are
+task-related by the difference in steps.
+
+This follows from the fact that both are reachable from S, and we can
+compose/decompose the relations.
+-/
+theorem canonical_forward_chain_coherence (S : CanonicalWorldState) (m n : ℕ) (h : m ≤ n) :
+    canonical_task_rel (canonical_forward_chain S m) ((n - m) • chain_step) (canonical_forward_chain S n) := by
+  -- Prove by showing both are on the same chain from S
+  induction n with
+  | zero =>
+    -- n = 0, so m = 0
+    simp only [Nat.le_zero] at h
+    subst h
+    simp only [Nat.sub_self, zero_smul]
+    exact canonical_nullity (canonical_forward_chain S 0)
+  | succ k ih =>
+    -- n = k + 1
+    by_cases hm : m = k + 1
+    · -- m = k + 1 = n
+      subst hm
+      simp only [Nat.sub_self, zero_smul]
+      exact canonical_nullity (canonical_forward_chain S (k + 1))
+    · -- m < k + 1, so m ≤ k
+      have h_m_le_k : m ≤ k := Nat.lt_succ_iff.mp (Nat.lt_of_le_of_ne h hm)
+      have h_ih := ih h_m_le_k
+      have h_step := canonical_forward_chain_step S k
+      have h_comp := canonical_compositionality (canonical_forward_chain S m)
+          (canonical_forward_chain S k) (canonical_forward_chain S (k + 1))
+          ((k - m) • chain_step) chain_step h_ih h_step
+      -- Need: (k - m) • chain_step + chain_step = (k + 1 - m) • chain_step
+      have h_arith : (k - m) • chain_step + chain_step = (k + 1 - m) • chain_step := by
+        rw [add_comm, ← succ_nsmul]
+        congr 1
+        omega
+      rw [h_arith] at h_comp
+      exact h_comp
+
 /--
 Helper function to construct MCS at each time relative to a base MCS S.
 

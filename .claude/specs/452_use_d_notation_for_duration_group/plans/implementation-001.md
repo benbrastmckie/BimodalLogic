@@ -73,7 +73,7 @@ The implementation is divided into 4 phases: LaTeX infrastructure, LaTeX content
 ### Phase 3: Lean Core Semantics
 
 **Estimated effort**: 1.5 hours
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update core structure definitions with `D` type parameter
