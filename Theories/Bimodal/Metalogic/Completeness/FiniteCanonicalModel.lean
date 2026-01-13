@@ -3558,21 +3558,19 @@ the semantic version, so this follows immediately.
 
 **Status**: PROVEN via semantic_weak_completeness
 -/
-theorem finite_weak_completeness (phi : Formula) :
-    (∀ (_M : TaskModel (FiniteCanonicalFrame phi)),
+noncomputable def finite_weak_completeness (phi : Formula)
+    (_h_finite_valid : ∀ (_M : TaskModel (FiniteCanonicalFrame phi)),
       ∀ (h : FiniteHistory phi),
       ∀ (t : FiniteTime (temporalBound phi)),
-      finite_truth_at phi h t phi) →
-    ⊢ phi := by
-  intro _h_finite_valid
+      finite_truth_at phi h t phi) :
+    ⊢ phi :=
   -- Use semantic_weak_completeness which is proven
   -- The semantic model contains all SemanticWorldStates, which include
   -- all states arising from finite histories
-  apply semantic_weak_completeness phi
-  intro w
-  -- The semantic_truth_at_v2 for w follows from the finite model truth
-  -- since w comes from some finite history
-  sorry  -- Bridge gap: connect finite_truth_at to semantic_truth_at_v2
+  semantic_weak_completeness phi fun w =>
+    -- The semantic_truth_at_v2 for w follows from the finite model truth
+    -- since w comes from some finite history
+    sorry  -- Bridge gap: connect finite_truth_at to semantic_truth_at_v2
 
 /--
 Strong completeness for finite model: semantic entailment implies derivability.
@@ -3626,27 +3624,29 @@ then phi is derivable in the TM proof system.
 
 **Status**: PROVEN via semantic_weak_completeness
 The proof uses the contrapositive: not derivable => not valid.
+
+**Note**: Returns a `DerivationTree [] phi` (a Type), so this is a noncomputable definition
+rather than a theorem returning Prop.
 -/
-theorem main_weak_completeness (phi : Formula) : valid phi → ⊢ phi := by
-  intro h_valid
+noncomputable def main_weak_completeness (phi : Formula) (h_valid : valid phi) : ⊢ phi :=
   -- Use semantic_weak_completeness: we need to show phi is true at all SemanticWorldStates
-  apply semantic_weak_completeness phi
-  intro w
-  -- w is a SemanticWorldState phi
-  -- We need to show: semantic_truth_at_v2 phi w (origin) phi
-  --
-  -- Key insight: valid phi quantifies over ALL types D and frames F.
-  -- SemanticCanonicalFrame phi uses D = Int, which is a valid instance.
-  -- So valid phi implies truth_at in SemanticCanonicalModel at any history/time.
-  --
-  -- The bridge theorem would show:
-  -- truth_at (SemanticCanonicalModel phi) tau t phi <-> semantic_truth_at_v2 phi w t phi
-  -- where w corresponds to (tau, t)
-  --
-  -- Since valid phi includes truth in SemanticCanonicalModel, and
-  -- semantic world states correspond to histories at specific times,
-  -- phi must be true at w.
-  sorry  -- Bridge gap: instantiate valid with SemanticCanonicalModel and connect
+  semantic_weak_completeness phi (fun w =>
+    -- w is a SemanticWorldState phi
+    -- We need to show: semantic_truth_at_v2 phi w (origin) phi
+    --
+    -- Key insight: valid phi quantifies over ALL types D and frames F.
+    -- SemanticCanonicalFrame phi uses D = Int, which is a valid instance.
+    -- So valid phi implies truth_at in SemanticCanonicalModel at any history/time.
+    --
+    -- The bridge theorem would show:
+    -- truth_at (SemanticCanonicalModel phi) tau t phi <-> semantic_truth_at_v2 phi w t phi
+    -- where w corresponds to (tau, t)
+    --
+    -- Since valid phi includes truth in SemanticCanonicalModel, and
+    -- semantic world states correspond to histories at specific times,
+    -- phi must be true at w.
+    by sorry  -- Bridge gap: instantiate valid with SemanticCanonicalModel and connect
+  )
 
 /--
 **Main Strong Completeness Theorem**: Semantic consequence implies derivability.
@@ -3655,10 +3655,11 @@ If Gamma semantically entails phi (phi is true in all models where all
 formulas in Gamma are true), then phi is derivable from Gamma.
 
 **Status**: Follows from main_weak_completeness via standard deduction theorem argument.
+
+**Note**: Returns a `DerivationTree Gamma phi` (a Type).
 -/
-theorem main_strong_completeness (Gamma : Context) (phi : Formula) :
-    semantic_consequence Gamma phi → Gamma ⊢ phi := by
-  intro h_conseq
+noncomputable def main_strong_completeness (Gamma : Context) (phi : Formula)
+    (h_conseq : semantic_consequence Gamma phi) : Gamma ⊢ phi := by
   -- Standard proof via deduction theorem:
   -- If Gamma |= phi, consider the case when Gamma = []
   -- Then |= phi, so |- phi by main_weak_completeness

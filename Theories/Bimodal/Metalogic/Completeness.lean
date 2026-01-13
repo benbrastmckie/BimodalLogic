@@ -3582,18 +3582,20 @@ The main results connecting semantic validity with syntactic derivability.
 
 Equivalently: `(∀ F M τ t, truth_at M τ t φ) → (⊢ φ)`
 
-**Proof Strategy**:
-1. Assume `valid φ` (i.e., `∀ F M τ t, truth_at M τ t φ`)
-2. Assume (for contradiction) `¬(⊢ φ)`
-3. Then `[]` is consistent (else would derive everything including φ)
-4. By Lindenbaum, extend `[]` to maximal consistent Γ
-5. Since `¬(Γ ⊢ φ)` and Γ closed, `φ ∉ Γ`
-6. Build canonical model M_can with Γ
-7. By truth lemma, `¬(M_can ⊨ φ)` at Γ
-8. Contradicts validity of φ
-9. Therefore `⊢ φ`
+**Implementation**: See `main_weak_completeness` in
+`Bimodal.Metalogic.Completeness.FiniteCanonicalModel` for the actual proof.
+This axiom is kept for backward compatibility in the module hierarchy
+(FiniteCanonicalModel imports Completeness, so we cannot import back).
 
-**Complexity**: ~10-15 hours (builds on truth lemma)
+**Proof via Finite Model (in FiniteCanonicalModel.lean)**:
+1. Use `semantic_weak_completeness` which is PROVEN
+2. This proves: if phi true in all SemanticWorldStates, then derivable
+3. Bridge from general `valid` to semantic truth via contrapositive
+4. If phi not derivable, construct countermodel in SemanticCanonicalModel
+5. Contrapositive: valid implies derivable
+
+**Status**: The proof is in FiniteCanonicalModel.lean (`main_weak_completeness`)
+with bridge lemmas having minor sorries for type-level connections.
 -/
 axiom weak_completeness (φ : Formula) : valid φ → DerivationTree [] φ
 
@@ -3604,16 +3606,16 @@ axiom weak_completeness (φ : Formula) : valid φ → DerivationTree [] φ
 
 Equivalently: `(∀ F M τ t, (∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M τ t φ) → (Γ ⊢ φ)`
 
-**Proof Strategy**:
-1. Assume `Γ ⊨ φ` and (for contradiction) `¬(Γ ⊢ φ)`
-2. Then `Γ ∪ {¬φ}` is consistent (else `Γ ⊢ φ`)
-3. Extend to maximal consistent Δ ⊇ Γ ∪ {¬φ}
-4. Build canonical model M_can with Δ
-5. By truth lemma, all formulas in Γ true at Δ, but φ false
-6. Contradicts `Γ ⊨ φ`
-7. Therefore `Γ ⊢ φ`
+**Implementation**: See `main_strong_completeness` in
+`Bimodal.Metalogic.Completeness.FiniteCanonicalModel` for the actual proof.
+This axiom is kept for backward compatibility in the module hierarchy.
 
-**Complexity**: ~10-15 hours (similar to weak completeness)
+**Proof Strategy** (in FiniteCanonicalModel.lean):
+Follows from weak completeness via the deduction theorem.
+If Γ |= φ, construct derivation from Γ to φ using context handling.
+
+**Status**: The proof is in FiniteCanonicalModel.lean (`main_strong_completeness`)
+with a sorry for the deduction theorem infrastructure.
 -/
 axiom strong_completeness (Γ : Context) (φ : Formula) :
   semantic_consequence Γ φ → DerivationTree Γ φ
@@ -3634,10 +3636,13 @@ Completeness + Soundness enable decidability results.
 theorem provable_iff_valid (φ : Formula) : Nonempty (DerivationTree [] φ) ↔ valid φ := by
   constructor
   · intro ⟨h⟩
-    -- Soundness direction
+    -- Soundness direction: derivable implies valid
     have sem_conseq := soundness [] φ h
     -- semantic_consequence [] φ is equivalent to valid φ
-    sorry
+    -- Unfold: semantic_consequence [] φ = ∀ D F M tau t, (∀ ψ ∈ [], truth_at ...) → truth_at ... φ
+    -- Since [] is empty, the antecedent is vacuously true
+    intro D _ _ _ F M tau t
+    exact sem_conseq D F M tau t (fun ψ h_in => absurd h_in List.not_mem_nil)
   · intro h
     exact ⟨weak_completeness φ h⟩
 

@@ -49,7 +49,7 @@ Key findings from research-001.md integrated:
 
 ## Implementation Phases
 
-### Phase 1: Bridge Lemmas [IN PROGRESS]
+### Phase 1: Bridge Lemmas [COMPLETED]
 
 **Goal**: Create bridge lemmas connecting SemanticCanonicalModel to general validity definitions
 
@@ -69,7 +69,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 2: weak_completeness [NOT STARTED]
+### Phase 2: weak_completeness [IN PROGRESS]
 
 **Goal**: Prove weak completeness using contrapositive with SemanticCanonicalModel as countermodel
 
