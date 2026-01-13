@@ -3141,6 +3141,109 @@ result expressed in the general framework. Task 450 will address the formal conn
 -/
 
 /-!
+## Bridge Lemmas: Connecting Semantic Model to General Validity
+
+These lemmas bridge `semantic_weak_completeness` (which works with SemanticWorldState)
+to the general `valid` definition (which quantifies over all temporal types).
+
+The key insight is that `SemanticCanonicalFrame phi` with `D = Int` is a valid
+instantiation for the universal quantifiers in `valid`. Since `semantic_weak_completeness`
+proves the contrapositive (not derivable => exists countermodel in semantic model),
+we can derive general weak completeness.
+-/
+
+/--
+Convert a FiniteHistory to a WorldHistory over the SemanticCanonicalFrame.
+
+This is the key bridge construction. A FiniteHistory phi provides a function
+from FiniteTime to FiniteWorldState. We lift this to a WorldHistory by:
+1. Using the full Int domain (convex by definition)
+2. Converting FiniteWorldState to SemanticWorldState via SemanticWorldState.ofHistoryTime
+3. Using semantic_task_rel_v2 which is satisfied by construction
+
+**Note**: The domain is the full Int type. For times outside [-k, k], we clamp
+to the boundary values, which respects the task relation by nullity.
+-/
+noncomputable def finiteHistoryToWorldHistory (phi : Formula) (h : FiniteHistory phi) :
+    WorldHistory (SemanticCanonicalFrame phi) where
+  domain := fun _ => True  -- Full domain (always convex)
+  convex := fun _ _ _ _ _ _ _ => True.intro
+  states := fun (t : Int) _ =>
+    -- Clamp t to the finite domain and get the semantic world state
+    let k := temporalBound phi
+    let t_clamped :=
+      if t < -(k : Int) then FiniteTime.minTime k
+      else if t > (k : Int) then FiniteTime.maxTime k
+      else
+        -- t is in range, find the corresponding FiniteTime
+        (FiniteTime.toInt_surj_on_range k t (by omega) (by omega)).choose
+    SemanticWorldState.ofHistoryTime h t_clamped
+  respects_task := fun s t _hs _ht _hst => by
+    -- Need to show semantic_task_rel_v2 phi (states s) (t - s) (states t)
+    -- This follows from the fact that both states come from the same history h
+    -- and semantic_task_rel_v2 is defined via history existence
+    simp only [SemanticCanonicalFrame]
+    -- The states at s and t both come from h, which witnesses the relation
+    sorry  -- Bridge lemma - requires detailed time arithmetic
+
+/--
+For any SemanticWorldState w, there exists a WorldHistory containing w at time 0.
+
+This shows that every semantic world state is reachable from some world history,
+which is needed to instantiate the `valid` quantifier.
+-/
+theorem semantic_world_state_has_world_history (phi : Formula) (w : SemanticWorldState phi) :
+    ∃ (tau : WorldHistory (SemanticCanonicalFrame phi)), tau.domain 0 ∧
+    tau.states 0 (by trivial : True) = w := by
+  -- Extract a representative history from w
+  let rep := Quotient.out w
+  let hist := rep.1
+  let time := rep.2
+  -- Convert hist to a WorldHistory
+  let wh := finiteHistoryToWorldHistory phi hist
+  -- Show w appears at time 0 by shifting appropriately
+  -- This requires showing that the time shift aligns w with position 0
+  sorry  -- Bridge lemma - requires history alignment
+
+/--
+Key bridge theorem: semantic truth in SemanticCanonicalModel implies truth_at.
+
+This shows that if a formula is true according to semantic_truth_at_v2, it is also
+true according to the general truth_at definition when evaluated in the
+SemanticCanonicalModel with an appropriate WorldHistory.
+
+This is the essential connection that allows us to conclude:
+- valid phi (truth in all models including SemanticCanonicalModel)
+- implies truth in SemanticCanonicalModel at all SemanticWorldStates
+- which by semantic_weak_completeness gives derivability
+-/
+theorem semantic_truth_implies_truth_at (phi : Formula) (w : SemanticWorldState phi)
+    (h_mem : phi ∈ closure phi) :
+    w.toFiniteWorldState.models phi h_mem →
+    ∀ (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0),
+    tau.states 0 ht = w →
+    truth_at (SemanticCanonicalModel phi) tau 0 phi := by
+  intro h_models tau ht h_eq
+  -- The proof proceeds by induction on phi, showing that semantic truth
+  -- (membership in the finite world state) matches truth_at in the model
+  sorry  -- Bridge lemma - requires induction on formula structure
+
+/--
+Converse: truth_at implies semantic truth.
+
+If phi is true at (SemanticCanonicalModel phi, tau, t), then it is true
+in the semantic sense at the corresponding SemanticWorldState.
+-/
+theorem truth_at_implies_semantic_truth (phi : Formula)
+    (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0)
+    (h_mem : phi ∈ closure phi) :
+    truth_at (SemanticCanonicalModel phi) tau 0 phi →
+    (tau.states 0 ht).toFiniteWorldState.models phi h_mem := by
+  intro h_truth
+  -- Similar induction on formula structure
+  sorry  -- Bridge lemma - requires induction on formula structure
+
+/-!
 ## Summary of Phase 5 Definitions
 
 **Lindenbaum Infrastructure** (from earlier sections):
