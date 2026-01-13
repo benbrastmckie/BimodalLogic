@@ -1,0 +1,4 @@
+# Essays LaTeX Build Configuration
+# Load shared ProofChecker configuration from central location
+# See latex/README.md for documentation
+do '../../../latex/latexmkrc';
