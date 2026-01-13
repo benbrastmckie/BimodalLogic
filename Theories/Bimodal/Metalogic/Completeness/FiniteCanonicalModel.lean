@@ -199,10 +199,8 @@ theorem shift_toInt (k : Nat) (t : FiniteTime k) (delta : Int) (t' : FiniteTime 
     subst h
     simp only [toInt]
     have h_nonneg : 0 ≤ (t.val : Int) - (k : Int) + delta + (k : Int) := by omega
-    simp only [Int.sub_add_cancel, add_sub_cancel_right] at h_nonneg ⊢
     rw [Int.toNat_of_nonneg h_nonneg]
-    ring
-  · contradiction
+    omega
 
 /--
 shift? by 0 returns the same time.
@@ -211,12 +209,9 @@ theorem shift_zero (k : Nat) (t : FiniteTime k) : shift? k t 0 = some t := by
   simp only [shift?, toInt, add_zero]
   have h_range := toInt_range k t
   simp only [toInt] at h_range
-  split_ifs with h_bound
-  · simp only [Option.some.injEq]
-    ext
-    simp only [Int.sub_add_cancel]
-    exact Int.toNat_natCast t.val
-  · omega
+  simp only [h_range, and_self, ↓reduceDIte, Option.some.injEq]
+  ext
+  simp only [Int.sub_add_cancel, Int.toNat_natCast]
 
 /--
 Successor time: increment by 1 if possible.
@@ -1373,17 +1368,97 @@ Given times t and s, the task relation holds between states at t and s
 with duration `toInt s - toInt t`.
 
 This follows from composing unit step relations (forward_rel and backward_rel).
-The proof requires compositionality which currently has sorry gaps.
+
+**Proof strategy**: By well-founded induction on the distance |toInt s - toInt t|.
+- Base case: t = s, use nullity
+- Inductive case (t < s): use forward_rel and compose
+- Inductive case (t > s): use backward_rel and compose
+
+**Note**: This only requires composing same-sign durations (+1 steps or -1 steps),
+so the mixed-sign compositionality gaps don't block this proof.
+
+**Status**: Proof sketch is correct but compositionality still has sorries for
+the mixed cases. Actually for same-sign (+1, +positive or -1, -negative),
+the compositionality proof does work, but we need to verify the specific cases.
 -/
 theorem respects_task (h : FiniteHistory phi) (t s : FiniteTime (temporalBound phi)) :
     finite_task_rel phi (h.states t)
       (FiniteTime.toInt (temporalBound phi) s - FiniteTime.toInt (temporalBound phi) t)
       (h.states s) := by
-  -- This requires composing unit step relations.
-  -- The proof would proceed by induction on the difference |toInt s - toInt t|.
-  -- For each unit step, use forward_rel or backward_rel, then compose via compositionality.
-  -- Currently blocked by compositionality sorries.
+  -- This proof requires compositionality which has mixed-sign sorry gaps.
+  -- However, for this specific use case (composing unit steps along a history),
+  -- we only use same-sign compositionality:
+  -- - Forward: 1 + positive = positive (both positive, works)
+  -- - Backward: -1 + negative = negative (both negative, works)
+  -- The proof is correct in principle, but verification is complex.
+  -- Leaving as sorry for now while we implement the semantic approach.
   sorry
+
+/-!
+### Time-Shift for Finite Histories
+
+The time-shift construction is key to the compositionality approach.
+Given a finite history `h`, we can construct a time-shifted version where
+each state is translated by an offset `Delta`.
+
+For the finite domain [-k, k], we need to ensure the shifted times remain
+within bounds. A shift by `Delta` is valid if:
+- The original domain and target domain overlap appropriately
+- We can construct a mapping between corresponding states
+
+**Note**: Unlike the infinite domain case in WorldHistory.lean where any
+shift is valid, finite histories can only be shifted by bounded amounts.
+-/
+
+/--
+Time-shift a finite history by an integer offset.
+
+Given a history `h` at origin `t0`, produces a history at origin `t0 + Delta`.
+The key property is that `(time_shift h Delta).states t = h.states (t - Delta)`.
+
+For this to work, we need `t - Delta` to be in the finite domain whenever
+`t` is in the finite domain. This constrains what shifts are valid.
+
+**Implementation Note**: For simplicity, we define this for Delta = 0 first,
+which gives identity. The general case requires bounds checking.
+-/
+noncomputable def time_shift (h : FiniteHistory phi) (Delta : Int)
+    (h_shift_valid : ∀ t : FiniteTime (temporalBound phi),
+      ∃ t' : FiniteTime (temporalBound phi),
+        FiniteTime.toInt (temporalBound phi) t' =
+          FiniteTime.toInt (temporalBound phi) t + Delta) :
+    FiniteHistory phi where
+  states := fun t =>
+    -- Find t' such that toInt t' = toInt t + Delta
+    -- This exists by h_shift_valid
+    let t' := Classical.choose (h_shift_valid t)
+    h.states t'
+  forward_rel := fun t t' h_succ => by
+    -- Need: task_rel (shifted.states t) 1 (shifted.states t')
+    -- shifted.states t = h.states (t + Delta)
+    -- shifted.states t' = h.states (t' + Delta)
+    -- By h_succ, toInt t' = toInt t + 1
+    -- So toInt (t' + Delta) = toInt (t + Delta) + 1
+    -- Use h.forward_rel
+    sorry
+  backward_rel := fun t t' h_pred => by
+    sorry
+
+/--
+Time-shift by 0 gives the original history.
+-/
+theorem time_shift_zero_eq (h : FiniteHistory phi)
+    (h_valid : ∀ t : FiniteTime (temporalBound phi),
+      ∃ t' : FiniteTime (temporalBound phi),
+        FiniteTime.toInt (temporalBound phi) t' =
+          FiniteTime.toInt (temporalBound phi) t + 0) :
+    (time_shift h 0 h_valid).states = h.states := by
+  funext t
+  simp only [time_shift, add_zero]
+  congr 1
+  have h_spec := Classical.choose_spec (h_valid t)
+  simp only [add_zero] at h_spec
+  exact FiniteTime.toInt_injective (temporalBound phi) h_spec
 
 end FiniteHistory
 

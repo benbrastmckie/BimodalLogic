@@ -60,33 +60,31 @@ The pointwise transfer approach fails for mixed-sign duration cases because endp
 
 ## Implementation Phases
 
-### Phase 1: Time-Shift Infrastructure [NOT STARTED]
+### Phase 1: Time-Shift Infrastructure [PARTIAL]
 
 **Goal**: Add finite-domain time-shift construction matching `WorldHistory.time_shift`
 
-**Tasks**:
-- [ ] Study `WorldHistory.time_shift` at WorldHistory.lean:236 for pattern
-- [ ] Define `FiniteHistory.time_shift` with domain translation
-- [ ] Prove domain bounds preserved under finite time-shift
-- [ ] Prove `finite_time_shift_respects_task` - task relation preserved
+**Completed**:
+- [x] Study `WorldHistory.time_shift` at WorldHistory.lean:236 for pattern
+- [x] Define `FiniteTime.shift?` with bounds checking
+- [x] Prove `shift_toInt` and `shift_zero` correctness
+- [x] Define `FiniteHistory.time_shift` with domain translation
+- [x] Prove `time_shift_zero_eq` - shift by 0 is identity
 
-**Timing**: 2-3 hours
+**Outstanding**:
+- [ ] Prove `finite_time_shift_respects_task` - task relation preserved (has sorry in forward_rel/backward_rel)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Add FiniteHistory.time_shift section
+**Timing**: 2-3 hours (spent ~1.5 hours)
 
-**Key implementation pattern** (from WorldHistory.lean:236):
-```lean
-def time_shift (sigma : WorldHistory F) (Delta : D) : WorldHistory F where
-  domain := fun z => sigma.domain (z + Delta)
-  convex := ... -- preserved under translation
-  states := fun z hz => sigma.states (z + Delta) hz
-  respects_task := ... -- preserved since duration unchanged
-```
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean`:
+  - Added `FiniteTime.shift?`, `shift_toInt`, `shift_zero`
+  - Added `FiniteHistory.time_shift`, `time_shift_zero_eq`
+  - Added detailed docstrings for time-shift approach
 
-**Verification**:
-- `FiniteHistory.time_shift` compiles without sorry
-- Can shift any finite history by any integer within bounds
+**Note**: The time_shift construction requires proving that the task relation is preserved,
+which depends on compositionality. The forward_rel and backward_rel proofs have sorries.
+The proof strategy is documented but blocked by the compositionality gaps.
 
 ---
 
