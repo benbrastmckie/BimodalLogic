@@ -48,7 +48,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Helper Definitions and Bounds Lemmas [NOT STARTED]
+### Phase 1: Helper Definitions and Bounds Lemmas [IN PROGRESS]
 
 **Goal**: Define time offset helpers and prove bounds are preserved under gluing operations.
 
