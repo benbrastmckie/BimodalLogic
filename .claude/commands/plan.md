@@ -49,18 +49,15 @@ Create a phased implementation plan for a task by delegating to the planner skil
 
 ### STAGE 2: DELEGATE
 
-Invoke **skill-planner** via Skill tool with:
-- task_number: {N}
-- research_path: {path to research report if exists}
-- session_id: {session_id}
+**EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
 
-Skill spawns `planner-agent` which:
-- Loads planning context files
-- Analyzes task requirements and research findings
-- Decomposes into logical phases
-- Identifies risks and mitigations
-- Creates plan in `.claude/specs/{N}_{SLUG}/plans/`
-- Returns structured result
+**Invoke the Skill tool NOW** with:
+```
+skill: "skill-planner"
+args: "task_number={N} research_path={path to research report if exists} session_id={session_id}"
+```
+
+The skill spawns `planner-agent` which analyzes task requirements and research findings, decomposes into logical phases, identifies risks and mitigations, and creates a plan in `.claude/specs/{N}_{SLUG}/plans/`.
 
 ### CHECKPOINT 2: GATE OUT
 

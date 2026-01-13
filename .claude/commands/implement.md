@@ -59,26 +59,23 @@ Execute implementation plan with automatic resume support by delegating to the a
 
 ### STAGE 2: DELEGATE
 
-Route by language (see routing.md):
+**EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
 
-| Language | Skill |
-|----------|-------|
-| lean | skill-lean-implementation |
-| latex | skill-latex-implementation |
-| general/meta/markdown | skill-implementer |
+**Language-Based Routing**:
 
-Invoke skill with:
-- task_number: {N}
-- plan_path: {path to implementation plan}
-- resume_phase: {phase number to resume from, if any}
-- session_id: {session_id}
+| Language | Skill to Invoke |
+|----------|-----------------|
+| `lean` | `skill-lean-implementation` |
+| `latex` | `skill-latex-implementation` |
+| `general`, `meta`, `markdown` | `skill-implementer` |
 
-Skill spawns appropriate agent which:
-- Executes plan phases sequentially
-- Updates phase markers in plan file
-- Creates commits per phase
-- Creates implementation summary
-- Returns structured result
+**Invoke the Skill tool NOW** with:
+```
+skill: "{skill-name from table above}"
+args: "task_number={N} plan_path={path to implementation plan} resume_phase={phase number} session_id={session_id}"
+```
+
+The skill will spawn the appropriate agent which executes plan phases sequentially, updates phase markers, creates commits per phase, and returns a structured result.
 
 ### CHECKPOINT 2: GATE OUT
 

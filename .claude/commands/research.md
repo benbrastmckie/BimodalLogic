@@ -44,22 +44,22 @@ Conduct research for a task by delegating to the appropriate research skill/suba
 
 ### STAGE 2: DELEGATE
 
-Route by language (see routing.md):
+**EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
 
-| Language | Skill |
-|----------|-------|
-| lean | skill-lean-research |
-| other | skill-researcher |
+**Language-Based Routing**:
 
-Invoke skill with:
-- task_number: {N}
-- focus_prompt: {optional focus}
-- session_id: {session_id}
+| Language | Skill to Invoke |
+|----------|-----------------|
+| `lean` | `skill-lean-research` |
+| `general`, `meta`, `markdown`, `latex` | `skill-researcher` |
 
-Skill spawns appropriate agent which:
-- Conducts research using language-appropriate tools
-- Creates report in `.claude/specs/{N}_{SLUG}/reports/`
-- Returns structured result
+**Invoke the Skill tool NOW** with:
+```
+skill: "{skill-name from table above}"
+args: "task_number={N} focus={focus_prompt} session_id={session_id}"
+```
+
+The skill will spawn the appropriate agent to conduct research and create a report.
 
 ### CHECKPOINT 2: GATE OUT
 
