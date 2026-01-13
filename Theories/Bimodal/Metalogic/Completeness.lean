@@ -2582,10 +2582,12 @@ def canonical_model : TaskModel canonical_frame where
 World histories in the canonical model map times to set-based maximal consistent sets.
 -/
 
-/--
+/-!
+### Full Domain Canonical History
+
 A canonical world history is constructed from a set-based maximal consistent set.
 
-**Full Domain Implementation**: All times are in the domain.
+**Full Domain Implementation**: All times are in the domain (Task 458).
 
 This implementation constructs a history covering all Duration values using:
 - Domain: All times (`fun _ => True`)
@@ -2604,8 +2606,24 @@ This implementation constructs a history covering all Duration values using:
 - `backward_extension`: For any MCS S and d > 0, exists T with canonical_task_rel T d S
 - `canonical_compositionality`: Task relations compose over time addition
 
-**Note**: This definition is noncomputable due to Classical.choice.
+**Why Full Domain Is Required**:
+The singleton domain version (with only time 0) makes temporal operators G φ and H φ
+vacuously true, which breaks the truth lemma correspondence. For correctness, we need
+`G φ ∈ S ↔ truth_at M τ 0 (G φ)` but singleton domain gives G φ always true semantically.
+The full domain ensures proper evaluation of temporal operators.
+
+**Implementation Status (Task 458)**:
+- `canonical_states`: Fully implemented using Classical.choose
+- `canonical_states_zero/forward/backward`: Helper lemmas proven
+- `canonical_history`: Domain and convexity complete
+- `respects_task`: Has sorry - requires compositionality proof for Classical.choose witnesses
+
+**Note**: Definitions are noncomputable due to Classical.choice. This is standard
+and acceptable for metalogic proofs about completeness.
 -/
+
+-- Use Classical decidability for Duration's ordering (needed for if-then-else)
+open scoped Classical
 
 /--
 Helper function to construct MCS at each time relative to a base MCS S.
@@ -2627,27 +2645,35 @@ noncomputable def canonical_states (S : CanonicalWorldState) (t : CanonicalTime)
     -- So T is "before" S by duration -t
     have h_neg : (0 : CanonicalTime) < -t := by
       -- From ¬(0 < t) and t ≠ 0, we need to show 0 < -t
-      -- Duration's LT is: a < b ↔ a ≤ b ∧ a ≠ b
-      simp only [LT.lt] at ht ⊢
-      -- ht : ¬(0 ≤ t ∧ 0 ≠ t)
-      -- Goal: 0 ≤ -t ∧ 0 ≠ -t
-      -- From ¬(0 ≤ t ∧ 0 ≠ t) we know: either ¬(0 ≤ t) or t = 0
-      -- Since h : t ≠ 0, we have ¬(0 ≤ t), which means t ≤ 0 with t ≠ 0, so t < 0
-      -- Then -t > 0, meaning 0 < -t
-      by_contra h_contra
-      -- h_contra : ¬(0 ≤ -t ∧ 0 ≠ -t)
-      -- Either ¬(0 ≤ -t) or -t = 0
-      push_neg at h_contra
-      cases h_contra with
-      | inl h_le => -- ¬(0 ≤ -t), so -t < 0, meaning t > 0
-        -- This contradicts ht
-        have h_pos : 0 ≤ t ∧ 0 ≠ t := by
-          constructor
-          · exact Duration.neg_le_neg h_le
-          · intro h0; exact h h0.symm
-        exact ht h_pos
-      | inr h_eq => -- -t = 0, so t = 0
-        exact h (neg_eq_zero.mp h_eq)
+      -- Strategy: Use totality of Duration's order
+      -- Either t ≤ 0 or 0 ≤ t (by Duration.le_total)
+      cases Duration.le_total t 0 with
+      | inl h_t_le_0 =>
+        -- t ≤ 0 and t ≠ 0 means t < 0
+        -- So -t > 0, i.e., 0 < -t
+        simp only [LT.lt]
+        constructor
+        · -- 0 ≤ -t: follows from t ≤ 0 by negation preserves order
+          -- In an ordered group, t ≤ 0 ↔ 0 ≤ -t
+          -- We have: -t + t ≤ -t + 0 (by add_le_add_left with t ≤ 0)
+          -- And: -t + t = 0, -t + 0 = -t
+          -- So: 0 ≤ -t
+          have h1 : -t + t ≤ -t + 0 := Duration.add_le_add_left' (-t) t 0 h_t_le_0
+          rw [neg_add_cancel, add_zero] at h1
+          exact h1
+        · -- 0 ≠ -t
+          intro h_eq
+          exact h (neg_eq_zero.mp h_eq.symm)
+      | inr h_0_le_t =>
+        -- 0 ≤ t and ¬(0 < t) means t = 0
+        -- But we have h : t ≠ 0, contradiction
+        simp only [LT.lt] at ht
+        -- ht : ¬(0 ≤ t ∧ 0 ≠ t)
+        -- h_0_le_t : 0 ≤ t
+        -- So we must have ¬(0 ≠ t), meaning 0 = t
+        exfalso
+        have h_ne : (0 : Duration) ≠ t := fun h_eq => h h_eq.symm
+        exact ht ⟨h_0_le_t, h_ne⟩
     Classical.choose (backward_extension S (-t) h_neg)
 
 /--
@@ -2661,23 +2687,50 @@ theorem canonical_states_zero (S : CanonicalWorldState) :
 /--
 Key lemma: For t > 0, canonical_task_rel S t (canonical_states S t) holds.
 -/
-theorem canonical_states_forward (S : CanonicalWorldState) (t : CanonicalTime) (ht : t > 0) :
+theorem canonical_states_forward (S : CanonicalWorldState) (t : CanonicalTime) (ht : (0 : CanonicalTime) < t) :
     canonical_task_rel S t (canonical_states S t) := by
   unfold canonical_states
-  have h_ne : t ≠ 0 := ne_of_gt ht
-  simp [h_ne, ht]
+  -- From 0 < t, we have t ≠ 0
+  have h_ne : t ≠ 0 := by
+    intro h_eq
+    simp only [LT.lt] at ht
+    exact ht.2 h_eq.symm
+  simp only [h_ne, ↓reduceDIte, ht]
   exact Classical.choose_spec (forward_extension S t ht)
 
 /--
 Key lemma: For t < 0, canonical_task_rel (canonical_states S t) (-t) S holds.
 -/
-theorem canonical_states_backward (S : CanonicalWorldState) (t : CanonicalTime) (ht : t < 0) :
+theorem canonical_states_backward (S : CanonicalWorldState) (t : CanonicalTime) (ht : t < (0 : CanonicalTime)) :
     canonical_task_rel (canonical_states S t) (-t) S := by
   unfold canonical_states
-  have h_ne : t ≠ 0 := ne_of_lt ht
-  have h_not_pos : ¬(t > 0) := not_lt.mpr (le_of_lt ht)
-  simp [h_ne, h_not_pos]
-  have h_neg_pos : -t > 0 := neg_pos.mpr ht
+  -- From t < 0, we have t ≠ 0 and ¬(0 < t)
+  have h_ne : t ≠ 0 := by
+    intro h_eq
+    simp only [LT.lt] at ht
+    exact ht.2 h_eq
+  have h_not_pos : ¬((0 : CanonicalTime) < t) := by
+    intro h_pos
+    -- t < 0 and 0 < t is impossible
+    simp only [LT.lt] at ht h_pos
+    -- ht : t ≤ 0 ∧ t ≠ 0
+    -- h_pos : 0 ≤ t ∧ 0 ≠ t
+    have h_eq := Duration.le_antisymm ht.1 h_pos.1
+    exact h_ne h_eq
+  simp only [h_ne, ↓reduceDIte, h_not_pos]
+  -- Now we need to show the Classical.choose satisfies the relation
+  -- The proof in canonical_states computes h_neg : 0 < -t
+  -- We need to show this equals the h_neg_pos here
+  have h_neg_pos : (0 : CanonicalTime) < -t := by
+    simp only [LT.lt] at ht ⊢
+    constructor
+    · -- 0 ≤ -t
+      have h1 : -t + t ≤ -t + 0 := Duration.add_le_add_left' (-t) t 0 ht.1
+      rw [neg_add_cancel, add_zero] at h1
+      exact h1
+    · -- 0 ≠ -t
+      intro h_eq
+      exact h_ne (neg_eq_zero.mp h_eq.symm)
   exact Classical.choose_spec (backward_extension S (-t) h_neg_pos)
 
 /--
@@ -2707,12 +2760,9 @@ noncomputable def canonical_history (S : CanonicalWorldState) : WorldHistory can
       exact canonical_nullity (canonical_states S s)
     case neg =>
       -- t ≠ s, but s ≤ t, so t - s > 0
-      have h_pos : t - s > 0 := by
-        -- s ≤ t and s ≠ t implies s < t, so t - s > 0
-        have h_lt : s < t := lt_of_le_of_ne hst (fun h => h_eq (sub_eq_zero.mpr h.symm))
-        exact sub_pos.mpr h_lt
       -- Need: canonical_task_rel (canonical_states S s) (t - s) (canonical_states S t)
-      -- This requires compositionality over the path from S to states at s and t
+      --
+      -- This requires compositionality over the path from S to states at s and t.
       --
       -- The key insight is that we're building a chain:
       -- S at time 0 → canonical_states S s at time s → canonical_states S t at time t
@@ -2727,6 +2777,9 @@ noncomputable def canonical_history (S : CanonicalWorldState) : WorldHistory can
       -- For the MVP, we use sorry and document this gap.
       -- The full proof requires showing that forward_extension and backward_extension
       -- witnesses compose correctly under canonical_compositionality.
+      --
+      -- NOTE: The respects_task proof is the key remaining work for full domain history.
+      -- It requires proving that Classical.choose witnesses satisfy compositionality.
       sorry
 
 /-!

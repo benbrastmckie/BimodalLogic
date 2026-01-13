@@ -47,7 +47,7 @@ Research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Update 04-Metalogic.tex with Decidability [NOT STARTED]
+### Phase 1: Update 04-Metalogic.tex with Decidability [COMPLETED]
 
 **Goal:** Add new Decidability subsection documenting the tableau-based decision procedure.
 
@@ -71,7 +71,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Update 05-Theorems.tex with New Theorems [NOT STARTED]
+### Phase 2: Update 05-Theorems.tex with New Theorems [IN PROGRESS]
 
 **Goal:** Add missing S5 theorems and verify generalized necessitation section.
 

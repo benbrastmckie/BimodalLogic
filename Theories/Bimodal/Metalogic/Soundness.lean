@@ -85,7 +85,7 @@ show (φ → χ). Given φ, we get ψ from second premise, then χ from first pr
 
 theorem prop_k_valid (φ ψ χ : Formula) :
     ⊨ ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h1 h2 h_phi
   exact h1 h_phi (h2 h_phi)
@@ -99,7 +99,7 @@ Proof: Assume φ and ψ, show φ. This is immediate from the first assumption.
 -/
 
 theorem prop_s_valid (φ ψ : Formula) : ⊨ (φ.imp (ψ.imp φ)) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_phi _
   exact h_phi
@@ -114,12 +114,12 @@ Since `τ` is a history containing `t`, we have `φ` true at `(M, τ, t)`.
 -/
 
 theorem modal_t_valid (φ : Formula) : ⊨ (φ.box.imp φ) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_box
-  -- h_box : ∀ σ, t ∈ σ.domain → truth_at M σ t φ
+  -- h_box : ∀ σ, truth_at M σ t φ
   -- Goal: truth_at M τ t φ
-  exact h_box τ ht
+  exact h_box τ
 
 /--
 Modal 4 axiom is valid: `⊨ □φ → □□φ`.
@@ -133,15 +133,15 @@ Since `□φ` was already true (for ALL histories including `ρ`), this follows 
 -/
 
 theorem modal_4_valid (φ : Formula) : ⊨ ((φ.box).imp (φ.box.box)) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_box
-  -- h_box : ∀ σ hs, truth_at M σ t hs φ
-  -- Goal: ∀ σ hs, ∀ ρ hr, truth_at M ρ t hr φ
-  intro σ hs ρ hr
+  -- h_box : ∀ σ, truth_at M σ t φ
+  -- Goal: ∀ σ, ∀ ρ, truth_at M ρ t φ
+  intro σ ρ
   -- The key insight: h_box gives truth at ALL histories at time t
   -- ρ is just another history at time t, so h_box applies directly
-  exact h_box ρ hr
+  exact h_box ρ
 
 /--
 Modal B axiom is valid: `⊨ φ → □◇φ`.
@@ -156,26 +156,26 @@ We witness with `τ` and `ht`, where we assumed `φ` is true.
 -/
 
 theorem modal_b_valid (φ : Formula) : ⊨ (φ.imp (φ.diamond.box)) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_phi
-  -- h_phi : truth_at M τ t ht φ
-  -- Goal: truth_at M τ t ht (φ.diamond.box)
-  -- Unfolding: ∀ σ hs, truth_at M σ t hs φ.diamond
-  intro σ hs
-  -- Goal: truth_at M σ t hs φ.diamond
+  -- h_phi : truth_at M τ t φ
+  -- Goal: truth_at M τ t (φ.diamond.box)
+  -- Unfolding: ∀ σ, truth_at M σ t φ.diamond
+  intro σ
+  -- Goal: truth_at M σ t φ.diamond
   -- φ.diamond = φ.neg.box.neg = ((φ.imp bot).box).imp bot
   unfold Formula.diamond truth_at
-  -- Goal: truth_at M σ t hs (φ.neg.box) → truth_at M σ t hs bot
-  -- which is: (∀ ρ hr, truth_at M ρ t hr φ.neg) → False
+  -- Goal: truth_at M σ t (φ.neg.box) → truth_at M σ t bot
+  -- which is: (∀ ρ, truth_at M ρ t φ.neg) → False
   intro h_box_neg
-  -- h_box_neg : ∀ ρ hr, truth_at M ρ t hr φ.neg
+  -- h_box_neg : ∀ ρ, truth_at M ρ t φ.neg
   -- where φ.neg = φ.imp bot
-  -- So h_box_neg : ∀ ρ hr, truth_at M ρ t hr (φ.imp bot)
-  -- which means: ∀ ρ hr, truth_at M ρ t hr φ → False
-  have h_neg_at_tau := h_box_neg τ ht
-  -- h_neg_at_tau : truth_at M τ t ht (φ.imp bot)
-  -- which is: truth_at M τ t ht φ → False
+  -- So h_box_neg : ∀ ρ, truth_at M ρ t (φ.imp bot)
+  -- which means: ∀ ρ, truth_at M ρ t φ → False
+  have h_neg_at_tau := h_box_neg τ
+  -- h_neg_at_tau : truth_at M τ t (φ.imp bot)
+  -- which is: truth_at M τ t φ → False
   unfold Formula.neg truth_at at h_neg_at_tau
   exact h_neg_at_tau h_phi
 
@@ -195,45 +195,45 @@ So φ holds at ALL histories at t, including ρ for any ρ.
 Hence □φ at (M, τ, t).
 -/
 theorem modal_5_collapse_valid (φ : Formula) : ⊨ (φ.box.diamond.imp φ.box) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
-  -- Goal: truth_at M τ t ht (φ.box.diamond) → truth_at M τ t ht φ.box
+  -- Goal: truth_at M τ t (φ.box.diamond) → truth_at M τ t φ.box
   intro h_diamond_box
-  -- h_diamond_box : truth_at M τ t ht (φ.box.diamond)
+  -- h_diamond_box : truth_at M τ t (φ.box.diamond)
   -- φ.box.diamond = (φ.box.neg.box).neg = ((φ.box → ⊥) → ⊥).box.neg
   -- Unfolding diamond: ¬□¬(□φ)
   -- This means: it's not the case that all histories have ¬□φ
   -- So there exists some history σ where □φ holds
-  -- Goal: truth_at M τ t ht φ.box, i.e., ∀ ρ hr, truth_at M ρ t hr φ
-  intro ρ hr
-  -- Need: truth_at M ρ t hr φ
+  -- Goal: truth_at M τ t φ.box, i.e., ∀ ρ, truth_at M ρ t φ
+  intro ρ
+  -- Need: truth_at M ρ t φ
   -- Use h_diamond_box: there exists σ where □φ, so φ at all histories including ρ
 
   -- Unfold diamond: ◇□φ = ¬□¬□φ
   unfold Formula.diamond at h_diamond_box
   unfold truth_at at h_diamond_box
-  -- h_diamond_box : (∀ σ hs, truth_at M σ t hs (φ.box.neg)) → False
-  -- i.e., ¬(∀ σ hs, ¬□φ at σ)
-  -- By classical logic, ∃ σ hs, □φ at σ
+  -- h_diamond_box : (∀ σ, truth_at M σ t (φ.box.neg)) → False
+  -- i.e., ¬(∀ σ, ¬□φ at σ)
+  -- By classical logic, ∃ σ, □φ at σ
 
-  -- Use classical reasoning: assume ¬(truth_at M ρ t hr φ)
+  -- Use classical reasoning: assume ¬(truth_at M ρ t φ)
   by_contra h_not_phi
-  -- h_not_phi : ¬ truth_at M ρ t hr φ
+  -- h_not_phi : ¬ truth_at M ρ t φ
   -- We will derive a contradiction
 
-  -- From h_diamond_box, we have ¬(∀ σ hs, truth_at M σ t hs (φ.box.neg))
+  -- From h_diamond_box, we have ¬(∀ σ, truth_at M σ t (φ.box.neg))
   -- Apply h_diamond_box to show all histories have φ.box.neg
   apply h_diamond_box
-  -- Goal: ∀ σ hs, truth_at M σ t hs (φ.box.neg)
-  intro σ hs
-  -- Goal: truth_at M σ t hs (φ.box.neg)
+  -- Goal: ∀ σ, truth_at M σ t (φ.box.neg)
+  intro σ
+  -- Goal: truth_at M σ t (φ.box.neg)
   -- φ.box.neg = φ.box → ⊥
   unfold Formula.neg truth_at
-  -- Goal: truth_at M σ t hs φ.box → False
+  -- Goal: truth_at M σ t φ.box → False
   intro h_box_at_sigma
-  -- h_box_at_sigma : ∀ ρ' hr', truth_at M ρ' t hr' φ
+  -- h_box_at_sigma : ∀ ρ', truth_at M ρ' t φ
   -- In particular, φ holds at ρ
-  have h_phi_at_rho := h_box_at_sigma ρ hr
+  have h_phi_at_rho := h_box_at_sigma ρ
   exact h_not_phi h_phi_at_rho
 
 /--
@@ -248,10 +248,10 @@ from `False` we can derive any goal, including `truth_at M τ t ht φ`.
 Since `⊥` can never be true, the implication `⊥ → φ` is vacuously valid.
 -/
 theorem ex_falso_valid (φ : Formula) : ⊨ (Formula.bot.imp φ) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_bot
-  -- h_bot : truth_at M τ t ht Formula.bot
+  -- h_bot : truth_at M τ t Formula.bot
   -- But truth_at ... bot = False (by definition in Truth.lean)
   -- So h_bot : False
   exfalso
@@ -276,16 +276,16 @@ This uses classical reasoning (`by_cases` on φ) and is valid in the classical
 two-valued task semantics used by Logos.
 -/
 theorem peirce_valid (φ ψ : Formula) : ⊨ (((φ.imp ψ).imp φ).imp φ) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_peirce
   -- Use classical reasoning: either φ is true or false
-  by_cases h : truth_at M τ t ht φ
+  by_cases h : truth_at M τ t φ
   · -- Case 1: φ is true
     exact h
   · -- Case 2: φ is false, derive contradiction
     -- If φ is false, then φ → ψ is true (false antecedent)
-    have h_imp : truth_at M τ t ht (φ.imp ψ) := by
+    have h_imp : truth_at M τ t (φ.imp ψ) := by
       unfold truth_at
       intro h_phi
       -- But we assumed φ is false (h : ¬truth_at ... φ)
