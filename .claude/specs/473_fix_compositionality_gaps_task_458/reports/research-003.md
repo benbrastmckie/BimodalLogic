@@ -25,6 +25,147 @@
 - **Primary recommendation**: **Semantic History-Based Construction** - define world states as equivalence classes of histories, making compositionality trivial
 - **Estimated effort**: 12-16 hours for primary approach; 6-8 hours for alternative approach
 
+## Background: Understanding Compositionality
+
+### What is Compositionality?
+
+**Compositionality** is a property of the task relation that says: if we can get from state `w` to state `u` in duration `x`, and from state `u` to state `v` in duration `y`, then we can get from state `w` to state `v` in duration `x + y`.
+
+Formally, for a task relation `R`:
+```
+R(w, x, u) ∧ R(u, y, v)  →  R(w, x+y, v)
+```
+
+**Why it matters**: Compositionality is essential for reasoning about paths through time. Without it:
+- We cannot prove that following a path step-by-step gives the same result as following it all at once
+- The truth lemma for temporal operators breaks down
+- The completeness proof cannot establish that syntactic derivability matches semantic validity
+
+**Visual example**:
+```
+w ----x----> u ----y----> v
+└──────────(x+y)──────────┘   ← Compositionality ensures this path exists
+```
+
+### The Two Definitions of Task Relation
+
+We have two ways to define when states are related by a duration:
+
+#### 1. Pointwise Definition (`finite_task_rel`)
+
+The **pointwise** approach defines the relation via formula transfer conditions:
+```lean
+def finite_task_rel (phi : Formula) (w u : FiniteWorldState phi) (d : Int) : Prop :=
+  -- If G(ψ) holds at w and d > 0, then ψ holds at u
+  (∀ ψ, d > 0 → w.models (all_future ψ) → u.models ψ) ∧
+  -- If H(ψ) holds at w and d < 0, then ψ holds at u
+  (∀ ψ, d < 0 → w.models (all_past ψ) → u.models ψ) ∧
+  -- ... plus persistence conditions
+```
+
+**Problem**: This captures *what formulas transfer* between endpoints, but loses information about *the path taken*. Mixed-sign durations (going forward then backward, or vice versa) don't compose because the intermediate state's formula membership doesn't encode where we came from.
+
+#### 2. Semantic Definition (`finite_task_rel_semantic`)
+
+The **semantic** approach defines the relation via history existence:
+```lean
+def finite_task_rel_semantic (phi : Formula) (w u : FiniteWorldState phi) (d : Int) : Prop :=
+  ∃ (seq : ConsistentStateSequence phi) (t t' : FiniteTime),
+    t' = t + d ∧ seq.states t = w ∧ seq.states t' = u
+```
+
+**Intuition**: `w` and `u` are related by duration `d` if there exists some consistent sequence of states (a "path") where `w` appears at time `t` and `u` appears at time `t + d`.
+
+### Compositionality Issues by Definition Type
+
+#### Pointwise Compositionality Failures
+
+For the pointwise relation, compositionality fails in **mixed-sign cases**:
+
+**Example**: Suppose we have:
+- `w →(+2)→ u` (forward 2 steps)
+- `u →(-1)→ v` (backward 1 step)
+- We need: `w →(+1)→ v` (net forward 1 step)
+
+**Why it fails**:
+1. From `w →(+2)→ u`: If `G(ψ) ∈ w` then `ψ ∈ u` (future transfer)
+2. From `u →(-1)→ v`: If `H(ψ) ∈ u` then `ψ ∈ v` (past transfer)
+3. For `w →(+1)→ v`: We need `G(ψ) ∈ w → ψ ∈ v`
+
+**The gap**: We know `G(ψ) ∈ w → ψ ∈ u`, but we need `ψ ∈ u → ψ ∈ v`. The past transfer from `u` to `v` only gives us `H(ψ) ∈ u → ψ ∈ v`. We have `ψ ∈ u`, not `H(ψ) ∈ u`, so we're stuck.
+
+The 8 compositionality sorries in `FiniteTaskRel.compositionality` are all mixed-sign cases like this.
+
+#### Semantic Compositionality Failures (Bounded)
+
+For the semantic relation, compositionality seems like it should be trivial - just use the same history! But there's a subtle problem with **finite bounds**.
+
+### What is Bounded Compositionality?
+
+**Bounded compositionality** adds a precondition: the result must fit within the finite time domain.
+
+```lean
+theorem compositionality_bounded (w u v : FiniteWorldState phi) (x y : Int)
+    (h_wu : finite_task_rel_semantic phi w x u)
+    (h_uv : finite_task_rel_semantic phi u y v)
+    (h_bounds : ∃ (s s' : FiniteTime), s' = s + (x + y)) :  -- THIS IS THE KEY
+    finite_task_rel_semantic phi w (x + y) v
+```
+
+The `h_bounds` hypothesis says: there exist valid time points `s, s'` in our finite domain `[-k, k]` such that `s' = s + (x + y)`. Without this, the theorem is **false**.
+
+### Why Unbounded Compositionality is Unprovable
+
+**The finite time domain**: For formula `φ` with temporal bound `k = temporalBound(φ)`, our time domain is `[-k, k]`. Any time point must be in this range.
+
+**The constraint**: If `finite_task_rel_semantic phi w d u` holds, the witnesses `t, t'` satisfy:
+- `t ∈ [-k, k]` and `t' ∈ [-k, k]`
+- `t' = t + d`
+- Therefore `|d| ≤ 2k` (maximum displacement from `-k` to `+k`)
+
+**The counterexample** (k = 1):
+
+```
+Time domain: [-1, 0, 1]  (only 3 time points)
+Maximum displacement: 2 (from -1 to +1)
+
+Given:
+  w →(+2)→ u  witnessed by t=-1, t'=+1 (displacement 2 ✓)
+  u →(+2)→ v  witnessed by t=-1, t'=+1 (displacement 2 ✓)
+
+Required for compositionality:
+  w →(+4)→ v  needs t, t' where t' = t + 4
+
+But no valid witnesses exist!
+  If t = -1, then t' = 3, but 3 ∉ [-1, 1]
+  If t = 0, then t' = 4, but 4 ∉ [-1, 1]
+  If t = 1, then t' = 5, but 5 ∉ [-1, 1]
+```
+
+**Conclusion**: The premises can be true while the conclusion is false. This isn't a proof gap - it's a genuine counterexample showing that unbounded `SemanticTaskRel.compositionality` is **mathematically false**.
+
+### Summary Table
+
+| Property | Pointwise (`finite_task_rel`) | Semantic (`finite_task_rel_semantic`) |
+|----------|------------------------------|---------------------------------------|
+| Same-sign compositionality | ✓ Provable | ✓ Provable |
+| Mixed-sign compositionality | ✗ Blocked (formula transfer gap) | N/A (same as bounded) |
+| Bounded compositionality | ✓ Provable (when bounds satisfied) | ✓ Provable (when bounds satisfied) |
+| Unbounded compositionality | ✗ Blocked | ✗ **Mathematically false** |
+
+### Implications for Completeness
+
+For the completeness proof, we need compositionality to:
+1. Construct histories by chaining forward/backward steps
+2. Prove truth is preserved along paths
+3. Establish the finite model property
+
+**Good news**: Within a single `FiniteHistory`, all operations naturally stay within bounds (the history's domain is `[-k, k]`). So `compositionality_bounded` should suffice for completeness.
+
+**The challenge**: Proving that all uses of compositionality in the completeness proof satisfy the bounds hypothesis.
+
+---
+
 ## Context & Scope
 
 ### Goal
