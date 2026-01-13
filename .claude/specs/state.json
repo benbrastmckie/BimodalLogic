@@ -1,18 +1,28 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T03:50:07Z",
-  "next_project_number": 466,
+  "next_project_number": 467,
   "active_projects": [
+    {
+      "project_number": 466,
+      "project_name": "reflection_extension_logosreference",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T06:31:21Z",
+      "last_updated": "2026-01-13T06:31:21Z",
+      "description": "Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the Reflection Extension"
+    },
     {
       "project_number": 465,
       "project_name": "cosmos_essay_latex",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T06:11:43Z",
-      "last_updated": "2026-01-13T06:24:47Z",
+      "last_updated": "2026-01-13T06:30:32Z",
       "description": "Convert cosmos-institute-essay.md to a professionally formatted LaTeX document with title information from BimodalReference.tex and LogosReference.tex, including their references and linking ModelChecker and ProofChecker to git repos.",
-      "session_id": "sess_1768285369_588de1",
+      "session_id": "sess_1768285816_7b069b",
       "artifacts": [
         {
           "path": ".claude/specs/465_cosmos_essay_latex/reports/research-001.md",

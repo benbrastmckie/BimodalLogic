@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T04:35:00Z
-next_project_number: 466
+next_project_number: 467
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -115,9 +115,19 @@ technical_debt:
 
 ## Medium Priority
 
+### 466. Add Reflection Extension to LogosReference
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the 'Reflection Extension'.
+
+---
+
 ### 465. Convert Cosmos essay to LaTeX
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/465_cosmos_essay_latex/reports/research-001.md)
