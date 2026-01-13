@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T18:57:59Z",
-  "next_project_number": 480,
+  "next_project_number": 481,
   "active_projects": [
+    {
+      "project_number": 480,
+      "project_name": "investigate_workflow_delegation_early_stop",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-13T20:12:45Z",
+      "last_updated": "2026-01-13T20:12:45Z",
+      "description": "Investigate workflow delegation errors causing early stop. Tasks 474, 467, 462 attempts did not fix. Check .claude/output/ for patterns. Search for terms like complete, finished that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems. Research similar errors online."
+    },
     {
       "project_number": 479,
       "project_name": "fix_tikz_extension_dependencies_diagram",

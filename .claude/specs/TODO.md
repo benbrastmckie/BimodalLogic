@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T18:58:00Z
-next_project_number: 480
+next_project_number: 481
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 480. Investigate workflow delegation early stop issues
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Investigate workflow delegation errors causing agents to stop early. Previous fix attempts (tasks 474, 467, 462) did not resolve the issue. Check `.claude/output/` for error patterns. Search for terms like "complete", "finished" etc. that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems and research similar errors online.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
