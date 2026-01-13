@@ -219,7 +219,7 @@ technical_debt:
 
 ### 473. Fix compositionality gaps from Task 458
 - **Effort**: 10-14 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium
@@ -250,9 +250,11 @@ technical_debt:
 
 ### 466. Add Reflection Extension to LogosReference
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/466_reflection_extension_logosreference/reports/research-001.md)
 
 **Description**: Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md and /home/benjamin/Projects/ProofChecker/README.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the 'Reflection Extension'.
 

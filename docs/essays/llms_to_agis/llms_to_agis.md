@@ -137,6 +137,10 @@ If the Real-World Learning View is right, it means that, while LLMs may be usefu
 
 To explore this perspective, I met Benjamin Brast-McKie for a drink in San Francisco. Benjamin got his PhD in philosophy and formal logic at Oxford and did his postdoctoral research at MIT. He studies AI reasoning and is working on The Logos Project, which aims to make LLMs more reliable by training and verifying their logical reasoning.
 
+What makes Logos distinctive is its scope: it implements formal verification for highly expressive logical systems. This isn't the simple propositional logic of introductory courses. Instead, Logos works with rich languages containing tense operators (past and future), modal operators (necessity and possibility), counterfactual conditionals (what-if reasoning), as well as causal, epistemic (knowledge and belief), and normative (obligation and permission) operators. Together, these interacting operators enable precise reasoning about plans in multi-agent systems under conditions of uncertainty.
+
+Benjamin embodies a philosophy many in formal methods share: "Philosophy without implementation is speculation." To him, formal reasoning systems need to prove themselves computationally, not just on paper.
+
 Benjamin thinks of AI as an ecosystem. "Rather than fixating on one technology and imagining it scaling infinitely, I think of AI progress as an ecology: an ecosystem with different niches and carrying capacities."
 
 He finds that view useful because in tech, "there are always bottlenecks. One bottleneck creates pressure for new growth, which introduces new constraints. That's why I don't like thinking about any single technology as something that will scale infinitely."
@@ -149,11 +153,19 @@ He takes a more agnostic stance on the role of LLMs, which he says "have already
 
 To him, progress happens when multiple technologies interact. LLMs may be one of those technologies. But other technologies might not be on the scene yet. Or they could already exist, but have not yet combined in the right way to cause the synergies necessary for a new paradigm to form.
 
-To elaborate on this second point, Benjamin uses a metaphor about physics. "Physics only became what we now recognize once geometry, algebra, and analysis came together. Those ingredients existed separately for a long time. But once they combined in the right way, you could suddenly articulate a mechanics."
+Consider, for instance, how the combination of generative AI and formal verification has been explored in recent years, with impressive results: Apple's Hilbert system achieved 99.2% accuracy on formal proofs, and Google's AlphaProof helped solve International Math Olympiad problems. Yet these systems have focused on mathematical reasoning. No one has yet trained AI systems to reason within the kind of richly expressive formal languages that Logos implements, with their many interacting operators for complex real-world reasoning about plans, causation, and counterfactuals.
+
+This represents a genuinely unexplored combination. Just as AI systems learned to excel at chess and Go - games with explicit, well-defined rules - they promise to be natural at formal reasoning, since logic too is governed by explicit rules for drawing inferences. The training regimes that produced AlphaGo and AlphaZero could, in principle, be adapted for logical reasoning. But unlike board games, expressive logical systems connect directly to the challenges of real-world planning and decision-making under uncertainty.
+
+To elaborate on his point about technological combinations, Benjamin uses a metaphor about physics. "Physics only became what we now recognize once geometry, algebra, and analysis came together. Those ingredients existed separately for a long time. But once they combined in the right way, you could suddenly articulate a mechanics."
+
+The historical parallels are instructive. Descartes invented analytic geometry by combining algebra with spatial reasoning. Newton and Leibniz developed calculus by fusing infinitesimal methods with rigor. Each synthesis created something genuinely new from ingredients that had long existed separately.
 
 He goes on to clearly state: "It's not only about which [technologies] haven't appeared yet. It's also about which ones are already here, but haven't yet mixed."
 
-If The Ecosystem View is right, then the question of whether LLMs will get us to AGI isn't all that relevant. AGI may well be on the horizon, and LLMs are no doubt a major technology that will help us get there. The more interesting question is what ingredients are missing.
+Perhaps most exciting are the connections between generative AI and the recursive semantics underlying expressive formal systems. Formal languages require interpretation: we need to construct models that give meaning to the operators. This is precisely what we do when we imagine scenarios, consider possibilities, or trace out consequences. Generative AI shows remarkable ability to build rich representations from context. The synergy could run both directions: AI helps construct the formal models from natural language descriptions, while formal methods verify and constrain AI reasoning. You don't have to trust the AI - you can check it.
+
+If The Ecosystem View is right, then the question of whether LLMs will get us to AGI isn't all that relevant. AGI may well be on the horizon, and LLMs are no doubt a major technology that will help us get there. The more interesting question is what ingredients are missing - and which existing ingredients haven't yet combined in the right way.
 
 ---
 
