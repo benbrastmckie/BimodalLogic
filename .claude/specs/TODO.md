@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T04:20:00Z
-next_project_number: 463
+next_project_number: 464
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -30,7 +30,7 @@ technical_debt:
 
 ### 462. Fix workflow command delegation
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 
@@ -93,6 +93,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 463. Improve /meta context loading
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+
+**Description**: Research the files in .claude/context/core/ that are relevant to the /meta command in order to progressively load exactly the right context when modifying or reproducing the current agentic system in order to identify and make improvements to the context loading in /meta and its skill and agent in a manner comparable to the /research, /plan, /revise, and /implement commands which are working nicely.
+
+---
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
