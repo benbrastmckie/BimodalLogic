@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T19:30:00Z",
-  "next_project_number": 478,
+  "next_project_number": 479,
   "active_projects": [
+    {
+      "project_number": 478,
+      "project_name": "revise_ecosystem_view_section",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-13T17:34:48Z",
+      "last_updated": "2026-01-13T17:34:48Z"
+    },
     {
       "project_number": 477,
       "project_name": "test_document_converter",

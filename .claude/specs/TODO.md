@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T19:30:00Z
-next_project_number: 478
+next_project_number: 479
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -146,6 +146,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 478. Revise Ecosystem View section of LLMs to AGIs essay
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Revise the '## The Ecosystem View: Meet Benjamin' section of `/home/benjamin/Projects/ProofChecker/docs/essays/llms_to_agis/llms_to_agis.md` to: (1) begin by focusing on presenting the Logos project discussed informally in `/home/benjamin/Projects/ProofChecker/docs/essays/latex/cosmos-essay.tex`; (2) claim that it is unlikely that any one ingredient will scale directly to AGI without hitting bottlenecks, but rather, like natural ecosystems, what leads to flourishing is not the dominance of one species but the careful harmony between organisms; and (3) argue that what remains to be explored are not just the development of new technologies, but the interactions and synergies between them, using physics as an example, and claiming that training AI systems in formally verified logical reasoning in highly expressive languages with all the resources for complex thinking and planning may be such a combination.
+
+---
 
 ### 475. Create skill-document-converter thin wrapper
 - **Effort**: 1 hour
