@@ -5,6 +5,46 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 133,
+      "project_name": "build_canonical_model_constructors_in_completeness.lean",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Implement canonical model construction helpers and remove associated axiom stubs.",
+      "abandoned": "2026-01-13T23:23:10Z",
+      "abandoned_reason": "Superseded by semantic completeness approach (Tasks 473, 449, 450). SemanticCanonicalFrame now provides this functionality."
+    },
+    {
+      "project_number": 134,
+      "project_name": "prove_truth_lemma_structure_in_completeness.lean",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Prove the truth lemma for the canonical model.",
+      "abandoned": "2026-01-13T23:23:10Z",
+      "abandoned_reason": "Superseded by semantic_truth_lemma_v2 in FiniteCanonicalModel.lean (Task 449)."
+    },
+    {
+      "project_number": 135,
+      "project_name": "remove_provable_iff_valid_sorry_in_completeness.lean",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Complete the provable_iff_valid theorem.",
+      "abandoned": "2026-01-13T23:23:10Z",
+      "abandoned_reason": "Superseded by main_provable_iff_valid in FiniteCanonicalModel.lean (Task 450)."
+    },
+    {
+      "project_number": 471,
+      "project_name": "constructive_model_finiteness_proof",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Prove model finiteness constructively without Classical.choice.",
+      "abandoned": "2026-01-13T23:23:10Z",
+      "abandoned_reason": "Classical.choice is acceptable for mathematical completeness proofs. Constructive version not required for publication."
+    },
+    {
       "project_number": 400,
       "project_name": "investigate_explanatory_truth_build_performance",
       "status": "abandoned",

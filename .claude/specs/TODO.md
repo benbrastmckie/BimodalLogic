@@ -1,22 +1,22 @@
 ---
-last_updated: 2026-01-13T19:02:00Z
-next_project_number: 487
+last_updated: 2026-01-13T21:00:00Z
+next_project_number: 492
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 22
+  active: 23
   completed: 154
   in_progress: 2
-  not_started: 12
-  abandoned: 10
-  total: 186
+  not_started: 13
+  abandoned: 14
+  total: 191
 priority_distribution:
   critical: 0
   high: 3
-  medium: 6
-  low: 13
+  medium: 9
+  low: 11
 technical_debt:
   sorry_count: 19
   axiom_count: 11
@@ -83,6 +83,36 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 487. Create Bimodal/Boneyard/ for deprecated code
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference.
+
+---
+
+### 488. Fill remaining bridge lemmas
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Fill the 6 remaining bridge lemma sorries in FiniteCanonicalModel.lean: finiteHistoryToWorldHistory.respects_task, semantic_world_state_has_world_history, glue_histories.forward_rel, glue_histories.backward_rel, and 2 in SemanticTaskRelV2.compositionality. These are type-level connections, not logical gaps.
+
+---
+
+### 489. Formal FMP theorem packaging
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Create formal Finite Model Property theorem statement: ∀ φ, satisfiable φ → ∃ (M : FiniteModel), M ⊨ φ. Package existing semantic_weak_completeness proof into standard FMP format. Add documentation explaining bounds (temporal depth, modal depth).
+
+---
 
 ### 486. Add Abilities box to middle layer TikZ diagram
 - **Effort**: 1-2 hours
@@ -280,6 +310,27 @@ technical_debt:
 
 ## Low Priority
 
+### 490. Complete decidability procedure
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 469
+
+**Description**: Complete the decidability procedure for TM logic. The existing Decidability module has tableau infrastructure but needs: proof extraction from closed tableaux, completeness proof connecting to FMP, and full decide function verification. Extends Task 469.
+
+---
+
+### 491. Research alternative completeness proofs
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+
+**Description**: Research alternative completeness proof approaches for TM logic: filtration-based proofs (standard modal technique), algebraic semantics (Boolean algebras with operators), and step-by-step canonical model variations. Compare with current semantic history-based approach for potential improvements or independent verification.
+
+---
+
 ### 468. Refactor infinite canonical model code
 - **Status**: [NOT STARTED]
 - **Priority**: Low
@@ -310,15 +361,6 @@ technical_debt:
 
 ---
 
-### 471. Constructive model finiteness proof
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 458
-
-**Description**: Prove model finiteness constructively in FiniteCanonicalModel.lean. Current implementation uses Classical.choice where needed. Investigate whether a fully constructive proof is possible and implement if feasible.
-
----
 
 ### 257. Completeness Proofs
 
@@ -392,63 +434,8 @@ technical_debt:
 
 ---
 
-### 133. Build canonical model constructors in Completeness.lean
-- **Effort**: 25-35 hours
-- **Status**: [RESEARCHED]
-- **Researched**: 2026-01-12
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 132 (completed)
-- **Research**: [research-001.md](.claude/specs/133_build_canonical_model_constructors_in_completeness/reports/research-001.md)
-- **Files Affected**:
-  - Theories/Bimodal/Metalogic/Completeness.lean
-- **Description**: Implement canonical model construction helpers and remove associated axiom stubs. Requires implementing 7 axioms: maximal_consistent_closed, maximal_negation_complete, canonical_task_rel, canonical_frame, canonical_valuation, canonical_model, canonical_history.
-- **Acceptance Criteria**:
-  - [ ] Canonical model constructors implemented
-  - [ ] Corresponding axiom placeholders removed
-  - [ ] Construction type-checks with existing definitions
-- **Impact**: Provides the core model for subsequent truth lemma proofs.
 
----
 
-### 134. Prove truth lemma structure in Completeness.lean
-- **Effort**: 3 hours
-- **Status**: [ON HOLD]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 133
-- **Note**: On hold pending Bimodal polish (Task 360)
-- **Files Affected**:
-  - Logos/Core/Metalogic/Completeness.lean
-- **Description**: Prove the truth lemma for the canonical model, removing the corresponding axiom placeholder.
-- **Acceptance Criteria**:
-  - [ ] Truth lemma proven and axiom removed
-  - [ ] Proof integrates with canonical model components
-  - [ ] Tests (or placeholders) updated to exercise lemma
-- **Impact**: Establishes the key bridge between syntax and semantics for completeness.
-
----
-
-### 135. Remove provable_iff_valid sorry in Completeness.lean
-- **Effort**: 2 hours
-- **Status**: [ON HOLD]
-- **Priority**: Low
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: 132, 133, 134
-- **Note**: On hold pending Bimodal polish (Task 360)
-- **Files Affected**:
-  - Logos/Core/Metalogic/Completeness.lean
-- **Description**: Complete the `provable_iff_valid` theorem using the proven canonical model and truth lemma to eliminate the remaining sorry.
-- **Acceptance Criteria**:
-  - [ ] `provable_iff_valid` fully proven
-  - [ ] No remaining axiom or sorry placeholders in Completeness.lean
-  - [ ] Completeness tests added or updated
-- **Impact**: Delivers full completeness, enabling derivability from validity.
-
----
 
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours

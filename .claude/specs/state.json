@@ -1,8 +1,59 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T18:57:59Z",
-  "next_project_number": 487,
+  "next_project_number": 492,
   "active_projects": [
+    {
+      "project_number": 487,
+      "project_name": "create_bimodal_boneyard_for_deprecated_code",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-13T23:24:12Z",
+      "last_updated": "2026-01-13T23:24:12Z",
+      "description": "Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference."
+    },
+    {
+      "project_number": 488,
+      "project_name": "fill_remaining_bridge_lemmas",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-13T23:24:12Z",
+      "last_updated": "2026-01-13T23:24:12Z",
+      "description": "Fill the 6 remaining bridge lemma sorries in FiniteCanonicalModel.lean: finiteHistoryToWorldHistory.respects_task, semantic_world_state_has_world_history, glue_histories.forward_rel, glue_histories.backward_rel, and 2 in SemanticTaskRelV2.compositionality. These are type-level connections, not logical gaps."
+    },
+    {
+      "project_number": 489,
+      "project_name": "formal_fmp_theorem_packaging",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-13T23:24:12Z",
+      "last_updated": "2026-01-13T23:24:12Z",
+      "description": "Create formal Finite Model Property theorem statement: forall phi, satisfiable phi -> exists (M : FiniteModel), M models phi. Package existing semantic_weak_completeness proof into standard FMP format. Add documentation explaining bounds (temporal depth, modal depth)."
+    },
+    {
+      "project_number": 490,
+      "project_name": "complete_decidability_procedure",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-13T23:24:12Z",
+      "last_updated": "2026-01-13T23:24:12Z",
+      "parent_task": 469,
+      "description": "Complete the decidability procedure for TM logic. The existing Decidability module has tableau infrastructure but needs: proof extraction from closed tableaux, completeness proof connecting to FMP, and full decide function verification. Extends Task 469."
+    },
+    {
+      "project_number": 491,
+      "project_name": "research_alternative_completeness_proofs",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-13T23:24:12Z",
+      "last_updated": "2026-01-13T23:24:12Z",
+      "description": "Research alternative completeness proof approaches for TM logic: filtration-based proofs (standard modal technique), algebraic semantics (Boolean algebras with operators), and step-by-step canonical model variations. Compare with current semantic history-based approach for potential improvements or independent verification."
+    },
     {
       "project_number": 486,
       "project_name": "add_abilities_box_to_tikz_diagram",
@@ -321,17 +372,6 @@
       "description": "Optimize FiniteCanonicalModel.lean for computational efficiency. Current implementation prioritizes correctness over performance. Identify and implement optimizations for the finite world state enumeration, task relation checking, and truth evaluation."
     },
     {
-      "project_number": 471,
-      "project_name": "constructive_model_finiteness_proof",
-      "status": "not_started",
-      "language": "lean",
-      "priority": "low",
-      "created": "2026-01-13T16:08:48Z",
-      "last_updated": "2026-01-13T16:08:48Z",
-      "parent_task": 458,
-      "description": "Prove model finiteness constructively in FiniteCanonicalModel.lean. Current implementation uses Classical.choice where needed. Investigate whether a fully constructive proof is possible and implement if feasible."
-    },
-    {
       "project_number": 466,
       "project_name": "reflection_extension_logosreference",
       "status": "completed",
@@ -497,52 +537,6 @@
         398,
         399
       ]
-    },
-    {
-      "project_number": 133,
-      "project_name": "build_canonical_model_constructors_in_completeness.lean",
-      "type": "feature",
-      "phase": "researched",
-      "status": "researched",
-      "priority": "low",
-      "language": "lean",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-12T21:45:00Z",
-      "effort": "25-35 hours",
-      "session_id": "sess_1768253701_259550",
-      "description": "Implement canonical model construction helpers and remove associated axiom stubs. Includes 7 axioms to implement: maximal_consistent_closed, maximal_negation_complete, canonical_task_rel, canonical_frame, canonical_valuation, canonical_model, canonical_history.",
-      "artifacts": [
-        {
-          "path": ".claude/specs/133_build_canonical_model_constructors_in_completeness/reports/research-001.md",
-          "type": "research"
-        }
-      ]
-    },
-    {
-      "project_number": 134,
-      "project_name": "prove_truth_lemma_structure_in_completeness.lean",
-      "type": "feature",
-      "phase": "on_hold",
-      "status": "on_hold",
-      "priority": "low",
-      "language": "lean",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T16:30:00Z",
-      "effort": "3 hours",
-      "on_hold_reason": "Pending Bimodal polish (Task 360)"
-    },
-    {
-      "project_number": 135,
-      "project_name": "remove_provable_iff_valid_sorry_in_completeness.lean",
-      "type": "feature",
-      "phase": "on_hold",
-      "status": "on_hold",
-      "priority": "low",
-      "language": "lean",
-      "created": "2026-01-05T01:22:38Z",
-      "last_updated": "2026-01-11T16:30:00Z",
-      "effort": "2 hours",
-      "on_hold_reason": "Pending Bimodal polish (Task 360)"
     },
     {
       "project_number": 136,
