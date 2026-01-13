@@ -48,15 +48,15 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Update research.md [NOT STARTED]
+### Phase 1: Update research.md [COMPLETED]
 
 **Goal**: Add explicit continuation markers to /research command file
 
 **Tasks**:
-- [ ] Replace "PROCEED if all pass" after GATE IN with "On GATE IN success: Status is [RESEARCHING]. IMMEDIATELY CONTINUE to STAGE 2 below."
-- [ ] Add continuation marker after STAGE 2 DELEGATE: "On DELEGATE success: Research complete. IMMEDIATELY CONTINUE to CHECKPOINT 2 below."
-- [ ] Add continuation marker after CHECKPOINT 2 GATE OUT: "On GATE OUT success: IMMEDIATELY CONTINUE to CHECKPOINT 3 below."
-- [ ] Verify command structure is coherent
+- [x] Replace "PROCEED if all pass" after GATE IN with "On GATE IN success: Status is [RESEARCHING]. IMMEDIATELY CONTINUE to STAGE 2 below."
+- [x] Add continuation marker after STAGE 2 DELEGATE: "On DELEGATE success: Research complete. IMMEDIATELY CONTINUE to CHECKPOINT 2 below."
+- [x] Add continuation marker after CHECKPOINT 2 GATE OUT: "On GATE OUT success: IMMEDIATELY CONTINUE to CHECKPOINT 3 below."
+- [x] Verify command structure is coherent
 
 **Timing**: 20 minutes
 
@@ -70,7 +70,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Update plan.md and implement.md [NOT STARTED]
+### Phase 2: Update plan.md and implement.md [IN PROGRESS]
 
 **Goal**: Apply same continuation marker pattern to remaining affected commands
 

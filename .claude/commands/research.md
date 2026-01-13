@@ -40,7 +40,9 @@ Conduct research for a task by delegating to the appropriate research skill/suba
 
 5. **Verify** status is now "researching"
 
-**ABORT** if any validation fails. **PROCEED** if all pass.
+**ABORT** if any validation fails.
+
+**On GATE IN success**: Status is [RESEARCHING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
 
 ### STAGE 2: DELEGATE
 
@@ -61,6 +63,8 @@ args: "task_number={N} focus={focus_prompt} session_id={session_id}"
 
 The skill will spawn the appropriate agent to conduct research and create a report.
 
+**On DELEGATE success**: Research complete. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
+
 ### CHECKPOINT 2: GATE OUT
 
 1. **Validate Return**
@@ -74,7 +78,9 @@ The skill will spawn the appropriate agent to conduct research and create a repo
 
 4. **Verify** status is "researched" and artifacts are linked
 
-**PROCEED** to commit. **RETRY** skill if validation fails.
+**RETRY** skill if validation fails.
+
+**On GATE OUT success**: Artifacts verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
 
 ### CHECKPOINT 3: COMMIT
 
