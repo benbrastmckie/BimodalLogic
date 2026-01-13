@@ -11,7 +11,9 @@
       "priority": "medium",
       "created": "2026-01-13T19:30:00Z",
       "last_updated": "2026-01-13T19:30:00Z",
-      "dependencies": [476],
+      "dependencies": [
+        476
+      ],
       "description": "Test document-converter skill on sample PDF, DOCX, and Markdown files. Verify bidirectional conversion, graceful fallback when tools unavailable, and proper error handling.",
       "reference_files": [
         "/home/benjamin/Projects/Logos/.claude/outputs/convert.md"
@@ -25,7 +27,9 @@
       "priority": "medium",
       "created": "2026-01-13T19:30:00Z",
       "last_updated": "2026-01-13T19:30:00Z",
-      "dependencies": [475],
+      "dependencies": [
+        475
+      ],
       "description": "Create document-converter-agent following ProofChecker's agent pattern. Handles actual conversion logic with runtime tool detection (markitdown, pandoc, typst), graceful fallbacks to Claude's native PDF reading, bidirectional conversion support, and standardized JSON returns.",
       "reference_files": [
         "/home/benjamin/Projects/Logos/.claude/skills/document-converter/README.md",
@@ -94,11 +98,11 @@
     {
       "project_number": 472,
       "project_name": "lindenbaum_extension_finite_closures",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T16:10:32Z",
-      "last_updated": "2026-01-13T17:01:00Z",
+      "last_updated": "2026-01-13T17:17:23Z",
       "parent_task": 458,
       "description": "Complete the Lindenbaum extension for finite closures, building on task 458. Implement the restricted Lindenbaum lemma that extends consistent formula sets to maximal consistent sets within the finite subformula closure, enabling the finite truth lemma proof.",
       "artifacts": [
@@ -109,6 +113,10 @@
         {
           "path": ".claude/specs/472_lindenbaum_extension_finite_closures/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ]
     },
