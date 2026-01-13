@@ -30,11 +30,13 @@ technical_debt:
 
 ### 480. Investigate workflow delegation early stop issues
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-13
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/480_investigate_workflow_delegation_early_stop/plans/implementation-001.md)
 
 **Description**: Investigate workflow delegation errors causing agents to stop early. Previous fix attempts (tasks 474, 467, 462) did not resolve the issue. Check `.claude/output/` for error patterns. Search for terms like "complete", "finished" etc. that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems and research similar errors online.
 
@@ -140,7 +142,7 @@ technical_debt:
 
 ### 473. Fix compositionality gaps from Task 458
 - **Effort**: 6-8 hours (reduced scope)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium

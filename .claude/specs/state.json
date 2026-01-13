@@ -6,19 +6,24 @@
     {
       "project_number": 480,
       "project_name": "investigate_workflow_delegation_early_stop",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T20:12:45Z",
-      "last_updated": "2026-01-13T20:24:19Z",
+      "last_updated": "2026-01-13T20:35:52Z",
       "description": "Investigate workflow delegation errors causing early stop. Tasks 474, 467, 462 attempts did not fix. Check .claude/output/ for patterns. Search for terms like complete, finished that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems. Research similar errors online.",
-      "session_id": "sess_1768335487_15fa4d",
+      "session_id": "sess_1768336124_b4b3f6",
       "artifacts": [
         {
           "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 479,
@@ -79,14 +84,14 @@
     {
       "project_number": 473,
       "project_name": "fix_compositionality_gaps_task_458",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T16:32:26Z",
-      "last_updated": "2026-01-13T20:24:03Z",
+      "last_updated": "2026-01-13T20:27:58Z",
+      "session_id": "sess_1768336078_6fe505",
       "parent_task": 458,
       "description": "Fix compositionality gaps from Task 458. Research identified 7 compositionality gaps (mixed-sign duration cases), 8 truth lemma gaps (negation-completeness), and 2 history construction gaps. Root cause: IsLocallyConsistent only captures soundness, not negation-completeness. Primary solution: Bridge to SetMaximalConsistent or strengthen world state definitions.",
-      "session_id": "sess_1768335620_4b284e",
       "artifacts": [
         {
           "path": ".claude/specs/473_fix_compositionality_gaps_task_458/reports/research-001.md",
