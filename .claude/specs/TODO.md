@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:34:26Z
-next_project_number: 455
+next_project_number: 456
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -93,6 +93,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 455. Improve README extension layer descriptions
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Turn the bullet points following the architecture drawing in the Overview section of README.md into clear and concise explanations of what each extension layer provides with regards to expressive and logical resources for representing and reasoning about tasks of increasing complexity.
+
+---
 
 ### 452. Use 'D' notation for duration group consistently
 - **Effort**: TBD
