@@ -16,11 +16,11 @@
     {
       "project_number": 460,
       "project_name": "cosmos_institute_substack_essay",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "high",
       "created": "2026-01-13T02:04:02Z",
-      "last_updated": "2026-01-13T02:18:47Z",
+      "last_updated": "2026-01-13T02:22:35Z",
       "description": "Create a 1000-2000 word essay that makes the project and its conclusions accessible to the public. Essays should conform to the tone and style of those that have appeared on the Cosmos Institute Substack. With the Grantee consent, select essays may be edited and featured on the Cosmos Institute Substack. This essay is due within 30 days after the conclusion of the grant term.",
       "session_id": "sess_1768270717_0edfca",
       "artifacts": [
@@ -35,9 +35,18 @@
         {
           "path": ".claude/specs/460_cosmos_institute_substack_essay/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/460_cosmos_institute_substack_essay/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        },
+        {
+          "path": "docs/essays/cosmos-institute-essay.md",
+          "type": "deliverable"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-13T02:22:35Z"
     },
     {
       "project_number": 459,

@@ -2,7 +2,9 @@
 
 When an AI recommends a medical treatment, drafts a legal argument, or plans a complex operation, can it prove its reasoning is correct? Not just plausible-sounding. Not just statistically likely. *Correct*.
 
-This question haunts the frontier of artificial intelligence. The systems we're building are increasingly sophisticated—they write code, analyze documents, make consequential recommendations. But they cannot show their work. They cannot provide what any competent human professional must provide: justification.
+This question haunts the frontier of artificial intelligence. The systems we're building are increasingly sophisticated—they write code, analyze documents, make consequential recommendations. Yet they cannot show their work. They cannot provide what any competent human professional must provide: justification.
+
+We set out to change this.
 
 ## The Problem
 
@@ -13,6 +15,8 @@ The fundamental limitation is not intelligence but verification. When a language
 This matters because consequential decisions demand verifiable reasoning. A physician explaining a diagnosis, a lawyer constructing an argument, a planner evaluating alternatives—each must be able to justify their conclusions. Their reasoning must be not merely plausible but sound. And increasingly, AI systems are being asked to assist with exactly these tasks.
 
 The question becomes: Can we build AI systems that don't just imitate reasoning but actually *do* it—and prove they've done it correctly?
+
+We believe the answer is yes. But it requires rethinking what logic is for.
 
 ## Philosophy as Engineering
 
@@ -75,3 +79,7 @@ The question we began with—can an AI prove its reasoning is correct?—now has
 We have built a formal language precise enough for mathematical verification yet expressive enough for real-world reasoning. We have proven its logical rules sound. We have demonstrated that it can generate unlimited verified training data. The result is not a finished product but a foundation: infrastructure for AI systems that reason with mathematical certainty rather than statistical approximation.
 
 The path from pattern matching to verified inference is now open. Building on it is the work ahead.
+
+---
+
+*This essay describes work supported by a grant from the Cosmos Institute. The Logos project is open source and available for collaboration.*
