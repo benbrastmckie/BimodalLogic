@@ -2,7 +2,7 @@
 
 When an AI recommends a medical treatment, drafts a legal argument, or creates a complex financial plan, can it prove its reasoning is correct? More than plausibility or statistically likelihood, what would it take to justify the inferences that an AI might draw? Without any answer or serious method by which to verify AI decision making, what is to become of human society when the volume of AI decisions outstrip human capacities for oversight.
 
-This question haunts the frontier of artificial intelligence. The systems we're building are increasingly sophisticated at writing code, analyzing documents, and make consequential recommendations. They can even show some of their work. What they cannot provide is what any competent human professional must provide: justification.
+This question haunts the frontier of artificial intelligence. The systems we're building are increasingly sophisticated at writing code, analyzing documents, and make consequential recommendations of all kinds. If we weren't delegating to AI systems autonomously, they would hardly be useful, surmounting only to the maximum capacity of human attention. They can even show some of their work. What they cannot provide is what any competent human professional must provide: justification.
 
 ## The Problem
 

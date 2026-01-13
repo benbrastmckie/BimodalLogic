@@ -5,6 +5,57 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 400,
+      "project_name": "investigate_explanatory_truth_build_performance",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.",
+      "created": "2026-01-11T21:55:51Z",
+      "last_updated": "2026-01-12T00:38:44Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "subtasks": [
+        416,
+        417,
+        418,
+        419,
+        420
+      ],
+      "abandoned": "2026-01-13T04:05:14Z"
+    },
+    {
+      "project_number": 419,
+      "project_name": "refactor_mutual_recursion_semantics",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.",
+      "effort": "4-6 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T09:15:00Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/419_refactor_mutual_recursion_semantics/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/419_refactor_mutual_recursion_semantics/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ],
+      "plan_version": "001",
+      "abandoned": "2026-01-13T04:05:14Z"
+    },
+    {
       "project_number": 441,
       "project_name": "prove_completeness_relativized_approach",
       "status": "abandoned",

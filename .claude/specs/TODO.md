@@ -29,16 +29,16 @@ technical_debt:
 ## High Priority
 
 ### 458. Extend canonical_history to full domain
-- **Effort**: 8-12 hours
-- **Status**: [PLANNING]
+- **Effort**: 10 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
-- **Planned**: 2026-01-12 (v002)
+- **Planned**: 2026-01-13 (v003)
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 448
 - **Research**: [research-001.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md), [research-002.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md)
-- **Plan**: [implementation-002.md](.claude/specs/458_extend_canonical_history_full_domain/plans/implementation-002.md) (v002 - chain construction)
+- **Plan**: [implementation-003.md](.claude/specs/458_extend_canonical_history_full_domain/plans/implementation-003.md) (v003 - indexed chains with proven lemmas)
 
 **Description**: Extend canonical_history from singleton domain to full domain for completeness proof correctness. v002: Redesigned to use **chain construction from 0** (instead of independent Classical.choose) to solve the coherence problem where independently chosen states may not lie on the same timeline. Build states as forward/backward chains from origin, ensuring compositionality by construction.
 
