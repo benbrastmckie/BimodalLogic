@@ -16,11 +16,11 @@ Reasoning by simulation without verification matters because consequential decis
 
 ## Philosophical Logic as Conceptual Engineering
 
-Instead of thinking about logic as a simulation of how humans happen to reason, this project takes an engineering approach to logic as a discipline for building reasoning systems that best serve out aims.
+Instead of thinking about logic as a simulation of how humans happen to reason, this project takes an engineering approach which understands logic as a discipline for building reasoning systems that are best fit to serve our aims.
 
-Consider how materials science works. Raw sand is transformed into glass through controlled processes that remove impurities and create useful transparency. The result is not a description of sand but a refined material engineered for specific purposes. Logic, properly understood, does something similar with concepts.
+Consider the materials science where raw sand is transformed into glass through controlled processes that remove impurities and create useful transparency. The result is not a description of sand but a refined material engineered that didn't exist before but has rather been created for specific purposes. Logic follows a similar course, engineering the conceptual world rather than the material.
 
-Natural language provides the raw materials: intuitive notions of necessity, possibility, time, causation, belief, obligation. These concepts are powerful but imprecise—ambiguous in edge cases, inconsistent across contexts, resistant to systematic analysis. Formal logic refines these intuitions into operators with explicit truth conditions: precise semantic clauses that specify exactly what each operator means.
+Natural language provides the raw materials in the form of intuitions about how to use notions of conjunction, negation, identity, necessity, possibility, time, causation, belief, obligation, and many others. Such intuitions are immediate and useful but often remain ambiguous in edge cases, inconsistent across contexts, or otherwise resistant to systematic analysis. Formal logic refines these intuitions by stipulating operators with explicit semantic clauses, providing precise truth-conditions for expressions as a function of their constituent elements.
 
 This is conceptual engineering. Rather than describing how the word "if" behaves in English (a descriptive project), we stipulate how the logical conditional *should* behave for systematic reasoning (a normative project). The resulting operators are close enough to natural language to remain intelligible, but precise enough to be verifiable.
 
