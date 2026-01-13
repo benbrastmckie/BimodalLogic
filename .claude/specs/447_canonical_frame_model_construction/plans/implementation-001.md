@@ -123,7 +123,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Nullity Property Proof [IN PROGRESS]
+### Phase 3: Nullity Property Proof [COMPLETED]
 
 **Goal**: Prove that `canonical_task_rel S 0 S` holds for all maximal consistent sets S.
 
@@ -159,7 +159,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Compositionality Property Proof [NOT STARTED]
+### Phase 4: Compositionality Property Proof [IN PROGRESS]
 
 **Goal**: Prove that `canonical_task_rel S x T -> canonical_task_rel T y U -> canonical_task_rel S (x + y) U`.
 

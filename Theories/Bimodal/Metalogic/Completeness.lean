@@ -1008,6 +1008,128 @@ theorem set_mcs_box_closure {S : Set Formula} {φ : Formula}
   exact set_mcs_closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
 
 /--
+Set-based MCS: modal 4 axiom property.
+
+If □φ ∈ S for a SetMaximalConsistent S, then □□φ ∈ S.
+
+**Proof Strategy**:
+1. Modal 4 axiom: □φ → □□φ
+2. With □φ ∈ S, derive □□φ via modus ponens
+3. By closure: □□φ ∈ S
+
+This is the positive introspection property: necessary truth implies necessarily necessary.
+-/
+theorem set_mcs_box_box {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_box : Formula.box φ ∈ S) : (Formula.box φ).box ∈ S := by
+  -- Modal 4 axiom: □φ → □□φ
+  have h_modal_4_thm : [] ⊢ (Formula.box φ).imp (Formula.box (Formula.box φ)) :=
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ)
+  -- Weaken to context [□φ]
+  have h_modal_4 : [Formula.box φ] ⊢ (Formula.box φ).imp (Formula.box (Formula.box φ)) :=
+    DerivationTree.weakening [] _ _ h_modal_4_thm (by intro; simp)
+  -- Assume □φ in context
+  have h_box_assume : [Formula.box φ] ⊢ Formula.box φ :=
+    DerivationTree.assumption _ _ (by simp)
+  -- Apply modus ponens to get □□φ
+  have h_deriv : [Formula.box φ] ⊢ (Formula.box φ).box :=
+    DerivationTree.modus_ponens _ _ _ h_modal_4 h_box_assume
+  -- By closure: □□φ ∈ S
+  have h_sub : ∀ χ ∈ [Formula.box φ], χ ∈ S := by simp [h_box]
+  exact set_mcs_closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
+
+/--
+Set-based MCS: temporal 4 axiom property for all_future.
+
+If Gφ ∈ S for a SetMaximalConsistent S, then GGφ ∈ S.
+
+**Proof Strategy**:
+1. Temporal 4 axiom: Gφ → GGφ
+2. With Gφ ∈ S, derive GGφ via modus ponens
+3. By closure: GGφ ∈ S
+
+This is the future transitivity property: always future implies always always future.
+-/
+theorem set_mcs_all_future_all_future {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_all_future : Formula.all_future φ ∈ S) : (Formula.all_future φ).all_future ∈ S := by
+  -- Temporal 4 axiom: Gφ → GGφ
+  have h_temp_4_thm : [] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+  -- Weaken to context [Gφ]
+  have h_temp_4 : [Formula.all_future φ] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
+    DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)
+  -- Assume Gφ in context
+  have h_all_future_assume : [Formula.all_future φ] ⊢ Formula.all_future φ :=
+    DerivationTree.assumption _ _ (by simp)
+  -- Apply modus ponens to get GGφ
+  have h_deriv : [Formula.all_future φ] ⊢ (Formula.all_future φ).all_future :=
+    DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_future_assume
+  -- By closure: GGφ ∈ S
+  have h_sub : ∀ χ ∈ [Formula.all_future φ], χ ∈ S := by simp [h_all_future]
+  exact set_mcs_closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
+
+/--
+Derivation of temporal 4 axiom for past: Hφ → HHφ.
+
+Derived by applying temporal duality to the temp_4 axiom (Gφ → GGφ).
+-/
+def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.all_past) := by
+  -- We want: Hφ → HHφ
+  -- By temporal duality from: Gψ → GGψ where ψ = swap_temporal φ
+  -- swap_temporal of (Gψ → GGψ) = Hφ' → HHφ' where φ' = swap_temporal ψ = φ
+  let ψ := φ.swap_temporal
+  -- Step 1: Get T4 axiom for ψ: Gψ → GGψ
+  have h1 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
+  -- Step 2: Apply temporal duality to get: H(swap ψ) → HH(swap ψ)
+  have h2 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
+    DerivationTree.temporal_duality _ h1
+  -- Step 3: The result has type H(swap ψ) → HH(swap ψ) = Hφ → HHφ
+  -- since swap(swap φ) = φ by involution
+  have h3 : (ψ.all_future.imp ψ.all_future.all_future).swap_temporal =
+      φ.all_past.imp φ.all_past.all_past := by
+    -- ψ = φ.swap_temporal, so ψ.swap_temporal = φ.swap_temporal.swap_temporal = φ
+    simp only [Formula.swap_temporal]
+    -- Now we need to show: ψ.swap_temporal.all_past.imp ... = φ.all_past.imp ...
+    -- where ψ.swap_temporal = φ by involution
+    have h_inv : ψ.swap_temporal = φ := Formula.swap_temporal_involution φ
+    rw [h_inv]
+  rw [h3] at h2
+  exact h2
+
+/--
+Set-based MCS: temporal 4 axiom property for all_past.
+
+If Hφ ∈ S for a SetMaximalConsistent S, then HHφ ∈ S.
+
+**Proof Strategy**:
+1. Use derived temp_4_past: Hφ → HHφ
+2. With Hφ ∈ S, derive HHφ via modus ponens
+3. By closure: HHφ ∈ S
+
+This is the past transitivity property: always past implies always always past.
+-/
+theorem set_mcs_all_past_all_past {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_all_past : Formula.all_past φ ∈ S) : (Formula.all_past φ).all_past ∈ S := by
+  -- Derived temporal 4 for past: Hφ → HHφ
+  have h_temp_4_past_thm : [] ⊢ (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
+    temp_4_past φ
+  -- Weaken to context [Hφ]
+  have h_temp_4 : [Formula.all_past φ] ⊢ (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
+    DerivationTree.weakening [] _ _ h_temp_4_past_thm (by intro; simp)
+  -- Assume Hφ in context
+  have h_all_past_assume : [Formula.all_past φ] ⊢ Formula.all_past φ :=
+    DerivationTree.assumption _ _ (by simp)
+  -- Apply modus ponens to get HHφ
+  have h_deriv : [Formula.all_past φ] ⊢ (Formula.all_past φ).all_past :=
+    DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_past_assume
+  -- By closure: HHφ ∈ S
+  have h_sub : ∀ χ ∈ [Formula.all_past φ], χ ∈ S := by simp [h_all_past]
+  exact set_mcs_closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
+
+/--
 Set-based MCS: diamond-box duality (forward direction).
 
 If ¬(□φ) ∈ S, then ◇(¬φ) ∈ S.
@@ -1808,40 +1930,183 @@ of the logic, not on this construction.
 -/
 
 /--
-Canonical time structure uses integers.
+Canonical time structure uses Duration from the Grothendieck construction.
 
-**Justification**: Integers form an ordered additive group, required for
-temporal operators (past/future) and task relation compositionality.
+**Justification**: Duration forms a linear ordered additive commutative group,
+which provides the required structure for temporal operators (past/future)
+and task relation compositionality.
 
-**Note**: This is a placeholder. Task 447 will integrate the abstract Duration
-construction to replace this with the agnostic duration type.
+**Agnostic Property**: The Duration type makes no assumptions about discreteness
+or density. Whether the temporal structure is discrete (like integers), dense
+(like rationals), or continuous (like reals) depends entirely on the axioms
+of the logic, not on this construction.
+
+**Instances Available**:
+- `AddCommGroup Duration` (from Grothendieck construction)
+- `LinearOrder Duration` (defined in this file)
+- `IsOrderedAddMonoid Duration` (defined in this file)
 -/
-def CanonicalTime : Type := Int
+abbrev CanonicalTime : Type := Duration
+
+/-!
+### Transfer Properties for Canonical Task Relation
+
+These helper definitions capture the individual transfer properties used
+in the canonical task relation definition.
+-/
+
+/--
+Modal transfer: box formulas in S transfer to their contents in T.
+
+`modal_transfer S T` holds iff for all φ, if □φ ∈ S then φ ∈ T.
+
+This captures the accessibility relationship between maximal consistent sets.
+-/
+def modal_transfer (S T : CanonicalWorldState) : Prop :=
+  ∀ φ, Formula.box φ ∈ S.val → φ ∈ T.val
+
+/--
+Future transfer: universal future formulas in S transfer to their contents in T.
+
+`future_transfer S T` holds iff for all φ, if Gφ ∈ S then φ ∈ T.
+
+This captures forward temporal reachability: if "always in the future" holds
+at S, then the formula holds at any future-reachable world T.
+-/
+def future_transfer (S T : CanonicalWorldState) : Prop :=
+  ∀ φ, Formula.all_future φ ∈ S.val → φ ∈ T.val
+
+/--
+Past transfer: universal past formulas in S transfer to their contents in T.
+
+`past_transfer S T` holds iff for all φ, if Hφ ∈ S then φ ∈ T.
+
+This captures backward temporal reachability: if "always in the past" holds
+at S, then the formula holds at any past-reachable world T.
+-/
+def past_transfer (S T : CanonicalWorldState) : Prop :=
+  ∀ φ, Formula.all_past φ ∈ S.val → φ ∈ T.val
 
 /--
 Canonical task relation between set-based world states.
 
-**Definition**: `task_rel S t T` holds iff all formulas of certain modal/temporal
-forms transfer appropriately between S and T relative to time offset t.
+**Definition**: `canonical_task_rel S t T` holds iff:
+1. Modal transfer: □φ ∈ S → φ ∈ T (always applies)
+2. Future transfer: t > 0 → (Gφ ∈ S → φ ∈ T) (positive duration)
+3. Past transfer: t < 0 → (Hφ ∈ S → φ ∈ T) (negative duration)
 
 where `S, T : CanonicalWorldState` are set-based maximal consistent sets.
 
-**Properties** (to be proven):
-- Nullity: `task_rel S 0 S`
-- Compositionality: `task_rel S t₁ T → task_rel T t₂ U → task_rel S (t₁+t₂) U`
+**Three-Part Structure**:
+- Modal accessibility is always required (S5 box semantics)
+- Temporal transfers are conditional on duration sign:
+  - For positive duration (moving forward in time): future formulas transfer
+  - For negative duration (moving backward in time): past formulas transfer
+  - For zero duration: only modal transfer matters
 
-**Full Definition** (to be implemented):
-```
-task_rel S t T ↔
-  (∀ φ, □φ ∈ S.val → φ ∈ T.val) ∧           -- Modal transfer
-  (t > 0 → ∀ φ, Fφ ∈ S.val → φ ∈ T.val) ∧   -- Future transfer (positive time)
-  (t < 0 → ∀ φ, Pφ ∈ S.val → φ ∈ T.val)     -- Past transfer (negative time)
-```
+**Properties**:
+- Nullity: `task_rel S 0 S` - reflexivity via modal T axiom
+- Compositionality: task_rel S t₁ T → task_rel T t₂ U → task_rel S (t₁+t₂) U
 
 **Note**: The set-based representation allows membership testing for potentially
 infinite sets, which is essential for the canonical model construction.
 -/
-axiom canonical_task_rel : CanonicalWorldState → CanonicalTime → CanonicalWorldState → Prop
+def canonical_task_rel (S : CanonicalWorldState) (t : CanonicalTime) (T : CanonicalWorldState) : Prop :=
+  modal_transfer S T ∧
+  (t > 0 → future_transfer S T) ∧
+  (t < 0 → past_transfer S T)
+
+/-!
+### Canonical Task Relation Properties
+
+These theorems prove that canonical_task_rel satisfies the TaskFrame constraints.
+-/
+
+/--
+Nullity: The canonical task relation is reflexive at duration 0.
+
+For any maximal consistent set S, `canonical_task_rel S 0 S` holds.
+
+**Proof Strategy**:
+1. Modal transfer: Use `set_mcs_box_closure` (Modal T axiom: □φ → φ)
+2. Future transfer: Vacuously true (0 is not > 0)
+3. Past transfer: Vacuously true (0 is not < 0)
+-/
+theorem canonical_nullity (S : CanonicalWorldState) : canonical_task_rel S 0 S := by
+  unfold canonical_task_rel modal_transfer future_transfer past_transfer
+  constructor
+  -- Modal transfer: □φ ∈ S → φ ∈ S (via Modal T axiom)
+  · intro φ h_box
+    exact set_mcs_box_closure S.property h_box
+  constructor
+  -- Future transfer: 0 > 0 → ... (vacuously true since 0 is not > 0)
+  · intro h_pos φ _
+    -- h_pos : 0 > 0 is false, so we can derive anything
+    exfalso
+    -- The LT instance on Duration says: d1 < d2 ↔ d1 ≤ d2 ∧ d1 ≠ d2
+    -- So 0 > 0 means 0 ≤ 0 ∧ 0 ≠ 0, but 0 ≠ 0 is false
+    simp only [GT.gt, LT.lt] at h_pos
+    exact h_pos.2 rfl
+  -- Past transfer: 0 < 0 → ... (vacuously true since 0 is not < 0)
+  · intro h_neg φ _
+    -- h_neg : 0 < 0 is false, so we can derive anything
+    exfalso
+    -- Same reasoning: 0 < 0 requires 0 ≠ 0 which is false
+    simp only [LT.lt] at h_neg
+    exact h_neg.2 rfl
+
+/--
+Compositionality: The canonical task relation composes with time addition.
+
+`canonical_task_rel S x T → canonical_task_rel T y U → canonical_task_rel S (x + y) U`
+
+**Proof Strategy**:
+1. Modal transfer composes:
+   - From box phi in S, get box box phi in S (by set_mcs_box_box)
+   - Then box phi in T (by first modal transfer on box phi)
+   - Then phi in U (by second modal transfer)
+2. Temporal transfers compose via case analysis on signs of x, y, and x+y
+   - The key insight is that if x > 0 and x+y > 0, we can compose future transfers
+   - Similar reasoning for past transfers when x < 0 and x+y < 0
+   - Mixed cases require more careful analysis
+
+**Note**: The temporal cases are complex and may need additional axioms or
+definition refinement. The modal case is complete with set_mcs_box_box.
+-/
+theorem canonical_compositionality
+    (S T U : CanonicalWorldState) (x y : CanonicalTime)
+    (hST : canonical_task_rel S x T)
+    (hTU : canonical_task_rel T y U) :
+    canonical_task_rel S (x + y) U := by
+  unfold canonical_task_rel at *
+  obtain ⟨hST_modal, hST_future, hST_past⟩ := hST
+  obtain ⟨hTU_modal, hTU_future, hTU_past⟩ := hTU
+  constructor
+  -- Part 1: Modal transfer composes
+  · intro φ h_box_S
+    -- We have: box phi in S
+    -- We need: phi in U
+    -- Strategy: box phi in S -> box box phi in S -> box phi in T -> phi in U
+    have h_box_box_S : (Formula.box φ).box ∈ S.val := set_mcs_box_box S.property h_box_S
+    have h_box_T : Formula.box φ ∈ T.val := hST_modal (Formula.box φ) h_box_box_S
+    exact hTU_modal φ h_box_T
+  constructor
+  -- Part 2: Future transfer when x + y > 0
+  · intro h_sum_pos φ h_all_future_S
+    -- We have: x + y > 0 and all_future phi in S
+    -- We need: phi in U
+    -- This is complex: depends on signs of x and y
+    -- Case 1: x > 0 implies future_transfer S T, then we need all_future phi in T
+    -- Case 2: x ≤ 0 but x + y > 0 means y > 0 and we use T->U transfer
+    -- The challenge: we don't have Gφ → GGφ applied to MCS yet
+    -- For now, use sorry and document the requirement
+    sorry
+  -- Part 3: Past transfer when x + y < 0
+  · intro h_sum_neg φ h_all_past_S
+    -- Similar analysis to future transfer
+    -- We have: x + y < 0 and all_past phi in S
+    -- We need: phi in U
+    sorry
 
 /--
 The canonical frame for TM logic using set-based maximal consistent sets.
@@ -1855,14 +2120,12 @@ The canonical frame for TM logic using set-based maximal consistent sets.
 **Note**: `CanonicalWorldState` is now `{S : Set Formula // SetMaximalConsistent S}`,
 using the set-based consistency definitions that allow true maximality.
 -/
-axiom canonical_frame : TaskFrame Int
+axiom canonical_frame : TaskFrame Duration
   -- where
   --   WorldState := CanonicalWorldState
-  --   Time := CanonicalTime
-  --   time_group := Int.orderedAddCommGroup
   --   task_rel := canonical_task_rel
-  --   nullity := sorry  -- Prove: ∀ w, task_rel w 0 w
-  --   compositionality := sorry  -- Prove composition property
+  --   nullity := canonical_nullity
+  --   compositionality := canonical_compositionality
 
 /-!
 ## Canonical Model and Valuation
