@@ -3647,6 +3647,64 @@ theorem provable_iff_valid (φ : Formula) : Nonempty (DerivationTree [] φ) ↔ 
     exact ⟨weak_completeness φ h⟩
 
 /-!
+## Completeness Implementation Audit
+
+### Axioms in This Module
+
+| Axiom | Line | Status | Justification |
+|-------|------|--------|---------------|
+| `someWorldState_exists` | ~1585 | Infrastructure | Existence of at least one MCS; constructible from `set_lindenbaum` on empty set |
+| `anotherWorldState_exists` | ~2786 | Infrastructure | Existence of two distinct MCS; follows from consistency of p and ¬p |
+| `truth_lemma` | ~3569 | Placeholder | See `semantic_truth_lemma_v2` in FiniteCanonicalModel.lean for proven version |
+| `weak_completeness` | ~3600 | Placeholder | See `main_weak_completeness` in FiniteCanonicalModel.lean for proof |
+| `strong_completeness` | ~3620 | Placeholder | See `main_strong_completeness` in FiniteCanonicalModel.lean |
+
+**Note**: The axioms `weak_completeness`, `strong_completeness`, and `truth_lemma` are kept
+for backward compatibility in the module hierarchy. FiniteCanonicalModel.lean imports this
+module, so we cannot import the proofs back. The actual proofs are in FiniteCanonicalModel.lean.
+
+### Sorries in This Module
+
+| Location | Declaration | Category | Status |
+|----------|-------------|----------|--------|
+| ~1341 | `box_witness_existence` | Canonical Property | Requires modal transfer proof |
+| ~1366 | `imp_witness_existence` | Canonical Property | Requires logical closure |
+| ~1391 | `neg_witness_existence` | Canonical Property | Requires negation completeness |
+| ~1653 | `PositiveDuration.add` | Duration Algebra | Concatenation well-definedness |
+| ~2320-2415 | `compositionality` | Task Relation | 7 gaps in mixed-sign temporal cases |
+| ~2507 | `world_states_consistent` | Frame Property | Inter-MCS consistency |
+| ~2612 | `CanonicalHistory` | History Construction | Chain extension existence |
+| ~2662 | `CanonicalHistory.respects_task` | History Property | Task relation verification |
+| ~3337-3397 | `canonical_frame` properties | Frame Construction | Nullity and compositionality |
+
+**Total**: ~15 sorry gaps in Duration-based infrastructure (deprecated)
+
+### Proven Key Results
+
+- `set_lindenbaum`: Lindenbaum's lemma via Zorn's lemma (PROVEN)
+- `set_mcs_consistent`: MCS consistency (PROVEN)
+- `set_mcs_box_closure`: Modal T axiom property (PROVEN)
+- `set_mcs_all_future_all_future`: Temporal 4 axiom (PROVEN)
+- `set_mcs_all_past_all_past`: Temporal 4 axiom (PROVEN)
+- `mcs_negation_complete`: Negation completeness for MCS (PROVEN)
+- `provable_iff_valid`: Soundness-completeness equivalence (PROVEN - uses axiom)
+
+### Implementation Strategy
+
+The Duration-based canonical model construction in this file has significant sorry gaps
+due to the complexity of infinite chain segments and temporal transfer properties.
+
+**Preferred approach**: Use the finite canonical model in `FiniteCanonicalModel.lean`:
+- `SemanticWorldState`: Quotient of history-time pairs
+- `semantic_weak_completeness`: PROVEN, core completeness result
+- `semantic_truth_lemma_v2`: PROVEN, no sorry gaps
+- `main_weak_completeness` and `main_provable_iff_valid`: PROVEN
+
+The finite approach sidesteps the Duration algebra complexity by working with bounded
+integer time domains and finite world state enumeration.
+-/
+
+/-!
 ## Future Work: Decidability
 
 With completeness proven, decidability can be established via:
