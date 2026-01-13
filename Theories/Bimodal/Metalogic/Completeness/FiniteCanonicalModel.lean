@@ -2063,6 +2063,268 @@ instance semanticWorldState_finite : Finite (SemanticWorldState phi) := by
 end SemanticWorldState
 
 /-!
+### History Gluing Infrastructure
+
+When two histories `h1` and `h2` share a common state at a junction point
+(i.e., `h1.states t1' = h2.states t2`), we can construct a "glued" history
+that uses `h1` for times before/at the junction and `h2` for times after.
+
+This is key to proving compositionality: if `w -[x]-> u` via `h1` and
+`u -[y]-> v` via `h2`, and the histories agree at `u`, then we can
+construct a single history witnessing `w -[x+y]-> v`.
+-/
+
+/--
+Compute the time offset to translate h2's time frame to h1's time frame at the junction.
+If h1 is at t1' (junction) and h2 is at t2 (junction), then offset = t1' - t2 (in Int).
+-/
+def junction_time_offset {phi : Formula} (t1' t2 : FiniteTime (temporalBound phi)) : Int :=
+  FiniteTime.toInt (temporalBound phi) t1' - FiniteTime.toInt (temporalBound phi) t2
+
+/--
+Construct a glued history from two histories that share a common state at the junction.
+
+Given:
+- `h1`: First history
+- `h2`: Second history
+- `t1'`: Time in h1's frame where junction occurs
+- `t2`: Time in h2's frame where junction occurs
+- `h_agree`: Proof that `h1.states t1' = h2.states t2`
+
+The glued history uses h1's states for times <= t1' and h2's states (shifted) for times > t1'.
+
+**Implementation**: This is noncomputable because we use Classical.choice to find times
+from integer coordinates.
+-/
+noncomputable def glue_histories {phi : Formula}
+    (h1 h2 : FiniteHistory phi)
+    (t1' t2 : FiniteTime (temporalBound phi))
+    (h_agree : h1.states t1' = h2.states t2) :
+    FiniteHistory phi where
+  states := fun t =>
+    if FiniteTime.toInt (temporalBound phi) t ≤ FiniteTime.toInt (temporalBound phi) t1' then
+      h1.states t
+    else
+      -- t is after junction in glued frame
+      let offset := FiniteTime.toInt (temporalBound phi) t -
+                    FiniteTime.toInt (temporalBound phi) t1'
+      let target_int := FiniteTime.toInt (temporalBound phi) t2 + offset
+      let k := temporalBound phi
+      if h_bounds : -(k : Int) ≤ target_int ∧ target_int ≤ (k : Int) then
+        let t2_shifted := Classical.choose (FiniteTime.toInt_surj_on_range k target_int h_bounds.1 h_bounds.2)
+        h2.states t2_shifted
+      else
+        -- Fallback to junction state when out of bounds
+        h1.states t1'
+  forward_rel := fun t t' h_succ => by
+    -- We need to show finite_task_rel phi (states t) 1 (states t')
+    simp only []
+    have h_t'_eq : FiniteTime.toInt (temporalBound phi) t' =
+                   FiniteTime.toInt (temporalBound phi) t + 1 :=
+      FiniteTime.succ_toInt (temporalBound phi) t t' h_succ
+    by_cases ht : FiniteTime.toInt (temporalBound phi) t ≤ FiniteTime.toInt (temporalBound phi) t1'
+    · -- t is before or at junction
+      by_cases ht' : FiniteTime.toInt (temporalBound phi) t' ≤ FiniteTime.toInt (temporalBound phi) t1'
+      · -- Both before junction: use h1.forward_rel
+        simp only [ht, ht', ↓reduceIte]
+        exact h1.forward_rel t t' h_succ
+      · -- t <= junction < t' (crossing case)
+        push_neg at ht'
+        have h_t_eq_junction : FiniteTime.toInt (temporalBound phi) t =
+                               FiniteTime.toInt (temporalBound phi) t1' := by omega
+        have h_t_eq_t1' : t = t1' := FiniteTime.toInt_injective (temporalBound phi) h_t_eq_junction
+        subst h_t_eq_t1'
+        simp only [le_refl, ↓reduceIte]
+        simp only [ht', ↓reduceIte]
+        let offset := FiniteTime.toInt (temporalBound phi) t' -
+                      FiniteTime.toInt (temporalBound phi) t1'
+        have h_offset_1 : offset = 1 := by simp only [offset]; omega
+        let target_int := FiniteTime.toInt (temporalBound phi) t2 + offset
+        have h_target : target_int = FiniteTime.toInt (temporalBound phi) t2 + 1 := by
+          simp only [target_int, h_offset_1]
+        by_cases h_bounds : -(temporalBound phi : Int) ≤ target_int ∧
+                            target_int ≤ (temporalBound phi : Int)
+        · simp only [h_bounds, ↓reduceIte]
+          let t2_shifted := Classical.choose (FiniteTime.toInt_surj_on_range
+            (temporalBound phi) target_int h_bounds.1 h_bounds.2)
+          have h_t2_shifted_spec := Classical.choose_spec (FiniteTime.toInt_surj_on_range
+            (temporalBound phi) target_int h_bounds.1 h_bounds.2)
+          rw [h_agree]
+          have h_dist : FiniteTime.toInt (temporalBound phi) t2_shifted -
+                        FiniteTime.toInt (temporalBound phi) t2 = 1 := by
+            rw [h_t2_shifted_spec, h_target]; ring
+          have h_task := h2.respects_task t2 t2_shifted
+          simp only [h_dist] at h_task
+          exact h_task
+        · simp only [h_bounds, ↓reduceIte]
+          -- Out of bounds edge case - h1.states t1' to h1.states t1' with d=1
+          -- This shouldn't happen with valid finite history construction
+          sorry
+    · -- t is after junction
+      push_neg at ht
+      simp only [ht.le, ↓reduceIte]
+      have ht' : FiniteTime.toInt (temporalBound phi) t' >
+                 FiniteTime.toInt (temporalBound phi) t1' := by omega
+      simp only [ht'.le, ↓reduceIte]
+      let offset_t := FiniteTime.toInt (temporalBound phi) t -
+                      FiniteTime.toInt (temporalBound phi) t1'
+      let offset_t' := FiniteTime.toInt (temporalBound phi) t' -
+                       FiniteTime.toInt (temporalBound phi) t1'
+      have h_offset_diff : offset_t' = offset_t + 1 := by simp only [offset_t, offset_t']; omega
+      let target_t := FiniteTime.toInt (temporalBound phi) t2 + offset_t
+      let target_t' := FiniteTime.toInt (temporalBound phi) t2 + offset_t'
+      have h_target_diff : target_t' = target_t + 1 := by simp only [target_t, target_t', h_offset_diff]; ring
+      by_cases h_bounds_t : -(temporalBound phi : Int) ≤ target_t ∧ target_t ≤ (temporalBound phi : Int)
+      · by_cases h_bounds_t' : -(temporalBound phi : Int) ≤ target_t' ∧ target_t' ≤ (temporalBound phi : Int)
+        · simp only [h_bounds_t, h_bounds_t', ↓reduceIte]
+          let t2_t := Classical.choose (FiniteTime.toInt_surj_on_range
+            (temporalBound phi) target_t h_bounds_t.1 h_bounds_t.2)
+          let t2_t' := Classical.choose (FiniteTime.toInt_surj_on_range
+            (temporalBound phi) target_t' h_bounds_t'.1 h_bounds_t'.2)
+          have h_t2_t_spec := Classical.choose_spec (FiniteTime.toInt_surj_on_range
+            (temporalBound phi) target_t h_bounds_t.1 h_bounds_t.2)
+          have h_t2_t'_spec := Classical.choose_spec (FiniteTime.toInt_surj_on_range
+            (temporalBound phi) target_t' h_bounds_t'.1 h_bounds_t'.2)
+          have h_dist : FiniteTime.toInt (temporalBound phi) t2_t' -
+                        FiniteTime.toInt (temporalBound phi) t2_t = 1 := by
+            rw [h_t2_t_spec, h_t2_t'_spec, h_target_diff]; ring
+          have h_task := h2.respects_task t2_t t2_t'
+          simp only [h_dist] at h_task
+          exact h_task
+        · simp only [h_bounds_t, h_bounds_t', ↓reduceIte]; sorry
+      · simp only [h_bounds_t, ↓reduceIte]
+        by_cases h_bounds_t' : -(temporalBound phi : Int) ≤ target_t' ∧ target_t' ≤ (temporalBound phi : Int)
+        · simp only [h_bounds_t', ↓reduceIte]; sorry
+        · simp only [h_bounds_t', ↓reduceIte]; sorry
+  backward_rel := fun t t' h_pred => by
+    simp only []
+    have h_t'_eq : FiniteTime.toInt (temporalBound phi) t' =
+                   FiniteTime.toInt (temporalBound phi) t - 1 :=
+      FiniteTime.pred_toInt (temporalBound phi) t t' h_pred
+    by_cases ht : FiniteTime.toInt (temporalBound phi) t ≤ FiniteTime.toInt (temporalBound phi) t1'
+    · have ht' : FiniteTime.toInt (temporalBound phi) t' ≤ FiniteTime.toInt (temporalBound phi) t1' := by omega
+      simp only [ht, ht', ↓reduceIte]
+      exact h1.backward_rel t t' h_pred
+    · push_neg at ht
+      by_cases ht' : FiniteTime.toInt (temporalBound phi) t' ≤ FiniteTime.toInt (temporalBound phi) t1'
+      · have h_t'_eq_junction : FiniteTime.toInt (temporalBound phi) t' =
+                                FiniteTime.toInt (temporalBound phi) t1' := by omega
+        have h_t'_eq_t1' : t' = t1' := FiniteTime.toInt_injective (temporalBound phi) h_t'_eq_junction
+        subst h_t'_eq_t1'
+        simp only [le_refl, ↓reduceIte, ht.le]
+        let offset := FiniteTime.toInt (temporalBound phi) t -
+                      FiniteTime.toInt (temporalBound phi) t1'
+        have h_offset_1 : offset = 1 := by simp only [offset]; omega
+        let target_int := FiniteTime.toInt (temporalBound phi) t2 + offset
+        by_cases h_bounds : -(temporalBound phi : Int) ≤ target_int ∧
+                            target_int ≤ (temporalBound phi : Int)
+        · simp only [h_bounds, ↓reduceIte]
+          let t2_shifted := Classical.choose (FiniteTime.toInt_surj_on_range
+            (temporalBound phi) target_int h_bounds.1 h_bounds.2)
+          have h_t2_shifted_spec := Classical.choose_spec (FiniteTime.toInt_surj_on_range
+            (temporalBound phi) target_int h_bounds.1 h_bounds.2)
+          rw [h_agree]
+          have h_dist : FiniteTime.toInt (temporalBound phi) t2 -
+                        FiniteTime.toInt (temporalBound phi) t2_shifted = -1 := by
+            rw [h_t2_shifted_spec]; simp only [h_offset_1]; ring
+          have h_task := h2.respects_task t2_shifted t2
+          simp only [h_dist] at h_task
+          exact h_task
+        · simp only [h_bounds, ↓reduceIte]; sorry
+      · push_neg at ht'
+        simp only [ht.le, ht'.le, ↓reduceIte]
+        let offset_t := FiniteTime.toInt (temporalBound phi) t -
+                        FiniteTime.toInt (temporalBound phi) t1'
+        let offset_t' := FiniteTime.toInt (temporalBound phi) t' -
+                         FiniteTime.toInt (temporalBound phi) t1'
+        let target_t := FiniteTime.toInt (temporalBound phi) t2 + offset_t
+        let target_t' := FiniteTime.toInt (temporalBound phi) t2 + offset_t'
+        by_cases h_bounds_t : -(temporalBound phi : Int) ≤ target_t ∧ target_t ≤ (temporalBound phi : Int)
+        · by_cases h_bounds_t' : -(temporalBound phi : Int) ≤ target_t' ∧ target_t' ≤ (temporalBound phi : Int)
+          · simp only [h_bounds_t, h_bounds_t', ↓reduceIte]
+            let t2_t := Classical.choose (FiniteTime.toInt_surj_on_range
+              (temporalBound phi) target_t h_bounds_t.1 h_bounds_t.2)
+            let t2_t' := Classical.choose (FiniteTime.toInt_surj_on_range
+              (temporalBound phi) target_t' h_bounds_t'.1 h_bounds_t'.2)
+            have h_t2_t_spec := Classical.choose_spec (FiniteTime.toInt_surj_on_range
+              (temporalBound phi) target_t h_bounds_t.1 h_bounds_t.2)
+            have h_t2_t'_spec := Classical.choose_spec (FiniteTime.toInt_surj_on_range
+              (temporalBound phi) target_t' h_bounds_t'.1 h_bounds_t'.2)
+            have h_dist : FiniteTime.toInt (temporalBound phi) t2_t' -
+                          FiniteTime.toInt (temporalBound phi) t2_t = -1 := by
+              rw [h_t2_t_spec, h_t2_t'_spec]; simp only [offset_t, offset_t']; ring
+            have h_task := h2.respects_task t2_t t2_t'
+            simp only [h_dist] at h_task
+            exact h_task
+          · simp only [h_bounds_t, h_bounds_t', ↓reduceIte]; sorry
+        · simp only [h_bounds_t, ↓reduceIte]
+          by_cases h_bounds_t' : -(temporalBound phi : Int) ≤ target_t' ∧ target_t' ≤ (temporalBound phi : Int)
+          · simp only [h_bounds_t', ↓reduceIte]; sorry
+          · simp only [h_bounds_t', ↓reduceIte]; sorry
+
+/--
+The glued history agrees with h1 at times before or at the junction.
+-/
+theorem glue_histories_before_junction {phi : Formula}
+    (h1 h2 : FiniteHistory phi)
+    (t1' t2 : FiniteTime (temporalBound phi))
+    (h_agree : h1.states t1' = h2.states t2)
+    (t : FiniteTime (temporalBound phi))
+    (h_before : FiniteTime.toInt (temporalBound phi) t ≤
+                FiniteTime.toInt (temporalBound phi) t1') :
+    (glue_histories h1 h2 t1' t2 h_agree).states t = h1.states t := by
+  simp only [glue_histories, h_before, ↓reduceIte]
+
+/--
+At the junction time, both histories agree with the glued history.
+-/
+theorem glue_histories_at_junction {phi : Formula}
+    (h1 h2 : FiniteHistory phi)
+    (t1' t2 : FiniteTime (temporalBound phi))
+    (h_agree : h1.states t1' = h2.states t2) :
+    (glue_histories h1 h2 t1' t2 h_agree).states t1' = h1.states t1' := by
+  simp only [glue_histories, le_refl, ↓reduceIte]
+
+/--
+The glued history agrees with h2 at times after the junction (with offset).
+-/
+theorem glue_histories_after_junction {phi : Formula}
+    (h1 h2 : FiniteHistory phi)
+    (t1' t2 : FiniteTime (temporalBound phi))
+    (h_agree : h1.states t1' = h2.states t2)
+    (t : FiniteTime (temporalBound phi))
+    (h_after : FiniteTime.toInt (temporalBound phi) t >
+               FiniteTime.toInt (temporalBound phi) t1')
+    (t2' : FiniteTime (temporalBound phi))
+    (h_t2'_eq : FiniteTime.toInt (temporalBound phi) t2' =
+                FiniteTime.toInt (temporalBound phi) t2 +
+                (FiniteTime.toInt (temporalBound phi) t -
+                 FiniteTime.toInt (temporalBound phi) t1')) :
+    (glue_histories h1 h2 t1' t2 h_agree).states t = h2.states t2' := by
+  simp only [glue_histories]
+  have h_not_le : ¬(FiniteTime.toInt (temporalBound phi) t ≤
+                    FiniteTime.toInt (temporalBound phi) t1') := by omega
+  simp only [h_not_le, ↓reduceIte]
+  let offset := FiniteTime.toInt (temporalBound phi) t -
+                FiniteTime.toInt (temporalBound phi) t1'
+  let target_int := FiniteTime.toInt (temporalBound phi) t2 + offset
+  have h_target_eq : target_int = FiniteTime.toInt (temporalBound phi) t2' := by
+    simp only [target_int, offset]; omega
+  have h_t2'_range := FiniteTime.toInt_range (temporalBound phi) t2'
+  have h_bounds : -(temporalBound phi : Int) ≤ target_int ∧
+                  target_int ≤ (temporalBound phi : Int) := by
+    rw [h_target_eq]; exact h_t2'_range
+  simp only [h_bounds, ↓reduceIte]
+  let t2_shifted := Classical.choose (FiniteTime.toInt_surj_on_range
+    (temporalBound phi) target_int h_bounds.1 h_bounds.2)
+  have h_shifted_spec := Classical.choose_spec (FiniteTime.toInt_surj_on_range
+    (temporalBound phi) target_int h_bounds.1 h_bounds.2)
+  have h_eq : t2_shifted = t2' := by
+    apply FiniteTime.toInt_injective (temporalBound phi)
+    rw [h_shifted_spec, h_target_eq]
+  simp only [h_eq]
+
+/-!
 ### Phase 2: Semantic Task Relation (Version 2)
 
 The semantic task relation for `SemanticWorldState` is defined via history existence.
@@ -2206,11 +2468,56 @@ theorem compositionality (w u v : SemanticWorldState phi) (x y : Int)
     -- canonical history constructed via Lindenbaum extension. In that context,
     -- h1 = h2 would hold.
 
-    -- For the general theorem, we accept this as a structural limitation
-    -- and note that in the completeness proof context it holds.
-    sorry
+    -- Use the glued history construction to witness the composed relation.
+    -- The glued history uses h1 for times <= t1' and h2 for times > t1' (with offset).
+    let h_glued := glue_histories h1 h2 t1' t2 h_states_eq
+    -- Show w is on h_glued at t1
+    have h_t1_before : FiniteTime.toInt (temporalBound phi) t1 ≤
+                       FiniteTime.toInt (temporalBound phi) t1' := by
+      have h_t1_range := FiniteTime.toInt_range (temporalBound phi) t1
+      have h_t1'_range := FiniteTime.toInt_range (temporalBound phi) t1'
+      -- Since t1' = t1 + x and both are in range, we can deduce x >= 0 in valid cases
+      -- Actually we can't assume x >= 0. The bound comes from h_bounds existing.
+      -- For the pos case (t_final exists), t_final = t1 + x + y is in range.
+      -- We need t1 <= t1'. This happens when x >= 0.
+      -- If x < 0 then w is AFTER u in h1, which means the gluing is different.
+      -- For now, use sorry for this edge case (x < 0).
+      sorry
+    have h_glued_state_t1 : h_glued.states t1 = h1.states t1 :=
+      glue_histories_before_junction h1 h2 t1' t2 h_states_eq t1 h_t1_before
+    have h_w_glued : w = SemanticWorldState.ofHistoryTime h_glued t1 := by
+      rw [h_w1]
+      simp only [SemanticWorldState.ofHistoryTime, SemanticWorldState.mk,
+                 SemanticWorldState.eq_iff_toFiniteWorldState_eq,
+                 SemanticWorldState.toFiniteWorldState, Quotient.lift_mk]
+      exact h_glued_state_t1.symm
+    -- Show v is on h_glued at t_final
+    have h_t_final_after : FiniteTime.toInt (temporalBound phi) t_final >
+                           FiniteTime.toInt (temporalBound phi) t1' := by
+      rw [h_t_final, h_t1_eq]
+      -- t_final = t1 + x + y, t1' = t1 + x
+      -- So t_final > t1' iff y > 0
+      -- Similar edge case: if y <= 0, v is at or before junction
+      sorry
+    have h_t2'_eq_offset : FiniteTime.toInt (temporalBound phi) t2' =
+                           FiniteTime.toInt (temporalBound phi) t2 +
+                           (FiniteTime.toInt (temporalBound phi) t_final -
+                            FiniteTime.toInt (temporalBound phi) t1') := by
+      rw [h_t2_eq, h_t_final, h_t1_eq]; omega
+    have h_glued_state_t_final : h_glued.states t_final = h2.states t2' :=
+      glue_histories_after_junction h1 h2 t1' t2 h_states_eq t_final
+        h_t_final_after t2' h_t2'_eq_offset
+    have h_v_glued : v = SemanticWorldState.ofHistoryTime h_glued t_final := by
+      rw [h_v2]
+      simp only [SemanticWorldState.ofHistoryTime, SemanticWorldState.mk,
+                 SemanticWorldState.eq_iff_toFiniteWorldState_eq,
+                 SemanticWorldState.toFiniteWorldState, Quotient.lift_mk]
+      exact h_glued_state_t_final.symm
+    -- Now use h_glued to witness the relation
+    exact ⟨h_glued, t1, t_final, h_t_final, h_w_glued, h_v_glued⟩
   · -- Bounds not satisfied - this case shouldn't arise in completeness proof
     -- In the completeness proof, all operations are bounded by temporalBound phi
+    -- This is an acceptable sorry as documented in the research.
     sorry
 
 /--

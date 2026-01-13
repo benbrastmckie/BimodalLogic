@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T18:58:00Z
-next_project_number: 484
+next_project_number: 485
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -142,6 +142,16 @@ technical_debt:
 
 ---
 
+### 484. Sync TikZ diagram operators with GLOSSARY.md
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Use GLOSSARY.md to improve/expand the operators included in the TikZ diagram in 00-Introduction.tex. Ensure bidirectional sync: add any operators from the glossary missing in the TikZ diagram, and add any operators in the TikZ diagram that are missing from GLOSSARY.md.
+
+---
+
 ### 483. Investigate LaTeX aux file corruption errors
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
@@ -171,14 +181,16 @@ technical_debt:
 
 ### 481. Implement finite_history_from_state
 - **Effort**: 2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 473
 - **Research**: [research-001.md](.claude/specs/481_finite_history_from_state/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/481_finite_history_from_state/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/481_finite_history_from_state/summaries/implementation-summary-20260113.md)
 
 **Description**: Implement `finite_history_from_state` to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for `SemanticCanonicalFrame.nullity` proof.
 
@@ -186,7 +198,7 @@ technical_debt:
 
 ### 482. Implement history gluing lemma
 - **Effort**: 4-5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium

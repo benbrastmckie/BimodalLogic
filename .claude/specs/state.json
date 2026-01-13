@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T18:57:59Z",
-  "next_project_number": 484,
+  "next_project_number": 485,
   "active_projects": [
+    {
+      "project_number": 484,
+      "project_name": "sync_tikz_diagram_operators_with_glossary",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T21:23:11Z",
+      "last_updated": "2026-01-13T21:23:11Z"
+    },
     {
       "project_number": 483,
       "project_name": "investigate_latex_aux_file_corruption_errors",
@@ -165,11 +174,11 @@
     {
       "project_number": 481,
       "project_name": "finite_history_from_state",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T20:50:00Z",
-      "last_updated": "2026-01-13T21:13:58Z",
+      "last_updated": "2026-01-13T21:21:35Z",
       "session_id": "sess_1768338797_f431ef",
       "parent_task": 473,
       "description": "Implement finite_history_from_state to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for SemanticCanonicalFrame.nullity proof.",
@@ -181,21 +190,26 @@
         {
           "path": ".claude/specs/481_finite_history_from_state/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/481_finite_history_from_state/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-13T21:21:35Z"
     },
     {
       "project_number": 482,
       "project_name": "history_gluing_lemma",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T20:50:00Z",
-      "last_updated": "2026-01-13T21:14:42Z",
+      "last_updated": "2026-01-13T21:16:28Z",
       "parent_task": 473,
       "description": "Implement history gluing lemma to compose two histories that share a common world state at the junction point. This eliminates the compositionality sorries in SemanticTaskRelV2.compositionality by proving histories can be concatenated when they agree at the boundary.",
-      "session_id": "sess_1768338790_24ed19",
+      "session_id": "sess_1768338975_5a5d1b",
       "artifacts": [
         {
           "path": ".claude/specs/482_history_gluing_lemma/reports/research-001.md",
