@@ -92,14 +92,14 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update command-lifecycle.md documentation [IN PROGRESS]
+### Phase 3: Update command-lifecycle.md documentation [COMPLETED]
 
 **Goal**: Document the continuation marker pattern for future reference
 
 **Tasks**:
-- [ ] Add "Control Flow in Commands" section documenting the pattern
-- [ ] Include the standard template: "On {checkpoint} success: IMMEDIATELY CONTINUE to {next_section} below."
-- [ ] Explain why this pattern prevents Claude from treating skill returns as stopping points
+- [x] Add "Control Flow in Commands" section documenting the pattern
+- [x] Include the standard template: "On {checkpoint} success: IMMEDIATELY CONTINUE to {next_section} below."
+- [x] Explain why this pattern prevents Claude from treating skill returns as stopping points
 
 **Timing**: 20 minutes
 
@@ -113,7 +113,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Verification and cleanup [NOT STARTED]
+### Phase 4: Verification and cleanup [IN PROGRESS]
 
 **Goal**: Verify all changes work correctly and remove any cruft
 
