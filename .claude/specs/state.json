@@ -124,12 +124,18 @@
     {
       "project_number": 453,
       "project_name": "add_ability_free_choice_modal_extension",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-12T22:55:27Z",
-      "last_updated": "2026-01-13T02:24:43Z",
-      "session_id": "sess_1768271071_5561e4"
+      "last_updated": "2026-01-13T02:36:38Z",
+      "session_id": "sess_1768271071_5561e4",
+      "artifacts": [
+        {
+          "path": ".claude/specs/453_add_ability_free_choice_modal_extension/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 452,

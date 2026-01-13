@@ -8,11 +8,11 @@ This question haunts the frontier of artificial intelligence. The systems we're 
 
 Current AI systems learn to reason by imitation. They consume vast corpora of human text including billions of words of reasoning, argument, and explanation to learn to produce outputs that pattern-match against this training data. The results can be impressive, making it increasingly difficult to tell when they are confidently wrong.
 
-The fundamental limitation is not intelligence but verification. When a language model produces a chain of reasoning, there is no mathematical guarantee that the reasoning is valid. The model has learned what reasoning *looks like*, not what makes reasoning *work*. It approximates patterns statistically rather than deriving conclusions logically.
+The fundamental limitation is not intelligence but verification. When a language model produces a chain of reasoning, there is no deterministic guarantee that the reasoning is in fact valid. The model has learned what reasoning *looks like* from human data that is far from consistent or accurate without knowing what makes reasoning valid or not.
 
-This matters because consequential decisions demand verifiable reasoning. A physician explaining a diagnosis, a lawyer constructing an argument, a planner evaluating alternatives—each must be able to justify their conclusions. Their reasoning must be not merely plausible but sound. And increasingly, AI systems are being asked to assist with exactly these tasks.
+This matters because consequential decisions demand verifiable reasoning. A physician explaining a diagnosis or a lawyer constructing an argument must be able to justify their conclusions. As AI systems continue to assist with complex tasks, 
 
-The question becomes: Can we build AI systems that don't just imitate reasoning but actually *do* it—and prove they've done it correctly?
+the question becomes: Can we build AI systems that don't just imitate reasoning but actually *do* it—and prove they've done it correctly?
 
 We believe the answer is yes. But it requires rethinking what logic is for.
 
