@@ -6,21 +6,27 @@
     {
       "project_number": 463,
       "project_name": "meta_context_loading_improvements",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-13T04:41:53Z",
-      "last_updated": "2026-01-13T04:41:53Z"
+      "last_updated": "2026-01-13T04:45:57Z"
     },
     {
       "project_number": 462,
       "project_name": "fix_workflow_command_delegation",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T04:27:46Z",
-      "last_updated": "2026-01-13T04:39:17Z",
-      "description": "Fix /research and /implement commands stopping after preflight. Commands complete skill-status-sync for preflight but fail to proceed to STAGE 2 delegation. Root cause: command files describe workflow but Claude stops executing after preflight instead of continuing to delegate to implementation skills/agents."
+      "last_updated": "2026-01-13T04:44:40Z",
+      "description": "Fix /research and /implement commands stopping after preflight. Commands complete skill-status-sync for preflight but fail to proceed to STAGE 2 delegation. Root cause: command files describe workflow but Claude stops executing after preflight instead of continuing to delegate to implementation skills/agents.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/462_fix_workflow_command_delegation/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 458,
