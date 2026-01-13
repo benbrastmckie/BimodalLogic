@@ -170,6 +170,55 @@ theorem toInt_surj_on_range (k : Nat) (n : Int)
   omega
 
 /--
+Shift a finite time by an integer offset, if the result is in bounds.
+
+Returns `some (t + delta)` if `toInt t + delta` is in [-k, k], otherwise `none`.
+-/
+def shift? (k : Nat) (t : FiniteTime k) (delta : Int) : Option (FiniteTime k) :=
+  let new_int := toInt k t + delta
+  if h : -(k : Int) ≤ new_int ∧ new_int ≤ (k : Int) then
+    -- Result is in range, construct the shifted time
+    let new_val := (new_int + k).toNat
+    have h_nonneg : 0 ≤ new_int + k := by omega
+    have h_bound : new_val < 2 * k + 1 := by
+      simp only [new_val]
+      rw [Int.toNat_lt h_nonneg]
+      omega
+    some ⟨new_val, h_bound⟩
+  else
+    none
+
+/--
+Shift produces the correct integer value.
+-/
+theorem shift_toInt (k : Nat) (t : FiniteTime k) (delta : Int) (t' : FiniteTime k)
+    (h : shift? k t delta = some t') : toInt k t' = toInt k t + delta := by
+  simp only [shift?, toInt] at h
+  split_ifs at h with h_bound
+  · simp only [Option.some.injEq] at h
+    subst h
+    simp only [toInt]
+    have h_nonneg : 0 ≤ (t.val : Int) - (k : Int) + delta + (k : Int) := by omega
+    simp only [Int.sub_add_cancel, add_sub_cancel_right]
+    conv_lhs => rw [Int.toNat_of_nonneg h_nonneg]
+    ring
+  · contradiction
+
+/--
+shift? by 0 returns the same time.
+-/
+theorem shift_zero (k : Nat) (t : FiniteTime k) : shift? k t 0 = some t := by
+  simp only [shift?, toInt, add_zero]
+  have h_range := toInt_range k t
+  simp only [toInt] at h_range
+  split_ifs with h_bound
+  · simp only [Option.some.injEq]
+    ext
+    simp only [Int.sub_add_cancel]
+    exact Int.toNat_coe_nat t.val
+  · omega
+
+/--
 Successor time: increment by 1 if possible.
 
 Returns `some (t + 1)` if `t + 1` is in bounds, otherwise `none`.

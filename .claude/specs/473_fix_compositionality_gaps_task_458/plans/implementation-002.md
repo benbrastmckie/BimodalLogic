@@ -1,7 +1,7 @@
 # Implementation Plan: Task #473
 
 - **Task**: 473 - Fix compositionality gaps from Task 458
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Version**: 002
 - **Effort**: 10-14 hours
 - **Priority**: Medium

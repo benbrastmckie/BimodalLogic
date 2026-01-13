@@ -6,11 +6,11 @@
     {
       "project_number": 478,
       "project_name": "revise_ecosystem_view_section",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-13T17:34:48Z",
-      "last_updated": "2026-01-13T18:29:51Z",
+      "last_updated": "2026-01-13T18:34:38Z",
       "artifacts": [
         {
           "path": ".claude/specs/478_revise_ecosystem_view_section/reports/research-001.md",
@@ -23,6 +23,10 @@
         {
           "path": ".claude/specs/478_revise_ecosystem_view_section/plans/implementation-002.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/478_revise_ecosystem_view_section/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ]
     },
@@ -230,19 +234,24 @@
     {
       "project_number": 466,
       "project_name": "reflection_extension_logosreference",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T06:31:21Z",
-      "last_updated": "2026-01-13T18:32:31Z",
+      "last_updated": "2026-01-13T18:36:15Z",
       "description": "Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the Reflection Extension",
-      "session_id": "sess_1768286181_c589c6",
+      "session_id": "sess_1768329277_b099e2",
       "artifacts": [
         {
           "path": ".claude/specs/466_reflection_extension_logosreference/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/466_reflection_extension_logosreference/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 465,
