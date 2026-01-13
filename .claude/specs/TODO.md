@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:34:26Z
-next_project_number: 459
+next_project_number: 460
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -113,6 +113,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 459. Update Bimodal LaTeX Metalogic, Theorems, and Notes
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Update /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/04-Metalogic.tex to include the decidability result and similarly update /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/05-Theorems.tex and /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/06-Notes.tex to include all recent progress made.
+
+---
 
 ### 456. Address TODOs in Bimodal Semantics LaTeX
 - **Effort**: 4 hours
