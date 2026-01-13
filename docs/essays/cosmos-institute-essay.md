@@ -6,7 +6,7 @@ This question haunts the frontier of artificial intelligence. The systems we're 
 
 ## The Problem
 
-Current AI systems learn to reason by imitation. They consume vast corpora of human text—billions of words of reasoning, argument, and explanation—and learn to produce outputs that pattern-match against this training data. The results can be impressive. They can also be confidently wrong.
+Current AI systems learn to reason by imitation. They consume vast corpora of human text including billions of words of reasoning, argument, and explanation to learn to produce outputs that pattern-match against this training data. The results can be impressive, making it increasingly difficult to tell when they are confidently wrong.
 
 The fundamental limitation is not intelligence but verification. When a language model produces a chain of reasoning, there is no mathematical guarantee that the reasoning is valid. The model has learned what reasoning *looks like*, not what makes reasoning *work*. It approximates patterns statistically rather than deriving conclusions logically.
 

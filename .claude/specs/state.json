@@ -134,19 +134,24 @@
     {
       "project_number": 452,
       "project_name": "use_d_notation_for_duration_group",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T22:50:56Z",
-      "last_updated": "2026-01-13T02:25:15Z",
-      "session_id": "sess_1768271089_ebc268",
+      "last_updated": "2026-01-13T02:31:30Z",
+      "session_id": "sess_1768271456_8cb136",
       "description": "Use D instead of T for the totally ordered commutative group of durations (also called times relative to a world history) consistently throughout the latex files in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/ and throughout the Lean Code in Logos/ to match the notation used in /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex",
       "artifacts": [
         {
           "path": ".claude/specs/452_use_d_notation_for_duration_group/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/452_use_d_notation_for_duration_group/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 449,

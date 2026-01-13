@@ -1,8 +1,9 @@
 # Implementation Summary: Task #458
 
 **Task**: Extend canonical_history from singleton domain to full domain
-**Completed**: 2026-01-12
+**Completed**: 2026-01-12 (Session 2)
 **Status**: PARTIAL (structures complete, some proofs have sorries)
+**Session ID**: sess_1768270848_c6ffa1 (resume session)
 
 ## Overview
 
@@ -29,11 +30,19 @@ This task extended the canonical world history construction from a singleton dom
 - `backward_seed_consistent` and `backward_extension` have sorries
 - More complex due to direction (transfers go TO S, not FROM T)
 
-### Phase 5: Full Domain Canonical History [PARTIAL]
+### Phase 5: Full Domain Canonical History [PARTIAL - IMPROVED]
 - Implemented `canonical_states` function using Classical.choose
 - Added `open scoped Classical` for Duration's decidability
 - Replaced singleton domain with full domain (`domain := fun _ => True`)
-- `respects_task` proof has sorry (requires compositionality for chosen witnesses)
+- **Session 2**: Significantly expanded `respects_task` proof with comprehensive case analysis:
+  - Case s = 0, t = 0: COMPLETE (uses canonical_nullity)
+  - Case s = 0, t > 0: COMPLETE (uses canonical_states_forward)
+  - Case s < 0, t = 0: COMPLETE (uses canonical_states_backward)
+  - Case s < 0, t > 0: COMPLETE (uses canonical_compositionality via backward+forward chain)
+  - Case s > 0, t <= 0: COMPLETE (proven impossible)
+  - Case s > 0, t > 0: Has sorry (blocked by coherence problem)
+  - Case s < 0, t < 0: Has sorry (blocked by coherence problem)
+- Added `Mathlib.Tactic.Abel` import for group arithmetic
 
 ### Phase 6: Verification and Cleanup [COMPLETED]
 - Added comprehensive documentation explaining:
