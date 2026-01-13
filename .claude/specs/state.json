@@ -156,31 +156,37 @@
     {
       "project_number": 481,
       "project_name": "finite_history_from_state",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T20:50:00Z",
-      "last_updated": "2026-01-13T21:04:00Z",
-      "session_id": "sess_1768337834_406839",
+      "last_updated": "2026-01-13T21:08:00Z",
+      "session_id": "sess_1768338404_922916",
       "parent_task": 473,
       "description": "Implement finite_history_from_state to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for SemanticCanonicalFrame.nullity proof.",
       "artifacts": [
         {
           "path": ".claude/specs/481_finite_history_from_state/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/481_finite_history_from_state/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 482,
       "project_name": "history_gluing_lemma",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T20:50:00Z",
-      "last_updated": "2026-01-13T20:50:00Z",
+      "last_updated": "2026-01-13T21:08:17Z",
       "parent_task": 473,
-      "description": "Implement history gluing lemma to compose two histories that share a common world state at the junction point. This eliminates the compositionality sorries in SemanticTaskRelV2.compositionality by proving histories can be concatenated when they agree at the boundary."
+      "description": "Implement history gluing lemma to compose two histories that share a common world state at the junction point. This eliminates the compositionality sorries in SemanticTaskRelV2.compositionality by proving histories can be concatenated when they agree at the boundary.",
+      "session_id": "sess_1768338485_ec8301"
     },
     {
       "project_number": 468,
