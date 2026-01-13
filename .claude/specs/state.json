@@ -401,12 +401,12 @@
     {
       "project_number": 450,
       "project_name": "completeness_theorems",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "effort": "8-10 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T22:36:08Z",
+      "last_updated": "2026-01-13T22:37:49Z",
       "parent_task": 257,
       "dependencies": [
         449,
@@ -422,6 +422,10 @@
         {
           "path": ".claude/specs/450_completeness_theorems/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/450_completeness_theorems/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
