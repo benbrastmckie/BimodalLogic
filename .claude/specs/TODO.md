@@ -55,6 +55,17 @@ technical_debt:
 
 ---
 
+### 464. Research coherence alternatives (Strategy A)
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: Task 458
+
+**Description**: Research alternative approaches to solve the canonical_history coherence problem. Current chain construction (Strategy C) provides coherence for discrete ℤ-indexed positions but cannot extend to full Duration domain. Investigate **Strategy A** from research-002.md: strengthen `canonical_task_rel` to include persistence conditions, making compositionality provable by construction. Also consider: (1) proving Duration discreteness (≅ ℤ·chain_step), (2) modifying forward/backward_extension to return chain-coherent witnesses, (3) quotient-based approaches.
+
+---
+
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [EXPANDED]

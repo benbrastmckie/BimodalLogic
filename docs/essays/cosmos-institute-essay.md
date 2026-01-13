@@ -12,13 +12,9 @@ Current AI systems learn to reason by imitation. They consume vast corpora of hu
 
 The fundamental limitation is not human or artificial intelligence but verification. When a language model produces a chain of reasoning, there is no deterministic guarantee that the reasoning is valid. In addition to the enormous bottleneck of attempting to check everything that one might want to, it is not even clear what it would be to check whether some piece of reasoning is valid or not, or how one would go about doing so. Instead, language models reproduce what reasoning *looks like* from human data. Although far from consistent or accurate, this often suffices to convince human users. In place of what is true or valid, AI systems are trained on the appearance of truth and validity by simulating even our best human approximations.
 
-This matters because consequential decisions demand verifiable reasoning. A physician explaining a diagnosis or a lawyer constructing an argument must be able to justify their conclusions. As AI systems continue to assist with complex tasks, 
+Reasoning by simulation without verification matters because consequential decisions demands justification. A physician explaining a diagnosis or a lawyer constructing an argument must be able to account for their conclusions. This project provides a foundation for training AI systems that don't just imitate reasoning well enough to convince most humans but rather to reason in a way that is provably correct. But it requires thinking about what reasoning is and what it is good for.
 
-the question becomes: Can we build AI systems that don't just imitate reasoning but actually *do* it—and prove they've done it correctly?
-
-We believe the answer is yes. But it requires rethinking what logic is for.
-
-## Philosophy as Engineering
+## Philosophical Logic as Conceptual Engineering
 
 The answer requires thinking about logic differently—not as a description of how humans reason, but as an engineering discipline for building reasoning systems.
 
