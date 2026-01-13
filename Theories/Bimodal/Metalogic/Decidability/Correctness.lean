@@ -54,7 +54,7 @@ If decide returns valid, the formula is valid.
 -/
 theorem decide_valid_implies_valid (φ : Formula) (searchDepth tableauFuel : Nat)
     (proof : DerivationTree [] φ)
-    (h : decide φ searchDepth tableauFuel = .valid proof) :
+    (_ : decide φ searchDepth tableauFuel = .valid proof) :
     (⊨ φ) := by
   exact decide_sound φ proof
 
