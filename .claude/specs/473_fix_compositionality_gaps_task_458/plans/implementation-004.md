@@ -141,7 +141,7 @@ This plan implements **Path A: Semantic History-Based World States** from resear
 
 ---
 
-### Phase 5: Connect to Completeness Theorem [IN PROGRESS]
+### Phase 5: Connect to Completeness Theorem [COMPLETED]
 
 **Goal**: Connect semantic infrastructure to main completeness statement
 
@@ -165,7 +165,7 @@ This plan implements **Path A: Semantic History-Based World States** from resear
 
 ---
 
-### Phase 6: Clean Up and Verify Zero-Sorry [NOT STARTED]
+### Phase 6: Clean Up and Verify Zero-Sorry [IN PROGRESS]
 
 **Goal**: Ensure all sorries are eliminated and proofs are complete
 
