@@ -30,7 +30,7 @@ technical_debt:
 
 ### 474. Fix skill return "status": "completed" field causing premature stops
 - **Effort**: 2.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Planned**: 2026-01-13 (v002)
 - **Priority**: High
 - **Language**: meta
@@ -159,12 +159,14 @@ technical_debt:
 ---
 
 ### 472. Lindenbaum extension for finite closures
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 458
 - **Research**: [research-001.md](.claude/specs/472_lindenbaum_extension_finite_closures/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/472_lindenbaum_extension_finite_closures/plans/implementation-001.md)
 
 **Description**: Complete the Lindenbaum extension for finite closures, building on task 458. Implement the restricted Lindenbaum lemma that extends consistent formula sets to maximal consistent sets within the finite subformula closure, enabling the finite truth lemma proof.
 

@@ -15,7 +15,7 @@ All subagents MUST return this JSON structure:
 
 ```json
 {
-  "status": "completed|partial|failed|blocked",
+  "status": "researched|planned|implemented|synced|linked|committed|tasks_created|partial|failed|blocked",
   "summary": "Brief 2-5 sentence summary (<100 tokens)",
   "artifacts": [
     {
@@ -46,13 +46,24 @@ All subagents MUST return this JSON structure:
 ## Field Specifications
 
 ### status (required)
-**Type**: enum  
-**Values**: `completed`, `partial`, `failed`, `blocked`  
-**Description**:
-- `completed`: Task fully completed, all artifacts created
+**Type**: enum
+**Values**: Contextual success values + `partial`, `failed`, `blocked`
+
+**Success values** (use instead of "completed" to avoid triggering stop behavior):
+- `researched`: Research task completed, report created
+- `planned`: Planning task completed, plan created
+- `implemented`: Implementation task completed, code/files created
+- `synced`: Status sync operation completed (preflight/postflight)
+- `linked`: Artifact linking operation completed
+- `committed`: Git commit operation completed
+- `tasks_created`: Meta/task creation operation completed
+
+**Non-success values**:
 - `partial`: Task partially completed, some artifacts created, can resume
 - `failed`: Task failed, no usable artifacts, cannot resume
 - `blocked`: Task blocked by external dependency, can retry later
+
+**Rationale**: The value "completed" was removed because Claude interprets it as a stop signal, causing workflow commands to halt prematurely after skill returns. Contextual values describe *what* was achieved rather than generic completion.
 
 ### summary (required)
 **Type**: string  
@@ -113,10 +124,10 @@ All subagents MUST return this JSON structure:
 
 1. **JSON Validity**: Return must be valid JSON
 2. **Required Fields**: status, summary, artifacts, metadata must be present
-3. **Status Enum**: status must be one of: completed, partial, failed, blocked
+3. **Status Enum**: status must be a contextual success value (researched, planned, implemented, synced, linked, committed, tasks_created) or partial, failed, blocked
 4. **Session ID Match**: metadata.session_id must match expected session_id
 5. **Summary Length**: summary must be <100 tokens
-6. **Artifacts Exist**: If status=completed, all artifact paths must exist on disk
+6. **Artifacts Exist**: If status is a success value (not partial/failed/blocked), all artifact paths must exist on disk
 
 ### Validation Failures
 
@@ -128,10 +139,10 @@ If validation fails:
 
 ## Examples
 
-### Completed Plan
+### Successful Plan
 ```json
 {
-  "status": "completed",
+  "status": "planned",
   "summary": "Created implementation plan for task 244 with 3 phases. Plan focuses on context reorganization, orchestrator streamlining, and command simplification. Estimated effort: 8 hours.",
   "artifacts": [
     {
@@ -236,7 +247,7 @@ Do NOT return plain text, markdown narrative, or any other format.
 
 Required JSON structure:
 {
-  "status": "completed|partial|failed|blocked",
+  "status": "<contextual-value>|partial|failed|blocked",
   "summary": "Brief 2-5 sentence summary (<100 tokens)",
   "artifacts": [{type, path, summary}, ...],
   "metadata": {session_id, duration_seconds, agent_type, delegation_depth, delegation_path},

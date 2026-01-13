@@ -43,12 +43,14 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg status "$target_status" \
 **Output:**
 ```json
 {
-  "status": "completed|failed",
+  "status": "synced|failed",
   "summary": "Updated task #N to [STATUS]",
   "previous_status": "not_started",
   "new_status": "researching"
 }
 ```
+
+Note: Returns `"status": "synced"` (not "completed") to avoid triggering Claude's stop behavior.
 
 ### postflight_update
 
@@ -67,13 +69,15 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg status "$target_status" \
 **Output:**
 ```json
 {
-  "status": "completed|failed",
+  "status": "{target_status}|failed",
   "summary": "Updated task #N to [STATUS] with N artifacts",
   "artifacts_linked": ["path1", "path2"],
   "previous_status": "researching",
   "new_status": "researched"
 }
 ```
+
+Note: Returns `"status": "{target_status}"` (e.g., "planned", "researched", "implemented") matching the achieved state, not "completed".
 
 ### artifact_link (Idempotent)
 
@@ -107,12 +111,14 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 **Output:**
 ```json
 {
-  "status": "completed|skipped",
+  "status": "linked|skipped|failed",
   "summary": "Linked artifact to task #N" | "Link already exists",
   "artifact_path": "path/to/artifact.md",
   "artifact_type": "research"
 }
 ```
+
+Note: Returns `"status": "linked"` (not "completed") to avoid triggering Claude's stop behavior.
 
 ---
 
