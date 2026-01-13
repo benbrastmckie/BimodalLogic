@@ -32,7 +32,7 @@ Create grant report text following the provided example format, distilling the t
 **Steps**:
 
 1. **Draft Outcome 1**: Technical achievement
-   - What: First Lean 4 formalization of TM bimodal logic with machine-verified soundness
+   - What: First Lean 4 formalization of TM bimodal logic with machine-verified soundness, deduction theorem, and decidability proofs
    - Impact: Provides verified foundation for AI reasoning systems
 
 2. **Draft Outcome 2**: Theoretical contribution

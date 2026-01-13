@@ -30,7 +30,7 @@ technical_debt:
 
 ### 458. Extend canonical_history to full domain
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 257
@@ -114,7 +114,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/457_document_top_project_outcomes/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/457_document_top_project_outcomes/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/457_document_top_project_outcomes/plans/implementation-002.md)
 
 **Description**: What are top 2-3 outcomes from this project? Briefly describe the most important outcomes resulting from your grant. This could be the impact it's made, technical achievements, or learnings from the project.
 
