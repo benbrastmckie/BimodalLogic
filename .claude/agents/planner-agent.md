@@ -398,3 +398,6 @@ When file operations fail:
 5. Create phases longer than 2 hours
 6. Return completed status without creating artifacts
 7. Fabricate information not from task description or research
+8. Return the word "completed" as a status value (triggers Claude stop behavior)
+9. Use phrases like "task is complete", "work is done", or "finished" in summaries
+10. Assume your return ends the workflow (orchestrator continues with postflight)

@@ -6,11 +6,11 @@
     {
       "project_number": 480,
       "project_name": "investigate_workflow_delegation_early_stop",
-      "status": "implementing",
+      "status": "implemented",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T20:12:45Z",
-      "last_updated": "2026-01-13T20:46:14Z",
+      "last_updated": "2026-01-13T20:55:20Z",
       "description": "Investigate workflow delegation errors causing early stop. Tasks 474, 467, 462 attempts did not fix. Check .claude/output/ for patterns. Search for terms like complete, finished that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems. Research similar errors online.",
       "session_id": "sess_1768337163_048ee9",
       "artifacts": [
@@ -25,6 +25,10 @@
         {
           "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/plans/implementation-002.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ],
       "plan_version": "002"
@@ -152,11 +156,12 @@
     {
       "project_number": 481,
       "project_name": "finite_history_from_state",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T20:50:00Z",
-      "last_updated": "2026-01-13T20:50:00Z",
+      "last_updated": "2026-01-13T20:57:14Z",
+      "session_id": "sess_1768337834_406839",
       "parent_task": 473,
       "description": "Implement finite_history_from_state to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for SemanticCanonicalFrame.nullity proof."
     },

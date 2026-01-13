@@ -98,11 +98,24 @@
 
 ---
 
+## Core Patterns (core/patterns/) **NEW**
+
+Load for: Behavior patterns that apply across all agents/skills
+
+- **anti-stop-patterns.md** (~150 lines) - Critical patterns to prevent workflow early stop
+  - Forbidden status values ("completed", "done", "finished")
+  - Safe contextual alternatives ("researched", "planned", "implemented")
+  - Forbidden phrases in summaries/next_steps
+  - Enforcement points and validation commands
+  - **MUST load when creating new agents or skills via /meta**
+
+---
+
 ## Core Formats (core/formats/)
 
 Load for: Artifact creation
 
-- **subagent-return.md** - Return format schema for all agents
+- **subagent-return.md** - Return format schema for all agents (includes anti-stop warning)
 - **plan-format.md** - Implementation plan structure
 - **report-format.md** - Research report structure
 - **summary-format.md** - Implementation summary structure

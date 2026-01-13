@@ -459,3 +459,6 @@ If task or plan is invalid:
 5. Create empty or placeholder proofs (sorry, admit)
 6. Ignore build errors
 7. Return completed status if any phase is incomplete
+8. Return the word "completed" as a status value (triggers Claude stop behavior)
+9. Use phrases like "task is complete", "work is done", or "finished" in summaries
+10. Assume your return ends the workflow (orchestrator continues with postflight)

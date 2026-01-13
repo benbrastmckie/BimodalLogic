@@ -1,5 +1,8 @@
 # Subagent Return Format Standard
 
+**CRITICAL WARNING - ANTI-STOP PATTERN**:
+Do NOT use `"status": "completed"` - it triggers Claude to stop execution prematurely, preventing orchestrator postflight (status updates, git commits). Use contextual values like `"researched"`, `"planned"`, `"implemented"` instead. See `.claude/context/core/patterns/anti-stop-patterns.md` for full documentation.
+
 ## Overview
 
 All subagents MUST return valid JSON matching this schema. This is enforced by:

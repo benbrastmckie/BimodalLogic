@@ -135,7 +135,7 @@ Expected successful return:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "next_steps": "Task complete"
+  "next_steps": "Implementation finished. Run /task --sync to verify."
 }
 ```
 

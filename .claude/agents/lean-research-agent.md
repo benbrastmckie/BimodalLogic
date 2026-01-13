@@ -395,3 +395,6 @@ Partial results should include:
 3. Ignore rate limits (will cause errors)
 4. Create empty report files
 5. Skip verification of found lemmas
+6. Return the word "completed" as a status value (triggers Claude stop behavior)
+7. Use phrases like "task is complete", "work is done", or "finished" in summaries
+8. Assume your return ends the workflow (orchestrator continues with postflight)

@@ -495,3 +495,6 @@ If task or plan is invalid:
 5. Skip compilation verification step
 6. Create .tex files without running compilation check
 7. Return completed status if PDF doesn't exist or is empty
+8. Return the word "completed" as a status value (triggers Claude stop behavior)
+9. Use phrases like "task is complete", "work is done", or "finished" in summaries
+10. Assume your return ends the workflow (orchestrator continues with postflight)

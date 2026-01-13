@@ -53,6 +53,7 @@ Load these on-demand using @-references:
 
 **Always Load (All Modes)**:
 - `@.claude/context/core/formats/subagent-return.md` - Return format schema
+- `@.claude/context/core/patterns/anti-stop-patterns.md` - Anti-stop patterns (apply when creating new agents/skills)
 
 **Stage 1 (Parse Delegation Context)**:
 - No additional context needed

@@ -394,3 +394,6 @@ Partial results should include:
 4. Ignore network errors (log and continue with fallback)
 5. Fabricate findings not actually discovered
 6. Return completed status without creating artifacts
+7. Return the word "completed" as a status value (triggers Claude stop behavior)
+8. Use phrases like "task is complete", "work is done", or "finished" in summaries
+9. Assume your return ends the workflow (orchestrator continues with postflight)

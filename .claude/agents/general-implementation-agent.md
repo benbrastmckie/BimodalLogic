@@ -444,3 +444,6 @@ If task or plan is invalid:
 5. Overwrite files unexpectedly (check first)
 6. Return completed status if verification fails
 7. Ignore build/test failures
+8. Return the word "completed" as a status value (triggers Claude stop behavior)
+9. Use phrases like "task is complete", "work is done", or "finished" in summaries
+10. Assume your return ends the workflow (orchestrator continues with postflight)
