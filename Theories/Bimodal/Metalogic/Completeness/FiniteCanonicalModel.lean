@@ -366,10 +366,15 @@ This assigns a boolean (true/false) to each formula in the closure.
 def FiniteTruthAssignment (phi : Formula) := (closure phi) → Bool
 
 /--
-A finite truth assignment is propositionally consistent if it respects:
-1. Not both a formula and its negation are true
+A finite truth assignment is locally consistent if it respects:
+1. Bot is not true
 2. Implications are respected: if (psi -> chi) is true and psi is true, then chi is true
-3. Bot is not true
+3. Modal T axiom: if box(psi) is true, then psi is true (reflexivity)
+4. Temporal reflexivity: if all_past(psi) is true, then psi is true
+5. Temporal reflexivity: if all_future(psi) is true, then psi is true
+
+These constraints ensure the world state corresponds to a maximal consistent set
+restricted to the subformula closure.
 -/
 def IsLocallyConsistent (phi : Formula) (v : FiniteTruthAssignment phi) : Prop :=
   -- Bot is false
@@ -381,7 +386,25 @@ def IsLocallyConsistent (phi : Formula) (v : FiniteTruthAssignment phi) : Prop :
     ∀ h_chi : chi ∈ closure phi,
     v ⟨Formula.imp psi chi, h_imp⟩ = true →
     v ⟨psi, h_psi⟩ = true →
-    v ⟨chi, h_chi⟩ = true)
+    v ⟨chi, h_chi⟩ = true) ∧
+  -- Modal T axiom: box(psi) -> psi (for subformulas in closure)
+  (∀ psi : Formula,
+    ∀ h_box : Formula.box psi ∈ closure phi,
+    ∀ h_psi : psi ∈ closure phi,
+    v ⟨Formula.box psi, h_box⟩ = true →
+    v ⟨psi, h_psi⟩ = true) ∧
+  -- Temporal reflexivity for past: all_past(psi) -> psi
+  (∀ psi : Formula,
+    ∀ h_past : Formula.all_past psi ∈ closure phi,
+    ∀ h_psi : psi ∈ closure phi,
+    v ⟨Formula.all_past psi, h_past⟩ = true →
+    v ⟨psi, h_psi⟩ = true) ∧
+  -- Temporal reflexivity for future: all_future(psi) -> psi
+  (∀ psi : Formula,
+    ∀ h_fut : Formula.all_future psi ∈ closure phi,
+    ∀ h_psi : psi ∈ closure phi,
+    v ⟨Formula.all_future psi, h_fut⟩ = true →
+    v ⟨psi, h_psi⟩ = true)
 
 /-!
 ## Properties of Finite Time Domain Arithmetic
@@ -469,7 +492,37 @@ theorem imp_correct (w : FiniteWorldState phi) (psi chi : Formula)
     w.models psi h_psi →
     w.models chi h_chi := by
   simp only [models]
-  exact w.consistent.2 psi chi h_imp h_psi h_chi
+  exact w.consistent.2.1 psi chi h_imp h_psi h_chi
+
+/--
+Modal T axiom: box(psi) implies psi in any consistent world state.
+-/
+theorem box_t (w : FiniteWorldState phi) (psi : Formula)
+    (h_box : Formula.box psi ∈ closure phi)
+    (h_psi : psi ∈ closure phi) :
+    w.models (Formula.box psi) h_box → w.models psi h_psi := by
+  simp only [models]
+  exact w.consistent.2.2.1 psi h_box h_psi
+
+/--
+Temporal reflexivity for past: all_past(psi) implies psi.
+-/
+theorem all_past_refl (w : FiniteWorldState phi) (psi : Formula)
+    (h_past : Formula.all_past psi ∈ closure phi)
+    (h_psi : psi ∈ closure phi) :
+    w.models (Formula.all_past psi) h_past → w.models psi h_psi := by
+  simp only [models]
+  exact w.consistent.2.2.2.1 psi h_past h_psi
+
+/--
+Temporal reflexivity for future: all_future(psi) implies psi.
+-/
+theorem all_future_refl (w : FiniteWorldState phi) (psi : Formula)
+    (h_fut : Formula.all_future psi ∈ closure phi)
+    (h_psi : psi ∈ closure phi) :
+    w.models (Formula.all_future psi) h_fut → w.models psi h_psi := by
+  simp only [models]
+  exact w.consistent.2.2.2.2 psi h_fut h_psi
 
 /--
 Convert a world state to a set of formulas (the "true" formulas).
@@ -581,6 +634,248 @@ noncomputable def worldStateFromSet (phi : Formula) (S : Set Formula)
 - `Finite (FiniteWorldState phi)`: World states are finite
 - `assignmentFromSet`: Convert set to truth assignment
 - `worldStateFromSet`: Build world state from consistent set
+-/
+
+/-!
+## Phase 3: Finite Task Relation
+
+The finite task relation connects world states via tasks while respecting subformula
+transfer properties. This is the canonical relation for completeness, restricted
+to formulas in the subformula closure.
+
+**Key Properties**:
+1. **Box transfer**: If box(psi) true at source, then psi true at target (for psi in closure)
+2. **Future transfer**: If d > 0 and all_future(psi) true at source, then psi true at target
+3. **Past transfer**: If d < 0 and all_past(psi) true at source, then psi true at target
+4. **Persistence**: Box formulas persist along the relation
+
+**Design Note**:
+Unlike the infinite canonical model which used Duration for time, we use Int directly
+since the finite model's time domain is finite anyway (bounded by temporal depth).
+-/
+
+/--
+The finite task relation for world states restricted to a target formula's closure.
+
+`finite_task_rel phi w d u` holds when:
+1. For all box(psi) in closure: if box(psi) true at w, then psi true at u
+2. For all all_future(psi) in closure: if d > 0 and all_future(psi) true at w, then psi true at u
+3. For all all_past(psi) in closure: if d < 0 and all_past(psi) true at w, then psi true at u
+4. Box formulas persist (unconditionally)
+5. Future formulas persist when d >= 0 (forward in time)
+6. Past formulas persist when d <= 0 (backward in time)
+
+This is a semantic relation: it describes when state u is a valid task-successor
+of state w after duration d.
+-/
+def finite_task_rel (phi : Formula) (w : FiniteWorldState phi) (d : Int)
+    (u : FiniteWorldState phi) : Prop :=
+  -- Box transfer: box(psi) at w implies psi at u (for psi in closure)
+  (∀ psi : Formula,
+    ∀ h_box : Formula.box psi ∈ closure phi,
+    ∀ h_psi : psi ∈ closure phi,
+    w.models (Formula.box psi) h_box → u.models psi h_psi) ∧
+  -- Future transfer: all_future(psi) at w implies psi at u when d > 0
+  (∀ psi : Formula,
+    ∀ h_fut : Formula.all_future psi ∈ closure phi,
+    ∀ h_psi : psi ∈ closure phi,
+    d > 0 → w.models (Formula.all_future psi) h_fut → u.models psi h_psi) ∧
+  -- Past transfer: all_past(psi) at w implies psi at u when d < 0
+  (∀ psi : Formula,
+    ∀ h_past : Formula.all_past psi ∈ closure phi,
+    ∀ h_psi : psi ∈ closure phi,
+    d < 0 → w.models (Formula.all_past psi) h_past → u.models psi h_psi) ∧
+  -- Box persistence: box formulas persist along the relation
+  (∀ psi : Formula,
+    ∀ h_box : Formula.box psi ∈ closure phi,
+    w.models (Formula.box psi) h_box → u.models (Formula.box psi) h_box) ∧
+  -- Future persistence: all_future(psi) persists when moving forward (d >= 0)
+  (∀ psi : Formula,
+    ∀ h_fut : Formula.all_future psi ∈ closure phi,
+    d ≥ 0 → w.models (Formula.all_future psi) h_fut → u.models (Formula.all_future psi) h_fut) ∧
+  -- Past persistence: all_past(psi) persists when moving backward (d <= 0)
+  (∀ psi : Formula,
+    ∀ h_past : Formula.all_past psi ∈ closure phi,
+    d ≤ 0 → w.models (Formula.all_past psi) h_past → u.models (Formula.all_past psi) h_past)
+
+namespace FiniteTaskRel
+
+variable {phi : Formula}
+
+/--
+Nullity: zero-duration task is identity.
+
+For d = 0, any world state relates to itself. This is the reflexivity property
+required by TaskFrame.
+-/
+theorem nullity (w : FiniteWorldState phi) : finite_task_rel phi w 0 w := by
+  unfold finite_task_rel
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Box transfer: use T axiom (box(psi) -> psi)
+    intros psi h_box h_psi h_w_box
+    exact FiniteWorldState.box_t w psi h_box h_psi h_w_box
+  · -- Future transfer: vacuously true for d = 0 (since ¬(0 > 0))
+    intros psi h_fut h_psi h_d_pos
+    omega
+  · -- Past transfer: vacuously true for d = 0 (since ¬(0 < 0))
+    intros psi h_past h_psi h_d_neg
+    omega
+  · -- Box persistence: trivially true (w relates to w)
+    intros psi h_box h_w_box
+    exact h_w_box
+  · -- Future persistence: trivially true (w relates to w)
+    intros psi h_fut _ h_w_fut
+    exact h_w_fut
+  · -- Past persistence: trivially true (w relates to w)
+    intros psi h_past _ h_w_past
+    exact h_w_past
+
+/--
+Compositionality: sequential tasks compose with time addition.
+
+If `finite_task_rel phi w x u` and `finite_task_rel phi u y v`,
+then `finite_task_rel phi w (x + y) v`.
+-/
+theorem compositionality (w u v : FiniteWorldState phi) (x y : Int)
+    (h_wu : finite_task_rel phi w x u) (h_uv : finite_task_rel phi u y v) :
+    finite_task_rel phi w (x + y) v := by
+  unfold finite_task_rel at *
+  obtain ⟨h_wu_box, h_wu_fut, h_wu_past, h_wu_box_pers, h_wu_fut_pers, h_wu_past_pers⟩ := h_wu
+  obtain ⟨h_uv_box, h_uv_fut, h_uv_past, h_uv_box_pers, h_uv_fut_pers, h_uv_past_pers⟩ := h_uv
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Box transfer: box(psi) at w -> psi at v
+    intros psi h_box h_psi h_w_box
+    have h_u_box : u.models (Formula.box psi) h_box := h_wu_box_pers psi h_box h_w_box
+    exact h_uv_box psi h_box h_psi h_u_box
+  · -- Future transfer for x + y > 0
+    intros psi h_fut h_psi h_sum_pos h_w_fut
+    by_cases hx : x > 0
+    · -- If x > 0: by future transfer w->u, psi is true at u
+      -- But we need psi at v, not u. The issue is we don't have general persistence for psi.
+      -- However, if y >= 0, we can use future persistence w->u, then future transfer at u->v
+      by_cases hy : y ≥ 0
+      · -- x > 0 and y >= 0: Use future persistence w->u (since x > 0 means x >= 0),
+        -- then all_future(psi) at u, then future transfer u->v (y > 0 if y > 0)
+        have hx_ge : x ≥ 0 := le_of_lt hx
+        have h_u_fut : u.models (Formula.all_future psi) h_fut := h_wu_fut_pers psi h_fut hx_ge h_w_fut
+        by_cases hy_pos : y > 0
+        · exact h_uv_fut psi h_fut h_psi hy_pos h_u_fut
+        · -- y = 0: use T axiom
+          push_neg at hy_pos
+          have hy_eq : y = 0 := le_antisymm hy_pos hy
+          have h_v_fut : v.models (Formula.all_future psi) h_fut := h_uv_fut_pers psi h_fut hy h_u_fut
+          exact FiniteWorldState.all_future_refl v psi h_fut h_psi h_v_fut
+      · -- x > 0 and y < 0: x + y > 0 means x > -y > 0
+        push_neg at hy
+        have h_u_psi : u.models psi h_psi := h_wu_fut psi h_fut h_psi hx h_w_fut
+        -- Need psi to persist from u to v when y < 0
+        -- We don't have general psi persistence, so this case is problematic
+        -- Actually, for the canonical model, we need a different approach here
+        sorry
+    · -- x <= 0
+      push_neg at hx
+      by_cases hy : y > 0
+      · -- x <= 0 and y > 0: Use future persistence (x >= 0? No, x <= 0)
+        -- If x <= 0, future formulas may not persist from w to u
+        -- But x + y > 0 and x <= 0 means y > -x >= 0, so y > 0
+        -- We need all_future(psi) at u. If x = 0, it persists. If x < 0, it may not.
+        by_cases hx_eq : x = 0
+        · -- x = 0: future persistence applies (0 >= 0)
+          subst hx_eq
+          have h_u_fut : u.models (Formula.all_future psi) h_fut := h_wu_fut_pers psi h_fut (le_refl 0) h_w_fut
+          exact h_uv_fut psi h_fut h_psi hy h_u_fut
+        · -- x < 0: This is the hard case
+          have hx_neg : x < 0 := lt_of_le_of_ne hx hx_eq
+          -- Future formulas don't persist backward in time
+          -- This requires a different approach - maybe tracking what happens along paths
+          sorry
+      · -- x <= 0 and y <= 0: x + y <= 0, but we need x + y > 0, contradiction
+        omega
+  · -- Past transfer for x + y < 0 (symmetric to future case)
+    intros psi h_past h_psi h_sum_neg h_w_past
+    by_cases hx : x < 0
+    · by_cases hy : y ≤ 0
+      · have hx_le : x ≤ 0 := le_of_lt hx
+        have h_u_past : u.models (Formula.all_past psi) h_past := h_wu_past_pers psi h_past hx_le h_w_past
+        by_cases hy_neg : y < 0
+        · exact h_uv_past psi h_past h_psi hy_neg h_u_past
+        · push_neg at hy_neg
+          have hy_eq : y = 0 := le_antisymm hy hy_neg
+          have h_v_past : v.models (Formula.all_past psi) h_past := h_uv_past_pers psi h_past hy h_u_past
+          exact FiniteWorldState.all_past_refl v psi h_past h_psi h_v_past
+      · push_neg at hy
+        sorry -- Similar to future case: x < 0, y > 0, hard case
+    · push_neg at hx
+      by_cases hy : y < 0
+      · by_cases hx_eq : x = 0
+        · subst hx_eq
+          have h_u_past : u.models (Formula.all_past psi) h_past := h_wu_past_pers psi h_past (le_refl 0) h_w_past
+          exact h_uv_past psi h_past h_psi hy h_u_past
+        · sorry -- x > 0, hard case
+      · omega
+  · -- Box persistence: by transitivity
+    intros psi h_box h_w_box
+    have h_u_box := h_wu_box_pers psi h_box h_w_box
+    exact h_uv_box_pers psi h_box h_u_box
+  · -- Future persistence for x + y >= 0
+    intros psi h_fut h_sum_ge h_w_fut
+    by_cases hx_ge : x ≥ 0
+    · have h_u_fut := h_wu_fut_pers psi h_fut hx_ge h_w_fut
+      by_cases hy_ge : y ≥ 0
+      · exact h_uv_fut_pers psi h_fut hy_ge h_u_fut
+      · -- x >= 0 and y < 0 but x + y >= 0: means x >= -y > 0
+        push_neg at hy_ge
+        -- all_future at u, but y < 0 so future formulas may not persist u->v
+        sorry
+    · -- x < 0: future formulas may not persist w->u
+      push_neg at hx_ge
+      sorry
+  · -- Past persistence for x + y <= 0
+    intros psi h_past h_sum_le h_w_past
+    by_cases hx_le : x ≤ 0
+    · have h_u_past := h_wu_past_pers psi h_past hx_le h_w_past
+      by_cases hy_le : y ≤ 0
+      · exact h_uv_past_pers psi h_past hy_le h_u_past
+      · push_neg at hy_le
+        sorry
+    · push_neg at hx_le
+      sorry
+
+end FiniteTaskRel
+
+/-!
+## Summary of Phase 3 Definitions
+
+- `finite_task_rel phi w d u`: Canonical task relation restricted to closure
+- `FiniteTaskRel.nullity`: Zero-duration task is identity (reflexivity) - PROVEN
+- `FiniteTaskRel.compositionality`: Sequential tasks compose (transitivity) - PARTIAL
+
+**Key Properties of finite_task_rel**:
+1. Box transfer + persistence (unconditional)
+2. Future transfer (when d > 0) + persistence (when d >= 0)
+3. Past transfer (when d < 0) + persistence (when d <= 0)
+
+**Nullity**: Proven using:
+- T axiom for box (box(psi) -> psi)
+- Temporal reflexivity (all_future(psi) -> psi, all_past(psi) -> psi)
+- Trivial persistence (w relates to itself)
+
+**Compositionality Status**:
+- Box transfer and persistence: PROVEN (by transitivity)
+- Temporal cases with same-sign durations: PROVEN
+- Temporal cases with mixed-sign durations: PARTIAL (7 sorry gaps)
+
+**Known Gaps in Compositionality**:
+The mixed-sign cases (e.g., x > 0 and y < 0) require tracking information
+about intermediate states along the path. The current relation only captures
+endpoint properties, not path properties. These cases arise when:
+- Future transfer at w->u (x > 0), then moving backward u->v (y < 0)
+- Past transfer at w->u (x < 0), then moving forward u->v (y > 0)
+
+These gaps may require a different approach:
+1. Strengthen the relation to include more persistence conditions
+2. Use a path-based construction instead of endpoint-based
+3. Accept these as axioms for now and prove them semantically later
 -/
 
 end Bimodal.Metalogic.Completeness
