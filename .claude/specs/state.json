@@ -6,12 +6,13 @@
     {
       "project_number": 466,
       "project_name": "reflection_extension_logosreference",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T06:31:21Z",
-      "last_updated": "2026-01-13T06:31:21Z",
-      "description": "Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the Reflection Extension"
+      "last_updated": "2026-01-13T06:36:27Z",
+      "description": "Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the Reflection Extension",
+      "session_id": "sess_1768286181_c589c6"
     },
     {
       "project_number": 465,

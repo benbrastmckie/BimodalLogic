@@ -117,7 +117,7 @@ technical_debt:
 
 ### 466. Add Reflection Extension to LogosReference
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: latex
 
