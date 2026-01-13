@@ -161,7 +161,7 @@ technical_debt:
 
 ### 481. Implement finite_history_from_state
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium
@@ -176,12 +176,14 @@ technical_debt:
 
 ### 482. Implement history gluing lemma
 - **Effort**: 4-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 473
 - **Research**: [research-001.md](.claude/specs/482_history_gluing_lemma/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/482_history_gluing_lemma/plans/implementation-001.md)
 
 **Description**: Implement history gluing lemma to compose two histories that share a common world state at the junction point. This eliminates the compositionality sorries in `SemanticTaskRelV2.compositionality` by proving histories can be concatenated when they agree at the boundary.
 
