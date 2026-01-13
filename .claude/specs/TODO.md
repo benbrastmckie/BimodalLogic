@@ -127,15 +127,15 @@ technical_debt:
 ---
 
 ### 473. Fix compositionality gaps from Task 458
-- **Effort**: 10-14 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 6-8 hours (reduced scope)
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 458
 - **Research**: [research-002.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-002.md)
-- **Plan**: [implementation-002.md](.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-003.md)
 - **Summary**: [implementation-summary-20260113-phase3.md](.claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-phase3.md)
 
 **Description**: Fix compositionality gaps from Task 458. Research identified 7 compositionality gaps (mixed-sign duration cases), 8 truth lemma gaps (negation-completeness), and 2 history construction gaps. Root cause: `IsLocallyConsistent` only captures soundness, not negation-completeness. Primary solution: Bridge to `SetMaximalConsistent` or strengthen world state definitions.
