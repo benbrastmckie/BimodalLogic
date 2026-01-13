@@ -16,11 +16,11 @@
     {
       "project_number": 465,
       "project_name": "cosmos_essay_latex",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T06:11:43Z",
-      "last_updated": "2026-01-13T06:30:32Z",
+      "last_updated": "2026-01-13T06:35:28Z",
       "description": "Convert cosmos-institute-essay.md to a professionally formatted LaTeX document with title information from BimodalReference.tex and LogosReference.tex, including their references and linking ModelChecker and ProofChecker to git repos.",
       "session_id": "sess_1768285816_7b069b",
       "artifacts": [
@@ -31,9 +31,14 @@
         {
           "path": ".claude/specs/465_cosmos_essay_latex/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/465_cosmos_essay_latex/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-13T06:35:28Z"
     },
     {
       "project_number": 464,
