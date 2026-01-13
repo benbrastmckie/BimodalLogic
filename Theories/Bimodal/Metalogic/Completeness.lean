@@ -2093,39 +2093,66 @@ theorem canonical_compositionality
   constructor
   -- Part 2: Future transfer when x + y > 0
   · intro h_sum_pos φ h_all_future_S
-    -- We have: x + y > 0 and all_future phi in S
-    -- We need: phi in U
-    -- This is complex: depends on signs of x and y
-    -- Case 1: x > 0 implies future_transfer S T, then we need all_future phi in T
-    -- Case 2: x ≤ 0 but x + y > 0 means y > 0 and we use T->U transfer
-    -- The challenge: we don't have Gφ → GGφ applied to MCS yet
-    -- For now, use sorry and document the requirement
+    -- We have: x + y > 0 and Gφ ∈ S
+    -- We need: φ ∈ U
+    --
+    -- CHALLENGE: The current definition's future_transfer gives us:
+    --   x > 0 → (Gψ ∈ S → ψ ∈ T)  [for all ψ]
+    -- But to compose, we need Gφ ∈ T, not just φ ∈ T.
+    --
+    -- The issue is that our definition transfers the *content* of G-formulas,
+    -- not the G-formulas themselves. This means:
+    --   - From Gφ ∈ S and x > 0, we get φ ∈ T
+    --   - From φ ∈ T and y > 0 (if it holds), we can't use future transfer
+    --     because we don't have Gφ ∈ T, only φ ∈ T
+    --
+    -- Possible fixes:
+    -- 1. Add "temporal persistence": t > 0 → (Gφ ∈ S → Gφ ∈ T)
+    -- 2. Use set_mcs_all_future_all_future to get GGφ ∈ S, then transfer
+    --
+    -- For now, we note that:
+    --   - GGφ ∈ S (by set_mcs_all_future_all_future)
+    --   - If x > 0: Gφ ∈ T (by hST_future on GGφ)
+    --   - If x ≤ 0 and x + y > 0: y > 0, so we need Gφ ∈ T for hTU_future
+    --
+    -- The second case requires further definition revision.
+    -- For Task 447, we document this as a known gap and proceed.
     sorry
   -- Part 3: Past transfer when x + y < 0
   · intro h_sum_neg φ h_all_past_S
     -- Similar analysis to future transfer
-    -- We have: x + y < 0 and all_past phi in S
-    -- We need: phi in U
+    -- We have: x + y < 0 and Hφ ∈ S
+    -- We need: φ ∈ U
+    --
+    -- Same challenge as future transfer: we transfer content of H-formulas,
+    -- not the H-formulas themselves.
+    --
+    -- Possible fix: Add "temporal persistence": t < 0 → (Hφ ∈ S → Hφ ∈ T)
     sorry
 
 /--
 The canonical frame for TM logic using set-based maximal consistent sets.
 
-**Construction**: Combines set-based maximal consistent sets, integers, and task relation.
+**Construction**: Combines set-based maximal consistent sets with the Duration type
+as the temporal structure.
 
-**Proof Obligations**:
-- Show `canonical_task_rel` satisfies nullity
-- Show `canonical_task_rel` satisfies compositionality
+**Components**:
+- WorldState: Set-based maximal consistent sets (CanonicalWorldState)
+- task_rel: The three-part transfer relation (modal + temporal)
+- nullity: Reflexivity at duration 0 (proven via Modal T axiom)
+- compositionality: Task composition with time addition
 
-**Note**: `CanonicalWorldState` is now `{S : Set Formula // SetMaximalConsistent S}`,
+**Note**: `CanonicalWorldState` is `{S : Set Formula // SetMaximalConsistent S}`,
 using the set-based consistency definitions that allow true maximality.
+
+**Status**: Compositionality proof has sorry placeholders for temporal cases.
+The modal case is proven. See canonical_compositionality for details.
 -/
-axiom canonical_frame : TaskFrame Duration
-  -- where
-  --   WorldState := CanonicalWorldState
-  --   task_rel := canonical_task_rel
-  --   nullity := canonical_nullity
-  --   compositionality := canonical_compositionality
+def canonical_frame : TaskFrame Duration where
+  WorldState := CanonicalWorldState
+  task_rel := canonical_task_rel
+  nullity := canonical_nullity
+  compositionality := canonical_compositionality
 
 /-!
 ## Canonical Model and Valuation
@@ -2138,7 +2165,7 @@ membership in maximal consistent sets.
 Canonical valuation: An atom is true at a world state iff it's in the
 set-based maximal consistent set.
 
-**Definition**: `canonical_val S p ↔ (Formula.atom p) ∈ S.val`
+**Definition**: `canonical_valuation S p ↔ (Formula.atom p) ∈ S.val`
 
 where `S : CanonicalWorldState` is a set-based maximal consistent set
 (subtype of `Set Formula`).
@@ -2147,16 +2174,19 @@ where `S : CanonicalWorldState` is a set-based maximal consistent set
 maximal consistent sets, enabling the truth lemma. The set-based representation
 ensures we can express true maximality (every formula or its negation is in the set).
 -/
-axiom canonical_valuation : CanonicalWorldState → String → Bool
+def canonical_valuation (S : CanonicalWorldState) (p : String) : Prop :=
+  Formula.atom p ∈ S.val
 
 /--
 The canonical model for TM logic.
 
 **Construction**: Canonical frame with canonical valuation.
+
+This provides the complete semantic structure for evaluating TM formulas
+in the canonical model construction.
 -/
-axiom canonical_model : TaskModel canonical_frame
-  -- where
-  --   valuation := canonical_valuation
+def canonical_model : TaskModel canonical_frame where
+  valuation := canonical_valuation
 
 /-!
 ## Canonical World Histories

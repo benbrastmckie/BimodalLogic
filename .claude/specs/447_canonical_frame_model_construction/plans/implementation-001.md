@@ -159,7 +159,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Compositionality Property Proof [IN PROGRESS]
+### Phase 4: Compositionality Property Proof [PARTIAL]
 
 **Goal**: Prove that `canonical_task_rel S x T -> canonical_task_rel T y U -> canonical_task_rel S (x + y) U`.
 
@@ -220,7 +220,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Canonical Frame Construction [NOT STARTED]
+### Phase 5: Canonical Frame Construction [COMPLETED]
 
 **Goal**: Package `canonical_task_rel`, `canonical_nullity`, and `canonical_compositionality` into a `TaskFrame Duration` structure.
 
@@ -251,7 +251,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 6: Canonical Valuation and Model [NOT STARTED]
+### Phase 6: Canonical Valuation and Model [COMPLETED]
 
 **Goal**: Define the canonical valuation and model, completing the canonical model construction.
 

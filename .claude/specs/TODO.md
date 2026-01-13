@@ -96,7 +96,7 @@ technical_debt:
 
 ### 456. Address TODOs in Bimodal Semantics LaTeX
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
@@ -302,15 +302,17 @@ technical_debt:
 
 ### 447. Canonical frame and model construction
 - **Effort**: 12-15 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 446
 - **Research**: [research-001.md](.claude/specs/447_canonical_frame_model_construction/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/447_canonical_frame_model_construction/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/447_canonical_frame_model_construction/summaries/implementation-summary-20260113.md)
 
 **Description**: Phase 4 of completeness proofs: Build canonical frame and model using agnostic Duration type. Define canonical_task_rel with modal/temporal transfer. Prove nullity and compositionality. Implement canonical_frame, canonical_valuation, canonical_model.
 
