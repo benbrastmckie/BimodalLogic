@@ -82,13 +82,11 @@ Just as the critical mind guides the creative, formally verified reasoning can a
 \section{The Problem}
 
 Current AI systems learn to reason by imitation, consuming vast corpora of human text to produce outputs that pattern-match against training data.
+Language models reproduce what reasoning \textit{looks like} by training on the appearance of validity rather than validity itself.
 Since human reasoning does not hang together as one, there is no single target for that imitation to mimic.
 Even if there were consensus on how to reason, execution is inevitably flawed.
-Nevertheless, the results can appear impressive, or at least convincing to most humans.
-
-The fundamental limitation is not intelligence, but verification.
 When a language model produces a chain of reasoning, there is no guarantee the reasoning is valid.
-Language models reproduce what reasoning \textit{looks like} by training on the appearance of validity rather than validity itself.
+Nevertheless, the results can appear impressive, or at least convincing to most humans.
 
 Consequential decisions demand justification.
 A physician explaining a diagnosis or a lawyer constructing an argument must be accountable for their conclusions.
@@ -102,19 +100,18 @@ This project provides a foundation for AI systems that reason in ways that are p
 
 This project treats logic not as a simulation of how humans reason but as a discipline for engineering reasoning systems fit to serve our aims.
 
-Consider materials science: raw sand is refined into glass through controlled processes that remove impurities and create useful transparency.
+Consider materials science where raw sand is refined into glass through controlled processes to remove impurities and create transparency.
 The result is an engineered material, created for specific applications.
-Logic follows a similar course, engineering the conceptual world rather than the material.
+Logic is similar, engineering the conceptual world rather than the material.
 
-Natural language provides raw materials---intuitions about conjunction, negation, necessity, possibility, time, causation, belief, and obligation.
+Natural language provides raw materials including intuitions about how to reason correctly with conjunction, negation, necessity, possibility, time, causation, belief, obligation, and many other operators.
 Such intuitions are useful but often ambiguous, inconsistent, or resistant to systematic analysis.
 Formal logic refines these intuitions by stipulating operators with explicit axioms, inference rules, and semantic clauses.
-Rather than describing how ``if'' behaves in English, formal logic stipulates how conditionals \textit{should} behave for systematic reasoning.
-The resulting operators remain intelligible yet are precise enough to be verifiable.
+Rather than describing how ``if'' behaves in English, formal logic stipulates how the material conditional, strict conditional, counterfactual conditional, and indicative conditional all \textit{should} behave for systematic reasoning.
+The resulting operators remain intelligible while also being precise enough to be verifiable.
 
 Although writing proofs and defining truth-conditions by hand has carried us some way over the past century and a half, the work is slow, error-prone, and limited to tiny fragment languages with few operators working together.
-
-The \href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}} implements an axiomatic proof theory and recursive semantics for the Logos---a unified formal language with operators for reasoning about necessity, possibility, counterfactuals, time, sufficiency, causation, and more.
+The \href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}} implements an axiomatic proof theory and recursive semantics for the Logos: a unified formal language with operators for reasoning about necessity, possibility, counterfactuals, time, sufficiency, causation, and many more.
 We have proven mathematically that the reasoning rules for this language are valid over its semantics.
 
 % ============================================================================
@@ -125,28 +122,28 @@ We have proven mathematically that the reasoning rules for this language are val
 
 \subsection{Machine-Verified Proofs}
 
-We have completed the first Lean 4 formalization of a bimodal logic for temporal-modal reasoning.
+I formalized a bimodal logic for temporal and modal reasoning in Lean 4.
 The system combines operators for necessity and possibility with operators for past and future into a unified framework.
 
-Every axiom has been proven sound by a machine-checkable proof---verified by Lean's type checker, not human arguments that might contain errors.
+Every axiom has been proven sound by a machine-checkable proof that is verified by Lean's type checker, not human arguments that might contain errors.
 When the system derives a conclusion, that conclusion is guaranteed to follow from the premises.
 
 \subsection{A Language for Planning Under Uncertainty}
 
-The Logos enables AI systems to reason about plans under uncertainty.
+The Logos provides expressive resources for reasoning about complex plans in multi-agent systems under conditions of uncertainty.
 Evaluating plans requires assessing failure points and surveying counterfactual futures that failures may induce.
 
 Temporal operators represent how situations evolve: ``this will always be true,'' ``this will eventually happen.''
-Modal operators represent alternatives: ``this is possible,'' ``this is necessary.''
-Together, these operators enable representing and comparing plans.
+Modal operators represent the range of alternatives: ``this is possible,'' ``this is necessary.''
+Together, these operators enable agents to represent and comparing plans.
 
 \subsection{Unlimited Verified Training Data}
 
-Current AI systems are trained on finite corpora---expensive to annotate, limited in scope, rife with errors.
-Axiom systems offer an alternative: they generate infinite theorems.
+Current AI systems are trained on finite corpora which are expensive to annotate, limited in scope, and rife with errors.
+Axiom systems offer an alternative since they generate infinite theorems.
 
-Each theorem comes with a \textit{proof receipt}, a machine-checkable demonstration that the inference is valid.
-Invalid inferences can be refuted with \textit{countermodels}---explicit scenarios showing why the reasoning fails.
+Each theorem has a \textit{proof receipt}, a machine-checkable demonstration that the inference is valid.
+Invalid inferences are refuted by \textit{countermodels} which provide explicit scenarios showing why the reasoning fails.
 This dual architecture produces training signals that are unbounded, clean, justified, and interpreted.
 
 % ============================================================================
@@ -160,13 +157,12 @@ We cannot check every inference or audit every recommendation.
 We need systems that can verify themselves.
 
 Proof receipts enable scalable oversight.
-An AI system can provide a machine-checkable proof that its conclusion follows from the premises---a certificate of correctness you can verify without understanding all the details.
-
+An AI system can provide a machine-checkable proof that its conclusion follows from the premises.
 Explicit semantics provide interpretability.
 When an AI claims something is ``necessarily true'' or ``will eventually happen,'' these claims have exact mathematical meanings.
 You can check not just whether the reasoning \textit{looks} right, but what it actually \textit{means}.
 
-Applications span any domain requiring verifiable reasoning under uncertainty: medical planning with counterfactual reasoning about interventions, legal reasoning tracking beliefs and obligations, multi-agent coordination modeling what others believe and prefer.
+Applications span any domain requiring verifiable reasoning, including medical planning with counterfactual reasoning about interventions, legal reasoning tracking beliefs and obligations, and multi-agent coordination modeling what others believe and prefer.
 
 % ============================================================================
 % The Invitation
@@ -175,9 +171,8 @@ Applications span any domain requiring verifiable reasoning under uncertainty: m
 \section{The Invitation}
 
 Philosophy without implementation is speculation.
-The Logos has a layered architecture: applications import exactly the operators they need---temporal and counterfactual reasoning for planning, epistemic reasoning for uncertainty, normative reasoning for obligations.
 
-The \href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}} provides proofs verified in Lean 4; the \href{https://github.com/benbrastmckie/ModelChecker}{\texttt{ModelChecker}} finds countermodels via Z3.
+By contrast, the \href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}} provides proofs verified in Lean 4 and the \href{https://github.com/benbrastmckie/ModelChecker}{\texttt{ModelChecker}} finds countermodels via Z3.
 Together these packages provide training signals that are unlimited and mathematically guaranteed.
 
 We invite others to join this work.
