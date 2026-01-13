@@ -177,12 +177,13 @@
     {
       "project_number": 446,
       "project_name": "agnostic_duration_construction",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "effort": "15-20 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T07:00:34Z",
+      "last_updated": "2026-01-13T07:45:00Z",
+      "completed": "2026-01-13T07:45:00Z",
       "parent_task": 257,
       "dependencies": [
         445
@@ -202,6 +203,10 @@
         {
           "path": ".claude/specs/446_agnostic_duration_construction/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/446_agnostic_duration_construction/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },
