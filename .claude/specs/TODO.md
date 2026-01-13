@@ -126,9 +126,11 @@ technical_debt:
 
 ### 459. Update Bimodal LaTeX Metalogic, Theorems, and Notes
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/459_update_bimodal_latex_metalogic_theorems_notes/reports/research-001.md)
 
 **Description**: Update /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/04-Metalogic.tex to include the decidability result and similarly update /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/05-Theorems.tex and /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/06-Notes.tex to include all recent progress made.
 

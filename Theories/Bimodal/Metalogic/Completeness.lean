@@ -2055,6 +2055,65 @@ theorem canonical_nullity (S : CanonicalWorldState) : canonical_task_rel S 0 S :
     simp only [LT.lt] at h_neg
     exact h_neg.2 rfl
 
+/-!
+### Temporal Persistence Lemmas
+
+These lemmas establish that G-formulas persist forward through the task relation
+and H-formulas persist backward. They are key to completing temporal compositionality.
+-/
+
+/--
+Future formula persistence: If `canonical_task_rel S d T` with `d > 0` and `Gφ ∈ S`,
+then `Gφ ∈ T`.
+
+**Proof Strategy**:
+1. From `Gφ ∈ S`, get `GGφ ∈ S` via `set_mcs_all_future_all_future` (G-4 axiom)
+2. Since `d > 0`, we have `future_transfer S T`, so `Gφ ∈ T` from `GGφ ∈ S`
+
+This captures the intuition that "always in the future" is stable under
+forward time progression.
+-/
+theorem future_formula_persistence {S T : CanonicalWorldState} {d : CanonicalTime}
+    (hrel : canonical_task_rel S d T) (hd : d > 0) (φ : Formula)
+    (h_all_future : Formula.all_future φ ∈ S.val) :
+    Formula.all_future φ ∈ T.val := by
+  -- Step 1: From Gφ ∈ S, get GGφ ∈ S via set_mcs_all_future_all_future
+  have h_gg : (Formula.all_future φ).all_future ∈ S.val :=
+    set_mcs_all_future_all_future S.property h_all_future
+  -- Step 2: Since d > 0, we have future_transfer S T
+  -- canonical_task_rel gives us: d > 0 → future_transfer S T
+  unfold canonical_task_rel at hrel
+  have h_future : future_transfer S T := hrel.2.1 hd
+  -- Step 3: Apply future_transfer to GGφ to get Gφ ∈ T
+  unfold future_transfer at h_future
+  exact h_future (Formula.all_future φ) h_gg
+
+/--
+Past formula persistence: If `canonical_task_rel S d T` with `d < 0` and `Hφ ∈ S`,
+then `Hφ ∈ T`.
+
+**Proof Strategy**:
+1. From `Hφ ∈ S`, get `HHφ ∈ S` via `set_mcs_all_past_all_past` (H-4 axiom)
+2. Since `d < 0`, we have `past_transfer S T`, so `Hφ ∈ T` from `HHφ ∈ S`
+
+This captures the intuition that "always in the past" is stable under
+backward time progression.
+-/
+theorem past_formula_persistence {S T : CanonicalWorldState} {d : CanonicalTime}
+    (hrel : canonical_task_rel S d T) (hd : d < 0) (φ : Formula)
+    (h_all_past : Formula.all_past φ ∈ S.val) :
+    Formula.all_past φ ∈ T.val := by
+  -- Step 1: From Hφ ∈ S, get HHφ ∈ S via set_mcs_all_past_all_past
+  have h_hh : (Formula.all_past φ).all_past ∈ S.val :=
+    set_mcs_all_past_all_past S.property h_all_past
+  -- Step 2: Since d < 0, we have past_transfer S T
+  -- canonical_task_rel gives us: d < 0 → past_transfer S T
+  unfold canonical_task_rel at hrel
+  have h_past : past_transfer S T := hrel.2.2 hd
+  -- Step 3: Apply past_transfer to HHφ to get Hφ ∈ T
+  unfold past_transfer at h_past
+  exact h_past (Formula.all_past φ) h_hh
+
 /--
 Compositionality: The canonical task relation composes with time addition.
 
@@ -2096,28 +2155,150 @@ theorem canonical_compositionality
     -- We have: x + y > 0 and Gφ ∈ S
     -- We need: φ ∈ U
     --
-    -- CHALLENGE: The current definition's future_transfer gives us:
-    --   x > 0 → (Gψ ∈ S → ψ ∈ T)  [for all ψ]
-    -- But to compose, we need Gφ ∈ T, not just φ ∈ T.
+    -- Strategy: Case analysis on sign of x
+    -- - If x > 0: Use future_formula_persistence to get Gφ ∈ T, then case on y
+    -- - If x ≤ 0: Then y > x + y > 0, so y > 0, use hTU_future with Gφ ∈ T (but we need Gφ ∈ T!)
     --
-    -- The issue is that our definition transfers the *content* of G-formulas,
-    -- not the G-formulas themselves. This means:
-    --   - From Gφ ∈ S and x > 0, we get φ ∈ T
-    --   - From φ ∈ T and y > 0 (if it holds), we can't use future transfer
-    --     because we don't have Gφ ∈ T, only φ ∈ T
+    -- Key insight: We need Gφ ∈ T in all cases where we can't directly transfer.
+    -- From Gφ ∈ S, we can get GGφ ∈ S via set_mcs_all_future_all_future.
+    -- If x > 0, then Gφ ∈ T via future_transfer on GGφ.
+    -- But if x ≤ 0, we need a different approach.
     --
-    -- Possible fixes:
-    -- 1. Add "temporal persistence": t > 0 → (Gφ ∈ S → Gφ ∈ T)
-    -- 2. Use set_mcs_all_future_all_future to get GGφ ∈ S, then transfer
+    -- Extended strategy for x ≤ 0:
+    -- If x ≤ 0 and x + y > 0, then y > 0.
+    -- We need to get Gφ ∈ T. But with x ≤ 0, we can't use hST_future.
+    -- However, with modal_transfer and the right boxing, we might be able to help.
     --
-    -- For now, we note that:
-    --   - GGφ ∈ S (by set_mcs_all_future_all_future)
-    --   - If x > 0: Gφ ∈ T (by hST_future on GGφ)
-    --   - If x ≤ 0 and x + y > 0: y > 0, so we need Gφ ∈ T for hTU_future
+    -- The fundamental issue is that Gφ talks about "strictly future" times.
+    -- When T is at or before S (x ≤ 0), Gφ ∈ S doesn't imply Gφ ∈ T syntactically.
     --
-    -- The second case requires further definition revision.
-    -- For Task 447, we document this as a known gap and proceed.
-    sorry
+    -- NEW APPROACH: Use case split on whether we can get Gφ into T or go directly.
+    --
+    -- Case x > 0:
+    by_cases hx : x > 0
+    case pos =>
+      -- x > 0: Get Gφ ∈ T via future_formula_persistence
+      have h_Gφ_T : φ.all_future ∈ T.val := by
+        have hrel : canonical_task_rel S x T := ⟨hST_modal, hST_future, hST_past⟩
+        exact future_formula_persistence hrel hx φ h_all_future_S
+      -- Now case split on y
+      by_cases hy : y > 0
+      case pos =>
+        -- y > 0: Use hTU_future with Gφ
+        have h_GGφ_T : (φ.all_future).all_future ∈ T.val :=
+          set_mcs_all_future_all_future T.property h_Gφ_T
+        exact hTU_future hy φ.all_future h_GGφ_T
+      case neg =>
+        -- y ≤ 0 but x + y > 0
+        -- We have Gφ ∈ T. We need φ ∈ U.
+        -- Since y ≤ 0, we use the fact that T and U are related by y ≤ 0.
+        -- With y ≤ 0, the only transfer is modal_transfer (and past_transfer if y < 0).
+        -- We need to get φ into U from Gφ in T.
+        --
+        -- Key: If y < 0, use past_transfer. But we have Gφ, not Hφ.
+        -- If y = 0, modal_transfer only, but Gφ is not □-something.
+        --
+        -- Alternative: Work backwards. We have GGφ ∈ S.
+        -- If x > 0, get Gφ ∈ T.
+        -- Now, from Gφ ∈ T, can we get anything into U when y ≤ 0?
+        --
+        -- Actually, let me reconsider. We have h_sum_pos : x + y > 0.
+        -- If x > 0 and y ≤ 0, then the total displacement is still > 0.
+        --
+        -- The semantic intuition: U is at distance x + y > 0 from S.
+        -- Gφ ∈ S means φ holds at all times > 0 from S.
+        -- So φ should hold at U.
+        --
+        -- The syntactic path: We've established Gφ ∈ T.
+        -- We need: can we "go forward by x+y from S" even though we "went back by |y| from T"?
+        --
+        -- Let's try: From Gφ ∈ T, get GGφ ∈ T. Now what?
+        --
+        -- Wait, here's the insight:
+        -- Gφ ∈ T means φ holds at all times strictly after T.
+        -- U is at time y from T. If y ≤ 0, U is at or before T.
+        -- So Gφ ∈ T does NOT imply φ ∈ U when y ≤ 0!
+        --
+        -- This is the fundamental issue. Let me reconsider from scratch.
+        --
+        -- Actually, for y = 0, U = T (up to the relation). So Gφ ∈ T doesn't give φ ∈ T = U
+        -- because G talks about strictly future, not present!
+        --
+        -- For y < 0, U is before T. Even worse.
+        --
+        -- So in the case x > 0, y ≤ 0, we need a different approach.
+        --
+        -- KEY REALIZATION: The only way to get φ ∈ U when U is at or before T is if
+        -- we have some formula in T that implies φ at past times. That would be Hφ.
+        -- But we have Gφ (future), not Hφ (past).
+        --
+        -- Unless... there's a way to get Hφ ∈ T from Gφ ∈ S?
+        --
+        -- Actually, let's use a different strategy. Let's iterate the G-formulas more.
+        --
+        -- From Gφ ∈ S:
+        -- - GGφ ∈ S (by G-4)
+        -- - GGGφ ∈ S (by G-4 again)
+        -- - etc.
+        --
+        -- From GGφ ∈ S and x > 0:
+        -- - Gφ ∈ T (by future_transfer)
+        --
+        -- From GGGφ ∈ S and x > 0:
+        -- - GGφ ∈ T (by future_transfer)
+        --
+        -- From GGφ ∈ T:
+        -- - Even with y = 0, we can't use future_transfer (y not > 0)
+        --
+        -- This is still blocked!
+        --
+        -- CONCLUSION: The current definition of canonical_task_rel does NOT support
+        -- compositionality for the case x > 0, y ≤ 0, x + y > 0.
+        --
+        -- Possible fixes:
+        -- 1. Strengthen the definition to require more transfers
+        -- 2. Add an axiom relating G and H (e.g., GPφ ↔ PGφ for some cases)
+        -- 3. Accept that compositionality only holds in restricted cases
+        --
+        -- For now, we use sorry and document this gap.
+        sorry
+    case neg =>
+      -- x ≤ 0: Then since x + y > 0, we have y > -x ≥ 0, so y > 0.
+      push_neg at hx
+      have hy_pos : y > 0 := by
+        -- From x + y > 0 and x ≤ 0, we get y > -x ≥ 0
+        have h : y > -x := by omega
+        omega
+      -- y > 0: We need Gφ ∈ T to use hTU_future.
+      -- But with x ≤ 0, we can't use hST_future.
+      --
+      -- This is the other problematic case.
+      --
+      -- From Gφ ∈ S, can we get Gφ ∈ T when x ≤ 0?
+      --
+      -- If x = 0: T is "at the same time" as S (modulo the relation).
+      --   - canonical_task_rel S 0 T gives modal_transfer only
+      --   - Gφ ∈ S doesn't transfer to Gφ ∈ T via modal_transfer
+      --
+      -- If x < 0: T is "before" S.
+      --   - canonical_task_rel S x T gives modal_transfer and past_transfer
+      --   - Gφ ∈ S still doesn't help because G talks about future, not past
+      --
+      -- The semantic intuition says this should work because:
+      --   - Gφ ∈ S means φ holds at all times > S
+      --   - U is at x + y > 0 from S
+      --   - So φ should hold at U
+      --
+      -- But syntactically, we need to go through T, and T might be before S.
+      --
+      -- SEMANTIC vs SYNTACTIC GAP: The canonical model construction has this gap.
+      --
+      -- Possible semantic fix: The definition of canonical_task_rel should be
+      -- "accumulated" rather than "pointwise". That is, the transfer properties
+      -- should depend on the total signed distance from some reference point.
+      --
+      -- For now, we use sorry.
+      sorry
   -- Part 3: Past transfer when x + y < 0
   · intro h_sum_neg φ h_all_past_S
     -- Similar analysis to future transfer

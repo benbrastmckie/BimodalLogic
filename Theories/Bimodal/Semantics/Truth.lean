@@ -85,21 +85,25 @@ Given:
 Returns whether `φ` is true at this semantic configuration.
 
 The evaluation is defined recursively on formula structure:
-- Atoms: true iff valuation says so at current state
+- Atoms: true iff t is in the history's domain AND valuation says so at current state
+  (atoms are false at times outside the history's domain)
 - Bot (⊥): always false
 - Implication: standard material conditional
 - Box (□): true iff φ true at all world histories at time t
-- Past (P): true iff φ true at all past times in current history
-- Future (F): true iff φ true at all future times in current history
+- Past (P): true iff φ true at all past times in T (not just domain)
+- Future (F): true iff φ true at all future times in T (not just domain)
+
+**Paper Reference**: def:BL-semantics (lines 1857-1872) specifies:
+- Atoms check domain membership: M,τ,x ⊨ p iff x ∈ dom(τ) and τ(x) ∈ V(p)
+- Temporal operators quantify over ALL times in D, not just dom(τ)
 -/
-def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : T) (ht : τ.domain t) :
-    Formula → Prop
-  | Formula.atom p => M.valuation (τ.states t ht) p
+def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : T) : Formula → Prop
+  | Formula.atom p => if ht : τ.domain t then M.valuation (τ.states t ht) p else False
   | Formula.bot => False
-  | Formula.imp φ ψ => truth_at M τ t ht φ → truth_at M τ t ht ψ
-  | Formula.box φ => ∀ (σ : WorldHistory F) (hs : σ.domain t), truth_at M σ t hs φ
-  | Formula.all_past φ => ∀ (s : T) (hs : τ.domain s), s < t → truth_at M τ s hs φ
-  | Formula.all_future φ => ∀ (s : T) (hs : τ.domain s), t < s → truth_at M τ s hs φ
+  | Formula.imp φ ψ => truth_at M τ t φ → truth_at M τ t ψ
+  | Formula.box φ => ∀ (σ : WorldHistory F), truth_at M σ t φ
+  | Formula.all_past φ => ∀ (s : T), s < t → truth_at M τ s φ
+  | Formula.all_future φ => ∀ (s : T), t < s → truth_at M τ s φ
 
 -- Note: We avoid defining a notation for truth_at as it causes parsing conflicts
 -- with the validity notation in Validity.lean. Use truth_at directly.
@@ -112,8 +116,8 @@ Bot (⊥) is false everywhere.
 theorem bot_false
     {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T} {ht : τ.domain t} :
-    ¬(truth_at M τ t ht Formula.bot) := by
+    {t : T} :
+    ¬(truth_at M τ t Formula.bot) := by
   intro h
   exact h
 
@@ -123,23 +127,37 @@ Truth of implication is material conditional.
 theorem imp_iff
     {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T} {ht : τ.domain t}
+    {t : T}
     (φ ψ : Formula) :
-    (truth_at M τ t ht (φ.imp ψ)) ↔
-      ((truth_at M τ t ht φ) → (truth_at M τ t ht ψ)) := by
+    (truth_at M τ t (φ.imp ψ)) ↔
+      ((truth_at M τ t φ) → (truth_at M τ t ψ)) := by
   rfl
 
 /--
-Truth of atom depends on valuation at current state.
+Truth of atom at a time in the domain: true iff valuation says so at current state.
+For times outside domain, atoms are always false.
 -/
-theorem atom_iff
+theorem atom_iff_of_domain
     {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T} {ht : τ.domain t}
+    {t : T} (ht : τ.domain t)
     (p : String) :
-    (truth_at M τ t ht (Formula.atom p)) ↔
+    (truth_at M τ t (Formula.atom p)) ↔
       M.valuation (τ.states t ht) p := by
-  rfl
+  simp only [truth_at, dif_pos ht]
+
+/--
+Truth of atom at a time outside the domain is false.
+-/
+theorem atom_false_of_not_domain
+    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
+    {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
+    {t : T} (ht : ¬τ.domain t)
+    (p : String) :
+    ¬(truth_at M τ t (Formula.atom p)) := by
+  simp only [truth_at, dif_neg ht]
+  intro h
+  exact h
 
 /--
 Truth of box: formula true at all histories at current time.
@@ -147,34 +165,34 @@ Truth of box: formula true at all histories at current time.
 theorem box_iff
     {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T} {ht : τ.domain t}
+    {t : T}
     (φ : Formula) :
-    (truth_at M τ t ht φ.box) ↔
-      ∀ (σ : WorldHistory F) (hs : σ.domain t), (truth_at M σ t hs φ) := by
+    (truth_at M τ t φ.box) ↔
+      ∀ (σ : WorldHistory F), (truth_at M σ t φ) := by
   rfl
 
 /--
-Truth of past: formula true at all earlier times in history.
+Truth of past: formula true at all earlier times.
 -/
 theorem past_iff
     {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T} {ht : τ.domain t}
+    {t : T}
     (φ : Formula) :
-    (truth_at M τ t ht φ.all_past) ↔
-      ∀ (s : T) (hs : τ.domain s), s < t → (truth_at M τ s hs φ) := by
+    (truth_at M τ t φ.all_past) ↔
+      ∀ (s : T), s < t → (truth_at M τ s φ) := by
   rfl
 
 /--
-Truth of future: formula true at all later times in history.
+Truth of future: formula true at all later times.
 -/
 theorem future_iff
     {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
     {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T} {ht : τ.domain t}
+    {t : T}
     (φ : Formula) :
-    (truth_at M τ t ht φ.all_future) ↔
-      ∀ (s : T) (hs : τ.domain s), t < s → (truth_at M τ s hs φ) := by
+    (truth_at M τ t φ.all_future) ↔
+      ∀ (s : T), t < s → (truth_at M τ s φ) := by
   rfl
 
 end Truth
@@ -185,53 +203,26 @@ These lemmas establish that truth is preserved under time-shift transformations.
 This is fundamental to proving the MF and TF axioms valid.
 
 The key insight is that for a formula φ:
-  `truth_at M σ y hy φ ↔ truth_at M (time_shift σ (y - x)) x hx φ`
+  `truth_at M σ y φ ↔ truth_at M (time_shift σ (y - x)) x φ`
 
 This relates truth at (σ, y) to truth at (shifted_σ, x).
+
+Note: With the new semantics where temporal operators quantify over ALL times (not just
+domain times), these proofs become simpler since we don't need to thread domain proofs.
 -/
 
 namespace TimeShift
 
 /--
-Truth is independent of the domain membership proof (proof irrelevance for truth).
-
-This auxiliary lemma is crucial for transporting truth between different domain membership proofs.
--/
-theorem truth_proof_irrel (M : TaskModel F) (τ : WorldHistory F) (t : T)
-    (ht₁ ht₂ : τ.domain t) (φ : Formula) :
-    truth_at M τ t ht₁ φ ↔ truth_at M τ t ht₂ φ := by
-  -- Proof by structural induction on φ
-  induction φ generalizing t ht₁ ht₂ with
-  | atom p =>
-    -- τ.states t ht₁ = τ.states t ht₂ by proof irrelevance, so both sides are equal
-    rfl
-  | bot =>
-    rfl
-  | imp ψ χ ih_ψ ih_χ =>
-    constructor
-    · intro h h_ψ
-      have := (ih_ψ t ht₁ ht₂).mpr h_ψ
-      exact (ih_χ t ht₁ ht₂).mp (h this)
-    · intro h h_ψ
-      have := (ih_ψ t ht₁ ht₂).mp h_ψ
-      exact (ih_χ t ht₁ ht₂).mpr (h this)
-  | box ψ _ =>
-    rfl
-  | all_past ψ _ =>
-    rfl
-  | all_future ψ _ =>
-    rfl
-
-/--
 Truth transport across equal histories.
 
-When two histories are equal and both domain proofs are valid, truth is preserved.
+When two histories are equal, truth is preserved.
 -/
 theorem truth_history_eq (M : TaskModel F) (τ₁ τ₂ : WorldHistory F) (t : T)
-    (ht₁ : τ₁.domain t) (ht₂ : τ₂.domain t) (h_eq : τ₁ = τ₂) (φ : Formula) :
-    truth_at M τ₁ t ht₁ φ ↔ truth_at M τ₂ t ht₂ φ := by
+    (h_eq : τ₁ = τ₂) (φ : Formula) :
+    truth_at M τ₁ t φ ↔ truth_at M τ₂ t φ := by
   cases h_eq
-  exact truth_proof_irrel M τ₁ t ht₁ ht₂ φ
+  rfl
 
 /--
 Truth at double time-shift with opposite amounts equals truth at original history.
@@ -240,26 +231,35 @@ This is the key transport lemma for the box case of time_shift_preserves_truth.
 It allows us to transfer truth from (time_shift (time_shift σ Δ) (-Δ)) back to σ.
 -/
 theorem truth_double_shift_cancel (M : TaskModel F) (σ : WorldHistory F) (Δ : T) (t : T)
-    (ht : σ.domain t) (ht' : (WorldHistory.time_shift (WorldHistory.time_shift σ Δ) (-Δ)).domain t)
     (φ : Formula) :
-    truth_at M (WorldHistory.time_shift (WorldHistory.time_shift σ Δ) (-Δ)) t ht' φ ↔
-    truth_at M σ t ht φ := by
-  induction φ generalizing t ht ht' with
+    truth_at M (WorldHistory.time_shift (WorldHistory.time_shift σ Δ) (-Δ)) t φ ↔
+    truth_at M σ t φ := by
+  induction φ generalizing t with
   | atom p =>
     simp only [truth_at]
-    have h_eq := WorldHistory.time_shift_time_shift_neg_states σ Δ t ht ht'
-    rw [h_eq]
+    -- Both sides check domain membership and get the same state
+    -- If t is in the double-shift domain, it's also in σ.domain (and vice versa)
+    by_cases ht : σ.domain t
+    · have ht' : (WorldHistory.time_shift (WorldHistory.time_shift σ Δ) (-Δ)).domain t := by
+        exact (WorldHistory.time_shift_time_shift_neg_domain_iff σ Δ t).mpr ht
+      simp only [dif_pos ht, dif_pos ht']
+      have h_eq := WorldHistory.time_shift_time_shift_neg_states σ Δ t ht ht'
+      rw [h_eq]
+    · have ht' : ¬(WorldHistory.time_shift (WorldHistory.time_shift σ Δ) (-Δ)).domain t := by
+        intro h
+        exact ht ((WorldHistory.time_shift_time_shift_neg_domain_iff σ Δ t).mp h)
+      simp only [dif_neg ht, dif_neg ht']
   | bot =>
     simp only [truth_at]
   | imp ψ χ ih_ψ ih_χ =>
     simp only [truth_at]
     constructor
     · intro h h_ψ
-      have h_ψ' := (ih_ψ t ht ht').mpr h_ψ
-      exact (ih_χ t ht ht').mp (h h_ψ')
+      have h_ψ' := (ih_ψ t).mpr h_ψ
+      exact (ih_χ t).mp (h h_ψ')
     · intro h h_ψ'
-      have h_ψ := (ih_ψ t ht ht').mp h_ψ'
-      exact (ih_χ t ht ht').mpr (h h_ψ)
+      have h_ψ := (ih_ψ t).mp h_ψ'
+      exact (ih_χ t).mpr (h h_ψ)
   | box ψ ih =>
     simp only [truth_at]
     -- Box quantifies over ALL histories at time t, independent of current history
@@ -267,27 +267,17 @@ theorem truth_double_shift_cancel (M : TaskModel F) (σ : WorldHistory F) (Δ : 
   | all_past ψ ih =>
     simp only [truth_at]
     constructor
-    · intro h s hs h_lt
-      -- Need domain proof for s in double-shift
-      have hs' : (WorldHistory.time_shift (WorldHistory.time_shift σ Δ) (-Δ)).domain s := by
-        exact (WorldHistory.time_shift_time_shift_neg_domain_iff σ Δ s).mpr hs
-      exact (ih s hs hs').mp (h s hs' h_lt)
-    · intro h s hs' h_lt
-      -- Need domain proof for s in original
-      have hs : σ.domain s := by
-        exact (WorldHistory.time_shift_time_shift_neg_domain_iff σ Δ s).mp hs'
-      exact (ih s hs hs').mpr (h s hs h_lt)
+    · intro h s h_lt
+      exact (ih s).mp (h s h_lt)
+    · intro h s h_lt
+      exact (ih s).mpr (h s h_lt)
   | all_future ψ ih =>
     simp only [truth_at]
     constructor
-    · intro h s hs h_lt
-      have hs' : (WorldHistory.time_shift (WorldHistory.time_shift σ Δ) (-Δ)).domain s := by
-        exact (WorldHistory.time_shift_time_shift_neg_domain_iff σ Δ s).mpr hs
-      exact (ih s hs hs').mp (h s hs' h_lt)
-    · intro h s hs' h_lt
-      have hs : σ.domain s := by
-        exact (WorldHistory.time_shift_time_shift_neg_domain_iff σ Δ s).mp hs'
-      exact (ih s hs hs').mpr (h s hs h_lt)
+    · intro h s h_lt
+      exact (ih s).mp (h s h_lt)
+    · intro h s h_lt
+      exact (ih s).mpr (h s h_lt)
 
 /--
 Time-shift preserves truth of formulas.
