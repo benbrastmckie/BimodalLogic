@@ -181,7 +181,7 @@ Note: GLOSSARY.md uses `≺_a` for preference and `↦` for normative explanatio
 
 ---
 
-### Phase 4: Update GLOSSARY.md Tables [IN PROGRESS]
+### Phase 4: Update GLOSSARY.md Tables [COMPLETED]
 
 **Goal**: Add missing Reflection and Spatial operator tables for bidirectional sync
 
@@ -228,7 +228,7 @@ Note: GLOSSARY.md uses `≺_a` for preference and `↦` for normative explanatio
 
 ---
 
-### Phase 5: Build Verification [NOT STARTED]
+### Phase 5: Build Verification [COMPLETED]
 
 **Goal**: Verify all changes build correctly and are consistent
 
