@@ -2590,6 +2590,120 @@ Combines the semantic canonical frame with the semantic valuation.
 noncomputable def SemanticCanonicalModel (phi : Formula) : TaskModel (SemanticCanonicalFrame phi) where
   valuation := semantic_valuation phi
 
+/-!
+### Helper Lemmas for Weak Completeness
+
+These lemmas support the proof of `semantic_weak_completeness`.
+-/
+
+/--
+If phi is not provable, then {phi.neg} is set-consistent.
+
+This is the key lemma connecting non-provability to consistency.
+The proof uses contrapositive: if {phi.neg} is inconsistent, then we can derive phi.
+-/
+theorem neg_consistent_of_not_provable (phi : Formula) (h_not_prov : ¬Nonempty (⊢ phi)) :
+    SetConsistent ({phi.neg} : Set Formula) := by
+  intro L hL h_incons
+  -- hL says every element of L is phi.neg
+  have hL' : ∀ ψ ∈ L, ψ = phi.neg := fun ψ hψ => Set.mem_singleton_iff.mp (hL ψ hψ)
+  by_cases hne : L = []
+  · -- L is empty, so [].⊢ ⊥, meaning ⊥ is provable from empty context
+    -- This contradicts soundness (⊥ is not valid)
+    subst hne
+    obtain ⟨d⟩ := h_incons
+    -- From [] ⊢ ⊥, by soundness, ⊥ is valid
+    have h_valid : valid Formula.bot := soundness [] Formula.bot d
+    -- But ⊥ is not valid (it's false in any model)
+    -- Use trivial frame to show ⊥ is false somewhere
+    have : ¬truth_at TaskFrame.trivial_frame
+        (TaskModel.trivialValuation TaskFrame.trivial_frame) (trivial_history Int) 0 Formula.bot := by
+      simp only [truth_at]
+    exact this (h_valid Int TaskFrame.trivial_frame
+        (TaskModel.trivialValuation TaskFrame.trivial_frame) (trivial_history Int) 0)
+  · -- L is non-empty, consisting only of phi.neg
+    obtain ⟨d⟩ := h_incons
+    -- L ⊢ ⊥ where L = [phi.neg, phi.neg, ...]
+    -- We can weaken to [phi.neg] ⊢ ⊥
+    have h_from_singleton : [phi.neg] ⊢ Formula.bot := by
+      apply derivation_from_subset_weaken d
+      intro ψ hψ
+      simp [hL' ψ hψ]
+    -- By deduction theorem: [] ⊢ phi.neg → ⊥, i.e., [] ⊢ phi.neg.neg
+    have h_dne_neg : [] ⊢ phi.neg.neg := deduction_theorem [] phi.neg Formula.bot h_from_singleton
+    -- By double negation elimination: [] ⊢ phi.neg.neg → phi
+    have h_dn : [] ⊢ phi.neg.neg.imp phi := double_negation phi
+    -- By modus ponens: [] ⊢ phi
+    have h_phi : [] ⊢ phi := DerivationTree.modus_ponens [] phi.neg.neg phi h_dn h_dne_neg
+    exact h_not_prov ⟨h_phi⟩
+
+/--
+In a set-consistent set, phi and phi.neg cannot both be members.
+-/
+theorem set_consistent_not_both {S : Set Formula} (h_cons : SetConsistent S)
+    (phi : Formula) (h_phi : phi ∈ S) (h_neg : phi.neg ∈ S) : False := by
+  -- [phi, phi.neg] ⊢ ⊥
+  have h_deriv : [phi, phi.neg] ⊢ Formula.bot := by
+    -- phi.neg = phi → ⊥
+    -- From phi and phi → ⊥, derive ⊥ by modus ponens
+    have h_phi_assume : [phi, phi.neg] ⊢ phi := DerivationTree.assumption _ _ (by simp)
+    have h_neg_assume : [phi, phi.neg] ⊢ phi.neg := DerivationTree.assumption _ _ (by simp)
+    exact DerivationTree.modus_ponens _ phi Formula.bot h_neg_assume h_phi_assume
+  -- But [phi, phi.neg] ⊆ S, so S is inconsistent
+  have h_sub : ∀ ψ ∈ [phi, phi.neg], ψ ∈ S := by
+    intro ψ hψ
+    simp only [List.mem_cons, List.mem_singleton] at hψ
+    cases hψ with
+    | inl h => exact h ▸ h_phi
+    | inr h => exact h ▸ h_neg
+  exact h_cons [phi, phi.neg] h_sub ⟨h_deriv⟩
+
+/--
+If phi.neg is in a set-maximal consistent set M, then phi is not in M.
+-/
+theorem set_mcs_neg_excludes {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+    (phi : Formula) (h_neg : phi.neg ∈ S) : phi ∉ S := by
+  intro h_phi
+  exact set_consistent_not_both h_mcs.1 phi h_phi h_neg
+
+/--
+Projection of a full MCS to closure gives a closure MCS.
+
+Given a SetMaximalConsistent set M and a formula phi, the intersection
+M ∩ closure(phi) is a ClosureMaximalConsistent set for phi.
+-/
+theorem mcs_projection_is_closure_mcs (phi : Formula) (M : Set Formula)
+    (h_mcs : SetMaximalConsistent M) :
+    ClosureMaximalConsistent phi (M ∩ (closure phi : Set Formula)) := by
+  constructor
+  · constructor
+    · -- M ∩ closure(phi) ⊆ closure(phi)
+      exact Set.inter_subset_right
+    · -- SetConsistent (M ∩ closure(phi))
+      intro L hL
+      -- L ⊆ M ∩ closure(phi) ⊆ M, so L ⊆ M
+      have h_sub_M : ∀ ψ ∈ L, ψ ∈ M := fun ψ hψ => (hL ψ hψ).1
+      exact h_mcs.1 L h_sub_M
+  · -- Maximality: for ψ ∈ closure(phi), if ψ ∉ M ∩ closure(phi), then insert ψ is inconsistent
+    intro ψ h_ψ_closure h_ψ_not_mem
+    -- ψ ∈ closure(phi) but ψ ∉ M ∩ closure(phi)
+    -- So ψ ∉ M (since if ψ ∈ M, then ψ ∈ M ∩ closure(phi))
+    have h_ψ_not_M : ψ ∉ M := by
+      intro h
+      exact h_ψ_not_mem ⟨h, h_ψ_closure⟩
+    -- By maximality of M: insert ψ M is inconsistent
+    have h_incons : ¬SetConsistent (insert ψ M) := h_mcs.2 ψ h_ψ_not_M
+    -- insert ψ (M ∩ closure) ⊆ insert ψ M
+    intro h_cons_insert
+    apply h_incons
+    intro L hL
+    have h_sub : ∀ x ∈ L, x ∈ insert ψ (M ∩ ↑(closure phi)) := by
+      intro x hx
+      cases hL x hx with
+      | inl h_eq => exact Or.inl h_eq
+      | inr h_mem => exact Or.inr h_mem
+    exact h_cons_insert L h_sub
+
 /--
 Semantic weak completeness: validity in semantic model implies derivability.
 
@@ -2599,17 +2713,77 @@ then phi is derivable.
 **Proof strategy**:
 1. Contrapositive: assume phi is not derivable
 2. Then {neg phi} is consistent
-3. By Lindenbaum, extend to maximal consistent set S0 in closure(phi)
-4. S0 becomes a FiniteWorldState
-5. Use finite_history_from_state to get a history
-6. The SemanticWorldState from that history falsifies phi
-7. Contrapositive: if valid in all semantic models, then derivable
-
-**Status**: Axiom pending completion of underlying infrastructure.
+3. By Lindenbaum, extend to maximal consistent set M
+4. Project M ∩ closure(phi) to get a closure MCS S
+5. Since phi.neg ∈ M, phi ∉ M, so phi ∉ S
+6. S becomes a FiniteWorldState where phi is false
+7. Use finite_history_from_state to get a history
+8. The SemanticWorldState from that history falsifies phi
+9. Contrapositive: if valid in all semantic models, then derivable
 -/
-axiom semantic_weak_completeness (phi : Formula) :
-  (∀ (w : SemanticWorldState phi), semantic_truth_at_v2 phi w (FiniteTime.origin (temporalBound phi)) phi) →
-  ⊢ phi
+noncomputable theorem semantic_weak_completeness (phi : Formula) :
+    (∀ (w : SemanticWorldState phi), semantic_truth_at_v2 phi w (FiniteTime.origin (temporalBound phi)) phi) →
+    ⊢ phi := by
+  -- Use contrapositive: ¬(⊢ phi) → ¬(∀ w, truth at w)
+  intro h_valid
+  by_contra h_not_prov
+  -- h_not_prov : ¬Nonempty (⊢ phi)
+  -- We construct a SemanticWorldState where phi is false
+
+  -- Step 1: {phi.neg} is consistent
+  have h_neg_cons : SetConsistent ({phi.neg} : Set Formula) :=
+    neg_consistent_of_not_provable phi h_not_prov
+
+  -- Step 2: Extend to full MCS by Lindenbaum
+  obtain ⟨M, h_sub_M, h_M_mcs⟩ := set_lindenbaum {phi.neg} h_neg_cons
+
+  -- Step 3: phi.neg ∈ M (from subset)
+  have h_neg_in_M : phi.neg ∈ M := h_sub_M (Set.mem_singleton phi.neg)
+
+  -- Step 4: phi ∉ M (by consistency)
+  have h_phi_not_M : phi ∉ M := set_mcs_neg_excludes h_M_mcs phi h_neg_in_M
+
+  -- Step 5: Project to closure MCS
+  let S := M ∩ (closure phi : Set Formula)
+  have h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M h_M_mcs
+
+  -- Step 6: phi ∉ S (since phi ∈ closure(phi) but phi ∉ M)
+  have h_phi_closure : phi ∈ closure phi := self_mem_closure phi
+  have h_phi_not_S : phi ∉ S := by
+    intro h
+    exact h_phi_not_M h.1
+
+  -- Step 7: Build FiniteWorldState from S
+  let w := worldStateFromClosureMCS phi S h_S_mcs
+
+  -- Step 8: phi is false at w
+  have h_phi_false : ¬w.models phi h_phi_closure :=
+    worldStateFromClosureMCS_not_models phi S h_S_mcs phi h_phi_closure h_phi_not_S
+
+  -- Step 9: Build FiniteHistory through w
+  let hist := finite_history_from_state phi w
+
+  -- Step 10: Build SemanticWorldState at origin
+  let t := FiniteTime.origin (temporalBound phi)
+  let sw := SemanticWorldState.ofHistoryTime hist t
+
+  -- Step 11: Show phi is false at sw
+  -- sw.toFiniteWorldState = hist.states t = w (by construction of hist)
+  have h_sw_eq : SemanticWorldState.toFiniteWorldState sw = hist.states t := rfl
+
+  -- hist.states t should equal w since hist is constructed from w at origin
+  -- For finite_history_from_state, states at any time returns w (constant function)
+  -- This follows from the definition of finite_history_from_state
+  have h_hist_states_t : hist.states t = w := rfl
+
+  have h_sw_false : ¬semantic_truth_at_v2 phi sw t phi := by
+    simp only [semantic_truth_at_v2]
+    intro ⟨h_mem, h_models⟩
+    rw [h_sw_eq, h_hist_states_t] at h_models
+    exact h_phi_false h_models
+
+  -- Step 12: This contradicts h_valid
+  exact h_sw_false (h_valid sw)
 
 /--
 Key theorem: The semantic approach eliminates the compositionality gaps.

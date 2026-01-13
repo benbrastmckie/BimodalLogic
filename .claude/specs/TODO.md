@@ -145,11 +145,14 @@ technical_debt:
 ### 484. Sync TikZ diagram operators with GLOSSARY.md
 - **Effort**: 1-2 hours
 - **Status**: [PLANNED]
+- **Revised**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
-- **Plan**: [implementation-001.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-002.md) (v002)
 
 **Description**: Use GLOSSARY.md to improve/expand the operators included in the TikZ diagram in 00-Introduction.tex. Ensure bidirectional sync: add any operators from the glossary missing in the TikZ diagram, and add any operators in the TikZ diagram that are missing from GLOSSARY.md.
+
+**v002 Changes**: Epistemic box: remove K, add Pr, Mi, Mu, indicative conditional (↪). Normative box: add preference ordering and normative explanation. GLOSSARY.md: standardize indicative conditional to hook-right arrow (↪).
 
 ---
 
@@ -324,7 +327,7 @@ technical_debt:
 
 ### 449. Truth lemma
 - **Effort**: 8-12 hours (reduced from 15-20)
-- **Status**: [PLANNED] (v002 - revised after tasks 473, 481, 482)
+- **Status**: [IMPLEMENTING] (v002 - revised after tasks 473, 481, 482)
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Revised**: 2026-01-13

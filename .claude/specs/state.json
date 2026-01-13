@@ -10,10 +10,14 @@
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T21:23:11Z",
-      "last_updated": "2026-01-13T21:32:52Z",
+      "last_updated": "2026-01-13T21:53:22Z",
       "artifacts": [
         {
           "path": ".claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-002.md",
           "type": "plan"
         }
       ]
@@ -307,12 +311,12 @@
     {
       "project_number": 449,
       "project_name": "truth_lemma",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "low",
       "effort": "15-20 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T21:30:51Z",
+      "last_updated": "2026-01-13T21:36:14Z",
       "parent_task": 257,
       "dependencies": [
         448
@@ -340,7 +344,7 @@
           "type": "plan"
         }
       ],
-      "session_id": "sess_1768321902_42d2f5",
+      "session_id": "sess_1768340153_b894b7",
       "plan_version": "002"
     },
     {

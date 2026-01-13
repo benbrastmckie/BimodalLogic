@@ -93,33 +93,39 @@ Complete the truth lemma by connecting the semantic infrastructure (from Task 47
 
 ## Implementation Phases
 
-### Phase 1: Analyze Current State and Task 482 Impact [NOT STARTED]
+### Phase 1: Analyze Current State and Task 482 Impact [COMPLETED]
 
 **Goal**: Understand the current state of semantic completeness, identify exact gaps, and determine whether Task 482's sorries are blocking.
 
 **Tasks**:
-- [ ] Read `semantic_weak_completeness` axiom/sorry at current location
-- [ ] Identify what `semantic_weak_completeness` needs to prove
-- [ ] **Critical**: Determine if proof requires `SemanticTaskRelV2.compositionality`
-  - If yes: Task 482 is blocking and must be completed or worked around
-  - If no: Can proceed with semantic_weak_completeness using nullity + truth lemma
-- [ ] Verify `semantic_truth_lemma_v2` provides the necessary connection
-- [ ] Check Completeness.lean to see how completeness connects to canonical model
+- [x] Read `semantic_weak_completeness` axiom/sorry at current location
+- [x] Identify what `semantic_weak_completeness` needs to prove
+- [x] **Critical**: Determine if proof requires `SemanticTaskRelV2.compositionality`
+  - **NO!** Compositionality is NOT needed for the basic completeness proof
+  - The proof constructs ONE countermodel, doesn't need frame properties
+- [x] Verify `semantic_truth_lemma_v2` provides the necessary connection
+- [x] Check Completeness.lean to see how completeness connects to canonical model
 
-**Timing**: 1-2 hours
+**Findings**:
+1. `semantic_weak_completeness` proof uses contrapositive: assume not provable, construct countermodel
+2. Key dependencies are `closure_lindenbaum_via_projection` (proven) and `finite_history_from_state` (2 sorries)
+3. Task 482's compositionality sorries are NOT blocking - they're only needed for frame axioms
+4. The actual blocking sorries are in `finite_history_from_state` (lines 2850, 2852)
+5. Main Completeness.lean has `weak_completeness` axiom that could be replaced once semantic version is proven
 
-**Files to examine**:
+**Timing**: 1 hour (completed)
+
+**Files examined**:
 - `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - semantic infrastructure
-- `Theories/Bimodal/Metalogic/Completeness/Completeness.lean` - main completeness theorems
+- `Theories/Bimodal/Metalogic/Completeness.lean` - main completeness theorems
 
 **Verification**:
-- Document exactly which sorries need to be resolved
-- List all dependencies between semantic and main completeness
-- **Decision point**: Is Task 482 blocking? Document finding and adjust plan if needed
+- Task 482 is NOT blocking for semantic_weak_completeness
+- Blocking dependencies: `finite_history_from_state` construction sorries
 
 ---
 
-### Phase 2: Prove semantic_weak_completeness [NOT STARTED]
+### Phase 2: Prove semantic_weak_completeness [IN PROGRESS]
 
 **Goal**: Replace the `semantic_weak_completeness` axiom/sorry with a complete proof using `semantic_truth_lemma_v2`.
 
