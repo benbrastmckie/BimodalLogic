@@ -95,14 +95,16 @@ technical_debt:
 ## Medium Priority
 
 ### 455. Improve README extension layer descriptions
-- **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Effort**: 30 minutes
+- **Status**: [COMPLETED]
 - **Planned**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: Medium
 - **Language**: general
 - **Plan**: [implementation-001.md](.claude/specs/455_readme_extension_layer_descriptions/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/455_readme_extension_layer_descriptions/summaries/implementation-summary-20260113.md)
 
-**Description**: Turn the bullet points following the architecture drawing in the Overview section of README.md into clear and concise explanations of what each extension layer provides with regards to expressive and logical resources for representing and reasoning about tasks of increasing complexity.
+**Description**: Replaced terse bullet-point descriptions of Logos extension layers in README.md with expanded 2-3 sentence explanations covering operators (with Unicode symbols), semantic resources, and reasoning capabilities for each layer.
 
 ---
 
@@ -288,7 +290,7 @@ technical_debt:
 
 ### 447. Canonical frame and model construction
 - **Effort**: 12-15 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257

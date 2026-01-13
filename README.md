@@ -48,13 +48,19 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 └─────────────────────────────────────────────────┘
 ```
 
-- **Constitutive Foundation**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
-- **Explanatory Extension**: Modal, temporal, counterfactual, and causal operators for reasoning about past, future, contingency, and causation.
-- **Epistemic Extension**: Belief, knowledge, probability, and indicative conditional operators for reasoning under uncertainty.
-- **Normative Extension**: Permission, obligation, preference, and normative explanatory operators for reasoning about values and laws.
-- **Spatial Extension**: Spatial relations and locations for reasoning about space.
-- **Agential Extension**: Agency, action, and intention operators for multi-agent reasoning.
-- **Reflection Extension**: Self-modeling and metacognitive operators for first-person reasoning about one's own beliefs, abilities, preferences, and goals.
+- **Constitutive Foundation**: Provides the hyperintensional base with predicates, functions, quantifiers, and constitutive operators (propositional identity `≡`, grounding `≤`, essence `⊑`) over a state lattice with bilateral propositions (verifier/falsifier pairs). This enables fine-grained distinctions between propositions with identical truth-values but different verification conditions---essential for exact specification of what makes a claim true.
+
+- **Explanatory Extension**: Adds modal operators (`□`, `◇`) for necessity and possibility, temporal operators (`H`, `G`, `P`, `F`) for reasoning across time, counterfactual conditionals (`□→`, `◇→`) for hypothetical reasoning, and causal operators (`○→`) for explanatory links. Together these resources enable reasoning about action sequences, future contingency, what would have happened under different circumstances, and causal relationships.
+
+- **Epistemic Extension**: Introduces belief (`B`), knowledge (`K`), probability (`Pr`), and indicative conditional operators for reasoning under uncertainty. By extending the temporal framework with credence functions over state transitions, agents can track how evidence updates beliefs across time and distinguish what an agent believes from what is actually the case.
+
+- **Normative Extension**: Adds obligation (`O`), permission (`P`), and preference operators with value orderings over states for reasoning about what ought to be done, what is permitted, and how to rank alternatives. This enables ethical reasoning, multi-party preference aggregation, and grounding obligations in factual circumstances.
+
+- **Spatial Extension**: Provides location-dependent operators and spatial relations for reasoning about where things are and how spatial proximity affects truth conditions. This supports navigation, containment reasoning, and location-sensitive planning.
+
+- **Agential Extension**: Indexes epistemic and normative operators to specific agents, enabling reasoning about what different agents believe, prefer, and are obligated to do. This transforms single-perspective reasoning into multi-agent coordination where agents can model each other's epistemic and normative states.
+
+- **Reflection Extension**: Adds first-person metacognitive operators for self-directed reasoning about one's own beliefs, knowledge, abilities, and goal progress. This enables an agent to reason about what it knows versus believes, recognize its own limitations, and track progress toward goals---essential for AI systems that must understand their own capabilities.
 
 The Constitutive Foundation and Explanatory Extension provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension.
 
