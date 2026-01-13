@@ -11,11 +11,11 @@ This module defines task frames, the fundamental semantic structures for bimodal
 The JPL paper "The Perpetuity Calculus of Agency" defines task frames as tuples
 `F = (W, G, ·)` where:
 - `W` is a set of world states
-- `G` is a totally ordered abelian group `T = ⟨T, +, ≤⟩` of "time" elements (durations)
+- `G` is a totally ordered abelian group `D = ⟨D, +, ≤⟩` of "time" elements (durations)
 - `·: W × G → P(W)` is the task relation
 
 **ProofChecker Implementation**:
-This implementation generalizes the time group `G` to any type `T` with an
+This implementation generalizes the time group `G` to any type `D` with an
 ordered additive commutative group structure, which provides:
 - Additive abelian group structure (zero, addition, inverse)
 - Total linear order (≤ relation)
@@ -36,7 +36,7 @@ This matches the paper's specification exactly and allows for various temporal s
 
 ## Main Definitions
 
-- `TaskFrame T`: Structure with world states, times of type `T`, task relation, and constraints
+- `TaskFrame D`: Structure with world states, times of type `D`, task relation, and constraints
 - `TaskFrame.nullity`: Identity task constraint (`task_rel w 0 w`)
 - `TaskFrame.compositionality`: Task composition constraint
 
@@ -46,12 +46,12 @@ This matches the paper's specification exactly and allows for various temporal s
 
 ## Implementation Notes
 
-- Type parameter `T` represents temporal duration with ordered additive group structure
+- Type parameter `D` represents temporal duration with ordered additive group structure
 - Task relation `task_rel w x u` means: world state `u` is reachable from `w` by task
   of duration `x`
 - Nullity: zero-duration task is identity (reflexivity)
 - Compositionality: sequential tasks compose (transitivity with addition)
-- Typeclass parameter convention: `(T : Type*)` explicit, ordered group instances implicit
+- Typeclass parameter convention: `(D : Type*)` explicit, ordered group instances implicit
 
 ## References
 
@@ -66,7 +66,7 @@ Task frame for bimodal logic TM.
 
 A task frame consists of:
 - A type of world states
-- A type `T` of temporal durations with ordered additive group structure
+- A type `D` of temporal durations with ordered additive group structure
 - A task relation connecting world states via timed tasks
 - Nullity constraint: zero-duration task is identity
 - Compositionality: tasks compose sequentially with additive time
@@ -75,16 +75,16 @@ The task relation `task_rel w x u` means: starting from world state `w`,
 executing a task of duration `x` can result in world state `u`.
 
 **Type Parameters**:
-- `T`: Temporal duration type with totally ordered abelian group structure
+- `D`: Temporal duration type with totally ordered abelian group structure
 
 **Paper Alignment**: Matches JPL paper def:frame (line 1835) exactly with
-`T = ⟨T, +, ≤⟩` as a totally ordered abelian group.
+`D = ⟨D, +, ≤⟩` as a totally ordered abelian group.
 -/
-structure TaskFrame (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] where
+structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
   /-- Type of world states -/
   WorldState : Type
   /-- Task relation: `task_rel w x u` means u is reachable from w by task of duration x -/
-  task_rel : WorldState → T → WorldState → Prop
+  task_rel : WorldState → D → WorldState → Prop
   /--
   Nullity constraint: zero-duration task is identity.
 
@@ -107,9 +107,9 @@ namespace TaskFrame
 Simple unit-based task frame for testing.
 
 World states are Unit (trivial), task relation is always true.
-This is the simplest possible task frame, polymorphic over temporal type `T`.
+This is the simplest possible task frame, polymorphic over temporal type `D`.
 -/
-def trivial_frame {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] : TaskFrame T where
+def trivial_frame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] : TaskFrame D where
   WorldState := Unit
   task_rel := fun _ _ _ => True
   nullity := fun _ => trivial
@@ -121,7 +121,7 @@ Identity task frame: task relation is identity.
 World states can be any type, task relation holds iff source equals target and time is 0.
 Polymorphic over both world state type and temporal type.
 -/
-def identity_frame (W : Type) {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] : TaskFrame T where
+def identity_frame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] : TaskFrame D where
   WorldState := W
   task_rel := fun w x u => w = u ∧ x = 0
   nullity := fun w => ⟨rfl, rfl⟩
@@ -137,9 +137,9 @@ Natural number based task frame.
 
 World states are natural numbers. Task relation: task of duration x from w
 can reach any state (permissive for simplicity).
-Polymorphic over temporal type `T`.
+Polymorphic over temporal type `D`.
 -/
-def nat_frame {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] : TaskFrame T where
+def nat_frame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] : TaskFrame D where
   WorldState := Nat
   task_rel := fun _ _ _ => True
   nullity := fun _ => trivial

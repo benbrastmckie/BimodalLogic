@@ -32,9 +32,9 @@ temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice
 ✓ Imp: Standard material conditional matches paper
 ✓ Box: `∀ (σ : WorldHistory F), truth_at M σ t φ`
   matches paper's quantification over all histories
-✓ Past: `∀ (s : T), s < t → truth_at M τ s φ`
+✓ Past: `∀ (s : D), s < t → truth_at M τ s φ`
   matches paper's quantification over all times (lines 896-897, 1869-1870)
-✓ Future: `∀ (s : T), t < s → truth_at M τ s φ`
+✓ Future: `∀ (s : D), t < s → truth_at M τ s φ`
   matches paper's quantification over all times (lines 896-897, 1869-1870)
 
 ## Main Definitions
@@ -58,7 +58,7 @@ See task 219 for details on the module hierarchy restructuring.
 
 - Truth is defined recursively on formula structure
 - Modal box quantifies over all world histories at current time
-- Temporal past/future quantify over ALL times in T (not just domain)
+- Temporal past/future quantify over ALL times in D (not just domain)
 - Atoms are false at times outside the history's domain
 
 ## References
@@ -75,7 +75,7 @@ namespace Bimodal.Semantics
 
 open Bimodal.Syntax
 
-variable {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] {F : TaskFrame T}
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] {F : TaskFrame D}
 
 /--
 Truth of a formula at a model-history-time triple.
@@ -94,20 +94,20 @@ The evaluation is defined recursively on formula structure:
 - Bot (⊥): always false
 - Implication: standard material conditional
 - Box (□): true iff φ true at all world histories at time t
-- Past (P): true iff φ true at all past times in T (not just domain)
-- Future (F): true iff φ true at all future times in T (not just domain)
+- Past (P): true iff φ true at all past times in D (not just domain)
+- Future (F): true iff φ true at all future times in D (not just domain)
 
 **Paper Reference**: def:BL-semantics (lines 1857-1872) specifies:
 - Atoms check domain membership: M,τ,x ⊨ p iff x ∈ dom(τ) and τ(x) ∈ V(p)
 - Temporal operators quantify over ALL times in D, not just dom(τ)
 -/
-def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : T) : Formula → Prop
+def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : D) : Formula → Prop
   | Formula.atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
   | Formula.bot => False
   | Formula.imp φ ψ => truth_at M τ t φ → truth_at M τ t ψ
   | Formula.box φ => ∀ (σ : WorldHistory F), truth_at M σ t φ
-  | Formula.all_past φ => ∀ (s : T), s < t → truth_at M τ s φ
-  | Formula.all_future φ => ∀ (s : T), t < s → truth_at M τ s φ
+  | Formula.all_past φ => ∀ (s : D), s < t → truth_at M τ s φ
+  | Formula.all_future φ => ∀ (s : D), t < s → truth_at M τ s φ
 
 -- Note: We avoid defining a notation for truth_at as it causes parsing conflicts
 -- with the validity notation in Validity.lean. Use truth_at directly.
@@ -118,9 +118,9 @@ namespace Truth
 Bot (⊥) is false everywhere.
 -/
 theorem bot_false
-    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
-    {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T} :
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D} :
     ¬(truth_at M τ t Formula.bot) := by
   intro h
   exact h
@@ -129,9 +129,9 @@ theorem bot_false
 Truth of implication is material conditional.
 -/
 theorem imp_iff
-    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
-    {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T}
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D}
     (φ ψ : Formula) :
     (truth_at M τ t (φ.imp ψ)) ↔
       ((truth_at M τ t φ) → (truth_at M τ t ψ)) := by
@@ -142,9 +142,9 @@ Truth of atom at a time in the domain: true iff valuation says so at current sta
 For times outside domain, atoms are always false.
 -/
 theorem atom_iff_of_domain
-    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
-    {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T} (ht : τ.domain t)
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D} (ht : τ.domain t)
     (p : String) :
     (truth_at M τ t (Formula.atom p)) ↔
       M.valuation (τ.states t ht) p := by
@@ -160,9 +160,9 @@ theorem atom_iff_of_domain
 Truth of atom at a time outside the domain is false.
 -/
 theorem atom_false_of_not_domain
-    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
-    {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T} (ht : ¬τ.domain t)
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D} (ht : ¬τ.domain t)
     (p : String) :
     ¬(truth_at M τ t (Formula.atom p)) := by
   simp only [truth_at]
@@ -173,9 +173,9 @@ theorem atom_false_of_not_domain
 Truth of box: formula true at all histories at current time.
 -/
 theorem box_iff
-    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
-    {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T}
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D}
     (φ : Formula) :
     (truth_at M τ t φ.box) ↔
       ∀ (σ : WorldHistory F), (truth_at M σ t φ) := by
@@ -185,24 +185,24 @@ theorem box_iff
 Truth of past: formula true at all earlier times.
 -/
 theorem past_iff
-    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
-    {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T}
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D}
     (φ : Formula) :
     (truth_at M τ t φ.all_past) ↔
-      ∀ (s : T), s < t → (truth_at M τ s φ) := by
+      ∀ (s : D), s < t → (truth_at M τ s φ) := by
   rfl
 
 /--
 Truth of future: formula true at all later times.
 -/
 theorem future_iff
-    {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
-    {F : TaskFrame T} {M : TaskModel F} {τ : WorldHistory F}
-    {t : T}
+    {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
+    {t : D}
     (φ : Formula) :
     (truth_at M τ t φ.all_future) ↔
-      ∀ (s : T), t < s → (truth_at M τ s φ) := by
+      ∀ (s : D), t < s → (truth_at M τ s φ) := by
   rfl
 
 end Truth
@@ -228,7 +228,7 @@ Truth transport across equal histories.
 
 When two histories are equal, truth is preserved.
 -/
-theorem truth_history_eq (M : TaskModel F) (τ₁ τ₂ : WorldHistory F) (t : T)
+theorem truth_history_eq (M : TaskModel F) (τ₁ τ₂ : WorldHistory F) (t : D)
     (h_eq : τ₁ = τ₂) (φ : Formula) :
     truth_at M τ₁ t φ ↔ truth_at M τ₂ t φ := by
   cases h_eq
@@ -240,7 +240,7 @@ Truth at double time-shift with opposite amounts equals truth at original histor
 This is the key transport lemma for the box case of time_shift_preserves_truth.
 It allows us to transfer truth from (time_shift (time_shift σ Δ) (-Δ)) back to σ.
 -/
-theorem truth_double_shift_cancel (M : TaskModel F) (σ : WorldHistory F) (Δ : T) (t : T)
+theorem truth_double_shift_cancel (M : TaskModel F) (σ : WorldHistory F) (Δ : D) (t : D)
     (φ : Formula) :
     truth_at M (WorldHistory.time_shift (WorldHistory.time_shift σ Δ) (-Δ)) t φ ↔
     truth_at M σ t φ := by
@@ -308,7 +308,7 @@ The proof proceeds by structural induction on formulas:
 `time_shift ρ (-Δ)` gives a history at time y (since x + Δ = y means x = y - Δ).
 This establishes a bijection between histories at the two times.
 -/
-theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y : T)
+theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y : D)
     (φ : Formula) :
     truth_at M (WorldHistory.time_shift σ (y - x)) x φ ↔ truth_at M σ y φ := by
   -- Proof by structural induction on φ
@@ -468,7 +468,7 @@ Corollary: For any history σ at time y, there exists a history at time x
 
 This is the key lemma for proving MF and TF axioms.
 -/
-theorem exists_shifted_history (M : TaskModel F) (σ : WorldHistory F) (x y : T)
+theorem exists_shifted_history (M : TaskModel F) (σ : WorldHistory F) (x y : D)
     (φ : Formula) :
     truth_at M σ y φ ↔
     truth_at M (WorldHistory.time_shift σ (y - x)) x φ := by

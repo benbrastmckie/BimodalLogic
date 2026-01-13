@@ -46,7 +46,7 @@ technical_debt:
 
 ### 458. Extend canonical_history to full domain
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-12 (v002)
 - **Priority**: High
@@ -164,15 +164,17 @@ technical_debt:
 
 ### 453. Add Ability and Free Choice Modal Extension to Logos
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/453_add_ability_free_choice_modal_extension/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/453_add_ability_free_choice_modal_extension/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260112.md](.claude/specs/453_add_ability_free_choice_modal_extension/summaries/implementation-summary-20260112.md)
 
-**Description**: Building on task 451, add an extension layer for ability and free choice modals to the middle layer while also acknowledging that there are many other potential extensions that could be added to the middle layer. As with task 451, the aim is to characterize and create stubs in the lean code to match the 'Epistemic Extension' and other extension layers that remain to be developed, while nevertheless updating all the relevant documentation.
+**Description**: Created Agential Extension stub with ability operators (Can_a, Able_a, Cannot_a) and free choice operators (FP, FF, Ch). Updated layer-extensions.md Section 6, recursive-semantics.md, IMPLEMENTATION_STATUS.md, ROADMAP.md Phase 8, and GLOSSARY.md. Module builds without errors.
 
 ---
 

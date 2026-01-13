@@ -20,7 +20,7 @@ This module defines semantic validity and consequence for TM formulas.
 
 ## Implementation Notes
 
-- Validity quantifies over all temporal types `T : Type*` with `LinearOrderedAddCommGroup T`
+- Validity quantifies over all temporal types `D : Type*` with `LinearOrderedAddCommGroup D`
 - Semantic consequence: truth in all models where premises true
 - Used in soundness theorem: `Γ ⊢ φ → Γ ⊨ φ`
 - Temporal types include Int, Rat, Real, and custom bounded types
@@ -28,7 +28,7 @@ This module defines semantic validity and consequence for TM formulas.
 ## Paper Alignment
 
 JPL paper §app:TaskSemantics defines validity as truth at all task frames with totally ordered
-abelian group T = ⟨T, +, ≤⟩. Our polymorphic quantification over `LinearOrderedAddCommGroup T`
+abelian group D = ⟨D, +, ≤⟩. Our polymorphic quantification over `LinearOrderedAddCommGroup D`
 captures this exactly.
 
 ## References
@@ -44,23 +44,23 @@ open Bimodal.Syntax
 
 /--
 A formula is valid if it is true in all models at all times in all histories,
-for every temporal type `T` satisfying `LinearOrderedAddCommGroup`.
+for every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
 
-Formally: for every temporal type `T`, every task frame `F : TaskFrame T`,
-every model `M` over `F`, every world history `τ`, every time `t : T`,
+Formally: for every temporal type `D`, every task frame `F : TaskFrame D`,
+every model `M` over `F`, every world history `τ`, every time `t : D`,
 the formula is true at `(M, τ, t)`.
 
 **Paper Reference (lines 924, 2272-2273)**: Logical consequence quantifies over
 all `x ∈ D` (all times in the temporal order), not just times in dom(τ).
 
 This matches the JPL paper's definition where validity is relative to all
-possible time groups T = ⟨T, +, ≤⟩.
+possible time groups D = ⟨D, +, ≤⟩.
 
 Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 -/
 def valid (φ : Formula) : Prop :=
-  ∀ (T : Type) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (F : TaskFrame T) (M : TaskModel F)
-    (τ : WorldHistory F) (t : T),
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F : TaskFrame D) (M : TaskModel F)
+    (τ : WorldHistory F) (t : D),
     truth_at M τ t φ
 
 /--

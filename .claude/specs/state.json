@@ -76,16 +76,16 @@
     {
       "project_number": 458,
       "project_name": "extend_canonical_history_full_domain",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-13T07:33:26Z",
-      "last_updated": "2026-01-12T12:52:31Z",
+      "last_updated": "2026-01-13T02:45:44Z",
       "parent_task": 257,
       "dependencies": [
         448
       ],
-      "session_id": "sess_1768271951_02a5a3",
+      "session_id": "sess_1768272325_3d008a",
       "plan_version": "002",
       "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. v002: Redesigned to use chain construction from 0 (instead of independent Classical.choose) to solve the coherence problem where independently chosen states may not lie on the same timeline.",
       "artifacts": [
@@ -133,12 +133,12 @@
     {
       "project_number": 453,
       "project_name": "add_ability_free_choice_modal_extension",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-12T22:55:27Z",
-      "last_updated": "2026-01-13T02:42:06Z",
-      "session_id": "sess_1768271983_9bdde4",
+      "last_updated": "2026-01-13T02:51:28Z",
+      "session_id": "sess_1768272346_127e9f",
       "artifacts": [
         {
           "path": ".claude/specs/453_add_ability_free_choice_modal_extension/reports/research-001.md",
@@ -147,9 +147,14 @@
         {
           "path": ".claude/specs/453_add_ability_free_choice_modal_extension/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/453_add_ability_free_choice_modal_extension/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-13T02:51:28Z"
     },
     {
       "project_number": 452,

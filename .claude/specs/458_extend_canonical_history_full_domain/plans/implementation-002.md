@@ -106,7 +106,7 @@ noncomputable def canonical_states (S : CanonicalWorldState) (t : Duration) : Ca
 
 ## Implementation Phases
 
-### Phase 1: Verify Duration Structure [NOT STARTED]
+### Phase 1: Verify Duration Structure [IN PROGRESS]
 
 **Goal**: Confirm the structure of `Duration`/`CanonicalTime` and determine chain indexing strategy.
 
