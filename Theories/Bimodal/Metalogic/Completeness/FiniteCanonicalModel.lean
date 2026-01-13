@@ -199,8 +199,8 @@ theorem shift_toInt (k : Nat) (t : FiniteTime k) (delta : Int) (t' : FiniteTime 
     subst h
     simp only [toInt]
     have h_nonneg : 0 ≤ (t.val : Int) - (k : Int) + delta + (k : Int) := by omega
-    simp only [Int.sub_add_cancel, add_sub_cancel_right]
-    conv_lhs => rw [Int.toNat_of_nonneg h_nonneg]
+    simp only [Int.sub_add_cancel, add_sub_cancel_right] at h_nonneg ⊢
+    rw [Int.toNat_of_nonneg h_nonneg]
     ring
   · contradiction
 
@@ -215,7 +215,7 @@ theorem shift_zero (k : Nat) (t : FiniteTime k) : shift? k t 0 = some t := by
   · simp only [Option.some.injEq]
     ext
     simp only [Int.sub_add_cancel]
-    exact Int.toNat_coe_nat t.val
+    exact Int.toNat_natCast t.val
   · omega
 
 /--
