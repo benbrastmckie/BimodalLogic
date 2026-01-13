@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T18:58:00Z
-next_project_number: 473
+next_project_number: 474
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -132,6 +132,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 473. Fix compositionality gaps from Task 458
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 458
+
+**Description**: Fix compositionality gaps from Task 458.
+
+---
 
 ### 472. Lindenbaum extension for finite closures
 - **Status**: [NOT STARTED]
@@ -277,7 +287,7 @@ technical_debt:
 
 ### 449. Truth lemma
 - **Effort**: 15-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Low

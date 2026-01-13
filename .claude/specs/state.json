@@ -1,8 +1,19 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T16:10:32Z",
-  "next_project_number": 473,
+  "next_project_number": 474,
   "active_projects": [
+    {
+      "project_number": 473,
+      "project_name": "fix_compositionality_gaps_task_458",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-13T16:32:26Z",
+      "last_updated": "2026-01-13T16:32:26Z",
+      "parent_task": 458,
+      "description": "Fix compositionality gaps from Task 458."
+    },
     {
       "project_number": 472,
       "project_name": "lindenbaum_extension_finite_closures",
@@ -244,12 +255,12 @@
     {
       "project_number": 449,
       "project_name": "truth_lemma",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "low",
       "effort": "15-20 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T16:29:41Z",
+      "last_updated": "2026-01-13T16:31:55Z",
       "parent_task": 257,
       "dependencies": [
         448
@@ -269,7 +280,7 @@
           "type": "plan"
         }
       ],
-      "session_id": "sess_1768321672_13ab38",
+      "session_id": "sess_1768321902_42d2f5",
       "plan_version": "001"
     },
     {
