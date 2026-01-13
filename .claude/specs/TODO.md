@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T21:00:00Z
-next_project_number: 492
+next_project_number: 493
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -83,6 +83,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 492. Update BimodalReference.tex with metalogical results
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Systematically update /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/BimodalReference.tex to reflect the current status of the project, including the recent metalogical results (decidability and completeness) that were established along with the representation theory that was proved and any other notable lemmas or theorems. Add proof strategy guidance in the metalogic section to help guide readers through the approaches used.
+
+---
 
 ### 487. Create Bimodal/Boneyard/ for deprecated code
 - **Effort**: 2-3 hours

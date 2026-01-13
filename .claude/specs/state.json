@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T18:57:59Z",
-  "next_project_number": 492,
+  "next_project_number": 493,
   "active_projects": [
+    {
+      "project_number": 492,
+      "project_name": "update_bimodalreference_tex_metalogical_results",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T23:53:35Z",
+      "last_updated": "2026-01-13T23:53:35Z",
+      "description": "Systematically update BimodalReference.tex to reflect the current status of the project, including the recent metalogical results (decidability and completeness) that were established along with the representation theory that was proved. Add proof strategy guidance in the metalogic section to help guide readers."
+    },
     {
       "project_number": 487,
       "project_name": "create_bimodal_boneyard_for_deprecated_code",
