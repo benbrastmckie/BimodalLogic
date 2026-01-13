@@ -244,12 +244,12 @@
     {
       "project_number": 449,
       "project_name": "truth_lemma",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "effort": "15-20 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T16:20:23Z",
+      "last_updated": "2026-01-13T16:29:41Z",
       "parent_task": 257,
       "dependencies": [
         448
@@ -263,9 +263,14 @@
         {
           "path": ".claude/specs/449_truth_lemma/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/449_truth_lemma/plans/implementation-001.md",
+          "type": "plan"
         }
       ],
-      "session_id": "sess_1768320808_2dfeb8"
+      "session_id": "sess_1768321672_13ab38",
+      "plan_version": "001"
     },
     {
       "project_number": 450,

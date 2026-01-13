@@ -277,14 +277,15 @@ technical_debt:
 
 ### 449. Truth lemma
 - **Effort**: 15-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-13
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 448
 - **Research**: [research-001.md](.claude/specs/449_truth_lemma/reports/research-001.md)
-- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 6)
+- **Plan**: [implementation-001.md](.claude/specs/449_truth_lemma/plans/implementation-001.md)
 
 **Description**: Phase 6 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem.
 
