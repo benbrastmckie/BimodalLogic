@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:34:26Z
-next_project_number: 461
+next_project_number: 462
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -125,6 +125,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 461. Expand Bimodal Theory README section
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Expand the 'Bimodal Theory' section in README.md to explain that the bimodal theory provides the logical core of the Logos theory by accounting for the relationship between time and possibility. This provides a well-motivated purely intensional target for developing the methodology that will then be extended to the Logos which is a hyperintensional theory of much greater complexity.
+
+---
 
 ### 459. Update Bimodal LaTeX Metalogic, Theorems, and Notes
 - **Effort**: 2.5 hours
