@@ -1,8 +1,51 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-13T16:10:32Z",
-  "next_project_number": 475,
+  "_last_updated": "2026-01-13T19:30:00Z",
+  "next_project_number": 478,
   "active_projects": [
+    {
+      "project_number": 477,
+      "project_name": "test_document_converter",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-13T19:30:00Z",
+      "last_updated": "2026-01-13T19:30:00Z",
+      "dependencies": [476],
+      "description": "Test document-converter skill on sample PDF, DOCX, and Markdown files. Verify bidirectional conversion, graceful fallback when tools unavailable, and proper error handling.",
+      "reference_files": [
+        "/home/benjamin/Projects/Logos/.claude/outputs/convert.md"
+      ]
+    },
+    {
+      "project_number": 476,
+      "project_name": "create_document_converter_agent",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-13T19:30:00Z",
+      "last_updated": "2026-01-13T19:30:00Z",
+      "dependencies": [475],
+      "description": "Create document-converter-agent following ProofChecker's agent pattern. Handles actual conversion logic with runtime tool detection (markitdown, pandoc, typst), graceful fallbacks to Claude's native PDF reading, bidirectional conversion support, and standardized JSON returns.",
+      "reference_files": [
+        "/home/benjamin/Projects/Logos/.claude/skills/document-converter/README.md",
+        "/home/benjamin/Projects/Logos/.claude/outputs/convert.md"
+      ]
+    },
+    {
+      "project_number": 475,
+      "project_name": "create_skill_document_converter",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-13T19:30:00Z",
+      "last_updated": "2026-01-13T19:30:00Z",
+      "description": "Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies.",
+      "reference_files": [
+        "/home/benjamin/Projects/Logos/.claude/skills/document-converter/README.md",
+        "/home/benjamin/Projects/Logos/.claude/outputs/convert.md"
+      ]
+    },
     {
       "project_number": 474,
       "project_name": "fix_skill_return_status_field",

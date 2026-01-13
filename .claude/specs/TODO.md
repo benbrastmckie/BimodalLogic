@@ -1,21 +1,21 @@
 ---
-last_updated: 2026-01-13T18:58:00Z
-next_project_number: 475
+last_updated: 2026-01-13T19:30:00Z
+next_project_number: 478
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 14
+  active: 17
   completed: 145
   in_progress: 1
-  not_started: 6
+  not_started: 9
   abandoned: 10
-  total: 169
+  total: 172
 priority_distribution:
   critical: 0
   high: 4
-  medium: 1
+  medium: 4
   low: 5
 technical_debt:
   sorry_count: 19
@@ -146,6 +146,64 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 475. Create skill-document-converter thin wrapper
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+
+**Description**: Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies.
+
+**Reference Files**:
+- Inspiration: `/home/benjamin/Projects/Logos/.claude/skills/document-converter/README.md`
+- Issues to avoid: `/home/benjamin/Projects/Logos/.claude/outputs/convert.md`
+
+---
+
+### 476. Create document-converter-agent
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Dependencies**: 475
+
+**Description**: Create document-converter-agent following ProofChecker's agent pattern. Handles actual conversion logic with runtime tool detection (markitdown, pandoc, typst), graceful fallbacks to Claude's native PDF reading, bidirectional conversion support, and standardized JSON returns.
+
+**Reference Files**:
+- Inspiration: `/home/benjamin/Projects/Logos/.claude/skills/document-converter/README.md`
+- Issues to avoid: `/home/benjamin/Projects/Logos/.claude/outputs/convert.md`
+
+**Design Requirements**:
+1. NO external shell script dependencies - all logic embedded in agent
+2. Detect tools via Bash within agent (`command -v` checks)
+3. Use Claude's native PDF/image reading (Read tool) as fallback
+4. Tool priority: markitdown > pandoc > Claude native
+5. Avoid pip output contamination - separate installation from conversion
+6. Support bidirectional: PDF/DOCX → Markdown AND Markdown → PDF/DOCX
+
+---
+
+### 477. Test document-converter on sample files
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Dependencies**: 476
+
+**Description**: Test document-converter skill on sample PDF, DOCX, and Markdown files. Verify bidirectional conversion, graceful fallback when tools unavailable, and proper error handling.
+
+**Reference Files**:
+- Issues to avoid: `/home/benjamin/Projects/Logos/.claude/outputs/convert.md`
+
+**Test Cases**:
+1. PDF → Markdown (with markitdown available)
+2. PDF → Markdown (markitdown fails, fallback to Claude native)
+3. DOCX → Markdown
+4. Markdown → PDF (using pandoc/typst)
+5. Error handling when no tools available
+
+---
 
 ### 473. Fix compositionality gaps from Task 458
 - **Effort**: 8-12 hours
