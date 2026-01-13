@@ -73,7 +73,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Complete Temporal Compositionality [IN PROGRESS]
+### Phase 2: Complete Temporal Compositionality [PARTIAL]
 
 **Goal**: Fill in the sorry placeholders in `canonical_compositionality` (lines 2120, 2131) using the persistence lemmas from Phase 1.
 
@@ -100,7 +100,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Forward Existence Lemma [NOT STARTED]
+### Phase 3: Forward Existence Lemma [IN PROGRESS]
 
 **Goal**: Prove that for any MCS S and positive duration d, there exists an MCS T such that `canonical_task_rel S d T`.
 

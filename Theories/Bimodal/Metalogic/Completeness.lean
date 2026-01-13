@@ -2184,10 +2184,10 @@ theorem canonical_compositionality
       -- Now case split on y
       by_cases hy : y > 0
       case pos =>
-        -- y > 0: Use hTU_future with Gφ
-        have h_GGφ_T : (φ.all_future).all_future ∈ T.val :=
-          set_mcs_all_future_all_future T.property h_Gφ_T
-        exact hTU_future hy φ.all_future h_GGφ_T
+        -- y > 0: Use hTU_future directly with Gφ ∈ T
+        -- future_transfer T U says: Gψ ∈ T → ψ ∈ U (for all ψ)
+        -- So from Gφ ∈ T, we get φ ∈ U directly!
+        exact hTU_future hy φ h_Gφ_T
       case neg =>
         -- y ≤ 0 but x + y > 0
         -- We have Gφ ∈ T. We need φ ∈ U.
@@ -2264,52 +2264,55 @@ theorem canonical_compositionality
         sorry
     case neg =>
       -- x ≤ 0: Then since x + y > 0, we have y > -x ≥ 0, so y > 0.
-      push_neg at hx
-      have hy_pos : y > 0 := by
-        -- From x + y > 0 and x ≤ 0, we get y > -x ≥ 0
-        have h : y > -x := by omega
-        omega
-      -- y > 0: We need Gφ ∈ T to use hTU_future.
-      -- But with x ≤ 0, we can't use hST_future.
+      -- Note: hx is ¬(x > 0), which means x ≤ 0 in a linear order
       --
-      -- This is the other problematic case.
+      -- However, we're blocked here due to the semantic/syntactic gap:
+      -- - From Gφ ∈ S, we cannot get Gφ ∈ T when x ≤ 0
+      -- - The relation canonical_task_rel S x T with x ≤ 0 only gives us
+      --   modal_transfer and possibly past_transfer, neither of which helps
+      --   transfer G-formulas forward.
       --
-      -- From Gφ ∈ S, can we get Gφ ∈ T when x ≤ 0?
+      -- This is a fundamental limitation of the "pointwise" transfer definition.
+      -- The semantic intuition (x + y > 0 means U is in S's future) doesn't
+      -- translate directly to syntactic transfer when the intermediate step T
+      -- is at or before S.
       --
-      -- If x = 0: T is "at the same time" as S (modulo the relation).
-      --   - canonical_task_rel S 0 T gives modal_transfer only
-      --   - Gφ ∈ S doesn't transfer to Gφ ∈ T via modal_transfer
+      -- RESOLUTION OPTIONS:
+      -- 1. Strengthen canonical_task_rel definition (requires definition change)
+      -- 2. Add "direct" transfer lemma that bypasses intermediate T
+      -- 3. Use a different canonical model construction approach
       --
-      -- If x < 0: T is "before" S.
-      --   - canonical_task_rel S x T gives modal_transfer and past_transfer
-      --   - Gφ ∈ S still doesn't help because G talks about future, not past
-      --
-      -- The semantic intuition says this should work because:
-      --   - Gφ ∈ S means φ holds at all times > S
-      --   - U is at x + y > 0 from S
-      --   - So φ should hold at U
-      --
-      -- But syntactically, we need to go through T, and T might be before S.
-      --
-      -- SEMANTIC vs SYNTACTIC GAP: The canonical model construction has this gap.
-      --
-      -- Possible semantic fix: The definition of canonical_task_rel should be
-      -- "accumulated" rather than "pointwise". That is, the transfer properties
-      -- should depend on the total signed distance from some reference point.
-      --
-      -- For now, we use sorry.
+      -- For Task 458, we mark this as a known limitation and use sorry.
+      -- The full resolution requires architectural changes to the canonical model.
       sorry
   -- Part 3: Past transfer when x + y < 0
   · intro h_sum_neg φ h_all_past_S
-    -- Similar analysis to future transfer
     -- We have: x + y < 0 and Hφ ∈ S
     -- We need: φ ∈ U
     --
-    -- Same challenge as future transfer: we transfer content of H-formulas,
-    -- not the H-formulas themselves.
-    --
-    -- Possible fix: Add "temporal persistence": t < 0 → (Hφ ∈ S → Hφ ∈ T)
-    sorry
+    -- Strategy: Case analysis on sign of x (symmetric to future case)
+    by_cases hx : x < 0
+    case pos =>
+      -- x < 0: Get Hφ ∈ T via past_formula_persistence
+      have h_Hφ_T : φ.all_past ∈ T.val := by
+        have hrel : canonical_task_rel S x T := ⟨hST_modal, hST_future, hST_past⟩
+        exact past_formula_persistence hrel hx φ h_all_past_S
+      -- Now case split on y
+      by_cases hy : y < 0
+      case pos =>
+        -- y < 0: Use hTU_past directly with Hφ ∈ T
+        exact hTU_past hy φ h_Hφ_T
+      case neg =>
+        -- y ≥ 0 but x + y < 0
+        -- Same semantic/syntactic gap as future case:
+        -- Hφ ∈ T means φ holds at all times strictly before T.
+        -- U is at time y ≥ 0 from T, so U is at or after T.
+        -- Hφ ∈ T does NOT imply φ ∈ U when y ≥ 0.
+        sorry
+    case neg =>
+      -- x ≥ 0: Then since x + y < 0, we have y < -x ≤ 0, so y < 0.
+      -- Same gap: from Hφ ∈ S, we cannot get Hφ ∈ T when x ≥ 0.
+      sorry
 
 /--
 The canonical frame for TM logic using set-based maximal consistent sets.
@@ -2334,6 +2337,210 @@ def canonical_frame : TaskFrame Duration where
   task_rel := canonical_task_rel
   nullity := canonical_nullity
   compositionality := canonical_compositionality
+
+/-!
+## Forward and Backward Existence Lemmas
+
+These lemmas establish that for any MCS S, there exist MCS T related to S
+by any positive duration (forward extension) or related from T to S by any
+positive duration (backward extension). They are essential for constructing
+the full domain canonical history.
+-/
+
+/--
+Forward seed: The set of formulas that must be in a forward-related MCS.
+
+For any MCS S, the forward seed contains:
+1. The content of all G-formulas in S (if Gφ ∈ S, then φ in seed)
+2. The content of all □-formulas in S (if □φ ∈ S, then φ in seed)
+
+This captures what must hold at any strictly future world state.
+-/
+def forward_seed (S : CanonicalWorldState) : Set Formula :=
+  {φ | Formula.all_future φ ∈ S.val} ∪ {φ | Formula.box φ ∈ S.val}
+
+/--
+Forward seed consistency: The forward_seed of any MCS is consistent.
+
+**Proof Strategy**:
+1. Assume for contradiction that forward_seed S is inconsistent
+2. Then some finite subset L derives ⊥
+3. Each formula in L is either G-content or □-content from S
+4. By deduction and modal/temporal reasoning, S would be inconsistent
+5. Contradiction with S being MCS
+
+**Note**: This proof requires careful handling of the mixed modal/temporal
+nature of the seed. The key insight is that G-formulas and □-formulas in an
+MCS are consistent with each other due to the interaction axioms (MF, TF).
+-/
+theorem forward_seed_consistent (S : CanonicalWorldState) :
+    SetConsistent (forward_seed S) := by
+  -- Assume inconsistent and derive contradiction
+  intro L hL
+  -- hL : ∀ φ ∈ L, φ ∈ forward_seed S
+  -- We need: Consistent L
+  -- i.e., ¬Nonempty (DerivationTree L Formula.bot)
+  intro ⟨d_bot⟩
+  -- d_bot : L ⊢ ⊥
+  -- Each φ in L is either:
+  --   - In {φ | Gφ ∈ S.val} : so Gφ ∈ S
+  --   - In {φ | □φ ∈ S.val} : so □φ ∈ S
+  --
+  -- We need to show S is inconsistent, contradicting S.property.
+  --
+  -- Strategy: Build a derivation of ⊥ from formulas in S.
+  -- For each φ in L:
+  --   - If Gφ ∈ S: Use Gφ directly
+  --   - If □φ ∈ S: Use □φ directly
+  --
+  -- We need: □ and G distribute over the derivation somehow.
+  --
+  -- Key lemma needed: If L ⊢ ⊥ and each φ in L has Gφ or □φ in S,
+  -- then we can derive ⊥ from S using modal/temporal reasoning.
+  --
+  -- This is non-trivial and requires:
+  -- 1. Generalized necessitation: If Γ ⊢ φ and □Γ ⊆ S, then □φ can be derived
+  -- 2. Similar for G-formulas
+  --
+  -- For now, we mark this as sorry and document the gap.
+  -- The full proof requires additional infrastructure for "boxed contexts".
+  sorry
+
+/--
+Forward extension: For any MCS S and positive duration d, there exists an
+MCS T such that canonical_task_rel S d T.
+
+**Proof Strategy**:
+1. forward_seed S is consistent (by forward_seed_consistent)
+2. By Lindenbaum's lemma, extend to MCS T
+3. Verify canonical_task_rel S d T:
+   - Modal transfer: □φ ∈ S → φ ∈ forward_seed → φ ∈ T
+   - Future transfer (d > 0): Gφ ∈ S → φ ∈ forward_seed → φ ∈ T
+   - Past transfer: vacuously true (d > 0, not < 0)
+-/
+theorem forward_extension (S : CanonicalWorldState) (d : CanonicalTime) (hd : d > 0) :
+    ∃ T : CanonicalWorldState, canonical_task_rel S d T := by
+  -- Step 1: forward_seed S is consistent
+  have h_cons : SetConsistent (forward_seed S) := forward_seed_consistent S
+  -- Step 2: Extend to MCS by Lindenbaum
+  obtain ⟨M, h_sub, h_mcs⟩ := set_lindenbaum (forward_seed S) h_cons
+  -- Step 3: Construct T as subtype
+  let T : CanonicalWorldState := ⟨M, h_mcs⟩
+  use T
+  -- Step 4: Verify canonical_task_rel S d T
+  unfold canonical_task_rel modal_transfer future_transfer past_transfer
+  constructor
+  -- Modal transfer: □φ ∈ S → φ ∈ T
+  · intro φ h_box_S
+    -- □φ ∈ S → φ ∈ forward_seed S → φ ∈ M = T.val
+    have h_in_seed : φ ∈ forward_seed S := by
+      unfold forward_seed
+      right
+      exact h_box_S
+    exact h_sub h_in_seed
+  constructor
+  -- Future transfer: d > 0 → (Gφ ∈ S → φ ∈ T)
+  · intro _ φ h_all_future_S
+    -- Gφ ∈ S → φ ∈ forward_seed S → φ ∈ M = T.val
+    have h_in_seed : φ ∈ forward_seed S := by
+      unfold forward_seed
+      left
+      exact h_all_future_S
+    exact h_sub h_in_seed
+  -- Past transfer: d < 0 → ... (vacuously true since d > 0)
+  · intro h_neg _φ _h_all_past
+    -- d > 0 and d < 0 is a contradiction
+    exfalso
+    -- The Duration type's LT is defined as: d1 < d2 ↔ d1 ≤ d2 ∧ d1 ≠ d2
+    -- So d > 0 means 0 ≤ d ∧ 0 ≠ d, and d < 0 means d ≤ 0 ∧ d ≠ 0
+    -- From d ≤ 0 and 0 ≤ d, we get d = 0 by antisymmetry.
+    -- But d ≠ 0 from either side, contradiction.
+    simp only [GT.gt, LT.lt] at hd h_neg
+    obtain ⟨h_le1, h_ne1⟩ := hd
+    obtain ⟨h_le2, h_ne2⟩ := h_neg
+    have h_eq : d = 0 := Duration.le_antisymm h_le2 h_le1
+    exact h_ne2 h_eq
+
+/-!
+## Backward Existence Lemma
+
+Similar to forward extension, but constructs a world state T in the "past"
+of S such that canonical_task_rel T d S holds for positive d.
+-/
+
+/--
+Backward seed: The set of formulas that must be in a backward-related MCS.
+
+For any MCS S, the backward seed contains:
+1. The content of all H-formulas in S (if Hφ ∈ S, then φ in seed)
+2. The content of all □-formulas in S (if □φ ∈ S, then φ in seed)
+
+This captures what must hold at any strictly past world state.
+-/
+def backward_seed (S : CanonicalWorldState) : Set Formula :=
+  {φ | Formula.all_past φ ∈ S.val} ∪ {φ | Formula.box φ ∈ S.val}
+
+/--
+Backward seed consistency: The backward_seed of any MCS is consistent.
+
+**Note**: Proof structure mirrors forward_seed_consistent.
+-/
+theorem backward_seed_consistent (S : CanonicalWorldState) :
+    SetConsistent (backward_seed S) := by
+  -- Similar to forward_seed_consistent
+  intro L hL
+  intro ⟨d_bot⟩
+  sorry
+
+/--
+Backward extension: For any MCS S and positive duration d, there exists an
+MCS T such that canonical_task_rel T d S.
+
+**Proof Strategy**:
+1. backward_seed S is consistent (by backward_seed_consistent)
+2. By Lindenbaum's lemma, extend to MCS T
+3. Verify canonical_task_rel T d S:
+   - Modal transfer: □φ ∈ T → φ ∈ S (need T to contain □-content of S plus more)
+   - Future transfer: vacuously true (d > 0, coming from T to S)
+   - Past transfer: vacuously true (d > 0, not < 0)
+
+**Key Insight**: The direction is T → S with duration d > 0, meaning:
+- T is "before" S by duration d
+- From T's perspective going forward d units reaches S
+- canonical_task_rel T d S requires:
+  - modal_transfer T S (always)
+  - future_transfer T S (since d > 0): Gφ ∈ T → φ ∈ S
+  - past_transfer T S: vacuously true (d not < 0)
+
+This is more complex because T is the unknown, and we need T to satisfy
+transfer properties "into" S.
+-/
+theorem backward_extension (S : CanonicalWorldState) (d : CanonicalTime) (hd : d > 0) :
+    ∃ T : CanonicalWorldState, canonical_task_rel T d S := by
+  -- The backward case is trickier: we need T such that transfers go TO S.
+  --
+  -- For modal_transfer T S: □φ ∈ T → φ ∈ S
+  --   - We need: if we put □φ in T, then φ must be in S
+  --   - This is satisfied if T contains only □-formulas whose content is in S
+  --
+  -- For future_transfer T S (since d > 0): Gφ ∈ T → φ ∈ S
+  --   - We need: if we put Gφ in T, then φ must be in S
+  --   - This is satisfied if T contains only G-formulas whose content is in S
+  --
+  -- Strategy: Build T to contain formulas whose transfers land in S.
+  -- Let T_seed = {□φ | φ ∈ S} ∪ {Gφ | φ ∈ S}
+  -- Then: □φ ∈ T → φ ∈ S (by construction) ✓
+  --       Gφ ∈ T → φ ∈ S (by construction) ✓
+  --
+  -- But we also need T to be an MCS! So T_seed must be:
+  -- 1. Consistent (to extend via Lindenbaum)
+  -- 2. The extension T still satisfies the transfer properties
+  --
+  -- Issue: Lindenbaum extension might add formulas that break transfers!
+  -- For example, T might get □ψ where ψ ∉ S, breaking modal_transfer.
+  --
+  -- This requires more careful construction. For now, use sorry.
+  sorry
 
 /-!
 ## Canonical Model and Valuation

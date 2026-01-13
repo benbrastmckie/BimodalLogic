@@ -52,7 +52,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Core truth_at Signature Change [IN PROGRESS]
+### Phase 1: Core truth_at Signature Change [COMPLETED]
 
 **Goal**: Modify the `truth_at` function in `Bimodal.Semantics.Truth` to remove the domain membership parameter and handle atoms/temporal operators correctly.
 
@@ -75,7 +75,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Truth.lean Helper Theorems [NOT STARTED]
+### Phase 2: Truth.lean Helper Theorems [COMPLETED]
 
 **Goal**: Update all helper theorems and lemmas in Truth.lean that depend on the old signature.
 
@@ -103,7 +103,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Validity Definitions Update [NOT STARTED]
+### Phase 3: Validity Definitions Update [IN PROGRESS]
 
 **Goal**: Update validity and semantic consequence definitions to quantify over all times.
 
