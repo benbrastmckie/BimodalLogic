@@ -198,16 +198,18 @@ technical_debt:
 
 ### 482. Implement history gluing lemma
 - **Effort**: 4-5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 473
 - **Research**: [research-001.md](.claude/specs/482_history_gluing_lemma/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/482_history_gluing_lemma/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/482_history_gluing_lemma/summaries/implementation-summary-20260113.md)
 
-**Description**: Implement history gluing lemma to compose two histories that share a common world state at the junction point. This eliminates the compositionality sorries in `SemanticTaskRelV2.compositionality` by proving histories can be concatenated when they agree at the boundary.
+**Description**: Implemented history gluing lemma with glue_histories function and supporting lemmas (before_junction, at_junction, after_junction). Updated SemanticTaskRelV2.compositionality to use gluing construction. Lake build succeeds.
 
 ---
 
