@@ -2225,24 +2225,19 @@ def canonical_history (S : CanonicalWorldState) : WorldHistory canonical_frame w
   convex := by
     -- Singleton domain is trivially convex
     intros x z hx hz y hxy hyz
-    simp only at hx hz ⊢
     -- With x = 0 and z = 0, we have x ≤ y ≤ z means y = 0
-    have hxz : x = z := by rw [hx, hz]
-    have hxy' : x = y := le_antisymm hxy (hxz ▸ hyz)
-    exact hxy' ▸ hx
-  states := fun t ht => by
-    -- At time 0, return S
-    simp only at ht
-    exact ht ▸ S
+    rw [hx] at hxy
+    rw [hz] at hyz
+    exact le_antisymm (hyz) hxy
+  states := fun _ _ =>
+    -- At time 0 (the only time in domain), return S
+    S
   respects_task := by
     -- For singleton domain, only t = s = 0 case exists
     intros s t hs ht hst
-    simp only at hs ht
     -- With s = 0 and t = 0, we have t - s = 0
-    have h_diff : t - s = 0 := by rw [hs, ht]; ring
+    rw [hs, ht, sub_self]
     -- canonical_task_rel S 0 S holds by canonical_nullity
-    rw [h_diff]
-    -- The states function returns S (via transport), so we need canonical_nullity S
     exact canonical_nullity S
 
 /-!

@@ -124,12 +124,12 @@
     {
       "project_number": 448,
       "project_name": "build_canonical_history",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "effort": "3-4 hours",
       "created": "2026-01-12T22:08:58Z",
-      "last_updated": "2026-01-13T06:43:50Z",
+      "last_updated": "2026-01-13T07:15:00Z",
       "parent_task": 257,
       "dependencies": [
         447
@@ -137,6 +137,7 @@
       "description": "Phase 5 of completeness proofs: Build canonical_history construction. Define the history structure that threads MCSs together with the canonical task relation, establishing the temporal backbone for the canonical model. This bridges canonical_frame/model (Phase 4) and truth_lemma (Phase 6).",
       "session_id": "sess_1768267030_cfb908",
       "plan_version": "001",
+      "completed": "2026-01-13T07:15:00Z",
       "artifacts": [
         {
           "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
@@ -149,6 +150,10 @@
         {
           "path": ".claude/specs/448_build_canonical_history/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/448_build_canonical_history/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ]
     },
