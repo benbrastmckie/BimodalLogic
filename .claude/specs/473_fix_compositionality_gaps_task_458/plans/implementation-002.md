@@ -88,7 +88,7 @@ The proof strategy is documented but blocked by the compositionality gaps.
 
 ---
 
-### Phase 2: Semantic Task Relation [NOT STARTED]
+### Phase 2: Semantic Task Relation [IN PROGRESS]
 
 **Goal**: Replace pointwise `finite_task_rel` with history-existence definition
 

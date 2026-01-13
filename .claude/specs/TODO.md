@@ -252,7 +252,7 @@ technical_debt:
 
 ### 466. Add Reflection Extension to LogosReference
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium

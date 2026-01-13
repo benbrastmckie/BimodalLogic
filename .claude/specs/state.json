@@ -1,35 +1,8 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-13T19:30:00Z",
+  "_last_updated": "2026-01-13T18:57:59Z",
   "next_project_number": 479,
   "active_projects": [
-    {
-      "project_number": 478,
-      "project_name": "revise_ecosystem_view_section",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-13T17:34:48Z",
-      "last_updated": "2026-01-13T18:34:38Z",
-      "artifacts": [
-        {
-          "path": ".claude/specs/478_revise_ecosystem_view_section/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/478_revise_ecosystem_view_section/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/478_revise_ecosystem_view_section/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/478_revise_ecosystem_view_section/summaries/implementation-summary-20260113.md",
-          "type": "summary"
-        }
-      ]
-    },
     {
       "project_number": 477,
       "project_name": "test_document_converter",
@@ -78,33 +51,6 @@
       ]
     },
     {
-      "project_number": 474,
-      "project_name": "fix_skill_return_status_field",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-13T16:40:27Z",
-      "last_updated": "2026-01-13T17:04:09Z",
-      "description": "Fix skill-status-sync return format \"status\": \"completed\" field causing Claude to stop execution prematurely. Tasks 462 and 467 added continuation markers but the root issue remains: skill returns include a status field with value \"completed\" that Claude interprets as a stop signal. Change to non-triggering terminology like \"result\": \"success\" or \"ok\": true, or remove field entirely if summary is sufficient.",
-      "session_id": "sess_1768323437_8dd4a5",
-      "plan_version": "002",
-      "artifacts": [
-        {
-          "path": ".claude/specs/474_fix_skill_return_status_field/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/474_fix_skill_return_status_field/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/474_fix_skill_return_status_field/summaries/implementation-summary-20260113.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-13T17:04:09Z"
-    },
-    {
       "project_number": 473,
       "project_name": "fix_compositionality_gaps_task_458",
       "status": "implementing",
@@ -138,31 +84,6 @@
         }
       ],
       "plan_version": "002"
-    },
-    {
-      "project_number": 472,
-      "project_name": "lindenbaum_extension_finite_closures",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-13T16:10:32Z",
-      "last_updated": "2026-01-13T17:17:23Z",
-      "parent_task": 458,
-      "description": "Complete the Lindenbaum extension for finite closures, building on task 458. Implement the restricted Lindenbaum lemma that extends consistent formula sets to maximal consistent sets within the finite subformula closure, enabling the finite truth lemma proof.",
-      "artifacts": [
-        {
-          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/summaries/implementation-summary-20260113.md",
-          "type": "summary"
-        }
-      ]
     },
     {
       "project_number": 468,
@@ -209,33 +130,6 @@
       "description": "Prove model finiteness constructively in FiniteCanonicalModel.lean. Current implementation uses Classical.choice where needed. Investigate whether a fully constructive proof is possible and implement if feasible."
     },
     {
-      "project_number": 467,
-      "project_name": "review_task_462_changes_fix_root_cause",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-13T15:11:50Z",
-      "last_updated": "2026-01-13T16:12:46Z",
-      "description": "Review task 462 changes (from .claude/output/research.md) to determine if they are worth keeping or cruft. Identify and fix root cause of workflow delegation errors in an elegant way without unnecessary changes. Update documentation to be accurate.",
-      "session_id": "sess_1768320511_65fbfb",
-      "artifacts": [
-        {
-          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/summaries/implementation-summary-20260113.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-13T16:12:46Z"
-    },
-    {
       "project_number": 466,
       "project_name": "reflection_extension_logosreference",
       "status": "planned",
@@ -256,151 +150,6 @@
         }
       ],
       "plan_version": "001"
-    },
-    {
-      "project_number": 465,
-      "project_name": "cosmos_essay_latex",
-      "status": "completed",
-      "language": "latex",
-      "priority": "medium",
-      "created": "2026-01-13T06:11:43Z",
-      "last_updated": "2026-01-13T06:35:28Z",
-      "description": "Convert cosmos-institute-essay.md to a professionally formatted LaTeX document with title information from BimodalReference.tex and LogosReference.tex, including their references and linking ModelChecker and ProofChecker to git repos.",
-      "session_id": "sess_1768285816_7b069b",
-      "artifacts": [
-        {
-          "path": ".claude/specs/465_cosmos_essay_latex/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/465_cosmos_essay_latex/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/465_cosmos_essay_latex/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-13T06:35:28Z"
-    },
-    {
-      "project_number": 464,
-      "project_name": "research_coherence_alternatives_strategy_a",
-      "status": "completed",
-      "priority": "high",
-      "language": "lean",
-      "created": "2026-01-13T04:51:37Z",
-      "last_updated": "2026-01-13T05:36:12Z",
-      "parent_task": 458,
-      "description": "Research alternative approaches to solve the canonical_history coherence problem. Current chain construction (Strategy C) provides coherence for discrete ℤ-indexed positions but cannot extend to full Duration domain. Investigate Strategy A from research-002.md: strengthen canonical_task_rel to include persistence conditions, making compositionality provable by construction. Also consider: (1) proving Duration discreteness (≅ ℤ·chain_step), (2) modifying forward/backward_extension to return chain-coherent witnesses, (3) quotient-based approaches.",
-      "session_id": "sess_1768281942_e65015",
-      "artifacts": [
-        {
-          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-13T05:35:55Z"
-    },
-    {
-      "project_number": 463,
-      "project_name": "meta_context_loading_improvements",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-13T04:41:53Z",
-      "last_updated": "2026-01-13T05:09:31Z"
-    },
-    {
-      "project_number": 462,
-      "project_name": "fix_workflow_command_delegation",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-13T04:27:46Z",
-      "last_updated": "2026-01-13T06:00:31Z",
-      "description": "Fix /research and /implement commands stopping after preflight. Commands complete skill-status-sync for preflight but fail to proceed to STAGE 2 delegation. Root cause: command files describe workflow but Claude stops executing after preflight instead of continuing to delegate to implementation skills/agents.",
-      "artifacts": [
-        {
-          "path": ".claude/specs/462_fix_workflow_command_delegation/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/462_fix_workflow_command_delegation/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/462_fix_workflow_command_delegation/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001",
-      "session_id": "sess_1768282549_2e9ad8"
-    },
-    {
-      "project_number": 458,
-      "project_name": "extend_canonical_history_full_domain",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-13T07:33:26Z",
-      "last_updated": "2026-01-13T18:52:14Z",
-      "parent_task": 257,
-      "dependencies": [
-        448
-      ],
-      "session_id": "sess_1768318334_6a63f9",
-      "plan_version": "004",
-      "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. Implemented finite canonical model approach with 7 phases. Created FiniteCanonicalModel.lean with finite time domain, world states, task relation, frame/model structures, existence lemmas, truth lemma skeleton, and completeness theorem statements.",
-      "artifacts": [
-        {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-003.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-003.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-004.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-004.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-20260113.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-13T18:52:14Z"
     },
     {
       "project_number": 449,
