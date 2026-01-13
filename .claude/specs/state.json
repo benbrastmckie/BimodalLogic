@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T22:05:22Z",
-  "next_project_number": 456,
+  "next_project_number": 457,
   "active_projects": [
+    {
+      "project_number": 456,
+      "project_name": "address_todos_in_bimodal_semantics_latex",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T00:43:38Z",
+      "last_updated": "2026-01-13T00:43:38Z",
+      "description": "Address all TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/02-Semantics.tex by rigorously researching each in order to revise the document appropriately, ignoring nothing."
+    },
     {
       "project_number": 455,
       "project_name": "readme_extension_layer_descriptions",
@@ -218,12 +228,12 @@
     {
       "project_number": 447,
       "project_name": "canonical_frame_model_construction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "low",
       "effort": "12-15 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T00:35:01Z",
+      "last_updated": "2026-01-13T00:39:08Z",
       "parent_task": 257,
       "dependencies": [
         446

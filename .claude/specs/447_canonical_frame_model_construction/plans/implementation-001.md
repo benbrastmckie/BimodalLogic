@@ -57,7 +57,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Duration Type Integration [NOT STARTED]
+### Phase 1: Duration Type Integration [COMPLETED]
 
 **Goal**: Replace the placeholder `CanonicalTime := Int` with the agnostic `Duration` type from Task 446 and verify type compatibility.
 
@@ -84,7 +84,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Canonical Task Relation Definition [NOT STARTED]
+### Phase 2: Canonical Task Relation Definition [COMPLETED]
 
 **Goal**: Define `canonical_task_rel` with the three-part transfer property: modal transfer (always) + temporal transfers (conditional on duration sign).
 
@@ -123,7 +123,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Nullity Property Proof [NOT STARTED]
+### Phase 3: Nullity Property Proof [IN PROGRESS]
 
 **Goal**: Prove that `canonical_task_rel S 0 S` holds for all maximal consistent sets S.
 

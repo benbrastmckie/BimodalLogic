@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:34:26Z
-next_project_number: 456
+next_project_number: 457
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -93,6 +93,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 456. Address TODOs in Bimodal Semantics LaTeX
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Address all TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/02-Semantics.tex by rigorously researching each in order to revise the document appropriately, ignoring nothing.
+
+---
 
 ### 455. Improve README extension layer descriptions
 - **Effort**: 30 minutes
@@ -290,7 +300,7 @@ technical_debt:
 
 ### 447. Canonical frame and model construction
 - **Effort**: 12-15 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Low
