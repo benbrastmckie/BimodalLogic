@@ -16,14 +16,20 @@
     {
       "project_number": 473,
       "project_name": "fix_compositionality_gaps_task_458",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T16:32:26Z",
-      "last_updated": "2026-01-13T16:39:57Z",
+      "last_updated": "2026-01-13T18:00:00Z",
       "parent_task": 458,
-      "description": "Fix compositionality gaps from Task 458.",
-      "session_id": "sess_1768322383_f040e8"
+      "description": "Fix compositionality gaps from Task 458. Research identified 7 compositionality gaps (mixed-sign duration cases), 8 truth lemma gaps (negation-completeness), and 2 history construction gaps. Root cause: IsLocallyConsistent only captures soundness, not negation-completeness. Primary solution: Bridge to SetMaximalConsistent or strengthen world state definitions.",
+      "session_id": "sess_1768322383_f040e8",
+      "artifacts": [
+        {
+          "path": ".claude/specs/473_fix_compositionality_gaps_task_458/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 472,
