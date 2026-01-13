@@ -156,14 +156,20 @@
     {
       "project_number": 481,
       "project_name": "finite_history_from_state",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T20:50:00Z",
-      "last_updated": "2026-01-13T20:57:14Z",
+      "last_updated": "2026-01-13T21:04:00Z",
       "session_id": "sess_1768337834_406839",
       "parent_task": 473,
-      "description": "Implement finite_history_from_state to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for SemanticCanonicalFrame.nullity proof."
+      "description": "Implement finite_history_from_state to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for SemanticCanonicalFrame.nullity proof.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/481_finite_history_from_state/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 482,

@@ -161,10 +161,12 @@ technical_debt:
 
 ### 481. Implement finite_history_from_state
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 473
+- **Research**: [research-001.md](.claude/specs/481_finite_history_from_state/reports/research-001.md)
 
 **Description**: Implement `finite_history_from_state` to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for `SemanticCanonicalFrame.nullity` proof.
 
