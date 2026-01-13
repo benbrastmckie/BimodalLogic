@@ -1,18 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T18:57:59Z",
-  "next_project_number": 481,
+  "next_project_number": 483,
   "active_projects": [
     {
       "project_number": 480,
       "project_name": "investigate_workflow_delegation_early_stop",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T20:12:45Z",
-      "last_updated": "2026-01-13T20:44:00Z",
+      "last_updated": "2026-01-13T20:46:14Z",
       "description": "Investigate workflow delegation errors causing early stop. Tasks 474, 467, 462 attempts did not fix. Check .claude/output/ for patterns. Search for terms like complete, finished that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems. Research similar errors online.",
-      "session_id": "sess_1768336989_c23d00",
+      "session_id": "sess_1768337163_048ee9",
       "artifacts": [
         {
           "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md",
@@ -150,6 +150,28 @@
       "plan_version": "004"
     },
     {
+      "project_number": 481,
+      "project_name": "finite_history_from_state",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-13T20:50:00Z",
+      "last_updated": "2026-01-13T20:50:00Z",
+      "parent_task": 473,
+      "description": "Implement finite_history_from_state to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for SemanticCanonicalFrame.nullity proof."
+    },
+    {
+      "project_number": 482,
+      "project_name": "history_gluing_lemma",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-13T20:50:00Z",
+      "last_updated": "2026-01-13T20:50:00Z",
+      "parent_task": 473,
+      "description": "Implement history gluing lemma to compose two histories that share a common world state at the junction point. This eliminates the compositionality sorries in SemanticTaskRelV2.compositionality by proving histories can be concatenated when they agree at the boundary."
+    },
+    {
       "project_number": 468,
       "project_name": "refactor_infinite_canonical_model_code",
       "status": "not_started",
@@ -263,12 +285,14 @@
       "priority": "low",
       "effort": "8-10 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-12T22:17:51Z",
+      "last_updated": "2026-01-13T20:50:00Z",
       "parent_task": 257,
       "dependencies": [
-        449
+        449,
+        481,
+        482
       ],
-      "description": "Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using truth lemma. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.",
+      "description": "Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using SemanticCanonicalModel from Task 473. Connect semantic_weak_completeness to main completeness theorem. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.",
       "artifacts": [
         {
           "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",

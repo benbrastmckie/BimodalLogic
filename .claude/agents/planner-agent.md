@@ -220,7 +220,7 @@ Return ONLY valid JSON matching this schema:
 
 ```json
 {
-  "status": "completed|partial|failed",
+  "status": "planned|partial|failed",
   "summary": "Brief 2-5 sentence summary (<100 tokens)",
   "artifacts": [
     {

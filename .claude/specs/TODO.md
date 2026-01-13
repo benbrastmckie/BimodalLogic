@@ -30,7 +30,7 @@ technical_debt:
 
 ### 480. Investigate workflow delegation early stop issues
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: High
@@ -154,6 +154,28 @@ technical_debt:
 - **Summary**: [implementation-summary-20260113-final.md](.claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-final.md)
 
 **Description**: Implemented Path A (Semantic History-Based World States). Defined SemanticWorldState as quotient of history-time pairs, making compositionality trivial by construction. Key achievement: reduced 8+ mathematically unprovable sorries (mixed-sign cases) to 2 constructible sorries (history gluing). All 6 phases completed, lake build succeeds.
+
+---
+
+### 481. Implement finite_history_from_state
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 473
+
+**Description**: Implement `finite_history_from_state` to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for `SemanticCanonicalFrame.nullity` proof.
+
+---
+
+### 482. Implement history gluing lemma
+- **Effort**: 4-5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 473
+
+**Description**: Implement history gluing lemma to compose two histories that share a common world state at the junction point. This eliminates the compositionality sorries in `SemanticTaskRelV2.compositionality` by proving histories can be concatenated when they agree at the boundary.
 
 ---
 
@@ -290,10 +312,10 @@ technical_debt:
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
-- **Dependencies**: 449
+- **Dependencies**: 449, 481, 482
 - **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 7)
 
-**Description**: Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using truth lemma. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.
+**Description**: Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using SemanticCanonicalModel from Task 473. Connect semantic_weak_completeness to main completeness theorem. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.
 
 ---
 
