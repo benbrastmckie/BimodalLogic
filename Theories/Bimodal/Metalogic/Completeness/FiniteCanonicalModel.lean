@@ -1113,4 +1113,171 @@ to handle finite closures. The axioms capture the essential semantic property
 that the canonical model is complete.
 -/
 
+/-!
+## Phase 6: Finite Truth Lemma
+
+The truth lemma is the key result connecting syntactic membership (formula in
+world state) with semantic truth (truth_at in the model). It states:
+
+For all psi in closure(phi), and for all times t in the finite domain:
+  psi true in world state S_t  <->  truth_at M tau t psi
+
+where M is the finite canonical model, tau is a finite history, and S_t is the
+world state at time t in that history.
+
+The proof proceeds by structural induction on psi, with each case using the
+properties of locally consistent world states and the finite task relation.
+-/
+
+/-!
+### Truth Lemma Setup
+
+We need to relate the finite model's truth evaluation to the world states.
+Since our finite model uses a different structure than WorldHistory, we
+first define truth evaluation directly on finite histories.
+-/
+
+/--
+Truth evaluation on the finite canonical model with a finite history.
+
+This directly evaluates formulas on the finite model without converting
+to WorldHistory, which simplifies the truth lemma proof.
+-/
+def finite_truth_at (phi : Formula) (h : FiniteHistory phi)
+    (t : FiniteTime (temporalBound phi)) : Formula → Prop
+  | Formula.atom p =>
+    -- Atom is true iff it's in the closure and true in the world state
+    ∃ h_mem : Formula.atom p ∈ closure phi, (h.states t).models (Formula.atom p) h_mem
+  | Formula.bot =>
+    -- Bot is always false
+    False
+  | Formula.imp psi chi =>
+    -- Implication is material conditional
+    finite_truth_at phi h t psi → finite_truth_at phi h t chi
+  | Formula.box psi =>
+    -- Box is true iff psi is true at all finite histories at time t
+    ∀ h' : FiniteHistory phi, finite_truth_at phi h' t psi
+  | Formula.all_past psi =>
+    -- All past is true iff psi is true at all earlier times in the finite domain
+    ∀ s : FiniteTime (temporalBound phi),
+      FiniteTime.toInt (temporalBound phi) s < FiniteTime.toInt (temporalBound phi) t →
+      finite_truth_at phi h s psi
+  | Formula.all_future psi =>
+    -- All future is true iff psi is true at all later times in the finite domain
+    ∀ s : FiniteTime (temporalBound phi),
+      FiniteTime.toInt (temporalBound phi) t < FiniteTime.toInt (temporalBound phi) s →
+      finite_truth_at phi h s psi
+
+/--
+The finite truth lemma: membership in world state equals truth in model.
+
+For any formula psi in the closure of phi:
+  psi is true in world state S_t  <->  finite_truth_at phi tau t psi
+
+**Note**: This is the key completeness lemma. The proof requires:
+1. Atom case: by definition of valuation
+2. Bot case: by consistency (bot is never in a consistent state)
+3. Imp case: by local consistency (implications are respected)
+4. Box case: requires all histories to have same state at t (canonical property)
+5. All_past case: by task relation transfer for past
+6. All_future case: by task relation transfer for future
+
+The modal (box) and temporal cases are where the canonical model construction
+pays off - the transfer properties in finite_task_rel ensure these cases work.
+-/
+theorem finite_truth_lemma (phi : Formula) (h : FiniteHistory phi)
+    (t : FiniteTime (temporalBound phi)) (psi : Formula) (h_mem : psi ∈ closure phi) :
+    (h.states t).models psi h_mem ↔ finite_truth_at phi h t psi := by
+  -- Proof by structural induction on psi
+  induction psi generalizing t with
+  | atom p =>
+    -- Atom case: both sides check membership in world state
+    simp only [FiniteWorldState.models, finite_truth_at]
+    constructor
+    · intro h_true
+      exact ⟨h_mem, h_true⟩
+    · intro ⟨_, h_true⟩
+      -- By proof irrelevance, both membership proofs give same result
+      exact h_true
+  | bot =>
+    -- Bot case: never true in consistent state, never true semantically
+    simp only [FiniteWorldState.models, finite_truth_at]
+    constructor
+    · intro h_true
+      have h_false := (h.states t).consistent.1 h_mem
+      simp [h_true] at h_false
+    · intro h_false
+      exact False.elim h_false
+  | imp psi chi ih_psi ih_chi =>
+    -- Implication case: by local consistency
+    simp only [FiniteWorldState.models, finite_truth_at]
+    constructor
+    · intro h_imp h_psi_true
+      -- Need: if imp true and psi true then chi true
+      -- This requires proving that psi and chi are also in closure phi
+      -- when (imp psi chi) is in closure phi
+      sorry
+    · intro h_impl
+      -- Need: if implication holds semantically, then syntactically
+      sorry
+  | box psi ih =>
+    -- Box case: requires canonical property
+    simp only [FiniteWorldState.models, finite_truth_at]
+    constructor
+    · intro h_box h'
+      -- box(psi) true at state t, need psi true at all histories at t
+      -- By canonical property, psi should be true at state t
+      -- Then by IH, finite_truth_at h' t psi
+      sorry
+    · intro h_all
+      -- psi true at all histories at t, need box(psi) true at state t
+      -- This is the converse canonical property
+      sorry
+  | all_past psi ih =>
+    -- All past case: by task relation transfer
+    simp only [FiniteWorldState.models, finite_truth_at]
+    constructor
+    · intro h_past s h_s_lt
+      -- all_past(psi) true at t, need psi true at s < t
+      -- By task relation transfer from t to s
+      sorry
+    · intro h_all_s
+      -- psi true at all s < t, need all_past(psi) true at t
+      sorry
+  | all_future psi ih =>
+    -- All future case: by task relation transfer (symmetric to past)
+    simp only [FiniteWorldState.models, finite_truth_at]
+    constructor
+    · intro h_fut s h_t_lt
+      sorry
+    · intro h_all_s
+      sorry
+
+/-!
+### Truth Lemma Notes
+
+The truth lemma proof requires several auxiliary facts:
+1. Closure contains subformulas of its members
+2. Task relation transfer properties connect states at different times
+3. Canonical property: box(psi) at state S implies psi at all accessible states
+
+The sorry gaps in the proof correspond to these auxiliary lemmas that need
+to be developed. The structure of the proof is correct, but completing it
+requires the full canonical model infrastructure.
+-/
+
+/-!
+## Summary of Phase 6 Definitions
+
+- `finite_truth_at`: Truth evaluation on finite histories
+- `finite_truth_lemma`: Membership <-> truth equivalence (PARTIAL - has sorries)
+
+**Status**: Truth lemma structure is correct but has sorry gaps:
+- Imp case: needs closure contains subformulas
+- Box case: needs canonical property relating box to accessibility
+- Temporal cases: need task relation transfer composition
+
+These gaps can be filled when the auxiliary infrastructure is developed.
+-/
+
 end Bimodal.Metalogic.Completeness
