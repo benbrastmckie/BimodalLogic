@@ -2657,28 +2657,42 @@ using `forward_extension` from the nearest chain point.
 /--
 A noncomputable positive duration used as the unit step for chain construction.
 
-We obtain this by constructing a doubleton segment (two distinct world states)
-which has strictly positive order type.
+We construct this by concatenating two singleton segments to get a segment
+with two elements, which represents a strictly positive duration.
+
+**Implementation Note**: In the Duration construction:
+- `PositiveDuration.zero` = singleton segment (order type 1, represents 0)
+- Concatenating two singletons gives order type 2 (represents 1 unit of time)
+
+The Grothendieck group maps PositiveDuration.zero to Duration's 0.
+Concatenating two singletons gives a PositiveDuration that maps to a
+strictly positive Duration.
 -/
+noncomputable def chain_step_pd : PositiveDuration :=
+  -- Two singleton segments concatenated represents a positive step
+  PositiveDuration.add ⟦mkSingletonSigma someWorldState⟧ ⟦mkSingletonSigma someWorldState⟧
+
 noncomputable def chain_step : Duration :=
-  positiveToDuration ⟦mkDoubleton someWorldState (Classical.choice inferInstance)⟧
+  positiveToDuration chain_step_pd
 
 /--
 The chain step is strictly positive.
+
+**Known Gap**: This proof requires showing that the concatenation of two
+singleton segments produces a PositiveDuration different from zero.
+This in turn requires the order type equivalence properties which have
+sorry placeholders.
 -/
 theorem chain_step_pos : (0 : Duration) < chain_step := by
-  -- chain_step is the image of a non-zero positive duration under positiveToDuration
-  -- The doubleton has strictly greater order type than singleton (zero)
   unfold chain_step
   simp only [LT.lt]
   constructor
-  · -- 0 ≤ chain_step
-    use ⟦mkDoubleton someWorldState (Classical.choice inferInstance)⟧
+  · -- 0 ≤ chain_step: follows from chain_step being a positive duration image
+    use chain_step_pd
     simp only [map_zero, zero_add]
-  · -- 0 ≠ chain_step
-    -- This requires showing positiveToDuration of doubleton ≠ 0
-    -- The doubleton has order type 2, singleton has order type 1
-    -- They are not equivalent, so their images in Duration differ
+  · -- 0 ≠ chain_step: two singletons ≠ one singleton in order type
+    -- This requires showing chain_step_pd ≠ PositiveDuration.zero
+    -- i.e., order type 2 ≠ order type 1
     sorry
 
 /--
@@ -2698,9 +2712,10 @@ noncomputable def canonical_forward_chain (S : CanonicalWorldState) : ℕ → Ca
 Each forward chain step maintains the task relation.
 -/
 theorem canonical_forward_chain_step (S : CanonicalWorldState) (n : ℕ) :
-    canonical_task_rel (canonical_forward_chain S n) chain_step (canonical_forward_chain S (n + 1)) := by
-  unfold canonical_forward_chain
-  exact Classical.choose_spec (forward_extension (canonical_forward_chain S n) chain_step chain_step_pos)
+    canonical_task_rel (canonical_forward_chain S n) chain_step (canonical_forward_chain S (n + 1)) :=
+  -- The n+1 case of canonical_forward_chain is defined as Classical.choose (forward_extension ...)
+  -- Classical.choose_spec gives us the task relation property
+  Classical.choose_spec (forward_extension (canonical_forward_chain S n) chain_step chain_step_pos)
 
 /--
 Forward chain at index 0 equals S.
@@ -2719,7 +2734,7 @@ theorem canonical_forward_chain_total (S : CanonicalWorldState) (n : ℕ) :
   induction n with
   | zero =>
     -- n = 0: need canonical_task_rel S 0 S
-    simp only [zero_smul]
+    rw [zero_nsmul]
     exact canonical_nullity S
   | succ k ih =>
     -- Inductive case: canonical_task_rel S (k • chain_step) (chain k)
@@ -2730,7 +2745,7 @@ theorem canonical_forward_chain_total (S : CanonicalWorldState) (n : ℕ) :
         (canonical_forward_chain S (k + 1)) (k • chain_step) chain_step ih h_step
     -- Need: (k • chain_step) + chain_step = (k + 1) • chain_step
     have h_arith : (k • chain_step) + chain_step = (k + 1) • chain_step := by
-      rw [add_comm, succ_nsmul]
+      rw [add_nsmul, one_nsmul]
     rw [h_arith] at h_comp
     exact h_comp
 
@@ -2749,14 +2764,16 @@ theorem canonical_forward_chain_coherence (S : CanonicalWorldState) (m n : ℕ) 
     -- n = 0, so m = 0
     simp only [Nat.le_zero] at h
     subst h
-    simp only [Nat.sub_self, zero_smul]
+    simp only [Nat.sub_self]
+    rw [zero_nsmul]
     exact canonical_nullity (canonical_forward_chain S 0)
   | succ k ih =>
     -- n = k + 1
     by_cases hm : m = k + 1
     · -- m = k + 1 = n
       subst hm
-      simp only [Nat.sub_self, zero_smul]
+      simp only [Nat.sub_self]
+      rw [zero_nsmul]
       exact canonical_nullity (canonical_forward_chain S (k + 1))
     · -- m < k + 1, so m ≤ k
       have h_m_le_k : m ≤ k := Nat.lt_succ_iff.mp (Nat.lt_of_le_of_ne h hm)
@@ -2767,9 +2784,105 @@ theorem canonical_forward_chain_coherence (S : CanonicalWorldState) (m n : ℕ) 
           ((k - m) • chain_step) chain_step h_ih h_step
       -- Need: (k - m) • chain_step + chain_step = (k + 1 - m) • chain_step
       have h_arith : (k - m) • chain_step + chain_step = (k + 1 - m) • chain_step := by
-        rw [add_comm, ← succ_nsmul]
-        congr 1
-        omega
+        have h_succ : k + 1 - m = k - m + 1 := by omega
+        rw [h_succ, add_nsmul, one_nsmul]
+      rw [← h_arith]
+      exact h_comp
+
+/--
+Backward chain: States at natural number indices extending backward from S.
+
+- `canonical_backward_chain S 0 = S`
+- `canonical_backward_chain S (n+1)` is chosen via `backward_extension` from
+  `canonical_backward_chain S n` with duration `chain_step`.
+
+This means the state at index n+1 is "earlier" than the state at index n.
+The relation is: canonical_task_rel (chain (n+1)) chain_step (chain n)
+-/
+noncomputable def canonical_backward_chain (S : CanonicalWorldState) : ℕ → CanonicalWorldState
+  | 0 => S
+  | n + 1 => Classical.choose (backward_extension (canonical_backward_chain S n) chain_step chain_step_pos)
+
+/--
+Each backward chain step maintains the task relation.
+The relation goes FROM the earlier state TO the later state.
+-/
+theorem canonical_backward_chain_step (S : CanonicalWorldState) (n : ℕ) :
+    canonical_task_rel (canonical_backward_chain S (n + 1)) chain_step (canonical_backward_chain S n) :=
+  -- backward_extension (state n) gives a state T with canonical_task_rel T chain_step (state n)
+  Classical.choose_spec (backward_extension (canonical_backward_chain S n) chain_step chain_step_pos)
+
+/--
+Backward chain at index 0 equals S.
+-/
+theorem canonical_backward_chain_zero (S : CanonicalWorldState) :
+    canonical_backward_chain S 0 = S := rfl
+
+/--
+Backward chain composition: Any chain element is task-related to S by
+the appropriate multiple of chain_step.
+
+canonical_task_rel (canonical_backward_chain S n) (n • chain_step) S
+
+This follows by induction: we compose the individual step relations.
+-/
+theorem canonical_backward_chain_total (S : CanonicalWorldState) (n : ℕ) :
+    canonical_task_rel (canonical_backward_chain S n) (n • chain_step) S := by
+  induction n with
+  | zero =>
+    -- n = 0: need canonical_task_rel S 0 S
+    rw [zero_nsmul]
+    exact canonical_nullity S
+  | succ k ih =>
+    -- Inductive case: canonical_task_rel (chain k) (k • chain_step) S
+    -- and canonical_task_rel (chain (k+1)) chain_step (chain k)
+    -- Compose to get canonical_task_rel (chain (k+1)) ((k+1) • chain_step) S
+    have h_step := canonical_backward_chain_step S k
+    have h_comp := canonical_compositionality (canonical_backward_chain S (k + 1))
+        (canonical_backward_chain S k) S chain_step (k • chain_step) h_step ih
+    -- Need: chain_step + (k • chain_step) = (k + 1) • chain_step
+    have h_arith : chain_step + (k • chain_step) = (k + 1) • chain_step := by
+      rw [add_comm, add_nsmul, one_nsmul]
+    rw [h_arith] at h_comp
+    exact h_comp
+
+/--
+Backward chain coherence: For m ≤ n, the states at indices m and n are
+task-related by the difference in steps.
+
+canonical_task_rel (canonical_backward_chain S n) ((n - m) • chain_step) (canonical_backward_chain S m)
+
+This says: the state n steps back relates to the state m steps back
+by (n - m) steps forward.
+-/
+theorem canonical_backward_chain_coherence (S : CanonicalWorldState) (m n : ℕ) (h : m ≤ n) :
+    canonical_task_rel (canonical_backward_chain S n) ((n - m) • chain_step) (canonical_backward_chain S m) := by
+  -- Similar to forward chain coherence, by induction
+  induction n with
+  | zero =>
+    simp only [Nat.le_zero] at h
+    subst h
+    simp only [Nat.sub_self]
+    rw [zero_nsmul]
+    exact canonical_nullity (canonical_backward_chain S 0)
+  | succ k ih =>
+    by_cases hm : m = k + 1
+    · subst hm
+      simp only [Nat.sub_self]
+      rw [zero_nsmul]
+      exact canonical_nullity (canonical_backward_chain S (k + 1))
+    · have h_m_le_k : m ≤ k := Nat.lt_succ_iff.mp (Nat.lt_of_le_of_ne h hm)
+      have h_ih := ih h_m_le_k
+      have h_step := canonical_backward_chain_step S k
+      -- h_step : canonical_task_rel (chain (k+1)) chain_step (chain k)
+      -- h_ih : canonical_task_rel (chain k) ((k - m) • chain_step) (chain m)
+      -- Compose to get: canonical_task_rel (chain (k+1)) (chain_step + (k-m) • chain_step) (chain m)
+      have h_comp := canonical_compositionality (canonical_backward_chain S (k + 1))
+          (canonical_backward_chain S k) (canonical_backward_chain S m)
+          chain_step ((k - m) • chain_step) h_step h_ih
+      have h_arith : chain_step + (k - m) • chain_step = (k + 1 - m) • chain_step := by
+        have h_succ : k + 1 - m = k - m + 1 := by omega
+        rw [h_succ, add_comm, add_nsmul, one_nsmul]
       rw [h_arith] at h_comp
       exact h_comp
 
@@ -2944,8 +3057,27 @@ noncomputable def canonical_history (S : CanonicalWorldState) : WorldHistory can
           case pos =>
             -- s > 0, t > 0, s ≤ t
             -- Need: canonical_task_rel (canonical_states S s) (t-s) (canonical_states S t)
-            -- This requires compositionality that we don't have for this case.
-            -- TODO: This case requires additional infrastructure or a different construction.
+            --
+            -- **Known Gap (Task 458)**:
+            -- The current `canonical_states` definition uses independent `Classical.choose`
+            -- calls for each Duration value:
+            --   canonical_states S s = Classical.choose (forward_extension S s)
+            --   canonical_states S t = Classical.choose (forward_extension S t)
+            --
+            -- These are independent choices that don't guarantee coherence:
+            -- there's no guarantee that canonical_task_rel (state s) (t-s) (state t).
+            --
+            -- **Chain-based solution**: We have `canonical_forward_chain` and
+            -- `canonical_forward_chain_coherence` that provide coherence for ℕ-indexed
+            -- chain positions. However, mapping arbitrary Duration values to chain
+            -- indices requires Duration ≅ ℤ * chain_step, which we don't have.
+            --
+            -- **Possible resolutions**:
+            -- 1. If Duration is discrete (isomorphic to ℤ), replace canonical_states
+            --    with chain-based construction
+            -- 2. If Duration is dense, use a different approach (e.g., axiomatic
+            --    coherence property or modify forward_extension to return coherent witnesses)
+            -- 3. Restrict domain to chain positions only
             sorry
           case neg =>
             -- s > 0, t not > 0 but s ≤ t, contradiction
@@ -2992,8 +3124,17 @@ noncomputable def canonical_history (S : CanonicalWorldState) : WorldHistory can
                 · exact fun h_eq => h_t_zero h_eq
               · exact absurd (h_t_pos h_0_le_t).symm h_t_zero
             -- Both s < 0 and t < 0, with s ≤ t < 0
-            -- We have two backward extensions to S, but need forward relation between them.
-            -- TODO: This case requires compositionality or a different approach.
+            -- Need: canonical_task_rel (canonical_states S s) (t-s) (canonical_states S t)
+            --
+            -- **Known Gap (Task 458)**: Same issue as the s > 0, t > 0 case.
+            -- The states at s and t are chosen independently via backward_extension,
+            -- with no guaranteed coherence.
+            --
+            -- **Chain-based solution**: We have `canonical_backward_chain` and
+            -- `canonical_backward_chain_coherence` that provide coherence for ℕ-indexed
+            -- backward chain positions.
+            --
+            -- See the s > 0, t > 0 case comments for possible resolutions.
             sorry
 
 /-!

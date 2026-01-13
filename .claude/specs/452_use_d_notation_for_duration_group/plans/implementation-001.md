@@ -125,7 +125,7 @@ The implementation is divided into 4 phases: LaTeX infrastructure, LaTeX content
 ### Phase 4: Lean Dependent Modules and Tests
 
 **Estimated effort**: 1 hour
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update metalogic modules (SoundnessLemmas, Completeness)

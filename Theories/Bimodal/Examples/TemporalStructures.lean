@@ -12,9 +12,9 @@ with ProofChecker's generalized semantics. The polymorphic `TaskFrame T` and
 ## Paper Alignment
 
 The JPL paper "The Perpetuity Calculus of Agency" (§app:TaskSemantics, def:frame, line 1835)
-specifies that the temporal structure is a "totally ordered abelian group T = ⟨T, +, ≤⟩".
-ProofChecker implements this via the unbundled typeclasses `[AddCommGroup T] [LinearOrder T]
-[IsOrderedAddMonoid T]`, which provide exactly this structure.
+specifies that the temporal structure is a "totally ordered abelian group D = ⟨D, +, ≤⟩".
+ProofChecker implements this via the unbundled typeclasses `[AddCommGroup D] [LinearOrder D]
+[IsOrderedAddMonoid D]`, which provide exactly this structure.
 
 ## Example Temporal Types
 
@@ -25,7 +25,7 @@ ProofChecker implements this via the unbundled typeclasses `[AddCommGroup T] [Li
 
 ### Polymorphic Examples
 The examples below demonstrate how ProofChecker's polymorphic types work with
-any type `T` that has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid` instances. This includes:
+any type `D` that has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid` instances. This includes:
 - `Int`: Discrete integer time
 - `Rat`: Dense rational time (requires additional Mathlib imports)
 - `Real`: Continuous real time (requires additional Mathlib imports)
@@ -34,8 +34,8 @@ any type `T` that has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid` in
 
 - `intTimeFrame`: Example task frame using `Int` as temporal type
 - `intTimeHistory`: Example world history using `Int`
-- `genericTimeFrame`: Polymorphic task frame (works with any `T`)
-- `genericTimeHistory`: Polymorphic world history (works with any `T`)
+- `genericTimeFrame`: Polymorphic task frame (works with any `D`)
+- `genericTimeHistory`: Polymorphic world history (works with any `D`)
 
 ## Implementation Notes
 
@@ -94,15 +94,15 @@ def intTimeHistory : WorldHistory intTimeFrame where
 
 section Polymorphic
 
-variable (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
+variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /--
 Generic polymorphic task frame.
 
-Works with any temporal type `T` that has a `LinearOrderedAddCommGroup` instance.
+Works with any temporal type `D` that has a `LinearOrderedAddCommGroup` instance.
 This demonstrates ProofChecker's polymorphic design.
 -/
-def genericTimeFrame : TaskFrame T where
+def genericTimeFrame : TaskFrame D where
   WorldState := Unit
   task_rel := fun _ _ _ => True
   nullity := fun _ => trivial
@@ -111,7 +111,7 @@ def genericTimeFrame : TaskFrame T where
 /--
 Generic polymorphic task frame with natural number world states.
 -/
-def genericNatFrame : TaskFrame T where
+def genericNatFrame : TaskFrame D where
   WorldState := Nat
   task_rel := fun _ _ _ => True
   nullity := fun _ => trivial
@@ -122,7 +122,7 @@ Generic polymorphic world history with universal domain.
 
 Works with the genericTimeFrame, demonstrating polymorphism over the temporal type.
 -/
-def genericTimeHistory : WorldHistory (genericTimeFrame T) where
+def genericTimeHistory : WorldHistory (genericTimeFrame D) where
   domain := fun _ => True
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun _ _ => ()
@@ -153,9 +153,9 @@ theorem int_nullity_example : intTimeFrame.task_rel () 0 () :=
 /--
 Generic time satisfies the nullity constraint (polymorphic proof).
 -/
-theorem generic_nullity_example (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] :
-    (genericTimeFrame T).task_rel () 0 () :=
-  (genericTimeFrame T).nullity ()
+theorem generic_nullity_example (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+    (genericTimeFrame D).task_rel () 0 () :=
+  (genericTimeFrame D).nullity ()
 
 /--
 Integer time compositionality example: 1 + 2 = 3 duration composition.
@@ -170,14 +170,14 @@ theorem int_compositionality_example :
 /--
 Generic compositionality theorem (polymorphic).
 
-For any temporal type `T`, tasks of duration `x` and `y` compose
+For any temporal type `D`, tasks of duration `x` and `y` compose
 to a task of duration `x + y`.
 -/
-theorem generic_compositionality (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (x y : T) :
-    (genericTimeFrame T).task_rel () (x + y) () :=
-  (genericTimeFrame T).compositionality () () () x y
-    ((genericTimeFrame T).nullity ())
-    ((genericTimeFrame T).nullity ())
+theorem generic_compositionality (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (x y : D) :
+    (genericTimeFrame D).task_rel () (x + y) () :=
+  (genericTimeFrame D).compositionality () () () x y
+    ((genericTimeFrame D).nullity ())
+    ((genericTimeFrame D).nullity ())
 
 /-! ## History Domain Examples -/
 
@@ -189,7 +189,7 @@ theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial
 /--
 Generic histories have universal domains (polymorphic).
 -/
-theorem generic_domain_universal (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (t : T) :
-    (genericTimeHistory T).domain t := trivial
+theorem generic_domain_universal (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (t : D) :
+    (genericTimeHistory D).domain t := trivial
 
 end Bimodal.Examples.TemporalStructures

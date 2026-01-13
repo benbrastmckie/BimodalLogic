@@ -127,7 +127,7 @@ noncomputable def canonical_states (S : CanonicalWorldState) (t : Duration) : Ca
 
 ---
 
-### Phase 2: Implement Forward Chain [IN PROGRESS]
+### Phase 2: Implement Forward Chain [COMPLETED]
 
 **Goal**: Define `canonical_forward_chain` and prove its key properties.
 
@@ -151,7 +151,7 @@ noncomputable def canonical_states (S : CanonicalWorldState) (t : Duration) : Ca
 
 ---
 
-### Phase 3: Implement Backward Chain [NOT STARTED]
+### Phase 3: Implement Backward Chain [COMPLETED]
 
 **Goal**: Define `canonical_backward_chain` and prove its key properties.
 
@@ -173,7 +173,7 @@ noncomputable def canonical_states (S : CanonicalWorldState) (t : Duration) : Ca
 
 ---
 
-### Phase 4: Implement Integer States [NOT STARTED]
+### Phase 4: Implement Integer States [PARTIAL]
 
 **Goal**: Combine forward and backward chains into `canonical_states_int`.
 

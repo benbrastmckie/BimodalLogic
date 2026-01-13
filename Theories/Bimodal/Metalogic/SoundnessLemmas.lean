@@ -66,19 +66,19 @@ open Bimodal.Semantics
 Local definition of validity to avoid circular dependency with Validity.lean.
 A formula is valid if it's true at all model-history-time triples.
 
-This is a monomorphic definition (fixed to explicit type parameter T) to avoid
+This is a monomorphic definition (fixed to explicit type parameter D) to avoid
 universe level mismatch errors.
-Per research report Option A: Make T explicit to allow type inference at call sites.
+Per research report Option A: Make D explicit to allow type inference at call sites.
 
 **Note**: With the new semantics (Task #454), validity quantifies over ALL times,
 not just times in the history's domain.
 -/
-private def is_valid (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame T) (M : TaskModel F) (τ : WorldHistory F) (t : T),
+private def is_valid (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (φ : Formula) : Prop :=
+  ∀ (F : TaskFrame D) (M : TaskModel F) (τ : WorldHistory F) (t : D),
     truth_at M τ t φ
 
 -- Section variable for theorem signatures
-variable {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /--
 Auxiliary lemma: If φ is valid, then for any specific triple (M, τ, t),
@@ -86,8 +86,8 @@ Auxiliary lemma: If φ is valid, then for any specific triple (M, τ, t),
 
 This is just the definition of validity, but stated as a lemma for clarity.
 -/
-theorem valid_at_triple {φ : Formula} (F : TaskFrame T) (M : TaskModel F)
-    (τ : WorldHistory F) (t : T) (h_valid : is_valid T φ) :
+theorem valid_at_triple {φ : Formula} (F : TaskFrame D) (M : TaskModel F)
+    (τ : WorldHistory F) (t : D) (h_valid : is_valid D φ) :
     truth_at M τ t φ := h_valid F M τ t
 
 /--
@@ -97,8 +97,8 @@ This lemma proves that applying swap twice to a formula preserves truth evaluati
 Required because truth_at is defined by structural recursion, preventing direct use
 of the involution property φ.swap.swap = φ via substitution.
 -/
-theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
-    (τ : WorldHistory F) (t : T) (φ : Formula) :
+theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
+    (τ : WorldHistory F) (t : D) (φ : Formula) :
     truth_at M τ t φ.swap_past_future.swap_past_future ↔ truth_at M τ t φ := by
   induction φ generalizing τ t with
   | atom p =>
@@ -142,7 +142,7 @@ theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
 
 The theorem `is_valid_swap_involution` as originally stated is **UNPROVABLE**.
 
-**Original claim**: `is_valid T φ.swap → is_valid T φ`
+**Original claim**: `is_valid D φ.swap → is_valid D φ`
 
 **Why it's false**: The `swap_past_future` operation exchanges `all_past` ↔ `all_future`,
 which quantify over different time ranges (past s<t vs future s>t). These are not
@@ -192,7 +192,7 @@ and MT is valid, this is immediate.
 At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t) specifically.
 -/
 theorem swap_axiom_mt_valid (φ : Formula) :
-    is_valid T ((Formula.box φ).imp φ).swap_past_future := by
+    is_valid D ((Formula.box φ).imp φ).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap_φ
@@ -210,7 +210,7 @@ This is still M4, just applied to swapped formula.
 holds at all histories at t (trivially, as this is a global property).
 -/
 theorem swap_axiom_m4_valid (φ : Formula) :
-    is_valid T ((Formula.box φ).imp (Formula.box (Formula.box φ))).swap_past_future := by
+    is_valid D ((Formula.box φ).imp (Formula.box (Formula.box φ))).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap_φ σ
@@ -228,7 +228,7 @@ This is still MB, just applied to swapped formula.
 The diamond ◇ψ means "there exists some history where ψ holds". We have τ witnessing this.
 -/
 theorem swap_axiom_mb_valid (φ : Formula) :
-    is_valid T (φ.imp (Formula.box φ.diamond)).swap_past_future := by
+    is_valid D (φ.imp (Formula.box φ.diamond)).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_past_future, Formula.diamond, truth_at]
   intro h_swap_φ σ
@@ -251,13 +251,13 @@ To show PP(swap φ), for any r < t, we need P(swap φ) at r.
 For any u < r, we need swap φ at u. Since u < r < t, swap φ at u follows from P(swap φ) at t.
 -/
 theorem swap_axiom_t4_valid (φ : Formula) :
-    is_valid T
+    is_valid D
       ((Formula.all_future φ).imp
        (Formula.all_future (Formula.all_future φ))).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
   intro h_past_swap r h_r_lt_t u h_u_lt_r
-  -- h_past_swap : ∀ (s : T), s < t → truth_at M τ s φ.swap_past_future
+  -- h_past_swap : ∀ (s : D), s < t → truth_at M τ s φ.swap_past_future
   -- Need: truth_at M τ u φ.swap_past_future
   -- Since u < r < t, we have u < t, so apply h_past_swap
   have h_u_lt_t : u < t := lt_trans h_u_lt_r h_r_lt_t
@@ -276,11 +276,11 @@ We can choose u = t, since t > s and swap φ holds at t.
 Note: sometime_future φ = ¬(past (¬φ))
 -/
 theorem swap_axiom_ta_valid (φ : Formula) :
-    is_valid T (φ.imp (Formula.all_future φ.sometime_past)).swap_past_future := by
+    is_valid D (φ.imp (Formula.all_future φ.sometime_past)).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_past_future, Formula.sometime_past, Formula.sometime_future, truth_at]
   intro h_swap_φ s h_s_lt_t
-  -- Goal: ¬ ∀ (u : T), u > s → ¬ truth_at M τ u φ.swap_past_future
+  -- Goal: ¬ ∀ (u : D), u > s → ¬ truth_at M τ u φ.swap_past_future
   -- Equivalently: ∃ u > s : swap φ at u
   intro h_all_not_future
   -- We can choose u = t, since t > s (from h_s_lt_t)
@@ -308,7 +308,7 @@ double-negation encoding of conjunction.
 **Proof Status**: COMPLETE
 -/
 theorem swap_axiom_tl_valid (φ : Formula) :
-    is_valid T (φ.always.imp (Formula.all_future (Formula.all_past φ))).swap_past_future := by
+    is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))).swap_past_future := by
   intro F M τ t
   -- Swapped form: (always φ).swap → (future (past φ)).swap
   --             = always (swap φ) → past (future (swap φ))
@@ -378,7 +378,7 @@ at time t, P(swap φ) holds at σ (i.e., swap φ holds at all times s < t in σ)
 **Proof Status**: COMPLETE
 -/
 theorem swap_axiom_mf_valid (φ : Formula) :
-    is_valid T ((Formula.box φ).imp (Formula.box (Formula.all_future φ))).swap_past_future := by
+    is_valid D ((Formula.box φ).imp (Formula.box (Formula.all_future φ))).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap σ s h_s_lt_t
@@ -404,7 +404,7 @@ and truth preservation establishes the result.
 **Proof Status**: COMPLETE
 -/
 theorem swap_axiom_tf_valid (φ : Formula) :
-    is_valid T ((Formula.box φ).imp (Formula.all_future (Formula.box φ))).swap_past_future := by
+    is_valid D ((Formula.box φ).imp (Formula.all_future (Formula.box φ))).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap s h_s_lt_t σ
@@ -434,9 +434,9 @@ If `(φ → ψ).swap` and `φ.swap` are both valid, then `ψ.swap` is valid.
 applied to the swapped formulas.
 -/
 theorem mp_preserves_swap_valid (φ ψ : Formula)
-    (h_imp : is_valid T (φ.imp ψ).swap_past_future)
-    (h_phi : is_valid T φ.swap_past_future) :
-    is_valid T ψ.swap_past_future := by
+    (h_imp : is_valid D (φ.imp ψ).swap_past_future)
+    (h_phi : is_valid D φ.swap_past_future) :
+    is_valid D ψ.swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at] at h_imp h_phi ⊢
   exact h_imp F M τ t (h_phi F M τ t)
@@ -450,8 +450,8 @@ If `φ.swap` is valid, then `(□φ).swap = □(φ.swap)` is valid.
 at all histories σ at time t, `φ.swap` is true at (M, σ, t). This is exactly `□(φ.swap)`.
 -/
 theorem modal_k_preserves_swap_valid (φ : Formula)
-    (h : is_valid T φ.swap_past_future) :
-    is_valid T (Formula.box φ).swap_past_future := by
+    (h : is_valid D φ.swap_past_future) :
+    is_valid D (Formula.box φ).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
   intro σ
@@ -466,8 +466,8 @@ If `φ.swap` is valid, then `(Fφ).swap = P(φ.swap)` is valid.
 at all times s < t, `φ.swap` is true at (M, τ, s). This is exactly `P(φ.swap)`.
 -/
 theorem temporal_k_preserves_swap_valid (φ : Formula)
-    (h : is_valid T φ.swap_past_future) :
-    is_valid T (Formula.all_future φ).swap_past_future := by
+    (h : is_valid D φ.swap_past_future) :
+    is_valid D (Formula.all_future φ).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
   intro s h_s_lt_t
@@ -483,8 +483,8 @@ Weakening from [] to [] is trivial.
 only applies to theorems (empty context derivations).
 -/
 theorem weakening_preserves_swap_valid (φ : Formula)
-    (h : is_valid T φ.swap_past_future) :
-    is_valid T φ.swap_past_future := h
+    (h : is_valid D φ.swap_past_future) :
+    is_valid D φ.swap_past_future := h
 
 /-! ## Axiom Swap Validity Master Theorem (Phase 4 - Partial)
 
@@ -500,7 +500,7 @@ The proof handles each axiom case:
 - **modal_future (MF), temp_future (TF)**: Use `time_shift_preserves_truth` to bridge times
 -/
 
-theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid T φ.swap_past_future := by
+theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past_future := by
   cases h with
   | prop_k ψ χ ρ =>
     -- prop_k is (ψ → (χ → ρ)) → ((ψ → χ) → (ψ → ρ))
@@ -598,7 +598,7 @@ This is needed to prove the combined soundness+swap theorem without importing So
 
 /-- Propositional K axiom is locally valid. -/
 private theorem axiom_prop_k_valid (φ ψ χ : Formula) :
-    is_valid T ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
+    is_valid D ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
   intro F M τ t
   simp only [truth_at]
   intro h1 h2 h_phi
@@ -606,7 +606,7 @@ private theorem axiom_prop_k_valid (φ ψ χ : Formula) :
 
 /-- Propositional S axiom is locally valid. -/
 private theorem axiom_prop_s_valid (φ ψ : Formula) :
-    is_valid T (φ.imp (ψ.imp φ)) := by
+    is_valid D (φ.imp (ψ.imp φ)) := by
   intro F M τ t
   simp only [truth_at]
   intro h_phi _
@@ -614,7 +614,7 @@ private theorem axiom_prop_s_valid (φ ψ : Formula) :
 
 /-- Modal T axiom is locally valid. -/
 private theorem axiom_modal_t_valid (φ : Formula) :
-    is_valid T (φ.box.imp φ) := by
+    is_valid D (φ.box.imp φ) := by
   intro F M τ t
   simp only [truth_at]
   intro h_box
@@ -622,7 +622,7 @@ private theorem axiom_modal_t_valid (φ : Formula) :
 
 /-- Modal 4 axiom is locally valid. -/
 private theorem axiom_modal_4_valid (φ : Formula) :
-    is_valid T ((φ.box).imp (φ.box.box)) := by
+    is_valid D ((φ.box).imp (φ.box.box)) := by
   intro F M τ t
   simp only [truth_at]
   intro h_box σ ρ
@@ -630,7 +630,7 @@ private theorem axiom_modal_4_valid (φ : Formula) :
 
 /-- Modal B axiom is locally valid. -/
 private theorem axiom_modal_b_valid (φ : Formula) :
-    is_valid T (φ.imp (φ.diamond.box)) := by
+    is_valid D (φ.imp (φ.diamond.box)) := by
   intro F M τ t
   simp only [truth_at]
   intro h_phi σ h_box_neg
@@ -640,7 +640,7 @@ private theorem axiom_modal_b_valid (φ : Formula) :
 
 /-- Modal 5 collapse axiom is locally valid. -/
 private theorem axiom_modal_5_collapse_valid (φ : Formula) :
-    is_valid T (φ.box.diamond.imp φ.box) := by
+    is_valid D (φ.box.diamond.imp φ.box) := by
   intro F M τ t
   simp only [truth_at]
   intro h_diamond_box ρ
@@ -652,7 +652,7 @@ private theorem axiom_modal_5_collapse_valid (φ : Formula) :
 
 /-- Ex falso axiom is locally valid. -/
 private theorem axiom_ex_falso_valid (φ : Formula) :
-    is_valid T (Formula.bot.imp φ) := by
+    is_valid D (Formula.bot.imp φ) := by
   intro F M τ t
   simp only [truth_at]
   intro h_bot
@@ -661,7 +661,7 @@ private theorem axiom_ex_falso_valid (φ : Formula) :
 
 /-- Peirce's law is locally valid. -/
 private theorem axiom_peirce_valid (φ ψ : Formula) :
-    is_valid T (((φ.imp ψ).imp φ).imp φ) := by
+    is_valid D (((φ.imp ψ).imp φ).imp φ) := by
   intro F M τ t
   simp only [truth_at]
   intro h_peirce
@@ -676,7 +676,7 @@ private theorem axiom_peirce_valid (φ ψ : Formula) :
 
 /-- Modal K distribution axiom is locally valid. -/
 private theorem axiom_modal_k_dist_valid (φ ψ : Formula) :
-    is_valid T ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) := by
+    is_valid D ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) := by
   intro F M τ t
   simp only [truth_at]
   intro h_box_imp h_box_phi σ
@@ -687,7 +687,7 @@ private theorem axiom_modal_k_dist_valid (φ ψ : Formula) :
 
 /-- Temporal K distribution axiom is locally valid. -/
 private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
-    is_valid T ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) := by
+    is_valid D ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) := by
   intro F M τ t
   simp only [truth_at]
   intro h_future_imp h_future_phi s hts
@@ -698,7 +698,7 @@ private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
 
 /-- Temporal 4 axiom is locally valid. -/
 private theorem axiom_temp_4_valid (φ : Formula) :
-    is_valid T ((φ.all_future).imp (φ.all_future.all_future)) := by
+    is_valid D ((φ.all_future).imp (φ.all_future.all_future)) := by
   intro F M τ t
   simp only [truth_at]
   intro h_future s hts r hsr
@@ -707,7 +707,7 @@ private theorem axiom_temp_4_valid (φ : Formula) :
 
 /-- Helper for temporal A axiom. -/
 private theorem axiom_temp_a_valid (φ : Formula) :
-    is_valid T (φ.imp (Formula.all_future φ.sometime_past)) := by
+    is_valid D (φ.imp (Formula.all_future φ.sometime_past)) := by
   intro F M τ t
   simp only [truth_at]
   intro h_phi s hts h_all_neg
@@ -722,7 +722,7 @@ private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → Fal
 
 /-- Temporal L axiom is locally valid. -/
 private theorem axiom_temp_l_valid (φ : Formula) :
-    is_valid T (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
+    is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
   intro F M τ t
   simp only [truth_at]
   intro h_always s hts r hrs
@@ -730,12 +730,12 @@ private theorem axiom_temp_l_valid (φ : Formula) :
   -- which is classically equivalent to: future(φ) ∧ φ ∧ past(φ)
   -- meaning φ holds at all times
   have h1 :
-    (∀ (u : T), u < t → truth_at M τ u φ) ∧
+    (∀ (u : D), u < t → truth_at M τ u φ) ∧
     ((truth_at M τ t φ →
-      (∀ (v : T), t < v → truth_at M τ v φ) → False) → False) :=
+      (∀ (v : D), t < v → truth_at M τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : truth_at M τ t φ ∧ (∀ (v : T), t < v → truth_at M τ v φ) :=
+  have h2 : truth_at M τ t φ ∧ (∀ (v : D), t < v → truth_at M τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
   rcases lt_trichotomy r t with h_lt | h_eq | h_gt
@@ -745,7 +745,7 @@ private theorem axiom_temp_l_valid (φ : Formula) :
 
 /-- Modal-Future axiom is locally valid. -/
 private theorem axiom_modal_future_valid (φ : Formula) :
-    is_valid T ((φ.box).imp ((φ.all_future).box)) := by
+    is_valid D ((φ.box).imp ((φ.all_future).box)) := by
   intro F M τ t
   simp only [truth_at]
   intro h_box_phi σ s hts
@@ -758,7 +758,7 @@ private theorem axiom_modal_future_valid (φ : Formula) :
 
 /-- Temporal-Future axiom is locally valid. -/
 private theorem axiom_temp_future_valid (φ : Formula) :
-    is_valid T ((φ.box).imp ((φ.box).all_future)) := by
+    is_valid D ((φ.box).imp ((φ.box).all_future)) := by
   intro F M τ t
   simp only [truth_at]
   intro h_box_phi s hts σ
@@ -770,7 +770,7 @@ private theorem axiom_temp_future_valid (φ : Formula) :
   exact h_preserve.mp h_phi_at_shifted
 
 /-- All axioms are locally valid. -/
-private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid T φ := by
+private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ := by
   intro h_axiom
   cases h_axiom with
   | prop_k φ ψ χ => exact axiom_prop_k_valid φ ψ χ
@@ -797,10 +797,10 @@ part of the IH to complete the temporal_duality case for swap validity.
 
 **The temporal_duality case resolution**:
 - We have: `h_ψ' : DerivationTree [] ψ'`
-- IH gives: `is_valid T ψ' ∧ is_valid T ψ'.swap`
-- Goal: `is_valid T ψ'.swap ∧ is_valid T ψ'.swap.swap`
-- Part 1 (`is_valid T ψ'.swap`): directly from IH.2
-- Part 2 (`is_valid T ψ'.swap.swap`): by involution = `is_valid T ψ'`, from IH.1
+- IH gives: `is_valid D ψ' ∧ is_valid D ψ'.swap`
+- Goal: `is_valid D ψ'.swap ∧ is_valid D ψ'.swap.swap`
+- Part 1 (`is_valid D ψ'.swap`): directly from IH.2
+- Part 2 (`is_valid D ψ'.swap.swap`): by involution = `is_valid D ψ'`, from IH.1
 -/
 
 /--
@@ -813,13 +813,13 @@ validity proof for temporal_duality.
 -/
 theorem derivable_implies_valid_and_swap_valid :
     ∀ {φ : Formula}, DerivationTree [] φ →
-      (is_valid T φ ∧ is_valid T φ.swap_past_future) := by
+      (is_valid D φ ∧ is_valid D φ.swap_past_future) := by
   intro φ h_deriv
   -- Proof by induction on the derivation structure
   -- We generalize to arbitrary contexts but only use the [] case
   have h_general : ∀ (Γ : List Formula) (ψ : Formula),
       DerivationTree Γ ψ → Γ = [] →
-        (is_valid T ψ ∧ is_valid T ψ.swap_past_future) := by
+        (is_valid D ψ ∧ is_valid D ψ.swap_past_future) := by
     intro Γ ψ h
     induction h with
     | «axiom» Γ' ψ' h_axiom =>
@@ -876,14 +876,14 @@ theorem derivable_implies_valid_and_swap_valid :
       intro h_eq
       -- KEY CASE: This is where the combined theorem approach pays off!
       -- We have: h_ψ' : DerivationTree [] ψ'
-      -- IH gives: is_valid T ψ' ∧ is_valid T ψ'.swap
-      -- Goal: is_valid T ψ'.swap ∧ is_valid T ψ'.swap.swap
+      -- IH gives: is_valid D ψ' ∧ is_valid D ψ'.swap
+      -- Goal: is_valid D ψ'.swap ∧ is_valid D ψ'.swap.swap
       obtain ⟨h_valid, h_swap⟩ := ih rfl
       constructor
       · -- Validity of ψ'.swap: directly from IH.2
         exact h_swap
       · -- Swap validity of ψ'.swap, i.e., validity of ψ'.swap.swap
-        -- By involution: ψ'.swap.swap = ψ', so we need is_valid T ψ'
+        -- By involution: ψ'.swap.swap = ψ', so we need is_valid D ψ'
         -- This comes from IH.1!
         intro F M τ t
         have h_truth := h_valid F M τ t
@@ -916,7 +916,7 @@ Soundness from empty context: derivability implies validity.
 Derived from the combined theorem.
 -/
 theorem soundness_from_empty :
-    ∀ {φ : Formula}, DerivationTree [] φ → is_valid T φ :=
+    ∀ {φ : Formula}, DerivationTree [] φ → is_valid D φ :=
   fun h => (derivable_implies_valid_and_swap_valid h).1
 
 /--
@@ -926,7 +926,7 @@ Derived from the combined theorem.
 This replaces the previous sorry-containing version.
 -/
 theorem derivable_implies_swap_valid :
-    ∀ {φ : Formula}, DerivationTree [] φ → is_valid T φ.swap_past_future :=
+    ∀ {φ : Formula}, DerivationTree [] φ → is_valid D φ.swap_past_future :=
   fun h => (derivable_implies_valid_and_swap_valid h).2
 
 end Bimodal.Metalogic.SoundnessLemmas
