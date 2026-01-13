@@ -30,7 +30,7 @@ technical_debt:
 
 ### 480. Investigate workflow delegation early stop issues
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 
@@ -407,7 +407,7 @@ technical_debt:
 
 ### 479. Fix TikZ extension dependencies diagram
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium

@@ -60,7 +60,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Add TikZ Libraries and Update Styles [NOT STARTED]
+### Phase 1: Add TikZ Libraries and Update Styles [COMPLETED]
 
 **Goal**: Set up required TikZ libraries and define updated node styles.
 
@@ -81,7 +81,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Restructure Nodes to Vertical Layout [NOT STARTED]
+### Phase 2: Restructure Nodes to Vertical Layout [IN PROGRESS]
 
 **Goal**: Convert to vertical stacking layout with full-width boxes for main layers.
 
