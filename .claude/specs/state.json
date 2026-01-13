@@ -6,14 +6,14 @@
     {
       "project_number": 464,
       "project_name": "research_coherence_alternatives_strategy_a",
-      "status": "planned",
+      "status": "implementing",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-13T04:51:37Z",
-      "last_updated": "2026-01-13T05:21:31Z",
+      "last_updated": "2026-01-13T05:25:47Z",
       "parent_task": 458,
       "description": "Research alternative approaches to solve the canonical_history coherence problem. Current chain construction (Strategy C) provides coherence for discrete ℤ-indexed positions but cannot extend to full Duration domain. Investigate Strategy A from research-002.md: strengthen canonical_task_rel to include persistence conditions, making compositionality provable by construction. Also consider: (1) proving Duration discreteness (≅ ℤ·chain_step), (2) modifying forward/backward_extension to return chain-coherent witnesses, (3) quotient-based approaches.",
-      "session_id": "sess_1768281555_9450ca",
+      "session_id": "sess_1768281942_e65015",
       "artifacts": [
         {
           "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md",
@@ -38,18 +38,23 @@
     {
       "project_number": 462,
       "project_name": "fix_workflow_command_delegation",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T04:27:46Z",
-      "last_updated": "2026-01-13T05:05:54Z",
+      "last_updated": "2026-01-13T05:27:22Z",
       "description": "Fix /research and /implement commands stopping after preflight. Commands complete skill-status-sync for preflight but fail to proceed to STAGE 2 delegation. Root cause: command files describe workflow but Claude stops executing after preflight instead of continuing to delegate to implementation skills/agents.",
       "artifacts": [
         {
           "path": ".claude/specs/462_fix_workflow_command_delegation/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/462_fix_workflow_command_delegation/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 458,

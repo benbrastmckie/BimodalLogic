@@ -29,11 +29,12 @@ technical_debt:
 ## High Priority
 
 ### 462. Fix workflow command delegation
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 2.5 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/462_fix_workflow_command_delegation/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/462_fix_workflow_command_delegation/plans/implementation-001.md)
 
 **Description**: Fix /research and /implement commands stopping after preflight. Commands complete skill-status-sync for preflight but fail to proceed to STAGE 2 delegation. Root cause: command files describe workflow but Claude stops executing after preflight instead of continuing to delegate to implementation skills/agents.
 
@@ -57,7 +58,7 @@ technical_debt:
 
 ### 464. Research coherence alternatives (Strategy A)
 - **Effort**: 4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: High
