@@ -45,18 +45,18 @@ technical_debt:
 ---
 
 ### 458. Extend canonical_history to full domain
-- **Effort**: 10-14 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 8-12 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
+- **Planned**: 2026-01-12 (v002)
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 448
 - **Research**: [research-001.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/458_extend_canonical_history_full_domain/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/458_extend_canonical_history_full_domain/plans/implementation-002.md) (v002 - chain construction)
 
-**Description**: Extend canonical_history from singleton domain to full domain for completeness proof correctness. The singleton domain (Task 448) makes temporal operators G φ and H φ vacuously true regardless of MCS membership, breaking the truth lemma correspondence: we need `G φ ∈ Γ iff G φ true` but singleton gives `G φ always true`. Requires implementing forward/backward existence lemmas to construct MCSs at arbitrary times while preserving canonical_task_rel.
+**Description**: Extend canonical_history from singleton domain to full domain for completeness proof correctness. v002: Redesigned to use **chain construction from 0** (instead of independent Classical.choose) to solve the coherence problem where independently chosen states may not lie on the same timeline. Build states as forward/backward chains from origin, ensuring compositionality by construction.
 
 ---
 

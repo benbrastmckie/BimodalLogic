@@ -76,18 +76,18 @@
     {
       "project_number": 458,
       "project_name": "extend_canonical_history_full_domain",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-13T07:33:26Z",
-      "last_updated": "2026-01-13T08:19:06Z",
+      "last_updated": "2026-01-12T12:52:31Z",
       "parent_task": 257,
       "dependencies": [
         448
       ],
-      "session_id": "sess_1768269546_a349e0",
-      "plan_version": "001",
-      "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. The singleton domain (Task 448) makes temporal operators G φ and H φ vacuously true regardless of MCS membership, breaking the truth lemma correspondence: we need 'G φ ∈ Γ iff G φ true' but singleton gives 'G φ always true'. Requires implementing forward/backward existence lemmas to construct MCSs at arbitrary times while preserving canonical_task_rel.",
+      "session_id": "sess_1768271951_02a5a3",
+      "plan_version": "002",
+      "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. v002: Redesigned to use chain construction from 0 (instead of independent Classical.choose) to solve the coherence problem where independently chosen states may not lie on the same timeline.",
       "artifacts": [
         {
           "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md",
@@ -95,6 +95,10 @@
         },
         {
           "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-002.md",
           "type": "plan"
         }
       ]
