@@ -10,6 +10,44 @@
 
 The Logos theory is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory. The modular architecture extends the expressive power of the language through progressive layer extensions:
 
+```
+┌─────────────────────────────────────────────────┐
+│           Constitutive Foundation               │
+│         (hyperintensional base layer)           │
+└───────────────────────┬─────────────────────────┘
+                        │ required
+                        ▼
+┌─────────────────────────────────────────────────┐
+│              Explanatory Extension              │
+│    (modal, temporal, counterfactual, causal)    │
+└───────────────────────┬─────────────────────────┘
+                        │
+       ┌────────────────┼────────────────┐
+       │ optional       │ optional       │ optional
+       ▼                ▼                ▼
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│  Epistemic   │ │  Normative   │ │   Spatial    │
+│  Extension   │ │  Extension   │ │  Extension   │
+│ (belief,     │ │ (obligation, │ │ (location,   │
+│  knowledge,  │ │  permission, │ │  spatial     │
+│  probability)│ │  preference) │ │  relations)  │
+└──────┬───────┘ └──────┬───────┘ └──────┬───────┘
+       │                │                │
+       └────────────────┼────────────────┘
+                        │ at least one required
+                        ▼
+┌─────────────────────────────────────────────────┐
+│             Agential Extension                  │
+│           (multi-agent reasoning)               │
+└───────────────────────┬─────────────────────────┘
+                        │ inherits from Epistemic
+                        ▼
+┌─────────────────────────────────────────────────┐
+│            Reflection Extension                 │
+│    (metacognition, self-modeling, I operator)   │
+└─────────────────────────────────────────────────┘
+```
+
 - **Constitutive Foundation**: Predicates, functions, lambdas, quantifiers, extensional operators, and constitutive explanatory operators.
 - **Explanatory Extension**: Modal, temporal, counterfactual, and causal operators for reasoning about past, future, contingency, and causation.
 - **Epistemic Extension**: Belief, knowledge, probability, and indicative conditional operators for reasoning under uncertainty.
