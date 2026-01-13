@@ -45,7 +45,9 @@ Create a phased implementation plan for a task by delegating to the planner skil
 
 6. **Verify** status is now "planning"
 
-**ABORT** if any validation fails. **PROCEED** if all pass.
+**ABORT** if any validation fails.
+
+**On GATE IN success**: Status is [PLANNING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
 
 ### STAGE 2: DELEGATE
 
@@ -58,6 +60,8 @@ args: "task_number={N} research_path={path to research report if exists} session
 ```
 
 The skill spawns `planner-agent` which analyzes task requirements and research findings, decomposes into logical phases, identifies risks and mitigations, and creates a plan in `.claude/specs/{N}_{SLUG}/plans/`.
+
+**On DELEGATE success**: Plan created. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
 
 ### CHECKPOINT 2: GATE OUT
 
@@ -72,7 +76,9 @@ The skill spawns `planner-agent` which analyzes task requirements and research f
 
 4. **Verify** status is "planned" and plan is linked
 
-**PROCEED** to commit. **RETRY** skill if validation fails.
+**RETRY** skill if validation fails.
+
+**On GATE OUT success**: Plan verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
 
 ### CHECKPOINT 3: COMMIT
 

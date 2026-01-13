@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-13T18:56:00Z
-next_project_number: 472
+last_updated: 2026-01-13T18:58:00Z
+next_project_number: 473
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -131,6 +131,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 472. Lindenbaum extension for finite closures
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 458
+
+**Description**: Complete the Lindenbaum extension for finite closures, building on task 458. Implement the restricted Lindenbaum lemma that extends consistent formula sets to maximal consistent sets within the finite subformula closure, enabling the finite truth lemma proof.
+
+---
 
 ### 466. Add Reflection Extension to LogosReference
 - **Effort**: 2-3 hours

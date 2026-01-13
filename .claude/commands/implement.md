@@ -55,7 +55,9 @@ Execute implementation plan with automatic resume support by delegating to the a
 
 7. **Verify** status is now "implementing"
 
-**ABORT** if any validation fails. **PROCEED** if all pass.
+**ABORT** if any validation fails.
+
+**On GATE IN success**: Status is [IMPLEMENTING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
 
 ### STAGE 2: DELEGATE
 
@@ -77,6 +79,8 @@ args: "task_number={N} plan_path={path to implementation plan} resume_phase={pha
 
 The skill will spawn the appropriate agent which executes plan phases sequentially, updates phase markers, creates commits per phase, and returns a structured result.
 
+**On DELEGATE success**: Implementation complete. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
+
 ### CHECKPOINT 2: GATE OUT
 
 1. **Validate Return**
@@ -95,7 +99,9 @@ The skill will spawn the appropriate agent which executes plan phases sequential
 
 4. **Verify** status and artifact links
 
-**PROCEED** to commit. **RETRY** skill if validation fails.
+**RETRY** skill if validation fails.
+
+**On GATE OUT success**: Artifacts verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
 
 ### CHECKPOINT 3: COMMIT
 
