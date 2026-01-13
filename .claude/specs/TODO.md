@@ -333,15 +333,16 @@ technical_debt:
 ---
 
 ### 448. Build canonical_history
-- **Effort**: 6-8 hours
-- **Status**: [PLANNING]
+- **Effort**: 3-4 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-13
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 447
 - **Research**: [research-001.md](.claude/specs/448_build_canonical_history/reports/research-001.md)
-- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 5)
+- **Plan**: [implementation-001.md](.claude/specs/448_build_canonical_history/plans/implementation-001.md)
 
 **Description**: Phase 5 of completeness proofs: Build canonical_history construction. Define the history structure that threads MCSs together with the canonical task relation, establishing the temporal backbone for the canonical model. This bridges canonical_frame/model (Phase 4) and truth_lemma (Phase 6).
 
