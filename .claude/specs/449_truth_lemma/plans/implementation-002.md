@@ -152,7 +152,7 @@ Complete the truth lemma by connecting the semantic infrastructure (from Task 47
 
 ---
 
-### Phase 3: Connect to Main Completeness [NOT STARTED]
+### Phase 3: Connect to Main Completeness [IN PROGRESS]
 
 **Goal**: Connect `semantic_weak_completeness` to the main `weak_completeness` theorem in Completeness.lean.
 

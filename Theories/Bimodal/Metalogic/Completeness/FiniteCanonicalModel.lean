@@ -3056,6 +3056,45 @@ noncomputable def semantic_weak_completeness (phi : Formula) :
     exact h_sw_false (h_valid sw)
 
 /-!
+## Connection to Main Completeness Theorem
+
+The `semantic_weak_completeness` theorem establishes the core completeness result:
+if phi is true in all semantic world states, then phi is provable.
+
+### Relationship to General Weak Completeness
+
+The general `weak_completeness` in Completeness.lean states:
+  `valid φ → ⊢ φ`
+where `valid` means truth in ALL task frames, models, histories, and times.
+
+`semantic_weak_completeness` has a weaker hypothesis:
+  `(∀ w : SemanticWorldState phi, semantic_truth_at_v2 ... phi) → ⊢ phi`
+
+These are connected via the **contrapositive**:
+- General completeness: `(∀ M, M ⊨ phi) → ⊢ phi`
+- Equivalently: `¬(⊢ phi) → ∃ M, ¬(M ⊨ phi)`
+- `semantic_weak_completeness` constructs this countermodel M when phi isn't provable
+
+### Bridge Theorems
+
+To formally connect these, we would need:
+1. Show `SemanticCanonicalModel` is a valid `TaskModel (SemanticCanonicalFrame phi)`
+   - This is done: `SemanticCanonicalModel` is defined as such
+2. Construct a `WorldHistory (SemanticCanonicalFrame phi)` from `FiniteHistory phi`
+   - Requires converting FiniteTime to Int and showing respects_task
+3. Show `truth_at` on this WorldHistory matches `semantic_truth_at_v2`
+   - Requires structural induction on formulas
+
+For the finite model property approach, `semantic_weak_completeness` suffices because:
+- If phi is not provable, we can construct a countermodel (SemanticWorldState where phi is false)
+- This countermodel falsifies phi
+- Contrapositive: if phi is valid in all models, phi is provable
+
+The axiom `weak_completeness` in Completeness.lean serves as a placeholder for this
+result expressed in the general framework. Task 450 will address the formal connection.
+-/
+
+/-!
 ## Summary of Phase 5 Definitions
 
 **Lindenbaum Infrastructure** (from earlier sections):
