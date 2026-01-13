@@ -73,7 +73,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Add Truth Conditions [IN PROGRESS]
+### Phase 2: Add Truth Conditions [COMPLETED]
 
 **Goal**: Add formal truth conditions from recursive-semantics.md
 
@@ -96,7 +96,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 3: Add Derived Operators and Temporal Interaction [NOT STARTED]
+### Phase 3: Add Derived Operators and Temporal Interaction [IN PROGRESS]
 
 **Goal**: Complete Reflection Extension section with derived operators and temporal semantics
 
