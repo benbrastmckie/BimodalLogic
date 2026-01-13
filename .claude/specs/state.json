@@ -6,19 +6,24 @@
     {
       "project_number": 467,
       "project_name": "review_task_462_changes_fix_root_cause",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T15:11:50Z",
-      "last_updated": "2026-01-13T15:19:57Z",
+      "last_updated": "2026-01-13T15:32:01Z",
       "description": "Review task 462 changes (from .claude/output/research.md) to determine if they are worth keeping or cruft. Identify and fix root cause of workflow delegation errors in an elegant way without unnecessary changes. Update documentation to be accurate.",
-      "session_id": "sess_1768317399_a32ad9",
+      "session_id": "sess_1768318198_c25d9e",
       "artifacts": [
         {
           "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 466,
@@ -124,16 +129,16 @@
     {
       "project_number": 458,
       "project_name": "extend_canonical_history_full_domain",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-13T07:33:26Z",
-      "last_updated": "2026-01-13T15:21:44Z",
+      "last_updated": "2026-01-13T15:26:32Z",
       "parent_task": 257,
       "dependencies": [
         448
       ],
-      "session_id": "sess_1768317530_4978a8",
+      "session_id": "sess_1768317973_acbd19",
       "plan_version": "004",
       "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. Task 464 (Strategy A) completed: strengthened canonical_task_rel with G/H-persistence conditions, proving uniform-sign compositionality cases (x>0,y>0 and x<0,y<0). Mixed-sign cases remain as fundamental gaps. Research needed: find the most elegant and mathematically virtuous path forward for remaining gaps, considering Duration discreteness (Strategy D) or alternative canonical model construction.",
       "artifacts": [
