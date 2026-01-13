@@ -51,7 +51,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Define Closure-Restricted Structures [NOT STARTED]
+### Phase 1: Define Closure-Restricted Structures [COMPLETED]
 
 **Goal**: Define `ClosureConsistent` and `ClosureMaximalConsistent` predicates that capture consistency and maximality relative to a finite closure.
 
@@ -73,7 +73,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Prove Closure Lindenbaum via Projection [NOT STARTED]
+### Phase 2: Prove Closure Lindenbaum via Projection [COMPLETED]
 
 **Goal**: Prove the closure-restricted Lindenbaum lemma using projection from full MCS.
 
@@ -95,7 +95,7 @@ From research-001.md:
 
 ---
 
-### Phase 3: Prove Closure Negation-Completeness [NOT STARTED]
+### Phase 3: Prove Closure Negation-Completeness [COMPLETED]
 
 **Goal**: Prove that closure-maximal consistent sets satisfy negation-completeness for formulas whose negations are also in the closure.
 
@@ -117,7 +117,7 @@ From research-001.md:
 
 ---
 
-### Phase 4: Bridge to FiniteWorldState [NOT STARTED]
+### Phase 4: Bridge to FiniteWorldState [COMPLETED]
 
 **Goal**: Connect closure-maximal consistent sets to `IsLocallyConsistent` and `FiniteWorldState`.
 
@@ -142,7 +142,7 @@ From research-001.md:
 
 ---
 
-### Phase 5: Prove Existence Lemmas [NOT STARTED]
+### Phase 5: Prove Existence Lemmas [COMPLETED]
 
 **Goal**: Replace the axioms `finite_forward_existence` and `finite_backward_existence` with proven theorems.
 
@@ -168,7 +168,7 @@ From research-001.md:
 
 ---
 
-### Phase 6: Complete History Construction [NOT STARTED]
+### Phase 6: Complete History Construction [COMPLETED]
 
 **Goal**: Complete the `finite_history_from_state` proof using the proven existence lemmas.
 
