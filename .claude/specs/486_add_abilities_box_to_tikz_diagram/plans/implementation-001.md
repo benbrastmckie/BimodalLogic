@@ -74,7 +74,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 2: Update README ASCII Diagram [IN PROGRESS]
+### Phase 2: Update README ASCII Diagram [COMPLETED]
 
 **Goal**: Add Abilities and Choice boxes to the ASCII architecture diagram in README.md
 
@@ -97,7 +97,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 3: Update Layer Descriptions [NOT STARTED]
+### Phase 3: Update Layer Descriptions [IN PROGRESS]
 
 **Goal**: Add descriptions for Abilities and Choice extensions to the Layer Descriptions section
 

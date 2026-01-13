@@ -11,41 +11,41 @@
 The Logos theory is an extensible formal language equipped with an axiomatic proof system and recursive semantic theory. The modular architecture extends the expressive power of the language through progressive layer extensions:
 
 ```
-┌─────────────────────────────────────────────────┐
-│           Constitutive Foundation               │
-│         (hyperintensional base layer)           │
-└───────────────────────┬─────────────────────────┘
-                        │ required
-                        ▼
-┌─────────────────────────────────────────────────┐
-│              Explanatory Extension              │
-│    (modal, temporal, counterfactual, causal)    │
-└───────────────────────┬─────────────────────────┘
-                        │
-       ┌────────────────┼────────────────┐
-       │ optional       │ optional       │ optional
-       ▼                ▼                ▼
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│  Epistemic   │ │  Normative   │ │   Spatial    │
-│  Extension   │ │  Extension   │ │  Extension   │
-│ (belief,     │ │ (obligation, │ │ (location,   │
-│  knowledge,  │ │  permission, │ │  spatial     │
-│  probability)│ │  preference) │ │  relations)  │
-└──────┬───────┘ └──────┬───────┘ └──────┬───────┘
-       │                │                │
-       └────────────────┼────────────────┘
-                        │ at least one required
-                        ▼
-┌─────────────────────────────────────────────────┐
-│             Agential Extension                  │
-│           (multi-agent reasoning)               │
-└───────────────────────┬─────────────────────────┘
-                        │ inherits from Epistemic
-                        ▼
-┌─────────────────────────────────────────────────┐
-│            Reflection Extension                 │
-│    (metacognition, self-modeling, I operator)   │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                            Constitutive Foundation                              │
+│                          (hyperintensional base layer)                          │
+└─────────────────────────────────────┬───────────────────────────────────────────┘
+                                      │ required
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                            Explanatory Extension                                │
+│                  (modal, temporal, counterfactual, causal)                      │
+└─────────────────────────────────────┬───────────────────────────────────────────┘
+                                      │
+     ┌──────────────┬─────────────────┼─────────────────┬──────────────┐
+     │ optional     │ optional        │ optional        │ optional     │ optional
+     ▼              ▼                 ▼                 ▼              ▼
+┌───────────┐ ┌───────────┐ ┌─────────────────┐ ┌───────────┐ ┌───────────┐
+│ Epistemic │ │ Abilities │ │    Normative    │ │  Choice   │ │  Spatial  │
+│ Extension │ │ Extension │ │    Extension    │ │ Extension │ │ Extension │
+│ (belief,  │ │ (Can, Able│ │  (obligation,   │ │   (free   │ │ (location,│
+│ knowledge,│ │  agency)  │ │   permission,   │ │  choice,  │ │  spatial  │
+│probability│ │           │ │   preference)   │ │alternatives│ │ relations)│
+└─────┬─────┘ └─────┬─────┘ └────────┬────────┘ └─────┬─────┘ └─────┬─────┘
+      │             │                │                │             │
+      └─────────────┴────────────────┼────────────────┴─────────────┘
+                                     │ at least one required
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                             Agential Extension                                  │
+│                           (multi-agent reasoning)                               │
+└─────────────────────────────────────┬───────────────────────────────────────────┘
+                                      │ inherits from Epistemic
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                            Reflection Extension                                 │
+│                  (metacognition, self-modeling, I operator)                     │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 - **Constitutive Foundation**: Provides the hyperintensional base with predicates, functions, quantifiers, and constitutive operators (propositional identity `≡`, grounding `≤`, essence `⊑`) over a state lattice with bilateral propositions (verifier/falsifier pairs). This enables fine-grained distinctions between propositions with identical truth-values but different verification conditions---essential for exact specification of what makes a claim true.
@@ -54,7 +54,11 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 
 - **Epistemic Extension**: Introduces belief (`B`), knowledge (`K`), probability (`Pr`), and indicative conditional operators for reasoning under uncertainty. By extending the temporal framework with credence functions over state transitions, agents can track how evidence updates beliefs across time and distinguish what an agent believes from what is actually the case.
 
+- **Abilities Extension**: Provides specific ability (`Can`), generic ability (`Able`), and STIT (`stit`) operators for reasoning about agent capacities. Ability modals express what an agent can bring about through their capacities, with stronger truth conditions than circumstantial possibility---ability entails possibility but not vice versa. This enables reasoning about what agents are capable of accomplishing given their intrinsic capacities and circumstances.
+
 - **Normative Extension**: Adds obligation (`O`), permission (`P`), and preference operators with value orderings over states for reasoning about what ought to be done, what is permitted, and how to rank alternatives. This enables ethical reasoning, multi-party preference aggregation, and grounding obligations in factual circumstances.
+
+- **Choice Extension**: Introduces free choice permission (`FP`) and choice set (`Ch`) operators for reasoning about permission over alternatives. Free choice modals address the distribution of permission over disjunctive alternatives---intuitively, "you may have an apple or a pear" implies permission for each disjunct. This enables reasoning about which alternatives are permitted and how permissions combine.
 
 - **Spatial Extension**: Provides location-dependent operators and spatial relations for reasoning about where things are and how spatial proximity affects truth conditions. This supports navigation, containment reasoning, and location-sensitive planning.
 
@@ -62,7 +66,7 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 
 - **Reflection Extension**: Adds first-person metacognitive operators for self-directed reasoning about one's own beliefs, knowledge, abilities, and goal progress. This enables an agent to reason about what it knows versus believes, recognize its own limitations, and track progress toward goals---essential for AI systems that must understand their own capabilities.
 
-The Constitutive Foundation and Explanatory Extension provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Normative, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension.
+The Constitutive Foundation and Explanatory Extension provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Abilities, Normative, Choice, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension.
 
 AI reasoning in the Logos is both **verified** by proof receipts for all inferences and **interpreted** by explicit semantic models, providing **scalable oversight** for sophisticated reasoning.
 
