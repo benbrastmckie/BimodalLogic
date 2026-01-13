@@ -56,15 +56,17 @@ technical_debt:
 ---
 
 ### 464. Research coherence alternatives (Strategy A)
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 4 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-13
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 458
 - **Research**: [research-001.md](.claude/specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/464_research_coherence_alternatives_strategy_a/plans/implementation-001.md)
 
-**Description**: Analyzed 7 strategies for solving the coherence problem. **Recommended hybrid approach**: (1) Strengthen `canonical_task_rel` with G/H-formula persistence conditions, (2) Prove Duration discreteness (≅ ℤ·chain_step), (3) Use chain construction for canonical_history. Key insight: persistence is a natural semantic property that should be part of the canonical relation definition.
+**Description**: Implement Strategy A: strengthen `canonical_task_rel` with G/H-formula persistence conditions. This addresses the root cause of compositionality failure while keeping Duration structurally agnostic (no discreteness, density, or continuity assumptions). The x > 0, y > 0 case becomes provable; mixed-sign cases remain documented gaps.
 
 ---
 
