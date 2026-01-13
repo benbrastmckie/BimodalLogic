@@ -3187,16 +3187,29 @@ The finite truth lemma: membership in world state equals truth in model.
 For any formula psi in the closure of phi:
   psi is true in world state S_t  <->  finite_truth_at phi tau t psi
 
-**Note**: This is the key completeness lemma. The proof requires:
-1. Atom case: by definition of valuation
-2. Bot case: by consistency (bot is never in a consistent state)
-3. Imp case: by local consistency (implications are respected)
-4. Box case: requires all histories to have same state at t (canonical property)
-5. All_past case: by task relation transfer for past
-6. All_future case: by task relation transfer for future
+**Status**: AUXILIARY / DEPRECATED
 
-The modal (box) and temporal cases are where the canonical model construction
-pays off - the transfer properties in finite_task_rel ensure these cases work.
+This theorem has 6 sorry gaps in the backward directions (imp, box, all_past,
+all_future) because:
+1. Backward directions require negation-completeness (maximal consistent sets)
+2. The current `IsLocallyConsistent` only provides soundness, not completeness
+3. Task 472 (Lindenbaum extension) would provide the needed properties
+
+**Preferred Alternative**: Use `semantic_truth_lemma_v2` instead (proven, no sorries).
+The semantic approach defines world states as quotients of history-time pairs,
+making the truth lemma trivial by construction.
+
+**Historical Note**: This was the original approach before Task 473 introduced
+the semantic history-based world states. The semantic approach sidesteps the
+negation-completeness requirement by defining truth directly on history-time pairs.
+
+**Proof structure** (for reference):
+1. Atom case: by definition of valuation (PROVEN)
+2. Bot case: by consistency (PROVEN)
+3. Imp case: forward proven, backward needs negation-completeness (SORRY)
+4. Box case: requires canonical property (SORRY)
+5. All_past case: forward proven via respects_task, backward needs maximality (SORRY)
+6. All_future case: forward proven via respects_task, backward needs maximality (SORRY)
 -/
 theorem finite_truth_lemma (phi : Formula) (h : FiniteHistory phi)
     (t : FiniteTime (temporalBound phi)) (psi : Formula) (h_mem : psi ∈ closure phi) :

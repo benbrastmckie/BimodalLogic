@@ -6,11 +6,17 @@
     {
       "project_number": 485,
       "project_name": "tikz_light_cone_diagram_for_tm_motivation",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T22:00:07Z",
-      "last_updated": "2026-01-13T22:02:57Z"
+      "last_updated": "2026-01-13T22:14:47Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 484,
