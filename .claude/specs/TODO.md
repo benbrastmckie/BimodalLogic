@@ -6,17 +6,17 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 16
+  active: 14
   completed: 145
   in_progress: 1
   not_started: 6
-  abandoned: 8
+  abandoned: 10
   total: 169
 priority_distribution:
   critical: 0
   high: 4
-  medium: 2
-  low: 6
+  medium: 1
+  low: 5
 technical_debt:
   sorry_count: 19
   axiom_count: 11
@@ -93,35 +93,6 @@ technical_debt:
 - **Research**: [research-001.md](.claude/specs/431_wezterm_tab_color_notification/reports/research-001.md)
 
 **Description**: Set up WezTerm tab color notification when Claude Code needs input. Using Claude Code in neovim via a plugin and WezTerm for the terminal on NixOS (software managed in ~/.dotfiles/). Configure so that when Claude Code completes or needs input, the numbered tab in WezTerm turns a visible color to indicate which tabs need attention.
-
----
-
-### 400. Investigate Explanatory/Truth.lean build performance
-- **Effort**: 2-3 hours
-- **Status**: [EXPANDED]
-- **Researched**: 2026-01-11
-- **Priority**: Medium
-- **Language**: lean
-- **Subtasks**: 419 (416, 417, 418, 420 completed)
-- **Research**: [research-001.md](.claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md)
-
-**Description**: Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.
-
----
-
-### 419. Refactor mutual recursion in Foundation/Semantics.lean
-- **Effort**: 4-6 hours
-- **Status**: [PLANNED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-12
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 400
-- **Dependencies**: 416
-- **Research**: [research-001.md](.claude/specs/419_refactor_mutual_recursion_semantics/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/419_refactor_mutual_recursion_semantics/plans/implementation-001.md)
-
-**Description**: Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Replace the `mutual` block with a single `eval` function parameterized by a `Polarity` type, enabling cleaner structural recursion and reducing well-founded recursion elaboration overhead.
 
 ---
 
