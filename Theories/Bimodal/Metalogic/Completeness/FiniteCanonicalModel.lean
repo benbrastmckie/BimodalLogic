@@ -3171,12 +3171,14 @@ noncomputable def finiteHistoryToWorldHistory (phi : Formula) (h : FiniteHistory
   states := fun (t : Int) _ =>
     -- Clamp t to the finite domain and get the semantic world state
     let k := temporalBound phi
-    let t_clamped :=
-      if t < -(k : Int) then FiniteTime.minTime k
-      else if t > (k : Int) then FiniteTime.maxTime k
+    let t_clamped : FiniteTime k :=
+      if ht_low : t < -(k : Int) then FiniteTime.minTime k
+      else if ht_high : t > (k : Int) then FiniteTime.maxTime k
       else
-        -- t is in range, find the corresponding FiniteTime
-        (FiniteTime.toInt_surj_on_range k t (by omega) (by omega)).choose
+        -- t is in range [-k, k], find the corresponding FiniteTime
+        have h_lower : -(k : Int) ≤ t := Int.not_lt.mp ht_low
+        have h_upper : t ≤ (k : Int) := Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt ht_high))
+        (FiniteTime.toInt_surj_on_range k t h_lower h_upper).choose
     SemanticWorldState.ofHistoryTime h t_clamped
   respects_task := fun s t _hs _ht _hst => by
     -- Need to show semantic_task_rel_v2 phi (states s) (t - s) (states t)
@@ -3193,12 +3195,12 @@ This shows that every semantic world state is reachable from some world history,
 which is needed to instantiate the `valid` quantifier.
 -/
 theorem semantic_world_state_has_world_history (phi : Formula) (w : SemanticWorldState phi) :
-    ∃ (tau : WorldHistory (SemanticCanonicalFrame phi)), tau.domain 0 ∧
-    tau.states 0 (by trivial : True) = w := by
+    ∃ (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0),
+    tau.states 0 ht = w := by
   -- Extract a representative history from w
   let rep := Quotient.out w
   let hist := rep.1
-  let time := rep.2
+  let _time := rep.2
   -- Convert hist to a WorldHistory
   let wh := finiteHistoryToWorldHistory phi hist
   -- Show w appears at time 0 by shifting appropriately
