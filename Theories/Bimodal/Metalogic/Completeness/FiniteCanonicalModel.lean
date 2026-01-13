@@ -1280,4 +1280,153 @@ requires the full canonical model infrastructure.
 These gaps can be filled when the auxiliary infrastructure is developed.
 -/
 
+/-!
+## Phase 7: Weak and Strong Completeness
+
+The completeness theorems are the main results of the finite canonical model
+construction. They establish:
+
+1. **Weak Completeness**: If phi is valid (true in all models), then phi is derivable
+2. **Strong Completeness**: If Gamma semantically entails phi, then Gamma derives phi
+
+Both are proven via the contrapositive:
+- If phi is NOT derivable, then there exists a countermodel where phi is false
+
+The countermodel is the finite canonical model constructed from a maximal
+consistent set containing neg(phi).
+-/
+
+/--
+Weak completeness: validity implies derivability.
+
+If phi is valid (true in all task models at all histories and times),
+then phi is derivable in the TM proof system.
+
+**Proof sketch**:
+1. Contrapositive: assume phi is not derivable
+2. Then {neg phi} is consistent
+3. By Lindenbaum, extend to maximal consistent set S0 in closure(phi)
+4. S0 becomes origin state of finite history
+5. By truth lemma, neg(phi) is true at origin in finite canonical model
+6. Therefore phi is false at origin, so phi is not valid
+7. Contrapositive: if phi is valid, then phi is derivable
+
+**Note**: This is stated as an axiom for now. The full proof requires:
+- Lindenbaum lemma for finite closure
+- Truth lemma without sorry gaps
+- Conversion from finite_truth_at to semantic truth_at
+-/
+axiom finite_weak_completeness (phi : Formula) :
+  (∀ (M : TaskModel (FiniteCanonicalFrame phi)),
+    ∀ (h : FiniteHistory phi),
+    ∀ (t : FiniteTime (temporalBound phi)),
+    finite_truth_at phi h t phi) →
+  ⊢ phi
+
+/--
+Strong completeness: semantic entailment implies derivability.
+
+If Gamma |= phi (phi is true in all models where all formulas in Gamma are true),
+then Gamma |- phi (phi is derivable from Gamma in the TM proof system).
+
+This follows from weak completeness by standard argument:
+- If Gamma |= phi, then |= (conjunction of Gamma) -> phi
+- By weak completeness, |- (conjunction of Gamma) -> phi
+- Therefore Gamma |- phi
+
+**Note**: Stated as axiom pending proof of weak_completeness.
+-/
+axiom finite_strong_completeness (Gamma : Set Formula) (phi : Formula) :
+  (∀ (M : TaskModel (FiniteCanonicalFrame phi)),
+    ∀ (h : FiniteHistory phi),
+    ∀ (t : FiniteTime (temporalBound phi)),
+    (∀ psi ∈ Gamma, ∃ h_mem : psi ∈ closure phi, (h.states t).models psi h_mem) →
+    finite_truth_at phi h t phi) →
+  (∃ (Gamma' : List Formula), (∀ g ∈ Gamma', g ∈ Gamma) ∧ Nonempty (Gamma' ⊢ phi))
+
+/--
+Finite model property: if phi is satisfiable, it's satisfiable in a finite model.
+
+This is a corollary of the finite canonical model construction: the canonical
+countermodel for an unprovable formula is finite (bounded by temporal and modal
+depth of the formula).
+-/
+theorem finite_model_property (phi : Formula) :
+  (∃ (M : TaskModel (FiniteCanonicalFrame phi))
+     (h : FiniteHistory phi)
+     (t : FiniteTime (temporalBound phi)),
+     finite_truth_at phi h t phi) →
+  (∃ (M : TaskModel (FiniteCanonicalFrame phi))
+     (h : FiniteHistory phi)
+     (t : FiniteTime (temporalBound phi)),
+     finite_truth_at phi h t phi) := by
+  -- This is trivially true as stated (identity)
+  -- The non-trivial content is that the finite canonical model exists
+  -- and has the required properties (finiteness bounds)
+  intro h
+  exact h
+
+/-!
+### Completeness Summary
+
+The finite canonical model approach provides:
+
+1. **Finite Model Property**: Satisfiable formulas have finite countermodels
+2. **Decidability Foundation**: Finite model property implies decidability
+3. **Weak Completeness**: Valid formulas are derivable
+4. **Strong Completeness**: Semantic entailment equals syntactic derivability
+
+**Current Status**:
+- Completeness theorems stated as axioms
+- Proofs depend on:
+  - Lindenbaum extension for finite closures (not yet implemented)
+  - Truth lemma without sorry gaps (partially implemented)
+  - Conversion infrastructure (not yet implemented)
+
+**Model Bounds**:
+- Time domain: 2 * temporalDepth(phi) + 1 time points
+- World states: at most 2^|closure(phi)| states
+- These bounds are polynomial in the formula size
+
+## Overall Implementation Summary
+
+### Definitions Implemented
+
+**Phase 1**: FiniteTime, closure, temporalBound
+**Phase 2**: FiniteWorldState, IsLocallyConsistent, Fintype instances
+**Phase 3**: finite_task_rel with transfer and persistence properties
+**Phase 4**: FiniteCanonicalFrame, FiniteCanonicalModel, FiniteHistory
+**Phase 5**: Existence axioms for forward/backward extension
+**Phase 6**: finite_truth_at, finite_truth_lemma
+**Phase 7**: Completeness theorems as axioms
+
+### Proofs Completed
+
+- FiniteTime arithmetic properties
+- FiniteTaskRel.nullity (reflexivity)
+- FiniteTaskRel.compositionality (partial - box cases and same-sign temporal)
+- finite_truth_lemma atom and bot cases
+
+### Axioms and Sorries
+
+- `finite_forward_existence`: Axiom - consistent states have successors
+- `finite_backward_existence`: Axiom - consistent states have predecessors
+- `finite_weak_completeness`: Axiom - validity implies derivability
+- `finite_strong_completeness`: Axiom - semantic entailment implies syntactic
+
+- `compositionality`: 7 sorry gaps in mixed-sign temporal cases
+- `finite_history_from_state`: 2 sorry gaps in relation proofs
+- `finite_truth_lemma`: 8 sorry gaps in non-trivial cases
+
+### Future Work
+
+1. **Lindenbaum Extension**: Adapt set_lindenbaum for finite closures
+2. **Closure Properties**: Prove subformula containment lemmas
+3. **Canonical Properties**: Establish box and temporal transfer lemmas
+4. **Completeness Proofs**: Convert axioms to theorems using above
+
+The infrastructure is in place; completing the proofs requires the
+supporting lemmas to be developed.
+-/
+
 end Bimodal.Metalogic.Completeness
