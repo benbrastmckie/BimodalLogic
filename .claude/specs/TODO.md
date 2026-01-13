@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-13T04:35:00Z
-next_project_number: 468
+last_updated: 2026-01-13T18:56:00Z
+next_project_number: 472
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -30,9 +30,10 @@ technical_debt:
 
 ### 467. Review task 462 changes and fix root cause
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Started**: 2026-01-13
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md)
@@ -184,6 +185,46 @@ technical_debt:
 ---
 
 ## Low Priority
+
+### 468. Refactor infinite canonical model code
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 458
+
+**Description**: Remove or refactor the existing infinite canonical model code in Completeness.lean. Now that FiniteCanonicalModel.lean implements the finite approach, assess whether the infinite Duration-based code should be removed, preserved for future use, or refactored.
+
+---
+
+### 469. Decidability decision procedure
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 458
+
+**Description**: Implement full decidability decision procedure for TM logic. The finite model property from FiniteCanonicalModel.lean directly yields decidability - implement a tableau-based or model-checking decision procedure that exploits the bounded model size.
+
+---
+
+### 470. Finite model computational optimization
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 458
+
+**Description**: Optimize FiniteCanonicalModel.lean for computational efficiency. Current implementation prioritizes correctness over performance. Identify and implement optimizations for the finite world state enumeration, task relation checking, and truth evaluation.
+
+---
+
+### 471. Constructive model finiteness proof
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 458
+
+**Description**: Prove model finiteness constructively in FiniteCanonicalModel.lean. Current implementation uses Classical.choice where needed. Investigate whether a fully constructive proof is possible and implement if feasible.
+
+---
 
 ### 257. Completeness Proofs
 

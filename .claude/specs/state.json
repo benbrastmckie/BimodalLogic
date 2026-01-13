@@ -1,18 +1,62 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-13T18:52:14Z",
-  "next_project_number": 468,
+  "_last_updated": "2026-01-13T16:08:48Z",
+  "next_project_number": 472,
   "active_projects": [
+    {
+      "project_number": 468,
+      "project_name": "refactor_infinite_canonical_model_code",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-13T16:08:48Z",
+      "last_updated": "2026-01-13T16:08:48Z",
+      "parent_task": 458,
+      "description": "Remove or refactor the existing infinite canonical model code in Completeness.lean. Now that FiniteCanonicalModel.lean implements the finite approach, assess whether the infinite Duration-based code should be removed, preserved for future use, or refactored."
+    },
+    {
+      "project_number": 469,
+      "project_name": "decidability_decision_procedure",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-13T16:08:48Z",
+      "last_updated": "2026-01-13T16:08:48Z",
+      "parent_task": 458,
+      "description": "Implement full decidability decision procedure for TM logic. The finite model property from FiniteCanonicalModel.lean directly yields decidability - implement a tableau-based or model-checking decision procedure that exploits the bounded model size."
+    },
+    {
+      "project_number": 470,
+      "project_name": "finite_model_computational_optimization",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-13T16:08:48Z",
+      "last_updated": "2026-01-13T16:08:48Z",
+      "parent_task": 458,
+      "description": "Optimize FiniteCanonicalModel.lean for computational efficiency. Current implementation prioritizes correctness over performance. Identify and implement optimizations for the finite world state enumeration, task relation checking, and truth evaluation."
+    },
+    {
+      "project_number": 471,
+      "project_name": "constructive_model_finiteness_proof",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-13T16:08:48Z",
+      "last_updated": "2026-01-13T16:08:48Z",
+      "parent_task": 458,
+      "description": "Prove model finiteness constructively in FiniteCanonicalModel.lean. Current implementation uses Classical.choice where needed. Investigate whether a fully constructive proof is possible and implement if feasible."
+    },
     {
       "project_number": 467,
       "project_name": "review_task_462_changes_fix_root_cause",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T15:11:50Z",
-      "last_updated": "2026-01-13T15:32:01Z",
+      "last_updated": "2026-01-13T16:08:47Z",
       "description": "Review task 462 changes (from .claude/output/research.md) to determine if they are worth keeping or cruft. Identify and fix root cause of workflow delegation errors in an elegant way without unnecessary changes. Update documentation to be accurate.",
-      "session_id": "sess_1768318198_c25d9e",
+      "session_id": "sess_1768320511_65fbfb",
       "artifacts": [
         {
           "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md",
