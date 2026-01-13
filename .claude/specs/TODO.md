@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T19:02:00Z
-next_project_number: 485
+next_project_number: 486
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -142,9 +142,19 @@ technical_debt:
 
 ---
 
+### 485. Create TikZ light-cone diagram for TM motivation
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: In line 13 of /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/00-Introduction.tex, create a professional TikZ diagram to motivate the bimodal logic TM. The diagram should feature: (1) a curvy S-shaped arrow going from left to right and slightly from below to above, (2) a point marked with a dot along the S-curve, (3) a light-cone emanating from that point in both directions (past and future), (4) other intersecting arrows extending from the marked point that fit within the light-cones in both directions, (5) the portions of these intersecting arrows prior to the marked point should be dotted (representing past/counterfactual paths).
+
+---
+
 ### 484. Sync TikZ diagram operators with GLOSSARY.md
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Revised**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex

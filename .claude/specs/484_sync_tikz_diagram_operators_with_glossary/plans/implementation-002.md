@@ -60,7 +60,7 @@ The user wants a "hook-right arrow" for the indicative conditional. Options:
 
 ## Implementation Phases
 
-### Phase 1: Update GLOSSARY.md Symbol [NOT STARTED]
+### Phase 1: Update GLOSSARY.md Symbol [COMPLETED]
 
 **Goal**: Standardize indicative conditional symbol to hook-right arrow
 
@@ -89,7 +89,7 @@ The user wants a "hook-right arrow" for the indicative conditional. Options:
 
 ---
 
-### Phase 2: Update TikZ Epistemic Box [NOT STARTED]
+### Phase 2: Update TikZ Epistemic Box [COMPLETED]
 
 **Goal**: Replace K with Pr, Mi, Mu, and indicative conditional per user request
 
@@ -134,7 +134,7 @@ The user wants a "hook-right arrow" for the indicative conditional. Options:
 
 ---
 
-### Phase 3: Update TikZ Normative Box [NOT STARTED]
+### Phase 3: Update TikZ Normative Box [COMPLETED]
 
 **Goal**: Add preference ordering and normative explanation symbols
 
@@ -181,7 +181,7 @@ Note: GLOSSARY.md uses `≺_a` for preference and `↦` for normative explanatio
 
 ---
 
-### Phase 4: Update GLOSSARY.md Tables [NOT STARTED]
+### Phase 4: Update GLOSSARY.md Tables [IN PROGRESS]
 
 **Goal**: Add missing Reflection and Spatial operator tables for bidirectional sync
 
