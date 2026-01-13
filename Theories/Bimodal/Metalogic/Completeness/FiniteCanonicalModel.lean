@@ -1017,4 +1017,100 @@ instance (phi : Formula) : DecidablePred (FiniteHistoryDomain phi) := by
 - Histories encode the task relation constraints between consecutive times
 -/
 
+/-!
+## Phase 5: Finite Existence Lemmas
+
+The existence lemmas establish that:
+1. Any consistent world state can be extended forward to time t+1
+2. Any consistent world state can be extended backward to time t-1
+3. From an initial state, we can construct a full finite history
+
+These are the key lemmas enabling the construction of countermodels for
+unprovable formulas.
+-/
+
+/--
+Forward existence: given a consistent world state, there exists a consistent
+successor state that satisfies the forward task relation.
+
+**Proof sketch**:
+1. Start with the required transfer formulas (from all_future)
+2. Use Lindenbaum extension to complete to maximal consistent set
+3. Verify the resulting state satisfies finite_task_rel
+
+This is stated as an axiom for now; the full proof requires the
+Lindenbaum lemma infrastructure restricted to the finite closure.
+-/
+axiom finite_forward_existence (phi : Formula) (w : FiniteWorldState phi) :
+  ∃ u : FiniteWorldState phi, finite_task_rel phi w 1 u
+
+/--
+Backward existence: given a consistent world state, there exists a consistent
+predecessor state that satisfies the backward task relation.
+
+**Proof sketch**: Similar to forward_existence, but using all_past transfer.
+-/
+axiom finite_backward_existence (phi : Formula) (w : FiniteWorldState phi) :
+  ∃ u : FiniteWorldState phi, finite_task_rel phi w (-1) u
+
+/--
+History existence: given any consistent world state as origin, there exists
+a finite history through that state.
+
+This uses forward_existence and backward_existence to construct states
+at all times in the finite domain.
+
+**Note**: This is noncomputable because it uses Classical.choice to
+select witnesses from the existence lemmas.
+-/
+noncomputable def finite_history_from_state (phi : Formula) (w : FiniteWorldState phi) :
+    FiniteHistory phi := by
+  -- We need to construct states at all times and prove the relation constraints
+  -- This requires recursively applying forward/backward existence
+  -- For now, we use a placeholder constant function and sorry the proofs
+  -- Construct states function: constant at w for simplicity (placeholder)
+  let states : FiniteTime (temporalBound phi) → FiniteWorldState phi := fun _ => w
+  refine ⟨states, ?_, ?_⟩
+  · -- Forward relation: need states(t) ~ states(t+1) for duration 1
+    intro t t' h_succ
+    -- states t = states t' = w, so we need finite_task_rel phi w 1 w
+    -- This is NOT nullity (which is for d=0), so we need to use existence
+    sorry
+  · -- Backward relation: need states(t) ~ states(t-1) for duration -1
+    intro t t' h_pred
+    sorry
+
+/-!
+### History Construction Notes
+
+The full construction of `finite_history_from_state` would:
+1. Place `w` at the origin (time 0)
+2. Use `finite_forward_existence` repeatedly to extend to times 1, 2, ..., k
+3. Use `finite_backward_existence` repeatedly to extend to times -1, -2, ..., -k
+4. Combine these into a single function on FiniteTime
+
+This construction is non-trivial because we need to ensure all the consecutive
+states satisfy the task relation. The existence axioms guarantee this is possible,
+but the detailed construction requires careful handling of the induction.
+
+For now, we leave this with sorry and focus on the truth lemma structure.
+-/
+
+/-!
+## Summary of Phase 5 Definitions
+
+- `finite_forward_existence`: Axiom - consistent states have forward successors
+- `finite_backward_existence`: Axiom - consistent states have backward predecessors
+- `finite_history_from_state`: Construct history from initial state (2 sorries)
+
+**Status**: Existence lemmas stated as axioms. Full proofs would require:
+1. Lindenbaum lemma for finite closure
+2. Consistency preservation under transfer
+3. Recursive construction with correct relation proofs
+
+These can be proven later when the Lindenbaum infrastructure is extended
+to handle finite closures. The axioms capture the essential semantic property
+that the canonical model is complete.
+-/
+
 end Bimodal.Metalogic.Completeness
