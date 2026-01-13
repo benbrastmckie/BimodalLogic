@@ -95,10 +95,12 @@ technical_debt:
 ## Medium Priority
 
 ### 455. Improve README extension layer descriptions
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 1 hour
+- **Status**: [PLANNED]
+- **Planned**: 2026-01-13
 - **Priority**: Medium
 - **Language**: general
+- **Plan**: [implementation-001.md](.claude/specs/455_readme_extension_layer_descriptions/plans/implementation-001.md)
 
 **Description**: Turn the bullet points following the architecture drawing in the Overview section of README.md into clear and concise explanations of what each extension layer provides with regards to expressive and logical resources for representing and reasoning about tasks of increasing complexity.
 
@@ -268,7 +270,7 @@ technical_debt:
 
 ### 446. Agnostic duration construction
 - **Effort**: 15-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Low

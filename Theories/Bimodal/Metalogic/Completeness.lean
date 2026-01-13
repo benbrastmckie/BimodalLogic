@@ -6,6 +6,11 @@ import Bimodal.Theorems.Propositional
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Order.Zorn
 import Mathlib.Data.Finite.Defs
+-- Duration construction imports (Task 446)
+import Mathlib.Order.Hom.Basic           -- OrderIso
+import Mathlib.Order.Chain               -- Set-based IsChain
+import Mathlib.GroupTheory.MonoidLocalization.GrothendieckGroup  -- Grothendieck
+import Mathlib.Algebra.Order.Group.Defs  -- LinearOrderedAddCommGroup
 
 /-!
 # Completeness for TM Bimodal Logic
