@@ -10,13 +10,17 @@
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T16:40:27Z",
-      "last_updated": "2026-01-13T16:48:04Z",
+      "last_updated": "2026-01-13T16:55:48Z",
       "description": "Fix skill-status-sync return format \"status\": \"completed\" field causing Claude to stop execution prematurely. Tasks 462 and 467 added continuation markers but the root issue remains: skill returns include a status field with value \"completed\" that Claude interprets as a stop signal. Change to non-triggering terminology like \"result\": \"success\" or \"ok\": true, or remove field entirely if summary is sufficient.",
       "session_id": "sess_1768322761_af3c6e",
-      "plan_version": "001",
+      "plan_version": "002",
       "artifacts": [
         {
           "path": ".claude/specs/474_fix_skill_return_status_field/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/474_fix_skill_return_status_field/plans/implementation-002.md",
           "type": "plan"
         }
       ]

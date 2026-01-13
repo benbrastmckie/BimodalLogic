@@ -29,14 +29,14 @@ technical_debt:
 ## High Priority
 
 ### 474. Fix skill return "status": "completed" field causing premature stops
-- **Effort**: 3 hours
+- **Effort**: 2.5 hours
 - **Status**: [PLANNED]
-- **Planned**: 2026-01-13
+- **Planned**: 2026-01-13 (v002)
 - **Priority**: High
 - **Language**: meta
-- **Plan**: [implementation-001.md](.claude/specs/474_fix_skill_return_status_field/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/474_fix_skill_return_status_field/plans/implementation-002.md)
 
-**Description**: Fix skill-status-sync return format `"status": "completed"` field causing Claude to stop execution prematurely. Tasks 462 and 467 added continuation markers but the root issue remains: skill returns include a status field with value "completed" that Claude interprets as a stop signal. Change to non-triggering terminology like `"result": "success"` or `"ok": true`, or remove field entirely if summary is sufficient.
+**Description**: Fix skill-status-sync return format `"status": "completed"` field causing Claude to stop execution prematurely. Instead of renaming the field, change the VALUE from "completed" to contextual values: "synced" (preflight), "planned"/"researched"/"implemented" (postflight), "linked" (artifact). This matches state.json conventions and avoids the trigger word.
 
 ---
 
