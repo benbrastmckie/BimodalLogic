@@ -163,12 +163,14 @@ technical_debt:
 ---
 
 ### 453. Add Ability and Free Choice Modal Extension to Logos
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 3-4 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/453_add_ability_free_choice_modal_extension/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/453_add_ability_free_choice_modal_extension/plans/implementation-001.md)
 
 **Description**: Building on task 451, add an extension layer for ability and free choice modals to the middle layer while also acknowledging that there are many other potential extensions that could be added to the middle layer. As with task 451, the aim is to characterize and create stubs in the lean code to match the 'Epistemic Extension' and other extension layers that remain to be developed, while nevertheless updating all the relevant documentation.
 
