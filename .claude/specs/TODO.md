@@ -36,7 +36,7 @@ technical_debt:
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/480_investigate_workflow_delegation_early_stop/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/480_investigate_workflow_delegation_early_stop/plans/implementation-002.md)
 
 **Description**: Investigate workflow delegation errors causing agents to stop early. Previous fix attempts (tasks 474, 467, 462) did not resolve the issue. Check `.claude/output/` for error patterns. Search for terms like "complete", "finished" etc. that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems and research similar errors online.
 
