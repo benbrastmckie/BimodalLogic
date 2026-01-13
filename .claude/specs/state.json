@@ -6,14 +6,20 @@
     {
       "project_number": 464,
       "project_name": "research_coherence_alternatives_strategy_a",
-      "status": "researching",
+      "status": "researched",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-13T04:51:37Z",
-      "last_updated": "2026-01-13T05:05:27Z",
+      "last_updated": "2026-01-13T05:10:03Z",
       "parent_task": 458,
       "description": "Research alternative approaches to solve the canonical_history coherence problem. Current chain construction (Strategy C) provides coherence for discrete ℤ-indexed positions but cannot extend to full Duration domain. Investigate Strategy A from research-002.md: strengthen canonical_task_rel to include persistence conditions, making compositionality provable by construction. Also consider: (1) proving Duration discreteness (≅ ℤ·chain_step), (2) modifying forward/backward_extension to return chain-coherent witnesses, (3) quotient-based approaches.",
-      "session_id": "sess_1768280717_97e69e"
+      "session_id": "sess_1768280717_97e69e",
+      "artifacts": [
+        {
+          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 463,

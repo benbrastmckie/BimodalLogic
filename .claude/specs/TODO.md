@@ -56,13 +56,15 @@ technical_debt:
 ---
 
 ### 464. Research coherence alternatives (Strategy A)
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 458
+- **Research**: [research-001.md](.claude/specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md)
 
-**Description**: Research alternative approaches to solve the canonical_history coherence problem. Current chain construction (Strategy C) provides coherence for discrete ℤ-indexed positions but cannot extend to full Duration domain. Investigate **Strategy A** from research-002.md: strengthen `canonical_task_rel` to include persistence conditions, making compositionality provable by construction. Also consider: (1) proving Duration discreteness (≅ ℤ·chain_step), (2) modifying forward/backward_extension to return chain-coherent witnesses, (3) quotient-based approaches.
+**Description**: Analyzed 7 strategies for solving the coherence problem. **Recommended hybrid approach**: (1) Strengthen `canonical_task_rel` with G/H-formula persistence conditions, (2) Prove Duration discreteness (≅ ℤ·chain_step), (3) Use chain construction for canonical_history. Key insight: persistence is a natural semantic property that should be part of the canonical relation definition.
 
 ---
 
