@@ -2044,11 +2044,20 @@ where `S, T : CanonicalWorldState` are set-based maximal consistent sets.
 
 **Note**: The set-based representation allows membership testing for potentially
 infinite sets, which is essential for the canonical model construction.
+
+**Persistence Conditions** (Strategy A from Task 464):
+- G-persistence: `t > 0 → ∀ φ, Gφ ∈ S → Gφ ∈ T`
+- H-persistence: `t < 0 → ∀ φ, Hφ ∈ S → Hφ ∈ T`
+
+These conditions ensure temporal formulas persist through the relation, enabling
+compositionality proofs for the x > 0, y > 0 and x < 0, y < 0 cases.
 -/
 def canonical_task_rel (S : CanonicalWorldState) (t : CanonicalTime) (T : CanonicalWorldState) : Prop :=
   modal_transfer S T ∧
   (t > 0 → future_transfer S T) ∧
-  (t < 0 → past_transfer S T)
+  (t < 0 → past_transfer S T) ∧
+  (t > 0 → ∀ φ, Formula.all_future φ ∈ S.val → Formula.all_future φ ∈ T.val) ∧  -- G-persistence
+  (t < 0 → ∀ φ, Formula.all_past φ ∈ S.val → Formula.all_past φ ∈ T.val)         -- H-persistence
 
 /-!
 ### Canonical Task Relation Properties
@@ -2065,14 +2074,15 @@ For any maximal consistent set S, `canonical_task_rel S 0 S` holds.
 1. Modal transfer: Use `set_mcs_box_closure` (Modal T axiom: □φ → φ)
 2. Future transfer: Vacuously true (0 is not > 0)
 3. Past transfer: Vacuously true (0 is not < 0)
+4. G-persistence: Vacuously true (0 is not > 0)
+5. H-persistence: Vacuously true (0 is not < 0)
 -/
 theorem canonical_nullity (S : CanonicalWorldState) : canonical_task_rel S 0 S := by
   unfold canonical_task_rel modal_transfer future_transfer past_transfer
-  constructor
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
   -- Modal transfer: □φ ∈ S → φ ∈ S (via Modal T axiom)
   · intro φ h_box
     exact set_mcs_box_closure S.property h_box
-  constructor
   -- Future transfer: 0 > 0 → ... (vacuously true since 0 is not > 0)
   · intro h_pos φ _
     -- h_pos : 0 > 0 is false, so we can derive anything
@@ -2086,6 +2096,16 @@ theorem canonical_nullity (S : CanonicalWorldState) : canonical_task_rel S 0 S :
     -- h_neg : 0 < 0 is false, so we can derive anything
     exfalso
     -- Same reasoning: 0 < 0 requires 0 ≠ 0 which is false
+    simp only [LT.lt] at h_neg
+    exact h_neg.2 rfl
+  -- G-persistence: 0 > 0 → ... (vacuously true since 0 is not > 0)
+  · intro h_pos φ _
+    exfalso
+    simp only [GT.gt, LT.lt] at h_pos
+    exact h_pos.2 rfl
+  -- H-persistence: 0 < 0 → ... (vacuously true since 0 is not < 0)
+  · intro h_neg φ _
+    exfalso
     simp only [LT.lt] at h_neg
     exact h_neg.2 rfl
 
@@ -2142,8 +2162,9 @@ theorem past_formula_persistence {S T : CanonicalWorldState} {d : CanonicalTime}
     set_mcs_all_past_all_past S.property h_all_past
   -- Step 2: Since d < 0, we have past_transfer S T
   -- canonical_task_rel gives us: d < 0 → past_transfer S T
+  -- Structure: ⟨modal, future, past, G_persist, H_persist⟩
   unfold canonical_task_rel at hrel
-  have h_past : past_transfer S T := hrel.2.2 hd
+  have h_past : past_transfer S T := hrel.2.2.1 hd
   -- Step 3: Apply past_transfer to HHφ to get Hφ ∈ T
   unfold past_transfer at h_past
   exact h_past (Formula.all_past φ) h_hh
@@ -2172,9 +2193,10 @@ theorem canonical_compositionality
     (hTU : canonical_task_rel T y U) :
     canonical_task_rel S (x + y) U := by
   unfold canonical_task_rel at *
-  obtain ⟨hST_modal, hST_future, hST_past⟩ := hST
-  obtain ⟨hTU_modal, hTU_future, hTU_past⟩ := hTU
-  constructor
+  -- Structure: ⟨modal, future_transfer, past_transfer, G_persist, H_persist⟩
+  obtain ⟨hST_modal, hST_future, hST_past, hST_G_persist, hST_H_persist⟩ := hST
+  obtain ⟨hTU_modal, hTU_future, hTU_past, hTU_G_persist, hTU_H_persist⟩ := hTU
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
   -- Part 1: Modal transfer composes
   · intro φ h_box_S
     -- We have: box phi in S
@@ -2183,7 +2205,6 @@ theorem canonical_compositionality
     have h_box_box_S : (Formula.box φ).box ∈ S.val := set_mcs_box_box S.property h_box_S
     have h_box_T : Formula.box φ ∈ T.val := hST_modal (Formula.box φ) h_box_box_S
     exact hTU_modal φ h_box_T
-  constructor
   -- Part 2: Future transfer when x + y > 0
   · intro h_sum_pos φ h_all_future_S
     -- We have: x + y > 0 and Gφ ∈ S
@@ -2213,7 +2234,8 @@ theorem canonical_compositionality
     case pos =>
       -- x > 0: Get Gφ ∈ T via future_formula_persistence
       have h_Gφ_T : φ.all_future ∈ T.val := by
-        have hrel : canonical_task_rel S x T := ⟨hST_modal, hST_future, hST_past⟩
+        have hrel : canonical_task_rel S x T :=
+          ⟨hST_modal, hST_future, hST_past, hST_G_persist, hST_H_persist⟩
         exact future_formula_persistence hrel hx φ h_all_future_S
       -- Now case split on y
       by_cases hy : y > 0
@@ -2329,7 +2351,8 @@ theorem canonical_compositionality
     case pos =>
       -- x < 0: Get Hφ ∈ T via past_formula_persistence
       have h_Hφ_T : φ.all_past ∈ T.val := by
-        have hrel : canonical_task_rel S x T := ⟨hST_modal, hST_future, hST_past⟩
+        have hrel : canonical_task_rel S x T :=
+          ⟨hST_modal, hST_future, hST_past, hST_G_persist, hST_H_persist⟩
         exact past_formula_persistence hrel hx φ h_all_past_S
       -- Now case split on y
       by_cases hy : y < 0
@@ -2346,6 +2369,49 @@ theorem canonical_compositionality
     case neg =>
       -- x ≥ 0: Then since x + y < 0, we have y < -x ≤ 0, so y < 0.
       -- Same gap: from Hφ ∈ S, we cannot get Hφ ∈ T when x ≥ 0.
+      sorry
+  -- Part 4: G-persistence when x + y > 0
+  -- If x + y > 0 and Gφ ∈ S, then Gφ ∈ U
+  · intro h_sum_pos φ h_all_future_S
+    -- Strategy A: Case split on x
+    by_cases hx : x > 0
+    case pos =>
+      -- x > 0: Get Gφ ∈ T via G-persistence, then use G-persistence on T→U or future_transfer
+      have h_Gφ_T : φ.all_future ∈ T.val := hST_G_persist hx φ h_all_future_S
+      -- Case split on y
+      by_cases hy : y > 0
+      case pos =>
+        -- y > 0: Use G-persistence T→U
+        exact hTU_G_persist hy φ h_Gφ_T
+      case neg =>
+        -- y ≤ 0 but x + y > 0
+        -- We have Gφ ∈ T but cannot get Gφ ∈ U when y ≤ 0
+        -- (G-persistence only works for positive durations)
+        -- This is a known limitation - same gap as future_transfer case
+        sorry
+    case neg =>
+      -- x ≤ 0: Cannot use G-persistence S→T (requires x > 0)
+      -- Even though x + y > 0 implies y > 0, we can't get Gφ into T first
+      sorry
+  -- Part 5: H-persistence when x + y < 0
+  -- If x + y < 0 and Hφ ∈ S, then Hφ ∈ U
+  · intro h_sum_neg φ h_all_past_S
+    -- Symmetric to Part 4
+    by_cases hx : x < 0
+    case pos =>
+      -- x < 0: Get Hφ ∈ T via H-persistence
+      have h_Hφ_T : φ.all_past ∈ T.val := hST_H_persist hx φ h_all_past_S
+      -- Case split on y
+      by_cases hy : y < 0
+      case pos =>
+        -- y < 0: Use H-persistence T→U
+        exact hTU_H_persist hy φ h_Hφ_T
+      case neg =>
+        -- y ≥ 0 but x + y < 0
+        -- Same gap: Hφ ∈ T but y ≥ 0 means no H-persistence T→U
+        sorry
+    case neg =>
+      -- x ≥ 0: Cannot use H-persistence S→T
       sorry
 
 /--
@@ -2462,8 +2528,9 @@ theorem forward_extension (S : CanonicalWorldState) (d : CanonicalTime) (hd : d 
   let T : CanonicalWorldState := ⟨M, h_mcs⟩
   use T
   -- Step 4: Verify canonical_task_rel S d T
+  -- Structure: ⟨modal, future_transfer, past_transfer, G_persist, H_persist⟩
   unfold canonical_task_rel modal_transfer future_transfer past_transfer
-  constructor
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
   -- Modal transfer: □φ ∈ S → φ ∈ T
   · intro φ h_box_S
     -- □φ ∈ S → φ ∈ forward_seed S → φ ∈ M = T.val
@@ -2472,7 +2539,6 @@ theorem forward_extension (S : CanonicalWorldState) (d : CanonicalTime) (hd : d 
       right
       exact h_box_S
     exact h_sub h_in_seed
-  constructor
   -- Future transfer: d > 0 → (Gφ ∈ S → φ ∈ T)
   · intro _ φ h_all_future_S
     -- Gφ ∈ S → φ ∈ forward_seed S → φ ∈ M = T.val
@@ -2491,6 +2557,25 @@ theorem forward_extension (S : CanonicalWorldState) (d : CanonicalTime) (hd : d 
     -- But d ≠ 0 from either side, contradiction.
     simp only [GT.gt, LT.lt] at hd h_neg
     obtain ⟨h_le1, h_ne1⟩ := hd
+    obtain ⟨h_le2, h_ne2⟩ := h_neg
+    have h_eq : d = 0 := Duration.le_antisymm h_le2 h_le1
+    exact h_ne2 h_eq
+  -- G-persistence: d > 0 → (Gφ ∈ S → Gφ ∈ T)
+  · intro _ φ h_all_future_S
+    -- From Gφ ∈ S, get GGφ ∈ S via set_mcs_all_future_all_future (G-4 axiom)
+    have h_gg : (Formula.all_future φ).all_future ∈ S.val :=
+      set_mcs_all_future_all_future S.property h_all_future_S
+    -- GGφ ∈ S means Gφ is in forward_seed S (it's the content of a G-formula in S)
+    have h_in_seed : φ.all_future ∈ forward_seed S := by
+      unfold forward_seed
+      left
+      exact h_gg
+    exact h_sub h_in_seed
+  -- H-persistence: d < 0 → ... (vacuously true since d > 0)
+  · intro h_neg _φ _h_all_past
+    exfalso
+    simp only [GT.gt, LT.lt] at hd h_neg
+    obtain ⟨h_le1, _⟩ := hd
     obtain ⟨h_le2, h_ne2⟩ := h_neg
     have h_eq : d = 0 := Duration.le_antisymm h_le2 h_le1
     exact h_ne2 h_eq
