@@ -30,7 +30,7 @@ technical_debt:
 
 ### 458. Extend canonical_history to full domain
 - **Effort**: 10-14 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: High

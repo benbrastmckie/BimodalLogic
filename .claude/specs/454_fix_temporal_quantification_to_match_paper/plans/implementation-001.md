@@ -2,7 +2,7 @@
 
 - **Task**: 454 - Fix temporal quantification to match paper
 - **Status**: [NOT STARTED]
-- **Effort**: 6-8 hours
+- **Effort**: 6 hours
 - **Priority**: High
 - **Dependencies**: None
 - **Research Inputs**: .claude/specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md
@@ -13,232 +13,196 @@
 
 ## Overview
 
-The Lean implementation currently restricts temporal quantification to times within the world history's domain (`tau.domain`), while the JPL paper quantifies over ALL times in the temporal order D. This discrepancy affects the semantics of the Past (H) and Future (G) operators, as well as the definitions of validity and semantic consequence.
+The Lean implementation currently restricts temporal quantification to times in the world history's domain `dom(tau)`, but the JPL paper (lines 896-897, 1869-1870) quantifies over **all times** `y in D` (the entire temporal order). Additionally, the paper's atom semantics (line 892) explicitly checks domain membership inline, returning false for atoms at times outside the domain.
 
-The fix requires removing the domain membership proof parameter from `truth_at` and handling atoms by checking domain membership inline (atoms are false outside the domain). Temporal operators will quantify over all times, and validity definitions will be updated similarly.
+This plan restructures `truth_at` to remove the domain membership parameter from its signature, handle atoms by checking domain inline (returning `False` outside domain), and update temporal operators to quantify over all times `T`. The validity/consequence definitions must also be updated to quantify over all times, not just domain times.
 
 ### Research Integration
 
 Key findings from research-001.md:
-- Paper lines 896-897 and 1869-1870: Temporal operators quantify over all y in D (not tau.domain)
-- Paper line 892: Atoms check domain membership inline (`x in dom(tau) and tau(x) in V(p)`)
-- Paper line 924 and 2272-2273: Logical consequence quantifies over all times x in D
-- The chess game example (lines 899-919) shows why times outside domain matter semantically
+1. Paper quantifies temporal operators over `y in D` (all times), not `y in dom(tau)`
+2. Atom semantics: `M,tau,x |= p_i` iff `x in dom(tau)` AND `tau(x) in V(p_i)`
+3. Logical consequence also quantifies over all `x in D`
+4. The `box` operator should lose its domain constraint for consistency
 
 ## Goals & Non-Goals
 
 **Goals**:
-- Modify `truth_at` to remove domain membership proof parameter
-- Handle atoms by checking domain membership inline with decidable if
-- Change temporal operators to quantify over all times T
-- Update validity/semantic_consequence to quantify over all times
-- Fix all downstream compilation errors
-- Maintain correct semantics for all existing theorems
+- Remove `ht : tau.domain t` parameter from `truth_at` signature
+- Change atom case to check domain membership inline (return False if outside domain)
+- Change temporal operators (`all_past`, `all_future`) to quantify over all `T`, not just domain
+- Change `box` operator to quantify over all histories (without domain constraint at evaluation time)
+- Update `valid` and `semantic_consequence` to quantify over all times `t : T`
+- Fix all downstream compilation errors in Bimodal module
+- Preserve existing theorem validity (SP1, SP2, MF, TF axioms)
 
 **Non-Goals**:
-- Changing the underlying `WorldHistory` structure
-- Modifying the proof system (axioms, derivation rules)
-- Performance optimization beyond necessary changes
+- Changes to Logos.SubTheories.Explanatory.Truth (Phase 4, separate later work)
+- Adding new theorems or features beyond matching the paper
+- Performance optimization
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Breaking existing proofs (Soundness, TimeShift) | High | High | Incremental changes with `lake build` after each file |
-| Box operator domain change complexity | Medium | Medium | Careful analysis of box semantics; may need to keep domain check |
-| TimeShift proofs need restructuring | Medium | Medium | Core insight (time-shift preserves truth) remains valid; only mechanics change |
-| Perpetuity principles may need updates | Medium | Low | These use derivability, not direct truth_at; should be unaffected |
-| Decidability of domain membership | Low | Low | WorldHistory.domain is already decidable via Interval |
+| Breaking existing TimeShift proofs | High | High | Incremental changes with compilation checks; proofs should be similar without domain threading |
+| Soundness proofs need restructuring | High | Medium | Time-shift invariance core insight remains valid; only mechanics change |
+| Box operator semantics change impacts | Medium | Medium | Carefully verify MF/TF axiom proofs still work |
+| Unexpected type mismatches | Low | Medium | Use lean_diagnostic_messages after each edit |
 
 ## Implementation Phases
 
-### Phase 1: Core Truth Definition [NOT STARTED]
+### Phase 1: Core truth_at Signature Change [NOT STARTED]
 
-**Goal**: Modify `truth_at` signature and atom handling in Bimodal.Semantics.Truth
+**Goal**: Modify the `truth_at` function in `Bimodal.Semantics.Truth` to remove the domain membership parameter and handle atoms/temporal operators correctly.
 
 **Tasks**:
-- [ ] Change `truth_at` signature to remove `ht : tau.domain t` parameter
-- [ ] Modify atom case to use `if ht : tau.domain t then M.valuation (tau.states t ht) p else False`
-- [ ] Modify temporal operators to quantify over all `s : T` without domain constraint
-- [ ] Update box operator (analyze whether domain check should remain for the quantified history)
-- [ ] Fix all simple lemmas in Truth namespace (bot_false, imp_iff, atom_iff, box_iff, past_iff, future_iff)
+- [ ] Remove `ht : tau.domain t` parameter from `truth_at` signature
+- [ ] Change atom case to: `if ht : tau.domain t then M.valuation (tau.states t ht) p else False`
+- [ ] Change `all_past` case to: `forall (s : T), s < t -> truth_at M tau s phi`
+- [ ] Change `all_future` case to: `forall (s : T), t < s -> truth_at M tau s phi`
+- [ ] Change `box` case to: `forall (sigma : WorldHistory F), truth_at M sigma t phi` (remove hs parameter)
+- [ ] Update `truth_at` type signature in docstring
 
 **Timing**: 1.5 hours
 
 **Files to modify**:
-- `Theories/Bimodal/Semantics/Truth.lean` - Core `truth_at` definition and basic lemmas
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Semantics/Truth.lean` - Lines 95-106 (truth_at definition)
 
 **Verification**:
-- File compiles without errors
-- `lake build Bimodal.Semantics.Truth` succeeds
+- Run `lean_diagnostic_messages` to see compilation errors (expected: many downstream errors)
+- Verify new definition matches paper's specification exactly
 
 ---
 
-### Phase 2: TimeShift Theorems [NOT STARTED]
+### Phase 2: Truth.lean Helper Theorems [NOT STARTED]
 
-**Goal**: Update TimeShift theorems to work with new signature
+**Goal**: Update all helper theorems and lemmas in Truth.lean that depend on the old signature.
 
 **Tasks**:
-- [ ] Update `truth_proof_irrel` - may be simplified or removed (no longer have proof parameter)
-- [ ] Update `truth_history_eq` - may be simplified
-- [ ] Update `truth_double_shift_cancel` - core logic should remain similar
-- [ ] Update `time_shift_preserves_truth` - the key theorem; proof structure should be similar but without domain proof threading
-- [ ] Update `exists_shifted_history` - corollary, should follow from above
+- [ ] Update `Truth.bot_false` - remove ht parameter
+- [ ] Update `Truth.imp_iff` - remove ht parameter
+- [ ] Update `Truth.atom_iff` - change to reflect new domain check semantics
+- [ ] Update `Truth.box_iff` - remove hs parameter from quantifier
+- [ ] Update `Truth.past_iff` - change to reflect all-times quantification
+- [ ] Update `Truth.future_iff` - change to reflect all-times quantification
+- [ ] Update `TimeShift.truth_proof_irrel` - signature and proof
+- [ ] Update `TimeShift.truth_history_eq` - signature and proof
+- [ ] Update `TimeShift.truth_double_shift_cancel` - signature and proof
+- [ ] Update `TimeShift.time_shift_preserves_truth` - signature and proof
+- [ ] Update `TimeShift.exists_shifted_history` - signature and proof
 
 **Timing**: 2 hours
 
 **Files to modify**:
-- `Theories/Bimodal/Semantics/Truth.lean` - TimeShift namespace
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Semantics/Truth.lean` - Lines 107-585
 
 **Verification**:
-- All TimeShift theorems compile
-- `lake build Bimodal.Semantics.Truth` succeeds
+- Run `lean_diagnostic_messages` on Truth.lean - should compile cleanly
+- Check `lean_goal` at key proof points to verify proof state
 
 ---
 
-### Phase 3: Validity Definitions [NOT STARTED]
+### Phase 3: Validity Definitions Update [NOT STARTED]
 
-**Goal**: Update validity and semantic consequence to quantify over all times
+**Goal**: Update validity and semantic consequence definitions to quantify over all times.
 
 **Tasks**:
-- [ ] Update `valid` definition to use `forall (t : T)` instead of `forall (t : T) (ht : tau.domain t)`
-- [ ] Update `semantic_consequence` similarly
+- [ ] Update `valid` definition to: `forall ... (t : T), truth_at M tau t phi` (remove ht parameter)
+- [ ] Update `semantic_consequence` definition similarly
 - [ ] Update `satisfiable` definition similarly
-- [ ] Update `satisfiable_abs` if needed
-- [ ] Fix all Validity namespace lemmas (valid_iff_empty_consequence, consequence_monotone, etc.)
+- [ ] Update `satisfiable_abs` definition
+- [ ] Update `Validity.valid_iff_empty_consequence` proof
+- [ ] Update `Validity.consequence_monotone` proof
+- [ ] Update `Validity.valid_consequence` proof
+- [ ] Update `Validity.consequence_of_member` proof
+- [ ] Update `Validity.unsatisfiable_implies_all` proof
+- [ ] Update `Validity.unsatisfiable_implies_all_fixed` proof
 
 **Timing**: 1 hour
 
 **Files to modify**:
-- `Theories/Bimodal/Semantics/Validity.lean` - All validity-related definitions
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Semantics/Validity.lean` - All definitions and theorems
 
 **Verification**:
-- File compiles without errors
-- `lake build Bimodal.Semantics.Validity` succeeds
+- Run `lean_diagnostic_messages` on Validity.lean - should compile cleanly
+- Verify definitions match paper's logical consequence (line 924, 2272-2273)
 
 ---
 
-### Phase 4: SoundnessLemmas Updates [NOT STARTED]
+### Phase 4: Metalogic Soundness Proofs [NOT STARTED]
 
-**Goal**: Fix SoundnessLemmas.lean to work with new truth_at signature
-
-**Tasks**:
-- [ ] Update local `is_valid` definition to match new signature
-- [ ] Update `valid_at_triple` theorem
-- [ ] Update `truth_at_swap_swap` lemma - should be simplified
-- [ ] Update all axiom swap validity lemmas (swap_axiom_mt_valid, swap_axiom_m4_valid, etc.)
-- [ ] Update all rule preservation lemmas (mp_preserves_swap_valid, modal_k_preserves_swap_valid, etc.)
-- [ ] Update `axiom_swap_valid` master theorem
-- [ ] Update all local axiom validity lemmas (axiom_prop_k_valid through axiom_temp_future_valid)
-- [ ] Update `axiom_locally_valid` and `derivable_implies_valid_and_swap_valid`
-
-**Timing**: 1.5 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/SoundnessLemmas.lean`
-
-**Verification**:
-- File compiles without errors
-- `lake build Bimodal.Metalogic.SoundnessLemmas` succeeds
-
----
-
-### Phase 5: Soundness.lean Updates [NOT STARTED]
-
-**Goal**: Fix main soundness theorem and all axiom validity proofs
+**Goal**: Fix soundness lemmas and main soundness theorem with new signatures.
 
 **Tasks**:
-- [ ] Update `and_of_not_imp_not` helper if needed
-- [ ] Update all axiom validity lemmas (prop_k_valid through temp_future_valid)
-- [ ] Verify MF and TF axioms still use time_shift correctly
-- [ ] Update `axiom_valid` master theorem
-- [ ] Update main `soundness` theorem - should have simplified signature in some cases
+- [ ] Update SoundnessLemmas.lean `is_valid` local definition
+- [ ] Update all `swap_axiom_*_valid` lemmas for new signature
+- [ ] Update all `axiom_*_valid` private theorems
+- [ ] Update `axiom_swap_valid` and `axiom_locally_valid`
+- [ ] Update rule preservation lemmas (`mp_preserves_swap_valid`, etc.)
+- [ ] Update `derivable_implies_valid_and_swap_valid` proof
+- [ ] Update Soundness.lean axiom validity proofs (prop_k_valid, modal_t_valid, etc.)
+- [ ] Update main `soundness` theorem proof
+- [ ] Verify MF and TF axiom proofs still work with time-shift
 
 **Timing**: 1 hour
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Soundness.lean`
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/SoundnessLemmas.lean`
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Soundness.lean`
 
 **Verification**:
-- File compiles without errors
-- `lake build Bimodal.Metalogic.Soundness` succeeds
+- Run `lean_diagnostic_messages` on both files - should compile cleanly
+- Run `lake build Bimodal.Metalogic.Soundness` to verify full compilation
 
 ---
 
-### Phase 6: Full Build Verification [NOT STARTED]
+### Phase 5: Perpetuity and Remaining Files [NOT STARTED]
 
-**Goal**: Verify entire codebase compiles and verify semantic correctness
+**Goal**: Fix any remaining downstream files in the Bimodal module.
 
 **Tasks**:
-- [ ] Run `lake build` on entire project
-- [ ] Fix any remaining compilation errors in other files
-- [ ] Check Completeness.lean, Decidability files if affected
-- [ ] Verify Perpetuity principles still compile (should be unaffected as they use derivability)
-- [ ] Review all changes for semantic correctness against paper
+- [ ] Check and fix `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Theorems/Perpetuity/Helpers.lean`
+- [ ] Check and fix `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Theorems/Perpetuity/Bridge.lean`
+- [ ] Check and fix `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Theorems/Perpetuity/Principles.lean`
+- [ ] Check and fix `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Decidability.lean` if affected
+- [ ] Check and fix `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Completeness.lean` if affected
+- [ ] Run full `lake build` to verify no remaining errors
 
-**Timing**: 1 hour
+**Timing**: 0.5 hours
 
 **Files to modify**:
-- Any remaining files with compilation errors
+- Perpetuity directory files
+- Any other files with compilation errors
 
 **Verification**:
-- `lake build` succeeds with no errors
-- All existing theorems still compile without sorry
-- Semantic changes match JPL paper specification exactly
+- Run `lake build` - should complete without errors
+- Run `lean_diagnostic_messages` on any files that had errors
 
 ## Testing & Validation
 
-- [ ] `lake build Bimodal.Semantics.Truth` succeeds after Phase 1-2
-- [ ] `lake build Bimodal.Semantics.Validity` succeeds after Phase 3
-- [ ] `lake build Bimodal.Metalogic.SoundnessLemmas` succeeds after Phase 4
-- [ ] `lake build Bimodal.Metalogic.Soundness` succeeds after Phase 5
-- [ ] Full `lake build` succeeds after Phase 6
-- [ ] Perpetuity principles (P1-P6) still proven without sorry
-- [ ] MF and TF axioms correctly use time_shift_preserves_truth
-- [ ] Atoms are false outside history domain (matches paper line 892)
+- [ ] `lake build` completes without errors for entire Bimodal module
+- [ ] Verify `truth_at` definition matches paper's def:BL-semantics (lines 1857-1872)
+- [ ] Verify `valid` and `semantic_consequence` match paper's logical consequence (lines 924, 2272-2273)
+- [ ] Verify atom semantics matches paper line 892 (domain check inline)
+- [ ] Verify temporal operator semantics match lines 896-897, 1869-1870 (quantify over all D)
+- [ ] MF axiom (`box phi -> box (future phi)`) still proven valid
+- [ ] TF axiom (`box phi -> future (box phi)`) still proven valid
+- [ ] Soundness theorem compiles and proves correctly
 
 ## Artifacts & Outputs
 
-- `plans/implementation-001.md` (this file)
-- Modified files:
-  - `Theories/Bimodal/Semantics/Truth.lean`
-  - `Theories/Bimodal/Semantics/Validity.lean`
-  - `Theories/Bimodal/Metalogic/SoundnessLemmas.lean`
-  - `Theories/Bimodal/Metalogic/Soundness.lean`
-  - Possibly other downstream files
-- `summaries/implementation-summary-YYYYMMDD.md` upon completion
+- Modified `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Semantics/Truth.lean`
+- Modified `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Semantics/Validity.lean`
+- Modified `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/SoundnessLemmas.lean`
+- Modified `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Soundness.lean`
+- Potentially modified Perpetuity theorem files
+- `.claude/specs/454_fix_temporal_quantification_to_match_paper/summaries/implementation-summary-{DATE}.md`
 
 ## Rollback/Contingency
 
-If implementation causes cascading issues:
-1. Git revert to pre-implementation state
-2. Consider alternative approach: Add a helper function `truth_at_ext` that extends truth evaluation to times outside domain, keeping original `truth_at` unchanged
-3. The original implementation with domain restriction is semantically consistent (just different from paper); can document discrepancy as a design choice if necessary
-
-## Technical Notes
-
-### New truth_at Signature
-
-```lean
-def truth_at (M : TaskModel F) (tau : WorldHistory F) (t : T) : Formula -> Prop
-  | Formula.atom p =>
-    if ht : tau.domain t then M.valuation (tau.states t ht) p else False
-  | Formula.bot => False
-  | Formula.imp phi psi => truth_at M tau t phi -> truth_at M tau t psi
-  | Formula.box phi => forall (sigma : WorldHistory F), truth_at M sigma t phi
-  | Formula.all_past phi => forall (s : T), s < t -> truth_at M tau s phi
-  | Formula.all_future phi => forall (s : T), t < s -> truth_at M tau s phi
-```
-
-### Box Operator Consideration
-
-The box operator quantifies over all histories at time t. The paper (line 1863) shows:
-```
-M,tau,x |= Box phi iff M,sigma,x |= phi for all sigma in Omega
-```
-
-This suggests box should quantify over ALL histories, not just those with domain at t. However, if sigma doesn't have domain at t, evaluating atoms in phi at (sigma, t) will return False for all atoms. This is consistent with the paper's approach.
-
-### Key Insight from Paper
-
-From lines 899-919: The chess game example shows that evaluating formulas at times outside a history's domain is meaningful. The game beta ends at move 31, but we can still ask "was checkmate in the past?" at move 47 in beta - the answer is yes because checkmate occurred at move 31 (which is in dom(beta)).
+If implementation fails or causes unforeseen issues:
+1. Use `git checkout` to restore original files
+2. The changes are isolated to Bimodal.Semantics and Bimodal.Metalogic modules
+3. No changes to Logos module in this plan (reserved for future task)
+4. All original proofs are preserved in git history
