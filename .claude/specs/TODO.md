@@ -290,11 +290,13 @@ technical_debt:
 
 ### 447. Canonical frame and model construction
 - **Effort**: 12-15 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 446
+- **Research**: [research-001.md](.claude/specs/447_canonical_frame_model_construction/reports/research-001.md)
 - **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (Phase 4)
 
 **Description**: Phase 4 of completeness proofs: Build canonical frame and model using agnostic Duration type. Define canonical_task_rel with modal/temporal transfer. Prove nullity and compositionality. Implement canonical_frame, canonical_valuation, canonical_model.

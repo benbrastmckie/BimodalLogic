@@ -218,12 +218,12 @@
     {
       "project_number": 447,
       "project_name": "canonical_frame_model_construction",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "effort": "12-15 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T00:22:48Z",
+      "last_updated": "2026-01-13T00:26:24Z",
       "parent_task": 257,
       "dependencies": [
         446
@@ -233,6 +233,10 @@
         {
           "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/447_canonical_frame_model_construction/reports/research-001.md",
+          "type": "research"
         }
       ]
     },
