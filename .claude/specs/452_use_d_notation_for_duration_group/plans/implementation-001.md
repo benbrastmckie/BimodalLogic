@@ -16,7 +16,7 @@ The implementation is divided into 4 phases: LaTeX infrastructure, LaTeX content
 ### Phase 1: LaTeX Infrastructure
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add `\D` macro to notation package for consistency with source paper

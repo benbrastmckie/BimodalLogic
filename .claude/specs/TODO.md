@@ -118,15 +118,17 @@ technical_debt:
 
 ### 461. Expand Bimodal Theory README section
 - **Effort**: 25 minutes
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/461_expand_bimodal_theory_readme_section/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/461_expand_bimodal_theory_readme_section/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/461_expand_bimodal_theory_readme_section/summaries/implementation-summary-20260113.md)
 
-**Description**: Expand the 'Bimodal Theory' section in README.md to explain that the bimodal theory provides the logical core of the Logos theory by accounting for the relationship between time and possibility. This provides a well-motivated purely intensional target for developing the methodology that will then be extended to the Logos which is a hyperintensional theory of much greater complexity.
+**Description**: Expanded Bimodal Theory section in README.md from ~80 to ~260 words. Now explains time-possibility relationship, perpetuity principles P1-P6, methodology testbed purpose, and transfer patterns to Logos.
 
 ---
 
@@ -148,7 +150,7 @@ technical_debt:
 
 ### 452. Use 'D' notation for duration group consistently
 - **Effort**: 3.25 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium
@@ -162,7 +164,7 @@ technical_debt:
 
 ### 453. Add Ability and Free Choice Modal Extension to Logos
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean

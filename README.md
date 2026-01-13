@@ -162,7 +162,11 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 
 ## Bimodal Theory
 
-The project also includes the **Bimodal** theory, a complete propositional intensional logic combining S5 modal and linear temporal operators. Developed in parallel with Logos, Bimodal provides an excellent starting point for understanding modal-temporal reasoning and demonstrates the boundaries of purely intensional semantics.
+The project includes the **Bimodal** theory, a complete propositional intensional logic combining S5 modal and linear temporal operators. Bimodal captures a fundamental philosophical insight: the deep relationship between time and possibility. The present opens onto multiple possible futures (world-histories) that share a common past. This relationship is formalized through the **perpetuity principles** (P1-P6), which establish that what is necessary is perpetual and what occurs is possible.
+
+Bimodal provides a well-motivated purely intensional target for developing the formal methodology—axiomatic proof system, recursive semantics, and metalogic—that is then extended to Logos. By validating the methodology at a simpler complexity level (propositional, intensional, world-states as primitives), we gain confidence before scaling to the hyperintensional complexity of Logos (second-order, fine-grained states with parthood, layered extensions).
+
+The patterns developed in Bimodal transfer directly to Logos: task semantics for relating states across time, proof system architecture for deriving valid inferences, soundness proof techniques, and automation strategies. This scaling approach ensures that the foundational machinery is robust before tackling the greater expressivity of hyperintensional reasoning.
 
 The contrast between Bimodal's purely intensional semantics and Logos's hyperintensional foundation demonstrates the advantages of hyperintensional semantics for supporting a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
 

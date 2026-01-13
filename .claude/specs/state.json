@@ -6,11 +6,11 @@
     {
       "project_number": 461,
       "project_name": "expand_bimodal_theory_readme_section",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-13T02:15:44Z",
-      "last_updated": "2026-01-13T02:30:49Z",
+      "last_updated": "2026-01-13T02:40:38Z",
       "description": "Expand the Bimodal Theory section in README.md to explain that the bimodal theory provides the logical core of the Logos theory by accounting for the relationship between time and possibility. This provides a well-motivated purely intensional target for developing the methodology that will then be extended to the Logos which is a hyperintensional theory of much greater complexity.",
       "artifacts": [
         {
@@ -20,9 +20,14 @@
         {
           "path": ".claude/specs/461_expand_bimodal_theory_readme_section/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/461_expand_bimodal_theory_readme_section/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-13T02:40:38Z"
     },
     {
       "project_number": 460,
@@ -124,12 +129,12 @@
     {
       "project_number": 453,
       "project_name": "add_ability_free_choice_modal_extension",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-12T22:55:27Z",
-      "last_updated": "2026-01-13T02:36:38Z",
-      "session_id": "sess_1768271071_5561e4",
+      "last_updated": "2026-01-13T02:39:52Z",
+      "session_id": "sess_1768271983_9bdde4",
       "artifacts": [
         {
           "path": ".claude/specs/453_add_ability_free_choice_modal_extension/reports/research-001.md",
@@ -140,12 +145,12 @@
     {
       "project_number": 452,
       "project_name": "use_d_notation_for_duration_group",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-12T22:50:56Z",
-      "last_updated": "2026-01-13T02:31:30Z",
-      "session_id": "sess_1768271456_8cb136",
+      "last_updated": "2026-01-13T02:39:52Z",
+      "session_id": "sess_1768271992_e86982",
       "description": "Use D instead of T for the totally ordered commutative group of durations (also called times relative to a world history) consistently throughout the latex files in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/ and throughout the Lean Code in Logos/ to match the notation used in /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex",
       "artifacts": [
         {

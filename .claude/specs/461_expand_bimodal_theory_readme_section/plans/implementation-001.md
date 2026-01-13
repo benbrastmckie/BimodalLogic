@@ -24,7 +24,7 @@ From research-001.md:
 ### Phase 1: Draft Expanded Content
 
 **Estimated effort**: 15 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Write expanded Bimodal Theory section
@@ -79,7 +79,7 @@ For implementation details, see [Theories/Bimodal/README.md](Theories/Bimodal/RE
 ### Phase 2: Apply Edit to README.md
 
 **Estimated effort**: 5 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Replace existing Bimodal Theory section with expanded version
@@ -103,7 +103,7 @@ For implementation details, see [Theories/Bimodal/README.md](Theories/Bimodal/RE
 ### Phase 3: Verify and Commit
 
 **Estimated effort**: 5 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Run quick verification
