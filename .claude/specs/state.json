@@ -6,11 +6,11 @@
     {
       "project_number": 484,
       "project_name": "sync_tikz_diagram_operators_with_glossary",
-      "status": "not_started",
+      "status": "planning",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T21:23:11Z",
-      "last_updated": "2026-01-13T21:23:11Z"
+      "last_updated": "2026-01-13T21:30:43Z"
     },
     {
       "project_number": 483,
@@ -301,12 +301,12 @@
     {
       "project_number": 449,
       "project_name": "truth_lemma",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "effort": "15-20 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T16:42:37Z",
+      "last_updated": "2026-01-13T21:30:51Z",
       "parent_task": 257,
       "dependencies": [
         448
@@ -328,10 +328,14 @@
         {
           "path": ".claude/specs/449_truth_lemma/summaries/implementation-summary-20260113.md",
           "type": "summary"
+        },
+        {
+          "path": ".claude/specs/449_truth_lemma/plans/implementation-002.md",
+          "type": "plan"
         }
       ],
       "session_id": "sess_1768321902_42d2f5",
-      "plan_version": "001"
+      "plan_version": "002"
     },
     {
       "project_number": 450,

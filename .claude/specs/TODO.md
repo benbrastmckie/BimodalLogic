@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-01-13T18:58:00Z
+last_updated: 2026-01-13T19:02:00Z
 next_project_number: 485
 repository_health:
   overall_score: 90
@@ -144,7 +144,7 @@ technical_debt:
 
 ### 484. Sync TikZ diagram operators with GLOSSARY.md
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: latex
 
@@ -322,21 +322,22 @@ technical_debt:
 ---
 
 ### 449. Truth lemma
-- **Effort**: 15-20 hours
-- **Status**: [IMPLEMENTING] (Phase 1 complete, Phases 2-4 partial)
+- **Effort**: 8-12 hours (reduced from 15-20)
+- **Status**: [PLANNED] (v002 - revised after tasks 473, 481, 482)
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Revised**: 2026-01-13
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
-- **Dependencies**: 448, 472 (Lindenbaum), 473 (compositionality)
+- **Dependencies**: 448 (completed), 473 (completed), 481 (completed), 482 (partial)
 - **Research**: [research-001.md](.claude/specs/449_truth_lemma/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/449_truth_lemma/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/449_truth_lemma/plans/implementation-002.md) (v002)
 - **Progress**: [implementation-summary-20260113.md](.claude/specs/449_truth_lemma/summaries/implementation-summary-20260113.md)
 
-**Description**: Phase 6 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem.
+**Description**: Phase 6 of completeness proofs: Complete truth lemma using SemanticWorldState infrastructure from Task 473. The semantic truth lemma (`semantic_truth_lemma_v2`) is already proven; remaining work is connecting `semantic_weak_completeness` to the main completeness theorem.
 
-**Progress**: Phase 1 (closure infrastructure) complete. Forward directions of all cases proven. Backward directions blocked on negation-completeness of FiniteWorldState (requires Task 472 Lindenbaum extension).
+**Progress**: v001 completed Phase 1 (closure infrastructure) and forward directions. Tasks 473/481/482 created SemanticWorldState with `semantic_truth_lemma_v2` (proven). v002 focuses on proving `semantic_weak_completeness` and connecting to main completeness. Old `finite_truth_lemma` deprecated (6 sorries, no longer on critical path).
 
 ---
 
