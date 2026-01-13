@@ -1,7 +1,7 @@
 # Implementation Plan: Task #458 - Extend canonical_history to Full Domain (v003)
 
 - **Task**: 458 - Extend canonical_history from singleton domain to full domain
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 10 hours
 - **Priority**: High
 - **Dependencies**: Task 448 (singleton domain MVP - COMPLETED)
@@ -170,7 +170,7 @@ This represents concatenating two singleton order types, giving a two-element to
 
 ---
 
-### Phase 4: Combine into Unified canonical_states [IN PROGRESS]
+### Phase 4: Combine into Unified canonical_states [PARTIAL]
 
 **Goal**: Replace the independent Classical.choose construction with chain-based construction covering positive and negative time indices.
 
@@ -205,13 +205,31 @@ def canonical_domain : Set CanonicalTime :=
 **Timing**: 2 hours
 
 **Verification**:
-- [ ] `canonical_states` definition compiles
-- [ ] Zero, positive, negative lemmas compile without sorry
-- [ ] Chain coherence preserved
+- [x] `chain_indexed_states` definition compiles
+- [x] `chain_indexed_states_zero` lemma compiles without sorry
+- [x] `chain_indexed_states_pos_coherence` lemma compiles without sorry
+- [x] `chain_indexed_states_neg_coherence` lemma compiles without sorry
+- [x] `chain_domain` definition compiles
+- [x] `chain_index` definition compiles
+- [x] `chain_indexed_history` definition compiles (with sorry in respects_task)
+- [ ] Mapping arbitrary Duration to chain index (blocked on Duration structure)
+
+**Status Notes (2026-01-12)**:
+Implemented the alternative discrete domain approach:
+- `chain_indexed_states : CanonicalWorldState → ℤ → CanonicalWorldState` - maps integer index to state via chains
+- `chain_indexed_states_pos_coherence` - coherence for 0 ≤ m ≤ n
+- `chain_indexed_states_neg_coherence` - coherence for n ≤ m ≤ 0
+- `chain_domain` - discrete domain of chain_step multiples
+- `chain_index` - extract integer index from domain proof
+- `chain_indexed_history` - WorldHistory using chain construction
+
+**Blocking Issue**: Cannot map arbitrary Duration values to integer chain indices without
+proving Duration is discrete (isomorphic to ℤ • chain_step). The current construction
+works for the discrete domain but cannot provide full domain coverage.
 
 ---
 
-### Phase 5: Complete respects_task Proof [NOT STARTED]
+### Phase 5: Complete respects_task Proof [BLOCKED]
 
 **Goal**: Prove `respects_task` using chain coherence - the key property that blocked v001 and v002.
 
@@ -243,9 +261,19 @@ def canonical_domain : Set CanonicalTime :=
 - [ ] All cases handled explicitly
 - [ ] No coherence issues (all states on same chain)
 
+**Blocking Reason**: Phase 5 cannot be completed until Duration is proven discrete
+(so arbitrary Duration values can be mapped to integer chain indices). The cases
+s = 0 (forward/backward) and s < 0 with t > 0 (cross-origin) are already handled
+in canonical_history. The s > 0, t > 0 and s < 0, t < 0 cases are blocked because
+they require relating independent Classical.choose witnesses to chain positions.
+
+**Partial Progress**: The chain-indexed infrastructure (chain_indexed_states_pos_coherence,
+chain_indexed_states_neg_coherence) provides coherence for integer-indexed positions.
+If we restrict domain to chain_step multiples, respects_task would follow.
+
 ---
 
-### Phase 6: Verification and Cleanup [NOT STARTED]
+### Phase 6: Verification and Cleanup [PARTIAL]
 
 **Goal**: Verify the implementation compiles, document changes, and clean up.
 
@@ -263,20 +291,25 @@ def canonical_domain : Set CanonicalTime :=
 **Timing**: 0.5 hours
 
 **Verification**:
-- [ ] `lake build Bimodal.Metalogic.Completeness` succeeds
-- [ ] Sorry count documented (before/after)
-- [ ] Documentation accurate and complete
+- [x] `lake build Bimodal.Metalogic.Completeness` succeeds
+- [x] Sorry count documented (see below)
+- [x] Documentation accurate and complete
+
+**Status Notes (2026-01-12)**:
+- Build succeeds with warnings (sorry declarations)
+- New chain infrastructure added and compiling
+- Documentation updated with gap analysis
 
 ---
 
 ## Testing & Validation
 
-- [ ] Phase 1: `chain_step_pos` compiles without sorry
-- [ ] Phase 2: Forward chain lemmas compile without sorry
-- [ ] Phase 3: Backward chain lemmas compile without sorry
-- [ ] Phase 4: `canonical_states` with chain construction compiles
-- [ ] Phase 5: `respects_task` compiles without sorry
-- [ ] Phase 6: Full `lake build` succeeds
+- [x] Phase 1: `chain_step_pos` compiles without sorry
+- [x] Phase 2: Forward chain lemmas compile without sorry
+- [x] Phase 3: Backward chain lemmas compile without sorry
+- [x] Phase 4: `chain_indexed_states` with coherence lemmas compiles (full domain mapping blocked)
+- [ ] Phase 5: `respects_task` compiles without sorry (BLOCKED - requires Duration discreteness)
+- [x] Phase 6: Full `lake build` succeeds (with sorries as warnings)
 
 ## Artifacts & Outputs
 
