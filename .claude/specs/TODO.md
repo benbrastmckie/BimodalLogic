@@ -143,15 +143,17 @@ technical_debt:
 
 ### 466. Add Reflection Extension to LogosReference
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/466_reflection_extension_logosreference/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/466_reflection_extension_logosreference/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/466_reflection_extension_logosreference/summaries/implementation-summary-20260113.md)
 
-**Description**: Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md and /home/benjamin/Projects/ProofChecker/README.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the 'Reflection Extension'.
+**Description**: Added Reflection Extension content to LogosReference.tex. Updated Introduction TikZ diagram and layer descriptions. Added Truth Conditions, Derived Operators, and Temporal Interaction subsections to 09-Reflection.tex. Clean build verified (31 pages).
 
 ---
 
