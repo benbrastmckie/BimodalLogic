@@ -29,10 +29,12 @@ technical_debt:
 ## High Priority
 
 ### 474. Fix skill return "status": "completed" field causing premature stops
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 3 hours
+- **Status**: [PLANNED]
+- **Planned**: 2026-01-13
 - **Priority**: High
 - **Language**: meta
+- **Plan**: [implementation-001.md](.claude/specs/474_fix_skill_return_status_field/plans/implementation-001.md)
 
 **Description**: Fix skill-status-sync return format `"status": "completed"` field causing Claude to stop execution prematurely. Tasks 462 and 467 added continuation markers but the root issue remains: skill returns include a status field with value "completed" that Claude interprets as a stop signal. Change to non-triggering terminology like `"result": "success"` or `"ok": true`, or remove field entirely if summary is sufficient.
 
@@ -157,7 +159,7 @@ technical_debt:
 ---
 
 ### 472. Lindenbaum extension for finite closures
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 458

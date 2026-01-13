@@ -6,12 +6,20 @@
     {
       "project_number": 474,
       "project_name": "fix_skill_return_status_field",
-      "status": "not_started",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T16:40:27Z",
-      "last_updated": "2026-01-13T16:40:27Z",
-      "description": "Fix skill-status-sync return format \"status\": \"completed\" field causing Claude to stop execution prematurely. Tasks 462 and 467 added continuation markers but the root issue remains: skill returns include a status field with value \"completed\" that Claude interprets as a stop signal. Change to non-triggering terminology like \"result\": \"success\" or \"ok\": true, or remove field entirely if summary is sufficient."
+      "last_updated": "2026-01-13T16:48:04Z",
+      "description": "Fix skill-status-sync return format \"status\": \"completed\" field causing Claude to stop execution prematurely. Tasks 462 and 467 added continuation markers but the root issue remains: skill returns include a status field with value \"completed\" that Claude interprets as a stop signal. Change to non-triggering terminology like \"result\": \"success\" or \"ok\": true, or remove field entirely if summary is sufficient.",
+      "session_id": "sess_1768322761_af3c6e",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/474_fix_skill_return_status_field/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ]
     },
     {
       "project_number": 473,
@@ -34,11 +42,11 @@
     {
       "project_number": 472,
       "project_name": "lindenbaum_extension_finite_closures",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T16:10:32Z",
-      "last_updated": "2026-01-13T16:10:32Z",
+      "last_updated": "2026-01-13T16:47:17Z",
       "parent_task": 458,
       "description": "Complete the Lindenbaum extension for finite closures, building on task 458. Implement the restricted Lindenbaum lemma that extends consistent formula sets to maximal consistent sets within the finite subformula closure, enabling the finite truth lemma proof."
     },
