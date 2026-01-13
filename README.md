@@ -160,6 +160,18 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 
 ---
 
+## Bimodal Theory
+
+The project also includes the **Bimodal** theory, a complete propositional intensional logic combining S5 modal and linear temporal operators. Developed in parallel with Logos, Bimodal provides an excellent starting point for understanding modal-temporal reasoning and demonstrates the boundaries of purely intensional semantics.
+
+The contrast between Bimodal's purely intensional semantics and Logos's hyperintensional foundation demonstrates the advantages of hyperintensional semantics for supporting a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
+
+For the full presentation of Bimodal and its comparison with Logos, see [A Bimodal Logic for Tense and Modality](docs/research/bimodal-logic.md).
+
+For implementation details, see [Theories/Bimodal/README.md](Theories/Bimodal/README.md).
+
+---
+
 ## Implementation Status
 
 The Logos methodology comprises three components: (1) an **axiomatic proof theory** for deriving valid inferences, (2) a **recursive semantic theory** for interpreting formulas in explicit models, and (3) a **metalogic** establishing the soundness and completeness of the proof theory over the semantics.
@@ -288,18 +300,6 @@ Logos implements formal semantics developed in recent research:
   - State-based semantics using verifier/falsifier pairs to capture fine-grained propositional content
   - Enables distinctions between necessarily equivalent propositions based on what they are *about*
   - Theoretical foundation for constitutive explanatory reasoning (grounding `≤`, essence `⊑`, and propositional identity `≡` operators)
-
----
-
-## Bimodal Theory
-
-The project also includes **Bimodal**, a complete propositional intensional logic combining S5 modal and linear temporal operators. Developed in parallel with Logos, Bimodal provides an excellent starting point for understanding modal-temporal reasoning and demonstrates the boundaries of purely intensional semantics.
-
-The contrast between Bimodal's purely intensional semantics and Logos's hyperintensional foundation demonstrates the advantages of hyperintensional semantics for supporting a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
-
-For the full presentation of Bimodal and its comparison with Logos, see [A Bimodal Logic for Tense and Modality](docs/research/bimodal-logic.md).
-
-For implementation details, see [Theories/Bimodal/README.md](Theories/Bimodal/README.md).
 
 ---
 

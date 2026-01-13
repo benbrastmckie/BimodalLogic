@@ -10,12 +10,16 @@
       "language": "general",
       "priority": "high",
       "created": "2026-01-13T02:04:02Z",
-      "last_updated": "2026-01-13T02:09:01Z",
+      "last_updated": "2026-01-13T02:12:04Z",
       "description": "Create a 1000-2000 word essay that makes the project and its conclusions accessible to the public. Essays should conform to the tone and style of those that have appeared on the Cosmos Institute Substack. With the Grantee consent, select essays may be edited and featured on the Cosmos Institute Substack. This essay is due within 30 days after the conclusion of the grant term.",
-      "session_id": "sess_1768270011_5ad7fb",
+      "session_id": "sess_1768270218_aa750e",
       "artifacts": [
         {
           "path": ".claude/specs/460_cosmos_institute_substack_essay/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/460_cosmos_institute_substack_essay/reports/research-002.md",
           "type": "research"
         }
       ]
@@ -23,11 +27,11 @@
     {
       "project_number": 459,
       "project_name": "update_bimodal_latex_metalogic_theorems_notes",
-      "status": "researched",
+      "status": "planning",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T01:58:46Z",
-      "last_updated": "2026-01-13T02:05:23Z"
+      "last_updated": "2026-01-13T02:10:49Z"
     },
     {
       "project_number": 458,

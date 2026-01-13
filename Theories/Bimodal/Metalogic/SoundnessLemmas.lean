@@ -69,10 +69,13 @@ A formula is valid if it's true at all model-history-time triples.
 This is a monomorphic definition (fixed to explicit type parameter T) to avoid
 universe level mismatch errors.
 Per research report Option A: Make T explicit to allow type inference at call sites.
+
+**Note**: With the new semantics (Task #454), validity quantifies over ALL times,
+not just times in the history's domain.
 -/
 private def is_valid (T : Type*) [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T] (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame T) (M : TaskModel F) (τ : WorldHistory F) (t : T) (ht : τ.domain t),
-    truth_at M τ t ht φ
+  ∀ (F : TaskFrame T) (M : TaskModel F) (τ : WorldHistory F) (t : T),
+    truth_at M τ t φ
 
 -- Section variable for theorem signatures
 variable {T : Type*} [AddCommGroup T] [LinearOrder T] [IsOrderedAddMonoid T]
@@ -84,8 +87,8 @@ Auxiliary lemma: If φ is valid, then for any specific triple (M, τ, t),
 This is just the definition of validity, but stated as a lemma for clarity.
 -/
 theorem valid_at_triple {φ : Formula} (F : TaskFrame T) (M : TaskModel F)
-    (τ : WorldHistory F) (t : T) (ht : τ.domain t) (h_valid : is_valid T φ) :
-    truth_at M τ t ht φ := h_valid F M τ t ht
+    (τ : WorldHistory F) (t : T) (h_valid : is_valid T φ) :
+    truth_at M τ t φ := h_valid F M τ t
 
 /--
 Helper lemma: truth_at is invariant under double swap.
@@ -95,44 +98,44 @@ Required because truth_at is defined by structural recursion, preventing direct 
 of the involution property φ.swap.swap = φ via substitution.
 -/
 theorem truth_at_swap_swap {F : TaskFrame T} (M : TaskModel F)
-    (τ : WorldHistory F) (t : T) (ht : τ.domain t) (φ : Formula) :
-    truth_at M τ t ht φ.swap_past_future.swap_past_future ↔ truth_at M τ t ht φ := by
-  induction φ generalizing τ t ht with
-  | atom p => 
+    (τ : WorldHistory F) (t : T) (φ : Formula) :
+    truth_at M τ t φ.swap_past_future.swap_past_future ↔ truth_at M τ t φ := by
+  induction φ generalizing τ t with
+  | atom p =>
     -- Atom case: swap doesn't change atoms
     simp only [Formula.swap_temporal, truth_at]
-    
-  | bot => 
+
+  | bot =>
     -- Bot case: swap doesn't change bot
     simp only [Formula.swap_temporal, truth_at]
-    
-  | imp φ ψ ih_φ ih_ψ => 
+
+  | imp φ ψ ih_φ ih_ψ =>
     -- Implication case: (φ.swap.swap → ψ.swap.swap) ↔ (φ → ψ)
     simp only [Formula.swap_temporal, truth_at]
     constructor <;> intro h <;> intro h_φ
-    · exact (ih_ψ τ t ht).mp (h ((ih_φ τ t ht).mpr h_φ))
-    · exact (ih_ψ τ t ht).mpr (h ((ih_φ τ t ht).mp h_φ))
-    
-  | box φ ih => 
+    · exact (ih_ψ τ t).mp (h ((ih_φ τ t).mpr h_φ))
+    · exact (ih_ψ τ t).mpr (h ((ih_φ τ t).mp h_φ))
+
+  | box φ ih =>
     -- Box case: □(φ.swap.swap) ↔ □φ
     simp only [Formula.swap_temporal, truth_at]
-    constructor <;> intro h σ hs
-    · exact (ih σ t hs).mp (h σ hs)
-    · exact (ih σ t hs).mpr (h σ hs)
-    
-  | all_past φ ih => 
+    constructor <;> intro h σ
+    · exact (ih σ t).mp (h σ)
+    · exact (ih σ t).mpr (h σ)
+
+  | all_past φ ih =>
     -- All_past case: all_past φ → all_future φ.swap → all_past φ.swap.swap
     simp only [Formula.swap_temporal, truth_at]
-    constructor <;> intro h s hs h_ord
-    · exact (ih τ s hs).mp (h s hs h_ord)
-    · exact (ih τ s hs).mpr (h s hs h_ord)
-    
-  | all_future φ ih => 
+    constructor <;> intro h s h_ord
+    · exact (ih τ s).mp (h s h_ord)
+    · exact (ih τ s).mpr (h s h_ord)
+
+  | all_future φ ih =>
     -- All_future case: all_future φ → all_past φ.swap → all_future φ.swap.swap
     simp only [Formula.swap_temporal, truth_at]
-    constructor <;> intro h s hs h_ord
-    · exact (ih τ s hs).mp (h s hs h_ord)
-    · exact (ih τ s hs).mpr (h s hs h_ord)
+    constructor <;> intro h s h_ord
+    · exact (ih τ s).mp (h s h_ord)
+    · exact (ih τ s).mpr (h s h_ord)
 
 /-!
 ## NOTE: Unprovable Theorem Removed
@@ -190,13 +193,13 @@ At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t)
 -/
 theorem swap_axiom_mt_valid (φ : Formula) :
     is_valid T ((Formula.box φ).imp φ).swap_past_future := by
-  intro F M τ t ht
+  intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap_φ
-  -- h_box_swap_φ : ∀ (σ : WorldHistory F) (hs : σ.domain t), truth_at M σ t hs φ.swap_past_future
-  -- Goal: truth_at M τ t ht φ.swap_past_future
+  -- h_box_swap_φ : ∀ (σ : WorldHistory F), truth_at M σ t φ.swap_past_future
+  -- Goal: truth_at M τ t φ.swap_past_future
   -- Choose σ = τ
-  exact h_box_swap_φ τ ht
+  exact h_box_swap_φ τ
 
 /--
 Modal 4 axiom (M4) is self-dual under swap: `□φ → □□φ` swaps to `□(swap φ) → □□(swap φ)`.

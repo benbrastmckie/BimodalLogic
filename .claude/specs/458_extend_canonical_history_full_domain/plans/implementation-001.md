@@ -100,7 +100,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Forward Existence Lemma [IN PROGRESS]
+### Phase 3: Forward Existence Lemma [PARTIAL]
 
 **Goal**: Prove that for any MCS S and positive duration d, there exists an MCS T such that `canonical_task_rel S d T`.
 
@@ -139,7 +139,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Backward Existence Lemma [NOT STARTED]
+### Phase 4: Backward Existence Lemma [PARTIAL]
 
 **Goal**: Prove that for any MCS S and positive duration d, there exists an MCS T such that `canonical_task_rel T d S` (T is "before" S by duration d).
 
@@ -177,7 +177,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Full Domain Canonical History [NOT STARTED]
+### Phase 5: Full Domain Canonical History [IN PROGRESS]
 
 **Goal**: Replace singleton domain `canonical_history` with full domain version using existence lemmas and Classical.choice.
 

@@ -103,7 +103,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Validity Definitions Update [IN PROGRESS]
+### Phase 3: Validity Definitions Update [COMPLETED]
 
 **Goal**: Update validity and semantic consequence definitions to quantify over all times.
 
@@ -130,7 +130,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Metalogic Soundness Proofs [NOT STARTED]
+### Phase 4: Metalogic Soundness Proofs [IN PROGRESS]
 
 **Goal**: Fix soundness lemmas and main soundness theorem with new signatures.
 
