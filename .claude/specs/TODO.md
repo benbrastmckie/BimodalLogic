@@ -52,7 +52,7 @@ technical_debt:
 - **Research**: [research-001.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md), [research-002.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md)
 - **Plan**: [implementation-003.md](.claude/specs/458_extend_canonical_history_full_domain/plans/implementation-003.md) (v003 - indexed chains with proven lemmas)
 
-**Description**: Extend canonical_history from singleton domain to full domain for completeness proof correctness. v002: Redesigned to use **chain construction from 0** (instead of independent Classical.choose) to solve the coherence problem where independently chosen states may not lie on the same timeline. Build states as forward/backward chains from origin, ensuring compositionality by construction.
+**Description**: Extend canonical_history from singleton domain to full domain for completeness proof correctness. Task 464 (Strategy A) completed: strengthened canonical_task_rel with G/H-persistence conditions, proving uniform-sign compositionality cases (x>0,y>0 and x<0,y<0). Mixed-sign cases remain as fundamental gaps. Research needed: find the most elegant and mathematically virtuous path forward for remaining gaps, considering Duration discreteness (Strategy D) or alternative canonical model construction.
 
 ---
 
