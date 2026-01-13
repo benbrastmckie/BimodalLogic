@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T18:57:59Z",
-  "next_project_number": 479,
+  "next_project_number": 480,
   "active_projects": [
+    {
+      "project_number": 479,
+      "project_name": "fix_tikz_extension_dependencies_diagram",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T19:25:23Z",
+      "last_updated": "2026-01-13T19:25:23Z"
+    },
     {
       "project_number": 477,
       "project_name": "test_document_converter",
