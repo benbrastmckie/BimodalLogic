@@ -28,7 +28,7 @@ Refocused outcomes per user direction:
 
 **Grant Report - Top 3 Outcomes:**
 
-1) Established machine-verified proofs of core metalogical properties for the Logos proof system, including soundness (all 14 axiom schemas), the deduction theorem with termination proof, and decidability via tableau methods - providing the first Lean 4 formalization of bimodal temporal-modal logic with certified correctness guarantees.
+1) Established machine-verified proofs of core metalogical properties for a bimodal logic for reasoning about future contingency, including soundness, the deduction theorem, and decidability, providing the first Lean 4 formalization of a bimodal logic with certified correctness guarantees.
 
 2) Developed a comprehensive methodology combining an axiomatic proof system, recursive semantics based on exact truthmaker theory, and metalogical foundations for Logos - a unified formal language with modal, temporal, counterfactual, causal, epistemic, and normative operators for planning and evaluating complex actions in multi-agent systems under conditions of uncertainty.
 

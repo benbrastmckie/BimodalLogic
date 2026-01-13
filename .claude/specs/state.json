@@ -86,11 +86,11 @@
     {
       "project_number": 454,
       "project_name": "fix_temporal_quantification_to_match_paper",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-12T23:48:46Z",
-      "last_updated": "2026-01-13T01:43:24Z"
+      "last_updated": "2026-01-13T01:45:42Z"
     },
     {
       "project_number": 453,
