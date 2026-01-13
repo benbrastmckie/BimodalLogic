@@ -1,7 +1,7 @@
 # Implementation Plan: Task #456
 
 - **Task**: 456 - Address TODOs in Bimodal Semantics LaTeX
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Priority**: normal
 - **Dependencies**: None
@@ -52,7 +52,7 @@ Key findings from research-001.md integrated:
 
 ## Implementation Phases
 
-### Phase 1: Task Frame Restructuring [NOT STARTED]
+### Phase 1: Task Frame Restructuring [COMPLETED]
 
 **Goal**: Reorganize Task Frame definition with primitives table (TODOs 1-2)
 
@@ -81,7 +81,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 2: World History Restructuring [NOT STARTED]
+### Phase 2: World History Restructuring [COMPLETED]
 
 **Goal**: Merge definitions and remove Lean table (TODOs 3-7)
 
@@ -115,7 +115,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 3: Task Models and Propositions [NOT STARTED]
+### Phase 3: Task Models and Propositions [COMPLETED]
 
 **Goal**: Update terminology and define propositions (TODOs 8-11)
 
@@ -150,7 +150,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 4: Truth Conditions and Time Variables [NOT STARTED]
+### Phase 4: Truth Conditions and Time Variables [COMPLETED]
 
 **Goal**: Update time variable notation throughout truth conditions (TODO 12)
 
@@ -183,7 +183,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 5: Time-Shift Notation [NOT STARTED]
+### Phase 5: Time-Shift Notation [COMPLETED]
 
 **Goal**: Replace \leanTimeShift with paper notation (TODOs 13-17)
 
@@ -221,7 +221,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 6: Logical Consequence and Validity [NOT STARTED]
+### Phase 6: Logical Consequence and Validity [COMPLETED]
 
 **Goal**: Restate definitions with types and define validity (TODOs 18-20)
 
