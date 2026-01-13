@@ -2618,19 +2618,36 @@ At time t < 0: Uses backward_extension to find T with T →_{-t} S
 -/
 noncomputable def canonical_states (S : CanonicalWorldState) (t : CanonicalTime) : CanonicalWorldState :=
   if h : t = 0 then S
-  else if ht : t > 0 then
+  else if ht : (0 : CanonicalTime) < t then
+    -- t > 0: use forward_extension
     Classical.choose (forward_extension S t ht)
   else
     -- t ≠ 0 and ¬(t > 0), so t < 0, meaning -t > 0
     -- backward_extension gives T with canonical_task_rel T (-t) S
     -- So T is "before" S by duration -t
-    have h_neg : -t > 0 := by
-      simp only [GT.gt, LT.lt, neg_pos]
-      -- From ¬(t > 0) and t ≠ 0, we get t < 0
-      push_neg at ht
-      constructor
-      · exact ht
-      · exact fun h_eq => h (neg_eq_zero.mp h_eq)
+    have h_neg : (0 : CanonicalTime) < -t := by
+      -- From ¬(0 < t) and t ≠ 0, we need to show 0 < -t
+      -- Duration's LT is: a < b ↔ a ≤ b ∧ a ≠ b
+      simp only [LT.lt] at ht ⊢
+      -- ht : ¬(0 ≤ t ∧ 0 ≠ t)
+      -- Goal: 0 ≤ -t ∧ 0 ≠ -t
+      -- From ¬(0 ≤ t ∧ 0 ≠ t) we know: either ¬(0 ≤ t) or t = 0
+      -- Since h : t ≠ 0, we have ¬(0 ≤ t), which means t ≤ 0 with t ≠ 0, so t < 0
+      -- Then -t > 0, meaning 0 < -t
+      by_contra h_contra
+      -- h_contra : ¬(0 ≤ -t ∧ 0 ≠ -t)
+      -- Either ¬(0 ≤ -t) or -t = 0
+      push_neg at h_contra
+      cases h_contra with
+      | inl h_le => -- ¬(0 ≤ -t), so -t < 0, meaning t > 0
+        -- This contradicts ht
+        have h_pos : 0 ≤ t ∧ 0 ≠ t := by
+          constructor
+          · exact Duration.neg_le_neg h_le
+          · intro h0; exact h h0.symm
+        exact ht h_pos
+      | inr h_eq => -- -t = 0, so t = 0
+        exact h (neg_eq_zero.mp h_eq)
     Classical.choose (backward_extension S (-t) h_neg)
 
 /--

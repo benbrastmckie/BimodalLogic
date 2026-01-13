@@ -211,13 +211,13 @@ holds at all histories at t (trivially, as this is a global property).
 -/
 theorem swap_axiom_m4_valid (φ : Formula) :
     is_valid T ((Formula.box φ).imp (Formula.box (Formula.box φ))).swap_past_future := by
-  intro F M τ t ht
+  intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
-  intro h_box_swap_φ σ hs
-  -- Goal: ∀ (ρ : WorldHistory F) (hρ : ρ.domain t), truth_at M ρ t hρ φ.swap_past_future
-  intro ρ hρ
+  intro h_box_swap_φ σ
+  -- Goal: ∀ (ρ : WorldHistory F), truth_at M ρ t φ.swap_past_future
+  intro ρ
   -- h_box_swap_φ says φ.swap holds at ALL histories at time t
-  exact h_box_swap_φ ρ hρ
+  exact h_box_swap_φ ρ
 
 /--
 Modal B axiom (MB) is self-dual under swap: `φ → □◇φ` swaps to `swap φ → □◇(swap φ)`.
@@ -229,16 +229,16 @@ The diamond ◇ψ means "there exists some history where ψ holds". We have τ w
 -/
 theorem swap_axiom_mb_valid (φ : Formula) :
     is_valid T (φ.imp (Formula.box φ.diamond)).swap_past_future := by
-  intro F M τ t ht
+  intro F M τ t
   simp only [Formula.swap_past_future, Formula.diamond, truth_at]
-  intro h_swap_φ σ hs
-  -- Goal: ¬ ∀ (σ' : WorldHistory F) (hs' : σ'.domain t), ¬ truth_at M σ' t hs' φ.swap_past_future
-  -- Equivalently: ∃ σ' hs', truth_at M σ' t hs' φ.swap_past_future
+  intro h_swap_φ σ
+  -- Goal: ¬ ∀ (σ' : WorldHistory F), ¬ truth_at M σ' t φ.swap_past_future
+  -- Equivalently: ∃ σ', truth_at M σ' t φ.swap_past_future
   intro h_all_not
   -- h_all_not says: φ.swap is false at ALL histories at t
   -- But h_swap_φ says: φ.swap is true at (M, τ, t)
   -- Contradiction when we instantiate h_all_not with τ
-  exact h_all_not τ ht h_swap_φ
+  exact h_all_not τ h_swap_φ
 
 /--
 Temporal 4 axiom (T4) swaps to a valid formula: `Fφ → FFφ` swaps to `P(swap φ) → PP(swap φ)`.
@@ -254,14 +254,14 @@ theorem swap_axiom_t4_valid (φ : Formula) :
     is_valid T
       ((Formula.all_future φ).imp
        (Formula.all_future (Formula.all_future φ))).swap_past_future := by
-  intro F M τ t ht
+  intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
-  intro h_past_swap r hr h_r_lt_t u hu h_u_lt_r
-  -- h_past_swap : ∀ (s : T) (hs : τ.domain s), s < t → truth_at M τ s hs φ.swap_past_future
-  -- Need: truth_at M τ u hu φ.swap_past_future
+  intro h_past_swap r h_r_lt_t u h_u_lt_r
+  -- h_past_swap : ∀ (s : T), s < t → truth_at M τ s φ.swap_past_future
+  -- Need: truth_at M τ u φ.swap_past_future
   -- Since u < r < t, we have u < t, so apply h_past_swap
   have h_u_lt_t : u < t := lt_trans h_u_lt_r h_r_lt_t
-  exact h_past_swap u hu h_u_lt_t
+  exact h_past_swap u h_u_lt_t
 
 /--
 Temporal A axiom (TA) swaps to a valid formula: `φ → F(sometime_past φ)` swaps to
@@ -277,15 +277,15 @@ Note: sometime_future φ = ¬(past (¬φ))
 -/
 theorem swap_axiom_ta_valid (φ : Formula) :
     is_valid T (φ.imp (Formula.all_future φ.sometime_past)).swap_past_future := by
-  intro F M τ t ht
+  intro F M τ t
   simp only [Formula.swap_past_future, Formula.sometime_past, Formula.sometime_future, truth_at]
-  intro h_swap_φ s hs h_s_lt_t
-  -- Goal: ¬ ∀ (u : T) (hu : τ.domain u), u > s → ¬ truth_at M τ u hu φ.swap_past_future
+  intro h_swap_φ s h_s_lt_t
+  -- Goal: ¬ ∀ (u : T), u > s → ¬ truth_at M τ u φ.swap_past_future
   -- Equivalently: ∃ u > s : swap φ at u
   intro h_all_not_future
   -- We can choose u = t, since t > s (from h_s_lt_t)
   have h_t_gt_s : s < t := h_s_lt_t
-  exact h_all_not_future t ht h_t_gt_s h_swap_φ
+  exact h_all_not_future t h_t_gt_s h_swap_φ
 
 /--
 Temporal L axiom (TL) swaps to a valid formula: `△φ → FPφ` swaps to `△(swap φ) → P(F(swap φ))`.
@@ -309,19 +309,19 @@ double-negation encoding of conjunction.
 -/
 theorem swap_axiom_tl_valid (φ : Formula) :
     is_valid T (φ.always.imp (Formula.all_future (Formula.all_past φ))).swap_past_future := by
-  intro F M τ t ht
+  intro F M τ t
   -- Swapped form: (always φ).swap → (future (past φ)).swap
   --             = always (swap φ) → past (future (swap φ))
   -- In semantics: if swap φ holds at all times, then at all s < t,
   --               there exists u > s where swap φ holds
   -- This is trivially valid: if swap φ holds everywhere, pick any u > s
   simp only [Formula.swap_temporal, truth_at]
-  intro h_always s hs h_s_lt_t u hu h_s_lt_u
+  intro h_always s h_s_lt_t u h_s_lt_u
   -- h_always encodes: ¬(future(swap φ) → ¬(swap φ ∧ past(swap φ)))
   -- which is classically equivalent to: future(swap φ) ∧ swap φ ∧ past(swap φ)
-  -- meaning swap φ holds at all times in τ's domain
+  -- meaning swap φ holds at all times
   --
-  -- We need: truth_at M τ u hu φ.swap_past_future where s < u and s < t
+  -- We need: truth_at M τ u φ.swap_past_future where s < u and s < t
   -- Consider cases on u relative to t:
   by_cases h_ut : u < t
   · -- Case: u < t, use the "past" component
@@ -336,7 +336,7 @@ theorem swap_axiom_tl_valid (φ : Formula) :
     intro h_past
     -- h_past : ∀ s' < t, swap φ holds at s'
     -- Since u < t, swap φ holds at u
-    exact h_neg (h_past u hu h_ut)
+    exact h_neg (h_past u h_ut)
   · -- Case: u ≥ t
     by_cases h_eq : u = t
     · -- Case: u = t, use the "present" component
@@ -350,8 +350,6 @@ theorem swap_axiom_tl_valid (φ : Formula) :
       intro h_now
       intro h_past
       -- h_now : swap φ holds at t
-      -- But we need to transport from ht to hu
-      have h_eq_proof : ht = hu := rfl  -- both are proofs of τ.domain t
       exact h_neg h_now
     · -- Case: u > t, use the "future" component
       have h_gt : t < u := lt_of_le_of_ne (le_of_not_lt h_ut) (Ne.symm h_eq)
@@ -362,7 +360,7 @@ theorem swap_axiom_tl_valid (φ : Formula) :
       intro h_conj
       -- h_fut_all : ∀ r > t, swap φ holds at r
       -- Since u > t, swap φ holds at u
-      exact h_neg (h_fut_all u hu h_gt)
+      exact h_neg (h_fut_all u h_gt)
 
 /--
 Modal-Future axiom (MF) swaps to a valid formula: `□φ → □Fφ` swaps to `□(swap φ) → □P(swap φ)`.
