@@ -48,7 +48,7 @@ Research report research-001.md identified:
 
 ## Implementation Phases
 
-### Phase 1: Closure Infrastructure [NOT STARTED]
+### Phase 1: Closure Infrastructure [COMPLETED]
 
 **Goal**: Implement closure_mono and derived subformula containment lemmas to enable recursive IH applications in the truth lemma.
 
@@ -72,7 +72,7 @@ Research report research-001.md identified:
 
 ---
 
-### Phase 2: Implication Case [NOT STARTED]
+### Phase 2: Implication Case [IN PROGRESS]
 
 **Goal**: Complete the imp case of finite_truth_lemma (2 sorries).
 

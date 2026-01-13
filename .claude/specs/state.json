@@ -1,18 +1,29 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T16:10:32Z",
-  "next_project_number": 474,
+  "next_project_number": 475,
   "active_projects": [
+    {
+      "project_number": 474,
+      "project_name": "fix_skill_return_status_field",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-13T16:40:27Z",
+      "last_updated": "2026-01-13T16:40:27Z",
+      "description": "Fix skill-status-sync return format \"status\": \"completed\" field causing Claude to stop execution prematurely. Tasks 462 and 467 added continuation markers but the root issue remains: skill returns include a status field with value \"completed\" that Claude interprets as a stop signal. Change to non-triggering terminology like \"result\": \"success\" or \"ok\": true, or remove field entirely if summary is sufficient."
+    },
     {
       "project_number": 473,
       "project_name": "fix_compositionality_gaps_task_458",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T16:32:26Z",
-      "last_updated": "2026-01-13T16:32:26Z",
+      "last_updated": "2026-01-13T16:39:57Z",
       "parent_task": 458,
-      "description": "Fix compositionality gaps from Task 458."
+      "description": "Fix compositionality gaps from Task 458.",
+      "session_id": "sess_1768322383_f040e8"
     },
     {
       "project_number": 472,

@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T18:58:00Z
-next_project_number: 474
+next_project_number: 475
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 474. Fix skill return "status": "completed" field causing premature stops
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Fix skill-status-sync return format `"status": "completed"` field causing Claude to stop execution prematurely. Tasks 462 and 467 added continuation markers but the root issue remains: skill returns include a status field with value "completed" that Claude interprets as a stop signal. Change to non-triggering terminology like `"result": "success"` or `"ok": true`, or remove field entirely if summary is sufficient.
+
+---
 
 ### 467. Review task 462 changes and fix root cause
 - **Effort**: 2 hours
@@ -134,7 +144,7 @@ technical_debt:
 ## Medium Priority
 
 ### 473. Fix compositionality gaps from Task 458
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 458
