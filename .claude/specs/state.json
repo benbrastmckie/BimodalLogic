@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T03:50:07Z",
-  "next_project_number": 467,
+  "next_project_number": 468,
   "active_projects": [
+    {
+      "project_number": 467,
+      "project_name": "review_task_462_changes_fix_root_cause",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-13T15:11:50Z",
+      "last_updated": "2026-01-13T15:11:50Z",
+      "description": "Review task 462 changes (from .claude/output/research.md) to determine if they are worth keeping or cruft. Identify and fix root cause of workflow delegation errors in an elegant way without unnecessary changes. Update documentation to be accurate."
+    },
     {
       "project_number": 466,
       "project_name": "reflection_extension_logosreference",
@@ -111,12 +121,12 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-13T07:33:26Z",
-      "last_updated": "2026-01-13T05:49:57Z",
+      "last_updated": "2026-01-13T15:11:23Z",
       "parent_task": 257,
       "dependencies": [
         448
       ],
-      "session_id": "sess_1768283046_c8d7c3",
+      "session_id": "sess_1768315395_a50b60",
       "plan_version": "003",
       "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. Task 464 (Strategy A) completed: strengthened canonical_task_rel with G/H-persistence conditions, proving uniform-sign compositionality cases (x>0,y>0 and x<0,y<0). Mixed-sign cases remain as fundamental gaps. Research needed: find the most elegant and mathematically virtuous path forward for remaining gaps, considering Duration discreteness (Strategy D) or alternative canonical model construction.",
       "artifacts": [
@@ -142,6 +152,10 @@
         },
         {
           "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-003.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-004.md",
           "type": "research"
         }
       ]

@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T04:35:00Z
-next_project_number: 467
+next_project_number: 468
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -28,6 +28,16 @@ technical_debt:
 
 ## High Priority
 
+### 467. Review task 462 changes and fix root cause
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Review task 462 changes (from .claude/output/research.md) to determine if they are worth keeping or cruft. Identify and fix root cause of workflow delegation errors in an elegant way without unnecessary changes. Update documentation to be accurate.
+
+---
+
 ### 462. Fix workflow command delegation
 - **Effort**: 2.5 hours
 - **Status**: [COMPLETED]
@@ -51,7 +61,7 @@ technical_debt:
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 448
-- **Research**: [research-001.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md), [research-002.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md), [research-003.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-003.md)
+- **Research**: [research-001.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md), [research-002.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md), [research-003.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-003.md), [research-004.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-004.md)
 - **Plan**: [implementation-003.md](.claude/specs/458_extend_canonical_history_full_domain/plans/implementation-003.md) (v003 - indexed chains with proven lemmas)
 
 **Description**: Extend canonical_history from singleton domain to full domain for completeness proof correctness. Task 464 (Strategy A) completed: strengthened canonical_task_rel with G/H-persistence conditions, proving uniform-sign compositionality cases (x>0,y>0 and x<0,y<0). Mixed-sign cases remain as fundamental gaps. Research needed: find the most elegant and mathematically virtuous path forward for remaining gaps, considering Duration discreteness (Strategy D) or alternative canonical model construction.
