@@ -139,21 +139,21 @@ To explore this perspective, I met Benjamin Brast-McKie for a drink in San Franc
 
 Benjamin thinks of AI as an ecosystem. "Rather than fixating on one technology and imagining it scaling infinitely, I think of AI progress as an ecology: an ecosystem with different niches and carrying capacities."
 
-He finds that view useful because in tech, "there are always bottlenecks. Technologies produce what they can produce, and then they require new ingredients. One bottleneck creates pressure for new growth, which introduces new constraints. That's why I don't like thinking about any single technology as something that will scale infinitely."
+He finds that view useful because in tech, "there are always bottlenecks. One bottleneck creates pressure for new growth, which introduces new constraints. That's why I don't like thinking about any single technology as something that will scale infinitely."
 
-In other words, Benjamin doesn't think we can simply add more compute to LLMs until we get to AGI. We'll hit bottlenecks. And once we solve those with new tech, that new tech will hit new bottlenecks. Which we'll then solve with newer tech. Etc. But we don't know which bottlenecks and solutions will arise ahead of time. It's all impossible to predict.
+In other words, Benjamin doesn't think we can simply add more compute to LLMs until we get to AGI. We'll hit bottlenecks. And once we solve those with new innovations, new bottlenecks will emerge. Which we'll then solve with further innovations. Etc. But we don't know which bottlenecks and solutions will arise ahead of time. It's all impossible to predict.
 
 That's why Benjamin says, "Making confident predictions about timelines feels misguided. We might spend the next decade elaborating the technologies we already have. Or entirely new actors might appear and change the conversation completely."
 
 He takes a more agnostic stance on the role of LLMs, which he says "have already played a substantial role and will likely continue to. But is it the only ingredient? I doubt it. Will it be permanent? Maybe, maybe not."
 
-To him, progress happens when multiple technologies interact. LLMs may be one of those technologies. But other technologies might not be on the scene yet. Or they could already exist, but have not yet combined in the right way to cause a synergistic explosion of progress.
+To him, progress happens when multiple technologies interact. LLMs may be one of those technologies. But other technologies might not be on the scene yet. Or they could already exist, but have not yet combined in the right way to cause the synergies necessary for a new paradigm to form.
 
-To elaborate on this second point, Benjamin uses a metaphor about physics. "Physics only became what we now recognize once geometry, algebra, calculus, and analysis came together. Those ingredients existed separately for a long time. But once they combined in the right way, you could suddenly articulate mechanics."
+To elaborate on this second point, Benjamin uses a metaphor about physics. "Physics only became what we now recognize once geometry, algebra, and analysis came together. Those ingredients existed separately for a long time. But once they combined in the right way, you could suddenly articulate a mechanics."
 
 He goes on to clearly state: "It's not only about which [technologies] haven't appeared yet. It's also about which ones are already here, but haven't yet mixed."
 
-If The Ecosystem View is right, then the question of whether LLMs will get us to AGI isn't all that relevant. AGI is probably on the horizon, and LLMs may or may not be a major technology that helps us get there.
+If The Ecosystem View is right, then the question of whether LLMs will get us to AGI isn't all that relevant. AGI may well be on the horizon, and LLMs are no doubt a major technology that will help us get there. The more interesting question is what ingredients are missing.
 
 ---
 

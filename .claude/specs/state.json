@@ -6,11 +6,17 @@
     {
       "project_number": 478,
       "project_name": "revise_ecosystem_view_section",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-13T17:34:48Z",
-      "last_updated": "2026-01-13T17:34:48Z"
+      "last_updated": "2026-01-13T17:46:29Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/478_revise_ecosystem_view_section/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 477,
