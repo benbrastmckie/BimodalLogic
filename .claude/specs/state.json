@@ -25,15 +25,6 @@
       ]
     },
     {
-      "project_number": 457,
-      "project_name": "document_top_project_outcomes",
-      "status": "planned",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-13T01:09:49Z",
-      "last_updated": "2026-01-13T01:29:18Z"
-    },
-    {
       "project_number": 456,
       "project_name": "address_todos_in_bimodal_semantics_latex",
       "status": "completed",

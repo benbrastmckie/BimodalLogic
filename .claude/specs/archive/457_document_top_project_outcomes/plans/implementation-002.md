@@ -28,11 +28,9 @@ Refocused outcomes per user direction:
 
 **Grant Report - Top 3 Outcomes:**
 
-1) Established machine-verified proofs of core metalogical properties for a bimodal logic for reasoning about future contingency, including soundness, the deduction theorem, and decidability, providing the first Lean 4 formalization of a bimodal logic with certified correctness guarantees.
-
-2) Developed a comprehensive methodology combining an axiomatic proof system, recursive semantics based on exact truthmaker theory, and metalogical foundations for Logos - a unified formal language with modal, temporal, counterfactual, causal, epistemic, and normative operators for planning and evaluating complex actions in multi-agent systems under conditions of uncertainty.
-
-3) Provided a foundation for generating clean, unbounded positive reinforcement learning signals for training AI systems in verified reasoning, where the interpreted semantic framework ensures that AI agents learn not just syntactic pattern matching but genuine logical inference grounded in an explicit language of thought with model-theoretic meaning.
+1) Established the first Lean 4 formalization of a bimodal logic for reasoning about future contingency, including machine-verified proofs of core metalogical properties including soundness, the deduction theorem, and decidability.
+2) Developed a formal methodology combining an axiomatic proof system, recursive semantics, and metalogic for the Logos, a unified formal language for planning and evaluating complex actions in multi-agent systems under conditions of uncertainty.
+3) Provided a foundation for generating clean, unbounded positive reinforcement learning signals for training AI systems in verified reasoning in an interpreted formal language of thought.
 
 ---
 
