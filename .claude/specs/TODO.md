@@ -138,7 +138,7 @@ technical_debt:
 
 ### 473. Fix compositionality gaps from Task 458
 - **Effort**: 6-8 hours (reduced scope)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium

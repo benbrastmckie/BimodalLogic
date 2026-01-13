@@ -105,7 +105,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Add Background Box and Ellipses [IN PROGRESS]
+### Phase 3: Add Background Box and Ellipses [COMPLETED]
 
 **Goal**: Add grey background grouping for middle extensions and ellipsis indicators.
 
@@ -127,7 +127,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update Arrow Connections [NOT STARTED]
+### Phase 4: Update Arrow Connections [IN PROGRESS]
 
 **Goal**: Redraw arrows with clean paths reflecting the correct dependency structure.
 
