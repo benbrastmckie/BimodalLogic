@@ -878,4 +878,143 @@ These gaps may require a different approach:
 3. Accept these as axioms for now and prove them semantically later
 -/
 
+/-!
+## Phase 4: Finite Canonical Frame and Model
+
+This phase assembles the TaskFrame and TaskModel structures using the
+finite world states and task relation defined above.
+-/
+
+/--
+The finite canonical frame for a target formula.
+
+This is a TaskFrame with:
+- World states: `FiniteWorldState phi`
+- Time domain: `Int` (will be restricted to finite range in histories)
+- Task relation: `finite_task_rel phi`
+
+**Note**: We use `Int` as the time type (not `FiniteTime`) because the
+TaskFrame structure requires an ordered additive group. The finite time
+bound is enforced at the history level, not the frame level.
+-/
+noncomputable def FiniteCanonicalFrame (phi : Formula) : TaskFrame Int where
+  WorldState := FiniteWorldState phi
+  task_rel := finite_task_rel phi
+  nullity := FiniteTaskRel.nullity
+  compositionality := fun w u v x y h_wu h_uv => FiniteTaskRel.compositionality w u v x y h_wu h_uv
+
+/--
+The valuation for the finite canonical model.
+
+An atom `p` is true at world state `w` iff `atom p` is in the closure
+and is assigned true by `w`.
+
+**Note**: If `atom p` is not in the closure of `phi`, the valuation is
+vacuously false (atoms outside the closure don't matter for truth of phi).
+-/
+def finite_valuation (phi : Formula) : FiniteWorldState phi → String → Prop :=
+  fun w p =>
+    ∃ h : Formula.atom p ∈ closure phi, w.models (Formula.atom p) h
+
+/--
+The finite canonical model for a target formula.
+
+Combines the finite canonical frame with the finite valuation.
+-/
+noncomputable def FiniteCanonicalModel (phi : Formula) : TaskModel (FiniteCanonicalFrame phi) where
+  valuation := finite_valuation phi
+
+/-!
+### Finite Histories
+
+A finite history is a function from the finite time domain to world states,
+such that consecutive states are related by the task relation.
+-/
+
+/--
+A finite history for a target formula.
+
+Maps each time in `FiniteTime (temporalBound phi)` to a world state,
+with the constraint that consecutive times are related by the task relation.
+-/
+structure FiniteHistory (phi : Formula) where
+  /-- The assignment of world states to times -/
+  states : FiniteTime (temporalBound phi) → FiniteWorldState phi
+  /-- Consecutive states are related by unit task relation (forward) -/
+  forward_rel : ∀ t : FiniteTime (temporalBound phi),
+    ∀ t' : FiniteTime (temporalBound phi),
+    FiniteTime.succ? (temporalBound phi) t = some t' →
+    finite_task_rel phi (states t) 1 (states t')
+  /-- Consecutive states are related by unit task relation (backward) -/
+  backward_rel : ∀ t : FiniteTime (temporalBound phi),
+    ∀ t' : FiniteTime (temporalBound phi),
+    FiniteTime.pred? (temporalBound phi) t = some t' →
+    finite_task_rel phi (states t) (-1) (states t')
+
+namespace FiniteHistory
+
+variable {phi : Formula}
+
+/--
+Get the world state at a given finite time.
+-/
+def stateAt (h : FiniteHistory phi) (t : FiniteTime (temporalBound phi)) :
+    FiniteWorldState phi :=
+  h.states t
+
+/--
+Get the world state at the origin (time 0).
+-/
+def originState (h : FiniteHistory phi) : FiniteWorldState phi :=
+  h.states (FiniteTime.origin (temporalBound phi))
+
+end FiniteHistory
+
+/-!
+### Converting Finite Histories to World Histories
+
+To use the finite canonical model with the existing truth definition,
+we need to convert finite histories to world histories. This requires
+defining:
+1. A domain predicate (which times are "valid")
+2. A mapping from valid times to world states
+
+For the finite model, all times in the finite domain are valid.
+-/
+
+/--
+Convert a finite time to an integer (the time coordinate).
+-/
+def finiteTimeToInt (phi : Formula) (t : FiniteTime (temporalBound phi)) : Int :=
+  FiniteTime.toInt (temporalBound phi) t
+
+/--
+Domain predicate for finite histories: time is valid if it's in [-k, k].
+-/
+def FiniteHistoryDomain (phi : Formula) (t : Int) : Prop :=
+  -(temporalBound phi : Int) ≤ t ∧ t ≤ (temporalBound phi : Int)
+
+/--
+The domain is decidable.
+-/
+instance (phi : Formula) : DecidablePred (FiniteHistoryDomain phi) := by
+  intro t
+  unfold FiniteHistoryDomain
+  infer_instance
+
+/-!
+## Summary of Phase 4 Definitions
+
+- `FiniteCanonicalFrame phi`: TaskFrame using finite world states and task relation
+- `finite_valuation phi`: Valuation based on atom membership in closure
+- `FiniteCanonicalModel phi`: TaskModel combining frame and valuation
+- `FiniteHistory phi`: Time-indexed function to world states with relation constraints
+- `FiniteHistoryDomain phi`: Domain predicate for finite time bounds
+
+**Key Properties**:
+- Frame satisfies TaskFrame axioms (via nullity and compositionality of relation)
+- Valuation is well-defined for atoms in closure
+- Histories encode the task relation constraints between consecutive times
+-/
+
 end Bimodal.Metalogic.Completeness

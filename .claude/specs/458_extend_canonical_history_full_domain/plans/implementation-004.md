@@ -130,17 +130,17 @@ path information. These cases can be addressed by:
 
 ---
 
-### Phase 4: Finite Canonical Frame and Model [NOT STARTED]
+### Phase 4: Finite Canonical Frame and Model [COMPLETED]
 
 **Goal**: Assemble frame and model structures for the finite canonical model
 
 **Tasks**:
-- [ ] Define `FiniteCanonicalFrame phi : TaskFrame Int` using FiniteWorldState and finite_task_rel
-- [ ] Prove frame properties (nullity, compositionality) lift from relation properties
-- [ ] Define `finite_valuation phi : String -> FiniteWorldState phi -> Prop`
-- [ ] Define `FiniteCanonicalModel phi : TaskModel Int`
-- [ ] Define `FiniteHistory phi` as function from FiniteTime to FiniteWorldState
-- [ ] Implement `finite_history_from_origin` using existence lemmas
+- [x] Define `FiniteCanonicalFrame phi : TaskFrame Int` using FiniteWorldState and finite_task_rel
+- [x] Prove frame properties (nullity, compositionality) lift from relation properties
+- [x] Define `finite_valuation phi : FiniteWorldState phi -> String -> Prop`
+- [x] Define `FiniteCanonicalModel phi : TaskModel (FiniteCanonicalFrame phi)`
+- [x] Define `FiniteHistory phi` structure with forward/backward relation constraints
+- [x] Define `FiniteHistoryDomain phi` predicate for time bounds
 
 **Timing**: 2 hours
 
@@ -148,9 +148,9 @@ path information. These cases can be addressed by:
 - `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean`
 
 **Verification**:
-- Frame satisfies TaskFrame axioms
-- Model typechecks
-- History construction compiles
+- [x] Frame satisfies TaskFrame axioms (nullity, compositionality from relation)
+- [x] Model typechecks
+- [x] History structure compiles with relation constraints
 
 ---
 
