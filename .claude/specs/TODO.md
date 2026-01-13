@@ -128,13 +128,13 @@ technical_debt:
 
 ### 473. Fix compositionality gaps from Task 458
 - **Effort**: 6-8 hours (reduced scope)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 458
-- **Research**: [research-002.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-002.md)
+- **Research**: [research-003.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-003.md)
 - **Plan**: [implementation-003.md](.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-003.md)
 - **Summary**: [implementation-summary-20260113-phase3.md](.claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-phase3.md)
 
