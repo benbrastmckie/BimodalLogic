@@ -1591,7 +1591,7 @@ If finite_task_rel phi w d u and there exists a consistent sequence with w
 at some time t and u at time t + d, then the semantic relation holds.
 -/
 theorem pointwise_implies_semantic (w u : FiniteWorldState phi) (d : Int)
-    (h_rel : finite_task_rel phi w d u)
+    (_h_rel : finite_task_rel phi w d u)
     (h_seq_exists : ∃ seq : ConsistentSequence phi,
       ∃ t t' : FiniteTime (temporalBound phi),
         FiniteTime.toInt (temporalBound phi) t' =
@@ -2437,7 +2437,7 @@ theorem semantic_compositionality_holds :
     semantic_task_rel_v2 phi w x u →
     semantic_task_rel_v2 phi u y v →
     semantic_task_rel_v2 phi w (x + y) v :=
-  fun phi w u v x y => SemanticTaskRelV2.compositionality w u v x y
+  fun _phi w u v x y => SemanticTaskRelV2.compositionality w u v x y
 
 /-!
 ### Summary of Semantic Approach
@@ -2989,7 +2989,7 @@ then phi is derivable in the TM proof system.
 - Conversion from finite_truth_at to semantic truth_at
 -/
 axiom finite_weak_completeness (phi : Formula) :
-  (∀ (M : TaskModel (FiniteCanonicalFrame phi)),
+  (∀ (_M : TaskModel (FiniteCanonicalFrame phi)),
     ∀ (h : FiniteHistory phi),
     ∀ (t : FiniteTime (temporalBound phi)),
     finite_truth_at phi h t phi) →
@@ -3009,7 +3009,7 @@ This follows from weak completeness by standard argument:
 **Note**: Stated as axiom pending proof of weak_completeness.
 -/
 axiom finite_strong_completeness (Gamma : Set Formula) (phi : Formula) :
-  (∀ (M : TaskModel (FiniteCanonicalFrame phi)),
+  (∀ (_M : TaskModel (FiniteCanonicalFrame phi)),
     ∀ (h : FiniteHistory phi),
     ∀ (t : FiniteTime (temporalBound phi)),
     (∀ psi ∈ Gamma, ∃ h_mem : psi ∈ closure phi, (h.states t).models psi h_mem) →
@@ -3024,11 +3024,11 @@ countermodel for an unprovable formula is finite (bounded by temporal and modal
 depth of the formula).
 -/
 theorem finite_model_property (phi : Formula) :
-  (∃ (M : TaskModel (FiniteCanonicalFrame phi))
+  (∃ (_M : TaskModel (FiniteCanonicalFrame phi))
      (h : FiniteHistory phi)
      (t : FiniteTime (temporalBound phi)),
      finite_truth_at phi h t phi) →
-  (∃ (M : TaskModel (FiniteCanonicalFrame phi))
+  (∃ (_M : TaskModel (FiniteCanonicalFrame phi))
      (h : FiniteHistory phi)
      (t : FiniteTime (temporalBound phi)),
      finite_truth_at phi h t phi) := by

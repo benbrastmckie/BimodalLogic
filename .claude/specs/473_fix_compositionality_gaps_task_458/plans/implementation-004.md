@@ -1,7 +1,7 @@
 # Implementation Plan: Task #473
 
 - **Task**: 473 - Fix compositionality gaps from Task 458
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10-12 hours
 - **Priority**: Medium
 - **Dependencies**: Task 472 (Lindenbaum extension - COMPLETED)
@@ -165,7 +165,7 @@ This plan implements **Path A: Semantic History-Based World States** from resear
 
 ---
 
-### Phase 6: Clean Up and Verify Zero-Sorry [IN PROGRESS]
+### Phase 6: Clean Up and Verify Zero-Sorry [COMPLETED]
 
 **Goal**: Ensure all sorries are eliminated and proofs are complete
 
