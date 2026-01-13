@@ -86,9 +86,11 @@ technical_debt:
 
 ### 486. Add Abilities box to middle layer TikZ diagram
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md)
 
 **Description**: Add free choice modals and ability modals to another Abilities box in the middle layer of the TikZ diagram in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex and the Overview section of /home/benjamin/Projects/ProofChecker/README.md.
 

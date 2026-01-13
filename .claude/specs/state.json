@@ -6,11 +6,17 @@
     {
       "project_number": 486,
       "project_name": "add_abilities_box_to_tikz_diagram",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T22:19:50Z",
-      "last_updated": "2026-01-13T22:23:40Z"
+      "last_updated": "2026-01-13T22:28:43Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 485,
