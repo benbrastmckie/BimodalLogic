@@ -1772,19 +1772,25 @@ theorem finiteHistory_to_consistentSequence (h : FiniteHistory phi) :
     have h_rel := h.forward_rel t t' h_succ
     unfold UnitStepForwardConsistent finite_task_rel at *
     obtain ⟨h1, h2, _, h4, h5, _⟩ := h_rel
-    refine ⟨h1, ?_, h4, h5⟩
+    refine ⟨h1, ?_, h4, ?_⟩
     -- Future transfer: extract from h2 with the fact that 1 > 0
-    intros psi h_fut h_psi h_w_fut
-    exact h2 psi h_fut h_psi (by omega : (1 : Int) > 0) h_w_fut
+    · intros psi h_fut h_psi h_w_fut
+      exact h2 psi h_fut h_psi (by omega : (1 : Int) > 0) h_w_fut
+    -- Future persistence: extract from h5 with the fact that 1 >= 0
+    · intros psi h_fut h_w_fut
+      exact h5 psi h_fut (by omega : (1 : Int) ≥ 0) h_w_fut
   · -- Backward consistency follows from FiniteHistory.backward_rel
     intros t t' h_pred
     have h_rel := h.backward_rel t t' h_pred
     unfold UnitStepBackwardConsistent finite_task_rel at *
     obtain ⟨h1, _, h3, h4, _, h6⟩ := h_rel
-    refine ⟨h1, ?_, h4, h6⟩
+    refine ⟨h1, ?_, h4, ?_⟩
     -- Past transfer: extract from h3 with the fact that -1 < 0
-    intros psi h_past h_psi h_w_past
-    exact h3 psi h_past h_psi (by omega : (-1 : Int) < 0) h_w_past
+    · intros psi h_past h_psi h_w_past
+      exact h3 psi h_past h_psi (by omega : (-1 : Int) < 0) h_w_past
+    -- Past persistence: extract from h6 with the fact that -1 <= 0
+    · intros psi h_past h_w_past
+      exact h6 psi h_past (by omega : (-1 : Int) ≤ 0) h_w_past
 
 /--
 Any ConsistentSequence gives rise to a FiniteHistory.
@@ -1816,8 +1822,8 @@ theorem finiteHistory_witnesses_semantic (h : FiniteHistory phi)
   obtain ⟨seq, h_eq⟩ := finiteHistory_to_consistentSequence h
   use seq, t, t'
   constructor
-  · ring
-  · rw [h_eq]
+  · omega
+  · constructor <;> simp [h_eq]
 
 /--
 If the semantic task relation holds, there exists a consistent sequence
