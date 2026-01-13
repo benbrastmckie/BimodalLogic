@@ -6,15 +6,19 @@
     {
       "project_number": 486,
       "project_name": "add_abilities_box_to_tikz_diagram",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T22:19:50Z",
-      "last_updated": "2026-01-13T22:28:43Z",
+      "last_updated": "2026-01-13T22:36:37Z",
       "artifacts": [
         {
           "path": ".claude/specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
@@ -397,12 +401,12 @@
     {
       "project_number": 450,
       "project_name": "completeness_theorems",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "low",
       "effort": "8-10 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T22:27:00Z",
+      "last_updated": "2026-01-13T22:36:08Z",
       "parent_task": 257,
       "dependencies": [
         449,

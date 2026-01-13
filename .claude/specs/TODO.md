@@ -86,11 +86,12 @@ technical_debt:
 
 ### 486. Add Abilities box to middle layer TikZ diagram
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md)
 
 **Description**: Add free choice modals and ability modals to another Abilities box in the middle layer of the TikZ diagram in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex and the Overview section of /home/benjamin/Projects/ProofChecker/README.md.
 
@@ -375,7 +376,7 @@ technical_debt:
 
 ### 450. Completeness theorems
 - **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
