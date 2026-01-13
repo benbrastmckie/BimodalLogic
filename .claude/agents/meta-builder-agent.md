@@ -51,18 +51,52 @@ This agent has access to:
 
 Load these on-demand using @-references:
 
-**Always Load**:
+**Always Load (All Modes)**:
 - `@.claude/context/core/formats/subagent-return.md` - Return format schema
 
-**Load for Component Creation Guidance**:
-- `@.claude/docs/guides/component-selection.md` - Decision tree for what to create
-- `@.claude/docs/guides/creating-commands.md` - When creating command tasks
-- `@.claude/docs/guides/creating-skills.md` - When creating skill tasks
-- `@.claude/docs/guides/creating-agents.md` - When creating agent tasks
+**Stage 1 (Parse Delegation Context)**:
+- No additional context needed
 
-**Load for System Analysis**:
-- `@.claude/CLAUDE.md` - Project configuration
-- `@.claude/context/index.md` - Full context discovery
+**Stage 2 (Context Loading - Mode-Based)**:
+
+| Mode | Files to Load |
+|------|---------------|
+| interactive | `@.claude/docs/guides/component-selection.md` (after Stage 0 inventory) |
+| prompt | `@.claude/docs/guides/component-selection.md` |
+| analyze | `@.claude/CLAUDE.md`, `@.claude/context/index.md` |
+
+**Stages 3-5 (Interview/Analysis - On-Demand)**:
+- When user selects commands: `@.claude/docs/guides/creating-commands.md`
+- When user selects skills/agents: `@.claude/docs/guides/creating-skills.md`, `@.claude/docs/guides/creating-agents.md`
+- When discussing templates: `@.claude/context/core/templates/thin-wrapper-skill.md`, `@.claude/context/core/templates/agent-template.md`
+
+**Stages 6-7 (Task Creation/Status Updates)**:
+- Direct file access: `.claude/specs/TODO.md`, `.claude/specs/state.json`
+- No additional context files needed (formats already loaded)
+
+**Stage 8 (Cleanup)**:
+- No additional context needed
+
+## Mode-Context Matrix
+
+Quick reference for context loading by mode:
+
+| Context File | Interactive | Prompt | Analyze |
+|--------------|-------------|--------|---------|
+| subagent-return.md | Always | Always | Always |
+| component-selection.md | Stage 2 | Stage 2 | No |
+| creating-commands.md | On-demand* | On-demand* | No |
+| creating-skills.md | On-demand* | On-demand* | No |
+| creating-agents.md | On-demand* | On-demand* | No |
+| thin-wrapper-skill.md | On-demand* | On-demand* | No |
+| agent-template.md | On-demand* | On-demand* | No |
+| CLAUDE.md | No | No | Stage 2 |
+| index.md | No | No | Stage 2 |
+| TODO.md | Stage 6 | Stage 5 | Stage 1** |
+| state.json | Stage 6 | Stage 5 | Stage 1** |
+
+*On-demand: Load when user discussion involves that component type
+**Analyze mode reads but does not modify
 
 ## Execution Flow
 
@@ -187,6 +221,11 @@ Let's begin!
 
 **Checkpoint**: Domain and purpose clearly identified
 
+**Context Loading Trigger**:
+- If user selects "Add a new command" -> Load `creating-commands.md`
+- If user selects "Add a new skill or agent" -> Load `creating-skills.md` AND `creating-agents.md`
+- If user selects "Fix or enhance existing" -> Load relevant existing component file
+
 ### Interview Stage 2.5: DetectDomainType
 
 **Classification Logic**:
@@ -213,6 +252,10 @@ Let's begin!
 **Question 4** (if breakdown needed):
 - Ask user to list discrete tasks in dependency order
 - Capture: task_list[], dependency_order[]
+
+**Context Loading Trigger**:
+- If "Help me break it down" selected -> Load `component-selection.md` decision tree
+- If discussing template-based components -> Load relevant template file
 
 ### Interview Stage 4: AssessComplexity
 

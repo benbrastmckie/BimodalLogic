@@ -387,24 +387,13 @@ Language-specific:
 ```
 
 **Meta Workflow (meta-builder-agent)**:
-```
-Stage 2 loads (mode-based):
-- Interactive mode: @.claude/docs/guides/component-selection.md (during interview)
-- Prompt mode: @.claude/docs/guides/component-selection.md
-- Analyze mode: @.claude/CLAUDE.md, @.claude/context/index.md
 
-On-demand loading during interview:
-- When discussing commands: @.claude/docs/guides/creating-commands.md
-- When discussing skills: @.claude/docs/guides/creating-skills.md
-- When discussing agents: @.claude/docs/guides/creating-agents.md
+See `.claude/agents/meta-builder-agent.md` for complete stage-by-stage context loading guidance.
 
-Stage 6 loads:
-- @.claude/context/core/formats/subagent-return.md (for return format)
-
-Stage 7 (Status Updates):
-- @.claude/specs/TODO.md (for task entry creation)
-- @.claude/specs/state.json (for state updates)
-```
+Quick reference:
+- Interactive/Prompt modes: component-selection.md + on-demand component guides
+- Analyze mode: CLAUDE.md + index.md (read-only analysis)
+- All modes: subagent-return.md (always)
 
 ---
 
