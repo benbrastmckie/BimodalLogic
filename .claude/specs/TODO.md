@@ -1,14 +1,14 @@
 ---
-last_updated: 2026-01-13T02:18:19Z
+last_updated: 2026-01-13T02:55:00Z
 next_project_number: 462
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 23
-  completed: 139
-  in_progress: 0
+  active: 17
+  completed: 145
+  in_progress: 1
   not_started: 7
   abandoned: 7
   total: 169
@@ -28,25 +28,9 @@ technical_debt:
 
 ## High Priority
 
-### 460. Cosmos Institute Substack Essay
-- **Effort**: 3.5 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: High
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/460_cosmos_institute_substack_essay/reports/research-001.md), [research-002.md](.claude/specs/460_cosmos_institute_substack_essay/reports/research-002.md)
-- **Plan**: [implementation-001.md](.claude/specs/460_cosmos_institute_substack_essay/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/460_cosmos_institute_substack_essay/summaries/implementation-summary-20260113.md)
-
-**Description**: Created 1,321-word essay "Teaching Machines to Prove They're Right" for Cosmos Institute Substack. Synthesizes three grant contributions (machine-verified proofs, language for planning, unlimited training data) into accessible narrative with philosopher-builder theme. Essay at `docs/essays/cosmos-institute-essay.md`.
-
----
-
 ### 458. Extend canonical_history to full domain
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-12 (v002)
 - **Priority**: High
@@ -98,87 +82,7 @@ technical_debt:
 
 ---
 
-### 454. Fix temporal quantification to match paper
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-12
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: High
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/454_fix_temporal_quantification_to_match_paper/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/454_fix_temporal_quantification_to_match_paper/summaries/implementation-summary-20260112.md)
-
-**Description**: Fixed temporal quantification to match JPL paper. Changed `truth_at` to remove domain parameter, atoms use existential quantification (false outside domain), temporal operators quantify over all times T, validity/consequence definitions updated. All soundness proofs updated. `lake build Bimodal` succeeds.
-
----
-
 ## Medium Priority
-
-### 461. Expand Bimodal Theory README section
-- **Effort**: 25 minutes
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/461_expand_bimodal_theory_readme_section/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/461_expand_bimodal_theory_readme_section/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/461_expand_bimodal_theory_readme_section/summaries/implementation-summary-20260113.md)
-
-**Description**: Expanded Bimodal Theory section in README.md from ~80 to ~260 words. Now explains time-possibility relationship, perpetuity principles P1-P6, methodology testbed purpose, and transfer patterns to Logos.
-
----
-
-### 459. Update Bimodal LaTeX Metalogic, Theorems, and Notes
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/459_update_bimodal_latex_metalogic_theorems_notes/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/459_update_bimodal_latex_metalogic_theorems_notes/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/459_update_bimodal_latex_metalogic_theorems_notes/summaries/implementation-summary-20260113.md)
-
-**Description**: Updated three Bimodal LaTeX subfiles: added Decidability section to 04-Metalogic.tex with tableau algorithm and complexity analysis, added S5 Diamond-Box to Truth and T-Box Consistency theorems to 05-Theorems.tex, updated 06-Notes.tex with decidability status and discrepancy note. Build verified successfully (21-page PDF).
-
----
-
-### 452. Use 'D' notation for duration group consistently
-- **Effort**: 45 minutes
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/452_use_d_notation_for_duration_group/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/452_use_d_notation_for_duration_group/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/452_use_d_notation_for_duration_group/summaries/implementation-summary-20260113.md)
-
-**Description**: Changed T→D notation for duration group across 13 files: added `\D` macro to LaTeX, updated 29 occurrences in 02-Semantics.tex and 06-Notes.tex, updated 9 Lean files (TaskFrame, TaskModel, WorldHistory, Truth, Validity, SoundnessLemmas, TemporalStructures, and Logos SubTheories). Full lake build succeeds (846 jobs). Axiom names and tableau formulas preserved.
-
----
-
-### 453. Add Ability and Free Choice Modal Extension to Logos
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/453_add_ability_free_choice_modal_extension/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/453_add_ability_free_choice_modal_extension/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260112.md](.claude/specs/453_add_ability_free_choice_modal_extension/summaries/implementation-summary-20260112.md)
-
-**Description**: Created Agential Extension stub with ability operators (Can_a, Able_a, Cannot_a) and free choice operators (FP, FF, Ch). Updated layer-extensions.md Section 6, recursive-semantics.md, IMPLEMENTATION_STATUS.md, ROADMAP.md Phase 8, and GLOSSARY.md. Module builds without errors.
-
----
 
 ### 441. Prove completeness via Relativized Completeness approach
 - **Effort**: TBD
