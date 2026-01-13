@@ -493,7 +493,7 @@ Return ONLY valid JSON matching this schema:
 
 ```json
 {
-  "status": "completed",
+  "status": "tasks_created",
   "summary": "Created 3 tasks for command creation workflow: research, implementation, and testing.",
   "artifacts": [
     {
@@ -519,7 +519,7 @@ Return ONLY valid JSON matching this schema:
 
 ```json
 {
-  "status": "completed",
+  "status": "analyzed",
   "summary": "System analysis complete. Found 9 commands, 9 skills, 6 agents.",
   "artifacts": [],
   "metadata": {
@@ -545,7 +545,7 @@ Return ONLY valid JSON matching this schema:
 
 ```json
 {
-  "status": "completed",
+  "status": "cancelled",
   "summary": "User cancelled task creation at confirmation stage.",
   "artifacts": [],
   "metadata": {

@@ -101,7 +101,7 @@ max_delegation_depth: 3
     <timeout>3600s</timeout>
     <expected_return>
       {
-        "status": "completed",
+        "status": "planned",
         "artifacts": [{"type": "plan", "path": "..."}],
         "summary": "Plan created"
       }
@@ -111,7 +111,7 @@ max_delegation_depth: 3
   <step_2>
     <action>Validate planner return</action>
     <validation>
-      - status == "completed"
+      - status == "planned" (contextual success value)
       - artifacts array contains plan
       - plan file exists on disk
     </validation>
@@ -134,7 +134,7 @@ max_delegation_depth: 3
     <timeout>30s</timeout>
     <expected_return>
       {
-        "status": "completed",
+        "status": "synced",
         "summary": "Status updated"
       }
     </expected_return>

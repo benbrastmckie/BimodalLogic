@@ -361,11 +361,11 @@ If task or plan is invalid:
 
 ## Return Format Examples
 
-### Completed Implementation
+### Successful Implementation
 
 ```json
 {
-  "status": "completed",
+  "status": "implemented",
   "summary": "Created Logos documentation with 4 chapters covering syntax, semantics, proofs, and examples. PDF compiles cleanly with latexmk, producing 42-page document with all cross-references resolved.",
   "artifacts": [
     {

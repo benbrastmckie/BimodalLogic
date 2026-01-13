@@ -112,7 +112,7 @@ See `.claude/context/core/formats/subagent-return.md` for full specification.
 
 ```json
 {
-  "status": "completed",
+  "status": "tasks_created",
   "summary": "Created 3 tasks for command creation workflow: research, implementation, and testing phases.",
   "artifacts": [
     {
@@ -142,7 +142,7 @@ See `.claude/context/core/formats/subagent-return.md` for full specification.
 
 ```json
 {
-  "status": "completed",
+  "status": "analyzed",
   "summary": "System analysis complete. Found 9 commands, 9 skills, 6 agents, and 15 active tasks.",
   "artifacts": [],
   "metadata": {
@@ -166,7 +166,7 @@ See `.claude/context/core/formats/subagent-return.md` for full specification.
 
 ```json
 {
-  "status": "completed",
+  "status": "cancelled",
   "summary": "User cancelled task creation at confirmation stage. No tasks created.",
   "artifacts": [],
   "metadata": {

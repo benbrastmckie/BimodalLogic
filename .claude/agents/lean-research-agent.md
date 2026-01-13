@@ -296,11 +296,11 @@ Partial results should include:
 
 ## Return Format Examples
 
-### Completed Research
+### Successful Research
 
 ```json
 {
-  "status": "completed",
+  "status": "researched",
   "summary": "Found 5 relevant Mathlib theorems for completeness proof including Nat.add_comm, List.length_append, and Set.mem_union. Identified proof strategy using structural induction with these lemmas.",
   "artifacts": [
     {

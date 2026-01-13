@@ -327,11 +327,11 @@ If task or plan is invalid:
 
 ## Return Format Examples
 
-### Completed Implementation
+### Successful Implementation
 
 ```json
 {
-  "status": "completed",
+  "status": "implemented",
   "summary": "Created general-research-agent.md with all required sections: metadata, allowed tools, context references, execution flow, error handling, and return format examples. All 3 phases completed successfully.",
   "artifacts": [
     {

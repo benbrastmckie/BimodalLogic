@@ -120,7 +120,7 @@ See `.claude/context/core/formats/subagent-return.md` for full specification.
 Expected successful return:
 ```json
 {
-  "status": "completed",
+  "status": "planned",
   "summary": "Created N-phase implementation plan",
   "artifacts": [
     {

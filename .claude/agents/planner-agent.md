@@ -292,11 +292,11 @@ When file operations fail:
 
 ## Return Format Examples
 
-### Completed Plan
+### Successful Plan
 
 ```json
 {
-  "status": "completed",
+  "status": "planned",
   "summary": "Created 5-phase implementation plan for task 414. Plan covers agent file structure, execution flow, error handling, return format examples, and verification. Total estimated effort: 2.5 hours.",
   "artifacts": [
     {

@@ -293,11 +293,11 @@ Partial results should include:
 
 ## Return Format Examples
 
-### Completed Research
+### Successful Research
 
 ```json
 {
-  "status": "completed",
+  "status": "researched",
   "summary": "Found 8 relevant patterns for agent implementation including subagent return format, lazy context loading, and skill-to-agent mapping. Identified report-format.md standard and documented execution flow patterns.",
   "artifacts": [
     {

@@ -113,7 +113,7 @@ See `.claude/context/core/formats/subagent-return.md` for full specification.
 Expected successful return:
 ```json
 {
-  "status": "completed",
+  "status": "researched",
   "summary": "Research completed with N findings and recommendations",
   "artifacts": [
     {

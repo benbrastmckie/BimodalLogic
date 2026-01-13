@@ -205,7 +205,7 @@ EOF
 ### Nothing to Commit
 ```json
 {
-  "status": "completed",
+  "status": "committed",
   "summary": "No changes to commit",
   "commit_hash": null
 }

@@ -601,7 +601,7 @@ If any write fails:
 
 ```json
 {
-  "status": "completed|failed",
+  "status": "synced|{target_status}|linked|failed",
   "summary": "Updated task #N to [STATUS]",
   "task_number": N,
   "old_status": "previous",
@@ -612,6 +612,14 @@ If any write fails:
   ]
 }
 ```
+
+**Status values by operation:**
+- `preflight_update` → `"status": "synced"`
+- `postflight_update` → `"status": "{target_status}"` (e.g., "planned", "researched", "implemented")
+- `artifact_link` → `"status": "linked"` or `"status": "skipped"`
+- On failure → `"status": "failed"`
+
+**Rationale**: The value "completed" is avoided because Claude interprets it as a stop signal. Contextual values describe the achieved state.
 
 ---
 

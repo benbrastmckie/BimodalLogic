@@ -342,11 +342,11 @@ If task or plan is invalid:
 
 ## Return Format Examples
 
-### Completed Implementation
+### Successful Implementation
 
 ```json
 {
-  "status": "completed",
+  "status": "implemented",
   "summary": "Implemented completeness theorem with 4 supporting lemmas. All proofs verified, lake build succeeds. Total 3 phases completed including modal soundness, completeness lemma, and main theorem.",
   "artifacts": [
     {

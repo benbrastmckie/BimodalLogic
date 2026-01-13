@@ -30,13 +30,15 @@ technical_debt:
 
 ### 474. Fix skill return "status": "completed" field causing premature stops
 - **Effort**: 2.5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Planned**: 2026-01-13 (v002)
+- **Completed**: 2026-01-13
 - **Priority**: High
 - **Language**: meta
 - **Plan**: [implementation-002.md](.claude/specs/474_fix_skill_return_status_field/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/474_fix_skill_return_status_field/summaries/implementation-summary-20260113.md)
 
-**Description**: Fix skill-status-sync return format `"status": "completed"` field causing Claude to stop execution prematurely. Instead of renaming the field, change the VALUE from "completed" to contextual values: "synced" (preflight), "planned"/"researched"/"implemented" (postflight), "linked" (artifact). This matches state.json conventions and avoids the trigger word.
+**Description**: Changed skill/agent return format `"status"` field VALUE from "completed" to contextual values: "synced" (preflight), "planned"/"researched"/"implemented" (postflight), "linked" (artifact). Updated 1 schema file, 9 skills, and 7 agents. The word "completed" triggered Claude to stop; contextual values avoid this while being more semantically accurate.
 
 ---
 
@@ -159,7 +161,7 @@ technical_debt:
 ---
 
 ### 472. Lindenbaum extension for finite closures
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium
