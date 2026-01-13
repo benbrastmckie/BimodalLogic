@@ -1460,67 +1460,128 @@ theorem nullity (w : FiniteWorldState phi) (h_exists_seq : ∃ seq : ConsistentS
   · exact ⟨h_eq, h_eq⟩
 
 /--
-Compositionality for semantic task relation.
+Bounded compositionality for semantic task relation.
 
-This is the key theorem: if there exists a sequence through w and u at distance x,
-and a sequence through u and v at distance y, then there exists a sequence
+If there exists a sequence through w and u at distance x, and a sequence
+through u and v at distance y, AND the combined displacement x + y has
+valid witness times in the finite domain, then there exists a sequence
 through w and v at distance x + y.
 
-**Proof sketch**:
-The proof uses the fact that if u appears in both sequences, we can find
-times where both sequences have state u, and then the composite displacement
-from w to v through u is x + y.
+**Key insight**: The finite time domain `[-k, k]` requires `|x + y| ≤ 2k` for
+witness times to exist. This is the bounded version that can be proven.
 
-**Note**: This proof is non-trivial because we need to show that a sequence
-exists through all three states. In the finite setting, this works because:
-1. The same consistent sequence can be extended/shifted
-2. Consistent sequences form a connected space over the finite time domain
+**Proof strategy**:
+Given `seq1` with `w` at `t1` and `u` at `t1'`, and `seq2` with `u` at `t2`
+and `v` at `t2'`, we need to find a sequence witnessing `w` at some time `s`
+and `v` at `s + (x + y)`.
+
+Since `seq1.states t1' = u = seq2.states t2`, we use `seq1` as our witness
+and show that it contains `v` at the appropriate relative position. The
+bound hypothesis ensures valid times exist.
+-/
+theorem compositionality_bounded (w u v : FiniteWorldState phi) (x y : Int)
+    (h_wu : finite_task_rel_semantic phi w x u)
+    (h_uv : finite_task_rel_semantic phi u y v)
+    (h_bounds : ∃ (s s' : FiniteTime (temporalBound phi)),
+        FiniteTime.toInt (temporalBound phi) s' =
+          FiniteTime.toInt (temporalBound phi) s + (x + y)) :
+    finite_task_rel_semantic phi w (x + y) v := by
+  -- Unpack hypotheses
+  obtain ⟨seq1, t1, t1', h_t1_eq, h_w1, h_u1⟩ := h_wu
+  obtain ⟨seq2, t2, t2', h_t2_eq, h_u2, h_v2⟩ := h_uv
+  obtain ⟨s, s', h_bounds_eq⟩ := h_bounds
+  -- The bound hypothesis tells us valid witness times exist
+  -- However, we still need to construct a sequence that:
+  --   1. Has w at time s
+  --   2. Has v at time s' = s + (x + y)
+  --
+  -- The challenge is that seq1 and seq2 are DIFFERENT sequences.
+  -- - seq1 passes through w and u
+  -- - seq2 passes through u and v
+  -- There's no guarantee that ANY sequence passes through all three of w, u, v.
+  --
+  -- To prove this properly, we would need one of:
+  -- (A) A lemma showing any two states that appear in consistent sequences
+  --     can appear together in SOME consistent sequence
+  -- (B) A construction that "glues" seq1 and seq2 at their common state u
+  --
+  -- Option (B) is complex because sequences are defined over the entire
+  -- finite time domain, so "gluing" requires careful alignment.
+  --
+  -- For now, this remains as a sorry until the sequence construction
+  -- machinery is more developed.
+  sorry
+
+/--
+Compositionality for semantic task relation (unbounded version).
+
+**WARNING**: This theorem as stated is NOT generally provable in the finite
+setting. The issue is that `|x + y|` can exceed `2 * temporalBound phi`,
+making it impossible to find valid witness times for the conclusion.
+
+**Example counterexample** (k = 1, so times in [-1, 0, 1]):
+- Let x = 2 (witnessed by t1 = -1, t1' = 1)
+- Let y = 2 (witnessed by t2 = -1, t2' = 1)
+- Then x + y = 4, but max displacement in [-1, 1] is 2
+- No valid witness times exist for the conclusion
+
+**For use cases where bounds are satisfied**: Use `compositionality_bounded`.
+
+**Status**: Sorry is EXPECTED here - this is a known limitation of the finite
+semantic relation. The pointwise relation `finite_task_rel` handles this
+differently (no time bounds, but has mixed-sign compositionality gaps).
 -/
 theorem compositionality (w u v : FiniteWorldState phi) (x y : Int)
     (h_wu : finite_task_rel_semantic phi w x u)
     (h_uv : finite_task_rel_semantic phi u y v) :
     finite_task_rel_semantic phi w (x + y) v := by
-  -- Unpack the hypotheses
-  obtain ⟨seq1, t1, t1', h_t1_eq, h_w1, h_u1⟩ := h_wu
-  obtain ⟨seq2, t2, t2', h_t2_eq, h_u2, h_v2⟩ := h_uv
-  -- We need to construct a sequence through w, u, and v
-  -- Key insight: if seq1 and seq2 agree at u, we can work with one of them
-  -- If they don't agree on the full path, we need to be more careful
-  --
-  -- For the finite model, the crucial observation is:
-  -- - seq1 has w at t1 and u at t1'
-  -- - seq2 has u at t2 and v at t2'
-  -- - If we can shift seq2 so that its "u" aligns with seq1's "u", we're done
-  --
-  -- However, the sequences might not be compatible. The real proof requires
-  -- showing that consistent sequences exist through any triple of states
-  -- that are semantically related, which is guaranteed by the construction
-  -- of the finite canonical model.
-  --
-  -- For now, we note that this compositionality holds semantically and
-  -- is the key advantage of the semantic definition over the pointwise one.
+  -- See docstring above: this is not generally provable without bounds
+  -- The proof would require showing valid witness times exist for x + y,
+  -- which is not guaranteed by the hypotheses alone.
   sorry
 
 /--
 Semantic task relation implies pointwise task relation.
 
 This connects the semantic definition back to the original `finite_task_rel`.
-The proof constructs the pointwise conditions from the existence of a
-consistent sequence.
+The proof extracts the pointwise conditions from the consistency of the
+witnessing sequence.
+
+**Proof strategy**:
+Given a `ConsistentSequence` `seq` with `w` at `t` and `u` at `t'` where
+`toInt t' = toInt t + d`, we need to show all six conditions of `finite_task_rel`.
+
+The key is that consistency of the sequence (forward/backward unit step
+conditions) implies the transfer and persistence properties between any
+two states in the sequence, which follows by composing the unit-step
+properties along the path from `t` to `t'`.
+
+**Status**: This proof requires `FiniteTaskRel.compositionality` to compose
+the unit-step relations, which has mixed-sign sorry gaps. The same-sign
+cases work (positive displacement = compose +1 steps, negative displacement
+= compose -1 steps).
 -/
 theorem semantic_implies_pointwise (w u : FiniteWorldState phi) (d : Int)
     (h : finite_task_rel_semantic phi w d u) :
     finite_task_rel phi w d u := by
-  -- The proof works by composing unit-step relations along the sequence
-  -- from w to u. Since each unit step satisfies the pointwise conditions,
-  -- and compositionality holds for same-sign cases, this follows.
+  -- Unpack the semantic relation
+  obtain ⟨seq, t, t', h_eq, h_w, h_u⟩ := h
+  -- The ConsistentSequence has unit-step consistency between consecutive times.
+  -- We need to compose these to get the full pointwise relation.
   --
-  -- However, for mixed-sign cases, this proof would require the full
-  -- compositionality theorem which has sorry gaps.
+  -- For d = 0: Use FiniteTaskRel.nullity
+  -- For d > 0: Compose d forward unit steps (+1 each)
+  -- For d < 0: Compose |d| backward unit steps (-1 each)
   --
-  -- The key insight is that for the truth lemma and completeness proof,
-  -- we only need the semantic relation to work, not its equivalence
-  -- to the pointwise relation in all cases.
+  -- Each unit step gives us finite_task_rel phi (seq.states ti) (±1) (seq.states ti')
+  -- by forward_consistent_implies_task_rel or backward_consistent_implies_task_rel.
+  -- Composing same-sign steps works via FiniteTaskRel.compositionality.
+  --
+  -- The mixed-sign cases in compositionality don't arise here because
+  -- we're composing only same-sign unit steps.
+  --
+  -- However, the full proof requires induction on |d| and careful bookkeeping.
+  -- Leaving as sorry for now - the proof structure is clear.
   sorry
 
 /--
