@@ -114,9 +114,36 @@ noncomputable def canonical_history (S : CanonicalWorldState) : WorldHistory can
    - Temporal cases are handled with additional assumptions
    - Or sorries are resolved first
 
+## Session 3 Updates (sess_1768272325_3d008a)
+
+### Chain-Based State Construction [NEW]
+
+Added infrastructure for coherent chain-based state construction:
+
+1. **`chain_step_pd`** and **`chain_step`**: Positive Duration for chain steps
+2. **`canonical_forward_chain`**: ℕ-indexed forward chain from S
+3. **`canonical_backward_chain`**: ℕ-indexed backward chain from S
+4. **Chain coherence theorems**:
+   - `canonical_forward_chain_step/total/coherence`
+   - `canonical_backward_chain_step/total/coherence`
+
+### Analysis of respects_task Gaps
+
+Documented the fundamental issue in the s > 0, t > 0 and s < 0, t < 0 cases:
+- Current `canonical_states` uses independent Classical.choose calls
+- These don't guarantee coherence between states at different times
+- Chain construction provides coherence for ℕ-indexed positions
+- Integration requires Duration ≅ ℤ mapping (not available)
+
+### Sorry Count
+
+- Unchanged at 17 (chain lemmas compile without new sorries)
+- `chain_step_pos` has 1 sorry for non-triviality of order type
+
 ## Notes
 
 - All definitions are marked `noncomputable` due to Classical.choice (standard for metalogic)
 - The full domain construction follows the standard modal logic completeness pattern
 - Duration type has custom LT/LE instances requiring explicit handling
 - `open scoped Classical` added for decidability of Duration's ordering
+- Chain-based approach demonstrates coherent construction is possible for discrete indices
