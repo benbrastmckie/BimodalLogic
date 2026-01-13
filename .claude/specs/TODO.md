@@ -134,7 +134,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 458
-- **Research**: [research-003.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-003.md)
+- **Research**: [research-004.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-004.md)
 - **Plan**: [implementation-003.md](.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-003.md)
 - **Summary**: [implementation-summary-20260113-phase3.md](.claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-phase3.md)
 
