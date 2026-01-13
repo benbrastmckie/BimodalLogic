@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T03:50:07Z",
-  "next_project_number": 465,
+  "next_project_number": 466,
   "active_projects": [
+    {
+      "project_number": 465,
+      "project_name": "cosmos_essay_latex",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T06:11:43Z",
+      "last_updated": "2026-01-13T06:11:43Z",
+      "description": "Convert cosmos-institute-essay.md to a professionally formatted LaTeX document with title information from BimodalReference.tex and LogosReference.tex, including their references and linking ModelChecker and ProofChecker to git repos."
+    },
     {
       "project_number": 464,
       "project_name": "research_coherence_alternatives_strategy_a",

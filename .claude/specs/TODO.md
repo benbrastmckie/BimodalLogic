@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T04:35:00Z
-next_project_number: 465
+next_project_number: 466
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -114,6 +114,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 465. Convert Cosmos essay to LaTeX
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Convert /home/benjamin/Projects/ProofChecker/docs/essays/cosmos-institute-essay.md to a professionally formatted LaTeX document with the same title information as given in BimodalReference.tex and LogosReference.tex, including the sources indicated in those manuals in the references and linking the ModelChecker and ProofChecker to the git repos.
+
+---
 
 ### 463. Improve /meta context loading
 - **Effort**: 3 hours
