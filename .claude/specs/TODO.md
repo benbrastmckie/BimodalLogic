@@ -128,7 +128,7 @@ technical_debt:
 
 ### 473. Fix compositionality gaps from Task 458
 - **Effort**: 6-8 hours (reduced scope)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium
@@ -397,8 +397,10 @@ technical_debt:
 
 ### 479. Fix TikZ extension dependencies diagram
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/reports/research-001.md)
 
 **Description**: The TikZ diagram in sec:extension-dependencies (line 21) of /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex does not match the diagram in the 'Overview' (line 7) of /home/benjamin/Projects/ProofChecker/README.md. Fix the TikZ diagram to match README.md layout. Requirements: (1) professional styling with rounded corners for boxes, (2) non-intersecting lines and labels, (3) middle layer extensions (Epistemic, Normative, Spatial) in a grey horizontal background box, (4) ellipses to left and right of middle layers to indicate extensibility, (5) explanatory text below the diagram.
