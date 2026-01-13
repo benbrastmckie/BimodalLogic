@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T18:58:00Z
-next_project_number: 481
+next_project_number: 484
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -139,6 +139,16 @@ technical_debt:
 3. DOCX → Markdown
 4. Markdown → PDF (using pandoc/typst)
 5. Error handling when no tools available
+
+---
+
+### 483. Investigate LaTeX aux file corruption errors
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: When making changes to LaTeX files (e.g., 00-Introduction.tex), rebuilding sometimes produces "File ended while scanning use of \@newl@bel" and "\@@BOOKMARK" errors, plus "Extra }, or forgotten \endgroup" errors in the .aux file. Identify the root cause (likely corrupted auxiliary files from interrupted builds) and document solutions to avoid these errors.
 
 ---
 

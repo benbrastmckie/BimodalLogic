@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T18:57:59Z",
-  "next_project_number": 483,
+  "next_project_number": 484,
   "active_projects": [
+    {
+      "project_number": 483,
+      "project_name": "investigate_latex_aux_file_corruption_errors",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T21:15:37Z",
+      "last_updated": "2026-01-13T21:15:37Z"
+    },
     {
       "project_number": 480,
       "project_name": "investigate_workflow_delegation_early_stop",
