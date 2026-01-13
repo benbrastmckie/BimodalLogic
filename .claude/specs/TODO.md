@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T19:02:00Z
-next_project_number: 486
+next_project_number: 487
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -83,6 +83,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 486. Add Abilities box to middle layer TikZ diagram
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Add free choice modals and ability modals to another Abilities box in the middle layer of the TikZ diagram in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex and the Overview section of /home/benjamin/Projects/ProofChecker/README.md.
+
+---
 
 ### 475. Create skill-document-converter thin wrapper
 - **Effort**: 1 hour
