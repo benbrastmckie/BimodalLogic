@@ -6,20 +6,20 @@
     {
       "project_number": 485,
       "project_name": "tikz_light_cone_diagram_for_tm_motivation",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T22:00:07Z",
-      "last_updated": "2026-01-13T22:00:07Z"
+      "last_updated": "2026-01-13T22:02:57Z"
     },
     {
       "project_number": 484,
       "project_name": "sync_tikz_diagram_operators_with_glossary",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T21:23:11Z",
-      "last_updated": "2026-01-13T21:59:56Z",
+      "last_updated": "2026-01-13T22:03:27Z",
       "artifacts": [
         {
           "path": ".claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-001.md",
@@ -28,6 +28,10 @@
         {
           "path": ".claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-002.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ]
     },

@@ -144,7 +144,7 @@ technical_debt:
 
 ### 485. Create TikZ light-cone diagram for TM motivation
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: latex
 
@@ -154,11 +154,13 @@ technical_debt:
 
 ### 484. Sync TikZ diagram operators with GLOSSARY.md
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Revised**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
 - **Plan**: [implementation-002.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-002.md) (v002)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-20260113.md)
 
 **Description**: Use GLOSSARY.md to improve/expand the operators included in the TikZ diagram in 00-Introduction.tex. Ensure bidirectional sync: add any operators from the glossary missing in the TikZ diagram, and add any operators in the TikZ diagram that are missing from GLOSSARY.md.
 
