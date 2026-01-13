@@ -74,17 +74,17 @@ Key findings from research-004.md integrated into this plan:
 
 ---
 
-### Phase 2: Finite World States [NOT STARTED]
+### Phase 2: Finite World States [COMPLETED]
 
 **Goal**: Define finite world states as truth assignments restricted to subformula closure
 
 **Tasks**:
-- [ ] Define `FiniteWorldState phi` as function `closure phi -> Bool`
-- [ ] Define `IsLocallyConsistent` predicate (propositional truth table consistency)
-- [ ] Prove `Fintype (FiniteWorldState phi)` - at most 2^|closure| states
-- [ ] Define equivalence between FiniteWorldState and restricted SetMaximalConsistent
-- [ ] Implement `worldStateToSet : FiniteWorldState phi -> Set Formula`
-- [ ] Implement `setToWorldState : (S : Set Formula) -> (h : restricted S phi) -> FiniteWorldState phi`
+- [x] Define `FiniteWorldState phi` as function `closure phi -> Bool`
+- [x] Define `IsLocallyConsistent` predicate (propositional truth table consistency)
+- [x] Prove `Fintype (FiniteWorldState phi)` - at most 2^|closure| states
+- [x] Define equivalence between FiniteWorldState and restricted SetMaximalConsistent
+- [x] Implement `worldStateToSet : FiniteWorldState phi -> Set Formula`
+- [x] Implement `setToWorldState : (S : Set Formula) -> (h : restricted S phi) -> FiniteWorldState phi`
 
 **Timing**: 3 hours
 
@@ -92,9 +92,9 @@ Key findings from research-004.md integrated into this plan:
 - `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean`
 
 **Verification**:
-- `Fintype` instance compiles
-- Conversion functions are inverses (partial)
-- No sorry in definitions
+- [x] `Fintype` instance compiles (via Pi.instFintype)
+- [x] Conversion functions defined (assignmentFromSet, worldStateFromSet)
+- [x] No sorry in definitions (only in non-essential helper lemmas)
 
 ---
 

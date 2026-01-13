@@ -7,6 +7,7 @@ import Mathlib.Data.List.Basic
 import Mathlib.Data.Fin.Basic
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Order.Zorn
+import Mathlib.Data.Fintype.Pi
 
 /-!
 # Finite Canonical Model for Completeness
@@ -406,17 +407,180 @@ theorem finiteTime_card (k : Nat) : Fintype.card (FiniteTime k) = 2 * k + 1 := b
   simp [Fintype.card_fin]
 
 /-!
-## Summary of Phase 1 Definitions
+## Phase 2: Finite World States
 
-- `FiniteTime k`: The finite time domain `Fin (2 * k + 1)`
-- `FiniteTime.toInt`: Conversion to centered integers
-- `FiniteTime.origin`: The time 0
-- `closure`: Subformula closure as Finset
-- `temporalBound`: The k value for a formula
-- `FiniteTruthAssignment`: Truth assignment on closure
-- `IsLocallyConsistent`: Propositional consistency predicate
+A finite world state is a locally consistent truth assignment on the subformula closure.
+This represents a "world" in the finite canonical model where each subformula has a
+definite truth value that respects propositional logic.
+-/
 
-These form the foundation for the finite canonical model construction.
+/--
+A finite world state for a target formula phi.
+
+This is a truth assignment on the subformula closure that is propositionally consistent.
+Each world state represents a possible "world" in the finite canonical model.
+
+**Key properties**:
+- Assignment is total on `closure phi`
+- Bot is false
+- Implications are materially respected
+- Finite: at most `2^|closure phi|` possible states
+-/
+structure FiniteWorldState (phi : Formula) where
+  /-- The truth assignment on subformulas -/
+  assignment : FiniteTruthAssignment phi
+  /-- The assignment is propositionally consistent -/
+  consistent : IsLocallyConsistent phi assignment
+
+namespace FiniteWorldState
+
+variable {phi : Formula}
+
+/--
+Check if a formula (in the closure) is true in this world state.
+-/
+def satisfies (w : FiniteWorldState phi) (psi : Formula) (h : psi ∈ closure phi) : Bool :=
+  w.assignment ⟨psi, h⟩
+
+/--
+Notation-friendly version: w |= psi means psi is true in w.
+Returns Prop instead of Bool for logical statements.
+-/
+def models (w : FiniteWorldState phi) (psi : Formula) (h : psi ∈ closure phi) : Prop :=
+  w.assignment ⟨psi, h⟩ = true
+
+/--
+Bot is false in any consistent world state.
+-/
+theorem bot_false (w : FiniteWorldState phi) (h : Formula.bot ∈ closure phi) :
+    w.models Formula.bot h = False := by
+  simp only [models]
+  have := w.consistent.1 h
+  simp [this]
+
+/--
+Implication is materially correct in any consistent world state.
+-/
+theorem imp_correct (w : FiniteWorldState phi) (psi chi : Formula)
+    (h_imp : Formula.imp psi chi ∈ closure phi)
+    (h_psi : psi ∈ closure phi)
+    (h_chi : chi ∈ closure phi) :
+    w.models (Formula.imp psi chi) h_imp →
+    w.models psi h_psi →
+    w.models chi h_chi := by
+  simp only [models]
+  exact w.consistent.2 psi chi h_imp h_psi h_chi
+
+/--
+Convert a world state to a set of formulas (the "true" formulas).
+-/
+def toSet (w : FiniteWorldState phi) : Set Formula :=
+  {psi | ∃ h : psi ∈ closure phi, w.assignment ⟨psi, h⟩ = true}
+
+/--
+A formula is in the set iff it's satisfied.
+-/
+theorem mem_toSet_iff (w : FiniteWorldState phi) (psi : Formula) (h : psi ∈ closure phi) :
+    psi ∈ w.toSet ↔ w.models psi h := by
+  simp only [toSet, Set.mem_setOf_eq, models]
+  constructor
+  · intro ⟨h', h_true⟩
+    -- By proof irrelevance, both membership proofs give the same assignment value
+    exact h_true
+  · intro h_true
+    exact ⟨h, h_true⟩
+
+end FiniteWorldState
+
+/--
+Extensionality lemma for FiniteWorldState.
+
+Two world states are equal iff their assignments are equal.
+-/
+@[ext]
+theorem FiniteWorldState.ext {phi : Formula} {w1 w2 : FiniteWorldState phi}
+    (h : w1.assignment = w2.assignment) : w1 = w2 := by
+  cases w1
+  cases w2
+  simp only [FiniteWorldState.mk.injEq]
+  exact h
+
+/--
+Fintype instance for closure elements (subtype of Finset).
+-/
+instance closureFintype (phi : Formula) : Fintype (closure phi) :=
+  Finset.fintypeCoeSort (closure phi)
+
+/--
+The type of truth assignments on closure is finite.
+
+We need to explicitly unfold `FiniteTruthAssignment` to help Lean find the instance.
+-/
+instance truthAssignmentFintype (phi : Formula) : Fintype (FiniteTruthAssignment phi) :=
+  Pi.instFintype
+
+/--
+The type of finite world states is finite.
+
+Since each world state is determined by its assignment (a function from
+a finite set to Bool), there are at most 2^|closure phi| world states.
+-/
+instance finiteWorldState_finite (phi : Formula) : Finite (FiniteWorldState phi) := by
+  apply Finite.of_injective (fun w => w.assignment)
+  intros w1 w2 h_eq
+  exact FiniteWorldState.ext h_eq
+
+/--
+Decidable equality for finite world states.
+
+Two world states are equal iff their assignments are equal.
+-/
+noncomputable instance finiteWorldState_decidableEq (phi : Formula) :
+    DecidableEq (FiniteWorldState phi) := by
+  intros w1 w2
+  by_cases h : w1.assignment = w2.assignment
+  · exact isTrue (FiniteWorldState.ext h)
+  · exact isFalse (fun h_eq => h (congrArg FiniteWorldState.assignment h_eq))
+
+/-!
+## Phase 2 Continued: World State Constructions
+
+These definitions support building world states from maximal consistent sets
+(the connection between syntactic and semantic constructions).
+-/
+
+open Classical in
+/--
+Given a subset of formulas (restricted to the closure), create a truth assignment.
+
+This is used to convert maximal consistent sets to world states.
+We use Classical.decide for set membership since sets may not be decidable.
+-/
+noncomputable def assignmentFromSet (phi : Formula) (S : Set Formula) :
+    FiniteTruthAssignment phi :=
+  fun ⟨psi, _⟩ => if psi ∈ S then true else false
+
+/--
+Build a world state from a set of formulas, given consistency proof.
+
+This is the key connection between the syntactic (maximal consistent sets)
+and semantic (world states) sides of completeness.
+-/
+noncomputable def worldStateFromSet (phi : Formula) (S : Set Formula)
+    (h_consistent : IsLocallyConsistent phi (assignmentFromSet phi S)) :
+    FiniteWorldState phi :=
+  ⟨assignmentFromSet phi S, h_consistent⟩
+
+/-!
+## Summary of Phase 2 Definitions
+
+- `FiniteWorldState phi`: Structure combining assignment with consistency
+- `FiniteWorldState.satisfies`: Check formula truth in a state
+- `FiniteWorldState.models`: Propositional version of satisfies
+- `FiniteWorldState.toSet`: Convert state to set of true formulas
+- `Finite (FiniteWorldState phi)`: World states are finite
+- `assignmentFromSet`: Convert set to truth assignment
+- `worldStateFromSet`: Build world state from consistent set
 -/
 
 end Bimodal.Metalogic.Completeness
