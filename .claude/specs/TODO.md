@@ -6,16 +6,16 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 17
+  active: 16
   completed: 145
   in_progress: 1
-  not_started: 7
-  abandoned: 7
+  not_started: 6
+  abandoned: 8
   total: 169
 priority_distribution:
   critical: 0
   high: 4
-  medium: 3
+  medium: 2
   low: 6
 technical_debt:
   sorry_count: 19
@@ -30,7 +30,7 @@ technical_debt:
 
 ### 458. Extend canonical_history to full domain
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-12 (v002)
 - **Priority**: High
@@ -83,16 +83,6 @@ technical_debt:
 ---
 
 ## Medium Priority
-
-### 441. Prove completeness via Relativized Completeness approach
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: lean
-
-**Description**: Prove completeness following Approach 2 'Relativized Completeness' from research-004.md. The syntactic construction yields the "free" ordered abelian group on one generator, isomorphic to ℤ. Adding density axioms yields ℚ, completeness axioms approaches ℝ. References: .claude/specs/257_completeness_proofs/reports/research-004.md and research-006.md.
-
----
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours

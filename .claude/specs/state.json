@@ -6,16 +6,16 @@
     {
       "project_number": 458,
       "project_name": "extend_canonical_history_full_domain",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-13T07:33:26Z",
-      "last_updated": "2026-01-13T03:53:42Z",
+      "last_updated": "2026-01-13T04:02:58Z",
       "parent_task": 257,
       "dependencies": [
         448
       ],
-      "session_id": "sess_1768276143_d8e772",
+      "session_id": "sess_1768276968_83aa84",
       "plan_version": "002",
       "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. v002: Redesigned to use chain construction from 0 (instead of independent Classical.choose) to solve the coherence problem where independently chosen states may not lie on the same timeline.",
       "artifacts": [
@@ -78,16 +78,6 @@
           "type": "plan"
         }
       ]
-    },
-    {
-      "project_number": 441,
-      "project_name": "prove_completeness_relativized_approach",
-      "status": "not_started",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-12T21:34:20Z",
-      "last_updated": "2026-01-12T21:34:20Z",
-      "description": "Prove completeness following Approach 2 Relativized Completeness from research-004.md. The syntactic construction yields the free ordered abelian group on one generator, isomorphic to Z. Adding density axioms yields Q, completeness axioms approaches R."
     },
     {
       "project_number": 431,
