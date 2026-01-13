@@ -86,7 +86,7 @@ technical_debt:
 
 ### 487. Create Bimodal/Boneyard/ for deprecated code
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/reports/research-001.md)
