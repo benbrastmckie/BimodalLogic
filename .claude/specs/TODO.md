@@ -149,7 +149,7 @@ technical_debt:
 
 ### 478. Revise Ecosystem View section of LLMs to AGIs essay
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/478_revise_ecosystem_view_section/reports/research-001.md)
@@ -218,15 +218,15 @@ technical_debt:
 ---
 
 ### 473. Fix compositionality gaps from Task 458
-- **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 10-14 hours
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 458
 - **Research**: [research-002.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-002.md)
-- **Plan**: [implementation-001.md](.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-002.md)
 
 **Description**: Fix compositionality gaps from Task 458. Research identified 7 compositionality gaps (mixed-sign duration cases), 8 truth lemma gaps (negation-completeness), and 2 history construction gaps. Root cause: `IsLocallyConsistent` only captures soundness, not negation-completeness. Primary solution: Bridge to `SetMaximalConsistent` or strengthen world state definitions.
 
