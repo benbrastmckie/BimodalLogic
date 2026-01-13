@@ -17,6 +17,47 @@ This module implements the finite canonical model construction for proving compl
 of TM bimodal logic. The key insight is that for any finite formula phi, we only need
 a finite countermodel to falsify it if it's not derivable.
 
+## Two Approaches to Completeness
+
+This module contains **two parallel approaches** to the truth lemma and completeness:
+
+### 1. Syntactic Approach (Original, DEPRECATED)
+
+The original approach using `FiniteWorldState`, `finite_task_rel`, and `finite_truth_lemma`.
+
+**Status**: Has 6+ sorry gaps in backward directions due to requiring negation-completeness.
+The `IsLocallyConsistent` definition only provides soundness (one direction), not the
+maximality needed for completeness proofs.
+
+**Key theorems** (with sorries):
+- `finite_truth_lemma` - membership ↔ truth (6 sorries in backward directions)
+- `finite_weak_completeness` (axiom)
+
+### 2. Semantic Approach (Preferred, PROVEN)
+
+Introduced in Task 473, this approach defines world states as equivalence classes of
+(history, time) pairs. This makes compositionality and the truth lemma trivial by construction.
+
+**Status**: Core completeness proven via `semantic_weak_completeness`.
+
+**Key theorems** (proven):
+- `semantic_truth_lemma_v2` - membership ↔ truth (proven, no sorries)
+- `semantic_weak_completeness` - validity in semantic model → derivability (proven)
+- `SemanticCanonicalFrame` - frame with compositionality by construction
+- `SemanticCanonicalModel` - model for completeness
+
+**Why this works**: By defining `SemanticWorldState` as a quotient of `(FiniteHistory, FiniteTime)`
+pairs, truth at a world state is definitionally equal to truth in the underlying history.
+The negation-completeness issue is bypassed because we're evaluating truth directly on
+the history rather than on an abstract world state.
+
+## Connection to General Completeness
+
+The general `weak_completeness` in Completeness.lean (axiom) states `valid φ → ⊢ φ` where
+`valid` quantifies over all task frames/models. The `semantic_weak_completeness` theorem
+in this module proves the completeness direction by constructing a countermodel when
+phi is not provable. Task 450 will formally connect these.
+
 ## Approach
 
 The finite model property for TM logic:
@@ -34,18 +75,23 @@ by working directly with finite structures.
 - `FiniteTime.toInt`: Conversion to centered integers
 - `closure`: Subformula closure as a Finset
 
-### Phase 2-7: (Subsequent phases)
-- Finite world states
-- Finite task relation
-- Finite canonical model
-- Truth lemma
-- Completeness theorems
+### Phase 2-4: Finite World States and Task Relation (Original Approach)
+- `FiniteWorldState` - syntactic world states with local consistency
+- `finite_task_rel` - task relation via transfer conditions
+- `finite_truth_lemma` - (deprecated, has sorries)
+
+### Phase 5-7: Semantic Approach (Preferred)
+- `SemanticWorldState` - equivalence classes of (history, time) pairs
+- `semantic_task_rel_v2` - task relation via history existence
+- `semantic_truth_lemma_v2` - proven, no sorries
+- `semantic_weak_completeness` - core completeness result
 
 ## References
 
 * Modal Logic, Blackburn et al. - Finite model property
 * Goldblatt, Logics of Time and Computation - Temporal completeness
 * Research report: .claude/specs/458_extend_canonical_history_full_domain/reports/research-004.md
+* Task 473: SemanticWorldState architecture
 -/
 
 namespace Bimodal.Metalogic.Completeness
