@@ -124,17 +124,17 @@
     {
       "project_number": 458,
       "project_name": "extend_canonical_history_full_domain",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-13T07:33:26Z",
-      "last_updated": "2026-01-13T15:19:05Z",
+      "last_updated": "2026-01-13T15:21:44Z",
       "parent_task": 257,
       "dependencies": [
         448
       ],
       "session_id": "sess_1768317530_4978a8",
-      "plan_version": "003",
+      "plan_version": "004",
       "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. Task 464 (Strategy A) completed: strengthened canonical_task_rel with G/H-persistence conditions, proving uniform-sign compositionality cases (x>0,y>0 and x<0,y<0). Mixed-sign cases remain as fundamental gaps. Research needed: find the most elegant and mathematically virtuous path forward for remaining gaps, considering Duration discreteness (Strategy D) or alternative canonical model construction.",
       "artifacts": [
         {
@@ -164,6 +164,10 @@
         {
           "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-004.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-004.md",
+          "type": "plan"
         }
       ]
     },
