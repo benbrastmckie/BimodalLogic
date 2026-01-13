@@ -50,7 +50,7 @@ Key findings from research-001.md integrated:
 
 ## Implementation Phases
 
-### Phase 1: Update TikZ Diagram [NOT STARTED]
+### Phase 1: Update TikZ Diagram [COMPLETED]
 
 **Goal**: Add Abilities and Choice boxes to the middle layer of the TikZ diagram in 00-Introduction.tex
 
@@ -74,7 +74,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 2: Update README ASCII Diagram [NOT STARTED]
+### Phase 2: Update README ASCII Diagram [IN PROGRESS]
 
 **Goal**: Add Abilities and Choice boxes to the ASCII architecture diagram in README.md
 

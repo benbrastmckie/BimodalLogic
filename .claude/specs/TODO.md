@@ -86,7 +86,7 @@ technical_debt:
 
 ### 486. Add Abilities box to middle layer TikZ diagram
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
@@ -376,7 +376,7 @@ technical_debt:
 
 ### 450. Completeness theorems
 - **Effort**: 8-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
