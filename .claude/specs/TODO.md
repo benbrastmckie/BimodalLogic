@@ -42,14 +42,14 @@ technical_debt:
 
 ### 458. Extend canonical_history to full domain
 - **Effort**: 10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13 (v003)
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 448
-- **Research**: [research-001.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md), [research-002.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md)
+- **Research**: [research-001.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md), [research-002.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md), [research-003.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-003.md)
 - **Plan**: [implementation-003.md](.claude/specs/458_extend_canonical_history_full_domain/plans/implementation-003.md) (v003 - indexed chains with proven lemmas)
 
 **Description**: Extend canonical_history from singleton domain to full domain for completeness proof correctness. Task 464 (Strategy A) completed: strengthened canonical_task_rel with G/H-persistence conditions, proving uniform-sign compositionality cases (x>0,y>0 and x<0,y<0). Mixed-sign cases remain as fundamental gaps. Research needed: find the most elegant and mathematically virtuous path forward for remaining gaps, considering Duration discreteness (Strategy D) or alternative canonical model construction.
