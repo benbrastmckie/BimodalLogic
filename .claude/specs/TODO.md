@@ -30,9 +30,11 @@ technical_debt:
 
 ### 467. Review task 462 changes and fix root cause
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: High
 - **Language**: meta
+- **Research**: [research-001.md](.claude/specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md)
 
 **Description**: Review task 462 changes (from .claude/output/research.md) to determine if they are worth keeping or cruft. Identify and fix root cause of workflow delegation errors in an elegant way without unnecessary changes. Update documentation to be accurate.
 
@@ -54,7 +56,7 @@ technical_debt:
 
 ### 458. Extend canonical_history to full domain
 - **Effort**: 10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13 (v003)
 - **Priority**: High
