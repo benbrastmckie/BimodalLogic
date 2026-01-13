@@ -2750,37 +2750,128 @@ noncomputable def canonical_history (S : CanonicalWorldState) : WorldHistory can
   states := fun t _ => canonical_states S t
   respects_task := by
     -- For any s ≤ t in domain, need canonical_task_rel (states s) (t - s) (states t)
+    -- i.e., canonical_task_rel (canonical_states S s) (t - s) (canonical_states S t)
     intros s t _hs _ht hst
-    -- Case analysis: is t - s = 0, > 0, or < 0?
-    by_cases h_eq : t - s = 0
+    -- Case analysis on signs of s and t
+    by_cases h_s_zero : s = 0
     case pos =>
-      -- t = s, so use canonical_nullity
-      have h_ts : t = s := sub_eq_zero.mp h_eq
-      rw [h_eq, h_ts]
-      exact canonical_nullity (canonical_states S s)
+      -- s = 0: Need canonical_task_rel S (t - 0) (canonical_states S t)
+      -- i.e., canonical_task_rel S t (canonical_states S t)
+      subst h_s_zero
+      simp only [sub_zero, canonical_states_zero]
+      by_cases h_t_zero : t = 0
+      case pos =>
+        -- t = 0: canonical_task_rel S 0 S
+        subst h_t_zero
+        exact canonical_nullity S
+      case neg =>
+        -- t ≠ 0, and 0 ≤ t (from hst with s = 0)
+        -- So t > 0
+        have h_t_pos : (0 : CanonicalTime) < t := by
+          simp only [LT.lt]
+          constructor
+          · exact hst
+          · intro h_eq; exact h_t_zero h_eq.symm
+        exact canonical_states_forward S t h_t_pos
     case neg =>
-      -- t ≠ s, but s ≤ t, so t - s > 0
-      -- Need: canonical_task_rel (canonical_states S s) (t - s) (canonical_states S t)
-      --
-      -- This requires compositionality over the path from S to states at s and t.
-      --
-      -- The key insight is that we're building a chain:
-      -- S at time 0 → canonical_states S s at time s → canonical_states S t at time t
-      --
-      -- But our construction only gives direct relations from S, not between arbitrary states.
-      -- We need compositionality to chain: S →_s (states s) and S →_t (states t)
-      -- gives us (states s) →_{t-s} (states t).
-      --
-      -- This is where the compositionality property of canonical_task_rel comes in,
-      -- but it requires careful case analysis on the signs of s, t, and t-s.
-      --
-      -- For the MVP, we use sorry and document this gap.
-      -- The full proof requires showing that forward_extension and backward_extension
-      -- witnesses compose correctly under canonical_compositionality.
-      --
-      -- NOTE: The respects_task proof is the key remaining work for full domain history.
-      -- It requires proving that Classical.choose witnesses satisfy compositionality.
-      sorry
+      -- s ≠ 0
+      by_cases h_t_zero : t = 0
+      case pos =>
+        -- t = 0, s ≠ 0, and s ≤ t = 0
+        -- So s < 0
+        subst h_t_zero
+        simp only [zero_sub, canonical_states_zero]
+        -- Need: canonical_task_rel (canonical_states S s) (-s) S
+        have h_s_neg : s < (0 : CanonicalTime) := by
+          simp only [LT.lt]
+          constructor
+          · exact hst
+          · exact fun h_eq => h_s_zero h_eq
+        exact canonical_states_backward S s h_s_neg
+      case neg =>
+        -- s ≠ 0, t ≠ 0
+        -- Further case analysis needed on signs
+        by_cases h_s_pos : (0 : CanonicalTime) < s
+        case pos =>
+          -- s > 0
+          by_cases h_t_pos : (0 : CanonicalTime) < t
+          case pos =>
+            -- s > 0, t > 0, s ≤ t
+            -- We have: canonical_task_rel S s (canonical_states S s) [from forward]
+            --          canonical_task_rel S t (canonical_states S t) [from forward]
+            -- Need: canonical_task_rel (canonical_states S s) (t-s) (canonical_states S t)
+            --
+            -- This requires either:
+            -- 1. Compositionality working for the case where we "invert" the first relation
+            -- 2. A direct proof that forward extensions compose
+            --
+            -- The issue is that canonical_states S s and canonical_states S t are independently
+            -- chosen witnesses - there's no guarantee they're on the same "timeline".
+            --
+            -- TODO: This case requires additional infrastructure or a different construction.
+            sorry
+          case neg =>
+            -- s > 0, t ≤ 0 but s ≤ t, contradiction: s > 0 ≤ t < s
+            -- Actually: t is not > 0, so either t = 0 or t < 0
+            -- But t ≠ 0 (from h_t_zero), so t < 0
+            -- And s ≤ t < 0 < s, contradiction
+            exfalso
+            simp only [not_lt] at h_t_pos
+            -- h_t_pos : t ≤ 0
+            -- But h_s_pos : 0 < s, and hst : s ≤ t
+            -- So 0 < s ≤ t ≤ 0, which means 0 < 0, contradiction
+            have h_chain := Duration.le_trans hst h_t_pos
+            simp only [LT.lt] at h_s_pos
+            exact h_s_pos.2 (Duration.le_antisymm h_s_pos.1 h_chain)
+        case neg =>
+          -- s ≤ 0 (i.e., s is not > 0)
+          -- Since s ≠ 0 and s ≤ 0, we have s < 0
+          have h_s_neg : s < (0 : CanonicalTime) := by
+            simp only [LT.lt, not_lt] at h_s_pos ⊢
+            constructor
+            · exact h_s_pos
+            · exact fun h_eq => h_s_zero h_eq
+          by_cases h_t_pos : (0 : CanonicalTime) < t
+          case pos =>
+            -- s < 0, t > 0
+            -- We have: canonical_task_rel (canonical_states S s) (-s) S [backward at s]
+            --          canonical_task_rel S t (canonical_states S t) [forward at t]
+            -- By compositionality: canonical_task_rel (canonical_states S s) (-s + t) (canonical_states S t)
+            -- And -s + t = t - s (group arithmetic)
+            have h_back := canonical_states_backward S s h_s_neg
+            have h_fwd := canonical_states_forward S t h_t_pos
+            -- Compose: (canonical_states S s) →_{-s} S →_t (canonical_states S t)
+            have h_comp := canonical_compositionality (canonical_states S s) S (canonical_states S t) (-s) t h_back h_fwd
+            -- Rewrite -s + t to t - s
+            have h_arith : -s + t = t - s := by ring
+            simp only [canonical_frame] at h_comp ⊢
+            rw [h_arith] at h_comp
+            exact h_comp
+          case neg =>
+            -- s < 0, t ≤ 0 (and t ≠ 0, so t < 0)
+            -- Both s and t are negative, with s ≤ t < 0
+            -- t - s > 0 since s < t (or s = t but then t - s = 0, handled earlier)
+            have h_t_neg : t < (0 : CanonicalTime) := by
+              simp only [LT.lt, not_lt] at h_t_pos ⊢
+              constructor
+              · exact h_t_pos
+              · exact fun h_eq => h_t_zero h_eq.symm
+            -- We have: canonical_task_rel (canonical_states S s) (-s) S [backward at s]
+            --          canonical_task_rel (canonical_states S t) (-t) S [backward at t]
+            -- We need: canonical_task_rel (canonical_states S s) (t-s) (canonical_states S t)
+            --
+            -- This case is tricky. We have two backward extensions to S, but need
+            -- a forward relation between them.
+            --
+            -- One approach: use that -s > -t (since s < t means -s > -t)
+            -- So (canonical_states S s) is "further back" than (canonical_states S t).
+            -- The duration from (states s) to (states t) is t - s > 0.
+            --
+            -- But our backward_extension only gives us relations TO S, not between
+            -- arbitrary backward-extended states.
+            --
+            -- TODO: This case requires compositionality or a different approach.
+            sorry
 
 /-!
 ## Truth Lemma

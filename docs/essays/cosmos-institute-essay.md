@@ -1,6 +1,6 @@
 # Teaching Machines to Prove They're Right
 
-When an AI recommends a medical treatment, drafts a legal argument, or plans a complex operation, can it prove its reasoning is correct? Not just plausible-sounding. Not just statistically likely. *Correct*.
+When an AI recommends a medical treatment, drafts a legal argument, or plans a complex operation, can it prove its reasoning is correct? Not just plausible-sounding or statistically likely, but *correct*.
 
 This question haunts the frontier of artificial intelligence. The systems we're building are increasingly sophisticated—they write code, analyze documents, make consequential recommendations. Yet they cannot show their work. They cannot provide what any competent human professional must provide: justification.
 

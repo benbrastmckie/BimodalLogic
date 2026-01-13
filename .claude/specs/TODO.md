@@ -145,10 +145,12 @@ technical_debt:
 ---
 
 ### 452. Use 'D' notation for duration group consistently
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 3-4 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: general
+- **Research**: [research-001.md](.claude/specs/452_use_d_notation_for_duration_group/reports/research-001.md)
 
 **Description**: Use 'D' instead of 'T' for the totally ordered commutative group of durations (also called times relative to a world history) consistently throughout the latex files in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/ and throughout the Lean Code in Logos/ to match the notation used in /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex.
 
@@ -156,7 +158,7 @@ technical_debt:
 
 ### 453. Add Ability and Free Choice Modal Extension to Logos
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 
