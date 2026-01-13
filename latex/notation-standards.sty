@@ -30,6 +30,23 @@
 \newcommand{\poss}{\Diamond}               % Possibility (diamond)
 
 % ============================================================================
+% Counterfactual and Causal Operators (from txfonts symbolsC)
+% ============================================================================
+
+\DeclareSymbolFont{symbolsC}{U}{txsyc}{m}{n}
+\SetSymbolFont{symbolsC}{bold}{U}{txsyc}{bx}{n}
+\DeclareFontSubstitution{U}{txsyc}{m}{n}
+\DeclareMathSymbol{\boxright}{\mathrel}{symbolsC}{"80}       % Would-counterfactual (□→)
+\DeclareMathSymbol{\circleright}{\mathrel}{symbolsC}{"91}    % Would-cause (○→)
+\DeclareMathSymbol{\diamondright}{\mathrel}{symbolsC}{"84}   % Might-counterfactual (◇→)
+
+% Might-cause operator (dotted circle arrow)
+\newcommand{\dotcircleright}{\mathrel{\mathpalette\dotcirclerighthelper\relax}}
+\newcommand{\dotcirclerighthelper}[2]{%
+  \ooalign{$#1\circleright$\cr\hidewidth\raise.225ex\hbox{$#1\cdot$}\hidewidth\cr}%
+}
+
+% ============================================================================
 % Truth and Satisfaction Relations
 % ============================================================================
 
