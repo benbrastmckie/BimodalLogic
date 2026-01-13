@@ -117,9 +117,10 @@ technical_debt:
 
 ### 465. Convert Cosmos essay to LaTeX
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/465_cosmos_essay_latex/reports/research-001.md)
 
 **Description**: Convert /home/benjamin/Projects/ProofChecker/docs/essays/cosmos-institute-essay.md to a professionally formatted LaTeX document with the same title information as given in BimodalReference.tex and LogosReference.tex, including the sources indicated in those manuals in the references and linking the ModelChecker and ProofChecker to the git repos.
 
