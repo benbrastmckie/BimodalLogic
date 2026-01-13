@@ -196,9 +196,14 @@ Key findings from research-001.md:
   - `convex := trivial` (full domain is convex)
   - `states := fun t _ => canonical_states S t`
 - [x] Replace old singleton domain version
-- [ ] BLOCKED: `respects_task` property has sorry
-  - Requires proving Classical.choose witnesses satisfy compositionality
-  - Depends on `canonical_compositionality` having sorries for temporal cases
+- [x] `respects_task` proof structure implemented with case analysis:
+  - [x] Case s = 0, t = 0: Uses `canonical_nullity` - COMPLETE
+  - [x] Case s = 0, t > 0: Uses `canonical_states_forward` - COMPLETE
+  - [x] Case s < 0, t = 0: Uses `canonical_states_backward` - COMPLETE
+  - [x] Case s < 0, t > 0: Uses `canonical_compositionality` via backward+forward chain - COMPLETE
+  - [ ] Case s > 0, t > 0: Has sorry - blocked by coherence/compositionality
+  - [x] Case s > 0, t <= 0: Proven impossible (contradiction)
+  - [ ] Case s < 0, t < 0: Has sorry - blocked by coherence/compositionality
 
 **Timing**: 3 hours (actual: ~2 hours, blocked on compositionality)
 

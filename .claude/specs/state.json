@@ -6,18 +6,23 @@
     {
       "project_number": 461,
       "project_name": "expand_bimodal_theory_readme_section",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-13T02:15:44Z",
-      "last_updated": "2026-01-13T02:24:26Z",
+      "last_updated": "2026-01-13T02:30:49Z",
       "description": "Expand the Bimodal Theory section in README.md to explain that the bimodal theory provides the logical core of the Logos theory by accounting for the relationship between time and possibility. This provides a well-motivated purely intensional target for developing the methodology that will then be extended to the Logos which is a hyperintensional theory of much greater complexity.",
       "artifacts": [
         {
           "path": ".claude/specs/461_expand_bimodal_theory_readme_section/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/461_expand_bimodal_theory_readme_section/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "plan_version": "001"
     },
     {
       "project_number": 460,

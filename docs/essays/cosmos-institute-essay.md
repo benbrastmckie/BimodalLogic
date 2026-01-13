@@ -2,9 +2,7 @@
 
 When an AI recommends a medical treatment, drafts a legal argument, or plans a complex operation, can it prove its reasoning is correct? Not just plausible-sounding or statistically likely, but *correct*.
 
-This question haunts the frontier of artificial intelligence. The systems we're building are increasingly sophisticated—they write code, analyze documents, make consequential recommendations. Yet they cannot show their work. They cannot provide what any competent human professional must provide: justification.
-
-We set out to change this.
+This question haunts the frontier of artificial intelligence. The systems we're building are increasingly sophisticated at writing code, analyzing documents, and make consequential recommendations. They can even show some of their work. What they cannot provide is what any competent human professional must provide: justification.
 
 ## The Problem
 
