@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-12T22:05:22Z",
-  "next_project_number": 457,
+  "next_project_number": 458,
   "active_projects": [
+    {
+      "project_number": 457,
+      "project_name": "document_top_project_outcomes",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-13T01:09:49Z",
+      "last_updated": "2026-01-13T01:09:49Z"
+    },
     {
       "project_number": 456,
       "project_name": "address_todos_in_bimodal_semantics_latex",
@@ -115,18 +124,18 @@
     {
       "project_number": 448,
       "project_name": "build_canonical_history",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "low",
       "effort": "6-8 hours",
       "created": "2026-01-12T22:08:58Z",
-      "last_updated": "2026-01-13T06:05:00Z",
+      "last_updated": "2026-01-13T06:29:33Z",
       "parent_task": 257,
       "dependencies": [
         447
       ],
       "description": "Phase 5 of completeness proofs: Build canonical_history construction. Define the history structure that threads MCSs together with the canonical task relation, establishing the temporal backbone for the canonical model. This bridges canonical_frame/model (Phase 4) and truth_lemma (Phase 6).",
-      "session_id": "sess_1768265631_be2b71",
+      "session_id": "sess_1768266573_018c21",
       "artifacts": [
         {
           "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
