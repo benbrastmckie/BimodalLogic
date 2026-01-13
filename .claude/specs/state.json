@@ -179,14 +179,20 @@
     {
       "project_number": 482,
       "project_name": "history_gluing_lemma",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T20:50:00Z",
-      "last_updated": "2026-01-13T21:08:17Z",
+      "last_updated": "2026-01-13T21:12:29Z",
       "parent_task": 473,
       "description": "Implement history gluing lemma to compose two histories that share a common world state at the junction point. This eliminates the compositionality sorries in SemanticTaskRelV2.compositionality by proving histories can be concatenated when they agree at the boundary.",
-      "session_id": "sess_1768338485_ec8301"
+      "session_id": "sess_1768338485_ec8301",
+      "artifacts": [
+        {
+          "path": ".claude/specs/482_history_gluing_lemma/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 468,
