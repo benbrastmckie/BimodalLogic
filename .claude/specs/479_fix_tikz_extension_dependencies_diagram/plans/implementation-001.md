@@ -127,7 +127,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update Arrow Connections [IN PROGRESS]
+### Phase 4: Update Arrow Connections [COMPLETED]
 
 **Goal**: Redraw arrows with clean paths reflecting the correct dependency structure.
 
@@ -152,7 +152,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Final Polish and Build Verification [NOT STARTED]
+### Phase 5: Final Polish and Build Verification [IN PROGRESS]
 
 **Goal**: Refine positioning, spacing, and verify complete build.
 
