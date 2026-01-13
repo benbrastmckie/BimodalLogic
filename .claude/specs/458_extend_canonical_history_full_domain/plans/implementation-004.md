@@ -50,17 +50,17 @@ Key findings from research-004.md integrated into this plan:
 
 ## Implementation Phases
 
-### Phase 1: Finite Time Domain and Subformula Closure [NOT STARTED]
+### Phase 1: Finite Time Domain and Subformula Closure [COMPLETED]
 
 **Goal**: Establish the finite time domain type and formalize subformula closure as a Finset
 
 **Tasks**:
-- [ ] Create `FiniteCanonicalModel.lean` in `Theories/Bimodal/Metalogic/Completeness/`
-- [ ] Define `FiniteTime k := Fin (2 * k + 1)` for temporal domain
-- [ ] Define `toInt : FiniteTime k -> Int` mapping to centered integers (-k to +k)
-- [ ] Define `closure : Formula -> Finset Formula` using existing `subformulas`
-- [ ] Prove `closure_finite : Fintype (closure phi).Elem`
-- [ ] Prove basic arithmetic properties for FiniteTime
+- [x] Create `FiniteCanonicalModel.lean` in `Theories/Bimodal/Metalogic/Completeness/`
+- [x] Define `FiniteTime k := Fin (2 * k + 1)` for temporal domain
+- [x] Define `toInt : FiniteTime k -> Int` mapping to centered integers (-k to +k)
+- [x] Define `closure : Formula -> Finset Formula` using existing `subformulas`
+- [x] Prove `closure_is_finite` (trivial for Finset)
+- [x] Prove basic arithmetic properties for FiniteTime (origin, minTime, maxTime, succ, pred, range)
 
 **Timing**: 2 hours
 
