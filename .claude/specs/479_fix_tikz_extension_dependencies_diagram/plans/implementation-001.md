@@ -81,7 +81,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Restructure Nodes to Vertical Layout [IN PROGRESS]
+### Phase 2: Restructure Nodes to Vertical Layout [COMPLETED]
 
 **Goal**: Convert to vertical stacking layout with full-width boxes for main layers.
 
@@ -105,7 +105,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Add Background Box and Ellipses [NOT STARTED]
+### Phase 3: Add Background Box and Ellipses [IN PROGRESS]
 
 **Goal**: Add grey background grouping for middle extensions and ellipsis indicators.
 
