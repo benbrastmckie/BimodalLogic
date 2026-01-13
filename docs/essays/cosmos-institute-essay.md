@@ -16,7 +16,7 @@ Reasoning by simulation without verification matters because consequential decis
 
 ## Philosophical Logic as Conceptual Engineering
 
-The answer requires thinking about logic differently—not as a description of how humans reason, but as an engineering discipline for building reasoning systems.
+Instead of thinking about logic as a simulation of how humans happen to reason, this project takes an engineering approach to logic as a discipline for building reasoning systems that best serve out aims.
 
 Consider how materials science works. Raw sand is transformed into glass through controlled processes that remove impurities and create useful transparency. The result is not a description of sand but a refined material engineered for specific purposes. Logic, properly understood, does something similar with concepts.
 

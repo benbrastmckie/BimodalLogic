@@ -107,12 +107,14 @@ technical_debt:
 ## Medium Priority
 
 ### 463. Improve /meta context loading
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 3 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-13
 - **Research**: [research-001.md](.claude/specs/463_meta_context_loading_improvements/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/463_meta_context_loading_improvements/plans/implementation-001.md)
 
 **Description**: Research the files in .claude/context/core/ that are relevant to the /meta command in order to progressively load exactly the right context when modifying or reproducing the current agentic system in order to identify and make improvements to the context loading in /meta and its skill and agent in a manner comparable to the /research, /plan, /revise, and /implement commands which are working nicely.
 
