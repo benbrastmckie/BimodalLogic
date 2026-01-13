@@ -1,7 +1,7 @@
 # Implementation Plan: Task #485
 
 - **Task**: 485 - Create TikZ light-cone diagram for TM motivation
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -48,7 +48,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Create Basic Diagram Structure [NOT STARTED]
+### Phase 1: Create Basic Diagram Structure [COMPLETED]
 
 **Goal**: Set up TikZ environment with S-curve worldline and marked point
 
@@ -69,7 +69,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Add Light Cone Regions [NOT STARTED]
+### Phase 2: Add Light Cone Regions [COMPLETED]
 
 **Goal**: Draw filled past and future light cone regions emanating from point P
 
@@ -90,7 +90,7 @@ From research-001.md:
 
 ---
 
-### Phase 3: Add Branching Paths and Labels [NOT STARTED]
+### Phase 3: Add Branching Paths and Labels [COMPLETED]
 
 **Goal**: Add counterfactual dotted paths within cones and minimal labels
 
@@ -111,7 +111,7 @@ From research-001.md:
 
 ---
 
-### Phase 4: Final Polish and Compilation Test [NOT STARTED]
+### Phase 4: Final Polish and Compilation Test [COMPLETED]
 
 **Goal**: Verify complete diagram compiles correctly and matches document style
 

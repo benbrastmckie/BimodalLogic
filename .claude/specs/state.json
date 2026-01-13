@@ -15,11 +15,11 @@
     {
       "project_number": 485,
       "project_name": "tikz_light_cone_diagram_for_tm_motivation",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T22:00:07Z",
-      "last_updated": "2026-01-13T22:23:41Z",
+      "last_updated": "2026-01-13T22:24:35Z",
       "artifacts": [
         {
           "path": ".claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md",
@@ -387,12 +387,12 @@
     {
       "project_number": 450,
       "project_name": "completeness_theorems",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "effort": "8-10 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T22:21:39Z",
+      "last_updated": "2026-01-13T22:27:00Z",
       "parent_task": 257,
       "dependencies": [
         449,
@@ -404,6 +404,10 @@
         {
           "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/450_completeness_theorems/reports/research-001.md",
+          "type": "research"
         }
       ]
     },
