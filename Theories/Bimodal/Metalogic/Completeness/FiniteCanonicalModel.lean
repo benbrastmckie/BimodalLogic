@@ -1543,6 +1543,18 @@ theorem pointwise_implies_semantic (w u : FiniteWorldState phi) (d : Int)
 end SemanticTaskRel
 
 /-!
+### Note: FiniteHistory <-> ConsistentSequence Equivalence
+
+The following theorems connecting FiniteHistory and ConsistentSequence are
+defined after the FiniteHistory structure (see `SemanticTaskRelFiniteHistory`
+namespace later in the file):
+
+- `finiteHistory_to_consistentSequence`: FiniteHistory implies ConsistentSequence
+- `consistentSequence_to_finiteHistory`: ConsistentSequence implies FiniteHistory
+- `finiteHistory_witnesses_semantic`: FiniteHistory witnesses semantic relation
+-/
+
+/-!
 ## Phase 4: Finite Canonical Frame and Model
 
 This phase assembles the TaskFrame and TaskModel structures using the
@@ -1732,6 +1744,95 @@ theorem time_shift_zero_eq (h : FiniteHistory phi)
   exact FiniteTime.toInt_injective (temporalBound phi) h_spec
 
 end FiniteHistory
+
+/-!
+### FiniteHistory <-> ConsistentSequence Equivalence
+
+These theorems connect the FiniteHistory structure (which uses finite_task_rel)
+with the ConsistentSequence structure (which uses direct consistency conditions).
+This equivalence is key to showing that the semantic task relation works correctly.
+-/
+
+namespace SemanticTaskRelFiniteHistory
+
+variable {phi : Formula}
+
+/--
+Any FiniteHistory can be converted to a ConsistentSequence.
+
+This shows that the existing FiniteHistory structure implies our
+ConsistentSequence conditions.
+-/
+theorem finiteHistory_to_consistentSequence (h : FiniteHistory phi) :
+    ∃ seq : ConsistentSequence phi, seq.states = h.states := by
+  -- Build the ConsistentSequence from the FiniteHistory
+  refine ⟨⟨h.states, ?_, ?_⟩, rfl⟩
+  · -- Forward consistency follows from FiniteHistory.forward_rel
+    intros t t' h_succ
+    have h_rel := h.forward_rel t t' h_succ
+    unfold UnitStepForwardConsistent finite_task_rel at *
+    obtain ⟨h1, h2, _, h4, h5, _⟩ := h_rel
+    refine ⟨h1, ?_, h4, h5⟩
+    -- Future transfer: extract from h2 with the fact that 1 > 0
+    intros psi h_fut h_psi h_w_fut
+    exact h2 psi h_fut h_psi (by omega : (1 : Int) > 0) h_w_fut
+  · -- Backward consistency follows from FiniteHistory.backward_rel
+    intros t t' h_pred
+    have h_rel := h.backward_rel t t' h_pred
+    unfold UnitStepBackwardConsistent finite_task_rel at *
+    obtain ⟨h1, _, h3, h4, _, h6⟩ := h_rel
+    refine ⟨h1, ?_, h4, h6⟩
+    -- Past transfer: extract from h3 with the fact that -1 < 0
+    intros psi h_past h_psi h_w_past
+    exact h3 psi h_past h_psi (by omega : (-1 : Int) < 0) h_w_past
+
+/--
+Any ConsistentSequence gives rise to a FiniteHistory.
+
+The forward and backward conditions in ConsistentSequence directly imply
+the FiniteHistory requirements via the unit-step theorems.
+-/
+theorem consistentSequence_to_finiteHistory (seq : ConsistentSequence phi) :
+    ∃ h : FiniteHistory phi, h.states = seq.states := by
+  refine ⟨⟨seq.states, ?_, ?_⟩, rfl⟩
+  · -- forward_rel: unit forward consistency implies task_rel 1
+    intros t t' h_succ
+    exact SemanticTaskRel.forward_consistent_implies_task_rel (seq.states t) (seq.states t')
+      (seq.forward_consistent t t' h_succ)
+  · -- backward_rel: unit backward consistency implies task_rel (-1)
+    intros t t' h_pred
+    exact SemanticTaskRel.backward_consistent_implies_task_rel (seq.states t) (seq.states t')
+      (seq.backward_consistent t t' h_pred)
+
+/--
+If a FiniteHistory has states w at time t and u at time t',
+then the semantic task relation holds with duration (toInt t' - toInt t).
+-/
+theorem finiteHistory_witnesses_semantic (h : FiniteHistory phi)
+    (t t' : FiniteTime (temporalBound phi)) :
+    finite_task_rel_semantic phi (h.states t)
+      (FiniteTime.toInt (temporalBound phi) t' - FiniteTime.toInt (temporalBound phi) t)
+      (h.states t') := by
+  obtain ⟨seq, h_eq⟩ := finiteHistory_to_consistentSequence h
+  use seq, t, t'
+  constructor
+  · ring
+  · rw [h_eq]
+
+/--
+If the semantic task relation holds, there exists a consistent sequence
+witnessing it.
+-/
+theorem semantic_has_sequence (w u : FiniteWorldState phi) (d : Int)
+    (h : finite_task_rel_semantic phi w d u) :
+    ∃ seq : ConsistentSequence phi,
+    ∃ t t' : FiniteTime (temporalBound phi),
+      FiniteTime.toInt (temporalBound phi) t' =
+        FiniteTime.toInt (temporalBound phi) t + d ∧
+      seq.states t = w ∧
+      seq.states t' = u := h
+
+end SemanticTaskRelFiniteHistory
 
 /-!
 ### Converting Finite Histories to World Histories
