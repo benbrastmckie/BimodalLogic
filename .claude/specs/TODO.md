@@ -219,13 +219,13 @@ technical_debt:
 
 ### 473. Fix compositionality gaps from Task 458
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 458
-- **Research**: [research-001.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-001.md)
+- **Research**: [research-002.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-002.md)
 - **Plan**: [implementation-001.md](.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-001.md)
 
 **Description**: Fix compositionality gaps from Task 458. Research identified 7 compositionality gaps (mixed-sign duration cases), 8 truth lemma gaps (negation-completeness), and 2 history construction gaps. Root cause: `IsLocallyConsistent` only captures soundness, not negation-completeness. Primary solution: Bridge to `SetMaximalConsistent` or strengthen world state definitions.
@@ -254,7 +254,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: latex
 
-**Description**: Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the 'Reflection Extension'.
+**Description**: Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md and /home/benjamin/Projects/ProofChecker/README.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the 'Reflection Extension'.
 
 ---
 

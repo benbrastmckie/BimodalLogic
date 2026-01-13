@@ -56,7 +56,7 @@ From user feedback:
 
 **Goals**:
 - Present Logos as implementing highly expressive logic (tense, modal, counterfactual, causal, epistemic, normative)
-- Emphasize this combination as unexplored: formal verification + AI training on complex reasoning
+- Emphasize this combination as unexplored: formal verification + AI training on complex logic reasoning
 - Draw chess/go analogy: explicit rules make logic tractable for AI training
 - Introduce recursive semantics angle: AI can help construct semantic models from context
 - Maintain proportional length relative to other two views
