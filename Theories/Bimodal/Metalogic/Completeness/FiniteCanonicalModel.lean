@@ -303,9 +303,43 @@ theorem closure_mono {phi psi : Formula} (h : psi ∈ closure phi) :
   intro chi h_chi
   simp [closure] at *
   -- chi is a subformula of psi, psi is a subformula of phi
-  -- Need to show chi is a subformula of phi
-  -- This requires structural induction on formula
-  sorry -- Will be filled in during implementation
+  -- By transitivity of subformula relation
+  exact Formula.subformulas_trans h_chi h
+
+/--
+When an implication is in the closure, its left component is also in the closure.
+-/
+theorem imp_in_closure_left {phi psi chi : Formula}
+    (h : Formula.imp psi chi ∈ closure phi) : psi ∈ closure phi :=
+  closure_mono h (imp_left_mem_closure psi chi)
+
+/--
+When an implication is in the closure, its right component is also in the closure.
+-/
+theorem imp_in_closure_right {phi psi chi : Formula}
+    (h : Formula.imp psi chi ∈ closure phi) : chi ∈ closure phi :=
+  closure_mono h (imp_right_mem_closure psi chi)
+
+/--
+When a box formula is in the closure, its subformula is also in the closure.
+-/
+theorem box_in_closure {phi psi : Formula}
+    (h : Formula.box psi ∈ closure phi) : psi ∈ closure phi :=
+  closure_mono h (box_sub_mem_closure psi)
+
+/--
+When an all_past formula is in the closure, its subformula is also in the closure.
+-/
+theorem all_past_in_closure {phi psi : Formula}
+    (h : Formula.all_past psi ∈ closure phi) : psi ∈ closure phi :=
+  closure_mono h (all_past_sub_mem_closure psi)
+
+/--
+When an all_future formula is in the closure, its subformula is also in the closure.
+-/
+theorem all_future_in_closure {phi psi : Formula}
+    (h : Formula.all_future psi ∈ closure phi) : psi ∈ closure phi :=
+  closure_mono h (all_future_sub_mem_closure psi)
 
 /--
 Size of the closure (number of distinct subformulas).
@@ -968,6 +1002,25 @@ Get the world state at the origin (time 0).
 def originState (h : FiniteHistory phi) : FiniteWorldState phi :=
   h.states (FiniteTime.origin (temporalBound phi))
 
+/--
+Task relation between arbitrary times in a finite history.
+
+Given times t and s, the task relation holds between states at t and s
+with duration `toInt s - toInt t`.
+
+This follows from composing unit step relations (forward_rel and backward_rel).
+The proof requires compositionality which currently has sorry gaps.
+-/
+theorem respects_task (h : FiniteHistory phi) (t s : FiniteTime (temporalBound phi)) :
+    finite_task_rel phi (h.states t)
+      (FiniteTime.toInt (temporalBound phi) s - FiniteTime.toInt (temporalBound phi) t)
+      (h.states s) := by
+  -- This requires composing unit step relations.
+  -- The proof would proceed by induction on the difference |toInt s - toInt t|.
+  -- For each unit step, use forward_rel or backward_rel, then compose via compositionality.
+  -- Currently blocked by compositionality sorries.
+  sorry
+
 end FiniteHistory
 
 /-!
@@ -1211,46 +1264,121 @@ theorem finite_truth_lemma (phi : Formula) (h : FiniteHistory phi)
   | imp psi chi ih_psi ih_chi =>
     -- Implication case: by local consistency
     simp only [FiniteWorldState.models, finite_truth_at]
+    -- Get closure memberships
+    have h_psi_mem : psi ∈ closure phi := imp_in_closure_left h_mem
+    have h_chi_mem : chi ∈ closure phi := imp_in_closure_right h_mem
     constructor
     · intro h_imp h_psi_true
-      -- Need: if imp true and psi true then chi true
-      -- This requires proving that psi and chi are also in closure phi
-      -- when (imp psi chi) is in closure phi
-      sorry
+      -- Forward: if (psi -> chi) true in state and psi true semantically, then chi true semantically
+      -- Convert semantic psi truth to syntactic using IH
+      have h_psi_syn : (h.states t).models psi h_psi_mem := (ih_psi t h_psi_mem).mpr h_psi_true
+      -- Use local consistency: imp true + psi true -> chi true
+      have h_chi_syn : (h.states t).models chi h_chi_mem := by
+        apply FiniteWorldState.imp_correct (h.states t) psi chi h_mem h_psi_mem h_chi_mem
+        · exact h_imp
+        · exact h_psi_syn
+      -- Convert syntactic chi truth to semantic using IH
+      exact (ih_chi t h_chi_mem).mp h_chi_syn
     · intro h_impl
-      -- Need: if implication holds semantically, then syntactically
-      sorry
+      -- Backward: if semantic implication holds, then syntactic implication holds
+      -- This direction requires the world state to be "maximal" or "negation-complete"
+      -- i.e., for every formula, either it or its negation is true.
+      -- The current FiniteWorldState only requires local consistency, which is not enough.
+      -- TODO: Add negation-completeness to IsLocallyConsistent or FiniteWorldState
+      -- For now, case split on whether psi is syntactically true
+      by_cases h_psi_syn : (h.states t).assignment ⟨psi, h_psi_mem⟩ = true
+      · -- Case: psi is true. By h_impl, chi is semantically true, hence syntactically true.
+        have h_psi_sem : finite_truth_at phi h t psi := (ih_psi t h_psi_mem).mp h_psi_syn
+        have h_chi_sem : finite_truth_at phi h t chi := h_impl h_psi_sem
+        have h_chi_syn : (h.states t).models chi h_chi_mem := (ih_chi t h_chi_mem).mpr h_chi_sem
+        -- Need: psi true and chi true implies (psi -> chi) true
+        -- This requires implication completeness, not just soundness
+        sorry
+      · -- Case: psi is false. The implication should be vacuously true.
+        -- This requires: if psi is false, then (psi -> chi) is true
+        -- This is negation-completeness for implications
+        sorry
   | box psi ih =>
     -- Box case: requires canonical property
     simp only [FiniteWorldState.models, finite_truth_at]
+    have h_psi_mem : psi ∈ closure phi := box_in_closure h_mem
     constructor
     · intro h_box h'
-      -- box(psi) true at state t, need psi true at all histories at t
-      -- By canonical property, psi should be true at state t
-      -- Then by IH, finite_truth_at h' t psi
+      -- box(psi) true at state t in history h, need psi true at time t in history h'
+      -- The canonical property for box requires:
+      -- If box(psi) is true in world state W, then psi is true in all "accessible" states
+      -- For finite histories, different histories at the same time may have different states.
+      --
+      -- ISSUE: The current FiniteHistory structure doesn't enforce that all histories
+      -- share the same world state at time t. The modal accessibility relation is
+      -- implicit in the quantification over histories.
+      --
+      -- To prove this, we would need either:
+      -- 1. All histories at time t have the same world state (too strong)
+      -- 2. If box(psi) is in any world state, psi is in all world states at that time
+      --    (this requires the canonical model construction to ensure consistency)
+      --
+      -- For now, use the T axiom for box to get psi in THIS history
+      have h_psi_h : (h.states t).models psi h_psi_mem :=
+        FiniteWorldState.box_t (h.states t) psi h_mem h_psi_mem h_box
+      -- This gives us psi in history h at time t
+      have h_psi_sem_h : finite_truth_at phi h t psi := (ih t h_psi_mem).mp h_psi_h
+      -- But we need psi in history h' at time t
+      -- TODO: Requires canonical property connecting world states across histories
       sorry
     · intro h_all
       -- psi true at all histories at t, need box(psi) true at state t
-      -- This is the converse canonical property
+      -- Since h_all quantifies over all histories, we can specialize to h
+      have h_psi_sem : finite_truth_at phi h t psi := h_all h
+      have h_psi_syn : (h.states t).models psi h_psi_mem := (ih t h_psi_mem).mpr h_psi_sem
+      -- Now we need: if psi is true in all histories at t, then box(psi) is true in state
+      -- This requires the canonical property: state captures what holds in all accessible worlds
+      -- This is the "completeness" direction of the canonical model construction
+      -- TODO: Requires negation-completeness of world states
       sorry
   | all_past psi ih =>
     -- All past case: by task relation transfer
     simp only [FiniteWorldState.models, finite_truth_at]
+    have h_psi_mem : psi ∈ closure phi := all_past_in_closure h_mem
     constructor
     · intro h_past s h_s_lt
       -- all_past(psi) true at t, need psi true at s < t
-      -- By task relation transfer from t to s
-      sorry
+      -- Use task relation transfer via respects_task
+      have h_rel := h.respects_task t s
+      have h_d_neg : FiniteTime.toInt (temporalBound phi) s -
+                     FiniteTime.toInt (temporalBound phi) t < 0 := by omega
+      -- Past transfer: all_past(psi) at t with d < 0 gives psi at s
+      have h_psi_s : (h.states s).models psi h_psi_mem :=
+        h_rel.2.2.1 psi h_mem h_psi_mem h_d_neg h_past
+      -- Convert to semantic truth via IH
+      exact (ih s h_psi_mem).mp h_psi_s
     · intro h_all_s
       -- psi true at all s < t, need all_past(psi) true at t
+      -- This requires: if psi holds at all past times, then all_past(psi) is in state
+      -- Similar to backward direction of imp/box: requires negation-completeness
+      -- TODO: Requires negation-completeness of world states
       sorry
   | all_future psi ih =>
     -- All future case: by task relation transfer (symmetric to past)
     simp only [FiniteWorldState.models, finite_truth_at]
+    have h_psi_mem : psi ∈ closure phi := all_future_in_closure h_mem
     constructor
     · intro h_fut s h_t_lt
-      sorry
+      -- all_future(psi) true at t, need psi true at s > t
+      -- Use task relation transfer via respects_task
+      have h_rel := h.respects_task t s
+      have h_d_pos : FiniteTime.toInt (temporalBound phi) s -
+                     FiniteTime.toInt (temporalBound phi) t > 0 := by omega
+      -- Future transfer: all_future(psi) at t with d > 0 gives psi at s
+      have h_psi_s : (h.states s).models psi h_psi_mem :=
+        h_rel.2.1 psi h_mem h_psi_mem h_d_pos h_fut
+      -- Convert to semantic truth via IH
+      exact (ih s h_psi_mem).mp h_psi_s
     · intro h_all_s
+      -- psi true at all s > t, need all_future(psi) true at t
+      -- This requires: if psi holds at all future times, then all_future(psi) is in state
+      -- Similar to backward direction of imp/box: requires negation-completeness
+      -- TODO: Requires negation-completeness of world states
       sorry
 
 /-!

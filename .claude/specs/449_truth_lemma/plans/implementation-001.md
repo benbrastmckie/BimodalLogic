@@ -72,7 +72,7 @@ Research report research-001.md identified:
 
 ---
 
-### Phase 2: Implication Case [IN PROGRESS]
+### Phase 2: Implication Case [PARTIAL]
 
 **Goal**: Complete the imp case of finite_truth_lemma (2 sorries).
 
@@ -95,7 +95,7 @@ Research report research-001.md identified:
 
 ---
 
-### Phase 3: Box Case [NOT STARTED]
+### Phase 3: Box Case [PARTIAL]
 
 **Goal**: Complete the box case of finite_truth_lemma (2 sorries). This requires establishing canonical properties about modal consistency across histories.
 
@@ -120,7 +120,7 @@ Research report research-001.md identified:
 
 ---
 
-### Phase 4: Temporal Cases [NOT STARTED]
+### Phase 4: Temporal Cases [PARTIAL]
 
 **Goal**: Complete all_past and all_future cases of finite_truth_lemma (4 sorries total, 2 each).
 
@@ -144,7 +144,7 @@ Research report research-001.md identified:
 
 ---
 
-### Phase 5: Integration and Verification [NOT STARTED]
+### Phase 5: Integration and Verification [PARTIAL]
 
 **Goal**: Verify complete truth lemma and ensure no regressions in FiniteCanonicalModel.lean.
 

@@ -223,6 +223,56 @@ theorem imp_right_mem_subformulas (ψ χ : Formula) : χ ∈ subformulas (.imp �
   right
   exact self_mem_subformulas χ
 
+/--
+Transitivity of the subformula relation.
+
+If chi is a subformula of psi, and psi is a subformula of phi,
+then chi is a subformula of phi.
+-/
+theorem subformulas_trans {chi psi phi : Formula}
+    (h1 : chi ∈ subformulas psi) (h2 : psi ∈ subformulas phi) :
+    chi ∈ subformulas phi := by
+  induction phi with
+  | atom p =>
+    simp only [subformulas, List.mem_singleton] at h2
+    subst h2
+    exact h1
+  | bot =>
+    simp only [subformulas, List.mem_singleton] at h2
+    subst h2
+    exact h1
+  | imp a b iha ihb =>
+    simp only [subformulas, List.mem_cons, List.mem_append] at h2
+    rcases h2 with rfl | ha | hb
+    · exact h1
+    · simp only [subformulas, List.mem_cons, List.mem_append]
+      right; left
+      exact iha ha
+    · simp only [subformulas, List.mem_cons, List.mem_append]
+      right; right
+      exact ihb hb
+  | box a iha =>
+    simp only [subformulas, List.mem_cons] at h2
+    rcases h2 with rfl | h2
+    · exact h1
+    · simp only [subformulas, List.mem_cons]
+      right
+      exact iha h2
+  | all_past a iha =>
+    simp only [subformulas, List.mem_cons] at h2
+    rcases h2 with rfl | h2
+    · exact h1
+    · simp only [subformulas, List.mem_cons]
+      right
+      exact iha h2
+  | all_future a iha =>
+    simp only [subformulas, List.mem_cons] at h2
+    rcases h2 with rfl | h2
+    · exact h1
+    · simp only [subformulas, List.mem_cons]
+      right
+      exact iha h2
+
 end Formula
 
 /--
