@@ -6,11 +6,11 @@
     {
       "project_number": 458,
       "project_name": "extend_canonical_history_full_domain",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-13T07:33:26Z",
-      "last_updated": "2026-01-13T03:49:13Z",
+      "last_updated": "2026-01-13T03:53:42Z",
       "parent_task": 257,
       "dependencies": [
         448
@@ -30,6 +30,10 @@
         {
           "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-002.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md",
+          "type": "research"
         }
       ]
     },
