@@ -589,22 +589,22 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
   | «axiom» Γ' φ' h_ax =>
     -- Case: φ' is an axiom
     -- All axioms are valid, hence semantic consequences of any context
-    intro T _ _ _ F M τ t ht _
-    exact axiom_valid h_ax T F M τ t ht
+    intro T _ _ _ F M τ t _
+    exact axiom_valid h_ax T F M τ t
 
   | @assumption Γ' φ' h_mem =>
     -- Case: φ' ∈ Γ' (assumption)
     -- If all of Γ' true, then φ' (member of Γ') is true
-    intro T _ _ _ F M τ t ht h_all
+    intro T _ _ _ F M τ t h_all
     exact h_all φ' h_mem
 
   | @modus_ponens Γ' φ' ψ' _ _ ih_imp ih_phi =>
     -- Case: From Γ' ⊢ φ' → ψ' and Γ' ⊢ φ', derive Γ' ⊢ ψ'
     -- By IH: Γ' ⊨ φ' → ψ' and Γ' ⊨ φ'
     -- Goal: Γ' ⊨ ψ'
-    intro T _ _ _ F M τ t ht h_all
-    have h_imp := ih_imp T F M τ t ht h_all
-    have h_phi := ih_phi T F M τ t ht h_all
+    intro T _ _ _ F M τ t h_all
+    have h_imp := ih_imp T F M τ t h_all
+    have h_phi := ih_phi T F M τ t h_all
     unfold truth_at at h_imp
     exact h_imp h_phi
 
@@ -612,23 +612,23 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     -- Case: From [] ⊢ φ', derive [] ⊢ □φ'
     -- IH: [] ⊨ φ' (φ' is valid)
     -- Goal: [] ⊨ □φ' (□φ' is valid)
-    intro T _ _ _ F M τ t ht _
+    intro T _ _ _ F M τ t _
     unfold truth_at
-    -- Goal: ∀ σ hs, truth_at M σ t hs φ'
-    intro σ hs
+    -- Goal: ∀ σ, truth_at M σ t φ'
+    intro σ
     -- Use IH: φ' is valid, so true at all models
-    exact ih T F M σ t hs (fun _ h => False.elim (List.not_mem_nil h))
+    exact ih T F M σ t (fun _ h => False.elim (List.not_mem_nil h))
 
   | @temporal_necessitation φ' h_deriv ih =>
     -- Case: From [] ⊢ φ', derive [] ⊢ Fφ'
     -- IH: [] ⊨ φ' (φ' is valid)
     -- Goal: [] ⊨ Fφ' (Fφ' is valid)
-    intro T _ _ _ F M τ t ht _
+    intro T _ _ _ F M τ t _
     unfold truth_at
-    -- Goal: ∀ s hs, t < s → truth_at M τ s hs φ'
-    intro s hs hts
+    -- Goal: ∀ s, t < s → truth_at M τ s φ'
+    intro s hts
     -- Use IH: φ' is valid, so true at all models
-    exact ih T F M τ s hs (fun _ h => False.elim (List.not_mem_nil h))
+    exact ih T F M τ s (fun _ h => False.elim (List.not_mem_nil h))
 
   | @temporal_duality φ' h_deriv_phi _ =>
     -- Case: From [] ⊢ φ', derive [] ⊢ swap_past_future φ'
@@ -650,20 +650,20 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     -- **Key Insight**: We don't need to prove "valid φ → valid φ.swap" for ALL
     -- valid formulas. We only need it for DERIVABLE formulas, and derivation
     -- induction avoids the impossible cases.
-    intro T _ _ _ F M τ t ht _
-    -- Goal: truth_at M τ t ht (swap_past_future φ')
+    intro T _ _ _ F M τ t _
+    -- Goal: truth_at M τ t (swap_past_future φ')
     -- Use derivable_implies_swap_valid which proves: Derivable [] φ' → is_valid φ'.swap
     have h_swap_valid := @SoundnessLemmas.derivable_implies_swap_valid T _ _ _ _ h_deriv_phi
     -- h_swap_valid : is_valid T φ'.swap_past_future
     -- Unpack the local is_valid definition
-    exact h_swap_valid F M τ t ht
+    exact h_swap_valid F M τ t
 
   | @weakening Γ' Δ' φ' _ h_sub ih =>
     -- Case: From Γ' ⊢ φ' and Γ' ⊆ Δ', derive Δ' ⊢ φ'
     -- By IH: Γ' ⊨ φ'
     -- Goal: Δ' ⊨ φ'
-    intro T _ _ _ F M τ t ht h_all
-    apply ih T F M τ t ht
+    intro T _ _ _ F M τ t h_all
+    apply ih T F M τ t
     intro ψ h_mem
     exact h_all ψ (h_sub h_mem)
 

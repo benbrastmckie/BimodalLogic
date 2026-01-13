@@ -130,7 +130,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Metalogic Soundness Proofs [IN PROGRESS]
+### Phase 4: Metalogic Soundness Proofs [COMPLETED]
 
 **Goal**: Fix soundness lemmas and main soundness theorem with new signatures.
 
@@ -157,7 +157,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Perpetuity and Remaining Files [NOT STARTED]
+### Phase 5: Perpetuity and Remaining Files [COMPLETED]
 
 **Goal**: Fix any remaining downstream files in the Bimodal module.
 
