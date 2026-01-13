@@ -6,11 +6,17 @@
     {
       "project_number": 484,
       "project_name": "sync_tikz_diagram_operators_with_glossary",
-      "status": "planning",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T21:23:11Z",
-      "last_updated": "2026-01-13T21:30:43Z"
+      "last_updated": "2026-01-13T21:32:52Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ]
     },
     {
       "project_number": 483,

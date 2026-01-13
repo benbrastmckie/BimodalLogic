@@ -144,9 +144,10 @@ technical_debt:
 
 ### 484. Sync TikZ diagram operators with GLOSSARY.md
 - **Effort**: 1-2 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: latex
+- **Plan**: [implementation-001.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-001.md)
 
 **Description**: Use GLOSSARY.md to improve/expand the operators included in the TikZ diagram in 00-Introduction.tex. Ensure bidirectional sync: add any operators from the glossary missing in the TikZ diagram, and add any operators in the TikZ diagram that are missing from GLOSSARY.md.
 
