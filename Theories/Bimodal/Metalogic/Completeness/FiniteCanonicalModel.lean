@@ -2364,21 +2364,32 @@ theorem. We define a semantic canonical frame using `SemanticWorldState` and
 The semantic canonical frame for a target formula.
 
 Uses `SemanticWorldState` as world states and `semantic_task_rel_v2` as task relation.
-Compositionality is trivial by construction.
 
-Note: This requires existence of histories for nullity, which we accept via axiom
-for now since `finite_history_from_state` has sorries.
+**Key insight for nullity**: Every `SemanticWorldState` is an equivalence class of
+`(FiniteHistory, FiniteTime)` pairs (via `Quotient`). Using `Quotient.out` we can
+extract a representative, which directly provides the witness needed for
+`SemanticTaskRelV2.nullity`. This avoids the need for `finite_history_from_state`.
+
+Compositionality delegates to `SemanticTaskRelV2.compositionality`.
 -/
 noncomputable def SemanticCanonicalFrame (phi : Formula) : TaskFrame Int where
   WorldState := SemanticWorldState phi
   task_rel := semantic_task_rel_v2 phi
   nullity := fun w => by
-    -- Need: semantic_task_rel_v2 phi w 0 w
-    -- This requires showing w can be represented as (h, t) for some history h
-    -- Every SemanticWorldState comes from some FiniteWorldState, and
-    -- every FiniteWorldState has a history through it (by finite_history_from_state)
-    -- For now, we use sorry since finite_history_from_state has sorries
-    sorry
+    -- Every SemanticWorldState is a Quotient of HistoryTimePair, so we can extract a representative
+    let rep := Quotient.out w
+    let hist := rep.1
+    let time := rep.2
+    -- Show w = SemanticWorldState.ofHistoryTime hist time using Quotient.out_eq
+    have h_eq : w = SemanticWorldState.ofHistoryTime hist time := by
+      unfold SemanticWorldState.ofHistoryTime SemanticWorldState.mk
+      show w = ⟦(hist, time)⟧
+      -- (hist, time) = (rep.1, rep.2) = rep = Quotient.out w
+      have h_rep : (hist, time) = rep := Prod.mk.eta
+      rw [h_rep]
+      exact (Quotient.out_eq w).symm
+    -- Apply the nullity theorem with the witness
+    exact SemanticTaskRelV2.nullity w ⟨hist, time, h_eq⟩
   compositionality := fun w u v x y h_wu h_uv =>
     SemanticTaskRelV2.compositionality w u v x y h_wu h_uv
 
@@ -2429,8 +2440,8 @@ The `SemanticCanonicalFrame` satisfies compositionality by construction because:
 2. Task relation is defined via history existence
 3. Same history witnesses compose trivially
 
-The only remaining sorry is in the nullity axiom (needing history existence),
-which is a dependency on `finite_history_from_state` infrastructure.
+The nullity proof is complete (uses Quotient.out to extract witness from quotient).
+The compositionality proof delegates to `SemanticTaskRelV2.compositionality`.
 -/
 theorem semantic_compositionality_holds :
     ∀ (phi : Formula) (w u v : SemanticWorldState phi) (x y : Int),

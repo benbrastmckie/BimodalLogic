@@ -46,7 +46,7 @@ Research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Fix SemanticCanonicalFrame.nullity [NOT STARTED]
+### Phase 1: Fix SemanticCanonicalFrame.nullity [COMPLETED]
 
 **Goal**: Eliminate the sorry in SemanticCanonicalFrame.nullity using Quotient.out
 
@@ -69,24 +69,21 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Implement finite_history_from_state (Optional) [NOT STARTED]
+### Phase 2: Implement finite_history_from_state (Optional) [SKIPPED]
 
 **Goal**: Provide a general-purpose function to construct FiniteHistory from any FiniteWorldState if needed by other proofs
 
-**Tasks**:
-- [ ] Assess if finite_history_from_state is needed by any other proof (completeness theorem)
-- [ ] If needed: implement using strong induction on distance from origin
-- [ ] If needed: prove forward_rel and backward_rel using Classical.choose_spec
-- [ ] If not needed: document decision and skip this phase
+**Assessment Result**: NOT NEEDED for the primary goal (SemanticCanonicalFrame.nullity).
 
-**Timing**: 1 hour (if needed), 5 minutes (if assessment determines not needed)
+The nullity proof uses `Quotient.out` to extract a representative `(history, time)` pair
+directly from the quotient structure of `SemanticWorldState`. This approach is simpler and
+more elegant than constructing a new history from scratch.
 
-**Files to modify**:
-- `Logos/Core/Metalogic/FiniteCanonicalModel.lean` - Add finite_history_from_state definition (if needed)
+`finite_history_from_state` may still be useful for `semantic_weak_completeness` (which uses
+it in the proof sketch to convert a `FiniteWorldState` to a `SemanticWorldState`), but that
+is a separate concern handled by Task 450 (completeness_theorems).
 
-**Verification**:
-- Function compiles without sorry (if implemented)
-- Or documented decision that it's not needed
+**Decision**: Skip this phase. The main objective (eliminating nullity sorry) is achieved.
 
 ---
 
