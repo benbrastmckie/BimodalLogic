@@ -5,7 +5,7 @@
 - **Status**: [PLANNED]
 - **Effort**: 8-12 hours (reduced from original 15-20)
 - **Priority**: Low
-- **Dependencies**: Task 448 (completed), Task 473 (completed), Task 481 (completed), Task 482 (partial)
+- **Dependencies**: Task 448 (completed), Task 473 (completed), Task 481 (completed), Task 482 (in progress - has sorries)
 - **Research Inputs**: .claude/specs/449_truth_lemma/reports/research-001.md
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-formats.md, tasks.md
@@ -14,7 +14,7 @@
 
 ## Revision Summary
 
-This is plan v002, revised after completion of tasks 473, 481, and 482 (partial).
+This is plan v002, revised after progress on tasks 473, 481, and 482.
 
 ### What Changed Since v001
 
@@ -28,10 +28,15 @@ This is plan v002, revised after completion of tasks 473, 481, and 482 (partial)
 - `SemanticCanonicalFrame.nullity` now proven via `Quotient.out`
 - SemanticCanonicalFrame is now a valid TaskFrame instance
 
-**Task 482 (Partial)**: History gluing infrastructure
+**Task 482 (In Progress)**: History gluing infrastructure - **NOT COMPLETE**
 - `glue_histories` function implemented with piecewise construction
-- 3 acceptable sorries remain: edge case bounds assumptions (x ≥ 0, y > 0, neg case)
-- These sorries are infrastructure gaps, not fundamental obstructions
+- **Remaining sorries in compositionality**:
+  1. `glue_histories.forward_rel` - edge cases in piecewise proof
+  2. `glue_histories.backward_rel` - edge cases in piecewise proof
+  3. `compositionality` case pos: `h_t1_before` (assumes x ≥ 0), `h_t_final_after` (assumes y > 0)
+  4. `compositionality` case neg: bounds exceeded case
+- These sorries are in `SemanticTaskRelV2.compositionality` which feeds into `SemanticCanonicalFrame`
+- **Impact on task 449**: May affect `semantic_weak_completeness` proof if it relies on compositionality
 
 ### Strategic Pivot
 
@@ -51,9 +56,15 @@ This is plan v002, revised after completion of tasks 473, 481, and 482 (partial)
 2. ~~Prove forward directions~~ - **DONE** (Phases 2-4 v001)
 3. ~~Complete semantic infrastructure~~ - **DONE** (Task 473)
 4. ~~Fix nullity~~ - **DONE** (Task 481)
-5. Complete history gluing edge cases - **OPTIONAL** (Task 482 in progress)
+5. Complete history gluing - **IN PROGRESS** (Task 482 - has sorries that may block completeness)
 6. **NEW**: Connect `semantic_weak_completeness` to main `weak_completeness` theorem
 7. **NEW**: Verify old `finite_truth_lemma` can be deprecated or marked auxiliary
+
+### Task 482 Dependency Analysis
+
+The `semantic_weak_completeness` theorem may depend on `SemanticCanonicalFrame` which uses `SemanticTaskRelV2.compositionality`. If the completeness proof requires compositionality (e.g., for temporal operators), then Task 482's sorries become blocking.
+
+**Assessment needed in Phase 1**: Determine whether `semantic_weak_completeness` actually uses compositionality, or whether it only uses nullity (which is proven) and truth evaluation (which doesn't require compositionality).
 
 ## Overview
 
@@ -70,7 +81,7 @@ Complete the truth lemma by connecting the semantic infrastructure (from Task 47
 **Non-Goals**:
 - Completing the old `finite_truth_lemma` backward directions (deprecated approach)
 - Task 472 Lindenbaum extension (not needed for semantic approach)
-- Resolving Task 482 edge case sorries (acceptable infrastructure gaps)
+- Resolving Task 482 sorries directly (unless Phase 1 determines they're blocking)
 
 ## Risks & Mitigations
 
@@ -78,17 +89,20 @@ Complete the truth lemma by connecting the semantic infrastructure (from Task 47
 |------|--------|------------|------------|
 | semantic_weak_completeness harder than expected | Medium | Low | Use existing semantic infrastructure; proof should follow standard pattern |
 | Connection to main completeness unclear | Medium | Medium | Review Task 450 plan and Completeness.lean structure |
-| Task 482 sorries block downstream work | Low | Low | These are acceptable edge cases; completeness proof avoids them |
+| Task 482 sorries block downstream work | High | Medium | Phase 1 must assess whether compositionality is needed; if yes, may need to complete 482 first or find workaround |
 
 ## Implementation Phases
 
-### Phase 1: Analyze Current State [NOT STARTED]
+### Phase 1: Analyze Current State and Task 482 Impact [NOT STARTED]
 
-**Goal**: Understand the current state of semantic completeness and identify exact gaps.
+**Goal**: Understand the current state of semantic completeness, identify exact gaps, and determine whether Task 482's sorries are blocking.
 
 **Tasks**:
 - [ ] Read `semantic_weak_completeness` axiom/sorry at current location
 - [ ] Identify what `semantic_weak_completeness` needs to prove
+- [ ] **Critical**: Determine if proof requires `SemanticTaskRelV2.compositionality`
+  - If yes: Task 482 is blocking and must be completed or worked around
+  - If no: Can proceed with semantic_weak_completeness using nullity + truth lemma
 - [ ] Verify `semantic_truth_lemma_v2` provides the necessary connection
 - [ ] Check Completeness.lean to see how completeness connects to canonical model
 
@@ -101,6 +115,7 @@ Complete the truth lemma by connecting the semantic infrastructure (from Task 47
 **Verification**:
 - Document exactly which sorries need to be resolved
 - List all dependencies between semantic and main completeness
+- **Decision point**: Is Task 482 blocking? Document finding and adjust plan if needed
 
 ---
 
@@ -200,14 +215,18 @@ If connection to main completeness is non-trivial:
 ```
 Task 448 (consistent model) ──┐
                               │
-Task 458 (compositionality)───┼──> Task 473 (semantic infrastructure) ──> Task 481 (nullity)
+Task 458 (compositionality)───┼──> Task 473 (semantic infrastructure) ──> Task 481 (nullity) ✓
                               │           │
-                              │           └──> Task 482 (gluing) [partial]
+                              │           └──> Task 482 (gluing) [IN PROGRESS - HAS SORRIES]
+                              │           │         │
+                              │           │         └──> compositionality sorries may block 449
                               │           │
                               │           └──> Task 449 v002 (THIS) ──> Task 450 (completeness)
                               │
 Task 472 (Lindenbaum) ────────┘  [NOT NEEDED for semantic approach]
 ```
+
+**Note**: Task 482's compositionality sorries are in `SemanticTaskRelV2.compositionality`, which is used by `SemanticCanonicalFrame`. Phase 1 of this task must determine whether these sorries are actually blocking for `semantic_weak_completeness`.
 
 ## Notes
 
@@ -219,3 +238,16 @@ The old `finite_truth_lemma` remains in the codebase with 6 sorries. It's not bl
 3. Completeness can proceed via the semantic route
 
 The old approach could be completed if Task 472 (Lindenbaum extension) is done, but this is no longer on the critical path for completeness.
+
+### Task 482 Status Clarification
+
+Task 482 was marked "completed" in state tracking, but **has remaining sorries**:
+- `glue_histories.forward_rel` and `backward_rel` edge cases
+- `compositionality` sign assumptions (x ≥ 0, y > 0)
+- `compositionality` neg case (bounds exceeded)
+
+These sorries may or may not block Task 449 depending on whether `semantic_weak_completeness` actually needs compositionality. The weak completeness proof typically only needs:
+1. A model exists (nullity ✓)
+2. Truth in model corresponds to membership (truth lemma ✓)
+
+Compositionality is needed for proving frame properties hold, but may not be needed for the basic completeness argument. Phase 1 must determine this.

@@ -331,14 +331,14 @@ technical_debt:
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
-- **Dependencies**: 448 (completed), 473 (completed), 481 (completed), 482 (partial)
+- **Dependencies**: 448 (completed), 473 (completed), 481 (completed), 482 (in progress - has sorries)
 - **Research**: [research-001.md](.claude/specs/449_truth_lemma/reports/research-001.md)
 - **Plan**: [implementation-002.md](.claude/specs/449_truth_lemma/plans/implementation-002.md) (v002)
 - **Progress**: [implementation-summary-20260113.md](.claude/specs/449_truth_lemma/summaries/implementation-summary-20260113.md)
 
 **Description**: Phase 6 of completeness proofs: Complete truth lemma using SemanticWorldState infrastructure from Task 473. The semantic truth lemma (`semantic_truth_lemma_v2`) is already proven; remaining work is connecting `semantic_weak_completeness` to the main completeness theorem.
 
-**Progress**: v001 completed Phase 1 (closure infrastructure) and forward directions. Tasks 473/481/482 created SemanticWorldState with `semantic_truth_lemma_v2` (proven). v002 focuses on proving `semantic_weak_completeness` and connecting to main completeness. Old `finite_truth_lemma` deprecated (6 sorries, no longer on critical path).
+**Progress**: v001 completed Phase 1 (closure infrastructure) and forward directions. Tasks 473/481 created SemanticWorldState with `semantic_truth_lemma_v2` (proven). Task 482 has gluing infrastructure but compositionality sorries remain. v002 Phase 1 must determine if 482's sorries block `semantic_weak_completeness`.
 
 ---
 
