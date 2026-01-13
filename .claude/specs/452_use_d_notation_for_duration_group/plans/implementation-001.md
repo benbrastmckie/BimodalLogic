@@ -39,7 +39,7 @@ The implementation is divided into 4 phases: LaTeX infrastructure, LaTeX content
 ### Phase 2: LaTeX Content Updates
 
 **Estimated effort**: 30 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Update `02-Semantics.tex` - 27 occurrences of `T` referring to durations
