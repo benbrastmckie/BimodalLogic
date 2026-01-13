@@ -6,11 +6,11 @@
     {
       "project_number": 487,
       "project_name": "create_bimodal_boneyard_for_deprecated_code",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T23:24:12Z",
-      "last_updated": "2026-01-13T23:37:34Z",
+      "last_updated": "2026-01-13T23:44:52Z",
       "description": "Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference.",
       "session_id": "sess_1768347439_4e0821",
       "artifacts": [
@@ -21,9 +21,14 @@
         {
           "path": ".claude/specs/487_create_bimodal_boneyard_for_deprecated_code/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/487_create_bimodal_boneyard_for_deprecated_code/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-13T23:44:52Z"
     },
     {
       "project_number": 488,

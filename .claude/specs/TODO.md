@@ -86,11 +86,13 @@ technical_debt:
 
 ### 487. Create Bimodal/Boneyard/ for deprecated code
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-01-13
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/summaries/implementation-summary-20260113.md)
 
 **Description**: Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference.
 
