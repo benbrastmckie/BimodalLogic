@@ -86,9 +86,11 @@ technical_debt:
 
 ### 492. Update BimodalReference.tex with metalogical results
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/reports/research-001.md)
 
 **Description**: Systematically update /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/BimodalReference.tex to reflect the current status of the project, including the recent metalogical results (decidability and completeness) that were established along with the representation theory that was proved and any other notable lemmas or theorems. Add proof strategy guidance in the metalogic section to help guide readers through the approaches used.
 
