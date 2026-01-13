@@ -30,16 +30,17 @@ technical_debt:
 
 ### 467. Review task 462 changes and fix root cause
 - **Effort**: 2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
-- **Started**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: High
 - **Language**: meta
 - **Research**: [research-001.md](.claude/specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/467_review_task_462_changes_fix_root_cause/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/467_review_task_462_changes_fix_root_cause/summaries/implementation-summary-20260113.md)
 
-**Description**: Review task 462 changes (from .claude/output/research.md) to determine if they are worth keeping or cruft. Identify and fix root cause of workflow delegation errors in an elegant way without unnecessary changes. Update documentation to be accurate.
+**Description**: Added explicit continuation markers to /research, /plan, /implement command files to fix workflow delegation errors. Root cause: Claude treated skill JSON returns as stopping points. Fix adds "IMMEDIATELY CONTINUE" markers after each checkpoint. Documented pattern in command-lifecycle.md.
 
 ---
 
