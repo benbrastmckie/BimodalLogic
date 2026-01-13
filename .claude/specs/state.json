@@ -6,11 +6,11 @@
     {
       "project_number": 456,
       "project_name": "address_todos_in_bimodal_semantics_latex",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T00:43:38Z",
-      "last_updated": "2026-01-13T00:54:35Z",
+      "last_updated": "2026-01-13T00:58:51Z",
       "description": "Address all TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/02-Semantics.tex by rigorously researching each in order to revise the document appropriately, ignoring nothing.",
       "session_id": "sess_1768265665_a8df02",
       "artifacts": [
@@ -21,9 +21,14 @@
         {
           "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ],
-      "plan_version": "001"
+      "plan_version": "001",
+      "completed": "2026-01-13T00:58:51Z"
     },
     {
       "project_number": 455,

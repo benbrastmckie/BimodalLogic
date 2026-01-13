@@ -96,15 +96,17 @@ technical_debt:
 
 ### 456. Address TODOs in Bimodal Semantics LaTeX
 - **Effort**: 4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Completed**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/456_address_todos_in_bimodal_semantics_latex/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](.claude/specs/456_address_todos_in_bimodal_semantics_latex/summaries/implementation-summary-20260113.md)
 
-**Description**: Address all TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/02-Semantics.tex by rigorously researching each in order to revise the document appropriately, ignoring nothing.
+**Description**: Addressed all 20 TODO comments in 02-Semantics.tex: added primitives table for Task Frames, merged Respects Task into World History, replaced terminology with 'sentence letters', used x/y/z time variables, aligned time-shift notation with JPL paper, added perpetuity motivation, explicit types throughout.
 
 ---
 
