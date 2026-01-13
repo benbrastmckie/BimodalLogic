@@ -86,7 +86,7 @@ This represents concatenating two singleton order types, giving a two-element to
 
 ---
 
-### Phase 2: Implement Forward Chain with Proven Lemmas [NOT STARTED]
+### Phase 2: Implement Forward Chain with Proven Lemmas [COMPLETED]
 
 **Goal**: Define `canonical_forward_chain` building states forward from origin, leveraging `future_formula_persistence` which is PROVEN.
 
@@ -131,7 +131,7 @@ This represents concatenating two singleton order types, giving a two-element to
 
 ---
 
-### Phase 3: Implement Backward Chain [NOT STARTED]
+### Phase 3: Implement Backward Chain [COMPLETED]
 
 **Goal**: Define `canonical_backward_chain` building states backward from origin, using `past_formula_persistence` (PROVEN).
 
@@ -170,7 +170,7 @@ This represents concatenating two singleton order types, giving a two-element to
 
 ---
 
-### Phase 4: Combine into Unified canonical_states [NOT STARTED]
+### Phase 4: Combine into Unified canonical_states [IN PROGRESS]
 
 **Goal**: Replace the independent Classical.choose construction with chain-based construction covering positive and negative time indices.
 

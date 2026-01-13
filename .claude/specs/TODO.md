@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-13T02:55:00Z
-next_project_number: 462
+last_updated: 2026-01-13T04:20:00Z
+next_project_number: 463
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 462. Fix workflow command delegation
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Fix /research and /implement commands stopping after preflight. Commands complete skill-status-sync for preflight but fail to proceed to STAGE 2 delegation. Root cause: command files describe workflow but Claude stops executing after preflight instead of continuing to delegate to implementation skills/agents.
+
+---
 
 ### 458. Extend canonical_history to full domain
 - **Effort**: 10 hours

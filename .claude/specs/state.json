@@ -1,8 +1,18 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T03:50:07Z",
-  "next_project_number": 462,
+  "next_project_number": 463,
   "active_projects": [
+    {
+      "project_number": 462,
+      "project_name": "fix_workflow_command_delegation",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-13T04:27:46Z",
+      "last_updated": "2026-01-13T04:27:46Z",
+      "description": "Fix /research and /implement commands stopping after preflight. Commands complete skill-status-sync for preflight but fail to proceed to STAGE 2 delegation. Root cause: command files describe workflow but Claude stops executing after preflight instead of continuing to delegate to implementation skills/agents."
+    },
     {
       "project_number": 458,
       "project_name": "extend_canonical_history_full_domain",
