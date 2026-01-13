@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-12T23:34:26Z
-next_project_number: 460
+next_project_number: 461
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 460. Cosmos Institute Substack Essay
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+
+**Description**: Create a 1000-2000 word essay that makes the project and its conclusions accessible to the public. Essays should conform to the tone and style of those that have appeared on the Cosmos Institute Substack. With the Grantee's consent, select essays may be edited and featured on the Cosmos Institute Substack. This essay is due within 30 days after the conclusion of the grant term.
+
+---
 
 ### 458. Extend canonical_history to full domain
 - **Effort**: 10-14 hours
@@ -100,7 +110,7 @@ technical_debt:
 
 ### 454. Fix temporal quantification to match paper
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Planned**: 2026-01-13
 - **Priority**: High
@@ -116,7 +126,7 @@ technical_debt:
 
 ### 459. Update Bimodal LaTeX Metalogic, Theorems, and Notes
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: latex
 

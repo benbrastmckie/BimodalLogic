@@ -1,16 +1,26 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T07:33:26Z",
-  "next_project_number": 460,
+  "next_project_number": 461,
   "active_projects": [
+    {
+      "project_number": 460,
+      "project_name": "cosmos_institute_substack_essay",
+      "status": "not_started",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-13T02:04:02Z",
+      "last_updated": "2026-01-13T02:04:02Z",
+      "description": "Create a 1000-2000 word essay that makes the project and its conclusions accessible to the public. Essays should conform to the tone and style of those that have appeared on the Cosmos Institute Substack. With the Grantee consent, select essays may be edited and featured on the Cosmos Institute Substack. This essay is due within 30 days after the conclusion of the grant term."
+    },
     {
       "project_number": 459,
       "project_name": "update_bimodal_latex_metalogic_theorems_notes",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T01:58:46Z",
-      "last_updated": "2026-01-13T01:58:46Z"
+      "last_updated": "2026-01-13T02:03:04Z"
     },
     {
       "project_number": 458,
@@ -91,22 +101,18 @@
     {
       "project_number": 454,
       "project_name": "fix_temporal_quantification_to_match_paper",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-12T23:48:46Z",
-      "last_updated": "2026-01-13T02:00:05Z",
-      "session_id": "sess_1768269338_2b0341",
+      "last_updated": "2026-01-13T08:49:15Z",
+      "session_id": "sess_1768269755_071a27",
       "plan_version": "001",
       "description": "The Lean implementation restricts temporal quantification to times in the world history's domain dom(τ) despite the fact the source paper /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (lines 896-7 and lines 1862-1872) quantifies over all times. It is also important that the times are unrestricted in the definition of logical consequence in line 924 and 2273. Fix the lean source code to match the paper exactly.",
       "artifacts": [
         {
           "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md",
           "type": "research"
-        },
-        {
-          "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/plans/implementation-001.md",
-          "type": "plan"
         },
         {
           "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/plans/implementation-001.md",

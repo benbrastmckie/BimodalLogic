@@ -52,7 +52,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Core truth_at Signature Change [NOT STARTED]
+### Phase 1: Core truth_at Signature Change [IN PROGRESS]
 
 **Goal**: Modify the `truth_at` function in `Bimodal.Semantics.Truth` to remove the domain membership parameter and handle atoms/temporal operators correctly.
 

@@ -49,7 +49,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Temporal Persistence Lemmas [NOT STARTED]
+### Phase 1: Temporal Persistence Lemmas [COMPLETED]
 
 **Goal**: Prove that G-formulas persist forward and H-formulas persist backward through the task relation. These lemmas are key to completing temporal compositionality.
 
@@ -73,7 +73,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Complete Temporal Compositionality [NOT STARTED]
+### Phase 2: Complete Temporal Compositionality [IN PROGRESS]
 
 **Goal**: Fill in the sorry placeholders in `canonical_compositionality` (lines 2120, 2131) using the persistence lemmas from Phase 1.
 
