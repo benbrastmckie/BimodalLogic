@@ -29,12 +29,14 @@ technical_debt:
 ## High Priority
 
 ### 458. Extend canonical_history to full domain
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 8-12 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-13
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 448
+- **Research**: [research-001.md](.claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md)
 
 **Description**: Extend canonical_history from singleton domain to full domain for completeness proof correctness. The singleton domain (Task 448) makes temporal operators G φ and H φ vacuously true regardless of MCS membership, breaking the truth lemma correspondence: we need `G φ ∈ Γ iff G φ true` but singleton gives `G φ always true`. Requires implementing forward/backward existence lemmas to construct MCSs at arbitrary times while preserving canonical_task_rel.
 
@@ -96,7 +98,7 @@ technical_debt:
 
 ### 454. Fix temporal quantification to match paper
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 

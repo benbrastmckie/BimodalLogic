@@ -6,15 +6,23 @@
     {
       "project_number": 458,
       "project_name": "extend_canonical_history_full_domain",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-13T07:33:26Z",
-      "last_updated": "2026-01-13T07:37:46Z",
+      "last_updated": "2026-01-13T07:50:00Z",
       "parent_task": 257,
-      "dependencies": [448],
+      "dependencies": [
+        448
+      ],
       "session_id": "sess_1768268266_129193",
-      "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. The singleton domain (Task 448) makes temporal operators G φ and H φ vacuously true regardless of MCS membership, breaking the truth lemma correspondence: we need 'G φ ∈ Γ iff G φ true' but singleton gives 'G φ always true'. Requires implementing forward/backward existence lemmas to construct MCSs at arbitrary times while preserving canonical_task_rel."
+      "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. The singleton domain (Task 448) makes temporal operators G φ and H φ vacuously true regardless of MCS membership, breaking the truth lemma correspondence: we need 'G φ ∈ Γ iff G φ true' but singleton gives 'G φ always true'. Requires implementing forward/backward existence lemmas to construct MCSs at arbitrary times while preserving canonical_task_rel.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 457,
@@ -78,11 +86,11 @@
     {
       "project_number": 454,
       "project_name": "fix_temporal_quantification_to_match_paper",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-12T23:48:46Z",
-      "last_updated": "2026-01-12T23:48:46Z"
+      "last_updated": "2026-01-13T01:43:24Z"
     },
     {
       "project_number": 453,
