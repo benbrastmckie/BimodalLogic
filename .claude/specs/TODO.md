@@ -297,17 +297,20 @@ technical_debt:
 
 ### 449. Truth lemma
 - **Effort**: 15-20 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [IMPLEMENTING] (Phase 1 complete, Phases 2-4 partial)
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 257
-- **Dependencies**: 448
+- **Dependencies**: 448, 472 (Lindenbaum), 473 (compositionality)
 - **Research**: [research-001.md](.claude/specs/449_truth_lemma/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/449_truth_lemma/plans/implementation-001.md)
+- **Progress**: [implementation-summary-20260113.md](.claude/specs/449_truth_lemma/summaries/implementation-summary-20260113.md)
 
 **Description**: Phase 6 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem.
+
+**Progress**: Phase 1 (closure infrastructure) complete. Forward directions of all cases proven. Backward directions blocked on negation-completeness of FiniteWorldState (requires Task 472 Lindenbaum extension).
 
 ---
 

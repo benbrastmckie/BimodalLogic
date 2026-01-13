@@ -271,7 +271,7 @@
       "priority": "low",
       "effort": "15-20 hours",
       "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T16:31:55Z",
+      "last_updated": "2026-01-13T16:42:37Z",
       "parent_task": 257,
       "dependencies": [
         448
@@ -289,6 +289,10 @@
         {
           "path": ".claude/specs/449_truth_lemma/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/449_truth_lemma/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ],
       "session_id": "sess_1768321902_42d2f5",
