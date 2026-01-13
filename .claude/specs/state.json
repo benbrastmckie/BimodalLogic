@@ -77,13 +77,14 @@
     {
       "project_number": 454,
       "project_name": "fix_temporal_quantification_to_match_paper",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-12T23:48:46Z",
-      "last_updated": "2026-01-13T08:49:15Z",
+      "last_updated": "2026-01-13T09:00:00Z",
       "session_id": "sess_1768269755_071a27",
       "plan_version": "001",
+      "completed": "2026-01-13T09:00:00Z",
       "description": "The Lean implementation restricts temporal quantification to times in the world history's domain dom(τ) despite the fact the source paper /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (lines 896-7 and lines 1862-1872) quantifies over all times. It is also important that the times are unrestricted in the definition of logical consequence in line 924 and 2273. Fix the lean source code to match the paper exactly.",
       "artifacts": [
         {
@@ -93,6 +94,10 @@
         {
           "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/summaries/implementation-summary-20260112.md",
+          "type": "summary"
         }
       ]
     },

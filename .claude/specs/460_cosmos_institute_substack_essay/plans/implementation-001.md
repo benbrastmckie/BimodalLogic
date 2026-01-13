@@ -147,7 +147,7 @@ From research-001.md and research-002.md:
 ### Phase 4: Write Stakes and Invitation Sections
 
 **Estimated effort**: 45 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Connect to broader AI safety concerns
