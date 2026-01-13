@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T07:33:26Z",
-  "next_project_number": 459,
+  "next_project_number": 460,
   "active_projects": [
+    {
+      "project_number": 459,
+      "project_name": "update_bimodal_latex_metalogic_theorems_notes",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T01:58:46Z",
+      "last_updated": "2026-01-13T01:58:46Z"
+    },
     {
       "project_number": 458,
       "project_name": "extend_canonical_history_full_domain",
@@ -82,17 +91,22 @@
     {
       "project_number": 454,
       "project_name": "fix_temporal_quantification_to_match_paper",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-12T23:48:46Z",
-      "last_updated": "2026-01-13T08:35:38Z",
+      "last_updated": "2026-01-13T08:40:00Z",
       "session_id": "sess_1768269338_2b0341",
+      "plan_version": "001",
       "description": "The Lean implementation restricts temporal quantification to times in the world history's domain dom(τ) despite the fact the source paper /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (lines 896-7 and lines 1862-1872) quantifies over all times. It is also important that the times are unrestricted in the definition of logical consequence in line 924 and 2273. Fix the lean source code to match the paper exactly.",
       "artifacts": [
         {
           "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
