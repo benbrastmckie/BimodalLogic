@@ -307,13 +307,13 @@ By modus ponens, ψ holds at σ.
 -/
 theorem modal_k_dist_valid (φ ψ : Formula) :
     ⊨ ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
-  intro h_box_imp h_box_phi σ hs
-  -- h_box_imp : ∀ ρ hr, truth_at M ρ t hr (φ.imp ψ)
-  -- h_box_phi : ∀ ρ hr, truth_at M ρ t hr φ
-  have h_imp_at_σ := h_box_imp σ hs
-  have h_phi_at_σ := h_box_phi σ hs
+  intro h_box_imp h_box_phi σ
+  -- h_box_imp : ∀ ρ, truth_at M ρ t (φ.imp ψ)
+  -- h_box_phi : ∀ ρ, truth_at M ρ t φ
+  have h_imp_at_σ := h_box_imp σ
+  have h_phi_at_σ := h_box_phi σ
   unfold truth_at at h_imp_at_σ
   exact h_imp_at_σ h_phi_at_σ
 
@@ -330,13 +330,13 @@ By modus ponens, ψ holds at s.
 -/
 theorem temp_k_dist_valid (φ ψ : Formula) :
     ⊨ ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
-  intro h_future_imp h_future_phi s hs hts
-  -- h_future_imp : ∀ r hr, t < r → truth_at M τ r hr (φ.imp ψ)
-  -- h_future_phi : ∀ r hr, t < r → truth_at M τ r hr φ
-  have h_imp_at_s := h_future_imp s hs hts
-  have h_phi_at_s := h_future_phi s hs hts
+  intro h_future_imp h_future_phi s hts
+  -- h_future_imp : ∀ r, t < r → truth_at M τ r (φ.imp ψ)
+  -- h_future_phi : ∀ r, t < r → truth_at M τ r φ
+  have h_imp_at_s := h_future_imp s hts
+  have h_phi_at_s := h_future_phi s hts
   unfold truth_at at h_imp_at_s
   exact h_imp_at_s h_phi_at_s
 
@@ -351,16 +351,16 @@ Since r > s > t implies r > t, and Fφ says φ holds at all times > t, φ holds 
 -/
 
 theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_future
-  -- h_future : ∀ s hs, t < s → truth_at M τ s hs φ
-  -- Goal: ∀ s hs, t < s → (∀ r hr, s < r → truth_at M τ r hr φ)
-  intro s hs hts r hr hsr
-  -- Need to show: truth_at M τ r hr φ
+  -- h_future : ∀ s, t < s → truth_at M τ s φ
+  -- Goal: ∀ s, t < s → (∀ r, s < r → truth_at M τ r φ)
+  intro s hts r hsr
+  -- Need to show: truth_at M τ r φ
   -- We have: t < s and s < r, so t < r
   have htr : t < r := lt_trans hts hsr
-  exact h_future r hr htr
+  exact h_future r htr
 
 /--
 Temporal A axiom is valid: `⊨ φ → F(sometime_past φ)`.
@@ -376,13 +376,13 @@ Since t < s and t is in domain (we're evaluating there), t is such an r.
 -/
 
 theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometime_past)) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_phi
-  -- h_phi : truth_at M τ t ht φ
-  -- Goal: ∀ s hs, t < s → truth_at M τ s hs φ.sometime_past
-  intro s hs hts
-  -- Goal: truth_at M τ s hs φ.sometime_past
+  -- h_phi : truth_at M τ t φ
+  -- Goal: ∀ s, t < s → truth_at M τ s φ.sometime_past
+  intro s hts
+  -- Goal: truth_at M τ s φ.sometime_past
   -- With corrected definition: sometime_past φ = φ.neg.past.neg
   -- = (φ.neg).all_past.neg
   -- = ((φ.imp bot).all_past).imp bot
@@ -391,24 +391,24 @@ theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometim
   -- = truth_at ... (φ.neg.past.neg)
   -- = truth_at ... ((φ.imp bot).all_past.imp bot)
   -- = (truth_at ... (φ.imp bot).all_past) → False
-  -- = (∀ r hr, r < s → (truth_at ... φ → False)) → False
+  -- = (∀ r, r < s → (truth_at ... φ → False)) → False
 
-  -- We need to prove: (∀ r hr, r < s → (truth_at M τ r hr φ → False)) → False
-  -- We have: h_phi : truth_at M τ t ht φ, and hts : t < s
+  -- We need to prove: (∀ r, r < s → (truth_at M τ r φ → False)) → False
+  -- We have: h_phi : truth_at M τ t φ, and hts : t < s
 
-  -- Assuming h : ∀ r hr, r < s → (truth_at M τ r hr φ → False)
-  -- Then h t ht hts : truth_at M τ t ht φ → False
-  -- And h t ht hts h_phi : False
+  -- Assuming h : ∀ r, r < s → (truth_at M τ r φ → False)
+  -- Then h t hts : truth_at M τ t φ → False
+  -- And h t hts h_phi : False
 
   unfold Formula.sometime_past Formula.some_past Formula.neg truth_at
-  -- Goal: (∀ r hr, r < s → truth_at M τ r hr (φ.imp bot)) → False
+  -- Goal: (∀ r, r < s → truth_at M τ r (φ.imp bot)) → False
   intro h_all_neg
-  -- h_all_neg : ∀ r hr, r < s → truth_at M τ r hr (φ.imp bot)
+  -- h_all_neg : ∀ r, r < s → truth_at M τ r (φ.imp bot)
   -- This says: for all r < s, ¬φ at r
-  have h_neg_at_t := h_all_neg t ht hts
-  -- h_neg_at_t : truth_at M τ t ht (φ.imp bot)
-  -- = truth_at M τ t ht φ → truth_at M τ t ht bot
-  -- = truth_at M τ t ht φ → False
+  have h_neg_at_t := h_all_neg t hts
+  -- h_neg_at_t : truth_at M τ t (φ.imp bot)
+  -- = truth_at M τ t φ → truth_at M τ t bot
+  -- = truth_at M τ t φ → False
   unfold truth_at at h_neg_at_t
   exact h_neg_at_t h_phi
 
@@ -434,15 +434,15 @@ gives information about ALL times, not just future times.
 
 theorem temp_l_valid (φ : Formula) :
     ⊨ (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_always
-  -- h_always : truth_at M τ t ht φ.always
+  -- h_always : truth_at M τ t φ.always
   -- Since always φ = past φ ∧ (φ ∧ future φ), we need to unfold
   -- The premise gives us: φ at all past times, φ now, φ at all future times
-  -- Goal: ∀ s hs, t < s → ∀ r hr, r < s → truth_at M τ r hr φ
-  intro s hs hts r hr hrs
-  -- We need: truth_at M τ r hr φ
+  -- Goal: ∀ s, t < s → ∀ r, r < s → truth_at M τ r φ
+  intro s hts r hrs
+  -- We need: truth_at M τ r φ
   -- We know φ holds at ALL times from h_always
   -- Case split: either r < t (use past), r = t (use present), or r > t (use future)
   -- Since always φ = (past φ) ∧ φ ∧ (future φ), and h_always : truth_at for this conjunction
@@ -454,24 +454,24 @@ theorem temp_l_valid (φ : Formula) :
 
   -- Extract using classical logic (conjunction encoded as ¬(P → ¬Q))
   have h1 :
-    (∀ (u : T) (hu : τ.domain u), u < t → truth_at M τ u hu φ) ∧
-    ((truth_at M τ t ht φ →
-      (∀ (v : T) (hv : τ.domain v), t < v → truth_at M τ v hv φ) → False) → False) :=
+    (∀ (u : T), u < t → truth_at M τ u φ) ∧
+    ((truth_at M τ t φ →
+      (∀ (v : T), t < v → truth_at M τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
 
-  have h2 : truth_at M τ t ht φ ∧ (∀ (v : T) (hv : τ.domain v), t < v → truth_at M τ v hv φ) :=
+  have h2 : truth_at M τ t φ ∧ (∀ (v : T), t < v → truth_at M τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
 
   -- Case split on whether r is before, at, or after t
   rcases lt_trichotomy r t with h_lt | h_eq | h_gt
   · -- r < t: use h_past
-    exact h_past r hr h_lt
+    exact h_past r h_lt
   · -- r = t: use h_now
     subst h_eq; exact h_now
   · -- t < r: use h_future
-    exact h_future r hr h_gt
+    exact h_future r h_gt
 
 /--
 MF axiom validity: `□φ → □(Fφ)` is valid in all task semantic models.
@@ -488,28 +488,23 @@ relate truth at (σ, s) to truth at (time_shift σ (s-t), t), then applies the
 -/
 
 theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.all_future).box)) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_box_phi
-  -- h_box_phi : ∀ σ hs, truth_at M σ t hs φ
-  -- Goal: ∀ σ hs, ∀ s hs', t < s → truth_at M σ s hs' φ
-  intro σ hs s hs' hts
-  -- We need: truth_at M σ s hs' φ
+  -- h_box_phi : ∀ σ, truth_at M σ t φ
+  -- Goal: ∀ σ, ∀ s, t < s → truth_at M σ s φ
+  intro σ s hts
+  -- We need: truth_at M σ s φ
   -- From h_box_phi: φ at all histories at time t
 
   -- Strategy: Use time-shift to relate (σ, s) to a history at time t
   -- time_shift σ (s - t) gives a history at time t (where t + (s - t) = s)
-  have h_shifted_domain : (WorldHistory.time_shift σ (s - t)).domain t := by
-    simp only [WorldHistory.time_shift]
-    have : t + (s - t) = s := add_sub_cancel t s
-    rw [this]
-    exact hs'
 
   -- Apply h_box_phi to the time-shifted history
-  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) h_shifted_domain
+  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t))
 
   -- Use time-shift preservation to relate truth at (shifted, t) to truth at (σ, s)
-  have h_preserve := TimeShift.time_shift_preserves_truth M σ t s h_shifted_domain hs' φ
+  have h_preserve := TimeShift.time_shift_preserves_truth M σ t s φ
   exact h_preserve.mp h_phi_at_shifted
 
 /--
@@ -531,28 +526,23 @@ relate truth at (σ, s) to truth at (time_shift σ (s-t), t), then applies the
 -/
 
 theorem temp_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.box).all_future)) := by
-  intro T _ _ _ F M τ t ht
+  intro T _ _ _ F M τ t
   unfold truth_at
   intro h_box_phi
-  -- h_box_phi : ∀ σ hs, truth_at M σ t hs φ
-  -- Goal: ∀ s hs, t < s → ∀ σ hs', truth_at M σ s hs' φ
-  intro s hs hts σ hs'
-  -- We need: truth_at M σ s hs' φ
+  -- h_box_phi : ∀ σ, truth_at M σ t φ
+  -- Goal: ∀ s, t < s → ∀ σ, truth_at M σ s φ
+  intro s hts σ
+  -- We need: truth_at M σ s φ
   -- From h_box_phi: φ at all histories at time t
 
   -- Strategy: Use time-shift to relate (σ, s) to a history at time t
   -- time_shift σ (s - t) gives a history at time t
-  have h_shifted_domain : (WorldHistory.time_shift σ (s - t)).domain t := by
-    simp only [WorldHistory.time_shift]
-    have : t + (s - t) = s := add_sub_cancel t s
-    rw [this]
-    exact hs'
 
   -- Apply h_box_phi to the time-shifted history
-  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) h_shifted_domain
+  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t))
 
   -- Use time-shift preservation to relate truth at (shifted, t) to truth at (σ, s)
-  have h_preserve := TimeShift.time_shift_preserves_truth M σ t s h_shifted_domain hs' φ
+  have h_preserve := TimeShift.time_shift_preserves_truth M σ t s φ
   exact h_preserve.mp h_phi_at_shifted
 
 /--

@@ -1,6 +1,6 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-13T07:33:26Z",
+  "_last_updated": "2026-01-13T02:18:35Z",
   "next_project_number": 462,
   "active_projects": [
     {
@@ -16,13 +16,13 @@
     {
       "project_number": 460,
       "project_name": "cosmos_institute_substack_essay",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "high",
       "created": "2026-01-13T02:04:02Z",
-      "last_updated": "2026-01-13T02:17:27Z",
+      "last_updated": "2026-01-13T02:18:47Z",
       "description": "Create a 1000-2000 word essay that makes the project and its conclusions accessible to the public. Essays should conform to the tone and style of those that have appeared on the Cosmos Institute Substack. With the Grantee consent, select essays may be edited and featured on the Cosmos Institute Substack. This essay is due within 30 days after the conclusion of the grant term.",
-      "session_id": "sess_1768270557_4f4fb8",
+      "session_id": "sess_1768270717_0edfca",
       "artifacts": [
         {
           "path": ".claude/specs/460_cosmos_institute_substack_essay/reports/research-001.md",
@@ -75,56 +75,6 @@
       ]
     },
     {
-      "project_number": 456,
-      "project_name": "address_todos_in_bimodal_semantics_latex",
-      "status": "completed",
-      "language": "latex",
-      "priority": "medium",
-      "created": "2026-01-13T00:43:38Z",
-      "last_updated": "2026-01-13T00:58:51Z",
-      "description": "Address all TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/02-Semantics.tex by rigorously researching each in order to revise the document appropriately, ignoring nothing.",
-      "session_id": "sess_1768265665_a8df02",
-      "artifacts": [
-        {
-          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/summaries/implementation-summary-20260113.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-13T00:58:51Z"
-    },
-    {
-      "project_number": 455,
-      "project_name": "readme_extension_layer_descriptions",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-12T23:59:54Z",
-      "last_updated": "2026-01-13T00:24:59Z",
-      "description": "Turn the bullet points following the architecture drawing in the Overview section of README.md into clear and concise explanations of what each extension layer provides with regards to expressive and logical resources for representing and reasoning about tasks of increasing complexity.",
-      "session_id": "sess_1768263793_ebe078",
-      "plan_version": "001",
-      "artifacts": [
-        {
-          "path": ".claude/specs/455_readme_extension_layer_descriptions/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/455_readme_extension_layer_descriptions/summaries/implementation-summary-20260113.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-13T00:24:59Z"
-    },
-    {
       "project_number": 454,
       "project_name": "fix_temporal_quantification_to_match_paper",
       "status": "implementing",
@@ -166,217 +116,6 @@
       "description": "Use D instead of T for the totally ordered commutative group of durations (also called times relative to a world history) consistently throughout the latex files in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/ and throughout the Lean Code in Logos/ to match the notation used in /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex"
     },
     {
-      "project_number": 451,
-      "project_name": "add_reflection_extension_to_logos_layer_extensions",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-12T22:34:13Z",
-      "last_updated": "2026-01-12T23:37:34Z",
-      "description": "Add Reflection Extension for metacognition to the Logos layer extensions in README.md, recursive-semantics.md, layer-extensions.md, LogosReference.tex, and project README.md where the Reflection Extension follows the Agential Extension",
-      "session_id": "sess_1768260517_a912b7",
-      "artifacts": [
-        {
-          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-12T23:37:34Z"
-    },
-    {
-      "project_number": 448,
-      "project_name": "build_canonical_history",
-      "status": "completed",
-      "language": "lean",
-      "priority": "low",
-      "effort": "3-4 hours",
-      "created": "2026-01-12T22:08:58Z",
-      "last_updated": "2026-01-13T07:15:00Z",
-      "parent_task": 257,
-      "dependencies": [
-        447
-      ],
-      "description": "Phase 5 of completeness proofs: Build canonical_history construction. Define the history structure that threads MCSs together with the canonical task relation, establishing the temporal backbone for the canonical model. This bridges canonical_frame/model (Phase 4) and truth_lemma (Phase 6).",
-      "session_id": "sess_1768267030_cfb908",
-      "plan_version": "001",
-      "completed": "2026-01-13T07:15:00Z",
-      "artifacts": [
-        {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/448_build_canonical_history/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/448_build_canonical_history/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/448_build_canonical_history/summaries/implementation-summary-20260113.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 444,
-      "project_name": "formula_countability_set_list_bridge",
-      "status": "completed",
-      "language": "lean",
-      "priority": "low",
-      "effort": "6-8 hours",
-      "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T04:05:00Z",
-      "completed": "2026-01-13T04:05:00Z",
-      "parent_task": 257,
-      "session_id": "sess_1768258292_b0c125",
-      "plan_version": "001",
-      "description": "Phase 1 of completeness proofs: Establish bridge between set-based and list-based consistency. Prove Formula is countable, implement enumeration, define setToContext, prove set-list consistency equivalence, complete lindenbaum proof.",
-      "artifacts": [
-        {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/444_formula_countability_set_list_bridge/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/444_formula_countability_set_list_bridge/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/444_formula_countability_set_list_bridge/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/444_formula_countability_set_list_bridge/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 445,
-      "project_name": "maximal_consistent_set_properties",
-      "status": "completed",
-      "language": "lean",
-      "priority": "low",
-      "effort": "10-12 hours",
-      "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T05:35:00Z",
-      "completed": "2026-01-13T05:35:00Z",
-      "parent_task": 257,
-      "dependencies": [
-        444
-      ],
-      "description": "Phase 2 of completeness proofs: Prove key properties of maximal consistent sets. Prove maximal_consistent_closed, maximal_negation_complete, implication/conjunction/disjunction properties, modal and temporal saturation lemmas.",
-      "session_id": "sess_1768259586_1524ac",
-      "plan_version": "001",
-      "artifacts": [
-        {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/445_maximal_consistent_set_properties/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/445_maximal_consistent_set_properties/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/445_maximal_consistent_set_properties/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 446,
-      "project_name": "agnostic_duration_construction",
-      "status": "completed",
-      "language": "lean",
-      "priority": "low",
-      "effort": "15-20 hours",
-      "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T07:45:00Z",
-      "completed": "2026-01-13T07:45:00Z",
-      "parent_task": 257,
-      "dependencies": [
-        445
-      ],
-      "description": "Phase 3 of completeness proofs: Implement order-type based duration construction from research-008.md. Define TemporalChain, ChainSegment, orderTypeEquiv. Build PositiveDuration quotient with AddCommMonoid. Define Duration via Grothendieck construction with LinearOrder and IsOrderedAddMonoid instances.",
-      "session_id": "sess_1768262434_4d1ee3",
-      "plan_version": "001",
-      "artifacts": [
-        {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/446_agnostic_duration_construction/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/446_agnostic_duration_construction/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/446_agnostic_duration_construction/summaries/implementation-summary-20260112.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 447,
-      "project_name": "canonical_frame_model_construction",
-      "status": "completed",
-      "language": "lean",
-      "priority": "low",
-      "effort": "12-15 hours",
-      "created": "2026-01-12T22:03:06Z",
-      "last_updated": "2026-01-13T00:51:22Z",
-      "parent_task": 257,
-      "dependencies": [
-        446
-      ],
-      "description": "Phase 4 of completeness proofs: Build canonical frame and model using agnostic Duration type. Define canonical_task_rel with modal/temporal transfer. Prove nullity and compositionality. Implement canonical_frame, canonical_valuation, canonical_model, canonical_history.",
-      "artifacts": [
-        {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/447_canonical_frame_model_construction/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/447_canonical_frame_model_construction/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/447_canonical_frame_model_construction/summaries/implementation-summary-20260113.md",
-          "type": "summary"
-        }
-      ],
-      "plan_version": "001",
-      "completed": "2026-01-13T00:51:22Z"
-    },
-    {
       "project_number": 449,
       "project_name": "truth_lemma",
       "status": "not_started",
@@ -415,33 +154,6 @@
         {
           "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
           "type": "plan"
-        }
-      ]
-    },
-    {
-      "project_number": 437,
-      "project_name": "improve_readme_consistency_with_recursive_semantics",
-      "status": "completed",
-      "language": "general",
-      "priority": "high",
-      "created": "2026-01-12T00:00:00Z",
-      "last_updated": "2026-01-12T22:58:00Z",
-      "completed": "2026-01-12T22:58:00Z",
-      "description": "Improve /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md for consistency and clarity with the recursive-semantics.md documentation. Reduce redundancy by presenting layer extensions only once. Fix any internal discrepancies. Emphasize the parallel development of Logos in the ModelChecker with link to https://github.com/benbrastmckie/ModelChecker.",
-      "session_id": "sess_1768256285_f4dc12",
-      "plan_version": "001",
-      "artifacts": [
-        {
-          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
-          "type": "summary"
         }
       ]
     },
