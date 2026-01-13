@@ -6,13 +6,19 @@
     {
       "project_number": 480,
       "project_name": "investigate_workflow_delegation_early_stop",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T20:12:45Z",
-      "last_updated": "2026-01-13T20:18:16Z",
+      "last_updated": "2026-01-13T20:24:19Z",
       "description": "Investigate workflow delegation errors causing early stop. Tasks 474, 467, 462 attempts did not fix. Check .claude/output/ for patterns. Search for terms like complete, finished that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems. Research similar errors online.",
-      "session_id": "sess_1768335487_15fa4d"
+      "session_id": "sess_1768335487_15fa4d",
+      "artifacts": [
+        {
+          "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 479,
