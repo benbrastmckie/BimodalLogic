@@ -15,11 +15,11 @@
     {
       "project_number": 485,
       "project_name": "tikz_light_cone_diagram_for_tm_motivation",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-13T22:00:07Z",
-      "last_updated": "2026-01-13T22:24:35Z",
+      "last_updated": "2026-01-13T22:28:17Z",
       "artifacts": [
         {
           "path": ".claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md",
@@ -28,6 +28,10 @@
         {
           "path": ".claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/summaries/implementation-summary-20260113.md",
+          "type": "summary"
         }
       ]
     },
