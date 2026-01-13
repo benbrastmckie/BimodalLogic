@@ -6,12 +6,19 @@
     {
       "project_number": 487,
       "project_name": "create_bimodal_boneyard_for_deprecated_code",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T23:24:12Z",
-      "last_updated": "2026-01-13T23:24:12Z",
-      "description": "Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference."
+      "last_updated": "2026-01-13T23:29:58Z",
+      "description": "Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference.",
+      "session_id": "sess_1768346834_fdc1c1",
+      "artifacts": [
+        {
+          "path": ".claude/specs/487_create_bimodal_boneyard_for_deprecated_code/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 488,
@@ -135,7 +142,7 @@
     {
       "project_number": 480,
       "project_name": "investigate_workflow_delegation_early_stop",
-      "status": "implemented",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-13T20:12:45Z",

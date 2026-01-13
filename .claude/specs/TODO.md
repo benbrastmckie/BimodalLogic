@@ -30,7 +30,7 @@ technical_debt:
 
 ### 480. Investigate workflow delegation early stop issues
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
 - **Implemented**: 2026-01-13
@@ -86,9 +86,10 @@ technical_debt:
 
 ### 487. Create Bimodal/Boneyard/ for deprecated code
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
+- **Research**: [research-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/reports/research-001.md)
 
 **Description**: Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference.
 
@@ -309,27 +310,6 @@ technical_debt:
 ---
 
 ## Low Priority
-
-### 490. Complete decidability procedure
-- **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 469
-
-**Description**: Complete the decidability procedure for TM logic. The existing Decidability module has tableau infrastructure but needs: proof extraction from closed tableaux, completeness proof connecting to FMP, and full decide function verification. Extends Task 469.
-
----
-
-### 491. Research alternative completeness proofs
-- **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: lean
-
-**Description**: Research alternative completeness proof approaches for TM logic: filtration-based proofs (standard modal technique), algebraic semantics (Boolean algebras with operators), and step-by-step canonical model variations. Compare with current semantic history-based approach for potential improvements or independent verification.
-
----
 
 ### 468. Refactor infinite canonical model code
 - **Status**: [NOT STARTED]
