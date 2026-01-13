@@ -153,7 +153,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/478_revise_ecosystem_view_section/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/478_revise_ecosystem_view_section/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](.claude/specs/478_revise_ecosystem_view_section/plans/implementation-002.md)
 
 **Description**: Revise the '## The Ecosystem View: Meet Benjamin' section of `/home/benjamin/Projects/ProofChecker/docs/essays/llms_to_agis/llms_to_agis.md` to: (1) begin by focusing on presenting the Logos project discussed informally in `/home/benjamin/Projects/ProofChecker/docs/essays/latex/cosmos-essay.tex`; (2) claim that it is unlikely that any one ingredient will scale directly to AGI without hitting bottlenecks, but rather, like natural ecosystems, what leads to flourishing is not the dominance of one species but the careful harmony between organisms; and (3) argue that what remains to be explored are not just the development of new technologies, but the interactions and synergies between them, using physics as an example, and claiming that training AI systems in formally verified logical reasoning in highly expressive languages with all the resources for complex thinking and planning may be such a combination.
 

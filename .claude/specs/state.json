@@ -10,7 +10,7 @@
       "language": "general",
       "priority": "medium",
       "created": "2026-01-13T17:34:48Z",
-      "last_updated": "2026-01-13T18:07:52Z",
+      "last_updated": "2026-01-13T18:17:12Z",
       "artifacts": [
         {
           "path": ".claude/specs/478_revise_ecosystem_view_section/reports/research-001.md",
@@ -18,6 +18,10 @@
         },
         {
           "path": ".claude/specs/478_revise_ecosystem_view_section/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/478_revise_ecosystem_view_section/plans/implementation-002.md",
           "type": "plan"
         }
       ]
