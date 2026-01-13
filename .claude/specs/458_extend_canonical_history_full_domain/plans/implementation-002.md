@@ -106,7 +106,7 @@ noncomputable def canonical_states (S : CanonicalWorldState) (t : Duration) : Ca
 
 ## Implementation Phases
 
-### Phase 1: Verify Duration Structure [COMPLETED]
+### Phase 1: Verify Duration Structure [COMPLETED - Previous Session]
 
 **Goal**: Confirm the structure of `Duration`/`CanonicalTime` and determine chain indexing strategy.
 
@@ -127,7 +127,9 @@ noncomputable def canonical_states (S : CanonicalWorldState) (t : Duration) : Ca
 
 ---
 
-### Phase 2: Implement Forward Chain [COMPLETED]
+### Phase 2: Implement Forward Chain [NOT STARTED]
+
+**Note**: The summary mentioned chain implementations but they don't exist in the codebase. The current canonical_states uses independent Classical.choose (v001 approach).
 
 **Goal**: Define `canonical_forward_chain` and prove its key properties.
 
@@ -151,7 +153,7 @@ noncomputable def canonical_states (S : CanonicalWorldState) (t : Duration) : Ca
 
 ---
 
-### Phase 3: Implement Backward Chain [COMPLETED]
+### Phase 3: Implement Backward Chain [NOT STARTED]
 
 **Goal**: Define `canonical_backward_chain` and prove its key properties.
 
@@ -173,7 +175,7 @@ noncomputable def canonical_states (S : CanonicalWorldState) (t : Duration) : Ca
 
 ---
 
-### Phase 4: Implement Integer States [PARTIAL]
+### Phase 4: Implement Integer States [NOT STARTED]
 
 **Goal**: Combine forward and backward chains into `canonical_states_int`.
 
