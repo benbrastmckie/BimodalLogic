@@ -42,13 +42,19 @@
     {
       "project_number": 472,
       "project_name": "lindenbaum_extension_finite_closures",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T16:10:32Z",
-      "last_updated": "2026-01-13T16:47:17Z",
+      "last_updated": "2026-01-13T16:50:36Z",
       "parent_task": 458,
-      "description": "Complete the Lindenbaum extension for finite closures, building on task 458. Implement the restricted Lindenbaum lemma that extends consistent formula sets to maximal consistent sets within the finite subformula closure, enabling the finite truth lemma proof."
+      "description": "Complete the Lindenbaum extension for finite closures, building on task 458. Implement the restricted Lindenbaum lemma that extends consistent formula sets to maximal consistent sets within the finite subformula closure, enabling the finite truth lemma proof.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 468,
