@@ -114,12 +114,18 @@
     {
       "project_number": 489,
       "project_name": "formal_fmp_theorem_packaging",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T23:24:12Z",
-      "last_updated": "2026-01-14T01:43:04Z",
-      "description": "Create formal Finite Model Property theorem statement: forall phi, satisfiable phi -> exists (M : FiniteModel), M models phi. Package existing semantic_weak_completeness proof into standard FMP format. Add documentation explaining bounds (temporal depth, modal depth)."
+      "last_updated": "2026-01-14T01:48:32Z",
+      "description": "Create formal Finite Model Property theorem statement: forall phi, satisfiable phi -> exists (M : FiniteModel), M models phi. Package existing semantic_weak_completeness proof into standard FMP format. Add documentation explaining bounds (temporal depth, modal depth).",
+      "artifacts": [
+        {
+          "path": ".claude/specs/489_formal_fmp_theorem_packaging/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 490,
