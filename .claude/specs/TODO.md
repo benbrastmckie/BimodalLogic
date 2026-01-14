@@ -84,6 +84,16 @@ technical_debt:
 
 ## Medium Priority
 
+### 494. Create Bimodal theory demo presentation
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Create an elegant demo for presenting the Bimodal theory results (soundness, deduction, completeness, decidability) to an audience. Showcase the key theorems and proofs established in the Bimodal/ directory.
+
+---
+
 ### 493. Sync TikZ diagram, GLOSSARY.md, and README.md descriptions
 - **Effort**: 2-3 hours
 - **Status**: [COMPLETED]
