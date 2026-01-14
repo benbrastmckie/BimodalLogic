@@ -28,7 +28,7 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 ┌───────────┐ ┌───────────┐ ┌─────────────────┐ ┌────────────┐ ┌───────────┐
 │ Epistemic │ │ Abilities │ │    Normative    │ │  Choice    │ │  Spatial  │
 │ Extension │ │ Extension │ │    Extension    │ │ Extension  │ │ Extension │
-│ (belief,  │ │ (Can,Stit)│ │  (obligation,   │ │ (FP, FF,   │ │ (location,│
+│ (belief,  │ │ (Can,Stit)│ │  (obligation,   │ │ (FP, FF,   │ │ (location,│ ...
 │ knowledge,│ │           │ │   permission,   │ │    Ch)     │ │  spatial  │
 │probability│ │           │ │   preference)   │ │            │ │ relations)│
 └─────┬─────┘ └─────┬─────┘ └────────┬────────┘ └─────┬──────┘ └─────┬─────┘
@@ -37,7 +37,7 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
                                      │ at least one required
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│               Agent-dependent extensions (require middle layer)                 │
+│                         Agent-dependent extensions                              │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌───────────────────────────────┐    │
 │  │    Agential     │  │     Social      │  │          Reflection           │    │
 │  │ (agent-indexing)│  │ (common ground) │  │ (metacognition, I operator)   │    │
@@ -45,9 +45,9 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Constitutive Foundation**: Provides the hyperintensional base with predicates, functions, quantifiers, and constitutive operators (propositional identity `≡`, grounding `≤`, essence `⊑`) over a state lattice with bilateral propositions (verifier/falsifier pairs). This enables fine-grained distinctions between propositions with identical truth-values but different verification conditions---essential for exact specification of what makes a claim true.
+- **Constitutive Foundation**: Provides the hyperintensional base with predicates (`F`, `G`), functions (`f`, `g`), variables (`x`, `y`), boolean operators (`¬`, `∧`, `∨`, `⊥`, `⊤`), lambda abstraction (`λ`), identity (`=`), and constitutive operators (propositional identity `≡`, grounding `≤`, essence `⊑`, reduction `⇒`) over a state lattice with bilateral propositions (verifier/falsifier pairs). This enables fine-grained distinctions between propositions with identical truth-values but different verification conditions---essential for exact specification of what makes a claim true.
 
-- **Explanatory Extension**: Adds modal operators (`□`, `◇`) for necessity and possibility, temporal operators (`H`, `G`, `P`, `F`) for reasoning across time, counterfactual conditionals (`□→`, `◇→`) for hypothetical reasoning, and causal operators (`○→`) for explanatory links. Together these resources enable reasoning about action sequences, future contingency, what would have happened under different circumstances, and causal relationships.
+- **Explanatory Extension**: Adds quantifiers (`∀`, `∃`), modal operators (`□`, `◇`) for necessity and possibility, temporal operators (`H`, `G`, `P`, `F`, `S`, `U`) for reasoning across time, store/recall operators (`↓`, `↑`) for temporal reference, actuality (`Act`) for distinguishing actual from possible, counterfactual conditionals (`□→`, `◇→`) for hypothetical reasoning, and causal operators (`○→`, `◌→`) for explanatory links. Together these resources enable reasoning about action sequences, future contingency, what would have happened under different circumstances, and causal relationships.
 
 - **Epistemic Extension**: Introduces belief (`B`), knowledge (`K`), probability (`Pr`), and indicative conditional operators for reasoning under uncertainty. By extending the temporal framework with credence functions over state transitions, agents can track how evidence updates beliefs across time and distinguish what an agent believes from what is actually the case.
 
@@ -282,7 +282,7 @@ Vision and planned architecture:
 
 - [Documentation Hub](docs/README.md) - Complete documentation index
 - [Bimodal Operators](Bimodal/docs/reference/OPERATORS.md) - Formal symbols reference
-- [Logos Glossary](Logos/docs/reference/GLOSSARY.md) - Key concepts and definitions
+- [Logos Glossary](Theories/Logos/docs/reference/GLOSSARY.md) - Key concepts and definitions
 
 ---
 
