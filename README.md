@@ -38,10 +38,10 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │               Agent-dependent extensions (require middle layer)                 │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌───────────────────────────────┐   │
-│  │    Agential     │  │     Social      │  │          Reflection           │   │
-│  │ (agent-indexing)│  │ (common ground) │  │ (metacognition, I operator)   │   │
-│  └─────────────────┘  └─────────────────┘  └───────────────────────────────┘   │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌───────────────────────────────┐    │
+│  │    Agential     │  │     Social      │  │          Reflection           │    │
+│  │ (agent-indexing)│  │ (common ground) │  │ (metacognition, I operator)   │    │
+│  └─────────────────┘  └─────────────────┘  └───────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
