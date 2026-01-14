@@ -2166,9 +2166,140 @@ noncomputable def glue_histories {phi : Formula}
     -- The forward relation proof follows the same structure as the states definition.
     -- Main cases: (1) both before junction, (2) crossing junction, (3) both after junction.
     -- Each case uses either h1.forward_rel, h2.respects_task, or h2.forward_rel.
-    -- The edge cases (out of bounds) are marked as sorry since they shouldn't occur
-    -- in valid uses of glue_histories.
-    sorry
+    have h_t'_eq := FiniteTime.succ_toInt (temporalBound phi) t t' h_succ
+    -- t' = t + 1 in integer coordinates
+    by_cases h_t_le : FiniteTime.toInt (temporalBound phi) t ≤ FiniteTime.toInt (temporalBound phi) t1'
+    · -- t is before or at junction
+      by_cases h_t'_le : FiniteTime.toInt (temporalBound phi) t' ≤ FiniteTime.toInt (temporalBound phi) t1'
+      · -- Both t and t' are at or before junction: use h1.forward_rel
+        simp only [h_t_le, ↓reduceIte, h_t'_le]
+        exact h1.forward_rel t t' h_succ
+      · -- t is at junction, t' is just after: crossing junction case
+        -- Since t' = t + 1 and t ≤ t1' < t', we have t = t1'
+        have h_t_eq_t1' : FiniteTime.toInt (temporalBound phi) t = FiniteTime.toInt (temporalBound phi) t1' := by omega
+        have h_t_eq : t = t1' := FiniteTime.toInt_injective (temporalBound phi) h_t_eq_t1'
+        simp only [h_t_le, ↓reduceIte, h_t'_le]
+        -- Source state is h1.states t = h1.states t1' = h2.states t2 (by h_agree and h_t_eq)
+        rw [h_t_eq, h_agree]
+        -- offset = toInt t' - toInt t1' = 1 (since toInt t' = toInt t + 1 = toInt t1' + 1)
+        have h_offset_val : FiniteTime.toInt (temporalBound phi) t' - FiniteTime.toInt (temporalBound phi) t1' = 1 := by
+          rw [h_t'_eq, h_t_eq_t1']; omega
+        -- Split on whether target is in bounds
+        split_ifs with h_bounds
+        · -- In bounds case: target is h2.states at t2 shifted by 1
+          -- Simplify h_bounds using h_offset_val
+          have h_bounds_simp : -↑(temporalBound phi) ≤ FiniteTime.toInt (temporalBound phi) t2 + 1 ∧
+                               FiniteTime.toInt (temporalBound phi) t2 + 1 ≤ ↑(temporalBound phi) := by
+            convert h_bounds using 2 <;> omega
+          -- Get the target time t2' with toInt = toInt t2 + 1
+          let t2' := Classical.choose (FiniteTime.toInt_surj_on_range (temporalBound phi)
+            (FiniteTime.toInt (temporalBound phi) t2 + 1)
+            h_bounds_simp.1 h_bounds_simp.2)
+          have h_t2'_spec : FiniteTime.toInt (temporalBound phi) t2' =
+              FiniteTime.toInt (temporalBound phi) t2 + 1 :=
+            Classical.choose_spec (FiniteTime.toInt_surj_on_range (temporalBound phi)
+              (FiniteTime.toInt (temporalBound phi) t2 + 1)
+              h_bounds_simp.1 h_bounds_simp.2)
+          -- Need to show the classical.choose in the goal equals t2'
+          -- First show succ? t2 = some t2'
+          have h_succ_t2 : FiniteTime.succ? (temporalBound phi) t2 = some t2' := by
+            simp only [FiniteTime.succ?]
+            have h_t2_upper : FiniteTime.toInt (temporalBound phi) t2 ≤ ↑(temporalBound phi) - 1 := by
+              have := h_bounds_simp.2; omega
+            have h_val_bound : t2.val < 2 * temporalBound phi := by
+              have h_range := FiniteTime.toInt_range (temporalBound phi) t2
+              simp only [FiniteTime.toInt] at h_t2_upper h_range
+              omega
+            split_ifs with h_bound_check
+            · simp only [Option.some.injEq]
+              apply FiniteTime.toInt_injective (temporalBound phi)
+              simp only [FiniteTime.toInt] at h_t2'_spec ⊢
+              push_cast
+              omega
+            · -- False case: h_bound_check contradicts h_val_bound
+              omega
+          -- Now show goal equals h2.forward_rel t2 t2'
+          -- The Classical.choose in goal should equal t2'
+          have h_goal_eq : Classical.choose (FiniteTime.toInt_surj_on_range (temporalBound phi)
+              (FiniteTime.toInt (temporalBound phi) t2 +
+               (FiniteTime.toInt (temporalBound phi) t' - FiniteTime.toInt (temporalBound phi) t1'))
+              h_bounds.1 h_bounds.2) = t2' := by
+            apply FiniteTime.toInt_injective (temporalBound phi)
+            rw [Classical.choose_spec (FiniteTime.toInt_surj_on_range _ _ h_bounds.1 h_bounds.2)]
+            rw [h_t2'_spec, h_offset_val]
+          rw [h_goal_eq]
+          exact h2.forward_rel t2 t2' h_succ_t2
+        · -- Out of bounds case: target is h1.states t1' = h2.states t2 (same state)
+          -- Need finite_task_rel phi (h2.states t2) 1 (h2.states t2)
+          -- This requires showing w relates to itself with duration 1, which is
+          -- NOT generally true (nullity only gives duration 0).
+          -- This edge case occurs when t2 is at the upper boundary (toInt t2 = k).
+          -- In practice, valid gluing should ensure room for successor.
+          -- Marking as sorry - this is the documented edge case.
+          sorry
+    · -- t is after junction
+      push_neg at h_t_le
+      -- t' is also after junction (since t' = t + 1 > t1')
+      have h_t'_gt : FiniteTime.toInt (temporalBound phi) t' > FiniteTime.toInt (temporalBound phi) t1' := by omega
+      have h_t'_not_le : ¬(FiniteTime.toInt (temporalBound phi) t' ≤ FiniteTime.toInt (temporalBound phi) t1') := by omega
+      have h_t_not_le : ¬(FiniteTime.toInt (temporalBound phi) t ≤ FiniteTime.toInt (temporalBound phi) t1') := by omega
+      simp only [h_t_not_le, ↓reduceIte, h_t'_not_le]
+      -- Both t and t' are after junction. Need to handle 4 cases based on bounds.
+      -- offset_t = toInt t - toInt t1' > 0, offset_t' = toInt t' - toInt t1' = offset_t + 1
+      -- target_t = toInt t2 + offset_t, target_t' = toInt t2 + offset_t' = target_t + 1
+      let offset_t := FiniteTime.toInt (temporalBound phi) t - FiniteTime.toInt (temporalBound phi) t1'
+      let offset_t' := FiniteTime.toInt (temporalBound phi) t' - FiniteTime.toInt (temporalBound phi) t1'
+      have h_offset_rel : offset_t' = offset_t + 1 := by simp only [offset_t, offset_t', h_t'_eq]; omega
+      let target_t := FiniteTime.toInt (temporalBound phi) t2 + offset_t
+      let target_t' := FiniteTime.toInt (temporalBound phi) t2 + offset_t'
+      have h_target_rel : target_t' = target_t + 1 := by simp only [target_t, target_t', h_offset_rel]; omega
+      -- Split on bounds for source state
+      split_ifs with h_bounds_t h_bounds_t'
+      · -- Both in bounds: use h2.forward_rel
+        -- Get the source time
+        let src_time := Classical.choose (FiniteTime.toInt_surj_on_range (temporalBound phi)
+            target_t h_bounds_t.1 h_bounds_t.2)
+        have h_src_spec : FiniteTime.toInt (temporalBound phi) src_time = target_t :=
+          Classical.choose_spec (FiniteTime.toInt_surj_on_range _ _ h_bounds_t.1 h_bounds_t.2)
+        -- Get the target time
+        let dst_time := Classical.choose (FiniteTime.toInt_surj_on_range (temporalBound phi)
+            target_t' h_bounds_t'.1 h_bounds_t'.2)
+        have h_dst_spec : FiniteTime.toInt (temporalBound phi) dst_time = target_t' :=
+          Classical.choose_spec (FiniteTime.toInt_surj_on_range _ _ h_bounds_t'.1 h_bounds_t'.2)
+        -- toInt dst_time = toInt src_time + 1
+        have h_dst_src : FiniteTime.toInt (temporalBound phi) dst_time =
+            FiniteTime.toInt (temporalBound phi) src_time + 1 := by
+          rw [h_dst_spec, h_src_spec, h_target_rel]
+        -- So succ? src_time = some dst_time
+        have h_succ_src : FiniteTime.succ? (temporalBound phi) src_time = some dst_time := by
+          simp only [FiniteTime.succ?]
+          have h_src_upper : FiniteTime.toInt (temporalBound phi) src_time ≤ ↑(temporalBound phi) - 1 := by
+            rw [h_src_spec]; have := h_bounds_t'.2; omega
+          have h_src_range := FiniteTime.toInt_range (temporalBound phi) src_time
+          have h_val_bound : src_time.val < 2 * temporalBound phi := by
+            simp only [FiniteTime.toInt] at h_src_upper h_src_range; omega
+          split_ifs with h_check
+          · simp only [Option.some.injEq]
+            apply FiniteTime.toInt_injective (temporalBound phi)
+            simp only [FiniteTime.toInt] at h_dst_src ⊢
+            push_cast; omega
+          · omega
+        exact h2.forward_rel src_time dst_time h_succ_src
+      · -- Source in bounds, target out of bounds: edge case
+        -- target_t' = target_t + 1 out of bounds means target_t = k
+        -- This is an edge case where we're at the boundary
+        sorry
+      · -- Source out of bounds, target in bounds: contradiction
+        -- If source (target_t) is out of bounds and target (target_t') is in bounds,
+        -- since target_t' = target_t + 1, this would require target_t out of lower bound
+        -- but target_t' in bounds, which means target_t >= -k-1 and target_t' <= k,
+        -- so target_t + 1 <= k, target_t <= k - 1. Combined with target_t < -k means
+        -- contradiction. Actually the bounds are symmetric so this could happen.
+        sorry
+      · -- Both out of bounds: fallback to h1.states t1'
+        -- Need finite_task_rel phi (h1.states t1') 1 (h1.states t1')
+        -- This is the edge case mentioned in comments
+        sorry
   backward_rel := fun t t' h_pred => by
     -- Similarly for backward relation.
     sorry

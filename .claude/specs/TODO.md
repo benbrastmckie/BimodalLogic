@@ -132,9 +132,10 @@ technical_debt:
 
 ### 488. Fill remaining bridge lemmas
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-14
 - **Planned**: 2026-01-14
+- **Started**: 2026-01-14
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/488_fill_remaining_bridge_lemmas/reports/research-001.md)

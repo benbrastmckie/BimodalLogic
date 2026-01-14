@@ -1,7 +1,7 @@
 # Implementation Plan: Task #488
 
 - **Task**: 488 - fill_remaining_bridge_lemmas
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4 hours
 - **Priority**: Medium
 - **Dependencies**: Task 473 (completed), Task 481 (completed), Task 482 (completed)
@@ -50,7 +50,7 @@ Research report research-001.md (2026-01-13) identified:
 
 ## Implementation Phases
 
-### Phase 1: MCS Projection Maximality [NOT STARTED]
+### Phase 1: MCS Projection Maximality [IN PROGRESS]
 
 **Goal**: Fill the high-priority `mcs_projection_is_closure_mcs` maximality sorry (line ~3014)
 
@@ -124,7 +124,7 @@ Research report research-001.md (2026-01-13) identified:
 
 ---
 
-### Phase 4: Gluing Relation Preservation [NOT STARTED]
+### Phase 4: Gluing Relation Preservation [PARTIAL]
 
 **Goal**: Fill `glue_histories.forward_rel` and `glue_histories.backward_rel` (lines ~2171, ~2174)
 
