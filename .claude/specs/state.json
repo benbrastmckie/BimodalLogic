@@ -1,8 +1,17 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-13T18:57:59Z",
-  "next_project_number": 493,
+  "next_project_number": 494,
   "active_projects": [
+    {
+      "project_number": 493,
+      "project_name": "sync_tikz_glossary_readme_descriptions",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-14T00:04:49Z",
+      "last_updated": "2026-01-14T00:04:49Z"
+    },
     {
       "project_number": 492,
       "project_name": "update_bimodalreference_tex_metalogical_results",

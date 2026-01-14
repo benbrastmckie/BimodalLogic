@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-13T21:00:00Z
-next_project_number: 493
+next_project_number: 494
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -83,6 +83,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 493. Sync TikZ diagram, GLOSSARY.md, and README.md descriptions
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Draw on the tikz diagram in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex which is correct to include any missing operators in /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/reference/GLOSSARY.md and to improve the diagram in Overview in /home/benjamin/Projects/ProofChecker/README.md to match. Then draw on the descriptions included in /home/benjamin/Projects/ProofChecker/README.md to expand and improve the descriptions following the tikz diagram in 00-Introduction.tex. The aim is consistency and quality.
+
+---
 
 ### 492. Update BimodalReference.tex with metalogical results
 - **Effort**: 4-6 hours
