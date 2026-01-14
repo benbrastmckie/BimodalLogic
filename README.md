@@ -2,7 +2,7 @@
 
 **Logos** is a formal verification framework in Lean 4 implementing hyperintensional logics for verified AI reasoning. By combining an axiomatic proof system with recursive semantics, Logos generates unlimited self-supervised training data for AI systems, providing proof receipts for valid inferences and countermodels for invalid ones without relying on human annotation.
 
-**Formal Specifications**: [markdown](Theories/Logos/docs/research/recursive-semantics.md) | [pdf](Theories/Logos/latex/LogosReference.pdf) | [tex](Theories/Logos/latex/LogosReference.tex)
+**Formal Specifications**: [Logos](Theories/Logos/latex/LogosReference.pdf) | [Bimodal](Theories/Bimodal/latex/BimodalReference.tex)
 
 ---
 
