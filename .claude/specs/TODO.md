@@ -86,13 +86,15 @@ technical_debt:
 
 ### 494. Create Bimodal theory demo presentation
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-14
 - **Planned**: 2026-01-14
+- **Completed**: 2026-01-14
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/494_bimodal_demo_presentation/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/494_bimodal_demo_presentation/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260114.md](.claude/specs/494_bimodal_demo_presentation/summaries/implementation-summary-20260114.md)
 
 **Description**: Create an elegant demo for presenting the Bimodal theory results (soundness, deduction, completeness, decidability) to an audience. Showcase the key theorems and proofs established in the Bimodal/ directory.
 
@@ -161,7 +163,8 @@ technical_debt:
 
 ### 489. Formal FMP theorem packaging
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-14
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/489_formal_fmp_theorem_packaging/reports/research-001.md)

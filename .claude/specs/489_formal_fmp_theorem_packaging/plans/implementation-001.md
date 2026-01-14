@@ -50,7 +50,7 @@ Research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Define FiniteTaskFrame and FiniteTaskModel [NOT STARTED]
+### Phase 1: Define FiniteTaskFrame and FiniteTaskModel [IN PROGRESS]
 
 **Goal**: Create explicit structures bundling the `Finite` constraint on world states.
 
