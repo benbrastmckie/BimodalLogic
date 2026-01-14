@@ -4,7 +4,7 @@
 
 The project also includes the **Bimodal** theory, a fragment of independent interest providing a complete bimodal logic for reasoning about past and future contingency. While the Bimodal theory serves as a methodological testbed for Logos development, it captures fundamental relationships between time and possibility in its own right. See [Bimodal Theory](#bimodal-theory) for details.
 
-**Formal Specifications**: [Logos](Theories/Logos/latex/LogosReference.pdf) | [Bimodal](Theories/Bimodal/latex/BimodalReference.tex)
+**Formal Specifications**: [Logos](Theories/Logos/latex/LogosReference.pdf) | [Bimodal](Theories/Bimodal/latex/BimodalReference.pdf)
 **Formal Demo**: [Bimodal](Theories/Bimodal/Examples/Demo.lean)
 
 ---
