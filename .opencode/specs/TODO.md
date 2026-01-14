@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-14T01:45:00Z
-next_project_number: 495
+next_project_number: 499
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,28 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 495. Complete formula induction proofs for truth lemma bridges in FiniteCanonicalModel.lean
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Session**: sess_488_bridge_001
+
+**Description**: Complete the formula structure induction for semantic_truth_implies_truth_at (line 3446) and related truth lemma bridges. This requires inductive proof on all formula constructors (6+ cases) connecting semantic truth to model truth_at definition. Handle complex temporal logic cases including modal operators, temporal operators, and boolean connectives. Estimated 2-3 hours of technical Lean proof work.
+
+---
+
+### 496. Implement valuation-assignment connection lemma for finite canonical model
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Session**: sess_488_bridge_002
+
+**Description**: Create and prove the lemma connecting SemanticCanonicalModel.valuation to FiniteWorldState.assignment (line 3466). This requires deep understanding of SemanticCanonicalModel structure and establishing the precise relationship between valuations and assignments in the finite canonical model construction. The lemma is critical for bridging semantic and finite truth definitions.
+
+---
 
 ### 480. Investigate workflow delegation early stop issues
 - **Effort**: 3-4 hours
@@ -83,6 +105,29 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 497. Complete time arithmetic case analysis for finite history bridges
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Session**: sess_488_bridge_003
+
+**Description**: Finish the time arithmetic completion for bridge lemmas (lines ~3337, ~3394). This involves detailed case analysis for clamping arithmetic on time domains using omega tactics to handle boundary conditions. Complete the time_shift mechanisms and clamped domain arithmetic that enables proper connection between finite and semantic world histories.
+
+---
+
+### 498. Verify and test completed bridge lemma infrastructure
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Session**: sess_488_bridge_004
+
+**Description**: Run comprehensive verification of all bridge lemma connections in FiniteCanonicalModel.lean. This includes verifying that completed truth lemma inductions work cohesively, testing time arithmetic correctness, and ensuring all bridge connections between finite and semantic worlds function properly. Also document lemma dependencies between different truth definitions for future maintenance.
+
+---
+
 
 ### 494. Create Bimodal theory demo presentation
 - **Effort**: 4-6 hours
