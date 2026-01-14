@@ -74,17 +74,18 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: GLOSSARY.md Synchronization [NOT STARTED]
+### Phase 2: GLOSSARY.md Synchronization [COMPLETED]
 
 **Goal**: Update GLOSSARY to match TikZ structure and add missing content
 
 **Tasks**:
-- [ ] Add Social extension section (mark as "theoretical, no operators")
-- [ ] Add missing operators: Reduction (Rightarrow), dotcircleright (causal might)
-- [ ] Verify Choice operators match TikZ (FP/FF/Ch - should already be correct)
-- [ ] Add clarification for extension dependencies
-- [ ] Ensure Explanatory Extension lists quantifiers (forall, exists)
-- [ ] Verify Since/Until operators documented correctly
+- [x] Add Social extension section (mark as "theoretical, no operators")
+- [x] Add missing operators: Reduction (Rightarrow), dotcircleright (causal might)
+- [x] Verify Choice operators match TikZ (FP/FF/Ch - already correct)
+- [x] Add clarification for extension dependencies
+- [x] Restructure: separate Abilities Extension and Choice Extension sections
+- [x] Add Agential Extension as agent-indexing layer
+- [x] Add Reflection Extension with dependency clarification
 
 **Timing**: 45 minutes
 
