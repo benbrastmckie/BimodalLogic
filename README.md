@@ -22,18 +22,18 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 │                  (modal, temporal, counterfactual, causal)                      │
 └─────────────────────────────────────┬───────────────────────────────────────────┘
                                       │
-     ┌──────────────┬─────────────────┼─────────────────┬──────────────┐
-     │ optional     │ optional        │ optional        │ optional     │ optional
-     ▼              ▼                 ▼                 ▼              ▼
-┌───────────┐ ┌───────────┐ ┌─────────────────┐ ┌───────────┐ ┌───────────┐
-│ Epistemic │ │ Abilities │ │    Normative    │ │  Choice   │ │  Spatial  │
-│ Extension │ │ Extension │ │    Extension    │ │ Extension │ │ Extension │
-│ (belief,  │ │ (Can, Able│ │  (obligation,   │ │   (free   │ │ (location,│
-│ knowledge,│ │  agency)  │ │   permission,   │ │  choice,  │ │  spatial  │
+     ┌──────────────┬─────────────────┼────────────────┬──────────────┐
+     │ optional     │ optional        │ optional       │ optional     │ optional
+     ▼              ▼                 ▼                ▼              ▼
+┌───────────┐ ┌───────────┐ ┌─────────────────┐ ┌────────────┐ ┌───────────┐
+│ Epistemic │ │ Abilities │ │    Normative    │ │  Choice    │ │  Spatial  │
+│ Extension │ │ Extension │ │    Extension    │ │ Extension  │ │ Extension │
+│ (belief,  │ │ (Can, Able│ │  (obligation,   │ │   (free    │ │ (location,│
+│ knowledge,│ │  agency)  │ │   permission,   │ │  choice,   │ │  spatial  │
 │probability│ │           │ │   preference)   │ │alternatives│ │ relations)│
-└─────┬─────┘ └─────┬─────┘ └────────┬────────┘ └─────┬─────┘ └─────┬─────┘
-      │             │                │                │             │
-      └─────────────┴────────────────┼────────────────┴─────────────┘
+└─────┬─────┘ └─────┬─────┘ └────────┬────────┘ └─────┬──────┘ └─────┬─────┘
+      │             │                │                │              │
+      └─────────────┴────────────────┼────────────────┴──────────────┘
                                      │ at least one required
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
