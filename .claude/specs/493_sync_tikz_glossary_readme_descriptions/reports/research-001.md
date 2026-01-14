@@ -168,20 +168,20 @@ The goal is to identify all discrepancies to enable synchronization.
 ### 8. Missing Elements by Source
 
 **TikZ missing**:
-- Knowledge operator (K)
-- Able operator (generic ability)
-- Since/Until operators
-- Relevance operator
+- Knowledge operator (K) NOTE: remove this operator from consideration everywhere
+- Able operator (generic ability) NOTE: remove this operator from consideration everywhere
+- Since/Until operators NOTE: it does have these already but uses 'S' and 'U' instead of the correct symbols
+- Relevance operator NOTE: this can be omitted
 
 **README missing**:
 - Social extension entirely
 - Store/recall operators
 - Mi/Mu epistemic modals
 - Preference/explanation normative operators
-- Quantifiers in foundation
+- Quantifiers in foundation NOTE: quantifiers live in the Explanatory layer
 
 **GLOSSARY missing**:
-- Social extension
+- Social extension NOTE: the glossary is for operators whereas the social extension is more theoretical
 - Reduction operator
 - dotcircleright (causal might)
 

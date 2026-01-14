@@ -86,11 +86,13 @@ technical_debt:
 
 ### 493. Sync TikZ diagram, GLOSSARY.md, and README.md descriptions
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-13
+- **Planned**: 2026-01-14
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/reports/research-001.md)
+- **Plan**: [implementation-001.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/plans/implementation-001.md)
 
 **Description**: Draw on the tikz diagram in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex which is correct to include any missing operators in /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/reference/GLOSSARY.md and to improve the diagram in Overview in /home/benjamin/Projects/ProofChecker/README.md to match. Then draw on the descriptions included in /home/benjamin/Projects/ProofChecker/README.md to expand and improve the descriptions following the tikz diagram in 00-Introduction.tex. The aim is consistency and quality.
 
@@ -98,9 +100,10 @@ technical_debt:
 
 ### 492. Update BimodalReference.tex with metalogical results
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-13
+- **Started**: 2026-01-13
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/reports/research-001.md)
