@@ -6,12 +6,12 @@
     {
       "project_number": 494,
       "project_name": "bimodal_demo_presentation",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "effort": "4-6 hours",
       "created": "2026-01-14T01:46:58Z",
-      "last_updated": "2026-01-14T01:46:58Z"
+      "last_updated": "2026-01-14T01:52:15Z"
     },
     {
       "project_number": 493,
@@ -114,16 +114,20 @@
     {
       "project_number": 489,
       "project_name": "formal_fmp_theorem_packaging",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-13T23:24:12Z",
-      "last_updated": "2026-01-14T01:48:32Z",
+      "last_updated": "2026-01-14T01:53:58Z",
       "description": "Create formal Finite Model Property theorem statement: forall phi, satisfiable phi -> exists (M : FiniteModel), M models phi. Package existing semantic_weak_completeness proof into standard FMP format. Add documentation explaining bounds (temporal depth, modal depth).",
       "artifacts": [
         {
           "path": ".claude/specs/489_formal_fmp_theorem_packaging/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": ".claude/specs/489_formal_fmp_theorem_packaging/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
