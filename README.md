@@ -28,23 +28,20 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 ┌───────────┐ ┌───────────┐ ┌─────────────────┐ ┌────────────┐ ┌───────────┐
 │ Epistemic │ │ Abilities │ │    Normative    │ │  Choice    │ │  Spatial  │
 │ Extension │ │ Extension │ │    Extension    │ │ Extension  │ │ Extension │
-│ (belief,  │ │ (Can, Able│ │  (obligation,   │ │   (free    │ │ (location,│
-│ knowledge,│ │  agency)  │ │   permission,   │ │  choice,   │ │  spatial  │
-│probability│ │           │ │   preference)   │ │alternatives│ │ relations)│
+│ (belief,  │ │ (Can,Stit)│ │  (obligation,   │ │ (FP, FF,   │ │ (location,│
+│ knowledge,│ │           │ │   permission,   │ │    Ch)     │ │  spatial  │
+│probability│ │           │ │   preference)   │ │            │ │ relations)│
 └─────┬─────┘ └─────┬─────┘ └────────┬────────┘ └─────┬──────┘ └─────┬─────┘
       │             │                │                │              │
       └─────────────┴────────────────┼────────────────┴──────────────┘
                                      │ at least one required
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                             Agential Extension                                  │
-│                           (multi-agent reasoning)                               │
-└─────────────────────────────────────┬───────────────────────────────────────────┘
-                                      │ inherits from Epistemic
-                                      ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                            Reflection Extension                                 │
-│                  (metacognition, self-modeling, I operator)                     │
+│               Agent-dependent extensions (require middle layer)                 │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌───────────────────────────────┐   │
+│  │    Agential     │  │     Social      │  │          Reflection           │   │
+│  │ (agent-indexing)│  │ (common ground) │  │ (metacognition, I operator)   │   │
+│  └─────────────────┘  └─────────────────┘  └───────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -62,11 +59,13 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 
 - **Spatial Extension**: Provides location-dependent operators and spatial relations for reasoning about where things are and how spatial proximity affects truth conditions. This supports navigation, containment reasoning, and location-sensitive planning.
 
-- **Agential Extension**: Indexes epistemic and normative operators to specific agents, enabling reasoning about what different agents believe, prefer, and are obligated to do. This transforms single-perspective reasoning into multi-agent coordination where agents can model each other's epistemic and normative states.
+- **Agential Extension**: Indexes epistemic and normative operators to specific agents (`B_a`, `K_a`, `O_a`), enabling reasoning about what different agents believe, prefer, and are obligated to do. This transforms single-perspective reasoning into multi-agent coordination where agents can model each other's epistemic and normative states. Requires at least one middle extension.
 
-- **Reflection Extension**: Adds first-person metacognitive operators for self-directed reasoning about one's own beliefs, knowledge, abilities, and goal progress. This enables an agent to reason about what it knows versus believes, recognize its own limitations, and track progress toward goals---essential for AI systems that must understand their own capabilities.
+- **Social Extension**: Provides resources for common ground and group-level reasoning, building upon the Agential Extension to enable reasoning about shared knowledge, collective beliefs, and social coordination. This is a theoretical extension without primitive operators.
 
-The Constitutive Foundation and Explanatory Extension provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Abilities, Normative, Choice, and Spatial Extensions are modular plugins that can be combined in any subset. The Agential Extension requires at least one middle extension.
+- **Reflection Extension**: Adds first-person metacognitive operators (`I`) for self-directed reasoning about one's own beliefs, knowledge, abilities, and goal progress. This enables an agent to reason about what it knows versus believes, recognize its own limitations, and track progress toward goals---essential for AI systems that must understand their own capabilities. Positioned in parallel with the Agential Extension, not sequentially after it.
+
+The Constitutive Foundation and Explanatory Extension provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Abilities, Normative, Choice, and Spatial Extensions are modular plugins that can be combined in any subset. The agent-dependent extensions (Agential, Social, and Reflection) require at least one middle extension and are positioned in parallel at the bottom layer.
 
 AI reasoning in the Logos is both **verified** by proof receipts for all inferences and **interpreted** by explicit semantic models, providing **scalable oversight** for sophisticated reasoning.
 

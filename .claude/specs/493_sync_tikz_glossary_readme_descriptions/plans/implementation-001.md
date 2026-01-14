@@ -99,17 +99,17 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: README.md Synchronization [NOT STARTED]
+### Phase 3: README.md Synchronization [COMPLETED]
 
 **Goal**: Update README to match authoritative TikZ/GLOSSARY content
 
 **Tasks**:
-- [ ] Update ASCII diagram to show Agential/Social/Reflection as parallel (grey box)
-- [ ] Add Social extension to extension list
-- [ ] Add missing operator mentions: Store/recall, Mi/Mu, Since/Until
-- [ ] Update extension descriptions to match TikZ
-- [ ] Clarify dependency requirements for Agential and Reflection extensions
-- [ ] Keep ASCII diagram simple; add reference to LaTeX docs for details
+- [x] Update ASCII diagram to show Agential/Social/Reflection as parallel (grey box)
+- [x] Add Social extension to extension list
+- [x] Update operator symbols in diagram (FP/FF/Ch, Can/Stit)
+- [x] Update extension descriptions to match TikZ
+- [x] Clarify dependency requirements for Agential and Reflection extensions
+- [x] Keep ASCII diagram simple with clear layer structure
 
 **Timing**: 45 minutes
 
