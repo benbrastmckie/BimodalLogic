@@ -74,4 +74,19 @@ def from_list (trueAtoms : List String) : TaskModel F where
 
 end TaskModel
 
+/-!
+# Finite Task Models
+
+This section defines finite task models, which are task models over finite task frames.
+-/
+
+open TaskFrame
+
+/-- 
+A finite task model is simply a task model over a finite task frame.
+This is defined as an abbreviation for convenience.
+-/
+abbrev FiniteTaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (F : FiniteTaskFrame D) := TaskModel F.toTaskFrame
+
 end Bimodal.Semantics
