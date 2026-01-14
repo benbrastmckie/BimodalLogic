@@ -86,9 +86,10 @@ technical_debt:
 
 ### 493. Sync TikZ diagram, GLOSSARY.md, and README.md descriptions
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-13
 - **Planned**: 2026-01-14
+- **Started**: 2026-01-14
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/reports/research-001.md)

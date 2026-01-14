@@ -50,17 +50,17 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Decision Resolution & TikZ Updates [NOT STARTED]
+### Phase 1: Decision Resolution & TikZ Updates [COMPLETED]
 
 **Goal**: Resolve research decisions and update TikZ as authoritative source
 
 **Tasks**:
-- [ ] Decision: Keep Social extension in TikZ only (theoretical, not operator-based)
-- [ ] Decision: Standardize Choice operators to FP/FF/Ch (GLOSSARY notation)
-- [ ] Decision: Use agent-indexed notation (B_a, K_a) in technical docs
-- [ ] Update TikZ Choice extension: change Perm to FP, Forb to FF
-- [ ] Update TikZ Since/Until symbols: ensure consistent with GLOSSARY (S, U already present - verify correct)
-- [ ] Verify TikZ compiles after changes
+- [x] Decision: Keep Social extension in TikZ only (theoretical, not operator-based)
+- [x] Decision: Standardize Choice operators to FP/FF/Ch (GLOSSARY notation)
+- [x] Decision: Use agent-indexed notation (B_a, K_a) in technical docs
+- [x] Update TikZ Choice extension: change Perm to FP, Forb to FF
+- [x] Update TikZ Since/Until symbols: ensure consistent with GLOSSARY (S, U already present - verify correct)
+- [x] Verify TikZ compiles after changes
 
 **Timing**: 45 minutes
 
