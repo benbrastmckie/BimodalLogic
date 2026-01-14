@@ -2,6 +2,8 @@
 
 **Logos** is a formal verification framework in Lean 4 implementing hyperintensional logics for verified AI reasoning. By combining an axiomatic proof system with recursive semantics, Logos generates unlimited self-supervised training data for AI systems, providing proof receipts for valid inferences and countermodels for invalid ones without relying on human annotation.
 
+The project also includes the **Bimodal** theory, a fragment of independent interest that combines modal and temporal operators for reasoning about past and future contingency. While Bimodal serves as a methodological testbed for Logos development, it captures fundamental relationships between time and possibility in its own right. See [Bimodal Theory](#bimodal-theory) for details.
+
 **Formal Specifications**: [Logos](Theories/Logos/latex/LogosReference.pdf) | [Bimodal](Theories/Bimodal/latex/BimodalReference.tex)
 
 ---
