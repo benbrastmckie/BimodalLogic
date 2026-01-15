@@ -1,20 +1,20 @@
 ---
-last_updated: 2026-01-15T15:50:00Z
+last_updated: 2025-01-15T10:35:00Z
 next_project_number: 505
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 23
+  active: 24
   completed: 154
   in_progress: 3
-  not_started: 12
+  not_started: 11
   abandoned: 14
   total: 191
 priority_distribution:
   critical: 0
-  high: 4
+  high: 5
   medium: 8
   low: 11
 technical_debt:
@@ -30,10 +30,12 @@ technical_debt:
 
 ### 495. Complete formula induction proofs for truth lemma bridges in FiniteCanonicalModel.lean
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Session**: sess_488_bridge_001
+- **Researched**: 2025-01-15T10:30:00Z
+- **Research**: [research-001.md](.claude/specs/495_formula_induction_truth_lemma_bridges/reports/research-001.md)
 
 **Description**: Complete the formula structure induction for semantic_truth_implies_truth_at (line 3446) and related truth lemma bridges. This requires inductive proof on all formula constructors (6+ cases) connecting semantic truth to model truth_at definition. Handle complex temporal logic cases including modal operators, temporal operators, and boolean connectives. Estimated 2-3 hours of technical Lean proof work.
 
@@ -215,13 +217,14 @@ technical_debt:
 
 ### 498. Verify and test completed bridge lemma infrastructure
 - **Effort**: 1 hour
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Plan**: [implementation-001.md](.opencode/specs/498_verify_bridge_lemma_infrastructure/plans/implementation-001.md)
 - **Language**: lean
 - **Started**: 2026-01-14
 - **Researched**: 2026-01-14
-- **Planned**: 2026-01-14T23:23:25Z
+- **Planned**: 2026-01-14T23:24:15Z
 - **Session**: /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md
 
 **Description**: Run comprehensive verification of all bridge lemma connections in FiniteCanonicalModel.lean. This includes verifying that completed truth lemma inductions work cohesively, testing time arithmetic correctness, and ensuring all bridge connections between finite and semantic worlds function properly. Also document lemma dependencies between different truth definitions for future maintenance.
@@ -234,7 +237,6 @@ technical_debt:
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
-- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 
 **Description**: lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification. Lake build is being used for syntax checking which completes successfully, but full compilation verification is missing. Need to investigate and restore lean-lsp-mcp tool availability for proper Lean development workflow.

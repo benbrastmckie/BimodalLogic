@@ -1,6 +1,28 @@
 {
   "active_projects": [
     {
+      "project_number": 495,
+      "project_name": "Complete formula induction proofs for truth lemma bridges in FiniteCanonicalModel.lean",
+      "type": "feature",
+      "phase": "researched",
+      "status": "researched",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-14T23:24:16Z",
+      "last_updated": "2025-01-15T10:35:00Z",
+      "researched": "2025-01-15T10:30:00Z",
+      "effort": "3 hours",
+      "description": "Complete the formula structure induction for semantic_truth_implies_truth_at (line 3446) and related truth lemma bridges. This requires inductive proof on all formula constructors (6+ cases) connecting semantic truth to model truth_at definition. Handle complex temporal logic cases including modal operators, temporal operators, and boolean connectives. Estimated 2-3 hours of technical Lean proof work.",
+      "session_id": "sess_488_bridge_001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/495_formula_induction_truth_lemma_bridges/reports/research-001.md",
+          "type": "research_report",
+          "summary": "Lean 4 formula induction proofs research report with implementation strategies"
+        }
+      ]
+    },
+    {
       "project_number": 504,
       "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
       "type": "feature",
@@ -16,18 +38,18 @@
       "artifacts": []
     },
     {
-      "project_number": 504,
-      "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
+      "project_number": 500,
+      "project_name": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification",
       "type": "feature",
       "phase": "not_started",
       "status": "not_started",
       "priority": "medium",
       "language": "lean",
-      "created": "2026-01-15T15:36:01Z",
-      "last_updated": "2026-01-15T15:36:01Z",
-      "effort": "4-6 hours",
-      "description": "Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.",
-      "session_id": "sess_1768491321_q6ud6",
+      "created": "2026-01-15T01:21:23Z",
+      "last_updated": "2026-01-15T01:21:23Z",
+      "effort": "2-3 hours",
+      "description": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification. Lake build is being used for syntax checking which completes successfully, but full compilation verification is missing. Need to investigate and restore lean-lsp-mcp tool availability for proper Lean development workflow.",
+      "session_id": "sess_1768440083_48ku7",
       "artifacts": []
     },
     {
@@ -80,25 +102,31 @@
       "project_number": 498,
       "project_name": "Verify and test completed bridge lemma infrastructure",
       "type": "feature",
-      "phase": "planning",
-      "status": "planning",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-14T23:24:58Z",
-      "last_updated": "2026-01-14T23:23:25Z",
+      "last_updated": "2026-01-14T23:24:15Z",
       "started": "2026-01-14",
       "researched": "2026-01-14",
-      "planned": "2026-01-14T23:23:25Z",
+      "planned": "2026-01-14T23:24:15Z",
       "effort": "1 hour",
       "description": "Run comprehensive verification of all bridge lemma connections in FiniteCanonicalModel.lean. This includes verifying that completed truth lemma inductions work cohesively, testing time arithmetic correctness, and ensuring all bridge connections between finite and semantic worlds function properly. Also document lemma dependencies between different truth definitions for future maintenance.",
-      "session_id": "sess_1768456662_wxecsn",
+      "session_id": "sess_1768461781_m9mam",
       "artifacts": [
         {
           "path": ".opencode/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of bridge lemma infrastructure status, sorry gaps, and dependencies"
+        },
+        {
+          "path": ".opencode/specs/498_verify_bridge_lemma_infrastructure/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Lean plan with 6 phases: Edge case resolution, compositionality fixes, truth lemma inductions, valuation connections, time arithmetic testing, and dependency documentation"
         }
-      ]
+      ],
+      "plan_path": ".opencode/specs/498_verify_bridge_lemma_infrastructure/plans/implementation-001.md"
     },
     {
       "project_number": 503,
@@ -131,9 +159,9 @@
     }
   ],
   "metadata": {
-    "last_updated": "2026-01-15T15:36:45Z",
-    "total_active": 2,
-    "session_id": "ses_43dbbbc96ffelkguN0fHxKcQKx"
+    "last_updated": "2025-01-15T10:35:00Z",
+    "total_active": 6,
+    "session_id": "ses_43d86d0e8ffeQ6LKV1WqKANSMv"
   },
   "next_project_number": 505
 }
