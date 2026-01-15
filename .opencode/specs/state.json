@@ -1,8 +1,36 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-14T01:45:00Z",
-  "next_project_number": 500,
+  "next_project_number": 502,
   "active_projects": [
+    {
+      "project_number": 501,
+      "project_name": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-15T01:22:08Z",
+      "last_updated": "2026-01-15T01:22:08Z",
+      "effort": "2-3 hours",
+      "description": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification. Lake build is being used for syntax checking which completes successfully, but full compilation verification is missing. Need to investigate and restore lean-lsp-mcp tool availability for proper Lean development workflow.",
+      "session_id": "sess_1768440128_lkk"
+    },
+    {
+      "project_number": 500,
+      "project_name": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-15T01:21:23Z",
+      "last_updated": "2026-01-15T01:21:23Z",
+      "effort": "2-3 hours",
+      "description": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification. Lake build is being used for syntax checking which completes successfully, but full compilation verification is missing. Need to investigate and restore lean-lsp-mcp tool availability for proper Lean development workflow.",
+      "session_id": "sess_1768440083_48ku7"
+    },
     {
       "project_number": 499,
       "project_name": "Review metalogical theorem strategies and design systematic refactor approach",
