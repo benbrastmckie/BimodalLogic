@@ -8,7 +8,8 @@ import Mathlib.Data.Finset.Basic
 # Set-Based Provability and Representation Theorems
 
 This module implements the systematic refactor for metalogical theorem strategies,
-establishing representation theorems as foundational result for bimodal/temporal
+<<<<<<< HEAD
+establishing representation theorems as the foundational result for bimodal/temporal
 modal logic.
 
 ## Main Results
@@ -19,7 +20,8 @@ modal logic.
 
 ## Architecture Design
 
-Based on research findings (Task 499), this establishes a hierarchy:
+<<<<<<< HEAD
+Based on research findings (Task 499), this establishes the hierarchy:
 1. **Representation Theorem** (Primary): Isomorphism between abstract and concrete structures
 2. **General Completeness** (Context-Sensitive): Γ ⊨ φ ⇒ SetDerivable Γ φ  
 3. **Finite Model Property** (Contrapositive): From representation theorem
@@ -146,12 +148,14 @@ Completeness → FMP → Decidability → (back to) Completeness
 
 This module provides the foundational infrastructure:
 - ✅ SetDerivable definition with finite subset requirement
-- ✅ Context-sensitive entailment definition  
+<<<<<<< HEAD
+- ✅ Context-sensitive entailment definition
 - ✅ Basic soundness theorem for set-based provability
 - 🔄 Full representation theorem (requires integration with FiniteCanonicalModel)
 - 🔄 General completeness (requires compactness arguments)
 
-The architecture establishes a mathematically elegant foundation for systematic
+<<<<<<< HEAD
+The architecture establishes the mathematical foundation for systematic
 refactor of metalogical results in bimodal/temporal modal logic.
 -/
 

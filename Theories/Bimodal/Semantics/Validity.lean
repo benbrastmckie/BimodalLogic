@@ -110,6 +110,24 @@ A context is absolutely satisfiable if it is satisfiable in some temporal type.
 def satisfiable_abs (Γ : Context) : Prop :=
   ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D), satisfiable D Γ
 
+/--
+A single formula is satisfiable if there exists a model where it is true at some point.
+
+This is the single-formula version of `satisfiable` (which works on contexts).
+A formula is satisfiable if there exists some temporal type D, some task frame,
+some model, some world history, and some time where the formula evaluates to true.
+
+**Usage**: Used in the Finite Model Property to connect formula satisfiability
+to the existence of finite models.
+
+**Relationship to Context Satisfiability**: 
+`formula_satisfiable φ ↔ satisfiable Int [φ]` (for Int time, but holds for any D)
+-/
+def formula_satisfiable (φ : Formula) : Prop :=
+  ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
+    (F : TaskFrame D) (M : TaskModel F) (τ : WorldHistory F) (t : D),
+    truth_at M τ t φ
+
 namespace Validity
 
 /--
