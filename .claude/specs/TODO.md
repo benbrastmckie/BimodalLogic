@@ -1,22 +1,22 @@
 ---
-last_updated: 2026-01-15T23:40:00Z
+last_updated: 2026-01-15T23:50:00Z
 next_project_number: 505
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 20
-  completed: 170
+  active: 19
+  completed: 171
   in_progress: 2
-  not_started: 11
+  not_started: 10
   abandoned: 14
-  total: 204
+  total: 205
 priority_distribution:
   critical: 0
   high: 3
   medium: 7
-  low: 10
+  low: 9
 technical_debt:
   sorry_count: 19
   axiom_count: 11
@@ -234,46 +234,6 @@ technical_debt:
 **Description**: Optimize FiniteCanonicalModel.lean for computational efficiency. Current implementation prioritizes correctness over performance. Identify and implement optimizations for the finite world state enumeration, task relation checking, and truth evaluation.
 
 ---
-
-
-### 257. Completeness Proofs
-
- **Effort**: 65-85 hours (revised from 57-76 to include Phase 5)
- **Status**: [COMPLETED]
- **Researched**: 2026-01-12
- **Planned**: 2026-01-12
- **Revised**: 2026-01-12
- **Priority**: Low
- **Language**: lean
- **Blocking**: None (Decidability complete)
- **Dependencies**: Soundness (Complete), Deduction Theorem (Complete), Proof Search (Complete), Decidability (Complete)
- **Subtasks**: 444 (completed), 445 (completed), 446 (completed), 447 (completed), 448 (completed), 449 (completed), 450 (completed)
- **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md), [research-003.md](.claude/specs/257_completeness_proofs/reports/research-003.md), [research-004.md](.claude/specs/257_completeness_proofs/reports/research-004.md), [research-005.md](.claude/specs/257_completeness_proofs/reports/research-005.md), [research-006.md](.claude/specs/257_completeness_proofs/reports/research-006.md), [research-007.md](.claude/specs/257_completeness_proofs/reports/research-007.md), [research-008.md](.claude/specs/257_completeness_proofs/reports/research-008.md)
- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (v002 - added Phase 5 canonical_history)
-
-**Description**: Implement the completeness proof for TM logic using the canonical model method. Research-004 clarifies the key approach: use **relativized completeness** where times are a type parameter T (not constructed from syntax), while worlds (maximal consistent sets) and task relations ARE constructed from syntax. This matches the polymorphic validity definition and remains agnostic about discrete/dense/continuous time.
-
-**Action Items**:
-1. Implement `lindenbaum` lemma (extend consistent sets to maximal consistent sets using Zorn's lemma).
-2. Prove properties of maximal consistent sets (deductive closure, negation completeness).
-3. Construct `canonical_frame` and prove frame properties (nullity, compositionality).
-4. Prove `truth_lemma` (correspondence between membership and truth).
-5. Prove `weak_completeness` and `strong_completeness`.
-
-**Files**:
-- `Logos/Core/Metalogic/Completeness.lean`
-
-**Acceptance Criteria**:
-- [x] Lindenbaum lemma implemented
-- [x] Maximal consistent set properties proven
-- [x] Canonical frame constructed with frame properties
-- [x] Truth lemma proven
-- [x] Weak and strong completeness proven
-
-**Impact**: Completes the metalogic foundation for TM logic by proving completeness, enabling derivability from validity.
-
----
-
 
 ### 136. Design Decidability.lean architecture and signatures
 - **Effort**: 2 hours
