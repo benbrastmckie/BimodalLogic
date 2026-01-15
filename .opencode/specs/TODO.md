@@ -211,7 +211,7 @@ technical_debt:
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 
 **Description**: lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification. Lake build is being used for syntax checking which completes successfully, but full compilation verification is missing. Need to investigate and restore lean-lsp-mcp tool availability for proper Lean development workflow.
@@ -226,7 +226,7 @@ technical_debt:
 - **Planned**: 2026-01-14
 - **Completed**: 2026-01-14
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/494_bimodal_demo_presentation/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/494_bimodal_demo_presentation/plans/implementation-001.md)
@@ -243,7 +243,7 @@ technical_debt:
 - **Planned**: 2026-01-14
 - **Completed**: 2026-01-14
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/plans/implementation-001.md)
@@ -260,7 +260,7 @@ technical_debt:
 - **Planned**: 2026-01-13
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/plans/implementation-001.md)
@@ -275,7 +275,7 @@ technical_debt:
 - **Status**: [COMPLETED]
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/plans/implementation-001.md)
@@ -293,7 +293,7 @@ technical_debt:
 - **Started**: 2026-01-14
 - **Completed**: 2026-01-14
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/488_fill_remaining_bridge_lemmas/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/488_fill_remaining_bridge_lemmas/plans/implementation-001.md)
@@ -309,7 +309,7 @@ technical_debt:
 - **Started**: 2026-01-14
 - **Completed**: 2026-01-14
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/489_formal_fmp_theorem_packaging/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/489_formal_fmp_theorem_packaging/plans/implementation-001.md)
@@ -324,7 +324,7 @@ technical_debt:
 - **Researched**: 2026-01-13
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md)
@@ -338,7 +338,7 @@ technical_debt:
 - **Effort**: 1 hour
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: meta
 
 **Description**: Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies.
@@ -353,7 +353,7 @@ technical_debt:
 - **Effort**: 3-4 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: meta
 - **Dependencies**: 475
 
@@ -377,7 +377,7 @@ technical_debt:
 - **Effort**: 1-2 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: meta
 - **Dependencies**: 476
 
@@ -402,7 +402,7 @@ technical_debt:
 - **Planned**: 2026-01-13
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/plans/implementation-001.md)
@@ -418,7 +418,7 @@ technical_debt:
 - **Revised**: 2026-01-13
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
 - **Plan**: [implementation-002.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-002.md) (v002)
 - **Summary**: [implementation-summary-20260113.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-20260113.md)
@@ -433,7 +433,7 @@ technical_debt:
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
 
 **Description**: When making changes to LaTeX files (e.g., 00-Introduction.tex), rebuilding sometimes produces "File ended while scanning use of \@newl@bel" and "\@@BOOKMARK" errors, plus "Extra }, or forgotten \endgroup" errors in the .aux file. Identify the root cause (likely corrupted auxiliary files from interrupted builds) and document solutions to avoid these errors.
@@ -447,7 +447,7 @@ technical_debt:
 - **Planned**: 2026-01-13
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Parent**: Task 458
 - **Research**: [research-004.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-004.md)
@@ -465,7 +465,7 @@ technical_debt:
 - **Planned**: 2026-01-13
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Parent**: Task 473
 - **Research**: [research-001.md](.claude/specs/481_finite_history_from_state/reports/research-001.md)
@@ -483,7 +483,7 @@ technical_debt:
 - **Planned**: 2026-01-13
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Parent**: Task 473
 - **Research**: [research-001.md](.claude/specs/482_history_gluing_lemma/reports/research-001.md)
@@ -501,7 +501,7 @@ technical_debt:
 - **Planned**: 2026-01-13
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/466_reflection_extension_logosreference/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/466_reflection_extension_logosreference/plans/implementation-001.md)
@@ -516,7 +516,7 @@ technical_debt:
 - **Status**: [RESEARCHED]
 - **Researched**: 2026-01-12
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: general
 - **Research**: [research-001.md](.claude/specs/431_wezterm_tab_color_notification/reports/research-001.md)
 
@@ -694,7 +694,7 @@ technical_debt:
 - **Planned**: 2026-01-13
 - **Completed**: 2026-01-13
 - **Priority**: Medium
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](../../.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
 - **Research**: [research-001.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/reports/research-001.md)
 - **Plan**: [implementation-001.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/plans/implementation-001.md)
