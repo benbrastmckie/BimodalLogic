@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-01-15T02:16:44Z
+P26-01-15T23:16:18Z
 next_project_number: 505
 repository_health:
   overall_score: 90
@@ -171,11 +171,12 @@ technical_debt:
 
 ### 504. Integration of harmonic API for aristotle into lean implementer and researcher agents
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
-- **Session**: sess_1768491321_q6ud6
+- **Session**: sess_1768530000_plan504
 - **Researched**: 2026-01-15T02:35:00Z
+- **Planned**: 2026-01-15
 - **Research**: [research-001.md](.opencode/specs/504_aristotle_api_integration/reports/research-001.md)
 
 **Description**: Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.
@@ -778,20 +779,4 @@ All critical components are production-ready and support completeness proof requ
 **Description**: The TikZ diagram in sec:extension-dependencies (line 21) of /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex does not match the diagram in the 'Overview' (line 7) of /home/benjamin/Projects/ProofChecker/README.md. Fix the TikZ diagram to match README.md layout. Requirements: (1) professional styling with rounded corners for boxes, (2) non-intersecting lines and labels, (3) middle layer extensions (Epistemic, Normative, Spatial) in a grey horizontal background box, (4) ellipses to left and right of middle layers to indicate extensibility, (5) explanatory text below the diagram.
 
 ---
-
-### 503. Update LaTeX to use dependent-type conventions for Lean consistency
-- **Effort**: 4 hours
-- **Status**: [PLANNED]
-- **Researched**: 2026-01-15
-- **Planned**: 2026-01-15
-- **Priority**: Medium
-- **Language**: markdown
-- **Session**: sess_1768457639_qizk
-- **Research**: [research-001.md](.opencode/specs/503_latex_dependent_type_conventions/reports/research-001.md)
-- **Plan**: [implementation-001.md](.opencode/specs/503_latex_dependent_type_conventions/plans/implementation-001.md)
-
-**Description**: Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.
-
----
-
 

@@ -1,7 +1,7 @@
 {
   "metadata": {
     "version": "1.0",
-    "generated_at": "2026-01-15T02:16:44Z",
+    "generated_at": "2026-01-15T23:15:47Z",
     "total_active": 19
   },
   "active_projects": [
@@ -35,23 +35,24 @@
       "project_number": 504,
       "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
       "type": "feature",
-      "phase": "researched",
-      "status": "researched",
+      "phase": "planning",
+      "status": "planning",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-14T10:00:00Z",
-      "last_updated": "2026-01-15T02:35:00Z",
+      "last_updated": "2026-01-15",
       "researched": "2026-01-15T02:35:00Z",
       "effort": "4-6 hours",
       "description": "Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.",
-      "session_id": "sess_1768491321_q6ud6",
+      "session_id": "sess_1768530000_plan504",
       "artifacts": [
         {
           "path": ".opencode/specs/504_aristotle_api_integration/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of Aristotle AI integration into .opencode/ Lean agents with CLI commands, API methods, and implementation recommendations"
         }
-      ]
+      ],
+      "planned": "2026-01-15"
     },
     {
       "project_number": 398,
@@ -82,7 +83,9 @@
       "effort": "6-8 hours",
       "description": "Implement the causal operator semantics in Lean based on the approved recursive-semantics.md specification. Extend CoreFrame with closeness ordering, define Evolution and ExpectedEvolution structures, implement CausalContext with background assumptions, and replace the current counterfactual-based definition in Truth.lean with the three-condition hyperintensional semantics.",
       "parent_task": 394,
-      "dependencies": [398]
+      "dependencies": [
+        398
+      ]
     },
     {
       "project_number": 503,
@@ -126,7 +129,9 @@
       "language": "meta",
       "effort": "3-4 hours",
       "description": "Create document-converter-agent following ProofChecker's agent pattern. Handles actual conversion logic with runtime tool detection (markitdown, pandoc, typst), graceful fallbacks to Claude's native PDF reading, bidirectional conversion support, and standardized JSON returns.",
-      "dependencies": [475]
+      "dependencies": [
+        475
+      ]
     },
     {
       "project_number": 477,
@@ -138,7 +143,9 @@
       "language": "meta",
       "effort": "1-2 hours",
       "description": "Test document-converter skill on sample PDF, DOCX, and Markdown files. Verify bidirectional conversion, graceful fallback when tools unavailable, and proper error handling.",
-      "dependencies": [476]
+      "dependencies": [
+        476
+      ]
     },
     {
       "project_number": 483,
@@ -215,7 +222,15 @@
       "language": "lean",
       "effort": "65-85 hours",
       "description": "Implement the completeness proof for TM logic using the canonical model method.",
-      "subtasks": [444, 445, 446, 447, 448, 449, 450],
+      "subtasks": [
+        444,
+        445,
+        446,
+        447,
+        448,
+        449,
+        450
+      ],
       "artifacts": [
         {
           "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
@@ -244,7 +259,9 @@
       "language": "lean",
       "effort": "3 hours",
       "description": "Implement the core tableau expansion rules and supporting helpers for validity checking.",
-      "dependencies": [136]
+      "dependencies": [
+        136
+      ]
     },
     {
       "project_number": 138,
@@ -256,7 +273,10 @@
       "language": "lean",
       "effort": "3 hours",
       "description": "Wire the tableau components into a decision procedure and add tests covering satisfiable and unsatisfiable cases.",
-      "dependencies": [136, 137]
+      "dependencies": [
+        136,
+        137
+      ]
     }
   ],
   "completed_projects": [
