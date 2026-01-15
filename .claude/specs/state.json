@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-14T18:32:00Z",
-  "next_project_number": 500,
+  "next_project_number": 504,
   "active_projects": [
     {
       "project_number": 499,
@@ -760,6 +760,17 @@
         449,
         450
       ]
+    },
+    {
+      "project_number": 503,
+      "project_name": "update_latex_dependent_type_conventions",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-15T18:45:00Z",
+      "last_updated": "2026-01-15T18:45:00Z",
+      "description": "Update LaTeX notation throughout the Logos documentation to use dependent-type conventions consistent with Lean 4. Replace set-theoretic notation with type-theoretic notation using ':' for typing instead of set membership. Keep notation simple and minimal for readability while avoiding explicit set ideology.",
+      "effort": "4-6 hours"
     }
   ]
 }

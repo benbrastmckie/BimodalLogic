@@ -578,3 +578,26 @@ technical_debt:
 - **Summary**: [implementation-summary-20260113.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/summaries/implementation-summary-20260113.md)
 
 **Description**: The TikZ diagram in sec:extension-dependencies (line 21) of /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex does not match the diagram in the 'Overview' (line 7) of /home/benjamin/Projects/ProofChecker/README.md. Fix the TikZ diagram to match README.md layout. Requirements: (1) professional styling with rounded corners for boxes, (2) non-intersecting lines and labels, (3) middle layer extensions (Epistemic, Normative, Spatial) in a grey horizontal background box, (4) ellipses to left and right of middle layers to indicate extensibility, (5) explanatory text below the diagram.
+
+---
+
+### 503. Update LaTeX to use dependent-type conventions for Lean consistency
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+- **Blocking**: None
+- **Dependencies**: None
+- **Files Affected**:
+  - Theories/Logos/latex/*.tex (multiple files)
+  - Theories/Logos/latex/subfiles/*.tex (multiple files)
+- **Description**: Update LaTeX notation throughout the Logos documentation to use dependent-type conventions consistent with Lean 4. Replace set-theoretic notation with type-theoretic notation using ':' for typing instead of set membership. Keep notation simple and minimal for readability while avoiding explicit set ideology. Do NOT replace function application notation with indexed family notation - preserve standard function application f(t₁, ..., tₙ).
+- **Acceptance Criteria**:
+  - [ ] All set membership notation ∈ replaced with typing notation ':' where appropriate
+  - [ ] Function application notation preserved as f(t₁, ..., tₙ) 
+  - [ ] Type annotations use consistent dependent-type syntax
+  - [ ] No explicit set-theoretic language or ideology remains
+  - [ ] LaTeX files compile successfully after changes
+  - [ ] Notation remains readable and minimal
+- **Impact**: Improves consistency between LaTeX documentation and Lean 4 formalization, removes set-theoretic bias while maintaining readability.
+
