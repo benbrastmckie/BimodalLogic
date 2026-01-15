@@ -1,6 +1,31 @@
+
+## Task 502: Complete Representation Theorem in Full
+
+**Language**: lean | **Priority**: High | **Effort**: 4-6 hours | **Status**: Not Started
+
+- **Description**: Complete the representation theorem implementation based on Task 499 foundation. Remove merge conflicts from RepresentationTheorems.lean, integrate with FiniteCanonicalModel.lean, implement full representation theorem connecting SetDerivable to concrete semantic models, develop general completeness via compactness, and add transfer theorems for bimodal fusion logic.
+- **Context**: This task completes representation theorem implementation based on Task 499's foundational architecture. Task 499 created SetDerivable definition, context-sensitive entailment, and basic soundness theorem but left the full representation theorem, integration with FiniteCanonicalModel.lean, and general completeness incomplete.
+- **Requirements**:
+  1. Remove git merge conflict markers from RepresentationTheorems.lean
+  2. Complete full representation theorem connecting SetDerivable Γ φ to concrete semantic models
+  3. Integrate representation theorem with FiniteCanonicalModel.lean for concrete model construction
+  4. Implement general completeness (Γ ⊨ φ ⇒ SetDerivable Γ φ) via compactness arguments
+  5. Add transfer theorems for bimodal fusion logic
+  6. Update documentation and ensure clean compilation
+
+**Key Files**:
+- Theories/Bimodal/Metalogic/RepresentationTheorems.lean (main implementation)
+- Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean (integration)
+- Theories/Bimodal/Metalogic.lean (imports)
+
+**References**: Task 499 research and implementation summary, Transfer Theorems for Independently Axiomatizable Bimodal Logics (J. Symbolic Logic, 2024)
+
 ---
-last_updated: 2026-01-14T01:45:00Z
-next_project_number: 502
+
+
+---
+last_updated: 2026-01-14T22:30:00Z
+next_project_number: 503
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -115,7 +140,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-002.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/research-002.md), [research-summary.md](.opencode/specs/499_review_metalogical_theorem_strategies/summaries/research-summary.md)
-- **Implementation**: [architecture-design.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/architecture-design.md)
+- **Implementation**: [architecture-design.md](499_review_metalogical_theorem_strategies/summaries/implementation-summary-20260114.md)
 
 **Description**: Review existing metatheorems in Bimodal/ theory and design systematic refactor approach. Analyze relationship between FMP property, decidability, and completeness theorems. Ensure representation theorem is preserved. Design general completeness statement supporting empty, finite, or infinite Gamma contexts. Create conceptually clear and mathematically elegant architecture for metalogical results.
 
@@ -149,6 +174,30 @@ technical_debt:
 - **Session**: sess_488_bridge_004
 
 **Description**: Run comprehensive verification of all bridge lemma connections in FiniteCanonicalModel.lean. This includes verifying that completed truth lemma inductions work cohesively, testing time arithmetic correctness, and ensuring all bridge connections between finite and semantic worlds function properly. Also document lemma dependencies between different truth definitions for future maintenance.
+
+---
+
+### 502. Complete the representation theorem in full based on Task 499 implementation summary
+- **Effort**: 4 hours
+- **Status**: [RESEARCHING]
+- **Priority**: Medium
+- **Language**: lean
+- **Started**: 2026-01-15
+- **Parent**: Task 499
+- **Dependencies**: Task 499 (completed)
+
+**Description**: Draw on .opencode/specs/499_review_metalogical_theorem_strategies/summaries/implementation-summary-20260114.md to complete the representation theorem in full. Focus on integrating the existing representation theorem scaffold in Theories/Bimodal/Metalogic/RepresentationTheorems.lean with FiniteCanonicalModel.lean. Complete the full representation theorem that was identified as requiring integration in Task 499.
+
+**Key Integration Points**:
+- Connect set-based provability infrastructure from Task 499 with finite canonical model construction
+- Complete representation theorem proof using existing soundness theorem foundation
+- Integrate with FiniteCanonicalModel.lean for model-theoretic foundations
+- Ensure the theorem handles empty, finite, and infinite contexts uniformly
+
+**Files**:
+- Theories/Bimodal/Metalogic/RepresentationTheorems.lean (scaffold exists)
+- FiniteCanonicalModel.lean (integration target)
+- Theories/Bimodal/Metalogic.lean (parent module)
 
 ---
 
