@@ -180,7 +180,7 @@ technical_debt:
 
 ### 498. Verify and test completed bridge lemma infrastructure
 - **Effort**: 1 hour
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Started**: 2026-01-14
