@@ -181,7 +181,7 @@ technical_debt:
 
 ---
 
-### ~~497.~~ Complete time arithmetic case analysis for finite history bridges
+### 497. Complete time arithmetic case analysis for finite history bridges
 - **Effort**: 2 hours
 - **Status**: [COMPLETED]
 - **Priority**: Medium
@@ -203,11 +203,13 @@ technical_debt:
 
 ### 498. Verify and test completed bridge lemma infrastructure
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Started**: 2026-01-14
+- **Researched**: 2026-01-14
+- **Planned**: 2026-01-14T23:23:25Z
 - **Session**: /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md
 
 **Description**: Run comprehensive verification of all bridge lemma connections in FiniteCanonicalModel.lean. This includes verifying that completed truth lemma inductions work cohesively, testing time arithmetic correctness, and ensuring all bridge connections between finite and semantic worlds function properly. Also document lemma dependencies between different truth definitions for future maintenance.

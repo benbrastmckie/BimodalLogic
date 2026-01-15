@@ -80,6 +80,7 @@
 % ============================================================================
 
 \newcommand{\imp}{\to}                     % Implication
+\renewcommand{\iff}{~\textit{ iff }~}            % Biconditional
 \newcommand{\lneg}{\neg}                   % Negation
 \newcommand{\falsum}{\bot}                 % Falsity/bottom
 
@@ -87,8 +88,8 @@
 % Lean Cross-Reference Commands
 % ============================================================================
 
-\newcommand{\leansrc}[1]{\texttt{#1}}      % Lean source reference (single arg)
-\newcommand{\leanref}[1]{\texttt{#1}}      % Lean reference
+\newcommand{\leansrc}[2]{\texttt{#1}.\texttt{#2}}   % Lean source reference
+\newcommand{\leanref}[1]{\texttt{#1}}               % Lean reference
 
 % ============================================================================
 % Project References
