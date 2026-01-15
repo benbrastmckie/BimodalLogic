@@ -1,28 +1,3 @@
-
-## Task 502: Complete Representation Theorem in Full
-
-**Language**: lean | **Priority**: High | **Effort**: 4-6 hours | **Status**: Not Started
-
-- **Description**: Complete the representation theorem implementation based on Task 499 foundation. Remove merge conflicts from RepresentationTheorems.lean, integrate with FiniteCanonicalModel.lean, implement full representation theorem connecting SetDerivable to concrete semantic models, develop general completeness via compactness, and add transfer theorems for bimodal fusion logic.
-- **Context**: This task completes representation theorem implementation based on Task 499's foundational architecture. Task 499 created SetDerivable definition, context-sensitive entailment, and basic soundness theorem but left the full representation theorem, integration with FiniteCanonicalModel.lean, and general completeness incomplete.
-- **Requirements**:
-  1. Remove git merge conflict markers from RepresentationTheorems.lean
-  2. Complete full representation theorem connecting SetDerivable Γ φ to concrete semantic models
-  3. Integrate representation theorem with FiniteCanonicalModel.lean for concrete model construction
-  4. Implement general completeness (Γ ⊨ φ ⇒ SetDerivable Γ φ) via compactness arguments
-  5. Add transfer theorems for bimodal fusion logic
-  6. Update documentation and ensure clean compilation
-
-**Key Files**:
-- Theories/Bimodal/Metalogic/RepresentationTheorems.lean (main implementation)
-- Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean (integration)
-- Theories/Bimodal/Metalogic.lean (imports)
-
-**References**: Task 499 research and implementation summary, Transfer Theorems for Independently Axiomatizable Bimodal Logics (J. Symbolic Logic, 2024)
-
----
-
-
 ---
 last_updated: 2026-01-14T18:31:00-08:00
 next_project_number: 503
@@ -130,18 +105,19 @@ technical_debt:
 ---
 
 ### 502. Complete representation theorem using context-based provability based on Task 499 foundation
-- **Effort**: 4 hours
-- **Status**: [REVISED]
-- **Priority**: High
-- **Language**: lean
-- **Started**: 2026-01-15
-- **Researched**: 2026-01-14
-- **Revised**: 2026-01-14
-- **Parent**: Task 499
-- **Dependencies**: Task 499 (completed)
-- **Research**: [research-001.md](.opencode/specs/502_complete_representation_theorem/reports/research-001.md), [research-002.md](.opencode/specs/502_complete_representation_theorem/reports/research-002.md)
-- **Analysis**: [initial-analysis.md](.opencode/specs/502_complete_representation_theorem/reports/initial-analysis.md)
-- **Summary**: [research-002.md](.opencode/specs/502_complete_representation_theorem/summaries/research-002.md)
+ **Effort**: 4 hours
+ **Status**: [PLANNED]
+ **Priority**: High
+ **Language**: lean
+ **Started**: 2026-01-15
+ **Researched**: 2026-01-14
+ **Revised**: 2026-01-14
+ **Parent**: Task 499
+ **Dependencies**: Task 499 (completed)
+ **Research**: [research-001.md](.opencode/specs/502_complete_representation_theorem/reports/research-001.md), [research-002.md](.opencode/specs/502_complete_representation_theorem/reports/research-002.md)
+ **Analysis**: [initial-analysis.md](.opencode/specs/502_complete_representation_theorem/reports/initial-analysis.md)
+ **Summary**: [research-002.md](.opencode/specs/502_complete_representation_theorem/summaries/research-002.md)
+ **Plan**: [implementation-001.md](.opencode/specs/502_complete_representation_theorem/plans/implementation-001.md)
 
 **Description**: Complete representation theorem using Lean native context-based provability (ContextDerivable using List Formula) throughout Bimodal/ theory. Draw on research findings that confirm context-based provability is superior to set-based SetDerivable. Eliminate set-based provability entirely and integrate with FiniteCanonicalModel.lean using context-based approach.
 
