@@ -26,42 +26,15 @@ technical_debt:
 
 # TODO
 
+
+---
+
 ## High Priority
 
-### 499. Review metalogical theorem strategies and design systematic refactor approach
-- **Effort**: 8-12 hours  
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-14
-- **Planned**: 2026-01-14
-- **Implemented**: 2026-01-14
-- **Priority**: High
-- **Language**: Lean
-- **Research**: [research-001.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/research-001.md) (existing analysis)
-- **Research**: [research-002.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/research-002.md) (representation theorem research)
-
-**Description**: Review metalogical theorem strategies and design systematic refactor approach. Analyze relationship between FMP property, decidability, and completeness theorems. Ensure representation theorem is preserved. Design general completeness statement supporting empty, finite, or infinite Gamma contexts. Specific focus on representation theorems for bimodal/temporal modal logic.
-
----
-
-### 480. Investigate workflow delegation early stop issues
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Implemented**: 2026-01-13
-- **Priority**: High
-- **Language**: meta
-- **Research**: [research-001.md](.claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md)
-- **Plan**: [implementation-002.md](.claude/specs/480_investigate_workflow_delegation_early_stop/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/480_investigate_workflow_delegation_early_stop/summaries/implementation-summary-20260113.md)
-
-**Description**: Investigate workflow delegation errors causing agents to stop early. Previous fix attempts (tasks 474, 467, 462) did not resolve the issue. Check `.claude/output/` for error patterns. Search for terms like "complete", "finished" etc. that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems and research similar errors online.
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [EXPANDED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
 - **Priority**: High
 - **Language**: lean
@@ -99,67 +72,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 494. Create Bimodal theory demo presentation
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-14
-- **Planned**: 2026-01-14
-- **Completed**: 2026-01-14
-- **Priority**: Medium
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/494_bimodal_demo_presentation/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/494_bimodal_demo_presentation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260114.md](.claude/specs/494_bimodal_demo_presentation/summaries/implementation-summary-20260114.md)
-
-**Description**: Create an elegant demo for presenting the Bimodal theory results (soundness, deduction, completeness, decidability) to an audience. Showcase the key theorems and proofs established in the Bimodal/ directory.
-
----
-
-### 493. Sync TikZ diagram, GLOSSARY.md, and README.md descriptions
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-14
-- **Completed**: 2026-01-14
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/summaries/implementation-summary-20260113.md)
-
-**Description**: Draw on the tikz diagram in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex which is correct to include any missing operators in /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/reference/GLOSSARY.md and to improve the diagram in Overview in /home/benjamin/Projects/ProofChecker/README.md to match. Then draw on the descriptions included in /home/benjamin/Projects/ProofChecker/README.md to expand and improve the descriptions following the tikz diagram in 00-Introduction.tex. The aim is consistency and quality.
-
----
-
-### 492. Update BimodalReference.tex with metalogical results
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/summaries/implementation-summary-20260113.md)
-
-**Description**: Systematically update /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/BimodalReference.tex to reflect the current status of the project, including the recent metalogical results (decidability and completeness) that were established along with the representation theory that was proved and any other notable lemmas or theorems. Add proof strategy guidance in the metalogic section to help guide readers through the approaches used.
-
----
-
-### 487. Create Bimodal/Boneyard/ for deprecated code
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: lean
-- **Research**: [research-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/summaries/implementation-summary-20260113.md)
-
-**Description**: Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference.
-
----
 
 ### 488. Fill remaining bridge lemmas
 - **Effort**: 3-4 hours
@@ -189,20 +101,6 @@ technical_debt:
 
 ---
 
-### 486. Add Abilities box to middle layer TikZ diagram
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/summaries/implementation-summary-20260113.md)
-
-**Description**: Add free choice modals and ability modals to another Abilities box in the middle layer of the TikZ diagram in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex and the Overview section of /home/benjamin/Projects/ProofChecker/README.md.
-
----
 
 ### 475. Create skill-document-converter thin wrapper
 - **Effort**: 1 hour
@@ -262,37 +160,6 @@ technical_debt:
 
 ---
 
-### 485. Create TikZ light-cone diagram for TM motivation
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/summaries/implementation-summary-20260113.md)
-
-**Description**: In line 13 of /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/00-Introduction.tex, create a professional TikZ diagram to motivate the bimodal logic TM. The diagram should feature: (1) a curvy S-shaped arrow going from left to right and slightly from below to above, (2) a point marked with a dot along the S-curve, (3) a light-cone emanating from that point in both directions (past and future), (4) other intersecting arrows extending from the marked point that fit within the light-cones in both directions, (5) the portions of these intersecting arrows prior to the marked point should be dotted (representing past/counterfactual paths).
-
----
-
-### 484. Sync TikZ diagram operators with GLOSSARY.md
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Revised**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: latex
-- **Plan**: [implementation-002.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-002.md) (v002)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-20260113.md)
-
-**Description**: Use GLOSSARY.md to improve/expand the operators included in the TikZ diagram in 00-Introduction.tex. Ensure bidirectional sync: add any operators from the glossary missing in the TikZ diagram, and add any operators in the TikZ diagram that are missing from GLOSSARY.md.
-
-**v002 Changes**: Epistemic box: remove K, add Pr, Mi, Mu, indicative conditional (↪). Normative box: add preference ordering and normative explanation. GLOSSARY.md: standardize indicative conditional to hook-right arrow (↪).
-
----
 
 ### 483. Investigate LaTeX aux file corruption errors
 - **Effort**: 2-3 hours
@@ -304,72 +171,6 @@ technical_debt:
 
 ---
 
-### 473. Fix compositionality gaps from Task 458
-- **Effort**: 6-8 hours (reduced scope)
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: lean
-- **Parent**: Task 458
-- **Research**: [research-004.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-004.md)
-- **Plan**: [implementation-004.md](.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-004.md)
-- **Summary**: [implementation-summary-20260113-final.md](.claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-final.md)
-
-**Description**: Implemented Path A (Semantic History-Based World States). Defined SemanticWorldState as quotient of history-time pairs, making compositionality trivial by construction. Key achievement: reduced 8+ mathematically unprovable sorries (mixed-sign cases) to 2 constructible sorries (history gluing). All 6 phases completed, lake build succeeds.
-
----
-
-### 481. Implement finite_history_from_state
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: lean
-- **Parent**: Task 473
-- **Research**: [research-001.md](.claude/specs/481_finite_history_from_state/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/481_finite_history_from_state/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/481_finite_history_from_state/summaries/implementation-summary-20260113.md)
-
-**Description**: Implement `finite_history_from_state` to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for `SemanticCanonicalFrame.nullity` proof.
-
----
-
-### 482. Implement history gluing lemma
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: lean
-- **Parent**: Task 473
-- **Research**: [research-001.md](.claude/specs/482_history_gluing_lemma/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/482_history_gluing_lemma/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/482_history_gluing_lemma/summaries/implementation-summary-20260113.md)
-
-**Description**: Implemented history gluing lemma with glue_histories function and supporting lemmas (before_junction, at_junction, after_junction). Updated SemanticTaskRelV2.compositionality to use gluing construction. Lake build succeeds.
-
----
-
-### 466. Add Reflection Extension to LogosReference
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/466_reflection_extension_logosreference/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/466_reflection_extension_logosreference/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/466_reflection_extension_logosreference/summaries/implementation-summary-20260113.md)
-
-**Description**: Added Reflection Extension content to LogosReference.tex. Updated Introduction TikZ diagram and layer descriptions. Added Truth Conditions, Derived Operators, and Temporal Interaction subsections to 09-Reflection.tex. Clean build verified (31 pages).
-
----
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
@@ -438,7 +239,7 @@ technical_debt:
 ### 257. Completeness Proofs
 
  **Effort**: 65-85 hours (revised from 57-76 to include Phase 5)
- **Status**: [EXPANDED]
+ **Status**: [PLANNED]
  **Researched**: 2026-01-12
  **Planned**: 2026-01-12
  **Revised**: 2026-01-12
@@ -472,42 +273,6 @@ technical_debt:
 **Impact**: Completes the metalogic foundation for TM logic by proving completeness, enabling derivability from validity.
 
 ---
-
-### 449. Truth lemma
-- **Effort**: 8-12 hours (reduced from 15-20)
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 257
-- **Dependencies**: 448 (completed), 473 (completed), 481 (completed), 482 (completed)
-- **Research**: [research-001.md](.claude/specs/449_truth_lemma/reports/research-001.md)
-- **Plan**: [implementation-002.md](.claude/specs/449_truth_lemma/plans/implementation-002.md) (v002)
-- **Summary**: [implementation-summary-20260113-phase3-4.md](.claude/specs/449_truth_lemma/summaries/implementation-summary-20260113-phase3-4.md)
-
-**Description**: Phase 6 of completeness proofs: Complete truth lemma using SemanticWorldState infrastructure from Task 473. The semantic truth lemma (`semantic_truth_lemma_v2`) is proven. `semantic_weak_completeness` is proven (uses `mcs_projection_is_closure_mcs` which has one sorry for maximality). Connection to main completeness documented; formal bridging deferred to Task 450. Old `finite_truth_lemma` marked deprecated.
-
----
-
-### 450. Completeness theorems
-- **Effort**: 8-10 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-13
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 257
-- **Dependencies**: 449, 481, 482
-- **Research**: [research-001.md](.claude/specs/450_completeness_theorems/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/450_completeness_theorems/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/450_completeness_theorems/summaries/implementation-summary-20260113.md)
-
-**Description**: Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using SemanticCanonicalModel from Task 473. Connect semantic_weak_completeness to main completeness theorem. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.
-
----
-
-
 
 
 ### 136. Design Decidability.lean architecture and signatures
@@ -565,21 +330,6 @@ technical_debt:
 
 ---
 
-### 479. Fix TikZ extension dependencies diagram
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-13
-- **Planned**: 2026-01-13
-- **Completed**: 2026-01-13
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/summaries/implementation-summary-20260113.md)
-
-**Description**: The TikZ diagram in sec:extension-dependencies (line 21) of /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex does not match the diagram in the 'Overview' (line 7) of /home/benjamin/Projects/ProofChecker/README.md. Fix the TikZ diagram to match README.md layout. Requirements: (1) professional styling with rounded corners for boxes, (2) non-intersecting lines and labels, (3) middle layer extensions (Epistemic, Normative, Spatial) in a grey horizontal background box, (4) ellipses to left and right of middle layers to indicate extensibility, (5) explanatory text below the diagram.
-
----
 
 ### 503. Update LaTeX to use dependent-type conventions for Lean consistency
 - **Effort**: 4-6 hours
@@ -594,10 +344,9 @@ technical_debt:
 - **Description**: Update LaTeX notation throughout the Logos documentation to use dependent-type conventions consistent with Lean 4. Replace set-theoretic notation with type-theoretic notation using ':' for typing instead of set membership. Keep notation simple and minimal for readability while avoiding explicit set ideology. Do NOT replace function application notation with indexed family notation - preserve standard function application f(t₁, ..., tₙ).
 - **Acceptance Criteria**:
   - [ ] All set membership notation ∈ replaced with typing notation ':' where appropriate
-  - [ ] Function application notation preserved as f(t₁, ..., tₙ) 
+  - [ ] Function application notation preserved as f(t₁, ..., tₙ)
   - [ ] Type annotations use consistent dependent-type syntax
   - [ ] No explicit set-theoretic language or ideology remains
   - [ ] LaTeX files compile successfully after changes
   - [ ] Notation remains readable and minimal
 - **Impact**: Improves consistency between LaTeX documentation and Lean 4 formalization, removes set-theoretic bias while maintaining readability.
-

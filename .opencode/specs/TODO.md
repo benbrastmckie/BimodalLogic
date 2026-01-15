@@ -582,6 +582,25 @@ technical_debt:
 
 ---
 
+### 490. Complete decidability procedure
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 469
+
+**Description**: Complete the decidability procedure for TM logic. The existing Decidability module has tableau infrastructure but needs: proof extraction from closed tableaux, completeness proof connecting to FMP, and full decide function verification. Extends Task 469.
+
+---
+
+### 491. Research alternative completeness proofs
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+
+**Description**: Research alternative completeness proof approaches for TM logic: filtration-based proofs (standard modal technique), algebraic semantics (Boolean algebras with operators), and step-by-step canonical model variations. Compare with current semantic history-based approach for potential improvements or independent verification.
+
+---
+
 
 ### 257. Completeness Proofs
 
