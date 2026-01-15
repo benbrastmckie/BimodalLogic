@@ -167,7 +167,7 @@ technical_debt:
 
 ### 497. Complete time arithmetic case analysis for finite history bridges
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED] - Research: [research-001.md](.claude/specs/497_time_arithmetic_case_analysis/reports/research-001.md) | [research-summary.md](.claude/specs/497_time_arithmetic_case_analysis/summaries/research-summary.md)
 - **Priority**: Medium
 - **Language**: lean
 - **Session**: sess_488_bridge_003

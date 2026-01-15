@@ -90,14 +90,24 @@
       "project_name": "Complete time arithmetic case analysis for finite history bridges",
       "type": "feature",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researched",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-14T23:24:16Z",
-      "last_updated": "2026-01-14T23:24:16Z",
+      "last_updated": "2026-01-14T23:26:00Z",
       "effort": "2 hours",
       "description": "Finish the time arithmetic completion for bridge lemmas (lines ~3337, ~3394). This involves detailed case analysis for clamping arithmetic on time domains using omega tactics to handle boundary conditions. Complete the time_shift mechanisms and clamped domain arithmetic that enables proper connection between finite and semantic world histories.",
-      "session_id": "sess_488_bridge_003"
+      "session_id": "sess_488_bridge_003",
+      "artifacts": [
+        {
+          "path": ".claude/specs/497_time_arithmetic_case_analysis/reports/research-001.md",
+          "type": "report"
+        },
+        {
+          "path": ".claude/specs/497_time_arithmetic_case_analysis/summaries/research-summary.md",
+          "type": "summary"
+        }
+      ]
     },
     {
       "project_number": 496,
