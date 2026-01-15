@@ -1,8 +1,22 @@
 {
   "_schema_version": "1.0.0",
-  "_last_updated": "2026-01-14T23:30:00-08:00",
-  "next_project_number": 503,
+  "_last_updated": "2026-01-15T06:10:46-08:00",
+  "next_project_number": 504,
   "active_projects": [
+    {
+      "project_number": 503,
+      "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "researching",
+      "priority": "Medium",
+      "language": "markdown",
+      "created": "2026-01-15T06:09:44Z",
+      "last_updated": "2026-01-15T06:13:59Z",
+      "effort": "4 hours",
+      "description": "Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.",
+      "session_id": "sess_1768457639_qizk"
+    },
     {
       "project_number": 501,
       "project_name": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification",
@@ -98,17 +112,18 @@
       "project_number": 497,
       "project_name": "Complete time arithmetic case analysis for finite history bridges",
       "type": "feature",
-      "phase": "planned",
-      "status": "planned",
+      "phase": "in_progress",
+      "status": "in_progress",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-14T23:24:16Z",
-      "last_updated": "2026-01-14T23:30:00Z",
+      "last_updated": "2026-01-14T22:15:55Z",
       "started": "2026-01-14T23:27:00Z",
       "planned": "2026-01-14T23:29:00Z",
+      "implementing": "2026-01-14T22:15:55Z",
       "effort": "2 hours",
       "description": "Finish the time arithmetic completion for bridge lemmas (lines ~3337, ~3394). This involves detailed case analysis for clamping arithmetic on time domains using omega tactics to handle boundary conditions. Complete the time_shift mechanisms and clamped domain arithmetic that enables proper connection between finite and semantic world histories.",
-      "session_id": "sess_488_bridge_003",
+      "session_id": "sess_1768457355_z5eu",
       "artifacts": [
         {
           "path": ".claude/specs/497_time_arithmetic_case_analysis/reports/research-001.md",
