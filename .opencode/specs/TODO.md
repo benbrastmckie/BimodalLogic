@@ -181,15 +181,21 @@ technical_debt:
 
 ---
 
-### 497. Complete time arithmetic case analysis for finite history bridges
+### ~~497.~~ Complete time arithmetic case analysis for finite history bridges
 - **Effort**: 2 hours
-- **Status**: [IN PROGRESS] - Research: [research-001.md](.claude/specs/497_time_arithmetic_case_analysis/reports/research-001.md) | [research-summary.md](.claude/specs/497_time_arithmetic_case_analysis/summaries/research-summary.md) | Plan: [implementation-001.md](.opencode/specs/497_time_arithmetic_case_analysis/plans/implementation-001.md)
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Session**: sess_488_bridge_003
 - **Started**: 2026-01-14T23:27:00Z
 - **Planned**: 2026-01-14T23:29:00Z
 - **Implementing**: 2026-01-14T22:15:55Z
+- **Completed**: 2026-01-14T22:32:00Z
+- **Research**: [research-001.md](.claude/specs/497_time_arithmetic_case_analysis/reports/research-001.md)
+- **Research Summary**: [research-summary.md](.claude/specs/497_time_arithmetic_case_analysis/summaries/research-summary.md)
+- **Plan**: [implementation-001.md](.opencode/specs/497_time_arithmetic_case_analysis/plans/implementation-001.md)
+- **Implementation**: [FiniteCanonicalModel.lean](Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean)
+- **Summary**: [implementation-summary-20260115.md](.opencode/specs/497_time_arithmetic_case_analysis/summaries/implementation-summary-20260115.md)
 
 **Description**: Finish the time arithmetic completion for bridge lemmas (lines ~3337, ~3394). This involves detailed case analysis for clamping arithmetic on time domains using omega tactics to handle boundary conditions. Complete the time_shift mechanisms and clamped domain arithmetic that enables proper connection between finite and semantic world histories.
 
@@ -709,11 +715,14 @@ technical_debt:
 
 ### 503. Update LaTeX to use dependent-type conventions for Lean consistency
 - **Effort**: 4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-15
+- **Planned**: 2026-01-15
 - **Priority**: Medium
 - **Language**: markdown
 - **Session**: sess_1768457639_qizk
+- **Research**: [research-001.md](.opencode/specs/503_latex_dependent_type_conventions/reports/research-001.md)
+- **Plan**: [implementation-001.md](.opencode/specs/503_latex_dependent_type_conventions/plans/implementation-001.md)
 
 **Description**: Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.
 

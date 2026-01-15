@@ -1,23 +1,92 @@
 {
-  "project_number": 498,
-  "project_name": "Verify and test completed bridge lemma infrastructure",
-  "type": "feature",
-  "phase": "researched",
-  "status": "researched",
-  "priority": "medium",
-  "language": "lean",
-  "created": "2026-01-14T23:24:58Z",
-  "last_updated": "2026-01-14",
-  "started": "2026-01-14",
-  "effort": "1 hour",
-  "description": "Run comprehensive verification of all bridge lemma connections in FiniteCanonicalModel.lean. This includes verifying that completed truth lemma inductions work cohesively, testing time arithmetic correctness, and ensuring all bridge connections between finite and semantic worlds function properly. Also document lemma dependencies between different truth definitions for future maintenance.",
-  "session_id": "sess_1768456662_wxecsn",
-  "researched": "2026-01-14",
-  "artifacts": [
+  "active_projects": [
     {
-      "path": ".opencode/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md",
-      "type": "research",
-      "summary": "Comprehensive analysis of bridge lemma infrastructure status, sorry gaps, and dependencies"
+      "project_number": 497,
+      "project_name": "Complete time arithmetic case analysis for finite history bridges",
+      "type": "feature",
+      "phase": "implementing",
+      "status": "implementing",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-14T23:24:16Z",
+      "last_updated": "2026-01-14T23:30:00Z",
+      "started": "2026-01-14T23:27:00Z",
+      "planned": "2026-01-14T23:29:00Z",
+      "implementing": "2026-01-14T22:15:55Z",
+      "effort": "2 hours",
+      "description": "Finish the time arithmetic completion for bridge lemmas (lines ~3337, ~3394). This involves detailed case analysis for clamping arithmetic on time domains using omega tactics to handle boundary conditions. Complete the time_shift mechanisms and clamped domain arithmetic that enables proper connection between finite and semantic world histories.",
+      "session_id": "sess_1768457355_z5eu",
+      "artifacts": [
+        {
+          "path": ".claude/specs/497_time_arithmetic_case_analysis/reports/research-001.md",
+          "type": "report"
+        },
+        {
+          "path": ".claude/specs/497_time_arithmetic_case_analysis/summaries/research-summary.md",
+          "type": "summary"
+        },
+        {
+          "path": ".opencode/specs/497_time_arithmetic_case_analysis/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ],
+      "plan_path": ".opencode/specs/497_time_arithmetic_case_analysis/plans/implementation-001.md"
+    },
+    {
+      "project_number": 498,
+      "project_name": "Verify and test completed bridge lemma infrastructure",
+      "type": "feature",
+      "phase": "researched",
+      "status": "researched",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-14T23:24:58Z",
+      "last_updated": "2026-01-14",
+      "started": "2026-01-14",
+      "researched": "2026-01-14",
+      "effort": "1 hour",
+      "description": "Run comprehensive verification of all bridge lemma connections in FiniteCanonicalModel.lean. This includes verifying that completed truth lemma inductions work cohesively, testing time arithmetic correctness, and ensuring all bridge connections between finite and semantic worlds function properly. Also document lemma dependencies between different truth definitions for future maintenance.",
+      "session_id": "sess_1768456662_wxecsn",
+      "artifacts": [
+        {
+          "path": ".opencode/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of bridge lemma infrastructure status, sorry gaps, and dependencies"
+        }
+      ]
+    },
+    {
+      "project_number": 503,
+      "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
+      "type": "feature",
+      "phase": "planned",
+      "status": "planned",
+      "priority": "Medium",
+      "language": "markdown",
+      "created": "2026-01-15T06:09:44Z",
+      "last_updated": "2025-01-15T06:15:00Z",
+      "effort": "4 hours",
+      "description": "Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.",
+      "session_id": "ses_1768457639_qizk",
+      "researched": "2025-01-15T06:14:00Z",
+      "planned": "2026-01-15T06:15:00Z",
+      "artifacts": [
+        {
+          "path": ".opencode/specs/503_latex_dependent_type_conventions/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of LaTeX vs Lean type notation with specific update recommendations"
+        },
+        {
+          "path": ".opencode/specs/503_latex_dependent_type_conventions/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan: Foundation, Semantic Integration, Extended Updates, Validation"
+        }
+      ]
     }
-  ]
+  ],
+  "metadata": {
+    "last_updated": "2026-01-14T22:31:00Z",
+    "total_active": 2,
+    "session_id": "sess_1768457355_z5eu"
+  }
 }
