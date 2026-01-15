@@ -36,9 +36,11 @@
 \DeclareSymbolFont{symbolsC}{U}{txsyc}{m}{n}
 \SetSymbolFont{symbolsC}{bold}{U}{txsyc}{bx}{n}
 \DeclareFontSubstitution{U}{txsyc}{m}{n}
-\DeclareMathSymbol{\boxright}{\mathrel}{symbolsC}{"80}       % Would-counterfactual (□→)
-\DeclareMathSymbol{\circleright}{\mathrel}{symbolsC}{"91}    % Would-cause (○→)
-\DeclareMathSymbol{\diamondright}{\mathrel}{symbolsC}{"84}   % Might-counterfactual (◇→)
+\AtBeginDocument{
+  \DeclareMathSymbol{\boxright}{\mathrel}{symbolsC}{"80}       % Would-counterfactual (□→)
+  \DeclareMathSymbol{\circleright}{\mathrel}{symbolsC}{"91}    % Would-cause (○→)
+  \DeclareMathSymbol{\diamondright}{\mathrel}{symbolsC}{"84}   % Might-counterfactual (◇→)
+}
 
 % Might-cause operator (dotted circle arrow)
 \newcommand{\dotcircleright}{\mathrel{\mathpalette\dotcirclerighthelper\relax}}
