@@ -186,8 +186,9 @@ technical_debt:
 - **Researched**: 2026-01-14
 - **Parent**: Task 499
 - **Dependencies**: Task 499 (completed)
-- **Research**: [research-001.md](.opencode/specs/502_set_based_vs_context_based_provability/reports/research-001.md)
-- **Summary**: [research-summary.md](.opencode/specs/502_set_based_vs_context_based_provability/summaries/research-summary.md)
+- **Research**: [research-001.md](.opencode/specs/502_complete_representation_theorem/reports/research-001.md), [research-002.md](.opencode/specs/502_complete_representation_theorem/reports/research-002.md)
+- **Analysis**: [initial-analysis.md](.opencode/specs/502_complete_representation_theorem/reports/initial-analysis.md)
+- **Summary**: [research-002.md](.opencode/specs/502_complete_representation_theorem/summaries/research-002.md)
 
 **Description**: Draw on .opencode/specs/499_review_metalogical_theorem_strategies/summaries/implementation-summary-20260114.md to complete the representation theorem in full. Focus on integrating the existing representation theorem scaffold in Theories/Bimodal/Metalogic/RepresentationTheorems.lean with FiniteCanonicalModel.lean. Complete the full representation theorem that was identified as requiring integration in Task 499.
 
