@@ -155,17 +155,20 @@ technical_debt:
 
 ### 503. Update LaTeX to use dependent-type conventions for Lean consistency
 - **Effort**: 4 hours
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: markdown
-- **Session**: ses_1768457639_qizk
+- **Session**: sess_1768530000_impl503
 - **Research**: [research-001.md](.opencode/specs/503_latex_dependent_type_conventions/reports/research-001.md)
 - **Plan**: [implementation-001.md](.opencode/specs/503_latex_dependent_type_conventions/plans/implementation-001.md)
 - **Researched**: 2026-01-15
 - **Planned**: 2026-01-15
 - **Revised**: 2026-01-15T15:50:00Z
 - **Started**: 2026-01-15
+- **Completed**: 2026-01-15
 
+- **Implementation**: [01-ConstitutiveFoundation.tex](Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex), [03-ExplanatoryExtension-Semantics.tex](Theories/Logos/latex/subfiles/03-ExplanatoryExtension-Semantics.tex)
+- **Summary**: [implementation-summary-20260115.md](.opencode/specs/503_latex_dependent_type_conventions/summaries/implementation-summary-20260115.md)
 **Description**: Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.
 
 ---

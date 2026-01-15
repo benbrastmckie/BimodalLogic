@@ -96,8 +96,8 @@
       "project_number": 503,
       "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
       "type": "feature",
-      "phase": "in_progress",
-      "status": "in_progress",
+      "phase": "completed",
+      "status": "completed",
       "priority": "medium",
       "language": "markdown",
       "effort": "4 hours",
@@ -110,10 +110,27 @@
         {
           "path": ".opencode/specs/503_latex_dependent_type_conventions/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "type": "implementation",
+          "path": "Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
+          "summary": "Updated function types and verification clauses to dependent-type notation"
+        },
+        {
+          "type": "implementation",
+          "path": "Theories/Logos/latex/subfiles/03-ExplanatoryExtension-Semantics.tex",
+          "summary": "Updated verification clauses to dependent-type notation"
+        },
+        {
+          "type": "summary",
+          "path": ".opencode/specs/503_latex_dependent_type_conventions/summaries/implementation-summary-20260115.md",
+          "summary": "Implementation summary for dependent-type conventions update"
         }
       ],
       "last_updated": "2026-01-15",
-      "started": "2026-01-15"
+      "started": "2026-01-15",
+      "completed": "2026-01-15",
+      "session_id": "sess_1768530000_impl503"
     },
     {
       "project_number": 475,
