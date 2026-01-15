@@ -1,162 +1,150 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic.Soundness
-import Mathlib.Data.Set.Basic
-import Mathlib.Data.Finset.Basic
+import Bimodal.Metalogic.Completeness
+import Mathlib.Data.List.Basic
+import Mathlib.Data.Finset.Basic  -- Only for transition period
+import Mathlib.Logic.Basic
+
+set_option trace.Meta.synthInstance true
 
 /-!
-# Set-Based Provability and Representation Theorems
+# Context-Based Provability and Representation Theorems
 
 This module implements the systematic refactor for metalogical theorem strategies,
-<<<<<<< HEAD
 establishing representation theorems as the foundational result for bimodal/temporal
-modal logic.
+modal logic using Lean-idiomatic context-based provability.
 
 ## Main Results
 
-- `SetDerivable Γ φ`: Set-based provability with finite subset requirement
-- `entails Γ φ`: Context-sensitive semantic entailment
-- `set_soundness`: Soundness for set-based provability
+- `ContextDerivable Γ φ`: Context-based provability using List Formula
+- `context_entails Γ φ`: Context-sensitive semantic entailment
+- `context_soundness`: Soundness for context-based provability
+- `representation_theorem_empty`: Representation theorem for empty context
 
 ## Architecture Design
 
-<<<<<<< HEAD
-Based on research findings (Task 499), this establishes the hierarchy:
-1. **Representation Theorem** (Primary): Isomorphism between abstract and concrete structures
-2. **General Completeness** (Context-Sensitive): Γ ⊨ φ ⇒ SetDerivable Γ φ  
+Based on research findings (Tasks 499, 502), this establishes the hierarchy:
+1. **Representation Theorem** (Primary): Isomorphism between syntax and semantics
+2. **General Completeness** (Context-Sensitive): Γ ⊨ φ ⇒ ContextDerivable Γ φ  
 3. **Finite Model Property** (Contrapositive): From representation theorem
 4. **Decidability** (Finite Search): From FMP + correctness
 
 ## Key Features
 
-- **Set-Based Provability**: Handles infinite contexts via finite subset requirement
-- **Context Universality**: Unified framework for empty, finite, and infinite Γ
+- **Context-Based Provability**: Lean-idiomatic List Formula approach
+- **No Artificial Finiteness**: Lists are naturally finite, avoids constraints
 - **Semantic Integration**: Builds on proven SemanticWorldState infrastructure
+- **Better Temporal Logic Integration**: Native support for temporal reasoning
 
 ## References
 
 * Task 499 Research: Representation theorems for bimodal/temporal modal logic
+* Task 502 Research: Context-based provability superiority over set-based approach
 * Transfer Theorems for Independently Axiomatizable Bimodal Logics (J. Symbolic Logic, 2024)
 * Jónsson-Tarski Representation Theorem - Algebraic-semantic duality
 -/
 
 namespace Bimodal.Metalogic.Representation
 
-open Bimodal.Syntax ProofSystem Semantics
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 
 /-- 
 Set-based provability: Γ ⊢ φ iff some finite subset of Γ derives φ.
 
-This handles infinite contexts by requiring only finitely many premises be used
-in any derivation, which matches the actual nature of formal proofs.
+This is being eliminated per Task 502 but kept for backward compatibility.
 -/
 def SetDerivable (Γ : Set Formula) (φ : Formula) : Prop :=
   ∃ (Δ : Finset Formula), (↑Δ : Set Formula) ⊆ Γ ∧ Nonempty (DerivationTree Δ.toList φ)
 
 /-- 
-Context-sensitive semantic entailment: Γ ⊨ φ means φ is true in all
-models where all formulas in Γ are true.
+Context-based provability: Γ ⊢ φ using List Formula.
 
-This supports empty, finite, and infinite contexts uniformly.
+This uses Lean's native List type which is naturally finite, avoiding
+artificial finiteness constraints while matching actual proof practice.
 -/
-def entails (Γ : Set Formula) (φ : Formula) : Prop :=
-  ∀ {F : Type} [AddCommGroup F] [LinearOrder F] [IsOrderedAddMonoid F]
-    (M : TaskModel F) (τ : TaskFrame F) (t : F),
-    (∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M τ t φ
+def ContextDerivable (Γ : Context) (φ : Formula) : Prop :=
+  Nonempty (DerivationTree Γ φ)
 
 /-- 
-Basic lemma: Empty context set-derivability matches standard derivability.
+Basic lemma: Empty context derivability matches standard derivability.
 
-This shows that SetDerivable generalizes the existing DerivationTree system.
+This shows that ContextDerivable generalizes the existing DerivationTree system.
 -/
-lemma empty_SetDerivable_iff {φ : Formula} :
-    SetDerivable ∅ φ ↔ Nonempty (DerivationTree [] φ) := by
+lemma empty_context_derivability_iff {φ : Formula} :
+    ContextDerivable [] φ ↔ Nonempty (DerivationTree [] φ) := by
+  rfl
+
+/-- 
+Soundness theorem for context-based provability.
+
+If Γ ⊢ φ via ContextDerivable, then Γ ⊨ φ semantically.
+-/
+theorem context_soundness (Γ : Context) (φ : Formula) :
+    ContextDerivable Γ φ → semantic_consequence Γ φ := by
+  intro ⟨d⟩
+  exact soundness Γ φ d
+
+/-- 
+Forward direction of representation theorem: ContextDerivable → semantic model.
+
+If [] ⊢ φ, then [] ⊨ φ by soundness, establishing the forward direction.
+-/
+theorem representation_theorem_forward {φ : Formula} :
+    ContextDerivable [] φ → semantic_consequence [] φ := by
+  intro ⟨d⟩
+  exact context_soundness [] φ ⟨d⟩
+
+/-- 
+Backward direction for empty context: semantic entailment → provability.
+
+For now, we use the known weak_completeness axiom from the Completeness module.
+This connects to the semantic infrastructure through that axiom.
+-/
+theorem representation_theorem_backward_empty {φ : Formula} :
+    semantic_consequence [] φ → ContextDerivable [] φ := by
+  intro h_entails
+  -- Convert semantic_consequence [] φ to the standard validity notion
+  have h_valid : valid φ := by
+    intro D F M τ t
+    exact h_entails D F M τ t
+  -- Use weak_completeness axiom from Completeness module
+  exact ⟨weak_completeness φ h_valid⟩
+
+/-- 
+Simplified representation theorem for empty context.
+
+Focuses on the core equivalence between provability and semantic entailment.
+-/
+theorem representation_theorem_empty {φ : Formula} :
+    ContextDerivable [] φ ↔ semantic_consequence [] φ := by
   constructor
-  · intro h_set
-    obtain ⟨Δ, h_sub, ⟨d⟩⟩ := h_set
-    have h_empty : Δ = ∅ := by
-      apply Finset.eq_empty_of_forall_notMem
-      intro ψ hψ
-      exact absurd (h_sub hψ) (by simp)
-    rw [h_empty] at d
-    exact ⟨d⟩
-  · intro ⟨d⟩
-    use ∅
-    simp
-    exact ⟨d⟩
-
-/-- 
-Soundness theorem for set-based provability.
-
-If Γ ⊢ φ via SetDerivable, then Γ ⊨ φ semantically.
--/
-theorem set_soundness {F : Type} [AddCommGroup F] [LinearOrder F] [IsOrderedAddMonoid F]
-    (Γ : Set Formula) (φ : Formula) :
-    SetDerivable Γ φ → entails Γ φ := by
-  intro ⟨Δ, h_sub, ⟨d⟩⟩
-  intro M τ t h_Γ_true
-  have h_Δ_true : ∀ ψ ∈ Δ, truth_at M τ t ψ := by
-    intro ψ hψ
-    exact h_Γ_true ψ (h_sub (Finset.mem_coe.1 hψ))
-  exact soundness Δ.toList φ d M τ t h_Δ_true
+  · exact representation_theorem_forward
+  · exact representation_theorem_backward_empty
 
 /-! 
-## Architecture Notes
+## Context Manipulation Utilities
 
-The representation theorem approach eliminates circular dependencies identified in Task 499:
-
-### Previous Architecture (Circular):
-```
-Completeness → FMP → Decidability → (back to) Completeness
-```
-
-### New Architecture (Hierarchical):
-```
-1. Representation Theorem (Primary):
-   SetDerivable Γ φ ↔ ∃ concrete model with Γ true and φ true
-   Uses only soundness as foundation
-
-2. General Completeness (Derived):
-   entails Γ φ → SetDerivable Γ φ
-   Direct consequence of representation theorem
-
-3. Finite Model Property (Derived):
-   If ⊬ φ, then ∃ finite countermodel
-   Contrapositive of representation theorem
-
-4. Decidability (Derived):
-   From FMP + bounded model checking
-   Computational decision procedure
-```
-
-### Research Insights
-
-1. **Set-Based Provability**: Essential for handling infinite contexts
-   - Finite subset requirement matches actual proof practice
-   - Enables compactness arguments
-
-2. **Transfer Theorems**: For bimodal logics L = L₁ ⊗ L₂
-   - Properties transfer under independent axiomatization
-   - Completeness, FMP, decidability all transfer
-
-3. **Context Universality**: Single framework for all context types
-   - Empty context: Standard completeness
-   - Finite context: Bounded search with FMP
-   - Infinite context: Countable compactness
-
-### Implementation Status
-
-This module provides the foundational infrastructure:
-- ✅ SetDerivable definition with finite subset requirement
-<<<<<<< HEAD
-- ✅ Context-sensitive entailment definition
-- ✅ Basic soundness theorem for set-based provability
-- 🔄 Full representation theorem (requires integration with FiniteCanonicalModel)
-- 🔄 General completeness (requires compactness arguments)
-
-<<<<<<< HEAD
-The architecture establishes the mathematical foundation for systematic
-refactor of metalogical results in bimodal/temporal modal logic.
+These utilities provide basic operations for working with Context contexts
+in the context-based provability system.
 -/
+
+/-- 
+Context extension: Check if Δ extends Γ (all elements of Δ are in Γ).
+-/
+def Context.extends (Δ Γ : Context) : Prop :=
+  ∀ ψ ∈ Δ, ψ ∈ Γ
+
+/-- 
+Context merge: Combine two contexts by concatenation.
+-/
+def Context.merge (Γ₁ Γ₂ : Context) : Context :=
+  Γ₁ ++ Γ₂
+
+/-- 
+Context subset: Check if Γ₁ is a subset of Γ₂ element-wise.
+-/
+def Context.subset (Γ₁ Γ₂ : Context) : Prop :=
+  ∀ ψ ∈ Γ₁, ψ ∈ Γ₂
 
 end Bimodal.Metalogic.Representation
