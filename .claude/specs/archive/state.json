@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-13T18:57:54Z",
+  "_last_updated": "2026-01-15T23:40:00Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -4266,6 +4266,499 @@
         }
       ],
       "archived": "2026-01-13T18:57:54Z"
+    },
+    [
+      {
+        "project_number": 499,
+        "project_name": "review_metalogical_theorem_strategies",
+        "status": "completed",
+        "language": "lean",
+        "priority": "high",
+        "effort": "8-12 hours",
+        "created": "2026-01-14T18:32:00Z",
+        "last_updated": "2026-01-14T18:32:00Z",
+        "completed": "2026-01-14T18:32:00Z",
+        "description": "Review metalogical theorem strategies and design systematic refactor approach. Analyze relationship between FMP property, decidability, and completeness theorems. Ensure representation theorem is preserved. Design general completeness statement supporting empty, finite, or infinite Gamma contexts.",
+        "session_id": "sess_1768239349_representation_research",
+        "artifacts": [
+          {
+            "path": ".opencode/specs/499_review_metalogical_theorem_strategies/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".opencode/specs/499_review_metalogical_theorem_strategies/reports/research-002.md",
+            "type": "research"
+          }
+        ],
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 494,
+        "project_name": "bimodal_demo_presentation",
+        "status": "completed",
+        "language": "lean",
+        "priority": "medium",
+        "effort": "4-6 hours",
+        "created": "2026-01-14T01:46:58Z",
+        "last_updated": "2026-01-14T02:12:21Z",
+        "completed": "2026-01-14T02:12:21Z",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 493,
+        "project_name": "sync_tikz_glossary_readme_descriptions",
+        "status": "completed",
+        "language": "general",
+        "priority": "medium",
+        "created": "2026-01-14T00:04:49Z",
+        "last_updated": "2026-01-14T00:46:29Z",
+        "session_id": "sess_1768351211_51951d",
+        "plan_version": "001",
+        "artifacts": [
+          {
+            "path": ".claude/specs/493_sync_tikz_glossary_readme_descriptions/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/493_sync_tikz_glossary_readme_descriptions/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "completed": "2026-01-14T00:46:29Z",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 492,
+        "project_name": "update_bimodalreference_tex_metalogical_results",
+        "status": "completed",
+        "language": "latex",
+        "priority": "medium",
+        "created": "2026-01-13T23:53:35Z",
+        "last_updated": "2026-01-14T00:22:44Z",
+        "description": "Systematically update BimodalReference.tex to reflect the current status of the project, including the recent metalogical results (decidability and completeness) that were established along with the representation theory that was proved. Add proof strategy guidance in the metalogic section to help guide readers.",
+        "session_id": "sess_1768349364_a7367f",
+        "artifacts": [
+          {
+            "path": ".claude/specs/492_update_bimodalreference_tex_metalogical_results/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/492_update_bimodalreference_tex_metalogical_results/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/492_update_bimodalreference_tex_metalogical_results/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "001",
+        "completed": "2026-01-14T00:22:44Z",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 487,
+        "project_name": "create_bimodal_boneyard_for_deprecated_code",
+        "status": "completed",
+        "language": "lean",
+        "priority": "medium",
+        "created": "2026-01-13T23:24:12Z",
+        "last_updated": "2026-01-13T23:44:52Z",
+        "description": "Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference.",
+        "session_id": "sess_1768347439_4e0821",
+        "artifacts": [
+          {
+            "path": ".claude/specs/487_create_bimodal_boneyard_for_deprecated_code/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/487_create_bimodal_boneyard_for_deprecated_code/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/487_create_bimodal_boneyard_for_deprecated_code/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "001",
+        "completed": "2026-01-13T23:44:52Z",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 486,
+        "project_name": "add_abilities_box_to_tikz_diagram",
+        "status": "completed",
+        "language": "latex",
+        "priority": "medium",
+        "created": "2026-01-13T22:19:50Z",
+        "last_updated": "2026-01-13T22:48:09Z",
+        "artifacts": [
+          {
+            "path": ".claude/specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/486_add_abilities_box_to_tikz_diagram/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 485,
+        "project_name": "tikz_light_cone_diagram_for_tm_motivation",
+        "status": "completed",
+        "language": "latex",
+        "priority": "medium",
+        "created": "2026-01-13T22:00:07Z",
+        "last_updated": "2026-01-13T22:28:17Z",
+        "artifacts": [
+          {
+            "path": ".claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 484,
+        "project_name": "sync_tikz_diagram_operators_with_glossary",
+        "status": "completed",
+        "language": "latex",
+        "priority": "medium",
+        "created": "2026-01-13T21:23:11Z",
+        "last_updated": "2026-01-13T22:03:27Z",
+        "artifacts": [
+          {
+            "path": ".claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-002.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 480,
+        "project_name": "investigate_workflow_delegation_early_stop",
+        "status": "completed",
+        "language": "meta",
+        "priority": "high",
+        "created": "2026-01-13T20:12:45Z",
+        "last_updated": "2026-01-13T20:55:20Z",
+        "description": "Investigate workflow delegation errors causing early stop. Tasks 474, 467, 462 attempts did not fix. Check .claude/output/ for patterns. Search for terms like complete, finished that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems. Research similar errors online.",
+        "session_id": "sess_1768337163_048ee9",
+        "artifacts": [
+          {
+            "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/plans/implementation-002.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/480_investigate_workflow_delegation_early_stop/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "002",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 479,
+        "project_name": "fix_tikz_extension_dependencies_diagram",
+        "status": "completed",
+        "language": "latex",
+        "priority": "medium",
+        "created": "2026-01-13T19:25:23Z",
+        "last_updated": "2026-01-13T20:23:54Z",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 473,
+        "project_name": "fix_compositionality_gaps_task_458",
+        "status": "completed",
+        "language": "lean",
+        "priority": "medium",
+        "created": "2026-01-13T16:32:26Z",
+        "last_updated": "2026-01-13T20:42:00Z",
+        "completed": "2026-01-13T20:42:00Z",
+        "session_id": "sess_1768336078_6fe505",
+        "parent_task": 458,
+        "description": "Fix compositionality gaps from Task 458. Research identified 7 compositionality gaps (mixed-sign duration cases), 8 truth lemma gaps (negation-completeness), and 2 history construction gaps. Root cause: IsLocallyConsistent only captures soundness, not negation-completeness. Primary solution: Bridge to SetMaximalConsistent or strengthen world state definitions.",
+        "artifacts": [
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/reports/research-002.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-002.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-phase2.md",
+            "type": "summary"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-phase3.md",
+            "type": "summary"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-003.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/reports/research-003.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/reports/research-004.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-004.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-final.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "004",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 481,
+        "project_name": "finite_history_from_state",
+        "status": "completed",
+        "language": "lean",
+        "priority": "medium",
+        "created": "2026-01-13T20:50:00Z",
+        "last_updated": "2026-01-13T21:21:35Z",
+        "session_id": "sess_1768338797_f431ef",
+        "parent_task": 473,
+        "description": "Implement finite_history_from_state to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for SemanticCanonicalFrame.nullity proof.",
+        "artifacts": [
+          {
+            "path": ".claude/specs/481_finite_history_from_state/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/481_finite_history_from_state/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/481_finite_history_from_state/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "001",
+        "completed": "2026-01-13T21:21:35Z",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 482,
+        "project_name": "history_gluing_lemma",
+        "status": "completed",
+        "language": "lean",
+        "priority": "medium",
+        "created": "2026-01-13T20:50:00Z",
+        "last_updated": "2026-01-13T21:29:37Z",
+        "parent_task": 473,
+        "description": "Implement history gluing lemma to compose two histories that share a common world state at the junction point. This eliminates the compositionality sorries in SemanticTaskRelV2.compositionality by proving histories can be concatenated when they agree at the boundary.",
+        "session_id": "sess_1768338975_5a5d1b",
+        "artifacts": [
+          {
+            "path": ".claude/specs/482_history_gluing_lemma/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/482_history_gluing_lemma/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/482_history_gluing_lemma/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "001",
+        "completed": "2026-01-13T21:29:37Z",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 466,
+        "project_name": "reflection_extension_logosreference",
+        "status": "completed",
+        "language": "latex",
+        "priority": "medium",
+        "created": "2026-01-13T06:31:21Z",
+        "last_updated": "2026-01-13T19:02:26Z",
+        "description": "Use /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md to revise /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex and its subfiles to include the characterization and stub for the Reflection Extension",
+        "session_id": "sess_1768329277_b099e2",
+        "artifacts": [
+          {
+            "path": ".claude/specs/466_reflection_extension_logosreference/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/466_reflection_extension_logosreference/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/466_reflection_extension_logosreference/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "001",
+        "completed": "2026-01-13T19:02:26Z",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 449,
+        "project_name": "truth_lemma",
+        "status": "completed",
+        "language": "lean",
+        "priority": "low",
+        "effort": "15-20 hours",
+        "created": "2026-01-12T22:03:06Z",
+        "last_updated": "2026-01-13T22:09:00Z",
+        "completed": "2026-01-13T22:09:00Z",
+        "parent_task": 257,
+        "dependencies": [
+          448
+        ],
+        "description": "Phase 6 of completeness proofs: Prove truth lemma establishing correspondence between membership and truth. Cases for atoms, bottom, implication, box, past, future. Combine into main truth_lemma theorem.",
+        "artifacts": [
+          {
+            "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/449_truth_lemma/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/449_truth_lemma/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/449_truth_lemma/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          },
+          {
+            "path": ".claude/specs/449_truth_lemma/plans/implementation-002.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/449_truth_lemma/summaries/implementation-summary-20260113-phase3-4.md",
+            "type": "summary"
+          }
+        ],
+        "session_id": "sess_1768342139_632169",
+        "plan_version": "002",
+        "archived": "2026-01-15T23:40:00Z"
+      },
+      {
+        "project_number": 450,
+        "project_name": "completeness_theorems",
+        "status": "completed",
+        "language": "lean",
+        "priority": "low",
+        "effort": "8-10 hours",
+        "created": "2026-01-12T22:03:06Z",
+        "last_updated": "2026-01-13T23:05:04Z",
+        "parent_task": 257,
+        "dependencies": [
+          449,
+          481,
+          482
+        ],
+        "description": "Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using SemanticCanonicalModel from Task 473. Connect semantic_weak_completeness to main completeness theorem. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.",
+        "artifacts": [
+          {
+            "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/450_completeness_theorems/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/450_completeness_theorems/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/450_completeness_theorems/summaries/implementation-summary-20260113.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-15T23:40:00Z"
+      }
+    ],
+    {
+      "project_number": 495,
+      "project_name": "formula_induction_truth_lemma_bridges",
+      "status": "orphan_archived",
+      "archived": "2026-01-15T23:40:00Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 497,
+      "project_name": "time_arithmetic_case_analysis",
+      "status": "orphan_archived",
+      "archived": "2026-01-15T23:40:00Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 504,
+      "project_name": "harmonic_api_integration_aristotle",
+      "status": "orphan_archived",
+      "archived": "2026-01-15T23:40:00Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
     }
   ]
 }
