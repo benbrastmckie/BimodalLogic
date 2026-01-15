@@ -1825,15 +1825,78 @@ noncomputable def time_shift (h : FiniteHistory phi) (Delta : Int)
     let t' := Classical.choose (h_shift_valid t)
     h.states t'
   forward_rel := fun t t' h_succ => by
-    -- Need: task_rel (shifted.states t) 1 (shifted.states t')
-    -- shifted.states t = h.states (t + Delta)
-    -- shifted.states t' = h.states (t' + Delta)
-    -- By h_succ, toInt t' = toInt t + 1
-    -- So toInt (t' + Delta) = toInt (t + Delta) + 1
-    -- Use h.forward_rel
-    sorry
+    -- Need: finite_task_rel phi (FiniteHistory.time_shift h Delta h_shift_valid).states t 1 
+    --                   (FiniteHistory.time_shift h Delta h_shift_valid).states t'
+    -- By definition of time_shift, time relation depends only on time difference
+    -- Since succ? preserves time difference (t' = t + 1), shifted version also works
+    let t_shift := Classical.choose (h_shift_valid t)
+    let t'_shift := Classical.choose (h_shift_valid t')
+    have h_t_shift := Classical.choose_spec (h_shift_valid t)
+    have h_t'_shift := Classical.choose_spec (h_shift_valid t')
+    -- From h_succ: toInt t' = toInt t + 1 (by succ_toInt)
+    have h_time_diff := FiniteTime.succ_toInt (temporalBound phi) t t' h_succ
+    -- Show time difference is preserved after shifting
+    have h_shifted_diff : FiniteTime.toInt (temporalBound phi) t'_shift - 
+                        FiniteTime.toInt (temporalBound phi) t_shift = 1 := by
+      rw [h_t_shift, h_t'_shift, h_time_diff]
+      omega
+    -- Now find the succ of t_shift and prove it equals t'_shift
+    have h_succ_shifted := by
+      have h_int_eq := h_shifted_diff
+      -- Since t'_shift = t_shift + 1 in toInt, and both are in bounds,
+      -- by uniqueness of succ, we have succ? t_shift = some t'_shift
+      cases h' : FiniteTime.succ? (temporalBound phi) t_shift with
+      | none =>
+        -- Contradiction: if no succ, t_shift is max, but t'_shift would be > max
+        have h_max := (FiniteTime.toInt_range (temporalBound phi) t_shift).right
+        have h'_max := (FiniteTime.toInt_range (temporalBound phi) t'_shift).right
+        have := by
+          calc FiniteTime.toInt (temporalBound phi) t'_shift
+            > FiniteTime.toInt (temporalBound phi) t_shift := by omega
+            _ ≥ FiniteTime.toInt (temporalBound phi) (FiniteTime.maxTime (temporalBound phi)) := by 
+                { have := (FiniteTime.maxTime_toInt (temporalBound phi)).symm; simp only [*] }
+            > ↑(temporalBound phi) := by omega
+        contradiction
+      | some t'' =>
+        have h_succ_int := FiniteTime.succ_toInt (temporalBound phi) t_shift t'' h'
+        rw [h_succ_int] at h_int_eq
+        exact FiniteTime.toInt_injective (temporalBound phi) h_int_eq
+    exact h.forward_rel t_shift t'_shift h_succ_shifted
   backward_rel := fun t t' h_pred => by
-    sorry
+    -- Similar to forward_rel but for predecessor relation
+    let t_shift := Classical.choose (h_shift_valid t)
+    let t'_shift := Classical.choose (h_shift_valid t')
+    have h_t_shift := Classical.choose_spec (h_shift_valid t)
+    have h_t'_shift := Classical.choose_spec (h_shift_valid t')
+    -- From h_pred: toInt t' = toInt t - 1 (by pred_toInt)
+    have h_time_diff := FiniteTime.pred_toInt (temporalBound phi) t t' h_pred
+    -- Show time difference is preserved after shifting
+    have h_shifted_diff : FiniteTime.toInt (temporalBound phi) t'_shift - 
+                        FiniteTime.toInt (temporalBound phi) t_shift = 1 := by
+      rw [h_t_shift, h_t'_shift, h_time_diff]
+      omega
+    -- Now find the pred of t_shift and prove it equals t'_shift
+    have h_pred_shifted := by
+      have h_int_eq := h_shifted_diff
+      -- Since t'_shift = t_shift - 1 in toInt, and both are in bounds,
+      -- by uniqueness of pred, we have pred? t_shift = some t'_shift
+      cases h' : FiniteTime.pred? (temporalBound phi) t_shift with
+      | none =>
+        -- Contradiction: if no pred, t_shift is min, but t'_shift would be < min
+        have h_min := (FiniteTime.toInt_range (temporalBound phi) t_shift).left
+        have h'_min := (FiniteTime.toInt_range (temporalBound phi) t'_shift).left
+        have := by
+          calc FiniteTime.toInt (temporalBound phi) t'_shift
+            < FiniteTime.toInt (temporalBound phi) t_shift := by omega
+            _ ≤ FiniteTime.toInt (temporalBound phi) (FiniteTime.minTime (temporalBound phi)) := by 
+                { have := (FiniteTime.minTime_toInt (temporalBound phi)).symm; simp only [*] }
+            < -↑(temporalBound phi) := by omega
+        contradiction
+      | some t'' =>
+        have h_pred_int := FiniteTime.pred_toInt (temporalBound phi) t_shift t'' h'
+        rw [h_pred_int] at h_int_eq
+        exact FiniteTime.toInt_injective (temporalBound phi) h_int_eq
+    exact h.backward_rel t_shift t'_shift h_pred_shifted
 
 /--
 Time-shift by 0 gives the original history.
@@ -1850,6 +1913,48 @@ theorem time_shift_zero_eq (h : FiniteHistory phi)
   have h_spec := Classical.choose_spec (h_valid t)
   simp only [add_zero] at h_spec
   exact FiniteTime.toInt_injective (temporalBound phi) h_spec
+
+  /--
+  Helper lemma: clamping preserves order.
+  
+  If a ≤ b, then clamp(a) ≤ clamp(b) where clamp uses FiniteTime bounds.
+  -/
+  theorem clamp_preserves_order (k : Nat) (a b : Int) 
+      (h_le : a ≤ b) 
+      (h_a_in_bounds : -(k : Int) ≤ a ∧ a ≤ (k : Int))
+      (h_b_in_bounds : -(k : Int) ≤ b ∧ b ≤ (k : Int))) :
+      let a_clamped := if h_a_low : a < -(k : Int) then -(k : Int)
+                    else if h_a_high : a > (k : Int) then (k : Int)
+                    else a
+      let b_clamped := if h_b_low : b < -(k : Int) then -(k : Int)
+                    else if h_b_high : b > (k : Int) then (k : Int)
+                    else b
+      a_clamped ≤ b_clamped := by
+      cases h_a_low <;> cases h_a_high <;> cases h_b_low <;> cases h_b_high <;>
+      <;> omega
+
+  /--
+  Helper lemma: clamping addition property.
+  
+  Relates clamp(a + Δ) to clamp(a) + Δ when in bounds.
+  -/
+  theorem clamp_add_property (k : Nat) (a Δ : Int) 
+      (h_a_in_bounds : -(k : Int) ≤ a ∧ a ≤ (k : Int))) :
+      let a_shifted := a + Δ
+      let a_clamped := if h_a_low : a < -(k : Int) then -(k : Int)
+                    else if h_a_high : a > (k : Int) then (k : Int)
+                    else a
+      let shifted_clamped := 
+        if h_shifted_low : a_shifted < -(k : Int) then -(k : Int)
+        else if h_shifted_high : a_shifted > (k : Int) then (k : Int)
+        else a_shifted
+      let clamped_plus := a_clamped + Δ
+      if h : -(k : Int) ≤ a_shifted ∧ a_shifted ≤ (k : Int) then
+        shifted_clamped = clamped_plus := by
+          cases h_a_low <;> cases h_a_high <;> simp only [h, h_shifted_low, h_shifted_high] <;> omega
+      else
+        shifted_clamped = clamped_plus := by
+          cases h_a_low <;> cases h_a_high <;> cases h_shifted_low <;> cases h_shifted_high <;> omega
 
 end FiniteHistory
 
@@ -3382,14 +3487,61 @@ noncomputable def finiteHistoryToWorldHistory (phi : Formula) (h : FiniteHistory
     -- Show the time relation holds: toInt(t_clamped) = toInt(s_clamped) + (t - s)
     have h_time_rel : FiniteTime.toInt (temporalBound phi) t_clamped = 
                    FiniteTime.toInt (temporalBound phi) s_clamped + (t - s) := by
-      -- Direct computation with case analysis on whether s,t are in bounds
-      cases s <== s_clamped <== t_clamped <== t
-      all_goals {simp only [FiniteTime.toInt]; omega}
-      · simp only [h1, h2]
+      -- Complete case analysis on boundary conditions for s and t
+      cases h_s_low <;> cases h_s_high <;> cases h_t_low <;> cases h_t_high
+      <;> simp only [FiniteTime.toInt, FiniteTime.minTime, FiniteTime.maxTime, 
+                     FiniteTime.toInt_surj_on_range] at *
+      <;> try {omega}
+      -- Case 1: s < -k, t < -k
+      · simp only [h_s_low, h_t_low]
         omega
-      · simp only [h1, h2]
+      -- Case 2: s < -k, -k ≤ t ≤ k
+      · simp only [h_s_low, Int.not_lt.mp h_t_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)]
+        have h4 := (FiniteTime.toInt_surj_on_range (temporalBound phi) t 
+                     (Int.not_lt.mp h_t_low) 
+                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)))).choose_spec
+        simp only [h4]
         omega
-      · simp only [h1, h2]
+      -- Case 3: s < -k, t > k
+      · simp only [h_s_low, h_t_high]
+        omega
+      -- Case 4: -k ≤ s ≤ k, t < -k
+      · simp only [Int.not_lt.mp h_s_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high), h_t_low]
+        have h4 := (FiniteTime.toInt_surj_on_range (temporalBound phi) s 
+                     (Int.not_lt.mp h_s_low) 
+                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high)))).choose_spec
+        simp only [h4]
+        omega
+      -- Case 5: -k ≤ s ≤ k, -k ≤ t ≤ k
+      · simp only [Int.not_lt.mp h_s_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high),
+                       Int.not_lt.mp h_t_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high))]
+        have h5 := (FiniteTime.toInt_surj_on_range (temporalBound phi) s 
+                     (Int.not_lt.mp h_s_low) 
+                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high)))).choose_spec
+        have h6 := (FiniteTime.toInt_surj_on_range (temporalBound phi) t 
+                     (Int.not_lt.mp h_t_low) 
+                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)))).choose_spec
+        simp only [h5, h6]
+        omega
+      -- Case 6: -k ≤ s ≤ k, t > k
+      · simp only [Int.not_lt.mp h_s_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high), h_t_high]
+        have h4 := (FiniteTime.toInt_surj_on_range (temporalBound phi) s 
+                     (Int.not_lt.mp h_s_low) 
+                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high)))).choose_spec
+        simp only [h4]
+        omega
+      -- Case 7: s > k, t < -k
+      · simp only [h_s_high, h_t_low]
+        omega
+      -- Case 8: s > k, -k ≤ t ≤ k
+      · simp only [h_s_high, Int.not_lt.mp h_t_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)]
+        have h4 := (FiniteTime.toInt_surj_on_range (temporalBound phi) t 
+                     (Int.not_lt.mp h_t_low) 
+                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)))).choose_spec
+        simp only [h4]
+        omega
+      -- Case 9: s > k, t > k
+      · simp only [h_s_high, h_t_high]
         omega
     -- Show both states come from the same history h
     · exact SemanticWorldState.ofHistoryTime h s_clamped
@@ -3411,13 +3563,13 @@ theorem semantic_world_state_has_world_history (phi : Formula) (w : SemanticWorl
   -- Convert hist to a WorldHistory
   let wh := finiteHistoryToWorldHistory phi hist
   -- Use time_shift to position w at time 0
-  let shifted_hist := time_shift hist (-_time)
+  let shifted_hist := FiniteHistory.time_shift hist (-_time)
   -- Convert to WorldHistory
   let tau := finiteHistoryToWorldHistory phi shifted_hist
   -- Show that tau.states 0 = w
   have h_at_zero : tau.states 0 True = w := by
     -- time_shift adds (-_time) to all times, so time 0 corresponds to time _time
-    simp only [time_shift, tau, shifted_hist]
+    simp only [FiniteHistory.time_shift, tau, shifted_hist]
     rfl
   -- tau has domain True and convexity True by construction
   · intro _; exact True.intro  
