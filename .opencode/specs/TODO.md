@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-14T01:45:00Z
-next_project_number: 499
+next_project_number: 500
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -106,6 +106,18 @@ technical_debt:
 
 ## Medium Priority
 
+### 499. Review metalogical theorem strategies and design systematic refactor approach
+- **Effort**: 3-4 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-14T23:59:26Z
+- **Priority**: Medium
+- **Language**: lean
+- **Research**: [research-002.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/research-002.md), [research-summary.md](.opencode/specs/499_review_metalogical_theorem_strategies/summaries/research-summary.md)
+
+**Description**: Review existing metatheorems in Bimodal/ theory and design systematic refactor approach. Analyze relationship between FMP property, decidability, and completeness theorems. Ensure representation theorem is preserved. Design general completeness statement supporting empty, finite, or infinite Gamma contexts. Create conceptually clear and mathematically elegant architecture for metalogical results.
+
+---
+
 ### 497. Complete time arithmetic case analysis for finite history bridges
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -210,8 +222,9 @@ technical_debt:
 
 ### 489. Formal FMP theorem packaging
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-14
+- **Completed**: 2026-01-14
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](.claude/specs/489_formal_fmp_theorem_packaging/reports/research-001.md)
