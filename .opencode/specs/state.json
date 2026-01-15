@@ -1,6 +1,36 @@
 {
   "active_projects": [
     {
+      "project_number": 504,
+      "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-15T15:36:45Z",
+      "last_updated": "2026-01-15T15:36:45Z",
+      "effort": "4-6 hours",
+      "description": "Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.",
+      "session_id": "sess_1768491321_q6ud6",
+      "artifacts": []
+    },
+    {
+      "project_number": 504,
+      "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-15T15:36:01Z",
+      "last_updated": "2026-01-15T15:36:01Z",
+      "effort": "4-6 hours",
+      "description": "Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.",
+      "session_id": "sess_1768491321_q6ud6",
+      "artifacts": []
+    },
+    {
       "project_number": 497,
       "project_name": "Complete time arithmetic case analysis for finite history bridges",
       "type": "feature",
@@ -101,8 +131,9 @@
     }
   ],
   "metadata": {
-    "last_updated": "2026-01-15T15:50:00Z",
+    "last_updated": "2026-01-15T15:36:45Z",
     "total_active": 2,
     "session_id": "ses_43dbbbc96ffelkguN0fHxKcQKx"
-  }
+  },
+  "next_project_number": 505
 }

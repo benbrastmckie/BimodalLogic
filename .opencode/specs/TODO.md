@@ -1,6 +1,6 @@
 ---
 last_updated: 2026-01-15T15:50:00Z
-next_project_number: 504
+next_project_number: 505
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -157,6 +157,16 @@ technical_debt:
 **Description**: Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.
 
 ---
+
+### 504. Integration of harmonic API for aristotle into lean implementer and researcher agents
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Session**: sess_1768491321_q6ud6
+
+**Description**: Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.
+
 
 
 ### 499. Review metalogical theorem strategies and design systematic refactor approach
