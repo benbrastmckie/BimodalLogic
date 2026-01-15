@@ -74,17 +74,18 @@
       "project_number": 503,
       "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
       "type": "feature",
-      "phase": "planned",
-      "status": "planned",
+      "phase": "revised",
+      "status": "revised",
       "priority": "Medium",
       "language": "markdown",
       "created": "2026-01-15T06:09:44Z",
-      "last_updated": "2025-01-15T06:15:00Z",
+      "last_updated": "2026-01-15T15:50:00Z",
       "effort": "4 hours",
       "description": "Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.",
       "session_id": "ses_1768457639_qizk",
       "researched": "2025-01-15T06:14:00Z",
       "planned": "2026-01-15T06:15:00Z",
+      "revised": "2026-01-15T15:50:00Z",
       "artifacts": [
         {
           "path": ".opencode/specs/503_latex_dependent_type_conventions/reports/research-001.md",
@@ -100,8 +101,8 @@
     }
   ],
   "metadata": {
-    "last_updated": "2026-01-14T22:31:00Z",
+    "last_updated": "2026-01-15T15:50:00Z",
     "total_active": 2,
-    "session_id": "sess_1768457355_z5eu"
+    "session_id": "ses_43dbbbc96ffelkguN0fHxKcQKx"
   }
 }
