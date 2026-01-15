@@ -1,6 +1,6 @@
 ---
-last_updated: 2026-01-13T21:00:00Z
-next_project_number: 495
+last_updated: 2026-01-14T18:32:00Z
+next_project_number: 500
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,21 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 499. Review metalogical theorem strategies and design systematic refactor approach
+- **Effort**: 8-12 hours  
+- **Status**: [COMPLETED]
+- **Researched**: 2026-01-14
+- **Planned**: 2026-01-14
+- **Implemented**: 2026-01-14
+- **Priority**: High
+- **Language**: Lean
+- **Research**: [research-001.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/research-001.md) (existing analysis)
+- **Research**: [research-002.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/research-002.md) (representation theorem research)
+
+**Description**: Review metalogical theorem strategies and design systematic refactor approach. Analyze relationship between FMP property, decidability, and completeness theorems. Ensure representation theorem is preserved. Design general completeness statement supporting empty, finite, or infinite Gamma contexts. Specific focus on representation theorems for bimodal/temporal modal logic.
+
+---
 
 ### 480. Investigate workflow delegation early stop issues
 - **Effort**: 3-4 hours
