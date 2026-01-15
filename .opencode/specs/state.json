@@ -328,10 +328,15 @@
         {
           "path": "Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean",
           "type": "implementation",
-          "summary": "Implemented semantic_valuation_assignment_connection lemma"
+          "summary": "Implemented semantic_valuation_iff_assignment lemma"
         },
         {
           "path": ".opencode/specs/496_valuation_assignment_connection/summaries/implementation-summary-20260115.md",
+          "type": "documentation",
+          "summary": "Implementation summary documentation"
+        },
+        {
+          "path": ".opencode/specs/496_finite_canonical_model_lemma/summaries/implementation-summary-20260115.md",
           "type": "documentation",
           "summary": "Implementation summary documentation"
         }

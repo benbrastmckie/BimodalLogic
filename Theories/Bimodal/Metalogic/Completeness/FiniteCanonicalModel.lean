@@ -3576,6 +3576,32 @@ theorem semantic_world_state_has_world_history (phi : Formula) (w : SemanticWorl
   · intro _ _ _ _ _ _ _; exact True.intro
 
 /--
+Lemma connecting SemanticCanonicalModel.valuation to FiniteWorldState.assignment.
+
+This lemma establishes that the valuation in the semantic canonical model corresponds
+exactly to the assignment in the underlying finite world state. This is critical
+for bridging the semantic truth definition (via valuation) and the finite truth
+definition (via assignment/models).
+-/
+theorem semantic_valuation_iff_assignment (phi : Formula) (w : SemanticWorldState phi) (p : String) 
+    (h_mem : Formula.atom p ∈ closure phi) :
+    (SemanticCanonicalModel phi).valuation w p ↔ 
+    (SemanticWorldState.toFiniteWorldState w).models (Formula.atom p) h_mem := by
+  -- Unfold the valuation definition
+  change semantic_valuation phi w p ↔ _
+  unfold semantic_valuation FiniteWorldState.models
+  constructor
+  · intro h
+    obtain ⟨h_mem', h_val⟩ := h
+    -- Proof irrelevance: the assignment depends only on the formula, not the proof of membership
+    have h_eq : (⟨Formula.atom p, h_mem⟩ : closure phi) = ⟨Formula.atom p, h_mem'⟩ := by
+      ext; rfl
+    rw [h_eq]
+    exact h_val
+  · intro h
+    exact ⟨h_mem, h⟩
+
+/--
 Key bridge theorem: semantic truth in SemanticCanonicalModel implies truth_at.
 
 This shows that if a formula is true according to semantic_truth_at_v2, it is also
