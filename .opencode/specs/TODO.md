@@ -604,3 +604,28 @@ technical_debt:
 - **Summary**: [implementation-summary-20260113.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/summaries/implementation-summary-20260113.md)
 
 **Description**: The TikZ diagram in sec:extension-dependencies (line 21) of /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex does not match the diagram in the 'Overview' (line 7) of /home/benjamin/Projects/ProofChecker/README.md. Fix the TikZ diagram to match README.md layout. Requirements: (1) professional styling with rounded corners for boxes, (2) non-intersecting lines and labels, (3) middle layer extensions (Epistemic, Normative, Spatial) in a grey horizontal background box, (4) ellipses to left and right of middle layers to indicate extensibility, (5) explanatory text below the diagram.
+
+---
+
+### 499. Review metalogical theorem strategies and design systematic refactor approach
+- **Effort**: 3-4 hours
+- **Status**: [COMPLETED]
+- **Researched**: 2026-01-14
+- **Implemented**: 2026-01-14
+- **Completed**: 2026-01-14
+- **Priority**: Medium
+- **Language**: lean
+- **Research**: [research-002.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/research-002.md)
+- **Summary**: [research-summary.md](.opencode/specs/499_review_metalogical_theorem_strategies/summaries/research-summary.md)
+- **Implementation**: [architecture-design.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/architecture-design.md)
+
+**Description**: Review existing metatheorems in Bimodal/ theory and design systematic refactor approach. Analyze relationship between FMP property, decidability, and completeness theorems. Ensure representation theorem is preserved. Design general completeness statement supporting empty, finite, or infinite Gamma contexts. Create conceptually clear and mathematically elegant architecture for metalogical results.
+
+**Implementation Summary**: Successfully implemented systematic refactor architecture for metalogical theorem strategies in bimodal/temporal modal logic. Created set-based provability infrastructure for handling empty, finite, and infinite contexts uniformly. Established representation theorems as foundational results, eliminating circular dependencies in the metalogical hierarchy. All modules compile successfully and build passes.
+
+**Artifacts Created**:
+- `Theories/Bimodal/Metalogic.lean` - Core implementation with set-based provability infrastructure
+- `Theories/Bimodal/Metalogic/RepresentationTheorems.lean` - Representation theorem framework
+- Architecture design documentation with mathematical foundations
+
+**Git Commit**: `e2cb0443` - task 499: systematic refactor architecture for metalogical theorem strategies implemented
