@@ -35,8 +35,8 @@
       "project_number": 504,
       "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
       "type": "feature",
-      "phase": "planning",
-      "status": "planning",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-14T10:00:00Z",
@@ -50,6 +50,11 @@
           "path": ".opencode/specs/504_aristotle_api_integration/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of Aristotle AI integration into .opencode/ Lean agents with CLI commands, API methods, and implementation recommendations"
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/504_aristotle_integration/plans/implementation-001.md",
+          "summary": "Integration plan for Harmonic Aristotle API into Lean agents"
         }
       ],
       "planned": "2026-01-15"
@@ -91,8 +96,8 @@
       "project_number": 503,
       "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
       "type": "feature",
-      "phase": "planned",
-      "status": "planned",
+      "phase": "in_progress",
+      "status": "in_progress",
       "priority": "medium",
       "language": "markdown",
       "effort": "4 hours",
@@ -106,7 +111,9 @@
           "path": ".opencode/specs/503_latex_dependent_type_conventions/plans/implementation-001.md",
           "type": "plan"
         }
-      ]
+      ],
+      "last_updated": "2026-01-15",
+      "started": "2026-01-15"
     },
     {
       "project_number": 475,
