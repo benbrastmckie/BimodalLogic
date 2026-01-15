@@ -33,14 +33,14 @@ repository_health:
 task_counts:
   active: 23
   completed: 154
-  in_progress: 2
-  not_started: 13
+  in_progress: 3
+  not_started: 12
   abandoned: 14
   total: 191
 priority_distribution:
   critical: 0
-  high: 3
-  medium: 9
+  high: 4
+  medium: 8
   low: 11
 technical_debt:
   sorry_count: 19
@@ -129,6 +129,36 @@ technical_debt:
 
 ---
 
+### 502. Complete representation theorem using context-based provability based on Task 499 foundation
+- **Effort**: 4 hours
+- **Status**: [IN PROGRESS]
+- **Priority**: High
+- **Language**: lean
+- **Started**: 2026-01-15
+- **Researched**: 2026-01-14
+- **Parent**: Task 499
+- **Dependencies**: Task 499 (completed)
+- **Research**: [research-001.md](.opencode/specs/502_complete_representation_theorem/reports/research-001.md), [research-002.md](.opencode/specs/502_complete_representation_theorem/reports/research-002.md)
+- **Analysis**: [initial-analysis.md](.opencode/specs/502_complete_representation_theorem/reports/initial-analysis.md)
+- **Summary**: [research-002.md](.opencode/specs/502_complete_representation_theorem/summaries/research-002.md)
+
+**Description**: Complete representation theorem using Lean native context-based provability (ContextDerivable using List Formula) throughout Bimodal/ theory. Draw on research findings that confirm context-based provability is superior to set-based SetDerivable. Eliminate set-based provability entirely and integrate with FiniteCanonicalModel.lean using context-based approach.
+
+**Key Implementation Points**:
+- Replace SetDerivable with ContextDerivable throughout Bimodal/ theory
+- Implement completeness theorems using context-based provability only
+- Remove all set-based components from RepresentationTheorems.lean
+- Integrate with FiniteCanonicalModel.lean using context-based approach
+- Ensure Lean idiomatic patterns using List Formula for provability
+- Leverage Task 499 foundation for metalogical architecture
+
+**Files**:
+- Theories/Bimodal/Metalogic/RepresentationTheorems.lean (scaffold exists)
+- FiniteCanonicalModel.lean (integration target)
+- Theories/Bimodal/Metalogic.lean (parent module)
+
+---
+
 ## Medium Priority
 
 ### 499. Review metalogical theorem strategies and design systematic refactor approach
@@ -177,33 +207,7 @@ technical_debt:
 
 ---
 
-### 502. Complete the representation theorem in full based on Task 499 implementation summary
-- **Effort**: 4 hours
-- **Status**: [RESEARCHED]
-- **Priority**: High
-- **Language**: lean
-- **Started**: 2026-01-15
-- **Researched**: 2026-01-14
-- **Parent**: Task 499
-- **Dependencies**: Task 499 (completed)
-- **Research**: [research-001.md](.opencode/specs/502_complete_representation_theorem/reports/research-001.md), [research-002.md](.opencode/specs/502_complete_representation_theorem/reports/research-002.md)
-- **Analysis**: [initial-analysis.md](.opencode/specs/502_complete_representation_theorem/reports/initial-analysis.md)
-- **Summary**: [research-002.md](.opencode/specs/502_complete_representation_theorem/summaries/research-002.md)
 
-**Description**: Draw on .opencode/specs/499_review_metalogical_theorem_strategies/summaries/implementation-summary-20260114.md to complete the representation theorem in full. Focus on integrating the existing representation theorem scaffold in Theories/Bimodal/Metalogic/RepresentationTheorems.lean with FiniteCanonicalModel.lean. Complete the full representation theorem that was identified as requiring integration in Task 499.
-
-**Key Integration Points**:
-- Connect set-based provability infrastructure from Task 499 with finite canonical model construction
-- Complete representation theorem proof using existing soundness theorem foundation
-- Integrate with FiniteCanonicalModel.lean for model-theoretic foundations
-- Ensure the theorem handles empty, finite, and infinite contexts uniformly
-
-**Files**:
-- Theories/Bimodal/Metalogic/RepresentationTheorems.lean (scaffold exists)
-- FiniteCanonicalModel.lean (integration target)
-- Theories/Bimodal/Metalogic.lean (parent module)
-
----
 
 ### 500. lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification
 - **Effort**: 2-3 hours
