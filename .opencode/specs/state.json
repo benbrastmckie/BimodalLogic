@@ -1,25 +1,33 @@
 {
+  "metadata": {
+    "version": "1.0",
+    "generated_at": "2026-01-15T02:16:44Z",
+    "total_active": 19
+  },
   "active_projects": [
     {
-      "project_number": 495,
-      "project_name": "Complete formula induction proofs for truth lemma bridges in FiniteCanonicalModel.lean",
+      "project_number": 394,
+      "project_name": "Research and port causal semantics from paper",
       "type": "feature",
-      "phase": "planning",
-      "status": "planning",
+      "phase": "not_started",
+      "status": "not_started",
       "priority": "high",
       "language": "lean",
-      "created": "2026-01-14T23:24:16Z",
-      "last_updated": "2025-01-15T16:36:38Z",
-      "researched": "2025-01-15T10:30:00Z",
-      "planned": "2025-01-15T16:36:38Z",
-      "effort": "3 hours",
-      "description": "Complete the formula structure induction for semantic_truth_implies_truth_at (line 3446) and related truth lemma bridges. This requires inductive proof on all formula constructors (6+ cases) connecting semantic truth to model truth_at definition. Handle complex temporal logic cases including modal operators, temporal operators, and boolean connectives. Estimated 2-3 hours of technical Lean proof work.",
-      "session_id": "sess_488_bridge_001",
+      "created": "2026-01-15T14:42:00Z",
+      "last_updated": "2026-01-15T14:42:00Z",
+      "effort": "4-6 hours",
+      "description": "Research and port the correct causal operator semantics from paper to recursive-semantics.md and Lean.",
+      "session_id": "restored_recovery_20260115",
       "artifacts": [
         {
-          "path": ".claude/specs/495_formula_induction_truth_lemma_bridges/reports/research-001.md",
-          "type": "research_report",
-          "summary": "Lean 4 formula induction proofs research report with implementation strategies"
+          "path": ".opencode/specs/394_research_port_causal_semantics_from_paper/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on causal semantics"
+        },
+        {
+          "path": ".opencode/specs/394_research_port_causal_semantics_from_paper/reports/research-002.md",
+          "type": "research",
+          "summary": "Additional research on causal semantics"
         }
       ]
     },
@@ -27,142 +35,324 @@
       "project_number": 504,
       "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "researched",
+      "status": "researched",
       "priority": "medium",
       "language": "lean",
-      "created": "2026-01-15T15:36:45Z",
-      "last_updated": "2026-01-15T15:36:45Z",
+      "created": "2026-01-14T10:00:00Z",
+      "last_updated": "2026-01-15T02:35:00Z",
+      "researched": "2026-01-15T02:35:00Z",
       "effort": "4-6 hours",
       "description": "Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.",
       "session_id": "sess_1768491321_q6ud6",
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": ".opencode/specs/504_aristotle_api_integration/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Aristotle AI integration into .opencode/ Lean agents with CLI commands, API methods, and implementation recommendations"
+        }
+      ]
     },
     {
-      "project_number": 500,
-      "project_name": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification",
+      "project_number": 398,
+      "project_name": "Port causal semantics to recursive-semantics.md",
+      "type": "feature",
+      "phase": "researched",
+      "status": "researched",
+      "priority": "high",
+      "language": "markdown",
+      "effort": "3-4 hours",
+      "description": "Port the causal semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos.",
+      "parent_task": 394,
+      "artifacts": [
+        {
+          "path": ".claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md",
+          "type": "research"
+        }
+      ]
+    },
+    {
+      "project_number": 399,
+      "project_name": "Implement causal semantics in Lean",
       "type": "feature",
       "phase": "not_started",
       "status": "not_started",
-      "priority": "medium",
+      "priority": "high",
       "language": "lean",
-      "created": "2026-01-15T01:21:23Z",
-      "last_updated": "2026-01-15T01:21:23Z",
-      "effort": "2-3 hours",
-      "description": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification. Lake build is being used for syntax checking which completes successfully, but full compilation verification is missing. Need to investigate and restore lean-lsp-mcp tool availability for proper Lean development workflow.",
-      "session_id": "sess_1768440083_48ku7",
-      "artifacts": []
-    },
-    {
-      "project_number": 497,
-      "project_name": "Complete time arithmetic case analysis for finite history bridges",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-14T23:24:16Z",
-      "last_updated": "2026-01-14T22:32:00Z",
-      "started": "2026-01-14T23:27:00Z",
-      "planned": "2026-01-14T23:29:00Z",
-      "implementing": "2026-01-14T22:15:55Z",
-      "completed": "2026-01-14T22:32:00Z",
-      "effort": "2 hours",
-      "description": "Finish the time arithmetic completion for bridge lemmas (lines ~3337, ~3394). This involves detailed case analysis for clamping arithmetic on time domains using omega tactics to handle boundary conditions. Complete the time_shift mechanisms and clamped domain arithmetic that enables proper connection between finite and semantic world histories.",
-      "session_id": "sess_1768457355_z5eu",
-      "artifacts": [
-        {
-          "path": ".claude/specs/497_time_arithmetic_case_analysis/reports/research-001.md",
-          "type": "research",
-          "summary": "Research findings for time arithmetic case analysis"
-        },
-        {
-          "path": ".claude/specs/497_time_arithmetic_case_analysis/summaries/research-summary.md",
-          "type": "summary",
-          "summary": "Brief research summary"
-        },
-        {
-          "path": ".opencode/specs/497_time_arithmetic_case_analysis/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "Implementation plan"
-        },
-        {
-          "path": "Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean",
-          "type": "implementation",
-          "summary": "Completed time arithmetic proofs for finite history bridges"
-        },
-        {
-          "path": ".opencode/specs/497_time_arithmetic_case_analysis/summaries/implementation-summary-20260115.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "plan_path": ".opencode/specs/497_time_arithmetic_case_analysis/plans/implementation-001.md"
-    },
-    {
-      "project_number": 498,
-      "project_name": "Verify and test completed bridge lemma infrastructure",
-      "type": "feature",
-      "phase": "planned",
-      "status": "planned",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-14T23:24:58Z",
-      "last_updated": "2026-01-14T23:24:15Z",
-      "started": "2026-01-14",
-      "researched": "2026-01-14",
-      "planned": "2026-01-14T23:24:15Z",
-      "effort": "1 hour",
-      "description": "Run comprehensive verification of all bridge lemma connections in FiniteCanonicalModel.lean. This includes verifying that completed truth lemma inductions work cohesively, testing time arithmetic correctness, and ensuring all bridge connections between finite and semantic worlds function properly. Also document lemma dependencies between different truth definitions for future maintenance.",
-      "session_id": "sess_1768461781_m9mam",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of bridge lemma infrastructure status, sorry gaps, and dependencies"
-        },
-        {
-          "path": ".opencode/specs/498_verify_bridge_lemma_infrastructure/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "Lean plan with 6 phases: Edge case resolution, compositionality fixes, truth lemma inductions, valuation connections, time arithmetic testing, and dependency documentation"
-        }
-      ],
-      "plan_path": ".opencode/specs/498_verify_bridge_lemma_infrastructure/plans/implementation-001.md"
+      "effort": "6-8 hours",
+      "description": "Implement the causal operator semantics in Lean based on the approved recursive-semantics.md specification. Extend CoreFrame with closeness ordering, define Evolution and ExpectedEvolution structures, implement CausalContext with background assumptions, and replace the current counterfactual-based definition in Truth.lean with the three-condition hyperintensional semantics.",
+      "parent_task": 394,
+      "dependencies": [398]
     },
     {
       "project_number": 503,
       "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
       "type": "feature",
-      "phase": "revised",
-      "status": "revised",
-      "priority": "Medium",
+      "phase": "planned",
+      "status": "planned",
+      "priority": "medium",
       "language": "markdown",
-      "created": "2026-01-15T06:09:44Z",
-      "last_updated": "2026-01-15T15:50:00Z",
       "effort": "4 hours",
       "description": "Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.",
-      "session_id": "ses_1768457639_qizk",
-      "researched": "2025-01-15T06:14:00Z",
-      "planned": "2026-01-15T06:15:00Z",
-      "revised": "2026-01-15T15:50:00Z",
       "artifacts": [
         {
           "path": ".opencode/specs/503_latex_dependent_type_conventions/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of LaTeX vs Lean type notation with specific update recommendations"
+          "type": "research"
         },
         {
           "path": ".opencode/specs/503_latex_dependent_type_conventions/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ]
+    },
+    {
+      "project_number": 475,
+      "project_name": "Create skill-document-converter thin wrapper",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "effort": "1 hour",
+      "description": "Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies."
+    },
+    {
+      "project_number": 476,
+      "project_name": "Create document-converter-agent",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "effort": "3-4 hours",
+      "description": "Create document-converter-agent following ProofChecker's agent pattern. Handles actual conversion logic with runtime tool detection (markitdown, pandoc, typst), graceful fallbacks to Claude's native PDF reading, bidirectional conversion support, and standardized JSON returns.",
+      "dependencies": [475]
+    },
+    {
+      "project_number": 477,
+      "project_name": "Test document-converter on sample files",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "effort": "1-2 hours",
+      "description": "Test document-converter skill on sample PDF, DOCX, and Markdown files. Verify bidirectional conversion, graceful fallback when tools unavailable, and proper error handling.",
+      "dependencies": [476]
+    },
+    {
+      "project_number": 483,
+      "project_name": "Investigate LaTeX aux file corruption errors",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "latex",
+      "effort": "2-3 hours",
+      "description": "Identify the root cause of LaTeX aux file corruption errors and document solutions."
+    },
+    {
+      "project_number": 468,
+      "project_name": "Refactor infinite canonical model code",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "parent_task": 458,
+      "description": "Remove or refactor the existing infinite canonical model code in Completeness.lean."
+    },
+    {
+      "project_number": 469,
+      "project_name": "Decidability decision procedure",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "parent_task": 458,
+      "description": "Implement full decidability decision procedure for TM logic."
+    },
+    {
+      "project_number": 470,
+      "project_name": "Finite model computational optimization",
+      "type": "optimization",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "parent_task": 458,
+      "description": "Optimize FiniteCanonicalModel.lean for computational efficiency."
+    },
+    {
+      "project_number": 490,
+      "project_name": "Complete decidability procedure",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "parent_task": 469,
+      "description": "Complete the decidability procedure for TM logic."
+    },
+    {
+      "project_number": 491,
+      "project_name": "Research alternative completeness proofs",
+      "type": "research",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "description": "Research alternative completeness proof approaches for TM logic."
+    },
+    {
+      "project_number": 257,
+      "project_name": "Completeness Proofs",
+      "type": "feature",
+      "phase": "expanded",
+      "status": "expanded",
+      "priority": "low",
+      "language": "lean",
+      "effort": "65-85 hours",
+      "description": "Implement the completeness proof for TM logic using the canonical model method.",
+      "subtasks": [444, 445, 446, 447, 448, 449, 450],
+      "artifacts": [
+        {
+          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "type": "plan"
+        }
+      ]
+    },
+    {
+      "project_number": 136,
+      "project_name": "Design Decidability.lean architecture and signatures",
+      "type": "design",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "effort": "2 hours",
+      "description": "Define the module structure, main theorems, and function signatures for decidability."
+    },
+    {
+      "project_number": 137,
+      "project_name": "Implement tableau core rules in Decidability.lean",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "effort": "3 hours",
+      "description": "Implement the core tableau expansion rules and supporting helpers for validity checking.",
+      "dependencies": [136]
+    },
+    {
+      "project_number": 138,
+      "project_name": "Implement satisfiability and validity decision procedure tests",
+      "type": "testing",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "low",
+      "language": "lean",
+      "effort": "3 hours",
+      "description": "Wire the tableau components into a decision procedure and add tests covering satisfiable and unsatisfiable cases.",
+      "dependencies": [136, 137]
+    }
+  ],
+  "completed_projects": [
+    {
+      "project_number": 496,
+      "project_name": "Implement valuation-assignment connection lemma for finite canonical model",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2025-01-15T16:36:40Z",
+      "last_updated": "2026-01-15",
+      "implemented": "2026-01-15",
+      "completed": "2026-01-15",
+      "effort": "2 hours",
+      "description": "Create and prove the lemma connecting SemanticCanonicalModel.valuation to FiniteWorldState.assignment (line 3466). This requires deep understanding of SemanticCanonicalModel structure and establishing the precise relationship between valuations and assignments in the finite canonical model construction. The lemma is critical for bridging semantic and finite truth definitions.",
+      "session_id": "sess_1768516626_0s",
+      "artifacts": [
+        {
+          "path": ".opencode/specs/496_valuation_assignment_connection/plans/implementation-001.md",
           "type": "plan",
-          "summary": "4-phase implementation plan: Foundation, Semantic Integration, Extended Updates, Validation"
+          "summary": "Implementation plan for valuation-assignment connection lemma"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean",
+          "type": "implementation",
+          "summary": "Implemented semantic_valuation_assignment_connection lemma"
+        },
+        {
+          "path": ".opencode/specs/496_valuation_assignment_connection/summaries/implementation-summary-20260115.md",
+          "type": "documentation",
+          "summary": "Implementation summary documentation"
+        }
+      ]
+    },
+    {
+      "project_number": 500,
+      "project_name": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-15T01:21:23Z",
+      "last_updated": "2026-01-15T02:16:44Z",
+      "researched": "2026-01-15T01:51:10Z",
+      "planned": "2026-01-15T02:08:19Z",
+      "started": "2026-01-15T02:16:44Z",
+      "completed": "2026-01-15T02:16:44Z",
+      "effort": "2-3 hours",
+      "description": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification. Lake build is being used for syntax checking which completes successfully, but full compilation verification is missing. Need to investigate and restore lean-lsp-mcp tool availability for proper Lean development workflow.",
+      "session_id": "sess_1768516604_a9e",
+      "artifacts": [
+        {
+          "path": ".opencode/specs/500_lean-lsp-mcp-unavailable/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research report on lean-lsp-mcp configuration issue with solution"
+        },
+        {
+          "path": ".opencode/specs/500_lean-lsp-mcp-unavailable/summaries/research-summary.md",
+          "type": "summary",
+          "summary": "Brief overview of lean-lsp-mcp issue and solution"
+        },
+        {
+          "path": ".opencode/specs/500_lean-lsp-mcp-unavailable/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Lean implementation plan with 4 phases: Configuration Backup, Configuration Fix, Basic Verification, Agent Integration Testing"
+        },
+        {
+          "path": "opencode.json",
+          "type": "implementation",
+          "summary": "Updated configuration with correct package manager (uvx) and enabled tools"
+        },
+        {
+          "path": "opencode.json.backup",
+          "type": "implementation",
+          "summary": "Backup of original configuration for rollback"
+        },
+        {
+          "path": "test-lean-lsp-mcp.sh",
+          "type": "implementation",
+          "summary": "Verification script for testing lean-lsp-mcp configuration"
+        },
+        {
+          "path": "verify-agent-tools.sh",
+          "type": "implementation",
+          "summary": "Agent tool verification script for testing restored functionality"
+        },
+        {
+          "path": ".opencode/specs/500_lean-lsp-mcp-unavailable/summaries/implementation-summary-20250115.md",
+          "type": "summary",
+          "summary": "Implementation summary with validation results and impact analysis"
         }
       ]
     }
   ],
-  "metadata": {
-    "last_updated": "2025-01-15T16:36:38Z",
-    "total_active": 6,
-    "session_id": "ses_43d86d0e8ffeQ6LKV1WqKANSMv"
-  },
-  "next_project_number": 505
+  "next_project_number": 506
 }
