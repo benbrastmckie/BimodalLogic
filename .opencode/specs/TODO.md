@@ -233,7 +233,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/.opencode/specs/510_mereological_constraints/reports/research-001.md), [research-002.md](/home/benjamin/Projects/ProofChecker/.opencode/specs/510_mereological_constraints/reports/research-002.md)
-- **Plan**: [implementation-003.md](.opencode/specs/510_mereological_constraints/plans/implementation-003.md)
+- **Plan**: [implementation-004.md](.opencode/specs/510_mereological_constraints/plans/implementation-004.md)
 - **Researched**: 2025-01-15
 - **Revised**: 2026-01-16
 
