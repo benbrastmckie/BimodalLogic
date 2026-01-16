@@ -1,5 +1,4 @@
 ---
-P26-01-15T23:16:18Z
 next_project_number: 515
 repository_health:
   overall_score: 90

@@ -1,124 +1,123 @@
+# Implementation Plan: Aristotle Integration (v2)
+
+- **Task**: 504
+- **Version**: 2
+- **Revised**: 2026-01-15
+- **Original Plan**: [implementation-001.md](implementation-001.md)
+- **Research**: [research-001.md](../reports/research-001.md)
+
 ---
-task_number: 504
-plan_version: 1
-project_slug: aristotle_lean_implementer_api
-language: lean
-master_branch: main
-github_repo: Benjamin-all/ProofChecker
-timestamp: 2026-01-15T12:00:00Z
-authors:
-  - "@claude"
-reviewers:
-  - "@human"
-sponsors:
-  - "@human"
 
-# METADATA
-status: [NOT STARTED]
-estimated_effort: 12 hours
-complexity: medium
-research_integrated: true
-integration_strategy: "Harmonic API delegation from lean-implementer to aristotle for automated proof generation."
-dependencies:
-  - "lean-implementer agent"
-  - "aristotle agent"
-# END METADATA
+## 1. Metadata
 
-# OVERVIEW
-This document outlines the implementation plan for designing and integrating a harmonic API to allow the `lean-implementer` agent to delegate proof obligations to the `aristotle` agent. The goal is to leverage `aristotle`'s powerful proof generation capabilities to augment `lean-implementer`, making it more effective at completing complex proofs.
+- **Task Number**: 504
+- **Task Description**: Integration of harmonic API for aristotle into lean implementer and researcher agents.
+- **Language**: lean
+- **Integration Strategy**: Direct integration with the `septract/lean-aristotle-mcp` server, leveraging an asynchronous, polling-based workflow to manage long-running proof tasks.
+- **Complexity**: Medium
+- **Total Estimated Effort**: 5-7 hours
+- **Mathlib Dependencies**: Handled by the `lean-aristotle-mcp` tool.
 
-Based on user requirements, this integration will be limited to `lean-implementer`. The `lean-researcher` agent will NOT be integrated with `aristotle` to avoid long run times during the research phase where formal proofs are not strictly necessary.
+---
 
-The "Definition of Done" for this task includes:
-1. A clearly defined and documented API for `aristotle`.
-2. `lean-implementer` capable of calling this API with a proof goal.
-3. `lean-implementer` capable of processing `aristotle`'s response to complete a proof.
-4. End-to-end tests demonstrating successful proof delegation.
+## 2. Overview
 
-# INTEGRATION STRATEGY
-The core of this task is to establish a clear, well-defined API contract between the two agents.
+This plan revises the original approach for integrating the Aristotle proof assistant. Based on the research findings, we will no longer develop a custom API client. Instead, we will integrate the existing `septract/lean-aristotle-mcp` Model Context Protocol (MCP) server.
 
-- **Initiator**: `lean-implementer`
-- **Provider**: `aristotle`
-- **Communication Protocol**: Local HTTP (e.g., via a lightweight Flask/FastAPI wrapper for `aristotle`).
-- **Request Format**: A JSON object containing the Lean proof state. This will include the main goal, hypotheses, and relevant definitions from the current context.
-  ```json
-  {
-    "lean_version": "4",
-    "file_context": "import Mathlib.Data.List.Basic\n...",
-    "proof_state": {
-      "goal": "List.map f (l₁ ++ l₂) = List.map f l₁ ++ List.map f l₂",
-      "hypotheses": [
-        "f : α → β",
-        "l₁ l₂ : List α"
-      ]
-    }
-  }
-  ```
-- **Response Format**: A JSON object containing either a successfully generated proof term/tactic script or an error state.
-  ```json
-  {
-    "status": "success", // or "failure"
-    "proof_type": "tactic_script", // or "proof_term"
-    "proof": "by induction l₁ with\n| nil => simp\n| cons h t ih => simp [ih]"
-  }
-  ```
-- **Error Handling**: `lean-implementer` must gracefully handle cases where `aristotle` fails to find a proof or times out, falling back to its own native tactics.
+The primary technical challenge is adapting the `lean-implementer` and `lean-researcher` agents to handle the long-running nature of Aristotle's proof tasks (1-5 minutes). This will be accomplished by implementing an asynchronous, polling-based workflow where the agent can submit a proof, receive a project ID, and periodically check the status without blocking its main execution thread.
 
-# IMPLEMENTATION PHASES
+**Definition of Done**:
+- The `lean-aristotle-mcp` tool is installed and configured in the environment.
+- `lean-implementer` can successfully delegate a `sorry` to Aristotle, poll for the result, and integrate the completed proof.
+- `lean-researcher` can use Aristotle to formalize natural language descriptions and check the feasibility of conjectures.
+- The agents correctly handle both successful and failed proof attempts.
+- Documentation for both agents is updated to reflect the new capabilities.
 
-### Phase 1: API Specification and `aristotle` Wrapper
+---
+
+## 3. Integration Strategy
+
+The core strategy is to wrap the `lean-aristotle-mcp` tools within the existing agent skills.
+
+1.  **Asynchronous Workflow**: For the `lean-implementer`, the primary workflow will be asynchronous.
+    -   Call `prove_file(..., wait=False)`.
+    -   Receive a `project_id`.
+    -   Enter a polling loop, calling `check_prove_file(project_id)` at intervals (e.g., every 30 seconds).
+    -   Handle the final status (`completed` or `failed`).
+
+2.  **Tool Specialization**:
+    -   The `lean-implementer` will primarily use `prove_file` to ensure full project context (including `lakefile.lean` dependencies) is available to the prover.
+    -   The `lean-researcher` will use `formalize` for natural language to Lean conversion and `prove` for quick feasibility checks of conjectures.
+
+3.  **Configuration**: The integration will rely on environment variables (`ARISTOTLE_API_KEY`, `ARISTOTLE_MOCK`) for configuration, which should be managed securely.
+
+---
+
+## 4. Implementation Phases
+
+### Phase 1: MCP Tool Setup & Configuration
 - **Status**: [NOT STARTED]
-- **Objective**: Finalize the API contract and create a runnable HTTP server for `aristotle`.
+- **Objective**: Install and configure the `lean-aristotle-mcp` tool.
 - **Tasks**:
-  1. Formalize the JSON schemas for the request and response.
-  2. Implement a lightweight Flask or FastAPI server that wraps the `aristotle` agent.
-  3. Create a single endpoint (e.g., `/prove`) that accepts the proof state JSON.
-  4. The endpoint should invoke `aristotle` with the provided context and return the formatted JSON response.
-  5. Implement basic error handling for when `aristotle` fails.
-- **Acceptance Criteria**: The `aristotle` server can be started, and the `/prove` endpoint can be successfully called with a tool like `curl`, returning a valid JSON response.
-- **Estimated Effort**: 4 hours
+    1.  Add the MCP tool using the `claude mcp add` command as specified in the research report.
+    2.  Establish a secure method for managing the `ARISTOTLE_API_KEY` environment variable.
+    3.  Verify the installation by running a simple command in mock mode (`ARISTOTLE_MOCK=true`).
+- **Acceptance Criteria**: The `aristotle-mcp` tools are callable from the command line.
+- **Estimated Effort**: 0.5 hours
 
-### Phase 2: `lean-implementer` Integration Logic
+### Phase 2: `lean-implementer` Integration
 - **Status**: [NOT STARTED]
-- **Objective**: Modify `lean-implementer` to call the new `aristotle` API.
+- **Objective**: Integrate Aristotle's proof-solving capability into the `lean-implementer` agent.
 - **Tasks**:
-  1. Identify the trigger point in `lean-implementer`'s workflow where proof delegation is appropriate (e.g., when simple tactics fail).
-  2. Implement the logic to gather the current proof state (goal, hypotheses, context).
-  3. Implement the client-side logic to make an HTTP request to the `aristotle` API.
-  4. Add logic to parse the response from `aristotle`.
-  5. Implement the mechanism to apply the returned tactic script or proof term to the current Lean goal.
-- **Acceptance Criteria**: `lean-implementer` attempts to call the `aristotle` API when faced with a non-trivial proof goal.
-- **Estimated Effort**: 4 hours
+    1.  Define new tools in the `lean-implementer`'s skill definition corresponding to `prove_file` and `check_prove_file`.
+    2.  Implement the core asynchronous logic:
+        -   Identify a `sorry` to be solved.
+        -   Write the current buffer to a temporary file if necessary.
+        -   Call `prove_file` with `wait=False`.
+        -   Implement a polling loop that calls `check_prove_file` and handles pending, success, and failure states.
+    3.  On success, parse the result and replace the `sorry` in the original file.
+    4.  On failure, log the error and report back to the user that the proof could not be completed.
+- **Acceptance Criteria**: The `lean-implementer` can autonomously solve a `sorry` in a Lean file using Aristotle.
+- **Estimated Effort**: 2-3 hours
 
-### Phase 3: End-to-End Testing and Refinement
+### Phase 3: `lean-researcher` Integration
 - **Status**: [NOT STARTED]
-- **Objective**: Verify the complete proof delegation workflow and handle edge cases.
+- **Objective**: Enhance the `lean-researcher` with Aristotle's formalization and conjecture-checking abilities.
 - **Tasks**:
-  1. Create a suite of test cases with Lean files containing proofs of varying difficulty.
-  2. Execute `lean-implementer` on these test cases.
-  3. Verify that `aristotle` is invoked correctly and its responses are applied successfully.
-  4. Test and refine the fallback logic in `lean-implementer` for when `aristotle` fails.
-  5. Monitor for performance and address any significant delays or timeouts.
-- **Acceptance Criteria**: At least 3 test cases of medium complexity are successfully solved by `lean-implementer` via delegation to `aristotle`.
-- **Estimated Effort**: 3 hours
+    1.  Add `formalize` and `prove` tools to the `lean-researcher`'s skill definition.
+    2.  Implement a workflow for the `formalize` command, likely using a synchronous call (`wait=True`) as these tasks are expected to be faster.
+    3.  Implement a workflow for the `prove` command to check the feasibility of conjectures. This should support both synchronous and asynchronous calls.
+- **Acceptance Criteria**: The `lean-researcher` can take a natural language statement and produce a valid Lean definition, and it can check if a simple Lean proposition is provable.
+- **Estimated Effort**: 1.5-2 hours
 
-### Phase 4: Documentation
+### Phase 4: Testing and Validation
 - **Status**: [NOT STARTED]
-- **Objective**: Document the new API and the integration for future maintenance.
+- **Objective**: Ensure the integration is robust and handles various scenarios correctly.
 - **Tasks**:
-  1. Create a README or update the system documentation with details of the `aristotle` API (endpoint, request/response format).
-  2. Update the `lean-implementer` agent's documentation to describe its new proof delegation capability.
-- **Acceptance Criteria**: API and agent documentation is complete and checked into the repository.
+    1.  Create a test suite for the `lean-implementer` that covers:
+        -   A successful asynchronous proof completion.
+        -   A failed proof attempt.
+        -   A timeout scenario during polling.
+    2.  Create a test suite for the `lean-researcher` that verifies:
+        -   Correct formalization of a mathematical statement.
+        -   Correct feasibility check for a known true and a known false proposition.
+    3.  Conduct all tests using the mock mode (`ARISTOTLE_MOCK=true`) to ensure the agent logic is sound without incurring API costs.
+- **Acceptance Criteria**: All test cases pass.
 - **Estimated Effort**: 1 hour
 
-# ARTIFACTS
-- **Plan**: `.opencode/specs/504_aristotle_lean_implementer_api/plans/implementation-001.md` (this file)
-- **Source Code**: Modifications within the `lean-implementer` and `aristotle` agent source directories.
-- **Documentation**: Updates to system documentation.
+### Phase 5: Documentation
+- **Status**: [NOT STARTED]
+- **Objective**: Update agent documentation to reflect the new capabilities.
+- **Tasks**:
+    1.  Update the `lean-implementer`'s documentation to explain its new ability to use Aristotle and the expected workflow.
+    2.  Update the `lean-researcher`'s documentation to describe the `formalize` and `prove` capabilities.
+- **Acceptance Criteria**: Documentation is updated and accurately reflects the new features.
+- **Estimated Effort**: 0.5 hours
 
-# ROLLBACK
-- All new functionality will be developed on a dedicated feature branch.
-- The integration will be controlled by a feature flag or configuration setting, allowing it to be disabled without a full rollback.
-- If the integration proves unstable, the feature branch can be reverted, and the feature flag can be turned off in the main branch.
 ---
+
+## 5. Rollback Plan
+
+- **Short-term**: If issues arise during a phase, the associated agent's skill definition can be reverted to its previous state by removing the new tool definitions and workflow logic. Git will be used to manage these changes.
+- **Long-term**: If the `lean-aristotle-mcp` integration proves unstable, we can disable the tools by default and remove the MCP installation. The agents will revert to their previous functionality without errors.
+- **Dependency Removal**: The MCP tool can be removed by running `claude mcp remove aristotle`.
