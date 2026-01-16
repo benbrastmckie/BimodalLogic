@@ -1,6 +1,24 @@
 {
   "active_projects": [
     {
+      "project_number": 505,
+      "project_name": "restructure_and_refine_bimodal_metalogic",
+      "type": "refactor",
+      "phase": "research_completed",
+      "status": "researched",
+      "priority": "high",
+      "language": "lean",
+      "created": "2025-01-16T20:54:33Z",
+      "started": "2025-01-16T20:54:33Z",
+      "researched": "2026-01-16",
+      "last_updated": "2026-01-16",
+      "artifacts": [
+        ".opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md"
+      ],
+      "research_summary": "Research completed. Proposed unified architecture with hierarchical metalogic structure, unified provability hierarchy, and integration of completeness, decidability, and representation theory.",
+      "estimated_hours": 100.0
+    },
+    {
       "project_number": 259,
       "project_name": "automation_tactics",
       "type": "feature",

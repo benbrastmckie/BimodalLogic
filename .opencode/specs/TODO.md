@@ -95,10 +95,11 @@ technical_debt:
 
 ### 522. Improve status-sync-manager Error Messages to be more actionable
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Session ID**: sess_1768625888_create522
+- **Started**: 2026-01-16T22:48:17+00:00
 - **Plan**: [Implementation Plan](.opencode/specs/522_improve_status-sync_manager_error_messages/plans/implementation-001.md)
 
 **Description**: Improve status-sync-manager error messages to be more specific and actionable. Research revealed that status-sync-manager returns generic errors like "Invalid parameters" without explaining which parameter is invalid or what expected format is. This makes debugging difficult for both users and calling agents.
@@ -120,15 +121,17 @@ technical_debt:
 
 ---
 
-### 512. Fix build error in RepresentationTheorems.lean
+### ✅ 512. Fix build error in RepresentationTheorems.lean
 - **Effort**: 2 hours
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: lean
 - **Created By**: Review task 506
 - **Research Report**: [research-001.md](512_fix_build_error_in_representationtheorems_lean/reports/research-001.md)
+- **Implementation Summary**: [implementation-summary-20260116.md](512_fix_build_error_in_representationtheorems_lean/summaries/implementation-summary-20260116.md)
 - **Researched**: 2025-01-16
 - **Started**: 2025-01-16T10:20:08Z
+- **Completed**: 2025-01-16T10:30:00+00:00
 - **Session ID**: sess_1768600408_yiawd
 
 **Description**: Fix build error in RepresentationTheorems.lean. Application type mismatch error preventing compilation.
@@ -179,12 +182,15 @@ technical_debt:
 ---
 
 ### 505. Restructure and Refine Bimodal Metalogic
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 85-120 hours
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
+- **Started**: 2025-01-16T20:54:33Z
+- **Researched**: 2026-01-16
+- **Research Report**: [.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
 
-**Description**: Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Design and implement an ideal restructuring to improve the quality, organization, and clarity of the theory.
+**Description**: Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Design and implement an ideal restructuring to improve the quality, organization, and clarity of the theory. Once implemented, update the /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/04-Metalogic.tex, /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/README.md, and /home/benjamin/Projects/ProofChecker/Theories/Bimodal/README.md documentation to present the metalogical results and their connections in a clear and consistent style. 
 
 ---
 
