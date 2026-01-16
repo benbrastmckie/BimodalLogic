@@ -85,6 +85,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: latex
 - **Completed**: 2026-01-15T10:30:00Z
+- **Research**: [Research Report](.opencode/specs/515_missing_section_descriptions/reports/research-001.md)
 
 **Description**: Replace line 257 in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex with descriptions for the missing sections, creating stubs as need be to match the other sections. The current line 257 contains "\ldots" which needs to be replaced with proper section descriptions that follow the same format as the surrounding items (lines 251-256 and 259).
 
@@ -227,16 +228,16 @@ technical_debt:
 ## Medium Priority
 
 ### 510. Add constraint to verifier and falsifier functions
-- **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Effort**: 2 hours
+- **Status**: [REVISED]
 - **Priority**: Medium
 - **Language**: lean
-- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/.opencode/specs/510_mereological_constraints/reports/research-001.md)
-- **Plan**: [implementation-001.md](.opencode/specs/510_mereological_constraints/plans/implementation-002.md)
+- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/.opencode/specs/510_mereological_constraints/reports/research-001.md), [research-002.md](/home/benjamin/Projects/ProofChecker/.opencode/specs/510_mereological_constraints/reports/research-002.md)
+- **Plan**: [implementation-003.md](.opencode/specs/510_mereological_constraints/plans/implementation-003.md)
 - **Researched**: 2025-01-15
-- **Planned**: 2025-01-16T18:45:00Z
+- **Revised**: 2026-01-16
 
-**Description**: Add constraint to lines 75-6 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state.
+**Description**: Create distinct VerifierFunction and FalsifierFunction types with mereological constraints using pure dependent type theory. Avoid set-theoretic notions while allowing different extensions for verifiers vs falsifiers. Update both Lean implementation and LaTeX documentation (lines 75-76).
 
 ---
 
