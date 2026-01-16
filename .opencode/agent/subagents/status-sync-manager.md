@@ -103,6 +103,7 @@ lifecycle:
   </parameter>
   <parameter name="artifact_links" type="array" optional="true">
     Artifact links to add to .opencode/specs/TODO.md (research reports, plans, etc.)
+    **Note**: Alias for "validated_artifacts" - both supported for backward compatibility
   </parameter>
   <parameter name="blocking_reason" type="string" optional="true">
     Reason for blocked status (required if new_status is blocked)
@@ -123,7 +124,8 @@ lifecycle:
     Phase status updates for /implement operations (array of {phase_number, status})
   </parameter>
   <parameter name="validated_artifacts" type="array" optional="true">
-    Artifacts validated by subagents before linking (replaces artifact_links)
+    Artifacts validated by subagents before linking (preferred parameter name)
+    **Note**: Alias for "artifact_links" - both supported for backward compatibility
   </parameter>
   <parameter name="updated_fields" type="object" optional="true">
     Fields to update for update_task_metadata operation (description, priority, effort, dependencies)
@@ -304,7 +306,18 @@ lifecycle:
   </format_error_response>
 </error_generation_helpers>
 
-<process_flow>
+ <process_flow>
+  <step_0_normalize_parameters>
+    <action>Step 0: Normalize parameters for backward compatibility</action>
+    <process>
+      1. Execute parameter_normalization process
+      2. Log any normalizations applied for debugging
+      3. Continue to operation routing with normalized parameters
+    </process>
+    <validation>Parameters normalized successfully</validation>
+    <output>Normalized parameters ready for operation routing</output>
+  </step_0_normalize_parameters>
+
   <operation_routing>
     <action>Route to appropriate operation based on operation parameter</action>
     <process>
@@ -320,6 +333,52 @@ lifecycle:
     <validation>Operation parameter is valid</validation>
     <output>Routed to appropriate operation flow</output>
   </operation_routing>
+
+  <parameter_normalization_step>
+    <action>Execute parameter normalization for backward compatibility</action>
+    <process>
+      1. Execute parameter_normalization process
+      2. Log any normalizations applied
+      3. Continue to routed operation flow with normalized parameters
+    </process>
+    <validation>Parameters normalized successfully</validation>
+    <output>Normalized parameters ready for operation execution</output>
+  </parameter_normalization_step>
+
+  <parameter_normalization>
+    <action>Normalize parameters for backward compatibility</action>
+    <process>
+      1. Handle artifact_links vs validated_artifacts alias:
+         a. If "validated_artifacts" provided and "artifact_links" not provided:
+            - Set "artifact_links" = "validated_artifacts" (for backward compatibility)
+            - Log: "Normalized: validated_artifacts → artifact_links"
+         b. If "artifact_links" provided and "validated_artifacts" not provided:
+            - Set "validated_artifacts" = "artifact_links" (preferred parameter)
+            - Log: "Normalized: artifact_links → validated_artifacts"
+         c. If both provided:
+            - Use "validated_artifacts" as primary
+            - Log: "Both provided, using validated_artifacts as primary"
+      
+      2. Handle missing operation parameter (backward compatibility):
+         a. If operation not provided but task_number and new_status provided:
+            - Set operation = "update_status"
+            - Log: "Normalized: missing operation → update_status (inferred from task_number + new_status)"
+      
+      3. Provide default delegation_depth if missing:
+         a. If delegation_depth not provided:
+            - Set delegation_depth = 1
+            - Log: "Normalized: missing delegation_depth → 1 (default)"
+      
+      4. Provide default delegation_path if missing:
+         a. If delegation_path not provided or empty:
+            - Set delegation_path = ["status-sync-manager"]
+            - Log: "Normalized: missing delegation_path → ['status-sync-manager'] (default)"
+      
+      5. Log all normalizations performed for debugging
+    </process>
+    <validation>Parameters normalized for backward compatibility</validation>
+    <output>Normalized parameters ready for operation flow</output>
+  </parameter_normalization>
 
   <create_task_flow>
     <step_0_validate_inputs>

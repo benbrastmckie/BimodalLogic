@@ -646,17 +646,24 @@
       "project_number": 522,
       "project_name": "Improve status-sync-manager Error Messages to be more actionable",
       "type": "feature",
-      "phase": "implementing",
-      "status": "implementing",
+      "phase": "completed",
+      "status": "completed",
       "priority": "Medium",
       "language": "meta",
       "created": "2026-01-16T22:17:32Z",
       "last_updated": "2026-01-16T22:48:17+00:00",
       "started": "2026-01-16T22:48:17+00:00",
+      "completed": "2026-01-16T22:48:17+00:00",
       "effort": "2 hours",
       "description": "Improve status-sync-manager error messages to be more specific and actionable. Research revealed that status-sync-manager returns generic errors like \"Invalid parameters\" without explaining which parameter is invalid or what expected format is. This makes debugging difficult for both users and calling agents.",
       "session_id": "sess_1768601852_create522",
-      "artifacts": []
+      "artifacts": [
+        {
+          "type": "enhancement",
+          "path": ".opencode/agent/subagents/status-sync-manager.md",
+          "summary": "Comprehensive error code system with 13 specific error codes for all failure scenarios"
+        }
+      ]
     }
   ],
   "completed_projects": [
