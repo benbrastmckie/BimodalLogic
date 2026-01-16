@@ -224,7 +224,7 @@ technical_debt:
 
 ### 510. Expand test coverage for Logos theory modules
 - **Effort**: 1 hour
-- **Status**: [REVISING]
+- **Status**: [REVISED]
 - **Priority**: Medium
 - **Language**: lean
 
