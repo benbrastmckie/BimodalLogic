@@ -1,10 +1,10 @@
 # Sorry Placeholder Registry
 
-**Last Updated**: 2026-01-11
-**Total Active Placeholders**: 5 (1 ModalS5 documented invalid, 1 Completeness, 1 SoundnessLemmas, 2 documentation examples in ProofSearch/Automation)
-**Total Axiom Declarations**: 11 (all in Completeness.lean for canonical model construction)
+**Last Updated**: 2026-01-15
+**Total Active Placeholders**: 46 (26 in Completeness.lean, 3 in ProofSearch.lean, 17 across other modules)
+**Total Axiom Declarations**: 7 (5 in Completeness.lean for canonical model construction, 2 in Examples)
 **Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
-**Note**: Count corrected from 6 to 5 after codebase review (sess_1766969902_lx) - ProofSearch has 3 sorry but only counted as documentation examples, Automation.lean has 1 documentation example
+**Note**: Count updated after comprehensive codebase review (sess_1768528304_4parxt) - Found 46 active sorry placeholders across Theories/Bimodal and Theories/Logos
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Bimodal codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
 
@@ -122,43 +122,40 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 phi) (persiste
 - **s4_diamond_box_conj**: `|- (diamond A and box B) -> diamond(A and box B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_4)
 - **s5_diamond_conj_diamond**: `|- diamond(A and diamond B) <-> (diamond A and diamond B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_5)
 
-### Bimodal/Metalogic/Completeness.lean (1 sorry, 11 axioms)
+### Bimodal/Metalogic/Completeness.lean (26 sorry, 5 axioms)
 
-**Active Sorry Placeholders** (1 total):
-- **Completeness.lean:369** - `provable_iff_valid` theorem
-  - **Context**: Main completeness theorem proving equivalence between provability and validity
-  - **Dependencies**: Requires Lindenbaum lemma, canonical model construction, and truth lemma (tasks 132-135)
-  - **Status**: Pending systematic resolution via tasks 132-135
-  - **Estimate**: 11 hours total (tasks 132-135)
+**Active Sorry Placeholders** (26 total):
+- **Lines 1341-1391**: Multiple placeholder proofs for canonical model construction
+- **Lines 1653-1794**: Truth lemma and related proofs with sorry gaps
+- **Lines 1837-2507**: Various auxiliary lemmas with sorry placeholders
+- **Lines 2612-2662**: Extension lemmas with sorry
+- **Lines 3332-3694**: Duration-based infrastructure with sorry gaps
+- **Context**: Main completeness theorem proving equivalence between provability and validity
+- **Dependencies**: Requires systematic resolution of canonical model construction (tasks 132-135)
+- **Status**: Major component requiring comprehensive work
+- **Estimate**: 20+ hours total (tasks 132-135 plus additional infrastructure)
 
-**Active Axiom Declarations** (11 total):
-1. **Line 117**: `lindenbaum` - Maximal consistent extension lemma (task 132)
-2. **Line 141**: `maximal_consistent_closed` - Maximal consistency closure property
-3. **Line 155**: `maximal_negation_complete` - Negation completeness for maximal sets
-4. **Line 200**: `canonical_task_rel` - Canonical task relation
-5. **Line 211**: `canonical_frame` - Canonical frame construction
-6. **Line 236**: `canonical_valuation` - Canonical valuation function
-7. **Line 243**: `canonical_model` - Canonical model construction (task 133)
-8. **Line 264**: `canonical_history` - Canonical world history
-9. **Line 298**: `truth_lemma` - Truth lemma for canonical model (task 134)
-10. **Line 327**: `weak_completeness` - Weak completeness theorem
-11. **Line 347**: `strong_completeness` - Strong completeness theorem
+**Active Axiom Declarations** (5 total):
+1. **Line 1585**: `someWorldState_exists` - Existence of maximal consistent set
+2. **Line 2786**: `anotherWorldState_exists` - Existence of distinct maximal consistent set
+3. **Line 3569**: `truth_lemma` - Truth lemma for canonical worlds
+4. **Line 3600**: `weak_completeness` - Weak completeness theorem
+5. **Line 3620**: `strong_completeness` - Strong completeness theorem
 
-### Bimodal/Automation/ProofSearch.lean (0 code placeholders, 3 documentation examples)
+### Bimodal/Automation/ProofSearch.lean (3 documentation examples)
 
-**Documentation Examples** (3 total - NOT counted as active placeholders):
-- **ProofSearch.lean:726** - Test case 1: `bounded_search [] _ 1` example
+**Documentation Examples** (3 total - actual sorry placeholders but for documentation):
+- **ProofSearch.lean:1348** - `bounded_search [] _ 1` example
   - **Context**: Documentation example showing bounded search usage
-  - **Status**: Documentation only, not blocking functionality
-  - **Note**: ProofSearch is blocked pending Task 260 resolution
+  - **Status**: Documentation placeholder, not blocking functionality
 
-- **ProofSearch.lean:731** - Test case 2: `bounded_search [] q 2` example
+- **ProofSearch.lean:1353** - `bounded_search [] q 2` example
   - **Context**: Documentation example showing bounded search usage
-  - **Status**: Documentation only, not blocking functionality
+  - **Status**: Documentation placeholder, not blocking functionality
 
-- **ProofSearch.lean:736** - Test case 3: `bounded_search [p.box] p.box 3` example
+- **ProofSearch.lean:1358** - `bounded_search [p.box] p.box 3` example
   - **Context**: Documentation example showing bounded search usage with modal formulas
-  - **Status**: Documentation only, not blocking functionality
+  - **Status**: Documentation placeholder, not blocking functionality
 
 ### Logos/Automation.lean (0 code placeholders, 1 documentation example)
 
