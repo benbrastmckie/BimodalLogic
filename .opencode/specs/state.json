@@ -4,7 +4,7 @@
     "generated_at": "2026-01-16T19:00:00Z",
     "total_active": 26
   },
-  "next_project_number": 518,
+  "next_project_number": 523,
   "active_projects": [
     {
       "project_number": 517,
@@ -550,6 +550,81 @@
         ]
       },
       "completed": "2026-01-16T17:02:43Z"
+    },
+    {
+      "project_number": 518,
+      "project_name": "Fix Parameter Mapping Between Workflow Commands and status-sync-manager",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "High",
+      "language": "meta",
+      "created": "2026-01-16T22:16:08Z",
+      "last_updated": "2026-01-16T22:16:08Z",
+      "effort": "2-3 hours",
+      "description": "Fix critical parameter mapping errors between workflow commands and status-sync-manager. Research revealed mismatched parameter names, missing required fields, and incompatible data formats causing silent failures and inconsistent state updates.",
+      "session_id": "sess_1768601768_create518",
+      "artifacts": []
+    },
+    {
+      "project_number": 519,
+      "project_name": "Add Missing Stage 7 Validation in Workflow Commands",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "High",
+      "language": "meta",
+      "created": "2026-01-16T22:16:31Z",
+      "last_updated": "2026-01-16T22:16:31Z",
+      "effort": "2-3 hours",
+      "description": "Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.",
+      "session_id": "sess_1768601791_create519",
+      "artifacts": []
+    },
+    {
+      "project_number": 520,
+      "project_name": "Fix Silent Failures When status-sync-manager Fails",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "High",
+      "language": "meta",
+      "created": "2026-01-16T22:16:51Z",
+      "last_updated": "2026-01-16T22:16:51Z",
+      "effort": "1-2 hours",
+      "description": "Fix silent failures when status-sync-manager delegation fails. Research revealed that workflow commands log status-sync-manager failures as \"non-critical\" and continue, returning success status even when status updates fail. This leads to inconsistent state where artifacts are created but task status isn't updated.",
+      "session_id": "sess_1768601811_create520",
+      "artifacts": []
+    },
+    {
+      "project_number": 521,
+      "project_name": "Fix Task 512 Inconsistent Status",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "High",
+      "language": "meta",
+      "created": "2026-01-16T22:17:05Z",
+      "last_updated": "2026-01-16T22:17:05Z",
+      "effort": "1 hour",
+      "description": "Fix inconsistent status for task 512 \"Fix build error in RepresentationTheorems.lean\". Research shows task has completed research artifact and TODO.md shows [IN PROGRESS] but based on research findings, the task should be [RESEARCHED] or potentially [COMPLETED] since the research identifies the fix.",
+      "session_id": "sess_1768601825_create521",
+      "artifacts": []
+    },
+    {
+      "project_number": 522,
+      "project_name": "Improve status-sync-manager Error Messages to be more actionable",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "Medium",
+      "language": "meta",
+      "created": "2026-01-16T22:17:32Z",
+      "last_updated": "2026-01-16T22:17:32Z",
+      "effort": "2 hours",
+      "description": "Improve status-sync-manager error messages to be more specific and actionable. Research revealed that status-sync-manager returns generic errors like \"Invalid parameters\" without explaining which parameter is invalid or what expected format is. This makes debugging difficult for both users and calling agents.",
+      "session_id": "sess_1768601852_create522",
+      "artifacts": []
     }
   ],
   "completed_projects": [

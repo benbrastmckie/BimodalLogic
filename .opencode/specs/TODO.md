@@ -1,6 +1,6 @@
 ---
 P26-01-16T00:00:00Z
-next_project_number: 518
+next_project_number: 523
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -29,6 +29,19 @@ technical_debt:
 ## High Priority
 
 
+### 518. Fix Parameter Mapping Between Workflow Commands and status-sync-manager
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Session ID**: sess_1768625888_create518
+- **Plan**: [Implementation Plan](.opencode/specs/518_fix_parameter_mapping_errors_between_workflow_commands_and_status-sync_manager/plans/implementation-001.md)
+
+**Description**: Fix critical parameter mapping errors between workflow commands and status-sync-manager. Research revealed mismatched parameter names, missing required fields, and incompatible data formats causing silent failures and inconsistent state updates.
+
+---
+
+
 ### 517. Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates
 - **Effort**: 2-3 hours
 - **Status**: [ABANDONED]
@@ -39,6 +52,56 @@ technical_debt:
 - **Researched**: 2025-01-16T10:51:00Z
 
 **Description**: Fix the /research command to avoid creating unnecessary implementation-summary files in summaries/ directory, properly link research reports in TODO.md and state.json, and correctly update task status to RESEARCHED. These issues prevent proper workflow tracking and create cleanup burden.
+
+---
+
+### 519. Add Missing Stage 7 Validation in Workflow Commands
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Session ID**: sess_1768625888_create519
+- **Plan**: [Implementation Plan](.opencode/specs/519_add_missing_stage_7_validation_in_workflow_commands/plans/implementation-001.md)
+
+**Description**: Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.
+
+---
+
+### 520. Fix Silent Failures When status-sync-manager Fails
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Session ID**: sess_1768625888_create520
+- **Plan**: [Implementation Plan](.opencode/specs/520_fix_silent_failures_when_status-sync_manager_fails/plans/implementation-001.md)
+
+**Description**: Fix silent failures when status-sync-manager delegation fails. Research revealed that workflow commands log status-sync-manager failures as "non-critical" and continue, returning success status even when status updates fail. This leads to inconsistent state where artifacts are created but task status isn't updated.
+
+---
+
+### 521. Fix Task 512 Inconsistent Status
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Session ID**: sess_1768625888_create521
+- **Plan**: [Implementation Plan](.opencode/specs/521_fix_task_512_inconsistent_status/plans/implementation-001.md)
+
+**Description**: Fix inconsistent status for task 512 "Fix build error in RepresentationTheorems.lean". Research shows task has completed research artifact and TODO.md shows [IN PROGRESS] but based on research findings, task should be [RESEARCHED] or potentially [COMPLETED] since research identifies fix.
+
+---
+
+## Medium Priority
+
+### 522. Improve status-sync-manager Error Messages to be more actionable
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Session ID**: sess_1768625888_create522
+- **Plan**: [Implementation Plan](.opencode/specs/522_improve_status-sync_manager_error_messages/plans/implementation-001.md)
+
+**Description**: Improve status-sync-manager error messages to be more specific and actionable. Research revealed that status-sync-manager returns generic errors like "Invalid parameters" without explaining which parameter is invalid or what expected format is. This makes debugging difficult for both users and calling agents.
 
 ---
 
@@ -121,7 +184,7 @@ technical_debt:
 - **Priority**: High
 - **Language**: lean
 
-**Description**: Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory.
+**Description**: Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Design and implement an ideal restructuring to improve the quality, organization, and clarity of the theory.
 
 ---
 
