@@ -429,15 +429,29 @@
       "project_name": "Address tm_auto proof reconstruction issues",
       "type": "maintenance",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researched",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-16T02:11:10.509242+00:00",
-      "last_updated": "2026-01-16T02:11:10.509242+00:00",
+      "last_updated": "2026-01-16T20:24:09Z",
       "effort": "5 hours",
       "description": "Address tm_auto proof reconstruction issues",
       "created_by": "Review task 506",
-      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md"
+      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
+      "researched": "2026-01-16T20:24:09Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".opencode/specs/513_address_tm_auto_proof_reconstruction_issues/reports/research-001.md",
+          "summary": "Comprehensive technical analysis of tm_auto proof reconstruction issues with solution recommendations"
+        },
+        {
+          "type": "summary",
+          "path": ".opencode/specs/513_address_tm_auto_proof_reconstruction_issues/summaries/research-summary.md",
+          "summary": "Brief research summary with findings and recommendations"
+        }
+      ],
+      "session_id": "sess_1768594543_in7i1i"
     },
     {
       "project_number": 514,
