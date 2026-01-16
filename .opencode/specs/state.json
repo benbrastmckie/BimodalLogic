@@ -192,8 +192,8 @@
       "language": "lean",
       "parent_task": 458,
       "description": "Remove or refactor the existing infinite canonical model code in Completeness.lean.",
-      "last_updated": "2026-01-15T23:18:00Z",
-      "researched": "2026-01-15T23:18:00Z",
+      "last_updated": "2026-01-15T23:20:00Z",
+      "researched": "2026-01-15T23:20:00Z",
       "artifacts": [
         {
           "type": "research",
