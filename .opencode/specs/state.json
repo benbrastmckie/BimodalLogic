@@ -345,7 +345,7 @@
       "project_name": "Restructure and Refine Bimodal Metalogic",
       "type": "feature",
       "phase": "planned",
-      "status": "revised",
+      "status": "implementing",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-15T23:30:00Z",
@@ -377,7 +377,8 @@
         "estimated_hours": 100,
         "complexity": "complex"
       },
-      "revised": "2026-01-16"
+      "revised": "2026-01-16",
+      "implemented": "2026-01-16"
     },
     {
       "project_number": 510,
@@ -599,7 +600,8 @@
       "artifacts": [
         {
           "path": ".opencode/specs/518_fix_parameter_mapping_errors_between_workflow_commands_and_status-sync_manager/plans/implementation-001.md",
-          "type": "plan"
+          "type": "implementation",
+          "summary": "Implementation plan with parameter mapping fixes for status-sync-manager integration"
         }
       ],
       "completed": "2026-01-16T23:35:22Z"
