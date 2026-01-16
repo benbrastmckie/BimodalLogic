@@ -4,8 +4,30 @@
     "generated_at": "2026-01-16T19:00:00Z",
     "total_active": 26
   },
-  "next_project_number": 517,
+  "next_project_number": 518,
   "active_projects": [
+    {
+      "project_number": 517,
+      "project_name": "Fix /research command to avoid creating unnecessary summary files and properly link research reports",
+      "type": "feature",
+      "phase": "researched",
+      "status": "researched",
+      "priority": "High",
+      "language": "general",
+      "created": "2026-01-16T19:59:04Z",
+      "last_updated": "2025-01-16T10:51:00Z",
+      "researched": "2025-01-16T10:51:00Z",
+      "effort": "2-3 hours",
+      "description": "Fix the /research command to avoid creating unnecessary implementation-summary files in summaries/ directory, properly link research reports in TODO.md and state.json, and correctly update task status to RESEARCHED. These issues prevent proper workflow tracking and create cleanup burden.",
+      "session_id": "sess_1768592660_vnieb",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".opencode/specs/517_fix_research_command_summary_files/reports/research-001.md",
+          "summary": "Comprehensive analysis of /research command issues with root cause analysis and implementation recommendations"
+        }
+      ]
+    },
     {
       "project_number": 394,
       "project_name": "Research and port causal semantics from paper",
@@ -354,8 +376,7 @@
           "path": ".opencode/specs/510_mereological_constraints/plans/implementation-001.md",
           "type": "plan",
           "summary": "Implementation plan with 3 phases for adding mereological constraints to predicate functions"
-        },
-
+        }
       ],
       "plan_path": ".opencode/specs/510_mereological_constraints/plans/implementation-001.md"
     },
@@ -442,7 +463,7 @@
       "priority": "medium",
       "language": "general",
       "created": "2026-01-16T00:00:00Z",
-      "last_updated": "2026-01-16T00:00:00Z",
+      "last_updated": "2026-01-16T18:36:01Z",
       "effort": "TBD",
       "description": "Test the task creation system to ensure it works correctly after the recent agent system refactoring. This is a validation task to verify that the workflow commands, task management, and file synchronization are functioning properly after the structural changes.",
       "session_id": "agent_system-1768239349",

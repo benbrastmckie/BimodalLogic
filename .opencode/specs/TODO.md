@@ -1,6 +1,6 @@
 ---
 P26-01-16T00:00:00Z
-next_project_number: 516
+next_project_number: 518
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,20 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+
+### 517. Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Priority**: High
+- **Language**: general
+- **Session ID**: sess_1768592660_vnieb
+- **Research**: [Research Report](.opencode/specs/517_fix_research_command_summary_files/reports/research-001.md)
+- **Researched**: 2025-01-16T10:51:00Z
+
+**Description**: Fix the /research command to avoid creating unnecessary implementation-summary files in summaries/ directory, properly link research reports in TODO.md and state.json, and correctly update task status to RESEARCHED. These issues prevent proper workflow tracking and create cleanup burden.
+
+---
 
 ### 511. Resolve 26 sorry placeholders in Completeness.lean
 - **Effort**: 20 hours
