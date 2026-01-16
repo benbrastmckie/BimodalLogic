@@ -4,7 +4,7 @@
     "generated_at": "2026-01-16T02:11:10.509242+00:00",
     "total_active": 24
   },
-  "next_project_number": 515,
+  "next_project_number": 516,
   "active_projects": [
     {
       "project_number": 394,
@@ -533,7 +533,7 @@
       ]
     },
     {
-      "project_number": 506,
+      "project_number": 515,
       "project_name": "Replace line 257 in 00-Introduction.tex with missing section descriptions",
       "type": "feature",
       "phase": "not_started",
