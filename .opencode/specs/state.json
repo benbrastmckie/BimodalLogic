@@ -344,8 +344,8 @@
       "project_number": 505,
       "project_name": "Restructure and Refine Bimodal Metalogic",
       "type": "feature",
-      "phase": "researched",
-      "status": "researched",
+      "phase": "planned",
+      "status": "planned",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-15T23:30:00Z",
@@ -357,14 +357,26 @@
         {
           "type": "research",
           "path": ".opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md",
+          "summary": "Overview of the current bimodal metalogic"
+        },
+        {
+          "type": "research",
+          "path": ".opencode/specs/505_bimodal_metalogic_restructuring/reports/research-002.md",
           "summary": "Detailed restructuring plan for bimodal metalogic"
         },
         {
-          "type": "summary",
-          "path": ".opencode/specs/505_bimodal_metalogic_restructuring/summaries/research-summary.md",
-          "summary": "Brief overview of research findings"
+          "type": "plan",
+          "path": ".opencode/specs/505_bimodal_metalogic_restructuring/plans/implementation-001.md",
+          "summary": "Lean implementation plan with 4 phases: Core Infrastructure, Representation Theory, Completeness/Compactness, Decidability Integration"
         }
-      ]
+      ],
+      "started": "2025-01-16T20:54:33Z",
+      "planned": "2026-01-16",
+      "plan_metadata": {
+        "phase_count": 4,
+        "estimated_hours": 100,
+        "complexity": "complex"
+      }
     },
     {
       "project_number": 510,

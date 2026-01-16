@@ -95,11 +95,12 @@ technical_debt:
 
 ### 522. Improve status-sync-manager Error Messages to be more actionable
 - **Effort**: 2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Session ID**: sess_1768625888_create522
 - **Started**: 2026-01-16T22:48:17+00:00
+- **Completed**: 2026-01-16T23:25:42+00:00
 - **Plan**: [Implementation Plan](.opencode/specs/522_improve_status-sync_manager_error_messages/plans/implementation-001.md)
 
 **Description**: Improve status-sync-manager error messages to be more specific and actionable. Research revealed that status-sync-manager returns generic errors like "Invalid parameters" without explaining which parameter is invalid or what expected format is. This makes debugging difficult for both users and calling agents.
@@ -183,13 +184,16 @@ technical_debt:
 
 ### 505. Restructure and Refine Bimodal Metalogic
 - **Effort**: 85-120 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Started**: 2025-01-16T20:54:33Z
 - **Researched**: 2026-01-16
-- **Research**: [Detailed restructuring plan for bimodal metalogic](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
-- **Summary**: [Brief overview of research findings](.opencode/specs/505_bimodal_metalogic_restructuring/summaries/research-summary.md)
+- **Planned**: 2026-01-16
+- **Plan**: [Implementation Plan](.opencode/specs/505_bimodal_metalogic_restructuring/plans/implementation-001.md)
+- **Research**:
+  - [Detailed restructuring plan for bimodal metalogic](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
+  - [Dependencies between metalogical theorems](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-002.md)
 
 **Description**: Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Design and implement an ideal restructuring to improve the quality, organization, and clarity of the theory. Once implemented, update the /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/04-Metalogic.tex, /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/README.md, and /home/benjamin/Projects/ProofChecker/Theories/Bimodal/README.md documentation to present the metalogical results and their connections in a clear and consistent style. 
 
