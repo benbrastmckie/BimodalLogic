@@ -17,7 +17,7 @@ Each theorem comes with a LEAN 4 proof receipt providing mathematical certainty,
 
 ## Dual Verification Architecture for Logos Training
 
-The Logos training architecture combines **syntactic verification** (proof construction in LEAN 4) with **semantic verification** (model checking in Z3) to create complementary training signals. AI systems progress through layers of the Logos, mastering each layer before advancing to more complex integrated reasoning.
+The Logos training architecture combines **syntactic verification** (proof construction in LEAN 4) with **semantic verification** (model checking in Z3) to create complementary training signals. AI systems progress through extensions of the Logos, mastering each extension before advancing to more complex integrated reasoning.
 
 ### Architecture Overview
 
@@ -52,24 +52,76 @@ The Logos training architecture combines **syntactic verification** (proof const
 └──────────────────────────────────────────────────────────────┘
 ```
 
-### Syntactic Verification Across Logos Layers
+### Syntactic Verification Across Logos Extensions
 
 **Proof-Checker** (LEAN 4 implementation):
 
 - **Framework**: Progressive layer training in the Logos hierarchy through increasingly expressive logical dimensions, beginning with the Constitutive and Dynamical foundation layers which support a plugin system for additional expressive resources.
 - **Axioms**: Layer-specific axiom schemata with soundness proofs
 - **Rules**: Layer-appropriate inference rules
+- **Proof Tactic Registry**: Comprehensive collection of specialized tactics for each Logos layer, enabling automated proof construction and strategic reasoning
 - **Output**: Scored proof receipts when inference derivable, failure signal otherwise
 
-**Note**: The much simpler Bimodal logic TM provides a separate testing ground to validate the training pipeline before tackling the complex Logos layers.
+**Note**: The much simpler Bimodal logic TM provides a separate testing ground to validate the training pipeline before tackling the complex Logos extensions.
 
-The proof-checker attempts to construct formal proofs for candidate inferences by systematically applying inference rules specific to the current training layer. When a proof succeeds, LEAN generates a proof receipt with quality metrics that guide AI learning toward elegant, efficient reasoning.
+### Proof Tactic Registry: Enabling Advanced Reasoning
 
-### Semantic Verification Across Logos Layers
+Tactics are automated proof procedures that systematically construct proofs by applying logical rules and reasoning patterns. Unlike manual step-by-step proof construction, tactics encapsulate sophisticated reasoning strategies that can automatically navigate complex proof spaces.
+
+**Logos Tactic Registry Structure**:
+
+```
+Logos Tactic Registry
+├── Foundation Tactics (Core reasoning strategies)
+│   ├── intro_tac          ── Introduce terms and assumptions
+│   ├── apply_tac          ── Apply inference rules
+│   ├── rewrite_tac         ── Transform expressions
+│   └── case_split_tac      ── Decompose propositions
+│
+├── Extension-Specific Tactics (Specialized procedures)
+│   ├── constitutive_tac     ── Fundamental logic & quantifiers
+│   ├── dynamical_tac        ── Temporal & modal reasoning
+│   ├── epistemic_tac       ── Knowledge, belief, probability
+│   ├── normative_tac        ── Obligation, permission, value
+│   ├── spatial_tac          ── Spatial reasoning & location
+│   ├── agential_tac         ── Multi-agent reasoning
+│   └── reflection_tac      ── Metacognition & self-modeling
+│
+└── Meta-Tactics (Strategic combinations)
+    ├── extension_progress_tac ── Navigate between extensions
+    ├── quality_optimize_tac  ── Optimize proof quality
+    └── generalize_tac        ── Create theorem schemas
+```
+
+This hierarchical structure enables AI systems to build foundational reasoning with core tactics, add extension-specific capabilities as needed, compose sophisticated strategies through meta-tactics, and navigate between extensions for optimal reasoning.
+
+---
+
+## Tactic Training Integration
+
+The proof-checker constructs proofs by selecting and composing tactics from the registry rather than applying individual inference rules manually. This strategic approach transforms how AI systems learn formal reasoning through several key advantages.
+
+This strategic approach transforms AI learning through several key advantages:
+
+* **Strategic Abstraction**: AI systems develop high-level strategic abstraction by learning sophisticated proof strategies rather than memorizing low-level rule applications.
+
+* **Extension Navigation**: Extension navigation emerges naturally as tactics learn when to transition between Logos extensions for optimal reasoning.
+
+* **Quality Awareness**: Meta-tactics provide built-in quality awareness, automatically optimizing for multiple quality dimensions including proof length, elegance, and generalization potential.
+
+* **Error Recovery**: The architecture enables robust error recovery—when tactics fail, they trigger alternative strategies rather than abandoning the proof attempt.
+
+## Tactic Quality Scoring
+
+Each tactic application receives comprehensive evaluation across multiple quality dimensions. Strategic scoring assesses the appropriateness of tactic selection for the specific logical context, ensuring AI systems choose contextually relevant approaches. Efficiency scoring measures the computational cost and performance of tactic execution, rewarding elegant, streamlined solutions. Elegance scoring evaluates the sophistication and insightfulness of tactical reasoning patterns, distinguishing mechanical from truly intelligent approaches. Extension coherence scoring evaluates how effectively tactics transition between Logos extensions, maintaining logical consistency across complex multi-extension reasoning.
+
+Through systematic exploration of different tactic combinations, the proof-checker learns which strategies consistently yield the highest quality proofs across diverse logical contexts. This tactical methodology enables AI systems to develop sophisticated reasoning patterns that scale naturally from simple logical inferences to complex, multi-extension Logos theorems.
+
+### Semantic Verification Across Logos Extensions
 
 **Model-Checker** (Z3 implementation):
 
-- **Framework**: Layer-specific semantic theories for the increasingly complex Logos layers
+- **Framework**: Extension-specific semantic theories for the increasingly complex Logos extensions
 - **Advanced Semantics**: Appropriate semantic frameworks for each Logos layer (possible worlds, intensional structures, etc.)
 - **States**: Layer-appropriate modeling (bitvectors, possible worlds, etc.)
 - **Propositions**: Bilateral structures with verifier/falsifier pairs
@@ -150,17 +202,25 @@ The proof-checker generates sophisticated reinforcement learning signals through
 
 ### Training Signal Integration
 
-Scored proof receipts provide nuanced reinforcement signals:
+Scored proof receipts provide nuanced reinforcement signals for tactic mastery:
 
-**Immediate Feedback**: Quality assessment happens during proof generation, enabling real-time learning about both correctness and elegance.
+**Immediate Feedback**: Quality assessment happens during tactic execution, enabling real-time learning about both tactical effectiveness and strategic elegance.
 
-**Progressive Difficulty**: AI systems naturally progress from simple, short proofs to complex, elegant derivations as their capabilities develop.
+**Tactic Selection Training**: AI systems learn to choose optimal tactics from the registry based on proof context, balancing tactical sophistication with proof efficiency.
 
-**Multi-Objective Learning**: AI systems balance validity, efficiency, elegance, and generalization rather than optimizing for correctness alone.
+**Progressive Tactic Mastery**: AI systems progress from basic foundation tactics to complex meta-tactics, developing layer-specific expertise and cross-layer strategic reasoning.
+
+**Multi-Objective Tactical Learning**: AI systems balance multiple dimensions in tactic selection:
+- **Strategic appropriateness** for given logical context
+- **Computational efficiency** of tactic execution
+- **Proof elegance** through sophisticated tactical patterns
+- **Layer coherence** in navigating Logos transitions
+
+**Adaptive Tactic Discovery**: Advanced AI systems can discover new effective tactic combinations, contributing novel strategic patterns to the registry and demonstrating mastery of Logos reasoning.
 
 ### Bimodal Theory: Separate Testing Ground for Pipeline Validation
 
-**Important Distinction**: The Bimodal theory (TM logic) is NOT a layer of the Logos. It is a much simpler, separate logical system that provides a testing ground to validate the training methodology before AI systems tackle the complex, increasingly expressive layers of the Logos framework.
+**Important Distinction**: The Bimodal theory (TM logic) is NOT an extension of the Logos. It is a much simpler, separate logical system that provides a testing ground to validate the training methodology before AI systems tackle the complex, increasingly expressive extensions of the Logos framework.
 
 The TM theory allows us to:
 - Validate the dual verification architecture
@@ -168,7 +228,7 @@ The TM theory allows us to:
 - Refine reinforcement learning signals
 - Debug training pipeline components
 
-All before progressing to the sophisticated reasoning required by the actual Logos layers.
+All before progressing to the sophisticated reasoning required by the actual Logos extensions.
 
 **Infinite Training Examples**:
 
@@ -196,14 +256,21 @@ All before progressing to the sophisticated reasoning required by the actual Log
 3. **Multi-step proofs**: Complex strategic reasoning
 4. **Novel discovery**: AI systems finding new theorems
 
-### Quality-Focused Training Loop
+### Quality-Focused Training Loop with Tactic Mastery
 
-Scored signals integrate into RL training through:
+Scored signals integrate into RL training through systematic tactic mastery:
 
-1. **Multi-Objective Reward Function**: Weighted combination of validity, efficiency, elegance, and generalization scores
-2. **Quality-Driven Exploration**: AI systems preferentially explore proof strategies that yield higher quality scores
-3. **Strategic Learning**: Development of heuristics for efficient, elegant proof construction
-4. **Curriculum Progression**: Natural advancement from simple valid proofs to complex elegant proofs
+1. **Tactic Selection Rewards**: High rewards for appropriate tactic choices based on logical context and extension requirements
+2. **Tactic Combination Learning**: AI systems discover optimal sequences of tactics for complex multi-step proofs
+3. **Meta-Tactic Development**: Training systems to compose and refine meta-tactics that optimize for multiple quality dimensions
+4. **Extension Navigation Expertise**: Specialized training for transitioning between Logos extensions using appropriate extension-progression tactics
+5. **Adaptive Tactic Discovery**: High rewards for discovering novel effective tactic patterns that extend the registry's capabilities
+
+**Tactic Training Progression**:
+- **Phase 1**: Master foundation tactics through simple axiom applications
+- **Phase 2**: Develop extension-specific expertise through complex theorems
+- **Phase 3**: Learn meta-tactic composition for quality optimization
+- **Phase 4**: Achieve cross-extension strategic reasoning and novel tactic discovery
 
 **Implementation Status**: See [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) for current progress on quality assessment metrics and TM theorem proofs.
 
@@ -292,7 +359,7 @@ The dual verification architecture produces unlimited, quality-assessed training
 
 ### Bimodal Theory: Validation Template for the Training Pipeline
 
-**Separate but Demonstrative**: The Bimodal theory, while much simpler than any Logos layer, demonstrates the training methodology that scales to the complex Logos layers:
+**Separate but Demonstrative**: The Bimodal theory, while much simpler than any Logos extension, demonstrates the training methodology that scales to the complex Logos extensions:
 
 **Training Data Foundation**:
 - **8 Axiom Schemata** × **Infinite Instantiations** = **Unlimited Axioms**
@@ -309,7 +376,7 @@ The dual verification architecture produces unlimited, quality-assessed training
 
 Each level provides training examples with increasing quality requirements, enabling progressive mastery of both correctness and sophistication.
 
-### Scaling Quality Training Across Logos Layers
+### Scaling Quality Training Across Logos Extensions
 
 **Computational Scaling with Quality**:
 - **Parallel quality assessment**: Multiple proof strategies evaluated simultaneously
@@ -323,12 +390,14 @@ Each level provides training examples with increasing quality requirements, enab
 - **Comparability**: Quality metrics enable comparison across different proof strategies
 - **Transferability**: Quality patterns identified in one layer inform training in others
 
-**Progressive Quality Curriculum**:
-- **Stage 1**: Validity focus - learn to produce correct proofs regardless of efficiency
-- **Stage 2**: Efficiency focus - learn shorter, more economical proof strategies
-- **Stage 3**: Elegance focus - learn sophisticated, insightful proof approaches
-- **Stage 4**: Minimalism focus - learn proofs using minimal premise sets
-- **Stage 5**: Generalization focus - learn proof patterns that extend broadly
+**Progressive Quality Curriculum with Tactic Mastery**:
+- **Stage 1**: Validity focus - master foundation tactics for correct proofs regardless of efficiency
+- **Stage 2**: Efficiency focus - learn extension-specific tactics that produce shorter, economical proof strategies
+- **Stage 3**: Elegance focus - develop meta-tactics for sophisticated, insightful proof approaches
+- **Stage 4**: Minimalism focus - master tactics that optimize for minimal premise usage
+- **Stage 5**: Generalization focus - learn to compose tactics for proof patterns that extend broadly
+- **Stage 6**: Extension Navigation focus - master extension-progression tactics for seamless Logos integration
+- **Stage 7**: Tactic Discovery focus - develop novel tactics and contribute to registry expansion
 
 ### Training Quality Metrics
 
@@ -358,48 +427,54 @@ The dual verification architecture provides a systematic pathway for AI systems 
 ### Phase-Based Training Progression
 
 **Phase 1: Foundational Correctness**
-- **Objective**: Master validity across all Logos layers
-- **Focus**: Generate correct proofs regardless of efficiency
-- **Training**: Simple axiom instances, basic theorem applications
+- **Objective**: Master foundation tactics for validity across all Logos extensions
+- **Focus**: Generate correct proofs using basic tactics regardless of efficiency
+- **Training**: Foundation tactic mastery, basic axiom applications
 - **Assessment**: Binary correctness through LEAN verification
 
 **Phase 2: Efficiency Optimization**  
-- **Objective**: Master proof efficiency and premise minimization
-- **Focus**: Shorter proofs, minimal premise usage
-- **Training**: Multiple proof strategies, efficiency comparison
-- **Assessment**: Length and premise efficiency scores
+- **Objective**: Master layer-specific tactics for proof efficiency and premise minimization
+- **Focus**: Shorter proofs through optimal tactic selection, minimal premise usage
+- **Training**: Layer-specific tactics, multiple proof strategies, efficiency comparison
+- **Assessment**: Length and premise efficiency scores, tactic selection quality
 
 **Phase 3: Elegance Development**
-- **Objective**: Master sophisticated, insightful proof strategies
-- **Focus**: Strategic elegance, novel approaches
-- **Training**: Complex theorems, multiple solution paths
-- **Assessment**: Elegance scoring and pattern recognition
+- **Objective**: Master meta-tactics for sophisticated, insightful proof strategies
+- **Focus**: Strategic elegance through advanced tactic combinations, novel tactical approaches
+- **Training**: Complex theorems, meta-tactic development, multiple solution paths
+- **Assessment**: Elegance scoring, tactical pattern recognition, meta-tactic effectiveness
 
 **Phase 4: Generalization Mastery**
-- **Objective**: Master proof patterns that extend across contexts
-- **Focus**: Schematic proofs, transferable strategies  
-- **Training**: Theorem schemas, cross-layer patterns
-- **Assessment**: Generalization potential and abstraction quality
+- **Objective**: Master generalized tactics that extend across contexts
+- **Focus**: Transferable tactic patterns, schematic proof construction
+- **Training**: Generalizable tactics, theorem schemas, cross-extension tactic patterns
+- **Assessment**: Generalization potential, tactic abstraction quality
 
 **Phase 5: Logos Integration**
-- **Objective**: Master integrated reasoning across all Logos layers
-- **Focus**: Multi-layer problems, comprehensive reasoning
-- **Training**: Complex scenarios requiring multiple logical dimensions
-- **Assessment**: Integrated quality scores across all dimensions
+- **Objective**: Master extension-progression tactics for integrated reasoning across all Logos extensions
+- **Focus**: Multi-extension tactical coordination, comprehensive strategic reasoning
+- **Training**: Complex scenarios requiring extension-progression tactics and multi-dimensional tactical planning
+- **Assessment**: Integrated quality scores, tactical extension-navigation effectiveness
+
+**Phase 6: Tactic Discovery and Innovation**
+- **Objective**: Master discovery of novel effective tactics that expand the registry
+- **Focus**: Tactical innovation, pattern recognition for new proof strategies
+- **Training**: Open-ended proof exploration, tactical pattern analysis, registry expansion
+- **Assessment**: Novel tactic quality, contribution to registry, tactical innovation impact
 
 ### Quality Benchmarks
 
 **Bimodal Theory Benchmarks** (Validation Phase):
-- **Basic**: 90% validity on simple axiom instances
-- **Efficient**: 80% optimal proof length on standard theorems  
-- **Elegant**: 70% top-quartile elegance scores on complex proofs
-- **Minimal**: 85% minimal premise usage on applicable theorems
-- **General**: 75% success on transfer tasks to new theorems
+- **Basic**: 90% validity using foundation tactics on simple axiom instances
+- **Efficient**: 80% optimal proof length using basic tactics on standard theorems  
+- **Elegant**: 70% top-quartile elegance scores using tactic combinations on complex proofs
+- **Minimal**: 85% minimal premise usage using optimized tactics on applicable theorems
+- **General**: 75% success on transfer tasks to new theorems using generalized tactics
 
-*Note: These benchmarks validate the training pipeline before progressing to Logos layers.*
+*Note: These benchmarks validate tactical training pipeline before progressing to Logos extensions.*
 
 **Advanced Logos Benchmarks**:
-- **Layer Mastery**: 85% across all individual Logos layers
+- **Extension Mastery**: 85% across all individual Logos extensions
 - **Integration**: 75% on multi-layer reasoning problems
 - **Discovery**: 65% on novel theorem generation with quality assessment
 - **Application**: 70% on real-world reasoning scenario mapping
@@ -416,7 +491,7 @@ The dual verification architecture provides a systematic pathway for AI systems 
 - **Proof pattern discovery**: AI systems identify and optimize new proof strategies
 - **Quality metric refinement**: Quality assessment improves with more data
 - **Strategic innovation**: Development of novel approaches to existing problems
-- **Framework expansion**: Quality assessment extends to new Logos layers as developed
+- **Framework expansion**: Quality assessment extends to new Logos extensions as developed
 
 This roadmap ensures AI systems achieve comprehensive mastery of the Logos framework with the sophistication expected of formal reasoning systems.
 
@@ -425,7 +500,7 @@ This roadmap ensures AI systems achieve comprehensive mastery of the Logos frame
 - [METHODOLOGY.md](../user-guide/METHODOLOGY.md) - Philosophical foundations of the Logos
 - [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) - Layer specifications for the Logos framework
 - [proof-library-design.md](proof-library-design.md) - Quality-aware theorem caching architecture
-- [layer-extensions.md](layer-extensions.md) - Advanced Logos layers and integration strategies
+- [layer-extensions.md](layer-extensions.md) - Advanced Logos extensions and integration strategies
 - [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) - Current progress on Logos training implementation
 
 ---

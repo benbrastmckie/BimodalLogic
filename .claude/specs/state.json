@@ -4,6 +4,25 @@
   "next_project_number": 512,
   "active_projects": [
     {
+      "project_number": 505,
+      "project_name": "bimodal_metalogic_restructuring",
+      "type": "research",
+      "phase": "completed",
+      "status": "researched",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-16T23:00:00Z",
+      "last_updated": "2026-01-16T23:00:00Z",
+      "effort": "85-120 hours",
+      "description": "Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/505_bimodal_metalogic_restructuring/reports/research-001.md",
+          "type": "research"
+        }
+      ]
+    },
+    {
       "project_number": 511,
       "project_name": "Fix Task 512 Inconsistent Status",
       "type": "feature",

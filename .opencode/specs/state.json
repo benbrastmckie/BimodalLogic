@@ -588,15 +588,21 @@
       "project_name": "Fix Parameter Mapping Between Workflow Commands and status-sync-manager",
       "type": "feature",
       "phase": "not_started",
-      "status": "implementing",
+      "status": "completed",
       "priority": "High",
       "language": "meta",
       "created": "2026-01-16T22:16:08Z",
-      "last_updated": "2026-01-16T22:16:08Z",
+      "last_updated": "2026-01-16T23:35:43Z",
       "effort": "2-3 hours",
       "description": "Fix critical parameter mapping errors between workflow commands and status-sync-manager. Research revealed mismatched parameter names, missing required fields, and incompatible data formats causing silent failures and inconsistent state updates.",
       "session_id": "sess_1768601768_create518",
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": ".opencode/specs/518_fix_parameter_mapping_errors_between_workflow_commands_and_status-sync_manager/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ],
+      "completed": "2026-01-16T23:35:22Z"
     },
     {
       "project_number": 519,

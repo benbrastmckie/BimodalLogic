@@ -19,7 +19,9 @@
 
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
+\RequirePackage{mathrsfs}   % For \mathscr script font
 \RequirePackage{mathtools}  % For \coloneqq and enhanced math support
+\RequirePackage{enumitem}   % For list customization
 % Note: hyperref loaded by formatting.sty with proper options
 
 % ============================================================================
@@ -75,6 +77,33 @@
 % ============================================================================
 
 \newcommand{\model}{\mathcal{M}}            % Model symbol
+\newcommand{\tuple}[1]{\langle #1 \rangle}  % Tuple notation
+\newcommand{\define}{\coloneqq}             % Definition symbol
+
+% ============================================================================
+% List Environment Customization
+% ============================================================================
+
+% Redefine itemize with reduced indentation
+% Default itemize has leftmargin=* (computed from labelindent+labelsep+labelwidth)
+% We'll use a smaller leftmargin to reduce overall indentation
+\setlist[itemize]{
+  leftmargin=1.75em,    % Reduced from default ~2.5em
+  labelindent=0.5em,   % Distance from left margin to bullet
+  itemsep=0.3em,       % Space between items
+  parsep=0pt,          % Space between paragraphs within items
+  topsep=0.3em         % Space before and after list
+}
+
+% Make enumerate match itemize indentation
+% Use same spacing parameters as itemize for consistency
+\setlist[enumerate]{
+  leftmargin=1.75em,    % Match itemize leftmargin
+  labelindent=0.5em,   % Distance from left margin to number
+  itemsep=0.3em,       % Space between items
+  parsep=0pt,          % Space between paragraphs within items
+  topsep=0.3em         % Space before and after list
+}
 
 % ============================================================================
 % Propositional Connectives (standard names)

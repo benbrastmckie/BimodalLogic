@@ -287,6 +287,7 @@ lifecycle:
           PREPARE delegation context:
           ```json
           {
+            "operation": "update_status",
             "task_number": "{task_number}",
             "new_status": "completed",
             "timestamp": "{ISO8601 date}",
@@ -308,8 +309,14 @@ lifecycle:
             - IF timeout: LOG error (non-critical), continue
           
           VALIDATE return:
-            - IF status == "completed": LOG success
-            - IF status == "failed": LOG error (non-critical), continue
+            - IF status == "completed": LOG success, set status_sync_success = true
+            - IF status == "failed": 
+              * LOG error with details from errors array
+              * SET status_sync_success = false
+              * EXTRACT error details for inclusion in final return
+            - IF timeout:
+              * LOG error "status-sync-manager timeout after 60s"
+              * SET status_sync_success = false
       
       STEP 7.3: INVOKE git-workflow-manager
         PREPARE delegation context:
@@ -464,7 +471,8 @@ lifecycle:
         "delegation_path": ["orchestrator", "meta", "command-creator"],
         "validation_result": "success",
         "git_commit": "abc123def456",
-        "commands_created": 5
+        "commands_created": 5,
+        "status_sync_success": true
       },
       "errors": [],
       "next_steps": "Review commands and proceed with context organization",

@@ -261,6 +261,7 @@ lifecycle:
           PREPARE delegation context:
           ```json
           {
+            "operation": "update_status",
             "task_number": "{task_number}",
             "new_status": "completed",
             "timestamp": "{ISO8601 date}",
@@ -282,8 +283,14 @@ lifecycle:
             - IF timeout: LOG error (non-critical), continue
           
           VALIDATE return:
-            - IF status == "completed": LOG success
-            - IF status == "failed": LOG error (non-critical), continue
+            - IF status == "completed": LOG success, set status_sync_success = true
+            - IF status == "failed": 
+              * LOG error with details from errors array
+              * SET status_sync_success = false
+              * EXTRACT error details for inclusion in final return
+            - IF timeout:
+              * LOG error "status-sync-manager timeout after 60s"
+              * SET status_sync_success = false
       
       STEP 7.3: INVOKE git-workflow-manager
         PREPARE delegation context:
@@ -446,7 +453,8 @@ lifecycle:
         "delegation_depth": 2,
         "delegation_path": ["orchestrator", "meta", "domain-analyzer"],
         "validation_result": "success",
-        "git_commit": "abc123def456"
+        "git_commit": "abc123def456",
+        "status_sync_success": true
       },
       "errors": [],
       "next_steps": "Review domain analysis and proceed with agent generation",
@@ -475,6 +483,7 @@ lifecycle:
         "delegation_path": ["orchestrator", "meta", "domain-analyzer"],
         "validation_result": "success",
         "git_commit": "a1b2c3d4e5f6",
+        "status_sync_success": true,
         "core_concepts_count": 6,
         "recommended_agents_count": 3,
         "context_files_count": 8
@@ -498,7 +507,8 @@ lifecycle:
         "duration_seconds": 120,
         "agent_type": "domain-analyzer",
         "delegation_depth": 2,
-        "delegation_path": ["orchestrator", "meta", "domain-analyzer"]
+        "delegation_path": ["orchestrator", "meta", "domain-analyzer"],
+        "status_sync_success": false
       },
       "errors": [{
         "type": "validation_failed",
