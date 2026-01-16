@@ -2,7 +2,7 @@
   "metadata": {
     "version": "1.0",
     "generated_at": "2026-01-16T02:11:10.509242+00:00",
-    "total_active": 22
+    "total_active": 24
   },
   "next_project_number": 515,
   "active_projects": [
@@ -331,6 +331,27 @@
       "description": "Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory."
     },
     {
+      "project_number": 510,
+      "project_name": "Add constraint to verifier and falsifier functions",
+      "type": "feature",
+      "phase": "researched",
+      "status": "researched",
+      "priority": "medium",
+      "language": "latex",
+      "created": "2025-01-15T18:27:00Z",
+      "last_updated": "2025-01-15T18:27:00Z",
+      "researched": "2025-01-15T18:27:00Z",
+      "effort": "1 hour",
+      "description": "Add constraint to lines 75-6 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/510_mereological_constraints_research/reports/research-001.md",
+          "type": "research_report",
+          "summary": "Research report on mereological constraints for predicate functions - completed 2025-01-15"
+        }
+      ]
+    },
+    {
       "project_number": 511,
       "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
       "type": "feature",
@@ -522,6 +543,27 @@
           "path": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
           "type": "summary",
           "summary": "Codebase review and registry updates - completed 2026-01-15"
+        }
+      ]
+    },
+    {
+      "project_number": 510,
+      "project_name": "Add constraint to verifier and falsifier functions",
+      "type": "feature",
+      "phase": "researched",
+      "status": "researched",
+      "priority": "medium",
+      "language": "latex",
+      "created": "2025-01-15T18:27:00Z",
+      "last_updated": "2025-01-15T18:27:00Z",
+      "researched": "2025-01-15T18:27:00Z",
+      "effort": "1 hour",
+      "description": "Add constraint to lines 75-6 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/510_mereological_constraints_research/reports/research-001.md",
+          "type": "research_report",
+          "summary": "Research report on mereological constraints for predicate functions - completed 2025-01-15"
         }
       ]
     }

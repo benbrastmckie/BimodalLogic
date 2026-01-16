@@ -229,9 +229,11 @@ technical_debt:
 
 ### 510. Add constraint to verifier and falsifier functions
 - **Effort**: 1 hour
-- **Status**: [REVISING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: latex
+- **Research**: [research-001.md](.claude/specs/510_mereological_constraints_research/reports/research-001.md)
+- **Researched**: 2025-01-15
 
 **Description**: Add constraint to lines 75-6 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state.
 
