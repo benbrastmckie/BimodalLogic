@@ -2,7 +2,7 @@
   "metadata": {
     "version": "1.0",
     "generated_at": "2026-01-15T23:15:47Z",
-    "total_active": 19
+    "total_active": 20
   },
   "active_projects": [
     {
@@ -55,6 +55,11 @@
           "type": "plan",
           "path": ".opencode/specs/504_aristotle_integration/plans/implementation-001.md",
           "summary": "Integration plan for Harmonic Aristotle API into Lean agents"
+        },
+        {
+          "type": "plan",
+          "path": ".opencode/specs/504_aristotle_integration/plans/implementation-002.md",
+          "summary": "Revised integration plan for Harmonic Aristotle API into Lean implementer agent"
         }
       ],
       "planned": "2026-01-15"
@@ -310,6 +315,19 @@
         136,
         137
       ]
+    },
+    {
+      "project_number": 505,
+      "project_name": "Restructure and Refine Bimodal Metalogic",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-15T23:30:00Z",
+      "last_updated": "2026-01-15T23:30:00Z",
+      "effort": "TBD",
+      "description": "Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory."
     }
   ],
   "completed_projects": [
@@ -412,5 +430,5 @@
       ]
     }
   ],
-  "next_project_number": 512
+  "next_project_number": 506
 }

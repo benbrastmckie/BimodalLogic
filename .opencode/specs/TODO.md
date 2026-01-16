@@ -1,20 +1,20 @@
 ---
 P26-01-15T23:16:18Z
-next_project_number: 505
+next_project_number: 506
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 24
+  active: 25
   completed: 154
   in_progress: 3
-  not_started: 11
+  not_started: 12
   abandoned: 14
-  total: 191
+  total: 192
 priority_distribution:
   critical: 0
-  high: 5
+  high: 6
   medium: 8
   low: 11
 technical_debt:
@@ -27,6 +27,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 505. Restructure and Refine Bimodal Metalogic
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+
+**Description**: Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory.
+
+---
 
 ### 495. Complete formula induction proofs for truth lemma bridges in FiniteCanonicalModel.lean
 - **Effort**: 3 hours
@@ -185,7 +195,7 @@ technical_debt:
 - **Revised**: 2026-01-15
 - **Research**: [research-001.md](.opencode/specs/504_aristotle_api_integration/reports/research-001.md)
 
-- **Plan**: [Revised integration plan for Harmonic Aristotle API into Lean agents using lean-aristotle-mcp](.opencode/specs/504_aristotle_integration/plans/implementation-002.md)
+- **Plan**: [Revised integration plan for Harmonic Aristotle API into Lean implementer agent](.opencode/specs/504_aristotle_integration/plans/implementation-002.md)
 
 **Description**: Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.
 
