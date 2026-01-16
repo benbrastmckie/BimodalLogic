@@ -106,8 +106,8 @@ theorem representation_theorem_backward_empty {φ : Formula} :
   intro h_entails
   -- Convert semantic_consequence [] φ to the standard validity notion
   have h_valid : valid φ := by
-    intro D F M τ t
-    exact h_entails D F M τ t
+    intro D _ _ _ F M τ t
+    exact h_entails D F M τ t (fun ψ h_in => absurd h_in List.not_mem_nil)
   -- Use weak_completeness axiom from Completeness module
   exact ⟨weak_completeness φ h_valid⟩
 
