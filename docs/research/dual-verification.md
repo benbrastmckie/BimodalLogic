@@ -1,34 +1,37 @@
-# Dual Verification Training Architecture
+# Dual Verification Training Architecture for the Logos
 
-> **Implementation Status**: This document describes research vision.
-> For current implementation progress, see [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md).
+This document characterizes the dual verification training loop architecture enabling AI systems to produce verified reasoning in the Logos through complementary syntactic and semantic verification. The proof-checker generates positive reinforcement learning signals through LEAN proof receipts while model-checker generates corrective signals through Z3 counterexamples, creating infinite clean training data without human annotation. The Bimodal logic (TM) serves as an example.
 
-This document characterizes the dual verification training loop architecture enabling verified AI reasoning through complementary syntactic and semantic verification systems. The proof-checker generates positive reinforcement learning signals through LEAN proof receipts while model-checker generates corrective signals through Z3 counterexamples, creating infinite clean training data without human annotation.
+## The Logos: A Comprehensive Framework for Verified AI Reasoning
 
-## Introduction to Verified AI Reasoning
+The Logos represents a unified framework for formal reasoning that integrates multiple logical dimensions essential for human-level intelligence. Unlike traditional machine learning systems that rely on finite natural language corpora containing errors, biases, and inconsistencies, AI systems trained on the Logos can achieve mathematical guarantees for their reasoning capabilities.
 
-Traditional machine learning systems rely on finite natural language corpora containing errors, biases, and inconsistencies. AI models trained on such data approximate patterns statistically but cannot provide mathematical guarantees that their reasoning is correct. The proof-checker architecture addresses this fundamental limitation by enabling AI systems to master logical reasoning through self-supervised learning from axiomatic proof systems and recursive semantic theories for extensible formal languages.
+**Core Innovation**: The Logos provides a hierarchical framework where each layer includes:
+1. **Axiomatic proof systems** defining unlimited ranges of theorems through systematic derivation
+2. **Recursive semantic theories** providing unlimited ranges of countermodels for invalid inferences
+3. **Soundness proofs** ensuring that every derivable theorem is semantically valid
 
-**Key Innovation**: Given a formal language, an axiomatic proof systems defines an unlimited range of theorems that could be derived, and a recursive semantics provides an unlimited range of non-theorems that admit of countermodels. Each theorem comes with a proof receipt providing mathematical certainty, and each invalid inference has a counterexample showing exactly why the reasoning fails. Establishing soundness of the proof system over its semantics ensures that every theorem is valid. These verification signals enable AI training without human annotation, replacing finite noisy corpora with infinite clean training data.
+Each theorem comes with a LEAN 4 proof receipt providing mathematical certainty, and each invalid inference has a Z3 counterexample showing exactly why the reasoning fails. These verification signals enable AI training without human annotation, replacing finite noisy corpora with infinite clean training data.
 
-**Result**: AI systems can learn verified logical reasoning through computational oversight rather than human labor, enabling scalable trustworthy AI through mathematical foundations rather than statistical approximation.
+**Training Goal**: AI systems progressively master each layer of the Logos, advancing through increasingly expressive logical dimensions from basic reasoning to complex integrated systems. The much simpler Bimodal theory provides a separate training ground to validate the methodology.
 
-## Dual Verification Architecture
+## Dual Verification Architecture for Logos Training
 
-The proof-checker architecture combines **syntactic verification** (proof construction in LEAN) with **semantic verification** (model checking in Z3) to create complementary training signals for reinforcement learning.
+The Logos training architecture combines **syntactic verification** (proof construction in LEAN 4) with **semantic verification** (model checking in Z3) to create complementary training signals. AI systems progress through layers of the Logos, mastering each layer before advancing to more complex integrated reasoning.
 
 ### Architecture Overview
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                    DUAL VERIFICATION                         │
+│                 LOGOS TRAINING ARCHITECTURE                  │
 │                                                              │
 │   ┌──────────────────┐              ┌───────────────────┐    │
 │   │  Proof-Checker   │              │  Model-Checker    │    │
 │   │   (Syntactic)    │◄────────────►│   (Semantic)      │    │
 │   │                  │              │                   │    │
 │   │  LEAN 4 Prover   │              │  Z3 SMT Solver    │    │
-│   │  TM Logic        │              │  State Models     │    │
+│   │  Logos Layers    │              │  Semantic Models  │    │
+│   │  (Progressive)   │              │  (Layer-Specific) │    │
 │   └──────────────────┘              └───────────────────┘    │
 │          │                                    │              │
 │          │                                    │              │
@@ -42,34 +45,39 @@ The proof-checker architecture combines **syntactic verification** (proof constr
 │          └────────────────┬───────────────────┘              │
 │                           │                                  │
 │                           ▼                                  │
-│                  ┌─────────────────┐                         │
-│                  │  RL Training    │                         │
-│                  │  Signal         │                         │
-│                  └─────────────────┘                         │
+│                  ┌────────────────────┐                      │
+│                  │ Scored RL Training │                      │
+│                  │ (Proof Quality)    │                      │
+│                  └────────────────────┘                      │
 └──────────────────────────────────────────────────────────────┘
 ```
 
-### Syntactic Verification Component
+### Syntactic Verification Across Logos Layers
 
 **Proof-Checker** (LEAN 4 implementation):
 
-- **Language**: Bimodal logic TM (Tense and Modality)
-- **Axioms**: 8 axiom schemata (S5 modal + linear temporal + bimodal interaction)
-- **Rules**: 7 inference rules (modus ponens, modal K, temporal K, temporal duality, weakening, axiom, assumption)
-- **Output**: Proof receipts when inference derivable, failure signal otherwise
+- **Framework**: Progressive layer training in the Logos hierarchy through increasingly expressive logical dimensions, beginning with the Constitutive and Dynamical foundation layers which support a plugin system for additional expressive resources.
+- **Axioms**: Layer-specific axiom schemata with soundness proofs
+- **Rules**: Layer-appropriate inference rules
+- **Output**: Scored proof receipts when inference derivable, failure signal otherwise
 
-The proof-checker attempts to construct formal proofs for candidate inferences by systematically applying inference rules to derive conclusions from axiom instantiations. When a proof succeeds, LEAN generates a proof receipt providing mathematical certainty that the inference is valid.
+**Note**: The much simpler Bimodal logic TM provides a separate testing ground to validate the training pipeline before tackling the complex Logos layers.
 
-### Semantic Verification Component
+The proof-checker attempts to construct formal proofs for candidate inferences by systematically applying inference rules specific to the current training layer. When a proof succeeds, LEAN generates a proof receipt with quality metrics that guide AI learning toward elegant, efficient reasoning.
+
+### Semantic Verification Across Logos Layers
 
 **Model-Checker** (Z3 implementation):
 
-- **Framework**: Programmatic hyperintensional semantics
-- **States**: Modeled as bitvectors with fusion operation
-- **Propositions**: Bilateral structures with verifier/falsifier state pairs
-- **Output**: Countermodels when inference invalid, validation when no countermodel found
+- **Framework**: Layer-specific semantic theories for the increasingly complex Logos layers
+- **Advanced Semantics**: Appropriate semantic frameworks for each Logos layer (possible worlds, intensional structures, etc.)
+- **States**: Layer-appropriate modeling (bitvectors, possible worlds, etc.)
+- **Propositions**: Bilateral structures with verifier/falsifier pairs
+- **Output**: Layer-appropriate countermodels with educational value
 
-The model-checker searches for countermodels in finite state spaces by encoding semantic clauses as SMT constraints. When a countermodel exists, Z3 generates a concrete semantic scenario showing exactly why the inference fails, pinpointing the breakdown in reasoning.
+**Note**: The simpler TM semantic framework provides validation testing for the model-checker before progressing to complex Logos semantics.
+
+The model-checker searches for countermodels using semantic frameworks appropriate to each Logos layer. Counterexamples serve as precise educational feedback, showing AI systems exactly why reasoning fails within that logical framework.
 
 ### Bidirectional Verification Flow
 
@@ -86,14 +94,14 @@ Candidate Inference
   ✓ Proof   ✗ Failed
     │         │
     │         ▼
-    │    ┌────────────────┐
-    │    │ Model-Checker  │
-    │    │ Search Counter │
-    │    └────────────────┘
+    │    ┌─────────────────────┐
+    │    │ Model-Checker       │
+    │    │ Search Countermodel │
+    │    └─────────────────────┘
     │         │
     │    ┌────┴────┐
     │    │         │
-    │  ✓ Valid   ✗ Counter
+    │  ✓ Valid   ✗ Countermodel
     │    │         │
     │    │         ▼
     ▼    ▼    ┌────────────┐
@@ -112,56 +120,92 @@ Candidate Inference
 
 This bidirectional flow ensures comprehensive verification: syntactic validity through proof construction, semantic validity through model checking.
 
-## Positive RL Signals from Proof-Checker
+## Proof Quality Assessment and Scored Training Signals
 
-The proof-checker generates positive reinforcement learning signals through LEAN proof receipts, providing mathematical certainty for valid inferences.
+The proof-checker generates sophisticated reinforcement learning signals through scored LEAN proof receipts, enabling AI systems to learn not just validity but proof quality, efficiency, and elegance.
 
-### Proof Receipts as Training Signals
+### Multi-Dimensional Proof Scoring
 
-**Mathematical Certainty**: Every proof receipt from LEAN provides absolute certainty that the inference is valid. Unlike statistical confidence scores, proof receipts guarantee correctness through formal verification.
+**Validity Score**: Every proof receipt provides absolute certainty that the inference is valid through formal verification, but proofs are evaluated across multiple quality dimensions:
 
-**Immediate Feedback**: Verification happens during inference generation, enabling real-time learning. AI systems receive instant positive reinforcement when reasoning correctly.
+1. **Premise Efficiency Score**: Evaluates whether the conclusion can be derived from a proper subset of premises
+   - **Penalty**: High penalty for proofs using unnecessary premises
+   - **Reward**: Bonus for minimal premise usage (stronger logical results)
+   - **Metric**: `(minimal_premises / used_premises)` where minimal_premises is computed through automated analysis
 
-**Systematic Coverage**: The TM logic axiom system enables systematic exploration of logical space. AI systems can master reasoning patterns progressively from simple theorems to complex derivations.
+2. **Proof Length Score**: Measures the complexity and cost of the proof
+   - **Shorter proofs**: Higher reward (efficiency, elegance)
+   - **Longer proofs**: Lower reward (computational cost)
+   - **Metric**: Inverse function of proof length: `1 / log(length + 1)`
 
-### Infinite Theorem Generation
+3. **Strategic Elegance Score**: Evaluates the sophistication of proof strategies
+   - **Direct strategies**: Higher reward for elegant, insightful approaches
+   - **Brute force**: Lower reward for mechanical, unstructured derivations
+   - **Metric**: Pattern analysis of proof structure against known elegant proofs
 
-**Axiom Schemata**: The TM logic includes 8 axiom schemata, each generating infinite axiom instantiations:
+4. **Generalization Potential**: Evaluates proof patterns that extend to broader contexts
+   - **Schematic proofs**: Higher reward for proofs generalizing to theorem schemas
+   - **Specific instances**: Lower reward for one-off proof patterns
+   - **Metric**: Analysis of proof abstraction level and pattern reuse
 
-- **Modal T**: `□φ → φ` (necessity implies truth) - infinite instances for any formula φ
-- **Modal 4**: `□φ → □□φ` (positive introspection) - infinite instances
-- **Modal B**: `φ → □◇φ` (symmetry) - infinite instances
-- **Temporal 4**: `Fφ → FFφ` (temporal transitivity) - infinite instances
-- **Temporal A**: `φ → F(Pφ)` (temporal accessibility) - infinite instances
-- **Temporal L**: `△φ → F(Hφ)` (temporal perpetuity) - infinite instances
-- **Modal-Future**: `□φ → □Fφ` (modal persistence) - infinite instances
-- **Temporal-Future**: `□φ → F□φ` (temporal persistence) - infinite instances
+### Training Signal Integration
 
-Each schema φ can be instantiated with any well-formed formula, generating unlimited training examples.
+Scored proof receipts provide nuanced reinforcement signals:
 
-### Perpetuity Principles as Theorems
+**Immediate Feedback**: Quality assessment happens during proof generation, enabling real-time learning about both correctness and elegance.
 
-The TM logic enables derivation of novel theorems connecting modal and temporal operators. The **perpetuity principles** (P1-P6) demonstrate the system's capacity for mathematical discovery:
+**Progressive Difficulty**: AI systems naturally progress from simple, short proofs to complex, elegant derivations as their capabilities develop.
 
-**P1**: `□φ → △φ` (what is necessary is always the case)
-**P2**: `▽φ → ◇φ` (what is sometimes the case is possible)
-**P3**: `□φ → □△φ` (necessity of perpetuity)
-**P4**: `◇▽φ → ◇φ` (possibility of occurrence)
-**P5**: `◇▽φ → △◇φ` (persistent possibility)
-**P6**: `▽□φ → □△φ` (occurrent necessity is perpetual)
+**Multi-Objective Learning**: AI systems balance validity, efficiency, elegance, and generalization rather than optimizing for correctness alone.
 
-These theorems are not axioms but derivable results, demonstrating how axiomatic systems produce unlimited mathematical knowledge through systematic derivation.
+### Bimodal Theory: Separate Testing Ground for Pipeline Validation
 
-**Implementation Status**: See [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) for current progress on perpetuity principle proofs.
+**Important Distinction**: The Bimodal theory (TM logic) is NOT a layer of the Logos. It is a much simpler, separate logical system that provides a testing ground to validate the training methodology before AI systems tackle the complex, increasingly expressive layers of the Logos framework.
 
-### Training Loop Integration
+The TM theory allows us to:
+- Validate the dual verification architecture
+- Test proof quality assessment metrics  
+- Refine reinforcement learning signals
+- Debug training pipeline components
 
-Positive signals integrate into RL training through:
+All before progressing to the sophisticated reasoning required by the actual Logos layers.
 
-1. **Reward Function**: Proof receipts contribute positive reward to model policy
-2. **Pattern Recognition**: AI learns which inference patterns yield valid proofs
-3. **Incremental Complexity**: Training progresses from simple theorems to complex derivations
-4. **Proof Strategy Learning**: AI develops heuristics for efficient proof search
+**Infinite Training Examples**:
+
+**Axiom Schemata**: TM includes 8 axiom schemata, each generating infinite instances:
+- **Modal T**: `□φ → φ` (necessity implies truth)
+- **Modal 4**: `□φ → □□φ` (positive introspection)  
+- **Modal B**: `φ → □◇φ` (symmetry)
+- **Temporal 4**: `Fφ → FFφ` (temporal transitivity)
+- **Temporal A**: `φ → F(Pφ)` (temporal accessibility)
+- **Temporal L**: `△φ → F(Hφ)` (temporal perpetuity)
+- **Modal-Future**: `□φ → □Fφ` (modal persistence)
+- **Temporal-Future**: `□φ → F□φ` (temporal persistence)
+
+**Derivable Theorems**: The perpetuity principles demonstrate theorem discovery:
+- **P1**: `□φ → △φ` (necessity implies perpetuity)
+- **P2**: `▽φ → ◇φ` (occurrence implies possibility)
+- **P3**: `□φ → □△φ` (necessity of perpetuity)
+- **P4**: `◇▽φ → ◇φ` (possibility of occurrence)
+- **P5**: `◇▽φ → △◇φ` (persistent possibility)
+- **P6**: `▽□φ → □△φ` (occurrent necessity is perpetual)
+
+**Progressive Training Path**:
+1. **Direct axiom instances**: Simple, single-step applications
+2. **One-step derivations**: Basic theorem applications
+3. **Multi-step proofs**: Complex strategic reasoning
+4. **Novel discovery**: AI systems finding new theorems
+
+### Quality-Focused Training Loop
+
+Scored signals integrate into RL training through:
+
+1. **Multi-Objective Reward Function**: Weighted combination of validity, efficiency, elegance, and generalization scores
+2. **Quality-Driven Exploration**: AI systems preferentially explore proof strategies that yield higher quality scores
+3. **Strategic Learning**: Development of heuristics for efficient, elegant proof construction
+4. **Curriculum Progression**: Natural advancement from simple valid proofs to complex elegant proofs
+
+**Implementation Status**: See [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) for current progress on quality assessment metrics and TM theorem proofs.
 
 ## Negative RL Signals from Model-Checker
 
@@ -216,76 +260,174 @@ Corrective signals integrate into RL training through:
 3. **Semantic Understanding**: Concrete countermodels build intuition about operator semantics
 4. **Refinement Cycles**: Corrective feedback guides iterative improvement
 
-## Infinite Clean Training Data
+## Infinite Quality-Scored Training Data for Logos Mastery
 
-The dual verification architecture produces unlimited training data without human annotation, solving the data scarcity problem for verified reasoning systems.
+The dual verification architecture produces unlimited, quality-assessed training data without human annotation, enabling AI systems to progressively master each layer of the Logos with nuanced understanding of proof quality.
 
-### Why This Matters
+### Beyond Traditional Machine Learning Limitations
 
-**Finite Corpus Limitation**: Traditional ML systems trained on finite natural language corpora containing:
-- Errors and inconsistencies
-- Cultural and demographic biases
-- Ambiguities requiring context
-- Missing reasoning steps
+**Finite Corpus Problems**: Traditional ML systems face fundamental limitations:
+- **Error propagation**: Training on corpora containing logical errors and inconsistencies
+- **Bias amplification**: Cultural and demographic biases embedded in natural language
+- **Ambiguity resolution**: Missing context and implicit reasoning steps
+- **Annotation bottleneck**: Human labeling is expensive, slow, and error-prone
+- **Quality blindness**: No distinction between elegant and clumsy reasoning
 
-**Statistical Approximation**: Pattern matching on finite noisy data produces approximate reasoning without guarantees.
+**Statistical vs Mathematical**: Pattern matching on finite noisy data produces approximate reasoning without guarantees, while Logos training provides mathematical certainty with quality assessment.
 
-**Annotation Bottleneck**: Human labeling is expensive, slow, and error-prone, limiting dataset size and quality.
+### Logos Training Data Advantages
 
-### Axiomatic Systems Advantage
+**Hierarchical Uniqueness**: Each layer of the Logos provides unlimited, layer-specific training data:
+- **Unlimited theorems**: Axiom schemata generate infinite valid inferences per layer
+- **Quality diversity**: Multiple proof strategies with different quality scores
+- **Clean signals**: Mathematically guaranteed correctness without annotation errors
+- **Systematic coverage**: Comprehensive exploration of logical space per layer
+- **Progressive complexity**: Natural curriculum from simple to sophisticated reasoning
 
-**Unlimited Theorems**: Axiom schemata generate infinite valid inferences through systematic instantiation and derivation.
+**Quality-Assessed Examples**: Unlike traditional datasets, every training example includes:
+- **Validity guarantee**: Mathematical certainty through proof receipt
+- **Quality metrics**: Multi-dimensional scoring of proof efficiency and elegance
+- **Educational value**: Clear feedback on why specific approaches succeed
+- **Generalization potential**: Identification of patterns that extend to broader contexts
 
-**Clean Signals**: Proof receipts and counterexamples are mathematically guaranteed correct - no annotation errors.
+### Bimodal Theory: Validation Template for the Training Pipeline
 
-**Systematic Coverage**: Axiomatic derivation explores logical space systematically rather than sampling randomly.
+**Separate but Demonstrative**: The Bimodal theory, while much simpler than any Logos layer, demonstrates the training methodology that scales to the complex Logos layers:
 
-**No Human Labor**: Verification systems generate training signals automatically through computation.
+**Training Data Foundation**:
+- **8 Axiom Schemata** × **Infinite Instantiations** = **Unlimited Axioms**
+- **7 Inference Rules** × **Combinatorial Derivations** = **Unlimited Theorems**  
+- **Multiple Proof Strategies** × **Quality Assessment** = **Rich Learning Signals**
 
-### TM Logic as Training Data Source
+**Quality-Diverse Progression**:
+1. **Simple valid proofs**: Basic axiom instances with single application
+2. **Efficient proofs**: Short derivations using optimal strategies
+3. **Elegant proofs**: Sophisticated strategies with high elegance scores
+4. **Minimal proofs**: Derivations using smallest premise sets
+5. **Generalizable proofs**: Schematic approaches extending to theorem families
+6. **Discovery proofs**: AI-generated novel theorems with quality assessment
 
-The TM logic provides comprehensive training data foundation:
+Each level provides training examples with increasing quality requirements, enabling progressive mastery of both correctness and sophistication.
 
-**8 Axiom Schemata** × **Infinite Instantiations** = **Unlimited Axioms**
+### Scaling Quality Training Across Logos Layers
 
-**7 Inference Rules** × **Combinatorial Derivations** = **Unlimited Theorems**
+**Computational Scaling with Quality**:
+- **Parallel quality assessment**: Multiple proof strategies evaluated simultaneously
+- **Quality cache**: High-quality proof patterns cached for reuse across theorems
+- **Adaptive search**: Focus computational resources on high-quality proof strategies
+- **Progressive investment**: More computational resources for complex, high-value theorems
 
-**Example Progression**:
-1. Simple axiom instances: `□p → p`, `□q → q`, `□(p ∧ q) → (p ∧ q)`
-2. One-step derivations: `□p → □□p` (from M4), `p → □◇p` (from MB)
-3. Multi-step proofs: Perpetuity principles P1-P6
-4. Complex derivations: Novel theorem discovery through systematic search
+**Quality Guarantees Layer by Layer**:
+- **Validity**: Proof receipts guarantee correctness through LEAN verification per layer
+- **Quality**: Multi-dimensional scoring ensures consistent quality assessment
+- **Comparability**: Quality metrics enable comparison across different proof strategies
+- **Transferability**: Quality patterns identified in one layer inform training in others
 
-Each level provides training examples of increasing complexity, enabling progressive learning from foundations to advanced reasoning.
+**Progressive Quality Curriculum**:
+- **Stage 1**: Validity focus - learn to produce correct proofs regardless of efficiency
+- **Stage 2**: Efficiency focus - learn shorter, more economical proof strategies
+- **Stage 3**: Elegance focus - learn sophisticated, insightful proof approaches
+- **Stage 4**: Minimalism focus - learn proofs using minimal premise sets
+- **Stage 5**: Generalization focus - learn proof patterns that extend broadly
 
-### Scaling Properties
+### Training Quality Metrics
 
-**Computational Scaling**: Training data generation scales with computational resources, not human labor:
-- Faster hardware → more theorems verified per second
-- Parallel verification → multiple proof attempts simultaneously
-- Proof libraries → cached theorems enable reuse
+**Multi-Dimensional Assessment**:
+- **Correctness Score**: Binary (valid/invalid) through LEAN verification
+- **Efficiency Score**: Proof length and premise minimization
+- **Elegance Score**: Strategic sophistication and insight
+- **Generalization Score**: Pattern abstraction and reusability
+- **Combined Quality Score**: Weighted optimization of all dimensions
 
-**Quality Guarantees**: All training signals mathematically verified:
-- Proof receipts guarantee validity through LEAN type checking
-- Counterexamples guarantee invalidity through Z3 model finding
-- No false positives or false negatives (modulo soundness of LEAN and Z3)
+**Learning Objectives**:
+- **Validity**: First objective - produce only logically correct reasoning
+- **Efficiency**: Second objective - minimize computational cost and redundancy
+- **Elegance**: Third objective - develop sophisticated proof strategies
+- **Mastery**: Final objective - integrate all dimensions seamlessly
 
-**Progressive Difficulty**: Training curriculum emerges naturally:
-- Short proofs discovered first (fewer derivation steps)
-- Complex theorems require longer proof search
-- Automatic difficulty progression from simple to advanced
+This quality-focused approach ensures AI systems don't just learn to reason correctly, but to reason with the sophistication and efficiency expected of the Logos framework.
 
 ## Implementation Status
 
 For current implementation progress on proof-checker and model-checker integration, see [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md).
 
+## Training Roadmap for Logos Mastery
+
+The dual verification architecture provides a systematic pathway for AI systems to achieve comprehensive mastery of the Logos framework.
+
+### Phase-Based Training Progression
+
+**Phase 1: Foundational Correctness**
+- **Objective**: Master validity across all Logos layers
+- **Focus**: Generate correct proofs regardless of efficiency
+- **Training**: Simple axiom instances, basic theorem applications
+- **Assessment**: Binary correctness through LEAN verification
+
+**Phase 2: Efficiency Optimization**  
+- **Objective**: Master proof efficiency and premise minimization
+- **Focus**: Shorter proofs, minimal premise usage
+- **Training**: Multiple proof strategies, efficiency comparison
+- **Assessment**: Length and premise efficiency scores
+
+**Phase 3: Elegance Development**
+- **Objective**: Master sophisticated, insightful proof strategies
+- **Focus**: Strategic elegance, novel approaches
+- **Training**: Complex theorems, multiple solution paths
+- **Assessment**: Elegance scoring and pattern recognition
+
+**Phase 4: Generalization Mastery**
+- **Objective**: Master proof patterns that extend across contexts
+- **Focus**: Schematic proofs, transferable strategies  
+- **Training**: Theorem schemas, cross-layer patterns
+- **Assessment**: Generalization potential and abstraction quality
+
+**Phase 5: Logos Integration**
+- **Objective**: Master integrated reasoning across all Logos layers
+- **Focus**: Multi-layer problems, comprehensive reasoning
+- **Training**: Complex scenarios requiring multiple logical dimensions
+- **Assessment**: Integrated quality scores across all dimensions
+
+### Quality Benchmarks
+
+**Bimodal Theory Benchmarks** (Validation Phase):
+- **Basic**: 90% validity on simple axiom instances
+- **Efficient**: 80% optimal proof length on standard theorems  
+- **Elegant**: 70% top-quartile elegance scores on complex proofs
+- **Minimal**: 85% minimal premise usage on applicable theorems
+- **General**: 75% success on transfer tasks to new theorems
+
+*Note: These benchmarks validate the training pipeline before progressing to Logos layers.*
+
+**Advanced Logos Benchmarks**:
+- **Layer Mastery**: 85% across all individual Logos layers
+- **Integration**: 75% on multi-layer reasoning problems
+- **Discovery**: 65% on novel theorem generation with quality assessment
+- **Application**: 70% on real-world reasoning scenario mapping
+
+### Continuous Quality Improvement
+
+**Adaptive Training**:
+- **Dynamic curriculum**: Training difficulty adjusts based on quality performance
+- **Targeted practice**: Focus on weak quality dimensions identified through assessment
+- **Cross-learning**: Quality insights from one layer inform training in others
+- **Meta-learning**: Learning how to learn quality improvement strategies
+
+**Quality Evolution**:
+- **Proof pattern discovery**: AI systems identify and optimize new proof strategies
+- **Quality metric refinement**: Quality assessment improves with more data
+- **Strategic innovation**: Development of novel approaches to existing problems
+- **Framework expansion**: Quality assessment extends to new Logos layers as developed
+
+This roadmap ensures AI systems achieve comprehensive mastery of the Logos framework with the sophistication expected of formal reasoning systems.
+
 ## Related Documentation
 
-- [METHODOLOGY.md](../user-guide/METHODOLOGY.md) - Philosophical foundations
-- [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) - Layer 0 (Core TM) specification
-- [proof-library-design.md](proof-library-design.md) - Theorem caching architecture
-- [layer-extensions.md](layer-extensions.md) - Layers 1-3 specifications
+- [METHODOLOGY.md](../user-guide/METHODOLOGY.md) - Philosophical foundations of the Logos
+- [ARCHITECTURE.md](../user-guide/ARCHITECTURE.md) - Layer specifications for the Logos framework
+- [proof-library-design.md](proof-library-design.md) - Quality-aware theorem caching architecture
+- [layer-extensions.md](layer-extensions.md) - Advanced Logos layers and integration strategies
+- [IMPLEMENTATION_STATUS.md](../project-info/IMPLEMENTATION_STATUS.md) - Current progress on Logos training implementation
 
 ---
 
-_Last updated: December 2025_
+_Last updated: January 2026 - Refocused on Logos with quality assessment_

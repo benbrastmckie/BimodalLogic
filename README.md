@@ -1,6 +1,6 @@
 # Logos: A Logic for Interpreted and Verified AI Reasoning
 
-**Logos** is a formal verification framework in Lean 4 implementing hyperintensional logics for verified AI reasoning. By combining an axiomatic proof system with recursive semantics, Logos generates unlimited self-supervised training data for AI systems, providing proof receipts for valid inferences and countermodels for invalid ones without relying on human annotation.
+**Logos** is a formal verification framework in LEAN 4 implementing hyperintensional logics for verified AI reasoning. By combining an axiomatic proof system with recursive semantics, Logos generates unlimited self-supervised training data for AI systems, providing proof receipts for valid inferences and countermodels for invalid ones without relying on human annotation.
 
 The project also includes the **Bimodal** theory, a fragment of independent interest providing a complete bimodal logic for reasoning about past and future contingency. While the Bimodal theory serves as a methodological testbed for Logos development, it captures fundamental relationships between time and possibility in its own right. See [Bimodal Theory](#bimodal-theory) for details.
 
@@ -207,7 +207,7 @@ The Logos methodology comprises three components: (1) an **axiomatic proof theor
 **Manual Installation**:
 
 ```bash
-# Install elan (Lean version manager)
+# Install elan (LEAN version manager)
 curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
 
 # Clone repository
@@ -355,7 +355,7 @@ lake lint
 
 ### Directory Convention
 
-- **PascalCase**: Lean source directories (`Logos/`, `Theories/`, `Tests/`)
+- **PascalCase**: LEAN source directories (`Logos/`, `Theories/`, `Tests/`)
 - **lowercase**: Non-code directories (`docs/`, `scripts/`, `benchmarks/`, `latex/`)
 
 See [Directory Naming Convention](docs/development/CONTRIBUTING.md#3-directory-naming-convention) for details.

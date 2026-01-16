@@ -2,97 +2,67 @@
 name: task
 agent: orchestrator
 description: "Unified task lifecycle management: create, recover, divide, sync, abandon tasks"
+context_level: 2
+language: varies
+routing:
+  flag_based: true
+  operations:
+    create: task-creator
+    recover: status-sync-manager
+    divide: task-divider
+    sync: status-sync-manager
+    abandon: status-sync-manager
+  default: task-creator
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/standards/subagent-return.md"
+    - "core/workflows/status-transitions.md"
+    - "core/orchestration/routing.md"
+  optional:
+    - "core/standards/task-management.md"
+    - "core/orchestration/state-management.md"
+  max_context_size: 40000
 timeout: 120
 ---
 
 **Task Input (required):** $ARGUMENTS (task description or flag with arguments)
 
-**CRITICAL ARCHITECTURAL CONSTRAINT**: This command manages task lifecycle. Task creation NEVER implements tasks.
+**Usage:** `/task [--recover|--divide|--sync|--abandon] ARGS`
 
 <context>
   <system_context>Unified task lifecycle management - create, recover, divide, sync, abandon tasks</system_context>
-  <task_context>Parse flags and arguments, route to appropriate operation, delegate to specialized subagents</task_context>
-  <architectural_constraint>
-    Task creation is FORBIDDEN from implementing tasks. It only creates task entries.
-    Implementation happens later via /implement command.
-  </architectural_constraint>
+  <task_context>Parse flags and arguments, route to appropriate subagent, delegate for execution</task_context>
 </context>
 
-<role>
-  Task lifecycle manager - Routes task operations to specialized subagents based on flags
-</role>
+<role>Task lifecycle router - Parses flags and delegates to specialized subagents</role>
 
-<task>
-  Manage task lifecycle operations:
-  1. Parse flags: --recover, --divide, --sync, --abandon, or none (create)
-  2. Extract and validate arguments based on flag
-  3. Route to appropriate stage based on flag
-  4. Delegate to specialized subagents for execution
-  5. Validate return format and results
-  6. Return success message to user
-  
-  FORBIDDEN (for task creation): Implementing tasks, creating code files, running build tools
-</task>
+<task>Parse flags/arguments from $ARGUMENTS, route to appropriate subagent, return results</task>
 
 <workflow_execution>
-  <stage id="1" name="ParseAndValidate">
-    <action>Parse flags and arguments, validate inputs, route to appropriate stage</action>
+  <stage id="1" name="ParseArguments">
+    <action>Parse flags and arguments from $ARGUMENTS</action>
     <process>
       1. Detect flag from $ARGUMENTS:
-         - Check for --recover: Unarchive tasks from archive/
-         - Check for --divide: Divide existing task into subtasks
-         - Check for --sync: Synchronize TODO.md and state.json
-         - Check for --abandon: Abandon tasks (move to archive/)
-         - If no flag: Default to task creation (backward compatibility)
+         - --recover: Unarchive tasks
+         - --divide: Divide existing task
+         - --sync: Synchronize files
+         - --abandon: Archive tasks
+         - No flag: Create new task
       
-      2. Extract arguments based on flag:
-         
-         **--recover TASK_RANGES**:
-         - Extract task_ranges after --recover
-         - Examples: "343", "343-345", "337, 343-345, 350"
-         - Validate non-empty
-         - Route to Stage 4 (RecoverTasks)
-         
-         **--divide TASK_NUMBER [PROMPT]**:
-         - Extract task_number after --divide (required)
-         - Extract optional prompt (remaining arguments)
-         - Validate task_number is positive integer
-         - Route to Stage 5 (DivideExistingTask)
-         
-         **--sync [TASK_RANGES]**:
-         - Extract optional task_ranges after --sync
-         - If no ranges: sync ALL tasks (default)
-         - Examples: "343-345", "337, 343-345"
-         - Route to Stage 6 (SyncTasks)
-         
-         **--abandon TASK_RANGES**:
-         - Extract task_ranges after --abandon (required)
-         - Examples: "343-345", "337, 343-345, 350"
-         - Validate non-empty
-         - Route to Stage 7 (AbandonTasks)
-         
-         **No flag (task creation)**:
-         - Extract task description (everything before first -- flag)
-         - Extract optional flags: --priority, --effort, --language, --divide
-         - Validate description non-empty
-         - Route to Stage 2 (PrepareTasks)
+      2. Extract arguments based on flag pattern:
+         - --recover TASK_RANGES
+         - --divide TASK_NUMBER [PROMPT]
+         - --sync [TASK_RANGES]
+         - --abandon TASK_RANGES
+         - DESCRIPTION [--priority] [--effort] [--language] [--divide]
       
-      3. Validation gates:
-         - Ensure only ONE flag present (--recover, --divide, --sync, --abandon, or none)
-         - If multiple flags: Return error "Only one flag allowed at a time"
-         - Validate required arguments present for each flag
-         - Validate argument formats (integers, ranges, etc.)
-      
-        4. For task creation (no flag) - ARCHITECTURAL CONSTRAINT ENFORCEMENT:
-          - CRITICAL VALIDATION: /task CREATES TASKS ONLY
+      3. Validate single flag only
+      4. Extract task metadata for creation scenarios
     </process>
-    <validation>
-      - Only one flag present (or none for task creation)
-      - Required arguments present for each flag
-      - Argument formats valid
-      - For task creation: No implementation keywords detected
-    </validation>
-    <checkpoint>Input parsed, validated, and routed to appropriate stage</checkpoint>
+    <validation>Single flag or none, required arguments present, formats valid</validation>
+    <checkpoint>Arguments parsed and validated</checkpoint>
   </stage>
   
   <stage id="2" name="PrepareTasks">
