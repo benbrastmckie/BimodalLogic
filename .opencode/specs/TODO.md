@@ -176,15 +176,16 @@ technical_debt:
 
 ### 504. Integration of harmonic API for aristotle into lean implementer and researcher agents
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [REVISED]
 - **Priority**: Medium
 - **Language**: lean
-- **Session**: sess_1768530000_plan504
+- **Session**: sess_1768539600_revise504
 - **Researched**: 2026-01-15T02:35:00Z
 - **Planned**: 2026-01-15
+- **Revised**: 2026-01-15
 - **Research**: [research-001.md](.opencode/specs/504_aristotle_api_integration/reports/research-001.md)
 
-- **Plan**: [Integration plan for Harmonic Aristotle API into Lean agents](.opencode/specs/504_aristotle_integration/plans/implementation-001.md)
+- **Plan**: [Revised integration plan for Harmonic Aristotle API into Lean agents using lean-aristotle-mcp](.opencode/specs/504_aristotle_integration/plans/implementation-002.md)
 
 **Description**: Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.
 
