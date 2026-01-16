@@ -185,13 +185,14 @@ technical_debt:
 
 ### 505. Restructure and Refine Bimodal Metalogic
 - **Effort**: 85-120 hours
-- **Status**: [PLANNED]
+- **Status**: [REVISING]
 - **Priority**: High
 - **Language**: lean
 - **Started**: 2025-01-16T20:54:33Z
 - **Researched**: 2026-01-16
 - **Planned**: 2026-01-16
-- **Plan**: [Implementation Plan](.opencode/specs/505_bimodal_metalogic_restructuring/plans/implementation-001.md)
+- **Revised**: 2026-01-16
+- **Plan**: [Implementation Plan](.opencode/specs/505_bimodal_metalogic_restructuring/plans/implementation-002.md)
 - **Research**:
   - [Detailed restructuring plan for bimodal metalogic](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
   - [Dependencies between metalogical theorems](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-002.md)
