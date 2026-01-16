@@ -437,7 +437,7 @@
       "project_name": "Replace line 257 in 00-Introduction.tex with missing section descriptions",
       "type": "feature",
       "phase": "researched",
-      "status": "researched",
+      "status": "planned",
       "priority": "medium",
       "language": "latex",
       "created": "2026-01-15T10:00:00Z",
@@ -445,7 +445,7 @@
       "researched": "2026-01-16T00:00:00Z",
       "effort": "2-3 hours",
       "description": "Replace line 257 in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex with descriptions for the missing sections, creating stubs as need be to match the other sections. The current line 257 contains \"\\ldots\" which needs to be replaced with proper section descriptions that follow the same format as the surrounding items (lines 251-256 and 259).",
-      "session_id": "sess_1768610040_correct515",
+      "session_id": "sess_1768582448_a7yjv",
       "artifacts": [
         {
           "path": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
@@ -457,7 +457,22 @@
           "type": "research",
           "summary": "Comprehensive research report identifying missing section descriptions and providing specific LaTeX code replacement"
         }
-      ]
+      ],
+      "plan_path": ".opencode/specs/515_missing_section_descriptions/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 1.0,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-16"
+          }
+        ]
+      }
     }
   ],
   "completed_projects": [

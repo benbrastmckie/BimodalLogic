@@ -85,6 +85,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: latex
 - **Researched**: 2026-01-16
+- **Plan**: [Implementation Plan](.opencode/specs/515_missing_section_descriptions/plans/implementation-001.md)
 - **Research**: [Research Report](.opencode/specs/515_missing_section_descriptions/reports/research-001.md)
 - **Session ID**: sess_1768610040_correct515
 
