@@ -1,8 +1,29 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-15T23:50:00Z",
-  "next_project_number": 511,
+  "next_project_number": 512,
   "active_projects": [
+    {
+      "project_number": 511,
+      "project_name": "Fix Task 512 Inconsistent Status",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "completed",
+      "priority": "High",
+      "language": "meta",
+      "created": "2026-01-16T22:19:23Z",
+      "last_updated": "2026-01-16T22:20:49Z",
+      "effort": "2 hours",
+      "description": "Investigate and fix inconsistent status issue for task 512 (task appears to be missing)",
+      "researched": "2026-01-16T22:20:38Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/511_fix_task_512_status/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "completed": "2026-01-16T22:20:49Z"
+    },
     {
       "project_number": 510,
       "project_name": "mereological_constraints_research",
