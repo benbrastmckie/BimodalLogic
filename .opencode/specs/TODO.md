@@ -188,7 +188,8 @@ technical_debt:
 - **Language**: lean
 - **Started**: 2025-01-16T20:54:33Z
 - **Researched**: 2026-01-16
-- **Research Report**: [.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
+- **Research**: [Detailed restructuring plan for bimodal metalogic](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
+- **Summary**: [Brief overview of research findings](.opencode/specs/505_bimodal_metalogic_restructuring/summaries/research-summary.md)
 
 **Description**: Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Design and implement an ideal restructuring to improve the quality, organization, and clarity of the theory. Once implemented, update the /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/04-Metalogic.tex, /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/README.md, and /home/benjamin/Projects/ProofChecker/Theories/Bimodal/README.md documentation to present the metalogical results and their connections in a clear and consistent style. 
 

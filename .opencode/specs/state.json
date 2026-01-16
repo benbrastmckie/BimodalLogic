@@ -344,14 +344,27 @@
       "project_number": 505,
       "project_name": "Restructure and Refine Bimodal Metalogic",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "researched",
+      "status": "researched",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-15T23:30:00Z",
-      "last_updated": "2026-01-15T23:30:00Z",
+      "last_updated": "2026-01-16",
       "effort": "TBD",
-      "description": "Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory."
+      "description": "Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory.",
+      "researched": "2026-01-16",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md",
+          "summary": "Detailed restructuring plan for bimodal metalogic"
+        },
+        {
+          "type": "summary",
+          "path": ".opencode/specs/505_bimodal_metalogic_restructuring/summaries/research-summary.md",
+          "summary": "Brief overview of research findings"
+        }
+      ]
     },
     {
       "project_number": 510,
@@ -415,11 +428,11 @@
       "project_name": "Fix build error in RepresentationTheorems.lean",
       "type": "feature",
       "phase": "in_progress",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-16T02:11:10.509242+00:00",
-      "last_updated": "2025-01-16T10:20:08Z",
+      "last_updated": "2025-01-16T10:30:00+00:00",
       "started": "2025-01-16T10:20:08Z",
       "effort": "2 hours",
       "description": "Fix build error in RepresentationTheorems.lean",
@@ -431,8 +444,14 @@
           "type": "research",
           "path": ".opencode/specs/512_fix_build_error_in_representationtheorems_lean/reports/research-001.md",
           "summary": "Analysis of build error in RepresentationTheorems.lean with type mismatch fix identified"
+        },
+        {
+          "path": ".opencode/specs/512_fix_build_error_in_representationtheorems_lean/summaries/implementation-summary-20260116.md",
+          "type": "implementation-summary",
+          "summary": "Implementation summary: Fixed semantic_consequence call pattern in RepresentationTheorems.lean"
         }
-      ]
+      ],
+      "completed": "2025-01-16T10:30:00+00:00"
     },
     {
       "project_number": 513,
@@ -615,12 +634,13 @@
       "project_number": 522,
       "project_name": "Improve status-sync-manager Error Messages to be more actionable",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "implementing",
+      "status": "implementing",
       "priority": "Medium",
       "language": "meta",
       "created": "2026-01-16T22:17:32Z",
-      "last_updated": "2026-01-16T22:17:32Z",
+      "last_updated": "2026-01-16T22:48:17+00:00",
+      "started": "2026-01-16T22:48:17+00:00",
       "effort": "2 hours",
       "description": "Improve status-sync-manager error messages to be more specific and actionable. Research revealed that status-sync-manager returns generic errors like \"Invalid parameters\" without explaining which parameter is invalid or what expected format is. This makes debugging difficult for both users and calling agents.",
       "session_id": "sess_1768601852_create522",
