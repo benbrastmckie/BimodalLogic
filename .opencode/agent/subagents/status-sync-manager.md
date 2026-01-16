@@ -136,6 +136,174 @@ lifecycle:
   <forbidden>unstructured_context</forbidden>
 </inputs_forbidden>
 
+<error_handling_standards>
+  <error_codes>
+    <code id="PARAM_MISSING_REQUIRED" value="001">Required parameter not provided</code>
+    <code id="PARAM_INVALID_TYPE" value="002">Parameter has wrong data type</code>
+    <code id="PARAM_INVALID_VALUE" value="003">Parameter value outside allowed range/enum</code>
+    <code id="TASK_NOT_FOUND" value="004">Task number not found in system</code>
+    <code id="TASK_ALREADY_EXISTS" value="005">Task number already in use</code>
+    <code id="FILE_NOT_FOUND" value="006">Required file not found</code>
+    <code id="FILE_PERMISSION_DENIED" value="007">File read/write permission denied</code>
+    <code id="FILE_PARSE_ERROR" value="008">File content malformed (invalid JSON/markdown)</code>
+    <code id="INVALID_STATUS_TRANSITION" value="009">Status transition not allowed by rules</code>
+    <code id="ARTIFACT_VALIDATION_FAILED" value="010">Artifact file not found or empty</code>
+    <code id="ATOMIC_OPERATION_FAILED" value="011">Atomic file operation failed</code>
+    <code id="TEMP_FILE_WRITE_FAILED" value="012">Failed to write temporary file</code>
+    <code id="VALIDATION_FAILED" value="013">General validation failure</code>
+  </error_codes>
+  
+  <error_message_format>
+    All errors must return structured format:
+    ```json
+    {
+      "status": "failed",
+      "error": {
+        "code": "PARAM_INVALID_TYPE",
+        "type": "parameter_validation_failed",
+        "message": "Parameter 'task_number' must be a positive integer",
+        "parameter": "task_number",
+        "received": "abc",
+        "expected": "positive integer (1, 2, 3, ...)",
+        "example": "task_number: 512",
+        "recovery": "Provide task number as positive integer"
+      }
+    }
+    ```
+  </error_message_format>
+  
+  <parameter_validation_templates>
+    <parameter name="task_number">
+      <missing>
+        {
+          "code": "PARAM_MISSING_REQUIRED",
+          "type": "parameter_validation_failed",
+          "message": "Required parameter 'task_number' not provided",
+          "parameter": "task_number",
+          "expected": "positive integer",
+          "example": "task_number: 512",
+          "recovery": "Add task_number parameter with positive integer value"
+        }
+      </missing>
+      <invalid_type>
+        {
+          "code": "PARAM_INVALID_TYPE",
+          "type": "parameter_validation_failed",
+          "message": "Parameter 'task_number' must be a positive integer",
+          "parameter": "task_number",
+          "received": "{received_value}",
+          "expected": "positive integer (1, 2, 3, ...)",
+          "example": "task_number: 512",
+          "recovery": "Provide task_number as positive integer, not {received_type}"
+        }
+      </invalid_type>
+      <invalid_value>
+        {
+          "code": "PARAM_INVALID_VALUE",
+          "type": "parameter_validation_failed",
+          "message": "Parameter 'task_number' must be greater than 0",
+          "parameter": "task_number",
+          "received": "{received_value}",
+          "expected": "positive integer > 0",
+          "example": "task_number: 512",
+          "recovery": "Provide task_number as positive integer greater than 0"
+        }
+      </invalid_value>
+    </parameter>
+    
+    <parameter name="operation">
+      <invalid_value>
+        {
+          "code": "PARAM_INVALID_VALUE",
+          "type": "parameter_validation_failed",
+          "message": "Parameter 'operation' has invalid value '{received_value}'",
+          "parameter": "operation",
+          "received": "{received_value}",
+          "expected": "one of: create_task, archive_tasks, unarchive_tasks, update_task_metadata, sync_tasks, update_status",
+          "closest_match": "{suggestion}",
+          "example": "operation: update_status",
+          "recovery": "Use one of the valid operation values"
+        }
+      </invalid_value>
+    </parameter>
+    
+    <parameter name="new_status">
+      <invalid_value>
+        {
+          "code": "PARAM_INVALID_VALUE",
+          "type": "parameter_validation_failed",
+          "message": "Parameter 'new_status' has invalid value '{received_value}'",
+          "parameter": "new_status",
+          "received": "{received_value}",
+          "expected": "one of: not_started, in_progress, researched, planned, blocked, abandoned, completed",
+          "example": "new_status: in_progress",
+          "recovery": "Use one of the valid status values"
+        }
+      </invalid_value>
+      <invalid_transition>
+        {
+          "code": "INVALID_STATUS_TRANSITION",
+          "type": "status_transition_failed",
+          "message": "Invalid status transition: {current_status} → {new_status}",
+          "parameter": "new_status",
+          "received": "{new_status}",
+          "current_status": "{current_status}",
+          "allowed_transitions": "{allowed_list}",
+          "example": "new_status: in_progress (from not_started)",
+          "recovery": "Use one of the allowed status transitions from current status"
+        }
+      </invalid_transition>
+    </parameter>
+  </parameter_validation_templates>
+</error_handling_standards>
+
+<error_generation_helpers>
+  <create_parameter_error>
+    <action>Generate structured error for parameter validation failures</action>
+    <process>
+      1. Determine error type: missing, invalid_type, invalid_value
+      2. Select appropriate template from error_handling_standards
+      3. Fill template variables: {received_value}, {expected}, {example}, {received_type}
+      4. Return structured error object with all fields populated
+    </process>
+  </create_parameter_error>
+  
+  <create_file_error>
+    <action>Generate structured error for file operation failures</action>
+    <process>
+      1. Determine file error type: not_found, permission_denied, parse_error
+      2. Include full file path in error
+      3. Add system error details if available (errno, strerror)
+      4. Suggest specific recovery actions:
+         - not_found: "Create file or check if path is correct"
+         - permission_denied: "Check file permissions with ls -la, adjust with chmod if needed"
+         - parse_error: "Validate file syntax, use JSON linter or markdown validator"
+    </process>
+  </create_file_error>
+  
+  <create_transition_error>
+    <action>Generate structured error for invalid status transitions</action>
+    <process>
+      1. Extract current_status and attempted new_status
+      2. Look up allowed transitions from status-markers.md
+      3. Generate list of valid next statuses from current status
+      4. Include current_status, new_status, and allowed_transitions in error
+      5. Suggest best alternative based on common patterns
+    </process>
+  </create_transition_error>
+  
+  <format_error_response>
+    <action>Format final error response according to subagent-return-format.md</action>
+    <process>
+      1. Create base response structure with status: "failed"
+      2. Set summary to brief description (<100 tokens)
+      3. Include structured error object in errors array
+      4. Set metadata fields including session_id
+      5. Add next_steps with recovery instructions
+    </process>
+  </format_error_response>
+</error_generation_helpers>
+
 <process_flow>
   <operation_routing>
     <action>Route to appropriate operation based on operation parameter</action>
@@ -147,7 +315,7 @@ lifecycle:
       5. If operation == "update_task_metadata": Execute update_task_metadata_flow
       6. If operation == "sync_tasks": Execute sync_tasks_flow
       7. If operation == "update_status" or not specified: Execute update_status_flow (default)
-      8. If operation invalid: Return error
+      8. If operation invalid: Return structured error with valid operations list
     </process>
     <validation>Operation parameter is valid</validation>
     <output>Routed to appropriate operation flow</output>
@@ -155,19 +323,44 @@ lifecycle:
 
   <create_task_flow>
     <step_0_validate_inputs>
-      <action>Validate create_task inputs</action>
+      <action>Validate create_task inputs with specific error messages</action>
       <process>
-        1. Validate required inputs:
-           - title (non-empty string, max 200 chars)
-           - description (non-empty string, 50-500 chars)
-           - priority (Low|Medium|High)
-           - effort (non-empty string)
-           - language (lean|markdown|general|python|shell|json|meta)
-        2. Validate state.json exists and is readable
-        3. Validate TODO.md exists and is readable
-        4. Read next_project_number from state.json
-        5. Validate task number not already in use
-        6. If validation fails: abort with clear error message
+        1. Validate title parameter:
+           a. If title missing: Return PARAM_MISSING_REQUIRED error for 'title'
+           b. If title not string: Return PARAM_INVALID_TYPE error (received: {type}, expected: string)
+           c. If title empty: Return PARAM_INVALID_VALUE error (received: empty, expected: 1-200 chars)
+           d. If title > 200 chars: Return PARAM_INVALID_VALUE error (received: {len} chars, expected: max 200)
+        
+        2. Validate description parameter:
+           a. If description missing: Return PARAM_MISSING_REQUIRED error for 'description'
+           b. If description not string: Return PARAM_INVALID_TYPE error (received: {type}, expected: string)
+           c. If description < 50 chars: Return PARAM_INVALID_VALUE error (received: {len} chars, expected: 50-500 chars)
+           d. If description > 500 chars: Return PARAM_INVALID_VALUE error (received: {len} chars, expected: max 500)
+        
+        3. Validate priority parameter:
+           a. If priority missing: Return PARAM_MISSING_REQUIRED error for 'priority'
+           b. If priority not in ["Low", "Medium", "High"]: Return PARAM_INVALID_VALUE error with valid options
+        
+        4. Validate effort parameter:
+           a. If effort missing: Return PARAM_MISSING_REQUIRED error for 'effort'
+           b. If effort not string or empty: Return PARAM_INVALID_VALUE error (expected: non-empty string)
+        
+        5. Validate language parameter:
+           a. If language missing: Return PARAM_MISSING_REQUIRED error for 'language'
+           b. If language not in ["lean", "markdown", "general", "python", "shell", "json", "meta"]: Return PARAM_INVALID_VALUE error with valid options
+        
+        6. Validate file accessibility:
+           a. Check state.json exists: If not, return FILE_NOT_FOUND error with path
+           b. Check state.json readable: If not, return FILE_PERMISSION_DENIED error with path
+           c. Check TODO.md exists: If not, return FILE_NOT_FOUND error with path
+           d. Check TODO.md readable: If not, return FILE_PERMISSION_DENIED error with path
+        
+        7. Parse state.json:
+           a. If JSON parse fails: Return FILE_PARSE_ERROR with line number and details
+           b. Extract next_project_number: If missing, return VALIDATION_FAILED for missing field
+        
+        8. Check for existing task with same number:
+           a. If task already exists: Return TASK_ALREADY_EXISTS error with existing task info
       </process>
       <validation>All inputs valid, task number available</validation>
       <output>Validated inputs, allocated task number</output>
@@ -289,21 +482,37 @@ lifecycle:
 
   <archive_tasks_flow>
     <step_0_validate_inputs>
-      <action>Validate archive_tasks inputs</action>
+      <action>Validate archive_tasks inputs with specific error messages</action>
       <process>
-        1. Validate task_numbers is non-empty array
-        2. Validate all task numbers are positive integers
-        3. Validate state.json exists and is readable
-        4. Validate TODO.md exists and is readable
+        1. Validate task_numbers parameter:
+           a. If task_numbers missing: Return PARAM_MISSING_REQUIRED error for 'task_numbers'
+           b. If task_numbers not array: Return PARAM_INVALID_TYPE error (received: {type}, expected: array)
+           c. If task_numbers empty: Return PARAM_INVALID_VALUE error (received: empty array, expected: non-empty array)
+        
+        2. Validate each task number in array:
+           a. If not integer: Return PARAM_INVALID_TYPE error for task number (received: {value}, expected: integer)
+           b. If <= 0: Return PARAM_INVALID_VALUE error for task number (received: {value}, expected: positive integer)
+        
+        3. Validate file accessibility:
+           a. Check state.json exists: If not, return FILE_NOT_FOUND error with path
+           b. Check state.json readable: If not, return FILE_PERMISSION_DENIED error with path
+           c. Check TODO.md exists: If not, return FILE_NOT_FOUND error with path
+           d. Check TODO.md readable: If not, return FILE_PERMISSION_DENIED error with path
+        
+        4. Parse state.json:
+           a. If JSON parse fails: Return FILE_PARSE_ERROR with line number and details
+           b. Validate active_projects array exists: If not, return VALIDATION_FAILED for missing field
+        
         5. For each task number:
-           - Verify task exists in state.json active_projects
-           - If force_archive is false (default):
-             * Verify task status is "completed" or "abandoned"
-             * If task not found or wrong status: abort with error
-           - If force_archive is true:
-             * Skip status check (allow archiving any status)
-             * Used for --abandon flag to abandon tasks regardless of status
-        6. If validation fails: abort with clear error message
+           a. Search active_projects for task number:
+              * If not found: Return TASK_NOT_FOUND error with task number and available tasks
+           b. If force_archive is false (default):
+              * Check task status is "completed" or "abandoned"
+              * If not: Return INVALID_STATUS_TRANSITION error with current status and allowed statuses
+              * Example: "Task 123 has status 'in_progress', only 'completed' or 'abandoned' tasks can be archived"
+           c. If force_archive is true:
+              * Skip status check (allow archiving any status)
+              * Log: "Force archiving task {number} with status '{status}'"
       </process>
       <validation>All tasks exist and are archivable</validation>
       <output>Validated task numbers</output>
@@ -498,28 +707,49 @@ lifecycle:
 
   <update_task_metadata_flow>
     <step_0_validate_inputs>
-      <action>Validate update_task_metadata inputs</action>
+      <action>Validate update_task_metadata inputs with specific error messages</action>
       <process>
-        1. Validate required inputs:
-           - task_number: Positive integer
-           - updated_fields: Non-empty object with at least one field
-           - Valid fields: description, priority, effort, dependencies
+        1. Validate required parameters:
+           a. If task_number missing: Return PARAM_MISSING_REQUIRED error for 'task_number'
+           b. If updated_fields missing: Return PARAM_MISSING_REQUIRED error for 'updated_fields'
         
-        2. Validate state.json exists and is readable
+        2. Validate task_number parameter:
+           a. If not positive integer: Use parameter validation template for task_number
         
-        3. Validate TODO.md exists and is readable
+        3. Validate updated_fields parameter:
+           a. If not object: Return PARAM_INVALID_TYPE error (received: {type}, expected: object)
+           b. If empty object: Return PARAM_INVALID_VALUE error (received: empty, expected: non-empty object)
+           c. If unknown fields: Return PARAM_INVALID_VALUE error with valid fields list
         
-        4. Validate task exists in state.json active_projects:
-           - Find task by project_number
-           - If not found: Return error "Task {task_number} not found"
+        4. Validate file accessibility:
+           a. Check state.json exists: If not, return FILE_NOT_FOUND error with path
+           b. Check state.json readable: If not, return FILE_PERMISSION_DENIED error with path
+           c. Check TODO.md exists: If not, return FILE_NOT_FOUND error with path
+           d. Check TODO.md readable: If not, return FILE_PERMISSION_DENIED error with path
         
-        5. Validate each field in updated_fields:
-           - If description provided: Validate 50-500 characters
-           - If priority provided: Validate is "Low", "Medium", or "High"
-           - If effort provided: Validate non-empty string
-           - If dependencies provided: Validate is array of integers, each task exists
+        5. Parse state.json:
+           a. If JSON parse fails: Return FILE_PARSE_ERROR with line number and details
         
-        6. If validation fails: abort with clear error message
+        6. Validate task exists:
+           a. Search active_projects for task_number
+           b. If not found: Return TASK_NOT_FOUND error with task number and available tasks
+        
+        7. Validate each field in updated_fields:
+           a. If description provided:
+              - If not string: Return PARAM_INVALID_TYPE error for description
+              - If < 50 chars: Return PARAM_INVALID_VALUE error (received: {len} chars, expected: 50-500)
+              - If > 500 chars: Return PARAM_INVALID_VALUE error (received: {len} chars, expected: max 500)
+           b. If priority provided:
+              - If not in ["Low", "Medium", "High"]: Return PARAM_INVALID_VALUE error with valid options
+           c. If effort provided:
+              - If not string or empty: Return PARAM_INVALID_VALUE error (expected: non-empty string)
+           d. If dependencies provided:
+              - If not array: Return PARAM_INVALID_TYPE error (received: {type}, expected: array)
+              - If empty array: Return PARAM_INVALID_VALUE error (received: empty, expected: non-empty array)
+              - For each dependency:
+                 * If not integer: Return PARAM_INVALID_TYPE error for dependency
+                 * If <= 0: Return PARAM_INVALID_VALUE error for dependency (expected: positive integer)
+                 * If dependency task doesn't exist: Return TASK_NOT_FOUND error for dependency task number
       </process>
       <validation>All inputs valid, task exists, fields valid</validation>
       <output>Validated inputs</output>
@@ -603,17 +833,43 @@ lifecycle:
 
   <sync_tasks_flow>
     <step_0_validate_inputs>
-      <action>Validate sync_tasks inputs</action>
+      <action>Validate sync_tasks inputs with specific error messages</action>
       <process>
         1. Validate task_ranges parameter:
-           - If "all" or empty: sync all tasks
-           - If array: validate all task numbers are positive integers
-        2. Validate state.json exists and is readable
-        3. Validate TODO.md exists and is readable
+           a. If task_ranges is null or undefined: Set to "all" (default behavior)
+           b. If task_ranges is string "all": Accept for syncing all tasks
+           c. If task_ranges is array:
+              - Validate each element is positive integer
+              - If not integer: Use parameter validation template for task number
+              - If <= 0: Return PARAM_INVALID_VALUE error for task number
+           d. If task_ranges is other type:
+              - Return PARAM_INVALID_TYPE error (received: {type}, expected: array or "all")
+        
+        2. Validate file accessibility:
+           a. Check state.json exists: If not, return FILE_NOT_FOUND error with path
+           b. Check state.json readable: If not, return FILE_PERMISSION_DENIED error with path
+           c. Check TODO.md exists: If not, return FILE_NOT_FOUND error with path
+           d. Check TODO.md readable: If not, return FILE_PERMISSION_DENIED error with path
+        
+        3. Parse state.json:
+           a. If JSON parse fails: Return FILE_PARSE_ERROR with line number and details
+        
         4. If task_ranges is array:
-           - Verify all tasks exist in TODO.md or state.json
-           - If task not found in either: collect error
-        5. If any validation errors: abort with batch error report
+           a. For each task number in array:
+              - Search TODO.md for task entry
+              - Search state.json active_projects for task
+              - If not found in either:
+                {
+                  "code": "TASK_NOT_FOUND",
+                  "type": "validation_failed",
+                  "message": "Task {task_number} not found in system",
+                  "parameter": "task_ranges",
+                  "received": "{task_number}",
+                  "available_tasks": "Found tasks: {list_of_task_numbers}",
+                  "recovery": "Use valid task number or remove from sync list"
+                }
+           b. Collect all missing tasks
+           c. If any missing tasks: Return batch error with all missing task numbers
       </process>
       <validation>All inputs valid</validation>
       <output>Validated task ranges or "all"</output>
@@ -760,73 +1016,118 @@ lifecycle:
   </step_1_prepare>
 
   <step_2_validate>
-    <action>Validate status transition and artifacts</action>
+    <action>Validate status transition and artifacts with specific error messages</action>
     <process>
-      1. Pre-commit validation for all target files:
-         a. Verify .opencode/specs/TODO.md exists and is readable
-         b. Verify state.json exists and is readable
-         c. Verify plan file exists and is readable (if plan_path provided)
-         d. If any file missing or unreadable: ABORT with explicit error (Bug #3 fix)
+      1. Validate required parameters:
+         a. If task_number missing: Return PARAM_MISSING_REQUIRED error for 'task_number'
+         b. If new_status missing: Return PARAM_MISSING_REQUIRED error for 'new_status'
+         c. If timestamp missing: Return PARAM_MISSING_REQUIRED error for 'timestamp'
+         d. If session_id missing: Return PARAM_MISSING_REQUIRED error for 'session_id'
       
-      2. Extract current status from .opencode/specs/TODO.md
+      2. Validate task_number parameter:
+         a. If not positive integer: Use parameter validation template for task_number
+         b. Search for task in TODO.md: If not found, return TASK_NOT_FOUND error with task number
       
-      3. Check transition is valid per status-markers.md:
-         a. Validate transition is allowed
-         b. If invalid transition: ABORT with explicit error (Bug #3 fix)
-            - Return status: "failed"
-            - Error type: "validation_failed"
-            - Error message: "Invalid status transition: {current} -> {new}"
-            - Exit immediately, do not proceed to prepare updates
+      3. Validate new_status parameter:
+         a. If not valid status value: Use parameter validation template for new_status
+         b. Extract current_status from TODO.md task entry
       
-      4. Verify required fields present:
-         a. If new_status == "blocked" and blocking_reason missing: ABORT (Bug #3 fix)
-         b. If new_status == "abandoned" and abandonment_reason missing: ABORT (Bug #3 fix)
-         c. Return explicit validation error with missing field name
+      4. Validate status transition:
+         a. Check transition rules per status-markers.md
+         b. If invalid transition:
+            {
+              "code": "INVALID_STATUS_TRANSITION",
+              "type": "status_transition_failed",
+              "message": "Invalid status transition: {current_status} → {new_status}",
+              "parameter": "new_status",
+              "received": "{new_status}",
+              "current_status": "{current_status}",
+              "allowed_transitions": "from '{current_status}' you can transition to: {allowed_list}",
+              "example": "new_status: in_progress (from not_started)",
+              "recovery": "Use one of the allowed status transitions from current status '{current_status}'"
+            }
       
-      5. Validate timestamp format (YYYY-MM-DD or ISO 8601):
-         a. Verify timestamp matches expected format
-         b. If invalid format: ABORT with explicit error (Bug #3 fix)
+      5. Validate conditional required fields:
+         a. If new_status == "blocked" and blocking_reason missing:
+            {
+              "code": "PARAM_MISSING_REQUIRED",
+              "type": "parameter_validation_failed",
+              "message": "Parameter 'blocking_reason' required when new_status is 'blocked'",
+              "parameter": "blocking_reason",
+              "expected": "string explaining why task is blocked",
+              "example": "blocking_reason: 'Waiting for dependency task 123 to complete'",
+              "recovery": "Add blocking_reason parameter explaining the blockage"
+            }
+         b. If new_status == "abandoned" and abandonment_reason missing:
+            {
+              "code": "PARAM_MISSING_REQUIRED",
+              "type": "parameter_validation_failed", 
+              "message": "Parameter 'abandonment_reason' required when new_status is 'abandoned'",
+              "parameter": "abandonment_reason",
+              "expected": "string explaining why task was abandoned",
+              "example": "abandonment_reason: 'Requirements changed, feature no longer needed'",
+              "recovery": "Add abandonment_reason parameter explaining the abandonment"
+            }
       
-      6. Validate artifacts if validated_artifacts provided:
-         a. Verify each artifact file exists on disk
-         b. Verify each artifact file is non-empty (size > 0)
-         c. Verify artifact paths are well-formed
-         d. If validation fails: ABORT with explicit error (Bug #3 fix)
-            - Return status: "failed"
-            - Error type: "artifact_validation_failed"
-            - Error message: "Artifact not found or empty: {path}"
-            - Exit immediately, do not proceed to prepare updates
+      6. Validate timestamp format:
+         a. If not YYYY-MM-DD or ISO 8601:
+            {
+              "code": "PARAM_INVALID_VALUE",
+              "type": "parameter_validation_failed",
+              "message": "Parameter 'timestamp' has invalid format",
+              "parameter": "timestamp",
+              "received": "{received_value}",
+              "expected": "YYYY-MM-DD or ISO 8601 format",
+              "example": "timestamp: 2026-01-16 or timestamp: 2026-01-16T22:48:17+00:00",
+              "recovery": "Provide timestamp in YYYY-MM-DD or ISO 8601 format"
+            }
       
-      7. Validate plan file format if plan_path provided:
-         a. Verify plan file follows plan.md standard
-         b. Verify phase headings are well-formed
-         c. Verify phase numbers are sequential
-         d. If malformed: ABORT with explicit error (Bug #3 fix)
+      7. Validate file accessibility:
+         a. Check TODO.md exists: If not, return FILE_NOT_FOUND error with path
+         b. Check TODO.md readable: If not, return FILE_PERMISSION_DENIED error with path
+         c. Check state.json exists: If not, return FILE_NOT_FOUND error with path
+         d. Check state.json readable: If not, return FILE_PERMISSION_DENIED error with path
+         e. If plan_path provided: Check plan file exists and readable, return appropriate errors
       
-      8. Validate phase_statuses if provided:
-         a. Verify phase_statuses is array
-         b. Verify each entry has phase_number, status, timestamp
-         c. Verify phase numbers exist in plan file
-         d. Verify status transitions are valid
-         e. If validation fails: ABORT with explicit error (Bug #3 fix)
+      8. Parse state.json:
+         a. If JSON parse fails: Return FILE_PARSE_ERROR with line number and error details
       
-      9. All validation failures MUST abort with explicit errors:
-         - Return status: "failed"
-         - Include specific error type and message
-         - Do NOT proceed to step_3_prepare_updates
-         - Do NOT return status: "completed" on validation failure
+      9. Validate validated_artifacts if provided:
+         a. If not array: Return PARAM_INVALID_TYPE error (expected: array)
+         b. For each artifact:
+            * If missing required fields: Return PARAM_MISSING_REQUIRED for artifact field
+            * If path malformed: Return PARAM_INVALID_VALUE for artifact path
+            * Check file exists: If not, return ARTIFACT_VALIDATION_FAILED with path
+            * Check file size > 0: If empty, return ARTIFACT_VALIDATION_FAILED with path and size
+      
+      10. Validate plan file format if plan_path provided:
+          a. If missing phase headings: Return FILE_PARSE_ERROR for plan structure
+          b. If phase numbers not sequential: Return VALIDATION_FAILED for phase sequence
+          c. If phases not well-formed: Return FILE_PARSE_ERROR with specific phase issues
+      
+      11. Validate phase_statuses if provided:
+          a. If not array: Return PARAM_INVALID_TYPE error for phase_statuses
+          b. For each phase_status:
+             * Missing phase_number: Return PARAM_MISSING_REQUIRED for phase_status entry
+             * Missing status: Return PARAM_MISSING_REQUIRED for phase_status entry
+             * Invalid phase_number: Return PARAM_INVALID_VALUE with valid phases
+             * Invalid status: Return PARAM_INVALID_VALUE with valid statuses
     </process>
     <validation>
       All validation checks pass before proceeding to prepare updates:
-      - Target files exist and readable
-      - Status transition valid
+      - Required parameters present and valid
+      - Task exists in system
+      - Status transition allowed
+      - Conditional required fields present
+      - Timestamp format valid
+      - Files accessible and parsable
       - Artifacts exist and non-empty
       - Plan file well-formed (if applicable)
       - Phase statuses valid (if applicable)
       
-      CRITICAL: Validation failures MUST abort with status: "failed" (Bug #3 fix)
+      CRITICAL: Any validation failure MUST return structured error and abort
     </validation>
-    <output>Validation result (pass/fail with specific errors)</output>
+    <output>Validation result (pass/fail with specific structured errors)</output>
   </step_2_validate>
 
   <step_3_prepare_updates>
@@ -981,77 +1282,92 @@ lifecycle:
     <output>Prepared updates for all files including plan file</output>
   </step_3_prepare_updates>
 
-  <step_4_commit>
-    <action>Phase 2: Commit all updates atomically using atomic write pattern</action>
-    <process>
-      ATOMIC WRITE PATTERN (Bug #2 fix):
-      This eliminates the race condition window between TODO.md and state.json writes.
-      Uses atomic rename (mv) which is atomic on most filesystems.
-      NO FILE LOCKING - allows concurrent agent execution.
-      Last writer wins if concurrent updates occur (acceptable per user requirement).
-      
-      1. Generate unique temp file names (include session_id for uniqueness):
-         - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
-         - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
-         - plan_tmp = "{plan_path}.tmp.${session_id}" (if plan_path provided)
-      
-      2. Write to temp files:
-         a. Write updated TODO.md content to todo_tmp
-         b. Write updated state.json content to state_tmp
-         c. Write updated plan content to plan_tmp (if plan_path provided)
-      
-      3. Verify temp files written successfully:
-         a. Verify todo_tmp exists and size > 0
-         b. Verify state_tmp exists and size > 0
-         c. Verify plan_tmp exists and size > 0 (if plan_path provided)
-         d. If any verification fails:
-            - Remove all temp files
-            - Return status: "failed"
-            - Error type: "temp_file_write_failed"
-            - Error message: "Failed to write temp file: {path}"
-            - Do NOT proceed to atomic rename
-      
-      4. Atomic rename (all files or none):
-         a. Rename todo_tmp to .opencode/specs/TODO.md (atomic operation)
-         b. Rename state_tmp to .opencode/specs/state.json (atomic operation)
-         c. Rename plan_tmp to plan_path (atomic operation, if plan_path provided)
-         d. If any rename fails:
-            - Remove all temp files
-            - Return status: "failed"
-            - Error type: "atomic_rename_failed"
-            - Error message: "Atomic rename failed for: {path}"
-            - Note: Some files may have been renamed (last writer wins)
-            - Rely on git for recovery (no backup file rollback)
-      
-      5. Clean up on success:
-         a. Verify all temp files removed (should be renamed)
-         b. If temp files remain: Log warning and remove
-      
-      6. NO BACKUP FILES CREATED (per user requirement):
-         - Rely on git exclusively for recovery
-         - No .backup files created
-         - No rollback to backup files on failure
-         - Git is the only rollback mechanism
-    </process>
-    <rollback_on_failure>
-      SIMPLIFIED ROLLBACK (Bug #2 fix):
-      No backup file rollback - rely on git exclusively.
-      
-      If temp file write fails:
-      1. Remove all temp files
-      2. Return failed status with error details
-      3. Original files remain unchanged
-      4. No git recovery needed
-      
-      If atomic rename fails:
-      1. Remove all temp files
-      2. Return failed status with error details
-      3. Some files may have been updated (last writer wins)
-      4. Rely on git for recovery if needed
-      5. Document manual recovery procedure in error message
-    </rollback_on_failure>
-    <output>All files updated atomically or temp files cleaned up</output>
-  </step_4_commit>
+<step_4_commit>
+     <action>Phase 2: Commit all updates atomically using atomic write pattern</action>
+     <process>
+       ATOMIC WRITE PATTERN (Bug #2 fix):
+       This eliminates the race condition window between TODO.md and state.json writes.
+       Uses atomic rename (mv) which is atomic on most filesystems.
+       NO FILE LOCKING - allows concurrent agent execution.
+       Last writer wins if concurrent updates occur (acceptable per user requirement).
+       
+       1. Generate unique temp file names (include session_id for uniqueness):
+          - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
+          - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+          - plan_tmp = "{plan_path}.tmp.${session_id}" (if plan_path provided)
+       
+       2. Write to temp files:
+          a. Write updated TODO.md content to todo_tmp
+          b. Write updated state.json content to state_tmp
+          c. Write updated plan content to plan_tmp (if plan_path provided)
+       
+       3. Verify temp files written successfully:
+          a. Verify todo_tmp exists and size > 0
+          b. Verify state_tmp exists and size > 0
+          c. Verify plan_tmp exists and size > 0 (if plan_path provided)
+          d. If any verification fails:
+             - Remove all temp files
+             - Return structured error:
+               {
+                 "code": "TEMP_FILE_WRITE_FAILED",
+                 "type": "file_operation_failed",
+                 "message": "Failed to write temporary file: {path}",
+                 "path": "{failed_path}",
+                 "operation": "temp_file_write",
+                 "session_id": "{session_id}",
+                 "recovery": "Check disk space, file permissions, and retry operation"
+               }
+             - Do NOT proceed to atomic rename
+       
+       4. Atomic rename (all files or none):
+          a. Rename todo_tmp to .opencode/specs/TODO.md (atomic operation)
+          b. Rename state_tmp to .opencode/specs/state.json (atomic operation)
+          c. Rename plan_tmp to plan_path (atomic operation, if plan_path provided)
+          d. If any rename fails:
+             - Remove all temp files
+             - Return structured error:
+               {
+                 "code": "ATOMIC_OPERATION_FAILED",
+                 "type": "file_operation_failed",
+                 "message": "Atomic rename failed for: {path}",
+                 "path": "{failed_path}",
+                 "operation": "atomic_rename",
+                 "session_id": "{session_id}",
+                 "partial_success": "{some_files_renamed}",
+                 "recovery": "Check file permissions, disk space, and use git to recover from partial updates"
+               }
+             - Note: Some files may have been renamed (last writer wins)
+             - Rely on git for recovery (no backup file rollback)
+       
+       5. Clean up on success:
+          a. Verify all temp files removed (should be renamed)
+          b. If temp files remain: Log warning and remove
+       
+       6. NO BACKUP FILES CREATED (per user requirement):
+          - Rely on git exclusively for recovery
+          - No .backup files created
+          - No rollback to backup files on failure
+          - Git is the only rollback mechanism
+     </process>
+     <rollback_on_failure>
+       SIMPLIFIED ROLLBACK (Bug #2 fix):
+       No backup file rollback - rely on git exclusively.
+       
+       If temp file write fails:
+       1. Remove all temp files
+       2. Return structured error with TEMP_FILE_WRITE_FAILED code
+       3. Original files remain unchanged
+       4. No git recovery needed
+       
+       If atomic rename fails:
+       1. Remove all temp files
+       2. Return structured error with ATOMIC_OPERATION_FAILED code
+       3. Some files may have been updated (last writer wins)
+       4. Rely on git for recovery if needed
+       5. Include detailed recovery instructions in error message
+     </rollback_on_failure>
+     <output>All files updated atomically or temp files cleaned up</output>
+   </step_4_commit>
 
   <step_5_return>
     <action>Post-commit validation and return</action>
@@ -1295,12 +1611,41 @@ lifecycle:
   </rollback_support>
 
   <error_messages>
-    Provide clear error messages for validation failures:
-    - "Phase {N} not found in plan file {path}"
-    - "Invalid status transition for phase {N}: {old_status} → {new_status}"
-    - "Invalid phase number: {N} (must be positive integer)"
-    - "Malformed plan file: {path} (missing phase headings)"
-    - "Plan file write failed: {error} (rolled back all changes)"
+    All error messages follow structured format defined in error_handling_standards section.
+    Each error includes:
+    - code: Unique error identifier (e.g., PARAM_INVALID_TYPE)
+    - type: Error category (e.g., parameter_validation_failed)
+    - message: Human-readable description of the error
+    - parameter: Name of the parameter that failed (if applicable)
+    - received: Actual value that was provided
+    - expected: What was expected instead
+    - example: Correct usage example
+    - recovery: How to fix the error
+    
+    Common error scenarios and their specific messages:
+    
+    **Parameter Validation Errors:**
+    - Missing required parameter: "Parameter 'task_number' not provided"
+    - Wrong data type: "Parameter 'task_number' must be a positive integer, received string"
+    - Invalid value: "Parameter 'priority' has invalid value 'urgent', expected: Low, Medium, High"
+    
+    **File Operation Errors:**
+    - File not found: "Required file not found: .opencode/specs/state.json"
+    - Permission denied: "Cannot read .opencode/specs/state.json: permission denied"
+    - Parse error: "Invalid JSON in state.json at line 42: unexpected token"
+    
+    **Task Management Errors:**
+    - Task not found: "Task 999 not found in system"
+    - Task already exists: "Task 512 already exists with title 'Existing Task'"
+    - Invalid status transition: "Cannot transition from 'completed' to 'not_started'"
+    
+    **Artifact Validation Errors:**
+    - Artifact not found: "Artifact file not found: .opencode/specs/512_missing/reports/report.md"
+    - Artifact empty: "Artifact file is empty (0 bytes): .opencode/specs/512_empty/plans/plan.md"
+    
+    **System Operation Errors:**
+    - Atomic operation failed: "Failed to atomically update .opencode/specs/state.json"
+    - Temp file write failed: "Could not write temporary file: disk full"
   </error_messages>
 
   <example_update>

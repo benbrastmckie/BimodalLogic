@@ -31,7 +31,7 @@ technical_debt:
 
 ### 518. Fix Parameter Mapping Between Workflow Commands and status-sync-manager
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Session ID**: sess_1768625888_create518
@@ -93,7 +93,7 @@ technical_debt:
 
 ## Medium Priority
 
-### 522. Improve status-sync-manager Error Messages to be more actionable
+### ✅ 522. Improve status-sync-manager Error Messages to be more actionable
 - **Effort**: 2 hours
 - **Status**: [COMPLETED]
 - **Priority**: Medium

@@ -587,7 +587,7 @@
       "project_name": "Fix Parameter Mapping Between Workflow Commands and status-sync-manager",
       "type": "feature",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "implementing",
       "priority": "High",
       "language": "meta",
       "created": "2026-01-16T22:16:08Z",
