@@ -1,6 +1,6 @@
 ---
 P26-01-15T23:16:18Z
-next_project_number: 506
+next_project_number: 515
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,64 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 511. Resolve 26 sorry placeholders in Completeness.lean
+- **Effort**: 20 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created By**: Review task 506
+- **Review Artifact**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
+
+**Description**: Resolve 26 sorry placeholders in Completeness.lean. This is the highest priority completion task identified in the codebase review.
+
+---
+
+### 512. Fix build error in RepresentationTheorems.lean
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created By**: Review task 506
+- **Review Artifact**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
+
+**Description**: Fix build error in RepresentationTheorems.lean. Application type mismatch error preventing compilation.
+
+---
+
+### 513. Address tm_auto proof reconstruction issues
+- **Effort**: 5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created By**: Review task 506
+- **Review Artifact**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
+
+**Description**: Address tm_auto proof reconstruction issues. Tactic implementation exists but has proof reconstruction problems.
+
+---
+
+### 514. Expand test coverage for Logos theory modules
+- **Effort**: 10 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created By**: Review task 506
+- **Review Artifact**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
+
+**Description**: Expand test coverage for Logos theory modules. Currently 53.6% coverage (45 test files for 84 core files).
+
+---
+
+### 506. Replace line 257 in 00-Introduction.tex with missing section descriptions
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+
+**Description**: Replace line 257 in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex with descriptions for the missing sections, creating stubs as need be to match the other sections. The current line 257 contains "\ldots" which needs to be replaced with proper section descriptions that follow the same format as the surrounding items (lines 251-256 and 259).
+
+---
 
 ### 505. Restructure and Refine Bimodal Metalogic
 - **Effort**: TBD
@@ -164,6 +222,16 @@ technical_debt:
 
 ## Medium Priority
 
+### 510. Expand test coverage for Logos theory modules
+- **Effort**: 1 hour
+- **Status**: [REVISING]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Restate this task as a lean task with references to the correct lines of the lean source code, where updating the latex is to follow for documentation purposes.
+
+---
+
 ### 503. Update LaTeX to use dependent-type conventions for Lean consistency
 - **Effort**: 4 hours
 - **Status**: [COMPLETED]
@@ -193,13 +261,11 @@ technical_debt:
 - **Researched**: 2026-01-15T02:35:00Z
 - **Planned**: 2026-01-15
 - **Revised**: 2026-01-15
-- **Research**: [research-001.md](.opencode/specs/504_aristotle_api_integration/reports/research-001.md)
+- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/.opencode/specs/504_aristotle_integration/reports/research-001.md)
 
-- **Plan**: [Revised integration plan for Harmonic Aristotle API into Lean implementer agent](.opencode/specs/504_aristotle_integration/plans/implementation-002.md)
+- **Plan**: [Revised integration plan for Harmonic Aristotle API into Lean implementer agent](.opencode/specs/504_aristotle_integration/plans/implementation-003.md)
 
 **Description**: Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.
-
-
 
 ### 499. Review metalogical theorem strategies and design systematic refactor approach
 - **Effort**: 3-4 hours
