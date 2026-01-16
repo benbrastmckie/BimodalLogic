@@ -1,4 +1,5 @@
 ---
+P26-01-15T23:16:18Z
 next_project_number: 515
 repository_health:
   overall_score: 90
@@ -80,11 +81,10 @@ technical_debt:
 
 ### 506. Replace line 257 in 00-Introduction.tex with missing section descriptions ✓
 - **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: latex
 - **Completed**: 2026-01-15T10:30:00Z
-- **Summary**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
 
 **Description**: Replace line 257 in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex with descriptions for the missing sections, creating stubs as need be to match the other sections. The current line 257 contains "\ldots" which needs to be replaced with proper section descriptions that follow the same format as the surrounding items (lines 251-256 and 259).
 
@@ -228,11 +228,13 @@ technical_debt:
 
 ### 510. Add constraint to verifier and falsifier functions
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: latex
-- **Research**: [research-001.md](.claude/specs/510_mereological_constraints_research/reports/research-001.md)
+- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/.opencode/specs/510_mereological_constraints/reports/research-001.md)
+- **Plan**: [implementation-001.md](.opencode/specs/510_mereological_constraints/plans/implementation-001.md)
 - **Researched**: 2025-01-15
+- **Planned**: 2025-01-16T18:45:00Z
 
 **Description**: Add constraint to lines 75-6 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state.
 

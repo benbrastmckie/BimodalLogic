@@ -334,13 +334,14 @@
       "project_number": 510,
       "project_name": "Add constraint to verifier and falsifier functions",
       "type": "feature",
-      "phase": "researched",
-      "status": "researched",
+      "phase": "planned",
+      "status": "planned",
       "priority": "medium",
       "language": "latex",
       "created": "2025-01-15T18:27:00Z",
-      "last_updated": "2025-01-15T18:27:00Z",
+      "last_updated": "2025-01-16T18:45:00Z",
       "researched": "2025-01-15T18:27:00Z",
+      "planned": "2025-01-16T18:45:00Z",
       "effort": "1 hour",
       "description": "Add constraint to lines 75-6 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state.",
       "artifacts": [
@@ -348,8 +349,14 @@
           "path": ".claude/specs/510_mereological_constraints_research/reports/research-001.md",
           "type": "research_report",
           "summary": "Research report on mereological constraints for predicate functions - completed 2025-01-15"
+        },
+        {
+          "path": ".opencode/specs/510_mereological_constraints/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan with 3 phases for adding mereological constraints to predicate functions"
         }
-      ]
+      ],
+      "plan_path": ".opencode/specs/510_mereological_constraints/plans/implementation-001.md"
     },
     {
       "project_number": 511,
@@ -529,8 +536,8 @@
       "project_number": 506,
       "project_name": "Replace line 257 in 00-Introduction.tex with missing section descriptions",
       "type": "feature",
-      "phase": "completed",
-      "status": "completed",
+      "phase": "not_started",
+      "status": "not_started",
       "priority": "medium",
       "language": "latex",
       "created": "2026-01-15T10:00:00Z",
