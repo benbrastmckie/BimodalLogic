@@ -31,7 +31,7 @@ technical_debt:
 
 ### 517. Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Priority**: High
 - **Language**: general
 - **Session ID**: sess_1768592660_vnieb
@@ -59,11 +59,12 @@ technical_debt:
 
 ### 512. Fix build error in RepresentationTheorems.lean
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created By**: Review task 506
-- **Review Artifact**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
+- **Research Report**: [research-001.md](512_fix_build_error_in_representationtheorems_lean/reports/research-001.md)
+- **Researched**: 2025-01-16
 
 **Description**: Fix build error in RepresentationTheorems.lean. Application type mismatch error preventing compilation.
 

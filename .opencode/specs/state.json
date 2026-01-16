@@ -11,7 +11,7 @@
       "project_name": "Fix /research command to avoid creating unnecessary summary files and properly link research reports",
       "type": "feature",
       "phase": "researched",
-      "status": "researched",
+      "status": "abandoned",
       "priority": "High",
       "language": "general",
       "created": "2026-01-16T19:59:04Z",
@@ -26,7 +26,8 @@
           "path": ".opencode/specs/517_fix_research_command_summary_files/reports/research-001.md",
           "summary": "Comprehensive analysis of /research command issues with root cause analysis and implementation recommendations"
         }
-      ]
+      ],
+      "abandoned": "2026-01-16T20:28:45Z"
     },
     {
       "project_number": 394,
@@ -413,16 +414,23 @@
       "project_number": 512,
       "project_name": "Fix build error in RepresentationTheorems.lean",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "researched",
+      "status": "researched",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-16T02:11:10.509242+00:00",
-      "last_updated": "2026-01-16T02:11:10.509242+00:00",
+      "last_updated": "2025-01-16T19:00:00Z",
       "effort": "2 hours",
       "description": "Fix build error in RepresentationTheorems.lean",
       "created_by": "Review task 506",
-      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md"
+      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".opencode/specs/512_fix_build_error_in_representationtheorems_lean/reports/research-001.md",
+          "summary": "Analysis of build error in RepresentationTheorems.lean with type mismatch fix identified"
+        }
+      ]
     },
     {
       "project_number": 513,
