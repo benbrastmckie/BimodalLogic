@@ -345,7 +345,7 @@
       "project_name": "Restructure and Refine Bimodal Metalogic",
       "type": "feature",
       "phase": "planned",
-      "status": "planned",
+      "status": "revised",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-15T23:30:00Z",
@@ -376,7 +376,8 @@
         "phase_count": 4,
         "estimated_hours": 100,
         "complexity": "complex"
-      }
+      },
+      "revised": "2026-01-16"
     },
     {
       "project_number": 510,
