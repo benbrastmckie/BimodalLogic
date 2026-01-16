@@ -30,13 +30,16 @@ technical_debt:
 
 ### 511. Resolve 26 sorry placeholders in Completeness.lean
 - **Effort**: 20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created By**: Review task 506
 - **Review Artifact**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
+- **Research Report**: [.opencode/specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md](.opencode/specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md)
+- **Session ID**: sess_1768517000_research511
+- **Researched**: 2026-01-16
 
-**Description**: Resolve 26 sorry placeholders in Completeness.lean. This is the highest priority completion task identified in the codebase review.
+**Description**: Resolve 26 sorry placeholders in Completeness.lean. Research reveals Aristotle made no progress (39 sorry gaps remain). Recommendation: pivot to finite canonical model approach already complete in FiniteCanonicalModel.lean.
 
 ---
 
@@ -76,11 +79,13 @@ technical_debt:
 
 ---
 
-### 506. Replace line 257 in 00-Introduction.tex with missing section descriptions
+### 506. Replace line 257 in 00-Introduction.tex with missing section descriptions ✓
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: latex
+- **Completed**: 2026-01-15T10:30:00Z
+- **Summary**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
 
 **Description**: Replace line 257 in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex with descriptions for the missing sections, creating stubs as need be to match the other sections. The current line 257 contains "\ldots" which needs to be replaced with proper section descriptions that follow the same format as the surrounding items (lines 251-256 and 259).
 
@@ -222,13 +227,13 @@ technical_debt:
 
 ## Medium Priority
 
-### 510. Expand test coverage for Logos theory modules
+### 510. Add constraint to verifier and falsifier functions
 - **Effort**: 1 hour
-- **Status**: [REVISED]
+- **Status**: [REVISING]
 - **Priority**: Medium
-- **Language**: lean
+- **Language**: latex
 
-**Description**: Restate this task as a lean task with references to the correct lines of the lean source code, where updating the latex is to follow for documentation purposes.
+**Description**: Add constraint to lines 75-6 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state.
 
 ---
 

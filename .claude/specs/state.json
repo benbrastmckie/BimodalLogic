@@ -1,8 +1,27 @@
 {
   "_schema_version": "1.0.0",
   "_last_updated": "2026-01-15T23:50:00Z",
-  "next_project_number": 505,
+  "next_project_number": 511,
   "active_projects": [
+    {
+      "project_number": 510,
+      "project_name": "mereological_constraints_research",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "researched",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2025-01-15T18:27:00Z",
+      "last_updated": "2025-01-15T18:27:00Z",
+      "effort": "2-4 hours",
+      "description": "Research on mereological constraints for predicate functions",
+      "artifacts": [
+        {
+          "path": ".claude/specs/510_mereological_constraints_research/reports/research-001.md",
+          "type": "research"
+        }
+      ]
+    },
     {
       "project_number": 488,
       "project_name": "fill_remaining_bridge_lemmas",

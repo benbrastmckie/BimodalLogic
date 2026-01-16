@@ -1,21 +1,22 @@
 ---
-last_updated: 2026-01-15T23:50:00Z
-next_project_number: 505
+last_updated: 2025-01-15T18:27:00Z
+next_project_number: 511
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 19
+  active: 20
   completed: 171
   in_progress: 2
   not_started: 10
+  researched: 1
   abandoned: 14
-  total: 205
+  total: 206
 priority_distribution:
   critical: 0
   high: 3
-  medium: 7
+  medium: 8
   low: 9
 technical_debt:
   sorry_count: 19
@@ -72,6 +73,18 @@ technical_debt:
 
 ## Medium Priority
 
+
+### 510. Research mereological constraints
+- **Effort**: 2-4 hours
+- **Status**: [RESEARCHED]
+- **Researched**: 2025-01-15
+- **Priority**: Medium
+- **Language**: lean
+- **Research**: [research-001.md](.claude/specs/510_mereological_constraints_research/reports/research-001.md)
+
+**Description**: Research on mereological constraints for predicate functions
+
+---
 
 ### 488. Fill remaining bridge lemmas
 - **Effort**: 3-4 hours
@@ -309,3 +322,20 @@ technical_debt:
   - [ ] LaTeX files compile successfully after changes
   - [ ] Notation remains readable and minimal
 - **Impact**: Improves consistency between LaTeX documentation and Lean 4 formalization, removes set-theoretic bias while maintaining readability.
+
+---
+
+### 505. Add state constraint to n-place predicates in LaTeX
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+- **Files Affected**:
+  - Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex
+- **Description**: Add constraint to lines 75-76 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state. This clarifies the relationship between input states and the resulting state in n-place predicate definitions.
+- **Acceptance Criteria**:
+  - [ ] Add constraint that n input states are parts of the output state
+  - [ ] Modification made to lines 75-76 in the verifier/falsifier function type definitions
+  - [ ] LaTeX file compiles successfully after changes
+  - [ ] Mathematical notation is clear and consistent with existing style
+- **Impact**: Improves formal precision of predicate semantics by explicitly stating the part-whole relationship between input and output states.

@@ -1,9 +1,10 @@
 {
   "metadata": {
     "version": "1.0",
-    "generated_at": "2026-01-15T23:15:47Z",
-    "total_active": 20
+    "generated_at": "2026-01-16T02:11:10.509242+00:00",
+    "total_active": 22
   },
+  "next_project_number": 515,
   "active_projects": [
     {
       "project_number": 394,
@@ -328,6 +329,80 @@
       "last_updated": "2026-01-15T23:30:00Z",
       "effort": "TBD",
       "description": "Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory."
+    },
+    {
+      "project_number": 511,
+      "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
+      "type": "feature",
+      "phase": "researched",
+      "status": "researched",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-16T02:11:10.509242+00:00",
+      "last_updated": "2026-01-16",
+      "effort": "20 hours",
+      "description": "Resolve 26 sorry placeholders in Completeness.lean",
+      "created_by": "Review task 506",
+      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
+      "researched": "2026-01-16",
+      "session_id": "sess_1768517000_research511",
+      "artifacts": [
+        {
+          "path": ".opencode/specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md",
+          "type": "research",
+          "summary": "Aristotle's Completeness.lean fix attempt analysis - zero progress, recommendation to pivot to finite approach"
+        },
+        {
+          "path": ".opencode/specs/511_resolve_26_sorry_placeholders_in_completeness.lean/summaries/research-summary.md",
+          "type": "summary",
+          "summary": "Research summary: No progress made, pivot to finite canonical model approach"
+        }
+      ]
+    },
+    {
+      "project_number": 512,
+      "project_name": "Fix build error in RepresentationTheorems.lean",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-16T02:11:10.509242+00:00",
+      "last_updated": "2026-01-16T02:11:10.509242+00:00",
+      "effort": "2 hours",
+      "description": "Fix build error in RepresentationTheorems.lean",
+      "created_by": "Review task 506",
+      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md"
+    },
+    {
+      "project_number": 513,
+      "project_name": "Address tm_auto proof reconstruction issues",
+      "type": "maintenance",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-16T02:11:10.509242+00:00",
+      "last_updated": "2026-01-16T02:11:10.509242+00:00",
+      "effort": "5 hours",
+      "description": "Address tm_auto proof reconstruction issues",
+      "created_by": "Review task 506",
+      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md"
+    },
+    {
+      "project_number": 514,
+      "project_name": "Expand test coverage for Logos theory modules",
+      "type": "maintenance",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-16T02:11:10.509242+00:00",
+      "last_updated": "2026-01-16T02:11:10.509242+00:00",
+      "effort": "10 hours",
+      "description": "Expand test coverage for Logos theory modules",
+      "created_by": "Review task 506",
+      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md"
     }
   ],
   "completed_projects": [
@@ -428,7 +503,27 @@
           "summary": "Implementation summary with validation results and impact analysis"
         }
       ]
+    },
+    {
+      "project_number": 506,
+      "project_name": "Replace line 257 in 00-Introduction.tex with missing section descriptions",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "latex",
+      "created": "2026-01-15T10:00:00Z",
+      "last_updated": "2026-01-15T10:30:00Z",
+      "completed": "2026-01-15T10:30:00Z",
+      "effort": "2-3 hours",
+      "description": "Replace line 257 in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex with descriptions for the missing sections, creating stubs as need be to match the other sections. The current line 257 contains \"\\ldots\" which needs to be replaced with proper section descriptions that follow the same format as the surrounding items (lines 251-256 and 259).",
+      "artifacts": [
+        {
+          "path": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
+          "type": "summary",
+          "summary": "Codebase review and registry updates - completed 2026-01-15"
+        }
+      ]
     }
-  ],
-  "next_project_number": 506
+  ]
 }
