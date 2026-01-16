@@ -1,8 +1,8 @@
 {
   "metadata": {
     "version": "1.0",
-    "generated_at": "2026-01-16T02:11:10.509242+00:00",
-    "total_active": 24
+    "generated_at": "2026-01-16T00:00:00Z",
+    "total_active": 25
   },
   "next_project_number": 516,
   "active_projects": [
@@ -431,6 +431,33 @@
       "description": "Expand test coverage for Logos theory modules",
       "created_by": "Review task 506",
       "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md"
+    },
+    {
+      "project_number": 515,
+      "project_name": "Replace line 257 in 00-Introduction.tex with missing section descriptions",
+      "type": "feature",
+      "phase": "researched",
+      "status": "researched",
+      "priority": "medium",
+      "language": "latex",
+      "created": "2026-01-15T10:00:00Z",
+      "last_updated": "2026-01-16T00:00:00Z",
+      "researched": "2026-01-16T00:00:00Z",
+      "effort": "2-3 hours",
+      "description": "Replace line 257 in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex with descriptions for the missing sections, creating stubs as need be to match the other sections. The current line 257 contains \"\\ldots\" which needs to be replaced with proper section descriptions that follow the same format as the surrounding items (lines 251-256 and 259).",
+      "session_id": "sess_1768610040_correct515",
+      "artifacts": [
+        {
+          "path": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
+          "type": "summary",
+          "summary": "Codebase review and registry updates - completed 2026-01-15"
+        },
+        {
+          "path": ".opencode/specs/515_missing_section_descriptions/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research report identifying missing section descriptions and providing specific LaTeX code replacement"
+        }
+      ]
     }
   ],
   "completed_projects": [
@@ -529,53 +556,6 @@
           "path": ".opencode/specs/500_lean-lsp-mcp-unavailable/summaries/implementation-summary-20250115.md",
           "type": "summary",
           "summary": "Implementation summary with validation results and impact analysis"
-        }
-      ]
-    },
-    {
-      "project_number": 515,
-      "project_name": "Replace line 257 in 00-Introduction.tex with missing section descriptions",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "latex",
-      "created": "2026-01-15T10:00:00Z",
-      "last_updated": "2026-01-16",
-      "completed": "2026-01-15T10:30:00Z",
-      "effort": "2-3 hours",
-      "description": "Replace line 257 in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex with descriptions for the missing sections, creating stubs as need be to match the other sections. The current line 257 contains \"\\ldots\" which needs to be replaced with proper section descriptions that follow the same format as the surrounding items (lines 251-256 and 259).",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
-          "type": "summary",
-          "summary": "Codebase review and registry updates - completed 2026-01-15"
-        },
-        {
-          "path": ".opencode/specs/515_missing_section_descriptions/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive research report identifying missing section descriptions and providing specific LaTeX code replacement"
-        }
-      ]
-    },
-    {
-      "project_number": 510,
-      "project_name": "Add constraint to verifier and falsifier functions",
-      "type": "feature",
-      "phase": "researched",
-      "status": "researched",
-      "priority": "medium",
-      "language": "latex",
-      "created": "2025-01-15T18:27:00Z",
-      "last_updated": "2025-01-15T18:27:00Z",
-      "researched": "2025-01-15T18:27:00Z",
-      "effort": "1 hour",
-      "description": "Add constraint to lines 75-6 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state.",
-      "artifacts": [
-        {
-          "path": ".claude/specs/510_mereological_constraints_research/reports/research-001.md",
-          "type": "research_report",
-          "summary": "Research report on mereological constraints for predicate functions - completed 2025-01-15"
         }
       ]
     }
