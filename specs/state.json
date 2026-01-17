@@ -8,11 +8,11 @@
     {
       "project_number": 556,
       "project_name": "complete_metalogic_v2_implementation",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T20:45:04Z",
-      "last_updated": "2026-01-17T20:50:35Z",
+      "last_updated": "2026-01-17T20:53:22Z",
       "researched": "2026-01-17T20:50:35Z",
       "artifacts": [
         {
@@ -149,11 +149,19 @@
     },
     {
       "project_number": 475,
-      "status": "not_started",
+      "status": "researched",
       "project_name": "Create skill-document-converter thin wrapper",
       "section": "Medium Priority",
       "language": "meta",
-      "priority": "medium"
+      "priority": "medium",
+      "last_updated": "2026-01-17T20:54:39Z",
+      "researched": "2026-01-17T20:54:39Z",
+      "artifacts": [
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 476,
