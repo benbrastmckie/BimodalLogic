@@ -2,145 +2,17 @@
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
     "total_tasks": 31,
-    "last_sync": "2026-01-17T16:43:48Z"
+    "last_sync": "2026-01-17T19:17:47Z"
   },
   "active_projects": [
     {
       "project_number": 554,
       "project_name": "bimodal_metalogic_v2_reorganize",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T19:15:49Z",
-      "last_updated": "2026-01-17T19:15:49Z"
-    },
-    {
-      "project_number": 547,
-      "project_name": "improve_fmp_full_theorem",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T16:22:24Z",
-      "last_updated": "2026-01-17T18:05:00Z",
-      "session_id": "sess_1768669081_835e7d",
-      "researched": "2026-01-17T17:55:00Z",
-      "planned": "2026-01-17T17:54:30Z",
-      "completed": "2026-01-17T18:05:00Z",
-      "effort": "4-5 hours",
-      "artifacts": [
-        {
-          "path": "specs/547_improve_fmp_full_theorem/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/547_improve_fmp_full_theorem/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/547_improve_fmp_full_theorem/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 545,
-      "project_name": "complete_applications_module",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T16:51:56Z",
-      "effort": "0.5 hours",
-      "parent": 540,
-      "dependencies": [
-        542,
-        543,
-        544
-      ],
-      "description": "Phase 4: Fix CompletenessTheorem.lean and Compactness.lean to use the new architecture. Export weak_completeness and strong_completeness theorems, update parent Metalogic.lean module.",
-      "artifacts": [
-        {
-          "path": "specs/545_complete_applications_module/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/545_complete_applications_module/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/545_complete_applications_module/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 546,
-      "project_name": "documentation_update",
-      "type": "documentation",
-      "phase": "not_started",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T17:07:11Z",
-      "effort": "0.5 hours",
-      "parent": 540,
-      "dependencies": [
-        542,
-        543,
-        544,
-        545
-      ],
-      "description": "Phase 5: Update Metalogic/README.md with accurate architecture diagram and module status. Remove references to non-existent Metalogic/Boneyard/, point to Bimodal/Boneyard/ instead. Add module-level docstrings.",
-      "artifacts": [
-        {
-          "path": "specs/546_documentation_update/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/546_documentation_update/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/546_documentation_update/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 540,
-      "project_name": "finish_metalogic_refactor_cleanup",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-17T14:34:53Z",
-      "last_updated": "2026-01-17T17:39:18Z",
-      "effort": "4-6 hours",
-      "description": "Finish the Metalogic/ directory refactor, leaving no stray elements or parallel structures. Move anything worth saving to Bimodal/Boneyard/ if not already represented, and update all documentation to be fully accurate. Research report: specs/523_bimodal_cleanup/reports/research-003.md",
-      "session_id": "sess_1768661078_ad3932",
-      "researched": "2026-01-17T14:39:42Z",
-      "artifacts": [
-        {
-          "path": "specs/540_finish_metalogic_refactor_cleanup/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/540_finish_metalogic_refactor_cleanup/plans/implementation-001.md",
-          "type": "plan"
-        }
-      ],
-      "planned": "2026-01-17T14:48:33Z",
-      "subtasks": [
-        542,
-        543,
-        544,
-        545,
-        546
-      ]
+      "last_updated": "2026-01-17T19:17:03Z"
     },
     {
       "project_number": 517,

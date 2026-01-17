@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-17T16:43:48Z",
+  "_last_updated": "2026-01-17T19:17:32Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -4917,6 +4917,121 @@
       "started": "2026-01-17T15:46:47Z",
       "completed": "2026-01-17T15:52:00Z",
       "archived": "2026-01-17T16:43:48Z"
+    },
+    {
+      "project_number": 547,
+      "project_name": "improve_fmp_full_theorem",
+      "type": "feature",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T16:22:24Z",
+      "last_updated": "2026-01-17T18:05:00Z",
+      "completed": "2026-01-17T18:05:00Z",
+      "archived": "2026-01-17T19:17:32Z",
+      "effort": "4-5 hours",
+      "session_id": "sess_1768669081_835e7d",
+      "artifacts": [
+        {
+          "path": "specs/547_improve_fmp_full_theorem/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/547_improve_fmp_full_theorem/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/547_improve_fmp_full_theorem/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 545,
+      "project_name": "complete_applications_module",
+      "type": "refactor",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T16:51:56Z",
+      "completed": "2026-01-17T16:51:56Z",
+      "archived": "2026-01-17T19:17:32Z",
+      "effort": "0.5 hours",
+      "parent": 540,
+      "artifacts": [
+        {
+          "path": "specs/545_complete_applications_module/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/545_complete_applications_module/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/545_complete_applications_module/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 546,
+      "project_name": "documentation_update",
+      "type": "documentation",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T17:07:11Z",
+      "completed": "2026-01-17T17:07:11Z",
+      "archived": "2026-01-17T19:17:32Z",
+      "effort": "0.5 hours",
+      "parent": 540,
+      "artifacts": [
+        {
+          "path": "specs/546_documentation_update/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/546_documentation_update/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/546_documentation_update/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 540,
+      "project_name": "finish_metalogic_refactor_cleanup",
+      "type": "refactor",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-17T14:34:53Z",
+      "last_updated": "2026-01-17T17:39:18Z",
+      "completed": "2026-01-17T17:39:18Z",
+      "archived": "2026-01-17T19:17:32Z",
+      "effort": "4-6 hours",
+      "session_id": "sess_1768661078_ad3932",
+      "subtasks": [
+        542,
+        543,
+        544,
+        545,
+        546
+      ],
+      "artifacts": [
+        {
+          "path": "specs/540_finish_metalogic_refactor_cleanup/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/540_finish_metalogic_refactor_cleanup/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ]
     }
   ]
 }

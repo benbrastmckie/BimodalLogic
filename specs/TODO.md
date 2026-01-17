@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 22
-  completed: 163
+  active: 26
+  completed: 167
   in_progress: 0
   not_started: 28
   abandoned: 14
-  total: 197
+  total: 201
 priority_distribution:
   critical: 0
   high: 10
@@ -26,26 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 547. Improve FMP Full Theorem
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Session ID**: sess_1768669081_835e7d
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Research**: [research-001.md](specs/547_improve_fmp_full_theorem/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/547_improve_fmp_full_theorem/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/547_improve_fmp_full_theorem/summaries/implementation-summary-20260117.md)
-
-**Description**: Improve the current implementation to establish the full FMP theorem proving that ANY model can be reduced to a FINITE model.
-
-**Implementation**: Fixed 22+ build errors in FiniteCanonicalModel.lean. Added `satisfiable_implies_not_refutable` bridge lemma and `phi_consistent_of_not_refutable` helper. Implemented `finite_model_property_v2` theorem establishing that satisfiable formulas have finite model witnesses via SemanticCanonicalFrame. One bridge gap remains requiring formula induction.
-
----
 
 ### 548. Fix Skill-to-Agent Delegation Pattern
 - **Effort**: 2-3 hours
@@ -126,9 +106,10 @@ technical_debt:
 
 ### 554. Reorganize Bimodal/Metalogic to Use Representation Theorem as Foundation
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
+- **Session ID**: sess_1768677415_4714f2
 - **Created**: 2026-01-17
 
 **Description**: From what I see in Theories/Bimodal/Metalogic/README.md, the Bimodal/Metalogic/ does not have the desired structure where the representation theorem is used to prove completeness via FMP bridge. Create a Bimodal/Metalogic_v2/ directory which reorganizes the theorems so that the representation theorem is central and foundational for the other results to build on.
@@ -170,67 +151,6 @@ technical_debt:
 **Description**: Create comprehensive documentation for the model tier system. Include: decision matrix for model selection, cost comparison examples, known limitations (Haiku tool_reference bug), and troubleshooting guide.
 
 ---
-
-### 540. Finish Metalogic Directory Refactor and Cleanup
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Session ID**: sess_1768661078_ad3932
-- **Created**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Research**: [research-001.md](specs/540_finish_metalogic_refactor_cleanup/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/540_finish_metalogic_refactor_cleanup/plans/implementation-001.md)
-- **Subtasks**: 542, 543, 544, 545, 546
-
-**Description**: Finish the Logos/Metalogic/ directory refactor, leaving no stray elements or parallel structures. The situation is documented in specs/523_bimodal_cleanup/reports/research-003.md. Move anything worth saving that is not necessary for the refactored implementation to Bimodal/Boneyard/ (if not already represented), and update all documentation to be fully accurate.
-
-**Implementation**: Completed via subtasks: Phases 1-3 (542-544) fixed CanonicalModel, TruthLemma, RepresentationTheorem, and FMP modules. Phase 4 (545) rewrote CompletenessTheorem.lean and Compactness.lean as thin re-export modules. Phase 5 (546) updated Metalogic/README.md documentation. Build succeeds (953 jobs).
-
----
-
-
-
-
-### 545. Complete Applications Module (Phase 4 of 540)
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Parent**: 540
-- **Dependencies**: 542, 543, 544
-- **Research**: [research-001.md](specs/545_complete_applications_module/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/545_complete_applications_module/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/545_complete_applications_module/summaries/implementation-summary-20260117.md)
-
-**Description**: Fix CompletenessTheorem.lean and Compactness.lean to use the new architecture. Export weak_completeness and strong_completeness theorems, update parent Metalogic.lean module.
-
-**Implementation**: Rewrote CompletenessTheorem.lean as thin re-export module from Completeness.lean (exporting weak_completeness, strong_completeness, provable_iff_valid, consistency_iff_satisfiability). Rewrote Compactness.lean with correct List-based Context signatures. Updated Metalogic.lean with new imports.
-
----
-
-### 546. Documentation Update (Phase 5 of 540)
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Parent**: 540
-- **Dependencies**: 542, 543, 544, 545
-- **Research**: [research-001.md](specs/546_documentation_update/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/546_documentation_update/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/546_documentation_update/summaries/implementation-summary-20260117.md)
-
-**Description**: Update Metalogic/README.md with accurate architecture diagram and module status. Remove references to non-existent Metalogic/Boneyard/, point to Bimodal/Boneyard/ instead. Add module-level docstrings.
-
-**Implementation**: Fixed all Boneyard path references (Metalogic/Boneyard/ → Bimodal/Boneyard/), updated module status table (Representation modules now PARTIAL with sorries), refreshed architecture diagrams, marked Phase 1 complete in Migration Path, updated Building section and footer.
-
----
-
 
 ### 511. Resolve 26 sorry placeholders in Completeness.lean
 - **Effort**: 20 hours
