@@ -132,14 +132,16 @@ technical_debt:
 
 ### 558. Semantic Satisfiability Bridge
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
+- **Planned**: 2026-01-17
 - **Parent**: 556
 - **Dependencies**: 557
 - **Research**: [research-003.md](specs/558_semantic_satisfiability_bridge/reports/research-003.md)
+- **Plan**: [implementation-001.md](specs/558_semantic_satisfiability_bridge/plans/implementation-001.md)
 
 **Description**: Prove consistent_implies_satisfiable and subformulaList_finite in Representation/FiniteModelProperty.lean. Bridges canonical world representation to semantic satisfiability.
 
