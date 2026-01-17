@@ -1,5 +1,5 @@
 ---
-paths: .claude/specs/**/*
+paths: specs/**/*
 ---
 
 # Artifact Format Rules
@@ -21,7 +21,7 @@ Placeholders in path templates and content follow these conventions:
 
 ## Research Reports
 
-**Location**: `.claude/specs/{N}_{SLUG}/reports/research-{NNN}.md`
+**Location**: `specs/{N}_{SLUG}/reports/research-{NNN}.md`
 
 ```markdown
 # Research Report: Task #{N}
@@ -55,7 +55,7 @@ Placeholders in path templates and content follow these conventions:
 
 ## Implementation Plans
 
-**Location**: `.claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md`
+**Location**: `specs/{N}_{SLUG}/plans/implementation-{NNN}.md`
 
 ```markdown
 # Implementation Plan: Task #{N}
@@ -106,7 +106,7 @@ Placeholders in path templates and content follow these conventions:
 
 ## Implementation Summaries
 
-**Location**: `.claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`
+**Location**: `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`
 
 ```markdown
 # Implementation Summary: Task #{N}

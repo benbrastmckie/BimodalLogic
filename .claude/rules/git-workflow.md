@@ -52,9 +52,9 @@ Include only files related to that task:
 task 334: complete research
 
 Modified:
-  .claude/specs/TODO.md
-  .claude/specs/state.json
-  .claude/specs/334_task_slug/reports/research-001.md
+  specs/TODO.md
+  specs/state.json
+  specs/334_task_slug/reports/research-001.md
 ```
 
 ### Multi-Task Operations
@@ -63,9 +63,9 @@ Group related changes:
 todo: archive 5 completed tasks
 
 Modified:
-  .claude/specs/TODO.md
-  .claude/specs/state.json
-  .claude/specs/archive/state.json
+  specs/TODO.md
+  specs/state.json
+  specs/archive/state.json
 ```
 
 ## Git Safety

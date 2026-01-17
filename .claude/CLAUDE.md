@@ -4,9 +4,9 @@ This project uses a structured task management and agent orchestration system fo
 
 ## Quick Reference
 
-- **Task List**: @.claude/specs/TODO.md
-- **Machine State**: @.claude/specs/state.json
-- **Error Tracking**: @.claude/specs/errors.json
+- **Task List**: @specs/TODO.md
+- **Machine State**: @specs/state.json
+- **Error Tracking**: @specs/errors.json
 - **Architecture**: @.claude/ARCHITECTURE.md
 
 ## System Overview
@@ -23,7 +23,7 @@ Logos/                    # Lean 4 source code (layered logic system)
 └── Shared/              # Common definitions
 
 docs/           # Project documentation
-.claude/specs/           # Task management artifacts
+specs/           # Task management artifacts
 .claude/                 # Claude Code configuration
 ```
 
@@ -39,7 +39,7 @@ Tasks progress through these states:
 
 ### Task Artifact Paths
 ```
-.claude/specs/{N}_{SLUG}/
+specs/{N}_{SLUG}/
 ├── reports/                    # Research artifacts
 │   └── research-{NNN}.md
 ├── plans/                      # Implementation plans
@@ -207,11 +207,11 @@ Standard actions:
 ## Rules References
 
 Core rules (automatically applied based on file paths):
-- @.claude/rules/state-management.md - Task state patterns (paths: .claude/specs/**)
+- @.claude/rules/state-management.md - Task state patterns (paths: specs/**)
 - @.claude/rules/git-workflow.md - Commit conventions
 - @.claude/rules/lean4.md - Lean development patterns (paths: **/*.lean)
 - @.claude/rules/error-handling.md - Error recovery patterns (paths: .claude/**)
-- @.claude/rules/artifact-formats.md - Report/plan formats (paths: .claude/specs/**)
+- @.claude/rules/artifact-formats.md - Report/plan formats (paths: specs/**)
 - @.claude/rules/workflows.md - Command lifecycle patterns (paths: .claude/**)
 
 ## Project Context Imports

@@ -9,15 +9,16 @@
       "project_number": 524,
       "project_name": "update_claude_md_and_rules_specs_path",
       "type": "refactor",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "completed",
+      "status": "completed",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-17T12:23:06Z",
-      "last_updated": "2026-01-17T12:23:06Z",
+      "last_updated": "2026-01-17T12:29:47Z",
       "effort": "30 minutes",
       "description": "Update CLAUDE.md and all rules files to reference specs/ instead of .claude/specs/. This is the foundation task that must be completed before other refactoring tasks.",
-      "session_id": "sess_1768654986_f1c470"
+      "session_id": "sess_1768655347_24e4a7",
+      "completed": "2026-01-17T12:29:47Z"
     },
     {
       "project_number": 525,

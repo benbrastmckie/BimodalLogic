@@ -29,13 +29,20 @@ technical_debt:
 
 ### 524. Update CLAUDE.md and rules with new specs path
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768654986_f1c470
+- **Session ID**: sess_1768655347_24e4a7
 - **Created**: 2026-01-17
+- **Completed**: 2026-01-17
 
 **Description**: Update CLAUDE.md and all rules files to reference `specs/` instead of `.claude/specs/`. This is the foundation task that must be completed before other refactoring tasks.
+
+**Files Modified**:
+- `.claude/CLAUDE.md` - Updated 6 references
+- `.claude/rules/artifact-formats.md` - Updated 4 references
+- `.claude/rules/state-management.md` - Updated 5 references
+- `.claude/rules/git-workflow.md` - Updated 6 references
 
 ---
 
