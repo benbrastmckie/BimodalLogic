@@ -8,11 +8,11 @@
     {
       "project_number": 557,
       "project_name": "mcs_property_completion",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T21:12:32Z",
+      "last_updated": "2026-01-17T21:18:02Z",
       "parent_task": 556,
       "description": "Prove mcs_contains_or_neg and mcs_modus_ponens in Representation/CanonicalModel.lean. These MCS properties are the critical blocking dependency for downstream theorems.",
       "researched": "2026-01-17T21:12:32Z",
@@ -20,8 +20,13 @@
         {
           "path": "specs/557_mcs_property_completion/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/557_mcs_property_completion/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-17T21:18:02Z"
     },
     {
       "project_number": 558,
@@ -181,13 +186,13 @@
     },
     {
       "project_number": 475,
-      "status": "planned",
+      "status": "researched",
       "project_name": "Create skill-document-converter thin wrapper",
       "section": "Medium Priority",
       "language": "meta",
       "priority": "medium",
-      "last_updated": "2026-01-17T21:10:18Z",
-      "researched": "2026-01-17T20:54:39Z",
+      "last_updated": "2026-01-17T21:17:58Z",
+      "researched": "2026-01-17T21:17:58Z",
       "artifacts": [
         {
           "path": "specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md",
@@ -200,6 +205,10 @@
         {
           "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-002.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/reports/research-002.md",
+          "type": "research"
         }
       ],
       "planned": "2026-01-17T21:00:32Z"

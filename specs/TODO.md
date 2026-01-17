@@ -79,12 +79,13 @@ technical_debt:
 
 ### 557. MCS Property Completion
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
 - **Parent**: 556
 - **Research**: [research-001.md](specs/557_mcs_property_completion/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/557_mcs_property_completion/plans/implementation-001.md)
 
 **Description**: Prove mcs_contains_or_neg and mcs_modus_ponens in Representation/CanonicalModel.lean. These MCS properties are the critical blocking dependency for downstream theorems.
 
@@ -315,10 +316,11 @@ technical_debt:
 
 ### 475. Create skill-document-converter thin wrapper
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md)
+- **Research**: [research-002.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-002.md)
 - **Plan**: [implementation-002.md](specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-002.md)
 
 **Description**: Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies.
