@@ -32,7 +32,9 @@
       "last_updated": "2026-01-17T12:35:00Z",
       "effort": "1 hour",
       "description": "Update all agent files in .claude/agents/ to reference specs/ instead of .claude/specs/. Depends on task 524.",
-      "dependencies": [524],
+      "dependencies": [
+        524
+      ],
       "session_id": "sess_1768655600_agent525",
       "completed": "2026-01-17T12:35:00Z"
     },
@@ -48,7 +50,9 @@
       "last_updated": "2026-01-17T12:45:00Z",
       "effort": "1 hour",
       "description": "Update all command files in .claude/commands/ to reference specs/ instead of .claude/specs/. Depends on task 524.",
-      "dependencies": [524],
+      "dependencies": [
+        524
+      ],
       "session_id": "sess_1768655600_cmd526",
       "completed": "2026-01-17T12:45:00Z"
     },
@@ -64,7 +68,9 @@
       "last_updated": "2026-01-17T13:00:00Z",
       "effort": "1 hour",
       "description": "Update all skill files in .claude/skills/ to reference specs/ instead of .claude/specs/. Depends on task 524.",
-      "dependencies": [524],
+      "dependencies": [
+        524
+      ],
       "session_id": "sess_1768655600_skill527",
       "completed": "2026-01-17T13:00:00Z"
     },
@@ -80,7 +86,11 @@
       "last_updated": "2026-01-17T12:33:12Z",
       "effort": "1 hour",
       "description": "Update context files and verify entire .claude/ agent system consistency after specs path refactoring. Run system tests to ensure all references work correctly. Depends on tasks 525-527.",
-      "dependencies": [525, 526, 527],
+      "dependencies": [
+        525,
+        526,
+        527
+      ],
       "session_id": "sess_1768655612_a6d404",
       "completed": "2026-01-17T12:33:12Z"
     },
@@ -93,16 +103,21 @@
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-17T06:00:27Z",
-      "last_updated": "2026-01-17T13:15:00Z",
-      "researched": "2026-01-17T06:08:00Z",
+      "last_updated": "2026-01-17T13:37:33Z",
+      "researched": "2026-01-17T13:37:33Z",
       "effort": "4-6 hours",
       "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments",
       "artifacts": [
         {
           "path": "specs/523_bimodal_cleanup_research/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/523_bimodal_cleanup/reports/research-002.md",
+          "type": "research"
         }
-      ]
+      ],
+      "session_id": "sess_1768656756_fec1d9"
     },
     {
       "project_number": 518,
@@ -196,7 +211,29 @@
       "project_name": "Restructure and Refine Bimodal Metalogic",
       "section": "Medium Priority",
       "language": "lean",
-      "priority": "high"
+      "priority": "high",
+      "started": "2025-01-16T20:54:33Z",
+      "researched": "2026-01-16",
+      "planned": "2026-01-16",
+      "completed": "2026-01-16",
+      "artifacts": [
+        {
+          "path": "specs/505_bimodal_metalogic_restructuring/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/505_bimodal_metalogic_restructuring/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/505_bimodal_metalogic_restructuring/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/505_bimodal_metalogic_restructuring/summaries/implementation-summary-20260116.md",
+          "type": "summary"
+        }
+      ]
     },
     {
       "project_number": 495,
