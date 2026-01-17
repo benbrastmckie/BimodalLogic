@@ -82,8 +82,7 @@ The main `finite_model_property` theorem is now proven by directly using the
 This is a structural proof showing that satisfiability implies model existence
 (trivially true by definition).
 
-**Note**: The full FMP theorem proving that ANY model can be reduced to a
-FINITE model remains as future work. The current implementation provides the
+**Note**: The full FMP theorem proving that ANY model can be reduced to a FINITE model remains as future work. The current implementation provides the
 type-level statement and architecture integration.
 
 ## Notes

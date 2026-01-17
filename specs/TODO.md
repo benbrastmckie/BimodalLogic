@@ -1,5 +1,5 @@
 ---
-next_project_number: 547
+next_project_number: 548
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 547. Improve FMP Full Theorem
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-17
+
+**Description**: Improve the current implementation to establish the full FMP theorem proving that ANY model can be reduced to a FINITE model.
+
+---
 
 ### 534. Research Claude Code Model Selection Mechanisms
 - **Effort**: 2-3 hours

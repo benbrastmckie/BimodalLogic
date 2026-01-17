@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 547,
+      "project_name": "improve_fmp_full_theorem",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T16:22:24Z",
+      "last_updated": "2026-01-17T16:22:24Z"
+    },
+    {
       "project_number": 542,
       "project_name": "fix_canonical_model_foundation",
       "type": "refactor",
@@ -749,5 +758,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 547
+  "next_project_number": 548
 }
