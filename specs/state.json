@@ -73,11 +73,11 @@
       "project_name": "connect_fmp_bridge",
       "type": "refactor",
       "phase": "not_started",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T15:49:56Z",
+      "last_updated": "2026-01-17T15:54:28Z",
       "effort": "1 hour",
       "parent": 540,
       "dependencies": [
@@ -85,7 +85,14 @@
         543
       ],
       "description": "Phase 3: Establish FiniteModelProperty as bridge from representation to decidability/compactness. Fix FiniteModelProperty.lean imports, define FMP statement, connect to SemanticCanonicalModel and Decidability modules.",
-      "session_id": "sess_1768664979_233a09"
+      "session_id": "sess_1768664979_233a09",
+      "researched": "2026-01-17T15:54:28Z",
+      "artifacts": [
+        {
+          "path": "specs/544_connect_fmp_bridge/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 545,
