@@ -10,22 +10,27 @@
       "project_name": "fix_canonical_model_foundation",
       "type": "refactor",
       "phase": "not_started",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T14:54:06Z",
+      "last_updated": "2026-01-17T14:57:17Z",
       "effort": "2 hours",
       "parent": 540,
       "description": "Phase 1: Fix Representation/CanonicalModel.lean to compile using patterns from Completeness.lean. Copy SetMaximalConsistent/SetConsistent/ConsistentExtensions definitions, fix Lindenbaum lemma using working set_lindenbaum pattern, replace outdated Mathlib APIs.",
-      "session_id": "sess_1768661519_937d9a",
+      "session_id": "sess_1768661753_d27fb6",
       "researched": "2026-01-17T14:54:06Z",
       "artifacts": [
         {
           "path": "specs/542_fix_canonical_model_foundation/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/542_fix_canonical_model_foundation/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-17T14:57:17Z"
     },
     {
       "project_number": 543,
@@ -640,11 +645,11 @@
       "project_name": "test_validate_model_tiering",
       "type": "validation",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researching",
       "priority": "medium",
       "language": "meta",
       "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T14:55:16Z",
       "effort": "2-3 hours",
       "description": "Test and validate the model tiering changes. Run through complete workflows (/research, /plan, /implement) to verify: correct model is used at each stage, quality meets expectations with Sonnet for heavy lifting, Haiku dispatch is fast and correct, no regressions in functionality.",
       "dependencies": [
@@ -652,7 +657,8 @@
         536,
         537,
         538
-      ]
+      ],
+      "session_id": "sess_1768661701_8fd041"
     }
   ],
   "completed_projects": [

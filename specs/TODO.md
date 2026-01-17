@@ -121,9 +121,10 @@ technical_debt:
 
 ### 539. Test and Validate Model Tiering Changes
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
+- **Session ID**: sess_1768661701_8fd041
 - **Created**: 2026-01-17
 - **Dependencies**: 535, 536, 537, 538
 
@@ -259,14 +260,16 @@ technical_debt:
 
 ### 542. Fix CanonicalModel Foundation (Phase 1 of 540)
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
-- **Session ID**: sess_1768661519_937d9a
+- **Status**: [PLANNED]
+- **Session ID**: sess_1768661753_d27fb6
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
+- **Planned**: 2026-01-17
 - **Parent**: 540
 - **Research**: [research-001.md](specs/542_fix_canonical_model_foundation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/542_fix_canonical_model_foundation/plans/implementation-001.md)
 
 **Description**: Fix Representation/CanonicalModel.lean to compile using patterns from Completeness.lean. Copy SetMaximalConsistent/SetConsistent/ConsistentExtensions definitions, fix Lindenbaum lemma using working set_lindenbaum pattern, replace outdated Mathlib APIs.
 
