@@ -113,7 +113,7 @@ Path 2: Implicit During Task Implementation
 
 ---
 
-### Phase 2: Create Skill File with Trigger Conditions [IN PROGRESS]
+### Phase 2: Create Skill File with Trigger Conditions [COMPLETED]
 
 **Goal**: Create thin wrapper skill with comprehensive trigger conditions enabling both invocation paths
 
@@ -168,7 +168,7 @@ Path 2: Implicit During Task Implementation
 
 ---
 
-### Phase 3: Create Command File [NOT STARTED]
+### Phase 3: Create Command File [IN PROGRESS]
 
 **Goal**: Create `/convert` command with 3-checkpoint pattern
 

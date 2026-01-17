@@ -48,15 +48,15 @@ Key findings from research-002.md integrated into this plan:
 
 ## Implementation Phases
 
-### Phase 1: Add Model Field to Lean Agents [NOT STARTED]
+### Phase 1: Add Model Field to Lean Agents [COMPLETED]
 
 **Goal**: Configure Lean agents (implementation and research) to use Opus for maximum reasoning capability.
 
 **Tasks**:
-- [ ] Read current lean-implementation-agent.md frontmatter
-- [ ] Add `model: opus` to lean-implementation-agent.md frontmatter
-- [ ] Read current lean-research-agent.md frontmatter
-- [ ] Add `model: opus` to lean-research-agent.md frontmatter
+- [x] Read current lean-implementation-agent.md frontmatter
+- [x] Add `model: opus` to lean-implementation-agent.md frontmatter
+- [x] Read current lean-research-agent.md frontmatter
+- [x] Add `model: opus` to lean-research-agent.md frontmatter
 
 **Timing**: 30 minutes
 
@@ -70,15 +70,15 @@ Key findings from research-002.md integrated into this plan:
 
 ---
 
-### Phase 2: Add Model Field to Planning and Research Agents [NOT STARTED]
+### Phase 2: Add Model Field to Planning and Research Agents [COMPLETED]
 
 **Goal**: Explicitly set Sonnet for planner and general research agents.
 
 **Tasks**:
-- [ ] Read current planner-agent.md frontmatter
-- [ ] Add `model: sonnet` to planner-agent.md frontmatter
-- [ ] Read current general-research-agent.md frontmatter
-- [ ] Add `model: sonnet` to general-research-agent.md frontmatter
+- [x] Read current planner-agent.md frontmatter
+- [x] Add `model: sonnet` to planner-agent.md frontmatter
+- [x] Read current general-research-agent.md frontmatter
+- [x] Add `model: sonnet` to general-research-agent.md frontmatter
 
 **Timing**: 30 minutes
 
@@ -92,7 +92,7 @@ Key findings from research-002.md integrated into this plan:
 
 ---
 
-### Phase 3: Add Model Field to Implementation Agents [NOT STARTED]
+### Phase 3: Add Model Field to Implementation Agents [IN PROGRESS]
 
 **Goal**: Explicitly set Sonnet for general, LaTeX, and meta-builder implementation agents.
 
