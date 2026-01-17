@@ -288,11 +288,11 @@
       "project_number": 549,
       "project_name": "research_intelligent_model_routing_architecture",
       "type": "research",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T20:36:21Z",
+      "last_updated": "2026-01-17T20:41:19Z",
       "effort": "2-3 hours",
       "dependencies": [
         548
@@ -306,6 +306,10 @@
         {
           "path": "specs/549_research_intelligent_model_routing_architecture/reports/research-002.md",
           "type": "report"
+        },
+        {
+          "path": "specs/549_research_intelligent_model_routing_architecture/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
