@@ -73,9 +73,9 @@ technical_debt:
 - **Planned**: 2026-01-17
 - **Revised**: 2026-01-17
 - **Research**: [research-001.md](specs/534_research_claude_code_model_selection/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/534_research_claude_code_model_selection/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](specs/534_research_claude_code_model_selection/plans/implementation-003.md)
 
-**Description**: Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults. **Revised**: Now includes Task 564 architectural changes (status-sync-agent → direct execution) for protocol/.claude/ porting.
+**Description**: Upgrade protocol/.claude/ agent system with model fields and verify direct execution patterns. Detailed 5-phase plan: (1) Add model: sonnet to all 6 agents, (2) Update CLAUDE.md documentation, (3) Verify skill-status-sync configuration, (4) Cross-repository consistency check, (5) Final verification and commit.
 
 ---
 
@@ -149,12 +149,13 @@ technical_debt:
 
 ### 559. Strong Completeness Helpers
 - **Effort**: 2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-17
 - **Parent**: 556
 - **Dependencies**: 557
+- **Research**: [research-001.md](specs/559_strong_completeness_helpers/reports/research-001.md)
 
 **Description**: Prove entails_imp_chain and imp_chain_to_context in StrongCompleteness.lean, plus double negation elimination and canonical world contradiction in RepresentationTheorem.lean.
 
