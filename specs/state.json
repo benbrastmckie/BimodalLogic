@@ -8,11 +8,12 @@
     {
       "project_number": 547,
       "project_name": "improve_fmp_full_theorem",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T16:22:24Z",
-      "last_updated": "2026-01-17T16:22:24Z"
+      "last_updated": "2026-01-17T17:27:10Z",
+      "session_id": "sess_1768668430_3741b8"
     },
     {
       "project_number": 545,
@@ -311,6 +312,83 @@
       "priority": "low"
     },
     {
+      "project_number": 548,
+      "project_name": "fix_skill_to_agent_delegation_pattern",
+      "type": "fix",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "description": "Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives. Fixes the root cause identified in Task 539 research."
+    },
+    {
+      "project_number": 549,
+      "project_name": "research_intelligent_model_routing_architecture",
+      "type": "research",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [548],
+      "description": "Research how to implement intelligent model routing in the .claude/ architecture. Evaluate query complexity analyzer, task-type based routing, and model cascade pattern options."
+    },
+    {
+      "project_number": 550,
+      "project_name": "implement_model_tier_strategy",
+      "type": "feature",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "3-4 hours",
+      "dependencies": [548, 549],
+      "description": "Implement the chosen model tiering strategy based on Task 549 research. Update agent frontmatter with appropriate model assignments."
+    },
+    {
+      "project_number": 551,
+      "project_name": "create_model_complexity_analyzer",
+      "type": "feature",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [550],
+      "description": "Create a lightweight skill that analyzes task complexity to recommend optimal model tier. Criteria: task language, estimated effort, number of files affected, tool requirements."
+    },
+    {
+      "project_number": 552,
+      "project_name": "test_validate_model_tiering_changes",
+      "type": "test",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [550],
+      "description": "Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks."
+    },
+    {
+      "project_number": 553,
+      "project_name": "document_final_model_tier_architecture",
+      "type": "documentation",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "1-2 hours",
+      "dependencies": [551, 552],
+      "description": "Create comprehensive documentation for the model tier system. Include decision matrix for model selection, cost comparison, known limitations, and troubleshooting guide."
+    },
+    {
       "project_number": 534,
       "project_name": "research_claude_code_model_selection",
       "type": "research",
@@ -349,5 +427,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 548
+  "next_project_number": 554
 }

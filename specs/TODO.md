@@ -1,5 +1,5 @@
 ---
-next_project_number: 548
+next_project_number: 554
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -29,12 +29,48 @@ technical_debt:
 
 ### 547. Improve FMP Full Theorem
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
+- **Session ID**: sess_1768668430_3741b8
 - **Created**: 2026-01-17
 
 **Description**: Improve the current implementation to establish the full FMP theorem proving that ANY model can be reduced to a FINITE model.
+
+---
+
+### 548. Fix Skill-to-Agent Delegation Pattern
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+
+**Description**: Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives: "You MUST use the Task tool (NOT Skill tool) to spawn the subagent." This fixes the root cause identified in Task 539 research.
+
+---
+
+### 549. Research Intelligent Model Routing Architecture
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 548
+
+**Description**: Research how to implement intelligent model routing in the .claude/ architecture. Options include: query complexity analyzer skill, task-type based routing rules, or model cascade pattern. Evaluate trade-offs between complexity, cost savings, and reliability given the Haiku tool_reference limitation.
+
+---
+
+### 550. Implement Model Tier Strategy
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 548, 549
+
+**Description**: Based on Task 549 research, implement the chosen model tiering strategy. Update agent frontmatter with appropriate model assignments. Strategy options: Simple (Haiku for research, Sonnet for implementation, Opus for lean-implementation), Optimized (complexity-based variants), or Advanced (routing logic in orchestrator).
 
 ---
 
@@ -89,6 +125,42 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 551. Create Model Complexity Analyzer
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 550
+
+**Description**: Create a lightweight skill that analyzes task complexity to recommend optimal model tier. Criteria: task language, estimated effort, number of files affected, tool requirements. This enables dynamic model selection without creating variant agents.
+
+---
+
+### 552. Test and Validate Model Tiering Changes
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 550
+
+**Description**: Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify: Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks (complex Lean proofs). Document any Haiku failures due to tool_reference limitation.
+
+---
+
+### 553. Document Final Model Tier Architecture
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 551, 552
+
+**Description**: Create comprehensive documentation for the model tier system. Include: decision matrix for model selection, cost comparison examples, known limitations (Haiku tool_reference bug), and troubleshooting guide.
+
+---
 
 ### 540. Finish Metalogic Directory Refactor and Cleanup
 - **Effort**: 4-6 hours
