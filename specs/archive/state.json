@@ -5,6 +5,79 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 533,
+      "project_name": "document_workflow_anti_patterns",
+      "type": "documentation",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "1-2 hours",
+      "description": "Add documentation in .claude/docs/guides/ explaining the skill completion = workflow completion anti-pattern and how to avoid it. Document root causes, symptoms, and prevention strategies.",
+      "abandoned": "2026-01-17T16:36:37Z"
+    },
+    {
+      "project_number": 532,
+      "project_name": "create_workflow_integration_tests",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "4-6 hours",
+      "description": "Create test scaffolding that validates workflow commands complete all checkpoints (GATE IN -> DELEGATE -> GATE OUT -> COMMIT) without halting. Tests should detect early stopping patterns and verify end-to-end execution.",
+      "dependencies": [
+        529,
+        530,
+        531
+      ],
+      "abandoned": "2026-01-17T16:36:37Z"
+    },
+    {
+      "project_number": 531,
+      "project_name": "refactor_status_sync_non_terminal_returns",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "1-2 hours",
+      "description": "Ensure skill-status-sync returns non-completion signals (already partially done with synced vs completed), but also add explicit continue_workflow: true field in return JSON to signal Claude should continue. Review and update return format documentation.",
+      "dependencies": [
+        529,
+        530
+      ],
+      "abandoned": "2026-01-17T16:36:37Z"
+    },
+    {
+      "project_number": 530,
+      "project_name": "add_continuation_guards_to_commands",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T15:09:53Z",
+      "effort": "2-3 hours",
+      "description": "Add explicit DO NOT STOP and CONTINUE EXECUTION guards at critical transition points in command files. Use bold warnings like CRITICAL: DO NOT STOP HERE. EXECUTE STAGE 2 IMMEDIATELY. These guards reinforce that skill completion does not mean workflow completion.",
+      "session_id": "sess_1768662494_88284c",
+      "planned": "2026-01-17T15:09:53Z",
+      "artifacts": [
+        {
+          "path": "specs/530_add_continuation_guards_to_commands/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ],
+      "abandoned": "2026-01-17T16:36:37Z"
+    },
+    {
       "project_number": 541,
       "project_name": "progressive_disclosure_refactor",
       "status": "abandoned",
