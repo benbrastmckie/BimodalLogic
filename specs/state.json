@@ -97,16 +97,23 @@
     {
       "project_number": 558,
       "project_name": "semantic_satisfiability_bridge",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T21:48:42Z",
+      "last_updated": "2026-01-17T22:35:39Z",
       "parent_task": 556,
       "dependencies": [
         557
       ],
-      "description": "Prove consistent_implies_satisfiable and subformulaList_finite in Representation/FiniteModelProperty.lean. Bridges canonical world representation to semantic satisfiability."
+      "description": "Prove consistent_implies_satisfiable and subformulaList_finite in Representation/FiniteModelProperty.lean. Bridges canonical world representation to semantic satisfiability.",
+      "researched": "2026-01-17T22:35:39Z",
+      "artifacts": [
+        {
+          "path": "specs/558_semantic_satisfiability_bridge/reports/research-003.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 559,
