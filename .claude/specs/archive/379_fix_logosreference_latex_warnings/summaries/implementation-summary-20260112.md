@@ -67,7 +67,7 @@ The trailing `//` enables recursive subdirectory searching via Kpathsea.
 
 ### Remaining Warnings
 
-LogosReference.tex has some undefined internal cross-references (e.g., `sec:core-syntax`). These are separate document issues unrelated to the bibliography fix and should be addressed in a future task if needed.
+LogosReference.tex has some undefined internal cross-references (e.g., `sec:dynamical-foundation`). These are separate document issues unrelated to the bibliography fix and should be addressed in a future task if needed.
 
 ## References
 

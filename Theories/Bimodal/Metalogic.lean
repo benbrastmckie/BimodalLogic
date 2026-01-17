@@ -1,8 +1,9 @@
-import Bimodal.Metalogic.SoundnessLemmas
-import Bimodal.Metalogic.Soundness
+import Bimodal.Metalogic.Soundness.SoundnessLemmas
+import Bimodal.Metalogic.Soundness.Soundness
 import Bimodal.Metalogic.Completeness
 import Bimodal.Metalogic.Decidability
-import Bimodal.Metalogic.RepresentationTheorems
+import Bimodal.Metalogic.Representation.ContextProvability
+import Bimodal.Metalogic.Core.Provability
 
 /-!
 # Bimodal.Metalogic - Soundness, Completeness, and Representation Theorems

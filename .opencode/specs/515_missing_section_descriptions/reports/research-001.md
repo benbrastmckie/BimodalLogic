@@ -169,7 +169,7 @@ With:
 
 Complete list of section labels found in Logos subfiles:
 - `sec:constitutive-foundation` (01-ConstitutiveFoundation.tex)
-- `sec:core-syntax` (02-ExplanatoryExtension-Syntax.tex)
+- `sec:dynamical-foundation` (02-ExplanatoryExtension-Syntax.tex)
 - `sec:core-semantics` (03-ExplanatoryExtension-Semantics.tex)
 - `sec:core-axioms` (04-ExplanatoryExtension-Axioms.tex)
 - `sec:epistemic` (05-Epistemic.tex) - [MISSING FROM DOC ORG]

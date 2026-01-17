@@ -312,14 +312,23 @@ lifecycle:
             - IF timeout: LOG error (non-critical), continue
           
           VALIDATE return:
-            - IF status == "completed": LOG success, set status_sync_success = true
+            - IF status == "completed": 
+              * LOG success, set status_sync_success = true
+              * STORE status_sync_result = {"status": "success", "operation": "update_status", "details": "Task {task_number} status updated"}
             - IF status == "failed": 
               * LOG error with details from errors array
               * SET status_sync_success = false
-              * EXTRACT error details for inclusion in final return
+              * EXTRACT error details from return object
+              * STORE status_sync_result = {"status": "failed", "operation": "update_status", "error": {extracted_error_details}}
+              * DETERMINE failure severity:
+                - IF error.code in ["FILE_WRITE_FAILED", "PARSE_ERROR", "VALIDATION_FAILED"]: severity = "important"
+                - IF error.code in ["PARAM_MISSING_REQUIRED", "PARAM_INVALID_TYPE"]: severity = "critical"  
+                - ELSE: severity = "important"
             - IF timeout:
               * LOG error "status-sync-manager timeout after 60s"
               * SET status_sync_success = false
+              * STORE status_sync_result = {"status": "failed", "operation": "update_status", "error": {"code": "TIMEOUT", "message": "status-sync-manager timeout after 60s"}}
+              * SET severity = "important"
       
       STEP 7.3: INVOKE git-workflow-manager
         PREPARE delegation context:
@@ -367,9 +376,27 @@ lifecycle:
       
       <error_case name="status_sync_failed">
         IF status-sync-manager fails:
-          STEP 1: LOG error (non-critical)
-          STEP 2: CONTINUE to git workflow
-          STEP 3: INCLUDE warning in return
+          STEP 1: EXTRACT failure severity (critical/important/cosmetic)
+          STEP 2: IF severity == "critical":
+            * SET workflow_return_status = "failed"
+            * HALT workflow (skip git commit)
+            * PREPARE recovery instructions
+          STEP 3: IF severity == "important":
+            * SET workflow_return_status = "partial" 
+            * CONTINUE to git workflow (artifacts should still be committed)
+            * PREPARE manual recovery instructions
+          STEP 4: IF severity == "cosmetic":
+            * SET workflow_return_status = "completed"
+            * CONTINUE to git workflow
+            * LOG warning only
+          STEP 5: STORE status_sync_result in metadata for final return
+          STEP 6: PREPARE error entry for errors array:
+            {
+              "type": "status_sync_failed",
+              "code": "{error.code}",
+              "message": "{error.message}",
+              "severity": "{severity}"
+            }
       </error_case>
       
       <error_case name="git_commit_failed">

@@ -104,7 +104,7 @@ However, `$bibtex_use = 2` (our current setting) should handle this - the issue 
 **Symptoms:**
 ```
 Reference `sec:constitutive-foundation' on page 1 undefined
-Reference `sec:core-syntax' on page 1 undefined
+Reference `sec:dynamical-foundation' on page 1 undefined
 ...
 Label(s) may have changed. Rerun to get cross-references right.
 ```

@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Decidability.DecisionProcedure
-import Bimodal.Metalogic.Soundness
+import Bimodal.Metalogic.Soundness.Soundness
 
 /-!
 # Correctness of the Decision Procedure

@@ -317,14 +317,23 @@ lifecycle:
             - IF timeout: LOG error (non-critical), continue
           
           VALIDATE return:
-            - IF status == "completed": LOG success, set status_sync_success = true
+            - IF status == "completed": 
+              * LOG success, set status_sync_success = true
+              * STORE status_sync_result = {"status": "success", "operation": "update_status", "details": "Task {task_number} status updated"}
             - IF status == "failed": 
               * LOG error with details from errors array
               * SET status_sync_success = false
-              * EXTRACT error details for inclusion in final return
+              * EXTRACT error details from return object
+              * STORE status_sync_result = {"status": "failed", "operation": "update_status", "error": {extracted_error_details}}
+              * DETERMINE failure severity:
+                - IF error.code in ["FILE_WRITE_FAILED", "PARSE_ERROR", "VALIDATION_FAILED"]: severity = "important"
+                - IF error.code in ["PARAM_MISSING_REQUIRED", "PARAM_INVALID_TYPE"]: severity = "critical"  
+                - ELSE: severity = "important"
             - IF timeout:
               * LOG error "status-sync-manager timeout after 60s"
               * SET status_sync_success = false
+              * STORE status_sync_result = {"status": "failed", "operation": "update_status", "error": {"code": "TIMEOUT", "message": "status-sync-manager timeout after 60s"}}
+              * SET severity = "important"
       
       STEP 7.3: INVOKE git-workflow-manager
         PREPARE delegation context:
@@ -372,9 +381,27 @@ lifecycle:
       
       <error_case name="status_sync_failed">
         IF status-sync-manager fails:
-          STEP 1: LOG error (non-critical)
-          STEP 2: CONTINUE to git workflow
-          STEP 3: INCLUDE warning in return
+          STEP 1: EXTRACT failure severity (critical/important/cosmetic)
+          STEP 2: IF severity == "critical":
+            * SET workflow_return_status = "failed"
+            * HALT workflow (skip git commit)
+            * PREPARE recovery instructions
+          STEP 3: IF severity == "important":
+            * SET workflow_return_status = "partial" 
+            * CONTINUE to git workflow (artifacts should still be committed)
+            * PREPARE manual recovery instructions
+          STEP 4: IF severity == "cosmetic":
+            * SET workflow_return_status = "completed"
+            * CONTINUE to git workflow
+            * LOG warning only
+          STEP 5: STORE status_sync_result in metadata for final return
+          STEP 6: PREPARE error entry for errors array:
+            {
+              "type": "status_sync_failed",
+              "code": "{error.code}",
+              "message": "{error.message}",
+              "severity": "{severity}"
+            }
       </error_case>
       
       <error_case name="git_commit_failed">
@@ -391,17 +418,30 @@ lifecycle:
     <name>Stage 8: Return Standardized Result</name>
     <action>Return standardized result</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. List all artifacts (workflow files) with validated flag
-      3. Include brief summary (<100 tokens):
+      1. DETERMINE return status:
+         - IF status_sync_success = true AND no other failures: status = "completed"
+         - IF status_sync_success = false AND severity = "critical": status = "failed"
+         - IF status_sync_success = false AND severity = "important": status = "partial"
+         - IF status_sync_success = false AND severity = "cosmetic": status = "completed"
+      
+      2. Format return following subagent-return-format.md
+      3. List all artifacts (workflow files) with validated flag
+      4. Include brief summary (<100 tokens):
          - Domain name
          - Number of workflows created
          - Complexity levels
          - Key features
-      4. Include session_id from input
-      5. Include metadata (duration, delegation info, validation result)
-      6. Include git commit hash if successful
-      7. Return status completed
+         - Status sync result (if failed)
+      5. Include session_id from input
+      6. Include metadata:
+         - duration, delegation info, validation result
+         - status_sync_result (from Stage 7.2)
+         - git_commit (if successful)
+      7. Include errors array (with status_sync_failed entry if applicable)
+      8. Set next_steps:
+         - IF status == "completed": "Review workflows and proceed with command creation"
+         - IF status == "partial": "Review workflows. Manually update task status: /task --update {task_number} --status completed"
+         - IF status == "failed": "Retry with correct parameters or fix underlying issue"
     </process>
     <validation>
       Before returning:
@@ -415,6 +455,12 @@ lifecycle:
       - Return status: "failed"
       - Include error in errors array with type "validation_failed"
       - Recommendation: "Fix artifact creation and retry"
+      
+      If status_sync_failed:
+      - Ensure status_sync_result included in metadata
+      - Ensure appropriate return status ("partial" or "failed")
+      - Ensure recovery instructions in next_steps
+      - Ensure error entry in errors array
     </validation>
     <output>Standardized return object with validated artifacts and brief summary metadata</output>
   </step_8>
@@ -468,7 +514,7 @@ lifecycle:
   <format>
     ```json
     {
-      "status": "completed",
+      "status": "completed|partial|failed",
       "summary": "Designed {N} workflows for {domain_name}. Workflows cover {use_case_count} use cases with clear stages and context dependencies.",
       "artifacts": [
         {
@@ -491,10 +537,22 @@ lifecycle:
         "validation_result": "success",
         "git_commit": "abc123def456",
         "workflows_created": 3,
-        "status_sync_success": true
+        "status_sync_result": {
+          "status": "success|failed",
+          "operation": "update_status|create_task",
+          "details": "Task 515 status updated to 'completed'",
+          "error": {"code": "ERROR_CODE", "message": "Error description"}
+        }
       },
-      "errors": [],
-      "next_steps": "Review workflows and proceed with command creation",
+      "errors": [
+        {
+          "type": "status_sync_failed",
+          "code": "FILE_WRITE_FAILED",
+          "message": "Failed to update TODO.md: Permission denied",
+          "severity": "important"
+        }
+      ],
+      "next_steps": "Review workflows and proceed with command creation|Manually update task status: /task --update 515 --status completed",
       "files_created": ["{workflow-1}.md", "{workflow-2}.md", "README.md"]
     }
     ```

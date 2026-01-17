@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic.Soundness
+import Bimodal.Metalogic.Soundness.Soundness
 import Bimodal.Metalogic.DeductionTheorem
 import Bimodal.Theorems.Propositional
 import Mathlib.Algebra.Order.Group.Int

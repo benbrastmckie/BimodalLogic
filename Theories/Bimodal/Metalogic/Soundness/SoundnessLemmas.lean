@@ -56,7 +56,7 @@ No cycle! Truth.lean doesn't import Soundness or SoundnessLemmas.
 * Task 219 implementation plan - Module hierarchy restructuring
 -/
 
-namespace Bimodal.Metalogic.SoundnessLemmas
+namespace Bimodal.Metalogic.Soundness.SoundnessLemmas
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem (Axiom DerivationTree)
@@ -929,4 +929,4 @@ theorem derivable_implies_swap_valid :
     ∀ {φ : Formula}, DerivationTree [] φ → is_valid D φ.swap_past_future :=
   fun h => (derivable_implies_valid_and_swap_valid h).2
 
-end Bimodal.Metalogic.SoundnessLemmas
+end Bimodal.Metalogic.Soundness.SoundnessLemmas

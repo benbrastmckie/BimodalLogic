@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
-import Bimodal.Metalogic.SoundnessLemmas
+import Bimodal.Metalogic.Soundness.SoundnessLemmas
 
 /-!
 # Soundness - Soundness Theorem for TM Logic
@@ -56,7 +56,7 @@ task semantic models. The MF and TF axioms use time-shift invariance
 * JPL Paper app:valid (line 1984) - Perpetuity principle validity proofs
 -/
 
-namespace Bimodal.Metalogic
+namespace Bimodal.Metalogic.Soundness
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -667,4 +667,4 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     intro ψ h_mem
     exact h_all ψ (h_sub h_mem)
 
-end Bimodal.Metalogic
+end Bimodal.Metalogic.Soundness

@@ -1,7 +1,7 @@
 {
   "metadata": {
     "version": "1.0",
-    "generated_at": "2026-01-16T19:00:00Z",
+    "generated_at": "2026-01-16T00:00:00Z",
     "total_active": 26
   },
   "next_project_number": 523,
@@ -610,27 +610,36 @@
       "project_number": 519,
       "project_name": "Add Missing Stage 7 Validation in Workflow Commands",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "researched",
+      "status": "researched",
       "priority": "High",
       "language": "meta",
       "created": "2026-01-16T22:16:31Z",
-      "last_updated": "2026-01-16T22:16:31Z",
+      "last_updated": "2026-01-16",
       "effort": "2-3 hours",
       "description": "Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.",
       "session_id": "sess_1768601791_create519",
-      "artifacts": []
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".opencode/specs/519_add_missing_stage_7_validation_in_workflow_commands/reports/research-001.md",
+          "summary": "Detailed research report identifying missing Postflight stages in workflow commands and providing an implementation plan."
+        }
+      ],
+      "started": "2026-01-16",
+      "researched": "2026-01-16"
     },
     {
       "project_number": 520,
       "project_name": "Fix Silent Failures When status-sync-manager Fails",
       "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "in_progress",
+      "status": "in_progress",
       "priority": "High",
       "language": "meta",
       "created": "2026-01-16T22:16:51Z",
-      "last_updated": "2026-01-16T22:16:51Z",
+      "last_updated": "2026-01-16T22:48:52Z",
+      "started": "2026-01-16T22:48:52Z",
       "effort": "1-2 hours",
       "description": "Fix silent failures when status-sync-manager delegation fails. Research revealed that workflow commands log status-sync-manager failures as \"non-critical\" and continue, returning success status even when status updates fail. This leads to inconsistent state where artifacts are created but task status isn't updated.",
       "session_id": "sess_1768601811_create520",
