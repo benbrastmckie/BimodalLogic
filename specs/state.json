@@ -95,12 +95,12 @@
       "project_number": 523,
       "project_name": "Clean Up Bimodal Lean Source Files After Task 505",
       "type": "refactor",
-      "phase": "implementing",
-      "status": "implementing",
+      "phase": "completed",
+      "status": "completed",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-17T06:00:27Z",
-      "last_updated": "2026-01-17T14:07:07Z",
+      "last_updated": "2026-01-17T14:17:03Z",
       "researched": "2026-01-17T13:54:33Z",
       "effort": "4-6 hours",
       "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments",
@@ -120,11 +120,16 @@
         {
           "path": "specs/523_bimodal_cleanup/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/523_bimodal_cleanup/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ],
       "session_id": "sess_1768658812_8386f4",
       "planned": "2026-01-17T14:04:35Z",
-      "started": "2026-01-17T14:07:07Z"
+      "started": "2026-01-17T14:07:07Z",
+      "completed": "2026-01-17T14:17:03Z"
     },
     {
       "project_number": 517,
