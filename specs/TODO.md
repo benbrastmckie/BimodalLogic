@@ -128,11 +128,11 @@ technical_debt:
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
 - **Dependencies**: 535, 536, 537, 538
-- **Research**: [research-001.md](specs/539_test_validate_model_tiering/reports/research-001.md)
+- **Research**: [research-002.md](specs/539_test_validate_model_tiering/reports/research-002.md) (supersedes research-001.md)
 
 **Description**: Test and validate the model tiering changes. Run through complete workflows (/research, /plan, /implement) to verify: correct model is used at each stage, quality meets expectations with Sonnet for heavy lifting, Haiku dispatch is fast and correct, no regressions in functionality.
 
-**Research Focus**: Diagnosed OOM crashes during `/research 541` - root cause is a known Claude Code memory leak (GitHub #18011), not agent system design. Identified progressive disclosure refactoring as an elegant solution to reduce memory pressure.
+**Research Finding (Corrected)**: The `/research 541` failures are NOT caused by OOM memory leak but by **skills calling `Skill(agent-name)` instead of `Task(agent-name)`**. Since agents are in `.claude/agents/` (not `.claude/skills/`), this invalid invocation causes the system to fail. Fix: Add explicit Task tool invocation instructions to all forked skills.
 
 ---
 
