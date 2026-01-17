@@ -8,11 +8,17 @@
     {
       "project_number": 563,
       "project_name": "investigate_empty_directory_creation",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-17T21:47:33Z",
-      "last_updated": "2026-01-17T21:47:33Z"
+      "last_updated": "2026-01-17T21:54:32Z",
+      "artifacts": [
+        {
+          "path": "specs/563_investigate_empty_directory_creation/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 562,
@@ -65,11 +71,11 @@
     {
       "project_number": 558,
       "project_name": "semantic_satisfiability_bridge",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-17T21:48:42Z",
       "parent_task": 556,
       "dependencies": [
         557

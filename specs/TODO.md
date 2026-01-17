@@ -64,10 +64,11 @@ technical_debt:
 
 ### 563. Investigate Empty Directory Creation in specs/
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-17
+- **Research**: [research-001.md](specs/563_investigate_empty_directory_creation/reports/research-001.md)
 
 **Description**: Investigate empty directories being created in specs/ which violates the lazy directory creation rule. Carefully inspect all potential sources in the .claude/ agent system to identify the root cause and resolve the issue elegantly.
 
@@ -110,7 +111,7 @@ technical_debt:
 
 ### 558. Semantic Satisfiability Bridge
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
