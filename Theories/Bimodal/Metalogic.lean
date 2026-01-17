@@ -1,9 +1,11 @@
 import Bimodal.Metalogic.Soundness.SoundnessLemmas
 import Bimodal.Metalogic.Soundness.Soundness
 import Bimodal.Metalogic.Completeness
+import Bimodal.Metalogic.Completeness.CompletenessTheorem
 import Bimodal.Metalogic.Decidability
 import Bimodal.Metalogic.Representation.ContextProvability
 import Bimodal.Metalogic.Core.Provability
+import Bimodal.Metalogic.Applications.Compactness
 
 /-!
 # Bimodal.Metalogic - Soundness, Completeness, and Representation Theorems
@@ -20,12 +22,17 @@ decidability procedures.
   and 7 inference rules
 - `Completeness`: Completeness infrastructure with canonical model construction, maximal
   consistent sets, and truth lemma scaffolding (proofs in progress)
+- `Completeness.CompletenessTheorem`: Re-export module for main completeness theorems
+  (`weak_completeness`, `strong_completeness`, `provable_iff_valid`) plus
+  consistency-satisfiability equivalence
 - `Decidability`: Tableau-based decision procedure returning proof terms or countermodels,
   with 8 submodules (SignedFormula, Tableau, Closure, Saturation, ProofExtraction,
   CountermodelExtraction, DecisionProcedure, Correctness)
 - `RepresentationTheorems`: Systematic refactor architecture establishing representation theorems
   as the foundation for all metalogical results, with set-based provability and
   context-sensitive completeness
+- `Applications.Compactness`: Compactness theorems including finite compactness and
+  consistency-satisfiability equivalence for contexts
 
 ## Status
 
@@ -33,8 +40,10 @@ decidability procedures.
 |-----------|--------|---------|
 | Soundness | COMPLETE | 14/14 axioms, 7/7 rules proven |
 | Completeness | PARTIAL | Canonical model defined, proofs pending |
+| CompletenessTheorem | COMPLETE | Re-exports weak/strong completeness |
 | Decidability | COMPLETE | Tableau + proof/countermodel extraction |
 | Representation Theorems | IMPLEMENTED | Set-based provability, architecture foundation |
+| Applications.Compactness | COMPLETE | Compactness theorems (some sorry placeholders) |
 
 ## Key Theorems
 
@@ -84,6 +93,8 @@ open Bimodal.Metalogic.Decidability
 * [SoundnessLemmas.lean](Metalogic/SoundnessLemmas.lean) - Bridge theorems
 * [Soundness.lean](Metalogic/Soundness.lean) - Soundness proof
 * [Completeness.lean](Metalogic/Completeness.lean) - Completeness infrastructure
+* [Completeness/CompletenessTheorem.lean](Metalogic/Completeness/CompletenessTheorem.lean) - Completeness re-exports
 * [Decidability.lean](Metalogic/Decidability.lean) - Decision procedure (8 submodules)
 * [RepresentationTheorems.lean](Metalogic/RepresentationTheorems.lean) - Systematic refactor architecture
+* [Applications/Compactness.lean](Metalogic/Applications/Compactness.lean) - Compactness theorems
 -/

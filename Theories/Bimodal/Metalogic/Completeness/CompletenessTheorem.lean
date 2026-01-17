@@ -1,92 +1,123 @@
-import Bimodal.ProofSystem
-import Bimodal.Semantics.Validity
-import Bimodal.Metalogic.Core.Basic
-import Bimodal.Metalogic.Core.Provability
-import Bimodal.Metalogic.Representation.CanonicalModel
-import Bimodal.Metalogic.Representation.RepresentationTheorem
-import Bimodal.Metalogic.Soundness.Soundness
+import Bimodal.Metalogic.Completeness
 
-namespace Bimodal.Metalogic.Completeness
+/-!
+# CompletenessTheorem - Re-export Module
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Metalogic.Core Bimodal.Metalogic.Representation
+This module re-exports the main completeness theorems from `Bimodal.Metalogic.Completeness`.
 
-variable {Γ : Context} {φ : Formula}
+## Purpose
 
-/-- 
-Strong Completeness: If Γ semantically entails φ, then Γ proves φ.
+Provides a stable API for accessing the key completeness results without exposing
+the internal infrastructure of the parent module.
 
-This is the main completeness theorem derived from the representation theorem.
-The proof goes by contrapositive using the representation theorem.
+## Exported Theorems
+
+- `weak_completeness`: `valid phi -> DerivationTree [] phi`
+- `strong_completeness`: `semantic_consequence Gamma phi -> DerivationTree Gamma phi`
+- `provable_iff_valid`: `Nonempty (DerivationTree [] phi) <-> valid phi`
+- `consistency_satisfiability`: Consistency implies satisfiability (corollary)
+
+## References
+
+See `Bimodal.Metalogic.Completeness` for the canonical model construction and
+supporting infrastructure.
 -/
-theorem strong_completeness :
-    semantic_consequence Γ φ → ContextDerivable Γ φ := by
-  intro h_consequence
-  -- Proof by contrapositive: If Γ ⊬ φ, then Γ ⊭ φ
-  by_contra h_not_derivable
-  -- Apply strong representation theorem to Γ ∪ {¬φ}
-  have := strong_representation_theorem h_not_derivable
-  obtain ⟨M, w, h_truth_Γ, h_truth_neg⟩ := this
-  -- Γ is true at w, but ¬φ is also true at w
-  -- Therefore φ is false at w, contradicting semantic consequence
-  have h_not_consequence := by
-    intro D _ _ F M_val τ t h_all_true
-    -- Build a countermodel from the canonical model
-    sorry
-  exact h_consequence h_not_consequence
 
-/-- 
-Weak Completeness: Every valid formula is derivable.
+namespace Bimodal.Metalogic.Completeness.Theorems
 
-This is the special case of strong completeness with empty context.
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Metalogic
+
+/-!
+## Completeness Theorems
+
+Re-exports from the parent Completeness module.
 -/
-theorem weak_completeness {φ : Formula} :
-    valid φ → ContextDerivable [] φ := by
-  intro h_valid
-  have := strong_completeness (Γ := []) (φ := φ)
-  exact this h_valid
 
-/-- 
-Completeness corollary: Consistency and satisfiability equivalence.
+/--
+**Weak Completeness**: Every valid formula is provable.
 
-A context is consistent iff it is satisfiable.
+This is the fundamental bridge from semantics to syntax: if a formula is
+true in all models, then it has a derivation.
 -/
-theorem consistency_satisfiability_equivalence :
-    Consistent Γ ↔ satisfiable_abs Γ := by
-  constructor
-  · intro h_cons
-    -- If consistent, apply representation theorem
-    exact Representation.representation_theorem h_cons
-  · intro h_sat
-    -- If satisfiable, then consistent (by soundness contrapositive)
-    intro h_incons
-    have := (soundness Γ .bot).mp ⟨axiom_axiom (.bot), h_incons⟩
-    sorry
+noncomputable def weak_completeness' (phi : Formula) : valid phi -> DerivationTree [] phi :=
+  weak_completeness phi
 
-/-- 
-Compactness: If every finite subset of Γ is satisfiable, then Γ is satisfiable.
+/--
+**Strong Completeness**: Semantic consequence implies syntactic derivability.
 
-This follows from the representation theorem and finite consistency.
+If phi is semantically entailed by Gamma (true in all models where Gamma holds),
+then phi can be derived from Gamma.
 -/
-theorem compactness :
-    (∀ Δ ⊆ Γ, Δ.Finite → satisfiable_abs Δ.toList) → satisfiable_abs Γ := by
-  intro h_fin_sat
-  -- Show Γ is finitely consistent
-  have h_fin_cons : FinitelyConsistent (↑Γ : Set Formula) := by
-    intro Δ h_sub h_fin
-    have h_sat := h_fin_sat (↑Δ) (by sorry) h_fin
-    exact (consistency_satisfiability_equivalence.mp h_sat).symm
-  -- Show consistency from finite consistency using compactness
-  sorry
+noncomputable def strong_completeness' (Gamma : Context) (phi : Formula) :
+    semantic_consequence Gamma phi -> DerivationTree Gamma phi :=
+  strong_completeness Gamma phi
 
-/-- 
-Decidability corollary: If φ is not valid, then ¬φ is satisfiable.
+/--
+**Provability-Validity Equivalence**: A formula is provable iff it is valid.
 
-This is a direct consequence of completeness.
+This combines soundness (provable implies valid) and completeness (valid implies provable)
+into a biconditional.
 -/
-theorem decidability_corollary {φ : Formula} :
-    ¬valid φ → satisfiable_abs [¬φ] := by
-  intro h_not_valid
-  have h_not_derivable := mt weak_completeness h_not_valid
-  exact Representation.representation_theorem ⟨¬φ, h_not_derivable⟩
+theorem provable_iff_valid' (phi : Formula) : Nonempty (DerivationTree [] phi) <-> valid phi :=
+  provable_iff_valid phi
 
-end Bimodal.Metalogic.Completeness
+/-!
+## Consistency and Satisfiability
+
+Additional theorems derived from completeness.
+-/
+
+/--
+**Consistency Implies Satisfiability (Semantic)**
+
+If a context is consistent (cannot derive bottom), then it is satisfiable
+in some model. This is a consequence of the representation theorem.
+
+Note: This uses a semantic notion of satisfiability. For the canonical model
+version, see `Representation.representation_theorem`.
+-/
+theorem consistency_implies_satisfiability {Gamma : Context}
+    (h_cons : Consistent Gamma) : satisfiable_abs Gamma := by
+  -- By contrapositive: if unsatisfiable, then can derive anything, including bottom
+  by_contra h_not_sat
+  -- If not satisfiable_abs, then semantic_consequence Gamma bot
+  have h_conseq : semantic_consequence Gamma Formula.bot := by
+    intro D _ _ _ F M tau t h_all_true
+    -- If Gamma is unsatisfiable, the antecedent (all of Gamma true) is false
+    exfalso
+    apply h_not_sat
+    exact ⟨D, inferInstance, inferInstance, inferInstance, F, M, tau, t, h_all_true⟩
+  -- By strong completeness, Gamma |- bot
+  have h_deriv := strong_completeness Gamma Formula.bot h_conseq
+  -- But this contradicts consistency
+  exact h_cons ⟨h_deriv⟩
+
+/--
+**Satisfiability Implies Consistency**
+
+If a context is satisfiable, then it is consistent.
+This is actually a consequence of soundness: if Gamma is satisfiable and
+we could derive bottom from it, soundness would give a contradiction.
+-/
+theorem satisfiability_implies_consistency {Gamma : Context}
+    (h_sat : satisfiable_abs Gamma) : Consistent Gamma := by
+  intro ⟨h_deriv⟩
+  -- By soundness, Gamma semantically entails bot
+  have h_conseq := Soundness.soundness Gamma Formula.bot h_deriv
+  -- Get the model witnessing satisfiability
+  obtain ⟨D, _, _, _, F, M, tau, t, h_all_true⟩ := h_sat
+  -- All of Gamma is true at this model, so by h_conseq, bot is true
+  have h_bot := h_conseq D F M tau t h_all_true
+  -- But bot is never true (by definition of truth_at)
+  exact h_bot
+
+/--
+**Consistency-Satisfiability Equivalence**
+
+A context is consistent if and only if it is satisfiable.
+-/
+theorem consistency_iff_satisfiability (Gamma : Context) :
+    Consistent Gamma <-> satisfiable_abs Gamma :=
+  ⟨consistency_implies_satisfiability, satisfiability_implies_consistency⟩
+
+end Bimodal.Metalogic.Completeness.Theorems
