@@ -8,11 +8,18 @@
     {
       "project_number": 562,
       "project_name": "agent_system_refactor_report",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-17T21:33:11Z",
-      "last_updated": "2026-01-17T21:35:00Z"
+      "last_updated": "2026-01-17T21:38:32Z",
+      "researched": "2026-01-17T21:38:32Z",
+      "artifacts": [
+        {
+          "path": "specs/562_agent_system_refactor_report/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 557,
