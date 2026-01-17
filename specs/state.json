@@ -9,11 +9,11 @@
       "project_number": 555,
       "project_name": "convert_skill_status_sync_to_forked_pattern",
       "type": "fix",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T19:52:15Z",
-      "last_updated": "2026-01-17T19:58:41Z",
+      "last_updated": "2026-01-17T20:11:53Z",
       "effort": "2-3 hours",
       "description": "Convert skill-status-sync from inline execution to forked subagent pattern. Currently causes workflow interruptions because inline skill completion triggers Claude to stop and wait for user input. Fix by creating status-sync-agent and making skill-status-sync a thin wrapper that delegates via Task tool.",
       "session_id": "sess_1768679755_30e62d",
@@ -28,11 +28,11 @@
     {
       "project_number": 554,
       "project_name": "bimodal_metalogic_v2_reorganize",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T19:15:49Z",
-      "last_updated": "2026-01-17T19:58:09Z",
+      "last_updated": "2026-01-17T20:08:10Z",
       "artifacts": [
         {
           "path": "specs/554_bimodal_metalogic_v2_reorganize/reports/research-001.md",
@@ -248,11 +248,11 @@
       "project_number": 548,
       "project_name": "fix_skill_to_agent_delegation_pattern",
       "type": "fix",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:04:56Z",
+      "last_updated": "2026-01-17T20:13:49Z",
       "effort": "2-3 hours",
       "description": "Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives. Fixes the root cause identified in Task 539 research.",
       "session_id": "sess_1768669365_4f0a88",
@@ -265,9 +265,14 @@
         {
           "path": "specs/548_fix_skill_to_agent_delegation_pattern/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/548_fix_skill_to_agent_delegation_pattern/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ],
-      "planned": "2026-01-17T17:04:56Z"
+      "planned": "2026-01-17T17:04:56Z",
+      "completed": "2026-01-17T20:13:49Z"
     },
     {
       "project_number": 549,

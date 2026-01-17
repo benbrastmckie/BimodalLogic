@@ -29,15 +29,17 @@ technical_debt:
 
 ### 548. Fix Skill-to-Agent Delegation Pattern
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Session ID**: sess_1768669365_4f0a88
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
 - **Planned**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Research**: [research-001.md](specs/548_fix_skill_to_agent_delegation_pattern/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/548_fix_skill_to_agent_delegation_pattern/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260117.md](specs/548_fix_skill_to_agent_delegation_pattern/summaries/implementation-summary-20260117.md)
 
 **Description**: Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives: "You MUST use the Task tool (NOT Skill tool) to spawn the subagent." This fixes the root cause identified in Task 539 research.
 
@@ -45,10 +47,10 @@ technical_debt:
 
 ### 555. Convert skill-status-sync to Forked Subagent Pattern
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768679755_30e62d
+- **Session ID**: sess_1768680695_8384ea
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
 - **Research**: [research-001.md](specs/555_convert_skill_status_sync_to_forked_pattern/reports/research-001.md)
@@ -120,10 +122,10 @@ technical_debt:
 
 ### 554. Reorganize Bimodal/Metalogic to Use Representation Theorem as Foundation
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
-- **Session ID**: sess_1768679674_ec2496
+- **Session ID**: sess_1768680475_5ca184
 - **Created**: 2026-01-17
 - **Research**: [research-001.md](specs/554_bimodal_metalogic_v2_reorganize/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/554_bimodal_metalogic_v2_reorganize/plans/implementation-001.md)
