@@ -130,7 +130,7 @@ technical_debt:
 - **Planned**: 2026-01-17
 - **Dependencies**: 535, 536, 537, 538
 - **Research**: [research-002.md](specs/539_test_validate_model_tiering/reports/research-002.md) (supersedes research-001.md)
-- **Plan**: [implementation-001.md](specs/539_test_validate_model_tiering/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/539_test_validate_model_tiering/plans/implementation-002.md) (revised: explicit Task tool directives)
 
 **Description**: Test and validate the model tiering changes. Run through complete workflows (/research, /plan, /implement) to verify: correct model is used at each stage, quality meets expectations with Sonnet for heavy lifting, Haiku dispatch is fast and correct, no regressions in functionality.
 
