@@ -91,12 +91,12 @@
       "project_number": 523,
       "project_name": "Clean Up Bimodal Lean Source Files After Task 505",
       "type": "refactor",
-      "phase": "planned",
-      "status": "planned",
+      "phase": "implementing",
+      "status": "implementing",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-17T06:00:27Z",
-      "last_updated": "2026-01-17T14:04:35Z",
+      "last_updated": "2026-01-17T14:07:07Z",
       "researched": "2026-01-17T13:54:33Z",
       "effort": "4-6 hours",
       "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments",
@@ -118,8 +118,9 @@
           "type": "plan"
         }
       ],
-      "session_id": "sess_1768658551_a9be00",
-      "planned": "2026-01-17T14:04:35Z"
+      "session_id": "sess_1768658812_8386f4",
+      "planned": "2026-01-17T14:04:35Z",
+      "started": "2026-01-17T14:07:07Z"
     },
     {
       "project_number": 517,
@@ -334,6 +335,104 @@
       "section": "Low Priority",
       "language": "lean",
       "priority": "low"
+    },
+    {
+      "project_number": 534,
+      "project_name": "research_claude_code_model_selection",
+      "type": "research",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T15:00:00Z",
+      "effort": "2-3 hours",
+      "description": "Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults."
+    },
+    {
+      "project_number": 535,
+      "project_name": "refactor_heavy_lifting_agents_to_sonnet",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T15:00:00Z",
+      "effort": "3-4 hours",
+      "description": "Refactor all heavy-lifting agents to use the latest Sonnet model. This includes lean-research-agent, lean-implementation-agent, general-research-agent, general-implementation-agent, latex-implementation-agent, planner-agent, and meta-builder-agent. Update either agent YAML frontmatter or skill invocation patterns based on Task 534 research findings.",
+      "dependencies": [
+        534
+      ]
+    },
+    {
+      "project_number": 536,
+      "project_name": "refactor_dispatch_skills_to_haiku",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T15:00:00Z",
+      "effort": "2-3 hours",
+      "description": "Refactor fast dispatch/routing skills to use the latest Haiku model for cost and latency optimization. This includes skill-orchestrator, skill-status-sync, skill-git-workflow. These skills perform simple routing, validation, and status updates that don't require heavy reasoning.",
+      "dependencies": [
+        534
+      ]
+    },
+    {
+      "project_number": 537,
+      "project_name": "identify_opus_only_components",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T15:00:00Z",
+      "effort": "1-2 hours",
+      "description": "Identify which components (if any) require Opus for best results and configure them appropriately. Consider: command entry points requiring nuanced user interaction, complex multi-step reasoning tasks, error recovery scenarios. Document rationale for each Opus designation.",
+      "dependencies": [
+        534
+      ]
+    },
+    {
+      "project_number": 538,
+      "project_name": "update_model_tier_documentation",
+      "type": "documentation",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T15:00:00Z",
+      "effort": "1-2 hours",
+      "description": "Update .claude/ documentation to include model tier guidelines. Document which model tier to use for different component types (agents, skills, commands), the rationale for each tier, and how to specify models in the system. Add to CLAUDE.md and/or create new guide in docs/.",
+      "dependencies": [
+        535,
+        536,
+        537
+      ]
+    },
+    {
+      "project_number": 539,
+      "project_name": "test_validate_model_tiering",
+      "type": "validation",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T15:00:00Z",
+      "effort": "2-3 hours",
+      "description": "Test and validate the model tiering changes. Run through complete workflows (/research, /plan, /implement) to verify: correct model is used at each stage, quality meets expectations with Sonnet for heavy lifting, Haiku dispatch is fast and correct, no regressions in functionality.",
+      "dependencies": [
+        535,
+        536,
+        537,
+        538
+      ]
     }
   ],
   "completed_projects": [
@@ -348,5 +447,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 534
+  "next_project_number": 540
 }

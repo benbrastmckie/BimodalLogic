@@ -27,6 +27,77 @@ technical_debt:
 
 ## High Priority
 
+### 534. Research Claude Code Model Selection Mechanisms
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+
+**Description**: Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults.
+
+---
+
+### 535. Refactor Heavy-Lifting Agents to Use Sonnet
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 534
+
+**Description**: Refactor all heavy-lifting agents to use the latest Sonnet model. This includes lean-research-agent, lean-implementation-agent, general-research-agent, general-implementation-agent, latex-implementation-agent, planner-agent, and meta-builder-agent. Update either agent YAML frontmatter or skill invocation patterns based on Task 534 research findings.
+
+---
+
+### 536. Refactor Dispatch/Routing Skills to Use Haiku
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 534
+
+**Description**: Refactor fast dispatch/routing skills to use the latest Haiku model for cost and latency optimization. This includes skill-orchestrator, skill-status-sync, skill-git-workflow. These skills perform simple routing, validation, and status updates that don't require heavy reasoning.
+
+---
+
+### 537. Identify and Configure Opus-Only Components
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 534
+
+**Description**: Identify which components (if any) require Opus for best results and configure them appropriately. Consider: command entry points requiring nuanced user interaction, complex multi-step reasoning tasks, error recovery scenarios. Document rationale for each Opus designation.
+
+---
+
+### 538. Update Model Tier Documentation
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 535, 536, 537
+
+**Description**: Update .claude/ documentation to include model tier guidelines. Document which model tier to use for different component types (agents, skills, commands), the rationale for each tier, and how to specify models in the system. Add to CLAUDE.md and/or create new guide in docs/.
+
+---
+
+### 539. Test and Validate Model Tiering Changes
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 535, 536, 537, 538
+
+**Description**: Test and validate the model tiering changes. Run through complete workflows (/research, /plan, /implement) to verify: correct model is used at each stage, quality meets expectations with Sonnet for heavy lifting, Haiku dispatch is fast and correct, no regressions in functionality.
+
+---
+
 ### 529. Unify Workflow Commands into Single-Execution Pattern
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
@@ -121,12 +192,13 @@ technical_debt:
 
 ### 523. Clean Up Bimodal Lean Source Files After Task 505
 - **Effort**: 7 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
-- **Session ID**: sess_1768658551_a9be00
+- **Session ID**: sess_1768658812_8386f4
 - **Researched**: 2026-01-17
 - **Planned**: 2026-01-17
+- **Started**: 2026-01-17
 - **Research**: [research-003.md](specs/523_bimodal_cleanup/reports/research-003.md)
 - **Plan**: [implementation-001.md](specs/523_bimodal_cleanup/plans/implementation-001.md)
 
