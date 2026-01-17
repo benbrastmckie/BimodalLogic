@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 562,
+      "project_name": "agent_system_refactor_report",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-17T21:33:11Z",
+      "last_updated": "2026-01-17T21:33:11Z"
+    },
+    {
       "project_number": 557,
       "project_name": "mcs_property_completion",
       "status": "planned",
@@ -424,5 +433,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 562
+  "next_project_number": 563
 }
