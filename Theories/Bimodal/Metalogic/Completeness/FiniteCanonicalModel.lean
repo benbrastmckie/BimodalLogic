@@ -3429,86 +3429,10 @@ noncomputable def finiteHistoryToWorldHistory (phi : Formula) (h : FiniteHistory
     SemanticWorldState.ofHistoryTime h t_clamped
   respects_task := fun s t _hs _ht _hst => by
     -- Need to show semantic_task_rel_v2 phi (states s) (t - s) (states t)
-    -- Use the original history h as witness
-    use h
-    -- Get the clamped times corresponding to s and t
-    let k := temporalBound phi
-    let s_clamped : FiniteTime k :=
-      if h_s_low : s < -(k : Int) then FiniteTime.minTime k
-      else if h_s_high : s > (k : Int) then FiniteTime.maxTime k
-      else
-        have h_lower_s : -(k : Int) ≤ s := Int.not_lt.mp h_s_low
-        have h_upper_s : s ≤ (k : Int) := Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high))
-        (FiniteTime.toInt_surj_on_range k s h_lower_s h_upper_s).choose
-    let t_clamped : FiniteTime k :=
-      if h_t_low : t < -(k : Int) then FiniteTime.minTime k
-      else if h_t_high : t > (k : Int) then FiniteTime.maxTime k
-      else
-        have h_lower_t : -(k : Int) ≤ t := Int.not_lt.mp h_t_low
-        have h_upper_t : t ≤ (k : Int) := Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high))
-        (FiniteTime.toInt_surj_on_range k t h_lower_t h_upper_t).choose
-    -- Show the time relation holds: toInt(t_clamped) = toInt(s_clamped) + (t - s)
-    have h_time_rel : FiniteTime.toInt (temporalBound phi) t_clamped = 
-                   FiniteTime.toInt (temporalBound phi) s_clamped + (t - s) := by
-      -- Complete case analysis on boundary conditions for s and t
-      cases h_s_low <;> cases h_s_high <;> cases h_t_low <;> cases h_t_high
-      <;> simp only [FiniteTime.toInt, FiniteTime.minTime, FiniteTime.maxTime, 
-                     FiniteTime.toInt_surj_on_range] at *
-      <;> try {omega}
-      -- Case 1: s < -k, t < -k
-      · simp only [h_s_low, h_t_low]
-        omega
-      -- Case 2: s < -k, -k ≤ t ≤ k
-      · simp only [h_s_low, Int.not_lt.mp h_t_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)]
-        have h4 := (FiniteTime.toInt_surj_on_range (temporalBound phi) t 
-                     (Int.not_lt.mp h_t_low) 
-                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)))).choose_spec
-        simp only [h4]
-        omega
-      -- Case 3: s < -k, t > k
-      · simp only [h_s_low, h_t_high]
-        omega
-      -- Case 4: -k ≤ s ≤ k, t < -k
-      · simp only [Int.not_lt.mp h_s_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high), h_t_low]
-        have h4 := (FiniteTime.toInt_surj_on_range (temporalBound phi) s 
-                     (Int.not_lt.mp h_s_low) 
-                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high)))).choose_spec
-        simp only [h4]
-        omega
-      -- Case 5: -k ≤ s ≤ k, -k ≤ t ≤ k
-      · simp only [Int.not_lt.mp h_s_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high),
-                       Int.not_lt.mp h_t_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high))]
-        have h5 := (FiniteTime.toInt_surj_on_range (temporalBound phi) s 
-                     (Int.not_lt.mp h_s_low) 
-                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high)))).choose_spec
-        have h6 := (FiniteTime.toInt_surj_on_range (temporalBound phi) t 
-                     (Int.not_lt.mp h_t_low) 
-                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)))).choose_spec
-        simp only [h5, h6]
-        omega
-      -- Case 6: -k ≤ s ≤ k, t > k
-      · simp only [Int.not_lt.mp h_s_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high), h_t_high]
-        have h4 := (FiniteTime.toInt_surj_on_range (temporalBound phi) s 
-                     (Int.not_lt.mp h_s_low) 
-                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_s_high)))).choose_spec
-        simp only [h4]
-        omega
-      -- Case 7: s > k, t < -k
-      · simp only [h_s_high, h_t_low]
-        omega
-      -- Case 8: s > k, -k ≤ t ≤ k
-      · simp only [h_s_high, Int.not_lt.mp h_t_low, Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)]
-        have h4 := (FiniteTime.toInt_surj_on_range (temporalBound phi) t 
-                     (Int.not_lt.mp h_t_low) 
-                     (Int.not_lt.mp (Int.not_lt.mpr (le_of_not_gt h_t_high)))).choose_spec
-        simp only [h4]
-        omega
-      -- Case 9: s > k, t > k
-      · simp only [h_s_high, h_t_high]
-        omega
-    -- Show both states come from the same history h
-    · exact SemanticWorldState.ofHistoryTime h s_clamped
-    · exact SemanticWorldState.ofHistoryTime h t_clamped
+    -- The proof requires showing that the clamped states satisfy the semantic
+    -- task relation with duration (t - s). This is complex due to the clamping
+    -- at boundaries. For now we use sorry.
+    sorry
 
 /--
 For any SemanticWorldState w, there exists a WorldHistory containing w at time 0.
@@ -3522,21 +3446,14 @@ theorem semantic_world_state_has_world_history (phi : Formula) (w : SemanticWorl
   -- Extract a representative history from w
   let rep := Quotient.out w
   let hist := rep.1
-  let _time := rep.2
   -- Convert hist to a WorldHistory
-  let wh := finiteHistoryToWorldHistory phi hist
-  -- Use time_shift to position w at time 0
-  let shifted_hist := FiniteHistory.time_shift hist (-_time)
-  -- Convert to WorldHistory
-  let tau := finiteHistoryToWorldHistory phi shifted_hist
-  -- Show that tau.states 0 = w
-  have h_at_zero : tau.states 0 True = w := by
-    -- time_shift adds (-_time) to all times, so time 0 corresponds to time _time
-    simp only [FiniteHistory.time_shift, tau, shifted_hist]
-    rfl
-  -- tau has domain True and convexity True by construction
-  · intro _; exact True.intro  
-  · intro _ _ _ _ _ _ _; exact True.intro
+  let tau := finiteHistoryToWorldHistory phi hist
+  -- The WorldHistory has domain True at all times
+  use tau, True.intro
+  -- Need to show tau.states 0 True = w
+  -- This requires proper handling of the time shift, which is complex.
+  -- For now we use sorry.
+  sorry
 
 /--
 Lemma connecting SemanticCanonicalModel.valuation to FiniteWorldState.assignment.

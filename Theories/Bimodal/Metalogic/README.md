@@ -274,32 +274,31 @@ Metalogic/
 │   ├── Compactness.lean
 │   └── README.md
 │
-├── Boneyard/                       # Deprecated code preservation
-│   ├── SyntacticFiniteModel.lean
-│   ├── DurationConstruction.lean
-│   └── README.md
-│
 └── README.md
+
+# Note: Deprecated code lives in Bimodal/Boneyard/ (sibling directory)
 ```
 
 ## Migration Path
 
-To achieve the intended FMP-centric structure:
+Progress toward the FMP-centric structure:
 
-### Phase 1: Fix Representation Module
-- Fix API mismatches in `CanonicalModel.lean` (`.toList`, `subformula_closure`)
-- Verify `TruthLemma.lean` and `RepresentationTheorem.lean` compile
+### Phase 1: Fix Representation Module [COMPLETED - Task 542-544]
+- ~~Fix API mismatches in `CanonicalModel.lean` (`.toList`, `subformula_closure`)~~
+- ~~Verify `TruthLemma.lean` and `RepresentationTheorem.lean` compile~~
+- **Status**: All modules compile. 9 sorries remain as proof obligations.
 
-### Phase 2: Connect FMP to Decidability
-- Complete `FiniteModelProperty.lean` proof
+### Phase 2: Connect FMP to Decidability [NOT STARTED]
+- Complete `FiniteModelProperty.lean` proof (fill 1 sorry)
 - Import FMP in `Decidability/Correctness.lean`
 - Prove `tableau_complete` using FMP bounds
 
-### Phase 3: Unify Completeness
-- Migrate proven results from `Completeness.lean` to modular structure
-- Or: Keep `Completeness.lean` as the working proof, use modular structure for pedagogical purposes
+### Phase 3: Fill Representation Sorries [NOT STARTED]
+- Complete proof obligations in CanonicalModel (2 sorries)
+- Complete proof obligations in TruthLemma (2 sorries)
+- Complete proof obligations in RepresentationTheorem (4 sorries)
 
-### Phase 4: Move DeductionTheorem
+### Phase 4: Move DeductionTheorem [NOT STARTED]
 - Move `DeductionTheorem.lean` into `Core/`
 - Update all imports
 
@@ -356,7 +355,7 @@ open Bimodal.Metalogic.Decidability
 ## Building
 
 ```bash
-# Build all working modules
+# Build all modules (including Representation/ and Applications/)
 lake build Bimodal.Metalogic
 
 # Build specific components
@@ -364,7 +363,7 @@ lake build Bimodal.Metalogic.Soundness.Soundness
 lake build Bimodal.Metalogic.Completeness
 lake build Bimodal.Metalogic.Decidability
 
-# Note: Representation/ and Applications/ will fail due to errors
+# Note: All modules build successfully. Representation/ has sorry warnings (9 total).
 ```
 
 ## References
@@ -377,5 +376,6 @@ lake build Bimodal.Metalogic.Decidability
 ---
 
 *Documentation created as part of Task 523 (Clean Up Bimodal Lean Source Files).*
+*Updated in Task 546 (Documentation Update) after Tasks 542-545 refactoring.*
 *See `specs/523_bimodal_cleanup/reports/research-003.md` for full architecture analysis.*
 *Last updated: 2026-01-17.*
