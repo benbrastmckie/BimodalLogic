@@ -259,11 +259,14 @@ technical_debt:
 
 ### 542. Fix CanonicalModel Foundation (Phase 1 of 540)
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Session ID**: sess_1768661519_937d9a
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
+- **Researched**: 2026-01-17
 - **Parent**: 540
+- **Research**: [research-001.md](specs/542_fix_canonical_model_foundation/reports/research-001.md)
 
 **Description**: Fix Representation/CanonicalModel.lean to compile using patterns from Completeness.lean. Copy SetMaximalConsistent/SetConsistent/ConsistentExtensions definitions, fix Lindenbaum lemma using working set_lindenbaum pattern, replace outdated Mathlib APIs.
 
