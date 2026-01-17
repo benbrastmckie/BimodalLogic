@@ -9,26 +9,38 @@
       "project_number": 555,
       "project_name": "convert_skill_status_sync_to_forked_pattern",
       "type": "fix",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T19:52:15Z",
-      "last_updated": "2026-01-17T19:52:15Z",
+      "last_updated": "2026-01-17T19:58:41Z",
       "effort": "2-3 hours",
-      "description": "Convert skill-status-sync from inline execution to forked subagent pattern. Currently causes workflow interruptions because inline skill completion triggers Claude to stop and wait for user input. Fix by creating status-sync-agent and making skill-status-sync a thin wrapper that delegates via Task tool."
+      "description": "Convert skill-status-sync from inline execution to forked subagent pattern. Currently causes workflow interruptions because inline skill completion triggers Claude to stop and wait for user input. Fix by creating status-sync-agent and making skill-status-sync a thin wrapper that delegates via Task tool.",
+      "session_id": "sess_1768679755_30e62d",
+      "researched": "2026-01-17T19:58:41Z",
+      "artifacts": [
+        {
+          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 554,
       "project_name": "bimodal_metalogic_v2_reorganize",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T19:15:49Z",
-      "last_updated": "2026-01-17T19:21:38Z",
+      "last_updated": "2026-01-17T19:58:09Z",
       "artifacts": [
         {
           "path": "specs/554_bimodal_metalogic_v2_reorganize/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/554_bimodal_metalogic_v2_reorganize/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
@@ -261,11 +273,11 @@
       "project_number": 549,
       "project_name": "research_intelligent_model_routing_architecture",
       "type": "research",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T19:53:30Z",
       "effort": "2-3 hours",
       "dependencies": [
         548
