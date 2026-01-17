@@ -1,6 +1,7 @@
 ---
 name: general-research-agent
 description: Research general tasks using web search and codebase exploration
+model: sonnet
 ---
 
 # General Research Agent

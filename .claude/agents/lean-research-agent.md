@@ -1,6 +1,7 @@
 ---
 name: lean-research-agent
 description: Research Lean 4 and Mathlib for theorem proving tasks
+model: sonnet
 ---
 
 # Lean Research Agent

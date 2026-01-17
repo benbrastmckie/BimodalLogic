@@ -45,11 +45,17 @@ technical_debt:
 
 ### 535. Refactor Heavy-Lifting Agents to Use Sonnet
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
+- **Session ID**: sess_1768660008_6b7162
 - **Created**: 2026-01-17
+- **Planned**: 2026-01-17
+- **Started**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Dependencies**: 534
+- **Plan**: [implementation-001.md](specs/535_refactor_heavy_lifting_agents_to_sonnet/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260117.md](specs/535_refactor_heavy_lifting_agents_to_sonnet/summaries/implementation-summary-20260117.md)
 
 **Description**: Refactor all heavy-lifting agents to use the latest Sonnet model. This includes lean-research-agent, lean-implementation-agent, general-research-agent, general-implementation-agent, latex-implementation-agent, planner-agent, and meta-builder-agent. Update either agent YAML frontmatter or skill invocation patterns based on Task 534 research findings.
 
