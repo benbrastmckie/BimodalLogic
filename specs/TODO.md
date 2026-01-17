@@ -162,17 +162,20 @@ technical_debt:
 
 ### 540. Finish Metalogic Directory Refactor and Cleanup
 - **Effort**: 4-6 hours
-- **Status**: [EXPANDED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Session ID**: sess_1768661078_ad3932
 - **Created**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Researched**: 2026-01-17
 - **Research**: [research-001.md](specs/540_finish_metalogic_refactor_cleanup/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/540_finish_metalogic_refactor_cleanup/plans/implementation-001.md)
 - **Subtasks**: 542, 543, 544, 545, 546
 
 **Description**: Finish the Logos/Metalogic/ directory refactor, leaving no stray elements or parallel structures. The situation is documented in specs/523_bimodal_cleanup/reports/research-003.md. Move anything worth saving that is not necessary for the refactored implementation to Bimodal/Boneyard/ (if not already represented), and update all documentation to be fully accurate.
+
+**Implementation**: Completed via subtasks: Phases 1-3 (542-544) fixed CanonicalModel, TruthLemma, RepresentationTheorem, and FMP modules. Phase 4 (545) rewrote CompletenessTheorem.lean and Compactness.lean as thin re-export modules. Phase 5 (546) updated Metalogic/README.md documentation. Build succeeds (953 jobs).
 
 ---
 
