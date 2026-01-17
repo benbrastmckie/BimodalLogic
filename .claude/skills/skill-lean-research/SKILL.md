@@ -86,10 +86,22 @@ Prepare delegation context:
 
 ### 3. Invoke Subagent
 
-Invoke `lean-research-agent` via Task tool with:
-- Task context (number, name, description, language)
-- Delegation context (session_id, depth, path)
-- Focus prompt (if provided)
+**CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
+
+The `agent` field in this skill's frontmatter specifies the target: `lean-research-agent`
+
+**Required Tool Invocation**:
+```
+Tool: Task (NOT Skill)
+Parameters:
+  - subagent_type: "lean-research-agent"
+  - prompt: [Include task_context, delegation_context, focus_prompt if present]
+  - description: "Execute Lean research for task {N}"
+```
+
+**DO NOT** use `Skill(lean-research-agent)` - this will FAIL.
+Agents live in `.claude/agents/`, not `.claude/skills/`.
+The Skill tool can only invoke skills from `.claude/skills/`.
 
 The subagent will:
 - Load Lean-specific context files

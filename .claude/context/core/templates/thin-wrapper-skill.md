@@ -110,19 +110,22 @@ session_id="sess_$(date +%s)_$(od -An -N3 -tx1 /dev/urandom | tr -d ' ')"
 
 ### 3. Invoke Subagent
 
-Invoke the target subagent via Task tool:
+**CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
 
-```markdown
-Invoke {agent-name} with:
-- Task context from delegation context
-- Focus prompt (if provided)
-- Delegation metadata (session_id, depth, path)
+The `agent` field in frontmatter specifies the target subagent.
+
+**Required Tool Invocation**:
+```
+Tool: Task (NOT Skill)
+Parameters:
+  - subagent_type: "{agent-name}" (from frontmatter)
+  - prompt: [Include task_context, delegation_context, focus_prompt if present]
+  - description: "Execute {operation} for task {N}"
 ```
 
-**Task tool parameters**:
-- `subagent_type`: The agent name from frontmatter
-- `prompt`: Task context + focus prompt
-- `description`: "Execute {operation} for task {N}"
+**DO NOT** use `Skill({agent-name})` - this will FAIL.
+Agents live in `.claude/agents/`, not `.claude/skills/`.
+The Skill tool can only invoke skills from `.claude/skills/`.
 
 ### 4. Return Validation
 
@@ -238,7 +241,19 @@ Generate session_id.
 Prepare delegation context with task details.
 
 ### 3. Invoke Subagent
-Invoke lean-research-agent via Task tool.
+
+**CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
+
+**Required Tool Invocation**:
+```
+Tool: Task (NOT Skill)
+Parameters:
+  - subagent_type: "lean-research-agent"
+  - prompt: [Include task_context, delegation_context, focus_prompt if present]
+  - description: "Execute Lean research for task {N}"
+```
+
+**DO NOT** use `Skill(lean-research-agent)` - this will FAIL.
 
 ### 4. Return Validation
 Validate return matches subagent-return.md schema.

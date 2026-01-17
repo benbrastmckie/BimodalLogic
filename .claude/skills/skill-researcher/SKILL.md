@@ -80,10 +80,22 @@ Prepare delegation context:
 
 ### 3. Invoke Subagent
 
-Invoke `general-research-agent` via Task tool with:
-- Task context (number, name, description, language)
-- Delegation context (session_id, depth, path)
-- Focus prompt (if provided)
+**CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
+
+The `agent` field in this skill's frontmatter specifies the target: `general-research-agent`
+
+**Required Tool Invocation**:
+```
+Tool: Task (NOT Skill)
+Parameters:
+  - subagent_type: "general-research-agent"
+  - prompt: [Include task_context, delegation_context, focus_prompt if present]
+  - description: "Execute research for task {N}"
+```
+
+**DO NOT** use `Skill(general-research-agent)` - this will FAIL.
+Agents live in `.claude/agents/`, not `.claude/skills/`.
+The Skill tool can only invoke skills from `.claude/skills/`.
 
 The subagent will:
 - Search codebase for related patterns
