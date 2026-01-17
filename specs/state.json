@@ -8,17 +8,22 @@
     {
       "project_number": 563,
       "project_name": "investigate_empty_directory_creation",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-17T21:47:33Z",
-      "last_updated": "2026-01-17T21:54:32Z",
+      "last_updated": "2026-01-17T22:13:17Z",
       "artifacts": [
         {
           "path": "specs/563_investigate_empty_directory_creation/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/563_investigate_empty_directory_creation/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-17T22:13:17Z"
     },
     {
       "project_number": 562,

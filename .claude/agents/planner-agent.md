@@ -1,7 +1,6 @@
 ---
 name: planner-agent
 description: Create phased implementation plans from research findings
-model: sonnet
 ---
 
 # Planner Agent
