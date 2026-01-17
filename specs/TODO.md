@@ -133,18 +133,6 @@ technical_debt:
 
 ---
 
-### 553. Document Final Model Tier Architecture
-- **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-17
-- **Dependencies**: 551, 552
-
-**Description**: Create comprehensive documentation for the model tier system. Include: decision matrix for model selection, cost comparison examples, known limitations (Haiku tool_reference bug), and troubleshooting guide.
-
----
-
 ### 511. Resolve 26 sorry placeholders in Completeness.lean
 - **Effort**: 20 hours
 - **Status**: [RESEARCHED]

@@ -315,22 +315,6 @@
       "description": "Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks."
     },
     {
-      "project_number": 553,
-      "project_name": "document_final_model_tier_architecture",
-      "type": "documentation",
-      "status": "not_started",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "1-2 hours",
-      "dependencies": [
-        551,
-        552
-      ],
-      "description": "Create comprehensive documentation for the model tier system. Include decision matrix for model selection, cost comparison, known limitations, and troubleshooting guide."
-    },
-    {
       "project_number": 534,
       "project_name": "research_claude_code_model_selection",
       "type": "research",
