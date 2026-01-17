@@ -147,8 +147,11 @@ theorem completeness_corollary {φ : Formula} :
     have d_neg_neg : DerivationTree [] (Formula.neg (Formula.neg φ)) :=
       deduction_theorem [] (Formula.neg φ) Formula.bot d_bot
     -- Then by classical logic, [] ⊢ φ
-    -- This requires double negation elimination which needs Peirce's law
-    sorry
+    -- Apply double negation elimination
+    open Bimodal.Theorems.Propositional in
+    have d_dne : ⊢ φ.neg.neg.imp φ := double_negation φ
+    have d_phi : ⊢ φ := DerivationTree.modus_ponens [] _ _ d_dne d_neg_neg
+    exact h_not_derivable ⟨d_phi⟩
   -- Apply representation theorem to get a world where ¬φ is true
   obtain ⟨w, h_truth⟩ := representation_theorem h_neg_cons
   have h_neg_in : Formula.neg φ ∈ w.carrier := by

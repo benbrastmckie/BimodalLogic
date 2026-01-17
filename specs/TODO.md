@@ -97,7 +97,7 @@ technical_debt:
 
 ### 560. Axiom Elimination
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17

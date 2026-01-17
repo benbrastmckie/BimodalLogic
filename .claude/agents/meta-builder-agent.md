@@ -28,7 +28,6 @@ System building agent that handles the `/meta` command for creating tasks relate
 **REQUIRED** - This agent MUST:
 - Track all work via tasks in TODO.md + state.json
 - Require explicit user confirmation before creating any tasks
-- Create task directories for each task
 - Follow the staged workflow with checkpoints
 
 ## Allowed Tools
@@ -43,7 +42,7 @@ This agent has access to:
 - Grep - Search for patterns
 
 ### System Tools
-- Bash - Execute git, jq, mkdir commands
+- Bash - Execute git, jq commands
 
 ### Interactive Tools
 - AskUserQuestion - Multi-turn interview for interactive mode
@@ -72,11 +71,11 @@ Load these on-demand using @-references:
 - When user selects skills/agents: `@.claude/docs/guides/creating-skills.md`, `@.claude/docs/guides/creating-agents.md`
 - When discussing templates: `@.claude/context/core/templates/thin-wrapper-skill.md`, `@.claude/context/core/templates/agent-template.md`
 
-**Stages 6-7 (Task Creation/Status Updates)**:
+**Stages 5-6 (Task Creation/Status Updates)**:
 - Direct file access: `specs/TODO.md`, `specs/state.json`
 - No additional context files needed (formats already loaded)
 
-**Stage 8 (Cleanup)**:
+**Stage 7 (Cleanup)**:
 - No additional context needed
 
 ## Mode-Context Matrix
@@ -94,8 +93,8 @@ Quick reference for context loading by mode:
 | agent-template.md | On-demand* | On-demand* | No |
 | CLAUDE.md | No | No | Stage 2 |
 | index.md | No | No | Stage 2 |
-| TODO.md | Stage 6 | Stage 5 | Stage 1** |
-| state.json | Stage 6 | Stage 5 | Stage 1** |
+| TODO.md | Stage 5 | Stage 5 | Stage 1** |
+| state.json | Stage 5 | Stage 5 | Stage 1** |
 
 *On-demand: Load when user discussion involves that component type
 **Analyze mode reads but does not modify
@@ -314,7 +313,7 @@ Options per task:
 
 **If user selects "Cancel"**: Return completed status with cancelled flag.
 **If user selects "Revise"**: Go back to Stage 3.
-**If user selects "Yes"**: Proceed to Stage 6.
+**If user selects "Yes"**: Proceed to Stage 5.
 
 ### Interview Stage 6: CreateTasks
 
@@ -327,11 +326,8 @@ next_num=$(jq -r '.next_project_number' specs/state.json)
 # 2. Create slug from title
 slug=$(echo "{title}" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd 'a-z0-9_' | cut -c1-50)
 
-# 3. Create task directory
-mkdir -p "specs/${next_num}_${slug}"
-
-# 4. Update state.json
-# 5. Update TODO.md
+# 3. Update state.json
+# 4. Update TODO.md
 ```
 
 **TODO.md Entry Format**:
@@ -476,18 +472,7 @@ Format output based on mode:
 
 ---
 
-## Stage 5: Artifact Creation (Interactive/Prompt Only)
-
-For each task created:
-```bash
-mkdir -p specs/{N}_{slug}
-```
-
-Verify directory creation successful.
-
----
-
-## Stage 6: Return Structured JSON
+## Stage 5: Return Structured JSON
 
 Return ONLY valid JSON matching this schema:
 
@@ -499,9 +484,9 @@ Return ONLY valid JSON matching this schema:
   "summary": "Created 3 tasks for command creation workflow: research, implementation, and testing.",
   "artifacts": [
     {
-      "type": "task",
-      "path": "specs/430_create_export_command/",
-      "summary": "Task directory for new command"
+      "type": "task_entry",
+      "path": "specs/TODO.md",
+      "summary": "Task #430 added to TODO.md"
     }
   ],
   "metadata": {
@@ -565,7 +550,7 @@ Return ONLY valid JSON matching this schema:
 
 ---
 
-## Stage 7: Status Updates (Interactive/Prompt Only)
+## Stage 6: Status Updates (Interactive/Prompt Only)
 
 For each created task:
 
@@ -587,7 +572,7 @@ Note: {N} in commit message is COUNT of tasks created.
 
 ---
 
-## Stage 8: Cleanup
+## Stage 7: Cleanup
 
 1. Log completion
 2. Return JSON result
@@ -623,8 +608,7 @@ If user stops responding:
 2. Always include session_id from delegation context
 3. Always require user confirmation before creating tasks
 4. Always update both TODO.md and state.json when creating tasks
-5. Always create task directories
-6. Use AskUserQuestion for interactive mode multi-turn conversation
+5. Use AskUserQuestion for interactive mode multi-turn conversation
 
 **MUST NOT**:
 1. Create implementation files directly (only task entries)

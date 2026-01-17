@@ -70,11 +70,11 @@
     {
       "project_number": 560,
       "project_name": "axiom_elimination",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-17T23:32:31Z",
       "parent_task": 556,
       "dependencies": [
         558

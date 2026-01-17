@@ -71,7 +71,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Remove Eager Directory Creation from meta-builder-agent.md [IN PROGRESS]
+### Phase 2: Remove Eager Directory Creation from meta-builder-agent.md [COMPLETED]
 
 **Goal**: Eliminate directory creation from interview and prompt modes
 
@@ -92,7 +92,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update state-management.md Documentation [NOT STARTED]
+### Phase 3: Update state-management.md Documentation [IN PROGRESS]
 
 **Goal**: Add explicit guidance against eager directory creation
 
