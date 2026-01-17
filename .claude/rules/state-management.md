@@ -131,12 +131,35 @@ When creating artifacts, update TODO.md with links:
 
 ## Directory Creation
 
-Create task directories lazily (only when first artifact is created):
+### Lazy Directory Creation Rule
+
+Create task directories **lazily** - only when the first artifact is written:
 ```
 specs/{NUMBER}_{SLUG}/
-├── reports/      # Created on first research
-├── plans/        # Created on first plan
-└── summaries/    # Created on completion
+├── reports/      # Created when research agent writes first report
+├── plans/        # Created when planner agent writes first plan
+└── summaries/    # Created when implementation agent writes summary
+```
+
+**DO NOT** create directories at task creation time. The `/task` command only:
+1. Updates `specs/state.json` (adds task to active_projects)
+2. Updates `specs/TODO.md` (adds task entry)
+
+**WHO creates directories**: Artifact-writing agents (researcher, planner, implementer) create directories with `mkdir -p` when writing their first artifact to a task.
+
+**WHY**: Empty directories provide no value (git doesn't track them), clutter the filesystem, and make task creation unnecessarily complex.
+
+### Correct Pattern
+```bash
+# When writing an artifact (e.g., research report)
+mkdir -p "specs/${task_num}_${slug}/reports"
+write "specs/${task_num}_${slug}/reports/research-001.md"
+```
+
+### Incorrect Pattern
+```bash
+# DO NOT do this at task creation time
+mkdir -p "specs/${task_num}_${slug}"  # Wrong! Creates empty directory
 ```
 
 ## Error Handling
