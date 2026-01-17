@@ -8,18 +8,23 @@
     {
       "project_number": 556,
       "project_name": "complete_metalogic_v2_implementation",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T20:45:04Z",
-      "last_updated": "2026-01-17T20:53:22Z",
+      "last_updated": "2026-01-17T20:55:27Z",
       "researched": "2026-01-17T20:50:35Z",
       "artifacts": [
         {
           "path": "specs/556_complete_metalogic_v2_implementation/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/556_complete_metalogic_v2_implementation/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-17T20:55:27Z"
     },
     {
       "project_number": 555,
