@@ -106,7 +106,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson arts '[{...}]' \
 
 ---
 
-### Phase 2: Delete status-sync-agent and Update Core Docs [IN PROGRESS]
+### Phase 2: Delete status-sync-agent and Update Core Docs [COMPLETED]
 
 **Goal**: Remove status-sync-agent and update primary documentation
 
@@ -136,7 +136,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson arts '[{...}]' \
 
 ---
 
-### Phase 3: Update Command References [NOT STARTED]
+### Phase 3: Update Command References [IN PROGRESS]
 
 **Goal**: Update command files to reflect that skill-status-sync is now direct execution (no functional changes, just comment/documentation updates)
 

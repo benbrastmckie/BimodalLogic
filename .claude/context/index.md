@@ -29,7 +29,7 @@
   - Session ID generation
   - Task existence validation
   - Status transition validation
-  - Preflight status update via skill-status-sync
+  - Preflight status update via skill-status-sync (direct execution)
 
 - **checkpoint-gate-out.md** (~250 tokens) - GATE OUT postflight validation
   - Return structure validation
