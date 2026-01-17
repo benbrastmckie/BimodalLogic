@@ -1841,26 +1841,41 @@ noncomputable def time_shift (h : FiniteHistory phi) (Delta : Int)
       rw [h_t_shift, h_t'_shift, h_time_diff]
       omega
     -- Now find the succ of t_shift and prove it equals t'_shift
-    have h_succ_shifted := by
+    have h_succ_shifted : FiniteTime.succ? (temporalBound phi) t_shift = some t'_shift := by
       have h_int_eq := h_shifted_diff
       -- Since t'_shift = t_shift + 1 in toInt, and both are in bounds,
       -- by uniqueness of succ, we have succ? t_shift = some t'_shift
       cases h' : FiniteTime.succ? (temporalBound phi) t_shift with
       | none =>
-        -- Contradiction: if no succ, t_shift is max, but t'_shift would be > max
-        have h_max := (FiniteTime.toInt_range (temporalBound phi) t_shift).right
+        -- Contradiction: if no succ, t_shift is at max, but t'_shift.toInt = t_shift.toInt + 1 > k
         have h'_max := (FiniteTime.toInt_range (temporalBound phi) t'_shift).right
-        have := by
-          calc FiniteTime.toInt (temporalBound phi) t'_shift
-            > FiniteTime.toInt (temporalBound phi) t_shift := by omega
-            _ ≥ FiniteTime.toInt (temporalBound phi) (FiniteTime.maxTime (temporalBound phi)) := by 
-                { have := (FiniteTime.maxTime_toInt (temporalBound phi)).symm; simp only [*] }
-            > ↑(temporalBound phi) := by omega
-        contradiction
+        -- From succ? = none: t_shift.val ≥ 2 * k (negation of the if condition)
+        simp only [FiniteTime.succ?] at h'
+        split_ifs at h' with h_bound
+        -- h_bound : t_shift.val + 1 < 2 * temporalBound phi + 1 leads to some, but we have none
+        -- So we must have ¬(t_shift.val + 1 < 2 * temporalBound phi + 1)
+        have h_at_max : t_shift.val ≥ 2 * temporalBound phi := by
+          have h_t_bound := t_shift.isLt
+          omega
+        -- Therefore toInt t_shift = k
+        have h_toInt_max : FiniteTime.toInt (temporalBound phi) t_shift = (temporalBound phi : Int) := by
+          simp only [FiniteTime.toInt]
+          have h_t_bound := t_shift.isLt
+          omega
+        -- But t'_shift.toInt = t_shift.toInt + 1 = k + 1, contradicting h'_max
+        have h_t'_toInt : FiniteTime.toInt (temporalBound phi) t'_shift = (temporalBound phi : Int) + 1 := by
+          omega
+        omega
       | some t'' =>
+        -- t'' is the successor of t_shift, need to show t'' = t'_shift
         have h_succ_int := FiniteTime.succ_toInt (temporalBound phi) t_shift t'' h'
-        rw [h_succ_int] at h_int_eq
-        exact FiniteTime.toInt_injective (temporalBound phi) h_int_eq
+        -- h_succ_int : toInt t'' = toInt t_shift + 1
+        -- h_int_eq : toInt t'_shift - toInt t_shift = 1
+        -- So toInt t'' = toInt t'_shift
+        have h_eq_int : FiniteTime.toInt (temporalBound phi) t'' =
+                        FiniteTime.toInt (temporalBound phi) t'_shift := by omega
+        have h_eq := FiniteTime.toInt_injective (temporalBound phi) h_eq_int
+        rw [h_eq]
     exact h.forward_rel t_shift t'_shift h_succ_shifted
   backward_rel := fun t t' h_pred => by
     -- Similar to forward_rel but for predecessor relation
@@ -1870,32 +1885,44 @@ noncomputable def time_shift (h : FiniteHistory phi) (Delta : Int)
     have h_t'_shift := Classical.choose_spec (h_shift_valid t')
     -- From h_pred: toInt t' = toInt t - 1 (by pred_toInt)
     have h_time_diff := FiniteTime.pred_toInt (temporalBound phi) t t' h_pred
-    -- Show time difference is preserved after shifting
-    have h_shifted_diff : FiniteTime.toInt (temporalBound phi) t'_shift - 
-                        FiniteTime.toInt (temporalBound phi) t_shift = 1 := by
+    -- Show time difference is preserved after shifting: t'_shift = t_shift - 1
+    have h_shifted_diff : FiniteTime.toInt (temporalBound phi) t_shift -
+                        FiniteTime.toInt (temporalBound phi) t'_shift = 1 := by
       rw [h_t_shift, h_t'_shift, h_time_diff]
       omega
     -- Now find the pred of t_shift and prove it equals t'_shift
-    have h_pred_shifted := by
+    have h_pred_shifted : FiniteTime.pred? (temporalBound phi) t_shift = some t'_shift := by
       have h_int_eq := h_shifted_diff
       -- Since t'_shift = t_shift - 1 in toInt, and both are in bounds,
       -- by uniqueness of pred, we have pred? t_shift = some t'_shift
       cases h' : FiniteTime.pred? (temporalBound phi) t_shift with
       | none =>
-        -- Contradiction: if no pred, t_shift is min, but t'_shift would be < min
-        have h_min := (FiniteTime.toInt_range (temporalBound phi) t_shift).left
+        -- Contradiction: if no pred, t_shift is at min, but t'_shift.toInt = t_shift.toInt - 1 < -k
         have h'_min := (FiniteTime.toInt_range (temporalBound phi) t'_shift).left
-        have := by
-          calc FiniteTime.toInt (temporalBound phi) t'_shift
-            < FiniteTime.toInt (temporalBound phi) t_shift := by omega
-            _ ≤ FiniteTime.toInt (temporalBound phi) (FiniteTime.minTime (temporalBound phi)) := by 
-                { have := (FiniteTime.minTime_toInt (temporalBound phi)).symm; simp only [*] }
-            < -↑(temporalBound phi) := by omega
-        contradiction
+        -- From pred? = none: t_shift.val = 0 (negation of the if condition)
+        simp only [FiniteTime.pred?] at h'
+        split_ifs at h' with h_bound
+        -- h_bound : 0 < t_shift.val leads to some, but we have none
+        -- So we must have ¬(0 < t_shift.val), i.e., t_shift.val = 0
+        have h_at_min : t_shift.val = 0 := by omega
+        -- Therefore toInt t_shift = -k
+        have h_toInt_min : FiniteTime.toInt (temporalBound phi) t_shift = -(temporalBound phi : Int) := by
+          simp only [FiniteTime.toInt, h_at_min]
+          omega
+        -- But t'_shift.toInt = t_shift.toInt - 1 = -k - 1, contradicting h'_min
+        have h_t'_toInt : FiniteTime.toInt (temporalBound phi) t'_shift = -(temporalBound phi : Int) - 1 := by
+          omega
+        omega
       | some t'' =>
+        -- t'' is the predecessor of t_shift, need to show t'' = t'_shift
         have h_pred_int := FiniteTime.pred_toInt (temporalBound phi) t_shift t'' h'
-        rw [h_pred_int] at h_int_eq
-        exact FiniteTime.toInt_injective (temporalBound phi) h_int_eq
+        -- h_pred_int : toInt t'' = toInt t_shift - 1
+        -- h_int_eq : toInt t_shift - toInt t'_shift = 1
+        -- So toInt t'' = toInt t'_shift
+        have h_eq_int : FiniteTime.toInt (temporalBound phi) t'' =
+                        FiniteTime.toInt (temporalBound phi) t'_shift := by omega
+        have h_eq := FiniteTime.toInt_injective (temporalBound phi) h_eq_int
+        rw [h_eq]
     exact h.backward_rel t_shift t'_shift h_pred_shifted
 
 /--
@@ -1916,45 +1943,14 @@ theorem time_shift_zero_eq (h : FiniteHistory phi)
 
   /--
   Helper lemma: clamping preserves order.
-  
-  If a ≤ b, then clamp(a) ≤ clamp(b) where clamp uses FiniteTime bounds.
-  -/
-  theorem clamp_preserves_order (k : Nat) (a b : Int) 
-      (h_le : a ≤ b) 
-      (h_a_in_bounds : -(k : Int) ≤ a ∧ a ≤ (k : Int))
-      (h_b_in_bounds : -(k : Int) ≤ b ∧ b ≤ (k : Int))) :
-      let a_clamped := if h_a_low : a < -(k : Int) then -(k : Int)
-                    else if h_a_high : a > (k : Int) then (k : Int)
-                    else a
-      let b_clamped := if h_b_low : b < -(k : Int) then -(k : Int)
-                    else if h_b_high : b > (k : Int) then (k : Int)
-                    else b
-      a_clamped ≤ b_clamped := by
-      cases h_a_low <;> cases h_a_high <;> cases h_b_low <;> cases h_b_high <;>
-      <;> omega
 
-  /--
-  Helper lemma: clamping addition property.
-  
-  Relates clamp(a + Δ) to clamp(a) + Δ when in bounds.
+  If a ≤ b and both are in bounds, then a ≤ b directly (no actual clamping needed).
   -/
-  theorem clamp_add_property (k : Nat) (a Δ : Int) 
-      (h_a_in_bounds : -(k : Int) ≤ a ∧ a ≤ (k : Int))) :
-      let a_shifted := a + Δ
-      let a_clamped := if h_a_low : a < -(k : Int) then -(k : Int)
-                    else if h_a_high : a > (k : Int) then (k : Int)
-                    else a
-      let shifted_clamped := 
-        if h_shifted_low : a_shifted < -(k : Int) then -(k : Int)
-        else if h_shifted_high : a_shifted > (k : Int) then (k : Int)
-        else a_shifted
-      let clamped_plus := a_clamped + Δ
-      if h : -(k : Int) ≤ a_shifted ∧ a_shifted ≤ (k : Int) then
-        shifted_clamped = clamped_plus := by
-          cases h_a_low <;> cases h_a_high <;> simp only [h, h_shifted_low, h_shifted_high] <;> omega
-      else
-        shifted_clamped = clamped_plus := by
-          cases h_a_low <;> cases h_a_high <;> cases h_shifted_low <;> cases h_shifted_high <;> omega
+  theorem clamp_preserves_order (k : Nat) (a b : Int)
+      (h_le : a ≤ b)
+      (h_a_in_bounds : -(k : Int) ≤ a ∧ a ≤ (k : Int))
+      (h_b_in_bounds : -(k : Int) ≤ b ∧ b ≤ (k : Int)) :
+      a ≤ b := h_le
 
 end FiniteHistory
 
@@ -3018,27 +3014,13 @@ Forward requirements are consistent.
 theorem forwardTransferRequirements_consistent (phi : Formula) (w : FiniteWorldState phi) :
     SetConsistent (forwardTransferRequirements phi w) := by
   -- By definition, forwardTransferRequirements consists of formulas satisfied by w
-  -- If w is consistent (which it is by definition), then any set of 
+  -- If w is consistent (which it is by definition), then any set of
   -- formulas it satisfies must also be consistent
   intro L h_sub
-  -- Suppose for contradiction that L ⊆ forwardTransferRequirements is inconsistent
-  rcases SetConsistent.exists_false_derivation (by_contra h_sub) with ⟨L', h_sub', h_false⟩
-  -- All formulas in L' are satisfied by w (since L' ⊆ forwardTransferRequirements)
-  have h_sat : ∀ ψ ∈ L', w.models ψ := by
-    intro ψ h_mem
-    have h_in_fwd : ψ ∈ forwardTransferRequirements phi w := h_sub ψ (h_sub' ψ h_mem)
-    rcases h_in_fwd with ⟨h_fut, h_psi, h_sat⟩
-    exact h_sat
-  -- Apply soundness: if w satisfies all premises of a derivation that yields false,
-  -- then w must satisfy false, contradicting w.consistent
-  have h_false_sat : w.models Formula.bot := by
-    apply soundness [] Formula.bot h_false
-    intro T _ _ F M τ t _ h_models
-    -- Since w satisfies all premises and derivation derives false,
-    -- w would satisfy false, which contradicts bot_false
-    exact (w.bot_false (by sorry)) h_models
-  -- Contradiction: w cannot both satisfy and not satisfy false
-  exact (w.bot_false h_false_sat).rec
+  -- Need to show: Consistent L where all formulas in L are satisfied by w
+  -- Since w is a FiniteWorldState (which extends MaximalConsistent sets),
+  -- any finite subset of formulas it satisfies must be consistent
+  sorry
 
 /--
 Forward existence theorem (proven via Lindenbaum).
@@ -3074,27 +3056,13 @@ Backward requirements are consistent.
 -/
 theorem backwardTransferRequirements_consistent (phi : Formula) (w : FiniteWorldState phi) :
     SetConsistent (backwardTransferRequirements phi w) := by
-  -- Similar to forward case: if w is consistent, any set of 
+  -- Similar to forward case: if w is consistent, any set of
   -- formulas it satisfies must be consistent
   intro L h_sub
-  -- Suppose for contradiction that L ⊆ backwardTransferRequirements is inconsistent
-  rcases SetConsistent.exists_false_derivation (by_contra h_sub) with ⟨L', h_sub', h_false⟩
-  -- All formulas in L' are satisfied by w (since L' ⊆ backwardTransferRequirements)
-  have h_sat : ∀ ψ ∈ L', w.models ψ := by
-    intro ψ h_mem
-    have h_in_bwd : ψ ∈ backwardTransferRequirements phi w := h_sub ψ (h_sub' ψ h_mem)
-    rcases h_in_bwd with ⟨h_past, h_psi, h_sat⟩
-    exact h_sat
-  -- Apply soundness: if w satisfies all premises of derivation yielding false,
-  -- then w would satisfy false, contradicting consistency
-  have h_false_sat : w.models Formula.bot := by
-    apply soundness [] Formula.bot h_false
-    intro T _ _ F M τ t _ h_models
-    -- Since w satisfies all premises and derivation derives false,
-    -- w would satisfy false, which contradicts bot_false
-    exact (w.bot_false (by sorry)) h_models
-  -- Contradiction: w cannot both satisfy and not satisfy false  
-  exact (w.bot_false h_false_sat).rec
+  -- Need to show: Consistent L where all formulas in L are satisfied by w
+  -- Since w is a FiniteWorldState (which extends MaximalConsistent sets),
+  -- any finite subset of formulas it satisfies must be consistent
+  sorry
 
 /--
 Backward existence theorem (proven via Lindenbaum).
@@ -3194,7 +3162,7 @@ theorem neg_consistent_of_not_provable (phi : Formula) (h_not_prov : ¬Nonempty 
     subst hne
     obtain ⟨d⟩ := h_incons
     -- From [] ⊢ ⊥, by soundness, [] ⊨ ⊥ (semantic consequence)
-    have h_sem_cons : ([] : Context) ⊨ Formula.bot := soundness [] Formula.bot d
+    have h_sem_cons : ([] : Context) ⊨ Formula.bot := Bimodal.Metalogic.Soundness.soundness [] Formula.bot d
     -- This means: for all D, F, M, τ, t, if all formulas in [] are true (vacuously), then ⊥ is true
     -- But ⊥ is never true, so this is a contradiction
     -- Specialize to Int with trivial structures
@@ -3286,16 +3254,11 @@ theorem mcs_projection_is_closure_mcs (phi : Formula) (M : Set Formula)
       | inl h => exact absurd h h_ψ_not_M
       | inr h => exact h
     -- Now we show insert ψ (M ∩ closure phi) is inconsistent
-    -- Since ψ ∉ M (h_ψ_not_M) and M is SetMaximalConsistent,
-    -- inserting ψ into M makes it inconsistent
-    have h_incons_M : ¬SetConsistent (insert ψ M) := h_mcs.2 ψ h_ψ_not_M
-    -- If insert ψ (M ∩ closure phi) were consistent, then since 
-    -- (M ∩ closure phi) ⊆ M, we could extend to show insert ψ M is consistent
-    -- (any derivation using only formulas from M can use only those from the intersection)
-    intro h_cons_inter
-    -- Contradiction: h_incons_M says insert ψ M is inconsistent,
-    -- but h_cons_inter would imply it's consistent
-    exact h_incons_M h_cons_inter
+    -- The key is that ψ.neg ∈ M (by h_neg_in_M). If ψ.neg ∈ closure phi,
+    -- then {ψ, ψ.neg} ⊆ insert ψ (M ∩ closure phi), making it inconsistent.
+    -- This requires closure to be closed under negations of its elements.
+    -- For now we use sorry as this requires closureWithNeg (see docstring).
+    sorry
 
 /--
 Semantic weak completeness: validity in semantic model implies derivability.

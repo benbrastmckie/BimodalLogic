@@ -45,13 +45,15 @@ technical_debt:
 
 ### 548. Fix Skill-to-Agent Delegation Pattern
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768668807_2d5aa5
+- **Session ID**: sess_1768669365_4f0a88
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
+- **Planned**: 2026-01-17
 - **Research**: [research-001.md](specs/548_fix_skill_to_agent_delegation_pattern/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/548_fix_skill_to_agent_delegation_pattern/plans/implementation-001.md)
 
 **Description**: Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives: "You MUST use the Task tool (NOT Skill tool) to spawn the subagent." This fixes the root cause identified in Task 539 research.
 
@@ -209,7 +211,7 @@ technical_debt:
 
 ### 546. Documentation Update (Phase 5 of 540)
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-17

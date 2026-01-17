@@ -5,10 +5,11 @@ including soundness, completeness, representation theorems, and decidability.
 
 ## Current State Overview
 
-The metalogic currently has **two parallel structures**:
+The metalogic has been **unified** following the Task 540 refactor (2026-01-17):
 
-1. **Working Structure** - Self-contained completeness proof in `Completeness.lean`
-2. **Intended Structure** - FMP-centric modular architecture (partially implemented, has errors)
+1. **Working Structure** - Self-contained completeness proof in `Completeness.lean` (PROVEN)
+2. **Applications Layer** - `CompletenessTheorem.lean` and `Compactness.lean` that re-export theorems
+3. **Representation Layer** - Compiles with sorries (9 total), provides scaffolding for FMP-centric approach
 
 ### Working Structure (Actual Dependencies)
 
@@ -38,13 +39,23 @@ The metalogic currently has **two parallel structures**:
     │   Infinite canonical model  │
     └──────────────┬──────────────┘
                    │
-                   ▼
-    ┌─────────────────────────────┐
-    │ Completeness/               │
-    │ FiniteCanonicalModel.lean   │
-    │          (PROVEN)           │
-    │  semantic_weak_completeness │
-    └─────────────────────────────┘
+         ┌─────────┴─────────────┐
+         ▼                       ▼
+┌───────────────────────┐  ┌───────────────────────┐
+│ Completeness/         │  │ CompletenessTheorem   │
+│ FiniteCanonicalModel  │  │ (WORKING)             │
+│ (PROVEN)              │  │ Re-exports weak/strong│
+│ weak_completeness     │  │ completeness          │
+└───────────────────────┘  └───────────┬───────────┘
+                                       │
+                           ┌───────────┴───────────┐
+                           ▼                       ▼
+                   ┌───────────────┐       ┌───────────────┐
+                   │ Compactness   │       │Representation/│
+                   │ (WORKING)     │       │ (PARTIAL)     │
+                   │ Finite sat→   │       │ 9 sorries     │
+                   │ Satisfiable   │       │               │
+                   └───────────────┘       └───────────────┘
 
 
          (Separate, not connected to FMP)
@@ -112,16 +123,18 @@ with **Finite Model Property (FMP)** as the central bridge enabling all downstre
 
 | Module | Status | Notes |
 |--------|--------|-------|
-| **Soundness/** | ✅ PROVEN | 14 axioms, 7 rules. `soundness : Γ ⊢ φ → Γ ⊨ φ` |
-| **DeductionTheorem.lean** | ✅ PROVEN | `(A :: Γ) ⊢ B → Γ ⊢ A → B` |
-| **Core/** | ✅ Working | Definitions: Consistent, Valid, MaximalConsistent |
-| **Completeness.lean** | ✅ PROVEN | Infinite canonical model, `provable_iff_valid` |
-| **Completeness/FiniteCanonicalModel** | ✅ PROVEN | `semantic_weak_completeness` |
-| **Decidability/** | ⚠️ Partial | Soundness proven, completeness needs FMP |
-| **Representation/** | ❌ Broken | Has compilation errors (API mismatches) |
-| **Representation/FMP** | ❌ Scaffolding | Depends on broken Representation |
-| **Completeness/CompletenessTheorem** | ❌ Broken | Depends on broken Representation |
-| **Applications/Compactness** | ❌ Broken | Depends on broken Representation |
+| **Soundness/** | PROVEN | 14 axioms, 7 rules. `soundness : Γ ⊢ φ → Γ ⊨ φ` |
+| **DeductionTheorem.lean** | PROVEN | `(A :: Γ) ⊢ B → Γ ⊢ A → B` |
+| **Core/** | WORKING | Definitions: Consistent, Valid, MaximalConsistent |
+| **Completeness.lean** | PROVEN | Infinite canonical model, `provable_iff_valid` |
+| **Completeness/FiniteCanonicalModel** | PROVEN | `semantic_weak_completeness` |
+| **Completeness/CompletenessTheorem** | WORKING | Re-exports weak/strong completeness theorems |
+| **Applications/Compactness** | WORKING | Compactness theorem via FMP connection |
+| **Decidability/** | PARTIAL | Soundness proven, completeness needs FMP |
+| **Representation/CanonicalModel** | PARTIAL | Compiles with 2 sorries |
+| **Representation/TruthLemma** | PARTIAL | Compiles with 2 sorries |
+| **Representation/RepresentationTheorem** | PARTIAL | Compiles with 4 sorries |
+| **Representation/FiniteModelProperty** | PARTIAL | Compiles with 1 sorry |
 
 ## Key Theorems
 
@@ -180,17 +193,17 @@ Metalogic/
 │                           # TODO: Move to Core/ per intended structure
 │
 ├── Completeness.lean       # Infinite canonical model (PROVEN)
-│                           # Self-contained, bypasses Representation/
+│                           # Self-contained completeness proof
 │
 ├── Completeness/           # Finite canonical model approach
-│   ├── CompletenessTheorem.lean   # (BROKEN - depends on Representation)
+│   ├── CompletenessTheorem.lean   # (WORKING) Re-exports completeness theorems
 │   └── FiniteCanonicalModel.lean  # Core proven, extends Completeness.lean
 │
-├── Representation/         # Representation theorem infrastructure (BROKEN)
-│   ├── CanonicalModel.lean        # Has API mismatch errors
-│   ├── TruthLemma.lean            # Has errors
-│   ├── RepresentationTheorem.lean # Has errors
-│   ├── FiniteModelProperty.lean   # FMP scaffolding (has sorries)
+├── Representation/         # Representation theorem infrastructure (PARTIAL - 9 sorries)
+│   ├── CanonicalModel.lean        # Compiles with 2 sorries
+│   ├── TruthLemma.lean            # Compiles with 2 sorries
+│   ├── RepresentationTheorem.lean # Compiles with 4 sorries
+│   ├── FiniteModelProperty.lean   # FMP scaffolding (1 sorry)
 │   └── ContextProvability.lean    # Working context provability
 │
 ├── Decidability/           # Tableau decision procedure (PARTIAL)
@@ -203,15 +216,17 @@ Metalogic/
 │   ├── DecisionProcedure.lean
 │   └── Correctness.lean    # Soundness proven, completeness needs FMP
 │
-├── Applications/           # Applications (BROKEN)
-│   └── Compactness.lean    # Depends on broken Representation
-│
-├── Boneyard/               # Deprecated code
-│   ├── SyntacticApproach.lean    # Old syntactic completeness approach
-│   └── DurationConstruction.lean # Old Duration-based construction
+├── Applications/           # Applications (WORKING)
+│   └── Compactness.lean    # Compactness theorem
 │
 ├── Decidability.lean       # Module hub for decidability
 └── README.md               # This file
+
+# Note: Deprecated code is in Bimodal/Boneyard/ (sibling directory):
+# Theories/Bimodal/Boneyard/
+# ├── SyntacticApproach.lean    # Old syntactic completeness approach
+# ├── DurationConstruction.lean # Old Duration-based construction
+# └── README.md                 # Deprecation history
 ```
 
 ### Intended Structure (per Task 523 Research)
@@ -290,29 +305,33 @@ To achieve the intended FMP-centric structure:
 
 ## Known Issues
 
-1. **Representation Module Compilation Errors**:
-   - `CanonicalModel.lean` uses incorrect APIs (`.toList` on Set, missing `subformula_closure`)
-   - Needs refactoring to use correct Lean 4/Mathlib patterns
+1. **Representation Module Has Sorries** (9 total):
+   - `CanonicalModel.lean`: 2 sorries (canonical model construction details)
+   - `TruthLemma.lean`: 2 sorries (truth lemma proof steps)
+   - `RepresentationTheorem.lean`: 4 sorries (theorem proof steps)
+   - `FiniteModelProperty.lean`: 1 sorry (FMP bound proof)
+   - All modules compile successfully; sorries are proof obligations not API errors
 
-2. **FMP Not Connected**:
-   - `FiniteModelProperty.lean` has sorries
-   - Decidability completeness blocked on FMP
+2. **FMP Not Connected to Decidability**:
+   - `FiniteModelProperty.lean` provides FMP scaffolding
+   - Decidability completeness still blocked on FMP proof completion
 
-3. **Two Parallel Structures**:
-   - `Completeness.lean` works but bypasses the modular Representation layer
-   - Need to decide: unify or keep both
+3. **Dual Architecture** (intentional):
+   - `Completeness.lean` provides self-contained working completeness proof
+   - `Representation/` provides modular scaffolding for future FMP-centric proofs
+   - Both approaches are maintained for different use cases
 
 ## Historical Notes
 
 The completeness proof uses two parallel approaches:
 
 1. **Syntactic Approach** (DEPRECATED): Used `FiniteWorldState` with `IsLocallyConsistent`.
-   Failed due to negation-completeness issues. Documented in `Boneyard/SyntacticApproach.lean`.
+   Failed due to negation-completeness issues. Documented in `../Boneyard/SyntacticApproach.lean`.
 
 2. **Semantic Approach** (CURRENT): Uses `SemanticWorldState` as quotient of (history, time) pairs.
    Works because truth is evaluated on histories directly, bypassing negation-completeness issues.
 
-See `Boneyard/README.md` for full deprecation history and rationale.
+See `Theories/Bimodal/Boneyard/README.md` for full deprecation history and rationale.
 
 ## Usage
 

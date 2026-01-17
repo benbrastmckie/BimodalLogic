@@ -66,11 +66,11 @@
       "project_name": "documentation_update",
       "type": "documentation",
       "phase": "not_started",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T17:00:05Z",
+      "last_updated": "2026-01-17T17:03:29Z",
       "effort": "0.5 hours",
       "parent": 540,
       "dependencies": [
@@ -342,21 +342,26 @@
       "project_number": 548,
       "project_name": "fix_skill_to_agent_delegation_pattern",
       "type": "fix",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T16:59:30Z",
+      "last_updated": "2026-01-17T17:04:56Z",
       "effort": "2-3 hours",
       "description": "Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives. Fixes the root cause identified in Task 539 research.",
-      "session_id": "sess_1768668807_2d5aa5",
+      "session_id": "sess_1768669365_4f0a88",
       "researched": "2026-01-17T16:59:30Z",
       "artifacts": [
         {
           "path": "specs/548_fix_skill_to_agent_delegation_pattern/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/548_fix_skill_to_agent_delegation_pattern/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-17T17:04:56Z"
     },
     {
       "project_number": 549,
