@@ -8,12 +8,19 @@
     {
       "project_number": 547,
       "project_name": "improve_fmp_full_theorem",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T16:22:24Z",
-      "last_updated": "2026-01-17T17:27:10Z",
-      "session_id": "sess_1768668430_3741b8"
+      "last_updated": "2026-01-17T17:55:00Z",
+      "session_id": "sess_1768668430_3741b8",
+      "researched": "2026-01-17T17:55:00Z",
+      "artifacts": [
+        {
+          "path": "specs/547_improve_fmp_full_theorem/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 545,

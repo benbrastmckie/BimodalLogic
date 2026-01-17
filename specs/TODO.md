@@ -28,12 +28,14 @@ technical_debt:
 ## High Priority
 
 ### 547. Improve FMP Full Theorem
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Session ID**: sess_1768668430_3741b8
 - **Created**: 2026-01-17
+- **Researched**: 2026-01-17
+- **Research**: [research-001.md](specs/547_improve_fmp_full_theorem/reports/research-001.md)
 
 **Description**: Improve the current implementation to establish the full FMP theorem proving that ANY model can be reduced to a FINITE model.
 
