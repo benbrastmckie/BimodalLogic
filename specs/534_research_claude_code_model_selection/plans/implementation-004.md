@@ -162,7 +162,7 @@ grep -l "DO NOT.*Skill tool" /home/benjamin/Projects/protocol/.claude/skills/*/S
 
 ---
 
-### Phase 3: Remove Eager Directory Creation [IN PROGRESS]
+### Phase 3: Remove Eager Directory Creation [COMPLETED]
 
 **Goal**: Eliminate `mkdir -p specs/{N}_{SLUG}` from task creation paths
 
@@ -198,7 +198,7 @@ grep -c "mkdir.*reports/\|mkdir.*plans/\|mkdir.*summaries/" /home/benjamin/Proje
 
 ---
 
-### Phase 4: Update Documentation [NOT STARTED]
+### Phase 4: Update Documentation [COMPLETED]
 
 **Goal**: Update CLAUDE.md and template files
 
@@ -254,7 +254,7 @@ grep -c "mkdir.*reports/\|mkdir.*plans/\|mkdir.*summaries/" /home/benjamin/Proje
 
 ---
 
-### Phase 5: Verify skill-status-sync Configuration [NOT STARTED]
+### Phase 5: Verify skill-status-sync Configuration [IN PROGRESS]
 
 **Goal**: Confirm direct execution pattern (from Task 564)
 

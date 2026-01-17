@@ -27,41 +27,6 @@ technical_debt:
 
 ## High Priority
 
-### 564. Memory Issues with Status-Sync-Agent Architecture
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-17
-- **Session ID**: sess_1768689272_7cbfab
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Research**: [research-001.md](specs/564_memory_issues_status_sync_agent/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/564_memory_issues_status_sync_agent/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260117.md](specs/564_memory_issues_status_sync_agent/summaries/implementation-summary-20260117.md)
-
-**Description**: Investigate memory errors occurring when skill-status-sync calls status-sync-agent. The skill-agent delegation leads to memory exhaustion that either crashes the terminal or produces error outputs in .claude/output/. Analyze the command-skill-agent architecture to identify root causes and redesign to preserve functionality without memory errors.
-
----
-
-### 549. Research Intelligent Model Routing Architecture
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Session ID**: sess_1768685712_d13ac2
-- **Created**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Dependencies**: 548
-- **Research**: [research-002.md](specs/549_research_intelligent_model_routing_architecture/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/549_research_intelligent_model_routing_architecture/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/549_research_intelligent_model_routing_architecture/summaries/implementation-summary-20260117.md)
-
-**Description**: Research how to implement intelligent model routing in the .claude/ architecture. Options include: query complexity analyzer skill, task-type based routing rules, or model cascade pattern. Evaluate trade-offs between complexity, cost savings, and reliability given the Haiku tool_reference limitation.
-
----
-
 ### 534. Research Claude Code Model Selection Mechanisms
 - **Effort**: 2-3 hours
 - **Status**: [IMPLEMENTING]
@@ -110,43 +75,6 @@ technical_debt:
 - **Subtasks**: 557, 558, 559, 560, 561
 
 **Description**: Complete all aspects of the implementation of the reorganized /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/ directory, completing all sorries and making this directory stand on its own so that I can delete Metalogic/ once Metalogic_v2/ is complete. Begin by improving /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/README.md to accurately report the current state and what the target organization is.
-
----
-
-### 557. MCS Property Completion
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Parent**: 556
-- **Research**: [research-001.md](specs/557_mcs_property_completion/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/557_mcs_property_completion/plans/implementation-001.md)
-- **Plan**: [implementation-002.md](specs/557_mcs_property_completion/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260117.md](specs/557_mcs_property_completion/summaries/implementation-summary-20260117.md)
-
-**Description**: Prove mcs_contains_or_neg and mcs_modus_ponens in Representation/CanonicalModel.lean. These MCS properties are the critical blocking dependency for downstream theorems.
-
----
-
-### 558. Semantic Satisfiability Bridge
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Revised**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Parent**: 556
-- **Dependencies**: 557
-- **Research**: [research-003.md](specs/558_semantic_satisfiability_bridge/reports/research-003.md)
-- **Plan**: [implementation-002.md](specs/558_semantic_satisfiability_bridge/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260117.md](specs/558_semantic_satisfiability_bridge/summaries/implementation-summary-20260117.md)
-
-**Description**: Prove consistent_implies_satisfiable and subformulaList_finite in Representation/FiniteModelProperty.lean. Bridges canonical world representation to semantic satisfiability. **Revised**: Emphasizes Metalogic_v2 self-containment - Metalogic/ results are inspiration only, not to be imported. Representation theorem is the foundation for completeness.
 
 ---
 
@@ -373,29 +301,6 @@ technical_debt:
 - **Plan**: [Revised integration plan for Harmonic Aristotle API into Lean implementer agent](specs/504_aristotle_integration/plans/implementation-003.md)
 
 **Description**: Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.
-
-### 475. Create skill-document-converter thin wrapper
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Completed**: 2026-01-17
-- **Research**: [research-001.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md)
-- **Research**: [research-002.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-002.md)
-- **Plan**: [implementation-003.md](specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-003.md)
-- **Implementation**: [document-converter-agent.md](.claude/agents/document-converter-agent.md)
-- **Implementation**: [SKILL.md](.claude/skills/skill-document-converter/SKILL.md)
-- **Implementation**: [convert.md](.claude/commands/convert.md)
-- **Summary**: [implementation-summary-20260117.md](specs/475_create_skill_document_converter_thin_wrapper/summaries/implementation-summary-20260117.md)
-
-**Description**: Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies.
-
-**Reference Files**:
-- Inspiration: `/home/benjamin/Projects/Logos/.claude/skills/document-converter/README.md`
-- Issues to avoid: `/home/benjamin/Projects/Logos/.claude/outputs/convert.md`
-
----
 
 ### 476. Create document-converter-agent
 - **Effort**: 3-4 hours
