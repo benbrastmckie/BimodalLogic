@@ -51,10 +51,13 @@ Metalogic/
 ```
                Soundness
                    ↑
-    DeductionTheorem   Core/Basic
-          ↑               ↑
-          └───────┬───────┘
-                  ↓
+              Core/
+    ┌──────────────────────────┐
+    │ Basic.lean               │
+    │ Provability.lean         │
+    │ DeductionTheorem.lean    │
+    └────────────┬─────────────┘
+                 ↓
          Representation/
          CanonicalModel
                   ↓
@@ -92,11 +95,13 @@ Based on standard metalogic for modal/temporal logics, the ideal dependency stru
                     │   (Soundness)     │
                     └─────────┬─────────┘
                               │
-            ┌─────────────────┼─────────────────┐
-            ↓                 ↓                 ↓
-     DeductionTheorem    Core/Basic    Core/Provability
-            ↓                 ↓                 ↓
-            └─────────────────┼─────────────────┘
+                              ↓
+                    ┌───────────────────┐
+                    │      Core/        │
+                    │  Basic.lean       │
+                    │  Provability.lean │
+                    │  DeductionThm.lean│
+                    └─────────┬─────────┘
                               ↓
                  ┌────────────────────────┐
                  │  REPRESENTATION LAYER  │
@@ -133,9 +138,10 @@ Based on standard metalogic for modal/temporal logics, the ideal dependency stru
 
 ```
 Metalogic/
-├── Core/                           # Foundation definitions
+├── Core/                           # Foundation definitions & theorems
 │   ├── Basic.lean                  # Consistency, Validity definitions
 │   ├── Provability.lean            # ContextDerivable, derivation trees
+│   ├── DeductionTheorem.lean       # Proof-theoretic tool (Γ,A ⊢ B → Γ ⊢ A→B)
 │   └── README.md                   # Core concepts documentation
 │
 ├── Soundness/                      # Direction: Derivable → Valid
@@ -174,8 +180,6 @@ Metalogic/
 │   ├── Compactness.lean            # Main theorem
 │   └── README.md                   # Compactness applications
 │
-├── DeductionTheorem.lean           # Proof-theoretic tool
-│
 ├── Boneyard/                       # Deprecated code preservation
 │   ├── SyntacticFiniteModel.lean   # Old syntactic approach
 │   ├── DurationConstruction.lean   # Old Duration-based approach
@@ -187,16 +191,17 @@ Metalogic/
 ### 4. Dependency Graph (Imports)
 
 ```lean
--- Core (no metalogic dependencies)
-Core/Basic.lean       → Bimodal.ProofSystem, Bimodal.Semantics
-Core/Provability.lean → Core/Basic
+-- Core (no metalogic dependencies, foundational definitions + deduction theorem)
+Core/Basic.lean            → Bimodal.ProofSystem, Bimodal.Semantics
+Core/Provability.lean      → Core/Basic
+Core/DeductionTheorem.lean → Core/Basic, Bimodal.ProofSystem.Derivation
 
 -- Soundness (independent of completeness)
 Soundness/Soundness.lean       → Core/Basic, Bimodal.Semantics
 Soundness/SoundnessLemmas.lean → Soundness/Soundness
 
--- Representation (depends on Core, not on Soundness)
-Representation/CanonicalModel.lean      → Core/Basic, Core/Provability
+-- Representation (depends on Core including DeductionTheorem)
+Representation/CanonicalModel.lean      → Core/Basic, Core/Provability, Core/DeductionTheorem
 Representation/TruthLemma.lean          → Representation/CanonicalModel
 Representation/RepresentationTheorem.lean → Representation/TruthLemma
 Representation/FiniteModelProperty.lean  → Representation/RepresentationTheorem
