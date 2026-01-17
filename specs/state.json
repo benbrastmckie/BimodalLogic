@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 563,
+      "project_name": "investigate_empty_directory_creation",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T21:47:33Z",
+      "last_updated": "2026-01-17T21:47:33Z"
+    },
+    {
       "project_number": 562,
       "project_name": "agent_system_refactor_report",
       "status": "researched",
@@ -466,5 +475,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 563
+  "next_project_number": 564
 }

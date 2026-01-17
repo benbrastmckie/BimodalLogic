@@ -1,5 +1,5 @@
 ---
-next_project_number: 563
+next_project_number: 564
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -61,6 +61,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 563. Investigate Empty Directory Creation in specs/
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+
+**Description**: Investigate empty directories being created in specs/ which violates the lazy directory creation rule. Carefully inspect all potential sources in the .claude/ agent system to identify the root cause and resolve the issue elegantly.
+
+---
 
 ### 556. Complete Metalogic_v2 Implementation
 - **Effort**: 6-10 hours
@@ -405,7 +416,6 @@ technical_debt:
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
-- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
 
 **Description**: When making changes to LaTeX files (e.g., 00-Introduction.tex), rebuilding sometimes produces "File ended while scanning use of \@newl@bel" and "\@@BOOKMARK" errors, plus "Extra }, or forgotten \endgroup" errors in the .aux file. Identify the root cause (likely corrupted auxiliary files from interrupted builds) and document solutions to avoid these errors.
