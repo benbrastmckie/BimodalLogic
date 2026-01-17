@@ -1,5 +1,5 @@
 ---
-next_project_number: 557
+next_project_number: 562
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -97,7 +97,7 @@ technical_debt:
 
 ### 556. Complete Metalogic_v2 Implementation
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [EXPANDED]
 - **Priority**: High
 - **Language**: lean
 - **Session ID**: sess_1768682818_dff425
@@ -107,8 +107,73 @@ technical_debt:
 - **Dependencies**: 554
 - **Research**: [research-001.md](specs/556_complete_metalogic_v2_implementation/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/556_complete_metalogic_v2_implementation/plans/implementation-001.md)
+- **Subtasks**: 557, 558, 559, 560, 561
 
 **Description**: Complete all aspects of the implementation of the reorganized /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/ directory, completing all sorries and making this directory stand on its own so that I can delete Metalogic/ once Metalogic_v2/ is complete. Begin by improving /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/README.md to accurately report the current state and what the target organization is.
+
+---
+
+### 557. MCS Property Completion
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Parent**: 556
+
+**Description**: Prove mcs_contains_or_neg and mcs_modus_ponens in Representation/CanonicalModel.lean. These MCS properties are the critical blocking dependency for downstream theorems.
+
+---
+
+### 558. Semantic Satisfiability Bridge
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Parent**: 556
+- **Dependencies**: 557
+
+**Description**: Prove consistent_implies_satisfiable and subformulaList_finite in Representation/FiniteModelProperty.lean. Bridges canonical world representation to semantic satisfiability.
+
+---
+
+### 559. Strong Completeness Helpers
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Parent**: 556
+- **Dependencies**: 557
+
+**Description**: Prove entails_imp_chain and imp_chain_to_context in StrongCompleteness.lean, plus double negation elimination and canonical world contradiction in RepresentationTheorem.lean.
+
+---
+
+### 560. Axiom Elimination
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Parent**: 556
+- **Dependencies**: 558
+
+**Description**: Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean. Uses completeness contrapositive argument.
+
+---
+
+### 561. Cleanup and Documentation
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Parent**: 556
+- **Dependencies**: 560
+
+**Description**: Prove consistent_iff_consistent in Basic.lean and necessitation_lemma in TruthLemma.lean. Update README.md with accurate completion status. Verify zero sorries in Metalogic_v2.
 
 ---
 
@@ -301,7 +366,7 @@ technical_debt:
 
 ### 475. Create skill-document-converter thin wrapper
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md)
