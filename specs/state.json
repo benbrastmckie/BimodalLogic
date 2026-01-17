@@ -6,6 +6,94 @@
   },
   "active_projects": [
     {
+      "project_number": 542,
+      "project_name": "fix_canonical_model_foundation",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T14:50:19Z",
+      "effort": "2 hours",
+      "parent": 540,
+      "description": "Phase 1: Fix Representation/CanonicalModel.lean to compile using patterns from Completeness.lean. Copy SetMaximalConsistent/SetConsistent/ConsistentExtensions definitions, fix Lindenbaum lemma using working set_lindenbaum pattern, replace outdated Mathlib APIs."
+    },
+    {
+      "project_number": 543,
+      "project_name": "establish_truth_lemma_and_representation",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T14:50:19Z",
+      "effort": "1.5 hours",
+      "parent": 540,
+      "dependencies": [
+        542
+      ],
+      "description": "Phase 2: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence."
+    },
+    {
+      "project_number": 544,
+      "project_name": "connect_fmp_bridge",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T14:50:19Z",
+      "effort": "1 hour",
+      "parent": 540,
+      "dependencies": [
+        542,
+        543
+      ],
+      "description": "Phase 3: Establish FiniteModelProperty as bridge from representation to decidability/compactness. Fix FiniteModelProperty.lean imports, define FMP statement, connect to SemanticCanonicalModel and Decidability modules."
+    },
+    {
+      "project_number": 545,
+      "project_name": "complete_applications_module",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T14:50:19Z",
+      "effort": "0.5 hours",
+      "parent": 540,
+      "dependencies": [
+        542,
+        543,
+        544
+      ],
+      "description": "Phase 4: Fix CompletenessTheorem.lean and Compactness.lean to use the new architecture. Export weak_completeness and strong_completeness theorems, update parent Metalogic.lean module."
+    },
+    {
+      "project_number": 546,
+      "project_name": "documentation_update",
+      "type": "documentation",
+      "phase": "not_started",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T14:50:19Z",
+      "effort": "0.5 hours",
+      "parent": 540,
+      "dependencies": [
+        542,
+        543,
+        544,
+        545
+      ],
+      "description": "Phase 5: Update Metalogic/README.md with accurate architecture diagram and module status. Remove references to non-existent Metalogic/Boneyard/, point to Bimodal/Boneyard/ instead. Add module-level docstrings."
+    },
+    {
       "project_number": 541,
       "project_name": "progressive_disclosure_refactor",
       "status": "researching",
@@ -20,11 +108,11 @@
       "project_name": "finish_metalogic_refactor_cleanup",
       "type": "refactor",
       "phase": "not_started",
-      "status": "planned",
+      "status": "expanded",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T14:34:53Z",
-      "last_updated": "2026-01-17T14:48:33Z",
+      "last_updated": "2026-01-17T14:50:23Z",
       "effort": "4-6 hours",
       "description": "Finish the Metalogic/ directory refactor, leaving no stray elements or parallel structures. Move anything worth saving to Bimodal/Boneyard/ if not already represented, and update all documentation to be fully accurate. Research report: specs/523_bimodal_cleanup/reports/research-003.md",
       "session_id": "sess_1768661078_ad3932",
@@ -39,7 +127,14 @@
           "type": "plan"
         }
       ],
-      "planned": "2026-01-17T14:48:33Z"
+      "planned": "2026-01-17T14:48:33Z",
+      "subtasks": [
+        542,
+        543,
+        544,
+        545,
+        546
+      ]
     },
     {
       "project_number": 529,
@@ -564,5 +659,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 542
+  "next_project_number": 547
 }

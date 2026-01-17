@@ -1,5 +1,5 @@
 ---
-next_project_number: 542
+next_project_number: 547
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -243,7 +243,7 @@ technical_debt:
 
 ### 540. Finish Metalogic Directory Refactor and Cleanup
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [EXPANDED]
 - **Priority**: Medium
 - **Language**: lean
 - **Session ID**: sess_1768661078_ad3932
@@ -251,8 +251,73 @@ technical_debt:
 - **Researched**: 2026-01-17
 - **Research**: [research-001.md](specs/540_finish_metalogic_refactor_cleanup/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/540_finish_metalogic_refactor_cleanup/plans/implementation-001.md)
+- **Subtasks**: 542, 543, 544, 545, 546
 
 **Description**: Finish the Logos/Metalogic/ directory refactor, leaving no stray elements or parallel structures. The situation is documented in specs/523_bimodal_cleanup/reports/research-003.md. Move anything worth saving that is not necessary for the refactored implementation to Bimodal/Boneyard/ (if not already represented), and update all documentation to be fully accurate.
+
+---
+
+### 542. Fix CanonicalModel Foundation (Phase 1 of 540)
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Parent**: 540
+
+**Description**: Fix Representation/CanonicalModel.lean to compile using patterns from Completeness.lean. Copy SetMaximalConsistent/SetConsistent/ConsistentExtensions definitions, fix Lindenbaum lemma using working set_lindenbaum pattern, replace outdated Mathlib APIs.
+
+---
+
+### 543. Establish TruthLemma and Representation (Phase 2 of 540)
+- **Effort**: 1.5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Parent**: 540
+- **Dependencies**: 542
+
+**Description**: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence.
+
+---
+
+### 544. Connect FMP Bridge (Phase 3 of 540)
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Parent**: 540
+- **Dependencies**: 542, 543
+
+**Description**: Establish FiniteModelProperty as bridge from representation to decidability/compactness. Fix FiniteModelProperty.lean imports, define FMP statement, connect to SemanticCanonicalModel and Decidability modules.
+
+---
+
+### 545. Complete Applications Module (Phase 4 of 540)
+- **Effort**: 0.5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Parent**: 540
+- **Dependencies**: 542, 543, 544
+
+**Description**: Fix CompletenessTheorem.lean and Compactness.lean to use the new architecture. Export weak_completeness and strong_completeness theorems, update parent Metalogic.lean module.
+
+---
+
+### 546. Documentation Update (Phase 5 of 540)
+- **Effort**: 0.5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Parent**: 540
+- **Dependencies**: 542, 543, 544, 545
+
+**Description**: Update Metalogic/README.md with accurate architecture diagram and module status. Remove references to non-existent Metalogic/Boneyard/, point to Bimodal/Boneyard/ instead. Add module-level docstrings.
 
 ---
 
