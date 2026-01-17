@@ -79,7 +79,7 @@ technical_debt:
 
 ### 557. MCS Property Completion
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
@@ -318,7 +318,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-002.md)
 
 **Description**: Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies.
 
