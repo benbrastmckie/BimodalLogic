@@ -308,14 +308,16 @@ technical_debt:
 
 ### 544. Connect FMP Bridge (Phase 3 of 540)
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
+- **Planned**: 2026-01-17
 - **Parent**: 540
 - **Dependencies**: 542, 543
 - **Research**: [research-001.md](specs/544_connect_fmp_bridge/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/544_connect_fmp_bridge/plans/implementation-001.md)
 
 **Description**: Establish FiniteModelProperty as bridge from representation to decidability/compactness. Fix FiniteModelProperty.lean imports, define FMP statement, connect to SemanticCanonicalModel and Decidability modules.
 
