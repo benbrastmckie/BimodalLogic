@@ -147,19 +147,24 @@
     {
       "project_number": 541,
       "project_name": "progressive_disclosure_refactor",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-17T14:41:00Z",
-      "last_updated": "2026-01-17T08:18:58-08:00",
-      "session_id": "sess_1768661109_395fa8",
+      "last_updated": "2026-01-17T08:21:57-08:00",
+      "session_id": "sess_1768666821_71a75a",
       "researched": "2026-01-17T08:18:58-08:00",
       "artifacts": [
         {
           "path": "specs/541_progressive_disclosure_refactor/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/541_progressive_disclosure_refactor/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-17T08:21:57-08:00"
     },
     {
       "project_number": 540,
