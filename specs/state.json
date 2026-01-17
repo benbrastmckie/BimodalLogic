@@ -10,14 +10,14 @@
       "project_name": "unify_workflow_commands_single_execution",
       "type": "refactor",
       "phase": "not_started",
-      "status": "planned",
+      "status": "implementing",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-17T13:43:36Z",
-      "last_updated": "2026-01-17T14:19:10Z",
+      "last_updated": "2026-01-17T14:25:23Z",
       "effort": "4-6 hours",
       "description": "Refactor /research, /plan, /implement commands to embed all checkpoint logic inline rather than delegating preflight to skill-status-sync. The preflight status update should be done directly in the command file using Bash/jq/Edit, not via Skill invocation, to prevent the completion signal problem that causes workflows to halt after preflight.",
-      "session_id": "sess_1768659461_df9d16",
+      "session_id": "sess_1768659910_d77aaf",
       "researched": "2026-01-17T14:14:12Z",
       "artifacts": [
         {
@@ -33,7 +33,8 @@
           "type": "plan"
         }
       ],
-      "planned": "2026-01-17T14:19:10Z"
+      "planned": "2026-01-17T14:19:10Z",
+      "started": "2026-01-17T14:25:23Z"
     },
     {
       "project_number": 530,

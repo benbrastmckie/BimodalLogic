@@ -105,13 +105,14 @@ technical_debt:
 
 ### 529. Unify Workflow Commands into Single-Execution Pattern
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768659461_df9d16
+- **Session ID**: sess_1768659910_d77aaf
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
 - **Planned**: 2026-01-17
+- **Started**: 2026-01-17
 - **Research**:
   - [research-001.md](specs/529_unify_workflow_commands_single_execution/reports/research-001.md) - Root cause analysis
   - [research-002.md](specs/529_unify_workflow_commands_single_execution/reports/research-002.md) - Location comparison

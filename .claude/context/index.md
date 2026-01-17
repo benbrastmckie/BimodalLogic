@@ -109,6 +109,19 @@ Load for: Behavior patterns that apply across all agents/skills
   - Enforcement points and validation commands
   - **MUST load when creating new agents or skills via /meta**
 
+- **skill-lifecycle.md** (~100 lines) - Self-contained skill pattern
+  - Skills own preflight → delegate → postflight lifecycle
+  - Eliminates multiple skill invocations per workflow
+  - Reduces halt risk from 3 skill calls to 1
+  - **MUST load when refactoring workflow skills**
+
+- **inline-status-update.md** (~200 lines) - Reusable status update snippets
+  - Preflight patterns for research/planning/implementation
+  - Postflight patterns with artifact linking
+  - TODO.md edit patterns
+  - Error handling patterns
+  - **MUST load when adding status management to skills**
+
 ---
 
 ## Core Formats (core/formats/)
