@@ -2,7 +2,7 @@
 
 - **Task**: 475 - Create document-converter command-skill-agent chain
 - **Version**: 003
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -207,7 +207,7 @@ Path 2: Implicit During Task Implementation
 
 ---
 
-### Phase 4: Update Skill List and Test [IN PROGRESS]
+### Phase 4: Update Skill List and Test [COMPLETED]
 
 **Goal**: Register skill and verify both invocation paths work
 

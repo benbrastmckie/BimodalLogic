@@ -303,6 +303,7 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 | skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
 | skill-meta | meta-builder-agent | System building and task creation |
 | skill-status-sync | status-sync-agent | Atomic status updates for task state |
+| skill-document-converter | document-converter-agent | Document format conversion (PDF/DOCX to Markdown, etc.) |
 
 ### Thin Wrapper Execution Flow
 
