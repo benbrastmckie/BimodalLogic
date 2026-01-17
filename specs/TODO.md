@@ -1,5 +1,5 @@
 ---
-next_project_number: 555
+next_project_number: 556
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -40,6 +40,17 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/548_fix_skill_to_agent_delegation_pattern/plans/implementation-001.md)
 
 **Description**: Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives: "You MUST use the Task tool (NOT Skill tool) to spawn the subagent." This fixes the root cause identified in Task 539 research.
+
+---
+
+### 555. Convert skill-status-sync to Forked Subagent Pattern
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+
+**Description**: Convert skill-status-sync from inline execution to forked subagent pattern. Currently causes workflow interruptions because inline skill completion triggers Claude to stop and wait for user input ("continue" required). Fix by creating status-sync-agent and making skill-status-sync a thin wrapper that delegates via Task tool.
 
 ---
 
