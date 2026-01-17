@@ -8,20 +8,20 @@
     {
       "project_number": 562,
       "project_name": "agent_system_refactor_report",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-17T21:33:11Z",
-      "last_updated": "2026-01-17T21:33:11Z"
+      "last_updated": "2026-01-17T21:35:00Z"
     },
     {
       "project_number": 557,
       "project_name": "mcs_property_completion",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T21:32:15Z",
+      "last_updated": "2026-01-17T21:34:27Z",
       "parent_task": 556,
       "description": "Prove mcs_contains_or_neg and mcs_modus_ponens in Representation/CanonicalModel.lean. These MCS properties are the critical blocking dependency for downstream theorems.",
       "researched": "2026-01-17T21:12:32Z",
@@ -199,12 +199,12 @@
     },
     {
       "project_number": 475,
-      "status": "planned",
+      "status": "implementing",
       "project_name": "Create skill-document-converter thin wrapper",
       "section": "Medium Priority",
       "language": "meta",
       "priority": "medium",
-      "last_updated": "2026-01-17T21:27:30Z",
+      "last_updated": "2026-01-17T21:33:45Z",
       "researched": "2026-01-17T21:17:58Z",
       "artifacts": [
         {
@@ -338,11 +338,11 @@
       "project_number": 549,
       "project_name": "research_intelligent_model_routing_architecture",
       "type": "research",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T20:41:19Z",
+      "last_updated": "2026-01-17T21:35:24Z",
       "effort": "2-3 hours",
       "dependencies": [
         548

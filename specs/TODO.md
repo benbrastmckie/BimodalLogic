@@ -29,9 +29,10 @@ technical_debt:
 
 ### 549. Research Intelligent Model Routing Architecture
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
+- **Session ID**: sess_1768685712_d13ac2
 - **Created**: 2026-01-17
 - **Dependencies**: 548
 - **Research**: [research-002.md](specs/549_research_intelligent_model_routing_architecture/reports/research-002.md)
@@ -79,7 +80,7 @@ technical_debt:
 
 ### 557. MCS Property Completion
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
@@ -288,7 +289,7 @@ technical_debt:
 
 ### 562. Agent System Refactor Report for Protocol Repository
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-17
@@ -328,7 +329,7 @@ technical_debt:
 
 ### 475. Create skill-document-converter thin wrapper
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md)
