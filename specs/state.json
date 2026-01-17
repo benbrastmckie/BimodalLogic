@@ -8,11 +8,18 @@
     {
       "project_number": 556,
       "project_name": "complete_metalogic_v2_implementation",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T20:45:04Z",
-      "last_updated": "2026-01-17T20:45:04Z"
+      "last_updated": "2026-01-17T20:50:35Z",
+      "researched": "2026-01-17T20:50:35Z",
+      "artifacts": [
+        {
+          "path": "specs/556_complete_metalogic_v2_implementation/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 555,
@@ -69,14 +76,6 @@
       "completed": "2026-01-17T20:35:13Z"
     },
     {
-      "project_number": 517,
-      "status": "not_started",
-      "project_name": "Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates",
-      "section": "High Priority",
-      "language": "general",
-      "priority": "high"
-    },
-    {
       "project_number": 511,
       "status": "not_started",
       "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
@@ -128,14 +127,6 @@
       "project_number": 502,
       "status": "not_started",
       "project_name": "Complete representation theorem using context-based provability based on Task 499 foundation",
-      "section": "Medium Priority",
-      "language": "general",
-      "priority": "medium"
-    },
-    {
-      "project_number": 516,
-      "status": "not_started",
-      "project_name": "Test task creation after refactoring",
       "section": "Medium Priority",
       "language": "general",
       "priority": "medium"
@@ -326,37 +317,6 @@
           "type": "plan"
         }
       ]
-    },
-    {
-      "project_number": 550,
-      "project_name": "implement_model_tier_strategy",
-      "type": "feature",
-      "status": "not_started",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "3-4 hours",
-      "dependencies": [
-        548,
-        549
-      ],
-      "description": "Implement the chosen model tiering strategy based on Task 549 research. Update agent frontmatter with appropriate model assignments."
-    },
-    {
-      "project_number": 551,
-      "project_name": "create_model_complexity_analyzer",
-      "type": "feature",
-      "status": "not_started",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "2-3 hours",
-      "dependencies": [
-        550
-      ],
-      "description": "Create a lightweight skill that analyzes task complexity to recommend optimal model tier. Criteria: task language, estimated effort, number of files affected, tool requirements."
     },
     {
       "project_number": 552,

@@ -105,12 +105,6 @@ technical_debt:
 
 ---
 
-
-
-
-
-
-
 ### 517. Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates
 - **Effort**: 2-3 hours
 - **Status**: [ABANDONED]
@@ -128,11 +122,14 @@ technical_debt:
 
 ### 556. Complete Metalogic_v2 Implementation
 - **Effort**: 6-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
+- **Session ID**: sess_1768682818_dff425
 - **Created**: 2026-01-17
+- **Researched**: 2026-01-17
 - **Dependencies**: 554
+- **Research**: [research-001.md](specs/556_complete_metalogic_v2_implementation/reports/research-001.md)
 
 **Description**: Complete all aspects of the implementation of the reorganized /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/ directory, completing all sorries and making this directory stand on its own so that I can delete Metalogic/ once Metalogic_v2/ is complete. Begin by improving /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/README.md to accurately report the current state and what the target organization is.
 
@@ -308,18 +305,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 516. Test task creation after refactoring
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: general
-- **Session ID**: agent_system-1768239349
-- **Created**: 2026-01-16
-
-**Description**: Test the task creation system to ensure it works correctly after the recent agent system refactoring. This is a validation task to verify that the workflow commands, task management, and file synchronization are functioning properly after the structural changes.
-
----
-
 ### 510. Add constraint to verifier and falsifier functions
 - **Effort**: 2 hours
 - **Status**: [PLANNED]
@@ -353,7 +338,6 @@ technical_debt:
 - **Effort**: 1 hour
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
-- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: meta
 
 **Description**: Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies.
