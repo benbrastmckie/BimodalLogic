@@ -1,20 +1,27 @@
 ---
 name: skill-researcher
 description: Conduct general research using web search, documentation, and codebase exploration. Invoke for non-Lean research tasks.
-allowed-tools: Task, Bash(jq:*), Read, Edit, Glob, Grep
+allowed-tools: Task
 context: fork
 agent: general-research-agent
+# Original context (now loaded by subagent):
+#   - .claude/context/core/formats/report-format.md
+# Original tools (now used by subagent):
+#   - Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 ---
 
 # Researcher Skill
 
-Self-contained research workflow that handles preflight, agent delegation, and postflight internally.
+Thin wrapper that delegates general research to `general-research-agent` subagent.
 
 ## Context Pointers
 
-Reference (load on-demand):
-- `@.claude/context/core/patterns/inline-status-update.md` - Status update patterns
-- `@.claude/context/core/patterns/skill-lifecycle.md` - Skill lifecycle pattern
+Reference (do not load eagerly):
+- Path: `.claude/context/core/validation.md`
+- Purpose: Return validation at CHECKPOINT 2
+- Load at: Subagent execution only
+
+Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
 
 ## Trigger Conditions
 
@@ -26,31 +33,6 @@ This skill activates when:
 ---
 
 ## Execution
-
-### 0. Preflight Status Update
-
-Update task to "researching" before starting work:
-
-```bash
-# Update state.json
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-   --arg status "researching" \
-   --arg sid "$session_id" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: $status,
-    last_updated: $ts,
-    session_id: $sid
-  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-```
-
-Then update TODO.md status marker using Edit tool:
-- Find the task entry line with `grep -n "^### $task_number\." specs/TODO.md`
-- Change `[NOT STARTED]` or `[RESEARCHED]` → `[RESEARCHING]`
-
-**On preflight success**: Continue to Section 1.
-**On preflight failure**: Return error immediately, do not invoke agent.
-
----
 
 ### 1. Input Validation
 
@@ -98,22 +80,10 @@ Prepare delegation context:
 
 ### 3. Invoke Subagent
 
-**CRITICAL**: You MUST use the **Task** tool (NOT the Skill tool) to invoke the subagent.
-
-**Tool Selection**:
-| Directory | Tool | Invocation |
-|-----------|------|------------|
-| `.claude/skills/` | Skill tool | `Skill("skill-name")` |
-| `.claude/agents/` | **Task tool** | `Task(subagent_type="agent-name")` |
-
-The `agent` field in frontmatter specifies which agent to invoke via the Task tool.
-
-**Invoke the Task tool NOW** with:
-- `subagent_type`: "general-research-agent"
-- `description`: "Execute research for task {N}"
-- `prompt`: Include task context, delegation context, and focus prompt
-
-**DO NOT** use `Skill("general-research-agent")` - agents are in `.claude/agents/`, NOT `.claude/skills/`.
+Invoke `general-research-agent` via Task tool with:
+- Task context (number, name, description, language)
+- Delegation context (session_id, depth, path)
+- Focus prompt (if provided)
 
 The subagent will:
 - Search codebase for related patterns
@@ -125,43 +95,12 @@ The subagent will:
 ### 4. Return Validation
 
 Validate return matches `subagent-return.md` schema:
-- Status is one of: researched, partial, failed, blocked
+- Status is one of: completed, partial, failed, blocked
 - Summary is non-empty and <100 tokens
 - Artifacts array present with research report path
 - Metadata contains session_id, agent_type, delegation info
 
-**On agent success**: Continue to Section 5 (Postflight).
-**On agent failure/partial**: Skip postflight, return agent result directly.
-
----
-
-### 5. Postflight Status Update
-
-Update task to "researched" after successful agent return:
-
-```bash
-# Get artifact path from agent result
-artifact_path="specs/{N}_{SLUG}/reports/research-{NNN}.md"
-
-# Update state.json with status and artifact
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-   --arg status "researched" \
-   --arg path "$artifact_path" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: $status,
-    last_updated: $ts,
-    researched: $ts,
-    artifacts: ((.artifacts // []) | map(select(.type != "research"))) + [{"path": $path, "type": "research"}]
-  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-```
-
-Then update TODO.md:
-- Change `[RESEARCHING]` → `[RESEARCHED]`
-- Add/update research artifact link: `- **Research**: [research-{NNN}.md](specs/{N}_{SLUG}/reports/research-{NNN}.md)`
-
----
-
-### 6. Return Propagation
+### 5. Return Propagation
 
 Return validated result to caller without modification.
 
@@ -197,17 +136,11 @@ Expected successful return:
 
 ## Error Handling
 
-### Preflight Errors
-Return immediately with failed status. Do not invoke agent.
-
 ### Input Validation Errors
 Return immediately with failed status if task not found.
 
 ### Subagent Errors
-Skip postflight, pass through the subagent's error return verbatim.
-
-### Postflight Errors
-Log warning but return success - artifacts were created, status can be fixed manually.
+Pass through the subagent's error return verbatim.
 
 ### Timeout
 Return partial status if subagent times out (default 3600s).

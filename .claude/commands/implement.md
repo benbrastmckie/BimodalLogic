@@ -1,13 +1,13 @@
 ---
 description: Execute implementation with resume support
-allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Glob
+allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit, Glob
 argument-hint: TASK_NUMBER
 model: claude-opus-4-5-20251101
 ---
 
 # /implement Command
 
-Execute implementation plan with automatic resume support by delegating to the appropriate implementation skill.
+Execute implementation plan with automatic resume support by delegating to the appropriate implementation skill/subagent.
 
 ## Arguments
 
@@ -16,7 +16,7 @@ Execute implementation plan with automatic resume support by delegating to the a
 
 ## Execution
 
-### CHECKPOINT 1: VALIDATE
+### CHECKPOINT 1: GATE IN
 
 1. **Generate Session ID**
    ```
@@ -50,11 +50,16 @@ Execute implementation plan with automatic resume support by delegating to the a
 
    If all [COMPLETED]: Task already done
 
+6. **Update Status (via skill-status-sync)**
+   Invoke skill-status-sync: `preflight_update(task_number, "implementing", session_id)`
+
+7. **Verify** status is now "implementing"
+
 **ABORT** if any validation fails.
 
-**On VALIDATE success**: Task validated with resume point. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
+**On GATE IN success**: Status is [IMPLEMENTING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
 
-### CHECKPOINT 2: DELEGATE
+### STAGE 2: DELEGATE
 
 **EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
 
@@ -72,13 +77,31 @@ skill: "{skill-name from table above}"
 args: "task_number={N} plan_path={path to implementation plan} resume_phase={phase number} session_id={session_id}"
 ```
 
-The skill handles:
-- Preflight status update (→ IMPLEMENTING)
-- Agent delegation for implementation
-- Postflight status update (→ COMPLETED or stays IMPLEMENTING for partial)
-- Artifact linking
+The skill will spawn the appropriate agent which executes plan phases sequentially, updates phase markers, creates commits per phase, and returns a structured result.
 
-**On DELEGATE success**: Implementation complete/partial with status updated. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
+**On DELEGATE success**: Implementation complete. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
+
+### CHECKPOINT 2: GATE OUT
+
+1. **Validate Return**
+   Required fields: status, summary, artifacts, metadata (phases_completed, phases_total)
+
+2. **Verify Artifacts**
+   Check summary file exists on disk (if completed)
+
+3. **Update Status (via skill-status-sync)**
+
+   **If result.status == "completed":**
+   Invoke skill-status-sync: `postflight_update(task_number, "completed", artifacts, session_id)`
+
+   **If result.status == "partial":**
+   Keep status as "implementing", note resume point
+
+4. **Verify** status and artifact links
+
+**RETRY** skill if validation fails.
+
+**On GATE OUT success**: Artifacts verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
 
 ### CHECKPOINT 3: COMMIT
 
@@ -136,17 +159,18 @@ Next: /implement {N} (will resume from Phase {M+1})
 
 ## Error Handling
 
-### VALIDATE Failure
+### GATE IN Failure
 - Task not found: Return error with guidance
 - No plan found: Return error "Run /plan {N} first"
 - Invalid status: Return error with current status
 
 ### DELEGATE Failure
-- Skill fails: Status remains as-is, log error
+- Skill fails: Keep [IMPLEMENTING], log error
 - Timeout: Progress preserved in plan phase markers, user can re-run
 
-### COMMIT Failure
-- Non-blocking: Log warning, continue with output
+### GATE OUT Failure
+- Missing artifacts: Log warning, continue with available
+- Link failure: Non-blocking warning
 
 ### Build Errors
 - Skill returns partial/failed status

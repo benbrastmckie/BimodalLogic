@@ -63,22 +63,22 @@ Tasks have a `Language` field that determines tool selection:
 
 ## Checkpoint-Based Execution Model
 
-All workflow commands follow a simplified three-checkpoint pattern (Task 529):
+All workflow commands follow a three-checkpoint pattern:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  CHECKPOINT 1    →    CHECKPOINT 2    →    CHECKPOINT 3    │
-│    VALIDATE            DELEGATE              COMMIT         │
-│  (Task lookup)      (Self-contained       (Git commit)     │
-│                        Skill)                               │
+│  CHECKPOINT 1    →    STAGE 2    →    CHECKPOINT 2    →    │
+│   GATE IN             DELEGATE         GATE OUT            │
+│  (Preflight)        (Skill/Agent)    (Postflight)          │
+│                                                 ↓          │
+│                                          CHECKPOINT 3      │
+│                                            COMMIT          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Key Design**: Skills are self-contained workflows that handle preflight and postflight status updates internally. This reduces skill invocations from 3 to 1 per command, eliminating halt risk.
-
 ### Session Tracking
 
-Each command generates a session ID at VALIDATE: `sess_{timestamp}_{random}`
+Each command generates a session ID at GATE IN: `sess_{timestamp}_{random}`
 
 Session ID is:
 - Passed through delegation to skill/agent
@@ -87,13 +87,13 @@ Session ID is:
 
 ### Checkpoint Details
 
-Reference: `.claude/context/core/patterns/skill-lifecycle.md`
+Reference: `.claude/context/core/checkpoints/`
 
 ---
 
 ## Command Workflows
 
-All workflow commands delegate to self-contained skills that handle status updates internally.
+All commands use checkpoint-based execution via skill-status-sync.
 
 ### /task - Create or manage tasks
 ```
@@ -105,18 +105,21 @@ All workflow commands delegate to self-contained skills that handle status updat
 ```
 
 ### /research N [focus] - Research a task
-VALIDATE → Task exists, status allows research
-DELEGATE → Skill handles: preflight → agent → postflight (status: RESEARCHING → RESEARCHED)
+GATE IN → Validate, update to [RESEARCHING]
+DELEGATE → Route by language (lean→skill-lean-research, other→skill-researcher)
+GATE OUT → Link report artifact, update to [RESEARCHED]
 COMMIT → Git commit with session ID
 
 ### /plan N - Create implementation plan
-VALIDATE → Task exists, status allows planning
-DELEGATE → Skill handles: preflight → agent → postflight (status: PLANNING → PLANNED)
+GATE IN → Validate, update to [PLANNING]
+DELEGATE → skill-planner creates phased plan
+GATE OUT → Link plan artifact, update to [PLANNED]
 COMMIT → Git commit with session ID
 
 ### /implement N - Execute implementation
-VALIDATE → Task exists, find resume point, status allows implementation
-DELEGATE → Skill handles: preflight → agent → postflight (status: IMPLEMENTING → COMPLETED)
+GATE IN → Validate, find resume point, update to [IMPLEMENTING]
+DELEGATE → Route by language (lean→skill-lean-implementation, etc.)
+GATE OUT → Link summary artifact, update to [COMPLETED]
 COMMIT → Git commit with session ID
 
 ### /revise N - Create new plan version
@@ -300,17 +303,6 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 | skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
 | skill-meta | meta-builder-agent | System building and task creation |
 
-### Tool Selection for Delegation
-
-**CRITICAL**: Skills delegate to agents via the **Task** tool, not the Skill tool.
-
-| Target Type | Directory | Tool | Example |
-|-------------|-----------|------|---------|
-| Skill | `.claude/skills/` | Skill | `Skill("skill-researcher")` |
-| Agent | `.claude/agents/` | Task | `Task(subagent_type="general-research-agent")` |
-
-The `agent:` field in skill frontmatter specifies which agent to invoke via the Task tool.
-
 ### Thin Wrapper Execution Flow
 
 All forked skills follow this 5-step pattern:
@@ -333,74 +325,6 @@ All forked skills follow this 5-step pattern:
 - `.claude/context/core/templates/thin-wrapper-skill.md` - Template reference
 - `.claude/context/core/formats/subagent-return.md` - Return format standard
 - `.claude/context/core/orchestration/delegation.md` - Delegation patterns
-
-## Model Tier Guidelines
-
-Agents use a three-tier model system for cost/capability optimization.
-
-### Tier Overview
-
-| Tier | Model | Use Case | Cost/Capability |
-|------|-------|----------|-----------------|
-| **Opus** | `model: opus` | Complex reasoning, proof development | Highest capability, highest cost |
-| **Sonnet** | `model: sonnet` | Most heavy-lifting tasks | Balanced (default) |
-| **Haiku** | `model: haiku` | Fast validation, simple transforms | Lowest cost, fastest |
-
-### Specifying Agent Models
-
-Add the `model` field to agent YAML frontmatter:
-
-```yaml
----
-name: agent-name
-description: Agent description
-model: sonnet  # sonnet | opus | haiku | inherit
----
-```
-
-**Values**:
-- `sonnet` - Claude Sonnet (default if omitted)
-- `opus` - Claude Opus for complex reasoning
-- `haiku` - Claude Haiku for simple tasks
-- `inherit` - Use parent conversation's model
-
-### Current Agent Assignments
-
-| Agent | Model | Rationale |
-|-------|-------|-----------|
-| lean-implementation-agent | **opus** | Complex proof development, deep reasoning |
-| lean-research-agent | sonnet | MCP tools + search synthesis |
-| general-research-agent | sonnet | Web search + synthesis |
-| general-implementation-agent | sonnet | Standard file operations |
-| latex-implementation-agent | sonnet | Template-based work |
-| planner-agent | sonnet | Task decomposition |
-| meta-builder-agent | sonnet | System analysis |
-
-### Model Selection Guidelines
-
-**Use Opus for**:
-- Complex multi-step reasoning (theorem proving)
-- Error recovery requiring deep analysis
-- Tasks where correctness is critical and mistakes costly
-
-**Use Sonnet for** (default):
-- Most implementation tasks
-- Research and synthesis
-- Structured output generation
-- General file operations
-
-**Use Haiku for**:
-- Simple validation checks
-- Fast status queries
-- Template-based transforms
-- **Note**: Known limitation with `tool_reference` blocks; test thoroughly
-
-### Architecture Notes
-
-- **Agents** (`.claude/agents/`): Can specify model via frontmatter
-- **Skills** (`.claude/skills/`): Inherit main conversation model (no model field)
-- **Commands** (`.claude/commands/`): Execute in main conversation context
-- **Task tool bug**: The `model` parameter may be ignored; prefer frontmatter specification
 
 ## Important Notes
 

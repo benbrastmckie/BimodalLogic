@@ -76,22 +76,10 @@ Prepare delegation context:
 
 ### 3. Invoke Subagent
 
-**CRITICAL**: You MUST use the **Task** tool (NOT the Skill tool) to invoke the subagent.
-
-**Tool Selection**:
-| Directory | Tool | Invocation |
-|-----------|------|------------|
-| `.claude/skills/` | Skill tool | `Skill("skill-name")` |
-| `.claude/agents/` | **Task tool** | `Task(subagent_type="agent-name")` |
-
-The `agent` field in frontmatter specifies which agent to invoke via the Task tool.
-
-**Invoke the Task tool NOW** with:
-- `subagent_type`: "meta-builder-agent"
-- `description`: "Execute meta workflow in {mode} mode"
-- `prompt`: Include mode, prompt (if provided), and delegation context
-
-**DO NOT** use `Skill("meta-builder-agent")` - agents are in `.claude/agents/`, NOT `.claude/skills/`.
+Invoke `meta-builder-agent` via Task tool with:
+- Mode (interactive, prompt, or analyze)
+- Prompt (if provided)
+- Delegation context (session_id, depth, path)
 
 The subagent will:
 - Load component guides on-demand based on mode

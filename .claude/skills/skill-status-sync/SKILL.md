@@ -7,13 +7,6 @@ allowed-tools: Read, Write, Edit, Bash
 
 # Status Sync Skill
 
-> **Deprecation Notice (Task 529)**: This skill is deprecated for workflow commands (/research, /plan, /implement).
-> Those commands now use self-contained skills with inline status updates (see `.claude/context/core/patterns/skill-lifecycle.md`).
-> skill-status-sync remains available for:
-> - Direct invocation via `/task --sync`
-> - Debugging and manual state corrections
-> - Non-workflow operations (task creation, archival)
-
 Atomic status updates across TODO.md and state.json using efficient jq/grep patterns.
 
 ## API Operations

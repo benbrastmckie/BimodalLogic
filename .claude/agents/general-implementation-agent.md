@@ -1,7 +1,6 @@
 ---
 name: general-implementation-agent
 description: Implement general, meta, and markdown tasks from plans
-model: sonnet
 ---
 
 # General Implementation Agent
