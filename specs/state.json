@@ -88,95 +88,6 @@
       "description": "Add documentation in .claude/docs/guides/ explaining the skill completion = workflow completion anti-pattern and how to avoid it. Document root causes, symptoms, and prevention strategies."
     },
     {
-      "project_number": 524,
-      "project_name": "update_claude_md_and_rules_specs_path",
-      "type": "refactor",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T12:23:06Z",
-      "last_updated": "2026-01-17T12:29:47Z",
-      "effort": "30 minutes",
-      "description": "Update CLAUDE.md and all rules files to reference specs/ instead of specs/. This is the foundation task that must be completed before other refactoring tasks.",
-      "session_id": "sess_1768655347_24e4a7",
-      "completed": "2026-01-17T12:29:47Z"
-    },
-    {
-      "project_number": 525,
-      "project_name": "update_agent_files_specs_path",
-      "type": "refactor",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T12:23:06Z",
-      "last_updated": "2026-01-17T12:35:00Z",
-      "effort": "1 hour",
-      "description": "Update all agent files in .claude/agents/ to reference specs/ instead of specs/. Depends on task 524.",
-      "dependencies": [
-        524
-      ],
-      "session_id": "sess_1768655600_agent525",
-      "completed": "2026-01-17T12:35:00Z"
-    },
-    {
-      "project_number": 526,
-      "project_name": "update_command_files_specs_path",
-      "type": "refactor",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T12:23:06Z",
-      "last_updated": "2026-01-17T12:45:00Z",
-      "effort": "1 hour",
-      "description": "Update all command files in .claude/commands/ to reference specs/ instead of specs/. Depends on task 524.",
-      "dependencies": [
-        524
-      ],
-      "session_id": "sess_1768655600_cmd526",
-      "completed": "2026-01-17T12:45:00Z"
-    },
-    {
-      "project_number": 527,
-      "project_name": "update_skill_files_specs_path",
-      "type": "refactor",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T12:23:06Z",
-      "last_updated": "2026-01-17T13:00:00Z",
-      "effort": "1 hour",
-      "description": "Update all skill files in .claude/skills/ to reference specs/ instead of specs/. Depends on task 524.",
-      "dependencies": [
-        524
-      ],
-      "session_id": "sess_1768655600_skill527",
-      "completed": "2026-01-17T13:00:00Z"
-    },
-    {
-      "project_number": 528,
-      "project_name": "verify_system_consistency",
-      "type": "refactor",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "meta",
-      "created": "2026-01-17T12:23:06Z",
-      "last_updated": "2026-01-17T12:33:12Z",
-      "effort": "1 hour",
-      "description": "Update context files and verify entire .claude/ agent system consistency after specs path refactoring. Run system tests to ensure all references work correctly. Depends on tasks 525-527.",
-      "dependencies": [
-        525,
-        526,
-        527
-      ],
-      "session_id": "sess_1768655612_a6d404",
-      "completed": "2026-01-17T12:33:12Z"
-    },
-    {
       "project_number": 523,
       "project_name": "Clean Up Bimodal Lean Source Files After Task 505",
       "type": "refactor",
@@ -206,14 +117,6 @@
       "session_id": "sess_1768657879_19f5ce"
     },
     {
-      "project_number": 518,
-      "status": "completed",
-      "project_name": "Fix Parameter Mapping Between Workflow Commands and status-sync-manager",
-      "section": "High Priority",
-      "language": "meta",
-      "priority": "high"
-    },
-    {
       "project_number": 517,
       "status": "not_started",
       "project_name": "Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates",
@@ -236,33 +139,9 @@
       "plan_path": "specs/519_add_missing_stage_7_validation_in_workflow_commands/plans/implementation-001.md"
     },
     {
-      "project_number": 520,
-      "status": "completed",
-      "project_name": "Fix Silent Failures When status-sync-manager Fails",
-      "section": "High Priority",
-      "language": "meta",
-      "priority": "high"
-    },
-    {
-      "project_number": 522,
-      "status": "completed",
-      "project_name": "Improve status-sync-manager Error Messages to be more actionable",
-      "section": "Medium Priority",
-      "language": "meta",
-      "priority": "medium"
-    },
-    {
       "project_number": 511,
       "status": "not_started",
       "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "high"
-    },
-    {
-      "project_number": 512,
-      "status": "completed",
-      "project_name": "Fix build error in RepresentationTheorems.lean",
       "section": "Medium Priority",
       "language": "lean",
       "priority": "high"
@@ -282,68 +161,6 @@
       "section": "Medium Priority",
       "language": "lean",
       "priority": "medium"
-    },
-    {
-      "project_number": 515,
-      "status": "completed",
-      "project_name": "Replace line 257 in 00-Introduction.tex with missing section descriptions",
-      "section": "Medium Priority",
-      "language": "latex",
-      "priority": "medium"
-    },
-    {
-      "project_number": 505,
-      "status": "completed",
-      "project_name": "Restructure and Refine Bimodal Metalogic",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "high",
-      "started": "2025-01-16T20:54:33Z",
-      "researched": "2026-01-16",
-      "planned": "2026-01-16",
-      "completed": "2026-01-16",
-      "artifacts": [
-        {
-          "path": "specs/505_bimodal_metalogic_restructuring/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/505_bimodal_metalogic_restructuring/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/505_bimodal_metalogic_restructuring/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/505_bimodal_metalogic_restructuring/summaries/implementation-summary-20260116.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 495,
-      "status": "completed",
-      "project_name": "Complete formula induction proofs for truth lemma bridges in FiniteCanonicalModel.lean",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "high"
-    },
-    {
-      "project_number": 496,
-      "status": "completed",
-      "project_name": "Implement valuation-assignment connection lemma for finite canonical model",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "high"
-    },
-    {
-      "project_number": 480,
-      "status": "completed",
-      "project_name": "Investigate workflow delegation early stop issues",
-      "section": "Medium Priority",
-      "language": "meta",
-      "priority": "high"
     },
     {
       "project_number": 394,
@@ -394,107 +211,11 @@
       "priority": "medium"
     },
     {
-      "project_number": 503,
-      "status": "completed",
-      "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
-      "section": "Medium Priority",
-      "language": "markdown",
-      "priority": "medium"
-    },
-    {
       "project_number": 504,
       "status": "not_started",
       "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
       "section": "Medium Priority",
       "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 499,
-      "status": "completed",
-      "project_name": "Review metalogical theorem strategies and design systematic refactor approach",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 497,
-      "status": "completed",
-      "project_name": "Complete time arithmetic case analysis for finite history bridges",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 498,
-      "status": "completed",
-      "project_name": "Verify and test completed bridge lemma infrastructure",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 500,
-      "status": "completed",
-      "project_name": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 494,
-      "status": "completed",
-      "project_name": "Create Bimodal theory demo presentation",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 493,
-      "status": "completed",
-      "project_name": "Sync TikZ diagram, GLOSSARY.md, and README.md descriptions",
-      "section": "Medium Priority",
-      "language": "general",
-      "priority": "medium"
-    },
-    {
-      "project_number": 492,
-      "status": "completed",
-      "project_name": "Update BimodalReference.tex with metalogical results",
-      "section": "Medium Priority",
-      "language": "latex",
-      "priority": "medium"
-    },
-    {
-      "project_number": 487,
-      "status": "completed",
-      "project_name": "Create Bimodal/Boneyard/ for deprecated code",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 488,
-      "status": "completed",
-      "project_name": "Fill remaining bridge lemmas",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 489,
-      "status": "completed",
-      "project_name": "Formal FMP theorem packaging",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 486,
-      "status": "completed",
-      "project_name": "Add Abilities box to middle layer TikZ diagram",
-      "section": "Medium Priority",
-      "language": "latex",
       "priority": "medium"
     },
     {
@@ -522,57 +243,9 @@
       "priority": "medium"
     },
     {
-      "project_number": 485,
-      "status": "completed",
-      "project_name": "Create TikZ light-cone diagram for TM motivation",
-      "section": "Medium Priority",
-      "language": "latex",
-      "priority": "medium"
-    },
-    {
-      "project_number": 484,
-      "status": "completed",
-      "project_name": "Sync TikZ diagram operators with GLOSSARY.md",
-      "section": "Medium Priority",
-      "language": "latex",
-      "priority": "medium"
-    },
-    {
       "project_number": 483,
       "status": "not_started",
       "project_name": "Investigate LaTeX aux file corruption errors",
-      "section": "Medium Priority",
-      "language": "latex",
-      "priority": "medium"
-    },
-    {
-      "project_number": 473,
-      "status": "completed",
-      "project_name": "Fix compositionality gaps from Task 458",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 481,
-      "status": "completed",
-      "project_name": "Implement finite_history_from_state",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 482,
-      "status": "completed",
-      "project_name": "Implement history gluing lemma",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
-    },
-    {
-      "project_number": 466,
-      "status": "completed",
-      "project_name": "Add Reflection Extension to LogosReference",
       "section": "Medium Priority",
       "language": "latex",
       "priority": "medium"
@@ -634,22 +307,6 @@
       "priority": "medium"
     },
     {
-      "project_number": 449,
-      "status": "completed",
-      "project_name": "Truth lemma",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low"
-    },
-    {
-      "project_number": 450,
-      "status": "completed",
-      "project_name": "Completeness theorems",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low"
-    },
-    {
       "project_number": 136,
       "status": "not_started",
       "project_name": "Design Decidability.lean architecture and signatures",
@@ -672,14 +329,6 @@
       "section": "Low Priority",
       "language": "lean",
       "priority": "low"
-    },
-    {
-      "project_number": 479,
-      "status": "completed",
-      "project_name": "Fix TikZ extension dependencies diagram",
-      "section": "Low Priority",
-      "language": "latex",
-      "priority": "medium"
     }
   ],
   "completed_projects": [

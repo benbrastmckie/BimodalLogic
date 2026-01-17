@@ -119,7 +119,7 @@ Based on standard metalogic for modal/temporal logics, the ideal dependency stru
 ┌───────────────┐    ┌───────────────┐    ┌───────────────┐
 │ COMPLETENESS  │    │ DECIDABILITY  │    │  COMPACTNESS  │
 │               │    │               │    │               │
-│ WeakComplete  │    │ DecidableValid│    │ FiniteSat→Sat│
+│ WeakComplete  │    │ DecidableValid│    │ FiniteSat→Sat │
 │ StrongComplete│    │ DecisionProc  │    │               │
 └───────────────┘    └───────────────┘    └───────────────┘
 ```
