@@ -86,6 +86,7 @@ technical_debt:
 - **Parent**: 556
 - **Research**: [research-001.md](specs/557_mcs_property_completion/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/557_mcs_property_completion/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/557_mcs_property_completion/plans/implementation-002.md)
 
 **Description**: Prove mcs_contains_or_neg and mcs_modus_ponens in Representation/CanonicalModel.lean. These MCS properties are the critical blocking dependency for downstream theorems.
 
