@@ -1,23 +1,12 @@
 ---
 name: skill-status-sync
 description: Atomically update task status across TODO.md and state.json. Invoke when task status changes.
-allowed-tools: Task
-context: fork
-agent: status-sync-agent
+allowed-tools: Bash, Edit, Read
 ---
 
-# Status Sync Skill
+# Status Sync Skill (Direct Execution)
 
-Thin wrapper that delegates status synchronization to `status-sync-agent` subagent.
-
-## Context Pointers
-
-Reference (do not load eagerly):
-- Path: `.claude/context/core/validation.md`
-- Purpose: Return validation at GATE OUT checkpoint
-- Load at: Subagent execution only
-
-Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
+Direct execution skill for atomic status synchronization across TODO.md and state.json. This skill executes inline without spawning a subagent, avoiding memory issues.
 
 ## Trigger Conditions
 
@@ -33,7 +22,7 @@ This skill exposes three primary operations:
 | Operation | Purpose | When to Use |
 |-----------|---------|-------------|
 | `preflight_update` | Set in-progress status | GATE IN checkpoint |
-| `postflight_update` | Set completed status + link artifacts | GATE OUT checkpoint |
+| `postflight_update` | Set final status + link artifacts | GATE OUT checkpoint |
 | `artifact_link` | Add single artifact link (idempotent) | Post-artifact creation |
 
 ---
@@ -51,7 +40,7 @@ Validate required inputs based on operation type:
 
 **For postflight_update**:
 - `task_number` - Must be provided and exist
-- `target_status` - Must be a completed variant (researched, planned, completed, partial)
+- `target_status` - Must be a final variant (researched, planned, implemented, partial)
 - `artifacts` - Array of {path, type} to link
 - `session_id` - Must be provided
 
@@ -60,76 +49,148 @@ Validate required inputs based on operation type:
 - `artifact_path` - Relative path to artifact
 - `artifact_type` - One of: research, plan, summary
 
-### 2. Context Preparation
+### 2. Execute Operation Directly
 
-Prepare delegation context:
+Route to appropriate operation and execute using Bash (jq) and Edit tools.
 
-```json
-{
-  "operation": "preflight_update|postflight_update|artifact_link",
-  "task_number": N,
-  "target_status": "{status}",
-  "artifacts": [{"path": "...", "type": "..."}],
-  "session_id": "sess_{timestamp}_{random}",
-  "delegation_depth": 1,
-  "delegation_path": ["orchestrator", "{command}", "skill-status-sync"]
-}
+---
+
+## Operation: preflight_update
+
+**Purpose**: Set in-progress status at GATE IN checkpoint
+
+**Execution**:
+
+1. **Validate task exists**:
+```bash
+task_data=$(jq -r --arg num "{task_number}" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  specs/state.json)
+
+if [ -z "$task_data" ]; then
+  echo "Error: Task {task_number} not found"
+  exit 1
+fi
 ```
 
-### 3. Invoke Subagent
-
-**CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
-
-The `agent` field in this skill's frontmatter specifies the target: `status-sync-agent`
-
-**Required Tool Invocation**:
-```
-Tool: Task (NOT Skill)
-Parameters:
-  - subagent_type: "status-sync-agent"
-  - prompt: [Include operation, task_number, target_status, artifacts, session_id]
-  - description: "Execute status sync for task {N}"
+2. **Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg status "{target_status}" \
+  '(.active_projects[] | select(.project_number == {task_number})) |= . + {
+    status: $status,
+    last_updated: $ts
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-**DO NOT** use `Skill(status-sync-agent)` - this will FAIL.
-Agents live in `.claude/agents/`, not `.claude/skills/`.
-The Skill tool can only invoke skills from `.claude/skills/`.
+3. **Update TODO.md status marker**:
+   - Find task entry: `grep -n "^### {task_number}\." specs/TODO.md`
+   - Use Edit tool to change `[OLD_STATUS]` to `[NEW_STATUS]`
 
-The subagent will:
-- Load state files (state.json, TODO.md)
-- Validate task exists and status transition is valid
-- Execute the requested operation
-- Return standardized JSON result
+**Status Mapping**:
+| state.json | TODO.md |
+|------------|---------|
+| not_started | [NOT STARTED] |
+| researching | [RESEARCHING] |
+| planning | [PLANNING] |
+| implementing | [IMPLEMENTING] |
 
-### 4. Return Validation
+**Return**: JSON object with status "synced" and previous/new status fields.
 
-Validate return matches `subagent-return.md` schema:
-- Status is one of: synced, linked, skipped, failed, or target status value
-- Summary is non-empty and <100 tokens
-- Metadata contains session_id, agent_type, delegation info
+---
 
-### 5. Return Propagation
+## Operation: postflight_update
 
-Return validated result to caller without modification.
+**Purpose**: Set final status and link artifacts at GATE OUT checkpoint
+
+**Execution**:
+
+1. **Update state.json status and timestamp**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg status "{target_status}" \
+  '(.active_projects[] | select(.project_number == {task_number})) |= . + {
+    status: $status,
+    last_updated: $ts
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+2. **Add artifacts to state.json** (for each artifact):
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg path "{artifact_path}" \
+   --arg type "{artifact_type}" \
+  '(.active_projects[] | select(.project_number == {task_number})) |= . + {
+    last_updated: $ts,
+    artifacts: ((.artifacts // []) + [{"path": $path, "type": $type}])
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+3. **Update TODO.md status marker**:
+   - Use Edit to change status: `[RESEARCHING]` -> `[RESEARCHED]`
+
+4. **Link artifacts in TODO.md**:
+   - Add research/plan/summary links in appropriate location
+
+**Status Mapping**:
+| state.json | TODO.md |
+|------------|---------|
+| researched | [RESEARCHED] |
+| planned | [PLANNED] |
+| implemented | [IMPLEMENTED] |
+| partial | [PARTIAL] |
+
+**Return**: JSON object with target_status and artifacts_linked fields.
+
+---
+
+## Operation: artifact_link
+
+**Purpose**: Add single artifact link (idempotent)
+
+**Execution**:
+
+1. **Idempotency check**:
+```bash
+if grep -A 30 "^### {task_number}\." specs/TODO.md | grep -q "{artifact_path}"; then
+  echo "Link already exists"
+  # Return "skipped" status
+fi
+```
+
+2. **Add to state.json artifacts array**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg path "{artifact_path}" \
+   --arg type "{artifact_type}" \
+  '(.active_projects[] | select(.project_number == {task_number})) |= . + {
+    last_updated: $ts,
+    artifacts: ((.artifacts // []) + [{"path": $path, "type": $type}])
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+3. **Add link to TODO.md** using Edit tool:
+
+| Type | Format in TODO.md |
+|------|-------------------|
+| research | `- **Research**: [research-{NNN}.md]({path})` |
+| plan | `- **Plan**: [implementation-{NNN}.md]({path})` |
+| summary | `- **Summary**: [implementation-summary-{DATE}.md]({path})` |
+
+**Insertion order**:
+- research: after Language line
+- plan: after Research line (or Language if no Research)
+- summary: after Plan line
+
+**Return**: JSON object with status "linked" or "skipped".
 
 ---
 
 ## Return Format
 
-See `.claude/context/core/formats/subagent-return.md` for full specification.
-
 ### preflight_update returns:
 ```json
 {
   "status": "synced",
-  "summary": "Updated task #N to [STATUS]",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_...",
-    "agent_type": "status-sync-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["...", "status-sync-agent"]
-  },
+  "summary": "Updated task #{N} to [{STATUS}]",
   "previous_status": "not_started",
   "new_status": "researching"
 }
@@ -139,9 +200,7 @@ See `.claude/context/core/formats/subagent-return.md` for full specification.
 ```json
 {
   "status": "{target_status}",
-  "summary": "Updated task #N to [STATUS] with N artifacts",
-  "artifacts": [],
-  "metadata": {...},
+  "summary": "Updated task #{N} to [{STATUS}] with {M} artifacts",
   "artifacts_linked": ["path1", "path2"],
   "previous_status": "researching",
   "new_status": "researched"
@@ -152,9 +211,7 @@ See `.claude/context/core/formats/subagent-return.md` for full specification.
 ```json
 {
   "status": "linked|skipped",
-  "summary": "Linked artifact to task #N" | "Link already exists",
-  "artifacts": [],
-  "metadata": {...},
+  "summary": "Linked artifact to task #{N}" | "Link already exists",
   "artifact_path": "path/to/artifact.md",
   "artifact_type": "research"
 }
@@ -164,14 +221,14 @@ See `.claude/context/core/formats/subagent-return.md` for full specification.
 
 ## Error Handling
 
-### Input Validation Errors
-Return immediately with failed status if operation type is unknown or required fields are missing.
+### Task Not Found
+Return failed status with recommendation to verify task number.
 
-### Subagent Errors
-Pass through the subagent's error return verbatim.
+### Invalid Status Transition
+Return failed status with current status and allowed transitions.
 
-### Timeout
-Return failed status if subagent times out (default 60s for status operations).
+### File Write Failure
+Return failed status with recommendation to check permissions.
 
 ---
 
@@ -180,7 +237,6 @@ Return failed status if subagent times out (default 60s for status operations).
 Command files should use this skill for ALL status updates:
 
 ```
-# In command file:
 ### Preflight (GATE IN)
 Invoke skill-status-sync with:
 - operation: preflight_update
@@ -192,13 +248,13 @@ Invoke skill-status-sync with:
 Invoke skill-status-sync with:
 - operation: postflight_update
 - task_number: {N}
-- target_status: researched|planned|completed|partial
+- target_status: researched|planned|implemented|partial
 - artifacts: [{path, type}, ...]
 - session_id: {session_id}
 ```
 
 This ensures:
 - Atomic updates across both files
-- Consistent jq/grep patterns
+- Consistent jq/Edit patterns
 - Proper error handling
-- No workflow interruptions (forked pattern)
+- Direct execution without subagent overhead
