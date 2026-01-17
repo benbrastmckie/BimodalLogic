@@ -904,9 +904,16 @@ agent: {subagent-name}        # Target subagent to spawn
 | skill-lean-implementation | lean-implementation-agent | Lean proof implementation |
 | skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
 
-### Thin Wrapper Execution Flow
+### Self-Contained Skill Execution Flow (Task 529)
 
-All forked skills follow this 5-step pattern:
+Workflow skills (research, planning, implementation) are now self-contained workflows that handle preflight and postflight status updates internally. This eliminates multiple skill invocations per command, reducing halt risk from 3 skills to 1.
+
+All workflow skills follow this 7-step pattern:
+
+0. **Preflight Status Update**
+   - Update state.json status (→ researching/planning/implementing)
+   - Update TODO.md status marker
+   - On failure: return error, do not invoke agent
 
 1. **Input Validation**
    - Verify task exists in state.json
@@ -928,9 +935,16 @@ All forked skills follow this 5-step pattern:
    - Check status, summary, artifacts, metadata fields
    - Validate session_id matches expected
 
-5. **Return Propagation**
+5. **Postflight Status Update**
+   - On success: Update state.json status (→ researched/planned/completed)
+   - Link artifacts to state.json and TODO.md
+   - On failure/partial: Skip postflight, return agent result directly
+
+6. **Return Propagation**
    - Pass validated result to caller without modification
    - Errors are passed through verbatim
+
+See `.claude/context/core/patterns/skill-lifecycle.md` for detailed patterns.
 
 ### Token Efficiency
 

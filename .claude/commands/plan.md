@@ -1,13 +1,13 @@
 ---
 description: Create implementation plan for a task
-allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit
+allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read
 argument-hint: TASK_NUMBER
 model: claude-opus-4-5-20251101
 ---
 
 # /plan Command
 
-Create a phased implementation plan for a task by delegating to the planner skill/subagent.
+Create a phased implementation plan for a task by delegating to the planner skill.
 
 ## Arguments
 
@@ -15,7 +15,7 @@ Create a phased implementation plan for a task by delegating to the planner skil
 
 ## Execution
 
-### CHECKPOINT 1: GATE IN
+### CHECKPOINT 1: VALIDATE
 
 1. **Generate Session ID**
    ```
@@ -40,16 +40,11 @@ Create a phased implementation plan for a task by delegating to the planner skil
    - Task description from state.json
    - Research reports from `specs/{N}_{SLUG}/reports/` (if any)
 
-5. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `preflight_update(task_number, "planning", session_id)`
-
-6. **Verify** status is now "planning"
-
 **ABORT** if any validation fails.
 
-**On GATE IN success**: Status is [PLANNING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
+**On VALIDATE success**: Task validated. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
 
-### STAGE 2: DELEGATE
+### CHECKPOINT 2: DELEGATE
 
 **EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
 
@@ -59,26 +54,13 @@ skill: "skill-planner"
 args: "task_number={N} research_path={path to research report if exists} session_id={session_id}"
 ```
 
-The skill spawns `planner-agent` which analyzes task requirements and research findings, decomposes into logical phases, identifies risks and mitigations, and creates a plan in `specs/{N}_{SLUG}/plans/`.
+The skill handles:
+- Preflight status update (→ PLANNING)
+- Agent delegation for plan creation
+- Postflight status update (→ PLANNED)
+- Artifact linking
 
-**On DELEGATE success**: Plan created. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
-
-### CHECKPOINT 2: GATE OUT
-
-1. **Validate Return**
-   Required fields: status, summary, artifacts, metadata (phase_count, estimated_hours)
-
-2. **Verify Artifacts**
-   Check plan file exists on disk
-
-3. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `postflight_update(task_number, "planned", artifacts, session_id)`
-
-4. **Verify** status is "planned" and plan is linked
-
-**RETRY** skill if validation fails.
-
-**On GATE OUT success**: Plan verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
+**On DELEGATE success**: Plan created with status updated. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
 
 ### CHECKPOINT 3: COMMIT
 
@@ -112,14 +94,13 @@ Next: /implement {N}
 
 ## Error Handling
 
-### GATE IN Failure
+### VALIDATE Failure
 - Task not found: Return error with guidance
 - Invalid status: Return error with current status
 
 ### DELEGATE Failure
-- Skill fails: Keep [PLANNING], log error
+- Skill fails: Status remains as-is, log error
 - Timeout: Partial plan preserved, user can re-run
 
-### GATE OUT Failure
-- Missing artifacts: Log warning, continue with available
-- Link failure: Non-blocking warning
+### COMMIT Failure
+- Non-blocking: Log warning, continue with output

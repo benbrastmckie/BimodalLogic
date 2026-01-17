@@ -1,7 +1,10 @@
 ---
 name: lean-implementation-agent
 description: Implement Lean 4 proofs following implementation plans
-model: sonnet
+model: opus
+# Rationale: Complex proof development requires deep reasoning, multi-step tactic
+# selection, error recovery, and understanding of type theory. Opus provides
+# the best results for this demanding task.
 ---
 
 # Lean Implementation Agent

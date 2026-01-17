@@ -1,13 +1,13 @@
 ---
 description: Research a task and create reports
-allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit
+allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read
 argument-hint: TASK_NUMBER [FOCUS]
 model: claude-opus-4-5-20251101
 ---
 
 # /research Command
 
-Conduct research for a task by delegating to the appropriate research skill/subagent.
+Conduct research for a task by delegating to the appropriate research skill.
 
 ## Arguments
 
@@ -16,7 +16,7 @@ Conduct research for a task by delegating to the appropriate research skill/suba
 
 ## Execution
 
-### CHECKPOINT 1: GATE IN
+### CHECKPOINT 1: VALIDATE
 
 1. **Generate Session ID**
    ```
@@ -35,16 +35,11 @@ Conduct research for a task by delegating to the appropriate research skill/suba
    - Status allows research: not_started, planned, partial, blocked, researched
    - If completed/abandoned: ABORT with recommendation
 
-4. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `preflight_update(task_number, "researching", session_id)`
-
-5. **Verify** status is now "researching"
-
 **ABORT** if any validation fails.
 
-**On GATE IN success**: Status is [RESEARCHING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
+**On VALIDATE success**: Task validated. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
 
-### STAGE 2: DELEGATE
+### CHECKPOINT 2: DELEGATE
 
 **EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
 
@@ -61,26 +56,13 @@ skill: "{skill-name from table above}"
 args: "task_number={N} focus={focus_prompt} session_id={session_id}"
 ```
 
-The skill will spawn the appropriate agent to conduct research and create a report.
+The skill handles:
+- Preflight status update (→ RESEARCHING)
+- Agent delegation for research
+- Postflight status update (→ RESEARCHED)
+- Artifact linking
 
-**On DELEGATE success**: Research complete. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
-
-### CHECKPOINT 2: GATE OUT
-
-1. **Validate Return**
-   Required fields: status, summary, artifacts
-
-2. **Verify Artifacts**
-   Check each artifact path exists on disk
-
-3. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `postflight_update(task_number, "researched", artifacts, session_id)`
-
-4. **Verify** status is "researched" and artifacts are linked
-
-**RETRY** skill if validation fails.
-
-**On GATE OUT success**: Artifacts verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
+**On DELEGATE success**: Research complete with status updated. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
 
 ### CHECKPOINT 3: COMMIT
 
@@ -113,14 +95,13 @@ Next: /plan {N}
 
 ## Error Handling
 
-### GATE IN Failure
+### VALIDATE Failure
 - Task not found: Return error with guidance
 - Invalid status: Return error with current status
 
 ### DELEGATE Failure
-- Skill fails: Keep [RESEARCHING], log error
+- Skill fails: Status remains as-is, log error
 - Timeout: Partial research preserved, user can re-run
 
-### GATE OUT Failure
-- Missing artifacts: Log warning, continue with available
-- Link failure: Non-blocking warning
+### COMMIT Failure
+- Non-blocking: Log warning, continue with output
