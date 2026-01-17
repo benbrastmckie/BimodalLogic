@@ -103,11 +103,17 @@ technical_debt:
 
 ### 538. Update Model Tier Documentation
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
+- **Session ID**: sess_1768660536_e8c912
 - **Created**: 2026-01-17
+- **Planned**: 2026-01-17
+- **Started**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Dependencies**: 535, 536, 537
+- **Plan**: [implementation-001.md](specs/538_update_model_tier_documentation/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260117.md](specs/538_update_model_tier_documentation/summaries/implementation-summary-20260117.md)
 
 **Description**: Update .claude/ documentation to include model tier guidelines. Document which model tier to use for different component types (agents, skills, commands), the rationale for each tier, and how to specify models in the system. Add to CLAUDE.md and/or create new guide in docs/.
 
@@ -127,7 +133,7 @@ technical_debt:
 
 ### 529. Unify Workflow Commands into Single-Execution Pattern
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Session ID**: sess_1768659910_d77aaf
@@ -135,10 +141,12 @@ technical_debt:
 - **Researched**: 2026-01-17
 - **Planned**: 2026-01-17
 - **Started**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Research**:
   - [research-001.md](specs/529_unify_workflow_commands_single_execution/reports/research-001.md) - Root cause analysis
   - [research-002.md](specs/529_unify_workflow_commands_single_execution/reports/research-002.md) - Location comparison
 - **Plan**: [implementation-001.md](specs/529_unify_workflow_commands_single_execution/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260117.md](specs/529_unify_workflow_commands_single_execution/summaries/implementation-summary-20260117.md)
 
 **Description**: Refactor /research, /plan, /implement commands to embed all checkpoint logic inline rather than delegating preflight to skill-status-sync. The preflight status update should be done directly in the command file using Bash/jq/Edit, not via Skill invocation, to prevent the "completion signal" problem that causes workflows to halt after preflight.
 

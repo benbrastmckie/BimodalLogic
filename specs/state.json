@@ -10,13 +10,14 @@
       "project_name": "finish_metalogic_refactor_cleanup",
       "type": "refactor",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T14:34:53Z",
-      "last_updated": "2026-01-17T14:34:53Z",
+      "last_updated": "2026-01-17T14:36:35Z",
       "effort": "4-6 hours",
-      "description": "Finish the Metalogic/ directory refactor, leaving no stray elements or parallel structures. Move anything worth saving to Bimodal/Boneyard/ if not already represented, and update all documentation to be fully accurate. Research report: specs/523_bimodal_cleanup/reports/research-003.md"
+      "description": "Finish the Metalogic/ directory refactor, leaving no stray elements or parallel structures. Move anything worth saving to Bimodal/Boneyard/ if not already represented, and update all documentation to be fully accurate. Research report: specs/523_bimodal_cleanup/reports/research-003.md",
+      "session_id": "sess_1768660568_f65d39"
     },
     {
       "project_number": 529,
@@ -483,18 +484,31 @@
       "project_name": "update_model_tier_documentation",
       "type": "documentation",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "completed",
       "priority": "medium",
       "language": "meta",
       "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T14:36:41Z",
       "effort": "1-2 hours",
       "description": "Update .claude/ documentation to include model tier guidelines. Document which model tier to use for different component types (agents, skills, commands), the rationale for each tier, and how to specify models in the system. Add to CLAUDE.md and/or create new guide in docs/.",
       "dependencies": [
         535,
         536,
         537
-      ]
+      ],
+      "session_id": "sess_1768660536_e8c912",
+      "planned": "2026-01-17T14:35:57Z",
+      "artifacts": [
+        {
+          "path": "specs/538_update_model_tier_documentation/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/538_update_model_tier_documentation/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-17T14:36:41Z"
     },
     {
       "project_number": 539,
