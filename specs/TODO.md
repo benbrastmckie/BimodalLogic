@@ -332,13 +332,18 @@ technical_debt:
 
 ### 475. Create skill-document-converter thin wrapper
 - **Effort**: 1 hour
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
+- **Completed**: 2026-01-17
 - **Research**: [research-001.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md)
 - **Research**: [research-002.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-002.md)
 - **Plan**: [implementation-002.md](specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-002.md)
 - **Plan**: [implementation-003.md](specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-003.md)
+- **Implementation**: [document-converter-agent.md](.claude/agents/document-converter-agent.md)
+- **Implementation**: [SKILL.md](.claude/skills/skill-document-converter/SKILL.md)
+- **Implementation**: [convert.md](.claude/commands/convert.md)
+- **Summary**: [implementation-summary-20260117.md](specs/475_create_skill_document_converter_thin_wrapper/summaries/implementation-summary-20260117.md)
 
 **Description**: Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies.
 

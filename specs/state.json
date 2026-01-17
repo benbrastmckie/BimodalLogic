@@ -206,12 +206,12 @@
     },
     {
       "project_number": 475,
-      "status": "implementing",
+      "status": "completed",
       "project_name": "Create skill-document-converter thin wrapper",
       "section": "Medium Priority",
       "language": "meta",
       "priority": "medium",
-      "last_updated": "2026-01-17T21:33:45Z",
+      "last_updated": "2026-01-17T21:39:04Z",
       "researched": "2026-01-17T21:17:58Z",
       "artifacts": [
         {
@@ -233,9 +233,26 @@
         {
           "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-003.md",
           "type": "plan"
+        },
+        {
+          "path": ".claude/agents/document-converter-agent.md",
+          "type": "implementation"
+        },
+        {
+          "path": ".claude/skills/skill-document-converter/SKILL.md",
+          "type": "implementation"
+        },
+        {
+          "path": ".claude/commands/convert.md",
+          "type": "implementation"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ],
-      "planned": "2026-01-17T21:27:30Z"
+      "planned": "2026-01-17T21:27:30Z",
+      "completed": "2026-01-17T21:39:04Z"
     },
     {
       "project_number": 476,
