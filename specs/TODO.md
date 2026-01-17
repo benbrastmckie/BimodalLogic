@@ -366,10 +366,11 @@ technical_debt:
 
 ### 475. Create skill-document-converter thin wrapper
 - **Effort**: 1 hour
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-001.md)
 
 **Description**: Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies.
 
