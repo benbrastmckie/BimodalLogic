@@ -22,7 +22,7 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
                                       │ required
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                            Explanatory Extension                                │
+ │                            Dynamical Foundation                                │
 │                  (modal, temporal, counterfactual, causal)                      │
 └─────────────────────────────────────┬───────────────────────────────────────────┘
                                       │
@@ -49,27 +49,27 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Constitutive Foundation**: Provides the hyperintensional base with predicates (`F`, `G`), functions (`f`, `g`), variables (`x`, `y`), boolean operators (`¬`, `∧`, `∨`, `⊥`, `⊤`), lambda abstraction (`λ`), identity (`=`), and constitutive operators (propositional identity `≡`, grounding `≤`, essence `⊑`, reduction `⇒`) over a state lattice with bilateral propositions (verifier/falsifier pairs). This enables fine-grained distinctions between propositions with identical truth-values but different verification conditions---essential for exact specification of what makes a claim true.
+- **Constitutive Foundation**: Provides the hyperintensional base with predicates (`F`, `G`), functions (`f`, `g`), variables (`x`, `y`), boolean operators (`¬`, `∧`, `∨`, `⊥`, `⊤`), lambda abstraction (`λ`), identity (`=`), and constitutive operators (propositional identity `≡`, grounding `≤`, essence `⊑`, reduction `⇒`) over a complete lattice with bilateral propositions (verifier/falsifier pairs). This enables fine-grained distinctions between propositions with identical truth-values and modal profiles but different verification conditions, essential for exact specification of what makes a claim true.
 
-- **Explanatory Extension**: Adds quantifiers (`∀`, `∃`), modal operators (`□`, `◇`) for necessity and possibility, temporal operators (`H`, `G`, `P`, `F`, `S`, `U`) for reasoning across time, store/recall operators (`↓`, `↑`) for temporal reference, actuality (`Act`) for distinguishing actual from possible, counterfactual conditionals (`□→`, `◇→`) for hypothetical reasoning, and causal operators (`○→`, `◌→`) for explanatory links. Together these resources enable reasoning about action sequences, future contingency, what would have happened under different circumstances, and causal relationships.
+- **Dynamical Foundation**: Adds quantifiers (`∀`, `∃`), modal operators (`□`, `◇`) for necessity and possibility, temporal operators (`H`, `G`, `P`, `F`, `S`, `U`) for reasoning across time, store/recall operators (`↓`, `↑`) for temporal reference, actuality (`Act`) for distinguishing actual from possible, counterfactual conditionals (`□→`, `◇→`) for hypothetical reasoning, and causal operators (`○→`, `◌→`) for explanatory links. Together these resources enable reasoning about action sequences, future contingency, what would have happened under different circumstances, and causal relationships.
 
-- **Epistemic Extension**: Introduces belief (`B`), knowledge (`K`), probability (`Pr`), and indicative conditional operators for reasoning under uncertainty. By extending the temporal framework with credence functions over state transitions, agents can track how evidence updates beliefs across time and distinguish what an agent believes from what is actually the case.
+- **Epistemic Extension**: Introduces epistemic modals (`Mi`, `Mu`), belief (`B`), probability (`Pr`), and indicative conditional operators (`↪`) for reasoning under uncertainty. By extending the semantic framework with credence functions to assign weights to state transitions, agents can track how evidence updates beliefs across time and distinguish what an agent believes from what is actually the case.
 
-- **Abilities Extension**: Provides specific ability (`Can`), generic ability (`Able`), and STIT (`stit`) operators for reasoning about agent capacities. Ability modals express what an agent can bring about through their capacities, with stronger truth conditions than circumstantial possibility---ability entails possibility but not vice versa. This enables reasoning about what agents are capable of accomplishing given their intrinsic capacities and circumstances.
+- **Abilities Extension**: Provides ability (`Can`) and STIT (`Stit`) operators for reasoning about capacities. Ability modals express what an agent can bring about through their capacities, with stronger truth conditions than circumstantial possibility since ability entails possibility but not *vice versa*. This enables reasoning about what agents are capable of accomplishing given their intrinsic capacities and circumstances.
 
-- **Normative Extension**: Adds obligation (`O`), permission (`P`), and preference operators with value orderings over states for reasoning about what ought to be done, what is permitted, and how to rank alternatives. This enables ethical reasoning, multi-party preference aggregation, and grounding obligations in factual circumstances.
+- **Normative Extension**: Adds obligation (`O`), permission (`P`), and a preference operator (`≺`) with value orderings over states for reasoning about what ought to be done, what is permitted, and how to rank alternatives. This enables ethical reasoning about alternatives.
 
-- **Choice Extension**: Introduces free choice permission (`FP`) and choice set (`Ch`) operators for reasoning about permission over alternatives. Free choice modals address the distribution of permission over disjunctive alternatives---intuitively, "you may have an apple or a pear" implies permission for each disjunct. This enables reasoning about which alternatives are permitted and how permissions combine.
+- **Choice Extension**: Introduces free choice permission (`FP`) and best choice (`Ch`) operators for reasoning about permission over alternatives. Free choice modals address the distribution of permission over disjunctive alternatives---intuitively, "you may have an apple or a pear" implies permission for each disjunct. This enables reasoning about which alternatives are permitted and how permissions combine.
 
-- **Spatial Extension**: Provides location-dependent operators and spatial relations for reasoning about where things are and how spatial proximity affects truth conditions. This supports navigation, containment reasoning, and location-sensitive planning.
+- **Spatial Extension**: Provides location-dependent operators and spatial relations for reasoning about where things are and how they are oriented relative to an orientation basis. This supports navigation, containment reasoning, and location-sensitive planning.
 
-- **Agential Extension**: Indexes epistemic and normative operators to specific agents (`B_a`, `K_a`, `O_a`), enabling reasoning about what different agents believe, prefer, and are obligated to do. This transforms single-perspective reasoning into multi-agent coordination where agents can model each other's epistemic and normative states. Requires at least one middle extension.
+- **Agential Extension**: Indexes epistemic and normative operators to specific agents (`B_a`, `≺`, `O_a`, …), enabling reasoning about what different agents believe, prefer, and are obligated to do. This transforms single-perspective reasoning into multi-agent coordination where agents can model each other's epistemic and normative states.
 
-- **Social Extension**: Provides resources for common ground and group-level reasoning, building upon the Agential Extension to enable reasoning about shared knowledge, collective beliefs, and social coordination. This is a theoretical extension without primitive operators.
+- **Social Extension**: Provides resources for common ground construction and group-level reasoning, building upon the Agential Extension to enable reasoning about shared beliefs, build trust in other agents, and coordinate on common goals.
 
-- **Reflection Extension**: Adds first-person metacognitive operators (`I`) for self-directed reasoning about one's own beliefs, knowledge, abilities, and goal progress. This enables an agent to reason about what it knows versus believes, recognize its own limitations, and track progress toward goals---essential for AI systems that must understand their own capabilities. Positioned in parallel with the Agential Extension, not sequentially after it.
+- **Reflection Extension**: Adds first-person metacognitive operators (`I`) for self-directed reasoning about one's own beliefs, abilities, and progress towards goals. This enables an agent to reason about what it is in a good position to believe given evaluation of its own limitations and track relative to other agents. Essential for AI systems that must understand their own capabilities and benefit from the capacity to learn by the testimony of others.
 
-The Constitutive Foundation and Explanatory Extension provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Abilities, Normative, Choice, and Spatial Extensions are modular plugins that can be combined in any subset. The agent-dependent extensions (Agential, Social, and Reflection) require at least one middle extension and are positioned in parallel at the bottom layer.
+The Constitutive Foundation and Dynamical Foundation provide essential expressive resources for verified reasoning in an interpreted language. The Epistemic, Abilities, Normative, Choice, and Spatial Extensions are modular plugins that can be combined in any subset. The agent-dependent extensions (Agential, Social, and Reflection) inherit from the layers above and are free to interact with each other.
 
 AI reasoning in the Logos is both **verified** by proof receipts for all inferences and **interpreted** by explicit semantic models, providing **scalable oversight** for sophisticated reasoning.
 
@@ -139,19 +139,19 @@ In addition to tense, historical modal, and counterfactual operators, effective 
 
 The Logos architecture enables domain-specific operator combinations, demonstrating how planned extensions can be composed for specific use cases:
 
-### Medical Planning (Constitutive + Explanatory + Epistemic)
+### Medical Planning (Constitutive + Dynamical + Epistemic)
 
 - **Constitutive operators**: Predicates, functions, quantifiers for representing medical facts and relationships
-- **Explanatory operators**: Modal (`□`, `◇`) + Temporal (`G`, `F`, `H`, `P`) for treatment timelines, Counterfactual (`□→`, `◇→`) for evaluating treatment strategies
+- **Dynamical operators**: Modal (`□`, `◇`) + Temporal (`G`, `F`, `H`, `P`) for treatment timelines, Counterfactual (`□→`, `◇→`) for evaluating treatment strategies
 - **Epistemic operators**: Probability (`Pr`), belief (`B`) for uncertainty quantification in diagnosis and prognosis
 - **Example**: `Prescribe(DrugA) ∧ Taking(MedicationX) □→ F(Normalize(BloodPressure)) ∧ F(Occur(LiverDamage))`
   - Evaluates what would happen under Drug A prescription given current medication
   - Distinguishes necessary consequences (`□→`) from possible consequences (`◇→`)
 
-### Legal Reasoning (Constitutive + Explanatory + Epistemic + Normative)
+### Legal Reasoning (Constitutive + Dynamical + Epistemic + Normative)
 
 - **Constitutive operators**: Predicates and functions for representing legal facts and evidence
-- **Explanatory operators**: Modal + Temporal for tracking events and beliefs across time
+- **Dynamical operators**: Modal + Temporal for tracking events and beliefs across time
 - **Epistemic operators**: Belief (`B`), epistemic modals (`Mi`, `Mu`) for evidence analysis
 - **Normative operators**: Obligation (`O`), Permission (`P`) for legal requirements and permissions
 - **Example**: Tracking how evidence reveals agent beliefs and motives, constructing narratives connecting motive to action
@@ -159,7 +159,7 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 ### Multi-Agent Coordination (All Layers)
 
 - **Constitutive**: Predicates and functions for representing agent properties and relationships
-- **Explanatory**: Modal + Temporal for action timelines and coordination constraints, Counterfactuals for evaluating alternative strategies
+- **Dynamical**: Modal + Temporal for action timelines and coordination constraints, Counterfactuals for evaluating alternative strategies
 - **Epistemic**: Belief operators for modeling other agents' knowledge states
 - **Normative**: Deontic operators (`O`, `P`) for obligations and permissions in negotiation
 
