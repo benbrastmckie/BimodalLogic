@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 554,
+      "project_name": "bimodal_metalogic_v2_reorganize",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-17T19:15:49Z",
+      "last_updated": "2026-01-17T19:15:49Z"
+    },
+    {
       "project_number": 547,
       "project_name": "improve_fmp_full_theorem",
       "status": "completed",
@@ -474,5 +483,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 554
+  "next_project_number": 555
 }
