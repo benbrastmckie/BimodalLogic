@@ -121,14 +121,16 @@ technical_debt:
 
 ### 539. Test and Validate Model Tiering Changes
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
-- **Session ID**: sess_1768661701_8fd041
+- **Session ID**: sess_1768663502_5fd8be
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
+- **Planned**: 2026-01-17
 - **Dependencies**: 535, 536, 537, 538
 - **Research**: [research-002.md](specs/539_test_validate_model_tiering/reports/research-002.md) (supersedes research-001.md)
+- **Plan**: [implementation-001.md](specs/539_test_validate_model_tiering/plans/implementation-001.md)
 
 **Description**: Test and validate the model tiering changes. Run through complete workflows (/research, /plan, /implement) to verify: correct model is used at each stage, quality meets expectations with Sonnet for heavy lifting, Haiku dispatch is fast and correct, no regressions in functionality.
 
