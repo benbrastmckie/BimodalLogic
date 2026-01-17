@@ -71,10 +71,11 @@ technical_debt:
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
 - **Planned**: 2026-01-17
+- **Revised**: 2026-01-17
 - **Research**: [research-001.md](specs/534_research_claude_code_model_selection/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/534_research_claude_code_model_selection/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/534_research_claude_code_model_selection/plans/implementation-002.md)
 
-**Description**: Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults.
+**Description**: Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults. **Revised**: Now includes Task 564 architectural changes (status-sync-agent → direct execution) for protocol/.claude/ porting.
 
 ---
 
@@ -131,7 +132,7 @@ technical_debt:
 
 ### 558. Semantic Satisfiability Bridge
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
@@ -146,7 +147,7 @@ technical_debt:
 
 ### 559. Strong Completeness Helpers
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-17
