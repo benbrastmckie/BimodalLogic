@@ -300,6 +300,17 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 | skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
 | skill-meta | meta-builder-agent | System building and task creation |
 
+### Tool Selection for Delegation
+
+**CRITICAL**: Skills delegate to agents via the **Task** tool, not the Skill tool.
+
+| Target Type | Directory | Tool | Example |
+|-------------|-----------|------|---------|
+| Skill | `.claude/skills/` | Skill | `Skill("skill-researcher")` |
+| Agent | `.claude/agents/` | Task | `Task(subagent_type="general-research-agent")` |
+
+The `agent:` field in skill frontmatter specifies which agent to invoke via the Task tool.
+
 ### Thin Wrapper Execution Flow
 
 All forked skills follow this 5-step pattern:
