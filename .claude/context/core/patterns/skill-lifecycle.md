@@ -37,16 +37,29 @@ This pattern eliminates the need for multiple skill invocations per workflow com
 
 ### Frontmatter Requirements
 
-Skills that manage lifecycle need these tools:
+Skills that manage lifecycle need these tools.
+
+**Forked Skills** (delegate to subagent):
 ```yaml
 ---
 name: skill-{name}
 description: {description}
-allowed-tools: Task, Bash(jq:*), Read, Edit, Glob, Grep
+allowed-tools: Task
 context: fork
 agent: {agent-name}
 ---
 ```
+
+**Direct Execution Skills** (inline execution, no subagent):
+```yaml
+---
+name: skill-{name}
+description: {description}
+allowed-tools: Bash, Edit, Read
+---
+```
+
+Note: skill-status-sync uses direct execution to avoid memory overhead from subagent spawning.
 
 ### Section Organization
 

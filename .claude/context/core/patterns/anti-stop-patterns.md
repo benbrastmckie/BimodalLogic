@@ -106,9 +106,9 @@ Each agent file's Critical Requirements section includes anti-stop rules:
 10. Assume your return ends the workflow (orchestrator continues with postflight)
 ```
 
-### 3. skill-status-sync (Reference Implementation)
+### 3. skill-status-sync (Direct Execution)
 
-The status sync skill demonstrates correct patterns. See lines 53, 80, 121, 622 for examples of anti-stop implementations.
+The status sync skill uses direct execution (Bash, Edit, Read) for atomic status updates. It demonstrates correct anti-stop patterns in its return format documentation.
 
 **Location**: `.claude/skills/skill-status-sync/SKILL.md`
 
