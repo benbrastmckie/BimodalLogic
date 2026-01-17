@@ -136,7 +136,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson arts '[{...}]' \
 
 ---
 
-### Phase 3: Update Command References [IN PROGRESS]
+### Phase 3: Update Command References [COMPLETED]
 
 **Goal**: Update command files to reflect that skill-status-sync is now direct execution (no functional changes, just comment/documentation updates)
 
@@ -162,7 +162,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson arts '[{...}]' \
 
 ---
 
-### Phase 4: Update Context and Pattern Files [NOT STARTED]
+### Phase 4: Update Context and Pattern Files [IN PROGRESS]
 
 **Goal**: Update patterns, templates, and checkpoint files to reflect the direct execution model
 
