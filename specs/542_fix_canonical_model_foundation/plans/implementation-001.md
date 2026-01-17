@@ -1,7 +1,7 @@
 # Implementation Plan: Task #542
 
 - **Task**: 542 - Fix CanonicalModel Foundation (Phase 1 of 540)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -49,7 +49,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Fix Imports and Core Definitions [NOT STARTED]
+### Phase 1: Fix Imports and Core Definitions [COMPLETED]
 
 **Goal**: Replace broken MCS definitions with working versions from Completeness.lean
 
@@ -72,7 +72,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Fix Lindenbaum's Lemma [NOT STARTED]
+### Phase 2: Fix Lindenbaum's Lemma [COMPLETED]
 
 **Goal**: Replace broken Lindenbaum implementation with working `set_lindenbaum` pattern
 
@@ -99,7 +99,7 @@ From research-001.md:
 
 ---
 
-### Phase 3: Fix Formula Constructor Usage [NOT STARTED]
+### Phase 3: Fix Formula Constructor Usage [COMPLETED]
 
 **Goal**: Update all Formula pattern matches to use correct constructors
 
@@ -122,7 +122,7 @@ From research-001.md:
 
 ---
 
-### Phase 4: Fix Type Mismatches [NOT STARTED]
+### Phase 4: Fix Type Mismatches [COMPLETED]
 
 **Goal**: Fix negation and other type issues
 
@@ -144,7 +144,7 @@ From research-001.md:
 
 ---
 
-### Phase 5: Final Verification and Cleanup [NOT STARTED]
+### Phase 5: Final Verification and Cleanup [COMPLETED]
 
 **Goal**: Ensure clean compilation and proper module structure
 
