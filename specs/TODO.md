@@ -232,7 +232,7 @@ technical_debt:
 
 ### 540. Finish Metalogic Directory Refactor and Cleanup
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-17
