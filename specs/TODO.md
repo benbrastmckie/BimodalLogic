@@ -211,16 +211,20 @@ technical_debt:
 
 ### 546. Documentation Update (Phase 5 of 540)
 - **Effort**: 0.5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Parent**: 540
 - **Dependencies**: 542, 543, 544, 545
 - **Research**: [research-001.md](specs/546_documentation_update/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/546_documentation_update/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260117.md](specs/546_documentation_update/summaries/implementation-summary-20260117.md)
 
 **Description**: Update Metalogic/README.md with accurate architecture diagram and module status. Remove references to non-existent Metalogic/Boneyard/, point to Bimodal/Boneyard/ instead. Add module-level docstrings.
+
+**Implementation**: Fixed all Boneyard path references (Metalogic/Boneyard/ → Bimodal/Boneyard/), updated module status table (Representation modules now PARTIAL with sorries), refreshed architecture diagrams, marked Phase 1 complete in Migration Path, updated Building section and footer.
 
 ---
 

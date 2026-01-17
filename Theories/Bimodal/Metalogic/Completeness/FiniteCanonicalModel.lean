@@ -3986,6 +3986,41 @@ is not provable, we construct a finite countermodel.
 open Bimodal.Semantics Validity
 
 /--
+**Bridge Lemma: Satisfiability Implies Non-Refutability**.
+
+If a formula φ is satisfiable, then its negation is not provable.
+This bridges the semantic notion (satisfiability) to syntactic (non-derivability).
+
+**Proof**:
+1. Assume φ is satisfiable: ∃ model M, τ, t such that M, τ, t ⊨ φ
+2. Suppose for contradiction that ⊢ ¬φ (neg φ is provable)
+3. By soundness, ⊢ ¬φ → ⊨ ¬φ (neg φ is valid)
+4. Validity means: ∀ M, τ, t, M, τ, t ⊨ ¬φ
+5. But M, τ, t ⊨ φ means M, τ, t ⊭ ¬φ (by definition of negation)
+6. Contradiction with (4), so ¬φ is not provable
+-/
+theorem satisfiable_implies_not_refutable (phi : Formula) :
+    formula_satisfiable phi → ¬Nonempty (⊢ phi.neg) := by
+  intro h_sat h_prov
+  -- Extract the satisfying model
+  obtain ⟨D, _, _, _, F, M, τ, t, h_true⟩ := h_sat
+  -- Extract the derivation of phi.neg
+  obtain ⟨d⟩ := h_prov
+  -- By soundness, phi.neg is a semantic consequence of []
+  have h_valid := Bimodal.Metalogic.Soundness.soundness [] phi.neg d
+  -- Specialize to our model
+  have h_neg_true : truth_at M τ t phi.neg := by
+    apply h_valid D
+    intro ψ hψ
+    exact (List.not_mem_nil hψ).elim
+  -- But phi.neg = phi → ⊥, so truth_at phi.neg means truth_at phi → False
+  simp only [Formula.neg, truth_at] at h_neg_true
+  -- h_neg_true : truth_at phi → truth_at ⊥
+  -- h_true : truth_at phi
+  -- truth_at ⊥ = False
+  exact h_neg_true h_true
+
+/--
 **Finite Model Property for TM Logic** (Standard Format).
 
 If a formula φ is satisfiable, then it is satisfiable in a finite model
