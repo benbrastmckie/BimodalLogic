@@ -121,13 +121,13 @@ permissions:
 
 ```yaml
 # Specific file
-- read: [".opencode/specs/TODO.md"]
+- read: ["specs/TODO.md"]
 
 # All files in directory (non-recursive)
-- read: [".opencode/specs/*"]
+- read: ["specs/*"]
 
 # All files in directory tree (recursive)
-- read: [".opencode/specs/**/*"]
+- read: ["specs/**/*"]
 
 # All markdown files anywhere
 - read: ["**/*.md"]
@@ -174,7 +174,7 @@ permissions:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
     
     # Write access to research outputs
-    - write: [".opencode/specs/**/*", "docs/research/**/*"]
+    - write: ["specs/**/*", "docs/research/**/*"]
     
     # Safe bash commands for analysis
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
@@ -206,7 +206,7 @@ permissions:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
     
     # Write access to plans
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     
     # Safe bash commands
     - bash: ["git", "grep", "find", "wc", "jq"]
@@ -238,7 +238,7 @@ permissions:
     - read: ["**/*"]
     
     # Write access to code and specs
-    - write: ["**/*.lean", "**/*.md", ".opencode/specs/**/*"]
+    - write: ["**/*.lean", "**/*.md", "specs/**/*"]
     
     # Edit access (safer than write)
     - edit: ["**/*.lean", "**/*.md"]
@@ -274,7 +274,7 @@ permissions:
     - read: ["**/*.lean", "**/*.md", ".opencode/**/*"]
     
     # Write access to Lean files
-    - write: ["**/*.lean", ".opencode/specs/**/*"]
+    - write: ["**/*.lean", "specs/**/*"]
     
     # Edit access for Lean files
     - edit: ["**/*.lean"]
@@ -305,10 +305,10 @@ tools:
 permissions:
   allow:
     # Read access to specs
-    - read: [".opencode/specs/**/*"]
+    - read: ["specs/**/*"]
     
     # Write access to specific files only
-    - write: [".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/specs/**/plans/*.md"]
+    - write: ["specs/TODO.md", "specs/state.json", "specs/**/plans/*.md"]
     
     # Minimal bash commands
     - bash: ["date", "git"]
@@ -480,7 +480,7 @@ permissions:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["git", "date"]
   deny:
     - write: [".git/**/*"]
@@ -495,7 +495,7 @@ permissions:
 permissions:
   allow:
     - read: ["**/*"]
-    - write: ["**/*.lean", "**/*.md", ".opencode/specs/**/*"]
+    - write: ["**/*.lean", "**/*.md", "specs/**/*"]
     - edit: ["**/*.lean", "**/*.md"]
     - bash: ["git", "lake", "lean"]
   deny:
@@ -510,8 +510,8 @@ permissions:
 ```yaml
 permissions:
   allow:
-    - read: [".opencode/specs/**/*"]
-    - write: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+    - read: ["specs/**/*"]
+    - write: ["specs/TODO.md", "specs/state.json"]
     - bash: ["date", "git"]
   deny:
     - write: [".git/**/*"]
@@ -656,15 +656,15 @@ Begin with minimal permissions and add as needed:
 # Start here
 permissions:
   allow:
-    - read: [".opencode/specs/**/*"]
-    - write: [".opencode/specs/{agent_output}/**/*"]
+    - read: ["specs/**/*"]
+    - write: ["specs/{agent_output}/**/*"]
     - bash: ["git"]
 
 # Expand as needed
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["git", "grep", "find"]
 ```
 
@@ -707,7 +707,7 @@ permissions:
     - read: ["**/*.md", "**/*.lean"]
     
     # Write access limited to research outputs
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
   
   deny:
     # Prevent modification of build configuration

@@ -341,7 +341,7 @@ All returns validated against subagent-return-format.md:
 
 ### TODO.md
 
-**Location**: `.opencode/specs/TODO.md`
+**Location**: `specs/TODO.md`
 
 **Purpose**: User-facing task list with status markers
 
@@ -368,7 +368,7 @@ All returns validated against subagent-return-format.md:
 
 ### state.json
 
-**Location**: `.opencode/specs/state.json`
+**Location**: `specs/state.json`
 
 **Purpose**: Machine-readable project state
 
@@ -389,7 +389,7 @@ All returns validated against subagent-return-format.md:
 
 ### errors.json
 
-**Location**: `.opencode/specs/errors.json`
+**Location**: `specs/errors.json`
 
 **Purpose**: Error tracking and fix effectiveness analysis
 
@@ -423,7 +423,7 @@ All returns validated against subagent-return-format.md:
 
 ### Plan Files
 
-**Location**: `.opencode/specs/{task_number}_{topic_slug}/plans/implementation-{version:03d}.md`
+**Location**: `specs/{task_number}_{topic_slug}/plans/implementation-{version:03d}.md`
 
 **Purpose**: Phased implementation plans with status tracking
 
@@ -848,5 +848,5 @@ The meta system builder is fully integrated into ProofChecker's .opencode system
 - Testing Guide: `.opencode/TESTING.md`
 - Delegation Guide: `.opencode/context/core/workflows/subagent-delegation-guide.md`
 - Return Format Standard: `.opencode/context/core/standards/subagent-return-format.md`
-- Task 191 Research: `.opencode/specs/191_fix_subagent_delegation_hang/reports/research-001.md`
-- Task 191 Plan: `.opencode/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md`
+- Task 191 Research: `specs/191_fix_subagent_delegation_hang/reports/research-001.md`
+- Task 191 Plan: `specs/191_fix_subagent_delegation_hang/plans/implementation-001.md`

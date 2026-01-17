@@ -5,7 +5,7 @@
 - **Effort**: 10 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: Research report (.opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md) identified three critical root causes: (1) task-executor bypasses status-sync-manager for plan file updates, (2) project state.json creation is non-critical and fails silently, (3) plan file phase status updates not implemented atomically
+- **Research Inputs**: Research report (specs/221_fix_comprehensive_status_update_failures/reports/research-001.md) identified three critical root causes: (1) task-executor bypasses status-sync-manager for plan file updates, (2) project state.json creation is non-critical and fails silently, (3) plan file phase status updates not implemented atomically
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -248,7 +248,7 @@ Fix three critical status update failures: (1) task-executor bypassing status-sy
 - .opencode/context/core/workflows/command-lifecycle.md (emphasize mandatory delegation in Stage 7)
 
 **Summary Artifact**:
-- .opencode/specs/221_fix_comprehensive_status_update_failures/summaries/implementation-summary-YYYYMMDD.md
+- specs/221_fix_comprehensive_status_update_failures/summaries/implementation-summary-YYYYMMDD.md
 
 **No New Files Created**: All changes are modifications to existing specification files
 

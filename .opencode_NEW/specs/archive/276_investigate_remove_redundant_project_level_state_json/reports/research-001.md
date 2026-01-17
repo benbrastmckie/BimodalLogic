@@ -8,15 +8,15 @@
 **Dependencies**: None
 
 **Sources/Inputs**:
-- Central state file: `.opencode/specs/state.json`
-- Project-level state files: 62 files in `.opencode/specs/{number}_{slug}/state.json`
+- Central state file: `specs/state.json`
+- Project-level state files: 62 files in `specs/{number}_{slug}/state.json`
 - status-sync-manager.md specification
 - state-management.md standard
 - All subagent specifications (researcher.md, planner.md, implementer.md, etc.)
 - All command specifications (research.md, plan.md, implement.md, etc.)
 
 **Artifacts**:
-- Research report: `.opencode/specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md`
+- Research report: `specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md`
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -49,14 +49,14 @@ Per task description, this research investigates:
 
 ### Current System Architecture
 
-**Central State File** (`.opencode/specs/state.json`):
+**Central State File** (`specs/state.json`):
 - Tracks all active and completed projects in `active_projects` and `completed_projects` arrays
 - Contains project metadata: number, name, type, phase, status, priority, language
 - Tracks artifacts as simple path array
 - Tracks plan metadata, estimated hours, files modified
 - Single source of truth for project numbering (`next_project_number`)
 
-**Project-Level State Files** (`.opencode/specs/{number}_{slug}/state.json`):
+**Project-Level State Files** (`specs/{number}_{slug}/state.json`):
 - Created lazily by status-sync-manager on first artifact write
 - Contains project metadata: number, name, type, phase, status
 - Tracks artifacts in structured arrays (reports, plans, summaries) with metadata
@@ -83,8 +83,8 @@ rg "jq.*\{task_number\}.*state\.json|cat.*\{task_number\}.*state\.json|read.*pro
 **status-sync-manager.md analysis**:
 ```markdown
 <step_1_prepare>
-  1. Read .opencode/specs/TODO.md into memory
-  2. Read .opencode/specs/state.json into memory
+  1. Read specs/TODO.md into memory
+  2. Read specs/state.json into memory
   3. Read project state.json if exists  # READ BUT NEVER USED
   4. Read plan file if plan_path provided
   5. Validate all files readable
@@ -123,9 +123,9 @@ The project state.json is read into memory for backup purposes only, then immedi
   "completed": "2025-12-28",
   "last_updated": "2025-12-28",
   "artifacts": [
-    ".opencode/specs/221_.../reports/research-001.md",
-    ".opencode/specs/221_.../plans/implementation-001.md",
-    ".opencode/specs/221_.../summaries/implementation-summary-20251228.md",
+    "specs/221_.../reports/research-001.md",
+    "specs/221_.../plans/implementation-001.md",
+    "specs/221_.../summaries/implementation-summary-20251228.md",
     "...modified files..."
   ],
   "estimated_hours": 9.0,
@@ -150,7 +150,7 @@ The project state.json is read into memory for backup purposes only, then immedi
   "reports": [
     {
       "type": "research_report",
-      "path": ".opencode/specs/221_.../reports/research-001.md",
+      "path": "specs/221_.../reports/research-001.md",
       "created": "2025-12-28T22:33:41Z",
       "summary": "Comprehensive analysis..."
     }
@@ -214,7 +214,7 @@ The project state.json is read into memory for backup purposes only, then immedi
 **Measured impact**:
 ```bash
 # Current: 62 project-level state.json files
-find .opencode/specs -name "state.json" -type f | grep -v "^\.opencode/specs/state\.json$" | wc -l
+find .opencode/specs -name "state.json" -type f | grep -v "^\specs/state\.json$" | wc -l
 # Output: 62
 
 # Total size: 260KB
@@ -243,9 +243,9 @@ find .opencode/specs -name "state.json" -type f | xargs du -ch | tail -1
 **Current synchronization complexity**:
 
 status-sync-manager must keep 3 files synchronized:
-1. `.opencode/specs/TODO.md` (user-facing task list)
-2. `.opencode/specs/state.json` (central project state)
-3. `.opencode/specs/{number}_{slug}/state.json` (project-level state)
+1. `specs/TODO.md` (user-facing task list)
+2. `specs/state.json` (central project state)
+3. `specs/{number}_{slug}/state.json` (project-level state)
 
 **Synchronization issues identified**:
 
@@ -336,9 +336,9 @@ The project state.json is completely regenerated in Step 3, not merged with exis
 **Central state.json artifact tracking**:
 ```json
 "artifacts": [
-  ".opencode/specs/221_.../reports/research-001.md",
-  ".opencode/specs/221_.../plans/implementation-001.md",
-  ".opencode/specs/221_.../summaries/implementation-summary-20251228.md"
+  "specs/221_.../reports/research-001.md",
+  "specs/221_.../plans/implementation-001.md",
+  "specs/221_.../summaries/implementation-summary-20251228.md"
 ]
 ```
 
@@ -347,7 +347,7 @@ The project state.json is completely regenerated in Step 3, not merged with exis
 "reports": [
   {
     "type": "research_report",
-    "path": ".opencode/specs/221_.../reports/research-001.md",
+    "path": "specs/221_.../reports/research-001.md",
     "created": "2025-12-28T22:33:41Z",
     "summary": "Comprehensive analysis..."
   }
@@ -515,7 +515,7 @@ rg "\.reports\[|\.plans\[|\.summaries\[" .opencode/ --type md
 #!/bin/bash
 # Remove project-level state.json files (excluding central, archive, maintenance)
 find .opencode/specs -name "state.json" -type f \
-  | grep -v "^\.opencode/specs/state\.json$" \
+  | grep -v "^\specs/state\.json$" \
   | grep -v "archive/state\.json$" \
   | grep -v "maintenance/state\.json$" \
   | xargs rm -f
@@ -576,7 +576,7 @@ find .opencode/specs -name "state.json" -type f \
 
 ### Source 1: Central State File
 
-**File**: `.opencode/specs/state.json`  
+**File**: `specs/state.json`  
 **Size**: 1565 lines, 62KB  
 **Schema version**: 1.1.0  
 **Active projects**: 10  
@@ -597,11 +597,11 @@ find .opencode/specs -name "state.json" -type f \
 **Average size**: 4.2KB per file
 
 **Sample files analyzed**:
-1. `.opencode/specs/221_fix_comprehensive_status_update_failures/state.json`
-2. `.opencode/specs/219_restructure_module_hierarchy/state.json`
-3. `.opencode/specs/193_prove_is_valid_swap_involution/state.json`
-4. `.opencode/specs/190_meta_system_optimization/state.json`
-5. `.opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/state.json`
+1. `specs/221_fix_comprehensive_status_update_failures/state.json`
+2. `specs/219_restructure_module_hierarchy/state.json`
+3. `specs/193_prove_is_valid_swap_involution/state.json`
+4. `specs/190_meta_system_optimization/state.json`
+5. `specs/231_fix_systematic_command_stage_7_postflight_execution_failures/state.json`
 
 ---
 

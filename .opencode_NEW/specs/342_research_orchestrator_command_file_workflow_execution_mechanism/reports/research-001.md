@@ -24,8 +24,8 @@ The orchestrator does NOT execute command file `<workflow_execution>` stages, ca
 - `.opencode/command/implement.md` (example command with workflow_execution stages)
 - `.opencode/docs/architecture/orchestrator-workflow-execution-issue.md` (issue documentation)
 - `.opencode/docs/migrations/001-openagents-migration/adr/ADR-002-agent-workflow-ownership.md`
-- `.opencode/specs/archive/240_*/reports/research-001.md` (OpenAgents comparison)
-- `.opencode/specs/archive/245_*/plans/implementation-001.md` (migration plan)
+- `specs/archive/240_*/reports/research-001.md` (OpenAgents comparison)
+- `specs/archive/245_*/plans/implementation-001.md` (migration plan)
 - `.opencode/agent/subagents/researcher.md` (subagent with deprecated preflight/postflight)
 - `.opencode/agent/subagents/implementer.md` (subagent with deprecated preflight/postflight)
 
@@ -800,7 +800,7 @@ Conduct comprehensive research on a specified topic and generate structured rese
     "summary": "Research completed on {topic}. Found {N} key insights.",
     "artifacts": [{
       "type": "research",
-      "path": ".opencode/specs/{task_number}_{slug}/reports/research-001.md",
+      "path": "specs/{task_number}_{slug}/reports/research-001.md",
       "summary": "Detailed research report"
     }],
     "metadata": {
@@ -1048,8 +1048,8 @@ The orchestrator does NOT execute command file `<workflow_execution>` stages bec
 - `.opencode/command/implement.md` - Example command with workflow_execution stages
 - `.opencode/docs/architecture/orchestrator-workflow-execution-issue.md` - Issue documentation
 - `.opencode/docs/migrations/001-openagents-migration/adr/ADR-002-agent-workflow-ownership.md` - ADR-002
-- `.opencode/specs/archive/240_*/reports/research-001.md` - OpenAgents comparison
-- `.opencode/specs/archive/245_*/plans/implementation-001.md` - Migration plan
+- `specs/archive/240_*/reports/research-001.md` - OpenAgents comparison
+- `specs/archive/245_*/plans/implementation-001.md` - Migration plan
 - `.opencode/agent/subagents/researcher.md` - Subagent with deprecated preflight/postflight
 - `.opencode/agent/subagents/implementer.md` - Subagent with deprecated preflight/postflight
 - Task 335 - Example of postflight failure (artifacts created but not linked)

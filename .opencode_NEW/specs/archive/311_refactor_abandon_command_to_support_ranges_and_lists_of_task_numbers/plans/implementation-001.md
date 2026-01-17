@@ -118,7 +118,7 @@ This plan integrates findings from 1 research report:
 ```bash
 # Manual recovery if rollback fails
 # 1. Check state.json for inconsistencies
-jq '.active_projects[] | select(.status == "abandoned")' .opencode/specs/state.json
+jq '.active_projects[] | select(.status == "abandoned")' specs/state.json
 
 # 2. Manually restore status using /sync command
 /sync
@@ -431,13 +431,13 @@ jq '.active_projects[] | select(.status == "abandoned")' .opencode/specs/state.j
 ### Supporting Artifacts
 
 1. **Implementation Summary**:
-   - `.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/summaries/implementation-summary-20260105.md`
+   - `specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/summaries/implementation-summary-20260105.md`
    - Brief summary of changes and validation results
 
 ### Artifact Structure
 
 ```
-.opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/
+specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/
 ├── reports/
 │   └── research-001.md (existing)
 ├── plans/

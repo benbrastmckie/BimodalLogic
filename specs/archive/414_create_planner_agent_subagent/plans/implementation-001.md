@@ -157,7 +157,7 @@ Create the `planner-agent.md` subagent file that integrates with the existing `s
 ## Artifacts & Outputs
 
 - `.claude/agents/planner-agent.md` - Main deliverable
-- `.claude/specs/414_create_planner_agent_subagent/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/414_create_planner_agent_subagent/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

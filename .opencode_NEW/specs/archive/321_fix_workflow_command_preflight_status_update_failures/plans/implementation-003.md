@@ -213,7 +213,7 @@ This plan integrates findings from 3 research reports:
    # In step_5_return, after file existence check
    
    # Verify status marker was actually updated in TODO.md
-   if ! grep -q "**Status**: \[$expected_status\]" .opencode/specs/TODO.md; then
+   if ! grep -q "**Status**: \[$expected_status\]" specs/TODO.md; then
      echo '{"status":"failed","summary":"Status marker not updated in TODO.md","errors":[{"type":"verification_failed","message":"File written but status marker not updated","code":"CONTENT_VERIFICATION_FAILED"}]}'
      exit 1
    fi
@@ -221,7 +221,7 @@ This plan integrates findings from 3 research reports:
    # Verify status was actually updated in state.json
    actual_status=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-     .opencode/specs/state.json)
+     specs/state.json)
    
    if [ "$actual_status" != "$expected_status" ]; then
      echo '{"status":"failed","summary":"Status not updated in state.json","errors":[{"type":"verification_failed","message":"Expected: $expected_status, Actual: $actual_status","code":"STATE_VERIFICATION_FAILED"}]}'
@@ -230,7 +230,7 @@ This plan integrates findings from 3 research reports:
    
    # Verify artifact link was added (if validated_artifacts provided)
    if [ -n "$artifact_path" ]; then
-     if ! grep -q "$artifact_path" .opencode/specs/TODO.md; then
+     if ! grep -q "$artifact_path" specs/TODO.md; then
        echo '{"status":"failed","summary":"Artifact link not added to TODO.md","errors":[{"type":"verification_failed","message":"Artifact: $artifact_path","code":"ARTIFACT_LINK_FAILED"}]}'
        exit 1
      fi
@@ -278,8 +278,8 @@ This plan integrates findings from 3 research reports:
    # In step_4_commit
    
    # Generate unique temp file names (include session_id for uniqueness)
-   todo_tmp=".opencode/specs/TODO.md.tmp.${session_id}"
-   state_tmp=".opencode/specs/state.json.tmp.${session_id}"
+   todo_tmp="specs/TODO.md.tmp.${session_id}"
+   state_tmp="specs/state.json.tmp.${session_id}"
    
    # Write to temp files
    echo "$updated_todo" > "$todo_tmp"
@@ -294,8 +294,8 @@ This plan integrates findings from 3 research reports:
    
    # Atomic rename (both files or neither)
    # Note: Last writer wins if concurrent updates occur (acceptable per user requirement)
-   if mv "$todo_tmp" .opencode/specs/TODO.md && \
-      mv "$state_tmp" .opencode/specs/state.json; then
+   if mv "$todo_tmp" specs/TODO.md && \
+      mv "$state_tmp" specs/state.json; then
      # Success - both files updated atomically
      echo "Files updated successfully"
    else
@@ -318,8 +318,8 @@ This plan integrates findings from 3 research reports:
    
    ```bash
    # REMOVE these lines from step_4_commit:
-   # cp .opencode/specs/TODO.md .opencode/specs/TODO.md.backup
-   # cp .opencode/specs/state.json .opencode/specs/state.json.backup
+   # cp specs/TODO.md specs/TODO.md.backup
+   # cp specs/state.json specs/state.json.backup
    
    # REMOVE rollback_on_failure function
    
@@ -413,7 +413,7 @@ This plan integrates findings from 3 research reports:
           Read state.json:
             actual_status=$(jq -r --arg num "$task_number" \
               '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-              .opencode/specs/state.json)
+              specs/state.json)
           
           IF actual_status != "researching":
             - Log error: "Preflight verification failed - status not updated"
@@ -549,7 +549,7 @@ This plan integrates findings from 3 research reports:
 **Tasks**:
 
 1. **Document Bug Fixes**:
-   - Create `.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/bug-fixes.md`
+   - Create `specs/321_fix_workflow_command_preflight_status_update_failures/bug-fixes.md`
    - Document bugs #7, #3, #2 and how they were fixed
    - Document why file locking was not used
    - Document why backup files were removed
@@ -685,7 +685,7 @@ This plan integrates findings from 3 research reports:
 ### Documentation Artifacts
 
 1. **Bug Fixes Documentation**:
-   - `.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/bug-fixes.md`
+   - `specs/321_fix_workflow_command_preflight_status_update_failures/bug-fixes.md`
    - Details of bugs #7, #3, #2 and fixes
    - Rationale for no file locking
    - Rationale for no backup files

@@ -14,8 +14,8 @@ The `/meta` command was directly implementing work:
 - Created commands, skills, rules, and context files immediately
 - Modified CLAUDE.md and ARCHITECTURE.md directly
 - Used TodoWrite for internal tracking only
-- Did NOT create tasks in `.claude/specs/TODO.md`
-- Did NOT create tasks in `.claude/specs/state.json`
+- Did NOT create tasks in `specs/TODO.md`
+- Did NOT create tasks in `specs/state.json`
 - Did NOT create plan artifacts
 
 ### Why This Is Wrong
@@ -47,7 +47,7 @@ The following infrastructure must exist for /meta to work correctly:
 
 ### 1. State Files
 
-**`.claude/specs/state.json`** must have structure:
+**`specs/state.json`** must have structure:
 ```json
 {
   "next_project_number": 349,
@@ -65,7 +65,7 @@ The following infrastructure must exist for /meta to work correctly:
 }
 ```
 
-**`.claude/specs/TODO.md`** must have structure:
+**`specs/TODO.md`** must have structure:
 ```markdown
 ---
 next_project_number: 349
@@ -81,7 +81,7 @@ next_project_number: 349
 - **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
-- **Plan**: [implementation-001.md](.claude/specs/348_task_slug/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/348_task_slug/plans/implementation-001.md)
 
 **Description**: Task description here.
 
@@ -142,11 +142,11 @@ Interactive system builder for creating agent architectures, commands, and skill
 - Directly create commands, skills, rules, or context files
 - Directly modify CLAUDE.md or ARCHITECTURE.md
 - Implement any work
-- Write any code or configuration files outside .claude/specs/
+- Write any code or configuration files outside specs/
 
 **REQUIRED**: All work must be tracked via:
 - Tasks in TODO.md and state.json
-- Plans in .claude/specs/{N}_{SLUG}/plans/
+- Plans in specs/{N}_{SLUG}/plans/
 
 ## Modes
 
@@ -253,7 +253,7 @@ Proceed with task creation? (y/n)
 
 ```bash
 # Get next task number
-jq '.next_project_number' .claude/specs/state.json
+jq '.next_project_number' specs/state.json
 ```
 
 ##### 7.2 Create Tasks Sequentially
@@ -262,7 +262,7 @@ For each component (command, skill, rule, context file, doc update):
 
 **A. Create task directory:**
 ```bash
-mkdir -p .claude/specs/{N}_{SLUG}/plans/
+mkdir -p specs/{N}_{SLUG}/plans/
 ```
 
 **B. Update state.json** (add to active_projects):
@@ -286,7 +286,7 @@ mkdir -p .claude/specs/{N}_{SLUG}/plans/
 - **Priority**: {High|Medium|Low}
 - **Language**: meta
 - **Created**: {ISO_DATE}
-- **Plan**: [implementation-001.md](.claude/specs/{N}_{SLUG}/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/{N}_{SLUG}/plans/implementation-001.md)
 
 **Description**: {detailed description of component to create}
 
@@ -294,7 +294,7 @@ mkdir -p .claude/specs/{N}_{SLUG}/plans/
 - {target file path}
 ```
 
-**D. Create plan artifact** at `.claude/specs/{N}_{SLUG}/plans/implementation-001.md`:
+**D. Create plan artifact** at `specs/{N}_{SLUG}/plans/implementation-001.md`:
 ```markdown
 # Implementation Plan: Task #{N}
 
@@ -363,7 +363,7 @@ Create tasks in this order (dependencies flow downward):
 #### Stage 8: Git Commit
 
 ```bash
-git add .claude/specs/
+git add specs/
 git commit -m "meta: create {N} tasks for {domain} system"
 ```
 
@@ -376,22 +376,22 @@ Created {N} tasks with implementation plans:
 
 High Priority:
 - Task #{N1}: {title}
-  Plan: .claude/specs/{N1}_{SLUG}/plans/implementation-001.md
+  Plan: specs/{N1}_{SLUG}/plans/implementation-001.md
 
 - Task #{N2}: {title}
-  Plan: .claude/specs/{N2}_{SLUG}/plans/implementation-001.md
+  Plan: specs/{N2}_{SLUG}/plans/implementation-001.md
 
 Medium Priority:
 - Task #{N3}: {title}
-  Plan: .claude/specs/{N3}_{SLUG}/plans/implementation-001.md
+  Plan: specs/{N3}_{SLUG}/plans/implementation-001.md
 
 Low Priority:
 - Task #{N4}: {title}
-  Plan: .claude/specs/{N4}_{SLUG}/plans/implementation-001.md
+  Plan: specs/{N4}_{SLUG}/plans/implementation-001.md
 
 Next steps:
 1. Review tasks in TODO.md
-2. Review plans in .claude/specs/
+2. Review plans in specs/
 3. Execute: /implement {N1} (start with highest priority)
 4. Continue through task list
 ```
@@ -507,34 +507,34 @@ Created 8 tasks with implementation plans:
 
 High Priority:
 - Task #350: Update CLAUDE.md for Lean 4 focus
-  Plan: .claude/specs/350_update_claude_md_lean4/plans/implementation-001.md
+  Plan: specs/350_update_claude_md_lean4/plans/implementation-001.md
 
 - Task #351: Update ARCHITECTURE.md for Lean system
-  Plan: .claude/specs/351_update_architecture_lean4/plans/implementation-001.md
+  Plan: specs/351_update_architecture_lean4/plans/implementation-001.md
 
 Medium Priority:
 - Task #352: Create skill-lean-research for Mathlib research
-  Plan: .claude/specs/352_create_skill_lean_research/plans/implementation-001.md
+  Plan: specs/352_create_skill_lean_research/plans/implementation-001.md
 
 - Task #353: Create skill-lean-implementation for proof writing
-  Plan: .claude/specs/353_create_skill_lean_implementation/plans/implementation-001.md
+  Plan: specs/353_create_skill_lean_implementation/plans/implementation-001.md
 
 - Task #354: Update skill-orchestrator for Lean routing
-  Plan: .claude/specs/354_update_skill_orchestrator_lean/plans/implementation-001.md
+  Plan: specs/354_update_skill_orchestrator_lean/plans/implementation-001.md
 
 - Task #355: Create lean4.md rule for development patterns
-  Plan: .claude/specs/355_create_lean4_rule/plans/implementation-001.md
+  Plan: specs/355_create_lean4_rule/plans/implementation-001.md
 
 Low Priority:
 - Task #356: Create lean4/tools/mcp-tools-guide.md context
-  Plan: .claude/specs/356_create_lean4_mcp_tools_context/plans/implementation-001.md
+  Plan: specs/356_create_lean4_mcp_tools_context/plans/implementation-001.md
 
 - Task #357: Create lean4/patterns/tactic-patterns.md context
-  Plan: .claude/specs/357_create_lean4_tactic_patterns_context/plans/implementation-001.md
+  Plan: specs/357_create_lean4_tactic_patterns_context/plans/implementation-001.md
 
 Next steps:
 1. Review tasks in TODO.md
-2. Review plans in .claude/specs/
+2. Review plans in specs/
 3. Execute: /implement 350 (start with highest priority)
 4. Continue through task list
 ```
@@ -548,7 +548,7 @@ Next steps:
 |--------|--------|-------|
 | Direct implementation | Yes | No (forbidden) |
 | Creates tasks | No | Yes (in TODO.md + state.json) |
-| Creates plans | No | Yes (in .claude/specs/{N}_{SLUG}/plans/) |
+| Creates plans | No | Yes (in specs/{N}_{SLUG}/plans/) |
 | Git commits | One large commit | One commit with all tasks/plans |
 | Resumable | No | Yes (via /implement) |
 | Trackable | No | Yes (task numbers, status markers) |
@@ -560,8 +560,8 @@ Next steps:
 
 To apply this refactor to ProofChecker:
 
-- [ ] Verify `.claude/specs/state.json` exists with correct structure
-- [ ] Verify `.claude/specs/TODO.md` exists with correct structure
+- [ ] Verify `specs/state.json` exists with correct structure
+- [ ] Verify `specs/TODO.md` exists with correct structure
 - [ ] Verify `.claude/rules/state-management.md` exists
 - [ ] Verify `.claude/rules/artifact-formats.md` exists
 - [ ] Replace `.claude/commands/meta.md` with updated version above

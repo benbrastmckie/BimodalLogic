@@ -13,7 +13,7 @@ tools:
 permissions:
   allow:
     - bash: ["git"]
-    - read: [".opencode/specs/**/*"]
+    - read: ["specs/**/*"]
   deny:
     - bash: ["rm", "sudo", "su"]
 context_loading:
@@ -82,8 +82,8 @@ lifecycle:
     <process>
       1. Receive explicit file list from caller (scope_files)
       2. Add related tracking files if not already included:
-         a. .opencode/specs/TODO.md (if task status changed)
-         b. .opencode/specs/state.json (if task status changed)
+         a. specs/TODO.md (if task status changed)
+         b. specs/state.json (if task status changed)
          c. Plan file (if phase status changed)
       3. Validate all files exist
       4. Exclude unrelated changes (check git status)
@@ -205,7 +205,7 @@ lifecycle:
         "files_committed": [
           ".opencode/command/implement.md",
           ".opencode/command/research.md",
-          ".opencode/specs/TODO.md"
+          "specs/TODO.md"
         ]
       }
     }
@@ -236,7 +236,7 @@ lifecycle:
           ".opencode/QUICK-START.md",
           ".opencode/TESTING.md",
           ".opencode/README.md",
-          ".opencode/specs/196_complete_opencode_refactor/plans/implementation-001.md"
+          "specs/196_complete_opencode_refactor/plans/implementation-001.md"
         ]
       }
     }
@@ -333,6 +333,6 @@ lifecycle:
   </principle_5>
 
   <principle_6>
-    Include tracking files: Always commit .opencode/specs/TODO.md and state.json with changes
+    Include tracking files: Always commit specs/TODO.md and state.json with changes
   </principle_6>
 </git_principles>

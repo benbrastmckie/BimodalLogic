@@ -6,7 +6,7 @@
 - **Priority**: Critical
 - **Dependencies**: None
 - **Research Inputs**: 
-  - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md (Comparative analysis of OpenAgents vs ProofChecker)
+  - specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md (Comparative analysis of OpenAgents vs ProofChecker)
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md

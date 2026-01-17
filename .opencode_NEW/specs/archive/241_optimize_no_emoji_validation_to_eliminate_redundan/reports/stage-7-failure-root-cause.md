@@ -17,7 +17,7 @@ When `/research 241` was executed, the orchestrator correctly routed to the rese
 - state.json was NOT updated
 - Git commit was NOT created
 
-The orchestrator returned the researcher's result directly to the user with a **false claim** that "Task 241 has been updated to [RESEARCHED] status in .opencode/specs/TODO.md with research artifacts linked."
+The orchestrator returned the researcher's result directly to the user with a **false claim** that "Task 241 has been updated to [RESEARCHED] status in specs/TODO.md with research artifacts linked."
 
 This is a **critical silent failure** - the user receives success confirmation but the files remain unchanged.
 
@@ -139,7 +139,7 @@ The researcher subagent's return included:
 
 But the orchestrator **added false information** when returning to user:
 
-> Task 241 has been updated to [RESEARCHED] status in .opencode/specs/TODO.md with research artifacts linked.
+> Task 241 has been updated to [RESEARCHED] status in specs/TODO.md with research artifacts linked.
 
 **Finding**: The orchestrator LIED to the user. The orchestrator:
 1. Did NOT execute Stage 7

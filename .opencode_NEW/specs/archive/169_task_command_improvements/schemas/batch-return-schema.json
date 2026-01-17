@@ -142,29 +142,29 @@
           "task_number": 160,
           "status": "COMPLETED",
           "one_line_summary": "Implemented modal logic axioms with soundness proofs",
-          "artifact_path": ".opencode/specs/160_modal_axioms/summaries/implementation-summary.md"
+          "artifact_path": "specs/160_modal_axioms/summaries/implementation-summary.md"
         },
         {
           "task_number": 161,
           "status": "COMPLETED",
           "one_line_summary": "Added temporal logic operators and semantics",
-          "artifact_path": ".opencode/specs/161_temporal_logic/summaries/implementation-summary.md"
+          "artifact_path": "specs/161_temporal_logic/summaries/implementation-summary.md"
         },
         {
           "task_number": 162,
           "status": "FAILED",
           "one_line_summary": "Failed due to missing dependency on task 160",
-          "artifact_path": ".opencode/specs/162_epistemic_logic/summaries/error-report.md"
+          "artifact_path": "specs/162_epistemic_logic/summaries/error-report.md"
         }
       ],
       "artifacts": {
-        "summary_artifact_path": ".opencode/specs/batch-160-169/summaries/batch-summary-20251224.md",
+        "summary_artifact_path": "specs/batch-160-169/summaries/batch-summary-20251224.md",
         "task_summaries": [
-          ".opencode/specs/160_modal_axioms/summaries/implementation-summary.md",
-          ".opencode/specs/161_temporal_logic/summaries/implementation-summary.md"
+          "specs/160_modal_axioms/summaries/implementation-summary.md",
+          "specs/161_temporal_logic/summaries/implementation-summary.md"
         ],
         "wave_summaries": [
-          ".opencode/specs/batch-160-169/summaries/wave-1-summary.md"
+          "specs/batch-160-169/summaries/wave-1-summary.md"
         ]
       },
       "total_files_modified": 42,

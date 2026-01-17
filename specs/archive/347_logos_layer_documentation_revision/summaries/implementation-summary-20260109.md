@@ -43,7 +43,7 @@ Successfully revised the Logos layer documentation to reflect the new five-layer
 | docs/research/RECURSIVE_SEMANTICS.md | Created (new) |
 | docs/research/LAYER_EXTENSIONS.md | Major restructure |
 | docs/reference/GLOSSARY.md | Updated terminology |
-| .claude/specs/347_*/plans/implementation-002.md | Updated phase statuses |
+| specs/347_*/plans/implementation-002.md | Updated phase statuses |
 
 ## Key Decisions
 

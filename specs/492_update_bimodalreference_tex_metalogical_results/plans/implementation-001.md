@@ -5,7 +5,7 @@
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: Task 450 (completeness theorems), Task 473 (semantic approach), Task 487 (Boneyard)
-- **Research Inputs**: .claude/specs/492_update_bimodalreference_tex_metalogical_results/reports/research-001.md
+- **Research Inputs**: specs/492_update_bimodalreference_tex_metalogical_results/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: latex

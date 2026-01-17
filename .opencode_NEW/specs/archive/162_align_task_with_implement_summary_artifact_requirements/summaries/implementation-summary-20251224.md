@@ -1,6 +1,6 @@
 # Implementation Summary — Task 162
 
-**Plan**: .opencode/specs/162_align_task_with_implement_summary_artifact_requirements/plans/implementation-002.md  
+**Plan**: specs/162_align_task_with_implement_summary_artifact_requirements/plans/implementation-002.md  
 **Date**: 2025-12-24
 
 ## Changes Completed
@@ -12,8 +12,8 @@
 - .opencode/command/task.md
 - .opencode/context/core/standards/tasks.md
 - .opencode/context/core/system/artifact-management.md
-- .opencode/specs/TODO.md
-- .opencode/specs/state.json
+- specs/TODO.md
+- specs/state.json
 
 ## Status
 - Plan: implementation-002.md (requirements applied)

@@ -71,7 +71,7 @@ From subagent-return.md, planner-agent must return:
   "artifacts": [
     {
       "type": "plan",
-      "path": ".claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
+      "path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
       "summary": "Phased implementation plan"
     }
   ],
@@ -106,7 +106,7 @@ No web search tools needed (planning is local operation).
    - metadata (session_id, delegation_depth, delegation_path)
    - research_path (optional)
 
-2. **Output**: Structured JSON + plan file in `.claude/specs/{N}_{SLUG}/plans/`
+2. **Output**: Structured JSON + plan file in `specs/{N}_{SLUG}/plans/`
 
 3. **Dependencies**: Depends on task 410 (remove eager context loading) per state.json
 

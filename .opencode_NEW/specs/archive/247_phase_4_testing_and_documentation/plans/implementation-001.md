@@ -14,7 +14,7 @@
 
 **Task**: Phase 4: Testing and Documentation (Task 240 OpenAgents Migration)  
 **Dependencies**: Task 246 (Phase 3 completed and validated)  
-**Research Integrated**: Yes - [Research Report 001](.opencode/specs/247_phase_4_testing_and_documentation/reports/research-001.md)  
+**Research Integrated**: Yes - [Research Report 001](specs/247_phase_4_testing_and_documentation/reports/research-001.md)  
 **Phase Count**: 6  
 **Total Estimated Hours**: 18 hours
 
@@ -234,10 +234,10 @@ Phase 4 is the final phase of the OpenAgents architectural migration (Task 240).
    - Generate visualization and [PASS]/[FAIL] status
 
 **Deliverables**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/test-stage7-reliability.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/validate-artifacts.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/measure-context-usage.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/track-stage7-rate.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/test-stage7-reliability.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/validate-artifacts.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/measure-context-usage.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/track-stage7-rate.sh`
 
 **Acceptance Criteria**:
 - [PASS] All 4 test scripts created and executable
@@ -291,9 +291,9 @@ Phase 4 is the final phase of the OpenAgents architectural migration (Task 240).
    - Document any issues discovered
 
 **Deliverables**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
-- Test logs in `.opencode/specs/247_phase_4_testing_and_documentation/logs/`
-- Metrics data in `.opencode/specs/247_phase_4_testing_and_documentation/metrics/`
+- `specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
+- Test logs in `specs/247_phase_4_testing_and_documentation/logs/`
+- Metrics data in `specs/247_phase_4_testing_and_documentation/metrics/`
 
 **Acceptance Criteria**:
 - [PASS] 80 test runs completed (20 per command)
@@ -519,9 +519,9 @@ grep "## Validation Checklist" .opencode/docs/templates/*.md
    - Update state.json with completion status
 
 **Deliverables**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/reports/validation-001.md`
-- `.opencode/specs/247_phase_4_testing_and_documentation/metrics/before-after-summary.md`
-- `.opencode/specs/247_phase_4_testing_and_documentation/summaries/implementation-summary-20251229.md`
+- `specs/247_phase_4_testing_and_documentation/reports/validation-001.md`
+- `specs/247_phase_4_testing_and_documentation/metrics/before-after-summary.md`
+- `specs/247_phase_4_testing_and_documentation/summaries/implementation-summary-20251229.md`
 
 **Acceptance Criteria**:
 - [PASS] Phase 4 validation report created with all metrics
@@ -535,9 +535,9 @@ grep "## Validation Checklist" .opencode/docs/templates/*.md
 **Validation**:
 ```bash
 # Verify completion
-grep "### 247.*\[COMPLETED\]" .opencode/specs/TODO.md
-grep "validation-001.md" .opencode/specs/TODO.md
-grep "implementation-summary" .opencode/specs/TODO.md
+grep "### 247.*\[COMPLETED\]" specs/TODO.md
+grep "validation-001.md" specs/TODO.md
+grep "implementation-summary" specs/TODO.md
 git log -1 --oneline | grep "task 247"
 ```
 
@@ -713,12 +713,12 @@ git log -1 --oneline | grep "task 247"
 ```bash
 # Remove test tasks (300-379)
 for i in {300..379}; do
-  rm -rf .opencode/specs/${i}_*
+  rm -rf specs/${i}_*
 done
 
 # Restore TODO.md and state.json from backup
-cp .opencode/specs/TODO.md.backup .opencode/specs/TODO.md
-cp .opencode/specs/state.json.backup .opencode/specs/state.json
+cp specs/TODO.md.backup specs/TODO.md
+cp specs/state.json.backup specs/state.json
 ```
 
 **Partial Completion**:
@@ -767,7 +767,7 @@ cp .opencode/specs/state.json.backup .opencode/specs/state.json
 
 ### Research Integration
 
-This plan integrates research findings from [Research Report 001](.opencode/specs/247_phase_4_testing_and_documentation/reports/research-001.md):
+This plan integrates research findings from [Research Report 001](specs/247_phase_4_testing_and_documentation/reports/research-001.md):
 
 1. **Testing Strategy**: Test pyramid approach with 80 total runs
 2. **Validation Metrics**: Stage 7 execution rate, context window usage, file sizes

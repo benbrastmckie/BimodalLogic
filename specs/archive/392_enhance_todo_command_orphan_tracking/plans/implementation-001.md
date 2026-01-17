@@ -28,13 +28,13 @@ Enhance the `/todo` command to properly track orphaned directories in `archive/s
    ```bash
    jq -r --arg n "$project_num" \
      '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-     .claude/specs/archive/state.json 2>/dev/null
+     specs/archive/state.json 2>/dev/null
    ```
    To:
    ```bash
    jq -r --arg n "$project_num" \
      '.completed_projects | flatten | .[] | select(.project_number == ($n | tonumber)) | .project_number' \
-     .claude/specs/archive/state.json 2>/dev/null
+     specs/archive/state.json 2>/dev/null
    ```
 
 **Verification**:
@@ -52,7 +52,7 @@ Enhance the `/todo` command to properly track orphaned directories in `archive/s
 2. Ensure consistent schema for future entries
 
 **Files to modify**:
-- `.claude/specs/archive/state.json` - Flatten nested arrays
+- `specs/archive/state.json` - Flatten nested arrays
 
 **Steps**:
 1. Read current `archive/state.json`
@@ -85,12 +85,12 @@ Enhance the `/todo` command to properly track orphaned directories in `archive/s
 1. Update detection to scan both directories:
    ```bash
    # Scan specs/ for orphans
-   for dir in .claude/specs/[0-9]*_*/; do
+   for dir in specs/[0-9]*_*/; do
      ...
    done
 
    # Scan specs/archive/ for orphans
-   for dir in .claude/specs/archive/[0-9]*_*/; do
+   for dir in specs/archive/[0-9]*_*/; do
      ...
    done
    ```

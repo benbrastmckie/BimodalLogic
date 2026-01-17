@@ -5,7 +5,7 @@
 - **Effort**: 8 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: [Research Report](.opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md)
+- **Research Inputs**: [Research Report](specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -24,7 +24,7 @@ Research revealed that all workflow commands already follow immediate delegation
 **Goals**:
 - Move context loading from command frontmatter to Stage 4 (InvokeAgent) for all 4 workflow commands
 - Reduce orchestrator routing context usage from 60-70% to <10%
-- Fix duplicate path errors in /plan and /revise (`.opencode/specs/.opencode/specs/TODO.md`)
+- Fix duplicate path errors in /plan and /revise (`specs/specs/TODO.md`)
 - Update command-lifecycle.md to document context loading stage separation
 - Preserve all existing functionality, safety checks, and validation logic
 - Maintain immediate delegation pattern (no new confirmation prompts)
@@ -42,7 +42,7 @@ Research revealed that all workflow commands already follow immediate delegation
   - **Mitigation**: Context loading in Stage 4 occurs before any execution logic that needs it; all context files are loaded before delegation to subagent
   
 - **Risk**: Path corrections break existing references or links
-  - **Mitigation**: Duplicate path error is clear (`.opencode/specs/.opencode/specs/TODO.md` → `.opencode/specs/TODO.md`); fix is straightforward string replacement
+  - **Mitigation**: Duplicate path error is clear (`specs/specs/TODO.md` → `specs/TODO.md`); fix is straightforward string replacement
   
 - **Risk**: Commands fail to load context in Stage 4 due to syntax errors
   - **Mitigation**: Use explicit context loading section in Stage 4 with clear file list; test each command after modification
@@ -76,7 +76,7 @@ Research revealed that all workflow commands already follow immediate delegation
 - **Tasks**:
   - [ ] Read current /plan command file (.opencode/command/plan.md)
   - [ ] Remove "Context Loaded:" section from frontmatter (lines 11-18)
-  - [ ] Fix duplicate path error: `.opencode/specs/.opencode/specs/TODO.md` → `.opencode/specs/TODO.md`
+  - [ ] Fix duplicate path error: `specs/specs/TODO.md` → `specs/TODO.md`
   - [ ] Add comment in frontmatter: "# Context loaded in Stage 4 (after routing)"
   - [ ] Add context loading section to Stage 4 (InvokeAgent) with explicit file list
   - [ ] Verify context files match original list (7 files, with corrected TODO.md path)
@@ -114,7 +114,7 @@ Research revealed that all workflow commands already follow immediate delegation
 - **Tasks**:
   - [ ] Read current /revise command file (.opencode/command/revise.md)
   - [ ] Remove "Context Loaded:" section from frontmatter (lines 11-18)
-  - [ ] Fix duplicate path error: `.opencode/specs/.opencode/specs/TODO.md` → `.opencode/specs/TODO.md`
+  - [ ] Fix duplicate path error: `specs/specs/TODO.md` → `specs/TODO.md`
   - [ ] Add comment in frontmatter: "# Context loaded in Stage 4 (after routing)"
   - [ ] Add context loading section to Stage 4 (InvokeAgent) with explicit file list
   - [ ] Verify context files match original list (7 files, with corrected TODO.md path)
@@ -174,7 +174,7 @@ Research revealed that all workflow commands already follow immediate delegation
 
 - **Goal**: Complete implementation summary and update task status
 - **Tasks**:
-  - [ ] Create implementation summary (.opencode/specs/234_.../summaries/implementation-summary-YYYYMMDD.md)
+  - [ ] Create implementation summary (specs/234_.../summaries/implementation-summary-YYYYMMDD.md)
   - [ ] Document context usage improvements (before/after metrics)
   - [ ] Document all files modified with change summaries
   - [ ] Document testing results and validation outcomes
@@ -226,8 +226,8 @@ Research revealed that all workflow commands already follow immediate delegation
   - .opencode/context/core/workflows/command-lifecycle.md (context loading documentation added)
 
 - **New Files**:
-  - .opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/plans/implementation-001.md (this file)
-  - .opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/summaries/implementation-summary-YYYYMMDD.md (created in Phase 7)
+  - specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/plans/implementation-001.md (this file)
+  - specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/summaries/implementation-summary-YYYYMMDD.md (created in Phase 7)
 
 ## Rollback/Contingency
 

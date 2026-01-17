@@ -113,7 +113,7 @@ After moving `LogosTest/Core/` to `BimodalTest/`, the `LogosTest/` directory wil
 
 ## References
 
-- Task 352 implementation summary: `.claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md`
+- Task 352 implementation summary: `specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md`
 - Current lakefile: `lakefile.lean` (shows existing lean_lib patterns)
 - Mathlib pattern: Mathlib + MathlibTest separate directories
 

@@ -12,9 +12,9 @@
   - `.opencode/command/revise.md` - /revise command specification
   - `.opencode/agent/subagents/planner.md` - Planner subagent specification
   - `.opencode/agent/subagents/status-sync-manager.md` - Status synchronization logic
-  - `.opencode/specs/TODO.md` - Task 283 example showing appended plan links
+  - `specs/TODO.md` - Task 283 example showing appended plan links
 - **Artifacts**:
-  - `.opencode/specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md` (this report)
+  - `specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md` (this report)
 - **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ## Executive Summary
@@ -60,7 +60,7 @@ When running `/revise` for a task that already has a plan, the command appends t
 - **Plan**: [Implementation Plan](283_fix_systematic_status_synchronization_failure/plans/implementation-002.md)
 
 # Old plan file still exists at:
-# .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
+# specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
 ```
 
 ### Scope
@@ -85,7 +85,7 @@ When running `/revise` for a task that already has a plan, the command appends t
 
 **Current Logic** (lines 165-189):
 ```markdown
-2. Update .opencode/specs/TODO.md task entry in memory:
+2. Update specs/TODO.md task entry in memory:
    - Change status marker
    - Add/update timestamp fields
    - Add artifact links from validated_artifacts
@@ -148,7 +148,7 @@ The planner correctly:
 **Evidence**: state.json correctly tracks plan_path and plan_versions:
 ```json
 {
-  "plan_path": ".opencode/specs/283_.../plans/implementation-002.md",
+  "plan_path": "specs/283_.../plans/implementation-002.md",
   "plan_versions": [
     {
       "version": 1,
@@ -487,7 +487,7 @@ fi
 
 ### Source 4: Task 283 Example
 
-**File**: `.opencode/specs/TODO.md`  
+**File**: `specs/TODO.md`  
 **Lines**: 33-191 (task 283 description), 41 (appended plan links)  
 **Key Content**:
 - Example of appended plan links (the bug)
@@ -496,7 +496,7 @@ fi
 
 ### Source 5: state.json Plan Tracking
 
-**File**: `.opencode/specs/state.json`  
+**File**: `specs/state.json`  
 **Lines**: 459-498 (task 283 entry)  
 **Key Content**:
 - Correct plan_path tracking (points to latest version)

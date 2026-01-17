@@ -130,7 +130,7 @@ Verified self-healing still works correctly:
 
 ```bash
 # Test auto-creation (if needed)
-# rm .opencode/specs/state.json
+# rm specs/state.json
 # /research 199
 # Verified: state.json auto-created successfully
 ```
@@ -254,7 +254,7 @@ Annual savings (assuming 1000 command executions):
 
 ## Related Documentation
 
-- Plan: `.opencode/specs/199_optimize_self_healing/plans/implementation-001.md`
-- Research: `.opencode/specs/199_optimize_self_healing/reports/research-001.md`
+- Plan: `specs/199_optimize_self_healing/plans/implementation-001.md`
+- Research: `specs/199_optimize_self_healing/reports/research-001.md`
 - Self-Healing Guide: `.opencode/context/core/system/self-healing-guide.md`
 - Implementation Details: `.opencode/context/project/repo/self-healing-implementation-details.md`

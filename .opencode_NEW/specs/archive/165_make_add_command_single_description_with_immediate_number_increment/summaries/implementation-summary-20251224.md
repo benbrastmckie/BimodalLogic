@@ -136,13 +136,13 @@ Successfully implemented pragmatic improvements to the /add command focusing on 
    - Added Auto-Populated Fields subsection
    - Added When to Override Defaults subsection
 
-4. `.opencode/specs/TODO.md`
+4. `specs/TODO.md`
    - Updated task 165 status to [COMPLETED]
    - Updated plan reference to implementation-002.md
    - Updated plan summary
    - Updated acceptance criteria
 
-5. `.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/summaries/implementation-summary-20251224.md`
+5. `specs/165_make_add_command_single_description_with_immediate_number_increment/summaries/implementation-summary-20251224.md`
    - This file (implementation summary)
 
 ---

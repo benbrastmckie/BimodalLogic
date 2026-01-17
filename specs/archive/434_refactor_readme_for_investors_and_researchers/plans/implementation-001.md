@@ -181,7 +181,7 @@ Comprehensive refactoring of README.md to improve narrative arc and organization
 
 ## Dependencies
 
-- Research report: `.claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md`
+- Research report: `specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md`
 - Formal specifications:
   - `/home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.tex`
   - `/home/benjamin/Projects/ProofChecker/Theories/Logos/latex/LogosReference.pdf`

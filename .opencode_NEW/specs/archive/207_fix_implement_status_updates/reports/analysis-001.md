@@ -1127,7 +1127,7 @@ Task Number: 193
 New Status: implementing
 Timestamp: 2025-12-28
 Session ID: sess_1703779200_a1b2c3
-Plan Path: .opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md
+Plan Path: specs/193_prove_is_valid_swap_involution/plans/implementation-001.md
   `,
   session_id: "sess_1703779200_a1b2c3",
   delegation_depth: 1,
@@ -1145,10 +1145,10 @@ Task Number: 193
 New Status: partial
 Timestamp: 2025-12-28
 Session ID: sess_1703779200_a1b2c3
-Plan Path: .opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md
+Plan Path: specs/193_prove_is_valid_swap_involution/plans/implementation-001.md
 Artifact Links:
   - Implementation: Logos/Core/Semantics/Truth.lean (lines 625-688)
-  - Summary: .opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md
+  - Summary: specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md
   `,
   session_id: "sess_1703779200_a1b2c3",
   delegation_depth: 1,

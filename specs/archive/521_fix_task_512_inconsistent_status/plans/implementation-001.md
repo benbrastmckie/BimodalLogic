@@ -8,8 +8,8 @@
 - **Research Inputs**: Direct observation of task 512 showing IN PROGRESS in TODO.md but research completed
 - **Artifacts**: 
   - plans/implementation-001.md (this file)
-  - .opencode/specs/TODO.md (updated)
-  - .opencode/specs/state.json (updated)
+  - specs/TODO.md (updated)
+  - specs/state.json (updated)
 - **Standards**:
   - .opencode/context/core/standards/status-markers.md
   - .opencode/context/core/orchestration/state-management.md
@@ -46,7 +46,7 @@ Fix inconsistent status for task 512 "Fix build error in RepresentationTheorems.
 ### Phase 1: Analyze Task 512 Current State [NOT STARTED]
 - **Goal**: Understand actual progress of task 512
 - **Tasks**:
-  - [ ] Read task 512 research report: .opencode/specs/512_fix_build_error_in_representationtheorems_lean/reports/research-001.md
+  - [ ] Read task 512 research report: specs/512_fix_build_error_in_representationtheorems_lean/reports/research-001.md
   - [ ] Analyze research findings:
     * Does research identify the specific fix needed?
     * Is research complete with actionable solution?

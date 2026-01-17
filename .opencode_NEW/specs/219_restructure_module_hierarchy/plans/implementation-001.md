@@ -18,8 +18,8 @@
 - **Priority**: High
 - **Dependencies**: Task 213 (circular dependency analysis)
 - **Research Integrated**: Yes
-  - Main Report: `.opencode/specs/219_restructure_module_hierarchy/reports/research-001.md`
-  - Summary: `.opencode/specs/219_restructure_module_hierarchy/summaries/research-summary.md`
+  - Main Report: `specs/219_restructure_module_hierarchy/reports/research-001.md`
+  - Summary: `specs/219_restructure_module_hierarchy/summaries/research-summary.md`
 
 ---
 

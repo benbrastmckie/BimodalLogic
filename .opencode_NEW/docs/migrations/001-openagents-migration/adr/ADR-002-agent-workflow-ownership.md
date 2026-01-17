@@ -178,7 +178,7 @@ The original OpenCode system split workflow execution between commands and agent
 ## References
 
 - **Implementation**: Task 245 (Phase 2: Core Architecture Migration)
-- **Validation**: `.opencode/specs/245_phase_2_core_architecture_migration/reports/validation-001.md`
+- **Validation**: `specs/245_phase_2_core_architecture_migration/reports/validation-001.md`
 - **Workflow Standard**: `.opencode/context/core/standards/agent-workflow.md`
 - **Return Format**: `.opencode/context/core/standards/subagent-return-format.md`
 - **Migration Guide**: `.opencode/docs/migrations/001-openagents-migration/phase-2-guide.md`

@@ -8,7 +8,7 @@
 - Updated meta templates (orchestrator/subagent) and meta-guide to reference the restored YAML/XML command standard; refreshed plan implementation-002 status to completed.
 
 ## Status & Artifacts
-- Plan: `.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/plans/implementation-002.md` (**Status**: [COMPLETED])
+- Plan: `specs/152_standardize_command_templates_and_migrate_command_docs/plans/implementation-002.md` (**Status**: [COMPLETED])
 - Summary: this file
 
 ## Notes

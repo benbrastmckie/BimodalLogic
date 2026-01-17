@@ -116,7 +116,7 @@
 
 ## Full Report
 
-See: `.opencode/specs/173_integration_tests/reports/research-001.md`
+See: `specs/173_integration_tests/reports/research-001.md`
 
 This comprehensive report includes:
 - Detailed current state analysis with gap identification

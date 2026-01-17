@@ -18,7 +18,7 @@ Successfully moved context loading from command frontmatter to Stage 4 for all 4
 
 ### Phase 2: /plan command - COMPLETED
 - Removed "Context Loaded:" section from frontmatter
-- Fixed duplicate path error: `.opencode/specs/.opencode/specs/TODO.md` → `.opencode/specs/TODO.md`
+- Fixed duplicate path error: `specs/specs/TODO.md` → `specs/TODO.md`
 - Added Stage 4 context loading section with 7 files
 - Added comment: "# Context loaded in Stage 4 (after routing)"
 
@@ -29,7 +29,7 @@ Successfully moved context loading from command frontmatter to Stage 4 for all 4
 
 ### Phase 4: /revise command - COMPLETED
 - Removed "Context Loaded:" section from frontmatter
-- Fixed duplicate path error: `.opencode/specs/.opencode/specs/TODO.md` → `.opencode/specs/TODO.md`
+- Fixed duplicate path error: `specs/specs/TODO.md` → `specs/TODO.md`
 - Added Stage 4 context loading section with 7 files
 - Added comment: "# Context loaded in Stage 4 (after routing)"
 
@@ -79,8 +79,8 @@ Successfully moved context loading from command frontmatter to Stage 4 for all 4
 ## Path Errors Fixed
 
 Fixed duplicate path errors in 2 commands:
-- `/plan`: `.opencode/specs/.opencode/specs/TODO.md` → `.opencode/specs/TODO.md`
-- `/revise`: `.opencode/specs/.opencode/specs/TODO.md` → `.opencode/specs/TODO.md`
+- `/plan`: `specs/specs/TODO.md` → `specs/TODO.md`
+- `/revise`: `specs/specs/TODO.md` → `specs/TODO.md`
 
 ## Next Steps
 

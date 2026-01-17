@@ -11,7 +11,7 @@
 - Authoritative reference: `/home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`
 - Lean implementation files: `Theories/Bimodal/Semantics/*.lean`
 **Artifacts**:
-- This report: `.claude/specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md`
+- This report: `specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md`
 **Standards**: report-format.md, subagent-return.md
 
 ## Executive Summary

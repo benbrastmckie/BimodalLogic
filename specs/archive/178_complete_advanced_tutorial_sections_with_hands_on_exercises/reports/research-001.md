@@ -115,7 +115,7 @@ This better reflects the actual remaining work.
 
 ## References
 
-- Existing plan: `.claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md`
+- Existing plan: `specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md`
 - TUTORIAL.md: `Theories/Bimodal/docs/UserGuide/TUTORIAL.md`
 - TACTIC_DEVELOPMENT.md: `Theories/Bimodal/docs/UserGuide/TACTIC_DEVELOPMENT.md`
 - EXAMPLES.md: `Theories/Bimodal/docs/UserGuide/EXAMPLES.md`

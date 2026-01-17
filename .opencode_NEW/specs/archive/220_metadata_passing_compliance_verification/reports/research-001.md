@@ -348,7 +348,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 **Step 4 (Create Artifacts) - Lazy Directory Creation**:
 ```xml
 <lazy_directory_creation>
-  1. Create project root: .opencode/specs/{task_number}_{slug}/
+  1. Create project root: specs/{task_number}_{slug}/
   2. Create reports/ subdirectory only (NO summaries/)
   3. Write research report: reports/research-001.md
   4. Do NOT create summary artifact (single-file output)
@@ -381,7 +381,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
     "artifacts": [
       {
         "type": "research",
-        "path": ".opencode/specs/{task_number}_{slug}/reports/research-001.md",
+        "path": "specs/{task_number}_{slug}/reports/research-001.md",
         "summary": "One-sentence artifact description"
       }
     ],
@@ -432,7 +432,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 **Step 4 (Create Artifacts) - Lazy Directory Creation**:
 ```xml
 <lazy_directory_creation>
-  1. Create project root: .opencode/specs/{task_number}_{slug}/
+  1. Create project root: specs/{task_number}_{slug}/
   2. Create plans/ subdirectory only (NO summaries/)
   3. Write implementation plan: plans/implementation-{version}.md
   4. Do NOT create summary artifact (plan is self-documenting)
@@ -466,7 +466,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
     "artifacts": [
       {
         "type": "plan",
-        "path": ".opencode/specs/{task_number}_{slug}/plans/implementation-{version}.md",
+        "path": "specs/{task_number}_{slug}/plans/implementation-{version}.md",
         "summary": "Plan overview with phase count and effort estimate"
       }
     ],
@@ -762,7 +762,7 @@ Comprehensive compliance analysis of all workflow commands (/research, /plan, /r
 - implementer: [WARN] Behavior correct, documentation could be more explicit
 
 [PASS] **Artifact references use standardized formats (absolute paths, correct naming)**
-- All components: [PASS] Use absolute paths starting with `.opencode/specs/`
+- All components: [PASS] Use absolute paths starting with `specs/`
 - All components: [PASS] Follow naming conventions (research-001.md, implementation-NNN.md, etc.)
 
 [PASS] **Brief summaries meet defined constraints (token limits, content requirements)**

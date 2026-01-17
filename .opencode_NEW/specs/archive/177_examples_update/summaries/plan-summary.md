@@ -71,7 +71,7 @@
 
 ## Full Plan
 
-See: `.opencode/specs/177_examples_update/plans/implementation-001.md`
+See: `specs/177_examples_update/plans/implementation-001.md`
 
 **Sections**:
 1. Overview and Goals

@@ -24,12 +24,12 @@ Resolve the is_valid_swap_involution blocker by implementing the solution identi
 ## Research Inputs
 
 ### Research Report
-- Path: .opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md
+- Path: specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md
 - Key Finding: Theorem is semantically false for arbitrary formulas; counterexample constructed
 - Recommended Solution: Reformulate for derivable formulas only (Solution 2 from research)
 
 ### Research Summary  
-- Path: .opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md
+- Path: specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md
 - Executive Summary: 586-line comprehensive analysis proving theorem unprovability
 - Implementation Guidance: Use temporal_duality rule for proof
 
@@ -218,8 +218,8 @@ Resolve the is_valid_swap_involution blocker by implementing the solution identi
    - Update repository health metrics
 
 **Files Modified**:
-- .opencode/specs/TODO.md (task 213, 184, 193, 209 status updates)
-- .opencode/specs/state.json (completion tracking)
+- specs/TODO.md (task 213, 184, 193, 209 status updates)
+- specs/state.json (completion tracking)
 - docs/research/is_valid_swap_involution_resolution.md (new)
 
 **Acceptance Criteria**:

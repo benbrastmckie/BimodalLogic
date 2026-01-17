@@ -31,7 +31,7 @@
 
 ### Problem Statement
 
-The context refactor plan (.opencode/specs/context-refactor-plan.md) was created on 2026-01-04 and updated on 2026-01-05, but **ZERO execution has occurred**. The current `.opencode/context/core/` directory structure remains unchanged from the "before" state, with 48 files across 5 directories instead of the planned 35 files across 6 directories.
+The context refactor plan (specs/context-refactor-plan.md) was created on 2026-01-04 and updated on 2026-01-05, but **ZERO execution has occurred**. The current `.opencode/context/core/` directory structure remains unchanged from the "before" state, with 48 files across 5 directories instead of the planned 35 files across 6 directories.
 
 **Critical Gaps**:
 1. **Missing Architecture Documentation**: Both critical files (orchestration/architecture.md and formats/command-structure.md) documenting ProofChecker's three-layer delegation pattern do not exist
@@ -189,7 +189,7 @@ Research report (research-001.md) provides comprehensive analysis:
 **Tasks**:
 
 1. **Review Unintended Changes** (1 hour):
-   - Read .opencode/specs/unintended-changes-report.md
+   - Read specs/unintended-changes-report.md
    - Analyze 6 modified files:
      * High-risk: meta.md, task-creator.md, todo.md
      * Low-risk: review.md, reviewer.md, state-lookup.md

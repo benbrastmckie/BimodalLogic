@@ -5,7 +5,7 @@
 - **Effort**: 4-5 hours
 - **Priority**: Low
 - **Dependencies**: None (subtask of 400, but independent of 417/418)
-- **Research Inputs**: .claude/specs/419_refactor_mutual_recursion_semantics/reports/research-001.md
+- **Research Inputs**: specs/419_refactor_mutual_recursion_semantics/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md; status-markers.md; artifact-formats.md
 - **Type**: lean

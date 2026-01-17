@@ -22,8 +22,8 @@
 
 ## Most Relevant Resources
 
-- **Existing Report**: .opencode/specs/maintenance/maintenance-report-20251224.md - Comprehensive example showing current best practices
-- **State Tracking**: .opencode/specs/maintenance/state.json - Robust infrastructure for operation history and metrics
+- **Existing Report**: specs/maintenance/maintenance-report-20251224.md - Comprehensive example showing current best practices
+- **State Tracking**: specs/maintenance/state.json - Robust infrastructure for operation history and metrics
 - **GitHub Pulse**: Industry standard for repository activity reporting with time-based views and contributor metrics
 - **GitLab Analytics**: DevOps-focused reporting with DORA metrics and value stream analysis
 - **SonarQube Quality Gates**: Code quality reporting with clear thresholds and remediation guidance
@@ -50,7 +50,7 @@
 
 ## Full Report
 
-See: .opencode/specs/170_maintenance_report_improvements/reports/research-001.md
+See: specs/170_maintenance_report_improvements/reports/research-001.md
 
 ---
 

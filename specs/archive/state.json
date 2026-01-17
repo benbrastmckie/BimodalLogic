@@ -55,7 +55,7 @@
       "last_updated": "2026-01-12T00:38:44Z",
       "artifacts": [
         {
-          "path": ".claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md",
+          "path": "specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md",
           "type": "research"
         }
       ],
@@ -84,11 +84,11 @@
       ],
       "artifacts": [
         {
-          "path": ".claude/specs/419_refactor_mutual_recursion_semantics/reports/research-001.md",
+          "path": "specs/419_refactor_mutual_recursion_semantics/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/419_refactor_mutual_recursion_semantics/plans/implementation-001.md",
+          "path": "specs/419_refactor_mutual_recursion_semantics/plans/implementation-001.md",
           "type": "plan"
         }
       ],
@@ -138,7 +138,7 @@
       "last_updated": "2026-01-12T09:52:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/426_covariantclass_vs_isorderedaddmonoid_comparison/reports/research-001.md",
+          "path": "specs/426_covariantclass_vs_isorderedaddmonoid_comparison/reports/research-001.md",
           "type": "research"
         }
       ],
@@ -174,15 +174,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/reports/research-001.md"
+          "path": "specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/plans/implementation-001.md"
+          "path": "specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/summaries/implementation-summary-20260112.md"
+          "path": "specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/summaries/implementation-summary-20260112.md"
         }
       ]
     },
@@ -198,7 +198,7 @@
       "last_updated": "2026-01-08T20:27:20Z",
       "effort": "2 hours",
       "description": "Create .claude/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.",
-      "plan_path": ".claude/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md",
+      "plan_path": "specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md",
       "abandoned": "2026-01-11T21:37:48Z"
     },
     {
@@ -216,7 +216,7 @@
       "dependencies": [
         338
       ],
-      "plan_path": ".claude/specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md",
+      "plan_path": "specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md",
       "abandoned": "2026-01-11T21:37:48Z"
     },
     {
@@ -235,13 +235,13 @@
       "last_updated": "2026-01-05",
       "research_completed": "2026-01-05",
       "artifacts": [
-        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md",
-        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md",
-        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-002.md",
-        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md"
+        "specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md",
+        "specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md",
+        "specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-002.md",
+        "specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md"
       ],
       "planning_completed": "2026-01-05",
-      "plan_path": ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md",
+      "plan_path": "specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 8,
@@ -261,7 +261,7 @@
       "status": "abandoned",
       "priority": "medium",
       "language": "meta",
-      "description": "Create a /sync command that bidirectionally synchronizes .claude/specs/TODO.md and .claude/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.",
+      "description": "Create a /sync command that bidirectionally synchronizes specs/TODO.md and specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.",
       "created": "2026-01-05T07:51:30Z",
       "last_updated": "2026-01-05T07:51:30Z",
       "abandoned": "2026-01-11T21:37:48Z"
@@ -332,7 +332,7 @@
       "last_updated": "2026-01-08T20:27:20Z",
       "effort": "3-4 hours",
       "description": "Audit all command files in .claude/command/ to ensure they have proper validation gates that prevent architectural violations. Add pre-execution and post-execution validation following patterns from /research and /implement. Document validation gate patterns in .claude/context/core/standards/validation-gates.md.",
-      "plan_path": ".claude/specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md",
+      "plan_path": "specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md",
       "abandoned": "2026-01-11T21:37:48Z"
     },
     {
@@ -347,7 +347,7 @@
       "last_updated": "2026-01-08T20:27:20Z",
       "effort": "2-3 hours",
       "description": "Update Stage 3 (CreateTasks) in /task command to delegate directly to status-sync-manager with operation: create_task instead of deprecated task-creator. Follow the pattern from /research and /implement commands (Stage 1.5 Preflight). Add validation gates to verify task creation succeeded. Test with multiple scenarios.",
-      "plan_path": ".claude/specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md",
+      "plan_path": "specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md",
       "abandoned": "2026-01-11T21:37:48Z"
     },
     {
@@ -367,7 +367,7 @@
       "artifacts": [
         {
           "type": "plan",
-          "path": ".claude/specs/335_refactor_errors_command/plans/implementation-001.md",
+          "path": "specs/335_refactor_errors_command/plans/implementation-001.md",
           "summary": "Implementation plan for refactoring /errors command"
         }
       ],
@@ -384,7 +384,7 @@
       "description": "Document in project README that Logos/ is a legacy re-export layer with stubs for planned extensions (Epistemic, Normative, Explanatory), and Bimodal/ contains the active implementation.",
       "created": "2026-01-11T02:22:16Z",
       "last_updated": "2026-01-11T02:22:16Z",
-      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "review_source": "specs/reviews/review-20260110.md",
       "abandoned": "2026-01-11T19:40:44Z"
     },
     {
@@ -404,15 +404,15 @@
       "artifacts": [
         {
           "type": "plan",
-          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/plans/implementation-001.md"
+          "path": "specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/plans/implementation-001.md"
         },
         {
           "type": "research",
-          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/reports/research-001.md"
+          "path": "specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/reports/research-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/summaries/implementation-summary-20260111.md"
+          "path": "specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/summaries/implementation-summary-20260111.md"
         }
       ],
       "description": "Build on existing Bimodal proof search with success pattern learning, best-first search implementation, and benchmarking. Core heuristics (modal/temporal bonuses, caching, IDDFS) already complete.",
@@ -430,15 +430,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/373_create_shared_latex_assets_directory/reports/research-001.md"
+          "path": "specs/373_create_shared_latex_assets_directory/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/373_create_shared_latex_assets_directory/plans/implementation-001.md"
+          "path": "specs/373_create_shared_latex_assets_directory/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/373_create_shared_latex_assets_directory/summaries/implementation-summary-20260111.md"
+          "path": "specs/373_create_shared_latex_assets_directory/summaries/implementation-summary-20260111.md"
         }
       ],
       "plan_version": "001",
@@ -481,15 +481,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/378_refactor_documentation_structure/reports/research-001.md"
+          "path": "specs/378_refactor_documentation_structure/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/378_refactor_documentation_structure/plans/implementation-001.md"
+          "path": "specs/378_refactor_documentation_structure/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/378_refactor_documentation_structure/summaries/implementation-summary-20260111.md"
+          "path": "specs/378_refactor_documentation_structure/summaries/implementation-summary-20260111.md"
         }
       ],
       "plan_version": "001",
@@ -624,9 +624,9 @@
       "plan_version": "002",
       "plan_revised": "2026-01-10",
       "artifacts": [
-        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md",
-        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/plans/implementation-002.md",
-        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/summaries/implementation-summary-20260110.md"
+        "specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md",
+        "specs/291_fix_lean_research_agent_delegate_status_updates/plans/implementation-002.md",
+        "specs/291_fix_lean_research_agent_delegate_status_updates/summaries/implementation-summary-20260110.md"
       ],
       "archived": "2026-01-11T00:00:00Z"
     },
@@ -646,15 +646,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/reports/research-001.md"
+          "path": "specs/308_final_cleanup_and_comprehensive_testing/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/plans/implementation-001.md"
+          "path": "specs/308_final_cleanup_and_comprehensive_testing/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/summaries/implementation-summary-20260110.md"
+          "path": "specs/308_final_cleanup_and_comprehensive_testing/summaries/implementation-summary-20260110.md"
         }
       ],
       "archived": "2026-01-11T00:00:00Z"
@@ -674,9 +674,9 @@
       "research_completed": "2026-01-05",
       "completed": "2026-01-10",
       "artifacts": [
-        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md",
-        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md",
-        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/summaries/implementation-summary-20260110.md"
+        "specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md",
+        "specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md",
+        "specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/summaries/implementation-summary-20260110.md"
       ],
       "archived": "2026-01-11T00:00:00Z"
     },
@@ -703,15 +703,15 @@
       "last_updated": "2026-01-10T22:55:52Z",
       "artifacts": [
         {
-          "path": ".claude/specs/351_review_skill_context_loading/reports/research-001.md",
+          "path": "specs/351_review_skill_context_loading/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/351_review_skill_context_loading/plans/implementation-001.md",
+          "path": "specs/351_review_skill_context_loading/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/351_review_skill_context_loading/summaries/implementation-summary-20260110.md",
+          "path": "specs/351_review_skill_context_loading/summaries/implementation-summary-20260110.md",
           "type": "summary"
         }
       ],
@@ -735,25 +735,25 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md",
+          "path": "specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md",
           "created": "2026-01-05T18:06:50Z",
           "summary": "Comprehensive analysis of three approaches to resolve Axiom Prop vs Type blocker. Recommends Approach 3 (Tactic-Mode) with 9/10 viability rating."
         },
         {
           "type": "research",
-          "path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md",
+          "path": "specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md",
           "created": "2026-01-05T18:36:09Z",
           "summary": "Comparative analysis of Approach 2 vs 3 for AI training data generation. Findings: (1) Approach 3 is Lean 4 standard, (2) Both approaches compatible (hybrid viable), (3) Approach 2 superior for AI training (5/5 vs 0/5). Recommends hybrid strategy: tactic first (28-44h), then programmatic API (33-53h)."
         },
         {
           "type": "plan",
-          "path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
+          "path": "specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
           "created": "2026-01-05T19:00:00Z",
           "summary": "Hybrid implementation plan: Phase 1 (Tactic Mode, 28-44h) + Phase 2 (Refactor to Type, 33-53h). Total 23 phases, 61-97 hours."
         }
       ],
       "planned": "2026-01-05",
-      "plan_path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
+      "plan_path": "specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 23,
         "total_effort_hours": 79,
@@ -801,27 +801,27 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/334_latex_documentation_structure/reports/research-001.md",
+          "path": "specs/334_latex_documentation_structure/reports/research-001.md",
           "summary": "Comprehensive research report analyzing source LaTeX structure and designing target documentation structure"
         },
         {
           "type": "research",
-          "path": ".claude/specs/334_latex_documentation_structure/reports/research-002.md",
+          "path": "specs/334_latex_documentation_structure/reports/research-002.md",
           "summary": "Supplemental research report focusing on Constitutive and Causal layers from LAYER_EXTENSIONS.md for future Layer 1 documentation"
         },
         {
           "type": "research",
-          "path": ".claude/specs/334_latex_documentation_structure/reports/research-003.md",
+          "path": "specs/334_latex_documentation_structure/reports/research-003.md",
           "summary": "Systematic mapping from RECURSIVE_SEMANTICS.md to LaTeX documentation structure with Lean 4 refactoring considerations"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/334_latex_documentation_structure/plans/implementation-003.md",
+          "path": "specs/334_latex_documentation_structure/plans/implementation-003.md",
           "summary": "Implementation plan based on RECURSIVE_SEMANTICS.md mapping with 6 phases"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/334_latex_documentation_structure/plans/implementation-004.md",
+          "path": "specs/334_latex_documentation_structure/plans/implementation-004.md",
           "summary": "Revised plan adding LaTeX context documentation phase for skill integration"
         }
       ],
@@ -839,15 +839,15 @@
       "last_updated": "2026-01-10T22:55:52Z",
       "artifacts": [
         {
-          "path": ".claude/specs/351_review_skill_context_loading/reports/research-001.md",
+          "path": "specs/351_review_skill_context_loading/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/351_review_skill_context_loading/plans/implementation-001.md",
+          "path": "specs/351_review_skill_context_loading/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/351_review_skill_context_loading/summaries/implementation-summary-20260110.md",
+          "path": "specs/351_review_skill_context_loading/summaries/implementation-summary-20260110.md",
           "type": "summary"
         }
       ],
@@ -936,19 +936,19 @@
       "plan_version": 2,
       "artifacts": [
         {
-          "path": ".claude/specs/347_logos_layer_documentation_revision/reports/research-001.md",
+          "path": "specs/347_logos_layer_documentation_revision/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/347_logos_layer_documentation_revision/reports/research-002.md",
+          "path": "specs/347_logos_layer_documentation_revision/reports/research-002.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/347_logos_layer_documentation_revision/plans/implementation-001.md",
+          "path": "specs/347_logos_layer_documentation_revision/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/347_logos_layer_documentation_revision/plans/implementation-002.md",
+          "path": "specs/347_logos_layer_documentation_revision/plans/implementation-002.md",
           "type": "plan"
         }
       ],
@@ -964,11 +964,11 @@
       "created": "2026-01-10T18:17:28Z",
       "last_updated": "2026-01-10T19:30:00Z",
       "artifacts": [
-        ".claude/specs/350_fix_recursive_semantics_tags/reports/research-001.md",
-        ".claude/specs/350_fix_recursive_semantics_tags/plans/implementation-001.md",
-        ".claude/specs/350_fix_recursive_semantics_tags/summaries/implementation-summary-20260110.md"
+        "specs/350_fix_recursive_semantics_tags/reports/research-001.md",
+        "specs/350_fix_recursive_semantics_tags/plans/implementation-001.md",
+        "specs/350_fix_recursive_semantics_tags/summaries/implementation-summary-20260110.md"
       ],
-      "plan_path": ".claude/specs/350_fix_recursive_semantics_tags/plans/implementation-001.md",
+      "plan_path": "specs/350_fix_recursive_semantics_tags/plans/implementation-001.md",
       "plan_metadata": {
         "plan_version": 1
       },
@@ -984,15 +984,15 @@
       "effort": "4-6 hours",
       "created": "2026-01-09T17:59:23Z",
       "last_updated": "2026-01-09T18:35:00Z",
-      "plan_path": ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
+      "plan_path": "specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
       "plan_metadata": {
         "plan_version": 2,
         "revision_reason": "Maintain ⟨S, ⊑, I⟩ notation instead of replacing with ⟨S, ⊑, | |⟩"
       },
       "artifacts": [
-        ".claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
-        ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-001.md",
-        ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md"
+        "specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
+        "specs/349_fix_recursive_semantics_documentation/plans/implementation-001.md",
+        "specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md"
       ],
       "implementing_started": "2026-01-09",
       "completed": "2026-01-09"
@@ -1010,9 +1010,9 @@
       "effort": "8-12 hours",
       "description": "Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.",
       "artifacts": [
-        ".claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/reports/research-001.md",
-        ".claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/plans/implementation-001.md",
-        ".claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/summaries/implementation-summary-20260110.md"
+        "specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/reports/research-001.md",
+        "specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/plans/implementation-001.md",
+        "specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/summaries/implementation-summary-20260110.md"
       ],
       "completed": "2026-01-10"
     },
@@ -1034,11 +1034,11 @@
       "artifacts": [
         {
           "type": "plan",
-          "path": ".claude/specs/317_bfs_variant_phase3/plans/implementation-001.md"
+          "path": "specs/317_bfs_variant_phase3/plans/implementation-001.md"
         },
         {
           "type": "research",
-          "path": ".claude/specs/317_bfs_variant_phase3/reports/research-001.md",
+          "path": "specs/317_bfs_variant_phase3/reports/research-001.md",
           "summary": "Comprehensive 1403-line research report analyzing BFS implementation strategies, completeness guarantees, and integration approaches for Lean 4 proof search"
         }
       ],
@@ -1060,11 +1060,11 @@
       "effort": "12-18 hours",
       "description": "Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.",
       "artifacts": [
-        ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md",
-        ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md",
-        ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-phase2-20260108.md"
+        "specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md",
+        "specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md",
+        "specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-phase2-20260108.md"
       ],
-      "plan_path": ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md",
+      "plan_path": "specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md",
       "plan_metadata": {
         "phase_count": 5,
         "estimated_hours": 15,
@@ -1084,7 +1084,7 @@
       "completed": "2026-01-10T19:30:00Z",
       "effort": "8-12 hours",
       "description": "Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.",
-      "implementation_summary": ".claude/specs/319_expand_testing_for_proof_search_automation_phase_5/summaries/implementation-summary-20260110.md"
+      "implementation_summary": "specs/319_expand_testing_for_proof_search_automation_phase_5/summaries/implementation-summary-20260110.md"
     },
     {
       "project_number": 352,
@@ -1248,15 +1248,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md"
+          "path": "specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/plans/implementation-001.md"
+          "path": "specs/377_refactor_logos_theory_recursive_semantics/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/summaries/implementation-summary-20260111.md"
+          "path": "specs/377_refactor_logos_theory_recursive_semantics/summaries/implementation-summary-20260111.md"
         }
       ],
       "archived": "2026-01-12T11:30:00Z"
@@ -1274,27 +1274,27 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md"
+          "path": "specs/379_fix_logosreference_latex_warnings/reports/research-001.md"
         },
         {
           "type": "research",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md"
+          "path": "specs/379_fix_logosreference_latex_warnings/reports/research-002.md"
         },
         {
           "type": "research",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-003.md"
+          "path": "specs/379_fix_logosreference_latex_warnings/reports/research-003.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md"
+          "path": "specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-002.md"
+          "path": "specs/379_fix_logosreference_latex_warnings/plans/implementation-002.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/379_fix_logosreference_latex_warnings/summaries/implementation-summary-20260112.md"
+          "path": "specs/379_fix_logosreference_latex_warnings/summaries/implementation-summary-20260112.md"
         }
       ],
       "archived": "2026-01-12T11:30:00Z"
@@ -1313,11 +1313,11 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/383_rename_core_to_explanatory/reports/research-001.md"
+          "path": "specs/383_rename_core_to_explanatory/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md"
+          "path": "specs/383_rename_core_to_explanatory/plans/implementation-001.md"
         }
       ],
       "archived": "2026-01-12T11:30:00Z"
@@ -1336,19 +1336,19 @@
       "artifacts": [
         {
           "type": "plan",
-          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md"
+          "path": "specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md"
         },
         {
           "type": "research",
-          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md"
+          "path": "specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md"
+          "path": "specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/summaries/implementation-summary-20260112.md"
+          "path": "specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/summaries/implementation-summary-20260112.md"
         }
       ],
       "archived": "2026-01-12T11:30:00Z"
@@ -1367,15 +1367,15 @@
       "artifacts": [
         {
           "type": "plan",
-          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md"
+          "path": "specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md"
+          "path": "specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md"
+          "path": "specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md"
         }
       ],
       "archived": "2026-01-12T11:30:00Z"
@@ -1392,7 +1392,7 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/390_research_logos_original_archive_removal/reports/research-001.md"
+          "path": "specs/390_research_logos_original_archive_removal/reports/research-001.md"
         }
       ],
       "completed": "2026-01-11",
@@ -1409,15 +1409,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/389_standardize_nnn_number_format/reports/research-001.md"
+          "path": "specs/389_standardize_nnn_number_format/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/389_standardize_nnn_number_format/plans/implementation-001.md"
+          "path": "specs/389_standardize_nnn_number_format/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/389_standardize_nnn_number_format/summaries/implementation-summary-20260111.md"
+          "path": "specs/389_standardize_nnn_number_format/summaries/implementation-summary-20260111.md"
         }
       ],
       "plan_version": "001",
@@ -1430,21 +1430,21 @@
       "status": "completed",
       "language": "meta",
       "priority": "high",
-      "description": "Fix /todo command to move project directories (.claude/specs/{N}_{SLUG}/) to archive directory (.claude/specs/archive/{N}_{SLUG}/) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.",
+      "description": "Fix /todo command to move project directories (specs/{N}_{SLUG}/) to archive directory (specs/archive/{N}_{SLUG}/) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.",
       "created": "2026-01-12T00:40:00Z",
       "last_updated": "2026-01-12T00:55:00Z",
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/388_fix_todo_command_directory_archiving/reports/research-001.md"
+          "path": "specs/388_fix_todo_command_directory_archiving/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/388_fix_todo_command_directory_archiving/plans/implementation-001.md"
+          "path": "specs/388_fix_todo_command_directory_archiving/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/388_fix_todo_command_directory_archiving/summaries/implementation-summary-20260112.md"
+          "path": "specs/388_fix_todo_command_directory_archiving/summaries/implementation-summary-20260112.md"
         }
       ],
       "plan_version": "001",
@@ -1461,15 +1461,15 @@
       "last_updated": "2026-01-11T20:25:49Z",
       "artifacts": [
         {
-          "path": ".claude/specs/387_standardize_research_file_names/reports/research-001.md",
+          "path": "specs/387_standardize_research_file_names/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/387_standardize_research_file_names/plans/implementation-001.md",
+          "path": "specs/387_standardize_research_file_names/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/387_standardize_research_file_names/summaries/implementation-summary-20260111.md",
+          "path": "specs/387_standardize_research_file_names/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
       ],
@@ -1490,15 +1490,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md"
+          "path": "specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md"
+          "path": "specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/summaries/implementation-summary-20260111.md"
+          "path": "specs/386_fix_command_artifact_linking_in_todo_md/summaries/implementation-summary-20260111.md"
         }
       ],
       "planned": "2026-01-11",
@@ -1520,23 +1520,23 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/385_refactor_meta_command_task_creation/reports/research-001.md"
+          "path": "specs/385_refactor_meta_command_task_creation/reports/research-001.md"
         },
         {
           "type": "research",
-          "path": ".claude/specs/385_refactor_meta_command_task_creation/reports/research-002.md"
+          "path": "specs/385_refactor_meta_command_task_creation/reports/research-002.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/385_refactor_meta_command_task_creation/plans/implementation-001.md"
+          "path": "specs/385_refactor_meta_command_task_creation/plans/implementation-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/385_refactor_meta_command_task_creation/plans/implementation-002.md"
+          "path": "specs/385_refactor_meta_command_task_creation/plans/implementation-002.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/385_refactor_meta_command_task_creation/summaries/implementation-summary-20260111.md"
+          "path": "specs/385_refactor_meta_command_task_creation/summaries/implementation-summary-20260111.md"
         }
       ],
       "planned": "2026-01-12",
@@ -1559,15 +1559,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/384_fix_latex_package_path_warnings/reports/research-001.md"
+          "path": "specs/384_fix_latex_package_path_warnings/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/384_fix_latex_package_path_warnings/plans/implementation-001.md"
+          "path": "specs/384_fix_latex_package_path_warnings/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/384_fix_latex_package_path_warnings/summaries/implementation-summary-20260111.md"
+          "path": "specs/384_fix_latex_package_path_warnings/summaries/implementation-summary-20260111.md"
         }
       ],
       "planned": "2026-01-11",
@@ -1586,15 +1586,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/380_document_latex_standards/reports/research-001.md"
+          "path": "specs/380_document_latex_standards/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/380_document_latex_standards/plans/implementation-001.md"
+          "path": "specs/380_document_latex_standards/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/380_document_latex_standards/summaries/implementation-summary-20260111.md"
+          "path": "specs/380_document_latex_standards/summaries/implementation-summary-20260111.md"
         }
       ],
       "archived": "2026-01-12T11:45:00Z"
@@ -1610,15 +1610,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/reports/research-001.md"
+          "path": "specs/376_refactor_repo_for_theorylib_multi_theory_structure/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md"
+          "path": "specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/summaries/implementation-summary-20260112.md"
+          "path": "specs/376_refactor_repo_for_theorylib_multi_theory_structure/summaries/implementation-summary-20260112.md"
         }
       ],
       "archived": "2026-01-12T11:45:00Z"
@@ -1635,19 +1635,19 @@
       "created": "2026-01-11T02:22:16Z",
       "last_updated": "2026-01-12T00:10:00Z",
       "completed": "2026-01-11",
-      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "review_source": "specs/reviews/review-20260110.md",
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/365_complete_bimodaltest_sorries/reports/research-001.md",
+          "path": "specs/365_complete_bimodaltest_sorries/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/365_complete_bimodaltest_sorries/plans/implementation-001.md",
+          "path": "specs/365_complete_bimodaltest_sorries/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/365_complete_bimodaltest_sorries/summaries/implementation-summary-20260111.md",
+          "path": "specs/365_complete_bimodaltest_sorries/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
       ],
@@ -1664,7 +1664,7 @@
       "description": "Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.",
       "created": "2026-01-11T02:22:16Z",
       "last_updated": "2026-01-12T00:00:00Z",
-      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "review_source": "specs/reviews/review-20260110.md",
       "started": "2026-01-11",
       "researched": "2026-01-11",
       "planned": "2026-01-11",
@@ -1673,15 +1673,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/367_complete_example_proofs/reports/research-001.md"
+          "path": "specs/367_complete_example_proofs/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/367_complete_example_proofs/plans/implementation-001.md"
+          "path": "specs/367_complete_example_proofs/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/367_complete_example_proofs/summaries/implementation-summary-20260112.md"
+          "path": "specs/367_complete_example_proofs/summaries/implementation-summary-20260112.md"
         }
       ],
       "archived": "2026-01-12T11:45:00Z"
@@ -1703,11 +1703,11 @@
       "artifacts": [
         {
           "type": "summary",
-          "path": ".claude/specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md"
+          "path": "specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md"
         },
         {
           "type": "research",
-          "path": ".claude/specs/263_refactor_context_lean/reports/research-001.md"
+          "path": "specs/263_refactor_context_lean/reports/research-001.md"
         }
       ],
       "completed": "2026-01-08",
@@ -1746,15 +1746,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/396_fix_latex_build_missing_style_files/reports/research-001.md"
+          "path": "specs/396_fix_latex_build_missing_style_files/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/396_fix_latex_build_missing_style_files/plans/implementation-001.md"
+          "path": "specs/396_fix_latex_build_missing_style_files/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/396_fix_latex_build_missing_style_files/summaries/implementation-summary-20260111.md"
+          "path": "specs/396_fix_latex_build_missing_style_files/summaries/implementation-summary-20260111.md"
         }
       ],
       "plan_version": "001",
@@ -1778,15 +1778,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/reports/research-001.md"
+          "path": "specs/393_remove_incorrect_causal_operator_definition/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/plans/implementation-001.md"
+          "path": "specs/393_remove_incorrect_causal_operator_definition/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/summaries/implementation-summary-20260112.md"
+          "path": "specs/393_remove_incorrect_causal_operator_definition/summaries/implementation-summary-20260112.md"
         }
       ],
       "archived": "2026-01-12T14:30:00Z"
@@ -1804,15 +1804,15 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/reports/research-001.md"
+          "path": "specs/392_enhance_todo_command_orphan_tracking/reports/research-001.md"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/plans/implementation-001.md"
+          "path": "specs/392_enhance_todo_command_orphan_tracking/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/summaries/implementation-summary-20260111.md"
+          "path": "specs/392_enhance_todo_command_orphan_tracking/summaries/implementation-summary-20260111.md"
         }
       ],
       "plan_version": "001",
@@ -1842,15 +1842,15 @@
       "last_updated": "2026-01-11T20:45:09Z",
       "artifacts": [
         {
-          "path": ".claude/specs/382_create_spatial_subtheory_stub/reports/research-001.md",
+          "path": "specs/382_create_spatial_subtheory_stub/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/382_create_spatial_subtheory_stub/plans/implementation-001.md",
+          "path": "specs/382_create_spatial_subtheory_stub/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/382_create_spatial_subtheory_stub/summaries/implementation-summary-20260112.md",
+          "path": "specs/382_create_spatial_subtheory_stub/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -1869,16 +1869,16 @@
       "last_updated": "2026-01-11T21:09:23Z",
       "artifacts": [
         {
-          "path": ".claude/specs/381_add_causal_semantics_infrastructure/reports/research-001.md",
+          "path": "specs/381_add_causal_semantics_infrastructure/reports/research-001.md",
           "type": "research"
         },
         {
           "type": "plan",
-          "path": ".claude/specs/381_add_causal_semantics_infrastructure/plans/implementation-001.md"
+          "path": "specs/381_add_causal_semantics_infrastructure/plans/implementation-001.md"
         },
         {
           "type": "summary",
-          "path": ".claude/specs/381_add_causal_semantics_infrastructure/summaries/implementation-summary-20260112.md"
+          "path": "specs/381_add_causal_semantics_infrastructure/summaries/implementation-summary-20260112.md"
         }
       ],
       "planned": "2026-01-12",
@@ -1906,10 +1906,10 @@
       "artifacts": [
         {
           "type": "plan",
-          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md"
+          "path": "specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md"
         },
         {
-          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/reports/research-001.md",
+          "path": "specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/reports/research-001.md",
           "type": "research"
         }
       ],
@@ -2349,15 +2349,15 @@
       "completed": "2026-01-12T07:10:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md",
+          "path": "specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/plans/implementation-001.md",
+          "path": "specs/405_document_latex_one_line_per_sentence_convention/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/summaries/implementation-summary-20260112.md",
+          "path": "specs/405_document_latex_one_line_per_sentence_convention/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2381,7 +2381,7 @@
       ],
       "artifacts": [
         {
-          "path": ".claude/specs/406_enforce_convention_bimodal_reference_tex/summaries/implementation-summary-20260112.md",
+          "path": "specs/406_enforce_convention_bimodal_reference_tex/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2404,7 +2404,7 @@
       ],
       "artifacts": [
         {
-          "path": ".claude/specs/407_enforce_convention_logos_reference_tex/summaries/implementation-summary-20260112.md",
+          "path": "specs/407_enforce_convention_logos_reference_tex/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2424,15 +2424,15 @@
       "completed": "2026-01-12T06:50:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md",
+          "path": "specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/plans/implementation-001.md",
+          "path": "specs/404_enhance_todo_to_archive_orphaned_specs_directories/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/summaries/implementation-summary-20260112.md",
+          "path": "specs/404_enhance_todo_to_archive_orphaned_specs_directories/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2451,15 +2451,15 @@
       "last_updated": "2026-01-11T22:32:17Z",
       "artifacts": [
         {
-          "path": ".claude/specs/403_enforce_directory_naming_convention/reports/research-001.md",
+          "path": "specs/403_enforce_directory_naming_convention/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/403_enforce_directory_naming_convention/plans/implementation-001.md",
+          "path": "specs/403_enforce_directory_naming_convention/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/403_enforce_directory_naming_convention/summaries/implementation-summary-20260111.md",
+          "path": "specs/403_enforce_directory_naming_convention/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
       ],
@@ -2480,15 +2480,15 @@
       "last_updated": "2026-01-11T22:36:22Z",
       "artifacts": [
         {
-          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/reports/research-001.md",
+          "path": "specs/401_add_expanded_status_for_parent_tasks/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/plans/implementation-001.md",
+          "path": "specs/401_add_expanded_status_for_parent_tasks/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/summaries/implementation-summary-20260112.md",
+          "path": "specs/401_add_expanded_status_for_parent_tasks/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2510,15 +2510,15 @@
       ],
       "artifacts": [
         {
-          "path": ".claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md",
+          "path": "specs/402_rename_divide_flag_to_expand/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/402_rename_divide_flag_to_expand/plans/implementation-001.md",
+          "path": "specs/402_rename_divide_flag_to_expand/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/402_rename_divide_flag_to_expand/summaries/implementation-summary-20260112.md",
+          "path": "specs/402_rename_divide_flag_to_expand/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2536,15 +2536,15 @@
       "last_updated": "2026-01-12T01:50:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/422_complete_introduction_todos/reports/research-001.md",
+          "path": "specs/archive/422_complete_introduction_todos/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/422_complete_introduction_todos/plans/implementation-001.md",
+          "path": "specs/archive/422_complete_introduction_todos/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/422_complete_introduction_todos/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/422_complete_introduction_todos/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2565,7 +2565,7 @@
       "related_task": 398,
       "artifacts": [
         {
-          "path": ".claude/specs/archive/421_lookup_formal_term_definitions_revise_research/reports/research-001.md",
+          "path": "specs/archive/421_lookup_formal_term_definitions_revise_research/reports/research-001.md",
           "type": "research"
         }
       ],
@@ -2619,15 +2619,15 @@
       ],
       "artifacts": [
         {
-          "path": ".claude/specs/archive/415_fix_latex_sentence_line_breaks/reports/research-001.md",
+          "path": "specs/archive/415_fix_latex_sentence_line_breaks/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/415_fix_latex_sentence_line_breaks/plans/implementation-001.md",
+          "path": "specs/archive/415_fix_latex_sentence_line_breaks/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/415_fix_latex_sentence_line_breaks/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/415_fix_latex_sentence_line_breaks/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2680,15 +2680,15 @@
       "last_updated": "2026-01-12T03:21:19Z",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/425_update_command_files_to_delegate_to_skill_subagent/reports/research-001.md",
+          "path": "specs/archive/425_update_command_files_to_delegate_to_skill_subagent/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/425_update_command_files_to_delegate_to_skill_subagent/plans/implementation-001.md",
+          "path": "specs/archive/425_update_command_files_to_delegate_to_skill_subagent/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/425_update_command_files_to_delegate_to_skill_subagent/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/425_update_command_files_to_delegate_to_skill_subagent/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2705,15 +2705,15 @@
       "last_updated": "2026-01-12T03:28:38Z",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/424_complete_todos_01_syntax_tex/reports/research-001.md",
+          "path": "specs/archive/424_complete_todos_01_syntax_tex/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/424_complete_todos_01_syntax_tex/plans/implementation-001.md",
+          "path": "specs/archive/424_complete_todos_01_syntax_tex/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/424_complete_todos_01_syntax_tex/summaries/implementation-summary-20260111.md",
+          "path": "specs/archive/424_complete_todos_01_syntax_tex/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
       ],
@@ -2737,23 +2737,23 @@
       ],
       "artifacts": [
         {
-          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/reports/research-001.md",
+          "path": "specs/archive/417_split_typeclass_constraints_explanatory/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/reports/research-002.md",
+          "path": "specs/archive/417_split_typeclass_constraints_explanatory/reports/research-002.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/plans/implementation-001.md",
+          "path": "specs/archive/417_split_typeclass_constraints_explanatory/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/reports/benchmark-results.md",
+          "path": "specs/archive/417_split_typeclass_constraints_explanatory/reports/benchmark-results.md",
           "type": "report"
         },
         {
-          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/summaries/implementation-summary-20260111.md",
+          "path": "specs/archive/417_split_typeclass_constraints_explanatory/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
       ],
@@ -2777,19 +2777,19 @@
       ],
       "artifacts": [
         {
-          "path": ".claude/specs/archive/418_cache_typeclass_instances_explanatory/reports/research-001.md",
+          "path": "specs/archive/418_cache_typeclass_instances_explanatory/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/418_cache_typeclass_instances_explanatory/reports/research-002.md",
+          "path": "specs/archive/418_cache_typeclass_instances_explanatory/reports/research-002.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/418_cache_typeclass_instances_explanatory/plans/implementation-001.md",
+          "path": "specs/archive/418_cache_typeclass_instances_explanatory/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/418_cache_typeclass_instances_explanatory/summaries/implementation-summary-20260111.md",
+          "path": "specs/archive/418_cache_typeclass_instances_explanatory/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
       ],
@@ -2813,15 +2813,15 @@
       "completed": "2026-01-11",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/414_create_planner_agent_subagent/reports/research-001.md",
+          "path": "specs/archive/414_create_planner_agent_subagent/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/414_create_planner_agent_subagent/plans/implementation-001.md",
+          "path": "specs/archive/414_create_planner_agent_subagent/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/414_create_planner_agent_subagent/summaries/implementation-summary-20260111.md",
+          "path": "specs/archive/414_create_planner_agent_subagent/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
       ],
@@ -2843,11 +2843,11 @@
       "completed": "2026-01-11",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/413_create_implementation_agent_subagents/plans/implementation-001.md",
+          "path": "specs/archive/413_create_implementation_agent_subagents/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/413_create_implementation_agent_subagents/summaries/implementation-summary-20260111.md",
+          "path": "specs/archive/413_create_implementation_agent_subagents/summaries/implementation-summary-20260111.md",
           "type": "summary"
         }
       ],
@@ -2869,11 +2869,11 @@
       "completed": "2026-01-12",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/412_create_general_research_agent_subagent/plans/implementation-001.md",
+          "path": "specs/archive/412_create_general_research_agent_subagent/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/412_create_general_research_agent_subagent/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/412_create_general_research_agent_subagent/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2895,15 +2895,15 @@
       "completed": "2026-01-12",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/411_create_lean_research_agent_subagent/reports/research-001.md",
+          "path": "specs/archive/411_create_lean_research_agent_subagent/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/411_create_lean_research_agent_subagent/plans/implementation-001.md",
+          "path": "specs/archive/411_create_lean_research_agent_subagent/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/411_create_lean_research_agent_subagent/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/411_create_lean_research_agent_subagent/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2925,11 +2925,11 @@
       "completed": "2026-01-12",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/410_remove_eager_context_loading_from_skill_frontmatter/plans/implementation-001.md",
+          "path": "specs/archive/410_remove_eager_context_loading_from_skill_frontmatter/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/410_remove_eager_context_loading_from_skill_frontmatter/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/410_remove_eager_context_loading_from_skill_frontmatter/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2948,15 +2948,15 @@
       "completed": "2026-01-12T11:00:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/409_convert_workflow_skills_to_forked_subagent_pattern/reports/research-001.md",
+          "path": "specs/archive/409_convert_workflow_skills_to_forked_subagent_pattern/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/409_convert_workflow_skills_to_forked_subagent_pattern/plans/implementation-001.md",
+          "path": "specs/archive/409_convert_workflow_skills_to_forked_subagent_pattern/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/409_convert_workflow_skills_to_forked_subagent_pattern/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/409_convert_workflow_skills_to_forked_subagent_pattern/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -2976,15 +2976,15 @@
       "supersedes": 178,
       "artifacts": [
         {
-          "path": ".claude/specs/archive/395_create_bimodal_troubleshooting_and_exercise_solutions/reports/research-001.md",
+          "path": "specs/archive/395_create_bimodal_troubleshooting_and_exercise_solutions/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/395_create_bimodal_troubleshooting_and_exercise_solutions/plans/implementation-001.md",
+          "path": "specs/archive/395_create_bimodal_troubleshooting_and_exercise_solutions/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/395_create_bimodal_troubleshooting_and_exercise_solutions/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/395_create_bimodal_troubleshooting_and_exercise_solutions/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3002,15 +3002,15 @@
       "archived": "2026-01-12T14:20:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/423_ci_skip_by_default_trigger_via_commit_message/reports/research-001.md",
+          "path": "specs/archive/423_ci_skip_by_default_trigger_via_commit_message/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/423_ci_skip_by_default_trigger_via_commit_message/plans/implementation-001.md",
+          "path": "specs/archive/423_ci_skip_by_default_trigger_via_commit_message/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/423_ci_skip_by_default_trigger_via_commit_message/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/423_ci_skip_by_default_trigger_via_commit_message/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ]
@@ -3026,15 +3026,15 @@
       "archived": "2026-01-12T14:20:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/427_document_command_skill_subagent_framework/reports/research-001.md",
+          "path": "specs/archive/427_document_command_skill_subagent_framework/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/archive/427_document_command_skill_subagent_framework/plans/implementation-001.md",
+          "path": "specs/archive/427_document_command_skill_subagent_framework/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/427_document_command_skill_subagent_framework/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/427_document_command_skill_subagent_framework/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ]
@@ -3050,11 +3050,11 @@
       "archived": "2026-01-12T14:20:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/archive/428_complete_todos_bimodal_syntax_latex/plans/implementation-001.md",
+          "path": "specs/archive/428_complete_todos_bimodal_syntax_latex/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/archive/428_complete_todos_bimodal_syntax_latex/summaries/implementation-summary-20260112.md",
+          "path": "specs/archive/428_complete_todos_bimodal_syntax_latex/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ]
@@ -3071,15 +3071,15 @@
       "completed": "2026-01-12T17:58:44Z",
       "artifacts": [
         {
-          "path": ".claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md",
+          "path": "specs/436_update_license_to_modelchecker_standard/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/436_update_license_to_modelchecker_standard/plans/implementation-001.md",
+          "path": "specs/436_update_license_to_modelchecker_standard/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/436_update_license_to_modelchecker_standard/summaries/implementation-summary-20260112.md",
+          "path": "specs/436_update_license_to_modelchecker_standard/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3098,15 +3098,15 @@
       "completed": "2026-01-12T17:45:36Z",
       "artifacts": [
         {
-          "path": ".claude/specs/435_module_aggregator_standard_bimodal/reports/research-001.md",
+          "path": "specs/435_module_aggregator_standard_bimodal/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/435_module_aggregator_standard_bimodal/plans/implementation-001.md",
+          "path": "specs/435_module_aggregator_standard_bimodal/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/435_module_aggregator_standard_bimodal/summaries/implementation-summary-20260112.md",
+          "path": "specs/435_module_aggregator_standard_bimodal/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3123,15 +3123,15 @@
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
+          "path": "specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md",
+          "path": "specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md",
+          "path": "specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3148,15 +3148,15 @@
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/reports/research-001.md",
+          "path": "specs/433_refine_readme_title_and_bimodal_section/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/plans/implementation-001.md",
+          "path": "specs/433_refine_readme_title_and_bimodal_section/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/summaries/implementation-summary-20260112.md",
+          "path": "specs/433_refine_readme_title_and_bimodal_section/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3173,15 +3173,15 @@
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/430_refactor_documentation_general_framework/reports/research-001.md",
+          "path": "specs/430_refactor_documentation_general_framework/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/430_refactor_documentation_general_framework/plans/implementation-001.md",
+          "path": "specs/430_refactor_documentation_general_framework/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/430_refactor_documentation_general_framework/summaries/implementation-summary-20260112.md",
+          "path": "specs/430_refactor_documentation_general_framework/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3198,15 +3198,15 @@
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/reports/research-001.md",
+          "path": "specs/429_extend_command_skill_agent_integration_to_meta/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/plans/implementation-001.md",
+          "path": "specs/429_extend_command_skill_agent_integration_to_meta/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/summaries/implementation-summary-20260112.md",
+          "path": "specs/429_extend_command_skill_agent_integration_to_meta/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3226,7 +3226,7 @@
       "description": "Implement automated proof search for TM logic with proof term construction using Direct Refactor approach (Axiom: Prop -> Type).",
       "planning_completed": "2026-01-12T23:30:00Z",
       "implementation_completed": "2026-01-12T23:45:00Z",
-      "plan_path": ".claude/specs/260_proof_search/plans/implementation-002.md",
+      "plan_path": "specs/260_proof_search/plans/implementation-002.md",
       "plan_version": "002",
       "plan_metadata": {
         "phases": 5,
@@ -3241,33 +3241,33 @@
       "estimated_hours": 22,
       "artifacts": [
         {
-          "path": ".claude/specs/260_proof_search/reports/research-001.md",
+          "path": "specs/260_proof_search/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/260_proof_search/reports/research-002.md",
+          "path": "specs/260_proof_search/reports/research-002.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/260_proof_search/reports/research-003.md",
+          "path": "specs/260_proof_search/reports/research-003.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/260_proof_search/reports/research-004.md",
+          "path": "specs/260_proof_search/reports/research-004.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/260_proof_search/plans/implementation-001.md",
+          "path": "specs/260_proof_search/plans/implementation-001.md",
           "type": "plan",
           "status": "superseded"
         },
         {
-          "path": ".claude/specs/260_proof_search/plans/implementation-002.md",
+          "path": "specs/260_proof_search/plans/implementation-002.md",
           "type": "plan",
           "status": "current"
         },
         {
-          "path": ".claude/specs/260_proof_search/summaries/implementation-summary-20260112.md",
+          "path": "specs/260_proof_search/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3293,19 +3293,19 @@
       "completed": "2026-01-12T22:30:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/261_decidability/reports/research-001.md",
+          "path": "specs/261_decidability/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/261_decidability/reports/research-002.md",
+          "path": "specs/261_decidability/reports/research-002.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/261_decidability/plans/implementation-001.md",
+          "path": "specs/261_decidability/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/261_decidability/summaries/implementation-summary-20260112.md",
+          "path": "specs/261_decidability/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3323,15 +3323,15 @@
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
+          "path": "specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
+          "path": "specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
+          "path": "specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3350,15 +3350,15 @@
         "session_id": "sess_1768251758_a9d38b",
         "artifacts": [
           {
-            "path": ".claude/specs/443_fix_session_id_and_agent_system_robustness/reports/research-001.md",
+            "path": "specs/443_fix_session_id_and_agent_system_robustness/reports/research-001.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/443_fix_session_id_and_agent_system_robustness/plans/implementation-001.md",
+            "path": "specs/443_fix_session_id_and_agent_system_robustness/plans/implementation-001.md",
             "type": "plan"
           },
           {
-            "path": ".claude/specs/443_fix_session_id_and_agent_system_robustness/summaries/implementation-summary-20260112.md",
+            "path": "specs/443_fix_session_id_and_agent_system_robustness/summaries/implementation-summary-20260112.md",
             "type": "summary"
           }
         ],
@@ -3380,15 +3380,15 @@
         "description": "Research the skill/agent execution architecture to determine optimal approach for systematic improvements. Analyze three options: (A) Make skills executable with automatic subagent delegation, (B) Inline critical patterns in command files removing skill indirection, (C) Use Task tool with explicit prompts including all skill context. Evaluate tradeoffs around token efficiency, reliability, maintainability, and Claude Code constraints.",
         "artifacts": [
           {
-            "path": ".claude/specs/442_research_skill_execution_architecture/reports/research-001.md",
+            "path": "specs/442_research_skill_execution_architecture/reports/research-001.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/442_research_skill_execution_architecture/plans/implementation-001.md",
+            "path": "specs/442_research_skill_execution_architecture/plans/implementation-001.md",
             "type": "plan"
           },
           {
-            "path": ".claude/specs/442_research_skill_execution_architecture/summaries/implementation-summary-20260112.md",
+            "path": "specs/442_research_skill_execution_architecture/summaries/implementation-summary-20260112.md",
             "type": "summary"
           }
         ],
@@ -3407,15 +3407,15 @@
         "plan_version": "001",
         "artifacts": [
           {
-            "path": ".claude/specs/440_revise_logos_readme/reports/research-001.md",
+            "path": "specs/440_revise_logos_readme/reports/research-001.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/440_revise_logos_readme/plans/implementation-001.md",
+            "path": "specs/440_revise_logos_readme/plans/implementation-001.md",
             "type": "plan"
           },
           {
-            "path": ".claude/specs/440_revise_logos_readme/summaries/implementation-summary-20260112.md",
+            "path": "specs/440_revise_logos_readme/summaries/implementation-summary-20260112.md",
             "type": "summary"
           }
         ],
@@ -3446,15 +3446,15 @@
         "plan_version": "001",
         "artifacts": [
           {
-            "path": ".claude/specs/438_refactor_bimodal_readme/reports/research-001.md",
+            "path": "specs/438_refactor_bimodal_readme/reports/research-001.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/438_refactor_bimodal_readme/plans/implementation-001.md",
+            "path": "specs/438_refactor_bimodal_readme/plans/implementation-001.md",
             "type": "plan"
           },
           {
-            "path": ".claude/specs/438_refactor_bimodal_readme/summaries/implementation-summary-20260112.md",
+            "path": "specs/438_refactor_bimodal_readme/summaries/implementation-summary-20260112.md",
             "type": "summary"
           }
         ],
@@ -3472,15 +3472,15 @@
         "plan_version": "001",
         "artifacts": [
           {
-            "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
+            "path": "specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md",
+            "path": "specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md",
             "type": "plan"
           },
           {
-            "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md",
+            "path": "specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md",
             "type": "summary"
           }
         ],
@@ -3497,27 +3497,27 @@
         "plan_version": "001",
         "artifacts": [
           {
-            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md",
+            "path": "specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md",
+            "path": "specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-003.md",
+            "path": "specs/432_fix_artifact_linking_in_todo_and_state/reports/research-003.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-004.md",
+            "path": "specs/432_fix_artifact_linking_in_todo_and_state/reports/research-004.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-005.md",
+            "path": "specs/432_fix_artifact_linking_in_todo_and_state/reports/research-005.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/plans/implementation-001.md",
+            "path": "specs/432_fix_artifact_linking_in_todo_and_state/plans/implementation-001.md",
             "type": "plan"
           }
         ],
@@ -3537,15 +3537,15 @@
         "effort": "16 hours",
         "artifacts": [
           {
-            "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/reports/research-001.md",
+            "path": "specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/reports/research-001.md",
             "type": "research"
           },
           {
-            "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/plans/implementation-001.md",
+            "path": "specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/plans/implementation-001.md",
             "type": "plan"
           },
           {
-            "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/summaries/implementation-summary-20260112.md",
+            "path": "specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/summaries/implementation-summary-20260112.md",
             "type": "summary"
           }
         ],
@@ -3566,15 +3566,15 @@
       "session_id": "sess_1768265665_a8df02",
       "artifacts": [
         {
-          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md",
+          "path": "specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/plans/implementation-001.md",
+          "path": "specs/456_address_todos_in_bimodal_semantics_latex/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/summaries/implementation-summary-20260113.md",
+          "path": "specs/456_address_todos_in_bimodal_semantics_latex/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -3595,11 +3595,11 @@
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/455_readme_extension_layer_descriptions/plans/implementation-001.md",
+          "path": "specs/455_readme_extension_layer_descriptions/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/455_readme_extension_layer_descriptions/summaries/implementation-summary-20260113.md",
+          "path": "specs/455_readme_extension_layer_descriptions/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -3618,19 +3618,19 @@
       "session_id": "sess_1768260517_a912b7",
       "artifacts": [
         {
-          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md",
+          "path": "specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md",
+          "path": "specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/plans/implementation-001.md",
+          "path": "specs/451_add_reflection_extension_to_logos_layer_extensions/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/summaries/implementation-summary-20260112.md",
+          "path": "specs/451_add_reflection_extension_to_logos_layer_extensions/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3657,19 +3657,19 @@
       "completed": "2026-01-13T07:15:00Z",
       "artifacts": [
         {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "path": "specs/257_completeness_proofs/plans/implementation-002.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/448_build_canonical_history/reports/research-001.md",
+          "path": "specs/448_build_canonical_history/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/448_build_canonical_history/plans/implementation-001.md",
+          "path": "specs/448_build_canonical_history/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/448_build_canonical_history/summaries/implementation-summary-20260113.md",
+          "path": "specs/448_build_canonical_history/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -3691,23 +3691,23 @@
       "description": "Phase 1 of completeness proofs: Establish bridge between set-based and list-based consistency. Prove Formula is countable, implement enumeration, define setToContext, prove set-list consistency equivalence, complete lindenbaum proof.",
       "artifacts": [
         {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "path": "specs/257_completeness_proofs/plans/implementation-002.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/444_formula_countability_set_list_bridge/reports/research-001.md",
+          "path": "specs/444_formula_countability_set_list_bridge/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/444_formula_countability_set_list_bridge/plans/implementation-001.md",
+          "path": "specs/444_formula_countability_set_list_bridge/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/444_formula_countability_set_list_bridge/reports/research-002.md",
+          "path": "specs/444_formula_countability_set_list_bridge/reports/research-002.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/444_formula_countability_set_list_bridge/summaries/implementation-summary-20260112.md",
+          "path": "specs/444_formula_countability_set_list_bridge/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3732,19 +3732,19 @@
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "path": "specs/257_completeness_proofs/plans/implementation-002.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/445_maximal_consistent_set_properties/reports/research-001.md",
+          "path": "specs/445_maximal_consistent_set_properties/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/445_maximal_consistent_set_properties/plans/implementation-001.md",
+          "path": "specs/445_maximal_consistent_set_properties/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/445_maximal_consistent_set_properties/summaries/implementation-summary-20260112.md",
+          "path": "specs/445_maximal_consistent_set_properties/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3769,19 +3769,19 @@
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "path": "specs/257_completeness_proofs/plans/implementation-002.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/446_agnostic_duration_construction/reports/research-001.md",
+          "path": "specs/446_agnostic_duration_construction/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/446_agnostic_duration_construction/plans/implementation-001.md",
+          "path": "specs/446_agnostic_duration_construction/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/446_agnostic_duration_construction/summaries/implementation-summary-20260112.md",
+          "path": "specs/446_agnostic_duration_construction/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3803,19 +3803,19 @@
       "description": "Phase 4 of completeness proofs: Build canonical frame and model using agnostic Duration type. Define canonical_task_rel with modal/temporal transfer. Prove nullity and compositionality. Implement canonical_frame, canonical_valuation, canonical_model, canonical_history.",
       "artifacts": [
         {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "path": "specs/257_completeness_proofs/plans/implementation-002.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/447_canonical_frame_model_construction/reports/research-001.md",
+          "path": "specs/447_canonical_frame_model_construction/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/447_canonical_frame_model_construction/plans/implementation-001.md",
+          "path": "specs/447_canonical_frame_model_construction/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/447_canonical_frame_model_construction/summaries/implementation-summary-20260113.md",
+          "path": "specs/447_canonical_frame_model_construction/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -3837,15 +3837,15 @@
       "plan_version": "001",
       "artifacts": [
         {
-          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
+          "path": "specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
+          "path": "specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
+          "path": "specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3862,15 +3862,15 @@
       "description": "Expand the Bimodal Theory section in README.md to explain that the bimodal theory provides the logical core of the Logos theory by accounting for the relationship between time and possibility. This provides a well-motivated purely intensional target for developing the methodology that will then be extended to the Logos which is a hyperintensional theory of much greater complexity.",
       "artifacts": [
         {
-          "path": ".claude/specs/461_expand_bimodal_theory_readme_section/reports/research-001.md",
+          "path": "specs/461_expand_bimodal_theory_readme_section/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/461_expand_bimodal_theory_readme_section/plans/implementation-001.md",
+          "path": "specs/461_expand_bimodal_theory_readme_section/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/461_expand_bimodal_theory_readme_section/summaries/implementation-summary-20260113.md",
+          "path": "specs/461_expand_bimodal_theory_readme_section/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -3890,19 +3890,19 @@
       "session_id": "sess_1768270717_0edfca",
       "artifacts": [
         {
-          "path": ".claude/specs/460_cosmos_institute_substack_essay/reports/research-001.md",
+          "path": "specs/460_cosmos_institute_substack_essay/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/460_cosmos_institute_substack_essay/reports/research-002.md",
+          "path": "specs/460_cosmos_institute_substack_essay/reports/research-002.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/460_cosmos_institute_substack_essay/plans/implementation-001.md",
+          "path": "specs/460_cosmos_institute_substack_essay/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/460_cosmos_institute_substack_essay/summaries/implementation-summary-20260113.md",
+          "path": "specs/460_cosmos_institute_substack_essay/summaries/implementation-summary-20260113.md",
           "type": "summary"
         },
         {
@@ -3938,15 +3938,15 @@
       "description": "The Lean implementation restricts temporal quantification to times in the world history's domain dom(τ) despite the fact the source paper /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (lines 896-7 and lines 1862-1872) quantifies over all times. It is also important that the times are unrestricted in the definition of logical consequence in line 924 and 2273. Fix the lean source code to match the paper exactly.",
       "artifacts": [
         {
-          "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md",
+          "path": "specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/plans/implementation-001.md",
+          "path": "specs/454_fix_temporal_quantification_to_match_paper/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/summaries/implementation-summary-20260112.md",
+          "path": "specs/454_fix_temporal_quantification_to_match_paper/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3963,15 +3963,15 @@
       "session_id": "sess_1768272346_127e9f",
       "artifacts": [
         {
-          "path": ".claude/specs/453_add_ability_free_choice_modal_extension/reports/research-001.md",
+          "path": "specs/453_add_ability_free_choice_modal_extension/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/453_add_ability_free_choice_modal_extension/plans/implementation-001.md",
+          "path": "specs/453_add_ability_free_choice_modal_extension/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/453_add_ability_free_choice_modal_extension/summaries/implementation-summary-20260112.md",
+          "path": "specs/453_add_ability_free_choice_modal_extension/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -3992,15 +3992,15 @@
       "completed": "2026-01-13T02:52:30Z",
       "artifacts": [
         {
-          "path": ".claude/specs/452_use_d_notation_for_duration_group/reports/research-001.md",
+          "path": "specs/452_use_d_notation_for_duration_group/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/452_use_d_notation_for_duration_group/plans/implementation-001.md",
+          "path": "specs/452_use_d_notation_for_duration_group/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/452_use_d_notation_for_duration_group/summaries/implementation-summary-20260113.md",
+          "path": "specs/452_use_d_notation_for_duration_group/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -4024,39 +4024,39 @@
       "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. Implemented finite canonical model approach with 7 phases. Created FiniteCanonicalModel.lean with finite time domain, world states, task relation, frame/model structures, existence lemmas, truth lemma skeleton, and completeness theorem statements.",
       "artifacts": [
         {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md",
+          "path": "specs/458_extend_canonical_history_full_domain/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-001.md",
+          "path": "specs/458_extend_canonical_history_full_domain/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-002.md",
+          "path": "specs/458_extend_canonical_history_full_domain/plans/implementation-002.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md",
+          "path": "specs/458_extend_canonical_history_full_domain/reports/research-002.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-003.md",
+          "path": "specs/458_extend_canonical_history_full_domain/plans/implementation-003.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-003.md",
+          "path": "specs/458_extend_canonical_history_full_domain/reports/research-003.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-004.md",
+          "path": "specs/458_extend_canonical_history_full_domain/reports/research-004.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-004.md",
+          "path": "specs/458_extend_canonical_history_full_domain/plans/implementation-004.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-20260113.md",
+          "path": "specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -4074,15 +4074,15 @@
       "description": "Fix /research and /implement commands stopping after preflight. Commands complete skill-status-sync for preflight but fail to proceed to STAGE 2 delegation. Root cause: command files describe workflow but Claude stops executing after preflight instead of continuing to delegate to implementation skills/agents.",
       "artifacts": [
         {
-          "path": ".claude/specs/462_fix_workflow_command_delegation/reports/research-001.md",
+          "path": "specs/462_fix_workflow_command_delegation/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/462_fix_workflow_command_delegation/plans/implementation-001.md",
+          "path": "specs/462_fix_workflow_command_delegation/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/462_fix_workflow_command_delegation/summaries/implementation-summary-20260112.md",
+          "path": "specs/462_fix_workflow_command_delegation/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -4113,15 +4113,15 @@
       "session_id": "sess_1768281942_e65015",
       "artifacts": [
         {
-          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md",
+          "path": "specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/plans/implementation-001.md",
+          "path": "specs/464_research_coherence_alternatives_strategy_a/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/summaries/implementation-summary-20260112.md",
+          "path": "specs/464_research_coherence_alternatives_strategy_a/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -4141,15 +4141,15 @@
       "session_id": "sess_1768285816_7b069b",
       "artifacts": [
         {
-          "path": ".claude/specs/465_cosmos_essay_latex/reports/research-001.md",
+          "path": "specs/465_cosmos_essay_latex/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/465_cosmos_essay_latex/plans/implementation-001.md",
+          "path": "specs/465_cosmos_essay_latex/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/465_cosmos_essay_latex/summaries/implementation-summary-20260112.md",
+          "path": "specs/465_cosmos_essay_latex/summaries/implementation-summary-20260112.md",
           "type": "summary"
         }
       ],
@@ -4169,15 +4169,15 @@
       "session_id": "sess_1768320511_65fbfb",
       "artifacts": [
         {
-          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md",
+          "path": "specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/plans/implementation-001.md",
+          "path": "specs/467_review_task_462_changes_fix_root_cause/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/summaries/implementation-summary-20260113.md",
+          "path": "specs/467_review_task_462_changes_fix_root_cause/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -4197,15 +4197,15 @@
       "description": "Complete the Lindenbaum extension for finite closures, building on task 458. Implement the restricted Lindenbaum lemma that extends consistent formula sets to maximal consistent sets within the finite subformula closure, enabling the finite truth lemma proof.",
       "artifacts": [
         {
-          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/reports/research-001.md",
+          "path": "specs/472_lindenbaum_extension_finite_closures/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/plans/implementation-001.md",
+          "path": "specs/472_lindenbaum_extension_finite_closures/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/summaries/implementation-summary-20260113.md",
+          "path": "specs/472_lindenbaum_extension_finite_closures/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -4224,15 +4224,15 @@
       "plan_version": "002",
       "artifacts": [
         {
-          "path": ".claude/specs/474_fix_skill_return_status_field/plans/implementation-001.md",
+          "path": "specs/474_fix_skill_return_status_field/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/474_fix_skill_return_status_field/plans/implementation-002.md",
+          "path": "specs/474_fix_skill_return_status_field/plans/implementation-002.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/474_fix_skill_return_status_field/summaries/implementation-summary-20260113.md",
+          "path": "specs/474_fix_skill_return_status_field/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],
@@ -4249,19 +4249,19 @@
       "last_updated": "2026-01-13T18:34:38Z",
       "artifacts": [
         {
-          "path": ".claude/specs/478_revise_ecosystem_view_section/reports/research-001.md",
+          "path": "specs/478_revise_ecosystem_view_section/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": ".claude/specs/478_revise_ecosystem_view_section/plans/implementation-001.md",
+          "path": "specs/478_revise_ecosystem_view_section/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/478_revise_ecosystem_view_section/plans/implementation-002.md",
+          "path": "specs/478_revise_ecosystem_view_section/plans/implementation-002.md",
           "type": "plan"
         },
         {
-          "path": ".claude/specs/478_revise_ecosystem_view_section/summaries/implementation-summary-20260113.md",
+          "path": "specs/478_revise_ecosystem_view_section/summaries/implementation-summary-20260113.md",
           "type": "summary"
         }
       ],

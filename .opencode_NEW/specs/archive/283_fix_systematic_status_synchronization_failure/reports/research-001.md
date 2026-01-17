@@ -15,12 +15,12 @@
 - .opencode/command/research.md
 - .opencode/command/implement.md
 - .opencode/command/plan.md
-- .opencode/specs/state.json
-- .opencode/specs/TODO.md
+- specs/state.json
+- specs/TODO.md
 - Task 275 artifacts (previous fix attempt)
 
 **Artifacts**: 
-- .opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
+- specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -320,7 +320,7 @@ DELEGATION_CONTEXT='{
   "validated_artifacts": [
     {
       "type": "research",
-      "path": ".opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md",
+      "path": "specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md",
       "summary": "Comprehensive analysis of status synchronization failure"
     }
   ]
@@ -341,7 +341,7 @@ if return["status"] != "completed":
   # Continue anyway - artifact exists
 
 # 5. Verify artifact linked in TODO.md
-if ".opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md" not in return["artifacts_linked"]:
+if "specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md" not in return["artifacts_linked"]:
   log_warning("Artifact not linked in TODO.md")
 ```
 
@@ -622,18 +622,18 @@ def validate_return_enhanced(subagent_return, expected_session_id, task_number):
    - .opencode/command/plan.md (Workflow delegation pattern)
 
 4. **State Files**:
-   - .opencode/specs/state.json (Task status tracking, completed_projects array)
-   - .opencode/specs/TODO.md (Task list with status markers)
+   - specs/state.json (Task status tracking, completed_projects array)
+   - specs/TODO.md (Task list with status markers)
 
 5. **Task 275 Artifacts**:
-   - .opencode/specs/275_fix_workflow_status_updates/reports/research-001.md
-   - .opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md
-   - .opencode/specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md
+   - specs/275_fix_workflow_status_updates/reports/research-001.md
+   - specs/275_fix_workflow_status_updates/plans/implementation-001.md
+   - specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md
 
 ### Secondary Sources
 
 1. **Task 240 Research** (OpenAgents Migration):
-   - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md
+   - specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md
    - Identified similar architectural issues with workflow execution
 
 2. **Subagent Return Format Standard**:

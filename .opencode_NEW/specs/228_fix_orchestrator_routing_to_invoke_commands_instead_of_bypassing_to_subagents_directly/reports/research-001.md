@@ -811,5 +811,5 @@ The root cause of /plan (and all workflow commands) failing to update TODO.md an
 6. .opencode/context/core/workflows/subagent-delegation-guide.md (Lines 1-649)
 7. .opencode/ARCHITECTURE.md (Lines 1-816)
 8. .opencode/agent/subagents/planner.md (Lines 1-385)
-9. .opencode/specs/TODO.md Task 228 (Lines 101-130)
-10. .opencode/specs/TODO.md Task 227 (Lines 61-99)
+9. specs/TODO.md Task 228 (Lines 101-130)
+10. specs/TODO.md Task 227 (Lines 61-99)

@@ -7,7 +7,7 @@
 **Priority**: High  
 **Dependencies**: Task 304 (abandoned), Task 303 (completed)  
 **Sources/Inputs**: 
-- .opencode/specs/changes-review-and-fixes-required.md
+- specs/changes-review-and-fixes-required.md
 - Git history analysis (commits e8188c1, ebcb018, 245a1e4, da5b39f)
 - Task 303 investigation report
 - Task 305 implementation summary
@@ -492,12 +492,12 @@ Task 304 testing is unnecessary because:
 ### Primary Sources
 
 1. **changes-review-and-fixes-required.md**
-   - Path: .opencode/specs/changes-review-and-fixes-required.md
+   - Path: specs/changes-review-and-fixes-required.md
    - Purpose: Detailed analysis of unintended changes
    - Key sections: File-by-file analysis, decision matrix
 
 2. **Task 303 Investigation Report**
-   - Path: .opencode/specs/archive/303_verify_status_sync_manager_create_task_functionality/investigation-report-20260105.md
+   - Path: specs/archive/303_verify_status_sync_manager_create_task_functionality/investigation-report-20260105.md
    - Purpose: Verified status-sync-manager.create_task() exists
    - Key findings: create_task_flow implementation, git history timeline
 

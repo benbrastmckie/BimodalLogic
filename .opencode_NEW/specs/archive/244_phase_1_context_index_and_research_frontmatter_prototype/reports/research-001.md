@@ -86,8 +86,8 @@ sessions    → workflows/sessions.md   [medium]   session management, cleanup
 # research.md frontmatter (lines 11-18)
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -335,7 +335,7 @@ Conduct comprehensive research for specified task, create research reports, upda
 
 ## Argument Parsing
 
-**task_number** (required): Integer task number from .opencode/specs/TODO.md
+**task_number** (required): Integer task number from specs/TODO.md
 **prompt** (optional): Additional context or focus for research
 **--divide** (optional): Subdivide research into multiple topics
 
@@ -357,14 +357,14 @@ ELSE:
 
 ## Artifacts Created
 
-- Research Report: `.opencode/specs/{task_number}_{slug}/reports/research-001.md`
+- Research Report: `specs/{task_number}_{slug}/reports/research-001.md`
 - Summary: Metadata in return object (NOT separate file)
 
 ## Error Handling
 
 - Missing task number: "Error: Task number required. Usage: /research TASK_NUMBER [PROMPT]"
 - Invalid task number: "Error: Task number must be an integer. Got: {input}"
-- Task not found: "Error: Task {task_number} not found in .opencode/specs/TODO.md"
+- Task not found: "Error: Task {task_number} not found in specs/TODO.md"
 
 ## Context Loading
 
@@ -821,8 +821,8 @@ echo ""
 echo "Checkpoint 3: Agent Execution (Stage 4+)"
 researcher_lines=$(wc -l .opencode/agent/subagents/researcher.md | awk '{print $1}')
 lifecycle_lines=$(wc -l .opencode/context/core/workflows/command-lifecycle.md | awk '{print $1}')
-todo_lines=$(wc -l .opencode/specs/TODO.md | awk '{print $1}')
-state_lines=$(wc -l .opencode/specs/state.json | awk '{print $1}')
+todo_lines=$(wc -l specs/TODO.md | awk '{print $1}')
+state_lines=$(wc -l specs/state.json | awk '{print $1}')
 delegation_lines=$(wc -l .opencode/context/core/workflows/subagent-delegation-guide.md | awk '{print $1}')
 git_lines=$(wc -l .opencode/context/core/system/git-commits.md | awk '{print $1}')
 artifact_lines=$(wc -l .opencode/context/core/system/artifact-management.md | awk '{print $1}')
@@ -1017,11 +1017,11 @@ grep "Stage 7" .opencode/logs/research-244.log
 # Expected: No Stage 7 execution logged
 
 # Check status updates
-grep "244" .opencode/specs/TODO.md | grep "RESEARCHED"
+grep "244" specs/TODO.md | grep "RESEARCHED"
 # Expected: [FAIL] - Status not updated
 
 # Check state.json
-jq '.tasks[] | select(.task_number == 244) | .status' .opencode/specs/state.json
+jq '.tasks[] | select(.task_number == 244) | .status' specs/state.json
 # Expected: "researching" (not "researched")
 
 # Check git commits
@@ -1045,11 +1045,11 @@ grep "Stage 7" .opencode/logs/research-244.log
 # Expected: "Stage 7 (UpdateStatus) started" → "Stage 7 completed successfully"
 
 # Check status updates
-grep "244" .opencode/specs/TODO.md | grep "RESEARCHED"
+grep "244" specs/TODO.md | grep "RESEARCHED"
 # Expected: [PASS] - Status updated to [RESEARCHED]
 
 # Check state.json
-jq '.tasks[] | select(.task_number == 244) | .status' .opencode/specs/state.json
+jq '.tasks[] | select(.task_number == 244) | .status' specs/state.json
 # Expected: "researched"
 
 # Check git commits
@@ -1079,7 +1079,7 @@ for i in $(seq 1 $total_runs); do
   
   # Check Stage 7 execution
   stage7_executed=$(grep -c "Stage 7 completed successfully" .opencode/logs/research-$task_number.log)
-  status_updated=$(grep -c "\[$task_number\].*RESEARCHED" .opencode/specs/TODO.md)
+  status_updated=$(grep -c "\[$task_number\].*RESEARCHED" specs/TODO.md)
   git_committed=$(git log --oneline --grep="task $task_number: research" | wc -l)
   
   if [ $stage7_executed -eq 1 ] && [ $status_updated -eq 1 ] && [ $git_committed -eq 1 ]; then

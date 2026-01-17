@@ -107,14 +107,14 @@ This plan integrates findings from 1 research report:
 **Git Commands**:
 ```bash
 # Step 1: Capture current state (before status-sync-manager)
-git show HEAD:.opencode/specs/TODO.md > /tmp/TODO.md.before
-git show HEAD:.opencode/specs/state.json > /tmp/state.json.before
+git show HEAD:specs/TODO.md > /tmp/TODO.md.before
+git show HEAD:specs/state.json > /tmp/state.json.before
 
 # Step 2: status-sync-manager updates files
 
 # Step 3: Generate diff for only our changes
-git diff --no-index /tmp/TODO.md.before .opencode/specs/TODO.md > /tmp/TODO.md.patch
-git diff --no-index /tmp/state.json.before .opencode/specs/state.json > /tmp/state.json.patch
+git diff --no-index /tmp/TODO.md.before specs/TODO.md > /tmp/TODO.md.patch
+git diff --no-index /tmp/state.json.before specs/state.json > /tmp/state.json.patch
 
 # Step 4: Apply patch to index (stage only our changes)
 git apply --cached /tmp/TODO.md.patch
@@ -525,7 +525,7 @@ If scoped staging causes issues:
 ### Prerequisites
 - Git installed and configured
 - Bash shell available
-- Write access to .opencode/specs/
+- Write access to specs/
 - Understanding of git staging and commit process
 - Git version 2.0+ (for `git apply --cached`)
 

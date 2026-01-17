@@ -48,7 +48,7 @@ Deleted `docs/research/theory-comparison.md` and updated all 20+ cross-reference
 - Confirmed bimodal-logic.md exists at correct path
 - Confirmed theory-comparison.md deleted
 - Verified no remaining references in docs/ or Theories/ directories
-- Remaining references only in .claude/specs/ (archive files, intentionally unchanged)
+- Remaining references only in specs/ (archive files, intentionally unchanged)
 
 ## Files Modified
 
@@ -80,5 +80,5 @@ Deleted `docs/research/theory-comparison.md` and updated all 20+ cross-reference
 
 ## Notes
 
-- Archive files in .claude/specs/ intentionally unchanged (historical record)
+- Archive files in specs/ intentionally unchanged (historical record)
 - All relative paths adjusted correctly for each file's location in directory hierarchy

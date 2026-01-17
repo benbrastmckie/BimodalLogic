@@ -16,7 +16,7 @@
 
 ### Problem Statement
 
-Artifacts are being created in `/specs/` instead of `/.opencode/specs/` for Lean research tasks. Research identified the root cause as a single incorrect path pattern in lean-research-agent.md line 497 missing the `.opencode/` prefix. This affects 3 confirmed projects (tasks 213, 215, 218) that used lean-research-agent.
+Artifacts are being created in `/specs/` instead of `/specs/` for Lean research tasks. Research identified the root cause as a single incorrect path pattern in lean-research-agent.md line 497 missing the `.opencode/` prefix. This affects 3 confirmed projects (tasks 213, 215, 218) that used lean-research-agent.
 
 ### Scope
 
@@ -36,8 +36,8 @@ This implementation will:
 
 ### Definition of Done
 
-- lean-research-agent.md uses correct `.opencode/specs/` path pattern
-- All 3 misplaced projects migrated to `.opencode/specs/`
+- lean-research-agent.md uses correct `specs/` path pattern
+- All 3 misplaced projects migrated to `specs/`
 - TODO.md artifact links updated and verified working
 - state.json artifact paths updated
 - Empty /specs/ directory removed
@@ -95,13 +95,13 @@ This implementation will:
 
 **Tasks**:
 1. Read lean-research-agent.md to locate line 497
-2. Replace `"path": "specs/{task_number}_{topic}/reports/research-001.md"` with `"path": ".opencode/specs/{task_number}_{topic}/reports/research-001.md"`
+2. Replace `"path": "specs/{task_number}_{topic}/reports/research-001.md"` with `"path": "specs/{task_number}_{topic}/reports/research-001.md"`
 3. Search entire file for any other instances of `specs/` without `.opencode/` prefix
 4. Verify fix matches pattern used by other subagents
-5. Commit change with message: "Fix lean-research-agent path pattern to use .opencode/specs/"
+5. Commit change with message: "Fix lean-research-agent path pattern to use specs/"
 
 **Acceptance Criteria**:
-- Line 497 contains `.opencode/specs/` path pattern
+- Line 497 contains `specs/` path pattern
 - No other incorrect path patterns in lean-research-agent.md
 - File syntax valid (no markdown errors)
 - Commit created with clear message
@@ -119,16 +119,16 @@ This implementation will:
 - Update references for single project
 
 **Tasks**:
-1. Create target directory: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/`
-2. Move `/specs/213_resolve_is_valid_swap_involution_blocker/` to `.opencode/specs/`
+1. Create target directory: `specs/213_resolve_is_valid_swap_involution_blocker/`
+2. Move `/specs/213_resolve_is_valid_swap_involution_blocker/` to `specs/`
 3. Update TODO.md artifact links for task 213 (lines 356-359)
 4. Verify TODO.md links work correctly
 5. Test that artifact files are accessible at new location
 
 **Acceptance Criteria**:
-- Project 213 directory exists at `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/`
+- Project 213 directory exists at `specs/213_resolve_is_valid_swap_involution_blocker/`
 - All artifacts preserved (research-001.md, research-summary.md, implementation-001.md, implementation-002.md)
-- TODO.md links for task 213 point to `.opencode/specs/` location
+- TODO.md links for task 213 point to `specs/` location
 - Links verified working (files accessible)
 
 **Dependencies**: Phase 1 (fix should be committed before migration)
@@ -144,15 +144,15 @@ This implementation will:
 - Verify consistency across all migrations
 
 **Tasks**:
-1. Move `/specs/215_fix_todo_command_task_block_removal/` to `.opencode/specs/`
-2. Move `/specs/218_fix_lean_lsp_mcp_integration_and_opencode_module_import_errors/` to `.opencode/specs/`
+1. Move `/specs/215_fix_todo_command_task_block_removal/` to `specs/`
+2. Move `/specs/218_fix_lean_lsp_mcp_integration_and_opencode_module_import_errors/` to `specs/`
 3. Update TODO.md artifact links for task 215 (line 215)
 4. Update TODO.md artifact links for task 218 (lines 465, 468)
 5. Verify all TODO.md links work correctly
 6. Verify all artifacts preserved in migrations
 
 **Acceptance Criteria**:
-- Projects 215 and 218 exist at `.opencode/specs/` location
+- Projects 215 and 218 exist at `specs/` location
 - All artifacts preserved for both projects
 - TODO.md links updated for tasks 215 and 218
 - All links verified working
@@ -170,15 +170,15 @@ This implementation will:
 - Verify state consistency
 
 **Tasks**:
-1. Read `.opencode/specs/state.json`
+1. Read `specs/state.json`
 2. Search for artifact paths containing `specs/213`, `specs/215`, `specs/218`
-3. Update paths to use `.opencode/specs/` prefix
+3. Update paths to use `specs/` prefix
 4. Validate JSON syntax with `jq` or Python
 5. Verify state.json structure intact
 6. Commit state.json update
 
 **Acceptance Criteria**:
-- All artifact paths in state.json use `.opencode/specs/` prefix
+- All artifact paths in state.json use `specs/` prefix
 - JSON syntax valid (verified with parser)
 - No broken references in state.json
 - State file structure preserved
@@ -199,7 +199,7 @@ This implementation will:
 1. Verify `/specs/` directory is empty
 2. Remove `/specs/` directory
 3. Grep entire codebase for `specs/` patterns without `.opencode/` prefix
-4. Verify all subagents use correct `.opencode/specs/` pattern
+4. Verify all subagents use correct `specs/` pattern
 5. Check for any remaining references to old paths
 6. Document any findings
 
@@ -225,14 +225,14 @@ This implementation will:
 **Tasks**:
 1. Create test Lean research task (or use existing task)
 2. Run `/research {test_task_number}` command
-3. Verify artifact created in `.opencode/specs/` location
+3. Verify artifact created in `specs/` location
 4. Verify return path includes `.opencode/` prefix
 5. Document path pattern standard in artifact-management.md
 6. Create implementation summary
 7. Update TODO.md to mark task 222 as COMPLETED
 
 **Acceptance Criteria**:
-- Test research task creates artifacts in `.opencode/specs/`
+- Test research task creates artifacts in `specs/`
 - Artifact paths in return format include `.opencode/` prefix
 - Path pattern standard documented
 - Implementation summary created
@@ -244,12 +244,12 @@ This implementation will:
 
 ### Unit Tests
 - Verify lean-research-agent.md line 497 has correct path pattern
-- Verify all 3 project directories exist at `.opencode/specs/` location
+- Verify all 3 project directories exist at `specs/` location
 - Verify all artifact files preserved in migrations
 
 ### Integration Tests
 - Run `/research` command on Lean task
-- Verify artifact created in `.opencode/specs/`
+- Verify artifact created in `specs/`
 - Verify TODO.md links work correctly
 - Verify state.json paths valid
 
@@ -263,20 +263,20 @@ This implementation will:
 
 ### Modified Files
 - `.opencode/agent/subagents/lean-research-agent.md` (line 497 fix)
-- `.opencode/specs/TODO.md` (artifact link updates for tasks 213, 215, 218)
-- `.opencode/specs/state.json` (artifact path updates)
+- `specs/TODO.md` (artifact link updates for tasks 213, 215, 218)
+- `specs/state.json` (artifact path updates)
 - `docs/reference/artifact-management.md` (path pattern documentation)
 
 ### Migrated Directories
-- `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/` (from /specs/)
-- `.opencode/specs/215_fix_todo_command_task_block_removal/` (from /specs/)
-- `.opencode/specs/218_fix_lean_lsp_mcp_integration_and_opencode_module_import_errors/` (from /specs/)
+- `specs/213_resolve_is_valid_swap_involution_blocker/` (from /specs/)
+- `specs/215_fix_todo_command_task_block_removal/` (from /specs/)
+- `specs/218_fix_lean_lsp_mcp_integration_and_opencode_module_import_errors/` (from /specs/)
 
 ### Removed Directories
 - `/specs/` (empty directory cleanup)
 
 ### New Artifacts
-- `.opencode/specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md`
+- `specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md`
 
 ## Rollback/Contingency
 
@@ -303,12 +303,12 @@ If migration causes issues:
 
 ### Research Findings Integration
 - Research definitively identified lean-research-agent.md line 497 as sole root cause
-- All other subagents (6/7) verified using correct `.opencode/specs/` pattern
+- All other subagents (6/7) verified using correct `specs/` pattern
 - All workflow commands verified using correct path patterns
 - Impact limited to 3 Lean research tasks (213, 215, 218)
 
 ### Path Pattern Standard
-Correct pattern: `.opencode/specs/{task_number}_{slug}/`
+Correct pattern: `specs/{task_number}_{slug}/`
 Incorrect pattern: `specs/{task_number}_{slug}/`
 
 All subagents must use `.opencode/` prefix for artifact paths.

@@ -31,7 +31,7 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 **Files Modified**:
 - `.opencode/command/task.md` - Fixed `started_at` → `started` on line 67
 - `.opencode/context/core/system/state-schema.md` - Added field naming convention section
-- `.opencode/specs/state.json` - Updated all `_at` suffixes to standardized names
+- `specs/state.json` - Updated all `_at` suffixes to standardized names
 
 **Changes**:
 - Standardized timestamp fields: `started`, `completed`, `researched`, `planned` (no `_at` suffix)
@@ -66,7 +66,7 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 
 ### Phase 5: Testing and Validation [PASS]
 
-**File Created**: `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/test-plan.md`
+**File Created**: `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/test-plan.md`
 
 **Test Coverage**:
 - 10 comprehensive test scenarios
@@ -85,7 +85,7 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 - `.opencode/context/core/system/state-schema.md` - Added field naming convention section
 
 **Files Created**:
-- `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/troubleshooting.md` - Comprehensive troubleshooting guide
+- `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/troubleshooting.md` - Comprehensive troubleshooting guide
 
 **Documentation Added**:
 - Multi-file status synchronization overview
@@ -121,9 +121,9 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 ## Files Created
 
 1. `.opencode/agent/subagents/specialists/status-sync-manager.md` (1,000+ lines)
-2. `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/test-plan.md`
-3. `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/troubleshooting.md`
-4. `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/summaries/implementation-summary-20251224.md` (this file)
+2. `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/test-plan.md`
+3. `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/troubleshooting.md`
+4. `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/summaries/implementation-summary-20251224.md` (this file)
 
 ## Files Modified
 
@@ -134,9 +134,9 @@ Successfully implemented atomic status synchronization across /plan, /research, 
 5. `.opencode/agent/subagents/batch-task-orchestrator.md` - Updated routing logic
 6. `.opencode/context/core/standards/status-markers.md` - Added multi-file sync section
 7. `.opencode/context/core/system/state-schema.md` - Added field naming conventions
-8. `.opencode/specs/state.json` - Updated field naming (25+ entries)
-9. `.opencode/specs/TODO.md` - Updated task 168 status
-10. `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/state.json` - Updated status
+8. `specs/state.json` - Updated field naming (25+ entries)
+9. `specs/TODO.md` - Updated task 168 status
+10. `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/state.json` - Updated status
 
 ## Key Design Decisions
 

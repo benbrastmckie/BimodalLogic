@@ -224,7 +224,7 @@ def measure_context_usage(content: str) -> dict:
   "artifacts": [
     {
       "type": "research",
-      "path": ".opencode/specs/250/reports/research-001.md",
+      "path": "specs/250/reports/research-001.md",
       "summary": "One-line description"
     }
   ]
@@ -936,7 +936,7 @@ def test_complete_workflow():
     "artifacts": [
       {
         "type": "research",
-        "path": ".opencode/specs/250/reports/research-001.md",
+        "path": "specs/250/reports/research-001.md",
         "size_bytes": 15000,
         "validation": "passed"
       }

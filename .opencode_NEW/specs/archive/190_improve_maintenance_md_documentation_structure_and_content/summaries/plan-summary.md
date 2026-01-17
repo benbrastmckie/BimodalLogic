@@ -27,4 +27,4 @@ None - standalone documentation improvement task
 
 ## Full Plan
 
-See: .opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md
+See: specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md

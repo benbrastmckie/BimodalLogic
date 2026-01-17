@@ -45,5 +45,5 @@
 [2025-12-29 09:56:24] 
 [2025-12-29 09:56:24] [PASS] Context window usage: 2% (below 10% target)
 [2025-12-29 09:56:24] 
-[2025-12-29 09:56:24] Results saved to: /home/benjamin/Projects/ProofChecker/.opencode/specs/247_phase_4_testing_and_documentation/metrics/context-usage-20251229_095624.json
-[2025-12-29 09:56:24] Log saved to: /home/benjamin/Projects/ProofChecker/.opencode/specs/247_phase_4_testing_and_documentation/logs/measure-context-usage-20251229_095624.log
+[2025-12-29 09:56:24] Results saved to: /home/benjamin/Projects/ProofChecker/specs/247_phase_4_testing_and_documentation/metrics/context-usage-20251229_095624.json
+[2025-12-29 09:56:24] Log saved to: /home/benjamin/Projects/ProofChecker/specs/247_phase_4_testing_and_documentation/logs/measure-context-usage-20251229_095624.log

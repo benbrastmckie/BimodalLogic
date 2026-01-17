@@ -5,7 +5,7 @@
 - **Effort**: 10-14 hours
 - **Priority**: High
 - **Dependencies**: Task 448 (Build canonical_history - singleton domain MVP - COMPLETED)
-- **Research Inputs**: .claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md
+- **Research Inputs**: specs/458_extend_canonical_history_full_domain/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -271,7 +271,7 @@ Completeness.lean compiles successfully on its own.
   - `backward_seed_consistent` lemma
   - `backward_extension` lemma
   - Updated `canonical_history` with full domain
-- `.claude/specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

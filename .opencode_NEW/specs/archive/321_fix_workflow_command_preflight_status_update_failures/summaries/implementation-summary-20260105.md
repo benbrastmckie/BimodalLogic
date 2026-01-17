@@ -332,10 +332,10 @@ CRITICAL TIMING REQUIREMENT: This step MUST complete BEFORE step_5_return execut
 
 ## References
 
-- **Implementation Plan**: `.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md`
+- **Implementation Plan**: `specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md`
 - **Research Reports**:
-  - Task 321 Research: `.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md`
-  - Task 320 Research (Bug Analysis): `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md`
+  - Task 321 Research: `specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md`
+  - Task 320 Research (Bug Analysis): `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md`
 - **Status Markers Convention**: `.opencode/context/system/status-markers.md`
 - **State Management Standard**: `.opencode/context/core/system/state-management.md`
 - **Status Transitions**: `.opencode/context/core/workflows/status-transitions.md`

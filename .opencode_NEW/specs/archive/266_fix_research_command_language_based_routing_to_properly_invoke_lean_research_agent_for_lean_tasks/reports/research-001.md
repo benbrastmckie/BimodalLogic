@@ -44,7 +44,7 @@ The `/research` command has `routing.language_based: true` configured in its fro
 **Task 256 (Markdown Language) - Working Example**:
 - Has `Language: markdown` in TODO.md ✓
 - Shows `[RESEARCHED]` status in TODO.md ✓
-- Has artifacts in `.opencode/specs/256_*/reports/research-001.md` ✓
+- Has artifacts in `specs/256_*/reports/research-001.md` ✓
 - Has state.json entry with artifacts array ✓
 - Has project directory ✓
 
@@ -124,7 +124,7 @@ routing:
 **Documented Extraction** (`orchestrator.md` lines 111-121):
 ```bash
 # Extract from project state.json (if exists)
-task_dir=".opencode/specs/${task_number}_*"
+task_dir="specs/${task_number}_*"
 if [ -f "${task_dir}/state.json" ]; then
   language=$(jq -r '.language // "general"' "${task_dir}/state.json")
 else
@@ -273,7 +273,7 @@ routing:
      language=$(jq -r '.language // "general"' "${task_dir}/state.json")
    else
      # Priority 2: TODO.md
-     language=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' ')
+     language=$(grep -A 20 "^### ${task_number}\." specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' ')
      language=${language:-general}
    fi
    ```
@@ -440,7 +440,7 @@ routing:
      
      # Priority 2: TODO.md
      if [ -z "$language" ]; then
-       language=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | \
+       language=$(grep -A 20 "^### ${task_number}\." specs/TODO.md | \
                   grep "Language" | \
                   sed 's/\*\*Language\*\*: //' | \
                   tr -d ' ')
@@ -617,8 +617,8 @@ routing:
    - Updates status to [RESEARCHED]
    - Updates state.json
 5. Artifacts created:
-   - `.opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md`
-   - `.opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md`
+   - `specs/258_resolve_truth_lean_sorries/reports/research-001.md`
+   - `specs/258_resolve_truth_lean_sorries/summaries/research-summary.md`
 6. state.json entry created with artifacts
 
 **Current Behavior (Broken)**:
@@ -903,7 +903,7 @@ routing:
 
 ### Testing Files
 
-5. **`.opencode/specs/266_*/tests/routing-tests.sh`** (test script)
+5. **`specs/266_*/tests/routing-tests.sh`** (test script)
    - Test lean research routing
    - Test markdown research routing
    - Test lean implementation routing
@@ -1008,9 +1008,9 @@ routing:
 
 ### Evidence Files
 
-- `.opencode/specs/TODO.md` - Task 258 and 257 entries
-- `.opencode/specs/state.json` - Missing entries for 258 and 257
-- `.opencode/specs/256_*/reports/research-001.md` - Working example (markdown)
+- `specs/TODO.md` - Task 258 and 257 entries
+- `specs/state.json` - Missing entries for 258 and 257
+- `specs/256_*/reports/research-001.md` - Working example (markdown)
 
 ---
 

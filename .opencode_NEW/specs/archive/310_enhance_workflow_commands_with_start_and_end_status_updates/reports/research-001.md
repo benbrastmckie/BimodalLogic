@@ -231,7 +231,7 @@ Per `state-management.md`, the complete status lifecycle is:
        - Use jq to find task by project_number:
          task_data=$(jq -r --arg num "$task_number" \
            '.active_projects[] | select(.project_number == ($num | tonumber))' \
-           .opencode/specs/state.json)
+           specs/state.json)
        - If task_data is empty: Return error "Task $task_number not found"
     
     4. Extract all metadata at once
@@ -279,9 +279,9 @@ description: "Atomic multi-file status synchronization using two-phase commit"
 4. All files updated or none updated (atomic guarantee)
 
 **Files Synchronized**:
-- `.opencode/specs/TODO.md` (status marker, timestamps, artifact links)
-- `.opencode/specs/state.json` (status field, timestamps, artifact_paths)
-- `.opencode/specs/{task}_*/state.json` (project-specific state, lazy created)
+- `specs/TODO.md` (status marker, timestamps, artifact links)
+- `specs/state.json` (status field, timestamps, artifact_paths)
+- `specs/{task}_*/state.json` (project-specific state, lazy created)
 - Plan files (phase status markers, if plan exists)
 
 **Status**: [PASS] - Atomic synchronization fully implemented
@@ -417,7 +417,7 @@ The current implementation follows a **consistent pattern** across all workflow 
   "delegation_depth": 2,
   "delegation_path": ["orchestrator", "implement", "implementer", "status-sync-manager"],
   "validated_artifacts": [
-    ".opencode/specs/259_automation_tactics/summaries/implementation-summary-20260105.md"
+    "specs/259_automation_tactics/summaries/implementation-summary-20260105.md"
   ]
 }
 ```
@@ -494,7 +494,7 @@ esac
 **Anti-Pattern** (DO NOT DO):
 ```bash
 # WRONG: Direct TODO.md update
-sed -i "s/\[NOT STARTED\]/\[RESEARCHING\]/" .opencode/specs/TODO.md
+sed -i "s/\[NOT STARTED\]/\[RESEARCHING\]/" specs/TODO.md
 
 # WRONG: Direct state.json update
 jq '.active_projects[0].status = "researching"' state.json > tmp && mv tmp state.json
@@ -1014,8 +1014,8 @@ esac
 3. **Standards and Documentation**:
    - `.opencode/context/core/system/state-management.md` - State management standard
    - `.opencode/context/core/workflows/status-transitions.md` - Status transition diagram
-   - `.opencode/specs/TODO.md` - Task tracking file (YAML header, status markers)
-   - `.opencode/specs/state.json` - Central state tracking (JSON schema)
+   - `specs/TODO.md` - Task tracking file (YAML header, status markers)
+   - `specs/state.json` - Central state tracking (JSON schema)
 
 ### Key Findings Summary
 

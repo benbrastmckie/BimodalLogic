@@ -5,7 +5,7 @@
 - **Effort**: 6 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md
+- **Research Inputs**: specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -172,8 +172,8 @@ The orchestrator does NOT implement Stage 2 (DetermineRouting) as documented, ca
 ## Artifacts & Outputs
 
 **Primary Artifacts:**
-- `.opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/plans/implementation-001.md` (this file)
-- `.opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/summaries/implementation-summary-20260103.md` (created on completion)
+- `specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/plans/implementation-001.md` (this file)
+- `specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/summaries/implementation-summary-20260103.md` (created on completion)
 
 **Modified Files:**
 - `.opencode/agent/orchestrator.md` (Stage 2 implementation, Stage 4 artifact validation)
@@ -182,8 +182,8 @@ The orchestrator does NOT implement Stage 2 (DetermineRouting) as documented, ca
 - `.opencode/command/implement.md` (clarify language-based routing)
 
 **Validation Artifacts:**
-- `.opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md` (created after fix)
-- `.opencode/specs/257_completeness_proofs/reports/research-001.md` (created after fix)
+- `specs/258_resolve_truth_lean_sorries/reports/research-001.md` (created after fix)
+- `specs/257_completeness_proofs/reports/research-001.md` (created after fix)
 
 ## Rollback/Contingency
 

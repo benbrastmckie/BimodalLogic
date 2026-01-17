@@ -13,12 +13,12 @@ tools:
   bash: true
 permissions:
   allow:
-    - read: [".opencode/specs/**/*"]
-    - write: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+    - read: ["specs/**/*"]
+    - write: ["specs/TODO.md", "specs/state.json"]
     - bash: ["date", "jq"]
   deny:
     - bash: ["rm", "sudo", "su", "lake", "lean", "python", "cargo", "npm"]
-    - write: [".git/**/*", "src/**/*", "lib/**/*", ".opencode/specs/**/reports/*", ".opencode/specs/**/plans/*"]
+    - write: [".git/**/*", "src/**/*", "lib/**/*", "specs/**/reports/*", "specs/**/plans/*"]
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
@@ -40,7 +40,7 @@ lifecycle:
 
 <context>
   <specialist_domain>Atomic multi-file state synchronization</specialist_domain>
-  <task_scope>Update status markers across .opencode/specs/TODO.md and state.json atomically</task_scope>
+  <task_scope>Update status markers across specs/TODO.md and state.json atomically</task_scope>
   <integration>Called by commands to ensure consistent status across all tracking files</integration>
 </context>
 
@@ -49,7 +49,7 @@ lifecycle:
 </role>
 
 <task>
-  Perform atomic status updates across .opencode/specs/TODO.md, state.json, and plan files using two-phase commit protocol
+  Perform atomic status updates across specs/TODO.md, state.json, and plan files using two-phase commit protocol
 </task>
 
 <inputs_required>
@@ -102,7 +102,7 @@ lifecycle:
     Path to plan file if status affects plan
   </parameter>
   <parameter name="artifact_links" type="array" optional="true">
-    Artifact links to add to .opencode/specs/TODO.md (research reports, plans, etc.)
+    Artifact links to add to specs/TODO.md (research reports, plans, etc.)
   </parameter>
   <parameter name="blocking_reason" type="string" optional="true">
     Reason for blocked status (required if new_status is blocked)
@@ -245,8 +245,8 @@ lifecycle:
       <action>Commit updates atomically using atomic write pattern</action>
       <process>
         1. Generate unique temp file names (include session_id):
-           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
-           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+           - todo_tmp = "specs/TODO.md.tmp.${session_id}"
+           - state_tmp = "specs/state.json.tmp.${session_id}"
         
         2. Write to temp files:
            - Write updated TODO.md to todo_tmp
@@ -258,8 +258,8 @@ lifecycle:
            - If verification fails: Remove temp files and abort
         
         4. Atomic rename (both files or neither):
-           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
-           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - Rename todo_tmp to specs/TODO.md (atomic)
+           - Rename state_tmp to specs/state.json (atomic)
            - If rename fails: Remove temp files and abort
         
         5. Clean up temp files on success
@@ -345,8 +345,8 @@ lifecycle:
       <action>Commit updates atomically using atomic write pattern</action>
       <process>
         1. Generate unique temp file names (include session_id):
-           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
-           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+           - todo_tmp = "specs/TODO.md.tmp.${session_id}"
+           - state_tmp = "specs/state.json.tmp.${session_id}"
         
         2. Write to temp files:
            - Write updated TODO.md to todo_tmp
@@ -358,8 +358,8 @@ lifecycle:
            - If verification fails: Remove temp files and abort
         
         4. Atomic rename (both files or neither):
-           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
-           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - Rename todo_tmp to specs/TODO.md (atomic)
+           - Rename state_tmp to specs/state.json (atomic)
            - If rename fails: Remove temp files and abort
         
         5. Clean up temp files on success
@@ -435,8 +435,8 @@ lifecycle:
       <action>Commit updates atomically using atomic write pattern</action>
       <process>
         1. Generate unique temp file names (include session_id):
-           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
-           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+           - todo_tmp = "specs/TODO.md.tmp.${session_id}"
+           - state_tmp = "specs/state.json.tmp.${session_id}"
         
         2. Write to temp files:
            - Write updated TODO.md to todo_tmp
@@ -448,8 +448,8 @@ lifecycle:
            - If verification fails: Remove temp files and abort
         
         4. Atomic rename (both files or neither):
-           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
-           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - Rename todo_tmp to specs/TODO.md (atomic)
+           - Rename state_tmp to specs/state.json (atomic)
            - If any rename fails: Remove temp files and abort
         
         5. Clean up temp files on success
@@ -468,9 +468,9 @@ lifecycle:
       <action>Move task directories from archive/ to specs/ (non-critical)</action>
       <process>
         1. For each task number:
-           - Find directory: .opencode/specs/archive/{number}_*
+           - Find directory: specs/archive/{number}_*
            - If directory exists:
-             * Target: .opencode/specs/{number}_*
+             * Target: specs/{number}_*
              * Move directory: mv archive/{number}_* ./
              * If move fails: Log warning, continue (non-critical)
            - If directory not found: Skip (not all tasks have directories)
@@ -559,8 +559,8 @@ lifecycle:
       <action>Commit updates atomically using atomic write pattern</action>
       <process>
         1. Generate unique temp file names (include session_id):
-           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
-           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+           - todo_tmp = "specs/TODO.md.tmp.${session_id}"
+           - state_tmp = "specs/state.json.tmp.${session_id}"
         
         2. Write to temp files:
            - Write updated TODO.md to todo_tmp
@@ -572,8 +572,8 @@ lifecycle:
            - If verification fails: Remove temp files and abort
         
         4. Atomic rename (both files or neither):
-           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
-           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - Rename todo_tmp to specs/TODO.md (atomic)
+           - Rename state_tmp to specs/state.json (atomic)
            - If rename fails: Remove temp files and abort
         
         5. Clean up temp files on success
@@ -655,13 +655,13 @@ lifecycle:
            For each differing field:
              a. Get TODO.md timestamp:
                 - Find task entry line range in TODO.md
-                - Run: git blame -L <start>,<end> .opencode/specs/TODO.md
+                - Run: git blame -L <start>,<end> specs/TODO.md
                 - Extract commit hash for field line
                 - Run: git show -s --format=%ct <commit_hash>
                 - Store timestamp_todo
              
              b. Get state.json timestamp:
-                - Run: git log -1 --format=%ct -S "\"project_number\": <task_number>" -- .opencode/specs/state.json
+                - Run: git log -1 --format=%ct -S "\"project_number\": <task_number>" -- specs/state.json
                 - Store timestamp_state
              
              c. Compare timestamps:
@@ -708,8 +708,8 @@ lifecycle:
       <action>Commit updates atomically</action>
       <process>
         1. Generate unique temp file names (include session_id):
-           - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
-           - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+           - todo_tmp = "specs/TODO.md.tmp.${session_id}"
+           - state_tmp = "specs/state.json.tmp.${session_id}"
         
         2. Write to temp files:
            - Write updated TODO.md to todo_tmp
@@ -720,8 +720,8 @@ lifecycle:
            - If verification fails: Remove temp files and abort
         
         4. Atomic rename (both files or neither):
-           - Rename todo_tmp to .opencode/specs/TODO.md (atomic)
-           - Rename state_tmp to .opencode/specs/state.json (atomic)
+           - Rename todo_tmp to specs/TODO.md (atomic)
+           - Rename state_tmp to specs/state.json (atomic)
            - If any rename fails: Remove temp files and abort
         
         5. Clean up temp files on success
@@ -749,8 +749,8 @@ lifecycle:
   <step_1_prepare>
     <action>Phase 1: Prepare all updates in memory</action>
     <process>
-      1. Read .opencode/specs/TODO.md into memory
-      2. Read .opencode/specs/state.json into memory
+      1. Read specs/TODO.md into memory
+      2. Read specs/state.json into memory
       3. Read plan file if plan_path provided
       4. Validate all files readable
       5. NO BACKUP FILES CREATED (per user requirement - git-only rollback)
@@ -763,12 +763,12 @@ lifecycle:
     <action>Validate status transition and artifacts</action>
     <process>
       1. Pre-commit validation for all target files:
-         a. Verify .opencode/specs/TODO.md exists and is readable
+         a. Verify specs/TODO.md exists and is readable
          b. Verify state.json exists and is readable
          c. Verify plan file exists and is readable (if plan_path provided)
          d. If any file missing or unreadable: ABORT with explicit error (Bug #3 fix)
       
-      2. Extract current status from .opencode/specs/TODO.md
+      2. Extract current status from specs/TODO.md
       
       3. Check transition is valid per status-markers.md:
          a. Validate transition is allowed
@@ -838,7 +838,7 @@ lifecycle:
          - Place YAML header at very beginning of file (before # TODO heading)
          - Format: --- (delimiter) + YAML fields + --- (delimiter) + blank line + # TODO
          - Gracefully handle missing fields (use defaults or omit)
-      2. Update .opencode/specs/TODO.md task entry in memory:
+      2. Update specs/TODO.md task entry in memory:
          - Change status marker
          - Add/update timestamp fields
          - Add artifact links from validated_artifacts (with plan link replacement logic)
@@ -991,8 +991,8 @@ lifecycle:
       Last writer wins if concurrent updates occur (acceptable per user requirement).
       
       1. Generate unique temp file names (include session_id for uniqueness):
-         - todo_tmp = ".opencode/specs/TODO.md.tmp.${session_id}"
-         - state_tmp = ".opencode/specs/state.json.tmp.${session_id}"
+         - todo_tmp = "specs/TODO.md.tmp.${session_id}"
+         - state_tmp = "specs/state.json.tmp.${session_id}"
          - plan_tmp = "{plan_path}.tmp.${session_id}" (if plan_path provided)
       
       2. Write to temp files:
@@ -1012,8 +1012,8 @@ lifecycle:
             - Do NOT proceed to atomic rename
       
       4. Atomic rename (all files or none):
-         a. Rename todo_tmp to .opencode/specs/TODO.md (atomic operation)
-         b. Rename state_tmp to .opencode/specs/state.json (atomic operation)
+         a. Rename todo_tmp to specs/TODO.md (atomic operation)
+         b. Rename state_tmp to specs/state.json (atomic operation)
          c. Rename plan_tmp to plan_path (atomic operation, if plan_path provided)
          d. If any rename fails:
             - Remove all temp files
@@ -1057,7 +1057,7 @@ lifecycle:
     <action>Post-commit validation and return</action>
     <process>
       1. Post-commit validation for all files written:
-         a. Verify .opencode/specs/TODO.md exists and size > 0
+         a. Verify specs/TODO.md exists and size > 0
          b. Verify state.json exists and size > 0
          c. Verify plan file exists and size > 0 (if plan_path provided)
          d. If any validation fails: Log error (files already written, cannot rollback)
@@ -1145,14 +1145,14 @@ lifecycle:
       "validated_artifacts": [
         {
           "type": "research_report",
-          "path": ".opencode/specs/195_topic/reports/research-001.md",
+          "path": "specs/195_topic/reports/research-001.md",
           "summary": "Research findings",
           "validated": true,
           "size_bytes": 15420
         },
         {
           "type": "research_summary",
-          "path": ".opencode/specs/195_topic/summaries/research-summary.md",
+          "path": "specs/195_topic/summaries/research-summary.md",
           "summary": "Brief research summary",
           "validated": true,
           "size_bytes": 380
@@ -1447,12 +1447,12 @@ lifecycle:
       "artifacts": [
         {
           "type": "state_update",
-          "path": ".opencode/specs/TODO.md",
+          "path": "specs/TODO.md",
           "summary": "Updated status marker and timestamp"
         },
         {
           "type": "state_update",
-          "path": ".opencode/specs/state.json",
+          "path": "specs/state.json",
           "summary": "Updated status and timestamp fields"
         }
       ],
@@ -1465,7 +1465,7 @@ lifecycle:
       },
       "errors": [],
       "next_steps": "Status synchronized across all files",
-      "files_updated": [".opencode/specs/TODO.md", "state.json"],
+      "files_updated": ["specs/TODO.md", "state.json"],
       "rollback_performed": false
     }
     ```
@@ -1479,12 +1479,12 @@ lifecycle:
       "artifacts": [
         {
           "type": "state_update",
-          "path": ".opencode/specs/TODO.md",
+          "path": "specs/TODO.md",
           "summary": "Status changed to [RESEARCHED], added Completed timestamp, linked research report"
         },
         {
           "type": "state_update",
-          "path": ".opencode/specs/state.json",
+          "path": "specs/state.json",
           "summary": "Status changed to researched, added completed timestamp"
         }
       ],
@@ -1497,7 +1497,7 @@ lifecycle:
       },
       "errors": [],
       "next_steps": "Task 195 ready for planning phase",
-      "files_updated": [".opencode/specs/TODO.md", "state.json"],
+      "files_updated": ["specs/TODO.md", "state.json"],
       "rollback_performed": false
     }
     ```
@@ -1511,12 +1511,12 @@ lifecycle:
       "artifacts": [
         {
           "type": "task_creation",
-          "path": ".opencode/specs/TODO.md",
+          "path": "specs/TODO.md",
           "summary": "Created task entry with Description field in High Priority section"
         },
         {
           "type": "task_creation",
-          "path": ".opencode/specs/state.json",
+          "path": "specs/state.json",
           "summary": "Added task to active_projects with description field, incremented next_project_number"
         }
       ],
@@ -1531,7 +1531,7 @@ lifecycle:
       },
       "errors": [],
       "next_steps": "Task 296 created successfully. Ready for research or planning.",
-      "files_updated": [".opencode/specs/TODO.md", ".opencode/specs/state.json"],
+      "files_updated": ["specs/TODO.md", "specs/state.json"],
       "rollback_performed": false
     }
     ```
@@ -1545,12 +1545,12 @@ lifecycle:
       "artifacts": [
         {
           "type": "task_archival",
-          "path": ".opencode/specs/TODO.md",
+          "path": "specs/TODO.md",
           "summary": "Removed 5 completed/abandoned task entries"
         },
         {
           "type": "task_archival",
-          "path": ".opencode/specs/state.json",
+          "path": "specs/state.json",
           "summary": "Moved 5 tasks from active_projects to completed_projects"
         }
       ],
@@ -1565,7 +1565,7 @@ lifecycle:
       },
       "errors": [],
       "next_steps": "5 tasks archived successfully. TODO.md cleaned up.",
-      "files_updated": [".opencode/specs/TODO.md", ".opencode/specs/state.json"],
+      "files_updated": ["specs/TODO.md", "specs/state.json"],
       "rollback_performed": false
     }
     ```
@@ -1579,12 +1579,12 @@ lifecycle:
       "artifacts": [
         {
           "type": "metadata_update",
-          "path": ".opencode/specs/TODO.md",
+          "path": "specs/TODO.md",
           "summary": "Updated description and priority fields"
         },
         {
           "type": "metadata_update",
-          "path": ".opencode/specs/state.json",
+          "path": "specs/state.json",
           "summary": "Updated description and priority fields, updated last_updated timestamp"
         }
       ],
@@ -1598,7 +1598,7 @@ lifecycle:
       },
       "errors": [],
       "next_steps": "Task 326 metadata updated successfully. Use /plan 326 to create implementation plan.",
-      "files_updated": [".opencode/specs/TODO.md", ".opencode/specs/state.json"],
+      "files_updated": ["specs/TODO.md", "specs/state.json"],
       "rollback_performed": false
     }
     ```
@@ -1628,7 +1628,7 @@ lifecycle:
       "next_steps": "Fix file permissions and retry status update",
       "files_updated": [],
       "rollback_performed": true,
-      "rollback_details": "Restored .opencode/specs/TODO.md to original state"
+      "rollback_details": "Restored specs/TODO.md to original state"
     }
     ```
 
@@ -1718,7 +1718,7 @@ lifecycle:
   </principle_4>
 
   <principle_5>
-    Write order matters: .opencode/specs/TODO.md first (most critical), then state files
+    Write order matters: specs/TODO.md first (most critical), then state files
   </principle_5>
 
   <principle_6>

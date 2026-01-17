@@ -21,7 +21,7 @@ Added comprehensive subagent return validation to all workflow command files (/r
 6. `.opencode/context/core/system/validation-strategy.md` - Marked as implemented
 
 ### Supporting Files (Created)
-7. `.opencode/specs/280_fix_orchestrator_stage_4_validation/validation-template.md` - Reusable validation template
+7. `specs/280_fix_orchestrator_stage_4_validation/validation-template.md` - Reusable validation template
 
 ## Key Changes
 

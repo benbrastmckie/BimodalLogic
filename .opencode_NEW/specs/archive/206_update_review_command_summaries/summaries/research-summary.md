@@ -59,7 +59,7 @@ Main risk: Reviewer subagent behavior undefined, requires specification from scr
 
 ## References
 
-- Research Report: .opencode/specs/206_update_review_command_summaries/reports/research-001.md
+- Research Report: specs/206_update_review_command_summaries/reports/research-001.md
 - Current /review Command: .opencode/command/review.md
 - Artifact Management: .opencode/context/core/system/artifact-management.md
 - Return Format Standard: .opencode/context/core/standards/subagent-return-format.md

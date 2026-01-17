@@ -53,7 +53,7 @@ Successfully verified and documented lean-lsp-mcp integration for Claude Code. F
 | `.claude/skills/skill-lean-research/SKILL.md` | Added state_search and hammer_premise tools |
 | `.claude/context/project/lean4/tools/mcp-tools-guide.md` | Complete rewrite for Claude Code |
 | `.claude/ARCHITECTURE.md` | Updated title and replaced .opencode references |
-| `.claude/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-005.md` | Marked phases complete |
+| `specs/218_fix_lean_lsp_mcp_integration/plans/implementation-005.md` | Marked phases complete |
 
 ## Verification
 

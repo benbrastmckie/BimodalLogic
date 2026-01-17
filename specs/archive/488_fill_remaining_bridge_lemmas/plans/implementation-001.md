@@ -5,7 +5,7 @@
 - **Effort**: 4 hours
 - **Priority**: Medium
 - **Dependencies**: Task 473 (completed), Task 481 (completed), Task 482 (completed)
-- **Research Inputs**: .claude/specs/488_fill_remaining_bridge_lemmas/reports/research-001.md
+- **Research Inputs**: specs/488_fill_remaining_bridge_lemmas/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -157,7 +157,7 @@ Research report research-001.md (2026-01-13) identified:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/FiniteCanonicalModel.lean` - Updated with filled sorries
-- `.claude/specs/488_fill_remaining_bridge_lemmas/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/488_fill_remaining_bridge_lemmas/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

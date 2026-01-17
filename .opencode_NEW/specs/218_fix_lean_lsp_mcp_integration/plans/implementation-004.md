@@ -602,7 +602,7 @@ From https://opencode.ai/docs/mcp-servers/:
 
 - **Main Report**: specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md
 - **Previous Report**: specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md
-- **Task 212 Research**: .opencode/specs/212_research_lean_lsp_mcp_usage/reports/research-001.md
+- **Task 212 Research**: specs/212_research_lean_lsp_mcp_usage/reports/research-001.md
 
 ### External Documentation
 

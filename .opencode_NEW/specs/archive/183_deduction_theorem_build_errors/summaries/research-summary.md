@@ -36,7 +36,7 @@
 
 ## Full Report
 
-See: `.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md`
+See: `specs/183_deduction_theorem_build_errors/reports/research-001.md`
 
 ## Implementation Estimate
 

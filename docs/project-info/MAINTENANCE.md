@@ -70,7 +70,7 @@ This model provides:
 
 2. Create spec directory (for non-trivial tasks):
    ```bash
-   mkdir -p .claude/specs/NNN_task_name/{plans,reports,summaries}
+   mkdir -p specs/NNN_task_name/{plans,reports,summaries}
    ```
 
 3. Create plan document if needed
@@ -100,8 +100,8 @@ This model provides:
    - [Files modified]
    - [Tests added/updated]
 
-   Plan: .claude/specs/NNN_task_name/plans/plan.md
-   Summary: .claude/specs/NNN_task_name/summaries/summary.md"
+   Plan: specs/NNN_task_name/plans/plan.md
+   Summary: specs/NNN_task_name/summaries/summary.md"
    ```
 
 ### 4. Partial Completion
@@ -221,7 +221,7 @@ git log --all --since="2025-12-01" --oneline | wc -l
 find .claude/specs -name "*summary*.md" -o -name "*FINAL*.md"
 
 # Search summaries for task
-grep -r "Task 7" .claude/specs/*/summaries/
+grep -r "Task 7" specs/*/summaries/
 
 # List summaries by size (find detailed docs)
 find .claude/specs -name "*summary*.md" -exec du -h {} \; | sort -hr
@@ -233,7 +233,7 @@ find .claude/specs -name "*summary*.md" -mtime -7
 find .claude/specs -name "*summary*.md" | wc -l
 
 # View specific summary
-cat .claude/specs/025_soundness_automation_implementation/summaries/004_iteration_3_final_summary.md
+cat specs/025_soundness_automation_implementation/summaries/004_iteration_3_final_summary.md
 ```
 
 ### Sorry Placeholder Queries
@@ -396,8 +396,8 @@ Complete Task N: [brief description]
 - [Key change 2]
 - [Tests added/updated]
 
-Plan: .claude/specs/NNN_task_name/plans/plan.md
-Summary: .claude/specs/NNN_task_name/summaries/summary.md
+Plan: specs/NNN_task_name/plans/plan.md
+Summary: specs/NNN_task_name/summaries/summary.md
 ```
 
 ### Sorry Resolution
@@ -444,7 +444,7 @@ If task completed but no summary exists:
 
 ```bash
 # Check if spec directory exists
-ls -la .claude/specs/NNN_task_name/
+ls -la specs/NNN_task_name/
 
 # Check git log for completion commit
 git log --all --grep="Task N" --oneline
@@ -655,7 +655,7 @@ These instructions are general and apply to any repository using this workflow s
 - context/core/standards/docs.md
 - docs/development/CONTRIBUTING.md
 
-**Summary**: .opencode/specs/007_emoji_removal/summaries/implementation-summary.md
+**Summary**: specs/007_emoji_removal/summaries/implementation-summary.md
 
 ---
 

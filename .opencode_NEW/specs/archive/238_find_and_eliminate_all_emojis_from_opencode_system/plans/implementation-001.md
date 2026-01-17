@@ -5,7 +5,7 @@
 - **Effort**: 5-7 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: Research Report (.opencode/specs/238_find_and_eliminate_all_emojis/reports/research-001.md)
+- **Research Inputs**: Research Report (specs/238_find_and_eliminate_all_emojis/reports/research-001.md)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -86,7 +86,7 @@ Research identified 1,891 emoji occurrences across 98 markdown files (24% of 409
 
 - **Goal**: Manually verify emoji replacements in critical system files
 - **Tasks**:
-  - [ ] Review .opencode/specs/TODO.md for correct replacements (1 occurrence on line 138 - documentation reference, no change needed)
+  - [ ] Review specs/TODO.md for correct replacements (1 occurrence on line 138 - documentation reference, no change needed)
   - [ ] Review .opencode/context/core/standards/status-markers.md (5 occurrences - remove from examples on lines 345, 370, 378, 615, 655)
   - [ ] Review .opencode/command/meta.md (14 occurrences - replace in examples)
   - [ ] Review .opencode/command/implement.md (1 occurrence - verify NO EMOJI policy documentation intact)
@@ -95,7 +95,7 @@ Research identified 1,891 emoji occurrences across 98 markdown files (24% of 409
   - [ ] Run final verification scan (rg "[PASS]|[FAIL]|[WARN]|[YES]|[NO]" .opencode --type md should return zero results)
 - **Timing**: 1-2 hours
 - **High-Impact Files**:
-  - .opencode/specs/TODO.md
+  - specs/TODO.md
   - .opencode/context/core/standards/status-markers.md
   - .opencode/command/*.md (9 files)
   - .opencode/agent/**/*.md (15 files)
@@ -252,13 +252,13 @@ Research identified 1,891 emoji occurrences across 98 markdown files (24% of 409
 ## Artifacts and Outputs
 
 **Created**:
-- .opencode/specs/238_find_and_eliminate_all_emojis/plans/implementation-001.md (this file)
+- specs/238_find_and_eliminate_all_emojis/plans/implementation-001.md (this file)
 
 **Modified** (98 files total):
-- .opencode/specs/TODO.md (verification only, no changes needed)
-- .opencode/specs/*/reports/*.md (95 files - emoji replacements)
-- .opencode/specs/*/summaries/*.md (included in 95 files)
-- .opencode/specs/*/plans/*.md (included in 95 files)
+- specs/TODO.md (verification only, no changes needed)
+- specs/*/reports/*.md (95 files - emoji replacements)
+- specs/*/summaries/*.md (included in 95 files)
+- specs/*/plans/*.md (included in 95 files)
 - .opencode/context/core/standards/status-markers.md (remove emoji examples, strengthen guidance)
 - .opencode/context/core/standards/documentation.md (add NO EMOJI Policy section, update quality checklist)
 - .opencode/context/core/standards/code.md (replace emoji examples)

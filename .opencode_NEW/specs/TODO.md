@@ -55,8 +55,8 @@ technical_debt:
 - **Dependencies**: None
 
 **Research Artifacts**:
-  - Research Report: [.opencode/specs/334_latex_documentation_structure/reports/research-001.md]
-  - Research Report (Layer 1 Focus): [.opencode/specs/334_latex_documentation_structure/reports/research-002.md]
+  - Research Report: [specs/334_latex_documentation_structure/reports/research-001.md]
+  - Research Report (Layer 1 Focus): [specs/334_latex_documentation_structure/reports/research-002.md]
 
 **Description**: Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Logos/latex/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.
 
@@ -133,7 +133,7 @@ technical_debt:
  **Dependencies**: None
 
 **Research Artifacts**:
-  - Research Report: [.opencode/specs/317_bfs_variant_phase3/reports/research-001.md]
+  - Research Report: [specs/317_bfs_variant_phase3/reports/research-001.md]
 
 **Description**: Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.
 
@@ -152,14 +152,14 @@ technical_debt:
 - **Dependencies**: None
 
 **Research Artifacts**:
-  - Research Report: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md]
+  - Research Report: [specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md]
 
 **Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md]
+  - Implementation Plan: [specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md]
 
 **Implementation Artifacts**:
-  - Implementation Summary (Phase 1): [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md]
-  - Implementation Summary (Phase 2): [.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-phase2-20260108.md]
+  - Implementation Summary (Phase 1): [specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md]
+  - Implementation Summary (Phase 2): [specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-phase2-20260108.md]
 
 **Description**: Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.
 
@@ -202,10 +202,10 @@ technical_debt:
 - **Blocking**: None
 - **Dependencies**: None
 - **Research**:
-  - [Initial Analysis](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md)
-  - [Approach Comparison for AI Training](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md)
+  - [Initial Analysis](specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md)
+  - [Approach Comparison for AI Training](specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md)
 - **Plan**:
-  - [Implementation Plan](.opencode/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md)
+  - [Implementation Plan](specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md)
 
 **Description**: Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.
 
@@ -327,7 +327,7 @@ technical_debt:
   - .opencode/agent/subagents/lean-research-agent.md
   - .opencode/agent/subagents/lean-implementation-agent.md
   - .opencode/context/core/standards/lean-tool-verification.md (new)
-  - .opencode/specs/monitoring/ (new directory structure)
+  - specs/monitoring/ (new directory structure)
 - **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
 - **Acceptance Criteria**:
   - [ ] Verification method identified for detecting lean-lsp-mcp usage in /implement command for Lean tasks
@@ -354,7 +354,7 @@ technical_debt:
 **Dependencies**: 212 (completed)
 **Language**: python
 **Research Artifacts**:
-  - Main Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
+  - Main Report: [specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
 **Research Findings** (2025-12-28): CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration, NOT .mcp.json. Task 212's custom Python MCP client approach is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. The ModuleNotFoundError is a symptom of wrong architectural approach, not missing __init__.py files. Solution requires complete pivot from Python-based integration to configuration-based integration: (1) Create opencode.json with lean-lsp-mcp server configuration, (2) Update lean-implementation-agent.md to use natural language MCP tool instructions instead of Python imports, (3) Remove custom MCP client from task 212 (architecturally incompatible). Proper approach enables 15+ lean-lsp-mcp tools (compile, check-proof, search, etc.) via native OpenCode MCP bridge. Previous plan obsolete - new configuration-based approach estimated 1-2 hours.
 
 **Files Affected**:
@@ -393,7 +393,7 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 - **Dependencies**: Task 290 (researched)
 
 **Research Artifacts**:
-  - Research Report: [.opencode/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md]
+  - Research Report: [specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md]
 
 **Description**:
 Fix lean-research-agent.md to use proper delegation pattern for status updates instead of direct file manipulation. The agent currently bypasses status-sync-manager and git-workflow-manager, causing status synchronization failures. Update step_6 to match researcher.md's delegation pattern, remove summary artifact requirement, and ensure atomic updates across TODO.md and state.json. See research report for detailed root cause analysis, fix strategy, and code examples.
@@ -431,10 +431,10 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Research Artifacts**:
-  - Research Report: [.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md]
+  - Research Report: [specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md]
 
 **Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-001.md]
+  - Implementation Plan: [specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-001.md]
 
 **Description**: Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations. This ensures TODO.md remains properly formatted after task archival.
 
@@ -452,7 +452,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 **Description**: Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.
 
 **Research Artifacts**:
-  - Research Report: [.opencode/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/reports/research-001.md]
+  - Research Report: [specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/reports/research-001.md]
 
 ---
 
@@ -498,9 +498,9 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Language**: lean
 - **Blocking**: Axiom refactor (Prop → Type) or Classical.choice research
 - **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/260_proof_search/reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/260_proof_search/plans/implementation-001.md)
-- **Implementation**: [Implementation Summary](.opencode/specs/260_proof_search/summaries/implementation-summary-20260105.md)
+- **Research**: [Research Report](specs/260_proof_search/reports/research-001.md)
+- **Plan**: [Implementation Plan](specs/260_proof_search/plans/implementation-001.md)
+- **Implementation**: [Implementation Summary](specs/260_proof_search/summaries/implementation-summary-20260105.md)
 
 **Description**: Implement automated proof search for TM logic.
 
@@ -562,7 +562,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md]
+  - Implementation Plan: [specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md]
 
 **Description**: Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.
 
@@ -589,7 +589,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: Task 263
 
 **Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/264_test_and_document_argument_passing/plans/implementation-001.md]
+  - Implementation Plan: [specs/264_test_and_document_argument_passing/plans/implementation-001.md]
 
 **Files Affected**:
 - `Logos/Core/ProofSystem/Derivation.lean`
@@ -770,7 +770,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Dependencies**: None
 
 **Plan Artifacts**:
-  - Implementation Plan: [.opencode/specs/335_refactor_errors_command/plans/implementation-001.md]
+  - Implementation Plan: [specs/335_refactor_errors_command/plans/implementation-001.md]
 
 **Description**: Refactor the /errors command and error-diagnostics-agent subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, move all workflow logic from command to subagent, optimize context loading to Level 2, ensure standardized return format.
 
@@ -786,7 +786,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Blocking**: None
 - **Dependencies**: None
 
-**Plan**: [Implementation Plan](.opencode/specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md)
+**Plan**: [Implementation Plan](specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md)
 
 **Description**: Update Stage 3 (CreateTasks) in /task command to delegate directly to status-sync-manager with operation: create_task instead of deprecated task-creator. Follow the pattern from /research and /implement commands (Stage 1.5 Preflight). Add validation gates to verify task creation succeeded. Test with multiple scenarios.
 
@@ -800,7 +800,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Blocking**: None
 - **Dependencies**: Task 338
 
-**Plan**: [Implementation Plan](.opencode/specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md)
+**Plan**: [Implementation Plan](specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md)
 
 **Description**: Remove .opencode/agent/subagents/task-creator.md file since it's deprecated and no longer used. Update any documentation that references it. Verify no other commands depend on it.
 
@@ -814,7 +814,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Blocking**: None
 - **Dependencies**: None
 
-**Plan**: [Implementation Plan](.opencode/specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md)
+**Plan**: [Implementation Plan](specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md)
 
 **Description**: Audit all command files in .opencode/command/ to ensure they have proper validation gates that prevent architectural violations. Add pre-execution and post-execution validation following patterns from /research and /implement. Document validation gate patterns in .opencode/context/core/standards/validation-gates.md.
 
@@ -828,7 +828,7 @@ Fixes the root cause of status synchronization failures for Lean tasks. Ensures 
 - **Blocking**: None
 - **Dependencies**: None
 
-**Plan**: [Implementation Plan](.opencode/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md)
+**Plan**: [Implementation Plan](specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md)
 
 **Description**: Create .opencode/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.
 

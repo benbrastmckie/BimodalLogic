@@ -9,7 +9,7 @@
 - **Effort**: 6 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/169_task_command_improvements/reports/research-001.md (820 lines)
+- **Research Inputs**: specs/169_task_command_improvements/reports/research-001.md (820 lines)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -216,15 +216,15 @@ The /task command and its subagents (task-executor, batch-task-orchestrator) cur
 
 ## Artifacts & Outputs
 
-- **Plans**: .opencode/specs/169_task_command_improvements/plans/implementation-001.md (this file)
-- **Summaries**: .opencode/specs/169_task_command_improvements/summaries/plan-summary.md
+- **Plans**: specs/169_task_command_improvements/plans/implementation-001.md (this file)
+- **Summaries**: specs/169_task_command_improvements/summaries/plan-summary.md
 - **Updated Commands**: .opencode/command/task.md
 - **Updated Agents**: 
   - .opencode/agent/subagents/task-executor.md
   - .opencode/agent/subagents/batch-task-orchestrator.md
 - **Updated Standards**: .opencode/context/core/system/artifact-management.md
-- **Test Results**: .opencode/specs/169_task_command_improvements/summaries/test-results.md (created during Phase 7)
-- **Migration Guide**: .opencode/specs/169_task_command_improvements/summaries/migration-guide.md (if needed, created during Phase 8)
+- **Test Results**: specs/169_task_command_improvements/summaries/test-results.md (created during Phase 7)
+- **Migration Guide**: specs/169_task_command_improvements/summaries/migration-guide.md (if needed, created during Phase 8)
 
 ## Rollback/Contingency
 

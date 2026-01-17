@@ -52,4 +52,4 @@
 
 ## Full Plan
 
-See: `.opencode/specs/172_documentation/plans/implementation-001.md`
+See: `specs/172_documentation/plans/implementation-001.md`

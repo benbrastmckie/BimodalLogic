@@ -55,14 +55,14 @@ Add Step 2.6 to detect "misplaced" directories:
 ```bash
 # Get misplaced directories (in specs/ but tracked in archive/state.json)
 misplaced_in_specs=()
-for dir in .claude/specs/[0-9]*_*/; do
+for dir in specs/[0-9]*_*/; do
   [ -d "$dir" ] || continue
   project_num=$(basename "$dir" | cut -d_ -f1)
 
   # Check if tracked in archive/state.json (should be in archive/)
   in_archive=$(jq -r --arg n "$project_num" \
     '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-    .claude/specs/archive/state.json 2>/dev/null)
+    specs/archive/state.json 2>/dev/null)
 
   if [ -n "$in_archive" ]; then
     misplaced_in_specs+=("$dir")
@@ -90,7 +90,7 @@ In Step 5, add Step 5F to move misplaced directories:
 ```bash
 for dir in "${misplaced_in_specs[@]}"; do
   dir_name=$(basename "$dir")
-  mv "$dir" ".claude/specs/archive/${dir_name}"
+  mv "$dir" "specs/archive/${dir_name}"
   echo "Moved misplaced: ${dir_name} -> archive/"
 done
 ```
@@ -108,8 +108,8 @@ Consider consolidating orphan detection into a single "reconciliation" step that
 ## References
 
 - `.claude/commands/todo.md` - Current /todo command implementation
-- `.claude/specs/state.json` - Active projects state
-- `.claude/specs/archive/state.json` - Archived projects state
+- `specs/state.json` - Active projects state
+- `specs/archive/state.json` - Archived projects state
 
 ## Next Steps
 

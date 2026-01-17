@@ -31,7 +31,7 @@ The system uses a **frontmatter delegation pattern** where:
 - **Frontmatter**: Minimal, delegates to orchestrator
 - **Subagent**: `planner.md` (`.opencode/agent/subagents/planner.md`)
 - **Status flow**: [NOT STARTED] → [PLANNING] → [PLANNED]
-- **Artifacts**: Plan file in `.opencode/specs/{number}_{slug}/plans/implementation-001.md`
+- **Artifacts**: Plan file in `specs/{number}_{slug}/plans/implementation-001.md`
 - **Updates**: TODO.md (status, plan link), state.json (status, plan_path, plan_metadata)
 
 #### `/research` Command (FAILING)
@@ -39,7 +39,7 @@ The system uses a **frontmatter delegation pattern** where:
 - **Frontmatter**: Minimal, delegates to orchestrator
 - **Subagent**: `researcher.md` (`.opencode/agent/subagents/researcher.md`)
 - **Status flow**: [NOT STARTED] → [RESEARCHING] → [RESEARCHED]
-- **Artifacts**: Research report in `.opencode/specs/{number}_{slug}/reports/research-001.md`
+- **Artifacts**: Research report in `specs/{number}_{slug}/reports/research-001.md`
 - **Updates**: TODO.md (status, research link), state.json (status, research_path, research_metadata)
 
 #### `/implement` Command (FAILING)
@@ -47,7 +47,7 @@ The system uses a **frontmatter delegation pattern** where:
 - **Frontmatter**: Minimal, delegates to orchestrator
 - **Subagent**: `implementer.md` (`.opencode/agent/subagents/implementer.md`)
 - **Status flow**: [NOT STARTED] → [IMPLEMENTING] → [COMPLETED]
-- **Artifacts**: Implementation files + summary in `.opencode/specs/{number}_{slug}/summaries/implementation-summary-YYYYMMDD.md`
+- **Artifacts**: Implementation files + summary in `specs/{number}_{slug}/summaries/implementation-summary-YYYYMMDD.md`
 - **Updates**: TODO.md (status, artifact links), state.json (status, artifact_paths)
 
 ### Identified Issues
@@ -139,7 +139,7 @@ Orchestrator Stage 4 must validate:
 ### Phase 3: Standardize Artifact Management
 
 All subagents must:
-1. Create artifacts in `.opencode/specs/{number}_{slug}/{type}/`
+1. Create artifacts in `specs/{number}_{slug}/{type}/`
 2. Use consistent naming: `{type}-001.md`, `{type}-002.md`, etc.
 3. Include artifacts in return JSON with full paths
 4. Delegate artifact linking to status-sync-manager

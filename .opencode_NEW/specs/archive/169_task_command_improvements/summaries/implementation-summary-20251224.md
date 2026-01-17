@@ -87,8 +87,8 @@ Phase 8: Documentation Updates (1.5 hours)
 **Status**: COMPLETED
 
 **Artifacts Created**:
-- `.opencode/specs/169_task_command_improvements/schemas/task-executor-return-schema.json` - Complete JSON schema with validation rules, examples, 500 token limit
-- `.opencode/specs/169_task_command_improvements/schemas/batch-return-schema.json` - Complete JSON schema with progressive summarization, 50 lines per 10 tasks limit
+- `specs/169_task_command_improvements/schemas/task-executor-return-schema.json` - Complete JSON schema with validation rules, examples, 500 token limit
+- `specs/169_task_command_improvements/schemas/batch-return-schema.json` - Complete JSON schema with progressive summarization, 50 lines per 10 tasks limit
 
 **Key Accomplishments**:
 1. [PASS] Documented task-executor return format schema (JSON structure with required fields, token limits)
@@ -462,12 +462,12 @@ Execute all phases in one /implement command.
 ## Files Modified (All Phases)
 
 ### Phase 0 (Audit)
-1. `.opencode/specs/169_task_command_improvements/plans/implementation-003.md` - Phase 0 status updated
-2. `.opencode/specs/169_task_command_improvements/summaries/implementation-summary-20251224.md` - Created
+1. `specs/169_task_command_improvements/plans/implementation-003.md` - Phase 0 status updated
+2. `specs/169_task_command_improvements/summaries/implementation-summary-20251224.md` - Created
 
 ### Phase 1a (Schemas)
-3. `.opencode/specs/169_task_command_improvements/schemas/task-executor-return-schema.json` - Created
-4. `.opencode/specs/169_task_command_improvements/schemas/batch-return-schema.json` - Created
+3. `specs/169_task_command_improvements/schemas/task-executor-return-schema.json` - Created
+4. `specs/169_task_command_improvements/schemas/batch-return-schema.json` - Created
 
 ### Phase 1b (Rename & Consumer Updates)
 5. `.opencode/agent/orchestrator.md` - Updated /task trigger to /implement
@@ -503,13 +503,13 @@ Execute all phases in one /implement command.
 23. `.opencode/agent/subagents/batch-task-orchestrator.md` - Added validation section to stage 6
 
 ### Phase 7 (Testing)
-24. `.opencode/specs/169_task_command_improvements/summaries/test-results-v3.md` - Created test plan
+24. `specs/169_task_command_improvements/summaries/test-results-v3.md` - Created test plan
 
 ### Phase 8 (Documentation)
-25. `.opencode/specs/169_task_command_improvements/summaries/migration-guide-v3.md` - Created
+25. `specs/169_task_command_improvements/summaries/migration-guide-v3.md` - Created
 26. `.opencode/context/core/system/artifact-management.md` - Updated summaries section
 27. `TODO.md` - Added task 169 entry marked [COMPLETED]
-28. `.opencode/specs/169_task_command_improvements/summaries/implementation-summary-20251224.md` - Updated with all phases
+28. `specs/169_task_command_improvements/summaries/implementation-summary-20251224.md` - Updated with all phases
 
 **Total Files Modified**: 28 core files + 50+ files with /task → /implement bulk replacements = **80+ files**
 
@@ -652,10 +652,10 @@ Phase 0 (Audit) is **COMPLETE**. The audit reveals a massive implementation scop
 - All user scripts/workflows using /task
 
 **Migration Resources**:
-- Migration guide: `.opencode/specs/169_task_command_improvements/summaries/migration-guide-v3.md`
-- Schemas: `.opencode/specs/169_task_command_improvements/schemas/`
-- Test plan: `.opencode/specs/169_task_command_improvements/summaries/test-results-v3.md`
-- Implementation plan: `.opencode/specs/169_task_command_improvements/plans/implementation-003.md`
+- Migration guide: `specs/169_task_command_improvements/summaries/migration-guide-v3.md`
+- Schemas: `specs/169_task_command_improvements/schemas/`
+- Test plan: `specs/169_task_command_improvements/summaries/test-results-v3.md`
+- Implementation plan: `specs/169_task_command_improvements/plans/implementation-003.md`
 
 ### Impact Assessment
 

@@ -15,12 +15,12 @@
   "last_updated": "2025-12-28",
   "description": "Restructure module hierarchy separating semantic from proof system properties by extracting TemporalDuality namespace to SoundnessLemmas.lean bridge module",
   "artifacts": [
-    ".opencode/specs/219_restructure_module_hierarchy/reports/research-001.md",
-    ".opencode/specs/219_restructure_module_hierarchy/summaries/research-summary.md",
-    ".opencode/specs/219_restructure_module_hierarchy/plans/implementation-001.md",
-    ".opencode/specs/219_restructure_module_hierarchy/summaries/implementation-summary-20251228.md"
+    "specs/219_restructure_module_hierarchy/reports/research-001.md",
+    "specs/219_restructure_module_hierarchy/summaries/research-summary.md",
+    "specs/219_restructure_module_hierarchy/plans/implementation-001.md",
+    "specs/219_restructure_module_hierarchy/summaries/implementation-summary-20251228.md"
   ],
-  "plan_path": ".opencode/specs/219_restructure_module_hierarchy/plans/implementation-001.md",
+  "plan_path": "specs/219_restructure_module_hierarchy/plans/implementation-001.md",
   "plan_metadata": {
     "phase_count": 9,
     "estimated_hours": 13.0,

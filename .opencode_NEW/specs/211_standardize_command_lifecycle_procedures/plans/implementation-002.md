@@ -15,12 +15,12 @@
 
 **Created**: 2025-12-28  
 **Status**: [NOT STARTED]  
-**Previous Plan**: .opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md  
+**Previous Plan**: specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md  
 **Revision Reason**: Add critical focus on plan status synchronization - ensure that when plans are created they say '[PLANNED]' in both the plan file and task, then update to '[IN PROGRESS]' when implementation begins, and finally to '[BLOCKED]', '[PARTIAL]', or '[COMPLETE]' after implementation completes. All three files (task in TODO.md, plan file, and state.json) must be updated in sync atomically.
 
 **Research Inputs**: 
-- .opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md
-- .opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md
+- specs/211_standardize_command_lifecycle_procedures/reports/research-001.md
+- specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md
 
 **Task Dependencies**: None  
 **Blocking**: None
@@ -464,10 +464,10 @@ state.json:  plan_artifacts updated with new version
 
 ### Research Artifacts
 
-- Main Report: .opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md
-- Summary: .opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md
-- Previous Plan: .opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md
-- Previous Implementation: .opencode/specs/211_standardize_command_lifecycle_procedures/summaries/implementation-summary-20251228.md
+- Main Report: specs/211_standardize_command_lifecycle_procedures/reports/research-001.md
+- Summary: specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md
+- Previous Plan: specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md
+- Previous Implementation: specs/211_standardize_command_lifecycle_procedures/summaries/implementation-summary-20251228.md
 
 ### Files to be Modified
 

@@ -4,13 +4,13 @@
   "type": "bugfix",
   "phase": "implementation_completed",
   "reports": [
-    ".opencode/specs/222_investigate_artifact_path_errors/reports/research-001.md"
+    "specs/222_investigate_artifact_path_errors/reports/research-001.md"
   ],
   "plans": [
-    ".opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md"
+    "specs/222_investigate_artifact_path_errors/plans/implementation-001.md"
   ],
   "summaries": [
-    ".opencode/specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md"
+    "specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md"
   ],
   "status": "completed",
   "created": "2025-12-28T23:01:58Z",

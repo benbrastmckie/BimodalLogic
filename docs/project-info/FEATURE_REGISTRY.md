@@ -14,7 +14,7 @@
   - No new project roots or numbering changes; plans stay in the task’s project folder.
   - Status markers and timestamps must align across TODO/state; phases reset to `[NOT STARTED]` in the new plan version.
   - Lean intent follows the task/plan metadata; language metadata remains authoritative in TODO.
-- **Artifacts**: .opencode/specs/127_context_refactor/plans/implementation-002.md (plan v3 for task 144); .opencode/specs/152_standardize_command_templates_and_migrate_command_docs/plans/implementation-002.md (plan v2 for task 152); .opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md (plan v2 for task 154)
+- **Artifacts**: specs/127_context_refactor/plans/implementation-002.md (plan v3 for task 144); specs/152_standardize_command_templates_and_migrate_command_docs/plans/implementation-002.md (plan v2 for task 152); specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md (plan v2 for task 154)
 - **Related Standards**: .opencode/context/common/standards/tasks.md; .opencode/context/common/system/artifact-management.md; .opencode/context/common/system/status-markers.md
 
 ### /task Language-driven Lean routing (Task 147)
@@ -24,5 +24,5 @@
   - Validate required MCP servers (at minimum `lean-lsp`) before dispatch; planned servers (`lean-explore`, `loogle`, `lean-search`) warn/halt unless explicitly allowed.
   - Preserve lazy creation: no project roots/subdirs/state writes on validation failure or `--dry-run` checks.
   - Prefer explicit user flag when it conflicts with TODO metadata; log the discrepancy.
-- **Artifacts**: .opencode/specs/147_ensure_task_uses_lean_subagents_and_mcp_servers_correctly/plans/implementation-002.md
+- **Artifacts**: specs/147_ensure_task_uses_lean_subagents_and_mcp_servers_correctly/plans/implementation-002.md
 - **Related Standards**: .opencode/context/common/standards/tasks.md; .opencode/context/common/system/artifact-management.md; .opencode/context/common/system/status-markers.md

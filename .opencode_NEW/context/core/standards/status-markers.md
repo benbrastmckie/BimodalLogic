@@ -278,7 +278,7 @@ This document defines the complete set of status markers used throughout the Pro
   "validated_artifacts": [
     {
       "type": "research_report",
-      "path": ".opencode/specs/321_topic/reports/research-001.md",
+      "path": "specs/321_topic/reports/research-001.md",
       "summary": "Research findings",
       "validated": true
     }

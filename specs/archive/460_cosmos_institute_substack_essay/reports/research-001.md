@@ -173,7 +173,7 @@ The Cosmos Institute Substack positions itself as an "Academy for Philosopher-Bu
 - Cosmos Institute Substack: https://blog.cosmos-institute.org/
 - "The Philosopher-Builder" essay (structural model)
 - "Essay Writing as Personal Sovereignty" (tone model)
-- Task 457 implementation plan: `.claude/specs/archive/457_document_top_project_outcomes/plans/implementation-002.md`
+- Task 457 implementation plan: `specs/archive/457_document_top_project_outcomes/plans/implementation-002.md`
 - Project README: `/home/benjamin/Projects/ProofChecker/README.md`
 - Logos README: `/home/benjamin/Projects/ProofChecker/Theories/Logos/README.md`
 

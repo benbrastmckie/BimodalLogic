@@ -71,7 +71,7 @@ Task 313 in TODO.md exhibits incorrect field ordering where artifact links and t
 
 3. **Implementation Gap**: The `step_3_prepare_updates` process (lines 399-549) states:
    ```
-   2. Update .opencode/specs/TODO.md task entry in memory:
+   2. Update specs/TODO.md task entry in memory:
       - Change status marker
       - Add/update timestamp fields
       - Add artifact links from validated_artifacts (with plan link replacement logic)
@@ -306,7 +306,7 @@ All commands must pass `validated_artifacts` to status-sync-manager in a way tha
 
 ### Files Analyzed
 
-1. `.opencode/specs/TODO.md` (lines 1061-1077: Task 313, lines 33-48: Task 312)
+1. `specs/TODO.md` (lines 1061-1077: Task 313, lines 33-48: Task 312)
 2. `.opencode/agent/subagents/status-sync-manager.md` (lines 399-549: update logic)
 3. `.opencode/context/core/standards/tasks.md` (lines 34-49: field definitions)
 4. `.opencode/context/index.md` (context loading patterns)

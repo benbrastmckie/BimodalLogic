@@ -13,7 +13,7 @@ Created the `lean-research-agent.md` subagent for Lean 4 and Mathlib research, f
 
 ## Files Modified
 
-- `.claude/specs/411_create_lean_research_agent_subagent/plans/implementation-001.md` - Phase status updates
+- `specs/411_create_lean_research_agent_subagent/plans/implementation-001.md` - Phase status updates
 
 ## Agent Features
 

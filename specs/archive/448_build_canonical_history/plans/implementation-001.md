@@ -5,7 +5,7 @@
 - **Effort**: 3-4 hours
 - **Priority**: Low
 - **Dependencies**: Task 447 (Canonical frame and model construction - COMPLETED)
-- **Research Inputs**: .claude/specs/448_build_canonical_history/reports/research-001.md
+- **Research Inputs**: specs/448_build_canonical_history/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean

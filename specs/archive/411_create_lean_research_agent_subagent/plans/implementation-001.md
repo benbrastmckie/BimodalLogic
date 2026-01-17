@@ -96,7 +96,7 @@ Create the `lean-research-agent.md` subagent file in `.claude/agents/` that will
    - Stage 5: Synthesize into research report
    - Stage 6: Return structured JSON
 3. Add Report Creation section:
-   - Create directory `.claude/specs/{N}_{SLUG}/reports/`
+   - Create directory `specs/{N}_{SLUG}/reports/`
    - Find next version number (research-001, 002, etc.)
    - Write report following report-format.md structure
 4. Add Return Format section:

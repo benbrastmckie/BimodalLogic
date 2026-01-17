@@ -64,7 +64,7 @@ This research investigates potential bugs/issues in status-sync-manager that cou
 **Recommendation**: Add file locking in step_1_prepare:
 ```bash
 # Acquire lock before reading files
-exec 200>.opencode/specs/.status-sync.lock
+exec 200>specs/.status-sync.lock
 flock -x 200 || { echo "Failed to acquire lock"; exit 1; }
 
 # Read files...
@@ -85,7 +85,7 @@ flock -u 200
 **Evidence**:
 - File: `.opencode/agent/subagents/status-sync-manager.md`
 - Lines 554-560: step_4_commit writes TODO.md, then state.json
-- Line 1179: "Write order matters: .opencode/specs/TODO.md first (most critical), then state files"
+- Line 1179: "Write order matters: specs/TODO.md first (most critical), then state files"
 - No atomic write mechanism (e.g., write to temp files, then rename)
 
 **Impact**: HIGH
@@ -100,13 +100,13 @@ flock -u 200
 **Recommendation**: Use atomic write pattern:
 ```bash
 # Write to temp files
-write_file ".opencode/specs/TODO.md.tmp" "$updated_todo"
-write_file ".opencode/specs/state.json.tmp" "$updated_state"
+write_file "specs/TODO.md.tmp" "$updated_todo"
+write_file "specs/state.json.tmp" "$updated_state"
 
 # Atomic rename (both files or neither)
-mv ".opencode/specs/TODO.md.tmp" ".opencode/specs/TODO.md" && \
-mv ".opencode/specs/state.json.tmp" ".opencode/specs/state.json" || \
-{ rm -f ".opencode/specs/TODO.md.tmp" ".opencode/specs/state.json.tmp"; exit 1; }
+mv "specs/TODO.md.tmp" "specs/TODO.md" && \
+mv "specs/state.json.tmp" "specs/state.json" || \
+{ rm -f "specs/TODO.md.tmp" "specs/state.json.tmp"; exit 1; }
 ```
 
 **Severity**: CRITICAL (directly causes task 320 symptoms)
@@ -174,7 +174,7 @@ fi
 **Recommendation**: Add rollback verification:
 ```bash
 # After rollback
-if ! diff -q ".opencode/specs/TODO.md" ".opencode/specs/TODO.md.backup"; then
+if ! diff -q "specs/TODO.md" "specs/TODO.md.backup"; then
   echo "CRITICAL: Rollback verification failed for TODO.md"
   echo "Manual intervention required"
   exit 1
@@ -208,7 +208,7 @@ fi
 ```bash
 # Retry write up to 3 times
 for attempt in 1 2 3; do
-  if write_file ".opencode/specs/TODO.md" "$updated_todo"; then
+  if write_file "specs/TODO.md" "$updated_todo"; then
     break
   fi
   if [ $attempt -lt 3 ]; then
@@ -284,7 +284,7 @@ fi
 ```bash
 # In step_5_return
 # Verify status marker was updated
-if ! grep -q "\*\*Status\*\*: \[$expected_status\]" .opencode/specs/TODO.md; then
+if ! grep -q "\*\*Status\*\*: \[$expected_status\]" specs/TODO.md; then
   echo "CRITICAL: Status marker not updated in TODO.md"
   echo "Expected: $expected_status"
   echo "File written but content not updated"
@@ -293,7 +293,7 @@ fi
 
 # Verify artifact link was added
 if [ -n "$artifact_path" ]; then
-  if ! grep -q "$artifact_path" .opencode/specs/TODO.md; then
+  if ! grep -q "$artifact_path" specs/TODO.md; then
     echo "CRITICAL: Artifact link not added to TODO.md"
     echo "Expected: $artifact_path"
     exit 1
@@ -528,13 +528,13 @@ Based on this research, task 320 implementation-002.md should be revised to incl
 
 ### Source 2: Test Plan
 
-- File: `.opencode/specs/archive/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/test-plan.md`
+- File: `specs/archive/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/test-plan.md`
 - Lines 228-250: Test 8 "Concurrent Update Handling" expects file locking but none exists
 - Lines 152-176: Test 5 "Rollback on Partial Failure" tests rollback mechanism
 
 ### Source 3: Task 320 Research-001.md
 
-- File: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md`
+- File: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md`
 - Key findings:
   - Root cause: Silent git commit failures (but user clarified status/artifact failures more important)
   - Postflight steps DO exist and execute
@@ -542,7 +542,7 @@ Based on this research, task 320 implementation-002.md should be revised to incl
 
 ### Source 4: Task 320 Implementation-002.md
 
-- File: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-002.md`
+- File: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-002.md`
 - Key sections:
   - Lines 42-43: Identifies status-sync-manager as critical
   - Lines 236-296: Phase 2 verification checkpoint

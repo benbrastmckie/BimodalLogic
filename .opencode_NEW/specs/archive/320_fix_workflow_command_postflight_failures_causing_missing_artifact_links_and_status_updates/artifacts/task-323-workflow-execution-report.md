@@ -64,7 +64,7 @@ jq -r --arg num "323" '.active_projects[] | select(.project_number == ($num | to
 - Validation: PASSED
 
 **Files Read**:
-- `.opencode/specs/state.json` (2000+ lines, read lines 1-2000)
+- `specs/state.json` (2000+ lines, read lines 1-2000)
 
 **Observations**:
 - Task 323 exists at line 845-858 in state.json
@@ -95,7 +95,7 @@ jq --arg num "323" --arg status "researching" --arg timestamp "$(date -I)" \
 - Validation: PASSED
 
 **Files Modified**:
-- `.opencode/specs/state.json` (atomic update via tmp file)
+- `specs/state.json` (atomic update via tmp file)
 
 **Observations**:
 - Used atomic write pattern (write to .tmp, then mv)
@@ -119,8 +119,8 @@ read /home/benjamin/Projects/ProofChecker/.opencode/command/todo.md
 read /home/benjamin/Projects/ProofChecker/.opencode/scripts/todo_cleanup.py
 
 # Read TODO.md to understand current format
-read /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md (offset 0, limit 100)
-read /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md (offset 500, limit 100)
+read /home/benjamin/Projects/ProofChecker/specs/TODO.md (offset 0, limit 100)
+read /home/benjamin/Projects/ProofChecker/specs/TODO.md (offset 500, limit 100)
 ```
 
 **Result**:
@@ -131,7 +131,7 @@ read /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md (offset 500, l
 **Files Read**:
 1. `.opencode/command/todo.md` (373 lines)
 2. `.opencode/scripts/todo_cleanup.py` (583 lines)
-3. `.opencode/specs/TODO.md` (200 lines sampled from 2000+)
+3. `specs/TODO.md` (200 lines sampled from 2000+)
 
 **Observations**:
 - /todo command uses 6-stage workflow
@@ -508,10 +508,10 @@ print(result)
 **Actions Taken**:
 ```bash
 # Create artifact directory
-mkdir -p /home/benjamin/Projects/ProofChecker/.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports
+mkdir -p /home/benjamin/Projects/ProofChecker/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports
 
 # Write research report
-write /home/benjamin/Projects/ProofChecker/.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
+write /home/benjamin/Projects/ProofChecker/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
 ```
 
 **Report Structure**:
@@ -565,7 +565,7 @@ jq --arg num "323" \
      .status = $status | 
      .last_updated = $timestamp | 
      .research_completed = $research_completed | 
-     .artifacts = [".opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"] 
+     .artifacts = ["specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"] 
    else . end]' \
    state.json > state.json.tmp && mv state.json.tmp state.json
 ```
@@ -587,7 +587,7 @@ jq -r --arg num "323" '.active_projects[] | select(.project_number == ($num | to
 ```
 Status: researched
 Research Completed: 2026-01-05
-Artifacts: .opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
+Artifacts: specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
 ```
 
 **Validation**: PASSED
@@ -604,8 +604,8 @@ Artifacts: .opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_
 ```bash
 # Stage files
 cd /home/benjamin/Projects/ProofChecker
-git add .opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
-git add .opencode/specs/state.json
+git add specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
+git add specs/state.json
 
 # Create commit
 git commit -m "task 323: research completed on markdown formatting for /todo command
@@ -619,7 +619,7 @@ git commit -m "task 323: research completed on markdown formatting for /todo com
 - Provided implementation plan with code examples and integration points
 - Documented formatting rules, edge cases, risks, and mitigations
 
-Research artifact: .opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"
+Research artifact: specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"
 ```
 
 **Commit Details**:
@@ -653,15 +653,15 @@ git log -1 --stat
 **Actions Taken**:
 ```bash
 # Check file exists and size
-ls -lh /home/benjamin/Projects/ProofChecker/.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
+ls -lh /home/benjamin/Projects/ProofChecker/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
 
 # Count lines
-wc -l /home/benjamin/Projects/ProofChecker/.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
+wc -l /home/benjamin/Projects/ProofChecker/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
 
 # Verify state.json update
 jq -r --arg num "323" '.active_projects[] | select(.project_number == ($num | tonumber)) | 
   "Status: \(.status)\nResearch Completed: \(.research_completed)\nArtifacts: \(.artifacts | join(", "))"' \
-  .opencode/specs/state.json
+  specs/state.json
 ```
 
 **Results**:
@@ -1010,7 +1010,7 @@ No rollbacks or retries needed.
    Time: ~100ms
 
 2. read: Load state.json for context
-   File: .opencode/specs/state.json
+   File: specs/state.json
    Lines: 2000 (read lines 1-2000)
    Time: ~200ms
 
@@ -1069,7 +1069,7 @@ No rollbacks or retries needed.
     Time: ~100ms
 
 13. read: Load TODO.md sample 1
-    File: .opencode/specs/TODO.md
+    File: specs/TODO.md
     Lines: 100 (offset 0)
     Time: ~150ms
 
@@ -1089,7 +1089,7 @@ No rollbacks or retries needed.
     Time: ~150ms
 
 17. read: Load TODO.md sample 2
-    File: .opencode/specs/TODO.md
+    File: specs/TODO.md
     Lines: 100 (offset 500)
     Time: ~150ms
 
@@ -1143,32 +1143,32 @@ No rollbacks or retries needed.
 
 ### Files Created
 
-1. `.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md`
+1. `specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md`
    - Size: 23KB
    - Lines: 699
    - Purpose: Research findings and recommendations
 
-2. `.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/artifacts/task-323-workflow-execution-report.md`
+2. `specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/artifacts/task-323-workflow-execution-report.md`
    - Size: TBD (this file)
    - Lines: TBD
    - Purpose: Workflow execution documentation
 
 ### Files Modified
 
-1. `.opencode/specs/state.json`
+1. `specs/state.json`
    - Changes: 2 updates (researching, researched)
    - Lines changed: ~10 (task 323 entry)
    - Purpose: Track task status and artifacts
 
 ### Directories Created
 
-1. `.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/`
+1. `specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/`
    - Purpose: Task artifact container
 
-2. `.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/`
+2. `specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/`
    - Purpose: Research reports
 
-3. `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/`
+3. `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/`
    - Purpose: Workflow execution reports (this file)
 
 ### Git Commits
@@ -1259,7 +1259,7 @@ No rollbacks or retries needed.
   "last_updated": "2026-01-05",
   "research_completed": "2026-01-05",
   "artifacts": [
-    ".opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"
+    "specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"
   ]
 }
 ```
@@ -1315,9 +1315,9 @@ Only state.json was updated. TODO.md was not modified.
    git show 14abf52 --stat
    ```
    Files changed in commit 14abf52:
-   - `.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md` (new file, +705 lines)
-   - `.opencode/specs/state.json` (modified, +2/-2 lines)
-   - `.opencode/specs/TODO.md` (NOT MODIFIED) ✗
+   - `specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md` (new file, +705 lines)
+   - `specs/state.json` (modified, +2/-2 lines)
+   - `specs/TODO.md` (NOT MODIFIED) ✗
 
 2. **Expected Files in Commit**:
    - research-001.md ✓ (present)
@@ -1347,7 +1347,7 @@ After updating state.json, the /research command should have:
 
 2. Staged TODO.md for git commit:
    ```bash
-   git add .opencode/specs/TODO.md
+   git add specs/TODO.md
    ```
 
 3. Included TODO.md in commit 14abf52

@@ -26,4 +26,4 @@ Proceed with standardization. Create command-lifecycle.md as single source of tr
 
 ## Full Report
 
-See .opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md for detailed analysis, inconsistency matrix, and proposed command-lifecycle.md structure.
+See specs/211_standardize_command_lifecycle_procedures/reports/research-001.md for detailed analysis, inconsistency matrix, and proposed command-lifecycle.md structure.

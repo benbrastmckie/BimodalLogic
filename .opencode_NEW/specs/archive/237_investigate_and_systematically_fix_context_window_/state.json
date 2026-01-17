@@ -15,7 +15,7 @@
   "reports": [
     {
       "type": "research_report",
-      "path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md",
+      "path": "specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md",
       "summary": "Root cause identified: Commands load 78-86KB during routing (39-43% of budget) due to premature command file loading, context duplication, and large TODO.md. Recommended 4-phase fix plan reduces routing context to <6% through file splitting, deduplication, and selective loading.",
       "created": "2025-12-29"
     }
@@ -23,7 +23,7 @@
   "plans": [
     {
       "type": "implementation_plan",
-      "path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md",
+      "path": "specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md",
       "summary": "4-phase implementation plan (28-42 hours total). Phase 1: Eliminate orchestrator duplication (2-4 hours, 56KB savings, LOW risk). Phase 2: Split command files (8-12 hours, 72-104KB savings). Phase 3: Selective TODO.md loading (6-10 hours, 107KB savings). Phase 4: Aggressive deduplication (12-16 hours, 56-72KB savings). Total savings: 178-186KB (62-64% reduction).",
       "created": "2025-12-29"
     }
@@ -31,18 +31,18 @@
   "summaries": [
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-20251228-phase3.md",
+      "path": "specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-20251228-phase3.md",
       "summary": "Phase 3 complete: Selective TODO.md loading implemented across all 4 workflow commands. Context reduced by 40KB (91% reduction). Total savings: 96KB (Phase 1: 56KB, Phase 3: 40KB). Phase 2 deferred (requires orchestrator refactor).",
       "created": "2025-12-28"
     },
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-final.md",
+      "path": "specs/237_investigate_fix_context_window_bloat_workflow_commands/summaries/implementation-summary-final.md",
       "summary": "Final implementation summary: 2 of 4 phases completed (Phase 1, Phase 3), 1 phase deferred (Phase 2). Total context savings: 96KB (48% reduction). Task extraction logic implemented in all 4 workflow commands.",
       "created": "2025-12-28"
     }
   ],
-  "plan_path": ".opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md",
+  "plan_path": "specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md",
   "plan_metadata": {
     "phase_count": 4,
     "phases_completed": 2,

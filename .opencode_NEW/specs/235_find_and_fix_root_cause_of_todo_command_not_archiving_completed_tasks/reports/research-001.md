@@ -66,7 +66,7 @@ Examined `.opencode/command/todo.md` (541 lines) to understand the complete 7-st
   - `[COMPLETED]`: 3 tasks (lines 550, 637, 752)
   - `[PASS]` prefix with `[COMPLETED]`: 19 tasks (lines 794, 831, 860, 887, 914, 971, 1071, 1094, 1169, 1230, 1264, 1348, 1398, 1445, 1477, 1525, 1587, 1631, 1676)
 
-**Archive State** (`.opencode/specs/archive/state.json`):
+**Archive State** (`specs/archive/state.json`):
 - Last updated: 2025-12-29T05:14:32.850974Z
 - Archived projects: 71 entries
 - Most recent archival: 5 tasks archived on 2025-12-29 (commit 2f9c499)
@@ -186,7 +186,7 @@ This reveals a **second root cause**: **Incomplete archival process** - tasks we
 
 The /todo command successfully:
 1. Identifies completed/abandoned tasks (Stage 1)
-2. Moves project directories to `.opencode/specs/archive/` (Stage 5)
+2. Moves project directories to `specs/archive/` (Stage 5)
 3. Updates `archive/state.json` with archived task entries (Stage 5)
 4. Creates git commits (Stage 6)
 
@@ -314,7 +314,7 @@ The specification (lines 152-297) defines:
 2. **Remove Duplicate Entries**:
    - For tasks already in archive/state.json (126, 174, 177, 183, 184, 208, 209, 211, 212, 213):
      - Manually remove their entries from TODO.md
-     - Verify their project directories are in `.opencode/specs/archive/`
+     - Verify their project directories are in `specs/archive/`
      - Verify their entries exist in `archive/state.json`
 
 3. **Re-run /todo Command**:
@@ -472,7 +472,7 @@ The /todo command is **working correctly** according to its specification. The r
 
 ### Appendix B: Archive State Statistics
 
-**File**: `.opencode/specs/archive/state.json`
+**File**: `specs/archive/state.json`
 
 **Statistics**:
 - Schema version: 1.0.0

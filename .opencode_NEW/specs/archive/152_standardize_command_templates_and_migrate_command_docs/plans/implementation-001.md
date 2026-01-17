@@ -4,7 +4,7 @@
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/152_standardize_command_templates_and_migrate_command_docs/reports/research-001.md
+- **Research Inputs**: specs/152_standardize_command_templates_and_migrate_command_docs/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -15,7 +15,7 @@
 - **Lean Intent**: false
 
 ## Research Inputs
-- [.opencode/specs/152_standardize_command_templates_and_migrate_command_docs/reports/research-001.md](../reports/research-001.md)
+- [specs/152_standardize_command_templates_and_migrate_command_docs/reports/research-001.md](../reports/research-001.md)
 
 ## Overview
 Create a unified command documentation standard and template, then migrate all existing command docs and meta templates from legacy YAML/@subagent/XML markup to the new Markdown metadata and section order. Ensure commands explicitly cover status markers, lazy directory creation, registry sync expectations, and language/routing rules. Keep directories lazily created (project root + plans only when writing this plan) and align references with state schema and artifact management standards.

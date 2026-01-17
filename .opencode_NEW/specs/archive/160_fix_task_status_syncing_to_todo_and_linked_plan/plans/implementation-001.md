@@ -13,7 +13,7 @@
 - none linked
 
 ## context
-- /task command sometimes fails to write status updates to `.opencode/specs/TODO.md` and to linked plan phase markers.
+- /task command sometimes fails to write status updates to `specs/TODO.md` and to linked plan phase markers.
 - Needs atomic, parity-preserving updates without breaking lazy directory creation or numbering/state sync.
 - Relevant files: `.opencode/command/task.md`, `.opencode/agent/subagents/task-executor.md`, standards in `context/core/standards/tasks.md`, `status-markers.md`, artifact management guidance, and shared state files.
 
@@ -55,7 +55,7 @@ Deliver a fix plan that:
 - Ensure plan/phase marker usage matches status-markers standard; keep TODO/state sync consistent.
 
 ## artifact_management
-- Plan path: `.opencode/specs/160_fix_task_status_syncing_to_todo_and_linked_plan/plans/implementation-001.md`.
+- Plan path: `specs/160_fix_task_status_syncing_to_todo_and_linked_plan/plans/implementation-001.md`.
 - Lazy creation: no additional dirs besides project root and plans/ (created by this plan write).
 - Status markers: keep plan header [IN PROGRESS]; phases begin [NOT STARTED]; update when executing.
 - When implementing, only create artifacts (tests/docs) where required; avoid unrelated directories.

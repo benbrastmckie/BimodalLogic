@@ -29,7 +29,7 @@ log_status() {
 # Validation functions for each command type
 validate_research_artifact() {
   local task_num=$1
-  local task_dir=".opencode/specs/${task_num}_"*
+  local task_dir="specs/${task_num}_"*
   
   # Find research report
   local report_file=$(find "$task_dir" -name "research-001.md" 2>/dev/null | head -1)
@@ -65,7 +65,7 @@ validate_research_artifact() {
 
 validate_plan_artifact() {
   local task_num=$1
-  local task_dir=".opencode/specs/${task_num}_"*
+  local task_dir="specs/${task_num}_"*
   
   # Find implementation plan
   local plan_file=$(find "$task_dir" -name "implementation-001.md" 2>/dev/null | head -1)
@@ -108,7 +108,7 @@ validate_plan_artifact() {
 
 validate_implement_artifact() {
   local task_num=$1
-  local task_dir=".opencode/specs/${task_num}_"*
+  local task_dir="specs/${task_num}_"*
   
   # Find implementation summary
   local summary_file=$(find "$task_dir" -name "implementation-summary-*.md" 2>/dev/null | head -1)
@@ -143,7 +143,7 @@ validate_implement_artifact() {
 
 validate_revise_artifact() {
   local task_num=$1
-  local task_dir=".opencode/specs/${task_num}_"*
+  local task_dir="specs/${task_num}_"*
   
   # Find revision report
   local report_file=$(find "$task_dir" -name "revision-001.md" 2>/dev/null | head -1)
@@ -184,7 +184,7 @@ validate_task_artifact() {
   log "Validating task $task_num ($command_type artifact)"
   
   # Check task directory exists
-  local task_dir=".opencode/specs/${task_num}_"*
+  local task_dir="specs/${task_num}_"*
   if [[ ! -d $task_dir ]]; then
     log_status "FAIL" "Task directory not found: $task_num"
     echo "FAIL"
@@ -238,7 +238,7 @@ main() {
   
   # Auto-detect command type if not provided
   if [[ -z "$command_type" ]]; then
-    local task_dir=".opencode/specs/${task_num}_"*
+    local task_dir="specs/${task_num}_"*
     if [[ -d $task_dir ]]; then
       if [[ -f "$task_dir/reports/research-001.md" ]]; then
         command_type="research"

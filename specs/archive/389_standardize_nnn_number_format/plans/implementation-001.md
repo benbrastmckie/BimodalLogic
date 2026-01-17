@@ -71,7 +71,7 @@ The issue is not inconsistent usage, but lack of explicit documentation about th
    - `Rules: {NNN}` → `Rules: {N}`
    - `Active Tasks: {NNN}` → `Active Tasks: {N}`
    - `Tasks to Create ({NNN} total)` → `Tasks to Create ({N} total)`
-3. Preserve correct uses like `.claude/specs/{NNN}_{slug}/`
+3. Preserve correct uses like `specs/{NNN}_{slug}/`
 
 **Verification**:
 - `{NNN}` only used for artifact version numbers

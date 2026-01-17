@@ -101,7 +101,7 @@ Investigate how Claude Code CLI actually passes arguments from user input to age
 4. Document constraints and requirements for new mechanism
 
 **Acceptance Criteria**:
-- [ ] Research report created at `.opencode/specs/260_investigate_claude_code_cli_argument_mechanism/reports/research-001.md`
+- [ ] Research report created at `specs/260_investigate_claude_code_cli_argument_mechanism/reports/research-001.md`
 - [ ] Report includes findings, examples, and recommendations
 - [ ] Report is <5000 words for readability
 
@@ -120,7 +120,7 @@ Investigate how Claude Code CLI actually passes arguments from user input to age
 ## Artifacts & Outputs
 
 **Primary Artifacts**:
-- `.opencode/specs/260_investigate_claude_code_cli_argument_mechanism/reports/research-001.md` - Research report
+- `specs/260_investigate_claude_code_cli_argument_mechanism/reports/research-001.md` - Research report
 
 **Secondary Artifacts**:
 - Test agent files (if created)

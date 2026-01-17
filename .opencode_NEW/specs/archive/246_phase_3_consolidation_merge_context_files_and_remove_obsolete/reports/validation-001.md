@@ -391,7 +391,7 @@ Successfully consolidated OpenCode context system achieving **72% reduction** in
 
 ### Supporting Artifacts
 1. **Content Mapping Document**
-   - Location: `.opencode/specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/content-mapping.md`
+   - Location: `specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/content-mapping.md`
    - Purpose: Track section moves during consolidation
 
 2. **Redirect Files** (1-month deprecation until 2025-01-29)
@@ -407,7 +407,7 @@ Successfully consolidated OpenCode context system achieving **72% reduction** in
    - Contents: command-lifecycle.md, delegation-patterns.md
 
 4. **Validation Report** (this document)
-   - Location: `.opencode/specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/reports/validation-001.md`
+   - Location: `specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/reports/validation-001.md`
 
 ---
 

@@ -45,14 +45,14 @@ context_loading:
          - Log: "Flags: all=${all_flag}, type=${filter_type}"
       
       2. Validate errors.json exists and is valid
-         - Check .opencode/specs/errors.json exists
+         - Check specs/errors.json exists
          - If missing: Return "No errors.json found. System is error-free or errors.json not initialized."
          - Validate is valid JSON with jq
          - If invalid JSON: Return error "errors.json is corrupted. Manual inspection required."
       
       3. Load errors.json content
          - Read full errors.json into memory
-         - errors_data=$(cat .opencode/specs/errors.json)
+         - errors_data=$(cat specs/errors.json)
          - Log: "Loaded errors.json"
       
       4. Filter errors based on flags

@@ -14,8 +14,8 @@
   "research_completed": "2025-12-29",
   "plan_created": "2025-12-29",
   "artifacts": [
-    ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md",
-    ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md"
+    "specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md",
+    "specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md"
   ],
   "plan_metadata": {
     "phases": 6,

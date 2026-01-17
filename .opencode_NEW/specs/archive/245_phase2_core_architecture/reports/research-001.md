@@ -868,7 +868,7 @@ lean_tools:
 mkdir -p .tmp/sessions/${session_id}
 
 # Extract task entry
-grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > .tmp/sessions/${session_id}/task-entry.md
+grep -A 50 "^### ${task_number}\." specs/TODO.md > .tmp/sessions/${session_id}/task-entry.md
 
 # Create focused context
 cat > .tmp/sessions/${session_id}/context.md <<EOF
@@ -1072,13 +1072,13 @@ validate_stage7() {
     revise) expected_status="[COMPLETED]" ;;
   esac
   
-  if ! grep -q "### ${task_number}.*${expected_status}" .opencode/specs/TODO.md; then
+  if ! grep -q "### ${task_number}.*${expected_status}" specs/TODO.md; then
     echo "ERROR: TODO.md not updated with ${expected_status}"
     return 1
   fi
   
   # Check 2: Artifacts linked in TODO.md
-  if ! grep -A 20 "### ${task_number}\." .opencode/specs/TODO.md | grep -q "artifacts"; then
+  if ! grep -A 20 "### ${task_number}\." specs/TODO.md | grep -q "artifacts"; then
     echo "ERROR: Artifacts not linked in TODO.md"
     return 1
   fi
@@ -1090,7 +1090,7 @@ validate_stage7() {
   fi
   
   # Check 4: Timestamp updated
-  if ! grep -A 20 "### ${task_number}\." .opencode/specs/TODO.md | grep -q "Completed:"; then
+  if ! grep -A 20 "### ${task_number}\." specs/TODO.md | grep -q "Completed:"; then
     echo "ERROR: Timestamp not updated"
     return 1
   fi

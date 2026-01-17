@@ -42,7 +42,7 @@ The `todo_cleanup.py` script (`.opencode/scripts/todo_cleanup.py`, 583 lines) pr
 
 ### TODO.md Current Format Issues
 
-Analysis of `.opencode/specs/TODO.md` reveals formatting inconsistencies:
+Analysis of `specs/TODO.md` reveals formatting inconsistencies:
 
 1. **Multiple consecutive blank lines**: Lines 77-84 show 8 consecutive blank lines
 2. **Inconsistent spacing around dividers**: Some dividers have blank lines before/after, others don't
@@ -164,7 +164,7 @@ Create `.opencode/scripts/format_markdown.py` and invoke from /todo command Stag
 ```bash
 # In Stage 4 (RunCleanupScript):
 python3 .opencode/scripts/todo_cleanup.py --tasks "{task_list}"
-python3 .opencode/scripts/format_markdown.py .opencode/specs/TODO.md  # NEW
+python3 .opencode/scripts/format_markdown.py specs/TODO.md  # NEW
 ```
 
 **Pros**: Separation of concerns, reusable for other markdown files
@@ -177,7 +177,7 @@ Install mdformat and invoke from /todo command Stage 4:
 ```bash
 # In Stage 4 (RunCleanupScript):
 python3 .opencode/scripts/todo_cleanup.py --tasks "{task_list}"
-mdformat .opencode/specs/TODO.md  # NEW
+mdformat specs/TODO.md  # NEW
 ```
 
 **Pros**: Industry-standard formatter, handles all edge cases
@@ -246,7 +246,7 @@ If custom formatter proves insufficient or maintenance burden increases, mdforma
 pip install mdformat mdformat-frontmatter
 
 # Invoke from /todo command
-mdformat --wrap keep --end-of-line lf .opencode/specs/TODO.md
+mdformat --wrap keep --end-of-line lf specs/TODO.md
 ```
 
 **When to reconsider**:
@@ -464,7 +464,7 @@ if __name__ == '__main__':
        - 0: Success, proceed to formatting
        - Non-zero: Rollback and abort
     4. Format TODO.md (NEW):
-       - Command: python3 .opencode/scripts/format_markdown.py .opencode/specs/TODO.md
+       - Command: python3 .opencode/scripts/format_markdown.py specs/TODO.md
        - Capture stdout, stderr, exit code
        - Timeout: 30 seconds
     5. Check formatting exit code:
@@ -553,7 +553,7 @@ if __name__ == '__main__':
 
 4. **Document formatting rules**
    - Add comment header to format_markdown.py
-   - Update .opencode/specs/TODO.md header with formatting standards
+   - Update specs/TODO.md header with formatting standards
    - Add formatting section to state-management.md
 
 5. **Test integration**
@@ -651,7 +651,7 @@ if __name__ == '__main__':
    - Relevance: Existing formatting capabilities (divider stacking)
 
 4. **TODO.md Current State**
-   - File: `.opencode/specs/TODO.md`
+   - File: `specs/TODO.md`
    - Lines: 1-2000+ (analyzed first 600 lines)
    - Relevance: Current formatting issues and structure
 

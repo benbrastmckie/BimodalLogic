@@ -7,7 +7,7 @@
 - **Priority**: High
 - **Dependencies**: None
 - **Research Inputs**: 
-  - .opencode/specs/184_truth_lean_build_error/reports/research-001.md
+  - specs/184_truth_lean_build_error/reports/research-001.md
 - **Artifacts**: 
   - plans/implementation-001.md (this file)
   - summaries/implementation-summary-YYYYMMDD.md (created upon completion)
@@ -140,15 +140,15 @@ Fix the build error in `Logos/Core/Semantics/Truth.lean` at line 636. The curren
 ## Artifacts & Outputs
 
 **Primary Artifacts:**
-- `.opencode/specs/184_truth_lean_build_error/plans/implementation-001.md` (this file)
-- `.opencode/specs/184_truth_lean_build_error/summaries/implementation-summary-YYYYMMDD.md` (created upon completion)
+- `specs/184_truth_lean_build_error/plans/implementation-001.md` (this file)
+- `specs/184_truth_lean_build_error/summaries/implementation-summary-YYYYMMDD.md` (created upon completion)
 
 **Modified Files:**
 - `Logos/Core/Semantics/Truth.lean` (lines 625-645, remove helper lemma and fix proof)
 
 **State Updates:**
-- `.opencode/specs/TODO.md` (status: [IN PROGRESS] → [COMPLETED])
-- `.opencode/specs/state.json` (completion timestamp, activity log)
+- `specs/TODO.md` (status: [IN PROGRESS] → [COMPLETED])
+- `specs/state.json` (completion timestamp, activity log)
 
 ## Rollback/Contingency
 

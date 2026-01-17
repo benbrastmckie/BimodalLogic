@@ -218,7 +218,7 @@
 - [x] Query examples
 - [x] Future enhancements
 
-**Location**: `.opencode/specs/197_loogle_cli_integration/implementation/integration-complete.md`
+**Location**: `specs/197_loogle_cli_integration/implementation/integration-complete.md`
 
 ### Summary Documentation
 - [x] implementation-summary.md created
@@ -229,7 +229,7 @@
 - [x] Error handling summary
 - [x] Next steps defined
 
-**Location**: `.opencode/specs/197_loogle_cli_integration/summaries/implementation-summary.md`
+**Location**: `specs/197_loogle_cli_integration/summaries/implementation-summary.md`
 
 ### Query Examples
 - [x] Modal logic queries documented
@@ -238,7 +238,7 @@
 - [x] List operation queries documented
 - [x] Combined search examples
 
-**Location**: `.opencode/specs/197_loogle_cli_integration/implementation/integration-complete.md` Appendix
+**Location**: `specs/197_loogle_cli_integration/implementation/integration-complete.md` Appendix
 
 ---
 

@@ -6,7 +6,7 @@
 - **Effort**: 3.5 hours (increased from 2.5)
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md
+- **Research Inputs**: specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: meta

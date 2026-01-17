@@ -118,7 +118,7 @@ Successfully completed task 256 by finalizing phases 5 and 6 of the /meta comman
 
 ## Files Modified
 
-1. `.opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md`
+1. `specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md`
    - Marked Phase 3 as [COMPLETED]
    - Updated acceptance criteria with [PASS] markers
    - Updated progress tracking (79% → 100%)
@@ -137,12 +137,12 @@ Successfully completed task 256 by finalizing phases 5 and 6 of the /meta comman
 
 ## Files Created
 
-1. `.opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/integration-test-results-20260103.md`
+1. `specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/integration-test-results-20260103.md`
    - 7 comprehensive integration tests
    - Quality metrics and validation results
    - Outstanding issues and recommendations
 
-2. `.opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/implementation-summary-20260103.md`
+2. `specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/implementation-summary-20260103.md`
    - This file - final implementation summary
 
 ---

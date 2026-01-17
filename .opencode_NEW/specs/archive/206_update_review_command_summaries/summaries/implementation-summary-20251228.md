@@ -9,9 +9,9 @@
 - **Language**: markdown
 - **Dependencies**: None
 - **Research Inputs**: 
-  - Main Report: .opencode/specs/206_update_review_command_summaries/reports/research-001.md
-  - Summary: .opencode/specs/206_update_review_command_summaries/summaries/research-summary.md
-- **Plan**: .opencode/specs/206_update_review_command_summaries/plans/implementation-001.md
+  - Main Report: specs/206_update_review_command_summaries/reports/research-001.md
+  - Summary: specs/206_update_review_command_summaries/summaries/research-summary.md
+- **Plan**: specs/206_update_review_command_summaries/plans/implementation-001.md
 - **Artifacts**:
   - summaries/implementation-summary-20251228.md (this file)
 - **Standards**:
@@ -52,7 +52,7 @@ The /review command has been successfully updated to create persistent review su
 - Updated artifact_management section with lazy creation documentation
 
 **Phase 3: Updated state.json Schema** (0.5 hours)
-- Added review_artifacts array to repository_health section in .opencode/specs/state.json
+- Added review_artifacts array to repository_health section in specs/state.json
 - Schema: Array of objects with timestamp, path, scope fields
 - Updated _schema_version from 1.0.0 to 1.1.0 (minor version bump for new optional field)
 - Documented new field in .opencode/context/core/system/state-schema.md
@@ -94,9 +94,9 @@ The /review command has been successfully updated to create persistent review su
 **Files Modified**:
 - .opencode/agent/subagents/reviewer.md (created, 354 lines)
 - .opencode/command/review.md (updated, 8 stages modified)
-- .opencode/specs/state.json (updated, added review_artifacts array)
+- specs/state.json (updated, added review_artifacts array)
 - .opencode/context/core/system/state-schema.md (updated, documented review_artifacts field)
-- .opencode/specs/206_update_review_command_summaries/summaries/implementation-summary-20251228.md (created, this file)
+- specs/206_update_review_command_summaries/summaries/implementation-summary-20251228.md (created, this file)
 
 **Lines Added/Modified**:
 - reviewer.md: 354 lines added
@@ -141,9 +141,9 @@ The /review command has been successfully updated to create persistent review su
 
 ## References
 
-- Research Report: .opencode/specs/206_update_review_command_summaries/reports/research-001.md
-- Research Summary: .opencode/specs/206_update_review_command_summaries/summaries/research-summary.md
-- Implementation Plan: .opencode/specs/206_update_review_command_summaries/plans/implementation-001.md
+- Research Report: specs/206_update_review_command_summaries/reports/research-001.md
+- Research Summary: specs/206_update_review_command_summaries/summaries/research-summary.md
+- Implementation Plan: specs/206_update_review_command_summaries/plans/implementation-001.md
 - Subagent Return Format: .opencode/context/core/standards/subagent-return-format.md
 - Artifact Management: .opencode/context/core/system/artifact-management.md
 - Summary Standard: .opencode/context/core/standards/summary.md

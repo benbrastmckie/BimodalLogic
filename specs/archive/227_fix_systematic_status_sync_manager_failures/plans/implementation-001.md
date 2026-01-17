@@ -5,7 +5,7 @@
 - **Effort**: 11 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md
+- **Research Inputs**: specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -267,7 +267,7 @@ Research has identified the root cause of systematic status update failures: ALL
 
 ### Documentation Artifacts
 - .opencode/context/core/workflows/command-lifecycle.md (updated with examples)
-- .opencode/specs/227_fix_systematic_status_sync_manager_failures/summaries/implementation-summary-YYYYMMDD.md
+- specs/227_fix_systematic_status_sync_manager_failures/summaries/implementation-summary-YYYYMMDD.md
 
 ### Testing Artifacts
 - Integration test results documentation
@@ -301,8 +301,8 @@ Research has identified the root cause of systematic status update failures: ALL
 ### Manual State Restoration Procedure
 If atomic updates fail and rollback doesn't work:
 1. Identify which files are corrupted (TODO.md, state.json, project state.json)
-2. Restore TODO.md from git history: `git checkout HEAD~1 .opencode/specs/TODO.md`
-3. Restore state.json from git history: `git checkout HEAD~1 .opencode/specs/state.json`
-4. Restore project state.json from git history: `git checkout HEAD~1 .opencode/specs/{task_number}_*/state.json`
+2. Restore TODO.md from git history: `git checkout HEAD~1 specs/TODO.md`
+3. Restore state.json from git history: `git checkout HEAD~1 specs/state.json`
+4. Restore project state.json from git history: `git checkout HEAD~1 specs/{task_number}_*/state.json`
 5. Verify all files restored to consistent state
 6. Re-run command after fixing underlying issue

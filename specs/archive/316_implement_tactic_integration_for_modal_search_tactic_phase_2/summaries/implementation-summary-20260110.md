@@ -15,7 +15,7 @@ Task 316 was created to implement Phase 2 (Tactic Integration) of Task 260 (Proo
 
 ### Administrative Updates
 
-1. **Task 260 Summary Updated**: Added Phase 2 completion status to `.claude/specs/260_proof_search/summaries/implementation-summary-20260105.md`
+1. **Task 260 Summary Updated**: Added Phase 2 completion status to `specs/260_proof_search/summaries/implementation-summary-20260105.md`
 
 2. **Cross-References Documented**: Linked Task 315, Task 316, and Task 260 completion status
 
@@ -25,10 +25,10 @@ Task 316 was created to implement Phase 2 (Tactic Integration) of Task 260 (Proo
 
 | File | Change |
 |------|--------|
-| `.claude/specs/260_proof_search/summaries/implementation-summary-20260105.md` | Added Phase 2 completion section |
-| `.claude/specs/316_*/plans/implementation-001.md` | Updated phase statuses |
-| `.claude/specs/TODO.md` | Updated Task 316 status |
-| `.claude/specs/state.json` | Updated Task 316 status |
+| `specs/260_proof_search/summaries/implementation-summary-20260105.md` | Added Phase 2 completion section |
+| `specs/316_*/plans/implementation-001.md` | Updated phase statuses |
+| `specs/TODO.md` | Updated Task 316 status |
+| `specs/state.json` | Updated Task 316 status |
 
 ## Implementation Already Completed (Task 315)
 

@@ -86,8 +86,8 @@ Successfully removed all dry-run and routing-check functionality from the .openc
 18. `.opencode/context/core/system/git-commits.md`
 
 ### State Files (2):
-19. `.opencode/specs/TODO.md` (task 166 completion)
-20. `.opencode/specs/state.json` (task 166 completion)
+19. `specs/TODO.md` (task 166 completion)
+20. `specs/state.json` (task 166 completion)
 
 ## Critical Guardrails Preserved
 

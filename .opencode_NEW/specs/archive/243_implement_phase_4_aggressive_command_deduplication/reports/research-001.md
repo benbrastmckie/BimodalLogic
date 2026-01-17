@@ -886,13 +886,13 @@ grep "Stage 1" research.log plan.log implement.log revise.log
 ```bash
 # Verify /research uses [RESEARCHING] not [PLANNING]
 /research 243
-grep "RESEARCHING" .opencode/specs/TODO.md
-grep -v "PLANNING" .opencode/specs/TODO.md
+grep "RESEARCHING" specs/TODO.md
+grep -v "PLANNING" specs/TODO.md
 
 # Verify /plan uses [PLANNING] not [RESEARCHING]
 /plan 243
-grep "PLANNING" .opencode/specs/TODO.md
-grep -v "RESEARCHING" .opencode/specs/TODO.md
+grep "PLANNING" specs/TODO.md
+grep -v "RESEARCHING" specs/TODO.md
 ```
 
 **Test 2: Routing Variation**
@@ -926,15 +926,15 @@ grep "timeout: 7200" implement.log
 ```bash
 # Verify /research creates reports/research-001.md
 /research 243
-ls .opencode/specs/243_*/reports/research-001.md
+ls specs/243_*/reports/research-001.md
 
 # Verify /plan creates plans/implementation-001.md
 /plan 243
-ls .opencode/specs/243_*/plans/implementation-001.md
+ls specs/243_*/plans/implementation-001.md
 
 # Verify /implement creates implementation files + summary
 /implement 243
-ls .opencode/specs/243_*/summaries/implementation-summary-*.md
+ls specs/243_*/summaries/implementation-summary-*.md
 ```
 
 **Source**: Unit testing and behavior-driven development practices
@@ -949,7 +949,7 @@ ls .opencode/specs/243_*/summaries/implementation-summary-*.md
 ```bash
 # Test selective loading with last task in file
 /research 218  # Last task in TODO.md
-grep -A 50 "^### 218\." .opencode/specs/TODO.md > /tmp/task-218.md
+grep -A 50 "^### 218\." specs/TODO.md > /tmp/task-218.md
 wc -l /tmp/task-218.md  # Should capture all remaining lines
 ```
 
@@ -957,7 +957,7 @@ wc -l /tmp/task-218.md  # Should capture all remaining lines
 ```bash
 # Test selective loading with task >50 lines
 /research 240  # Task with extensive description
-grep -A 50 "^### 240\." .opencode/specs/TODO.md > /tmp/task-240.md
+grep -A 50 "^### 240\." specs/TODO.md > /tmp/task-240.md
 # Verify all required fields captured (Language, Status, Description, etc.)
 ```
 
@@ -1888,7 +1888,7 @@ echo "scale=2; (2805 - {new_total}) / 2805 * 100" | bc
    - Created: Task 211 (Standardize command lifecycle procedures)
 
 2. **Task 237 Implementation Plan** (2025-12-28)
-   - Location: .opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md
+   - Location: specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md
    - Purpose: 4-phase plan to fix context window bloat
    - Phase 4: Aggressive command file deduplication (12-16 hours, 56-72KB savings)
 

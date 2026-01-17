@@ -114,17 +114,17 @@
 
 ### Low Priority (Spec Files)
 
-13. **`.opencode/specs/TODO.md`**
+13. **`specs/TODO.md`**
     - Line 37: Task 169 description mentions /task → /implement rename
     - Line 47: Acceptance criteria about /task references
     - Update: Ensure consistency with rename
 
-14. **`.opencode/specs/171_gap_analysis_20251224/reports/analysis-001.md`**
+14. **`specs/171_gap_analysis_20251224/reports/analysis-001.md`**
     - Line 542: `/add → /research → /plan → /task` workflow
     - Line 577: Integration with /task command
     - Update: All /task references to /implement
 
-15. **`.opencode/specs/research/context-window-protection-and-agent-communication.md`**
+15. **`specs/research/context-window-protection-and-agent-communication.md`**
     - Multiple references to /task command improvements
     - Update: All /task references to /implement
 

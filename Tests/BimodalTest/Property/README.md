@@ -228,4 +228,4 @@ See individual test files for examples:
 
 - [Plausible Framework](https://github.com/leanprover-community/plausible)
 - [Property Testing Guide](../../../docs/development/PROPERTY_TESTING_GUIDE.md)
-- [Research Report](../../../.opencode/specs/174_property_based_testing/reports/research-001.md)
+- [Research Report](../../../specs/174_property_based_testing/reports/research-001.md)

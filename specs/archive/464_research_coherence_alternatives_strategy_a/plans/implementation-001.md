@@ -5,7 +5,7 @@
 - **Effort**: 4 hours
 - **Priority**: High
 - **Dependencies**: Task 458 (Extend canonical_history), Task 257 (Completeness Proofs)
-- **Research Inputs**: .claude/specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md
+- **Research Inputs**: specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -215,7 +215,7 @@ From research-001.md:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness.lean` - Modified with strengthened canonical_task_rel
-- `.claude/specs/464_research_coherence_alternatives_strategy_a/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/464_research_coherence_alternatives_strategy_a/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

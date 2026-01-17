@@ -241,9 +241,9 @@ If task status update is blocked:
 
 ### Related Documentation
 
-- `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/` - Task 213 artifacts
+- `specs/213_resolve_is_valid_swap_involution_blocker/` - Task 213 artifacts
 - `docs/project-info/SORRY_REGISTRY.md` - Confirms 0 sorries in Truth.lean
-- Research report: `.opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md`
+- Research report: `specs/258_resolve_truth_lean_sorries/reports/research-001.md`
 
 ## Notes
 

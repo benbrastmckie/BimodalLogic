@@ -3,7 +3,7 @@
 **Project**: #144_update_context_references_after_refactor  
 **Date**: 2025-12-23  
 **Research Type**: context-reference audit (documentation/agent/command)  
-**Inputs**: 143 implementation plan (.opencode/specs/143_execute_context_refactor_per_plan_127_context_refactor/plans/implementation-001.md), prior references placeholder (.opencode/specs/127_context_refactor/plans/context-references-plan-001.md), refreshed context index/README after refactor
+**Inputs**: 143 implementation plan (specs/143_execute_context_refactor_per_plan_127_context_refactor/plans/implementation-001.md), prior references placeholder (specs/127_context_refactor/plans/context-references-plan-001.md), refreshed context index/README after refactor
 
 ## Research Question
 Enumerate the concrete context references in agent/command documentation that must be updated to match the new `.opencode/context` structure after Task 143’s refactor, including old→new path mapping and per-file edit actions.

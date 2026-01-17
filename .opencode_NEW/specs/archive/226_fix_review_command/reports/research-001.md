@@ -26,7 +26,7 @@ This research analyzes 5 critical issues with the /review command implementation
 **Evidence from review.md Stage 1 (lines 60-69)**:
 ```markdown
 4. Read next_project_number from state.json
-5. Generate project path: .opencode/specs/{number}_codebase_review
+5. Generate project path: specs/{number}_codebase_review
 ```
 
 **Evidence from actual execution (task 225)**:
@@ -35,12 +35,12 @@ This research analyzes 5 critical issues with the /review command implementation
 - Task 225 already exists in TODO.md (different task)
 - Result: Directory number collision
 
-**Root Cause**: /review Stage 1 reads next_project_number from state.json (line 60) but the reviewer subagent receives hardcoded project_path ".opencode/specs/{number}_codebase_review" where {number} is NOT replaced with actual next_project_number. The reviewer creates the directory with whatever number is in the path string.
+**Root Cause**: /review Stage 1 reads next_project_number from state.json (line 60) but the reviewer subagent receives hardcoded project_path "specs/{number}_codebase_review" where {number} is NOT replaced with actual next_project_number. The reviewer creates the directory with whatever number is in the path string.
 
 **Evidence from reviewer.md (lines 36-38)**:
 ```markdown
 <parameter name="project_path" type="string">
-  Project directory path for artifact creation (e.g., .opencode/specs/207_codebase_review)
+  Project directory path for artifact creation (e.g., specs/207_codebase_review)
 </parameter>
 ```
 
@@ -53,15 +53,15 @@ The project_path is passed as a string but /review Stage 1 doesn't actually subs
 **Current Code** (conceptual):
 ```
 4. Read next_project_number from state.json
-5. Generate project path: .opencode/specs/{number}_codebase_review
+5. Generate project path: specs/{number}_codebase_review
 ```
 
 **Fixed Code**:
 ```
 4. Read next_project_number from state.json
 5. Validate next_project_number is valid integer
-6. Generate project path: .opencode/specs/{next_project_number}_codebase_review
-   Example: If next_project_number = 227, path = .opencode/specs/227_codebase_review
+6. Generate project path: specs/{next_project_number}_codebase_review
+   Example: If next_project_number = 227, path = specs/227_codebase_review
 7. Pass actual project_path to reviewer (not template string)
 ```
 
@@ -87,7 +87,7 @@ The project_path is passed as a string but /review Stage 1 doesn't actually subs
 **Evidence from TODO.md**:
 - Task 225 exists: "Fix systematic status-sync-manager TODO.md update failures"
 - No task entry for review project 225_codebase_review
-- Review summary exists at .opencode/specs/225_codebase_review/summaries/review-summary.md
+- Review summary exists at specs/225_codebase_review/summaries/review-summary.md
 - state.json shows project 225 in completed_projects (lines 180-185)
 
 **Root Cause**: /review command creates review project directory and summary artifact but does NOT create a corresponding task entry in TODO.md. The review project exists in state.json completed_projects but has no TODO.md representation.
@@ -156,7 +156,7 @@ The project_path is passed as a string but /review Stage 1 doesn't actually subs
 - **Completed**: 2025-12-29
 - **Priority**: High
 - **Language**: markdown
-- **Review Summary**: [Review Summary](.opencode/specs/225_codebase_review/summaries/review-summary.md)
+- **Review Summary**: [Review Summary](specs/225_codebase_review/summaries/review-summary.md)
 - **Scope**: Full codebase (Lean code, documentation, tests)
 - **Findings**: 6 sorry, 11 axioms, 11 build errors, 87.5% test coverage
 - **Registries Updated**: IMPLEMENTATION_STATUS, SORRY_REGISTRY, TACTIC_REGISTRY, FEATURE_REGISTRY
@@ -363,7 +363,7 @@ Subagents return artifact links + brief summaries (metadata) to calling agents, 
   "artifacts": [
     {
       "type": "summary",
-      "path": ".opencode/specs/227_codebase_review/summaries/review-summary.md",
+      "path": "specs/227_codebase_review/summaries/review-summary.md",
       "summary": "Review findings and 5 follow-up tasks"
     },
     {
@@ -520,7 +520,7 @@ Subagents return artifact links + brief summaries (metadata) to calling agents, 
 
 ### Stage 1: Preflight
 - Read next_project_number from state.json
-- Generate project path: .opencode/specs/{next_project_number}_codebase_review
+- Generate project path: specs/{next_project_number}_codebase_review
 - Load current registries (IMPLEMENTATION_STATUS, SORRY_REGISTRY, TACTIC_REGISTRY, FEATURE_REGISTRY)
 
 ### Stage 2: PrepareDelegation
@@ -768,12 +768,12 @@ All fixes are internal to /review command and reviewer subagent. No changes to:
 
 ### State Management
 - `.opencode/agent/subagents/status-sync-manager.md` - Atomic state updates
-- `.opencode/specs/state.json` - Global state tracking
-- `.opencode/specs/TODO.md` - Task tracking
+- `specs/state.json` - Global state tracking
+- `specs/TODO.md` - Task tracking
 
 ### Evidence
-- `.opencode/specs/225_codebase_review/summaries/review-summary.md` - Example review with issues
-- `.opencode/specs/state.json` (lines 5, 180-185) - Project numbering evidence
+- `specs/225_codebase_review/summaries/review-summary.md` - Example review with issues
+- `specs/state.json` (lines 5, 180-185) - Project numbering evidence
 - `TODO.md` (line 225) - Task collision evidence
 
 ## Conclusion

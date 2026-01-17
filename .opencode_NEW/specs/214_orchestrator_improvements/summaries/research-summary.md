@@ -90,4 +90,4 @@ Review research findings and create implementation plan with `/plan 214` to exec
 ## Full Report
 
 See detailed analysis, code examples, and sources in:  
-`.opencode/specs/214_orchestrator_improvements/reports/research-001.md`
+`specs/214_orchestrator_improvements/reports/research-001.md`

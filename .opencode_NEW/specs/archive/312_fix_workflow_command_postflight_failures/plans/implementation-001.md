@@ -144,7 +144,7 @@ This plan integrates findings from 1 research report:
 **Tasks**:
 1. Add step_0_acquire_lock to git-workflow-manager.md process_flow
 2. Implement lock acquisition logic:
-   - Lock file: `.opencode/specs/.git-commit.lock`
+   - Lock file: `specs/.git-commit.lock`
    - Lock timeout: 60 seconds
    - Store PID and timestamp in lock file
    - Retry with 1-second sleep intervals
@@ -427,7 +427,7 @@ If locking causes issues:
 ### Prerequisites
 - Git installed and configured
 - Bash shell available
-- Write access to .opencode/specs/
+- Write access to specs/
 - Understanding of git staging and commit process
 
 ### External Dependencies
@@ -450,7 +450,7 @@ If locking causes issues:
 5. Git commits are not properly scoped due to concurrent staging
 
 ### Implementation Considerations
-1. Lock file location: `.opencode/specs/.git-commit.lock`
+1. Lock file location: `specs/.git-commit.lock`
    - Visible in git status but not committed
    - Easy to inspect and remove manually
    - Standard location for lock files

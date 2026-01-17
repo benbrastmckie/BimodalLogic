@@ -7,7 +7,7 @@
 - **Effort**: 8-12 hours
 - **Priority**: High
 - **Dependencies**: Task 448 (Build canonical_history - singleton domain MVP - COMPLETED)
-- **Research Inputs**: .claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md
+- **Research Inputs**: specs/458_extend_canonical_history_full_domain/reports/research-001.md
 - **Previous Plan**: implementation-001.md (PARTIAL - blocked by coherence problem)
 - **Type**: lean
 - **Lean Intent**: true

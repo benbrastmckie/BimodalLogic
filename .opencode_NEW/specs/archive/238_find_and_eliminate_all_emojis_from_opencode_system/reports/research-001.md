@@ -12,12 +12,12 @@ Comprehensive scan of the .opencode system identified **1,891 emoji occurrences*
 **Severity**: MODERATE - Emojis are concentrated in artifact files (reports/plans/summaries) rather than core system files (commands/agents/context). The NO EMOJI standard is well-documented but not consistently enforced.
 
 **Primary Locations**:
-- `.opencode/specs/*/reports/*.md`: 1,200+ occurrences (research reports)
-- `.opencode/specs/*/summaries/*.md`: 400+ occurrences (implementation summaries)
-- `.opencode/specs/*/plans/*.md`: 200+ occurrences (implementation plans)
+- `specs/*/reports/*.md`: 1,200+ occurrences (research reports)
+- `specs/*/summaries/*.md`: 400+ occurrences (implementation summaries)
+- `specs/*/plans/*.md`: 200+ occurrences (implementation plans)
 - `.opencode/context/**/*.md`: 91 occurrences (context files)
 - `.opencode/command/*.md`: 15 occurrences (command files)
-- `.opencode/specs/TODO.md`: 1 occurrence (line 138 - status marker reference)
+- `specs/TODO.md`: 1 occurrence (line 138 - status marker reference)
 
 **Pattern Analysis**: Emojis are being introduced by research and implementation workflows, particularly in validation checklists, compliance reports, and status indicators. The `/research`, `/plan`, and `/implement` commands are the primary sources.
 
@@ -25,7 +25,7 @@ Comprehensive scan of the .opencode system identified **1,891 emoji occurrences*
 
 ### 1. TODO.md Analysis
 
-**File**: `.opencode/specs/TODO.md`  
+**File**: `specs/TODO.md`  
 **Emoji Count**: 1 occurrence  
 **Location**: Line 138
 
@@ -51,26 +51,26 @@ formats like [PASS] emoji or no brackets).
 
 | Rank | File | Count | Type |
 |------|------|-------|------|
-| 1 | `.opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md` | 120 | Research Report |
-| 2 | `.opencode/specs/archive/169_task_command_improvements/summaries/implementation-summary-20251224.md` | 103 | Implementation Summary |
-| 3 | `.opencode/specs/archive/217_research_artifact_creation/reports/research-001.md` | 84 | Research Report |
-| 4 | `.opencode/specs/170_maintenance_report_improvements/reports/research-001.md` | 74 | Research Report |
-| 5 | `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-003.md` | 72 | Implementation Plan |
-| 6 | `.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md` | 57 | Research Report |
-| 7 | `.opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md` | 53 | Research Report |
-| 8 | `.opencode/specs/archive/172_documentation/summaries/doc-summary.md` | 51 | Summary |
-| 9 | `.opencode/specs/196_complete_opencode_refactor/plans/implementation-001.md` | 50 | Implementation Plan |
-| 10 | `.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md` | 38 | Research Report |
-| 11 | `.opencode/specs/archive/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251227.md` | 35 | Implementation Summary |
-| 12 | `.opencode/specs/archive/177_examples_update/summaries/implementation-summary-20251225.md` | 35 | Implementation Summary |
-| 13 | `.opencode/specs/archive/172_documentation/summaries/implementation-summary-20251224.md` | 35 | Implementation Summary |
-| 14 | `.opencode/specs/archive/174_property_based_testing/summaries/implementation-summary-20251225.md` | 33 | Implementation Summary |
-| 15 | `.opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md` | 32 | Research Report |
-| 16 | `.opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md` | 28 | Research Report |
-| 17 | `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md` | 28 | Research Report |
-| 18 | `.opencode/specs/archive/172_documentation/reports/research-001.md` | 27 | Research Report |
-| 19 | `.opencode/specs/archive/172_documentation/analysis/doc-gaps-analysis.md` | 27 | Analysis Report |
-| 20 | `.opencode/specs/233_research_and_fix_systematic_command_execution_failures_causing_incomplete_todomd_updates/reports/research-001.md` | 26 | Research Report |
+| 1 | `specs/220_metadata_passing_compliance_verification/reports/research-001.md` | 120 | Research Report |
+| 2 | `specs/archive/169_task_command_improvements/summaries/implementation-summary-20251224.md` | 103 | Implementation Summary |
+| 3 | `specs/archive/217_research_artifact_creation/reports/research-001.md` | 84 | Research Report |
+| 4 | `specs/170_maintenance_report_improvements/reports/research-001.md` | 74 | Research Report |
+| 5 | `specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-003.md` | 72 | Implementation Plan |
+| 6 | `specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md` | 57 | Research Report |
+| 7 | `specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md` | 53 | Research Report |
+| 8 | `specs/archive/172_documentation/summaries/doc-summary.md` | 51 | Summary |
+| 9 | `specs/196_complete_opencode_refactor/plans/implementation-001.md` | 50 | Implementation Plan |
+| 10 | `specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md` | 38 | Research Report |
+| 11 | `specs/archive/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251227.md` | 35 | Implementation Summary |
+| 12 | `specs/archive/177_examples_update/summaries/implementation-summary-20251225.md` | 35 | Implementation Summary |
+| 13 | `specs/archive/172_documentation/summaries/implementation-summary-20251224.md` | 35 | Implementation Summary |
+| 14 | `specs/archive/174_property_based_testing/summaries/implementation-summary-20251225.md` | 33 | Implementation Summary |
+| 15 | `specs/221_fix_comprehensive_status_update_failures/reports/research-001.md` | 32 | Research Report |
+| 16 | `specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md` | 28 | Research Report |
+| 17 | `specs/213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md` | 28 | Research Report |
+| 18 | `specs/archive/172_documentation/reports/research-001.md` | 27 | Research Report |
+| 19 | `specs/archive/172_documentation/analysis/doc-gaps-analysis.md` | 27 | Analysis Report |
+| 20 | `specs/233_research_and_fix_systematic_command_execution_failures_causing_incomplete_todomd_updates/reports/research-001.md` | 26 | Research Report |
 
 #### Common Emoji Usage Patterns in Artifacts
 
@@ -262,10 +262,10 @@ All 8 workflow command files contain explicit `<no_emojis>` tags:
 ### Primary Source: Research Workflow (/research command)
 
 **Evidence**:
-- 120 emojis in `.opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md`
-- 84 emojis in `.opencode/specs/archive/217_research_artifact_creation/reports/research-001.md`
-- 74 emojis in `.opencode/specs/170_maintenance_report_improvements/reports/research-001.md`
-- 57 emojis in `.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md`
+- 120 emojis in `specs/220_metadata_passing_compliance_verification/reports/research-001.md`
+- 84 emojis in `specs/archive/217_research_artifact_creation/reports/research-001.md`
+- 74 emojis in `specs/170_maintenance_report_improvements/reports/research-001.md`
+- 57 emojis in `specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md`
 
 **Pattern**: Research reports use emojis extensively in:
 - Compliance checklists ([PASS]/[FAIL]/[WARN])
@@ -278,10 +278,10 @@ All 8 workflow command files contain explicit `<no_emojis>` tags:
 ### Secondary Source: Implementation Workflow (/implement command)
 
 **Evidence**:
-- 103 emojis in `.opencode/specs/archive/169_task_command_improvements/summaries/implementation-summary-20251224.md`
-- 35 emojis in `.opencode/specs/archive/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251227.md`
-- 35 emojis in `.opencode/specs/archive/177_examples_update/summaries/implementation-summary-20251225.md`
-- 35 emojis in `.opencode/specs/archive/172_documentation/summaries/implementation-summary-20251224.md`
+- 103 emojis in `specs/archive/169_task_command_improvements/summaries/implementation-summary-20251224.md`
+- 35 emojis in `specs/archive/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251227.md`
+- 35 emojis in `specs/archive/177_examples_update/summaries/implementation-summary-20251225.md`
+- 35 emojis in `specs/archive/172_documentation/summaries/implementation-summary-20251224.md`
 
 **Pattern**: Implementation summaries use emojis for:
 - Phase completion status ([PASS])
@@ -294,8 +294,8 @@ All 8 workflow command files contain explicit `<no_emojis>` tags:
 ### Tertiary Source: Planning Workflow (/plan command)
 
 **Evidence**:
-- 72 emojis in `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-003.md`
-- 50 emojis in `.opencode/specs/196_complete_opencode_refactor/plans/implementation-001.md`
+- 72 emojis in `specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-003.md`
+- 50 emojis in `specs/196_complete_opencode_refactor/plans/implementation-001.md`
 
 **Pattern**: Implementation plans use emojis for:
 - Phase validation checklists
@@ -390,7 +390,7 @@ All 8 workflow command files contain explicit `<no_emojis>` tags:
    find .opencode -name "*.md" -type f -exec sed -i 's/ [PASS]$//g' {} \;
    ```
 3. Manual verification of high-impact files:
-   - `.opencode/specs/TODO.md`
+   - `specs/TODO.md`
    - `.opencode/context/core/standards/status-markers.md`
    - All command files
    - All agent files
@@ -563,7 +563,7 @@ Use this checklist when creating or updating documentation:
 - Command specifications (.opencode/command/*.md)
 - Agent specifications (.opencode/agent/**/*.md)
 - Context files (.opencode/context/**/*.md)
-- Artifacts (.opencode/specs/*/reports/*.md, plans/*.md, summaries/*.md)
+- Artifacts (specs/*/reports/*.md, plans/*.md, summaries/*.md)
 - TODO.md and state files
 
 ### Rationale
@@ -819,13 +819,13 @@ The root cause is not a lack of standards but a lack of enforcement mechanisms. 
 
 ## Sources
 
-- `.opencode/specs/TODO.md` - Task 238 description
+- `specs/TODO.md` - Task 238 description
 - `.opencode/context/core/standards/documentation.md` - NO EMOJI policy
 - `.opencode/context/core/standards/status-markers.md` - Status marker standards
 - `.opencode/command/*.md` - Command specifications with `<no_emojis>` tags
-- `.opencode/specs/*/reports/*.md` - Research reports (1,200+ emojis)
-- `.opencode/specs/*/summaries/*.md` - Implementation summaries (400+ emojis)
-- `.opencode/specs/*/plans/*.md` - Implementation plans (200+ emojis)
+- `specs/*/reports/*.md` - Research reports (1,200+ emojis)
+- `specs/*/summaries/*.md` - Implementation summaries (400+ emojis)
+- `specs/*/plans/*.md` - Implementation plans (200+ emojis)
 - `.opencode/context/**/*.md` - Context files (91 emojis)
 - Grep analysis: `rg "[PASS]|[FAIL]|[WARN]" .opencode --type md -c`
 - File count: `find .opencode -name "*.md" -type f | wc -l`

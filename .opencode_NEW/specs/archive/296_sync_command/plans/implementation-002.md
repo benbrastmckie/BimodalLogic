@@ -20,7 +20,7 @@
 
 ## Overview
 
-Create a /sync command that bidirectionally synchronizes .opencode/specs/TODO.md and .opencode/specs/state.json using **git blame line-level timestamps** for intelligent per-field conflict resolution. Unlike the previous plan which used coarse-grained file modification times, this approach examines the git history of each specific field (status, description, priority, etc.) to determine which file has the most recent change to that field. This prevents irrelevant changes to other parts of the file from incorrectly marking the entire file as "newer" and enables true bidirectional synchronization with field-level granularity.
+Create a /sync command that bidirectionally synchronizes specs/TODO.md and specs/state.json using **git blame line-level timestamps** for intelligent per-field conflict resolution. Unlike the previous plan which used coarse-grained file modification times, this approach examines the git history of each specific field (status, description, priority, etc.) to determine which file has the most recent change to that field. This prevents irrelevant changes to other parts of the file from incorrectly marking the entire file as "newer" and enables true bidirectional synchronization with field-level granularity.
 
 **Key Innovation**: Use `git blame` to get the commit timestamp for each line containing task metadata, then resolve conflicts field-by-field based on which file's line was modified most recently. This provides surgical precision in conflict resolution.
 
@@ -182,8 +182,8 @@ Create a /sync command that bidirectionally synchronizes .opencode/specs/TODO.md
 ## Artifacts & Outputs
 
 - .opencode/command/sync.md (command file)
-- .opencode/specs/296_sync_command/plans/implementation-002.md (this file)
-- .opencode/specs/296_sync_command/summaries/implementation-summary-20260105.md (after completion)
+- specs/296_sync_command/plans/implementation-002.md (this file)
+- specs/296_sync_command/summaries/implementation-summary-20260105.md (after completion)
 
 ## Rollback/Contingency
 
@@ -239,11 +239,11 @@ For each field, use `git blame --line-porcelain` to get the commit timestamp:
 
 ```bash
 # Get timestamp for status field in TODO.md (line 1184)
-git blame --line-porcelain -L 1184,1184 .opencode/specs/TODO.md | grep '^author-time' | awk '{print $2}'
+git blame --line-porcelain -L 1184,1184 specs/TODO.md | grep '^author-time' | awk '{print $2}'
 # Output: 1735992000 (Unix epoch seconds)
 
 # Get timestamp for status field in state.json (line 5)
-git blame --line-porcelain -L 5,5 .opencode/specs/state.json | grep '^author-time' | awk '{print $2}'
+git blame --line-porcelain -L 5,5 specs/state.json | grep '^author-time' | awk '{print $2}'
 # Output: 1735995600 (Unix epoch seconds)
 ```
 
@@ -349,7 +349,7 @@ For each field resolution:
 **Handling**:
 1. Detect with `git ls-files --error-unmatch`
 2. Abort sync with error: "state.json not tracked in git. Commit file before sync."
-3. Provide recovery steps: `git add .opencode/specs/state.json && git commit`
+3. Provide recovery steps: `git add specs/state.json && git commit`
 
 ### Edge Case 3: Merge Commits
 
@@ -430,7 +430,7 @@ git blame --line-porcelain -L 1184,1184 TODO.md
 # committer-time 1735992000
 # committer-tz +0000
 # summary Update task status to PLANNED
-# filename .opencode/specs/TODO.md
+# filename specs/TODO.md
 #         - **Status**: [PLANNED]
 ```
 

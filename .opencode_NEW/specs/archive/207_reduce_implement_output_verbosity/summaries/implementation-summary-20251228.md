@@ -19,7 +19,7 @@ Reduced command output verbosity for /implement and /plan commands by implementi
 2. `.opencode/agent/subagents/lean-implementation-agent.md` - Added summary artifact creation in Step 5, updated Step 6 return format, added constraints
 3. `.opencode/command/plan.md` - Updated Stage 8 with brief return format and rationale
 4. `.opencode/agent/subagents/planner.md` - Updated Step 6 to ensure brief summaries, added constraints against summary artifacts
-5. `.opencode/specs/207_reduce_implement_output_verbosity/summaries/implementation-summary-20251228.md` - This summary
+5. `specs/207_reduce_implement_output_verbosity/summaries/implementation-summary-20251228.md` - This summary
 
 ---
 

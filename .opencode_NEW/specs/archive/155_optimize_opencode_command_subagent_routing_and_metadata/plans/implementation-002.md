@@ -10,8 +10,8 @@
 - **Priority**: Medium
 - **Language**: markdown (no Lean intent)
 - **Scope**: commands, agents, contexts, docs, routing (all)
-- **Previous Version**: [.opencode/specs/155_optimize_opencode_command_subagent_routing_and_metadata/plans/implementation-001.md](./implementation-001.md)
-- **Research Inputs**: [.opencode/specs/155_optimize_opencode_command_subagent_routing_and_metadata/reports/research-001.md](../reports/research-001.md)
+- **Previous Version**: [specs/155_optimize_opencode_command_subagent_routing_and_metadata/plans/implementation-001.md](./implementation-001.md)
+- **Research Inputs**: [specs/155_optimize_opencode_command_subagent_routing_and_metadata/reports/research-001.md](../reports/research-001.md)
 - **Standards**: commands.md, tasks.md, plan.md, status-markers.md, artifact-management.md, context-guide.md
 - **Constraints**: Markdown/meta only; lazy directory creation (roots/subdirs only on artifact writes); dry-run/routing checks must avoid directories, artifacts, TODO/state/registry writes; status markers per status-markers.md; command standards and patterns compliance; no Lean routing.
 

@@ -6,7 +6,7 @@
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: [.opencode/specs/155_optimize_opencode_command_subagent_routing_and_metadata/reports/research-001.md](../reports/research-001.md)
+- **Research Inputs**: [specs/155_optimize_opencode_command_subagent_routing_and_metadata/reports/research-001.md](../reports/research-001.md)
 - **Artifacts**: plans/implementation-001.md
 - **Standards**:
   - .opencode/context/core/standards/plan.md

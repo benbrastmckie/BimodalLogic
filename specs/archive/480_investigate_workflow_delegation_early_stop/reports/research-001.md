@@ -11,7 +11,7 @@
 - GitHub Issues: anthropics/claude-code#6159, anthropics/claude-code-action#599
 - Anthropic documentation: claude-code-best-practices
 - subagent-return.md specification
-**Artifacts**: - .claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md
+**Artifacts**: - specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md
 **Standards**: report-format.md, subagent-return.md
 
 ## Executive Summary

@@ -5,7 +5,7 @@
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: None (all prerequisites exist)
-- **Research Inputs**: .claude/specs/481_finite_history_from_state/reports/research-001.md
+- **Research Inputs**: specs/481_finite_history_from_state/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -97,7 +97,7 @@ is a separate concern handled by Task 450 (completeness_theorems).
 ## Artifacts & Outputs
 
 - Modified: `Logos/Core/Metalogic/FiniteCanonicalModel.lean` (nullity proof)
-- Summary: `.claude/specs/481_finite_history_from_state/summaries/implementation-summary-{DATE}.md`
+- Summary: `specs/481_finite_history_from_state/summaries/implementation-summary-{DATE}.md`
 
 ## Rollback/Contingency
 

@@ -22,7 +22,7 @@ The artifact linking failure for task 429 stems from a gap between documented in
   - Plan link: present
   - **Summary link: MISSING**
 
-The implementation completed successfully (summary file exists at `.claude/specs/429_extend_command_skill_agent_integration_to_meta/summaries/implementation-summary-20260112.md`) but the link was never added to TODO.md.
+The implementation completed successfully (summary file exists at `specs/429_extend_command_skill_agent_integration_to_meta/summaries/implementation-summary-20260112.md`) but the link was never added to TODO.md.
 
 ### 2. Architecture Gap Analysis
 
@@ -140,8 +140,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     last_updated: $ts,
     artifacts: ((.artifacts // []) + [{"path": $path, "type": $type}])
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  }' specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 ```
 
 **Add to TODO.md** (via Edit tool):
@@ -185,7 +185,7 @@ After artifact linking, verify links exist:
 
 For each artifact path in skill result:
 ```bash
-if ! grep -A 30 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "{artifact_path}"; then
+if ! grep -A 30 "^### ${task_number}\." specs/TODO.md | grep -q "{artifact_path}"; then
   echo "WARNING: Artifact not linked in TODO.md: {artifact_path}"
   echo "Manual fix needed"
 fi
@@ -207,12 +207,12 @@ A dedicated skill/utility to handle artifact linking consistently across all com
 
 ## References
 
-- `.claude/specs/429_extend_command_skill_agent_integration_to_meta/` - Affected task with missing summary link
+- `specs/429_extend_command_skill_agent_integration_to_meta/` - Affected task with missing summary link
 - `.claude/commands/implement.md` - Implementation command (lines 176-180)
 - `.claude/commands/research.md` - Research command (lines 133-135)
 - `.claude/commands/plan.md` - Plan command (lines 131-133)
 - `.claude/skills/skill-status-sync/SKILL.md` - Documented patterns (lines 164-326)
-- `.claude/specs/archive/386_fix_command_artifact_linking_in_todo_md/` - Prior fix attempt
+- `specs/archive/386_fix_command_artifact_linking_in_todo_md/` - Prior fix attempt
 
 ## Next Steps
 

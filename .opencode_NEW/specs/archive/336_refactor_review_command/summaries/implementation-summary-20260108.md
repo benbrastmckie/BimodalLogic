@@ -62,7 +62,7 @@ Refactored /review command and reviewer subagent to follow modern .opencode stan
 
 ## References
 
-- Implementation Plan: .opencode/specs/336_refactor_review_command/plans/implementation-001.md
+- Implementation Plan: specs/336_refactor_review_command/plans/implementation-001.md
 - Command File: .opencode/command/review.md (210 lines)
 - Subagent File: .opencode/agent/subagents/reviewer.md (540 lines)
 - Standards: .opencode/context/core/formats/subagent-return.md

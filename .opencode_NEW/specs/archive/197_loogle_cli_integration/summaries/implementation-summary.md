@@ -60,14 +60,14 @@ Successfully integrated Loogle CLI into lean-research-agent, enabling type-based
   - Error handling and fallback strategy
 
 ### Documentation Created
-- `.opencode/specs/197_loogle_cli_integration/implementation/integration-complete.md`
+- `specs/197_loogle_cli_integration/implementation/integration-complete.md`
   - Comprehensive implementation documentation
   - Phase-by-phase completion summary
   - Architecture overview
   - Performance characteristics
   - Query examples
 
-- `.opencode/specs/197_loogle_cli_integration/summaries/implementation-summary.md`
+- `specs/197_loogle_cli_integration/summaries/implementation-summary.md`
   - This summary document
 
 ---

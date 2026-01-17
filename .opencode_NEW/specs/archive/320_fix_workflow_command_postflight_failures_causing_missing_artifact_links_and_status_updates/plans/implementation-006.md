@@ -34,7 +34,7 @@
 - ✗ **TODO.md NOT staged** in git commit
 - ✗ **Artifact links NOT added** to TODO.md
 
-**Evidence**: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md`
+**Evidence**: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md`
 
 **Conclusion**: **The problem STILL EXISTS** - task 321 did NOT fix it
 
@@ -426,14 +426,14 @@ Minimum requirements:
 
 ### Task 321 Implementation
 
-- **Summary**: `.opencode/specs/archive/321_fix_workflow_command_preflight_status_update_failures/summaries/implementation-summary-20260105.md`
-- **Plan**: `.opencode/specs/archive/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md`
+- **Summary**: `specs/archive/321_fix_workflow_command_preflight_status_update_failures/summaries/implementation-summary-20260105.md`
+- **Plan**: `specs/archive/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md`
 - **What it fixed**: Bugs #7, #3, #2 in status-sync-manager, enhanced subagents, created status-markers.md
 - **What it didn't fix**: TODO.md update problem (proven by task 323 test)
 
 ### Task 323 Test Case
 
-- **Workflow Report**: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md`
+- **Workflow Report**: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md`
 - **Evidence**: Appendix D (Discrepancy Analysis)
 - **Git Commit**: 14abf52
 - **Finding**: TODO.md not updated despite state.json being updated correctly
@@ -447,9 +447,9 @@ Minimum requirements:
 
 ### Research Reports
 
-- **Research-001**: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md`
-- **Research-002**: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md` (status-sync-manager bugs)
-- **Research-003**: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-003.md` (task 321 analysis)
+- **Research-001**: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md`
+- **Research-002**: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md` (status-sync-manager bugs)
+- **Research-003**: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-003.md` (task 321 analysis)
 
 ---
 

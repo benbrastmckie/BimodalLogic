@@ -14,7 +14,7 @@ The root cause is a parsing logic flaw where numeric arguments are discarded bef
 
 ## Research Inputs
 
-- **Research Report**: [reports/research-001.md](.opencode/specs/163_fix_research_and_plan_task_number_parser_regression_range_number_handling/reports/research-001.md)
+- **Research Report**: [reports/research-001.md](specs/163_fix_research_and_plan_task_number_parser_regression_range_number_handling/reports/research-001.md)
   - Identified parsing regression: numeric tokens discarded when preflight expects list object
   - Range parsing lacks numeric-only guard before prompting
   - Subagent wrappers depend on task-executor for TODO/state preflight
@@ -139,7 +139,7 @@ The root cause is a parsing logic flaw where numeric arguments are discarded bef
 **Tasks**:
 1. Review and enforce lazy creation in `/research`:
    - No project root creation during parsing/validation
-   - Create `.opencode/specs/{id}_{slug}/` only when writing first artifact
+   - Create `specs/{id}_{slug}/` only when writing first artifact
    - Create `reports/` subdirectory only when writing research report
    - Ensure preflight failures leave no filesystem artifacts
 

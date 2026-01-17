@@ -317,12 +317,12 @@ All commands correctly specify lazy directory creation:
 
 #### /task Command (task.md)
 - Line 22: `creates_root_on: "Only when delegated agent writes first artifact"`
-- Line 96: "Derive slug `.opencode/specs/NNN_slug/`; create project root/subdir only when writing an artifact"
+- Line 96: "Derive slug `specs/NNN_slug/`; create project root/subdir only when writing an artifact"
 - **Compliance**: [PASS] Correct
 
 **task-executor.md**:
 - Lines 229-251: Stage 4 (CreateProjectDirectory) with lazy creation
-- Line 235: "Lazily create directory: .opencode/specs/NNN_task_name/ **only immediately before writing the first artifact**"
+- Line 235: "Lazily create directory: specs/NNN_task_name/ **only immediately before writing the first artifact**"
 - Line 249: "If execution only updates TODO/status markers with no artifacts, **skip directory creation entirely**"
 - **Compliance**: [PASS] Correct
 

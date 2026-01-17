@@ -35,7 +35,7 @@ This plan implements archival functionality in the `/todo` command to automatica
 
 ## Research Inputs
 
-**Research Report**: `.opencode/specs/201_todo_archival_feature/reports/research-001.md`
+**Research Report**: `specs/201_todo_archival_feature/reports/research-001.md`
 
 **Key Research Findings**:
 1. **Current Limitation**: `/todo` removes tasks but doesn't preserve artifacts
@@ -83,7 +83,7 @@ This plan implements archival functionality in the `/todo` command to automatica
   <process>
     1. For each task to archive:
        a. Extract task metadata (number, slug, title, status, dates)
-       b. Check if project directory exists: .opencode/specs/{number}_{slug}/
+       b. Check if project directory exists: specs/{number}_{slug}/
        c. If exists: Prepare directory move operation
        d. If missing: Log info (task has no artifacts)
     2. Ensure archive/state.json exists (self-healing)
@@ -108,11 +108,11 @@ This plan implements archival functionality in the `/todo` command to automatica
 ```python
 def ensure_archive_state_exists():
     """Create archive/state.json from template if missing"""
-    archive_state_path = ".opencode/specs/archive/state.json"
+    archive_state_path = "specs/archive/state.json"
     
     if not exists(archive_state_path):
         # Ensure directory exists
-        mkdir_p(".opencode/specs/archive/")
+        mkdir_p("specs/archive/")
         
         # Create from template
         template = {
@@ -171,7 +171,7 @@ def build_archive_entry(task):
         "archived": current_date(),  # YYYY-MM-DD
         "summary": task["title"],  # Task title as summary
         "artifacts": {
-            "base_path": f".opencode/specs/archive/{task['number']}_{slug}/"
+            "base_path": f"specs/archive/{task['number']}_{slug}/"
         }
     }
     
@@ -199,8 +199,8 @@ def prepare_directory_moves(tasks_to_archive):
     for task in tasks_to_archive:
         # Build source and destination paths
         slug = build_slug(task["title"])
-        src = f".opencode/specs/{task['number']}_{slug}"
-        dst = f".opencode/specs/archive/{task['number']}_{slug}"
+        src = f"specs/{task['number']}_{slug}"
+        dst = f"specs/archive/{task['number']}_{slug}"
         
         # Check if source exists
         if exists(src):
@@ -335,11 +335,11 @@ def rollback_archival(backup_files, attempted_moves):
         rollback_log.append("Restored TODO.md from backup")
     
     if exists("state.json.bak"):
-        shutil.copy("state.json.bak", ".opencode/specs/state.json")
+        shutil.copy("state.json.bak", "specs/state.json")
         rollback_log.append("Restored state.json from backup")
     
     if exists("archive/state.json.bak"):
-        shutil.copy("archive/state.json.bak", ".opencode/specs/archive/state.json")
+        shutil.copy("archive/state.json.bak", "specs/archive/state.json")
         rollback_log.append("Restored archive/state.json from backup")
     
     # Reverse directory moves
@@ -469,9 +469,9 @@ def execute_directory_moves(move_operations):
   <process>
     1. Stage files:
        - git add TODO.md
-       - git add .opencode/specs/state.json
-       - git add .opencode/specs/archive/state.json
-       - git add .opencode/specs/archive/  # Pick up moved directories
+       - git add specs/state.json
+       - git add specs/archive/state.json
+       - git add specs/archive/  # Pick up moved directories
     2. Verify staged changes:
        - git status --short
     3. Create commit:
@@ -526,7 +526,7 @@ def execute_directory_moves(move_operations):
     
     Remaining active tasks: {remaining_count}
     
-    Archive location: .opencode/specs/archive/state.json
+    Archive location: specs/archive/state.json
   </return_format>
 </stage>
 ```
@@ -578,7 +578,7 @@ def execute_directory_moves(move_operations):
    - Expected: Early exit with message "No tasks to archive"
 
 2. **Task without project directory**
-   - Task 172 is [COMPLETED] but no .opencode/specs/172_*/ exists
+   - Task 172 is [COMPLETED] but no specs/172_*/ exists
    - Expected: Archive task, skip directory move, log info
 
 3. **Missing archive/state.json**
@@ -779,10 +779,10 @@ None (all functionality self-contained)
 
 ## Related Documentation
 
-- **Research Report**: `.opencode/specs/201_todo_archival_feature/reports/research-001.md`
-- **Research Summary**: `.opencode/specs/201_todo_archival_feature/summaries/research-summary.md`
+- **Research Report**: `specs/201_todo_archival_feature/reports/research-001.md`
+- **Research Summary**: `specs/201_todo_archival_feature/summaries/research-summary.md`
 - **Existing /todo Command**: `.opencode/command/todo.md`
-- **Archive State Schema**: `.opencode/specs/archive/state.json`
+- **Archive State Schema**: `specs/archive/state.json`
 - **State Schema Reference**: `.opencode/context/core/system/state-schema.md`
 - **Status Markers**: `.opencode/context/core/standards/status-markers.md`
 - **Git Commits Standard**: `.opencode/context/core/system/git-commits.md`

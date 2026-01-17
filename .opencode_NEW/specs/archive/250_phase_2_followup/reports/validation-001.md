@@ -399,21 +399,21 @@ Phase 2 follow-up validation reveals a **PARTIAL PASS** status:
 
 ### Metrics Files
 
-- `.opencode/specs/250_phase_2_followup/metrics/baseline_metrics.json`
-- `.opencode/specs/250_phase_2_followup/metrics/current_state.json`
-- `.opencode/specs/250_phase_2_followup/metrics/line_count_report.json`
+- `specs/250_phase_2_followup/metrics/baseline_metrics.json`
+- `specs/250_phase_2_followup/metrics/current_state.json`
+- `specs/250_phase_2_followup/metrics/line_count_report.json`
 
 ### Scripts
 
-- `.opencode/specs/250_phase_2_followup/scripts/measure_current_state.sh`
+- `specs/250_phase_2_followup/scripts/measure_current_state.sh`
 
 ### Reports
 
-- `.opencode/specs/250_phase_2_followup/reports/validation-001.md` (this document)
+- `specs/250_phase_2_followup/reports/validation-001.md` (this document)
 
 ### Summary
 
-- `.opencode/specs/250_phase_2_followup/summaries/implementation-summary-20251229.md` (to be created)
+- `specs/250_phase_2_followup/summaries/implementation-summary-20251229.md` (to be created)
 
 ---
 

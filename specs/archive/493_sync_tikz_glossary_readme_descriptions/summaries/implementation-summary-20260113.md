@@ -38,7 +38,7 @@ Synchronized the extension architecture descriptions across three documentation 
 - `Theories/Logos/latex/subfiles/00-Introduction.tex` - Choice operators updated to FP/FF/Ch
 - `Theories/Logos/docs/reference/GLOSSARY.md` - Restructured with all extensions, added Social, separated Abilities/Choice
 - `README.md` - New ASCII diagram with parallel agent-dependent extensions, added Social
-- `.claude/specs/493_sync_tikz_glossary_readme_descriptions/plans/implementation-001.md` - Phase status updates
+- `specs/493_sync_tikz_glossary_readme_descriptions/plans/implementation-001.md` - Phase status updates
 
 ## Verification
 

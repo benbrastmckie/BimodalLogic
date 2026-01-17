@@ -5,7 +5,7 @@
 - **Effort**: 5 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/494_bimodal_demo_presentation/reports/research-001.md
+- **Research Inputs**: specs/494_bimodal_demo_presentation/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -150,7 +150,7 @@ Research report (research-001.md) identified:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Examples/Demo.lean` - Main demo presentation file
-- `.claude/specs/494_bimodal_demo_presentation/summaries/implementation-summary-{DATE}.md` - Completion summary
+- `specs/494_bimodal_demo_presentation/summaries/implementation-summary-{DATE}.md` - Completion summary
 
 ## Rollback/Contingency
 

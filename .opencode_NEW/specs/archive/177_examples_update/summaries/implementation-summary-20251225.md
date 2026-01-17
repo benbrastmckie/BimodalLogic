@@ -363,5 +363,5 @@ From TODO.md Task 177:
 ---
 
 **Summary Generated**: 2025-12-25  
-**Plan Reference**: `.opencode/specs/177_examples_update/plans/implementation-001.md`  
-**Research Reference**: `.opencode/specs/177_examples_update/reports/research-001.md`
+**Plan Reference**: `specs/177_examples_update/plans/implementation-001.md`  
+**Research Reference**: `specs/177_examples_update/reports/research-001.md`

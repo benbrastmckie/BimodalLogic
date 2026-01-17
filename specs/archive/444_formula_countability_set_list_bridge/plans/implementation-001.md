@@ -5,7 +5,7 @@
 - **Effort**: 6-8 hours
 - **Priority**: Low
 - **Dependencies**: None (first phase of Task 257)
-- **Research Inputs**: .claude/specs/444_formula_countability_set_list_bridge/reports/research-001.md
+- **Research Inputs**: specs/444_formula_countability_set_list_bridge/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -204,7 +204,7 @@ Key findings from research-001.md integrated into this plan:
 - `Theories/Bimodal/Syntax/Formula.lean` - Updated with Countable instances
 - `Theories/Bimodal/Metalogic/Completeness.lean` - Refactored to set-based canonical model
 - `Theories/Bimodal/docs/user-guide/ARCHITECTURE.md` - Updated documentation
-- `.claude/specs/444_formula_countability_set_list_bridge/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/444_formula_countability_set_list_bridge/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

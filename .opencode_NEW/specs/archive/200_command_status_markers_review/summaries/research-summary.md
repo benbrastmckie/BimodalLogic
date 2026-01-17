@@ -80,4 +80,4 @@ The three recommendations are optional enhancements for improved clarity, not fi
 
 ## Full Report
 
-See detailed findings and verification: `.opencode/specs/200_command_status_markers_review/reports/research-001.md`
+See detailed findings and verification: `specs/200_command_status_markers_review/reports/research-001.md`

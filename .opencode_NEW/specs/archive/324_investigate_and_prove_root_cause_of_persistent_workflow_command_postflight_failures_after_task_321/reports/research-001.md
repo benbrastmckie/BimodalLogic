@@ -64,7 +64,7 @@ This investigation does NOT:
 
 ### Evidence 1: Task 323 Workflow Execution Report
 
-**Source**: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md`
+**Source**: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md`
 
 **Key Findings from Report**:
 
@@ -90,7 +90,7 @@ This investigation does NOT:
         .status = $status | 
         .last_updated = $timestamp | 
         .research_completed = $research_completed | 
-        .artifacts = [".opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"] 
+        .artifacts = ["specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"] 
       else . end]' \
       state.json > state.json.tmp && mv state.json.tmp state.json
    ```
@@ -100,8 +100,8 @@ This investigation does NOT:
 
 3. **Git Commit** (lines 599-646):
    ```bash
-   git add .opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
-   git add .opencode/specs/state.json
+   git add specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
+   git add specs/state.json
    git commit -m "task 323: research completed on markdown formatting for /todo command..."
    ```
    - Files committed: research-001.md, state.json
@@ -138,7 +138,7 @@ This investigation does NOT:
   "last_updated": "2026-01-05",
   "research_completed": "2026-01-05",
   "artifacts": [
-    ".opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"
+    "specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md"
   ]
 }
 ```
@@ -172,11 +172,11 @@ git show 14abf52 --stat
 ```
 
 **Files changed in commit 14abf52**:
-1. `.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md` (new file, +705 lines)
-2. `.opencode/specs/state.json` (modified, +2/-2 lines)
+1. `specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md` (new file, +705 lines)
+2. `specs/state.json` (modified, +2/-2 lines)
 
 **Files NOT changed**:
-- `.opencode/specs/TODO.md` (NOT MODIFIED)
+- `specs/TODO.md` (NOT MODIFIED)
 
 **Conclusion**: TODO.md was never staged or committed, proving it was never updated during postflight.
 
@@ -225,7 +225,7 @@ git show 14abf52 --stat
        VERIFY status-sync-manager return:
          - VERIFY return format matches subagent-return-format.md
          - VERIFY status field == "completed" (not "failed" or "partial")
-         - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+         - VERIFY files_updated includes ["specs/TODO.md", "state.json"]
          - IF validation fails: ABORT with error details
        
        LOG: "status-sync-manager completed: {files_updated}"
@@ -235,7 +235,7 @@ git show 14abf52 --stat
        Read state.json to verify status:
          actual_status=$(jq -r --arg num "$task_number" \
            '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-           .opencode/specs/state.json)
+           specs/state.json)
        
        IF actual_status != "researched":
          - Log error: "Postflight verification failed - status not updated"
@@ -244,7 +244,7 @@ git show 14abf52 --stat
          - DO NOT proceed to git commit
        
        Read TODO.md to verify artifact link:
-         grep -q "{research_report_path}" .opencode/specs/TODO.md
+         grep -q "{research_report_path}" specs/TODO.md
        
        IF artifact link not found:
          - Log error: "Postflight verification failed - artifact not linked"
@@ -279,15 +279,15 @@ git show 14abf52 --stat
 
 **step_3_prepare_updates** (lines 454-604):
 - Line 458: "Regenerate TODO.md YAML header from state.json"
-- Line 462: "Update .opencode/specs/TODO.md task entry in memory"
+- Line 462: "Update specs/TODO.md task entry in memory"
 - Line 465: "Add artifact links from validated_artifacts"
 - Line 469: "Update state.json in memory"
 
 **step_4_commit** (lines 606-676):
 - Line 621: "Write updated TODO.md content to todo_tmp"
 - Line 622: "Write updated state.json content to state_tmp"
-- Line 637: "Rename todo_tmp to .opencode/specs/TODO.md (atomic operation)"
-- Line 638: "Rename state_tmp to .opencode/specs/state.json (atomic operation)"
+- Line 637: "Rename todo_tmp to specs/TODO.md (atomic operation)"
+- Line 638: "Rename state_tmp to specs/state.json (atomic operation)"
 
 **step_5_return** (lines 678-726):
 - Line 688: "Verify status marker was actually updated in TODO.md"
@@ -650,13 +650,13 @@ grep -A 5 "^### <task_number>\." TODO.md | grep "Status.*RESEARCHED"
 ### Primary Evidence
 
 1. **Task 323 Workflow Execution Report**
-   - Path: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md`
+   - Path: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/artifacts/task-323-workflow-execution-report.md`
    - Lines: 1436
    - Size: ~70KB
    - Key Sections: Preflight (lines 48-207), Postflight (lines 502-678), Discrepancy Analysis (lines 1234-1436)
 
 2. **Task 323 Research Report**
-   - Path: `.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md`
+   - Path: `specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md`
    - Lines: 699
    - Size: 23KB
    - Status: Created successfully, validated
@@ -672,12 +672,12 @@ grep -A 5 "^### <task_number>\." TODO.md | grep "Status.*RESEARCHED"
    - Key Sections: update_status_flow (lines 370-726), step_4_commit (lines 606-676)
 
 5. **state.json**
-   - Path: `.opencode/specs/state.json`
+   - Path: `specs/state.json`
    - Task 323 entry: Lines 853-870
    - Status: "researched" (CORRECT)
 
 6. **TODO.md**
-   - Path: `.opencode/specs/TODO.md`
+   - Path: `specs/TODO.md`
    - Task 323 entry: Lines 890-900
    - Status: [NOT STARTED] (INCORRECT)
 
@@ -689,7 +689,7 @@ grep -A 5 "^### <task_number>\." TODO.md | grep "Status.*RESEARCHED"
    - Files NOT changed: TODO.md
 
 2. **Task 320 Plan v6**
-   - Path: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-006.md`
+   - Path: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-006.md`
    - Revision reason: "Plan v5 was INCORRECT - claimed task 321 completed all work without empirical verification"
 
 ---
@@ -700,28 +700,28 @@ grep -A 5 "^### <task_number>\." TODO.md | grep "Status.*RESEARCHED"
 
 ```bash
 # Check state.json status
-jq -r '.active_projects[] | select(.project_number == 323) | {status, research_completed, artifacts}' .opencode/specs/state.json
+jq -r '.active_projects[] | select(.project_number == 323) | {status, research_completed, artifacts}' specs/state.json
 
 # Check TODO.md status
-grep -A 10 "^### 323\." .opencode/specs/TODO.md | grep "Status"
+grep -A 10 "^### 323\." specs/TODO.md | grep "Status"
 
 # Check git commit
 git show 14abf52 --stat
 
 # Check research artifact exists
-ls -lh .opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
+ls -lh specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md
 ```
 
 ### Find All Affected Tasks
 
 ```bash
 # Find tasks with status="researched" in state.json
-jq -r '.active_projects[] | select(.status == "researched") | .project_number' .opencode/specs/state.json
+jq -r '.active_projects[] | select(.status == "researched") | .project_number' specs/state.json
 
 # For each task, check if TODO.md shows [RESEARCHED]
-for task in $(jq -r '.active_projects[] | select(.status == "researched") | .project_number' .opencode/specs/state.json); do
+for task in $(jq -r '.active_projects[] | select(.status == "researched") | .project_number' specs/state.json); do
   echo "Task $task:"
-  grep -A 5 "^### $task\." .opencode/specs/TODO.md | grep "Status" || echo "  NOT FOUND IN TODO.md"
+  grep -A 5 "^### $task\." specs/TODO.md | grep "Status" || echo "  NOT FOUND IN TODO.md"
 done
 ```
 

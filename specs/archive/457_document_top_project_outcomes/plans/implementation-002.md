@@ -36,7 +36,7 @@ Refocused outcomes per user direction:
 
 ## Dependencies
 
-- Research report: `.claude/specs/457_document_top_project_outcomes/reports/research-001.md` (complete)
+- Research report: `specs/457_document_top_project_outcomes/reports/research-001.md` (complete)
 - Previous plan: `implementation-001.md` (superseded)
 
 ## Success Criteria

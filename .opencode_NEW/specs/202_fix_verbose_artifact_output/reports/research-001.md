@@ -16,7 +16,7 @@
   - .opencode/agent/subagents/planner.md
   - .opencode/agent/subagents/task-executor.md
   - .opencode/context/core/standards/subagent-return-format.md
-  - .opencode/specs/169_task_command_improvements/reports/research-001.md (Task 169 findings)
+  - specs/169_task_command_improvements/reports/research-001.md (Task 169 findings)
 - **Artifacts**: This report
 - **Standards**: subagent-return-format.md, status-markers.md, artifact-management.md
 
@@ -135,12 +135,12 @@ Implementation completed for task {number}
   "artifacts": [
     {
       "type": "research",
-      "path": ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md",
+      "path": "specs/{task_number}_{topic_slug}/reports/research-001.md",
       "summary": "Detailed research report with findings and citations"
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/{task_number}_{topic_slug}/summaries/research-summary.md",
+      "path": "specs/{task_number}_{topic_slug}/summaries/research-summary.md",
       "summary": "Concise summary of key findings and recommendations"
     }
   ],
@@ -195,7 +195,7 @@ Implementation completed for task {number}
   "artifacts": [
     {
       "type": "plan",
-      "path": ".opencode/specs/{task_number}_{topic_slug}/plans/implementation-001.md",
+      "path": "specs/{task_number}_{topic_slug}/plans/implementation-001.md",
       "summary": "Implementation plan with {N} phases"
     }
   ],
@@ -412,7 +412,7 @@ task-executor returns full coordinator_results instead of extracting just the su
   "artifacts": [
     {
       "type": "batch_summary",
-      "path": ".opencode/specs/batch_{timestamp}/summaries/batch-summary.md",
+      "path": "specs/batch_{timestamp}/summaries/batch-summary.md",
       "summary": "Detailed batch execution summary"
     }
   ],
@@ -453,7 +453,7 @@ task-executor returns full coordinator_results instead of extracting just the su
 
 #### Fix 3: Create Batch Summary Artifact
 
-**New Artifact**: .opencode/specs/batch_{timestamp}/summaries/batch-summary.md
+**New Artifact**: specs/batch_{timestamp}/summaries/batch-summary.md
 
 When batch-task-orchestrator executes multiple tasks, create a batch summary artifact containing:
 - Dependency analysis results
@@ -577,4 +577,4 @@ The verbose artifact output problem is **real and localized** to task-executor a
 7. .opencode/agent/subagents/planner.md - Planner subagent specification
 8. .opencode/agent/subagents/task-executor.md - Task executor subagent specification
 9. .opencode/agent/subagents/batch-task-orchestrator.md - Batch task orchestrator subagent specification
-10. .opencode/specs/169_task_command_improvements/reports/research-001.md - Task 169 research findings
+10. specs/169_task_command_improvements/reports/research-001.md - Task 169 research findings

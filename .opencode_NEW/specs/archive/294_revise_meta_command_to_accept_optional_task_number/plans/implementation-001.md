@@ -12,7 +12,7 @@
 - **Plan Version**: 001
 - **Research Integrated**: Yes
 - **Research Artifacts**:
-  - `.opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md`
+  - `specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md`
 
 ---
 
@@ -250,7 +250,7 @@ This implementation will:
 **Tasks**:
 1. Add mode check at start of Stage 8
 2. Implement Task Mode branch:
-   - Use existing task directory: `.opencode/specs/{task_number}_{project_name}/`
+   - Use existing task directory: `specs/{task_number}_{project_name}/`
    - Create plans/ subdirectory if not exists
    - Generate plan artifact: `plans/implementation-001.md`
    - Include metadata from task (number, description, priority, etc.)
@@ -539,7 +539,7 @@ This implementation will:
    - Interview stages skip logic for task context
    - Return format updated with task_number and mode
 
-3. **Plan Artifacts**: `.opencode/specs/{task_number}_{project_name}/plans/implementation-001.md`
+3. **Plan Artifacts**: `specs/{task_number}_{project_name}/plans/implementation-001.md`
    - Created for tasks in Task Mode
    - Follows plan.md template standard
    - Includes metadata, phases, testing, artifacts sections

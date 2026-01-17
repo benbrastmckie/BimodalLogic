@@ -259,7 +259,7 @@ Note: GLOSSARY.md uses `≺_a` for preference and `↦` for normative explanatio
 
 - `Theories/Logos/latex/subfiles/00-Introduction.tex` - Updated TikZ diagram
 - `Theories/Logos/docs/reference/GLOSSARY.md` - Updated symbol + new tables
-- `.claude/specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-YYYYMMDD.md`
+- `specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-YYYYMMDD.md`
 
 ## Rollback/Contingency
 

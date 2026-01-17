@@ -29,7 +29,7 @@ Investigation revealed that the verbose artifact output issue described in the r
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
+      "path": "specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
       "summary": "Implementation summary"
     }
   ],
@@ -86,7 +86,7 @@ Investigation revealed that the verbose artifact output issue described in the r
 ### 3. Research Report Analysis
 
 **Research Date**: 2025-12-27  
-**Research Source**: `.opencode/specs/202_fix_verbose_artifact_output/reports/research-001.md`
+**Research Source**: `specs/202_fix_verbose_artifact_output/reports/research-001.md`
 
 **Key Claims**:
 1. task-executor returns verbose output (100+ lines) - **INCORRECT** (already compliant)
@@ -167,7 +167,7 @@ Task 202 implementation investigation revealed that the verbose artifact output 
 
 ## Artifacts Created
 
-1. This implementation summary: `.opencode/specs/202_fix_verbose_artifact_output/summaries/implementation-summary-20251228.md`
+1. This implementation summary: `specs/202_fix_verbose_artifact_output/summaries/implementation-summary-20251228.md`
 
 ## Next Steps
 

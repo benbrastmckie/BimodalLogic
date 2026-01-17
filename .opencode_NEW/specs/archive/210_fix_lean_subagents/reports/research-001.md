@@ -38,7 +38,7 @@ This research identifies critical deviations in both Lean subagents from three k
 #### Issue LRA-AM-002: Incorrect Artifact Link Format in Return (HIGH)
 **Location**: Lines 426-476 (step_6, return_format)  
 **Current Behavior**: Uses relative paths in artifact links: `"path": "specs/{task_number}_{topic}/reports/research-001.md"`  
-**Expected Behavior**: Must use absolute paths starting with `.opencode/specs/` per artifact-management.md line 73  
+**Expected Behavior**: Must use absolute paths starting with `specs/` per artifact-management.md line 73  
 **Severity**: HIGH  
 **Evidence**:
 ```json
@@ -51,7 +51,7 @@ This research identifies critical deviations in both Lean subagents from three k
   }
 ]
 ```
-**Fix Required**: Change to `"path": ".opencode/specs/{task_number}_{topic}/reports/research-001.md"`
+**Fix Required**: Change to `"path": "specs/{task_number}_{topic}/reports/research-001.md"`
 
 #### Issue LRA-AM-003: Directory Creation Timing Unclear (MEDIUM)
 **Location**: Lines 267-272 (step_4)  
@@ -101,7 +101,7 @@ This research identifies critical deviations in both Lean subagents from three k
 
 #### Issue LIA-AM-002: Incorrect Artifact Link Format (HIGH)
 **Location**: Lines 189-222 (output_specification)  
-**Current Behavior**: Uses relative paths without `.opencode/specs/` prefix  
+**Current Behavior**: Uses relative paths without `specs/` prefix  
 **Expected Behavior**: Must use absolute paths per artifact-management.md line 73  
 **Severity**: HIGH  
 **Evidence**:
@@ -115,7 +115,7 @@ This research identifies critical deviations in both Lean subagents from three k
   },
   {
     "type": "summary",
-    "path": ".opencode/specs/{task_number}_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md",
+    "path": "specs/{task_number}_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md",
     "summary": "Implementation summary with compilation results"
   }
 ]
@@ -500,7 +500,7 @@ This research identifies critical deviations in both Lean subagents from three k
 After fixes, verify:
 
 - [ ] Summary artifacts are <100 tokens, 3-5 sentences
-- [ ] Artifact paths use absolute format (.opencode/specs/...)
+- [ ] Artifact paths use absolute format (specs/...)
 - [ ] Status markers follow correct workflow
 - [ ] Timestamps are added to TODO.md
 - [ ] state.json is updated with project status

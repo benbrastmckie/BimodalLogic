@@ -124,8 +124,8 @@ Status update failure doesn't affect workflow outcome:
 
 Alternatively, edit TODO.md and state.json directly:
 1. Open TODO.md and update task {task_number} status
-2. Open .opencode/specs/state.json and update the corresponding task
-3. Run: git commit TODO.md .opencode/specs/state.json -m 'Manual status update'"
+2. Open specs/state.json and update the corresponding task
+3. Run: git commit TODO.md specs/state.json -m 'Manual status update'"
 ```
 
 #### For CRITICAL failures:

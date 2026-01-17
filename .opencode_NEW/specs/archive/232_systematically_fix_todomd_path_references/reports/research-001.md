@@ -12,20 +12,20 @@
 
 ## Executive Summary
 
-This research systematically surveyed all TODO.md path references across the .opencode system to identify which commands, agents, and context files use incorrect paths. The investigation revealed that **ALL references use relative paths without absolute prefixes**, making them context-dependent rather than explicitly wrong. The root TODO.md file exists and contains 264 lines of unique content (primarily Logos project-specific tasks) that are not present in the canonical .opencode/specs/TODO.md file.
+This research systematically surveyed all TODO.md path references across the .opencode system to identify which commands, agents, and context files use incorrect paths. The investigation revealed that **ALL references use relative paths without absolute prefixes**, making them context-dependent rather than explicitly wrong. The root TODO.md file exists and contains 264 lines of unique content (primarily Logos project-specific tasks) that are not present in the canonical specs/TODO.md file.
 
 **Key Findings**:
 
-1. **Path Pattern Analysis**: All 95+ references use relative path `TODO.md` without `.opencode/specs/` prefix
+1. **Path Pattern Analysis**: All 95+ references use relative path `TODO.md` without `specs/` prefix
 2. **No Explicitly Wrong Paths**: No files reference `/home/benjamin/Projects/ProofChecker/TODO.md` (absolute root path)
 3. **Context-Dependent Behavior**: Relative `TODO.md` resolves to different files depending on working directory
-4. **Two TODO.md Files Exist**: Root TODO.md (1101 lines) vs canonical .opencode/specs/TODO.md (837 lines)
+4. **Two TODO.md Files Exist**: Root TODO.md (1101 lines) vs canonical specs/TODO.md (837 lines)
 5. **Unique Content**: Root TODO.md contains Logos project tasks (Completeness Proofs, Truth.lean sorries, etc.) not in canonical file
 6. **Migration Required**: 264 lines of unique Logos-specific tasks need careful migration to avoid duplication
 
 **Scope**: 9 command files, 15 subagent files, 70+ context files surveyed
 
-**Recommendation**: Fix by making all paths explicitly reference `.opencode/specs/TODO.md`, then migrate unique Logos tasks from root TODO.md to canonical location.
+**Recommendation**: Fix by making all paths explicitly reference `specs/TODO.md`, then migrate unique Logos tasks from root TODO.md to canonical location.
 
 ---
 
@@ -54,7 +54,7 @@ This research systematically surveyed all TODO.md path references across the .op
 **Pattern Analysis**:
 - All commands use relative path `TODO.md` without directory prefix
 - No commands use absolute path `/home/benjamin/Projects/ProofChecker/TODO.md`
-- No commands explicitly reference `.opencode/specs/TODO.md`
+- No commands explicitly reference `specs/TODO.md`
 - References assume working directory context determines which TODO.md is accessed
 
 **Example References**:
@@ -98,7 +98,7 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 - status-sync-manager.md has highest reference count (12) - critical for atomic updates
 - atomic-task-numberer.md reads TODO.md to find next task number (9 references)
 - All references use relative paths without directory prefix
-- No subagents use absolute paths or explicit `.opencode/specs/` prefix
+- No subagents use absolute paths or explicit `specs/` prefix
 
 **Example References**:
 
@@ -134,7 +134,7 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 - command-lifecycle.md has most references (24) - defines standard workflow
 - review.md references TODO.md for task creation workflow
 - All references use relative paths
-- No context files use absolute paths or explicit `.opencode/specs/` prefix
+- No context files use absolute paths or explicit `specs/` prefix
 
 **Example References**:
 
@@ -151,23 +151,23 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 
 ### 1.4 Correct Path References Survey
 
-**Pattern**: `.opencode/specs/TODO.md` (explicit canonical path)
+**Pattern**: `specs/TODO.md` (explicit canonical path)
 
 **Total Correct References**: 95 references found
 
 **Distribution**:
 - Primarily in artifact summaries and research reports
-- Task descriptions in .opencode/specs/TODO.md itself
+- Task descriptions in specs/TODO.md itself
 - Implementation summaries documenting file updates
 
 **Example Correct References**:
 
 ```markdown
-# .opencode/specs/230_fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link/reports/research-001.md
-5. `.opencode/specs/TODO.md` - Task tracking file
+# specs/230_fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link/reports/research-001.md
+5. `specs/TODO.md` - Task tracking file
 
-# .opencode/specs/223_fix_opencode_agent_configuration/summaries/implementation-summary-20251228.md
-Updated `.opencode/specs/TODO.md` task 223:
+# specs/223_fix_opencode_agent_configuration/summaries/implementation-summary-20251228.md
+Updated `specs/TODO.md` task 223:
 ```
 
 **Analysis**: Correct references appear in documentation and summaries but NOT in operational command/agent code that actually reads/writes TODO.md.
@@ -183,7 +183,7 @@ Updated `.opencode/specs/TODO.md` task 223:
 - **Size**: 1101 lines
 - **Last Modified**: 2025-12-28 17:34:42
 
-**Canonical TODO.md**: `/home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md`
+**Canonical TODO.md**: `/home/benjamin/Projects/ProofChecker/specs/TODO.md`
 - **Exists**: Yes
 - **Size**: 837 lines
 - **Last Modified**: 2025-12-28 17:49:34
@@ -480,9 +480,9 @@ Return: "Error: Task {task_number} not found in TODO.md"
 
 **Root Cause 1: No Absolute Path Standard**
 
-- **Evidence**: Zero files use absolute path `/home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md`
+- **Evidence**: Zero files use absolute path `/home/benjamin/Projects/ProofChecker/specs/TODO.md`
 - **Impact**: All code assumes relative path resolution
-- **Fix**: Establish standard that all TODO.md references must use `.opencode/specs/TODO.md`
+- **Fix**: Establish standard that all TODO.md references must use `specs/TODO.md`
 
 **Root Cause 2: Working Directory Assumptions**
 
@@ -492,9 +492,9 @@ Return: "Error: Task {task_number} not found in TODO.md"
 
 **Root Cause 3: Inconsistent Path Conventions**
 
-- **Evidence**: 95 correct references use `.opencode/specs/TODO.md`, 150+ use `TODO.md`
+- **Evidence**: 95 correct references use `specs/TODO.md`, 150+ use `TODO.md`
 - **Impact**: Mixed conventions create confusion about canonical location
-- **Fix**: Standardize all references to use `.opencode/specs/TODO.md`
+- **Fix**: Standardize all references to use `specs/TODO.md`
 
 **Root Cause 4: Legacy Root TODO.md**
 
@@ -513,8 +513,8 @@ If task not found in TODO.md:
 
 **Fix**:
 ```markdown
-If task not found in .opencode/specs/TODO.md:
-  Return: "Error: Task {task_number} not found in .opencode/specs/TODO.md"
+If task not found in specs/TODO.md:
+  Return: "Error: Task {task_number} not found in specs/TODO.md"
 ```
 
 **Example 2: Bash Command (implement.md line 164)**
@@ -525,7 +525,7 @@ grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Langua
 
 **Fix**:
 ```bash
-grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+grep -A 20 "^### ${task_number}\." specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
 ```
 
 **Example 3: File I/O (status-sync-manager.md line 81)**
@@ -536,7 +536,7 @@ grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | s
 
 **Fix**:
 ```markdown
-1. Read .opencode/specs/TODO.md into memory
+1. Read specs/TODO.md into memory
 ```
 
 **Example 4: Error Message (planner.md line 292)**
@@ -547,7 +547,7 @@ grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | s
 
 **Fix**:
 ```markdown
-"summary": "Task {number} not found in .opencode/specs/TODO.md. Cannot create plan.",
+"summary": "Task {number} not found in specs/TODO.md. Cannot create plan.",
 ```
 
 ---
@@ -612,25 +612,25 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 **Test Category 1: Path Resolution**
 
 - **Test**: Execute commands from different working directories
-- **Expected**: All commands resolve to `.opencode/specs/TODO.md` regardless of working directory
+- **Expected**: All commands resolve to `specs/TODO.md` regardless of working directory
 - **Coverage**: All 9 command files
 
 **Test Category 2: Task Creation**
 
 - **Test**: Create new task, verify it appears in canonical TODO.md only
-- **Expected**: Task added to `.opencode/specs/TODO.md`, not root TODO.md
+- **Expected**: Task added to `specs/TODO.md`, not root TODO.md
 - **Coverage**: task.md, atomic-task-numberer.md, status-sync-manager.md
 
 **Test Category 3: Status Updates**
 
 - **Test**: Complete task, verify status updated in canonical TODO.md
-- **Expected**: Status marker updated in `.opencode/specs/TODO.md`
+- **Expected**: Status marker updated in `specs/TODO.md`
 - **Coverage**: All workflow commands (research, plan, implement, revise)
 
 **Test Category 4: Language Extraction**
 
 - **Test**: Extract language from Lean task, verify correct routing
-- **Expected**: Bash command reads from `.opencode/specs/TODO.md`, routes to lean-research-agent
+- **Expected**: Bash command reads from `specs/TODO.md`, routes to lean-research-agent
 - **Coverage**: research.md, implement.md
 
 **Test Category 5: Migration Integrity**
@@ -649,38 +649,38 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 
 1. Fix bash commands in research.md and implement.md (language extraction)
    - Lines: research.md:135, implement.md:164, command-lifecycle.md:92
-   - Change: `TODO.md` → `.opencode/specs/TODO.md`
+   - Change: `TODO.md` → `specs/TODO.md`
    - Risk: HIGH - Language routing fails without this fix
 
 2. Fix file I/O in status-sync-manager.md (atomic updates)
    - Lines: 81, 96, 100, 136, 197, 223
-   - Change: `TODO.md` → `.opencode/specs/TODO.md`
+   - Change: `TODO.md` → `specs/TODO.md`
    - Risk: CRITICAL - Status updates write to wrong file
 
 3. Fix file I/O in atomic-task-numberer.md (task numbering)
    - Lines: 43, 89, 139, 169, 182
-   - Change: `TODO.md` → `.opencode/specs/TODO.md`
+   - Change: `TODO.md` → `specs/TODO.md`
    - Risk: CRITICAL - Task number conflicts
 
 **Phase 2: Command File Fixes** (Priority: HIGH, Effort: 3 hours)
 
 4. Fix all 9 command files (91 references total)
    - Files: research.md, plan.md, implement.md, revise.md, task.md, todo.md, review.md, errors.md
-   - Change: All `TODO.md` → `.opencode/specs/TODO.md`
+   - Change: All `TODO.md` → `specs/TODO.md`
    - Risk: HIGH - Commands read/write wrong file
 
 **Phase 3: Subagent File Fixes** (Priority: MEDIUM, Effort: 1 hour)
 
 5. Fix remaining subagent files (planner.md, reviewer.md, implementer.md, etc.)
    - Files: 6 subagent files, 33 references
-   - Change: All `TODO.md` → `.opencode/specs/TODO.md`
+   - Change: All `TODO.md` → `specs/TODO.md`
    - Risk: MEDIUM - Subagents read wrong file
 
 **Phase 4: Context File Fixes** (Priority: LOW, Effort: 1 hour)
 
 6. Fix context files (command-lifecycle.md, review.md, etc.)
    - Files: 5 context files, 30 references
-   - Change: All `TODO.md` → `.opencode/specs/TODO.md`
+   - Change: All `TODO.md` → `specs/TODO.md`
    - Risk: LOW - Documentation inconsistency
 
 **Phase 5: Migration** (Priority: HIGH, Effort: 4 hours)
@@ -750,8 +750,8 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 **Validation Level 1: Static Analysis**
 
 - **Tool**: grep, sed, awk
-- **Check**: All references use `.opencode/specs/TODO.md`
-- **Command**: `grep -r "TODO\.md" .opencode --include="*.md" | grep -v "\.opencode/specs/TODO\.md"`
+- **Check**: All references use `specs/TODO.md`
+- **Command**: `grep -r "TODO\.md" .opencode --include="*.md" | grep -v "\specs/TODO\.md"`
 - **Expected**: Zero results
 
 **Validation Level 2: Path Resolution Testing**
@@ -759,7 +759,7 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 - **Test**: Execute commands from different working directories
 - **Directories**: Project root, .opencode/, .opencode/command/, .opencode/agent/
 - **Commands**: /task, /research, /plan, /implement
-- **Expected**: All commands resolve to `.opencode/specs/TODO.md`
+- **Expected**: All commands resolve to `specs/TODO.md`
 
 **Validation Level 3: Integration Testing**
 
@@ -802,7 +802,7 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 **Critical References**:
 - Line 135: `grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'`
   - **Risk**: CRITICAL - Language extraction fails if wrong TODO.md
-  - **Fix**: Change to `.opencode/specs/TODO.md`
+  - **Fix**: Change to `specs/TODO.md`
 
 #### implement.md (11 references)
 
@@ -822,7 +822,7 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 **Critical References**:
 - Line 164: `grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'`
   - **Risk**: CRITICAL - Language extraction fails if wrong TODO.md
-  - **Fix**: Change to `.opencode/specs/TODO.md`
+  - **Fix**: Change to `specs/TODO.md`
 
 #### status-sync-manager.md (12 references)
 
@@ -842,10 +842,10 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 **Critical References**:
 - Line 81: `1. Read TODO.md into memory`
   - **Risk**: CRITICAL - Reads wrong file, status updates fail
-  - **Fix**: Change to `.opencode/specs/TODO.md`
+  - **Fix**: Change to `specs/TODO.md`
 - Line 197: `1. Write TODO.md (first, most critical)`
   - **Risk**: CRITICAL - Writes to wrong file, data corruption
-  - **Fix**: Change to `.opencode/specs/TODO.md`
+  - **Fix**: Change to `specs/TODO.md`
 
 ### 6.2 Context Files
 
@@ -863,7 +863,7 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 **Critical References**:
 - Line 92: `grep -A 20 "^### ${task_number}\." TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'`
   - **Risk**: CRITICAL - Language extraction fails if wrong TODO.md
-  - **Fix**: Change to `.opencode/specs/TODO.md`
+  - **Fix**: Change to `specs/TODO.md`
 
 ---
 
@@ -871,7 +871,7 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 
 ### 7.1 Summary of Findings
 
-1. **Path Pattern**: All 150+ references use relative `TODO.md` without `.opencode/specs/` prefix
+1. **Path Pattern**: All 150+ references use relative `TODO.md` without `specs/` prefix
 2. **No Explicit Errors**: No files use absolute root path (good)
 3. **Context-Dependent**: All paths resolve based on working directory (bad)
 4. **Two Files Exist**: Root TODO.md (1101 lines) and canonical TODO.md (837 lines)
@@ -898,8 +898,8 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 
 ### 7.3 Success Criteria
 
-1. **Zero relative references**: All `TODO.md` changed to `.opencode/specs/TODO.md`
-2. **Single source of truth**: Only `.opencode/specs/TODO.md` exists
+1. **Zero relative references**: All `TODO.md` changed to `specs/TODO.md`
+2. **Single source of truth**: Only `specs/TODO.md` exists
 3. **All tasks migrated**: 40 unique Logos tasks in canonical TODO.md
 4. **No duplicates**: No task number conflicts
 5. **All tests pass**: Path resolution, task creation, status updates, language extraction
@@ -998,7 +998,7 @@ research.md/implement.md (extracts Language from TODO.md via bash)
 
 ```bash
 # Check for remaining relative TODO.md references
-grep -r "TODO\.md" .opencode --include="*.md" | grep -v "\.opencode/specs/TODO\.md"
+grep -r "TODO\.md" .opencode --include="*.md" | grep -v "\specs/TODO\.md"
 
 # Count references by file type
 grep -r "TODO\.md" .opencode/command --include="*.md" | wc -l
@@ -1009,13 +1009,13 @@ grep -r "TODO\.md" .opencode/context --include="*.md" | wc -l
 ls -la /home/benjamin/Projects/ProofChecker/TODO.md
 
 # Verify canonical TODO.md exists
-ls -la /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md
+ls -la /home/benjamin/Projects/ProofChecker/specs/TODO.md
 
 # Test task creation
 /task "Test task creation after fix"
 
 # Test language extraction
-grep -A 20 "^### 232\." .opencode/specs/TODO.md | grep "Language"
+grep -A 20 "^### 232\." specs/TODO.md | grep "Language"
 ```
 
 ---

@@ -6,8 +6,8 @@
 - **Priority**: High
 - **Dependencies**: 212 (completed)
 - **Research Inputs**: 
-  - Main Report: .opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md
-  - Summary: .opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md
+  - Main Report: specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md
+  - Summary: specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -188,8 +188,8 @@ The `.opencode` directory lacks `__init__.py` files in parent directories, preve
 5. **Fallback Options**: Research identified 3 alternative solutions if primary approach fails, with effort estimates and risk assessments (research report lines 486-609)
 
 **Research Artifacts Referenced**:
-- Main Report: `.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md` (897 lines)
-- Summary: `.opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md` (126 lines)
+- Main Report: `specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md` (897 lines)
+- Summary: `specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary.md` (126 lines)
 
 **Implementation Confidence**: High (95%+)
 - Research thoroughly analyzed root cause with concrete evidence

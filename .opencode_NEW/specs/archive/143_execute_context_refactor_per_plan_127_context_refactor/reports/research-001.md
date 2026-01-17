@@ -5,16 +5,16 @@
 - **Completed**: 2025-12-22T00:00:00Z
 - **Effort**: 0.5h (research)
 - **Priority**: Medium
-- **Dependencies**: Context refactor plan placeholder (`.opencode/specs/127_context_refactor/plans/context-refactor-plan-001.md`); Task 144 (context references remap after refactor)
+- **Dependencies**: Context refactor plan placeholder (`specs/127_context_refactor/plans/context-refactor-plan-001.md`); Task 144 (context references remap after refactor)
 - **Sources/Inputs**:
-  - `.opencode/specs/127_context_refactor/plans/context-refactor-plan-001.md` (placeholder)
-  - `.opencode/specs/127_context_refactor/plans/context-references-plan-001.md`
+  - `specs/127_context_refactor/plans/context-refactor-plan-001.md` (placeholder)
+  - `specs/127_context_refactor/plans/context-references-plan-001.md`
   - `.opencode/context/index.md`
   - `.opencode/context/README.md`
   - `.opencode/context/core/system/context-guide.md`
   - `.opencode/context/core/system/artifact-management.md`
   - `.opencode/context/core/standards/report.md`
-- **Artifacts**: `.opencode/specs/143_execute_context_refactor_per_plan_127_context_refactor/reports/research-001.md`
+- **Artifacts**: `specs/143_execute_context_refactor_per_plan_127_context_refactor/reports/research-001.md`
 - **Standards**: status-markers.md; artifact-management.md; report.md; tasks.md
 
 ## Executive Summary
@@ -28,9 +28,9 @@
 Task 143 aims to apply the context refactor described in plan 127 to `.opencode/context/` (common + project trees), refresh `index.md`, and consolidate overlapping Logic/Lean guidance. The supplied plan is empty, so this research outlines what is needed to satisfy the acceptance criteria and stages the execution approach.
 
 ## Findings
-- **Plan gap**: `.opencode/specs/127_context_refactor/plans/context-refactor-plan-001.md` is a placeholder; no target structure, mapping, or rename list is defined, blocking direct execution.
+- **Plan gap**: `specs/127_context_refactor/plans/context-refactor-plan-001.md` is a placeholder; no target structure, mapping, or rename list is defined, blocking direct execution.
 - **Current layout**: `common/` holds standards, system guides, templates, workflows; `project/` holds domain trees (`lean4/`, `logic/`, `math/`, `physics/`, `repo/`). `index.md` maps quick loads by category and priorities.
-- **References plan**: `.opencode/specs/127_context_refactor/plans/context-references-plan-001.md` inventories agent/command context loads and narratives; all edits are deferred pending a real mapping.
+- **References plan**: `specs/127_context_refactor/plans/context-references-plan-001.md` inventories agent/command context loads and narratives; all edits are deferred pending a real mapping.
 - **Acceptance expectations** (from TODO 143): relocate/rename per plan with updated index and no broken links; update per-domain READMEs with canonical logic standards and trimmed Lean4 guidance; resolve outdated references/verbosity; run plan verification checks for links/dependencies.
 - **Dependencies**: Task 144 depends on the refactor output to remap references; executing 143 without a defined mapping risks churn and breakage.
 
@@ -58,4 +58,4 @@ Task 143 aims to apply the context refactor described in plan 127 to `.opencode/
 - [ ] Plan verification checks for links and dependency references executed and documented; issues fixed.
 
 ## Appendix
-- References: `.opencode/context/index.md`, `.opencode/context/README.md`, `.opencode/context/core/system/context-guide.md`, `.opencode/context/core/system/artifact-management.md`, `.opencode/specs/127_context_refactor/plans/context-references-plan-001.md`, `.opencode/context/core/standards/report.md`.
+- References: `.opencode/context/index.md`, `.opencode/context/README.md`, `.opencode/context/core/system/context-guide.md`, `.opencode/context/core/system/artifact-management.md`, `specs/127_context_refactor/plans/context-references-plan-001.md`, `.opencode/context/core/standards/report.md`.

@@ -83,8 +83,8 @@ Bimodal/docs/
 
 ## Files Modified
 
-- `.claude/specs/TODO.md` - Updated completeness tasks to ON HOLD
-- `.claude/specs/state.json` - Updated task statuses
+- `specs/TODO.md` - Updated completeness tasks to ON HOLD
+- `specs/state.json` - Updated task statuses
 - `BimodalTest/README.md` - Added Implementation Status section
 - `BimodalTest/Metalogic/CompletenessTest.lean` - Added pending comments
 - `BimodalTest/Theorems/PropositionalTest.lean` - Added pending comments

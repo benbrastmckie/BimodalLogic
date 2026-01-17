@@ -5,7 +5,7 @@
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/479_fix_tikz_extension_dependencies_diagram/reports/research-001.md
+- **Research Inputs**: specs/479_fix_tikz_extension_dependencies_diagram/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .claude/context/core/standards/plan.md

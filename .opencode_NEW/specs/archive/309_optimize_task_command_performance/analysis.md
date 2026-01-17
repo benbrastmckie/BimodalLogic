@@ -81,7 +81,7 @@ Looking at `.opencode/agent/subagents/task-creator.md`:
 
 ```markdown
 <step_1_allocate_number>
-  1. Read .opencode/specs/state.json
+  1. Read specs/state.json
   2. Extract next_project_number field using jq
   3. Validate it's a number >= 0
   4. Store for use in task creation

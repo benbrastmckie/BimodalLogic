@@ -201,8 +201,8 @@ Some commands route to different agents based on task language:
 **Returns**: Research report and summary paths
 
 **Output**:
-- `.opencode/specs/{task_number}_{topic}/reports/research-001.md`
-- `.opencode/specs/{task_number}_{topic}/summaries/research-summary.md`
+- `specs/{task_number}_{topic}/reports/research-001.md`
+- `specs/{task_number}_{topic}/summaries/research-summary.md`
 
 **Status Change**: [NOT STARTED] → [RESEARCHED]
 
@@ -224,7 +224,7 @@ Some commands route to different agents based on task language:
 **Returns**: Plan path with phase breakdown
 
 **Output**:
-- `.opencode/specs/{task_number}_{topic}/plans/implementation-001.md`
+- `specs/{task_number}_{topic}/plans/implementation-001.md`
 
 **Status Change**: [RESEARCHED] → [PLANNED] (or [NOT STARTED] → [PLANNED])
 
@@ -282,7 +282,7 @@ Some commands route to different agents based on task language:
 **Returns**: New plan version path
 
 **Output**:
-- `.opencode/specs/{task_number}_{topic}/plans/implementation-002.md`
+- `specs/{task_number}_{topic}/plans/implementation-002.md`
 
 **Status Change**: None (preserves current status)
 

@@ -172,19 +172,19 @@ This research provides a comprehensive analysis of the context directory cleanup
 #### 2.2.2 Files with References (Categorized)
 
 **Archived Specs** (78 references, 11 files):
-- `.opencode/specs/archive/127_context_refactor/plans/context-references-plan-001.md` (9 refs)
-- `.opencode/specs/archive/199_optimize_self_healing/reports/research-001.md` (4 refs)
-- `.opencode/specs/archive/237_investigate_and_systematically_fix_context_window_/reports/research-001.md` (3 refs)
-- `.opencode/specs/archive/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md` (5 refs)
-- `.opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md` (4 refs)
-- `.opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md` (1 ref)
-- `.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md` (17 refs)
-- `.opencode/specs/233_research_and_fix_systematic_command_execution_failures_causing_incomplete_todomd_updates/reports/research-001.md` (5 refs)
-- `.opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md` (45 refs)
+- `specs/archive/127_context_refactor/plans/context-references-plan-001.md` (9 refs)
+- `specs/archive/199_optimize_self_healing/reports/research-001.md` (4 refs)
+- `specs/archive/237_investigate_and_systematically_fix_context_window_/reports/research-001.md` (3 refs)
+- `specs/archive/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md` (5 refs)
+- `specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md` (4 refs)
+- `specs/211_standardize_command_lifecycle_procedures/reports/research-001.md` (1 ref)
+- `specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md` (17 refs)
+- `specs/233_research_and_fix_systematic_command_execution_failures_causing_incomplete_todomd_updates/reports/research-001.md` (5 refs)
+- `specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md` (45 refs)
 - Other archived specs (various)
 
 **Active Specs** (5 references, 2 files):
-- `.opencode/specs/TODO.md` (1 ref) - Reference in task 265 description
+- `specs/TODO.md` (1 ref) - Reference in task 265 description
 - Active spec research reports (4 refs)
 
 **Documentation** (21 references, 2 files):
@@ -1176,14 +1176,14 @@ This research has comprehensively analyzed the context directory cleanup task, i
 ### Appendix B: Reference Breakdown by File
 
 **Files with Most References**:
-1. `.opencode/specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md` (45 refs)
-2. `.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md` (17 refs)
+1. `specs/234_systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts/reports/research-001.md` (45 refs)
+2. `specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md` (17 refs)
 3. `.opencode/context/archive/command-lifecycle.md` (16 refs)
-4. `.opencode/specs/archive/127_context_refactor/plans/context-references-plan-001.md` (9 refs)
-5. `.opencode/specs/archive/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md` (5 refs)
+4. `specs/archive/127_context_refactor/plans/context-references-plan-001.md` (9 refs)
+5. `specs/archive/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md` (5 refs)
 
 **Files with Active References** (non-archived):
-1. `.opencode/specs/TODO.md` (1 ref) - Task 265 description
+1. `specs/TODO.md` (1 ref) - Task 265 description
 2. `.opencode/context/index.md` (5 refs) - Index references
 3. `.opencode/SYSTEM_IMPROVEMENT_PLAN.md` (1 ref)
 4. `.opencode/PHASE_5_SUMMARY.md` (1 ref)
@@ -1264,7 +1264,7 @@ exit 0
 
 ## Sources and Citations
 
-1. Task 265 description in `.opencode/specs/TODO.md`
+1. Task 265 description in `specs/TODO.md`
 2. Context index at `.opencode/context/index.md`
 3. Task 246 consolidation summary (Phase 3 completion)
 4. Task 240 OpenAgents migration research

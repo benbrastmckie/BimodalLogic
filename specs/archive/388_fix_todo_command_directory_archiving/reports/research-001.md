@@ -6,15 +6,15 @@
 
 ## Summary
 
-The `/todo` command correctly updates `state.json` and `archive/state.json` when archiving tasks, but fails to execute Step 5D which moves project directories to the archive. Additionally, there are 40 orphaned project directories that exist in `.claude/specs/` but are not tracked in either `state.json` or `archive/state.json`. The user wants these orphans to be archivable with explicit approval via `AskUserQuestion`.
+The `/todo` command correctly updates `state.json` and `archive/state.json` when archiving tasks, but fails to execute Step 5D which moves project directories to the archive. Additionally, there are 40 orphaned project directories that exist in `specs/` but are not tracked in either `state.json` or `archive/state.json`. The user wants these orphans to be archivable with explicit approval via `AskUserQuestion`.
 
 ## Findings
 
 ### Current State Analysis
 
 **Directory counts:**
-- Project directories in `.claude/specs/`: 106
-- Project directories in `.claude/specs/archive/`: 0
+- Project directories in `specs/`: 106
+- Project directories in `specs/archive/`: 0
 - Active projects in `state.json`: 37
 - Archived projects in `archive/state.json`: 50
 - Orphaned directories: 40 (including some duplicate-numbered directories)
@@ -30,7 +30,7 @@ The `/todo` command correctly updates `state.json` and `archive/state.json` when
 
 The `/todo` command document correctly describes the expected behavior in Step 5D:
 ```bash
-mv .claude/specs/{N}_{SLUG}/ .claude/specs/archive/{N}_{SLUG}/
+mv specs/{N}_{SLUG}/ specs/archive/{N}_{SLUG}/
 ```
 
 However, the command is a "prompt document" that Claude Code interprets at runtime. The directory move step is either:
@@ -42,8 +42,8 @@ However, the command is a "prompt document" that Claude Code interprets at runti
 
 The `/task --recover` command demonstrates the inverse operation:
 ```bash
-if [ -d ".claude/specs/archive/${task_number}_${slug}" ]; then
-  mv ".claude/specs/archive/${task_number}_${slug}" ".claude/specs/${task_number}_${slug}"
+if [ -d "specs/archive/${task_number}_${slug}" ]; then
+  mv "specs/archive/${task_number}_${slug}" "specs/${task_number}_${slug}"
 fi
 ```
 
@@ -72,8 +72,8 @@ AskUserQuestion:
 Update Step 5D with explicit bash commands and conditional checks:
 ```bash
 for each archived_task (project_number, project_name):
-  src=".claude/specs/${project_number}_${project_name}"
-  dst=".claude/specs/archive/${project_number}_${project_name}"
+  src="specs/${project_number}_${project_name}"
+  dst="specs/archive/${project_number}_${project_name}"
   if [ -d "$src" ]; then
     mv "$src" "$dst"
     echo "Moved: $src -> archive/"
@@ -118,7 +118,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(mv:*), Bash(mkdi
 Add reporting for orphan handling:
 ```
 Orphaned directories archived: {N}
-- .claude/specs/170_maintenance_report_improvements/ -> archive/
+- specs/170_maintenance_report_improvements/ -> archive/
 ```
 
 ## Technical Details
@@ -127,12 +127,12 @@ Orphaned directories archived: {N}
 
 ```bash
 # All directories in specs/ matching {N}_{SLUG} pattern
-find .claude/specs/ -maxdepth 1 -type d -name '[0-9]*_*' | while read dir; do
+find specs/ -maxdepth 1 -type d -name '[0-9]*_*' | while read dir; do
   num=$(basename "$dir" | cut -d_ -f1)
   # Check if in active_projects
-  in_active=$(jq -r --arg n "$num" '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_number' .claude/specs/state.json)
+  in_active=$(jq -r --arg n "$num" '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_number' specs/state.json)
   # Check if in completed_projects
-  in_archive=$(jq -r --arg n "$num" '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' .claude/specs/archive/state.json)
+  in_archive=$(jq -r --arg n "$num" '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' specs/archive/state.json)
 
   if [ -z "$in_active" ] && [ -z "$in_archive" ]; then
     echo "$dir"  # Orphan
@@ -146,7 +146,7 @@ done
 
 2. **No directory exists**: Some tasks may never have had artifacts created (never researched/planned). Skip the move step gracefully.
 
-3. **Archive directory doesn't exist**: Ensure `mkdir -p .claude/specs/archive/` runs before any moves.
+3. **Archive directory doesn't exist**: Ensure `mkdir -p specs/archive/` runs before any moves.
 
 4. **Partial state**: If directory exists but task isn't tracked anywhere, archive the directory but don't create a state.json entry for it.
 

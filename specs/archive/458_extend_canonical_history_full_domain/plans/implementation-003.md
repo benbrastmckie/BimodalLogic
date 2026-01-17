@@ -6,8 +6,8 @@
 - **Priority**: High
 - **Dependencies**: Task 448 (singleton domain MVP - COMPLETED)
 - **Research Inputs**:
-  - .claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md
-  - .claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md
+  - specs/458_extend_canonical_history_full_domain/reports/research-001.md
+  - specs/458_extend_canonical_history_full_domain/reports/research-002.md
 - **Artifacts**: plans/implementation-003.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean

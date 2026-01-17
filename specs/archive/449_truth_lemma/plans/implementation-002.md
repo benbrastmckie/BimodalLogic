@@ -7,7 +7,7 @@
 - **Actual Effort**: ~4 hours (Phases 1-4 combined)
 - **Priority**: Low
 - **Dependencies**: Task 448 (completed), Task 473 (completed), Task 481 (completed), Task 482 (completed)
-- **Research Inputs**: .claude/specs/449_truth_lemma/reports/research-001.md
+- **Research Inputs**: specs/449_truth_lemma/reports/research-001.md
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-formats.md, tasks.md
 - **Type**: lean
@@ -219,7 +219,7 @@ Complete the truth lemma by connecting the semantic infrastructure (from Task 47
 
 - `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - semantic_weak_completeness proven
 - `Theories/Bimodal/Metalogic/Completeness/Completeness.lean` - connection to main theorem (if needed)
-- `.claude/specs/449_truth_lemma/summaries/implementation-summary-YYYYMMDD.md` - completion summary
+- `specs/449_truth_lemma/summaries/implementation-summary-YYYYMMDD.md` - completion summary
 
 ## Rollback/Contingency
 

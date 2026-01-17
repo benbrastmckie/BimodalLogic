@@ -159,7 +159,7 @@ Operators in TikZ diagram missing from GLOSSARY.md:
 
 - `Theories/Logos/latex/subfiles/00-Introduction.tex` - Updated TikZ diagram
 - `Theories/Logos/docs/reference/GLOSSARY.md` - Updated operator tables
-- `.claude/specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-YYYYMMDD.md`
+- `specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-YYYYMMDD.md`
 
 ## Rollback/Contingency
 

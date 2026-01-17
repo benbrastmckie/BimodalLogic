@@ -259,7 +259,7 @@ Update line 92 to include "knowledge":
 - `/home/benjamin/Projects/ProofChecker/README.md` - Current README
 - `/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/recursive-semantics.md` - Authoritative semantic specification
 - `/home/benjamin/Projects/ProofChecker/Theories/Logos/docs/research/layer-extensions.md` - Extension architecture
-- `/home/benjamin/Projects/ProofChecker/.claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md` - Prior refactor research
+- `/home/benjamin/Projects/ProofChecker/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md` - Prior refactor research
 - `https://github.com/benbrastmckie/ModelChecker` - ModelChecker repository
 
 ## Next Steps

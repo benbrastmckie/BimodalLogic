@@ -256,7 +256,7 @@ Based on command-lifecycle.md variation tables, the 8 variation categories are:
   <commit_scope>
     <include>reports/</include>
     <include>summaries/</include>
-    <include>.opencode/specs/TODO.md</include>
+    <include>specs/TODO.md</include>
   </commit_scope>
 </variation>
 ```

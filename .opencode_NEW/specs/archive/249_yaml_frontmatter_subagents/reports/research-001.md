@@ -100,7 +100,7 @@ tools:
 permissions:
   allow:
     - read: [".opencode/**/*", "**/*.md"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x"]
@@ -162,7 +162,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc", "date"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod", "dd"]
@@ -295,7 +295,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
-    - write: [".opencode/specs/**/*", ".opencode/context/**/*"]
+    - write: ["specs/**/*", ".opencode/context/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd", "mkfs"]
@@ -692,7 +692,7 @@ permissions:
     
     # Write permissions
     - write:
-      - ".opencode/specs/**/*"
+      - "specs/**/*"
       - ".opencode/context/**/*"
     
     # Bash permissions
@@ -881,7 +881,7 @@ metadata:
   ```yaml
   allow:
     - read: ["**/*.md", ".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc"]
   ```
 
@@ -1222,7 +1222,7 @@ tools: [read, write, bash, webfetch, grep, glob]
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
@@ -1250,7 +1250,7 @@ tools: [read, write, bash, grep, glob]
 permissions:
   allow:
     - read: [".opencode/**/*", "**/*.md"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x"]
@@ -1314,7 +1314,7 @@ tools: [read, write, bash, grep, glob]
 permissions:
   allow:
     - read: [".opencode/**/*", "**/*.md"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "wc", "date", "mkdir", "git"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
@@ -1346,7 +1346,7 @@ tools: [read, write, bash, webfetch, grep, glob]
 permissions:
   allow:
     - read: ["**/*.lean", "**/*.md", ".opencode/**/*", "docs/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir", "loogle"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
@@ -1378,7 +1378,7 @@ tools: [read, write, edit, bash, grep, glob]
 permissions:
   allow:
     - read: ["**/*.lean", "**/*.md", ".opencode/**/*"]
-    - write: ["**/*.lean", ".opencode/specs/**/*"]
+    - write: ["**/*.lean", "specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir", "lake"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]

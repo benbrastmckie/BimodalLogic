@@ -5,7 +5,7 @@
 **Status**: COMPLETED  
 
 ## Issue Identified
-- Task 516 existed in `.opencode/specs/state.json` but was missing from `TODO.md`
+- Task 516 existed in `specs/state.json` but was missing from `TODO.md`
 - This caused inconsistency between the two tracking files
 
 ## Actions Performed
@@ -27,7 +27,7 @@
 
 ## Files Modified
 1. `TODO.md` - Added task 516 entry
-2. `.opencode/specs/state.json` - Fixed syntax, updated timestamp
+2. `specs/state.json` - Fixed syntax, updated timestamp
 
 ## Impact
 Task tracking is now synchronized between TODO.md and state.json. The task creation system validation can proceed with both tracking files properly aligned.

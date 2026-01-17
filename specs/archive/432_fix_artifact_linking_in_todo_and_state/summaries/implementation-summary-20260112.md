@@ -107,7 +107,7 @@ Updated main documentation:
 - `.claude/agents/latex-implementation-agent.md`
 - `.claude/rules/error-handling.md`
 - `.claude/rules/git-workflow.md`
-- `.claude/specs/errors.json`
+- `specs/errors.json`
 - `.claude/context/index.md`
 - `.claude/CLAUDE.md`
 

@@ -13,7 +13,7 @@ Updated SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Lo
   - Changed `Logos/Core/**/*.lean` to `Bimodal/**/*.lean` in all verification commands
   - Changed `Logos` codebase reference to `Bimodal` codebase
   - Updated section headers from `Logos/Core/...` to `Bimodal/...`
-  - Fixed relative links (`.opencode/specs/TODO.md` to `.claude/specs/TODO.md`)
+  - Fixed relative links (`specs/TODO.md` to `specs/TODO.md`)
   - Updated Last Updated date to 2026-01-11
   - Updated ProofSearch line numbers (448/453/458 to 726/731/736) based on current file
   - Removed deprecated `.opencode/` references
@@ -28,8 +28,8 @@ Updated SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Lo
 | Logos/Core/Metalogic/Completeness.lean | Bimodal/Metalogic/Completeness.lean |
 | Logos/Core/Automation/ProofSearch.lean | Bimodal/Automation/ProofSearch.lean |
 | Logos/Core/Metalogic/SoundnessLemmas.lean | Bimodal/Metalogic/SoundnessLemmas.lean |
-| .opencode/specs/TODO.md | .claude/specs/TODO.md |
-| .opencode/specs/ | .claude/specs/ |
+| specs/TODO.md | specs/TODO.md |
+| specs/ | specs/ |
 
 ## Verification
 

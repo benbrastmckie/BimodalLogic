@@ -35,7 +35,7 @@ How should ProofSearch strengthen caching (`search_with_cache`), context helpers
 ## Relevant Resources
 - Internal: `Logos/Core/Automation/ProofSearch.lean` (current caching/heuristics/contexts), `LogosTest/Core/Automation/ProofSearchTest.lean` (axiom/heuristic/visit-limit tests).
 - Web: Lean Std `HashMap`, `HashSet` basics; Lean `StateT`/`ReaderT` usage in FPiL; transformer construction patterns (see specialist report below).
-- Specialist report: `.opencode/specs/151_research_caching_and_context_helpers_in_proofsearch/specialist-reports/web-research-Lean 4 memoization and context transforms for proof search.md`.
+- Specialist report: `specs/151_research_caching_and_context_helpers_in_proofsearch/specialist-reports/web-research-Lean 4 memoization and context transforms for proof search.md`.
 
 ## Recommendations
 - **Cache structure**: Switch `ProofCache` to `HashMap (Context × Formula) Bool` and add `HashSet` for visited; cache both success and failure. Consider utility `containsThenInsertIfNew` for atomic check/insert.
@@ -50,4 +50,4 @@ How should ProofSearch strengthen caching (`search_with_cache`), context helpers
 - Explore proof-term integration (if/when derivation trees are added) to ensure cache entries remain sound across proof objects.
 
 ## Specialist Reports
-- Web Research: `.opencode/specs/151_research_caching_and_context_helpers_in_proofsearch/specialist-reports/web-research-Lean 4 memoization and context transforms for proof search.md`
+- Web Research: `specs/151_research_caching_and_context_helpers_in_proofsearch/specialist-reports/web-research-Lean 4 memoization and context transforms for proof search.md`

@@ -349,8 +349,8 @@ After Phase 2, axiom count should decrease by 2 (maximal_consistent_closed and m
 
 ## References
 
-- Previous research: `.claude/specs/257_completeness_proofs/reports/research-001.md` through `research-004.md`
-- Task 444 summary: `.claude/specs/444_formula_countability_set_list_bridge/summaries/implementation-summary-20260112.md`
-- Implementation plan: `.claude/specs/257_completeness_proofs/plans/implementation-002.md`
+- Previous research: `specs/257_completeness_proofs/reports/research-001.md` through `research-004.md`
+- Task 444 summary: `specs/444_formula_countability_set_list_bridge/summaries/implementation-summary-20260112.md`
+- Implementation plan: `specs/257_completeness_proofs/plans/implementation-002.md`
 - Mathlib `FirstOrder.Language.Theory.IsMaximal` - Pattern for maximal theories
 - Modal Logic (Blackburn et al.), Chapter 4 - Canonical model construction

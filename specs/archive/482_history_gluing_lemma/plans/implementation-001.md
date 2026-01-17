@@ -5,7 +5,7 @@
 - **Effort**: 4-5 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/482_history_gluing_lemma/reports/research-001.md
+- **Research Inputs**: specs/482_history_gluing_lemma/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -135,7 +135,7 @@ Key findings from research-001.md:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Modified with gluing lemmas
-- `.claude/specs/482_history_gluing_lemma/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/482_history_gluing_lemma/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

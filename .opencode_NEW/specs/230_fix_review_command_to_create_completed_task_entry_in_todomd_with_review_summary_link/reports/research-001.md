@@ -24,7 +24,7 @@ Research completed on /review command's task creation behavior. Found that /revi
 4. Read next_project_number from state.json
 5. Validate next_project_number is positive integer
 6. Check for existing project directory collision
-7. Generate project path: .opencode/specs/{next_project_number}_codebase_review
+7. Generate project path: specs/{next_project_number}_codebase_review
 ```
 
 **Finding**: /review correctly reads `next_project_number` from state.json and uses it for the project directory name (e.g., `225_codebase_review`).
@@ -90,7 +90,7 @@ b. Delegate to status-sync-manager for atomic update:
 - **Completed**: 2025-12-29
 - **Priority**: N/A
 - **Language**: N/A
-- **Review Summary**: [.opencode/specs/225_codebase_review/summaries/review-summary.md]
+- **Review Summary**: [specs/225_codebase_review/summaries/review-summary.md]
 - **Description**: Comprehensive codebase review completed. Updated all 4 registries. Found 6 sorry, 11 axioms, 11 build errors.
 ```
 
@@ -129,7 +129,7 @@ The following tasks should be created to address review findings:
 1. Read `next_project_number` from state.json
 2. Validate it's a positive integer
 3. Check for directory collision
-4. Generate project path: `.opencode/specs/{next_project_number}_codebase_review`
+4. Generate project path: `specs/{next_project_number}_codebase_review`
 
 **Stage 7 (Postflight)** - lines 314-335:
 1. Delegate to status-sync-manager with `review_task_number` = project number
@@ -229,7 +229,7 @@ Delegate to status-sync-manager with payload:
     // ...
   },
   "created_tasks": [201, 202, 203, 204, 205],
-  "project_path": ".opencode/specs/207_codebase_review",
+  "project_path": "specs/207_codebase_review",
   "review_scope": "full",
   "timestamp": "2025-12-28T20:00:00Z"
 }
@@ -273,7 +273,7 @@ Additional metadata that could be included:
 - **Completed**: 2025-12-29
 - **Priority**: N/A
 - **Language**: N/A
-- **Review Summary**: [.opencode/specs/225_codebase_review/summaries/review-summary.md]
+- **Review Summary**: [specs/225_codebase_review/summaries/review-summary.md]
 - **Scope**: full
 - **Registries Updated**: 4 (IMPLEMENTATION_STATUS, SORRY_REGISTRY, TACTIC_REGISTRY, FEATURE_REGISTRY)
 - **Metrics**: 6 sorry, 11 axioms, 11 build errors
@@ -391,7 +391,7 @@ f. If status-sync-manager fails:
 **Test Case 3**: Review summary linked
 ```bash
 /review
-# Expected: Task 230 has link to .opencode/specs/230_codebase_review/summaries/review-summary.md
+# Expected: Task 230 has link to specs/230_codebase_review/summaries/review-summary.md
 ```
 
 **Test Case 4**: Follow-up tasks NOT created
@@ -524,8 +524,8 @@ After fix:
 1. `.opencode/command/review.md` - Review command specification
 2. `.opencode/agent/subagents/reviewer.md` - Reviewer subagent specification
 3. `.opencode/agent/subagents/status-sync-manager.md` - Status synchronization manager
-4. `.opencode/specs/state.json` - Project state tracking
-5. `.opencode/specs/TODO.md` - Task tracking file
+4. `specs/state.json` - Project state tracking
+5. `specs/TODO.md` - Task tracking file
 6. Task 226 - Fix /review command (completed)
 7. Task 227 - Fix status-sync-manager failures (planned)
 8. Task 228 - Fix orchestrator routing (planned)

@@ -13,13 +13,13 @@
   "completed": "2025-12-28",
   "last_updated": "2025-12-28",
   "reports": [
-    ".opencode/specs/238_find_and_eliminate_all_emojis/reports/research-001.md"
+    "specs/238_find_and_eliminate_all_emojis/reports/research-001.md"
   ],
   "plans": [
-    ".opencode/specs/238_find_and_eliminate_all_emojis/plans/implementation-001.md"
+    "specs/238_find_and_eliminate_all_emojis/plans/implementation-001.md"
   ],
   "summaries": [
-    ".opencode/specs/238_find_and_eliminate_all_emojis/summaries/implementation-summary-20251228.md"
+    "specs/238_find_and_eliminate_all_emojis/summaries/implementation-summary-20251228.md"
   ],
   "plan_metadata": {
     "phase_count": 6,

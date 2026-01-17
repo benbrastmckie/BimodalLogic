@@ -109,7 +109,7 @@ The goal is to empirically verify that unbundling provides performance benefits 
 3. Make recommendation based on data
 
 **Files to modify**:
-- Create `.claude/specs/417_split_typeclass_constraints_explanatory/reports/benchmark-results.md`
+- Create `specs/417_split_typeclass_constraints_explanatory/reports/benchmark-results.md`
 
 **Steps**:
 1. Calculate performance difference (percentage improvement from unbundling)

@@ -55,4 +55,4 @@
 
 ## Full Plan
 
-See: .opencode/specs/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/plans/implementation-001.md
+See: specs/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/plans/implementation-001.md

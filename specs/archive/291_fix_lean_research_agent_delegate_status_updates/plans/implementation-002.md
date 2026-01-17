@@ -223,8 +223,8 @@ Task 218 (just completed) already addressed most configuration issues:
 - [ ] Plan link points to v002
 
 **Files to Modify**:
-- `.claude/specs/TODO.md`
-- `.claude/specs/state.json`
+- `specs/TODO.md`
+- `specs/state.json`
 
 ---
 

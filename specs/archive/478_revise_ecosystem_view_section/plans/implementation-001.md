@@ -5,7 +5,7 @@
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/478_revise_ecosystem_view_section/reports/research-001.md
+- **Research Inputs**: specs/478_revise_ecosystem_view_section/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: general
@@ -201,7 +201,7 @@ Key findings from research-001.md integrated into this plan:
 ## Artifacts & Outputs
 
 - `docs/essays/llms_to_agis/llms_to_agis.md` - revised essay
-- `.claude/specs/478_revise_ecosystem_view_section/summaries/implementation-summary-YYYYMMDD.md` - completion summary
+- `specs/478_revise_ecosystem_view_section/summaries/implementation-summary-YYYYMMDD.md` - completion summary
 
 ## Rollback/Contingency
 

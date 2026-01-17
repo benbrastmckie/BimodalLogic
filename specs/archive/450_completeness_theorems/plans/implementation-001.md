@@ -5,7 +5,7 @@
 - **Effort**: 8-10 hours
 - **Priority**: Low
 - **Dependencies**: Task 449 (completed), Task 481 (completed), Task 482 (completed)
-- **Research Inputs**: .claude/specs/450_completeness_theorems/reports/research-001.md
+- **Research Inputs**: specs/450_completeness_theorems/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean

@@ -16,7 +16,7 @@
 - Preserve lazy directory creation, status synchronization, and summary naming/location per artifact-management.
 
 ## Research Inputs
-- [.opencode/specs/162_align_task_with_implement_summary_artifact_requirements/reports/research-001.md](../reports/research-001.md)
+- [specs/162_align_task_with_implement_summary_artifact_requirements/reports/research-001.md](../reports/research-001.md)
 
 ## Overview
 Ensure /task enforces implementation summary artifact parity with /implement when implementation work produces artifacts, while preserving lazy directory creation and atomic status synchronization.

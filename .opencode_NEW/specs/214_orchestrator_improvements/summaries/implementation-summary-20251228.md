@@ -258,7 +258,7 @@ Each needs conversion to `<step_N>` tags with nested structure.
 
 ## Artifacts Created
 
-- Implementation Summary: `.opencode/specs/214_orchestrator_improvements/summaries/implementation-summary-20251228.md`
+- Implementation Summary: `specs/214_orchestrator_improvements/summaries/implementation-summary-20251228.md`
 - Modified File: `.opencode/agent/orchestrator.md` (914 → 1,015 lines)
 
 ---

@@ -39,10 +39,10 @@ These files correctly use `{NNN}` for artifact versioning:
 **Problem A: artifact-formats.md mixes both**
 ```markdown
 # Line 9 - directory uses {N}
-**Location**: `.claude/specs/{N}_{SLUG}/reports/research-{NNN}.md`
+**Location**: `specs/{N}_{SLUG}/reports/research-{NNN}.md`
 
 # Line 43 - same pattern
-**Location**: `.claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md`
+**Location**: `specs/{N}_{SLUG}/plans/implementation-{NNN}.md`
 ```
 This is actually **correct** - task numbers are unpadded, artifact versions are padded.
 
@@ -57,7 +57,7 @@ These are counts, not padded version numbers. Should use `{N}` or a different pl
 
 **Problem C: Task 388 description uses {N} for directory paths**
 ```markdown
-.claude/specs/{N}_{SLUG}/
+specs/{N}_{SLUG}/
 ```
 This is correct for unpadded task numbers, but was flagged as inconsistent with `{NNN}`.
 
@@ -129,8 +129,8 @@ Files needing updates:
 ## References
 
 - `.claude/rules/artifact-formats.md` - current artifact format rules
-- `.claude/specs/385_refactor_meta_command_task_creation/plans/implementation-002.md` - recognized this issue
-- Actual directory/file naming in `.claude/specs/`
+- `specs/385_refactor_meta_command_task_creation/plans/implementation-002.md` - recognized this issue
+- Actual directory/file naming in `specs/`
 
 ## Next Steps
 

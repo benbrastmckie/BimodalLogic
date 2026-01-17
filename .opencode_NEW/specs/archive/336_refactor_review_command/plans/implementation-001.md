@@ -69,7 +69,7 @@ Refactor the /review command and reviewer subagent to follow modern .opencode st
       * docs/project-info/TACTIC_REGISTRY.md
       * docs/project-info/FEATURE_REGISTRY.md
     - Read next_project_number from state.json
-    - Generate project_path: .opencode/specs/{next_project_number}_codebase_review
+    - Generate project_path: specs/{next_project_number}_codebase_review
     - If zero registries loaded: Return error "Registry files not found"
   - [ ] Implement Stage 2 (Delegate):
     - Generate session_id for tracking
@@ -308,7 +308,7 @@ Refactor the /review command and reviewer subagent to follow modern .opencode st
 - .opencode/agent/subagents/reviewer.md (refactored, 8-stage workflow)
 
 **Created Files**:
-- .opencode/specs/{next_project_number}_codebase_review/summaries/review-summary.md (by subagent)
+- specs/{next_project_number}_codebase_review/summaries/review-summary.md (by subagent)
 - Updated registry files (by subagent)
 
 **State Updates**:

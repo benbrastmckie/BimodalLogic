@@ -20,7 +20,7 @@
 **Blocking**: Task 245 (Phase 2)
 
 **Research Integration**: Yes  
-**Research Report**: `.opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md`
+**Research Report**: `specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md`
 
 **Key Research Findings**:
 - OpenAgents uses 32-line lazy-loading index reducing context by 60-70%
@@ -652,7 +652,7 @@ fi
 
 **Tasks**:
 1. Create validation report template (0.2 hours)
-   - Create `.opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md`
+   - Create `specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md`
    - Add sections: Overview, Metrics, Test Results, Conclusions, Recommendations
 
 2. Document all metrics (0.5 hours)
@@ -679,16 +679,16 @@ fi
 **Validation**:
 ```bash
 # Verify report exists
-if [ -f .opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md ]; then
+if [ -f specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md ]; then
   echo "[PASS] Validation report created"
 else
   echo "[FAIL] Validation report missing"
 fi
 
 # Check report includes all sections
-grep "## Metrics" .opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md
-grep "## Test Results" .opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md
-grep "## Conclusions" .opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md
+grep "## Metrics" specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md
+grep "## Test Results" specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md
+grep "## Conclusions" specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md
 ```
 
 ---
@@ -746,8 +746,8 @@ grep "Stage 7 (UpdateStatus) started" .opencode/logs/research-244.log
 grep "Stage 7 completed successfully" .opencode/logs/research-244.log
 
 # Verify status updates
-grep "244.*RESEARCHED" .opencode/specs/TODO.md
-jq '.tasks[] | select(.task_number == 244) | .status' .opencode/specs/state.json | grep "researched"
+grep "244.*RESEARCHED" specs/TODO.md
+jq '.tasks[] | select(.task_number == 244) | .status' specs/state.json | grep "researched"
 
 # Verify git commit
 git log --oneline --grep="task 244: research"
@@ -778,26 +778,26 @@ success_rate=$(grep "Reliability:" test-stage7-reliability.log | sed 's/.*: \([0
 **Test 7: End-to-End Workflow**
 ```bash
 # Create new test task
-echo "### 999. Test Task for Phase 1 Validation" >> .opencode/specs/TODO.md
-echo "- **Effort**: 1 hour" >> .opencode/specs/TODO.md
-echo "- **Status**: [NOT STARTED]" >> .opencode/specs/TODO.md
-echo "- **Language**: markdown" >> .opencode/specs/TODO.md
+echo "### 999. Test Task for Phase 1 Validation" >> specs/TODO.md
+echo "- **Effort**: 1 hour" >> specs/TODO.md
+echo "- **Status**: [NOT STARTED]" >> specs/TODO.md
+echo "- **Language**: markdown" >> specs/TODO.md
 
 # Execute /research
 /research 999 "Test Phase 1 migration"
 
 # Verify all artifacts created
-test -f .opencode/specs/999_test_task_for_phase_1_validation/reports/research-001.md
+test -f specs/999_test_task_for_phase_1_validation/reports/research-001.md
 
 # Verify status updated
-grep "999.*RESEARCHED" .opencode/specs/TODO.md
+grep "999.*RESEARCHED" specs/TODO.md
 
 # Verify git commit
 git log --oneline --grep="task 999: research"
 
 # Cleanup
 git reset --hard HEAD~1
-sed -i '/### 999\./,+3d' .opencode/specs/TODO.md
+sed -i '/### 999\./,+3d' specs/TODO.md
 ```
 
 ### Performance Testing
@@ -890,7 +890,7 @@ grep "subdivide" .opencode/logs/research-244.log
 
 ### Documentation Artifacts
 
-9. **Validation Report** (`.opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md`)
+9. **Validation Report** (`specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md`)
    - All metrics documented
    - Test results included
    - Conclusions and recommendations

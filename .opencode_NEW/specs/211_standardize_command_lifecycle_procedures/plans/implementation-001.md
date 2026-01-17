@@ -15,8 +15,8 @@
 **Status**: [COMPLETED]  
 **Completed**: 2025-12-28  
 **Research Inputs**: 
-- .opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md
-- .opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md
+- specs/211_standardize_command_lifecycle_procedures/reports/research-001.md
+- specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md
 
 **Task Dependencies**: None  
 **Blocking**: None
@@ -215,8 +215,8 @@ Each command file should follow this pattern:
 <!-- Context Loading -->
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/system/git-commits.md
@@ -638,8 +638,8 @@ None identified
 
 ### Research Artifacts
 
-- Main Report: .opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md
-- Summary: .opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md
+- Main Report: specs/211_standardize_command_lifecycle_procedures/reports/research-001.md
+- Summary: specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md
 
 ### Files to be Created
 

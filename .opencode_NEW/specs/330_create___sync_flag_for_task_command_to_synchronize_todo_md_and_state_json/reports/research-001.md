@@ -11,12 +11,12 @@
 - .opencode/command/task.md (current /task command structure)
 - .opencode/command/abandon.md (range/list parsing patterns)
 - .opencode/agent/subagents/status-sync-manager.md (atomic update mechanism)
-- .opencode/specs/TODO.md (task metadata)
+- specs/TODO.md (task metadata)
 - .opencode/state.json (authoritative state)
 - .opencode/scripts/validate_state_sync.py (validation utility)
 
 **Artifacts**:
-- .opencode/specs/330_create___sync_flag_for_task_command_to_synchronize_todo_md_and_state_json/reports/research-001.md
+- specs/330_create___sync_flag_for_task_command_to_synchronize_todo_md_and_state_json/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -229,8 +229,8 @@ Rollback on Failure:
 **Atomic Write Pattern**:
 ```bash
 # Generate unique temp file names
-todo_tmp=".opencode/specs/TODO.md.tmp.${session_id}"
-state_tmp=".opencode/specs/state.json.tmp.${session_id}"
+todo_tmp="specs/TODO.md.tmp.${session_id}"
+state_tmp="specs/state.json.tmp.${session_id}"
 
 # Write to temp files
 write_file "$todo_tmp" "$updated_todo_content"
@@ -241,8 +241,8 @@ verify_file_exists "$todo_tmp"
 verify_file_exists "$state_tmp"
 
 # Atomic rename (both files or neither)
-mv "$todo_tmp" ".opencode/specs/TODO.md"
-mv "$state_tmp" ".opencode/specs/state.json"
+mv "$todo_tmp" "specs/TODO.md"
+mv "$state_tmp" "specs/state.json"
 ```
 
 **Strengths**:
@@ -1098,7 +1098,7 @@ parse_task_numbers() {
 
 ### Source 5: Task 279 Findings
 
-**File**: .opencode/specs/TODO.md  
+**File**: specs/TODO.md  
 **Lines**: 719-733  
 **Relevance**: state.json as authoritative source
 
@@ -1108,7 +1108,7 @@ parse_task_numbers() {
 
 ### Source 6: Task 333 Findings
 
-**File**: .opencode/specs/TODO.md  
+**File**: specs/TODO.md  
 **Lines**: 63-82  
 **Relevance**: Delegation to status-sync-manager requirement
 

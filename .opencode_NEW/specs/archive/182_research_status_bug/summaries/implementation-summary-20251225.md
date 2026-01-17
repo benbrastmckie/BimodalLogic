@@ -17,7 +17,7 @@ Fixed critical bug in `/research` command where completed research was not updat
 3. **Spec vs Implementation Gap**: research.md Stage 4 (Postflight) specifies using status-sync-manager but the specification is not being executed by the implementing code
 
 **Evidence**:
-- Task 177 research completed successfully (artifacts in `.opencode/specs/177_examples_update/`)
+- Task 177 research completed successfully (artifacts in `specs/177_examples_update/`)
 - TODO.md still shows task 177 as [NOT STARTED]
 - No research links added to TODO.md
 - state.json still shows task 177 as "not_started"

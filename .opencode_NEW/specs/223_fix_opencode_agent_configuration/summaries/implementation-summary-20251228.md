@@ -125,7 +125,7 @@ The following validation requires manual testing by the user after restarting Op
 
 ## Documentation
 
-Updated `.opencode/specs/TODO.md` task 223:
+Updated `specs/TODO.md` task 223:
 - Status: [RESEARCHED] → [COMPLETED]
 - Added implementation artifacts section
 - Marked automated acceptance criteria as complete
@@ -145,11 +145,11 @@ Updated `.opencode/specs/TODO.md` task 223:
 ## Files Modified
 
 - `opencode.json` (lines 19, 31: added `"mode": "subagent"`)
-- `.opencode/specs/TODO.md` (task 223: updated status and acceptance criteria)
+- `specs/TODO.md` (task 223: updated status and acceptance criteria)
 
 ## Artifacts Created
 
-- `.opencode/specs/223_fix_opencode_agent_configuration/summaries/implementation-summary-20251228.md` (this file)
+- `specs/223_fix_opencode_agent_configuration/summaries/implementation-summary-20251228.md` (this file)
 
 ## Success Criteria
 

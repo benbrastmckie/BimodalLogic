@@ -21,10 +21,10 @@ After comprehensive analysis of the current command implementations, the reporte
 - `.opencode/command/plan.md` (current implementation)
 - `.opencode/agent/subagents/researcher.md` (subagent implementation)
 - `.opencode/agent/subagents/planner.md` (subagent implementation)
-- `.opencode/specs/163_*/plans/implementation-001.md` (proposed plan)
-- `.opencode/specs/163_*/reports/research-001.md` (initial research)
+- `specs/163_*/plans/implementation-001.md` (proposed plan)
+- `specs/163_*/reports/research-001.md` (initial research)
 - `TODO.md` (task registry - note: task 163 not present)
-- `.opencode/specs/state.json` (project state tracking)
+- `specs/state.json` (project state tracking)
 
 ## Key Findings
 

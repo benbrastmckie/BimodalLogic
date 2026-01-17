@@ -169,7 +169,7 @@ Successfully enhanced workflow commands (`/research`, `/plan`, `/revise`, `/impl
    - Updated command usage documentation with --force flag
 
 4. **Summary**:
-   - `.opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/summaries/implementation-summary-20260105.md` (this file)
+   - `specs/310_enhance_workflow_commands_with_start_and_end_status_updates/summaries/implementation-summary-20260105.md` (this file)
 
 ---
 

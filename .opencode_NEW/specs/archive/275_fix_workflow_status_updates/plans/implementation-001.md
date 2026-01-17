@@ -19,7 +19,7 @@
 **Dependencies**: None  
 **Blocking**: None  
 **Research Artifacts**:
-- `.opencode/specs/275_fix_workflow_status_updates/reports/research-001.md`
+- `specs/275_fix_workflow_status_updates/reports/research-001.md`
 
 **Key Research Findings**:
 1. Researcher subagent ALREADY implements two-phase status updates correctly
@@ -399,8 +399,8 @@ All workflow subagents (researcher, planner, implementer) follow a two-phase sta
    - `.opencode/command/implement.md`
    - `.opencode/command/revise.md`
    - `.opencode/context/core/workflows/command-lifecycle.md`
-   - `.opencode/specs/TODO.md`
-   - `.opencode/specs/state.json`
+   - `specs/TODO.md`
+   - `specs/state.json`
 4. Create git commit with descriptive message
 5. Update task 275 status to [COMPLETED] in TODO.md and state.json
 6. Add completion timestamp
@@ -490,22 +490,22 @@ task 275: fix workflow commands to update status at beginning and end
    - `.opencode/context/core/workflows/command-lifecycle.md`
 
 4. **Updated Tracking Files**:
-   - `.opencode/specs/TODO.md` (task 275 status updated to [COMPLETED])
-   - `.opencode/specs/state.json` (task 275 status updated to completed)
+   - `specs/TODO.md` (task 275 status updated to [COMPLETED])
+   - `specs/state.json` (task 275 status updated to completed)
 
 ### Supporting Artifacts
 
 1. **Verification Report** (Phase 1):
    - Documents whether preflight updates exist in planner and implementer
-   - Location: `.opencode/specs/275_fix_workflow_status_updates/reports/verification-001.md`
+   - Location: `specs/275_fix_workflow_status_updates/reports/verification-001.md`
 
 2. **Test Results Document** (Phase 5):
    - Documents test results for status updates
-   - Location: `.opencode/specs/275_fix_workflow_status_updates/reports/test-results-001.md`
+   - Location: `specs/275_fix_workflow_status_updates/reports/test-results-001.md`
 
 3. **Implementation Summary**:
    - Brief summary of changes made (<100 tokens)
-   - Location: `.opencode/specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md`
+   - Location: `specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md`
 
 ---
 

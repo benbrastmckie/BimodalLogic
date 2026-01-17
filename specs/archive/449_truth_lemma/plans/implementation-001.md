@@ -5,7 +5,7 @@
 - **Effort**: 15-17 hours
 - **Priority**: Low
 - **Dependencies**: Task 448 (completed), Task 458 (completed)
-- **Research Inputs**: .claude/specs/449_truth_lemma/reports/research-001.md
+- **Research Inputs**: specs/449_truth_lemma/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -177,7 +177,7 @@ Research report research-001.md identified:
 
 - `Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean` - subformulas_trans lemma
 - `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - completed truth lemma
-- `.claude/specs/449_truth_lemma/summaries/implementation-summary-YYYYMMDD.md` - completion summary
+- `specs/449_truth_lemma/summaries/implementation-summary-YYYYMMDD.md` - completion summary
 
 ## Rollback/Contingency
 

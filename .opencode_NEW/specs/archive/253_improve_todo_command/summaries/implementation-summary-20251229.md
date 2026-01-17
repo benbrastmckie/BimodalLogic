@@ -39,7 +39,7 @@ Updated `.opencode/command/todo.md` to:
    - Replaced backup-based workflow with git commits
    - Delegated cleanup logic to dedicated script
 
-3. **Modified**: `.opencode/specs/TODO.md`
+3. **Modified**: `specs/TODO.md`
    - Fixed 2 instances of stacked dividers (lines 345, 399)
    - Applied divider fixing algorithm
 

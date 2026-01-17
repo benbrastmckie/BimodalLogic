@@ -226,7 +226,7 @@ Architectural Decision Records (ADRs):
 1. [Contributing Guide](Development/CONTRIBUTING.md) - Contribution workflow
 2. [Implementation Status](ProjectInfo/IMPLEMENTATION_STATUS.md) - What's implemented
 3. [Sorry Registry](ProjectInfo/SORRY_REGISTRY.md) - Technical debt tracking
-4. [TODO.md](../.claude/specs/TODO.md) - Active tasks
+4. [TODO.md](../specs/TODO.md) - Active tasks
 
 ## Documentation Update Workflow
 

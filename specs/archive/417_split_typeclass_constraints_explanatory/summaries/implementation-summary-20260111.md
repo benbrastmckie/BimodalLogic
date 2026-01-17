@@ -20,7 +20,7 @@ No code changes were made. This task was a benchmark comparison that discovered 
 
 ## Files Created
 
-- `.claude/specs/417_split_typeclass_constraints_explanatory/reports/benchmark-results.md` - Benchmark findings
+- `specs/417_split_typeclass_constraints_explanatory/reports/benchmark-results.md` - Benchmark findings
 
 ## Verification
 

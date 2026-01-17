@@ -57,8 +57,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     status: "researching",
     last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  }' specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 ```
 ```
 
@@ -434,7 +434,7 @@ After implementation:
 - `.claude/context/core/orchestration/subagent-validation.md` - Validation (current)
 - `.claude/skills/skill-status-sync/SKILL.md` - Status sync (documented)
 - `.claude/commands/research.md` - Research command (example)
-- `.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md` - Initial analysis
+- `specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md` - Initial analysis
 
 ## Next Steps
 

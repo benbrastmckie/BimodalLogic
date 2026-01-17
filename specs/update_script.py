@@ -10,21 +10,21 @@ timestamp = "2026-01-15"
 new_artifacts = [
     {
         "type": "research",
-        "path": ".opencode/specs/504_aristotle_integration/reports/research-001.md",
+        "path": "specs/504_aristotle_integration/reports/research-001.md",
         "summary": "Detailed research on Harmonic Aristotle MCP integration and best practices",
     },
     {
         "type": "summary",
-        "path": ".opencode/specs/504_aristotle_integration/summaries/research-summary.md",
+        "path": "specs/504_aristotle_integration/summaries/research-summary.md",
         "summary": "Brief overview of Aristotle API integration findings",
     },
 ]
 
 # Read files
-with open(".opencode/specs/TODO.md", "r") as f:
+with open("specs/TODO.md", "r") as f:
     todo_content = f.read()
 
-with open(".opencode/specs/state.json", "r") as f:
+with open("specs/state.json", "r") as f:
     state_content = f.read()
 
 # Update state.json
@@ -110,10 +110,10 @@ todo_content = todo_content.replace(task_block, new_task_block)
 # todo_content = re.sub(r"last_updated:.*", f"last_updated: {timestamp}", todo_content, count=1)
 
 # Write temp files
-with open(f".opencode/specs/TODO.md.tmp.{session_id}", "w") as f:
+with open(f"specs/TODO.md.tmp.{session_id}", "w") as f:
     f.write(todo_content)
 
-with open(f".opencode/specs/state.json.tmp.{session_id}", "w") as f:
+with open(f"specs/state.json.tmp.{session_id}", "w") as f:
     json.dump(state_data, f, indent=2)
 
 print("Temp files created successfully")

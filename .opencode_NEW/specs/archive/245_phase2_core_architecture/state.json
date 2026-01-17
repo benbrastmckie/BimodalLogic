@@ -19,14 +19,14 @@
   "phase_8_completed": "2025-12-29",
   "last_updated": "2025-12-29T16:10:00Z",
   "reports": [
-    ".opencode/specs/245_phase2_core_architecture/reports/research-001.md",
-    ".opencode/specs/245_phase2_core_architecture/reports/validation-001.md"
+    "specs/245_phase2_core_architecture/reports/research-001.md",
+    "specs/245_phase2_core_architecture/reports/validation-001.md"
   ],
   "plans": [
-    ".opencode/specs/245_phase2_core_architecture/plans/implementation-001.md"
+    "specs/245_phase2_core_architecture/plans/implementation-001.md"
   ],
   "summaries": [
-    ".opencode/specs/245_phase2_core_architecture/summaries/implementation-summary-20251229.md"
+    "specs/245_phase2_core_architecture/summaries/implementation-summary-20251229.md"
   ],
   "artifacts": [
     ".opencode/backups/phase2/backup-phase2-files.sh",
@@ -42,7 +42,7 @@
     ".opencode/agent/orchestrator.md",
     ".opencode/context/system/orchestrator-guide.md"
   ],
-  "plan_path": ".opencode/specs/245_phase2_core_architecture/plans/implementation-001.md",
+  "plan_path": "specs/245_phase2_core_architecture/plans/implementation-001.md",
   "plan_metadata": {
     "phase_count": 8,
     "estimated_hours": 32.5,

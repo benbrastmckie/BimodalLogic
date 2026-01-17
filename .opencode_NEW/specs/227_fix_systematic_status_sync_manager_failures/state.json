@@ -14,7 +14,7 @@
   "research_completed": "2025-12-29",
   "last_updated": "2025-12-29",
   "artifacts": [
-    ".opencode/specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md"
+    "specs/227_fix_systematic_status_sync_manager_failures/reports/research-001.md"
   ],
   "estimated_hours": 11.0,
   "research_findings": {

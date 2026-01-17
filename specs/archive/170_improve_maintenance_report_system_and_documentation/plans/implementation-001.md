@@ -6,7 +6,7 @@
 - **Priority**: Low
 - **Dependencies**: None
 - **Research Inputs**: 
-  - Main Report: .opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md
+  - Main Report: specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md
   - Key Findings: /review command exists but lacks status-sync-manager integration, project state.json creation, and comprehensive state file updates. Research identified 6 priority improvements with 5-7 hour total effort.
 - **Artifacts**: 
   - plans/implementation-001.md (this file)
@@ -198,7 +198,7 @@ The /review command currently creates review summary artifacts and updates regis
 ## Artifacts & Outputs
 
 - **Plans:**
-  - .opencode/specs/170_improve_maintenance_report_system_and_documentation/plans/implementation-001.md (this file)
+  - specs/170_improve_maintenance_report_system_and_documentation/plans/implementation-001.md (this file)
 
 - **Updated Files:**
   - .opencode/command/review.md (Stage 6 and Stage 7 updates)

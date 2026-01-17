@@ -245,7 +245,7 @@ Research on task 285 revealed that Task 283 successfully fixed status update beh
 - [ ] Findings documented
 
 **Files Modified**:
-- `.opencode/specs/TODO.md` (if Task 289 created)
+- `specs/TODO.md` (if Task 289 created)
 
 ## Testing and Validation
 
@@ -283,7 +283,7 @@ Research on task 285 revealed that Task 283 successfully fixed status update beh
 
 ### Secondary Artifacts
 
-1. **Implementation Summary**: `.opencode/specs/285_audit_and_fix_status_update_behavior/summaries/implementation-summary-{date}.md`
+1. **Implementation Summary**: `specs/285_audit_and_fix_status_update_behavior/summaries/implementation-summary-{date}.md`
 2. **Test Results**: Documented in implementation summary
 
 ## Rollback/Contingency

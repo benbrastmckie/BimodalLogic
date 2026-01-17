@@ -13,10 +13,10 @@ Successfully enhanced `todo_cleanup.py` with markdown formatting capabilities. T
 ### Phase 1: Path Updates
 
 Updated path constants in `.opencode/scripts/todo_cleanup.py`:
-- `todo_path`: `.opencode/specs/TODO.md` → `.claude/specs/TODO.md`
-- `state_path`: `.opencode/specs/state.json` → `.claude/specs/state.json`
-- `archive_state_path`: `.opencode/specs/archive/state.json` → `.claude/specs/archive/state.json`
-- `specs_dir`: `.opencode/specs/` → `.claude/specs/`
+- `todo_path`: `specs/TODO.md` → `specs/TODO.md`
+- `state_path`: `specs/state.json` → `specs/state.json`
+- `archive_state_path`: `specs/archive/state.json` → `specs/archive/state.json`
+- `specs_dir`: `specs/` → `specs/`
 
 Also updated docstring reference on line 11.
 
@@ -53,8 +53,8 @@ Verified:
 | File | Change |
 |------|--------|
 | `.opencode/scripts/todo_cleanup.py` | Path updates, format_markdown(), --format-only flag, integration |
-| `.claude/specs/323_.../plans/implementation-002.md` | Marked phases complete |
-| `.claude/specs/TODO.md` | Applied formatting |
+| `specs/323_.../plans/implementation-002.md` | Marked phases complete |
+| `specs/TODO.md` | Applied formatting |
 
 ## Usage
 
@@ -83,7 +83,7 @@ python3 .opencode/scripts/todo_cleanup.py --fix-dividers
 - [x] Formatting failure doesn't abort archival
 - [x] Dry-run shows formatting changes
 - [x] No content loss
-- [x] Script uses .claude/specs/ paths
+- [x] Script uses specs/ paths
 
 ## Notes
 

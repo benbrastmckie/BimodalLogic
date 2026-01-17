@@ -137,9 +137,9 @@ Research-002's comparative analysis saved hours of implementation time by identi
 - `.opencode/command/implement.md` - Line 34: Changed "arguments" to "$ARGUMENTS"
 
 **Documentation**:
-- `.opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/summaries/implementation-summary-20260103.md`
-- `.opencode/specs/TODO.md` - Updated status to [COMPLETED]
-- `.opencode/specs/state.json` - Updated completion timestamp
+- `specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/summaries/implementation-summary-20260103.md`
+- `specs/TODO.md` - Updated status to [COMPLETED]
+- `specs/state.json` - Updated completion timestamp
 
 ---
 

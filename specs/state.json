@@ -6,6 +6,88 @@
   },
   "active_projects": [
     {
+      "project_number": 529,
+      "project_name": "unify_workflow_commands_single_execution",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "researched",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:54:26Z",
+      "effort": "4-6 hours",
+      "description": "Refactor /research, /plan, /implement commands to embed all checkpoint logic inline rather than delegating preflight to skill-status-sync. The preflight status update should be done directly in the command file using Bash/jq/Edit, not via Skill invocation, to prevent the completion signal problem that causes workflows to halt after preflight.",
+      "session_id": "sess_1768657929_57f816",
+      "researched": "2026-01-17T13:54:26Z",
+      "artifacts": [
+        {
+          "path": "specs/529_unify_workflow_commands_single_execution/reports/research-001.md",
+          "type": "research"
+        }
+      ]
+    },
+    {
+      "project_number": 530,
+      "project_name": "add_continuation_guards_to_commands",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "2-3 hours",
+      "description": "Add explicit DO NOT STOP and CONTINUE EXECUTION guards at critical transition points in command files. Use bold warnings like CRITICAL: DO NOT STOP HERE. EXECUTE STAGE 2 IMMEDIATELY. These guards reinforce that skill completion does not mean workflow completion."
+    },
+    {
+      "project_number": 531,
+      "project_name": "refactor_status_sync_non_terminal_returns",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "1-2 hours",
+      "description": "Ensure skill-status-sync returns non-completion signals (already partially done with synced vs completed), but also add explicit continue_workflow: true field in return JSON to signal Claude should continue. Review and update return format documentation.",
+      "dependencies": [
+        529,
+        530
+      ]
+    },
+    {
+      "project_number": 532,
+      "project_name": "create_workflow_integration_tests",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "4-6 hours",
+      "description": "Create test scaffolding that validates workflow commands complete all checkpoints (GATE IN -> DELEGATE -> GATE OUT -> COMMIT) without halting. Tests should detect early stopping patterns and verify end-to-end execution.",
+      "dependencies": [
+        529,
+        530,
+        531
+      ]
+    },
+    {
+      "project_number": 533,
+      "project_name": "document_workflow_anti_patterns",
+      "type": "documentation",
+      "phase": "not_started",
+      "status": "not_started",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "1-2 hours",
+      "description": "Add documentation in .claude/docs/guides/ explaining the skill completion = workflow completion anti-pattern and how to avoid it. Document root causes, symptoms, and prevention strategies."
+    },
+    {
       "project_number": 524,
       "project_name": "update_claude_md_and_rules_specs_path",
       "type": "refactor",
@@ -16,7 +98,7 @@
       "created": "2026-01-17T12:23:06Z",
       "last_updated": "2026-01-17T12:29:47Z",
       "effort": "30 minutes",
-      "description": "Update CLAUDE.md and all rules files to reference specs/ instead of .claude/specs/. This is the foundation task that must be completed before other refactoring tasks.",
+      "description": "Update CLAUDE.md and all rules files to reference specs/ instead of specs/. This is the foundation task that must be completed before other refactoring tasks.",
       "session_id": "sess_1768655347_24e4a7",
       "completed": "2026-01-17T12:29:47Z"
     },
@@ -31,7 +113,7 @@
       "created": "2026-01-17T12:23:06Z",
       "last_updated": "2026-01-17T12:35:00Z",
       "effort": "1 hour",
-      "description": "Update all agent files in .claude/agents/ to reference specs/ instead of .claude/specs/. Depends on task 524.",
+      "description": "Update all agent files in .claude/agents/ to reference specs/ instead of specs/. Depends on task 524.",
       "dependencies": [
         524
       ],
@@ -49,7 +131,7 @@
       "created": "2026-01-17T12:23:06Z",
       "last_updated": "2026-01-17T12:45:00Z",
       "effort": "1 hour",
-      "description": "Update all command files in .claude/commands/ to reference specs/ instead of .claude/specs/. Depends on task 524.",
+      "description": "Update all command files in .claude/commands/ to reference specs/ instead of specs/. Depends on task 524.",
       "dependencies": [
         524
       ],
@@ -67,7 +149,7 @@
       "created": "2026-01-17T12:23:06Z",
       "last_updated": "2026-01-17T13:00:00Z",
       "effort": "1 hour",
-      "description": "Update all skill files in .claude/skills/ to reference specs/ instead of .claude/specs/. Depends on task 524.",
+      "description": "Update all skill files in .claude/skills/ to reference specs/ instead of specs/. Depends on task 524.",
       "dependencies": [
         524
       ],
@@ -103,8 +185,8 @@
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-17T06:00:27Z",
-      "last_updated": "2026-01-17T13:37:33Z",
-      "researched": "2026-01-17T13:37:33Z",
+      "last_updated": "2026-01-17T13:54:33Z",
+      "researched": "2026-01-17T13:54:33Z",
       "effort": "4-6 hours",
       "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments",
       "artifacts": [
@@ -115,9 +197,13 @@
         {
           "path": "specs/523_bimodal_cleanup/reports/research-002.md",
           "type": "research"
+        },
+        {
+          "path": "specs/523_bimodal_cleanup/reports/research-003.md",
+          "type": "research"
         }
       ],
-      "session_id": "sess_1768656756_fec1d9"
+      "session_id": "sess_1768657879_19f5ce"
     },
     {
       "project_number": 518,
@@ -147,7 +233,7 @@
       "last_updated": "2026-01-16T00:00:00Z",
       "effort": "2-3 hours",
       "description": "Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.",
-      "plan_path": ".opencode/specs/519_add_missing_stage_7_validation_in_workflow_commands/plans/implementation-001.md"
+      "plan_path": "specs/519_add_missing_stage_7_validation_in_workflow_commands/plans/implementation-001.md"
     },
     {
       "project_number": 520,
@@ -608,5 +694,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 529
+  "next_project_number": 534
 }

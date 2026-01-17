@@ -19,7 +19,7 @@ Investigation reveals that the reported "/research and /plan TODO.md update fail
   4. Trace status-sync-manager invocation points
   5. Compare with Task 240 root cause analysis
 - **Sources**:
-  - .opencode/specs/TODO.md (task status tracking)
+  - specs/TODO.md (task status tracking)
   - .opencode/command/research.md (677 lines)
   - .opencode/command/plan.md (652 lines)
   - .opencode/agent/subagents/status-sync-manager.md (838 lines)
@@ -37,8 +37,8 @@ Investigation reveals that the reported "/research and /plan TODO.md update fail
 - **Started**: 2025-12-29
 - **Researched**: 2025-12-29
 - **Completed**: 2025-12-29
-- **Research**: [Comparative Analysis Report](.opencode/specs/240_.../reports/research-001.md)
-- **Plan**: [Implementation Plan](.opencode/specs/240_.../plans/implementation-002.md)
+- **Research**: [Comparative Analysis Report](specs/240_.../reports/research-001.md)
+- **Plan**: [Implementation Plan](specs/240_.../plans/implementation-002.md)
 ```
 
 **Analysis**: 
@@ -140,10 +140,10 @@ Defines 8-stage pattern for all workflow commands:
 **Purpose**: Update status, link artifacts, create git commit
 
 **Common Steps**:
-1. Update .opencode/specs/TODO.md with completion status marker
+1. Update specs/TODO.md with completion status marker
 2. Add/update **Completed** timestamp
 3. Update state.json with completion status and timestamp
-4. Link artifacts in .opencode/specs/TODO.md
+4. Link artifacts in specs/TODO.md
 5. Validate all artifact links are correct
 6. Create git commit with scoped changes
 7. Validate git commit succeeded
@@ -156,7 +156,7 @@ Defines 8-stage pattern for all workflow commands:
 CRITICAL: All status and artifact updates in Stage 7 MUST be delegated to 
 status-sync-manager to ensure atomicity across all tracking files.
 
-**WARNING**: DO NOT manually update .opencode/specs/TODO.md, state.json, 
+**WARNING**: DO NOT manually update specs/TODO.md, state.json, 
 project state.json, or plan files directly. Manual updates create race 
 conditions and inconsistent state. ALL updates MUST flow through 
 status-sync-manager's two-phase commit protocol.
@@ -512,9 +512,9 @@ Possible reasons:
 
 ### Primary Sources
 
-- **Task 240 Research**: .opencode/specs/240_.../reports/research-001.md (391 lines)
-- **Task 240 Plan**: .opencode/specs/240_.../plans/implementation-002.md
-- **TODO.md**: .opencode/specs/TODO.md (Task 240 entry shows successful update)
+- **Task 240 Research**: specs/240_.../reports/research-001.md (391 lines)
+- **Task 240 Plan**: specs/240_.../plans/implementation-002.md
+- **TODO.md**: specs/TODO.md (Task 240 entry shows successful update)
 - **research.md**: .opencode/command/research.md (677 lines)
 - **plan.md**: .opencode/command/plan.md (652 lines)
 - **status-sync-manager.md**: .opencode/agent/subagents/status-sync-manager.md (838 lines)

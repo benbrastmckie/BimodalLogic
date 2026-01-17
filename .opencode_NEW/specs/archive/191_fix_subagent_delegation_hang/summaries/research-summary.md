@@ -35,4 +35,4 @@ This phased approach will eliminate 95% of delegation hang scenarios while maint
 
 ## Full Report
 
-See: .opencode/specs/191_fix_subagent_delegation_hang/reports/research-001.md
+See: specs/191_fix_subagent_delegation_hang/reports/research-001.md

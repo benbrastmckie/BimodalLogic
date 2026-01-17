@@ -11,13 +11,13 @@
   "planning_completed": "2025-12-29",
   "last_updated": "2025-12-29",
   "reports": [
-    ".opencode/specs/249_yaml_frontmatter_subagents/reports/research-001.md"
+    "specs/249_yaml_frontmatter_subagents/reports/research-001.md"
   ],
   "plans": [
-    ".opencode/specs/249_yaml_frontmatter_subagents/plans/implementation-001.md"
+    "specs/249_yaml_frontmatter_subagents/plans/implementation-001.md"
   ],
   "summaries": [
-    ".opencode/specs/249_yaml_frontmatter_subagents/summaries/research-summary.md"
+    "specs/249_yaml_frontmatter_subagents/summaries/research-summary.md"
   ],
   "plan_metadata": {
     "phase_count": 9,

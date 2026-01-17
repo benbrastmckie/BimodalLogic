@@ -14,8 +14,8 @@
 **Created**: 2025-12-28  
 **Status**: [COMPLETED]  
 **Research Inputs**: 
-- .opencode/specs/216_improve_task_tracking_updates/reports/research-001.md
-- .opencode/specs/216_improve_task_tracking_updates/summaries/research-summary.md
+- specs/216_improve_task_tracking_updates/reports/research-001.md
+- specs/216_improve_task_tracking_updates/summaries/research-summary.md
 
 **Task Dependencies**: Task 211 (Completed)  
 **Blocking**: None
@@ -123,7 +123,7 @@ Enhance status-sync-manager with artifact validation protocol, plan metadata tra
    - Implement lazy creation on first artifact write
    - Use state-schema.md template for initial structure
    - Add project state.json to two-phase commit transaction
-   - Create .opencode/specs/{task_number}_{slug}/state.json
+   - Create specs/{task_number}_{slug}/state.json
    - Populate with project_name, project_number, type, phase, status
    - Add creation timestamp and last_updated timestamp
    - Document lazy creation policy in state-schema.md
@@ -686,8 +686,8 @@ None identified
 
 ### Research Artifacts
 
-- Main Report: .opencode/specs/216_improve_task_tracking_updates/reports/research-001.md
-- Summary: .opencode/specs/216_improve_task_tracking_updates/summaries/research-summary.md
+- Main Report: specs/216_improve_task_tracking_updates/reports/research-001.md
+- Summary: specs/216_improve_task_tracking_updates/summaries/research-summary.md
 
 ### Files to be Modified
 

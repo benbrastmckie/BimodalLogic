@@ -61,7 +61,7 @@ It does NOT handle:
    # Lookup task in state.json (8x faster than TODO.md)
    task_data=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber))' \
-     .opencode/specs/state.json)
+     specs/state.json)
    
    # Extract language
    language=$(echo "$task_data" | jq -r '.language // "general"')
@@ -179,7 +179,7 @@ Without loading:
 ## Language Extraction Logic
 
 ### Priority 1: Project state.json
-**Path**: `.opencode/specs/{task_number}_{slug}/state.json`
+**Path**: `specs/{task_number}_{slug}/state.json`
 
 **Field**: `language`
 
@@ -197,7 +197,7 @@ Without loading:
 ---
 
 ### Priority 2: TODO.md
-**Path**: `.opencode/specs/TODO.md`
+**Path**: `specs/TODO.md`
 
 **Field**: `**Language**:` in task entry
 

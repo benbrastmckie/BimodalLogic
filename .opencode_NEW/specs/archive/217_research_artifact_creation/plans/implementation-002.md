@@ -475,8 +475,8 @@ If documentation changes break existing workflows:
 - `.opencode/context/core/standards/subagent-return-format.md` (authoritative return format)
 - `.opencode/context/core/system/artifact-management.md` (authoritative artifact requirements)
 - `.opencode/context/core/workflows/command-lifecycle.md` (command pattern)
-- `.opencode/specs/217_research_artifact_creation/reports/research-001.md` (gap analysis)
-- `.opencode/specs/217_research_artifact_creation/summaries/research-summary.md` (key findings)
+- `specs/217_research_artifact_creation/reports/research-001.md` (gap analysis)
+- `specs/217_research_artifact_creation/summaries/research-summary.md` (key findings)
 
 ### No External Dependencies
 - No tool installations required

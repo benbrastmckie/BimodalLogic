@@ -49,8 +49,8 @@ The task description's assumption about missing preflight updates appears to be 
 **Evidence from Task 260 TODO.md**:
 ```markdown
 **Research Artifacts**:
-  - Main Report: .opencode/specs/260_proof_search/reports/research-001.md
-  - Summary: .opencode/specs/260_proof_search/summaries/research-summary.md
+  - Main Report: specs/260_proof_search/reports/research-001.md
+  - Summary: specs/260_proof_search/summaries/research-summary.md
 ```
 
 **Evidence from lean-research-agent.md**:
@@ -70,8 +70,8 @@ The task description's assumption about missing preflight updates appears to be 
 **Evidence from Task 260**:
 ```markdown
 **Research Artifacts**:
-  - Main Report: .opencode/specs/260_proof_search/reports/research-001.md
-  - Summary: .opencode/specs/260_proof_search/summaries/research-summary.md
+  - Main Report: specs/260_proof_search/reports/research-001.md
+  - Summary: specs/260_proof_search/summaries/research-summary.md
 ```
 
 **Analysis**:

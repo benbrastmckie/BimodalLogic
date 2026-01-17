@@ -89,7 +89,7 @@ The semantic approach provides a **proven** core completeness theorem:
    - Documents proven core completeness results
    - Lake build: SUCCESS
 
-3. **`.claude/specs/450_completeness_theorems/plans/implementation-001.md`**
+3. **`specs/450_completeness_theorems/plans/implementation-001.md`**
    - Updated all phase statuses to [COMPLETED]
    - Updated plan status to [COMPLETED]
 

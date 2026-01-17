@@ -125,7 +125,7 @@ Enhance the `/todo` command to properly move project directories to the archive 
 
    First, ensure archive directory exists:
    ```bash
-   mkdir -p .claude/specs/archive/
+   mkdir -p specs/archive/
    ```
 
    For each archived task (completed or abandoned):
@@ -134,8 +134,8 @@ Enhance the `/todo` command to properly move project directories to the archive 
    project_number={N}
    project_name={SLUG}
 
-   src=".claude/specs/${project_number}_${project_name}"
-   dst=".claude/specs/archive/${project_number}_${project_name}"
+   src="specs/${project_number}_${project_name}"
+   dst="specs/archive/${project_number}_${project_name}"
 
    if [ -d "$src" ]; then
      mv "$src" "$dst"
@@ -155,7 +155,7 @@ Enhance the `/todo` command to properly move project directories to the archive 
    If user selected "Archive all orphans":
    ```bash
    for each orphan_dir in orphaned_directories:
-     mv "$orphan_dir" ".claude/specs/archive/$(basename $orphan_dir)"
+     mv "$orphan_dir" "specs/archive/$(basename $orphan_dir)"
      echo "Moved orphan: $(basename $orphan_dir) -> archive/"
    ```
 
@@ -214,7 +214,7 @@ Enhance the `/todo` command to properly move project directories to the archive 
    - Medium priority: {N}
    - Low priority: {N}
 
-   Archives: .claude/specs/archive/
+   Archives: specs/archive/
    ```
    ```
 
@@ -226,7 +226,7 @@ Enhance the `/todo` command to properly move project directories to the archive 
    - Tasks can be recovered with `/task --recover N`
    - **Orphaned directories** can be manually moved back but have no state.json entry
    - Archive is append-only (for audit trail)
-   - Run periodically to keep TODO.md and .claude/specs/ manageable
+   - Run periodically to keep TODO.md and specs/ manageable
    ```
 
 **Verification**:

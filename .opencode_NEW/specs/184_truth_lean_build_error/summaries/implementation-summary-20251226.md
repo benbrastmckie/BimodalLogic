@@ -75,8 +75,8 @@ This lemma must be proven by induction on φ's structure, showing the equivalenc
 
 - `Logos/Core/Semantics/Truth.lean` (lines 629-645)  
 - `Logos/Core/Syntax/Formula.lean` (swap_past_future definition and involution)  
-- `.opencode/specs/184_truth_lean_build_error/reports/research-001.md`  
-- `.opencode/specs/184_truth_lean_build_error/plans/implementation-001.md`  
+- `specs/184_truth_lean_build_error/reports/research-001.md`  
+- `specs/184_truth_lean_build_error/plans/implementation-001.md`  
 
 ## Time Spent
 
@@ -94,6 +94,6 @@ This lemma must be proven by induction on φ's structure, showing the equivalenc
 
 ---
 
-**Artifact Path**: `.opencode/specs/184_truth_lean_build_error/summaries/implementation-summary-20251226.md`  
-**Related Plan**: `.opencode/specs/184_truth_lean_build_error/plans/implementation-001.md`  
-**Related Research**: `.opencode/specs/184_truth_lean_build_error/reports/research-001.md`  
+**Artifact Path**: `specs/184_truth_lean_build_error/summaries/implementation-summary-20251226.md`  
+**Related Plan**: `specs/184_truth_lean_build_error/plans/implementation-001.md`  
+**Related Research**: `specs/184_truth_lean_build_error/reports/research-001.md`  

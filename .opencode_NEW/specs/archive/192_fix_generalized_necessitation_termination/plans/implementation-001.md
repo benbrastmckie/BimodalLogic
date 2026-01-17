@@ -30,7 +30,7 @@ Fix 2 termination proof errors in `Logos/Core/Theorems/GeneralizedNecessitation.
 
 ## Research Inputs
 
-Research completed on 2025-12-27 (see `.opencode/specs/192_fix_generalized_necessitation_termination/reports/research-001.md`):
+Research completed on 2025-12-27 (see `specs/192_fix_generalized_necessitation_termination/reports/research-001.md`):
 
 ### Key Findings
 
@@ -206,8 +206,8 @@ This would help future developers understand the design decision, but is not req
 
 ## References
 
-- **Research Report**: `.opencode/specs/192_fix_generalized_necessitation_termination/reports/research-001.md`
-- **Research Summary**: `.opencode/specs/192_fix_generalized_necessitation_termination/summaries/research-summary.md`
+- **Research Report**: `specs/192_fix_generalized_necessitation_termination/reports/research-001.md`
+- **Research Summary**: `specs/192_fix_generalized_necessitation_termination/summaries/research-summary.md`
 - **Source File**: `Logos/Core/Theorems/GeneralizedNecessitation.lean`
 - **Dependency**: `Logos/Core/Metalogic/DeductionTheorem.lean` (line 332)
 - **Lean Documentation**: [Noncomputable Definitions](https://lean-lang.org/theorem_proving_in_lean4/axioms_and_computation.html#noncomputable-definitions)

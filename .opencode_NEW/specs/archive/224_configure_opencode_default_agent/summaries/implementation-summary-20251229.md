@@ -203,7 +203,7 @@ If issues arise after restart:
 
 ## Artifacts Created
 
-1. **Implementation Summary**: `.opencode/specs/224_configure_opencode_default_agent/summaries/implementation-summary-20251229.md` (this file)
+1. **Implementation Summary**: `specs/224_configure_opencode_default_agent/summaries/implementation-summary-20251229.md` (this file)
 2. **Modified Configuration**: `opencode.json` (1 line added)
 
 ---

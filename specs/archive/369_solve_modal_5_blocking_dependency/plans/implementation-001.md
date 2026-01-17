@@ -75,7 +75,7 @@ The "Modal 5 blocking dependency" is caused by `diamond_mono_imp` and `diamond_m
 3. Verify no downstream breakage
 
 **Files to modify**:
-- `.claude/specs/TODO.md` - Update sorry_count in frontmatter (if count changed)
+- `specs/TODO.md` - Update sorry_count in frontmatter (if count changed)
 
 **Steps**:
 1. Run `lake build Bimodal` to check for any regressions

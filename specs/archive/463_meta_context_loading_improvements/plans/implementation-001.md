@@ -8,7 +8,7 @@
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/463_meta_context_loading_improvements/reports/research-001.md
+- **Research Inputs**: specs/463_meta_context_loading_improvements/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, artifact-formats.md, subagent-return.md
 
@@ -88,7 +88,7 @@ Load these on-demand using @-references:
 - When discussing templates: `@.claude/context/core/templates/thin-wrapper-skill.md`, `@.claude/context/core/templates/agent-template.md`
 
 **Stages 6-7 (Task Creation)**:
-- Direct file access: `.claude/specs/TODO.md`, `.claude/specs/state.json`
+- Direct file access: `specs/TODO.md`, `specs/state.json`
 - No additional context files needed (formats already loaded)
 
 **Stage 8 (Cleanup)**:

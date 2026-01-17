@@ -15,7 +15,7 @@
 - Logos documentation (recursive-semantics.md, layer-extensions.md)
 - Epistemic must literature (Rett 2014, Rudin 2024)
 **Artifacts**:
-- /home/benjamin/Projects/ProofChecker/.claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md
+- /home/benjamin/Projects/ProofChecker/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md
 **Standards**: report-format.md, subagent-return.md
 
 ---

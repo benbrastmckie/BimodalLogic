@@ -42,8 +42,8 @@ The key differentiation between theories:
 2. Document rationale in TODO.md
 
 **Files to modify**:
-- `.claude/specs/TODO.md` - Update task priorities
-- `.claude/specs/state.json` - Sync priority changes
+- `specs/TODO.md` - Update task priorities
+- `specs/state.json` - Sync priority changes
 
 **Steps**:
 1. Read current TODO.md completeness tasks

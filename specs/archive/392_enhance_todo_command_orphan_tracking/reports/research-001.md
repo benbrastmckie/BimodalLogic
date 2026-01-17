@@ -16,7 +16,7 @@ The current Step 2.5 detection logic uses:
 ```bash
 in_archive=$(jq -r --arg n "$project_num" \
   '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-  .claude/specs/archive/state.json 2>/dev/null)
+  specs/archive/state.json 2>/dev/null)
 ```
 
 However, `archive/state.json` has a malformed structure where `completed_projects` contains a mix of objects and nested arrays:
@@ -35,7 +35,7 @@ However, `archive/state.json` has a malformed structure where `completed_project
 
 ### Issue 2: Directories Not Moved to Archive
 
-**46 directories** exist in `.claude/specs/` that ARE tracked in `archive/state.json` but were never physically moved:
+**46 directories** exist in `specs/` that ARE tracked in `archive/state.json` but were never physically moved:
 
 | Project | Directory |
 |---------|-----------|
@@ -48,7 +48,7 @@ These are not "orphans" per se - they're tracked projects whose directories were
 
 ### Issue 3: True Orphans in specs/archive/
 
-**38 directories** exist in `.claude/specs/archive/` that are NOT tracked in `archive/state.json`:
+**38 directories** exist in `specs/archive/` that are NOT tracked in `archive/state.json`:
 
 | Project | Directory |
 |---------|-----------|
@@ -94,7 +94,7 @@ Update Step 2.5 to use flattened queries:
 ```bash
 in_archive=$(jq -r --arg n "$project_num" \
   '.completed_projects | flatten | .[] | select(.project_number == ($n | tonumber)) | .project_number' \
-  .claude/specs/archive/state.json 2>/dev/null)
+  specs/archive/state.json 2>/dev/null)
 ```
 
 ### Phase 2: Define Orphan Categories
@@ -118,7 +118,7 @@ When archiving orphans, create minimal entries in `archive/state.json`:
   "project_name": "maintenance_report_improvements",
   "status": "orphan_archived",
   "archived": "2026-01-12T12:00:00Z",
-  "source_path": ".claude/specs/170_maintenance_report_improvements/",
+  "source_path": "specs/170_maintenance_report_improvements/",
   "artifacts": ["reports/", "plans/"]  // scan subdirs
 }
 ```
@@ -145,8 +145,8 @@ jq '.completed_projects = (.completed_projects | flatten)' archive/state.json
 ## References
 
 - Current /todo command: `.claude/commands/todo.md`
-- archive/state.json: `.claude/specs/archive/state.json`
-- state.json: `.claude/specs/state.json`
+- archive/state.json: `specs/archive/state.json`
+- state.json: `specs/state.json`
 - artifact-formats.md: `.claude/rules/artifact-formats.md`
 
 ## Next Steps

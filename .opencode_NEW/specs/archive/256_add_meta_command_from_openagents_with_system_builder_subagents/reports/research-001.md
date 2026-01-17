@@ -422,8 +422,8 @@ delegation_context = {
     ".opencode/command/meta.md",
     ".opencode/agent/subagents/meta/*.md",
     ".opencode/context/meta/*.md",
-    ".opencode/specs/TODO.md",
-    ".opencode/specs/state.json"
+    "specs/TODO.md",
+    "specs/state.json"
   ],
   "message_template": "task 256: add /meta command with system-builder subagents",
   "task_context": {
@@ -939,7 +939,7 @@ context_loading:
     - Example of current agent standard
 
 12. **State Schema**:
-    - File: `.opencode/specs/state.json`
+    - File: `specs/state.json`
     - Version: 1.1.0
     - Schema for task tracking
 
@@ -956,7 +956,7 @@ context_loading:
    - Create timeline and milestones
 
 2. **Prepare Development Environment**:
-   - Create task directory: `.opencode/specs/256_add_meta_command/`
+   - Create task directory: `specs/256_add_meta_command/`
    - Create subdirectories: reports/, plans/, summaries/
    - Set up git branch for development (optional)
 

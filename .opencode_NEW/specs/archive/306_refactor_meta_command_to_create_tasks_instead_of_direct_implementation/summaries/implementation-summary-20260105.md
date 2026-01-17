@@ -57,7 +57,7 @@ Successfully refactored the /meta command to create tasks with plan artifacts in
 
 - `.opencode/agent/subagents/meta.md` - Added plan generation templates to Stage 7
 - `.opencode/command/meta.md` - Already updated (verified)
-- `.opencode/specs/306_*/summaries/implementation-summary-20260105.md` - This file
+- `specs/306_*/summaries/implementation-summary-20260105.md` - This file
 
 ## Validation Results
 

@@ -22,8 +22,8 @@
   - Task 291 (lean-research-agent) - separate issue
 - **Research Integrated**: Yes
 - **Reports Integrated**:
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md` (integrated 2026-01-05)
 
 ---
 
@@ -203,17 +203,17 @@ Add content verification in step_5_return to verify status and artifact updates:
        a. Verify status marker updated in TODO.md:
           - Extract expected status from new_status parameter
           - Convert to TODO.md format (e.g., "researched" → "RESEARCHED")
-          - Check: grep -q "**Status**: \[$expected_status\]" .opencode/specs/TODO.md
+          - Check: grep -q "**Status**: \[$expected_status\]" specs/TODO.md
           - If not found: Return CRITICAL error "Status marker not updated in TODO.md"
        
        b. Verify status updated in state.json:
           - Extract task status from state.json using jq
-          - Check: status=$(jq -r --arg num "$task_number" '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' .opencode/specs/state.json)
+          - Check: status=$(jq -r --arg num "$task_number" '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' specs/state.json)
           - If status != new_status: Return CRITICAL error "Status not updated in state.json"
        
        c. Verify artifact links added (if validated_artifacts provided):
           - For each artifact in validated_artifacts:
-            * Check: grep -q "$artifact_path" .opencode/specs/TODO.md
+            * Check: grep -q "$artifact_path" specs/TODO.md
             * If not found: Return CRITICAL error "Artifact link not added to TODO.md"
        
        d. If any verification fails:
@@ -270,8 +270,8 @@ Replace sequential writes with atomic write pattern:
   <action>Phase 2: Commit all updates atomically</action>
   <process>
     1. Write to temporary files:
-       - write_file ".opencode/specs/TODO.md.tmp" "$updated_todo"
-       - write_file ".opencode/specs/state.json.tmp" "$updated_state"
+       - write_file "specs/TODO.md.tmp" "$updated_todo"
+       - write_file "specs/state.json.tmp" "$updated_state"
        - If plan_path: write_file "$plan_path.tmp" "$updated_plan"
     
     2. Verify temp files written successfully:
@@ -279,10 +279,10 @@ Replace sequential writes with atomic write pattern:
        - If any write failed: Remove all temp files, return failed
     
     3. Atomic rename (all files or none):
-       - mv ".opencode/specs/TODO.md.tmp" ".opencode/specs/TODO.md" && \
-         mv ".opencode/specs/state.json.tmp" ".opencode/specs/state.json" && \
+       - mv "specs/TODO.md.tmp" "specs/TODO.md" && \
+         mv "specs/state.json.tmp" "specs/state.json" && \
          ([ -z "$plan_path" ] || mv "$plan_path.tmp" "$plan_path") || \
-         { rm -f ".opencode/specs/TODO.md.tmp" ".opencode/specs/state.json.tmp" "$plan_path.tmp"; exit 1; }
+         { rm -f "specs/TODO.md.tmp" "specs/state.json.tmp" "$plan_path.tmp"; exit 1; }
     
     4. If rename fails:
        - Remove all temp files
@@ -315,7 +315,7 @@ Add retry with exponential backoff for transient failures:
     
     Example:
     for attempt in 1 2 3; do
-      if write_file ".opencode/specs/TODO.md.tmp" "$updated_todo"; then
+      if write_file "specs/TODO.md.tmp" "$updated_todo"; then
         break
       fi
       if [ $attempt -lt 3 ]; then
@@ -371,7 +371,7 @@ Replace backup files with git-only rollback:
   1. Remove temp files (cleanup)
   2. Original files unchanged (atomic rename failed)
   3. If files were partially updated:
-     - Recommend: git checkout .opencode/specs/TODO.md .opencode/specs/state.json
+     - Recommend: git checkout specs/TODO.md specs/state.json
      - Recommend: git status to verify recovery
   4. Return failed status with git recovery instructions
 </rollback_on_failure>
@@ -416,15 +416,15 @@ Add verification checkpoint after status-sync-manager:
     
     4. VERIFICATION CHECKPOINT (NEW):
        a. Verify status updated in state.json:
-          - status=$(jq -r --arg num "$task_number" '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' .opencode/specs/state.json)
+          - status=$(jq -r --arg num "$task_number" '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' specs/state.json)
           - If status != "researched": Log CRITICAL error, return failed
        
        b. Verify status updated in TODO.md:
-          - status=$(grep -A 5 "^### $task_number\." .opencode/specs/TODO.md | grep -oP '\*\*Status\*\*: \[\K[^\]]+')
+          - status=$(grep -A 5 "^### $task_number\." specs/TODO.md | grep -oP '\*\*Status\*\*: \[\K[^\]]+')
           - If status != "RESEARCHED": Log CRITICAL error, return failed
        
        c. Verify artifact linked in TODO.md:
-          - If ! grep -q "$research_report_path" .opencode/specs/TODO.md; then
+          - If ! grep -q "$research_report_path" specs/TODO.md; then
               Log CRITICAL error "Artifact not linked in TODO.md"
               return failed
             fi

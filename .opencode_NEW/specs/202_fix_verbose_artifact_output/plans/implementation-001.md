@@ -8,8 +8,8 @@
 - **Complexity**: Low
 - **Dependencies**: None
 - **Research Inputs**: 
-  - Main Report: .opencode/specs/202_fix_verbose_artifact_output/reports/research-001.md
-  - Summary: .opencode/specs/202_fix_verbose_artifact_output/summaries/research-summary.md
+  - Main Report: specs/202_fix_verbose_artifact_output/reports/research-001.md
+  - Summary: specs/202_fix_verbose_artifact_output/summaries/research-summary.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -198,10 +198,10 @@ Research completed on 2025-12-27 identified the following key findings:
 - .opencode/context/core/standards/subagent-return-format.md (batch example added)
 
 **New Artifacts**:
-- .opencode/specs/batch_{timestamp}/summaries/batch-summary.md (created by batch-task-orchestrator)
+- specs/batch_{timestamp}/summaries/batch-summary.md (created by batch-task-orchestrator)
 
 **Implementation Summary**:
-- .opencode/specs/202_fix_verbose_artifact_output/summaries/implementation-summary-YYYYMMDD.md
+- specs/202_fix_verbose_artifact_output/summaries/implementation-summary-YYYYMMDD.md
 
 ## Rollback/Contingency
 

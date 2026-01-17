@@ -29,8 +29,8 @@ This research traces artifact creation flows across 4 commands (/research, /plan
 **Workflow**: Stage 4 delegation → researcher or lean-research-agent
 
 **Artifacts Created**:
-1. **Research Report**: `.opencode/specs/{task_number}_{topic_slug}/reports/research-001.md`
-2. **Research Summary**: `.opencode/specs/{task_number}_{topic_slug}/summaries/research-summary.md`
+1. **Research Report**: `specs/{task_number}_{topic_slug}/reports/research-001.md`
+2. **Research Summary**: `specs/{task_number}_{topic_slug}/summaries/research-summary.md`
 
 **Directory Creation Timing**:
 - Project root: Created immediately before writing first artifact (Step 4 in researcher)
@@ -49,8 +49,8 @@ This research traces artifact creation flows across 4 commands (/research, /plan
   "started": "YYYY-MM-DD",
   "completed": "YYYY-MM-DD",
   "artifacts": [
-    ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md",
-    ".opencode/specs/{task_number}_{topic_slug}/summaries/research-summary.md"
+    "specs/{task_number}_{topic_slug}/reports/research-001.md",
+    "specs/{task_number}_{topic_slug}/summaries/research-summary.md"
   ]
 }
 ```
@@ -74,7 +74,7 @@ This research traces artifact creation flows across 4 commands (/research, /plan
 **Workflow**: Stage 4 delegation → planner (no language-based routing)
 
 **Artifacts Created**:
-1. **Implementation Plan**: `.opencode/specs/{task_number}_{topic_slug}/plans/implementation-001.md`
+1. **Implementation Plan**: `specs/{task_number}_{topic_slug}/plans/implementation-001.md`
 2. **NO Summary Artifact** (plan is self-documenting)
 
 **Directory Creation Timing**:
@@ -92,7 +92,7 @@ This research traces artifact creation flows across 4 commands (/research, /plan
   "status": "planned",
   "started": "YYYY-MM-DD",
   "completed": "YYYY-MM-DD",
-  "plan_path": ".opencode/specs/{task_number}_{topic_slug}/plans/implementation-001.md"
+  "plan_path": "specs/{task_number}_{topic_slug}/plans/implementation-001.md"
 }
 ```
 
@@ -118,7 +118,7 @@ From planner.md line 170: "No summary artifact created - plan artifact is self-d
 **Workflow**: Stage 4 delegation → planner (same as /plan)
 
 **Artifacts Created**:
-1. **Revised Plan**: `.opencode/specs/{task_number}_{topic_slug}/plans/implementation-{version:03d}.md`
+1. **Revised Plan**: `specs/{task_number}_{topic_slug}/plans/implementation-{version:03d}.md`
    - Version incremented from existing plan (002, 003, etc.)
 2. **NO Summary Artifact** (plan is self-documenting)
 
@@ -137,7 +137,7 @@ From planner.md line 170: "No summary artifact created - plan artifact is self-d
   "status": "revised",
   "started": "YYYY-MM-DD",  // Preserved from original
   "completed": "YYYY-MM-DD",  // Updated
-  "plan_path": ".opencode/specs/{task_number}_{topic_slug}/plans/implementation-002.md"  // Updated
+  "plan_path": "specs/{task_number}_{topic_slug}/plans/implementation-002.md"  // Updated
 }
 ```
 
@@ -173,7 +173,7 @@ ELSE IF language != "lean" AND has_plan == false:
 
 **Artifacts Created**:
 1. **Implementation Files**: Language-specific paths (e.g., `Logos/Core/*.lean`, `docs/*.md`)
-2. **Implementation Summary**: `.opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-{YYYYMMDD}.md`
+2. **Implementation Summary**: `specs/{task_number}_{topic_slug}/summaries/implementation-summary-{YYYYMMDD}.md`
 
 **Directory Creation Timing**:
 - Project root: Created only when writing implementation summary (if no prior artifacts)
@@ -196,7 +196,7 @@ ELSE IF language != "lean" AND has_plan == false:
   "completed": "YYYY-MM-DD",  // if completed
   "artifacts": [
     "Logos/Core/NewTheorem.lean",
-    ".opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251228.md"
+    "specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251228.md"
   ]
 }
 ```
@@ -229,16 +229,16 @@ ELSE IF language != "lean" AND has_plan == false:
 2. **Step 2**: Subdivide if --divide flag set
 3. **Step 3**: Conduct research (web search, documentation)
 4. **Step 4**: Create research report
-   - Path: `.opencode/specs/{task_number}_{topic_slug}/reports/research-001.md`
+   - Path: `specs/{task_number}_{topic_slug}/reports/research-001.md`
    - Sections: Overview, Key Findings, Detailed Analysis, Code Examples, Recommendations, Sources
 5. **Step 5**: Create research summary
-   - Path: `.opencode/specs/{task_number}_{topic_slug}/summaries/research-summary.md`
+   - Path: `specs/{task_number}_{topic_slug}/summaries/research-summary.md`
    - Content: 2-3 sentence overview, key findings (bullets), recommendations, link to full report
    - Limit: <500 words
 6. **Step 6**: Return standardized result
 
 **Directory Creation**:
-- Line 114: "Create project directory: .opencode/specs/{task_number}_{topic_slug}/"
+- Line 114: "Create project directory: specs/{task_number}_{topic_slug}/"
 - Line 115: "Create reports subdirectory (lazy creation)"
 - Line 134: "Create summaries subdirectory (lazy creation)"
 
@@ -250,12 +250,12 @@ ELSE IF language != "lean" AND has_plan == false:
   "artifacts": [
     {
       "type": "research",
-      "path": ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md",
+      "path": "specs/{task_number}_{topic_slug}/reports/research-001.md",
       "summary": "Detailed research report with findings and citations"
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/{task_number}_{topic_slug}/summaries/research-summary.md",
+      "path": "specs/{task_number}_{topic_slug}/summaries/research-summary.md",
       "summary": "Concise summary of key findings and recommendations"
     }
   ],
@@ -291,8 +291,8 @@ ELSE IF language != "lean" AND has_plan == false:
    - Primary: Loogle CLI queries (if available)
    - Fallback: Web search for Lean documentation
 4. **Step 4**: Create research artifacts
-   - Report: `.opencode/specs/{task_number}_{topic_slug}/reports/research-001.md`
-   - Summary: `.opencode/specs/{task_number}_{topic_slug}/summaries/research-summary.md`
+   - Report: `specs/{task_number}_{topic_slug}/reports/research-001.md`
+   - Summary: `specs/{task_number}_{topic_slug}/summaries/research-summary.md`
 5. **Step 5**: Log tool unavailability if applicable
 6. **Step 6**: Return standardized result
 
@@ -359,12 +359,12 @@ ELSE IF language != "lean" AND has_plan == false:
 3. **Step 3**: Analyze complexity, determine phases
 4. **Step 4**: Estimate effort per phase
 5. **Step 5**: Create implementation plan
-   - Path: `.opencode/specs/{task_number}_{topic_slug}/plans/implementation-{version:03d}.md`
+   - Path: `specs/{task_number}_{topic_slug}/plans/implementation-{version:03d}.md`
    - Follows plan.md template
 6. **Step 6**: Return standardized result
 
 **Directory Creation** (Step 5):
-- Line 122: "Create project directory: .opencode/specs/{task_number}_{topic_slug}/"
+- Line 122: "Create project directory: specs/{task_number}_{topic_slug}/"
 - Line 123: "Create plans subdirectory (lazy creation)"
 - Line 169: "Create directories before writing files" (must_not constraint)
 
@@ -380,7 +380,7 @@ ELSE IF language != "lean" AND has_plan == false:
   "artifacts": [
     {
       "type": "plan",
-      "path": ".opencode/specs/{task_number}_{topic_slug}/plans/implementation-001.md",
+      "path": "specs/{task_number}_{topic_slug}/plans/implementation-001.md",
       "summary": "Implementation plan with {N} phases"
     }
   ],
@@ -421,7 +421,7 @@ ELSE IF language != "lean" AND has_plan == false:
    - Iterate up to 5 times to fix errors
    - Graceful degradation if tool unavailable
 5. **Step 5**: Write final Lean files and implementation summary
-   - Summary: `.opencode/specs/{task_number}_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md`
+   - Summary: `specs/{task_number}_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md`
 6. **Step 6**: Return standardized result with validation
 
 **Directory Creation** (Step 5):
@@ -450,7 +450,7 @@ ELSE IF language != "lean" AND has_plan == false:
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/{task_number}_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md",
+      "path": "specs/{task_number}_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md",
       "summary": "Implementation summary with compilation results"
     }
   ],
@@ -483,7 +483,7 @@ ELSE IF language != "lean" AND has_plan == false:
    - Update phase status in plan file
 4. **Step 4**: Create per-phase git commits
 5. **Step 5**: Create implementation summary
-   - Path: `.opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-{YYYYMMDD}.md`
+   - Path: `specs/{task_number}_{topic_slug}/summaries/implementation-summary-{YYYYMMDD}.md`
 6. **Step 6**: Return standardized result with validation
 
 **Directory Creation** (Step 5):
@@ -511,7 +511,7 @@ ELSE IF language != "lean" AND has_plan == false:
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
+      "path": "specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
       "summary": "Implementation summary"
     }
   ],
@@ -542,7 +542,7 @@ ELSE IF language != "lean" AND has_plan == false:
 3. **Step 3**: Determine files to modify/create
 4. **Step 4**: Execute implementation
 5. **Step 5**: Create implementation summary
-   - Path: `.opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-{YYYYMMDD}.md`
+   - Path: `specs/{task_number}_{topic_slug}/summaries/implementation-summary-{YYYYMMDD}.md`
 6. **Step 6**: Return standardized result
 
 **Directory Creation** (Step 5):
@@ -567,7 +567,7 @@ ELSE IF language != "lean" AND has_plan == false:
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
+      "path": "specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
       "summary": "Implementation summary"
     }
   ],
@@ -763,25 +763,25 @@ All commands follow the 8-stage pattern with documented variations per command-l
 
 **/research**:
 ```markdown
-- Main Report: [.opencode/specs/{task_number}_{slug}/reports/research-001.md]
-- Summary: [.opencode/specs/{task_number}_{slug}/summaries/research-summary.md]
+- Main Report: [specs/{task_number}_{slug}/reports/research-001.md]
+- Summary: [specs/{task_number}_{slug}/summaries/research-summary.md]
 ```
 
 **/plan**:
 ```markdown
-- Plan: [.opencode/specs/{task_number}_{slug}/plans/implementation-001.md]
+- Plan: [specs/{task_number}_{slug}/plans/implementation-001.md]
 - Plan Summary: {brief_summary} ({phase_count} phases, {effort} hours)
 ```
 
 **/revise**:
 ```markdown
-- Plan: [.opencode/specs/{task_number}_{slug}/plans/implementation-{version}.md] (updates existing)
+- Plan: [specs/{task_number}_{slug}/plans/implementation-{version}.md] (updates existing)
 ```
 
 **/implement**:
 ```markdown
 - Implementation: [implementation file paths]
-- Summary: [.opencode/specs/{task_number}_{slug}/summaries/implementation-summary-{date}.md]
+- Summary: [specs/{task_number}_{slug}/summaries/implementation-summary-{date}.md]
 ```
 
 **Compliance**: All follow artifact-management.md linking format
@@ -810,7 +810,7 @@ All commands follow the 8-stage pattern with documented variations per command-l
 ### 6.1 Standard Project Structure
 
 ```
-.opencode/specs/
+specs/
 └── NNN_project_name/
     ├── reports/
     │   ├── research-001.md

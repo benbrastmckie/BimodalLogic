@@ -7,8 +7,8 @@
 **Priority**: High  
 **Dependencies**: None  
 **Sources/Inputs**: 
-- .opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
-- .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
+- specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
+- specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
 - .opencode/agent/orchestrator.md
 - .opencode/agent/subagents/researcher.md
 - .opencode/agent/subagents/planner.md
@@ -21,7 +21,7 @@
 - .opencode/context/core/system/state-management.md
 
 **Artifacts**: 
-- .opencode/specs/286_research_alternative_to_task_283/reports/research-001.md
+- specs/286_research_alternative_to_task_283/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -66,7 +66,7 @@ This research investigates:
   <action>Preflight: Parse arguments, validate task, update status to [RESEARCHING]</action>
   <process>
     1. Parse task_number from delegation context or prompt string
-    2. Validate task exists in .opencode/specs/TODO.md
+    2. Validate task exists in specs/TODO.md
     3. Extract task description and current status
     4. Verify task not [COMPLETED] or [ABANDONED]
     5. Extract language from state.json
@@ -102,7 +102,7 @@ This research investigates:
   <action>Preflight: Validate task and update status to [PLANNING]</action>
   <process>
     1. Parse task_number from delegation context or prompt string
-    2. Validate task exists in .opencode/specs/TODO.md
+    2. Validate task exists in specs/TODO.md
     3. Extract task description and current status
     4. Verify task not [COMPLETED] or [ABANDONED]
     5. Verify task is in valid starting status
@@ -402,7 +402,7 @@ The IRS doesn't FILE your taxes for you (that's still your responsibility), but 
 TASK_NUMBER=$(echo "$PROMPT" | grep -oP '\d+' | head -1)
 
 # 2. Validate task exists
-TASK_ENTRY=$(grep -A 50 "^### ${TASK_NUMBER}\." .opencode/specs/TODO.md)
+TASK_ENTRY=$(grep -A 50 "^### ${TASK_NUMBER}\." specs/TODO.md)
 if [ -z "$TASK_ENTRY" ]; then
   return_failed "Task ${TASK_NUMBER} not found in TODO.md"
 fi
@@ -518,7 +518,7 @@ def validate_return(subagent_return, expected_session_id, task_number):
   "artifacts": [
     {
       "type": "research",
-      "path": ".opencode/specs/286_research_alternative_to_task_283/reports/research-001.md",
+      "path": "specs/286_research_alternative_to_task_283/reports/research-001.md",
       "summary": "Comprehensive analysis of subagent-owned vs orchestrator-centric approaches"
     }
   ],
@@ -760,12 +760,12 @@ This would:
 ### Primary Sources
 
 1. **Task 283 Research**:
-   - .opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
+   - specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
    - Confirmed subagent specifications are correct
    - Identified execution gap as root cause
 
 2. **Task 283 Implementation Plan**:
-   - .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
+   - specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
    - Defines orchestrator validation approach
    - Includes stage_log support
 

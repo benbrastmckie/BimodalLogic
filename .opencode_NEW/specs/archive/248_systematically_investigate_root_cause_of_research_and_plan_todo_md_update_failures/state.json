@@ -5,7 +5,7 @@
   "phase": "research",
   "reports": [
     {
-      "path": ".opencode/specs/248_systematically_investigate_root_cause_of_research_and_plan_todo_md_update_failures/reports/research-001.md",
+      "path": "specs/248_systematically_investigate_root_cause_of_research_and_plan_todo_md_update_failures/reports/research-001.md",
       "created": "2025-12-29",
       "summary": "Root cause analysis confirms Task 248 is duplicate of Task 240. Issue is intermittent Stage 7 execution failures due to XML documentation vs executable code."
     }

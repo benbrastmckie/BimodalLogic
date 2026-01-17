@@ -18,11 +18,11 @@
 - .opencode/command/implement.md
 - .opencode/command/revise.md
 - .opencode/context/core/system/state-management.md
-- .opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
-- .opencode/specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md
+- specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
+- specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md
 
 **Artifacts**: 
-- .opencode/specs/285_audit_and_fix_status_update_behavior/reports/research-001.md
+- specs/285_audit_and_fix_status_update_behavior/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -152,7 +152,7 @@ This research investigates:
     1. Parse task_number from delegation context or prompt string:
        ...
     2. Update TODO.md status marker:
-       a. Find task entry in .opencode/specs/TODO.md
+       a. Find task entry in specs/TODO.md
        b. Change status from [NOT STARTED] to [RESEARCHING]
        c. Add **Started**: YYYY-MM-DD timestamp
     3. Load context from .opencode/context/project/lean4/
@@ -475,11 +475,11 @@ The `status-sync-manager` specialist provides atomic multi-file updates using tw
 
 ### Primary Sources
 
-1. **Task 283 Research Report**: .opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
+1. **Task 283 Research Report**: specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
    - Root cause analysis of naming inconsistency
    - Proof that `<step_0_preflight>` naming fixes status update issues
 
-2. **Task 283 Implementation Summary**: .opencode/specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md
+2. **Task 283 Implementation Summary**: specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md
    - Details of fix applied to researcher.md
    - Standardization to `<step_0_preflight>` naming
 
@@ -533,11 +533,11 @@ The `status-sync-manager` specialist provides atomic multi-file updates using tw
 
 ### State Files
 
-1. **state.json**: .opencode/specs/state.json (lines 526-551)
+1. **state.json**: specs/state.json (lines 526-551)
    - Task 259 details (language="lean", status="implementing")
    - Evidence of Lean task routing
 
-2. **TODO.md**: .opencode/specs/TODO.md
+2. **TODO.md**: specs/TODO.md
    - Task 285 description (evidence of status update failure)
    - Task 259 entry (Lean task example)
 

@@ -7,15 +7,15 @@
 **Priority**: Medium  
 **Dependencies**: 325, 326, 322, 330  
 **Sources/Inputs**:
-- .opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md
-- .opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md
-- .opencode/specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md
+- specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md
+- specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md
+- specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md
 - .opencode/command/task.md (current /task command implementation)
 - .opencode/agent/subagents/status-sync-manager.md (atomic state synchronization)
-- .opencode/specs/state.json (task metadata structure)
-- .opencode/specs/TODO.md (user-facing task list)
+- specs/state.json (task metadata structure)
+- specs/TODO.md (user-facing task list)
 
-**Artifacts**: .opencode/specs/332_design_and_implement_comprehensive_task_command_enhancements/reports/research-001.md  
+**Artifacts**: specs/332_design_and_implement_comprehensive_task_command_enhancements/reports/research-001.md  
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ---
@@ -1233,17 +1233,17 @@ For help: /task --help
 ## Appendix: Sources and Citations
 
 ### Source 1: Task 325 Research Report
-- **File**: `.opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md`
+- **File**: `specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md`
 - **Key Sections**: Archive system analysis, recovery workflow, atomic updates, error handling
 - **Relevance**: Comprehensive research for --recover flag implementation
 
 ### Source 2: Task 325 Implementation Plan
-- **File**: `.opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md`
+- **File**: `specs/325_create___recover_flag_for_task_command_to_unarchive_projects/plans/implementation-001.md`
 - **Key Sections**: Phase breakdown, acceptance criteria, testing plan
 - **Relevance**: Detailed implementation plan for --recover flag
 
 ### Source 3: Task 326 Research Report
-- **File**: `.opencode/specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md`
+- **File**: `specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md`
 - **Key Sections**: Task division workflow, dependency management, rollback mechanism
 - **Relevance**: Comprehensive research for --divide flag implementation
 
@@ -1258,12 +1258,12 @@ For help: /task --help
 - **Relevance**: Atomic operations and state synchronization patterns
 
 ### Source 6: state.json Schema
-- **File**: `.opencode/specs/state.json`
+- **File**: `specs/state.json`
 - **Key Fields**: active_projects, next_project_number, dependencies
 - **Relevance**: Task metadata structure and state tracking
 
 ### Source 7: TODO.md Structure
-- **File**: `.opencode/specs/TODO.md`
+- **File**: `specs/TODO.md`
 - **Key Sections**: Priority sections, task entry format
 - **Relevance**: User-facing task list structure
 

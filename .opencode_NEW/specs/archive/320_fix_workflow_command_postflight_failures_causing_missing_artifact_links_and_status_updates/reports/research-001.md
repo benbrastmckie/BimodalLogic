@@ -14,12 +14,12 @@
 - `.opencode/agent/subagents/researcher.md` (step_4_postflight with delegation)
 - `.opencode/agent/subagents/planner.md` (step_7 with delegation)
 - `.opencode/agent/subagents/lean-research-agent.md` (step_7 with delegation)
-- `.opencode/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md`
-- `.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/` (evidence)
+- `specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md`
+- `specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/` (evidence)
 - Git log analysis (2026-01-05)
 
 **Artifacts**:
-- `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md`
+- `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md`
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md, delegation.md, subagent-return-format.md
 
@@ -121,7 +121,7 @@ This research investigates:
        f. If status update fails: Log error but continue (artifact exists)
     3. Invoke git-workflow-manager to create commit:
        a. Prepare delegation context:
-          - scope_files: ["{research_report_path}", ".opencode/specs/TODO.md", ...]
+          - scope_files: ["{research_report_path}", "specs/TODO.md", ...]
           - message_template: "task {number}: research completed"
        b. Invoke git-workflow-manager with timeout (120s)
        c. Validate return status (completed or failed)
@@ -149,7 +149,7 @@ This research investigates:
       PREPARE delegation context with validated_artifacts
       INVOKE status-sync-manager with timeout (60s)
       VALIDATE return status == "completed"
-      VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+      VERIFY files_updated includes ["specs/TODO.md", "state.json"]
     
     STEP 7.2: INVOKE git-workflow-manager (if status update succeeded)
       PREPARE delegation context with scope_files
@@ -165,7 +165,7 @@ This research investigates:
 
 **Evidence**: Task 314 research investigation:
 
-1. **Artifact Created**: `.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md` exists
+1. **Artifact Created**: `specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md` exists
    - Created: 2026-01-05 08:34:21
    - Size: 34543 bytes (non-empty, valid)
 
@@ -176,7 +176,7 @@ This research investigates:
    - **Researched**: 2026-01-05
    
    **Research Artifacts**:
-     - Research Report: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md]
+     - Research Report: [specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md]
    ```
 
 3. **Git Commit Missing**: Git log shows NO commit for task 314 research:
@@ -216,7 +216,7 @@ This research investigates:
 
 **Evidence**: Task 291 research report identifies that lean-research-agent.md directly manipulates files instead of delegating:
 
-**File**: `.opencode/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md`
+**File**: `specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md`
 ```markdown
 Root cause confirmed: lean-research-agent.md step_6 (lines 651-662) directly manipulates 
 TODO.md and state.json files instead of delegating to status-sync-manager and 
@@ -485,12 +485,12 @@ This creates the illusion that "postflight steps are not executing" when in real
 
 ### Source 3: Task 291 Research
 
-- `.opencode/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md`
+- `specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md`
 - Identifies lean-research-agent direct file manipulation issue
 
 ### Source 4: Task 314 Evidence
 
-- Artifact: `.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md`
+- Artifact: `specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md`
 - Created: 2026-01-05 08:34:21
 - Size: 34543 bytes
 - Status: [RESEARCHED] in TODO.md

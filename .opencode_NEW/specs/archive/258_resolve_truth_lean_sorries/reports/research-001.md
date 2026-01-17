@@ -202,7 +202,7 @@ Key theorems to use:
 
 ### Documentation
 - **SORRY_REGISTRY.md**: Confirms 0 active sorries in Truth.lean (last updated 2025-12-28)
-- **Task 213 artifacts**: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/`
+- **Task 213 artifacts**: `specs/213_resolve_is_valid_swap_involution_blocker/`
 - **Truth.lean module comments**: Lines 669-700 explain why swap involution is unprovable
 
 ### Research Findings

@@ -11,12 +11,12 @@
 - .opencode/agent/subagents/meta.md (current meta agent)
 - .opencode/command/task.md (task creation reference)
 - .opencode/agent/subagents/task-creator.md (deprecated, reference only)
-- .opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md (prior research)
-- .opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md (related research)
+- specs/271_revise_meta_command_task_creation/reports/research-001.md (prior research)
+- specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md (related research)
 - .opencode/agent/subagents/meta/ (5 meta subagents: domain-analyzer, workflow-designer, agent-generator, command-creator, context-organizer)
 
 **Artifacts**: 
-- .opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md
+- specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -149,7 +149,7 @@ Task 271 ("Revise /meta command to create tasks with linked artifacts") already 
 
 **Artifact Structure Proposed**:
 ```
-.opencode/specs/NNN_task_name/
+specs/NNN_task_name/
 ├── reports/
 │   └── research-001.md          # Domain analysis, requirements
 ├── plans/
@@ -446,7 +446,7 @@ fi
 <stage id="7" name="CreateTasksWithArtifacts">
   <action>Create tasks with plan artifacts for each component</action>
   <process>
-    1. Read next_project_number from .opencode/specs/state.json
+    1. Read next_project_number from specs/state.json
     
     2. Determine task breakdown based on complexity:
        - Simple (1-2 agents): 4 tasks
@@ -456,7 +456,7 @@ fi
     3. For each task in breakdown:
        a. Generate task title and slug from interview results
        b. Assign task number: next_project_number + task_index
-       c. Create project directory: .opencode/specs/{number}_{slug}/
+       c. Create project directory: specs/{number}_{slug}/
        d. Generate plan artifact: plans/implementation-001.md
           - Use interview results as context
           - Follow plan.md template standard
@@ -815,7 +815,7 @@ done
 2. Determine task breakdown based on complexity (4, 7, or 10-15 tasks)
 3. For each task:
    - Generate title, slug, description from interview results
-   - Create project directory: .opencode/specs/{number}_{slug}/
+   - Create project directory: specs/{number}_{slug}/
    - Generate plan artifact: plans/implementation-001.md (template-based)
    - Delegate to status-sync-manager for atomic task creation
    - Collect task_number from return

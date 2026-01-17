@@ -457,7 +457,7 @@ From lines 292-355:
 - Created when status-sync-manager is updating project status
 
 **Creation Process**:
-1. Check if .opencode/specs/{task_number}_{slug}/state.json exists
+1. Check if specs/{task_number}_{slug}/state.json exists
 2. If not exists:
    - Create directory if needed (lazy directory creation)
    - Use state-schema.md template for initial structure
@@ -620,7 +620,7 @@ From process_flow and constraints (lines 76-450):
    - Checkmark to title if completed
    - Blocking/abandonment reasons if applicable
 
-2. **state.json** (.opencode/specs/state.json):
+2. **state.json** (specs/state.json):
    - status field (lowercase, underscore: not_started, researched, planned, etc.)
    - Timestamp fields (started, completed, blocked, abandoned)
    - Artifact references (reports, plans, summaries arrays)
@@ -629,7 +629,7 @@ From process_flow and constraints (lines 76-450):
    - plan_path (current plan file path)
 
 **Conditionally Updated**:
-3. **Project state.json** (.opencode/specs/{task_number}_{slug}/state.json):
+3. **Project state.json** (specs/{task_number}_{slug}/state.json):
    - Created lazily on first artifact write
    - Updated with artifact references
    - Updated with phase and status changes
@@ -708,8 +708,8 @@ From status-sync-manager.md (lines 292-355) and state-schema.md (lines 256-304):
 3. **Actual project state.json files exist**:
    ```bash
    $ find .opencode/specs -name "state.json" -type f
-   /home/benjamin/Projects/ProofChecker/.opencode/specs/190_meta_system_optimization/state.json
-   /home/benjamin/Projects/ProofChecker/.opencode/specs/193_prove_is_valid_swap_involution/state.json
+   /home/benjamin/Projects/ProofChecker/specs/190_meta_system_optimization/state.json
+   /home/benjamin/Projects/ProofChecker/specs/193_prove_is_valid_swap_involution/state.json
    ```
 
 **Analysis**: [PASS] **PARTIALLY IMPLEMENTED**

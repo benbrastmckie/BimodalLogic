@@ -7,7 +7,7 @@
 **Priority**: Medium  
 **Dependencies**: None  
 **Sources/Inputs**: opencode.json, .opencode/ARCHITECTURE.md, .opencode/README.md, .opencode/context/core/standards/frontmatter-standard.md, .opencode/context/core/standards/git-safety.md, .opencode/agent/orchestrator.md, .opencode/agent/subagents/git-workflow-manager.md  
-**Artifacts**: .opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/reports/research-001.md  
+**Artifacts**: specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/reports/research-001.md  
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ---
@@ -69,7 +69,7 @@ The OpenCode system implements a comprehensive permission system through YAML fr
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
@@ -132,8 +132,8 @@ git clean -fd
 **Example from sync.md**:
 ```bash
 # Create backups
-cp .opencode/specs/TODO.md /tmp/TODO.md.backup.$session_id
-cp .opencode/specs/state.json /tmp/state.json.backup.$session_id
+cp specs/TODO.md /tmp/TODO.md.backup.$session_id
+cp specs/state.json /tmp/state.json.backup.$session_id
 ```
 
 **Key Insight**: Some commands still use temporary backup files in /tmp for atomic operations, though the git-safety.md standard recommends eliminating these.
@@ -354,7 +354,7 @@ Based on the research, "permission interruptions" in the OpenCode context likely
    ```yaml
    permissions:
      allow:
-       - write: [".opencode/specs/**/*", "docs/**/*", "*.md"]
+       - write: ["specs/**/*", "docs/**/*", "*.md"]
        - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
    ```
 
@@ -402,7 +402,7 @@ Based on the research, "permission interruptions" in the OpenCode context likely
    {
      "permissions": {
        "allow": {
-         "write": [".opencode/specs/**/*"],
+         "write": ["specs/**/*"],
          "bash": ["git", "grep", "find", "wc", "jq"]
        },
        "deny": {
@@ -512,14 +512,14 @@ Based on the research, "permission interruptions" in the OpenCode context likely
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq"]
 
 # Implementation agents
 permissions:
   allow:
     - read: ["**/*"]
-    - write: ["**/*.lean", "**/*.md", ".opencode/specs/**/*"]
+    - write: ["**/*.lean", "**/*.md", "specs/**/*"]
     - edit: ["**/*.lean", "**/*.md"]
     - bash: ["git", "lake", "grep", "find"]
   deny:
@@ -715,7 +715,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
-    - write: [".opencode/specs/**/*", "docs/research/**/*"]
+    - write: ["specs/**/*", "docs/research/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
@@ -761,7 +761,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*"]
-    - write: ["**/*.lean", "**/*.md", ".opencode/specs/**/*"]
+    - write: ["**/*.lean", "**/*.md", "specs/**/*"]
     - edit: ["**/*.lean", "**/*.md"]
     - bash: ["git", "lake", "grep", "find", "wc", "jq"]
   deny:
@@ -794,8 +794,8 @@ delegation:
   <process>
     1. Stage files that will be modified:
        ```bash
-       git add .opencode/specs/TODO.md
-       git add .opencode/specs/state.json
+       git add specs/TODO.md
+       git add specs/state.json
        ```
     2. Create safety commit:
        ```bash

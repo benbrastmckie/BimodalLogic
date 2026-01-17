@@ -13,8 +13,8 @@
 - Task 449 implementation summary
 - Task 481 implementation summary
 - Task 482 implementation summary
-- Implementation plan v002 (`.claude/specs/257_completeness_proofs/plans/implementation-002.md`)
-**Artifacts**: .claude/specs/450_completeness_theorems/reports/research-001.md (this report)
+- Implementation plan v002 (`specs/257_completeness_proofs/plans/implementation-002.md`)
+**Artifacts**: specs/450_completeness_theorems/reports/research-001.md (this report)
 **Standards**: report-format.md, subagent-return.md
 
 ## Executive Summary

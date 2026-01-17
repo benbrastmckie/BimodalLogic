@@ -34,7 +34,7 @@ Successfully implemented archival functionality in the `/todo` command following
 ```xml
 <self_healing>
   If archive/state.json does not exist:
-    1. Create .opencode/specs/archive/ directory
+    1. Create specs/archive/ directory
     2. Write archive/state.json from template
     3. Log self-healing action to main state.json
     4. Continue with archival workflow
@@ -55,7 +55,7 @@ Successfully implemented archival functionality in the `/todo` command following
   "archived": "{current_date_YYYY-MM-DD}",
   "summary": "{task_title}",
   "artifacts": {
-    "base_path": ".opencode/specs/archive/{number}_{slug}/"
+    "base_path": "specs/archive/{number}_{slug}/"
   }
 }
 ```
@@ -119,9 +119,9 @@ Phase 2 (Commit):
 ```
 Files staged:
   - TODO.md
-  - .opencode/specs/state.json
-  - .opencode/specs/archive/state.json
-  - .opencode/specs/archive/ (moved directories)
+  - specs/state.json
+  - specs/archive/state.json
+  - specs/archive/ (moved directories)
 
 Commit message: "todo: archive {N} completed/abandoned tasks"
 ```
@@ -142,7 +142,7 @@ Tasks without project directories: {count}
 
 Remaining active tasks: {remaining_count}
 
-Archive location: .opencode/specs/archive/state.json
+Archive location: specs/archive/state.json
 ```
 
 ---
@@ -241,7 +241,7 @@ All 12 acceptance criteria met:
 ```xml
 <self_healing>
   Auto-create archive/state.json from template if missing
-  Lazy creation: .opencode/specs/archive/ created only when needed
+  Lazy creation: specs/archive/ created only when needed
 </self_healing>
 ```
 
@@ -413,10 +413,10 @@ For each archived task:
 
 ### Files Referenced
 
-1. **Research Report**: `.opencode/specs/201_todo_archival_feature/reports/research-001.md`
-2. **Research Summary**: `.opencode/specs/201_todo_archival_feature/summaries/research-summary.md`
-3. **Implementation Plan**: `.opencode/specs/201_todo_archival_feature/plans/implementation-001.md`
-4. **Archive State Schema**: `.opencode/specs/archive/state.json`
+1. **Research Report**: `specs/201_todo_archival_feature/reports/research-001.md`
+2. **Research Summary**: `specs/201_todo_archival_feature/summaries/research-summary.md`
+3. **Implementation Plan**: `specs/201_todo_archival_feature/plans/implementation-001.md`
+4. **Archive State Schema**: `specs/archive/state.json`
 5. **State Schema Reference**: `.opencode/context/core/system/state-schema.md`
 
 ---

@@ -17,7 +17,7 @@
 **Language**: general  
 **Blocking**: None  
 **Dependencies**: None  
-**Research Report**: `.opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md`
+**Research Report**: `specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md`
 
 **Root Cause** (from research-002.md):
 Line 34 of `/implement` command says "from **arguments**" instead of "from **$ARGUMENTS**". This single missing `$` character causes the orchestrator to not recognize where to extract the task number from.
@@ -202,9 +202,9 @@ This was necessary when the root cause was unknown. Now that research-002 has id
 - `.opencode/command/implement.md` - Line 34: Change "arguments" to "$ARGUMENTS"
 
 **Documentation**:
-- `.opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/summaries/implementation-summary-20260103.md` - Document the fix
-- `.opencode/specs/TODO.md` - Update status to [COMPLETED]
-- `.opencode/specs/state.json` - Update completion timestamp
+- `specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/summaries/implementation-summary-20260103.md` - Document the fix
+- `specs/TODO.md` - Update status to [COMPLETED]
+- `specs/state.json` - Update completion timestamp
 
 ---
 

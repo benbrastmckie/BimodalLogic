@@ -238,8 +238,8 @@ Task: 258
 Research completed for Truth.lean sorries. Found 3 sorries already resolved in Task 213. All acceptance criteria met.
 
 Artifacts created:
-- report: .opencode/specs/258_resolve_truth_lean_sorries/reports/research-001.md
-- summary: .opencode/specs/258_resolve_truth_lean_sorries/summaries/research-summary.md
+- report: specs/258_resolve_truth_lean_sorries/reports/research-001.md
+- summary: specs/258_resolve_truth_lean_sorries/summaries/research-summary.md
 
 Task 258 - /research
 ```
@@ -251,7 +251,7 @@ Command: /review
 Codebase review completed. Updated 4 registries. Found 6 sorries, 11 axioms, 11 build errors. Test coverage 87.5%.
 
 Artifacts created:
-- summary: .opencode/specs/225_codebase_review/summaries/review-summary.md
+- summary: specs/225_codebase_review/summaries/review-summary.md
 
 Command: /review
 ```

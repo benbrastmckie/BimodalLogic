@@ -7,7 +7,7 @@
 
 ### Primary Fix: state.json Format Conversion
 
-The main issue discovered during research was that `.claude/specs/state.json` was using JSON Lines (JSONL) format - one JSON object per line - instead of the expected JSON structure with `active_projects` array. This caused all jq-based workflow commands to fail.
+The main issue discovered during research was that `specs/state.json` was using JSON Lines (JSONL) format - one JSON object per line - instead of the expected JSON structure with `active_projects` array. This caused all jq-based workflow commands to fail.
 
 **Before (JSONL)**:
 ```json
@@ -44,7 +44,7 @@ The main issue discovered during research was that `.claude/specs/state.json` wa
 
 ## Files Modified
 
-- `.claude/specs/state.json` - Converted from JSONL to proper JSON with `active_projects` array
+- `specs/state.json` - Converted from JSONL to proper JSON with `active_projects` array
 
 ## Verification
 

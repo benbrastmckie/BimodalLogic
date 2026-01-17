@@ -6,7 +6,7 @@
 - **Priority**: High
 - **Complexity**: Medium
 - **Dependencies**: None (Tasks 227 and 228 are duplicates/subsumed by this architectural fix)
-- **Research Inputs**: .opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md
+- **Research Inputs**: specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md

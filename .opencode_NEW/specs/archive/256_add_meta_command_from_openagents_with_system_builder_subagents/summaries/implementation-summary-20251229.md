@@ -171,7 +171,7 @@ The 5 meta subagents need significant updates to follow current standards:
 2. `.opencode/context/meta/architecture-principles.md` (272 lines)
 3. `.opencode/context/meta/domain-patterns.md` (260 lines)
 4. `.opencode/context/meta/agent-templates.md` (336 lines)
-5. `.opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/implementation-summary-20251229.md`
+5. `specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/implementation-summary-20251229.md`
 
 ---
 

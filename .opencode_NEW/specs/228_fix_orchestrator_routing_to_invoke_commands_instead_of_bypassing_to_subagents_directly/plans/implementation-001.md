@@ -6,7 +6,7 @@
 - **Priority**: High
 - **Complexity**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/reports/research-001.md
+- **Research Inputs**: specs/228_fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md

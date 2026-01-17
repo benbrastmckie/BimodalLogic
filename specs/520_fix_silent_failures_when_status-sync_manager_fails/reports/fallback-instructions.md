@@ -25,13 +25,13 @@ Alternatively, edit TODO.md and state.json directly:
    - Update the status: [IN_PROGRESS] → [COMPLETED]
    - Add any completion notes if needed
 
-2. Open .opencode/specs/state.json and update the corresponding task:
+2. Open specs/state.json and update the corresponding task:
    - Find the task with matching number
    - Update "status" field to the target status
    - Update "completed_at" timestamp if completed
 
 3. Run git commit:
-   git commit TODO.md .opencode/specs/state.json -m 'Manual status update for task {task_number}'
+   git commit TODO.md specs/state.json -m 'Manual status update for task {task_number}'
 ```
 
 ### Helper Command Template
@@ -57,8 +57,8 @@ echo "/task --update $TASK_NUMBER --status $TARGET_STATUS"
 echo ""
 echo "Method 2: Manual file edit"
 echo "1. Edit TODO.md - update task $TASK_NUMBER status to [$TARGET_STATUS]"
-echo "2. Edit .opencode/specs/state.json - update task $TASK_NUMBER status field"
-echo "3. git commit TODO.md .opencode/specs/state.json -m 'Manual status update for task $TASK_NUMBER'"
+echo "2. Edit specs/state.json - update task $TASK_NUMBER status field"
+echo "3. git commit TODO.md specs/state.json -m 'Manual status update for task $TASK_NUMBER'"
 ```
 
 ### When to Use Fallback vs Retry
@@ -95,7 +95,7 @@ Status update failed but artifacts were created successfully.
 RECOVERY REQUIRED:
 Manually update task status using: /task --update {task_number} --status {target_status}
 
-Alternative: Edit TODO.md and .opencode/specs/state.json directly, then commit.
+Alternative: Edit TODO.md and specs/state.json directly, then commit.
 ```
 
 #### For CRITICAL Failures:

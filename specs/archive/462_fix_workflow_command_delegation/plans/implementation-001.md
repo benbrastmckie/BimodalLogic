@@ -5,7 +5,7 @@
 - **Effort**: 2.5 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/462_fix_workflow_command_delegation/reports/research-001.md
+- **Research Inputs**: specs/462_fix_workflow_command_delegation/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: meta
@@ -149,7 +149,7 @@ Research report (research-001.md) identified:
 - `.claude/commands/research.md` - Fixed with imperative STAGE 2
 - `.claude/commands/implement.md` - Fixed with imperative STAGE 2
 - `.claude/commands/plan.md` - Fixed if needed
-- `.claude/specs/462_fix_workflow_command_delegation/summaries/implementation-summary-{DATE}.md`
+- `specs/462_fix_workflow_command_delegation/summaries/implementation-summary-{DATE}.md`
 
 ## Rollback/Contingency
 

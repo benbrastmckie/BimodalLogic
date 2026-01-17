@@ -8,7 +8,7 @@ Dedicated script for TODO.md maintenance that:
 - Updates state.json and archive/state.json
 - Moves project directories to archive
 
-Follows TODO.md file standards defined in .claude/specs/TODO.md
+Follows TODO.md file standards defined in specs/TODO.md
 
 Usage:
     python3 .opencode/scripts/todo_cleanup.py [OPTIONS]

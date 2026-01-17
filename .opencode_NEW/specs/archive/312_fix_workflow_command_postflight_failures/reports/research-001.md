@@ -7,8 +7,8 @@
 **Priority**: High  
 **Dependencies**: None  
 **Sources/Inputs**:
-- .opencode/specs/TODO.md (task 307, 312 entries)
-- .opencode/specs/state.json (task status tracking)
+- specs/TODO.md (task 307, 312 entries)
+- specs/state.json (task status tracking)
 - .opencode/agent/subagents/researcher.md (step_4_postflight)
 - .opencode/agent/subagents/planner.md (step_7)
 - .opencode/agent/subagents/lean-research-agent.md (step_7)
@@ -109,7 +109,7 @@ Current state of task 307 in TODO.md (lines 91-102):
 - **Language**: markdown
 - **Blocking**: None
 - **Dependencies**: None
-- **Research**: [Research Report](.opencode/specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md)
+- **Research**: [Research Report](specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md)
 - **Researched**: 2026-01-05
 ```
 
@@ -119,7 +119,7 @@ Current state of task 307 in state.json:
   "project_number": 307,
   "status": "researched",
   "artifacts": [
-    ".opencode/specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md"
+    "specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md"
   ]
 }
 ```
@@ -143,7 +143,7 @@ Commit timeline:
 
 **Git diff analysis**:
 ```bash
-git diff e5cde92^..e5cde92 -- .opencode/specs/TODO.md
+git diff e5cde92^..e5cde92 -- specs/TODO.md
 ```
 
 Shows task 307 changes in commit e5cde92:
@@ -156,7 +156,7 @@ Shows task 307 changes in commit e5cde92:
  - **Language**: markdown
  - **Blocking**: None
  - **Dependencies**: None
-+- **Research**: [Research Report](.opencode/specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md)
++- **Research**: [Research Report](specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md)
 +- **Researched**: 2026-01-05
 ```
 
@@ -178,7 +178,7 @@ Shows task 307 changes in commit e5cde92:
 
 **Evidence from Error Logs**:
 
-Checked .opencode/specs/errors.json:
+Checked specs/errors.json:
 ```json
 {
   "_schema_version": "1.0.0",
@@ -303,7 +303,7 @@ All workflow commands are potentially affected:
 
 **Option A: Git Commit Locking** (Recommended)
 - Add file-based locking to git-workflow-manager
-- Lock file: .opencode/specs/.git-commit.lock
+- Lock file: specs/.git-commit.lock
 - Acquire lock before staging, release after commit
 - Timeout: 60s (fail if lock held longer)
 - Prevents concurrent git operations
@@ -348,7 +348,7 @@ All workflow commands are potentially affected:
 1. **Add locking to git-workflow-manager.md** (step_0_acquire_lock):
    ```bash
    # Acquire lock
-   lock_file=".opencode/specs/.git-commit.lock"
+   lock_file="specs/.git-commit.lock"
    lock_timeout=60
    lock_acquired=false
    
@@ -585,13 +585,13 @@ git show --name-status 4b9ad5c
 git show --name-status 58f081c
 
 # Check TODO.md history
-git log --all --oneline -- .opencode/specs/TODO.md
+git log --all --oneline -- specs/TODO.md
 
 # Check TODO.md at specific commit
-git show e5cde92:.opencode/specs/TODO.md
+git show e5cde92:specs/TODO.md
 
 # Check TODO.md changes in commit
-git diff e5cde92^..e5cde92 -- .opencode/specs/TODO.md
+git diff e5cde92^..e5cde92 -- specs/TODO.md
 ```
 
 ---

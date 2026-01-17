@@ -97,7 +97,7 @@ However, tests don't actually use tm_auto, modal_search, or temporal_search tact
 1. `Logos/Core/Automation/AesopRules.lean` - Fixed 2 noncomputable errors
 2. `docs/project-info/TACTIC_REGISTRY.md` - Updated status
 3. `Logos/Core/Automation/README.md` - Added recent updates section
-4. `.opencode/specs/TODO.md` - Updated task status to [IMPLEMENTING]
+4. `specs/TODO.md` - Updated task status to [IMPLEMENTING]
 
 ## Next Steps
 

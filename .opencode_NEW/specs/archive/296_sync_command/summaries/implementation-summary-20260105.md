@@ -4,11 +4,11 @@
 **Status**: COMPLETED  
 **Date**: 2026-01-05  
 **Effort**: 8-10 hours (actual: ~2 hours)  
-**Implementation Plan**: .opencode/specs/296_sync_command/plans/implementation-002.md (git blame-based approach)
+**Implementation Plan**: specs/296_sync_command/plans/implementation-002.md (git blame-based approach)
 
 ## Overview
 
-Successfully implemented the /sync command that bidirectionally synchronizes .opencode/specs/TODO.md and .opencode/specs/state.json using git blame line-level timestamps for intelligent per-field conflict resolution. The command provides surgical precision in synchronization by examining the git history of each specific field (status, description, priority, etc.) to determine which file has the most recent change to that field.
+Successfully implemented the /sync command that bidirectionally synchronizes specs/TODO.md and specs/state.json using git blame line-level timestamps for intelligent per-field conflict resolution. The command provides surgical precision in synchronization by examining the git history of each specific field (status, description, priority, etc.) to determine which file has the most recent change to that field.
 
 ## Implementation Approach
 
@@ -145,7 +145,7 @@ Uses `git blame --line-porcelain` to get the commit timestamp for each line cont
 **Example:**
 ```bash
 # Get timestamp for status field in TODO.md (line 1184)
-git blame --line-porcelain -L 1184,1184 .opencode/specs/TODO.md | grep '^author-time' | awk '{print $2}'
+git blame --line-porcelain -L 1184,1184 specs/TODO.md | grep '^author-time' | awk '{print $2}'
 # Output: 1735992000 (Unix epoch seconds)
 ```
 
@@ -228,8 +228,8 @@ TASK ADDITIONS:
   Reason: Task exists in TODO.md but not in state.json
 
 FILES UPDATED:
-- .opencode/specs/TODO.md
-- .opencode/specs/state.json
+- specs/TODO.md
+- specs/state.json
 
 GIT COMMIT: def456
 
@@ -311,7 +311,7 @@ If TODO.md has mtime 2026-01-05 09:00:00 and state.json has mtime 2026-01-05 08:
 **Handling**:
 1. Detect with `git ls-files --error-unmatch`
 2. Abort sync with error: "state.json not tracked in git. Commit file before sync."
-3. Provide recovery steps: `git add .opencode/specs/state.json && git commit`
+3. Provide recovery steps: `git add specs/state.json && git commit`
 
 ### 3. Merge Commits
 

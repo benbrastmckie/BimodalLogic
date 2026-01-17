@@ -7,7 +7,7 @@
 **Priority**: low
 **Dependencies**: None
 **Sources/Inputs**: Source paper (JPL), LaTeX files, Lean code
-**Artifacts**: .claude/specs/452_use_d_notation_for_duration_group/reports/research-001.md
+**Artifacts**: specs/452_use_d_notation_for_duration_group/reports/research-001.md
 **Standards**: report-format.md, subagent-return.md
 
 ## Executive Summary

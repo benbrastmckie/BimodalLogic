@@ -30,7 +30,7 @@ Fix 3 build errors in `Logos/Core/Metalogic/DeductionTheorem.lean` by replacing 
 
 ## Research Inputs
 
-Research completed on 2025-12-25 (see `.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md`):
+Research completed on 2025-12-25 (see `specs/183_deduction_theorem_build_errors/reports/research-001.md`):
 
 ### Key Findings
 
@@ -295,9 +295,9 @@ We could rewrite the entire function to use term mode, but this would be a major
 
 ## References
 
-- **Research Report**: `.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md`
-- **Research Summary**: `.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md`
-- **Previous Plan**: `.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-001.md`
+- **Research Report**: `specs/183_deduction_theorem_build_errors/reports/research-001.md`
+- **Research Summary**: `specs/183_deduction_theorem_build_errors/summaries/research-summary.md`
+- **Previous Plan**: `specs/183_deduction_theorem_build_errors/plans/implementation-001.md`
 - **Source File**: `Logos/Core/Metalogic/DeductionTheorem.lean`
 - **Proven Patterns**:
   - `Logos/Core/Metalogic/Soundness.lean` (line 282)
@@ -308,7 +308,7 @@ We could rewrite the entire function to use term mode, but this would be a major
 
 **Plan Ready**: 2025-12-28  
 **Plan Status**: COMPLETED 2025-12-28  
-**Implementation Summary**: [.opencode/specs/183_deduction_theorem_build_errors/summaries/implementation-summary-20251228.md]
+**Implementation Summary**: [specs/183_deduction_theorem_build_errors/summaries/implementation-summary-20251228.md]
 
 ---
 

@@ -183,7 +183,7 @@ This plan addresses the documentation gaps identified in the research phase by c
 
 ## Dependencies
 
-- Research report (completed): `.claude/specs/427_document_command_skill_subagent_framework/reports/research-001.md`
+- Research report (completed): `specs/427_document_command_skill_subagent_framework/reports/research-001.md`
 - Existing documentation in `.claude/docs/`
 - Existing templates in `.claude/docs/templates/`
 - Existing context in `.claude/context/core/`

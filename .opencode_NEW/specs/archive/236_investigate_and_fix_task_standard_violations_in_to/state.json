@@ -4,13 +4,13 @@
   "type": "bugfix",
   "phase": "implementation_completed",
   "reports": [
-    ".opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md"
+    "specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md"
   ],
   "plans": [
-    ".opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/plans/implementation-001.md"
+    "specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/plans/implementation-001.md"
   ],
   "summaries": [
-    ".opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/summaries/implementation-summary-20251228.md"
+    "specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/summaries/implementation-summary-20251228.md"
   ],
   "status": "completed",
   "created": "2025-12-29T05:28:00Z",
@@ -19,7 +19,7 @@
   "planning_completed": "2025-12-29",
   "completed": "2025-12-28",
   "last_updated": "2025-12-28",
-  "plan_path": ".opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/plans/implementation-001.md",
+  "plan_path": "specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/plans/implementation-001.md",
   "plan_metadata": {
     "phase_count": 5,
     "estimated_hours": 4,

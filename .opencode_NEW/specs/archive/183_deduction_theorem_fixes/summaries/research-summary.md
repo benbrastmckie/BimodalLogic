@@ -75,4 +75,4 @@ by_cases hA' : A ∈ Γ''
 
 ## Full Report
 
-See: `.opencode/specs/183_deduction_theorem_fixes/reports/research-001.md`
+See: `specs/183_deduction_theorem_fixes/reports/research-001.md`

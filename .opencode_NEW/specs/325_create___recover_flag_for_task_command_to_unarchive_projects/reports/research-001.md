@@ -11,18 +11,18 @@
 - .opencode/command/todo.md (archival command)
 - .opencode/scripts/todo_cleanup.py (archival script)
 - .opencode/agent/subagents/status-sync-manager.md (state synchronization)
-- .opencode/specs/state.json (active project state)
-- .opencode/specs/archive/state.json (archived project state)
-- .opencode/specs/TODO.md (user-facing task list)
+- specs/state.json (active project state)
+- specs/archive/state.json (archived project state)
+- specs/TODO.md (user-facing task list)
 
-**Artifacts**: .opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md  
+**Artifacts**: specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md  
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ---
 
 ## Executive Summary
 
-This research investigates the current archival system and designs a recovery mechanism to unarchive projects. The system currently archives completed/abandoned tasks by moving project directories to `.opencode/specs/archive/`, removing entries from TODO.md and state.json, and adding them to archive/state.json. The proposed `--recover` flag will reverse this process atomically, restoring projects to active status while maintaining data integrity.
+This research investigates the current archival system and designs a recovery mechanism to unarchive projects. The system currently archives completed/abandoned tasks by moving project directories to `specs/archive/`, removing entries from TODO.md and state.json, and adding them to archive/state.json. The proposed `--recover` flag will reverse this process atomically, restoring projects to active status while maintaining data integrity.
 
 **Key Findings**:
 1. Archive system uses atomic two-phase commit with git-only rollback
@@ -56,8 +56,8 @@ The archival system consists of:
    - Exit codes: 0 (success), 1 (validation error), 2 (file I/O error), 3 (argument error)
 
 3. **State Files**:
-   - `.opencode/specs/state.json`: Active projects (51 active)
-   - `.opencode/specs/archive/state.json`: Archived projects (130 archived)
+   - `specs/state.json`: Active projects (51 active)
+   - `specs/archive/state.json`: Archived projects (130 archived)
    - Both use schema version 1.1.0
 
 4. **Atomic Updates**:
@@ -99,7 +99,7 @@ Archive state.json contains full project metadata:
   "archived": "2025-12-23T05:00:00Z",
   "summary": "Bounded search and axiom matching implemented...",
   "artifacts": {
-    "base_path": ".opencode/specs/archive/126_implement_bounded_search_and_matches_axiom_in_proofsearch/"
+    "base_path": "specs/archive/126_implement_bounded_search_and_matches_axiom_in_proofsearch/"
   }
 }
 ```
@@ -162,7 +162,7 @@ Task entries follow format:
 
 ### Finding 4: Project Directory Structure
 
-Archived directories in `.opencode/specs/archive/`:
+Archived directories in `specs/archive/`:
 - Format: `{task_number}_{slug}/`
 - Contains: reports/, plans/, summaries/, state.json (optional)
 - Example: `126_implement_bounded_search_and_matches_axiom_in_proofsearch/`
@@ -449,9 +449,9 @@ Fields to add:
     <action>Move project directory from archive</action>
     <process>
       1. Check if directory exists:
-         - Source: .opencode/specs/archive/{number}_{slug}/
+         - Source: specs/archive/{number}_{slug}/
       2. If exists:
-         - Destination: .opencode/specs/{number}_{slug}/
+         - Destination: specs/{number}_{slug}/
          - Move directory: shutil.move(source, destination)
          - If move fails: Log warning (non-critical)
       3. If not exists:
@@ -754,17 +754,17 @@ Track recovery in metadata:
 - **Relevance**: Atomic updates, two-phase commit, operation patterns
 
 ### Source 5: state.json Schema
-- **File**: `.opencode/specs/state.json`
+- **File**: `specs/state.json`
 - **Key Fields**: active_projects, next_project_number, _last_updated
 - **Relevance**: Active project structure, metadata fields
 
 ### Source 6: archive/state.json Schema
-- **File**: `.opencode/specs/archive/state.json`
+- **File**: `specs/archive/state.json`
 - **Key Fields**: archived_projects, archived timestamp, summary
 - **Relevance**: Archived project structure, metadata preservation
 
 ### Source 7: TODO.md Structure
-- **File**: `.opencode/specs/TODO.md`
+- **File**: `specs/TODO.md`
 - **Key Sections**: Priority sections, task entry format, dividers
 - **Relevance**: TODO.md formatting, priority sections, task blocks
 

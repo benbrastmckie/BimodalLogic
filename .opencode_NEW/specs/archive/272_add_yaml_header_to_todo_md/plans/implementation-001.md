@@ -210,8 +210,8 @@ This implementation will:
 - Git commit created with descriptive message
 
 **Artifacts**:
-- Updated `.opencode/specs/TODO.md`
-- Backup: `.opencode/specs/TODO.md.backup-20260103`
+- Updated `specs/TODO.md`
+- Backup: `specs/TODO.md.backup-20260103`
 
 ---
 
@@ -378,7 +378,7 @@ This implementation will:
    - Format examples
    - Rationale documentation
 
-2. **Updated TODO.md**: `.opencode/specs/TODO.md`
+2. **Updated TODO.md**: `specs/TODO.md`
    - YAML header with current state.json metadata
    - Preserved task list body
 
@@ -402,7 +402,7 @@ This implementation will:
    - Error scenario test results
    - Validation results
 
-2. **TODO.md Backup**: `.opencode/specs/TODO.md.backup-20260103`
+2. **TODO.md Backup**: `specs/TODO.md.backup-20260103`
    - Backup before header implementation
 
 ---

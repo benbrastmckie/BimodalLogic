@@ -5,7 +5,7 @@
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: [Research Report](.opencode/specs/309_optimize_task_command_performance/reports/research-001.md)
+- **Research Inputs**: [Research Report](specs/309_optimize_task_command_performance/reports/research-001.md)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -146,10 +146,10 @@ The /task command currently takes 5-10 seconds for simple task creation due to a
 - Pass Criteria: Fast failure (< 1s), clear error, no side effects
 
 ### Test Case 5: Atomic Rollback
-- Setup: `chmod 444 .opencode/specs/TODO.md`
+- Setup: `chmod 444 specs/TODO.md`
 - Run: `/task "Test rollback"`
 - Verify: Error mentions rollback, no task in either file, next_project_number unchanged
-- Cleanup: `chmod 644 .opencode/specs/TODO.md`
+- Cleanup: `chmod 644 specs/TODO.md`
 - Pass Criteria: Rollback successful, no partial state
 
 ### Test Case 6: Performance Measurement

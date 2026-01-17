@@ -5,7 +5,7 @@
 - **Effort**: 8 hours (distributed across 5 subtasks)
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: Research report (.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md) - Comprehensive analysis of current /meta implementation and task creation pattern from /task command
+- **Research Inputs**: Research report (specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md) - Comprehensive analysis of current /meta implementation and task creation pattern from /task command
 - **Artifacts**: 
   - plans/implementation-002.md (this file - revised plan)
   - 5 subtasks with individual implementation plans (created via /task --divide)
@@ -166,7 +166,7 @@ Subtask 5 (Testing) ─────────┘
 - **Tasks:**
   - [ ] Run `/task --divide` command with subtask descriptions
   - [ ] Verify 5 tasks created with sequential numbers
-  - [ ] Verify each task has dedicated directory in .opencode/specs/
+  - [ ] Verify each task has dedicated directory in specs/
   - [ ] Verify each task has implementation plan (plans/implementation-001.md)
   - [ ] Verify dependencies correctly set in TODO.md and state.json
   - [ ] Verify all tasks link back to parent task 306
@@ -215,11 +215,11 @@ Subtask 5 (Testing) ─────────┘
 
 - **plans/implementation-002.md** - This revised implementation plan
 - **5 subtask directories** - Created via /task --divide:
-  - .opencode/specs/{N}_create_plan_generation_templates/
-  - .opencode/specs/{N+1}_refactor_stage_7_to_createtaskswithartifacts/
-  - .opencode/specs/{N+2}_refactor_stage_8_to_delivertasksummary/
-  - .opencode/specs/{N+3}_update_command_documentation/
-  - .opencode/specs/{N+4}_test_with_all_complexity_levels/
+  - specs/{N}_create_plan_generation_templates/
+  - specs/{N+1}_refactor_stage_7_to_createtaskswithartifacts/
+  - specs/{N+2}_refactor_stage_8_to_delivertasksummary/
+  - specs/{N+3}_update_command_documentation/
+  - specs/{N+4}_test_with_all_complexity_levels/
 - **5 implementation plans** - One per subtask:
   - plans/implementation-001.md in each subtask directory
 - **.opencode/command/meta.md** - Updated command file (via Subtasks 2, 3)

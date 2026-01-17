@@ -73,8 +73,8 @@ The task-reviser subagent follows the established subagent pattern with:
 - **Delegates to**: 
   - `status-sync-manager` (atomic TODO.md + state.json updates)
   - `git-workflow-manager` (git commit creation)
-- **Reads from**: `.opencode/specs/state.json` (task metadata extraction)
-- **Updates**: `.opencode/specs/TODO.md` and `.opencode/specs/state.json` (via delegation)
+- **Reads from**: `specs/state.json` (task metadata extraction)
+- **Updates**: `specs/TODO.md` and `specs/state.json` (via delegation)
 
 ## Phases Completed
 

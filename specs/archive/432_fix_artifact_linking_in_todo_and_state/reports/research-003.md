@@ -372,7 +372,7 @@ CHECKPOINT 3 (COMMIT):
 - `.claude/context/index.md` - Context discovery index (needs update)
 - `.claude/docs/guides/context-loading-best-practices.md` - Loading patterns
 - `.claude/context/core/orchestration/architecture.md` - Three-layer pattern
-- `.claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md` - Checkpoint model
+- `specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md` - Checkpoint model
 
 ## Next Steps
 

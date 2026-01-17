@@ -196,10 +196,10 @@ Detailed metrics comparison:
 
 ### Validation Reports
 
-- **Phase 1 Validation**: `.opencode/specs/244_phase_1_context_index_and_research_prototype/reports/validation-001.md`
-- **Phase 2 Validation**: `.opencode/specs/245_phase_2_core_architecture_migration/reports/validation-001.md`
-- **Phase 3 Validation**: `.opencode/specs/246_phase_3_consolidation/reports/validation-001.md`
-- **Phase 4 Validation**: `.opencode/specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
+- **Phase 1 Validation**: `specs/244_phase_1_context_index_and_research_prototype/reports/validation-001.md`
+- **Phase 2 Validation**: `specs/245_phase_2_core_architecture_migration/reports/validation-001.md`
+- **Phase 3 Validation**: `specs/246_phase_3_consolidation/reports/validation-001.md`
+- **Phase 4 Validation**: `specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
 
 ---
 

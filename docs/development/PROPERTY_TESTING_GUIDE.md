@@ -710,4 +710,4 @@ Property-based testing with Plausible provides:
 **Resources**:
 - [Plausible Repository](https://github.com/leanprover-community/plausible)
 - [Logos Property Tests](../../LogosTest/Core/Property/)
-- [Research Report](../../.opencode/specs/174_property_based_testing/reports/research-001.md)
+- [Research Report](../../specs/174_property_based_testing/reports/research-001.md)

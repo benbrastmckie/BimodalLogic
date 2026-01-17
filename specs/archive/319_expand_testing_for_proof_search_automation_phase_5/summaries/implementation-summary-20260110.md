@@ -77,7 +77,7 @@ All TM axiom schemata tested with 3+ variants each:
 
 ### New Files
 - `LogosTest/Core/Automation/EdgeCaseTest.lean` - 44 edge case tests
-- `.claude/specs/319_.../benchmarks/performance-baseline.md` - Performance metrics
+- `specs/319_.../benchmarks/performance-baseline.md` - Performance metrics
 
 ### Modified Files
 - `LogosTest/Core/Automation/ProofSearchTest.lean`

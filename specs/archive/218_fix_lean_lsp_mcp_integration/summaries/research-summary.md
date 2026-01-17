@@ -119,7 +119,7 @@
 
 ## References
 
-- **Research Report**: `.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md`
+- **Research Report**: `specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md`
 - **MCP Client**: `.opencode/tool/mcp/client.py`
 - **Agent Spec**: `.opencode/agent/subagents/lean-implementation-agent.md`
 - **MCP Config**: `.mcp.json`

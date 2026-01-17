@@ -34,10 +34,10 @@ Added the `[EXPANDED]` status marker for parent tasks that have been divided int
   - Updated Divide Mode step 4 to set `status: "expanded"`
   - Updated commit message from "divide into subtasks" to "expand into subtasks"
 
-- `.claude/specs/state.json`
+- `specs/state.json`
   - Updated task 394 status from "researched" to "expanded"
 
-- `.claude/specs/TODO.md`
+- `specs/TODO.md`
   - Updated task 394 status from `[RESEARCHED]` to `[EXPANDED]`
 
 ## Verification

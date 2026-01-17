@@ -1,5 +1,5 @@
 ---
-next_project_number: 529
+next_project_number: 534
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,6 +27,68 @@ technical_debt:
 
 ## High Priority
 
+### 529. Unify Workflow Commands into Single-Execution Pattern
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHED]
+- **Priority**: High
+- **Language**: meta
+- **Session ID**: sess_1768657929_57f816
+- **Created**: 2026-01-17
+- **Researched**: 2026-01-17
+- **Research**: [research-001.md](specs/529_unify_workflow_commands_single_execution/reports/research-001.md)
+
+**Description**: Refactor /research, /plan, /implement commands to embed all checkpoint logic inline rather than delegating preflight to skill-status-sync. The preflight status update should be done directly in the command file using Bash/jq/Edit, not via Skill invocation, to prevent the "completion signal" problem that causes workflows to halt after preflight.
+
+**Root Cause**: When skill-status-sync returns `"status": "synced"`, Claude interprets this as a stopping point and halts before executing STAGE 2 delegation. Evidence in `.claude/output/research.md` shows workflow stopping after preflight JSON return.
+
+---
+
+### 530. Add Explicit Continuation Guards to Command Files
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+
+**Description**: Add explicit "DO NOT STOP" and "CONTINUE EXECUTION" guards at critical transition points in command files. Use bold warnings like `**CRITICAL: DO NOT STOP HERE. EXECUTE STAGE 2 IMMEDIATELY.**` These guards reinforce that skill completion does not mean workflow completion.
+
+---
+
+### 531. Refactor skill-status-sync to Return Non-Terminal Status
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 529, 530
+
+**Description**: Ensure skill-status-sync returns non-completion signals (already partially done with "synced" vs "completed"), but also add explicit `continue_workflow: true` field in return JSON to signal Claude should continue. Review and update return format documentation.
+
+---
+
+### 532. Create Workflow Integration Tests
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+- **Dependencies**: 529, 530, 531
+
+**Description**: Create test scaffolding that validates workflow commands complete all checkpoints (GATE IN → DELEGATE → GATE OUT → COMMIT) without halting. Tests should detect early stopping patterns and verify end-to-end execution.
+
+---
+
+### 533. Document Workflow Anti-Patterns
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+
+**Description**: Add documentation in `.claude/docs/guides/` explaining the "skill completion = workflow completion" anti-pattern and how to avoid it. Document root causes, symptoms, and prevention strategies.
+
+---
+
 ### 524. Update CLAUDE.md and rules with new specs path
 - **Effort**: 30 minutes
 - **Status**: [COMPLETED]
@@ -36,7 +98,7 @@ technical_debt:
 - **Created**: 2026-01-17
 - **Completed**: 2026-01-17
 
-**Description**: Update CLAUDE.md and all rules files to reference `specs/` instead of `.claude/specs/`. This is the foundation task that must be completed before other refactoring tasks.
+**Description**: Update CLAUDE.md and all rules files to reference `specs/` instead of `specs/`. This is the foundation task that must be completed before other refactoring tasks.
 
 **Files Modified**:
 - `.claude/CLAUDE.md` - Updated 6 references
@@ -56,7 +118,7 @@ technical_debt:
 - **Completed**: 2026-01-17
 - **Dependencies**: 524
 
-**Description**: Update all agent files in `.claude/agents/` to reference `specs/` instead of `.claude/specs/`. Depends on task 524.
+**Description**: Update all agent files in `.claude/agents/` to reference `specs/` instead of `specs/`. Depends on task 524.
 
 **Files Modified**:
 - `.claude/agents/general-research-agent.md` - Updated 4 references
@@ -79,7 +141,7 @@ technical_debt:
 - **Completed**: 2026-01-17
 - **Dependencies**: 524
 
-**Description**: Update all command files in `.claude/commands/` to reference `specs/` instead of `.claude/specs/`. Depends on task 524.
+**Description**: Update all command files in `.claude/commands/` to reference `specs/` instead of `specs/`. Depends on task 524.
 
 **Files Modified**:
 - `.claude/commands/implement.md` - Updated 2 references
@@ -104,7 +166,7 @@ technical_debt:
 - **Completed**: 2026-01-17
 - **Dependencies**: 524
 
-**Description**: Update all skill files in `.claude/skills/` to reference `specs/` instead of `.claude/specs/`. Depends on task 524.
+**Description**: Update all skill files in `.claude/skills/` to reference `specs/` instead of `specs/`. Depends on task 524.
 
 **Files Modified**:
 - `.claude/skills/skill-orchestrator/SKILL.md` - Updated 1 reference
@@ -140,7 +202,7 @@ technical_debt:
 - `.claude/settings.json`
 
 **Verification**:
-- ✅ 0 remaining `.claude/specs/` references (outside specs/ directory)
+- ✅ 0 remaining `specs/` references (outside specs/ directory)
 - ✅ 92 files now correctly reference `specs/`
 
 ---
@@ -151,7 +213,7 @@ technical_debt:
 - **Priority**: High
 - **Language**: meta
 - **Session ID**: sess_1768625888_create518
-- **Plan**: [Implementation Plan](.opencode/specs/518_fix_parameter_mapping_errors_between_workflow_commands_and_status-sync_manager/plans/implementation-001.md)
+- **Plan**: [Implementation Plan](specs/518_fix_parameter_mapping_errors_between_workflow_commands_and_status-sync_manager/plans/implementation-001.md)
 
 **Description**: Fix critical parameter mapping errors between workflow commands and status-sync-manager. Research revealed mismatched parameter names, missing required fields, and incompatible data formats causing silent failures and inconsistent state updates.
 
@@ -164,7 +226,7 @@ technical_debt:
 - **Priority**: High
 - **Language**: general
 - **Session ID**: sess_1768592660_vnieb
-- **Research**: [Research Report](.opencode/specs/517_fix_research_command_summary_files/reports/research-001.md)
+- **Research**: [Research Report](specs/517_fix_research_command_summary_files/reports/research-001.md)
 - **Researched**: 2025-01-16T10:51:00Z
 
 **Description**: Fix the /research command to avoid creating unnecessary implementation-summary files in summaries/ directory, properly link research reports in TODO.md and state.json, and correctly update task status to RESEARCHED. These issues prevent proper workflow tracking and create cleanup burden.
@@ -179,8 +241,8 @@ technical_debt:
 - **Session ID**: sess_1768625888_create519
 - **Started**: 2026-01-16
 - **Researched**: 2026-01-16
-- **Plan**: [Implementation Plan](.opencode/specs/519_add_missing_stage_7_validation_in_workflow_commands/plans/implementation-001.md)
-- **Research**: [Detailed research report identifying missing Postflight stages in workflow commands and providing an implementation plan.](.opencode/specs/519_add_missing_stage_7_validation_in_workflow_commands/reports/research-001.md)
+- **Plan**: [Implementation Plan](specs/519_add_missing_stage_7_validation_in_workflow_commands/plans/implementation-001.md)
+- **Research**: [Detailed research report identifying missing Postflight stages in workflow commands and providing an implementation plan.](specs/519_add_missing_stage_7_validation_in_workflow_commands/reports/research-001.md)
 
 **Description**: Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.
 
@@ -194,10 +256,10 @@ technical_debt:
 - **Session ID**: sess_1768625888_create520
 - **Started**: 2026-01-16T22:48:52Z
 - **Completed**: 2026-01-16T22:49:00Z
-- **Plan**: [Implementation Plan](.opencode/specs/520_fix_silent_failures_when_status-sync_manager_fails/plans/implementation-001.md)
-- **Implementation Summary**: [Implementation Summary](.opencode/specs/520_fix_silent_failures_when_status-sync_manager_fails/reports/implementation-summary.md)
-- **Test Plan**: [Test Plan](.opencode/specs/520_fix_silent_failures_when_status-sync_manager_fails/reports/test-plan.md)
-- **Fallback Instructions**: [Fallback Instructions](.opencode/specs/520_fix_silent_failures_when_status-sync_manager_fails/reports/fallback-instructions.md)
+- **Plan**: [Implementation Plan](specs/520_fix_silent_failures_when_status-sync_manager_fails/plans/implementation-001.md)
+- **Implementation Summary**: [Implementation Summary](specs/520_fix_silent_failures_when_status-sync_manager_fails/reports/implementation-summary.md)
+- **Test Plan**: [Test Plan](specs/520_fix_silent_failures_when_status-sync_manager_fails/reports/test-plan.md)
+- **Fallback Instructions**: [Fallback Instructions](specs/520_fix_silent_failures_when_status-sync_manager_fails/reports/fallback-instructions.md)
 - **Meta Agent**: [Enhanced context-organizer](.opencode/agent/subagents/meta/context-organizer.md)
 
 **Description**: Fix silent failures when status-sync-manager delegation fails. Research revealed that workflow commands log status-sync-manager failures as "non-critical" and continue, returning success status even when status updates fail. This leads to inconsistent state where artifacts are created but task status isn't updated.
@@ -216,7 +278,7 @@ technical_debt:
 - **Session ID**: sess_1768625888_create522
 - **Started**: 2026-01-16T22:48:17+00:00
 - **Completed**: 2026-01-16T22:48:17+00:00
-- **Plan**: [Implementation Plan](.opencode/specs/522_improve_status-sync_manager_error_messages/plans/implementation-001.md)
+- **Plan**: [Implementation Plan](specs/522_improve_status-sync_manager_error_messages/plans/implementation-001.md)
 - **Enhancement**: [Comprehensive Error Code System](.opencode/agent/subagents/status-sync-manager.md)
 
 **Description**: Improve status-sync-manager error messages to be more specific and actionable. Research revealed that status-sync-manager returns generic errors like "Invalid parameters" without explaining which parameter is invalid or what expected format is. This makes debugging difficult for both users and calling agents.
@@ -225,10 +287,10 @@ technical_debt:
 
 ### 523. Clean Up Bimodal Lean Source Files After Task 505
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
-- **Session ID**: sess_1768656756_fec1d9
+- **Session ID**: sess_1768657879_19f5ce
 - **Researched**: 2026-01-17
 - **Research**: [research-002.md](specs/523_bimodal_cleanup/reports/research-002.md)
 
@@ -244,8 +306,8 @@ technical_debt:
 - **Priority**: High
 - **Language**: lean
 - **Created By**: Review task 506
-- **Review Artifact**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
-- **Research Report**: [.opencode/specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md](.opencode/specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md)
+- **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
+- **Research Report**: [specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md](specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md)
 - **Session ID**: sess_1768517000_research511
 - **Researched**: 2026-01-16
 
@@ -277,8 +339,8 @@ technical_debt:
 - **Language**: lean
 - **Session ID**: sess_1768594543_in7i1i
 - **Created By**: Review task 506
-- **Review Artifact**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
-- **Research**: [Research Report](.opencode/specs/513_address_tm_auto_proof_reconstruction_issues/reports/research-001.md)
+- **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
+- **Research**: [Research Report](specs/513_address_tm_auto_proof_reconstruction_issues/reports/research-001.md)
 - **Researched**: 2026-01-16T19:55:00Z
 
 **Description**: Address tm_auto proof reconstruction issues. Tactic implementation exists but has proof reconstruction problems.
@@ -291,7 +353,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: lean
 - **Created By**: Review task 506
-- **Review Artifact**: [.opencode/specs/506_codebase_review/summaries/review-summary.md](.opencode/specs/506_codebase_review/summaries/review-summary.md)
+- **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
 
 **Description**: Expand test coverage for Logos theory modules. Currently 53.6% coverage (45 test files for 84 core files).
 
@@ -303,9 +365,9 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: latex
 - **Researched**: 2026-01-16
-- **Plan**: [Implementation Plan](.opencode/specs/515_missing_section_descriptions/plans/implementation-001.md)
-- **Research**: [Research Report](.opencode/specs/515_missing_section_descriptions/reports/research-001.md)
-- **Implementation Summary**: [Implementation Summary](.opencode/specs/515_missing_section_descriptions/summaries/implementation-summary-20260116.md)
+- **Plan**: [Implementation Plan](specs/515_missing_section_descriptions/plans/implementation-001.md)
+- **Research**: [Research Report](specs/515_missing_section_descriptions/reports/research-001.md)
+- **Implementation Summary**: [Implementation Summary](specs/515_missing_section_descriptions/summaries/implementation-summary-20260116.md)
 - **Session ID**: sess_1768582820_zqryxb
 - **Completed**: 2026-01-16
 
@@ -323,10 +385,10 @@ technical_debt:
 - **Planned**: 2026-01-16
 - **Revised**: 2026-01-16
 - **Implemented**: 2026-01-16
-- **Plan**: [Implementation Plan](.opencode/specs/505_bimodal_metalogic_restructuring/plans/implementation-002.md)
+- **Plan**: [Implementation Plan](specs/505_bimodal_metalogic_restructuring/plans/implementation-002.md)
 - **Research**:
-  - [Detailed restructuring plan for bimodal metalogic](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
-  - [Dependencies between metalogical theorems](.opencode/specs/505_bimodal_metalogic_restructuring/reports/research-002.md)
+  - [Detailed restructuring plan for bimodal metalogic](specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
+  - [Dependencies between metalogical theorems](specs/505_bimodal_metalogic_restructuring/reports/research-002.md)
 
 **Description**: Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Design and implement an ideal restructuring to improve the quality, organization, and clarity of the theory. Once implemented, update the /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/04-Metalogic.tex, /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/README.md, and /home/benjamin/Projects/ProofChecker/Theories/Bimodal/README.md documentation to present the metalogical results and their connections in a clear and consistent style. 
 
@@ -342,8 +404,8 @@ technical_debt:
 - **Planned**: 2025-01-15T16:36:40Z
 - **Started**: 2025-01-15T16:51:10Z
 - **Completed**: 2025-01-15T16:51:15Z
-- **Research**: [research-001.md](.claude/specs/495_formula_induction_truth_lemma_bridges/reports/research-001.md)
-- **Plan**: [implementation-001.md](.opencode/specs/495_formula_induction_truth_lemma_bridges/plans/implementation-001.md)
+- **Research**: [research-001.md](specs/495_formula_induction_truth_lemma_bridges/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/495_formula_induction_truth_lemma_bridges/plans/implementation-001.md)
 - **Implementation**: [FiniteCanonicalModel.lean](Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean)
 
 **Description**: Complete the formula structure induction for semantic_truth_implies_truth_at (line 3446) and related truth lemma bridges. This requires inductive proof on all formula constructors (6+ cases) connecting semantic truth to model truth_at definition. Handle complex temporal logic cases including modal operators, temporal operators, and boolean connectives. Estimated 2-3 hours of technical Lean proof work.
@@ -358,11 +420,11 @@ technical_debt:
 - **Session**: sess_1768516626_0s
 - **Implemented**: 2026-01-15
 - **Completed**: 2026-01-15
-- **Documentation**: [Implementation summary documentation](.opencode/specs/496_finite_canonical_model_lemma/summaries/implementation-summary-20260115.md)
+- **Documentation**: [Implementation summary documentation](specs/496_finite_canonical_model_lemma/summaries/implementation-summary-20260115.md)
 
 **Description**: Create and prove the lemma connecting SemanticCanonicalModel.valuation to FiniteWorldState.assignment (line 3466). This requires deep understanding of SemanticCanonicalModel structure and establishing the precise relationship between valuations and assignments in the finite canonical model construction. The lemma is critical for bridging semantic and finite truth definitions.
 - **Implementation**: [semantic_valuation_assignment_connection](Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean#L3655-3669)
-- **Implementation Summary**: [implementation-summary-20260115.md](.opencode/specs/496_valuation_assignment_connection/summaries/implementation-summary-20260115.md)
+- **Implementation Summary**: [implementation-summary-20260115.md](specs/496_valuation_assignment_connection/summaries/implementation-summary-20260115.md)
 
 ---
 
@@ -374,9 +436,9 @@ technical_debt:
 - **Implemented**: 2026-01-13
 - **Priority**: High
 - **Language**: meta
-- **Research**: [research-001.md](.claude/specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md)
-- **Plan**: [implementation-002.md](.claude/specs/480_investigate_workflow_delegation_early_stop/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/480_investigate_workflow_delegation_early_stop/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/480_investigate_workflow_delegation_early_stop/reports/research-001.md)
+- **Plan**: [implementation-002.md](specs/480_investigate_workflow_delegation_early_stop/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260113.md](specs/480_investigate_workflow_delegation_early_stop/summaries/implementation-summary-20260113.md)
 
 **Description**: Investigate workflow delegation errors causing agents to stop early. Previous fix attempts (tasks 474, 467, 462) did not resolve the issue. Check `.claude/output/` for error patterns. Search for terms like "complete", "finished" etc. that might trigger Claude Code to stop early. Consult best practices for Claude Code agent systems and research similar errors online.
 
@@ -390,7 +452,7 @@ technical_debt:
 - **Language**: lean
 - **Parent**: Task 381
 - **Subtasks**: 398, 399
-- **Research**: [research-001.md](.claude/specs/394_research_port_causal_semantics_from_paper/reports/research-001.md), [research-002.md](.claude/specs/394_research_port_causal_semantics_from_paper/reports/research-002.md)
+- **Research**: [research-001.md](specs/394_research_port_causal_semantics_from_paper/reports/research-001.md), [research-002.md](specs/394_research_port_causal_semantics_from_paper/reports/research-002.md)
 
 **Description**: Research and port the correct causal operator semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md first, then to Lean. The causal operator is primitive (like the counterfactual conditional) and requires careful adaptation to the more sophisticated theory of time in Logos.
 
@@ -402,7 +464,7 @@ technical_debt:
 - **Priority**: High
 - **Language**: markdown
 - **Parent**: Task 394
-- **Research**: [research-001.md](.claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md)
+- **Research**: [research-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md)
 
 **Description**: Port the causal semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Carefully study the counterfactual semantics already included in the recursive-semantics.md in order to adapt existing resources rather than positing additional resources in order to construct the three-condition truth clause for causation.
 
@@ -431,11 +493,11 @@ technical_debt:
  **Revised**: 2026-01-14
  **Parent**: Task 499
  **Dependencies**: Task 499 (completed)
- **Research**: [research-001.md](.opencode/specs/502_complete_representation_theorem/reports/research-001.md), [research-002.md](.opencode/specs/502_complete_representation_theorem/reports/research-002.md)
+ **Research**: [research-001.md](specs/502_complete_representation_theorem/reports/research-001.md), [research-002.md](specs/502_complete_representation_theorem/reports/research-002.md)
  *
- **Analysis**: [initial-analysis.md](.opencode/specs/502_complete_representation_theorem/reports/initial-analysis.md)
- **Summary**: [research-002.md](.opencode/specs/502_complete_representation_theorem/summaries/research-002.md)
- **Plan**: [implementation-001.md](.opencode/specs/502_complete_representation_theorem/plans/implementation-001.md)
+ **Analysis**: [initial-analysis.md](specs/502_complete_representation_theorem/reports/initial-analysis.md)
+ **Summary**: [research-002.md](specs/502_complete_representation_theorem/summaries/research-002.md)
+ **Plan**: [implementation-001.md](specs/502_complete_representation_theorem/plans/implementation-001.md)
 - **Implementation**: [RepresentationTheorems.lean](Theories/Bimodal/Metalogic/RepresentationTheorems.lean)
  **Session**: sess_1768452611_xef
 
@@ -475,8 +537,8 @@ technical_debt:
 - **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: latex
-- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/.opencode/specs/510_mereological_constraints_research/reports/research-001.md)
-- **Plan**: [implementation-001.md](.opencode/specs/510_mereological_constraints/plans/implementation-001.md)
+- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/specs/510_mereological_constraints_research/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/510_mereological_constraints/plans/implementation-001.md)
 - **Researched**: 2025-01-15
 - **Planned**: 2025-01-16
 
@@ -490,8 +552,8 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: markdown
 - **Session**: sess_1768530000_impl503
-- **Research**: [research-001.md](.opencode/specs/503_latex_dependent_type_conventions/reports/research-001.md)
-- **Plan**: [implementation-001.md](.opencode/specs/503_latex_dependent_type_conventions/plans/implementation-001.md)
+- **Research**: [research-001.md](specs/503_latex_dependent_type_conventions/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/503_latex_dependent_type_conventions/plans/implementation-001.md)
 - **Researched**: 2026-01-15
 - **Planned**: 2026-01-15
 - **Revised**: 2026-01-15T15:50:00Z
@@ -499,7 +561,7 @@ technical_debt:
 - **Completed**: 2026-01-15
 
 - **Implementation**: [01-ConstitutiveFoundation.tex](Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex), [03-DynamicsFoundation-Semantics.tex](Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex)
-- **Summary**: [implementation-summary-20260115.md](.opencode/specs/503_latex_dependent_type_conventions/summaries/implementation-summary-20260115.md)
+- **Summary**: [implementation-summary-20260115.md](specs/503_latex_dependent_type_conventions/summaries/implementation-summary-20260115.md)
 **Description**: Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.
 
 ---
@@ -513,9 +575,9 @@ technical_debt:
 - **Researched**: 2026-01-15T02:35:00Z
 - **Planned**: 2026-01-15
 - **Revised**: 2026-01-15
-- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/.opencode/specs/504_aristotle_integration/reports/research-001.md)
+- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/specs/504_aristotle_integration/reports/research-001.md)
 
-- **Plan**: [Revised integration plan for Harmonic Aristotle API into Lean implementer agent](.opencode/specs/504_aristotle_integration/plans/implementation-003.md)
+- **Plan**: [Revised integration plan for Harmonic Aristotle API into Lean implementer agent](specs/504_aristotle_integration/plans/implementation-003.md)
 
 **Description**: Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.
 
@@ -527,7 +589,7 @@ technical_debt:
 - **Completed**: 2026-01-14
 - **Priority**: Medium
 - **Language**: lean
-- **Research**: [research-002.md](.opencode/specs/499_review_metalogical_theorem_strategies/reports/research-002.md), [research-summary.md](.opencode/specs/499_review_metalogical_theorem_strategies/summaries/research-summary.md)
+- **Research**: [research-002.md](specs/499_review_metalogical_theorem_strategies/reports/research-002.md), [research-summary.md](specs/499_review_metalogical_theorem_strategies/summaries/research-summary.md)
 - **Implementation**: [architecture-design.md](499_review_metalogical_theorem_strategies/summaries/implementation-summary-20260114.md)
 
 **Description**: Review existing metatheorems in Bimodal/ theory and design systematic refactor approach. Analyze relationship between FMP property, decidability, and completeness theorems. Ensure representation theorem is preserved. Design general completeness statement supporting empty, finite, or infinite Gamma contexts. Create conceptually clear and mathematically elegant architecture for metalogical results.
@@ -553,11 +615,11 @@ technical_debt:
 - **Planned**: 2026-01-14T23:29:00Z
 - **Implementing**: 2026-01-14T22:15:55Z
 - **Completed**: 2026-01-14T22:32:00Z
-- **Research**: [research-001.md](.claude/specs/497_time_arithmetic_case_analysis/reports/research-001.md)
-- **Research Summary**: [research-summary.md](.claude/specs/497_time_arithmetic_case_analysis/summaries/research-summary.md)
-- **Plan**: [implementation-001.md](.opencode/specs/497_time_arithmetic_case_analysis/plans/implementation-001.md)
+- **Research**: [research-001.md](specs/497_time_arithmetic_case_analysis/reports/research-001.md)
+- **Research Summary**: [research-summary.md](specs/497_time_arithmetic_case_analysis/summaries/research-summary.md)
+- **Plan**: [implementation-001.md](specs/497_time_arithmetic_case_analysis/plans/implementation-001.md)
 - **Implementation**: [FiniteCanonicalModel.lean](Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean)
-- **Summary**: [implementation-summary-20260115.md](.opencode/specs/497_time_arithmetic_case_analysis/summaries/implementation-summary-20260115.md)
+- **Summary**: [implementation-summary-20260115.md](specs/497_time_arithmetic_case_analysis/summaries/implementation-summary-20260115.md)
 
 **Description**: Finish the time arithmetic completion for bridge lemmas (lines ~3337, ~3394). This involves detailed case analysis for clamping arithmetic on time domains using omega tactics to handle boundary conditions. Complete the time_shift mechanisms and clamped domain arithmetic that enables proper connection between finite and semantic world histories.
 
@@ -573,10 +635,10 @@ technical_debt:
 - **Planned**: 2026-01-14T23:24:15Z
 - **Started**: 2026-01-15T02:45:00Z
 - **Completed**: 2026-01-15T02:45:00Z
-- **Research Report**: [.claude/specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
-- **Plan**: [implementation-001.md](.opencode/specs/498_verify_bridge_lemma_infrastructure/plans/implementation-001.md)
+- **Research Report**: [specs/498_verify_bridge_lemma_infrastructure/reports/research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/498_verify_bridge_lemma_infrastructure/plans/implementation-001.md)
 - **Implementation**: [FiniteCanonicalModel.lean](Theories/Bimodal/Metalogic/FiniteCanonicalModel.lean#L3638-3660)
-- **Implementation Summary**: [implementation-summary-20260115.md](.opencode/specs/498_verify_bridge_lemma_infrastructure/summaries/implementation-summary-20260115.md)
+- **Implementation Summary**: [implementation-summary-20260115.md](specs/498_verify_bridge_lemma_infrastructure/summaries/implementation-summary-20260115.md)
 
 **Description**: Run comprehensive verification of all bridge lemma connections in FiniteCanonicalModel.lean. This includes verifying that completed truth lemma inductions work cohesively, testing time arithmetic correctness, and ensuring all bridge connections between finite and semantic worlds function properly. Also document lemma dependencies between different truth definitions for future maintenance.
 
@@ -601,11 +663,11 @@ All critical components are production-ready and support completeness proof requ
 - **Planned**: 2026-01-15T02:08:19Z
 - **Started**: 2026-01-15T02:16:44Z
 - **Completed**: 2026-01-15T02:16:44Z
-- **Research**: [research-001.md](.opencode/specs/500_lean-lsp-mcp-unavailable/reports/research-001.md)
-- **Research Summary**: [research-summary.md](.opencode/specs/500_lean-lsp-mcp-unavailable/summaries/research-summary.md)
-- **Plan**: [implementation-001.md](.opencode/specs/500_lean-lsp-mcp-unavailable/plans/implementation-001.md)
+- **Research**: [research-001.md](specs/500_lean-lsp-mcp-unavailable/reports/research-001.md)
+- **Research Summary**: [research-summary.md](specs/500_lean-lsp-mcp-unavailable/summaries/research-summary.md)
+- **Plan**: [implementation-001.md](specs/500_lean-lsp-mcp-unavailable/plans/implementation-001.md)
 - **Implementation**: [opencode.json](opencode.json)
-- **Implementation Summary**: [implementation-summary-20250115.md](.opencode/specs/500_lean-lsp-mcp-unavailable/summaries/implementation-summary-20250115.md)
+- **Implementation Summary**: [implementation-summary-20250115.md](specs/500_lean-lsp-mcp-unavailable/summaries/implementation-summary-20250115.md)
 
 **Description**: lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification. Lake build is being used for syntax checking which completes successfully, but full compilation verification is missing. Need to investigate and restore lean-lsp-mcp tool availability for proper Lean development workflow.
 
@@ -621,9 +683,9 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
-- **Research**: [research-001.md](.claude/specs/494_bimodal_demo_presentation/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/494_bimodal_demo_presentation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260114.md](.claude/specs/494_bimodal_demo_presentation/summaries/implementation-summary-20260114.md)
+- **Research**: [research-001.md](specs/494_bimodal_demo_presentation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/494_bimodal_demo_presentation/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260114.md](specs/494_bimodal_demo_presentation/summaries/implementation-summary-20260114.md)
 
 **Description**: Create an elegant demo for presenting the Bimodal theory results (soundness, deduction, completeness, decidability) to an audience. Showcase the key theorems and proofs established in the Bimodal/ directory.
 
@@ -638,9 +700,9 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: general
-- **Research**: [research-001.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/493_sync_tikz_glossary_readme_descriptions/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/493_sync_tikz_glossary_readme_descriptions/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/493_sync_tikz_glossary_readme_descriptions/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/493_sync_tikz_glossary_readme_descriptions/summaries/implementation-summary-20260113.md)
 
 **Description**: Draw on the tikz diagram in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex which is correct to include any missing operators in /home/benjamin/Projects/ProofChecker/Theories/Logos/docs/reference/GLOSSARY.md and to improve the diagram in Overview in /home/benjamin/Projects/ProofChecker/README.md to match. Then draw on the descriptions included in /home/benjamin/Projects/ProofChecker/README.md to expand and improve the descriptions following the tikz diagram in 00-Introduction.tex. The aim is consistency and quality.
 
@@ -655,9 +717,9 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
-- **Research**: [research-001.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/492_update_bimodalreference_tex_metalogical_results/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/492_update_bimodalreference_tex_metalogical_results/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/492_update_bimodalreference_tex_metalogical_results/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/492_update_bimodalreference_tex_metalogical_results/summaries/implementation-summary-20260113.md)
 
 **Description**: Systematically update /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/BimodalReference.tex to reflect the current status of the project, including the recent metalogical results (decidability and completeness) that were established along with the representation theory that was proved and any other notable lemmas or theorems. Add proof strategy guidance in the metalogic section to help guide readers through the approaches used.
 
@@ -670,9 +732,9 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
-- **Research**: [research-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/487_create_bimodal_boneyard_for_deprecated_code/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/487_create_bimodal_boneyard_for_deprecated_code/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/487_create_bimodal_boneyard_for_deprecated_code/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/487_create_bimodal_boneyard_for_deprecated_code/summaries/implementation-summary-20260113.md)
 
 **Description**: Create Theories/Bimodal/Boneyard/ directory for deprecated completeness code. Move syntactic approach (~lines 1-1900 of FiniteCanonicalModel.lean) and infinite Duration-based code from Completeness.lean to Boneyard. Document deprecation reasons and preserve for historical reference.
 
@@ -688,9 +750,9 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
-- **Research**: [research-001.md](.claude/specs/488_fill_remaining_bridge_lemmas/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/488_fill_remaining_bridge_lemmas/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260114.md](.opencode/specs/488_fill_remaining_bridge_lemmas/summaries/implementation-summary-20260114.md)
+- **Research**: [research-001.md](specs/488_fill_remaining_bridge_lemmas/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/488_fill_remaining_bridge_lemmas/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260114.md](specs/488_fill_remaining_bridge_lemmas/summaries/implementation-summary-20260114.md)
 
 **Description**: Fill the 6 remaining bridge lemma sorries in FiniteCanonicalModel.lean: finiteHistoryToWorldHistory.respects_task, semantic_world_state_has_world_history, glue_histories.forward_rel, glue_histories.backward_rel, and 2 in SemanticTaskRelV2.compositionality. These are type-level connections, not logical gaps.
 
@@ -704,8 +766,8 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
-- **Research**: [research-001.md](.claude/specs/489_formal_fmp_theorem_packaging/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/489_formal_fmp_theorem_packaging/plans/implementation-001.md)
+- **Research**: [research-001.md](specs/489_formal_fmp_theorem_packaging/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/489_formal_fmp_theorem_packaging/plans/implementation-001.md)
 
 **Description**: Create formal Finite Model Property theorem statement: ∀ φ, satisfiable φ → ∃ (M : FiniteModel), M ⊨ φ. Package existing semantic_weak_completeness proof into standard FMP format. Add documentation explaining bounds (temporal depth, modal depth).
 
@@ -719,9 +781,9 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
-- **Research**: [research-001.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/486_add_abilities_box_to_tikz_diagram/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/486_add_abilities_box_to_tikz_diagram/summaries/implementation-summary-20260113.md)
 
 **Description**: Add free choice modals and ability modals to another Abilities box in the middle layer of the TikZ diagram in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex and the Overview section of /home/benjamin/Projects/ProofChecker/README.md.
 
@@ -797,9 +859,9 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
-- **Research**: [research-001.md](.claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/485_tikz_light_cone_diagram_for_tm_motivation/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/485_tikz_light_cone_diagram_for_tm_motivation/summaries/implementation-summary-20260113.md)
 
 **Description**: In line 13 of /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/00-Introduction.tex, create a professional TikZ diagram to motivate the bimodal logic TM. The diagram should feature: (1) a curvy S-shaped arrow going from left to right and slightly from below to above, (2) a point marked with a dot along the S-curve, (3) a light-cone emanating from that point in both directions (past and future), (4) other intersecting arrows extending from the marked point that fit within the light-cones in both directions, (5) the portions of these intersecting arrows prior to the marked point should be dotted (representing past/counterfactual paths).
 
@@ -813,8 +875,8 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
-- **Plan**: [implementation-002.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-002.md) (v002)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-20260113.md)
+- **Plan**: [implementation-002.md](specs/484_sync_tikz_diagram_operators_with_glossary/plans/implementation-002.md) (v002)
+- **Summary**: [implementation-summary-20260113.md](specs/484_sync_tikz_diagram_operators_with_glossary/summaries/implementation-summary-20260113.md)
 
 **Description**: Use GLOSSARY.md to improve/expand the operators included in the TikZ diagram in 00-Introduction.tex. Ensure bidirectional sync: add any operators from the glossary missing in the TikZ diagram, and add any operators in the TikZ diagram that are missing from GLOSSARY.md.
 
@@ -843,9 +905,9 @@ All critical components are production-ready and support completeness proof requ
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Parent**: Task 458
-- **Research**: [research-004.md](.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-004.md)
-- **Plan**: [implementation-004.md](.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-004.md)
-- **Summary**: [implementation-summary-20260113-final.md](.claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-final.md)
+- **Research**: [research-004.md](specs/473_fix_compositionality_gaps_task_458/reports/research-004.md)
+- **Plan**: [implementation-004.md](specs/473_fix_compositionality_gaps_task_458/plans/implementation-004.md)
+- **Summary**: [implementation-summary-20260113-final.md](specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-20260113-final.md)
 
 **Description**: Implemented Path A (Semantic History-Based World States). Defined SemanticWorldState as quotient of history-time pairs, making compositionality trivial by construction. Key achievement: reduced 8+ mathematically unprovable sorries (mixed-sign cases) to 2 constructible sorries (history gluing). All 6 phases completed, lake build succeeds.
 
@@ -861,9 +923,9 @@ All critical components are production-ready and support completeness proof requ
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Parent**: Task 473
-- **Research**: [research-001.md](.claude/specs/481_finite_history_from_state/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/481_finite_history_from_state/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/481_finite_history_from_state/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/481_finite_history_from_state/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/481_finite_history_from_state/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/481_finite_history_from_state/summaries/implementation-summary-20260113.md)
 
 **Description**: Implement `finite_history_from_state` to construct a FiniteHistory from any SemanticWorldState. This eliminates the nullity sorry in SemanticCanonicalFrame by proving that every world state has at least one witnessing history. Required for `SemanticCanonicalFrame.nullity` proof.
 
@@ -879,9 +941,9 @@ All critical components are production-ready and support completeness proof requ
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: lean
 - **Parent**: Task 473
-- **Research**: [research-001.md](.claude/specs/482_history_gluing_lemma/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/482_history_gluing_lemma/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/482_history_gluing_lemma/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/482_history_gluing_lemma/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/482_history_gluing_lemma/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/482_history_gluing_lemma/summaries/implementation-summary-20260113.md)
 
 **Description**: Implemented history gluing lemma with glue_histories function and supporting lemmas (before_junction, at_junction, after_junction). Updated SemanticTaskRelV2.compositionality to use gluing construction. Lake build succeeds.
 
@@ -896,9 +958,9 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
-- **Research**: [research-001.md](.claude/specs/466_reflection_extension_logosreference/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/466_reflection_extension_logosreference/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/466_reflection_extension_logosreference/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/466_reflection_extension_logosreference/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/466_reflection_extension_logosreference/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/466_reflection_extension_logosreference/summaries/implementation-summary-20260113.md)
 
 **Description**: Added Reflection Extension content to LogosReference.tex. Updated Introduction TikZ diagram and layer descriptions. Added Truth Conditions, Derived Operators, and Temporal Interaction subsections to 09-Reflection.tex. Clean build verified (31 pages).
 
@@ -911,7 +973,7 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: general
-- **Research**: [research-001.md](.claude/specs/431_wezterm_tab_color_notification/reports/research-001.md)
+- **Research**: [research-001.md](specs/431_wezterm_tab_color_notification/reports/research-001.md)
 
 **Description**: Set up WezTerm tab color notification when Claude Code needs input. Using Claude Code in neovim via a plugin and WezTerm for the terminal on NixOS (software managed in ~/.dotfiles/). Configure so that when Claude Code completes or needs input, the numbered tab in WezTerm turns a visible color to indicate which tabs need attention.
 
@@ -925,7 +987,7 @@ All critical components are production-ready and support completeness proof requ
 - **Language**: lean
 - **Parent**: Task 458
 - **Researched**: 2026-01-15T23:20:00Z
-- **Research**: [research-001.md](.opencode/specs/468_remove_or_refactor_the_existing_infinite_canonical_model_code_in_completeness.lean/reports/research-001.md)
+- **Research**: [research-001.md](specs/468_remove_or_refactor_the_existing_infinite_canonical_model_code_in_completeness.lean/reports/research-001.md)
 
 **Description**: Remove or refactor the existing infinite canonical model code in Completeness.lean. Now that FiniteCanonicalModel.lean implements the finite approach, assess whether the infinite Duration-based code should be removed, preserved for future use, or refactored.
 
@@ -983,8 +1045,8 @@ All critical components are production-ready and support completeness proof requ
  **Blocking**: None (Decidability complete)
  **Dependencies**: Soundness (Complete), Deduction Theorem (Complete), Proof Search (Complete), Decidability (Complete)
  **Subtasks**: 444 (completed), 445 (completed), 446 (completed), 447 (completed), 448 (completed), 449, 450
- **Research**: [research-001.md](.claude/specs/257_completeness_proofs/reports/research-001.md), [research-002.md](.claude/specs/257_completeness_proofs/reports/research-002.md), [research-003.md](.claude/specs/257_completeness_proofs/reports/research-003.md), [research-004.md](.claude/specs/257_completeness_proofs/reports/research-004.md), [research-005.md](.claude/specs/257_completeness_proofs/reports/research-005.md), [research-006.md](.claude/specs/257_completeness_proofs/reports/research-006.md), [research-007.md](.claude/specs/257_completeness_proofs/reports/research-007.md), [research-008.md](.claude/specs/257_completeness_proofs/reports/research-008.md)
- **Plan**: [implementation-002.md](.claude/specs/257_completeness_proofs/plans/implementation-002.md) (v002 - added Phase 5 canonical_history)
+ **Research**: [research-001.md](specs/257_completeness_proofs/reports/research-001.md), [research-002.md](specs/257_completeness_proofs/reports/research-002.md), [research-003.md](specs/257_completeness_proofs/reports/research-003.md), [research-004.md](specs/257_completeness_proofs/reports/research-004.md), [research-005.md](specs/257_completeness_proofs/reports/research-005.md), [research-006.md](specs/257_completeness_proofs/reports/research-006.md), [research-007.md](specs/257_completeness_proofs/reports/research-007.md), [research-008.md](specs/257_completeness_proofs/reports/research-008.md)
+ **Plan**: [implementation-002.md](specs/257_completeness_proofs/plans/implementation-002.md) (v002 - added Phase 5 canonical_history)
 
 **Description**: Implement the completeness proof for TM logic using the canonical model method. Research-004 clarifies the key approach: use **relativized completeness** where times are a type parameter T (not constructed from syntax), while worlds (maximal consistent sets) and task relations ARE constructed from syntax. This matches the polymorphic validity definition and remains agnostic about discrete/dense/continuous time.
 
@@ -1019,9 +1081,9 @@ All critical components are production-ready and support completeness proof requ
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 448 (completed), 473 (completed), 481 (completed), 482 (completed)
-- **Research**: [research-001.md](.claude/specs/449_truth_lemma/reports/research-001.md)
-- **Plan**: [implementation-002.md](.claude/specs/449_truth_lemma/plans/implementation-002.md) (v002)
-- **Summary**: [implementation-summary-20260113-phase3-4.md](.claude/specs/449_truth_lemma/summaries/implementation-summary-20260113-phase3-4.md)
+- **Research**: [research-001.md](specs/449_truth_lemma/reports/research-001.md)
+- **Plan**: [implementation-002.md](specs/449_truth_lemma/plans/implementation-002.md) (v002)
+- **Summary**: [implementation-summary-20260113-phase3-4.md](specs/449_truth_lemma/summaries/implementation-summary-20260113-phase3-4.md)
 
 **Description**: Phase 6 of completeness proofs: Complete truth lemma using SemanticWorldState infrastructure from Task 473. The semantic truth lemma (`semantic_truth_lemma_v2`) is proven. `semantic_weak_completeness` is proven (uses `mcs_projection_is_closure_mcs` which has one sorry for maximality). Connection to main completeness documented; formal bridging deferred to Task 450. Old `finite_truth_lemma` marked deprecated.
 
@@ -1035,9 +1097,9 @@ All critical components are production-ready and support completeness proof requ
 - **Language**: lean
 - **Parent**: Task 257
 - **Dependencies**: 449, 481, 482
-- **Research**: [research-001.md](.claude/specs/450_completeness_theorems/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/450_completeness_theorems/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/450_completeness_theorems/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/450_completeness_theorems/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/450_completeness_theorems/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/450_completeness_theorems/summaries/implementation-summary-20260113.md)
 
 **Description**: Phase 7 of completeness proofs: Prove weak_completeness and strong_completeness using SemanticCanonicalModel from Task 473. Connect semantic_weak_completeness to main completeness theorem. Complete provable_iff_valid proof. Final cleanup to verify no axioms or sorry remain in Completeness.lean.
 
@@ -1110,9 +1172,9 @@ All critical components are production-ready and support completeness proof requ
 - **Priority**: Medium
 - **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: latex
-- **Research**: [research-001.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/reports/research-001.md)
-- **Plan**: [implementation-001.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260113.md](.claude/specs/479_fix_tikz_extension_dependencies_diagram/summaries/implementation-summary-20260113.md)
+- **Research**: [research-001.md](specs/479_fix_tikz_extension_dependencies_diagram/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/479_fix_tikz_extension_dependencies_diagram/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260113.md](specs/479_fix_tikz_extension_dependencies_diagram/summaries/implementation-summary-20260113.md)
 
 **Description**: The TikZ diagram in sec:extension-dependencies (line 21) of /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex does not match the diagram in the 'Overview' (line 7) of /home/benjamin/Projects/ProofChecker/README.md. Fix the TikZ diagram to match README.md layout. Requirements: (1) professional styling with rounded corners for boxes, (2) non-intersecting lines and labels, (3) middle layer extensions (Epistemic, Normative, Spatial) in a grey horizontal background box, (4) ellipses to left and right of middle layers to indicate extensibility, (5) explanatory text below the diagram.
 

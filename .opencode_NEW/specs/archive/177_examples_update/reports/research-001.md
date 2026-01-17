@@ -679,7 +679,7 @@ lake build 2>&1 | grep -i "error"
 
 ### Web Research Specialist
 
-**Report**: `.opencode/specs/177_examples_update/reports/api-changes-analysis.md`
+**Report**: `specs/177_examples_update/reports/api-changes-analysis.md`
 
 **Key Contributions**:
 - Comprehensive API change analysis

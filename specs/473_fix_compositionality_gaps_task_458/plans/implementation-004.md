@@ -199,7 +199,7 @@ This plan implements **Path A: Semantic History-Based World States** from resear
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Updated with semantic approach
-- `.claude/specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/473_fix_compositionality_gaps_task_458/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

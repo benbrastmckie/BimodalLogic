@@ -33,9 +33,9 @@ echo "axiom: $(grep -rc '^axiom ' Bimodal/**/*.lean 2>/dev/null | awk -F: '{s+=$
 ```
 
 **Relationship to Other Files**:
-- **.claude/specs/TODO.md**: Active tasks that resolve items in this registry
+- **specs/TODO.md**: Active tasks that resolve items in this registry
 - **IMPLEMENTATION_STATUS.md**: Module status affected by sorry resolution
-- **.claude/specs/**: Spec-based plans for systematic resolution
+- **specs/**: Spec-based plans for systematic resolution
 
 **Command Integration**:
 - `/task`, `/add`, `/review`, and `/todo` now require updating this registry alongside IMPLEMENTATION_STATUS.md and TACTIC_REGISTRY.md whenever command/task updates affect sorry or tactic status; dry-run/test modes must avoid registry writes and must not create project directories for doc-only changes.
@@ -44,7 +44,7 @@ echo "axiom: $(grep -rc '^axiom ' Bimodal/**/*.lean 2>/dev/null | awk -F: '{s+=$
 
 ## Related Documentation
 
-- [TODO.md](../../.claude/specs/TODO.md) - Active tasks addressing these items
+- [TODO.md](../../specs/TODO.md) - Active tasks addressing these items
 - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Module-by-module completion tracking (canonical sorry counts)
 - [IMPLEMENTATION_STATUS.md - Known Limitations](IMPLEMENTATION_STATUS.md#known-limitations) - Blockers and workarounds affecting resolution
 

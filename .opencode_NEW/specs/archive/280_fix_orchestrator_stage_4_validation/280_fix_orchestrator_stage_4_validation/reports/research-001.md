@@ -12,10 +12,10 @@
   - `.opencode/agent/orchestrator.md` (orchestrator implementation)
   - `.opencode/context/core/system/validation-rules.md` (validation documentation)
   - `.opencode/context/core/standards/subagent-return-format.md` (return format standard)
-  - `.opencode/specs/TODO.md` (task 280 description)
+  - `specs/TODO.md` (task 280 description)
   - Task 279 phantom research example
 - **Artifacts**:
-  - `.opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md` (this report)
+  - `specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md` (this report)
 - **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ## Executive Summary
@@ -151,7 +151,7 @@ Stage 4 should execute the validation logic documented in `validation-rules.md`:
 
 **Evidence**:
 - Task 279 exists in TODO.md with status `[NOT STARTED]`
-- No directory exists: `.opencode/specs/279_*` (verified with `ls`)
+- No directory exists: `specs/279_*` (verified with `ls`)
 - No artifacts created
 - No state.json update
 - Orchestrator claimed "research completed successfully"
@@ -652,7 +652,7 @@ The orchestrator Stage 4 should be rewritten to include executable validation lo
   "artifacts": [
     {
       "type": "report",
-      "path": ".opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md",
+      "path": "specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md",
       "summary": "Comprehensive research report on validation implementation"
     }
   ],
@@ -719,7 +719,7 @@ Research completed successfully. Found validation logic in validation-rules.md.
   "artifacts": [
     {
       "type": "report",
-      "path": ".opencode/specs/280_validation/reports/research-001.md",
+      "path": "specs/280_validation/reports/research-001.md",
       "summary": "Research report"
     }
   ],
@@ -739,7 +739,7 @@ Research completed successfully. Found validation logic in validation-rules.md.
 - Session ID: Matches expected
 - Artifacts: 1 artifact listed
 - File existence: FAIL (file not found on disk)
-- Error: "[FAIL] Artifact does not exist: .opencode/specs/280_validation/reports/research-001.md"
+- Error: "[FAIL] Artifact does not exist: specs/280_validation/reports/research-001.md"
 - Recommendation: "Verify researcher writes artifacts to correct paths"
 
 ### Example 5: Invalid Return - Session ID Mismatch (Should Fail Validation)
@@ -751,7 +751,7 @@ Research completed successfully. Found validation logic in validation-rules.md.
   "artifacts": [
     {
       "type": "report",
-      "path": ".opencode/specs/280_validation/reports/research-001.md",
+      "path": "specs/280_validation/reports/research-001.md",
       "summary": "Research report"
     }
   ],
@@ -962,14 +962,14 @@ Research completed successfully. Found validation logic in validation-rules.md.
    - Evidence: Required JSON structure and validation rules defined
 
 4. **Task 280 Description**
-   - File: `.opencode/specs/TODO.md`
+   - File: `specs/TODO.md`
    - Lines: 30-88 (task 280 entry)
    - Evidence: Problem statement, expected behavior, acceptance criteria
 
 ### Supporting Evidence
 
 5. **Task 279 Phantom Research Example**
-   - File: `.opencode/specs/TODO.md`
+   - File: `specs/TODO.md`
    - Lines: 1483-1684 (task 279 entry)
    - Evidence: No directory created, no artifacts, status still [NOT STARTED]
 

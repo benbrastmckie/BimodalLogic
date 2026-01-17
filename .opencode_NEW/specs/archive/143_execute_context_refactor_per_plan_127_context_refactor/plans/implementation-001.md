@@ -27,7 +27,7 @@ type: refactor
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: [.opencode/specs/143_execute_context_refactor_per_plan_127_context_refactor/reports/research-001.md](../reports/research-001.md)
+- **Research Inputs**: [specs/143_execute_context_refactor_per_plan_127_context_refactor/reports/research-001.md](../reports/research-001.md)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Lean Intent**: false
 
@@ -122,4 +122,4 @@ Task 143 executes the `.opencode/context/` refactor promised by plan 127, replac
 - If link check tooling unavailable, pause before merging and document gaps for follow-up.
 
 ## Research Inputs
-- `.opencode/specs/143_execute_context_refactor_per_plan_127_context_refactor/reports/research-001.md`
+- `specs/143_execute_context_refactor_per_plan_127_context_refactor/reports/research-001.md`

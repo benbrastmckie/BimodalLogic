@@ -513,12 +513,12 @@ If Solution 1 fails:
 
 ### Task 209 References
 
-1. **Research Report** (.opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md)
+1. **Research Report** (specs/209_research_lean4_involution_techniques/reports/research-001.md)
    - Lines 175-184: Recommended solution (not implemented)
    - Lines 127-164: Explanation of `simp only` pattern
    - Lines 217-229: Alternative 1 (helper with symmetry)
 
-2. **Implementation Summary** (.opencode/specs/209_research_lean4_involution_techniques/summaries/implementation-summary-20251228.md)
+2. **Implementation Summary** (specs/209_research_lean4_involution_techniques/summaries/implementation-summary-20251228.md)
    - Documents that `@[simp]` attribute was added
    - Notes that proof remains incomplete
    - Does not mention the type error (only mentions `sorry`)

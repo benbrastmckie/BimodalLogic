@@ -10,16 +10,16 @@
   "completion_percentage": 85,
   "artifacts": {
     "reports": [
-      ".opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md",
-      ".opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md"
+      "specs/193_prove_is_valid_swap_involution/reports/research-001.md",
+      "specs/193_prove_is_valid_swap_involution/reports/implementation-001.md"
     ],
     "summaries": [
-      ".opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md",
-      ".opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md"
+      "specs/193_prove_is_valid_swap_involution/summaries/research-summary.md",
+      "specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md"
     ],
     "plans": [
-      ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-001.md",
-      ".opencode/specs/193_prove_is_valid_swap_involution/plans/implementation-002.md"
+      "specs/193_prove_is_valid_swap_involution/plans/implementation-001.md",
+      "specs/193_prove_is_valid_swap_involution/plans/implementation-002.md"
     ],
     "implementations": [
       "Logos/Core/Semantics/Truth.lean"

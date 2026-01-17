@@ -37,7 +37,7 @@ subagents:
 mcp_requirements: []
 registry_impacts:
   - TODO.md
-  - .opencode/specs/state.json
+  - specs/state.json
 creates_root_on: never
 creates_subdir: []
 dry_run: "Parse and number only; no status/registry/state writes and no directory creation."
@@ -132,7 +132,7 @@ Required metadata fields:
 
 ### 2.1 Schema Structure
 
-**From `.opencode/specs/state.json`:**
+**From `specs/state.json`:**
 
 ```json
 {

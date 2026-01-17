@@ -64,4 +64,4 @@ All acceptance criteria met:
 
 ## Notes
 
-Task was found in archived state (`.opencode/specs/archive/190_*`) with status marked COMPLETED in plan but [IN PROGRESS] in TODO.md, indicating the work was never actually completed. This implementation completes all originally planned work.
+Task was found in archived state (`specs/archive/190_*`) with status marked COMPLETED in plan but [IN PROGRESS] in TODO.md, indicating the work was never actually completed. This implementation completes all originally planned work.

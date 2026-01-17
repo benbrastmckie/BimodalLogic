@@ -5,7 +5,7 @@
 - **Effort**: 16 hours
 - **Priority**: Low
 - **Dependencies**: None (can be developed independently)
-- **Research Inputs**: .claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/reports/research-001.md
+- **Research Inputs**: specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -168,7 +168,7 @@ From research-001.md:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness.lean` - Modified with proven lindenbaum theorem
-- `.claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

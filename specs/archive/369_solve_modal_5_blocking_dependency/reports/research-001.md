@@ -88,7 +88,7 @@ If this task was created based on a misunderstanding of the issue, it can be clo
 - `Bimodal/Theorems/ModalS5.lean:316-365` - `k_dist_diamond` implementation
 - `Bimodal/Theorems/Perpetuity/Principles.lean:331-352` - `modal_5` implementation
 - `docs/project-info/SORRY_REGISTRY.md:107-127` - Sorry documentation
-- `.claude/specs/reviews/review-20260110-bimodal-mvp.md:65-69` - Review mentioning this issue
+- `specs/reviews/review-20260110-bimodal-mvp.md:65-69` - Review mentioning this issue
 
 ## Next Steps
 

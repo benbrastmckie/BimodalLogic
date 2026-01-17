@@ -59,4 +59,4 @@
 
 ## Full Plan
 
-See: .opencode/specs/169_task_command_improvements/plans/implementation-001.md
+See: specs/169_task_command_improvements/plans/implementation-001.md

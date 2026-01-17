@@ -121,8 +121,8 @@ Examined "Context Loaded:" sections in all command files and orchestrator.md to 
 ```
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -134,8 +134,8 @@ Context Loaded:
 ```
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/.opencode/specs/TODO.md  # NOTE: Duplicate path error
-@.opencode/specs/state.json
+@specs/specs/TODO.md  # NOTE: Duplicate path error
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -147,8 +147,8 @@ Context Loaded:
 ```
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -160,8 +160,8 @@ Context Loaded:
 ```
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/.opencode/specs/TODO.md  # NOTE: Duplicate path error
-@.opencode/specs/state.json
+@specs/specs/TODO.md  # NOTE: Duplicate path error
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -173,9 +173,9 @@ Context Loaded:
 ```
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
-@.opencode/specs/archive/state.json
+@specs/TODO.md
+@specs/state.json
+@specs/archive/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/system/git-commits.md
@@ -387,8 +387,8 @@ All commands use this pattern:
     Return: "Error: Task number required. Usage: /implement TASK_NUMBER [PROMPT]"
   If task_number not integer or range:
     Return: "Error: Task must be integer or range (N-M). Got: {input}"
-  If task not found in .opencode/specs/TODO.md:
-    Return: "Error: Task {task_number} not found in .opencode/specs/TODO.md"
+  If task not found in specs/TODO.md:
+    Return: "Error: Task {task_number} not found in specs/TODO.md"
   If range invalid (start >= end):
     Return: "Error: Invalid range {start}-{end}. Start must be less than end."
   If some tasks in range missing:
@@ -401,7 +401,7 @@ All commands use this pattern:
 /plan uses this pattern (line 105):
 ```xml
 <validation>
-  - Task number must exist in .opencode/specs/TODO.md
+  - Task number must exist in specs/TODO.md
   - Task must not be [COMPLETED] or [ABANDONED]
   - Warn if plan already exists (suggest /revise instead)
 </validation>
@@ -508,8 +508,8 @@ Analyzed orchestrator.md and command files to identify the distinction between r
 
 **Step 3: CheckLanguage** (lines 200-236):
 ```
-1. If task number present: Read task from .opencode/specs/TODO.md using explicit bash command:
-   grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+1. If task number present: Read task from specs/TODO.md using explicit bash command:
+   grep -A 20 "^### ${task_number}\." specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
 2. Validate extraction succeeded (non-empty result)
 3. If extraction fails or no language specified: default to "general" and log warning
 4. Log extracted language: "Task ${task_number} language: ${language}"
@@ -530,7 +530,7 @@ Routing logic by command:
   agent = "planner" (language-agnostic)
 
 /implement:
-  Check for plan existence in .opencode/specs/TODO.md (look for "Plan:" link)
+  Check for plan existence in specs/TODO.md (look for "Plan:" link)
   
   IF language == "lean" AND has_plan == true:
     agent = "lean-implementation-agent", mode = "phased"
@@ -587,10 +587,10 @@ Commands follow 8-stage pattern:
 task_number=$(echo "$ARGUMENTS" | awk '{print $1}')
 
 # Extract language from TODO.md
-language=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //')
+language=$(grep -A 20 "^### ${task_number}\." specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //')
 
 # Check plan existence
-has_plan=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep -q "Plan:" && echo "true" || echo "false")
+has_plan=$(grep -A 20 "^### ${task_number}\." specs/TODO.md | grep -q "Plan:" && echo "true" || echo "false")
 
 # Route based on language and plan
 if [ "$language" = "lean" ] && [ "$has_plan" = "true" ]; then
@@ -684,8 +684,8 @@ delegate_to_agent "$agent" "$task_number" "$language" "$mode"
 ```
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -705,8 +705,8 @@ Context Loaded (Routing Stage):
 
 Context Loaded (Execution Stage):
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -717,14 +717,14 @@ Context Loaded (Execution Stage):
 
 **Current** (plan.md line 13):
 ```
-@.opencode/specs/.opencode/specs/TODO.md
+@specs/specs/TODO.md
 ```
 
-**Problem**: Duplicate path prefix (`.opencode/specs/.opencode/specs/`) - likely a copy-paste error
+**Problem**: Duplicate path prefix (`specs/specs/`) - likely a copy-paste error
 
 **Fix**: Correct path to:
 ```
-@.opencode/specs/TODO.md
+@specs/TODO.md
 ```
 
 ### Example 3: Orchestrator Context Loading
@@ -776,8 +776,8 @@ language: varies
 
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -806,8 +806,8 @@ language: varies
   <context_loading>
     Load context files for execution:
     - .opencode/context/core/workflows/command-lifecycle.md
-    - .opencode/specs/TODO.md
-    - .opencode/specs/state.json
+    - specs/TODO.md
+    - specs/state.json
     - .opencode/context/core/standards/status-markers.md
     - .opencode/context/core/standards/subagent-return-format.md
     - .opencode/context/core/workflows/subagent-delegation-guide.md
@@ -833,8 +833,8 @@ language: varies
 
 **Changes Required**:
 
-1. **plan.md line 13**: Change `@.opencode/specs/.opencode/specs/TODO.md` to `@.opencode/specs/TODO.md`
-2. **revise.md line 13**: Change `@.opencode/specs/.opencode/specs/TODO.md` to `@.opencode/specs/TODO.md`
+1. **plan.md line 13**: Change `@specs/specs/TODO.md` to `@specs/TODO.md`
+2. **revise.md line 13**: Change `@specs/specs/TODO.md` to `@specs/TODO.md`
 
 ### Recommendation 3: Document Lightweight Routing Pattern
 
@@ -1016,7 +1016,7 @@ IF delegation is command:
 
 2. **Clear Error Messages** (actionable without confirmation):
    - "Error: Task number required. Usage: /implement TASK_NUMBER [PROMPT]"
-   - "Error: Task {task_number} not found in .opencode/specs/TODO.md"
+   - "Error: Task {task_number} not found in specs/TODO.md"
    - "Error: Task {task_number} has no plan. Use /plan instead."
    - "Warning: Tasks {missing_list} not found. Continuing with {found_list}"
 

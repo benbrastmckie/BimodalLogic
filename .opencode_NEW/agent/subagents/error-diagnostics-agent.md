@@ -13,7 +13,7 @@ tools:
   bash: true
 permissions:
   allow:
-    - read: [".opencode/specs/errors.json", ".opencode/specs/TODO.md", ".opencode/**/*"]
+    - read: ["specs/errors.json", "specs/TODO.md", ".opencode/**/*"]
     - bash: ["grep", "jq", "wc"]
   deny:
     - write: ["**/*"]
@@ -131,13 +131,13 @@ lifecycle:
          - Log: "✓ Context loaded (Level 2)"
       
       2. Load errors.json for historical comparison
-         - Read .opencode/specs/errors.json
+         - Read specs/errors.json
          - Parse as JSON
          - Extract all errors (including addressed)
          - Log: "✓ Loaded errors.json for historical analysis"
       
       3. Load TODO.md for fix tracking
-         - Read .opencode/specs/TODO.md
+         - Read specs/TODO.md
          - Extract task entries with error fix references
          - Log: "✓ Loaded TODO.md for fix tracking"
       

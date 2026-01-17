@@ -90,7 +90,7 @@ Manually fixed task 323 in TODO.md to demonstrate the correct pattern:
 - **Dependencies**: None
 
 **Research Artifacts**:
-  - Research Report: [.opencode/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md]
+  - Research Report: [specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md]
 
 **Description**: Fix the /todo command...
 ```
@@ -179,7 +179,7 @@ Task 323 now synchronized:
 
 ## Files Modified
 
-1. `.opencode/specs/TODO.md` - Fixed task 323 status and artifact link
+1. `specs/TODO.md` - Fixed task 323 status and artifact link
 2. `.opencode/scripts/validate_state_sync.py` - Fixed None.lower() bug
 
 ## Next Steps

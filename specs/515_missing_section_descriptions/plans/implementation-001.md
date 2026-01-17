@@ -26,7 +26,7 @@ revisions: []
 # Artifact Metadata
 artifacts_created:
   - type: "plan"
-    path: ".opencode/specs/515_missing_section_descriptions/plans/implementation-001.md"
+    path: "specs/515_missing_section_descriptions/plans/implementation-001.md"
     description: "Implementation plan for replacing missing section descriptions"
 artifacts_updated:
   - type: "latex_file"

@@ -101,4 +101,4 @@
 
 ## Full Plan
 
-See: .opencode/specs/169_task_command_improvements/plans/implementation-002.md
+See: specs/169_task_command_improvements/plans/implementation-002.md

@@ -427,7 +427,7 @@ Estimated effort: 40-50 hours (reduced from original 40-60 due to existing infra
 - `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/ProofSystem/Axioms.lean` - Type-based axiom definition
 - `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/ProofSystem/Derivation.lean` - DerivationTree definition
 - `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Automation/ProofSearch.lean` - matchAxiom and proof search
-- `/home/benjamin/Projects/ProofChecker/.claude/specs/260_proof_search/reports/research-004.md` - Axiom refactor analysis
+- `/home/benjamin/Projects/ProofChecker/specs/260_proof_search/reports/research-004.md` - Axiom refactor analysis
 
 ### Task Context
 - Task 260 (Proof Search): Completed the Axiom Prop->Type refactor

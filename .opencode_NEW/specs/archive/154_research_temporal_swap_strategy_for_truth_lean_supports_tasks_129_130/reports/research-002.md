@@ -10,7 +10,7 @@ Re-evaluate whether the global time-reversal lemma `is_valid φ ↔ is_valid φ.
 
 ## Sources Consulted
 
-- Prior report: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md`
+- Prior report: `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md`
 - Internal code: `Logos/Core/Semantics/Truth.lean` (definitions of `truth_at`, `is_valid`, time-shift lemmas)
 - Frame/domain structure: `WorldHistory` (domain restrictions), `TimeShift.time_shift_preserves_truth`
 

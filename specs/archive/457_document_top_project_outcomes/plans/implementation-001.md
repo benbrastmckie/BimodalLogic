@@ -71,7 +71,7 @@ Based on research findings, here is the grant report text matching the requested
 
 ## Dependencies
 
-- Research report: `.claude/specs/457_document_top_project_outcomes/reports/research-001.md` (complete)
+- Research report: `specs/457_document_top_project_outcomes/reports/research-001.md` (complete)
 
 ## Risks and Mitigations
 

@@ -5,7 +5,7 @@
 - **Effort**: 6 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md
+- **Research Inputs**: specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -197,7 +197,7 @@ Key findings from research-001.md:
 - Modified `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/SoundnessLemmas.lean`
 - Modified `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Soundness.lean`
 - Potentially modified Perpetuity theorem files
-- `.claude/specs/454_fix_temporal_quantification_to_match_paper/summaries/implementation-summary-{DATE}.md`
+- `specs/454_fix_temporal_quantification_to_match_paper/summaries/implementation-summary-{DATE}.md`
 
 ## Rollback/Contingency
 

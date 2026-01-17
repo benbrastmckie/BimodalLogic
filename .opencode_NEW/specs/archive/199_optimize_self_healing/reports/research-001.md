@@ -36,8 +36,8 @@ The self-healing feature for auto-creating missing state.json creates significan
 ### Context Loading Patterns
 
 **Commands Loading State Files**:
-- All 9 commands load: `@.opencode/specs/state.json`
-- All 9 commands load: `@.opencode/specs/TODO.md`
+- All 9 commands load: `@specs/state.json`
+- All 9 commands load: `@specs/TODO.md`
 - 7 commands load: `@.opencode/context/core/standards/status-markers.md` (784 lines)
 - 6 commands load: `@.opencode/context/core/standards/subagent-return-format.md` (356 lines)
 - 6 commands load: `@.opencode/context/core/workflows/subagent-delegation-guide.md` (649 lines)
@@ -268,7 +268,7 @@ Commands load state.json directly:
 
 ```markdown
 Context Loaded:
-@.opencode/specs/state.json
+@specs/state.json
 ```
 
 ### Proposed Lazy-Loading Pattern
@@ -278,11 +278,11 @@ Context Loaded:
 ```python
 if not session.infrastructure_validated:
     # Load self-healing-guide.md only if needed
-    if not exists(".opencode/specs/state.json"):
+    if not exists("specs/state.json"):
         load_context("@.opencode/context/core/system/self-healing-guide.md")
         auto_create_state_json()
     
-    if not exists(".opencode/specs/errors.json"):
+    if not exists("specs/errors.json"):
         auto_create_errors_json()
     
     session.infrastructure_validated = True

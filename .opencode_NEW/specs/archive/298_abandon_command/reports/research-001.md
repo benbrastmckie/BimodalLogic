@@ -19,7 +19,7 @@
 - .opencode/context/core/system/state-management.md
 
 **Artifacts**: 
-- Research Report: .opencode/specs/298_abandon_command/reports/research-001.md
+- Research Report: specs/298_abandon_command/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -66,7 +66,7 @@ Design a /abandon command that follows the same architectural patterns as /imple
 task_number=$(echo "$ARGUMENTS" | awk '{print $1}')
 
 # Validate state.json exists
-if [ ! -f .opencode/specs/state.json ]; then
+if [ ! -f specs/state.json ]; then
   echo "Error: Run /meta to regenerate state.json"
   exit 1
 fi
@@ -74,7 +74,7 @@ fi
 # Lookup task in state.json (8x faster than TODO.md)
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Validate task exists
 if [ -z "$task_data" ]; then
@@ -158,7 +158,7 @@ task(
 # Single jq call extracts all metadata
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Extract fields with defaults
 language=$(echo "$task_data" | jq -r '.language // "general"')
@@ -263,7 +263,7 @@ Invalid transitions:
   "artifacts": [
     {
       "type": "state_update",
-      "path": ".opencode/specs/TODO.md",
+      "path": "specs/TODO.md",
       "summary": "Updated status marker and timestamp"
     }
   ],
@@ -344,7 +344,7 @@ fi
 
 **Task Not Found**:
 ```
-Error: Task 298 not found in .opencode/specs/state.json
+Error: Task 298 not found in specs/state.json
 Recommendation: Verify task number exists in TODO.md
 ```
 
@@ -674,7 +674,7 @@ context_loading:
 # Validate and lookup task (8x faster than TODO.md parsing)
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ -z "$task_data" ]; then
   echo "Error: Task $task_number not found"
@@ -774,7 +774,7 @@ context_loading:
          - Validate reason is non-empty (10-500 chars)
       
       3. Validate state.json exists and is valid
-         - Check .opencode/specs/state.json exists
+         - Check specs/state.json exists
          - Validate is valid JSON with jq
          - If missing/corrupt: Return error "Run /meta to regenerate state.json"
       
@@ -782,7 +782,7 @@ context_loading:
          - Use jq to find task by project_number:
            task_data=$(jq -r --arg num "$task_number" \
              '.active_projects[] | select(.project_number == ($num | tonumber))' \
-             .opencode/specs/state.json)
+             specs/state.json)
          - If task_data is empty: Return error "Task $task_number not found"
       
       5. Extract current status
@@ -853,7 +853,7 @@ context_loading:
 
 **Task Not Found:**
 ```
-Error: Task 298 not found in .opencode/specs/TODO.md
+Error: Task 298 not found in specs/TODO.md
 Recommendation: Verify task number exists in TODO.md
 ```
 
@@ -951,15 +951,15 @@ fi
 #!/bin/bash
 
 # Validate state.json exists
-if [ ! -f .opencode/specs/state.json ]; then
-  echo "Error: .opencode/specs/state.json not found"
+if [ ! -f specs/state.json ]; then
+  echo "Error: specs/state.json not found"
   echo "Recommendation: Run /meta to regenerate state.json"
   exit 1
 fi
 
 # Validate state.json is valid JSON
-if ! jq empty .opencode/specs/state.json 2>/dev/null; then
-  echo "Error: .opencode/specs/state.json is not valid JSON"
+if ! jq empty specs/state.json 2>/dev/null; then
+  echo "Error: specs/state.json is not valid JSON"
   echo "Recommendation: Run /meta to regenerate state.json"
   exit 1
 fi
@@ -967,11 +967,11 @@ fi
 # Lookup task in state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Validate task exists
 if [ -z "$task_data" ]; then
-  echo "Error: Task $task_number not found in .opencode/specs/state.json"
+  echo "Error: Task $task_number not found in specs/state.json"
   echo "Recommendation: Verify task number exists in TODO.md"
   exit 1
 fi
@@ -1415,12 +1415,12 @@ fi
 
 ### Related Documentation
 
-11. **.opencode/specs/TODO.md**
+11. **specs/TODO.md**
     - Task 298 description
     - Task metadata format
     - Status markers in use
 
-12. **.opencode/specs/state.json**
+12. **specs/state.json**
     - State schema example
     - Active projects structure
     - Metadata fields

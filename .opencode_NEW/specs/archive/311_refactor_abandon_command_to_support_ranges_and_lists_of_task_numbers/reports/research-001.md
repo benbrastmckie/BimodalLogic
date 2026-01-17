@@ -124,7 +124,7 @@ if [[ "$ARGUMENTS" =~ ^([0-9]+)-([0-9]+)$ ]]; then
   for num in $(seq "$start_num" "$end_num"); do
     task_data=$(jq -r --arg num "$num" \
       '.active_projects[] | select(.project_number == ($num | tonumber))' \
-      .opencode/specs/state.json)
+      specs/state.json)
     
     if [ -z "$task_data" ]; then
       echo "Error: Task $num not found in range"
@@ -151,8 +151,8 @@ The `/todo` command (`.opencode/command/todo.md`) implements bulk archival:
 
 ```bash
 # Stage 1: Query state.json for completed and abandoned tasks
-completed_tasks=$(jq -r '.active_projects[] | select(.status == "completed") | .project_number' .opencode/specs/state.json)
-abandoned_tasks=$(jq -r '.active_projects[] | select(.status == "abandoned") | .project_number' .opencode/specs/state.json)
+completed_tasks=$(jq -r '.active_projects[] | select(.status == "completed") | .project_number' specs/state.json)
+abandoned_tasks=$(jq -r '.active_projects[] | select(.status == "abandoned") | .project_number' specs/state.json)
 
 # Stage 4: Execute cleanup script with task list
 task_list="250,251,252,253,254"  # Comma-separated
@@ -474,14 +474,14 @@ validate_tasks() {
   local -n original_statuses=$2  # Associative array to store original statuses
   
   # Validate state.json exists
-  if [ ! -f .opencode/specs/state.json ]; then
+  if [ ! -f specs/state.json ]; then
     echo "Error: state.json not found" >&2
     echo "Run /meta to regenerate state.json" >&2
     return 1
   fi
   
   # Validate state.json is valid JSON
-  if ! jq empty .opencode/specs/state.json 2>/dev/null; then
+  if ! jq empty specs/state.json 2>/dev/null; then
     echo "Error: state.json is corrupt or invalid JSON" >&2
     echo "Run /meta to regenerate state.json" >&2
     return 1
@@ -492,7 +492,7 @@ validate_tasks() {
     # Lookup task in state.json
     task_data=$(jq -r --arg num "$task_number" \
       '.active_projects[] | select(.project_number == ($num | tonumber))' \
-      .opencode/specs/state.json)
+      specs/state.json)
     
     # Check task exists
     if [ -z "$task_data" ]; then
@@ -500,7 +500,7 @@ validate_tasks() {
       echo "" >&2
       echo "Available tasks:" >&2
       jq -r '.active_projects[] | "\(.project_number). \(.project_name) [\(.status)]"' \
-        .opencode/specs/state.json | head -10 >&2
+        specs/state.json | head -10 >&2
       return 1
     fi
     
@@ -790,7 +790,7 @@ fi
 ```bash
 # Manual recovery if rollback fails
 # 1. Check state.json for inconsistencies
-jq '.active_projects[] | select(.status == "abandoned")' .opencode/specs/state.json
+jq '.active_projects[] | select(.status == "abandoned")' specs/state.json
 
 # 2. Manually restore status using /sync command
 /sync

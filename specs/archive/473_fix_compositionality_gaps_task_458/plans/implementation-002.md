@@ -7,8 +7,8 @@
 - **Priority**: Medium
 - **Dependencies**: Task 472 (Lindenbaum extension - COMPLETED)
 - **Research Inputs**:
-  - .claude/specs/473_fix_compositionality_gaps_task_458/reports/research-001.md
-  - .claude/specs/473_fix_compositionality_gaps_task_458/reports/research-002.md
+  - specs/473_fix_compositionality_gaps_task_458/reports/research-001.md
+  - specs/473_fix_compositionality_gaps_task_458/reports/research-002.md
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-formats.md, tasks.md
 - **Type**: lean

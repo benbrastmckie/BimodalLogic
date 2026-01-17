@@ -81,6 +81,6 @@ theorem is_valid_swap_involution (φ : Formula)
 
 ## References
 
-- Main Report: `.opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md`
+- Main Report: `specs/193_prove_is_valid_swap_involution/reports/research-001.md`
 - Truth.lean: `Logos/Core/Semantics/Truth.lean` (lines 629-632)
 - Formula.lean: `Logos/Core/Syntax/Formula.lean` (swap definition, lines 204-213)

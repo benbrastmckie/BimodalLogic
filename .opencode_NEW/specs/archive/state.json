@@ -13,7 +13,7 @@
       "archived": "2025-12-23T05:00:00Z",
       "summary": "Bounded search and axiom matching implemented with depth/visit limits and summary recorded.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/126_implement_bounded_search_and_matches_axiom_in_proofsearch/"
+        "base_path": "specs/archive/126_implement_bounded_search_and_matches_axiom_in_proofsearch/"
       }
     },
     {
@@ -26,7 +26,7 @@
       "archived": "2025-12-23T05:00:00Z",
       "summary": "Heuristic scoring and branch ordering implemented and summarized.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/127_implement_heuristic_scoring_functions_in_proofsearch/"
+        "base_path": "specs/archive/127_implement_heuristic_scoring_functions_in_proofsearch/"
       }
     },
     {
@@ -39,7 +39,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Caching and context helpers added to ProofSearch with stats and tests.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/128_implement_caching_and_context_helpers_in_proofsearch/"
+        "base_path": "specs/archive/128_implement_caching_and_context_helpers_in_proofsearch/"
       }
     },
     {
@@ -53,7 +53,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Temporal swap lemmas proven via Branch B using project 154 artifacts.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/129_prove_temporal_swap_lemmas_in_truth_lean/"
+        "base_path": "specs/archive/129_prove_temporal_swap_lemmas_in_truth_lean/"
       }
     },
     {
@@ -66,7 +66,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Archive examples reviewed; obsolete content removed or relocated.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/131_clean_up_archive_examples/"
+        "base_path": "specs/archive/131_clean_up_archive_examples/"
       }
     },
     {
@@ -79,7 +79,7 @@
       "archived": "2025-12-23T05:00:00Z",
       "summary": "Context refactor executed per plan with index/README refresh and mapping updates.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/143_execute_context_refactor_per_plan_127_context_refactor/"
+        "base_path": "specs/archive/143_execute_context_refactor_per_plan_127_context_refactor/"
       }
     },
     {
@@ -92,7 +92,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Context references remapped post-refactor; plans and summaries updated.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/144_update_context_references_after_refactor/"
+        "base_path": "specs/archive/144_update_context_references_after_refactor/"
       }
     },
     {
@@ -105,7 +105,7 @@
       "archived": "2025-12-23T05:00:00Z",
       "summary": "YAML front-matter plan standard change abandoned in favor of marker-aligned format.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/145_convert_plan_standard_metadata_to_yaml_front_matter/"
+        "base_path": "specs/archive/145_convert_plan_standard_metadata_to_yaml_front_matter/"
       }
     },
     {
@@ -118,7 +118,7 @@
       "archived": "2025-12-23T05:00:00Z",
       "summary": "Lean routing guardrails implemented with MCP validation and plan updates.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/147_ensure_task_uses_lean_subagents_and_mcp_servers_correctly/"
+        "base_path": "specs/archive/147_ensure_task_uses_lean_subagents_and_mcp_servers_correctly/"
       }
     },
     {
@@ -131,7 +131,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Task status pre-update guardrail implemented for /task.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/151_ensure_task_pre_updates_todo_and_plans_to_in_progress_before_work/"
+        "base_path": "specs/archive/151_ensure_task_pre_updates_todo_and_plans_to_in_progress_before_work/"
       }
     },
     {
@@ -144,7 +144,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Command templates and standards unified; docs migrated to YAML/@subagent format.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/152_standardize_command_templates_and_migrate_command_docs/"
+        "base_path": "specs/archive/152_standardize_command_templates_and_migrate_command_docs/"
       }
     },
     {
@@ -157,7 +157,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Research/plan commands now enforce status markers and sync flows.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/153_revise_research_and_plan_commands_to_enforce_status_updates/"
+        "base_path": "specs/archive/153_revise_research_and_plan_commands_to_enforce_status_updates/"
       }
     },
     {
@@ -171,7 +171,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Branch B executed elsewhere; research line closed as abandoned; artifacts remain in project folder.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/"
+        "base_path": "specs/archive/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/"
       }
     },
     {
@@ -184,7 +184,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Optimized .opencode command routing to delegate to correct subagents with explicit metadata and timing.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/155_optimize_opencode_command_subagent_routing_and_metadata/"
+        "base_path": "specs/archive/155_optimize_opencode_command_subagent_routing_and_metadata/"
       }
     },
     {
@@ -197,7 +197,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Fixed /task status sync failure to ensure atomic updates to TODO.md and linked plan files.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/160_fix_task_status_syncing_to_todo_and_linked_plan/"
+        "base_path": "specs/archive/160_fix_task_status_syncing_to_todo_and_linked_plan/"
       }
     },
     {
@@ -210,7 +210,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Implemented batch delegation for /task ranged execution with dependency-aware wave scheduling.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/161_ensure_task_delegates_batch_coordinator_for_ranged_execution/"
+        "base_path": "specs/archive/161_ensure_task_delegates_batch_coordinator_for_ranged_execution/"
       }
     },
     {
@@ -223,7 +223,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Aligned /task with /implement to enforce summary artifact creation for implementation work.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/162_align_task_with_implement_summary_artifact_requirements/"
+        "base_path": "specs/archive/162_align_task_with_implement_summary_artifact_requirements/"
       }
     },
     {
@@ -237,7 +237,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Research completed but implementation abandoned; parser regression deemed low priority.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/163_fix_research_and_plan_task_number_parser_regression_range_number_handling/"
+        "base_path": "specs/archive/163_fix_research_and_plan_task_number_parser_regression_range_number_handling/"
       }
     },
     {
@@ -250,7 +250,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Improved /add command with better documentation, defaults, and error messages while preserving all features.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/165_make_add_command_single_description_with_immediate_number_increment/"
+        "base_path": "specs/archive/165_make_add_command_single_description_with_immediate_number_increment/"
       }
     },
     {
@@ -263,7 +263,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Removed dry-run functionality across .opencode commands and agents to simplify execution flows.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/"
+        "base_path": "specs/archive/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/"
       }
     },
     {
@@ -276,7 +276,7 @@
       "archived": "2025-12-24T22:00:00Z",
       "summary": "Fixed status synchronization across /plan, /research, /revise, /task to ensure atomic TODO/state updates.",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/"
+        "base_path": "specs/archive/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/"
       }
     },
     {
@@ -288,7 +288,7 @@
       "archived": "2025-12-27",
       "summary": "Fix subagent delegation hang issue in command workflows",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/191_fix_subagent_delegation_hang_issue_in_command_work/"
+        "base_path": "specs/archive/191_fix_subagent_delegation_hang_issue_in_command_work/"
       },
       "completed": "2025-12-27"
     },
@@ -301,7 +301,7 @@
       "archived": "2025-12-27",
       "summary": "Fix /research status update bug - tasks not marked RESEARCHED",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/182_fix_research_status_update_bug_tasks_not_marked_re/"
+        "base_path": "specs/archive/182_fix_research_status_update_bug_tasks_not_marked_re/"
       },
       "completed": "2025-12-25"
     },
@@ -314,7 +314,7 @@
       "archived": "2025-12-27",
       "summary": "Integrate Loogle CLI tool into lean-research-agent",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/197_integrate_loogle_cli_tool_into_lean_research_agent/"
+        "base_path": "specs/archive/197_integrate_loogle_cli_tool_into_lean_research_agent/"
       },
       "completed": "2025-12-27"
     },
@@ -327,7 +327,7 @@
       "archived": "2025-12-27",
       "summary": "Complete API documentation for all Logos modules",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/172_complete_api_documentation_for_all_logos_modules/"
+        "base_path": "specs/archive/172_complete_api_documentation_for_all_logos_modules/"
       },
       "completed": "2025-12-24"
     },
@@ -340,7 +340,7 @@
       "archived": "2025-12-27",
       "summary": "Add property-based testing framework and metalogic tests",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/174_add_property_based_testing_framework_and_metalogic/"
+        "base_path": "specs/archive/174_add_property_based_testing_framework_and_metalogic/"
       },
       "completed": "2025-12-25"
     },
@@ -353,7 +353,7 @@
       "archived": "2025-12-27",
       "summary": "Update examples to use latest APIs and add new feature demonstrations",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/177_update_examples_to_use_latest_apis_and_add_new_fea/"
+        "base_path": "specs/archive/177_update_examples_to_use_latest_apis_and_add_new_fea/"
       },
       "completed": "2025-12-25"
     },
@@ -366,7 +366,7 @@
       "archived": "2025-12-27",
       "summary": "Fix /implement status update bug - tasks not marked COMPLETED",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/181_fix_implement_status_update_bug_tasks_not_marked_c/"
+        "base_path": "specs/archive/181_fix_implement_status_update_bug_tasks_not_marked_c/"
       },
       "completed": "2025-12-25"
     },
@@ -379,7 +379,7 @@
       "archived": "2025-12-27",
       "summary": "Review command-specific status marker implementation for consistency",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/200_review_command_specific_status_marker_implementati/"
+        "base_path": "specs/archive/200_review_command_specific_status_marker_implementati/"
       },
       "completed": "2025-12-27"
     },
@@ -408,7 +408,7 @@
       "archived": "2025-12-28",
       "summary": "todo_archival_feature",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/201_todo_archival_feature/"
+        "base_path": "specs/archive/201_todo_archival_feature/"
       }
     },
     {
@@ -420,7 +420,7 @@
       "archived": "2025-12-28",
       "summary": "Fix GeneralizedNecessitation.lean termination proofs (2 errors)",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/192_fix_generalized_necessitation_termination/"
+        "base_path": "specs/archive/192_fix_generalized_necessitation_termination/"
       }
     },
     {
@@ -432,7 +432,7 @@
       "archived": "2025-12-28",
       "summary": "Fix DeductionTheorem.lean build errors (3 errors)",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/183_deduction_theorem_fixes/"
+        "base_path": "specs/archive/183_deduction_theorem_fixes/"
       }
     },
     {
@@ -444,7 +444,7 @@
       "archived": "2025-12-28",
       "summary": "Fix /implement and /research routing to use Lean-specific agents and tools",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/208_fix_lean_routing/"
+        "base_path": "specs/archive/208_fix_lean_routing/"
       }
     },
     {
@@ -456,7 +456,7 @@
       "archived": "2025-12-28",
       "summary": "Update /review command to create summaries in new project directories",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/206_update_review_command_summaries/"
+        "base_path": "specs/archive/206_update_review_command_summaries/"
       }
     },
     {
@@ -468,7 +468,7 @@
       "archived": "2025-12-28",
       "summary": "Reduce /implement command output verbosity with artifact-based summaries",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/207_fix_implement_status_updates/"
+        "base_path": "specs/archive/207_fix_implement_status_updates/"
       }
     },
     {
@@ -590,7 +590,7 @@
       "archived": "2025-12-28",
       "summary": "Research artifact creation by all commands and their subagents in the .opencode/ agent system",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/217_research_artifact_creation/"
+        "base_path": "specs/archive/217_research_artifact_creation/"
       },
       "created": "2025-12-28T23:30:00Z",
       "started": "2025-12-28",
@@ -949,7 +949,7 @@
       "archived": "2025-12-28",
       "summary": "Investigate and fix task standard violations in TODO.md tasks 1-9",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/236_investigate_and_fix_task_standard_violations_in_to/"
+        "base_path": "specs/archive/236_investigate_and_fix_task_standard_violations_in_to/"
       },
       "completed": "2025-12-28"
     },
@@ -963,7 +963,7 @@
       "archived": "2025-12-28",
       "summary": "Investigate and systematically fix context window bloat in workflow commands",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/237_investigate_and_systematically_fix_context_window_/"
+        "base_path": "specs/archive/237_investigate_and_systematically_fix_context_window_/"
       }
     },
     {
@@ -976,7 +976,7 @@
       "archived": "2025-12-28",
       "summary": "Find and eliminate all emojis from .opencode system to maintain NO EMOJI standard",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/238_find_and_eliminate_all_emojis_from_opencode_system/"
+        "base_path": "specs/archive/238_find_and_eliminate_all_emojis_from_opencode_system/"
       },
       "completed": "2025-12-28"
     },
@@ -990,7 +990,7 @@
       "archived": "2025-12-28",
       "summary": "Optimize NO EMOJI validation to eliminate redundant checks and reduce system overhead [COMPLETED]",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/241_optimize_no_emoji_validation_to_eliminate_redundan/"
+        "base_path": "specs/archive/241_optimize_no_emoji_validation_to_eliminate_redundan/"
       },
       "completed": "2025-12-28"
     },
@@ -1004,7 +1004,7 @@
       "archived": "2025-12-28",
       "summary": "Implement Phase 2 from task 237 implementation plan (split command files into routing and execution)",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/242_implement_phase_2_from_task_237_implementation_pla/"
+        "base_path": "specs/archive/242_implement_phase_2_from_task_237_implementation_pla/"
       },
       "completed": "2025-12-29"
     },
@@ -1018,7 +1018,7 @@
       "archived": "2025-12-29",
       "summary": "Task 244",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/244_phase_1_context_index_and_research_frontmatter_prototype/"
+        "base_path": "specs/archive/244_phase_1_context_index_and_research_frontmatter_prototype/"
       },
       "completed": "2025-12-29"
     },
@@ -1032,7 +1032,7 @@
       "archived": "2025-12-29",
       "summary": "Task 245",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/245_phase_2_core_architecture_migrate_all_commands_and_simplify_orchestrator/"
+        "base_path": "specs/archive/245_phase_2_core_architecture_migrate_all_commands_and_simplify_orchestrator/"
       },
       "completed": "2025-12-29"
     },
@@ -1046,7 +1046,7 @@
       "archived": "2025-12-29",
       "summary": "Task 247",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/247_phase_4_testing_and_documentation/"
+        "base_path": "specs/archive/247_phase_4_testing_and_documentation/"
       },
       "completed": "2025-12-29"
     },
@@ -1065,16 +1065,16 @@
       "completed": "2025-12-28",
       "last_updated": "2025-12-28",
       "artifacts": [
-        ".opencode/specs/221_fix_comprehensive_status_update_failures/reports/research-001.md",
-        ".opencode/specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md",
-        ".opencode/specs/221_fix_comprehensive_status_update_failures/summaries/implementation-summary-20251228.md",
+        "specs/221_fix_comprehensive_status_update_failures/reports/research-001.md",
+        "specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md",
+        "specs/221_fix_comprehensive_status_update_failures/summaries/implementation-summary-20251228.md",
         ".opencode/agent/subagents/task-executor.md",
         ".opencode/agent/subagents/status-sync-manager.md",
         ".opencode/command/implement.md",
         ".opencode/context/common/workflows/command-lifecycle.md"
       ],
       "estimated_hours": 9.0,
-      "plan_path": ".opencode/specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md",
+      "plan_path": "specs/221_fix_comprehensive_status_update_failures/plans/implementation-001.md",
       "plan_metadata": {
         "phase_count": 7,
         "estimated_hours": 10,
@@ -1104,14 +1104,14 @@
       "completed": "2025-12-29",
       "last_updated": "2025-12-29",
       "artifacts": [
-        ".opencode/specs/226_fix_review_command/reports/research-001.md",
-        ".opencode/specs/226_fix_review_command/plans/implementation-001.md",
-        ".opencode/specs/226_fix_review_command/summaries/implementation-summary-20251228.md",
+        "specs/226_fix_review_command/reports/research-001.md",
+        "specs/226_fix_review_command/plans/implementation-001.md",
+        "specs/226_fix_review_command/summaries/implementation-summary-20251228.md",
         ".opencode/command/review.md",
         ".opencode/agent/subagents/reviewer.md",
         ".opencode/context/common/workflows/review.md"
       ],
-      "plan_path": ".opencode/specs/226_fix_review_command/plans/implementation-001.md",
+      "plan_path": "specs/226_fix_review_command/plans/implementation-001.md",
       "plan_metadata": {
         "phase_count": 3,
         "estimated_hours": 8,
@@ -1142,10 +1142,10 @@
       "abandonment_reason": "Task superseded by simpler /meta command implementation. The complex system-builder subagents approach is no longer needed.",
       "last_updated": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md",
-        ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md"
+        "specs/256_add_meta_command_from_openagents_with_system_builder_subagents/reports/research-001.md",
+        "specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md"
       ],
-      "plan_path": ".opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md",
+      "plan_path": "specs/256_add_meta_command_from_openagents_with_system_builder_subagents/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 14,
@@ -1169,12 +1169,12 @@
       "completed": "2026-01-04",
       "last_updated": "2026-01-04T04:45:44Z",
       "artifacts": [
-        ".opencode/specs/272_add_yaml_header_to_todo_md/reports/research-001.md",
-        ".opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md",
-        ".opencode/specs/272_add_yaml_header_to_todo_md/summaries/implementation-summary-20260104.md",
-        ".opencode/specs/TODO.md"
+        "specs/272_add_yaml_header_to_todo_md/reports/research-001.md",
+        "specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md",
+        "specs/272_add_yaml_header_to_todo_md/summaries/implementation-summary-20260104.md",
+        "specs/TODO.md"
       ],
-      "plan_path": ".opencode/specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md",
+      "plan_path": "specs/272_add_yaml_header_to_todo_md/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 14,
@@ -1183,7 +1183,7 @@
       },
       "estimated_hours": 14.0,
       "files_modified": [
-        ".opencode/specs/TODO.md"
+        "specs/TODO.md"
       ],
       "archived": "2026-01-05T09:58:40Z"
     },
@@ -1200,7 +1200,7 @@
       "completed": "2026-01-03",
       "last_updated": "2026-01-03",
       "artifacts": [
-        ".opencode/specs/274_remove_status_metadata_from_research_reports/summaries/implementation-summary-20260103.md",
+        "specs/274_remove_status_metadata_from_research_reports/summaries/implementation-summary-20260103.md",
         ".opencode/context/core/standards/report.md",
         ".opencode/agent/subagents/researcher.md"
       ],
@@ -1221,10 +1221,10 @@
       "completed": "2026-01-03",
       "last_updated": "2026-01-03",
       "artifacts": [
-        ".opencode/specs/275_fix_workflow_status_updates/reports/research-001.md",
-        ".opencode/specs/275_fix_workflow_status_updates/reports/verification-001.md",
-        ".opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md",
-        ".opencode/specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md",
+        "specs/275_fix_workflow_status_updates/reports/research-001.md",
+        "specs/275_fix_workflow_status_updates/reports/verification-001.md",
+        "specs/275_fix_workflow_status_updates/plans/implementation-001.md",
+        "specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md",
         ".opencode/agent/subagents/planner.md",
         ".opencode/agent/subagents/implementer.md",
         ".opencode/command/research.md",
@@ -1233,7 +1233,7 @@
         ".opencode/command/revise.md",
         ".opencode/context/core/workflows/command-lifecycle.md"
       ],
-      "plan_path": ".opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md",
+      "plan_path": "specs/275_fix_workflow_status_updates/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 8,
@@ -1253,8 +1253,8 @@
       ],
       "files_created": [
         ".opencode/context/core/workflows/command-lifecycle.md",
-        ".opencode/specs/275_fix_workflow_status_updates/reports/verification-001.md",
-        ".opencode/specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md"
+        "specs/275_fix_workflow_status_updates/reports/verification-001.md",
+        "specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md"
       ],
       "archived": "2026-01-05T09:58:40Z"
     },
@@ -1272,9 +1272,9 @@
       "planning_completed": "2026-01-03",
       "last_updated": "2026-01-03",
       "artifacts": [
-        ".opencode/specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md",
-        ".opencode/specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md",
-        ".opencode/specs/276_investigate_remove_redundant_project_level_state_json/summaries/implementation-summary-20260103.md",
+        "specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md",
+        "specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md",
+        "specs/276_investigate_remove_redundant_project_level_state_json/summaries/implementation-summary-20260103.md",
         ".opencode/agent/subagents/status-sync-manager.md",
         ".opencode/agent/subagents/planner.md",
         ".opencode/agent/subagents/implementer.md",
@@ -1286,7 +1286,7 @@
         "docs/Architecture/ADR-004-Remove-Project-Level-State-Files.md"
       ],
       "estimated_hours": 8.0,
-      "plan_path": ".opencode/specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md",
+      "plan_path": "specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 8,
@@ -1313,11 +1313,11 @@
       "completed": "2026-01-03",
       "last_updated": "2026-01-03",
       "artifacts": [
-        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md",
-        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md",
-        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md",
-        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-002.md",
-        ".opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/summaries/implementation-summary-20260103.md",
+        "specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md",
+        "specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md",
+        "specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-001.md",
+        "specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/plans/implementation-002.md",
+        "specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/summaries/implementation-summary-20260103.md",
         ".opencode/command/implement.md"
       ],
       "research_summary": "ROOT CAUSE: Line 34 of /implement command missing $ prefix on \"arguments\". Fixed by changing \"from arguments\" to \"from $ARGUMENTS\". Research-001 hypothesis was incorrect - OpenCode DOES pass $ARGUMENTS (proven by /research, /plan, /revise working).",
@@ -1341,15 +1341,15 @@
       "completed": "2026-01-04",
       "last_updated": "2026-01-04T07:00:00Z",
       "artifacts": [
-        ".opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md",
-        ".opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md",
-        ".opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-002.md",
-        ".opencode/specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md",
+        "specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md",
+        "specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md",
+        "specs/283_fix_systematic_status_synchronization_failure/plans/implementation-002.md",
+        "specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md",
         ".opencode/agent/subagents/researcher.md",
         ".opencode/context/core/standards/subagent-structure.md"
       ],
       "research_summary": "Root cause: subagent specs correct (Task 275 fix), but no enforcement mechanism. Orchestrator validates OUTPUT but not PROCESS. Recommended: extend Stage 4 validation, add stage logging, move status updates to orchestrator.",
-      "plan_path": ".opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-002.md",
+      "plan_path": "specs/283_fix_systematic_status_synchronization_failure/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 3.5,
@@ -1384,12 +1384,12 @@
       "planning_completed": "2026-01-04",
       "last_updated": "2026-01-05T09:55:00Z",
       "artifacts": [
-        ".opencode/specs/285_audit_and_fix_status_update_behavior/task-description.md",
-        ".opencode/specs/285_audit_and_fix_status_update_behavior/reports/research-001.md",
-        ".opencode/specs/285_audit_and_fix_status_update_behavior/plans/implementation-001.md"
+        "specs/285_audit_and_fix_status_update_behavior/task-description.md",
+        "specs/285_audit_and_fix_status_update_behavior/reports/research-001.md",
+        "specs/285_audit_and_fix_status_update_behavior/plans/implementation-001.md"
       ],
       "research_summary": "Found that Task 283 successfully fixed general subagents (researcher, planner, implementer) but Lean subagents (lean-research-agent, lean-planner, lean-implementation-agent) still use inconsistent <step_1> naming instead of <step_0_preflight>. This explains Task 259 failure. Recommended extending Task 283 fix to Lean subagents.",
-      "plan_path": ".opencode/specs/285_audit_and_fix_status_update_behavior/plans/implementation-001.md",
+      "plan_path": "specs/285_audit_and_fix_status_update_behavior/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 7,
@@ -1414,13 +1414,13 @@
       "research_completed": "2026-01-04",
       "last_updated": "2026-01-05T00:00:00Z",
       "artifacts": [
-        ".opencode/specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md",
-        ".opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md"
+        "specs/287_fix_revise_command_plan_link_replacement/reports/research-001.md",
+        "specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md"
       ],
       "research_summary": "Root cause identified: status-sync-manager appends plan links instead of replacing them. Fix requires adding plan link replacement logic with regex pattern matching in step_3_prepare_updates. Estimated effort: 2-3 hours.",
       "estimated_hours": 2.5,
       "planning_completed": "2026-01-04",
-      "plan_path": ".opencode/specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md",
+      "plan_path": "specs/287_fix_revise_command_plan_link_replacement/plans/implementation-001.md",
       "plan_metadata": {
         "phase_count": 5,
         "estimated_hours": 2.5,
@@ -1459,11 +1459,11 @@
       "planning_completed": "2026-01-04",
       "last_updated": "2026-01-05T09:50:00Z",
       "artifacts": [
-        ".opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md",
-        ".opencode/specs/292_diagnose_and_fix_implement_259_command_failure/plans/implementation-001.md"
+        "specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md",
+        "specs/292_diagnose_and_fix_implement_259_command_failure/plans/implementation-001.md"
       ],
       "research_summary": "Investigation reveals the issue may already be fixed by Task 281 (added $ARGUMENTS reference to /implement command line 34). Task 259 exists and is valid for implementation. The reported symptom suggests Claude misinterpretation rather than code bug. Recommendation: verify /implement 259 works; if yes, mark Task 292 complete; if no, clarify orchestrator instructions.",
-      "plan_path": ".opencode/specs/292_diagnose_and_fix_implement_259_command_failure/plans/implementation-001.md",
+      "plan_path": "specs/292_diagnose_and_fix_implement_259_command_failure/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 2.5,
@@ -1537,12 +1537,12 @@
       "artifacts": [
         {
           "type": "investigation_report",
-          "path": ".opencode/specs/303_verify_status_sync_manager_create_task_functionality/investigation-report-20260105.md",
+          "path": "specs/303_verify_status_sync_manager_create_task_functionality/investigation-report-20260105.md",
           "summary": "Comprehensive investigation report confirming create_task functionality exists"
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/303_verify_status_sync_manager_create_task_functionality/summaries/implementation-summary-20260105.md",
+          "path": "specs/303_verify_status_sync_manager_create_task_functionality/summaries/implementation-summary-20260105.md",
           "summary": "Implementation summary for investigation"
         }
       ],
@@ -1562,7 +1562,7 @@
       "completed": "2025-12-29",
       "last_updated": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md"
+        "specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md"
       ],
       "research_summary": "Comparative analysis of OpenAgents and ProofChecker systems reveals architectural solution: adopt frontmatter delegation pattern, lazy-loading context index, session-based temporary context, and simplified orchestrator. Eliminates Stage 7 failures by moving workflow ownership from commands to agents. 4-phase migration (56-78 hours) achieves 60-70% systematic improvements.",
       "supersedes_tasks": [
@@ -1587,10 +1587,10 @@
       "plan_created": "2026-01-03",
       "last_updated": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/reports/research-001.md",
-        ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md"
+        "specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/reports/research-001.md",
+        "specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md"
       ],
-      "plan_path": ".opencode/specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md",
+      "plan_path": "specs/265_clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 10,
@@ -1613,7 +1613,7 @@
       "research_completed": "2026-01-03",
       "last_updated": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md"
+        "specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md"
       ],
       "research_summary": "Root cause: orchestrator does NOT implement Stage 2 (DetermineRouting). Language extraction exists only in documentation. Lean tasks route to default researcher instead of lean-research-agent, causing phantom research. Fix: implement Stage 2 to extract language from TODO.md and route based on command frontmatter. Estimated 5-7 hours.",
       "estimated_hours": 6.0,
@@ -1633,13 +1633,13 @@
       "research_completed": "2026-01-03",
       "last_updated": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md",
-        ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
+        "specs/271_revise_meta_command_task_creation/reports/research-001.md",
+        "specs/271_revise_meta_command_task_creation/plans/implementation-001.md"
       ],
       "research_summary": "Comprehensive revision plan to align /meta command with research → plan → implement workflow. Creates tasks with linked artifacts (research reports and implementation plans) instead of directly implementing. Includes task breakdown strategy, artifact structure, and 13-hour implementation estimate.",
       "estimated_hours": 13.0,
       "plan_created": "2026-01-03",
-      "plan_path": ".opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
+      "plan_path": "specs/271_revise_meta_command_task_creation/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 9,
         "total_effort_hours": 13,
@@ -1663,11 +1663,11 @@
       "research_completed": "2026-01-03",
       "planning_completed": "2026-01-03",
       "artifacts": [
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md",
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md",
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/validation-template.md",
-        ".opencode/specs/280_fix_orchestrator_stage_4_validation/summaries/implementation-summary-20260105.md",
+        "specs/280_fix_orchestrator_stage_4_validation/plans/implementation-001.md",
+        "specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
+        "specs/280_fix_orchestrator_stage_4_validation/reports/research-001.md",
+        "specs/280_fix_orchestrator_stage_4_validation/validation-template.md",
+        "specs/280_fix_orchestrator_stage_4_validation/summaries/implementation-summary-20260105.md",
         ".opencode/command/research.md",
         ".opencode/command/plan.md",
         ".opencode/command/revise.md",
@@ -1675,7 +1675,7 @@
         ".opencode/context/core/system/validation-rules.md",
         ".opencode/context/core/system/validation-strategy.md"
       ],
-      "plan_path": ".opencode/specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
+      "plan_path": "specs/280_fix_orchestrator_stage_4_validation/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 6,
@@ -1701,9 +1701,9 @@
       "effort": "3 hours",
       "description": "Update `/revise` command to detect plan presence and route to either task-reviser (no plan) or planner (plan exists with report integration).",
       "research_artifacts": [
-        ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/reports/research-001.md"
+        "specs/301_enhance_revise_command_with_dual_mode_routing/reports/research-001.md"
       ],
-      "plan_path": ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/plans/implementation-001.md",
+      "plan_path": "specs/301_enhance_revise_command_with_dual_mode_routing/plans/implementation-001.md",
       "planning_completed": "2026-01-05T07:47:12-08:00",
       "plan_metadata": {
         "phases": 5,
@@ -1721,7 +1721,7 @@
       },
       "completed": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/301_enhance_revise_command_with_dual_mode_routing/summaries/implementation-summary-20260105.md",
+        "specs/301_enhance_revise_command_with_dual_mode_routing/summaries/implementation-summary-20260105.md",
         ".opencode/command/revise.md"
       ]
     },
@@ -1741,9 +1741,9 @@
       "last_updated": "2026-01-05",
       "research_completed": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md",
-        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md",
-        ".opencode/specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/summaries/implementation-summary-20260105.md"
+        "specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/reports/research-001.md",
+        "specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/plans/implementation-001.md",
+        "specs/305_remove_performance_cruft_from_all_6_modified_files_3_5/summaries/implementation-summary-20260105.md"
       ],
       "plan_completed": "2026-01-05",
       "completed": "2026-01-05"
@@ -1765,9 +1765,9 @@
       "abandoned": "2026-01-05",
       "abandonment_reason": "User requested abandonment",
       "artifacts": [
-        ".opencode/specs/312_fix_workflow_command_postflight_failures/reports/research-001.md"
+        "specs/312_fix_workflow_command_postflight_failures/reports/research-001.md"
       ],
-      "plan_path": ".opencode/specs/312_fix_workflow_command_postflight_failures/plans/implementation-002.md",
+      "plan_path": "specs/312_fix_workflow_command_postflight_failures/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 5,
@@ -1799,8 +1799,8 @@
       "last_updated": "2026-01-05",
       "planning_completed": "2026-01-05",
       "implementation_completed": "2026-01-05",
-      "plan_path": ".opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/plans/implementation-001.md",
-      "implementation_path": ".opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/summaries/implementation-summary-20260105.md",
+      "plan_path": "specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/plans/implementation-001.md",
+      "implementation_path": "specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/summaries/implementation-summary-20260105.md",
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 12,
@@ -1843,13 +1843,13 @@
       "abandoned": "2026-01-05",
       "abandonment_reason": "User requested abandonment",
       "artifacts": [
-        ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md",
-        ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md"
+        "specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md",
+        "specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md"
       ],
       "research_summary": "Research completed on Task 290. Investigation reveals preflight status updates ARE working correctly (Task 289 fix successful). The actual issue is outdated documentation in lean-research-agent.md requiring summary artifact creation, contradicting standard workflow. Recommended fix: remove summary artifact requirements to match researcher.md behavior. Estimated effort: 2-3 hours.",
       "estimated_hours": 2.5,
       "planning_completed": "2026-01-04",
-      "plan_path": ".opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md",
+      "plan_path": "specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 2.5,
@@ -1870,12 +1870,12 @@
       "started": "2026-01-04",
       "research_completed": "2026-01-04",
       "artifacts": [
-        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md",
-        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md",
-        ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/summaries/implementation-summary-20260105.md"
+        "specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md",
+        "specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md",
+        "specs/294_revise_meta_command_to_accept_optional_task_number/summaries/implementation-summary-20260105.md"
       ],
       "planning_completed": "2026-01-04",
-      "plan_path": ".opencode/specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md",
+      "plan_path": "specs/294_revise_meta_command_to_accept_optional_task_number/plans/implementation-001.md",
       "completed": "2026-01-05"
     },
     {
@@ -1906,7 +1906,7 @@
       "research_completed": "2026-01-05",
       "abandoned": "2026-01-05T16:38:30Z",
       "artifacts": [
-        ".opencode/specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md"
+        "specs/307_verify_or_revert_core_logic_changes_in_high_risk_files_4_5/reports/research-001.md"
       ]
     },
     {
@@ -1925,11 +1925,11 @@
       "last_updated": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md",
-        ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/summaries/implementation-summary-20260105.md"
+        "specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md",
+        "specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/summaries/implementation-summary-20260105.md"
       ],
       "planning_completed": "2026-01-05",
-      "plan_path": ".opencode/specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/plans/implementation-001.md",
+      "plan_path": "specs/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 3.5,
@@ -1966,31 +1966,31 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md",
+          "path": "specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md",
           "created": "2026-01-05",
           "summary": "Comprehensive analysis of preflight status update failures with 7.5 hour fix estimate"
         },
         {
           "type": "plan",
-          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
+          "path": "specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
           "created": "2026-01-05",
           "summary": "Implementation plan with 6 phases focusing on root cause debugging"
         },
         {
           "type": "plan",
-          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
+          "path": "specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
           "created": "2026-01-05",
           "summary": "Revised plan integrating task 320 findings, error logging, and context window hypothesis"
         },
         {
           "type": "plan",
-          "path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
+          "path": "specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
           "created": "2026-01-05",
           "summary": "Revised plan v3 integrating status-sync-manager bug analysis, eliminating file locking, using git-only rollback, and focusing on timing-aware architecture"
         }
       ],
       "planned": "2026-01-05",
-      "plan_path": ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
+      "plan_path": "specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 4.5,
@@ -2038,21 +2038,21 @@
       "artifacts": [
         {
           "type": "research",
-          "path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md",
+          "path": "specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md",
           "created": "2026-01-05T18:45:00Z",
           "summary": "Comprehensive analysis of postflight failures. Root cause: silent git commit failures, not missing postflight steps."
         },
         {
           "type": "research",
-          "path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md",
+          "path": "specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md",
           "created": "2026-01-05T19:36:27-08:00",
           "summary": "Analysis of 7 potential bugs in status-sync-manager with 3 critical issues directly causing task 320 symptoms"
         },
-        ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-004.md",
-        ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/summaries/implementation-summary-20260106.md"
+        "specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-004.md",
+        "specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/summaries/implementation-summary-20260106.md"
       ],
       "planning_completed": "2026-01-05",
-      "plan_path": ".opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-007.md",
+      "plan_path": "specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/plans/implementation-007.md",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": null,
@@ -2100,14 +2100,14 @@
       "status": "completed",
       "priority": "high",
       "language": "meta",
-      "description": "Conduct a systematic review of the opencode system to complete all aims of the original context refactor plan (.opencode/specs/context-refactor-plan.md) given recent changes. The plan aims to: (1) Eliminate redundancy by consolidating 47 files to 35 files (26% reduction), (2) Document ProofChecker's three-layer delegation architecture, (3) Improve naming consistency, (4) Reorganize context structure (orchestration, formats, standards, workflows, templates, schemas), (5) Update all references across agent/command/context files, (6) Integrate state.json optimization documentation. Review current state against plan objectives, identify completed work, remaining work, and any deviations requiring plan updates.",
+      "description": "Conduct a systematic review of the opencode system to complete all aims of the original context refactor plan (specs/context-refactor-plan.md) given recent changes. The plan aims to: (1) Eliminate redundancy by consolidating 47 files to 35 files (26% reduction), (2) Document ProofChecker's three-layer delegation architecture, (3) Improve naming consistency, (4) Reorganize context structure (orchestration, formats, standards, workflows, templates, schemas), (5) Update all references across agent/command/context files, (6) Integrate state.json optimization documentation. Review current state against plan objectives, identify completed work, remaining work, and any deviations requiring plan updates.",
       "effort": "20 hours",
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-05T08:23:48.417376Z",
       "last_updated": "2026-01-05",
       "planning_completed": "2026-01-05",
-      "plan_path": ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-002.md",
+      "plan_path": "specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-002.md",
       "plan_metadata": {
         "phases": 7,
         "total_effort_hours": 20,
@@ -2116,7 +2116,7 @@
         "plan_version": 2,
         "reports_integrated": [
           {
-            "path": ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md",
+            "path": "specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md",
             "integrated_in_plan_version": 1,
             "integrated_date": "2026-01-05"
           }
@@ -2127,8 +2127,8 @@
       "revised": "2026-01-05",
       "started": "2026-01-05",
       "implementation_artifacts": [
-        ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/systematic-review-report.md",
-        ".opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/summaries/implementation-summary-20260105.md"
+        "specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/systematic-review-report.md",
+        "specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/summaries/implementation-summary-20260105.md"
       ],
       "completed": "2026-01-05"
     },
@@ -2152,7 +2152,7 @@
         "324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/summaries/implementation-summary-20260106.md"
       ],
       "planning_completed": "2026-01-06",
-      "plan_path": ".opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/plans/implementation-001.md",
+      "plan_path": "specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 7,
@@ -2184,9 +2184,9 @@
       "plan_revised": "2026-01-03",
       "last_updated": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md",
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md",
-        ".opencode/specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md"
+        "specs/277_improve_opencode_header_and_summary_display_for_task_commands/reports/research-001.md",
+        "specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-001.md",
+        "specs/277_improve_opencode_header_and_summary_display_for_task_commands/plans/implementation-002.md"
       ],
       "estimated_hours": 3.5,
       "research_summary": "Research into OpenCode header and summary display patterns reveals orchestrator already formats prompts as 'Task: {number}' for internal delegation but lacks user-facing headers. Recommended solution: modify orchestrator Stage 5 (PostflightCleanup) to add headers. Estimated effort: 3.5 hours (revised from 4.5 hours - removed summary conclusions as redundant with header).",
@@ -2217,11 +2217,11 @@
       "research_completed": "2026-01-05",
       "planned": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
-        ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
-        ".opencode/specs/300_add_report_detection_to_planner/summaries/implementation-summary-20260105.md"
+        "specs/300_add_report_detection_to_planner/reports/research-001.md",
+        "specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+        "specs/300_add_report_detection_to_planner/summaries/implementation-summary-20260105.md"
       ],
-      "plan_path": ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+      "plan_path": "specs/300_add_report_detection_to_planner/plans/implementation-001.md",
       "plan_metadata": {
         "phases": 4,
         "total_effort_hours": 4,
@@ -2230,7 +2230,7 @@
         "plan_version": 1,
         "reports_integrated": [
           {
-            "path": ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
+            "path": "specs/300_add_report_detection_to_planner/reports/research-001.md",
             "integrated_in_plan_version": 1,
             "integrated_date": "2026-01-05"
           }
@@ -2273,9 +2273,9 @@
       "research_completed": "2026-01-05",
       "last_updated": "2026-01-05T02:22:00Z",
       "artifacts": [
-        ".opencode/specs/309_optimize_task_command_performance/reports/research-001.md",
-        ".opencode/specs/309_optimize_task_command_performance/plans/implementation-001.md",
-        ".opencode/specs/309_optimize_task_command_performance/summaries/implementation-summary-20260105.md"
+        "specs/309_optimize_task_command_performance/reports/research-001.md",
+        "specs/309_optimize_task_command_performance/plans/implementation-001.md",
+        "specs/309_optimize_task_command_performance/summaries/implementation-summary-20260105.md"
       ],
       "planned": "2026-01-05",
       "implemented": "2026-01-05"
@@ -2296,11 +2296,11 @@
       "last_updated": "2026-01-05T02:40:00Z",
       "research_completed": "2026-01-05",
       "artifacts": [
-        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md",
-        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
-        ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/summaries/implementation-summary-20260105.md"
+        "specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md",
+        "specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
+        "specs/310_enhance_workflow_commands_with_start_and_end_status_updates/summaries/implementation-summary-20260105.md"
       ],
-      "plan_path": ".opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
+      "plan_path": "specs/310_enhance_workflow_commands_with_start_and_end_status_updates/plans/implementation-001.md",
       "planned": "2026-01-05",
       "implemented": "2026-01-05"
     },
@@ -2337,7 +2337,7 @@
       "archived": "2026-01-08T07:50:00Z",
       "summary": "Research completed on automation tactics implementation. Found 10/12 tactics fully implemented (83% complete), 2 tactics with infrastructure ready but delegating to tm_auto. Aesop integration functional with 2 noncomputable errors. ProofSearch.lean provides production-ready bounded search infrastructure (461 lines). Revised effort estimate: 17-23 hours (down from 40-60 hours).",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/259_automation_tactics/"
+        "base_path": "specs/archive/259_automation_tactics/"
       }
     },
     {
@@ -2350,7 +2350,7 @@
       "archived": "2026-01-08T07:50:00Z",
       "summary": "Fixed 45 broken context references, created validation infrastructure, documented best practices (1000+ lines), optimized context loading (91% command coverage)",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/327_review_context_file_references_and_optimize_context_loading_strategy/"
+        "base_path": "specs/archive/327_review_context_file_references_and_optimize_context_loading_strategy/"
       }
     },
     {
@@ -2363,7 +2363,7 @@
       "archived": "2026-01-08T07:50:00Z",
       "summary": "Verification that all subagent specifications already implement correct status-sync-manager delegation pattern",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/333_fix_workflow_command_todo_md_state_json_synchronization_failures/"
+        "base_path": "specs/archive/333_fix_workflow_command_todo_md_state_json_synchronization_failures/"
       }
     },
     {
@@ -2380,7 +2380,7 @@
       "description": "The theorem `diamond_mono_imp` in `ModalS5.lean` is marked with `sorry` because it is not valid as an object-level implication. This is a documented limitation.",
       "completed": "2026-01-08",
       "artifacts": [
-        ".opencode/specs/archive/262_update_orchestrator_for_new_argument_mechanism/summaries/implementation-summary-20260108.md"
+        "specs/archive/262_update_orchestrator_for_new_argument_mechanism/summaries/implementation-summary-20260108.md"
       ]
     },
     {
@@ -2400,7 +2400,7 @@
       "artifacts": [
         {
           "type": "implementation",
-          "path": ".opencode/specs/archive/336_refactor_review_command/plans/implementation-001.md",
+          "path": "specs/archive/336_refactor_review_command/plans/implementation-001.md",
           "summary": "Refactored command file with 4-stage pattern (210 lines)"
         },
         {
@@ -2410,7 +2410,7 @@
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/archive/336_refactor_review_command/summaries/implementation-summary-20260108.md",
+          "path": "specs/archive/336_refactor_review_command/summaries/implementation-summary-20260108.md",
           "summary": "Implementation summary documenting all changes"
         }
       ],
@@ -2433,7 +2433,7 @@
       "artifacts": [
         {
           "type": "implementation",
-          "path": ".opencode/specs/archive/337_refactor_todo_command/plans/implementation-001.md",
+          "path": "specs/archive/337_refactor_todo_command/plans/implementation-001.md",
           "summary": "Refactored command file (372→188 lines) with 4-stage pattern"
         },
         {
@@ -2443,7 +2443,7 @@
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/archive/337_refactor_todo_command/summaries/implementation-summary-20260108.md",
+          "path": "specs/archive/337_refactor_todo_command/summaries/implementation-summary-20260108.md",
           "summary": "Implementation summary documenting refactoring approach and standards compliance"
         }
       ],

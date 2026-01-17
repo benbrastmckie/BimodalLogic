@@ -1009,7 +1009,7 @@ The Lean-specific agents (lean-implementation-agent, lean-research-agent) are pr
 7. `.opencode/ARCHITECTURE.md` - System architecture
 8. `.opencode/README.md` - System overview
 9. `.opencode/QUICK-START.md` - Quick start guide
-10. `.opencode/specs/TODO.md` - Task list with Language fields
+10. `specs/TODO.md` - Task list with Language fields
 
 ### Key Insights
 

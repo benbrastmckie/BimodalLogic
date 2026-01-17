@@ -16,7 +16,7 @@ tools:
 permissions:
   allow:
     - read: [".opencode/**/*", "**/*.md", "**/*.lean", "lakefile.lean", "lean-toolchain"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "rm -fr", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
@@ -170,7 +170,7 @@ lifecycle:
            
            VERIFY return:
              - status == "completed" (if "failed", abort with error)
-             - files_updated includes [".opencode/specs/TODO.md", "state.json"]
+             - files_updated includes ["specs/TODO.md", "state.json"]
            
            IF status != "completed":
              - Log error: "Preflight status update failed: {error_message}"
@@ -182,7 +182,7 @@ lifecycle:
          Read state.json to verify status:
            actual_status=$(jq -r --arg num "$task_number" \
              '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-             .opencode/specs/state.json)
+             specs/state.json)
          
          IF actual_status != "planning":
            - Log error: "Preflight verification failed - status not updated"
@@ -311,7 +311,7 @@ lifecycle:
     <action>Create Lean implementation plan following plan.md template</action>
     <process>
       1. Load plan.md template from context
-      2. Create project directory: .opencode/specs/{task_number}_{topic_slug}/
+      2. Create project directory: specs/{task_number}_{topic_slug}/
       3. Create plans subdirectory (lazy creation)
       4. Generate plan filename: plans/implementation-{version:03d}.md
       5. Populate Lean-specific plan sections:
@@ -456,7 +456,7 @@ lifecycle:
         VALIDATE status-sync-manager return:
           - VERIFY return format matches subagent-return-format.md
           - VERIFY status field == "completed" (not "failed" or "partial")
-          - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+          - VERIFY files_updated includes ["specs/TODO.md", "state.json"]
           - VERIFY rollback_performed == false
           - IF validation fails: ABORT with error details
         
@@ -468,8 +468,8 @@ lifecycle:
         {
           "scope_files": [
             "{plan_path}",
-            ".opencode/specs/TODO.md",
-            ".opencode/specs/state.json"
+            "specs/TODO.md",
+            "specs/state.json"
           ],
           "message_template": "task {number}: lean plan created",
           "task_context": {
@@ -505,7 +505,7 @@ lifecycle:
       
       CHECKPOINT: Stage 7 completed
         - [ ] status-sync-manager returned "completed"
-        - [ ] .opencode/specs/TODO.md updated on disk
+        - [ ] specs/TODO.md updated on disk
         - [ ] state.json updated on disk
         - [ ] git-workflow-manager invoked (if status update succeeded)
     </process>
@@ -692,7 +692,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "plan",
-          "path": ".opencode/specs/{task_number}_{topic_slug}/plans/implementation-001.md",
+          "path": "specs/{task_number}_{topic_slug}/plans/implementation-001.md",
           "summary": "Lean implementation plan with {N} phases and proof strategy"
         }
       ],
@@ -732,7 +732,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "plan",
-          "path": ".opencode/specs/267_list_map_fusion/plans/implementation-001.md",
+          "path": "specs/267_list_map_fusion/plans/implementation-001.md",
           "summary": "Lean plan with 4 phases: Setup, Helper Lemmas, Main Proof, Testing"
         }
       ],
@@ -792,7 +792,7 @@ lifecycle:
     - Verify task_number is positive integer
     - Verify session_id provided
     - Verify delegation_depth less than 3
-    - Check .opencode/specs/TODO.md exists and is readable
+    - Check specs/TODO.md exists and is readable
     - Verify task language is "lean" (routing validation)
   </pre_execution>
 

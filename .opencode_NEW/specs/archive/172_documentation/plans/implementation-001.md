@@ -333,7 +333,7 @@ wc -l baseline_doc_gaps.txt
 
 **Action**: Establish standard templates for each declaration type
 
-**File**: `.opencode/specs/172_documentation/templates/docstring-templates.md`
+**File**: `specs/172_documentation/templates/docstring-templates.md`
 
 **Approach**:
 Create templates following mathlib4 conventions:
@@ -1590,7 +1590,7 @@ lake exe docbuild && echo "PASS: Documentation generated"
 
 ### Primary Research Report
 
-**File**: `.opencode/specs/172_documentation/reports/research-001.md`
+**File**: `specs/172_documentation/reports/research-001.md`
 
 **Key Findings**:
 - Current state: 98% module-level coverage, 47% declaration-level coverage
@@ -1601,7 +1601,7 @@ lake exe docbuild && echo "PASS: Documentation generated"
 
 ### Web Research Report
 
-**File**: `.opencode/specs/172_documentation/reports/web-research-lean4-docstrings.md`
+**File**: `specs/172_documentation/reports/web-research-lean4-docstrings.md`
 
 **Key Findings**:
 - Lean 4 docstring syntax: `/-! ... -/` (module), `/-- ... -/` (declaration)

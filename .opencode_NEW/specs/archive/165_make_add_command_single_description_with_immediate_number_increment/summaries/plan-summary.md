@@ -32,4 +32,4 @@
 
 ## Full Plan
 
-See: `.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/plans/implementation-001.md`
+See: `specs/165_make_add_command_single_description_with_immediate_number_increment/plans/implementation-001.md`

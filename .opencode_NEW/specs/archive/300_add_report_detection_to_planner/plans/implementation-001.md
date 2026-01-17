@@ -101,7 +101,7 @@ This plan integrates findings from 1 research report:
   - [ ] Update .opencode/agent/subagents/planner.md step_1 to add plan metadata extraction for revisions
   - [ ] Add logic to extract plan_path from state.json when revision_mode is true
   - [ ] Add logic to read existing plan file and extract reports_integrated array from plan_metadata
-  - [ ] Add report directory scanning logic: find all .opencode/specs/{task_number}_*/reports/research-*.md files
+  - [ ] Add report directory scanning logic: find all specs/{task_number}_*/reports/research-*.md files
   - [ ] Add filesystem timestamp comparison: stat -c %Y for report mtime vs plan mtime
   - [ ] Add filtering logic to identify NEW reports (report_mtime > plan_mtime)
   - [ ] Add defensive checks: handle missing reports directory, empty directory, non-existent plan file
@@ -193,8 +193,8 @@ This plan integrates findings from 1 research report:
 ## Artifacts & Outputs
 
 **Primary Artifacts**:
-- .opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md (this file)
-- .opencode/specs/300_add_report_detection_to_planner/summaries/implementation-summary-20260105.md (created after implementation)
+- specs/300_add_report_detection_to_planner/plans/implementation-001.md (this file)
+- specs/300_add_report_detection_to_planner/summaries/implementation-summary-20260105.md (created after implementation)
 
 **Modified Files**:
 - .opencode/agent/subagents/planner.md (step_1, step_2, step_5, step_6, step_7 updates)
@@ -203,8 +203,8 @@ This plan integrates findings from 1 research report:
 - .opencode/context/core/system/artifact-management.md (report editing policy)
 
 **State Updates**:
-- .opencode/specs/TODO.md (status updated to [PLANNED], plan link added)
-- .opencode/specs/state.json (task 300 plan_path and plan_metadata updated)
+- specs/TODO.md (status updated to [PLANNED], plan link added)
+- specs/state.json (task 300 plan_path and plan_metadata updated)
 
 ## Rollback/Contingency
 

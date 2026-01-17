@@ -14,7 +14,7 @@
 ## Metadata
 
 **Research Integrated**: Yes  
-**Research Report**: .opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md  
+**Research Report**: specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md  
 **Key Findings**: Commands load 78-86KB during routing (39-43% of budget) due to premature command file loading, context duplication, and large TODO.md. Recommended 4-phase fix plan reduces routing context to <6% through file splitting, deduplication, and selective loading.  
 
 **Dependencies**: None  
@@ -719,7 +719,7 @@ This implementation will systematically fix all four root causes through a phase
 - `.opencode/command/revise.md` (exists)
 - `.opencode/command/implement.md` (exists)
 - `.opencode/context/core/workflows/command-lifecycle.md` (exists)
-- `.opencode/specs/TODO.md` (exists)
+- `specs/TODO.md` (exists)
 
 **Required Tools**:
 - bash (for task extraction)
@@ -736,7 +736,7 @@ This implementation will systematically fix all four root causes through a phase
 - Git commit workflow
 
 **Research Artifacts**:
-- Research report: .opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md
+- Research report: specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md
 - Root cause analysis complete
 - Solution design complete
 - Baseline measurements complete

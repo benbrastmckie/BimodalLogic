@@ -8,8 +8,8 @@
 - **Priority**: Medium
 - **Dependencies**: None (Tasks 126, 127, 129, 130 already completed)
 - **Research Inputs**: 
-  - `.opencode/specs/177_examples_update/reports/research-001.md`
-  - `.opencode/specs/177_examples_update/summaries/research-summary.md`
+  - `specs/177_examples_update/reports/research-001.md`
+  - `specs/177_examples_update/summaries/research-summary.md`
 - **Artifacts**: 
   - `plans/implementation-001.md` (this file)
   - `summaries/plan-summary.md`
@@ -375,11 +375,11 @@ lake build 2>&1 | grep -i "error"
    - Effort estimate and phase breakdown
 
 ### State Updates
-1. **.opencode/specs/177_examples_update/state.json**
+1. **specs/177_examples_update/state.json**
    - Updated with plan version and timestamps
    - Phase completion tracking
 
-2. **.opencode/specs/state.json** (global)
+2. **specs/state.json** (global)
    - Updated recent_activities with plan creation
    - Project status tracking
 
@@ -489,8 +489,8 @@ If implementation encounters critical issues:
 5. Perpetuity principles P1-P6 are fully proven (no sorry placeholders)
 
 ### Related Documentation
-- **Research Report**: `.opencode/specs/177_examples_update/reports/research-001.md` (698 lines)
-- **Research Summary**: `.opencode/specs/177_examples_update/summaries/research-summary.md` (100 lines)
+- **Research Report**: `specs/177_examples_update/reports/research-001.md` (698 lines)
+- **Research Summary**: `specs/177_examples_update/summaries/research-summary.md` (100 lines)
 - **ProofSearch Implementation**: `Logos/Core/Automation/ProofSearch.lean` (461 lines)
 - **Tactics Implementation**: `Logos/Core/Automation/Tactics.lean` (626 lines)
 - **Style Guide**: `docs/development/LEAN_STYLE_GUIDE.md`

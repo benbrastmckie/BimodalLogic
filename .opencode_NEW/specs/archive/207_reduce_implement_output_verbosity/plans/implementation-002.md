@@ -15,8 +15,8 @@
 - **Created**: 2025-12-28
 - **Revised**: 2025-12-28
 - **Language**: markdown
-- **Research Input**: [.opencode/specs/207_reduce_implement_output_verbosity/reports/research-001.md]
-- **Previous Plan**: [.opencode/specs/207_reduce_implement_output_verbosity/plans/implementation-001.md]
+- **Research Input**: [specs/207_reduce_implement_output_verbosity/reports/research-001.md]
+- **Previous Plan**: [specs/207_reduce_implement_output_verbosity/plans/implementation-001.md]
 - **Dependencies**: None
 - **Risk Level**: Low-Medium
 
@@ -66,7 +66,7 @@ Research completed 2025-12-28 for /implement command. Key findings:
 4. **Impact**: 90-95% context window reduction achievable
 5. **Effort**: 4.5 hours total (1.5h /implement, 1.5h /plan, 1h lean-agent, 0.5h testing)
 
-Full research: `.opencode/specs/207_reduce_implement_output_verbosity/reports/research-001.md`
+Full research: `specs/207_reduce_implement_output_verbosity/reports/research-001.md`
 
 ---
 

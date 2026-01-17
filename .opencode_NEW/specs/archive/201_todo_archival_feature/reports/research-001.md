@@ -13,7 +13,7 @@ This research investigates requirements and design approaches for implementing a
 
 **Key Findings**:
 1. Current `/todo` command removes tasks from TODO.md but does not preserve artifacts or update archive state
-2. Archive infrastructure already exists (`.opencode/specs/archive/state.json`) with well-defined schema
+2. Archive infrastructure already exists (`specs/archive/state.json`) with well-defined schema
 3. Archival must be atomic across 4 files: TODO.md, state.json, archive/state.json, and project directories
 4. Task numbering must be preserved with gaps (critical requirement)
 5. Self-healing pattern should be applied to archive/state.json creation
@@ -45,11 +45,11 @@ This research investigates requirements and design approaches for implementing a
 
 ### Archive Infrastructure
 
-**Location**: `.opencode/specs/archive/`
+**Location**: `specs/archive/`
 
 **Existing Structure**:
 ```
-.opencode/specs/archive/
+specs/archive/
 ├── state.json              # Archived project metadata
 └── NNN_project_name/       # Archived project directories
     ├── reports/
@@ -76,7 +76,7 @@ This research investigates requirements and design approaches for implementing a
       "archived": "YYYY-MM-DD",
       "summary": "Brief description",
       "artifacts": {
-        "base_path": ".opencode/specs/archive/NNN_project_name/"
+        "base_path": "specs/archive/NNN_project_name/"
       }
     }
   ]
@@ -97,7 +97,7 @@ This research investigates requirements and design approaches for implementing a
 - Validate task is eligible for archival
 
 **FR2: Artifact Preservation**
-- Move project directory from `.opencode/specs/NNN_*/` to `.opencode/specs/archive/NNN_*/`
+- Move project directory from `specs/NNN_*/` to `specs/archive/NNN_*/`
 - Preserve all files: reports/, plans/, summaries/, state.json
 - Handle missing project directories gracefully (some tasks may not have artifacts)
 
@@ -290,9 +290,9 @@ Proceed with archival? (yes/no):
 
 **Process**:
 1. For each task to archive:
-   a. Check if project directory exists: `.opencode/specs/{number}_{slug}/`
+   a. Check if project directory exists: `specs/{number}_{slug}/`
    b. If exists:
-      - Prepare move to `.opencode/specs/archive/{number}_{slug}/`
+      - Prepare move to `specs/archive/{number}_{slug}/`
       - Extract project metadata from state.json or TODO.md
    c. If missing:
       - Log warning (task has no artifacts to archive)
@@ -304,7 +304,7 @@ Proceed with archival? (yes/no):
 **Self-Healing**:
 ```python
 def ensure_archive_state_exists():
-    archive_state_path = ".opencode/specs/archive/state.json"
+    archive_state_path = "specs/archive/state.json"
     
     if not exists(archive_state_path):
         # Create from template
@@ -316,7 +316,7 @@ def ensure_archive_state_exists():
         }
         
         # Ensure directory exists
-        mkdir_p(".opencode/specs/archive/")
+        mkdir_p("specs/archive/")
         
         # Write template
         write_json_atomic(archive_state_path, template)
@@ -344,7 +344,7 @@ def build_archive_entry(task):
         "archived": current_date(),  # YYYY-MM-DD
         "summary": task["title"],  # Task title as summary
         "artifacts": {
-            "base_path": f".opencode/specs/archive/{task['number']}_{task['slug']}/"
+            "base_path": f"specs/archive/{task['number']}_{task['slug']}/"
         }
     }
     
@@ -387,8 +387,8 @@ def build_archive_entry(task):
 7. Move project directories (if they exist):
    ```python
    for task in tasks_to_archive:
-       src = f".opencode/specs/{task['number']}_{task['slug']}"
-       dst = f".opencode/specs/archive/{task['number']}_{task['slug']}"
+       src = f"specs/{task['number']}_{task['slug']}"
+       dst = f"specs/archive/{task['number']}_{task['slug']}"
        
        if exists(src):
            try:
@@ -418,8 +418,8 @@ def rollback_archival():
     
     # Reverse directory moves
     for task in tasks_attempted:
-        src = f".opencode/specs/archive/{task['number']}_{task['slug']}"
-        dst = f".opencode/specs/{task['number']}_{task['slug']}"
+        src = f"specs/archive/{task['number']}_{task['slug']}"
+        dst = f"specs/{task['number']}_{task['slug']}"
         
         if exists(src) and not exists(dst):
             shutil.move(src, dst)  # Move back
@@ -443,9 +443,9 @@ def rollback_archival():
 **Git Command**:
 ```bash
 git add TODO.md
-git add .opencode/specs/state.json
-git add .opencode/specs/archive/state.json
-git add .opencode/specs/archive/  # Pick up moved directories
+git add specs/state.json
+git add specs/archive/state.json
+git add specs/archive/  # Pick up moved directories
 git status --short  # Verify staged changes
 git commit -m "todo: archive {N} completed/abandoned tasks"
 ```
@@ -478,7 +478,7 @@ Project directories moved:
 
 Remaining active tasks: 38
 
-Archive location: .opencode/specs/archive/state.json
+Archive location: specs/archive/state.json
 ```
 
 ---
@@ -496,7 +496,7 @@ Archive location: .opencode/specs/archive/state.json
 
 ### Edge Case 2: Task Without Project Directory
 
-**Scenario**: Task 172 is `[COMPLETED]` but `.opencode/specs/172_*/` does not exist
+**Scenario**: Task 172 is `[COMPLETED]` but `specs/172_*/` does not exist
 
 **Handling**:
 - Archival proceeds normally
@@ -535,11 +535,11 @@ Archive location: .opencode/specs/archive/state.json
 - Return error:
   ```
   Archival failed: Permission denied moving directory
-  File: .opencode/specs/172_api_documentation
+  File: specs/172_api_documentation
   
   To fix:
   1. Check directory permissions
-  2. Ensure .opencode/specs/archive/ is writable
+  2. Ensure specs/archive/ is writable
   3. Retry /todo command
   ```
 

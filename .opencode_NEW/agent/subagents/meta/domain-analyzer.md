@@ -13,7 +13,7 @@ tools:
 permissions:
   allow:
     - read: [".opencode/context/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
   deny: []
 context_loading:
   strategy: lazy
@@ -435,7 +435,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "report",
-          "path": ".opencode/specs/{task_number}_{slug}/reports/domain-analysis-{date}.md",
+          "path": "specs/{task_number}_{slug}/reports/domain-analysis-{date}.md",
           "summary": "Domain analysis report with core concepts, recommended agents, and context structure"
         }
       ],
@@ -463,7 +463,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "report",
-          "path": ".opencode/specs/meta_ecommerce/reports/domain-analysis-20251229.md",
+          "path": "specs/meta_ecommerce/reports/domain-analysis-20251229.md",
           "summary": "Domain analysis for E-commerce Order Management"
         }
       ],

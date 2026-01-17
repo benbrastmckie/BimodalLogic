@@ -20,7 +20,7 @@
 - Implementation status: docs/project-info/IMPLEMENTATION_STATUS.md
 
 **Artifacts**:
-- This research report: .opencode/specs/334_latex_documentation_structure/reports/research-001.md
+- This research report: specs/334_latex_documentation_structure/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 

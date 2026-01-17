@@ -1012,7 +1012,7 @@ The context window bloat in workflow commands is caused by:
 
 3. **Context Files**:
    - `.opencode/context/core/workflows/command-lifecycle.md` (1,139 lines, 40KB)
-   - `.opencode/specs/TODO.md` (109KB)
+   - `specs/TODO.md` (109KB)
    - `.opencode/context/core/standards/status-markers.md` (27KB)
    - `.opencode/context/core/standards/subagent-return-format.md` (11KB)
    - `.opencode/context/core/workflows/subagent-delegation-guide.md` (18KB)

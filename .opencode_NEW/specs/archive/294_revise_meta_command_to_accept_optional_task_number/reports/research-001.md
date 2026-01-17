@@ -12,11 +12,11 @@
 - .opencode/command/implement.md (reference pattern)
 - .opencode/command/plan.md (reference pattern)
 - .opencode/agent/subagents/meta.md (meta agent)
-- .opencode/specs/state.json (task metadata structure)
+- specs/state.json (task metadata structure)
 - .opencode/context/core/system/routing-guide.md (routing patterns)
 
 **Artifacts**: 
-- .opencode/specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md
+- specs/294_revise_meta_command_to_accept_optional_task_number/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -109,7 +109,7 @@ All workflow commands (/research, /implement, /plan) follow a consistent 2-stage
        - Validate is integer
     
     2. Validate state.json exists and is valid
-       - Check .opencode/specs/state.json exists
+       - Check specs/state.json exists
        - Validate is valid JSON with jq
        - If missing/corrupt: Return error "Run /meta to regenerate state.json"
     
@@ -117,7 +117,7 @@ All workflow commands (/research, /implement, /plan) follow a consistent 2-stage
        - Use jq to find task by project_number:
          task_data=$(jq -r --arg num "$task_number" \
            '.active_projects[] | select(.project_number == ($num | tonumber))' \
-           .opencode/specs/state.json)
+           specs/state.json)
        - If task_data is empty: Return error "Task $task_number not found"
     
     4. Extract all metadata at once
@@ -187,7 +187,7 @@ Task metadata in state.json includes all fields needed for context:
 # Extract task metadata from state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Extract specific fields
 language=$(echo "$task_data" | jq -r '.language // "general"')
@@ -293,7 +293,7 @@ The /meta command currently has an 8-stage workflow:
 
 **Stage 7: CreateTasksWithArtifacts**
 - Determine task breakdown based on system complexity
-- Create project directories in .opencode/specs/NNN_*/
+- Create project directories in specs/NNN_*/
 - Generate plan artifacts ONLY (plans/implementation-001.md)
 - Create task entries in TODO.md with Type field set to 'meta'
 - Update state.json with task metadata
@@ -335,7 +335,7 @@ When /meta is invoked with a task number, the workflow should adapt:
      - integrations = identified from task description
 
 3. **Stage 7: CreatePlanArtifact** (ADAPTED)
-   - Create plan artifact in existing task directory (.opencode/specs/{task_number}_{slug}/)
+   - Create plan artifact in existing task directory (specs/{task_number}_{slug}/)
    - Generate implementation plan based on task description
    - Follow plan.md template standard
    - Update task status to [PLANNED]
@@ -484,12 +484,12 @@ This approach maintains the existing stage numbering while adding the new functi
 
 ```bash
 # Validate state.json exists and is valid
-if [ ! -f ".opencode/specs/state.json" ]; then
+if [ ! -f "specs/state.json" ]; then
   echo "[FAIL] state.json not found"
   exit 1
 fi
 
-if ! jq empty .opencode/specs/state.json 2>/dev/null; then
+if ! jq empty specs/state.json 2>/dev/null; then
   echo "[FAIL] state.json is not valid JSON"
   exit 1
 fi
@@ -497,7 +497,7 @@ fi
 # Lookup task in state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ -z "$task_data" ]; then
   echo "[FAIL] Task $task_number not found in state.json"
@@ -602,7 +602,7 @@ if [[ "$first_token" =~ ^[0-9]+$ ]]; then
   # Check if task exists in state.json
   task_data=$(jq -r --arg num "$first_token" \
     '.active_projects[] | select(.project_number == ($num | tonumber))' \
-    .opencode/specs/state.json)
+    specs/state.json)
   
   if [ -z "$task_data" ]; then
     # Task not found - fall back to Prompt Mode with warning
@@ -664,7 +664,7 @@ Instead of creating multiple tasks, create a plan artifact for the single task:
   <action>Create implementation plan for task (ADAPTED for Task Mode)</action>
   <process>
     1. If mode="task":
-       a. Use existing task directory: .opencode/specs/{task_number}_{project_name}/
+       a. Use existing task directory: specs/{task_number}_{project_name}/
        b. Create plans/ subdirectory if not exists
        c. Generate plan artifact: plans/implementation-001.md
        d. Include metadata:
@@ -827,13 +827,13 @@ echo "[INFO] Task number: $task_number"
 
 ```bash
 # Validate state.json exists and is valid
-if [ ! -f ".opencode/specs/state.json" ]; then
+if [ ! -f "specs/state.json" ]; then
   echo "[FAIL] state.json not found"
   echo "Recommendation: Run /meta to regenerate state.json"
   exit 1
 fi
 
-if ! jq empty .opencode/specs/state.json 2>/dev/null; then
+if ! jq empty specs/state.json 2>/dev/null; then
   echo "[FAIL] state.json is not valid JSON"
   echo "Recommendation: Check state.json syntax"
   exit 1
@@ -842,7 +842,7 @@ fi
 # Lookup task in state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ -z "$task_data" ]; then
   echo "[FAIL] Task $task_number not found in state.json"
@@ -886,7 +886,7 @@ else
     # First token is integer - check if task exists
     task_data=$(jq -r --arg num "$first_token" \
       '.active_projects[] | select(.project_number == ($num | tonumber))' \
-      .opencode/specs/state.json 2>/dev/null)
+      specs/state.json 2>/dev/null)
     
     if [ -z "$task_data" ]; then
       # Task not found - fall back to Prompt Mode
@@ -1421,7 +1421,7 @@ fi
 
 ### Source 6: state.json Structure
 
-**File**: `.opencode/specs/state.json`  
+**File**: `specs/state.json`  
 **Lines**: 1-100 (sample)  
 **Relevance**: Task metadata structure and available fields
 

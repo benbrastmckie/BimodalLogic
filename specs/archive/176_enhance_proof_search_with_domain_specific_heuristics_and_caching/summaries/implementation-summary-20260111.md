@@ -63,7 +63,7 @@ Updated documentation across:
 - `Bimodal/Automation.lean` - Updated imports and docstring
 - `BimodalTest/Automation/ProofSearchBenchmark.lean` - Enhanced benchmarks
 - `docs/reference/API_REFERENCE.md` - API documentation updates
-- `.claude/specs/176.../plans/implementation-001.md` - Plan status updates
+- `specs/176.../plans/implementation-001.md` - Plan status updates
 
 ## Benchmark Results
 

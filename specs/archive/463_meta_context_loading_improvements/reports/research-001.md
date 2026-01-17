@@ -180,8 +180,8 @@ Stage 6 loads:
 - @.claude/context/core/formats/subagent-return.md (for return format)
 
 Stage 7 (Status Updates):
-- @.claude/specs/TODO.md (for task entry creation)
-- @.claude/specs/state.json (for state updates)
+- @specs/TODO.md (for task entry creation)
+- @specs/state.json (for state updates)
 ```
 
 **Gap**: This guidance exists in index.md but is NOT reflected in meta-builder-agent.md itself.
@@ -260,7 +260,7 @@ Load these on-demand using @-references:
 - Return format already loaded in Stage 1
 
 **Stage 7: Status Updates**:
-- Direct file access to `.claude/specs/TODO.md` and `.claude/specs/state.json`
+- Direct file access to `specs/TODO.md` and `specs/state.json`
 - No additional context files needed
 ```
 

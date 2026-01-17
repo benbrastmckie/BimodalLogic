@@ -67,7 +67,7 @@ These files use status markers but don't define them (no changes needed):
 - `.claude/commands/research.md` - uses status, doesn't define
 - `.claude/commands/plan.md` - uses status, doesn't define
 - `.claude/commands/implement.md` - uses status, doesn't define
-- `.claude/specs/TODO.md` - consumes status markers
+- `specs/TODO.md` - consumes status markers
 - Archive files - historical, no updates needed
 
 ### Finding 6: Task 394 Update Required
@@ -109,8 +109,8 @@ After implementing [EXPANDED] status, task 394 should be updated to:
 | `.claude/CLAUDE.md` | Status Markers | Add to terminal states |
 | `.claude/skills/skill-status-sync/SKILL.md` | Status Mapping | Add expand operation |
 | `.claude/commands/task.md` | Divide Mode | Set status to expanded |
-| `.claude/specs/state.json` | Task 394 | Update status to expanded |
-| `.claude/specs/TODO.md` | Task 394 | Update status to [EXPANDED] |
+| `specs/state.json` | Task 394 | Update status to expanded |
+| `specs/TODO.md` | Task 394 | Update status to [EXPANDED] |
 
 ## References
 

@@ -303,7 +303,7 @@ example : ⊢ p.imp p  -- Trivial proof, should find at depth 0-1
 **Estimated Effort**: 2-3 hours
 
 **Files Created**:
-- `.opencode/specs/317_bfs_variant_phase3/benchmarks/iddfs-vs-dfs.md` (new)
+- `specs/317_bfs_variant_phase3/benchmarks/iddfs-vs-dfs.md` (new)
 
 ---
 
@@ -451,10 +451,10 @@ if visited.contains (Γ, φ) then -- Skip
 
 ### Documentation
 
-3. **.opencode/specs/317_bfs_variant_phase3/benchmarks/iddfs-vs-dfs.md** (new)
+3. **specs/317_bfs_variant_phase3/benchmarks/iddfs-vs-dfs.md** (new)
    - Benchmark results and analysis (~200 lines)
 
-4. **.opencode/specs/317_bfs_variant_phase3/summaries/implementation-summary-YYYYMMDD.md** (new)
+4. **specs/317_bfs_variant_phase3/summaries/implementation-summary-YYYYMMDD.md** (new)
    - Implementation summary with results (~100 lines)
 
 ---

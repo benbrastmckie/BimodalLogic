@@ -171,7 +171,7 @@ Extension Dependency Structure:
 
 ## Dependencies
 
-- Research report completed: `.claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md`
+- Research report completed: `specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md`
 - Task 434 (README refactor) completed: Provides baseline README structure
 - No external dependencies
 

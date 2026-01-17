@@ -197,7 +197,7 @@ This plan integrates findings from research-001.md (2026-01-05):
 **Tasks**:
 1. Create test copy of TODO.md:
    ```bash
-   cp .opencode/specs/TODO.md /tmp/TODO-test.md
+   cp specs/TODO.md /tmp/TODO-test.md
    ```
 2. Run formatter on test copy:
    ```bash
@@ -217,7 +217,7 @@ This plan integrates findings from research-001.md (2026-01-05):
    - Code blocks with --- or ### in content
 5. Compare before/after with diff:
    ```bash
-   diff -u .opencode/specs/TODO.md /tmp/TODO-test.md
+   diff -u specs/TODO.md /tmp/TODO-test.md
    ```
 6. Fix any bugs discovered
 
@@ -249,7 +249,7 @@ This plan integrates findings from research-001.md (2026-01-05):
 2. Modify Stage 4 process:
    ```markdown
    4. Format TODO.md (NEW):
-      - Command: python3 .opencode/scripts/format_markdown.py .opencode/specs/TODO.md
+      - Command: python3 .opencode/scripts/format_markdown.py specs/TODO.md
       - Capture stdout, stderr, exit code
       - Timeout: 30 seconds
    5. Check formatting exit code:

@@ -18,7 +18,7 @@ Restructured the context loading patterns in `meta-builder-agent.md` to match th
   - Replaced detailed 18-line guidance with 6-line cross-reference to meta-builder-agent.md
   - Added quick reference summary for navigation
 
-- `.claude/specs/463_meta_context_loading_improvements/plans/implementation-001.md` - Phase status updates
+- `specs/463_meta_context_loading_improvements/plans/implementation-001.md` - Phase status updates
 
 ## Verification
 

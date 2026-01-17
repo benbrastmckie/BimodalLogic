@@ -405,7 +405,7 @@ See: [research-001.md](../reports/research-001.md) (comprehensive synthesis)
 ```markdown
 <lazy_creation>
   1. Project root creation:
-     - Create `.opencode/specs/NNN_{slug}/` when writing first artifact
+     - Create `specs/NNN_{slug}/` when writing first artifact
      - Same timing as current behavior (no change)
   
   2. reports/ creation:
@@ -430,13 +430,13 @@ See: [research-001.md](../reports/research-001.md) (comprehensive synthesis)
 def create_directories(divide_flag: bool, artifact_type: str):
     if artifact_type == "subtopic_report":
         # First subtopic report triggers project root + reports/
-        create_if_not_exists(".opencode/specs/NNN_slug/")
-        create_if_not_exists(".opencode/specs/NNN_slug/reports/")
+        create_if_not_exists("specs/NNN_slug/")
+        create_if_not_exists("specs/NNN_slug/reports/")
     
     elif artifact_type == "aggregated_summary":
         # Only create summaries/ if --divide flag used
         if divide_flag:
-            create_if_not_exists(".opencode/specs/NNN_slug/summaries/")
+            create_if_not_exists("specs/NNN_slug/summaries/")
         else:
             # Standard research: no summaries/ directory
             pass

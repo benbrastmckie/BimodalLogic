@@ -188,8 +188,8 @@ Research report (research-001.md) identified:
 - `Theories/Bimodal/Semantics/TaskFrame.lean` - FiniteTaskFrame definition
 - `Theories/Bimodal/Semantics/Validity.lean` - formula_satisfiable definition
 - `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - FMP theorem and bounds
-- `.claude/specs/489_formal_fmp_theorem_packaging/plans/implementation-001.md` (this file)
-- `.claude/specs/489_formal_fmp_theorem_packaging/summaries/implementation-summary-YYYYMMDD.md` (on completion)
+- `specs/489_formal_fmp_theorem_packaging/plans/implementation-001.md` (this file)
+- `specs/489_formal_fmp_theorem_packaging/summaries/implementation-summary-YYYYMMDD.md` (on completion)
 
 ## Rollback/Contingency
 

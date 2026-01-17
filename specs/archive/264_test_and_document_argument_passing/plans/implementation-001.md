@@ -155,7 +155,7 @@ Test the new argument passing mechanism with all commands and document the resul
 ## Artifacts & Outputs
 
 **Primary Artifacts**:
-- `.opencode/specs/264_test_and_document_argument_passing/reports/test-results.md` - Test results
+- `specs/264_test_and_document_argument_passing/reports/test-results.md` - Test results
 - `.opencode/docs/guides/argument-passing-guide.md` - User guide (if created)
 
 **Secondary Artifacts**:

@@ -6,8 +6,8 @@
 - **Priority**: High
 - **Dependencies**: None
 - **Research Inputs**: 
-  - Main Report: .opencode/specs/212_research_lean_lsp_mcp_usage/reports/research-001.md
-  - Summary: .opencode/specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md
+  - Main Report: specs/212_research_lean_lsp_mcp_usage/reports/research-001.md
+  - Summary: specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -198,8 +198,8 @@ Research identified that lean-lsp-mcp is properly configured in .mcp.json but co
 **Documentation Artifacts**:
 - .opencode/agent/subagents/lean-implementation-agent.md (updated)
 - .opencode/context/project/lean4/tools/mcp-tools-guide.md (updated)
-- .opencode/specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md (this file)
-- .opencode/specs/212_research_lean_lsp_mcp_usage/summaries/implementation-summary-YYYYMMDD.md
+- specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md (this file)
+- specs/212_research_lean_lsp_mcp_usage/summaries/implementation-summary-YYYYMMDD.md
 
 **Project Documentation**:
 - TODO.md (task 212 status updated to [COMPLETED])

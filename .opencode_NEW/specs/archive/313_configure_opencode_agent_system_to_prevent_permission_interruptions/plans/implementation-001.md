@@ -18,7 +18,7 @@
 - **Dependencies**: None
 - **Blocking**: None
 - **Research Inputs**: 
-  - Research Report: `.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/reports/research-001.md`
+  - Research Report: `specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/reports/research-001.md`
   - Research completed: 2026-01-05
   - Research effort: 3 hours
 
@@ -186,7 +186,7 @@ This plan integrates findings from 1 research report created for this task:
      <process>
        1. Stage files that will be modified:
           ```bash
-          git add .opencode/specs/TODO.md .opencode/specs/state.json
+          git add specs/TODO.md specs/state.json
           ```
        2. Create safety commit:
           ```bash
@@ -282,7 +282,7 @@ This plan integrates findings from 1 research report created for this task:
    permissions:
      allow:
        - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
-       - write: [".opencode/specs/**/*", "docs/research/**/*"]
+       - write: ["specs/**/*", "docs/research/**/*"]
        - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
    ```
    
@@ -291,7 +291,7 @@ This plan integrates findings from 1 research report created for this task:
    permissions:
      allow:
        - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
-       - write: [".opencode/specs/**/*"]
+       - write: ["specs/**/*"]
        - bash: ["git", "grep", "find", "wc", "jq"]
    ```
    
@@ -300,7 +300,7 @@ This plan integrates findings from 1 research report created for this task:
    permissions:
      allow:
        - read: ["**/*"]
-       - write: ["**/*.lean", "**/*.md", ".opencode/specs/**/*"]
+       - write: ["**/*.lean", "**/*.md", "specs/**/*"]
        - edit: ["**/*.lean", "**/*.md"]
        - bash: ["git", "lake", "grep", "find", "wc", "jq"]
      deny:
@@ -476,7 +476,7 @@ This plan integrates findings from 1 research report created for this task:
    permissions:
      allow:
        - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
-       - write: [".opencode/specs/**/*"]
+       - write: ["specs/**/*"]
        - bash: ["git", "grep", "find", "wc", "jq"]
      deny:
        - bash: ["rm -rf", "sudo", "chmod +x"]
@@ -488,7 +488,7 @@ This plan integrates findings from 1 research report created for this task:
    permissions:
      allow:
        - read: ["**/*"]
-       - write: ["**/*.lean", "**/*.md", ".opencode/specs/**/*"]
+       - write: ["**/*.lean", "**/*.md", "specs/**/*"]
        - bash: ["git", "lake", "grep", "find"]
      deny:
        - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
@@ -608,7 +608,7 @@ This plan integrates findings from 1 research report created for this task:
    - `.opencode/docs/guides/permission-configuration.md` (new guide)
 
 4. **Implementation summary**:
-   - `.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/summaries/implementation-summary-20260105.md`
+   - `specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/summaries/implementation-summary-20260105.md`
 
 ### Supporting Artifacts
 

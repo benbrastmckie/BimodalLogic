@@ -5,7 +5,7 @@
 - **Effort**: 4 hours
 - **Priority**: normal
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md
+- **Research Inputs**: specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: latex
@@ -270,7 +270,7 @@ Key findings from research-001.md integrated:
 ## Artifacts & Outputs
 
 - Modified: `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/02-Semantics.tex`
-- Summary: `.claude/specs/456_address_todos_in_bimodal_semantics_latex/summaries/implementation-summary-{DATE}.md` (on completion)
+- Summary: `specs/456_address_todos_in_bimodal_semantics_latex/summaries/implementation-summary-{DATE}.md` (on completion)
 
 ## Rollback/Contingency
 

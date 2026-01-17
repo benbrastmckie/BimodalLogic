@@ -14,7 +14,7 @@
 - Broken reference detection
 
 **Artifacts**:
-- This research report: .opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/reports/research-001.md
+- This research report: specs/327_review_context_file_references_and_optimize_context_loading_strategy/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 

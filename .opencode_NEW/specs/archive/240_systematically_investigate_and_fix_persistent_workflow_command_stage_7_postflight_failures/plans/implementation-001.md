@@ -5,7 +5,7 @@
 - **Effort**: 8 hours
 - **Priority**: Critical
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md
+- **Research Inputs**: specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -184,7 +184,7 @@ Research definitively identified the root cause of persistent Stage 7 (Postfligh
 ## Artifacts & Outputs
 
 **Implementation Artifacts:**
-- .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-001.md (this file)
+- specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-001.md (this file)
 
 **Modified Files:**
 - .opencode/agent/orchestrator.md (delegation registry, ValidateReturn step, helper functions)

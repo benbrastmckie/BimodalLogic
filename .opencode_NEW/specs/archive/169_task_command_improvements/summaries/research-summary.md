@@ -40,4 +40,4 @@
 
 ## Full Report
 
-See: .opencode/specs/169_task_command_improvements/reports/research-001.md
+See: specs/169_task_command_improvements/reports/research-001.md

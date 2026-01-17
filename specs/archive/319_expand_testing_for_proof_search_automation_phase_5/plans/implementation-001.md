@@ -114,7 +114,7 @@ This plan creates a comprehensive test suite for the proof search automation sys
 
 **Files to modify**:
 - `LogosTest/Core/Automation/ProofSearchBenchmark.lean` - Add timing
-- `.claude/specs/319_expand_testing_for_proof_search_automation_phase_5/benchmarks/performance-baseline.md` - New
+- `specs/319_expand_testing_for_proof_search_automation_phase_5/benchmarks/performance-baseline.md` - New
 
 **Steps**:
 1. Add timing wrapper using `IO.monoNanosNow`:

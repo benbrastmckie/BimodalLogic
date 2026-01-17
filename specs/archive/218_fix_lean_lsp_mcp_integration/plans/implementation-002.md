@@ -6,9 +6,9 @@
 - **Priority**: High
 - **Dependencies**: 212 (completed)
 - **Research Inputs**: 
-  - Main Report: .opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md
-  - Previous Report: .opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md
-  - Summary: .opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary-002.md
+  - Main Report: specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md
+  - Previous Report: specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md
+  - Summary: specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary-002.md
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -211,9 +211,9 @@ This revised plan replaces the custom wrapper approach with a proper MCP client 
 6. **Comparison Table** (research-002.md lines 477-493): MCP SDK approach superior in every metric: uses official SDK, protocol fully implemented, stdio transport, separate process, no PYTHONPATH needed, no `__init__.py` needed, lower complexity, SDK maintained, MCP ecosystem compatible, built-in error handling, MCP Inspector testing, official docs.
 
 **Research Artifacts Referenced**:
-- Main Report: `.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md` (863 lines)
-- Previous Report: `.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md` (897 lines)
-- Summary: `.opencode/specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary-002.md`
+- Main Report: `specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md` (863 lines)
+- Previous Report: `specs/218_fix_lean_lsp_mcp_integration/reports/research-001.md` (897 lines)
+- Summary: `specs/218_fix_lean_lsp_mcp_integration/summaries/research-summary-002.md`
 
 **Implementation Confidence**: Very High (95%+)
 - Research confirms MCP SDK is standard approach used by all major MCP clients

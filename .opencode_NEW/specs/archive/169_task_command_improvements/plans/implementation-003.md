@@ -10,7 +10,7 @@
 - **Effort**: 8-9 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/169_task_command_improvements/reports/research-001.md (820 lines)
+- **Research Inputs**: specs/169_task_command_improvements/reports/research-001.md (820 lines)
 - **Artifacts**: plans/implementation-003.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -324,10 +324,10 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
 
 ## Artifacts & Outputs
 
-- **Plans**: .opencode/specs/169_task_command_improvements/plans/implementation-003.md (this file)
-- **Summaries**: .opencode/specs/169_task_command_improvements/summaries/plan-summary-v3.md
-- **Audit Report**: .opencode/specs/169_task_command_improvements/summaries/consumers-audit.md (created during Phase 0)
-- **Rename Audit**: .opencode/specs/169_task_command_improvements/summaries/rename-audit.md (created during Phase 0)
+- **Plans**: specs/169_task_command_improvements/plans/implementation-003.md (this file)
+- **Summaries**: specs/169_task_command_improvements/summaries/plan-summary-v3.md
+- **Audit Report**: specs/169_task_command_improvements/summaries/consumers-audit.md (created during Phase 0)
+- **Rename Audit**: specs/169_task_command_improvements/summaries/rename-audit.md (created during Phase 0)
 - **Updated Commands**: 
   - .opencode/command/implement.md (renamed from task.md)
   - .opencode/command/optimize.md (if needed)
@@ -335,8 +335,8 @@ The /implement command (formerly /task) and its subagents (task-executor, batch-
   - .opencode/agent/subagents/task-executor.md
   - .opencode/agent/subagents/batch-task-orchestrator.md
 - **Updated Standards**: .opencode/context/core/system/artifact-management.md
-- **Test Results**: .opencode/specs/169_task_command_improvements/summaries/test-results-v3.md (created during Phase 7)
-- **Migration Guide**: .opencode/specs/169_task_command_improvements/summaries/migration-guide-v3.md (created during Phase 8)
+- **Test Results**: specs/169_task_command_improvements/summaries/test-results-v3.md (created during Phase 7)
+- **Migration Guide**: specs/169_task_command_improvements/summaries/migration-guide-v3.md (created during Phase 8)
 
 ## Rollback/Contingency
 

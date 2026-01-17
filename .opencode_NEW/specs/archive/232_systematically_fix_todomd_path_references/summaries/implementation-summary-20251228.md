@@ -7,7 +7,7 @@
 
 ## Overview
 
-Successfully completed all 6 phases of the implementation plan, fixing 150+ relative TODO.md references across the OpenCode system and migrating 31 unique tasks from root TODO.md to canonical .opencode/specs/TODO.md.
+Successfully completed all 6 phases of the implementation plan, fixing 150+ relative TODO.md references across the OpenCode system and migrating 31 unique tasks from root TODO.md to canonical specs/TODO.md.
 
 ## Phase 1: Critical Path Fixes - Bash Commands and File I/O [PASS]
 
@@ -21,8 +21,8 @@ Successfully completed all 6 phases of the implementation plan, fixing 150+ rela
 - `.opencode/agent/subagents/atomic-task-numberer.md` - Fixed 8 file I/O references
 
 **Changes**:
-- All bash commands now use `.opencode/specs/TODO.md` instead of `TODO.md`
-- All file I/O operations now use `.opencode/specs/TODO.md` instead of `TODO.md`
+- All bash commands now use `specs/TODO.md` instead of `TODO.md`
+- All file I/O operations now use `specs/TODO.md` instead of `TODO.md`
 - Language extraction works correctly (routes to lean-research-agent for Lean tasks)
 - Status updates write to canonical TODO.md only
 - Task numbering reads from canonical TODO.md only
@@ -44,7 +44,7 @@ Successfully completed all 6 phases of the implementation plan, fixing 150+ rela
 - `.opencode/command/errors.md` - Fixed all references
 
 **Changes**:
-- All 91 references in command files now use `.opencode/specs/TODO.md`
+- All 91 references in command files now use `specs/TODO.md`
 - Error messages reference correct TODO.md path
 - Documentation strings reference correct TODO.md path
 
@@ -64,7 +64,7 @@ Successfully completed all 6 phases of the implementation plan, fixing 150+ rela
 - `.opencode/agent/orchestrator.md` - Fixed all references (discovered during validation)
 
 **Changes**:
-- All 33+ references in subagent files now use `.opencode/specs/TODO.md`
+- All 33+ references in subagent files now use `specs/TODO.md`
 - Subagents read task data from canonical TODO.md
 - Planner creates plans with correct task references
 - Reviewer creates review tasks in canonical TODO.md
@@ -84,7 +84,7 @@ Successfully completed all 6 phases of the implementation plan, fixing 150+ rela
 - All other context files with TODO.md references
 
 **Changes**:
-- All 30+ references in context files now use `.opencode/specs/TODO.md`
+- All 30+ references in context files now use `specs/TODO.md`
 - Documentation references correct TODO.md location
 - Workflow descriptions reference correct TODO.md path
 - Command lifecycle documentation accurate
@@ -125,7 +125,7 @@ Successfully completed all 6 phases of the implementation plan, fixing 150+ rela
 1. [PASS] Final validation: All 31 tasks migrated, no duplicates
 2. [PASS] Static analysis: Zero relative TODO.md references in critical files
 3. [PASS] Root TODO.md removed from project root
-4. [PASS] Canonical TODO.md verified at `.opencode/specs/TODO.md`
+4. [PASS] Canonical TODO.md verified at `specs/TODO.md`
 5. [PASS] Backup preserved at `TODO.md.backup`
 
 **Final Static Analysis Results**:
@@ -150,7 +150,7 @@ Successfully completed all 6 phases of the implementation plan, fixing 150+ rela
 - command-lifecycle.md, review.md, documentation.md, commands.md, command-argument-handling.md, subagent-return-format.md, tasks.md, self-healing-guide.md, artifact-management.md, status-markers.md, context-guide.md, state-schema.md, command-template.md, maintenance-workflow.md, maintenance-report-template.md, self-healing-implementation-details.md
 
 **Task Files**:
-- `.opencode/specs/TODO.md` - Merged with 31 migrated tasks (56 total tasks)
+- `specs/TODO.md` - Merged with 31 migrated tasks (56 total tasks)
 - `TODO.md` - Removed from project root
 - `TODO.md.backup` - Created and preserved
 
@@ -167,9 +167,9 @@ Successfully completed all 6 phases of the implementation plan, fixing 150+ rela
 
 ### Immediate Benefits
 
-1. **Eliminates Context-Dependent Path Resolution**: All commands, agents, and context files now use explicit `.opencode/specs/TODO.md` paths, preventing failures when working directory changes.
+1. **Eliminates Context-Dependent Path Resolution**: All commands, agents, and context files now use explicit `specs/TODO.md` paths, preventing failures when working directory changes.
 
-2. **Consolidates Task Tracking**: Single canonical TODO.md file at `.opencode/specs/TODO.md` contains all 56 tasks, eliminating confusion and potential data corruption.
+2. **Consolidates Task Tracking**: Single canonical TODO.md file at `specs/TODO.md` contains all 56 tasks, eliminating confusion and potential data corruption.
 
 3. **Preserves All Task Data**: All 31 unique Logos project tasks successfully migrated with no data loss, maintaining completion timestamps and artifact links.
 
@@ -205,9 +205,9 @@ While all phases completed successfully, the following integration tests are rec
 
 ## Artifacts Created
 
-1. **Implementation Summary**: `.opencode/specs/232_systematically_fix_todomd_path_references/summaries/implementation-summary-20251228.md`
+1. **Implementation Summary**: `specs/232_systematically_fix_todomd_path_references/summaries/implementation-summary-20251228.md`
 2. **Backup File**: `TODO.md.backup` (preserved for safety)
-3. **Merged TODO.md**: `.opencode/specs/TODO.md` (56 tasks)
+3. **Merged TODO.md**: `specs/TODO.md` (56 tasks)
 
 ## Completion Status
 

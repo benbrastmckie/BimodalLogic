@@ -69,7 +69,7 @@ No active code, documentation, or configuration references these archived files.
 
 ## References
 
-- Task 354 summary: `.claude/specs/354_refactor_archive_directory/summaries/implementation-summary-20260110.md`
+- Task 354 summary: `specs/354_refactor_archive_directory/summaries/implementation-summary-20260110.md`
 - Current layer docs: `Theories/Logos/docs/Research/layer-extensions.md`
 - Current dual verification: `docs/Research/dual-verification.md`
 - Current proof library: `docs/Research/proof-library-design.md`

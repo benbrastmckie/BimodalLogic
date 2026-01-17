@@ -448,7 +448,7 @@ grep -c "example" Logos/Core/Automation/README.md
    - Status: [NOT STARTED]
 
 3. **Implementation Summary** (new)
-   - Location: `.opencode/specs/259_automation_tactics/summaries/implementation-summary-20260104.md`
+   - Location: `specs/259_automation_tactics/summaries/implementation-summary-20260104.md`
    - Purpose: Summary of implementation work
    - Status: [NOT STARTED]
 
@@ -602,7 +602,7 @@ This plan integrates key findings from research-001.md:
 
 ### References
 
-- Research Report: `.opencode/specs/259_automation_tactics/reports/research-001.md`
+- Research Report: `specs/259_automation_tactics/reports/research-001.md`
 - TACTIC_REGISTRY.md: `docs/project-info/TACTIC_REGISTRY.md`
 - ProofSearch.lean: `Logos/Core/Automation/ProofSearch.lean`
 - Tactics.lean: `Logos/Core/Automation/Tactics.lean`

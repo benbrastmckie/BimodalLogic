@@ -16,7 +16,7 @@ This plan restructures the ProofChecker .opencode system to implement:
 4. Language-based routing via orchestrator
 5. Clear validation strategy
 
-**Important**: `.opencode/specs/` remains unchanged. All tasks, TODO.md, state.json, and project directories stay exactly as they are.
+**Important**: `specs/` remains unchanged. All tasks, TODO.md, state.json, and project directories stay exactly as they are.
 
 ---
 
@@ -467,7 +467,7 @@ Updated in Stage 4 (PrepareContext) and Stage 7 (PostflightCleanup).
   "new_status": "researched",
   "timestamp": "2025-12-29T08:13:37Z",
   "artifacts": [
-    ".opencode/specs/244_phase_1/reports/research-001.md"
+    "specs/244_phase_1/reports/research-001.md"
   ]
 }
 ```
@@ -615,7 +615,7 @@ If validation fails:
   "artifacts": [
     {
       "type": "plan",
-      "path": ".opencode/specs/244_context_refactor/plans/implementation-001.md",
+      "path": "specs/244_context_refactor/plans/implementation-001.md",
       "summary": "3-phase implementation plan"
     }
   ],
@@ -675,7 +675,7 @@ If validation fails:
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/246_feature/summaries/implementation-summary.md",
+      "path": "specs/246_feature/summaries/implementation-summary.md",
       "summary": "Partial implementation summary"
     }
   ],
@@ -1648,7 +1648,7 @@ git checkout .opencode/QUICK-START.md
 ### Overall Success
 - [ ] All phases complete
 - [ ] System functions correctly
-- [ ] `.opencode/specs/` unchanged
+- [ ] `specs/` unchanged
 - [ ] TODO.md and state.json unchanged
 - [ ] All tasks and projects preserved
 

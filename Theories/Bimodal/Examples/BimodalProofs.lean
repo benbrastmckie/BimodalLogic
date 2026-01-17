@@ -210,7 +210,7 @@ TODO: Re-enable when Task 260 (ProofSearch) is unblocked.
 -/
 
 -- ProofSearch examples commented out - Task 260 is BLOCKED
--- See: .claude/specs/260_proof_search/plans/implementation-001.md
+-- See: specs/260_proof_search/plans/implementation-001.md
 
 /-!
 ## Summary

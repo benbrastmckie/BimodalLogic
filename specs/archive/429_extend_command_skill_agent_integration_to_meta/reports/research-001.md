@@ -219,7 +219,7 @@ Based on creating-skills.md and creating-agents.md:
 - `.claude/docs/guides/creating-skills.md` - Skill creation guide
 - `.claude/docs/guides/creating-agents.md` - Agent creation guide
 - `.claude/docs/examples/research-flow-example.md` - Integration example
-- `.claude/specs/427_document_command_skill_subagent_framework/summaries/implementation-summary-20260112.md` - Task 427 summary
+- `specs/427_document_command_skill_subagent_framework/summaries/implementation-summary-20260112.md` - Task 427 summary
 
 ## Next Steps
 

@@ -20,7 +20,7 @@ The TODO.md shows Task 263 as `[IMPLEMENTING]` with status "in_progress", but th
 | state.json | status: "in_progress", phase: "implementing" |
 | Actual Summary | Implementation completed 2026-01-08 |
 
-**Implementation Summary** (`.claude/specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md`):
+**Implementation Summary** (`specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md`):
 > Refactored Context.lean by replacing custom map recursion with List.map, adding isEmpty and singleton helpers, and proving 10 new structural theorems. Updated ContextTest.lean with 15 additional test cases covering new functionality. All dependent files compile successfully including GeneralizedNecessitation and AesopRules.
 
 ### 2. Artifact Link Mismatch
@@ -29,11 +29,11 @@ The TODO.md entry for Task 263 links to wrong artifacts:
 
 | Field | Current (Wrong) | Should Be |
 |-------|-----------------|-----------|
-| Plan | `.claude/specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md` | `.claude/specs/263_refactor_context_lean/plans/implementation-001.md` (if exists) |
+| Plan | `specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md` | `specs/263_refactor_context_lean/plans/implementation-001.md` (if exists) |
 
 There are TWO directories for "task 263":
-- `.claude/specs/263_refactor_context_lean/` - The correct task (Lean refactoring)
-- `.claude/specs/263_update_all_commands_for_new_argument_mechanism/` - A different meta task that was incorrectly numbered
+- `specs/263_refactor_context_lean/` - The correct task (Lean refactoring)
+- `specs/263_update_all_commands_for_new_argument_mechanism/` - A different meta task that was incorrectly numbered
 
 ### 3. Current State of Context.lean
 
@@ -85,17 +85,17 @@ If the original intent differs from what was implemented:
 
 ## References
 
-- Implementation Summary: `.claude/specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md`
+- Implementation Summary: `specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md`
 - Context.lean: `Theories/Bimodal/Syntax/Context.lean`
 - Context Tests: `Tests/BimodalTest/Syntax/ContextTest.lean`
-- Task 376 Plan: `.claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md`
+- Task 376 Plan: `specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md`
 
 ## Next Steps
 
 1. **Immediate**: Update state.json and TODO.md to mark Task 263 as COMPLETED
 2. **Fix Links**: Correct the artifact links in TODO.md for Task 263
 3. **Assess 264**: Determine if Task 264 should be completed or abandoned
-4. **Clean Up**: Consider archiving the incorrect artifact directory (`.claude/specs/263_update_all_commands_for_new_argument_mechanism/`)
+4. **Clean Up**: Consider archiving the incorrect artifact directory (`specs/263_update_all_commands_for_new_argument_mechanism/`)
 
 ## Evidence of Completion
 

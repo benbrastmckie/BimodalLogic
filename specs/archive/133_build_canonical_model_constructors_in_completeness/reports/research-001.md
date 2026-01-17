@@ -7,7 +7,7 @@
 **Priority**: High (blocks remaining completeness proof)
 **Dependencies**: Task 132 (Lindenbaum lemma - completed)
 **Sources/Inputs**: Mathlib.Order.Zorn, Bimodal.Semantics.*, Bimodal.ProofSystem.*, Bimodal.Metalogic.DeductionTheorem
-**Artifacts**: This report (.claude/specs/133_build_canonical_model_constructors_in_completeness/reports/research-001.md)
+**Artifacts**: This report (specs/133_build_canonical_model_constructors_in_completeness/reports/research-001.md)
 **Standards**: report-format.md, subagent-return.md
 
 ## Executive Summary

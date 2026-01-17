@@ -45,9 +45,9 @@ Complete the remaining 15% of task 193 by adding a simple involution helper lemm
 
 ## Research Inputs
 
-**Research Report**: `.opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md`  
-**Implementation Report**: `.opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md`  
-**Implementation Summary**: `.opencode/specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md`
+**Research Report**: `specs/193_prove_is_valid_swap_involution/reports/research-001.md`  
+**Implementation Report**: `specs/193_prove_is_valid_swap_involution/reports/implementation-001.md`  
+**Implementation Summary**: `specs/193_prove_is_valid_swap_involution/summaries/implementation-summary.md`
 
 **Key Implementation Findings**:
 - Type theory issue: Cannot transport `truth_at M τ t ht φ.swap` to `truth_at M τ t ht φ.swap.swap` via propositional equality `φ.swap.swap = φ.swap`

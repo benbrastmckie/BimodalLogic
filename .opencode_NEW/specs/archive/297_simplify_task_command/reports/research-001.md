@@ -6,7 +6,7 @@
 **Effort**: 4 hours  
 **Priority**: High  
 **Dependencies**: None  
-**Sources/Inputs**: .opencode/command/task.md, .opencode/agent/subagents/description-clarifier.md, .opencode/agent/subagents/task-creator.md, .opencode/agent/subagents/status-sync-manager.md, .opencode/specs/state.json, .opencode/specs/TODO.md, .opencode/context/core/standards/tasks.md  
+**Sources/Inputs**: .opencode/command/task.md, .opencode/agent/subagents/description-clarifier.md, .opencode/agent/subagents/task-creator.md, .opencode/agent/subagents/status-sync-manager.md, specs/state.json, specs/TODO.md, .opencode/context/core/standards/tasks.md  
 **Artifacts**: research-001.md  
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -812,13 +812,13 @@ fi
 title=$(echo "$description" | head -c 80)
 
 # Validate state.json exists
-if [[ ! -f .opencode/specs/state.json ]]; then
+if [[ ! -f specs/state.json ]]; then
   echo "ERROR: state.json not found. Run /todo to regenerate."
   exit 1
 fi
 
 # Read next_project_number from state.json
-next_number=$(jq -r '.next_project_number' .opencode/specs/state.json)
+next_number=$(jq -r '.next_project_number' specs/state.json)
 if [[ -z "$next_number" || "$next_number" == "null" ]]; then
   echo "ERROR: state.json missing next_project_number field"
   exit 1
@@ -1327,12 +1327,12 @@ Add documentation for --divide flag to task.md and tasks.md, explaining task sub
 
 ### Secondary Sources
 
-6. **state.json** (.opencode/specs/state.json)
+6. **state.json** (specs/state.json)
    - next_project_number field (current: 303)
    - active_projects array
    - Project metadata schema
 
-7. **TODO.md** (.opencode/specs/TODO.md)
+7. **TODO.md** (specs/TODO.md)
    - Task entry format
    - Priority sections (High, Medium, Low)
    - Artifact links

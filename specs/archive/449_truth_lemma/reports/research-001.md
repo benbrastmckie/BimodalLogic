@@ -7,7 +7,7 @@
 **Priority**: Low
 **Dependencies**: Task 448 (completed), Task 458 (completed)
 **Sources/Inputs**: FiniteCanonicalModel.lean, Task 458 implementation summary, parent task 257 research
-**Artifacts**: .claude/specs/449_truth_lemma/reports/research-001.md
+**Artifacts**: specs/449_truth_lemma/reports/research-001.md
 **Standards**: report-format.md, subagent-return.md
 
 ## Executive Summary
@@ -346,7 +346,7 @@ This aligns with the task estimate of 15-20 hours.
 - `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Main implementation
 - `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean` - Subformula definitions
 - `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Syntax/Formula.lean` - Formula type and properties
-- `/home/benjamin/Projects/ProofChecker/.claude/specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-20260113.md` - Task 458 completion summary
+- `/home/benjamin/Projects/ProofChecker/specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-20260113.md` - Task 458 completion summary
 
 ### References
 

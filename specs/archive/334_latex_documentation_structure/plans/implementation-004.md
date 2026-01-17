@@ -57,7 +57,7 @@ This plan creates LaTeX reference documentation for the Logos system while simul
 
 **Files to modify**:
 - `.claude/skills/skill-latex-implementation/SKILL.md` - Add context references
-- `.claude/specs/state.json` - Update task 334 language to "latex"
+- `specs/state.json` - Update task 334 language to "latex"
 
 **Steps**:
 

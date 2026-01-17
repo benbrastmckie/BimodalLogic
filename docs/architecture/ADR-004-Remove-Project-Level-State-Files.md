@@ -8,13 +8,13 @@
 
 The system previously maintained duplicate state information in two locations:
 
-1. **Central state file**: `.opencode/specs/state.json`
+1. **Central state file**: `specs/state.json`
    - Authoritative source for all project state
    - Queried by all commands and agents
    - Contains comprehensive project metadata in `active_projects` array
    - Single source of truth for project numbering
 
-2. **Project-level state files**: `.opencode/specs/{number}_{slug}/state.json`
+2. **Project-level state files**: `specs/{number}_{slug}/state.json`
    - Created lazily by status-sync-manager on first artifact write
    - Write-only (never read by any command or agent)
    - Contains subset of data already in central state.json
@@ -224,9 +224,9 @@ Specifically:
 
 ## References
 
-- **Research Report**: `.opencode/specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md`
-- **Implementation Plan**: `.opencode/specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md`
-- **Task**: Task 276 in `.opencode/specs/TODO.md`
+- **Research Report**: `specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md`
+- **Implementation Plan**: `specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md`
+- **Task**: Task 276 in `specs/TODO.md`
 
 ## Future Considerations
 

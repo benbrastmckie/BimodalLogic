@@ -4,13 +4,13 @@
   "type": "bugfix",
   "phase": "implementation_completed",
   "reports": [
-    ".opencode/specs/232_systematically_fix_todomd_path_references/reports/research-001.md"
+    "specs/232_systematically_fix_todomd_path_references/reports/research-001.md"
   ],
   "plans": [
-    ".opencode/specs/232_systematically_fix_todomd_path_references/plans/implementation-001.md"
+    "specs/232_systematically_fix_todomd_path_references/plans/implementation-001.md"
   ],
   "summaries": [
-    ".opencode/specs/232_systematically_fix_todomd_path_references/summaries/implementation-summary-20251228.md"
+    "specs/232_systematically_fix_todomd_path_references/summaries/implementation-summary-20251228.md"
   ],
   "status": "completed",
   "created": "2025-12-29T01:42:33Z",

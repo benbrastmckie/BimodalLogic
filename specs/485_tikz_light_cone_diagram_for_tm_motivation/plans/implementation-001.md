@@ -5,7 +5,7 @@
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md
+- **Research Inputs**: specs/485_tikz_light_cone_diagram_for_tm_motivation/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: latex
@@ -143,7 +143,7 @@ From research-001.md:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/latex/subfiles/00-Introduction.tex` - Modified with TikZ diagram
-- `.claude/specs/485_tikz_light_cone_diagram_for_tm_motivation/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/485_tikz_light_cone_diagram_for_tm_motivation/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

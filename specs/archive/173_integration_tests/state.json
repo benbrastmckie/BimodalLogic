@@ -12,19 +12,19 @@
   "artifacts": [
     {
       "type": "research_report",
-      "path": ".opencode/specs/173_integration_tests/reports/research-001.md",
+      "path": "specs/173_integration_tests/reports/research-001.md",
       "created": "2025-12-24T23:59:59Z",
       "description": "Comprehensive research report on integration testing for proof system and semantics"
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/173_integration_tests/summaries/research-summary.md",
+      "path": "specs/173_integration_tests/summaries/research-summary.md",
       "created": "2025-12-24T23:59:59Z",
       "description": "Brief research summary with key findings and recommendations"
     },
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/173_integration_tests/summaries/implementation-summary-20251225.md",
+      "path": "specs/173_integration_tests/summaries/implementation-summary-20251225.md",
       "created": "2025-12-25",
       "description": "Implementation summary documenting 106 new tests created (82% coverage) but blocked by pre-existing build errors"
     }

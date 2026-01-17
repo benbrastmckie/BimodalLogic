@@ -224,25 +224,25 @@ Minor observations:
 ### Generated Artifacts
 
 **Test Scripts**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/test-stage7-reliability.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/validate-artifacts.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/measure-context-usage.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/track-stage7-rate.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/test-stage7-reliability.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/validate-artifacts.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/measure-context-usage.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/track-stage7-rate.sh`
 
 **Test Logs**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/logs/test-stage7-reliability-*.log`
-- `.opencode/specs/247_phase_4_testing_and_documentation/logs/measure-context-usage-*.log`
-- `.opencode/specs/247_phase_4_testing_and_documentation/logs/validate-artifacts-*.log`
+- `specs/247_phase_4_testing_and_documentation/logs/test-stage7-reliability-*.log`
+- `specs/247_phase_4_testing_and_documentation/logs/measure-context-usage-*.log`
+- `specs/247_phase_4_testing_and_documentation/logs/validate-artifacts-*.log`
 
 **Metrics Data**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/metrics/stage7-results-*.json`
-- `.opencode/specs/247_phase_4_testing_and_documentation/metrics/context-usage-*.json`
+- `specs/247_phase_4_testing_and_documentation/metrics/stage7-results-*.json`
+- `specs/247_phase_4_testing_and_documentation/metrics/context-usage-*.json`
 
 ### Validation Reports Referenced
 
-- **Phase 1 Validation**: `.opencode/specs/244_phase_1_context_index_and_research_prototype/reports/validation-001.md`
-- **Phase 2 Validation**: `.opencode/specs/245_phase_2_core_architecture_migration/reports/validation-001.md`
-- **Phase 3 Validation**: `.opencode/specs/246_phase_3_consolidation/reports/validation-001.md`
+- **Phase 1 Validation**: `specs/244_phase_1_context_index_and_research_prototype/reports/validation-001.md`
+- **Phase 2 Validation**: `specs/245_phase_2_core_architecture_migration/reports/validation-001.md`
+- **Phase 3 Validation**: `specs/246_phase_3_consolidation/reports/validation-001.md`
 
 ---
 

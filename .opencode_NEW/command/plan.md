@@ -47,7 +47,7 @@ context_loading:
          - Else: force_mode=false
       
       2. Validate state.json exists and is valid
-         - Check .opencode/specs/state.json exists
+         - Check specs/state.json exists
          - Validate is valid JSON with jq
          - If missing/corrupt: Return error "Run /meta to regenerate state.json"
       
@@ -55,7 +55,7 @@ context_loading:
          - Use jq to find task by project_number:
            task_data=$(jq -r --arg num "$task_number" \
              '.active_projects[] | select(.project_number == ($num | tonumber))' \
-             .opencode/specs/state.json)
+             specs/state.json)
          - If task_data is empty: Return error "Task $task_number not found"
       
       4. Extract all metadata at once
@@ -185,7 +185,7 @@ context_loading:
          Read state.json to check current status:
          actual_status=$(jq -r --arg num "$task_number" \
            '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-           .opencode/specs/state.json)
+           specs/state.json)
          
          If actual_status != "planning":
            - Log error: "Preflight verification failed"
@@ -425,7 +425,7 @@ context_loading:
          Read state.json to check current status:
          actual_status=$(jq -r --arg num "$task_number" \
            '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-           .opencode/specs/state.json)
+           specs/state.json)
          
          If actual_status != "planned":
            - Log warning: "Postflight verification failed - status not updated"
@@ -437,7 +437,7 @@ context_loading:
          
          Verify artifact links in TODO.md:
          for artifact_path in $(echo "$artifacts_json" | jq -r '.[].path'); do
-           if ! grep -q "$artifact_path" .opencode/specs/TODO.md; then
+           if ! grep -q "$artifact_path" specs/TODO.md; then
              echo "WARNING: Artifact not linked in TODO.md: $artifact_path"
              echo "Manual fix: Edit TODO.md to add artifact link"
            else
@@ -456,7 +456,7 @@ context_loading:
          task(
            subagent_type="git-workflow-manager",
            prompt="{
-             \"scope_files\": [${artifact_paths}, \".opencode/specs/TODO.md\", \".opencode/specs/state.json\"],
+             \"scope_files\": [${artifact_paths}, \"specs/TODO.md\", \"specs/state.json\"],
              \"message_template\": \"task ${task_number}: plan created\",
              \"task_context\": {
                \"task_number\": ${task_number},
@@ -589,14 +589,14 @@ Creates implementation plans with phased breakdown, effort estimates, and resear
 - Project state.json (lazy created if needed)
 
 **Lazy Directory Creation:**
-- `.opencode/specs/{number}_{slug}/` created when writing plan
+- `specs/{number}_{slug}/` created when writing plan
 - `plans/` subdirectory created when writing implementation-001.md
 
 ## Error Handling
 
 **Task Not Found:**
 ```
-Error: Task {task_number} not found in .opencode/specs/TODO.md
+Error: Task {task_number} not found in specs/TODO.md
 Recommendation: Verify task number exists in TODO.md
 ```
 

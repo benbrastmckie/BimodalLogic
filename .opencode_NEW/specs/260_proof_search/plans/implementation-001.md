@@ -11,7 +11,7 @@
 - **Plan Version**: 1
 - **Created**: 2026-01-05
 - **Research Integrated**: Yes
-- **Research Report**: .opencode/specs/260_proof_search/reports/research-001.md
+- **Research Report**: specs/260_proof_search/reports/research-001.md
 
 ## Overview
 

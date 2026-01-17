@@ -19,7 +19,7 @@ tools:
   webfetch: true
 permissions:
   allow:
-    - read: [".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/context/**/*", "docs/**/*"]
+    - read: ["specs/TODO.md", "specs/state.json", ".opencode/context/**/*", "docs/**/*"]
     - bash: ["grep", "find", "jq"]
     - webfetch: ["*"]
   deny:
@@ -121,7 +121,7 @@ This subagent has been deprecated and replaced by inline description reformulati
     <action>Research task context and similar tasks</action>
     <process>
       1. Search TODO.md for similar tasks:
-         - Read .opencode/specs/TODO.md
+         - Read specs/TODO.md
          - Extract keywords from rough description
          - Find tasks with similar keywords using grep
          - Analyze their descriptions for patterns
@@ -482,7 +482,7 @@ This subagent has been deprecated and replaced by inline description reformulati
   - Consistency: Uses project terminology
   
   For detailed documentation, see:
-  - `.opencode/specs/task-command-refactor-plan.md` - Implementation plan
+  - `specs/task-command-refactor-plan.md` - Implementation plan
   - `.opencode/context/core/standards/task-management.md` - Task creation standards
   - `.opencode/context/core/orchestration/state-management.md` - State management
 </notes>

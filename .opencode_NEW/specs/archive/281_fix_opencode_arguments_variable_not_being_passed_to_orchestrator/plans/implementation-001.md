@@ -16,7 +16,7 @@
 **Language**: general  
 **Blocking**: None  
 **Dependencies**: None  
-**Research Report**: `.opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md`
+**Research Report**: `specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md`
 
 **Key Insight from User**: 
 - Task 278's fix to orchestrator argument parsing did NOT work
@@ -197,9 +197,9 @@ The fact that `/research`, `/plan`, and `/revise` work proves that:
 - `.opencode/command/implement.md` - Fix the issue causing `$ARGUMENTS` to be empty
 
 **Documentation**:
-- `.opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/summaries/implementation-summary-YYYYMMDD.md` - Document the fix
-- `.opencode/specs/TODO.md` - Update status to [COMPLETED]
-- `.opencode/specs/state.json` - Update status and completion timestamp
+- `specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/summaries/implementation-summary-YYYYMMDD.md` - Document the fix
+- `specs/TODO.md` - Update status to [COMPLETED]
+- `specs/state.json` - Update status and completion timestamp
 
 **Possibly**:
 - `.opencode/context/core/standards/command-argument-handling.md` - Add note about the issue if it's a common pitfall

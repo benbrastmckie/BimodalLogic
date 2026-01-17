@@ -22,7 +22,7 @@
   - Task 291 (lean-research-agent) - separate issue
 - **Research Integrated**: Yes
 - **Reports Integrated**:
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
 
 ---
 
@@ -244,14 +244,14 @@ This plan integrates findings from research-001.md:
      # Check status in state.json
      status_in_state=$(jq -r --arg num "$task_number" \
        '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-       .opencode/specs/state.json)
+       specs/state.json)
      
      # Check status in TODO.md
-     status_in_todo=$(grep -A 5 "^### $task_number\." .opencode/specs/TODO.md | \
+     status_in_todo=$(grep -A 5 "^### $task_number\." specs/TODO.md | \
        grep -oP '\*\*Status\*\*: \[\K[^\]]+')
      
      # Check artifact link in TODO.md
-     artifact_linked=$(grep -A 20 "^### $task_number\." .opencode/specs/TODO.md | \
+     artifact_linked=$(grep -A 20 "^### $task_number\." specs/TODO.md | \
        grep -q "$research_report_path" && echo "yes" || echo "no")
      
      # Verify all conditions

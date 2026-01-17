@@ -14,8 +14,8 @@
 ## Metadata
 
 **Research Inputs**:
-- Main Report: `.opencode/specs/197_loogle_cli_integration/reports/research-001.md`
-- Summary: `.opencode/specs/197_loogle_cli_integration/summaries/research-summary.md`
+- Main Report: `specs/197_loogle_cli_integration/reports/research-001.md`
+- Summary: `specs/197_loogle_cli_integration/summaries/research-summary.md`
 - API Documentation: `.opencode/context/project/lean4/tools/loogle-api.md`
 
 **Research Findings Summary**:
@@ -428,8 +428,8 @@ The lean-research-agent currently lacks integration with Loogle, a powerful CLI 
 ### Research Artifacts
 
 **Existing Artifacts** (from research phase):
-- `.opencode/specs/197_loogle_cli_integration/reports/research-001.md` - Comprehensive research report
-- `.opencode/specs/197_loogle_cli_integration/summaries/research-summary.md` - Research summary
+- `specs/197_loogle_cli_integration/reports/research-001.md` - Comprehensive research report
+- `specs/197_loogle_cli_integration/summaries/research-summary.md` - Research summary
 - `.opencode/context/project/lean4/tools/loogle-api.md` - API documentation
 
 ### Test Artifacts
@@ -522,7 +522,7 @@ The lean-research-agent currently lacks integration with Loogle, a powerful CLI 
 - Query syntax (constant, name, type, conclusion)
 
 **Documentation**:
-- Research report: `.opencode/specs/197_loogle_cli_integration/reports/research-001.md`
+- Research report: `specs/197_loogle_cli_integration/reports/research-001.md`
 - API documentation: `.opencode/context/project/lean4/tools/loogle-api.md`
 
 ---

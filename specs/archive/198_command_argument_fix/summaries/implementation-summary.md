@@ -61,7 +61,7 @@ Successfully reverted verbose command argument handling workarounds and implemen
 
 ### Phase 3: Investigation
 
-9. **`.opencode/specs/198_command_argument_fix/reports/investigation-001.md`**:
+9. **`specs/198_command_argument_fix/reports/investigation-001.md`**:
    - Root cause analysis
    - Comparison of verbose fix vs $ARGUMENTS
    - Implementation plan
@@ -247,7 +247,7 @@ The $ARGUMENTS pattern was proven in the old system - we just needed to look at 
    - Content: Comprehensive examples, error handling, migration guide
 
 2. **Investigation Report**: Full root cause analysis
-   - Location: `.opencode/specs/198_command_argument_fix/reports/investigation-001.md`
+   - Location: `specs/198_command_argument_fix/reports/investigation-001.md`
    - Content: Problem description, attempted solutions, recommendations
 
 3. **Task 198 in TODO.md**: Complete task definition with implementation plan

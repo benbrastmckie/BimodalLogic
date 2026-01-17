@@ -33,7 +33,7 @@ Why do `/research 161` and `/plan 161` prompt for a task number instead of accep
 - Do not mutate `next_project_number` during research/planning.
 
 ### Lazy-creation guardrails
-- No project roots or subdirectories are created during parsing, validation, or status-only updates. Only create `.opencode/specs/{id_slug}/reports/` (or `/plans/`) at the moment an artifact is written.
+- No project roots or subdirectories are created during parsing, validation, or status-only updates. Only create `specs/{id_slug}/reports/` (or `/plans/`) at the moment an artifact is written.
 - Maintain incremental numbering for reports/plans; avoid speculative directory creation during dry-run/routing-check paths (now removed).
 - Ensure preflight failures do not leave partially created directories.
 

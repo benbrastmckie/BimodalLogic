@@ -7,14 +7,14 @@
 **Priority**: Medium  
 **Dependencies**: None  
 **Sources/Inputs**: 
-- .opencode/specs/TODO.md (current format)
-- .opencode/specs/state.json (metadata source)
+- specs/TODO.md (current format)
+- specs/state.json (metadata source)
 - .opencode/context/core/standards/tasks.md
 - .opencode/context/core/system/state-management.md
 - .opencode/context/core/system/artifact-management.md
 
 **Artifacts**: 
-- .opencode/specs/272_add_yaml_header_to_todo_md/reports/research-001.md
+- specs/272_add_yaml_header_to_todo_md/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -457,8 +457,8 @@ def generate_yaml_header(state_json_path):
 #!/bin/bash
 # Replace TODO.md YAML header with regenerated header
 
-STATE_JSON=".opencode/specs/state.json"
-TODO_MD=".opencode/specs/TODO.md"
+STATE_JSON="specs/state.json"
+TODO_MD="specs/TODO.md"
 TEMP_HEADER="/tmp/todo_header.yaml"
 TEMP_TODO="/tmp/TODO.md.tmp"
 
@@ -665,8 +665,8 @@ rm -f "$TEMP_HEADER" "$TEMP_TODO"
 
 ### Primary Sources
 
-1. **.opencode/specs/TODO.md**: Current TODO.md format (simple text header)
-2. **.opencode/specs/state.json**: Metadata source for YAML header
+1. **specs/TODO.md**: Current TODO.md format (simple text header)
+2. **specs/state.json**: Metadata source for YAML header
 3. **.opencode/context/core/standards/tasks.md**: Task standards and formatting
 4. **.opencode/context/core/system/state-management.md**: State synchronization standards
 5. **.opencode/context/core/system/artifact-management.md**: Artifact structure standards

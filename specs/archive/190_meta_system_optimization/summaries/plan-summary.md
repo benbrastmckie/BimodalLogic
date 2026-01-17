@@ -34,4 +34,4 @@
 
 ## Full Plan
 
-See: .opencode/specs/190_meta_system_optimization/plans/implementation-001.md
+See: specs/190_meta_system_optimization/plans/implementation-001.md

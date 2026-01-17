@@ -7,7 +7,7 @@
 **Priority**: Medium  
 **Dependencies**: None  
 **Sources/Inputs**: 
-- .opencode/specs/309_optimize_task_command_performance/analysis.md
+- specs/309_optimize_task_command_performance/analysis.md
 - .opencode/command/task.md (503 lines)
 - .opencode/agent/subagents/task-creator.md (452 lines)
 - .opencode/agent/subagents/status-sync-manager.md (1192 lines)
@@ -101,7 +101,7 @@ The task-creator subagent performs only three operations:
 **Code Analysis**:
 ```markdown
 <step_1_allocate_number>
-  1. Read .opencode/specs/state.json
+  1. Read specs/state.json
   2. Extract next_project_number field using jq
   3. Validate it's a number >= 0
   4. Store for use in task creation
@@ -166,12 +166,12 @@ The status-sync-manager already implements a complete create_task operation with
   "artifacts": [
     {
       "type": "task_creation",
-      "path": ".opencode/specs/TODO.md",
+      "path": "specs/TODO.md",
       "summary": "Created task entry with Description field in High Priority section"
     },
     {
       "type": "task_creation",
-      "path": ".opencode/specs/state.json",
+      "path": "specs/state.json",
       "summary": "Added task to active_projects with description field, incremented next_project_number"
     }
   ],
@@ -186,7 +186,7 @@ The status-sync-manager already implements a complete create_task operation with
   },
   "errors": [],
   "next_steps": "Task 296 created successfully. Ready for research or planning.",
-  "files_updated": [".opencode/specs/TODO.md", ".opencode/specs/state.json"],
+  "files_updated": ["specs/TODO.md", "specs/state.json"],
   "rollback_performed": false
 }
 ```
@@ -402,7 +402,7 @@ The status-sync-manager already implements a complete create_task operation with
 
 5. **task-creator Step 1**: Read next_project_number
    - Time: ~0.3s
-   - Bash: `jq -r '.next_project_number' .opencode/specs/state.json`
+   - Bash: `jq -r '.next_project_number' specs/state.json`
    - Result: e.g., 310
 
 6. **task-creator Step 2**: Delegate to status-sync-manager
@@ -512,7 +512,7 @@ task-creator receives:
 }
 
 # task-creator reads next_project_number
-next_project_number=$(jq -r '.next_project_number' .opencode/specs/state.json)
+next_project_number=$(jq -r '.next_project_number' specs/state.json)
 # Result: 310
 
 # task-creator delegates to status-sync-manager
@@ -572,12 +572,12 @@ status-sync-manager receives:
   "artifacts": [
     {
       "type": "task_creation",
-      "path": ".opencode/specs/TODO.md",
+      "path": "specs/TODO.md",
       "summary": "Created task entry in Medium Priority section"
     },
     {
       "type": "task_creation",
-      "path": ".opencode/specs/state.json",
+      "path": "specs/state.json",
       "summary": "Added task to active_projects, incremented next_project_number"
     }
   ],
@@ -592,7 +592,7 @@ status-sync-manager receives:
   },
   "errors": [],
   "next_steps": "Task 310 created successfully. Ready for research or planning.",
-  "files_updated": [".opencode/specs/TODO.md", ".opencode/specs/state.json"],
+  "files_updated": ["specs/TODO.md", "specs/state.json"],
   "rollback_performed": false
 }
 
@@ -907,13 +907,13 @@ status-sync-manager creates task 312: "Refactor system (3/3): Improve docs"
 **Objective**: Verify atomic rollback works on failure
 
 **Steps**:
-1. Make TODO.md read-only: `chmod 444 .opencode/specs/TODO.md`
+1. Make TODO.md read-only: `chmod 444 specs/TODO.md`
 2. Run: `/task "Test rollback"`
 3. Verify error message mentions rollback
 4. Verify no task created in TODO.md
 5. Verify no task created in state.json
 6. Verify next_project_number unchanged
-7. Restore permissions: `chmod 644 .opencode/specs/TODO.md`
+7. Restore permissions: `chmod 644 specs/TODO.md`
 
 **Expected Result**:
 - Error: "Failed to write TODO.md, rolled back changes"
@@ -962,7 +962,7 @@ status-sync-manager creates task 312: "Refactor system (3/3): Improve docs"
 ### Primary Sources
 
 1. **analysis.md** (357 lines)
-   - Path: .opencode/specs/309_optimize_task_command_performance/analysis.md
+   - Path: specs/309_optimize_task_command_performance/analysis.md
    - Content: Comprehensive performance analysis with 3 optimization options
    - Key Sections: Root Cause Analysis, Optimization Opportunities, Implementation Plan
    - Citation: All performance metrics, delegation chain analysis, and implementation estimates
@@ -1000,13 +1000,13 @@ status-sync-manager creates task 312: "Refactor system (3/3): Improve docs"
 ### Secondary Sources
 
 1. **state.json**
-   - Path: .opencode/specs/state.json
+   - Path: specs/state.json
    - Content: Current state tracking file
    - Key Fields: next_project_number, active_projects
    - Citation: Task numbering mechanism
 
 2. **TODO.md**
-   - Path: .opencode/specs/TODO.md
+   - Path: specs/TODO.md
    - Content: Task tracking file
    - Key Sections: High/Medium/Low Priority Tasks
    - Citation: Task entry format

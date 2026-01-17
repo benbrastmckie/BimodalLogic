@@ -449,7 +449,7 @@ After finding a name: `lean_local_search` to verify, `lean_hover_info` for signa
 - `.claude/context/project/lean4/tools/mcp-tools-guide.md` - MCP tools guide
 
 ### Previous Plan
-- `.claude/specs/218_fix_lean_lsp_mcp_integration/plans/implementation-004.md` - OpenCode plan (obsolete)
+- `specs/218_fix_lean_lsp_mcp_integration/plans/implementation-004.md` - OpenCode plan (obsolete)
 
 ---
 

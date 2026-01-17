@@ -579,7 +579,7 @@ When adding new documentation standards:
 - [TODO.md](../../TODO.md)
 
 **Best Practices Report**:
-- Report 022: Documentation Improvement Analysis (.opencode/specs/
+- Report 022: Documentation Improvement Analysis (specs/
   022_lean4_docs_implementation_improve/reports/
   001-documentation-improvement-implementation-plan.md)
 - Report 022 Findings Section 4: Documentation Consistency Issues

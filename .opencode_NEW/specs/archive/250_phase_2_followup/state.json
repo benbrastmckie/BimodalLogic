@@ -4,22 +4,22 @@
   "type": "validation",
   "phase": "implementation_completed",
   "reports": [
-    ".opencode/specs/250_phase_2_followup/reports/research-001.md",
-    ".opencode/specs/250_phase_2_followup/reports/validation-001.md"
+    "specs/250_phase_2_followup/reports/research-001.md",
+    "specs/250_phase_2_followup/reports/validation-001.md"
   ],
   "plans": [
-    ".opencode/specs/250_phase_2_followup/plans/implementation-001.md"
+    "specs/250_phase_2_followup/plans/implementation-001.md"
   ],
   "summaries": [
-    ".opencode/specs/250_phase_2_followup/summaries/implementation-summary-20251229.md"
+    "specs/250_phase_2_followup/summaries/implementation-summary-20251229.md"
   ],
   "metrics": [
-    ".opencode/specs/250_phase_2_followup/metrics/baseline_metrics.json",
-    ".opencode/specs/250_phase_2_followup/metrics/current_state.json",
-    ".opencode/specs/250_phase_2_followup/metrics/line_count_report.json"
+    "specs/250_phase_2_followup/metrics/baseline_metrics.json",
+    "specs/250_phase_2_followup/metrics/current_state.json",
+    "specs/250_phase_2_followup/metrics/line_count_report.json"
   ],
   "scripts": [
-    ".opencode/specs/250_phase_2_followup/scripts/measure_current_state.sh"
+    "specs/250_phase_2_followup/scripts/measure_current_state.sh"
   ],
   "status": "completed",
   "created": "2025-12-29T16:03:52Z",
@@ -33,7 +33,7 @@
   "plan_versions": [
     {
       "version": 1,
-      "path": ".opencode/specs/250_phase_2_followup/plans/implementation-001.md",
+      "path": "specs/250_phase_2_followup/plans/implementation-001.md",
       "created": "2025-12-29T16:03:52Z",
       "reason": "Initial implementation plan"
     }

@@ -33,14 +33,14 @@ This enhancement adds:
    ```bash
    # Get misplaced directories (in specs/ but tracked in archive/state.json)
    misplaced_in_specs=()
-   for dir in .claude/specs/[0-9]*_*/; do
+   for dir in specs/[0-9]*_*/; do
      [ -d "$dir" ] || continue
      project_num=$(basename "$dir" | cut -d_ -f1)
 
      # Check if tracked in archive/state.json (should be in archive/)
      in_archive=$(jq -r --arg n "$project_num" \
        '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-       .claude/specs/archive/state.json 2>/dev/null)
+       specs/archive/state.json 2>/dev/null)
 
      if [ -n "$in_archive" ]; then
        misplaced_in_specs+=("$dir")
@@ -111,7 +111,7 @@ This enhancement adds:
    if [ "$move_misplaced" = true ]; then
      for dir in "${misplaced_in_specs[@]}"; do
        dir_name=$(basename "$dir")
-       mv "$dir" ".claude/specs/archive/${dir_name}"
+       mv "$dir" "specs/archive/${dir_name}"
        echo "Moved misplaced: ${dir_name} -> archive/"
      done
    fi

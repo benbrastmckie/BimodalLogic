@@ -6,7 +6,7 @@
 - **Progress**: 17% (Phase 1 complete)
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: Research Report (.opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md)
+- **Research Inputs**: Research Report (specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/reports/research-001.md)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -167,7 +167,7 @@ Research identified two root causes for /todo command archival failures: (1) Inc
 - [ ] Confirm archival when prompted
 - [ ] Verify TODO.md updated: All completed task entries removed
 - [ ] Verify archive/state.json updated: All completed tasks added (no duplicates)
-- [ ] Verify project directories moved to .opencode/specs/archive/
+- [ ] Verify project directories moved to specs/archive/
 - [ ] Verify git commit created with proper message (e.g., "todo: archive 24 completed tasks")
 - [ ] Verify TODO.md contains only active tasks: [NOT STARTED], [IN PROGRESS], [RESEARCHED], [PLANNED], [BLOCKED]
 - [ ] Verify no dual-state tasks remain (tasks in both TODO.md and archive/state.json)
@@ -237,11 +237,11 @@ Research identified two root causes for /todo command archival failures: (1) Inc
 ## Artifacts & Outputs
 
 **Created**:
-- .opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/plans/implementation-001.md (this file)
-- .opencode/specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/summaries/implementation-summary-YYYYMMDD.md
+- specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/plans/implementation-001.md (this file)
+- specs/235_find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks/summaries/implementation-summary-YYYYMMDD.md
 
 **Modified**:
-- .opencode/specs/TODO.md (standardized status markers, removed duplicates, archived completed tasks)
+- specs/TODO.md (standardized status markers, removed duplicates, archived completed tasks)
 - .opencode/command/todo.md (added logging, validation, error handling for Stage 4/5)
 - .opencode/agent/subagents/status-sync-manager.md (added status marker validation)
 - .opencode/command/research.md (enforced standard status markers)
@@ -249,11 +249,11 @@ Research identified two root causes for /todo command archival failures: (1) Inc
 - .opencode/command/implement.md (enforced standard status markers)
 - .opencode/command/revise.md (enforced standard status markers)
 - .opencode/context/core/standards/status-markers.md (documented enforcement mechanisms)
-- .opencode/specs/archive/state.json (added archived task entries)
+- specs/archive/state.json (added archived task entries)
 - state.json (updated completed_projects list)
 
 **Verified**:
-- All project directories in .opencode/specs/archive/ for archived tasks
+- All project directories in specs/archive/ for archived tasks
 - Git commits for manual cleanup and /todo execution
 - No dual-state tasks (in both TODO.md and archive/state.json)
 

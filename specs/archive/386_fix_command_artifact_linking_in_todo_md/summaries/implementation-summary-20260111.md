@@ -10,8 +10,8 @@ Fixed the artifact linking gap between state.json and TODO.md by updating skill-
 ## Files Modified
 
 - `.claude/skills/skill-status-sync/SKILL.md` - Added TODO.md artifact linking section and verification patterns
-- `.claude/specs/state.json` - Added missing artifacts arrays to tasks 380 and 376
-- `.claude/specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md` - Updated phase statuses
+- `specs/state.json` - Added missing artifacts arrays to tasks 380 and 376
+- `specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md` - Updated phase statuses
 
 ## Key Additions to skill-status-sync
 

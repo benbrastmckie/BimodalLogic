@@ -4,8 +4,8 @@
 - **Effort**: 1-2 hours
 - **Priority**: High
 - **Dependencies**: TODO tasks 129 & 130 entries; `Logos/Core/Semantics/Truth.lean` (TemporalDuality section, `truth_swap_of_valid_at_triple`, `valid_swap_of_valid`, time-shift helpers); `Logos/Core/Metalogic/Soundness.lean` (temporal_duality consumption of `derivable_implies_swap_valid`); existing `TimeShift.time_shift_preserves_truth` transport lemmas
-- **Research Inputs**: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md`, `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md`
-- **Artifacts**: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-001.md` (this plan)
+- **Research Inputs**: `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md`, `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md`
+- **Artifacts**: `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-001.md` (this plan)
 - **Standards**:
   - `.opencode/context/core/standards/plan.md`
   - `.opencode/context/core/standards/status-markers.md`
@@ -18,8 +18,8 @@
 Branch B only: avoid any global swap-validity axiom and instead guide Tasks 129 and 130 to use derivation-indexed induction (or mutual IH) and domain-witnessed transport lemmas. This plan produces actionable TODO guidance and a proof-adjustment outline for `Truth.lean` and `Soundness.lean`, ensuring testing and state synchronization steps are included. Success means TODO entries 129/130 instruct contributors to refactor `derivable_implies_swap_valid` using IH (no semantics change) and to add only local transport helpers, with test and status updates specified.
 
 ## Research Inputs
-- `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md` (primary Branch B recommendation)
-- `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md` (Branch A/B comparison; Branch B endorsed)
+- `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md` (primary Branch B recommendation)
+- `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md` (Branch A/B comparison; Branch B endorsed)
 
 ## Goals & Non-Goals
 - **Goals**: Update TODO tasks 129/130 with precise Branch B guidance; outline proof refactor steps for `Truth.lean` (temporal_duality) and `Soundness.lean` consumers; include testing and state/TODO alignment steps; preserve current semantics (no new axioms).
@@ -75,7 +75,7 @@ Branch B only: avoid any global swap-validity axiom and instead guide Tasks 129 
 - [ ] Confirm no global swap-validity lemma or bi-infinite domain axiom was added.
 
 ## Artifacts & Outputs
-- `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-001.md` (this plan)
+- `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-001.md` (this plan)
 - TODO entries 129 and 130 updated with Branch B guidance and research links (no new reports/summaries created at this stage)
 
 ## Rollback/Contingency

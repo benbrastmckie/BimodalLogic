@@ -144,8 +144,8 @@ Implement a GitHub Actions CI/CD pipeline for the ProofChecker project using the
 2. Mark task as completed
 
 **Files to modify**:
-- `.claude/specs/TODO.md` - Update Files Affected section
-- `.claude/specs/state.json` - Update status
+- `specs/TODO.md` - Update Files Affected section
+- `specs/state.json` - Update status
 
 **Steps**:
 1. Remove placeholder files from TODO.md task:

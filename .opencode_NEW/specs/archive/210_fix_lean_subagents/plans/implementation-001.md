@@ -5,7 +5,7 @@
 - **Effort**: 8 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: Research report (.opencode/specs/210_fix_lean_subagents/reports/research-001.md) identified 21 compliance issues across both agents
+- **Research Inputs**: Research report (specs/210_fix_lean_subagents/reports/research-001.md) identified 21 compliance issues across both agents
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -96,12 +96,12 @@ Both Lean subagents (lean-research-agent.md and lean-implementation-agent.md) ha
 - **Goal**: Fix integration and quality issues for proper artifact linking and tracking
 - **Tasks**:
   - [ ] Fix artifact link paths in lean-research-agent.md (LRA-AM-002)
-    - Change relative paths to absolute: .opencode/specs/{task_number}_{topic}/...
+    - Change relative paths to absolute: specs/{task_number}_{topic}/...
     - Update return format examples (lines 432-441)
     - Update documentation sections
   - [ ] Fix artifact link paths in lean-implementation-agent.md (LIA-AM-002)
     - Verify Lean file paths are correct (project root paths)
-    - Ensure summary artifact paths use .opencode/specs/ prefix
+    - Ensure summary artifact paths use specs/ prefix
     - Update return format examples (lines 196-205)
   - [ ] Add summary validation in lean-research-agent.md (LRA-AM-004)
     - Add step_6 validation: Check summary artifact exists
@@ -113,11 +113,11 @@ Both Lean subagents (lean-research-agent.md and lean-implementation-agent.md) ha
     - Add step_6 validation: Verify token/sentence requirements
     - Fail with clear error if validation fails
   - [ ] Add project state.json updates in lean-research-agent.md (LRA-SS-002)
-    - Create .opencode/specs/{task_number}_{topic}/state.json when creating first artifact
+    - Create specs/{task_number}_{topic}/state.json when creating first artifact
     - Include research artifacts tracking
     - Follow lazy creation: create only when writing first artifact
   - [ ] Add project state.json updates in lean-implementation-agent.md (LIA-SS-002)
-    - Update .opencode/specs/{task_number}_{topic}/state.json with implementation artifacts
+    - Update specs/{task_number}_{topic}/state.json with implementation artifacts
     - Track Lean files modified/created
     - Track compilation status
   - [ ] Document artifact link format in lean-research-agent.md (LRA-SM-003)

@@ -59,16 +59,16 @@ Theories/Logos/latex/                            → Theories/Logos/latex/
 
 ### References Requiring Updates
 
-#### Active References (outside .claude/specs/archive/)
+#### Active References (outside specs/archive/)
 
 | File | Reference Type |
 |------|---------------|
 | `latex/README.md` | 9 references to `Theories/*/LaTeX/` |
 | `latex/latexmkrc` | 3 references to theory `LaTeX/` directories |
-| `.claude/specs/TODO.md` | Task description mentions `LaTeX/` |
-| `.claude/specs/state.json` | Task description mentions `LaTeX/` |
-| `.claude/specs/394_*/reports/research-002.md` | Reference to `Documentation/` |
-| `.claude/specs/372_*/plans/implementation-001.md` | References to `Documentation/` |
+| `specs/TODO.md` | Task description mentions `LaTeX/` |
+| `specs/state.json` | Task description mentions `LaTeX/` |
+| `specs/394_*/reports/research-002.md` | Reference to `Documentation/` |
+| `specs/372_*/plans/implementation-001.md` | References to `Documentation/` |
 
 #### Internal References Within Violating Directories
 
@@ -99,8 +99,8 @@ The implementation summary claimed success but the directories still exist with 
 2. **Build output directories**: `Theories/*/LaTeX/build/` should be in .gitignore (or moved)
 3. **latexmkrc paths**: The `latex/latexmkrc` config references theory LaTeX directories
 4. **Nested .claude directories**: Found in:
-   - `Theories/Logos/latex/.claude/specs/` (orphaned task artifacts)
-   - `Theories/Bimodal/latex/assets/.claude/specs/` (orphaned task artifacts)
+   - `Theories/Logos/latex/specs/` (orphaned task artifacts)
+   - `Theories/Bimodal/latex/assets/specs/` (orphaned task artifacts)
 
 ## Recommendations
 

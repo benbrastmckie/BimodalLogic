@@ -5,7 +5,7 @@
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/435_module_aggregator_standard_bimodal/reports/research-001.md
+- **Research Inputs**: specs/435_module_aggregator_standard_bimodal/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md
 - **Type**: lean

@@ -112,7 +112,7 @@ Execute a comprehensive optimization review of the .opencode meta-system to alig
 
 - **Goal**: Verify plan.md compliance, command documentation, and workflow documentation
 - **Tasks**:
-  - [ ] Route to doc-analyzer specialist to check plan artifacts in .opencode/specs/
+  - [ ] Route to doc-analyzer specialist to check plan artifacts in specs/
   - [ ] Verify all plan files follow plan.md standard (metadata, section order, status markers)
   - [ ] Check command documentation completeness (all commands have usage_examples)
   - [ ] Verify workflow documentation in core/workflows/ is referenced by relevant commands
@@ -162,7 +162,7 @@ Execute a comprehensive optimization review of the .opencode meta-system to alig
 - **Tasks**:
   - [ ] Update TODO.md task 190 status to [COMPLETED]
   - [ ] Add completion timestamp to TODO.md
-  - [ ] Update .opencode/specs/state.json with project 190 completion
+  - [ ] Update specs/state.json with project 190 completion
   - [ ] Update project state.json with artifact paths
   - [ ] Link optimization report in TODO.md task 190
   - [ ] Verify IMPLEMENTATION_STATUS.md does not require updates (review task, no code changes)

@@ -52,7 +52,7 @@ log_status() {
 validate_stage7() {
   local task_num=$1
   local command=$2
-  local task_dir=".opencode/specs/${task_num}_test_${command}"
+  local task_dir="specs/${task_num}_test_${command}"
   
   # Check 1: Task directory exists
   if [[ ! -d "$task_dir" ]]; then
@@ -61,14 +61,14 @@ validate_stage7() {
   fi
   
   # Check 2: TODO.md updated with task entry
-  if ! grep -q "### ${task_num}\." .opencode/specs/TODO.md; then
+  if ! grep -q "### ${task_num}\." specs/TODO.md; then
     echo "FAIL: TODO.md not updated"
     return 1
   fi
   
   # Check 3: state.json updated
-  if [[ -f .opencode/specs/state.json ]]; then
-    if ! grep -q "\"${task_num}\"" .opencode/specs/state.json; then
+  if [[ -f specs/state.json ]]; then
+    if ! grep -q "\"${task_num}\"" specs/state.json; then
       echo "FAIL: state.json not updated"
       return 1
     fi

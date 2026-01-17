@@ -28,8 +28,8 @@ This audit identifies all locations where backup files are created instead of gi
 **Purpose**: Atomic synchronization of TODO.md and state.json  
 **Context**:
 ```bash
-cp .opencode/specs/TODO.md /tmp/TODO.md.backup.$session_id
-cp .opencode/specs/state.json /tmp/state.json.backup.$session_id
+cp specs/TODO.md /tmp/TODO.md.backup.$session_id
+cp specs/state.json /tmp/state.json.backup.$session_id
 ```
 **Migration Priority**: **HIGH** - Core synchronization command  
 **Replacement**: Git safety commit before sync operation
@@ -101,9 +101,9 @@ c. Wait for confirmation (yes/no)
 
 ### Files Found
 ```
-.opencode/specs/state.json.bad.bak
-.opencode/specs/archive/245_phase2_core_architecture/state.json.backup
-.opencode/specs/state.json.bak
+specs/state.json.bad.bak
+specs/archive/245_phase2_core_architecture/state.json.backup
+specs/state.json.bak
 .opencode/agent/orchestrator.md.backup
 ```
 
@@ -147,10 +147,10 @@ c. Wait for confirmation (yes/no)
 **Pattern**: Direct git add commands  
 **Context**: 
 ```bash
-git add .opencode/specs/TODO.md
-git add .opencode/specs/state.json
-git add .opencode/specs/archive/state.json
-git add .opencode/specs/archive/  (pick up moved directories)
+git add specs/TODO.md
+git add specs/state.json
+git add specs/archive/state.json
+git add specs/archive/  (pick up moved directories)
 ```
 **Migration**: Delegate to git-workflow-manager
 

@@ -158,7 +158,7 @@ The /implement command should:
     Implementation completed for task 191.
     Fixed subagent delegation hangs across 3 phases with standardized return formats and timeout handling.
     14 artifacts created across 3 phases.
-    Summary: .opencode/specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251226.md
+    Summary: specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251226.md
     ```
     
     Example return (partial):
@@ -166,7 +166,7 @@ The /implement command should:
     Implementation partially completed for task 191.
     Completed phases 1-2 of 3, phase 3 timed out after 2 hours.
     Resume with: /implement 191
-    Summary: .opencode/specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251226.md
+    Summary: specs/191_fix_subagent_delegation_hang/summaries/implementation-summary-20251226.md
     ```
   </return_format>
 </stage>

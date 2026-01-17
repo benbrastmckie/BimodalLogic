@@ -126,7 +126,7 @@ Additional files may need review - should scan all .tex files for this pattern.
 ## References
 
 - `.claude/rules/latex.md` - Current LaTeX formatting rules
-- `.claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md` - Original convention research
+- `specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md` - Original convention research
 - Brian Kernighan's semantic linefeeds rule (1974)
 
 ## Next Steps

@@ -39,7 +39,7 @@ Task 172 has been **successfully completed**. Analysis of all 24 Logos/Core modu
    - Examples included for complex functions
 
 4. **[PASS] Analysis Artifacts**
-   - Created `.opencode/specs/172_documentation/analysis/doc-gaps-analysis.md`
+   - Created `specs/172_documentation/analysis/doc-gaps-analysis.md`
    - Detailed per-module documentation assessment
    - Priority ranking for any remaining work
    - Recommendations for maintenance
@@ -108,13 +108,13 @@ All have appropriate documentation for their implementation status.
    - Module index, function reference, usage examples
    - Cross-references to related modules and papers
 
-2. **`.opencode/specs/172_documentation/analysis/doc-gaps-analysis.md`** (NEW)
+2. **`specs/172_documentation/analysis/doc-gaps-analysis.md`** (NEW)
    - Detailed documentation gap analysis
    - Per-module assessment with priority ranking
    - Recommendations for future maintenance
    - Statistics and compliance verification
 
-3. **`.opencode/specs/172_documentation/summaries/doc-summary.md`** (THIS FILE)
+3. **`specs/172_documentation/summaries/doc-summary.md`** (THIS FILE)
    - Implementation summary for Task 172
    - Completion status and statistics
    - Next steps and recommendations
@@ -298,19 +298,19 @@ All 24 Logos/Core modules were analyzed and found to have excellent documentatio
    - Module index, function reference, usage examples
    - Cross-references and version history
 
-2. **Gap Analysis**: `.opencode/specs/172_documentation/analysis/doc-gaps-analysis.md`
+2. **Gap Analysis**: `specs/172_documentation/analysis/doc-gaps-analysis.md`
    - Detailed per-module assessment
    - Priority ranking and recommendations
    - Statistics and compliance verification
 
-3. **Summary**: `.opencode/specs/172_documentation/summaries/doc-summary.md`
+3. **Summary**: `specs/172_documentation/summaries/doc-summary.md`
    - This file - implementation summary
    - Completion status and next steps
    - Acceptance criteria verification
 
 ### Supporting Artifacts
 
-4. **Project State**: `.opencode/specs/172_documentation/state.json` (to be created)
+4. **Project State**: `specs/172_documentation/state.json` (to be created)
    - Project metadata and completion status
    - Artifact references and timestamps
 

@@ -222,9 +222,9 @@ From research-001.md and research-002.md:
 
 ## Dependencies
 
-- Research report: `.claude/specs/460_cosmos_institute_substack_essay/reports/research-001.md` (complete)
-- Supplementary research: `.claude/specs/460_cosmos_institute_substack_essay/reports/research-002.md` (complete)
-- Task 457 outcomes: `.claude/specs/archive/457_document_top_project_outcomes/plans/implementation-002.md`
+- Research report: `specs/460_cosmos_institute_substack_essay/reports/research-001.md` (complete)
+- Supplementary research: `specs/460_cosmos_institute_substack_essay/reports/research-002.md` (complete)
+- Task 457 outcomes: `specs/archive/457_document_top_project_outcomes/plans/implementation-002.md`
 
 ## Risks and Mitigations
 

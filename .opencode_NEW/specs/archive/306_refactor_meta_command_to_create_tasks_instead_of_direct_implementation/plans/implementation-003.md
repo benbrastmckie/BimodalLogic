@@ -6,7 +6,7 @@
 - **Priority**: High
 - **Completed**: 2026-01-05
 - **Dependencies**: None
-- **Research Inputs**: Research report (.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md) - Comprehensive analysis of current /meta implementation and task creation pattern from /task command
+- **Research Inputs**: Research report (specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md) - Comprehensive analysis of current /meta implementation and task creation pattern from /task command
 - **Artifacts**: 
   - plans/implementation-003.md (this file - revised plan)
   - .opencode/command/meta.md (updated)
@@ -92,7 +92,7 @@ This is a single-task implementation with phases determined by the natural break
   - [x] For each task in breakdown:
     - Generate title and slug from interview results
     - Assign task number (next_project_number + index)
-    - Create project directory (.opencode/specs/{number}_{slug}/)
+    - Create project directory (specs/{number}_{slug}/)
     - Generate plan artifact using templates (plans/implementation-001.md)
     - Populate template with interview context
     - Validate plan follows plan.md standard

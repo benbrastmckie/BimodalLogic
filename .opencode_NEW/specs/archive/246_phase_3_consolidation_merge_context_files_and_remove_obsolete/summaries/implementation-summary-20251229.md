@@ -151,7 +151,7 @@ Successfully consolidated OpenCode context system achieving 72% reduction in key
    - Enhanced with comprehensive navigation
 
 4. **validation-001.md**
-   - Location: `.opencode/specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/reports/validation-001.md`
+   - Location: `specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/reports/validation-001.md`
    - Comprehensive Phase 3 validation report
 
 ### Supporting Artifacts

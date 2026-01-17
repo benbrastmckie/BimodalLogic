@@ -30,4 +30,4 @@
 
 ## Full Report
 
-See: `.opencode/specs/174_property_based_testing/reports/research-001.md`
+See: `specs/174_property_based_testing/reports/research-001.md`

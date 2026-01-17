@@ -6,8 +6,8 @@
 - **Priority**: High
 - **Dependencies**: None
 - **Research Inputs**: 
-  - Main Report: .opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md
-  - Summary: .opencode/specs/209_research_lean4_involution_techniques/summaries/research-summary.md
+  - Main Report: specs/209_research_lean4_involution_techniques/reports/research-001.md
+  - Summary: specs/209_research_lean4_involution_techniques/summaries/research-summary.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md

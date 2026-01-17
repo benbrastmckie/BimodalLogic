@@ -5,7 +5,7 @@
 - **Effort**: 10-12 hours
 - **Priority**: Medium
 - **Dependencies**: Task 444 (Formula Countability and Set-List Bridge) - Complete
-- **Research Inputs**: `.claude/specs/445_maximal_consistent_set_properties/reports/research-001.md`
+- **Research Inputs**: `specs/445_maximal_consistent_set_properties/reports/research-001.md`
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -246,8 +246,8 @@ Key findings from research-001.md:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness.lean` - Modified with proven theorems
-- `.claude/specs/445_maximal_consistent_set_properties/plans/implementation-001.md` - This plan
-- `.claude/specs/445_maximal_consistent_set_properties/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/445_maximal_consistent_set_properties/plans/implementation-001.md` - This plan
+- `specs/445_maximal_consistent_set_properties/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

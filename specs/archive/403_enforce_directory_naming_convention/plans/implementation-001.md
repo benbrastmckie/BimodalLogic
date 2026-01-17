@@ -220,7 +220,7 @@ Theories/Logos/docs/user-guide/    → Theories/Logos/docs/user-guide/
    lake build
    ```
 
-4. Update `.claude/specs/TODO.md` and `.claude/specs/state.json` task descriptions (they reference the old paths)
+4. Update `specs/TODO.md` and `specs/state.json` task descriptions (they reference the old paths)
 
 **Verification**:
 - `grep` for old paths returns only archive results
@@ -262,5 +262,5 @@ If issues arise:
 
 ## Notes
 
-- Archive files (`.claude/specs/archive/`) will NOT be updated - they are historical records
+- Archive files (`specs/archive/`) will NOT be updated - they are historical records
 - Task 403 description in TODO.md and state.json mentions old paths - will update in Phase 5

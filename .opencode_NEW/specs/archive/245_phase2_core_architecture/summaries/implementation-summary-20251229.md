@@ -124,8 +124,8 @@ Phase 2 successfully migrated all 4 workflow commands (/research, /plan, /implem
 
 ### Validation Artifacts (Phase 8)
 
-- `.opencode/specs/245_phase2_core_architecture/reports/validation-001.md`
-- `.opencode/specs/245_phase2_core_architecture/summaries/implementation-summary-20251229.md` (this document)
+- `specs/245_phase2_core_architecture/reports/validation-001.md`
+- `specs/245_phase2_core_architecture/summaries/implementation-summary-20251229.md` (this document)
 
 ---
 

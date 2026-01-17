@@ -2,7 +2,7 @@
 
 **Status**: Complete  
 **Last Updated**: 2025-12-28  
-**Related**: [Task 192](../../.opencode/specs/192_fix_generalized_necessitation_termination/), ADR-001-Classical-Logic-Noncomputable.md
+**Related**: [Task 192](../../specs/192_fix_generalized_necessitation_termination/), ADR-001-Classical-Logic-Noncomputable.md
 
 ---
 
@@ -187,7 +187,7 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
    - **Fix**: Add `noncomputable` keyword
    - **Why Noncomputable**: Dependency on `deduction_theorem`
 
-**Task Reference**: [Task 192](../../.opencode/specs/192_fix_generalized_necessitation_termination/)
+**Task Reference**: [Task 192](../../specs/192_fix_generalized_necessitation_termination/)
 
 ---
 

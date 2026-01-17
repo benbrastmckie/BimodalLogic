@@ -6,8 +6,8 @@
 - **Priority**: Normal
 - **Dependencies**: Agential Extension (conceptually follows it in hierarchy)
 - **Research Inputs**:
-  - .claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md (operator survey)
-  - .claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md ('I' operator analysis)
+  - specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md (operator survey)
+  - specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md ('I' operator analysis)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: markdown

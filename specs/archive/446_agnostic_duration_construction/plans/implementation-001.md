@@ -268,8 +268,8 @@ Key findings from research-001.md integrated into this plan:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness.lean` - Extended with duration construction
-- `.claude/specs/446_agnostic_duration_construction/plans/implementation-001.md` - This plan
-- `.claude/specs/446_agnostic_duration_construction/summaries/implementation-summary-YYYYMMDD.md` - Final summary (on completion)
+- `specs/446_agnostic_duration_construction/plans/implementation-001.md` - This plan
+- `specs/446_agnostic_duration_construction/summaries/implementation-summary-YYYYMMDD.md` - Final summary (on completion)
 
 ## Rollback/Contingency
 

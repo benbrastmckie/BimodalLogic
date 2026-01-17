@@ -1075,9 +1075,9 @@ Stage 7 has **no explicit error handling blocks**. Errors are mentioned in descr
       {
         "scope_files": [
           {plan_path from planner return},
-          ".opencode/specs/TODO.md",
-          ".opencode/specs/state.json",
-          ".opencode/specs/{task_number}_{slug}/state.json"
+          "specs/TODO.md",
+          "specs/state.json",
+          "specs/{task_number}_{slug}/state.json"
         ],
         "message_template": "task {number}: plan created",
         "task_context": {

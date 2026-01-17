@@ -22,4 +22,4 @@
 
 ## Full Plan
 
-See: `.opencode/specs/128_implement_caching_and_context_helpers_in_proofsearch/plans/implementation-001.md`
+See: `specs/128_implement_caching_and_context_helpers_in_proofsearch/plans/implementation-001.md`

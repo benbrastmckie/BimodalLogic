@@ -54,8 +54,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     last_updated: $ts,
     artifacts: ((.artifacts // []) + [{"path": $path, "type": $type}])
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  }' specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 ```
 
 **CRITICAL MISSING**: There is NO corresponding code to add artifact links to TODO.md!
@@ -93,16 +93,16 @@ The documented artifact linking format in state-management.md (lines 79-93) show
 ```markdown
 ### Research Completion
 - **Status**: [RESEARCHED]
-- **Research**: [.claude/specs/{N}_{SLUG}/reports/research-001.md]
+- **Research**: [specs/{N}_{SLUG}/reports/research-001.md]
 
 ### Plan Completion
 - **Status**: [PLANNED]
-- **Plan**: [.claude/specs/{N}_{SLUG}/plans/implementation-001.md]
+- **Plan**: [specs/{N}_{SLUG}/plans/implementation-001.md]
 
 ### Implementation Completion
 - **Status**: [COMPLETED]
 - **Completed**: 2026-01-08
-- **Summary**: [.claude/specs/{N}_{SLUG}/summaries/implementation-summary-20260108.md]
+- **Summary**: [specs/{N}_{SLUG}/summaries/implementation-summary-20260108.md]
 ```
 
 But there's no code in skill-status-sync that implements these patterns!
@@ -116,7 +116,7 @@ Add Edit patterns for artifact linking after state.json update:
 ```bash
 # After state.json artifact addition, add link to TODO.md
 # Find task entry line
-task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
+task_line=$(grep -n "^### ${task_number}\." specs/TODO.md | cut -d: -f1)
 
 # Add artifact link after Status line
 case "$artifact_type" in
@@ -143,7 +143,7 @@ The current TODO.md format only shows one Research link, but tasks can have mult
 Implement the defense-in-depth pattern from postflight-pattern.md:
 ```bash
 # Verify artifact link exists in TODO.md
-if ! grep -q "$artifact_path" .claude/specs/TODO.md; then
+if ! grep -q "$artifact_path" specs/TODO.md; then
   echo "WARNING: Artifact not linked in TODO.md: $artifact_path"
 fi
 ```

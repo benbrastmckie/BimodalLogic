@@ -146,7 +146,7 @@ Based on existing `subagent-return.md`, the artifact return format should be:
   "artifacts": [
     {
       "type": "research",
-      "path": ".claude/specs/{N}_{SLUG}/reports/research-{NNN}.md",
+      "path": "specs/{N}_{SLUG}/reports/research-{NNN}.md",
       "summary": "Lean research report with theorem findings"
     }
   ],
@@ -169,7 +169,7 @@ Based on existing `subagent-return.md`, the artifact return format should be:
   "artifacts": [
     {
       "type": "plan",
-      "path": ".claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
+      "path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
       "summary": "Implementation plan with phases and steps"
     }
   ],
@@ -192,7 +192,7 @@ Based on existing `subagent-return.md`, the artifact return format should be:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
+      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
       "summary": "Implementation completion summary"
     }
   ],

@@ -25,7 +25,7 @@ The implementation is structured in 5 phases, each targeting 2-4 hours of work, 
 ## Research Integration
 
 **Research Artifacts Harvested**:
-- `.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md`
+- `specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md`
 
 **Key Research Findings**:
 
@@ -489,7 +489,7 @@ structure TunedHeuristicWeights where
 
 ## Appendix A: Research Summary
 
-**Research Report**: `.opencode/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md`
+**Research Report**: `specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md`
 
 **Key Findings**:
 1. `orderSubgoalsByScore` is unimplemented (critical gap)

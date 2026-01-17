@@ -14,13 +14,13 @@
     "research": [
       {
         "type": "research_report",
-        "path": ".opencode/specs/174_property_based_testing/reports/research-001.md",
+        "path": "specs/174_property_based_testing/reports/research-001.md",
         "created": "2025-12-24T23:30:00Z",
         "description": "Comprehensive research on property-based testing frameworks for Lean 4"
       },
       {
         "type": "summary",
-        "path": ".opencode/specs/174_property_based_testing/summaries/research-summary.md",
+        "path": "specs/174_property_based_testing/summaries/research-summary.md",
         "created": "2025-12-24T23:30:00Z",
         "description": "Brief summary of research findings and recommendations"
       },
@@ -34,13 +34,13 @@
     "planning": [
       {
         "type": "implementation_plan",
-        "path": ".opencode/specs/174_property_based_testing/plans/implementation-001.md",
+        "path": "specs/174_property_based_testing/plans/implementation-001.md",
         "created": "2025-12-24T23:59:59Z",
         "description": "7-phase implementation plan (18-23 hours)"
       },
       {
         "type": "plan_summary",
-        "path": ".opencode/specs/174_property_based_testing/summaries/plan-summary.md",
+        "path": "specs/174_property_based_testing/summaries/plan-summary.md",
         "created": "2025-12-24T23:59:59Z",
         "description": "Brief summary of implementation plan"
       }
@@ -48,7 +48,7 @@
     "implementation": [
       {
         "type": "implementation_summary",
-        "path": ".opencode/specs/174_property_based_testing/summaries/implementation-summary-20251225.md",
+        "path": "specs/174_property_based_testing/summaries/implementation-summary-20251225.md",
         "created": "2025-12-25",
         "description": "Implementation summary documenting completion of all 7 phases"
       }

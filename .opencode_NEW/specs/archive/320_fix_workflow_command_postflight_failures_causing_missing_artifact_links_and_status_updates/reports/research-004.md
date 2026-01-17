@@ -15,7 +15,7 @@
 - status-sync-manager.md specification
 - Empirical evidence from tasks 323, 324, 314, 315
 **Artifacts**: 
-- .opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-004.md
+- specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-004.md
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ---
@@ -90,7 +90,7 @@ This observation is the key to finding the fix strategy.
         - Timeout: 60s
       
       VALIDATE status-sync-manager return:
-        - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+        - VERIFY files_updated includes ["specs/TODO.md", "state.json"]
 ```
 
 **Evidence from implementer.md** (lines 275-332):
@@ -115,7 +115,7 @@ This observation is the key to finding the fix strategy.
         - Timeout: 60s
       
       VALIDATE status-sync-manager return:
-        - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+        - VERIFY files_updated includes ["specs/TODO.md", "state.json"]
 ```
 
 **Analysis**: Both planner.md and implementer.md follow the SAME PATTERN:
@@ -291,7 +291,7 @@ Since planner.md and implementer.md have working implementations, the fix is to:
 **From status-sync-manager.md** (lines 98-100):
 ```xml
 <parameter name="artifact_links" type="array" optional="true">
-  Artifact links to add to .opencode/specs/TODO.md (research reports, plans, etc.)
+  Artifact links to add to specs/TODO.md (research reports, plans, etc.)
 </parameter>
 ```
 

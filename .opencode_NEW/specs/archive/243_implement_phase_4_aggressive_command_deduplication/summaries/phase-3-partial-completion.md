@@ -67,9 +67,9 @@ Phase 3 began context file consolidation with the creation of delegation-pattern
   - Status transition rules and workflows
   - Timestamp requirements
 - Part 2: State Schema and Files
-  - Main state file (.opencode/specs/state.json)
-  - Archive state file (.opencode/specs/archive/state.json)
-  - Maintenance state file (.opencode/specs/maintenance/state.json)
+  - Main state file (specs/state.json)
+  - Archive state file (specs/archive/state.json)
+  - Maintenance state file (specs/maintenance/state.json)
   - Project-specific state files
 - Part 3: State Update Patterns
   - Atomic status updates via status-sync-manager
@@ -112,7 +112,7 @@ Phase 3 began context file consolidation with the creation of delegation-pattern
 
 ### 5. Reference Mapping Document (Not Started)
 
-**File**: `.opencode/specs/243_implement_phase_4_aggressive_command_deduplication/summaries/reference-mapping.md`
+**File**: `specs/243_implement_phase_4_aggressive_command_deduplication/summaries/reference-mapping.md`
 
 **Content**:
 - Old file → New file section mapping

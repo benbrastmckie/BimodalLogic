@@ -670,9 +670,9 @@ The **Axiom Prop vs Type blocker** is a fundamental architectural issue that aff
 1. **Logos/Core/ProofSystem/Axioms.lean**: Axiom definition (`Axiom : Formula → Prop`)
 2. **Logos/Core/ProofSystem/Derivation.lean**: DerivationTree definition (`DerivationTree : Context → Formula → Type`)
 3. **Logos/Core/Automation/ProofSearch.lean**: Current proof search implementation (461 lines)
-4. **.opencode/specs/260_proof_search/reports/research-001.md**: Task 260 research report
-5. **.opencode/specs/260_proof_search/plans/implementation-001.md**: Task 260 implementation plan
-6. **.opencode/specs/260_proof_search/summaries/implementation-summary-20260105.md**: Task 260 blocker documentation
+4. **specs/260_proof_search/reports/research-001.md**: Task 260 research report
+5. **specs/260_proof_search/plans/implementation-001.md**: Task 260 implementation plan
+6. **specs/260_proof_search/summaries/implementation-summary-20260105.md**: Task 260 blocker documentation
 
 ### Lean 4 Documentation
 

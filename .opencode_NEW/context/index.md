@@ -265,8 +265,8 @@ Stage 4 loads:
 - @.opencode/context/core/orchestration/delegation.md
 - @.opencode/context/core/orchestration/state-management.md
 - @.opencode/context/core/orchestration/state-management.md
-- grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
-- @.opencode/specs/state.json
+- grep -A 50 "^### {task_number}\." specs/TODO.md
+- @specs/state.json
 
 Language-specific:
 - If lean: @.opencode/context/project/lean4/tools/leansearch-api.md
@@ -280,8 +280,8 @@ Stage 4 loads:
 - @.opencode/context/core/formats/plan-format.md
 - @.opencode/context/core/orchestration/state-management.md
 - @.opencode/context/core/orchestration/state-management.md
-- grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
-- @.opencode/specs/state.json
+- grep -A 50 "^### {task_number}\." specs/TODO.md
+- @specs/state.json
 - Research artifacts from task (if exist)
 ```
 
@@ -292,8 +292,8 @@ Stage 4 loads:
 - @.opencode/context/core/orchestration/state-management.md
 - @.opencode/context/core/orchestration/state-management.md
 - @.opencode/context/core/system/git-commits.md
-- grep -A 50 "^### {task_number}\." .opencode/specs/TODO.md
-- @.opencode/specs/state.json
+- grep -A 50 "^### {task_number}\." specs/TODO.md
+- @specs/state.json
 - Plan file (if exists)
 
 Language-specific:

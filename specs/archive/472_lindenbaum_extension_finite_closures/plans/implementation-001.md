@@ -5,7 +5,7 @@
 - **Effort**: 12 hours
 - **Priority**: Medium
 - **Dependencies**: None (builds on existing infrastructure)
-- **Research Inputs**: .claude/specs/472_lindenbaum_extension_finite_closures/reports/research-001.md
+- **Research Inputs**: specs/472_lindenbaum_extension_finite_closures/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean

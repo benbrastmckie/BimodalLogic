@@ -13,7 +13,7 @@
 - `.opencode/context/core/standards/subagent-return-format.md`
 
 **Artifacts**:
-- `.opencode/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md`
+- `specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md`
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md, delegation.md
 
@@ -64,14 +64,14 @@ This research focuses on:
   <action>Validate artifact, update status markers, update state, and return standardized result</action>
   <process>
     2. Update TODO.md status marker:
-       a. Find task entry in .opencode/specs/TODO.md
+       a. Find task entry in specs/TODO.md
        b. Change status from [RESEARCHING] to [RESEARCHED]
        c. Add **Completed**: YYYY-MM-DD timestamp
        d. Add **Research Artifacts**: section with links:
-          - Main Report: .opencode/specs/{task_number}_{topic}/reports/research-001.md
-          - Summary: .opencode/specs/{task_number}_{topic}/summaries/research-summary.md
+          - Main Report: specs/{task_number}_{topic}/reports/research-001.md
+          - Summary: specs/{task_number}_{topic}/summaries/research-summary.md
     3. Update state.json:
-       a. Update .opencode/specs/state.json active_projects array
+       a. Update specs/state.json active_projects array
        b. Add/update project entry with status "researched"
        c. Add artifacts array with research report and summary paths
        d. Set created_at and updated_at timestamps (ISO 8601 format)
@@ -109,9 +109,9 @@ This research focuses on:
        a. Prepare delegation context:
           - scope_files: [
               "{research_report_path}",
-              ".opencode/specs/TODO.md",
-              ".opencode/specs/state.json",
-              ".opencode/specs/{task_number}_{slug}/state.json"
+              "specs/TODO.md",
+              "specs/state.json",
+              "specs/{task_number}_{slug}/state.json"
             ]
           - message_template: "task {number}: research completed"
           - task_context: {
@@ -179,12 +179,12 @@ e. Verify summary artifact is 3-5 sentences
 **Current Implementation** (lines 651-657):
 ```xml
 2. Update TODO.md status marker:
-   a. Find task entry in .opencode/specs/TODO.md
+   a. Find task entry in specs/TODO.md
    b. Change status from [RESEARCHING] to [RESEARCHED]
    c. Add **Completed**: YYYY-MM-DD timestamp
    d. Add **Research Artifacts**: section with links:
-      - Main Report: .opencode/specs/{task_number}_{topic}/reports/research-001.md
-      - Summary: .opencode/specs/{task_number}_{topic}/summaries/research-summary.md
+      - Main Report: specs/{task_number}_{topic}/reports/research-001.md
+      - Summary: specs/{task_number}_{topic}/summaries/research-summary.md
 ```
 
 **Required Change**:
@@ -217,7 +217,7 @@ Replace with delegation pattern from researcher.md lines 335-348:
 **Current Implementation** (lines 658-662):
 ```xml
 3. Update state.json:
-   a. Update .opencode/specs/state.json active_projects array
+   a. Update specs/state.json active_projects array
    b. Add/update project entry with status "researched"
    c. Add artifacts array with research report and summary paths
    d. Set created_at and updated_at timestamps (ISO 8601 format)
@@ -242,9 +242,9 @@ Add delegation pattern from researcher.md lines 349-368:
    a. Prepare delegation context:
       - scope_files: [
           "{research_report_path}",
-          ".opencode/specs/TODO.md",
-          ".opencode/specs/state.json",
-          ".opencode/specs/{task_number}_{slug}/state.json"
+          "specs/TODO.md",
+          "specs/state.json",
+          "specs/{task_number}_{slug}/state.json"
         ]
       - message_template: "task {number}: research completed"
       - task_context: {
@@ -309,14 +309,14 @@ Remove all references to summary artifact:
 
 ```xml
 2. Update TODO.md status marker:
-   a. Find task entry in .opencode/specs/TODO.md
+   a. Find task entry in specs/TODO.md
    b. Change status from [RESEARCHING] to [RESEARCHED]
    c. Add **Completed**: YYYY-MM-DD timestamp
    d. Add **Research Artifacts**: section with links:
-      - Main Report: .opencode/specs/{task_number}_{topic}/reports/research-001.md
-      - Summary: .opencode/specs/{task_number}_{topic}/summaries/research-summary.md
+      - Main Report: specs/{task_number}_{topic}/reports/research-001.md
+      - Summary: specs/{task_number}_{topic}/summaries/research-summary.md
 3. Update state.json:
-   a. Update .opencode/specs/state.json active_projects array
+   a. Update specs/state.json active_projects array
    b. Add/update project entry with status "researched"
    c. Add artifacts array with research report and summary paths
    d. Set created_at and updated_at timestamps (ISO 8601 format)
@@ -343,9 +343,9 @@ Remove all references to summary artifact:
    a. Prepare delegation context:
       - scope_files: [
           "{research_report_path}",
-          ".opencode/specs/TODO.md",
-          ".opencode/specs/state.json",
-          ".opencode/specs/{task_number}_{slug}/state.json"
+          "specs/TODO.md",
+          "specs/state.json",
+          "specs/{task_number}_{slug}/state.json"
         ]
       - message_template: "task {number}: research completed"
       - task_context: {
@@ -506,7 +506,7 @@ Remove all references to summary artifact:
    - Lines 331-379: step_4_postflight implementation
    - Delegation pattern reference
 
-3. **Task 290 Research Report**: `.opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md`
+3. **Task 290 Research Report**: `specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md`
    - Evidence of status update failure
    - Root cause analysis
 

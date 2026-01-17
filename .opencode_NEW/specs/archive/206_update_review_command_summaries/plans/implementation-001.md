@@ -6,8 +6,8 @@
 - **Priority**: Medium
 - **Dependencies**: None
 - **Research Inputs**: 
-  - Main Report: .opencode/specs/206_update_review_command_summaries/reports/research-001.md
-  - Summary: .opencode/specs/206_update_review_command_summaries/summaries/research-summary.md
+  - Main Report: specs/206_update_review_command_summaries/reports/research-001.md
+  - Summary: specs/206_update_review_command_summaries/summaries/research-summary.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -145,11 +145,11 @@ The /review command currently updates project registries and creates tasks but d
 
 - .opencode/agent/subagents/reviewer.md (new subagent specification)
 - .opencode/command/review.md (updated command workflow)
-- .opencode/specs/state.json (updated schema with review_artifacts)
+- specs/state.json (updated schema with review_artifacts)
 - .opencode/context/core/system/state-schema.md (updated documentation)
 - .opencode/context/core/system/artifact-management.md (updated with /review example)
-- .opencode/specs/NNN_codebase_review/summaries/review-summary.md (example artifact created by /review)
-- .opencode/specs/206_update_review_command_summaries/summaries/implementation-summary-YYYYMMDD.md (implementation summary)
+- specs/NNN_codebase_review/summaries/review-summary.md (example artifact created by /review)
+- specs/206_update_review_command_summaries/summaries/implementation-summary-YYYYMMDD.md (implementation summary)
 
 ## Rollback/Contingency
 

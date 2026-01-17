@@ -15,7 +15,7 @@
 - .opencode/agent/subagents/planner.md (working subagent pattern)
 - .opencode/agent/subagents/researcher.md (recently fixed pattern)
 **Artifacts**:
-- .opencode/specs/328_fix_task_command_to_only_create_task_entries_and_never_implement_directly/reports/research-001.md
+- specs/328_fix_task_command_to_only_create_task_entries_and_never_implement_directly/reports/research-001.md
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ---
@@ -79,7 +79,7 @@ This suggests concern that /task might be implementing tasks instead of just cre
   This command MUST NOT:
   - Implement any tasks described in $ARGUMENTS
   - Create any code files (*.lean, *.py, *.sh, *.md, etc.)
-  - Create any spec directories (.opencode/specs/{number}_*/)
+  - Create any spec directories (specs/{number}_*/)
   - Create any artifact files (research, plans, implementations)
   - Run any build tools (lake, python, lean, cargo, etc.)
   - Modify any project code or configuration

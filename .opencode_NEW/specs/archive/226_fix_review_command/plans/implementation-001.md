@@ -5,7 +5,7 @@
 - **Effort**: 8 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/226_fix_review_command/reports/research-001.md
+- **Research Inputs**: specs/226_fix_review_command/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md

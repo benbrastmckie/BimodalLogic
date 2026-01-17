@@ -38,7 +38,7 @@ Phase 3 implemented selective TODO.md loading across all 4 workflow commands (re
 
 ```bash
 # Extract task entry (header + 50 lines of content)
-grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
 
 # Validate extraction succeeded (non-empty file)
 if [ ! -s /tmp/task-${task_number}.md ]; then
@@ -118,7 +118,7 @@ All acceptance criteria met:
 - `.opencode/command/plan.md` (Stage 4 updated)
 - `.opencode/command/implement.md` (Stage 4 updated)
 - `.opencode/command/revise.md` (Stage 4 updated)
-- `.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md` (Phase 2 deferred, Phase 3 completed)
+- `specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md` (Phase 2 deferred, Phase 3 completed)
 
 ## Git Commit
 

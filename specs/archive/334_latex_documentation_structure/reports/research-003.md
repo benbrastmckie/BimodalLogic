@@ -9,8 +9,8 @@
 **Sources/Inputs**:
 - docs/research/RECURSIVE_SEMANTICS.md (primary - 591 lines)
 - docs/research/LAYER_EXTENSIONS.md (secondary)
-- .claude/specs/334_latex_documentation_structure/reports/research-001.md (prior research)
-- .claude/specs/334_latex_documentation_structure/reports/research-002.md (prior research)
+- specs/334_latex_documentation_structure/reports/research-001.md (prior research)
+- specs/334_latex_documentation_structure/reports/research-002.md (prior research)
 
 ---
 

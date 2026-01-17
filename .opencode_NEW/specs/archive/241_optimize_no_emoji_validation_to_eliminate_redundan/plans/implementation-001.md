@@ -6,7 +6,7 @@
 - **Priority**: Medium
 - **Dependencies**: 238 (completed)
 - **Research Inputs**: 
-  - Research Report: .opencode/specs/241_optimize_no_emoji_validation/reports/research-001.md
+  - Research Report: specs/241_optimize_no_emoji_validation/reports/research-001.md
   - Key Finding: 95 validation lines across 18 files (4.7KB, ~1,200 tokens per invocation)
   - Recommended Solution: AGENTS.md centralization (80-98% overhead reduction)
 - **Artifacts**: 

@@ -1,7 +1,7 @@
 ---
 project: 127_context_refactor
 plan_type: context_references
-source_refactor_plan: .opencode/specs/127_context_refactor/plans/context-refactor-plan-001.md
+source_refactor_plan: specs/127_context_refactor/plans/context-refactor-plan-001.md
 created: 2025-12-22
 status: pending-refactor-structure
 ---
@@ -9,7 +9,7 @@ status: pending-refactor-structure
 # Context References Update Plan (Placeholder-aware)
 
 ## 1) Inputs and constraints
-- Refactor plan path provided: `.opencode/specs/127_context_refactor/plans/context-refactor-plan-001.md` (currently a placeholder with no new structure defined).
+- Refactor plan path provided: `specs/127_context_refactor/plans/context-refactor-plan-001.md` (currently a placeholder with no new structure defined).
 - Scope: all agent and command markdown files under `.opencode/agent/` and `.opencode/command/`.
 - Requirement: map existing context references (`@...` or `.opencode/context/...`) to the post-refactor structure and define per-file edit steps. Because the refactor plan is empty, mappings are provisional and edits are deferred until a real structure exists.
 
@@ -31,13 +31,13 @@ status: pending-refactor-structure
 - `.opencode/command/lean.md`
   - Loaded: `@.opencode/context/project/lean4/`, `@.opencode/context/project/logic/`, `@.opencode/context/core/standards/{code,tests,documentation}.md`, `@.opencode/context/project/repo/project-overview.md`
 - `.opencode/command/task.md`
-  - Loaded: `@.opencode/specs/TODO.md`, `@.opencode/specs/state.json`, `@.opencode/context/core/system/{state-schema,artifact-management,status-markers}.md`, `@.opencode/context/core/standards/{tasks,patterns}.md`, `@.opencode/context/core/workflows/task-breakdown.md`, `@.opencode/context/project/repo/project-overview.md`, optional Lean contexts `@.opencode/context/project/lean4/*`, `@.opencode/context/project/logic/*`
+  - Loaded: `@specs/TODO.md`, `@specs/state.json`, `@.opencode/context/core/system/{state-schema,artifact-management,status-markers}.md`, `@.opencode/context/core/standards/{tasks,patterns}.md`, `@.opencode/context/core/workflows/task-breakdown.md`, `@.opencode/context/project/repo/project-overview.md`, optional Lean contexts `@.opencode/context/project/lean4/*`, `@.opencode/context/project/logic/*`
 - `.opencode/command/plan.md`
   - Loaded: same as `/task` plus optional Lean contexts; non-Lean avoidance noted
 - `.opencode/command/add.md`
-  - Loaded: `@.opencode/specs/TODO.md`, `@.opencode/specs/state.json`, `@.opencode/context/core/system/{state-schema,artifact-management}.md`, `@.opencode/context/core/standards/{tasks,patterns}.md`
+  - Loaded: `@specs/TODO.md`, `@specs/state.json`, `@.opencode/context/core/system/{state-schema,artifact-management}.md`, `@.opencode/context/core/standards/{tasks,patterns}.md`
 - `.opencode/command/research.md`
-  - Loaded: `@.opencode/specs/TODO.md`, `@.opencode/specs/state.json`, `@.opencode/context/core/system/{state-schema,artifact-management}.md`, `@.opencode/context/core/standards/{tasks,patterns}.md`, `@.opencode/context/core/workflows/task-breakdown.md`
+  - Loaded: `@specs/TODO.md`, `@specs/state.json`, `@.opencode/context/core/system/{state-schema,artifact-management}.md`, `@.opencode/context/core/standards/{tasks,patterns}.md`, `@.opencode/context/core/workflows/task-breakdown.md`
 - `.opencode/command/context.md`
   - Loaded: `@context/core/system/context-guide.md`
 - `.opencode/command/meta.md`
@@ -67,6 +67,6 @@ For each file below, re-run this plan when a non-placeholder refactor plan is av
 - `.opencode/command/README.md`: update context allocation narrative to reflect new hierarchy.
 
 ## 5) Immediate next actions
-1. Produce a complete refactor structure in `.opencode/specs/127_context_refactor/plans/context-refactor-plan-001.md` (or superseding version).
+1. Produce a complete refactor structure in `specs/127_context_refactor/plans/context-refactor-plan-001.md` (or superseding version).
 2. Re-run the context-references workflow with the real refactor plan to generate concrete old→new mappings and apply edits.
 3. Once the new structure is defined, update all listed files using `edit` tool steps derived from the final mapping and verify references via `grep`.

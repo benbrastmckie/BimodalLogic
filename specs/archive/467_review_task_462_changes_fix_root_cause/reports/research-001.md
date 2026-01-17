@@ -303,15 +303,15 @@ This prevents Claude from treating intermediate skill returns as stopping points
 - `.claude/context/core/checkpoints/checkpoint-gate-in.md` - Full read
 
 **Task 462 artifacts**:
-- `.claude/specs/462_fix_workflow_command_delegation/reports/research-001.md`
-- `.claude/specs/462_fix_workflow_command_delegation/plans/implementation-001.md`
-- `.claude/specs/462_fix_workflow_command_delegation/summaries/implementation-summary-20260112.md`
+- `specs/462_fix_workflow_command_delegation/reports/research-001.md`
+- `specs/462_fix_workflow_command_delegation/plans/implementation-001.md`
+- `specs/462_fix_workflow_command_delegation/summaries/implementation-summary-20260112.md`
 
 ### Evidence Sources
 
 - `.claude/output/research.md` (Example 3, lines 155-346)
-- `.claude/specs/state.json` (task metadata)
-- `.claude/specs/TODO.md` (task descriptions)
+- `specs/state.json` (task metadata)
+- `specs/TODO.md` (task descriptions)
 
 ## Next Steps
 

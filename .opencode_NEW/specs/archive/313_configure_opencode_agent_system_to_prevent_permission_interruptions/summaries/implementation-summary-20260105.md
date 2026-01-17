@@ -65,13 +65,13 @@ Successfully configured the OpenCode agent system to prevent permission interrup
 
 **Before**:
 ```bash
-cp .opencode/specs/TODO.md /tmp/TODO.md.backup.$session_id
-cp .opencode/specs/state.json /tmp/state.json.backup.$session_id
+cp specs/TODO.md /tmp/TODO.md.backup.$session_id
+cp specs/state.json /tmp/state.json.backup.$session_id
 ```
 
 **After**:
 ```bash
-git add .opencode/specs/TODO.md .opencode/specs/state.json
+git add specs/TODO.md specs/state.json
 git commit -m "safety: pre-sync snapshot (session: $session_id)"
 safety_commit=$(git rev-parse HEAD)
 ```
@@ -123,7 +123,7 @@ safety_commit=$(git rev-parse HEAD)
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["git", "grep", "find"]
 ```
 
@@ -132,7 +132,7 @@ permissions:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "**/*.lean"]
-    - write: [".opencode/specs/**/*", "docs/research/**/*"]
+    - write: ["specs/**/*", "docs/research/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq", "sed", "awk"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd", "wget", "curl"]
@@ -154,7 +154,7 @@ permissions:
 permissions:
   allow:
     - read: ["**/*"]
-    - write: ["**/*.lean", "**/*.md", ".opencode/specs/**/*"]
+    - write: ["**/*.lean", "**/*.md", "specs/**/*"]
     - edit: ["**/*.lean", "**/*.md"]
     - bash: ["git", "lake", "grep", "find", "wc", "jq"]
   deny:
@@ -214,9 +214,9 @@ All agents retain deny lists for dangerous operations:
 
 **Before**:
 ```bash
-git add .opencode/specs/TODO.md
-git add .opencode/specs/state.json
-git add .opencode/specs/archive/state.json
+git add specs/TODO.md
+git add specs/state.json
+git add specs/archive/state.json
 git commit -m "todo: archive tasks"
 ```
 
@@ -266,7 +266,7 @@ git commit -m "todo: archive tasks"
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["git", "grep", "find", "wc", "jq"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x"]
@@ -278,7 +278,7 @@ permissions:
 permissions:
   allow:
     - read: ["**/*"]
-    - write: ["**/*.lean", "**/*.md", ".opencode/specs/**/*"]
+    - write: ["**/*.lean", "**/*.md", "specs/**/*"]
     - bash: ["git", "lake", "grep", "find"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
@@ -310,9 +310,9 @@ Complete list of operations that must remain denied:
 
 ### Backup Files Removed
 ```bash
-rm .opencode/specs/state.json.bad.bak
-rm .opencode/specs/archive/245_phase2_core_architecture/state.json.backup
-rm .opencode/specs/state.json.bak
+rm specs/state.json.bad.bak
+rm specs/archive/245_phase2_core_architecture/state.json.backup
+rm specs/state.json.bak
 rm .opencode/agent/orchestrator.md.backup
 ```
 
@@ -388,8 +388,8 @@ rm .opencode/agent/orchestrator.md.backup
 3. `.opencode/ARCHITECTURE.md` - Added link to permission guide
 
 ### Audit and Summary
-1. `.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/audit/backup-file-audit.md` - NEW audit report
-2. `.opencode/specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/summaries/implementation-summary-20260105.md` - THIS FILE
+1. `specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/audit/backup-file-audit.md` - NEW audit report
+2. `specs/313_configure_opencode_agent_system_to_prevent_permission_interruptions/summaries/implementation-summary-20260105.md` - THIS FILE
 
 ---
 

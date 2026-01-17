@@ -43,7 +43,7 @@ Added enumerated entries for both new extensions:
 |------|--------|
 | `Theories/Logos/latex/subfiles/00-Introduction.tex` | TikZ diagram + layer descriptions |
 | `README.md` | ASCII diagram + extension descriptions |
-| `.claude/specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md` | Phase status updates |
+| `specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md` | Phase status updates |
 
 ## Verification
 

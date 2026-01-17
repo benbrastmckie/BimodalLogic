@@ -6,7 +6,7 @@
 
 ## What Was Implemented
 
-Added a standardized YAML header to `.opencode/specs/TODO.md` that surfaces key metadata from `state.json` in a human-readable format. The header includes:
+Added a standardized YAML header to `specs/TODO.md` that surfaces key metadata from `state.json` in a human-readable format. The header includes:
 
 - Repository health metrics (overall score, production readiness)
 - Task counts (active, completed, blocked, in-progress, not-started, total)
@@ -17,11 +17,11 @@ Added a standardized YAML header to `.opencode/specs/TODO.md` that surfaces key 
 
 ## Files Modified
 
-1. **`.opencode/specs/TODO.md`**
+1. **`specs/TODO.md`**
    - Added YAML frontmatter at the very beginning of the file (before `# TODO` heading)
    - Header placed between `---` delimiters following standard YAML frontmatter format
    - Preserves all existing task entries below header
-   - Backup created: `.opencode/specs/TODO.md.backup-20260104`
+   - Backup created: `specs/TODO.md.backup-20260104`
 
 ## YAML Header Format
 

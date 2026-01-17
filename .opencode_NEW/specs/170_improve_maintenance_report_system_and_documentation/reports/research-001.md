@@ -19,11 +19,11 @@
   - .opencode/context/core/workflows/command-lifecycle.md
   - .opencode/context/core/standards/report.md
   - .opencode/context/core/standards/summary.md
-  - .opencode/specs/state.json
-  - .opencode/specs/maintenance/maintenance-report-20251224.md
-  - .opencode/specs/maintenance/state.json
+  - specs/state.json
+  - specs/maintenance/maintenance-report-20251224.md
+  - specs/maintenance/state.json
 - **Artifacts**: 
-  - .opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md
+  - specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md
 - **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ---
@@ -59,7 +59,7 @@ This research analyzes the maintenance report system to clarify command responsi
 
 **Responsibilities** (WELL-DEFINED):
 - Archive completed and abandoned tasks from TODO.md
-- Move project directories to archive (.opencode/specs/archive/)
+- Move project directories to archive (specs/archive/)
 - Update state.json (move tasks from active_projects to completed_projects)
 - Update archive/state.json (add archive entries)
 - Preserve task numbering (no renumbering)
@@ -124,7 +124,7 @@ This research analyzes the maintenance report system to clarify command responsi
   "review_artifacts": [
     {
       "timestamp": "2025-12-28T20:00:00Z",
-      "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
+      "path": "specs/207_codebase_review/summaries/review-summary.md",
       "scope": "full"
     }
   ]
@@ -388,7 +388,7 @@ Atomicity guaranteed across:
 
 ### 8. State File Update Patterns
 
-**File**: .opencode/specs/state.json (663 lines)
+**File**: specs/state.json (663 lines)
 
 **Schema Version**: 1.1.0
 
@@ -444,7 +444,7 @@ Atomicity guaranteed across:
 
 ### 9. Maintenance Report Example
 
-**File**: .opencode/specs/maintenance/maintenance-report-20251224.md (427 lines)
+**File**: specs/maintenance/maintenance-report-20251224.md (427 lines)
 
 **Structure**:
 - Executive Summary
@@ -461,7 +461,7 @@ Atomicity guaranteed across:
 - Statistics on operation efficiency and repository health
 - Clear next steps and recommendations
 
-**Maintenance State File**: .opencode/specs/maintenance/state.json (2118 bytes)
+**Maintenance State File**: specs/maintenance/state.json (2118 bytes)
 
 **Integration with /review**:
 - /review creates review summary artifact (similar to maintenance report)
@@ -639,7 +639,7 @@ Atomicity guaranteed across:
   "created": "2025-12-28T20:00:00Z",
   "completed": "2025-12-28T21:00:00Z",
   "artifacts": [
-    ".opencode/specs/207_codebase_review/summaries/review-summary.md"
+    "specs/207_codebase_review/summaries/review-summary.md"
   ],
   "metrics": {
     "sorry_count": 10,
@@ -778,7 +778,7 @@ Atomicity guaranteed across:
     "tasks_created": 5
   },
   "artifacts": [
-    ".opencode/specs/207_codebase_review/summaries/review-summary.md"
+    "specs/207_codebase_review/summaries/review-summary.md"
   ],
   "registries_updated": [
     "docs/project-info/IMPLEMENTATION_STATUS.md",
@@ -953,9 +953,9 @@ Atomicity guaranteed across:
 - .opencode/context/core/standards/summary.md
 
 **State Files**:
-- .opencode/specs/state.json
-- .opencode/specs/maintenance/state.json
-- .opencode/specs/maintenance/maintenance-report-20251224.md
+- specs/state.json
+- specs/maintenance/state.json
+- specs/maintenance/maintenance-report-20251224.md
 
 ---
 

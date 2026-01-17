@@ -61,9 +61,9 @@ Completed during /revise command:
 | File | Change |
 |------|--------|
 | `.claude/skills/skill-lean-research/SKILL.md` | Complete rewrite with workflow, tool matrix, patterns |
-| `.claude/specs/291_.../plans/implementation-002.md` | Marked phases complete |
-| `.claude/specs/TODO.md` | Status updates |
-| `.claude/specs/state.json` | Status updates |
+| `specs/291_.../plans/implementation-002.md` | Marked phases complete |
+| `specs/TODO.md` | Status updates |
+| `specs/state.json` | Status updates |
 
 ## Verification
 

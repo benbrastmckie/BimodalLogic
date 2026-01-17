@@ -127,7 +127,7 @@ Options:
 
 ## References
 
-- Task 352 Summary: `.claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md`
+- Task 352 Summary: `specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md`
 - Archive README: `Archive/README.md`
 - lakefile: `lakefile.lean` (line 29: `lean_lib Archive`)
 

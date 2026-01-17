@@ -302,7 +302,7 @@ The planner has 8 steps (0-8) with step 0 being preflight, while the researcher 
    - `.opencode/context/core/standards/subagent-structure.md` (step_0_preflight standard)
 
 3. **Implementation Summary**:
-   - `.opencode/specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md`
+   - `specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md`
 
 ### Validation Artifacts
 - Test results from /research 997

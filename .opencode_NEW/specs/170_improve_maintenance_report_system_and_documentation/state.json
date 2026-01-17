@@ -11,13 +11,13 @@
   "completed": "2025-12-28",
   "last_updated": "2025-12-28",
   "reports": [
-    ".opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md"
+    "specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md"
   ],
   "plans": [
-    ".opencode/specs/170_improve_maintenance_report_system_and_documentation/plans/implementation-001.md"
+    "specs/170_improve_maintenance_report_system_and_documentation/plans/implementation-001.md"
   ],
   "summaries": [
-    ".opencode/specs/170_improve_maintenance_report_system_and_documentation/summaries/implementation-summary-20251228.md"
+    "specs/170_improve_maintenance_report_system_and_documentation/summaries/implementation-summary-20251228.md"
   ],
   "artifacts": [
     ".opencode/command/review.md",

@@ -188,7 +188,7 @@ All workflow subagents implement a `<step_0_preflight>` or `<stage_1_preflight>`
   <action>Preflight: Validate task and update status to [COMMAND-ING]</action>
   <process>
     1. Parse task_number from delegation context or prompt string
-    2. Validate task exists in .opencode/specs/TODO.md
+    2. Validate task exists in specs/TODO.md
     3. Extract task description and current status
     4. Verify task not [COMPLETED] or [ABANDONED]
     5. Verify task is in valid starting status
@@ -276,7 +276,7 @@ Unlike /research and /implement which delegate to subagents, /task uses **inline
 
 ```bash
 # Read next project number
-next_number=$(jq -r '.next_project_number' .opencode/specs/state.json)
+next_number=$(jq -r '.next_project_number' specs/state.json)
 
 # Format TODO.md entry
 entry="### ${next_number}. ${description}
@@ -292,7 +292,7 @@ entry="### ${next_number}. ${description}
 # Append to TODO.md (using Edit tool)
 # Update state.json (using jq)
 jq '.next_project_number = (.next_project_number + 1) | 
-    .active_projects += [...]' .opencode/specs/state.json
+    .active_projects += [...]' specs/state.json
 ```
 
 ### Key Differences from Workflow Commands
@@ -332,8 +332,8 @@ jq '.next_project_number = (.next_project_number + 1) |
 
 - **Task Command:** `.opencode/command/task.md` (inline implementation)
 - **Task Standards:** `.opencode/context/core/standards/tasks.md`
-- **Original Implementation Plan:** `.opencode/specs/task-command-improvement-plan.md`
-- **Fix Plan:** `.opencode/specs/task-command-fix-plan.md`
+- **Original Implementation Plan:** `specs/task-command-improvement-plan.md`
+- **Fix Plan:** `specs/task-command-fix-plan.md`
 
 ## References
 

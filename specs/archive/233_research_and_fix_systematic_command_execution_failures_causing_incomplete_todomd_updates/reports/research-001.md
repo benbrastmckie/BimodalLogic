@@ -209,7 +209,7 @@ This research comprehensively analyzes systematic command execution failures tha
         "Error: status-sync-manager reported success but files not updated
          This indicates a system error
          Manual steps:
-           1. Check .opencode/specs/TODO.md modification time
+           1. Check specs/TODO.md modification time
            2. Check state.json modification time
            3. If not updated: manually update both files
          Or retry: /implement {task_number}"
@@ -340,7 +340,7 @@ This research comprehensively analyzes systematic command execution failures tha
   <language_extraction>
     Extract Language field from TODO.md task using explicit bash command:
     ```bash
-    grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+    grep -A 20 "^### ${task_number}\." specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
     ```
   </language_extraction>
   <pre_invocation_check>
@@ -574,8 +574,8 @@ This research comprehensively analyzes systematic command execution failures tha
 ```
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -997,9 +997,9 @@ Test orchestrator stage validation:
 
 ### Research Artifacts
 
-- Main Report: .opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/reports/research-001.md
-- Implementation Summary: .opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/summaries/implementation-summary-20251228.md
-- Implementation Plan: .opencode/specs/231_fix_systematic_command_stage_7_postflight_execution_failures/plans/implementation-001.md
+- Main Report: specs/231_fix_systematic_command_stage_7_postflight_execution_failures/reports/research-001.md
+- Implementation Summary: specs/231_fix_systematic_command_stage_7_postflight_execution_failures/summaries/implementation-summary-20251228.md
+- Implementation Plan: specs/231_fix_systematic_command_stage_7_postflight_execution_failures/plans/implementation-001.md
 
 ### Modified Files (Task 231)
 

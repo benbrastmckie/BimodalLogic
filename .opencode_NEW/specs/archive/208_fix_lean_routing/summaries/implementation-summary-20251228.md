@@ -5,7 +5,7 @@
 **Started**: 2025-12-28
 **Completed**: 2025-12-28
 **Total Duration**: ~1.5 hours
-**Plan**: .opencode/specs/208_fix_lean_routing/plans/implementation-001.md
+**Plan**: specs/208_fix_lean_routing/plans/implementation-001.md
 
 ## Overview
 

@@ -101,6 +101,6 @@ ProofChecker/
 
 ## Notes
 
-- Archive files (`.claude/specs/archive/`) were intentionally NOT updated - they are historical records
+- Archive files (`specs/archive/`) were intentionally NOT updated - they are historical records
 - Task 391 (archived) had previously claimed to complete this work but only renamed root-level directories
 - This implementation completes the full convention enforcement including theory-specific directories

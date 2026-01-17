@@ -10,7 +10,7 @@
 - **Task ID**: 161
 
 ## Research Inputs
-- [.opencode/specs/161_ensure_task_delegates_batch_coordinator_for_ranged_execution/reports/research-001.md](../reports/research-001.md)
+- [specs/161_ensure_task_delegates_batch_coordinator_for_ranged_execution/reports/research-001.md](../reports/research-001.md)
 
 ## context
 - /task must detect ranges/lists and delegate to batch-task-orchestrator for dependency-aware, wave-based execution while keeping status markers in sync across TODO/state/plan.
@@ -58,7 +58,7 @@ Implement range/list handling and batch delegation for /task, ensuring dependenc
 - Preserve numbering/state consistency; maintain Language metadata in all updates.
 
 ## artifact_management
-- Plan path: `.opencode/specs/161_ensure_task_delegates_batch_coordinator_for_ranged_execution/plans/implementation-001.md`.
+- Plan path: `specs/161_ensure_task_delegates_batch_coordinator_for_ranged_execution/plans/implementation-001.md`.
 - Lazy creation: only project root and plans/ (this write); no summaries/reports created here.
 - Status markers: plan header [IN PROGRESS]; phases start [NOT STARTED]; update when executing phases.
 

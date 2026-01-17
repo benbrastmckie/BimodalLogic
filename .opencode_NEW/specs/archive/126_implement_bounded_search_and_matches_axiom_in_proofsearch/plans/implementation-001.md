@@ -7,8 +7,8 @@
 - **Effort**: 6-10 hours (initial request 3h; expanded for schema coverage)
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md
-- **Artifacts**: .opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md; Logos/Core/Automation/ProofSearch.lean; LogosTest/Core/Automation/ProofSearchTest.lean
+- **Research Inputs**: specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md
+- **Artifacts**: specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md; Logos/Core/Automation/ProofSearch.lean; LogosTest/Core/Automation/ProofSearchTest.lean
 - **Standards**: .opencode/context/core/standards/plan.md; .opencode/context/core/standards/status-markers.md; .opencode/context/core/system/artifact-management.md; .opencode/context/core/standards/tasks.md
 
 ## Overview
@@ -69,7 +69,7 @@ Implement a terminating bounded proof search driver and exact axiom matching in 
 - [ ] Acceptance: bounded search enforces limits and terminates; `matches_axiom` only accepts valid schema instances; targeted Automation tests pass.
 
 ## Artifacts & Outputs
-- .opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md
+- specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md
 - Logos/Core/Automation/ProofSearch.lean
 - LogosTest/Core/Automation/ProofSearchTest.lean
 

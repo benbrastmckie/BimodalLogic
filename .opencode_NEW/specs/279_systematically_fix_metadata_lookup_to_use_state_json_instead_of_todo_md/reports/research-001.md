@@ -84,17 +84,17 @@ This research analyzed:
 
 #### Subagents (7 files)
 - `researcher.md` - "Extract language from state.json (fallback to TODO.md)"
-- `planner.md` - "Read task from .opencode/specs/TODO.md"
-- `implementer.md` - "grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md"
+- `planner.md` - "Read task from specs/TODO.md"
+- `implementer.md` - "grep -A 50 "^### ${task_number}\." specs/TODO.md"
 - `lean-research-agent.md` - "Extract language from state.json (fallback to TODO.md)"
-- `lean-implementation-agent.md` - "Read task from .opencode/specs/TODO.md"
-- `lean-planner.md` - "Read task from .opencode/specs/TODO.md"
-- `status-sync-manager.md` - "Extract current status from .opencode/specs/TODO.md"
+- `lean-implementation-agent.md` - "Read task from specs/TODO.md"
+- `lean-planner.md` - "Read task from specs/TODO.md"
+- `status-sync-manager.md` - "Extract current status from specs/TODO.md"
 - **Issue**: Subagents use grep patterns on TODO.md instead of jq queries on state.json
 
 #### Context Files (6 files)
 - `routing-guide.md` - "Extract language from task entry in TODO.md"
-- `routing-logic.md` - "task_entry=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md)"
+- `routing-logic.md` - "task_entry=$(grep -A 20 "^### ${task_number}\." specs/TODO.md)"
 - `research-workflow.md` - "Read task from TODO.md using grep"
 - `planning-workflow.md` - "Read task from TODO.md using grep"
 - `implementation-workflow.md` - "Read task from TODO.md using grep"
@@ -184,7 +184,7 @@ The root cause is **historical evolution** of the OpenCode system:
 # Extract task metadata from state.json
 task_metadata=$(jq -r --arg task_num "$task_number" \
   '.active_projects[] | select(.project_number == ($task_num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Extract specific fields
 language=$(echo "$task_metadata" | jq -r '.language // "general"')
@@ -224,7 +224,7 @@ Stage 2 (DetermineRouting): "Extract language from state.json ONLY"
 # Implementation
 language=$(jq -r --arg task_num "$task_number" \
   '.active_projects[] | select(.project_number == ($task_num | tonumber)) | .language // "general"' \
-  .opencode/specs/state.json)
+  specs/state.json)
 ```
 
 **Impact**: HIGH - Controls routing to Lean-specific agents
@@ -251,7 +251,7 @@ Stage 1 (PreflightValidation): "Extract metadata from state.json"
 # Implementation
 task_metadata=$(jq -r --arg task_num "$task_number" \
   '.active_projects[] | select(.project_number == ($task_num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 language=$(echo "$task_metadata" | jq -r '.language // "general"')
 status=$(echo "$task_metadata" | jq -r '.status // "not_started"')
@@ -269,7 +269,7 @@ status=$(echo "$task_metadata" | jq -r '.status // "not_started"')
 
 **Current Behavior**:
 ```bash
-grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md
+grep -A 50 "^### ${task_number}\." specs/TODO.md
 ```
 
 **Issue**: Uses grep pattern matching on TODO.md markdown.
@@ -279,7 +279,7 @@ grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md
 # Extract full task metadata from state.json
 task_metadata=$(jq -r --arg task_num "$task_number" \
   '.active_projects[] | select(.project_number == ($task_num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Extract description (may be multi-line)
 description=$(echo "$task_metadata" | jq -r '.description // ""')
@@ -293,7 +293,7 @@ description=$(echo "$task_metadata" | jq -r '.description // ""')
 
 **Current Behavior**:
 ```markdown
-"Extract current status from .opencode/specs/TODO.md"
+"Extract current status from specs/TODO.md"
 ```
 
 **Issue**: Reads current status from TODO.md instead of state.json.
@@ -305,7 +305,7 @@ description=$(echo "$task_metadata" | jq -r '.description // ""')
 # Implementation
 current_status=$(jq -r --arg task_num "$task_number" \
   '.active_projects[] | select(.project_number == ($task_num | tonumber)) | .status // "not_started"' \
-  .opencode/specs/state.json)
+  specs/state.json)
 ```
 
 **Impact**: CRITICAL - Status-sync-manager is responsible for maintaining state.json, should not read TODO.md
@@ -336,7 +336,7 @@ current_status=$(jq -r --arg task_num "$task_number" \
 ```bash
 # Stage 2: DetermineRouting
 # Extract language from state.json or TODO.md
-language=$(grep -A 5 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Language:" | cut -d: -f2 | xargs)
+language=$(grep -A 5 "^### ${task_number}\." specs/TODO.md | grep "Language:" | cut -d: -f2 | xargs)
 ```
 
 **After**:
@@ -345,7 +345,7 @@ language=$(grep -A 5 "^### ${task_number}\." .opencode/specs/TODO.md | grep "Lan
 # Extract language from state.json (authoritative source)
 language=$(jq -r --arg task_num "$task_number" \
   '.active_projects[] | select(.project_number == ($task_num | tonumber)) | .language // "general"' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Validate language extracted
 if [[ -z "$language" ]]; then
@@ -360,7 +360,7 @@ fi
 ```bash
 # Stage 1: PreflightValidation
 # Extract language from task entry (state.json or TODO.md)
-task_entry=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md)
+task_entry=$(grep -A 20 "^### ${task_number}\." specs/TODO.md)
 language=$(echo "$task_entry" | grep "Language:" | cut -d: -f2 | xargs)
 ```
 
@@ -370,7 +370,7 @@ language=$(echo "$task_entry" | grep "Language:" | cut -d: -f2 | xargs)
 # Extract metadata from state.json (authoritative source)
 task_metadata=$(jq -r --arg task_num "$task_number" \
   '.active_projects[] | select(.project_number == ($task_num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Validate task exists
 if [[ -z "$task_metadata" ]] || [[ "$task_metadata" == "null" ]]; then
@@ -389,7 +389,7 @@ status=$(echo "$task_metadata" | jq -r '.status // "not_started"')
 **Before**:
 ```bash
 # Read task from TODO.md
-task_description=$(grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md | sed -n '/^### /,/^---$/p')
+task_description=$(grep -A 50 "^### ${task_number}\." specs/TODO.md | sed -n '/^### /,/^---$/p')
 ```
 
 **After**:
@@ -397,7 +397,7 @@ task_description=$(grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md | 
 # Read task from state.json
 task_metadata=$(jq -r --arg task_num "$task_number" \
   '.active_projects[] | select(.project_number == ($task_num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Extract description (handles multi-line)
 description=$(echo "$task_metadata" | jq -r '.description // ""')
@@ -502,7 +502,7 @@ extract_task_metadata() {
   
   jq -r --arg task_num "$task_number" --arg field "$field" --arg default "$default_value" \
     '.active_projects[] | select(.project_number == ($task_num | tonumber)) | .[$field] // $default' \
-    .opencode/specs/state.json
+    specs/state.json
 }
 
 # Usage examples
@@ -706,7 +706,7 @@ status=$(extract_task_metadata "$task_number" "status" "not_started")
 
 ### Source 1: Task 279 Description in TODO.md
 
-**File**: `.opencode/specs/TODO.md` (lines 751-953)
+**File**: `specs/TODO.md` (lines 751-953)
 
 **Content**: Original task description with comprehensive analysis of 25 affected files, metadata fields, root cause, and implementation strategy.
 
@@ -714,7 +714,7 @@ status=$(extract_task_metadata "$task_number" "status" "not_started")
 
 ### Source 2: state.json Schema
 
-**File**: `.opencode/specs/state.json`
+**File**: `specs/state.json`
 
 **Content**: Current state.json structure showing active_projects array with metadata fields.
 

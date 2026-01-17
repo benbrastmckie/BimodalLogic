@@ -12,7 +12,7 @@ Research identified a critical structural issue with state.json that prevents co
 
 ### Critical: state.json Format Mismatch
 
-**Issue**: The file `.claude/specs/state.json` uses JSON Lines format (one JSON object per line) instead of the expected structure:
+**Issue**: The file `specs/state.json` uses JSON Lines format (one JSON object per line) instead of the expected structure:
 
 **Current format (JSONL)**:
 ```json
@@ -53,7 +53,7 @@ Research identified a critical structural issue with state.json that prevents co
 
 **Evidence**:
 ```bash
-$ jq -r '.next_project_number' .claude/specs/state.json
+$ jq -r '.next_project_number' specs/state.json
 null (repeated for each object in file)
 ```
 
@@ -79,7 +79,7 @@ null (repeated for each object in file)
 - `.claude/skills/` - 9 skill directories with SKILL.md files
 - `.claude/context/` - Comprehensive documentation hierarchy
 - `.claude/rules/` - 5 rule files for specialized contexts
-- `.claude/specs/` - 68 task directories with artifacts
+- `specs/` - 68 task directories with artifacts
 
 **No cleanup needed**:
 - No backup files (.bak, .old, ~)
@@ -118,8 +118,8 @@ This demonstrates the expected format for the main state.json.
 
 ## References
 
-- `.claude/specs/state.json` - Current (broken) format
-- `.claude/specs/archive/state.json` - Correct format example
+- `specs/state.json` - Current (broken) format
+- `specs/archive/state.json` - Correct format example
 - `.claude/skills/skill-status-sync/SKILL.md` - Expected jq patterns
 - `.claude/commands/task.md` - Command expecting proper JSON structure
 

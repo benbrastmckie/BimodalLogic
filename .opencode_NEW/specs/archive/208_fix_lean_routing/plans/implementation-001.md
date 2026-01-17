@@ -8,8 +8,8 @@
 - **Priority**: High
 - **Dependencies**: None
 - **Research Inputs**: 
-  - Main Report: .opencode/specs/208_fix_lean_routing/reports/research-001.md
-  - Summary: .opencode/specs/208_fix_lean_routing/summaries/research-summary.md
+  - Main Report: specs/208_fix_lean_routing/reports/research-001.md
+  - Summary: specs/208_fix_lean_routing/summaries/research-summary.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -156,7 +156,7 @@ verified to work correctly for both lean and markdown tasks.
 - .opencode/command/research.md (updated with enhanced routing validation)
 - .opencode/command/implement.md (updated with enhanced routing validation)
 - .opencode/agent/orchestrator.md (updated with explicit language extraction and routing logic)
-- .opencode/specs/208_fix_lean_routing/summaries/implementation-summary-YYYYMMDD.md (implementation summary)
+- specs/208_fix_lean_routing/summaries/implementation-summary-YYYYMMDD.md (implementation summary)
 - Test logs showing routing decisions for Lean and general tasks
 
 ## Rollback/Contingency

@@ -53,7 +53,7 @@ Integrated /review command with status-sync-manager for atomic state updates acr
 
 - Updated: .opencode/command/review.md (Stage 6 and Stage 7)
 - Updated: .opencode/agent/subagents/reviewer.md (integration_notes section)
-- Created: .opencode/specs/170_improve_maintenance_report_system_and_documentation/summaries/implementation-summary-20251228.md
+- Created: specs/170_improve_maintenance_report_system_and_documentation/summaries/implementation-summary-20251228.md
 
 ## Validation Checklist
 
@@ -89,8 +89,8 @@ Integrated /review command with status-sync-manager for atomic state updates acr
 
 ## References
 
-- Research Report: .opencode/specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md
-- Implementation Plan: .opencode/specs/170_improve_maintenance_report_system_and_documentation/plans/implementation-001.md
+- Research Report: specs/170_improve_maintenance_report_system_and_documentation/reports/research-001.md
+- Implementation Plan: specs/170_improve_maintenance_report_system_and_documentation/plans/implementation-001.md
 - Updated Files:
   * .opencode/command/review.md
   * .opencode/agent/subagents/reviewer.md

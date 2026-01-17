@@ -7,7 +7,7 @@
 **Priority**: Medium  
 **Dependencies**: None  
 **Sources/Inputs**: Tactics.lean, TACTIC_REGISTRY.md, AesopRules.lean, ProofSearch.lean, temporal-logic-automation-research.md, PROOF_SEARCH_AUTOMATION.md  
-**Artifacts**: .opencode/specs/259_automation_tactics/reports/research-001.md  
+**Artifacts**: specs/259_automation_tactics/reports/research-001.md  
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ## Executive Summary

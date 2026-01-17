@@ -248,7 +248,7 @@ The Logos theory is an extensible formal language equipped with...
 
 ## Dependencies
 
-- Research report at `.claude/specs/430_refactor_documentation_general_framework/reports/research-001.md` provides detailed analysis of current state
+- Research report at `specs/430_refactor_documentation_general_framework/reports/research-001.md` provides detailed analysis of current state
 
 ## Risks and Mitigations
 

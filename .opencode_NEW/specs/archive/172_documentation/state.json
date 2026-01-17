@@ -25,38 +25,38 @@
   "artifacts": [
     {
       "type": "research_report",
-      "path": ".opencode/specs/172_documentation/reports/research-001.md",
+      "path": "specs/172_documentation/reports/research-001.md",
       "created": "2025-12-24T23:59:59Z",
       "description": "Comprehensive research on Lean 4 documentation standards, current state analysis, gap identification, and implementation recommendations"
     },
     {
       "type": "web_research",
-      "path": ".opencode/specs/172_documentation/reports/web-research-lean4-docstrings.md",
+      "path": "specs/172_documentation/reports/web-research-lean4-docstrings.md",
       "created": "2025-12-24T12:30:00Z",
       "description": "Lean 4 docstring syntax and conventions"
     },
     {
       "type": "implementation_plan",
-      "path": ".opencode/specs/172_documentation/plans/implementation-001.md",
+      "path": "specs/172_documentation/plans/implementation-001.md",
       "version": 1,
       "created": "2025-12-24T13:00:00Z",
       "description": "5-phase implementation plan for complete API documentation (30 hours)"
     },
     {
       "type": "plan_summary",
-      "path": ".opencode/specs/172_documentation/summaries/plan-summary.md",
+      "path": "specs/172_documentation/summaries/plan-summary.md",
       "created": "2025-12-24T13:00:00Z",
       "description": "Brief summary of implementation plan phases and deliverables"
     },
     {
       "type": "doc_summary",
-      "path": ".opencode/specs/172_documentation/summaries/doc-summary.md",
+      "path": "specs/172_documentation/summaries/doc-summary.md",
       "created": "2025-12-24T14:33:00Z",
       "description": "Initial documentation coverage analysis (95% coverage estimate)"
     },
     {
       "type": "gap_analysis",
-      "path": ".opencode/specs/172_documentation/analysis/doc-gaps-analysis.md",
+      "path": "specs/172_documentation/analysis/doc-gaps-analysis.md",
       "created": "2025-12-24T13:39:00Z",
       "description": "Detailed gap analysis of missing docstrings"
     },
@@ -68,19 +68,19 @@
     },
     {
       "type": "gap_analysis_report",
-      "path": ".opencode/specs/172_api_documentation/reports/doc-analysis.md",
+      "path": "specs/172_api_documentation/reports/doc-analysis.md",
       "created": "2025-12-25T03:18:33Z",
       "description": "Comprehensive gap analysis identifying 6 undocumented declarations across 2 files"
     },
     {
       "type": "gap_analysis_json",
-      "path": ".opencode/specs/172_api_documentation/reports/doc-analysis.json",
+      "path": "specs/172_api_documentation/reports/doc-analysis.json",
       "created": "2025-12-25T03:18:33Z",
       "description": "Structured gap analysis data for tooling integration"
     },
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/172_documentation/summaries/implementation-summary-20251224.md",
+      "path": "specs/172_documentation/summaries/implementation-summary-20251224.md",
       "created": "2025-12-25T03:18:33Z",
       "description": "Comprehensive implementation summary documenting completion of 100% API documentation coverage"
     }

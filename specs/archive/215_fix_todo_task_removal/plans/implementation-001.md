@@ -21,14 +21,14 @@ Fix the /todo command's task removal logic to remove complete task blocks (headi
 
 ## Research Inputs
 
-**From**: `.opencode/specs/215_fix_todo_task_removal/reports/research-001.md`
+**From**: `specs/215_fix_todo_task_removal/reports/research-001.md`
 
 **Key Findings**:
 1. Task structure: Heading line (`^### \d+\. `) + Body lines (all content until next boundary)
 2. Task block boundaries: Start = `^### \d+\. `, End = next `^### \d+\. ` or `^## ` or `^---$` or EOF
 3. Current removal: Heading only (incomplete)
 4. Required removal: Complete block (heading + all body lines)
-5. Impact: 129+ orphaned lines in `.opencode/specs/TODO.md`
+5. Impact: 129+ orphaned lines in `specs/TODO.md`
 
 **Solution Approach**: Specification enhancement (Approach 1) recommended for minimal disruption and fastest implementation.
 
@@ -327,8 +327,8 @@ The implementation will be considered successful when:
 
 ## References
 
-1. Research Report: `.opencode/specs/215_fix_todo_task_removal/reports/research-001.md`
-2. Research Summary: `.opencode/specs/215_fix_todo_task_removal/summaries/research-summary.md`
+1. Research Report: `specs/215_fix_todo_task_removal/reports/research-001.md`
+2. Research Summary: `specs/215_fix_todo_task_removal/summaries/research-summary.md`
 3. Command Specification: `.opencode/command/todo.md`
 4. Status Markers: `.opencode/context/core/standards/status-markers.md`
 5. Artifact Management: `.opencode/context/core/system/artifact-management.md`

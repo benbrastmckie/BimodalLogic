@@ -16,7 +16,7 @@
 - **Plan Version**: 1
 - **Research Integrated**: Yes
 - **Research Reports**:
-  - `.opencode/specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/reports/research-001.md`
+  - `specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/reports/research-001.md`
 - **Dependencies**: None
 - **Blocking**: None
 - **Related Tasks**: 329 (duplicate), 312 (abandoned predecessor)
@@ -314,7 +314,7 @@ This plan integrates findings from research-001.md:
 **Objective**: Verify all workflow commands work together and sync correctly
 
 **Tasks**:
-1. Create integration test suite (`.opencode/specs/333_*/tests/sync-test.sh`)
+1. Create integration test suite (`specs/333_*/tests/sync-test.sh`)
 2. Test 1: /research command sync (create task, research, verify sync)
 3. Test 2: /plan command sync (create task, plan, verify sync)
 4. Test 3: /revise command sync (create task, revise, verify sync - both modes)
@@ -335,7 +335,7 @@ This plan integrates findings from research-001.md:
 - [ ] Test results documented
 
 **Deliverables**:
-- Integration test suite (`.opencode/specs/333_*/tests/sync-test.sh`)
+- Integration test suite (`specs/333_*/tests/sync-test.sh`)
 - Test execution report
 - Documentation of test results
 
@@ -483,13 +483,13 @@ This plan integrates findings from research-001.md:
    - `.opencode/agent/subagents/implementer.md` (updated with delegation)
 
 2. **Integration Test Suite**:
-   - `.opencode/specs/333_*/tests/sync-test.sh` (new)
+   - `specs/333_*/tests/sync-test.sh` (new)
 
 3. **Test Execution Report**:
-   - `.opencode/specs/333_*/tests/test-results.md` (new)
+   - `specs/333_*/tests/test-results.md` (new)
 
 4. **Implementation Summary**:
-   - `.opencode/specs/333_*/summaries/implementation-summary-20260106.md` (new)
+   - `specs/333_*/summaries/implementation-summary-20260106.md` (new)
 
 ### Documentation Updates
 

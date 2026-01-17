@@ -81,7 +81,7 @@ Created `docs/latex/` directory structure:
 ## Files Modified
 
 - `.claude/skills/skill-latex-implementation/SKILL.md` - Added context references
-- `.claude/specs/state.json` - Task 334 language changed to "latex"
+- `specs/state.json` - Task 334 language changed to "latex"
 
 ## Verification
 

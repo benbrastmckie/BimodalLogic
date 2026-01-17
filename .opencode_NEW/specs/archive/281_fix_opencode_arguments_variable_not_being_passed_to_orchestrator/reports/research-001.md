@@ -12,11 +12,11 @@
 - `.opencode/agent/orchestrator.md`
 - `.opencode/context/core/standards/command-argument-handling.md`
 - `.opencode/docs/guides/creating-commands.md`
-- `.opencode/specs/278_investigate_fix_implement_argument_parsing/`
+- `specs/278_investigate_fix_implement_argument_parsing/`
 - `opencode.json`
 
 **Artifacts**:
-- `.opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md`
+- `specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-001.md`
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -80,7 +80,7 @@ This research investigates:
 
 ### Finding 1: Task 278 Fixed Orchestrator Parsing Logic
 
-**Evidence**: `.opencode/specs/278_investigate_fix_implement_argument_parsing/summaries/implementation-summary-20260103.md`
+**Evidence**: `specs/278_investigate_fix_implement_argument_parsing/summaries/implementation-summary-20260103.md`
 
 Task 278 successfully enhanced the orchestrator's Stage 1 (PreflightValidation) with:
 - Explicit command type lists (task-based vs. direct)
@@ -471,7 +471,7 @@ Invoke orchestrator with arguments: $ARGUMENTS
 
 ### Source 1: Task 278 Implementation Summary
 
-**File**: `.opencode/specs/278_investigate_fix_implement_argument_parsing/summaries/implementation-summary-20260103.md`
+**File**: `specs/278_investigate_fix_implement_argument_parsing/summaries/implementation-summary-20260103.md`
 
 **Key Quote**:
 > "The orchestrator AI agent was not following its Stage 1 instructions to parse task numbers from $ARGUMENTS. The instructions were present but not explicit or imperative enough."

@@ -65,7 +65,7 @@ This document defines comprehensive test scenarios for validating all changes im
   "artifacts": [
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/999_test_simple_task/summaries/implementation-summary-20251224.md"
+      "path": "specs/999_test_simple_task/summaries/implementation-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -167,23 +167,23 @@ Actual: [TO BE MEASURED]
   "artifacts": [
     {
       "type": "research",
-      "path": ".opencode/specs/998_test_complex_task/reports/research-001.md"
+      "path": "specs/998_test_complex_task/reports/research-001.md"
     },
     {
       "type": "research_summary",
-      "path": ".opencode/specs/998_test_complex_task/summaries/research-summary.md"
+      "path": "specs/998_test_complex_task/summaries/research-summary.md"
     },
     {
       "type": "plan",
-      "path": ".opencode/specs/998_test_complex_task/plans/implementation-001.md"
+      "path": "specs/998_test_complex_task/plans/implementation-001.md"
     },
     {
       "type": "plan_summary",
-      "path": ".opencode/specs/998_test_complex_task/summaries/plan-summary.md"
+      "path": "specs/998_test_complex_task/summaries/plan-summary.md"
     },
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/998_test_complex_task/summaries/implementation-summary-20251224.md"
+      "path": "specs/998_test_complex_task/summaries/implementation-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -260,20 +260,20 @@ Actual: [TO BE MEASURED]
       "task_number": 990,
       "status": "completed",
       "summary": "Simple file modification completed",
-      "artifacts": [".opencode/specs/990_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/990_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 991,
       "status": "completed",
       "summary": "Documentation update completed",
-      "artifacts": [".opencode/specs/991_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/991_*/summaries/implementation-summary-*.md"]
     }
     // ... 8 more task summaries (one-line each)
   ],
   "artifacts": [
     {
       "type": "batch_summary",
-      "path": ".opencode/specs/batch_990-999/summaries/batch-summary-20251224.md"
+      "path": "specs/batch_990-999/summaries/batch-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -320,7 +320,7 @@ Actual: [TO BE MEASURED]
   - **Status**: [NOT STARTED]
   - **Effort**: 4 hours
   - **Priority**: Medium
-  - **Plan**: .opencode/specs/997_test_plan_reuse/plans/implementation-001.md
+  - **Plan**: specs/997_test_plan_reuse/plans/implementation-001.md
   - **Description**: Extend existing validation system with new rules
   - **Files**: validation-utils.md, task-executor.md
   ```
@@ -355,11 +355,11 @@ Actual: [TO BE MEASURED]
   "artifacts": [
     {
       "type": "plan",
-      "path": ".opencode/specs/997_test_plan_reuse/plans/implementation-001.md"
+      "path": "specs/997_test_plan_reuse/plans/implementation-001.md"
     },
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/997_test_plan_reuse/summaries/implementation-summary-20251224.md"
+      "path": "specs/997_test_plan_reuse/summaries/implementation-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -433,7 +433,7 @@ Actual: [TO BE MEASURED]
   "artifacts": [
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/996_test_direct_execution/summaries/implementation-summary-20251224.md"
+      "path": "specs/996_test_direct_execution/summaries/implementation-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -545,11 +545,11 @@ Actual: [TO BE MEASURED]
   "artifacts": [
     {
       "type": "implementation",
-      "path": ".opencode/specs/993_*/reports/implementation-001.md"
+      "path": "specs/993_*/reports/implementation-001.md"
     },
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/993_*/summaries/implementation-summary-20251224.md"
+      "path": "specs/993_*/summaries/implementation-summary-20251224.md"
     }
   ],
   "validation_warnings": [

@@ -94,7 +94,7 @@ Successfully completed comprehensive compliance verification of all workflow com
 - No-emojis standard verified
 - Recommendations for ongoing compliance monitoring
 
-**Result**: Compliance verification report created at `.opencode/specs/220_metadata_passing_compliance_verification/summaries/compliance-verification-report.md`
+**Result**: Compliance verification report created at `specs/220_metadata_passing_compliance_verification/summaries/compliance-verification-report.md`
 
 ### Phase 6: Final Validation and Documentation (0.5 hours)
 

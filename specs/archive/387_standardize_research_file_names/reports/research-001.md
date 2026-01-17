@@ -48,8 +48,8 @@ Grep found ~230 references to `docs/Research/` across the codebase:
 - docs/Research/README.md: 18 internal references
 - Theories/Logos/*: ~30 references
 - Theories/Bimodal/*: ~15 references
-- .claude/specs/* (historical): ~150+ references (many in archive)
-- .opencode/specs/* (historical): ~25 references
+- specs/* (historical): ~150+ references (many in archive)
+- specs/* (historical): ~25 references
 
 ### Broken Reference Risk
 
@@ -103,7 +103,7 @@ Adopt **lowercase-hyphenated** naming for all research files (except README.md):
    - docs/Research/README.md
    - Theories/*/docs/**/*.md
    - Theories/*/*.lean (doc comments)
-3. **Phase 3: Skip archive references** - References in `.claude/specs/archive/` and `.opencode/specs/archive/` are historical and should not be updated
+3. **Phase 3: Skip archive references** - References in `specs/archive/` and `specs/archive/` are historical and should not be updated
 
 ### Scope Limitation
 

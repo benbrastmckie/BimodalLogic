@@ -60,8 +60,8 @@ and optimality guarantees while maintaining O(d) space efficiency like bounded D
 
 ## Files Created
 
-- `.claude/specs/317_bfs_variant_phase3/benchmarks/iddfs-vs-dfs.md`
-- `.claude/specs/317_bfs_variant_phase3/summaries/implementation-summary-20260109.md`
+- `specs/317_bfs_variant_phase3/benchmarks/iddfs-vs-dfs.md`
+- `specs/317_bfs_variant_phase3/summaries/implementation-summary-20260109.md`
 
 ## Verification
 

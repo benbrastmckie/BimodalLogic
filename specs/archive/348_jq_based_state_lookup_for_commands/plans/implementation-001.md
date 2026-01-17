@@ -63,7 +63,7 @@ The existing `state-lookup.md` already documents optimal jq patterns. This imple
 **Status**: [COMPLETED]
 
 **Objectives**:
-1. Replace "Read .claude/specs/state.json" with explicit jq lookup
+1. Replace "Read specs/state.json" with explicit jq lookup
 2. Reference skill-status-sync for status updates
 3. Add grep-based TODO.md lookup for section editing
 
@@ -75,7 +75,7 @@ The existing `state-lookup.md` already documents optimal jq patterns. This imple
    ```bash
    task_data=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber))' \
-     .claude/specs/state.json)
+     specs/state.json)
    ```
 2. Update step 3 to explicitly invoke skill-status-sync for status change
 3. Update step 6 to explicitly invoke skill-status-sync for final status

@@ -8,8 +8,8 @@
 
 ## Most Relevant Resources
 
-- `.opencode/specs/151_research_caching_and_context_helpers_in_proofsearch/reports/research-001.md`
-- `.opencode/specs/151_research_caching_and_context_helpers_in_proofsearch/specialist-reports/web-research-Lean 4 memoization and context transforms for proof search.md`
+- `specs/151_research_caching_and_context_helpers_in_proofsearch/reports/research-001.md`
+- `specs/151_research_caching_and_context_helpers_in_proofsearch/specialist-reports/web-research-Lean 4 memoization and context transforms for proof search.md`
 - `Logos/Core/Automation/ProofSearch.lean`
 
 ## Recommendations
@@ -18,4 +18,4 @@ Adopt hash-based cache + visited sets keyed by `(Γ, φ)`, expose search stats i
 
 ## Full Report
 
-See: `.opencode/specs/151_research_caching_and_context_helpers_in_proofsearch/reports/research-001.md`
+See: `specs/151_research_caching_and_context_helpers_in_proofsearch/reports/research-001.md`

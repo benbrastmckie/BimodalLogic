@@ -7,8 +7,8 @@
 **Priority**: High  
 **Dependencies**: Task 283 (comparison baseline)  
 **Sources/Inputs**: 
-- .opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
-- .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
+- specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
+- specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
 - .opencode/agent/orchestrator.md
 - .opencode/agent/subagents/researcher.md
 - .opencode/agent/subagents/planner.md
@@ -18,7 +18,7 @@
 - .opencode/context/core/system/state-management.md
 
 **Artifacts**: 
-- .opencode/specs/286_research_alternative_to_task_283_with_subagent_owned_pre_flight_and_post_flight_work/reports/research-001.md
+- specs/286_research_alternative_to_task_283_with_subagent_owned_pre_flight_and_post_flight_work/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -581,12 +581,12 @@ Both solve the problem, but via different mechanisms.
     9. VALIDATE status update succeeded (CRITICAL - DO NOT SKIP):
        a. Read TODO.md and extract current status for task_number:
           ```bash
-          CURRENT_STATUS=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep -oP '\[.*?\]' | head -1)
+          CURRENT_STATUS=$(grep -A 20 "^### ${task_number}\." specs/TODO.md | grep -oP '\[.*?\]' | head -1)
           ```
        b. Verify CURRENT_STATUS == "[RESEARCHING]"
        c. Read state.json and extract current status for task_number:
           ```bash
-          STATE_STATUS=$(jq -r ".active_projects[] | select(.project_number == ${task_number}) | .status" .opencode/specs/state.json)
+          STATE_STATUS=$(jq -r ".active_projects[] | select(.project_number == ${task_number}) | .status" specs/state.json)
           ```
        d. Verify STATE_STATUS == "researching"
        e. If validation FAILS:
@@ -728,7 +728,7 @@ verify_todo_status() {
   local expected_status=$2
   
   # Extract current status marker from TODO.md
-  local current_status=$(grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep -oP '\[.*?\]' | head -1)
+  local current_status=$(grep -A 20 "^### ${task_number}\." specs/TODO.md | grep -oP '\[.*?\]' | head -1)
   
   # Compare with expected
   if [ "$current_status" == "$expected_status" ]; then
@@ -746,7 +746,7 @@ verify_state_json_status() {
   local expected_status=$2
   
   # Extract current status from state.json
-  local current_status=$(jq -r ".active_projects[] | select(.project_number == ${task_number}) | .status" .opencode/specs/state.json)
+  local current_status=$(jq -r ".active_projects[] | select(.project_number == ${task_number}) | .status" specs/state.json)
   
   # Compare with expected
   if [ "$current_status" == "$expected_status" ]; then
@@ -764,7 +764,7 @@ verify_artifact_linked() {
   local artifact_path=$2
   
   # Check if artifact path appears in task entry
-  if grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md | grep -q "$artifact_path"; then
+  if grep -A 50 "^### ${task_number}\." specs/TODO.md | grep -q "$artifact_path"; then
     echo "SUCCESS: Artifact $artifact_path linked in TODO.md"
     return 0
   else
@@ -998,8 +998,8 @@ fi
 ### Primary Sources
 
 1. **Task 283 Research and Plan**:
-   - .opencode/specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
-   - .opencode/specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
+   - specs/283_fix_systematic_status_synchronization_failure/reports/research-001.md
+   - specs/283_fix_systematic_status_synchronization_failure/plans/implementation-001.md
 
 2. **Orchestrator Specification**:
    - .opencode/agent/orchestrator.md (Stage 1-5 workflow, validation rules)
@@ -1019,12 +1019,12 @@ fi
 ### Secondary Sources
 
 1. **Task 275 Artifacts** (Previous fix attempt):
-   - .opencode/specs/275_fix_workflow_status_updates/reports/research-001.md
-   - .opencode/specs/275_fix_workflow_status_updates/plans/implementation-001.md
-   - .opencode/specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md
+   - specs/275_fix_workflow_status_updates/reports/research-001.md
+   - specs/275_fix_workflow_status_updates/plans/implementation-001.md
+   - specs/275_fix_workflow_status_updates/summaries/implementation-summary-20260103.md
 
 2. **Task 240 Research** (OpenAgents Migration):
-   - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md
+   - specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md
 
 ### Evidence
 

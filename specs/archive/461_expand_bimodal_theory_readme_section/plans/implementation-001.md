@@ -123,7 +123,7 @@ For implementation details, see [Theories/Bimodal/README.md](Theories/Bimodal/RE
 
 ## Dependencies
 
-- Research report: `.claude/specs/461_expand_bimodal_theory_readme_section/reports/research-001.md` (complete)
+- Research report: `specs/461_expand_bimodal_theory_readme_section/reports/research-001.md` (complete)
 - Current README.md content (read during implementation)
 
 ## Risks and Mitigations

@@ -5,7 +5,7 @@
 - **Effort**: 8 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: Research report (.opencode/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md) - Comprehensive analysis of current /meta implementation and task creation pattern from /task command
+- **Research Inputs**: Research report (specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md) - Comprehensive analysis of current /meta implementation and task creation pattern from /task command
 - **Artifacts**: 
   - plans/implementation-001.md (this file)
   - .opencode/command/meta.md (updated)
@@ -71,7 +71,7 @@ Refactor the /meta command to create tasks with plan artifacts instead of direct
   - [ ] Read next_project_number from state.json
   - [ ] Implement task breakdown logic based on complexity (4, 7, or 10-15 tasks)
   - [ ] For each task: generate title, slug, description from interview results
-  - [ ] For each task: create project directory (.opencode/specs/{number}_{slug}/)
+  - [ ] For each task: create project directory (specs/{number}_{slug}/)
   - [ ] For each task: generate plan artifact using templates (plans/implementation-001.md)
   - [ ] For each task: delegate to status-sync-manager for atomic task creation
   - [ ] Collect task_numbers from returns

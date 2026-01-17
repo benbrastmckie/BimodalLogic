@@ -602,11 +602,11 @@ Task 238 successfully eliminated emojis but introduced significant validation ov
    - Precedence rules and combination behavior
    - Best practices for project vs global rules
 
-2. Task 238 Research Report: `.opencode/specs/238_find_and_eliminate_all_emojis/reports/research-001.md`
+2. Task 238 Research Report: `specs/238_find_and_eliminate_all_emojis/reports/research-001.md`
    - Emoji elimination implementation details
    - Validation patterns introduced
 
-3. Task 238 Implementation Summary: `.opencode/specs/238_find_and_eliminate_all_emojis/summaries/implementation-summary-20251228.md`
+3. Task 238 Implementation Summary: `specs/238_find_and_eliminate_all_emojis/summaries/implementation-summary-20251228.md`
    - Files modified and validation added
    - Prevention mechanisms implemented
 

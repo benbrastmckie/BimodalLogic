@@ -89,8 +89,8 @@ $ lake build
 3. Update any stale documentation
 
 **Files to update**:
-- `.claude/specs/TODO.md` - Update Task 316 status
-- `.claude/specs/260_proof_search/summaries/implementation-summary-20260105.md` - Note Phase 2 completion
+- `specs/TODO.md` - Update Task 316 status
+- `specs/260_proof_search/summaries/implementation-summary-20260105.md` - Note Phase 2 completion
 
 **Steps**:
 1. Mark Task 316 as COMPLETED in state.json

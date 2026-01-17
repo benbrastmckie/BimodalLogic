@@ -33,7 +33,7 @@ Enforced directory naming convention across the ProofChecker project: PascalCase
 ### Phase 2: LaTeX/ to latex/
 - `git mv LaTeX latex` (renamed with history)
 - Updated 66 files with `LaTeX/` → `latex/` references
-- Includes: docs/, .claude/specs/, Theories/*/LaTeX/ paths
+- Includes: docs/, specs/, Theories/*/LaTeX/ paths
 
 ### Phase 3: Documentation
 - `docs/Development/CONTRIBUTING.md` - Added new Section 3

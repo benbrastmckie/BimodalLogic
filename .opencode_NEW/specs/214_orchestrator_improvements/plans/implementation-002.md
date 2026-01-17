@@ -281,7 +281,7 @@ Complete two related improvements to orchestrator.md: (1) Address FIX comment on
         <reference type="workflow">Delegation Guide: .opencode/context/core/workflows/subagent-delegation-guide.md</reference>
         <reference type="standard">Return Format: .opencode/context/core/standards/subagent-return-format.md</reference>
         <reference type="system">Status Markers: .opencode/context/core/standards/status-markers.md</reference>
-        <reference type="research">Task 191 Research: .opencode/specs/191_fix_subagent_delegation_hang/reports/research-001.md</reference>
+        <reference type="research">Task 191 Research: specs/191_fix_subagent_delegation_hang/reports/research-001.md</reference>
       </references>
       ```
 
@@ -399,8 +399,8 @@ Complete two related improvements to orchestrator.md: (1) Address FIX comment on
 
 ## Related Documentation
 
-- Research Report: `.opencode/specs/214_orchestrator_improvements/reports/research-001.md`
-- Research Summary: `.opencode/specs/214_orchestrator_improvements/summaries/research-summary.md`
+- Research Report: `specs/214_orchestrator_improvements/reports/research-001.md`
+- Research Summary: `specs/214_orchestrator_improvements/summaries/research-summary.md`
 - Reference Agent (XML pattern): `.opencode/agent/subagents/error-diagnostics-agent.md`
 - Orchestrator (current): `.opencode/agent/orchestrator.md`
 

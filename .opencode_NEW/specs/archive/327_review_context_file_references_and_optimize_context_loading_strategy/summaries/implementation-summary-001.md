@@ -228,7 +228,7 @@ Successfully completed all 6 phases of task 327, fixing 45 broken context file r
 1. `.opencode/docs/guides/context-loading-best-practices.md` - Created comprehensive guide
 
 ### Reports (2 files)
-1. `.opencode/specs/327_*/reports/implementation-summary.md` - This file
+1. `specs/327_*/reports/implementation-summary.md` - This file
 2. `/tmp/validation-report.txt` - Validation report
 
 **Total**: 28 files (26 modified, 2 created)

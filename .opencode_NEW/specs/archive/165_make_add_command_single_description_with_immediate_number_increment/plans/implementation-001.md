@@ -17,21 +17,21 @@ This implementation plan is based on comprehensive research completed for task 1
 
 ### Research Reports
 
-1. **`.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-001.md`**
+1. **`specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-001.md`**
    - 582 lines of atomic number reservation patterns and best practices
    - CLI command design principles from clig.dev
    - State management and consistency guarantees
    - Linearizability and fetch-and-add patterns
    - Academic sources: Herlihy & Wing (1990), Martin Fowler patterns
 
-2. **`.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-002.md`**
+2. **`specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-002.md`**
    - 582 lines of current /add command implementation analysis
    - State.json numbering mechanics documentation
    - Task-adder subagent capabilities analysis
    - Gap analysis: current vs. desired behavior
    - Comprehensive recommendations with implementation outline
 
-3. **`.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/summaries/research-summary.md`**
+3. **`specs/165_make_add_command_single_description_with_immediate_number_increment/summaries/research-summary.md`**
    - Executive summary of key findings
    - Metadata auto-population strategy table
    - Recommended changes by priority
@@ -887,8 +887,8 @@ Verification:
 - `@subagents/task-adder` - Task metadata population and TODO.md formatting
 
 **State Files**:
-- `.opencode/specs/state.json` - Task numbering counter and project tracking
-- `.opencode/specs/TODO.md` - Task list with metadata
+- `specs/state.json` - Task numbering counter and project tracking
+- `specs/TODO.md` - Task list with metadata
 
 **Standards**:
 - `.opencode/context/core/standards/tasks.md` - Task metadata format specification
@@ -1377,7 +1377,7 @@ Verification:
 
 ### Implementation Documentation
 
-**File**: `.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/plans/implementation-001.md`
+**File**: `specs/165_make_add_command_single_description_with_immediate_number_increment/plans/implementation-001.md`
 
 **Required Sections** (this document):
 1. Research Inputs: All research reports and analyses
@@ -1424,7 +1424,7 @@ Verification:
 
 5. **Preserved Lazy Directory Creation**
    - No project directories created by /add command
-   - Measurement: Verify no new directories in .opencode/specs/
+   - Measurement: Verify no new directories in specs/
 
 6. **State Consistency**
    - state.json and TODO.md in sync
@@ -1485,17 +1485,17 @@ Verification:
 ### Research Reports
 
 1. **Atomic Number Reservation and CLI Command Design Best Practices**
-   - Path: `.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-001.md`
+   - Path: `specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-001.md`
    - Content: 582 lines of atomic numbering patterns, CLI design principles, state management
    - Key Findings: Fetch-and-add pattern optimal, single required argument, immediate state updates
 
 2. **Current /add Implementation Analysis and Gap Analysis**
-   - Path: `.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-002.md`
+   - Path: `specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-002.md`
    - Content: 582 lines of current implementation analysis, gap analysis, recommendations
    - Key Findings: Atomic numbering already correct, requires too much metadata, number allocation in wrong place
 
 3. **Research Summary**
-   - Path: `.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/summaries/research-summary.md`
+   - Path: `specs/165_make_add_command_single_description_with_immediate_number_increment/summaries/research-summary.md`
    - Content: Executive summary, metadata auto-population strategy, recommendations
    - Key Findings: 90% reduction in input, immediate feedback, auto-population with defaults
 

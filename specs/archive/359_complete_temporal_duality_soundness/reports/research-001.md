@@ -210,8 +210,8 @@ theorem derivable_implies_swap_valid : (⊢ φ) → is_valid T φ.swap :=
 
 ## References
 
-- Task 213 Research Report: `.claude/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md`
-- Task 213 Circular Dependency Analysis: `.claude/specs/213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md`
+- Task 213 Research Report: `specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md`
+- Task 213 Circular Dependency Analysis: `specs/213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md`
 - SoundnessLemmas.lean: `Bimodal/Metalogic/SoundnessLemmas.lean`
 - Soundness.lean: `Bimodal/Metalogic/Soundness.lean`
 - Formula.swap_past_future_involution: `Bimodal/Syntax/Formula.lean:294`

@@ -177,7 +177,7 @@ Theories/Bimodal/Boneyard/
 - Task 473: SemanticWorldState architecture
 - Task 446: Duration construction
 - Task 458: Completeness research
-- .claude/specs/473_fix_compositionality_gaps_task_458/reports/research-004.md
+- specs/473_fix_compositionality_gaps_task_458/reports/research-004.md
 
 ## Next Steps
 

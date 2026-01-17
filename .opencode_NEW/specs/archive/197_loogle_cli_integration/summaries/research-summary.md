@@ -121,7 +121,7 @@
 
 ## References
 
-- **Research Report**: `.opencode/specs/197_loogle_cli_integration/reports/research-001.md`
+- **Research Report**: `specs/197_loogle_cli_integration/reports/research-001.md`
 - **API Documentation**: `.opencode/context/project/lean4/tools/loogle-api.md`
 - **Loogle GitHub**: https://github.com/nomeata/loogle
 - **Loogle Web**: https://loogle.lean-lang.org/

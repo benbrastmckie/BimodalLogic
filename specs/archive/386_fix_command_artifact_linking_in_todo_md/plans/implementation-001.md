@@ -58,7 +58,7 @@ The skill-status-sync skill has logic for adding artifacts to state.json but lac
 2. Document grep-based verification pattern:
    ```bash
    # Verify artifact link exists in TODO.md
-   if ! grep -q "$artifact_path" .claude/specs/TODO.md; then
+   if ! grep -q "$artifact_path" specs/TODO.md; then
      echo "WARNING: Artifact not linked in TODO.md: $artifact_path"
    fi
    ```
@@ -82,8 +82,8 @@ The skill-status-sync skill has logic for adding artifacts to state.json but lac
 3. Sync state.json artifacts arrays with TODO.md links
 
 **Files to modify**:
-- `.claude/specs/TODO.md` - Add missing artifact links
-- `.claude/specs/state.json` - Add missing artifacts arrays where needed
+- `specs/TODO.md` - Add missing artifact links
+- `specs/state.json` - Add missing artifacts arrays where needed
 
 **Steps**:
 1. Query state.json for tasks with artifacts that aren't linked in TODO.md

@@ -65,7 +65,7 @@ Two-phase implementation addressing FIX comment in orchestrator.md, applying XML
 
 ## Related Files
 
-- Plan: `.opencode/specs/214_orchestrator_improvements/plans/implementation-001.md`
-- Research: `.opencode/specs/214_orchestrator_improvements/reports/research-001.md`
+- Plan: `specs/214_orchestrator_improvements/plans/implementation-001.md`
+- Research: `specs/214_orchestrator_improvements/reports/research-001.md`
 - Target: `.opencode/agent/orchestrator.md`
 - Reference: `.opencode/agent/subagents/error-diagnostics-agent.md`

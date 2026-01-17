@@ -5,7 +5,7 @@
 - **Effort**: 6 hours
 - **Priority**: High
 - **Dependencies**: Task 245 (Phase 2 Phases 1-5 and 8 completed), Task 249 (YAML frontmatter completed)
-- **Research Inputs**: [Research Report 001](.opencode/specs/250_phase_2_followup/reports/research-001.md)
+- **Research Inputs**: [Research Report 001](specs/250_phase_2_followup/reports/research-001.md)
 - **Artifacts**: 
   - plans/implementation-001.md (this file)
   - reports/validation-001.md
@@ -222,19 +222,19 @@ This task validates the Phase 2 OpenAgents migration through comprehensive testi
 - tests/validation/phase2/test_delegation_safety.py
 
 **Metrics and Reports**:
-- .opencode/specs/250_phase_2_followup/metrics/baseline_metrics.json
-- .opencode/specs/250_phase_2_followup/metrics/test_results.json
-- .opencode/specs/250_phase_2_followup/metrics/context_usage_report.json
-- .opencode/specs/250_phase_2_followup/metrics/line_count_report.json
-- .opencode/specs/250_phase_2_followup/metrics/delegation_safety_report.json
-- .opencode/specs/250_phase_2_followup/reports/validation-001.md
-- .opencode/specs/250_phase_2_followup/summaries/implementation-summary-20251229.md
+- specs/250_phase_2_followup/metrics/baseline_metrics.json
+- specs/250_phase_2_followup/metrics/test_results.json
+- specs/250_phase_2_followup/metrics/context_usage_report.json
+- specs/250_phase_2_followup/metrics/line_count_report.json
+- specs/250_phase_2_followup/metrics/delegation_safety_report.json
+- specs/250_phase_2_followup/reports/validation-001.md
+- specs/250_phase_2_followup/summaries/implementation-summary-20251229.md
 
 **Scripts**:
-- .opencode/specs/250_phase_2_followup/scripts/metrics_collector.py
-- .opencode/specs/250_phase_2_followup/scripts/context_profiler.py
-- .opencode/specs/250_phase_2_followup/scripts/line_count_validator.py
-- .opencode/specs/250_phase_2_followup/scripts/metrics_comparison.py
+- specs/250_phase_2_followup/scripts/metrics_collector.py
+- specs/250_phase_2_followup/scripts/context_profiler.py
+- specs/250_phase_2_followup/scripts/line_count_validator.py
+- specs/250_phase_2_followup/scripts/metrics_comparison.py
 
 ## Rollback/Contingency
 

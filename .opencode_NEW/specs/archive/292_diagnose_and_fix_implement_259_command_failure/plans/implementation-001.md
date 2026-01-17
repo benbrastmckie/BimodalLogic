@@ -382,7 +382,7 @@ However, research reveals this may be a **misdiagnosis**:
 ### Primary Artifacts
 
 1. **Verification Report** (Phase 1):
-   - Path: `.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/verification-001.md`
+   - Path: `specs/292_diagnose_and_fix_implement_259_command_failure/reports/verification-001.md`
    - Content: Results of `/implement 259` test after Task 281 fix
    - Status: [NOT STARTED]
 
@@ -392,12 +392,12 @@ However, research reveals this may be a **misdiagnosis**:
    - Status: [NOT STARTED]
 
 3. **Test Report** (Phase 4):
-   - Path: `.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/test-001.md`
+   - Path: `specs/292_diagnose_and_fix_implement_259_command_failure/reports/test-001.md`
    - Content: Test results for `/implement 259` and regression tests
    - Status: [NOT STARTED]
 
 4. **Implementation Summary** (Phase 5):
-   - Path: `.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/summaries/implementation-summary-20260104.md`
+   - Path: `specs/292_diagnose_and_fix_implement_259_command_failure/summaries/implementation-summary-20260104.md`
    - Content: Summary of verification, clarifications, and test results
    - Status: [NOT STARTED]
 
@@ -503,6 +503,6 @@ Research report (research-001.md) findings integrated:
 
 ### References
 
-- Research Report: `.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md`
+- Research Report: `specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md`
 - Orchestrator Specification: `.opencode/agent/orchestrator.md`
 - Command Argument Handling: `.opencode/context/core/standards/command-argument-handling.md`

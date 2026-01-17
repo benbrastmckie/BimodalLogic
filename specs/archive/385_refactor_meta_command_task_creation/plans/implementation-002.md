@@ -32,7 +32,7 @@ The /meta command currently bypasses the task management system and directly imp
 4. Present task list for user confirmation (mandatory)
 5. Create tasks in TODO.md + state.json (NOT implement directly)
 
-The refactor follows patterns from OpenAgents meta.md (research-002.md) and the existing refactor guide at `.claude/specs/meta-command-refactor-guide.md`.
+The refactor follows patterns from OpenAgents meta.md (research-002.md) and the existing refactor guide at `specs/meta-command-refactor-guide.md`.
 
 ## Phases
 
@@ -63,7 +63,7 @@ The refactor follows patterns from OpenAgents meta.md (research-002.md) and the 
    - Directly create commands, skills, rules, or context files
    - Directly modify CLAUDE.md or ARCHITECTURE.md
    - Implement any work without user confirmation
-   - Write any files outside .claude/specs/
+   - Write any files outside specs/
 
    **REQUIRED** - This command MUST:
    - Track all work via tasks in TODO.md + state.json
@@ -108,7 +108,7 @@ The refactor follows patterns from OpenAgents meta.md (research-002.md) and the 
    1. Scan for existing commands: `ls .claude/commands/*.md`
    2. Scan for existing skills: `ls .claude/skills/*/SKILL.md`
    3. Scan for existing rules: `ls .claude/rules/*.md`
-   4. Identify active tasks: `jq '.active_projects | length' .claude/specs/state.json`
+   4. Identify active tasks: `jq '.active_projects | length' specs/state.json`
    5. Check for related existing tasks based on prompt keywords
 
    **Output** (when existing system detected):
@@ -508,13 +508,13 @@ The refactor follows patterns from OpenAgents meta.md (research-002.md) and the 
 
    ```bash
    # 1. Get next task number (will become {NNN})
-   next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
+   next_num=$(jq -r '.next_project_number' specs/state.json)
 
    # 2. Create slug from title (lowercase, underscores, max 50 chars)
    slug=$(echo "{title}" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd 'a-z0-9_' | cut -c1-50)
 
    # 3. Create task directory
-   mkdir -p ".claude/specs/${next_num}_${slug}"
+   mkdir -p "specs/${next_num}_${slug}"
 
    # 4. Update state.json with dependencies
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
@@ -531,12 +531,12 @@ The refactor follows patterns from OpenAgents meta.md (research-002.md) and the 
         "created": $ts,
         "last_updated": $ts
       }] + .active_projects' \
-     .claude/specs/state.json > /tmp/state.json && \
-     mv /tmp/state.json .claude/specs/state.json
+     specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json specs/state.json
 
    # 5. Update TODO.md frontmatter
    sed -i "s/^next_project_number: [0-9]*/next_project_number: $((next_num + 1))/" \
-     .claude/specs/TODO.md
+     specs/TODO.md
 
    # 6. Add entry to TODO.md under appropriate priority section
    ```
@@ -557,7 +557,7 @@ The refactor follows patterns from OpenAgents meta.md (research-002.md) and the 
 
 3. Document git commit:
    ```bash
-   git add .claude/specs/
+   git add specs/
    git commit -m "meta: create {NNN} tasks for {domain}"
    ```
 
@@ -595,15 +595,15 @@ The refactor follows patterns from OpenAgents meta.md (research-002.md) and the 
 
    **High Priority**:
    - Task #{NNN}: {title}
-     Path: .claude/specs/{NNN}_{slug}/
+     Path: specs/{NNN}_{slug}/
 
    **Medium Priority**:
    - Task #{NNN}: {title} (depends on #{NNN})
-     Path: .claude/specs/{NNN}_{slug}/
+     Path: specs/{NNN}_{slug}/
 
    **Low Priority**:
    - Task #{NNN}: {title}
-     Path: .claude/specs/{NNN}_{slug}/
+     Path: specs/{NNN}_{slug}/
 
    ---
 
@@ -671,7 +671,7 @@ The refactor follows patterns from OpenAgents meta.md (research-002.md) and the 
 - [ ] Tasks created with proper dependencies in state.json
 - [ ] Tasks linked properly in TODO.md with {NNN} format
 - [ ] /meta --analyze still works (read-only analysis)
-- [ ] No direct file creation outside .claude/specs/
+- [ ] No direct file creation outside specs/
 - [ ] Interview patterns section documents all four patterns
 
 ## Rollback Plan

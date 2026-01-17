@@ -205,7 +205,7 @@ Industry research emphasizes idempotency:
 **Recommended Fix**: Add idempotency check to artifact linking:
 ```bash
 # Before adding link, check if already present
-if grep -q "{artifact_path}" .claude/specs/TODO.md; then
+if grep -q "{artifact_path}" specs/TODO.md; then
   echo "Link already present, skipping"
 else
   # Add link

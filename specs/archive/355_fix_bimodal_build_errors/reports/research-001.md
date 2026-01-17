@@ -89,7 +89,7 @@ All errors are in the Examples directory (formerly Archive/):
 
 - Bimodal/ProofSystem/Derivation.lean - Defines `DerivationTree` type
 - Bimodal/Theorems/Combinators.lean - Defines helper lemmas
-- .claude/specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md - Notes pre-existing issues
+- specs/352_rename_logos_core_to_bimodal/summaries/implementation-summary-20260110.md - Notes pre-existing issues
 
 ## Next Steps
 

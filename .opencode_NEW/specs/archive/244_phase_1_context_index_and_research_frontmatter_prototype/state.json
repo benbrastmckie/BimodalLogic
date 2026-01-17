@@ -54,8 +54,8 @@
     ".opencode/scripts/cleanup-sessions.sh",
     ".opencode/scripts/measure-context-usage.sh",
     ".opencode/scripts/test-stage7-reliability.sh",
-    ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md",
-    ".opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/summaries/implementation-summary-20251229.md"
+    "specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md",
+    "specs/244_phase_1_context_index_and_research_frontmatter_prototype/summaries/implementation-summary-20251229.md"
   ],
   "git_commit_hash": "2c7c328",
   "metrics": {

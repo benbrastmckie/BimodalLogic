@@ -13,7 +13,7 @@
 ## Metadata
 
 - **Task Number**: 325
-- **Project Directory**: `.opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/`
+- **Project Directory**: `specs/325_create___recover_flag_for_task_command_to_unarchive_projects/`
 - **Plan Version**: 1
 - **Research Integrated**: Yes
 - **Dependencies**: None
@@ -25,7 +25,7 @@
 
 ### Problem Statement
 
-The .opencode system currently supports archiving completed/abandoned tasks via the `/todo` command, which moves project directories to `.opencode/specs/archive/`, removes entries from TODO.md and state.json, and adds them to archive/state.json. However, there is no mechanism to reverse this process and restore archived projects back to active status. This creates a one-way archival system that prevents users from recovering valuable work or revisiting completed tasks.
+The .opencode system currently supports archiving completed/abandoned tasks via the `/todo` command, which moves project directories to `specs/archive/`, removes entries from TODO.md and state.json, and adds them to archive/state.json. However, there is no mechanism to reverse this process and restore archived projects back to active status. This creates a one-way archival system that prevents users from recovering valuable work or revisiting completed tasks.
 
 ### Solution Approach
 
@@ -419,7 +419,7 @@ This plan integrates findings from 1 research report created on 2026-01-06:
 ### Secondary Artifacts
 
 1. **Implementation Summary**:
-   - `.opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/summaries/implementation-summary-20260106.md`
+   - `specs/325_create___recover_flag_for_task_command_to_unarchive_projects/summaries/implementation-summary-20260106.md`
 
 2. **Git Commits**:
    - Commit for /task command changes

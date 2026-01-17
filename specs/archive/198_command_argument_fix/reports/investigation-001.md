@@ -420,7 +420,7 @@ The command argument passing issue has a **simple, proven solution**: the `$ARGU
 ## References
 
 - Old system command files: `.opencode.backup.20251225_173342/command/`
-- Task 198: `.opencode/specs/TODO.md`
+- Task 198: `specs/TODO.md`
 - First fix changes: Git history (commits on 2025-12-27)
 - OpenCode documentation: (check for $ARGUMENTS documentation)
 

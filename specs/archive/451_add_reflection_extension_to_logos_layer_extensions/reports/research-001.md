@@ -11,7 +11,7 @@
 - Existing extension stubs (Epistemic, Normative, Spatial)
 - Academic literature on epistemic logic, metacognition, and theory of mind
 **Artifacts**:
-- /home/benjamin/Projects/ProofChecker/.claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md
+- /home/benjamin/Projects/ProofChecker/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md
 **Standards**: report-format.md, subagent-return.md
 
 ---

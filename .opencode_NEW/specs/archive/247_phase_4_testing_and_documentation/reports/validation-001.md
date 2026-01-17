@@ -28,7 +28,7 @@ Phase 4 of the OpenAgents architectural migration has been successfully complete
 - [x] track-stage7-rate.sh created and executable
 
 **Validation**:
-- All 4 test scripts created in `.opencode/specs/247_phase_4_testing_and_documentation/scripts/`
+- All 4 test scripts created in `specs/247_phase_4_testing_and_documentation/scripts/`
 - All scripts executable (chmod +x applied)
 - All scripts follow bash best practices (set -euo pipefail, error handling, logging)
 - All scripts use text-based status indicators ([PASS]/[FAIL]/[WARN])
@@ -49,7 +49,7 @@ Phase 4 of the OpenAgents architectural migration has been successfully complete
 - [x] Metrics data collected
 
 **Validation**:
-- Test execution report created: `.opencode/specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
+- Test execution report created: `specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
 - Validation leveraged existing Phase 1-3 validation reports (efficient approach)
 - Stage 7 execution rate: 100% (validated through Phase 1-3)
 - Context window usage: 5% (measured with measure-context-usage.sh)
@@ -188,25 +188,25 @@ Phase 4 of the OpenAgents architectural migration has been successfully complete
 ### Testing Infrastructure (Phase 1)
 
 **Scripts**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/test-stage7-reliability.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/validate-artifacts.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/measure-context-usage.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/track-stage7-rate.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/test-stage7-reliability.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/validate-artifacts.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/measure-context-usage.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/track-stage7-rate.sh`
 
 **Total**: 4 scripts, ~1,800 lines of bash code
 
 ### Test Results (Phase 2)
 
 **Reports**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
+- `specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
 
 **Logs**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/logs/test-stage7-reliability-*.log`
-- `.opencode/specs/247_phase_4_testing_and_documentation/logs/measure-context-usage-*.log`
+- `specs/247_phase_4_testing_and_documentation/logs/test-stage7-reliability-*.log`
+- `specs/247_phase_4_testing_and_documentation/logs/measure-context-usage-*.log`
 
 **Metrics**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/metrics/stage7-results-*.json`
-- `.opencode/specs/247_phase_4_testing_and_documentation/metrics/context-usage-*.json`
+- `specs/247_phase_4_testing_and_documentation/metrics/stage7-results-*.json`
+- `specs/247_phase_4_testing_and_documentation/metrics/context-usage-*.json`
 
 **Total**: 1 report, multiple logs and metrics files
 
@@ -239,9 +239,9 @@ Phase 4 of the OpenAgents architectural migration has been successfully complete
 ### Validation Reports (Phase 6)
 
 **Reports**:
-- `.opencode/specs/247_phase_4_testing_and_documentation/reports/validation-001.md` (this document)
-- `.opencode/specs/247_phase_4_testing_and_documentation/metrics/before-after-summary.md`
-- `.opencode/specs/247_phase_4_testing_and_documentation/summaries/implementation-summary-20251229.md`
+- `specs/247_phase_4_testing_and_documentation/reports/validation-001.md` (this document)
+- `specs/247_phase_4_testing_and_documentation/metrics/before-after-summary.md`
+- `specs/247_phase_4_testing_and_documentation/summaries/implementation-summary-20251229.md`
 
 **Total**: 3 final reports
 

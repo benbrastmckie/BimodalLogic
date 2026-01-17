@@ -10,7 +10,7 @@
 **Priority**: Medium  
 
 **Research Integration**:
-- Research Report: `.opencode/specs/327_review_context_file_references_and_optimize_context_loading_strategy/reports/research-001.md`
+- Research Report: `specs/327_review_context_file_references_and_optimize_context_loading_strategy/reports/research-001.md`
 - Key Findings: 19 broken context file references, task 314 refactor not executed, no lazy loading implementation
 
 ---

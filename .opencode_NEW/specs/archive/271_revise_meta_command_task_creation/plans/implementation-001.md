@@ -5,7 +5,7 @@
 - **Effort**: 13 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md
+- **Research Inputs**: specs/271_revise_meta_command_task_creation/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -76,7 +76,7 @@ The `/meta` command currently implements a complete system generation workflow (
     - [ ] Moderate system (3-5 agents, 4-6 use cases): 7 tasks (research, planning, 5 implementation)
     - [ ] Complex system (6-8 agents, 7+ use cases): 10-15 tasks (research, planning, 8-13 implementation)
   - [ ] Generate task titles and slugs from interview results
-  - [ ] Read next_project_number from .opencode/specs/state.json
+  - [ ] Read next_project_number from specs/state.json
   - [ ] Create task number sequence (next_project_number, next_project_number+1, ...)
 - **Timing:** 1.5 hours
 
@@ -87,7 +87,7 @@ The `/meta` command currently implements a complete system generation workflow (
   - [ ] For planning task: Generate architecture design, workflow patterns, agent hierarchy, integration points
   - [ ] For implementation tasks: Generate component requirements (agent/command/context), interface specifications, workflow definitions, integration points, dependencies
   - [ ] Follow report.md standard structure (metadata, executive summary, sections, sources)
-  - [ ] Create project directory: .opencode/specs/{number}_{slug}/ (lazy creation)
+  - [ ] Create project directory: specs/{number}_{slug}/ (lazy creation)
   - [ ] Write research artifact: reports/research-001.md
   - [ ] Validate artifact exists and is non-empty
 - **Timing:** 2 hours
@@ -225,13 +225,13 @@ The `/meta` command currently implements a complete system generation workflow (
 
 ## Artifacts & Outputs
 
-- .opencode/specs/271_revise_meta_command_task_creation/plans/implementation-001.md (this file)
+- specs/271_revise_meta_command_task_creation/plans/implementation-001.md (this file)
 - .opencode/agent/subagents/meta.md (revised Stage 7 and Stage 8)
 - .opencode/command/meta.md (updated documentation)
-- .opencode/specs/271_revise_meta_command_task_creation/summaries/implementation-summary-YYYYMMDD.md (created at completion)
-- Multiple task directories in .opencode/specs/NNN_*/ with research, plan, and summary artifacts (created during testing)
-- Updated .opencode/specs/TODO.md with task entries (created during testing)
-- Updated .opencode/specs/state.json with incremented next_project_number (created during testing)
+- specs/271_revise_meta_command_task_creation/summaries/implementation-summary-YYYYMMDD.md (created at completion)
+- Multiple task directories in specs/NNN_*/ with research, plan, and summary artifacts (created during testing)
+- Updated specs/TODO.md with task entries (created during testing)
+- Updated specs/state.json with incremented next_project_number (created during testing)
 
 ## Rollback/Contingency
 

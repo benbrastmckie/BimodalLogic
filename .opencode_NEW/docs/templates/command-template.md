@@ -43,7 +43,7 @@ This command delegates to the `<agent-name>` agent, which executes the following
 2. **Context Loading**: Loads required context files on-demand
 3. **Core Execution**: [Brief description of core work]
 4. **Output Generation**: [Brief description of output]
-5. **Artifact Creation**: Creates [artifact type] in `.opencode/specs/<task-number>_<topic>/`
+5. **Artifact Creation**: Creates [artifact type] in `specs/<task-number>_<topic>/`
 6. **Return Formatting**: Formats response following subagent-return-format.md
 7. **Artifact Validation**: Validates artifacts, updates TODO.md, state.json, creates git commit
 8. **Cleanup**: Performs any necessary cleanup
@@ -54,7 +54,7 @@ This command delegates to the `<agent-name>` agent, which executes the following
 
 This command creates the following artifacts:
 
-- **[Artifact Type]**: `.opencode/specs/<task-number>_<topic>/<artifact-path>`
+- **[Artifact Type]**: `specs/<task-number>_<topic>/<artifact-path>`
   - [Description of artifact]
   - [Required sections or format]
 

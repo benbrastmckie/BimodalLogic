@@ -44,7 +44,7 @@ The user's intent was clear: update the task description to reflect changed circ
 
 Task descriptions are stored in two places that must stay synchronized:
 
-1. **state.json** (`.claude/specs/state.json`):
+1. **state.json** (`specs/state.json`):
    ```json
    {
      "project_number": 397,
@@ -52,7 +52,7 @@ Task descriptions are stored in two places that must stay synchronized:
    }
    ```
 
-2. **TODO.md** (`.claude/specs/TODO.md`):
+2. **TODO.md** (`specs/TODO.md`):
    ```markdown
    **Description**: Modify the /revise command...
    ```
@@ -65,7 +65,7 @@ The skill-status-sync SKILL.md provides the patterns needed:
 ```bash
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+  specs/state.json)
 ```
 
 **Updating state.json fields:**
@@ -74,13 +74,13 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg desc "$new_description" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     description: $desc,
     last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  }' specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 ```
 
 **Locating task in TODO.md:**
 ```bash
-task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
+task_line=$(grep -n "^### ${task_number}\." specs/TODO.md | cut -d: -f1)
 ```
 
 **Two-Phase Commit Pattern:**

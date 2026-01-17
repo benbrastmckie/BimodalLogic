@@ -5,7 +5,7 @@
 - **Effort**: 9-12 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md
+- **Research Inputs**: specs/310_enhance_workflow_commands_with_start_and_end_status_updates/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md

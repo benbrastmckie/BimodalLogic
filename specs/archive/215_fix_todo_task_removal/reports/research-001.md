@@ -59,9 +59,9 @@ The bug occurs in Stage 4 "PrepareUpdates" where task removal logic is specified
 This research employed the following methods:
 
 1. **Specification Analysis**: Examined .opencode/command/todo.md for task removal logic
-2. **File Structure Analysis**: Analyzed TODO.md and .opencode/specs/TODO.md for task structure
+2. **File Structure Analysis**: Analyzed TODO.md and specs/TODO.md for task structure
 3. **Implementation Search**: Searched for Python/bash implementation files
-4. **Example Identification**: Located orphaned task bodies in .opencode/specs/TODO.md
+4. **Example Identification**: Located orphaned task bodies in specs/TODO.md
 5. **Pattern Analysis**: Identified task block boundaries and structure patterns
 6. **Solution Research**: Investigated best practices for block removal in markdown files
 
@@ -122,8 +122,8 @@ A complete task in TODO.md consists of:
 - **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
-- **Plan**: [Implementation Plan](.opencode/specs/208_fix_lean_routing/plans/implementation-001.md)
-- **Implementation Summary**: [Summary](.opencode/specs/208_fix_lean_routing/summaries/implementation-summary-20251228.md)
+- **Plan**: [Implementation Plan](specs/208_fix_lean_routing/plans/implementation-001.md)
+- **Implementation Summary**: [Summary](specs/208_fix_lean_routing/summaries/implementation-summary-20251228.md)
 - **Files Affected**:
   - .opencode/command/research.md
   - .opencode/command/implement.md
@@ -203,7 +203,7 @@ When the AI agent interprets "Remove [COMPLETED] tasks", it likely:
 
 ## Orphaned Task Body Examples
 
-### Example 1: Orphaned Task Body in .opencode/specs/TODO.md
+### Example 1: Orphaned Task Body in specs/TODO.md
 
 **Lines 18-41** show orphaned body from a removed "Automation" task:
 
@@ -218,9 +218,9 @@ When the AI agent interprets "Remove [COMPLETED] tasks", it likely:
 - **Blocking**: None
 - **Dependencies**: None
 - **Research Artifacts**:
-  - Main Report: [.opencode/specs/192_fix_generalized_necessitation_termination/reports/research-001.md]
-  - Summary: [.opencode/specs/192_fix_generalized_necessitation_termination/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/192_fix_generalized_necessitation_termination/plans/implementation-001.md]
+  - Main Report: [specs/192_fix_generalized_necessitation_termination/reports/research-001.md]
+  - Summary: [specs/192_fix_generalized_necessitation_termination/summaries/research-summary.md]
+- **Plan**: [specs/192_fix_generalized_necessitation_termination/plans/implementation-001.md]
 - **Plan Summary**: Single-phase implementation (10 minutes)...
 [... 23 more lines of orphaned content ...]
 ```
@@ -229,7 +229,7 @@ When the AI agent interprets "Remove [COMPLETED] tasks", it likely:
 
 ### Example 2: Pattern Across Multiple Tasks
 
-The .opencode/specs/TODO.md file shows this pattern repeatedly:
+The specs/TODO.md file shows this pattern repeatedly:
 - Lines 18-41: Orphaned "Automation" task body
 - Lines 131-206: Orphaned task 184 body (75 lines)
 - Lines 502-533: Orphaned task 209 body (31 lines)
@@ -624,7 +624,7 @@ For each test case, verify:
 
 1. **Root Cause Confirmed**: The /todo command's Stage 4 "PrepareUpdates" specification lacks explicit task block structure definition, causing the AI agent to remove only heading lines instead of complete task blocks (heading + body).
 
-2. **Impact**: Orphaned task body metadata scattered throughout TODO.md (129+ lines in .opencode/specs/TODO.md), making the file unreadable and breaking task structure.
+2. **Impact**: Orphaned task body metadata scattered throughout TODO.md (129+ lines in specs/TODO.md), making the file unreadable and breaking task structure.
 
 3. **Fix Required**: Update Stage 4 specification with explicit block identification logic, boundary detection, and validation.
 
@@ -658,7 +658,7 @@ The fix will be considered successful when:
 
 1. `.opencode/command/todo.md` - /todo command specification
 2. `TODO.md` - Main project TODO file
-3. `.opencode/specs/TODO.md` - Specs TODO file with orphaned content
+3. `specs/TODO.md` - Specs TODO file with orphaned content
 4. `.opencode/context/core/standards/status-markers.md` - Status marker specification
 5. `.opencode/context/core/system/artifact-management.md` - Artifact management standards
 

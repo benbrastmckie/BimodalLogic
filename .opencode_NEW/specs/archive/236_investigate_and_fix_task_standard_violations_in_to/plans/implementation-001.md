@@ -5,7 +5,7 @@
 - **Effort**: 4 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md
+- **Research Inputs**: specs/236_investigate_and_fix_task_standard_violations_in_todomd_tasks_1_9/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -159,7 +159,7 @@ Tasks 1-9 in TODO.md violate task standards by missing the mandatory Language fi
 
 ## Artifacts & Outputs
 
-- .opencode/specs/TODO.md (updated tasks 1-9)
+- specs/TODO.md (updated tasks 1-9)
 - .opencode/command/task.md (enhanced with validation)
 - .opencode/command/review.md (enhanced with validation)
 - .opencode/context/core/standards/tasks.md (updated with troubleshooting)

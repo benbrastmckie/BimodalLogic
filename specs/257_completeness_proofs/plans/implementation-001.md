@@ -230,8 +230,8 @@ Key findings from research-008.md integrated into this plan:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness.lean` - Complete implementation
-- `.claude/specs/257_completeness_proofs/plans/implementation-001.md` - This plan
-- `.claude/specs/257_completeness_proofs/summaries/implementation-summary-YYYYMMDD.md` - Final summary
+- `specs/257_completeness_proofs/plans/implementation-001.md` - This plan
+- `specs/257_completeness_proofs/summaries/implementation-summary-YYYYMMDD.md` - Final summary
 
 ## Rollback/Contingency
 

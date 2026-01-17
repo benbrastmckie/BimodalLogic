@@ -231,7 +231,7 @@ All agents follow lazy directory creation pattern:
 - lean-implementation-agent: Creates summaries/ subdirectory when needed
 
 **Pattern**:
-1. Create project root: .opencode/specs/{task_number}_{slug}/
+1. Create project root: specs/{task_number}_{slug}/
 2. Create subdirectories as needed (reports/, plans/, summaries/)
 3. Do NOT create all subdirectories upfront
 4. Follow artifact-management.md lazy creation standard

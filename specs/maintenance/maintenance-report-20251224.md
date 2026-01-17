@@ -239,7 +239,7 @@ Executed comprehensive TODO maintenance and archival operations for the ProofChe
 
 **Total Moved:** 8 directories
 
-All directories successfully moved from `.opencode/specs/` to `.opencode/specs/archive/`:
+All directories successfully moved from `specs/` to `specs/archive/`:
 
 1. `155_optimize_opencode_command_subagent_routing_and_metadata/`
 2. `160_fix_task_status_syncing_to_todo_and_linked_plan/`
@@ -250,7 +250,7 @@ All directories successfully moved from `.opencode/specs/` to `.opencode/specs/a
 7. `166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/`
 8. `168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/`
 
-**Note:** Projects 154 and 129 did not have directories in `.opencode/specs/` - they may have been completed without creating project directories or already moved.
+**Note:** Projects 154 and 129 did not have directories in `specs/` - they may have been completed without creating project directories or already moved.
 
 ---
 
@@ -378,22 +378,22 @@ None required - all maintenance operations completed successfully.
 ### A. File Paths
 
 **Modified Files:**
-- `.opencode/specs/TODO.md`
-- `.opencode/specs/state.json`
-- `.opencode/specs/archive/state.json`
-- `.opencode/specs/maintenance/state.json`
+- `specs/TODO.md`
+- `specs/state.json`
+- `specs/archive/state.json`
+- `specs/maintenance/state.json`
 
 **Created Files:**
-- `.opencode/specs/maintenance/maintenance-report-20251224.md` (this file)
+- `specs/maintenance/maintenance-report-20251224.md` (this file)
 
 **Moved Directories:**
-- 8 project directories from `.opencode/specs/` to `.opencode/specs/archive/`
+- 8 project directories from `specs/` to `specs/archive/`
 
 ### B. Archive Structure
 
 Current archive directory structure:
 ```
-.opencode/specs/archive/
+specs/archive/
 ├── 126_implement_bounded_search_and_matches_axiom_in_proofsearch/
 ├── 127_implement_heuristic_scoring_functions_in_proofsearch/
 ├── 128_implement_caching_and_context_helpers_in_proofsearch/

@@ -8,14 +8,14 @@
 - **Priority**: Low
 - **Dependencies**: None
 - **Sources/Inputs**:
-  - .opencode/specs/maintenance/maintenance-report-20251224.md
+  - specs/maintenance/maintenance-report-20251224.md
   - .opencode/command/todo.md
   - .opencode/agent/subagents/reviewer.md
   - .opencode/context/core/standards/report.md
   - .opencode/context/core/system/artifact-management.md
   - .opencode/context/core/standards/status-markers.md
   - .opencode/context/core/system/state-schema.md
-  - .opencode/specs/maintenance/state.json
+  - specs/maintenance/state.json
   - Web research on maintenance report best practices
 - **Artifacts**:
   - reports/research-001.md (this file)
@@ -121,7 +121,7 @@ The maintenance/state.json file provides robust tracking infrastructure:
 
 **reviewer.md agent documentation**:
 - Comprehensive workflow for repository analysis and code review
-- Documents artifact creation in .opencode/specs/NNN_review/reports/
+- Documents artifact creation in specs/NNN_review/reports/
 - Includes stage for archiving completed projects
 - **Gap**: No specific guidance for maintenance report generation
 - **Gap**: Does not reference maintenance report template or standards
@@ -225,7 +225,7 @@ Based on web research of GitHub, GitLab, SonarQube, and DevOps methodologies:
 - [FAIL] Metric definitions: Not documented
 - [FAIL] Generation process: Not documented
 - [FAIL] Troubleshooting: Not documented
-- [PASS] Version control: Reports stored in .opencode/specs/maintenance/
+- [PASS] Version control: Reports stored in specs/maintenance/
 
 ### 3. Gap Analysis
 
@@ -324,7 +324,7 @@ The existing report.md standard defines structure for research/analysis/verifica
 The artifact-management.md standard defines project structure:
 
 **Aligned Elements**:
-- [PASS] Maintenance directory: .opencode/specs/maintenance/
+- [PASS] Maintenance directory: specs/maintenance/
 - [PASS] State file: maintenance/state.json
 - [PASS] Report storage: maintenance/maintenance-report-YYYYMMDD.md
 
@@ -513,10 +513,10 @@ Based on industry research and current state analysis, the following best practi
      2. Include detailed operation breakdown
      3. Validate critical guardrails
      4. Calculate statistics
-     5. Write report to .opencode/specs/maintenance/maintenance-report-YYYYMMDD.md
+     5. Write report to specs/maintenance/maintenance-report-YYYYMMDD.md
      6. Add report path to maintenance/state.json
 2. **Artifact Management Section**:
-   - Maintenance reports created in .opencode/specs/maintenance/
+   - Maintenance reports created in specs/maintenance/
    - Naming convention: maintenance-report-YYYYMMDD.md
    - Report template: @context/core/standards/maintenance-report.md
    - State tracking: maintenance/state.json updated with report path
@@ -565,7 +565,7 @@ Based on industry research and current state analysis, the following best practi
 2. **Report Naming Convention**:
    - Format: maintenance-report-YYYYMMDD.md
    - Date represents operation date (not generation date if different)
-   - Stored in .opencode/specs/maintenance/
+   - Stored in specs/maintenance/
 3. **Report Retention Policy**:
    - Keep all reports indefinitely (small size, high value)
    - No automatic archival or deletion
@@ -606,11 +606,11 @@ Based on industry research and current state analysis, the following best practi
    - Artifact preservation: Verify all moved directories exist
    - Task preservation: Verify non-removed tasks still in TODO.md
 4. **Data Sources**:
-   - .opencode/specs/TODO.md
-   - .opencode/specs/state.json
-   - .opencode/specs/archive/state.json
-   - .opencode/specs/maintenance/state.json
-   - .opencode/specs/ directory listing
+   - specs/TODO.md
+   - specs/state.json
+   - specs/archive/state.json
+   - specs/maintenance/state.json
+   - specs/ directory listing
 
 **Rationale**: Transparency in methodology enables verification, reproducibility, and trust.
 
@@ -627,7 +627,7 @@ Based on industry research and current state analysis, the following best practi
    - Add note: "When performing TODO maintenance, generate maintenance report per maintenance-report.md standard"
    - Reference: @context/core/standards/maintenance-report.md
 2. **Artifact Creation Section**:
-   - Add: "Maintenance reports: .opencode/specs/maintenance/maintenance-report-YYYYMMDD.md"
+   - Add: "Maintenance reports: specs/maintenance/maintenance-report-YYYYMMDD.md"
 3. **Quality Standards Section**:
    - Add: "Maintenance reports must follow maintenance-report.md standard"
 
@@ -988,14 +988,14 @@ Based on industry research and current state analysis, the following best practi
 
 ### Internal Documentation
 
-1. .opencode/specs/maintenance/maintenance-report-20251224.md - Example maintenance report
+1. specs/maintenance/maintenance-report-20251224.md - Example maintenance report
 2. .opencode/command/todo.md - /todo command documentation
 3. .opencode/agent/subagents/reviewer.md - Reviewer agent documentation
 4. .opencode/context/core/standards/report.md - Report standard
 5. .opencode/context/core/system/artifact-management.md - Artifact management standard
 6. .opencode/context/core/standards/status-markers.md - Status markers specification
 7. .opencode/context/core/system/state-schema.md - State schema reference
-8. .opencode/specs/maintenance/state.json - Maintenance state tracking
+8. specs/maintenance/state.json - Maintenance state tracking
 
 ### External Research
 

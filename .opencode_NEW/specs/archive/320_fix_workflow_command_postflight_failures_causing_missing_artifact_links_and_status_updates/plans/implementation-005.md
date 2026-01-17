@@ -21,9 +21,9 @@
   - Task 321 (preflight/postflight fixes) - COMPLETED, provides COMPLETE solution
 - **Research Integrated**: Yes
 - **Reports Integrated**:
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md` (integrated 2026-01-05)
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-003.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-003.md` (integrated 2026-01-05)
 
 ---
 

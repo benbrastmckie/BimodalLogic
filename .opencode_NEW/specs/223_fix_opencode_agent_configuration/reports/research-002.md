@@ -418,7 +418,7 @@ This is not speculation or hypothesis - this is proven causation with definitive
 
 ### Previous Research
 
-- `.opencode/specs/223_fix_opencode_agent_configuration/reports/research-001.md`
+- `specs/223_fix_opencode_agent_configuration/reports/research-001.md`
   - Identified candidate causes
   - Recommended correct solution
   - Did not provide definitive proof

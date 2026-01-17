@@ -497,8 +497,8 @@ Each command file should:
 ```markdown
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 ...
 
 <workflow_execution>

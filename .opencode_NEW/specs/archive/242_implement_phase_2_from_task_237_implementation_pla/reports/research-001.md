@@ -210,7 +210,7 @@ Support BOTH patterns during migration:
 **Implementation**:
 ```bash
 # Extract only task 237 entry (50 lines)
-grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
 # Load /tmp/task-${task_number}.md instead of full TODO.md
 ```
 
@@ -573,7 +573,7 @@ The `research-routing.md` file contains:
 **Implementation**:
 ```bash
 # Extract only task 237 entry (50 lines)
-grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
 # Load /tmp/task-${task_number}.md instead of full TODO.md
 ```
 
@@ -850,13 +850,13 @@ Phase 2 from task 237's implementation plan (split command files into routing an
 ## Sources and Citations
 
 1. **Task 237 Implementation Plan**:
-   - `.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md`
+   - `specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md`
    - Phase 2 specification (lines 193-275)
    - Phase 3 specification (lines 277-361)
    - Phase 4 specification (lines 363-449)
 
 2. **Task 237 Research Report**:
-   - `.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md`
+   - `specs/237_investigate_fix_context_window_bloat_workflow_commands/reports/research-001.md`
    - Root cause analysis (lines 390-450)
    - Recommendations (lines 452-705)
    - Expected outcomes (lines 770-838)
@@ -873,7 +873,7 @@ Phase 2 from task 237's implementation plan (split command files into routing an
    - Demonstrates file splitting is possible but savings lower than estimated
 
 5. **Task 237 TODO Entry**:
-   - `.opencode/specs/TODO.md` (task 237)
+   - `specs/TODO.md` (task 237)
    - Phase 1 status: [COMPLETED]
    - Phase 2 status: [DEFERRED]
    - Phase 3 status: [COMPLETED]

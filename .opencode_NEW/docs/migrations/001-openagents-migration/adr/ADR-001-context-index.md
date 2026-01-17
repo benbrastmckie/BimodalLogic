@@ -168,7 +168,7 @@ The original OpenCode system loaded all context files during command routing, co
 ## References
 
 - **Implementation**: Task 244 (Phase 1: Context Index and /research Prototype)
-- **Validation**: `.opencode/specs/244_phase_1_context_index_and_research_prototype/reports/validation-001.md`
+- **Validation**: `specs/244_phase_1_context_index_and_research_prototype/reports/validation-001.md`
 - **Context Index**: `.opencode/context/index.md`
 - **Migration Guide**: `.opencode/docs/migrations/001-openagents-migration/phase-1-guide.md`
 

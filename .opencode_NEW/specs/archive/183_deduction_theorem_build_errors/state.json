@@ -12,19 +12,19 @@
   "artifacts": [
     {
       "type": "research_report",
-      "path": ".opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md",
+      "path": "specs/183_deduction_theorem_build_errors/reports/research-001.md",
       "created": "2025-12-25T16:10:00Z",
       "description": "Comprehensive research on classical reasoning patterns in Lean 4 and solution for DeductionTheorem.lean build errors"
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md",
+      "path": "specs/183_deduction_theorem_build_errors/summaries/research-summary.md",
       "created": "2025-12-25T16:10:00Z",
       "description": "Brief summary of research findings and recommendations"
     },
     {
       "type": "implementation_plan",
-      "path": ".opencode/specs/183_deduction_theorem_build_errors/plans/implementation-001.md",
+      "path": "specs/183_deduction_theorem_build_errors/plans/implementation-001.md",
       "created": "2025-12-25T16:30:00Z",
       "description": "4-phase implementation plan for fixing DeductionTheorem.lean build errors (30-45 minutes estimated)"
     }

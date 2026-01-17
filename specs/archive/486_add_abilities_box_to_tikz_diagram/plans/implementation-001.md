@@ -5,7 +5,7 @@
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md
+- **Research Inputs**: specs/486_add_abilities_box_to_tikz_diagram/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: latex
@@ -130,8 +130,8 @@ Key findings from research-001.md integrated:
 
 - Modified: `/home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex`
 - Modified: `/home/benjamin/Projects/ProofChecker/README.md`
-- Plan: `.claude/specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md`
-- Summary: `.claude/specs/486_add_abilities_box_to_tikz_diagram/summaries/implementation-summary-YYYYMMDD.md`
+- Plan: `specs/486_add_abilities_box_to_tikz_diagram/plans/implementation-001.md`
+- Summary: `specs/486_add_abilities_box_to_tikz_diagram/summaries/implementation-summary-YYYYMMDD.md`
 
 ## Rollback/Contingency
 

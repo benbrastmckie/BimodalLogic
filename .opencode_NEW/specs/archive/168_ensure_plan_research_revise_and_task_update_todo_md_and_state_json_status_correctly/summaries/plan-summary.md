@@ -32,4 +32,4 @@
 
 ## Full Plan
 
-See: `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/plans/implementation-001.md`
+See: `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/plans/implementation-001.md`

@@ -354,7 +354,7 @@ git diff .opencode/agent/subagents/researcher.md
 - `.opencode/scripts/cleanup-sessions.sh`
 - `.opencode/scripts/measure-context-usage.sh`
 - `.opencode/scripts/test-stage7-reliability.sh`
-- `.opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md` (this file)
+- `specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md` (this file)
 
 **Modified**:
 - `.opencode/command/research.md` (677 → 272 lines)

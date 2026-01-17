@@ -16,7 +16,7 @@
 - **Priority**: High
 - **Dependencies**: Task 289 (completed)
 - **Research Integrated**: Yes
-- **Research Report**: .opencode/specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md
+- **Research Report**: specs/290_fix_lean_research_agent_preflight_status_updates_and_artifact_linking/reports/research-001.md
 
 ## Overview
 
@@ -161,8 +161,8 @@ After Task 289 fixed step naming inconsistency in Lean subagents, `/research 260
 1. Add git-workflow-manager invocation after status-sync-manager
 2. Prepare delegation context with scope_files:
    - Research report path
-   - .opencode/specs/TODO.md
-   - .opencode/specs/state.json
+   - specs/TODO.md
+   - specs/state.json
 3. Set message_template: "task {number}: research completed"
 4. Handle git-workflow-manager return:
    - Extract commit_hash if successful

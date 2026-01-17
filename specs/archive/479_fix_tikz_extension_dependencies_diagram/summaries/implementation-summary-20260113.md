@@ -21,7 +21,7 @@ Restructured the TikZ extension dependencies diagram in `00-Introduction.tex` to
 ## Files Modified
 
 - `/home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex` - Complete TikZ diagram rewrite
-- `/home/benjamin/Projects/ProofChecker/.claude/specs/479_fix_tikz_extension_dependencies_diagram/plans/implementation-001.md` - Phase status updates
+- `/home/benjamin/Projects/ProofChecker/specs/479_fix_tikz_extension_dependencies_diagram/plans/implementation-001.md` - Phase status updates
 
 ## Output Artifacts
 

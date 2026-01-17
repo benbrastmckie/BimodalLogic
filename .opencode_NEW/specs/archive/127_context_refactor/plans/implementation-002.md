@@ -6,7 +6,7 @@
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: [.opencode/specs/144_update_context_references_after_refactor/reports/research-001.md](../144_update_context_references_after_refactor/reports/research-001.md)
+- **Research Inputs**: [specs/144_update_context_references_after_refactor/reports/research-001.md](../144_update_context_references_after_refactor/reports/research-001.md)
 - **Artifacts**: plans/implementation-002.md (this plan)
 - **Standards**: plan.md; status-markers.md; artifact-management.md; tasks.md
 - **Language**: markdown
@@ -32,7 +32,7 @@ Apply the post-refactor mapping to agent/command documentation so all context re
 - Documentation touch-ups limited to context-reference narratives (no code changes).
 
 ## Inputs
-- Research: `.opencode/specs/144_update_context_references_after_refactor/reports/research-001.md`
+- Research: `specs/144_update_context_references_after_refactor/reports/research-001.md`
 - Updated context structure (Task 143): `common/` vs `project/{logic,lean4,math,physics,repo}`, Lean overlay rename, refreshed `context/index.md` and `context/README.md`.
 
 ## Risks & Mitigations

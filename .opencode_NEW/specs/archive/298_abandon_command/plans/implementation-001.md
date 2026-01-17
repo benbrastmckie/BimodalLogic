@@ -14,7 +14,7 @@
 
 **Research Integrated**: Yes  
 **Research Artifacts**:
-- .opencode/specs/298_abandon_command/reports/research-001.md
+- specs/298_abandon_command/reports/research-001.md
 
 **Dependencies**: None  
 **Blocking**: None  
@@ -285,14 +285,14 @@ head -20 .opencode/command/abandon.md | grep -q "name: abandon"
 # Expected: "Files updated: TODO.md, state.json"
 
 # Verify TODO.md updated
-grep -A 10 "^### 298\." .opencode/specs/TODO.md | grep "\[ABANDONED\]"
+grep -A 10 "^### 298\." specs/TODO.md | grep "\[ABANDONED\]"
 
 # Verify state.json updated
-jq -r '.active_projects[] | select(.project_number == 298) | .status' .opencode/specs/state.json
+jq -r '.active_projects[] | select(.project_number == 298) | .status' specs/state.json
 # Expected: "abandoned"
 
 # Verify abandonment_reason in state.json
-jq -r '.active_projects[] | select(.project_number == 298) | .abandonment_reason' .opencode/specs/state.json
+jq -r '.active_projects[] | select(.project_number == 298) | .abandonment_reason' specs/state.json
 # Expected: "No longer needed due to architectural changes"
 ```
 
@@ -423,10 +423,10 @@ newline"
 /abandon 298 "Test reason"
 
 # Verify TODO.md updated
-grep -A 10 "^### 298\." .opencode/specs/TODO.md | grep "\[ABANDONED\]"
+grep -A 10 "^### 298\." specs/TODO.md | grep "\[ABANDONED\]"
 
 # Verify state.json updated
-jq -r '.active_projects[] | select(.project_number == 298) | .status' .opencode/specs/state.json
+jq -r '.active_projects[] | select(.project_number == 298) | .status' specs/state.json
 
 # Verify both files have same status
 ```
@@ -434,17 +434,17 @@ jq -r '.active_projects[] | select(.project_number == 298) | .status' .opencode/
 **Test 2: Rollback on Failure**
 ```bash
 # Make state.json read-only
-chmod 444 .opencode/specs/state.json
+chmod 444 specs/state.json
 
 # Try to abandon task
 /abandon 298 "Test reason"
 # Expected: Error, TODO.md rolled back
 
 # Verify TODO.md not updated
-grep -A 10 "^### 298\." .opencode/specs/TODO.md | grep -v "\[ABANDONED\]"
+grep -A 10 "^### 298\." specs/TODO.md | grep -v "\[ABANDONED\]"
 
 # Restore permissions
-chmod 644 .opencode/specs/state.json
+chmod 644 specs/state.json
 ```
 
 ### Acceptance Tests
@@ -462,10 +462,10 @@ chmod 644 .opencode/specs/state.json
 /abandon {task_number} "Test abandonment workflow"
 
 # Verify status
-grep -A 10 "^### {task_number}\." .opencode/specs/TODO.md | grep "\[ABANDONED\]"
+grep -A 10 "^### {task_number}\." specs/TODO.md | grep "\[ABANDONED\]"
 
 # Verify reason
-grep -A 10 "^### {task_number}\." .opencode/specs/TODO.md | grep "Test abandonment workflow"
+grep -A 10 "^### {task_number}\." specs/TODO.md | grep "Test abandonment workflow"
 ```
 
 ---
@@ -482,13 +482,13 @@ grep -A 10 "^### {task_number}\." .opencode/specs/TODO.md | grep "Test abandonme
 
 ### Modified Files
 
-1. **.opencode/specs/TODO.md**
+1. **specs/TODO.md**
    - Updated by status-sync-manager when task abandoned
    - Status marker changed to [ABANDONED]
    - Abandonment reason added
    - Timestamp added
 
-2. **.opencode/specs/state.json**
+2. **specs/state.json**
    - Updated by status-sync-manager when task abandoned
    - status field changed to "abandoned"
    - abandonment_reason field added

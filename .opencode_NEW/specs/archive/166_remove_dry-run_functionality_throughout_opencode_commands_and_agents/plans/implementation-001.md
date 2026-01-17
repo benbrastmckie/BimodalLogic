@@ -7,7 +7,7 @@
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/reports/research-001.md
+- **Research Inputs**: specs/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file), summaries/implementation-summary-20251224.md
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -254,11 +254,11 @@ Remove all dry-run and routing-check functionality from the .opencode system to 
 
 - **Goal:** Mark task 166 as complete and update project state
 - **Tasks:**
-  - [x] Update .opencode/specs/TODO.md task 166:
+  - [x] Update specs/TODO.md task 166:
     - [x] Mark all acceptance criteria as complete
     - [x] Update status to [COMPLETED]
     - [x] Add completion timestamp
-  - [x] Update .opencode/specs/state.json:
+  - [x] Update specs/state.json:
     - [x] Update task 166 status to completed
     - [x] Update recent_activities
     - [x] Update project completion timestamp
@@ -319,8 +319,8 @@ grep -r "dry.run" .opencode/context/core/standards/
 ## Artifacts & Outputs
 
 **Primary Artifacts:**
-- .opencode/specs/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/plans/implementation-001.md (this file)
-- .opencode/specs/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/summaries/plan-summary.md
+- specs/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/plans/implementation-001.md (this file)
+- specs/166_remove_dry-run_functionality_throughout_opencode_commands_and_agents/summaries/plan-summary.md
 
 **Modified Files (17 total):**
 
@@ -348,8 +348,8 @@ grep -r "dry.run" .opencode/context/core/standards/
 17. .opencode/context/core/system/git-commits.md
 
 *State Files (2):*
-18. .opencode/specs/TODO.md (task 166 completion)
-19. .opencode/specs/state.json (task 166 completion)
+18. specs/TODO.md (task 166 completion)
+19. specs/state.json (task 166 completion)
 
 ## Rollback/Contingency
 

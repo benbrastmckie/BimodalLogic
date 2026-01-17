@@ -3,7 +3,7 @@
 **Project**: #152_standardize_command_templates_and_migrate_command_docs  
 **Date**: 2025-12-23  
 **Research Type**: standards definition and migration guidance  
-**Inputs**: .opencode/specs/TODO.md; .opencode/specs/state.json; .opencode/context/core/system/state-schema.md; .opencode/context/core/system/artifact-management.md; .opencode/context/core/standards/tasks.md; .opencode/context/core/standards/patterns.md; .opencode/context/core/workflows/task-breakdown.md; .opencode/command/README.md and command docs (legacy YAML/@ tags)
+**Inputs**: specs/TODO.md; specs/state.json; .opencode/context/core/system/state-schema.md; .opencode/context/core/system/artifact-management.md; .opencode/context/core/standards/tasks.md; .opencode/context/core/standards/patterns.md; .opencode/context/core/workflows/task-breakdown.md; .opencode/command/README.md and command docs (legacy YAML/@ tags)
 
 ## Research Question
 Define a unified command documentation standard and template aligned with status markers, lazy directory rules, and artifact/state synchronization; provide migration guidance for existing command docs and /meta context/templates.

@@ -346,24 +346,24 @@ Successfully completed root cause investigation for persistent workflow command 
 
 ### Created Files
 
-1. `.opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/reports/research-001.md`
+1. `specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/reports/research-001.md`
    - Size: 802 lines, ~40KB
    - Purpose: Root cause analysis report with 4 proof methods
    - Status: Validated and committed
 
-2. `.opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/summaries/implementation-summary-20260106.md`
+2. `specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/summaries/implementation-summary-20260106.md`
    - Size: This file
    - Purpose: Implementation summary for task 324
    - Status: Created
 
 ### Modified Files
 
-1. `.opencode/specs/state.json`
+1. `specs/state.json`
    - Changes: Task 324 status "planned" → "implementing" → "completed"
    - Fields updated: status, last_updated, implementation_completed, artifacts
    - Purpose: Track task 324 progress
 
-2. `.opencode/specs/TODO.md` (will be updated by status-sync-manager)
+2. `specs/TODO.md` (will be updated by status-sync-manager)
    - Changes: Task 324 status [PLANNED] → [COMPLETED]
    - Fields added: Implementation completed date, implementation artifacts section
    - Purpose: User-facing task status

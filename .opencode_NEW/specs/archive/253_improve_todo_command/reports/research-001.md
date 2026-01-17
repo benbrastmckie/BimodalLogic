@@ -35,7 +35,7 @@ The /todo command uses a two-phase commit with file backups:
 **Phase 1 (Prepare)**:
 ```
 1. Backup current state:
-   - Backup .opencode/specs/TODO.md → .opencode/specs/TODO.md.bak
+   - Backup specs/TODO.md → specs/TODO.md.bak
    - Backup state.json → state.json.bak
    - Backup archive/state.json → archive/state.json.bak
    - No directory backup (rely on git, expensive operation)
@@ -45,7 +45,7 @@ The /todo command uses a two-phase commit with file backups:
 
 **Phase 2 (Commit)**:
 ```
-1. Write updated .opencode/specs/TODO.md
+1. Write updated specs/TODO.md
 2. Write updated state.json
 3. Write updated archive/state.json
 4. Move project directories
@@ -57,7 +57,7 @@ The /todo command uses a two-phase commit with file backups:
 ```python
 rollback_archival():
   1. Restore files from backups:
-     - Copy .opencode/specs/TODO.md.bak → .opencode/specs/TODO.md
+     - Copy specs/TODO.md.bak → specs/TODO.md
      - Copy state.json.bak → state.json
      - Copy archive/state.json.bak → archive/state.json
   2. Reverse directory moves
@@ -95,10 +95,10 @@ The command includes Stage 6 (GitCommit) that creates a single commit AFTER arch
 ```
 Stage 6: GitCommit
 1. Stage files:
-   - git add .opencode/specs/TODO.md
-   - git add .opencode/specs/state.json
-   - git add .opencode/specs/archive/state.json
-   - git add .opencode/specs/archive/  (pick up moved directories)
+   - git add specs/TODO.md
+   - git add specs/state.json
+   - git add specs/archive/state.json
+   - git add specs/archive/  (pick up moved directories)
 2. Verify staged changes: git status --short
 3. Create commit:
    - Message format: "todo: archive {N} completed/abandoned tasks"
@@ -113,7 +113,7 @@ Stage 6: GitCommit
 
 ### 2.1 File Structure
 
-**Location**: `.opencode/specs/TODO.md`  
+**Location**: `specs/TODO.md`  
 **Format**: Markdown with structured metadata
 
 **Standard Structure**:
@@ -263,18 +263,18 @@ Tasks to archive: 236, 237, 238, 241, 242
 
 **Pre-Cleanup Commit** (snapshot current state):
 ```bash
-git add .opencode/specs/TODO.md
-git add .opencode/specs/state.json
-git add .opencode/specs/archive/state.json
+git add specs/TODO.md
+git add specs/state.json
+git add specs/archive/state.json
 git commit -m "todo: snapshot before archiving {N} tasks (task 253)"
 ```
 
 **Post-Cleanup Commit** (record changes):
 ```bash
-git add .opencode/specs/TODO.md
-git add .opencode/specs/state.json
-git add .opencode/specs/archive/state.json
-git add .opencode/specs/archive/  # Pick up moved directories
+git add specs/TODO.md
+git add specs/state.json
+git add specs/archive/state.json
+git add specs/archive/  # Pick up moved directories
 git commit -m "todo: archive {N} completed/abandoned tasks (task 253)"
 ```
 
@@ -704,7 +704,7 @@ Stage 6: ReturnSuccess (unchanged)
    ```diff
    - **Phase 1 (Prepare)**:
    - 1. Backup current state:
-   -    - Backup .opencode/specs/TODO.md → .opencode/specs/TODO.md.bak
+   -    - Backup specs/TODO.md → specs/TODO.md.bak
    -    - Backup state.json → state.json.bak
    -    - Backup archive/state.json → archive/state.json.bak
    ```
@@ -719,9 +719,9 @@ Stage 6: ReturnSuccess (unchanged)
           - Abort if merge in progress
           - Abort if detached HEAD
        2. Stage files:
-          - git add .opencode/specs/TODO.md
-          - git add .opencode/specs/state.json
-          - git add .opencode/specs/archive/state.json
+          - git add specs/TODO.md
+          - git add specs/state.json
+          - git add specs/archive/state.json
        3. Create commit:
           - Message: "todo: snapshot before archiving {N} tasks (task 253)"
        4. If commit fails: Abort archival
@@ -755,10 +755,10 @@ Stage 6: ReturnSuccess (unchanged)
      <action>Commit archival changes</action>
      <process>
        1. Stage files:
-          - git add .opencode/specs/TODO.md
-          - git add .opencode/specs/state.json
-          - git add .opencode/specs/archive/state.json
-          - git add .opencode/specs/archive/  (pick up moved directories)
+          - git add specs/TODO.md
+          - git add specs/state.json
+          - git add specs/archive/state.json
+          - git add specs/archive/  (pick up moved directories)
        2. Create commit:
           - Message: "todo: archive {N} completed/abandoned tasks (task 253)"
        3. If commit fails:
@@ -770,7 +770,7 @@ Stage 6: ReturnSuccess (unchanged)
 
 ### 5.3 Testing Plan
 
-**Test Suite**: `.opencode/specs/253_improve_todo_command/tests/`
+**Test Suite**: `specs/253_improve_todo_command/tests/`
 
 **Test 1: Divider Fixing**
 ```python
@@ -876,7 +876,7 @@ def test_end_to_end_archival():
 - Expected: Archive all tasks, empty TODO.md (except headers)
 
 **Edge Case 3: Task with No Project Directory**
-- Input: Completed task with no `.opencode/specs/{number}_{slug}/` directory
+- Input: Completed task with no `specs/{number}_{slug}/` directory
 - Expected: Archive task, log info "No project directory", continue
 
 **Edge Case 4: Dirty Working Tree**
@@ -1031,8 +1031,8 @@ The current /todo command uses a fragile backup-based approach and generates Pyt
 ## References
 
 1. `.opencode/command/todo.md` - Current /todo command specification
-2. `.opencode/specs/TODO.md` - TODO.md file format and structure
-3. `.opencode/specs/state.json` - State file schema
+2. `specs/TODO.md` - TODO.md file format and structure
+3. `specs/state.json` - State file schema
 4. `.opencode/tmp/archive_tasks.py` - Existing Python archival script
 5. `.opencode/context/core/system/git-commits.md` - Git commit standards
 6. `.opencode/context/core/system/state-management.md` - State management standards

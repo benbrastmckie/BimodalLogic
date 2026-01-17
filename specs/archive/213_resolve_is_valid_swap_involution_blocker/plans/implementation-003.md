@@ -437,23 +437,23 @@ The temporal_duality case in SoundnessLemmas.lean can be completed **after** the
    - Status: COMPLETED
 
 3. **Implementation Summary** [PASS]
-   - Location: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/implementation-summary-20251229.md`
+   - Location: `specs/213_resolve_is_valid_swap_involution_blocker/summaries/implementation-summary-20251229.md`
    - Content: Documents resolution and lessons learned
    - Status: COMPLETED
 
 4. **TODO.md** (TO BE UPDATED)
-   - Location: `.opencode/specs/TODO.md`
+   - Location: `specs/TODO.md`
    - Changes: Mark tasks 184, 193, 209, 213 as COMPLETED/RESOLVED
    - Status: PENDING
 
 ### Research Artifacts (Already Complete)
 
 1. **Research Report** [PASS]
-   - Location: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md`
+   - Location: `specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md`
    - Status: Complete (comprehensive analysis)
 
 2. **Research Summary** [PASS]
-   - Location: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md`
+   - Location: `specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md`
    - Status: Complete
 
 ---
@@ -645,8 +645,8 @@ None. All prerequisites are satisfied.
 
 ### References
 
-1. **Task 213 Research Report**: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md`
-2. **Task 213 Research Summary**: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md`
+1. **Task 213 Research Report**: `specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md`
+2. **Task 213 Research Summary**: `specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md`
 3. **Task 184**: Truth.lean build error (resolved by task 219)
 4. **Task 193**: Prove is_valid_swap_involution (IMPOSSIBLE AS STATED)
 5. **Task 209**: Research Lean 4 involution techniques (confirmed impossibility)

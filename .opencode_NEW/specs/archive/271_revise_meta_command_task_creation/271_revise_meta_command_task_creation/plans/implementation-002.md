@@ -5,7 +5,7 @@
 - **Effort**: 10 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/271_revise_meta_command_task_creation/reports/research-001.md
+- **Research Inputs**: specs/271_revise_meta_command_task_creation/reports/research-001.md
 - **Artifacts**: plans/implementation-002.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -123,7 +123,7 @@ This revised plan simplifies the `/meta` command artifact generation to create O
     - [ ] Moderate system (3-5 agents, 4-6 use cases): 7 tasks (planning, 6 implementation)
     - [ ] Complex system (6-8 agents, 7+ use cases): 10-15 tasks (planning, 9-14 implementation)
   - [ ] Generate task titles and slugs from interview results
-  - [ ] Read next_project_number from .opencode/specs/state.json
+  - [ ] Read next_project_number from specs/state.json
   - [ ] Create task number sequence (next_project_number, next_project_number+1, ...)
   - [ ] Set Type field to 'meta' for all meta-related tasks
 - **Timing:** 1.5 hours
@@ -139,7 +139,7 @@ This revised plan simplifies the `/meta` command artifact generation to create O
   - [ ] Generate Testing & Validation
   - [ ] Generate Artifacts & Outputs
   - [ ] Generate Rollback/Contingency
-  - [ ] Create project directory: .opencode/specs/{number}_{slug}/ (lazy creation)
+  - [ ] Create project directory: specs/{number}_{slug}/ (lazy creation)
   - [ ] Write plan artifact: plans/implementation-001.md
   - [ ] Validate artifact exists and is non-empty
   - [ ] Extract plan metadata (phase_count, estimated_hours, complexity)
@@ -237,7 +237,7 @@ This revised plan simplifies the `/meta` command artifact generation to create O
 
 ## Artifacts & Outputs
 
-- .opencode/specs/271_revise_meta_command_task_creation/plans/implementation-002.md (this file)
+- specs/271_revise_meta_command_task_creation/plans/implementation-002.md (this file)
 - .opencode/agent/subagents/meta.md (revised Stage 7 and Stage 8)
 - .opencode/command/meta.md (updated documentation)
 - .opencode/command/implement.md (updated routing for meta tasks)
@@ -245,9 +245,9 @@ This revised plan simplifies the `/meta` command artifact generation to create O
 - .opencode/context/core/standards/plan.md (Language → Type migration)
 - .opencode/context/core/standards/report.md (Language → Type migration)
 - .opencode/context/core/system/state-management.md (Language → Type migration)
-- Multiple task directories in .opencode/specs/NNN_*/ with plan artifacts only (created during testing)
-- Updated .opencode/specs/TODO.md with task entries using Type field (created during testing)
-- Updated .opencode/specs/state.json with incremented next_project_number and 'type' field (created during testing)
+- Multiple task directories in specs/NNN_*/ with plan artifacts only (created during testing)
+- Updated specs/TODO.md with task entries using Type field (created during testing)
+- Updated specs/state.json with incremented next_project_number and 'type' field (created during testing)
 
 ## Rollback/Contingency
 

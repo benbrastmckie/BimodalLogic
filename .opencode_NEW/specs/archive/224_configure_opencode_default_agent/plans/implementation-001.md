@@ -247,8 +247,8 @@ This implementation will:
 - Project README.md (optional: note about default agent)
 
 ### Implementation Artifacts
-- `.opencode/specs/224_configure_opencode_default_agent/plans/implementation-001.md` (this file)
-- `.opencode/specs/224_configure_opencode_default_agent/summaries/implementation-summary-20251229.md` (created on completion)
+- `specs/224_configure_opencode_default_agent/plans/implementation-001.md` (this file)
+- `specs/224_configure_opencode_default_agent/summaries/implementation-summary-20251229.md` (created on completion)
 
 ## Rollback/Contingency
 

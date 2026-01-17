@@ -5,8 +5,8 @@
 - **Started**: 2025-12-23T00:00:00Z
 - **Priority**: High
 - **Dependencies**: TODO tasks 129 & 130 entries; `Logos/Core/Semantics/Truth.lean` (TemporalDuality, `derivable_implies_swap_valid`, `truth_swap_of_valid_at_triple`, `valid_swap_of_valid`, time-shift helpers); `Logos/Core/Metalogic/Soundness.lean` (temporal_duality consumer of `derivable_implies_swap_valid`); tests in `LogosTest/Core/Semantics/TruthTest` and `LogosTest/Core/Metalogic/SoundnessTest`
-- **Research Inputs**: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md`, `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md`
-- **Artifacts**: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md` (this plan)
+- **Research Inputs**: `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md`, `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md`
+- **Artifacts**: `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md` (this plan)
 - **Standards**:
   - `.opencode/context/core/standards/plan.md`
   - `.opencode/context/core/standards/status-markers.md`
@@ -20,8 +20,8 @@
 Implement Branch B directly in Lean: refactor `derivable_implies_swap_valid` to use IH/mutual IH (no global swap-validity axiom), add only domain-witnessed transport lemmas, and update `Soundness.lean` consumers. Deliver passing tests, then mark TODO tasks 129 and 130 as abandoned (fulfilled by task 154 implementation), with state/TODO sync.
 
 ## Research Inputs
-- `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md`
-- `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md`
+- `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-001.md`
+- `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/reports/research-002.md`
 
 ## Goals & Non-Goals
 - **Goals**: (1) Refactor temporal_duality proof to remove `valid_swap_of_valid`/`truth_swap_of_valid_at_triple` reliance using IH/mutual IH; (2) add local, domain-witnessed transport lemmas (reuse `TimeShift.time_shift_preserves_truth` family); (3) align `Soundness.lean` caller; (4) green tests; (5) update TODO/state to abandon tasks 129/130 as satisfied by this work.
@@ -63,8 +63,8 @@ Implement Branch B directly in Lean: refactor `derivable_implies_swap_valid` to 
 ### Phase 4: TODO/state sync and retire tasks 129/130 [NOT STARTED]
 - **Goal:** Mark tasks 129 and 130 as abandoned after this implementation delivers their outcomes.
 - **Tasks:**
-  - [ ] Update `.opencode/specs/TODO.md` to note that task 154 implementation supersedes tasks 129/130; set 129/130 status to [ABANDONED] with rationale and link to this plan and research.
-  - [ ] Update `.opencode/specs/state.json` pending_tasks entries for 129/130 to `abandoned` with reasons; do not create new projects.
+  - [ ] Update `specs/TODO.md` to note that task 154 implementation supersedes tasks 129/130; set 129/130 status to [ABANDONED] with rationale and link to this plan and research.
+  - [ ] Update `specs/state.json` pending_tasks entries for 129/130 to `abandoned` with reasons; do not create new projects.
   - [ ] If a project state file exists for 154, append plan v2 and refresh timestamps; otherwise, keep state minimal per artifact-management.
 - **Timing:** 0.5h
 - **Verification:** TODO/state show 129/130 abandoned with rationale; task 154 remains tracked as the implementing work.
@@ -84,7 +84,7 @@ Implement Branch B directly in Lean: refactor `derivable_implies_swap_valid` to 
 - [ ] Confirm no global swap-validity lemma or new frame axioms introduced
 
 ## Artifacts & Outputs
-- `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md`
+- `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md`
 - Updated TODO/state entries for tasks 129, 130 (abandoned after implementation), and task 154 plan link
 
 ## Rollback/Contingency

@@ -27,7 +27,7 @@ Renamed the `/task --divide` flag to `/task --expand` across the active `.claude
 - `.claude/context/core/workflows/status-transitions.md` - Updated status transition description
 
 ### Related Summaries
-- `.claude/specs/401_add_expanded_status_for_parent_tasks/summaries/implementation-summary-20260112.md` - Updated forward reference to use --expand
+- `specs/401_add_expanded_status_for_parent_tasks/summaries/implementation-summary-20260112.md` - Updated forward reference to use --expand
 
 ## Verification
 

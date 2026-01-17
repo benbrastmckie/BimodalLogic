@@ -5,7 +5,7 @@
 - **Effort**: 3-4 hours
 - **Priority**: Medium
 - **Dependencies**: Task 451 (completed)
-- **Research Inputs**: .claude/specs/453_add_ability_free_choice_modal_extension/reports/research-001.md
+- **Research Inputs**: specs/453_add_ability_free_choice_modal_extension/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .claude/context/core/formats/plan-format.md
@@ -213,7 +213,7 @@ Key findings from research-001.md integrated into this plan:
 - `Theories/Logos/docs/project-info/IMPLEMENTATION_STATUS.md` - Updated
 - `Theories/Logos/docs/project-info/ROADMAP.md` - Updated with Phase 8
 - `Theories/Logos/docs/reference/GLOSSARY.md` - New terms added
-- `.claude/specs/453_add_ability_free_choice_modal_extension/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/453_add_ability_free_choice_modal_extension/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

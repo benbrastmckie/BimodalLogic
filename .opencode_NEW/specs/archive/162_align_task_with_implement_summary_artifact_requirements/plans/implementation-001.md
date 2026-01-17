@@ -10,7 +10,7 @@
 - **Task ID**: 162
 
 ## Research Inputs
-- [.opencode/specs/162_align_task_with_implement_summary_artifact_requirements/reports/research-001.md](../reports/research-001.md)
+- [specs/162_align_task_with_implement_summary_artifact_requirements/reports/research-001.md](../reports/research-001.md)
 
 ## Overview
 Ensure /task enforces implementation summary artifact parity with /implement while preserving lazy directory creation, atomic status synchronization, and registry updates only when implementation work occurs.

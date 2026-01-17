@@ -14,7 +14,7 @@ tools:
   task: true
 permissions:
   allow:
-    - read: [".opencode/specs/**/*"]
+    - read: ["specs/**/*"]
     - bash: ["date", "jq", "grep"]
     - task: ["status-sync-manager", "git-workflow-manager"]
   deny:
@@ -181,7 +181,7 @@ lifecycle:
          - delegation_depth: Integer less than 3
       
       2. Validate state.json exists and is readable:
-         - Check .opencode/specs/state.json exists
+         - Check specs/state.json exists
          - Validate is valid JSON with jq
          - If missing/corrupt: Return error "state.json not found or invalid"
       
@@ -362,7 +362,7 @@ lifecycle:
     <action>Delegate to git-workflow-manager for git commit</action>
     <process>
       1. Prepare delegation context for git-workflow-manager:
-         - scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+         - scope_files: ["specs/TODO.md", "specs/state.json"]
          - message_template: "task {task_number}: revised task metadata"
          - task_context: {
              task_number: {task_number},
@@ -443,7 +443,7 @@ lifecycle:
            "type": "git_commit_failed",
            "message": "{error_message}",
            "recoverable": true,
-           "recommendation": "Manually commit changes with: git add .opencode/specs/TODO.md .opencode/specs/state.json && git commit -m 'task {task_number}: revised task metadata'"
+           "recommendation": "Manually commit changes with: git add specs/TODO.md specs/state.json && git commit -m 'task {task_number}: revised task metadata'"
          }
       
       4. Return JSON object

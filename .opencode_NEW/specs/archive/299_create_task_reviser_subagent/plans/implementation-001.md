@@ -273,7 +273,7 @@ Create a new subagent `task-reviser.md` that:
 
 **Tasks**:
 1. Prepare delegation context for git-workflow-manager:
-   - scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+   - scope_files: ["specs/TODO.md", "specs/state.json"]
    - message_template: "task {number}: revised task metadata"
    - task_context: {task_number, description: "revised task metadata"}
    - session_id: {session_id}
@@ -460,9 +460,9 @@ If task-reviser fails after status-sync-manager invocation:
 ### Manual Recovery
 
 If rollback fails:
-1. Check `.opencode/specs/TODO.md` for task entry
-2. Check `.opencode/specs/state.json` for task metadata
-3. Manually restore from git history: `git checkout HEAD~1 -- .opencode/specs/TODO.md .opencode/specs/state.json`
+1. Check `specs/TODO.md` for task entry
+2. Check `specs/state.json` for task metadata
+3. Manually restore from git history: `git checkout HEAD~1 -- specs/TODO.md specs/state.json`
 4. Retry task revision
 
 ### Contingency Plan

@@ -354,7 +354,7 @@ The research (research-001.md) confirmed that the root cause is NOT broken speci
    - `.opencode/docs/debugging-status-updates.md` (new)
 
 4. **Implementation Summary**:
-   - `.opencode/specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md`
+   - `specs/283_fix_systematic_status_synchronization_failure/summaries/implementation-summary-20260104.md`
 
 ### Validation Artifacts
 - Test results from test-status-updates.sh

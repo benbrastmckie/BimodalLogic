@@ -29,13 +29,13 @@ This implementation plan is based on comprehensive research completed on 2025-12
 
 ### Primary Research Artifacts
 
-1. **Main Research Report**: `.opencode/specs/174_property_based_testing/reports/research-001.md`
+1. **Main Research Report**: `specs/174_property_based_testing/reports/research-001.md`
    - Comprehensive analysis of Plausible framework
    - Integration strategies and best practices
    - Generator patterns and property test patterns
    - 374 lines of detailed findings
 
-2. **Research Summary**: `.opencode/specs/174_property_based_testing/summaries/research-summary.md`
+2. **Research Summary**: `specs/174_property_based_testing/summaries/research-summary.md`
    - Key findings and recommendations
    - Quick reference for implementation
 
@@ -877,12 +877,12 @@ docs/
 ## Related Research
 
 ### Research Reports
-- [Main Research Report](.opencode/specs/174_property_based_testing/reports/research-001.md)
+- [Main Research Report](specs/174_property_based_testing/reports/research-001.md)
   - Comprehensive analysis of Plausible framework
   - Integration strategies and best practices
   - 374 lines of detailed findings
 
-- [Research Summary](.opencode/specs/174_property_based_testing/summaries/research-summary.md)
+- [Research Summary](specs/174_property_based_testing/summaries/research-summary.md)
   - Key findings and recommendations
   - Quick reference for implementation
 

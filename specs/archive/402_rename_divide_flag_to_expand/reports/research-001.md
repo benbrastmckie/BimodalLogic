@@ -33,12 +33,12 @@ These active documentation and command files need `--divide` renamed to `--expan
 - This is the `/research --divide` feature for topic subdivision, not task expansion
 
 **2. Archive Files (Historical Records)**
-- All files under `.claude/specs/archive/` (189, 211, 229, 234, 325, 326, 328, 330, 332, 338, 385, etc.)
+- All files under `specs/archive/` (189, 211, 229, 234, 325, 326, 328, 330, 332, 338, 385, etc.)
 - Historical research and plans should not be modified
 
 **3. Task Metadata (Self-Referential)**
-- `.claude/specs/state.json` - Contains task 402's own description
-- `.claude/specs/TODO.md` - Contains task 402's own description
+- `specs/state.json` - Contains task 402's own description
+- `specs/TODO.md` - Contains task 402's own description
 - These describe the task itself, not the flag
 
 **4. Internal Operation Names (Not Flags)**
@@ -99,7 +99,7 @@ Line 161: [[ "$ARGUMENTS" =~ --divide ]] → [[ "$ARGUMENTS" =~ --expand ]]
 
 1. **Rename systematically**: Update all 8 files with the changes documented above
 2. **Preserve /research --divide**: The research command's subdivision feature remains unchanged
-3. **Don't modify archives**: Historical records in `.claude/specs/archive/` should remain as-is
+3. **Don't modify archives**: Historical records in `specs/archive/` should remain as-is
 4. **Verify consistency**: After changes, grep for `--divide` to ensure only research-related references remain
 
 ## References

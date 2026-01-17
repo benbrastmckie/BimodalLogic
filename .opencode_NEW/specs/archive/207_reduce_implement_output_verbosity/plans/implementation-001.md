@@ -13,7 +13,7 @@
 
 - **Created**: 2025-12-28
 - **Language**: markdown
-- **Research Input**: [.opencode/specs/207_reduce_implement_output_verbosity/reports/research-001.md]
+- **Research Input**: [specs/207_reduce_implement_output_verbosity/reports/research-001.md]
 - **Dependencies**: None
 - **Risk Level**: Low
 
@@ -37,7 +37,7 @@ Research completed 2025-12-28. Key findings:
 4. **Impact**: 95% context window reduction achievable (700 tokens → 35 tokens)
 5. **Effort**: 2-3 hours total (1.5h /implement, 1h lean-agent, 0.5h testing)
 
-Full research: `.opencode/specs/207_reduce_implement_output_verbosity/reports/research-001.md`
+Full research: `specs/207_reduce_implement_output_verbosity/reports/research-001.md`
 
 ---
 

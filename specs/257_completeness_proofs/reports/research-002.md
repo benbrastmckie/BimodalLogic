@@ -230,8 +230,8 @@ Tasks 260 and 261 provide valuable infrastructure but do not fundamentally chang
 
 ## References
 
-- Task 260 Summary: `.claude/specs/260_proof_search/summaries/implementation-summary-20260112.md`
-- Task 261 Summary: `.claude/specs/261_decidability/summaries/implementation-summary-20260112.md`
-- Previous Research: `.claude/specs/257_completeness_proofs/reports/research-001.md`
+- Task 260 Summary: `specs/260_proof_search/summaries/implementation-summary-20260112.md`
+- Task 261 Summary: `specs/261_decidability/summaries/implementation-summary-20260112.md`
+- Previous Research: `specs/257_completeness_proofs/reports/research-001.md`
 - Mathlib.Order.Zorn documentation
 - Modal Logic (Blackburn et al.), Chapter 4 (Canonical Models)

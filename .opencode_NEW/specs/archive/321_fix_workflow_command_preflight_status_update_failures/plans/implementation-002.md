@@ -19,7 +19,7 @@
 **Changes from Version 1**:
 1. **Integrated Task 320 Findings**: Incorporated research on postflight failures showing same root cause (delegation instructions not executed consistently)
 2. **Updated Failure Frequency**: Changed from "occasional" to "consistent" failures based on user observation
-3. **Added Error Logging**: All preflight/postflight failures now logged to `.opencode/specs/errors.state` for debugging
+3. **Added Error Logging**: All preflight/postflight failures now logged to `specs/errors.state` for debugging
 4. **Reduced Complexity**: Removed timeout protection phase, streamlined validation to surgical checkpoints only
 5. **Context Window Hypothesis**: Added investigation of why /plan works better (possibly due to context window priming from /research)
 6. **Unified Approach**: Treat preflight and postflight as same problem with same solution
@@ -52,7 +52,7 @@ Workflow commands (/research, /plan, /revise, /implement) are experiencing **con
 - Debug why preflight AND postflight instructions are not being executed consistently
 - Create standardized status marker convention file (`.opencode/context/system/status-markers.md`)
 - Add surgical verification checkpoints to confirm preflight/postflight execution
-- Implement error logging to `.opencode/specs/errors.state` for all failures
+- Implement error logging to `specs/errors.state` for all failures
 - Investigate context window hypothesis (why /plan works better)
 - Fix root cause with minimal complexity increase
 
@@ -70,14 +70,14 @@ Workflow commands (/research, /plan, /revise, /implement) are experiencing **con
 3. ALLOW: Minimal surgical verification checkpoints to confirm execution
 4. AVOID: Useless timeout protection that causes more issues than it solves
 5. REQUIRED: Create `.opencode/context/system/status-markers.md` for consistent status marker conventions
-6. REQUIRED: Log all failures to `.opencode/specs/errors.state` for debugging
+6. REQUIRED: Log all failures to `specs/errors.state` for debugging
 
 ### Definition of Done
 
 - [ ] Root cause of preflight/postflight non-execution identified and documented
 - [ ] Status marker convention file created at `.opencode/context/system/status-markers.md`
 - [ ] Surgical verification checkpoints added to confirm preflight/postflight execution
-- [ ] Error logging to `.opencode/specs/errors.state` implemented for all failures
+- [ ] Error logging to `specs/errors.state` implemented for all failures
 - [ ] Context window hypothesis investigated and documented
 - [ ] Preflight/postflight execution gap fixed in all 6 workflow subagents
 - [ ] All changes tested with at least one workflow command
@@ -111,7 +111,7 @@ This plan integrates findings from 2 research reports:
 2. **Fix delegation execution gap** with minimal complexity increase
 3. **Standardize status markers** via `.opencode/context/system/status-markers.md`
 4. **Add surgical verification** at critical checkpoints to confirm execution
-5. **Implement error logging** to `.opencode/specs/errors.state` for debugging
+5. **Implement error logging** to `specs/errors.state` for debugging
 6. **Investigate context window hypothesis** to understand why /plan works better
 7. **Maintain workflow speed** - no bloat, no unnecessary checks
 
@@ -227,7 +227,7 @@ This plan integrates findings from 2 research reports:
 
 ### Phase 2: Create Status Marker Convention File and Error Logging Infrastructure [NOT STARTED]
 
-**Objective**: Create `.opencode/context/system/status-markers.md` as single source of truth for status marker conventions, and implement error logging to `.opencode/specs/errors.state`
+**Objective**: Create `.opencode/context/system/status-markers.md` as single source of truth for status marker conventions, and implement error logging to `specs/errors.state`
 
 **Tasks**:
 1. **Create Status Marker Convention File**:
@@ -243,7 +243,7 @@ This plan integrates findings from 2 research reports:
    - Verify no inconsistencies between files
 
 2. **Implement Error Logging Infrastructure**:
-   - Create `.opencode/specs/errors.state` file with JSON lines format
+   - Create `specs/errors.state` file with JSON lines format
    - Define error log entry schema:
      ```json
      {
@@ -271,7 +271,7 @@ This plan integrates findings from 2 research reports:
 - Valid transitions documented
 - Cross-references added to state-management.md and status-transitions.md
 - No duplicate or conflicting definitions
-- `.opencode/specs/errors.state` created with proper schema
+- `specs/errors.state` created with proper schema
 - Error logging infrastructure ready for use
 - Documentation complete
 
@@ -377,11 +377,11 @@ This plan integrates findings from 2 research reports:
    # After subagent delegation, check if status was updated
    current_status=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-     .opencode/specs/state.json)
+     specs/state.json)
    
    if [[ "$current_status" != "researching" && "$current_status" != "researched" ]]; then
      # Log error to errors.state
-     echo "{\"timestamp\":\"$(date -Iseconds)\",\"error_type\":\"preflight_failure\",\"task_number\":$task_number,\"command\":\"/research\",\"subagent\":\"researcher\",\"step\":\"step_0_preflight\",\"delegation_target\":\"status-sync-manager\",\"error_message\":\"Preflight status update did not occur\",\"context\":{\"session_id\":\"$session_id\",\"expected_status\":\"researching\",\"actual_status\":\"$current_status\"}}" >> .opencode/specs/errors.state
+     echo "{\"timestamp\":\"$(date -Iseconds)\",\"error_type\":\"preflight_failure\",\"task_number\":$task_number,\"command\":\"/research\",\"subagent\":\"researcher\",\"step\":\"step_0_preflight\",\"delegation_target\":\"status-sync-manager\",\"error_message\":\"Preflight status update did not occur\",\"context\":{\"session_id\":\"$session_id\",\"expected_status\":\"researching\",\"actual_status\":\"$current_status\"}}" >> specs/errors.state
      
      # Fail fast
      echo "ERROR: Preflight verification failed - status not updated to [RESEARCHING]"
@@ -400,9 +400,9 @@ This plan integrates findings from 2 research reports:
      if [[ "$artifact_count" -gt 0 ]]; then
        # Verify first artifact is linked in TODO.md
        first_artifact=$(echo "$subagent_return" | jq -r '.artifacts[0].path')
-       if ! grep -q "$first_artifact" .opencode/specs/TODO.md; then
+       if ! grep -q "$first_artifact" specs/TODO.md; then
          # Log error to errors.state
-         echo "{\"timestamp\":\"$(date -Iseconds)\",\"error_type\":\"postflight_failure\",\"task_number\":$task_number,\"command\":\"/research\",\"subagent\":\"researcher\",\"step\":\"step_4_postflight\",\"delegation_target\":\"status-sync-manager\",\"error_message\":\"Artifact not linked in TODO.md\",\"context\":{\"session_id\":\"$session_id\",\"artifact_path\":\"$first_artifact\"}}" >> .opencode/specs/errors.state
+         echo "{\"timestamp\":\"$(date -Iseconds)\",\"error_type\":\"postflight_failure\",\"task_number\":$task_number,\"command\":\"/research\",\"subagent\":\"researcher\",\"step\":\"step_4_postflight\",\"delegation_target\":\"status-sync-manager\",\"error_message\":\"Artifact not linked in TODO.md\",\"context\":{\"session_id\":\"$session_id\",\"artifact_path\":\"$first_artifact\"}}" >> specs/errors.state
          
          # Fail fast
          echo "ERROR: Postflight verification failed - artifact not linked in TODO.md"
@@ -518,7 +518,7 @@ This plan integrates findings from 2 research reports:
 
 **Tasks**:
 1. **Document Root Cause Findings**:
-   - Create `.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/root-cause-analysis.md`
+   - Create `specs/321_fix_workflow_command_preflight_status_update_failures/root-cause-analysis.md`
    - Document what was found in Phase 1 investigation
    - Document context window hypothesis findings
    - Document what fix was applied and why it works
@@ -632,7 +632,7 @@ This plan integrates findings from 2 research reports:
    - Complete list of all markers and transitions
    - Usage guidelines
 
-2. **.opencode/specs/errors.state**
+2. **specs/errors.state**
    - Error log file for debugging preflight/postflight failures
    - JSON lines format for easy parsing
    - Contains all logged failures with context
@@ -659,7 +659,7 @@ This plan integrates findings from 2 research reports:
 ### Documentation Artifacts
 
 1. **Root Cause Analysis**:
-   - `.opencode/specs/321_fix_workflow_command_preflight_status_update_failures/root-cause-analysis.md`
+   - `specs/321_fix_workflow_command_preflight_status_update_failures/root-cause-analysis.md`
    - Findings from Phase 1 investigation
    - Context window hypothesis findings
    - Explanation of documentation-vs-execution gap

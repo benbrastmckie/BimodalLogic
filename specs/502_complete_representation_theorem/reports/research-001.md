@@ -219,7 +219,7 @@ The foundational work from Task 499 provides all necessary building blocks - the
 
 ## References
 
-1. **Task 499 Foundation**: `.claude/specs/499_review_metalogical_theorem_strategies/summaries/implementation-summary-20260114.md`
+1. **Task 499 Foundation**: `specs/499_review_metalogical_theorem_strategies/summaries/implementation-summary-20260114.md`
 2. **Canonical Models**: Blackburn et al., *Modal Logic*, Chapter 4
 3. **Compactness**: Standard translation approach (Blackburn et al., Section 3.2)
 4. **Fusion Transfer**: Kracht & Wolter, "Properties of independently axiomatizable bimodal logics" (JSL 2024)

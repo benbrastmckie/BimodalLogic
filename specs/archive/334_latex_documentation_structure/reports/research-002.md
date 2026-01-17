@@ -15,11 +15,11 @@
 **Sources/Inputs**:
 - docs/research/LAYER_EXTENSIONS.md (Overview section, lines 1-558)
 - docs/user-guide/ARCHITECTURE.md (Layer architecture specification)
-- .opencode/specs/334_latex_documentation_structure/reports/research-001.md (base research)
+- specs/334_latex_documentation_structure/reports/research-001.md (base research)
 - Logos/Core/Syntax/Formula.lean (Layer 0 implementation reference)
 
 **Artifacts**:
-- This supplemental research report: .opencode/specs/334_latex_documentation_structure/reports/research-002.md
+- This supplemental research report: specs/334_latex_documentation_structure/reports/research-002.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 

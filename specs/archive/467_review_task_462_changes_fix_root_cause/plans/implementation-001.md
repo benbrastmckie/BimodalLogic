@@ -5,7 +5,7 @@
 - **Effort**: 2 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md
+- **Research Inputs**: specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: meta
@@ -147,8 +147,8 @@ Key findings from research-001.md:
 
 ## Artifacts & Outputs
 
-- `.claude/specs/467_review_task_462_changes_fix_root_cause/plans/implementation-001.md` (this file)
-- `.claude/specs/467_review_task_462_changes_fix_root_cause/summaries/implementation-summary-YYYYMMDD.md` (on completion)
+- `specs/467_review_task_462_changes_fix_root_cause/plans/implementation-001.md` (this file)
+- `specs/467_review_task_462_changes_fix_root_cause/summaries/implementation-summary-YYYYMMDD.md` (on completion)
 
 ## Rollback/Contingency
 

@@ -126,7 +126,7 @@ Then add `@[irreducible]` at line 99.
 - [Typeclass Inference Performance (Issue #2055)](https://github.com/leanprover/lean4/issues/2055)
 - [Instance Synthesis Documentation](https://lean-lang.org/doc/reference/latest/Type-Classes/Instance-Synthesis/)
 - [Recursive Definitions in Lean](https://lean-lang.org/blog/2024-1-11-recursive-definitions-in-lean/)
-- [Parent Task 400 Research](.claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md)
+- [Parent Task 400 Research](specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md)
 
 ## Next Steps
 

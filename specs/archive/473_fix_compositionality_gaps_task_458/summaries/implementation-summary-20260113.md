@@ -108,7 +108,7 @@ This requires more extensive refactoring than originally anticipated.
 
 ## Related Files
 
-- `.claude/specs/473_fix_compositionality_gaps_task_458/reports/research-002.md` - Research on time-shift approach
-- `.claude/specs/473_fix_compositionality_gaps_task_458/plans/implementation-002.md` - Implementation plan v002
+- `specs/473_fix_compositionality_gaps_task_458/reports/research-002.md` - Research on time-shift approach
+- `specs/473_fix_compositionality_gaps_task_458/plans/implementation-002.md` - Implementation plan v002
 - `Theories/Bimodal/Semantics/WorldHistory.lean` - `time_shift` definition for infinite domain
 - `Theories/Bimodal/Semantics/Truth.lean` - `time_shift_preserves_truth` theorem

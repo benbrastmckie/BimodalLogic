@@ -12,8 +12,8 @@
   - .opencode/context/core/system/artifact-management.md (artifact patterns)
   - .opencode/context/core/system/state-management.md (state tracking)
   - .opencode/context/core/standards/plan.md (plan format)
-  - .opencode/specs/TODO.md (task 300 requirements)
-  - .opencode/specs/state.json (task metadata)
+  - specs/TODO.md (task 300 requirements)
+  - specs/state.json (task metadata)
 - **Artifacts**: reports/research-001.md
 - **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -63,8 +63,8 @@ The planner subagent (.opencode/agent/subagents/planner.md) implements a 8-step 
 ### Artifact Management Patterns
 
 Per artifact-management.md:
-- Research reports stored in: `.opencode/specs/{task_number}_{slug}/reports/research-NNN.md`
-- Plans stored in: `.opencode/specs/{task_number}_{slug}/plans/implementation-NNN.md`
+- Research reports stored in: `specs/{task_number}_{slug}/reports/research-NNN.md`
+- Plans stored in: `specs/{task_number}_{slug}/plans/implementation-NNN.md`
 - Plan versions increment with each revision (001, 002, 003, etc.)
 - Artifact links added to TODO.md via status-sync-manager
 
@@ -75,10 +75,10 @@ Per state.json schema (lines 283-308 in state.json):
 {
   "project_number": 259,
   "artifacts": [
-    ".opencode/specs/259_automation_tactics/reports/research-001.md",
-    ".opencode/specs/259_automation_tactics/plans/implementation-001.md"
+    "specs/259_automation_tactics/reports/research-001.md",
+    "specs/259_automation_tactics/plans/implementation-001.md"
   ],
-  "plan_path": ".opencode/specs/259_automation_tactics/plans/implementation-001.md",
+  "plan_path": "specs/259_automation_tactics/plans/implementation-001.md",
   "plan_metadata": {
     "phases": 6,
     "total_effort_hours": 20,
@@ -131,7 +131,7 @@ Per state.json schema (lines 283-308 in state.json):
   "research_integrated": true,
   "reports_integrated": [
     {
-      "path": ".opencode/specs/300_add_report_detection_to_planner/reports/research-001.md",
+      "path": "specs/300_add_report_detection_to_planner/reports/research-001.md",
       "integrated_in_plan_version": 1,
       "integrated_date": "2026-01-05"
     }
@@ -169,7 +169,7 @@ last_plan_path=$(jq -r '.active_projects[] | select(.project_number == 300) | .p
 last_plan_mtime=$(stat -c %Y "$last_plan_path")  # Unix timestamp
 
 # 2. Scan reports directory
-reports_dir=".opencode/specs/300_add_report_detection_to_planner/reports"
+reports_dir="specs/300_add_report_detection_to_planner/reports"
 for report in "$reports_dir"/research-*.md; do
   report_mtime=$(stat -c %Y "$report")
   
@@ -288,7 +288,7 @@ done
 last_plan_mtime=$(stat -c %Y "$last_plan_path" 2>/dev/null || echo 0)
 
 # Scan reports directory
-for report in .opencode/specs/${task_number}_*/reports/research-*.md; do
+for report in specs/${task_number}_*/reports/research-*.md; do
   [ -f "$report" ] || continue
   report_mtime=$(stat -c %Y "$report")
   
@@ -540,10 +540,10 @@ Update the following documentation files:
    - Plan metadata format (lines 6-29)
    - Plan structure requirements (lines 31-48)
 
-6. **.opencode/specs/TODO.md** (task 300, lines 136-163)
+6. **specs/TODO.md** (task 300, lines 136-163)
    - Task requirements and acceptance criteria
 
-7. **.opencode/specs/state.json** (task 300 metadata, lines 612-623)
+7. **specs/state.json** (task 300 metadata, lines 612-623)
    - Task metadata and current status
 
 ### Secondary Sources

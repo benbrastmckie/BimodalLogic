@@ -101,7 +101,7 @@ test_research_agent_integration() {
   assert_agent_invoked "researcher"
   
   # And: Research artifact created
-  assert_file_exists ".opencode/specs/247_*/reports/research-001.md"
+  assert_file_exists "specs/247_*/reports/research-001.md"
   
   # And: Status updated to [RESEARCHED]
   assert_status_equals 247 "RESEARCHED"
@@ -233,20 +233,20 @@ validate_stage7() {
   esac
   
   # Check 1: TODO.md updated with correct status
-  if ! grep -q "### ${task_number}.*\[${expected_status}\]" .opencode/specs/TODO.md; then
+  if ! grep -q "### ${task_number}.*\[${expected_status}\]" specs/TODO.md; then
     echo "    ERROR: TODO.md not updated with [${expected_status}]"
     return 1
   fi
   
   # Check 2: state.json updated
-  local state_status=$(jq -r ".tasks[] | select(.task_number == ${task_number}) | .status" .opencode/specs/state.json)
+  local state_status=$(jq -r ".tasks[] | select(.task_number == ${task_number}) | .status" specs/state.json)
   if [ "$state_status" != "${expected_status,,}" ]; then
     echo "    ERROR: state.json status is '${state_status}', expected '${expected_status,,}'"
     return 1
   fi
   
   # Check 3: Artifacts linked in TODO.md
-  if ! grep -A 20 "### ${task_number}\." .opencode/specs/TODO.md | grep -q "artifacts"; then
+  if ! grep -A 20 "### ${task_number}\." specs/TODO.md | grep -q "artifacts"; then
     echo "    ERROR: Artifacts not linked in TODO.md"
     return 1
   fi
@@ -258,7 +258,7 @@ validate_stage7() {
   fi
   
   # Check 5: Timestamp updated
-  if ! grep -A 20 "### ${task_number}\." .opencode/specs/TODO.md | grep -q "Completed:"; then
+  if ! grep -A 20 "### ${task_number}\." specs/TODO.md | grep -q "Completed:"; then
     echo "    ERROR: Completion timestamp not updated"
     return 1
   fi
@@ -765,14 +765,14 @@ ELSE:
 
 ## Artifacts Created
 
-- {Artifact type}: `.opencode/specs/{task_number}_{slug}/{path}/{filename}`
-- {Artifact type}: `.opencode/specs/{task_number}_{slug}/{path}/{filename}`
+- {Artifact type}: `specs/{task_number}_{slug}/{path}/{filename}`
+- {Artifact type}: `specs/{task_number}_{slug}/{path}/{filename}`
 
 ## Error Handling
 
 - Missing task number: "Error: Task number required. Usage: /{command_name} TASK_NUMBER [ARGUMENTS]"
 - Invalid task number: "Error: Task number must be an integer. Got: {input}"
-- Task not found: "Error: Task {task_number} not found in .opencode/specs/TODO.md"
+- Task not found: "Error: Task {task_number} not found in specs/TODO.md"
 
 ## Context Loading
 
@@ -1432,12 +1432,12 @@ done
    - Key Concepts: Coverage targets, lint compliance, performance benchmarks
 
 4. **Phase 1 Validation Report** (Task 244)
-   - Location: .opencode/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md
+   - Location: specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/validation-001.md
    - Relevance: Context window measurement, validation methodology
    - Key Concepts: Context usage tracking, validation gates
 
 5. **Phase 2 Validation Report** (Task 245)
-   - Location: .opencode/specs/245_phase2_core_architecture/reports/validation-001.md
+   - Location: specs/245_phase2_core_architecture/reports/validation-001.md
    - Relevance: Command migration patterns, orchestrator simplification
    - Key Concepts: Frontmatter delegation, workflow ownership
 

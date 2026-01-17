@@ -17,8 +17,8 @@
 ### Problem Statement
 
 The system currently maintains duplicate state information in two locations:
-1. Central state file: `.opencode/specs/state.json` (authoritative, queried by all commands)
-2. Project-level state files: `.opencode/specs/{number}_{slug}/state.json` (write-only, never read)
+1. Central state file: `specs/state.json` (authoritative, queried by all commands)
+2. Project-level state files: `specs/{number}_{slug}/state.json` (write-only, never read)
 
 Research findings confirm that project-level state.json files are redundant:
 - **Zero reads found**: No command or agent reads project-level state.json
@@ -287,17 +287,17 @@ Research findings confirm that project-level state.json files are redundant:
 **Test Scenario 1**: Create new research task
 - Command: `/research {new_task_number}`
 - Expected: Research report created, central state.json updated, TODO.md updated, NO project state.json created
-- Validation: Check `.opencode/specs/{number}_{slug}/` directory for absence of state.json
+- Validation: Check `specs/{number}_{slug}/` directory for absence of state.json
 
 **Test Scenario 2**: Create implementation plan
 - Command: `/plan {researched_task_number}`
 - Expected: Plan created, central state.json updated, TODO.md updated, NO project state.json created
-- Validation: Check `.opencode/specs/{number}_{slug}/` directory for absence of state.json
+- Validation: Check `specs/{number}_{slug}/` directory for absence of state.json
 
 **Test Scenario 3**: Execute implementation
 - Command: `/implement {planned_task_number}`
 - Expected: Implementation summary created, central state.json updated, TODO.md updated, NO project state.json created
-- Validation: Check `.opencode/specs/{number}_{slug}/` directory for absence of state.json
+- Validation: Check `specs/{number}_{slug}/` directory for absence of state.json
 
 **Test Scenario 4**: Rollback on failure
 - Simulate: Force status update failure (e.g., make TODO.md read-only)
@@ -309,7 +309,7 @@ Research findings confirm that project-level state.json files are redundant:
 1. **File count verification**:
    ```bash
    # Before migration: 62 project-level state.json files
-   find .opencode/specs -name "state.json" -type f | grep -v "^\.opencode/specs/state\.json$" | wc -l
+   find .opencode/specs -name "state.json" -type f | grep -v "^\specs/state\.json$" | wc -l
    
    # After migration: Same 62 files (backward-compatible)
    # After new task: Still 62 files (no new files created)
@@ -318,16 +318,16 @@ Research findings confirm that project-level state.json files are redundant:
 2. **Central state.json integrity**:
    ```bash
    # Verify central state.json is valid JSON
-   jq . .opencode/specs/state.json > /dev/null
+   jq . specs/state.json > /dev/null
    
    # Verify active_projects array populated
-   jq '.active_projects | length' .opencode/specs/state.json
+   jq '.active_projects | length' specs/state.json
    ```
 
 3. **TODO.md integrity**:
    ```bash
    # Verify TODO.md has correct status markers
-   grep -E "\[RESEARCHED\]|\[PLANNED\]|\[COMPLETED\]" .opencode/specs/TODO.md
+   grep -E "\[RESEARCHED\]|\[PLANNED\]|\[COMPLETED\]" specs/TODO.md
    ```
 
 ## Artifacts and Outputs
@@ -353,8 +353,8 @@ Research findings confirm that project-level state.json files are redundant:
 
 ### Supporting Artifacts
 
-- Implementation plan: `.opencode/specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md` (this file)
-- Research report: `.opencode/specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md` (already exists)
+- Implementation plan: `specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md` (this file)
+- Research report: `specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md` (already exists)
 
 ## Rollback/Contingency
 

@@ -837,8 +837,8 @@ The long-term solution involves **separating semantic theorems from metatheoreti
 
 ## References
 
-- Task 213 Research Report: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md`
-- Task 213 Implementation Summary: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/implementation-summary-20251228.md`
+- Task 213 Research Report: `specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md`
+- Task 213 Implementation Summary: `specs/213_resolve_is_valid_swap_involution_blocker/summaries/implementation-summary-20251228.md`
 - Truth.lean: `Logos/Core/Semantics/Truth.lean` (lines 1233-1256)
 - Soundness.lean: `Logos/Core/Metalogic/Soundness.lean`
 - Validity.lean: `Logos/Core/Semantics/Validity.lean`

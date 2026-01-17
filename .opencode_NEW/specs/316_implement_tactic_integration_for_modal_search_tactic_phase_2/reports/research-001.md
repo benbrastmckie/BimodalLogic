@@ -755,9 +755,9 @@ def bounded_search (Γ : Context) (φ : Formula) (depth : Nat) ...
 
 ### Research Documentation
 
-- `.opencode/specs/260_proof_search/reports/research-001.md` - Task 260 research
-- `.opencode/specs/260_proof_search/plans/implementation-001.md` - Task 260 plan
-- `.opencode/specs/260_proof_search/summaries/implementation-summary-20260105.md` - Task 260 status
+- `specs/260_proof_search/reports/research-001.md` - Task 260 research
+- `specs/260_proof_search/plans/implementation-001.md` - Task 260 plan
+- `specs/260_proof_search/summaries/implementation-summary-20260105.md` - Task 260 status
 - `docs/research/PROOF_SEARCH_AUTOMATION.md` - Proof search strategies
 - `docs/research/MODAL_TEMPORAL_PROOF_SEARCH.md` - Modal/temporal automation
 

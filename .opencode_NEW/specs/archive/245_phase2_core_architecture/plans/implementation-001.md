@@ -5,7 +5,7 @@
 - **Effort**: 30-35 hours
 - **Priority**: High
 - **Dependencies**: Task 244 (Phase 1 completed and validated)
-- **Research Inputs**: .opencode/specs/245_phase2_core_architecture/reports/research-001.md
+- **Research Inputs**: specs/245_phase2_core_architecture/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -390,7 +390,7 @@ Phase 2 applies validated patterns from Phase 1 to all workflow commands (/plan,
 ## Artifacts & Outputs
 
 **Plan Artifacts**:
-- .opencode/specs/245_phase2_core_architecture/plans/implementation-001.md (this file)
+- specs/245_phase2_core_architecture/plans/implementation-001.md (this file)
 
 **Backup Artifacts**:
 - .opencode/backups/phase2/plan.md.backup
@@ -434,8 +434,8 @@ Phase 2 applies validated patterns from Phase 1 to all workflow commands (/plan,
 - .opencode/agent/subagents/lean-implementation-agent.md (with YAML frontmatter)
 
 **Validation Artifacts**:
-- .opencode/specs/245_phase2_core_architecture/reports/validation-001.md
-- .opencode/specs/245_phase2_core_architecture/summaries/implementation-summary-YYYYMMDD.md
+- specs/245_phase2_core_architecture/reports/validation-001.md
+- specs/245_phase2_core_architecture/summaries/implementation-summary-YYYYMMDD.md
 
 ## Rollback/Contingency
 

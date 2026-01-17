@@ -397,7 +397,7 @@ This plan integrates findings from research-001.md which identified the exact fa
 
 ### Primary Artifacts
 
-1. **Investigation Report** (`.opencode/specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/reports/investigation-001.md`)
+1. **Investigation Report** (`specs/324_investigate_and_prove_root_cause_of_persistent_workflow_command_postflight_failures_after_task_321/reports/investigation-001.md`)
    - Size: ~800 lines, ~40KB
    - Sections: 9 major sections + 3 appendices
    - Evidence: 7 sources with line references

@@ -50,7 +50,7 @@ programmatic proof witness construction.
 - `Logos/Core/Automation.lean` - Updated documentation
 - `LogosTest/Core/Automation/TacticsTest.lean` - 24 new tests, fixed broken tests 51-58
 - `docs/project-info/TACTIC_REGISTRY.md` - Status updates
-- `.claude/specs/315_.../plans/implementation-001.md` - Phase completion markers
+- `specs/315_.../plans/implementation-001.md` - Phase completion markers
 
 ## Verification
 

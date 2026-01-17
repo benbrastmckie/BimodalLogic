@@ -13,7 +13,7 @@ The /meta command currently bypasses the task management system and directly imp
 3. Present task list for user confirmation
 4. Create tasks in TODO.md + state.json (NOT implement directly)
 
-The refactor follows patterns from OpenAgents meta.md and the existing refactor guide at `.claude/specs/meta-command-refactor-guide.md`.
+The refactor follows patterns from OpenAgents meta.md and the existing refactor guide at `specs/meta-command-refactor-guide.md`.
 
 ## Phases
 
@@ -234,10 +234,10 @@ The refactor follows patterns from OpenAgents meta.md and the existing refactor 
    # For each task identified:
 
    # 1. Get next task number
-   next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
+   next_num=$(jq -r '.next_project_number' specs/state.json)
 
    # 2. Create task directory
-   mkdir -p .claude/specs/{N}_{SLUG}
+   mkdir -p specs/{N}_{SLUG}
 
    # 3. Update state.json with dependencies
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
@@ -252,12 +252,12 @@ The refactor follows patterns from OpenAgents meta.md and the existing refactor 
         "created": $ts,
         "last_updated": $ts
       }] + .active_projects' \
-     .claude/specs/state.json > /tmp/state.json && \
-     mv /tmp/state.json .claude/specs/state.json
+     specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json specs/state.json
 
    # 4. Update TODO.md frontmatter
    sed -i 's/^next_project_number: [0-9]*/next_project_number: {NEW}/' \
-     .claude/specs/TODO.md
+     specs/TODO.md
 
    # 5. Add entry to TODO.md with dependencies
    ```
@@ -276,7 +276,7 @@ The refactor follows patterns from OpenAgents meta.md and the existing refactor 
 
 3. Document git commit pattern:
    ```bash
-   git add .claude/specs/
+   git add specs/
    git commit -m "meta: create {N} tasks for {domain}"
    ```
 
@@ -309,11 +309,11 @@ The refactor follows patterns from OpenAgents meta.md and the existing refactor 
 
    **High Priority**:
    - Task #{N1}: {title}
-     Path: .claude/specs/{N1}_{SLUG}/
+     Path: specs/{N1}_{SLUG}/
 
    **Medium Priority**:
    - Task #{N2}: {title} (depends on #{N1})
-     Path: .claude/specs/{N2}_{SLUG}/
+     Path: specs/{N2}_{SLUG}/
 
    **Next Steps**:
    1. Review tasks in TODO.md
@@ -356,7 +356,7 @@ The refactor follows patterns from OpenAgents meta.md and the existing refactor 
 - [ ] Tasks created with proper dependencies in state.json
 - [ ] Tasks linked properly in TODO.md
 - [ ] /meta --analyze still works (read-only analysis)
-- [ ] No direct file creation outside .claude/specs/
+- [ ] No direct file creation outside specs/
 
 ## Rollback Plan
 

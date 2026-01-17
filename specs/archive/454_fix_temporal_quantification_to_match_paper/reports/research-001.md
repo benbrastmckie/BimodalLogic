@@ -11,7 +11,7 @@
 - Lean implementation: `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Semantics/Truth.lean`
 - Lean implementation: `/home/benjamin/Projects/ProofChecker/Theories/Logos/SubTheories/Explanatory/Truth.lean`
 **Artifacts**:
-- This report: `.claude/specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md`
+- This report: `specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md`
 **Standards**: report-format.md, subagent-return.md
 
 ## Executive Summary

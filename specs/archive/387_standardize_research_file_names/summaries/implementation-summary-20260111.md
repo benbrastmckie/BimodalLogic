@@ -66,7 +66,7 @@ Standardized 12 research documentation files from inconsistent naming (ALL_CAPS 
 - Grep verification confirms no remaining ALL_CAPS references in active documentation
 - Grep verification confirms no remaining `-research` suffix references
 - All renames performed via `git mv` to preserve history
-- Archive directories (.claude/specs/archive/, .opencode/specs/archive/) intentionally unchanged
+- Archive directories (specs/archive/, specs/archive/) intentionally unchanged
 
 ## Notes
 

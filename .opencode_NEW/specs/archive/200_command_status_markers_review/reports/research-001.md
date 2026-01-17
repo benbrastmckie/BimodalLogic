@@ -795,7 +795,7 @@ Currently, [PARTIAL] is defined but has fewer examples than other completion mar
 ```markdown
 **Status**: [PARTIAL]
 **Started**: 2025-12-27
-- Implementation Summary: .opencode/specs/191.../summaries/implementation-summary.md
+- Implementation Summary: specs/191.../summaries/implementation-summary.md
 - Completed Phases: 1, 2
 - Remaining Phases: 3
 - Resume with: /implement 191

@@ -84,9 +84,9 @@ Task 237 successfully reduced context window bloat in workflow commands by 96KB 
 - `.opencode/command/revise.md` (task_extraction added)
 
 ### Status Updates
-- `.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md`
-- `.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/state.json`
-- `.opencode/specs/TODO.md`
+- `specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md`
+- `specs/237_investigate_fix_context_window_bloat_workflow_commands/state.json`
+- `specs/TODO.md`
 
 ## Testing Results
 

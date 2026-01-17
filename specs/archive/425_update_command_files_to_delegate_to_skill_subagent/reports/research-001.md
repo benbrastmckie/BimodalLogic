@@ -64,7 +64,7 @@ Tasks 409-414 established this delegation chain:
 **4. /task** - State management only
 - Purpose: CRUD operations on TODO.md and state.json
 - No heavy computation, no file exploration
-- Explicit constraint: "ONLY touches files in `.claude/specs/`"
+- Explicit constraint: "ONLY touches files in `specs/`"
 - Keep inline execution
 
 **5. /todo** - Archive operations
@@ -194,7 +194,7 @@ For each command update:
 
 - `.claude/skills/skill-lean-research/SKILL.md` - Thin wrapper pattern example
 - `.claude/agents/lean-research-agent.md` - Agent execution pattern
-- `.claude/specs/409_*/summaries/implementation-summary-20260112.md` - Task 409 implementation
+- `specs/409_*/summaries/implementation-summary-20260112.md` - Task 409 implementation
 - `.claude/CLAUDE.md` - Skill architecture documentation
 
 ## Next Steps

@@ -39,7 +39,7 @@ Establishes the use of Classical logic (including `noncomputable` definitions an
 ### ADR-004: Remove Project-Level State Files
 
 Documents the decision to remove project-level state tracking files in favor of centralized
-management through the `.claude/specs/` directory structure.
+management through the `specs/` directory structure.
 
 ## Creating New ADRs
 

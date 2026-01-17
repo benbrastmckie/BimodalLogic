@@ -7,7 +7,7 @@
 **Effort**: 2 hours  
 **Priority**: Medium  
 **Dependencies**: None  
-**Sources/Inputs**: .opencode/specs/changes-review-and-fixes-required.md  
+**Sources/Inputs**: specs/changes-review-and-fixes-required.md  
 **Artifacts**: research-001.md  
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -130,11 +130,11 @@ Should be:
 
 **todo.md line 16**:
 ```yaml
-- ".opencode/specs/state.json"       # State tracking (primary source for task scanning)
+- "specs/state.json"       # State tracking (primary source for task scanning)
 ```
 Should be:
 ```yaml
-- ".opencode/specs/state.json"  # State tracking
+- "specs/state.json"  # State tracking
 ```
 
 **review.md line 18**:
@@ -148,11 +148,11 @@ Should be:
 
 **review.md line 22**:
 ```yaml
-- ".opencode/specs/state.json"  # Primary source for next_project_number and task queries
+- "specs/state.json"  # Primary source for next_project_number and task queries
 ```
 Should be:
 ```yaml
-- ".opencode/specs/state.json"  # State tracking
+- "specs/state.json"  # State tracking
 ```
 
 **Why Remove**:
@@ -260,11 +260,11 @@ optimization:
 
 **Issue 4: Verbose Comment (line 16)**
 ```yaml
-- ".opencode/specs/state.json"       # State tracking (primary source for task scanning)
+- "specs/state.json"       # State tracking (primary source for task scanning)
 ```
 **Action**: Simplify to:
 ```yaml
-- ".opencode/specs/state.json"  # State tracking
+- "specs/state.json"  # State tracking
 ```
 
 #### Changes to Keep
@@ -303,11 +303,11 @@ optimization:
 
 **Issue 3: Verbose Comment (line 22)**
 ```yaml
-- ".opencode/specs/state.json"  # Primary source for next_project_number and task queries
+- "specs/state.json"  # Primary source for next_project_number and task queries
 ```
 **Action**: Simplify to:
 ```yaml
-- ".opencode/specs/state.json"  # State tracking
+- "specs/state.json"  # State tracking
 ```
 
 #### Changes to Keep

@@ -43,12 +43,12 @@ After researching the current /add command implementation, this revised plan sca
 
 This implementation plan is based on:
 
-1. **`.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-001.md`**
+1. **`specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-001.md`**
    - Atomic number reservation patterns (fetch-and-add)
    - CLI command design best practices (clig.dev)
    - State management consistency patterns
 
-2. **`.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-002.md`**
+2. **`specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-002.md`**
    - Current /add command implementation analysis
    - Gap analysis: current vs. desired behavior
    - Atomic numbering verification (already correct)
@@ -599,11 +599,11 @@ Verify: All tasks from file in TODO.md
 ### Research Reports
 
 1. **Atomic Number Reservation and CLI Command Design Best Practices**
-   - Path: `.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-001.md`
+   - Path: `specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-001.md`
    - Key Finding: Current atomic numbering already follows best practices (fetch-and-add pattern)
 
 2. **Current /add Implementation Analysis and Gap Analysis**
-   - Path: `.opencode/specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-002.md`
+   - Path: `specs/165_make_add_command_single_description_with_immediate_number_increment/reports/research-002.md`
    - Key Finding: Current implementation already supports single-description input and has intelligent features
 
 ### Key Insights

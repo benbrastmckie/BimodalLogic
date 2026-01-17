@@ -73,7 +73,7 @@ System-level update so `/task` auto-detects Lean tasks (research vs implementati
 - Dry-run demonstrates correct routing/validation without creating project directories or touching state.
 
 ## Research Inputs
-- `.opencode/specs/147_ensure_task_uses_lean_subagents_and_mcp_servers_correctly/reports/research-001.md`
+- `specs/147_ensure_task_uses_lean_subagents_and_mcp_servers_correctly/reports/research-001.md`
 
 ## Notes
 - Preserve lazy creation: no project root/subdirs until an artifact write succeeds; dry-run must keep numbering/state untouched.

@@ -52,7 +52,7 @@ Enhanced cross-references throughout the document to include new registries:
 
 ## Files Created
 
-- **.opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/summaries/implementation-summary-20251226.md**: This file
+- **specs/190_improve_maintenance_md_documentation_structure_and_content/summaries/implementation-summary-20251226.md**: This file
 
 ## Validation
 

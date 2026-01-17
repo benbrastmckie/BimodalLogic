@@ -124,8 +124,8 @@ Integrate Plausible property-based testing framework and implement comprehensive
 
 This plan is based on comprehensive research completed 2025-12-24:
 
-- **Main Report**: `.opencode/specs/174_property_based_testing/reports/research-001.md` (374 lines)
-- **Summary**: `.opencode/specs/174_property_based_testing/summaries/research-summary.md`
+- **Main Report**: `specs/174_property_based_testing/reports/research-001.md` (374 lines)
+- **Summary**: `specs/174_property_based_testing/summaries/research-summary.md`
 - **Detailed Findings**: `docs/research/property-based-testing-lean4.md` (986 lines)
 
 **Key Finding**: Plausible is the only mature property-based testing framework for Lean 4, with excellent integration, automatic derivation, and no external dependencies.
@@ -134,7 +134,7 @@ This plan is based on comprehensive research completed 2025-12-24:
 
 ## Full Plan
 
-See: `.opencode/specs/174_property_based_testing/plans/implementation-001.md`
+See: `specs/174_property_based_testing/plans/implementation-001.md`
 
 ---
 

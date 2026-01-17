@@ -196,5 +196,5 @@
 [2025-12-29 09:56:08] 
 [2025-12-29 09:56:08] [FAIL] Stage 7 reliability: 0% (significantly below 100% target)
 [2025-12-29 09:56:08] 
-[2025-12-29 09:56:08] Results saved to: /home/benjamin/Projects/ProofChecker/.opencode/specs/247_phase_4_testing_and_documentation/metrics/stage7-results-20251229_095607.json
-[2025-12-29 09:56:08] Log saved to: /home/benjamin/Projects/ProofChecker/.opencode/specs/247_phase_4_testing_and_documentation/logs/test-stage7-reliability-20251229_095607.log
+[2025-12-29 09:56:08] Results saved to: /home/benjamin/Projects/ProofChecker/specs/247_phase_4_testing_and_documentation/metrics/stage7-results-20251229_095607.json
+[2025-12-29 09:56:08] Log saved to: /home/benjamin/Projects/ProofChecker/specs/247_phase_4_testing_and_documentation/logs/test-stage7-reliability-20251229_095607.log

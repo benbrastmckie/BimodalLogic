@@ -9,15 +9,15 @@
 **Dependencies**: None
 
 **Sources/Inputs**:
-- Task 292 description in `.opencode/specs/TODO.md`
+- Task 292 description in `specs/TODO.md`
 - Task 281 research reports (previous $ARGUMENTS fix)
 - `.opencode/agent/orchestrator.md` (Stage 1 logic)
 - `.opencode/command/implement.md` (command specification)
 - `.opencode/context/core/standards/command-argument-handling.md`
-- `.opencode/specs/state.json` (task 259 validation)
+- `specs/state.json` (task 259 validation)
 
 **Artifacts**:
-- `.opencode/specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md`
+- `specs/292_diagnose_and_fix_implement_259_command_failure/reports/research-001.md`
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -354,7 +354,7 @@ DO NOT execute bash commands to extract it. Parse it logically as a string.
 
 ### Source 1: Task 281 Research Report 002
 
-**File**: `.opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md`
+**File**: `specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md`
 
 **Key Finding**: "The `/implement` command file has a typo in line 34 that says 'Parse task number or range from **arguments**' instead of 'from **$ARGUMENTS**'."
 

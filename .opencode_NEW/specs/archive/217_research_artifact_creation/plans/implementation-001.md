@@ -243,7 +243,7 @@ If Phase 3 finds more inconsistencies:
 ### Required Context Files
 - `.opencode/context/core/system/artifact-management.md` (authoritative limits)
 - `.opencode/context/core/standards/subagent-return-format.md` (return format)
-- `.opencode/specs/217_research_artifact_creation/reports/research-001.md` (gap analysis)
+- `specs/217_research_artifact_creation/reports/research-001.md` (gap analysis)
 
 ### Reference Files
 - `.opencode/agent/subagents/lean-implementation-agent.md` (validation pattern)

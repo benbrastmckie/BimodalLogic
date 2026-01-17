@@ -3,9 +3,9 @@
 **Task**: 314 - Conduct systematic review to complete context refactor plan aims
 **Date**: 2026-01-05
 **Reviewer**: Implementation Agent
-**Plan Reference**: .opencode/specs/context-refactor-plan.md
-**Implementation Plan**: .opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-002.md
-**Research Report**: .opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md
+**Plan Reference**: specs/context-refactor-plan.md
+**Implementation Plan**: specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/plans/implementation-002.md
+**Research Report**: specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md
 
 ---
 
@@ -325,11 +325,11 @@ This systematic review evaluates the current state of the opencode system agains
 
 **Documentation Created**:
 - ✅ .opencode/context/core/system/state-lookup.md (v1.1)
-- ✅ .opencode/specs/state-json-optimization-plan.md
-- ✅ .opencode/specs/state-json-phase2-optimization-plan.md
-- ✅ .opencode/specs/state-json-phase2-testing-guide.md
-- ✅ .opencode/specs/state-json-phase2-validation-summary.md
-- ✅ .opencode/specs/state-json-phase2-complete-summary.md
+- ✅ specs/state-json-optimization-plan.md
+- ✅ specs/state-json-phase2-optimization-plan.md
+- ✅ specs/state-json-phase2-testing-guide.md
+- ✅ specs/state-json-phase2-validation-summary.md
+- ✅ specs/state-json-phase2-complete-summary.md
 
 **Impact on Refactor**: state-lookup.md must be moved from system/ to orchestration/ during refactor
 

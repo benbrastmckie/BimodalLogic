@@ -3,7 +3,7 @@
 **Status**: Accepted  
 **Date**: 2025-12-28  
 **Deciders**: ProofChecker Development Team  
-**Related**: [Task 192](../../.opencode/specs/192_fix_generalized_necessitation_termination/), [NONCOMPUTABLE_GUIDE.md](../development/NONCOMPUTABLE_GUIDE.md)
+**Related**: [Task 192](../../specs/192_fix_generalized_necessitation_termination/), [NONCOMPUTABLE_GUIDE.md](../development/NONCOMPUTABLE_GUIDE.md)
 
 ---
 
@@ -262,7 +262,7 @@ Classical.propDecidable
 ### Internal Documentation
 
 - [NONCOMPUTABLE_GUIDE.md](../development/NONCOMPUTABLE_GUIDE.md) - Complete catalog and guidelines
-- [Task 192](../../.opencode/specs/192_fix_generalized_necessitation_termination/) - Fix noncomputable errors
+- [Task 192](../../specs/192_fix_generalized_necessitation_termination/) - Fix noncomputable errors
 - [Noncomputable Research](../research/noncomputable.md) - Comprehensive explanation
 - [Deduction Theorem Necessity](../research/deduction-theorem-necessity.md) - Detailed analysis
 

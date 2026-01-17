@@ -234,4 +234,4 @@ This provides clearer separation of concerns while maintaining all functionality
 - `.opencode/command/plan.md` - Simplified command (133 lines)
 - `.opencode/command/research.md` - Simplified command (144 lines)
 - `.opencode/command/implement.md` - Simplified command (141 lines)
-- `.opencode/specs/255_improve_opencode_system/summaries/implementation-summary-20251229-phase2-3.md` - This summary
+- `specs/255_improve_opencode_system/summaries/implementation-summary-20251229-phase2-3.md` - This summary

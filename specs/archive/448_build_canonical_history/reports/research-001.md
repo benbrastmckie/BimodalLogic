@@ -16,7 +16,7 @@
   - Task 447 implementation summary
   - Task 133 research-001.md (canonical history approach options)
   - implementation-002.md (Phase 5 plan)
-**Artifacts**: This report (.claude/specs/448_build_canonical_history/reports/research-001.md)
+**Artifacts**: This report (specs/448_build_canonical_history/reports/research-001.md)
 **Standards**: report-format.md, subagent-return.md, artifact-formats.md
 
 ## Executive Summary

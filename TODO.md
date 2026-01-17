@@ -30,7 +30,7 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 - **Description**: Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory.
 - **Research Findings**: Current implementation has solid foundations but suffers from organic growth without coherent architecture. Proposed restructuring includes: (1) Unified provability hierarchy, (2) Clear module boundaries, (3) Integration of completeness with decidability via FMP, (4) Context-based approach from Task 502.
 - **Artifacts**: 
-  - [Research Report](.claude/specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
+  - [Research Report](specs/505_bimodal_metalogic_restructuring/reports/research-001.md)
 - **Next Steps**: Run `/plan 505` to create implementation plan
 
 ### 1. Completeness Proofs
@@ -111,8 +111,8 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 - **Completed**: 2025-12-28
 - **Priority**: High
 - **Language**: markdown
-- **Plan**: [Implementation Plan](.opencode/specs/208_fix_lean_routing/plans/implementation-001.md)
-- **Implementation Summary**: [Summary](.opencode/specs/208_fix_lean_routing/summaries/implementation-summary-20251228.md)
+- **Plan**: [Implementation Plan](specs/208_fix_lean_routing/plans/implementation-001.md)
+- **Implementation Summary**: [Summary](specs/208_fix_lean_routing/summaries/implementation-summary-20251228.md)
 - **Files Affected**:
   - .opencode/command/research.md
   - .opencode/command/implement.md
@@ -138,7 +138,7 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
   - .opencode/agent/subagents/lean-research-agent.md
   - .opencode/agent/subagents/lean-implementation-agent.md
   - .opencode/context/common/standards/lean-tool-verification.md (new)
-  - .opencode/specs/monitoring/ (new directory structure)
+  - specs/monitoring/ (new directory structure)
 - **Description**: Design and implement a comprehensive monitoring and verification system to detect and validate that Lean-specific tools (lean-lsp-mcp, Loogle, LeanExplore, LeanSearch) are being correctly used by the appropriate commands and agents when processing Lean tasks. The system should provide visibility into tool usage patterns, detect routing errors, track tool availability issues, and identify opportunities for improvement. This includes creating verification methods, logging standards, monitoring dashboards, and automated health checks to ensure the system is working optimally.
 - **Acceptance Criteria**:
   - [ ] Verification method identified for detecting lean-lsp-mcp usage in /implement command for Lean tasks
@@ -163,10 +163,10 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 **Blocking**: None
 **Dependencies**: None
 **Research Artifacts**:
-  - Main Report: [.opencode/specs/212_research_lean_lsp_mcp_usage/reports/research-001.md]
-  - Summary: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md]
-**Plan**: [.opencode/specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md]
-**Implementation Summary**: [.opencode/specs/212_research_lean_lsp_mcp_usage/summaries/implementation-summary-20251228.md]
+  - Main Report: [specs/212_research_lean_lsp_mcp_usage/reports/research-001.md]
+  - Summary: [specs/212_research_lean_lsp_mcp_usage/summaries/research-summary.md]
+**Plan**: [specs/212_research_lean_lsp_mcp_usage/plans/implementation-001.md]
+**Implementation Summary**: [specs/212_research_lean_lsp_mcp_usage/summaries/implementation-summary-20251228.md]
 **Plan Summary**: Implementation plan with 5 phases (14 hours total). Phase 1: Create MCP Client Wrapper (4h). Phase 2: Update Lean Agents (3h). Phase 3: Enhance Documentation (2.5h). Phase 4: Integration Tests (3h). Phase 5: Validation and Refinement (1.5h). Integrates research findings on lean-lsp-mcp usage gaps and MCP client infrastructure requirements.
 
 **Description**: Research current usage patterns of lean-lsp-mcp in the Lean implementation agent and identify opportunities for improvement. Analyze how the agent leverages LSP capabilities for code navigation, type information, and proof assistance. Provide recommendations for enhanced integration.
@@ -239,11 +239,11 @@ Keeps implementation status and registries synchronized, reducing drift and miss
 - **Blocking**: None
 - **Dependencies**: None
 - **Research Artifacts**:
-  - Main Report: [.opencode/specs/211_standardize_command_lifecycle_procedures/reports/research-001.md]
-  - Summary: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md]
-- **Plan**: [Implementation Plan](.opencode/specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md)
+  - Main Report: [specs/211_standardize_command_lifecycle_procedures/reports/research-001.md]
+  - Summary: [specs/211_standardize_command_lifecycle_procedures/summaries/research-summary.md]
+- **Plan**: [Implementation Plan](specs/211_standardize_command_lifecycle_procedures/plans/implementation-001.md)
 - **Plan Summary**: 4-phase implementation (18 hours). Phase 1: Create command-lifecycle.md with 8-stage pattern (4h). Phase 2: Update 4 command files with lifecycle references (6h). Phase 3: Update agent files with summary validation (4h). Phase 4: Testing and validation (4h, deferred). Achieves 39% duplication reduction (1,961 → 1,200 lines).
-- **Implementation Summary**: [.opencode/specs/211_standardize_command_lifecycle_procedures/summaries/implementation-summary-20251228.md]
+- **Implementation Summary**: [specs/211_standardize_command_lifecycle_procedures/summaries/implementation-summary-20251228.md]
 - **Implementation Artifacts**:
   - .opencode/context/common/workflows/command-lifecycle.md
   - .opencode/command/research.md
@@ -298,11 +298,11 @@ Provides single source of truth for command lifecycle pattern, reduces documenta
 - **Blocking**: None
 - **Dependencies**: Task 217 (completed)
 - **Research Artifacts**:
-  - Main Report: [.opencode/specs/220_metadata_passing_compliance_verification/reports/research-001.md]
-- **Plan**: [Implementation Plan](.opencode/specs/220_metadata_passing_compliance_verification/plans/implementation-001.md)
+  - Main Report: [specs/220_metadata_passing_compliance_verification/reports/research-001.md]
+- **Plan**: [Implementation Plan](specs/220_metadata_passing_compliance_verification/plans/implementation-001.md)
 - **Plan Summary**: 6-phase implementation (2.5 hours). Phase 1: Complete lean-research-agent documentation review (0.5h). Phase 2: Complete lean-implementation-agent documentation review (0.5h). Phase 3: Enhance planner validation (0.25h). Phase 4: Enhance task-executor error messages (0.25h). Phase 5: Create compliance verification report (0.5h). Phase 6: Final validation and documentation (0.5h). Achieves 100% compliance across all 10 files (up from 94%).
-- **Implementation Summary**: [.opencode/specs/220_metadata_passing_compliance_verification/summaries/implementation-summary-20251228.md]
-- **Compliance Report**: [.opencode/specs/220_metadata_passing_compliance_verification/summaries/compliance-verification-report.md]
+- **Implementation Summary**: [specs/220_metadata_passing_compliance_verification/summaries/implementation-summary-20251228.md]
+- **Compliance Report**: [specs/220_metadata_passing_compliance_verification/summaries/compliance-verification-report.md]
 - **Implementation Artifacts**:
   - .opencode/agent/subagents/lean-research-agent.md (fixed documentation)
   - .opencode/agent/subagents/lean-implementation-agent.md (fixed examples)
@@ -343,28 +343,28 @@ Ensures all commands and agents fully comply with metadata passing standards for
 - **Blocking**: None
 - **Dependencies**: None
 - **Research Artifacts**:
-  - Main Report: [.opencode/specs/222_investigate_artifact_path_errors/reports/research-001.md]
-- **Plan**: [Implementation Plan](.opencode/specs/222_investigate_artifact_path_errors/plans/implementation-001.md)
+  - Main Report: [specs/222_investigate_artifact_path_errors/reports/research-001.md]
+- **Plan**: [Implementation Plan](specs/222_investigate_artifact_path_errors/plans/implementation-001.md)
 - **Plan Summary**: 6-phase implementation (3 hours). Phase 1: Fix lean-research-agent.md path pattern (0.5h). Phase 2: Migrate project 213 test migration (0.5h). Phase 3: Migrate projects 215 and 218 (0.5h). Phase 4: Update state.json references (0.5h). Phase 5: Cleanup and verification (0.5h). Phase 6: Integration test and documentation (0.5h). Fixes 4 path patterns in lean-research-agent.md and migrates 3 misplaced projects.
-- **Implementation Summary**: [.opencode/specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md]
+- **Implementation Summary**: [specs/222_investigate_artifact_path_errors/summaries/implementation-summary-20251228.md]
 - **Implementation Artifacts**:
   - .opencode/agent/subagents/lean-research-agent.md (fixed 4 path patterns)
-  - .opencode/specs/213_resolve_is_valid_swap_involution_blocker/ (migrated from /specs/)
-  - .opencode/specs/215_fix_todo_task_removal/ (migrated from /specs/)
-  - .opencode/specs/218_fix_lean_lsp_mcp_integration/ (migrated from /specs/)
+  - specs/213_resolve_is_valid_swap_involution_blocker/ (migrated from /specs/)
+  - specs/215_fix_todo_task_removal/ (migrated from /specs/)
+  - specs/218_fix_lean_lsp_mcp_integration/ (migrated from /specs/)
   - TODO.md (updated artifact links for task 213)
 
 **Files Affected**:
 - .opencode/agent/subagents/lean-research-agent.md
 - TODO.md
-- .opencode/specs/state.json
+- specs/state.json
 
 **Description**:
-Fixed artifact path creation errors where Lean research tasks created artifacts in `/specs/` instead of `/.opencode/specs/`. Root cause: 4 path patterns in lean-research-agent.md missing `.opencode/` prefix. Migrated 3 affected projects (213, 215, 218) to correct location and updated all artifact references. All 6 implementation phases completed successfully.
+Fixed artifact path creation errors where Lean research tasks created artifacts in `/specs/` instead of `/specs/`. Root cause: 4 path patterns in lean-research-agent.md missing `.opencode/` prefix. Migrated 3 affected projects (213, 215, 218) to correct location and updated all artifact references. All 6 implementation phases completed successfully.
 
 **Acceptance Criteria**:
-- [x] lean-research-agent.md uses correct `.opencode/specs/` path pattern (4 patterns fixed)
-- [x] All 3 misplaced projects migrated to `.opencode/specs/`
+- [x] lean-research-agent.md uses correct `specs/` path pattern (4 patterns fixed)
+- [x] All 3 misplaced projects migrated to `specs/`
 - [x] TODO.md artifact links updated and verified working
 - [x] state.json artifact paths updated (no changes needed - already correct)
 - [x] Empty /specs/ directory removed
@@ -372,7 +372,7 @@ Fixed artifact path creation errors where Lean research tasks created artifacts 
 - [x] Implementation summary created
 
 **Impact**:
-Ensures all future Lean research tasks create artifacts in correct `.opencode/specs/` location. Fixes 3 existing projects with misplaced artifacts. Prevents future path confusion and maintains consistent artifact organization across all workflow commands.
+Ensures all future Lean research tasks create artifacts in correct `specs/` location. Fixes 3 existing projects with misplaced artifacts. Prevents future path confusion and maintains consistent artifact organization across all workflow commands.
 
 ---
 
@@ -384,8 +384,8 @@ Ensures all future Lean research tasks create artifacts in correct `.opencode/sp
 - **Priority**: Medium
 - **Language**: general
 - **Research Artifacts**:
-  - Main Report: [.opencode/specs/224_configure_opencode_default_agent/reports/research-001.md]
-- **Plan**: [.opencode/specs/224_configure_opencode_default_agent/plans/implementation-001.md]
+  - Main Report: [specs/224_configure_opencode_default_agent/reports/research-001.md]
+- **Plan**: [specs/224_configure_opencode_default_agent/plans/implementation-001.md]
 - **Description**: Research how to configure OpenCode to start in Orchestrator mode by default or automatically switch agent modes when workflow commands are executed. Analyzed OpenCode agent system, command routing, and identified 4 potential solutions. Recommended solution: Add "default_agent": "orchestrator" to opencode.json configuration (minimal disruption, follows OpenCode conventions).
 - **Acceptance Criteria**:
   - [x] OpenCode agent system architecture analyzed
@@ -406,9 +406,9 @@ Ensures all future Lean research tasks create artifacts in correct `.opencode/sp
 **Blocking**: None
 **Dependencies**: None
 **Language**: lean
-**Research**: [Research Report](.opencode/specs/172_documentation/reports/research-001.md)
+**Research**: [Research Report](specs/172_documentation/reports/research-001.md)
 **Research Summary**: Current state shows 98% module-level coverage but only 47% declaration-level coverage. Critical gaps identified in 4 files (Tactics.lean, Truth.lean, Propositional.lean, Derivation.lean). Recommended tools: doc-gen4 for centralized API reference, linters for quality enforcement. Revised effort estimate: 30 hours (up from 18 hours).
-**Plan**: [Implementation Plan](.opencode/specs/172_documentation/plans/implementation-001.md)
+**Plan**: [Implementation Plan](specs/172_documentation/plans/implementation-001.md)
 **Plan Summary**: 5-phase implementation plan (30 hours total). Phase 1: Infrastructure setup with doc-gen4 and linters (3h). Phase 2: Critical gaps - Tactics, Truth, Propositional, Derivation (12h). Phase 3: Moderate gaps - TaskModel, ModalS4, ModalS5 (4.5h). Phase 4: Minor gaps - 18 remaining files (9h). Phase 5: Quality assurance and API reference generation (1.5h). Includes build blocker fixes for Truth.lean and DeductionTheorem.lean.
 
 **Files Affected**:
@@ -440,11 +440,11 @@ Provides complete API documentation for all Logos modules, improving usability a
 - **Blocking**: 173
 - **Dependencies**: None
 - **Research Artifacts**:
-  - Main Report: [.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md]
-  - Summary: [.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md]
-- **Plan**: [.opencode/specs/183_deduction_theorem_build_errors/plans/implementation-002.md]
+  - Main Report: [specs/183_deduction_theorem_build_errors/reports/research-001.md]
+  - Summary: [specs/183_deduction_theorem_build_errors/summaries/research-summary.md]
+- **Plan**: [specs/183_deduction_theorem_build_errors/plans/implementation-002.md]
 - **Plan Summary**: Single-phase implementation (30 minutes). Replace 3 `.elim` patterns with idiomatic `by_cases` tactic at lines 256, 369, 376. Purely syntactic fix following proven patterns from Soundness.lean and Truth.lean. Very low risk - no logic changes, only tactic mode syntax.
-- **Implementation Summary**: [.opencode/specs/183_deduction_theorem_build_errors/summaries/implementation-summary-20251228.md]
+- **Implementation Summary**: [specs/183_deduction_theorem_build_errors/summaries/implementation-summary-20251228.md]
 - **Files Affected**:
   - Logos/Core/Metalogic/DeductionTheorem.lean
 - **Description**: Fix 3 pre-existing build errors in DeductionTheorem.lean that are blocking compilation of all test files including the new integration tests from task 173. These errors prevent verification that the 106 new integration tests (82% coverage) actually compile and pass. Errors: Line 255 (Decidable typeclass instance stuck), Line 297 (no goals to be solved), Line 371 (Decidable typeclass instance stuck).
@@ -479,9 +479,9 @@ Provides complete API documentation for all Logos modules, improving usability a
 **Dependencies**: None
 **Language**: lean
 **Research Artifacts**:
-  - Main Report: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md]
-  - Summary: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md]
-**Plan**: [.opencode/specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-002.md]
+  - Main Report: [specs/213_resolve_is_valid_swap_involution_blocker/reports/research-001.md]
+  - Summary: [specs/213_resolve_is_valid_swap_involution_blocker/summaries/research-summary.md]
+**Plan**: [specs/213_resolve_is_valid_swap_involution_blocker/plans/implementation-002.md]
 **Plan Summary**: Revised implementation plan (6 hours total) with usage context verification. Phase 1: Remove unprovable theorem (0.5h). Phase 2: Add provable theorem with usage verification (2.5h). Phase 3: Update temporal_duality case with type verification (1.5h). Phase 4: Build verification (1h). Phase 5: Documentation updates (1h). Verified that proposed solution matches usage site requirements at Truth.lean line 1226-1235.
 
 **Files Affected**:
@@ -551,9 +551,9 @@ Unblocks task 173 (integration tests) and task 185 (test helper API fixes). Crit
 **Dependencies**: Task 213 (blocker identified)
 **Language**: lean
 **Research Artifacts**:
-  - Main Report: [.opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md]
-  - Summary: [.opencode/specs/209_research_lean4_involution_techniques/summaries/research-summary.md]
-**Implementation Summary**: [.opencode/specs/209_research_lean4_involution_techniques/summaries/implementation-summary-20251228.md]
+  - Main Report: [specs/209_research_lean4_involution_techniques/reports/research-001.md]
+  - Summary: [specs/209_research_lean4_involution_techniques/summaries/research-summary.md]
+**Implementation Summary**: [specs/209_research_lean4_involution_techniques/summaries/implementation-summary-20251228.md]
 
 **Files Affected**:
 - Logos/Core/Syntax/Formula.lean (added @[simp] attribute to swap_past_future_involution)
@@ -587,7 +587,7 @@ Research completed and identified that the theorem is fundamentally unprovable. 
 **Dependencies**: 212 (completed)
 **Language**: python
 **Research Artifacts**:
-  - Main Report: [.opencode/specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
+  - Main Report: [specs/218_fix_lean_lsp_mcp_integration/reports/research-002.md]
 **Research Findings** (2025-12-28): CRITICAL DISCOVERY: OpenCode has native MCP support via opencode.json configuration, NOT .mcp.json. Task 212's custom Python MCP client approach is architecturally incompatible - OpenCode agents use natural language tool instructions, not Python imports. The ModuleNotFoundError is a symptom of wrong architectural approach, not missing __init__.py files. Solution requires complete pivot from Python-based integration to configuration-based integration: (1) Create opencode.json with lean-lsp-mcp server configuration, (2) Update lean-implementation-agent.md to use natural language MCP tool instructions instead of Python imports, (3) Remove custom MCP client from task 212 (architecturally incompatible). Proper approach enables 15+ lean-lsp-mcp tools (compile, check-proof, search, etc.) via native OpenCode MCP bridge. Previous plan obsolete - new configuration-based approach estimated 1-2 hours.
 
 **Files Affected**:
@@ -622,10 +622,10 @@ CRITICAL ARCHITECTURAL CORRECTION: Pivots from incompatible custom Python client
 **Dependencies**: 213 (circular dependency analysis)
 **Language**: lean
 **Research Artifacts**:
-  - Main Report: [.opencode/specs/219_restructure_module_hierarchy/reports/research-001.md]
-  - Summary: [.opencode/specs/219_restructure_module_hierarchy/summaries/research-summary.md]
-**Plan**: [.opencode/specs/219_restructure_module_hierarchy/plans/implementation-001.md]
-**Implementation Summary**: [.opencode/specs/219_restructure_module_hierarchy/summaries/implementation-summary-20251228.md]
+  - Main Report: [specs/219_restructure_module_hierarchy/reports/research-001.md]
+  - Summary: [specs/219_restructure_module_hierarchy/summaries/research-summary.md]
+**Plan**: [specs/219_restructure_module_hierarchy/plans/implementation-001.md]
+**Implementation Summary**: [specs/219_restructure_module_hierarchy/summaries/implementation-summary-20251228.md]
 
 **Files Created**:
 - Logos/Core/Metalogic/SoundnessLemmas.lean (706 lines)
@@ -670,8 +670,8 @@ CRITICAL STRUCTURAL IMPROVEMENT: Eliminates circular dependency blocking soundne
 **Dependencies**: None
 **Language**: markdown
 **Research Artifacts**:
-  - Main Report: [.opencode/specs/210_fix_lean_subagents/reports/research-001.md]
-  - Summary: [.opencode/specs/210_fix_lean_subagents/summaries/research-summary.md]
+  - Main Report: [specs/210_fix_lean_subagents/reports/research-001.md]
+  - Summary: [specs/210_fix_lean_subagents/summaries/research-summary.md]
 
 **Files Affected**:
 - .opencode/agent/subagents/lean-research-agent.md
@@ -703,7 +703,7 @@ Ensures Lean subagents properly maintain TODO.md, state.json, and artifact files
 **Blocking**: Task 173 (integration tests)
 **Dependencies**: Task 183, Task 184
 **Language**: lean
-**Research**: [Research Report](.opencode/specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md)
+**Research**: [Research Report](specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md)
 
 **Files Affected**:
 - `LogosTest/Core/Integration/Helpers.lean` (lines 126, 131, 129)
@@ -783,14 +783,14 @@ Ensures that the entire codebase is compatible with the refactored `Context` mod
 **Priority**: Medium
 **Blocking**: None
 **Dependencies**: None
-**Artifacts**: [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md), [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md), [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/summaries/implementation-summary-20251222.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/summaries/implementation-summary-20251222.md)
+**Artifacts**: [specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md](specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md), [specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md](specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/reports/research-001.md), [specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/summaries/implementation-summary-20251222.md](specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/summaries/implementation-summary-20251222.md)
 
 **Files Affected**:
 - `Logos/Core/Automation/ProofSearch.lean`
 - `LogosTest/Core/Automation/ProofSearchTest.lean`
 
 **Description**:
-Implement bounded search driver with depth/visit limits, cache/visited threading, and structural axiom matching for all 14 schemas to replace stubs and enable basic proof search execution. Lean intent true; plan ready at [.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md](.opencode/specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md).
+Implement bounded search driver with depth/visit limits, cache/visited threading, and structural axiom matching for all 14 schemas to replace stubs and enable basic proof search execution. Lean intent true; plan ready at [specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md](specs/126_implement_bounded_search_and_matches_axiom_in_proofsearch/plans/implementation-001.md).
 
 **Acceptance Criteria**:
 - [x] `bounded_search` implemented with depth and visit limits.
@@ -813,7 +813,7 @@ Enables the first working path for automated proof search with termination guard
 **Priority**: Medium
 **Language**: lean
 **Research Artifacts**:
-  - Main Report: [.opencode/specs/259_automation_tactics/reports/research-001.md]
+  - Main Report: [specs/259_automation_tactics/reports/research-001.md]
 
 **Description**: Implement the remaining planned tactics for TM logic to support easier proof construction. Research completed 2026-01-04 found 10/12 tactics fully implemented (83% complete), 2 tactics with infrastructure ready but delegating to tm_auto. Aesop integration functional with 2 noncomputable errors. ProofSearch.lean provides production-ready bounded search infrastructure (461 lines). Revised effort estimate: 17-23 hours (down from 40-60 hours).
 
@@ -878,8 +878,8 @@ Enables the first working path for automated proof search with termination guard
 **Blocking**: None
 **Dependencies**: Tasks 126, 127 (completed)
 **Language**: lean
-**Plan**: [Implementation Plan](.opencode/specs/177_examples_update/plans/implementation-001.md)
-**Summary**: [Implementation Summary](.opencode/specs/177_examples_update/summaries/implementation-summary-20251225.md)
+**Plan**: [Implementation Plan](specs/177_examples_update/plans/implementation-001.md)
+**Summary**: [Implementation Summary](specs/177_examples_update/summaries/implementation-summary-20251225.md)
 
 **Files Modified**:
 - `Archive/ModalProofs.lean` (241 → 346 lines, +105)
@@ -995,8 +995,8 @@ Ensures /review command automatically maintains registry consistency through wor
 **Blocking**: None
 **Dependencies**: None
 **Language**: lean
-**Plan**: [Implementation Plan](.opencode/specs/174_property_based_testing/plans/implementation-001.md)
-**Summary**: [Implementation Summary](.opencode/specs/174_property_based_testing/summaries/implementation-summary-20251225.md)
+**Plan**: [Implementation Plan](specs/174_property_based_testing/plans/implementation-001.md)
+**Summary**: [Implementation Summary](specs/174_property_based_testing/summaries/implementation-summary-20251225.md)
 
 **Files Affected**:
 - `LogosTest/Core/Property/Generators.lean`
@@ -1060,8 +1060,8 @@ Provides clear documentation for a core component of the syntax package, improvi
 **Superseded By**: Task 231
 **Abandonment Reason**: Root cause analysis was incorrect. Research concluded orchestrator bypasses commands, but investigation revealed commands ARE loaded and executed - the issue is Claude skipping Stage 7 (Postflight) within command execution. Task 231 addresses the correct root cause with proper fixes.
 **Research Artifacts**:
-  - Main Report: [.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
-**Plan**: [Implementation Plan](.opencode/specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md)
+  - Main Report: [specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/reports/research-001.md]
+**Plan**: [Implementation Plan](specs/229_review_and_optimize_orchestrator_command_integration_for_context_efficiency/plans/implementation-001.md)
 **Plan Summary**: 7-phase implementation plan (6 hours total). Phase 1: Audit command invocability (0.5h). Phase 2: Reduce orchestrator context to 3 core files (0.5h). Phase 3: Refactor Step 7 RouteToCommand (1.5h). Phase 4: Refactor Step 4 PrepareRouting to target commands (1h). Phase 5: Simplify/remove Step 3 CheckLanguage (0.5h). Phase 6: Testing and validation (1.5h). Phase 7: Documentation updates (0.5h). Fixes critical architectural flaw where orchestrator bypasses commands causing 100% workflow failure and 60-70% context bloat.
 
 **Files Affected**:
@@ -1105,7 +1105,7 @@ CRITICAL: Resolves the root cause of why all workflow commands fail to update TO
 **Blocking**: None
 **Dependencies**: None
 **Language**: markdown
-**Plan**: [Implementation Plan](.opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md)
+**Plan**: [Implementation Plan](specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md)
 
 **Files Affected**:
 - `Documentation/ProjectInfo/MAINTENANCE.md`

@@ -207,7 +207,7 @@ During use case identification, explicitly ask about:
 ## References
 
 - `/home/benjamin/Projects/OpenAgents/.opencode/command/meta.md` - OpenAgents meta command
-- `.claude/specs/meta-command-refactor-guide.md` - Existing refactor guide
+- `specs/meta-command-refactor-guide.md` - Existing refactor guide
 - `.claude/context/project/meta/interview-patterns.md` - Interview patterns documentation
 
 ## Next Steps

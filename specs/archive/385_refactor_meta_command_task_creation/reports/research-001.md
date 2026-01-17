@@ -6,7 +6,7 @@
 
 ## Summary
 
-The `/meta` command currently bypasses the task management system and directly implements changes to `.claude/` files. A comprehensive refactor guide already exists at `.claude/specs/meta-command-refactor-guide.md` that documents the required behavior. The current `meta.md` command file has not been updated to follow this guide, leading to the problematic behavior observed in the user's recent execution.
+The `/meta` command currently bypasses the task management system and directly implements changes to `.claude/` files. A comprehensive refactor guide already exists at `specs/meta-command-refactor-guide.md` that documents the required behavior. The current `meta.md` command file has not been updated to follow this guide, leading to the problematic behavior observed in the user's recent execution.
 
 ## Findings
 
@@ -28,13 +28,13 @@ Evidence from `.claude/output/meta.md`:
 
 ### 2. Existing Refactor Guide (Solution Blueprint)
 
-A comprehensive guide exists at `.claude/specs/meta-command-refactor-guide.md` that was never applied:
+A comprehensive guide exists at `specs/meta-command-refactor-guide.md` that was never applied:
 
 **Key Requirements from Guide**:
 1. **FORBIDDEN**: Direct creation of commands, skills, rules, context files
 2. **FORBIDDEN**: Direct modification of CLAUDE.md or ARCHITECTURE.md
 3. **REQUIRED**: All work tracked via tasks in TODO.md + state.json
-4. **REQUIRED**: Plans in `.claude/specs/{N}_{SLUG}/plans/`
+4. **REQUIRED**: Plans in `specs/{N}_{SLUG}/plans/`
 
 **Correct Stage Structure**:
 - Stages 1-5: Interview/Analysis (unchanged)
@@ -87,7 +87,7 @@ This tool is currently not listed in meta.md's allowed-tools but should be added
 
 ### 1. Replace Current meta.md
 
-Apply the refactor guide from `.claude/specs/meta-command-refactor-guide.md`:
+Apply the refactor guide from `specs/meta-command-refactor-guide.md`:
 - Replace Stage 7 (Generation) with Task Creation
 - Add explicit FORBIDDEN/REQUIRED constraints at top
 - Add AskUserQuestion to allowed-tools
@@ -136,7 +136,7 @@ Task 306 is a duplicate with missing artifacts. Options:
 ## References
 
 - `.claude/commands/meta.md` - Current command file
-- `.claude/specs/meta-command-refactor-guide.md` - Comprehensive refactor guide
+- `specs/meta-command-refactor-guide.md` - Comprehensive refactor guide
 - `.claude/context/project/meta/interview-patterns.md` - Interview patterns
 - `.claude/commands/task.md` - Task --divide pattern for reference
 - `.claude/output/meta.md` - Evidence of problematic behavior

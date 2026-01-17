@@ -102,7 +102,7 @@ Example structure from `bimodal-notation.sty`:
 
 Documentation exists in:
 - `latex/README.md` - Comprehensive build and usage docs (195 lines)
-- Task implementation summaries in `.claude/specs/`
+- Task implementation summaries in `specs/`
 
 Documentation missing:
 - `docs/Development/` has no LaTeX-specific standards document

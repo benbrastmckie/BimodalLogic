@@ -5,7 +5,7 @@
 - **Effort**: 3 hours
 - **Priority**: High
 - **Dependencies**: Task 299 (task-reviser subagent), Task 300 (planner report detection)
-- **Research Inputs**: .opencode/specs/301_enhance_revise_command_with_dual_mode_routing/reports/research-001.md
+- **Research Inputs**: specs/301_enhance_revise_command_with_dual_mode_routing/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -163,8 +163,8 @@ This plan integrates findings from 1 research report:
 ## Artifacts & Outputs
 
 - `.opencode/command/revise.md` (modified - dual-mode routing logic)
-- `.opencode/specs/301_enhance_revise_command_with_dual_mode_routing/plans/implementation-001.md` (this file)
-- `.opencode/specs/301_enhance_revise_command_with_dual_mode_routing/summaries/implementation-summary-20260105.md` (created after completion)
+- `specs/301_enhance_revise_command_with_dual_mode_routing/plans/implementation-001.md` (this file)
+- `specs/301_enhance_revise_command_with_dual_mode_routing/summaries/implementation-summary-20260105.md` (created after completion)
 
 ## Rollback/Contingency
 

@@ -5,7 +5,7 @@
 - **Effort**: 1 hour
 - **Priority**: High
 - **Dependencies**: 183 (DeductionTheorem.lean), 184 (resolved by task 219)
-- **Research Inputs**: .opencode/specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md
+- **Research Inputs**: specs/185_fix_integration_test_helper_api_mismatches/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
@@ -152,13 +152,13 @@ Fix 3 API mismatches in LogosTest/Core/Integration/Helpers.lean that prevent tes
 - LogosTest/Core/Integration/Helpers.lean (lines 126, 131 modified)
 
 **Generated Artifacts:**
-- .opencode/specs/185_fix_integration_test_helper_api_mismatches/plans/implementation-001.md (this file)
-- .opencode/specs/185_fix_integration_test_helper_api_mismatches/summaries/implementation-summary-YYYYMMDD.md (created on completion)
+- specs/185_fix_integration_test_helper_api_mismatches/plans/implementation-001.md (this file)
+- specs/185_fix_integration_test_helper_api_mismatches/summaries/implementation-summary-YYYYMMDD.md (created on completion)
 
 **State Updates:**
-- .opencode/specs/TODO.md (task 185 status → [COMPLETED])
-- .opencode/specs/state.json (task 185 status, completion timestamp)
-- .opencode/specs/185_fix_integration_test_helper_api_mismatches/state.json (project state)
+- specs/TODO.md (task 185 status → [COMPLETED])
+- specs/state.json (task 185 status, completion timestamp)
+- specs/185_fix_integration_test_helper_api_mismatches/state.json (project state)
 
 ## Rollback/Contingency
 

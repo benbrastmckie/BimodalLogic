@@ -5,7 +5,7 @@
 - **Effort**: 3.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
-- **Research Inputs**: .claude/specs/465_cosmos_essay_latex/reports/research-001.md
+- **Research Inputs**: specs/465_cosmos_essay_latex/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .claude/context/core/standards/plan.md
@@ -178,7 +178,7 @@ Key findings from research-001.md:
 - `docs/essays/latex/latexmkrc` - Build configuration stub
 - `docs/essays/latex/.gitignore` - Ignore build outputs
 - `docs/essays/latex/build/cosmos-essay.pdf` - Final PDF output
-- `.claude/specs/465_cosmos_essay_latex/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/465_cosmos_essay_latex/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

@@ -9,7 +9,7 @@ Complete refactoring of the `/meta` command from direct implementation to task c
 
 ### Key Changes
 
-1. **Constraints Section**: Added explicit FORBIDDEN/REQUIRED constraints preventing direct file creation outside `.claude/specs/`
+1. **Constraints Section**: Added explicit FORBIDDEN/REQUIRED constraints preventing direct file creation outside `specs/`
 
 2. **Interview Patterns**: Added section documenting progressive disclosure, adaptive questioning, example-driven, and validation checkpoint patterns
 

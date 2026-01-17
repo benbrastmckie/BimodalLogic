@@ -20,11 +20,11 @@
 - .opencode/agent/subagents/status-sync-manager.md
 - .opencode/context/core/system/state-management.md
 - .opencode/context/core/workflows/status-transitions.md
-- .opencode/specs/TODO.md
-- .opencode/specs/state.json
+- specs/TODO.md
+- specs/state.json
 
 **Artifacts**: 
-- .opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md
+- specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -170,7 +170,7 @@ Workflow commands have 4 stages:
 - **Status**: [RESEARCHED]
 - **Researched**: 2026-01-05
 **Research Artifacts**:
-  - Research Report: [.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md]
+  - Research Report: [specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md]
 ```
 
 **state.json**:
@@ -186,7 +186,7 @@ Workflow commands have 4 stages:
 
 **Filesystem**:
 ```
-.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md
+specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md
 (exists, 34543 bytes)
 ```
 
@@ -508,7 +508,7 @@ research.md Stage 4: RelayResult
        - Read current status from state.json:
          current_status=$(jq -r --arg num "$task_number" \
            '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-           .opencode/specs/state.json)
+           specs/state.json)
        
        - If current_status is NOT "researching" and NOT "researched":
          * Log error: "[FAIL] Preflight did not execute - status not updated"
@@ -768,9 +768,9 @@ research.md Stage 4: RelayResult
 
 ### Evidence Files
 
-1. **.opencode/specs/TODO.md** - Task list with status markers
-2. **.opencode/specs/state.json** - Main state tracking file
-3. **.opencode/specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md** - Evidence of state sync failure
+1. **specs/TODO.md** - Task list with status markers
+2. **specs/state.json** - Main state tracking file
+3. **specs/314_conduct_systematic_review_to_complete_context_refactor_plan_aims/reports/research-001.md** - Evidence of state sync failure
 
 ### Related Tasks
 
@@ -815,7 +815,7 @@ research.md Stage 4: RelayResult
 
 ### State Files
 ```
-.opencode/specs/
+specs/
 ├── TODO.md          # User-facing task list
 ├── state.json       # Main state tracking
 └── NNN_*/           # Project directories

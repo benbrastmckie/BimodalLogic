@@ -146,7 +146,7 @@ This research analyzes the current /task command implementation to identify gaps
 #### Current Patterns
 
 **What Works**:
-- Lazy directory creation enforced (.opencode/specs/NNN_slug/ created only when writing first artifact)
+- Lazy directory creation enforced (specs/NNN_slug/ created only when writing first artifact)
 - Subdirectories (reports/, plans/, summaries/) created only when writing into them
 - Project state.json created alongside first artifact
 - Artifact paths returned in responses
@@ -236,11 +236,11 @@ git commit -m "docs: add missing READMEs (task 169)"
 **Complex Tasks**:
 ```bash
 # After research phase
-git add .opencode/specs/169_*/reports/research-001.md
+git add specs/169_*/reports/research-001.md
 git commit -m "research: context window protection patterns (task 169, phase 1)"
 
 # After planning phase
-git add .opencode/specs/169_*/plans/implementation-001.md
+git add specs/169_*/plans/implementation-001.md
 git commit -m "plan: /task command improvements (task 169, phase 2)"
 
 # After implementation phase
@@ -262,10 +262,10 @@ git commit -m "implement: enforce artifact-first returns (task 169, phase 3)"
 ```
 Primary Agent (Orchestrator)
   ├─ Delegates to Worker 1
-  │   ├─ Creates artifact: .opencode/specs/169_*/reports/research-001.md
+  │   ├─ Creates artifact: specs/169_*/reports/research-001.md
   │   └─ Returns: {path, summary: "3-5 sentences", key_findings: [3 bullets]}
   ├─ Delegates to Worker 2
-  │   ├─ Creates artifact: .opencode/specs/169_*/plans/implementation-001.md
+  │   ├─ Creates artifact: specs/169_*/plans/implementation-001.md
   │   └─ Returns: {path, summary: "3-5 sentences", phases: [phase names]}
   └─ Aggregates references (not content)
 ```
@@ -386,7 +386,7 @@ Primary Agent
   "artifacts": [
     {
       "type": "plan|report|implementation",
-      "path": ".opencode/specs/NNN_*/plans/implementation-001.md"
+      "path": "specs/NNN_*/plans/implementation-001.md"
     }
   ],
   "summary": "Brief 3-5 sentence summary of what was done and outcome",
@@ -492,7 +492,7 @@ Complex Path:
       "task_number": 63,
       "status": "completed",
       "summary": "Brief one-line summary",
-      "artifacts": [".opencode/specs/063_*/"]
+      "artifacts": ["specs/063_*/"]
     },
     // ... brief summaries only
   ],

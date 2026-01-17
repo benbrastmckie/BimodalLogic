@@ -21,7 +21,7 @@
   - Task 291 (lean-research-agent) - separate issue
 - **Research Integrated**: Yes
 - **Reports Integrated**:
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
 
 ---
 
@@ -308,7 +308,7 @@ This plan integrates findings from research-001.md:
 
 **Tasks**:
 1. Create integration document:
-   - File: `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/integration-with-321.md`
+   - File: `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/integration-with-321.md`
    - Document two-level error logging standard
    - Document verification checkpoint pattern
    - Document error format for both preflight and postflight
@@ -470,7 +470,7 @@ This plan integrates findings from research-001.md:
 
 ### New Files
 
-1. `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/integration-with-321.md`
+1. `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/integration-with-321.md`
    - Integration strategy with task 321
    - Two-level error logging standard
    - Verification checkpoint pattern

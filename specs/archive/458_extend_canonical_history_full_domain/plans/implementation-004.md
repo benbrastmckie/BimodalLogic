@@ -5,7 +5,7 @@
 - **Effort**: 15-17 hours
 - **Priority**: High
 - **Dependencies**: Task 448 (completed)
-- **Research Inputs**: .claude/specs/458_extend_canonical_history_full_domain/reports/research-004.md
+- **Research Inputs**: specs/458_extend_canonical_history_full_domain/reports/research-004.md
 - **Artifacts**: plans/implementation-004.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
@@ -248,7 +248,7 @@ path information. These cases can be addressed by:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Main implementation
-- `.claude/specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
+- `specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-YYYYMMDD.md` - Completion summary
 
 ## Rollback/Contingency
 

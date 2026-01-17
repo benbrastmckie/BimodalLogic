@@ -9,7 +9,7 @@
     },
     {
       "type": "summary",
-      "path": ".opencode/specs/502_complete_representation_theorem/summaries/implementation-summary-20260114.md",
+      "path": "specs/502_complete_representation_theorem/summaries/implementation-summary-20260114.md",
       "summary": "Implementation summary documenting context-based provability implementation and architecture impact"
     }
   ],

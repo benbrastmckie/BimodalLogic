@@ -3,7 +3,7 @@
 **Task**: #174  
 **Date**: 2025-12-25  
 **Status**: COMPLETED  
-**Implementation Plan**: `.opencode/specs/174_property_based_testing/plans/implementation-001.md`
+**Implementation Plan**: `specs/174_property_based_testing/plans/implementation-001.md`
 
 ---
 
@@ -138,12 +138,12 @@ Successfully completed all 7 phases of the property-based testing framework inte
 
 ### Plan Files
 
-9. **.opencode/specs/174_property_based_testing/plans/implementation-001.md**
+9. **specs/174_property_based_testing/plans/implementation-001.md**
    - Updated all phase statuses from [NOT STARTED] to [COMPLETED]
    - Updated overall status from [IN PROGRESS] to [COMPLETED]
    - Added completion date: 2025-12-25
 
-10. **.opencode/specs/174_property_based_testing/summaries/implementation-summary-20251225.md** (THIS FILE)
+10. **specs/174_property_based_testing/summaries/implementation-summary-20251225.md** (THIS FILE)
     - Created implementation summary artifact
 
 ---
@@ -304,8 +304,8 @@ The property-based testing framework integration is complete and production-read
 
 ## References
 
-- **Implementation Plan**: `.opencode/specs/174_property_based_testing/plans/implementation-001.md`
-- **Research Report**: `.opencode/specs/174_property_based_testing/reports/research-001.md`
+- **Implementation Plan**: `specs/174_property_based_testing/plans/implementation-001.md`
+- **Research Report**: `specs/174_property_based_testing/reports/research-001.md`
 - **Property Testing Guide**: `docs/development/PROPERTY_TESTING_GUIDE.md`
 - **Plausible Framework**: https://github.com/leanprover-community/plausible
 - **Implementation Status**: `docs/project-info/IMPLEMENTATION_STATUS.md`

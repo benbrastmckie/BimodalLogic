@@ -9,10 +9,10 @@
   "phase": "analysis",
   "artifacts": {
     "reports": [
-      ".opencode/specs/207_fix_implement_status_updates/reports/analysis-001.md"
+      "specs/207_fix_implement_status_updates/reports/analysis-001.md"
     ],
     "summaries": [
-      ".opencode/specs/207_fix_implement_status_updates/summaries/analysis-summary.md"
+      "specs/207_fix_implement_status_updates/summaries/analysis-summary.md"
     ],
     "plans": [],
     "implementations": []

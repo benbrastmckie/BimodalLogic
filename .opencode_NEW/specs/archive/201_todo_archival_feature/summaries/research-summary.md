@@ -10,7 +10,7 @@
 
 1. **Current /todo removes but doesn't archive**: The existing `/todo` command removes completed/abandoned tasks from TODO.md and state.json but does not preserve artifacts or update archive state.
 
-2. **Archive infrastructure exists**: `.opencode/specs/archive/state.json` already has well-defined schema and 20 archived projects. Infrastructure is mature and ready for integration.
+2. **Archive infrastructure exists**: `specs/archive/state.json` already has well-defined schema and 20 archived projects. Infrastructure is mature and ready for integration.
 
 3. **Atomicity critical**: Archival must update 4 entities atomically: TODO.md, state.json, archive/state.json, and project directories. Failure in any requires rollback of all.
 
@@ -58,7 +58,7 @@ Extend existing `/todo` command with 3 new/enhanced stages:
 
 ```python
 def ensure_archive_state_exists():
-    if not exists(".opencode/specs/archive/state.json"):
+    if not exists("specs/archive/state.json"):
         create_from_template()
         log_to_recent_activities("Auto-created archive/state.json")
 ```
@@ -74,9 +74,9 @@ Extract metadata from TODO.md task:
 ### Git Scope Expansion
 
 ```bash
-git add TODO.md .opencode/specs/state.json
-git add .opencode/specs/archive/state.json
-git add .opencode/specs/archive/  # Moved directories
+git add TODO.md specs/state.json
+git add specs/archive/state.json
+git add specs/archive/  # Moved directories
 git commit -m "todo: archive {N} completed/abandoned tasks"
 ```
 

@@ -255,7 +255,7 @@ Root cause: Command contains workflow as XML documentation (narrative) rather th
    - Gather findings, citations, recommendations
    - Create research report content
 3. Add Stage 3 (Artifact Creation):
-   - Lazy create project directory: .opencode/specs/{task_number}_{slug}/
+   - Lazy create project directory: specs/{task_number}_{slug}/
    - Lazy create reports/ subdirectory
    - Write research-001.md report
    - Validate artifact exists and is non-empty
@@ -377,9 +377,9 @@ Root cause: Command contains workflow as XML documentation (narrative) rather th
    - Follow git-commits.md standard
 4. File scoping:
    - Add research report path
-   - Add .opencode/specs/TODO.md
-   - Add .opencode/specs/state.json
-   - Add .opencode/specs/{task_number}_{slug}/state.json
+   - Add specs/TODO.md
+   - Add specs/state.json
+   - Add specs/{task_number}_{slug}/state.json
    - Do NOT use `git add -A` (scoped additions only)
 
 **Validation**:
@@ -610,14 +610,14 @@ Root cause: Command contains workflow as XML documentation (narrative) rather th
 
 ### Created Artifacts (during testing)
 
-1. Research report: `.opencode/specs/254_research_command_refactor/reports/research-001.md` (already exists)
+1. Research report: `specs/254_research_command_refactor/reports/research-001.md` (already exists)
 2. Test research reports for validation tasks
 
 ### Updated Files (during execution)
 
-1. `.opencode/specs/TODO.md` (status updates, research links)
-2. `.opencode/specs/state.json` (status transitions, artifacts)
-3. `.opencode/specs/{task_number}_{slug}/state.json` (project state)
+1. `specs/TODO.md` (status updates, research links)
+2. `specs/state.json` (status transitions, artifacts)
+3. `specs/{task_number}_{slug}/state.json` (project state)
 
 ---
 
@@ -714,8 +714,8 @@ If implementation fails or causes regressions:
 **Successful Patterns**:
 - `.opencode/command/plan.md` - Frontmatter delegation, status updates, git commits
 - `.opencode/command/implement.md` - Frontmatter delegation, status updates, git commits
-- `.opencode/specs/240_*/reports/research-001.md` - OpenAgents comparative analysis
-- `.opencode/specs/240_*/plans/implementation-002.md` - OpenAgents migration plan with Phase 1 validation
+- `specs/240_*/reports/research-001.md` - OpenAgents comparative analysis
+- `specs/240_*/plans/implementation-002.md` - OpenAgents migration plan with Phase 1 validation
 
 **Current Implementation**:
 - `.opencode/command/research.md` - Current routing implementation (272 lines)

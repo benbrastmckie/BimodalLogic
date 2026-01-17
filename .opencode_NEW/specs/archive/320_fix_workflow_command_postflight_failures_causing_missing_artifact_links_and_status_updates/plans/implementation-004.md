@@ -22,9 +22,9 @@
   - Task 291 (lean-research-agent) - separate issue
 - **Research Integrated**: Yes
 - **Reports Integrated**:
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md` (integrated 2026-01-05)
-  - `.opencode/specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-003.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-001.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-002.md` (integrated 2026-01-05)
+  - `specs/320_fix_workflow_command_postflight_failures_causing_missing_artifact_links_and_status_updates/reports/research-003.md` (integrated 2026-01-05)
 
 ---
 
@@ -210,8 +210,8 @@ Update `.opencode/agent/subagents/status-sync-manager.md` step_4_commit:
           - If verification fails: Cleanup and return failed
     
     2. Atomic rename (existing logic from task 321):
-       - mv ".opencode/specs/TODO.md.tmp" ".opencode/specs/TODO.md" && \
-         mv ".opencode/specs/state.json.tmp" ".opencode/specs/state.json" && \
+       - mv "specs/TODO.md.tmp" "specs/TODO.md" && \
+         mv "specs/state.json.tmp" "specs/state.json" && \
          ([ -z "$plan_path" ] || mv "$plan_path.tmp" "$plan_path") || \
          { rm -f *.tmp; exit 1; }
     

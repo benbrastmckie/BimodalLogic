@@ -66,8 +66,8 @@ Modify the `/revise` command to handle tasks without plans (status `not_started`
      '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
        description: $desc,
        last_updated: $ts
-     }' .claude/specs/state.json > /tmp/state.json && \
-     mv /tmp/state.json .claude/specs/state.json
+     }' specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json specs/state.json
    ```
 
    **Update TODO.md:**
@@ -79,7 +79,7 @@ Modify the `/revise` command to handle tasks without plans (status `not_started`
 
    **Git commit:**
    ```bash
-   git add .claude/specs/
+   git add specs/
    git commit -m "task {N}: revise description"
    ```
 
@@ -120,7 +120,7 @@ Modify the `/revise` command to handle tasks without plans (status `not_started`
 
 1. **Find a test task with not_started status**:
    ```bash
-   jq -r '.active_projects[] | select(.status == "not_started") | .project_number' .claude/specs/state.json | head -1
+   jq -r '.active_projects[] | select(.status == "not_started") | .project_number' specs/state.json | head -1
    ```
 
 2. **Run /revise with description update**:
@@ -130,12 +130,12 @@ Modify the `/revise` command to handle tasks without plans (status `not_started`
 
 3. **Verify state.json updated**:
    ```bash
-   jq --arg num "{N}" '.active_projects[] | select(.project_number == ($num | tonumber)) | .description' .claude/specs/state.json
+   jq --arg num "{N}" '.active_projects[] | select(.project_number == ($num | tonumber)) | .description' specs/state.json
    ```
 
 4. **Verify TODO.md updated**:
    ```bash
-   grep -A 20 "^### {N}\." .claude/specs/TODO.md | grep "Description"
+   grep -A 20 "^### {N}\." specs/TODO.md | grep "Description"
    ```
 
 5. **Verify git commit created**:

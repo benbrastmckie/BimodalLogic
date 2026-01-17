@@ -128,9 +128,9 @@ Add the `[EXPANDED]` status marker for parent tasks that have been divided into 
 **Files to modify**:
 - `.claude/commands/task.md`
   - Line ~190: Modify jq command to also set status to expanded
-- `.claude/specs/state.json`
+- `specs/state.json`
   - Update task 394 status to "expanded"
-- `.claude/specs/TODO.md`
+- `specs/TODO.md`
   - Update task 394 status to [EXPANDED]
 
 **Steps**:
@@ -141,8 +141,8 @@ Add the `[EXPANDED]` status marker for parent tasks that have been divided into 
        status: "expanded",
        subtasks: [list_of_subtask_numbers],
        last_updated: $ts
-     }' .claude/specs/state.json > /tmp/state.json && \
-     mv /tmp/state.json .claude/specs/state.json
+     }' specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json specs/state.json
    ```
 2. Update task 394 in state.json:
    - Change `"status": "researched"` to `"status": "expanded"`

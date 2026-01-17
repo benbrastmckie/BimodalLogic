@@ -14,10 +14,10 @@
 
 ## Research Inputs
 
-**Research Report**: `.opencode/specs/232_systematically_fix_todomd_path_references/reports/research-001.md`
+**Research Report**: `specs/232_systematically_fix_todomd_path_references/reports/research-001.md`
 
 **Key Findings**:
-1. All 150+ references use relative path `TODO.md` without `.opencode/specs/` prefix
+1. All 150+ references use relative path `TODO.md` without `specs/` prefix
 2. No files use absolute root path (good), but all paths are context-dependent (bad)
 3. Two TODO.md files exist: root (1101 lines) and canonical (837 lines)
 4. 40 unique Logos project tasks in root TODO.md need migration
@@ -33,12 +33,12 @@
 
 ### Problem Statement
 
-The OpenCode system has two TODO.md files in different locations, causing confusion and potential data corruption. All commands, agents, and context files use relative path `TODO.md` without the `.opencode/specs/` prefix, making them context-dependent. If working directory changes, file operations will fail or corrupt the wrong file. Additionally, 40 unique Logos project tasks exist in the root TODO.md that need migration to the canonical location.
+The OpenCode system has two TODO.md files in different locations, causing confusion and potential data corruption. All commands, agents, and context files use relative path `TODO.md` without the `specs/` prefix, making them context-dependent. If working directory changes, file operations will fail or corrupt the wrong file. Additionally, 40 unique Logos project tasks exist in the root TODO.md that need migration to the canonical location.
 
 ### Scope
 
 **In Scope**:
-- Fix all relative `TODO.md` references to use `.opencode/specs/TODO.md` in 9 command files
+- Fix all relative `TODO.md` references to use `specs/TODO.md` in 9 command files
 - Fix all relative `TODO.md` references in 6 subagent files
 - Fix all relative `TODO.md` references in 5 context files
 - Migrate 40 unique Logos project tasks from root TODO.md to canonical TODO.md
@@ -62,7 +62,7 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 
 ### Definition of Done
 
-- All 150+ relative `TODO.md` references changed to `.opencode/specs/TODO.md`
+- All 150+ relative `TODO.md` references changed to `specs/TODO.md`
 - All 40 unique Logos tasks migrated to canonical TODO.md
 - No duplicate task numbers in canonical TODO.md
 - All cross-references (dependencies, blocking) updated and valid
@@ -75,7 +75,7 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 
 ### Goals
 
-1. Eliminate context-dependent path resolution by using explicit `.opencode/specs/TODO.md` paths
+1. Eliminate context-dependent path resolution by using explicit `specs/TODO.md` paths
 2. Consolidate all task tracking in single canonical TODO.md file
 3. Preserve all unique Logos project tasks through careful migration
 4. Ensure atomic status updates always target correct TODO.md file
@@ -138,7 +138,7 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 **Impact**: Medium  
 **Mitigation**:
 - Test commands from different working directories
-- Verify all paths resolve to `.opencode/specs/TODO.md`
+- Verify all paths resolve to `specs/TODO.md`
 - Add validation that TODO.md exists before file operations
 - Document working directory requirements if any remain
 
@@ -162,8 +162,8 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 8. Test task numbering: Create new task, verify next_project_number correct
 
 **Acceptance Criteria**:
-- All bash commands use `.opencode/specs/TODO.md`
-- All file I/O operations use `.opencode/specs/TODO.md`
+- All bash commands use `specs/TODO.md`
+- All file I/O operations use `specs/TODO.md`
 - Language extraction works correctly (routes to lean-research-agent for Lean tasks)
 - Status updates write to canonical TODO.md only
 - Task numbering reads from canonical TODO.md only
@@ -180,28 +180,28 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 - **Completed**: 2025-12-29
 **Effort**: 3 hours
 
-**Objective**: Fix all 91 relative `TODO.md` references in 9 command files to use `.opencode/specs/TODO.md`.
+**Objective**: Fix all 91 relative `TODO.md` references in 9 command files to use `specs/TODO.md`.
 
 **Tasks**:
 1. Fix research.md (8 references) - lines 62, 71, 100-101, 114, 121, 133-135, 202, 298
-2. Fix plan.md (8 references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
+2. Fix plan.md (8 references) - all relative `TODO.md` to `specs/TODO.md`
 3. Fix implement.md (11 references) - lines 66, 84, 113-114, 131, 149, 162-164, 171, 272, 298-301, 379, 391
-4. Fix revise.md (7 references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
-5. Fix task.md (15 references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
-6. Fix todo.md (27 references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
-7. Fix review.md (11 references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
-8. Fix errors.md (4 references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
+4. Fix revise.md (7 references) - all relative `TODO.md` to `specs/TODO.md`
+5. Fix task.md (15 references) - all relative `TODO.md` to `specs/TODO.md`
+6. Fix todo.md (27 references) - all relative `TODO.md` to `specs/TODO.md`
+7. Fix review.md (11 references) - all relative `TODO.md` to `specs/TODO.md`
+8. Fix errors.md (4 references) - all relative `TODO.md` to `specs/TODO.md`
 9. Test each command: /research, /plan, /implement, /revise, /task, /todo, /review, /errors
 
 **Acceptance Criteria**:
-- All 91 references in command files use `.opencode/specs/TODO.md`
+- All 91 references in command files use `specs/TODO.md`
 - No relative `TODO.md` references remain in command files
 - All workflow commands execute successfully
 - Error messages reference correct TODO.md path
 - Documentation strings reference correct TODO.md path
 
 **Validation**:
-- Static analysis: `grep -r "TODO\.md" .opencode/command --include="*.md" | grep -v "\.opencode/specs/TODO\.md"`
+- Static analysis: `grep -r "TODO\.md" .opencode/command --include="*.md" | grep -v "\specs/TODO\.md"`
 - Expected: Zero results
 - Test each command with real task numbers
 - Verify all commands read/write canonical TODO.md
@@ -211,26 +211,26 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 - **Completed**: 2025-12-29
 **Effort**: 1 hour
 
-**Objective**: Fix all 33 relative `TODO.md` references in 6 subagent files to use `.opencode/specs/TODO.md`.
+**Objective**: Fix all 33 relative `TODO.md` references in 6 subagent files to use `specs/TODO.md`.
 
 **Tasks**:
 1. Fix planner.md (5 references) - lines 56, 292, and others
-2. Fix reviewer.md (2 references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
-3. Fix implementer.md (2 references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
-4. Fix lean-implementation-agent.md (1 reference) - relative `TODO.md` to `.opencode/specs/TODO.md`
-5. Fix git-workflow-manager.md (1 reference) - relative `TODO.md` to `.opencode/specs/TODO.md`
-6. Fix error-diagnostics-agent.md (1 reference) - relative `TODO.md` to `.opencode/specs/TODO.md`
+2. Fix reviewer.md (2 references) - all relative `TODO.md` to `specs/TODO.md`
+3. Fix implementer.md (2 references) - all relative `TODO.md` to `specs/TODO.md`
+4. Fix lean-implementation-agent.md (1 reference) - relative `TODO.md` to `specs/TODO.md`
+5. Fix git-workflow-manager.md (1 reference) - relative `TODO.md` to `specs/TODO.md`
+6. Fix error-diagnostics-agent.md (1 reference) - relative `TODO.md` to `specs/TODO.md`
 7. Test subagent delegation: Verify planner reads task from canonical TODO.md
 
 **Acceptance Criteria**:
-- All 33 references in subagent files use `.opencode/specs/TODO.md`
+- All 33 references in subagent files use `specs/TODO.md`
 - No relative `TODO.md` references remain in subagent files
 - Subagents read task data from canonical TODO.md
 - Planner creates plans with correct task references
 - Reviewer creates review tasks in canonical TODO.md
 
 **Validation**:
-- Static analysis: `grep -r "TODO\.md" .opencode/agent/subagents --include="*.md" | grep -v "\.opencode/specs/TODO\.md"`
+- Static analysis: `grep -r "TODO\.md" .opencode/agent/subagents --include="*.md" | grep -v "\specs/TODO\.md"`
 - Expected: Zero results
 - Test `/plan` command, verify planner reads from canonical TODO.md
 - Test `/review` command, verify reviewer creates task in canonical TODO.md
@@ -240,25 +240,25 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 - **Completed**: 2025-12-29
 **Effort**: 1 hour
 
-**Objective**: Fix all 30 relative `TODO.md` references in 5 context files to use `.opencode/specs/TODO.md`.
+**Objective**: Fix all 30 relative `TODO.md` references in 5 context files to use `specs/TODO.md`.
 
 **Tasks**:
 1. Fix command-lifecycle.md (24 references) - lines 53, 62, 66, 74, 82, 92, 205-560
-2. Fix review.md workflow (2 references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
-3. Fix documentation.md (references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
-4. Fix commands.md (references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
-5. Fix command-argument-handling.md (references) - all relative `TODO.md` to `.opencode/specs/TODO.md`
+2. Fix review.md workflow (2 references) - all relative `TODO.md` to `specs/TODO.md`
+3. Fix documentation.md (references) - all relative `TODO.md` to `specs/TODO.md`
+4. Fix commands.md (references) - all relative `TODO.md` to `specs/TODO.md`
+5. Fix command-argument-handling.md (references) - all relative `TODO.md` to `specs/TODO.md`
 6. Verify context files loaded correctly by commands
 
 **Acceptance Criteria**:
-- All 30 references in context files use `.opencode/specs/TODO.md`
+- All 30 references in context files use `specs/TODO.md`
 - No relative `TODO.md` references remain in context files
 - Documentation references correct TODO.md location
 - Workflow descriptions reference correct TODO.md path
 - Command lifecycle documentation accurate
 
 **Validation**:
-- Static analysis: `grep -r "TODO\.md" .opencode/context --include="*.md" | grep -v "\.opencode/specs/TODO\.md"`
+- Static analysis: `grep -r "TODO\.md" .opencode/context --include="*.md" | grep -v "\specs/TODO\.md"`
 - Expected: Zero results
 - Review command-lifecycle.md for accuracy
 - Verify workflow descriptions match actual behavior
@@ -297,7 +297,7 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 **Validation**:
 - Count tasks in canonical TODO.md before and after migration
 - Verify 40 tasks added
-- Check for duplicate task numbers: `grep "^### [0-9]" .opencode/specs/TODO.md | sort | uniq -d`
+- Check for duplicate task numbers: `grep "^### [0-9]" specs/TODO.md | sort | uniq -d`
 - Expected: Zero duplicates
 - Validate all artifact links: Check each link resolves to existing file
 - Test task creation: Verify next_project_number correct after migration
@@ -333,11 +333,11 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 - Migration documented
 
 **Validation**:
-- Static analysis: `grep -r "TODO\.md" .opencode --include="*.md" | grep -v "\.opencode/specs/TODO\.md"`
+- Static analysis: `grep -r "TODO\.md" .opencode --include="*.md" | grep -v "\specs/TODO\.md"`
 - Expected: Zero results
 - Verify root TODO.md removed: `ls -la /home/benjamin/Projects/ProofChecker/TODO.md`
 - Expected: File not found
-- Verify canonical TODO.md exists: `ls -la /home/benjamin/Projects/ProofChecker/.opencode/specs/TODO.md`
+- Verify canonical TODO.md exists: `ls -la /home/benjamin/Projects/ProofChecker/specs/TODO.md`
 - Expected: File exists
 - Test full workflow: Create task → research → plan → implement
 - Expected: All artifacts created, all statuses updated, no errors
@@ -348,22 +348,22 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 
 **Test 1: Path Resolution**
 - Execute commands from different working directories (root, .opencode/, .opencode/command/)
-- Expected: All commands resolve to `.opencode/specs/TODO.md`
+- Expected: All commands resolve to `specs/TODO.md`
 - Coverage: All 9 command files
 
 **Test 2: Language Extraction**
 - Create Lean task, run `/research {task_number}`
-- Expected: Bash command extracts "lean" from `.opencode/specs/TODO.md`, routes to lean-research-agent
+- Expected: Bash command extracts "lean" from `specs/TODO.md`, routes to lean-research-agent
 - Coverage: research.md, implement.md, command-lifecycle.md
 
 **Test 3: Status Updates**
 - Create test task, run `/research`, `/plan`, `/implement`
-- Expected: Status markers updated in `.opencode/specs/TODO.md` only
+- Expected: Status markers updated in `specs/TODO.md` only
 - Coverage: status-sync-manager.md
 
 **Test 4: Task Numbering**
 - Create new task with `/task`
-- Expected: Task number read from `.opencode/specs/TODO.md`, new task added to canonical TODO.md
+- Expected: Task number read from `specs/TODO.md`, new task added to canonical TODO.md
 - Coverage: atomic-task-numberer.md, task.md
 
 ### Integration Testing
@@ -392,18 +392,18 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 
 **Test 9: Error Handling**
 - Test with invalid task numbers
-- Expected: Error messages reference `.opencode/specs/TODO.md`
+- Expected: Error messages reference `specs/TODO.md`
 - Coverage: All command error handling
 
 ### Static Analysis
 
 **Test 10: Path Reference Audit**
-- Command: `grep -r "TODO\.md" .opencode --include="*.md" | grep -v "\.opencode/specs/TODO\.md"`
+- Command: `grep -r "TODO\.md" .opencode --include="*.md" | grep -v "\specs/TODO\.md"`
 - Expected: Zero results
 - Coverage: All .opencode files
 
 **Test 11: Duplicate Task Numbers**
-- Command: `grep "^### [0-9]" .opencode/specs/TODO.md | sort | uniq -d`
+- Command: `grep "^### [0-9]" specs/TODO.md | sort | uniq -d`
 - Expected: Zero duplicates
 - Coverage: Canonical TODO.md
 
@@ -444,7 +444,7 @@ The OpenCode system has two TODO.md files in different locations, causing confus
    - `.opencode/context/core/standards/command-argument-handling.md`
 
 4. **Canonical TODO.md** (updated)
-   - `.opencode/specs/TODO.md` (with 40 migrated tasks)
+   - `specs/TODO.md` (with 40 migrated tasks)
 
 5. **Root TODO.md Backup** (created then removed)
    - `/home/benjamin/Projects/ProofChecker/TODO.md.backup` (preserved for safety)
@@ -452,7 +452,7 @@ The OpenCode system has two TODO.md files in different locations, causing confus
 ### Supporting Artifacts
 
 6. **Implementation Summary**
-   - `.opencode/specs/232_systematically_fix_todomd_path_references/summaries/implementation-summary-{date}.md`
+   - `specs/232_systematically_fix_todomd_path_references/summaries/implementation-summary-{date}.md`
    - Documents all changes, migration results, validation outcomes
 
 7. **Migration Report**
@@ -499,7 +499,7 @@ cp /home/benjamin/Projects/ProofChecker/TODO.md.backup /home/benjamin/Projects/P
 
 **Step 3: Revert Canonical TODO.md**
 - Use git to revert canonical TODO.md to pre-migration state
-- Command: `git checkout HEAD -- .opencode/specs/TODO.md`
+- Command: `git checkout HEAD -- specs/TODO.md`
 
 **Step 4: Verify Rollback**
 - Test task creation: `/task "Test rollback"`
@@ -573,7 +573,7 @@ This plan follows a risk-based approach, fixing critical paths first (bash comma
 
 ### Lessons from Research
 
-Research identified that all references use relative paths (context-dependent) rather than explicitly wrong paths. This means the fix is straightforward (add `.opencode/specs/` prefix) but requires comprehensive coverage to prevent any references from being missed.
+Research identified that all references use relative paths (context-dependent) rather than explicitly wrong paths. This means the fix is straightforward (add `specs/` prefix) but requires comprehensive coverage to prevent any references from being missed.
 
 ### Post-Implementation
 

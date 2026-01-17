@@ -197,7 +197,7 @@ Research completed on 2025-12-27 identified the actual state of self-healing con
 **Testing Scenarios**:
 ```bash
 # Test 1: Missing state.json
-rm .opencode/specs/state.json
+rm specs/state.json
 /research 199  # Should auto-create state.json
 
 # Test 2: Normal operations

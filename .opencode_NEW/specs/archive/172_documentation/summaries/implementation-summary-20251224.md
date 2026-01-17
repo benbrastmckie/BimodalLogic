@@ -41,8 +41,8 @@ Task 172 has been successfully completed with **100% declaration-level API docum
   - Tactics.lean: 4 helper functions (is_box_formula, is_future_formula, extract_from_box, extract_from_future)
 
 **Deliverables**:
-- `.opencode/specs/172_api_documentation/reports/doc-analysis.md` (30-page comprehensive analysis)
-- `.opencode/specs/172_api_documentation/reports/doc-analysis.json` (structured data)
+- `specs/172_api_documentation/reports/doc-analysis.md` (30-page comprehensive analysis)
+- `specs/172_api_documentation/reports/doc-analysis.json` (structured data)
 
 ---
 
@@ -213,7 +213,7 @@ The massive positive variance (-26 hours, 87% reduction) is due to:
 ## Artifacts Created
 
 ### 1. Gap Analysis Report
-**Path**: `.opencode/specs/172_api_documentation/reports/doc-analysis.md`
+**Path**: `specs/172_api_documentation/reports/doc-analysis.md`
 - 30-page comprehensive analysis
 - File-by-file breakdown of all 31 Logos/Core files
 - Specific missing declaration names
@@ -221,14 +221,14 @@ The massive positive variance (-26 hours, 87% reduction) is due to:
 - Priority categorization
 
 ### 2. Gap Analysis JSON
-**Path**: `.opencode/specs/172_api_documentation/reports/doc-analysis.json`
+**Path**: `specs/172_api_documentation/reports/doc-analysis.json`
 - Structured data for tooling integration
 - Coverage statistics
 - Recommendations
 - Next steps
 
 ### 3. Implementation Summary
-**Path**: `.opencode/specs/172_documentation/summaries/implementation-summary-20251224.md`
+**Path**: `specs/172_documentation/summaries/implementation-summary-20251224.md`
 - This document
 - Comprehensive summary of work completed
 - Coverage statistics

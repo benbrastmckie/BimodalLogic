@@ -7,7 +7,7 @@
 **Priority**: High  
 **Dependencies**: None  
 **Sources/Inputs**:
-- Root Cause Analysis: `.opencode/specs/root-cause-analysis-todo-state-sync-failures.md`
+- Root Cause Analysis: `specs/root-cause-analysis-todo-state-sync-failures.md`
 - status-sync-manager specification: `.opencode/agent/subagents/status-sync-manager.md`
 - state-management standard: `.opencode/context/core/orchestration/state-management.md`
 - Successful command patterns: `/task`, `/abandon` commands
@@ -15,7 +15,7 @@
 - git-workflow-manager specification: `.opencode/agent/subagents/git-workflow-manager.md`
 
 **Artifacts**:
-- Research Report: `.opencode/specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/reports/research-001.md`
+- Research Report: `specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/reports/research-001.md`
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
@@ -87,7 +87,7 @@ Workflow commands systematically fail to update TODO.md with status changes and 
 
 **Evidence from Root Cause Analysis**:
 
-The root cause analysis (`.opencode/specs/root-cause-analysis-todo-state-sync-failures.md`) provides comprehensive evidence:
+The root cause analysis (`specs/root-cause-analysis-todo-state-sync-failures.md`) provides comprehensive evidence:
 
 ```markdown
 Primary Root Cause: Manual File Manipulation Instead of status-sync-manager
@@ -285,7 +285,7 @@ status-sync-manager implements comprehensive validation:
    Read state.json to verify status:
      actual_status=$(jq -r --arg num "$task_number" \
        '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-       .opencode/specs/state.json)
+       specs/state.json)
    
    IF actual_status != "researching":
      - Log error: "Preflight verification failed - status not updated"
@@ -337,8 +337,8 @@ From researcher.md postflight stage (lines 4-7 of step_4_postflight):
    {
      "scope_files": [
        "{research_report_path}",
-       ".opencode/specs/TODO.md",
-       ".opencode/specs/state.json"
+       "specs/TODO.md",
+       "specs/state.json"
      ],
      "message_template": "task {task_number}: research completed",
      "task_context": {
@@ -513,8 +513,8 @@ The two-phase commit protocol ensures atomicity:
 <step_1_prepare>
   <action>Phase 1: Prepare all updates in memory</action>
   <process>
-    1. Read .opencode/specs/TODO.md into memory
-    2. Read .opencode/specs/state.json into memory
+    1. Read specs/TODO.md into memory
+    2. Read specs/state.json into memory
     3. Read plan file if plan_path provided
     4. Validate all files readable
     5. NO BACKUP FILES CREATED (per user requirement - git-only rollback)
@@ -725,7 +725,7 @@ Prevent future regressions:
 
 **Test Automation**:
 
-Create test script: `.opencode/specs/333_*/tests/sync-test.sh`
+Create test script: `specs/333_*/tests/sync-test.sh`
 
 ```bash
 #!/bin/bash
@@ -813,7 +813,7 @@ fi
 
 Create linting rule to flag manual file manipulation:
 
-**File**: `.opencode/specs/333_*/tools/lint-commands.sh`
+**File**: `specs/333_*/tools/lint-commands.sh`
 
 ```bash
 #!/bin/bash
@@ -984,8 +984,8 @@ grep -r "jq.*state.json.*>" .opencode/command/
          prompt="{
            scope_files: [
              '{research_report_path}',
-             '.opencode/specs/TODO.md',
-             '.opencode/specs/state.json'
+             'specs/TODO.md',
+             'specs/state.json'
            ],
            message_template: 'task {task_number}: research completed',
            task_context: {
@@ -1032,7 +1032,7 @@ grep -r "jq.*state.json.*>" .opencode/command/
     
     2. Prepare artifact metadata:
        - type: "research"
-       - path: ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md"
+       - path: "specs/{task_number}_{topic_slug}/reports/research-001.md"
        - summary: "Detailed research report with findings and citations"
        - validated: true
     
@@ -1065,7 +1065,7 @@ grep -r "jq.*state.json.*>" .opencode/command/
    Read state.json to verify status:
      actual_status=$(jq -r --arg num "$task_number" \
        '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-       .opencode/specs/state.json)
+       specs/state.json)
    
    IF actual_status != "researched":
      - Log error: "Postflight verification failed - status not updated"
@@ -1074,7 +1074,7 @@ grep -r "jq.*state.json.*>" .opencode/command/
      - DO NOT proceed to git commit
    
    Read TODO.md to verify artifact link:
-     grep -q "{research_report_path}" .opencode/specs/TODO.md
+     grep -q "{research_report_path}" specs/TODO.md
    
    IF artifact link not found:
      - Log error: "Postflight verification failed - artifact not linked"
@@ -1252,7 +1252,7 @@ Add validation after status-sync-manager delegation:
 3. Verify status actually updated (defense in depth):
    actual_status=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-     .opencode/specs/state.json)
+     specs/state.json)
    
    if [ "$actual_status" != "researched" ]; then
      log_error("Status verification failed: expected researched, got $actual_status")
@@ -1275,7 +1275,7 @@ Add validation after status-sync-manager delegation:
 
 **Implementation**:
 
-Create test suite: `.opencode/specs/333_*/tests/sync-test.sh`
+Create test suite: `specs/333_*/tests/sync-test.sh`
 
 ```bash
 #!/bin/bash
@@ -1294,7 +1294,7 @@ test_research_sync() {
   /research $task_num
   
   # Verify TODO.md status
-  todo_status=$(grep -A5 "^### $task_num\." .opencode/specs/TODO.md | grep "Status:" | grep -oP '\[.*?\]')
+  todo_status=$(grep -A5 "^### $task_num\." specs/TODO.md | grep "Status:" | grep -oP '\[.*?\]')
   if [ "$todo_status" != "[RESEARCHED]" ]; then
     echo "[FAIL] TODO.md status not updated: $todo_status"
     exit 1
@@ -1303,14 +1303,14 @@ test_research_sync() {
   # Verify state.json status
   state_status=$(jq -r --arg num "$task_num" \
     '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-    .opencode/specs/state.json)
+    specs/state.json)
   if [ "$state_status" != "researched" ]; then
     echo "[FAIL] state.json status not updated: $state_status"
     exit 1
   fi
   
   # Verify artifact link in TODO.md
-  if ! grep -A10 "^### $task_num\." .opencode/specs/TODO.md | grep -q "Research"; then
+  if ! grep -A10 "^### $task_num\." specs/TODO.md | grep -q "Research"; then
     echo "[FAIL] Artifact link not added to TODO.md"
     exit 1
   fi
@@ -1318,7 +1318,7 @@ test_research_sync() {
   # Verify artifact in state.json
   artifact_count=$(jq -r --arg num "$task_num" \
     '.active_projects[] | select(.project_number == ($num | tonumber)) | .artifacts | length' \
-    .opencode/specs/state.json)
+    specs/state.json)
   if [ "$artifact_count" -eq 0 ]; then
     echo "[FAIL] Artifact not added to state.json"
     exit 1
@@ -1358,7 +1358,7 @@ test_workflow_sequence() {
   # Verify status: researched
   status=$(jq -r --arg num "$task_num" \
     '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-    .opencode/specs/state.json)
+    specs/state.json)
   if [ "$status" != "researched" ]; then
     echo "[FAIL] Status after /research: $status"
     exit 1
@@ -1370,7 +1370,7 @@ test_workflow_sequence() {
   # Verify status: planned
   status=$(jq -r --arg num "$task_num" \
     '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-    .opencode/specs/state.json)
+    specs/state.json)
   if [ "$status" != "planned" ]; then
     echo "[FAIL] Status after /plan: $status"
     exit 1
@@ -1382,7 +1382,7 @@ test_workflow_sequence() {
   # Verify status: completed
   status=$(jq -r --arg num "$task_num" \
     '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-    .opencode/specs/state.json)
+    specs/state.json)
   if [ "$status" != "completed" ]; then
     echo "[FAIL] Status after /implement: $status"
     exit 1
@@ -1715,7 +1715,7 @@ For each command found:
 ### Phase 2: Testing and Validation (4-6 hours)
 
 **Task 5: Create Integration Tests** (4-6 hours)
-- [ ] Create test suite: `.opencode/specs/333_*/tests/sync-test.sh`
+- [ ] Create test suite: `specs/333_*/tests/sync-test.sh`
 - [ ] Test 1: /research command sync
 - [ ] Test 2: /plan command sync
 - [ ] Test 3: /revise command sync
@@ -1736,7 +1736,7 @@ For each command found:
 - [ ] Update user documentation
 
 **Task 7: Implement Prevention Strategy** (2-3 hours)
-- [ ] Create linting script: `.opencode/specs/333_*/tools/lint-commands.sh`
+- [ ] Create linting script: `specs/333_*/tools/lint-commands.sh`
 - [ ] Add linting rules for manual file manipulation
 - [ ] Add orchestrator validation for delegation pattern
 - [ ] Create audit script for existing commands

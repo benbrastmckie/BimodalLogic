@@ -74,13 +74,13 @@ Instead of generating the system, create tasks with linked artifacts:
    - Use task-breakdown.md workflow for complex systems
 
 2. **Retrieve next_project_number from state.json**:
-   - Read .opencode/specs/state.json
+   - Read specs/state.json
    - Extract next_project_number field
    - Use for first task number
    - Increment for each subsequent task
 
 3. **For Each Task**:
-   a. Create project directory: `.opencode/specs/NNN_task_name/`
+   a. Create project directory: `specs/NNN_task_name/`
    b. Generate research artifact: `reports/research-001.md`
       - Domain analysis for research task
       - Component requirements for implementation tasks
@@ -175,7 +175,7 @@ Instead of delivering a completed system, deliver a task list:
 Following artifact-management.md standards:
 
 ```
-.opencode/specs/NNN_task_name/
+specs/NNN_task_name/
 ├── reports/
 │   └── research-001.md          # Domain analysis, requirements, component specs
 ├── plans/
@@ -235,11 +235,11 @@ Following summary.md standard:
        - Moderate system (3-5 agents): 7 tasks
        - Complex system (6-8 agents): 10-15 tasks
     
-    2. Read next_project_number from .opencode/specs/state.json
+    2. Read next_project_number from specs/state.json
     
     3. For each task in breakdown:
        a. Generate task slug from task name
-       b. Create project directory: .opencode/specs/{number}_{slug}/
+       b. Create project directory: specs/{number}_{slug}/
        c. Generate research artifact:
           - Path: reports/research-001.md
           - Content: Domain analysis, requirements, component specs
@@ -364,7 +364,7 @@ Update Stage 7 and Stage 8 descriptions to match new behavior:
 ### Stage 7: Create Tasks with Artifacts
 - Determines appropriate task breakdown based on system complexity
 - Uses next_project_number from state.json for task numbering
-- Creates project directories in .opencode/specs/NNN_*/
+- Creates project directories in specs/NNN_*/
 - Generates research artifacts analyzing requirements
 - Generates detailed plan artifacts for each task
 - Creates task entries in TODO.md linking to artifacts
@@ -386,22 +386,22 @@ Update to reflect new artifact structure:
 
 This command creates the following artifacts:
 
-- **Task Entries**: `.opencode/specs/TODO.md`
+- **Task Entries**: `specs/TODO.md`
   - One entry per task with status [NOT STARTED]
   - Links to research and plan artifacts
   - Follows tasks.md standard
 
-- **Research Artifacts**: `.opencode/specs/NNN_task_name/reports/research-001.md`
+- **Research Artifacts**: `specs/NNN_task_name/reports/research-001.md`
   - Domain analysis for research tasks
   - Component requirements for implementation tasks
   - Follows report.md standard
 
-- **Plan Artifacts**: `.opencode/specs/NNN_task_name/plans/implementation-001.md`
+- **Plan Artifacts**: `specs/NNN_task_name/plans/implementation-001.md`
   - Detailed implementation plan with phases
   - Follows plan.md standard with status markers
   - Includes effort estimates, dependencies, acceptance criteria
 
-- **Summary Artifacts**: `.opencode/specs/NNN_task_name/summaries/`
+- **Summary Artifacts**: `specs/NNN_task_name/summaries/`
   - research-summary.md (<100 tokens)
   - plan-summary.md (<100 tokens)
   - Follows summary.md standard
@@ -457,7 +457,7 @@ Based on task 271 acceptance criteria:
 - [x] `/meta` creates tasks in TODO.md using next_project_number from state.json
   - Implementation: Read state.json, use next_project_number, increment for each task
 
-- [x] Each task has a project directory in `.opencode/specs/NNN_*/`
+- [x] Each task has a project directory in `specs/NNN_*/`
   - Implementation: Create directory with lazy creation when writing first artifact
 
 - [x] Each task links to research artifact and plan artifact
@@ -603,5 +603,5 @@ The implementation effort is estimated at 13 hours (slightly over the 8-12 hour 
 6. `.opencode/context/core/standards/summary.md` - Summary artifact standard
 7. `.opencode/context/core/standards/subagent-return-format.md` - Return format standard
 8. `.opencode/context/core/workflows/task-breakdown.md` - Task breakdown workflow
-9. `.opencode/specs/TODO.md` - Task 271 description
-10. `.opencode/specs/state.json` - State management schema
+9. `specs/TODO.md` - Task 271 description
+10. `specs/state.json` - State management schema

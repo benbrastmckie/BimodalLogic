@@ -19,8 +19,8 @@ Replace the `sorry` placeholder in the `is_valid_swap_involution` theorem (Truth
 
 ## Research Inputs
 
-**Research Report**: `.opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md`  
-**Research Summary**: `.opencode/specs/193_prove_is_valid_swap_involution/summaries/research-summary.md`
+**Research Report**: `specs/193_prove_is_valid_swap_involution/reports/research-001.md`  
+**Research Summary**: `specs/193_prove_is_valid_swap_involution/summaries/research-summary.md`
 
 **Key Findings**:
 - Current proof uses `simpa [Formula.swap_past_future_involution φ]` which fails with type mismatch

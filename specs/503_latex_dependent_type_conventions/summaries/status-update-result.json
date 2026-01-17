@@ -4,12 +4,12 @@
   "artifacts": [
     {
       "type": "state_update",
-      "path": ".opencode/specs/TODO.md",
+      "path": "specs/TODO.md",
       "summary": "Status changed to [COMPLETED], added Completed timestamp, linked implementation files and summary"
     },
     {
       "type": "state_update",
-      "path": ".opencode/specs/state.json",
+      "path": "specs/state.json",
       "summary": "Status changed to completed, phase to completed, added completed timestamp and artifacts"
     }
   ],
@@ -22,6 +22,6 @@
   },
   "errors": [],
   "next_steps": "Task 503 completed successfully. Ready for review or archival.",
-  "files_updated": [".opencode/specs/TODO.md", ".opencode/specs/state.json"],
+  "files_updated": ["specs/TODO.md", "specs/state.json"],
   "rollback_performed": false
 }

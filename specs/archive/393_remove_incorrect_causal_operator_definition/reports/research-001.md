@@ -155,7 +155,7 @@ These are correct and will be used by Task 394's implementation.
 - `Theories/Logos/SubTheories/Explanatory/Truth.lean` - Current incorrect implementation
 - `Theories/Logos/SubTheories/Explanatory/Syntax.lean` - Causal operator syntax
 - `/home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex` line 626 - Correct semantics
-- `.claude/specs/381_add_causal_semantics_infrastructure/` - Parent task artifacts
+- `specs/381_add_causal_semantics_infrastructure/` - Parent task artifacts
 - Task 394 - Follow-up task to implement correct semantics
 
 ## Next Steps

@@ -256,7 +256,7 @@ timeout: 120
       
        6. Create git commit (non-critical):
           - Delegate to git-workflow-manager:
-            * scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+            * scope_files: ["specs/TODO.md", "specs/state.json"]
             * message_template: "task: recover {count} tasks from archive ({ranges})"
             * task_context:
               - task_count: {success_count}
@@ -367,7 +367,7 @@ timeout: 120
       
        7. Create git commit (non-critical):
           - Delegate to git-workflow-manager:
-            * scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+            * scope_files: ["specs/TODO.md", "specs/state.json"]
             * message_template: "task: divide task {number} into {count} subtasks ({range})"
             * task_context:
               - task_number: {parent_task_number}
@@ -444,7 +444,7 @@ timeout: 120
       
        6. Create git commit (non-critical):
           - Delegate to git-workflow-manager:
-            * scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+            * scope_files: ["specs/TODO.md", "specs/state.json"]
             * message_template: "task: sync TODO.md and state.json for {count} tasks ({ranges})"
             * task_context:
               - task_count: {synced_tasks count}
@@ -512,7 +512,7 @@ timeout: 120
       
        6. Create git commit (non-critical):
           - Delegate to git-workflow-manager:
-            * scope_files: [".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+            * scope_files: ["specs/TODO.md", "specs/state.json"]
             * message_template: "task: abandon {count} tasks ({ranges})"
             * task_context:
               - task_count: {success_count}
@@ -677,7 +677,7 @@ timeout: 120
     For task creation, this command MUST NOT:
     - Implement any tasks described in $ARGUMENTS
     - Create any code files (*.lean, *.py, *.sh, *.md, etc.)
-    - Create any spec directories (.opencode/specs/{number}_*/)
+    - Create any spec directories (specs/{number}_*/)
     - Create any artifact files (research, plans, implementations)
     - Run any build tools (lake, python, lean, cargo, etc.)
     - Modify any project code or configuration

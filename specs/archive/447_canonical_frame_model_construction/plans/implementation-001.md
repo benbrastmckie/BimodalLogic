@@ -307,8 +307,8 @@ Key findings from research-001.md:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness.lean` - Updated with implementations
-- `.claude/specs/447_canonical_frame_model_construction/plans/implementation-001.md` - This plan
-- `.claude/specs/447_canonical_frame_model_construction/summaries/implementation-summary-YYYYMMDD.md` - Final summary (on completion)
+- `specs/447_canonical_frame_model_construction/plans/implementation-001.md` - This plan
+- `specs/447_canonical_frame_model_construction/summaries/implementation-summary-YYYYMMDD.md` - Final summary (on completion)
 
 ## Rollback/Contingency
 

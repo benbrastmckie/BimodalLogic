@@ -452,7 +452,7 @@ After implementation:
 - `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Automation/ProofSearch.lean` - matches_axiom : Bool
 
 ### Previous Research
-- `.claude/specs/260_proof_search/reports/research-003.md` - Prior AxiomWitness recommendation
+- `specs/260_proof_search/reports/research-003.md` - Prior AxiomWitness recommendation
 
 ---
 

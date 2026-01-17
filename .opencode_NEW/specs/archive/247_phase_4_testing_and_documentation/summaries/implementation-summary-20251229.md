@@ -95,15 +95,15 @@ Created final validation and metrics:
 ## Artifacts Created
 
 ### Testing Infrastructure (4 files)
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/test-stage7-reliability.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/validate-artifacts.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/measure-context-usage.sh`
-- `.opencode/specs/247_phase_4_testing_and_documentation/scripts/track-stage7-rate.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/test-stage7-reliability.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/validate-artifacts.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/measure-context-usage.sh`
+- `specs/247_phase_4_testing_and_documentation/scripts/track-stage7-rate.sh`
 
 ### Test Results (1 report + logs/metrics)
-- `.opencode/specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
-- `.opencode/specs/247_phase_4_testing_and_documentation/logs/` (multiple log files)
-- `.opencode/specs/247_phase_4_testing_and_documentation/metrics/` (JSON metrics)
+- `specs/247_phase_4_testing_and_documentation/reports/test-execution-report.md`
+- `specs/247_phase_4_testing_and_documentation/logs/` (multiple log files)
+- `specs/247_phase_4_testing_and_documentation/metrics/` (JSON metrics)
 
 ### Migration Documentation (2 files)
 - `.opencode/docs/migrations/001-openagents-migration/README.md`
@@ -120,9 +120,9 @@ Created final validation and metrics:
 - `.opencode/docs/templates/README.md`
 
 ### Final Reports (3 files)
-- `.opencode/specs/247_phase_4_testing_and_documentation/reports/validation-001.md`
-- `.opencode/specs/247_phase_4_testing_and_documentation/metrics/before-after-summary.md`
-- `.opencode/specs/247_phase_4_testing_and_documentation/summaries/implementation-summary-20251229.md`
+- `specs/247_phase_4_testing_and_documentation/reports/validation-001.md`
+- `specs/247_phase_4_testing_and_documentation/metrics/before-after-summary.md`
+- `specs/247_phase_4_testing_and_documentation/summaries/implementation-summary-20251229.md`
 
 **Total**: 20+ files, ~5,000+ lines of documentation and code
 

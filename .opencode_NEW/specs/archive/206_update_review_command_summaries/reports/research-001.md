@@ -14,9 +14,9 @@
   - .opencode/context/core/standards/summary.md
   - .opencode/context/core/standards/status-markers.md
   - .opencode/command/research.md (reference implementation)
-  - .opencode/specs/TODO.md
-  - .opencode/specs/state.json
-  - .opencode/specs/170_maintenance_report_improvements/reports/research-001.md
+  - specs/TODO.md
+  - specs/state.json
+  - specs/170_maintenance_report_improvements/reports/research-001.md
 - **Artifacts**:
   - reports/research-001.md (this file)
   - summaries/research-summary.md
@@ -424,7 +424,7 @@ From `state.json` (lines 100-119):
     "review_artifacts": [
       {
         "timestamp": "2025-12-28T18:00:00Z",
-        "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
+        "path": "specs/207_codebase_review/summaries/review-summary.md",
         "scope": "full"
       }
     ]
@@ -465,7 +465,7 @@ From `status-markers.md`:
 - Update Postflight stage to update state.json with review artifact
 - Update ReturnSuccess stage to return artifact path + brief summary (not verbose findings)
 
-**3. Update state.json Schema** (modify: `.opencode/specs/state.json`)
+**3. Update state.json Schema** (modify: `specs/state.json`)
 - Add `review_artifacts` array to `repository_health` section
 - Document schema change in state-schema.md
 
@@ -526,13 +526,13 @@ From `status-markers.md`:
 
 **Phase 3: Update state.json Schema** (0.5 hours)
 
-1. Modify `.opencode/specs/state.json`
+1. Modify `specs/state.json`
 2. Add `review_artifacts` array to `repository_health`:
    ```json
    "review_artifacts": [
      {
        "timestamp": "2025-12-28T18:00:00Z",
-       "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
+       "path": "specs/207_codebase_review/summaries/review-summary.md",
        "scope": "full"
      }
    ]
@@ -675,7 +675,7 @@ From `status-markers.md`:
   "artifacts": [
     {
       "type": "summary",
-      "path": ".opencode/specs/207_codebase_review/summaries/review-summary.md",
+      "path": "specs/207_codebase_review/summaries/review-summary.md",
       "summary": "Review findings and recommendations"
     }
   ],
@@ -708,7 +708,7 @@ From `status-markers.md`:
 **Required Documentation**:
 1. Create `.opencode/agent/subagents/reviewer.md` (new)
 2. Update `.opencode/command/review.md` (modify stages 2, 4, 5, 7, 8)
-3. Update `.opencode/specs/state.json` (add review_artifacts)
+3. Update `specs/state.json` (add review_artifacts)
 4. Update `.opencode/context/core/system/state-schema.md` (document review_artifacts)
 
 **Optional Documentation**:
@@ -763,6 +763,6 @@ Implementation is successful when:
 - .opencode/context/core/standards/summary.md (summary format standard)
 - .opencode/context/core/standards/status-markers.md (status markers)
 - .opencode/command/research.md (reference implementation)
-- .opencode/specs/TODO.md (task tracking)
-- .opencode/specs/state.json (state management)
-- .opencode/specs/170_maintenance_report_improvements/reports/research-001.md (maintenance report analysis)
+- specs/TODO.md (task tracking)
+- specs/state.json (state management)
+- specs/170_maintenance_report_improvements/reports/research-001.md (maintenance report analysis)

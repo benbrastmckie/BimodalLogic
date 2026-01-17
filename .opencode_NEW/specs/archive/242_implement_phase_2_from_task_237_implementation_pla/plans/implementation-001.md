@@ -13,7 +13,7 @@
 ## Metadata
 
 **Research Integrated**: Yes  
-**Research Report**: .opencode/specs/242_phase2_split_command_files/reports/research-001.md  
+**Research Report**: specs/242_phase2_split_command_files/reports/research-001.md  
 **Key Findings**: Phase 2 requires orchestrator architectural changes with MEDIUM-HIGH risk for 72-104KB savings. Context transition (unloading routing file) is NOT feasible without major refactoring. Phase 3 (selective TODO.md loading) achieved 40KB savings with ZERO architectural risk (COMPLETED). Phase 4 (aggressive deduplication) offers 56-72KB savings with LOWER risk than Phase 2. Recommendation: ABANDON Phase 2, pursue Phase 4 instead.  
 
 **Dependencies**: Task 237 (context window optimization)  
@@ -120,7 +120,7 @@ This is NOT a traditional implementation plan - it is a formal abandonment plan 
 **Tasks**:
 
 1. **Create abandonment summary document** (30 minutes)
-   - Create `.opencode/specs/242_phase2_split_command_files/summaries/abandonment-summary.md`
+   - Create `specs/242_phase2_split_command_files/summaries/abandonment-summary.md`
    - Document abandonment decision with clear rationale
    - Reference research findings (architectural complexity, context transition infeasibility)
    - Highlight Phase 3 achievements (40KB savings, ZERO risk)
@@ -128,7 +128,7 @@ This is NOT a traditional implementation plan - it is a formal abandonment plan 
    - Document expected outcomes of Phase 3 + Phase 4 approach (96-112KB total savings)
 
 2. **Update task 237 implementation plan** (30 minutes)
-   - Edit `.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md`
+   - Edit `specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md`
    - Change Phase 2 status from [DEFERRED] to [ABANDONED]
    - Add abandonment rationale to Phase 2 section
    - Reference task 242 research findings
@@ -160,7 +160,7 @@ This is NOT a traditional implementation plan - it is a formal abandonment plan 
 **Tasks**:
 
 1. **Update task 237 TODO.md entry** (30 minutes)
-   - Edit `.opencode/specs/TODO.md` task 237 entry
+   - Edit `specs/TODO.md` task 237 entry
    - Change Phase 2 status from [DEFERRED] to [ABANDONED]
    - Add abandonment note to Phase 2 description
    - Reference task 242 research and abandonment summary
@@ -169,7 +169,7 @@ This is NOT a traditional implementation plan - it is a formal abandonment plan 
    - Highlight Phase 4 as recommended next step
 
 2. **Update task 242 TODO.md entry** (15 minutes)
-   - Edit `.opencode/specs/TODO.md` task 242 entry
+   - Edit `specs/TODO.md` task 242 entry
    - Change status from [RESEARCHED] to [ABANDONED]
    - Add abandonment note referencing research findings
    - Link to abandonment summary document
@@ -277,7 +277,7 @@ This is NOT a traditional implementation plan - it is a formal abandonment plan 
 ### New Files
 
 **Abandonment Summary**:
-- `.opencode/specs/242_phase2_split_command_files/summaries/abandonment-summary.md`
+- `specs/242_phase2_split_command_files/summaries/abandonment-summary.md`
   - Formal abandonment documentation
   - Rationale based on research findings
   - Phase 4 recommendation
@@ -286,17 +286,17 @@ This is NOT a traditional implementation plan - it is a formal abandonment plan 
 ### Modified Files
 
 **Task 237 Documentation**:
-- `.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md`
+- `specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md`
   - Phase 2 status changed to [ABANDONED]
   - Abandonment rationale added
   - Reference to task 242 research
 
 **Task Tracking**:
-- `.opencode/specs/TODO.md`
+- `specs/TODO.md`
   - Task 237 entry updated (Phase 2 abandoned)
   - Task 242 entry updated (status [ABANDONED])
   - Abandonment summary linked
-- `.opencode/specs/state.json`
+- `specs/state.json`
   - Task 237 status updated
   - Task 242 status updated to [ABANDONED]
   - Abandonment timestamp added
@@ -364,10 +364,10 @@ This is NOT a traditional implementation plan - it is a formal abandonment plan 
 ### Technical Dependencies
 
 **Required Files**:
-- `.opencode/specs/242_phase2_split_command_files/reports/research-001.md` (exists)
-- `.opencode/specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md` (exists)
-- `.opencode/specs/TODO.md` (exists)
-- `.opencode/specs/state.json` (exists)
+- `specs/242_phase2_split_command_files/reports/research-001.md` (exists)
+- `specs/237_investigate_fix_context_window_bloat_workflow_commands/plans/implementation-001.md` (exists)
+- `specs/TODO.md` (exists)
+- `specs/state.json` (exists)
 
 **Required Tools**:
 - Text editor for documentation
@@ -382,7 +382,7 @@ This is NOT a traditional implementation plan - it is a formal abandonment plan 
 - Phase 4 design and benefits
 
 **Research Artifacts**:
-- Research report: .opencode/specs/242_phase2_split_command_files/reports/research-001.md
+- Research report: specs/242_phase2_split_command_files/reports/research-001.md
 - Key findings: Architectural complexity, context transition infeasibility, Phase 4 superiority
 
 ---

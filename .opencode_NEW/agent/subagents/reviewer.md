@@ -16,11 +16,11 @@ tools:
 permissions:
   allow:
     - read: ["**/*"]
-    - write: [".opencode/specs/**/*", "docs/project-info/**/*"]
+    - write: ["specs/**/*", "docs/project-info/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "rm -fr", "sudo", "su"]
-    - write: [".git/**/*", ".opencode/specs/TODO.md", ".opencode/specs/state.json"]
+    - write: [".git/**/*", "specs/TODO.md", "specs/state.json"]
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
@@ -62,7 +62,7 @@ lifecycle:
   <parameter name="delegation_depth" type="integer">Current delegation depth (should be 1)</parameter>
   <parameter name="delegation_path" type="array">Array of agent names in delegation chain</parameter>
   <parameter name="review_scope" type="string">Scope of review (full|lean|docs)</parameter>
-  <parameter name="project_path" type="string">Project directory path (e.g., .opencode/specs/338_codebase_review)</parameter>
+  <parameter name="project_path" type="string">Project directory path (e.g., specs/338_codebase_review)</parameter>
   <parameter name="current_registries" type="object">Current registry paths</parameter>
 </inputs_required>
 
@@ -519,8 +519,8 @@ lifecycle:
   
   <state_separation>
     Reviewer does NOT update:
-    - .opencode/specs/TODO.md (command creates tasks)
-    - .opencode/specs/state.json (command updates state)
+    - specs/TODO.md (command creates tasks)
+    - specs/state.json (command updates state)
     
     Reviewer DOES update:
     - docs/project-info/*_REGISTRY.md (4 registries)

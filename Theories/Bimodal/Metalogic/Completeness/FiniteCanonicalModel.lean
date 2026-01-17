@@ -91,7 +91,7 @@ by working directly with finite structures.
 
 * Modal Logic, Blackburn et al. - Finite model property
 * Goldblatt, Logics of Time and Computation - Temporal completeness
-* Research report: .claude/specs/458_extend_canonical_history_full_domain/reports/research-004.md
+* Research report: specs/458_extend_canonical_history_full_domain/reports/research-004.md
 * Task 473: SemanticWorldState architecture
 -/
 

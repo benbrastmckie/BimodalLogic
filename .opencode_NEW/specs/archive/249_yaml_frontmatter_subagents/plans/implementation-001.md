@@ -12,7 +12,7 @@
 - **Plan Version**: 001
 - **Created**: 2025-12-29
 - **Research Integrated**: Yes
-- **Research Report**: `.opencode/specs/249_yaml_frontmatter_subagents/reports/research-001.md`
+- **Research Report**: `specs/249_yaml_frontmatter_subagents/reports/research-001.md`
 
 ## Overview
 
@@ -157,7 +157,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
 3. Set temperature: 0.3 (research agent)
 4. Configure tools: [read, write, bash, webfetch, grep, glob]
 5. Configure permissions:
-   - Allow: read (**/*.md, .opencode/**/*), write (.opencode/specs/**/*), bash (grep, find, wc, date, mkdir)
+   - Allow: read (**/*.md, .opencode/**/*), write (specs/**/*), bash (grep, find, wc, date, mkdir)
    - Deny: bash (rm -rf, sudo, chmod +x, dd), write (.git/**/*), read (.env, **/*.key)
 6. Configure context_loading: lazy strategy with index.md
 7. Configure delegation: max_depth 3, can_delegate_to [web-research-specialist]
@@ -222,7 +222,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
 3. Set temperature: 0.2 (execution agent)
 4. Configure tools: [read, write, bash, grep, glob]
 5. Configure permissions:
-   - Allow: read (.opencode/**/*), write (.opencode/specs/**/*), bash (grep, wc, date, mkdir, git)
+   - Allow: read (.opencode/**/*), write (specs/**/*), bash (grep, wc, date, mkdir, git)
    - Deny: bash (rm -rf, sudo, chmod +x, dd), write (.git/config)
 6. Configure context_loading: lazy strategy with plan.md required
 7. Configure delegation: max_depth 3, can_delegate_to [implementer, lean-implementation-agent, status-sync-manager]
@@ -255,7 +255,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
 3. Set temperature: 0.3 (research agent)
 4. Configure tools: [read, write, bash, webfetch, grep, glob]
 5. Configure permissions:
-   - Allow: read (**/*.lean, **/*.md, .opencode/**/*), write (.opencode/specs/**/*), bash (grep, find, wc, date, mkdir, loogle)
+   - Allow: read (**/*.lean, **/*.md, .opencode/**/*), write (specs/**/*), bash (grep, find, wc, date, mkdir, loogle)
    - Deny: bash (rm -rf, sudo, chmod +x, dd), write (.git/**/* , **/*.lean, lakefile.lean)
 6. Configure context_loading: lazy strategy with lean-patterns.md required
 7. Configure delegation: max_depth 3, can_delegate_to [web-research-specialist]
@@ -288,7 +288,7 @@ This plan implements comprehensive YAML frontmatter for all 6 subagents followin
 3. Set temperature: 0.2 (implementation agent)
 4. Configure tools: [read, write, edit, bash, grep, glob]
 5. Configure permissions:
-   - Allow: read (**/*.lean, **/*.md, .opencode/**/*), write (**/*.lean, .opencode/specs/**/*), bash (grep, find, wc, date, mkdir, lake)
+   - Allow: read (**/*.lean, **/*.md, .opencode/**/*), write (**/*.lean, specs/**/*), bash (grep, find, wc, date, mkdir, lake)
    - Deny: bash (rm -rf, sudo, chmod +x, dd), write (.git/**/* , lakefile.lean, lean-toolchain)
 6. Configure context_loading: lazy strategy with lean-patterns.md and proof-strategies.md required
 7. Configure delegation: max_depth 3, can_delegate_to [status-sync-manager]
@@ -580,7 +580,7 @@ If frontmatter changes break subagent functionality:
 
 ### Research Integration
 
-This plan integrates comprehensive research findings from `.opencode/specs/249_yaml_frontmatter_subagents/reports/research-001.md`:
+This plan integrates comprehensive research findings from `specs/249_yaml_frontmatter_subagents/reports/research-001.md`:
 
 - **13 Essential Fields**: name, version, description, mode, agent_type, temperature, tools, permissions, context_loading, delegation, lifecycle, max_tokens, timeout
 - **30+ Dangerous Commands**: rm -rf, sudo, chmod, dd, package managers, network operations, etc.

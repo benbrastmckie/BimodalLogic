@@ -7,7 +7,7 @@
 - **Priority**: Medium
 - **Dependencies**: 126, 127
 - **Research Inputs**:
-  - .opencode/specs/128_implement_caching_and_context_helpers_in_proofsearch/reports/research-001.md
+  - specs/128_implement_caching_and_context_helpers_in_proofsearch/reports/research-001.md
 - **Artifacts**:
   - plans/implementation-001.md (this file)
   - summaries/plan-summary.md
@@ -100,7 +100,7 @@ Implement hash-based cache/visited structures with statistics, ensure modal/temp
 ## File Structure
 
 ```
-.opencode/specs/128_implement_caching_and_context_helpers_in_proofsearch/
+specs/128_implement_caching_and_context_helpers_in_proofsearch/
   plans/implementation-001.md (this plan)
   reports/research-001.md
   summaries/plan-summary.md
@@ -136,7 +136,7 @@ LogosTest/Core/Automation/ProofSearchTest.lean
 
 ## Related Research
 
-- `.opencode/specs/128_implement_caching_and_context_helpers_in_proofsearch/reports/research-001.md`
+- `specs/128_implement_caching_and_context_helpers_in_proofsearch/reports/research-001.md`
 
 ## Notes
 

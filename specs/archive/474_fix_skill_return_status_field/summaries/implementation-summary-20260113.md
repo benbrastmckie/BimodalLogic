@@ -68,8 +68,8 @@ The word "completed" triggered Claude to interpret skill returns as "task done, 
 
 ## Not Modified (As Designed)
 
-- `.claude/specs/state.json` - Task status "completed" is valid here (tracks task lifecycle, not skill returns)
-- `.claude/specs/TODO.md` - Same as above
+- `specs/state.json` - Task status "completed" is valid here (tracks task lifecycle, not skill returns)
+- `specs/TODO.md` - Same as above
 - Archive files - Historical documentation, not active code
 - Old research reports - Reference documentation only
 

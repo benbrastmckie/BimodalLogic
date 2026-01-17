@@ -13,7 +13,7 @@
   - Task 133 research-001.md (canonical history)
   - Implementation-002.md (Phase 4 plan)
   - TaskFrame.lean, TaskModel.lean, WorldHistory.lean (semantic structures)
-- **Artifacts**: This report (.claude/specs/447_canonical_frame_model_construction/reports/research-001.md)
+- **Artifacts**: This report (specs/447_canonical_frame_model_construction/reports/research-001.md)
 - **Standards**: report-format.md, subagent-return.md, artifact-formats.md
 
 ## Executive Summary
@@ -384,9 +384,9 @@ The existing plan (implementation-002.md Phase 4) is appropriate with these clar
 2. `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Semantics/TaskFrame.lean` - TaskFrame definition
 3. `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Semantics/TaskModel.lean` - TaskModel definition
 4. `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Semantics/WorldHistory.lean` - WorldHistory definition
-5. `/home/benjamin/Projects/ProofChecker/.claude/specs/257_completeness_proofs/plans/implementation-002.md` - Parent plan
-6. `/home/benjamin/Projects/ProofChecker/.claude/specs/446_agnostic_duration_construction/summaries/implementation-summary-20260112.md` - Task 446 summary
-7. `/home/benjamin/Projects/ProofChecker/.claude/specs/133_build_canonical_model_constructors_in_completeness/reports/research-001.md` - Related research
+5. `/home/benjamin/Projects/ProofChecker/specs/257_completeness_proofs/plans/implementation-002.md` - Parent plan
+6. `/home/benjamin/Projects/ProofChecker/specs/446_agnostic_duration_construction/summaries/implementation-summary-20260112.md` - Task 446 summary
+7. `/home/benjamin/Projects/ProofChecker/specs/133_build_canonical_model_constructors_in_completeness/reports/research-001.md` - Related research
 
 ### Key Mathlib Lemmas (Potentially Useful)
 

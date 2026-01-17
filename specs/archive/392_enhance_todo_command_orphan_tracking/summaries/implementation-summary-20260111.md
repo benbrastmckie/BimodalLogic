@@ -17,7 +17,7 @@ Enhanced the `/todo` command to properly track orphaned directories in `archive/
   - **Step 5.E**: Completely rewrote to add state entries for orphans
   - **Notes**: Added comprehensive documentation for orphan tracking
 
-- `.claude/specs/archive/state.json` - Flattened nested arrays:
+- `specs/archive/state.json` - Flattened nested arrays:
   - Changed from mixed objects/nested arrays to flat array structure
   - 63 entries preserved, no data loss
 
@@ -59,4 +59,4 @@ Added comprehensive notes explaining:
 
 ## Notes
 
-This implementation ensures all project directories in `.claude/specs/archive/` are now accounted for in state files. The research report identified 38 orphaned directories in archive/ - these can now be tracked by running `/todo` and selecting "Track all orphans".
+This implementation ensures all project directories in `specs/archive/` are now accounted for in state files. The research report identified 38 orphaned directories in archive/ - these can now be tracked by running `/todo` and selecting "Track all orphans".

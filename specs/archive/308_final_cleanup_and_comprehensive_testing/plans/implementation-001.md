@@ -24,7 +24,7 @@ This plan focuses on fixing the state.json format and then testing all commands 
 3. Wrap all task objects in `active_projects` array
 
 **Files to modify**:
-- `.claude/specs/state.json` - Convert from JSONL to proper JSON structure
+- `specs/state.json` - Convert from JSONL to proper JSON structure
 
 **Steps**:
 1. Read current state.json and parse each JSON object
@@ -44,9 +44,9 @@ This plan focuses on fixing the state.json format and then testing all commands 
 5. Validate with jq that `.next_project_number` and `.active_projects[]` work
 
 **Verification**:
-- `jq -r '.next_project_number' .claude/specs/state.json` returns 352
-- `jq -r '.active_projects | length' .claude/specs/state.json` returns count matching task count
-- `jq -r '.active_projects[] | select(.project_number == 308)' .claude/specs/state.json` returns task data
+- `jq -r '.next_project_number' specs/state.json` returns 352
+- `jq -r '.active_projects | length' specs/state.json` returns count matching task count
+- `jq -r '.active_projects[] | select(.project_number == 308)' specs/state.json` returns task data
 
 ---
 
@@ -66,7 +66,7 @@ This plan focuses on fixing the state.json format and then testing all commands 
 **Steps**:
 1. Test task lookup:
    ```bash
-   jq -r --arg num "308" '.active_projects[] | select(.project_number == ($num | tonumber))' .claude/specs/state.json
+   jq -r --arg num "308" '.active_projects[] | select(.project_number == ($num | tonumber))' specs/state.json
    ```
 2. Test /meta --analyze (should work)
 3. Test /review (should work for basic review)
@@ -92,7 +92,7 @@ This plan focuses on fixing the state.json format and then testing all commands 
 - May need minor fixes to state.json or TODO.md if discrepancies found
 
 **Steps**:
-1. Count tasks in state.json: `jq '.active_projects | length' .claude/specs/state.json`
+1. Count tasks in state.json: `jq '.active_projects | length' specs/state.json`
 2. Count task entries in TODO.md
 3. Compare next_project_number in both files
 4. Document results
@@ -114,9 +114,9 @@ This plan focuses on fixing the state.json format and then testing all commands 
 3. Create implementation summary
 
 **Files to modify**:
-- `.claude/specs/308_final_cleanup_and_comprehensive_testing/summaries/implementation-summary-20260110.md`
-- `.claude/specs/state.json` - Status update
-- `.claude/specs/TODO.md` - Status update
+- `specs/308_final_cleanup_and_comprehensive_testing/summaries/implementation-summary-20260110.md`
+- `specs/state.json` - Status update
+- `specs/TODO.md` - Status update
 
 **Steps**:
 1. Create implementation summary
@@ -154,7 +154,7 @@ This plan focuses on fixing the state.json format and then testing all commands 
 
 1. If format conversion fails, restore from git:
    ```bash
-   git checkout HEAD -- .claude/specs/state.json
+   git checkout HEAD -- specs/state.json
    ```
 2. If partial corruption, use archive/state.json structure as template
 3. As last resort, parse TODO.md to regenerate state.json

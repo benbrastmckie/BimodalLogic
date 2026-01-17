@@ -46,9 +46,9 @@ Complete the remaining 15% of task 193 by first attempting the simpler `simp onl
 ## Research Inputs
 
 **Primary Sources**:
-- Research Report: `.opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md`
-- Task 209 Review: `.opencode/specs/193_prove_is_valid_swap_involution/reports/task209-review-and-revised-plan.md`
-- Implementation Report: `.opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md`
+- Research Report: `specs/193_prove_is_valid_swap_involution/reports/research-001.md`
+- Task 209 Review: `specs/193_prove_is_valid_swap_involution/reports/task209-review-and-revised-plan.md`
+- Implementation Report: `specs/193_prove_is_valid_swap_involution/reports/implementation-001.md`
 
 **Key Findings**:
 
@@ -425,10 +425,10 @@ grep -n "sorry" Logos/Core/Semantics/Truth.lean
 
 ### Related Documentation
 
-- Research Report: `.opencode/specs/193_prove_is_valid_swap_involution/reports/research-001.md`
-- Implementation Report: `.opencode/specs/193_prove_is_valid_swap_involution/reports/implementation-001.md`
-- Task 209 Review: `.opencode/specs/193_prove_is_valid_swap_involution/reports/task209-review-and-revised-plan.md`
-- Task 209 Research: `.opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md`
+- Research Report: `specs/193_prove_is_valid_swap_involution/reports/research-001.md`
+- Implementation Report: `specs/193_prove_is_valid_swap_involution/reports/implementation-001.md`
+- Task 209 Review: `specs/193_prove_is_valid_swap_involution/reports/task209-review-and-revised-plan.md`
+- Task 209 Research: `specs/209_research_lean4_involution_techniques/reports/research-001.md`
 
 ---
 

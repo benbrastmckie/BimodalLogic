@@ -26,8 +26,8 @@ blocks: [173]
 
 This implementation plan is based on comprehensive research completed on 2025-12-26:
 
-- **Main Research Report**: `.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md`
-- **Research Summary**: `.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md`
+- **Main Research Report**: `specs/183_deduction_theorem_build_errors/reports/research-001.md`
+- **Research Summary**: `specs/183_deduction_theorem_build_errors/summaries/research-summary.md`
 
 **Key Research Findings**:
 - Root cause: All 3 errors stem from using `(em P).elim` pattern inside `match` expressions
@@ -535,7 +535,7 @@ Consider documenting classical reasoning patterns in LEAN_STYLE_GUIDE.md:
 
 ## Related Research
 
-**Research Report**: `.opencode/specs/183_deduction_theorem_build_errors/reports/research-001.md`
+**Research Report**: `specs/183_deduction_theorem_build_errors/reports/research-001.md`
 
 **Key Sections**:
 - Error Analysis (lines 30-136): Detailed breakdown of all 3 errors
@@ -543,7 +543,7 @@ Consider documenting classical reasoning patterns in LEAN_STYLE_GUIDE.md:
 - Code Examples (lines 374-561): Before/after code for all 3 fixes
 - Recommended Solution (lines 599-627): Rationale for using `by_cases`
 
-**Research Summary**: `.opencode/specs/183_deduction_theorem_build_errors/summaries/research-summary.md`
+**Research Summary**: `specs/183_deduction_theorem_build_errors/summaries/research-summary.md`
 
 **Proven Patterns**:
 - Soundness.lean line 282: `by_cases` pattern

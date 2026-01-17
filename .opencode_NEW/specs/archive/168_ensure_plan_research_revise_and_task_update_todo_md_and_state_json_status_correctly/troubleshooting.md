@@ -180,7 +180,7 @@ This guide helps diagnose and resolve status synchronization issues across TODO.
 **Symptoms**:
 - Project directory created during status update
 - plans/ or reports/ subdirectory created without artifacts
-- Empty directories in .opencode/specs/
+- Empty directories in specs/
 
 **Diagnosis**:
 1. Check if project directory exists
@@ -242,54 +242,54 @@ This guide helps diagnose and resolve status synchronization issues across TODO.
 
 ```bash
 # Check TODO.md status for task 168
-grep -A 5 "^### 168\." .opencode/specs/TODO.md | grep "Status:"
+grep -A 5 "^### 168\." specs/TODO.md | grep "Status:"
 
 # Check state.json status for task 168
-jq '.pending_tasks[] | select(.project_number == 168) | .status' .opencode/specs/state.json
+jq '.pending_tasks[] | select(.project_number == 168) | .status' specs/state.json
 
 # Check project state.json status
-jq '.status' .opencode/specs/168_*/state.json
+jq '.status' specs/168_*/state.json
 
 # Check plan file status
-grep "^**Status**:" .opencode/specs/168_*/plans/implementation-*.md
+grep "^**Status**:" specs/168_*/plans/implementation-*.md
 ```
 
 ### Check Timestamp Consistency
 
 ```bash
 # Check TODO.md timestamps
-grep -A 10 "^### 168\." .opencode/specs/TODO.md | grep -E "(Started|Completed|Researched|Planned):"
+grep -A 10 "^### 168\." specs/TODO.md | grep -E "(Started|Completed|Researched|Planned):"
 
 # Check state.json timestamps
-jq '.pending_tasks[] | select(.project_number == 168) | {started, completed, researched, planned}' .opencode/specs/state.json
+jq '.pending_tasks[] | select(.project_number == 168) | {started, completed, researched, planned}' specs/state.json
 
 # Check project state.json timestamps
-jq '{started, completed, last_updated}' .opencode/specs/168_*/state.json
+jq '{started, completed, last_updated}' specs/168_*/state.json
 ```
 
 ### Check Field Naming
 
 ```bash
 # Check for _at suffix in state.json (should not exist)
-grep -E "(started_at|completed_at|researched_at|planned_at)" .opencode/specs/state.json
+grep -E "(started_at|completed_at|researched_at|planned_at)" specs/state.json
 
 # Check for correct field names
-jq '.pending_tasks[] | select(.project_number == 168) | keys' .opencode/specs/state.json
+jq '.pending_tasks[] | select(.project_number == 168) | keys' specs/state.json
 ```
 
 ### Validate File Integrity
 
 ```bash
 # Validate JSON syntax
-jq empty .opencode/specs/state.json
-jq empty .opencode/specs/168_*/state.json
+jq empty specs/state.json
+jq empty specs/168_*/state.json
 
 # Check for empty directories
-find .opencode/specs/168_* -type d -empty
+find specs/168_* -type d -empty
 
 # Check file permissions
-ls -la .opencode/specs/TODO.md
-ls -la .opencode/specs/state.json
+ls -la specs/TODO.md
+ls -la specs/state.json
 ```
 
 ## Recovery Procedures
@@ -301,8 +301,8 @@ If files are corrupted or inconsistent:
 1. Stop all running commands
 2. Restore files from backup:
    ```bash
-   cp .opencode/specs/TODO.md.backup .opencode/specs/TODO.md
-   cp .opencode/specs/state.json.backup .opencode/specs/state.json
+   cp specs/TODO.md.backup specs/TODO.md
+   cp specs/state.json.backup specs/state.json
    ```
 3. Verify file integrity
 4. Re-run commands to get back to desired state
@@ -315,7 +315,7 @@ If backup not available, manually sync files:
 2. Update state.json to match:
    ```bash
    # Edit state.json manually
-   vim .opencode/specs/state.json
+   vim specs/state.json
    ```
 3. Update project state.json to match
 4. Update plan file to match

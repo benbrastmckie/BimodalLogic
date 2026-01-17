@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Tasks 1-9 in `.opencode/specs/TODO.md` violate task standards defined in `.opencode/context/core/standards/tasks.md` in two critical ways:
+Tasks 1-9 in `specs/TODO.md` violate task standards defined in `.opencode/context/core/standards/tasks.md` in two critical ways:
 
 1. **Missing Language field** - All 9 tasks lack the mandatory `**Language**` metadata field
 2. **Wrong bullet formatting** - Tasks 1-6 use `*Effort**:` instead of `- **Effort**:`
@@ -216,7 +216,7 @@ CRITICAL: This stage MUST extract the Language field and determine routing.
 
 Extract Language field from TODO.md task using explicit bash command:
 
-bash: grep -A 20 "^### ${task_number}\." .opencode/specs/TODO.md | grep -m 1 "Language:" | sed 's/.*Language: *//'
+bash: grep -A 20 "^### ${task_number}\." specs/TODO.md | grep -m 1 "Language:" | sed 's/.*Language: *//'
 
 IF Language == "lean":
   Route to lean-implementation-agent
@@ -285,9 +285,9 @@ ELSE:
 
 **Command**:
 ```bash
-grep -n "^### [0-9]" .opencode/specs/TODO.md | while read line; do
+grep -n "^### [0-9]" specs/TODO.md | while read line; do
   task_num=$(echo "$line" | grep -o "^[0-9]*")
-  has_language=$(sed -n "${task_num},/^---$/p" .opencode/specs/TODO.md | grep -c "Language:")
+  has_language=$(sed -n "${task_num},/^---$/p" specs/TODO.md | grep -c "Language:")
   if [ "$has_language" -eq 0 ]; then
     echo "Task at line $line: Missing Language field"
   fi
@@ -436,11 +436,11 @@ done
 
 ### 10.1 Files Analyzed
 
-1. `.opencode/specs/TODO.md` - Task list with violations
+1. `specs/TODO.md` - Task list with violations
 2. `.opencode/context/core/standards/tasks.md` - Task standards specification
 3. `.opencode/command/task.md` - Task creation command
 4. `.opencode/command/review.md` - Review command with task creation
-5. `.opencode/specs/state.json` - Project state tracking
+5. `specs/state.json` - Project state tracking
 6. `.opencode/command/implement.md` - Language-based routing logic
 7. `.opencode/command/research.md` - Language-based routing logic
 

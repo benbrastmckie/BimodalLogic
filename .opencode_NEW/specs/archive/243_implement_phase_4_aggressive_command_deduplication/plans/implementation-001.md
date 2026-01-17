@@ -6,9 +6,9 @@
 - **Priority**: Medium
 - **Dependencies**: Task 237 Phase 3 (completed), Task 240 research (completed)
 - **Research Inputs**: 
-  - .opencode/specs/243_implement_phase_4_aggressive_command_deduplication/reports/research-001.md (Aggressive deduplication strategies)
-  - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-002.md (OpenAgents architectural patterns)
-  - .opencode/specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md (Comparative analysis)
+  - specs/243_implement_phase_4_aggressive_command_deduplication/reports/research-001.md (Aggressive deduplication strategies)
+  - specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/plans/implementation-002.md (OpenAgents architectural patterns)
+  - specs/240_systematically_investigate_and_fix_persistent_workflow_command_stage_7_postflight_failures/reports/research-001.md (Comparative analysis)
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md

@@ -59,7 +59,7 @@ From `subagent-return.md`, the agent MUST return:
   "artifacts": [
     {
       "type": "report",
-      "path": ".claude/specs/{N}_{SLUG}/reports/research-{NNN}.md",
+      "path": "specs/{N}_{SLUG}/reports/research-{NNN}.md",
       "summary": "Brief description"
     }
   ],
@@ -152,7 +152,7 @@ Create `.claude/agents/lean-research-agent.md` with:
 ### Artifact Creation
 
 The agent must:
-1. Create directory: `.claude/specs/{N}_{SLUG}/reports/` (if not exists)
+1. Create directory: `specs/{N}_{SLUG}/reports/` (if not exists)
 2. Find next report number (research-001.md, research-002.md, etc.)
 3. Write report following `report-format.md` structure
 4. Return JSON with artifact path
@@ -176,7 +176,7 @@ The agent should handle:
 - Thin wrapper template: `.claude/context/core/templates/thin-wrapper-skill.md`
 - Delegation patterns: `.claude/context/core/orchestration/delegation.md`
 - Context index: `.claude/context/index.md`
-- Task 409 summary: `.claude/specs/409_convert_workflow_skills_to_forked_subagent_pattern/summaries/implementation-summary-20260112.md`
+- Task 409 summary: `specs/409_convert_workflow_skills_to_forked_subagent_pattern/summaries/implementation-summary-20260112.md`
 
 ## Next Steps
 

@@ -56,7 +56,7 @@ Current examples are **basic demonstrations** that don't showcase:
 
 ### 1. API Changes Analysis Report
 
-**Location**: `.opencode/specs/177_examples_update/reports/api-changes-analysis.md`
+**Location**: `specs/177_examples_update/reports/api-changes-analysis.md`
 
 **Contents**:
 - Detailed API additions from each task

@@ -855,7 +855,7 @@ end Logos.Core.Metalogic.SoundnessLemmas
 
 #### 3. Update Circular Dependency Analysis
 
-**File**: `.opencode/specs/213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md`
+**File**: `specs/213_resolve_is_valid_swap_involution_blocker/reports/circular-dependency-analysis.md`
 
 **Changes**:
 - Add section: "Resolution via Module Restructuring (Task 219)"

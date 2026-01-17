@@ -9,15 +9,15 @@
 **Sources/Inputs**:
 - .opencode/command/task.md (task creation command)
 - .opencode/command/abandon.md (range/list parsing patterns)
-- .opencode/specs/189_research_divide_flag/reports/research-001.md (--divide flag research for /research)
-- .opencode/specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md (--recover flag patterns)
-- .opencode/specs/archive/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md (argument parsing)
+- specs/189_research_divide_flag/reports/research-001.md (--divide flag research for /research)
+- specs/325_create___recover_flag_for_task_command_to_unarchive_projects/reports/research-001.md (--recover flag patterns)
+- specs/archive/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md (argument parsing)
 - .opencode/agent/subagents/status-sync-manager.md (atomic task creation)
 - .opencode/agent/subagents/atomic-task-numberer.md (task number allocation)
 - .opencode/command/meta.md (task creation with plan artifacts)
-- .opencode/specs/state.json (task metadata structure)
+- specs/state.json (task metadata structure)
 
-**Artifacts**: .opencode/specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md  
+**Artifacts**: specs/326_create___divide_flag_for_task_command_with_task_division_capability/reports/research-001.md  
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 
 ---
@@ -1087,12 +1087,12 @@ Update documentation for `/task --divide` feature:
 - **Relevance**: Existing --divide flag for new tasks, division logic, delegation patterns
 
 ### Source 2: Task 189 Research Report
-- **File**: `.opencode/specs/189_research_divide_flag/reports/research-001.md`
+- **File**: `specs/189_research_divide_flag/reports/research-001.md`
 - **Key Sections**: Topic subdivision strategy, subtopic count, subdivision criteria
 - **Relevance**: Division patterns, 3-5 subtask optimal range, validation criteria
 
 ### Source 3: Task 311 Research Report
-- **File**: `.opencode/specs/archive/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md`
+- **File**: `specs/archive/311_refactor_abandon_command_to_support_ranges_and_lists_of_task_numbers/reports/research-001.md`
 - **Key Sections**: Argument parsing patterns, range/list syntax
 - **Relevance**: Parsing patterns for task numbers, validation, error handling
 
@@ -1112,7 +1112,7 @@ Update documentation for `/task --divide` feature:
 - **Relevance**: Multiple task creation patterns, artifact management
 
 ### Source 7: state.json Schema
-- **File**: `.opencode/specs/state.json`
+- **File**: `specs/state.json`
 - **Key Fields**: active_projects, next_project_number, dependencies
 - **Relevance**: Task metadata structure, dependency tracking
 

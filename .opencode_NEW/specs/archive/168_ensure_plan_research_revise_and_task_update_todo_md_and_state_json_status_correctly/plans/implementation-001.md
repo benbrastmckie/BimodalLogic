@@ -17,7 +17,7 @@ Verify and fix status synchronization across /plan, /research, /revise, and /tas
 
 ## Research Inputs
 
-- **Research Report**: `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/reports/research-001.md`
+- **Research Report**: `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/reports/research-001.md`
   - Comprehensive audit of status synchronization across all four commands
   - Identified 5 critical gaps in atomicity and consistency
   - Analyzed batch-status-manager limitations (TODO.md only)
@@ -264,7 +264,7 @@ None - uses built-in file system operations and markdown/JSON parsing.
 - `.opencode/command/research.md`
 - `.opencode/command/revise.md`
 - `.opencode/command/task.md`
-- `.opencode/specs/state.json`
+- `specs/state.json`
 - All project-specific state.json files
 
 **Approach**:
@@ -296,7 +296,7 @@ None - uses built-in file system operations and markdown/JSON parsing.
 
 **Action**: Update all existing state.json files to use standardized field names
 
-**Files**: `.opencode/specs/state.json` and project-specific state.json files
+**Files**: `specs/state.json` and project-specific state.json files
 
 **Approach**:
 1. Read each state.json file
@@ -465,7 +465,7 @@ None - uses built-in file system operations and markdown/JSON parsing.
 
 **Action**: Design comprehensive test plan for status synchronization
 
-**File**: `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/test-plan.md`
+**File**: `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/test-plan.md`
 
 **Approach**:
 1. Define test scenarios:
@@ -590,7 +590,7 @@ None - uses built-in file system operations and markdown/JSON parsing.
 
 **Action**: Create troubleshooting guide for status synchronization issues
 
-**File**: `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/troubleshooting.md`
+**File**: `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/troubleshooting.md`
 
 **Approach**:
 1. Document common issues:
@@ -780,7 +780,7 @@ None - uses built-in file system operations and markdown/JSON parsing.
 
 ## Related Research
 
-- **Research Report**: `.opencode/specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/reports/research-001.md`
+- **Research Report**: `specs/168_ensure_plan_research_revise_and_task_update_todo_md_and_state_json_status_correctly/reports/research-001.md`
   - Comprehensive audit identifying 5 critical gaps
   - Detailed analysis of batch-status-manager limitations
   - Field naming inconsistency documentation

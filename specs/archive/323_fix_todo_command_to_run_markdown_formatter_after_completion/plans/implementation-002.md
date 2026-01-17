@@ -15,11 +15,11 @@
 The original plan (v001) was written for the OpenCode system:
 - Referenced `.opencode/scripts/format_markdown.py`
 - Referenced `.opencode/command/todo.md`
-- Referenced `.opencode/specs/TODO.md`
+- Referenced `specs/TODO.md`
 
 The project has migrated to Claude Code:
 - Scripts remain in `.opencode/scripts/` (not yet migrated)
-- TODO.md is at `.claude/specs/TODO.md`
+- TODO.md is at `specs/TODO.md`
 - Commands are now skills in `.claude/skills/`
 
 ### Previous Plan Status
@@ -27,7 +27,7 @@ The project has migrated to Claude Code:
 
 ### Key Changes
 1. **Extend existing script** instead of creating new one - add formatting to `todo_cleanup.py`
-2. **Update paths** from `.opencode/specs/` to `.claude/specs/`
+2. **Update paths** from `specs/` to `specs/`
 3. **Simplify phases** since no separate script needed
 4. **Note script location** - stays in `.opencode/scripts/` until full migration
 
@@ -46,14 +46,14 @@ The /todo command (via `todo_cleanup.py`) successfully archives completed and ab
 
 Instead of creating a separate `format_markdown.py` script, extend the existing `todo_cleanup.py` with formatting functionality. This is simpler and keeps all TODO.md maintenance in one place.
 
-The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated to `.claude/scripts/`), but it now operates on `.claude/specs/TODO.md`.
+The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated to `.claude/scripts/`), but it now operates on `specs/TODO.md`.
 
 ### Scope
 
 **In Scope**:
 - Add `format_markdown()` function to `todo_cleanup.py`
 - Apply formatting after archival operations
-- Update path references from `.opencode/specs/` to `.claude/specs/`
+- Update path references from `specs/` to `specs/`
 - Test with current TODO.md
 
 **Out of Scope**:
@@ -65,7 +65,7 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 
 - [ ] `format_markdown()` function added to todo_cleanup.py
 - [ ] Formatting applied after archival operations
-- [ ] Path references updated to `.claude/specs/`
+- [ ] Path references updated to `specs/`
 - [ ] TODO.md properly formatted after test run
 - [ ] No data loss or corruption
 
@@ -78,7 +78,7 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 **Estimated Effort**: 15 minutes
 **Status**: [COMPLETED]
 
-**Objective**: Update script to use `.claude/specs/` instead of `.opencode/specs/`
+**Objective**: Update script to use `specs/` instead of `specs/`
 
 **Tasks**:
 1. Update default path constants in script
@@ -86,9 +86,9 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 3. Test script still finds TODO.md and state.json
 
 **Acceptance Criteria**:
-- [ ] Script uses `.claude/specs/TODO.md` by default
-- [ ] Script uses `.claude/specs/state.json` by default
-- [ ] Archive path updated to `.claude/specs/archive/`
+- [ ] Script uses `specs/TODO.md` by default
+- [ ] Script uses `specs/state.json` by default
+- [ ] Archive path updated to `specs/archive/`
 - [ ] Dry-run works with new paths
 
 **Files to Modify**:
@@ -187,7 +187,7 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 **Mitigation**:
 - Script stays in `.opencode/scripts/` for now
 - Clear documentation of path changes
-- TODO.md path updated to `.claude/specs/`
+- TODO.md path updated to `specs/`
 
 ---
 
@@ -227,9 +227,9 @@ The script path is still `.opencode/scripts/todo_cleanup.py` (not yet migrated t
 | Item | Current Location | Status |
 |------|-----------------|--------|
 | todo_cleanup.py | `.opencode/scripts/` | Not migrated |
-| TODO.md | `.claude/specs/` | Migrated |
-| state.json | `.claude/specs/` | Migrated |
-| archive/ | `.claude/specs/archive/` | Migrated |
+| TODO.md | `specs/` | Migrated |
+| state.json | `specs/` | Migrated |
+| archive/ | `specs/archive/` | Migrated |
 
 ### Comparison to v001
 

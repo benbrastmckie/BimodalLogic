@@ -68,15 +68,15 @@ This migration guide documents the breaking changes implemented in Task 169 to p
   "artifacts": [
     {
       "type": "research_summary",
-      "path": ".opencode/specs/123_validation_system/summaries/research-summary.md"
+      "path": "specs/123_validation_system/summaries/research-summary.md"
     },
     {
       "type": "plan_summary",
-      "path": ".opencode/specs/123_validation_system/summaries/plan-summary.md"
+      "path": "specs/123_validation_system/summaries/plan-summary.md"
     },
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/123_validation_system/summaries/implementation-summary-20251224.md"
+      "path": "specs/123_validation_system/summaries/implementation-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -146,20 +146,20 @@ This migration guide documents the breaking changes implemented in Task 169 to p
       "task_number": 1,
       "status": "completed",
       "summary": "Simple file modification completed",
-      "artifacts": [".opencode/specs/001_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/001_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 2,
       "status": "completed",
       "summary": "Documentation update completed",
-      "artifacts": [".opencode/specs/002_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/002_*/summaries/implementation-summary-*.md"]
     }
     // ... 8 more one-line summaries
   ],
   "artifacts": [
     {
       "type": "batch_summary",
-      "path": ".opencode/specs/batch_001-010/summaries/batch-summary-20251224.md"
+      "path": "specs/batch_001-010/summaries/batch-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -239,11 +239,11 @@ git commit -m "Implement task 999: Add comment to file"
 **Example**:
 ```bash
 # Phase 1 - Research
-git add .opencode/specs/998_*/reports/research-001.md .opencode/specs/998_*/summaries/research-summary.md
+git add specs/998_*/reports/research-001.md specs/998_*/summaries/research-summary.md
 git commit -m "Complete research phase of task 998: Validation system design"
 
 # Phase 2 - Planning
-git add .opencode/specs/998_*/plans/implementation-001.md .opencode/specs/998_*/summaries/plan-summary.md
+git add specs/998_*/plans/implementation-001.md specs/998_*/summaries/plan-summary.md
 git commit -m "Complete planning phase of task 998: Validation implementation plan"
 
 # Phase 3 - Implementation Phase 1
@@ -575,7 +575,7 @@ information. This protects the orchestrator's context window from bloat.
   "artifacts": [
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/999_test_simple_task/summaries/implementation-summary-20251224.md"
+      "path": "specs/999_test_simple_task/summaries/implementation-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -612,7 +612,7 @@ information. This protects the orchestrator's context window from bloat.
         "... 200 lines of recommendations ..."
       ],
       "artifacts_created": [
-        ".opencode/specs/998_validation_system/reports/research-001.md"
+        "specs/998_validation_system/reports/research-001.md"
       ]
     },
     "planning_phase": {
@@ -638,7 +638,7 @@ information. This protects the orchestrator's context window from bloat.
         }
       ],
       "artifacts_created": [
-        ".opencode/specs/998_validation_system/plans/implementation-001.md"
+        "specs/998_validation_system/plans/implementation-001.md"
       ]
     },
     "implementation_phase": {
@@ -684,15 +684,15 @@ information. This protects the orchestrator's context window from bloat.
   "artifacts": [
     {
       "type": "research_summary",
-      "path": ".opencode/specs/998_validation_system/summaries/research-summary.md"
+      "path": "specs/998_validation_system/summaries/research-summary.md"
     },
     {
       "type": "plan_summary",
-      "path": ".opencode/specs/998_validation_system/summaries/plan-summary.md"
+      "path": "specs/998_validation_system/summaries/plan-summary.md"
     },
     {
       "type": "implementation_summary",
-      "path": ".opencode/specs/998_validation_system/summaries/implementation-summary-20251224.md"
+      "path": "specs/998_validation_system/summaries/implementation-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -789,67 +789,67 @@ information. This protects the orchestrator's context window from bloat.
       "task_number": 990,
       "status": "completed",
       "summary": "Simple file modification completed",
-      "artifacts": [".opencode/specs/990_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/990_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 991,
       "status": "completed",
       "summary": "Documentation update completed",
-      "artifacts": [".opencode/specs/991_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/991_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 992,
       "status": "completed",
       "summary": "Refactoring task completed",
-      "artifacts": [".opencode/specs/992_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/992_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 993,
       "status": "completed",
       "summary": "Test coverage improvement completed",
-      "artifacts": [".opencode/specs/993_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/993_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 994,
       "status": "completed",
       "summary": "Bug fix completed",
-      "artifacts": [".opencode/specs/994_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/994_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 995,
       "status": "completed",
       "summary": "Feature enhancement completed",
-      "artifacts": [".opencode/specs/995_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/995_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 996,
       "status": "completed",
       "summary": "Documentation update completed",
-      "artifacts": [".opencode/specs/996_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/996_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 997,
       "status": "completed",
       "summary": "Validation extension completed",
-      "artifacts": [".opencode/specs/997_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/997_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 998,
       "status": "completed",
       "summary": "Validation system implementation completed",
-      "artifacts": [".opencode/specs/998_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/998_*/summaries/implementation-summary-*.md"]
     },
     {
       "task_number": 999,
       "status": "completed",
       "summary": "Comment addition completed",
-      "artifacts": [".opencode/specs/999_*/summaries/implementation-summary-*.md"]
+      "artifacts": ["specs/999_*/summaries/implementation-summary-*.md"]
     }
   ],
   "artifacts": [
     {
       "type": "batch_summary",
-      "path": ".opencode/specs/batch_990-999/summaries/batch-summary-20251224.md"
+      "path": "specs/batch_990-999/summaries/batch-summary-20251224.md"
     }
   ],
   "key_metrics": {
@@ -1173,14 +1173,14 @@ Use this checklist to ensure complete migration:
 ## Support and Resources
 
 ### Documentation
-- **Implementation Plan**: `.opencode/specs/169_task_command_improvements/plans/implementation-003.md`
-- **Research Report**: `.opencode/specs/169_task_command_improvements/reports/research-001.md`
-- **Test Results**: `.opencode/specs/169_task_command_improvements/summaries/test-results-v3.md`
+- **Implementation Plan**: `specs/169_task_command_improvements/plans/implementation-003.md`
+- **Research Report**: `specs/169_task_command_improvements/reports/research-001.md`
+- **Test Results**: `specs/169_task_command_improvements/summaries/test-results-v3.md`
 - **Artifact Management**: `.opencode/context/core/system/artifact-management.md`
 
 ### Schemas
-- **Task Executor Return Schema**: `.opencode/specs/169_task_command_improvements/schemas/task-executor-return-schema.json`
-- **Batch Return Schema**: `.opencode/specs/169_task_command_improvements/schemas/batch-return-schema.json`
+- **Task Executor Return Schema**: `specs/169_task_command_improvements/schemas/task-executor-return-schema.json`
+- **Batch Return Schema**: `specs/169_task_command_improvements/schemas/batch-return-schema.json`
 
 ### Examples
 - See "Before/After Examples" section above

@@ -7,12 +7,12 @@
 **Priority**: High
 **Dependencies**: None
 **Sources/Inputs**: 
-- .opencode/specs/context-refactor-plan.md
-- .opencode/specs/unintended-changes-report.md
-- .opencode/specs/state-json-phase2-complete-summary.md
-- .opencode/specs/state-json-optimization-plan.md
+- specs/context-refactor-plan.md
+- specs/unintended-changes-report.md
+- specs/state-json-phase2-complete-summary.md
+- specs/state-json-optimization-plan.md
 - .opencode/context/core/ directory structure
-- .opencode/specs/TODO.md and state.json
+- specs/TODO.md and state.json
 - Git commit history (2026-01-01 to 2026-01-05)
 
 **Artifacts**: 
@@ -24,7 +24,7 @@
 
 ## Executive Summary
 
-The context refactor plan (.opencode/specs/context-refactor-plan.md) was created on 2026-01-04 and updated on 2026-01-05 to account for state.json optimizations. This systematic review reveals that **NONE of the core refactoring objectives have been implemented**, despite the plan being marked as ready for review. The current context directory structure remains unchanged from the "before" state described in the plan.
+The context refactor plan (specs/context-refactor-plan.md) was created on 2026-01-04 and updated on 2026-01-05 to account for state.json optimizations. This systematic review reveals that **NONE of the core refactoring objectives have been implemented**, despite the plan being marked as ready for review. The current context directory structure remains unchanged from the "before" state described in the plan.
 
 **Critical Findings**:
 

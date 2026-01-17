@@ -168,7 +168,7 @@ Git Commit:
 **Evidence**:
 - state-schema.md defines project state.json schema (lines 256-288)
 - artifact-management.md references project state.json (line 22)
-- No command creates .opencode/specs/NNN_project_name/state.json
+- No command creates specs/NNN_project_name/state.json
 - Lazy creation applies only to reports/, plans/, summaries/ subdirectories
 
 **Recommendation**: Enhance status-sync-manager to create project state.json on first artifact write
@@ -182,8 +182,8 @@ Git Commit:
 ```markdown
 # /research command (lines 193-196)
 <artifact_linking>
-  - Main Report: [.opencode/specs/{task_number}_{slug}/reports/research-001.md]
-  - Summary: [.opencode/specs/{task_number}_{slug}/summaries/research-summary.md]
+  - Main Report: [specs/{task_number}_{slug}/reports/research-001.md]
+  - Summary: [specs/{task_number}_{slug}/summaries/research-summary.md]
 </artifact_linking>
 ```
 
@@ -230,7 +230,7 @@ def validate_artifacts_exist(artifacts):
 **Recommendation**: Add plan metadata fields to state.json:
 ```json
 {
-  "plan_path": ".opencode/specs/195_task/plans/implementation-001.md",
+  "plan_path": "specs/195_task/plans/implementation-001.md",
   "plan_metadata": {
     "phases": 4,
     "estimated_hours": 6,
@@ -260,23 +260,23 @@ def validate_artifacts_exist(artifacts):
 **Recommendation**: Track plan version array in state.json:
 ```json
 {
-  "plan_path": ".opencode/specs/195_task/plans/implementation-003.md",
+  "plan_path": "specs/195_task/plans/implementation-003.md",
   "plan_versions": [
     {
       "version": 1,
-      "path": ".opencode/specs/195_task/plans/implementation-001.md",
+      "path": "specs/195_task/plans/implementation-001.md",
       "created": "2025-12-27",
       "reason": "initial"
     },
     {
       "version": 2,
-      "path": ".opencode/specs/195_task/plans/implementation-002.md",
+      "path": "specs/195_task/plans/implementation-002.md",
       "created": "2025-12-28",
       "reason": "adjust approach based on research"
     },
     {
       "version": 3,
-      "path": ".opencode/specs/195_task/plans/implementation-003.md",
+      "path": "specs/195_task/plans/implementation-003.md",
       "created": "2025-12-28",
       "reason": "simplify phase breakdown"
     }
@@ -298,7 +298,7 @@ def validate_artifacts_exist(artifacts):
 ```json
 {
   "artifacts": [
-    ".opencode/specs/195_task/summaries/implementation-summary-20251228.md",
+    "specs/195_task/summaries/implementation-summary-20251228.md",
     "Logos/Core/Automation/ProofSearch.lean"
   ]
 }
@@ -325,7 +325,7 @@ def validate_artifacts_exist(artifacts):
 **Recommendation**: Track phase statuses in state.json:
 ```json
 {
-  "plan_path": ".opencode/specs/195_task/plans/implementation-001.md",
+  "plan_path": "specs/195_task/plans/implementation-001.md",
   "phase_statuses": [
     {"phase": 1, "status": "completed", "started": "2025-12-28", "completed": "2025-12-28"},
     {"phase": 2, "status": "in_progress", "started": "2025-12-28"},
@@ -471,12 +471,12 @@ status_sync_manager.update_status(
     artifact_links=[
         {
             "type": "research",
-            "path": ".opencode/specs/195_task/reports/research-001.md",
+            "path": "specs/195_task/reports/research-001.md",
             "label": "Main Report"
         },
         {
             "type": "summary",
-            "path": ".opencode/specs/195_task/summaries/research-summary.md",
+            "path": "specs/195_task/summaries/research-summary.md",
             "label": "Summary"
         }
     ]

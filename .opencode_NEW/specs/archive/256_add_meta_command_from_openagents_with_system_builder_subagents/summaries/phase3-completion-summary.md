@@ -96,7 +96,7 @@ tools:
   write: true  # Added write permission
 permissions:
   allow:
-    - write: [".opencode/specs/**/*"]  # Added write permission
+    - write: ["specs/**/*"]  # Added write permission
 delegation:
   can_delegate_to: ["status-sync-manager", "git-workflow-manager"]  # Added delegation targets
 lifecycle:
@@ -202,8 +202,8 @@ Added new principles to all agents:
 5. `.opencode/agent/subagents/meta/context-organizer.md` (447 lines)
 
 ## Files Created
-1. `.opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/implementation-summary-20260103.md`
-2. `.opencode/specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/phase3-completion-summary.md`
+1. `specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/implementation-summary-20260103.md`
+2. `specs/256_add_meta_command_from_openagents_with_system_builder_subagents/summaries/phase3-completion-summary.md`
 
 ## Git Commit
 - **Commit Hash**: b70a94f

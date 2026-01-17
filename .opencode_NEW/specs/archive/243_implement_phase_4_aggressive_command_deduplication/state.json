@@ -20,8 +20,8 @@
   ],
   "summaries": [],
   "artifacts": [
-    ".opencode/specs/243_implement_phase_4_aggressive_command_deduplication/reports/research-001.md",
-    ".opencode/specs/243_implement_phase_4_aggressive_command_deduplication/plans/implementation-001.md"
+    "specs/243_implement_phase_4_aggressive_command_deduplication/reports/research-001.md",
+    "specs/243_implement_phase_4_aggressive_command_deduplication/plans/implementation-001.md"
   ],
   "plan_path": "plans/implementation-001.md",
   "estimated_hours": 24.0

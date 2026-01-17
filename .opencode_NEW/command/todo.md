@@ -1,7 +1,7 @@
 ---
 name: todo
 agent: orchestrator
-description: "Maintain .opencode/specs/TODO.md (archive completed/abandoned tasks)"
+description: "Maintain specs/TODO.md (archive completed/abandoned tasks)"
 context_level: 1
 language: markdown
 routing:
@@ -38,13 +38,13 @@ context_loading:
          - --force: Skip confirmation (future)
       
       2. Validate files:
-         - Check .opencode/specs/TODO.md exists
-         - Check .opencode/specs/state.json exists and is valid JSON
+         - Check specs/TODO.md exists
+         - Check specs/state.json exists and is valid JSON
          - If missing/corrupt: Return error "Run /meta to regenerate state.json"
       
       3. Count tasks to archive:
-         completed=$(jq -r '[.active_projects[] | select(.status == "completed")] | length' .opencode/specs/state.json)
-         abandoned=$(jq -r '[.active_projects[] | select(.status == "abandoned")] | length' .opencode/specs/state.json)
+         completed=$(jq -r '[.active_projects[] | select(.status == "completed")] | length' specs/state.json)
+         abandoned=$(jq -r '[.active_projects[] | select(.status == "abandoned")] | length' specs/state.json)
          total=$((completed + abandoned))
       
       4. Early return if zero:
@@ -119,7 +119,7 @@ context_loading:
          - remaining_active_tasks, archive_location
       
       2. Format summary:
-         .opencode/specs/TODO.md archival complete
+         specs/TODO.md archival complete
          
          Tasks archived: {total}
          - Completed: {completed}

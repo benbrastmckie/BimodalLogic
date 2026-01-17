@@ -107,7 +107,7 @@ This fix follows proven patterns already in the codebase:
 
 ### Status Files
 - `TODO.md` (task 183 marked [COMPLETED], acceptance criteria checked)
-- `.opencode/specs/state.json` (task 183 moved to completed_projects)
+- `specs/state.json` (task 183 moved to completed_projects)
 
 ---
 

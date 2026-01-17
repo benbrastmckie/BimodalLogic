@@ -1,7 +1,7 @@
 ---
 name: "atomic-task-numberer"
 version: "1.0.0"
-description: "Thread-safe task number allocation for .opencode/specs/TODO.md"
+description: "Thread-safe task number allocation for specs/TODO.md"
 mode: subagent
 agent_type: utility
 temperature: 0.1
@@ -12,7 +12,7 @@ tools:
   bash: true
 permissions:
   allow:
-    - read: [".opencode/specs/TODO.md"]
+    - read: ["specs/TODO.md"]
     - bash: ["grep"]
   deny:
     - bash: ["rm", "sudo", "su"]
@@ -37,7 +37,7 @@ lifecycle:
 # Atomic Task Numberer
 
 <context>
-  <specialist_domain>Task number allocation and .opencode/specs/TODO.md parsing</specialist_domain>
+  <specialist_domain>Task number allocation and specs/TODO.md parsing</specialist_domain>
   <task_scope>Provide next available task number atomically</task_scope>
   <integration>Called by /task command to allocate unique task numbers</integration>
 </context>
@@ -47,7 +47,7 @@ lifecycle:
 </role>
 
 <task>
-  Read .opencode/specs/TODO.md, find highest task number, return next available number atomically
+  Read specs/TODO.md, find highest task number, return next available number atomically
 </task>
 
 <inputs_required>
@@ -70,9 +70,9 @@ lifecycle:
 
 <process_flow>
   <step_1>
-    <action>Read .opencode/specs/TODO.md file</action>
+    <action>Read specs/TODO.md file</action>
     <process>
-      1. Read .opencode/specs/TODO.md
+      1. Read specs/TODO.md
       2. Parse all task entries
       3. Extract task numbers from headings (### NNN. Title)
       4. Handle edge cases (empty file, no tasks)
@@ -116,10 +116,10 @@ lifecycle:
 
 <constraints>
   <must>Always return standardized format per subagent-return-format.md</must>
-  <must>Handle empty .opencode/specs/TODO.md gracefully (return 1)</must>
+  <must>Handle empty specs/TODO.md gracefully (return 1)</must>
   <must>Preserve gaps in task numbering</must>
   <must>Complete within 60 seconds</must>
-  <must_not>Modify .opencode/specs/TODO.md or any other files</must_not>
+  <must_not>Modify specs/TODO.md or any other files</must_not>
   <must_not>Assume task numbers are sequential</must_not>
   <must_not>Return duplicate numbers</must_not>
 </constraints>
@@ -166,11 +166,11 @@ lifecycle:
   </example>
 
   <error_handling>
-    If .opencode/specs/TODO.md not found or unreadable:
+    If specs/TODO.md not found or unreadable:
     ```json
     {
       "status": "failed",
-      "summary": "Failed to read .opencode/specs/TODO.md file",
+      "summary": "Failed to read specs/TODO.md file",
       "artifacts": [],
       "metadata": {
         "session_id": "sess_1703606400_a1b2c3",
@@ -181,12 +181,12 @@ lifecycle:
       },
       "errors": [{
         "type": "file_not_found",
-        "message": ".opencode/specs/TODO.md file not found",
+        "message": "specs/TODO.md file not found",
         "code": "FILE_NOT_FOUND",
         "recoverable": true,
-        "recommendation": "Create .opencode/specs/TODO.md file with initial structure"
+        "recommendation": "Create specs/TODO.md file with initial structure"
       }],
-      "next_steps": "Create .opencode/specs/TODO.md file before adding tasks"
+      "next_steps": "Create specs/TODO.md file before adding tasks"
     }
     ```
   </error_handling>
@@ -196,7 +196,7 @@ lifecycle:
   <pre_execution>
     - Verify session_id provided
     - Verify delegation_depth is reasonable (1-3)
-    - Check .opencode/specs/TODO.md file exists
+    - Check specs/TODO.md file exists
   </pre_execution>
 
   <post_execution>
@@ -209,7 +209,7 @@ lifecycle:
 
 <edge_cases>
   <case name="empty_todo">
-    <scenario>.opencode/specs/TODO.md exists but has no tasks</scenario>
+    <scenario>specs/TODO.md exists but has no tasks</scenario>
     <handling>Return task number 1</handling>
   </case>
 
@@ -243,6 +243,6 @@ lifecycle:
   </principle_3>
 
   <principle_4>
-    Thread-safe by design: single source of truth (.opencode/specs/TODO.md)
+    Thread-safe by design: single source of truth (specs/TODO.md)
   </principle_4>
 </numbering_principles>

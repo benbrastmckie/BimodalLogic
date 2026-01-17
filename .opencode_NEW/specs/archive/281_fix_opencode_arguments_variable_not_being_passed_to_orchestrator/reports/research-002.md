@@ -16,7 +16,7 @@
 - User observation: "/research, /plan, and /revise commands do seem to work"
 
 **Artifacts**:
-- `.opencode/specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md`
+- `specs/281_fix_opencode_arguments_variable_not_being_passed_to_orchestrator/reports/research-002.md`
 
 **Standards**: status-markers.md, artifact-management.md, tasks.md, report.md
 

@@ -261,7 +261,7 @@ This plan implements a systematic overhaul of the .claude/ agent system based on
 
 **Files to modify**:
 - `.claude/rules/error-handling.md` - Error format documentation
-- `.claude/specs/errors.json` - If exists, verify structure
+- `specs/errors.json` - If exists, verify structure
 
 **Steps**:
 1. Update error-handling.md error format to:

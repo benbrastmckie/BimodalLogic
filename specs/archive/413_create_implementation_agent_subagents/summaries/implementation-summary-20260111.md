@@ -31,7 +31,7 @@ Created three implementation agent subagents that execute implementation plans f
 | `.claude/agents/lean-implementation-agent.md` | Created | Lean 4 proof implementation agent |
 | `.claude/agents/general-implementation-agent.md` | Created | General/meta/markdown implementation agent |
 | `.claude/agents/latex-implementation-agent.md` | Created | LaTeX document implementation agent |
-| `.claude/specs/413_*/plans/implementation-001.md` | Updated | Phase status markers |
+| `specs/413_*/plans/implementation-001.md` | Updated | Phase status markers |
 
 ## Verification
 

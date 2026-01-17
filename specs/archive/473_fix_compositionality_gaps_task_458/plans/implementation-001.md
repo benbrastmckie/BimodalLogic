@@ -5,7 +5,7 @@
 - **Effort**: 10-14 hours
 - **Priority**: Medium
 - **Dependencies**: Task 472 (Lindenbaum extension - COMPLETED)
-- **Research Inputs**: .claude/specs/473_fix_compositionality_gaps_task_458/reports/research-001.md
+- **Research Inputs**: specs/473_fix_compositionality_gaps_task_458/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean

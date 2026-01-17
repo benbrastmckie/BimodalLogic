@@ -61,7 +61,7 @@ Create foundational files and schemas that all other components depend on.
 #### Task 1.1: Create errors.json Schema [COMPLETED]
 
 **Files Created**:
-- [PASS] `.opencode/specs/errors.json`
+- [PASS] `specs/errors.json`
 
 **Content**:
 ```json
@@ -1383,9 +1383,9 @@ If interrupted at any point:
 6. **Follow phases in order** - later phases depend on earlier ones
 
 **Critical Files to Track**:
-- This plan: `.opencode/specs/196_complete_opencode_refactor/plans/implementation-001.md`
+- This plan: `specs/196_complete_opencode_refactor/plans/implementation-001.md`
 - Standardized return format: `.opencode/context/core/standards/subagent-return-format.md`
-- errors.json: `.opencode/specs/errors.json`
+- errors.json: `specs/errors.json`
 
 **Validation Commands**:
 ```bash
@@ -1396,7 +1396,7 @@ ls -la .opencode/
 ls -la .opencode/context/
 
 # Check TODO.md preserved
-cat .opencode/specs/TODO.md | head -20
+cat specs/TODO.md | head -20
 
 # Check agents created so far
 ls -la .opencode/agent/subagents/

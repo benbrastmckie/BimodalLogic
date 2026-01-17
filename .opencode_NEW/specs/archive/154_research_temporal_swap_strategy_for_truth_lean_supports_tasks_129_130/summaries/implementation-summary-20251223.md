@@ -3,7 +3,7 @@
 ## Context
 - **Project**: 154 — Branch B execution to support TODO tasks 129 (temporal swap lemmas) and 130 (domain extension lemmas)
 - **Tasks Closed**: 129, 130 (Lean)
-- **Plan**: `.opencode/specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md` (Branch B)
+- **Plan**: `specs/154_research_temporal_swap_strategy_for_truth_lean_supports_tasks_129_130/plans/implementation-002.md` (Branch B)
 - **Language**: Lean
 
 ## What Changed

@@ -38,7 +38,7 @@ Improved README.md consistency with recursive-semantics.md specification documen
 ## Files Modified
 
 - `README.md` - Primary changes (terminology, structure, content)
-- `.claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md` - Updated phase statuses
+- `specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md` - Updated phase statuses
 
 ## Verification
 

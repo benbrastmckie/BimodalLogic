@@ -346,7 +346,7 @@ def validate_after_status_sync(
         return ValidationError(f"state.json status mismatch: expected {expected_status}, got {state_status}")
     
     # Verify project state.json exists
-    project_state_path = f".opencode/specs/{task_number}_*/state.json"
+    project_state_path = f"specs/{task_number}_*/state.json"
     if not glob.glob(project_state_path):
         return ValidationError("Project state.json not created")
     
@@ -637,9 +637,9 @@ The status-sync-manager specialist is correctly designed and ready to use. The c
 
 ### Evidence Files
 
-1. `.opencode/specs/TODO.md` - Task 224 shows `[RESEARCHED]` status
-2. `.opencode/specs/state.json` - Task 224 entry missing (null)
-3. `.opencode/specs/224_configure_opencode_default_agent/state.json` - Project state exists
+1. `specs/TODO.md` - Task 224 shows `[RESEARCHED]` status
+2. `specs/state.json` - Task 224 entry missing (null)
+3. `specs/224_configure_opencode_default_agent/state.json` - Project state exists
 
 ### Related Tasks
 
@@ -698,8 +698,8 @@ sed -i "s/\*\*Status\*\*: \[RESEARCHING\]/\*\*Status\*\*: [RESEARCHED]/" TODO.md
 sed -i "/^### ${task_number}\./a \*\*Completed\*\*: $(date +%Y-%m-%d)" TODO.md
 
 # Manual project state.json creation (WRONG)
-mkdir -p ".opencode/specs/${task_number}_${slug}"
-cat > ".opencode/specs/${task_number}_${slug}/state.json" <<EOF
+mkdir -p "specs/${task_number}_${slug}"
+cat > "specs/${task_number}_${slug}/state.json" <<EOF
 {
   "project_name": "${slug}",
   "project_number": ${task_number},
@@ -712,7 +712,7 @@ cat > ".opencode/specs/${task_number}_${slug}/state.json" <<EOF
 EOF
 
 # Global state.json SKIPPED (BUG)
-# No update to .opencode/specs/state.json
+# No update to specs/state.json
 ```
 
 **Problems**:

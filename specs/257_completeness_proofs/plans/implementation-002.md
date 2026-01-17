@@ -320,9 +320,9 @@ Key findings from Task 133 research-001.md:
 ## Artifacts & Outputs
 
 - `Theories/Bimodal/Metalogic/Completeness.lean` - Complete implementation
-- `.claude/specs/257_completeness_proofs/plans/implementation-002.md` - This plan (revised)
-- `.claude/specs/257_completeness_proofs/plans/implementation-001.md` - Previous version (archived)
-- `.claude/specs/257_completeness_proofs/summaries/implementation-summary-YYYYMMDD.md` - Final summary
+- `specs/257_completeness_proofs/plans/implementation-002.md` - This plan (revised)
+- `specs/257_completeness_proofs/plans/implementation-001.md` - Previous version (archived)
+- `specs/257_completeness_proofs/summaries/implementation-summary-YYYYMMDD.md` - Final summary
 
 ## Rollback/Contingency
 

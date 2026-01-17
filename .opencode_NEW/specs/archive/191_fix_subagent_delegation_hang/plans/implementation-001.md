@@ -30,8 +30,8 @@ phases: 3
 
 This implementation plan is based on comprehensive research completed on 2025-12-25:
 
-- **Main Report**: `.opencode/specs/191_fix_subagent_delegation_hang/reports/research-001.md`
-- **Summary**: `.opencode/specs/191_fix_subagent_delegation_hang/summaries/research-summary.md`
+- **Main Report**: `specs/191_fix_subagent_delegation_hang/reports/research-001.md`
+- **Summary**: `specs/191_fix_subagent_delegation_hang/summaries/research-summary.md`
 
 **Key Research Findings**:
 
@@ -530,7 +530,7 @@ For each subagent, update return format section to match standardized schema:
       "artifacts": [
         {
           "type": "implementation|research|plan|summary",
-          "path": ".opencode/specs/{project}/...",
+          "path": "specs/{project}/...",
           "summary": "Optional brief description"
         }
       ],

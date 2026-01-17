@@ -188,7 +188,7 @@ theorem is_valid_swap_involution (φ : Formula) (h : is_valid T φ.swap_past_fut
 
 ## References
 
-- **Task 209 Research Report**: `.opencode/specs/209_research_lean4_involution_techniques/reports/research-001.md`
+- **Task 209 Research Report**: `specs/209_research_lean4_involution_techniques/reports/research-001.md`
 - **Perpetuity/Helpers.lean**: Line 70-75 (proven pattern)
 - **Formula.lean**: Line 231 (`@[simp]` attribute)
 - **Truth.lean**: Lines 676-679 (theorem to fix)

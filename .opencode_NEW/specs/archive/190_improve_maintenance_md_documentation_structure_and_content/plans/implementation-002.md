@@ -147,8 +147,8 @@ Improve MAINTENANCE.md documentation by adding missing registry references (FEAT
 ## Artifacts & Outputs
 
 - **Modified**: docs/project-info/MAINTENANCE.md
-- **Created**: .opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md (this file)
-- **Created**: .opencode/specs/190_improve_maintenance_md_documentation_structure_and_content/summaries/implementation-summary-20251225.md
+- **Created**: specs/190_improve_maintenance_md_documentation_structure_and_content/plans/implementation-002.md (this file)
+- **Created**: specs/190_improve_maintenance_md_documentation_structure_and_content/summaries/implementation-summary-20251225.md
 
 ## Rollback/Contingency
 

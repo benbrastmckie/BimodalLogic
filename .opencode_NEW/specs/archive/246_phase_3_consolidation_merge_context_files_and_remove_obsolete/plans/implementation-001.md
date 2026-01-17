@@ -564,12 +564,12 @@ If critical issues found:
    - Purpose: Navigation and cross-references for consolidated structure
 
 4. **Phase 3 Validation Report**
-   - Location: .opencode/specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/reports/validation-001.md
+   - Location: specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/reports/validation-001.md
    - Purpose: Document all metrics, test results, and consolidation actions
 
 ### Supporting Artifacts
 1. **Content Mapping Document**
-   - Location: .opencode/specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/content-mapping.md
+   - Location: specs/246_phase_3_consolidation_merge_context_files_and_remove_obsolete/content-mapping.md
    - Purpose: Track where each section moved during consolidation
 
 2. **Redirect Files** (temporary, 1-month deprecation)

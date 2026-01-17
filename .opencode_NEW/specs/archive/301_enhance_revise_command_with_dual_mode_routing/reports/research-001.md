@@ -12,7 +12,7 @@
   - `.opencode/command/revise.md` (current implementation)
   - `.opencode/agent/subagents/task-reviser.md` (task-only revision agent)
   - `.opencode/agent/subagents/planner.md` (plan revision agent)
-  - `.opencode/specs/state.json` (state structure with plan_path)
+  - `specs/state.json` (state structure with plan_path)
   - `.opencode/context/core/system/routing-guide.md` (routing patterns)
   - `.opencode/context/core/system/state-management.md` (status transitions)
 - **Artifacts**: research-001.md
@@ -162,14 +162,14 @@ d. Scan reports directory for all research reports:
 
 ### Finding 4: Plan Presence Detection via state.json
 
-**File**: `.opencode/specs/state.json`
+**File**: `specs/state.json`
 
 **Schema**: Each active project has a `plan_path` field (lines 1-100 sample):
 ```json
 {
   "project_number": 259,
   "project_name": "automation_tactics",
-  "plan_path": ".opencode/specs/259_automation_tactics/plans/implementation-001.md",
+  "plan_path": "specs/259_automation_tactics/plans/implementation-001.md",
   "status": "planned"
 }
 ```
@@ -179,7 +179,7 @@ d. Scan reports directory for all research reports:
 # Extract plan_path from state.json
 plan_path=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .plan_path // ""' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Check if plan exists
 if [ -z "$plan_path" ] || [ "$plan_path" == "null" ]; then
@@ -513,7 +513,7 @@ The command validates routing decisions to ensure correctness:
 # Extract plan_path from state.json
 plan_path=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .plan_path // ""' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Determine routing mode
 if [ -z "$plan_path" ] || [ "$plan_path" == "null" ]; then
@@ -828,7 +828,7 @@ fi
 
 ### Source 4: state.json Schema
 
-**File**: `.opencode/specs/state.json`
+**File**: `specs/state.json`
 
 **Key Fields**:
 - `project_number`: Task number

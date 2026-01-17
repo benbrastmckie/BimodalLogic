@@ -326,7 +326,7 @@ cf80a76 task 326: update status to [RESEARCHED] and link research artifact  # �
 # After calling status-sync-manager:
 actual_status=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ "$actual_status" != "researched" ]; then
   echo "ERROR: Status update failed"
@@ -394,7 +394,7 @@ task 326: fix missing research artifact link  # ← Manual fix needed
     2. Validate status updated:
        actual_status=$(jq -r --arg num "$task_number" \
          '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-         .opencode/specs/state.json)
+         specs/state.json)
        
        if [ "$actual_status" != "researching" ]; then
          echo "ERROR: Preflight status update failed"
@@ -436,7 +436,7 @@ task 326: fix missing research artifact link  # ← Manual fix needed
     3. Validate status updated:
        actual_status=$(jq -r --arg num "$task_number" \
          '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-         .opencode/specs/state.json)
+         specs/state.json)
        
        if [ "$actual_status" != "researched" ]; then
          echo "ERROR: Postflight status update failed"

@@ -17,7 +17,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*.lean", "**/*.md", ".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir", "loogle"]
   deny:
     - bash: ["rm -rf", "rm -fr", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
@@ -376,12 +376,12 @@ lifecycle:
     <action>Create research artifacts</action>
     <process>
       1. Create project directory structure (lazy creation):
-         - Create project root .opencode/specs/{task_number}_{slugified_topic}/ immediately before writing first artifact
+         - Create project root specs/{task_number}_{slugified_topic}/ immediately before writing first artifact
          - Create reports/ subdirectory only when writing research report
          - Never pre-create unused subdirectories
       
       2. Create detailed research report:
-         Path: .opencode/specs/{task_number}_{slugified_topic}/reports/research-001.md
+         Path: specs/{task_number}_{slugified_topic}/reports/research-001.md
          Content:
          - Research topic and scope
          - Tool usage summary (Loogle queries, web searches)
@@ -434,7 +434,7 @@ lifecycle:
       CRITICAL: Create directories ONLY when writing files into them.
       
       Directory creation sequence:
-      1. Create project root .opencode/specs/{task_number}_{topic}/ immediately before writing first artifact
+      1. Create project root specs/{task_number}_{topic}/ immediately before writing first artifact
       2. Create reports/ subdirectory only when writing research report (not before)
       3. Never pre-create unused subdirectories (e.g., plans/, summaries/)
       4. Never create placeholder files (.gitkeep, README.md, etc.)
@@ -471,7 +471,7 @@ lifecycle:
          c. If validation fails: Return failed status with error
       2. Prepare artifact metadata:
          - type: "research"
-         - path: ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md"
+         - path: "specs/{task_number}_{topic_slug}/reports/research-001.md"
          - summary: "Detailed Lean library research report with Loogle findings"
       3. Create brief summary for return object (3-5 sentences, <100 tokens):
          - This is METADATA in return object, NOT a separate artifact file
@@ -619,7 +619,7 @@ lifecycle:
         "artifacts": [
           {
             "type": "research",
-            "path": ".opencode/specs/{task_number}_{topic}/reports/research-001.md",
+            "path": "specs/{task_number}_{topic}/reports/research-001.md",
             "summary": "Detailed Lean library research report with Loogle findings"
           }
         ],
@@ -690,7 +690,7 @@ lifecycle:
   <must_not>Return without validating artifact</must_not>
   <must_not>Fail research if specialized tools unavailable</must_not>
   <must_not>Implement tasks (research HOW to implement, do NOT implement)</must_not>
-  <must_not>Modify project files outside .opencode/specs/{task_number}_*/</must_not>
+  <must_not>Modify project files outside specs/{task_number}_*/</must_not>
   <must_not>Move files, update code, or make implementation changes</must_not>
   <must_not>Include status metadata in research reports (status tracked in TODO.md and state.json only)</must_not>
   <must_not>Include general programming advice (focus on Lean)</must_not>
@@ -760,7 +760,7 @@ lifecycle:
 
 <output_specification>
   <artifacts>
-    - Research report in .opencode/specs/{task_number}_{topic}/reports/research-001.md
+    - Research report in specs/{task_number}_{topic}/reports/research-001.md
     - Standardized return object following subagent-return-format.md
   </artifacts>
   
@@ -1167,7 +1167,7 @@ lifecycle:
     - All required fields present in return object
     - Summary field in return object is <100 tokens
     - Artifacts array includes research report with validated path
-    - Artifact paths use absolute format (.opencode/specs/...)
+    - Artifact paths use absolute format (specs/...)
     - Loogle client closed gracefully (if started)
     - Command file will handle status updates and git commits
   </post_execution>

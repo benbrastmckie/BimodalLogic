@@ -63,14 +63,14 @@ Task 333 aimed to fix persistent synchronization failures between TODO.md and st
      
      VERIFY return:
        - status == "completed" (if "failed", abort with error)
-       - files_updated includes [".opencode/specs/TODO.md", "state.json"]
+       - files_updated includes ["specs/TODO.md", "state.json"]
 
 3. Verify status was actually updated (defense in depth):
    
    Read state.json to verify status:
      actual_status=$(jq -r --arg num "$task_number" \
        '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-       .opencode/specs/state.json)
+       specs/state.json)
    
    IF actual_status != "researching":
      - Log error: "Preflight verification failed - status not updated"
@@ -121,7 +121,7 @@ Task 333 aimed to fix persistent synchronization failures between TODO.md and st
 - Ensure validation occurs before git commits
 
 **Action 3: Integration Testing**
-- Create test suite: `.opencode/specs/333_*/tests/sync-test.sh`
+- Create test suite: `specs/333_*/tests/sync-test.sh`
 - Test each workflow command end-to-end
 - Verify TODO.md and state.json stay in sync
 - Verify artifact links are added correctly
@@ -140,7 +140,7 @@ Task 333 aimed to fix persistent synchronization failures between TODO.md and st
 4. `.opencode/agent/subagents/task-reviser.md` - Verified correct (no changes needed)
 
 **Files Created**:
-1. `.opencode/specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/summaries/implementation-summary-20260106.md` - This summary
+1. `specs/333_fix_workflow_command_todo_md_state_json_synchronization_failures/summaries/implementation-summary-20260106.md` - This summary
 
 ---
 
@@ -192,7 +192,7 @@ Task 333 aimed to fix persistent synchronization failures between TODO.md and st
 
 ### Integration Tests (Not Implemented - Recommended for Future)
 
-**Test Suite**: `.opencode/specs/333_*/tests/sync-test.sh`
+**Test Suite**: `specs/333_*/tests/sync-test.sh`
 
 **Test 1: /research Command Sync**
 ```bash
@@ -203,22 +203,22 @@ task_num=$(/task "Test research sync" --priority High --language general)
 /research $task_num
 
 # Verify TODO.md status
-todo_status=$(grep -A5 "^### $task_num\." .opencode/specs/TODO.md | grep "Status:" | grep -oP '\[.*?\]')
+todo_status=$(grep -A5 "^### $task_num\." specs/TODO.md | grep "Status:" | grep -oP '\[.*?\]')
 assert_equals "$todo_status" "[RESEARCHED]"
 
 # Verify state.json status
 state_status=$(jq -r --arg num "$task_num" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-  .opencode/specs/state.json)
+  specs/state.json)
 assert_equals "$state_status" "researched"
 
 # Verify artifact link in TODO.md
-assert_contains "$(grep -A10 "^### $task_num\." .opencode/specs/TODO.md)" "Research"
+assert_contains "$(grep -A10 "^### $task_num\." specs/TODO.md)" "Research"
 
 # Verify artifact in state.json
 artifact_count=$(jq -r --arg num "$task_num" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .artifacts | length' \
-  .opencode/specs/state.json)
+  specs/state.json)
 assert_greater_than "$artifact_count" 0
 ```
 
@@ -299,7 +299,7 @@ assert_has_implementation_links "$task_num"
 ### Immediate Actions (Recommended)
 
 1. **Create Integration Tests** (4-6 hours):
-   - Implement test suite: `.opencode/specs/333_*/tests/sync-test.sh`
+   - Implement test suite: `specs/333_*/tests/sync-test.sh`
    - Test all 4 workflow commands
    - Verify TODO.md and state.json stay in sync
    - Verify artifact links are added correctly

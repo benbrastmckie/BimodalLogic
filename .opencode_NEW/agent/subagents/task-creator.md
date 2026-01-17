@@ -19,7 +19,7 @@ tools:
   task: true
 permissions:
   allow:
-    - read: [".opencode/specs/state.json", ".opencode/specs/TODO.md"]
+    - read: ["specs/state.json", "specs/TODO.md"]
     - bash: ["date", "jq", "grep"]
     - task: ["status-sync-manager"]
   deny:
@@ -79,7 +79,7 @@ lifecycle:
     
     FORBIDDEN ACTIVITIES:
     - Implementing task requirements
-    - Creating spec directories (.opencode/specs/{number}_*/)
+    - Creating spec directories (specs/{number}_*/)
     - Creating research files, plan files, or implementation files
     - Modifying project code or configuration
     - Running implementation tools (lake, python, lean, etc.)
@@ -163,12 +163,12 @@ lifecycle:
          - Validated all inputs before delegation
       
       2. Validate state.json exists and is readable:
-         - Check .opencode/specs/state.json exists
+         - Check specs/state.json exists
          - Validate is valid JSON with jq
          - If missing/corrupt: Return error "state.json not found or invalid"
       
       3. Validate TODO.md exists and is readable:
-         - Check .opencode/specs/TODO.md exists
+         - Check specs/TODO.md exists
          - If missing: Return error "TODO.md not found"
       
       4. Validate Language field is set (MANDATORY per tasks.md):
@@ -193,9 +193,9 @@ lifecycle:
   <step_1_allocate_number>
     <action>Read next_project_number from state.json</action>
     <process>
-      1. Read .opencode/specs/state.json
+      1. Read specs/state.json
       2. Extract next_project_number field using jq:
-         next_number=$(jq -r '.next_project_number' .opencode/specs/state.json)
+         next_number=$(jq -r '.next_project_number' specs/state.json)
       3. Validate it's a number >= 0
       4. Store for use in task creation
       5. If extraction fails: Return error "state.json missing next_project_number field"
@@ -324,7 +324,7 @@ lifecycle:
   <must_not>Create any implementation files (*.lean, *.py, *.sh, etc.)</must_not>
   <must_not>Run any implementation tools (lake, python, lean, etc.)</must_not>
   <must_not>Implement the task</must_not>
-  <must_not>Create any spec directories (.opencode/specs/{number}_*/)</must_not>
+  <must_not>Create any spec directories (specs/{number}_*/)</must_not>
   <must_not>Create any research files</must_not>
   <must_not>Create any plan files</must_not>
 </constraints>
@@ -374,7 +374,7 @@ lifecycle:
       },
       "errors": [{
         "type": "file_not_found",
-        "message": "state.json file not found at .opencode/specs/state.json",
+        "message": "state.json file not found at specs/state.json",
         "code": "FILE_NOT_FOUND",
         "recoverable": true,
         "recommendation": "Run /sync to regenerate state.json file"

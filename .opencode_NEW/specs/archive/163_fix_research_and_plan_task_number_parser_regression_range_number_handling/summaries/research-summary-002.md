@@ -46,4 +46,4 @@ The commands work correctly as designed. No implementation work is needed. The p
 
 ## Full Report
 
-See: .opencode/specs/163_fix_research_and_plan_task_number_parser_regression_range_number_handling/reports/research-002.md
+See: specs/163_fix_research_and_plan_task_number_parser_regression_range_number_handling/reports/research-002.md

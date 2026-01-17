@@ -5,14 +5,14 @@
 - **Effort**: 5 hours
 - **Priority**: High
 - **Dependencies**: None
-- **Research Inputs**: .opencode/specs/253_improve_todo_command/reports/research-001.md
+- **Research Inputs**: specs/253_improve_todo_command/reports/research-001.md
 - **Artifacts**: plans/implementation-001.md (this file)
 - **Standards**:
   - .opencode/context/core/standards/plan.md
   - .opencode/context/core/standards/status-markers.md
   - .opencode/context/core/system/artifact-management.md
   - .opencode/context/core/standards/tasks.md
-  - .opencode/specs/TODO.md (file format standard)
+  - specs/TODO.md (file format standard)
   - .opencode/context/core/system/git-commits.md (git safety standard)
 - **Language**: python
 - **Lean Intent**: false
@@ -89,7 +89,7 @@ The /todo command currently creates backup files before cleanup operations and g
   - [ ] Apply divider fixing to cleaned content
   - [ ] Update state.json (remove archived tasks)
   - [ ] Update archive/state.json (add archived tasks)
-  - [ ] Move project directories from `.opencode/specs/{number}_{slug}/` to `.opencode/specs/archive/{number}_{slug}/`
+  - [ ] Move project directories from `specs/{number}_{slug}/` to `specs/archive/{number}_{slug}/`
   - [ ] Handle edge cases (no project directory, no tasks to archive, all tasks completed)
   - [ ] Return ArchivalResult with counts, moved directories, errors
 - **Timing**: 1.5 hours
@@ -150,9 +150,9 @@ The /todo command currently creates backup files before cleanup operations and g
 - `.opencode/command/todo.md` - Updated /todo command specification
 
 **Modified Files**:
-- `.opencode/specs/TODO.md` - Fixed divider stacking (21+ instances)
-- `.opencode/specs/state.json` - Updated by script during archival
-- `.opencode/specs/archive/state.json` - Updated by script during archival
+- `specs/TODO.md` - Fixed divider stacking (21+ instances)
+- `specs/state.json` - Updated by script during archival
+- `specs/archive/state.json` - Updated by script during archival
 
 **Git Commits**:
 - Pre-cleanup snapshot commit: "todo: snapshot before archiving {N} tasks (task 253)"
@@ -185,7 +185,7 @@ The /todo command currently creates backup files before cleanup operations and g
 ## Success Metrics
 
 **Functional Requirements**:
-- [PASS] Script correctly parses TODO.md format per .opencode/specs/TODO.md standards
+- [PASS] Script correctly parses TODO.md format per specs/TODO.md standards
 - [PASS] Script removes complete task blocks (heading + body + metadata)
 - [PASS] Script fixes divider stacking (no stacked `---` dividers with empty lines)
 - [PASS] Script updates state.json and archive/state.json correctly

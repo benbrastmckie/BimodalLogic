@@ -70,7 +70,7 @@ Refactor the /todo command to follow modern .opencode standards by extracting it
     - max_tokens: 2000
     - timeout: 300
     - tools: read, write, bash
-    - permissions: allow read/write to .opencode/specs/*, deny rm/sudo
+    - permissions: allow read/write to specs/*, deny rm/sudo
     - context_loading: strategy=lazy, Level 1 (10KB)
     - delegation: max_depth=2, can_delegate_to=["git-workflow-manager"]
   - [ ] Implement Stage 1 (ValidateInputs):
@@ -134,10 +134,10 @@ Refactor the /todo command to follow modern .opencode standards by extracting it
       * Return error with script output
   - [ ] Implement Stage 7 (CreateCommit):
     - Stage files:
-      * git add .opencode/specs/TODO.md
-      * git add .opencode/specs/state.json
-      * git add .opencode/specs/archive/state.json
-      * git add .opencode/specs/archive/ (pick up moved directories)
+      * git add specs/TODO.md
+      * git add specs/state.json
+      * git add specs/archive/state.json
+      * git add specs/archive/ (pick up moved directories)
     - Verify staged changes: git status --short
     - Create commit:
       * Message: "todo: archive {N} completed/abandoned tasks (task 337)"

@@ -8,7 +8,7 @@
 - **Complexity**: simple
 - **Total Estimated Effort Hours**: 0.5
 - **Research Integrated**: true
-- **Research Report**: [.opencode/specs/512_fix_build_error_in_representationtheorems_lean/reports/research-001.md](../reports/research-001.md)
+- **Research Report**: [specs/512_fix_build_error_in_representationtheorems_lean/reports/research-001.md](../reports/research-001.md)
 
 ## OVERVIEW
 

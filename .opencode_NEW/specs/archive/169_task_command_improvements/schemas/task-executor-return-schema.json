@@ -115,12 +115,12 @@
       "artifacts": [
         {
           "type": "implementation",
-          "path": ".opencode/specs/169_task_command_improvements/summaries/implementation-summary-20251224.md",
+          "path": "specs/169_task_command_improvements/summaries/implementation-summary-20251224.md",
           "summary": "Complete implementation summary with phase-by-phase details"
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/169_task_command_improvements/summaries/test-results-v3.md",
+          "path": "specs/169_task_command_improvements/summaries/test-results-v3.md",
           "summary": "Integration test results showing all 8 scenarios passed"
         }
       ],

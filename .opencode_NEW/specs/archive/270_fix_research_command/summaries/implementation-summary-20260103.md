@@ -27,7 +27,7 @@ Added `<critical_constraints>` section to researcher.md with:
 ### 2. Restricted Permissions
 
 Updated permissions in researcher.md frontmatter:
-- **Write permissions**: Restricted to `.opencode/specs/*/reports/**/*` and state files only
+- **Write permissions**: Restricted to `specs/*/reports/**/*` and state files only
 - **Denied bash commands**: Added `mv` and `cp` to prevent file operations
 - **Denied write paths**: Added `.opencode/command/**/*`, `.opencode/agent/**/*`, `.opencode/context/**/*`, `docs/**/*`, `Logos/**/*`, `LogosTest/**/*`
 
@@ -35,7 +35,7 @@ Updated permissions in researcher.md frontmatter:
 
 Added explicit `<must_not>` constraints:
 - `<must_not>Implement tasks (research HOW to implement, do NOT implement)</must_not>`
-- `<must_not>Modify project files outside .opencode/specs/{task_number}_*/</must_not>`
+- `<must_not>Modify project files outside specs/{task_number}_*/</must_not>`
 - `<must_not>Change status to [COMPLETED] (only [RESEARCHED] allowed)</must_not>`
 - `<must_not>Move files, update code, or make implementation changes</must_not>`
 
@@ -47,14 +47,14 @@ Added explicit constraint:
 ## Files Modified
 
 - `.opencode/agent/subagents/researcher.md` (added constraints, restricted permissions)
-- `.opencode/specs/TODO.md` (marked task 270 as COMPLETED)
-- `.opencode/specs/state.json` (added completion activity)
+- `specs/TODO.md` (marked task 270 as COMPLETED)
+- `specs/state.json` (added completion activity)
 
 ## Impact
 
 The researcher agent is now explicitly constrained to:
 1. Conduct research ONLY (no implementation)
-2. Create research artifacts in `.opencode/specs/{task_number}_*/reports/` only
+2. Create research artifacts in `specs/{task_number}_*/reports/` only
 3. Use correct status transitions: [NOT STARTED] → [RESEARCHING] → [RESEARCHED]
 4. Never modify project files outside the specs directory
 

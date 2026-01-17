@@ -298,4 +298,4 @@ This bug blocks ALL task-based workflow commands:
 - Command Argument Handling: `.opencode/context/core/standards/command-argument-handling.md`
 - Implement Command: `.opencode/command/implement.md`
 - Research Command: `.opencode/command/research.md`
-- Task 278: `.opencode/specs/TODO.md` (line 278)
+- Task 278: `specs/TODO.md` (line 278)

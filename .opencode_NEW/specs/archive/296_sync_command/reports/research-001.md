@@ -14,7 +14,7 @@
 
 ## Executive Summary
 
-This research investigates the requirements for creating a `/sync` command that bidirectionally synchronizes `.opencode/specs/TODO.md` and `.opencode/specs/state.json`. The investigation reveals that the current architecture has a **critical structural issue**: state.json is malformed and contains only a single project object instead of the expected `active_projects` array structure. This malformation prevents proper metadata lookups and violates the architectural principle that state.json should be the authoritative source for task metadata.
+This research investigates the requirements for creating a `/sync` command that bidirectionally synchronizes `specs/TODO.md` and `specs/state.json`. The investigation reveals that the current architecture has a **critical structural issue**: state.json is malformed and contains only a single project object instead of the expected `active_projects` array structure. This malformation prevents proper metadata lookups and violates the architectural principle that state.json should be the authoritative source for task metadata.
 
 **Key Findings**:
 1. **Current state.json is malformed**: Contains single project (297) instead of `active_projects` array with all tasks
@@ -62,7 +62,7 @@ The architectural intent is that state.json is the **single source of truth** fo
 
 **Evidence**:
 ```bash
-$ cat .opencode/specs/state.json
+$ cat specs/state.json
 {
   "project_number": 297,
   "project_name": "simplify_task_command_to_directly_create_tasks_without_subagent_delegation",
@@ -248,7 +248,7 @@ The /sync command should leverage status-sync-manager's atomic update mechanism 
 # Lookup task in state.json (8x faster than TODO.md parsing)
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Extract all metadata at once
 language=$(echo "$task_data" | jq -r '.language // "general"')
@@ -293,36 +293,36 @@ The task description requests "bidirectional synchronization," but this conflict
 **1. stat command** (Linux):
 ```bash
 # Get modification timestamp (seconds since epoch)
-stat -c "%Y %n" .opencode/specs/TODO.md .opencode/specs/state.json
+stat -c "%Y %n" specs/TODO.md specs/state.json
 
 # Output:
-# 1767602026 .opencode/specs/TODO.md
-# 1767602243 .opencode/specs/state.json
+# 1767602026 specs/TODO.md
+# 1767602243 specs/state.json
 ```
 
 **2. stat command** (macOS):
 ```bash
 # Get modification timestamp (seconds since epoch)
-stat -f "%m %N" .opencode/specs/TODO.md .opencode/specs/state.json
+stat -f "%m %N" specs/TODO.md specs/state.json
 ```
 
 **3. ls command** (portable):
 ```bash
 # Get modification time (human-readable)
-ls -l --time-style=+%s .opencode/specs/TODO.md .opencode/specs/state.json
+ls -l --time-style=+%s specs/TODO.md specs/state.json
 ```
 
 **4. git log** (if files are tracked):
 ```bash
 # Get last commit timestamp for file
-git log -1 --format="%ct" -- .opencode/specs/TODO.md
-git log -1 --format="%ct" -- .opencode/specs/state.json
+git log -1 --format="%ct" -- specs/TODO.md
+git log -1 --format="%ct" -- specs/state.json
 ```
 
 **Comparison Logic**:
 ```bash
-todo_mtime=$(stat -c "%Y" .opencode/specs/TODO.md)
-state_mtime=$(stat -c "%Y" .opencode/specs/state.json)
+todo_mtime=$(stat -c "%Y" specs/TODO.md)
+state_mtime=$(stat -c "%Y" specs/state.json)
 
 if [ "$todo_mtime" -gt "$state_mtime" ]; then
   echo "TODO.md is newer (modified after state.json)"
@@ -515,8 +515,8 @@ The actual sync logic should be implemented in a new `sync-manager.md` subagent 
 **Backup Strategy**:
 ```bash
 # Phase 1: Create backups before any writes
-todo_backup=$(cat .opencode/specs/TODO.md)
-state_backup=$(cat .opencode/specs/state.json)
+todo_backup=$(cat specs/TODO.md)
+state_backup=$(cat specs/state.json)
 ```
 
 **Validation Before Commit**:
@@ -531,11 +531,11 @@ validate_artifacts_exist "$artifact_paths"
 **Write Order** (dependency-based):
 ```bash
 # 1. Write TODO.md first (most critical, user-facing)
-echo "$updated_todo" > .opencode/specs/TODO.md
+echo "$updated_todo" > specs/TODO.md
 verify_write_success || rollback_and_abort
 
 # 2. Write state.json second
-echo "$updated_state" > .opencode/specs/state.json
+echo "$updated_state" > specs/state.json
 verify_write_success || rollback_and_abort
 
 # 3. Write plan files last (if applicable)
@@ -549,10 +549,10 @@ rollback_and_abort() {
   echo "Write failed, rolling back all changes..."
   
   # Restore TODO.md from backup
-  echo "$todo_backup" > .opencode/specs/TODO.md
+  echo "$todo_backup" > specs/TODO.md
   
   # Restore state.json from backup
-  echo "$state_backup" > .opencode/specs/state.json
+  echo "$state_backup" > specs/state.json
   
   # Restore plan file from backup (if applicable)
   [ -n "$plan_backup" ] && echo "$plan_backup" > "$plan_path"
@@ -568,10 +568,10 @@ rollback_and_abort() {
 **Post-Commit Validation**:
 ```bash
 # Verify files written successfully
-[ -f .opencode/specs/TODO.md ] || log_error "TODO.md missing after write"
-[ -f .opencode/specs/state.json ] || log_error "state.json missing after write"
-[ -s .opencode/specs/TODO.md ] || log_error "TODO.md empty after write"
-[ -s .opencode/specs/state.json ] || log_error "state.json empty after write"
+[ -f specs/TODO.md ] || log_error "TODO.md missing after write"
+[ -f specs/state.json ] || log_error "state.json missing after write"
+[ -s specs/TODO.md ] || log_error "TODO.md empty after write"
+[ -s specs/state.json ] || log_error "state.json empty after write"
 ```
 
 **Sync Command Rollback Requirements**:
@@ -860,8 +860,8 @@ get_mtime() {
   ls -l --time-style=+%s "$file" 2>/dev/null | awk '{print $6}'
 }
 
-todo_mtime=$(get_mtime .opencode/specs/TODO.md)
-state_mtime=$(get_mtime .opencode/specs/state.json)
+todo_mtime=$(get_mtime specs/TODO.md)
+state_mtime=$(get_mtime specs/state.json)
 
 echo "TODO.md modified: $(date -d @$todo_mtime '+%Y-%m-%d %H:%M:%S')"
 echo "state.json modified: $(date -d @$state_mtime '+%Y-%m-%d %H:%M:%S')"
@@ -884,8 +884,8 @@ get_git_mtime() {
   git log -1 --format="%ct" -- "$file" 2>/dev/null || echo "0"
 }
 
-todo_git_mtime=$(get_git_mtime .opencode/specs/TODO.md)
-state_git_mtime=$(get_git_mtime .opencode/specs/state.json)
+todo_git_mtime=$(get_git_mtime specs/TODO.md)
+state_git_mtime=$(get_git_mtime specs/state.json)
 
 echo "TODO.md last committed: $(date -d @$todo_git_mtime '+%Y-%m-%d %H:%M:%S')"
 echo "state.json last committed: $(date -d @$state_git_mtime '+%Y-%m-%d %H:%M:%S')"
@@ -900,10 +900,10 @@ detect_changes() {
   # Extract task from state.json
   state_task=$(jq -r --arg num "$task_num" \
     '.active_projects[] | select(.project_number == ($num | tonumber))' \
-    .opencode/specs/state.json)
+    specs/state.json)
   
   # Extract task from TODO.md
-  todo_task=$(grep -A 20 "^### $task_num\." .opencode/specs/TODO.md)
+  todo_task=$(grep -A 20 "^### $task_num\." specs/TODO.md)
   
   # Compare status
   state_status=$(echo "$state_task" | jq -r '.status')
@@ -1100,31 +1100,31 @@ routing:
 ```bash
 validate_files() {
   # Check TODO.md exists
-  if [ ! -f .opencode/specs/TODO.md ]; then
+  if [ ! -f specs/TODO.md ]; then
     echo "Error: TODO.md not found"
     exit 1
   fi
   
   # Check state.json exists
-  if [ ! -f .opencode/specs/state.json ]; then
+  if [ ! -f specs/state.json ]; then
     echo "Error: state.json not found. Run /meta to regenerate."
     exit 1
   fi
   
   # Validate state.json is valid JSON
-  if ! jq empty .opencode/specs/state.json 2>/dev/null; then
+  if ! jq empty specs/state.json 2>/dev/null; then
     echo "Error: state.json is not valid JSON"
     echo "Run /meta to regenerate state.json from TODO.md"
     exit 1
   fi
   
   # Check write permissions
-  if [ ! -w .opencode/specs/TODO.md ]; then
+  if [ ! -w specs/TODO.md ]; then
     echo "Error: TODO.md is not writable"
     exit 1
   fi
   
-  if [ ! -w .opencode/specs/state.json ]; then
+  if [ ! -w specs/state.json ]; then
     echo "Error: state.json is not writable"
     exit 1
   fi
@@ -1137,10 +1137,10 @@ detect_discrepancies() {
   local discrepancies=0
   
   # Parse state.json active_projects
-  state_tasks=$(jq -r '.active_projects[].project_number' .opencode/specs/state.json)
+  state_tasks=$(jq -r '.active_projects[].project_number' specs/state.json)
   
   # Parse TODO.md task numbers
-  todo_tasks=$(grep -oP '^### \K\d+' .opencode/specs/TODO.md)
+  todo_tasks=$(grep -oP '^### \K\d+' specs/TODO.md)
   
   # Find tasks in state.json but not in TODO.md
   for task in $state_tasks; do
@@ -1169,8 +1169,8 @@ sync_files() {
   echo "Phase 1: Preparing updates..."
   
   # Backup original files
-  todo_backup=$(cat .opencode/specs/TODO.md)
-  state_backup=$(cat .opencode/specs/state.json)
+  todo_backup=$(cat specs/TODO.md)
+  state_backup=$(cat specs/state.json)
   
   # Generate updated TODO.md from state.json
   updated_todo=$(generate_todo_from_state)
@@ -1185,7 +1185,7 @@ sync_files() {
   echo "Phase 2: Committing updates..."
   
   # Write TODO.md
-  echo "$updated_todo" > .opencode/specs/TODO.md
+  echo "$updated_todo" > specs/TODO.md
   if [ $? -ne 0 ]; then
     echo "Error: Failed to write TODO.md"
     rollback
@@ -1193,7 +1193,7 @@ sync_files() {
   fi
   
   # Verify TODO.md written successfully
-  if [ ! -s .opencode/specs/TODO.md ]; then
+  if [ ! -s specs/TODO.md ]; then
     echo "Error: TODO.md is empty after write"
     rollback
     return 1
@@ -1205,8 +1205,8 @@ sync_files() {
 
 rollback() {
   echo "Rolling back changes..."
-  echo "$todo_backup" > .opencode/specs/TODO.md
-  echo "$state_backup" > .opencode/specs/state.json
+  echo "$todo_backup" > specs/TODO.md
+  echo "$state_backup" > specs/state.json
   echo "Rollback completed"
 }
 ```
@@ -1229,8 +1229,8 @@ fi
 **Step 1.1: Read Files**
 ```bash
 # Read both files into memory
-todo_content=$(cat .opencode/specs/TODO.md)
-state_content=$(cat .opencode/specs/state.json)
+todo_content=$(cat specs/TODO.md)
+state_content=$(cat specs/state.json)
 
 # Create backups
 todo_backup="$todo_content"
@@ -1313,7 +1313,7 @@ fi
 **Step 2.1: Write TODO.md**
 ```bash
 echo "Writing TODO.md..."
-echo "$updated_todo" > .opencode/specs/TODO.md
+echo "$updated_todo" > specs/TODO.md
 
 # Verify write succeeded
 if [ $? -ne 0 ]; then
@@ -1323,7 +1323,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Verify file is non-empty
-if [ ! -s .opencode/specs/TODO.md ]; then
+if [ ! -s specs/TODO.md ]; then
   echo "Error: TODO.md is empty after write"
   rollback_all
   exit 1
@@ -1333,7 +1333,7 @@ fi
 **Step 2.2: Verify TODO.md**
 ```bash
 # Verify TODO.md is valid markdown
-if ! validate_todo_markdown "$(cat .opencode/specs/TODO.md)"; then
+if ! validate_todo_markdown "$(cat specs/TODO.md)"; then
   echo "Error: TODO.md is invalid after write"
   rollback_all
   exit 1
@@ -1345,7 +1345,7 @@ fi
 # If state.json needs updates (e.g., last_updated timestamp)
 if [ -n "$state_updates" ]; then
   echo "Writing state.json..."
-  echo "$updated_state" > .opencode/specs/state.json
+  echo "$updated_state" > specs/state.json
   
   # Verify write succeeded
   if [ $? -ne 0 ]; then
@@ -1355,7 +1355,7 @@ if [ -n "$state_updates" ]; then
   fi
   
   # Verify file is non-empty and valid JSON
-  if ! jq empty .opencode/specs/state.json 2>/dev/null; then
+  if ! jq empty specs/state.json 2>/dev/null; then
     echo "Error: state.json is invalid after write"
     rollback_all
     exit 1
@@ -1366,16 +1366,16 @@ fi
 **Step 2.4: Post-Commit Validation**
 ```bash
 # Verify both files exist and are non-empty
-[ -s .opencode/specs/TODO.md ] || log_error "TODO.md missing or empty"
-[ -s .opencode/specs/state.json ] || log_error "state.json missing or empty"
+[ -s specs/TODO.md ] || log_error "TODO.md missing or empty"
+[ -s specs/state.json ] || log_error "state.json missing or empty"
 
 # Verify files are readable
-[ -r .opencode/specs/TODO.md ] || log_error "TODO.md not readable"
-[ -r .opencode/specs/state.json ] || log_error "state.json not readable"
+[ -r specs/TODO.md ] || log_error "TODO.md not readable"
+[ -r specs/state.json ] || log_error "state.json not readable"
 
 # Verify files are valid
-validate_todo_markdown "$(cat .opencode/specs/TODO.md)" || log_error "TODO.md invalid"
-jq empty .opencode/specs/state.json || log_error "state.json invalid"
+validate_todo_markdown "$(cat specs/TODO.md)" || log_error "TODO.md invalid"
+jq empty specs/state.json || log_error "state.json invalid"
 ```
 
 **Rollback Implementation**:
@@ -1385,7 +1385,7 @@ rollback_all() {
   echo "ERROR: Write failed. Rolling back all changes..."
   
   # Restore TODO.md from backup
-  echo "$todo_backup" > .opencode/specs/TODO.md
+  echo "$todo_backup" > specs/TODO.md
   if [ $? -ne 0 ]; then
     echo "CRITICAL: Failed to restore TODO.md from backup!"
     echo "Backup content:"
@@ -1394,7 +1394,7 @@ rollback_all() {
   fi
   
   # Restore state.json from backup
-  echo "$state_backup" > .opencode/specs/state.json
+  echo "$state_backup" > specs/state.json
   if [ $? -ne 0 ]; then
     echo "CRITICAL: Failed to restore state.json from backup!"
     echo "Backup content:"
@@ -1403,12 +1403,12 @@ rollback_all() {
   fi
   
   # Verify rollback succeeded
-  if [ ! -s .opencode/specs/TODO.md ]; then
+  if [ ! -s specs/TODO.md ]; then
     echo "CRITICAL: TODO.md is empty after rollback!"
     exit 2
   fi
   
-  if ! jq empty .opencode/specs/state.json 2>/dev/null; then
+  if ! jq empty specs/state.json 2>/dev/null; then
     echo "CRITICAL: state.json is invalid after rollback!"
     exit 2
   fi
@@ -1425,7 +1425,7 @@ After successful sync, create git commit via git-workflow-manager:
 ```bash
 # Invoke git-workflow-manager
 git-workflow-manager \
-  --scope-files ".opencode/specs/TODO.md,.opencode/specs/state.json" \
+  --scope-files "specs/TODO.md,specs/state.json" \
   --message-template "sync: synchronized TODO.md and state.json" \
   --task-context '{"description": "sync completed"}' \
   --session-id "$session_id"
@@ -1555,17 +1555,17 @@ git-workflow-manager \
 **Validation**:
 ```bash
 # Verify state.json has active_projects array
-jq '.active_projects | length' .opencode/specs/state.json
+jq '.active_projects | length' specs/state.json
 
 # Verify all TODO.md tasks are in state.json
-todo_tasks=$(grep -oP '^### \K\d+' .opencode/specs/TODO.md | wc -l)
-state_tasks=$(jq '.active_projects | length' .opencode/specs/state.json)
+todo_tasks=$(grep -oP '^### \K\d+' specs/TODO.md | wc -l)
+state_tasks=$(jq '.active_projects | length' specs/state.json)
 echo "TODO.md tasks: $todo_tasks"
 echo "state.json tasks: $state_tasks"
 
 # Verify next_project_number is correct
-max_task=$(grep -oP '^### \K\d+' .opencode/specs/TODO.md | sort -n | tail -1)
-next_num=$(jq -r '.next_project_number' .opencode/specs/state.json)
+max_task=$(grep -oP '^### \K\d+' specs/TODO.md | sort -n | tail -1)
+next_num=$(jq -r '.next_project_number' specs/state.json)
 echo "Max task number: $max_task"
 echo "Next project number: $next_num"
 [ "$next_num" -gt "$max_task" ] && echo "PASS" || echo "FAIL"
@@ -1856,13 +1856,13 @@ With hundreds of tasks, parsing TODO.md and comparing with state.json may be slo
    - State lookup patterns
    - Read/write separation principle
 
-3. **TODO.md** (`.opencode/specs/TODO.md`)
+3. **TODO.md** (`specs/TODO.md`)
    - Current YAML header structure
    - Task entry format
    - Priority sections
    - Status markers in use
 
-4. **state.json** (`.opencode/specs/state.json`)
+4. **state.json** (`specs/state.json`)
    - Current structure (malformed - single project)
    - Expected structure (active_projects array)
    - Metadata fields

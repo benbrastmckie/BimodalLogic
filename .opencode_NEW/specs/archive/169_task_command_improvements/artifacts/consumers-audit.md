@@ -38,9 +38,9 @@
 - `.opencode/context/core/workflows/task-breakdown.md` - Task workflow patterns
 
 ### 5. Spec Files (Non-Archive)
-- `.opencode/specs/TODO.md` - Task 169 description and acceptance criteria
-- `.opencode/specs/171_gap_analysis_20251224/reports/analysis-001.md` - References /task workflow
-- `.opencode/specs/research/context-window-protection-and-agent-communication.md` - Research on /task improvements
+- `specs/TODO.md` - Task 169 description and acceptance criteria
+- `specs/171_gap_analysis_20251224/reports/analysis-001.md` - References /task workflow
+- `specs/research/context-window-protection-and-agent-communication.md` - Research on /task improvements
 
 ## Consumption Patterns
 

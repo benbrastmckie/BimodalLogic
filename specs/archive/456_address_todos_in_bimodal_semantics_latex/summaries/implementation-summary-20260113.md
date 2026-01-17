@@ -43,7 +43,7 @@ Addressed all 20 TODO comments in `02-Semantics.tex` through 6 implementation ph
 ## Files Modified
 
 - `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/02-Semantics.tex` - Complete rewrite addressing all 20 TODOs
-- `/home/benjamin/Projects/ProofChecker/.claude/specs/456_address_todos_in_bimodal_semantics_latex/plans/implementation-001.md` - Updated phase statuses to COMPLETED
+- `/home/benjamin/Projects/ProofChecker/specs/456_address_todos_in_bimodal_semantics_latex/plans/implementation-001.md` - Updated phase statuses to COMPLETED
 
 ## Verification
 

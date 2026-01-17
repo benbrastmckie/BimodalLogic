@@ -54,7 +54,7 @@ Task management and documentation synchronization:
 
 The project uses a Four-Document Model for tracking project state:
 
-1. **[TODO.md](../../.claude/specs/TODO.md)** - Active task tracking (active work only)
+1. **[TODO.md](../../specs/TODO.md)** - Active task tracking (active work only)
 2. **[IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)** - Module-by-module completion tracking
 3. **[FEATURE_REGISTRY.md](FEATURE_REGISTRY.md)** - Feature tracking and capabilities
 4. **[SORRY_REGISTRY.md](SORRY_REGISTRY.md)** - Technical debt tracking
@@ -76,7 +76,7 @@ See [MAINTENANCE.md](MAINTENANCE.md) for the complete workflow for updating thes
 
 ### Managing Tasks
 
-- **Active tasks**: [TODO.md](../../.claude/specs/TODO.md)
+- **Active tasks**: [TODO.md](../../specs/TODO.md)
 - **Task workflow**: [MAINTENANCE.md](MAINTENANCE.md)
 
 ## Related Documentation

@@ -228,8 +228,8 @@ RESULT: Plan artifact created [PASS], TODO.md updated [PASS], state.json updated
 ```
 Context Loaded:
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md
@@ -665,7 +665,7 @@ result = execute_command(
     "description": "Configure OpenCode default agent",
     "language": "markdown",
     "research_inputs": [
-      ".opencode/specs/224_.../reports/research-001.md"
+      "specs/224_.../reports/research-001.md"
     ]
   }
 }
@@ -680,7 +680,7 @@ result = execute_command(
   "artifacts": [
     {
       "type": "plan",
-      "path": ".opencode/specs/224_.../plans/implementation-001.md",
+      "path": "specs/224_.../plans/implementation-001.md",
       "summary": "4-phase implementation plan"
     }
   ],
@@ -710,7 +710,7 @@ result = execute_command(
   "artifacts": [
     {
       "type": "plan",
-      "path": ".opencode/specs/224_.../plans/implementation-001.md",
+      "path": "specs/224_.../plans/implementation-001.md",
       "summary": "4-phase implementation plan"
     }
   ],
@@ -738,8 +738,8 @@ result = execute_command(
 **Command Context** (~10,000-12,000 tokens):
 ```
 @.opencode/context/core/workflows/command-lifecycle.md
-@.opencode/specs/TODO.md
-@.opencode/specs/state.json
+@specs/TODO.md
+@specs/state.json
 @.opencode/context/core/standards/status-markers.md
 @.opencode/context/core/standards/subagent-return-format.md
 @.opencode/context/core/workflows/subagent-delegation-guide.md

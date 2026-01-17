@@ -81,7 +81,7 @@
 
 ## Full Report
 
-See: `.opencode/specs/177_examples_update/reports/research-001.md`
+See: `specs/177_examples_update/reports/research-001.md`
 
 **Sections**:
 1. Executive Summary
