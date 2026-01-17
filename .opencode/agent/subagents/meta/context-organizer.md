@@ -413,17 +413,30 @@ lifecycle:
     <name>Stage 8: Return Standardized Result</name>
     <action>Return standardized result</action>
     <process>
-      1. Format return following subagent-return-format.md
-      2. List all artifacts (context files, README) with validated flag
-      3. Include brief summary (<100 tokens):
+      1. DETERMINE return status:
+         - IF status_sync_success = true AND no other failures: status = "completed"
+         - IF status_sync_success = false AND severity = "critical": status = "failed"
+         - IF status_sync_success = false AND severity = "important": status = "partial"
+         - IF status_sync_success = false AND severity = "cosmetic": status = "completed"
+      
+      2. Format return following subagent-return-format.md
+      3. List all artifacts (context files, README) with validated flag
+      4. Include brief summary (<100 tokens):
          - Domain name
          - Number of files created in each category
          - Average file size
          - Key features
-      4. Include session_id from input
-      5. Include metadata (duration, delegation info, validation result)
-      6. Include git commit hash if successful
-      7. Return status completed
+         - Status sync result (if failed)
+      5. Include session_id from input
+      6. Include metadata:
+         - duration, delegation info, validation result
+         - status_sync_result (from Stage 7.2)
+         - git_commit (if successful)
+      7. Include errors array (with status_sync_failed entry if applicable)
+      8. Set next_steps:
+         - IF status == "completed": "Review context organization and test context loading"
+         - IF status == "partial": "Review context organization. Manually update task status: /task --update {task_number} --status completed"
+         - IF status == "failed": "Retry with correct parameters or fix underlying issue"
     </process>
     <validation>
       Before returning:
@@ -439,6 +452,12 @@ lifecycle:
       - Return status: "failed"
       - Include error in errors array with type "validation_failed"
       - Recommendation: "Fix artifact creation and retry"
+      
+      If status_sync_failed:
+      - Ensure status_sync_result included in metadata
+      - Ensure appropriate return status ("partial" or "failed")
+      - Ensure recovery instructions in next_steps
+      - Ensure error entry in errors array
     </validation>
     <output>Standardized return object with validated artifacts and brief summary metadata</output>
   </step_8>
