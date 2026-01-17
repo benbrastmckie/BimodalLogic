@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 564,
+      "project_name": "memory_issues_status_sync_agent",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T22:20:14Z",
+      "last_updated": "2026-01-17T22:20:14Z"
+    },
+    {
       "project_number": 563,
       "project_name": "investigate_empty_directory_creation",
       "status": "planned",
@@ -28,11 +37,11 @@
     {
       "project_number": 562,
       "project_name": "agent_system_refactor_report",
-      "status": "researched",
+      "status": "planning",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-17T21:33:11Z",
-      "last_updated": "2026-01-17T21:38:32Z",
+      "last_updated": "2026-01-17T22:14:08Z",
       "researched": "2026-01-17T21:38:32Z",
       "artifacts": [
         {
@@ -486,5 +495,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 564
+  "next_project_number": 565
 }

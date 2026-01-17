@@ -1,5 +1,5 @@
 ---
-next_project_number: 564
+next_project_number: 565
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 564. Memory Issues with Status-Sync-Agent Architecture
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+
+**Description**: Investigate memory errors occurring when skill-status-sync calls status-sync-agent. The skill-agent delegation leads to memory exhaustion that either crashes the terminal or produces error outputs in .claude/output/. Analyze the command-skill-agent architecture to identify root causes and redesign to preserve functionality without memory errors.
+
+---
 
 ### 549. Research Intelligent Model Routing Architecture
 - **Effort**: 2-3 hours
@@ -307,7 +318,7 @@ technical_debt:
 
 ### 562. Agent System Refactor Report for Protocol Repository
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-17
