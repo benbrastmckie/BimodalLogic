@@ -66,11 +66,11 @@
       "project_name": "documentation_update",
       "type": "documentation",
       "phase": "not_started",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T16:55:28Z",
+      "last_updated": "2026-01-17T16:57:48Z",
       "effort": "0.5 hours",
       "parent": 540,
       "dependencies": [
@@ -79,7 +79,13 @@
         544,
         545
       ],
-      "description": "Phase 5: Update Metalogic/README.md with accurate architecture diagram and module status. Remove references to non-existent Metalogic/Boneyard/, point to Bimodal/Boneyard/ instead. Add module-level docstrings."
+      "description": "Phase 5: Update Metalogic/README.md with accurate architecture diagram and module status. Remove references to non-existent Metalogic/Boneyard/, point to Bimodal/Boneyard/ instead. Add module-level docstrings.",
+      "artifacts": [
+        {
+          "path": "specs/546_documentation_update/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 540,

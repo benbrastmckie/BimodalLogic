@@ -207,12 +207,13 @@ technical_debt:
 
 ### 546. Documentation Update (Phase 5 of 540)
 - **Effort**: 0.5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-17
 - **Parent**: 540
 - **Dependencies**: 542, 543, 544, 545
+- **Research**: [research-001.md](specs/546_documentation_update/reports/research-001.md)
 
 **Description**: Update Metalogic/README.md with accurate architecture diagram and module status. Remove references to non-existent Metalogic/Boneyard/, point to Bimodal/Boneyard/ instead. Add module-level docstrings.
 
