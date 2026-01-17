@@ -73,9 +73,9 @@ technical_debt:
 - **Planned**: 2026-01-17
 - **Revised**: 2026-01-17
 - **Research**: [research-001.md](specs/534_research_claude_code_model_selection/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/534_research_claude_code_model_selection/plans/implementation-003.md)
+- **Plan**: [implementation-004.md](specs/534_research_claude_code_model_selection/plans/implementation-004.md)
 
-**Description**: Upgrade protocol/.claude/ agent system with model fields and verify direct execution patterns. Detailed 5-phase plan: (1) Add model: sonnet to all 6 agents, (2) Update CLAUDE.md documentation, (3) Verify skill-status-sync configuration, (4) Cross-repository consistency check, (5) Final verification and commit.
+**Description**: Comprehensive protocol/.claude/ upgrade incorporating Tasks 534, 548, 563, 564. 6-phase plan: (1) Add model: sonnet to 6 agents, (2) Add CRITICAL Task tool directives to 6 forked skills, (3) Remove eager mkdir from task.md and meta-builder-agent.md, (4) Update CLAUDE.md documentation, (5) Verify skill-status-sync direct execution, (6) Final verification and commit.
 
 ---
 
