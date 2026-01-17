@@ -1,5 +1,5 @@
 ---
-next_project_number: 541
+next_project_number: 542
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -229,6 +229,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 541. Refactor Progressive Disclosure Design in Agent System
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-17
+
+**Description**: Review the progressive disclosure design in the .claude/ agent system for economically and lazily disclosing relevant context through the command-skill-agent patterns that have been implemented, comparing best practices for Claude Code usage in 2026 in order to refactor the system to improve progressive disclosure and metadata passing for high efficiency context management.
+
+---
 
 ### 540. Finish Metalogic Directory Refactor and Cleanup
 - **Effort**: 4-6 hours

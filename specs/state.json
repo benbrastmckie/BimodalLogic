@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 541,
+      "project_name": "progressive_disclosure_refactor",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T14:41:00Z",
+      "last_updated": "2026-01-17T14:41:00Z"
+    },
+    {
       "project_number": 540,
       "project_name": "finish_metalogic_refactor_cleanup",
       "type": "refactor",
@@ -549,5 +558,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 541
+  "next_project_number": 542
 }
