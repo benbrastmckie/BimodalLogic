@@ -9,14 +9,21 @@
       "project_number": 523,
       "project_name": "Clean Up Bimodal Lean Source Files After Task 505",
       "type": "refactor",
-      "phase": "not_started",
-      "status": "not_started",
+      "phase": "researched",
+      "status": "researched",
       "priority": "medium",
       "language": "lean",
       "created": "2026-01-17T06:00:27Z",
-      "last_updated": "2026-01-17T06:00:27Z",
+      "last_updated": "2026-01-17T06:09:00Z",
+      "researched": "2026-01-17T06:08:00Z",
       "effort": "4-6 hours",
-      "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments"
+      "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments",
+      "artifacts": [
+        {
+          "path": ".opencode/specs/523_bimodal_cleanup_research/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 518,
