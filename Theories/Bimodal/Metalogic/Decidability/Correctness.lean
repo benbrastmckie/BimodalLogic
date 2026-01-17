@@ -67,14 +67,19 @@ The tableau method is complete: if a formula is valid, the tableau will
 eventually close all branches.
 
 Note: This is a partial formalization. Full completeness requires:
-1. Finite model property for TM logic
+1. Finite model property for TM logic (see `Representation.FiniteModelProperty`)
 2. Tableau completeness relative to FMP
 3. Termination with sufficient fuel
+
+**FMP Reference**: The `finite_model_property` theorem in
+`Bimodal.Metalogic.Representation.FiniteModelProperty` provides the key bound:
+any satisfiable formula has a model with bounded world states (≤ 2^|subformulas|).
+This bounds the tableau exploration space.
 -/
 theorem tableau_complete (φ : Formula) :
     (⊨ φ) → ∃ (fuel : Nat), (buildTableau φ fuel).isSome ∧
              ∀ t, buildTableau φ fuel = some t → t.isValid := by
-  sorry  -- Requires FMP and tableau completeness proof
+  sorry  -- Requires FMP-based termination proof; see Representation.FiniteModelProperty
 
 /--
 Decision procedure completeness: if a formula is valid and we use
@@ -82,10 +87,14 @@ sufficient fuel, decide will return valid.
 
 Note: This is stated but not fully proven due to complexity of
 FMP and completeness proofs.
+
+**FMP Connection**: The `finite_model_property` theorem bounds the search space.
+For a formula with complexity n, the fuel bound is O(2^n) since the subformula
+closure has at most 2^n distinct states.
 -/
 theorem decide_complete (φ : Formula) (hvalid : ⊨ φ) :
     ∃ (fuel : Nat), ∃ proof, decide φ 10 fuel = .valid proof := by
-  sorry  -- Requires tableau completeness
+  sorry  -- Requires tableau completeness; fuel bound from Representation.FiniteModelProperty
 
 /-!
 ## Correctness Summary

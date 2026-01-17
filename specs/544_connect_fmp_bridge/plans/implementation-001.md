@@ -46,7 +46,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Fix FiniteModelProperty.lean Imports [NOT STARTED]
+### Phase 1: Fix FiniteModelProperty.lean Imports [COMPLETED]
 
 **Goal**: Get FiniteModelProperty.lean to compile by fixing import references and removing broken dependencies.
 
@@ -68,7 +68,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Define FMP Statement Using Semantic Approach [NOT STARTED]
+### Phase 2: Define FMP Statement Using Semantic Approach [COMPLETED]
 
 **Goal**: Define the Finite Model Property theorem using the proven SemanticCanonicalModel infrastructure.
 
@@ -91,7 +91,7 @@ From research-001.md:
 
 ---
 
-### Phase 3: Connect to Decidability Module [NOT STARTED]
+### Phase 3: Connect to Decidability Module [COMPLETED]
 
 **Goal**: Bridge FMP to the Decidability module to enable `satisfiability_decidable`.
 
