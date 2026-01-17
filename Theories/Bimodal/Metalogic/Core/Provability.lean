@@ -6,6 +6,10 @@ namespace Bimodal.Metalogic.Core
 
 open Bimodal.Syntax Bimodal.ProofSystem
 
+-- Import Consistent from Basic after defining it locally to avoid circular imports
+def LocalConsistent (Γ : Context) : Prop :=
+  ∃ φ : Formula, ¬Nonempty (DerivationTree Γ φ)
+
 /-- 
 Set-based provability: Γ ⊢ φ iff some finite subset of Γ derives φ.
 

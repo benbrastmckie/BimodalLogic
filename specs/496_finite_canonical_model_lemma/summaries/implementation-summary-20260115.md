@@ -1,0 +1,1 @@
+Implemented `semantic_valuation_iff_assignment` in `FiniteCanonicalModel.lean` to connect semantic valuation with finite assignments. This lemma bridges semantic and finite truth definitions for atomic formulas. Placed before bridge theorems to support future proofs. Proof is straightforward by unfolding definitions.

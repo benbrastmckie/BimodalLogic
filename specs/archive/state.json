@@ -1,0 +1,4271 @@
+{
+  "_schema_version": "1.0.0",
+  "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
+  "_last_updated": "2026-01-13T18:57:54Z",
+  "archived_projects": [],
+  "completed_projects": [
+    {
+      "project_number": 133,
+      "project_name": "build_canonical_model_constructors_in_completeness.lean",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Implement canonical model construction helpers and remove associated axiom stubs.",
+      "abandoned": "2026-01-13T23:23:10Z",
+      "abandoned_reason": "Superseded by semantic completeness approach (Tasks 473, 449, 450). SemanticCanonicalFrame now provides this functionality."
+    },
+    {
+      "project_number": 134,
+      "project_name": "prove_truth_lemma_structure_in_completeness.lean",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Prove the truth lemma for the canonical model.",
+      "abandoned": "2026-01-13T23:23:10Z",
+      "abandoned_reason": "Superseded by semantic_truth_lemma_v2 in FiniteCanonicalModel.lean (Task 449)."
+    },
+    {
+      "project_number": 135,
+      "project_name": "remove_provable_iff_valid_sorry_in_completeness.lean",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Complete the provable_iff_valid theorem.",
+      "abandoned": "2026-01-13T23:23:10Z",
+      "abandoned_reason": "Superseded by main_provable_iff_valid in FiniteCanonicalModel.lean (Task 450)."
+    },
+    {
+      "project_number": 471,
+      "project_name": "constructive_model_finiteness_proof",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Prove model finiteness constructively without Classical.choice.",
+      "abandoned": "2026-01-13T23:23:10Z",
+      "abandoned_reason": "Classical.choice is acceptable for mathematical completeness proofs. Constructive version not required for publication."
+    },
+    {
+      "project_number": 400,
+      "project_name": "investigate_explanatory_truth_build_performance",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Investigate why building Explanatory/Truth.lean is so computationally demanding and identify ways to build faster or more efficiently.",
+      "created": "2026-01-11T21:55:51Z",
+      "last_updated": "2026-01-12T00:38:44Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/400_investigate_explanatory_truth_build_performance/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "subtasks": [
+        416,
+        417,
+        418,
+        419,
+        420
+      ],
+      "abandoned": "2026-01-13T04:05:14Z"
+    },
+    {
+      "project_number": 419,
+      "project_name": "refactor_mutual_recursion_semantics",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "low",
+      "description": "Refactor the mutual recursion between verifies/falsifies in Foundation/Semantics.lean. Consider using a single function with a Bool flag for verify/falsify mode, or an indexed inductive family to avoid expensive well-founded recursion elaboration.",
+      "effort": "4-6 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T09:15:00Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/419_refactor_mutual_recursion_semantics/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/419_refactor_mutual_recursion_semantics/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ],
+      "plan_version": "001",
+      "abandoned": "2026-01-13T04:05:14Z"
+    },
+    {
+      "project_number": 441,
+      "project_name": "prove_completeness_relativized_approach",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-12T21:34:20Z",
+      "last_updated": "2026-01-12T21:34:20Z",
+      "description": "Prove completeness following Approach 2 Relativized Completeness from research-004.md. The syntactic construction yields the free ordered abelian group on one generator, isomorphic to Z. Adding density axioms yields Q, completeness axioms approaches R.",
+      "abandoned": "2026-01-13T04:03:57Z"
+    },
+    {
+      "project_number": 457,
+      "project_name": "document_top_project_outcomes",
+      "status": "abandoned",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-13T01:09:49Z",
+      "last_updated": "2026-01-13T01:29:18Z",
+      "abandoned": "2026-01-13T01:54:01Z"
+    },
+    {
+      "project_number": 437,
+      "project_name": "improve_readme_consistency_with_recursive_semantics",
+      "status": "abandoned",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T19:44:35Z",
+      "last_updated": "2026-01-12T19:44:35Z",
+      "description": "Improve README.md for consistency with recursive-semantics.md documentation.",
+      "abandoned": "2026-01-12T21:59:10Z"
+    },
+    {
+      "project_number": 426,
+      "project_name": "covariantclass_vs_isorderedaddmonoid_comparison",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Compare CovariantClass (originally intended in task 417) vs IsOrderedAddMonoid (used in task 420) for representing time as a totally ordered commutative group. Analyze whether using IsOrderedAddMonoid loses expressiveness or accuracy in stating that time is a totally ordered commutative group. Document pros/cons of each approach.",
+      "created": "2026-01-12T05:35:04Z",
+      "last_updated": "2026-01-12T09:52:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/426_covariantclass_vs_isorderedaddmonoid_comparison/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "abandoned": "2026-01-12T05:46:59Z"
+    },
+    {
+      "project_number": 346,
+      "project_name": "refactor_commands_to_delegate_to_skills",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "low",
+      "language": "meta",
+      "created": "2026-01-09T02:30:00Z",
+      "last_updated": "2026-01-09T02:30:00Z",
+      "effort": "8-12 hours",
+      "description": "Refactor the .claude/ agent system to use 'thin wrapper' commands that parse arguments and delegate to corresponding skills for execution, enabling skill reuse across commands and cleaner separation of concerns.",
+      "abandoned": "2026-01-12T02:52:10Z"
+    },
+    {
+      "project_number": 397,
+      "project_name": "enhance_revise_to_update_description_when_no_plan_exists",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Modify the /revise command to handle tasks without plans by updating the task description instead of erroring. When a task has status not_started or researched (no plan), and the user provides a revision reason, update the task description in both state.json and TODO.md, then git commit the change.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T21:42:42Z",
+      "last_updated": "2026-01-11T22:05:19Z",
+      "implementing_started": "2026-01-11T22:03:25Z",
+      "completed": "2026-01-11T22:05:19Z",
+      "archived": "2026-01-12T06:30:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/archive/397_enhance_revise_to_update_description_when_no_plan_exists/summaries/implementation-summary-20260112.md"
+        }
+      ]
+    },
+    {
+      "project_number": 341,
+      "project_name": "create_deprecation_policy_and_migration_guide",
+      "type": "documentation",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-08T20:27:20Z",
+      "last_updated": "2026-01-08T20:27:20Z",
+      "effort": "2 hours",
+      "description": "Create .claude/context/core/standards/deprecation-policy.md documenting how to deprecate agents/commands safely. Include migration checklist: (1) Mark as deprecated with reason, (2) Update all callers, (3) Add deprecation warnings, (4) Remove after migration complete. Create migration guide for moving from deprecated agents to replacements.",
+      "plan_path": ".claude/specs/341_create_deprecation_policy_and_migration_guide/plans/implementation-001.md",
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 339,
+      "project_name": "remove_deprecated_task_creator_subagent",
+      "type": "maintenance",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-08T20:27:20Z",
+      "last_updated": "2026-01-08T20:27:20Z",
+      "effort": "1 hour",
+      "description": "Remove .claude/agent/subagents/task-creator.md file since it is deprecated and no longer used. Update any documentation that references it. Verify no other commands depend on it.",
+      "dependencies": [
+        338
+      ],
+      "plan_path": ".claude/specs/339_remove_deprecated_task_creator_subagent/plans/implementation-001.md",
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 306,
+      "project_name": "refactor_/meta_command_to_create_tasks_instead_of_direct_implementation",
+      "type": "feature",
+      "phase": "planning_completed",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "description": "Refactor the /meta command to always create an appropriate number of tasks (similar to /task command) rather than directly implementing the work. Preserve the interview functionality to clarify requirements when needed, or run in full interactive mode when /meta is called with no arguments. The result should be task creation with dependencies indicated and plan artifacts stored in the appropriate artifact structure per artifact-management.md.",
+      "effort": "8 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-05T08:00:00Z",
+      "last_updated": "2026-01-05",
+      "research_completed": "2026-01-05",
+      "artifacts": [
+        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/reports/research-001.md",
+        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-001.md",
+        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-002.md",
+        ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md"
+      ],
+      "planning_completed": "2026-01-05",
+      "plan_path": ".claude/specs/306_refactor_meta_command_to_create_tasks_instead_of_direct_implementation/plans/implementation-003.md",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 8,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 3,
+        "revision_reason": "User requested single task with detailed plan containing appropriate number of phases (not hardcoded), rather than multiple subtasks"
+      },
+      "plan_revised": "2026-01-05",
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 296,
+      "project_name": "create_sync_command_to_synchronize_todo_md_and_state_json",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Create a /sync command that bidirectionally synchronizes .claude/specs/TODO.md and .claude/specs/state.json, ensuring both files contain identical task information with the most recent changes from either file. The command should detect discrepancies between the two files, intelligently resolve conflicts by preferring the most recently updated data, and perform atomic updates to both files using the existing status-sync-manager's two-phase commit protocol. This addresses the architectural requirement that state.json is the authoritative source for metadata reads while TODO.md serves as the user-facing view, with synchronization ensuring consistency between them.",
+      "created": "2026-01-05T07:51:30Z",
+      "last_updated": "2026-01-05T07:51:30Z",
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 345,
+      "project_name": "test_and_validate_all_workflow_commands_with_postflight_execution",
+      "type": "testing",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "last_updated": "2026-01-08T20:45:00Z",
+      "effort": "4-6 hours",
+      "description": "Comprehensive testing of all workflow commands (/implement, /research, /plan, /revise) to verify postflight stages execute correctly. Test artifact creation and linking, status updates to completed markers, git commit creation, error handling and rollback, and defense-in-depth verification. Validate that Task 335 scenario is fixed.",
+      "dependencies": [
+        342,
+        343,
+        344
+      ],
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 344,
+      "project_name": "implement_orchestrator_workflow_execution_engine",
+      "type": "implementation",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "last_updated": "2026-01-08T20:45:00Z",
+      "effort": "8-12 hours",
+      "description": "Implement orchestrator workflow execution engine that parses command file workflow_execution stages and executes them in sequence. Implement stage parser, execution engine, context passing mechanism, error handling and rollback, and integration with existing delegation system. Ensure Stage 3.5 (Postflight) executes correctly for all workflow commands.",
+      "dependencies": [
+        342,
+        343
+      ],
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 343,
+      "project_name": "design_command_file_workflow_execution_architecture",
+      "type": "design",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "last_updated": "2026-01-08T20:45:00Z",
+      "effort": "3-4 hours",
+      "description": "Design comprehensive architecture for orchestrator to execute command file workflow_execution stages. Define stage parsing mechanism, execution engine design, context passing between stages, error handling and rollback strategy, and integration with existing delegation system.",
+      "dependencies": [
+        342
+      ],
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 340,
+      "project_name": "add_validation_gates_to_all_command_files",
+      "type": "enhancement",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-08T20:27:20Z",
+      "last_updated": "2026-01-08T20:27:20Z",
+      "effort": "3-4 hours",
+      "description": "Audit all command files in .claude/command/ to ensure they have proper validation gates that prevent architectural violations. Add pre-execution and post-execution validation following patterns from /research and /implement. Document validation gate patterns in .claude/context/core/standards/validation-gates.md.",
+      "plan_path": ".claude/specs/340_add_validation_gates_to_all_command_files/plans/implementation-001.md",
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 338,
+      "project_name": "update_task_command_to_use_status_sync_manager_directly",
+      "type": "bugfix",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-08T20:27:20Z",
+      "last_updated": "2026-01-08T20:27:20Z",
+      "effort": "2-3 hours",
+      "description": "Update Stage 3 (CreateTasks) in /task command to delegate directly to status-sync-manager with operation: create_task instead of deprecated task-creator. Follow the pattern from /research and /implement commands (Stage 1.5 Preflight). Add validation gates to verify task creation succeeded. Test with multiple scenarios.",
+      "plan_path": ".claude/specs/338_update_task_command_to_use_status_sync_manager_directly/plans/implementation-001.md",
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 335,
+      "project_name": "refactor_errors_command_and_error_diagnostics_agent",
+      "type": "refactoring",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "general",
+      "description": "Refactor the /errors command and error-diagnostics-agent subagent to follow modern .opencode standards. Simplify command file to <300 lines with 4-stage pattern, refactor subagent to use 8-stage workflow_execution, move all workflow logic from command to subagent, optimize context loading to Level 2, ensure standardized return format.",
+      "effort": "3-4 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-08T08:50:00Z",
+      "last_updated": "2026-01-08T08:50:00Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/335_refactor_errors_command/plans/implementation-001.md",
+          "summary": "Implementation plan for refactoring /errors command"
+        }
+      ],
+      "abandoned": "2026-01-11T21:37:48Z"
+    },
+    {
+      "project_number": 366,
+      "project_name": "document_logos_legacy_reexports",
+      "status": "abandoned",
+      "language": "markdown",
+      "priority": "low",
+      "type": "documentation",
+      "effort": "30 minutes",
+      "description": "Document in project README that Logos/ is a legacy re-export layer with stubs for planned extensions (Epistemic, Normative, Explanatory), and Bimodal/ contains the active implementation.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-11T02:22:16Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "abandoned": "2026-01-11T19:40:44Z"
+    },
+    {
+      "project_number": 176,
+      "project_name": "enhance_proof_search_with_domain_specific_heuristics_and_caching",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-11T23:00:00Z",
+      "effort": "12 hours",
+      "started": "2026-01-11",
+      "completed": "2026-01-11",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/plans/implementation-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/reports/research-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/176_enhance_proof_search_with_domain_specific_heuristics_and_caching/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "description": "Build on existing Bimodal proof search with success pattern learning, best-first search implementation, and benchmarking. Core heuristics (modal/temporal bonuses, caching, IDDFS) already complete.",
+      "archived": "2026-01-11T23:30:00Z"
+    },
+    {
+      "project_number": 373,
+      "project_name": "create_shared_latex_assets_directory",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Create a single ProofChecker/latex/ directory to provide general purpose assets that can be imported and used by Logos/latex/ and Bimodal/latex/ as well as other theories included in the future, instead of maintaining similar latex standards separately.",
+      "created": "2026-01-11T16:30:08Z",
+      "last_updated": "2026-01-11T16:53:41Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/373_create_shared_latex_assets_directory/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/373_create_shared_latex_assets_directory/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/373_create_shared_latex_assets_directory/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "plan_version": "001",
+      "started": "2026-01-11",
+      "completed": "2026-01-11T16:53:41Z",
+      "archived": "2026-01-11T23:30:00Z"
+    },
+    {
+      "project_number": 374,
+      "project_name": "refactor_project_documentation",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-11T16:36:37Z",
+      "last_updated": "2026-01-11T17:17:41Z",
+      "completed": "2026-01-11T17:17:41Z",
+      "archived": "2026-01-11T23:30:00Z"
+    },
+    {
+      "project_number": 375,
+      "project_name": "integrate_latexmkrc_project_config",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-11T17:02:16Z",
+      "last_updated": "2026-01-11T18:00:18Z",
+      "completed": "2026-01-11T18:00:18Z",
+      "archived": "2026-01-11T23:30:00Z"
+    },
+    {
+      "project_number": 378,
+      "project_name": "refactor_documentation_structure",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Completely refactor docs/ to better distribute information between documents and gather documents into subdirectories, where each subdirectory has a README.md that follows the DIRECTORY_README_STANDARD.md and DOC_QUALITY_CHECKLIST.md. Merge NAVIGATION.md into docs/README.md. Avoid removing important content while reducing redundancy and improving consistency and organization using cross-linking with brief summaries.",
+      "created": "2026-01-11T17:31:13Z",
+      "last_updated": "2026-01-11T18:01:15Z",
+      "started": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/378_refactor_documentation_structure/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/378_refactor_documentation_structure/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/378_refactor_documentation_structure/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-11",
+      "archived": "2026-01-11T23:30:00Z"
+    },
+    {
+      "project_number": 360,
+      "project_name": "bimodal_polish_and_documentation_system",
+      "type": "documentation",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-11T21:30:00Z",
+      "effort": "4-6 hours",
+      "description": "Comprehensive Bimodal theory polish and documentation system",
+      "completed": "2026-01-11T21:30:00Z",
+      "archived": "2026-01-11T21:30:00Z"
+    },
+    {
+      "project_number": 363,
+      "project_name": "create_bimodal_latex_documentation",
+      "type": "documentation",
+      "status": "completed",
+      "priority": "medium",
+      "language": "latex",
+      "created": "2026-01-11T02:11:42Z",
+      "last_updated": "2026-01-11T08:00:00Z",
+      "effort": "2-4 hours",
+      "description": "Create Bimodal/latex/ directory with documentation similar to Logos/latex/",
+      "completed": "2026-01-11T08:00:00Z",
+      "archived": "2026-01-11T21:30:00Z"
+    },
+    {
+      "project_number": 368,
+      "project_name": "documentation_directory_reorganization",
+      "type": "refactor",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-11T03:33:51Z",
+      "last_updated": "2026-01-11T15:00:00Z",
+      "description": "Refactor Documentation directory structure",
+      "completed": "2026-01-11T15:00:00Z",
+      "archived": "2026-01-11T21:30:00Z"
+    },
+    {
+      "project_number": 369,
+      "project_name": "solve_modal_5_blocking_dependency",
+      "type": "bugfix",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-11T03:39:46Z",
+      "last_updated": "2026-01-11T03:55:08Z",
+      "effort": "15 minutes",
+      "description": "Solve the blocking dependency in the Modal 5 theorem",
+      "completed": "2026-01-11T03:55:08Z",
+      "archived": "2026-01-11T21:30:00Z"
+    },
+    {
+      "project_number": 370,
+      "project_name": "fix_bimodal_latex_compilation_errors",
+      "type": "bugfix",
+      "status": "completed",
+      "priority": "high",
+      "language": "latex",
+      "created": "2026-01-11T14:54:28Z",
+      "last_updated": "2026-01-11T14:59:28Z",
+      "effort": "1-2 hours",
+      "description": "Fix LaTeX compilation errors in Bimodal/latex/BimodalReference.tex",
+      "completed": "2026-01-11T14:59:28Z",
+      "archived": "2026-01-11T21:30:00Z"
+    },
+    {
+      "project_number": 371,
+      "project_name": "refactor_latex_reference_manual_titles",
+      "type": "enhancement",
+      "status": "completed",
+      "priority": "medium",
+      "language": "latex",
+      "created": "2026-01-11T15:21:50Z",
+      "last_updated": "2026-01-11T20:00:00Z",
+      "effort": "1 hour",
+      "description": "Refactor LaTeX title formatting in BimodalReference.tex and LogosReference.tex",
+      "completed": "2026-01-11T20:00:00Z",
+      "archived": "2026-01-11T21:30:00Z"
+    },
+    {
+      "project_number": 372,
+      "project_name": "create_logos_documentation_and_refactor_root",
+      "type": "documentation",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-11T15:33:52Z",
+      "last_updated": "2026-01-11T21:30:00Z",
+      "effort": "4-8 hours",
+      "description": "Create Logos/docs/ directory and refactor ProofChecker/docs/",
+      "completed": "2026-01-11T21:30:00Z",
+      "archived": "2026-01-11T21:30:00Z"
+    },
+    {
+      "project_number": 218,
+      "project_name": "fix_lean_lsp_mcp_integration_and_opencode_module_import_errors",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-10T23:15:00Z",
+      "completed": "2026-01-10",
+      "effort": "0.75 hours",
+      "archived": "2026-01-11T00:00:00Z"
+    },
+    {
+      "project_number": 291,
+      "project_name": "fix_lean_research_agent_delegate_status_updates",
+      "type": "bugfix",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-04T17:19:31Z",
+      "last_updated": "2026-01-10T23:30:00Z",
+      "completed": "2026-01-10",
+      "estimated_hours": 1,
+      "started": "2026-01-04",
+      "research_completed": "2026-01-04",
+      "plan_version": "002",
+      "plan_revised": "2026-01-10",
+      "artifacts": [
+        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/reports/research-001.md",
+        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/plans/implementation-002.md",
+        ".claude/specs/291_fix_lean_research_agent_delegate_status_updates/summaries/implementation-summary-20260110.md"
+      ],
+      "archived": "2026-01-11T00:00:00Z"
+    },
+    {
+      "project_number": 308,
+      "project_name": "final_cleanup_and_comprehensive_testing_5_5",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "description": "Complete final cleanup of any remaining cruft from files not reverted. Test all commands (/task, /meta, /todo, /review) comprehensively to ensure everything works correctly. Commit clean changes with proper documentation.",
+      "effort": "30 minutes",
+      "created": "2026-01-05T09:38:06Z",
+      "last_updated": "2026-01-10T23:38:38Z",
+      "completed": "2026-01-10",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/308_final_cleanup_and_comprehensive_testing/summaries/implementation-summary-20260110.md"
+        }
+      ],
+      "archived": "2026-01-11T00:00:00Z"
+    },
+    {
+      "project_number": 323,
+      "project_name": "fix_/todo_command_to_run_markdown_formatter_after_completion",
+      "type": "feature",
+      "phase": "implementation_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "meta",
+      "description": "Fix the /todo command to run the markdown formatter on TODO.md after completing its archival operations.",
+      "effort": "1.75 hours",
+      "created": "2026-01-05T00:00:00Z",
+      "last_updated": "2026-01-10",
+      "research_completed": "2026-01-05",
+      "completed": "2026-01-10",
+      "artifacts": [
+        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/reports/research-001.md",
+        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/plans/implementation-002.md",
+        ".claude/specs/323_fix_todo_command_to_run_markdown_formatter_after_completion/summaries/implementation-summary-20260110.md"
+      ],
+      "archived": "2026-01-11T00:00:00Z"
+    },
+    {
+      "project_number": 205,
+      "project_name": "implement_lean_tool_usage_verification_and_monitoring_system",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "6-8 hours",
+      "abandoned": "2026-01-10T23:46:25Z"
+    },
+    {
+      "project_number": 351,
+      "project_name": "review_skill_context_loading",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-10T22:08:02Z",
+      "last_updated": "2026-01-10T22:55:52Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/351_review_skill_context_loading/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/351_review_skill_context_loading/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/351_review_skill_context_loading/summaries/implementation-summary-20260110.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-10T22:55:52Z"
+    },
+    {
+      "project_number": 315,
+      "project_name": "research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction",
+      "type": "feature",
+      "phase": "implementing",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-10T22:57:38Z",
+      "effort": "61-97 hours",
+      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
+      "started": "2026-01-05",
+      "researched": "2026-01-05",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-001.md",
+          "created": "2026-01-05T18:06:50Z",
+          "summary": "Comprehensive analysis of three approaches to resolve Axiom Prop vs Type blocker. Recommends Approach 3 (Tactic-Mode) with 9/10 viability rating."
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/reports/research-002.md",
+          "created": "2026-01-05T18:36:09Z",
+          "summary": "Comparative analysis of Approach 2 vs 3 for AI training data generation. Findings: (1) Approach 3 is Lean 4 standard, (2) Both approaches compatible (hybrid viable), (3) Approach 2 superior for AI training (5/5 vs 0/5). Recommends hybrid strategy: tactic first (28-44h), then programmatic API (33-53h)."
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
+          "created": "2026-01-05T19:00:00Z",
+          "summary": "Hybrid implementation plan: Phase 1 (Tactic Mode, 28-44h) + Phase 2 (Refactor to Type, 33-53h). Total 23 phases, 61-97 hours."
+        }
+      ],
+      "planned": "2026-01-05",
+      "plan_path": ".claude/specs/315_research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction/plans/implementation-001.md",
+      "plan_metadata": {
+        "phases": 23,
+        "total_effort_hours": 79,
+        "complexity": "complex",
+        "research_integrated": true,
+        "language": "lean",
+        "proof_strategy": "Hybrid: Phase 1 (Tactic Mode) + Phase 2 (Refactor to Type)",
+        "mathlib_dependencies": [
+          "Lean.Elab.Tactic",
+          "Lean.Meta",
+          "Aesop"
+        ],
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          },
+          {
+            "path": "reports/research-002.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-05"
+          }
+        ]
+      },
+      "implementing_started": "2026-01-09",
+      "completed": "2026-01-10"
+    },
+    {
+      "project_number": 334,
+      "project_name": "create_latex_documentation_for_logos_system_mirroring_layer_structure",
+      "type": "feature",
+      "phase": "planning_completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "latex",
+      "description": "Create a copy of /home/benjamin/Projects/Philosophy/Teaching/LogicNotes/ in /home/benjamin/Projects/ProofChecker/Logos/latex/ with a cleaned up structure that mirrors the Logos layers. The documentation should: (1) Create and import a subfile for each Logos layer, (2) Maintain the same formatting standards as the original LaTeX document, (3) Exclude problem sets, (4) Include standardized sections for each layer: Syntax extensions from previous layer, Semantic frames and models definitions, Proof system extensions from previous layer, Metalogical properties that have been established, (5) Compile definitions in a clear and concise way without proofs, (6) Provide minimal explanation, (7) Serve as a nicely formatted readable LaTeX reference for learning the Logos system without reading Lean code.",
+      "effort": "4-6 hours",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-07T00:00:00Z",
+      "last_updated": "2026-01-10T22:30:00Z",
+      "researched": "2026-01-08",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/334_latex_documentation_structure/reports/research-001.md",
+          "summary": "Comprehensive research report analyzing source LaTeX structure and designing target documentation structure"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/334_latex_documentation_structure/reports/research-002.md",
+          "summary": "Supplemental research report focusing on Constitutive and Causal layers from LAYER_EXTENSIONS.md for future Layer 1 documentation"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/334_latex_documentation_structure/reports/research-003.md",
+          "summary": "Systematic mapping from RECURSIVE_SEMANTICS.md to LaTeX documentation structure with Lean 4 refactoring considerations"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/334_latex_documentation_structure/plans/implementation-003.md",
+          "summary": "Implementation plan based on RECURSIVE_SEMANTICS.md mapping with 6 phases"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/334_latex_documentation_structure/plans/implementation-004.md",
+          "summary": "Revised plan adding LaTeX context documentation phase for skill integration"
+        }
+      ],
+      "planned": "2026-01-08",
+      "plan_version": "004",
+      "completed": "2026-01-10"
+    },
+    {
+      "project_number": 351,
+      "project_name": "review_skill_context_loading",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-10T22:08:02Z",
+      "last_updated": "2026-01-10T22:55:52Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/351_review_skill_context_loading/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/351_review_skill_context_loading/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/351_review_skill_context_loading/summaries/implementation-summary-20260110.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-10T22:55:52Z"
+    },
+    {
+      "project_number": 141,
+      "project_name": "draft_layer_3_normative_operator_plan",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "low",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours",
+      "abandoned": "2026-01-10T22:55:53Z"
+    },
+    {
+      "project_number": 140,
+      "project_name": "draft_layer_2_epistemic_operator_plan",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "low",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours",
+      "abandoned": "2026-01-10T22:55:53Z"
+    },
+    {
+      "project_number": 139,
+      "project_name": "draft_layer_1_counterfactual_operator_plan",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "low",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-05T01:22:38Z",
+      "effort": "2 hours",
+      "abandoned": "2026-01-10T22:55:53Z"
+    },
+    {
+      "project_number": 342,
+      "project_name": "research_orchestrator_command_file_workflow_execution_mechanism",
+      "type": "research",
+      "phase": "researching",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-08T20:45:00Z",
+      "effort": "4-6 hours",
+      "description": "Research how the orchestrator should execute command file workflow_execution stages. Analyze current orchestrator delegation mechanism, identify why command file stages are not being executed, compare with OpenAgents architecture (tasks 240-247), and design solution for parsing and executing workflow_execution stages including stage sequencing, context passing, error handling, and rollback mechanisms.",
+      "started": "2026-01-08",
+      "abandoned": "2026-01-09T16:27:01Z"
+    },
+    {
+      "project_number": 348,
+      "project_name": "jq_based_state_lookup_for_commands",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-09T13:19:56Z",
+      "last_updated": "2026-01-09T13:55:25Z",
+      "effort": "4-6 hours",
+      "description": "Enhance claude code agent system to use jq for efficient state.json lookups by task number in /research, /plan, /revise, /implement, and /task commands. From task lookup, use grep to find relevant TODO.md sections for synchronized updates via skill-status-sync.",
+      "plan_version": "001",
+      "completed": "2026-01-09T13:55:25Z"
+    },
+    {
+      "project_number": 347,
+      "project_name": "logos_layer_documentation_revision",
+      "type": "documentation",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "high",
+      "language": "general",
+      "created": "2026-01-09T12:00:00Z",
+      "last_updated": "2026-01-09T16:00:00Z",
+      "effort": "6-8 hours",
+      "plan_version": 2,
+      "artifacts": [
+        {
+          "path": ".claude/specs/347_logos_layer_documentation_revision/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/347_logos_layer_documentation_revision/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/347_logos_layer_documentation_revision/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/347_logos_layer_documentation_revision/plans/implementation-002.md",
+          "type": "plan"
+        }
+      ],
+      "description": "Revise LAYER_EXTENSIONS.md using FIX tags for new Logos layer organization (Constitutive, Causal, Epistemic, Normative, Agential). Update GLOSSARY.md to match. Create new RECURSIVE_SEMANTICS.md with full hyperintensional semantics for Constitutive Layer and intensional semantics for following layers. Use [DETAILS] and [QUESTION: ...] tags for uncertain content."
+    },
+    {
+      "project_number": 350,
+      "project_name": "fix_recursive_semantics_tags",
+      "status": "completed",
+      "language": "markdown",
+      "priority": "high",
+      "effort": "6-8 hours",
+      "created": "2026-01-10T18:17:28Z",
+      "last_updated": "2026-01-10T19:30:00Z",
+      "artifacts": [
+        ".claude/specs/350_fix_recursive_semantics_tags/reports/research-001.md",
+        ".claude/specs/350_fix_recursive_semantics_tags/plans/implementation-001.md",
+        ".claude/specs/350_fix_recursive_semantics_tags/summaries/implementation-summary-20260110.md"
+      ],
+      "plan_path": ".claude/specs/350_fix_recursive_semantics_tags/plans/implementation-001.md",
+      "plan_metadata": {
+        "plan_version": 1
+      },
+      "implementing_started": "2026-01-10",
+      "completed": "2026-01-10"
+    },
+    {
+      "project_number": 349,
+      "project_name": "fix_recursive_semantics_documentation",
+      "status": "completed",
+      "language": "markdown",
+      "priority": "medium",
+      "effort": "4-6 hours",
+      "created": "2026-01-09T17:59:23Z",
+      "last_updated": "2026-01-09T18:35:00Z",
+      "plan_path": ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
+      "plan_metadata": {
+        "plan_version": 2,
+        "revision_reason": "Maintain ⟨S, ⊑, I⟩ notation instead of replacing with ⟨S, ⊑, | |⟩"
+      },
+      "artifacts": [
+        ".claude/specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
+        ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-001.md",
+        ".claude/specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md"
+      ],
+      "implementing_started": "2026-01-09",
+      "completed": "2026-01-09"
+    },
+    {
+      "project_number": 316,
+      "project_name": "implement_tactic_integration_for_modal_search_tactic_phase_2",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-10T13:00:00.000000Z",
+      "effort": "8-12 hours",
+      "description": "Implement Phase 2 of task 260: Tactic Integration. Create modal_search tactic that constructs proofs in tactic mode, avoiding Prop vs Type issues. This phase is prioritized over Phase 1 as it may be easier than programmatic proof term construction and is more useful for end users (interactive proof development). Integrate with existing ProofSearch.lean infrastructure.",
+      "artifacts": [
+        ".claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/reports/research-001.md",
+        ".claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/plans/implementation-001.md",
+        ".claude/specs/316_implement_tactic_integration_for_modal_search_tactic_phase_2/summaries/implementation-summary-20260110.md"
+      ],
+      "completed": "2026-01-10"
+    },
+    {
+      "project_number": 317,
+      "project_name": "implement_bfs_variant_for_proof_search_completeness_phase_3",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-09",
+      "implementing_started": "2026-01-09",
+      "completed": "2026-01-09",
+      "effort": "10-15 hours",
+      "description": "Implement Phase 3 of task 260: BFS Variant. Add breadth-first search variant to ProofSearch.lean to ensure completeness guarantees. Current implementation uses bounded DFS which may miss proofs. BFS variant will explore search space level-by-level, guaranteeing shortest proofs are found first.",
+      "research_completed": "2026-01-07",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/317_bfs_variant_phase3/plans/implementation-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/317_bfs_variant_phase3/reports/research-001.md",
+          "summary": "Comprehensive 1403-line research report analyzing BFS implementation strategies, completeness guarantees, and integration approaches for Lean 4 proof search"
+        }
+      ],
+      "planning_completed": "2026-01-07",
+      "plan_version": "001"
+    },
+    {
+      "project_number": 318,
+      "project_name": "implement_advanced_heuristics_for_proof_search_performance_phase_4",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-09",
+      "implementing_started": "2026-01-09",
+      "completed": "2026-01-09",
+      "effort": "12-18 hours",
+      "description": "Implement Phase 4 of task 260: Advanced Heuristics. Enhance proof search with domain-specific heuristics and caching to improve performance. Implement proper sorting in orderSubgoalsByScore (currently returns targets in original order). Add heuristic scoring based on formula structure, proof depth, and historical success rates. Implement proof caching to avoid redundant search.",
+      "artifacts": [
+        ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/reports/research-001.md",
+        ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-20260108.md",
+        ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/summaries/implementation-summary-phase2-20260108.md"
+      ],
+      "plan_path": ".claude/specs/318_implement_advanced_heuristics_for_proof_search_performance_phase_4/plans/implementation-001.md",
+      "plan_metadata": {
+        "phase_count": 5,
+        "estimated_hours": 15,
+        "complexity": "medium"
+      }
+    },
+    {
+      "project_number": 319,
+      "project_name": "expand_testing_for_proof_search_automation_phase_5",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T08:34:20.462436Z",
+      "last_updated": "2026-01-10T19:30:00Z",
+      "completed": "2026-01-10T19:30:00Z",
+      "effort": "8-12 hours",
+      "description": "Implement Phase 5 of task 260: Expanded Testing. Add comprehensive tests for proof search automation covering all phases. Test proof term construction, tactic integration, BFS variant, and advanced heuristics. Add property-based tests for completeness and soundness guarantees. Ensure test coverage for edge cases and performance benchmarks.",
+      "implementation_summary": ".claude/specs/319_expand_testing_for_proof_search_automation_phase_5/summaries/implementation-summary-20260110.md"
+    },
+    {
+      "project_number": 352,
+      "project_name": "rename_logos_core_to_bimodal",
+      "type": "refactor",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-10T14:00:00Z",
+      "last_updated": "2026-01-11T00:15:00Z",
+      "effort": "2-4 hours",
+      "description": "Rename Logos/Core/ to Bimodal/ to establish the bimodal language, semantics, proof theory, and metalogical results as an independent project.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 353,
+      "project_name": "move_logostest_core_to_bimodaltest",
+      "type": "refactor",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-11T00:00:19Z",
+      "last_updated": "2026-01-11T00:30:59Z",
+      "effort": "1-2 hours",
+      "description": "Move LogosTest/Core/ to BimodalTest/ to mirror the Bimodal library structure.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 354,
+      "project_name": "refactor_archive_directory",
+      "type": "refactor",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-11T00:03:52Z",
+      "last_updated": "2026-01-11T03:00:00Z",
+      "description": "Move examples from Archive/ to Bimodal/Examples/, remove Archive/ directory.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 356,
+      "project_name": "bimodal_directory_documentation",
+      "type": "documentation",
+      "status": "completed",
+      "priority": "medium",
+      "language": "general",
+      "created": "2026-01-11T00:43:33Z",
+      "last_updated": "2026-01-11T01:03:17Z",
+      "description": "Create systematic documentation for Bimodal/ and BimodalTest/.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 357,
+      "project_name": "fix_modals5_noncomputable_cascade",
+      "type": "bugfix",
+      "status": "completed",
+      "priority": "critical",
+      "language": "lean",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-10T14:45:00Z",
+      "effort": "30 minutes",
+      "description": "Add noncomputable markers to definitions in ModalS5.lean.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 358,
+      "project_name": "fix_completenesstest_import_error",
+      "type": "bugfix",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-11T01:19:57Z",
+      "effort": "5 minutes",
+      "description": "Move import statement from line 26 to beginning of file in BimodalTest/Metalogic/CompletenessTest.lean.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 359,
+      "project_name": "complete_temporal_duality_soundness",
+      "type": "feature",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-10T12:00:00Z",
+      "last_updated": "2026-01-10T18:00:00Z",
+      "effort": "1-2 hours",
+      "description": "Complete the temporal_duality case in SoundnessLemmas.lean to remove the last sorry from soundness proofs.",
+      "completed": "2026-01-10",
+      "archived": "2026-01-11T04:30:00Z"
+    },
+    {
+      "project_number": 355,
+      "project_name": "fix_bimodal_build_errors",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-11T00:41:09Z",
+      "last_updated": "2026-01-11T05:30:00Z",
+      "description": "Fix all Lean build errors for the Bimodal/ theory.",
+      "completed": "2026-01-11",
+      "archived": "2026-01-11T06:30:00Z"
+    },
+    {
+      "project_number": 361,
+      "project_name": "create_installation_documentation",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "type": "documentation",
+      "effort": "2-4 hours",
+      "description": "Create installation documentation (CLAUDE_CODE.md, BASIC_INSTALLATION.md, GETTING_STARTED.md, USING_GIT.md).",
+      "created": "2026-01-11T01:30:25Z",
+      "last_updated": "2026-01-11T06:00:00Z",
+      "completed": "2026-01-11",
+      "archived": "2026-01-11T06:30:00Z"
+    },
+    {
+      "project_number": 362,
+      "project_name": "move_latex_to_logos",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Move docs/latex/ to Logos/latex/, updating all references.",
+      "created": "2026-01-11T01:56:51Z",
+      "last_updated": "2026-01-11T02:10:18Z",
+      "completed": "2026-01-11",
+      "archived": "2026-01-11T06:30:00Z"
+    },
+    {
+      "project_number": 364,
+      "project_name": "update_sorry_registry_paths",
+      "status": "completed",
+      "language": "markdown",
+      "priority": "medium",
+      "type": "documentation",
+      "effort": "30 minutes",
+      "description": "Update SORRY_REGISTRY.md to use correct Bimodal/ paths instead of deprecated Logos/Core/ paths.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-11T02:31:43Z",
+      "completed": "2026-01-11",
+      "archived": "2026-01-11T06:30:00Z"
+    },
+    {
+      "project_number": 377,
+      "project_name": "refactor_logos_theory_recursive_semantics",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "description": "Completely refactor the Logos/ theory to be self-contained and align with the theoretical target presented in Logos/docs/Research/RECURSIVE_SEMANTICS.md.",
+      "created": "2026-01-11T17:25:18Z",
+      "last_updated": "2026-01-12T00:30:00Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/377_refactor_logos_theory_recursive_semantics/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "archived": "2026-01-12T11:30:00Z"
+    },
+    {
+      "project_number": 379,
+      "project_name": "fix_logosreference_latex_warnings",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Fix LaTeX warnings/errors in LogosReference.tex using latexmk's ensure_path() function for BSTINPUTS and BIBINPUTS search paths.",
+      "created": "2026-01-11T18:01:49Z",
+      "last_updated": "2026-01-12T04:00:00Z",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-002.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/reports/research-003.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/379_fix_logosreference_latex_warnings/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "archived": "2026-01-12T11:30:00Z"
+    },
+    {
+      "project_number": 383,
+      "project_name": "rename_core_to_explanatory",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Rename Logos/Core/ to Logos/Explanatory/ systematically with all namespace, documentation, and LaTeX updates.",
+      "created": "2026-01-11T18:49:04Z",
+      "last_updated": "2026-01-12T11:15:00Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/383_rename_core_to_explanatory/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/383_rename_core_to_explanatory/plans/implementation-001.md"
+        }
+      ],
+      "archived": "2026-01-12T11:30:00Z"
+    },
+    {
+      "project_number": 179,
+      "project_name": "implement_performance_benchmarks_for_proof_search_and_derivation",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Extend existing Bimodal benchmarks with derivation, semantics, and CI integration.",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T02:00:00Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/plans/implementation-003.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/179_implement_performance_benchmarks_for_proof_search_and_derivation/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "archived": "2026-01-12T11:30:00Z"
+    },
+    {
+      "project_number": 180,
+      "project_name": "add_test_coverage_metrics_and_reporting",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Create definition-level coverage measurement for Bimodal with coverage mapping script and TEST_COVERAGE.md.",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T03:45:00Z",
+      "started": "2026-01-11",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/180_add_test_coverage_metrics_and_reporting/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "archived": "2026-01-12T11:30:00Z"
+    },
+    {
+      "project_number": 390,
+      "project_name": "research_logos_original_archive_removal",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Research whether .claude/archive/logos-original/ can be removed or if the files contain important content not represented elsewhere that should be preserved.",
+      "created": "2026-01-11T20:27:46Z",
+      "last_updated": "2026-01-11T20:35:02Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/390_research_logos_original_archive_removal/reports/research-001.md"
+        }
+      ],
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 389,
+      "project_name": "standardize_nnn_number_format",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-11T20:22:45Z",
+      "last_updated": "2026-01-11T20:34:11Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/389_standardize_nnn_number_format/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/389_standardize_nnn_number_format/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/389_standardize_nnn_number_format/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-11T20:34:11Z",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 388,
+      "project_name": "fix_todo_command_directory_archiving",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Fix /todo command to move project directories (.claude/specs/{N}_{SLUG}/) to archive directory (.claude/specs/archive/{N}_{SLUG}/) when archiving completed/abandoned tasks. Currently the command updates state.json and archive/state.json correctly but fails to execute Step 5D which moves the directories.",
+      "created": "2026-01-12T00:40:00Z",
+      "last_updated": "2026-01-12T00:55:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/388_fix_todo_command_directory_archiving/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/388_fix_todo_command_directory_archiving/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/388_fix_todo_command_directory_archiving/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 387,
+      "project_name": "standardize_research_file_names",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-11T20:10:25Z",
+      "last_updated": "2026-01-11T20:25:49Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/387_standardize_research_file_names/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/387_standardize_research_file_names/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/387_standardize_research_file_names/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-11T20:25:49Z",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 386,
+      "project_name": "fix_command_artifact_linking_in_todo_md",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Fix /research command (and audit other commands) to properly link new artifacts in TODO.md. The command adds artifacts to state.json but fails to add corresponding links in TODO.md entries. Audit /plan, /implement, and /revise commands for similar artifact linking failures.",
+      "created": "2026-01-11T19:58:51Z",
+      "last_updated": "2026-01-11T20:15:28Z",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/386_fix_command_artifact_linking_in_todo_md/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "planned": "2026-01-11",
+      "plan_version": "001",
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 385,
+      "project_name": "refactor_meta_command_task_creation",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Refactor the /meta command to conduct careful analysis of the .claude/ agent system given the prompt, ask follow-up questions if additional clarity would improve understanding, and then produce an appropriate number of tasks (similar to /task --divide) with dependencies indicated. If /meta is run without a prompt, run in full interactive mode to interview the user until sufficient detail has been provided to create the appropriate number of tasks with dependencies.",
+      "created": "2026-01-11T19:39:55Z",
+      "last_updated": "2026-01-11T21:00:00Z",
+      "started": "2026-01-12",
+      "researched": "2026-01-12",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/reports/research-001.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/reports/research-002.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/plans/implementation-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/385_refactor_meta_command_task_creation/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "planned": "2026-01-12",
+      "plan_version": 2,
+      "plan_revised": "2026-01-12",
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 384,
+      "project_name": "fix_latex_package_path_warnings",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Fix LaTeX package path warnings in LogosReference.tex: warnings about logos-notation, notation-standards, and formatting packages. Also handle showhyphens command change and cross-reference warnings.",
+      "created": "2026-01-11T19:11:13Z",
+      "last_updated": "2026-01-11T19:25:08Z",
+      "started": "2026-01-11",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/384_fix_latex_package_path_warnings/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/384_fix_latex_package_path_warnings/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/384_fix_latex_package_path_warnings/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "planned": "2026-01-11",
+      "plan_version": "001",
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 380,
+      "project_name": "document_latex_standards",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-11T18:13:43Z",
+      "last_updated": "2026-01-11T19:44:25Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/380_document_latex_standards/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/380_document_latex_standards/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/380_document_latex_standards/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 376,
+      "project_name": "refactor_repo_for_theorylib_multi_theory_structure",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-11T17:06:06Z",
+      "last_updated": "2026-01-11T20:04:05Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/plans/implementation-002.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/376_refactor_repo_for_theorylib_multi_theory_structure/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 365,
+      "project_name": "complete_bimodaltest_sorries",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "type": "testing",
+      "effort": "2-3 hours",
+      "description": "Complete sorry placeholders in BimodalTest files: CompletenessTest.lean (3), PerpetuityTest.lean (1), PropositionalTest.lean (1), ModalS4Test.lean. Either implement the tests or document as pending infrastructure.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-12T00:10:00Z",
+      "completed": "2026-01-11",
+      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/365_complete_bimodaltest_sorries/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/365_complete_bimodaltest_sorries/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/365_complete_bimodaltest_sorries/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 367,
+      "project_name": "complete_example_proofs",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "type": "enhancement",
+      "effort": "4-6 hours",
+      "description": "Complete pedagogical sorry placeholders in Bimodal/Examples/ files (~24 total). Prioritize high-value examples that demonstrate key proof techniques. Mark remaining as explicit exercises.",
+      "created": "2026-01-11T02:22:16Z",
+      "last_updated": "2026-01-12T00:00:00Z",
+      "review_source": ".claude/specs/reviews/review-20260110.md",
+      "started": "2026-01-11",
+      "researched": "2026-01-11",
+      "planned": "2026-01-11",
+      "completed": "2026-01-12",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/367_complete_example_proofs/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/367_complete_example_proofs/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/367_complete_example_proofs/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 263,
+      "project_name": "refactor_context.lean",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-11T20:13:17Z",
+      "effort": "2-4 hours",
+      "description": "Refactor the `Context.lean` file to improve clarity, performance, and alignment with the LEAN 4 style guide. This involves reviewing the existing implementation of proof contexts and applying best practices for data structures and function definitions in LEAN 4.",
+      "started": "2026-01-08",
+      "researched": "2026-01-11",
+      "artifacts": [
+        {
+          "type": "summary",
+          "path": ".claude/specs/263_refactor_context_lean/summaries/implementation-summary-20260108.md"
+        },
+        {
+          "type": "research",
+          "path": ".claude/specs/263_refactor_context_lean/reports/research-001.md"
+        }
+      ],
+      "completed": "2026-01-08",
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 264,
+      "project_name": "update_context_references",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-11T20:13:17Z",
+      "effort": "1-2 hours",
+      "description": "After refactoring `Context.lean`, update all references to the `Context` module throughout the codebase to ensure they are compatible with any changes made to the API. This task involves searching for all usages of `Context` and updating them as necessary.",
+      "completed": "2026-01-12",
+      "artifacts": [
+        {
+          "type": "note",
+          "path": "Completed as part of Task 376 refactoring"
+        }
+      ],
+      "archived": "2026-01-12T11:45:00Z"
+    },
+    {
+      "project_number": 396,
+      "project_name": "fix_latex_build_missing_style_files",
+      "status": "completed",
+      "language": "latex",
+      "priority": "high",
+      "description": "Fix LaTeX build errors in Theories/Logos/LaTeX/LogosReference.tex and Theories/Bimodal/LaTeX/BimodalReference.tex caused by missing style files (logos-notation.sty, notation-standards.sty, bimodal-notation.sty). Troubleshoot and provide elegant solution for style file paths.",
+      "created": "2026-01-11T21:24:04Z",
+      "last_updated": "2026-01-11T21:49:59Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/396_fix_latex_build_missing_style_files/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/396_fix_latex_build_missing_style_files/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/396_fix_latex_build_missing_style_files/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "plan_version": "001",
+      "started": "2026-01-11",
+      "completed": "2026-01-11T21:48:00Z",
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 393,
+      "project_name": "remove_incorrect_causal_operator_definition",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "description": "Remove the incorrect definition of the causal operator (which was defined in terms of the counterfactual conditional) and leave behind a stub or comment for systematic future implementation of the correct semantics.",
+      "created": "2026-01-11T21:09:02Z",
+      "last_updated": "2026-01-12T02:00:00Z",
+      "parent_task": 381,
+      "plan_version": "001",
+      "implementing_started": "2026-01-12",
+      "completed": "2026-01-12T02:00:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/393_remove_incorrect_causal_operator_definition/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 392,
+      "project_name": "enhance_todo_command_orphan_tracking",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Enhance /todo command to track orphaned directories in archive/state.json. Modify detection to check both state.json AND archive/state.json, and add orphan entries to archive/state.json when archiving (not just move directories). This ensures all project directories in specs/archive/ are accounted for by state files.",
+      "effort": "2-3 hours",
+      "created": "2026-01-12T12:00:00Z",
+      "last_updated": "2026-01-11T21:45:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/reports/research-001.md"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/392_enhance_todo_command_orphan_tracking/summaries/implementation-summary-20260111.md"
+        }
+      ],
+      "plan_version": "001",
+      "implementing_started": "2026-01-11",
+      "completed": "2026-01-11T21:45:00Z",
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 391,
+      "project_name": "enforce_directory_naming_convention",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-11T20:42:13Z",
+      "last_updated": "2026-01-11T21:16:26Z",
+      "completed": "2026-01-11T21:16:26Z",
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 382,
+      "project_name": "create_spatial_subtheory_stub",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Create Logos/Spatial/ subtheory stub following the pattern of other extension layers. Task 377 implemented Core but did not create the Spatial extension layer. Create minimal stub structure with appropriate documentation.",
+      "created": "2026-01-11T18:49:04Z",
+      "last_updated": "2026-01-11T20:45:09Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/382_create_spatial_subtheory_stub/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/382_create_spatial_subtheory_stub/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/382_create_spatial_subtheory_stub/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-11T20:45:09Z",
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 381,
+      "project_name": "add_causal_semantics_infrastructure",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Add infrastructure and comments for causal semantics in Logos theory. The causal operator was missing from RECURSIVE_SEMANTICS.md line 29 and has been fixed, but the Lean implementation needs appropriate stub definitions and TODO comments to enable future implementation of causation semantics.",
+      "created": "2026-01-11T18:49:04Z",
+      "last_updated": "2026-01-11T21:09:23Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/381_add_causal_semantics_infrastructure/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "type": "plan",
+          "path": ".claude/specs/381_add_causal_semantics_infrastructure/plans/implementation-001.md"
+        },
+        {
+          "type": "summary",
+          "path": ".claude/specs/381_add_causal_semantics_infrastructure/summaries/implementation-summary-20260112.md"
+        }
+      ],
+      "planned": "2026-01-12",
+      "plan_version": "001",
+      "completed": "2026-01-12",
+      "subtasks": [
+        393,
+        394
+      ],
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 178,
+      "project_name": "complete_advanced_tutorial_sections_with_hands_on_exercises",
+      "type": "feature",
+      "phase": "planned",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-11T21:10:49Z",
+      "effort": "10 hours",
+      "started": "2026-01-11",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/plans/implementation-001.md"
+        },
+        {
+          "path": ".claude/specs/178_complete_advanced_tutorial_sections_with_hands_on_exercises/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "description": "Create advanced Bimodal tutorial covering proof search tactics, custom tactic development, and metalogic with hands-on exercises.",
+      "abandoned_reason": "Superseded by existing documentation. ~80% of planned content already exists in TUTORIAL.md, TACTIC_DEVELOPMENT.md, EXAMPLES.md. New targeted task created for remaining gaps.",
+      "archived": "2026-01-12T14:30:00Z"
+    },
+    {
+      "project_number": 170,
+      "project_name": "improve_maintenance_report_system_and_documentation",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 170,
+      "project_name": "maintenance_report_improvements",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 173,
+      "project_name": "integration_tests",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 184,
+      "project_name": "truth_lean_build_error",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 189,
+      "project_name": "research_divide_flag",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 190,
+      "project_name": "improve_maintenance_md_documentation",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 190,
+      "project_name": "meta_system_optimization",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 193,
+      "project_name": "prove_is_valid_swap_involution",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 196,
+      "project_name": "complete_opencode_refactor",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 198,
+      "project_name": "command_argument_fix",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 202,
+      "project_name": "fix_verbose_artifact_output",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 209,
+      "project_name": "research_lean4_involution_techniques",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 211,
+      "project_name": "standardize_command_lifecycle_procedures",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 212,
+      "project_name": "research_lean_lsp_mcp_usage",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 213,
+      "project_name": "resolve_is_valid_swap_involution_blocker",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 214,
+      "project_name": "orchestrator_improvements",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 215,
+      "project_name": "fix_todo_task_removal",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 216,
+      "project_name": "improve_task_tracking_updates",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 219,
+      "project_name": "restructure_module_hierarchy",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 225,
+      "project_name": "codebase_review",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 227,
+      "project_name": "fix_systematic_status_sync_manager_failures",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 228,
+      "project_name": "fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 229,
+      "project_name": "review_and_optimize_orchestrator_command_integration_for_context_efficiency",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 230,
+      "project_name": "codebase_review",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 230,
+      "project_name": "fix_review_command_to_create_completed_task_entry_in_todomd_with_review_summary_link",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 231,
+      "project_name": "fix_systematic_command_stage_7_postflight_execution_failures",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 233,
+      "project_name": "research_and_fix_systematic_command_execution_failures_causing_incomplete_todomd_updates",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 234,
+      "project_name": "systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 235,
+      "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 279,
+      "project_name": "systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 284,
+      "project_name": "todo_auto_commit",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 314,
+      "project_name": "standardize_todo_md_task_entry_format_and_artifact_ordering",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 325,
+      "project_name": "create___recover_flag_for_task_command_to_unarchive_projects",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 326,
+      "project_name": "create___divide_flag_for_task_command_with_task_division_capability",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 328,
+      "project_name": "fix_task_command_to_only_create_task_entries_and_never_implement_directly",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 330,
+      "project_name": "create___sync_flag_for_task_command_to_synchronize_todo_md_and_state_json",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 332,
+      "project_name": "design_and_implement_comprehensive_task_command_enhancements",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 333,
+      "project_name": "fix_workflow_command_todomd_statejson_synchronization_failures",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T06:30:00Z",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 405,
+      "project_name": "document_latex_one_line_per_sentence_convention",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Document the LaTeX convention of one numbered line per sentence in .claude/context/ files for latex and other relevant documentation locations. Create or update latex style guides and coding conventions.",
+      "effort": "1 hour",
+      "created": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-12T07:10:00Z",
+      "implementing_started": "2026-01-12T07:05:00Z",
+      "completed": "2026-01-12T07:10:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/405_document_latex_one_line_per_sentence_convention/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 406,
+      "project_name": "enforce_convention_bimodal_reference_tex",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Reformat Theories/Bimodal/LaTeX/BimodalReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-12T08:25:00Z",
+      "implementing_started": "2026-01-12T08:15:00Z",
+      "completed": "2026-01-12T08:25:00Z",
+      "dependencies": [
+        405
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/406_enforce_convention_bimodal_reference_tex/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 407,
+      "project_name": "enforce_convention_logos_reference_tex",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Reformat Theories/Logos/LaTeX/LogosReference.tex to follow the one-numbered-line-per-sentence convention. Each sentence should start on its own line for better version control diffs and readability.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:25:49Z",
+      "last_updated": "2026-01-12T09:00:00Z",
+      "implementing_started": "2026-01-12T08:30:00Z",
+      "completed": "2026-01-12T09:00:00Z",
+      "dependencies": [
+        405
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/407_enforce_convention_logos_reference_tex/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 404,
+      "project_name": "enhance_todo_to_archive_orphaned_specs_directories",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Enhance /todo command to detect orphaned project directories in specs/ that are not tracked in TODO.md or state.json, and offer to move them to specs/archive/ while updating archive/state.json accordingly.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:20:12Z",
+      "last_updated": "2026-01-12T06:50:00Z",
+      "implementing_started": "2026-01-12T06:45:00Z",
+      "completed": "2026-01-12T06:50:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/404_enhance_todo_to_archive_orphaned_specs_directories/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 403,
+      "project_name": "enforce_directory_naming_convention",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Enforce the naming convention that only directories containing Lean source code should be capitalized. Renamed 19 directories (docs/ subdirectories, Theories/*/Documentation/, Theories/*/LaTeX/) to lowercase and updated all references.",
+      "effort": "2-3 hours",
+      "created": "2026-01-11T22:13:04Z",
+      "last_updated": "2026-01-11T22:32:17Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/403_enforce_directory_naming_convention/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/403_enforce_directory_naming_convention/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/403_enforce_directory_naming_convention/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "implementing_started": "2026-01-11T22:26:48Z",
+      "completed": "2026-01-11T22:32:17Z",
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 401,
+      "project_name": "add_expanded_status_for_parent_tasks",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Add [EXPANDED] status for parent tasks after expand operation. Update state-management.md with expanded status value, modify task.md Expand Mode to set parent task status to expanded, and update task 394 to [EXPANDED] status in both state.json and TODO.md.",
+      "effort": "1-2 hours",
+      "created": "2026-01-11T22:10:38Z",
+      "last_updated": "2026-01-11T22:36:22Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/401_add_expanded_status_for_parent_tasks/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-11T22:36:22Z",
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 402,
+      "project_name": "rename_divide_flag_to_expand",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Rename --divide flag to --expand across .claude/ system for consistency. Update all references in CLAUDE.md, task.md, git-integration.md, task-management.md, validation.md, delegation.md, and routing.md. Keep /research --divide unchanged (different feature).",
+      "effort": "2-3 hours",
+      "created": "2026-01-11T22:10:38Z",
+      "last_updated": "2026-01-12T00:21:12Z",
+      "dependencies": [
+        401
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/402_rename_divide_flag_to_expand/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/402_rename_divide_flag_to_expand/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/402_rename_divide_flag_to_expand/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12",
+      "archived": "2026-01-12T00:42:34Z"
+    },
+    {
+      "project_number": 422,
+      "project_name": "complete_introduction_todos",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T01:17:56Z",
+      "last_updated": "2026-01-12T01:50:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/422_complete_introduction_todos/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/422_complete_introduction_todos/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/422_complete_introduction_todos/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12T01:50:00Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 421,
+      "project_name": "lookup_formal_term_definitions_revise_research",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "description": "Look up all formal terms and terms of art used in task 398 research report.",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:45:38Z",
+      "last_updated": "2026-01-12T00:54:44Z",
+      "related_task": 398,
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/421_lookup_formal_term_definitions_revise_research/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "completed": "2026-01-12T00:54:44Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 416,
+      "project_name": "quick_performance_fixes_explanatory_truth",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Apply quick performance fixes to Explanatory/Truth.lean",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T01:12:28Z",
+      "parent_task": 400,
+      "completed": "2026-01-12T01:12:28Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 420,
+      "project_name": "upgrade_mathlib_version",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "description": "Upgrade Mathlib from v4.14.0 to v4.27.0-rc1",
+      "effort": "4-8 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-11T00:00:00Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ],
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 415,
+      "project_name": "fix_latex_sentence_line_breaks",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "description": "Fix LaTeX sentence line breaks introduced by task 405/406 refactor",
+      "effort": "1-2 hours",
+      "created": "2026-01-12T00:32:09Z",
+      "last_updated": "2026-01-12T00:45:38Z",
+      "dependencies": [
+        405,
+        406
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/415_fix_latex_sentence_line_breaks/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/415_fix_latex_sentence_line_breaks/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/415_fix_latex_sentence_line_breaks/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12T00:45:38Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 408,
+      "project_name": "define_proofchecker_latex_command",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T00:18:17Z",
+      "last_updated": "2026-01-12T00:55:35Z",
+      "plan_version": "001",
+      "completed": "2026-01-12T00:55:35Z",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 175,
+      "project_name": "establish_ci_cd_pipeline_with_automated_testing_and_linting",
+      "type": "feature",
+      "status": "completed",
+      "priority": "high",
+      "language": "markdown",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T02:02:55Z",
+      "effort": "13 hours",
+      "completed": "2026-01-12",
+      "archived": "2026-01-12T02:46:35Z"
+    },
+    {
+      "project_number": 260,
+      "project_name": "investigate_claude_code_cli_argument_mechanism",
+      "status": "orphan_archived",
+      "source": "orphan_recovery",
+      "archived": "2026-01-12T02:46:41Z",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 425,
+      "project_name": "update_command_files_to_delegate_to_skill_subagent",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-12T03:13:55Z",
+      "last_updated": "2026-01-12T03:21:19Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/425_update_command_files_to_delegate_to_skill_subagent/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/425_update_command_files_to_delegate_to_skill_subagent/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/425_update_command_files_to_delegate_to_skill_subagent/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-12",
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 424,
+      "project_name": "complete_todos_01_syntax_tex",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T03:06:14Z",
+      "last_updated": "2026-01-12T03:28:38Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/424_complete_todos_01_syntax_tex/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/424_complete_todos_01_syntax_tex/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/424_complete_todos_01_syntax_tex/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 417,
+      "project_name": "split_typeclass_constraints_explanatory",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Split LinearOrderedAddCommGroup constraint into more specific constraints (AddGroup, LinearOrder, CovariantClass) to reduce typeclass instance search complexity. Requires understanding type dependencies and may affect multiple files.",
+      "effort": "3-4 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T09:35:00Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/reports/benchmark-results.md",
+          "type": "report"
+        },
+        {
+          "path": ".claude/specs/archive/417_split_typeclass_constraints_explanatory/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-11",
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 418,
+      "project_name": "cache_typeclass_instances_explanatory",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Add explicit instance arguments where typeclass inference is slow. Cache CompleteLattice and other deep hierarchy instances to avoid repeated inference in truthAt and related functions.",
+      "effort": "1.5-2 hours",
+      "created": "2026-01-12T00:38:44Z",
+      "last_updated": "2026-01-12T03:47:27Z",
+      "parent_task": 400,
+      "dependencies": [
+        416
+      ],
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/418_cache_typeclass_instances_explanatory/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/418_cache_typeclass_instances_explanatory/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/418_cache_typeclass_instances_explanatory/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/418_cache_typeclass_instances_explanatory/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12",
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 414,
+      "project_name": "create_planner_agent_subagent",
+      "status": "completed",
+      "language": "meta",
+      "priority": "low",
+      "description": "Create .claude/agents/planner-agent.md subagent that loads plan-format.md and task-breakdown.md on-demand. Returns structured JSON with plan path and summary. Integrates with skill-planner via context: fork pattern.",
+      "effort": "2-3 hours",
+      "created": "2026-01-12T08:00:00Z",
+      "last_updated": "2026-01-12T03:02:54Z",
+      "dependencies": [
+        410
+      ],
+      "completed": "2026-01-11",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/414_create_planner_agent_subagent/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/414_create_planner_agent_subagent/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/414_create_planner_agent_subagent/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 413,
+      "project_name": "create_implementation_agent_subagents",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Create .claude/agents/lean-implementation-agent.md, general-implementation-agent.md, and latex-implementation-agent.md subagents. Each loads language-specific context only when executing phases. Returns phase completion status and artifact paths.",
+      "effort": "4-5 hours",
+      "created": "2026-01-12T08:00:00Z",
+      "last_updated": "2026-01-11T03:00:00Z",
+      "dependencies": [
+        410
+      ],
+      "completed": "2026-01-11",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/413_create_implementation_agent_subagents/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/413_create_implementation_agent_subagents/summaries/implementation-summary-20260111.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 412,
+      "project_name": "create_general_research_agent_subagent",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Create .claude/agents/general-research-agent.md subagent with WebSearch, WebFetch, Read, Grep tools. Loads report-format.md on-demand. Returns structured JSON with artifact path and summary.",
+      "effort": "2-3 hours",
+      "created": "2026-01-12T08:00:00Z",
+      "last_updated": "2026-01-12T02:00:30Z",
+      "dependencies": [
+        410
+      ],
+      "completed": "2026-01-12",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/412_create_general_research_agent_subagent/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/412_create_general_research_agent_subagent/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 411,
+      "project_name": "create_lean_research_agent_subagent",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Create .claude/agents/lean-research-agent.md subagent with lean-lsp MCP tools and search decision tree. Loads mcp-tools-guide.md, leansearch-api.md, loogle-api.md only when needed. Returns structured JSON with artifact path and summary.",
+      "effort": "3-4 hours",
+      "created": "2026-01-12T08:00:00Z",
+      "last_updated": "2026-01-12T13:30:00Z",
+      "dependencies": [
+        410
+      ],
+      "completed": "2026-01-12",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/411_create_lean_research_agent_subagent/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/411_create_lean_research_agent_subagent/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/411_create_lean_research_agent_subagent/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 410,
+      "project_name": "remove_eager_context_loading_from_skill_frontmatter",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Remove context: arrays from all skill frontmatter. Document lazy loading pattern using @-references. Ensure context/index.md is referenced for on-demand lookup. Update CLAUDE.md if needed.",
+      "effort": "2-3 hours",
+      "created": "2026-01-12T08:00:00Z",
+      "last_updated": "2026-01-12T01:37:38Z",
+      "dependencies": [
+        409
+      ],
+      "completed": "2026-01-12",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/410_remove_eager_context_loading_from_skill_frontmatter/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/410_remove_eager_context_loading_from_skill_frontmatter/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 409,
+      "project_name": "convert_workflow_skills_to_forked_subagent_pattern",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "description": "Update skill-lean-research, skill-researcher, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation to use context: fork and agent: field. Convert skills to thin wrappers that spawn subagents. Define standardized return format for artifacts.",
+      "effort": "4-6 hours",
+      "created": "2026-01-12T08:00:00Z",
+      "last_updated": "2026-01-12T11:00:00Z",
+      "completed": "2026-01-12T11:00:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/409_convert_workflow_skills_to_forked_subagent_pattern/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/409_convert_workflow_skills_to_forked_subagent_pattern/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/409_convert_workflow_skills_to_forked_subagent_pattern/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 395,
+      "project_name": "create_bimodal_troubleshooting_and_exercise_solutions",
+      "status": "completed",
+      "language": "markdown",
+      "priority": "medium",
+      "description": "Create TROUBLESHOOTING.md for Bimodal with import errors, type mismatches, proof search failures, and build issues. Add solutions with hints to existing exercises in EXAMPLES.md section 7.",
+      "effort": "3-4 hours",
+      "created": "2026-01-11T21:10:49Z",
+      "last_updated": "2026-01-12T04:45:00Z",
+      "completed": "2026-01-12",
+      "supersedes": 178,
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/395_create_bimodal_troubleshooting_and_exercise_solutions/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/395_create_bimodal_troubleshooting_and_exercise_solutions/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/395_create_bimodal_troubleshooting_and_exercise_solutions/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "archived": "2026-01-12T05:36:33.618239Z"
+    },
+    {
+      "project_number": 423,
+      "project_name": "ci_skip_by_default_trigger_via_commit_message",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-12T02:09:50Z",
+      "completed": "2026-01-12T10:15:00Z",
+      "archived": "2026-01-12T14:20:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/423_ci_skip_by_default_trigger_via_commit_message/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/423_ci_skip_by_default_trigger_via_commit_message/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/423_ci_skip_by_default_trigger_via_commit_message/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 427,
+      "project_name": "document_command_skill_subagent_framework",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-12T05:40:23Z",
+      "completed": "2026-01-12T21:54:00Z",
+      "archived": "2026-01-12T14:20:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/427_document_command_skill_subagent_framework/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/archive/427_document_command_skill_subagent_framework/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/427_document_command_skill_subagent_framework/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 428,
+      "project_name": "complete_todos_bimodal_syntax_latex",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-12T05:53:50Z",
+      "completed": "2026-01-12T06:04:50Z",
+      "archived": "2026-01-12T14:20:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/archive/428_complete_todos_bimodal_syntax_latex/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/archive/428_complete_todos_bimodal_syntax_latex/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 436,
+      "project_name": "update_license_to_modelchecker_standard",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T17:28:42Z",
+      "last_updated": "2026-01-12T17:58:44Z",
+      "plan_version": "001",
+      "completed": "2026-01-12T17:58:44Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/436_update_license_to_modelchecker_standard/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/436_update_license_to_modelchecker_standard/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/436_update_license_to_modelchecker_standard/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 435,
+      "project_name": "module_aggregator_standard_bimodal",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-12T17:16:42Z",
+      "last_updated": "2026-01-12T17:45:36Z",
+      "description": "Systematically and uniformly improve the Module Aggregator Standard throughout the Bimodal/ theory following best practices for Lean 4 implementation",
+      "plan_version": "001",
+      "completed": "2026-01-12T17:45:36Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/435_module_aggregator_standard_bimodal/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/435_module_aggregator_standard_bimodal/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/435_module_aggregator_standard_bimodal/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 434,
+      "project_name": "refactor_readme_for_investors_and_researchers",
+      "status": "completed",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T16:54:47Z",
+      "last_updated": "2026-01-12T18:00:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 433,
+      "project_name": "refine_readme_title_and_bimodal_section",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T15:47:36Z",
+      "last_updated": "2026-01-12T16:36:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/433_refine_readme_title_and_bimodal_section/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 430,
+      "project_name": "refactor_documentation_general_framework",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T14:28:44Z",
+      "last_updated": "2026-01-12T19:25:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/430_refactor_documentation_general_framework/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/430_refactor_documentation_general_framework/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/430_refactor_documentation_general_framework/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 429,
+      "project_name": "extend_command_skill_agent_integration_to_meta",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-12T06:02:46Z",
+      "last_updated": "2026-01-12T14:30:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/429_extend_command_skill_agent_integration_to_meta/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 260,
+      "project_name": "proof_search",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T16:07:39Z",
+      "effort": "16-22 hours",
+      "description": "Implement automated proof search for TM logic with proof term construction using Direct Refactor approach (Axiom: Prop -> Type).",
+      "planning_completed": "2026-01-12T23:30:00Z",
+      "implementation_completed": "2026-01-12T23:45:00Z",
+      "plan_path": ".claude/specs/260_proof_search/plans/implementation-002.md",
+      "plan_version": "002",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 22,
+        "complexity": "medium",
+        "research_integrated": true,
+        "language": "lean",
+        "proof_strategy": "Direct Refactor (Axiom: Prop -> Type) with matchAxiom and proof term construction",
+        "supersedes": "implementation-001.md",
+        "approach": "Direct Refactor (recommended by research-004)"
+      },
+      "estimated_hours": 22,
+      "artifacts": [
+        {
+          "path": ".claude/specs/260_proof_search/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/reports/research-003.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/reports/research-004.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/plans/implementation-001.md",
+          "type": "plan",
+          "status": "superseded"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/plans/implementation-002.md",
+          "type": "plan",
+          "status": "current"
+        },
+        {
+          "path": ".claude/specs/260_proof_search/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "started": "2026-01-05",
+      "blocking_resolved": true,
+      "blocking_resolution": "Research-004 provides balanced re-analysis. RECOMMENDS Direct Refactor (Axiom: Prop -> Type) over AxiomWitness pattern. Reasons: (1) simplicity - single source of truth, (2) zero code relies on proof irrelevance, (3) no maintenance burden of parallel types, (4) ITauto precedent not applicable (different context).",
+      "completed": "2026-01-12T16:07:39Z",
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 261,
+      "project_name": "decidability",
+      "type": "feature",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "low",
+      "language": "lean",
+      "created": "2026-01-05T01:22:38Z",
+      "last_updated": "2026-01-12T22:30:00Z",
+      "effort": "40-50 hours",
+      "description": "Implement decision procedures for TM logic. Research-002 analyzes implications of Type-based axiom refactor from task 260.",
+      "plan_version": "001",
+      "completed": "2026-01-12T22:30:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/261_decidability/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/261_decidability/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/261_decidability/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/261_decidability/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:00:00Z"
+    },
+    {
+      "project_number": 437,
+      "project_name": "improve_readme_consistency_with_recursive_semantics",
+      "status": "completed",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T17:34:32Z",
+      "last_updated": "2026-01-12T22:30:00Z",
+      "completed": "2026-01-12T22:30:00Z",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-12T19:30:00Z"
+    },
+    [
+      {
+        "project_number": 443,
+        "project_name": "fix_session_id_and_agent_system_robustness",
+        "status": "completed",
+        "language": "meta",
+        "priority": "high",
+        "created": "2026-01-12T20:49:18Z",
+        "last_updated": "2026-01-12T21:05:37Z",
+        "description": "Fix session ID generation (xxd dependency) and related agent system robustness issues discovered when /research 133 crashed. Root cause: session ID generation uses xxd which is not available on NixOS. Systematically fix all fragile patterns in .claude/ agent system.",
+        "session_id": "sess_1768251758_a9d38b",
+        "artifacts": [
+          {
+            "path": ".claude/specs/443_fix_session_id_and_agent_system_robustness/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/443_fix_session_id_and_agent_system_robustness/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/443_fix_session_id_and_agent_system_robustness/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "001",
+        "completed": "2026-01-12T21:05:37Z",
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 442,
+        "project_name": "research_skill_execution_architecture",
+        "type": "research",
+        "phase": "completed",
+        "status": "completed",
+        "priority": "high",
+        "language": "meta",
+        "created": "2026-01-12T19:44:35Z",
+        "last_updated": "2026-01-12T20:30:23Z",
+        "effort": "4 hours",
+        "description": "Research the skill/agent execution architecture to determine optimal approach for systematic improvements. Analyze three options: (A) Make skills executable with automatic subagent delegation, (B) Inline critical patterns in command files removing skill indirection, (C) Use Task tool with explicit prompts including all skill context. Evaluate tradeoffs around token efficiency, reliability, maintainability, and Claude Code constraints.",
+        "artifacts": [
+          {
+            "path": ".claude/specs/442_research_skill_execution_architecture/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/442_research_skill_execution_architecture/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/442_research_skill_execution_architecture/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "session_id": "sess_1768249607_8e0bfe",
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 440,
+        "project_name": "revise_logos_readme",
+        "status": "completed",
+        "language": "general",
+        "priority": "medium",
+        "created": "2026-01-12T21:16:41Z",
+        "last_updated": "2026-01-12T22:10:00Z",
+        "completed": "2026-01-12T22:10:00Z",
+        "plan_version": "001",
+        "artifacts": [
+          {
+            "path": ".claude/specs/440_revise_logos_readme/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/440_revise_logos_readme/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/440_revise_logos_readme/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 439,
+        "project_name": "address_todo_note_tags_semantics_tex",
+        "status": "completed",
+        "language": "latex",
+        "priority": "medium",
+        "created": "2026-01-12T18:46:59Z",
+        "last_updated": "2026-01-12T20:56:00Z",
+        "description": "Address the TODO and NOTE tags in Theories/Bimodal/latex/subfiles/02-Semantics.tex",
+        "completed": "2026-01-12T20:56:00Z",
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 438,
+        "project_name": "refactor_bimodal_readme",
+        "status": "completed",
+        "language": "general",
+        "priority": "medium",
+        "created": "2026-01-12T18:04:54Z",
+        "last_updated": "2026-01-12T19:45:00Z",
+        "completed": "2026-01-12T19:45:00Z",
+        "description": "Refactor Theories/Bimodal/README.md to provide a more systematic account of the Bimodal/ theory including a basic outline of its syntax, semantics, proof theory, and metalogic while also linking the BimodalReference.pdf and BimodalReference.tex for a more complete reference.",
+        "plan_version": "001",
+        "artifacts": [
+          {
+            "path": ".claude/specs/438_refactor_bimodal_readme/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/438_refactor_bimodal_readme/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/438_refactor_bimodal_readme/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 434,
+        "project_name": "refactor_readme_for_investors_and_researchers",
+        "status": "completed",
+        "language": "general",
+        "priority": "high",
+        "created": "2026-01-12T14:00:00Z",
+        "last_updated": "2026-01-12T18:00:00Z",
+        "completed": "2026-01-12T18:00:00Z",
+        "plan_version": "001",
+        "artifacts": [
+          {
+            "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/434_refactor_readme_for_investors_and_researchers/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 432,
+        "project_name": "fix_artifact_linking_in_todo_and_state",
+        "status": "completed",
+        "language": "meta",
+        "priority": "high",
+        "created": "2026-01-12T14:48:15Z",
+        "last_updated": "2026-01-12T17:50:29Z",
+        "plan_version": "001",
+        "artifacts": [
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-002.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-003.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-004.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/reports/research-005.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/432_fix_artifact_linking_in_todo_and_state/plans/implementation-001.md",
+            "type": "plan"
+          }
+        ],
+        "completed": "2026-01-12T17:50:29Z",
+        "archived": "2026-01-12T22:05:12Z"
+      },
+      {
+        "project_number": 132,
+        "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",
+        "type": "feature",
+        "phase": "completed",
+        "status": "completed",
+        "priority": "low",
+        "language": "lean",
+        "created": "2026-01-05T01:22:38Z",
+        "last_updated": "2026-01-12T18:40:07Z",
+        "effort": "16 hours",
+        "artifacts": [
+          {
+            "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/reports/research-001.md",
+            "type": "research"
+          },
+          {
+            "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/plans/implementation-001.md",
+            "type": "plan"
+          },
+          {
+            "path": ".claude/specs/132_prove_lindenbaum_maximal_consistency_lemma_in_completeness/summaries/implementation-summary-20260112.md",
+            "type": "summary"
+          }
+        ],
+        "plan_version": "001",
+        "completed": "2026-01-12T18:40:07Z",
+        "archived": "2026-01-12T22:05:12Z"
+      }
+    ],
+    {
+      "project_number": 456,
+      "project_name": "address_todos_in_bimodal_semantics_latex",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T00:43:38Z",
+      "last_updated": "2026-01-13T00:58:51Z",
+      "description": "Address all TODOs in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/02-Semantics.tex by rigorously researching each in order to revise the document appropriately, ignoring nothing.",
+      "session_id": "sess_1768265665_a8df02",
+      "artifacts": [
+        {
+          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/456_address_todos_in_bimodal_semantics_latex/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-13T00:58:51Z",
+      "archived": "2026-01-13T02:18:47Z"
+    },
+    {
+      "project_number": 455,
+      "project_name": "readme_extension_layer_descriptions",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T23:59:54Z",
+      "last_updated": "2026-01-13T00:24:59Z",
+      "description": "Turn the bullet points following the architecture drawing in the Overview section of README.md into clear and concise explanations of what each extension layer provides with regards to expressive and logical resources for representing and reasoning about tasks of increasing complexity.",
+      "session_id": "sess_1768263793_ebe078",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/455_readme_extension_layer_descriptions/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/455_readme_extension_layer_descriptions/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-13T00:24:59Z",
+      "archived": "2026-01-13T02:18:47Z"
+    },
+    {
+      "project_number": 451,
+      "project_name": "add_reflection_extension_to_logos_layer_extensions",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T22:34:13Z",
+      "last_updated": "2026-01-12T23:37:34Z",
+      "description": "Add Reflection Extension for metacognition to the Logos layer extensions in README.md, recursive-semantics.md, layer-extensions.md, LogosReference.tex, and project README.md where the Reflection Extension follows the Agential Extension",
+      "session_id": "sess_1768260517_a912b7",
+      "artifacts": [
+        {
+          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/451_add_reflection_extension_to_logos_layer_extensions/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-12T23:37:34Z",
+      "archived": "2026-01-13T02:18:47Z"
+    },
+    {
+      "project_number": 448,
+      "project_name": "build_canonical_history",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "effort": "3-4 hours",
+      "created": "2026-01-12T22:08:58Z",
+      "last_updated": "2026-01-13T07:15:00Z",
+      "parent_task": 257,
+      "dependencies": [
+        447
+      ],
+      "description": "Phase 5 of completeness proofs: Build canonical_history construction. Define the history structure that threads MCSs together with the canonical task relation, establishing the temporal backbone for the canonical model. This bridges canonical_frame/model (Phase 4) and truth_lemma (Phase 6).",
+      "session_id": "sess_1768267030_cfb908",
+      "plan_version": "001",
+      "completed": "2026-01-13T07:15:00Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/448_build_canonical_history/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/448_build_canonical_history/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/448_build_canonical_history/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-13T02:18:47Z"
+    },
+    {
+      "project_number": 444,
+      "project_name": "formula_countability_set_list_bridge",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "effort": "6-8 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-13T04:05:00Z",
+      "completed": "2026-01-13T04:05:00Z",
+      "parent_task": 257,
+      "session_id": "sess_1768258292_b0c125",
+      "plan_version": "001",
+      "description": "Phase 1 of completeness proofs: Establish bridge between set-based and list-based consistency. Prove Formula is countable, implement enumeration, define setToContext, prove set-list consistency equivalence, complete lindenbaum proof.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/444_formula_countability_set_list_bridge/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/444_formula_countability_set_list_bridge/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/444_formula_countability_set_list_bridge/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/444_formula_countability_set_list_bridge/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-13T02:18:47Z"
+    },
+    {
+      "project_number": 445,
+      "project_name": "maximal_consistent_set_properties",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "effort": "10-12 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-13T05:35:00Z",
+      "completed": "2026-01-13T05:35:00Z",
+      "parent_task": 257,
+      "dependencies": [
+        444
+      ],
+      "description": "Phase 2 of completeness proofs: Prove key properties of maximal consistent sets. Prove maximal_consistent_closed, maximal_negation_complete, implication/conjunction/disjunction properties, modal and temporal saturation lemmas.",
+      "session_id": "sess_1768259586_1524ac",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/445_maximal_consistent_set_properties/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/445_maximal_consistent_set_properties/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/445_maximal_consistent_set_properties/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-13T02:18:47Z"
+    },
+    {
+      "project_number": 446,
+      "project_name": "agnostic_duration_construction",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "effort": "15-20 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-13T07:45:00Z",
+      "completed": "2026-01-13T07:45:00Z",
+      "parent_task": 257,
+      "dependencies": [
+        445
+      ],
+      "description": "Phase 3 of completeness proofs: Implement order-type based duration construction from research-008.md. Define TemporalChain, ChainSegment, orderTypeEquiv. Build PositiveDuration quotient with AddCommMonoid. Define Duration via Grothendieck construction with LinearOrder and IsOrderedAddMonoid instances.",
+      "session_id": "sess_1768262434_4d1ee3",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/446_agnostic_duration_construction/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/446_agnostic_duration_construction/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/446_agnostic_duration_construction/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-13T02:18:47Z"
+    },
+    {
+      "project_number": 447,
+      "project_name": "canonical_frame_model_construction",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "effort": "12-15 hours",
+      "created": "2026-01-12T22:03:06Z",
+      "last_updated": "2026-01-13T00:51:22Z",
+      "parent_task": 257,
+      "dependencies": [
+        446
+      ],
+      "description": "Phase 4 of completeness proofs: Build canonical frame and model using agnostic Duration type. Define canonical_task_rel with modal/temporal transfer. Prove nullity and compositionality. Implement canonical_frame, canonical_valuation, canonical_model, canonical_history.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/447_canonical_frame_model_construction/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/447_canonical_frame_model_construction/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/447_canonical_frame_model_construction/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-13T00:51:22Z",
+      "archived": "2026-01-13T02:18:47Z"
+    },
+    {
+      "project_number": 437,
+      "project_name": "improve_readme_consistency_with_recursive_semantics",
+      "status": "completed",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-12T00:00:00Z",
+      "last_updated": "2026-01-12T22:58:00Z",
+      "completed": "2026-01-12T22:58:00Z",
+      "description": "Improve /home/benjamin/Projects/ProofChecker/Theories/Logos/README.md for consistency and clarity with the recursive-semantics.md documentation. Reduce redundancy by presenting layer extensions only once. Fix any internal discrepancies. Emphasize the parallel development of Logos in the ModelChecker with link to https://github.com/benbrastmckie/ModelChecker.",
+      "session_id": "sess_1768256285_f4dc12",
+      "plan_version": "001",
+      "artifacts": [
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/437_improve_readme_consistency_with_recursive_semantics/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-13T02:18:47Z"
+    },
+    {
+      "project_number": 461,
+      "project_name": "expand_bimodal_theory_readme_section",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-13T02:15:44Z",
+      "last_updated": "2026-01-13T02:40:38Z",
+      "description": "Expand the Bimodal Theory section in README.md to explain that the bimodal theory provides the logical core of the Logos theory by accounting for the relationship between time and possibility. This provides a well-motivated purely intensional target for developing the methodology that will then be extended to the Logos which is a hyperintensional theory of much greater complexity.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/461_expand_bimodal_theory_readme_section/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/461_expand_bimodal_theory_readme_section/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/461_expand_bimodal_theory_readme_section/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-13T02:40:38Z",
+      "archived": "2026-01-13T03:50:01Z"
+    },
+    {
+      "project_number": 460,
+      "project_name": "cosmos_institute_substack_essay",
+      "status": "completed",
+      "language": "general",
+      "priority": "high",
+      "created": "2026-01-13T02:04:02Z",
+      "last_updated": "2026-01-13T02:22:35Z",
+      "description": "Create a 1000-2000 word essay that makes the project and its conclusions accessible to the public. Essays should conform to the tone and style of those that have appeared on the Cosmos Institute Substack. With the Grantee consent, select essays may be edited and featured on the Cosmos Institute Substack. This essay is due within 30 days after the conclusion of the grant term.",
+      "session_id": "sess_1768270717_0edfca",
+      "artifacts": [
+        {
+          "path": ".claude/specs/460_cosmos_institute_substack_essay/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/460_cosmos_institute_substack_essay/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/460_cosmos_institute_substack_essay/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/460_cosmos_institute_substack_essay/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        },
+        {
+          "path": "docs/essays/cosmos-institute-essay.md",
+          "type": "deliverable"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-13T02:22:35Z",
+      "archived": "2026-01-13T03:50:01Z"
+    },
+    {
+      "project_number": 459,
+      "project_name": "update_bimodal_latex_metalogic_theorems_notes",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T01:58:46Z",
+      "last_updated": "2026-01-13T02:20:46Z",
+      "archived": "2026-01-13T03:50:01Z"
+    },
+    {
+      "project_number": 454,
+      "project_name": "fix_temporal_quantification_to_match_paper",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-12T23:48:46Z",
+      "last_updated": "2026-01-13T09:00:00Z",
+      "session_id": "sess_1768269755_071a27",
+      "plan_version": "001",
+      "completed": "2026-01-13T09:00:00Z",
+      "description": "The Lean implementation restricts temporal quantification to times in the world history's domain dom(τ) despite the fact the source paper /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (lines 896-7 and lines 1862-1872) quantifies over all times. It is also important that the times are unrestricted in the definition of logical consequence in line 924 and 2273. Fix the lean source code to match the paper exactly.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/454_fix_temporal_quantification_to_match_paper/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-13T03:50:01Z"
+    },
+    {
+      "project_number": 453,
+      "project_name": "add_ability_free_choice_modal_extension",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-12T22:55:27Z",
+      "last_updated": "2026-01-13T02:51:28Z",
+      "session_id": "sess_1768272346_127e9f",
+      "artifacts": [
+        {
+          "path": ".claude/specs/453_add_ability_free_choice_modal_extension/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/453_add_ability_free_choice_modal_extension/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/453_add_ability_free_choice_modal_extension/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-13T02:51:28Z",
+      "archived": "2026-01-13T03:50:01Z"
+    },
+    {
+      "project_number": 452,
+      "project_name": "use_d_notation_for_duration_group",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-12T22:50:56Z",
+      "last_updated": "2026-01-13T02:52:30Z",
+      "session_id": "sess_1768271992_e86982",
+      "description": "Use D instead of T for the totally ordered commutative group of durations (also called times relative to a world history) consistently throughout the latex files in /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/ and throughout the Lean Code in Logos/ to match the notation used in /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex",
+      "completed": "2026-01-13T02:52:30Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/452_use_d_notation_for_duration_group/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/452_use_d_notation_for_duration_group/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/452_use_d_notation_for_duration_group/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "archived": "2026-01-13T03:50:01Z"
+    },
+    {
+      "project_number": 458,
+      "project_name": "extend_canonical_history_full_domain",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-13T07:33:26Z",
+      "last_updated": "2026-01-13T18:52:14Z",
+      "parent_task": 257,
+      "dependencies": [
+        448
+      ],
+      "session_id": "sess_1768318334_6a63f9",
+      "plan_version": "004",
+      "description": "Extend canonical_history from singleton domain to full domain for completeness proof correctness. Implemented finite canonical model approach with 7 phases. Created FiniteCanonicalModel.lean with finite time domain, world states, task relation, frame/model structures, existence lemmas, truth lemma skeleton, and completeness theorem statements.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-003.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-003.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/reports/research-004.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/plans/implementation-004.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/458_extend_canonical_history_full_domain/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-13T18:52:14Z",
+      "archived": "2026-01-13T18:57:54Z"
+    },
+    {
+      "project_number": 462,
+      "project_name": "fix_workflow_command_delegation",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-13T04:27:46Z",
+      "last_updated": "2026-01-13T06:00:31Z",
+      "description": "Fix /research and /implement commands stopping after preflight. Commands complete skill-status-sync for preflight but fail to proceed to STAGE 2 delegation. Root cause: command files describe workflow but Claude stops executing after preflight instead of continuing to delegate to implementation skills/agents.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/462_fix_workflow_command_delegation/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/462_fix_workflow_command_delegation/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/462_fix_workflow_command_delegation/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "session_id": "sess_1768282549_2e9ad8",
+      "archived": "2026-01-13T18:57:54Z"
+    },
+    {
+      "project_number": 463,
+      "project_name": "meta_context_loading_improvements",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-13T04:41:53Z",
+      "last_updated": "2026-01-13T05:09:31Z",
+      "archived": "2026-01-13T18:57:54Z"
+    },
+    {
+      "project_number": 464,
+      "project_name": "research_coherence_alternatives_strategy_a",
+      "status": "completed",
+      "priority": "high",
+      "language": "lean",
+      "created": "2026-01-13T04:51:37Z",
+      "last_updated": "2026-01-13T05:36:12Z",
+      "parent_task": 458,
+      "description": "Research alternative approaches to solve the canonical_history coherence problem. Current chain construction (Strategy C) provides coherence for discrete ℤ-indexed positions but cannot extend to full Duration domain. Investigate Strategy A from research-002.md: strengthen canonical_task_rel to include persistence conditions, making compositionality provable by construction. Also consider: (1) proving Duration discreteness (≅ ℤ·chain_step), (2) modifying forward/backward_extension to return chain-coherent witnesses, (3) quotient-based approaches.",
+      "session_id": "sess_1768281942_e65015",
+      "artifacts": [
+        {
+          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/464_research_coherence_alternatives_strategy_a/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-13T05:35:55Z",
+      "archived": "2026-01-13T18:57:54Z"
+    },
+    {
+      "project_number": 465,
+      "project_name": "cosmos_essay_latex",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-13T06:11:43Z",
+      "last_updated": "2026-01-13T06:35:28Z",
+      "description": "Convert cosmos-institute-essay.md to a professionally formatted LaTeX document with title information from BimodalReference.tex and LogosReference.tex, including their references and linking ModelChecker and ProofChecker to git repos.",
+      "session_id": "sess_1768285816_7b069b",
+      "artifacts": [
+        {
+          "path": ".claude/specs/465_cosmos_essay_latex/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/465_cosmos_essay_latex/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/465_cosmos_essay_latex/summaries/implementation-summary-20260112.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-13T06:35:28Z",
+      "archived": "2026-01-13T18:57:54Z"
+    },
+    {
+      "project_number": 467,
+      "project_name": "review_task_462_changes_fix_root_cause",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-13T15:11:50Z",
+      "last_updated": "2026-01-13T16:12:46Z",
+      "description": "Review task 462 changes (from .claude/output/research.md) to determine if they are worth keeping or cruft. Identify and fix root cause of workflow delegation errors in an elegant way without unnecessary changes. Update documentation to be accurate.",
+      "session_id": "sess_1768320511_65fbfb",
+      "artifacts": [
+        {
+          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/467_review_task_462_changes_fix_root_cause/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "plan_version": "001",
+      "completed": "2026-01-13T16:12:46Z",
+      "archived": "2026-01-13T18:57:54Z"
+    },
+    {
+      "project_number": 472,
+      "project_name": "lindenbaum_extension_finite_closures",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-13T16:10:32Z",
+      "last_updated": "2026-01-13T17:17:23Z",
+      "parent_task": 458,
+      "description": "Complete the Lindenbaum extension for finite closures, building on task 458. Implement the restricted Lindenbaum lemma that extends consistent formula sets to maximal consistent sets within the finite subformula closure, enabling the finite truth lemma proof.",
+      "artifacts": [
+        {
+          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/472_lindenbaum_extension_finite_closures/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-13T18:57:54Z"
+    },
+    {
+      "project_number": 474,
+      "project_name": "fix_skill_return_status_field",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-13T16:40:27Z",
+      "last_updated": "2026-01-13T17:04:09Z",
+      "description": "Fix skill-status-sync return format \"status\": \"completed\" field causing Claude to stop execution prematurely. Tasks 462 and 467 added continuation markers but the root issue remains: skill returns include a status field with value \"completed\" that Claude interprets as a stop signal. Change to non-triggering terminology like \"result\": \"success\" or \"ok\": true, or remove field entirely if summary is sufficient.",
+      "session_id": "sess_1768323437_8dd4a5",
+      "plan_version": "002",
+      "artifacts": [
+        {
+          "path": ".claude/specs/474_fix_skill_return_status_field/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/474_fix_skill_return_status_field/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/474_fix_skill_return_status_field/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-13T17:04:09Z",
+      "archived": "2026-01-13T18:57:54Z"
+    },
+    {
+      "project_number": 478,
+      "project_name": "revise_ecosystem_view_section",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-13T17:34:48Z",
+      "last_updated": "2026-01-13T18:34:38Z",
+      "artifacts": [
+        {
+          "path": ".claude/specs/478_revise_ecosystem_view_section/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": ".claude/specs/478_revise_ecosystem_view_section/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/478_revise_ecosystem_view_section/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/specs/478_revise_ecosystem_view_section/summaries/implementation-summary-20260113.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-13T18:57:54Z"
+    }
+  ]
+}
