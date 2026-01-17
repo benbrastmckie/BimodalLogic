@@ -1,5 +1,5 @@
 ---
-next_project_number: 534
+next_project_number: 535
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -103,15 +103,17 @@ technical_debt:
 
 ### 529. Unify Workflow Commands into Single-Execution Pattern
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768659082_0813e6
+- **Session ID**: sess_1768659461_df9d16
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
+- **Planned**: 2026-01-17
 - **Research**:
   - [research-001.md](specs/529_unify_workflow_commands_single_execution/reports/research-001.md) - Root cause analysis
   - [research-002.md](specs/529_unify_workflow_commands_single_execution/reports/research-002.md) - Location comparison
+- **Plan**: [implementation-001.md](specs/529_unify_workflow_commands_single_execution/plans/implementation-001.md)
 
 **Description**: Refactor /research, /plan, /implement commands to embed all checkpoint logic inline rather than delegating preflight to skill-status-sync. The preflight status update should be done directly in the command file using Bash/jq/Edit, not via Skill invocation, to prevent the "completion signal" problem that causes workflows to halt after preflight.
 
