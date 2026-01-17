@@ -108,10 +108,22 @@ Prepare delegation context:
 
 ### 3. Invoke Subagent
 
-Invoke `planner-agent` via Task tool with:
-- Task context (number, name, description, language)
-- Delegation context (session_id, depth, path)
-- Research report path (if available)
+**CRITICAL**: You MUST use the **Task** tool (NOT the Skill tool) to invoke the subagent.
+
+**Tool Selection**:
+| Directory | Tool | Invocation |
+|-----------|------|------------|
+| `.claude/skills/` | Skill tool | `Skill("skill-name")` |
+| `.claude/agents/` | **Task tool** | `Task(subagent_type="agent-name")` |
+
+The `agent` field in frontmatter specifies which agent to invoke via the Task tool.
+
+**Invoke the Task tool NOW** with:
+- `subagent_type`: "planner-agent"
+- `description`: "Create implementation plan for task {N}"
+- `prompt`: Include task context, delegation context, and research report path
+
+**DO NOT** use `Skill("planner-agent")` - agents are in `.claude/agents/`, NOT `.claude/skills/`.
 
 The subagent will:
 - Load planning context files

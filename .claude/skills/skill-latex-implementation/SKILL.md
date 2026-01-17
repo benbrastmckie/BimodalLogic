@@ -122,10 +122,22 @@ Prepare delegation context:
 
 ### 3. Invoke Subagent
 
-Invoke `latex-implementation-agent` via Task tool with:
-- Task context (number, name, description, language)
-- Delegation context (session_id, depth, path)
-- Plan path for execution
+**CRITICAL**: You MUST use the **Task** tool (NOT the Skill tool) to invoke the subagent.
+
+**Tool Selection**:
+| Directory | Tool | Invocation |
+|-----------|------|------------|
+| `.claude/skills/` | Skill tool | `Skill("skill-name")` |
+| `.claude/agents/` | **Task tool** | `Task(subagent_type="agent-name")` |
+
+The `agent` field in frontmatter specifies which agent to invoke via the Task tool.
+
+**Invoke the Task tool NOW** with:
+- `subagent_type`: "latex-implementation-agent"
+- `description`: "Execute LaTeX implementation for task {N}"
+- `prompt`: Include task context, delegation context, and plan path
+
+**DO NOT** use `Skill("latex-implementation-agent")` - agents are in `.claude/agents/`, NOT `.claude/skills/`.
 
 The subagent will:
 - Load LaTeX-specific context files (style guide, notation conventions, etc.)

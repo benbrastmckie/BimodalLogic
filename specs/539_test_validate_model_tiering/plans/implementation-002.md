@@ -67,7 +67,7 @@ Key findings from research-002.md:
 
 ## Implementation Phases
 
-### Phase 1: Create Task Invocation Directive Block [NOT STARTED]
+### Phase 1: Create Task Invocation Directive Block [COMPLETED]
 
 **Goal**: Define the standard directive block that will be added to all skills
 
@@ -111,7 +111,7 @@ The subagent will:
 
 ---
 
-### Phase 2: Update Research Skills [NOT STARTED]
+### Phase 2: Update Research Skills [COMPLETED]
 
 **Goal**: Apply directive block to skill-researcher and skill-lean-research
 
@@ -132,7 +132,7 @@ The subagent will:
 
 ---
 
-### Phase 3: Update Planning Skill [NOT STARTED]
+### Phase 3: Update Planning Skill [COMPLETED]
 
 **Goal**: Apply directive block to skill-planner
 
@@ -150,7 +150,7 @@ The subagent will:
 
 ---
 
-### Phase 4: Update Implementation Skills [NOT STARTED]
+### Phase 4: Update Implementation Skills [COMPLETED]
 
 **Goal**: Apply directive block to skill-implementer, skill-lean-implementation, skill-latex-implementation
 
@@ -172,7 +172,7 @@ The subagent will:
 
 ---
 
-### Phase 5: Update Meta Skill [NOT STARTED]
+### Phase 5: Update Meta Skill [IN PROGRESS]
 
 **Goal**: Apply directive block to skill-meta
 

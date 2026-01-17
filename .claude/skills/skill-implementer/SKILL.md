@@ -109,10 +109,22 @@ Prepare delegation context:
 
 ### 3. Invoke Subagent
 
-Invoke `general-implementation-agent` via Task tool with:
-- Task context (number, name, description, language)
-- Delegation context (session_id, depth, path)
-- Plan path for execution
+**CRITICAL**: You MUST use the **Task** tool (NOT the Skill tool) to invoke the subagent.
+
+**Tool Selection**:
+| Directory | Tool | Invocation |
+|-----------|------|------------|
+| `.claude/skills/` | Skill tool | `Skill("skill-name")` |
+| `.claude/agents/` | **Task tool** | `Task(subagent_type="agent-name")` |
+
+The `agent` field in frontmatter specifies which agent to invoke via the Task tool.
+
+**Invoke the Task tool NOW** with:
+- `subagent_type`: "general-implementation-agent"
+- `description`: "Execute implementation for task {N}"
+- `prompt`: Include task context, delegation context, and plan path
+
+**DO NOT** use `Skill("general-implementation-agent")` - agents are in `.claude/agents/`, NOT `.claude/skills/`.
 
 The subagent will:
 - Load implementation context files
