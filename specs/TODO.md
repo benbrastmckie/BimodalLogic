@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 32
-  completed: 153
+  active: 22
+  completed: 163
   in_progress: 0
   not_started: 28
   abandoned: 14
@@ -54,125 +54,11 @@ technical_debt:
 
 ---
 
-### 535. Refactor Heavy-Lifting Agents to Use Sonnet
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Session ID**: sess_1768660008_6b7162
-- **Created**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Started**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Dependencies**: 534
-- **Plan**: [implementation-001.md](specs/535_refactor_heavy_lifting_agents_to_sonnet/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/535_refactor_heavy_lifting_agents_to_sonnet/summaries/implementation-summary-20260117.md)
 
-**Description**: Refactor all heavy-lifting agents to use the latest Sonnet model. This includes lean-research-agent, lean-implementation-agent, general-research-agent, general-implementation-agent, latex-implementation-agent, planner-agent, and meta-builder-agent. Update either agent YAML frontmatter or skill invocation patterns based on Task 534 research findings.
 
----
 
-### 536. Refactor Dispatch/Routing Skills to Use Haiku
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Session ID**: sess_1768660132_130ba0
-- **Created**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Started**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Dependencies**: 534
-- **Plan**: [implementation-001.md](specs/536_refactor_dispatch_skills_to_haiku/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/536_refactor_dispatch_skills_to_haiku/summaries/implementation-summary-20260117.md)
 
-**Description**: Refactor fast dispatch/routing skills to use the latest Haiku model for cost and latency optimization. This includes skill-orchestrator, skill-status-sync, skill-git-workflow. These skills perform simple routing, validation, and status updates that don't require heavy reasoning.
 
-**Implementation Finding**: Skills cannot have independent model settings - they execute in the main conversation context and inherit that model. No code changes needed; architecture documented.
-
----
-
-### 537. Identify and Configure Opus-Only Components
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Session ID**: sess_1768660285_d5b57d
-- **Created**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Started**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Dependencies**: 534
-- **Plan**: [implementation-001.md](specs/537_identify_opus_only_components/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/537_identify_opus_only_components/summaries/implementation-summary-20260117.md)
-
-**Description**: Identify which components (if any) require Opus for best results and configure them appropriately.
-
-**Result**: Only lean-implementation-agent upgraded to Opus (complex proof development). All other agents remain on Sonnet. Consider: command entry points requiring nuanced user interaction, complex multi-step reasoning tasks, error recovery scenarios. Document rationale for each Opus designation.
-
----
-
-### 538. Update Model Tier Documentation
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Session ID**: sess_1768660536_e8c912
-- **Created**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Started**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Dependencies**: 535, 536, 537
-- **Plan**: [implementation-001.md](specs/538_update_model_tier_documentation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/538_update_model_tier_documentation/summaries/implementation-summary-20260117.md)
-
-**Description**: Update .claude/ documentation to include model tier guidelines. Document which model tier to use for different component types (agents, skills, commands), the rationale for each tier, and how to specify models in the system. Add to CLAUDE.md and/or create new guide in docs/.
-
----
-
-### 539. Test and Validate Model Tiering Changes
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Session ID**: sess_1768664771_155733
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Dependencies**: 535, 536, 537, 538
-- **Research**: [research-002.md](specs/539_test_validate_model_tiering/reports/research-002.md) (supersedes research-001.md)
-- **Plan**: [implementation-002.md](specs/539_test_validate_model_tiering/plans/implementation-002.md) (revised: explicit Task tool directives)
-- **Summary**: [implementation-summary-20260117.md](specs/539_test_validate_model_tiering/summaries/implementation-summary-20260117.md)
-
-**Description**: Test and validate the model tiering changes. Run through complete workflows (/research, /plan, /implement) to verify: correct model is used at each stage, quality meets expectations with Sonnet for heavy lifting, Haiku dispatch is fast and correct, no regressions in functionality.
-
-**Research Finding (Corrected)**: The `/research 541` failures are NOT caused by OOM memory leak but by **skills calling `Skill(agent-name)` instead of `Task(agent-name)`**. Since agents are in `.claude/agents/` (not `.claude/skills/`), this invalid invocation causes the system to fail. Fix: Add explicit Task tool invocation instructions to all forked skills.
-
----
-
-### 529. Unify Workflow Commands into Single-Execution Pattern
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Session ID**: sess_1768659910_d77aaf
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Started**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Research**:
-  - [research-001.md](specs/529_unify_workflow_commands_single_execution/reports/research-001.md) - Root cause analysis
-  - [research-002.md](specs/529_unify_workflow_commands_single_execution/reports/research-002.md) - Location comparison
-- **Plan**: [implementation-001.md](specs/529_unify_workflow_commands_single_execution/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/529_unify_workflow_commands_single_execution/summaries/implementation-summary-20260117.md)
-
-**Description**: Refactor /research, /plan, /implement commands to embed all checkpoint logic inline rather than delegating preflight to skill-status-sync. The preflight status update should be done directly in the command file using Bash/jq/Edit, not via Skill invocation, to prevent the "completion signal" problem that causes workflows to halt after preflight.
-
-**Root Cause**: When skill-status-sync returns `"status": "synced"`, Claude interprets this as a stopping point and halts before executing STAGE 2 delegation. Evidence in `.claude/output/research.md` shows workflow stopping after preflight JSON return.
-
----
 
 ### 517. Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates
 - **Effort**: 2-3 hours
@@ -220,67 +106,12 @@ technical_debt:
 
 ---
 
-### 542. Fix CanonicalModel Foundation (Phase 1 of 540)
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Session ID**: sess_1768662035_2a67ce
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Parent**: 540
-- **Research**: [research-001.md](specs/542_fix_canonical_model_foundation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/542_fix_canonical_model_foundation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/542_fix_canonical_model_foundation/summaries/implementation-summary-20260117.md)
 
-**Description**: Fix Representation/CanonicalModel.lean to compile using patterns from Completeness.lean. Copy SetMaximalConsistent/SetConsistent/ConsistentExtensions definitions, fix Lindenbaum lemma using working set_lindenbaum pattern, replace outdated Mathlib APIs.
 
----
-
-### 543. Establish TruthLemma and Representation (Phase 2 of 540)
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Parent**: 540
-- **Dependencies**: 542
-- **Research**: [research-001.md](specs/543_establish_truth_lemma_and_representation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/543_establish_truth_lemma_and_representation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/543_establish_truth_lemma_and_representation/summaries/implementation-summary-20260117.md)
-
-**Description**: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence.
-
----
-
-### 544. Connect FMP Bridge (Phase 3 of 540)
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Parent**: 540
-- **Dependencies**: 542, 543
-- **Research**: [research-001.md](specs/544_connect_fmp_bridge/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/544_connect_fmp_bridge/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/544_connect_fmp_bridge/summaries/implementation-summary-20260117.md)
-
-**Description**: Establish FiniteModelProperty as bridge from representation to decidability/compactness. Fix FiniteModelProperty.lean imports, define FMP statement, connect to SemanticCanonicalModel and Decidability modules.
-
-**Implementation**: Rewrote FiniteModelProperty.lean to import from working modules (Completeness, CanonicalModel). Defined FMP theorem connecting formula_satisfiable to model existence. Updated Decidability/Correctness.lean with FMP references.
-
----
 
 ### 545. Complete Applications Module (Phase 4 of 540)
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-17
@@ -306,25 +137,6 @@ technical_debt:
 
 ---
 
-### 523. Clean Up Bimodal Lean Source Files After Task 505
-- **Effort**: 7 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Session ID**: sess_1768658812_8386f4
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Started**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Research**: [research-003.md](specs/523_bimodal_cleanup/reports/research-003.md)
-- **Plan**: [implementation-001.md](specs/523_bimodal_cleanup/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/523_bimodal_cleanup/summaries/implementation-summary-20260117.md)
-
-**Description**: Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments.
-
-**Implementation Summary**: Fixed 3 namespace issues (soundness → Soundness.soundness), created comprehensive Metalogic/README.md documenting module status. FMP and Representation modules have pre-existing compilation errors requiring separate tasks.
-
----
 
 ### 511. Resolve 26 sorry placeholders in Completeness.lean
 - **Effort**: 20 hours

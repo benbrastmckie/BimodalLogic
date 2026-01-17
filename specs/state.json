@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
-    "total_tasks": 63,
-    "last_sync": "2026-01-17T12:23:06.000000"
+    "total_tasks": 31,
+    "last_sync": "2026-01-17T16:43:48Z"
   },
   "active_projects": [
     {
@@ -15,115 +15,15 @@
       "last_updated": "2026-01-17T16:22:24Z"
     },
     {
-      "project_number": 542,
-      "project_name": "fix_canonical_model_foundation",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T15:04:22Z",
-      "effort": "2 hours",
-      "parent": 540,
-      "description": "Phase 1: Fix Representation/CanonicalModel.lean to compile using patterns from Completeness.lean. Copy SetMaximalConsistent/SetConsistent/ConsistentExtensions definitions, fix Lindenbaum lemma using working set_lindenbaum pattern, replace outdated Mathlib APIs.",
-      "session_id": "sess_1768661753_d27fb6",
-      "researched": "2026-01-17T14:54:06Z",
-      "artifacts": [
-        {
-          "path": "specs/542_fix_canonical_model_foundation/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/542_fix_canonical_model_foundation/plans/implementation-001.md",
-          "type": "plan"
-        }
-      ],
-      "planned": "2026-01-17T14:57:17Z",
-      "completed": "2026-01-17T15:04:22Z"
-    },
-    {
-      "project_number": 543,
-      "project_name": "establish_truth_lemma_and_representation",
-      "type": "refactor",
-      "phase": "completed",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T15:27:00Z",
-      "effort": "1.5 hours",
-      "parent": 540,
-      "dependencies": [
-        542
-      ],
-      "description": "Phase 2: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence.",
-      "session_id": "sess_1768663596_17844a",
-      "researched": "2026-01-17T15:11:07Z",
-      "artifacts": [
-        {
-          "path": "specs/543_establish_truth_lemma_and_representation/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/543_establish_truth_lemma_and_representation/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/543_establish_truth_lemma_and_representation/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T15:23:59Z",
-      "completed": "2026-01-17T15:27:00Z"
-    },
-    {
-      "project_number": 544,
-      "project_name": "connect_fmp_bridge",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T16:08:20Z",
-      "effort": "1 hour",
-      "parent": 540,
-      "dependencies": [
-        542,
-        543
-      ],
-      "description": "Phase 3: Establish FiniteModelProperty as bridge from representation to decidability/compactness. Fix FiniteModelProperty.lean imports, define FMP statement, connect to SemanticCanonicalModel and Decidability modules.",
-      "session_id": "sess_1768665716_8694d0",
-      "researched": "2026-01-17T15:54:28Z",
-      "artifacts": [
-        {
-          "path": "specs/544_connect_fmp_bridge/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/544_connect_fmp_bridge/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/544_connect_fmp_bridge/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T15:59:23Z",
-      "started": "2026-01-17T16:02:18Z",
-      "completed": "2026-01-17T16:08:20Z"
-    },
-    {
       "project_number": 545,
       "project_name": "complete_applications_module",
       "type": "refactor",
       "phase": "not_started",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T16:40:01Z",
+      "last_updated": "2026-01-17T16:43:42Z",
       "effort": "0.5 hours",
       "parent": 540,
       "dependencies": [
@@ -195,78 +95,6 @@
         545,
         546
       ]
-    },
-    {
-      "project_number": 529,
-      "project_name": "unify_workflow_commands_single_execution",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T13:43:36Z",
-      "last_updated": "2026-01-17T14:34:46Z",
-      "effort": "4-6 hours",
-      "description": "Refactor /research, /plan, /implement commands to embed all checkpoint logic inline rather than delegating preflight to skill-status-sync. The preflight status update should be done directly in the command file using Bash/jq/Edit, not via Skill invocation, to prevent the completion signal problem that causes workflows to halt after preflight.",
-      "session_id": "sess_1768659910_d77aaf",
-      "researched": "2026-01-17T14:14:12Z",
-      "artifacts": [
-        {
-          "path": "specs/529_unify_workflow_commands_single_execution/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/529_unify_workflow_commands_single_execution/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/529_unify_workflow_commands_single_execution/plans/implementation-001.md",
-          "type": "plan"
-        }
-      ],
-      "planned": "2026-01-17T14:19:10Z",
-      "started": "2026-01-17T14:25:23Z",
-      "completed": "2026-01-17T14:34:46Z"
-    },
-    {
-      "project_number": 523,
-      "project_name": "Clean Up Bimodal Lean Source Files After Task 505",
-      "type": "refactor",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-17T06:00:27Z",
-      "last_updated": "2026-01-17T14:17:03Z",
-      "researched": "2026-01-17T13:54:33Z",
-      "effort": "4-6 hours",
-      "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments",
-      "artifacts": [
-        {
-          "path": "specs/523_bimodal_cleanup_research/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/523_bimodal_cleanup/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/523_bimodal_cleanup/reports/research-003.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/523_bimodal_cleanup/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/523_bimodal_cleanup/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "session_id": "sess_1768658812_8386f4",
-      "planned": "2026-01-17T14:04:35Z",
-      "started": "2026-01-17T14:07:07Z",
-      "completed": "2026-01-17T14:17:03Z"
     },
     {
       "project_number": 517,
@@ -507,162 +335,6 @@
         }
       ],
       "planned": "2026-01-17T14:20:57Z"
-    },
-    {
-      "project_number": 535,
-      "project_name": "refactor_heavy_lifting_agents_to_sonnet",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T14:28:06Z",
-      "effort": "3-4 hours",
-      "description": "Refactor all heavy-lifting agents to use the latest Sonnet model. This includes lean-research-agent, lean-implementation-agent, general-research-agent, general-implementation-agent, latex-implementation-agent, planner-agent, and meta-builder-agent. Update either agent YAML frontmatter or skill invocation patterns based on Task 534 research findings.",
-      "dependencies": [
-        534
-      ],
-      "session_id": "sess_1768660008_6b7162",
-      "planned": "2026-01-17T14:27:17Z",
-      "artifacts": [
-        {
-          "path": "specs/535_refactor_heavy_lifting_agents_to_sonnet/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/535_refactor_heavy_lifting_agents_to_sonnet/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-17T14:28:06Z"
-    },
-    {
-      "project_number": 536,
-      "project_name": "refactor_dispatch_skills_to_haiku",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T14:29:57Z",
-      "effort": "2-3 hours",
-      "description": "Refactor fast dispatch/routing skills to use the latest Haiku model for cost and latency optimization. This includes skill-orchestrator, skill-status-sync, skill-git-workflow. These skills perform simple routing, validation, and status updates that don't require heavy reasoning.",
-      "dependencies": [
-        534
-      ],
-      "session_id": "sess_1768660132_130ba0",
-      "planned": "2026-01-17T14:29:31Z",
-      "artifacts": [
-        {
-          "path": "specs/536_refactor_dispatch_skills_to_haiku/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/536_refactor_dispatch_skills_to_haiku/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-17T14:29:57Z"
-    },
-    {
-      "project_number": 537,
-      "project_name": "identify_opus_only_components",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "medium",
-      "language": "meta",
-      "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T14:33:02Z",
-      "effort": "1-2 hours",
-      "description": "Identify which components (if any) require Opus for best results and configure them appropriately. Consider: command entry points requiring nuanced user interaction, complex multi-step reasoning tasks, error recovery scenarios. Document rationale for each Opus designation.",
-      "dependencies": [
-        534
-      ],
-      "session_id": "sess_1768660285_d5b57d",
-      "planned": "2026-01-17T14:31:50Z",
-      "artifacts": [
-        {
-          "path": "specs/537_identify_opus_only_components/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/537_identify_opus_only_components/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-17T14:33:02Z"
-    },
-    {
-      "project_number": 538,
-      "project_name": "update_model_tier_documentation",
-      "type": "documentation",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "medium",
-      "language": "meta",
-      "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T14:36:41Z",
-      "effort": "1-2 hours",
-      "description": "Update .claude/ documentation to include model tier guidelines. Document which model tier to use for different component types (agents, skills, commands), the rationale for each tier, and how to specify models in the system. Add to CLAUDE.md and/or create new guide in docs/.",
-      "dependencies": [
-        535,
-        536,
-        537
-      ],
-      "session_id": "sess_1768660536_e8c912",
-      "planned": "2026-01-17T14:35:57Z",
-      "artifacts": [
-        {
-          "path": "specs/538_update_model_tier_documentation/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/538_update_model_tier_documentation/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-17T14:36:41Z"
-    },
-    {
-      "project_number": 539,
-      "project_name": "test_validate_model_tiering",
-      "type": "validation",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "medium",
-      "language": "meta",
-      "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T15:52:00Z",
-      "effort": "2-3 hours",
-      "description": "Test and validate the model tiering changes. Run through complete workflows (/research, /plan, /implement) to verify: correct model is used at each stage, quality meets expectations with Sonnet for heavy lifting, Haiku dispatch is fast and correct, no regressions in functionality.",
-      "dependencies": [
-        535,
-        536,
-        537,
-        538
-      ],
-      "session_id": "sess_1768664771_155733",
-      "researched": "2026-01-17T15:40:00Z",
-      "artifacts": [
-        {
-          "path": "specs/539_test_validate_model_tiering/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/539_test_validate_model_tiering/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/539_test_validate_model_tiering/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T15:26:35Z",
-      "started": "2026-01-17T15:46:47Z",
-      "completed": "2026-01-17T15:52:00Z"
     }
   ],
   "completed_projects": [
