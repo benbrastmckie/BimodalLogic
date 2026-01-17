@@ -1,814 +1,484 @@
 {
   "metadata": {
-    "version": "1.0",
-    "generated_at": "2026-01-16T00:00:00Z",
-    "total_active": 26
+    "generated_at": "2026-01-16T16:40:38.529316",
+    "total_tasks": 57,
+    "last_sync": "2026-01-16T16:40:38.529323"
   },
-  "next_project_number": 523,
   "active_projects": [
     {
-      "project_number": 517,
-      "project_name": "Fix /research command to avoid creating unnecessary summary files and properly link research reports",
-      "type": "feature",
-      "phase": "researched",
-      "status": "abandoned",
-      "priority": "High",
-      "language": "general",
-      "created": "2026-01-16T19:59:04Z",
-      "last_updated": "2025-01-16T10:51:00Z",
-      "researched": "2025-01-16T10:51:00Z",
-      "effort": "2-3 hours",
-      "description": "Fix the /research command to avoid creating unnecessary implementation-summary files in summaries/ directory, properly link research reports in TODO.md and state.json, and correctly update task status to RESEARCHED. These issues prevent proper workflow tracking and create cleanup burden.",
-      "session_id": "sess_1768592660_vnieb",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".opencode/specs/517_fix_research_command_summary_files/reports/research-001.md",
-          "summary": "Comprehensive analysis of /research command issues with root cause analysis and implementation recommendations"
-        }
-      ],
-      "abandoned": "2026-01-16T20:28:45Z"
-    },
-    {
-      "project_number": 394,
-      "project_name": "Research and port causal semantics from paper",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "lean",
-      "created": "2026-01-15T14:42:00Z",
-      "last_updated": "2026-01-15T14:42:00Z",
-      "effort": "4-6 hours",
-      "description": "Research and port the correct causal operator semantics from paper to recursive-semantics.md and Lean.",
-      "session_id": "restored_recovery_20260115",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/394_research_port_causal_semantics_from_paper/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report on causal semantics"
-        },
-        {
-          "path": ".opencode/specs/394_research_port_causal_semantics_from_paper/reports/research-002.md",
-          "type": "research",
-          "summary": "Additional research on causal semantics"
-        }
-      ]
-    },
-    {
-      "project_number": 504,
-      "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
-      "type": "feature",
-      "phase": "researched",
-      "status": "revising",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-14T10:00:00Z",
-      "last_updated": "2026-01-15",
-      "researched": "2026-01-15T02:35:00Z",
-      "effort": "4-6 hours",
-      "description": "Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.",
-      "session_id": "sess_1768530000_plan504",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/504_aristotle_api_integration/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of Aristotle AI integration into .opencode/ Lean agents with CLI commands, API methods, and implementation recommendations"
-        },
-        {
-          "type": "plan",
-          "path": ".opencode/specs/504_aristotle_integration/plans/implementation-001.md",
-          "summary": "Integration plan for Harmonic Aristotle API into Lean agents"
-        },
-        {
-          "type": "plan",
-          "path": ".opencode/specs/504_aristotle_integration/plans/implementation-002.md",
-          "summary": "Revised integration plan for Harmonic Aristotle API into Lean implementer agent"
-        }
-      ],
-      "planned": "2026-01-15"
-    },
-    {
-      "project_number": 398,
-      "project_name": "Port causal semantics to recursive-semantics.md",
-      "type": "feature",
-      "phase": "researched",
-      "status": "researched",
-      "priority": "high",
-      "language": "markdown",
-      "effort": "3-4 hours",
-      "description": "Port the causal semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos.",
-      "parent_task": 394,
-      "artifacts": [
-        {
-          "path": ".claude/specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md",
-          "type": "research"
-        }
-      ]
-    },
-    {
-      "project_number": 399,
-      "project_name": "Implement causal semantics in Lean",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "high",
-      "language": "lean",
-      "effort": "6-8 hours",
-      "description": "Implement the causal operator semantics in Lean based on the approved recursive-semantics.md specification. Extend CoreFrame with closeness ordering, define Evolution and ExpectedEvolution structures, implement CausalContext with background assumptions, and replace the current counterfactual-based definition in Truth.lean with the three-condition hyperintensional semantics.",
-      "parent_task": 394,
-      "dependencies": [
-        398
-      ]
-    },
-    {
-      "project_number": 503,
-      "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "markdown",
-      "effort": "4 hours",
-      "description": "Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/503_latex_dependent_type_conventions/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": ".opencode/specs/503_latex_dependent_type_conventions/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "type": "implementation",
-          "path": "Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
-          "summary": "Updated function types and verification clauses to dependent-type notation"
-        },
-        {
-          "type": "implementation",
-          "path": "Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex",
-          "summary": "Updated verification clauses to dependent-type notation"
-        },
-        {
-          "type": "summary",
-          "path": ".opencode/specs/503_latex_dependent_type_conventions/summaries/implementation-summary-20260115.md",
-          "summary": "Implementation summary for dependent-type conventions update"
-        }
-      ],
-      "last_updated": "2026-01-15",
-      "started": "2026-01-15",
-      "completed": "2026-01-15",
-      "session_id": "sess_1768530000_impl503"
-    },
-    {
-      "project_number": 475,
-      "project_name": "Create skill-document-converter thin wrapper",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "meta",
-      "effort": "1 hour",
-      "description": "Create skill-document-converter as thin wrapper following ProofChecker's forked subagent pattern. Validates input, delegates to document-converter-agent, returns standardized result. No external script dependencies."
-    },
-    {
-      "project_number": 476,
-      "project_name": "Create document-converter-agent",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "meta",
-      "effort": "3-4 hours",
-      "description": "Create document-converter-agent following ProofChecker's agent pattern. Handles actual conversion logic with runtime tool detection (markitdown, pandoc, typst), graceful fallbacks to Claude's native PDF reading, bidirectional conversion support, and standardized JSON returns.",
-      "dependencies": [
-        475
-      ]
-    },
-    {
-      "project_number": 477,
-      "project_name": "Test document-converter on sample files",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "meta",
-      "effort": "1-2 hours",
-      "description": "Test document-converter skill on sample PDF, DOCX, and Markdown files. Verify bidirectional conversion, graceful fallback when tools unavailable, and proper error handling.",
-      "dependencies": [
-        476
-      ]
-    },
-    {
-      "project_number": 483,
-      "project_name": "Investigate LaTeX aux file corruption errors",
-      "type": "bugfix",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "latex",
-      "effort": "2-3 hours",
-      "description": "Identify the root cause of LaTeX aux file corruption errors and document solutions."
-    },
-    {
-      "project_number": 468,
-      "project_name": "Refactor infinite canonical model code",
+      "project_number": 523,
+      "project_name": "Clean Up Bimodal Lean Source Files After Task 505",
       "type": "refactor",
-      "phase": "researched",
-      "status": "researched",
-      "priority": "low",
-      "language": "lean",
-      "parent_task": 458,
-      "description": "Remove or refactor the existing infinite canonical model code in Completeness.lean.",
-      "last_updated": "2026-01-15T23:20:00Z",
-      "researched": "2026-01-15T23:20:00Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".opencode/specs/468_remove_or_refactor_the_existing_infinite_canonical_model_code_in_completeness.lean/reports/research-001.md",
-          "summary": "A research report recommending the use of mathlib's Ultrafilter Principle to refactor the canonical model construction in Completeness.lean."
-        }
-      ]
-    },
-    {
-      "project_number": 469,
-      "project_name": "Decidability decision procedure",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "lean",
-      "parent_task": 458,
-      "description": "Implement full decidability decision procedure for TM logic."
-    },
-    {
-      "project_number": 470,
-      "project_name": "Finite model computational optimization",
-      "type": "optimization",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "lean",
-      "parent_task": 458,
-      "description": "Optimize FiniteCanonicalModel.lean for computational efficiency."
-    },
-    {
-      "project_number": 490,
-      "project_name": "Complete decidability procedure",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "lean",
-      "parent_task": 469,
-      "description": "Complete the decidability procedure for TM logic."
-    },
-    {
-      "project_number": 491,
-      "project_name": "Research alternative completeness proofs",
-      "type": "research",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "lean",
-      "description": "Research alternative completeness proof approaches for TM logic."
-    },
-    {
-      "project_number": 257,
-      "project_name": "Completeness Proofs",
-      "type": "feature",
-      "phase": "expanded",
-      "status": "expanded",
-      "priority": "low",
-      "language": "lean",
-      "effort": "65-85 hours",
-      "description": "Implement the completeness proof for TM logic using the canonical model method.",
-      "subtasks": [
-        444,
-        445,
-        446,
-        447,
-        448,
-        449,
-        450
-      ],
-      "artifacts": [
-        {
-          "path": ".claude/specs/257_completeness_proofs/plans/implementation-002.md",
-          "type": "plan"
-        }
-      ]
-    },
-    {
-      "project_number": 136,
-      "project_name": "Design Decidability.lean architecture and signatures",
-      "type": "design",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "lean",
-      "effort": "2 hours",
-      "description": "Define the module structure, main theorems, and function signatures for decidability."
-    },
-    {
-      "project_number": 137,
-      "project_name": "Implement tableau core rules in Decidability.lean",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "lean",
-      "effort": "3 hours",
-      "description": "Implement the core tableau expansion rules and supporting helpers for validity checking.",
-      "dependencies": [
-        136
-      ]
-    },
-    {
-      "project_number": 138,
-      "project_name": "Implement satisfiability and validity decision procedure tests",
-      "type": "testing",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "low",
-      "language": "lean",
-      "effort": "3 hours",
-      "description": "Wire the tableau components into a decision procedure and add tests covering satisfiable and unsatisfiable cases.",
-      "dependencies": [
-        136,
-        137
-      ]
-    },
-    {
-      "project_number": 505,
-      "project_name": "Restructure and Refine Bimodal Metalogic",
-      "type": "feature",
-      "phase": "planned",
-      "status": "planned",
-      "priority": "high",
-      "language": "lean",
-      "created": "2026-01-15T23:30:00Z",
-      "last_updated": "2026-01-16",
-      "effort": "TBD",
-      "description": "Review the existing bimodal metalogic, including representation theory, completeness, decidability, and compactness, following the completion of task 502. Propose and implement an ideal restructuring to improve the quality, organization, and clarity of the theory.",
-      "researched": "2026-01-16",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md",
-          "summary": "Overview of the current bimodal metalogic"
-        },
-        {
-          "type": "research",
-          "path": ".opencode/specs/505_bimodal_metalogic_restructuring/reports/research-002.md",
-          "summary": "Detailed restructuring plan for bimodal metalogic"
-        },
-        {
-          "type": "plan",
-          "path": ".opencode/specs/505_bimodal_metalogic_restructuring/plans/implementation-001.md",
-          "summary": "Lean implementation plan with 4 phases: Core Infrastructure, Representation Theory, Completeness/Compactness, Decidability Integration"
-        }
-      ],
-      "started": "2025-01-16T20:54:33Z",
-      "planned": "2026-01-16",
-      "plan_metadata": {
-        "phase_count": 4,
-        "estimated_hours": 100,
-        "complexity": "complex"
-      },
-      "revised": "2026-01-16",
-      "implemented": "2026-01-16"
-    },
-    {
-      "project_number": 510,
-      "project_name": "Add constraint to verifier and falsifier functions",
-      "type": "feature",
-      "phase": "planned",
-      "status": "planned",
-      "priority": "medium",
-      "language": "latex",
-      "created": "2025-01-15T18:27:00Z",
-      "last_updated": "2026-01-16T18:45:00Z",
-      "researched": "2025-01-15T18:27:00Z",
-      "planned": "2025-01-16T18:45:00Z",
-      "effort": "1 hour",
-      "description": "Add constraint to lines 75-6 in 01-ConstitutiveFoundation.tex that the n input states must all be parts of the output state.",
-      "artifacts": [
-        {
-          "path": ".claude/specs/510_mereological_constraints_research/reports/research-001.md",
-          "type": "research_report",
-          "summary": "Research report on mereological constraints for predicate functions - completed 2025-01-15"
-        },
-        {
-          "path": ".opencode/specs/510_mereological_constraints/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "Implementation plan with 3 phases for adding mereological constraints to predicate functions"
-        }
-      ],
-      "plan_path": ".opencode/specs/510_mereological_constraints/plans/implementation-001.md"
-    },
-    {
-      "project_number": 511,
-      "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
-      "type": "feature",
-      "phase": "researched",
-      "status": "researched",
-      "priority": "high",
-      "language": "lean",
-      "created": "2026-01-16T02:11:10.509242+00:00",
-      "last_updated": "2026-01-16",
-      "effort": "20 hours",
-      "description": "Resolve 26 sorry placeholders in Completeness.lean",
-      "created_by": "Review task 506",
-      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
-      "researched": "2026-01-16",
-      "session_id": "sess_1768517000_research511",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md",
-          "type": "research",
-          "summary": "Aristotle's Completeness.lean fix attempt analysis - zero progress, recommendation to pivot to finite approach"
-        },
-        {
-          "path": ".opencode/specs/511_resolve_26_sorry_placeholders_in_completeness.lean/summaries/research-summary.md",
-          "type": "summary",
-          "summary": "Research summary: No progress made, pivot to finite canonical model approach"
-        }
-      ]
-    },
-    {
-      "project_number": 512,
-      "project_name": "Fix build error in RepresentationTheorems.lean",
-      "type": "feature",
-      "phase": "in_progress",
-      "status": "completed",
-      "priority": "high",
-      "language": "lean",
-      "created": "2026-01-16T02:11:10.509242+00:00",
-      "last_updated": "2025-01-16T10:30:00+00:00",
-      "started": "2025-01-16T10:20:08Z",
-      "effort": "2 hours",
-      "description": "Fix build error in RepresentationTheorems.lean",
-      "created_by": "Review task 506",
-      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
-      "session_id": "sess_1768600408_yiawd",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".opencode/specs/512_fix_build_error_in_representationtheorems_lean/reports/research-001.md",
-          "summary": "Analysis of build error in RepresentationTheorems.lean with type mismatch fix identified"
-        },
-        {
-          "path": ".opencode/specs/512_fix_build_error_in_representationtheorems_lean/summaries/implementation-summary-20260116.md",
-          "type": "implementation-summary",
-          "summary": "Implementation summary: Fixed semantic_consequence call pattern in RepresentationTheorems.lean"
-        }
-      ],
-      "completed": "2025-01-16T10:30:00+00:00"
-    },
-    {
-      "project_number": 513,
-      "project_name": "Address tm_auto proof reconstruction issues",
-      "type": "maintenance",
-      "phase": "not_started",
-      "status": "researched",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-16T02:11:10.509242+00:00",
-      "last_updated": "2026-01-16T20:24:09Z",
-      "effort": "5 hours",
-      "description": "Address tm_auto proof reconstruction issues",
-      "created_by": "Review task 506",
-      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
-      "researched": "2026-01-16T20:24:09Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".opencode/specs/513_address_tm_auto_proof_reconstruction_issues/reports/research-001.md",
-          "summary": "Comprehensive technical analysis of tm_auto proof reconstruction issues with solution recommendations"
-        },
-        {
-          "type": "summary",
-          "path": ".opencode/specs/513_address_tm_auto_proof_reconstruction_issues/summaries/research-summary.md",
-          "summary": "Brief research summary with findings and recommendations"
-        }
-      ],
-      "session_id": "sess_1768594543_in7i1i"
-    },
-    {
-      "project_number": 514,
-      "project_name": "Expand test coverage for Logos theory modules",
-      "type": "maintenance",
       "phase": "not_started",
       "status": "not_started",
       "priority": "medium",
       "language": "lean",
-      "created": "2026-01-16T02:11:10.509242+00:00",
-      "last_updated": "2026-01-16T02:11:10.509242+00:00",
-      "effort": "10 hours",
-      "description": "Expand test coverage for Logos theory modules",
-      "created_by": "Review task 506",
-      "review_artifact": ".opencode/specs/506_codebase_review/summaries/review-summary.md"
-    },
-    {
-      "project_number": 516,
-      "project_name": "Test task creation after refactoring",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "medium",
-      "language": "general",
-      "created": "2026-01-16T00:00:00Z",
-      "last_updated": "2026-01-16T18:36:01Z",
-      "effort": "TBD",
-      "description": "Test the task creation system to ensure it works correctly after the recent agent system refactoring. This is a validation task to verify that the workflow commands, task management, and file synchronization are functioning properly after the structural changes.",
-      "session_id": "agent_system-1768239349",
-      "artifacts": []
-    },
-    {
-      "project_number": 515,
-      "project_name": "Replace line 257 in 00-Introduction.tex with missing section descriptions",
-      "type": "feature",
-      "phase": "researched",
-      "status": "completed",
-      "priority": "medium",
-      "language": "latex",
-      "created": "2026-01-15T10:00:00Z",
-      "last_updated": "2026-01-16T17:02:56Z",
-      "researched": "2026-01-16T00:00:00Z",
-      "effort": "2-3 hours",
-      "description": "Replace line 257 in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex with descriptions for the missing sections, creating stubs as need be to match the other sections. The current line 257 contains \"\\ldots\" which needs to be replaced with proper section descriptions that follow the same format as the surrounding items (lines 251-256 and 259).",
-      "session_id": "sess_1768582448_a7yjv",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/506_codebase_review/summaries/review-summary.md",
-          "type": "summary",
-          "summary": "Codebase review and registry updates - completed 2026-01-15"
-        },
-        {
-          "path": ".opencode/specs/515_missing_section_descriptions/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive research report identifying missing section descriptions and providing specific LaTeX code replacement"
-        },
-        {
-          "type": "implementation",
-          "path": "/home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex",
-          "summary": "Modified LaTeX file with four new section descriptions replacing \\\\ldots placeholder"
-        },
-        {
-          "type": "backup",
-          "path": "/home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/00-Introduction.tex.backup",
-          "summary": "Backup of original file before modification"
-        },
-        {
-          "type": "summary",
-          "path": ".opencode/specs/515_missing_section_descriptions/summaries/implementation-summary-20260116.md",
-          "summary": "Implementation completion summary with validation results"
-        }
-      ],
-      "plan_path": ".opencode/specs/515_missing_section_descriptions/plans/implementation-001.md",
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 1.0,
-        "complexity": "simple",
-        "research_integrated": true,
-        "plan_version": 1,
-        "reports_integrated": [
-          {
-            "path": "reports/research-001.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-01-16"
-          }
-        ]
-      },
-      "completed": "2026-01-16T17:02:43Z"
+      "created": "2026-01-17T06:00:27Z",
+      "last_updated": "2026-01-17T06:00:27Z",
+      "effort": "4-6 hours",
+      "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments"
     },
     {
       "project_number": 518,
-      "project_name": "Fix Parameter Mapping Between Workflow Commands and status-sync-manager",
-      "type": "feature",
-      "phase": "not_started",
       "status": "completed",
-      "priority": "High",
+      "project_name": "Fix Parameter Mapping Between Workflow Commands and status-sync-manager",
+      "section": "High Priority",
       "language": "meta",
-      "created": "2026-01-16T22:16:08Z",
-      "last_updated": "2026-01-16T23:35:43Z",
-      "effort": "2-3 hours",
-      "description": "Fix critical parameter mapping errors between workflow commands and status-sync-manager. Research revealed mismatched parameter names, missing required fields, and incompatible data formats causing silent failures and inconsistent state updates.",
-      "session_id": "sess_1768601768_create518",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/518_fix_parameter_mapping_errors_between_workflow_commands_and_status-sync_manager/plans/implementation-001.md",
-          "type": "implementation",
-          "summary": "Implementation plan with parameter mapping fixes for status-sync-manager integration"
-        }
-      ],
-      "completed": "2026-01-16T23:35:22Z"
+      "priority": "high"
+    },
+    {
+      "project_number": 517,
+      "status": "not_started",
+      "project_name": "Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates",
+      "section": "High Priority",
+      "language": "general",
+      "priority": "high"
     },
     {
       "project_number": 519,
+      "status": "not_started",
       "project_name": "Add Missing Stage 7 Validation in Workflow Commands",
-      "type": "feature",
-      "phase": "researched",
-      "status": "researched",
-      "priority": "High",
+      "section": "High Priority",
       "language": "meta",
-      "created": "2026-01-16T22:16:31Z",
-      "last_updated": "2026-01-16",
-      "effort": "2-3 hours",
-      "description": "Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.",
-      "session_id": "sess_1768601791_create519",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": ".opencode/specs/519_add_missing_stage_7_validation_in_workflow_commands/reports/research-001.md",
-          "summary": "Detailed research report identifying missing Postflight stages in workflow commands and providing an implementation plan."
-        }
-      ],
-      "started": "2026-01-16",
-      "researched": "2026-01-16"
+      "priority": "high"
     },
     {
       "project_number": 520,
-      "project_name": "Fix Silent Failures When status-sync-manager Fails",
-      "type": "feature",
-      "phase": "completed",
       "status": "completed",
-      "priority": "High",
+      "project_name": "Fix Silent Failures When status-sync-manager Fails",
+      "section": "High Priority",
       "language": "meta",
-      "created": "2026-01-16T22:16:51Z",
-      "last_updated": "2026-01-16T22:49:00Z",
-      "started": "2026-01-16T22:48:52Z",
-      "completed": "2026-01-16T22:49:00Z",
-      "effort": "1-2 hours",
-      "description": "Fix silent failures when status-sync-manager delegation fails. Research revealed that workflow commands log status-sync-manager failures as \"non-critical\" and continue, returning success status even when status updates fail. This leads to inconsistent state where artifacts are created but task status isn't updated.",
-      "session_id": "sess_1768601811_create520",
-      "artifacts": [
-        {
-          "type": "agent_file",
-          "path": ".opencode/agent/subagents/meta/context-organizer.md",
-          "summary": "Updated context-organizer meta agent with enhanced status-sync-manager error handling"
-        },
-        {
-          "type": "implementation_plan",
-          "path": ".opencode/specs/520_fix_silent_failures_when_status-sync_manager_fails/plans/implementation-001.md",
-          "summary": "Implementation plan for fixing silent failures"
-        },
-        {
-          "type": "documentation",
-          "path": ".opencode/specs/520_fix_silent_failures_when_status-sync_manager_fails/reports/fallback-instructions.md",
-          "summary": "Fallback instructions for manual status recovery"
-        },
-        {
-          "type": "documentation",
-          "path": ".opencode/specs/520_fix_silent_failures_when_status-sync_manager_fails/reports/implementation-summary.md",
-          "summary": "Implementation summary with impact analysis"
-        },
-        {
-          "type": "documentation",
-          "path": ".opencode/specs/520_fix_silent_failures_when_status-sync_manager_fails/reports/test-plan.md",
-          "summary": "Comprehensive test plan with 5 scenarios"
-        }
-      ]
+      "priority": "high"
     },
-    {
-      "project_number": 521,
-      "project_name": "Fix Task 512 Inconsistent Status",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "not_started",
-      "priority": "High",
-      "language": "meta",
-      "created": "2026-01-16T22:17:05Z",
-      "last_updated": "2026-01-16T22:17:05Z",
-      "effort": "1 hour",
-      "description": "Fix inconsistent status for task 512 \"Fix build error in RepresentationTheorems.lean\". Research shows task has completed research artifact and TODO.md shows [IN PROGRESS] but based on research findings, the task should be [RESEARCHED] or potentially [COMPLETED] since the research identifies the fix.",
-      "session_id": "sess_1768601825_create521",
-      "artifacts": []
-    },
+
     {
       "project_number": 522,
-      "project_name": "Improve status-sync-manager Error Messages to be more actionable",
-      "type": "feature",
-      "phase": "completed",
       "status": "completed",
-      "priority": "Medium",
+      "project_name": "Improve status-sync-manager Error Messages to be more actionable",
+      "section": "Medium Priority",
       "language": "meta",
-      "created": "2026-01-16T22:17:32Z",
-      "last_updated": "2026-01-16T22:48:17+00:00",
-      "started": "2026-01-16T22:48:17+00:00",
-      "completed": "2026-01-16T22:48:17+00:00",
-      "effort": "2 hours",
-      "description": "Improve status-sync-manager error messages to be more specific and actionable. Research revealed that status-sync-manager returns generic errors like \"Invalid parameters\" without explaining which parameter is invalid or what expected format is. This makes debugging difficult for both users and calling agents.",
-      "session_id": "sess_1768601852_create522",
-      "artifacts": [
-        {
-          "type": "enhancement",
-          "path": ".opencode/agent/subagents/status-sync-manager.md",
-          "summary": "Comprehensive error code system with 13 specific error codes for all failure scenarios"
-        }
-      ]
+      "priority": "medium"
+    },
+    {
+      "project_number": 511,
+      "status": "not_started",
+      "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "high"
+    },
+    {
+      "project_number": 512,
+      "status": "completed",
+      "project_name": "Fix build error in RepresentationTheorems.lean",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "high"
+    },
+    {
+      "project_number": 513,
+      "status": "not_started",
+      "project_name": "Address tm_auto proof reconstruction issues",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 514,
+      "status": "not_started",
+      "project_name": "Expand test coverage for Logos theory modules",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 515,
+      "status": "completed",
+      "project_name": "Replace line 257 in 00-Introduction.tex with missing section descriptions",
+      "section": "Medium Priority",
+      "language": "latex",
+      "priority": "medium"
+    },
+    {
+      "project_number": 505,
+      "status": "completed",
+      "project_name": "Restructure and Refine Bimodal Metalogic",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "high"
+    },
+    {
+      "project_number": 495,
+      "status": "completed",
+      "project_name": "Complete formula induction proofs for truth lemma bridges in FiniteCanonicalModel.lean",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "high"
+    },
+    {
+      "project_number": 496,
+      "status": "completed",
+      "project_name": "Implement valuation-assignment connection lemma for finite canonical model",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "high"
+    },
+    {
+      "project_number": 480,
+      "status": "completed",
+      "project_name": "Investigate workflow delegation early stop issues",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "high"
+    },
+    {
+      "project_number": 394,
+      "status": "not_started",
+      "project_name": "Research and port causal semantics from paper",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "high"
+    },
+    {
+      "project_number": 398,
+      "status": "not_started",
+      "project_name": "Port causal semantics to recursive-semantics.md",
+      "section": "Medium Priority",
+      "language": "markdown",
+      "priority": "high"
+    },
+    {
+      "project_number": 399,
+      "status": "not_started",
+      "project_name": "Implement causal semantics in Lean",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "high"
+    },
+    {
+      "project_number": 502,
+      "status": "not_started",
+      "project_name": "Complete representation theorem using context-based provability based on Task 499 foundation",
+      "section": "Medium Priority",
+      "language": "general",
+      "priority": "medium"
+    },
+    {
+      "project_number": 516,
+      "status": "not_started",
+      "project_name": "Test task creation after refactoring",
+      "section": "Medium Priority",
+      "language": "general",
+      "priority": "medium"
+    },
+    {
+      "project_number": 510,
+      "status": "planned",
+      "project_name": "Add constraint to verifier and falsifier functions",
+      "section": "Medium Priority",
+      "language": "latex",
+      "priority": "medium"
+    },
+    {
+      "project_number": 503,
+      "status": "completed",
+      "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
+      "section": "Medium Priority",
+      "language": "markdown",
+      "priority": "medium"
+    },
+    {
+      "project_number": 504,
+      "status": "not_started",
+      "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 499,
+      "status": "completed",
+      "project_name": "Review metalogical theorem strategies and design systematic refactor approach",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 497,
+      "status": "completed",
+      "project_name": "Complete time arithmetic case analysis for finite history bridges",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 498,
+      "status": "completed",
+      "project_name": "Verify and test completed bridge lemma infrastructure",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 500,
+      "status": "completed",
+      "project_name": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 494,
+      "status": "completed",
+      "project_name": "Create Bimodal theory demo presentation",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 493,
+      "status": "completed",
+      "project_name": "Sync TikZ diagram, GLOSSARY.md, and README.md descriptions",
+      "section": "Medium Priority",
+      "language": "general",
+      "priority": "medium"
+    },
+    {
+      "project_number": 492,
+      "status": "completed",
+      "project_name": "Update BimodalReference.tex with metalogical results",
+      "section": "Medium Priority",
+      "language": "latex",
+      "priority": "medium"
+    },
+    {
+      "project_number": 487,
+      "status": "completed",
+      "project_name": "Create Bimodal/Boneyard/ for deprecated code",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 488,
+      "status": "completed",
+      "project_name": "Fill remaining bridge lemmas",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 489,
+      "status": "completed",
+      "project_name": "Formal FMP theorem packaging",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 486,
+      "status": "completed",
+      "project_name": "Add Abilities box to middle layer TikZ diagram",
+      "section": "Medium Priority",
+      "language": "latex",
+      "priority": "medium"
+    },
+    {
+      "project_number": 475,
+      "status": "not_started",
+      "project_name": "Create skill-document-converter thin wrapper",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "medium"
+    },
+    {
+      "project_number": 476,
+      "status": "not_started",
+      "project_name": "Create document-converter-agent",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "medium"
+    },
+    {
+      "project_number": 477,
+      "status": "not_started",
+      "project_name": "Test document-converter on sample files",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "medium"
+    },
+    {
+      "project_number": 485,
+      "status": "completed",
+      "project_name": "Create TikZ light-cone diagram for TM motivation",
+      "section": "Medium Priority",
+      "language": "latex",
+      "priority": "medium"
+    },
+    {
+      "project_number": 484,
+      "status": "completed",
+      "project_name": "Sync TikZ diagram operators with GLOSSARY.md",
+      "section": "Medium Priority",
+      "language": "latex",
+      "priority": "medium"
+    },
+    {
+      "project_number": 483,
+      "status": "not_started",
+      "project_name": "Investigate LaTeX aux file corruption errors",
+      "section": "Medium Priority",
+      "language": "latex",
+      "priority": "medium"
+    },
+    {
+      "project_number": 473,
+      "status": "completed",
+      "project_name": "Fix compositionality gaps from Task 458",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 481,
+      "status": "completed",
+      "project_name": "Implement finite_history_from_state",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 482,
+      "status": "completed",
+      "project_name": "Implement history gluing lemma",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium"
+    },
+    {
+      "project_number": 466,
+      "status": "completed",
+      "project_name": "Add Reflection Extension to LogosReference",
+      "section": "Medium Priority",
+      "language": "latex",
+      "priority": "medium"
+    },
+    {
+      "project_number": 431,
+      "status": "not_started",
+      "project_name": "WezTerm tab color notification for Claude Code input needed",
+      "section": "Medium Priority",
+      "language": "general",
+      "priority": "medium"
+    },
+    {
+      "project_number": 468,
+      "status": "not_started",
+      "project_name": "Refactor infinite canonical model code",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 469,
+      "status": "not_started",
+      "project_name": "Decidability decision procedure",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 470,
+      "status": "not_started",
+      "project_name": "Finite model computational optimization",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 490,
+      "status": "not_started",
+      "project_name": "Complete decidability procedure",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 491,
+      "status": "not_started",
+      "project_name": "Research alternative completeness proofs",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 257,
+      "status": "not_started",
+      "project_name": "Completeness Proofs",
+      "section": "Low Priority",
+      "language": "general",
+      "priority": "medium"
+    },
+    {
+      "project_number": 449,
+      "status": "completed",
+      "project_name": "Truth lemma",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 450,
+      "status": "completed",
+      "project_name": "Completeness theorems",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 136,
+      "status": "not_started",
+      "project_name": "Design Decidability.lean architecture and signatures",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 137,
+      "status": "not_started",
+      "project_name": "Implement tableau core rules in Decidability.lean",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 138,
+      "status": "not_started",
+      "project_name": "Implement satisfiability and validity decision procedure tests",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low"
+    },
+    {
+      "project_number": 479,
+      "status": "completed",
+      "project_name": "Fix TikZ extension dependencies diagram",
+      "section": "Low Priority",
+      "language": "latex",
+      "priority": "medium"
     }
   ],
   "completed_projects": [
     {
-      "project_number": 496,
-      "project_name": "Implement valuation-assignment connection lemma for finite canonical model",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
+      "project_number": 521,
+      "status": "abandoned",
+      "project_name": "Fix Task 512 Inconsistent Status",
+      "section": "High Priority",
+      "language": "meta",
       "priority": "high",
-      "language": "lean",
-      "created": "2025-01-15T16:36:40Z",
-      "last_updated": "2026-01-15",
-      "implemented": "2026-01-15",
-      "completed": "2026-01-15",
-      "effort": "2 hours",
-      "description": "Create and prove the lemma connecting SemanticCanonicalModel.valuation to FiniteWorldState.assignment (line 3466). This requires deep understanding of SemanticCanonicalModel structure and establishing the precise relationship between valuations and assignments in the finite canonical model construction. The lemma is critical for bridging semantic and finite truth definitions.",
-      "session_id": "sess_1768516626_0s",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/496_valuation_assignment_connection/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "Implementation plan for valuation-assignment connection lemma"
-        },
-        {
-          "path": "Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean",
-          "type": "implementation",
-          "summary": "Implemented semantic_valuation_iff_assignment lemma"
-        },
-        {
-          "path": ".opencode/specs/496_valuation_assignment_connection/summaries/implementation-summary-20260115.md",
-          "type": "documentation",
-          "summary": "Implementation summary documentation"
-        },
-        {
-          "path": ".opencode/specs/496_finite_canonical_model_lemma/summaries/implementation-summary-20260115.md",
-          "type": "documentation",
-          "summary": "Implementation summary documentation"
-        }
-      ]
-    },
-    {
-      "project_number": 500,
-      "project_name": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification",
-      "type": "feature",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-15T01:21:23Z",
-      "last_updated": "2026-01-15T02:16:44Z",
-      "researched": "2026-01-15T01:51:10Z",
-      "planned": "2026-01-15T02:08:19Z",
-      "started": "2026-01-15T02:16:44Z",
-      "completed": "2026-01-15T02:16:44Z",
-      "effort": "2-3 hours",
-      "description": "lean-lsp-mcp tools are unavailable causing degraded mode operation without compilation verification. Lake build is being used for syntax checking which completes successfully, but full compilation verification is missing. Need to investigate and restore lean-lsp-mcp tool availability for proper Lean development workflow.",
-      "session_id": "sess_1768516604_a9e",
-      "artifacts": [
-        {
-          "path": ".opencode/specs/500_lean-lsp-mcp-unavailable/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive research report on lean-lsp-mcp configuration issue with solution"
-        },
-        {
-          "path": ".opencode/specs/500_lean-lsp-mcp-unavailable/summaries/research-summary.md",
-          "type": "summary",
-          "summary": "Brief overview of lean-lsp-mcp issue and solution"
-        },
-        {
-          "path": ".opencode/specs/500_lean-lsp-mcp-unavailable/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "Lean implementation plan with 4 phases: Configuration Backup, Configuration Fix, Basic Verification, Agent Integration Testing"
-        },
-        {
-          "path": "opencode.json",
-          "type": "implementation",
-          "summary": "Updated configuration with correct package manager (uvx) and enabled tools"
-        },
-        {
-          "path": "opencode.json.backup",
-          "type": "implementation",
-          "summary": "Backup of original configuration for rollback"
-        },
-        {
-          "path": "test-lean-lsp-mcp.sh",
-          "type": "implementation",
-          "summary": "Verification script for testing lean-lsp-mcp configuration"
-        },
-        {
-          "path": "verify-agent-tools.sh",
-          "type": "implementation",
-          "summary": "Agent tool verification script for testing restored functionality"
-        },
-        {
-          "path": ".opencode/specs/500_lean-lsp-mcp-unavailable/summaries/implementation-summary-20250115.md",
-          "type": "summary",
-          "summary": "Implementation summary with validation results and impact analysis"
-        }
-      ]
+      "archived": "2026-01-16T23:00:00Z",
+      "archived_reason": "abandoned"
     }
-  ]
+  ],
+  "next_project_number": 524
 }

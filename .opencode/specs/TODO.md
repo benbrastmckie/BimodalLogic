@@ -1,6 +1,6 @@
 ---
 2026-01-16T00:00:00Z
-next_project_number: 523
+next_project_number: 524
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -88,17 +88,7 @@ technical_debt:
 
 ---
 
-### 521. Fix Task 512 Inconsistent Status
-- **Effort**: 1 hour
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Session ID**: sess_1768625888_create521
-- **Plan**: [Implementation Plan](.opencode/specs/521_fix_task_512_inconsistent_status/plans/implementation-001.md)
 
-**Description**: Fix inconsistent status for task 512 "Fix build error in RepresentationTheorems.lean". Research shows task has completed research artifact and TODO.md shows [IN PROGRESS] but based on research findings, task should be [RESEARCHED] or potentially [COMPLETED] since research identifies fix.
-
----
 
 ## Medium Priority
 
@@ -114,6 +104,17 @@ technical_debt:
 - **Enhancement**: [Comprehensive Error Code System](.opencode/agent/subagents/status-sync-manager.md)
 
 **Description**: Improve status-sync-manager error messages to be more specific and actionable. Research revealed that status-sync-manager returns generic errors like "Invalid parameters" without explaining which parameter is invalid or what expected format is. This makes debugging difficult for both users and calling agents.
+
+---
+
+### 523. Clean Up Bimodal Lean Source Files After Task 505
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Session ID**: task-1768239349-506
+
+**Description**: Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments.
 
 ---
 
@@ -194,7 +195,7 @@ technical_debt:
 
 ### 505. Restructure and Refine Bimodal Metalogic
 - **Effort**: 85-120 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: lean
 - **Started**: 2025-01-16T20:54:33Z
