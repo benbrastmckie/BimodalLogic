@@ -1,5 +1,5 @@
 ---
-next_project_number: 556
+next_project_number: 557
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -125,6 +125,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 556. Complete Metalogic_v2 Implementation
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-17
+- **Dependencies**: 554
+
+**Description**: Complete all aspects of the implementation of the reorganized /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/ directory, completing all sorries and making this directory stand on its own so that I can delete Metalogic/ once Metalogic_v2/ is complete. Begin by improving /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/README.md to accurately report the current state and what the target organization is.
+
+---
 
 ### 554. Reorganize Bimodal/Metalogic to Use Representation Theorem as Foundation
 - **Effort**: 4-6 hours
