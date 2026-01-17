@@ -278,16 +278,22 @@
       "project_number": 549,
       "project_name": "research_intelligent_model_routing_architecture",
       "type": "research",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T19:53:30Z",
+      "last_updated": "2026-01-17T20:17:05Z",
       "effort": "2-3 hours",
       "dependencies": [
         548
       ],
-      "description": "Research how to implement intelligent model routing in the .claude/ architecture. Evaluate query complexity analyzer, task-type based routing, and model cascade pattern options."
+      "description": "Research how to implement intelligent model routing in the .claude/ architecture. Evaluate query complexity analyzer, task-type based routing, and model cascade pattern options.",
+      "artifacts": [
+        {
+          "path": "specs/549_research_intelligent_model_routing_architecture/reports/research-001.md",
+          "type": "report"
+        }
+      ]
     },
     {
       "project_number": 550,
