@@ -38,17 +38,18 @@
       "project_name": "establish_truth_lemma_and_representation",
       "type": "refactor",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T15:06:48Z",
       "effort": "1.5 hours",
       "parent": 540,
       "dependencies": [
         542
       ],
-      "description": "Phase 2: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence."
+      "description": "Phase 2: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence.",
+      "session_id": "sess_1768662390_7907d9"
     },
     {
       "project_number": 544,
@@ -187,13 +188,21 @@
       "project_name": "add_continuation_guards_to_commands",
       "type": "refactor",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "planned",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-17T13:43:36Z",
-      "last_updated": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T15:09:53Z",
       "effort": "2-3 hours",
-      "description": "Add explicit DO NOT STOP and CONTINUE EXECUTION guards at critical transition points in command files. Use bold warnings like CRITICAL: DO NOT STOP HERE. EXECUTE STAGE 2 IMMEDIATELY. These guards reinforce that skill completion does not mean workflow completion."
+      "description": "Add explicit DO NOT STOP and CONTINUE EXECUTION guards at critical transition points in command files. Use bold warnings like CRITICAL: DO NOT STOP HERE. EXECUTE STAGE 2 IMMEDIATELY. These guards reinforce that skill completion does not mean workflow completion.",
+      "session_id": "sess_1768662494_88284c",
+      "planned": "2026-01-17T15:09:53Z",
+      "artifacts": [
+        {
+          "path": "specs/530_add_continuation_guards_to_commands/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ]
     },
     {
       "project_number": 531,
