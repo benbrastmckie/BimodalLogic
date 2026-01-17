@@ -8,18 +8,23 @@
     {
       "project_number": 564,
       "project_name": "memory_issues_status_sync_agent",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T22:20:14Z",
-      "last_updated": "2026-01-17T22:23:36Z",
+      "last_updated": "2026-01-17T22:26:21Z",
       "researched": "2026-01-17T22:23:36Z",
       "artifacts": [
         {
           "path": "specs/564_memory_issues_status_sync_agent/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-17T22:26:21Z"
     },
     {
       "project_number": 563,
