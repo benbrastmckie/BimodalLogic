@@ -194,7 +194,7 @@ technical_debt:
 
 ### 505. Restructure and Refine Bimodal Metalogic
 - **Effort**: 85-120 hours
-- **Status**: [COMPLETED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Started**: 2025-01-16T20:54:33Z
@@ -377,7 +377,7 @@ technical_debt:
 - **Started**: 2026-01-15
 - **Completed**: 2026-01-15
 
-- **Implementation**: [01-ConstitutiveFoundation.tex](Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex), [03-ExplanatoryExtension-Semantics.tex](Theories/Logos/latex/subfiles/03-ExplanatoryExtension-Semantics.tex)
+- **Implementation**: [01-ConstitutiveFoundation.tex](Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex), [03-DynamicsFoundation-Semantics.tex](Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex)
 - **Summary**: [implementation-summary-20260115.md](.opencode/specs/503_latex_dependent_type_conventions/summaries/implementation-summary-20260115.md)
 **Description**: Update LaTeX files in Theories/Logos to use dependent-type theory conventions that align with Lean definitions. Replace set-theoretic formulations with proper dependent-type representations using verifier function types.
 

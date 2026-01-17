@@ -147,7 +147,7 @@
         },
         {
           "type": "implementation",
-          "path": "Theories/Logos/latex/subfiles/03-ExplanatoryExtension-Semantics.tex",
+          "path": "Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex",
           "summary": "Updated verification clauses to dependent-type notation"
         },
         {
@@ -345,7 +345,7 @@
       "project_name": "Restructure and Refine Bimodal Metalogic",
       "type": "feature",
       "phase": "planned",
-      "status": "implementing",
+      "status": "planned",
       "priority": "high",
       "language": "lean",
       "created": "2026-01-15T23:30:00Z",

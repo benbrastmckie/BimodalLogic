@@ -34,17 +34,17 @@ Four existing sections need to be added to the document organization:
 
 1. **Epistemic Extension** (sec:epistemic)
    - File: `05-Epistemic.tex`
-   - Purpose: Extends Explanatory Extension with belief, knowledge, and probability structures
+   - Purpose: Extends Dynamics Foundation with belief, knowledge, and probability structures
    - Status: Development pending, but framework established
 
 2. **Normative Extension** (sec:normative)
    - File: `06-Normative.tex`
-   - Purpose: Extends Explanatory Extension with obligation, permission, and value structures
+   - Purpose: Extends Dynamics Foundation with obligation, permission, and value structures
    - Status: Development pending, but framework established
 
 3. **Spatial Extension** (sec:spatial)
    - File: `07-Spatial.tex`
-   - Purpose: Extends Explanatory Extension with spatial reasoning and location structures
+   - Purpose: Extends Dynamics Foundation with spatial reasoning and location structures
    - Status: Development pending, but framework established
 
 4. **Agential Extension** (sec:agential)
@@ -67,9 +67,9 @@ These should NOT be included in the document organization until the correspondin
 
 The document organization follows this logical flow:
 1. Constitutive Foundation (基础)
-2. Explanatory Extension Syntax (语法)
-3. Explanatory Extension Semantics (语义)
-4. Explanatory Extension Axioms (公理)
+2. Dynamics Foundation Syntax (语法)
+3. Dynamics Foundation Semantics (语义)
+4. Dynamics Foundation Axioms (公理)
 5. [MISSING MIDDLE EXTENSIONS]
 6. Reflection Extension (反思)
 
@@ -98,11 +98,11 @@ Replace line 257 in `/home/benjamin/Projects/ProofChecker/Theories/Logos/latex/s
 With:
 
 ```
-  \item[\Cref{sec:epistemic}] extends the Explanatory Extension with structures for belief, knowledge, probability, and indicative conditionals for reasoning under uncertainty.
+  \item[\Cref{sec:epistemic}] extends the Dynamics Foundation with structures for belief, knowledge, probability, and indicative conditionals for reasoning under uncertainty.
 
-  \item[\Cref{sec:normative}] extends the Explanatory Extension with structures for obligation, permission, and value orderings for ethical reasoning about alternatives.
+  \item[\Cref{sec:normative}] extends the Dynamics Foundation with structures for obligation, permission, and value orderings for ethical reasoning about alternatives.
 
-  \item[\Cref{sec:spatial}] extends the Explanatory Extension with location-dependent operators and spatial relations for reasoning about orientation and navigation.
+  \item[\Cref{sec:spatial}] extends the Dynamics Foundation with location-dependent operators and spatial relations for reasoning about orientation and navigation.
 
   \item[\Cref{sec:agential}] provides multi-agent reasoning structures that index epistemic and normative operators to specific agents, requiring at least one middle extension to be loaded.\\
 ```
@@ -124,11 +124,11 @@ With:
 
 ### Recommended Replacement
 ```latex
-  \item[\Cref{sec:epistemic}] extends the Explanatory Extension with structures for belief, knowledge, probability, and indicative conditionals for reasoning under uncertainty.
+  \item[\Cref{sec:epistemic}] extends the Dynamics Foundation with structures for belief, knowledge, probability, and indicative conditionals for reasoning under uncertainty.
 
-  \item[\Cref{sec:normative}] extends the Explanatory Extension with structures for obligation, permission, and value orderings for ethical reasoning about alternatives.
+  \item[\Cref{sec:normative}] extends the Dynamics Foundation with structures for obligation, permission, and value orderings for ethical reasoning about alternatives.
 
-  \item[\Cref{sec:spatial}] extends the Explanatory Extension with location-dependent operators and spatial relations for reasoning about orientation and navigation.
+  \item[\Cref{sec:spatial}] extends the Dynamics Foundation with location-dependent operators and spatial relations for reasoning about orientation and navigation.
 
   \item[\Cref{sec:agential}] provides multi-agent reasoning structures that index epistemic and normative operators to specific agents, requiring at least one middle extension to be loaded.\\
 ```
@@ -169,9 +169,9 @@ With:
 
 Complete list of section labels found in Logos subfiles:
 - `sec:constitutive-foundation` (01-ConstitutiveFoundation.tex)
-- `sec:dynamical-foundation` (02-ExplanatoryExtension-Syntax.tex)
-- `sec:core-semantics` (03-ExplanatoryExtension-Semantics.tex)
-- `sec:core-axioms` (04-ExplanatoryExtension-Axioms.tex)
+- `sec:dynamical-foundation` (02-DynamicsFoundation-Syntax.tex)
+- `sec:core-semantics` (03-DynamicsFoundation-Semantics.tex)
+- `sec:core-axioms` (04-DynamicsFoundation-Axioms.tex)
 - `sec:epistemic` (05-Epistemic.tex) - [MISSING FROM DOC ORG]
 - `sec:normative` (06-Normative.tex) - [MISSING FROM DOC ORG]
 - `sec:spatial` (07-Spatial.tex) - [MISSING FROM DOC ORG]
