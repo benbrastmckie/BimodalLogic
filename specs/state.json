@@ -10,14 +10,21 @@
       "project_name": "finish_metalogic_refactor_cleanup",
       "type": "refactor",
       "phase": "not_started",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T14:34:53Z",
-      "last_updated": "2026-01-17T14:36:35Z",
+      "last_updated": "2026-01-17T14:39:42Z",
       "effort": "4-6 hours",
       "description": "Finish the Metalogic/ directory refactor, leaving no stray elements or parallel structures. Move anything worth saving to Bimodal/Boneyard/ if not already represented, and update all documentation to be fully accurate. Research report: specs/523_bimodal_cleanup/reports/research-003.md",
-      "session_id": "sess_1768660568_f65d39"
+      "session_id": "sess_1768660568_f65d39",
+      "researched": "2026-01-17T14:39:42Z",
+      "artifacts": [
+        {
+          "path": "specs/540_finish_metalogic_refactor_cleanup/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 529,

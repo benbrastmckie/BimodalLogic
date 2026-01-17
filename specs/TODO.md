@@ -232,10 +232,13 @@ technical_debt:
 
 ### 540. Finish Metalogic Directory Refactor and Cleanup
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
+- **Session ID**: sess_1768660568_f65d39
 - **Created**: 2026-01-17
+- **Researched**: 2026-01-17
+- **Research**: [research-001.md](specs/540_finish_metalogic_refactor_cleanup/reports/research-001.md)
 
 **Description**: Finish the Logos/Metalogic/ directory refactor, leaving no stray elements or parallel structures. The situation is documented in specs/523_bimodal_cleanup/reports/research-003.md. Move anything worth saving that is not necessary for the refactored implementation to Bimodal/Boneyard/ (if not already represented), and update all documentation to be fully accurate.
 
