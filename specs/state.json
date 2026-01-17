@@ -142,20 +142,6 @@
       "priority": "high"
     },
     {
-      "project_number": 519,
-      "project_name": "Add Missing Stage 7 Validation in Workflow Commands",
-      "type": "feature",
-      "phase": "planned",
-      "status": "researched",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-16T00:00:00Z",
-      "last_updated": "2026-01-16T00:00:00Z",
-      "effort": "2-3 hours",
-      "description": "Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.",
-      "plan_path": "specs/519_add_missing_stage_7_validation_in_workflow_commands/plans/implementation-001.md"
-    },
-    {
       "project_number": 511,
       "status": "not_started",
       "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
