@@ -27,7 +27,7 @@ Conduct research for a task by delegating to the appropriate research skill/suba
    ```bash
    task_data=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber))' \
-     .claude/specs/state.json)
+     specs/state.json)
    ```
 
 3. **Validate**

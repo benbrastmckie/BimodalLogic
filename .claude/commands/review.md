@@ -57,7 +57,7 @@ Categorize issues:
 
 ### 4. Create Review Report
 
-Write to `.claude/specs/reviews/review-{DATE}.md`:
+Write to `specs/reviews/review-{DATE}.md`:
 
 ```markdown
 # Code Review Report
@@ -128,7 +128,7 @@ If reviewing specific domains, update relevant registries:
 ### 7. Git Commit
 
 ```bash
-git add .claude/specs/reviews/
+git add specs/reviews/
 git commit -m "review: {scope} code review"
 ```
 
@@ -137,7 +137,7 @@ git commit -m "review: {scope} code review"
 ```
 Review complete for: {scope}
 
-Report: .claude/specs/reviews/review-{DATE}.md
+Report: specs/reviews/review-{DATE}.md
 
 Summary:
 - Critical: {N} issues

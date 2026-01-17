@@ -29,7 +29,7 @@ This skill activates when:
 
 Given a task number, retrieve full context:
 ```
-1. Read .claude/specs/state.json
+1. Read specs/state.json
 2. Find task by project_number
 3. Extract: language, status, project_name, description, priority
 4. Read TODO.md for additional context if needed

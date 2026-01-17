@@ -27,7 +27,7 @@ Execute implementation plan with automatic resume support by delegating to the a
    ```bash
    task_data=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber))' \
-     .claude/specs/state.json)
+     specs/state.json)
    ```
 
 3. **Validate**
@@ -37,7 +37,7 @@ Execute implementation plan with automatic resume support by delegating to the a
    - If abandoned: ABORT "Recover task first"
 
 4. **Load Implementation Plan**
-   Find latest: `.claude/specs/{N}_{SLUG}/plans/implementation-{LATEST}.md`
+   Find latest: `specs/{N}_{SLUG}/plans/implementation-{LATEST}.md`
 
    If no plan: ABORT "No implementation plan found. Run /plan {N} first."
 

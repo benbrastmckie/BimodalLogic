@@ -45,7 +45,7 @@ Validate required inputs:
 # Lookup task
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 # Validate exists
 if [ -z "$task_data" ]; then
@@ -96,7 +96,7 @@ The subagent will:
 - Analyze task requirements and research
 - Decompose into logical phases
 - Identify risks and mitigations
-- Create plan in `.claude/specs/{N}_{SLUG}/plans/`
+- Create plan in `specs/{N}_{SLUG}/plans/`
 - Return standardized JSON result
 
 ### 4. Return Validation
@@ -125,7 +125,7 @@ Expected successful return:
   "artifacts": [
     {
       "type": "plan",
-      "path": ".claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
+      "path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
       "summary": "Phased implementation plan"
     }
   ],

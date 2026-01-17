@@ -73,7 +73,7 @@ Extract from input:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "plan_path": ".claude/specs/412_general_research/plans/implementation-001.md"
+  "plan_path": "specs/412_general_research/plans/implementation-001.md"
 }
 ```
 
@@ -139,7 +139,7 @@ After all phases complete:
 
 ### Stage 6: Create Implementation Summary
 
-Write to `.claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
+Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 
 ```markdown
 # Implementation Summary: Task #{N}
@@ -183,7 +183,7 @@ Return ONLY valid JSON matching this schema:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
+      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
       "summary": "Implementation summary with verification results"
     }
   ],
@@ -341,7 +341,7 @@ If task or plan is invalid:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/412_general_research/summaries/implementation-summary-20260112.md",
+      "path": "specs/412_general_research/summaries/implementation-summary-20260112.md",
       "summary": "Implementation summary with verification"
     }
   ],
@@ -372,7 +372,7 @@ If task or plan is invalid:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/350_feature/summaries/implementation-summary-20260112.md",
+      "path": "specs/350_feature/summaries/implementation-summary-20260112.md",
       "summary": "Partial implementation summary"
     }
   ],
@@ -416,7 +416,7 @@ If task or plan is invalid:
   "errors": [
     {
       "type": "validation",
-      "message": "Plan file not found: .claude/specs/999_missing/plans/implementation-001.md",
+      "message": "Plan file not found: specs/999_missing/plans/implementation-001.md",
       "recoverable": false,
       "recommendation": "Run /plan 999 to create implementation plan first"
     }

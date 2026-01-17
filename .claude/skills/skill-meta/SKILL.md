@@ -117,12 +117,12 @@ See `.claude/context/core/formats/subagent-return.md` for full specification.
   "artifacts": [
     {
       "type": "task",
-      "path": ".claude/specs/430_create_export_command/",
+      "path": "specs/430_create_export_command/",
       "summary": "Task directory for new command"
     },
     {
       "type": "task",
-      "path": ".claude/specs/431_export_command_tests/",
+      "path": "specs/431_export_command_tests/",
       "summary": "Task directory for tests"
     }
   ],

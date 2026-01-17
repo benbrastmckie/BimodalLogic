@@ -63,7 +63,7 @@ Extract from input:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "plan", "skill-planner"]
   },
-  "research_path": ".claude/specs/414_slug/reports/research-001.md"
+  "research_path": "specs/414_slug/reports/research-001.md"
 }
 ```
 
@@ -133,7 +133,7 @@ Apply task-breakdown.md guidelines:
 
 Create directory if needed:
 ```
-mkdir -p .claude/specs/{N}_{SLUG}/plans/
+mkdir -p specs/{N}_{SLUG}/plans/
 ```
 
 Find next plan version (implementation-001.md, implementation-002.md, etc.)
@@ -225,7 +225,7 @@ Return ONLY valid JSON matching this schema:
   "artifacts": [
     {
       "type": "plan",
-      "path": ".claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
+      "path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
       "summary": "N-phase implementation plan"
     }
   ],
@@ -301,7 +301,7 @@ When file operations fail:
   "artifacts": [
     {
       "type": "plan",
-      "path": ".claude/specs/414_create_planner_agent_subagent/plans/implementation-001.md",
+      "path": "specs/414_create_planner_agent_subagent/plans/implementation-001.md",
       "summary": "5-phase implementation plan for planner-agent creation"
     }
   ],
@@ -327,7 +327,7 @@ When file operations fail:
   "artifacts": [
     {
       "type": "plan",
-      "path": ".claude/specs/414_create_planner_agent_subagent/plans/implementation-001.md",
+      "path": "specs/414_create_planner_agent_subagent/plans/implementation-001.md",
       "summary": "Partial plan - phases 1-3 complete, 4-5 pending"
     }
   ],

@@ -154,7 +154,7 @@ Compile discovered information:
 
 Create directory and write report:
 
-**Path**: `.claude/specs/{N}_{SLUG}/reports/research-{NNN}.md`
+**Path**: `specs/{N}_{SLUG}/reports/research-{NNN}.md`
 
 **Structure** (from report-format.md):
 ```markdown
@@ -214,7 +214,7 @@ Return ONLY valid JSON matching this schema:
   "artifacts": [
     {
       "type": "report",
-      "path": ".claude/specs/{N}_{SLUG}/reports/research-{NNN}.md",
+      "path": "specs/{N}_{SLUG}/reports/research-{NNN}.md",
       "summary": "Research report with theorem discovery findings"
     }
   ],
@@ -305,7 +305,7 @@ Partial results should include:
   "artifacts": [
     {
       "type": "report",
-      "path": ".claude/specs/259_completeness/reports/research-001.md",
+      "path": "specs/259_completeness/reports/research-001.md",
       "summary": "Research report with 5 theorem findings and proof strategy"
     }
   ],
@@ -330,7 +330,7 @@ Partial results should include:
   "artifacts": [
     {
       "type": "report",
-      "path": ".claude/specs/259_completeness/reports/research-001.md",
+      "path": "specs/259_completeness/reports/research-001.md",
       "summary": "Partial research report with 2 findings"
     }
   ],

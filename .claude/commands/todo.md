@@ -23,11 +23,11 @@ dry_run = "--dry-run" in $ARGUMENTS
 
 ### 2. Scan for Archivable Tasks
 
-Read .claude/specs/state.json and identify:
+Read specs/state.json and identify:
 - Tasks with status = "completed"
 - Tasks with status = "abandoned"
 
-Read .claude/specs/TODO.md and cross-reference:
+Read specs/TODO.md and cross-reference:
 - Entries marked [COMPLETED]
 - Entries marked [ABANDONED]
 
@@ -40,19 +40,19 @@ Scan for project directories not tracked in any state file.
 ```bash
 # Get orphaned directories in specs/ (not tracked anywhere)
 orphaned_in_specs=()
-for dir in .claude/specs/[0-9]*_*/; do
+for dir in specs/[0-9]*_*/; do
   [ -d "$dir" ] || continue
   project_num=$(basename "$dir" | cut -d_ -f1)
 
   # Check if in state.json active_projects
   in_active=$(jq -r --arg n "$project_num" \
     '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-    .claude/specs/state.json 2>/dev/null)
+    specs/state.json 2>/dev/null)
 
   # Check if in archive/state.json completed_projects
   in_archive=$(jq -r --arg n "$project_num" \
     '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-    .claude/specs/archive/state.json 2>/dev/null)
+    specs/archive/state.json 2>/dev/null)
 
   # If not in either, it's an orphan
   if [ -z "$in_active" ] && [ -z "$in_archive" ]; then
@@ -62,14 +62,14 @@ done
 
 # Get orphaned directories in specs/archive/ (not tracked in archive/state.json)
 orphaned_in_archive=()
-for dir in .claude/specs/archive/[0-9]*_*/; do
+for dir in specs/archive/[0-9]*_*/; do
   [ -d "$dir" ] || continue
   project_num=$(basename "$dir" | cut -d_ -f1)
 
   # Check if in archive/state.json completed_projects
   in_archive=$(jq -r --arg n "$project_num" \
     '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-    .claude/specs/archive/state.json 2>/dev/null)
+    specs/archive/state.json 2>/dev/null)
 
   # If not tracked, it's an orphan
   if [ -z "$in_archive" ]; then
@@ -96,19 +96,19 @@ Scan for project directories in specs/ that ARE tracked in archive/state.json (m
 ```bash
 # Get misplaced directories (in specs/ but tracked in archive/state.json)
 misplaced_in_specs=()
-for dir in .claude/specs/[0-9]*_*/; do
+for dir in specs/[0-9]*_*/; do
   [ -d "$dir" ] || continue
   project_num=$(basename "$dir" | cut -d_ -f1)
 
   # Skip if already identified as orphan (not tracked anywhere)
   in_active=$(jq -r --arg n "$project_num" \
     '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-    .claude/specs/state.json 2>/dev/null)
+    specs/state.json 2>/dev/null)
 
   # Check if tracked in archive/state.json (should be in archive/)
   in_archive=$(jq -r --arg n "$project_num" \
     '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-    .claude/specs/archive/state.json 2>/dev/null)
+    specs/archive/state.json 2>/dev/null)
 
   # If in archive state but not in active state, it's misplaced
   if [ -z "$in_active" ] && [ -n "$in_archive" ]; then
@@ -237,10 +237,10 @@ If no misplaced directories were found, skip this step and proceed.
 
 Ensure archive directory exists:
 ```bash
-mkdir -p .claude/specs/archive/
+mkdir -p specs/archive/
 ```
 
-Read or create .claude/specs/archive/state.json:
+Read or create specs/archive/state.json:
 ```json
 {
   "archived_projects": [],
@@ -268,8 +268,8 @@ For each archived task (completed or abandoned):
 project_number={N}
 project_name={SLUG}
 
-src=".claude/specs/${project_number}_${project_name}"
-dst=".claude/specs/archive/${project_number}_${project_name}"
+src="specs/${project_number}_${project_name}"
+dst="specs/archive/${project_number}_${project_name}"
 
 if [ -d "$src" ]; then
   mv "$src" "$dst"
@@ -293,7 +293,7 @@ If user selected "Track all orphans" (track_orphans = true):
 ```bash
 for orphan_dir in "${orphaned_in_specs[@]}"; do
   dir_name=$(basename "$orphan_dir")
-  mv "$orphan_dir" ".claude/specs/archive/${dir_name}"
+  mv "$orphan_dir" "specs/archive/${dir_name}"
   echo "Moved orphan: ${dir_name} -> archive/"
 done
 ```
@@ -306,7 +306,7 @@ for orphan_dir in "${orphaned_dirs[@]}"; do
   project_name=$(echo "$dir_name" | cut -d_ -f2-)
 
   # Determine archive path (after potential move)
-  archive_path=".claude/specs/archive/${dir_name}"
+  archive_path="specs/archive/${dir_name}"
 
   # Scan for existing artifacts
   artifacts="[]"
@@ -326,8 +326,8 @@ for orphan_dir in "${orphaned_dirs[@]}"; do
        archived: $date,
        source: "orphan_recovery",
        detected_artifacts: $arts
-     }]' .claude/specs/archive/state.json > .claude/specs/archive/state.json.tmp \
-  && mv .claude/specs/archive/state.json.tmp .claude/specs/archive/state.json
+     }]' specs/archive/state.json > specs/archive/state.json.tmp \
+  && mv specs/archive/state.json.tmp specs/archive/state.json
 
   echo "Added state entry for orphan: ${dir_name}"
 done
@@ -346,7 +346,7 @@ If user selected "Move all" (move_misplaced = true):
 misplaced_moved=0
 for dir in "${misplaced_in_specs[@]}"; do
   dir_name=$(basename "$dir")
-  dst=".claude/specs/archive/${dir_name}"
+  dst="specs/archive/${dir_name}"
 
   # Check if destination already exists
   if [ -d "$dst" ]; then
@@ -368,7 +368,7 @@ Track misplaced operations for output reporting:
 ### 6. Git Commit
 
 ```bash
-git add .claude/specs/
+git add specs/
 git commit -m "todo: archive {N} completed tasks"
 ```
 
@@ -416,7 +416,7 @@ Active tasks remaining: {N}
 - Medium priority: {N}
 - Low priority: {N}
 
-Archives: .claude/specs/archive/
+Archives: specs/archive/
 ```
 
 If no orphans were tracked (either none found or user skipped):
@@ -431,14 +431,14 @@ If no misplaced directories were moved (either none found or user skipped):
 - Artifacts (plans, reports, summaries) are preserved in archive/{N}_{SLUG}/
 - Tasks can be recovered with `/task --recover N`
 - Archive is append-only (for audit trail)
-- Run periodically to keep TODO.md and .claude/specs/ manageable
+- Run periodically to keep TODO.md and specs/ manageable
 
 ### Orphan Tracking
 
 **Orphan Categories**:
-1. **Orphaned in specs/** - Directories in `.claude/specs/` not tracked in any state file
+1. **Orphaned in specs/** - Directories in `specs/` not tracked in any state file
    - Action: Move to archive/ AND add entry to archive/state.json
-2. **Orphaned in archive/** - Directories in `.claude/specs/archive/` not tracked in archive/state.json
+2. **Orphaned in archive/** - Directories in `specs/archive/` not tracked in archive/state.json
    - Action: Add entry to archive/state.json (no move needed)
 
 **orphan_archived Status**:

@@ -74,9 +74,9 @@ This skill activates when:
 ### Task-Specific Commits
 Include only task-related files:
 ```
-.claude/specs/TODO.md
-.claude/specs/state.json
-.claude/specs/{N}_{SLUG}/**
+specs/TODO.md
+specs/state.json
+specs/{N}_{SLUG}/**
 ```
 
 ### Implementation Commits
@@ -175,7 +175,7 @@ EOF
 
 ### Task Commit
 ```bash
-git add .claude/specs/
+git add specs/
 git commit -m "$(cat <<'EOF'
 task {N}: {action}
 

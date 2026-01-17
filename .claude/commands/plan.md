@@ -26,7 +26,7 @@ Create a phased implementation plan for a task by delegating to the planner skil
    ```bash
    task_data=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber))' \
-     .claude/specs/state.json)
+     specs/state.json)
    ```
 
 3. **Validate**
@@ -38,7 +38,7 @@ Create a phased implementation plan for a task by delegating to the planner skil
 
 4. **Load Context**
    - Task description from state.json
-   - Research reports from `.claude/specs/{N}_{SLUG}/reports/` (if any)
+   - Research reports from `specs/{N}_{SLUG}/reports/` (if any)
 
 5. **Update Status (via skill-status-sync)**
    Invoke skill-status-sync: `preflight_update(task_number, "planning", session_id)`
@@ -59,7 +59,7 @@ skill: "skill-planner"
 args: "task_number={N} research_path={path to research report if exists} session_id={session_id}"
 ```
 
-The skill spawns `planner-agent` which analyzes task requirements and research findings, decomposes into logical phases, identifies risks and mitigations, and creates a plan in `.claude/specs/{N}_{SLUG}/plans/`.
+The skill spawns `planner-agent` which analyzes task requirements and research findings, decomposes into logical phases, identifies risks and mitigations, and creates a plan in `specs/{N}_{SLUG}/plans/`.
 
 **On DELEGATE success**: Plan created. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
 

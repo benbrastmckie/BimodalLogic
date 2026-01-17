@@ -27,7 +27,7 @@ Create a new version of an implementation plan, or update task description if no
    ```bash
    task_data=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber))' \
-     .claude/specs/state.json)
+     specs/state.json)
    ```
 
 3. **Validate and Route**
@@ -50,7 +50,7 @@ Create a new version of an implementation plan, or update task description if no
 For tasks with existing plans (planned, implementing, partial, blocked):
 
 1. **Load Current Context**
-   - Current plan from `.claude/specs/{N}_{SLUG}/plans/implementation-{LATEST}.md`
+   - Current plan from `specs/{N}_{SLUG}/plans/implementation-{LATEST}.md`
    - Research reports if any
    - Implementation progress (phase statuses)
 
@@ -62,7 +62,7 @@ For tasks with existing plans (planned, implementing, partial, blocked):
 3. **Create Revised Plan**
    Increment version: implementation-002.md, implementation-003.md, etc.
 
-   Write to `.claude/specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md`
+   Write to `specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md`
 
 4. **Update Status (via skill-status-sync)**
    Invoke skill-status-sync: `postflight_update(task_number, "planned", [{type: "plan", path: new_plan_path}], session_id)`
@@ -89,8 +89,8 @@ For tasks without plans (not_started, researched):
      '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
        description: $desc,
        last_updated: $ts
-     }' .claude/specs/state.json > /tmp/state.json && \
-     mv /tmp/state.json .claude/specs/state.json
+     }' specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json specs/state.json
    ```
 
 4. **Update TODO.md**

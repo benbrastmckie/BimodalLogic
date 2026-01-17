@@ -33,8 +33,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg status "$target_status" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     status: $status,
     last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  }' specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 
 # Update TODO.md status marker
 # Use Edit tool: [OLD_STATUS] -> [NEW_STATUS]
@@ -89,7 +89,7 @@ Note: Returns `"status": "{target_status}"` (e.g., "planned", "researched", "imp
 **Execution:**
 ```bash
 # IDEMPOTENCY CHECK - Skip if link already exists
-if grep -A 30 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "$artifact_path"; then
+if grep -A 30 "^### ${task_number}\." specs/TODO.md | grep -q "$artifact_path"; then
   echo "Link already exists for $artifact_path, skipping"
   exit 0  # Success - idempotent operation
 fi
@@ -101,8 +101,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     last_updated: $ts,
     artifacts: ((.artifacts // []) + [{"path": $path, "type": $type}])
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  }' specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 
 # Add link to TODO.md using Edit tool
 # Format depends on artifact_type (see Artifact Link Formats below)
@@ -150,7 +150,7 @@ This skill activates when:
 # Get full task object from state.json (~5-10ms)
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 # Validate task exists
 if [ -z "$task_data" ]; then
@@ -190,7 +190,7 @@ fi
 
 ```bash
 # Get next available task number
-next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
+next_num=$(jq -r '.next_project_number' specs/state.json)
 ```
 
 ### Fast Existence Check
@@ -199,7 +199,7 @@ next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
 # Returns project_number or empty (fastest, ~5ms)
 exists=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .project_number' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 if [ -z "$exists" ]; then
   echo "Error: Task $task_number not found"
@@ -215,7 +215,7 @@ fi
 
 ```bash
 # Find line number where task entry starts
-task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
+task_line=$(grep -n "^### ${task_number}\." specs/TODO.md | cut -d: -f1)
 
 if [ -z "$task_line" ]; then
   echo "Error: Task $task_number not found in TODO.md"
@@ -227,23 +227,23 @@ fi
 
 ```bash
 # Read task entry (header + following lines until next ### or ---)
-task_section=$(sed -n "${task_line},/^###\|^---/p" .claude/specs/TODO.md | head -n -1)
+task_section=$(sed -n "${task_line},/^###\|^---/p" specs/TODO.md | head -n -1)
 ```
 
 ### Frontmatter Field Extraction
 
 ```bash
 # Get next_project_number from TODO.md frontmatter
-todo_next_num=$(grep "^next_project_number:" .claude/specs/TODO.md | awk '{print $2}')
+todo_next_num=$(grep "^next_project_number:" specs/TODO.md | awk '{print $2}')
 ```
 
 ### Priority Section Location
 
 ```bash
 # Find priority section headers
-high_line=$(grep -n "^## High Priority" .claude/specs/TODO.md | cut -d: -f1)
-medium_line=$(grep -n "^## Medium Priority" .claude/specs/TODO.md | cut -d: -f1)
-low_line=$(grep -n "^## Low Priority" .claude/specs/TODO.md | cut -d: -f1)
+high_line=$(grep -n "^## High Priority" specs/TODO.md | cut -d: -f1)
+medium_line=$(grep -n "^## Medium Priority" specs/TODO.md | cut -d: -f1)
+low_line=$(grep -n "^## Low Priority" specs/TODO.md | cut -d: -f1)
 ```
 
 ---
@@ -258,8 +258,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg status "$new_status" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     status: $status,
     last_updated: $ts
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  }' specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 ```
 
 ### Artifact Addition
@@ -272,8 +272,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     last_updated: $ts,
     artifacts: ((.artifacts // []) + [{"path": $path, "type": $type}])
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  }' specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 ```
 
 ### TODO.md Artifact Linking (CRITICAL)
@@ -298,7 +298,7 @@ Artifact links go after the Language line and before the Description:
 
 ```bash
 # Find task entry line
-task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
+task_line=$(grep -n "^### ${task_number}\." specs/TODO.md | cut -d: -f1)
 
 # Read the task section to find insertion point
 # Links go after **Language**: and before **Description** or empty line before description
@@ -308,7 +308,7 @@ task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
 
 ```bash
 # Check if Research link already exists
-if grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "^\- \*\*Research\*\*:"; then
+if grep -A 20 "^### ${task_number}\." specs/TODO.md | grep -q "^\- \*\*Research\*\*:"; then
   # Update existing link (for multiple research reports, update to latest)
   # Use Edit tool to replace the line
   echo "Research link exists, updating to: $artifact_path"
@@ -323,7 +323,7 @@ fi
 
 ```bash
 # Check if Plan link already exists
-if grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "^\- \*\*Plan\*\*:"; then
+if grep -A 20 "^### ${task_number}\." specs/TODO.md | grep -q "^\- \*\*Plan\*\*:"; then
   # Update existing link (for revised plans, update to latest version)
   echo "Plan link exists, updating to: $artifact_path"
 else
@@ -336,7 +336,7 @@ fi
 
 ```bash
 # Check if Summary link already exists
-if grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "^\- \*\*Summary\*\*:"; then
+if grep -A 20 "^### ${task_number}\." specs/TODO.md | grep -q "^\- \*\*Summary\*\*:"; then
   # Update existing link
   echo "Summary link exists, updating to: $artifact_path"
 else
@@ -387,7 +387,7 @@ After any artifact operation, verify consistency between state.json and TODO.md.
 artifact_exists=$(jq -r --arg path "$artifact_path" \
   '.active_projects[] | select(.project_number == '$task_number') |
    .artifacts[]? | select(.path == $path) | .path' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 if [ -z "$artifact_exists" ]; then
   echo "WARNING: Artifact not found in state.json: $artifact_path"
@@ -398,7 +398,7 @@ fi
 
 ```bash
 # Check artifact link exists in TODO.md task entry
-if ! grep -A 30 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "$artifact_path"; then
+if ! grep -A 30 "^### ${task_number}\." specs/TODO.md | grep -q "$artifact_path"; then
   echo "WARNING: Artifact not linked in TODO.md: $artifact_path"
   echo "Task entry may need manual fix"
 fi
@@ -411,10 +411,10 @@ fi
 artifacts=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) |
    .artifacts[]?.path' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 for artifact in $artifacts; do
-  if ! grep -A 30 "^### ${task_number}\." .claude/specs/TODO.md | grep -q "$artifact"; then
+  if ! grep -A 30 "^### ${task_number}\." specs/TODO.md | grep -q "$artifact"; then
     echo "MISSING LINK: $artifact not linked in TODO.md for task $task_number"
   fi
 done
@@ -467,8 +467,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
      effort: $effort,
      description: $desc
    }] + .active_projects' \
-  .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 ```
 
 ### Task Archival
@@ -479,8 +479,8 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 jq '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     status: "abandoned",
     abandoned: "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
-  }' .claude/specs/state.json > /tmp/state.json && \
-  mv /tmp/state.json .claude/specs/state.json
+  }' specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
 ```
 
 ---
@@ -498,15 +498,15 @@ Handled by the Task Creation jq pattern above (automatically increments).
 # Update next_project_number in YAML frontmatter
 new_num=$((current_num + 1))
 sed -i "s/^next_project_number: [0-9]*/next_project_number: $new_num/" \
-  .claude/specs/TODO.md
+  specs/TODO.md
 ```
 
 ### Consistency Verification
 
 ```bash
 # Verify both files have matching next_project_number
-state_num=$(jq -r '.next_project_number' .claude/specs/state.json)
-todo_num=$(grep "^next_project_number:" .claude/specs/TODO.md | awk '{print $2}')
+state_num=$(jq -r '.next_project_number' specs/state.json)
+todo_num=$(grep "^next_project_number:" specs/TODO.md | awk '{print $2}')
 
 if [ "$state_num" != "$todo_num" ]; then
   echo "ERROR: next_project_number mismatch - state.json: $state_num, TODO.md: $todo_num"
@@ -524,8 +524,8 @@ fi
    ```bash
    task_data=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber))' \
-     .claude/specs/state.json)
-   task_line=$(grep -n "^### ${task_number}\." .claude/specs/TODO.md | cut -d: -f1)
+     specs/state.json)
+   task_line=$(grep -n "^### ${task_number}\." specs/TODO.md | cut -d: -f1)
    ```
 
 2. **Validate Task Exists**
@@ -607,8 +607,8 @@ If any write fails:
   "old_status": "previous",
   "new_status": "current",
   "files_updated": [
-    ".claude/specs/state.json",
-    ".claude/specs/TODO.md"
+    "specs/state.json",
+    "specs/TODO.md"
   ]
 }
 ```

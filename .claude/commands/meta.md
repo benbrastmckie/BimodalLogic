@@ -21,7 +21,7 @@ Interactive system builder that delegates to `skill-meta` for creating TASKS for
 - Directly create commands, skills, rules, or context files
 - Directly modify CLAUDE.md or ARCHITECTURE.md
 - Implement any work without user confirmation
-- Write any files outside .claude/specs/
+- Write any files outside specs/
 
 **REQUIRED** - This command MUST:
 - Track all work via tasks in TODO.md + state.json
@@ -111,7 +111,7 @@ Created {N} task(s) for {domain}:
 
 **High Priority**:
 - Task #{N}: {title}
-  Path: .claude/specs/{N}_{slug}/
+  Path: specs/{N}_{slug}/
 
 **Next Steps**:
 1. Review tasks in TODO.md

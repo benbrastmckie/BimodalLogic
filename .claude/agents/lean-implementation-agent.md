@@ -85,7 +85,7 @@ Extract from input:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"]
   },
-  "plan_path": ".claude/specs/259_completeness/plans/implementation-001.md"
+  "plan_path": "specs/259_completeness/plans/implementation-001.md"
 }
 ```
 
@@ -170,7 +170,7 @@ If build fails:
 
 ### Stage 6: Create Implementation Summary
 
-Write to `.claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
+Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 
 ```markdown
 # Implementation Summary: Task #{N}
@@ -213,7 +213,7 @@ Return ONLY valid JSON matching this schema:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
+      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
       "summary": "Implementation summary with verification results"
     }
   ],
@@ -356,7 +356,7 @@ If task or plan is invalid:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/259_completeness/summaries/implementation-summary-20260112.md",
+      "path": "specs/259_completeness/summaries/implementation-summary-20260112.md",
       "summary": "Implementation summary with build verification"
     }
   ],
@@ -387,7 +387,7 @@ If task or plan is invalid:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/259_completeness/summaries/implementation-summary-20260112.md",
+      "path": "specs/259_completeness/summaries/implementation-summary-20260112.md",
       "summary": "Partial implementation summary"
     }
   ],

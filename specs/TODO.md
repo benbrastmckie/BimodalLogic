@@ -48,40 +48,75 @@ technical_debt:
 
 ### 525. Update all agent files with new specs path
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768654986_f1c470
+- **Session ID**: sess_1768655600_agent525
 - **Created**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Dependencies**: 524
 
 **Description**: Update all agent files in `.claude/agents/` to reference `specs/` instead of `.claude/specs/`. Depends on task 524.
+
+**Files Modified**:
+- `.claude/agents/general-research-agent.md` - Updated 4 references
+- `.claude/agents/lean-research-agent.md` - Updated 4 references
+- `.claude/agents/planner-agent.md` - Updated 5 references
+- `.claude/agents/general-implementation-agent.md` - Updated 6 references
+- `.claude/agents/lean-implementation-agent.md` - Updated 5 references
+- `.claude/agents/latex-implementation-agent.md` - Updated 5 references
+- `.claude/agents/meta-builder-agent.md` - Updated 13 references
 
 ---
 
 ### 526. Update all command files with new specs path
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768654986_f1c470
+- **Session ID**: sess_1768655600_cmd526
 - **Created**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Dependencies**: 524
 
 **Description**: Update all command files in `.claude/commands/` to reference `specs/` instead of `.claude/specs/`. Depends on task 524.
+
+**Files Modified**:
+- `.claude/commands/implement.md` - Updated 2 references
+- `.claude/commands/errors.md` - Updated 3 references
+- `.claude/commands/review.md` - Updated 3 references
+- `.claude/commands/todo.md` - Updated 36 references
+- `.claude/commands/plan.md` - Updated 3 references
+- `.claude/commands/revise.md` - Updated 4 references
+- `.claude/commands/meta.md` - Updated 2 references
+- `.claude/commands/research.md` - Updated 1 reference
+- `.claude/commands/task.md` - Updated 37 references
 
 ---
 
 ### 527. Update all skill files with new specs path
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768654986_f1c470
+- **Session ID**: sess_1768655600_skill527
 - **Created**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Dependencies**: 524
 
 **Description**: Update all skill files in `.claude/skills/` to reference `specs/` instead of `.claude/specs/`. Depends on task 524.
+
+**Files Modified**:
+- `.claude/skills/skill-orchestrator/SKILL.md` - Updated 1 reference
+- `.claude/skills/skill-git-workflow/SKILL.md` - Updated 4 references
+- `.claude/skills/skill-status-sync/SKILL.md` - Updated 40 references
+- `.claude/skills/skill-lean-research/SKILL.md` - Updated 2 references
+- `.claude/skills/skill-latex-implementation/SKILL.md` - Updated 2 references
+- `.claude/skills/skill-planner/SKILL.md` - Updated 2 references
+- `.claude/skills/skill-researcher/SKILL.md` - Updated 2 references
+- `.claude/skills/skill-meta/SKILL.md` - Updated 2 references
+- `.claude/skills/skill-lean-implementation/SKILL.md` - Updated 2 references
+- `.claude/skills/skill-implementer/SKILL.md` - Updated 2 references
 
 ---
 

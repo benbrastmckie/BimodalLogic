@@ -92,7 +92,7 @@ Extract from input:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "latex-implementation-agent"]
   },
-  "plan_path": ".claude/specs/334_logos_docs/plans/implementation-001.md"
+  "plan_path": "specs/334_logos_docs/plans/implementation-001.md"
 }
 ```
 
@@ -173,7 +173,7 @@ Verify:
 
 ### Stage 6: Create Implementation Summary
 
-Write to `.claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
+Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 
 ```markdown
 # Implementation Summary: Task #{N}
@@ -226,7 +226,7 @@ Return ONLY valid JSON matching this schema:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
+      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
       "summary": "Implementation summary with compilation results"
     }
   ],
@@ -390,7 +390,7 @@ If task or plan is invalid:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/334_logos_docs/summaries/implementation-summary-20260112.md",
+      "path": "specs/334_logos_docs/summaries/implementation-summary-20260112.md",
       "summary": "Implementation summary with compilation verification"
     }
   ],
@@ -422,7 +422,7 @@ If task or plan is invalid:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/334_logos_docs/summaries/implementation-summary-20260112.md",
+      "path": "specs/334_logos_docs/summaries/implementation-summary-20260112.md",
       "summary": "Partial implementation summary"
     }
   ],

@@ -22,7 +22,7 @@ System building agent that handles the `/meta` command for creating tasks relate
 - Directly create commands, skills, rules, or context files
 - Directly modify CLAUDE.md or ARCHITECTURE.md
 - Implement any work without user confirmation
-- Write any files outside .claude/specs/
+- Write any files outside specs/
 
 **REQUIRED** - This agent MUST:
 - Track all work via tasks in TODO.md + state.json
@@ -72,7 +72,7 @@ Load these on-demand using @-references:
 - When discussing templates: `@.claude/context/core/templates/thin-wrapper-skill.md`, `@.claude/context/core/templates/agent-template.md`
 
 **Stages 6-7 (Task Creation/Status Updates)**:
-- Direct file access: `.claude/specs/TODO.md`, `.claude/specs/state.json`
+- Direct file access: `specs/TODO.md`, `specs/state.json`
 - No additional context files needed (formats already loaded)
 
 **Stage 8 (Cleanup)**:
@@ -151,7 +151,7 @@ cmd_count=$(ls .claude/commands/*.md 2>/dev/null | wc -l)
 skill_count=$(find .claude/skills -name "SKILL.md" 2>/dev/null | wc -l)
 agent_count=$(ls .claude/agents/*.md 2>/dev/null | wc -l)
 rule_count=$(ls .claude/rules/*.md 2>/dev/null | wc -l)
-active_tasks=$(jq '.active_projects | length' .claude/specs/state.json)
+active_tasks=$(jq '.active_projects | length' specs/state.json)
 ```
 
 **Output**:
@@ -321,13 +321,13 @@ Options per task:
 
 ```bash
 # 1. Get next task number
-next_num=$(jq -r '.next_project_number' .claude/specs/state.json)
+next_num=$(jq -r '.next_project_number' specs/state.json)
 
 # 2. Create slug from title
 slug=$(echo "{title}" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd 'a-z0-9_' | cut -c1-50)
 
 # 3. Create task directory
-mkdir -p ".claude/specs/${next_num}_${slug}"
+mkdir -p "specs/${next_num}_${slug}"
 
 # 4. Update state.json
 # 5. Update TODO.md
@@ -357,11 +357,11 @@ Created {N} task(s) for {domain}:
 
 **High Priority**:
 - Task #{N}: {title}
-  Path: .claude/specs/{N}_{slug}/
+  Path: specs/{N}_{slug}/
 
 **Medium Priority**:
 - Task #{N}: {title} (depends on #{N})
-  Path: .claude/specs/{N}_{slug}/
+  Path: specs/{N}_{slug}/
 
 ---
 
@@ -392,7 +392,7 @@ Identify:
 
 Search state.json for related active tasks:
 ```bash
-jq '.active_projects[] | select(.project_name | contains("{keyword}"))' .claude/specs/state.json
+jq '.active_projects[] | select(.project_name | contains("{keyword}"))' specs/state.json
 ```
 
 ### Step 3: Propose Task Breakdown
@@ -443,7 +443,7 @@ ls .claude/agents/*.md 2>/dev/null | while read f; do
 done
 
 # Active tasks
-jq -r '.active_projects[] | "- #\(.project_number): \(.project_name) [\(.status)]"' .claude/specs/state.json
+jq -r '.active_projects[] | "- #\(.project_number): \(.project_name) [\(.status)]"' specs/state.json
 ```
 
 ### Step 2: Generate Recommendations
@@ -479,7 +479,7 @@ Format output based on mode:
 
 For each task created:
 ```bash
-mkdir -p .claude/specs/{N}_{slug}
+mkdir -p specs/{N}_{slug}
 ```
 
 Verify directory creation successful.
@@ -499,7 +499,7 @@ Return ONLY valid JSON matching this schema:
   "artifacts": [
     {
       "type": "task",
-      "path": ".claude/specs/430_create_export_command/",
+      "path": "specs/430_create_export_command/",
       "summary": "Task directory for new command"
     }
   ],
@@ -578,7 +578,7 @@ For each created task:
 
 3. **Git Commit**:
 ```bash
-git add .claude/specs/
+git add specs/
 git commit -m "meta: create {N} tasks for {domain}"
 ```
 
@@ -630,4 +630,4 @@ If user stops responding:
 2. Skip user confirmation stage
 3. Return plain text instead of JSON
 4. Create tasks without updating state.json
-5. Modify files outside .claude/specs/
+5. Modify files outside specs/

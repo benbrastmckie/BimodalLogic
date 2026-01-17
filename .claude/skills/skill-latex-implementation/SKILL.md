@@ -53,7 +53,7 @@ Validate required inputs:
 # Lookup task
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 # Validate exists
 if [ -z "$task_data" ]; then
@@ -93,7 +93,7 @@ Prepare delegation context:
     "description": "{description}",
     "language": "latex"
   },
-  "plan_path": ".claude/specs/{N}_{SLUG}/plans/implementation-{NNN}.md"
+  "plan_path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md"
 }
 ```
 
@@ -148,7 +148,7 @@ Expected successful return:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
+      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
       "summary": "Implementation completion summary"
     }
   ],
