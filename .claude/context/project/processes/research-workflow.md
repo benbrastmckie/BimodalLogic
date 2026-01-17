@@ -45,7 +45,7 @@ This document describes the complete research workflow executed by the researche
 Language is extracted from task entry in TODO.md:
 
 ```bash
-grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
+grep -A 20 "^### ${task_number}\." specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
 ```
 
 **Fallback**: If extraction fails, defaults to "general" with warning logged.
@@ -72,7 +72,7 @@ grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep "Language" | sed
 **Process**:
 1. Read task from TODO.md using grep (selective loading):
    ```bash
-   grep -A 50 "^### ${task_number}\." .claude/specs/TODO.md > /tmp/task-${task_number}.md
+   grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
    ```
 2. Extract task metadata:
    - Task number
@@ -163,7 +163,7 @@ grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep "Language" | sed
 
 **Process**:
 1. Create research report file:
-   - Path: `.claude/specs/{number}_{slug}/reports/research-001.md`
+   - Path: `specs/{number}_{slug}/reports/research-001.md`
    - Directory created lazily when writing
 2. Write report sections:
    - **Overview**: Research objective and scope
@@ -205,7 +205,7 @@ grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep "Language" | sed
    - If report is long (>500 lines): Create summary
    - If report is concise (<500 lines): No summary needed
 2. If summary needed:
-   - Path: `.claude/specs/{number}_{slug}/summaries/research-summary.md`
+   - Path: `specs/{number}_{slug}/summaries/research-summary.md`
    - Content: 3-5 sentence overview of findings
    - Token limit: <100 tokens (~400 characters)
    - Purpose: Protect orchestrator context window
@@ -426,7 +426,7 @@ Researcher loads context on-demand per `.claude/context/index.md`:
 ### Task Not Found
 
 ```
-Error: Task {task_number} not found in .claude/specs/TODO.md
+Error: Task {task_number} not found in specs/TODO.md
 
 Recommendation: Verify task number exists in TODO.md
 ```
@@ -532,7 +532,7 @@ Error: {git_error}
 ### Lazy Directory Creation
 
 Directories created only when writing artifacts:
-- `.claude/specs/{task_number}_{slug}/` created when writing first artifact
+- `specs/{task_number}_{slug}/` created when writing first artifact
 - `reports/` subdirectory created when writing research-001.md
 - `summaries/` NOT created (summary is metadata, not artifact)
 
@@ -541,7 +541,7 @@ Directories created only when writing artifacts:
 Extract only specific task entry from TODO.md to reduce context load:
 
 ```bash
-grep -A 50 "^### ${task_number}\." .claude/specs/TODO.md > /tmp/task-${task_number}.md
+grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
 ```
 
 **Impact**: Reduces context from 109KB (full TODO.md) to ~2KB (task entry only), 98% reduction.
@@ -602,7 +602,7 @@ Results: Nat.add_comm, Int.add_comm, etc.
 Extract only specific task entry from TODO.md to reduce context load:
 
 ```bash
-grep -A 50 "^### ${task_number}\." .claude/specs/TODO.md > /tmp/task-${task_number}.md
+grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
 ```
 
 **Impact**: Reduces context from 109KB (full TODO.md) to ~2KB (task entry only), 98% reduction.

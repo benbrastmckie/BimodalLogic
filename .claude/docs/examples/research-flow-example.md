@@ -45,7 +45,7 @@ User Input: /research 427
        |
        | Agent -> Skill -> Orchestrator -> User
        v
-Output: Research report created at .claude/specs/427_document.../reports/research-001.md
+Output: Research report created at specs/427_document.../reports/research-001.md
 ```
 
 ---
@@ -84,7 +84,7 @@ Parsed: task_number = 427
 
 **Orchestrator Stage 2: Lookup Task**
 
-Read from `.claude/specs/state.json`:
+Read from `specs/state.json`:
 ```json
 {
   "project_number": 427,
@@ -122,7 +122,7 @@ The skill (`skill-researcher/SKILL.md`) receives the routing.
 # Lookup task
 task_data=$(jq -r --arg num "427" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 # Validate exists -> YES
 # Extract fields
@@ -224,7 +224,7 @@ formed 4 recommendations.
 **Agent Stage 5: Create Artifact**
 
 ```bash
-mkdir -p .claude/specs/427_document_command_skill_subagent_framework/reports/
+mkdir -p specs/427_document_command_skill_subagent_framework/reports/
 write research-001.md
 ```
 
@@ -251,7 +251,7 @@ jq '.active_projects |= map(
   "artifacts": [
     {
       "type": "report",
-      "path": ".claude/specs/427_document_command_skill_subagent_framework/reports/research-001.md",
+      "path": "specs/427_document_command_skill_subagent_framework/reports/research-001.md",
       "summary": "Research report with 8 findings and 4 recommendations"
     }
   ],
@@ -289,7 +289,7 @@ User sees:
 ```
 Research completed for task 427.
 
-Created: .claude/specs/427_document_command_skill_subagent_framework/reports/research-001.md
+Created: specs/427_document_command_skill_subagent_framework/reports/research-001.md
 
 Next steps: Run /plan 427 to create implementation plan
 ```
@@ -342,7 +342,7 @@ Context loading:
 After `/research 427` completes:
 
 ```
-.claude/specs/
+specs/
 ├── state.json                 # Updated: task 427 status = "researched"
 ├── TODO.md                    # Updated: task 427 [RESEARCHED] with link
 └── 427_document_command_skill_subagent_framework/

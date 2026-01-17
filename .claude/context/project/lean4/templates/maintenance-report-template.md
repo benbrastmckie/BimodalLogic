@@ -24,7 +24,7 @@
 
 ## 1. Maintenance Operations Performed
 
-### 1.1 .claude/specs/TODO.md Maintenance
+### 1.1 specs/TODO.md Maintenance
 
 **Tasks Removed**: {N} completed tasks  
 **Tasks Updated**: {N} tasks  
@@ -54,7 +54,7 @@
    - **Summary**: {One-line summary}
    - **Impact**: {Key impact metric}
    - **Artifacts**: {List key artifacts preserved}
-   - **Archive Path**: `.claude/specs/archive/{NNN_project_name}/`
+   - **Archive Path**: `specs/archive/{NNN_project_name}/`
 
 ### 1.3 Status Document Updates
 
@@ -143,17 +143,17 @@
 ## 4. State Updates
 
 ### 4.1 Archive State
-- **Updated**: `.claude/specs/archive/state.json`
+- **Updated**: `specs/archive/state.json`
 - **Projects Added**: {N}
 - **Total Archived**: {N} projects
 
 ### 4.2 Maintenance State
-- **Updated**: `.claude/specs/maintenance/state.json`
+- **Updated**: `specs/maintenance/state.json`
 - **Operation ID**: `maintenance-{YYYYMMDD}`
 - **Health Trend**: {Improving | Stable | Declining}
 
 ### 4.3 Global State
-- **Updated**: `.claude/specs/state.json`
+- **Updated**: `specs/state.json`
 - **Recent Activities**: Added maintenance operation
 - **Next Project Number**: {N}
 

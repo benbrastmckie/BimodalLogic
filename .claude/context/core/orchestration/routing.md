@@ -49,7 +49,7 @@ Extract language from task entry in TODO.md:
 
 ```bash
 # Extract language field from task entry
-language=$(grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //')
+language=$(grep -A 20 "^### ${task_number}\." specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //')
 
 # Validate extraction succeeded
 if [ -z "$language" ]; then
@@ -200,7 +200,7 @@ if ! [[ "$task_number" =~ ^[0-9]+$ ]]; then
 fi
 
 # Verify task exists in TODO.md
-if ! grep -q "^### ${task_number}\." .claude/specs/TODO.md; then
+if ! grep -q "^### ${task_number}\." specs/TODO.md; then
   echo "[FAIL] Task ${task_number} not found in TODO.md"
   exit 1
 fi
@@ -319,7 +319,7 @@ Commands update task status using text-based markers:
   "new_status": "researched",
   "timestamp": "2025-12-29T08:13:37Z",
   "artifacts": [
-    ".claude/specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md"
+    "specs/244_phase_1_context_index_and_research_frontmatter_prototype/reports/research-001.md"
   ]
 }
 ```
@@ -352,7 +352,7 @@ Commands update task status using text-based markers:
     "message": "Task 244 not found in TODO.md",
     "code": "TASK_NOT_FOUND",
     "recoverable": false,
-    "recommendation": "Verify task number exists in .claude/specs/TODO.md"
+    "recommendation": "Verify task number exists in specs/TODO.md"
   }],
   "metadata": {
     "session_id": "sess_1735460684_a1b2c3",
@@ -556,7 +556,7 @@ fi
 
 ```bash
 # Extract task entry (20 lines after task header)
-task_entry=$(grep -A 20 "^### ${task_number}\." .claude/specs/TODO.md)
+task_entry=$(grep -A 20 "^### ${task_number}\." specs/TODO.md)
 
 # Extract Language field
 language=$(echo "$task_entry" | grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' ')

@@ -48,10 +48,10 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 
 **Actions**:
 1. Load current state files:
-   - `.claude/specs/state.json`
-   - `.claude/specs/archive/state.json`
-   - `.claude/specs/maintenance/state.json`
-2. Load .claude/specs/TODO.md and status documents
+   - `specs/state.json`
+   - `specs/archive/state.json`
+   - `specs/maintenance/state.json`
+2. Load specs/TODO.md and status documents
 3. Determine maintenance scope
 4. Generate operation ID: `maintenance-YYYYMMDD`
 
@@ -60,10 +60,10 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 - Maintenance scope definition
 - Baseline metrics
 
-### Stage 2: .claude/specs/TODO.md Maintenance
+### Stage 2: specs/TODO.md Maintenance
 
 **Actions**:
-1. Scan .claude/specs/TODO.md for completed tasks
+1. Scan specs/TODO.md for completed tasks
 2. Identify tasks marked with [PASS], [x], or in "Completed" sections
 3. If >5 completed tasks, request user confirmation
 4. Remove completed tasks from active sections
@@ -72,24 +72,24 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 7. Update task counts in overview
 
 **Outputs**:
-- Updated .claude/specs/TODO.md
+- Updated specs/TODO.md
 - List of removed tasks
 - Before/after metrics
 
 **State Updates**:
-- None (.claude/specs/TODO.md is documentation, not state)
+- None (specs/TODO.md is documentation, not state)
 
 ### Stage 3: Project Archiving
 
 **Actions**:
-1. Identify completed project directories in `.claude/specs/`
+1. Identify completed project directories in `specs/`
 2. For each completed project:
    - Verify completion status
    - Collect project metadata
    - Preserve all artifacts
    - Add to archive state
 3. Update archive/state.json with new projects
-4. Optionally move directories to `.claude/specs/archive/`
+4. Optionally move directories to `specs/archive/`
 
 **Outputs**:
 - Updated archive/state.json
@@ -221,7 +221,7 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
    - State updates
    - Recommendations
    - Verification commands
-4. Save as: `.claude/specs/maintenance/report-YYYYMMDD.md`
+4. Save as: `specs/maintenance/report-YYYYMMDD.md`
 
 **Outputs**:
 - Comprehensive maintenance report
@@ -229,7 +229,7 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 
 **Naming Convention**:
 - **Format**: `report-YYYYMMDD.md`
-- **Location**: `.claude/specs/maintenance/`
+- **Location**: `specs/maintenance/`
 - **Example**: `report-20251219.md`
 
 ### Stage 8: Verification
@@ -267,7 +267,7 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
   "type": "scheduled",
   "status": "completed",
   "duration_hours": X.X,
-  "report_path": ".claude/specs/maintenance/report-YYYYMMDD.md",
+  "report_path": "specs/maintenance/report-YYYYMMDD.md",
   "summary": "Brief 2-3 sentence summary",
   "key_metrics": {
     "tasks_removed": N,
@@ -290,17 +290,17 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 
 ### Maintenance Reports
 - **Format**: `report-YYYYMMDD.md`
-- **Location**: `.claude/specs/maintenance/`
+- **Location**: `specs/maintenance/`
 - **Example**: `report-20251219.md`
 
 ### State Files
-- **Archive State**: `.claude/specs/archive/state.json`
-- **Maintenance State**: `.claude/specs/maintenance/state.json`
-- **Global State**: `.claude/specs/state.json`
+- **Archive State**: `specs/archive/state.json`
+- **Maintenance State**: `specs/maintenance/state.json`
+- **Global State**: `specs/state.json`
 
 ### Archived Projects
 - **Format**: `NNN_project_name/`
-- **Location**: `.claude/specs/archive/`
+- **Location**: `specs/archive/`
 - **Example**: `052_fix_aesop_duplicate/`
 
 ---
@@ -320,7 +320,7 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
     "total_projects": N,
     "last_updated": "YYYY-MM-DDTHH:MM:SSZ",
     "retention_policy": "indefinite",
-    "archive_location": ".claude/specs/archive/"
+    "archive_location": "specs/archive/"
   },
   "archived_projects": [
     {
@@ -394,8 +394,8 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
 {
   "schema_version": "1.0.0",
   "state_references": {
-    "archive_state": ".claude/specs/archive/state.json",
-    "maintenance_state": ".claude/specs/maintenance/state.json"
+    "archive_state": "specs/archive/state.json",
+    "maintenance_state": "specs/maintenance/state.json"
   },
   "repository_health": {
     "health_score": XX,
@@ -437,11 +437,11 @@ This document defines the standardized maintenance workflow for the LEAN 4 Proof
   - Return verification results
 
 ### TODO Manager (Subagent)
-- **Role**: Manage .claude/specs/TODO.md updates
+- **Role**: Manage specs/TODO.md updates
 - **Responsibilities**:
   - Clean up completed tasks
   - Update task priorities
-  - Reorganize .claude/specs/TODO.md
+  - Reorganize specs/TODO.md
   - Return summary of changes
 
 ---

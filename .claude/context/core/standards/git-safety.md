@@ -235,9 +235,9 @@ Create safety commits before:
   <process>
     1. Stage files that will be modified:
        ```bash
-       git add .claude/specs/TODO.md
-       git add .claude/specs/state.json
-       git add .claude/specs/archive/state.json
+       git add specs/TODO.md
+       git add specs/state.json
+       git add specs/archive/state.json
        ```
     2. Create safety commit:
        ```bash
@@ -283,9 +283,9 @@ Create safety commits before:
   <process>
     1. Stage all changes:
        ```bash
-       git add .claude/specs/TODO.md
-       git add .claude/specs/state.json
-       git add .claude/specs/archive/
+       git add specs/TODO.md
+       git add specs/state.json
+       git add specs/archive/
        ```
     2. Create final commit:
        ```bash

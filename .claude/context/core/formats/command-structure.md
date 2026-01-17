@@ -741,7 +741,7 @@ Benefit: Clear separation, easy to test, flexible composition
 <workflow_execution>
   <step_1>
     Create implementation plan
-    Write plan to file: .claude/specs/{task_number}_.../plan.md
+    Write plan to file: specs/{task_number}_.../plan.md
   </step_1>
   
   <step_2>

@@ -173,7 +173,7 @@ Based on task language and purpose:
 ### Stage 5: Artifact Creation
 
 Create directory and write artifacts:
-- Path: `.claude/specs/{N}_{SLUG}/{type}/`
+- Path: `specs/{N}_{SLUG}/{type}/`
 - Verify artifacts are non-empty
 
 ### Stage 6: Return Structured JSON
@@ -342,7 +342,7 @@ Format outputs according to standards:
 
 Create directory structure:
 ```
-.claude/specs/{N}_{SLUG}/
+specs/{N}_{SLUG}/
 ├── reports/
 │   └── research-{NNN}.md
 ├── plans/
@@ -371,7 +371,7 @@ Return ONLY valid JSON matching this schema:
   "artifacts": [
     {
       "type": "report|plan|summary|implementation",
-      "path": ".claude/specs/{N}_{SLUG}/{type}/{file}.md",
+      "path": "specs/{N}_{SLUG}/{type}/{file}.md",
       "summary": "Brief artifact description"
     }
   ],
@@ -481,7 +481,7 @@ Include complete examples:
   "artifacts": [
     {
       "type": "report",
-      "path": ".claude/specs/412_create_agent/reports/research-001.md",
+      "path": "specs/412_create_agent/reports/research-001.md",
       "summary": "Research report with 8 findings"
     }
   ],

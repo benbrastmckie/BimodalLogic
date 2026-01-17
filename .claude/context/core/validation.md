@@ -32,15 +32,15 @@ Token budget: ~300 tokens
 1. Path must be relative to repo root
 2. File must exist on disk
 3. Type must match artifact category:
-   - research: `.claude/specs/{N}_*/reports/research-*.md`
-   - plan: `.claude/specs/{N}_*/plans/implementation-*.md`
-   - summary: `.claude/specs/{N}_*/summaries/implementation-summary-*.md`
+   - research: `specs/{N}_*/reports/research-*.md`
+   - plan: `specs/{N}_*/plans/implementation-*.md`
+   - summary: `specs/{N}_*/summaries/implementation-summary-*.md`
 
 ## Idempotency Check
 
 Before linking artifact to TODO.md:
 ```bash
-grep -q "$artifact_path" .claude/specs/TODO.md
+grep -q "$artifact_path" specs/TODO.md
 ```
 
 If found, skip linking (already exists).

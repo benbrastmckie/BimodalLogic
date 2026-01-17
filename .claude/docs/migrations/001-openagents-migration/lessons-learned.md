@@ -243,7 +243,7 @@ This document captures lessons learned from the OpenAgents architectural migrati
 
 **Insight**: Organizing artifacts by task number and type improved discoverability.
 
-**Key Learning**: Structure like `.claude/specs/247_phase_4_testing_and_documentation/reports/` made artifacts easy to find.
+**Key Learning**: Structure like `specs/247_phase_4_testing_and_documentation/reports/` made artifacts easy to find.
 
 **Benefits**: Clear organization, easy navigation, reduced confusion.
 

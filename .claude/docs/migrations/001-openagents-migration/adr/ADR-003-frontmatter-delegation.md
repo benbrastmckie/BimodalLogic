@@ -230,7 +230,7 @@ agent: research-agent
 ## References
 
 - **Implementation**: Task 245 (Phase 2: Core Architecture Migration)
-- **Validation**: `.claude/specs/245_phase_2_core_architecture_migration/reports/validation-001.md`
+- **Validation**: `specs/245_phase_2_core_architecture_migration/reports/validation-001.md`
 - **Command Files**: `.claude/command/*.md`
 - **Agent Files**: `.claude/skills/*.md`
 - **Command Template**: `.claude/docs/templates/command-template.md`

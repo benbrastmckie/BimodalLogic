@@ -49,7 +49,7 @@ Quick reference for common standards in the ProofChecker .opencode system.
   "artifacts": [
     {
       "type": "research_report|plan|code|test|analysis",
-      "path": ".claude/specs/{task_dir}/{artifact}.md",
+      "path": "specs/{task_dir}/{artifact}.md",
       "description": "Brief description"
     }
   ],
@@ -98,7 +98,7 @@ Quick reference for common standards in the ProofChecker .opencode system.
   "artifacts": [
     {
       "type": "research_report",
-      "path": ".claude/specs/258_task_title/reports/research-001.md",
+      "path": "specs/258_task_title/reports/research-001.md",
       "created": "2026-01-03T11:00:00Z"
     }
   ]
@@ -256,7 +256,7 @@ Changes:
 - Documented proof strategies
 
 Artifacts:
-- .claude/specs/258_task/reports/research-001.md
+- specs/258_task/reports/research-001.md
 
 Status: [RESEARCHING] → [RESEARCHED]
 ```
@@ -276,7 +276,7 @@ Status: [RESEARCHING] → [RESEARCHED]
 ### Artifact Naming
 
 ```
-.claude/specs/{task_number}_{task_title}/
+specs/{task_number}_{task_title}/
   reports/
     research-001.md
     research-002.md
@@ -303,14 +303,14 @@ Don't create directories until artifacts are ready to be written.
 **Good**:
 ```bash
 # Create directory only when writing artifact
-mkdir -p .claude/specs/258_task/reports
-echo "content" > .claude/specs/258_task/reports/research-001.md
+mkdir -p specs/258_task/reports
+echo "content" > specs/258_task/reports/research-001.md
 ```
 
 **Bad**:
 ```bash
 # Don't create empty directories
-mkdir -p .claude/specs/258_task/reports
+mkdir -p specs/258_task/reports
 # ... later, maybe write artifact
 ```
 
@@ -412,9 +412,9 @@ Example: /research 258
 ```
 Error: Task 999 not found in TODO.md
 
-Please verify the task number exists in .claude/specs/TODO.md
+Please verify the task number exists in specs/TODO.md
 
-You can list all tasks with: grep "^###" .claude/specs/TODO.md
+You can list all tasks with: grep "^###" specs/TODO.md
 ```
 
 ### Phantom Research

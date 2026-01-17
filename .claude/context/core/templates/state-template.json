@@ -1,6 +1,6 @@
 {
-  "_comment_purpose": "Template for auto-creating .claude/specs/state.json if missing. Self-healing commands use this template to bootstrap state tracking.",
-  "_comment_usage": "Copy this template to .claude/specs/state.json and replace placeholder values with actual data from TODO.md",
+  "_comment_purpose": "Template for auto-creating specs/state.json if missing. Self-healing commands use this template to bootstrap state tracking.",
+  "_comment_usage": "Copy this template to specs/state.json and replace placeholder values with actual data from TODO.md",
   "_schema_version": "1.0.0",
   "_comment": "Main state tracking file for project .opencode system. Auto-created from template. Links to specialized state files for archives and maintenance.",
   "_last_updated": "{CURRENT_TIMESTAMP}",
@@ -12,8 +12,8 @@
     "_comment": "Project numbers wrap around to 000 after 999. Ensure old projects are archived before reuse."
   },
   "state_references": {
-    "archive_state_path": ".claude/specs/archive/state.json",
-    "maintenance_state_path": ".claude/specs/maintenance/state.json",
+    "archive_state_path": "specs/archive/state.json",
+    "maintenance_state_path": "specs/maintenance/state.json",
     "_comment": "References to specialized state files. These files are auto-created if missing."
   },
   "active_projects": [],
@@ -56,8 +56,8 @@
   },
   "archive_summary": {
     "_comment": "Quick reference to archived projects - full details in archive/state.json",
-    "archive_location": ".claude/specs/archive/",
-    "archive_state_file": ".claude/specs/archive/state.json"
+    "archive_location": "specs/archive/",
+    "archive_state_file": "specs/archive/state.json"
   },
   "schema_info": {
     "version": "1.0.0",

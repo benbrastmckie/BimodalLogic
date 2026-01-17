@@ -299,6 +299,6 @@ This standardized validation provides:
 
 ## References
 
-- `.claude/specs/workflow-command-refactor-plan.md` - Root cause analysis
+- `specs/workflow-command-refactor-plan.md` - Root cause analysis
 - `.claude/context/core/standards/subagent-return-format.md` - Return format specification
 - `.claude/context/core/orchestration/delegation.md` - Delegation patterns

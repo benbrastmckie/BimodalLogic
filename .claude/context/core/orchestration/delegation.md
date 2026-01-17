@@ -425,7 +425,7 @@ Standardized error codes for consistent error handling:
   "artifacts": [
     {
       "type": "research",
-      "path": ".claude/specs/195_lean_tools/reports/research-001.md",
+      "path": "specs/195_lean_tools/reports/research-001.md",
       "summary": "Detailed API specifications"
     }
   ],
@@ -704,7 +704,7 @@ The status-sync-manager subagent now supports these additional operations:
 
 - Status Management: `.claude/context/core/system/state-management.md`
 - Artifact Management: `.claude/context/core/system/artifact-management.md`
-- Task 191 Research: `.claude/specs/191_fix_subagent_delegation_hang/reports/research-001.md`
+- Task 191 Research: `specs/191_fix_subagent_delegation_hang/reports/research-001.md`
 # Delegation Guide
 
 ## Session ID Tracking

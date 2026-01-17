@@ -224,7 +224,7 @@ Context files in `.claude/context/` provide knowledge for AI agents:
 - Cross-reference related context files
 
 ### Artifact Documentation
-Artifacts in `.claude/specs/` are organized by project:
+Artifacts in `specs/` are organized by project:
 
 **Structure**:
 - `NNN_project_name/reports/`: Research and analysis reports
@@ -235,7 +235,7 @@ Artifacts in `.claude/specs/` are organized by project:
 - Use descriptive project names
 - Increment plan versions when revising
 - Keep summaries to 1-2 pages maximum
-- Link artifacts to .claude/specs/TODO.md tasks
+- Link artifacts to specs/TODO.md tasks
 - Update state.json after operations
 
 ## Validation

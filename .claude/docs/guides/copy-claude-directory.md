@@ -186,7 +186,7 @@ You should see directories including:
 
 ```bash
 # macOS/Linux
-ls .claude/specs/TODO.md .claude/specs/state.json
+ls specs/TODO.md specs/state.json
 
 # Windows PowerShell
 Test-Path .claude\specs\TODO.md, .claude\specs\state.json
@@ -296,8 +296,8 @@ The ProofChecker `.claude/` system is optimized for Lean 4 theorem proving. If y
 | File | Purpose |
 |------|---------|
 | `.claude/CLAUDE.md` | Main entry point, quick reference |
-| `.claude/specs/state.json` | Machine-readable task state |
-| `.claude/specs/TODO.md` | Human-readable task list |
+| `specs/state.json` | Machine-readable task state |
+| `specs/TODO.md` | Human-readable task list |
 | `.claude/settings.json` | Claude Code settings |
 
 ---

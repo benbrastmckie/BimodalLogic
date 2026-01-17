@@ -140,7 +140,7 @@ The following inputs must NOT be provided to this agent:
 **Objective**: Create artifacts in task directory
 
 **Tasks**:
-1. Create task directory: `.claude/specs/<task-number>_<topic>/`
+1. Create task directory: `specs/<task-number>_<topic>/`
 2. Create artifact subdirectories (reports/, plans/, summaries/, etc.)
 3. Write artifacts to disk:
    - [Artifact 1]: `<path>`
@@ -149,7 +149,7 @@ The following inputs must NOT be provided to this agent:
 
 **Artifact Structure**:
 ```
-.claude/specs/<task-number>_<topic>/
+specs/<task-number>_<topic>/
   ├── <artifact-type>/
   │   └── <artifact-name>.md
   └── ...
@@ -224,13 +224,13 @@ The following inputs must NOT be provided to this agent:
    - Verify artifacts within size limits
 
 2. **TODO.md Update**:
-   - Add task entry to `.claude/specs/TODO.md`
+   - Add task entry to `specs/TODO.md`
    - Include task number, title, status, timestamps
    - Link to artifacts
    - Follow TODO.md format
 
 3. **state.json Update**:
-   - Update `.claude/specs/state.json` with task status
+   - Update `specs/state.json` with task status
    - Include completion timestamp
    - Include artifact paths
    - Validate JSON format
@@ -289,7 +289,7 @@ The following inputs must NOT be provided to this agent:
   "artifacts": [
     {
       "type": "<artifact-type>",
-      "path": ".claude/specs/<task-number>_<topic>/<artifact-path>",
+      "path": "specs/<task-number>_<topic>/<artifact-path>",
       "summary": "Brief artifact description"
     }
   ],

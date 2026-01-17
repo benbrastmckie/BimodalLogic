@@ -342,7 +342,7 @@ All returns validated against subagent-return-format.md:
 
 ### TODO.md
 
-**Location**: `.claude/specs/TODO.md`
+**Location**: `specs/TODO.md`
 
 **Purpose**: User-facing task list with status markers
 
@@ -369,7 +369,7 @@ All returns validated against subagent-return-format.md:
 
 ### state.json
 
-**Location**: `.claude/specs/state.json`
+**Location**: `specs/state.json`
 
 **Purpose**: Machine-readable project state
 
@@ -390,7 +390,7 @@ All returns validated against subagent-return-format.md:
 
 ### errors.json
 
-**Location**: `.claude/specs/errors.json`
+**Location**: `specs/errors.json`
 
 **Purpose**: Error tracking and fix effectiveness analysis
 
@@ -424,7 +424,7 @@ All returns validated against subagent-return-format.md:
 
 ### Plan Files
 
-**Location**: `.claude/specs/{task_number}_{topic_slug}/plans/implementation-{version:03d}.md`
+**Location**: `specs/{task_number}_{topic_slug}/plans/implementation-{version:03d}.md`
 
 **Purpose**: Phased implementation plans with status tracking
 
@@ -970,5 +970,5 @@ Subagent context: ~2000 tokens (loaded only in fork)
 - Testing Guide: `.claude/TESTING.md`
 - Delegation Guide: `.claude/context/core/workflows/subagent-delegation-guide.md`
 - Return Format Standard: `.claude/context/core/standards/subagent-return-format.md`
-- Task 191 Research: `.claude/specs/191_fix_subagent_delegation_hang/reports/research-001.md`
-- Task 191 Plan: `.claude/specs/191_fix_subagent_delegation_hang/plans/implementation-001.md`
+- Task 191 Research: `specs/191_fix_subagent_delegation_hang/reports/research-001.md`
+- Task 191 Plan: `specs/191_fix_subagent_delegation_hang/plans/implementation-001.md`

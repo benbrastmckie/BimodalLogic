@@ -24,7 +24,7 @@ Token budget: ~200 tokens
 ## Task Lookup
 
 ```bash
-jq -r --arg num "$N" '.active_projects[] | select(.project_number == ($num | tonumber))' .claude/specs/state.json
+jq -r --arg num "$N" '.active_projects[] | select(.project_number == ($num | tonumber))' specs/state.json
 ```
 
 ## Session ID

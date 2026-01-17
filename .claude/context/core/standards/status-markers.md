@@ -298,7 +298,7 @@ Any non-terminal ──(/task --expand)──> [EXPANDED] (delegates to subtasks
   "validated_artifacts": [
     {
       "type": "research_report",
-      "path": ".claude/specs/321_topic/reports/research-001.md",
+      "path": "specs/321_topic/reports/research-001.md",
       "summary": "Research findings",
       "validated": true
     }

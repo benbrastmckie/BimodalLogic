@@ -150,7 +150,7 @@ If validation fails:
   "artifacts": [
     {
       "type": "plan",
-      "path": ".claude/specs/244_context_refactor/plans/implementation-001.md",
+      "path": "specs/244_context_refactor/plans/implementation-001.md",
       "summary": "3-phase implementation plan"
     }
   ],
@@ -210,7 +210,7 @@ If validation fails:
     },
     {
       "type": "summary",
-      "path": ".claude/specs/246_feature/summaries/implementation-summary.md",
+      "path": "specs/246_feature/summaries/implementation-summary.md",
       "summary": "Partial implementation summary"
     }
   ],

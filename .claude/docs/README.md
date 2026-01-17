@@ -69,10 +69,10 @@ This documentation provides comprehensive coverage of the `.claude/` agent syste
 
 | Path | Description |
 |------|-------------|
-| `.claude/specs/TODO.md` | User-facing task list |
-| `.claude/specs/state.json` | Machine-readable state |
-| `.claude/specs/errors.json` | Error tracking |
-| `.claude/specs/{N}_{SLUG}/` | Task artifacts |
+| `specs/TODO.md` | User-facing task list |
+| `specs/state.json` | Machine-readable state |
+| `specs/errors.json` | Error tracking |
+| `specs/{N}_{SLUG}/` | Task artifacts |
 | `.claude/commands/` | Slash command definitions |
 | `.claude/skills/` | Specialized agent skills |
 | `.claude/rules/` | Automatic behavior rules |
@@ -262,12 +262,12 @@ Tasks route to specialized skills based on their `language` field:
 
 ## Artifacts
 
-Tasks produce artifacts stored in `.claude/specs/{N}_{SLUG}/`:
+Tasks produce artifacts stored in `specs/{N}_{SLUG}/`:
 
 ### Directory Structure
 
 ```
-.claude/specs/{N}_{SLUG}/
+specs/{N}_{SLUG}/
 ├── reports/
 │   └── research-001.md         # Research report
 ├── plans/

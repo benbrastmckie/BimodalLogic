@@ -18,7 +18,7 @@ Store in memory for use throughout operation.
 ```bash
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 if [ -z "$task_data" ]; then
   echo "ABORT: Task $task_number not found"
@@ -62,7 +62,7 @@ Re-read state.json and verify status changed:
 ```bash
 new_status=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 if [ "$new_status" != "$target_status" ]; then
   echo "ABORT: Status update failed"

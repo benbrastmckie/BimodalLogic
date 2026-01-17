@@ -178,7 +178,7 @@ Test your new command:
 
 ```bash
 # Find a test task
-grep "^###" .claude/specs/TODO.md | head -5
+grep "^###" specs/TODO.md | head -5
 
 # Test command
 /{command-name} {task-number}

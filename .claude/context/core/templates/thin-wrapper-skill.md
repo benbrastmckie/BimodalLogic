@@ -74,7 +74,7 @@ Validate required inputs:
 # Lookup task
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .claude/specs/state.json)
+  specs/state.json)
 
 # Validate exists
 if [ -z "$task_data" ]; then

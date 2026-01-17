@@ -97,7 +97,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*"]
-    - write: [".claude/specs/**/*"]
+    - write: ["specs/**/*"]
   deny: []
 context_loading:
   strategy: lazy
@@ -206,7 +206,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*"]
-    - write: [".claude/specs/**/*"]
+    - write: ["specs/**/*"]
   deny: []
 context_loading:
   strategy: lazy

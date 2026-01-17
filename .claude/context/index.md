@@ -363,8 +363,8 @@ Stage 4 loads:
 - @.claude/context/core/orchestration/delegation.md
 - @.claude/context/core/orchestration/state-management.md
 - @.claude/context/core/orchestration/state-management.md
-- grep -A 50 "^### {task_number}\." .claude/specs/TODO.md
-- @.claude/specs/state.json
+- grep -A 50 "^### {task_number}\." specs/TODO.md
+- @specs/state.json
 
 Language-specific:
 - If lean: @.claude/context/project/lean4/tools/leansearch-api.md
@@ -378,8 +378,8 @@ Stage 4 loads:
 - @.claude/context/core/formats/plan-format.md
 - @.claude/context/core/orchestration/state-management.md
 - @.claude/context/core/orchestration/state-management.md
-- grep -A 50 "^### {task_number}\." .claude/specs/TODO.md
-- @.claude/specs/state.json
+- grep -A 50 "^### {task_number}\." specs/TODO.md
+- @specs/state.json
 - Research artifacts from task (if exist)
 ```
 
@@ -390,8 +390,8 @@ Stage 4 loads:
 - @.claude/context/core/orchestration/state-management.md
 - @.claude/context/core/orchestration/state-management.md
 - @.claude/context/core/system/git-commits.md
-- grep -A 50 "^### {task_number}\." .claude/specs/TODO.md
-- @.claude/specs/state.json
+- grep -A 50 "^### {task_number}\." specs/TODO.md
+- @specs/state.json
 - Plan file (if exists)
 
 Language-specific:

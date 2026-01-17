@@ -70,7 +70,7 @@ The artifact_link operation includes idempotency check:
 
 ```bash
 # Check if link already exists
-if grep -q "$artifact_path" .claude/specs/TODO.md; then
+if grep -q "$artifact_path" specs/TODO.md; then
   echo "Link already exists, skipping"
 else
   # Add link to TODO.md

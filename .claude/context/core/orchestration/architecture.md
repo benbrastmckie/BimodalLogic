@@ -299,7 +299,7 @@ Command File: Return to orchestrator
 │                                                              │
 │ Step 7: Aggregate results                                  │
 │ Step 8: Format response                                    │
-│ Output: "Plan created: .claude/specs/196_.../plan.md"   │
+│ Output: "Plan created: specs/196_.../plan.md"   │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -392,7 +392,7 @@ task_status=$(jq -r ".tasks[] | select(.number == $task_number) | .status" .clau
 Delegate to status-sync-manager with:
   - task_number: 196
   - new_status: "planned"
-  - artifact_path: ".claude/specs/196_.../plan.md"
+  - artifact_path: "specs/196_.../plan.md"
 ```
 
 **Benefits**:

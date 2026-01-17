@@ -60,7 +60,7 @@
   "new_status": "researched",
   "timestamp": "2025-12-29T08:13:37Z",
   "artifacts": [
-    ".claude/specs/244_phase_1/reports/research-001.md"
+    "specs/244_phase_1/reports/research-001.md"
   ]
 }
 ```
