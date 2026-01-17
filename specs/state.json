@@ -48,7 +48,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T23:09:16Z",
+      "last_updated": "2026-01-17T23:12:55Z",
       "parent_task": 556,
       "dependencies": [
         557
@@ -61,7 +61,7 @@
           "type": "research"
         },
         {
-          "path": "specs/559_strong_completeness_helpers/plans/implementation-001.md",
+          "path": "specs/559_strong_completeness_helpers/plans/implementation-002.md",
           "type": "plan"
         }
       ],
