@@ -189,7 +189,7 @@ context_loading:
   required:
     - "core/orchestration/delegation.md"
   sections:
-    - file: ".opencode/specs/TODO.md"
+    - file: "specs/TODO.md"
       pattern: "grep -A 50 '^### {task_number}\\.'"
       description: "Load only the specific task entry"
   max_context_size: 30000

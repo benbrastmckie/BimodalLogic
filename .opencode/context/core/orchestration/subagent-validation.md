@@ -299,6 +299,6 @@ This standardized validation provides:
 
 ## References
 
-- `.opencode/specs/workflow-command-refactor-plan.md` - Root cause analysis
+- `specs/workflow-command-refactor-plan.md` - Root cause analysis
 - `.opencode/context/core/standards/subagent-return-format.md` - Return format specification
 - `.opencode/context/core/orchestration/delegation.md` - Delegation patterns

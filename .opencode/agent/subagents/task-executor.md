@@ -16,7 +16,7 @@ tools:
 permissions:
   allow:
     - read: [".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir", "git"]
   deny:
     - bash: ["rm -rf", "rm -fr", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
@@ -311,7 +311,7 @@ lifecycle:
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
+          "path": "specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
           "summary": "Implementation summary"
         }
       ],
@@ -366,7 +366,7 @@ lifecycle:
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/195_leansearch_api_integration/summaries/implementation-summary-20251226.md",
+          "path": "specs/195_leansearch_api_integration/summaries/implementation-summary-20251226.md",
           "summary": "Complete implementation summary"
         }
       ],
@@ -405,7 +405,7 @@ lifecycle:
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/195_leansearch_api_integration/summaries/implementation-summary-20251226.md",
+          "path": "specs/195_leansearch_api_integration/summaries/implementation-summary-20251226.md",
           "summary": "Partial implementation summary"
         }
       ],

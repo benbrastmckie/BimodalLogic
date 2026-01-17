@@ -120,8 +120,8 @@ Two-phase commit:
 ### 2. Task Creator Permission Model
 
 The task-creator will have:
-- **Allowed tools**: Read(.opencode/specs/*), Edit(.opencode/specs/TODO.md), Bash(jq:*), Bash(date:*)
-- **Forbidden tools**: Write(except .opencode/specs/), Bash(build:*), Edit(source files)
+- **Allowed tools**: Read(specs/*), Edit(specs/TODO.md), Bash(jq:*), Bash(date:*)
+- **Forbidden tools**: Write(except specs/), Bash(build:*), Edit(source files)
 
 ### 3. Command Pattern Updates
 
@@ -161,12 +161,12 @@ In state.json:
   "artifacts": [
     {
       "type": "research",
-      "path": ".opencode/specs/259_task_slug/reports/research-001.md",
+      "path": "specs/259_task_slug/reports/research-001.md",
       "created": "2026-01-16T10:00:00Z"
     },
     {
       "type": "plan", 
-      "path": ".opencode/specs/259_task_slug/plans/implementation-001.md",
+      "path": "specs/259_task_slug/plans/implementation-001.md",
       "created": "2026-01-16T11:00:00Z"
     }
   ]

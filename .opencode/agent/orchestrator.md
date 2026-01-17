@@ -194,7 +194,7 @@ updated: 2026-01-04
   - Execution subagents receive clean, validated inputs
   
   For detailed documentation, see:
-  - `.opencode/specs/argument-passing-root-cause-analysis.md` - Architecture rationale
+  - `specs/argument-passing-root-cause-analysis.md` - Architecture rationale
   - `.opencode/context/core/orchestration/routing.md` - Routing rules
   - Individual command files in `.opencode/command/` - Command agents
   - Individual subagent files in `.opencode/agent/subagents/` - Execution agents

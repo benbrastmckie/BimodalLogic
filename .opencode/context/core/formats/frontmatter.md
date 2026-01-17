@@ -278,7 +278,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
@@ -499,7 +499,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "sudo", "chmod +x", "dd", "wget"]

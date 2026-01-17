@@ -1,18 +1,17 @@
-# Implementation Plan: Add Missing Stage 7 Validation in Workflow Commands
+# Implementation Plan: Add Missing Stage 7 (Postflight) Validation in Workflow Commands
 
 - **Task**: 519 - Add missing Stage 7 validation in workflow commands  
 - **Status**: [NOT STARTED]
 - **Effort**: 2-3 hours
 - **Priority**: High
 - **Dependencies**: []
-- **Research Inputs**: Analysis of workflow command Stage 7 implementations revealing missing validation checkpoints
+- **Research Inputs**: Analysis of `.opencode/command/*.md` files revealing missing postflight validation checkpoints
 - **Artifacts**: 
   - plans/implementation-001.md (this file)
-  - .opencode/agent/subagents/meta/workflow-designer.md (updated)
-  - .opencode/agent/subagents/meta/domain-analyzer.md (updated)
-  - .opencode/agent/subagents/meta/agent-generator.md (updated)
-  - .opencode/agent/subagents/meta/command-creator.md (updated)
-  - .opencode/agent/subagents/meta/context-organizer.md (updated)
+  - .opencode/command/review.md (updated with Stage 3.6)
+  - .opencode/command/task.md (updated with Stage 3)
+  - .opencode/command/todo.md (updated with Stage 3.5)
+  - .opencode/context/core/standards/validation-checkpoints.md (updated with standard pattern)
 - **Standards**:
   - .opencode/context/core/formats/plan-format.md
   - .opencode/context/core/workflows/command-lifecycle.md
@@ -22,152 +21,125 @@
 
 ## Overview
 
-Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.
+Add missing Stage 7 (Postflight) validation checkpoints in core workflow commands (`review.md`, `task.md`, `todo.md`). Research revealed that while core commands (`research`, `plan`, `implement`, `revise`) have robust postflight validation, several commands modify project state without ensuring git commits or verifying effects, leading to potential data loss and inconsistent state.
+
+## Research-Based Improvements
+
+Based on the detailed analysis in `research-001.md`, this plan has been improved from the original meta-workflow focus to address the actual critical gaps:
+
+**Original Plan Issues Fixed**:
+- ❌ Focused on meta subagents (already have validation) → ✅ Focus on core commands (missing validation)
+- ❌ Targeted 6 workflow commands → ✅ Target 3 critical commands that need fixing
+- ❌ Generic "add validation" approach → ✅ Specific fixes for each command's unique gap
+
+**Critical Issues Being Fixed**:
+1. **review.md**: Creates tasks but doesn't commit them (CRITICAL - potential data loss)
+2. **task.md**: Reports success without verifying file changes (HIGH - phantom success)
+3. **todo.md**: Reports archival without verifying file moves (MEDIUM - incomplete operations)
+
+**Deferred Issues** (per research recommendation):
+- `meta.md` structural refactoring (requires separate task)
+- Commands already compliant (`research`, `plan`, `implement`, `revise`)
+- Read-only commands (`errors.md`)
 
 ## Goals & Non-Goals
 
 **Goals**:
-- Implement complete Stage 7 validation in all 6 workflow commands
-- Add artifact validation before status updates
-- Add post-commit validation to verify files were written correctly
-- Ensure all failures return proper error status with details
-- Standardize validation patterns across all workflow commands
+- Fix critical postflight validation gap in `review.md` (creates tasks without git commit)
+- Add effect verification to `task.md` (validates file system changes)
+- Add archival verification to `todo.md` (verifies file moves and status updates)
+- Implement standardized postflight validation pattern across all commands
+- Ensure all state-modifying commands create git commits for persistence
 
 **Non-Goals**:
-- Adding validation to non-workflow commands (out of scope)
-- Changing the core workflow structure (only adding missing validation)
-- Implementing new validation types (using existing patterns)
+- Modifying commands that already have proper postflight validation (`research`, `plan`, `implement`, `revise`)
+- Changing `errors.md` (read-only, no validation needed)
+- Refactoring `meta.md` (deferred to separate task due to structural changes)
+- Adding validation to non-workflow commands
 
 ## Risks & Mitigations
 
 | Risk | Mitigation |
 |------|-----------|
-| Validation too strict, blocking valid operations | Use warnings for non-critical issues, only fail on critical problems |
-| Performance impact from validation | Keep validation lightweight and focused |
-| Inconsistent validation across commands | Create validation template/checklist for all to follow |
+| Review creates tasks but commit fails, causing "phantom" tasks | Validate commit success, return error with clear recovery steps |
+| Task command reports success but no files changed | Verify actual file system changes before returning success |
+| Todo command reports archival but files remain | Verify file moves and TODO.md updates before returning success |
+| Breaking existing user workflows | Implement validation incrementally, test thoroughly before deployment |
 
 ## Implementation Phases
 
-### Phase 1: Create Validation Template [NOT STARTED]
-- **Goal**: Define standard Stage 7 validation pattern for all workflow commands
+### Phase 1: Define Standard Postflight Pattern [NOT STARTED]
+- **Goal**: Document the standardized postflight validation pattern based on existing compliant commands
 - **Tasks**:
-  - [ ] Analyze existing validation in status-sync-manager as reference
-  - [ ] Create validation template with:
-    * Pre-delegation validation (artifacts exist, parameters valid)
-    * Post-delegation validation (status updated, artifacts linked)
-    * Error handling patterns (what to do if validation fails)
-  - [ ] Define validation levels: CRITICAL (must fail), WARNING (log but continue)
-  - [ ] Document validation in .opencode/context/core/standards/validation-checkpoints.md
-- **Timing**: 45 minutes
-
-### Phase 2: Fix workflow-designer Stage 7 Validation [NOT STARTED]
-- **Goal**: Add complete validation to workflow-designer Stage 7
-- **Tasks**:
-  - [ ] Add artifact validation before status-sync-manager delegation:
-    * Verify all workflow files exist and are non-empty
-    * Verify workflow selection guide exists
-    * If validation fails: return failed status (don't delegate)
-  - [ ] Add post-commit validation after git-workflow-manager:
-    * Verify git commit was successful
-    * Verify commit hash is returned
-    * If validation fails: return warning but success (commit already made)
-  - [ ] Add validation checkpoints with [PASS]/[FAIL]/[WARN] markers
-  - [ ] Update Stage 7 process_flow to include validation steps
+  - [ ] Analyze existing postflight pattern in `research.md`, `plan.md`, `implement.md`, `revise.md`
+  - [ ] Extract the standardized pattern from Stage 3.5 of compliant commands
+  - [ ] Document standard pattern in `validation-checkpoints.md`
+  - [ ] Include: artifact validation, status verification, git commit creation, success validation
 - **Timing**: 30 minutes
 
-### Phase 3: Fix domain-analyzer Stage 7 Validation [NOT STARTED]
-- **Goal**: Add complete validation to domain-analyzer Stage 7
+### Phase 2: Fix review.md Postflight Validation (CRITICAL) [NOT STARTED]
+- **Goal**: Add Stage 3.6 (Postflight) to prevent phantom task creation
 - **Tasks**:
-  - [ ] Add artifact validation before status-sync-manager delegation:
-    * Verify research report exists and is non-empty
-    * Verify domain mapping file exists (if created)
-    * If validation fails: return failed status
-  - [ ] Add post-commit validation after git-workflow-manager:
-    * Verify git commit successful
-    * Verify artifacts tracked in commit
-  - [ ] Add validation checkpoints with text-based markers
-  - [ ] Update Stage 7 process_flow with validation steps
+  - [ ] Add Stage 3.6 "Postflight" after current Stage 3.5 (CreateTasks)
+  - [ ] Verify `TODO.md` and `state.json` were actually updated with new tasks
+  - [ ] Count number of tasks created for commit message
+  - [ ] Invoke `git-workflow-manager` to commit changes: "review: created N tasks"
+  - [ ] Validate git commit success with hash verification
+  - [ ] If commit fails: return error with recovery instructions
 - **Timing**: 30 minutes
 
-### Phase 4: Fix agent-generator Stage 7 Validation [NOT STARTED]
-- **Goal**: Add complete validation to agent-generator Stage 7
+### Phase 3: Fix task.md Postflight Validation (HIGH) [NOT STARTED]
+- **Goal**: Add Stage 3 (Postflight) to verify actual file system effects
 - **Tasks**:
-  - [ ] Add artifact validation before status-sync-manager delegation:
-    * Verify all agent files created and are 200-300 lines
-    * Verify agent files have valid YAML frontmatter
-    * Verify delegation paths are correct
-    * If validation fails: return failed status
-  - [ ] Add post-commit validation:
-    * Verify git commit successful
-    * Verify agent files in commit
-  - [ ] Add validation checkpoints
-  - [ ] Update Stage 7 process_flow
+  - [ ] Rename current Stage 3 to Stage 4 (Final)
+  - [ ] Insert new Stage 3 "Postflight" between delegation and result return
+  - [ ] Verify `TODO.md` timestamp/content actually changed
+  - [ ] Verify `state.json` was updated with new timestamps
+  - [ ] If subagent reported git commit: verify commit hash exists
+  - [ ] Return failed status if file system unchanged despite success report
 - **Timing**: 30 minutes
 
-### Phase 5: Fix command-creator Stage 7 Validation [NOT STARTED]
-- **Goal**: Add complete validation to command-creator Stage 7
+### Phase 4: Fix todo.md Postflight Validation (MEDIUM) [NOT STARTED]
+- **Goal**: Add Stage 3.5 (Postflight) to verify archival actually occurred
 - **Tasks**:
-  - [ ] Add artifact validation before status-sync-manager delegation:
-    * Verify all command files created and are <300 lines
-    * Verify command files have valid YAML frontmatter
-    * Verify routing to correct agents
-    * If validation fails: return failed status
-  - [ ] Add post-commit validation:
-    * Verify git commit successful
-    * Verify command files in commit
-  - [ ] Add validation checkpoints
-  - [ ] Update Stage 7 process_flow
+  - [ ] Add Stage 3.5 "Postflight" after current Stage 3 (Archive)
+  - [ ] Verify project directories were actually moved to `archive/`
+  - [ ] Verify tasks are marked `[ABANDONED]` or `[COMPLETED]` in `TODO.md`
+  - [ ] If subagent reported git commit: verify commit exists and contains changes
+  - [ ] Return warning if some archival actions failed but partial success occurred
 - **Timing**: 30 minutes
 
-### Phase 6: Fix context-organizer Stage 7 Validation [NOT STARTED]
-- **Goal**: Add complete validation to context-organizer Stage 7
+### Phase 5: Test All Fixed Commands [NOT STARTED]
+- **Goal**: Verify validation works correctly and doesn't break existing workflows
 - **Tasks**:
-  - [ ] Add artifact validation before status-sync-manager delegation:
-    * Verify all context files created and follow 80/20 distribution
-    * Verify context index updated
-    * Verify file sizes within limits
-    * If validation fails: return failed status
-  - [ ] Add post-commit validation:
-    * Verify git commit successful
-    * Verify context files in commit
-  - [ ] Add validation checkpoints
-  - [ ] Update Stage 7 process_flow
-- **Timing**: 30 minutes
-
-### Phase 7: Test All Workflow Commands [NOT STARTED]
-- **Goal**: Verify validation works correctly in all workflow commands
-- **Tasks**:
-  - [ ] Test workflow-designer with missing artifacts (should fail)
-  - [ ] Test workflow-designer with valid artifacts (should succeed)
-  - [ ] Test domain-analyzer validation
-  - [ ] Test agent-generator validation
-  - [ ] Test command-creator validation
-  - [ ] Test context-organizer validation
+  - [ ] Test review command: create mock review, verify tasks and commit created
+  - [ ] Test task command: create task, verify TODO.md and state.json updated
+  - [ ] Test todo command: archive test project, verify files moved and status updated
+  - [ ] Test failure scenarios: mock failures to verify proper error handling
   - [ ] Verify error messages are clear and actionable
+  - [ ] Ensure existing compliant commands still work
 - **Timing**: 45 minutes
 
 ## Testing & Validation
 
-- [ ] All workflow commands validate artifacts before delegation
-- [ ] All workflow commands return failed status if artifact validation fails
-- [ ] All workflow commands perform post-commit validation
-- [ ] Validation failures include specific error details
-- [ ] Valid artifacts pass validation and proceed normally
-- [ ] Error messages help users fix validation issues
+- [ ] review.md creates git commits for new tasks (prevents phantom tasks)
+- [ ] task.md verifies actual file system changes before reporting success
+- [ ] todo.md verifies archival operations actually occurred
+- [ ] All commands return appropriate error status with recovery instructions
+- [ ] Existing compliant commands continue to work unchanged
+- [ ] Error messages clearly indicate what failed and how to fix
 
 ## Artifacts & Outputs
 
-- Updated workflow-designer.md with complete Stage 7 validation
-- Updated domain-analyzer.md with complete Stage 7 validation
-- Updated agent-generator.md with complete Stage 7 validation
-- Updated command-creator.md with complete Stage 7 validation
-- Updated context-organizer.md with complete Stage 7 validation
-- validation-checkpoints.md with standard validation template
+- Updated .opencode/command/review.md with Stage 3.6 (Postflight) validation
+- Updated .opencode/command/task.md with Stage 3 (Postflight) validation
+- Updated .opencode/command/todo.md with Stage 3.5 (Postflight) validation
+- Updated .opencode/context/core/standards/validation-checkpoints.md with standard postflight pattern
 
 ## Rollback/Contingency
 
 If validation breaks existing workflows:
-- Make validation non-blocking initially (warnings only)
-- Gradually upgrade warnings to failures after testing
-- Provide flag to bypass validation for emergency fixes
-- Document which validations are critical vs cosmetic
+- Implement validation as warnings first, then upgrade to failures after testing
+- Provide clear error messages with specific recovery steps
+- Document which validations are critical (data loss prevention) vs optional
+- Ensure all state-modifying operations have corresponding git commits for recovery

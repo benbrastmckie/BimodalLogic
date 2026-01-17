@@ -138,7 +138,7 @@ This standard defines the complete state management system for ProofChecker, inc
 ### File Locations
 
 ```
-.opencode/specs/
+specs/
 ├── state.json                      # Main state (cross-references, health)
 ├── TODO.md                         # User-facing task list
 ├── archive/
@@ -154,7 +154,7 @@ This standard defines the complete state management system for ProofChecker, inc
 
 ### Main State File
 
-**Location**: `.opencode/specs/state.json`
+**Location**: `specs/state.json`
 
 **Purpose**: Central tracking of active/completed projects, repository health, cross-references
 
@@ -170,8 +170,8 @@ This standard defines the complete state management system for ProofChecker, inc
     "policy": "increment_modulo_1000"
   },
   "state_references": {
-    "archive_state_path": ".opencode/specs/archive/state.json",
-    "maintenance_state_path": ".opencode/specs/maintenance/state.json"
+    "archive_state_path": "specs/archive/state.json",
+    "maintenance_state_path": "specs/maintenance/state.json"
   },
   "active_projects": [],
   "completed_projects": [
@@ -203,7 +203,7 @@ Active projects may include `plan_metadata` tracking plan characteristics and re
 ```json
 {
   "project_number": 300,
-  "plan_path": ".opencode/specs/300_add_report_detection_to_planner/plans/implementation-001.md",
+  "plan_path": "specs/300_add_report_detection_to_planner/plans/implementation-001.md",
   "plan_metadata": {
     "phases": 4,
     "total_effort_hours": 4,
@@ -230,7 +230,7 @@ Active projects may include `plan_metadata` tracking plan characteristics and re
 
 ### Archive State File
 
-**Location**: `.opencode/specs/archive/state.json`
+**Location**: `specs/archive/state.json`
 
 **Purpose**: Comprehensive tracking of archived projects with metadata, artifacts, impact
 
@@ -255,7 +255,7 @@ Active projects may include `plan_metadata` tracking plan characteristics and re
         "duration_hours": 2.5
       },
       "artifacts": {
-        "base_path": ".opencode/specs/archive/061_add_missing_directory_readmes/",
+        "base_path": "specs/archive/061_add_missing_directory_readmes/",
         "plans": ["plans/implementation-001.md"]
       }
     }
@@ -265,7 +265,7 @@ Active projects may include `plan_metadata` tracking plan characteristics and re
 
 ### Maintenance State File
 
-**Location**: `.opencode/specs/maintenance/state.json`
+**Location**: `specs/maintenance/state.json`
 
 **Purpose**: Track maintenance operations, health trends, technical debt
 
@@ -406,7 +406,7 @@ Command files should use state.json for fast task validation and metadata extrac
 # Lookup task in state.json (8x faster than TODO.md parsing)
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Validate task exists
 if [ -z "$task_data" ]; then
@@ -439,7 +439,7 @@ priority=$(echo "$task_data" | jq -r '.priority')
 task_number=$(echo "$ARGUMENTS" | awk '{print $1}')
 
 # 2. Validate state.json exists
-if [ ! -f .opencode/specs/state.json ]; then
+if [ ! -f specs/state.json ]; then
   echo "Error: state.json not found. Run /meta to regenerate."
   exit 1
 fi
@@ -447,7 +447,7 @@ fi
 # 3. Lookup task in state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ -z "$task_data" ]; then
   echo "Error: Task $task_number not found"
@@ -475,7 +475,7 @@ esac
 ### Multi-File Synchronization
 
 Commands that create or update plans must keep status synchronized across:
-- `.opencode/specs/TODO.md` (user-facing task list)
+- `specs/TODO.md` (user-facing task list)
 - `state.json` (global project state)
 - Plan files (implementation plans)
 
@@ -551,9 +551,9 @@ If any file write fails during commit:
 
 ```bash
 # Validate JSON syntax
-jq empty .opencode/specs/state.json
-jq empty .opencode/specs/archive/state.json
-jq empty .opencode/specs/maintenance/state.json
+jq empty specs/state.json
+jq empty specs/archive/state.json
+jq empty specs/maintenance/state.json
 ```
 
 ---
@@ -645,13 +645,13 @@ When updating status, preserve previous timestamps:
 # Project Structure Guide
 
 ## Overview
-Organization of .opencode/specs/ directory for project-based artifact management. All artifacts must comply with lazy directory creation and the no-emojis standard.
+Organization of specs/ directory for project-based artifact management. All artifacts must comply with lazy directory creation and the no-emojis standard.
 
 ## Directory Structure
 
 ```
-.opencode/specs/
-├── .opencode/specs/TODO.md                          # User-facing master task list
+specs/
+├── specs/TODO.md                          # User-facing master task list
 ├── state.json                       # Global state file
 ├── archive/
 │   ├── state.json                   # Archive state tracking
@@ -718,9 +718,9 @@ Version increments when:
 
 **Command contract boundaries:**
 - `/plan` may create the project directory and initial `plans/implementation-001.md` if missing. Creation is lazy: create the project root and `plans/` only when emitting the plan; do **not** pre-create `reports/` or `summaries/`.
-- `/revise` reuses the existing project directory and plan link from .opencode/specs/TODO.md; it increments the plan version in the same `plans/` folder and must **not** create new project directories or change numbering.
-- If no plan link exists in .opencode/specs/TODO.md, `/revise` must fail gracefully and instruct the user to run `/plan` first.
-- `/implement` reuses the plan path attached in .opencode/specs/TODO.md when present and updates that plan in place while executing. When no plan link exists on the TODO entry, `/implement` executes the task directly (no failure) while adhering to lazy directory creation (no project roots/subdirs unless an artifact is written) and keeping numbering/state sync intact. When /implement execution writes implementation artifacts, it must also emit an implementation summary in `summaries/implementation-summary-YYYYMMDD.md`; status-only paths do not emit summaries.
+- `/revise` reuses the existing project directory and plan link from specs/TODO.md; it increments the plan version in the same `plans/` folder and must **not** create new project directories or change numbering.
+- If no plan link exists in specs/TODO.md, `/revise` must fail gracefully and instruct the user to run `/plan` first.
+- `/implement` reuses the plan path attached in specs/TODO.md when present and updates that plan in place while executing. When no plan link exists on the TODO entry, `/implement` executes the task directly (no failure) while adhering to lazy directory creation (no project roots/subdirs unless an artifact is written) and keeping numbering/state sync intact. When /implement execution writes implementation artifacts, it must also emit an implementation summary in `summaries/implementation-summary-YYYYMMDD.md`; status-only paths do not emit summaries.
 - `/implement`, `/task`, `/review`, and `/todo` must update IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md together when their operations change task/plan/implementation status or sorry/tactic counts.
 - `/research` and researcher agents: create the project root immediately before writing the first research artifact, and create only `reports/` (no `plans/` or `summaries/`) when emitting that artifact; do **not** pre-create other subdirs or placeholders.
 
@@ -758,7 +758,7 @@ Contains brief summaries for quick reference. **All detailed artifacts MUST have
 - Status markers must align with `.opencode/context/core/standards/status-markers.md`.
 - Commands and agents should load these standards in their context when producing corresponding artifacts.
 
-## .opencode/specs/TODO.md Format
+## specs/TODO.md Format
 
 ```markdown
 # TODO - LEAN 4 ProofChecker
@@ -806,7 +806,7 @@ Contains brief summaries for quick reference. **All detailed artifacts MUST have
 6. **Keep summaries brief** (1-2 pages max).
 7. **Link TODO items** to relevant reports/plans.
 8. **Update state files** after every operation.
-9. **Sync .opencode/specs/TODO.md** with project progress.
+9. **Sync specs/TODO.md** with project progress.
 10. **Lean routing**: Use the TODO task `Language` field as the primary Lean intent signal (explicit `--lang` flag overrides; plan `lean:` is secondary). For Lean tasks, route `/implement` to the Lean research subagent when research is requested and the Lean implementation subagent when implementation is requested; validate required MCP servers from `.mcp.json` (at minimum `lean-lsp` via `uvx lean-lsp-mcp`) before creating project roots. If validation fails, return remediation steps and avoid filesystem changes.
 
 ## Context Window Protection via Metadata Passing

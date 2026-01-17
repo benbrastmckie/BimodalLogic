@@ -45,7 +45,7 @@ This document describes the complete planning workflow executed by the planner s
 **Process**:
 1. Read task from TODO.md using grep (selective loading):
    ```bash
-   grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+   grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
    ```
 2. Extract task metadata:
    - Task number
@@ -142,7 +142,7 @@ This document describes the complete planning workflow executed by the planner s
 
 **Process**:
 1. Create plan file:
-   - Path: `.opencode/specs/{number}_{slug}/plans/implementation-{version:03d}.md`
+   - Path: `specs/{number}_{slug}/plans/implementation-{version:03d}.md`
    - Version: 001 for initial plan, incremented for revisions
    - Directory created lazily when writing
 2. Write plan metadata (frontmatter):
@@ -393,7 +393,7 @@ Planner loads context on-demand per `.opencode/context/index.md`:
 ### Task Not Found
 
 ```
-Error: Task {task_number} not found in .opencode/specs/TODO.md
+Error: Task {task_number} not found in specs/TODO.md
 
 Recommendation: Verify task number exists in TODO.md
 ```
@@ -476,7 +476,7 @@ All plans must follow `.opencode/context/core/standards/plan.md` template:
 ### Atomic Updates
 
 Status updates delegated to `status-sync-manager` for atomic synchronization:
-- `.opencode/specs/TODO.md` (status, timestamps, plan link)
+- `specs/TODO.md` (status, timestamps, plan link)
 - `state.json` (status, timestamps, plan_path, plan_metadata)
 - Project state.json (lazy created if needed)
 
@@ -485,7 +485,7 @@ Two-phase commit ensures consistency across all files.
 ### Lazy Directory Creation
 
 Directories created only when writing artifacts:
-- `.opencode/specs/{task_number}_{slug}/` created when writing plan
+- `specs/{task_number}_{slug}/` created when writing plan
 - `plans/` subdirectory created when writing implementation-001.md
 
 No directories created during routing or validation stages.
@@ -510,7 +510,7 @@ If no research available, planner proceeds without research context.
 Extract only specific task entry from TODO.md to reduce context load:
 
 ```bash
-grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
 ```
 
 **Impact**: Reduces context from 109KB (full TODO.md) to ~2KB (task entry only), 98% reduction.

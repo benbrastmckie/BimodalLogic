@@ -195,19 +195,19 @@ The /meta command automatically detects which mode to use based on $ARGUMENTS:
 
 This command creates the following artifacts:
 
-- **Task Entries**: `.opencode/specs/TODO.md`
+- **Task Entries**: `specs/TODO.md`
   - Task entries for each component to be implemented
   - Type field set to 'meta' for meta-related tasks
   - Status set to [NOT STARTED]
   - Links to plan artifacts
 
-- **Plan Artifacts**: `.opencode/specs/NNN_task_name/plans/implementation-001.md`
+- **Plan Artifacts**: `specs/NNN_task_name/plans/implementation-001.md`
   - Detailed implementation plans for each task
   - Self-documenting with metadata, phases, and estimates
   - Follows plan.md standard
   - ONLY artifact type created (no research or summary artifacts)
 
-- **State Tracking**: Updates to `.opencode/specs/state.json`
+- **State Tracking**: Updates to `specs/state.json`
   - Task metadata in active_projects array
   - Incremented next_project_number for each task
   - Type field set to 'meta' for meta tasks

@@ -13,7 +13,7 @@
       "researched": "2026-01-16",
       "last_updated": "2026-01-16",
       "artifacts": [
-        ".opencode/specs/505_bimodal_metalogic_restructuring/reports/research-001.md"
+        "specs/505_bimodal_metalogic_restructuring/reports/research-001.md"
       ],
       "research_summary": "Research completed. Proposed unified architecture with hierarchical metalogic structure, unified provability hierarchy, and integration of completeness, decidability, and representation theory.",
       "estimated_hours": 100.0
@@ -31,7 +31,7 @@
       "research_completed": "2026-01-04",
       "last_updated": "2026-01-04",
       "artifacts": [
-        ".opencode/specs/259_automation_tactics/reports/research-001.md"
+        "specs/259_automation_tactics/reports/research-001.md"
       ],
       "research_summary": "Research completed on automation tactics implementation. Found 10/12 tactics fully implemented (83% complete), 2 tactics with infrastructure ready but delegating to tm_auto. Aesop integration functional with 2 noncomputable errors. ProofSearch.lean provides production-ready bounded search infrastructure (461 lines). Revised effort estimate: 17-23 hours (down from 40-60 hours).",
       "estimated_hours": 20.0
@@ -46,7 +46,7 @@
       "created": "2026-01-04T17:55:39Z",
       "artifacts": {
         "plans": [
-          ".opencode/specs/260_investigate_claude_code_cli_argument_mechanism/plans/implementation-001.md"
+          "specs/260_investigate_claude_code_cli_argument_mechanism/plans/implementation-001.md"
         ]
       }
     },
@@ -63,7 +63,7 @@
       ],
       "artifacts": {
         "plans": [
-          ".opencode/specs/261_redesign_argument_passing_mechanism/plans/implementation-001.md"
+          "specs/261_redesign_argument_passing_mechanism/plans/implementation-001.md"
         ]
       }
     },
@@ -80,7 +80,7 @@
       ],
       "artifacts": {
         "plans": [
-          ".opencode/specs/262_update_orchestrator_for_new_argument_mechanism/plans/implementation-001.md"
+          "specs/262_update_orchestrator_for_new_argument_mechanism/plans/implementation-001.md"
         ]
       }
     },
@@ -98,7 +98,7 @@
       ],
       "artifacts": {
         "plans": [
-          ".opencode/specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md"
+          "specs/263_update_all_commands_for_new_argument_mechanism/plans/implementation-001.md"
         ]
       }
     },
@@ -116,7 +116,7 @@
       ],
       "artifacts": {
         "plans": [
-          ".opencode/specs/264_test_and_document_argument_passing/plans/implementation-001.md"
+          "specs/264_test_and_document_argument_passing/plans/implementation-001.md"
         ]
       }
     },
@@ -196,11 +196,11 @@
       "completed": "2026-01-05",
       "estimated_hours": 7.0,
       "artifacts": [
-        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md",
-        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
-        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
-        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
-        ".opencode/specs/321_fix_workflow_command_preflight_status_update_failures/summaries/implementation-summary-20260105.md"
+        "specs/321_fix_workflow_command_preflight_status_update_failures/reports/research-001.md",
+        "specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-001.md",
+        "specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-002.md",
+        "specs/321_fix_workflow_command_preflight_status_update_failures/plans/implementation-003.md",
+        "specs/321_fix_workflow_command_preflight_status_update_failures/summaries/implementation-summary-20260105.md"
       ]
     }
   ],

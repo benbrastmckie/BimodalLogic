@@ -29,7 +29,7 @@ Multiple processes attempting to update task status at the same time. The first 
 1. **Identify which process is active:**
    ```bash
    # Check for recent status updates in state.json
-   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber)) | .last_updated' .opencode/specs/state.json
+   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber)) | .last_updated' specs/state.json
    ```
 
 2. **Wait for active process to complete:**
@@ -77,16 +77,16 @@ Workflow command crashed, timed out, or was interrupted before completing postfl
    ps aux | grep -i "research\|plan\|implement"
    
    # Check timestamp in state.json
-   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber)) | .last_updated' .opencode/specs/state.json
+   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber)) | .last_updated' specs/state.json
    ```
 
 2. **Check for partial artifacts:**
    ```bash
    # List artifacts in task directory
-   ls -la .opencode/specs/TASK_NUMBER_*/
+   ls -la specs/TASK_NUMBER_*/
    
    # Check for incomplete reports/plans/summaries
-   find .opencode/specs/TASK_NUMBER_*/ -type f -name "*.md"
+   find specs/TASK_NUMBER_*/ -type f -name "*.md"
    ```
 
 3. **Determine recovery strategy:**
@@ -108,7 +108,7 @@ Workflow command crashed, timed out, or was interrupted before completing postfl
    /task --sync TASK_NUMBER
    
    # Remove partial artifacts if needed
-   rm -rf .opencode/specs/TASK_NUMBER_*/reports/research-*.md  # example
+   rm -rf specs/TASK_NUMBER_*/reports/research-*.md  # example
    
    # Re-run command from scratch
    /research TASK_NUMBER
@@ -117,10 +117,10 @@ Workflow command crashed, timed out, or was interrupted before completing postfl
 4. **Verify status reset:**
    ```bash
    # Check status in TODO.md
-   grep -A 5 "^### TASK_NUMBER\." .opencode/specs/TODO.md
+   grep -A 5 "^### TASK_NUMBER\." specs/TODO.md
    
    # Check status in state.json
-   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' .opencode/specs/state.json
+   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' specs/state.json
    ```
 
 ### Prevention Tips
@@ -213,22 +213,22 @@ Two-phase commit rollback failed due to file system issues, permission errors, o
 1. **Identify which files are inconsistent:**
    ```bash
    # Check TODO.md status
-   grep -A 5 "^### TASK_NUMBER\." .opencode/specs/TODO.md | grep -E "\[(RESEARCHING|PLANNING|IMPLEMENTING|RESEARCHED|PLANNED|COMPLETED)\]"
+   grep -A 5 "^### TASK_NUMBER\." specs/TODO.md | grep -E "\[(RESEARCHING|PLANNING|IMPLEMENTING|RESEARCHED|PLANNED|COMPLETED)\]"
    
    # Check state.json status
-   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' .opencode/specs/state.json
+   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' specs/state.json
    ```
 
 2. **Determine correct status:**
    - Check git history to see last known good state:
      ```bash
-     git log --oneline -10 -- .opencode/specs/TODO.md .opencode/specs/state.json
-     git show HEAD:.opencode/specs/TODO.md | grep -A 5 "^### TASK_NUMBER\."
+     git log --oneline -10 -- specs/TODO.md specs/state.json
+     git show HEAD:specs/TODO.md | grep -A 5 "^### TASK_NUMBER\."
      ```
    
    - Check for artifacts to determine actual completion state:
      ```bash
-     ls -la .opencode/specs/TASK_NUMBER_*/
+     ls -la specs/TASK_NUMBER_*/
      ```
 
 3. **Manually synchronize files:**
@@ -241,7 +241,7 @@ Two-phase commit rollback failed due to file system issues, permission errors, o
    **Option B: Manual git revert (if /task --sync fails)**
    ```bash
    # Revert to last known good state
-   git checkout HEAD -- .opencode/specs/TODO.md .opencode/specs/state.json
+   git checkout HEAD -- specs/TODO.md specs/state.json
    
    # Re-run workflow command
    /research TASK_NUMBER  # or appropriate command
@@ -250,11 +250,11 @@ Two-phase commit rollback failed due to file system issues, permission errors, o
    **Option C: Manual file editing (last resort)**
    ```bash
    # Edit TODO.md to match state.json
-   vim .opencode/specs/TODO.md
+   vim specs/TODO.md
    # Find task entry and update status marker
    
    # Or edit state.json to match TODO.md
-   vim .opencode/specs/state.json
+   vim specs/state.json
    # Update "status" field for task
    
    # Verify consistency
@@ -264,14 +264,14 @@ Two-phase commit rollback failed due to file system issues, permission errors, o
 4. **Verify synchronization:**
    ```bash
    # Check both files have same status
-   grep -A 5 "^### TASK_NUMBER\." .opencode/specs/TODO.md
-   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber))' .opencode/specs/state.json
+   grep -A 5 "^### TASK_NUMBER\." specs/TODO.md
+   jq -r --arg num "TASK_NUMBER" '.active_projects[] | select(.project_number == ($num | tonumber))' specs/state.json
    ```
 
 ### Prevention Tips
 
 - **Monitor disk space**: Ensure adequate disk space before running workflow commands
-- **Check file permissions**: Verify write permissions on .opencode/specs/ directory
+- **Check file permissions**: Verify write permissions on specs/ directory
 - **Avoid manual edits**: Don't manually edit TODO.md or state.json while commands are running
 - **Use /task --sync regularly**: Run `/task --sync` to detect and fix inconsistencies early
 
@@ -295,10 +295,10 @@ Command execution exceeded configured timeout. This can happen for complex tasks
 1. **Check for partial artifacts:**
    ```bash
    # List all artifacts in task directory
-   find .opencode/specs/TASK_NUMBER_*/ -type f -name "*.md"
+   find specs/TASK_NUMBER_*/ -type f -name "*.md"
    
    # Check file sizes and timestamps
-   ls -lh .opencode/specs/TASK_NUMBER_*/
+   ls -lh specs/TASK_NUMBER_*/
    ```
 
 2. **Determine if work is salvageable:**
@@ -316,7 +316,7 @@ Command execution exceeded configured timeout. This can happen for complex tasks
    /task --sync TASK_NUMBER
    
    # Remove incomplete artifacts
-   rm -rf .opencode/specs/TASK_NUMBER_*/reports/research-*.md  # example
+   rm -rf specs/TASK_NUMBER_*/reports/research-*.md  # example
    
    # Re-run command with increased timeout (if possible)
    /research TASK_NUMBER  # Will use default timeout
@@ -351,8 +351,8 @@ For any status conflict or edge case:
 
 1. **Assess the situation:**
    - Check current status: `/task TASK_NUMBER`
-   - Check timestamps: `jq -r '.active_projects[] | select(.project_number == TASK_NUMBER)' .opencode/specs/state.json`
-   - Check for artifacts: `ls -la .opencode/specs/TASK_NUMBER_*/`
+   - Check timestamps: `jq -r '.active_projects[] | select(.project_number == TASK_NUMBER)' specs/state.json`
+   - Check for artifacts: `ls -la specs/TASK_NUMBER_*/`
 
 2. **Use /task --sync command (first line of defense):**
    ```bash
@@ -381,7 +381,7 @@ If you encounter a status conflict not covered in this document:
 
 1. **Check git history:**
    ```bash
-   git log --oneline -20 -- .opencode/specs/TODO.md .opencode/specs/state.json
+   git log --oneline -20 -- specs/TODO.md specs/state.json
    ```
 
 2. **Check for error logs:**
@@ -392,8 +392,8 @@ If you encounter a status conflict not covered in this document:
 
 3. **Create a backup before manual intervention:**
    ```bash
-   cp .opencode/specs/TODO.md .opencode/specs/TODO.md.backup
-   cp .opencode/specs/state.json .opencode/specs/state.json.backup
+   cp specs/TODO.md specs/TODO.md.backup
+   cp specs/state.json specs/state.json.backup
    ```
 
 4. **Document the new edge case:**

@@ -15,7 +15,7 @@ tools:
   task: false
 permissions:
   allow:
-    - read: [".opencode/specs/state.json"]
+    - read: ["specs/state.json"]
   deny:
     - write: ["**/*"]
     - edit: ["**/*"]

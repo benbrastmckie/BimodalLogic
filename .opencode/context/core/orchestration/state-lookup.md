@@ -30,7 +30,7 @@ Command files need to validate tasks and extract metadata (language, status, des
 # Lookup task in state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Validate task exists
 if [ -z "$task_data" ]; then
@@ -62,7 +62,7 @@ created=$(echo "$task_data" | jq -r '.created // ""')
 # Fast existence check (returns project_number or empty)
 exists=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .project_number' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ -z "$exists" ]; then
   echo "Error: Task $task_number not found in state.json"
@@ -92,13 +92,13 @@ fi
 # 2. Lookup task in state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Validate task exists
 if [ -z "$task_data" ]; then
   echo "Error: Task $task_number not found in state.json"
   echo ""
-  echo "Available tasks: jq '.active_projects[].project_number' .opencode/specs/state.json"
+  echo "Available tasks: jq '.active_projects[].project_number' specs/state.json"
   exit 1
 fi
 
@@ -162,7 +162,7 @@ if [[ "$ARGUMENTS" =~ ^([0-9]+)-([0-9]+)$ ]]; then
   for num in $(seq "$start_num" "$end_num"); do
     task_data=$(jq -r --arg num "$num" \
       '.active_projects[] | select(.project_number == ($num | tonumber))' \
-      .opencode/specs/state.json)
+      specs/state.json)
     
     if [ -z "$task_data" ]; then
       echo "Error: Task $num not found in range"
@@ -192,7 +192,7 @@ fi
 ```bash
 # Get all tasks with status "in_progress"
 in_progress_tasks=$(jq -r '.active_projects[] | select(.status == "in_progress") | .project_number' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Count tasks
 count=$(echo "$in_progress_tasks" | wc -l)
@@ -202,7 +202,7 @@ echo "Found $count tasks in progress"
 for num in $in_progress_tasks; do
   task_data=$(jq -r --arg num "$num" \
     '.active_projects[] | select(.project_number == ($num | tonumber))' \
-    .opencode/specs/state.json)
+    specs/state.json)
   
   project_name=$(echo "$task_data" | jq -r '.project_name')
   echo "Task $num: $project_name"
@@ -216,13 +216,13 @@ done
 ```bash
 # Get all Lean tasks
 lean_tasks=$(jq -r '.active_projects[] | select(.language == "lean") | .project_number' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Process each task
 for num in $lean_tasks; do
   task_data=$(jq -r --arg num "$num" \
     '.active_projects[] | select(.project_number == ($num | tonumber))' \
-    .opencode/specs/state.json)
+    specs/state.json)
   
   project_name=$(echo "$task_data" | jq -r '.project_name')
   status=$(echo "$task_data" | jq -r '.status')
@@ -236,7 +236,7 @@ done
 
 ```bash
 # Validate state.json exists
-if [ ! -f .opencode/specs/state.json ]; then
+if [ ! -f specs/state.json ]; then
   echo "Error: state.json not found"
   echo ""
   echo "Run /meta to regenerate state.json"
@@ -248,7 +248,7 @@ fi
 
 ```bash
 # Validate state.json is valid JSON
-if ! jq empty .opencode/specs/state.json 2>/dev/null; then
+if ! jq empty specs/state.json 2>/dev/null; then
   echo "Error: state.json is corrupt or invalid JSON"
   echo ""
   echo "Run /meta to regenerate state.json"
@@ -278,9 +278,9 @@ if [ -z "$task_data" ]; then
   echo ""
   echo "Available tasks:"
   jq -r '.active_projects[] | "\(.project_number). \(.project_name) [\(.status)]"' \
-    .opencode/specs/state.json | head -20
+    specs/state.json | head -20
   echo ""
-  echo "Run 'cat .opencode/specs/TODO.md' to see all tasks"
+  echo "Run 'cat specs/TODO.md' to see all tasks"
   exit 1
 fi
 ```
@@ -325,7 +325,7 @@ fi
 # ✅ Good: Check task exists before extracting fields
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ -z "$task_data" ]; then
   echo "Error: Task not found"
@@ -335,7 +335,7 @@ fi
 # ❌ Bad: Extract fields without checking
 language=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .language' \
-  .opencode/specs/state.json)
+  specs/state.json)
 # If task doesn't exist, language will be empty with no error
 ```
 
@@ -361,28 +361,28 @@ project_name=$(echo "$task_data" | jq -r '.project_name')
 # ❌ Bad: Multiple jq calls (slower)
 language=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .language' \
-  .opencode/specs/state.json)
+  specs/state.json)
 status=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-  .opencode/specs/state.json)
+  specs/state.json)
 ```
 
 ### 4. Validate state.json Before Use
 
 ```bash
 # ✅ Good: Check file exists and is valid JSON
-if [ ! -f .opencode/specs/state.json ]; then
+if [ ! -f specs/state.json ]; then
   echo "Error: state.json not found"
   exit 1
 fi
 
-if ! jq empty .opencode/specs/state.json 2>/dev/null; then
+if ! jq empty specs/state.json 2>/dev/null; then
   echo "Error: state.json is corrupt"
   exit 1
 fi
 
 # ❌ Bad: Assume file exists and is valid
-task_data=$(jq -r ... .opencode/specs/state.json)
+task_data=$(jq -r ... specs/state.json)
 ```
 
 ### 5. Provide Helpful Error Messages
@@ -394,7 +394,7 @@ if [ -z "$task_data" ]; then
   echo ""
   echo "Available tasks:"
   jq -r '.active_projects[] | "\(.project_number). \(.project_name)"' \
-    .opencode/specs/state.json | head -10
+    specs/state.json | head -10
   exit 1
 fi
 
@@ -420,7 +420,7 @@ Command files should use state.json for:
 # Read from state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 language=$(echo "$task_data" | jq -r '.language // "general"')
 status=$(echo "$task_data" | jq -r '.status')
@@ -461,7 +461,7 @@ status-sync-manager ensures:
 ```bash
 # Stage 1: ParseAndValidate
 # Read TODO.md
-todo_content=$(cat .opencode/specs/TODO.md)
+todo_content=$(cat specs/TODO.md)
 
 # Search for task
 task_entry=$(echo "$todo_content" | grep -A 20 "### ${task_number}\.")
@@ -490,7 +490,7 @@ fi
 # Lookup task in state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ -z "$task_data" ]; then
   echo "Error: Task not found"
@@ -524,7 +524,7 @@ task_number=$(echo "$ARGUMENTS" | awk '{print $1}')
 # 2. Lookup task in state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ -z "$task_data" ]; then
   echo "Error: Task $task_number not found"
@@ -574,7 +574,7 @@ task_number=$(echo "$ARGUMENTS" | awk '{print $1}')
 # 2. Lookup task in state.json
 task_data=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 if [ -z "$task_data" ]; then
   echo "Error: Task $task_number not found"
@@ -641,16 +641,16 @@ task(
 ```bash
 # Query completed tasks (fast, ~5ms)
 completed_tasks=$(jq -r '.active_projects[] | select(.status == "completed") | .project_number' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Query abandoned tasks (fast, ~5ms)
 abandoned_tasks=$(jq -r '.active_projects[] | select(.status == "abandoned") | .project_number' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Get metadata for archival (fast, ~5ms)
 archival_data=$(jq -r '.active_projects[] | select(.status == "completed" or .status == "abandoned") | 
   {project_number, project_name, status, completed, abandoned, abandonment_reason}' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Count total tasks to archive
 total_count=$(echo "$archival_data" | jq -s 'length')
@@ -666,7 +666,7 @@ echo "Found $total_count tasks to archive"
 
 ```bash
 # Prepare task metadata
-task_number=$(jq -r '.next_project_number' .opencode/specs/state.json)
+task_number=$(jq -r '.next_project_number' specs/state.json)
 title="Implement feature X"
 description="Create a new feature that does X, Y, and Z. This will improve performance by 10x."
 priority="High"
@@ -695,7 +695,7 @@ task(
 ```bash
 # Get task numbers to archive (from Pattern 5)
 task_numbers=$(jq -r '.active_projects[] | select(.status == "completed" or .status == "abandoned") | .project_number' \
-  .opencode/specs/state.json | tr '\n' ',' | sed 's/,$//')
+  specs/state.json | tr '\n' ',' | sed 's/,$//')
 
 # Delegate to status-sync-manager for atomic archival
 task(
@@ -719,7 +719,7 @@ task(
 # Get all tasks with description field
 tasks_with_desc=$(jq -r '.active_projects[] | select(.description != null) | 
   {project_number, project_name, description}' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Count tasks with description
 desc_count=$(echo "$tasks_with_desc" | jq -s 'length')
@@ -728,7 +728,7 @@ echo "Found $desc_count tasks with description field"
 # Get description for specific task
 task_desc=$(jq -r --arg num "$task_number" \
   '.active_projects[] | select(.project_number == ($num | tonumber)) | .description // ""' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Validate description length (should be 50-500 chars)
 desc_len=$(echo -n "$task_desc" | wc -c)
@@ -749,7 +749,7 @@ fi
 # Get all Lean tasks
 lean_tasks=$(jq -r '.active_projects[] | select(.language == "lean") | 
   {project_number, project_name, status, description}' \
-  .opencode/specs/state.json)
+  specs/state.json)
 
 # Count Lean tasks by status
 not_started=$(echo "$lean_tasks" | jq -s '[.[] | select(.status == "not_started")] | length')
@@ -767,10 +767,10 @@ echo "Lean tasks: $not_started not started, $in_progress in progress, $completed
 
 ```bash
 # Count tasks in TODO.md
-todo_count=$(grep -c "^### [0-9]\+\." .opencode/specs/TODO.md)
+todo_count=$(grep -c "^### [0-9]\+\." specs/TODO.md)
 
 # Count tasks in state.json
-state_count=$(jq -r '.active_projects | length' .opencode/specs/state.json)
+state_count=$(jq -r '.active_projects | length' specs/state.json)
 
 # Compare counts
 if [ "$todo_count" -eq "$state_count" ]; then
@@ -780,8 +780,8 @@ else
 fi
 
 # Verify each task in state.json exists in TODO.md
-jq -r '.active_projects[].project_number' .opencode/specs/state.json | while read num; do
-  if grep -q "^### ${num}\." .opencode/specs/TODO.md; then
+jq -r '.active_projects[].project_number' specs/state.json | while read num; do
+  if grep -q "^### ${num}\." specs/TODO.md; then
     echo "✅ Task ${num} consistent"
   else
     echo "❌ Task ${num} missing from TODO.md"
@@ -790,8 +790,8 @@ done
 
 # Check description field consistency
 jq -r '.active_projects[] | select(.description != null) | .project_number' \
-  .opencode/specs/state.json | while read num; do
-  if grep -A 20 "^### ${num}\." .opencode/specs/TODO.md | grep -q "^\*\*Description\*\*:"; then
+  specs/state.json | while read num; do
+  if grep -A 20 "^### ${num}\." specs/TODO.md | grep -q "^\*\*Description\*\*:"; then
     echo "✅ Task ${num} has Description in both files"
   else
     echo "❌ Task ${num} missing Description in TODO.md"
@@ -840,7 +840,7 @@ done
 **Last Updated**: 2026-01-05
 **Related Documents**:
 - `.opencode/context/core/system/state-management.md` - State management overview
-- `.opencode/specs/state-json-optimization-plan.md` - Phase 1 optimization plan
-- `.opencode/specs/state-json-phase2-optimization-plan.md` - Phase 2 optimization plan
+- `specs/state-json-optimization-plan.md` - Phase 1 optimization plan
+- `specs/state-json-phase2-optimization-plan.md` - Phase 2 optimization plan
 - `.opencode/agent/subagents/status-sync-manager.md` - Synchronization mechanism
-- `.opencode/specs/state-json-phase2-testing-guide.md` - Testing guide
+- `specs/state-json-phase2-testing-guide.md` - Testing guide

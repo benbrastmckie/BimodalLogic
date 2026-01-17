@@ -13,7 +13,7 @@ tools:
 permissions:
   allow:
     - read: [".opencode/context/**/*"]
-    - write: [".opencode/workflows/**/*", ".opencode/specs/**/*"]
+    - write: [".opencode/workflows/**/*", "specs/**/*"]
   deny:
     - write: [".git/**/*"]
 context_loading:

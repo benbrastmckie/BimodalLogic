@@ -63,10 +63,10 @@ Analyzes codebase, updates registries (IMPLEMENTATION_STATUS, SORRY_REGISTRY, TA
          - If none found: Error "Registry files not found"
       
       3. Read next_project_number from state.json
-         - next_num=$(jq -r '.next_project_number' .opencode/specs/state.json)
+         - next_num=$(jq -r '.next_project_number' specs/state.json)
          - If fails: Error "Run /meta to regenerate state.json"
       
-      4. Generate project_path: .opencode/specs/${next_num}_codebase_review
+      4. Generate project_path: specs/${next_num}_codebase_review
     </process>
     <checkpoint>Scope validated, registries loaded, project path generated</checkpoint>
   </stage>

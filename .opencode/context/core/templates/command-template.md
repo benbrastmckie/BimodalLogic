@@ -63,7 +63,7 @@ context_loading:
     # Validate and lookup task (8x faster than TODO.md parsing)
     task_data=$(jq -r --arg num "$task_number" \
       '.active_projects[] | select(.project_number == ($num | tonumber))' \
-      .opencode/specs/state.json)
+      specs/state.json)
     
     if [ -z "$task_data" ]; then
       echo "Error: Task $task_number not found"
@@ -210,7 +210,7 @@ context_loading:
     # Lookup task in state.json (8x faster than TODO.md)
     task_data=$(jq -r --arg num "$task_number" \
       '.active_projects[] | select(.project_number == ($num | tonumber))' \
-      .opencode/specs/state.json)
+      specs/state.json)
     
     # Extract language with default fallback
     language=$(echo "$task_data" | jq -r '.language // "general"')

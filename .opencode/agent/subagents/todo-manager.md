@@ -13,8 +13,8 @@ tools:
   bash: true
 permissions:
   allow:
-    - read: [".opencode/specs/**/*", ".opencode/scripts/**/*"]
-    - write: [".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/specs/archive/**/*"]
+    - read: ["specs/**/*", ".opencode/scripts/**/*"]
+    - write: ["specs/TODO.md", "specs/state.json", "specs/archive/**/*"]
     - bash: ["date", "jq", "python3", "git", "mv", "mkdir"]
   deny:
     - bash: ["rm", "sudo", "su", "lake", "lean", "cargo", "npm"]
@@ -49,7 +49,7 @@ lifecycle:
 </role>
 
 <task>
-  Archive completed and abandoned tasks from .opencode/specs/TODO.md, move project directories to archive,
+  Archive completed and abandoned tasks from specs/TODO.md, move project directories to archive,
   update state.json and archive/state.json atomically, preserve task numbering and all artifacts
 </task>
 
@@ -88,8 +88,8 @@ lifecycle:
          - If validation fails: Return error status
       
       2. Validate file existence:
-         - Check .opencode/specs/TODO.md exists and is readable
-         - Check .opencode/specs/state.json exists and is readable
+         - Check specs/TODO.md exists and is readable
+         - Check specs/state.json exists and is readable
          - If files missing: Return error with file path
       
       3. Validate JSON structure:
@@ -123,13 +123,13 @@ lifecycle:
          - core/standards/git-safety.md (git commit patterns)
       
       2. Load data files:
-         - Read .opencode/specs/TODO.md content
-         - Read .opencode/specs/state.json content
+         - Read specs/TODO.md content
+         - Read specs/state.json content
          - Parse state.json as JSON
       
       3. Check archive infrastructure:
-         - Check if .opencode/specs/archive/ directory exists
-         - Check if .opencode/specs/archive/state.json exists
+         - Check if specs/archive/ directory exists
+         - Check if specs/archive/state.json exists
          - If archive/state.json missing: Prepare to create from template (self-healing)
       
       4. Verify context loaded successfully:
@@ -150,14 +150,14 @@ lifecycle:
     <action>Query state.json for completed and abandoned tasks</action>
     <process>
       1. Query completed tasks (fast, ~5ms):
-         completed_tasks=$(jq -r '.active_projects[] | select(.status == "completed") | .project_number' .opencode/specs/state.json)
+         completed_tasks=$(jq -r '.active_projects[] | select(.status == "completed") | .project_number' specs/state.json)
       
       2. Query abandoned tasks (fast, ~5ms):
-         abandoned_tasks=$(jq -r '.active_projects[] | select(.status == "abandoned") | .project_number' .opencode/specs/state.json)
+         abandoned_tasks=$(jq -r '.active_projects[] | select(.status == "abandoned") | .project_number' specs/state.json)
       
       3. Get metadata for archival (fast, ~5ms):
          archival_data=$(jq -r '.active_projects[] | select(.status == "completed" or .status == "abandoned") | 
-           {project_number, project_name, status, completed, abandoned, abandonment_reason}' .opencode/specs/state.json)
+           {project_number, project_name, status, completed, abandoned, abandonment_reason}' specs/state.json)
       
       4. Count total tasks to archive:
          - completed_count = count of completed tasks
@@ -244,9 +244,9 @@ lifecycle:
       
       2. Create pre-cleanup snapshot commit:
          - Stage TODO.md, state.json, archive/state.json:
-           * git add .opencode/specs/TODO.md
-           * git add .opencode/specs/state.json
-           * git add .opencode/specs/archive/state.json (if exists)
+           * git add specs/TODO.md
+           * git add specs/state.json
+           * git add specs/archive/state.json (if exists)
          - Create commit: "todo: snapshot before archiving {total_count} tasks (task 337)"
          - If commit fails:
            * Log error with details
@@ -268,7 +268,7 @@ lifecycle:
       5. On failure (exit code != 0):
          - Rollback pre-cleanup commit: git reset --hard HEAD~1
          - Verify rollback succeeded:
-           * Check .opencode/specs/TODO.md matches pre-archival state
+           * Check specs/TODO.md matches pre-archival state
            * Check state.json matches pre-archival state
          - Log error to errors.json:
            * Event: "todo_cleanup_script_failed"
@@ -290,7 +290,7 @@ lifecycle:
       If script fails (exit code != 0):
         1. Rollback pre-cleanup commit: git reset --hard HEAD~1
         2. Verify rollback:
-           - Check .opencode/specs/TODO.md matches pre-archival state
+           - Check specs/TODO.md matches pre-archival state
            - Check state.json matches pre-archival state
         3. Log error to errors.json:
            - Event: "todo_cleanup_script_failed"
@@ -314,10 +314,10 @@ lifecycle:
     <action>Commit archival changes</action>
     <process>
       1. Stage files:
-         - git add .opencode/specs/TODO.md
-         - git add .opencode/specs/state.json
-         - git add .opencode/specs/archive/state.json
-         - git add .opencode/specs/archive/ (pick up moved directories)
+         - git add specs/TODO.md
+         - git add specs/state.json
+         - git add specs/archive/state.json
+         - git add specs/archive/ (pick up moved directories)
       
       2. Verify staged changes:
          - Run: git status --short
@@ -340,7 +340,7 @@ lifecycle:
          - Include in return metadata
     </process>
     <git_commit>
-      Scope: .opencode/specs/TODO.md + state.json + archive/state.json + moved directories
+      Scope: specs/TODO.md + state.json + archive/state.json + moved directories
       Message: "todo: archive {N} completed/abandoned tasks (task 337)"
       
       Non-critical: If commit fails, archival is still complete
@@ -370,7 +370,7 @@ lifecycle:
          - directories_moved: [{number}_{slug}, ...]
          - tasks_without_directories: [{number}: {title}, ...]
          - remaining_active_tasks: {remaining_count}
-         - archive_location: ".opencode/specs/archive/state.json"
+         - archive_location: "specs/archive/state.json"
       
       3. Include task_list if awaiting confirmation:
          - task_list: [{number, title, status}, ...]
@@ -406,7 +406,7 @@ lifecycle:
           "directories_moved": ["250_example_task", "251_another_task"],
           "tasks_without_directories": ["252: Small fix", "253: Quick update"],
           "remaining_active_tasks": 47,
-          "archive_location": ".opencode/specs/archive/state.json"
+          "archive_location": "specs/archive/state.json"
         },
         "git_commit_info": {
           "commit_hash": "abc123def456",
@@ -432,7 +432,7 @@ lifecycle:
   </numbering_preservation>
   <atomic_updates>
     Use two-phase commit for 4 entities:
-      - .opencode/specs/TODO.md
+      - specs/TODO.md
       - state.json
       - archive/state.json
       - Project directories
@@ -445,7 +445,7 @@ lifecycle:
   </artifact_preservation>
   <self_healing>
     Auto-create archive/state.json from template if missing
-    Lazy creation: .opencode/specs/archive/ created only when needed
+    Lazy creation: specs/archive/ created only when needed
   </self_healing>
   <user_confirmation>
     Request confirmation if archiving > 5 tasks

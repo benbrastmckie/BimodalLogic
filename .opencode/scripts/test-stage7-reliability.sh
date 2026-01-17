@@ -54,8 +54,8 @@ verify_stage7_execution() {
   echo "[RUN ${run_number}/${RUNS}] Verifying Stage 7 execution for task ${task_number}"
   
   # Check TODO.md status
-  if grep -q "### ${task_number}\." .opencode/specs/TODO.md; then
-    if grep -A 5 "### ${task_number}\." .opencode/specs/TODO.md | grep -q "\[RESEARCHED\]"; then
+  if grep -q "### ${task_number}\." specs/TODO.md; then
+    if grep -A 5 "### ${task_number}\." specs/TODO.md | grep -q "\[RESEARCHED\]"; then
       echo "  [PASS] TODO.md status: [RESEARCHED]"
       todo_pass=true
     else
@@ -68,8 +68,8 @@ verify_stage7_execution() {
   fi
   
   # Check state.json status
-  if [ -f .opencode/specs/state.json ]; then
-    if jq -e ".tasks[] | select(.task_number == ${task_number}) | select(.status == \"researched\")" .opencode/specs/state.json > /dev/null 2>&1; then
+  if [ -f specs/state.json ]; then
+    if jq -e ".tasks[] | select(.task_number == ${task_number}) | select(.status == \"researched\")" specs/state.json > /dev/null 2>&1; then
       echo "  [PASS] state.json status: researched"
       state_pass=true
     else
@@ -91,7 +91,7 @@ verify_stage7_execution() {
   fi
   
   # Check timestamps
-  if grep -A 10 "### ${task_number}\." .opencode/specs/TODO.md | grep -q "\*\*Started\*\*:"; then
+  if grep -A 10 "### ${task_number}\." specs/TODO.md | grep -q "\*\*Started\*\*:"; then
     echo "  [PASS] Started timestamp present"
     started_pass=true
   else
@@ -99,7 +99,7 @@ verify_stage7_execution() {
     started_pass=false
   fi
   
-  if grep -A 10 "### ${task_number}\." .opencode/specs/TODO.md | grep -q "\*\*Completed\*\*:"; then
+  if grep -A 10 "### ${task_number}\." specs/TODO.md | grep -q "\*\*Completed\*\*:"; then
     echo "  [PASS] Completed timestamp present"
     completed_pass=true
   else

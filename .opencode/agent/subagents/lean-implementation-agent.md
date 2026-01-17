@@ -17,7 +17,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*.lean", "**/*.md", ".opencode/**/*"]
-    - write: ["**/*.lean", ".opencode/specs/**/*"]
+    - write: ["**/*.lean", "specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir", "lake"]
   deny:
     - bash: ["rm -rf", "rm -fr", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
@@ -89,7 +89,7 @@ lifecycle:
     Phase description if implementing specific phase
   </parameter>
   <parameter name="task_description" type="string" optional="true">
-    Task description if not reading from .opencode/specs/TODO.md
+    Task description if not reading from specs/TODO.md
   </parameter>
 </inputs_required>
 
@@ -155,7 +155,7 @@ lifecycle:
            
            VERIFY return:
              - status == "completed" (if "failed", abort with error)
-             - files_updated includes [".opencode/specs/TODO.md", "state.json"]
+             - files_updated includes ["specs/TODO.md", "state.json"]
            
            IF status != "completed":
              - Log error: "Preflight status update failed: {error_message}"
@@ -167,7 +167,7 @@ lifecycle:
          Read state.json to verify status:
            actual_status=$(jq -r --arg num "$task_number" \
              '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-             .opencode/specs/state.json)
+             specs/state.json)
          
          IF actual_status != "implementing":
            - Log error: "Preflight verification failed - status not updated"
@@ -206,7 +206,7 @@ lifecycle:
          d. If task_number not found or invalid: Return failed status with error
       2. If task_description provided: Use directly
       3. Else if plan_path provided: Read phase from plan
-      4. Else: Read task from .opencode/specs/TODO.md
+      4. Else: Read task from specs/TODO.md
       5. Extract Lean-specific requirements (theorems, proofs, tactics)
       6. Identify target Lean files
       7. Determine implementation strategy
@@ -411,7 +411,7 @@ lifecycle:
       
       Directory creation sequence:
       1. Determine if project directory exists from task_number
-      2. If project directory doesn't exist: Create .opencode/specs/{task_number}_{topic}/ immediately before writing first artifact
+      2. If project directory doesn't exist: Create specs/{task_number}_{topic}/ immediately before writing first artifact
       3. Create summaries/ subdirectory only when writing summary artifact (not before)
       4. Never pre-create unused subdirectories (e.g., reports/, plans/)
       5. Never create placeholder files (.gitkeep, README.md, etc.)
@@ -531,7 +531,7 @@ lifecycle:
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/{task_number}_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md",
+          "path": "specs/{task_number}_{task_slug}/summaries/implementation-summary-{YYYYMMDD}.md",
           "summary": "Implementation summary with compilation results"
         }
       ],
@@ -570,7 +570,7 @@ lifecycle:
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/198_new_modal_theorem/summaries/implementation-summary-20251226.md",
+          "path": "specs/198_new_modal_theorem/summaries/implementation-summary-20251226.md",
           "summary": "Implementation summary with compilation results"
         }
       ],
@@ -605,7 +605,7 @@ lifecycle:
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/198_new_modal_theorem/summaries/implementation-summary-20251226.md",
+          "path": "specs/198_new_modal_theorem/summaries/implementation-summary-20251226.md",
           "summary": "Implementation summary (compilation not verified)"
         }
       ],
@@ -646,7 +646,7 @@ lifecycle:
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/198_new_modal_theorem/summaries/implementation-summary-20251226.md",
+          "path": "specs/198_new_modal_theorem/summaries/implementation-summary-20251226.md",
           "summary": "Implementation summary with compilation errors"
         }
       ],
@@ -693,7 +693,7 @@ lifecycle:
     - Verify tool unavailability logged (if applicable)
     - Verify return format matches subagent-return-format.md
     - Verify session_id matches input
-    - Verify artifact paths use absolute format for .opencode/specs/ files
+    - Verify artifact paths use absolute format for specs/ files
   </post_execution>
 </validation_checks>
 

@@ -86,7 +86,7 @@ lifecycle:
     Phase description if implementing a specific phase (called by task-executor)
   </parameter>
   <parameter name="task_description" type="string" optional="true">
-    Task description if not reading from .opencode/specs/TODO.md
+    Task description if not reading from specs/TODO.md
   </parameter>
 </inputs_required>
 
@@ -152,7 +152,7 @@ lifecycle:
            
            VERIFY return:
              - status == "completed" (if "failed", abort with error)
-             - files_updated includes [".opencode/specs/TODO.md", "state.json"]
+             - files_updated includes ["specs/TODO.md", "state.json"]
            
            IF status != "completed":
              - Log error: "Preflight status update failed: {error_message}"
@@ -164,7 +164,7 @@ lifecycle:
          Read state.json to verify status:
            actual_status=$(jq -r --arg num "$task_number" \
              '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-             .opencode/specs/state.json)
+             specs/state.json)
          
          IF actual_status != "implementing":
            - Log error: "Preflight verification failed - status not updated"
@@ -183,7 +183,7 @@ lifecycle:
       1. If task_description provided: Use directly
       2. Else: Extract task entry using grep (selective loading):
          ```bash
-         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+         grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
          ```
       3. Validate extraction succeeded (non-empty file)
       4. Extract task description and requirements
@@ -333,7 +333,7 @@ lifecycle:
         VALIDATE status-sync-manager return:
           - VERIFY return format matches subagent-return-format.md
           - VERIFY status field == "completed" (not "failed" or "partial")
-          - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+          - VERIFY files_updated includes ["specs/TODO.md", "state.json"]
           - VERIFY rollback_performed == false
           - IF validation fails: ABORT with error details
         
@@ -344,7 +344,7 @@ lifecycle:
         Read state.json to verify status:
           actual_status=$(jq -r --arg num "$task_number" \
             '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-            .opencode/specs/state.json)
+            specs/state.json)
         
         IF actual_status != "completed":
           - Log error: "Postflight verification failed - status not updated"
@@ -354,7 +354,7 @@ lifecycle:
         
         Read TODO.md to verify artifact links:
           for artifact_path in {validated_artifacts}:
-            grep -q "$artifact_path" .opencode/specs/TODO.md
+            grep -q "$artifact_path" specs/TODO.md
             IF not found:
               - Log error: "Postflight verification failed - artifact not linked: $artifact_path"
               - Return status: "failed"
@@ -367,8 +367,8 @@ lifecycle:
           "scope_files": [
             "{implementation_files}",
             "{summary_path}",
-            ".opencode/specs/TODO.md",
-            ".opencode/specs/state.json"
+            "specs/TODO.md",
+            "specs/state.json"
           ],
           "message_template": "task {number}: {description}",
           "task_context": {
@@ -403,7 +403,7 @@ lifecycle:
       
       CHECKPOINT: Stage 7 completed
         - [ ] status-sync-manager returned "completed"
-        - [ ] .opencode/specs/TODO.md updated on disk
+        - [ ] specs/TODO.md updated on disk
         - [ ] state.json updated on disk
         - [ ] git-workflow-manager invoked (if status update succeeded)
     </process>
@@ -475,7 +475,7 @@ lifecycle:
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
+          "path": "specs/{task_number}_{topic_slug}/summaries/implementation-summary-20251226.md",
           "summary": "Implementation summary"
         }
       ],
@@ -509,7 +509,7 @@ lifecycle:
         },
         {
           "type": "summary",
-          "path": ".opencode/specs/197_research_readme/summaries/implementation-summary-20251226.md",
+          "path": "specs/197_research_readme/summaries/implementation-summary-20251226.md",
           "summary": "Implementation summary for README creation"
         }
       ],
@@ -620,7 +620,7 @@ lifecycle:
     - Verify language is valid value
     - Verify session_id provided
     - Verify delegation_depth less than 3
-    - Check task description available (from .opencode/specs/TODO.md or parameter)
+    - Check task description available (from specs/TODO.md or parameter)
   </pre_execution>
 
   <post_execution>

@@ -13,7 +13,7 @@ tools:
 permissions:
   allow:
     - read: [".opencode/context/**/*"]
-    - write: [".opencode/agent/**/*", ".opencode/specs/**/*"]
+    - write: [".opencode/agent/**/*", "specs/**/*"]
   deny:
     - write: [".git/**/*"]
 context_loading:
@@ -617,7 +617,7 @@ lifecycle:
         },
         {
           "type": "report",
-          "path": ".opencode/specs/{task_number}_{slug}/reports/agent-generation-{date}.md",
+          "path": "specs/{task_number}_{slug}/reports/agent-generation-{date}.md",
           "summary": "Agent generation report with quality scores"
         }
       ],

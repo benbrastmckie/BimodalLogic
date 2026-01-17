@@ -16,7 +16,7 @@ tools:
 permissions:
   allow:
     - read: [".opencode/**/*", "**/*.md"]
-    - write: [".opencode/specs/**/*"]
+    - write: ["specs/**/*"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "rm -fr", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "systemctl", "apt", "yum", "pip", "eval", "exec"]
@@ -157,7 +157,7 @@ lifecycle:
            
            VERIFY return:
              - status == "completed" (if "failed", abort with error)
-             - files_updated includes [".opencode/specs/TODO.md", "state.json"]
+             - files_updated includes ["specs/TODO.md", "state.json"]
            
            IF status != "completed":
              - Log error: "Preflight status update failed: {error_message}"
@@ -169,7 +169,7 @@ lifecycle:
          Read state.json to verify status:
            actual_status=$(jq -r --arg num "$task_number" \
              '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-             .opencode/specs/state.json)
+             specs/state.json)
          
          IF actual_status != "{target_status}":
            - Log error: "Preflight verification failed - status not updated"
@@ -187,7 +187,7 @@ lifecycle:
     <process>
       1. Extract task entry using grep (selective loading):
          ```bash
-         grep -A 50 "^### ${task_number}\." .opencode/specs/TODO.md > /tmp/task-${task_number}.md
+         grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
          ```
       2. Validate extraction succeeded (non-empty file)
       3. Extract task description, language, priority from task entry
@@ -199,7 +199,7 @@ lifecycle:
             ```bash
             plan_path=$(jq -r --arg num "$task_number" \
               '.active_projects[] | select(.project_number == ($num | tonumber)) | .plan_path // ""' \
-              .opencode/specs/state.json)
+              specs/state.json)
             ```
          
          b. Validate plan_path consistency:
@@ -211,7 +211,7 @@ lifecycle:
             # Extract reports_integrated from state.json plan_metadata
             reports_integrated=$(jq -r --arg num "$task_number" \
               '.active_projects[] | select(.project_number == ($num | tonumber)) | .plan_metadata.reports_integrated // []' \
-              .opencode/specs/state.json)
+              specs/state.json)
             
             # Get plan file mtime for timestamp comparison
             if [ -f "$plan_path" ]; then
@@ -377,7 +377,7 @@ lifecycle:
     <action>Create implementation plan following plan.md template</action>
     <process>
       1. Load plan.md template from context
-      2. Create project directory: .opencode/specs/{task_number}_{topic_slug}/
+      2. Create project directory: specs/{task_number}_{topic_slug}/
       3. Create plans subdirectory (lazy creation)
       4. Generate plan filename: plans/implementation-{version:03d}.md
       5. Populate plan sections:
@@ -472,7 +472,7 @@ lifecycle:
         VALIDATE status-sync-manager return:
           - VERIFY return format matches subagent-return-format.md
           - VERIFY status field == "completed" (not "failed" or "partial")
-          - VERIFY files_updated includes [".opencode/specs/TODO.md", "state.json"]
+          - VERIFY files_updated includes ["specs/TODO.md", "state.json"]
           - VERIFY rollback_performed == false
           - IF validation fails: ABORT with error details
         
@@ -483,7 +483,7 @@ lifecycle:
         Read state.json to verify status:
           actual_status=$(jq -r --arg num "$task_number" \
             '.active_projects[] | select(.project_number == ($num | tonumber)) | .status' \
-            .opencode/specs/state.json)
+            specs/state.json)
         
         expected_status="{revision_mode ? 'revised' : 'planned'}"
         
@@ -494,7 +494,7 @@ lifecycle:
           - DO NOT proceed to git commit
         
         Read TODO.md to verify artifact link:
-          grep -q "{plan_path}" .opencode/specs/TODO.md
+          grep -q "{plan_path}" specs/TODO.md
         
         IF artifact link not found:
           - Log error: "Postflight verification failed - artifact not linked"
@@ -507,8 +507,8 @@ lifecycle:
         {
           "scope_files": [
             "{plan_path}",
-            ".opencode/specs/TODO.md",
-            ".opencode/specs/state.json"
+            "specs/TODO.md",
+            "specs/state.json"
           ],
           "message_template": "task {number}: plan created",
           "task_context": {
@@ -543,7 +543,7 @@ lifecycle:
       
       CHECKPOINT: Stage 7 completed
         - [ ] status-sync-manager returned "completed"
-        - [ ] .opencode/specs/TODO.md updated on disk
+        - [ ] specs/TODO.md updated on disk
         - [ ] state.json updated on disk
         - [ ] git-workflow-manager invoked (if status update succeeded)
     </process>
@@ -670,7 +670,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "plan",
-          "path": ".opencode/specs/{task_number}_{topic_slug}/plans/implementation-001.md",
+          "path": "specs/{task_number}_{topic_slug}/plans/implementation-001.md",
           "summary": "Implementation plan with {N} phases"
         }
       ],
@@ -706,7 +706,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "plan",
-          "path": ".opencode/specs/195_leansearch_api_integration/plans/implementation-001.md",
+          "path": "specs/195_leansearch_api_integration/plans/implementation-001.md",
           "summary": "Implementation plan with 4 phases: Setup, API Client, Integration, Testing"
         }
       ],
@@ -736,7 +736,7 @@ lifecycle:
     ```json
     {
       "status": "failed",
-      "summary": "Task {number} not found in .opencode/specs/TODO.md. Cannot create plan.",
+      "summary": "Task {number} not found in specs/TODO.md. Cannot create plan.",
       "artifacts": [],
       "metadata": {
         "session_id": "sess_1703606400_a1b2c3",
@@ -747,7 +747,7 @@ lifecycle:
       },
       "errors": [{
         "type": "file_not_found",
-        "message": "Task {number} not found in .opencode/specs/TODO.md",
+        "message": "Task {number} not found in specs/TODO.md",
         "code": "FILE_NOT_FOUND",
         "recoverable": true,
         "recommendation": "Verify task number and create task with /task command"
@@ -764,7 +764,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "plan",
-          "path": ".opencode/specs/{task_number}_{slug}/plans/implementation-001.md",
+          "path": "specs/{task_number}_{slug}/plans/implementation-001.md",
           "summary": "Implementation plan (status not updated)"
         }
       ],
@@ -793,7 +793,7 @@ lifecycle:
     - Verify task_number is positive integer
     - Verify session_id provided
     - Verify delegation_depth less than 3
-    - Check .opencode/specs/TODO.md exists and is readable
+    - Check specs/TODO.md exists and is readable
   </pre_execution>
 
   <post_execution>

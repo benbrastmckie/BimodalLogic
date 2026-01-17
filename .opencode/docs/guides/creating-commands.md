@@ -15,7 +15,7 @@ Before creating a new command, understand:
 
 **Required Reading**:
 - `.opencode/agent/orchestrator.md` - Hybrid architecture (v6.1)
-- `.opencode/specs/opencode-invocation-diagnostic-plan.md` - Architecture rationale
+- `specs/opencode-invocation-diagnostic-plan.md` - Architecture rationale
 - `.opencode/context/core/standards/delegation.md` - Subagent return format
 
 ## ProofChecker vs OpenAgents
@@ -177,7 +177,7 @@ Test your new command:
 
 ```bash
 # Find a test task
-grep "^###" .opencode/specs/TODO.md | head -5
+grep "^###" specs/TODO.md | head -5
 
 # Test command
 /{command-name} {task-number}

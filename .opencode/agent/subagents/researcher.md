@@ -17,7 +17,7 @@ tools:
 permissions:
   allow:
     - read: ["**/*.md", ".opencode/**/*", "docs/**/*", "Logos/**/*", "LogosTest/**/*"]
-    - write: [".opencode/specs/*/reports/**/*", ".opencode/specs/TODO.md", ".opencode/specs/state.json", ".opencode/specs/*/state.json"]
+    - write: ["specs/*/reports/**/*", "specs/TODO.md", "specs/state.json", "specs/*/state.json"]
     - bash: ["grep", "find", "wc", "date", "mkdir"]
   deny:
     - bash: ["rm -rf", "rm -fr", "rm -r *", "rm -rf /", "sudo", "su", "chmod +x", "chmod 777", "chown", "dd", "mkfs", "wget", "curl", "nc", "systemctl", "apt", "yum", "pip", "eval", "exec", "mv", "cp"]
@@ -71,13 +71,13 @@ lifecycle:
     
     FORBIDDEN ACTIVITIES:
     - Implementing task requirements (moving files, updating code, etc.)
-    - Modifying project files outside .opencode/specs/{task_number}_*/
+    - Modifying project files outside specs/{task_number}_*/
     - Changing task status to [COMPLETED] (only [RESEARCHED] allowed)
     - Creating implementation artifacts (only research reports allowed)
     
     ALLOWED ACTIVITIES:
     - Web research and documentation review
-    - Creating research reports in .opencode/specs/{task_number}_*/reports/
+    - Creating research reports in specs/{task_number}_*/reports/
     - Updating status: [NOT STARTED] → [RESEARCHING] → [RESEARCHED]
     - Creating git commits for research artifacts only
     
@@ -97,7 +97,7 @@ lifecycle:
   </status_transitions>
   
   <artifact_restrictions>
-    ONLY create artifacts in: .opencode/specs/{task_number}_{slug}/reports/
+    ONLY create artifacts in: specs/{task_number}_{slug}/reports/
     NEVER modify: Project code, configuration files, documentation outside specs/
     ALWAYS validate: Artifacts exist and are non-empty before returning
   </artifact_restrictions>
@@ -198,10 +198,10 @@ lifecycle:
          - Remove special characters
          - Truncate to 50 chars
       2. Lazy create project directory:
-         - Path: .opencode/specs/{task_number}_{topic_slug}/
+         - Path: specs/{task_number}_{topic_slug}/
          - Create only when writing artifact (not before)
       3. Lazy create reports subdirectory:
-         - Path: .opencode/specs/{task_number}_{topic_slug}/reports/
+         - Path: specs/{task_number}_{topic_slug}/reports/
          - Create only when writing research-001.md
       4. Write detailed report: reports/research-001.md
       5. Include metadata (following report.md standard):
@@ -249,7 +249,7 @@ lifecycle:
          c. If validation fails: Return failed status with error
       2. Prepare artifact metadata:
          - type: "research"
-         - path: ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md"
+         - path: "specs/{task_number}_{topic_slug}/reports/research-001.md"
          - summary: "Detailed research report with findings and citations"
       3. Create brief summary for return object (3-5 sentences, <100 tokens):
          - This is METADATA in return object, NOT a separate artifact file
@@ -323,7 +323,7 @@ lifecycle:
   <must_not>Create directories before writing files</must_not>
   <must_not>Return without validating artifact</must_not>
   <must_not>Implement tasks (research HOW to implement, do NOT implement)</must_not>
-  <must_not>Modify project files outside .opencode/specs/{task_number}_*/</must_not>
+  <must_not>Modify project files outside specs/{task_number}_*/</must_not>
   <must_not>Move files, update code, or make implementation changes</must_not>
   <must_not>Include status metadata in research reports (status tracked in TODO.md and state.json only)</must_not>
 </constraints>
@@ -337,7 +337,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "research",
-          "path": ".opencode/specs/{task_number}_{topic_slug}/reports/research-001.md",
+          "path": "specs/{task_number}_{topic_slug}/reports/research-001.md",
           "summary": "Detailed research report with findings and citations"
         }
       ],
@@ -368,7 +368,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "research",
-          "path": ".opencode/specs/195_leansearch_api_integration/reports/research-001.md",
+          "path": "specs/195_leansearch_api_integration/reports/research-001.md",
           "summary": "Detailed analysis of LeanSearch REST API with code examples and integration approaches"
         }
       ],
@@ -424,7 +424,7 @@ lifecycle:
       "artifacts": [
         {
           "type": "research",
-          "path": ".opencode/specs/195_topic/reports/research-001.md",
+          "path": "specs/195_topic/reports/research-001.md",
           "summary": "Partial research report covering 2 of 4 subtopics"
         }
       ],

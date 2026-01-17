@@ -14,7 +14,7 @@ tools:
 permissions:
   allow:
     - read: [".opencode/**/*"]
-    - write: [".opencode/**/*", ".opencode/specs/**/*"]
+    - write: [".opencode/**/*", "specs/**/*"]
   deny: []
 context_loading:
   strategy: lazy
@@ -693,7 +693,7 @@ $ARGUMENTS
       1. Inform user:
          "Creating implementation tasks with detailed plans. This will take a few minutes..."
       
-      2. Read next_project_number from .opencode/specs/state.json
+      2. Read next_project_number from specs/state.json
       
       3. Determine task breakdown based on system complexity:
          a. Simple system (1-2 agents, 3-4 use cases): 4 tasks
@@ -719,7 +719,7 @@ $ARGUMENTS
       4. For each task:
          a. Generate task title and slug from interview results
          b. Assign task number: next_project_number + task_index
-         c. Create project directory: .opencode/specs/{number}_{slug}/
+         c. Create project directory: specs/{number}_{slug}/
          d. Generate plan artifact (plans/implementation-001.md) using templates:
             
             **Planning Task Template** (Task 1 - always first):
@@ -1244,7 +1244,7 @@ $ARGUMENTS
             - Continue with remaining tasks in dependency order
          
          NEXT STEPS:
-         - Review plan artifacts in .opencode/specs/{number}_{slug}/plans/
+         - Review plan artifacts in specs/{number}_{slug}/plans/
          - Run `/implement {first_task_number}` to start implementation (no dependencies)
          - Implement remaining tasks in dependency order (check Dependencies field)
          - Track progress in TODO.md"
@@ -1284,7 +1284,7 @@ $ARGUMENTS
               }
             },
            "errors": [],
-           "next_steps": "Review plan artifacts in .opencode/specs/{number}_{slug}/plans/ and run /implement {first_task_number} to start implementation"
+           "next_steps": "Review plan artifacts in specs/{number}_{slug}/plans/ and run /implement {first_task_number} to start implementation"
          }
     </process>
     <validation>

@@ -18,11 +18,11 @@ This document contains detailed implementation pseudocode, data extraction funct
 
 ## Data Extraction Functions
 
-### Extract Active Projects from .opencode/specs/TODO.md
+### Extract Active Projects from specs/TODO.md
 
 ```python
 def extract_active_projects(todo_data):
-    """Extract active projects from parsed .opencode/specs/TODO.md"""
+    """Extract active projects from parsed specs/TODO.md"""
     
     active_statuses = ["IN PROGRESS", "PLANNED", "RESEARCHED", "BLOCKED", "IMPLEMENTING", "RESEARCHING", "PLANNING"]
     active_projects = []
@@ -61,7 +61,7 @@ def extract_active_projects(todo_data):
 
 ```python
 def extract_completed_projects(todo_data):
-    """Extract completed projects from parsed .opencode/specs/TODO.md"""
+    """Extract completed projects from parsed specs/TODO.md"""
     
     completed = []
     
@@ -83,7 +83,7 @@ def extract_completed_projects(todo_data):
 
 ```python
 def calculate_health_metrics(todo_data):
-    """Calculate repository health metrics from .opencode/specs/TODO.md"""
+    """Calculate repository health metrics from specs/TODO.md"""
     
     status_counts = count_by_status(todo_data)
     priority_counts = count_by_priority(todo_data)
@@ -212,7 +212,7 @@ def ensure_state_json():
     It implements the core self-healing logic for state.json.
     """
     
-    state_path = ".opencode/specs/state.json"
+    state_path = "specs/state.json"
     
     # Check if file exists
     if file_exists(state_path):
@@ -240,20 +240,20 @@ def ensure_state_json():
         log_error(f"Self-healing failed: Template invalid: {e}")
         return create_minimal_state()  # Fallback
     
-    # 2. Gather data from .opencode/specs/TODO.md
-    todo_path = ".opencode/specs/TODO.md"
+    # 2. Gather data from specs/TODO.md
+    todo_path = "specs/TODO.md"
     if not file_exists(todo_path):
-        log_error("Cannot auto-create state.json: .opencode/specs/TODO.md missing")
+        log_error("Cannot auto-create state.json: specs/TODO.md missing")
         raise FileNotFoundError(
-            "Required file .opencode/specs/TODO.md not found. "
-            "Self-healing can only create state.json when .opencode/specs/TODO.md exists."
+            "Required file specs/TODO.md not found. "
+            "Self-healing can only create state.json when specs/TODO.md exists."
         )
     
     try:
         todo_data = parse_todo_md(todo_path)
     except Exception as e:
-        log_error(f"Failed to parse .opencode/specs/TODO.md: {e}")
-        raise ValueError(f".opencode/specs/TODO.md exists but cannot be parsed: {e}")
+        log_error(f"Failed to parse specs/TODO.md: {e}")
+        raise ValueError(f"specs/TODO.md exists but cannot be parsed: {e}")
     
     # 3. Populate template
     state = populate_state_from_template(template, todo_data)
@@ -266,13 +266,13 @@ def ensure_state_json():
         raise IOError(f"Could not write {state_path}: {e}")
     
     log_info(f"Self-healing: Created {state_path} successfully")
-    log_info(f"  - Initialized from .opencode/specs/TODO.md ({len(todo_data['tasks'])} tasks)")
+    log_info(f"  - Initialized from specs/TODO.md ({len(todo_data['tasks'])} tasks)")
     log_info(f"  - Next project number: {state['next_project_number']}")
     
     return state_path
 
 def populate_state_from_template(template, todo_data):
-    """Populate state template with data from .opencode/specs/TODO.md"""
+    """Populate state template with data from specs/TODO.md"""
     
     highest_task = max(task["number"] for task in todo_data["tasks"])
     
@@ -289,7 +289,7 @@ def populate_state_from_template(template, todo_data):
         "recent_activities": [
             {
                 "timestamp": current_timestamp(),
-                "activity": f"Auto-created state.json with self-healing - initialized from .opencode/specs/TODO.md ({len(todo_data['tasks'])} tasks, {highest_task + 1} next number)"
+                "activity": f"Auto-created state.json with self-healing - initialized from specs/TODO.md ({len(todo_data['tasks'])} tasks, {highest_task + 1} next number)"
             }
         ],
         "pending_tasks": extract_pending_tasks(todo_data),
@@ -344,8 +344,8 @@ def create_minimal_state():
             "_comment": "Project numbers wrap around to 000 after 999. Ensure old projects are archived before reuse."
         },
         "state_references": {
-            "archive_state_path": ".opencode/specs/archive/state.json",
-            "maintenance_state_path": ".opencode/specs/maintenance/state.json",
+            "archive_state_path": "specs/archive/state.json",
+            "maintenance_state_path": "specs/maintenance/state.json",
             "_comment": "References to specialized state files. These files are auto-created if missing."
         },
         "active_projects": [],
@@ -376,8 +376,8 @@ def create_minimal_state():
         },
         "archive_summary": {
             "_comment": "Quick reference to archived projects - full details in archive/state.json",
-            "archive_location": ".opencode/specs/archive/",
-            "archive_state_file": ".opencode/specs/archive/state.json"
+            "archive_location": "specs/archive/",
+            "archive_state_file": "specs/archive/state.json"
         },
         "schema_info": {
             "version": "1.0.0",
@@ -390,7 +390,7 @@ def create_minimal_state():
     }
     
     try:
-        write_json_atomic(".opencode/specs/state.json", minimal_state)
+        write_json_atomic("specs/state.json", minimal_state)
         log_warning("Self-healing: Created minimal state.json (degraded mode)")
         log_warning("  - Template file missing, using fallback minimal structure")
         log_warning("  - To restore full functionality, restore template from git:")
@@ -399,7 +399,7 @@ def create_minimal_state():
         log_error(f"Critical: Cannot create even minimal state.json: {e}")
         raise IOError(f"Self-healing completely failed: {e}")
     
-    return ".opencode/specs/state.json"
+    return "specs/state.json"
 ```
 
 ---
@@ -410,7 +410,7 @@ def create_minimal_state():
 
 ```bash
 # Setup: Remove state.json
-rm .opencode/specs/state.json
+rm specs/state.json
 
 # Execute: Run any command
 /research 197
@@ -419,7 +419,7 @@ rm .opencode/specs/state.json
 # 1. Command detects missing state.json in preflight
 # 2. Calls ensure_state_json()
 # 3. Loads template from .opencode/context/core/templates/state-template.json
-# 4. Parses .opencode/specs/TODO.md (must exist)
+# 4. Parses specs/TODO.md (must exist)
 # 5. Extracts task data (37 tasks found)
 # 6. Populates template fields
 # 7. Writes state.json atomically
@@ -427,13 +427,13 @@ rm .opencode/specs/state.json
 # 9. Command continues normally
 
 # Verification:
-cat .opencode/specs/state.json | jq '._comment'
+cat specs/state.json | jq '._comment'
 # Should show: "Auto-created with self-healing on 2025-12-27"
 
-cat .opencode/specs/state.json | jq '.next_project_number'
-# Should show: 200 (one more than highest task in .opencode/specs/TODO.md)
+cat specs/state.json | jq '.next_project_number'
+# Should show: 200 (one more than highest task in specs/TODO.md)
 
-cat .opencode/specs/state.json | jq '.recent_activities[0].activity'
+cat specs/state.json | jq '.recent_activities[0].activity'
 # Should show: "Auto-created state.json..."
 ```
 
@@ -457,10 +457,10 @@ mv .opencode/context/core/templates/state-template.json \
 # 7. Command continues in degraded mode
 
 # Verification:
-cat .opencode/specs/state.json | jq '.schema_info.degraded_mode'
+cat specs/state.json | jq '.schema_info.degraded_mode'
 # Should show: true
 
-cat .opencode/specs/state.json | jq '.active_projects | length'
+cat specs/state.json | jq '.active_projects | length'
 # Should show: 0 (minimal state has empty arrays)
 
 # Cleanup: Restore template
@@ -468,11 +468,11 @@ mv .opencode/context/core/templates/state-template.json.backup \
    .opencode/context/core/templates/state-template.json
 ```
 
-### Test Case 3: Missing .opencode/specs/TODO.md (Failure)
+### Test Case 3: Missing specs/TODO.md (Failure)
 
 ```bash
-# Setup: Remove .opencode/specs/TODO.md
-mv .opencode/specs/TODO.md .opencode/specs/TODO.md.backup
+# Setup: Remove specs/TODO.md
+mv specs/TODO.md specs/TODO.md.backup
 
 # Execute: Run command
 /research 197
@@ -481,28 +481,28 @@ mv .opencode/specs/TODO.md .opencode/specs/TODO.md.backup
 # 1. Command detects missing state.json
 # 2. Calls ensure_state_json()
 # 3. Loads template successfully
-# 4. Attempts to load .opencode/specs/TODO.md - fails
+# 4. Attempts to load specs/TODO.md - fails
 # 5. Raises FileNotFoundError with clear message
 # 6. Command fails with actionable error
 
 # Expected error:
-# Error: Required file .opencode/specs/TODO.md not found
-# Self-healing can only create state.json when .opencode/specs/TODO.md exists.
+# Error: Required file specs/TODO.md not found
+# Self-healing can only create state.json when specs/TODO.md exists.
 #
 # Recovery steps:
-# 1. Restore .opencode/specs/TODO.md from git: git checkout HEAD -- .opencode/specs/TODO.md
+# 1. Restore specs/TODO.md from git: git checkout HEAD -- specs/TODO.md
 # 2. Or restore from backup
 # 3. Retry command
 
-# Cleanup: Restore .opencode/specs/TODO.md
-mv .opencode/specs/TODO.md.backup .opencode/specs/TODO.md
+# Cleanup: Restore specs/TODO.md
+mv specs/TODO.md.backup specs/TODO.md
 ```
 
 ### Test Case 4: Corrupted state.json (Re-Creation)
 
 ```bash
 # Setup: Corrupt state.json
-echo "{ invalid json }" > .opencode/specs/state.json
+echo "{ invalid json }" > specs/state.json
 
 # Execute: Run command
 /research 197
@@ -516,7 +516,7 @@ echo "{ invalid json }" > .opencode/specs/state.json
 # 6. Command continues normally
 
 # Verification:
-cat .opencode/specs/state.json | jq '._schema_version'
+cat specs/state.json | jq '._schema_version'
 # Should show: "1.0.0" (valid JSON)
 ```
 
@@ -538,7 +538,7 @@ cat .opencode/specs/state.json | jq '._schema_version'
 
 # Verification:
 # Check that recent_activities does NOT have a new self-healing entry
-cat .opencode/specs/state.json | jq '.recent_activities[0].activity'
+cat specs/state.json | jq '.recent_activities[0].activity'
 # Should NOT show "Auto-created" message
 ```
 
@@ -551,11 +551,11 @@ cat .opencode/specs/state.json | jq '.recent_activities[0].activity'
 ```
 [INFO] Self-healing: state.json missing, creating from template
 [INFO] Self-healing: Loaded template from .opencode/context/core/templates/state-template.json
-[INFO] Self-healing: Parsed .opencode/specs/TODO.md successfully (37 tasks found)
+[INFO] Self-healing: Parsed specs/TODO.md successfully (37 tasks found)
 [INFO] Self-healing: Extracted 4 active projects, 2 completed projects
 [INFO] Self-healing: Calculated repository health (score: 85)
-[INFO] Self-healing: Created .opencode/specs/state.json successfully
-[INFO]   - Initialized from .opencode/specs/TODO.md (37 tasks)
+[INFO] Self-healing: Created specs/state.json successfully
+[INFO]   - Initialized from specs/TODO.md (37 tasks)
 [INFO]   - Next project number: 200
 ```
 
@@ -576,18 +576,18 @@ cat .opencode/specs/state.json | jq '.recent_activities[0].activity'
 ```
 [WARN] Self-healing: state.json missing, creating from template
 [INFO] Self-healing: Loaded template from .opencode/context/core/templates/state-template.json
-[ERROR] Cannot auto-create state.json: .opencode/specs/TODO.md missing
-[ERROR] Required file .opencode/specs/TODO.md not found. Self-healing can only create state.json when .opencode/specs/TODO.md exists.
+[ERROR] Cannot auto-create state.json: specs/TODO.md missing
+[ERROR] Required file specs/TODO.md not found. Self-healing can only create state.json when specs/TODO.md exists.
 
 Error: Required file not found
 
 Recovery steps:
-1. Restore .opencode/specs/TODO.md from git:
-   git checkout HEAD -- .opencode/specs/TODO.md
+1. Restore specs/TODO.md from git:
+   git checkout HEAD -- specs/TODO.md
 
 2. Or restore from backup if available
 
-3. Create new .opencode/specs/TODO.md following the standard format
+3. Create new specs/TODO.md following the standard format
    Template: .opencode/context/core/templates/todo-template.md
 ```
 
