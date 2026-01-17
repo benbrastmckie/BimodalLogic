@@ -5,6 +5,159 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 549,
+      "project_name": "research_intelligent_model_routing_architecture",
+      "type": "research",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T21:38:26Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        548
+      ],
+      "description": "Research how to implement intelligent model routing in the .claude/ architecture. Evaluate query complexity analyzer, task-type based routing, and model cascade pattern options.",
+      "artifacts": [
+        {
+          "path": "specs/549_research_intelligent_model_routing_architecture/reports/research-001.md",
+          "type": "report"
+        },
+        {
+          "path": "specs/549_research_intelligent_model_routing_architecture/reports/research-002.md",
+          "type": "report"
+        },
+        {
+          "path": "specs/549_research_intelligent_model_routing_architecture/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/549_research_intelligent_model_routing_architecture/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-17T23:09:55Z"
+    },
+    {
+      "project_number": 475,
+      "status": "completed",
+      "project_name": "Create skill-document-converter thin wrapper",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "medium",
+      "last_updated": "2026-01-17T21:39:04Z",
+      "researched": "2026-01-17T21:17:58Z",
+      "artifacts": [
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-003.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/agents/document-converter-agent.md",
+          "type": "implementation"
+        },
+        {
+          "path": ".claude/skills/skill-document-converter/SKILL.md",
+          "type": "implementation"
+        },
+        {
+          "path": ".claude/commands/convert.md",
+          "type": "implementation"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T21:27:30Z",
+      "completed": "2026-01-17T21:39:04Z",
+      "archived": "2026-01-17T23:09:55Z"
+    },
+    {
+      "project_number": 557,
+      "project_name": "mcs_property_completion",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-17T21:43:01Z",
+      "parent_task": 556,
+      "description": "Prove mcs_contains_or_neg and mcs_modus_ponens in Representation/CanonicalModel.lean. These MCS properties are the critical blocking dependency for downstream theorems.",
+      "researched": "2026-01-17T21:12:32Z",
+      "artifacts": [
+        {
+          "path": "specs/557_mcs_property_completion/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/557_mcs_property_completion/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/557_mcs_property_completion/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/557_mcs_property_completion/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T21:18:02Z",
+      "completed": "2026-01-17T21:43:01Z",
+      "archived": "2026-01-17T23:09:55Z"
+    },
+    {
+      "project_number": 564,
+      "project_name": "memory_issues_status_sync_agent",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T22:20:14Z",
+      "last_updated": "2026-01-17T22:39:53Z",
+      "researched": "2026-01-17T22:23:36Z",
+      "artifacts": [
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-003.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T22:26:21Z",
+      "completed": "2026-01-17T22:39:53Z",
+      "archived": "2026-01-17T23:09:55Z"
+    },
+    {
       "project_number": 555,
       "project_name": "convert_skill_status_sync_to_forked_pattern",
       "type": "fix",

@@ -68,7 +68,7 @@ This comprehensive plan upgrades `protocol/.claude/` with all performance improv
 
 ## Implementation Phases
 
-### Phase 1: Add Model Fields to Agents [NOT STARTED]
+### Phase 1: Add Model Fields to Agents [COMPLETED]
 
 **Goal**: Add explicit `model` field to all 6 agents
 
@@ -103,7 +103,7 @@ grep -l "^model:" /home/benjamin/Projects/protocol/.claude/agents/*.md | wc -l
 
 ---
 
-### Phase 2: Add CRITICAL Task Tool Directives to Forked Skills [NOT STARTED]
+### Phase 2: Add CRITICAL Task Tool Directives to Forked Skills [COMPLETED]
 
 **Goal**: Add explicit Task tool invocation directives to prevent Skill() misuse
 
@@ -162,7 +162,7 @@ grep -l "DO NOT.*Skill tool" /home/benjamin/Projects/protocol/.claude/skills/*/S
 
 ---
 
-### Phase 3: Remove Eager Directory Creation [NOT STARTED]
+### Phase 3: Remove Eager Directory Creation [IN PROGRESS]
 
 **Goal**: Eliminate `mkdir -p specs/{N}_{SLUG}` from task creation paths
 

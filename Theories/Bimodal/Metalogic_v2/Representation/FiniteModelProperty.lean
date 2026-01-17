@@ -1,4 +1,5 @@
 import Bimodal.Metalogic_v2.Representation.RepresentationTheorem
+import Bimodal.Metalogic_v2.Representation.ContextProvability
 import Bimodal.Metalogic_v2.Soundness.Soundness
 import Bimodal.Semantics.Validity
 
@@ -74,11 +75,82 @@ theorem self_mem_subformulaList (φ : Formula) : φ ∈ subformulaList φ := by
   cases φ <;> simp [subformulaList]
 
 /--
+All formulas have complexity at least 1.
+This is used in the arithmetic bounds for subformulaList_finite.
+-/
+lemma complexity_pos (φ : Formula) : 1 ≤ φ.complexity := by
+  cases φ <;> simp [Formula.complexity] <;> omega
+
+/--
 The subformula list is finite (it's a list).
 -/
+-- Helper lemma: a + b < 2 * a * b when a, b >= 2
+private lemma arith_helper (a b : Nat) (ha : a ≥ 2) (hb : b ≥ 2) : a + b < 2 * a * b := by
+  have h1 : a * b ≥ 2 * b := Nat.mul_le_mul_right b ha
+  have h2 : a * b ≥ a * 2 := Nat.mul_le_mul_left a hb
+  -- 2ab = ab + ab >= 2b + 2a > a + b
+  have h3 : 2 * a * b = 2 * (a * b) := Nat.mul_assoc 2 a b
+  have h4 : 2 * (a * b) = a * b + a * b := Nat.two_mul (a * b)
+  have h5 : a * 2 = 2 * a := Nat.mul_comm a 2
+  omega
+
 theorem subformulaList_finite (φ : Formula) :
     (subformulaList φ).length < 2 ^ Formula.complexity φ + 1 := by
-  sorry
+  induction φ with
+  | atom p => simp [subformulaList, Formula.complexity]
+  | bot => simp [subformulaList, Formula.complexity]
+  | imp ψ χ ih_ψ ih_χ =>
+    simp only [subformulaList, List.length_cons, List.length_append, Formula.complexity]
+    -- Goal: 1 + len_ψ + len_χ < 2^(1 + c_ψ + c_χ) + 1
+    have h_ψ_pos := complexity_pos ψ
+    have h_χ_pos := complexity_pos χ
+    have h_ψ_bound : 2 ^ ψ.complexity ≥ 2 := Nat.one_lt_two_pow (by omega)
+    have h_χ_bound : 2 ^ χ.complexity ≥ 2 := Nat.one_lt_two_pow (by omega)
+    have h_from_ih_ψ : (subformulaList ψ).length ≤ 2 ^ ψ.complexity := Nat.lt_add_one_iff.mp ih_ψ
+    have h_from_ih_χ : (subformulaList χ).length ≤ 2 ^ χ.complexity := Nat.lt_add_one_iff.mp ih_χ
+    -- Key: 2^(1 + a + b) = 2 * 2^a * 2^b
+    have h_pow_expand : 2 ^ (1 + ψ.complexity + χ.complexity) =
+        2 * 2 ^ ψ.complexity * 2 ^ χ.complexity := by
+      rw [Nat.add_assoc, Nat.pow_add, Nat.pow_add]
+      simp only [Nat.pow_one, Nat.mul_assoc]
+    -- Key arithmetic: a + b < 2 * a * b when a, b >= 2
+    have h_arith : 2 ^ ψ.complexity + 2 ^ χ.complexity <
+        2 * 2 ^ ψ.complexity * 2 ^ χ.complexity :=
+      arith_helper _ _ h_ψ_bound h_χ_bound
+    calc (subformulaList ψ).length + (subformulaList χ).length + 1
+        ≤ 2 ^ ψ.complexity + 2 ^ χ.complexity + 1 := by omega
+      _ < 2 * 2 ^ ψ.complexity * 2 ^ χ.complexity + 1 := by omega
+      _ = 2 ^ (1 + ψ.complexity + χ.complexity) + 1 := by rw [h_pow_expand]
+  | box ψ ih =>
+    simp only [subformulaList, List.length_cons, Formula.complexity]
+    have h_from_ih : (subformulaList ψ).length ≤ 2 ^ ψ.complexity := Nat.lt_add_one_iff.mp ih
+    have h_pow : 2 ^ (1 + ψ.complexity) = 2 * 2 ^ ψ.complexity := by simp [Nat.pow_add]
+    have h_one_le : 2 ^ ψ.complexity ≥ 1 := Nat.one_le_pow _ _ (by omega)
+    calc (subformulaList ψ).length + 1
+        ≤ 2 ^ ψ.complexity + 1 := by omega
+      _ ≤ 2 * 2 ^ ψ.complexity := by omega
+      _ < 2 * 2 ^ ψ.complexity + 1 := by omega
+      _ = 2 ^ (1 + ψ.complexity) + 1 := by omega
+  | all_future ψ ih =>
+    simp only [subformulaList, List.length_cons, Formula.complexity]
+    have h_from_ih : (subformulaList ψ).length ≤ 2 ^ ψ.complexity := Nat.lt_add_one_iff.mp ih
+    have h_pow : 2 ^ (1 + ψ.complexity) = 2 * 2 ^ ψ.complexity := by simp [Nat.pow_add]
+    have h_one_le : 2 ^ ψ.complexity ≥ 1 := Nat.one_le_pow _ _ (by omega)
+    calc (subformulaList ψ).length + 1
+        ≤ 2 ^ ψ.complexity + 1 := by omega
+      _ ≤ 2 * 2 ^ ψ.complexity := by omega
+      _ < 2 * 2 ^ ψ.complexity + 1 := by omega
+      _ = 2 ^ (1 + ψ.complexity) + 1 := by omega
+  | all_past ψ ih =>
+    simp only [subformulaList, List.length_cons, Formula.complexity]
+    have h_from_ih : (subformulaList ψ).length ≤ 2 ^ ψ.complexity := Nat.lt_add_one_iff.mp ih
+    have h_pow : 2 ^ (1 + ψ.complexity) = 2 * 2 ^ ψ.complexity := by simp [Nat.pow_add]
+    have h_one_le : 2 ^ ψ.complexity ≥ 1 := Nat.one_le_pow _ _ (by omega)
+    calc (subformulaList ψ).length + 1
+        ≤ 2 ^ ψ.complexity + 1 := by omega
+      _ ≤ 2 * 2 ^ ψ.complexity := by omega
+      _ < 2 * 2 ^ ψ.complexity + 1 := by omega
+      _ = 2 ^ (1 + ψ.complexity) + 1 := by omega
 
 /-!
 ## Finite Model Property Statement
@@ -153,13 +225,30 @@ This follows from the representation theorem.
 -/
 theorem consistent_implies_satisfiable (φ : Formula) (h_cons : Consistent [φ]) :
     formula_satisfiable φ := by
-  -- By representation theorem, [φ] has a canonical world where all formulas are true
-  obtain ⟨w, h_sat⟩ := representation_theorem h_cons
-  -- The canonical world satisfies φ
-  -- But CanonicalWorldState is an abstract type, not a concrete TaskModel
-  -- We need to construct a TaskModel from the canonical world
-  -- For now, this uses the completeness axiom
-  sorry
+  -- Contrapositive proof: assume ¬formula_satisfiable φ and derive contradiction
+  by_contra h_not_sat
+  -- If φ is not satisfiable, then ¬φ is valid (true everywhere)
+  have h_neg_valid : valid (Formula.neg φ) := by
+    intro D _ _ _ F M τ t
+    simp only [Formula.neg, truth_at]
+    intro h_phi
+    -- If φ were true somewhere, it would be satisfiable
+    apply h_not_sat
+    exact ⟨D, _, _, _, F, M, τ, t, h_phi⟩
+  -- By completeness (valid_implies_derivable), we get [] ⊢ neg φ
+  have h_neg_deriv : ContextDerivable [] (Formula.neg φ) := valid_implies_derivable h_neg_valid
+  obtain ⟨d_neg⟩ := h_neg_deriv
+  -- By weakening, [φ] ⊢ neg φ
+  have d_neg_ctx : DerivationTree [φ] (Formula.neg φ) :=
+    DerivationTree.weakening [] [φ] (Formula.neg φ) d_neg (fun _ h => (List.not_mem_nil h).elim)
+  -- [φ] ⊢ φ by assumption rule
+  have d_phi : DerivationTree [φ] φ :=
+    DerivationTree.assumption [φ] φ (List.mem_singleton.mpr rfl)
+  -- Combine φ and ¬φ to get ⊥
+  have d_bot : DerivationTree [φ] Formula.bot :=
+    Bimodal.Metalogic_v2.Core.derives_bot_from_phi_neg_phi d_phi d_neg_ctx
+  -- This contradicts Consistent [φ]
+  exact h_cons ⟨d_bot⟩
 
 /--
 **Validity is Decidable** via FMP.
