@@ -5,6 +5,57 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 516,
+      "status": "abandoned",
+      "project_name": "Test task creation after refactoring",
+      "section": "Medium Priority",
+      "language": "general",
+      "priority": "medium",
+      "abandoned": "2026-01-17T20:50:08Z"
+    },
+    {
+      "project_number": 550,
+      "project_name": "implement_model_tier_strategy",
+      "type": "feature",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "3-4 hours",
+      "dependencies": [
+        548,
+        549
+      ],
+      "description": "Implement the chosen model tiering strategy based on Task 549 research. Update agent frontmatter with appropriate model assignments.",
+      "abandoned": "2026-01-17T20:50:08Z"
+    },
+    {
+      "project_number": 517,
+      "status": "abandoned",
+      "project_name": "Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates",
+      "section": "High Priority",
+      "language": "general",
+      "priority": "high",
+      "abandoned": "2026-01-17T20:50:08Z"
+    },
+    {
+      "project_number": 551,
+      "project_name": "create_model_complexity_analyzer",
+      "type": "feature",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        550
+      ],
+      "description": "Create a lightweight skill that analyzes task complexity to recommend optimal model tier. Criteria: task language, estimated effort, number of files affected, tool requirements.",
+      "abandoned": "2026-01-17T20:50:07Z"
+    },
+    {
       "project_number": 519,
       "project_name": "Add Missing Stage 7 Validation in Workflow Commands",
       "type": "feature",

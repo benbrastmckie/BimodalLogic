@@ -77,18 +77,6 @@ technical_debt:
 
 ---
 
-### 550. Implement Model Tier Strategy
-- **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-17
-- **Dependencies**: 548, 549
-
-**Description**: Based on Task 549 research, implement the chosen model tiering strategy. Update agent frontmatter with appropriate model assignments. Strategy options: Simple (Haiku for research, Sonnet for implementation, Opus for lean-implementation), Optimized (complexity-based variants), or Advanced (routing logic in orchestrator).
-
----
-
 ### 534. Research Claude Code Model Selection Mechanisms
 - **Effort**: 2-3 hours
 - **Status**: [PLANNED]
@@ -102,19 +90,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/534_research_claude_code_model_selection/plans/implementation-001.md)
 
 **Description**: Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults.
-
----
-
-### 517. Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates
-- **Effort**: 2-3 hours
-- **Status**: [ABANDONED]
-- **Priority**: High
-- **Language**: general
-- **Session ID**: sess_1768592660_vnieb
-- **Research**: [Research Report](specs/517_fix_research_command_summary_files/reports/research-001.md)
-- **Researched**: 2025-01-16T10:51:00Z
-
-**Description**: Fix the /research command to avoid creating unnecessary implementation-summary files in summaries/ directory, properly link research reports in TODO.md and state.json, and correctly update task status to RESEARCHED. These issues prevent proper workflow tracking and create cleanup burden.
 
 ---
 
@@ -148,18 +123,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260117.md](specs/554_bimodal_metalogic_v2_reorganize/summaries/implementation-summary-20260117.md)
 
 **Description**: From what I see in Theories/Bimodal/Metalogic/README.md, the Bimodal/Metalogic/ does not have the desired structure where the representation theorem is used to prove completeness via FMP bridge. Create a Bimodal/Metalogic_v2/ directory which reorganizes the theorems so that the representation theorem is central and foundational for the other results to build on.
-
----
-
-### 551. Create Model Complexity Analyzer
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-17
-- **Dependencies**: 550
-
-**Description**: Create a lightweight skill that analyzes task complexity to recommend optimal model tier. Criteria: task language, estimated effort, number of files affected, tool requirements. This enables dynamic model selection without creating variant agents.
 
 ---
 
