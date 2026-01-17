@@ -49,13 +49,15 @@ technical_debt:
 
 ### 563. Investigate Empty Directory Creation in specs/
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-17
 - **Planned**: 2026-01-17
+- **Completed**: 2026-01-17
 - **Research**: [research-001.md](specs/563_investigate_empty_directory_creation/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/563_investigate_empty_directory_creation/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260117.md](specs/563_investigate_empty_directory_creation/summaries/implementation-summary-20260117.md)
 
 **Description**: Investigate empty directories being created in specs/ which violates the lazy directory creation rule. Carefully inspect all potential sources in the .claude/ agent system to identify the root cause and resolve the issue elegantly.
 
@@ -97,12 +99,14 @@ technical_debt:
 
 ### 560. Axiom Elimination
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
+- **Researched**: 2026-01-17
 - **Parent**: 556
 - **Dependencies**: 558
+- **Research**: [research-001.md](specs/560_axiom_elimination/reports/research-001.md)
 
 **Description**: Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean. Uses completeness contrapositive argument.
 

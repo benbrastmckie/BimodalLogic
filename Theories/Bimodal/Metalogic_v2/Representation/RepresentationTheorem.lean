@@ -1,5 +1,6 @@
 import Bimodal.Metalogic_v2.Representation.CanonicalModel
 import Bimodal.Metalogic_v2.Representation.TruthLemma
+import Bimodal.Metalogic_v2.Representation.ContextProvability
 
 namespace Bimodal.Metalogic_v2.Representation
 

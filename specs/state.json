@@ -8,11 +8,11 @@
     {
       "project_number": 563,
       "project_name": "investigate_empty_directory_creation",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-17T21:47:33Z",
-      "last_updated": "2026-01-17T23:13:30Z",
+      "last_updated": "2026-01-17T23:35:36Z",
       "artifacts": [
         {
           "path": "specs/563_investigate_empty_directory_creation/reports/research-001.md",
@@ -21,9 +21,14 @@
         {
           "path": "specs/563_investigate_empty_directory_creation/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/563_investigate_empty_directory_creation/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ],
-      "planned": "2026-01-17T22:13:17Z"
+      "planned": "2026-01-17T22:13:17Z",
+      "completed": "2026-01-17T23:35:30Z"
     },
     {
       "project_number": 562,
@@ -70,16 +75,22 @@
     {
       "project_number": 560,
       "project_name": "axiom_elimination",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T23:32:31Z",
+      "last_updated": "2026-01-17T23:36:32Z",
       "parent_task": 556,
       "dependencies": [
         558
       ],
-      "description": "Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean. Uses completeness contrapositive argument."
+      "description": "Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean. Uses completeness contrapositive argument.",
+      "artifacts": [
+        {
+          "path": "specs/560_axiom_elimination/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 561,
