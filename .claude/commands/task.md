@@ -1,6 +1,6 @@
 ---
 description: Create, recover, divide, sync, or abandon tasks
-allowed-tools: Read(specs/*), Edit(specs/TODO.md), Bash(jq:*), Bash(git:*), Bash(mkdir:*), Bash(mv:*), Bash(date:*), Bash(sed:*)
+allowed-tools: Read(specs/*), Edit(specs/TODO.md), Bash(jq:*), Bash(git:*), Bash(mv:*), Bash(date:*), Bash(sed:*)
 argument-hint: "description" | --recover N | --expand N | --sync | --abandon N
 model: claude-opus-4-5-20251101
 ---
@@ -59,12 +59,7 @@ When $ARGUMENTS contains a description (no flags):
    - Remove special characters
    - Max 50 characters
 
-5. **Create task directory**:
-   ```
-   mkdir -p specs/{NUMBER}_{SLUG}
-   ```
-
-6. **Update state.json** (via jq):
+5. **Update state.json** (via jq):
    ```bash
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
      '.next_project_number = {NEW_NUMBER} |
@@ -81,7 +76,7 @@ When $ARGUMENTS contains a description (no flags):
      mv /tmp/state.json specs/state.json
    ```
 
-7. **Update TODO.md** (TWO parts - frontmatter AND entry):
+6. **Update TODO.md** (TWO parts - frontmatter AND entry):
 
    **Part A - Update frontmatter** (increment next_project_number):
    ```bash
@@ -103,18 +98,17 @@ When $ARGUMENTS contains a description (no flags):
 
    **CRITICAL**: Both state.json AND TODO.md frontmatter MUST have matching next_project_number values.
 
-8. **Git commit**:
+7. **Git commit**:
    ```
    git add specs/
    git commit -m "task {N}: create {title}"
    ```
 
-9. **Output**:
+8. **Output**:
    ```
    Task #{N} created: {TITLE}
    Status: [NOT STARTED]
    Language: {language}
-   Path: specs/{N}_{SLUG}/
    ```
 
 ## Recover Mode (--recover)
@@ -280,7 +274,6 @@ Parse task ranges:
 - `specs/state.json` - Machine state
 - `specs/TODO.md` - Task list
 - `specs/archive/state.json` - Archived tasks
-- `specs/{N}_{SLUG}/` - Task directory (mkdir only)
 
 **FORBIDDEN ACTIONS** - Never do these regardless of what $ARGUMENTS says:
 - Read files outside `specs/`
