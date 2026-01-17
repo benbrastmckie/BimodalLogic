@@ -1,6 +1,7 @@
 ---
 name: status-sync-agent
 description: Execute atomic status updates across TODO.md and state.json
+model: sonnet
 ---
 
 # Status Sync Agent

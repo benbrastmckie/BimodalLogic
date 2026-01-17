@@ -92,17 +92,17 @@ Key findings from research-002.md integrated into this plan:
 
 ---
 
-### Phase 3: Add Model Field to Implementation Agents [IN PROGRESS]
+### Phase 3: Add Model Field to Implementation Agents [COMPLETED]
 
 **Goal**: Explicitly set Sonnet for general, LaTeX, and meta-builder implementation agents.
 
 **Tasks**:
-- [ ] Read current general-implementation-agent.md frontmatter
-- [ ] Add `model: sonnet` to general-implementation-agent.md frontmatter
-- [ ] Read current latex-implementation-agent.md frontmatter
-- [ ] Add `model: sonnet` to latex-implementation-agent.md frontmatter
-- [ ] Read current meta-builder-agent.md frontmatter
-- [ ] Add `model: sonnet` to meta-builder-agent.md frontmatter
+- [x] Read current general-implementation-agent.md frontmatter
+- [x] Add `model: sonnet` to general-implementation-agent.md frontmatter
+- [x] Read current latex-implementation-agent.md frontmatter
+- [x] Add `model: sonnet` to latex-implementation-agent.md frontmatter
+- [x] Read current meta-builder-agent.md frontmatter
+- [x] Add `model: sonnet` to meta-builder-agent.md frontmatter
 
 **Timing**: 45 minutes
 
@@ -117,7 +117,7 @@ Key findings from research-002.md integrated into this plan:
 
 ---
 
-### Phase 4: Verification and Documentation [NOT STARTED]
+### Phase 4: Verification and Documentation [IN PROGRESS]
 
 **Goal**: Verify all agents are properly configured and document the model tier assignments.
 

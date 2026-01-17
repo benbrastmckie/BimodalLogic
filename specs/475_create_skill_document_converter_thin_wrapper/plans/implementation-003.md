@@ -168,7 +168,7 @@ Path 2: Implicit During Task Implementation
 
 ---
 
-### Phase 3: Create Command File [IN PROGRESS]
+### Phase 3: Create Command File [COMPLETED]
 
 **Goal**: Create `/convert` command with 3-checkpoint pattern
 
@@ -207,7 +207,7 @@ Path 2: Implicit During Task Implementation
 
 ---
 
-### Phase 4: Update Skill List and Test [NOT STARTED]
+### Phase 4: Update Skill List and Test [IN PROGRESS]
 
 **Goal**: Register skill and verify both invocation paths work
 
