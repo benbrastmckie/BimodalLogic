@@ -27,42 +27,6 @@ technical_debt:
 
 ## High Priority
 
-### 548. Fix Skill-to-Agent Delegation Pattern
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Session ID**: sess_1768669365_4f0a88
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Research**: [research-001.md](specs/548_fix_skill_to_agent_delegation_pattern/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/548_fix_skill_to_agent_delegation_pattern/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/548_fix_skill_to_agent_delegation_pattern/summaries/implementation-summary-20260117.md)
-
-**Description**: Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives: "You MUST use the Task tool (NOT Skill tool) to spawn the subagent." This fixes the root cause identified in Task 539 research.
-
----
-
-### 555. Convert skill-status-sync to Forked Subagent Pattern
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Session ID**: sess_1768682279_d8a559
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Research**: [research-001.md](specs/555_convert_skill_status_sync_to_forked_pattern/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/555_convert_skill_status_sync_to_forked_pattern/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/555_convert_skill_status_sync_to_forked_pattern/summaries/implementation-summary-20260117.md)
-
-**Description**: Convert skill-status-sync from inline execution to forked subagent pattern. Currently causes workflow interruptions because inline skill completion triggers Claude to stop and wait for user input ("continue" required). Fix by creating status-sync-agent and making skill-status-sync a thin wrapper that delegates via Task tool.
-
----
-
 ### 549. Research Intelligent Model Routing Architecture
 - **Effort**: 2-3 hours
 - **Status**: [PLANNED]
@@ -174,22 +138,6 @@ technical_debt:
 - **Dependencies**: 560
 
 **Description**: Prove consistent_iff_consistent in Basic.lean and necessitation_lemma in TruthLemma.lean. Update README.md with accurate completion status. Verify zero sorries in Metalogic_v2.
-
----
-
-### 554. Reorganize Bimodal/Metalogic to Use Representation Theorem as Foundation
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Session ID**: sess_1768680475_5ca184
-- **Created**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Research**: [research-001.md](specs/554_bimodal_metalogic_v2_reorganize/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/554_bimodal_metalogic_v2_reorganize/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/554_bimodal_metalogic_v2_reorganize/summaries/implementation-summary-20260117.md)
-
-**Description**: From what I see in Theories/Bimodal/Metalogic/README.md, the Bimodal/Metalogic/ does not have the desired structure where the representation theorem is used to prove completeness via FMP bridge. Create a Bimodal/Metalogic_v2/ directory which reorganizes the theorems so that the representation theorem is central and foundational for the other results to build on.
 
 ---
 

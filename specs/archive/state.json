@@ -1,9 +1,96 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-17T19:17:32Z",
+  "_last_updated": "2026-01-17T21:06:33Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 555,
+      "project_name": "convert_skill_status_sync_to_forked_pattern",
+      "type": "fix",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T19:52:15Z",
+      "last_updated": "2026-01-17T21:18:00Z",
+      "effort": "2-3 hours",
+      "description": "Convert skill-status-sync from inline execution to forked subagent pattern. Currently causes workflow interruptions because inline skill completion triggers Claude to stop and wait for user input. Fix by creating status-sync-agent and making skill-status-sync a thin wrapper that delegates via Task tool.",
+      "session_id": "sess_1768682279_d8a559",
+      "researched": "2026-01-17T19:58:41Z",
+      "planned": "2026-01-17T21:13:30Z",
+      "completed": "2026-01-17T21:18:00Z",
+      "artifacts": [
+        {
+          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-17T21:05:36Z"
+    },
+    {
+      "project_number": 554,
+      "project_name": "bimodal_metalogic_v2_reorganize",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-17T19:15:49Z",
+      "last_updated": "2026-01-17T20:35:13Z",
+      "artifacts": [
+        {
+          "path": "specs/554_bimodal_metalogic_v2_reorganize/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/554_bimodal_metalogic_v2_reorganize/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/554_bimodal_metalogic_v2_reorganize/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-17T20:35:13Z",
+      "archived": "2026-01-17T21:05:36Z"
+    },
+    {
+      "project_number": 548,
+      "project_name": "fix_skill_to_agent_delegation_pattern",
+      "type": "fix",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T20:13:49Z",
+      "effort": "2-3 hours",
+      "description": "Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives. Fixes the root cause identified in Task 539 research.",
+      "session_id": "sess_1768669365_4f0a88",
+      "researched": "2026-01-17T16:59:30Z",
+      "artifacts": [
+        {
+          "path": "specs/548_fix_skill_to_agent_delegation_pattern/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/548_fix_skill_to_agent_delegation_pattern/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/548_fix_skill_to_agent_delegation_pattern/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T17:04:56Z",
+      "completed": "2026-01-17T20:13:49Z",
+      "archived": "2026-01-17T21:05:36Z"
+    },
     {
       "project_number": 516,
       "status": "abandoned",
