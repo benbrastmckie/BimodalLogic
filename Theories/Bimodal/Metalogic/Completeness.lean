@@ -3637,7 +3637,7 @@ theorem provable_iff_valid (φ : Formula) : Nonempty (DerivationTree [] φ) ↔ 
   constructor
   · intro ⟨h⟩
     -- Soundness direction: derivable implies valid
-    have sem_conseq := soundness [] φ h
+    have sem_conseq := Soundness.soundness [] φ h
     -- semantic_consequence [] φ is equivalent to valid φ
     -- Unfold: semantic_consequence [] φ = ∀ D F M tau t, (∀ ψ ∈ [], truth_at ...) → truth_at ... φ
     -- Since [] is empty, the antecedent is vacuously true

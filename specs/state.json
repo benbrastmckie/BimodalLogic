@@ -14,14 +14,18 @@
       "priority": "high",
       "language": "meta",
       "created": "2026-01-17T13:43:36Z",
-      "last_updated": "2026-01-17T13:54:26Z",
+      "last_updated": "2026-01-17T14:14:12Z",
       "effort": "4-6 hours",
       "description": "Refactor /research, /plan, /implement commands to embed all checkpoint logic inline rather than delegating preflight to skill-status-sync. The preflight status update should be done directly in the command file using Bash/jq/Edit, not via Skill invocation, to prevent the completion signal problem that causes workflows to halt after preflight.",
-      "session_id": "sess_1768657929_57f816",
-      "researched": "2026-01-17T13:54:26Z",
+      "session_id": "sess_1768659082_0813e6",
+      "researched": "2026-01-17T14:14:12Z",
       "artifacts": [
         {
           "path": "specs/529_unify_workflow_commands_single_execution/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/529_unify_workflow_commands_single_execution/reports/research-002.md",
           "type": "research"
         }
       ]
@@ -341,13 +345,14 @@
       "project_name": "research_claude_code_model_selection",
       "type": "research",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researching",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T14:11:38Z",
       "effort": "2-3 hours",
-      "description": "Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults."
+      "description": "Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults.",
+      "session_id": "sess_1768659091_1dfece"
     },
     {
       "project_number": 535,

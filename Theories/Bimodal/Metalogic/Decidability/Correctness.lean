@@ -46,7 +46,7 @@ theorem decide_sound (φ : Formula) (proof : DerivationTree [] φ) :
     (⊨ φ) := by
   -- soundness : (Γ ⊢ φ) → (Γ ⊨ φ)
   -- For empty context, ([] ⊨ φ) is equivalent to (⊨ φ)
-  have h := soundness [] φ proof
+  have h := Soundness.soundness [] φ proof
   exact Validity.valid_iff_empty_consequence φ |>.mpr h
 
 /--

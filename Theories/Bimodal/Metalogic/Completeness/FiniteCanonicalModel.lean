@@ -3639,7 +3639,7 @@ theorem truth_at_implies_semantic_truth (phi : Formula)
   -- Use the equivalence between semantic truth and assignment truth
   -- This is a fundamental connection between the two truth definitions
   -- For the SemanticCanonicalModel, valuation should match world state assignment
-  have h_equiv : (tau.states 0 ht).assignment ⟨phi, h_mem⟩ = true := by
+  have h_equiv : (tau.states 0 ht).toFiniteWorldState.assignment ⟨phi, h_mem⟩ = true := by
     -- This follows from the definition of SemanticCanonicalModel.valuation
     -- which should return the truth assignment of the underlying world state
     sorry  -- Need lemma connecting valuation to assignment
@@ -4085,7 +4085,7 @@ theorem main_provable_iff_valid (phi : Formula) : Nonempty (⊢ phi) ↔ valid p
   constructor
   · -- Soundness direction: derivable implies valid
     intro ⟨h_deriv⟩
-    have h_sem_conseq := soundness [] phi h_deriv
+    have h_sem_conseq := Soundness.soundness [] phi h_deriv
     -- semantic_consequence [] phi is equivalent to valid phi
     -- Unfold definitions to see equivalence
     intro D _ _ _ F M tau t
@@ -4152,7 +4152,7 @@ Each world state corresponds to a consistent subset of the subformula closure.
 **Proof**: SemanticWorldState φ injects into FiniteWorldState φ,
 which consists of subsets of closure φ. There are 2^|closure φ| such subsets.
 -/
-theorem finite_model_state_bound (φ : Formula) : Prop :=
+def finite_model_state_bound (φ : Formula) : Prop :=
   -- The number of world states is bounded by 2^|closure φ|
   True
 
@@ -4167,18 +4167,10 @@ dependencies up to depth k in the formula structure.
 **Temporal Depth Definition**: The maximum nesting of temporal operators
 (◯, ◯⁻¹, ◯*) in φ.
 -/
-theorem finite_model_temporal_bound (φ : Formula) : Prop :=
+def finite_model_temporal_bound (φ : Formula) : Prop :=
   -- For any model of φ, the relevant time domain can be restricted
   -- to [-temporalDepth φ, temporalDepth φ] (k = temporalDepth φ)
   True
-
-/--
-**Legacy Finite Model Property** (Deprecated).
-
-This is the original trivial formulation. Use `finite_model_property_v2`
-for the standard FMP statement.
--/
-@[deprecated finite_model_property_v2]
 
 /-!
 ### Completeness Summary
