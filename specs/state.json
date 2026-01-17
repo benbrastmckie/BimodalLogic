@@ -411,16 +411,29 @@
       "project_name": "refactor_dispatch_skills_to_haiku",
       "type": "refactor",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "completed",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T14:29:57Z",
       "effort": "2-3 hours",
       "description": "Refactor fast dispatch/routing skills to use the latest Haiku model for cost and latency optimization. This includes skill-orchestrator, skill-status-sync, skill-git-workflow. These skills perform simple routing, validation, and status updates that don't require heavy reasoning.",
       "dependencies": [
         534
-      ]
+      ],
+      "session_id": "sess_1768660132_130ba0",
+      "planned": "2026-01-17T14:29:31Z",
+      "artifacts": [
+        {
+          "path": "specs/536_refactor_dispatch_skills_to_haiku/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/536_refactor_dispatch_skills_to_haiku/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-17T14:29:57Z"
     },
     {
       "project_number": 537,
