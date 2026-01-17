@@ -12,7 +12,7 @@
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T22:20:14Z",
-      "last_updated": "2026-01-17T22:29:35Z",
+      "last_updated": "2026-01-17T22:32:02Z",
       "researched": "2026-01-17T22:23:36Z",
       "artifacts": [
         {
@@ -25,6 +25,10 @@
         },
         {
           "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-003.md",
           "type": "plan"
         }
       ],
