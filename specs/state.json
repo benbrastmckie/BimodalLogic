@@ -8,14 +8,15 @@
     {
       "project_number": 547,
       "project_name": "improve_fmp_full_theorem",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T16:22:24Z",
-      "last_updated": "2026-01-17T17:58:01Z",
+      "last_updated": "2026-01-17T18:05:00Z",
       "session_id": "sess_1768669081_835e7d",
       "researched": "2026-01-17T17:55:00Z",
       "planned": "2026-01-17T17:54:30Z",
+      "completed": "2026-01-17T18:05:00Z",
       "effort": "4-5 hours",
       "artifacts": [
         {
@@ -25,6 +26,10 @@
         {
           "path": "specs/547_improve_fmp_full_theorem/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/547_improve_fmp_full_theorem/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ]
     },

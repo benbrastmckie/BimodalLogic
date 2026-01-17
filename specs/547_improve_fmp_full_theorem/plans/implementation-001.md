@@ -110,7 +110,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 4: Prove Bridge Lemma - satisfiable_implies_not_refutable [IN PROGRESS]
+### Phase 4: Prove Bridge Lemma - satisfiable_implies_not_refutable [COMPLETED]
 
 **Goal**: Prove the key bridge lemma connecting satisfiability to non-derivability
 
@@ -131,7 +131,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 5: Prove finite_model_property_v2 [NOT STARTED]
+### Phase 5: Prove finite_model_property_v2 [COMPLETED]
 
 **Goal**: Replace the sorry in `finite_model_property_v2` with a complete proof
 

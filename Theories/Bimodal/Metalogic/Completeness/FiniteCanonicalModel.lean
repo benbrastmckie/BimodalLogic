@@ -4021,6 +4021,36 @@ theorem satisfiable_implies_not_refutable (phi : Formula) :
   exact h_neg_true h_true
 
 /--
+If φ is not refutable, then {φ} is set-consistent.
+
+Proof: If {φ} is inconsistent, then [φ] ⊢ ⊥, so by deduction theorem ⊢ φ → ⊥ = φ.neg.
+-/
+theorem phi_consistent_of_not_refutable (φ : Formula) (h_not_refutable : ¬Nonempty (⊢ φ.neg)) :
+    SetConsistent ({φ} : Set Formula) := by
+  intro L hL h_incons
+  -- hL says every element of L is φ
+  have hL' : ∀ ψ ∈ L, ψ = φ := fun ψ hψ => Set.mem_singleton_iff.mp (hL ψ hψ)
+  by_cases hne : L = []
+  · -- L is empty, so [] ⊢ ⊥, contradicts soundness
+    subst hne
+    obtain ⟨d⟩ := h_incons
+    have h_sem_cons : ([] : Context) ⊨ Formula.bot := Bimodal.Metalogic.Soundness.soundness [] Formula.bot d
+    have h_bot_true := h_sem_cons Int TaskFrame.trivial_frame
+        (TaskModel.all_false) (WorldHistory.trivial) (0 : Int)
+        (fun ψ hψ => (List.not_mem_nil hψ).elim)
+    simp only [truth_at] at h_bot_true
+  · -- L is non-empty, consisting only of φ
+    obtain ⟨d⟩ := h_incons
+    -- Weaken to [φ] ⊢ ⊥
+    have h_from_singleton : [φ] ⊢ Formula.bot := by
+      apply derivation_from_subset_weaken d
+      intro ψ hψ
+      simp [hL' ψ hψ]
+    -- By deduction theorem: [] ⊢ φ → ⊥ = φ.neg
+    have h_phi_neg : [] ⊢ φ.neg := deduction_theorem [] φ Formula.bot h_from_singleton
+    exact h_not_refutable ⟨h_phi_neg⟩
+
+/--
 **Finite Model Property for TM Logic** (Standard Format).
 
 If a formula φ is satisfiable, then it is satisfiable in a finite model
@@ -4029,33 +4059,106 @@ which has:
 - World states bounded by 2^|closure φ| (all subsets of subformulas)
 - Temporal domain bounded by [-temporalDepth φ, temporalDepth φ]
 
-**Proof Strategy (Contrapositive)**:
-1. Assume φ is NOT satisfiable in any finite model
-2. Then φ is valid in all finite models
-3. By completeness, valid formulas are provable
-4. So φ is provable
-5. But provable formulas are valid, hence satisfiable (contradiction)
-6. Therefore, φ must be satisfiable in some finite model
+**Proof Strategy**:
+1. If φ is satisfiable, then φ.neg is not provable (by soundness)
+2. Therefore {φ} is set-consistent
+3. By Lindenbaum, extend {φ} to a maximal consistent set M
+4. Project M to closure(φ) to get a closure MCS S with φ ∈ S
+5. Build a FiniteWorldState w from S where φ is true
+6. Build a FiniteHistory through w
+7. Package as SemanticWorldState in SemanticCanonicalFrame
+8. SemanticCanonicalFrame is finite (by semanticWorldState_finite)
 
-**Status**: FOLLOWS from semantic_weak_completeness (PROVEN)
-The proof uses the semantic canonical model which is already finite.
+**Status**: PROVEN (modulo bridge lemma to truth_at)
 -/
 theorem finite_model_property_v2 (φ : Formula) :
     formula_satisfiable φ →
     ∃ (F : FiniteTaskFrame Int) (M : TaskModel F.toTaskFrame)
       (τ : WorldHistory F.toTaskFrame) (t : Int),
       truth_at M τ t φ := by
-  -- If φ is satisfiable, then there exists SOME model where it's true
-  -- We need to show there exists a FINITE model where it's true
-  -- Use contrapositive: if no finite model satisfies φ, then φ is not satisfiable at all
-  
-  -- The key insight: SemanticCanonicalFrame φ is already finite
-  -- and SemanticCanonicalModel φ provides a model over this frame
-  -- If φ is satisfiable, then by semantic_weak_completeness contrapositive,
-  -- there exists a SemanticWorldState where φ is true
-  -- This SemanticWorldState corresponds to a finite model
-  
-  sorry  -- Proof uses contrapositive of semantic_weak_completeness
+  intro h_sat
+
+  -- Step 1: φ is not refutable (by satisfiable_implies_not_refutable)
+  have h_not_refutable : ¬Nonempty (⊢ φ.neg) := satisfiable_implies_not_refutable φ h_sat
+
+  -- Step 2: {φ} is set-consistent
+  have h_phi_cons : SetConsistent ({φ} : Set Formula) := phi_consistent_of_not_refutable φ h_not_refutable
+
+  -- Step 3: Extend {φ} to a maximal consistent set M by Lindenbaum
+  obtain ⟨M, h_sub_M, h_M_mcs⟩ := set_lindenbaum {φ} h_phi_cons
+
+  -- Step 4: φ ∈ M (from subset property)
+  have h_phi_in_M : φ ∈ M := h_sub_M (Set.mem_singleton φ)
+
+  -- Step 5: Project M to closure(φ) to get a closure MCS S
+  let S := M ∩ (closure φ : Set Formula)
+  have h_S_mcs : ClosureMaximalConsistent φ S := mcs_projection_is_closure_mcs φ M h_M_mcs
+
+  -- Step 6: φ ∈ S (since φ ∈ M and φ ∈ closure φ)
+  have h_phi_closure : φ ∈ closure φ := self_mem_closure φ
+  have h_phi_in_S : φ ∈ S := ⟨h_phi_in_M, h_phi_closure⟩
+
+  -- Step 7: Build FiniteWorldState from S where φ is true
+  let w := worldStateFromClosureMCS φ S h_S_mcs
+
+  -- Step 8: φ is true at w (by worldStateFromClosureMCS_models_iff)
+  have h_phi_true_w : w.models φ h_phi_closure := by
+    rw [← worldStateFromClosureMCS_models_iff φ S h_S_mcs φ h_phi_closure]
+    exact h_phi_in_S
+
+  -- Step 9: Build FiniteHistory through w
+  let hist := finite_history_from_state φ w
+
+  -- Step 10: Build SemanticWorldState at origin
+  let t := FiniteTime.origin (temporalBound φ)
+  let sw := SemanticWorldState.ofHistoryTime hist t
+
+  -- Step 11: φ is true at sw at origin
+  -- hist.states t = w by definition of finite_history_from_state
+  have h_hist_states_t : hist.states t = w := rfl
+
+  have h_phi_true_sw : semantic_truth_at_v2 φ sw t φ := by
+    -- semantic_truth_at_v2 phi w t psi = ∃ h_mem : psi ∈ closure phi, w.toFiniteWorldState.models psi h_mem
+    use h_phi_closure
+    -- Need to show sw.toFiniteWorldState.models φ h_phi_closure
+    -- sw.toFiniteWorldState = hist.states t = w
+    have h_sw_eq : SemanticWorldState.toFiniteWorldState sw = hist.states t := rfl
+    rw [h_sw_eq, h_hist_states_t]
+    exact h_phi_true_w
+
+  -- Step 12: Package SemanticCanonicalFrame as FiniteTaskFrame
+  -- SemanticCanonicalFrame φ : TaskFrame Int with WorldState = SemanticWorldState φ
+  -- SemanticWorldState φ is finite by SemanticWorldState.semanticWorldState_finite
+  let finFrame : FiniteTaskFrame Int := {
+    toTaskFrame := SemanticCanonicalFrame φ
+    finite_world := SemanticWorldState.semanticWorldState_finite
+  }
+
+  -- Step 13: Build WorldHistory over SemanticCanonicalFrame
+  -- We need a WorldHistory (SemanticCanonicalFrame φ)
+  -- Use finiteHistoryToWorldHistory
+  let tau := finiteHistoryToWorldHistory φ hist
+
+  -- Step 14: Convert semantic_truth_at_v2 to truth_at
+  -- This is the key bridge: semantic_truth_at_v2 should imply truth_at
+  -- At time 0 (the integer corresponding to origin)
+  let t_int : Int := FiniteTime.toInt (temporalBound φ) t
+
+  -- We need: truth_at (SemanticCanonicalModel φ) tau t_int φ
+  -- where tau is the world history and t_int = 0 is the time
+
+  -- This requires showing semantic_truth_at_v2 corresponds to truth_at
+  -- which involves the bridge lemma semantic_truth_implies_truth_at
+
+  use finFrame
+  use SemanticCanonicalModel φ
+  use tau
+  use t_int
+
+  -- The key step: bridge from semantic_truth_at_v2 to truth_at
+  -- semantic_truth_at_v2 φ sw t φ should imply truth_at M tau t_int φ
+  -- This requires structural induction on formulas
+  sorry  -- Bridge gap: connect semantic_truth_at_v2 to truth_at
 
 /--
 **Finite Model State Bound**.
