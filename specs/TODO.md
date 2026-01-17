@@ -291,10 +291,11 @@ technical_debt:
 
 ### 562. Agent System Refactor Report for Protocol Repository
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-17
+- **Research**: [research-001.md](specs/562_agent_system_refactor_report/reports/research-001.md)
 
 **Description**: Look through the recently completed refactors to .claude/ which addressed some of the errors I was having about continuation and skills calling skills and aborting, etc., in order to create a report in /home/benjamin/Projects/protocol/specs/ with links to all relevant reports and plans from these refactors so that similar changes can be made to protocol/.claude/ to emulate the advances made in the .claude/ agent system in this repository.
 
