@@ -16,6 +16,7 @@ including soundness, completeness, representation theorems, and decidability.
                     │      Core/        │
                     │  Basic.lean       │
                     │  Provability.lean │
+                    │  DeductionThm.lean│
                     └─────────┬─────────┘
                               │
                               ↓
@@ -44,7 +45,7 @@ including soundness, completeness, representation theorems, and decidability.
 
 | Module | Status | Notes |
 |--------|--------|-------|
-| **Core/** | Working | Definitions: Consistent, Valid, MaximalConsistent |
+| **Core/** | Working | Definitions + DeductionTheorem: Consistent, Valid, MaximalConsistent |
 | **Soundness/** | PROVEN | 14/14 axioms, 7/7 rules. `soundness : Γ ⊢ φ → Γ ⊨ φ` |
 | **Completeness.lean** | PROVEN | Infinite canonical model approach |
 | **Decidability/** | PROVEN | Tableau + proof/countermodel extraction |
@@ -87,9 +88,10 @@ The decision procedure is sound when it succeeds. Completeness requires FMP (cur
 
 ```
 Metalogic/
-├── Core/                    # Foundational definitions
+├── Core/                    # Foundational definitions & theorems
 │   ├── Basic.lean          # Consistency, validity, MCS definitions
-│   └── Provability.lean    # Context-based provability infrastructure
+│   ├── Provability.lean    # Context-based provability infrastructure
+│   └── DeductionTheorem.lean # Deduction theorem (Γ,A ⊢ B → Γ ⊢ A→B)
 │
 ├── Soundness/              # Direction: Derivable → Valid
 │   ├── Soundness.lean      # Main soundness theorem (PROVEN)
@@ -121,8 +123,6 @@ Metalogic/
 ├── Applications/           # Applications (scaffolding)
 │   └── Compactness.lean    # Depends on broken Representation
 │
-├── DeductionTheorem.lean   # Deduction theorem infrastructure
-│
 ├── Decidability.lean       # Module hub for decidability
 └── README.md               # This file
 ```
@@ -131,18 +131,23 @@ Metalogic/
 
 ### Proven Core Results
 
-1. **Soundness** (`Soundness/Soundness.lean`):
+1. **Core Infrastructure** (`Core/`):
+   - Consistency, validity, and maximal consistent set definitions
+   - Context-based provability (`ContextDerivable`)
+   - Deduction theorem: `(A :: Γ) ⊢ B → Γ ⊢ A → B`
+
+2. **Soundness** (`Soundness/Soundness.lean`):
    - All 14 axiom validity lemmas
    - All 7 inference rule soundness cases
    - Main `soundness` theorem
 
-2. **Completeness** (`Completeness.lean`, `Completeness/FiniteCanonicalModel.lean`):
+3. **Completeness** (`Completeness.lean`, `Completeness/FiniteCanonicalModel.lean`):
    - `semantic_weak_completeness` - Contrapositive proof via MCS construction
    - `semantic_truth_lemma_v2` - By definition of SemanticWorldState
    - `main_provable_iff_valid` - Combining soundness and semantic completeness
    - Lindenbaum lemma via Zorn's lemma
 
-3. **Decidability** (`Decidability/*.lean`):
+4. **Decidability** (`Decidability/*.lean`):
    - Tableau expansion rules
    - Closure detection
    - Saturation checking
@@ -227,3 +232,7 @@ See `../Boneyard/README.md` for full deprecation history and rationale.
 - Goldblatt, Logics of Time and Computation - Temporal completeness
 - Wu, M. Verified Decision Procedures for Modal Logics
 - Gore, R. (1999). Tableau Methods for Modal and Temporal Logics
+
+---
+
+*Documentation created as part of Task 523 (Clean Up Bimodal Lean Source Files). Last updated: 2026-01-17.*
