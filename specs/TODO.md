@@ -286,13 +286,15 @@ technical_debt:
 
 ### 543. Establish TruthLemma and Representation (Phase 2 of 540)
 - **Effort**: 1.5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
+- **Planned**: 2026-01-17
 - **Parent**: 540
 - **Dependencies**: 542
 - **Research**: [research-001.md](specs/543_establish_truth_lemma_and_representation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/543_establish_truth_lemma_and_representation/plans/implementation-001.md)
 
 **Description**: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence.
 
