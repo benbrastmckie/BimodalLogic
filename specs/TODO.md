@@ -37,7 +37,7 @@ technical_debt:
 - **Researched**: 2026-01-17
 - **Planned**: 2026-01-17
 - **Research**: [research-001.md](specs/564_memory_issues_status_sync_agent/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/564_memory_issues_status_sync_agent/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/564_memory_issues_status_sync_agent/plans/implementation-002.md)
 
 **Description**: Investigate memory errors occurring when skill-status-sync calls status-sync-agent. The skill-agent delegation leads to memory exhaustion that either crashes the terminal or produces error outputs in .claude/output/. Analyze the command-skill-agent architecture to identify root causes and redesign to preserve functionality without memory errors.
 
