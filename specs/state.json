@@ -6,13 +6,31 @@
   },
   "active_projects": [
     {
+      "project_number": 555,
+      "project_name": "convert_skill_status_sync_to_forked_pattern",
+      "type": "fix",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T19:52:15Z",
+      "last_updated": "2026-01-17T19:52:15Z",
+      "effort": "2-3 hours",
+      "description": "Convert skill-status-sync from inline execution to forked subagent pattern. Currently causes workflow interruptions because inline skill completion triggers Claude to stop and wait for user input. Fix by creating status-sync-agent and making skill-status-sync a thin wrapper that delegates via Task tool."
+    },
+    {
       "project_number": 554,
       "project_name": "bimodal_metalogic_v2_reorganize",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T19:15:49Z",
-      "last_updated": "2026-01-17T19:17:03Z"
+      "last_updated": "2026-01-17T19:21:38Z",
+      "artifacts": [
+        {
+          "path": "specs/554_bimodal_metalogic_v2_reorganize/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 517,
@@ -355,5 +373,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 555
+  "next_project_number": 556
 }

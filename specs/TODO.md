@@ -106,11 +106,12 @@ technical_debt:
 
 ### 554. Reorganize Bimodal/Metalogic to Use Representation Theorem as Foundation
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Session ID**: sess_1768677415_4714f2
 - **Created**: 2026-01-17
+- **Research**: [research-001.md](specs/554_bimodal_metalogic_v2_reorganize/reports/research-001.md)
 
 **Description**: From what I see in Theories/Bimodal/Metalogic/README.md, the Bimodal/Metalogic/ does not have the desired structure where the representation theorem is used to prove completeness via FMP bridge. Create a Bimodal/Metalogic_v2/ directory which reorganizes the theorems so that the representation theorem is central and foundational for the other results to build on.
 
