@@ -286,17 +286,17 @@ technical_debt:
 ---
 
 ### 523. Clean Up Bimodal Lean Source Files After Task 505
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Effort**: 6-9 hours
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Session ID**: sess_1768657879_19f5ce
 - **Researched**: 2026-01-17
-- **Research**: [research-002.md](specs/523_bimodal_cleanup/reports/research-002.md)
+- **Research**: [research-003.md](specs/523_bimodal_cleanup/reports/research-003.md)
 
 **Description**: Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments.
 
-**Research Findings**: Task 523 depends on task 505's restructuring which has been completed. The cleanup tasks involve file restructuring, code consolidation, documentation updates, and Boneyard management.
+**Research Findings**: FMP-centric restructuring proposed. The Finite Model Property should be the central bridge from which Completeness, Decidability, and Compactness all derive. Current Decidability module is isolated from FMP; semantic_weak_completeness is proven but not properly elevated. 3-phase cleanup: create FMP-centric structure, clean FiniteCanonicalModel.lean, update documentation.
 
 ---
 
