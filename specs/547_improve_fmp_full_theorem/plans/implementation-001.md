@@ -89,7 +89,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 3: Fix Build Errors - Type Mismatches and Proofs [IN PROGRESS]
+### Phase 3: Fix Build Errors - Type Mismatches and Proofs [COMPLETED]
 
 **Goal**: Resolve remaining type mismatches and unsolved goal errors
 
@@ -110,7 +110,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 4: Prove Bridge Lemma - satisfiable_implies_not_refutable [NOT STARTED]
+### Phase 4: Prove Bridge Lemma - satisfiable_implies_not_refutable [IN PROGRESS]
 
 **Goal**: Prove the key bridge lemma connecting satisfiability to non-derivability
 
