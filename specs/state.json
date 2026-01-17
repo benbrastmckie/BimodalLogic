@@ -6,15 +6,28 @@
   },
   "active_projects": [
     {
+      "project_number": 540,
+      "project_name": "finish_metalogic_refactor_cleanup",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-17T14:34:53Z",
+      "last_updated": "2026-01-17T14:34:53Z",
+      "effort": "4-6 hours",
+      "description": "Finish the Metalogic/ directory refactor, leaving no stray elements or parallel structures. Move anything worth saving to Bimodal/Boneyard/ if not already represented, and update all documentation to be fully accurate. Research report: specs/523_bimodal_cleanup/reports/research-003.md"
+    },
+    {
       "project_number": 529,
       "project_name": "unify_workflow_commands_single_execution",
       "type": "refactor",
       "phase": "not_started",
-      "status": "implementing",
+      "status": "completed",
       "priority": "high",
       "language": "meta",
       "created": "2026-01-17T13:43:36Z",
-      "last_updated": "2026-01-17T14:25:23Z",
+      "last_updated": "2026-01-17T14:34:46Z",
       "effort": "4-6 hours",
       "description": "Refactor /research, /plan, /implement commands to embed all checkpoint logic inline rather than delegating preflight to skill-status-sync. The preflight status update should be done directly in the command file using Bash/jq/Edit, not via Skill invocation, to prevent the completion signal problem that causes workflows to halt after preflight.",
       "session_id": "sess_1768659910_d77aaf",
@@ -34,7 +47,8 @@
         }
       ],
       "planned": "2026-01-17T14:19:10Z",
-      "started": "2026-01-17T14:25:23Z"
+      "started": "2026-01-17T14:25:23Z",
+      "completed": "2026-01-17T14:34:46Z"
     },
     {
       "project_number": 530,
@@ -514,5 +528,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 540
+  "next_project_number": 541
 }

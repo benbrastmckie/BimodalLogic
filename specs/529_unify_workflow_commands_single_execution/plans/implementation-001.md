@@ -74,7 +74,7 @@ This eliminates the 3-skill invocation pattern that causes halting, reducing to 
 ### Phase 2: Refactor Research Skills
 
 **Estimated effort**: 1.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add preflight/postflight to skill-researcher
@@ -141,7 +141,7 @@ For each skill:
 ### Phase 3: Refactor Planner Skill
 
 **Estimated effort**: 45 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add preflight/postflight to skill-planner
@@ -168,7 +168,7 @@ For each skill:
 ### Phase 4: Refactor Implementation Skills
 
 **Estimated effort**: 1.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add preflight/postflight to skill-implementer
@@ -204,7 +204,7 @@ For each skill:
 ### Phase 5: Simplify Commands
 
 **Estimated effort**: 1 hour
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Simplify /research command (remove GATE IN/OUT checkpoints)
@@ -267,7 +267,7 @@ Git commit on successful return.
 ### Phase 6: Update Documentation
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Mark skill-status-sync as deprecated for workflow use
@@ -300,7 +300,7 @@ Git commit on successful return.
 ### Phase 7: Test Full Workflows
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Test /research workflow completes without "continue"

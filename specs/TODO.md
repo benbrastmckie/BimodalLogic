@@ -1,5 +1,5 @@
 ---
-next_project_number: 535
+next_project_number: 541
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -221,6 +221,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 540. Finish Metalogic Directory Refactor and Cleanup
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-17
+
+**Description**: Finish the Logos/Metalogic/ directory refactor, leaving no stray elements or parallel structures. The situation is documented in specs/523_bimodal_cleanup/reports/research-003.md. Move anything worth saving that is not necessary for the refactored implementation to Bimodal/Boneyard/ (if not already represented), and update all documentation to be fully accurate.
+
+---
 
 ### 523. Clean Up Bimodal Lean Source Files After Task 505
 - **Effort**: 7 hours
