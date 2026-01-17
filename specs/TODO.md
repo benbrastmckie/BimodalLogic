@@ -28,14 +28,16 @@ technical_debt:
 ## High Priority
 
 ### 547. Improve FMP Full Theorem
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 4-5 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
-- **Session ID**: sess_1768668430_3741b8
+- **Session ID**: sess_1768668829_3d82f1
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
+- **Planned**: 2026-01-17
 - **Research**: [research-001.md](specs/547_improve_fmp_full_theorem/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/547_improve_fmp_full_theorem/plans/implementation-001.md)
 
 **Description**: Improve the current implementation to establish the full FMP theorem proving that ANY model can be reduced to a FINITE model.
 
@@ -43,9 +45,10 @@ technical_debt:
 
 ### 548. Fix Skill-to-Agent Delegation Pattern
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
+- **Session ID**: sess_1768668807_2d5aa5
 - **Created**: 2026-01-17
 
 **Description**: Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives: "You MUST use the Task tool (NOT Skill tool) to spawn the subagent." This fixes the root cause identified in Task 539 research.
@@ -204,7 +207,7 @@ technical_debt:
 
 ### 546. Documentation Update (Phase 5 of 540)
 - **Effort**: 0.5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-17

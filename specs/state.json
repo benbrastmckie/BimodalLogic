@@ -8,17 +8,23 @@
     {
       "project_number": 547,
       "project_name": "improve_fmp_full_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T16:22:24Z",
-      "last_updated": "2026-01-17T17:55:00Z",
-      "session_id": "sess_1768668430_3741b8",
+      "last_updated": "2026-01-17T17:54:30Z",
+      "session_id": "sess_1768668829_3d82f1",
       "researched": "2026-01-17T17:55:00Z",
+      "planned": "2026-01-17T17:54:30Z",
+      "effort": "4-5 hours",
       "artifacts": [
         {
           "path": "specs/547_improve_fmp_full_theorem/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/547_improve_fmp_full_theorem/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
@@ -60,11 +66,11 @@
       "project_name": "documentation_update",
       "type": "documentation",
       "phase": "not_started",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T16:55:28Z",
       "effort": "0.5 hours",
       "parent": 540,
       "dependencies": [
@@ -326,13 +332,14 @@
       "project_number": 548,
       "project_name": "fix_skill_to_agent_delegation_pattern",
       "type": "fix",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T16:53:36Z",
       "effort": "2-3 hours",
-      "description": "Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives. Fixes the root cause identified in Task 539 research."
+      "description": "Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives. Fixes the root cause identified in Task 539 research.",
+      "session_id": "sess_1768668807_2d5aa5"
     },
     {
       "project_number": 549,
