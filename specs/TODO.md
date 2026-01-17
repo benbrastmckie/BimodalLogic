@@ -138,12 +138,13 @@ technical_debt:
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
 - **Planned**: 2026-01-17
+- **Revised**: 2026-01-17
 - **Parent**: 556
 - **Dependencies**: 557
 - **Research**: [research-003.md](specs/558_semantic_satisfiability_bridge/reports/research-003.md)
-- **Plan**: [implementation-001.md](specs/558_semantic_satisfiability_bridge/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/558_semantic_satisfiability_bridge/plans/implementation-002.md)
 
-**Description**: Prove consistent_implies_satisfiable and subformulaList_finite in Representation/FiniteModelProperty.lean. Bridges canonical world representation to semantic satisfiability.
+**Description**: Prove consistent_implies_satisfiable and subformulaList_finite in Representation/FiniteModelProperty.lean. Bridges canonical world representation to semantic satisfiability. **Revised**: Emphasizes Metalogic_v2 self-containment - Metalogic/ results are inspiration only, not to be imported. Representation theorem is the foundation for completeness.
 
 ---
 

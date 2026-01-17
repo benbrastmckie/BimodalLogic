@@ -114,7 +114,7 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T22:45:16Z",
+      "last_updated": "2026-01-17T22:53:32Z",
       "parent_task": 556,
       "dependencies": [
         557
@@ -128,6 +128,10 @@
         },
         {
           "path": "specs/558_semantic_satisfiability_bridge/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/558_semantic_satisfiability_bridge/plans/implementation-002.md",
           "type": "plan"
         }
       ],
