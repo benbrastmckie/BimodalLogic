@@ -51,13 +51,14 @@
     {
       "project_number": 570,
       "project_name": "analyze_compound_formula_proof_requirements",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T03:43:29Z",
-      "last_updated": "2026-01-18T04:27:05Z",
+      "last_updated": "2026-01-18T04:33:45Z",
       "parent_task": 566,
       "description": "Analyze what is needed to complete the 4 compound formula cases (imp, box, all_past, all_future) in truth_at_implies_semantic_truth. Document the proof obligations, required lemmas, and relationship between truth_at and assignment functions.",
+      "blocked_on": "Theorem truth_at_implies_semantic_truth is unprovable: IsLocallyConsistent provides soundness only, not completeness. Core completeness (semantic_weak_completeness) is PROVEN and unaffected.",
       "artifacts": [
         {
           "path": "specs/570_analyze_compound_formula_proof_requirements/reports/research-001.md",
@@ -66,17 +67,21 @@
         {
           "path": "specs/570_analyze_compound_formula_proof_requirements/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/570_analyze_compound_formula_proof_requirements/summaries/implementation-summary-20260118.md",
+          "type": "summary"
         }
       ]
     },
     {
       "project_number": 569,
       "project_name": "analyze_proof_strategy_alternatives",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T03:42:56Z",
-      "last_updated": "2026-01-18T04:10:14Z",
+      "last_updated": "2026-01-18T04:11:28Z",
       "parent_task": 566,
       "description": "Analyze different proof strategies for completing the semantic embedding in task 566. Compare contrapositive approach, direct instantiation, and alternative lemmas from rollback section.",
       "artifacts": [

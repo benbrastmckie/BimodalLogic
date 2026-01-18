@@ -1,8 +1,8 @@
 # Implementation Plan: Task #570
 
 - **Task**: 570 - Analyze Compound Formula Proof Requirements
-- **Status**: [NOT STARTED]
-- **Effort**: 16 hours
+- **Status**: [BLOCKED]
+- **Effort**: 16 hours estimated (blocked after ~2 hours of analysis)
 - **Priority**: High
 - **Dependencies**: Task 566, Task 569
 - **Research Inputs**: specs/570_analyze_compound_formula_proof_requirements/reports/research-001.md
@@ -56,142 +56,123 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Infrastructure and Helper Lemmas [IN PROGRESS]
+### Phase 1: Infrastructure and Helper Lemmas [BLOCKED]
 
 **Goal**: Establish the foundational bridge lemmas needed by all 4 cases
 
-**Tasks**:
-- [ ] Analyze the exact structure of how `SemanticWorldState` relates to closure MCS
-- [ ] Create helper lemma `mcs_of_semantic_world_state` to extract MCS membership from SemanticWorldState
-- [ ] Verify `closure_mcs_negation_complete` works with SemanticWorldState's underlying MCS
-- [ ] Create lemma `assignment_true_iff_in_mcs` relating assignment values to MCS membership
-- [ ] Create lemma `assignment_false_implies_neg_in_mcs` for contrapositive arguments
-- [ ] Test infrastructure compiles and key lemmas are usable
+**Status**: BLOCKED - Fundamental architectural issue discovered
 
-**Timing**: 4 hours
+**Analysis Summary**:
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Add helper lemmas near line 3600
+After deep investigation during implementation, confirmed that **the theorem `truth_at_implies_semantic_truth` is fundamentally unprovable in its current form**:
 
-**Verification**:
-- All new lemmas compile without sorries
-- `lean_goal` shows lemmas have expected types
-- Helper lemmas can be used in simple test cases
+1. **The theorem is too general**: It works for ANY `tau : WorldHistory (SemanticCanonicalFrame phi)`, not just histories constructed from MCS sets
+
+2. **The correspondence gap**: `truth_at` (recursive semantic evaluation on formula structure) does not necessarily correspond to `assignment` (direct lookup in FiniteWorldState) for compound formulas
+
+3. **Root cause - soundness vs completeness**:
+   - `IsLocallyConsistent` provides SOUNDNESS: `assignment (imp psi chi) = true` AND `assignment psi = true` => `assignment chi = true`
+   - We NEED COMPLETENESS: `(assignment psi = true => assignment chi = true)` => `assignment (imp psi chi) = true`
+   - These are NOT equivalent for arbitrary `FiniteWorldState`s
+
+4. **MCS vs general world states**: The correspondence only holds for `FiniteWorldState`s constructed from closure-MCS sets via `worldStateFromClosureMCS`. Arbitrary `SemanticWorldState`s may have `FiniteWorldState`s that satisfy local consistency but not MCS completeness.
+
+**Evidence**:
+- The `semantic_truth_lemma_v2` (line 2801) is PROVEN because it defines truth directly in terms of `models`, sidestepping the bridge entirely
+- The `finite_truth_lemma` (line 3770) has the same 4 sorries in backward directions
+- The comments in the codebase explicitly acknowledge this limitation
+
+**Why the existing code still works**:
+- `semantic_weak_completeness` is PROVEN - it uses the contrapositive approach
+- `main_provable_iff_valid` is PROVEN - it doesn't actually need `truth_at_implies_semantic_truth` for its core result
+- The sorries in `truth_at_implies_semantic_truth` and `main_weak_completeness` are "bridge sorries" that connect the proven semantic approach to the general `valid` definition
+
+**Blocking Reason**: Cannot create the proposed helper lemmas because the fundamental assumption (all SemanticWorldStates have MCS-derived assignments) is false.
+
+**Timing**: N/A (blocked)
+
+**Files to modify**: None (architectural issue)
+
+**Verification**: N/A
 
 ---
 
-### Phase 2: Implication Case [NOT STARTED]
+### Phase 2: Implication Case [BLOCKED]
 
 **Goal**: Complete the sorry at line 3635 for the implication case (`psi.imp chi`)
 
-**Tasks**:
-- [ ] Read the exact goal state at line 3635 using `lean_goal`
-- [ ] Implement contrapositive approach:
-  - Assume `assignment ⟨psi.imp chi, h_mem⟩ = false`
-  - By Phase 1 infrastructure, deduce `(psi.imp chi).neg` is in MCS (or equivalent)
-  - Unfold negation semantics to get `psi` true and `chi` false in MCS
-  - Use IH or bridge lemma to get `truth_at psi` and `NOT truth_at chi`
-  - Derive contradiction with `h_truth : truth_at psi -> truth_at chi`
-- [ ] If contrapositive is complex, try direct approach using decidability
-- [ ] Test proof compiles and goal is discharged
-- [ ] Document the proof strategy in comments
+**Status**: BLOCKED - Depends on Phase 1 which is blocked
 
-**Timing**: 3 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Line 3635
-
-**Verification**:
-- `lean_diagnostic_messages` shows no errors at line 3635
-- The sorry is replaced with actual proof term
-- Nearby lines still compile
+**Reason**: The contrapositive approach requires that the world state's assignment is determined by MCS membership, which is not guaranteed for arbitrary `SemanticWorldState`s.
 
 ---
 
-### Phase 3: Box Case [NOT STARTED]
+### Phase 3: Box Case [BLOCKED]
 
 **Goal**: Complete the sorry at line 3641 for the box case (`psi.box`)
 
-**Tasks**:
-- [ ] Read the exact goal state at line 3641 using `lean_goal`
-- [ ] Analyze what's needed for modal canonical property:
-  - `h_truth : forall sigma, truth_at M sigma 0 psi` means psi holds at all histories
-  - Need to show `assignment ⟨psi.box, h_mem⟩ = true`
-- [ ] Check if existing modal lemmas can be leveraged
-- [ ] Implement proof using contrapositive approach:
-  - Assume box(psi) assignment is false
-  - By negation-completeness, there exists a "witness" history where psi fails
-  - Derive contradiction with universal quantifier in h_truth
-- [ ] Test proof compiles
-- [ ] Document proof strategy
+**Status**: BLOCKED - Depends on Phase 1 which is blocked
 
-**Timing**: 4 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Line 3641
-
-**Verification**:
-- `lean_diagnostic_messages` shows no errors at line 3641
-- The sorry is replaced with actual proof term
+**Reason**: Same fundamental issue as implication case - the correspondence between `truth_at` and `assignment` is not established for arbitrary world states.
 
 ---
 
-### Phase 4: Temporal Cases (all_past and all_future) [NOT STARTED]
+### Phase 4: Temporal Cases (all_past and all_future) [BLOCKED]
 
 **Goal**: Complete the sorries at lines 3646 and 3651 for temporal operators
 
-**Tasks**:
-- [ ] Read the exact goal states at lines 3646 and 3651 using `lean_goal`
-- [ ] Analyze temporal canonical properties:
-  - `all_past`: `forall s < t, truth_at M tau s psi` => assignment true
-  - `all_future`: `forall s > t, truth_at M tau s psi` => assignment true
-- [ ] Check if temporal cases can reuse pattern from box case
-- [ ] Handle time domain issues (FiniteTime vs abstract time)
-- [ ] Implement all_past case at line 3646
-- [ ] Implement all_future case at line 3651
-- [ ] Verify both cases follow similar pattern
-- [ ] Document proof strategies
+**Status**: BLOCKED - Depends on Phase 1 which is blocked
 
-**Timing**: 4 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Lines 3646, 3651
-
-**Verification**:
-- `lean_diagnostic_messages` shows no errors at lines 3646, 3651
-- Both sorries are replaced with actual proof terms
+**Reason**: Same fundamental issue as other cases - the correspondence between `truth_at` and `assignment` is not established for arbitrary world states.
 
 ---
 
-### Phase 5: Verification and Documentation [NOT STARTED]
+### Phase 5: Documentation and Alternative Paths [COMPLETED]
 
-**Goal**: Ensure all changes are robust and well-documented
+**Goal**: Document findings and provide alternative paths forward
 
-**Tasks**:
-- [ ] Run full build to verify no regressions: `lake build`
-- [ ] Check diagnostic messages for any remaining sorries in the theorem
-- [ ] Add inline comments explaining proof strategies
-- [ ] Verify `truth_at_implies_semantic_truth` has no remaining sorries
-- [ ] Check downstream consumers of the theorem still work
-- [ ] Update task 566 summary if applicable
+**Status**: COMPLETED - Documentation created
 
-**Timing**: 1 hour
+**What was done**:
+1. Analyzed the architectural issue in depth
+2. Documented in Phase 1 why the theorem is unprovable in its current form
+3. Identified that the core completeness result (`semantic_weak_completeness`) is already PROVEN and unaffected
+4. Created this implementation summary
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - Documentation only
+**Alternative Paths Forward**:
 
-**Verification**:
-- `lake build` succeeds with no errors
-- No sorries remain in `truth_at_implies_semantic_truth`
-- All downstream theorems compile
+1. **Accept as technical debt** (RECOMMENDED):
+   - The sorries in `truth_at_implies_semantic_truth` are "bridge sorries" connecting the proven semantic approach to the general `valid` definition
+   - The core completeness (`semantic_weak_completeness`) is PROVEN
+   - `main_provable_iff_valid` is PROVEN
+   - These sorries don't affect mathematical soundness
+
+2. **Restrict theorem scope**:
+   - Modify `truth_at_implies_semantic_truth` to only work for `tau`s that come from MCS-derived histories
+   - This would make the theorem provable but less general
+
+3. **Restructure `main_weak_completeness`**:
+   - Rewrite to avoid needing `truth_at_implies_semantic_truth`
+   - Use `semantic_truth_at_v2` throughout instead of bridging to `truth_at`
+
+4. **Add MCS requirement to SemanticWorldState**:
+   - Require that all `SemanticWorldState`s come from MCS constructions
+   - This would make the type more restrictive but the bridge provable
+
+**Timing**: Completed during implementation phase
+
+**Verification**: Documentation accurately reflects the architectural analysis
 
 ## Testing & Validation
 
-- [ ] Each phase produces compiling Lean code
-- [ ] `lean_goal` at each sorry location shows no remaining goal
-- [ ] `lean_diagnostic_messages` shows no errors in modified file
-- [ ] Full `lake build` succeeds after all phases
-- [ ] No regressions in theorems that depend on `truth_at_implies_semantic_truth`
+**Status**: N/A (implementation blocked)
+
+The original validation criteria are not applicable because the fundamental approach is blocked. Instead:
+
+- [x] Architectural analysis completed
+- [x] Root cause of blockage identified and documented
+- [x] Alternative paths forward documented
+- [x] Core completeness results verified as unaffected
 
 ## Artifacts & Outputs
 

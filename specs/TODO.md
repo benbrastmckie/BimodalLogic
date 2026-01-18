@@ -48,11 +48,12 @@ technical_debt:
 
 ### 571. Complete MCS Infrastructure
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
 - **Created**: 2026-01-18
+- **Research**: [research-001.md](specs/571_complete_mcs_infrastructure/reports/research-001.md)
 
 **Description**: Prove the MCS (Maximal Consistent Set) infrastructure lemmas that block the semantic embedding: `closure_mcs_negation_complete` (line 669), `closure_mcs_implies_locally_consistent` (line 1048), and `worldStateFromClosureMCS_models_iff` (line 1067) in FiniteCanonicalModel.lean.
 
@@ -86,8 +87,8 @@ technical_debt:
 
 ### 569. Analyze Proof Strategy Alternatives
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
-- **Session ID**: sess_1768709372_c9e23f
+- **Status**: [IMPLEMENTING]
+- **Session ID**: sess_1768709471_f16736
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
@@ -100,15 +101,19 @@ technical_debt:
 
 ### 570. Analyze Compound Formula Proof Requirements
 - **Effort**: 16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Session ID**: sess_1768709225_4f52f4
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
 - **Research**: [research-001.md](specs/570_analyze_compound_formula_proof_requirements/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/570_analyze_compound_formula_proof_requirements/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/570_analyze_compound_formula_proof_requirements/summaries/implementation-summary-20260118.md)
+- **Blocked On**: Theorem fundamentally unprovable (soundness vs completeness gap)
 
 **Description**: Analyze what is needed to complete the 4 compound formula cases (imp, box, all_past, all_future) in truth_at_implies_semantic_truth. Document the proof obligations, required lemmas, and relationship between truth_at and assignment functions.
+
+**Conclusion**: The theorem `truth_at_implies_semantic_truth` is architecturally unprovable: `IsLocallyConsistent` provides soundness only (not completeness), and the correspondence only holds for MCS-derived states. Core completeness results (`semantic_weak_completeness`, `main_provable_iff_valid`) are PROVEN and unaffected.
 
 ---
 
