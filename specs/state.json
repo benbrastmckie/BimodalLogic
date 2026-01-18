@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 592,
+      "project_name": "update_metalogic_v2_readme_proof_status",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-18T23:08:02Z",
+      "last_updated": "2026-01-18T23:08:02Z"
+    },
+    {
       "project_number": 591,
       "project_name": "find_fix_double_forking",
       "status": "researched",
@@ -420,5 +429,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 592
+  "next_project_number": 593
 }

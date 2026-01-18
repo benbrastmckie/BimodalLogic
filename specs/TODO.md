@@ -1,5 +1,5 @@
 ---
-next_project_number: 592
+next_project_number: 593
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -193,6 +193,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 592. Update Metalogic_v2 README.md to reflect accurate proof status
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-18
+
+**Description**: Update Theories/Bimodal/Metalogic_v2/README.md to accurately reflect current proof status. Remove `mcs_contains_or_neg` and `mcs_modus_ponens` from "With Sorries" section (they are now fully proven). Add them to "Proven" section. Verify and update remaining sorry counts. Reference task 586 research report for findings.
+
+---
 
 ### 574. Restructure main_weak_completeness with semantic_truth_at_v2
 - **Effort**: 4-6 hours
