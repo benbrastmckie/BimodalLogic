@@ -47,7 +47,7 @@ Research report (research-001.md) confirmed:
 
 ## Implementation Phases
 
-### Phase 1: Add theorem_in_mcs Helper [NOT STARTED]
+### Phase 1: Add theorem_in_mcs Helper [COMPLETED]
 
 **Goal**: Create the helper lemma that proves theorems are in every MCS
 
@@ -78,7 +78,7 @@ Research report (research-001.md) confirmed:
 
 ---
 
-### Phase 2: Complete necessitation_lemma [NOT STARTED]
+### Phase 2: Complete necessitation_lemma [COMPLETED]
 
 **Goal**: Use the helper to prove necessitation_lemma
 
@@ -101,7 +101,7 @@ Research report (research-001.md) confirmed:
 
 ---
 
-### Phase 3: Verify Downstream Files [NOT STARTED]
+### Phase 3: Verify Downstream Files [COMPLETED]
 
 **Goal**: Ensure changes don't break downstream dependencies
 

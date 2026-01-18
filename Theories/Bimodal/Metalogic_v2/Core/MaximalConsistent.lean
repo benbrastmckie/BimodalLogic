@@ -454,4 +454,69 @@ theorem maximal_negation_complete (Γ : Context) (φ : Formula)
   -- By closure property, ¬φ ∈ Γ
   exact maximal_consistent_closed Γ (Formula.neg φ) h_max h_neg_deriv
 
+/-!
+## Theorem Membership
+
+Theorems (formulas derivable from empty context) are members of every MCS.
+-/
+
+/--
+Theorems (formulas derivable from empty context) are in every maximal consistent set.
+
+**Strategy**: By contradiction using maximality.
+1. Assume φ ∉ S (where S is MCS)
+2. By maximality, insert φ S is inconsistent
+3. There exists L ⊆ insert φ S that derives ⊥
+4. Let Γ = L.filter (· ≠ φ). Then (φ :: Γ) ⊢ ⊥
+5. By deduction theorem, Γ ⊢ ¬φ
+6. But also [] ⊢ φ weakens to Γ ⊢ φ
+7. Combining gives Γ ⊢ ⊥, contradicting S being consistent
+-/
+theorem theorem_in_mcs {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_deriv : DerivationTree [] φ) : φ ∈ S := by
+  by_contra h_not_in
+  -- By maximality, insert φ S is inconsistent
+  have h_incons : ¬SetConsistent (insert φ S) := h_mcs.2 φ h_not_in
+  -- Unfold ¬SetConsistent to get a witness list
+  unfold SetConsistent at h_incons
+  push_neg at h_incons
+  obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
+  -- L is inconsistent, so L ⊢ ⊥
+  have h_bot : Nonempty (DerivationTree L Formula.bot) := inconsistent_derives_bot h_L_incons
+  obtain ⟨d_bot⟩ := h_bot
+  -- Define Γ = L.filter (· ≠ φ)
+  let Γ := L.filter (· ≠ φ)
+  -- Show Γ ⊆ S
+  have h_Γ_in_S : ∀ ψ ∈ Γ, ψ ∈ S := by
+    intro ψ hψ
+    have hψ' := List.mem_filter.mp hψ
+    have hψL := hψ'.1
+    have hψne : ψ ≠ φ := by simpa using hψ'.2
+    specialize h_L_sub ψ hψL
+    simp [Set.mem_insert_iff] at h_L_sub
+    rcases h_L_sub with rfl | h_in_S
+    · exact absurd rfl hψne
+    · exact h_in_S
+  -- L ⊆ φ :: Γ
+  have h_L_sub_phiGamma : L ⊆ φ :: Γ := by
+    intro ψ hψ
+    by_cases hψφ : ψ = φ
+    · simp [hψφ]
+    · simp only [List.mem_cons]
+      right
+      exact List.mem_filter.mpr ⟨hψ, by simpa⟩
+  -- Weaken derivation from L to φ :: Γ
+  have d_bot' : DerivationTree (φ :: Γ) Formula.bot :=
+    DerivationTree.weakening L (φ :: Γ) Formula.bot d_bot h_L_sub_phiGamma
+  -- By deduction theorem, Γ ⊢ ¬φ
+  have d_neg : DerivationTree Γ (Formula.neg φ) := deduction_theorem Γ φ Formula.bot d_bot'
+  -- Weaken [] ⊢ φ to Γ ⊢ φ
+  have d_phi : DerivationTree Γ φ := DerivationTree.weakening [] Γ φ h_deriv (by simp)
+  -- Combine to get Γ ⊢ ⊥
+  have d_bot_Γ : DerivationTree Γ Formula.bot := derives_bot_from_phi_neg_phi d_phi d_neg
+  -- This contradicts SetConsistent S (since Γ ⊆ S)
+  have h_Γ_cons : Consistent Γ := h_mcs.1 Γ h_Γ_in_S
+  exact h_Γ_cons ⟨d_bot_Γ⟩
+
 end Bimodal.Metalogic_v2.Core

@@ -154,10 +154,12 @@ If φ is derivable (from empty context), then □φ is in every canonical world.
 -/
 theorem necessitation_lemma (w : CanonicalWorldState) {φ : Formula}
     (h_derivable : ContextDerivable [] φ) : (Formula.box φ) ∈ w.carrier := by
-  -- If [] ⊢ φ, then by necessitation rule, [] ⊢ □φ
-  -- Since every MCS extends [], and MCS is deductively closed, □φ ∈ w.carrier
-  -- This requires the deductive closure property
-  sorry
+  -- Unwrap ContextDerivable to get DerivationTree [] φ
+  obtain ⟨d_phi⟩ := h_derivable
+  -- Apply necessitation rule to get DerivationTree [] (Formula.box φ)
+  have d_box : DerivationTree [] (Formula.box φ) := DerivationTree.necessitation φ d_phi
+  -- Apply theorem_in_mcs with w.property (the SetMaximalConsistent proof)
+  exact theorem_in_mcs w.property d_box
 
 /--
 Implication property for canonical worlds.

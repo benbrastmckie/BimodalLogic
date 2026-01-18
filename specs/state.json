@@ -2,43 +2,18 @@
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
     "total_tasks": 20,
-    "last_sync": "2026-01-19T00:26:00Z"
+    "last_sync": "2026-01-18T23:45:34Z"
   },
   "active_projects": [
     {
-      "project_number": 592,
-      "project_name": "update_metalogic_v2_readme_proof_status",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-18T23:08:02Z",
-      "last_updated": "2026-01-18T23:35:01Z",
-      "session_id": "sess_1768777790_d41185",
-      "artifacts": [
-        {
-          "path": "specs/592_update_metalogic_v2_readme_proof_status/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/592_update_metalogic_v2_readme_proof_status/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/592_update_metalogic_v2_readme_proof_status/summaries/implementation-summary-20260118.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-18T23:35:01Z"
-    },
-    {
       "project_number": 591,
       "project_name": "find_fix_double_forking",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T00:33:51Z",
-      "last_updated": "2026-01-18T23:20:21Z",
-      "session_id": "sess_1768776831_85fb6e",
+      "last_updated": "2026-01-18T23:41:18Z",
+      "session_id": "sess_1768779650_5df0f1",
       "description": "Investigate and fix potential double forking in skill-to-agent delegation. Current architecture shows skills have both context: fork (which spawns a subprocess) AND invoke Task tool (which spawns another subprocess). Audit all forked skills, determine if context: fork should be removed OR if Task invocation should be replaced with direct execution.",
       "references": [
         ".claude/docs/skills-vs-agents-context-behavior.md",
@@ -59,11 +34,11 @@
     {
       "project_number": 588,
       "project_name": "complete_truth_lemma_metalogic_v2",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:49:34Z",
-      "last_updated": "2026-01-18T23:32:58Z",
+      "last_updated": "2026-01-18T23:45:53Z",
       "artifacts": [
         {
           "path": "specs/588_complete_truth_lemma_metalogic_v2/reports/research-001.md",
@@ -72,8 +47,14 @@
         {
           "path": "specs/588_complete_truth_lemma_metalogic_v2/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/588_complete_truth_lemma_metalogic_v2/summaries/implementation-summary-20260118.md",
+          "type": "summary"
         }
-      ]
+      ],
+      "session_id": "sess_1768779621_c54bd7",
+      "completed": "2026-01-18T23:45:53Z"
     },
     {
       "project_number": 589,
@@ -128,49 +109,6 @@
         {
           "path": "specs/577_prove_compound_formula_bridge_cases/plans/implementation-001.md",
           "type": "plan"
-        }
-      ]
-    },
-    {
-      "project_number": 576,
-      "project_name": "prove_mcs_negation_completeness",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T22:12:18Z",
-      "last_updated": "2026-01-18T23:08:55Z",
-      "parent_task": 574,
-      "dependencies": [
-        575
-      ],
-      "description": "Prove closure_mcs_negation_complete using closureWithNeg infrastructure. For any ClosureMaximalConsistent set S and formula phi in closureWithNeg, either phi in S or phi.neg in S. This is the key property enabling compound formula proofs.",
-      "session_id": "sess_1768777343_817dcc",
-      "artifacts": [
-        {
-          "path": "specs/576_prove_mcs_negation_completeness/reports/research-001.md",
-          "type": "research"
-        }
-      ],
-      "completed": "2026-01-18T23:08:55Z"
-    },
-    {
-      "project_number": 575,
-      "project_name": "implement_closure_with_neg_infrastructure",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T22:12:12Z",
-      "last_updated": "2026-01-19T00:13:22Z",
-      "parent_task": 574,
-      "description": "Define closureWithNeg as closure union negations of closure formulas. Refactor MCS infrastructure (ClosureMaximalConsistent, worldStateFromClosureMCS) to use closureWithNeg instead of closure. This enables negation completeness properties needed for compound formula proofs.",
-      "artifacts": [
-        {
-          "path": "specs/575_implement_closure_with_neg_infrastructure/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/575_implement_closure_with_neg_infrastructure/summaries/implementation-summary-20260119.md",
-          "type": "summary"
         }
       ]
     },

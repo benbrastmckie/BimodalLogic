@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 19
-  completed: 177
+  active: 16
+  completed: 180
   in_progress: 2
   not_started: 26
   abandoned: 18
@@ -29,11 +29,11 @@ technical_debt:
 
 ### 591. Find and Fix Double Forking in Skill-Agent Delegation
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
-- **Session ID**: sess_1768778321_8868b6
+- **Session ID**: sess_1768779650_5df0f1
 - **Research**: [research-001.md](specs/591_find_fix_double_forking/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/591_find_fix_double_forking/plans/implementation-001.md)
 
@@ -77,14 +77,16 @@ technical_debt:
 
 ### 588. Complete Truth Lemma in Metalogic_v2
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: lean
 - **Dependencies**: 587
 - **Related**: 556
 - **Created**: 2026-01-18
+- **Completed**: 2026-01-18
 - **Research**: [research-001.md](specs/588_complete_truth_lemma_metalogic_v2/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/588_complete_truth_lemma_metalogic_v2/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/588_complete_truth_lemma_metalogic_v2/summaries/implementation-summary-20260118.md)
 
 **Description**: Complete the Truth Lemma in Theories/Bimodal/Metalogic_v2/Representation/TruthLemma.lean by filling the sorry in `necessitation_lemma` (line 160) and any other remaining sorries. The truth lemma establishes that for canonical worlds, formula membership equals truth: φ ∈ w.carrier ↔ w ⊨ φ. Uses MCS properties from tasks 586-587.
 
@@ -197,21 +199,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 592. Update Metalogic_v2 README.md to reflect accurate proof status
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-18
-- **Completed**: 2026-01-18
-- **Research**: [research-001.md](specs/592_update_metalogic_v2_readme_proof_status/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/592_update_metalogic_v2_readme_proof_status/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/592_update_metalogic_v2_readme_proof_status/summaries/implementation-summary-20260118.md)
-
-**Description**: Update Theories/Bimodal/Metalogic_v2/README.md to accurately reflect current proof status. Remove `mcs_contains_or_neg` and `mcs_modus_ponens` from "With Sorries" section (they are now fully proven). Add them to "Proven" section. Verify and update remaining sorry counts. Reference task 586 research report for findings.
-
----
-
 ### 574. Restructure main_weak_completeness with semantic_truth_at_v2
 - **Effort**: 4-6 hours
 - **Status**: [EXPANDED]
@@ -225,37 +212,6 @@ technical_debt:
 - **Subtasks**: 575, 576, 577, 578
 
 **Description**: Restructure `main_weak_completeness` to use `semantic_truth_at_v2` throughout, avoiding the need for the problematic bridge. Per recommendation from task 570 analysis (implementation-summary-20260118.md line 68).
-
----
-
-### 575. Implement closureWithNeg Infrastructure
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Parent**: 574
-- **Created**: 2026-01-18
-- **Completed**: 2026-01-19
-- **Plan**: [implementation-001.md](specs/575_implement_closure_with_neg_infrastructure/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/575_implement_closure_with_neg_infrastructure/summaries/implementation-summary-20260119.md)
-
-**Description**: Define closureWithNeg as closure union negations of closure formulas. Refactor MCS infrastructure (ClosureMaximalConsistent, worldStateFromClosureMCS) to use closureWithNeg instead of closure. This enables negation completeness properties needed for compound formula proofs.
-
----
-
-### 576. Prove MCS Negation Completeness
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Parent**: 574
-- **Dependencies**: 575
-- **Created**: 2026-01-18
-- **Completed**: 2026-01-19
-- **Session ID**: sess_1768777343_817dcc
-- **Research**: [research-001.md](specs/576_prove_mcs_negation_completeness/reports/research-001.md)
-
-**Description**: Prove closure_mcs_negation_complete using closureWithNeg infrastructure. For any ClosureMaximalConsistent set S and formula phi in closureWithNeg, either phi in S or phi.neg in S. This is the key property enabling compound formula proofs.
 
 ---
 
