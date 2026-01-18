@@ -29,12 +29,13 @@ technical_debt:
 
 ### 591. Find and Fix Double Forking in Skill-Agent Delegation
 - **Effort**: 3-4 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
-- **Session ID**: sess_1768777934_d5eb3d
+- **Session ID**: sess_1768778321_8868b6
 - **Research**: [research-001.md](specs/591_find_fix_double_forking/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/591_find_fix_double_forking/plans/implementation-001.md)
 
 **Description**: Investigate and fix potential double forking in skill-to-agent delegation. Current architecture shows skills have both `context: fork` (which spawns a subprocess) AND invoke Task tool (which spawns another subprocess). This may cause: (1) Memory multiplication from nested subprocesses, (2) Zombie process accumulation, (3) Unnecessary token overhead. Audit all forked skills (skill-lean-implementation, skill-implementer, skill-latex-implementation, skill-researcher, skill-lean-research, skill-planner, skill-meta, skill-document-converter). Determine if `context: fork` should be removed OR if Task invocation should be replaced with direct execution. Reference: .claude/docs/skills-vs-agents-context-behavior.md, .claude/docs/research-skill-agent-contexts.md, .claude/docs/memory-leak-fix-plan.md
 
