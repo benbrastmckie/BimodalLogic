@@ -8,13 +8,19 @@
     {
       "project_number": 570,
       "project_name": "analyze_compound_formula_proof_requirements",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T03:43:29Z",
-      "last_updated": "2026-01-18T03:43:29Z",
+      "last_updated": "2026-01-18T03:51:16Z",
       "parent_task": 566,
-      "description": "Analyze what is needed to complete the 4 compound formula cases (imp, box, all_past, all_future) in truth_at_implies_semantic_truth. Document the proof obligations, required lemmas, and relationship between truth_at and assignment functions."
+      "description": "Analyze what is needed to complete the 4 compound formula cases (imp, box, all_past, all_future) in truth_at_implies_semantic_truth. Document the proof obligations, required lemmas, and relationship between truth_at and assignment functions.",
+      "artifacts": [
+        {
+          "path": "specs/570_analyze_compound_formula_proof_requirements/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 569,

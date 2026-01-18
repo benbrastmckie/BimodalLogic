@@ -57,7 +57,7 @@ technical_debt:
 
 ### 570. Analyze Compound Formula Proof Requirements
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566

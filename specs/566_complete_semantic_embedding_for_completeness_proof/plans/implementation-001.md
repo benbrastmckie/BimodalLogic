@@ -1,7 +1,7 @@
 # Implementation Plan: Task #566
 
 - **Task**: 566 - Complete Semantic Embedding for Completeness Proof
-- **Status**: [PARTIAL]
+- **Status**: [BLOCKED]
 - **Effort**: 4 hours
 - **Priority**: High
 - **Dependencies**: Task 560 (partial), Task 558 (TruthLemma)
@@ -124,7 +124,7 @@ The proof structure uses:
 
 ---
 
-### Phase 4: Complete Bridge to semantic_consequence [PARTIAL]
+### Phase 4: Complete Bridge to semantic_consequence [BLOCKED]
 
 **Goal**: Complete the proof by showing the constructed countermodel falsifies `semantic_consequence [] phi`
 
@@ -132,22 +132,28 @@ The proof structure uses:
 - [x] `semantic_world_state_has_world_history` is now PROVEN - was major blocker
 - [x] Bridge infrastructure in place using the proven history lemma
 - [x] `truth_at_implies_semantic_truth` - atom and bot cases proven
+- [x] Analyzed compound formula cases (imp, box, all_past, all_future)
 
-**Remaining (structural sorries)**:
-- [ ] Prove imp case: truth_at for material conditional → assignment = true
-- [ ] Prove box case: truth_at for box → assignment = true
-- [ ] Prove all_past case: truth_at for temporal → assignment = true
-- [ ] Prove all_future case: truth_at for temporal → assignment = true
+**Blocked on foundational sorries**:
+- [ ] `closure_mcs_negation_complete` (line 669) - needed for compound case proofs
+- [ ] `closure_mcs_implies_locally_consistent` (line 1048) - needed for world state construction
+- [ ] `worldStateFromClosureMCS_models_iff` (line 1067) - needed to connect MCS membership to models
+- [ ] `finite_history_from_state` (lines 3121-3124) - needed for history construction
 
-These remaining cases require showing that the recursive `truth_at` definition matches the flat `assignment` lookup for compound formulas. This is equivalent to proving a restricted form of the truth lemma.
+The compound formula cases (imp, box, all_past, all_future) in `truth_at_implies_semantic_truth` cannot be completed without first resolving these foundational sorries. These are not superficial gaps - they represent deep requirements about negation-completeness and closure properties of MCS sets.
 
-**Key Insight**: The `semantic_weak_completeness` theorem already provides completeness via the CONTRAPOSITIVE approach, using `semantic_truth_at_v2` (defined via `models`). The remaining bridge is connecting the general `truth_at` to this.
+**Key Insight from Task 569 research**: All alternative approaches (direct instantiation, finite_model_property_v2, contrapositive) hit the same bridge gap. The core issue is converting between `truth_at` (recursive semantic evaluation) and `FiniteWorldState.models` (flat assignment lookup).
 
-**Files modified**:
-- `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` - semantic_world_state_has_world_history proven, truth_at_implies_semantic_truth partially proven
+**Recommendation**: Create subtasks to:
+1. Complete `closure_mcs_negation_complete` and related foundational lemmas
+2. Then complete the compound formula cases in `truth_at_implies_semantic_truth`
+
+**Files analyzed**:
+- `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean`
+- `Theories/Bimodal/Metalogic_v2/Representation/ContextProvability.lean`
 
 **Verification**:
-- ✓ lake build succeeds
+- ✓ lake build succeeds (976 jobs)
 - ⚠ `#print axioms representation_theorem_backward_empty` shows sorries in bridge lemma chain
 
 ---
