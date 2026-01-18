@@ -1,24 +1,24 @@
 ---
-next_project_number: 567
+next_project_number: 569
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-11T21:30:00Z
+  last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 12
+  active: 14
   completed: 174
-  in_progress: 0
-  not_started: 25
+  in_progress: 2
+  not_started: 27
   abandoned: 14
-  total: 201
+  total: 203
 priority_distribution:
   critical: 0
   high: 8
-  medium: 8
+  medium: 10
   low: 11
 technical_debt:
-  sorry_count: 19
-  axiom_count: 11
+  sorry_count: 205
+  axiom_count: 15
   build_errors: 0
   status: manageable
 ---
@@ -45,7 +45,7 @@ technical_debt:
 
 ### 565. Investigate Workflow Interruption Issue
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Session ID**: sess_1768701291_ec7db1
@@ -151,7 +151,29 @@ technical_debt:
 
 ---
 
-## Medium Priority
+### 567. Separate Deprecated Code from FiniteCanonicalModel
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-18
+- **Source**: Code Review 2026-01-17
+
+**Description**: Extract deprecated syntactic approach code from FiniteCanonicalModel.lean into separate DeprecatedApproach.lean module. The current file mixes deprecated code (IsLocallyConsistent, FiniteWorldState, finite_truth_lemma with 26+ sorries) with active semantic approach code (SemanticWorldState, semantic_truth_lemma_v2), making maintenance difficult.
+
+---
+
+### 568. Expand Logos Test Coverage
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-18
+- **Source**: Code Review 2026-01-17
+
+**Description**: Expand test coverage for Logos layer to match Bimodal layer standards. Currently ~40 Logos theory files have limited or no test coverage. Create comprehensive test suite including integration tests for layer extensions and property-based testing for Logos semantics.
+
+---
 
 ### 483. Investigate LaTeX aux file corruption errors
 - **Effort**: 2-3 hours

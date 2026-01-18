@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
-    "total_tasks": 12,
-    "last_sync": "2026-01-18T02:17:23Z"
+    "total_tasks": 14,
+    "last_sync": "2026-01-18T02:30:43Z"
   },
   "active_projects": [
     {
@@ -29,11 +29,11 @@
     {
       "project_number": 565,
       "project_name": "investigate_workflow_interruption_issue",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-18T00:58:44Z",
-      "last_updated": "2026-01-18T02:12:39Z",
+      "last_updated": "2026-01-18T02:27:23Z",
       "artifacts": [
         {
           "path": "specs/565_investigate_workflow_interruption_issue/reports/research-001.md",
@@ -125,40 +125,44 @@
     },
     {
       "project_number": 394,
-      "status": "not_started",
-      "project_name": "Research and port causal semantics from paper",
+      "status": "expanded",
+      "project_name": "research_port_causal_semantics_from_paper",
       "section": "Medium Priority",
       "language": "lean",
-      "priority": "high"
+      "priority": "high",
+      "subtasks": [398, 399]
     },
     {
       "project_number": 398,
-      "status": "not_started",
-      "project_name": "Port causal semantics to recursive-semantics.md",
+      "status": "researched",
+      "project_name": "port_causal_semantics_to_recursive_semantics_md",
       "section": "Medium Priority",
       "language": "markdown",
-      "priority": "high"
+      "priority": "high",
+      "parent_task": 394
     },
     {
       "project_number": 399,
       "status": "not_started",
-      "project_name": "Implement causal semantics in Lean",
+      "project_name": "implement_causal_semantics_in_lean",
       "section": "Medium Priority",
       "language": "lean",
-      "priority": "high"
+      "priority": "high",
+      "parent_task": 394,
+      "dependencies": [398]
     },
     {
       "project_number": 483,
       "status": "not_started",
-      "project_name": "Investigate LaTeX aux file corruption errors",
+      "project_name": "investigate_latex_aux_file_corruption_errors",
       "section": "Medium Priority",
       "language": "latex",
       "priority": "medium"
     },
     {
       "project_number": 431,
-      "status": "not_started",
-      "project_name": "WezTerm tab color notification for Claude Code input needed",
+      "status": "researched",
+      "project_name": "wezterm_tab_color_notification",
       "section": "Medium Priority",
       "language": "general",
       "priority": "medium"
@@ -166,7 +170,7 @@
     {
       "project_number": 470,
       "status": "not_started",
-      "project_name": "Finite model computational optimization",
+      "project_name": "finite_model_computational_optimization",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low"
@@ -174,10 +178,30 @@
     {
       "project_number": 490,
       "status": "not_started",
-      "project_name": "Complete decidability procedure",
+      "project_name": "complete_decidability_procedure",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low"
+    },
+    {
+      "project_number": 567,
+      "project_name": "separate_deprecated_code_from_finitecanonicalmodel",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-18T02:30:43Z",
+      "last_updated": "2026-01-18T02:30:43Z",
+      "description": "Extract deprecated syntactic approach code from FiniteCanonicalModel.lean into separate DeprecatedApproach.lean module. The current file mixes deprecated code (IsLocallyConsistent, FiniteWorldState, finite_truth_lemma with 26+ sorries) with active semantic approach code (SemanticWorldState, semantic_truth_lemma_v2), making maintenance difficult."
+    },
+    {
+      "project_number": 568,
+      "project_name": "expand_logos_test_coverage",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-18T02:30:43Z",
+      "last_updated": "2026-01-18T02:30:43Z",
+      "description": "Expand test coverage for Logos layer to match Bimodal layer standards. Currently ~40 Logos theory files have limited or no test coverage. Create comprehensive test suite including integration tests for layer extensions and property-based testing for Logos semantics."
     }
   ],
   "completed_projects": [
@@ -192,5 +216,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 567
+  "next_project_number": 569
 }
