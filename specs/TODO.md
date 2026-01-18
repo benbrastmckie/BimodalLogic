@@ -1,5 +1,5 @@
 ---
-next_project_number: 566
+next_project_number: 567
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 566. Complete Semantic Embedding for Completeness Proof
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: 560
+
+**Description**: Complete semantic embedding for completeness proof as per specs/560_axiom_elimination/summaries/implementation-summary-20260117.md to avoid all technical debt.
+
+---
 
 ### 565. Investigate Workflow Interruption Issue
 - **Effort**: 2-3 hours
