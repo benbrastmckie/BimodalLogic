@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 593,
+      "project_name": "complete_consistent_iff_consistent_basic_lean",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T23:47:44Z",
+      "last_updated": "2026-01-18T23:47:44Z",
+      "description": "Complete the sorry remaining in Metalogic_v2/Core/ for consistent_iff_consistent in Basic.lean"
+    },
+    {
       "project_number": 591,
       "project_name": "find_fix_double_forking",
       "status": "implementing",
@@ -383,5 +393,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 593
+  "next_project_number": 594
 }

@@ -1,5 +1,5 @@
 ---
-next_project_number: 593
+next_project_number: 594
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -74,6 +74,18 @@ technical_debt:
 
 ---
 
+
+### 593. Complete consistent_iff_consistent' in Basic.lean
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-18
+- **Related**: 588, 561
+
+**Description**: Complete the sorry remaining in Metalogic_v2/Core/ for `consistent_iff_consistent'` in Basic.lean. This lemma establishes equivalence between the two consistency definitions used in the codebase.
+
+---
 
 ### 589. Complete Representation Theorem in Metalogic_v2
 - **Effort**: 2-3 hours
