@@ -48,7 +48,7 @@ technical_debt:
 
 ### 571. Complete MCS Infrastructure
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
@@ -86,8 +86,8 @@ technical_debt:
 
 ### 569. Analyze Proof Strategy Alternatives
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
-- **Session ID**: sess_1768708481_db6ae8
+- **Status**: [RESEARCHING]
+- **Session ID**: sess_1768708802_c9db34
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
@@ -99,12 +99,14 @@ technical_debt:
 ---
 
 ### 570. Analyze Compound Formula Proof Requirements
-- **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Effort**: 16 hours
+- **Status**: [PLANNED]
+- **Session ID**: sess_1768708854_fc1cab
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
 - **Research**: [research-001.md](specs/570_analyze_compound_formula_proof_requirements/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/570_analyze_compound_formula_proof_requirements/plans/implementation-001.md)
 
 **Description**: Analyze what is needed to complete the 4 compound formula cases (imp, box, all_past, all_future) in truth_at_implies_semantic_truth. Document the proof obligations, required lemmas, and relationship between truth_at and assignment functions.
 

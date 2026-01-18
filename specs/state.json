@@ -8,12 +8,12 @@
     {
       "project_number": 571,
       "project_name": "complete_mcs_infrastructure",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "parent": 566,
       "created": "2026-01-18T03:56:12Z",
-      "last_updated": "2026-01-18T03:56:12Z"
+      "last_updated": "2026-01-18T04:01:41Z"
     },
     {
       "project_number": 572,
@@ -45,28 +45,32 @@
     {
       "project_number": 570,
       "project_name": "analyze_compound_formula_proof_requirements",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T03:43:29Z",
-      "last_updated": "2026-01-18T03:54:38Z",
+      "last_updated": "2026-01-18T04:20:54Z",
       "parent_task": 566,
       "description": "Analyze what is needed to complete the 4 compound formula cases (imp, box, all_past, all_future) in truth_at_implies_semantic_truth. Document the proof obligations, required lemmas, and relationship between truth_at and assignment functions.",
       "artifacts": [
         {
           "path": "specs/570_analyze_compound_formula_proof_requirements/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/570_analyze_compound_formula_proof_requirements/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
     {
       "project_number": 569,
       "project_name": "analyze_proof_strategy_alternatives",
-      "status": "planned",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T03:42:56Z",
-      "last_updated": "2026-01-18T03:56:16Z",
+      "last_updated": "2026-01-18T04:00:11Z",
       "parent_task": 566,
       "description": "Analyze different proof strategies for completing the semantic embedding in task 566. Compare contrapositive approach, direct instantiation, and alternative lemmas from rollback section.",
       "artifacts": [
