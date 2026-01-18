@@ -73,31 +73,6 @@ technical_debt:
 
 ---
 
-### 586. Prove mcs_contains_or_neg in Metalogic_v2
-- **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
-- **Priority**: High
-- **Language**: lean
-- **Related**: 556
-- **Created**: 2026-01-18
-- **Research**: [research-001.md](specs/586_prove_mcs_contains_or_neg_metalogic_v2/reports/research-001.md)
-
-**Description**: Prove `mcs_contains_or_neg` in Theories/Bimodal/Metalogic_v2/Representation/CanonicalModel.lean (line 192). This theorem establishes that for any maximal consistent set S, every formula φ is either in S or its negation is in S. Use Mathlib's `FirstOrder.Language.Theory.IsMaximal.mem_or_not_mem` as proof pattern. This is CRITICAL PATH for representation theorem - works with FULL MCS (not closure-restricted), no temporal reflexivity issues.
-
----
-
-### 587. Prove mcs_modus_ponens in Metalogic_v2
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: lean
-- **Dependencies**: 586
-- **Related**: 556
-- **Created**: 2026-01-18
-
-**Description**: Prove `mcs_modus_ponens` in Theories/Bimodal/Metalogic_v2/Representation/CanonicalModel.lean (line 209). This theorem establishes that maximal consistent sets are closed under modus ponens: if φ→ψ and φ are in S, then ψ is in S. Uses `mcs_contains_or_neg` from task 586. CRITICAL PATH for truth lemma.
-
----
 
 ### 588. Complete Truth Lemma in Metalogic_v2
 - **Effort**: 2-3 hours

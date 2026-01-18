@@ -5,844 +5,6 @@
   "archived_projects": [],
   "completed_projects": [
     {
-      "project_number": 582,
-      "project_name": "abandon_blocked_syntactic_subtasks",
-      "status": "abandoned",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-18T22:23:46Z",
-      "last_updated": "2026-01-18T22:23:46Z",
-      "abandoned": "2026-01-18T22:48:10Z"
-    },
-    {
-      "project_number": 581,
-      "project_name": "archive_deprecated_syntactic_code",
-      "status": "abandoned",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-18T22:23:46Z",
-      "last_updated": "2026-01-18T22:23:46Z",
-      "abandoned": "2026-01-18T22:48:10Z"
-    },
-    {
-      "project_number": 580,
-      "project_name": "document_semantic_approach_decision",
-      "status": "abandoned",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T22:23:46Z",
-      "last_updated": "2026-01-18T22:23:46Z",
-      "abandoned": "2026-01-18T22:48:10Z"
-    },
-    {
-      "project_number": 579,
-      "project_name": "update_566_semantic_completeness",
-      "status": "abandoned",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T22:23:46Z",
-      "last_updated": "2026-01-18T22:23:46Z",
-      "abandoned": "2026-01-18T22:48:10Z"
-    },
-    {
-      "project_number": 567,
-      "project_name": "separate_deprecated_code_from_finitecanonicalmodel",
-      "status": "abandoned",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-18T02:30:43Z",
-      "last_updated": "2026-01-18T02:41:45Z",
-      "description": "Extract deprecated syntactic approach code from FiniteCanonicalModel.lean into separate DeprecatedApproach.lean module. The current file mixes deprecated code (IsLocallyConsistent, FiniteWorldState, finite_truth_lemma with 26+ sorries) with active semantic approach code (SemanticWorldState, semantic_truth_lemma_v2), making maintenance difficult.",
-      "artifacts": [
-        {
-          "path": "specs/567_separate_deprecated_code_from_finitecanonicalmodel/reports/research-001.md",
-          "type": "research"
-        }
-      ],
-      "abandoned": "2026-01-18T03:43:33Z"
-    },
-    {
-      "project_number": 138,
-      "status": "abandoned",
-      "project_name": "Implement satisfiability and validity decision procedure tests",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low",
-      "abandoned": "2026-01-18T02:01:02Z"
-    },
-    {
-      "project_number": 137,
-      "status": "abandoned",
-      "project_name": "Implement tableau core rules in Decidability.lean",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low",
-      "abandoned": "2026-01-18T02:01:02Z"
-    },
-    {
-      "project_number": 136,
-      "status": "abandoned",
-      "project_name": "Design Decidability.lean architecture and signatures",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low",
-      "abandoned": "2026-01-18T02:01:02Z"
-    },
-    {
-      "project_number": 257,
-      "status": "abandoned",
-      "project_name": "Completeness Proofs",
-      "section": "Low Priority",
-      "language": "general",
-      "priority": "medium",
-      "abandoned": "2026-01-18T02:01:02Z"
-    },
-    {
-      "project_number": 491,
-      "status": "abandoned",
-      "project_name": "Research alternative completeness proofs",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low",
-      "abandoned": "2026-01-18T02:01:02Z"
-    },
-    {
-      "project_number": 469,
-      "status": "abandoned",
-      "project_name": "Decidability decision procedure",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low",
-      "abandoned": "2026-01-18T02:01:02Z"
-    },
-    {
-      "project_number": 468,
-      "status": "abandoned",
-      "project_name": "Refactor infinite canonical model code",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low",
-      "abandoned": "2026-01-18T02:01:02Z"
-    },
-    {
-      "project_number": 477,
-      "status": "abandoned",
-      "project_name": "Test document-converter on sample files",
-      "section": "Medium Priority",
-      "language": "meta",
-      "priority": "medium",
-      "abandoned": "2026-01-18T02:01:02Z"
-    },
-    {
-      "project_number": 476,
-      "status": "abandoned",
-      "project_name": "Create document-converter-agent",
-      "section": "Medium Priority",
-      "language": "meta",
-      "priority": "medium",
-      "abandoned": "2026-01-18T02:01:02Z"
-    },
-    {
-      "project_number": 504,
-      "status": "abandoned",
-      "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium",
-      "abandoned": "2026-01-18T01:57:17Z"
-    },
-    {
-      "project_number": 511,
-      "status": "abandoned",
-      "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "high",
-      "last_updated": "2026-01-18T01:12:58Z",
-      "artifacts": [
-        {
-          "path": "specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-002.md",
-          "type": "research"
-        }
-      ],
-      "abandoned": "2026-01-18T01:21:10Z"
-    },
-    {
-      "project_number": 511,
-      "status": "abandoned",
-      "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "high",
-      "last_updated": "2026-01-18T01:12:58Z",
-      "artifacts": [
-        {
-          "path": "specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-002.md",
-          "type": "research"
-        }
-      ],
-      "abandoned": "2026-01-18T01:21:04Z"
-    },
-    {
-      "project_number": 511,
-      "status": "abandoned",
-      "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "high",
-      "last_updated": "2026-01-18T01:12:58Z",
-      "artifacts": [
-        {
-          "path": "specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-002.md",
-          "type": "research"
-        }
-      ],
-      "abandoned": "2026-01-18T01:20:55Z"
-    },
-    {
-      "project_number": 562,
-      "project_name": "agent_system_refactor_report",
-      "status": "abandoned",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-17T21:33:11Z",
-      "last_updated": "2026-01-17T22:14:08Z",
-      "researched": "2026-01-17T21:38:32Z",
-      "artifacts": [
-        {
-          "path": "specs/562_agent_system_refactor_report/reports/research-001.md",
-          "type": "research"
-        }
-      ],
-      "abandoned": "2026-01-18T01:11:41Z"
-    },
-    {
-      "project_number": 552,
-      "project_name": "test_validate_model_tiering_changes",
-      "type": "test",
-      "status": "abandoned",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "2-3 hours",
-      "dependencies": [
-        550
-      ],
-      "description": "Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks.",
-      "abandoned": "2026-01-18T01:00:44Z"
-    },
-    {
-      "project_number": 552,
-      "project_name": "test_validate_model_tiering_changes",
-      "type": "test",
-      "status": "abandoned",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "2-3 hours",
-      "dependencies": [
-        550
-      ],
-      "description": "Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks.",
-      "abandoned": "2026-01-18T01:00:37Z"
-    },
-    {
-      "project_number": 552,
-      "project_name": "test_validate_model_tiering_changes",
-      "type": "test",
-      "status": "abandoned",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "2-3 hours",
-      "dependencies": [
-        550
-      ],
-      "description": "Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks.",
-      "abandoned": "2026-01-18T01:00:31Z"
-    },
-    {
-      "project_number": 563,
-      "project_name": "investigate_empty_directory_creation",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T21:47:33Z",
-      "last_updated": "2026-01-17T23:35:36Z",
-      "artifacts": [
-        {
-          "path": "specs/563_investigate_empty_directory_creation/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/563_investigate_empty_directory_creation/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/563_investigate_empty_directory_creation/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T22:13:17Z",
-      "completed": "2026-01-17T23:35:30Z",
-      "archived": "2026-01-18T00:59:33Z"
-    },
-    {
-      "project_number": 559,
-      "project_name": "strong_completeness_helpers",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T23:41:53Z",
-      "parent_task": 556,
-      "dependencies": [
-        557
-      ],
-      "description": "Prove entails_imp_chain and imp_chain_to_context in StrongCompleteness.lean, plus double negation elimination and canonical world contradiction in RepresentationTheorem.lean.",
-      "researched": "2026-01-17T22:48:38Z",
-      "artifacts": [
-        {
-          "path": "specs/559_strong_completeness_helpers/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/559_strong_completeness_helpers/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/559_strong_completeness_helpers/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T23:09:16Z",
-      "completed": "2026-01-17T23:41:47Z",
-      "archived": "2026-01-18T00:59:33Z"
-    },
-    {
-      "project_number": 534,
-      "project_name": "research_claude_code_model_selection",
-      "type": "research",
-      "phase": "not_started",
-      "status": "completed",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T15:00:00Z",
-      "last_updated": "2026-01-17T23:14:03Z",
-      "effort": "2-3 hours",
-      "description": "Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults.",
-      "session_id": "sess_1768659565_318297",
-      "researched": "2026-01-17T14:14:45Z",
-      "artifacts": [
-        {
-          "path": "specs/534_research_claude_code_model_selection/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/534_research_claude_code_model_selection/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/534_research_claude_code_model_selection/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/534_research_claude_code_model_selection/plans/implementation-003.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/534_research_claude_code_model_selection/plans/implementation-004.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/534_research_claude_code_model_selection/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T14:20:57Z",
-      "completed": "2026-01-17T23:14:03Z",
-      "archived": "2026-01-18T00:59:33Z"
-    },
-    {
-      "project_number": 553,
-      "project_name": "document_final_model_tier_architecture",
-      "type": "documentation",
-      "status": "abandoned",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "1-2 hours",
-      "dependencies": [
-        551,
-        552
-      ],
-      "description": "Create comprehensive documentation for the model tier system. Include decision matrix for model selection, cost comparison, known limitations, and troubleshooting guide.",
-      "abandoned": "2026-01-17T23:33:46Z"
-    },
-    {
-      "project_number": 553,
-      "project_name": "document_final_model_tier_architecture",
-      "type": "documentation",
-      "status": "abandoned",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "1-2 hours",
-      "dependencies": [
-        551,
-        552
-      ],
-      "description": "Create comprehensive documentation for the model tier system. Include decision matrix for model selection, cost comparison, known limitations, and troubleshooting guide.",
-      "abandoned": "2026-01-17T23:33:38Z"
-    },
-    {
-      "project_number": 558,
-      "project_name": "semantic_satisfiability_bridge",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T23:09:52Z",
-      "parent_task": 556,
-      "dependencies": [
-        557
-      ],
-      "description": "Prove consistent_implies_satisfiable and subformulaList_finite in Representation/FiniteModelProperty.lean. Bridges canonical world representation to semantic satisfiability.",
-      "researched": "2026-01-17T22:35:39Z",
-      "artifacts": [
-        {
-          "path": "specs/558_semantic_satisfiability_bridge/reports/research-003.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/558_semantic_satisfiability_bridge/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/558_semantic_satisfiability_bridge/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "Theories/Bimodal/Metalogic_v2/Representation/FiniteModelProperty.lean",
-          "type": "implementation"
-        },
-        {
-          "path": "specs/558_semantic_satisfiability_bridge/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T22:45:16Z",
-      "completed": "2026-01-17T23:09:52Z",
-      "archived": "2026-01-17T23:11:34Z"
-    },
-    {
-      "project_number": 549,
-      "project_name": "research_intelligent_model_routing_architecture",
-      "type": "research",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T21:38:26Z",
-      "effort": "2-3 hours",
-      "dependencies": [
-        548
-      ],
-      "description": "Research how to implement intelligent model routing in the .claude/ architecture. Evaluate query complexity analyzer, task-type based routing, and model cascade pattern options.",
-      "artifacts": [
-        {
-          "path": "specs/549_research_intelligent_model_routing_architecture/reports/research-001.md",
-          "type": "report"
-        },
-        {
-          "path": "specs/549_research_intelligent_model_routing_architecture/reports/research-002.md",
-          "type": "report"
-        },
-        {
-          "path": "specs/549_research_intelligent_model_routing_architecture/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/549_research_intelligent_model_routing_architecture/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "archived": "2026-01-17T23:09:55Z"
-    },
-    {
-      "project_number": 475,
-      "status": "completed",
-      "project_name": "Create skill-document-converter thin wrapper",
-      "section": "Medium Priority",
-      "language": "meta",
-      "priority": "medium",
-      "last_updated": "2026-01-17T21:39:04Z",
-      "researched": "2026-01-17T21:17:58Z",
-      "artifacts": [
-        {
-          "path": "specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/475_create_skill_document_converter_thin_wrapper/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-003.md",
-          "type": "plan"
-        },
-        {
-          "path": ".claude/agents/document-converter-agent.md",
-          "type": "implementation"
-        },
-        {
-          "path": ".claude/skills/skill-document-converter/SKILL.md",
-          "type": "implementation"
-        },
-        {
-          "path": ".claude/commands/convert.md",
-          "type": "implementation"
-        },
-        {
-          "path": "specs/475_create_skill_document_converter_thin_wrapper/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T21:27:30Z",
-      "completed": "2026-01-17T21:39:04Z",
-      "archived": "2026-01-17T23:09:55Z"
-    },
-    {
-      "project_number": 557,
-      "project_name": "mcs_property_completion",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T21:43:01Z",
-      "parent_task": 556,
-      "description": "Prove mcs_contains_or_neg and mcs_modus_ponens in Representation/CanonicalModel.lean. These MCS properties are the critical blocking dependency for downstream theorems.",
-      "researched": "2026-01-17T21:12:32Z",
-      "artifacts": [
-        {
-          "path": "specs/557_mcs_property_completion/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/557_mcs_property_completion/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/557_mcs_property_completion/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/557_mcs_property_completion/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T21:18:02Z",
-      "completed": "2026-01-17T21:43:01Z",
-      "archived": "2026-01-17T23:09:55Z"
-    },
-    {
-      "project_number": 564,
-      "project_name": "memory_issues_status_sync_agent",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-17T22:20:14Z",
-      "last_updated": "2026-01-17T22:39:53Z",
-      "researched": "2026-01-17T22:23:36Z",
-      "artifacts": [
-        {
-          "path": "specs/564_memory_issues_status_sync_agent/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-003.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/564_memory_issues_status_sync_agent/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T22:26:21Z",
-      "completed": "2026-01-17T22:39:53Z",
-      "archived": "2026-01-17T23:09:55Z"
-    },
-    {
-      "project_number": 555,
-      "project_name": "convert_skill_status_sync_to_forked_pattern",
-      "type": "fix",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-17T19:52:15Z",
-      "last_updated": "2026-01-17T21:18:00Z",
-      "effort": "2-3 hours",
-      "description": "Convert skill-status-sync from inline execution to forked subagent pattern. Currently causes workflow interruptions because inline skill completion triggers Claude to stop and wait for user input. Fix by creating status-sync-agent and making skill-status-sync a thin wrapper that delegates via Task tool.",
-      "session_id": "sess_1768682279_d8a559",
-      "researched": "2026-01-17T19:58:41Z",
-      "planned": "2026-01-17T21:13:30Z",
-      "completed": "2026-01-17T21:18:00Z",
-      "artifacts": [
-        {
-          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "archived": "2026-01-17T21:05:36Z"
-    },
-    {
-      "project_number": 554,
-      "project_name": "bimodal_metalogic_v2_reorganize",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-17T19:15:49Z",
-      "last_updated": "2026-01-17T20:35:13Z",
-      "artifacts": [
-        {
-          "path": "specs/554_bimodal_metalogic_v2_reorganize/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/554_bimodal_metalogic_v2_reorganize/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/554_bimodal_metalogic_v2_reorganize/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-17T20:35:13Z",
-      "archived": "2026-01-17T21:05:36Z"
-    },
-    {
-      "project_number": 548,
-      "project_name": "fix_skill_to_agent_delegation_pattern",
-      "type": "fix",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T20:13:49Z",
-      "effort": "2-3 hours",
-      "description": "Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives. Fixes the root cause identified in Task 539 research.",
-      "session_id": "sess_1768669365_4f0a88",
-      "researched": "2026-01-17T16:59:30Z",
-      "artifacts": [
-        {
-          "path": "specs/548_fix_skill_to_agent_delegation_pattern/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/548_fix_skill_to_agent_delegation_pattern/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/548_fix_skill_to_agent_delegation_pattern/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T17:04:56Z",
-      "completed": "2026-01-17T20:13:49Z",
-      "archived": "2026-01-17T21:05:36Z"
-    },
-    {
-      "project_number": 516,
-      "status": "abandoned",
-      "project_name": "Test task creation after refactoring",
-      "section": "Medium Priority",
-      "language": "general",
-      "priority": "medium",
-      "abandoned": "2026-01-17T20:50:08Z"
-    },
-    {
-      "project_number": 550,
-      "project_name": "implement_model_tier_strategy",
-      "type": "feature",
-      "status": "abandoned",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "3-4 hours",
-      "dependencies": [
-        548,
-        549
-      ],
-      "description": "Implement the chosen model tiering strategy based on Task 549 research. Update agent frontmatter with appropriate model assignments.",
-      "abandoned": "2026-01-17T20:50:08Z"
-    },
-    {
-      "project_number": 517,
-      "status": "abandoned",
-      "project_name": "Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates",
-      "section": "High Priority",
-      "language": "general",
-      "priority": "high",
-      "abandoned": "2026-01-17T20:50:08Z"
-    },
-    {
-      "project_number": 551,
-      "project_name": "create_model_complexity_analyzer",
-      "type": "feature",
-      "status": "abandoned",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T17:00:00Z",
-      "last_updated": "2026-01-17T17:00:00Z",
-      "effort": "2-3 hours",
-      "dependencies": [
-        550
-      ],
-      "description": "Create a lightweight skill that analyzes task complexity to recommend optimal model tier. Criteria: task language, estimated effort, number of files affected, tool requirements.",
-      "abandoned": "2026-01-17T20:50:07Z"
-    },
-    {
-      "project_number": 519,
-      "project_name": "Add Missing Stage 7 Validation in Workflow Commands",
-      "type": "feature",
-      "phase": "planned",
-      "status": "abandoned",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-16T00:00:00Z",
-      "last_updated": "2026-01-17T17:33:27Z",
-      "effort": "2-3 hours",
-      "description": "Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.",
-      "abandoned": "2026-01-17T17:33:27Z"
-    },
-    {
-      "project_number": 533,
-      "project_name": "document_workflow_anti_patterns",
-      "type": "documentation",
-      "phase": "not_started",
-      "status": "abandoned",
-      "priority": "medium",
-      "language": "meta",
-      "created": "2026-01-17T13:43:36Z",
-      "last_updated": "2026-01-17T13:43:36Z",
-      "effort": "1-2 hours",
-      "description": "Add documentation in .claude/docs/guides/ explaining the skill completion = workflow completion anti-pattern and how to avoid it. Document root causes, symptoms, and prevention strategies.",
-      "abandoned": "2026-01-17T16:36:37Z"
-    },
-    {
-      "project_number": 532,
-      "project_name": "create_workflow_integration_tests",
-      "type": "feature",
-      "phase": "not_started",
-      "status": "abandoned",
-      "priority": "medium",
-      "language": "meta",
-      "created": "2026-01-17T13:43:36Z",
-      "last_updated": "2026-01-17T13:43:36Z",
-      "effort": "4-6 hours",
-      "description": "Create test scaffolding that validates workflow commands complete all checkpoints (GATE IN -> DELEGATE -> GATE OUT -> COMMIT) without halting. Tests should detect early stopping patterns and verify end-to-end execution.",
-      "dependencies": [
-        529,
-        530,
-        531
-      ],
-      "abandoned": "2026-01-17T16:36:37Z"
-    },
-    {
-      "project_number": 531,
-      "project_name": "refactor_status_sync_non_terminal_returns",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "abandoned",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T13:43:36Z",
-      "last_updated": "2026-01-17T13:43:36Z",
-      "effort": "1-2 hours",
-      "description": "Ensure skill-status-sync returns non-completion signals (already partially done with synced vs completed), but also add explicit continue_workflow: true field in return JSON to signal Claude should continue. Review and update return format documentation.",
-      "dependencies": [
-        529,
-        530
-      ],
-      "abandoned": "2026-01-17T16:36:37Z"
-    },
-    {
-      "project_number": 530,
-      "project_name": "add_continuation_guards_to_commands",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "abandoned",
-      "priority": "high",
-      "language": "meta",
-      "created": "2026-01-17T13:43:36Z",
-      "last_updated": "2026-01-17T15:09:53Z",
-      "effort": "2-3 hours",
-      "description": "Add explicit DO NOT STOP and CONTINUE EXECUTION guards at critical transition points in command files. Use bold warnings like CRITICAL: DO NOT STOP HERE. EXECUTE STAGE 2 IMMEDIATELY. These guards reinforce that skill completion does not mean workflow completion.",
-      "session_id": "sess_1768662494_88284c",
-      "planned": "2026-01-17T15:09:53Z",
-      "artifacts": [
-        {
-          "path": "specs/530_add_continuation_guards_to_commands/plans/implementation-001.md",
-          "type": "plan"
-        }
-      ],
-      "abandoned": "2026-01-17T16:36:37Z"
-    },
-    {
-      "project_number": 541,
-      "project_name": "progressive_disclosure_refactor",
-      "status": "abandoned",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-17T14:41:00Z",
-      "last_updated": "2026-01-17T08:21:57-08:00",
-      "session_id": "sess_1768666821_71a75a",
-      "researched": "2026-01-17T08:18:58-08:00",
-      "artifacts": [
-        {
-          "path": "specs/541_progressive_disclosure_refactor/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/541_progressive_disclosure_refactor/plans/implementation-001.md",
-          "type": "plan"
-        }
-      ],
-      "planned": "2026-01-17T08:21:57-08:00",
-      "abandoned": "2026-01-17T16:28:40Z",
-      "archived_reason": "abandoned"
-    },
-    {
       "project_number": 132,
       "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",
       "type": "feature",
@@ -900,6 +62,33 @@
       "description": "Complete the provable_iff_valid theorem.",
       "abandoned": "2026-01-13T23:23:10Z",
       "abandoned_reason": "Superseded by main_provable_iff_valid in FiniteCanonicalModel.lean (Task 450)."
+    },
+    {
+      "project_number": 136,
+      "status": "abandoned",
+      "project_name": "Design Decidability.lean architecture and signatures",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 137,
+      "status": "abandoned",
+      "project_name": "Implement tableau core rules in Decidability.lean",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 138,
+      "status": "abandoned",
+      "project_name": "Implement satisfiability and validity decision procedure tests",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
     },
     {
       "project_number": 139,
@@ -1392,6 +581,15 @@
         "plans/",
         "summaries/"
       ]
+    },
+    {
+      "project_number": 257,
+      "status": "abandoned",
+      "project_name": "Completeness Proofs",
+      "section": "Low Priority",
+      "language": "general",
+      "priority": "medium",
+      "abandoned": "2026-01-18T02:01:02Z"
     },
     {
       "project_number": 260,
@@ -4837,6 +4035,24 @@
       "archived": "2026-01-13T18:57:54Z"
     },
     {
+      "project_number": 468,
+      "status": "abandoned",
+      "project_name": "Refactor infinite canonical model code",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 469,
+      "status": "abandoned",
+      "project_name": "Decidability decision procedure",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
       "project_number": 471,
       "project_name": "constructive_model_finiteness_proof",
       "status": "abandoned",
@@ -4908,6 +4124,75 @@
       ],
       "completed": "2026-01-13T17:04:09Z",
       "archived": "2026-01-13T18:57:54Z"
+    },
+    {
+      "project_number": 475,
+      "status": "completed",
+      "project_name": "Create skill-document-converter thin wrapper",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "medium",
+      "last_updated": "2026-01-17T21:39:04Z",
+      "researched": "2026-01-17T21:17:58Z",
+      "artifacts": [
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/plans/implementation-003.md",
+          "type": "plan"
+        },
+        {
+          "path": ".claude/agents/document-converter-agent.md",
+          "type": "implementation"
+        },
+        {
+          "path": ".claude/skills/skill-document-converter/SKILL.md",
+          "type": "implementation"
+        },
+        {
+          "path": ".claude/commands/convert.md",
+          "type": "implementation"
+        },
+        {
+          "path": "specs/475_create_skill_document_converter_thin_wrapper/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T21:27:30Z",
+      "completed": "2026-01-17T21:39:04Z",
+      "archived": "2026-01-17T23:09:55Z"
+    },
+    {
+      "project_number": 476,
+      "status": "abandoned",
+      "project_name": "Create document-converter-agent",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "medium",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 477,
+      "status": "abandoned",
+      "project_name": "Test document-converter on sample files",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "medium",
+      "abandoned": "2026-01-18T02:01:02Z"
     },
     {
       "project_number": 478,
@@ -5028,6 +4313,15 @@
       "archived": "2026-01-17T13:54:51Z"
     },
     {
+      "project_number": 491,
+      "status": "abandoned",
+      "project_name": "Research alternative completeness proofs",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
       "project_number": 492,
       "status": "completed",
       "project_name": "Update BimodalReference.tex with metalogical results",
@@ -5109,6 +4403,18 @@
       "archived": "2026-01-17T13:54:51Z"
     },
     {
+      "project_number": 502,
+      "status": "completed",
+      "project_name": "Complete representation theorem using context-based provability based on Task 499 foundation",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "high",
+      "started": "2026-01-14",
+      "completed": "2026-01-14",
+      "last_updated": "2026-01-18T01:09:22Z",
+      "archived": "2026-01-18T02:17:17Z"
+    },
+    {
       "project_number": 503,
       "status": "completed",
       "project_name": "Update LaTeX to use dependent-type conventions for Lean consistency",
@@ -5116,6 +4422,15 @@
       "language": "markdown",
       "priority": "medium",
       "archived": "2026-01-17T13:54:51Z"
+    },
+    {
+      "project_number": 504,
+      "status": "abandoned",
+      "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium",
+      "abandoned": "2026-01-18T01:57:17Z"
     },
     {
       "project_number": 505,
@@ -5149,6 +4464,48 @@
       "archived": "2026-01-17T13:54:51Z"
     },
     {
+      "project_number": 506,
+      "project_name": "codebase_review",
+      "status": "orphan_archived",
+      "archived": "2026-01-17T13:56:41Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 510,
+      "status": "completed",
+      "project_name": "Add constraint to verifier and falsifier functions",
+      "section": "Medium Priority",
+      "language": "latex",
+      "priority": "medium",
+      "last_updated": "2026-01-18T01:47:56Z",
+      "artifacts": [
+        {
+          "path": "specs/510_mereological_constraints/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-18T02:17:17Z"
+    },
+    {
+      "project_number": 511,
+      "status": "abandoned",
+      "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "high",
+      "last_updated": "2026-01-18T01:12:58Z",
+      "artifacts": [
+        {
+          "path": "specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-002.md",
+          "type": "research"
+        }
+      ],
+      "abandoned": "2026-01-18T01:21:10Z"
+    },
+    {
       "project_number": 512,
       "status": "completed",
       "project_name": "Fix build error in RepresentationTheorems.lean",
@@ -5156,6 +4513,51 @@
       "language": "lean",
       "priority": "high",
       "archived": "2026-01-17T13:54:51Z"
+    },
+    {
+      "project_number": 513,
+      "status": "completed",
+      "project_name": "Address tm_auto proof reconstruction issues",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium",
+      "last_updated": "2026-01-18T02:08:27Z",
+      "artifacts": [
+        {
+          "path": "specs/513_address_tm_auto_proof_reconstruction_issues/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/513_address_tm_auto_proof_reconstruction_issues/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-18T02:17:17Z"
+    },
+    {
+      "project_number": 514,
+      "status": "completed",
+      "project_name": "Expand test coverage for Metalogic_v2",
+      "section": "Medium Priority",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.",
+      "last_updated": "2026-01-18T02:06:32Z",
+      "artifacts": [
+        {
+          "path": "specs/514_expand_test_coverage_for_metalogic_v2/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/514_expand_test_coverage_for_metalogic_v2/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/514_expand_test_coverage_for_metalogic_v2/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-18T02:17:17Z"
     },
     {
       "project_number": 515,
@@ -5167,6 +4569,24 @@
       "archived": "2026-01-17T13:54:51Z"
     },
     {
+      "project_number": 516,
+      "status": "abandoned",
+      "project_name": "Test task creation after refactoring",
+      "section": "Medium Priority",
+      "language": "general",
+      "priority": "medium",
+      "abandoned": "2026-01-17T20:50:08Z"
+    },
+    {
+      "project_number": 517,
+      "status": "abandoned",
+      "project_name": "Fix /research command to avoid creating unnecessary summary files and properly link research reports in TODO.md and state.json with correct status updates",
+      "section": "High Priority",
+      "language": "general",
+      "priority": "high",
+      "abandoned": "2026-01-17T20:50:08Z"
+    },
+    {
       "project_number": 518,
       "status": "completed",
       "project_name": "Fix Parameter Mapping Between Workflow Commands and status-sync-manager",
@@ -5174,6 +4594,20 @@
       "language": "meta",
       "priority": "high",
       "archived": "2026-01-17T13:54:51Z"
+    },
+    {
+      "project_number": 519,
+      "project_name": "Add Missing Stage 7 Validation in Workflow Commands",
+      "type": "feature",
+      "phase": "planned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-16T00:00:00Z",
+      "last_updated": "2026-01-17T17:33:27Z",
+      "effort": "2-3 hours",
+      "description": "Add missing Stage 7 (Postflight) validation checkpoints in all workflow commands. Research revealed that workflow commands skip critical validation steps before returning, leading to undetected failures and inconsistent state.",
+      "abandoned": "2026-01-17T17:33:27Z"
     },
     {
       "project_number": 520,
@@ -5185,6 +4619,16 @@
       "archived": "2026-01-17T13:54:51Z"
     },
     {
+      "project_number": 521,
+      "project_name": "fix_task_512_inconsistent_status",
+      "status": "orphan_archived",
+      "archived": "2026-01-17T13:56:41Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
       "project_number": 522,
       "status": "completed",
       "project_name": "Improve status-sync-manager Error Messages to be more actionable",
@@ -5192,6 +4636,47 @@
       "language": "meta",
       "priority": "medium",
       "archived": "2026-01-17T13:54:51Z"
+    },
+    {
+      "project_number": 523,
+      "project_name": "Clean Up Bimodal Lean Source Files After Task 505",
+      "type": "refactor",
+      "phase": "completed",
+      "status": "completed",
+      "priority": "medium",
+      "language": "lean",
+      "created": "2026-01-17T06:00:27Z",
+      "last_updated": "2026-01-17T14:17:03Z",
+      "researched": "2026-01-17T13:54:33Z",
+      "effort": "4-6 hours",
+      "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments",
+      "artifacts": [
+        {
+          "path": "specs/523_bimodal_cleanup_research/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/523_bimodal_cleanup/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/523_bimodal_cleanup/reports/research-003.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/523_bimodal_cleanup/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/523_bimodal_cleanup/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "session_id": "sess_1768658812_8386f4",
+      "planned": "2026-01-17T14:04:35Z",
+      "started": "2026-01-17T14:07:07Z",
+      "completed": "2026-01-17T14:17:03Z",
+      "archived": "2026-01-17T16:43:48Z"
     },
     {
       "project_number": 524,
@@ -5288,129 +4773,6 @@
       "archived": "2026-01-17T13:54:51Z"
     },
     {
-      "project_number": 506,
-      "project_name": "codebase_review",
-      "status": "orphan_archived",
-      "archived": "2026-01-17T13:56:41Z",
-      "source": "orphan_recovery",
-      "detected_artifacts": [
-        "summaries/"
-      ]
-    },
-    {
-      "project_number": 521,
-      "project_name": "fix_task_512_inconsistent_status",
-      "status": "orphan_archived",
-      "archived": "2026-01-17T13:56:41Z",
-      "source": "orphan_recovery",
-      "detected_artifacts": [
-        "plans/"
-      ]
-    },
-    {
-      "project_number": 542,
-      "project_name": "fix_canonical_model_foundation",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T15:04:22Z",
-      "effort": "2 hours",
-      "parent": 540,
-      "description": "Phase 1: Fix Representation/CanonicalModel.lean to compile using patterns from Completeness.lean. Copy SetMaximalConsistent/SetConsistent/ConsistentExtensions definitions, fix Lindenbaum lemma using working set_lindenbaum pattern, replace outdated Mathlib APIs.",
-      "session_id": "sess_1768661753_d27fb6",
-      "researched": "2026-01-17T14:54:06Z",
-      "artifacts": [
-        {
-          "path": "specs/542_fix_canonical_model_foundation/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/542_fix_canonical_model_foundation/plans/implementation-001.md",
-          "type": "plan"
-        }
-      ],
-      "planned": "2026-01-17T14:57:17Z",
-      "completed": "2026-01-17T15:04:22Z",
-      "archived": "2026-01-17T16:43:48Z"
-    },
-    {
-      "project_number": 543,
-      "project_name": "establish_truth_lemma_and_representation",
-      "type": "refactor",
-      "phase": "completed",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T15:27:00Z",
-      "effort": "1.5 hours",
-      "parent": 540,
-      "dependencies": [
-        542
-      ],
-      "description": "Phase 2: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence.",
-      "session_id": "sess_1768663596_17844a",
-      "researched": "2026-01-17T15:11:07Z",
-      "artifacts": [
-        {
-          "path": "specs/543_establish_truth_lemma_and_representation/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/543_establish_truth_lemma_and_representation/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/543_establish_truth_lemma_and_representation/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T15:23:59Z",
-      "completed": "2026-01-17T15:27:00Z",
-      "archived": "2026-01-17T16:43:48Z"
-    },
-    {
-      "project_number": 544,
-      "project_name": "connect_fmp_bridge",
-      "type": "refactor",
-      "phase": "not_started",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T14:50:19Z",
-      "last_updated": "2026-01-17T16:08:20Z",
-      "effort": "1 hour",
-      "parent": 540,
-      "dependencies": [
-        542,
-        543
-      ],
-      "description": "Phase 3: Establish FiniteModelProperty as bridge from representation to decidability/compactness. Fix FiniteModelProperty.lean imports, define FMP statement, connect to SemanticCanonicalModel and Decidability modules.",
-      "session_id": "sess_1768665716_8694d0",
-      "researched": "2026-01-17T15:54:28Z",
-      "artifacts": [
-        {
-          "path": "specs/544_connect_fmp_bridge/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/544_connect_fmp_bridge/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/544_connect_fmp_bridge/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "planned": "2026-01-17T15:59:23Z",
-      "started": "2026-01-17T16:02:18Z",
-      "completed": "2026-01-17T16:08:20Z",
-      "archived": "2026-01-17T16:43:48Z"
-    },
-    {
       "project_number": 529,
       "project_name": "unify_workflow_commands_single_execution",
       "type": "refactor",
@@ -5444,45 +4806,121 @@
       "archived": "2026-01-17T16:43:48Z"
     },
     {
-      "project_number": 523,
-      "project_name": "Clean Up Bimodal Lean Source Files After Task 505",
+      "project_number": 530,
+      "project_name": "add_continuation_guards_to_commands",
       "type": "refactor",
-      "phase": "completed",
-      "status": "completed",
-      "priority": "medium",
-      "language": "lean",
-      "created": "2026-01-17T06:00:27Z",
-      "last_updated": "2026-01-17T14:17:03Z",
-      "researched": "2026-01-17T13:54:33Z",
-      "effort": "4-6 hours",
-      "description": "Having completed 505, I want to clean up the Bimodal/ lean source files to include only what is essential and relevant to the presentation of the system, restating anything worth saving in a cleaned up fashion in the Bimodal/Boneyard/ and updating all documentation accordingly to accurately reflect the cleaned up state of the theory without historical commentary, simply stating the state of the theory without past comparison in the comments",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T15:09:53Z",
+      "effort": "2-3 hours",
+      "description": "Add explicit DO NOT STOP and CONTINUE EXECUTION guards at critical transition points in command files. Use bold warnings like CRITICAL: DO NOT STOP HERE. EXECUTE STAGE 2 IMMEDIATELY. These guards reinforce that skill completion does not mean workflow completion.",
+      "session_id": "sess_1768662494_88284c",
+      "planned": "2026-01-17T15:09:53Z",
       "artifacts": [
         {
-          "path": "specs/523_bimodal_cleanup_research/reports/research-001.md",
+          "path": "specs/530_add_continuation_guards_to_commands/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ],
+      "abandoned": "2026-01-17T16:36:37Z"
+    },
+    {
+      "project_number": 531,
+      "project_name": "refactor_status_sync_non_terminal_returns",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "1-2 hours",
+      "description": "Ensure skill-status-sync returns non-completion signals (already partially done with synced vs completed), but also add explicit continue_workflow: true field in return JSON to signal Claude should continue. Review and update return format documentation.",
+      "dependencies": [
+        529,
+        530
+      ],
+      "abandoned": "2026-01-17T16:36:37Z"
+    },
+    {
+      "project_number": 532,
+      "project_name": "create_workflow_integration_tests",
+      "type": "feature",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "4-6 hours",
+      "description": "Create test scaffolding that validates workflow commands complete all checkpoints (GATE IN -> DELEGATE -> GATE OUT -> COMMIT) without halting. Tests should detect early stopping patterns and verify end-to-end execution.",
+      "dependencies": [
+        529,
+        530,
+        531
+      ],
+      "abandoned": "2026-01-17T16:36:37Z"
+    },
+    {
+      "project_number": 533,
+      "project_name": "document_workflow_anti_patterns",
+      "type": "documentation",
+      "phase": "not_started",
+      "status": "abandoned",
+      "priority": "medium",
+      "language": "meta",
+      "created": "2026-01-17T13:43:36Z",
+      "last_updated": "2026-01-17T13:43:36Z",
+      "effort": "1-2 hours",
+      "description": "Add documentation in .claude/docs/guides/ explaining the skill completion = workflow completion anti-pattern and how to avoid it. Document root causes, symptoms, and prevention strategies.",
+      "abandoned": "2026-01-17T16:36:37Z"
+    },
+    {
+      "project_number": 534,
+      "project_name": "research_claude_code_model_selection",
+      "type": "research",
+      "phase": "not_started",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T23:14:03Z",
+      "effort": "2-3 hours",
+      "description": "Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults.",
+      "session_id": "sess_1768659565_318297",
+      "researched": "2026-01-17T14:14:45Z",
+      "artifacts": [
+        {
+          "path": "specs/534_research_claude_code_model_selection/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": "specs/523_bimodal_cleanup/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/523_bimodal_cleanup/reports/research-003.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/523_bimodal_cleanup/plans/implementation-001.md",
+          "path": "specs/534_research_claude_code_model_selection/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": "specs/523_bimodal_cleanup/summaries/implementation-summary-20260117.md",
+          "path": "specs/534_research_claude_code_model_selection/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/534_research_claude_code_model_selection/plans/implementation-003.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/534_research_claude_code_model_selection/plans/implementation-004.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/534_research_claude_code_model_selection/summaries/implementation-summary-20260117.md",
           "type": "summary"
         }
       ],
-      "session_id": "sess_1768658812_8386f4",
-      "planned": "2026-01-17T14:04:35Z",
-      "started": "2026-01-17T14:07:07Z",
-      "completed": "2026-01-17T14:17:03Z",
-      "archived": "2026-01-17T16:43:48Z"
+      "planned": "2026-01-17T14:20:57Z",
+      "completed": "2026-01-17T23:14:03Z",
+      "archived": "2026-01-18T00:59:33Z"
     },
     {
       "project_number": 535,
@@ -5646,32 +5084,162 @@
       "archived": "2026-01-17T16:43:48Z"
     },
     {
-      "project_number": 547,
-      "project_name": "improve_fmp_full_theorem",
-      "type": "feature",
+      "project_number": 540,
+      "project_name": "finish_metalogic_refactor_cleanup",
+      "type": "refactor",
       "status": "completed",
       "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T16:22:24Z",
-      "last_updated": "2026-01-17T18:05:00Z",
-      "completed": "2026-01-17T18:05:00Z",
+      "priority": "medium",
+      "created": "2026-01-17T14:34:53Z",
+      "last_updated": "2026-01-17T17:39:18Z",
+      "completed": "2026-01-17T17:39:18Z",
       "archived": "2026-01-17T19:17:32Z",
-      "effort": "4-5 hours",
-      "session_id": "sess_1768669081_835e7d",
+      "effort": "4-6 hours",
+      "session_id": "sess_1768661078_ad3932",
+      "subtasks": [
+        542,
+        543,
+        544,
+        545,
+        546
+      ],
       "artifacts": [
         {
-          "path": "specs/547_improve_fmp_full_theorem/reports/research-001.md",
+          "path": "specs/540_finish_metalogic_refactor_cleanup/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": "specs/547_improve_fmp_full_theorem/plans/implementation-001.md",
+          "path": "specs/540_finish_metalogic_refactor_cleanup/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ]
+    },
+    {
+      "project_number": 541,
+      "project_name": "progressive_disclosure_refactor",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T14:41:00Z",
+      "last_updated": "2026-01-17T08:21:57-08:00",
+      "session_id": "sess_1768666821_71a75a",
+      "researched": "2026-01-17T08:18:58-08:00",
+      "artifacts": [
+        {
+          "path": "specs/541_progressive_disclosure_refactor/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/541_progressive_disclosure_refactor/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ],
+      "planned": "2026-01-17T08:21:57-08:00",
+      "abandoned": "2026-01-17T16:28:40Z",
+      "archived_reason": "abandoned"
+    },
+    {
+      "project_number": 542,
+      "project_name": "fix_canonical_model_foundation",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T15:04:22Z",
+      "effort": "2 hours",
+      "parent": 540,
+      "description": "Phase 1: Fix Representation/CanonicalModel.lean to compile using patterns from Completeness.lean. Copy SetMaximalConsistent/SetConsistent/ConsistentExtensions definitions, fix Lindenbaum lemma using working set_lindenbaum pattern, replace outdated Mathlib APIs.",
+      "session_id": "sess_1768661753_d27fb6",
+      "researched": "2026-01-17T14:54:06Z",
+      "artifacts": [
+        {
+          "path": "specs/542_fix_canonical_model_foundation/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/542_fix_canonical_model_foundation/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ],
+      "planned": "2026-01-17T14:57:17Z",
+      "completed": "2026-01-17T15:04:22Z",
+      "archived": "2026-01-17T16:43:48Z"
+    },
+    {
+      "project_number": 543,
+      "project_name": "establish_truth_lemma_and_representation",
+      "type": "refactor",
+      "phase": "completed",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T15:27:00Z",
+      "effort": "1.5 hours",
+      "parent": 540,
+      "dependencies": [
+        542
+      ],
+      "description": "Phase 2: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence.",
+      "session_id": "sess_1768663596_17844a",
+      "researched": "2026-01-17T15:11:07Z",
+      "artifacts": [
+        {
+          "path": "specs/543_establish_truth_lemma_and_representation/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/543_establish_truth_lemma_and_representation/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": "specs/547_improve_fmp_full_theorem/summaries/implementation-summary-20260117.md",
+          "path": "specs/543_establish_truth_lemma_and_representation/summaries/implementation-summary-20260117.md",
           "type": "summary"
         }
-      ]
+      ],
+      "planned": "2026-01-17T15:23:59Z",
+      "completed": "2026-01-17T15:27:00Z",
+      "archived": "2026-01-17T16:43:48Z"
+    },
+    {
+      "project_number": 544,
+      "project_name": "connect_fmp_bridge",
+      "type": "refactor",
+      "phase": "not_started",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T14:50:19Z",
+      "last_updated": "2026-01-17T16:08:20Z",
+      "effort": "1 hour",
+      "parent": 540,
+      "dependencies": [
+        542,
+        543
+      ],
+      "description": "Phase 3: Establish FiniteModelProperty as bridge from representation to decidability/compactness. Fix FiniteModelProperty.lean imports, define FMP statement, connect to SemanticCanonicalModel and Decidability modules.",
+      "session_id": "sess_1768665716_8694d0",
+      "researched": "2026-01-17T15:54:28Z",
+      "artifacts": [
+        {
+          "path": "specs/544_connect_fmp_bridge/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/544_connect_fmp_bridge/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/544_connect_fmp_bridge/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T15:59:23Z",
+      "started": "2026-01-17T16:02:18Z",
+      "completed": "2026-01-17T16:08:20Z",
+      "archived": "2026-01-17T16:43:48Z"
     },
     {
       "project_number": 545,
@@ -5730,108 +5298,442 @@
       ]
     },
     {
-      "project_number": 540,
-      "project_name": "finish_metalogic_refactor_cleanup",
-      "type": "refactor",
+      "project_number": 547,
+      "project_name": "improve_fmp_full_theorem",
+      "type": "feature",
       "status": "completed",
       "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-17T14:34:53Z",
-      "last_updated": "2026-01-17T17:39:18Z",
-      "completed": "2026-01-17T17:39:18Z",
+      "priority": "high",
+      "created": "2026-01-17T16:22:24Z",
+      "last_updated": "2026-01-17T18:05:00Z",
+      "completed": "2026-01-17T18:05:00Z",
       "archived": "2026-01-17T19:17:32Z",
-      "effort": "4-6 hours",
-      "session_id": "sess_1768661078_ad3932",
-      "subtasks": [
-        542,
-        543,
-        544,
-        545,
-        546
-      ],
+      "effort": "4-5 hours",
+      "session_id": "sess_1768669081_835e7d",
       "artifacts": [
         {
-          "path": "specs/540_finish_metalogic_refactor_cleanup/reports/research-001.md",
+          "path": "specs/547_improve_fmp_full_theorem/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": "specs/540_finish_metalogic_refactor_cleanup/plans/implementation-001.md",
+          "path": "specs/547_improve_fmp_full_theorem/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/547_improve_fmp_full_theorem/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ]
     },
     {
-      "project_number": 513,
+      "project_number": 548,
+      "project_name": "fix_skill_to_agent_delegation_pattern",
+      "type": "fix",
       "status": "completed",
-      "project_name": "Address tm_auto proof reconstruction issues",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium",
-      "last_updated": "2026-01-18T02:08:27Z",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T20:13:49Z",
+      "effort": "2-3 hours",
+      "description": "Add explicit Task tool invocation instructions to all 7 forked skills that delegate to agents. Replace ambiguous prose with clear directives. Fixes the root cause identified in Task 539 research.",
+      "session_id": "sess_1768669365_4f0a88",
+      "researched": "2026-01-17T16:59:30Z",
       "artifacts": [
         {
-          "path": "specs/513_address_tm_auto_proof_reconstruction_issues/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/513_address_tm_auto_proof_reconstruction_issues/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ],
-      "archived": "2026-01-18T02:17:17Z"
-    },
-    {
-      "project_number": 514,
-      "status": "completed",
-      "project_name": "Expand test coverage for Metalogic_v2",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium",
-      "description": "Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.",
-      "last_updated": "2026-01-18T02:06:32Z",
-      "artifacts": [
-        {
-          "path": "specs/514_expand_test_coverage_for_metalogic_v2/reports/research-001.md",
+          "path": "specs/548_fix_skill_to_agent_delegation_pattern/reports/research-001.md",
           "type": "research"
         },
         {
-          "path": "specs/514_expand_test_coverage_for_metalogic_v2/plans/implementation-001.md",
+          "path": "specs/548_fix_skill_to_agent_delegation_pattern/plans/implementation-001.md",
           "type": "plan"
         },
         {
-          "path": "specs/514_expand_test_coverage_for_metalogic_v2/summaries/implementation-summary-20260117.md",
+          "path": "specs/548_fix_skill_to_agent_delegation_pattern/summaries/implementation-summary-20260117.md",
           "type": "summary"
         }
       ],
-      "archived": "2026-01-18T02:17:17Z"
+      "planned": "2026-01-17T17:04:56Z",
+      "completed": "2026-01-17T20:13:49Z",
+      "archived": "2026-01-17T21:05:36Z"
     },
     {
-      "project_number": 502,
+      "project_number": 549,
+      "project_name": "research_intelligent_model_routing_architecture",
+      "type": "research",
       "status": "completed",
-      "project_name": "Complete representation theorem using context-based provability based on Task 499 foundation",
-      "section": "Medium Priority",
-      "language": "lean",
+      "language": "meta",
       "priority": "high",
-      "started": "2026-01-14",
-      "completed": "2026-01-14",
-      "last_updated": "2026-01-18T01:09:22Z",
-      "archived": "2026-01-18T02:17:17Z"
-    },
-    {
-      "project_number": 510,
-      "status": "completed",
-      "project_name": "Add constraint to verifier and falsifier functions",
-      "section": "Medium Priority",
-      "language": "latex",
-      "priority": "medium",
-      "last_updated": "2026-01-18T01:47:56Z",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T21:38:26Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        548
+      ],
+      "description": "Research how to implement intelligent model routing in the .claude/ architecture. Evaluate query complexity analyzer, task-type based routing, and model cascade pattern options.",
       "artifacts": [
         {
-          "path": "specs/510_mereological_constraints/summaries/implementation-summary-20260117.md",
+          "path": "specs/549_research_intelligent_model_routing_architecture/reports/research-001.md",
+          "type": "report"
+        },
+        {
+          "path": "specs/549_research_intelligent_model_routing_architecture/reports/research-002.md",
+          "type": "report"
+        },
+        {
+          "path": "specs/549_research_intelligent_model_routing_architecture/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/549_research_intelligent_model_routing_architecture/summaries/implementation-summary-20260117.md",
           "type": "summary"
         }
       ],
-      "archived": "2026-01-18T02:17:17Z"
+      "archived": "2026-01-17T23:09:55Z"
+    },
+    {
+      "project_number": 550,
+      "project_name": "implement_model_tier_strategy",
+      "type": "feature",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "3-4 hours",
+      "dependencies": [
+        548,
+        549
+      ],
+      "description": "Implement the chosen model tiering strategy based on Task 549 research. Update agent frontmatter with appropriate model assignments.",
+      "abandoned": "2026-01-17T20:50:08Z"
+    },
+    {
+      "project_number": 551,
+      "project_name": "create_model_complexity_analyzer",
+      "type": "feature",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        550
+      ],
+      "description": "Create a lightweight skill that analyzes task complexity to recommend optimal model tier. Criteria: task language, estimated effort, number of files affected, tool requirements.",
+      "abandoned": "2026-01-17T20:50:07Z"
+    },
+    {
+      "project_number": 552,
+      "project_name": "test_validate_model_tiering_changes",
+      "type": "test",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        550
+      ],
+      "description": "Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks.",
+      "abandoned": "2026-01-18T01:00:44Z"
+    },
+    {
+      "project_number": 553,
+      "project_name": "document_final_model_tier_architecture",
+      "type": "documentation",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "1-2 hours",
+      "dependencies": [
+        551,
+        552
+      ],
+      "description": "Create comprehensive documentation for the model tier system. Include decision matrix for model selection, cost comparison, known limitations, and troubleshooting guide.",
+      "abandoned": "2026-01-17T23:33:46Z"
+    },
+    {
+      "project_number": 554,
+      "project_name": "bimodal_metalogic_v2_reorganize",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-17T19:15:49Z",
+      "last_updated": "2026-01-17T20:35:13Z",
+      "artifacts": [
+        {
+          "path": "specs/554_bimodal_metalogic_v2_reorganize/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/554_bimodal_metalogic_v2_reorganize/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/554_bimodal_metalogic_v2_reorganize/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "completed": "2026-01-17T20:35:13Z",
+      "archived": "2026-01-17T21:05:36Z"
+    },
+    {
+      "project_number": 555,
+      "project_name": "convert_skill_status_sync_to_forked_pattern",
+      "type": "fix",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T19:52:15Z",
+      "last_updated": "2026-01-17T21:18:00Z",
+      "effort": "2-3 hours",
+      "description": "Convert skill-status-sync from inline execution to forked subagent pattern. Currently causes workflow interruptions because inline skill completion triggers Claude to stop and wait for user input. Fix by creating status-sync-agent and making skill-status-sync a thin wrapper that delegates via Task tool.",
+      "session_id": "sess_1768682279_d8a559",
+      "researched": "2026-01-17T19:58:41Z",
+      "planned": "2026-01-17T21:13:30Z",
+      "completed": "2026-01-17T21:18:00Z",
+      "artifacts": [
+        {
+          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/555_convert_skill_status_sync_to_forked_pattern/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "archived": "2026-01-17T21:05:36Z"
+    },
+    {
+      "project_number": 557,
+      "project_name": "mcs_property_completion",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-17T21:43:01Z",
+      "parent_task": 556,
+      "description": "Prove mcs_contains_or_neg and mcs_modus_ponens in Representation/CanonicalModel.lean. These MCS properties are the critical blocking dependency for downstream theorems.",
+      "researched": "2026-01-17T21:12:32Z",
+      "artifacts": [
+        {
+          "path": "specs/557_mcs_property_completion/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/557_mcs_property_completion/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/557_mcs_property_completion/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/557_mcs_property_completion/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T21:18:02Z",
+      "completed": "2026-01-17T21:43:01Z",
+      "archived": "2026-01-17T23:09:55Z"
+    },
+    {
+      "project_number": 558,
+      "project_name": "semantic_satisfiability_bridge",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-17T23:09:52Z",
+      "parent_task": 556,
+      "dependencies": [
+        557
+      ],
+      "description": "Prove consistent_implies_satisfiable and subformulaList_finite in Representation/FiniteModelProperty.lean. Bridges canonical world representation to semantic satisfiability.",
+      "researched": "2026-01-17T22:35:39Z",
+      "artifacts": [
+        {
+          "path": "specs/558_semantic_satisfiability_bridge/reports/research-003.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/558_semantic_satisfiability_bridge/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/558_semantic_satisfiability_bridge/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic_v2/Representation/FiniteModelProperty.lean",
+          "type": "implementation"
+        },
+        {
+          "path": "specs/558_semantic_satisfiability_bridge/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T22:45:16Z",
+      "completed": "2026-01-17T23:09:52Z",
+      "archived": "2026-01-17T23:11:34Z"
+    },
+    {
+      "project_number": 559,
+      "project_name": "strong_completeness_helpers",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-17T23:41:53Z",
+      "parent_task": 556,
+      "dependencies": [
+        557
+      ],
+      "description": "Prove entails_imp_chain and imp_chain_to_context in StrongCompleteness.lean, plus double negation elimination and canonical world contradiction in RepresentationTheorem.lean.",
+      "researched": "2026-01-17T22:48:38Z",
+      "artifacts": [
+        {
+          "path": "specs/559_strong_completeness_helpers/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/559_strong_completeness_helpers/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/559_strong_completeness_helpers/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T23:09:16Z",
+      "completed": "2026-01-17T23:41:47Z",
+      "archived": "2026-01-18T00:59:33Z"
+    },
+    {
+      "project_number": 560,
+      "project_name": "axiom_elimination",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-18T03:56:47Z",
+      "parent_task": 556,
+      "description": "Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean.",
+      "archived": "2026-01-18T22:16:13Z"
+    },
+    {
+      "project_number": 562,
+      "project_name": "agent_system_refactor_report",
+      "status": "abandoned",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-17T21:33:11Z",
+      "last_updated": "2026-01-17T22:14:08Z",
+      "researched": "2026-01-17T21:38:32Z",
+      "artifacts": [
+        {
+          "path": "specs/562_agent_system_refactor_report/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "abandoned": "2026-01-18T01:11:41Z"
+    },
+    {
+      "project_number": 563,
+      "project_name": "investigate_empty_directory_creation",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T21:47:33Z",
+      "last_updated": "2026-01-17T23:35:36Z",
+      "artifacts": [
+        {
+          "path": "specs/563_investigate_empty_directory_creation/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/563_investigate_empty_directory_creation/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/563_investigate_empty_directory_creation/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T22:13:17Z",
+      "completed": "2026-01-17T23:35:30Z",
+      "archived": "2026-01-18T00:59:33Z"
+    },
+    {
+      "project_number": 564,
+      "project_name": "memory_issues_status_sync_agent",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-17T22:20:14Z",
+      "last_updated": "2026-01-17T22:39:53Z",
+      "researched": "2026-01-17T22:23:36Z",
+      "artifacts": [
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/plans/implementation-003.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/564_memory_issues_status_sync_agent/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T22:26:21Z",
+      "completed": "2026-01-17T22:39:53Z",
+      "archived": "2026-01-17T23:09:55Z"
+    },
+    {
+      "project_number": 565,
+      "project_name": "investigate_workflow_interruption_issue",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-18T00:58:44Z",
+      "last_updated": "2026-01-18T03:40:32Z",
+      "description": "Investigate and fix the workflow interruption issue where commands require explicit continue input to proceed.",
+      "archived": "2026-01-18T22:16:13Z"
+    },
+    {
+      "project_number": 567,
+      "project_name": "separate_deprecated_code_from_finitecanonicalmodel",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-18T02:30:43Z",
+      "last_updated": "2026-01-18T02:41:45Z",
+      "description": "Extract deprecated syntactic approach code from FiniteCanonicalModel.lean into separate DeprecatedApproach.lean module. The current file mixes deprecated code (IsLocallyConsistent, FiniteWorldState, finite_truth_lemma with 26+ sorries) with active semantic approach code (SemanticWorldState, semantic_truth_lemma_v2), making maintenance difficult.",
+      "artifacts": [
+        {
+          "path": "specs/567_separate_deprecated_code_from_finitecanonicalmodel/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "abandoned": "2026-01-18T03:43:33Z"
     },
     {
       "project_number": 569,
@@ -5846,27 +5748,70 @@
       "archived": "2026-01-18T22:16:13Z"
     },
     {
-      "project_number": 565,
-      "project_name": "investigate_workflow_interruption_issue",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-18T00:58:44Z",
-      "last_updated": "2026-01-18T03:40:32Z",
-      "description": "Investigate and fix the workflow interruption issue where commands require explicit continue input to proceed.",
-      "archived": "2026-01-18T22:16:13Z"
-    },
-    {
-      "project_number": 560,
-      "project_name": "axiom_elimination",
-      "status": "completed",
+      "project_number": 579,
+      "project_name": "update_566_semantic_completeness",
+      "status": "abandoned",
       "language": "lean",
       "priority": "high",
-      "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-18T03:56:47Z",
-      "parent_task": 556,
-      "description": "Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean.",
-      "archived": "2026-01-18T22:16:13Z"
+      "created": "2026-01-18T22:23:46Z",
+      "last_updated": "2026-01-18T22:23:46Z",
+      "abandoned": "2026-01-18T22:48:10Z"
+    },
+    {
+      "project_number": 580,
+      "project_name": "document_semantic_approach_decision",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:23:46Z",
+      "last_updated": "2026-01-18T22:23:46Z",
+      "abandoned": "2026-01-18T22:48:10Z"
+    },
+    {
+      "project_number": 581,
+      "project_name": "archive_deprecated_syntactic_code",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-18T22:23:46Z",
+      "last_updated": "2026-01-18T22:23:46Z",
+      "abandoned": "2026-01-18T22:48:10Z"
+    },
+    {
+      "project_number": 582,
+      "project_name": "abandon_blocked_syntactic_subtasks",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-18T22:23:46Z",
+      "last_updated": "2026-01-18T22:23:46Z",
+      "abandoned": "2026-01-18T22:48:10Z"
+    },
+    {
+      "project_number": 586,
+      "project_name": "prove_mcs_contains_or_neg_metalogic_v2",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:49:34Z",
+      "last_updated": "2026-01-18T23:01:44Z",
+      "artifacts": [
+        {
+          "path": "specs/586_prove_mcs_contains_or_neg_metalogic_v2/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "abandoned": "2026-01-18T23:06:58Z"
+    },
+    {
+      "project_number": 587,
+      "project_name": "prove_mcs_modus_ponens_metalogic_v2",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:49:34Z",
+      "last_updated": "2026-01-18T22:49:34Z",
+      "abandoned": "2026-01-18T23:07:05Z"
     }
   ]
 }
