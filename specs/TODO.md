@@ -29,11 +29,13 @@ technical_debt:
 
 ### 565. Investigate Workflow Interruption Issue
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Session ID**: sess_1768698237_ff51d1
 - **Created**: 2026-01-17
+- **Researched**: 2026-01-18
+- **Research**: [research-001.md](specs/565_investigate_workflow_interruption_issue/reports/research-001.md)
 
 **Description**: Investigate and fix the workflow interruption issue where commands require explicit 'continue' input to proceed. The agent system in .claude/ should be studied carefully by examining output files in .claude/output/ and reviewing completed/archived tasks to identify the root cause of this recurring issue.
 
