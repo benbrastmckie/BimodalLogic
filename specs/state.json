@@ -107,12 +107,18 @@
     },
     {
       "project_number": 513,
-      "status": "planning",
+      "status": "planned",
       "project_name": "Address tm_auto proof reconstruction issues",
       "section": "Medium Priority",
       "language": "lean",
       "priority": "medium",
-      "last_updated": "2026-01-18T01:38:23Z"
+      "last_updated": "2026-01-18T01:48:14Z",
+      "artifacts": [
+        {
+          "path": "specs/513_address_tm_auto_proof_reconstruction_issues/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ]
     },
     {
       "project_number": 514,
@@ -171,12 +177,18 @@
     },
     {
       "project_number": 510,
-      "status": "implementing",
+      "status": "completed",
       "project_name": "Add constraint to verifier and falsifier functions",
       "section": "Medium Priority",
       "language": "latex",
       "priority": "medium",
-      "last_updated": "2026-01-18T01:37:47Z"
+      "last_updated": "2026-01-18T01:47:56Z",
+      "artifacts": [
+        {
+          "path": "specs/510_mereological_constraints/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ]
     },
     {
       "project_number": 504,
