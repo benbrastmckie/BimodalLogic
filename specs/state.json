@@ -121,16 +121,20 @@
     },
     {
       "project_number": 513,
-      "status": "implementing",
+      "status": "completed",
       "project_name": "Address tm_auto proof reconstruction issues",
       "section": "Medium Priority",
       "language": "lean",
       "priority": "medium",
-      "last_updated": "2026-01-18T01:57:42Z",
+      "last_updated": "2026-01-18T02:08:27Z",
       "artifacts": [
         {
           "path": "specs/513_address_tm_auto_proof_reconstruction_issues/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/513_address_tm_auto_proof_reconstruction_issues/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ]
     },
