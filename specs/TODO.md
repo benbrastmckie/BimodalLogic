@@ -79,7 +79,7 @@ technical_debt:
 
 ### 593. Complete consistent_iff_consistent' in Basic.lean
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-18
@@ -91,12 +91,13 @@ technical_debt:
 
 ### 589. Complete Representation Theorem in Metalogic_v2
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Dependencies**: 588
 - **Related**: 556
 - **Created**: 2026-01-18
+- **Research**: [research-001.md](specs/589_complete_representation_theorem_metalogic_v2/reports/research-001.md)
 
 **Description**: Complete the Representation Theorem in Theories/Bimodal/Metalogic_v2/Representation/RepresentationTheorem.lean by filling remaining sorries (lines vary). The representation theorem establishes that every consistent context is satisfiable in the canonical model. Uses completed truth lemma from task 588. This is the FOUNDATION of the representation-first architecture.
 
