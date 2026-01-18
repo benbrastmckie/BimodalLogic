@@ -2,6 +2,10 @@ import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic_v2.Soundness.Soundness
 import Bimodal.Metalogic_v2.Core.Provability
+import Bimodal.Metalogic_v2.Core.DeductionTheorem
+import Bimodal.Metalogic_v2.Core.MaximalConsistent
+import Bimodal.Metalogic_v2.Representation.CanonicalModel
+import Bimodal.Theorems.Propositional
 import Mathlib.Data.List.Basic
 
 /-!
@@ -50,6 +54,7 @@ namespace Bimodal.Metalogic_v2.Representation
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic_v2.Core Bimodal.Metalogic_v2.Soundness
+open Bimodal.Theorems.Propositional
 
 /--
 Soundness theorem for context-based provability.
@@ -71,14 +76,93 @@ theorem representation_theorem_forward {φ : Formula} :
   intro ⟨d⟩
   exact context_soundness [] φ ⟨d⟩
 
+/-!
+## Helper Lemmas for Completeness Proof
+
+The following lemmas establish the key steps of the completeness proof via contrapositive:
+1. If φ is not derivable from empty context, then [φ.neg] is consistent
+2. (Semantic bridge - handled in RepresentationTheorem.lean)
+-/
+
 /--
-Backward direction for empty context: semantic entailment → provability.
+If a formula is not derivable from the empty context, then its negation is consistent.
 
-This requires the completeness theorem. In Metalogic_v2, we will establish
-this through the FMP bridge once it's built.
+This is a key lemma for the completeness proof. The proof proceeds by contradiction:
+1. Assume ¬ContextDerivable [] φ and ¬Consistent [φ.neg]
+2. From ¬Consistent [φ.neg], we have [φ.neg] ⊢ ⊥
+3. By deduction theorem: [] ⊢ φ.neg → ⊥ = [] ⊢ φ.neg.neg
+4. By double negation elimination: [] ⊢ φ
+5. This contradicts ¬ContextDerivable [] φ
+-/
+theorem not_derivable_implies_neg_consistent {φ : Formula} :
+    ¬ContextDerivable [] φ → Consistent [φ.neg] := by
+  intro h_not_deriv
+  -- Consistent means ¬Nonempty (DerivationTree [φ.neg] Formula.bot)
+  intro ⟨d_bot⟩
+  apply h_not_deriv
+  -- From [φ.neg] ⊢ ⊥, by deduction theorem, [] ⊢ φ.neg → ⊥ = [] ⊢ φ.neg.neg
+  have d_neg_neg : DerivationTree [] (Formula.neg φ).neg :=
+    deduction_theorem [] φ.neg Formula.bot d_bot
+  -- By double negation elimination: ⊢ φ.neg.neg → φ
+  have dne : ⊢ φ.neg.neg.imp φ := double_negation φ
+  -- Weaken DNE to empty context (trivial since it's already from empty context)
+  -- Apply modus ponens: [] ⊢ φ
+  have d_phi : DerivationTree [] φ :=
+    DerivationTree.modus_ponens [] φ.neg.neg φ
+      (DerivationTree.weakening [] [] (φ.neg.neg.imp φ) dne (List.nil_subset []))
+      d_neg_neg
+  exact ⟨d_phi⟩
 
-For now, this is stated as an axiom that will be proven once the full
-completeness machinery is in place.
+/--
+**Backward direction for empty context**: semantic entailment → provability.
+
+**Statement**: `[] ⊨ φ → ContextDerivable [] φ`
+
+**Proof Strategy** (via contrapositive):
+
+The standard completeness proof proceeds by contrapositive:
+1. Show `¬ContextDerivable [] φ → ¬semantic_consequence [] φ`
+2. Use `Function.mtr` to convert to the forward direction
+
+**Proof Sketch**:
+```
+Given: ¬ContextDerivable [] φ
+
+Step 1: By `not_derivable_implies_neg_consistent`: Consistent [φ.neg]
+
+Step 2: By `representation_theorem`: ∃ w : CanonicalWorldState, φ.neg ∈ w.carrier
+
+Step 3: Need to show: ¬semantic_consequence [] φ
+        i.e., exhibit a model M and time t where φ is false
+
+        This requires constructing a TaskFrame D / TaskModel from the canonical world.
+        The semantic_consequence quantifies over ALL types D, so we need to:
+        - Choose a concrete D (e.g., Int)
+        - Construct a TaskFrame D from canonical model
+        - Show truth in canonical model implies truth in TaskModel
+        - The canonical world w where φ.neg is true provides the countermodel
+```
+
+**Gap**: Step 3 requires bridging canonical model truth (set membership) to
+polymorphic semantic validity (quantified over all temporal types). This
+"semantic embedding" is non-trivial because:
+- `CanonicalWorldState` is an MCS (maximal consistent set of formulas)
+- `TaskFrame D` requires temporal structure with duration algebra
+- The canonical model accessibility relations need to be embedded into task relations
+
+**Status**: Axiom pending completion of semantic embedding infrastructure.
+The helper lemma `not_derivable_implies_neg_consistent` completes the first half
+of the contrapositive proof (syntactic side). The remaining work is the semantic
+embedding (connecting canonical worlds to TaskModel).
+
+**Dependencies**:
+- `not_derivable_implies_neg_consistent` (proven above)
+- `representation_theorem` (from RepresentationTheorem.lean)
+- Semantic embedding (TODO: construct TaskFrame from canonical model)
+
+**References**:
+- Blackburn et al., Modal Logic, Chapter 4.8 (Canonical Model Construction)
+- Research report: specs/560_axiom_elimination/reports/research-001.md
 -/
 axiom representation_theorem_backward_empty {φ : Formula} :
     semantic_consequence [] φ → ContextDerivable [] φ

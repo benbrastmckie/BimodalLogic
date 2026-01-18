@@ -43,16 +43,22 @@ Research report `research-001.md` identifies the proof strategy (contrapositive 
 
 ## Implementation Phases
 
-### Phase 1: Explore Infrastructure and Verify Dependencies [NOT STARTED]
+### Phase 1: Explore Infrastructure and Verify Dependencies [COMPLETED]
 
 **Goal**: Confirm all required lemmas exist and have compatible signatures.
 
 **Tasks**:
-- [ ] Verify `deduction_theorem` signature: `(Γ : Context) → (A B : Formula) → (A :: Γ ⊢ B) → Γ ⊢ A.imp B`
-- [ ] Verify `double_negation` signature: `(φ : Formula) → ⊢ φ.neg.neg.imp φ`
-- [ ] Check `representation_theorem` signature: `Consistent Γ → ∃ (w : CanonicalWorldState), ∀ φ ∈ Γ, canonicalTruthAt w φ`
-- [ ] Identify Mathlib contrapositive lemmas (`Function.mtr`, `not_imp_not`)
-- [ ] Verify `Consistent` definition and its relationship to derivability
+- [x] Verify `deduction_theorem` signature: `(Γ : Context) → (A B : Formula) → (A :: Γ ⊢ B) → Γ ⊢ A.imp B`
+- [x] Verify `double_negation` signature: `(φ : Formula) → ⊢ φ.neg.neg.imp φ`
+- [x] Check `representation_theorem` signature: `Consistent Γ → ∃ (w : CanonicalWorldState), ∀ φ ∈ Γ, canonicalTruthAt w φ`
+- [x] Identify Mathlib contrapositive lemmas (`Function.mtr`, `not_imp_not`)
+- [x] Verify `Consistent` definition and its relationship to derivability
+
+**Verified Signatures**:
+- `deduction_theorem`: `(Γ : Context) (A B : Formula) (h : (A :: Γ) ⊢ B) : Γ ⊢ A.imp B`
+- `double_negation`: `(φ : Formula) : ⊢ φ.neg.neg.imp φ`
+- `representation_theorem`: `Consistent Γ → ∃ (w : CanonicalWorldState), ∀ φ ∈ Γ, canonicalTruthAt w φ`
+- `Consistent`: `def Consistent (Γ : Context) : Prop := ¬Nonempty (DerivationTree Γ Formula.bot)`
 
 **Timing**: 30 minutes
 
@@ -68,20 +74,22 @@ Research report `research-001.md` identifies the proof strategy (contrapositive 
 
 ---
 
-### Phase 2: Prove Consistency of Negation Lemma [NOT STARTED]
+### Phase 2: Prove Consistency of Negation Lemma [COMPLETED]
 
 **Goal**: Prove that if `φ` is not derivable from empty context, then `[φ.neg]` is consistent.
 
 **Tasks**:
-- [ ] Create helper lemma: `not_derivable_implies_neg_consistent`
-- [ ] Proof structure:
+- [x] Create helper lemma: `not_derivable_implies_neg_consistent`
+- [x] Proof structure:
   1. Assume `¬ContextDerivable [] φ`
   2. Assume for contradiction: `¬Consistent [φ.neg]` (i.e., `[φ.neg] ⊢ ⊥`)
   3. By deduction theorem: `[] ⊢ φ.neg → ⊥` = `[] ⊢ φ.neg.neg`
   4. By `double_negation` + modus ponens: `[] ⊢ φ`
   5. Contradiction with assumption
-- [ ] Handle weakening of `double_negation` from `⊢` to `[] ⊢`
-- [ ] Test proof compiles without errors
+- [x] Handle weakening of `double_negation` from `⊢` to `[] ⊢`
+- [x] Test proof compiles without errors
+
+**Result**: Lemma `not_derivable_implies_neg_consistent` added to ContextProvability.lean and compiles successfully.
 
 **Timing**: 45 minutes
 
@@ -95,19 +103,33 @@ Research report `research-001.md` identifies the proof strategy (contrapositive 
 
 ---
 
-### Phase 3: Bridge Canonical Truth to Semantic Countermodel [NOT STARTED]
+### Phase 3: Bridge Canonical Truth to Semantic Countermodel [PARTIAL]
 
 **Goal**: Prove that canonical world truth of `φ.neg` implies existence of semantic countermodel.
 
-**Tasks**:
-- [ ] Analyze `canonicalTruthAt` definition and semantic structures
-- [ ] Identify how to instantiate the polymorphic `semantic_consequence` with a concrete model
-- [ ] Option A: Construct `TaskFrame Int` and `TaskModel` from canonical model
-- [ ] Option B: Use negation of semantic consequence directly with canonical model witness
-- [ ] Create bridge lemma: `canonical_neg_true_implies_not_semantic_consequence`
-- [ ] Handle the quantification over `∀ D : Type, ...` by exhibiting a specific witness
+**Analysis Completed**:
+- [x] Analyzed `canonicalTruthAt` definition and semantic structures
+- [x] Identified the "semantic embedding gap" challenge
+- [x] Examined existing infrastructure in Metalogic/Completeness/FiniteCanonicalModel.lean
 
-**Timing**: 1 hour
+**Key Finding**: The semantic embedding requires constructing a TaskFrame/TaskModel from the canonical model. This is non-trivial because:
+1. `CanonicalWorldState` is an MCS (set of formulas)
+2. `TaskFrame D` requires temporal structure with duration algebra
+3. The canonical model accessibility relations need to be embedded into task relations
+4. Existing infrastructure (`SemanticCanonicalFrame`) is in old Metalogic/, has sorries
+
+**Decision**: Per contingency plan, keep the axiom with comprehensive documentation.
+The axiom `representation_theorem_backward_empty` has been updated with:
+- Detailed proof sketch
+- Clear statement of what the semantic embedding would require
+- Documentation of dependencies and references
+
+**Status**: The syntactic half of the proof is complete (`not_derivable_implies_neg_consistent`).
+The semantic embedding remains as future work requiring:
+- TaskFrame construction from canonical model
+- Truth lemma connecting canonical truth to semantic truth
+
+**Timing**: 1 hour (analysis complete)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic_v2/Representation/ContextProvability.lean` - add bridge lemma
@@ -119,24 +141,25 @@ Research report `research-001.md` identifies the proof strategy (contrapositive 
 
 ---
 
-### Phase 4: Replace Axiom with Theorem [NOT STARTED]
+### Phase 4: Document Axiom with Proof Roadmap [COMPLETED]
 
-**Goal**: Convert the axiom declaration to a proven theorem using the helper lemmas.
+**Goal**: Since semantic embedding is complex, document the axiom with clear proof roadmap.
 
 **Tasks**:
-- [ ] Change `axiom representation_theorem_backward_empty` to `theorem representation_theorem_backward_empty`
-- [ ] Implement proof using contrapositive:
-  1. Apply `Function.mtr` (or `Mathlib.Tactic.Contrapose.mtr`)
-  2. Assume `¬ContextDerivable [] φ`
-  3. By Phase 2 lemma: `Consistent [φ.neg]`
-  4. By `representation_theorem`: `∃ w, φ.neg ∈ w.carrier`
-  5. By Phase 3 bridge: `¬semantic_consequence [] φ`
-- [ ] Verify all downstream theorems still compile:
-  - `representation_theorem_empty`
-  - `valid_implies_derivable`
-  - `derivable_implies_valid`
-  - `representation_validity`
-- [ ] Run `lean_diagnostic_messages` on entire file
+- [x] Keep `axiom representation_theorem_backward_empty` (semantic embedding gap too complex for this task)
+- [x] Add comprehensive docstring explaining:
+  - The contrapositive proof strategy
+  - The proof sketch with clear steps
+  - The specific gap (semantic embedding)
+  - Dependencies and references
+- [x] Verify all downstream theorems still compile:
+  - `representation_theorem_empty` - OK
+  - `valid_implies_derivable` - OK
+  - `derivable_implies_valid` - OK
+  - `representation_validity` - OK
+- [x] Run `lean_diagnostic_messages` - only linting warnings (no errors)
+
+**Result**: Axiom retained with detailed documentation. The helper lemma `not_derivable_implies_neg_consistent` provides the syntactic foundation for future completion.
 
 **Timing**: 30 minutes
 
@@ -151,17 +174,19 @@ Research report `research-001.md` identifies the proof strategy (contrapositive 
 
 ---
 
-### Phase 5: Verification and Cleanup [NOT STARTED]
+### Phase 5: Verification and Cleanup [COMPLETED]
 
 **Goal**: Ensure no regressions and clean up any temporary constructs.
 
 **Tasks**:
-- [ ] Run full build: `lake build Bimodal.Metalogic_v2.Representation.ContextProvability`
-- [ ] Check for any new sorries introduced: search for `sorry` in modified files
-- [ ] Verify WeakCompleteness.lean still compiles (uses `representation_theorem_backward_empty`)
-- [ ] Run `lake build` for full project
-- [ ] Review proof for clarity and add documentation comments
-- [ ] Remove any temporary debugging code
+- [x] Run full build: `lake build Bimodal.Metalogic_v2.Representation.ContextProvability` - Success
+- [x] Check for any new sorries introduced: No sorries in ContextProvability.lean
+- [x] Verify WeakCompleteness.lean still compiles - Success
+- [x] Run `lake build` for full project - Success (976 jobs)
+- [x] Review proof for clarity and add documentation comments - Done (comprehensive docstrings added)
+- [x] Remove any temporary debugging code - N/A (none added)
+
+**Result**: All verification checks passed. Project builds cleanly.
 
 **Timing**: 15 minutes
 

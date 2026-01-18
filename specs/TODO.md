@@ -29,7 +29,7 @@ technical_debt:
 
 ### 565. Investigate Workflow Interruption Issue
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 - **Session ID**: sess_1768698237_ff51d1
@@ -63,7 +63,7 @@ technical_debt:
 
 ### 560. Axiom Elimination
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
@@ -72,6 +72,7 @@ technical_debt:
 - **Dependencies**: 558
 - **Research**: [research-001.md](specs/560_axiom_elimination/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/560_axiom_elimination/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260117.md](specs/560_axiom_elimination/summaries/implementation-summary-20260117.md)
 
 **Description**: Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean. Uses completeness contrapositive argument.
 
@@ -107,9 +108,10 @@ technical_debt:
 
 ### 514. Expand test coverage for Metalogic_v2
 - **Effort**: 10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
+- **Session ID**: sess_1768699936_6f84ad
 - **Created By**: Review task 506
 - **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
 - **Revised**: 2026-01-18

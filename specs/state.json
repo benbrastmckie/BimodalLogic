@@ -8,11 +8,11 @@
     {
       "project_number": 565,
       "project_name": "investigate_workflow_interruption_issue",
-      "status": "researched",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-18T00:58:44Z",
-      "last_updated": "2026-01-18T01:21:51Z",
+      "last_updated": "2026-01-18T01:34:18Z",
       "artifacts": [
         {
           "path": "specs/565_investigate_workflow_interruption_issue/reports/research-001.md",
@@ -23,11 +23,11 @@
     {
       "project_number": 560,
       "project_name": "axiom_elimination",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-18T01:21:39Z",
+      "last_updated": "2026-01-18T01:35:05Z",
       "parent_task": 556,
       "dependencies": [
         558
@@ -41,6 +41,10 @@
         {
           "path": "specs/560_axiom_elimination/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/560_axiom_elimination/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ]
     },
@@ -96,13 +100,13 @@
     },
     {
       "project_number": 514,
-      "status": "not_started",
+      "status": "researching",
       "project_name": "Expand test coverage for Metalogic_v2",
       "section": "Medium Priority",
       "language": "lean",
       "priority": "medium",
       "description": "Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.",
-      "last_updated": "2026-01-18T02:05:37Z"
+      "last_updated": "2026-01-18T01:32:36Z"
     },
     {
       "project_number": 394,
