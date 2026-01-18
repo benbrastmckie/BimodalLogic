@@ -6,6 +6,42 @@
   },
   "active_projects": [
     {
+      "project_number": 579,
+      "project_name": "update_566_semantic_completeness",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:23:46Z",
+      "last_updated": "2026-01-18T22:23:46Z"
+    },
+    {
+      "project_number": 580,
+      "project_name": "document_semantic_approach_decision",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:23:46Z",
+      "last_updated": "2026-01-18T22:23:46Z"
+    },
+    {
+      "project_number": 581,
+      "project_name": "archive_deprecated_syntactic_code",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-18T22:23:46Z",
+      "last_updated": "2026-01-18T22:23:46Z"
+    },
+    {
+      "project_number": 582,
+      "project_name": "abandon_blocked_syntactic_subtasks",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-18T22:23:46Z",
+      "last_updated": "2026-01-18T22:23:46Z"
+    },
+    {
       "project_number": 578,
       "project_name": "complete_main_weak_completeness_sorry_free",
       "status": "not_started",
@@ -50,13 +86,19 @@
     {
       "project_number": 575,
       "project_name": "implement_closure_with_neg_infrastructure",
-      "status": "not_started",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:12:12Z",
-      "last_updated": "2026-01-18T22:12:12Z",
+      "last_updated": "2026-01-19T00:00:02Z",
       "parent_task": 574,
-      "description": "Define closureWithNeg as closure union negations of closure formulas. Refactor MCS infrastructure (ClosureMaximalConsistent, worldStateFromClosureMCS) to use closureWithNeg instead of closure. This enables negation completeness properties needed for compound formula proofs."
+      "description": "Define closureWithNeg as closure union negations of closure formulas. Refactor MCS infrastructure (ClosureMaximalConsistent, worldStateFromClosureMCS) to use closureWithNeg instead of closure. This enables negation completeness properties needed for compound formula proofs.",
+      "artifacts": [
+        {
+          "path": "specs/575_implement_closure_with_neg_infrastructure/plans/implementation-001.md",
+          "type": "plan"
+        }
+      ]
     },
     {
       "project_number": 574,
@@ -324,5 +366,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 579
+  "next_project_number": 583
 }
