@@ -2,7 +2,7 @@
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
     "total_tasks": 20,
-    "last_sync": "2026-01-18T23:45:34Z"
+    "last_sync": "2026-01-18T23:46:29Z"
   },
   "active_projects": [
     {
@@ -30,31 +30,6 @@
           "type": "plan"
         }
       ]
-    },
-    {
-      "project_number": 588,
-      "project_name": "complete_truth_lemma_metalogic_v2",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T22:49:34Z",
-      "last_updated": "2026-01-18T23:45:53Z",
-      "artifacts": [
-        {
-          "path": "specs/588_complete_truth_lemma_metalogic_v2/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/588_complete_truth_lemma_metalogic_v2/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/588_complete_truth_lemma_metalogic_v2/summaries/implementation-summary-20260118.md",
-          "type": "summary"
-        }
-      ],
-      "session_id": "sess_1768779621_c54bd7",
-      "completed": "2026-01-18T23:45:53Z"
     },
     {
       "project_number": 589,
