@@ -18,12 +18,12 @@
     {
       "project_number": 591,
       "project_name": "find_fix_double_forking",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T00:33:51Z",
-      "last_updated": "2026-01-18T23:41:18Z",
-      "session_id": "sess_1768779650_5df0f1",
+      "last_updated": "2026-01-18T23:48:43Z",
+      "session_id": "sess_1768779943_482ffe",
       "description": "Investigate and fix potential double forking in skill-to-agent delegation. Current architecture shows skills have both context: fork (which spawns a subprocess) AND invoke Task tool (which spawns another subprocess). Audit all forked skills, determine if context: fork should be removed OR if Task invocation should be replaced with direct execution.",
       "references": [
         ".claude/docs/skills-vs-agents-context-behavior.md",
@@ -38,17 +38,22 @@
         {
           "path": "specs/591_find_fix_double_forking/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/591_find_fix_double_forking/summaries/implementation-summary-20260119.md",
+          "type": "summary"
         }
-      ]
+      ],
+      "completed": "2026-01-18T23:48:43Z"
     },
     {
       "project_number": 589,
       "project_name": "complete_representation_theorem_metalogic_v2",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:49:34Z",
-      "last_updated": "2026-01-18T22:49:34Z"
+      "last_updated": "2026-01-18T23:48:53Z"
     },
     {
       "project_number": 590,
