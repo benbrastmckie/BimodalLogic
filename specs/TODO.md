@@ -5,16 +5,16 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 23
+  active: 19
   completed: 177
   in_progress: 2
-  not_started: 30
-  abandoned: 14
+  not_started: 26
+  abandoned: 18
   total: 209
 priority_distribution:
   critical: 0
-  high: 11
-  medium: 10
+  high: 9
+  medium: 8
   low: 11
 technical_debt:
   sorry_count: 205
@@ -57,30 +57,6 @@ technical_debt:
 - **Created**: 2026-01-19
 
 **Description**: Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination.
-
----
-
-### 579. Update Task 566 to Use Semantic Completeness Infrastructure
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: lean
-- **Related**: 566, 571
-- **Created**: 2026-01-18
-
-**Description**: Update task 566 (semantic embedding) to use `semantic_weak_completeness` infrastructure instead of blocked syntactic lemmas. Replace references to `closure_mcs_implies_locally_consistent` with semantic lemmas. Use `semantic_truth_lemma_v2` instead of `finite_truth_lemma`. Use `SemanticWorldState` instead of `FiniteWorldState`. Per architectural analysis in specs/571_complete_mcs_infrastructure/summaries/architectural-analysis-20260118.md.
-
----
-
-### 580. Document Semantic Approach Decision in FiniteCanonicalModel.lean
-- **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: lean
-- **Related**: 571
-- **Created**: 2026-01-18
-
-**Description**: Add comprehensive documentation in FiniteCanonicalModel.lean explaining the architectural decision to use the semantic approach over the syntactic approach. Document: (1) why syntactic approach is blocked (IsLocallyConsistent requires temporal reflexivity not valid in TM logic), (2) why semantic approach is superior (already proven, cleaner construction), (3) reference to architectural analysis. Update existing deprecation comments (lines 29-96) with final decision.
 
 ---
 
@@ -164,30 +140,6 @@ technical_debt:
 ---
 
 ## Medium Priority
-
-### 581. Archive Deprecated Syntactic Approach Code to Boneyard
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: lean
-- **Related**: 571, 580
-- **Created**: 2026-01-18
-
-**Description**: Move deprecated syntactic completeness code from FiniteCanonicalModel.lean to Theories/Bimodal/Boneyard/ for reference. Archive: `FiniteWorldState`, `IsLocallyConsistent`, `finite_truth_lemma`, `worldStateFromClosureMCS`, and related infrastructure (approximately lines 680-1500). Keep proven lemmas (`closure_mcs_negation_complete`, `closure_mcs_imp_closed`, `worldStateFromClosureMCS_models_iff`) as they demonstrate correct MCS property handling. Ensure main file compiles after removal. Document what was archived and why.
-
----
-
-### 582. Abandon Blocked Syntactic Approach Subtasks
-- **Effort**: 1 hour
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Related**: 571, 572, 573
-- **Created**: 2026-01-18
-
-**Description**: Review and abandon tasks that depend on the blocked syntactic approach. Tasks 572 (Complete History Construction) and 573 (Complete Compound Formula Cases) depend on `closure_mcs_implies_locally_consistent` which is architecturally blocked. Either abandon these tasks or revise them to use the semantic approach. Update task 566 dependencies accordingly. Use `/task --abandon` for tasks that cannot be salvaged.
-
----
 
 ### 574. Restructure main_weak_completeness with semantic_truth_at_v2
 - **Effort**: 4-6 hours

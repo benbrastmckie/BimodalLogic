@@ -6,42 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 579,
-      "project_name": "update_566_semantic_completeness",
-      "status": "not_started",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T22:23:46Z",
-      "last_updated": "2026-01-18T22:23:46Z"
-    },
-    {
-      "project_number": 580,
-      "project_name": "document_semantic_approach_decision",
-      "status": "not_started",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T22:23:46Z",
-      "last_updated": "2026-01-18T22:23:46Z"
-    },
-    {
-      "project_number": 581,
-      "project_name": "archive_deprecated_syntactic_code",
-      "status": "not_started",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-18T22:23:46Z",
-      "last_updated": "2026-01-18T22:23:46Z"
-    },
-    {
-      "project_number": 582,
-      "project_name": "abandon_blocked_syntactic_subtasks",
-      "status": "not_started",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-18T22:23:46Z",
-      "last_updated": "2026-01-18T22:23:46Z"
-    },
-    {
       "project_number": 578,
       "project_name": "complete_main_weak_completeness_sorry_free",
       "status": "not_started",
