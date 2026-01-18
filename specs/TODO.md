@@ -46,6 +46,44 @@ technical_debt:
 
 ---
 
+### 571. Complete MCS Infrastructure
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: 566
+- **Created**: 2026-01-18
+
+**Description**: Prove the MCS (Maximal Consistent Set) infrastructure lemmas that block the semantic embedding: `closure_mcs_negation_complete` (line 669), `closure_mcs_implies_locally_consistent` (line 1048), and `worldStateFromClosureMCS_models_iff` (line 1067) in FiniteCanonicalModel.lean.
+
+---
+
+### 572. Complete History Construction
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: 566
+- **Dependencies**: 571
+- **Created**: 2026-01-18
+
+**Description**: Prove `finite_history_from_state` (lines 3121-3124) in FiniteCanonicalModel.lean using `finite_forward_existence` and `finite_backward_existence`. This lemma constructs proper histories for the canonical model.
+
+---
+
+### 573. Complete Bridge Lemmas
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: 566
+- **Dependencies**: 571, 572
+- **Created**: 2026-01-18
+
+**Description**: After MCS infrastructure and history construction are complete, prove the 4 compound formula cases (imp, box, all_past, all_future) in `truth_at_implies_semantic_truth` (lines 3635, 3641, 3646, 3651) in FiniteCanonicalModel.lean. These bridge recursive semantic evaluation (`truth_at`) to flat assignment lookup (`FiniteWorldState.models`).
+
+---
+
 ### 569. Analyze Proof Strategy Alternatives
 - **Effort**: 2-3 hours
 - **Status**: [PLANNED]
