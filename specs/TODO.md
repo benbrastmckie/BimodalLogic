@@ -29,7 +29,8 @@ technical_debt:
 
 ### 566. Complete Semantic Embedding for Completeness Proof
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
+- **Session ID**: sess_1768700705_440112
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 560
@@ -40,13 +41,14 @@ technical_debt:
 
 ### 565. Investigate Workflow Interruption Issue
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768698237_ff51d1
+- **Session ID**: sess_1768700471_6ec3b6
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-18
 - **Research**: [research-001.md](specs/565_investigate_workflow_interruption_issue/reports/research-001.md)
+- **Research**: [research-002.md](specs/565_investigate_workflow_interruption_issue/reports/research-002.md)
 
 **Description**: Investigate and fix the workflow interruption issue where commands require explicit 'continue' input to proceed. The agent system in .claude/ should be studied carefully by examining output files in .claude/output/ and reviewing completed/archived tasks to identify the root cause of this recurring issue.
 
@@ -121,10 +123,10 @@ technical_debt:
 
 ### 514. Expand test coverage for Metalogic_v2
 - **Effort**: 10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
-- **Session ID**: sess_1768699936_6f84ad
+- **Session ID**: sess_1768700649_97b565
 - **Created By**: Review task 506
 - **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
 - **Revised**: 2026-01-18
