@@ -31,12 +31,12 @@
     {
       "project_number": 571,
       "project_name": "complete_mcs_infrastructure",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "priority": "high",
       "parent": 566,
       "created": "2026-01-18T03:56:12Z",
-      "last_updated": "2026-01-18T21:49:58Z",
+      "last_updated": "2026-01-18T22:11:19Z",
       "artifacts": [
         {
           "path": "specs/571_complete_mcs_infrastructure/reports/research-001.md",
@@ -45,6 +45,10 @@
         {
           "path": "specs/571_complete_mcs_infrastructure/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/571_complete_mcs_infrastructure/summaries/implementation-summary-20260118.md",
+          "type": "summary"
         }
       ]
     },

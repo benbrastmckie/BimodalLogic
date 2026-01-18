@@ -48,13 +48,15 @@ technical_debt:
 
 ### 571. Complete MCS Infrastructure
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
 - **Created**: 2026-01-18
 - **Research**: [research-001.md](specs/571_complete_mcs_infrastructure/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/571_complete_mcs_infrastructure/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/571_complete_mcs_infrastructure/summaries/implementation-summary-20260118.md)
+- **Blocked By**: Architectural mismatch - IsLocallyConsistent requires temporal reflexivity axioms not valid in TM logic
 
 **Description**: Prove the MCS (Maximal Consistent Set) infrastructure lemmas that block the semantic embedding: `closure_mcs_negation_complete` (line 669), `closure_mcs_implies_locally_consistent` (line 1048), and `worldStateFromClosureMCS_models_iff` (line 1067) in FiniteCanonicalModel.lean.
 

@@ -122,7 +122,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Closure MCS Negation Complete [NOT STARTED]
+### Phase 3: Closure MCS Negation Complete [COMPLETED]
 
 **Goal**: Prove `closure_mcs_negation_complete` using projection from full MCS.
 
@@ -145,7 +145,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Local Consistency [NOT STARTED]
+### Phase 4: Local Consistency [BLOCKED]
 
 **Goal**: Prove `closure_mcs_implies_locally_consistent`.
 
@@ -171,7 +171,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Models Iff [NOT STARTED]
+### Phase 5: Models Iff [COMPLETED]
 
 **Goal**: Prove `worldStateFromClosureMCS_models_iff`.
 
@@ -194,7 +194,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 6: Integration Verification [NOT STARTED]
+### Phase 6: Integration Verification [COMPLETED]
 
 **Goal**: Verify all changes integrate correctly and document completion.
 

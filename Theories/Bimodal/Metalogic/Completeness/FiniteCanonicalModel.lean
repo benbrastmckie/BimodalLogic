@@ -1264,8 +1264,21 @@ Formula membership in closure MCS equals truth in the world state.
 theorem worldStateFromClosureMCS_models_iff (phi : Formula) (S : Set Formula)
     (h_mcs : ClosureMaximalConsistent phi S) (psi : Formula) (h_mem : psi ∈ closure phi) :
     psi ∈ S ↔ (worldStateFromClosureMCS phi S h_mcs).models psi h_mem := by
-  -- Direct from definition of assignmentFromClosureMCS and Classical.decide
-  sorry
+  -- Unfold definitions
+  unfold worldStateFromClosureMCS FiniteWorldState.models assignmentFromClosureMCS
+  simp only
+  -- The goal is: psi ∈ S ↔ (if decide (psi ∈ S) = true then true else false) = true
+  -- We provide the Classical.propDecidable instance to work with decide lemmas
+  haveI : Decidable (psi ∈ S) := Classical.propDecidable (psi ∈ S)
+  constructor
+  · intro h_in_S
+    -- psi ∈ S, so decide (psi ∈ S) = true, and if True then true else false = true
+    simp only [decide_eq_true_eq, h_in_S, ite_true]
+  · intro h_true
+    -- The if expression equals true, so the condition must be true
+    by_contra h_not_in_S
+    simp only [decide_eq_false_iff_not.mpr h_not_in_S] at h_true
+    simp at h_true
 
 /--
 A formula not in closure MCS is false in the world state.
