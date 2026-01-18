@@ -8,27 +8,31 @@
     {
       "project_number": 574,
       "project_name": "restructure_main_weak_completeness",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-18T04:18:00Z",
-      "last_updated": "2026-01-18T21:45:59Z",
+      "last_updated": "2026-01-18T21:51:55Z",
       "artifacts": [
         {
           "path": "specs/574_restructure_main_weak_completeness/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/574_restructure_main_weak_completeness/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
     {
       "project_number": 571,
       "project_name": "complete_mcs_infrastructure",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "parent": 566,
       "created": "2026-01-18T03:56:12Z",
-      "last_updated": "2026-01-18T21:48:57Z",
+      "last_updated": "2026-01-18T21:49:58Z",
       "artifacts": [
         {
           "path": "specs/571_complete_mcs_infrastructure/reports/research-001.md",
@@ -100,7 +104,7 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T03:42:56Z",
-      "last_updated": "2026-01-18T04:11:28Z",
+      "last_updated": "2026-01-18T21:49:22Z",
       "parent_task": 566,
       "description": "Analyze different proof strategies for completing the semantic embedding in task 566. Compare contrapositive approach, direct instantiation, and alternative lemmas from rollback section.",
       "artifacts": [
