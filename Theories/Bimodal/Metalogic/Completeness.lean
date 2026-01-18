@@ -541,7 +541,7 @@ but work with infinite sets of formulas.
 /--
 Helper: If `A ∈ Γ'`, then `A :: Γ'.filter (fun x => decide (x ≠ A))` has the same elements as `Γ'`.
 -/
-private lemma cons_filter_neq_perm {A : Formula} {Γ' : Context}
+lemma cons_filter_neq_perm {A : Formula} {Γ' : Context}
     (h_mem : A ∈ Γ') : ∀ x, x ∈ A :: Γ'.filter (fun y => decide (y ≠ A)) ↔ x ∈ Γ' := by
   intro x
   constructor
@@ -565,7 +565,7 @@ private lemma cons_filter_neq_perm {A : Formula} {Γ' : Context}
 /--
 Exchange lemma for derivations: If Γ and Γ' have the same elements, derivation is preserved.
 -/
-private def derivation_exchange {Γ Γ' : Context} {φ : Formula}
+def derivation_exchange {Γ Γ' : Context} {φ : Formula}
     (h : Γ ⊢ φ) (h_perm : ∀ x, x ∈ Γ ↔ x ∈ Γ') : Γ' ⊢ φ :=
   DerivationTree.weakening Γ Γ' φ h (fun x hx => (h_perm x).mp hx)
 

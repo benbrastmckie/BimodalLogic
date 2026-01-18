@@ -88,13 +88,15 @@ technical_debt:
 
 ### 569. Analyze Proof Strategy Alternatives
 - **Effort**: 1 hour
-- **Status**: [IMPLEMENTING]
-- **Session ID**: sess_1768709471_f16736
+- **Status**: [COMPLETED]
+- **Session ID**: sess_1768773274_06e42e
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
+- **Completed**: 2026-01-18
 - **Research**: [research-001.md](specs/569_analyze_proof_strategy_alternatives/reports/research-001.md), [research-002.md](specs/569_analyze_proof_strategy_alternatives/reports/research-002.md)
 - **Plan**: [implementation-002.md](specs/569_analyze_proof_strategy_alternatives/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260118.md](specs/569_analyze_proof_strategy_alternatives/summaries/implementation-summary-20260118.md)
 
 **Description**: Analyze different proof strategies for completing the semantic embedding in task 566. Compare contrapositive approach, direct instantiation, and alternative lemmas from rollback section.
 
@@ -142,13 +144,14 @@ technical_debt:
 
 ### 574. Restructure main_weak_completeness with semantic_truth_at_v2
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Follow-up**: 570
 - **Created**: 2026-01-18
 - **Research**: [research-001.md](specs/574_restructure_main_weak_completeness/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/574_restructure_main_weak_completeness/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/574_restructure_main_weak_completeness/summaries/implementation-summary-20260118.md)
 
 **Description**: Restructure `main_weak_completeness` to use `semantic_truth_at_v2` throughout, avoiding the need for the problematic bridge. Per recommendation from task 570 analysis (implementation-summary-20260118.md line 68).
 

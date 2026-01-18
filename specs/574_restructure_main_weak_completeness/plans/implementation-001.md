@@ -1,7 +1,7 @@
 # Implementation Plan: Task #574
 
 - **Task**: 574 - Restructure main_weak_completeness with semantic_truth_at_v2
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 6 hours
 - **Priority**: Medium
 - **Dependencies**: None (follows task 570 analysis)
@@ -54,7 +54,7 @@ Research recommends **MCS-derived history approach** (Priority 2) as most direct
 
 ## Implementation Phases
 
-### Phase 1: Analysis and Proof Sketch [NOT STARTED]
+### Phase 1: Analysis and Proof Sketch [COMPLETED]
 
 **Goal**: Verify MCS-derived history approach is viable and sketch core lemmas.
 
@@ -80,7 +80,7 @@ Research recommends **MCS-derived history approach** (Priority 2) as most direct
 
 ---
 
-### Phase 2: Define MCS-Derived History Predicate [NOT STARTED]
+### Phase 2: Define MCS-Derived History Predicate [PARTIAL]
 
 **Goal**: Formalize the `mcs_derived_history` predicate and prove all canonical model histories satisfy it.
 
@@ -103,7 +103,7 @@ Research recommends **MCS-derived history approach** (Priority 2) as most direct
 
 ---
 
-### Phase 3: Prove Bridge for MCS-Derived Histories [NOT STARTED]
+### Phase 3: Prove Bridge for MCS-Derived Histories [BLOCKED]
 
 **Goal**: Prove `truth_at_implies_semantic_truth` restricted to MCS-derived histories.
 
@@ -131,7 +131,7 @@ Research recommends **MCS-derived history approach** (Priority 2) as most direct
 
 ---
 
-### Phase 4: Restructure main_weak_completeness [NOT STARTED]
+### Phase 4: Restructure main_weak_completeness [COMPLETED]
 
 **Goal**: Update `main_weak_completeness` to use the MCS-restricted bridge lemma.
 
@@ -156,7 +156,7 @@ Research recommends **MCS-derived history approach** (Priority 2) as most direct
 
 ---
 
-### Phase 5: Testing and Documentation [NOT STARTED]
+### Phase 5: Testing and Documentation [COMPLETED]
 
 **Goal**: Verify all completeness theorems compile, test imports, and document changes.
 

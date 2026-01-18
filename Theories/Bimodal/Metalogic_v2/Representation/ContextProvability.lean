@@ -57,7 +57,7 @@ open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic_v2.Core Bimodal.Metalogic_v2.Soundness
 open Bimodal.Theorems.Propositional
 open Bimodal.Metalogic.Completeness (SemanticCanonicalFrame SemanticCanonicalModel
-  SemanticWorldState semantic_weak_completeness FiniteTime temporalBound)
+  SemanticWorldState semantic_weak_completeness FiniteTime temporalBound main_provable_iff_valid)
 
 /--
 Soundness theorem for context-based provability.
@@ -117,14 +117,14 @@ theorem not_derivable_implies_neg_consistent {φ : Formula} :
   exact ⟨d_phi⟩
 
 /--
-Helper lemma: If phi is true at all SemanticWorldStates, then it's provable.
+**DEPRECATED**: Helper lemma superseded by Strategy C.
 
-This is a direct application of `semantic_weak_completeness` from FiniteCanonicalModel.lean.
-The key is that `semantic_weak_completeness` already contains the full contrapositive proof
-showing that if phi is not provable, there exists a SemanticWorldState where phi is false.
+This was a direct application of `semantic_weak_completeness` from FiniteCanonicalModel.lean.
+With Strategy C, we now use `main_provable_iff_valid` directly, making this helper unnecessary.
 
 Note: This is a `def` rather than `theorem` because the codomain `⊢ φ` is `Type` (not `Prop`).
 -/
+@[deprecated "Use main_provable_iff_valid directly" (since := "2026-01-18")]
 noncomputable def semantic_world_validity_implies_provable (φ : Formula) :
     (∀ (w : SemanticWorldState φ),
      Bimodal.Metalogic.Completeness.semantic_truth_at_v2 φ w
@@ -133,27 +133,20 @@ noncomputable def semantic_world_validity_implies_provable (φ : Formula) :
   exact semantic_weak_completeness φ
 
 /--
-**Bridge Lemma**: semantic_consequence implies truth at all SemanticWorldStates.
+**DEPRECATED**: This bridge lemma is superseded by Strategy C.
 
-This is the key connection between polymorphic validity (quantified over all types D)
-and truth in the specific semantic canonical model.
+The direct path via `main_provable_iff_valid` + `valid_iff_empty_consequence`
+is simpler and avoids the need for this intermediate step.
 
-**Proof Strategy**:
-1. Given `semantic_consequence [] φ`, instantiate with:
-   - `D := Int`
-   - `F := SemanticCanonicalFrame φ`
-   - `M := SemanticCanonicalModel φ`
-2. For each `SemanticWorldState φ`, use `semantic_world_state_has_world_history`
-   to get a WorldHistory containing that state
-3. Apply the hypothesis to get truth at that history
-4. Convert back to `semantic_truth_at_v2`
+**Original Purpose**: Connected polymorphic validity (quantified over all types D)
+to truth in the specific semantic canonical model.
 
-**Gap**: This requires the bridge lemmas `semantic_world_state_has_world_history`
-and `semantic_truth_implies_truth_at` from FiniteCanonicalModel.lean, which currently
-have sorries. These sorries arise from complexity in handling time shifts and clamping.
+**Why Deprecated**: The proof relies on bridge lemmas with sorries. Strategy C
+bypasses this entirely by going through `valid` as an intermediate step.
 
-**Status**: Currently uses `sorry` pending completion of bridge infrastructure.
+**See**: `representation_theorem_backward_empty` for the canonical proof.
 -/
+@[deprecated "Use representation_theorem_backward_empty directly via Strategy C (main_provable_iff_valid + valid_iff_empty_consequence)" (since := "2026-01-18")]
 theorem semantic_consequence_implies_semantic_world_truth {φ : Formula} :
     semantic_consequence [] φ →
     ∀ (w : SemanticWorldState φ),
@@ -205,36 +198,35 @@ theorem semantic_consequence_implies_semantic_world_truth {φ : Formula} :
 
 **Statement**: `[] ⊨ φ → ContextDerivable [] φ`
 
-**Proof Strategy**:
-1. By `semantic_consequence_implies_semantic_world_truth`:
-   `semantic_consequence [] φ` implies φ is true at all `SemanticWorldState φ`
-2. By `semantic_world_validity_implies_provable` (which wraps `semantic_weak_completeness`):
-   Truth at all SemanticWorldStates implies `⊢ φ`
-3. Wrap in `ContextDerivable` constructor
+**Proof Strategy (Strategy C)**:
+1. Convert `semantic_consequence [] φ` to `valid φ` via `valid_iff_empty_consequence`
+2. Apply `main_provable_iff_valid` to get `Nonempty (⊢ φ)`
+3. Return as `ContextDerivable [] φ`
+
+**Key Insight**: Strategy C bypasses the deprecated bridge lemma
+`semantic_consequence_implies_semantic_world_truth` by going through the `valid`
+predicate as an intermediate step. This is cleaner and avoids sorry dependencies.
 
 **Dependencies**:
-- `semantic_weak_completeness` (PROVEN in FiniteCanonicalModel.lean)
-- `semantic_consequence_implies_semantic_world_truth` (has sorry pending bridge lemmas)
+- `Validity.valid_iff_empty_consequence` (PROVEN in Validity.lean)
+- `main_provable_iff_valid` (PROVEN in FiniteCanonicalModel.lean)
 
-**Status**: Proof structure complete, but depends on bridge lemma with sorry.
+**Status**: Fully proven, no sorries.
 
 **References**:
 - Blackburn et al., Modal Logic, Chapter 4.8 (Canonical Model Construction)
-- Research report: specs/566_complete_semantic_embedding_for_completeness_proof/reports/research-001.md
-- FiniteCanonicalModel.lean: `semantic_weak_completeness` (lines 3280-3349, PROVEN)
+- FiniteCanonicalModel.lean: `main_provable_iff_valid` (PROVEN)
+- Research: specs/569_analyze_proof_strategy_alternatives/reports/research-002.md
 -/
 theorem representation_theorem_backward_empty {φ : Formula} :
     semantic_consequence [] φ → ContextDerivable [] φ := by
   intro h_sem
-  -- Step 1: From semantic_consequence to truth at all SemanticWorldStates
-  have h_all_sw : ∀ (w : SemanticWorldState φ),
-      Bimodal.Metalogic.Completeness.semantic_truth_at_v2 φ w
-        (FiniteTime.origin (temporalBound φ)) φ :=
-    semantic_consequence_implies_semantic_world_truth h_sem
-  -- Step 2: By semantic_weak_completeness, get provability
-  have h_prov : ⊢ φ := semantic_world_validity_implies_provable φ h_all_sw
-  -- Step 3: Wrap in ContextDerivable
-  exact ⟨h_prov⟩
+  -- Step 1: Convert semantic_consequence [] φ to valid φ
+  have h_valid : valid φ := (Validity.valid_iff_empty_consequence φ).mpr h_sem
+  -- Step 2: By main_provable_iff_valid, get provability
+  have h_prov : Nonempty (⊢ φ) := (main_provable_iff_valid φ).mpr h_valid
+  -- Step 3: Return as ContextDerivable
+  exact h_prov
 
 /--
 Simplified representation theorem for empty context.
