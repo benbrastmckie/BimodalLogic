@@ -46,7 +46,7 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T01:43:12Z",
-      "last_updated": "2026-01-18T04:30:00Z",
+      "last_updated": "2026-01-18T03:52:43Z",
       "parent_task": 560,
       "description": "Complete semantic embedding for completeness proof as per specs/560_axiom_elimination/summaries/implementation-summary-20260117.md to avoid all technical debt.",
       "blocked_on": "MCS infrastructure sorries (closure_mcs_negation_complete, closure_mcs_implies_locally_consistent, worldStateFromClosureMCS_models_iff, finite_history_from_state)",
@@ -58,6 +58,10 @@
         {
           "path": "specs/566_complete_semantic_embedding_for_completeness_proof/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/566_complete_semantic_embedding_for_completeness_proof/summaries/implementation-summary-20260118.md",
+          "type": "summary"
         },
         {
           "path": "specs/566_complete_semantic_embedding_for_completeness_proof/summaries/implementation-summary-20260118.md",
