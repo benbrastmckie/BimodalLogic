@@ -29,11 +29,12 @@ technical_debt:
 
 ### 591. Find and Fix Double Forking in Skill-Agent Delegation
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Session ID**: sess_1768777196_1dc10b
+- **Research**: [research-001.md](specs/591_find_fix_double_forking/reports/research-001.md)
 
 **Description**: Investigate and fix potential double forking in skill-to-agent delegation. Current architecture shows skills have both `context: fork` (which spawns a subprocess) AND invoke Task tool (which spawns another subprocess). This may cause: (1) Memory multiplication from nested subprocesses, (2) Zombie process accumulation, (3) Unnecessary token overhead. Audit all forked skills (skill-lean-implementation, skill-implementer, skill-latex-implementation, skill-researcher, skill-lean-research, skill-planner, skill-meta, skill-document-converter). Determine if `context: fork` should be removed OR if Task invocation should be replaced with direct execution. Reference: .claude/docs/skills-vs-agents-context-behavior.md, .claude/docs/research-skill-agent-contexts.md, .claude/docs/memory-leak-fix-plan.md
 
@@ -251,12 +252,14 @@ technical_debt:
 
 ### 576. Prove MCS Negation Completeness
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 574
 - **Dependencies**: 575
 - **Created**: 2026-01-18
+- **Session ID**: sess_1768777343_817dcc
+- **Research**: [research-001.md](specs/576_prove_mcs_negation_completeness/reports/research-001.md)
 
 **Description**: Prove closure_mcs_negation_complete using closureWithNeg infrastructure. For any ClosureMaximalConsistent set S and formula phi in closureWithNeg, either phi in S or phi.neg in S. This is the key property enabling compound formula proofs.
 
