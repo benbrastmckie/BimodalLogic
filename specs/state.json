@@ -93,11 +93,11 @@
     {
       "project_number": 577,
       "project_name": "prove_compound_formula_bridge_cases",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:12:24Z",
-      "last_updated": "2026-01-18T23:18:11Z",
+      "last_updated": "2026-01-18T23:19:48Z",
       "parent_task": 574,
       "dependencies": [
         576
@@ -107,6 +107,10 @@
         {
           "path": "specs/577_prove_compound_formula_bridge_cases/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/577_prove_compound_formula_bridge_cases/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
