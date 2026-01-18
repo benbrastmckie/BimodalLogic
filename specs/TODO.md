@@ -1,5 +1,5 @@
 ---
-next_project_number: 591
+next_project_number: 592
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,18 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 591. Find and Fix Double Forking in Skill-Agent Delegation
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Session ID**: sess_1768776831_85fb6e
+
+**Description**: Investigate and fix potential double forking in skill-to-agent delegation. Current architecture shows skills have both `context: fork` (which spawns a subprocess) AND invoke Task tool (which spawns another subprocess). This may cause: (1) Memory multiplication from nested subprocesses, (2) Zombie process accumulation, (3) Unnecessary token overhead. Audit all forked skills (skill-lean-implementation, skill-implementer, skill-latex-implementation, skill-researcher, skill-lean-research, skill-planner, skill-meta, skill-document-converter). Determine if `context: fork` should be removed OR if Task invocation should be replaced with direct execution. Reference: .claude/docs/skills-vs-agents-context-behavior.md, .claude/docs/research-skill-agent-contexts.md, .claude/docs/memory-leak-fix-plan.md
+
+---
 
 ### 583. Add max_turns Limit to Agent Spawning
 - **Effort**: 1-2 hours

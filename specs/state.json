@@ -6,6 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 591,
+      "project_name": "find_fix_double_forking",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T00:33:51Z",
+      "last_updated": "2026-01-19T00:33:51Z",
+      "session_id": "sess_1768776831_85fb6e",
+      "description": "Investigate and fix potential double forking in skill-to-agent delegation. Current architecture shows skills have both context: fork (which spawns a subprocess) AND invoke Task tool (which spawns another subprocess). Audit all forked skills, determine if context: fork should be removed OR if Task invocation should be replaced with direct execution.",
+      "references": [
+        ".claude/docs/skills-vs-agents-context-behavior.md",
+        ".claude/docs/research-skill-agent-contexts.md",
+        ".claude/docs/memory-leak-fix-plan.md"
+      ]
+    },
+    {
       "project_number": 586,
       "project_name": "prove_mcs_contains_or_neg_metalogic_v2",
       "status": "not_started",
@@ -409,5 +425,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 591
+  "next_project_number": 592
 }
