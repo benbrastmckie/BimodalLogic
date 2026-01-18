@@ -8,11 +8,11 @@
     {
       "project_number": 566,
       "project_name": "complete_semantic_embedding_for_completeness_proof",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T01:43:12Z",
-      "last_updated": "2026-01-18T01:58:16Z",
+      "last_updated": "2026-01-18T02:02:05Z",
       "parent_task": 560,
       "description": "Complete semantic embedding for completeness proof as per specs/560_axiom_elimination/summaries/implementation-summary-20260117.md to avoid all technical debt.",
       "artifacts": [
@@ -201,22 +201,6 @@
       ]
     },
     {
-      "project_number": 476,
-      "status": "not_started",
-      "project_name": "Create document-converter-agent",
-      "section": "Medium Priority",
-      "language": "meta",
-      "priority": "medium"
-    },
-    {
-      "project_number": 477,
-      "status": "not_started",
-      "project_name": "Test document-converter on sample files",
-      "section": "Medium Priority",
-      "language": "meta",
-      "priority": "medium"
-    },
-    {
       "project_number": 483,
       "status": "not_started",
       "project_name": "Investigate LaTeX aux file corruption errors",
@@ -233,22 +217,6 @@
       "priority": "medium"
     },
     {
-      "project_number": 468,
-      "status": "not_started",
-      "project_name": "Refactor infinite canonical model code",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low"
-    },
-    {
-      "project_number": 469,
-      "status": "not_started",
-      "project_name": "Decidability decision procedure",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low"
-    },
-    {
       "project_number": 470,
       "status": "not_started",
       "project_name": "Finite model computational optimization",
@@ -260,46 +228,6 @@
       "project_number": 490,
       "status": "not_started",
       "project_name": "Complete decidability procedure",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low"
-    },
-    {
-      "project_number": 491,
-      "status": "not_started",
-      "project_name": "Research alternative completeness proofs",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low"
-    },
-    {
-      "project_number": 257,
-      "status": "not_started",
-      "project_name": "Completeness Proofs",
-      "section": "Low Priority",
-      "language": "general",
-      "priority": "medium"
-    },
-    {
-      "project_number": 136,
-      "status": "not_started",
-      "project_name": "Design Decidability.lean architecture and signatures",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low"
-    },
-    {
-      "project_number": 137,
-      "status": "not_started",
-      "project_name": "Implement tableau core rules in Decidability.lean",
-      "section": "Low Priority",
-      "language": "lean",
-      "priority": "low"
-    },
-    {
-      "project_number": 138,
-      "status": "not_started",
-      "project_name": "Implement satisfiability and validity decision procedure tests",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low"

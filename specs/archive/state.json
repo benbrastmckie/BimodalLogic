@@ -5,6 +5,87 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 138,
+      "status": "abandoned",
+      "project_name": "Implement satisfiability and validity decision procedure tests",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 137,
+      "status": "abandoned",
+      "project_name": "Implement tableau core rules in Decidability.lean",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 136,
+      "status": "abandoned",
+      "project_name": "Design Decidability.lean architecture and signatures",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 257,
+      "status": "abandoned",
+      "project_name": "Completeness Proofs",
+      "section": "Low Priority",
+      "language": "general",
+      "priority": "medium",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 491,
+      "status": "abandoned",
+      "project_name": "Research alternative completeness proofs",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 469,
+      "status": "abandoned",
+      "project_name": "Decidability decision procedure",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 468,
+      "status": "abandoned",
+      "project_name": "Refactor infinite canonical model code",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 477,
+      "status": "abandoned",
+      "project_name": "Test document-converter on sample files",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "medium",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
+      "project_number": 476,
+      "status": "abandoned",
+      "project_name": "Create document-converter-agent",
+      "section": "Medium Priority",
+      "language": "meta",
+      "priority": "medium",
+      "abandoned": "2026-01-18T02:01:02Z"
+    },
+    {
       "project_number": 504,
       "status": "abandoned",
       "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
