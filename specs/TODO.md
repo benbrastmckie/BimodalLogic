@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 14
-  completed: 174
+  active: 20
+  completed: 177
   in_progress: 2
   not_started: 27
   abandoned: 14
-  total: 203
+  total: 206
 priority_distribution:
   critical: 0
   high: 8
@@ -88,22 +88,6 @@ technical_debt:
 
 ---
 
-### 569. Analyze Proof Strategy Alternatives
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Session ID**: sess_1768773274_06e42e
-- **Priority**: High
-- **Language**: lean
-- **Parent**: 566
-- **Completed**: 2026-01-18
-- **Research**: [research-001.md](specs/569_analyze_proof_strategy_alternatives/reports/research-001.md), [research-002.md](specs/569_analyze_proof_strategy_alternatives/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/569_analyze_proof_strategy_alternatives/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260118.md](specs/569_analyze_proof_strategy_alternatives/summaries/implementation-summary-20260118.md)
-
-**Description**: Analyze different proof strategies for completing the semantic embedding in task 566. Compare contrapositive approach, direct instantiation, and alternative lemmas from rollback section.
-
----
-
 ### 570. Analyze Compound Formula Proof Requirements
 - **Effort**: 16 hours
 - **Status**: [BLOCKED]
@@ -119,26 +103,6 @@ technical_debt:
 **Description**: Analyze what is needed to complete the 4 compound formula cases (imp, box, all_past, all_future) in truth_at_implies_semantic_truth. Document the proof obligations, required lemmas, and relationship between truth_at and assignment functions.
 
 **Conclusion**: The theorem `truth_at_implies_semantic_truth` is architecturally unprovable: `IsLocallyConsistent` provides soundness only (not completeness), and the correspondence only holds for MCS-derived states. Core completeness results (`semantic_weak_completeness`, `main_provable_iff_valid`) are PROVEN and unaffected.
-
----
-
-### 565. Investigate Workflow Interruption Issue
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Session ID**: sess_1768701291_ec7db1
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-18
-- **Research**: [research-001.md](specs/565_investigate_workflow_interruption_issue/reports/research-001.md)
-- **Research**: [research-002.md](specs/565_investigate_workflow_interruption_issue/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/565_investigate_workflow_interruption_issue/plans/implementation-001.md)
-- **Plan**: [implementation-002.md](specs/565_investigate_workflow_interruption_issue/plans/implementation-002.md) (revised)
-- **Revised**: 2026-01-18
-- **Completed**: 2026-01-17
-- **Summary**: [implementation-summary-20260117.md](specs/565_investigate_workflow_interruption_issue/summaries/implementation-summary-20260117.md)
-
-**Description**: Investigate and fix the workflow interruption issue where commands require explicit 'continue' input to proceed. The agent system in .claude/ should be studied carefully by examining output files in .claude/output/ and reviewing completed/archived tasks to identify the root cause of this recurring issue.
 
 ---
 
@@ -226,27 +190,6 @@ technical_debt:
 - **Subtasks**: 557, 558, 559, 560, 561
 
 **Description**: Complete all aspects of the implementation of the reorganized /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/ directory, completing all sorries and making this directory stand on its own so that I can delete Metalogic/ once Metalogic_v2/ is complete. Begin by improving /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/README.md to accurately report the current state and what the target organization is.
-
----
-
-### 560. Axiom Elimination
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Session ID**: sess_1768707984_60cb39
-- **Parent**: 556
-- **Dependencies**: 558
-- **Research**: [research-001.md](specs/560_axiom_elimination/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/560_axiom_elimination/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/560_axiom_elimination/summaries/implementation-summary-20260117.md)
-
-**Description**: Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean. Uses completeness contrapositive argument.
-
-**Completion Note**: Syntactic half proven (`not_derivable_implies_neg_consistent`). Axiom retained with documentation due to semantic embedding gap complexity. Follow-up work tracked in task 566. See summary for details.
 
 ---
 

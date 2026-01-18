@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-18T00:59:33Z",
+  "_last_updated": "2026-01-18T22:16:13Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -5792,6 +5792,41 @@
         }
       ],
       "archived": "2026-01-18T02:17:17Z"
+    },
+    {
+      "project_number": 569,
+      "project_name": "analyze_proof_strategy_alternatives",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T03:42:56Z",
+      "last_updated": "2026-01-18T21:59:33Z",
+      "parent_task": 566,
+      "description": "Analyze different proof strategies for completing the semantic embedding in task 566.",
+      "archived": "2026-01-18T22:16:13Z"
+    },
+    {
+      "project_number": 565,
+      "project_name": "investigate_workflow_interruption_issue",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-18T00:58:44Z",
+      "last_updated": "2026-01-18T03:40:32Z",
+      "description": "Investigate and fix the workflow interruption issue where commands require explicit continue input to proceed.",
+      "archived": "2026-01-18T22:16:13Z"
+    },
+    {
+      "project_number": 560,
+      "project_name": "axiom_elimination",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-18T03:56:47Z",
+      "parent_task": 556,
+      "description": "Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean.",
+      "archived": "2026-01-18T22:16:13Z"
     }
   ]
 }

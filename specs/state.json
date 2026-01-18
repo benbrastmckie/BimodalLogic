@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
-    "total_tasks": 14,
-    "last_sync": "2026-01-18T02:30:43Z"
+    "total_tasks": 20,
+    "last_sync": "2026-01-18T22:16:26Z"
   },
   "active_projects": [
     {
@@ -165,39 +165,6 @@
       ]
     },
     {
-      "project_number": 569,
-      "project_name": "analyze_proof_strategy_alternatives",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T03:42:56Z",
-      "last_updated": "2026-01-18T21:59:33Z",
-      "parent_task": 566,
-      "description": "Analyze different proof strategies for completing the semantic embedding in task 566. Compare contrapositive approach, direct instantiation, and alternative lemmas from rollback section.",
-      "artifacts": [
-        {
-          "path": "specs/569_analyze_proof_strategy_alternatives/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/569_analyze_proof_strategy_alternatives/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/569_analyze_proof_strategy_alternatives/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/569_analyze_proof_strategy_alternatives/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/569_analyze_proof_strategy_alternatives/summaries/implementation-summary-20260118.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
       "project_number": 566,
       "project_name": "complete_semantic_embedding_for_completeness_proof",
       "status": "blocked",
@@ -223,65 +190,6 @@
         },
         {
           "path": "specs/566_complete_semantic_embedding_for_completeness_proof/summaries/implementation-summary-20260118.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 565,
-      "project_name": "investigate_workflow_interruption_issue",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-18T00:58:44Z",
-      "last_updated": "2026-01-18T03:40:32Z",
-      "artifacts": [
-        {
-          "path": "specs/565_investigate_workflow_interruption_issue/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/565_investigate_workflow_interruption_issue/reports/research-002.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/565_investigate_workflow_interruption_issue/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/565_investigate_workflow_interruption_issue/plans/implementation-002.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/565_investigate_workflow_interruption_issue/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 560,
-      "project_name": "axiom_elimination",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-18T03:56:47Z",
-      "parent_task": 556,
-      "dependencies": [
-        558
-      ],
-      "description": "Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean. Uses completeness contrapositive argument.",
-      "artifacts": [
-        {
-          "path": "specs/560_axiom_elimination/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/560_axiom_elimination/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/560_axiom_elimination/summaries/implementation-summary-20260117.md",
           "type": "summary"
         }
       ]
