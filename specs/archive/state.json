@@ -5,6 +5,23 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 567,
+      "project_name": "separate_deprecated_code_from_finitecanonicalmodel",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-18T02:30:43Z",
+      "last_updated": "2026-01-18T02:41:45Z",
+      "description": "Extract deprecated syntactic approach code from FiniteCanonicalModel.lean into separate DeprecatedApproach.lean module. The current file mixes deprecated code (IsLocallyConsistent, FiniteWorldState, finite_truth_lemma with 26+ sorries) with active semantic approach code (SemanticWorldState, semantic_truth_lemma_v2), making maintenance difficult.",
+      "artifacts": [
+        {
+          "path": "specs/567_separate_deprecated_code_from_finitecanonicalmodel/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "abandoned": "2026-01-18T03:43:33Z"
+    },
+    {
       "project_number": 138,
       "status": "abandoned",
       "project_name": "Implement satisfiability and validity decision procedure tests",

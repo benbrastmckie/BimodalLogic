@@ -1,5 +1,5 @@
 ---
-next_project_number: 570
+next_project_number: 571
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -51,6 +51,17 @@ technical_debt:
 - **Parent**: 566
 
 **Description**: Analyze different proof strategies for completing the semantic embedding in task 566. Compare contrapositive approach, direct instantiation, and alternative lemmas from rollback section.
+
+---
+
+### 570. Analyze Compound Formula Proof Requirements
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: 566
+
+**Description**: Analyze what is needed to complete the 4 compound formula cases (imp, box, all_past, all_future) in truth_at_implies_semantic_truth. Document the proof obligations, required lemmas, and relationship between truth_at and assignment functions.
 
 ---
 
