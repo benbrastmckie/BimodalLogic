@@ -197,7 +197,7 @@ technical_debt:
 
 ### 592. Update Metalogic_v2 README.md to reflect accurate proof status
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-18
@@ -256,12 +256,13 @@ technical_debt:
 
 ### 577. Prove Compound Formula Bridge Cases
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 574
 - **Dependencies**: 576
 - **Created**: 2026-01-18
+- **Research**: [research-001.md](specs/577_prove_compound_formula_bridge_cases/reports/research-001.md)
 
 **Description**: Prove the 4 compound formula cases in truth_at_implies_semantic_truth: imp (line 3915), box (line 3921), all_past (line 3926), all_future (line 3931). Uses MCS negation completeness from task 576 to establish material implication and modal/temporal consistency properties.
 
