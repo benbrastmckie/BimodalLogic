@@ -170,15 +170,35 @@ theorem semantic_consequence_implies_semantic_world_truth {φ : Formula} :
   use h_mem
 
   -- Now need to show: (SemanticWorldState.toFiniteWorldState w).models φ h_mem
-  -- To use h_sem, we need to instantiate it with:
-  -- D := Int, F := SemanticCanonicalFrame φ, M := SemanticCanonicalModel φ
-  -- τ := some WorldHistory containing w
-  -- t := 0 (the origin time)
+  --
+  -- Strategy:
+  -- 1. Get a WorldHistory τ containing w at time 0 (semantic_world_state_has_world_history)
+  -- 2. Apply h_sem with D = Int, F = SemanticCanonicalFrame φ, M = SemanticCanonicalModel φ
+  -- 3. Use truth_at_implies_semantic_truth to convert back
 
-  -- The gap: we need a WorldHistory that has w as its state at time 0
-  -- This is provided by semantic_world_state_has_world_history, but that has a sorry
-  -- For now, use sorry here
-  sorry
+  -- Step 1: Get a WorldHistory containing w at time 0
+  obtain ⟨tau, ht, h_eq⟩ := Bimodal.Metalogic.Completeness.semantic_world_state_has_world_history φ w
+
+  -- Step 2: Apply h_sem to get truth_at
+  have h_truth : truth_at (SemanticCanonicalModel φ) tau 0 φ := by
+    apply h_sem Int (SemanticCanonicalFrame φ) (SemanticCanonicalModel φ) tau 0
+    -- Need to show: all formulas in [] are true (vacuously true)
+    intro psi h_psi_in_ctx
+    cases h_psi_in_ctx
+
+  -- Step 3: Convert from truth_at to models
+  -- Since tau.states 0 ht = w, we need:
+  -- (tau.states 0 ht).toFiniteWorldState.models φ h_mem
+  -- which equals w.toFiniteWorldState.models φ h_mem after substitution
+
+  have h_models := Bimodal.Metalogic.Completeness.truth_at_implies_semantic_truth φ tau ht h_mem h_truth
+
+  -- Now h_models : (tau.states 0 ht).toFiniteWorldState.models φ h_mem
+  -- We need: w.toFiniteWorldState.models φ h_mem
+  -- Since h_eq : tau.states 0 ht = w, we can substitute
+
+  rw [← h_eq]
+  exact h_models
 
 /--
 **Backward direction for empty context**: semantic entailment → provability.

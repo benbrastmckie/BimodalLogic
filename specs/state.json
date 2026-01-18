@@ -130,7 +130,10 @@
       "section": "Medium Priority",
       "language": "lean",
       "priority": "high",
-      "subtasks": [398, 399]
+      "subtasks": [
+        398,
+        399
+      ]
     },
     {
       "project_number": 398,
@@ -149,7 +152,9 @@
       "language": "lean",
       "priority": "high",
       "parent_task": 394,
-      "dependencies": [398]
+      "dependencies": [
+        398
+      ]
     },
     {
       "project_number": 483,
@@ -186,12 +191,18 @@
     {
       "project_number": 567,
       "project_name": "separate_deprecated_code_from_finitecanonicalmodel",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-18T02:30:43Z",
-      "last_updated": "2026-01-18T02:30:43Z",
-      "description": "Extract deprecated syntactic approach code from FiniteCanonicalModel.lean into separate DeprecatedApproach.lean module. The current file mixes deprecated code (IsLocallyConsistent, FiniteWorldState, finite_truth_lemma with 26+ sorries) with active semantic approach code (SemanticWorldState, semantic_truth_lemma_v2), making maintenance difficult."
+      "last_updated": "2026-01-18T02:41:45Z",
+      "description": "Extract deprecated syntactic approach code from FiniteCanonicalModel.lean into separate DeprecatedApproach.lean module. The current file mixes deprecated code (IsLocallyConsistent, FiniteWorldState, finite_truth_lemma with 26+ sorries) with active semantic approach code (SemanticWorldState, semantic_truth_lemma_v2), making maintenance difficult.",
+      "artifacts": [
+        {
+          "path": "specs/567_separate_deprecated_code_from_finitecanonicalmodel/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 568,

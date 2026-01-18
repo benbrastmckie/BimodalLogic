@@ -3443,17 +3443,92 @@ which is needed to instantiate the `valid` quantifier.
 theorem semantic_world_state_has_world_history (phi : Formula) (w : SemanticWorldState phi) :
     ∃ (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0),
     tau.states 0 ht = w := by
-  -- Extract a representative history from w
-  let rep := Quotient.out w
-  let hist := rep.1
-  -- Convert hist to a WorldHistory
+  -- Strategy: Build a history that places w.toFiniteWorldState at the origin
+  -- Then convert that history to a WorldHistory
+
+  -- Step 1: Get the underlying FiniteWorldState
+  let ws := SemanticWorldState.toFiniteWorldState w
+
+  -- Step 2: Build a FiniteHistory through ws at origin
+  -- finite_history_from_state places ws at ALL times (constant function)
+  let hist := finite_history_from_state phi ws
+
+  -- Step 3: Convert to WorldHistory
   let tau := finiteHistoryToWorldHistory phi hist
-  -- The WorldHistory has domain True at all times
+
+  -- Step 4: Use this history with time 0
   use tau, True.intro
-  -- Need to show tau.states 0 True = w
-  -- This requires proper handling of the time shift, which is complex.
-  -- For now we use sorry.
-  sorry
+
+  -- Step 5: Show tau.states 0 True.intro = w
+  -- tau.states 0 = SemanticWorldState.ofHistoryTime hist (clamped 0)
+  -- For time 0, clamped = origin (since 0 is in [-k, k])
+  -- hist.states origin = ws (by construction of finite_history_from_state)
+  -- So tau.states 0 = ofHistoryTime hist origin
+  --                 = Quotient.mk (hist, origin)
+  -- We need this to equal w
+
+  -- The key insight: two SemanticWorldStates are equal iff their
+  -- underlying FiniteWorldStates are equal (by eq_iff_toFiniteWorldState_eq)
+  rw [SemanticWorldState.eq_iff_toFiniteWorldState_eq]
+
+  -- Now need: (tau.states 0 True.intro).toFiniteWorldState = w.toFiniteWorldState
+  -- tau.states 0 = ofHistoryTime hist (clamped 0) where clamped 0 = origin
+  -- (ofHistoryTime hist origin).toFiniteWorldState = hist.states origin = ws = w.toFiniteWorldState
+
+  -- Unfold tau.states 0
+  -- finiteHistoryToWorldHistory.states 0 = ofHistoryTime hist (clamped 0)
+  -- where clamped is computed by the if-then-else on bounds
+
+  -- Key facts:
+  -- 1. For t = 0, since 0 ≥ -k and 0 ≤ k for any k : Nat,
+  --    the clamping returns toInt_surj_on_range.choose which maps to 0
+  -- 2. The FiniteTime that maps to 0 is FiniteTime.origin k
+  -- 3. hist = finite_history_from_state phi ws, and by its definition
+  --    hist.states t = ws for ALL t (constant function)
+  -- 4. So hist.states (clamped 0) = ws = w.toFiniteWorldState
+
+  -- Goal: (tau.states 0 True.intro).toFiniteWorldState = w.toFiniteWorldState
+  -- tau.states 0 True.intro = (finiteHistoryToWorldHistory phi hist).states 0 True.intro
+  --                        = ofHistoryTime hist (clamped 0)
+  -- where hist = finite_history_from_state phi (w.toFiniteWorldState)
+
+  -- Key insight: toFiniteWorldState (ofHistoryTime h t) = h.states t
+  -- And finite_history_from_state phi ws returns a history where states _ = ws (constant)
+
+  -- So: (ofHistoryTime hist (clamped 0)).toFiniteWorldState
+  --   = hist.states (clamped 0)
+  --   = (finite_history_from_state phi ws).states (clamped 0)
+  --   = ws                                            (constant function)
+  --   = w.toFiniteWorldState
+
+  -- First, unfold the left side step by step
+  -- tau.states 0 True.intro unfolds to the definition in finiteHistoryToWorldHistory
+  show SemanticWorldState.toFiniteWorldState ((finiteHistoryToWorldHistory phi hist).states 0 True.intro) = _
+
+  -- Unfold finiteHistoryToWorldHistory.states
+  unfold finiteHistoryToWorldHistory
+  simp only
+
+  -- Now we have: (ofHistoryTime hist (if ... then ... else ...)).toFiniteWorldState = ws
+
+  -- Show the conditions for 0
+  have h_not_lt_neg : ¬((0 : Int) < -(temporalBound phi : Int)) := by omega
+  simp only [h_not_lt_neg]
+
+  have h_not_gt : ¬((0 : Int) > (temporalBound phi : Int)) := by omega
+  simp only [h_not_gt]
+
+  -- Now: (ofHistoryTime hist (toInt_surj_on_range.choose)).toFiniteWorldState = ws
+  -- toFiniteWorldState (ofHistoryTime h t) = h.states t
+  simp only [SemanticWorldState.ofHistoryTime, SemanticWorldState.mk,
+             SemanticWorldState.toFiniteWorldState, Quotient.lift_mk]
+
+  -- Now: hist.states (toInt_surj_on_range.choose) = ws
+  -- hist = finite_history_from_state phi ws, which is constant at ws
+  -- So hist.states any_t = ws
+
+  -- The definition of finite_history_from_state shows states is constant at ws
+  rfl
 
 /--
 Lemma connecting SemanticCanonicalModel.valuation to FiniteWorldState.assignment.
@@ -3515,16 +3590,65 @@ theorem truth_at_implies_semantic_truth (phi : Formula)
     (h_mem : phi ∈ closure phi) :
     truth_at (SemanticCanonicalModel phi) tau 0 phi →
     (tau.states 0 ht).toFiniteWorldState.models phi h_mem := by
+  -- The proof proceeds by case analysis on the formula structure.
+  -- For each case, we show that truth_at corresponds to models.
   intro h_truth
-  -- Use the equivalence between semantic truth and assignment truth
-  -- This is a fundamental connection between the two truth definitions
-  -- For the SemanticCanonicalModel, valuation should match world state assignment
-  have h_equiv : (tau.states 0 ht).toFiniteWorldState.assignment ⟨phi, h_mem⟩ = true := by
-    -- This follows from the definition of SemanticCanonicalModel.valuation
-    -- which should return the truth assignment of the underlying world state
-    sorry  -- Need lemma connecting valuation to assignment
-  -- Therefore (tau.states 0 ht).models phi h_mem holds
-  exact h_equiv
+
+  -- Case analysis on phi
+  match phi with
+  | Formula.atom p =>
+    -- For atom p, we have:
+    -- - phi = atom p
+    -- - h_mem : atom p ∈ closure (atom p), which is true by self_mem_closure
+    -- - tau : WorldHistory (SemanticCanonicalFrame (atom p))
+    -- - h_truth : truth_at (SemanticCanonicalModel (atom p)) tau 0 (atom p)
+    --
+    -- truth_at for atoms: ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
+    -- valuation is semantic_valuation which is:
+    -- ∃ h : atom p ∈ closure (atom p), w.toFiniteWorldState.models (atom p) h
+    simp only [Bimodal.Semantics.truth_at, SemanticCanonicalModel, semantic_valuation] at h_truth
+    obtain ⟨ht', h_val⟩ := h_truth
+    obtain ⟨h_mem', h_models⟩ := h_val
+    -- h_models : (tau.states 0 ht').toFiniteWorldState.models (atom p) h_mem'
+    -- We need: (tau.states 0 ht).toFiniteWorldState.models (atom p) h_mem
+    unfold FiniteWorldState.models at h_models ⊢
+    -- Both use the same underlying assignment, just with different proofs of membership
+    -- Since h_mem and h_mem' are both proofs of (atom p) ∈ closure (atom p),
+    -- and the assignment depends only on the formula, not the proof:
+    have h_eq : (⟨Formula.atom p, h_mem⟩ : closure (Formula.atom p)) =
+                 ⟨Formula.atom p, h_mem'⟩ := by ext; rfl
+    rw [h_eq]
+    exact h_models
+
+  | Formula.bot =>
+    -- truth_at for bot is False
+    simp only [Bimodal.Semantics.truth_at] at h_truth
+
+  | Formula.imp psi chi =>
+    -- truth_at for imp is material implication: truth_at psi → truth_at chi
+    -- This is more complex as it requires recursive truth
+    -- For the target formula phi = imp psi chi, we need models (imp psi chi)
+    -- The assignment for implication is determined by consistency
+    unfold FiniteWorldState.models
+    -- The assignment for phi = psi.imp chi should be true if
+    -- the world state is consistent
+    sorry  -- Complex: requires understanding of assignment for compound formulas
+
+  | Formula.box psi =>
+    -- truth_at for box: ∀ σ, truth_at M σ t psi
+    -- This quantifies over ALL histories, which is very strong
+    unfold FiniteWorldState.models
+    sorry  -- Complex: requires modal consistency
+
+  | Formula.all_past psi =>
+    -- truth_at for all_past: ∀ s < t, truth_at M τ s psi
+    unfold FiniteWorldState.models
+    sorry  -- Complex: requires temporal consistency
+
+  | Formula.all_future psi =>
+    -- truth_at for all_future: ∀ s > t, truth_at M τ s psi
+    unfold FiniteWorldState.models
+    sorry  -- Complex: requires temporal consistency
 
 /-!
 ## Summary of Phase 5 Definitions
@@ -3918,15 +4042,27 @@ noncomputable def main_weak_completeness (phi : Formula) (h_valid : valid phi) :
     -- Key insight: valid phi quantifies over ALL types D and frames F.
     -- SemanticCanonicalFrame phi uses D = Int, which is a valid instance.
     -- So valid phi implies truth_at in SemanticCanonicalModel at any history/time.
-    --
-    -- The bridge theorem would show:
-    -- truth_at (SemanticCanonicalModel phi) tau t phi <-> semantic_truth_at_v2 phi w t phi
-    -- where w corresponds to (tau, t)
-    --
-    -- Since valid phi includes truth in SemanticCanonicalModel, and
-    -- semantic world states correspond to histories at specific times,
-    -- phi must be true at w.
-    by sorry  -- Bridge gap: instantiate valid with SemanticCanonicalModel and connect
+
+    -- semantic_truth_at_v2 is defined as:
+    -- ∃ h_mem : phi ∈ closure phi, w.toFiniteWorldState.models phi h_mem
+
+    -- Step 1: phi ∈ closure phi is trivial
+    have h_mem : phi ∈ closure phi := self_mem_closure phi
+
+    -- Step 2: Get a WorldHistory containing w at time 0
+    have ⟨tau, ht, h_eq⟩ := semantic_world_state_has_world_history phi w
+
+    -- Step 3: Apply h_valid to get truth_at
+    have h_truth : truth_at (SemanticCanonicalModel phi) tau 0 phi :=
+      h_valid Int (SemanticCanonicalFrame phi) (SemanticCanonicalModel phi) tau 0
+
+    -- Step 4: Convert from truth_at to models
+    have h_models := truth_at_implies_semantic_truth phi tau ht h_mem h_truth
+
+    -- Step 5: Package into semantic_truth_at_v2
+    -- h_models : (tau.states 0 ht).toFiniteWorldState.models phi h_mem
+    -- Since h_eq : tau.states 0 ht = w, we have w.toFiniteWorldState.models phi h_mem
+    ⟨h_mem, by rw [← h_eq]; exact h_models⟩
   )
 
 /--

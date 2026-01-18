@@ -153,11 +153,13 @@ technical_debt:
 
 ### 567. Separate Deprecated Code from FiniteCanonicalModel
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-18
 - **Source**: Code Review 2026-01-17
+- **Started**: 2026-01-18
+- **Research**: [research-001.md](specs/567_separate_deprecated_code_from_finitecanonicalmodel/reports/research-001.md)
 
 **Description**: Extract deprecated syntactic approach code from FiniteCanonicalModel.lean into separate DeprecatedApproach.lean module. The current file mixes deprecated code (IsLocallyConsistent, FiniteWorldState, finite_truth_lemma with 26+ sorries) with active semantic approach code (SemanticWorldState, semantic_truth_lemma_v2), making maintenance difficult.
 
