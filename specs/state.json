@@ -8,11 +8,12 @@
     {
       "project_number": 592,
       "project_name": "update_metalogic_v2_readme_proof_status",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-18T23:08:02Z",
-      "last_updated": "2026-01-18T23:08:02Z"
+      "last_updated": "2026-01-18T23:10:02Z",
+      "session_id": "sess_1768777790_d41185"
     },
     {
       "project_number": 591,
@@ -39,11 +40,11 @@
     {
       "project_number": 588,
       "project_name": "complete_truth_lemma_metalogic_v2",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:49:34Z",
-      "last_updated": "2026-01-18T22:49:34Z"
+      "last_updated": "2026-01-18T23:09:46Z"
     },
     {
       "project_number": 589,
