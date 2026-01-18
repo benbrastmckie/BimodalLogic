@@ -5,6 +5,23 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 562,
+      "project_name": "agent_system_refactor_report",
+      "status": "abandoned",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-17T21:33:11Z",
+      "last_updated": "2026-01-17T22:14:08Z",
+      "researched": "2026-01-17T21:38:32Z",
+      "artifacts": [
+        {
+          "path": "specs/562_agent_system_refactor_report/reports/research-001.md",
+          "type": "research"
+        }
+      ],
+      "abandoned": "2026-01-18T01:11:41Z"
+    },
+    {
       "project_number": 552,
       "project_name": "test_validate_model_tiering_changes",
       "type": "test",
