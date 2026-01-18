@@ -48,12 +48,13 @@ technical_debt:
 
 ### 571. Complete MCS Infrastructure
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
 - **Created**: 2026-01-18
 - **Research**: [research-001.md](specs/571_complete_mcs_infrastructure/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/571_complete_mcs_infrastructure/plans/implementation-001.md)
 
 **Description**: Prove the MCS (Maximal Consistent Set) infrastructure lemmas that block the semantic embedding: `closure_mcs_negation_complete` (line 669), `closure_mcs_implies_locally_consistent` (line 1048), and `worldStateFromClosureMCS_models_iff` (line 1067) in FiniteCanonicalModel.lean.
 
@@ -141,7 +142,7 @@ technical_debt:
 
 ### 574. Restructure main_weak_completeness with semantic_truth_at_v2
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Follow-up**: 570
