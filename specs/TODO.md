@@ -108,13 +108,14 @@ technical_debt:
 
 ### 514. Expand test coverage for Metalogic_v2
 - **Effort**: 10 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Session ID**: sess_1768699936_6f84ad
 - **Created By**: Review task 506
 - **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
 - **Revised**: 2026-01-18
+- **Research**: [research-001.md](specs/514_expand_test_coverage_for_metalogic_v2/reports/research-001.md)
 
 **Description**: Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.
 
