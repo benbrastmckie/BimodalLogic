@@ -80,17 +80,19 @@ Metalogic_v2/
 | `maximal_consistent_closed` | Core/MaximalConsistent.lean | MCS is deductively closed |
 | `maximal_negation_complete` | Core/MaximalConsistent.lean | φ ∉ MCS → ¬φ ∈ MCS |
 | `representation_theorem` | Representation/RepresentationTheorem.lean | Consistent Γ → satisfiable in canonical |
+| `mcs_contains_or_neg` | Representation/CanonicalModel.lean | φ ∈ MCS ∨ ¬φ ∈ MCS (MCS is complete) |
+| `mcs_modus_ponens` | Representation/CanonicalModel.lean | MCS is closed under modus ponens |
+| `representation_theorem_backward_empty` | Representation/ContextProvability.lean | ⊨ φ → ⊢ φ (via main_provable_iff_valid) |
+| `weak_completeness` | Completeness/WeakCompleteness.lean | valid φ → provable φ |
+| `strong_completeness` | Completeness/StrongCompleteness.lean | Γ ⊨ φ → Γ ⊢ φ |
 
-### With Sorries (axioms/placeholders)
+### With Sorries (remaining technical debt)
 
 | Theorem | Location | Status |
 |---------|----------|--------|
-| `mcs_contains_or_neg` | Representation/CanonicalModel.lean | sorry (MCS property) |
-| `mcs_modus_ponens` | Representation/CanonicalModel.lean | sorry (MCS property) |
-| `representation_theorem_backward_empty` | Representation/ContextProvability.lean | axiom |
-| `weak_completeness` | Completeness/WeakCompleteness.lean | Uses axiom |
-| `strong_completeness` | Completeness/StrongCompleteness.lean | Uses axiom |
-| `finite_model_property` | Representation/FiniteModelProperty.lean | Trivial witness |
+| `necessitation_lemma` | Representation/TruthLemma.lean:160 | sorry (needs deductive closure proof) |
+| `consistent_iff_consistent'` | Core/Basic.lean:56 | sorry (needs ex-falso axiom usage) |
+| `finite_model_property` | Representation/FiniteModelProperty.lean | Trivial witness (constructive bounds needed) |
 
 ## Usage
 
@@ -152,9 +154,11 @@ import Bimodal.Metalogic_v2.Representation.CanonicalModel
 
 ## Future Work
 
-1. **Fill remaining sorries**: The MCS property proofs and completeness axiom
+1. **Complete remaining sorries** (2 total):
+   - `necessitation_lemma`: Prove using deductive closure properties
+   - `consistent_iff_consistent'`: Bridge via ex-falso axiom
 2. **Add Decidability layer**: Port Decidability/ with FMP integration
-3. **Constructive FMP**: Establish finite model bounds
+3. **Constructive FMP**: Establish finite model bounds (currently trivial witness)
 4. **Proof cleanup**: Remove redundant tactics and improve readability
 
 ## References
