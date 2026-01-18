@@ -189,9 +189,9 @@ theorem soundness_mp_semantic (Gamma : Context) (phi psi : Formula)
     (h_imp : Gamma ⊨ (phi.imp psi))
     (h_phi : Gamma ⊨ phi) :
     Gamma ⊨ psi := by
-  intro T _ _ _ F M tau t ht h_all
-  have h_imp_at := h_imp T F M tau t ht h_all
-  have h_phi_at := h_phi T F M tau t ht h_all
+  intro T _ _ _ F M tau t h_all
+  have h_imp_at := h_imp T F M tau t h_all
+  have h_phi_at := h_phi T F M tau t h_all
   unfold truth_at at h_imp_at
   exact h_imp_at h_phi_at
 

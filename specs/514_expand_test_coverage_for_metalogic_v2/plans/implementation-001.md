@@ -1,7 +1,7 @@
 # Implementation Plan: Task #514
 
 - **Task**: 514 - Expand test coverage for Metalogic_v2
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Priority**: Medium
 - **Dependencies**: Metalogic_v2 directory must be stable (no major refactoring)
@@ -151,7 +151,7 @@ Key findings from research-001.md incorporated:
 
 ---
 
-### Phase 5: Integration Tests and Documentation [IN PROGRESS]
+### Phase 5: Integration Tests and Documentation [COMPLETED]
 
 **Goal**: Create end-to-end integration tests and test documentation
 

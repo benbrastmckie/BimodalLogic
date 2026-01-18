@@ -29,11 +29,11 @@
     {
       "project_number": 565,
       "project_name": "investigate_workflow_interruption_issue",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-18T00:58:44Z",
-      "last_updated": "2026-01-18T01:55:13Z",
+      "last_updated": "2026-01-18T02:03:06Z",
       "artifacts": [
         {
           "path": "specs/565_investigate_workflow_interruption_issue/reports/research-001.md",
@@ -42,6 +42,10 @@
         {
           "path": "specs/565_investigate_workflow_interruption_issue/reports/research-002.md",
           "type": "research"
+        },
+        {
+          "path": "specs/565_investigate_workflow_interruption_issue/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
@@ -132,13 +136,13 @@
     },
     {
       "project_number": 514,
-      "status": "implementing",
+      "status": "completed",
       "project_name": "Expand test coverage for Metalogic_v2",
       "section": "Medium Priority",
       "language": "lean",
       "priority": "medium",
       "description": "Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.",
-      "last_updated": "2026-01-18T01:50:10Z",
+      "last_updated": "2026-01-18T02:06:32Z",
       "artifacts": [
         {
           "path": "specs/514_expand_test_coverage_for_metalogic_v2/reports/research-001.md",
@@ -147,6 +151,10 @@
         {
           "path": "specs/514_expand_test_coverage_for_metalogic_v2/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/514_expand_test_coverage_for_metalogic_v2/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ]
     },

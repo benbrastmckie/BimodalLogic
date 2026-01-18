@@ -29,8 +29,8 @@ technical_debt:
 
 ### 566. Complete Semantic Embedding for Completeness Proof
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
-- **Session ID**: sess_1768701303_2bdd23
+- **Status**: [IMPLEMENTING]
+- **Session ID**: sess_1768701712_38de91
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 560
@@ -45,7 +45,7 @@ technical_debt:
 
 ### 565. Investigate Workflow Interruption Issue
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Session ID**: sess_1768701291_ec7db1
@@ -53,6 +53,7 @@ technical_debt:
 - **Researched**: 2026-01-18
 - **Research**: [research-001.md](specs/565_investigate_workflow_interruption_issue/reports/research-001.md)
 - **Research**: [research-002.md](specs/565_investigate_workflow_interruption_issue/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/565_investigate_workflow_interruption_issue/plans/implementation-001.md)
 
 **Description**: Investigate and fix the workflow interruption issue where commands require explicit 'continue' input to proceed. The agent system in .claude/ should be studied carefully by examining output files in .claude/output/ and reviewing completed/archived tasks to identify the root cause of this recurring issue.
 
@@ -129,15 +130,17 @@ technical_debt:
 
 ### 514. Expand test coverage for Metalogic_v2
 - **Effort**: 10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
-- **Session ID**: sess_1768700649_97b565
+- **Session ID**: sess_1768700983_5fed5d
 - **Created By**: Review task 506
 - **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
 - **Revised**: 2026-01-18
+- **Completed**: 2026-01-17
 - **Research**: [research-001.md](specs/514_expand_test_coverage_for_metalogic_v2/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/514_expand_test_coverage_for_metalogic_v2/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260117.md](specs/514_expand_test_coverage_for_metalogic_v2/summaries/implementation-summary-20260117.md)
 
 **Description**: Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.
 

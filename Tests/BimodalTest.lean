@@ -12,6 +12,10 @@ import BimodalTest.Metalogic.CompletenessTest
 import BimodalTest.Metalogic.SoundnessPropertyTest
 import BimodalTest.Metalogic_v2.CoreTest
 import BimodalTest.Metalogic_v2.CorePropertyTest
+import BimodalTest.Metalogic_v2.SoundnessTest
+import BimodalTest.Metalogic_v2.SoundnessPropertyTest
+import BimodalTest.Metalogic_v2.RepresentationTest
+import BimodalTest.Metalogic_v2.CompletenessTest
 import BimodalTest.Theorems.PropositionalTest
 import BimodalTest.Theorems.ModalS4Test
 import BimodalTest.Theorems.ModalS5Test
@@ -28,6 +32,7 @@ import BimodalTest.Integration.AutomationProofSystemTest
 import BimodalTest.Integration.ComplexDerivationTest
 import BimodalTest.Integration.TemporalIntegrationTest
 import BimodalTest.Integration.BimodalIntegrationTest
+import BimodalTest.Integration.Metalogic_v2IntegrationTest
 import BimodalTest.Property.Generators
 import BimodalTest.Property
 
