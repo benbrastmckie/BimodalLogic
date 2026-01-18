@@ -2,8 +2,6 @@
 name: skill-lean-implementation
 description: Implement Lean 4 proofs and definitions using lean-lsp tools. Invoke for Lean-language implementation tasks.
 allowed-tools: Task
-context: fork
-agent: lean-implementation-agent
 # Original context (now loaded by subagent):
 #   - .claude/context/project/lean4/tools/mcp-tools-guide.md
 #   - .claude/context/project/lean4/patterns/tactic-patterns.md

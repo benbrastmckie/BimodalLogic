@@ -2,8 +2,6 @@
 name: skill-meta
 description: Interactive system builder. Invoke for /meta command to create tasks for .claude/ system changes.
 allowed-tools: Task
-context: fork
-agent: meta-builder-agent
 # Original context (now loaded by subagent):
 #   - .claude/docs/guides/component-selection.md
 #   - .claude/docs/guides/creating-commands.md

@@ -2,8 +2,6 @@
 name: skill-lean-research
 description: Research Lean 4 and Mathlib for theorem proving tasks. Invoke for Lean-language research using LeanSearch, Loogle, and lean-lsp tools.
 allowed-tools: Task
-context: fork
-agent: lean-research-agent
 # Original context (now loaded by subagent):
 #   - .claude/context/project/lean4/tools/mcp-tools-guide.md
 #   - .claude/context/project/lean4/tools/leansearch-api.md

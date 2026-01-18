@@ -2,8 +2,6 @@
 name: skill-latex-implementation
 description: Implement LaTeX documents following a plan. Invoke for LaTeX-language implementation tasks.
 allowed-tools: Task
-context: fork
-agent: latex-implementation-agent
 # Original context (now loaded by subagent):
 #   - .claude/context/project/latex/README.md
 #   - .claude/context/project/latex/standards/latex-style-guide.md

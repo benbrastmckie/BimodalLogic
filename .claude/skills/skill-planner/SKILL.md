@@ -2,8 +2,6 @@
 name: skill-planner
 description: Create phased implementation plans from research findings. Invoke when a task needs an implementation plan.
 allowed-tools: Task
-context: fork
-agent: planner-agent
 # Original context (now loaded by subagent):
 #   - .claude/context/core/formats/plan-format.md
 #   - .claude/context/core/workflows/task-breakdown.md

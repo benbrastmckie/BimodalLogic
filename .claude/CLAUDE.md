@@ -255,28 +255,32 @@ Domain knowledge (load as needed):
 
 All skills use lazy context loading - context is never loaded eagerly via frontmatter arrays. Instead:
 
-1. **Forked skills** (`context: fork`): Delegate to subagents which load their own context
+1. **Delegating skills**: Use Task tool to spawn subagents which load their own context
 2. **Direct skills**: Document required context via @-references in a "Context Loading" section
 
 Reference `@.claude/context/index.md` for the full context discovery index.
 
-### Forked Subagent Pattern
+### Thin Wrapper Skill Pattern
 
-Workflow skills use a thin wrapper pattern with forked subagents for token efficiency:
+Workflow skills use a thin wrapper pattern that delegates to subagents via the Task tool:
 
 ```yaml
 ---
 name: skill-{name}
 description: {description}
 allowed-tools: Task
-context: fork          # Signals: don't load context eagerly
-agent: {subagent-name} # Target subagent to spawn
 ---
 ```
 
-**Key fields**:
-- `context: fork` - Indicates skill delegates to subagent (no eager context loading)
-- `agent: {name}` - Name of subagent to invoke via Task tool
+**Key characteristics**:
+- Skills contain minimal routing logic only
+- All context loading happens in the subagent (via Task tool)
+- Skill instructions specify which agent to invoke (e.g., `subagent_type: "general-research-agent"`)
+- No `context: fork` or `agent:` fields needed - delegation is explicit via Task tool
+
+**When NOT to use thin wrapper pattern**:
+- Skills that execute work directly without spawning a subagent (e.g., skill-status-sync)
+- Skills that need to process results before returning (use direct execution instead)
 
 ### Custom Agent Registration
 
@@ -307,7 +311,7 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 
 ### Thin Wrapper Execution Flow
 
-All forked skills follow this 5-step pattern:
+All delegating skills follow this 5-step pattern:
 
 1. **Input Validation** - Verify task exists, status allows operation
 2. **Context Preparation** - Build delegation context with session_id
@@ -324,7 +328,6 @@ All forked skills follow this 5-step pattern:
 
 ### Related Documentation
 
-- `.claude/context/core/templates/thin-wrapper-skill.md` - Template reference
 - `.claude/context/core/formats/subagent-return.md` - Return format standard
 - `.claude/context/core/orchestration/delegation.md` - Delegation patterns
 

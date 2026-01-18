@@ -2,8 +2,6 @@
 name: skill-document-converter
 description: Document conversion routing with dual invocation support
 allowed-tools: Task
-context: fork
-agent: document-converter-agent
 ---
 
 # Document Converter Skill
