@@ -1,5 +1,5 @@
 ---
-next_project_number: 586
+next_project_number: 591
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -57,6 +57,70 @@ technical_debt:
 - **Created**: 2026-01-19
 
 **Description**: Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination.
+
+---
+
+### 586. Prove mcs_contains_or_neg in Metalogic_v2
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Related**: 556
+- **Created**: 2026-01-18
+
+**Description**: Prove `mcs_contains_or_neg` in Theories/Bimodal/Metalogic_v2/Representation/CanonicalModel.lean (line 192). This theorem establishes that for any maximal consistent set S, every formula φ is either in S or its negation is in S. Use Mathlib's `FirstOrder.Language.Theory.IsMaximal.mem_or_not_mem` as proof pattern. This is CRITICAL PATH for representation theorem - works with FULL MCS (not closure-restricted), no temporal reflexivity issues.
+
+---
+
+### 587. Prove mcs_modus_ponens in Metalogic_v2
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Dependencies**: 586
+- **Related**: 556
+- **Created**: 2026-01-18
+
+**Description**: Prove `mcs_modus_ponens` in Theories/Bimodal/Metalogic_v2/Representation/CanonicalModel.lean (line 209). This theorem establishes that maximal consistent sets are closed under modus ponens: if φ→ψ and φ are in S, then ψ is in S. Uses `mcs_contains_or_neg` from task 586. CRITICAL PATH for truth lemma.
+
+---
+
+### 588. Complete Truth Lemma in Metalogic_v2
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Dependencies**: 587
+- **Related**: 556
+- **Created**: 2026-01-18
+
+**Description**: Complete the Truth Lemma in Theories/Bimodal/Metalogic_v2/Representation/TruthLemma.lean by filling the sorry in `necessitation_lemma` (line 160) and any other remaining sorries. The truth lemma establishes that for canonical worlds, formula membership equals truth: φ ∈ w.carrier ↔ w ⊨ φ. Uses MCS properties from tasks 586-587.
+
+---
+
+### 589. Complete Representation Theorem in Metalogic_v2
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Dependencies**: 588
+- **Related**: 556
+- **Created**: 2026-01-18
+
+**Description**: Complete the Representation Theorem in Theories/Bimodal/Metalogic_v2/Representation/RepresentationTheorem.lean by filling remaining sorries (lines vary). The representation theorem establishes that every consistent context is satisfiable in the canonical model. Uses completed truth lemma from task 588. This is the FOUNDATION of the representation-first architecture.
+
+---
+
+### 590. Eliminate Axiom in ContextProvability Using Representation Theorem
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Dependencies**: 589
+- **Related**: 556, 566
+- **Created**: 2026-01-18
+
+**Description**: Replace the `representation_theorem_backward_empty` axiom in Theories/Bimodal/Metalogic_v2/Representation/ContextProvability.lean with a proven theorem using the completed representation theorem from task 589. Completeness follows as a corollary. DO NOT import from old Theories/Bimodal/Metalogic/ directory - use only Metalogic_v2 infrastructure. This completes the representation-first architecture with zero axioms.
 
 ---
 
@@ -159,11 +223,14 @@ technical_debt:
 
 ### 575. Implement closureWithNeg Infrastructure
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 574
 - **Created**: 2026-01-18
+- **Completed**: 2026-01-19
+- **Plan**: [implementation-001.md](specs/575_implement_closure_with_neg_infrastructure/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/575_implement_closure_with_neg_infrastructure/summaries/implementation-summary-20260119.md)
 
 **Description**: Define closureWithNeg as closure union negations of closure formulas. Refactor MCS infrastructure (ClosureMaximalConsistent, worldStateFromClosureMCS) to use closureWithNeg instead of closure. This enables negation completeness properties needed for compound formula proofs.
 

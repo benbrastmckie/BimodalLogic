@@ -6,6 +6,51 @@
   },
   "active_projects": [
     {
+      "project_number": 586,
+      "project_name": "prove_mcs_contains_or_neg_metalogic_v2",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:49:34Z",
+      "last_updated": "2026-01-18T22:49:34Z"
+    },
+    {
+      "project_number": 587,
+      "project_name": "prove_mcs_modus_ponens_metalogic_v2",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:49:34Z",
+      "last_updated": "2026-01-18T22:49:34Z"
+    },
+    {
+      "project_number": 588,
+      "project_name": "complete_truth_lemma_metalogic_v2",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:49:34Z",
+      "last_updated": "2026-01-18T22:49:34Z"
+    },
+    {
+      "project_number": 589,
+      "project_name": "complete_representation_theorem_metalogic_v2",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:49:34Z",
+      "last_updated": "2026-01-18T22:49:34Z"
+    },
+    {
+      "project_number": 590,
+      "project_name": "eliminate_axiom_context_provability",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:49:34Z",
+      "last_updated": "2026-01-18T22:49:34Z"
+    },
+    {
       "project_number": 578,
       "project_name": "complete_main_weak_completeness_sorry_free",
       "status": "not_started",
@@ -364,5 +409,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 586
+  "next_project_number": 591
 }
