@@ -133,58 +133,88 @@ noncomputable def semantic_world_validity_implies_provable (φ : Formula) :
   exact semantic_weak_completeness φ
 
 /--
+**Bridge Lemma**: semantic_consequence implies truth at all SemanticWorldStates.
+
+This is the key connection between polymorphic validity (quantified over all types D)
+and truth in the specific semantic canonical model.
+
+**Proof Strategy**:
+1. Given `semantic_consequence [] φ`, instantiate with:
+   - `D := Int`
+   - `F := SemanticCanonicalFrame φ`
+   - `M := SemanticCanonicalModel φ`
+2. For each `SemanticWorldState φ`, use `semantic_world_state_has_world_history`
+   to get a WorldHistory containing that state
+3. Apply the hypothesis to get truth at that history
+4. Convert back to `semantic_truth_at_v2`
+
+**Gap**: This requires the bridge lemmas `semantic_world_state_has_world_history`
+and `semantic_truth_implies_truth_at` from FiniteCanonicalModel.lean, which currently
+have sorries. These sorries arise from complexity in handling time shifts and clamping.
+
+**Status**: Currently uses `sorry` pending completion of bridge infrastructure.
+-/
+theorem semantic_consequence_implies_semantic_world_truth {φ : Formula} :
+    semantic_consequence [] φ →
+    ∀ (w : SemanticWorldState φ),
+      Bimodal.Metalogic.Completeness.semantic_truth_at_v2 φ w
+        (FiniteTime.origin (temporalBound φ)) φ := by
+  intro h_sem w
+  -- semantic_truth_at_v2 is defined as:
+  -- ∃ h_mem : φ ∈ closure φ, (SemanticWorldState.toFiniteWorldState w).models φ h_mem
+
+  -- First, φ ∈ closure φ is trivial
+  have h_mem : φ ∈ Bimodal.Metalogic.Completeness.closure φ :=
+    Bimodal.Metalogic.Completeness.self_mem_closure φ
+
+  use h_mem
+
+  -- Now need to show: (SemanticWorldState.toFiniteWorldState w).models φ h_mem
+  -- To use h_sem, we need to instantiate it with:
+  -- D := Int, F := SemanticCanonicalFrame φ, M := SemanticCanonicalModel φ
+  -- τ := some WorldHistory containing w
+  -- t := 0 (the origin time)
+
+  -- The gap: we need a WorldHistory that has w as its state at time 0
+  -- This is provided by semantic_world_state_has_world_history, but that has a sorry
+  -- For now, use sorry here
+  sorry
+
+/--
 **Backward direction for empty context**: semantic entailment → provability.
 
 **Statement**: `[] ⊨ φ → ContextDerivable [] φ`
 
-**Proof Strategy** (via contrapositive):
-
-The standard completeness proof proceeds by contrapositive:
-1. Show `¬ContextDerivable [] φ → ¬semantic_consequence [] φ`
-2. Use `Function.mtr` to convert to the forward direction
-
-**Proof Sketch**:
-```
-Given: ¬ContextDerivable [] φ
-
-Step 1: By `not_derivable_implies_neg_consistent`: Consistent [φ.neg]
-
-Step 2: By `representation_theorem`: ∃ w : CanonicalWorldState, φ.neg ∈ w.carrier
-
-Step 3: Need to show: ¬semantic_consequence [] φ
-        i.e., exhibit a model M and time t where φ is false
-
-        This requires constructing a TaskFrame D / TaskModel from the canonical world.
-        The semantic_consequence quantifies over ALL types D, so we need to:
-        - Choose a concrete D (e.g., Int)
-        - Construct a TaskFrame D from canonical model
-        - Show truth in canonical model implies truth in TaskModel
-        - The canonical world w where φ.neg is true provides the countermodel
-```
-
-**Gap**: Step 3 requires bridging canonical model truth (set membership) to
-polymorphic semantic validity (quantified over all temporal types). This
-"semantic embedding" is non-trivial because:
-- `CanonicalWorldState` is an MCS (maximal consistent set of formulas)
-- `TaskFrame D` requires temporal structure with duration algebra
-- The canonical model accessibility relations need to be embedded into task relations
-
-**Status**: Axiom pending completion of semantic embedding infrastructure.
-The helper lemma `not_derivable_implies_neg_consistent` completes the first half
-of the contrapositive proof (syntactic side). The remaining work is the semantic
-embedding (connecting canonical worlds to TaskModel).
+**Proof Strategy**:
+1. By `semantic_consequence_implies_semantic_world_truth`:
+   `semantic_consequence [] φ` implies φ is true at all `SemanticWorldState φ`
+2. By `semantic_world_validity_implies_provable` (which wraps `semantic_weak_completeness`):
+   Truth at all SemanticWorldStates implies `⊢ φ`
+3. Wrap in `ContextDerivable` constructor
 
 **Dependencies**:
-- `not_derivable_implies_neg_consistent` (proven above)
-- `representation_theorem` (from RepresentationTheorem.lean)
-- Semantic embedding (TODO: construct TaskFrame from canonical model)
+- `semantic_weak_completeness` (PROVEN in FiniteCanonicalModel.lean)
+- `semantic_consequence_implies_semantic_world_truth` (has sorry pending bridge lemmas)
+
+**Status**: Proof structure complete, but depends on bridge lemma with sorry.
 
 **References**:
 - Blackburn et al., Modal Logic, Chapter 4.8 (Canonical Model Construction)
-- Research report: specs/560_axiom_elimination/reports/research-001.md
+- Research report: specs/566_complete_semantic_embedding_for_completeness_proof/reports/research-001.md
+- FiniteCanonicalModel.lean: `semantic_weak_completeness` (lines 3280-3349, PROVEN)
 -/
-axiom representation_theorem_backward_empty {φ : Formula} :
-    semantic_consequence [] φ → ContextDerivable [] φ
+theorem representation_theorem_backward_empty {φ : Formula} :
+    semantic_consequence [] φ → ContextDerivable [] φ := by
+  intro h_sem
+  -- Step 1: From semantic_consequence to truth at all SemanticWorldStates
+  have h_all_sw : ∀ (w : SemanticWorldState φ),
+      Bimodal.Metalogic.Completeness.semantic_truth_at_v2 φ w
+        (FiniteTime.origin (temporalBound φ)) φ :=
+    semantic_consequence_implies_semantic_world_truth h_sem
+  -- Step 2: By semantic_weak_completeness, get provability
+  have h_prov : ⊢ φ := semantic_world_validity_implies_provable φ h_all_sw
+  -- Step 3: Wrap in ContextDerivable
+  exact ⟨h_prov⟩
 
 /--
 Simplified representation theorem for empty context.

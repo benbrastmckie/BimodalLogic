@@ -14,7 +14,7 @@
 
 ## Overview
 
-This plan addresses JavaScript heap exhaustion (OOM crashes) during subagent delegation by optimizing the context file system. The focus is on **reducing context file sizes to essentials** and implementing **progressive disclosure patterns** so agents load minimal context upfront with clear paths to deeper information when needed.
+This plan addresses JavaScript heap exhaustion (OOM crashes) during subagent delegation by optimizing the context file system **while preserving the existing core/ and project/ structure**. The focus is on **trimming unnecessary content ("fat")**, **dividing files when appropriate**, and **loading context carefully in the right places** - NOT on wholesale refactoring or reduction to nothing.
 
 ### Revision Notes
 
@@ -37,16 +37,18 @@ Key findings from research-001.md and research-002.md:
 ## Goals & Non-Goals
 
 **Goals**:
-- Reduce context file sizes by distilling to essential information
-- Implement progressive disclosure: minimal upfront context with links to details
-- Preserve important content through better organization, not deletion
-- Create tiered context structure (quick-ref → full-detail)
+- **Preserve** the existing `.claude/context/core/` and `.claude/context/project/` structure
+- **Trim the fat**: Remove verbose examples, redundant explanations, and unnecessary content
+- **Divide appropriately**: Split overly large files (>20KB) when it makes logical sense
+- **Load carefully**: Ensure agents load only necessary context via strategic @-references
+- Preserve essential information through better organization, not deletion
 
 **Non-Goals**:
+- Total refactoring of context structure (keep core/ and project/ as-is)
+- Reducing files to nothing or eliminating important reference material
+- Creating complex multi-tier hierarchies (keep it simple)
 - Document session restart patterns (per user request)
-- Eliminate all subagent spawning (architecture is sound)
 - Modify Claude Code internals or JavaScript heap limits
-- Delete important reference material
 
 ## Risks & Mitigations
 
@@ -84,40 +86,28 @@ Key findings from research-001.md and research-002.md:
 
 ---
 
-### Phase 2: Design Progressive Disclosure Structure [NOT STARTED]
+### Phase 2: Plan Trimming and Division Strategy [NOT STARTED]
 
-**Goal**: Define tiered context architecture for minimal upfront loading
+**Goal**: Plan how to trim unnecessary content and divide large files within existing structure
 
-**Architecture Pattern**:
-```
-Level 0: Quick Reference (loaded by default)
-  - Essential rules, patterns, key decisions
-  - Target: <5KB per topic area
-  - Format: Bullet points, tables, decision trees
-
-Level 1: Working Detail (loaded on-demand via @-reference)
-  - How-to instructions, examples, edge cases
-  - Target: <15KB per file
-  - Format: Step-by-step, code examples
-
-Level 2: Full Reference (rarely loaded, for deep investigation)
-  - Complete specifications, historical context
-  - Size: Unrestricted
-  - Format: Comprehensive documentation
-```
+**Approach**:
+- **Keep core/ and project/ structure intact** - no reorganization
+- **Trim**: Identify verbose sections, redundant examples, unnecessary explanations to remove
+- **Divide**: For files >20KB, determine natural split points (if any make sense)
+- **Load carefully**: Plan which agents need which context files
 
 **Tasks**:
-- [ ] Design file naming convention for tiers (e.g., `-quick.md`, `-guide.md`, `-ref.md`)
-- [ ] Identify which content belongs at each tier for top 5 largest files
-- [ ] Define @-reference patterns for progressive loading
-- [ ] Document the pattern in `.claude/context/index.md`
+- [ ] For each large file, identify "fat" to trim (verbose examples, redundancy)
+- [ ] For files >25KB, identify logical division points (e.g., state-management could split read vs write operations)
+- [ ] Plan agent-to-context mapping: which agents need which specific files
+- [ ] Document trimming/division decisions before executing
 
 **Timing**: 30 minutes
 
 **Deliverables**:
-- Tier naming convention documented
-- Content allocation plan for large files
-- Progressive loading pattern examples
+- Trimming plan for each large file (what to cut, what to keep)
+- Division plan for files that need splitting (if any)
+- Agent context loading map (which agents load what)
 
 ---
 
