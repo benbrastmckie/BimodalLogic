@@ -209,11 +209,11 @@ theorem representation_theorem_backward_empty {φ : Formula} :
 
 | Approach | Estimated Effort | Risk |
 |----------|------------------|------|
-| Port semantic_weak_completeness (use FMP) | 2-3 hours | Low |
-| Complete bridge sorries directly | 4-6 hours | Medium |
+| Contrapositive with direct instantiation | 3-4 hours | Low-Medium |
+| Complete bridge sorries in FiniteCanonicalModel | 4-6 hours | Medium |
 | Build new semantic embedding from scratch | 8-12 hours | High |
 
-**Recommendation**: Start with the FMP approach since `finite_model_property_contrapositive` is proven.
+**Recommendation**: Use contrapositive approach since `semantic_weak_completeness` is proven and its construction can be adapted.
 
 ### 10. Dependencies
 
@@ -228,51 +228,60 @@ theorem representation_theorem_backward_empty {φ : Formula} :
 
 ## Recommendations
 
-### Primary Recommendation: FMP-Based Approach
+### Primary Recommendation: Contrapositive with Direct Instantiation
 
-1. **Leverage Existing Proven Infrastructure**
-   - `finite_model_property_contrapositive` is fully proven
-   - Provides contrapositive direction directly
+The cleanest approach leverages the PROVEN `semantic_weak_completeness` and constructs the bridge directly:
 
-2. **Proof Sketch**:
+1. **Strategy**: Use the contrapositive - show that if φ is not derivable, then `semantic_consequence [] φ` fails
+
+2. **Key Insight**: The existing `semantic_weak_completeness` proof (lines 3280-3349) explicitly constructs a `SemanticWorldState` where φ is false when φ is not provable. We can use this construction.
+
+3. **Proof Sketch**:
    ```lean
    theorem representation_theorem_backward_empty {φ : Formula} :
        semantic_consequence [] φ → ContextDerivable [] φ := by
      -- By contrapositive
      apply Function.mtr
      intro h_not_deriv
-     -- h_not_deriv : ¬ContextDerivable [] φ
-     -- Need: ¬semantic_consequence [] φ
+     -- h_not_deriv : ¬ContextDerivable [] φ (i.e., ¬Nonempty (⊢ φ))
 
-     -- Convert to ¬(⊢ φ) for FMP
-     have h_not_prov : ¬(⊢ φ) := h_not_deriv
+     -- Step 1: {φ.neg} is consistent (PROVEN: not_derivable_implies_neg_consistent)
+     have h_neg_cons : Consistent [φ.neg] := not_derivable_implies_neg_consistent h_not_deriv
 
-     -- Apply finite_model_property_contrapositive
-     obtain ⟨FF, M, τ, ht, h_false⟩ := finite_model_property_contrapositive φ h_not_prov
+     -- Step 2: Extend to MCS and build countermodel
+     -- (Following semantic_weak_completeness construction)
+     obtain ⟨M, h_sub_M, h_M_mcs⟩ := set_lindenbaum {φ.neg} (neg_consistent_of_not_provable φ h_not_deriv)
+     -- ... construct SemanticWorldState sw where φ is false ...
 
-     -- Construct countermodel for semantic_consequence
+     -- Step 3: Build WorldHistory containing sw
+     -- Need finiteHistoryToWorldHistory or simpler direct construction
+
+     -- Step 4: Show ¬semantic_consequence [] φ
      intro h_sem
-     -- h_sem : ∀ D F M τ t, ... → truth_at M τ t φ
-     -- Instantiate with FF (as TaskFrame Int)
-     have h_truth := h_sem Int FF.toTaskFrame M τ 0 (by intro ψ hψ; exact List.not_mem_nil hψ |>.elim)
-     -- But h_false says ¬truth_at M τ 0 φ
-     exact h_false h_truth
+     -- Instantiate with D = Int, F = SemanticCanonicalFrame φ
+     specialize h_sem Int (SemanticCanonicalFrame φ) (SemanticCanonicalModel φ) τ 0 _
+     -- Get contradiction: h_sem says φ true, but sw makes φ false
    ```
 
-3. **Estimated Effort**: 2-3 hours
-   - Main complexity: handling type conversions and universe levels
+4. **Estimated Effort**: 3-4 hours
+   - Main work: constructing the WorldHistory that contains the falsifying state
+   - Can reuse `finite_history_from_state` from FiniteCanonicalModel.lean
 
-### Secondary Recommendation: Bridge Completion
+### Secondary Recommendation: Complete Bridge Sorries
 
-If FMP approach encounters issues:
+Complete the 2 key bridge sorries in FiniteCanonicalModel.lean:
 
-1. Complete `finiteHistoryToWorldHistory.respects_task`
-   - Simplify by using non-clamping domain (full Int always in domain)
+1. `finiteHistoryToWorldHistory.respects_task` (1 sorry at line ~3430-3435)
+   - Simplify by avoiding boundary clamping
+   - Use constant history or full Int domain
 
-2. Complete `semantic_world_state_has_world_history`
-   - Use constant history at fixed time
+2. `semantic_world_state_has_world_history` (1 sorry at line ~3455)
+   - Use the `finite_history_from_state` construction
+   - Time alignment is straightforward with origin
 
-3. Connect via `semantic_weak_completeness`
+Then use `main_weak_completeness` which chains through `semantic_weak_completeness`.
+
+**Estimated Effort**: 4-6 hours
 
 ### Tertiary: Document Axiom Retention
 
