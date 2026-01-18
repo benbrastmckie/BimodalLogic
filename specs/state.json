@@ -17,11 +17,11 @@
     {
       "project_number": 560,
       "project_name": "axiom_elimination",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-18T01:05:15Z",
+      "last_updated": "2026-01-18T01:21:27Z",
       "parent_task": 556,
       "dependencies": [
         558
@@ -74,21 +74,6 @@
         559,
         560,
         561
-      ]
-    },
-    {
-      "project_number": 511,
-      "status": "researched",
-      "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "high",
-      "last_updated": "2026-01-18T01:12:58Z",
-      "artifacts": [
-        {
-          "path": "specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-002.md",
-          "type": "research"
-        }
       ]
     },
     {

@@ -87,22 +87,6 @@ technical_debt:
 
 ---
 
-### 511. Resolve 26 sorry placeholders in Completeness.lean
-- **Effort**: 20 hours
-- **Status**: [RESEARCHED]
-- **Priority**: High
-- **Language**: lean
-- **Created By**: Review task 506
-- **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
-- **Research Report**: [specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md](specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-001.md)
-- **Research Report 2**: [specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-002.md](specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-002.md)
-- **Session ID**: sess_1768698141_4ff283
-- **Researched**: 2026-01-17
-
-**Description**: Resolve 26 sorry placeholders in Completeness.lean. Research reveals Aristotle made no progress (39 sorry gaps remain). Recommendation: pivot to finite canonical model approach already complete in FiniteCanonicalModel.lean.
-
----
-
 ### 513. Address tm_auto proof reconstruction issues
 - **Effort**: 5 hours
 - **Status**: [RESEARCHED]
