@@ -1,9 +1,159 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-17T21:06:33Z",
+  "_last_updated": "2026-01-18T00:59:33Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 552,
+      "project_name": "test_validate_model_tiering_changes",
+      "type": "test",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        550
+      ],
+      "description": "Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks.",
+      "abandoned": "2026-01-18T01:00:44Z"
+    },
+    {
+      "project_number": 552,
+      "project_name": "test_validate_model_tiering_changes",
+      "type": "test",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        550
+      ],
+      "description": "Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks.",
+      "abandoned": "2026-01-18T01:00:37Z"
+    },
+    {
+      "project_number": 552,
+      "project_name": "test_validate_model_tiering_changes",
+      "type": "test",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T17:00:00Z",
+      "last_updated": "2026-01-17T17:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        550
+      ],
+      "description": "Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks.",
+      "abandoned": "2026-01-18T01:00:31Z"
+    },
+    {
+      "project_number": 563,
+      "project_name": "investigate_empty_directory_creation",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-17T21:47:33Z",
+      "last_updated": "2026-01-17T23:35:36Z",
+      "artifacts": [
+        {
+          "path": "specs/563_investigate_empty_directory_creation/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/563_investigate_empty_directory_creation/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/563_investigate_empty_directory_creation/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T22:13:17Z",
+      "completed": "2026-01-17T23:35:30Z",
+      "archived": "2026-01-18T00:59:33Z"
+    },
+    {
+      "project_number": 559,
+      "project_name": "strong_completeness_helpers",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-17T23:41:53Z",
+      "parent_task": 556,
+      "dependencies": [
+        557
+      ],
+      "description": "Prove entails_imp_chain and imp_chain_to_context in StrongCompleteness.lean, plus double negation elimination and canonical world contradiction in RepresentationTheorem.lean.",
+      "researched": "2026-01-17T22:48:38Z",
+      "artifacts": [
+        {
+          "path": "specs/559_strong_completeness_helpers/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/559_strong_completeness_helpers/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/559_strong_completeness_helpers/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T23:09:16Z",
+      "completed": "2026-01-17T23:41:47Z",
+      "archived": "2026-01-18T00:59:33Z"
+    },
+    {
+      "project_number": 534,
+      "project_name": "research_claude_code_model_selection",
+      "type": "research",
+      "phase": "not_started",
+      "status": "completed",
+      "priority": "high",
+      "language": "meta",
+      "created": "2026-01-17T15:00:00Z",
+      "last_updated": "2026-01-17T23:14:03Z",
+      "effort": "2-3 hours",
+      "description": "Research how Claude Code handles model selection for the Task tool. Determine if agent YAML frontmatter supports model specification, whether the model parameter must be set at Task tool invocation, and document the complete model selection mechanism including inheritance and defaults.",
+      "session_id": "sess_1768659565_318297",
+      "researched": "2026-01-17T14:14:45Z",
+      "artifacts": [
+        {
+          "path": "specs/534_research_claude_code_model_selection/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/534_research_claude_code_model_selection/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/534_research_claude_code_model_selection/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/534_research_claude_code_model_selection/plans/implementation-003.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/534_research_claude_code_model_selection/plans/implementation-004.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/534_research_claude_code_model_selection/summaries/implementation-summary-20260117.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-17T14:20:57Z",
+      "completed": "2026-01-17T23:14:03Z",
+      "archived": "2026-01-18T00:59:33Z"
+    },
     {
       "project_number": 553,
       "project_name": "document_final_model_tier_architecture",

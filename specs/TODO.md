@@ -38,41 +38,7 @@ technical_debt:
 
 ---
 
-### 534. Research Claude Code Model Selection Mechanisms
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Session ID**: sess_1768691198_77654e
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Research**: [research-001.md](specs/534_research_claude_code_model_selection/reports/research-001.md)
-- **Plan**: [implementation-004.md](specs/534_research_claude_code_model_selection/plans/implementation-004.md)
-- **Summary**: [implementation-summary-20260117.md](specs/534_research_claude_code_model_selection/summaries/implementation-summary-20260117.md)
-
-**Description**: Comprehensive protocol/.claude/ upgrade incorporating Tasks 534, 548, 563, 564. 6-phase plan: (1) Add model: sonnet to 6 agents, (2) Add CRITICAL Task tool directives to 6 forked skills, (3) Remove eager mkdir from task.md and meta-builder-agent.md, (4) Update CLAUDE.md documentation, (5) Verify skill-status-sync direct execution, (6) Final verification and commit.
-
----
-
 ## Medium Priority
-
-### 563. Investigate Empty Directory Creation in specs/
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-17
-- **Planned**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Research**: [research-001.md](specs/563_investigate_empty_directory_creation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/563_investigate_empty_directory_creation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/563_investigate_empty_directory_creation/summaries/implementation-summary-20260117.md)
-
-**Description**: Investigate empty directories being created in specs/ which violates the lazy directory creation rule. Carefully inspect all potential sources in the .claude/ agent system to identify the root cause and resolve the issue elegantly.
-
----
 
 ### 556. Complete Metalogic_v2 Implementation
 - **Effort**: 6-10 hours
@@ -89,24 +55,6 @@ technical_debt:
 - **Subtasks**: 557, 558, 559, 560, 561
 
 **Description**: Complete all aspects of the implementation of the reorganized /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/ directory, completing all sorries and making this directory stand on its own so that I can delete Metalogic/ once Metalogic_v2/ is complete. Begin by improving /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/README.md to accurately report the current state and what the target organization is.
-
----
-
-### 559. Strong Completeness Helpers
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-17
-- **Revised**: 2026-01-17
-- **Completed**: 2026-01-17
-- **Parent**: 556
-- **Dependencies**: 557
-- **Research**: [research-001.md](specs/559_strong_completeness_helpers/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/559_strong_completeness_helpers/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260117.md](specs/559_strong_completeness_helpers/summaries/implementation-summary-20260117.md)
-
-**Description**: Prove entails_imp_chain and imp_chain_to_context in StrongCompleteness.lean, plus double negation elimination and canonical world contradiction in RepresentationTheorem.lean. The results in Bimodal/Metalogic/ serve as inspiration only - they should NOT be imported or distract from Metalogic_v2 reorganization. The representation theorem must be the foundation from which completeness derives. Metalogic/ will be deleted once Metalogic_v2 is complete.
 
 ---
 
@@ -135,18 +83,6 @@ technical_debt:
 - **Dependencies**: 560
 
 **Description**: Prove consistent_iff_consistent in Basic.lean and necessitation_lemma in TruthLemma.lean. Update README.md with accurate completion status. Verify zero sorries in Metalogic_v2.
-
----
-
-### 552. Test and Validate Model Tiering Changes
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-17
-- **Dependencies**: 550
-
-**Description**: Test model tiering changes across all workflow commands (/research, /plan, /implement). Verify: Haiku works for simple tasks, Sonnet handles standard work, Opus reserved for hardest tasks (complex Lean proofs). Document any Haiku failures due to tool_reference limitation.
 
 ---
 
