@@ -1,5 +1,5 @@
 ---
-next_project_number: 571
+next_project_number: 574
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -40,6 +40,7 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/566_complete_semantic_embedding_for_completeness_proof/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260118.md](specs/566_complete_semantic_embedding_for_completeness_proof/summaries/implementation-summary-20260118.md)
 - **Blocked On**: MCS infrastructure sorries (closure_mcs_negation_complete, etc.)
+- **Subtasks**: 571, 572, 573
 
 **Description**: Complete semantic embedding for completeness proof as per specs/560_axiom_elimination/summaries/implementation-summary-20260117.md to avoid all technical debt.
 
@@ -47,11 +48,13 @@ technical_debt:
 
 ### 569. Analyze Proof Strategy Alternatives
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
+- **Session ID**: sess_1768708481_db6ae8
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
 - **Research**: [research-001.md](specs/569_analyze_proof_strategy_alternatives/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/569_analyze_proof_strategy_alternatives/plans/implementation-001.md)
 
 **Description**: Analyze different proof strategies for completing the semantic embedding in task 566. Compare contrapositive approach, direct instantiation, and alternative lemmas from rollback section.
 
@@ -59,7 +62,7 @@ technical_debt:
 
 ### 570. Analyze Compound Formula Proof Requirements
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
