@@ -128,39 +128,14 @@ theorem strong_representation_theorem {φ : Formula} :
     h_truth φ (List.mem_append.2 (Or.inr (List.mem_singleton_self _)))⟩
 
 /--
-Corollary: Every valid formula is derivable (assuming weak completeness).
+Corollary: Every valid formula is derivable.
 
 This is the completeness direction specialized to the empty context.
-
-Note: Full proof requires connecting to the completeness theorem or using
-the canonical model evaluation. For now left as sorry since it depends
-on the full completeness machinery.
+It follows directly from `valid_implies_derivable` in ContextProvability.
 -/
 theorem completeness_corollary {φ : Formula} :
-    valid φ → ContextDerivable [] φ := by
-  intro h_valid
-  -- Assume φ is not derivable and derive contradiction
-  by_contra h_not_derivable
-  -- Show ¬φ is consistent by converting non-derivability
-  have h_neg_cons : Consistent [Formula.neg φ] := by
-    intro ⟨d_bot⟩
-    -- If [¬φ] ⊢ ⊥, then by deduction theorem, [] ⊢ ¬φ → ⊥ = ¬¬φ
-    have d_neg_neg : DerivationTree [] (Formula.neg (Formula.neg φ)) :=
-      deduction_theorem [] (Formula.neg φ) Formula.bot d_bot
-    -- Then by classical logic, [] ⊢ φ
-    -- Apply double negation elimination
-    open Bimodal.Theorems.Propositional in
-    have d_dne : ⊢ φ.neg.neg.imp φ := double_negation φ
-    have d_phi : ⊢ φ := DerivationTree.modus_ponens [] _ _ d_dne d_neg_neg
-    exact h_not_derivable ⟨d_phi⟩
-  -- Apply representation theorem to get a world where ¬φ is true
-  obtain ⟨w, h_truth⟩ := representation_theorem h_neg_cons
-  have h_neg_in : Formula.neg φ ∈ w.carrier := by
-    unfold canonicalTruthAt at h_truth
-    exact h_truth (Formula.neg φ) (List.mem_singleton_self _)
-  -- But φ is valid, so it should be true in canonical model too
-  -- This contradicts MCS consistency
-  sorry
+    valid φ → ContextDerivable [] φ :=
+  valid_implies_derivable
 
 /--
 Satisfiability for canonical model.

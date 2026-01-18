@@ -49,11 +49,11 @@
     {
       "project_number": 559,
       "project_name": "strong_completeness_helpers",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T23:30:55Z",
+      "last_updated": "2026-01-17T23:41:53Z",
       "parent_task": 556,
       "dependencies": [
         557
@@ -68,9 +68,14 @@
         {
           "path": "specs/559_strong_completeness_helpers/plans/implementation-002.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/559_strong_completeness_helpers/summaries/implementation-summary-20260117.md",
+          "type": "summary"
         }
       ],
-      "planned": "2026-01-17T23:09:16Z"
+      "planned": "2026-01-17T23:09:16Z",
+      "completed": "2026-01-17T23:41:47Z"
     },
     {
       "project_number": 560,

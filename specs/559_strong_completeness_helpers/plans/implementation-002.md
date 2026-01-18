@@ -42,7 +42,7 @@ All proofs must derive from the representation theorem. Do NOT:
 ### Phase 1: DNE-based completeness_corollary (Line 151)
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Complete the proof at line 151 using double negation elimination
@@ -73,7 +73,7 @@ exact h_not_derivable ⟨d_phi⟩
 ### Phase 2: Simplify completeness_corollary (Line 159)
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Remove or simplify the redundant canonical model proof branch at line 159
@@ -99,7 +99,7 @@ exact h_not_derivable ⟨d_phi⟩
 ### Phase 3: Helper lemma for imp_chain_to_context
 
 **Estimated effort**: 2-3 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Create helper lemma for extracting φ from implication chains (self-contained in Metalogic_v2)
@@ -139,7 +139,7 @@ exact h_not_derivable ⟨d_phi⟩
 ### Phase 4: Restructure entails_imp_chain
 
 **Estimated effort**: 3-4 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Fix the universe quantifier mismatch in `entails_imp_chain`

@@ -57,61 +57,115 @@ def impChain (Γ : Context) (φ : Formula) : Formula :=
   | ψ :: Γ' => Formula.imp ψ (impChain Γ' φ)
 
 /--
+Helper: Given a derivation of impChain Γ φ from context Δ,
+derive φ from context (Γ ++ Δ).
+
+This uses the fact that elements of Γ are available as assumptions in Γ ++ Δ,
+so we can apply modus ponens repeatedly to unfold the implication chain.
+-/
+def imp_chain_unfold (Γ Δ : Context) (φ : Formula) :
+    DerivationTree Δ (impChain Γ φ) → DerivationTree (Γ ++ Δ) φ := by
+  intro d
+  induction Γ generalizing Δ with
+  | nil =>
+    -- impChain [] φ = φ, and [] ++ Δ = Δ
+    simp only [List.nil_append]
+    exact d
+  | cons ψ Γ' ih =>
+    -- impChain (ψ :: Γ') φ = ψ → impChain Γ' φ
+    -- d : Δ ⊢ ψ → impChain Γ' φ
+    -- Goal: (ψ :: Γ') ++ Δ ⊢ φ
+    simp only [impChain, List.cons_append] at d ⊢
+    -- Need: ψ :: (Γ' ++ Δ) ⊢ φ
+    -- Weaken d to context ψ :: (Γ' ++ Δ)
+    have d_weak : DerivationTree (ψ :: (Γ' ++ Δ)) (Formula.imp ψ (impChain Γ' φ)) :=
+      DerivationTree.weakening Δ (ψ :: (Γ' ++ Δ)) _ d (by
+        intro x hx
+        simp [hx])
+    -- Get ψ by assumption
+    have d_assump : DerivationTree (ψ :: (Γ' ++ Δ)) ψ :=
+      DerivationTree.assumption (ψ :: (Γ' ++ Δ)) ψ (by simp)
+    -- Apply modus ponens to get impChain Γ' φ
+    have d_chain : DerivationTree (ψ :: (Γ' ++ Δ)) (impChain Γ' φ) :=
+      DerivationTree.modus_ponens (ψ :: (Γ' ++ Δ)) ψ (impChain Γ' φ) d_weak d_assump
+    -- Apply IH with Δ' = ψ :: Δ (which doesn't quite work)
+    -- Actually need: Γ' ++ (ψ :: Δ) = ψ :: (Γ' ++ Δ) is NOT true in general
+    -- Let's think again...
+    -- We have d_chain : (ψ :: (Γ' ++ Δ)) ⊢ impChain Γ' φ
+    -- By IH with Δ' = ψ :: (Γ' ++ Δ), we get:
+    --   Γ' ++ (ψ :: (Γ' ++ Δ)) ⊢ φ
+    -- But we want (ψ :: (Γ' ++ Δ)) ⊢ φ
+    -- This requires weakening, since Γ' ⊆ Γ' ++ Δ ⊆ ψ :: (Γ' ++ Δ)
+    have d_from_ih : DerivationTree (Γ' ++ (ψ :: (Γ' ++ Δ))) φ := ih (ψ :: (Γ' ++ Δ)) d_chain
+    -- Weaken from Γ' ++ (ψ :: (Γ' ++ Δ)) to ψ :: (Γ' ++ Δ)
+    exact DerivationTree.weakening (Γ' ++ (ψ :: (Γ' ++ Δ))) (ψ :: (Γ' ++ Δ)) φ d_from_ih (by
+      intro x hx
+      simp at hx ⊢
+      rcases hx with h | h
+      · right; left; exact h
+      · exact h)
+
+/--
+Helper: impChain Γ φ is semantically equivalent to "if all of Γ hold, then φ holds"
+
+This lemma shows that truth_at M τ t (impChain Γ φ) holds iff
+(∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M τ t φ
+-/
+lemma impChain_semantics {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F} {t : D}
+    (Γ : Context) (φ : Formula) :
+    truth_at M τ t (impChain Γ φ) ↔ ((∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M τ t φ) := by
+  induction Γ with
+  | nil =>
+    -- impChain [] φ = φ
+    simp only [impChain, List.not_mem_nil, false_implies, forall_const, implies_true]
+  | cons ψ Γ' ih =>
+    -- impChain (ψ :: Γ') φ = ψ → impChain Γ' φ
+    simp only [impChain, truth_at, ih, List.mem_cons]
+    constructor
+    · -- Forward: (ψ → (Γ' → φ)) → ((ψ ∧ Γ') → φ)
+      intro h h_all
+      have h_psi : truth_at M τ t ψ := h_all ψ (Or.inl rfl)
+      have h_Γ' : ∀ χ ∈ Γ', truth_at M τ t χ := fun χ hχ => h_all χ (Or.inr hχ)
+      exact h h_psi h_Γ'
+    · -- Backward: ((ψ ∧ Γ') → φ) → (ψ → (Γ' → φ))
+      intro h h_psi h_Γ'
+      apply h
+      intro χ hχ
+      rcases hχ with rfl | hχ'
+      · exact h_psi
+      · exact h_Γ' χ hχ'
+
+/--
 If Γ ⊨ φ, then ⊨ impChain Γ φ.
+
+The proof uses impChain_semantics to show that the semantic content of impChain Γ φ
+matches exactly the definition of semantic consequence.
 -/
 lemma entails_imp_chain (Γ : Context) (φ : Formula) :
     semantic_consequence Γ φ → valid (impChain Γ φ) := by
-  intro h_entails
-  induction Γ with
-  | nil =>
-    -- impChain [] φ = φ, and [] ⊨ φ means valid φ
-    intro D _ _ _ F M τ t
-    exact h_entails D F M τ t (fun _ h => (List.not_mem_nil h).elim)
-  | cons ψ Γ' ih =>
-    -- impChain (ψ :: Γ') φ = ψ → impChain Γ' φ
-    -- Need to show ⊨ (ψ → impChain Γ' φ)
-    intro D _ _ _ F M τ t
-    simp only [impChain, truth_at]
-    intro h_psi
-    -- Need to show truth_at M τ t (impChain Γ' φ)
-    -- By IH, valid (impChain Γ' φ) if Γ' ⊨ φ
-    -- But we have ψ :: Γ' ⊨ φ and h_psi : truth_at M τ t ψ
-    have h_Γ'_entails : semantic_consequence Γ' φ := by
-      intro D' inst1' inst2' inst3' F' M' τ' t' h_all'
-      -- We don't have h_psi in this world, so this approach doesn't work directly
-      sorry
-    exact ih h_Γ'_entails D F M τ t
+  intro h_entails D _ _ _ F M τ t
+  -- Use impChain_semantics to convert the goal
+  rw [impChain_semantics]
+  -- Now goal is: (∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M τ t φ
+  -- This is exactly what h_entails gives us
+  intro h_all
+  exact h_entails D F M τ t h_all
 
 /--
 If ⊢ impChain Γ φ, then Γ ⊢ φ.
+
+Uses imp_chain_unfold to unfold the implication chain with Δ = [].
 -/
 lemma imp_chain_to_context (Γ : Context) (φ : Formula) :
     ContextDerivable [] (impChain Γ φ) → ContextDerivable Γ φ := by
   intro ⟨d⟩
-  induction Γ with
-  | nil =>
-    -- impChain [] φ = φ
-    exact ⟨d⟩
-  | cons ψ Γ' ih =>
-    -- impChain (ψ :: Γ') φ = ψ → impChain Γ' φ
-    -- d : [] ⊢ ψ → impChain Γ' φ
-    -- We need: ψ :: Γ' ⊢ φ
-    -- By IH: if [] ⊢ impChain Γ' φ, then Γ' ⊢ φ
-    -- We have [] ⊢ ψ → impChain Γ' φ
-    -- Weakening: ψ :: Γ' ⊢ ψ → impChain Γ' φ
-    have d_weak : DerivationTree (ψ :: Γ') (Formula.imp ψ (impChain Γ' φ)) :=
-      DerivationTree.weakening [] (ψ :: Γ') (Formula.imp ψ (impChain Γ' φ)) d
-        (fun _ h => (List.not_mem_nil h).elim)
-    -- Assumption: ψ :: Γ' ⊢ ψ
-    have d_assump : DerivationTree (ψ :: Γ') ψ :=
-      DerivationTree.assumption (ψ :: Γ') ψ (by simp)
-    -- Modus ponens: ψ :: Γ' ⊢ impChain Γ' φ
-    have d_chain : DerivationTree (ψ :: Γ') (impChain Γ' φ) :=
-      DerivationTree.modus_ponens (ψ :: Γ') ψ (impChain Γ' φ) d_weak d_assump
-    -- Now we need to extract φ from impChain Γ' φ via the remaining assumptions
-    -- This requires nested applications, which is complex
-    -- For now, leave as sorry - the structure is established
-    sorry
+  -- Use imp_chain_unfold with Δ = []
+  -- imp_chain_unfold Γ [] φ d : DerivationTree (Γ ++ []) φ
+  have d' := imp_chain_unfold Γ [] φ d
+  -- Γ ++ [] = Γ
+  simp only [List.append_nil] at d'
+  exact ⟨d'⟩
 
 /--
 **Strong Completeness**: Semantic consequence implies syntactic derivability.
