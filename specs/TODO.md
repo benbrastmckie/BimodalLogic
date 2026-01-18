@@ -29,8 +29,8 @@ technical_debt:
 
 ### 566. Complete Semantic Embedding for Completeness Proof
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
-- **Session ID**: sess_1768701712_38de91
+- **Status**: [BLOCKED]
+- **Session ID**: sess_1768707914_bd0aad
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 560
@@ -38,6 +38,8 @@ technical_debt:
 - **Planned**: 2026-01-18
 - **Research**: [research-001.md](specs/566_complete_semantic_embedding_for_completeness_proof/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/566_complete_semantic_embedding_for_completeness_proof/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/566_complete_semantic_embedding_for_completeness_proof/summaries/implementation-summary-20260118.md)
+- **Blocked On**: MCS infrastructure sorries (closure_mcs_negation_complete, etc.)
 
 **Description**: Complete semantic embedding for completeness proof as per specs/560_axiom_elimination/summaries/implementation-summary-20260117.md to avoid all technical debt.
 
