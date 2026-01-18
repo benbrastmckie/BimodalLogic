@@ -1,19 +1,19 @@
 ---
-next_project_number: 583
+next_project_number: 586
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 20
+  active: 23
   completed: 177
   in_progress: 2
-  not_started: 27
+  not_started: 30
   abandoned: 14
-  total: 206
+  total: 209
 priority_distribution:
   critical: 0
-  high: 8
+  high: 11
   medium: 10
   low: 11
 technical_debt:
@@ -26,6 +26,39 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 583. Add max_turns Limit to Agent Spawning
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Add max_turns parameter to all workflow skill agent spawning calls (Task tool invocations). Set max_turns: 50 to limit agent conversation depth and prevent infinite context accumulation. Update skill-lean-implementation, skill-implementer, skill-latex-implementation, skill-researcher, skill-lean-research, skill-planner, skill-meta.
+
+---
+
+### 584. Add Memory Budget to Agent Documentation
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Add Memory Budget section to all agent documentation files (.claude/agents/*.md). Document: (1) maximum turns limit (50), (2) turn budget per phase (~10 average), (3) context size limits (max 5 files per phase, skip files >10MB), (4) cleanup strategy (clear intermediate results, do not re-read completed proofs). Target agents: lean-implementation-agent, general-implementation-agent, latex-implementation-agent, lean-research-agent, general-research-agent, planner-agent.
+
+---
+
+### 585. Add Session Cleanup to Agents
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination.
+
+---
 
 ### 579. Update Task 566 to Use Semantic Completeness Infrastructure
 - **Effort**: 2-3 hours

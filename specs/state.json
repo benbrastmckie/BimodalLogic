@@ -2,7 +2,7 @@
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
     "total_tasks": 20,
-    "last_sync": "2026-01-18T22:16:26Z"
+    "last_sync": "2026-01-19T00:26:00Z"
   },
   "active_projects": [
     {
@@ -356,6 +356,36 @@
       "created": "2026-01-18T02:30:43Z",
       "last_updated": "2026-01-18T02:30:43Z",
       "description": "Expand test coverage for Logos layer to match Bimodal layer standards. Currently ~40 Logos theory files have limited or no test coverage. Create comprehensive test suite including integration tests for layer extensions and property-based testing for Logos semantics."
+    },
+    {
+      "project_number": 583,
+      "project_name": "add_max_turns_limit_to_agent_spawning",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T00:26:00Z",
+      "last_updated": "2026-01-19T00:26:00Z",
+      "description": "Add max_turns parameter to all workflow skill agent spawning calls (Task tool invocations). Set max_turns: 50 to limit agent conversation depth and prevent infinite context accumulation. Update skill-lean-implementation, skill-implementer, skill-latex-implementation, skill-researcher, skill-lean-research, skill-planner, skill-meta."
+    },
+    {
+      "project_number": 584,
+      "project_name": "add_memory_budget_to_agent_documentation",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T00:26:00Z",
+      "last_updated": "2026-01-19T00:26:00Z",
+      "description": "Add Memory Budget section to all agent documentation files (.claude/agents/*.md). Document: (1) maximum turns limit (50), (2) turn budget per phase (~10 average), (3) context size limits (max 5 files per phase, skip files >10MB), (4) cleanup strategy (clear intermediate results, do not re-read completed proofs). Target agents: lean-implementation-agent, general-implementation-agent, latex-implementation-agent, lean-research-agent, general-research-agent, planner-agent."
+    },
+    {
+      "project_number": 585,
+      "project_name": "add_session_cleanup_to_agents",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T00:26:00Z",
+      "last_updated": "2026-01-19T00:26:00Z",
+      "description": "Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination."
     }
   ],
   "completed_projects": [
@@ -370,5 +400,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 583
+  "next_project_number": 586
 }
