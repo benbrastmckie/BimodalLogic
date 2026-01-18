@@ -94,11 +94,11 @@
     {
       "project_number": 576,
       "project_name": "prove_mcs_negation_completeness",
-      "status": "researched",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:12:18Z",
-      "last_updated": "2026-01-18T23:05:44Z",
+      "last_updated": "2026-01-18T23:08:55Z",
       "parent_task": 574,
       "dependencies": [
         575
@@ -110,7 +110,8 @@
           "path": "specs/576_prove_mcs_negation_completeness/reports/research-001.md",
           "type": "research"
         }
-      ]
+      ],
+      "completed": "2026-01-18T23:08:55Z"
     },
     {
       "project_number": 575,
