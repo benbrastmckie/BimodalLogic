@@ -79,7 +79,7 @@ It does NOT handle:
 
 **Output**: Target agent name
 
-**Note**: Command files now use state.json for all task lookups. See `.claude/context/core/system/state-lookup.md` for patterns.
+**Note**: Command files now use state.json for all task lookups. See `state-management.md` for patterns.
 
 ---
 

@@ -552,7 +552,7 @@ Benefit: Clear separation, easy to test, flexible composition
 </argument_parsing>
 ```
 
-**See Also**: `orchestration/state-lookup.md` for query patterns
+**See Also**: `orchestration/state-management.md` for query patterns
 
 ---
 
@@ -958,7 +958,7 @@ Layer 3: Execution Subagent (Work Executor)
 - `orchestration/architecture.md` - Three-layer delegation pattern
 - `orchestration/delegation.md` - Delegation patterns and depth tracking
 - `orchestration/state-management.md` - State management patterns
-- `orchestration/state-lookup.md` - Query patterns and examples
+- `orchestration/state-management.md` - State management and query patterns
 - `workflows/preflight-postflight.md` - Workflow timing standards
 - `standards/error-handling.md` - Error handling patterns
 - `formats/subagent-return.md` - Subagent return format

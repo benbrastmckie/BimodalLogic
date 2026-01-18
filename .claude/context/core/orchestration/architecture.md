@@ -403,7 +403,7 @@ Delegate to status-sync-manager with:
 
 **See Also**:
 - `orchestration/state-management.md` - Detailed state management patterns
-- `orchestration/state-lookup.md` - Query patterns and examples
+- `orchestration/state-management.md` - State management and query patterns
 
 ---
 

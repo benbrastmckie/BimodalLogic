@@ -92,7 +92,7 @@
   - Delegation depth management
   - Context passing patterns
 
-- **state-lookup.md** - State lookup utilities
+- **state-management.md** - State management and lookup utilities
   - jq patterns for task lookup
   - TODO.md grep patterns
 
