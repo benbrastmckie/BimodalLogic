@@ -29,11 +29,11 @@ technical_debt:
 
 ### 591. Find and Fix Double Forking in Skill-Agent Delegation
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
-- **Session ID**: sess_1768777196_1dc10b
+- **Session ID**: sess_1768777934_d5eb3d
 - **Research**: [research-001.md](specs/591_find_fix_double_forking/reports/research-001.md)
 
 **Description**: Investigate and fix potential double forking in skill-to-agent delegation. Current architecture shows skills have both `context: fork` (which spawns a subprocess) AND invoke Task tool (which spawns another subprocess). This may cause: (1) Memory multiplication from nested subprocesses, (2) Zombie process accumulation, (3) Unnecessary token overhead. Audit all forked skills (skill-lean-implementation, skill-implementer, skill-latex-implementation, skill-researcher, skill-lean-research, skill-planner, skill-meta, skill-document-converter). Determine if `context: fork` should be removed OR if Task invocation should be replaced with direct execution. Reference: .claude/docs/skills-vs-agents-context-behavior.md, .claude/docs/research-skill-agent-contexts.md, .claude/docs/memory-leak-fix-plan.md
@@ -76,12 +76,13 @@ technical_debt:
 
 ### 588. Complete Truth Lemma in Metalogic_v2
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Dependencies**: 587
 - **Related**: 556
 - **Created**: 2026-01-18
+- **Research**: [research-001.md](specs/588_complete_truth_lemma_metalogic_v2/reports/research-001.md)
 
 **Description**: Complete the Truth Lemma in Theories/Bimodal/Metalogic_v2/Representation/TruthLemma.lean by filling the sorry in `necessitation_lemma` (line 160) and any other remaining sorries. The truth lemma establishes that for canonical worlds, formula membership equals truth: φ ∈ w.carrier ↔ w ⊨ φ. Uses MCS properties from tasks 586-587.
 
@@ -196,10 +197,11 @@ technical_debt:
 
 ### 592. Update Metalogic_v2 README.md to reflect accurate proof status
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-18
+- **Research**: [research-001.md](specs/592_update_metalogic_v2_readme_proof_status/reports/research-001.md)
 
 **Description**: Update Theories/Bimodal/Metalogic_v2/README.md to accurately reflect current proof status. Remove `mcs_contains_or_neg` and `mcs_modus_ponens` from "With Sorries" section (they are now fully proven). Add them to "Proven" section. Verify and update remaining sorry counts. Reference task 586 research report for findings.
 
@@ -254,7 +256,7 @@ technical_debt:
 
 ### 577. Prove Compound Formula Bridge Cases
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 574

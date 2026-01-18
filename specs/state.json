@@ -8,21 +8,27 @@
     {
       "project_number": 592,
       "project_name": "update_metalogic_v2_readme_proof_status",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-18T23:08:02Z",
-      "last_updated": "2026-01-18T23:10:02Z",
-      "session_id": "sess_1768777790_d41185"
+      "last_updated": "2026-01-18T23:12:25Z",
+      "session_id": "sess_1768777790_d41185",
+      "artifacts": [
+        {
+          "path": "specs/592_update_metalogic_v2_readme_proof_status/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 591,
       "project_name": "find_fix_double_forking",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T00:33:51Z",
-      "last_updated": "2026-01-18T23:03:51Z",
+      "last_updated": "2026-01-18T23:12:27Z",
       "session_id": "sess_1768776831_85fb6e",
       "description": "Investigate and fix potential double forking in skill-to-agent delegation. Current architecture shows skills have both context: fork (which spawns a subprocess) AND invoke Task tool (which spawns another subprocess). Audit all forked skills, determine if context: fork should be removed OR if Task invocation should be replaced with direct execution.",
       "references": [
@@ -40,11 +46,17 @@
     {
       "project_number": 588,
       "project_name": "complete_truth_lemma_metalogic_v2",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:49:34Z",
-      "last_updated": "2026-01-18T23:09:46Z"
+      "last_updated": "2026-01-18T23:14:14Z",
+      "artifacts": [
+        {
+          "path": "specs/588_complete_truth_lemma_metalogic_v2/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 589,
@@ -81,11 +93,11 @@
     {
       "project_number": 577,
       "project_name": "prove_compound_formula_bridge_cases",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:12:24Z",
-      "last_updated": "2026-01-18T22:12:24Z",
+      "last_updated": "2026-01-18T23:13:15Z",
       "parent_task": 574,
       "dependencies": [
         576
