@@ -33,7 +33,7 @@
       "language": "meta",
       "priority": "high",
       "created": "2026-01-18T00:58:44Z",
-      "last_updated": "2026-01-18T02:03:06Z",
+      "last_updated": "2026-01-18T02:12:39Z",
       "artifacts": [
         {
           "path": "specs/565_investigate_workflow_interruption_issue/reports/research-001.md",
@@ -45,6 +45,10 @@
         },
         {
           "path": "specs/565_investigate_workflow_interruption_issue/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/565_investigate_workflow_interruption_issue/plans/implementation-002.md",
           "type": "plan"
         }
       ]

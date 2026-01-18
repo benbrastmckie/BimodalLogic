@@ -56,6 +56,8 @@ namespace Bimodal.Metalogic_v2.Representation
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic_v2.Core Bimodal.Metalogic_v2.Soundness
 open Bimodal.Theorems.Propositional
+open Bimodal.Metalogic.Completeness (SemanticCanonicalFrame SemanticCanonicalModel
+  SemanticWorldState semantic_weak_completeness FiniteTime temporalBound)
 
 /--
 Soundness theorem for context-based provability.
@@ -113,6 +115,22 @@ theorem not_derivable_implies_neg_consistent {φ : Formula} :
       (DerivationTree.weakening [] [] (φ.neg.neg.imp φ) dne (List.nil_subset []))
       d_neg_neg
   exact ⟨d_phi⟩
+
+/--
+Helper lemma: If phi is true at all SemanticWorldStates, then it's provable.
+
+This is a direct application of `semantic_weak_completeness` from FiniteCanonicalModel.lean.
+The key is that `semantic_weak_completeness` already contains the full contrapositive proof
+showing that if phi is not provable, there exists a SemanticWorldState where phi is false.
+
+Note: This is a `def` rather than `theorem` because the codomain `⊢ φ` is `Type` (not `Prop`).
+-/
+noncomputable def semantic_world_validity_implies_provable (φ : Formula) :
+    (∀ (w : SemanticWorldState φ),
+     Bimodal.Metalogic.Completeness.semantic_truth_at_v2 φ w
+       (FiniteTime.origin (temporalBound φ)) φ) →
+    ⊢ φ := by
+  exact semantic_weak_completeness φ
 
 /--
 **Backward direction for empty context**: semantic entailment → provability.

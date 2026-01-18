@@ -68,27 +68,28 @@ From research-001.md:
 
 ---
 
-### Phase 2: Implement Helper Lemma for neg_consistent [NOT STARTED]
+### Phase 2: Implement Helper Lemma for neg_consistent [COMPLETED]
 
 **Goal**: Create a variant of `not_derivable_implies_neg_consistent` that produces the form needed for `semantic_weak_completeness`
 
 **Tasks**:
-- [ ] Review `semantic_weak_completeness` input requirements: needs `FormulaSet` that is consistent
-- [ ] Verify that `[phi.neg]` (List) can be converted to the expected form
-- [ ] Create helper lemma `neg_consistent_of_not_provable` that bridges list-based consistency to set-based consistency if needed
+- [x] Review `semantic_weak_completeness` input requirements: needs `FormulaSet` that is consistent
+- [x] Verify that `[phi.neg]` (List) can be converted to the expected form
+- [x] Create helper lemma `neg_consistent_of_not_provable` that bridges list-based consistency to set-based consistency if needed
 
-**Timing**: 30 minutes
+**Outcome**: No additional helper lemma needed. The `semantic_weak_completeness` already contains the required `neg_consistent_of_not_provable` internally (line 3298). It uses `by_cases h_prov : Nonempty (⊢ phi)` pattern to handle the contrapositive automatically.
+
+**Timing**: 15 minutes
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic_v2/Representation/ContextProvability.lean` - Add helper lemma
+- None
 
 **Verification**:
-- Helper lemma compiles
-- Types align with what `semantic_weak_completeness` expects
+- N/A - no changes needed
 
 ---
 
-### Phase 3: Implement Contrapositive Core [NOT STARTED]
+### Phase 3: Implement Contrapositive Core [IN PROGRESS]
 
 **Goal**: Prove the contrapositive: `not ContextDerivable [] phi -> not semantic_consequence [] phi`
 
