@@ -48,7 +48,7 @@ technical_debt:
 
 ### 571. Complete MCS Infrastructure
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
@@ -141,11 +141,12 @@ technical_debt:
 
 ### 574. Restructure main_weak_completeness with semantic_truth_at_v2
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Follow-up**: 570
 - **Created**: 2026-01-18
+- **Research**: [research-001.md](specs/574_restructure_main_weak_completeness/reports/research-001.md)
 
 **Description**: Restructure `main_weak_completeness` to use `semantic_truth_at_v2` throughout, avoiding the need for the problematic bridge. Per recommendation from task 570 analysis (implementation-summary-20260118.md line 68).
 
