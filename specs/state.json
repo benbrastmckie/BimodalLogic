@@ -8,11 +8,11 @@
     {
       "project_number": 566,
       "project_name": "complete_semantic_embedding_for_completeness_proof",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T01:43:12Z",
-      "last_updated": "2026-01-18T01:49:29Z",
+      "last_updated": "2026-01-18T01:55:09Z",
       "parent_task": 560,
       "description": "Complete semantic embedding for completeness proof as per specs/560_axiom_elimination/summaries/implementation-summary-20260117.md to avoid all technical debt.",
       "artifacts": [
@@ -25,11 +25,11 @@
     {
       "project_number": 565,
       "project_name": "investigate_workflow_interruption_issue",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-18T00:58:44Z",
-      "last_updated": "2026-01-18T01:45:24Z",
+      "last_updated": "2026-01-18T01:55:13Z",
       "artifacts": [
         {
           "path": "specs/565_investigate_workflow_interruption_issue/reports/research-001.md",
@@ -113,12 +113,12 @@
     },
     {
       "project_number": 513,
-      "status": "planned",
+      "status": "implementing",
       "project_name": "Address tm_auto proof reconstruction issues",
       "section": "Medium Priority",
       "language": "lean",
       "priority": "medium",
-      "last_updated": "2026-01-18T01:48:14Z",
+      "last_updated": "2026-01-18T01:57:42Z",
       "artifacts": [
         {
           "path": "specs/513_address_tm_auto_proof_reconstruction_issues/plans/implementation-001.md",
@@ -128,13 +128,13 @@
     },
     {
       "project_number": 514,
-      "status": "planned",
+      "status": "implementing",
       "project_name": "Expand test coverage for Metalogic_v2",
       "section": "Medium Priority",
       "language": "lean",
       "priority": "medium",
       "description": "Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.",
-      "last_updated": "2026-01-18T01:46:14Z",
+      "last_updated": "2026-01-18T01:50:10Z",
       "artifacts": [
         {
           "path": "specs/514_expand_test_coverage_for_metalogic_v2/reports/research-001.md",
@@ -195,14 +195,6 @@
           "type": "summary"
         }
       ]
-    },
-    {
-      "project_number": 504,
-      "status": "not_started",
-      "project_name": "Integration of harmonic API for aristotle into lean implementer and researcher agents",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium"
     },
     {
       "project_number": 476,

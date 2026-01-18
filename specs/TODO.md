@@ -29,8 +29,8 @@ technical_debt:
 
 ### 566. Complete Semantic Embedding for Completeness Proof
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
-- **Session ID**: sess_1768700705_440112
+- **Status**: [PLANNING]
+- **Session ID**: sess_1768701303_2bdd23
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 560
@@ -43,10 +43,10 @@ technical_debt:
 
 ### 565. Investigate Workflow Interruption Issue
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: meta
-- **Session ID**: sess_1768700471_6ec3b6
+- **Session ID**: sess_1768701291_ec7db1
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-18
 - **Research**: [research-001.md](specs/565_investigate_workflow_interruption_issue/reports/research-001.md)
@@ -127,7 +127,7 @@ technical_debt:
 
 ### 514. Expand test coverage for Metalogic_v2
 - **Effort**: 10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Session ID**: sess_1768700649_97b565
@@ -232,21 +232,6 @@ technical_debt:
 **Description**: Create distinct VerifierFunction and FalsifierFunction types with mereological constraints using pure dependent type theory. Avoid set-theoretic notions while allowing different extensions for verifiers vs falsifiers. Update both Lean implementation and LaTeX documentation (lines 75-76).
 
 ---
-
-### 504. Integration of harmonic API for aristotle into lean implementer and researcher agents
-- **Effort**: 4-6 hours
-- **Status**: [REVISED]
-- **Priority**: Medium
-- **Language**: lean
-- **Session**: sess_1768539600_revise504
-- **Researched**: 2026-01-15T02:35:00Z
-- **Planned**: 2026-01-15
-- **Revised**: 2026-01-15
-- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/specs/504_aristotle_integration/reports/research-001.md)
-
-- **Plan**: [Revised integration plan for Harmonic Aristotle API into Lean implementer agent](specs/504_aristotle_integration/plans/implementation-003.md)
-
-**Description**: Design and integrate harmonic API for aristotle into lean implementer and researcher agents as appropriate. This involves API design, integration planning, and coordination between lean-specific agents.
 
 ### 476. Create document-converter-agent
 - **Effort**: 3-4 hours

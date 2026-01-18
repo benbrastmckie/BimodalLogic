@@ -51,7 +51,7 @@ Key findings from research-001.md incorporated:
 
 ## Implementation Phases
 
-### Phase 1: Core Layer Tests [NOT STARTED]
+### Phase 1: Core Layer Tests [COMPLETED]
 
 **Goal**: Create comprehensive tests for Core layer (Basic, Provability, DeductionTheorem, MaximalConsistent)
 
@@ -78,7 +78,7 @@ Key findings from research-001.md incorporated:
 
 ---
 
-### Phase 2: Soundness Layer Tests [NOT STARTED]
+### Phase 2: Soundness Layer Tests [IN PROGRESS]
 
 **Goal**: Create tests for Soundness layer with all 15 axiom validity lemmas
 
