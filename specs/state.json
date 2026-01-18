@@ -6,13 +6,66 @@
   },
   "active_projects": [
     {
+      "project_number": 578,
+      "project_name": "complete_main_weak_completeness_sorry_free",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:12:30Z",
+      "last_updated": "2026-01-18T22:12:30Z",
+      "parent_task": 574,
+      "dependencies": [
+        577
+      ],
+      "description": "Complete main_weak_completeness with zero sorries by integrating the proven compound formula cases. Resolve the time arithmetic sorry (line 4421) connecting tau.states 0 to the constructed world state. Verify all completeness theorems compile without sorries and document the final architecture."
+    },
+    {
+      "project_number": 577,
+      "project_name": "prove_compound_formula_bridge_cases",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:12:24Z",
+      "last_updated": "2026-01-18T22:12:24Z",
+      "parent_task": 574,
+      "dependencies": [
+        576
+      ],
+      "description": "Prove the 4 compound formula cases in truth_at_implies_semantic_truth: imp (line 3915), box (line 3921), all_past (line 3926), all_future (line 3931). Uses MCS negation completeness from task 576 to establish material implication and modal/temporal consistency properties."
+    },
+    {
+      "project_number": 576,
+      "project_name": "prove_mcs_negation_completeness",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:12:18Z",
+      "last_updated": "2026-01-18T22:12:18Z",
+      "parent_task": 574,
+      "dependencies": [
+        575
+      ],
+      "description": "Prove closure_mcs_negation_complete using closureWithNeg infrastructure. For any ClosureMaximalConsistent set S and formula phi in closureWithNeg, either phi in S or phi.neg in S. This is the key property enabling compound formula proofs."
+    },
+    {
+      "project_number": 575,
+      "project_name": "implement_closure_with_neg_infrastructure",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:12:12Z",
+      "last_updated": "2026-01-18T22:12:12Z",
+      "parent_task": 574,
+      "description": "Define closureWithNeg as closure union negations of closure formulas. Refactor MCS infrastructure (ClosureMaximalConsistent, worldStateFromClosureMCS) to use closureWithNeg instead of closure. This enables negation completeness properties needed for compound formula proofs."
+    },
+    {
       "project_number": 574,
       "project_name": "restructure_main_weak_completeness",
-      "status": "implementing",
+      "status": "expanded",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-18T04:18:00Z",
-      "last_updated": "2026-01-18T22:02:43Z",
+      "last_updated": "2026-01-18T22:13:04Z",
       "artifacts": [
         {
           "path": "specs/574_restructure_main_weak_completeness/reports/research-001.md",
@@ -26,6 +79,12 @@
           "path": "specs/574_restructure_main_weak_completeness/summaries/implementation-summary-20260118.md",
           "type": "summary"
         }
+      ],
+      "subtasks": [
+        575,
+        576,
+        577,
+        578
       ]
     },
     {
@@ -357,5 +416,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 575
+  "next_project_number": 579
 }

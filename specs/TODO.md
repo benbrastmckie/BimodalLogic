@@ -1,5 +1,5 @@
 ---
-next_project_number: 575
+next_project_number: 579
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -146,7 +146,7 @@ technical_debt:
 
 ### 574. Restructure main_weak_completeness with semantic_truth_at_v2
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [EXPANDED]
 - **Priority**: Medium
 - **Language**: lean
 - **Follow-up**: 570
@@ -154,8 +154,60 @@ technical_debt:
 - **Research**: [research-001.md](specs/574_restructure_main_weak_completeness/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/574_restructure_main_weak_completeness/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260118.md](specs/574_restructure_main_weak_completeness/summaries/implementation-summary-20260118.md)
+- **Subtasks**: 575, 576, 577, 578
 
 **Description**: Restructure `main_weak_completeness` to use `semantic_truth_at_v2` throughout, avoiding the need for the problematic bridge. Per recommendation from task 570 analysis (implementation-summary-20260118.md line 68).
+
+---
+
+### 575. Implement closureWithNeg Infrastructure
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: 574
+- **Created**: 2026-01-18
+
+**Description**: Define closureWithNeg as closure union negations of closure formulas. Refactor MCS infrastructure (ClosureMaximalConsistent, worldStateFromClosureMCS) to use closureWithNeg instead of closure. This enables negation completeness properties needed for compound formula proofs.
+
+---
+
+### 576. Prove MCS Negation Completeness
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: 574
+- **Dependencies**: 575
+- **Created**: 2026-01-18
+
+**Description**: Prove closure_mcs_negation_complete using closureWithNeg infrastructure. For any ClosureMaximalConsistent set S and formula phi in closureWithNeg, either phi in S or phi.neg in S. This is the key property enabling compound formula proofs.
+
+---
+
+### 577. Prove Compound Formula Bridge Cases
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: 574
+- **Dependencies**: 576
+- **Created**: 2026-01-18
+
+**Description**: Prove the 4 compound formula cases in truth_at_implies_semantic_truth: imp (line 3915), box (line 3921), all_past (line 3926), all_future (line 3931). Uses MCS negation completeness from task 576 to establish material implication and modal/temporal consistency properties.
+
+---
+
+### 578. Complete main_weak_completeness Sorry-Free
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Parent**: 574
+- **Dependencies**: 577
+- **Created**: 2026-01-18
+
+**Description**: Complete main_weak_completeness with zero sorries by integrating the proven compound formula cases. Resolve the time arithmetic sorry (line 4421) connecting tau.states 0 to the constructed world state. Verify all completeness theorems compile without sorries and document the final architecture.
 
 ---
 
