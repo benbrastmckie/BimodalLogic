@@ -78,12 +78,18 @@
     },
     {
       "project_number": 511,
-      "status": "researching",
+      "status": "researched",
       "project_name": "Resolve 26 sorry placeholders in Completeness.lean",
       "section": "Medium Priority",
       "language": "lean",
       "priority": "high",
-      "last_updated": "2026-01-18T01:02:33Z"
+      "last_updated": "2026-01-18T01:12:58Z",
+      "artifacts": [
+        {
+          "path": "specs/511_resolve_26_sorry_placeholders_in_completeness.lean/reports/research-002.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 513,
