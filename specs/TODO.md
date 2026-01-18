@@ -1,5 +1,5 @@
 ---
-next_project_number: 565
+next_project_number: 566
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 565. Investigate Workflow Interruption Issue
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-17
+
+**Description**: Investigate and fix the workflow interruption issue where commands require explicit 'continue' input to proceed. The agent system in .claude/ should be studied carefully by examining output files in .claude/output/ and reviewing completed/archived tasks to identify the root cause of this recurring issue.
+
+---
 
 ### 534. Research Claude Code Model Selection Mechanisms
 - **Effort**: 2-3 hours
