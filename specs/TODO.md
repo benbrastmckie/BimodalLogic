@@ -1,5 +1,5 @@
 ---
-next_project_number: 574
+next_project_number: 575
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -138,6 +138,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 574. Restructure main_weak_completeness with semantic_truth_at_v2
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Follow-up**: 570
+- **Created**: 2026-01-18
+
+**Description**: Restructure `main_weak_completeness` to use `semantic_truth_at_v2` throughout, avoiding the need for the problematic bridge. Per recommendation from task 570 analysis (implementation-summary-20260118.md line 68).
+
+---
 
 ### 556. Complete Metalogic_v2 Implementation
 - **Effort**: 6-10 hours
