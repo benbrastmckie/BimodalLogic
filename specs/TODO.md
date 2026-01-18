@@ -29,13 +29,15 @@ technical_debt:
 
 ### 566. Complete Semantic Embedding for Completeness Proof
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Session ID**: sess_1768701303_2bdd23
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 560
 - **Researched**: 2026-01-18
+- **Planned**: 2026-01-18
 - **Research**: [research-001.md](specs/566_complete_semantic_embedding_for_completeness_proof/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/566_complete_semantic_embedding_for_completeness_proof/plans/implementation-001.md)
 
 **Description**: Complete semantic embedding for completeness proof as per specs/560_axiom_elimination/summaries/implementation-summary-20260117.md to avoid all technical debt.
 
@@ -110,7 +112,7 @@ technical_debt:
 
 ### 513. Address tm_auto proof reconstruction issues
 - **Effort**: 5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Session ID**: sess_1768700237_c3d7bc

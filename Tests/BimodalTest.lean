@@ -10,6 +10,8 @@ import BimodalTest.Semantics.SemanticPropertyTest
 import BimodalTest.Metalogic.SoundnessTest
 import BimodalTest.Metalogic.CompletenessTest
 import BimodalTest.Metalogic.SoundnessPropertyTest
+import BimodalTest.Metalogic_v2.CoreTest
+import BimodalTest.Metalogic_v2.CorePropertyTest
 import BimodalTest.Theorems.PropositionalTest
 import BimodalTest.Theorems.ModalS4Test
 import BimodalTest.Theorems.ModalS5Test
