@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-11T21:30:00Z
 task_counts:
-  active: 23
-  completed: 170
+  active: 12
+  completed: 174
   in_progress: 0
   not_started: 25
   abandoned: 14
@@ -113,43 +113,6 @@ technical_debt:
 
 ---
 
-### 513. Address tm_auto proof reconstruction issues
-- **Effort**: 5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Session ID**: sess_1768700237_c3d7bc
-- **Created By**: Review task 506
-- **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
-- **Research**: [Research Report](specs/513_address_tm_auto_proof_reconstruction_issues/reports/research-001.md)
-- **Researched**: 2026-01-16T19:55:00Z
-- **Planned**: 2026-01-18
-- **Plan**: [implementation-001.md](specs/513_address_tm_auto_proof_reconstruction_issues/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/513_address_tm_auto_proof_reconstruction_issues/summaries/implementation-summary-20260117.md)
-- **Completed**: 2026-01-17
-
-**Description**: Address tm_auto proof reconstruction issues. Tactic implementation exists but has proof reconstruction problems.
-
----
-
-### 514. Expand test coverage for Metalogic_v2
-- **Effort**: 10 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Session ID**: sess_1768700983_5fed5d
-- **Created By**: Review task 506
-- **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
-- **Revised**: 2026-01-18
-- **Completed**: 2026-01-17
-- **Research**: [research-001.md](specs/514_expand_test_coverage_for_metalogic_v2/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/514_expand_test_coverage_for_metalogic_v2/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/514_expand_test_coverage_for_metalogic_v2/summaries/implementation-summary-20260117.md)
-
-**Description**: Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.
-
----
-
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [EXPANDED]
@@ -188,59 +151,7 @@ technical_debt:
 
 ---
 
-### 502. Complete representation theorem using context-based provability based on Task 499 foundation
- **Effort**: 4 hours
- **Status**: [COMPLETED]
- **Priority**: High
- **Language**: lean
- **Started**: 2026-01-14
-- **Completed**: 2026-01-14
- **Researched**: 2026-01-14
- **Revised**: 2026-01-14
- **Parent**: Task 499
- **Dependencies**: Task 499 (completed)
- **Research**: [research-001.md](specs/502_complete_representation_theorem/reports/research-001.md), [research-002.md](specs/502_complete_representation_theorem/reports/research-002.md)
- *
- **Analysis**: [initial-analysis.md](specs/502_complete_representation_theorem/reports/initial-analysis.md)
- **Summary**: [research-002.md](specs/502_complete_representation_theorem/summaries/research-002.md)
- **Plan**: [implementation-001.md](specs/502_complete_representation_theorem/plans/implementation-001.md)
-- **Implementation**: [RepresentationTheorems.lean](Theories/Bimodal/Metalogic/RepresentationTheorems.lean)
- **Session**: sess_1768452611_xef
-
-**Description**: Complete representation theorem using Lean native context-based provability (ContextDerivable using List Formula) throughout Bimodal/ theory. Draw on research findings that confirm context-based provability is superior to set-based SetDerivable. Eliminate set-based provability entirely and integrate with FiniteCanonicalModel.lean using context-based approach.
-
-**Key Implementation Points**:
-- Replace SetDerivable with ContextDerivable throughout Bimodal/ theory
-- Implement completeness theorems using context-based provability only
-- Remove all set-based components from RepresentationTheorems.lean
-- Integrate with FiniteCanonicalModel.lean using context-based approach
-- Ensure Lean idiomatic patterns using List Formula for provability
-- Leverage Task 499 foundation for metalogical architecture
-
-**Files**:
-- Theories/Bimodal/Metalogic/RepresentationTheorems.lean (scaffold exists)
-- FiniteCanonicalModel.lean (integration target)
-- Theories/Bimodal/Metalogic.lean (parent module)
-
----
-
 ## Medium Priority
-
-### 510. Add constraint to verifier and falsifier functions
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/specs/510_mereological_constraints_research/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/510_mereological_constraints/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260117.md](specs/510_mereological_constraints/summaries/implementation-summary-20260117.md)
-- **Researched**: 2025-01-15
-- **Planned**: 2025-01-16
-- **Completed**: 2026-01-17
-
-**Description**: Create distinct VerifierFunction and FalsifierFunction types with mereological constraints using pure dependent type theory. Avoid set-theoretic notions while allowing different extensions for verifiers vs falsifiers. Update both Lean implementation and LaTeX documentation (lines 75-76).
-
----
 
 ### 483. Investigate LaTeX aux file corruption errors
 - **Effort**: 2-3 hours

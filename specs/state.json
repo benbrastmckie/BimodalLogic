@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
-    "total_tasks": 28,
-    "last_sync": "2026-01-18T00:59:33Z"
+    "total_tasks": 12,
+    "last_sync": "2026-01-18T02:17:23Z"
   },
   "active_projects": [
     {
@@ -124,49 +124,6 @@
       ]
     },
     {
-      "project_number": 513,
-      "status": "completed",
-      "project_name": "Address tm_auto proof reconstruction issues",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium",
-      "last_updated": "2026-01-18T02:08:27Z",
-      "artifacts": [
-        {
-          "path": "specs/513_address_tm_auto_proof_reconstruction_issues/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/513_address_tm_auto_proof_reconstruction_issues/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 514,
-      "status": "completed",
-      "project_name": "Expand test coverage for Metalogic_v2",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "medium",
-      "description": "Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.",
-      "last_updated": "2026-01-18T02:06:32Z",
-      "artifacts": [
-        {
-          "path": "specs/514_expand_test_coverage_for_metalogic_v2/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/514_expand_test_coverage_for_metalogic_v2/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/514_expand_test_coverage_for_metalogic_v2/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
       "project_number": 394,
       "status": "not_started",
       "project_name": "Research and port causal semantics from paper",
@@ -189,32 +146,6 @@
       "section": "Medium Priority",
       "language": "lean",
       "priority": "high"
-    },
-    {
-      "project_number": 502,
-      "status": "completed",
-      "project_name": "Complete representation theorem using context-based provability based on Task 499 foundation",
-      "section": "Medium Priority",
-      "language": "lean",
-      "priority": "high",
-      "started": "2026-01-14",
-      "completed": "2026-01-14",
-      "last_updated": "2026-01-18T01:09:22Z"
-    },
-    {
-      "project_number": 510,
-      "status": "completed",
-      "project_name": "Add constraint to verifier and falsifier functions",
-      "section": "Medium Priority",
-      "language": "latex",
-      "priority": "medium",
-      "last_updated": "2026-01-18T01:47:56Z",
-      "artifacts": [
-        {
-          "path": "specs/510_mereological_constraints/summaries/implementation-summary-20260117.md",
-          "type": "summary"
-        }
-      ]
     },
     {
       "project_number": 483,
