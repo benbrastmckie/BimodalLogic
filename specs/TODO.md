@@ -108,14 +108,16 @@ technical_debt:
 
 ### 513. Address tm_auto proof reconstruction issues
 - **Effort**: 5 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
-- **Session ID**: sess_1768700287_a9cd8b
+- **Session ID**: sess_1768700237_c3d7bc
 - **Created By**: Review task 506
 - **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
 - **Research**: [Research Report](specs/513_address_tm_auto_proof_reconstruction_issues/reports/research-001.md)
 - **Researched**: 2026-01-16T19:55:00Z
+- **Planned**: 2026-01-18
+- **Plan**: [implementation-001.md](specs/513_address_tm_auto_proof_reconstruction_issues/plans/implementation-001.md)
 
 **Description**: Address tm_auto proof reconstruction issues. Tactic implementation exists but has proof reconstruction problems.
 

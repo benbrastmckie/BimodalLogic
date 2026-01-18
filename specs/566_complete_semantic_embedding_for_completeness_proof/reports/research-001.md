@@ -142,21 +142,17 @@ To complete either approach, the following theorems need proofs:
 4. `semantic_canonical_model_correct` (line ~3835)
    - Need: Tie everything together for completeness
 
-### 6. Alternative: Simpler Proof via FMP
+### 6. Alternative: Proof via Contrapositive and Direct Instantiation
 
-The Finite Model Property (FMP) approach might be simpler:
+A potentially simpler approach uses the contrapositive directly:
 
-1. If `¬ContextDerivable [] φ`, then φ.neg is consistent
-2. By `finite_model_property_contrapositive` (line ~4060): there exists a finite countermodel
-3. This finite countermodel witnesses `¬semantic_consequence [] φ`
+1. If `¬ContextDerivable [] φ`, then φ.neg is consistent (PROVEN: `not_derivable_implies_neg_consistent`)
+2. By `semantic_weak_completeness` contrapositive: there exists a `SemanticWorldState φ` where φ is false
+3. Construct a `WorldHistory (SemanticCanonicalFrame φ)` containing this state
+4. Instantiate `semantic_consequence [] φ` with `D = Int`, `F = SemanticCanonicalFrame φ`
+5. Get contradiction: φ should be true (by hypothesis) but is false (by construction)
 
-The FMP theorem IS proven (see line ~4060-4145):
-```lean
-theorem finite_model_property_contrapositive (φ : Formula) :
-    ¬(⊢ φ) → ∃ (FF : FiniteTaskFrame Int) ...
-```
-
-This shows: if φ is not provable, there exists a finite model falsifying φ.
+**Note on FMP**: The `finite_model_property_v2` theorem (line ~4074-4161) has 1 sorry at line 4161 for the bridge from `semantic_truth_at_v2` to `truth_at`. So it cannot be used directly until that sorry is resolved.
 
 ### 7. Architecture Analysis
 
