@@ -57,10 +57,11 @@ technical_debt:
 
 ### 570. Analyze Compound Formula Proof Requirements
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: 566
+- **Research**: [research-001.md](specs/570_analyze_compound_formula_proof_requirements/reports/research-001.md)
 
 **Description**: Analyze what is needed to complete the 4 compound formula cases (imp, box, all_past, all_future) in truth_at_implies_semantic_truth. Document the proof obligations, required lemmas, and relationship between truth_at and assignment functions.
 
