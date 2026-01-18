@@ -474,33 +474,40 @@ theorem mem_closure_iff_mem_set (phi psi : Formula) :
   simp only [Finset.mem_coe]
 
 /--
-Closure-restricted consistency: a set of formulas that is a subset of the closure
+Closure-restricted consistency: a set of formulas that is a subset of closureWithNeg
 and is set-consistent.
 
 `ClosureConsistent phi S` means:
-1. S ⊆ closure phi (restricted to closure)
+1. S ⊆ closureWithNeg phi (restricted to closure plus negations)
 2. SetConsistent S (every finite subset is consistent)
+
+Note: We use closureWithNeg instead of closure to ensure negation completeness.
+This means S can contain both formulas from the closure and their negations.
 -/
 def ClosureConsistent (phi : Formula) (S : Set Formula) : Prop :=
-  S ⊆ (closure phi : Set Formula) ∧ SetConsistent S
+  S ⊆ (closureWithNeg phi : Set Formula) ∧ SetConsistent S
 
 /--
 Closure-restricted maximal consistency: a closure-consistent set that cannot be
-properly extended within the closure while remaining consistent.
+properly extended within closureWithNeg while remaining consistent.
 
 `ClosureMaximalConsistent phi S` means:
 1. ClosureConsistent phi S
-2. For all ψ in closure phi, if ψ ∉ S, then S ∪ {ψ} is inconsistent
+2. For all ψ in closureWithNeg phi, if ψ ∉ S, then S ∪ {ψ} is inconsistent
+
+Note: We use closureWithNeg instead of closure to ensure negation completeness.
+This guarantees: for any ψ ∈ closure phi, either ψ ∈ S or neg ψ ∈ S
+(since neg ψ ∈ closureWithNeg phi by construction).
 -/
 def ClosureMaximalConsistent (phi : Formula) (S : Set Formula) : Prop :=
   ClosureConsistent phi S ∧
-  ∀ ψ : Formula, ψ ∈ closure phi → ψ ∉ S → ¬SetConsistent (insert ψ S)
+  ∀ ψ : Formula, ψ ∈ closureWithNeg phi → ψ ∉ S → ¬SetConsistent (insert ψ S)
 
 /--
-A closure-consistent set is a subset of the closure.
+A closure-consistent set is a subset of closureWithNeg.
 -/
 theorem closure_consistent_subset {phi : Formula} {S : Set Formula}
-    (h : ClosureConsistent phi S) : S ⊆ (closure phi : Set Formula) :=
+    (h : ClosureConsistent phi S) : S ⊆ (closureWithNeg phi : Set Formula) :=
   h.1
 
 /--
@@ -525,11 +532,11 @@ theorem closure_mcs_set_consistent {phi : Formula} {S : Set Formula}
   h.1.2
 
 /--
-A closure-maximal consistent set is maximal wrt adding closure formulas.
+A closure-maximal consistent set is maximal wrt adding closureWithNeg formulas.
 -/
 theorem closure_mcs_maximal {phi : Formula} {S : Set Formula}
     (h : ClosureMaximalConsistent phi S) (ψ : Formula)
-    (h_mem : ψ ∈ closure phi) (h_not : ψ ∉ S) : ¬SetConsistent (insert ψ S) :=
+    (h_mem : ψ ∈ closureWithNeg phi) (h_not : ψ ∉ S) : ¬SetConsistent (insert ψ S) :=
   h.2 ψ h_mem h_not
 
 /--
@@ -599,83 +606,92 @@ maximal consistent subset of the closure. This uses the full Lindenbaum lemma
 -/
 
 /--
-Closure Lindenbaum via projection: Given a consistent subset of the closure,
-extend it to a maximal consistent subset of the closure.
+Closure Lindenbaum via projection: Given a consistent subset of closureWithNeg,
+extend it to a maximal consistent subset of closureWithNeg.
 
 **Strategy**: Use `set_lindenbaum` to get a full maximal consistent set M,
-then project M ∩ (closure phi) to get the closure-restricted maximal set.
+then project M ∩ (closureWithNeg phi) to get the closure-restricted maximal set.
 
 This theorem is key for constructing world states in the finite canonical model.
 -/
 theorem closure_lindenbaum_via_projection (phi : Formula) (S : Set Formula)
-    (h_sub : S ⊆ (closure phi : Set Formula)) (h_cons : SetConsistent S) :
+    (h_sub : S ⊆ (closureWithNeg phi : Set Formula)) (h_cons : SetConsistent S) :
     ∃ M : Set Formula, S ⊆ M ∧ ClosureMaximalConsistent phi M := by
   -- Step 1: Get full MCS containing S using set_lindenbaum
   obtain ⟨M_full, h_S_sub, h_mcs⟩ := set_lindenbaum S h_cons
-  -- Step 2: Project to closure
-  let M := M_full ∩ (closure phi : Set Formula)
+  -- Step 2: Project to closureWithNeg
+  let M := M_full ∩ (closureWithNeg phi : Set Formula)
   use M
   constructor
-  · -- S ⊆ M follows from S ⊆ M_full and S ⊆ closure phi
+  · -- S ⊆ M follows from S ⊆ M_full and S ⊆ closureWithNeg phi
     intro ψ h_ψ
     exact ⟨h_S_sub h_ψ, h_sub h_ψ⟩
   · constructor
     · constructor
-      · -- M ⊆ closure phi (by definition of intersection)
+      · -- M ⊆ closureWithNeg phi (by definition of intersection)
         exact Set.inter_subset_right
       · -- SetConsistent M (subset of consistent M_full)
         intro L h_L
         have h_L_full : ∀ φ' ∈ L, φ' ∈ M_full := fun φ' hφ' => (h_L φ' hφ').1
         exact h_mcs.1 L h_L_full
-    · -- Closure-restricted maximality
-      intro ψ h_ψ_closure h_ψ_not_M h_cons'
-      -- If ψ ∈ closure phi and ψ ∉ M, then either:
+    · -- Closure-restricted maximality (now over closureWithNeg)
+      intro ψ h_ψ_closureWithNeg h_ψ_not_M h_cons'
+      -- If ψ ∈ closureWithNeg phi and ψ ∉ M, then either:
       -- 1. ψ ∉ M_full → contradicts maximality of M_full
-      -- 2. ψ ∈ M_full → contradicts ψ ∉ M (since M = M_full ∩ closure)
+      -- 2. ψ ∈ M_full → contradicts ψ ∉ M (since M = M_full ∩ closureWithNeg)
       by_cases h : ψ ∈ M_full
       · -- Case: ψ ∈ M_full
-        -- Then ψ ∈ M_full ∩ closure phi = M, contradiction
-        exact h_ψ_not_M ⟨h, h_ψ_closure⟩
+        -- Then ψ ∈ M_full ∩ closureWithNeg phi = M, contradiction
+        exact h_ψ_not_M ⟨h, h_ψ_closureWithNeg⟩
       · -- Case: ψ ∉ M_full
         -- By maximality of M_full, insert ψ M_full is inconsistent
         have h_full_incons : ¬SetConsistent (insert ψ M_full) := h_mcs.2 ψ h
-        -- We need to show insert ψ M is also inconsistent.
-        --
-        -- Key insight: Since ψ ∉ M_full, the full MCS derives ¬ψ.
-        -- By closure under derivation: ¬ψ ∈ M_full
-        --
-        -- Now if ¬ψ ∈ M (i.e., ¬ψ ∈ closure phi), then insert ψ M contains both
-        -- ψ and ¬ψ, making it inconsistent.
-        --
-        -- If ¬ψ ∉ closure phi, the argument is more subtle.
-        -- For completeness, we work with closureWithNeg which ensures negations are available.
-        --
-        -- For now, we use the fact that the proof structure is correct and
-        -- defer the detailed argument. The key property (closure MCS exists) holds
-        -- by the full Lindenbaum lemma; we just need to verify maximality carefully.
-        --
-        -- Technical: we derive ¬ψ ∈ M_full from h_full_incons, then check if in closure.
+        -- Since insert ψ M_full is inconsistent and M ⊆ M_full,
+        -- insert ψ M is also inconsistent (smaller context, same derivation works)
+        intro h_M_cons
+        apply h_full_incons
+        -- SetConsistent (insert ψ M_full) follows from:
+        -- For any L ⊆ insert ψ M_full, we need to show Consistent L
+        intro L h_L_sub
+        -- If L ⊆ insert ψ M, then by h_M_cons, Consistent L
+        -- If L contains elements from M_full \ M, we need more work...
+        -- Actually, the issue is M ⊆ M_full, so insert ψ M ⊆ insert ψ M_full
+        -- The other direction: if insert ψ M_full inconsistent, then
+        -- extract L ⊆ insert ψ M_full with L inconsistent.
+        -- The elements of L are either ψ or in M_full.
+        -- If the elements in M_full ∩ L are also in M (i.e., in closureWithNeg),
+        -- then L ⊆ insert ψ M, contradicting h_M_cons.
+        -- Otherwise, some element is in M_full \ closureWithNeg.
+        -- But then we can't directly argue...
+        -- This requires that the inconsistency witness can be projected.
+        -- For now, use sorry - this is the same gap as before.
         sorry
 
 /--
 Closure-maximal consistent sets satisfy negation-completeness for formulas
-whose negations are also in the closure.
+in the closure.
 
-**Key Property**: For ψ ∈ closure phi with ψ.neg ∈ closure phi,
-either ψ ∈ S or ψ.neg ∈ S.
+**Key Property**: For ψ ∈ closure phi, either ψ ∈ S or ψ.neg ∈ S.
+
+This is now simpler because ClosureMaximalConsistent uses closureWithNeg,
+which guarantees that neg ψ is available for maximality checking.
 
 This enables the backward directions of the truth lemma.
 -/
 theorem closure_mcs_negation_complete {phi : Formula} {S : Set Formula}
     (h_mcs : ClosureMaximalConsistent phi S) (ψ : Formula)
-    (h_psi : ψ ∈ closure phi) (h_neg : Formula.neg ψ ∈ closure phi) :
+    (h_psi : ψ ∈ closure phi) :
     ψ ∈ S ∨ (Formula.neg ψ) ∈ S := by
+  -- Key: neg ψ ∈ closureWithNeg phi by construction
+  have h_neg : Formula.neg ψ ∈ closureWithNeg phi := closureWithNeg_neg_mem h_psi
+  -- Also, ψ ∈ closureWithNeg phi since closure ⊆ closureWithNeg
+  have h_psi' : ψ ∈ closureWithNeg phi := closure_subset_closureWithNeg phi h_psi
   by_cases h : ψ ∈ S
   · left; exact h
   · right
-    -- If ψ ∉ S and ψ ∈ closure phi, then insert ψ S is inconsistent by maximality
-    have h_incons : ¬SetConsistent (insert ψ S) := h_mcs.2 ψ h_psi h
-    -- Since ψ.neg ∈ closure phi (given as h_neg), by maximality:
+    -- If ψ ∉ S and ψ ∈ closureWithNeg phi, then insert ψ S is inconsistent by maximality
+    have h_incons : ¬SetConsistent (insert ψ S) := h_mcs.2 ψ h_psi' h
+    -- Since ψ.neg ∈ closureWithNeg phi, by maximality:
     -- either ψ.neg ∈ S or insert (ψ.neg) S is inconsistent
     by_contra h_neg_not_in_S
     -- We have: insert ψ S inconsistent, insert ψ.neg S inconsistent, but S consistent
@@ -806,7 +822,9 @@ theorem closure_mcs_imp_closed {phi : Formula} {S : Set Formula}
     (h_chi_closure : chi ∈ closure phi) : chi ∈ S := by
   -- If chi ∉ S, then insert chi S is inconsistent
   by_contra h_chi_not
-  have h_incons : ¬SetConsistent (insert chi S) := h_mcs.2 chi h_chi_closure h_chi_not
+  -- chi ∈ closure phi implies chi ∈ closureWithNeg phi
+  have h_chi_closureWithNeg : chi ∈ closureWithNeg phi := closure_subset_closureWithNeg phi h_chi_closure
+  have h_incons : ¬SetConsistent (insert chi S) := h_mcs.2 chi h_chi_closureWithNeg h_chi_not
   have h_S_cons : SetConsistent S := h_mcs.1.2
 
   -- We can derive chi from ψ → chi and ψ (both in S)
@@ -3334,8 +3352,11 @@ theorem finite_forward_existence_thm (phi : Formula) (w : FiniteWorldState phi) 
     ∃ u : FiniteWorldState phi, finite_task_rel phi w 1 u := by
   let S := forwardTransferRequirements phi w
   have h_sub := forwardTransferRequirements_subset phi w
+  -- Lift from closure to closureWithNeg (which is what closure_lindenbaum expects)
+  have h_sub' : S ⊆ (closureWithNeg phi : Set Formula) :=
+    Set.Subset.trans h_sub (closure_subset_closureWithNeg phi)
   have h_cons := forwardTransferRequirements_consistent phi w
-  obtain ⟨M, _, h_mcs⟩ := closure_lindenbaum_via_projection phi S h_sub h_cons
+  obtain ⟨M, _, h_mcs⟩ := closure_lindenbaum_via_projection phi S h_sub' h_cons
   let u := worldStateFromClosureMCS phi M h_mcs
   use u
   sorry
@@ -3376,8 +3397,11 @@ theorem finite_backward_existence_thm (phi : Formula) (w : FiniteWorldState phi)
     ∃ u : FiniteWorldState phi, finite_task_rel phi w (-1) u := by
   let S := backwardTransferRequirements phi w
   have h_sub := backwardTransferRequirements_subset phi w
+  -- Lift from closure to closureWithNeg (which is what closure_lindenbaum expects)
+  have h_sub' : S ⊆ (closureWithNeg phi : Set Formula) :=
+    Set.Subset.trans h_sub (closure_subset_closureWithNeg phi)
   have h_cons := backwardTransferRequirements_consistent phi w
-  obtain ⟨M, _, h_mcs⟩ := closure_lindenbaum_via_projection phi S h_sub h_cons
+  obtain ⟨M, _, h_mcs⟩ := closure_lindenbaum_via_projection phi S h_sub' h_cons
   let u := worldStateFromClosureMCS phi M h_mcs
   use u
   sorry
@@ -3522,47 +3546,50 @@ theorem set_mcs_neg_excludes {S : Set Formula} (h_mcs : SetMaximalConsistent S)
   exact set_consistent_not_both h_mcs.1 phi h_phi h_neg
 
 /--
-Projection of a full MCS to closure gives a closure MCS.
+Projection of a full MCS to closureWithNeg gives a closure MCS.
 
 Given a SetMaximalConsistent set M and a formula phi, the intersection
-M ∩ closure(phi) is a ClosureMaximalConsistent set for phi.
+M ∩ closureWithNeg(phi) is a ClosureMaximalConsistent set for phi.
 
-**Note**: The maximality proof requires showing that for ψ ∈ closure(phi) with ψ ∉ M,
-the set insert ψ (M ∩ closure phi) is inconsistent. This uses the fact that ψ.neg ∈ M
-(by MCS negation completeness) and the derivation [ψ, ψ.neg] ⊢ ⊥. The subtlety is
-ensuring ψ.neg ∈ closure(phi) or that the inconsistency can be witnessed within
-the closure; for standard completeness proofs this holds when closure is closed
-under negation of its elements, which requires closureWithNeg.
+**Key insight**: Using closureWithNeg ensures that for any ψ ∈ closure(phi),
+we have ψ.neg ∈ closureWithNeg(phi), enabling the maximality argument.
 -/
 theorem mcs_projection_is_closure_mcs (phi : Formula) (M : Set Formula)
     (h_mcs : SetMaximalConsistent M) :
-    ClosureMaximalConsistent phi (M ∩ (closure phi : Set Formula)) := by
+    ClosureMaximalConsistent phi (M ∩ (closureWithNeg phi : Set Formula)) := by
   constructor
   · constructor
-    · -- M ∩ closure(phi) ⊆ closure(phi)
+    · -- M ∩ closureWithNeg(phi) ⊆ closureWithNeg(phi)
       exact Set.inter_subset_right
-    · -- SetConsistent (M ∩ closure(phi))
+    · -- SetConsistent (M ∩ closureWithNeg(phi))
       intro L hL
-      -- L ⊆ M ∩ closure(phi) ⊆ M, so L ⊆ M
+      -- L ⊆ M ∩ closureWithNeg(phi) ⊆ M, so L ⊆ M
       have h_sub_M : ∀ ψ ∈ L, ψ ∈ M := fun ψ hψ => (hL ψ hψ).1
       exact h_mcs.1 L h_sub_M
-  · -- Maximality: for ψ ∈ closure(phi), if ψ ∉ M ∩ closure(phi), then insert ψ is inconsistent
-    intro ψ h_ψ_closure h_ψ_not_mem
-    -- ψ ∈ closure(phi) but ψ ∉ M ∩ closure(phi)
-    -- So ψ ∉ M (since if ψ ∈ M, then ψ ∈ M ∩ closure(phi))
+  · -- Maximality: for ψ ∈ closureWithNeg(phi), if ψ ∉ M ∩ closureWithNeg(phi), then insert ψ is inconsistent
+    intro ψ h_ψ_closureWithNeg h_ψ_not_mem
+    -- ψ ∈ closureWithNeg(phi) but ψ ∉ M ∩ closureWithNeg(phi)
+    -- So ψ ∉ M (since if ψ ∈ M, then ψ ∈ M ∩ closureWithNeg(phi))
     have h_ψ_not_M : ψ ∉ M := by
       intro h
-      exact h_ψ_not_mem ⟨h, h_ψ_closure⟩
+      exact h_ψ_not_mem ⟨h, h_ψ_closureWithNeg⟩
     -- By MCS negation completeness: ψ.neg ∈ M
     have h_neg_in_M : ψ.neg ∈ M := by
       cases set_mcs_negation_complete h_mcs ψ with
       | inl h => exact absurd h h_ψ_not_M
       | inr h => exact h
-    -- Now we show insert ψ (M ∩ closure phi) is inconsistent
-    -- The key is that ψ.neg ∈ M (by h_neg_in_M). If ψ.neg ∈ closure phi,
-    -- then {ψ, ψ.neg} ⊆ insert ψ (M ∩ closure phi), making it inconsistent.
-    -- This requires closure to be closed under negations of its elements.
-    -- For now we use sorry as this requires closureWithNeg (see docstring).
+    -- Now we show insert ψ (M ∩ closureWithNeg phi) is inconsistent
+    -- We need to show ψ.neg is also in closureWithNeg to use the inconsistency witness
+    -- Case split on whether ψ ∈ closure phi or ψ = chi.neg for some chi ∈ closure phi
+    intro h_cons
+    -- The key insight is that we can derive ⊥ from {ψ, ψ.neg} or from {chi.neg, chi}
+    -- depending on which case we're in. Both witnesses are in insert ψ (M ∩ closureWithNeg phi).
+    --
+    -- Case 1: ψ ∈ closure phi → ψ.neg ∈ closureWithNeg phi, use [ψ, ψ.neg] ⊢ ⊥
+    -- Case 2: ψ = chi.neg for chi ∈ closure → chi ∈ M ∩ closureWithNeg, use [chi.neg, chi] ⊢ ⊥
+    --
+    -- The detailed proof is somewhat technical due to list membership handling.
+    -- For now we use sorry and document the proof strategy above.
     sorry
 
 /--
@@ -3611,11 +3638,11 @@ noncomputable def semantic_weak_completeness (phi : Formula) :
     -- Step 4: phi ∉ M (by consistency)
     have h_phi_not_M : phi ∉ M := set_mcs_neg_excludes h_M_mcs phi h_neg_in_M
 
-    -- Step 5: Project to closure MCS
-    let S := M ∩ (closure phi : Set Formula)
+    -- Step 5: Project to closureWithNeg MCS
+    let S := M ∩ (closureWithNeg phi : Set Formula)
     have h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M h_M_mcs
 
-    -- Step 6: phi ∉ S (since phi ∈ closure(phi) but phi ∉ M)
+    -- Step 6: phi ∉ S (since phi ∈ closureWithNeg(phi) but phi ∉ M)
     have h_phi_closure : phi ∈ closure phi := self_mem_closure phi
     have h_phi_not_S : phi ∉ S := by
       intro h
@@ -4368,11 +4395,11 @@ noncomputable def main_weak_completeness (phi : Formula) (h_valid : valid phi) :
     -- Step 4: phi ∉ M (by consistency)
     have h_phi_not_M : phi ∉ M := set_mcs_neg_excludes h_M_mcs phi h_neg_in_M
 
-    -- Step 5: Project to closure MCS
-    let S := M ∩ (closure phi : Set Formula)
+    -- Step 5: Project to closureWithNeg MCS
+    let S := M ∩ (closureWithNeg phi : Set Formula)
     have h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M h_M_mcs
 
-    -- Step 6: phi ∉ S (since phi ∈ closure(phi) but phi ∉ M)
+    -- Step 6: phi ∉ S (since phi ∈ closureWithNeg(phi) but phi ∉ M)
     have h_phi_closure : phi ∈ closure phi := self_mem_closure phi
     have h_phi_not_S : phi ∉ S := fun h => h_phi_not_M h.1
 
@@ -4609,13 +4636,14 @@ theorem finite_model_property_v2 (φ : Formula) :
   -- Step 4: φ ∈ M (from subset property)
   have h_phi_in_M : φ ∈ M := h_sub_M (Set.mem_singleton φ)
 
-  -- Step 5: Project M to closure(φ) to get a closure MCS S
-  let S := M ∩ (closure φ : Set Formula)
+  -- Step 5: Project M to closureWithNeg(φ) to get a closure MCS S
+  let S := M ∩ (closureWithNeg φ : Set Formula)
   have h_S_mcs : ClosureMaximalConsistent φ S := mcs_projection_is_closure_mcs φ M h_M_mcs
 
-  -- Step 6: φ ∈ S (since φ ∈ M and φ ∈ closure φ)
+  -- Step 6: φ ∈ S (since φ ∈ M and φ ∈ closureWithNeg φ)
   have h_phi_closure : φ ∈ closure φ := self_mem_closure φ
-  have h_phi_in_S : φ ∈ S := ⟨h_phi_in_M, h_phi_closure⟩
+  have h_phi_closureWithNeg : φ ∈ closureWithNeg φ := closure_subset_closureWithNeg φ h_phi_closure
+  have h_phi_in_S : φ ∈ S := ⟨h_phi_in_M, h_phi_closureWithNeg⟩
 
   -- Step 7: Build FiniteWorldState from S where φ is true
   let w := worldStateFromClosureMCS φ S h_S_mcs
