@@ -66,11 +66,11 @@
     {
       "project_number": 569,
       "project_name": "analyze_proof_strategy_alternatives",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T03:42:56Z",
-      "last_updated": "2026-01-18T04:00:11Z",
+      "last_updated": "2026-01-18T04:05:32Z",
       "parent_task": 566,
       "description": "Analyze different proof strategies for completing the semantic embedding in task 566. Compare contrapositive approach, direct instantiation, and alternative lemmas from rollback section.",
       "artifacts": [
@@ -81,6 +81,10 @@
         {
           "path": "specs/569_analyze_proof_strategy_alternatives/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/569_analyze_proof_strategy_alternatives/reports/research-002.md",
+          "type": "research"
         }
       ]
     },
