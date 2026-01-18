@@ -97,10 +97,12 @@
     {
       "project_number": 514,
       "status": "not_started",
-      "project_name": "Expand test coverage for Logos theory modules",
+      "project_name": "Expand test coverage for Metalogic_v2",
       "section": "Medium Priority",
       "language": "lean",
-      "priority": "medium"
+      "priority": "medium",
+      "description": "Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.",
+      "last_updated": "2026-01-18T02:05:37Z"
     },
     {
       "project_number": 394,
