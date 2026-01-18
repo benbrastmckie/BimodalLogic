@@ -79,11 +79,12 @@ technical_debt:
 
 ### 593. Complete consistent_iff_consistent' in Basic.lean
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-18
 - **Related**: 588, 561
+- **Research**: [research-001.md](specs/593_complete_consistent_iff_consistent_basic_lean/reports/research-001.md)
 
 **Description**: Complete the sorry remaining in Metalogic_v2/Core/ for `consistent_iff_consistent'` in Basic.lean. This lemma establishes equivalence between the two consistency definitions used in the codebase.
 
