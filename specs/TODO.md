@@ -61,7 +61,7 @@ technical_debt:
 
 ### 560. Axiom Elimination
 - **Effort**: 1-2 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
@@ -69,6 +69,7 @@ technical_debt:
 - **Parent**: 556
 - **Dependencies**: 558
 - **Research**: [research-001.md](specs/560_axiom_elimination/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/560_axiom_elimination/plans/implementation-001.md)
 
 **Description**: Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean. Uses completeness contrapositive argument.
 

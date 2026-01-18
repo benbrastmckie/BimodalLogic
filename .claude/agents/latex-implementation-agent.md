@@ -1,7 +1,6 @@
 ---
 name: latex-implementation-agent
 description: Implement LaTeX documents following implementation plans
-model: sonnet
 ---
 
 # LaTeX Implementation Agent

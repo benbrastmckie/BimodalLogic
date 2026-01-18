@@ -1,7 +1,6 @@
 ---
 name: lean-implementation-agent
 description: Implement Lean 4 proofs following implementation plans
-model: opus
 ---
 
 # Lean Implementation Agent

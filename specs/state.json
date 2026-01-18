@@ -21,7 +21,7 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-18T01:21:27Z",
+      "last_updated": "2026-01-18T01:21:39Z",
       "parent_task": 556,
       "dependencies": [
         558
@@ -31,6 +31,10 @@
         {
           "path": "specs/560_axiom_elimination/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/560_axiom_elimination/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
