@@ -116,17 +116,21 @@
     },
     {
       "project_number": 514,
-      "status": "planning",
+      "status": "planned",
       "project_name": "Expand test coverage for Metalogic_v2",
       "section": "Medium Priority",
       "language": "lean",
       "priority": "medium",
       "description": "Improve test coverage for Bimodal/Metalogic_v2/ directory. Draw inspiration from the original Metalogic/ test directory patterns, but focus on the new architecture which makes the representation theorem central. Do not import from old Metalogic/ versions since these will be removed in favor of Metalogic_v2/.",
-      "last_updated": "2026-01-18T01:44:21Z",
+      "last_updated": "2026-01-18T01:46:14Z",
       "artifacts": [
         {
           "path": "specs/514_expand_test_coverage_for_metalogic_v2/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/514_expand_test_coverage_for_metalogic_v2/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
