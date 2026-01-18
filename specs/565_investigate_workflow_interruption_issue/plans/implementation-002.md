@@ -111,45 +111,46 @@ Key findings from research-001.md and research-002.md:
 
 ---
 
-### Phase 3: Distill Core Orchestration Files [NOT STARTED]
+### Phase 3: Trim and Divide Core Orchestration Files [NOT STARTED]
 
-**Goal**: Apply progressive disclosure to the largest orchestration context files
+**Goal**: Reduce size of largest context files by trimming fat and dividing where appropriate
 
 **Target files** (from research):
-- `state-management.md` (33KB) → Split to quick + detail
-- `state-lookup.md` (25KB) → Merge relevant parts, distill rest
-- `delegation.md` (24KB) → Extract essentials, move examples to ref
-- `architecture.md` (24KB) → Create quick overview + full ref
-- `error-handling.md` (23KB) → Distill patterns, keep examples separate
+- `state-management.md` (33KB) → Trim verbose examples, consider dividing read/write ops
+- `state-lookup.md` (25KB) → Remove redundancy with state-management
+- `delegation.md` (24KB) → Trim verbose examples, keep patterns concise
+- `architecture.md` (24KB) → Trim, keep structure intact
+- `error-handling.md` (23KB) → Trim redundant examples
 
 **Tasks**:
-- [ ] Create `state-management-quick.md` with essential rules (<5KB)
-- [ ] Create `delegation-quick.md` with core patterns (<5KB)
-- [ ] Consolidate redundant content between state-management and state-lookup
-- [ ] Move verbose examples to `-ref.md` files
-- [ ] Update original files to reference the quick versions
+- [ ] Trim `state-management.md`: Remove verbose examples, consolidate repetitive sections
+- [ ] Review `state-lookup.md` vs `state-management.md`: eliminate redundancy
+- [ ] Trim `delegation.md`: Keep patterns, remove overly detailed examples
+- [ ] **If natural split exists**, divide state-management (e.g., read vs write operations)
+- [ ] Ensure all @-references remain valid after any divisions
 
 **Timing**: 60 minutes
 
 **Verification**:
-- Quick files are <5KB each
-- Original files reduced by >40%
-- No essential information lost (moved, not deleted)
-- @-references point to correct locations
+- Files reduced by 30-50% in size
+- No essential information lost
+- Structure (core/orchestration/) preserved
+- All @-references valid
 
 ---
 
-### Phase 4: Update Agent Context Loading [NOT STARTED]
+### Phase 4: Optimize Agent Context Loading [NOT STARTED]
 
-**Goal**: Configure agents to load quick-reference by default, full context on-demand
+**Goal**: Ensure agents load only necessary context files - nothing more, nothing less
 
 **Tasks**:
-- [ ] Update agent files to reference `-quick.md` versions instead of full files
-- [ ] Add "For more detail, see @..." notes in agent prompts
-- [ ] Ensure critical operations still have necessary context
-- [ ] Test each agent type with a simple operation
+- [ ] Review each agent's @-references: are they all necessary?
+- [ ] Remove @-references to files the agent doesn't actually need
+- [ ] Add @-references where agents are missing critical context
+- [ ] Ensure no redundant loading (multiple files with overlapping content)
+- [ ] Test each agent type to verify functionality
 
-**Files to modify**:
+**Files to review**:
 - `.claude/agents/general-research-agent.md`
 - `.claude/agents/planner-agent.md`
 - `.claude/agents/general-implementation-agent.md`
@@ -160,8 +161,8 @@ Key findings from research-001.md and research-002.md:
 **Timing**: 45 minutes
 
 **Verification**:
-- Agents reference quick files by default
-- Progressive disclosure paths are documented in agents
+- Each agent loads exactly what it needs (no more, no less)
+- No broken @-references
 - Manual test: spawn each agent type, verify functionality
 
 ---
@@ -185,10 +186,10 @@ Key findings from research-001.md and research-002.md:
 - Implementation summary
 
 **Success criteria**:
-- Total context size reduced by >30%
-- Default agent context load reduced by >50%
+- Total context size reduced by 20-40%
+- Largest files reduced by 30-50%
 - All agent operations still function correctly
-- Progressive disclosure paths are clear
+- core/ and project/ structure preserved
 
 ## Testing & Validation
 
@@ -203,13 +204,14 @@ Key findings from research-001.md and research-002.md:
 
 - `specs/565_investigate_workflow_interruption_issue/plans/implementation-002.md` (this file)
 - `specs/565_investigate_workflow_interruption_issue/summaries/implementation-summary-YYYYMMDD.md`
-- New quick-reference context files (`*-quick.md`)
-- Updated agent files with progressive loading
-- Updated `.claude/context/index.md`
+- Trimmed context files in `.claude/context/core/` and `.claude/context/project/`
+- Divided files (if appropriate splits were identified)
+- Updated agent files with optimized @-references
+- Updated `.claude/context/index.md` if structure changed
 
 ## Rollback/Contingency
 
 - All original context files preserved in git history
-- If distillation causes issues, revert specific files
-- Keep original files alongside quick versions during testing
-- Document any content that proved essential despite initial categorization
+- If trimming causes issues, revert specific files
+- Structure preserved, so no major rollback concerns
+- Document any content that proved essential and was restored
