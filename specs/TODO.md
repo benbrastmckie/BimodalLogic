@@ -77,7 +77,7 @@ technical_debt:
 
 ### 588. Complete Truth Lemma in Metalogic_v2
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: lean
 - **Dependencies**: 587
@@ -198,11 +198,12 @@ technical_debt:
 
 ### 592. Update Metalogic_v2 README.md to reflect accurate proof status
 - **Effort**: 1 hour
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-18
 - **Research**: [research-001.md](specs/592_update_metalogic_v2_readme_proof_status/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/592_update_metalogic_v2_readme_proof_status/plans/implementation-001.md)
 
 **Description**: Update Theories/Bimodal/Metalogic_v2/README.md to accurately reflect current proof status. Remove `mcs_contains_or_neg` and `mcs_modus_ponens` from "With Sorries" section (they are now fully proven). Add them to "Proven" section. Verify and update remaining sorry counts. Reference task 586 research report for findings.
 
