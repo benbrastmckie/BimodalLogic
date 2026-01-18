@@ -63,7 +63,7 @@ technical_debt:
 
 ### 560. Axiom Elimination
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-17
@@ -75,6 +75,8 @@ technical_debt:
 - **Summary**: [implementation-summary-20260117.md](specs/560_axiom_elimination/summaries/implementation-summary-20260117.md)
 
 **Description**: Replace representation_theorem_backward_empty axiom with a proven theorem in Representation/ContextProvability.lean. Uses completeness contrapositive argument.
+
+**Partial Completion Note**: Syntactic half proven (`not_derivable_implies_neg_consistent`). Axiom retained with documentation due to semantic embedding gap complexity. See summary for details.
 
 ---
 
@@ -93,10 +95,10 @@ technical_debt:
 
 ### 513. Address tm_auto proof reconstruction issues
 - **Effort**: 5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
-- **Session ID**: sess_1768594543_in7i1i
+- **Session ID**: sess_1768700287_a9cd8b
 - **Created By**: Review task 506
 - **Review Artifact**: [specs/506_codebase_review/summaries/review-summary.md](specs/506_codebase_review/summaries/review-summary.md)
 - **Research**: [Research Report](specs/513_address_tm_auto_proof_reconstruction_issues/reports/research-001.md)
@@ -199,7 +201,7 @@ technical_debt:
 
 ### 510. Add constraint to verifier and falsifier functions
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: latex
 - **Research**: [research-001.md](/home/benjamin/Projects/ProofChecker/specs/510_mereological_constraints_research/reports/research-001.md)

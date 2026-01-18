@@ -23,11 +23,11 @@
     {
       "project_number": 560,
       "project_name": "axiom_elimination",
-      "status": "implementing",
+      "status": "partial",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-18T01:35:05Z",
+      "last_updated": "2026-01-18T01:39:10Z",
       "parent_task": 556,
       "dependencies": [
         558
@@ -92,11 +92,12 @@
     },
     {
       "project_number": 513,
-      "status": "not_started",
+      "status": "planning",
       "project_name": "Address tm_auto proof reconstruction issues",
       "section": "Medium Priority",
       "language": "lean",
-      "priority": "medium"
+      "priority": "medium",
+      "last_updated": "2026-01-18T01:38:23Z"
     },
     {
       "project_number": 514,
@@ -151,11 +152,12 @@
     },
     {
       "project_number": 510,
-      "status": "planned",
+      "status": "implementing",
       "project_name": "Add constraint to verifier and falsifier functions",
       "section": "Medium Priority",
       "language": "latex",
-      "priority": "medium"
+      "priority": "medium",
+      "last_updated": "2026-01-18T01:37:47Z"
     },
     {
       "project_number": 504,
