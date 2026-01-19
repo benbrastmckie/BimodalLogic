@@ -224,13 +224,80 @@ def expansionMeasure (b : Branch) : Nat :=
     if isExpanded sf then acc
     else acc + sf.formula.complexity) 0
 
+/-!
+### Complexity Lemmas for Subformulas
+
+These lemmas establish that subformulas have strictly smaller complexity,
+which is the key to proving termination of tableau expansion.
+-/
+
+/-- Subformulas of implication have smaller complexity. -/
+theorem complexity_imp_left (φ ψ : Formula) : φ.complexity < (Formula.imp φ ψ).complexity := by
+  simp only [Formula.complexity]; omega
+
+theorem complexity_imp_right (φ ψ : Formula) : ψ.complexity < (Formula.imp φ ψ).complexity := by
+  simp only [Formula.complexity]; omega
+
+/-- Sum of implication subformulas is strictly less than implication complexity. -/
+theorem complexity_imp_sum (φ ψ : Formula) : φ.complexity + ψ.complexity < (Formula.imp φ ψ).complexity := by
+  simp only [Formula.complexity]; omega
+
+/-- Box subformula has smaller complexity. -/
+theorem complexity_box (φ : Formula) : φ.complexity < (Formula.box φ).complexity := by
+  simp only [Formula.complexity]; omega
+
+/-- All_future subformula has smaller complexity. -/
+theorem complexity_all_future (φ : Formula) : φ.complexity < (Formula.all_future φ).complexity := by
+  simp only [Formula.complexity]; omega
+
+/-- All_past subformula has smaller complexity. -/
+theorem complexity_all_past (φ : Formula) : φ.complexity < (Formula.all_past φ).complexity := by
+  simp only [Formula.complexity]; omega
+
+/-!
+### List Measure Lemmas
+-/
+
 /--
 Helper: removing an element from a list doesn't increase the foldl accumulation
 of a non-negative function.
 -/
 theorem foldl_filter_le (b : Branch) (sf : SignedFormula) (f : Nat → SignedFormula → Nat) :
     (b.filter (· != sf)).foldl f 0 ≤ b.foldl f 0 := by
-  sorry  -- Standard list lemma
+  sorry  -- Standard list lemma: filter produces a sublist
+
+/--
+Total complexity of a list of signed formulas.
+-/
+def totalComplexity (sfs : List SignedFormula) : Nat :=
+  sfs.foldl (fun acc sf => acc + sf.formula.complexity) 0
+
+/--
+Key lemma: applying a tableau rule produces formulas with strictly smaller total complexity.
+
+This is the core insight for termination: every tableau rule decomposes a formula
+into subformulas whose total complexity is strictly less than the original.
+
+**Proof by case analysis**:
+- Linear rules (impNeg, andPos, orNeg, negPos, negNeg, box*, diamond*, allFuture*, allPast*):
+  produce immediate subformulas with smaller complexity
+- Branching rules (impPos, andNeg, orPos):
+  each branch gets a single subformula with smaller complexity
+
+**Note**: This lemma requires extensive case analysis on all 16 rule types.
+The proof is straightforward but tedious - each case follows from the complexity lemmas above.
+-/
+theorem applyRule_decreases_complexity (rule : TableauRule) (sf : SignedFormula) (result : RuleResult)
+    (h : applyRule rule sf = result) (hApplicable : result ≠ .notApplicable) :
+    match result with
+    | .linear formulas => totalComplexity formulas < sf.formula.complexity
+    | .branching branches => ∀ branch ∈ branches, totalComplexity branch < sf.formula.complexity
+    | .notApplicable => True := by
+  -- Each case requires showing that subformulas have smaller total complexity
+  -- This follows from complexity_imp_sum, complexity_box, complexity_all_future, complexity_all_past
+  cases rule <;> simp only [applyRule] at h <;>
+  try (cases sf.sign <;> simp at h hApplicable)
+  all_goals sorry  -- Each case follows from complexity lemmas
 
 /--
 Helper: if sf is in b and ¬isExpanded sf, then sf contributes positively to expansionMeasure.
@@ -315,20 +382,35 @@ theorem expansion_decreases_measure (b : Branch) (h : ¬isSaturated b) :
         rcases hb' with hext | ⟨bs, heq, _⟩
         · -- b' = formulas ++ b.filter (· != sf)
           -- Need to show expansionMeasure (formulas ++ remaining) < expansionMeasure b
-          -- Key insight: sf contributes sf.formula.complexity to expansionMeasure b
-          -- formulas are subformulas with total complexity < sf.formula.complexity
           --
-          -- REMAINING WORK (linear case):
-          -- 1. Extract b' = formulas ++ b.filter (· != sf) from hext
-          -- 2. Show sf is in b (from List.mem_of_find?_eq_some hfind)
-          -- 3. Show expansionMeasure b ≥ sf.formula.complexity (sf unexpanded, in b)
-          -- 4. Show expansionMeasure (b.filter (· != sf)) ≤ expansionMeasure b - sf.formula.complexity
-          -- 5. Show formulas are all expanded OR have sum complexity < sf.formula.complexity
-          -- 6. Conclude expansionMeasure b' < expansionMeasure b
+          -- Step 1: Extract b' = formulas ++ b.filter (· != sf) from hext
+          simp only [ExpansionResult.extended.injEq] at hext
+          subst hext
           --
-          -- The key challenge is step 5: showing each tableau rule produces
-          -- decomposition formulas with smaller total unexpanded complexity.
-          -- This requires case analysis on all 16 rule types in TableauRule.
+          -- Step 2: Get sf ∈ b from findUnexpanded returning sf
+          have hsf_in_b : sf ∈ b := List.mem_of_find?_eq_some hfind
+          --
+          -- Step 3: Get that sf is not expanded (isExpanded sf = false)
+          have hsf_not_expanded : isExpanded sf = false := by
+            have h1 := List.find?_some hfind
+            -- h1 : (decide ¬(isExpanded sf = true)) = true
+            -- We need: isExpanded sf = false
+            simp only [decide_eq_true_iff] at h1
+            cases hexp : isExpanded sf <;> simp_all
+          --
+          -- Step 4: From applyRule producing linear formulas, show total complexity decreases
+          -- The key insight: formulas have total unexpanded complexity < sf.formula.complexity
+          -- This is because applyRule produces subformulas when it returns a linear result
+          --
+          -- Technical proof: require showing expansionMeasure of new branch < original
+          -- This requires:
+          -- a) expansionMeasure b ≥ sf.formula.complexity (sf is unexpanded, contributes its complexity)
+          -- b) expansionMeasure (formulas ++ remaining) ≤ expansionMeasure remaining + totalComplexity formulas
+          -- c) totalComplexity formulas < sf.formula.complexity (from applyRule_decreases_complexity)
+          -- d) expansionMeasure remaining ≤ expansionMeasure b - sf.formula.complexity
+          --
+          -- This is the core argument but requires lemmas about foldl and List operations
+          -- that are tedious to prove. The key mathematical insight is captured above.
           sorry
         · -- This case is contradictory - linear doesn't produce split
           cases heq
@@ -340,17 +422,35 @@ theorem expansion_decreases_measure (b : Branch) (h : ¬isSaturated b) :
         · -- b' ∈ branches.map (fun newFormulas => newFormulas ++ remaining)
           -- Each branch has newFormulas ++ remaining where newFormulas are subformulas
           --
-          -- REMAINING WORK (branching case):
-          -- Similar to linear case, but for each branch in the split:
-          -- 1. From heq, bs = branches.map (fun newFormulas => newFormulas ++ remaining)
-          -- 2. From hmem, b' ∈ bs
-          -- 3. Therefore b' = newFormulas ++ remaining for some newFormulas ∈ branches
-          -- 4. Show newFormulas are subformulas with smaller complexity
-          -- 5. Conclude expansionMeasure b' < expansionMeasure b
+          -- Step 1: Extract bs = branches.map (fun newFormulas => newFormulas ++ remaining)
+          simp only [ExpansionResult.split.injEq] at heq
+          subst heq
           --
-          -- Branching rules (andNeg, orPos, impPos) each produce TWO branches,
-          -- each with a single subformula. These subformulas are immediate
-          -- components of the original formula, so they have smaller complexity.
+          -- Step 2: From hmem, b' ∈ branches.map (fun newFormulas => newFormulas ++ remaining)
+          -- This means b' = newFormulas ++ b.filter (· != sf) for some newFormulas ∈ branches
+          rw [List.mem_map] at hmem
+          obtain ⟨newFormulas, hnewFormulas_in_branches, hb'_eq⟩ := hmem
+          subst hb'_eq
+          --
+          -- Step 3: Get sf ∈ b and sf is not expanded (same as linear case)
+          have hsf_in_b : sf ∈ b := List.mem_of_find?_eq_some hfind
+          have hsf_not_expanded : isExpanded sf = false := by
+            have h1 := List.find?_some hfind
+            simp only [decide_eq_true_iff] at h1
+            cases hexp : isExpanded sf <;> simp_all
+          --
+          -- Step 4: newFormulas is one of the branches from the branching rule
+          -- Each branch contains a single subformula with smaller complexity
+          -- Branching rules (andNeg, orPos, impPos) produce branches like:
+          -- - andNeg: [[neg ψ], [neg χ]] from neg (and ψ χ)
+          -- - orPos: [[pos ψ], [pos χ]] from pos (or ψ χ)
+          -- - impPos: [[neg ψ], [pos χ]] from pos (imp ψ χ)
+          --
+          -- Each newFormulas list has a single element with complexity < sf.complexity
+          -- Technical proof requires:
+          -- a) expansionMeasure b ≥ sf.formula.complexity (sf is unexpanded in b)
+          -- b) totalComplexity newFormulas < sf.formula.complexity (subformula property)
+          -- c) Similar arithmetic as linear case
           sorry
       | .notApplicable =>
         -- notApplicable produces saturated, not extended or split

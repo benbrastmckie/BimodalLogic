@@ -76,31 +76,38 @@ From research-001.md:
 **Tasks**:
 - [x] Define or locate formula decomposition lemmas
 - [x] Handle impossible cases in theorem (findApplicableRule = none, linear/split mismatch)
-- [ ] Show that expandOnce reduces complexity of unexpanded formulas
-- [ ] Handle both `.extended` and `.split` cases in the theorem
-- [ ] Complete the proof of `expansion_decreases_measure`
+- [x] Add complexity lemmas for all formula constructors
+- [x] Extract sf membership and non-expanded status from findUnexpanded
+- [x] Structure proof for both linear and branching cases
+- [ ] Complete the arithmetic showing measure decreases
 
 **Timing**: 2 hours
 
 **Files modified**:
 - `Theories/Bimodal/Metalogic_v2/Decidability/Saturation.lean`
-  - Added helper theorems `foldl_filter_le` and `unexpanded_contributes`
-  - Proof structure completed for impossible cases
-  - Two sorries remain in linear and branching cases (require rule decomposition analysis)
+  - Added 5 complexity lemmas: `complexity_imp_left`, `complexity_imp_right`, `complexity_imp_sum`, `complexity_box`, `complexity_all_future`, `complexity_all_past`
+  - Added `totalComplexity` definition for signed formula lists
+  - Added `applyRule_decreases_complexity` theorem (with sorry) capturing the key insight
+  - Added helper theorems `foldl_filter_le` (with sorry) and `unexpanded_contributes`
+  - Proof structure completed for both linear and branching cases
+  - Both cases now extract: `sf ∈ b`, `isExpanded sf = false`, and the branch structure
 
 **Current Status**:
-- Proof structure is complete (impossible cases handled)
-- Two sorries remain requiring detailed case analysis on all 16 tableau rules
+- Proof structure is essentially complete
+- Four sorries remain:
+  1. `foldl_filter_le`: Standard list lemma about filter/foldl (tedious but doable)
+  2. `applyRule_decreases_complexity`: Case analysis on 16 rules (straightforward but tedious)
+  3-4. Final arithmetic in linear/branching cases (follows from helper lemmas)
 - This theorem is primarily for documentation; termination is ensured by fuel parameter
 - Does not block Phase 3-6
 
 **Remaining Work**:
-- Linear case: show rule decomposition produces subformulas with smaller complexity
-- Branching case: same analysis for branching rules (andNeg, orPos, impPos)
-- Requires extensive case analysis - could be separate follow-up task
+- The remaining sorries require tedious but straightforward case analysis
+- Each rule application produces subformulas, and complexity lemmas show they have smaller total complexity
+- Could be a separate follow-up task for completeness-focused work
 
 **Verification**:
-- `lake build Bimodal.Metalogic_v2.Decidability.Saturation` compiles with sorry warnings
+- `lake build Bimodal.Metalogic_v2.Decidability.Saturation` compiles with sorry warnings (4 sorries)
 - `lean_diagnostic_messages` shows no errors on Saturation.lean
 
 ---
