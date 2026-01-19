@@ -57,11 +57,11 @@ technical_debt:
 
 ### 597. Re-prove main_provable_iff_valid in Metalogic_v2
 - **Effort**: 4-6 hours (originally), 20+ hours (revised - requires SemanticCanonicalModel migration)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-19
-- **Research**: [research-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md)
+- **Research**: [research-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md), [research-002.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-001.md)
 - **Completed**: Phase 1 (helper lemmas)
 - **Blocked**: Phase 2 - requires SemanticCanonicalModel infrastructure (~4000 lines from old Metalogic)
@@ -133,15 +133,15 @@ technical_debt:
 
 ### 595. Remove Maintenance Directory and Fix Review State Management
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/595_remove_maintenance_dir_fix_review_state/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/595_remove_maintenance_dir_fix_review_state/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/595_remove_maintenance_dir_fix_review_state/summaries/implementation-summary-20260118.md)
 - **Created**: 2026-01-19
 - **Started**: 2026-01-19
-- **Completed**: Phases 1-4
-- **Remaining**: Phase 5 (Documentation and Final Verification)
+- **Completed**: 2026-01-19
 
 **Description**: Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.
 

@@ -86,14 +86,14 @@
     {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T02:00:41Z",
+      "last_updated": "2026-01-19T02:05:28Z",
       "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
       "session_id": "sess_1768788022_ec9091",
-      "researched": "2026-01-19T01:16:42Z",
+      "researched": "2026-01-19T02:05:28Z",
       "artifacts": [
         {
           "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md",
@@ -102,6 +102,10 @@
         {
           "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-002.md",
+          "type": "research"
         }
       ],
       "planned": "2026-01-19T01:20:21Z",
@@ -139,11 +143,11 @@
     {
       "project_number": 595,
       "project_name": "remove_maintenance_dir_fix_review_state",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T00:53:03Z",
-      "last_updated": "2026-01-19T02:02:45Z",
+      "last_updated": "2026-01-19T02:04:39Z",
       "description": "Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.",
       "session_id": "sess_1768788145_d4689b",
       "researched": "2026-01-19T01:18:58Z",
@@ -155,18 +159,15 @@
         {
           "path": "specs/595_remove_maintenance_dir_fix_review_state/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/595_remove_maintenance_dir_fix_review_state/summaries/implementation-summary-20260118.md",
+          "type": "summary"
         }
       ],
       "planned": "2026-01-19T01:28:33Z",
       "started": "2026-01-19T01:53:54Z",
-      "partial_since": "2026-01-19T02:01:21Z",
-      "completed_phases": [
-        1,
-        2,
-        3,
-        4
-      ],
-      "resume_phase": 5
+      "completed": "2026-01-19T02:04:39Z"
     },
     {
       "project_number": 394,

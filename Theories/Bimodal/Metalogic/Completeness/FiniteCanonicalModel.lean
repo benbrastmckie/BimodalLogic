@@ -441,13 +441,36 @@ This bounds the complexity of the finite model.
 def closureSize (phi : Formula) : Nat := (closure phi).card
 
 /--
+The length of the subformulas list is at most the complexity of the formula.
+-/
+private theorem subformulas_length_le_complexity (phi : Formula) :
+    (Formula.subformulas phi).length ≤ phi.complexity := by
+  induction phi with
+  | atom p => simp [Formula.subformulas, Formula.complexity]
+  | bot => simp [Formula.subformulas, Formula.complexity]
+  | imp a b iha ihb =>
+    simp only [Formula.subformulas, List.length_cons, List.length_append,
+               Formula.complexity]
+    omega
+  | box a iha =>
+    simp only [Formula.subformulas, List.length_cons, Formula.complexity]
+    omega
+  | all_past a iha =>
+    simp only [Formula.subformulas, List.length_cons, Formula.complexity]
+    omega
+  | all_future a iha =>
+    simp only [Formula.subformulas, List.length_cons, Formula.complexity]
+    omega
+
+/--
 The closure size is at most the complexity of the formula.
 -/
 theorem closureSize_le_complexity (phi : Formula) :
     closureSize phi ≤ phi.complexity := by
-  simp [closureSize, closure]
-  -- Each subformula contributes at most 1 to complexity
-  sorry -- Will be filled in during implementation
+  simp only [closureSize, closure]
+  calc (Formula.subformulas phi).toFinset.card
+      ≤ (Formula.subformulas phi).length := List.toFinset_card_le _
+    _ ≤ phi.complexity := subformulas_length_le_complexity phi
 
 /--
 The negation closure: if phi is in closure, so is neg phi (if neg phi exists as subformula).
@@ -648,19 +671,19 @@ theorem closure_lindenbaum_via_projection (phi : Formula) (S : Set Formula)
         have h_full_incons : ¬SetConsistent (insert ψ M_full) := h_mcs.2 ψ h
         -- Since insert ψ M_full is inconsistent and M ⊆ M_full,
         -- insert ψ M is also inconsistent (smaller context, same derivation works)
-        intro h_M_cons
+        -- We have h_cons' : SetConsistent (insert ψ M), need to derive contradiction
         apply h_full_incons
         -- SetConsistent (insert ψ M_full) follows from:
         -- For any L ⊆ insert ψ M_full, we need to show Consistent L
         intro L h_L_sub
-        -- If L ⊆ insert ψ M, then by h_M_cons, Consistent L
+        -- If L ⊆ insert ψ M, then by h_cons', Consistent L
         -- If L contains elements from M_full \ M, we need more work...
         -- Actually, the issue is M ⊆ M_full, so insert ψ M ⊆ insert ψ M_full
         -- The other direction: if insert ψ M_full inconsistent, then
         -- extract L ⊆ insert ψ M_full with L inconsistent.
         -- The elements of L are either ψ or in M_full.
         -- If the elements in M_full ∩ L are also in M (i.e., in closureWithNeg),
-        -- then L ⊆ insert ψ M, contradicting h_M_cons.
+        -- then L ⊆ insert ψ M, contradicting h_cons'.
         -- Otherwise, some element is in M_full \ closureWithNeg.
         -- But then we can't directly argue...
         -- This requires that the inconsistency witness can be projected.
