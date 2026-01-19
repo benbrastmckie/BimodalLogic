@@ -8,11 +8,20 @@
     {
       "project_number": 617,
       "project_name": "fix_closure_mcs_implies_locally_consistent",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T17:55:38Z",
-      "last_updated": "2026-01-19T17:55:38Z"
+      "last_updated": "2026-01-19T20:15:28Z",
+      "session_id": "sess_1768853498_7e0e0c",
+      "researched": "2026-01-19T20:15:28Z",
+      "artifacts": [
+        {
+          "path": "specs/617_fix_closure_mcs_implies_locally_consistent/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing temporal reflexivity mismatch and recommending removal of unused conditions from IsLocallyConsistent definition"
+        }
+      ]
     },
     {
       "project_number": 616,

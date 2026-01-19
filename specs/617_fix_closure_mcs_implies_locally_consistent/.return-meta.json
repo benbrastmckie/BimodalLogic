@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "summary": "Temporal reflexivity axioms (H phi -> phi, G phi -> phi) are not valid in TM logic's strict semantics; recommended fix is removing these conditions from IsLocallyConsistent since they are unused by downstream code.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/617_fix_closure_mcs_implies_locally_consistent/reports/research-001.md",
+      "summary": "Research report analyzing temporal reflexivity mismatch and recommending removal of unused conditions from IsLocallyConsistent definition"
+    }
+  ],
+  "next_steps": "Run /plan 617 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1768853498_7e0e0c",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-lean-research"],
+    "findings_count": 4
+  }
+}
