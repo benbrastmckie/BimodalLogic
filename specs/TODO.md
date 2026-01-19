@@ -83,11 +83,12 @@ technical_debt:
 
 ### 609. Document command-skill-agent architecture
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Research**: [research-001.md](specs/609_document_command_skill_agent_architecture/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/609_document_command_skill_agent_architecture/plans/implementation-001.md)
 
 **Description**: Research the current command-skill-agent architecture used throughout the .claude/ architecture to improve existing, or create new documentation in .claude/docs/ for users and .claude/context/core/ in appropriate subdirectories for the agent to draw from (e.g., the /meta command agents should have access to context that describes the architecture of the system in order to reproduce those elements when creating new functionality).
 
