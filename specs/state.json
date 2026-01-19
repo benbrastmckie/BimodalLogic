@@ -26,12 +26,20 @@
     {
       "project_number": 615,
       "project_name": "fix_closure_mcs_neg_complete_double_negation",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T17:54:18Z",
-      "last_updated": "2026-01-19T20:00:05Z",
-      "session_id": "sess_1768852785_40e3e4"
+      "last_updated": "2026-01-19T20:06:15Z",
+      "session_id": "sess_1768852785_40e3e4",
+      "researched": "2026-01-19T20:06:15Z",
+      "artifacts": [
+        {
+          "path": "specs/615_fix_closure_mcs_neg_complete_double_negation/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing double negation escape issue and recommending Option 1 (restrict to closure)"
+        }
+      ]
     },
     {
       "project_number": 613,
