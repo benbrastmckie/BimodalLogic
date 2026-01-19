@@ -356,11 +356,11 @@
     {
       "project_number": 601,
       "project_name": "design_task_review_logic_validation",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-18T17:36:50Z",
-      "last_updated": "2026-01-19T07:11:30Z",
+      "last_updated": "2026-01-19T07:14:17Z",
       "description": "Design validation rules for state.json/TODO.md consistency, artifact links, completion verification, follow-up task workflow",
       "session_id": "sess_1768806673_bf73d4",
       "researched": "2026-01-19T06:56:17Z",
@@ -379,10 +379,16 @@
           "path": "specs/601_design_task_review_logic_validation/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase plan implementing --review as read-only task completion analyzer with interactive follow-up task creation"
+        },
+        {
+          "path": "specs/601_design_task_review_logic_validation/summaries/implementation-summary-20260118.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting /task --review N command with 9-step workflow"
         }
       ],
       "planned": "2026-01-19T07:08:30Z",
-      "started": "2026-01-19T07:11:30Z"
+      "started": "2026-01-19T07:11:30Z",
+      "completed": "2026-01-19T07:14:17Z"
     },
     {
       "project_number": 602,
