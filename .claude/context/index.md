@@ -98,7 +98,35 @@
 
 ---
 
-## Core Patterns (core/patterns/) **NEW**
+## Core Architecture (core/architecture/) **NEW**
+
+Load for: Architecture understanding, component generation, /meta agent use
+
+- **system-overview.md** (~300 lines) - Three-layer architecture overview
+  - Command -> Skill -> Agent delegation pattern
+  - Component responsibilities matrix
+  - Delegation flow diagrams
+  - Checkpoint model reference
+  - **MUST load when understanding system architecture or generating components**
+
+- **component-checklist.md** (~250 lines) - Component creation decision tree
+  - When to create command vs skill vs agent
+  - Checklists for each component type
+  - Common component combinations
+  - Naming conventions
+  - **MUST load when creating new components via /meta**
+
+- **generation-guidelines.md** (~350 lines) - Templates for /meta agent
+  - Command generation template
+  - Skill generation template (thin wrapper pattern)
+  - Agent generation template
+  - Anti-stop patterns reference
+  - Post-generation verification
+  - **MUST load when /meta generates new components**
+
+---
+
+## Core Patterns (core/patterns/)
 
 Load for: Behavior patterns that apply across all agents/skills
 
@@ -128,6 +156,24 @@ Load for: Behavior patterns that apply across all agents/skills
   - Pattern templates for research/planning/implementation postflight
   - Testing checklist for new jq patterns
   - **MUST load when adding jq commands that use map(select(!=)) patterns**
+
+- **thin-wrapper-skill.md** (~120 lines) - Quick reference for thin wrapper skill pattern
+  - Frontmatter requirements
+  - Execution pattern (5 steps)
+  - Task tool invocation (NOT Skill tool)
+  - When to use vs direct execution
+
+- **metadata-file-return.md** (~100 lines) - Quick reference for agent return via metadata file
+  - File location pattern
+  - Schema quick reference
+  - Status values (contextual, never "completed")
+  - Agent writing and skill reading patterns
+
+- **checkpoint-execution.md** (~180 lines) - Quick reference for command checkpoint pattern
+  - Three-checkpoint model (GATE IN, DELEGATE, GATE OUT, COMMIT)
+  - Status transitions by command
+  - Session ID tracking
+  - Error handling at each checkpoint
 
 ---
 

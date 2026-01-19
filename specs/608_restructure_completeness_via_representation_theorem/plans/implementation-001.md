@@ -1,7 +1,7 @@
 # Implementation Plan: Task #608
 
 - **Task**: 608 - Restructure Completeness via Representation Theorem
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Priority**: Medium
 - **Dependencies**: None (self-contained refactoring)
@@ -48,7 +48,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Add semantic_truth_at_v2 Definition [NOT STARTED]
+### Phase 1: Add semantic_truth_at_v2 Definition [IN PROGRESS]
 
 **Goal**: Port the `semantic_truth_at_v2` definition from old Metalogic to Metalogic_v2's SemanticCanonicalModel.lean
 

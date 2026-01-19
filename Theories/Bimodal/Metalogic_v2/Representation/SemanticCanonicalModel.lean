@@ -408,6 +408,21 @@ def semantic_truth_at (phi : Formula) (w : SemanticWorldState phi)
   (SemanticWorldState.toFiniteWorldState w).models psi h_mem
 
 /--
+Truth at a semantic world state for a formula in the closure (v2 variant).
+
+This variant is used for `semantic_weak_completeness` and includes the time
+parameter for API compatibility. The key insight is that truth at a semantic
+world state only depends on the underlying world state's satisfaction, not
+on the specific history-time representative.
+
+The existential wrapper on the membership proof allows the definition to be
+used without requiring the caller to provide the membership proof upfront.
+-/
+def semantic_truth_at_v2 (phi : Formula) (w : SemanticWorldState phi)
+    (_t : FiniteTime (temporalBound phi)) (psi : Formula) : Prop :=
+  ∃ h_mem : psi ∈ closure phi, (SemanticWorldState.toFiniteWorldState w).models psi h_mem
+
+/--
 Truth lemma: semantic truth corresponds to MCS membership.
 
 For MCS-derived world states, membership in the underlying MCS
