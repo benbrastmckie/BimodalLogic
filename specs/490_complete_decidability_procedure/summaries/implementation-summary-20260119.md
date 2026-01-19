@@ -2,8 +2,9 @@
 
 **Task**: Complete decidability procedure for TM logic
 **Completed**: 2026-01-19 (Partial)
-**Duration**: Analysis and documentation phase
+**Duration**: Multiple sessions
 **Status**: PARTIAL
+**Session**: sess_1768858875_b3b77f (current), sess_1768858388_5ac0d4 (previous)
 
 ## Overview
 
@@ -12,6 +13,36 @@ This task aimed to complete the decidability procedure for TM bimodal logic by p
 2. `tableau_complete` - Completeness of tableau method via FMP
 3. `decide_complete` - Decision procedure completeness
 4. `decide_axiom_valid` (optional) - Axiom handling correctness
+
+## Implementation Progress (Session 2)
+
+### Phase 2: expansion_decreases_measure - Proof Structure Completed
+
+**Accomplishments**:
+- Eliminated impossible cases (findApplicableRule = none, linear/split mismatch)
+- Added helper theorems `foldl_filter_le` and `unexpanded_contributes`
+- Proper case analysis structure using `match` and `rcases`
+- Detailed documentation of remaining work
+
+**Code Changes**:
+```lean
+-- Helper lemmas added (lines 231-245)
+theorem foldl_filter_le ...
+theorem unexpanded_contributes ...
+
+-- Main theorem structure completed (lines 270-350)
+-- Impossible cases: proven via cases/contradiction
+-- Remaining: 2 sorries in linear and branching cases
+```
+
+**Remaining Work**:
+- Linear case: show rule decomposition produces subformulas with smaller complexity
+- Branching case: same analysis for branching rules (andNeg, orPos, impPos)
+- Requires case analysis on all 16 tableau rules
+
+### Phases 3-5: BLOCKED
+
+**tableau_complete** and **decide_complete** are blocked by missing FMP-tableau connection infrastructure. The classical decidability result `validity_decidable_via_fmp` already provides decidability, making the constructive version lower priority.
 
 ## Analysis Findings
 
@@ -27,44 +58,24 @@ The soundness proof `decide_sound` is already complete:
 - If `decide` returns `valid proof`, the formula is semantically valid
 - This is the critical safety property ensuring correctness
 
-### Completeness Proofs (Documented, Not Complete)
-The completeness proofs require deep metatheoretic connections:
+### Why Phases 3-4 Are Blocked
 
-1. **expansion_decreases_measure**: Requires showing each tableau rule application reduces the sum of unexpanded formula complexities. Technical case analysis on 16+ rule patterns.
+The `tableau_complete` theorem requires connecting:
+1. Semantic validity to syntactic unsatisfiability
+2. FMP bounds to tableau fuel sufficiency
+3. Saturated branch semantics to finite model construction
 
-2. **tableau_complete**: Requires connecting:
-   - Semantic validity to unsatisfiability of negation
-   - FMP bounds to tableau search space exhaustion
-   - Open saturated branches to finite countermodel existence
-
-3. **decide_complete**: Depends on tableau_complete and requires showing proof extraction succeeds for valid formulas.
-
-4. **decide_axiom_valid**: Depends on matchAxiom pattern matcher completeness.
-
-## Changes Made
-
-### Documentation Improvements
-
-**Saturation.lean** (line 227-250):
-- Added detailed proof strategy for `expansion_decreases_measure`
-- Documented technical requirements and difficulty level
-
-**Correctness.lean** (lines 80-163, 224-295):
-- Added comprehensive proof strategies for `tableau_complete`
-- Added proof strategy for `decide_complete` showing dependency chain
-- Added documentation for `decide_axiom_valid` limitations
-
-**BranchClosure.lean** (lines 174-218):
-- Documented `closed_extend_closed` proof strategy (monotonicity of closure)
-- Documented `add_neg_causes_closure` proof approach
+This infrastructure doesn't currently exist and would require:
+- Proof that saturated open branches yield finite countermodels
+- Proof that FMP bounds guarantee tableau termination
+- Connection between canonical model and tableau branches
 
 ## Files Modified
 
 | File | Changes |
 |------|---------|
-| `Theories/Bimodal/Metalogic_v2/Decidability/Saturation.lean` | Enhanced documentation for expansion_decreases_measure |
-| `Theories/Bimodal/Metalogic_v2/Decidability/Correctness.lean` | Enhanced documentation for 3 completeness theorems |
-| `Theories/Bimodal/Metalogic_v2/Decidability/BranchClosure.lean` | Enhanced documentation for 2 auxiliary theorems |
+| `Theories/Bimodal/Metalogic_v2/Decidability/Saturation.lean` | Proof structure, helper lemmas, detailed documentation |
+| `specs/490_complete_decidability_procedure/plans/implementation-001.md` | Phase status updates |
 
 ## Verification
 
@@ -76,11 +87,11 @@ The completeness proofs require deep metatheoretic connections:
 
 | File | Sorries | Purpose |
 |------|---------|---------|
-| Saturation.lean | 1 | expansion_decreases_measure |
+| Saturation.lean | 3 | foldl_filter_le, unexpanded_contributes, expansion_decreases_measure |
 | Correctness.lean | 3 | tableau_complete, decide_complete, decide_axiom_valid |
 | BranchClosure.lean | 2 | closed_extend_closed, add_neg_causes_closure |
 
-**Total**: 6 sorries (same as before, now better documented)
+**Total**: 8 sorries in Decidability modules (3 new helpers, all documented)
 
 ## Recommendations for Future Work
 

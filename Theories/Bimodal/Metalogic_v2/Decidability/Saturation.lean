@@ -225,6 +225,26 @@ def expansionMeasure (b : Branch) : Nat :=
     else acc + sf.formula.complexity) 0
 
 /--
+Helper: removing an element from a list doesn't increase the foldl accumulation
+of a non-negative function.
+-/
+theorem foldl_filter_le (b : Branch) (sf : SignedFormula) (f : Nat → SignedFormula → Nat) :
+    (b.filter (· != sf)).foldl f 0 ≤ b.foldl f 0 := by
+  sorry  -- Standard list lemma
+
+/--
+Helper: if sf is in b and ¬isExpanded sf, then sf contributes positively to expansionMeasure.
+-/
+theorem unexpanded_contributes (b : Branch) (sf : SignedFormula) (hIn : sf ∈ b) (hUnexp : ¬isExpanded sf) :
+    0 < sf.formula.complexity ∧
+    expansionMeasure b ≥ sf.formula.complexity := by
+  constructor
+  · -- complexity is always positive
+    cases sf.formula <;> simp [Formula.complexity] <;> omega
+  · -- sf contributes to the measure
+    sorry
+
+/--
 Expansion decreases the measure (for non-saturated branches).
 This is the key lemma for termination of the tableau procedure.
 
@@ -251,13 +271,93 @@ theorem expansion_decreases_measure (b : Branch) (h : ¬isSaturated b) :
     ∀ b', (expandOnce b = .extended b' ∨
            ∃ bs, expandOnce b = .split bs ∧ b' ∈ bs) →
     expansionMeasure b' < expansionMeasure b := by
-  -- Proof sketch:
+  -- Proof outline:
   -- 1. From ¬isSaturated b, we have findUnexpanded b = some sf for some sf
   -- 2. expandOnce applies a rule to sf
   -- 3. Each rule decomposes sf.formula into subformulas with lower total complexity
   -- 4. The expansionMeasure sums complexities of unexpanded formulas
   -- 5. Replacing sf with its decomposition decreases this sum
-  sorry  -- Technical: requires case analysis on all tableau rules
+  intro b' hb'
+  -- First unfold isSaturated to get findUnexpanded b ≠ none
+  simp only [isSaturated, Option.isNone_iff_eq_none] at h
+  -- From h, we know findUnexpanded b = some sf for some sf
+  cases hfind : findUnexpanded b with
+  | none => simp [hfind] at h
+  | some sf =>
+    -- sf is the unexpanded formula found
+    -- Now we need to analyze expandOnce b
+    simp only [expandOnce, hfind] at hb'
+    -- findApplicableRule sf must return some (rule, result) since sf is unexpanded
+    cases hrule : findApplicableRule sf with
+    | none =>
+      -- This contradicts sf being unexpanded
+      -- findUnexpanded returns sf only if ¬isExpanded sf
+      -- isExpanded sf = (findApplicableRule sf).isNone
+      -- If findApplicableRule sf = none, then isExpanded sf = true
+      -- But findUnexpanded only returns formulas where ¬isExpanded
+      exfalso
+      -- From hfind, sf is found because (fun sf => ¬isExpanded sf) sf = true
+      simp only [findUnexpanded] at hfind
+      have hsf_not_expanded := List.find?_some hfind
+      -- hsf_not_expanded : (!isExpanded sf) = true
+      -- hrule : findApplicableRule sf = none
+      -- isExpanded sf = (findApplicableRule sf).isNone
+      simp only [isExpanded, hrule, Option.isNone_none] at hsf_not_expanded
+      -- hsf_not_expanded : (decide ¬True) = true, which is a contradiction
+      simp at hsf_not_expanded
+    | some rr =>
+      simp only [hrule] at hb'
+      -- rr is (rule, result), need to case on result
+      obtain ⟨rule, result⟩ := rr
+      match result with
+      | .linear formulas =>
+        simp only at hb'
+        rcases hb' with hext | ⟨bs, heq, _⟩
+        · -- b' = formulas ++ b.filter (· != sf)
+          -- Need to show expansionMeasure (formulas ++ remaining) < expansionMeasure b
+          -- Key insight: sf contributes sf.formula.complexity to expansionMeasure b
+          -- formulas are subformulas with total complexity < sf.formula.complexity
+          --
+          -- REMAINING WORK (linear case):
+          -- 1. Extract b' = formulas ++ b.filter (· != sf) from hext
+          -- 2. Show sf is in b (from List.mem_of_find?_eq_some hfind)
+          -- 3. Show expansionMeasure b ≥ sf.formula.complexity (sf unexpanded, in b)
+          -- 4. Show expansionMeasure (b.filter (· != sf)) ≤ expansionMeasure b - sf.formula.complexity
+          -- 5. Show formulas are all expanded OR have sum complexity < sf.formula.complexity
+          -- 6. Conclude expansionMeasure b' < expansionMeasure b
+          --
+          -- The key challenge is step 5: showing each tableau rule produces
+          -- decomposition formulas with smaller total unexpanded complexity.
+          -- This requires case analysis on all 16 rule types in TableauRule.
+          sorry
+        · -- This case is contradictory - linear doesn't produce split
+          cases heq
+      | .branching branches =>
+        simp only at hb'
+        rcases hb' with hext | ⟨bs, heq, hmem⟩
+        · -- This case is contradictory - branching doesn't produce extended
+          cases hext
+        · -- b' ∈ branches.map (fun newFormulas => newFormulas ++ remaining)
+          -- Each branch has newFormulas ++ remaining where newFormulas are subformulas
+          --
+          -- REMAINING WORK (branching case):
+          -- Similar to linear case, but for each branch in the split:
+          -- 1. From heq, bs = branches.map (fun newFormulas => newFormulas ++ remaining)
+          -- 2. From hmem, b' ∈ bs
+          -- 3. Therefore b' = newFormulas ++ remaining for some newFormulas ∈ branches
+          -- 4. Show newFormulas are subformulas with smaller complexity
+          -- 5. Conclude expansionMeasure b' < expansionMeasure b
+          --
+          -- Branching rules (andNeg, orPos, impPos) each produce TWO branches,
+          -- each with a single subformula. These subformulas are immediate
+          -- components of the original formula, so they have smaller complexity.
+          sorry
+      | .notApplicable =>
+        -- notApplicable produces saturated, not extended or split
+        simp only at hb'
+        rcases hb' with hext | ⟨bs, heq, _⟩
+        · cases hext
+        · cases heq
 
 /-!
 ## FMP-Based Termination Theorem
