@@ -18,16 +18,22 @@
     {
       "project_number": 561,
       "project_name": "cleanup_and_documentation",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-19T00:17:32Z",
+      "last_updated": "2026-01-19T00:22:05Z",
       "parent_task": 556,
       "dependencies": [
         560
       ],
-      "description": "Improve documentation for Metalogic_v2/ to be accurate and up to date. Remove historical markers and commentary (words like 'now', 'currently', etc.). Update README.md with accurate completion status. Verify documentation matches implementation state."
+      "description": "Improve documentation for Metalogic_v2/ to be accurate and up to date. Remove historical markers and commentary (words like 'now', 'currently', etc.). Update README.md with accurate completion status. Verify documentation matches implementation state.",
+      "artifacts": [
+        {
+          "path": "specs/561_cleanup_and_documentation/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 556,
