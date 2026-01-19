@@ -45,7 +45,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Modify IsLocallyConsistent Definition [IN PROGRESS]
+### Phase 1: Modify IsLocallyConsistent Definition [COMPLETED]
 
 **Goal**: Remove temporal reflexivity conditions 4 and 5 from the definition
 
@@ -67,7 +67,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Prove closure_mcs_implies_locally_consistent [NOT STARTED]
+### Phase 2: Prove closure_mcs_implies_locally_consistent [COMPLETED]
 
 **Goal**: Replace the sorry with an actual proof
 

@@ -326,16 +326,97 @@ noncomputable def assignmentFromClosureMCS (phi : Formula) (S : Set Formula)
 /--
 A closure MCS induces a locally consistent truth assignment.
 
-NOTE: This requires the MCS to satisfy temporal reflexivity axioms (H phi -> phi, G phi -> phi).
-The TM logic uses strict temporal semantics, so these are NOT valid axioms.
-This is an architectural limitation - the semantic approach bypasses this issue.
+This proof establishes the 3 conditions of `IsLocallyConsistent`:
+1. Bot is false: Follows from set consistency of MCS
+2. Implications respected: Uses `closure_mcs_imp_iff`
+3. Modal T axiom: Uses T axiom (`□φ → φ`) being derivable as a theorem
 -/
 theorem closure_mcs_implies_locally_consistent (phi : Formula) (S : Set Formula)
     (h_mcs : ClosureMaximalConsistent phi S) :
     IsLocallyConsistent phi (assignmentFromClosureMCS phi S h_mcs) := by
-  -- The proof requires temporal reflexivity axioms which don't hold in TM logic
-  -- The semantic approach (via SemanticCanonicalModel) bypasses this issue
-  sorry
+  unfold IsLocallyConsistent assignmentFromClosureMCS
+  refine ⟨?_, ?_, ?_⟩
+  -- Goal 1: Bot is false
+  · intro _h_bot_mem
+    simp only
+    -- Show bot ∉ S using consistency
+    have h_bot_not_in : Formula.bot ∉ S := by
+      intro h_bot_in
+      have h_cons := closure_mcs_set_consistent h_mcs
+      unfold SetConsistent at h_cons
+      specialize h_cons [Formula.bot] (by simp [h_bot_in])
+      unfold Consistent at h_cons
+      apply h_cons
+      -- [bot] ⊢ bot by assumption
+      exact ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
+    haveI : Decidable (Formula.bot ∈ S) := Classical.propDecidable _
+    simp only [decide_eq_true_eq, h_bot_not_in, ite_false]
+  -- Goal 2: Implications are respected
+  · intro psi chi h_imp h_psi h_chi h_imp_true h_psi_true
+    simp only at h_imp_true h_psi_true ⊢
+    haveI : Decidable (Formula.imp psi chi ∈ S) := Classical.propDecidable _
+    haveI : Decidable (psi ∈ S) := Classical.propDecidable _
+    haveI : Decidable (chi ∈ S) := Classical.propDecidable _
+    simp only [decide_eq_true_eq] at h_imp_true h_psi_true ⊢
+    -- Extract membership from the ite
+    have h_imp_in_S : Formula.imp psi chi ∈ S := by
+      by_contra h
+      simp [h] at h_imp_true
+    have h_psi_in_S : psi ∈ S := by
+      by_contra h
+      simp [h] at h_psi_true
+    -- Use closure_mcs_imp_iff
+    have h_iff := closure_mcs_imp_iff phi S h_mcs psi chi h_imp
+    rw [h_iff] at h_imp_in_S
+    have h_chi_in_S := h_imp_in_S h_psi_in_S
+    simp [h_chi_in_S]
+  -- Goal 3: Modal T axiom (box psi → psi)
+  · intro psi h_box h_psi h_box_true
+    simp only at h_box_true ⊢
+    haveI : Decidable (psi.box ∈ S) := Classical.propDecidable _
+    haveI : Decidable (psi ∈ S) := Classical.propDecidable _
+    simp only [decide_eq_true_eq] at h_box_true ⊢
+    -- Extract membership from the ite
+    have h_box_in_S : psi.box ∈ S := by
+      by_contra h
+      simp [h] at h_box_true
+    -- By negation completeness, psi ∈ S or psi.neg ∈ S
+    have h_psi_or := closure_mcs_neg_complete phi S h_mcs psi h_psi
+    cases h_psi_or with
+    | inl h => simp [h]  -- psi ∈ S, we're done
+    | inr h_neg =>
+      -- psi.neg ∈ S, but this contradicts consistency when box psi ∈ S
+      -- From box psi, by T axiom, we derive psi
+      -- Then psi and psi.neg derive bot
+      exfalso
+      have h_incons : ¬Consistent [psi.box, psi.neg] := by
+        intro h_cons
+        apply h_cons
+        -- Build derivation [box psi, psi.neg] ⊢ ⊥
+        -- T axiom: box psi → psi
+        have d_T : DerivationTree [] (psi.box.imp psi) :=
+          DerivationTree.axiom [] _ (Axiom.modal_t psi)
+        have d_T' : DerivationTree [psi.box, psi.neg] (psi.box.imp psi) :=
+          DerivationTree.weakening [] _ _ d_T (by simp)
+        -- Get box psi from context
+        have d_box : DerivationTree [psi.box, psi.neg] psi.box :=
+          DerivationTree.assumption _ _ (by simp)
+        -- MP to get psi
+        have d_psi : DerivationTree [psi.box, psi.neg] psi :=
+          DerivationTree.modus_ponens _ _ _ d_T' d_box
+        -- Get psi.neg from context
+        have d_neg : DerivationTree [psi.box, psi.neg] psi.neg :=
+          DerivationTree.assumption _ _ (by simp)
+        -- MP to get ⊥
+        exact ⟨derives_bot_from_phi_neg_phi d_psi d_neg⟩
+      -- But [box psi, psi.neg] ⊆ S, so S is inconsistent
+      have h_sub : ∀ ψ ∈ [psi.box, psi.neg], ψ ∈ S := by
+        intro ψ hψ
+        simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
+        rcases hψ with rfl | rfl
+        · exact h_box_in_S
+        · exact h_neg
+      exact h_incons (h_mcs.1.2 [psi.box, psi.neg] h_sub)
 
 /--
 Build a finite world state from a closure MCS.

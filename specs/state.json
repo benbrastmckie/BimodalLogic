@@ -8,12 +8,13 @@
     {
       "project_number": 619,
       "project_name": "agent_system_architecture_upgrade",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T20:33:57Z",
-      "last_updated": "2026-01-19T20:37:56Z",
-      "session_id": "sess_1768855064_c885b3"
+      "last_updated": "2026-01-19T20:42:08Z",
+      "session_id": "sess_1768855064_c885b3",
+      "researched": "2026-01-19T20:42:08Z"
     },
     {
       "project_number": 618,
@@ -242,13 +243,21 @@
     },
     {
       "project_number": 490,
-      "status": "researching",
+      "status": "researched",
       "project_name": "complete_decidability_procedure",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low",
-      "last_updated": "2026-01-19T20:37:36Z",
-      "session_id": "sess_1768855950_b8c4d2"
+      "last_updated": "2026-01-19T20:41:56Z",
+      "session_id": "sess_1768855950_b8c4d2",
+      "researched": "2026-01-19T20:41:56Z",
+      "artifacts": [
+        {
+          "path": "specs/490_complete_decidability_procedure/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Metalogic_v2 vs old Metalogic decidability infrastructure, identifying 4 key sorries to resolve and recommending Task 607 as prerequisite"
+        }
+      ]
     },
     {
       "project_number": 607,

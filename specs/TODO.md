@@ -199,10 +199,12 @@ technical_debt:
 ---
 
 ### 490. Complete decidability procedure
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 469
+- **Research**: [research-001.md](specs/490_complete_decidability_procedure/reports/research-001.md)
 
 **Description**: Complete the decidability procedure for TM logic. The existing Decidability module has tableau infrastructure but needs: proof extraction from closed tableaux, completeness proof connecting to FMP, and full decide function verification. Extends Task 469.
 
