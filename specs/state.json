@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 599,
+      "project_name": "troubleshoot_jq_escaping_agent_system",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T01:07:44Z",
+      "last_updated": "2026-01-19T01:07:44Z",
+      "description": "Troubleshoot jq escaping issues in agent system. The not-equals operator is being escaped when passed through bash, causing jq parse errors. Fix skill-task and related skills to properly handle jq operators. Document correct patterns in context files to ensure consistent jq usage across the system."
+    },
+    {
       "project_number": 598,
       "project_name": "remove_deprecated_helpers_contextprovability",
       "status": "not_started",
@@ -217,5 +227,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 599
+  "next_project_number": 600
 }
