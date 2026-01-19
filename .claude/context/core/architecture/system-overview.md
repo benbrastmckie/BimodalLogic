@@ -13,29 +13,29 @@ The ProofChecker agent system implements a three-layer delegation pattern separa
 
 ```
                          USER INPUT
-                              |
-                              v
-                    +-----------------+
-     Layer 1:       |    Commands     |  User-facing entry points
-     (Commands)     |  (/research,    |  Parse $ARGUMENTS
-                    |   /plan, etc.)  |  Route to skills
-                    +-----------------+
-                              |
-                              v
-                    +-----------------+
-     Layer 2:       |     Skills      |  Thin wrappers with validation
-     (Skills)       | (skill-lean-    |  Prepare delegation context
-                    |  research, etc.)|  Invoke agents via Task tool
-                    +-----------------+
-                              |
-                              v
-                    +-----------------+
-     Layer 3:       |     Agents      |  Full execution components
-     (Agents)       | (lean-research- |  Load context on-demand
-                    |  agent, etc.)   |  Create artifacts
-                    +-----------------+
-                              |
-                              v
+                              │
+                              ▼
+                    ┌─────────────────┐
+     Layer 1:       │    Commands     │  User-facing entry points
+     (Commands)     │  (/research,    │  Parse $ARGUMENTS
+                    │   /plan, etc.)  │  Route to skills
+                    └────────┬────────┘
+                              │
+                              ▼
+                    ┌─────────────────┐
+     Layer 2:       │     Skills      │  Thin wrappers with validation
+     (Skills)       │ (skill-lean-    │  Prepare delegation context
+                    │  research, etc.)│  Invoke agents via Task tool
+                    └────────┬────────┘
+                              │
+                              ▼
+                    ┌─────────────────┐
+     Layer 3:       │     Agents      │  Full execution components
+     (Agents)       │ (lean-research- │  Load context on-demand
+                    │  agent, etc.)   │  Create artifacts
+                    └────────┬────────┘
+                              │
+                              ▼
                         ARTIFACTS
                (reports, plans, summaries)
 ```
@@ -90,30 +90,30 @@ routing:
 
 ### Layer 2: Skills
 
-**Purpose**: Thin wrappers that validate inputs and delegate to agents.
+**Purpose**: Thin wrappers that validate inputs, delegate to agents, and handle lifecycle operations.
 
 **Key characteristics**:
-- Use `context: fork` to avoid loading heavy context
 - Validate inputs before delegation
 - Prepare delegation context (session_id, depth, path)
 - Invoke agent via **Task tool** (not Skill tool)
-- Validate agent return matches schema
-- Pass-through return to caller
+- Handle preflight/postflight status updates internally
+- Perform git commit after agent completion
+- Return brief text summary (agent writes JSON to metadata file)
 
 **Thin Wrapper Pattern**:
 ```yaml
 ---
 name: skill-{name}
 description: {description}
-allowed-tools: Task
-context: fork
-agent: {agent-name}
+allowed-tools: Task, Bash, Edit, Read, Write
 ---
 ```
 
+**Note**: Skills do NOT use `context: fork` or `agent:` frontmatter fields. Delegation is explicit via Task tool invocation in the skill body. Context loading happens in the agent (not via skill frontmatter).
+
 **Critical**: Skills delegate via Task tool, not Skill tool. Agents live in `.claude/agents/`, not `.claude/skills/`.
 
-**Reference**: @.claude/context/core/templates/thin-wrapper-skill.md
+**Reference**: @.claude/context/core/patterns/thin-wrapper-skill.md
 
 ---
 
@@ -155,6 +155,99 @@ agent: {agent-name}
 **Critical**: Never use "completed" as status value - triggers Claude stop behavior.
 
 **Reference**: @.claude/context/core/formats/subagent-return.md
+
+---
+
+## Skill Architecture Patterns
+
+Skills implement three distinct architecture patterns based on their execution needs.
+
+### Pattern A: Delegating Skills with Internal Postflight
+
+**Used by**: skill-researcher, skill-lean-research, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation, skill-meta, skill-document-converter (8 skills)
+
+**Characteristics**:
+- Frontmatter: `allowed-tools: Task, Bash, Edit, Read, Write`
+- 11-stage execution flow with preflight/postflight inline
+- Invoke subagent via Task tool with explicit subagent_type
+- Handle all lifecycle operations (status updates, git commit)
+- Create postflight marker file to prevent premature termination
+- Return brief text summary (agent writes JSON to metadata file)
+
+**Execution Flow**:
+```
+Stage 1:  Input Validation
+Stage 2:  Preflight Status Update      [RESEARCHING]
+Stage 3:  Create Postflight Marker
+Stage 4:  Prepare Delegation Context
+Stage 5:  Invoke Subagent (Task tool)
+Stage 6:  Parse Subagent Return (read metadata file)
+Stage 7:  Update Task Status           [RESEARCHED]
+Stage 8:  Link Artifacts
+Stage 9:  Git Commit
+Stage 10: Cleanup (remove marker)
+Stage 11: Return Brief Summary
+```
+
+**Motivation**: Eliminates "continue prompt" between skill return and orchestrator. The skill handles all lifecycle operations, ensuring atomic completion without user interaction.
+
+---
+
+### Pattern B: Direct Execution Skills
+
+**Used by**: skill-status-sync, skill-refresh, skill-git-workflow (3 skills)
+
+**Characteristics**:
+- Frontmatter: `allowed-tools: Bash, Edit, Read` (no Task tool)
+- Execute work inline without spawning subagent
+- No postflight marker needed (work is atomic)
+- Return JSON or text directly
+
+**Example Frontmatter**:
+```yaml
+---
+name: skill-status-sync
+description: Atomically update task status across TODO.md and state.json
+allowed-tools: Bash, Edit, Read
+---
+```
+
+**Motivation**: Some operations are simple enough that spawning a subagent adds unnecessary overhead. Status updates, git commits, and process cleanup are atomic operations that don't need the full delegation machinery.
+
+---
+
+### Pattern C: Orchestrator/Routing Skills
+
+**Used by**: skill-orchestrator (1 skill)
+
+**Characteristics**:
+- Frontmatter: `allowed-tools: Read, Glob, Grep, Task`
+- Central routing intelligence
+- Dispatches to other skills/agents based on task language
+- Provides context preparation and routing logic
+
+**Motivation**: Centralizes routing decisions and reduces duplication across commands. Rather than each command implementing routing logic, the orchestrator provides a single source of routing truth.
+
+---
+
+### Pattern Selection Decision Tree
+
+When creating a new skill:
+
+```
+Does the skill need to spawn a subagent?
+├── NO → Pattern B (Direct Execution)
+│   └── Use for: atomic operations, status updates, cleanup
+│
+└── YES → Does it need to route to multiple skills/agents?
+    ├── YES → Pattern C (Orchestrator/Routing)
+    │   └── Use for: command routing, language-based dispatch
+    │
+    └── NO → Pattern A (Delegating with Internal Postflight)
+        └── Use for: research, planning, implementation workflows
+```
+
+**Default Choice**: Pattern A is the standard for new skills unless there's a specific reason to use B or C.
 
 ---
 

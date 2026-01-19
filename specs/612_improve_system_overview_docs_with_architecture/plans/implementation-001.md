@@ -1,7 +1,7 @@
 # Implementation Plan: Task #612
 
 - **Task**: 612 - improve_system_overview_docs_with_architecture
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: Task 609 (Document command-skill-agent architecture), Task 611 (Context optimization)
@@ -51,7 +51,7 @@ Key findings from research-001.md integrated into this plan:
 
 ## Implementation Phases
 
-### Phase 1: Fix Inaccurate Frontmatter Documentation [NOT STARTED]
+### Phase 1: Fix Inaccurate Frontmatter Documentation [COMPLETED]
 
 **Goal**: Remove incorrect `context: fork` and `agent:` claims from Layer 2 section
 
@@ -73,7 +73,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 2: Document Three Architecture Patterns [NOT STARTED]
+### Phase 2: Document Three Architecture Patterns [COMPLETED]
 
 **Goal**: Add new section documenting Pattern A, B, and C with motivations
 
@@ -105,7 +105,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 3: Update Diagrams to Unicode [NOT STARTED]
+### Phase 3: Update Diagrams to Unicode [IN PROGRESS]
 
 **Goal**: Convert all ASCII box-drawing to Unicode characters for better rendering
 

@@ -44,61 +44,36 @@
     {
       "project_number": 615,
       "project_name": "fix_closure_mcs_neg_complete_double_negation",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T17:54:18Z",
-      "last_updated": "2026-01-19T20:06:15Z",
-      "session_id": "sess_1768852785_40e3e4",
+      "last_updated": "2026-01-19T20:19:08Z",
+      "session_id": "sess_1768853806_3fe843",
       "researched": "2026-01-19T20:06:15Z",
       "artifacts": [
         {
           "path": "specs/615_fix_closure_mcs_neg_complete_double_negation/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing double negation escape issue and recommending Option 1 (restrict to closure)"
-        }
-      ]
-    },
-    {
-      "project_number": 613,
-      "project_name": "revise_metalogic_v2_readme_architecture_diagram",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-19T17:22:52Z",
-      "last_updated": "2026-01-19T17:44:25Z",
-      "session_id": "sess_1768844441_87544b",
-      "researched": "2026-01-19T17:36:12Z",
-      "artifacts": [
-        {
-          "path": "specs/613_revise_metalogic_v2_readme_architecture_diagram/reports/research-001.md",
-          "type": "research",
-          "summary": "Complete analysis of Metalogic_v2 module dependencies with proposed bottom-up architecture diagram showing foundations first"
         },
         {
-          "path": "specs/613_revise_metalogic_v2_readme_architecture_diagram/plans/implementation-001.md",
+          "path": "specs/615_fix_closure_mcs_neg_complete_double_negation/plans/implementation-001.md",
           "type": "plan",
-          "summary": "3-phase implementation plan for revising Metalogic_v2 README architecture diagram with accurate bottom-up dependency structure"
-        },
-        {
-          "path": "specs/613_revise_metalogic_v2_readme_architecture_diagram/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting diagram revision and verification"
+          "summary": "4-phase implementation plan to fix closure_mcs_neg_complete double negation sorry"
         }
       ],
-      "planned": "2026-01-19T17:38:48Z",
-      "started": "2026-01-19T17:40:59Z",
-      "completed": "2026-01-19T17:44:25Z"
+      "planned": "2026-01-19T20:19:08Z"
     },
     {
       "project_number": 612,
       "project_name": "improve_system_overview_docs_with_architecture",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:12:02Z",
-      "last_updated": "2026-01-19T20:05:17Z",
-      "session_id": "sess_1768852962_9af2ee",
+      "last_updated": "2026-01-19T20:17:45Z",
+      "session_id": "sess_1768853844_9bcb0b",
       "researched": "2026-01-19T17:50:37Z",
       "artifacts": [
         {
@@ -112,33 +87,8 @@
           "summary": "5-phase implementation plan for improving system-overview.md documentation accuracy"
         }
       ],
-      "planned": "2026-01-19T20:05:17Z"
-    },
-    {
-      "project_number": 611,
-      "project_name": "context_optimization_and_loading_patterns",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-19T17:06:04Z",
-      "last_updated": "2026-01-19T17:45:51Z",
-      "session_id": "sess_1768844092_2a7b73",
-      "researched": "2026-01-19T17:21:44Z",
-      "planned": "2026-01-19T17:32:43Z",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": "specs/611_context_optimization_and_loading_patterns/plans/implementation-001.md",
-          "summary": "5-phase implementation plan for context optimization with 75% target reduction"
-        },
-        {
-          "type": "summary",
-          "path": "specs/611_context_optimization_and_loading_patterns/summaries/implementation-summary-20260119.md",
-          "summary": "Implementation summary with 78% line reduction achieved"
-        }
-      ],
-      "started": "2026-01-19T17:35:13Z",
-      "completed": "2026-01-19T17:45:51Z"
+      "planned": "2026-01-19T20:05:17Z",
+      "started": "2026-01-19T20:17:45Z"
     },
     {
       "project_number": 610,
@@ -157,100 +107,6 @@
           "summary": "Research report analyzing Strategy B for truth bridge, with detailed case analysis for structural induction and comparison to Strategy A"
         }
       ]
-    },
-    {
-      "project_number": 609,
-      "project_name": "document_command_skill_agent_architecture",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-19T16:03:47Z",
-      "last_updated": "2026-01-19T17:01:44Z",
-      "session_id": "sess_1768841523_21d667",
-      "researched": "2026-01-19T16:15:55Z",
-      "artifacts": [
-        {
-          "path": "specs/609_document_command_skill_agent_architecture/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting three-layer command-skill-agent architecture with recommendations for documentation improvements"
-        },
-        {
-          "path": "specs/609_document_command_skill_agent_architecture/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for documenting command-skill-agent architecture"
-        },
-        {
-          "path": "specs/609_document_command_skill_agent_architecture/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary with all files created and verification results"
-        }
-      ],
-      "planned": "2026-01-19T16:38:32Z",
-      "started": "2026-01-19T16:52:24Z",
-      "completed": "2026-01-19T17:01:44Z"
-    },
-    {
-      "project_number": 608,
-      "project_name": "restructure_completeness_via_representation_theorem",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-19T15:54:48Z",
-      "last_updated": "2026-01-19T17:06:13Z",
-      "session_id": "sess_1768842033_29489a",
-      "researched": "2026-01-19T16:11:43Z",
-      "artifacts": [
-        {
-          "path": "specs/608_restructure_completeness_via_representation_theorem/reports/research-001.md",
-          "type": "research",
-          "summary": "Analysis of Metalogic_v2 architecture, task 470 limitations, and recommendation to port proven semantic_weak_completeness approach"
-        },
-        {
-          "path": "specs/608_restructure_completeness_via_representation_theorem/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase plan covering semantic_truth_at_v2 definition, truth lemma, semantic_weak_completeness port, main theorem update, and documentation"
-        },
-        {
-          "path": "specs/608_restructure_completeness_via_representation_theorem/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary: ported semantic_weak_completeness with sorry-free completeness core"
-        }
-      ],
-      "planned": "2026-01-19T16:59:12Z",
-      "started": "2026-01-19T17:00:54Z",
-      "completed": "2026-01-19T17:06:13Z"
-    },
-    {
-      "project_number": 605,
-      "project_name": "sync_plan_metadata_status_with_task_status",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "description": "Sync the **Status**: field in plan file metadata with the task status in TODO.md and state.json. Currently, implementation plans have a Status field in their YAML-like header (e.g., **Status**: [NOT STARTED]) that is not updated when the task progresses through research/plan/implement cycles. Update the preflight/postflight patterns in implementation skills to also update this status field in the plan file when task status changes.",
-      "created": "2026-01-19T07:27:54Z",
-      "last_updated": "2026-01-19T07:57:01Z",
-      "session_id": "sess_1768809180_b38caf",
-      "researched": "2026-01-19T07:36:07Z",
-      "artifacts": [
-        {
-          "path": "specs/605_sync_plan_metadata_status_with_task_status/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing plan metadata status sync gap with 7 findings and 5 recommendations for updating implementation skills"
-        },
-        {
-          "path": "specs/605_sync_plan_metadata_status_with_task_status/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan with unified status update pattern for atomic updates across state.json, TODO.md, and plan files"
-        },
-        {
-          "path": "specs/605_sync_plan_metadata_status_with_task_status/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting changes to three skill files and the unified status update pattern"
-        }
-      ],
-      "planned": "2026-01-19T07:46:46Z",
-      "started": "2026-01-19T07:53:17Z",
-      "completed": "2026-01-19T07:57:01Z"
     },
     {
       "project_number": 394,
@@ -345,71 +201,6 @@
       "priority": "low"
     },
     {
-      "project_number": 585,
-      "project_name": "add_session_cleanup_to_agents",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-19T00:26:00Z",
-      "last_updated": "2026-01-19T17:21:14Z",
-      "description": "Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination.",
-      "session_id": "sess_1768842920_d1f685",
-      "researched": "2026-01-19T16:21:28Z",
-      "artifacts": [
-        {
-          "path": "specs/585_add_session_cleanup_to_agents/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report on Claude Code memory management, orphaned process cleanup, and monitoring approaches with immediate action steps"
-        },
-        {
-          "path": "specs/585_add_session_cleanup_to_agents/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "Implementation plan for /cleanup command and process monitoring infrastructure"
-        },
-        {
-          "path": "specs/585_add_session_cleanup_to_agents/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting /cleanup command, scripts, aliases, and systemd timer setup"
-        }
-      ],
-      "planned": "2026-01-19T16:34:36Z",
-      "started": "2026-01-19T17:15:40Z",
-      "completed": "2026-01-19T17:21:14Z"
-    },
-    {
-      "project_number": 606,
-      "project_name": "fix_metalogic_v2_readme_accuracy",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-19T07:45:00Z",
-      "last_updated": "2026-01-19T15:59:50Z",
-      "description": "Update Metalogic_v2/README.md to accurately document the sorry count and locations. Current README incorrectly claims 'All theorems in Metalogic_v2 are fully proven with no sorry statements' but there are 7 active sorries in the semantic bridge infrastructure. Document which theorems have sorries, their locations, and impact on downstream theorems.",
-      "source": "Code Review 2026-01-18 (H2)",
-      "session_id": "sess_1768838194_aafa6d",
-      "researched": "2026-01-19T07:54:29Z",
-      "artifacts": [
-        {
-          "path": "specs/606_fix_metalogic_v2_readme_accuracy/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting 5 sorries with exact file:line locations, dependency analysis, and README correction recommendations"
-        },
-        {
-          "path": "specs/606_fix_metalogic_v2_readme_accuracy/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase plan to fix README accuracy: update header, add sorry table, replace false claim, verify"
-        },
-        {
-          "path": "specs/606_fix_metalogic_v2_readme_accuracy/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-19T07:57:49Z",
-      "started": "2026-01-19T15:56:54Z",
-      "completed": "2026-01-19T15:59:50Z"
-    },
-    {
       "project_number": 607,
       "project_name": "port_decidability_to_metalogic_v2",
       "status": "not_started",
@@ -422,39 +213,6 @@
       "dependencies": [
         470
       ]
-    },
-    {
-      "project_number": 614,
-      "project_name": "refactor_cleanup_to_refresh_command",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-19T18:00:00Z",
-      "last_updated": "2026-01-19T20:20:00Z",
-      "description": "Refactor /cleanup command to /refresh with simplified two-mode interface. /refresh shows status and prompts user via AskUserQuestion, /refresh --force immediately clears orphaned processes. Remove --status and --dry-run flags. Rename command, skill, and script files. Fix script bug where set -euo pipefail causes early exit after each kill.",
-      "source": "Task 585 followup",
-      "session_id": "sess_1768852805_e9b439",
-      "researched": "2026-01-19T17:54:46Z",
-      "artifacts": [
-        {
-          "path": "specs/614_refactor_cleanup_to_refresh_command/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report with file inventory, script bug analysis, and AskUserQuestion pattern"
-        },
-        {
-          "path": "specs/614_refactor_cleanup_to_refresh_command/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for refactoring /cleanup to /refresh with simplified interface"
-        },
-        {
-          "path": "specs/614_refactor_cleanup_to_refresh_command/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting /refresh command, fixed script bug, and migration notes"
-        }
-      ],
-      "planned": "2026-01-19T17:59:31Z",
-      "started": "2026-01-19T20:00:25Z",
-      "completed": "2026-01-19T20:20:00Z"
     }
   ],
   "completed_projects": [
