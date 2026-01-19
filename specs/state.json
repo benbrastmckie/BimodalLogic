@@ -323,13 +323,13 @@
     },
     {
       "project_number": 490,
-      "status": "implementing",
+      "status": "partial",
       "project_name": "complete_decidability_procedure",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low",
-      "last_updated": "2026-01-19T22:18:29Z",
-      "session_id": "sess_1768860492_5460af",
+      "last_updated": "2026-01-19T22:47:16Z",
+      "session_id": "sess_1768861636_a5f8bb",
       "researched": "2026-01-19T20:41:56Z",
       "artifacts": [
         {
@@ -353,7 +353,7 @@
       ],
       "planned": "2026-01-19T21:25:47Z",
       "started": "2026-01-19T21:33:26Z",
-      "resume_phase": 3
+      "blocked_phases": "3-4 (tableau_complete, decide_complete require FMP-tableau infrastructure not yet available)"
     },
     {
       "project_number": 607,

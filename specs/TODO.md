@@ -232,7 +232,7 @@ technical_debt:
 ---
 
 ### 490. Complete decidability procedure
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Researched**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean
@@ -240,8 +240,10 @@ technical_debt:
 - **Dependencies**: Task 607
 - **Research**: [research-001.md](specs/490_complete_decidability_procedure/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/490_complete_decidability_procedure/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md)
+- **Blocked**: Phases 3-4 (tableau_complete, decide_complete) require FMP-tableau infrastructure not yet available
 
-**Description**: Complete the decidability procedure for TM logic. The existing Decidability module has tableau infrastructure but needs: proof extraction from closed tableaux, completeness proof connecting to FMP, and full decide function verification. Extends Task 469.
+**Description**: Complete the decidability procedure for TM logic. Phases 1-2 completed with helper lemmas and proof structure. Phases 3-4 blocked pending FMP-tableau connection infrastructure. Soundness complete, decidability operational with documented sorries.
 
 ---
 
