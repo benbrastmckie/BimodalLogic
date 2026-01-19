@@ -5,6 +5,28 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 583,
+      "project_name": "add_max_turns_limit_to_agent_spawning",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T00:26:00Z",
+      "last_updated": "2026-01-19T00:26:00Z",
+      "description": "Add max_turns parameter to all workflow skill agent spawning calls (Task tool invocations). Set max_turns: 50 to limit agent conversation depth and prevent infinite context accumulation. Update skill-lean-implementation, skill-implementer, skill-latex-implementation, skill-researcher, skill-lean-research, skill-planner, skill-meta.",
+      "abandoned": "2026-01-19T00:00:46Z"
+    },
+    {
+      "project_number": 584,
+      "project_name": "add_memory_budget_to_agent_documentation",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T00:26:00Z",
+      "last_updated": "2026-01-19T00:26:00Z",
+      "description": "Add Memory Budget section to all agent documentation files (.claude/agents/*.md). Document: (1) maximum turns limit (50), (2) turn budget per phase (~10 average), (3) context size limits (max 5 files per phase, skip files >10MB), (4) cleanup strategy (clear intermediate results, do not re-read completed proofs). Target agents: lean-implementation-agent, general-implementation-agent, latex-implementation-agent, lean-research-agent, general-research-agent, planner-agent.",
+      "abandoned": "2026-01-19T00:00:46Z"
+    },
+    {
       "project_number": 132,
       "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness.lean",
       "type": "feature",
