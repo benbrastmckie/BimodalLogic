@@ -58,7 +58,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Define Unified Status Update Pattern [NOT STARTED]
+### Phase 1: Define Unified Status Update Pattern [COMPLETED]
 
 **Goal**: Create a reusable bash code block that updates all three locations atomically.
 
@@ -108,7 +108,7 @@ fi
 
 ---
 
-### Phase 2: Update skill-implementer with Unified Pattern [NOT STARTED]
+### Phase 2: Update skill-implementer with Unified Pattern [IN PROGRESS]
 
 **Goal**: Replace separate state.json/TODO.md updates with unified pattern in skill-implementer.
 
