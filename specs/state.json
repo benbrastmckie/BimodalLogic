@@ -8,12 +8,21 @@
     {
       "project_number": 605,
       "project_name": "sync_plan_metadata_status_with_task_status",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "description": "Sync the **Status**: field in plan file metadata with the task status in TODO.md and state.json. Currently, implementation plans have a Status field in their YAML-like header (e.g., **Status**: [NOT STARTED]) that is not updated when the task progresses through research/plan/implement cycles. Update the preflight/postflight patterns in implementation skills to also update this status field in the plan file when task status changes.",
       "created": "2026-01-19T07:27:54Z",
-      "last_updated": "2026-01-19T07:27:54Z"
+      "last_updated": "2026-01-19T07:36:07Z",
+      "session_id": "sess_1768808004_5b25bf",
+      "researched": "2026-01-19T07:36:07Z",
+      "artifacts": [
+        {
+          "path": "specs/605_sync_plan_metadata_status_with_task_status/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing plan metadata status sync gap with 7 findings and 5 recommendations for updating implementation skills"
+        }
+      ]
     },
     {
       "project_number": 604,
@@ -331,13 +340,13 @@
     },
     {
       "project_number": 470,
-      "status": "researched",
+      "status": "planned",
       "project_name": "finite_model_computational_optimization",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low",
-      "last_updated": "2026-01-19T07:28:54Z",
-      "session_id": "sess_1768807504_dde491",
+      "last_updated": "2026-01-19T07:36:09Z",
+      "session_id": "sess_1768807971_ec379e",
       "researched": "2026-01-19T07:28:54Z",
       "artifacts": [
         {
@@ -350,7 +359,8 @@
           "type": "research",
           "summary": "Supplemental research on Metalogic_v2 architecture identifying 4 critical sorries, noncomputable patterns, and optimization recommendations for finite model computations"
         }
-      ]
+      ],
+      "planned": "2026-01-19T07:36:09Z"
     },
     {
       "project_number": 490,
