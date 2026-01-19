@@ -1,7 +1,7 @@
 # Implementation Plan: Task #593
 
 - **Task**: 593 - Complete consistent_iff_consistent' in Basic.lean
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -79,42 +79,52 @@ Research report research-001.md confirms:
 
 ---
 
-### Phase 2: Update Basic.lean Definition [IN PROGRESS]
+### Phase 2: Update Basic.lean Definition [COMPLETED]
 
 **Goal**: Replace the two definitions with a single `Consistent` definition
 
 **Tasks**:
-- [ ] Remove `Consistent` definition (lines 38-39)
-- [ ] Rename `Consistent'` to `Consistent` (update lines 46-47)
-- [ ] Update docstring for new `Consistent` to be primary definition
-- [ ] Remove `consistent_iff_consistent'` lemma and its docstring (lines 49-56)
-- [ ] Run `lean_diagnostic_messages` on Basic.lean
+- [x] Remove `Consistent` definition (lines 38-39)
+- [x] Rename `Consistent'` to `Consistent` (update lines 46-47)
+- [x] Update docstring for new `Consistent` to be primary definition
+- [x] Remove `consistent_iff_consistent'` lemma and its docstring (lines 49-56)
+- [x] Run `lean_diagnostic_messages` on Basic.lean
 
 **Timing**: 20 minutes
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic_v2/Core/Basic.lean` - Remove old Consistent (line 38-39), rename Consistent' to Consistent (line 46-47), remove equivalence lemma (lines 49-56)
 
+**Changes made**:
+- Replaced both definitions with single `Consistent` definition using "⊥ not derivable" formulation
+- Updated docstring to explain relationship to "exists underivable formula" definition
+- Removed `consistent_iff_consistent'` lemma entirely
+
 **Verification**:
 - Basic.lean has single `Consistent` definition
 - Definition is "⊥ cannot be derived" formulation
-- No compilation errors in Basic.lean
+- No compilation errors in Basic.lean (verified with lean_diagnostic_messages)
 
 ---
 
-### Phase 3: Update References in Other Files [NOT STARTED]
+### Phase 3: Update References in Other Files [COMPLETED]
 
 **Goal**: Update all references found in Phase 1 to use new definition
 
 **Tasks**:
-- [ ] For each file with references, update to use `Consistent` (new name)
-- [ ] Remove any uses of `consistent_iff_consistent'` lemma
-- [ ] Run `lean_diagnostic_messages` on each modified file
+- [x] For each file with references, update to use `Consistent` (new name)
+- [x] Remove any uses of `consistent_iff_consistent'` lemma
+- [x] Run `lean_diagnostic_messages` on each modified file
 
 **Timing**: 30 minutes
 
 **Files to modify**:
 - Files identified in Phase 1 search
+
+**Changes made**:
+- Updated README.md to remove `consistent_iff_consistent'` from sorries table
+- Updated "Future Work" section to reflect 1 remaining sorry (down from 2)
+- No code files needed updates (they never used Consistent' or the equivalence lemma)
 
 **Verification**:
 - All references use new `Consistent` definition
@@ -123,52 +133,67 @@ Research report research-001.md confirms:
 
 ---
 
-### Phase 4: Full Build Verification [NOT STARTED]
+### Phase 4: Full Build Verification [COMPLETED]
 
 **Goal**: Ensure entire project builds successfully
 
 **Tasks**:
-- [ ] Run `lake build Theories.Bimodal.Metalogic_v2.Core.Basic`
-- [ ] Run `lake build` for full project
-- [ ] Fix any remaining compilation errors
-- [ ] Run `lean_diagnostic_messages` on all modified files
+- [x] Run `lake build Bimodal.Metalogic_v2.Core.Basic`
+- [x] Run `lake build` for full project
+- [x] Fix any remaining compilation errors
+- [x] Run `lean_diagnostic_messages` on all modified files
 
 **Timing**: 20 minutes
 
 **Files to modify**:
 - Any files with build errors discovered
 
+**Build results**:
+- Basic.lean module built successfully (675 jobs)
+- Full project built successfully (976 jobs)
+- No compilation errors related to consistency definitions
+- Verified no references to `Consistent'` or `consistent_iff_consistent'` remain in Metalogic_v2
+
 **Verification**:
 - `lake build` succeeds with no errors
 - All diagnostics show clean output
+- Grep confirms no deprecated definition names remain
 
 ---
 
-### Phase 5: Documentation and Summary [NOT STARTED]
+### Phase 5: Documentation and Summary [COMPLETED]
 
 **Goal**: Document changes and create implementation summary
 
 **Tasks**:
-- [ ] Create implementation summary with list of modified files
-- [ ] Note the simplification achieved
-- [ ] Document the final `Consistent` definition
+- [x] Create implementation summary with list of modified files
+- [x] Note the simplification achieved
+- [x] Document the final `Consistent` definition
 
 **Timing**: 15 minutes
 
 **Files to modify**:
-- `specs/593_complete_consistent_iff_consistent_basic_lean/summaries/implementation-summary-YYYYMMDD.md` - Implementation summary
+- `specs/593_complete_consistent_iff_consistent_basic_lean/summaries/implementation-summary-20260118.md` - Implementation summary
+
+**Summary created**:
+- Comprehensive documentation of all changes
+- Analysis of architectural insight (MaximalConsistent.lean shadowing)
+- Verification results and success criteria
+- Next steps and related work
 
 **Verification**:
-- Summary file created
-- All changes documented
+- Summary file created at expected path
+- All changes documented with before/after examples
+- Build verification results included
+- Related tasks and future work noted
 
 ## Testing & Validation
 
-- [ ] Basic.lean compiles without errors
-- [ ] All files with updated references compile
-- [ ] Full project builds with `lake build`
-- [ ] No remaining references to old definition names
-- [ ] Grep confirms no `Consistent'` or `consistent_iff_consistent'` references
+- [x] Basic.lean compiles without errors
+- [x] All files with updated references compile
+- [x] Full project builds with `lake build`
+- [x] No remaining references to old definition names
+- [x] Grep confirms no `Consistent'` or `consistent_iff_consistent'` references
 
 ## Artifacts & Outputs
 
