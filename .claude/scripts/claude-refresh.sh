@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 #
-# claude-cleanup.sh - Identify and terminate orphaned Claude Code processes
+# claude-refresh.sh - Identify and terminate orphaned Claude Code processes
 #
-# Usage: ./claude-cleanup.sh [--dry-run] [--force] [--status]
+# Usage: ./claude-refresh.sh [--force]
 #
 # Options:
-#   --status   Show memory usage without cleanup
-#   --dry-run  Preview orphaned processes without terminating
-#   --force    Skip confirmation prompt
-#   (none)     Interactive cleanup with confirmation
+#   --force    Skip confirmation prompt and terminate immediately
+#   (none)     Show status and exit (skill handles confirmation via AskUserQuestion)
 #
 # Safety:
 #   - Only targets processes with TTY == "?" (no controlling terminal)
@@ -25,29 +23,19 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Parse arguments
-DRY_RUN=false
 FORCE=false
-STATUS_ONLY=false
 
 for arg in "$@"; do
     case $arg in
-        --dry-run)
-            DRY_RUN=true
-            ;;
         --force)
             FORCE=true
             ;;
-        --status)
-            STATUS_ONLY=true
-            ;;
         --help|-h)
-            echo "Usage: $0 [--dry-run] [--force] [--status]"
+            echo "Usage: $0 [--force]"
             echo ""
             echo "Options:"
-            echo "  --status   Show memory usage without cleanup"
-            echo "  --dry-run  Preview orphaned processes without terminating"
-            echo "  --force    Skip confirmation prompt"
-            echo "  (none)     Interactive cleanup with confirmation"
+            echo "  --force    Skip confirmation prompt and terminate immediately"
+            echo "  (none)     Show status and exit (for use with /refresh command)"
             exit 0
             ;;
         *)
@@ -167,32 +155,9 @@ total_mem=$(echo "$all_procs" | calculate_memory)
 orphan_mem=$(echo "$orphan_procs" | calculate_memory)
 active_mem=$(echo "$active_procs" | calculate_memory)
 
-# Status mode - just show stats
-if $STATUS_ONLY; then
-    echo -e "${BLUE}Claude Code Memory Status${NC}"
-    echo "========================="
-    echo ""
-    echo "Process Count:"
-    echo "  Total Claude processes: $total_count"
-    echo "  Active (with TTY):      $active_count"
-    echo "  Orphaned (no TTY):      $orphan_count"
-    echo ""
-    echo "Memory Usage:"
-    echo "  Total:    $(format_memory $total_mem)"
-    echo "  Active:   $(format_memory $active_mem)"
-    echo "  Orphaned: $(format_memory $orphan_mem) (reclaimable)"
-    echo ""
-    if [ "$orphan_count" -gt 0 ]; then
-        echo -e "${YELLOW}Run '/cleanup' to terminate orphaned processes.${NC}"
-    else
-        echo -e "${GREEN}No orphaned processes found.${NC}"
-    fi
-    exit 0
-fi
-
 # No orphaned processes
 if [ "$orphan_count" -eq 0 ]; then
-    echo -e "${GREEN}Claude Code Cleanup${NC}"
+    echo -e "${GREEN}Claude Code Refresh${NC}"
     echo "==================="
     echo ""
     echo "No orphaned processes found."
@@ -225,38 +190,17 @@ done <<< "$orphan_procs"
 actual_orphan_count=${#orphan_pids[@]}
 
 if [ "$actual_orphan_count" -eq 0 ]; then
-    echo -e "${GREEN}Claude Code Cleanup${NC}"
+    echo -e "${GREEN}Claude Code Refresh${NC}"
     echo "==================="
     echo ""
     echo "No orphaned processes found (excluded current session)."
     exit 0
 fi
 
-# Dry run mode - show what would be cleaned
-if $DRY_RUN; then
-    echo -e "${YELLOW}Claude Code Cleanup (Dry Run)${NC}"
-    echo "============================="
-    echo ""
-    echo "The following $actual_orphan_count orphaned processes would be terminated:"
-    echo ""
-    printf "%-8s %-12s %-10s %s\n" "PID" "Memory" "Age" "Command"
-    printf "%-8s %-12s %-10s %s\n" "-----" "-------" "-------" "--------------------------------"
-
-    for detail in "${orphan_details[@]}"; do
-        IFS='|' read -r pid mem age cmd <<< "$detail"
-        printf "%-8s %-12s %-10s %s\n" "$pid" "$mem" "$age" "$cmd"
-    done
-
-    echo ""
-    echo "Total memory that would be reclaimed: $(format_memory $orphan_mem)"
-    echo ""
-    echo -e "${BLUE}Run '/cleanup --force' to terminate these processes.${NC}"
-    exit 0
-fi
-
-# Interactive mode - ask for confirmation
+# Default mode (no --force) - show status and exit
+# The skill handles confirmation via AskUserQuestion
 if ! $FORCE; then
-    echo -e "${YELLOW}Claude Code Cleanup${NC}"
+    echo -e "${YELLOW}Claude Code Refresh${NC}"
     echo "==================="
     echo ""
     echo "Found $actual_orphan_count orphaned processes using $(format_memory $orphan_mem):"
@@ -270,16 +214,13 @@ if ! $FORCE; then
     done
 
     echo ""
-    read -p "Terminate these processes? [y/N] " -n 1 -r
+    echo "Total memory that can be reclaimed: $(format_memory $orphan_mem)"
     echo ""
-
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Aborted."
-        exit 0
-    fi
+    # Exit here - skill will prompt with AskUserQuestion and re-run with --force if confirmed
+    exit 0
 fi
 
-# Execute cleanup
+# Force mode - execute cleanup
 echo ""
 echo -e "${GREEN}Terminating orphaned processes...${NC}"
 
@@ -318,7 +259,7 @@ for pid in "${orphan_pids[@]}"; do
 done
 
 echo ""
-echo -e "${GREEN}Claude Code Cleanup Complete${NC}"
+echo -e "${GREEN}Claude Code Refresh Complete${NC}"
 echo "============================"
 echo "Terminated: $terminated processes"
 echo "Failed:     $failed processes"

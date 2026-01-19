@@ -1,32 +1,30 @@
 ---
-name: skill-cleanup
+name: skill-refresh
 description: Identify and terminate orphaned Claude Code processes to reclaim memory
-allowed-tools: Bash, Read
+allowed-tools: Bash, Read, AskUserQuestion
 ---
 
-# Cleanup Skill (Direct Execution)
+# Refresh Skill (Direct Execution)
 
 Direct execution skill for identifying and terminating orphaned Claude Code processes. This skill executes inline without spawning a subagent.
 
 ## Trigger Conditions
 
 This skill activates when:
-- User invokes `/cleanup` command
+- User invokes `/refresh` command
 - Memory usage needs investigation
 - Orphaned processes need cleanup
 
 ## Command Syntax
 
 ```
-/cleanup [--dry-run] [--force] [--status]
+/refresh [--force]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--status` | Show memory usage without cleanup |
-| `--dry-run` | Preview orphaned processes without terminating |
-| `--force` | Skip confirmation prompt |
-| (no flags) | Interactive cleanup with confirmation |
+| `--force` | Terminate orphaned processes immediately |
+| (no flags) | Show status and prompt for confirmation |
 
 ---
 
@@ -35,79 +33,67 @@ This skill activates when:
 ### 1. Parse Arguments
 
 Parse command flags from input:
-- `--status`: Only show memory stats
-- `--dry-run`: Preview without action
-- `--force`: Skip confirmation
+- `--force`: Skip confirmation and terminate immediately
 
-### 2. Detect Orphaned Processes
+### 2. Run Detection Script
 
-**Definition**: Claude Code processes with `TTY == "??"` (no controlling terminal) are considered orphaned.
-
-**Detection Command**:
+Execute the detection script to get status:
 ```bash
-# Get orphaned Claude processes (excluding current session)
-ps aux | grep -E '[c]laude|[n]ode.*claude' | awk '$7 == "??" {print $0}'
+.claude/scripts/claude-refresh.sh
 ```
 
-**Important**: Exclude current process and parent process from results:
+The script will output:
+- Process counts (total, active, orphaned)
+- Memory usage breakdown
+- List of orphaned processes with PID, memory, age, and command
+- Exit without terminating (unless --force is passed)
+
+### 3. Handle Based on Mode
+
+#### Force Mode (--force flag provided)
+
+Run the script with --force to terminate immediately:
 ```bash
-current_pid=$$
-parent_pid=$(ps -o ppid= -p $$)
+.claude/scripts/claude-refresh.sh --force
 ```
 
-### 3. Calculate Memory Usage
+Display the termination results and exit.
 
-For `--status` mode, show memory summary:
+#### Default Mode (no flags)
+
+1. Display the status output from the script
+2. If orphaned processes were found, use AskUserQuestion for confirmation:
+
+```json
+{
+  "question": "Terminate these orphaned processes?",
+  "header": "Confirm Cleanup",
+  "options": [
+    {
+      "label": "Yes, terminate",
+      "description": "Kill orphaned processes and reclaim memory"
+    },
+    {
+      "label": "Cancel",
+      "description": "Exit without changes"
+    }
+  ]
+}
+```
+
+3. If user confirms, run the script with --force:
 ```bash
-# Get total memory used by Claude processes
-ps aux | grep -E '[c]laude|[n]ode.*claude' | awk '{sum += $6} END {print sum/1024 " MB"}'
-
-# Get orphaned process memory
-ps aux | grep -E '[c]laude|[n]ode.*claude' | awk '$7 == "??" {sum += $6} END {print sum/1024 " MB"}'
+.claude/scripts/claude-refresh.sh --force
 ```
 
-### 4. Execute Cleanup (if not dry-run)
-
-**For each orphaned process**:
-```bash
-# Send SIGTERM first (graceful)
-kill -15 $pid
-
-# Wait briefly
-sleep 1
-
-# If still running, SIGKILL
-if kill -0 $pid 2>/dev/null; then
-    kill -9 $pid
-fi
-```
-
-### 5. Report Results
-
-Return summary:
-```
-Claude Code Cleanup Report
-==========================
-
-Before:
-- Total Claude processes: {N}
-- Orphaned processes: {M}
-- Total memory: {X} MB
-- Orphaned memory: {Y} MB
-
-Action taken: {none|preview|terminated}
-
-After:
-- Terminated processes: {count}
-- Memory reclaimed: {Z} MB
-```
+4. Display the termination results
 
 ---
 
 ## Safety Measures
 
 1. **Never kill processes with a TTY** - Active sessions have terminals
-2. **Exclude current process tree** - Don't kill the running cleanup command
+2. **Exclude current process tree** - Don't kill the running command
 3. **SIGTERM before SIGKILL** - Allow graceful shutdown
 4. **Confirmation by default** - Require `--force` to skip
 
@@ -115,10 +101,10 @@ After:
 
 ## Integration with Scripts
 
-The skill delegates to `.claude/scripts/claude-cleanup.sh` for the actual process management:
+The skill delegates to `.claude/scripts/claude-refresh.sh` for process management:
 
 ```bash
-.claude/scripts/claude-cleanup.sh [--dry-run] [--force] [--status]
+.claude/scripts/claude-refresh.sh [--force]
 ```
 
 This separation allows:
@@ -130,48 +116,42 @@ This separation allows:
 
 ## Return Format
 
-### For --status:
+### For default mode (no orphans):
 ```
-Claude Code Memory Status
-=========================
-Total Claude processes: 12
-Active (with TTY): 3
-Orphaned (no TTY): 9
+Claude Code Refresh
+===================
 
-Memory Usage:
-- Total: 5.2 GB
-- Active: 1.1 GB
-- Orphaned: 4.1 GB (reclaimable)
-
-Run `/cleanup` to terminate orphaned processes.
+No orphaned processes found.
+All N Claude processes are active sessions.
 ```
 
-### For --dry-run:
+### For default mode (with orphans, after confirmation):
 ```
-Claude Code Cleanup (Dry Run)
-=============================
-The following 9 orphaned processes would be terminated:
+Claude Code Refresh
+===================
 
-PID    Memory    Age       Command
------  -------   -------   --------------------------------
-12345  450 MB    2h 15m    node /path/to/claude-code/...
-12346  380 MB    1h 45m    node /path/to/claude-code/...
+Found N orphaned processes using X MB:
+
+PID      Memory       Age        Command
+-----    -------      -------    --------------------------------
+12345    450 MB       2h 15m     node /path/to/claude-code/...
 ...
 
-Total memory that would be reclaimed: 4.1 GB
+Terminating orphaned processes...
+  PID 12345: terminated (graceful)
+  ...
 
-Run `/cleanup --force` to terminate these processes.
-```
-
-### For cleanup:
-```
 Claude Code Cleanup Complete
 ============================
-Terminated 9 orphaned processes
-Memory reclaimed: 4.1 GB
+Terminated: N processes
+Failed:     0 processes
+Memory reclaimed: ~X MB
 
-Active sessions preserved: 3
+Active sessions preserved: M
 ```
+
+### For --force mode:
+Same as above but without the confirmation prompt.
 
 ---
 

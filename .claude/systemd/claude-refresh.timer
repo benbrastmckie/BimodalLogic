@@ -1,5 +1,5 @@
 [Unit]
-Description=Run Claude Code cleanup hourly
+Description=Run Claude Code refresh hourly
 Documentation=https://github.com/anthropics/claude-code
 
 [Timer]

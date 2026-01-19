@@ -1,39 +1,35 @@
-# /cleanup Command
+# /refresh Command
 
 Identify and terminate orphaned Claude Code processes to reclaim memory.
 
 ## Syntax
 
 ```
-/cleanup [--dry-run] [--force] [--status]
+/refresh [--force]
 ```
 
 ## Options
 
 | Flag | Description |
 |------|-------------|
-| `--status` | Show current memory usage by Claude processes |
-| `--dry-run` | Preview orphaned processes without terminating them |
-| `--force` | Skip confirmation prompt and terminate immediately |
-| (no flags) | Interactive cleanup with confirmation prompt |
+| `--force` | Terminate orphaned processes immediately without confirmation |
+| (no flags) | Show status and prompt for confirmation |
 
 ## Execution
 
-Invoke skill-cleanup with the provided arguments:
+Invoke skill-refresh with the provided arguments:
 
 ```
-skill: skill-cleanup
+skill: skill-refresh
 args: {flags from command}
 ```
 
 The skill will:
-1. Detect orphaned Claude processes (processes with no controlling terminal)
-2. Calculate memory usage
+1. Run the detection script to identify orphaned Claude processes
+2. Display status report with process list and memory usage
 3. Based on flags:
-   - `--status`: Display memory report and exit
-   - `--dry-run`: List processes that would be terminated
-   - `--force`: Terminate orphaned processes without confirmation
-   - default: Show preview and ask for confirmation
+   - `--force`: Terminate orphaned processes immediately
+   - default: Use AskUserQuestion to prompt for confirmation, then terminate if confirmed
 
 ## Safety
 
@@ -44,17 +40,11 @@ The skill will:
 ## Examples
 
 ```bash
-# Check memory usage
-/cleanup --status
+# Show status and prompt for confirmation
+/refresh
 
-# Preview what would be cleaned
-/cleanup --dry-run
-
-# Clean up with confirmation
-/cleanup
-
-# Clean up immediately
-/cleanup --force
+# Terminate orphaned processes immediately
+/refresh --force
 ```
 
 ## Output
@@ -62,5 +52,6 @@ The skill will:
 Reports include:
 - Total Claude processes and their memory usage
 - Count of active vs orphaned processes
+- List of orphaned processes with PID, memory, age, and command
 - Memory reclaimed (after cleanup)
 - Any processes that couldn't be terminated
