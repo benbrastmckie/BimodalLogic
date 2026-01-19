@@ -2,117 +2,27 @@
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
     "total_tasks": 20,
-    "last_sync": "2026-01-18T23:46:29Z"
+    "last_sync": "2026-01-19T00:30:00Z"
   },
   "active_projects": [
     {
       "project_number": 594,
       "project_name": "fix_progress_interruptions_agent_system",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "effort": "2-3 hours",
       "created": "2026-01-19T00:12:36Z",
-      "last_updated": "2026-01-19T00:12:36Z"
-    },
-    {
-      "project_number": 593,
-      "project_name": "complete_consistent_iff_consistent_basic_lean",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T23:47:44Z",
-      "last_updated": "2026-01-19T00:09:14Z",
-      "description": "Complete the sorry remaining in Metalogic_v2/Core/ for consistent_iff_consistent in Basic.lean",
-      "artifacts": [
-        {
-          "path": "specs/593_complete_consistent_iff_consistent_basic_lean/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/593_complete_consistent_iff_consistent_basic_lean/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/593_complete_consistent_iff_consistent_basic_lean/summaries/implementation-summary-20260118.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 591,
-      "project_name": "find_fix_double_forking",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-19T00:33:51Z",
-      "last_updated": "2026-01-18T23:48:43Z",
-      "session_id": "sess_1768779943_482ffe",
-      "description": "Investigate and fix potential double forking in skill-to-agent delegation. Current architecture shows skills have both context: fork (which spawns a subprocess) AND invoke Task tool (which spawns another subprocess). Audit all forked skills, determine if context: fork should be removed OR if Task invocation should be replaced with direct execution.",
-      "references": [
-        ".claude/docs/skills-vs-agents-context-behavior.md",
-        ".claude/docs/research-skill-agent-contexts.md",
-        ".claude/docs/memory-leak-fix-plan.md"
-      ],
-      "artifacts": [
-        {
-          "path": "specs/591_find_fix_double_forking/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/591_find_fix_double_forking/plans/implementation-001.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/591_find_fix_double_forking/summaries/implementation-summary-20260119.md",
-          "type": "summary"
-        }
-      ],
-      "completed": "2026-01-18T23:48:43Z"
-    },
-    {
-      "project_number": 589,
-      "project_name": "complete_representation_theorem_metalogic_v2",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T22:49:34Z",
-      "last_updated": "2026-01-18T23:59:00Z",
-      "completed": "2026-01-18T23:59:00Z",
-      "artifacts": [
-        {
-          "path": "specs/589_complete_representation_theorem_metalogic_v2/reports/research-001.md",
-          "type": "research"
-        },
-        {
-          "path": "specs/589_complete_representation_theorem_metalogic_v2/summaries/implementation-summary-20260118.md",
-          "type": "summary"
-        }
-      ]
-    },
-    {
-      "project_number": 590,
-      "project_name": "eliminate_axiom_context_provability",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-18T22:49:34Z",
-      "last_updated": "2026-01-19T00:06:08Z",
-      "artifacts": [
-        {
-          "path": "specs/590_eliminate_axiom_context_provability/reports/research-001.md",
-          "type": "research"
-        }
-      ]
+      "last_updated": "2026-01-19T00:18:20Z"
     },
     {
       "project_number": 561,
       "project_name": "cleanup_and_documentation",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-19T00:15:35Z",
+      "last_updated": "2026-01-19T00:17:32Z",
       "parent_task": 556,
       "dependencies": [
         560

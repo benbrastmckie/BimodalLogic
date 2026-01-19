@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-18T23:46:25Z",
+  "_last_updated": "2026-01-19T00:30:00Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -6105,6 +6105,95 @@
         },
         {
           "path": "specs/archive/588_complete_truth_lemma_metalogic_v2/summaries/implementation-summary-20260118.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 589,
+      "project_name": "complete_representation_theorem_metalogic_v2",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:49:34Z",
+      "last_updated": "2026-01-18T23:59:00Z",
+      "completed": "2026-01-18T23:59:00Z",
+      "archived": "2026-01-19T00:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/589_complete_representation_theorem_metalogic_v2/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/589_complete_representation_theorem_metalogic_v2/summaries/implementation-summary-20260118.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 590,
+      "project_name": "eliminate_axiom_context_provability",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T22:49:34Z",
+      "last_updated": "2026-01-19T00:06:08Z",
+      "completed": "2026-01-19T00:06:08Z",
+      "archived": "2026-01-19T00:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/590_eliminate_axiom_context_provability/reports/research-001.md",
+          "type": "research"
+        }
+      ]
+    },
+    {
+      "project_number": 591,
+      "project_name": "find_fix_double_forking",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T00:33:51Z",
+      "last_updated": "2026-01-18T23:48:43Z",
+      "completed": "2026-01-18T23:48:43Z",
+      "archived": "2026-01-19T00:30:00Z",
+      "session_id": "sess_1768779943_482ffe",
+      "artifacts": [
+        {
+          "path": "specs/591_find_fix_double_forking/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/591_find_fix_double_forking/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/591_find_fix_double_forking/summaries/implementation-summary-20260119.md",
+          "type": "summary"
+        }
+      ]
+    },
+    {
+      "project_number": 593,
+      "project_name": "complete_consistent_iff_consistent_basic_lean",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-18T23:47:44Z",
+      "last_updated": "2026-01-19T00:09:14Z",
+      "completed": "2026-01-19T00:09:14Z",
+      "archived": "2026-01-19T00:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/593_complete_consistent_iff_consistent_basic_lean/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/593_complete_consistent_iff_consistent_basic_lean/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/593_complete_consistent_iff_consistent_basic_lean/summaries/implementation-summary-20260118.md",
           "type": "summary"
         }
       ]
