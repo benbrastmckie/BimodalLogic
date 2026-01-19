@@ -292,7 +292,7 @@ Convert a finite history to a world history.
 
 The world history has domain [-k, k] where k = temporalBound phi.
 -/
-noncomputable def finiteHistoryToWorldHistory (phi : Formula) (h : FiniteHistory phi) :
+def finiteHistoryToWorldHistory (phi : Formula) (h : FiniteHistory phi) :
     WorldHistory (SemanticCanonicalFrame phi) where
   domain := inFiniteDomain phi
   convex := fun x z h_x h_z y h_xy h_yz => by
@@ -574,8 +574,25 @@ If phi is valid (true in all models), then phi is provable.
 6. By validity, phi is true in the countermodel
 7. But phi ∉ MCS projection, so phi is false (contradiction)
 
-**Status**: This requires the full truth correspondence lemma
-and correct model construction. Currently has sorry.
+**Status**: SORRY - Depends on truth bridge lemma (Phase 6).
+
+The proof structure is complete up to the bridge between:
+- `truth_at (SemanticCanonicalModel phi) tau 0 phi` (from validity)
+- `w.models phi h_phi_closure` (finite world state truth)
+
+This bridge is `semantic_truth_implies_truth_at` (converse direction) which has
+a sorry because bridging general truth_at (quantifying over ALL histories and times)
+to finite world state truth is non-trivial.
+
+**Alternative Approach (from old Metalogic)**:
+The FiniteCanonicalModel.lean uses `semantic_weak_completeness` which works with
+`semantic_truth_at_v2` (internal finite truth) and avoids this bridge by:
+1. Defining truth directly on SemanticWorldState/FiniteTime
+2. Proving completeness without going through general `truth_at`
+3. The bridge theorems are documented but left as sorries
+
+For the current implementation, the proof structure demonstrates correctness
+while the sorry marks where the bridge theorem would connect.
 -/
 noncomputable def main_weak_completeness_v2 (phi : Formula) (h_valid : valid phi) : ⊢ phi := by
   by_cases h_prov : Nonempty (⊢ phi)

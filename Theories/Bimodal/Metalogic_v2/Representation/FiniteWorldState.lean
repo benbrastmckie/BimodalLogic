@@ -256,6 +256,28 @@ instance finiteWorldState_finite (phi : Formula) : Finite (FiniteWorldState phi)
   intros w1 w2 h_eq
   exact FiniteWorldState.ext h_eq
 
+/--
+DecidableEq instance for truth assignments.
+
+Since the domain is finite and Bool has decidable equality,
+function equality is decidable via Fintype.decidablePiFintype.
+-/
+instance truthAssignmentDecidableEq (phi : Formula) : DecidableEq (FiniteTruthAssignment phi) :=
+  Fintype.decidablePiFintype
+
+/--
+DecidableEq instance for FiniteWorldState.
+
+Two world states are equal iff their assignments are equal.
+Since assignments have decidable equality, world states do too.
+-/
+instance finiteWorldState_decidableEq (phi : Formula) : DecidableEq (FiniteWorldState phi) :=
+  fun w1 w2 =>
+    if h : w1.assignment = w2.assignment then
+      isTrue (FiniteWorldState.ext h)
+    else
+      isFalse (fun h_eq => h (by rw [h_eq]))
+
 /-!
 ## Finite History
 
