@@ -69,7 +69,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Prove expansion_decreases_measure [PARTIAL]
+### Phase 2: Prove expansion_decreases_measure [IN PROGRESS]
 
 **Goal**: Prove the termination measure lemma for tableau expansion.
 

@@ -241,12 +241,22 @@
     },
     {
       "project_number": 398,
-      "status": "researched",
+      "status": "planned",
       "project_name": "port_causal_semantics_to_recursive_semantics_md",
       "section": "Medium Priority",
       "language": "markdown",
       "priority": "high",
-      "parent_task": 394
+      "parent_task": 394,
+      "last_updated": "2026-01-19T22:09:14Z",
+      "session_id": "sess_1768860381_239edb",
+      "planned": "2026-01-19T22:09:14Z",
+      "artifacts": [
+        {
+          "path": "specs/398_port_causal_semantics_to_recursive_semantics_md/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan for adding causal semantics using [DETAILS] placeholders"
+        }
+      ]
     },
     {
       "project_number": 399,
@@ -318,8 +328,8 @@
       "section": "Low Priority",
       "language": "lean",
       "priority": "low",
-      "last_updated": "2026-01-19T22:06:03Z",
-      "session_id": "sess_1768859831_ea9dce",
+      "last_updated": "2026-01-19T22:08:34Z",
+      "session_id": "sess_1768860492_5460af",
       "researched": "2026-01-19T20:41:56Z",
       "artifacts": [
         {
