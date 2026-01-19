@@ -432,9 +432,49 @@ This is the essential connection that allows us to conclude:
 - implies truth in SemanticCanonicalModel at all SemanticWorldStates
 - which by semantic_weak_completeness gives derivability
 
-**Note**: This theorem has a sorry inherited from the old Metalogic implementation.
-The proof requires induction on formula structure and careful handling of the
-correspondence between finite world state truth and model truth.
+**Status**: SORRY - Requires complex formula induction.
+
+**The Challenge**:
+This bridge connects two different notions of truth:
+1. `truth_at` (general): quantifies over ALL integers and ALL WorldHistories
+2. `models` (finite): evaluates truth in a finite world state
+
+The proof requires structural induction on phi, handling each case:
+- **Atom**: Straightforward - both definitions check valuation at the state
+- **Bot**: Both are False
+- **Imp**: By induction hypothesis on subformulas
+- **Box**: Problematic - `truth_at` quantifies over ALL WorldHistories,
+  but finite model only has finitely many states. Requires showing that
+  if box(psi) is true in the finite sense, then psi is true at ALL histories.
+- **Past/Future**: Problematic - `truth_at` quantifies over ALL integers,
+  but finite model only has bounded time domain [-k, k].
+
+**Why Box Is Hard**:
+`truth_at M tau t (box psi) = ∀ sigma : WorldHistory F, truth_at M sigma t psi`
+This quantifies over ALL possible WorldHistories in SemanticCanonicalFrame,
+which is uncountably many. The finite world state only knows about finitely
+many states. We need to show that the T axiom (box psi -> psi) and local
+consistency suffice to guarantee truth at ALL histories.
+
+**Why Temporal Is Hard**:
+`truth_at M tau t (all_future psi) = ∀ s > t, truth_at M tau s psi`
+This quantifies over ALL integers s > t, but the finite model only has
+times in [-k, k]. For s outside this range, atoms are false (no domain witness),
+which might not match the finite evaluation.
+
+**The Old Metalogic Approach**:
+The FiniteCanonicalModel.lean file has the same sorry at line 3944.
+Instead of proving this bridge directly, the old code uses `semantic_weak_completeness`
+which works with `semantic_truth_at_v2` (internal to the finite model) and
+avoids the bridge to general `truth_at`. The approach is:
+1. If phi not provable, construct countermodel in SemanticWorldState
+2. This countermodel falsifies phi in the `semantic_truth_at_v2` sense
+3. The contrapositive gives: if valid in all semantic world states, then provable
+
+For the current implementation, we leave this sorry with the understanding that:
+1. The completeness proof structure is correct
+2. The finite model construction is sound
+3. The bridge requires non-trivial work that doesn't block the core result
 -/
 theorem semantic_truth_implies_truth_at (phi : Formula) (w : SemanticWorldState phi)
     (h_mem : phi ∈ closure phi) :
@@ -443,9 +483,10 @@ theorem semantic_truth_implies_truth_at (phi : Formula) (w : SemanticWorldState 
     tau.states 0 ht = w →
     truth_at (SemanticCanonicalModel phi) tau 0 phi := by
   intro h_models tau ht h_eq
-  -- The proof proceeds by induction on phi, showing that semantic truth
-  -- (membership in the finite world state) matches truth_at in the model
-  sorry  -- Bridge lemma - requires induction on formula structure
+  -- Bridge lemma - requires induction on formula structure.
+  -- See docstring for detailed explanation of the challenges.
+  -- The old Metalogic has the same sorry (line 3944 of FiniteCanonicalModel.lean).
+  sorry
 
 /-!
 ## Completeness via Contrapositive
