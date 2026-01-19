@@ -86,7 +86,7 @@ technical_debt:
 
 ### 613. Revise Metalogic_v2 README architecture diagram
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19

@@ -85,16 +85,14 @@
   - State schemas (main, archive, reviews, project)
   - Timestamp formats
   - Status synchronization mechanisms
+  - jq patterns for task lookup
+  - TODO.md grep patterns
   - Replaces: status-markers.md, state-schema.md
 
 - **delegation.md** - Delegation patterns and context template
   - Session tracking
   - Delegation depth management
   - Context passing patterns
-
-- **state-management.md** - State management and lookup utilities
-  - jq patterns for task lookup
-  - TODO.md grep patterns
 
 ---
 
@@ -450,7 +448,6 @@ Stage 4 loads:
 Stage 4 loads:
 - @.claude/context/core/orchestration/delegation.md
 - @.claude/context/core/orchestration/state-management.md
-- @.claude/context/core/orchestration/state-management.md
 - @.claude/context/core/system/git-commits.md
 - grep -A 50 "^### {task_number}\." specs/TODO.md
 - @specs/state.json
@@ -485,14 +482,14 @@ Quick reference:
 **Completed**:
 - ✓ Delegation files merged: 1,003 → 510 lines (50% reduction)
 - ✓ State management files merged: 1,574 → 535 lines (66% reduction)
-- ✓ command-lifecycle.md removed: 1,138 lines eliminated (100% reduction)
+- ✓ command-lifecycle.md deprecated: 1,138 lines pending removal
 - ✓ Total reduction: 3,715 → 1,045 lines (72% reduction, 2,670 lines saved)
 
-**Deprecated Files** (1-month deprecation period until 2025-01-29):
-- subagent-return-format.md → core/standards/delegation.md#return-format
-- subagent-delegation-guide.md → core/standards/delegation.md#delegation-patterns
-- state-schema.md → core/system/state-management.md#state-schemas
-- command-lifecycle.md → (removed, see agent files for execution patterns)
+**Deprecated Files** (deprecation period ended 2025-01-29, now removed):
+- subagent-return-format.md → core/standards/delegation.md#return-format (removed)
+- subagent-delegation-guide.md → core/standards/delegation.md#delegation-patterns (removed)
+- state-schema.md → core/system/state-management.md#state-schemas (removed)
+- command-lifecycle.md → see agent files for execution patterns (pending removal)
 
 **Note**: status-markers.md has been moved from core/system/ to core/standards/ (2026-01-08) as it defines standards/conventions rather than system implementation.
 
