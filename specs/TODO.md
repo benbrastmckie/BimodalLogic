@@ -59,14 +59,14 @@ technical_debt:
 
 ### 597. Re-prove main_provable_iff_valid in Metalogic_v2
 - **Effort**: 20-30 hours (zero technical debt solution)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Research**: [research-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md), [research-002.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-002.md), [research-003.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-003.md)
-- **Plan**: [implementation-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-002.md) (supersedes v1)
 
-**Description**: Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.
+**Description**: Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. Build SemanticCanonicalModel_v2 to bridge canonical truth (MCS membership) to semantic truth (TaskModel evaluation). Zero technical debt - no imports from old Metalogic.
 
 ---
 

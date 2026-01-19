@@ -99,11 +99,11 @@
     {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T02:17:55Z",
+      "last_updated": "2026-01-19T06:26:33Z",
       "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
       "session_id": "sess_1768788778_c6161f",
       "researched": "2026-01-19T02:17:55Z",
@@ -123,9 +123,13 @@
         {
           "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-003.md",
           "type": "research"
+        },
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-002.md",
+          "type": "plan"
         }
       ],
-      "planned": "2026-01-19T01:20:21Z",
+      "planned": "2026-01-19T06:26:33Z",
       "started": "2026-01-19T01:25:26Z",
       "partial_since": "2026-01-19T02:50:00Z",
       "completed_phases": [
