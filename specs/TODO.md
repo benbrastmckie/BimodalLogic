@@ -29,11 +29,11 @@ technical_debt:
 
 ### 600. Fix Subagent Metadata Passing in Agent System
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
-- **Research**: [research-001.md](specs/600_fix_subagent_metadata_passing/reports/research-001.md)
+- **Research**: [research-001.md](specs/600_fix_subagent_metadata_passing/reports/research-001.md), [research-002.md](specs/600_fix_subagent_metadata_passing/reports/research-002.md)
 
 **Description**: Study the research output from /home/benjamin/Projects/ProofChecker/.claude/output/research.md which shows agents attempting to pass metadata in JSON blocks back to the primary agent, but the JSON is printing to console instead of being parsed. Research best practices for subagent metadata passing in Claude Code 2026. Improve the agent system to avoid printing JSON output to console and eliminate the 'continue' interruptions demonstrated in the research output.
 

@@ -8,16 +8,20 @@
     {
       "project_number": 600,
       "project_name": "fix_subagent_metadata_passing",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T01:21:21Z",
-      "last_updated": "2026-01-19T01:42:40Z",
+      "last_updated": "2026-01-19T01:48:14Z",
       "session_id": "sess_1768786945_62eccd",
-      "researched": "2026-01-19T01:30:20Z",
+      "researched": "2026-01-19T01:48:14Z",
       "artifacts": [
         {
           "path": "specs/600_fix_subagent_metadata_passing/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/600_fix_subagent_metadata_passing/reports/research-002.md",
           "type": "research"
         }
       ]
