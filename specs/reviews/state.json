@@ -60,7 +60,7 @@
         "medium_issues": 3,
         "low_issues": 2
       },
-      "tasks_created": [],
+      "tasks_created": [606, 607],
       "registries_updated": []
     }
   ],
@@ -68,6 +68,6 @@
     "total_reviews": 4,
     "last_review": "2026-01-18",
     "total_issues_found": 91,
-    "total_tasks_created": 0
+    "total_tasks_created": 2
   }
 }

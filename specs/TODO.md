@@ -1,20 +1,20 @@
 ---
-next_project_number: 606
+next_project_number: 608
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 9
+  active: 11
   completed: 197
   in_progress: 1
-  not_started: 4
+  not_started: 6
   abandoned: 18
-  total: 218
+  total: 220
 priority_distribution:
   critical: 0
   high: 5
-  medium: 2
+  medium: 4
   low: 2
 technical_debt:
   sorry_count: 205
@@ -133,5 +133,30 @@ technical_debt:
 - **Parent**: Task 469
 
 **Description**: Complete the decidability procedure for TM logic. The existing Decidability module has tableau infrastructure but needs: proof extraction from closed tableaux, completeness proof connecting to FMP, and full decide function verification. Extends Task 469.
+
+---
+
+### 606. Fix Metalogic_v2 README accuracy
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Source**: Code Review 2026-01-18 (H2)
+
+**Description**: Update Metalogic_v2/README.md to accurately document the sorry count and locations. Current README incorrectly claims "All theorems in Metalogic_v2 are fully proven with no sorry statements" but there are 7 active sorries in the semantic bridge infrastructure. Document which theorems have sorries, their locations, and impact on downstream theorems.
+
+---
+
+### 607. Port Decidability to Metalogic_v2
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-19
+- **Source**: Code Review 2026-01-18 (M1)
+- **Dependencies**: Task 470
+
+**Description**: Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.
 
 ---
