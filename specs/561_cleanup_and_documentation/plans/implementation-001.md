@@ -78,7 +78,7 @@ Research report `specs/561_cleanup_and_documentation/reports/research-001.md` (2
 
 ---
 
-### Phase 2: Clean Historical Markers in Lean Comments [IN PROGRESS]
+### Phase 2: Clean Historical Markers in Lean Comments [COMPLETED]
 
 **Goal**: Remove 3 historical/temporal markers from Lean file comments
 
@@ -108,7 +108,7 @@ Research report `specs/561_cleanup_and_documentation/reports/research-001.md` (2
 
 ---
 
-### Phase 3: Verification and Build Check [NOT STARTED]
+### Phase 3: Verification and Build Check [COMPLETED]
 
 **Goal**: Verify no regressions and documentation is accurate
 

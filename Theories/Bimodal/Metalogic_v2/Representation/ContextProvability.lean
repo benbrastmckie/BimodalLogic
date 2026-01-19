@@ -120,7 +120,7 @@ theorem not_derivable_implies_neg_consistent {φ : Formula} :
 **DEPRECATED**: Helper lemma superseded by Strategy C.
 
 This was a direct application of `semantic_weak_completeness` from FiniteCanonicalModel.lean.
-With Strategy C, we now use `main_provable_iff_valid` directly, making this helper unnecessary.
+Strategy C uses `main_provable_iff_valid` directly, making this helper unnecessary.
 
 Note: This is a `def` rather than `theorem` because the codomain `⊢ φ` is `Type` (not `Prop`).
 -/

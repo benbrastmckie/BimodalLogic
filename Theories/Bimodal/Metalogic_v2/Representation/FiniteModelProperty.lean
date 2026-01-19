@@ -182,7 +182,7 @@ theorem finite_model_property (φ : Formula) :
   -- The canonical model from completeness provides the witness
   -- By completeness infrastructure, satisfiable formulas have countermodels
   -- The subformula closure bounds the effective distinctions
-  -- For now, just use the satisfiability witness directly
+  -- Use the satisfiability witness directly (identity proof)
   obtain ⟨D, inst1, inst2, inst3, F, M, τ, t, h_truth⟩ := h_sat
   exact ⟨D, inst1, inst2, inst3, F, M, τ, t, h_truth⟩
 
