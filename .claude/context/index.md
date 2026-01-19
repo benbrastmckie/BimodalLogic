@@ -220,12 +220,14 @@ Load for: Artifact creation
 
 Load for: Task validation, artifact creation, documentation standards
 
-- **status-markers.md** (350 lines) - Status marker definitions and transitions
+- **status-markers.md** (350 lines) - **Complete** status marker reference
   - Standard status markers (NOT STARTED, RESEARCHING, PLANNED, etc.)
   - TODO.md vs state.json mapping
   - Command → Status mapping
   - Valid transition rules and diagrams
   - Atomic synchronization protocol
+  - **Note**: For most use cases, `orchestration/state-management.md` is sufficient.
+    Load status-markers.md only when you need detailed transition validation rules.
 - **ci-workflow.md** (140 lines) - CI workflow standards and trigger criteria
   - Skip-by-default behavior with `[ci]` marker
   - Decision criteria for triggering CI

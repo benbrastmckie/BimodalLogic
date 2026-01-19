@@ -282,10 +282,51 @@ description=$(echo "$task_data" | jq -r '.description // ""')
 
 ---
 
+## Status Transition Rules
+
+### Valid Transitions
+
+```
+[NOT STARTED] -> [RESEARCHING] | [PLANNING] | [IMPLEMENTING] | [BLOCKED] | [EXPANDED]
+[RESEARCHING] -> [RESEARCHED] | [BLOCKED] | [ABANDONED]
+[RESEARCHED] -> [PLANNING] | [IMPLEMENTING] | [BLOCKED] | [EXPANDED]
+[PLANNING] -> [PLANNED] | [BLOCKED] | [ABANDONED]
+[PLANNED] -> [REVISING] | [IMPLEMENTING] | [BLOCKED] | [EXPANDED]
+[REVISING] -> [REVISED] | [BLOCKED] | [ABANDONED]
+[REVISED] -> [IMPLEMENTING] | [REVISING] | [BLOCKED] | [EXPANDED]
+[IMPLEMENTING] -> [COMPLETED] | [PARTIAL] | [BLOCKED] | [ABANDONED]
+[PARTIAL] -> [IMPLEMENTING] | [COMPLETED] | [ABANDONED]
+[BLOCKED] -> [RESEARCHING] | [PLANNING] | [IMPLEMENTING] | [ABANDONED] | [EXPANDED]
+```
+
+### Terminal States
+
+- `[COMPLETED]` - No further transitions
+- `[EXPANDED]` - Terminal-like (work continues in subtasks)
+- `[ABANDONED]` - Typically terminal (rare restart to [NOT STARTED])
+
+### Invalid Transitions
+
+- `[NOT STARTED]` -> `[COMPLETED]` (must go through work phases)
+- `[NOT STARTED]` -> `[ABANDONED]` (cannot abandon work never started)
+- `[ABANDONED]` -> `[COMPLETED]` (abandoned work not complete)
+
+### Command Mappings
+
+| Command | Preflight | Postflight |
+|---------|-----------|------------|
+| /research | RESEARCHING | RESEARCHED |
+| /plan | PLANNING | PLANNED |
+| /revise | REVISING | REVISED |
+| /implement | IMPLEMENTING | COMPLETED or PARTIAL |
+
+---
+
 ## Related Documentation
 
 - `.claude/skills/skill-status-sync/` - Atomic status updates (**primary reference for writes**)
-- `.claude/context/core/orchestration/delegation.md` - Delegation patterns
+- `.claude/context/core/standards/status-markers.md` - Complete status definitions
+- `.claude/context/core/patterns/inline-status-update.md` - jq patterns for direct updates
 - `.claude/commands/` - Command file implementations
 
 ---

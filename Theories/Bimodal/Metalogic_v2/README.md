@@ -4,42 +4,96 @@ This directory contains a reorganized metalogic infrastructure for TM bimodal lo
 
 ## Architecture Overview
 
+The architecture follows a bottom-up dependency structure. Arrows point upward, meaning
+"is used by" (equivalently: lower modules are imported by higher ones).
+
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Application Layer                            │
-├─────────────────────────────────────────────────────────────────┤
-│  Completeness/           │  Applications/                       │
-│  ├── WeakCompleteness    │  └── Compactness                     │
-│  └── StrongCompleteness  │                                      │
-└──────────────────────────┴──────────────────────────────────────┘
-                              ▲
-                              │ imports
-                    ┌─────────┴─────────┐
-                    │      FMP.lean     │
-                    │   (central hub)   │
-                    └─────────┬─────────┘
-                              │ imports
-         ┌────────────────────┼────────────────────┐
-         ▼                    ▼                    ▼
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│  Representation │ │    Soundness    │ │                 │
-│  ├── Canonical  │ │  ├── Lemmas     │ │                 │
-│  ├── TruthLemma │ │  └── Soundness  │ │                 │
-│  ├── RepTheorem │ └─────────────────┘ │                 │
-│  ├── ContextProv│                     │                 │
-│  └── FMP        │                     │                 │
-└────────┬────────┘                     │                 │
-         │                              │                 │
-         └──────────────────────────────┘                 │
-                              │ imports                   │
-                    ┌─────────┴─────────┐                 │
-                    │       Core        │◄────────────────┘
-                    │  ├── Basic        │
-                    │  ├── Provability  │
-                    │  ├── DeductionThm │
-                    │  └── MaxConsistent│
-                    └───────────────────┘
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                         APPLICATIONS (Most Derived)                            ║
+║  Compactness.lean                                                              ║
+║    compactness_entailment, compactness_satisfiability                          ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+                                       ▲
+                                       │
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                         COMPLETENESS (Derived)                                 ║
+║  StrongCompleteness.lean: strong_completeness, context_provable_iff_entails   ║
+║  WeakCompleteness.lean: weak_completeness, provable_iff_valid                 ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+                                       ▲
+                                       │
+                            ┌──────────┴──────────┐
+                            │     FMP.lean        │
+                            │   (re-export hub)   │
+                            └──────────┬──────────┘
+                                       ▲
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                     REPRESENTATION (Bridge Layer)                              ║
+║  ┌───────────────────────────────┐  ┌───────────────────────────────────────┐ ║
+║  │ FiniteModelProperty.lean      │  │ RepresentationTheorem.lean            │ ║
+║  │   finite_model_property       │  │   representation_theorem              │ ║
+║  │   validity_decidable_via_fmp  │  │   strong_representation_theorem       │ ║
+║  │   satisfiability_decidable    │  │   completeness_corollary              │ ║
+║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
+║                  │                                    │                        ║
+║  ┌───────────────┴───────────────┐  ┌─────────────────┴─────────────────────┐ ║
+║  │ SemanticCanonicalModel.lean   │  │ ContextProvability.lean               │ ║
+║  │   semantic_weak_completeness  │  │   representation_validity             │ ║
+║  │   SemanticWorldState          │  │   valid_implies_derivable             │ ║
+║  │   SemanticCanonicalFrame      │  │   representation_theorem_backward     │ ║
+║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
+║                  │                                    │                        ║
+║  ┌───────────────┴───────────────┐  ┌─────────────────┴─────────────────────┐ ║
+║  │ FiniteWorldState.lean         │  │ TruthLemma.lean                       │ ║
+║  │   FiniteWorldState            │  │   canonicalTruthAt                    │ ║
+║  │   FiniteHistory               │  │   truthLemma_*                        │ ║
+║  │   worldStateFromClosureMCS    │  │   necessitation_lemma                 │ ║
+║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
+║                  │                                    │                        ║
+║  ┌───────────────┴───────────────┐                    │                        ║
+║  │ Closure.lean                  │                    │                        ║
+║  │   closure, closureWithNeg     │                    │                        ║
+║  │   ClosureMaximalConsistent    │                    │                        ║
+║  │   mcs_projection_is_closure   │                    │                        ║
+║  └───────────────┬───────────────┘                    │                        ║
+║                  └───────────────────┬────────────────┘                        ║
+║                                      │                                         ║
+║                       ┌──────────────┴──────────────┐                          ║
+║                       │ CanonicalModel.lean         │                          ║
+║                       │   CanonicalWorldState       │                          ║
+║                       │   CanonicalFrame, Model     │                          ║
+║                       │   mcs_contains_or_neg       │                          ║
+║                       │   mcs_modus_ponens          │                          ║
+║                       └──────────────┬──────────────┘                          ║
+╚══════════════════════════════════════╪════════════════════════════════════════╝
+                                       ▲
+           ┌───────────────────────────┼───────────────────────────┐
+           │                           │                           │
+┌──────────┴──────────┐     ┌──────────┴──────────┐     ┌──────────┴──────────┐
+│      SOUNDNESS      │     │         CORE        │     │    (external)       │
+│                     │     │                     │     │  Bimodal.Syntax     │
+│ Soundness.lean      │     │ MaximalConsistent   │     │  Bimodal.Semantics  │
+│   soundness         │     │   set_lindenbaum    │     │  Bimodal.ProofSystem│
+│   axiom_valid       │     │   maximal_*_closed  │     │  Mathlib.*          │
+│                     │     │   theorem_in_mcs    │     │                     │
+│ SoundnessLemmas     │     │                     │     │                     │
+│   temporal duality  │     │ DeductionTheorem    │     │                     │
+│   bridge theorems   │     │   deduction_theorem │     │                     │
+│                     │     │   exchange, weaken  │     │                     │
+│                     │     │                     │     │                     │
+│                     │     │ Basic.lean          │     │                     │
+│                     │     │   Consistent, Valid │     │                     │
+│                     │     │   MaximalConsistent │     │                     │
+│                     │     │                     │     │                     │
+│                     │     │ Provability.lean    │     │                     │
+│                     │     │   context-based ⊢   │     │                     │
+└─────────────────────┘     └─────────────────────┘     └─────────────────────┘
+        (Foundations - No internal Metalogic_v2 dependencies)
 ```
+
+**Legend**: Arrows point upward, indicating "is used by" / "is imported by". The three
+foundation columns (Soundness, Core, external imports) have no internal Metalogic_v2
+dependencies - they only import from Bimodal.* and Mathlib.
 
 ## Directory Structure
 
@@ -56,15 +110,18 @@ Metalogic_v2/
 ├── Representation/
 │   ├── CanonicalModel.lean     # Canonical model construction
 │   ├── TruthLemma.lean         # Truth lemma
+│   ├── Closure.lean            # Subformula closure, ClosureMaximalConsistent
+│   ├── FiniteWorldState.lean   # Finite world state construction
+│   ├── SemanticCanonicalModel.lean # Semantic canonical model (sorry-free completeness)
 │   ├── RepresentationTheorem.lean # Representation theorem
 │   ├── ContextProvability.lean # Context provability bridge
-│   └── FiniteModelProperty.lean # FMP statement
+│   └── FiniteModelProperty.lean # FMP and decidability
 ├── Completeness/
 │   ├── WeakCompleteness.lean   # valid -> provable
 │   └── StrongCompleteness.lean # semantic consequence -> derivable
 ├── Applications/
 │   └── Compactness.lean        # Compactness theorems
-├── FMP.lean                    # Central hub (re-exports)
+├── FMP.lean                    # Re-export hub (imports FiniteModelProperty)
 └── README.md                   # This file
 ```
 
