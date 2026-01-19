@@ -61,8 +61,7 @@ The main completeness result for the empty context.
 4. The canonical world gives rise to a model where φ is false
 5. This contradicts validity of φ
 
-**Implementation Status**:
-Uses representation_theorem_backward_empty from ContextProvability (proven).
+**Implementation**: Uses representation_theorem_backward_empty from ContextProvability (proven).
 -/
 theorem weak_completeness (φ : Formula) : valid φ → ContextDerivable [] φ := by
   intro h_valid

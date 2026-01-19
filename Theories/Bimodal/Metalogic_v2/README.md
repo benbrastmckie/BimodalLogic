@@ -153,8 +153,9 @@ import Bimodal.Metalogic_v2.Representation.CanonicalModel
 ## Future Work
 
 1. **Add Decidability layer**: Port Decidability/ with FMP integration
-2. **Constructive FMP**: Establish finite model bounds (trivial witness implementation)
+2. **Constructive FMP**: Establish finite model bounds (currently using identity witness)
 3. **Proof cleanup**: Remove redundant tactics and improve readability
+4. **Deprecate old Metalogic/**: Complete migration and remove dependency on FiniteCanonicalModel.lean
 
 ## References
 

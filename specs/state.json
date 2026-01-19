@@ -6,14 +6,24 @@
   },
   "active_projects": [
     {
+      "project_number": 595,
+      "project_name": "remove_maintenance_dir_fix_review_state",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T00:53:03Z",
+      "last_updated": "2026-01-19T00:53:03Z",
+      "description": "Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates."
+    },
+    {
       "project_number": 594,
       "project_name": "fix_progress_interruptions_agent_system",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "effort": "2-3 hours",
       "created": "2026-01-19T00:12:36Z",
-      "last_updated": "2026-01-19T00:41:12Z"
+      "last_updated": "2026-01-19T00:44:59Z"
     },
     {
       "project_number": 561,
@@ -46,11 +56,11 @@
     {
       "project_number": 556,
       "project_name": "complete_metalogic_v2_implementation",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T20:45:04Z",
-      "last_updated": "2026-01-19T00:35:00Z",
+      "last_updated": "2026-01-19T00:49:38Z",
       "researched": "2026-01-17T20:50:35Z",
       "artifacts": [
         {
@@ -64,6 +74,10 @@
         {
           "path": "specs/556_complete_metalogic_v2_implementation/plans/implementation-002.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/556_complete_metalogic_v2_implementation/summaries/implementation-summary-20260118.md",
+          "type": "summary"
         }
       ],
       "planned": "2026-01-19T00:35:00Z",
@@ -174,5 +188,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 595
+  "next_project_number": 596
 }

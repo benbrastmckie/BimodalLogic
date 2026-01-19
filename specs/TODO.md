@@ -1,5 +1,5 @@
 ---
-next_project_number: 595
+next_project_number: 596
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -29,11 +29,11 @@ technical_debt:
 
 ### 594. Fix Progress Interruptions in Agent System
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
-- **Session ID**: sess_1768783189_c070e2
+- **Session ID**: sess_1768783488_4198c8
 - **Research**: [research-001.md](specs/594_fix_progress_interruptions_agent_system/reports/research-001.md), [research-002.md](specs/594_fix_progress_interruptions_agent_system/reports/research-002.md)
 - **Plan**: [implementation-002.md](specs/594_fix_progress_interruptions_agent_system/plans/implementation-002.md)
 
@@ -54,16 +54,18 @@ technical_debt:
 
 ### 556. Complete Metalogic_v2 Implementation
 - **Effort**: 2-3 hours (revised from 6-10)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: lean
 - **Session ID**: sess_1768782114_60bde9
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
 - **Planned**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Dependencies**: 554
 - **Research**: [research-001.md](specs/556_complete_metalogic_v2_implementation/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/556_complete_metalogic_v2_implementation/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260118.md](specs/556_complete_metalogic_v2_implementation/summaries/implementation-summary-20260118.md)
 - **Subtasks**: 557, 558, 559, 560, 561
 
 **Description**: Complete the implementation of Metalogic_v2/ to center on the representation theorem, using it as the basis for completeness, decidability, and compactness. Update documentation to reflect zero sorries and the proven architecture. Prepare for deprecation of old Metalogic/ directory.
@@ -134,6 +136,17 @@ technical_debt:
 - **Source**: Code Review 2026-01-17
 
 **Description**: Expand test coverage for Logos layer to match Bimodal layer standards. Currently ~40 Logos theory files have limited or no test coverage. Create comprehensive test suite including integration tests for layer extensions and property-based testing for Logos semantics.
+
+---
+
+### 595. Remove Maintenance Directory and Fix Review State Management
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.
 
 ---
 
