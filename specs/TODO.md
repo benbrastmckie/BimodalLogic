@@ -1,5 +1,5 @@
 ---
-next_project_number: 611
+next_project_number: 612
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -80,6 +80,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 611. Context optimization and loading patterns
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Related**: Task 609
+
+**Description**: Optimize context files created in task 609 for quality and concision. Improve organization, eliminate redundancy, and study how/where context is loaded throughout the command-skill-agent architecture. Ensure majority of context is loaded in agents, loading only what's needed progressively, and never loading unnecessary context.
+
+---
 
 ### 610. Complete truth bridge (Strategy B) for completeness proof
 - **Status**: [NOT STARTED]
