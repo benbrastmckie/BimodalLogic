@@ -28,6 +28,21 @@ Determine review scope:
 - If directory: Review all files in directory
 - If "all": Review entire codebase
 
+### 1.5. Load Review State
+
+Read existing state file or initialize if missing:
+
+```bash
+# Read or create specs/reviews/state.json
+if [ -f specs/reviews/state.json ]; then
+  review_state=$(cat specs/reviews/state.json)
+else
+  # Initialize with empty state
+  mkdir -p specs/reviews
+  echo '{"_schema_version":"1.0.0","_comment":"Review state tracking","_last_updated":"","reviews":[],"statistics":{"total_reviews":0,"last_review":"","total_issues_found":0,"total_tasks_created":0}}' > specs/reviews/state.json
+fi
+```
+
 ### 2. Gather Context
 
 **For Lean files (.lean):**
@@ -109,6 +124,36 @@ Write to `specs/reviews/review-{DATE}.md`:
 2. {Secondary recommendation}
 ```
 
+### 4.5. Update Review State
+
+After creating the review report, update `specs/reviews/state.json`:
+
+1. **Generate review entry:**
+```json
+{
+  "review_id": "review-{DATE}",
+  "date": "{ISO_DATE}",
+  "scope": "{scope}",
+  "report_path": "specs/reviews/review-{DATE}.md",
+  "summary": {
+    "files_reviewed": {N},
+    "critical_issues": {N},
+    "high_issues": {N},
+    "medium_issues": {N},
+    "low_issues": {N}
+  },
+  "tasks_created": [],
+  "registries_updated": []
+}
+```
+
+2. **Add entry to reviews array**
+3. **Update statistics:**
+   - Increment `total_reviews`
+   - Update `last_review` date
+   - Add issue counts to `total_issues_found`
+4. **Update `_last_updated` timestamp**
+
 ### 5. Create Tasks (if --create-tasks)
 
 For each High/Critical issue, create a task:
@@ -127,10 +172,21 @@ If reviewing specific domains, update relevant registries:
 
 ### 7. Git Commit
 
+Commit both the review report and updated state file:
+
 ```bash
-git add specs/reviews/
-git commit -m "review: {scope} code review"
+git add specs/reviews/review-{DATE}.md specs/reviews/state.json
+git commit -m "$(cat <<'EOF'
+review: {scope} code review
+
+Session: {session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
 ```
+
+This ensures both the review report and state tracking are committed together.
 
 ### 8. Output
 
