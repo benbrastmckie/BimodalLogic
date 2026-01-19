@@ -8,12 +8,20 @@
     {
       "project_number": 599,
       "project_name": "troubleshoot_jq_escaping_agent_system",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T01:07:44Z",
-      "last_updated": "2026-01-19T01:07:44Z",
-      "description": "Troubleshoot jq escaping issues in agent system. The not-equals operator is being escaped when passed through bash, causing jq parse errors. Fix skill-task and related skills to properly handle jq operators. Document correct patterns in context files to ensure consistent jq usage across the system."
+      "last_updated": "2026-01-19T01:15:05Z",
+      "description": "Troubleshoot jq escaping issues in agent system. The not-equals operator is being escaped when passed through bash, causing jq parse errors. Fix skill-task and related skills to properly handle jq operators. Document correct patterns in context files to ensure consistent jq usage across the system.",
+      "session_id": "sess_1768785092_5b7d3e",
+      "researched": "2026-01-19T01:15:05Z",
+      "artifacts": [
+        {
+          "path": "specs/599_troubleshoot_jq_escaping_agent_system/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 598,
@@ -28,12 +36,13 @@
     {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T01:00:46Z",
-      "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory."
+      "last_updated": "2026-01-19T01:12:52Z",
+      "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
+      "session_id": "sess_1768785161_554f05"
     },
     {
       "project_number": 596,

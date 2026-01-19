@@ -29,10 +29,11 @@ technical_debt:
 
 ### 599. Troubleshoot jq Escaping in Agent System
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
+- **Research**: [research-001.md](specs/599_troubleshoot_jq_escaping_agent_system/reports/research-001.md)
 
 **Description**: Troubleshoot jq escaping issues in agent system. The not-equals operator is being escaped when passed through bash, causing jq parse errors. Fix skill-task and related skills to properly handle jq operators. Document correct patterns in context files to ensure consistent jq usage across the system.
 
@@ -40,7 +41,7 @@ technical_debt:
 
 ### 597. Re-prove main_provable_iff_valid in Metalogic_v2
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-19
