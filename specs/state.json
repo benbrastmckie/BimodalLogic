@@ -68,11 +68,11 @@
     {
       "project_number": 612,
       "project_name": "improve_system_overview_docs_with_architecture",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:12:02Z",
-      "last_updated": "2026-01-19T20:17:45Z",
+      "last_updated": "2026-01-19T20:22:01Z",
       "session_id": "sess_1768853844_9bcb0b",
       "researched": "2026-01-19T17:50:37Z",
       "artifacts": [
@@ -85,10 +85,16 @@
           "path": "specs/612_improve_system_overview_docs_with_architecture/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for improving system-overview.md documentation accuracy"
+        },
+        {
+          "path": "specs/612_improve_system_overview_docs_with_architecture/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-01-19T20:05:17Z",
-      "started": "2026-01-19T20:17:45Z"
+      "started": "2026-01-19T20:17:45Z",
+      "completed": "2026-01-19T20:22:01Z"
     },
     {
       "project_number": 610,

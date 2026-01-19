@@ -1,7 +1,8 @@
 # System Architecture Overview
 
-**Version**: 1.0
+**Version**: 1.1
 **Created**: 2026-01-19
+**Last Verified**: 2026-01-19
 **Purpose**: Consolidated architecture reference for agents generating new components
 **Audience**: /meta agent, system developers, architecture reviewers
 
@@ -257,69 +258,69 @@ Does the skill need to spawn a subagent?
 
 ```
 User: "/research 259"
-         |
-         v
-+-------------------+
-| 1. Command parses |  Extract task_number=259
-|    $ARGUMENTS     |  Determine language=lean
-+-------------------+
-         |
-         v
-+-------------------+
-| 2. Route to skill |  language=lean -> skill-lean-research
-|    by language    |
-+-------------------+
-         |
-         v
-+-------------------+
-| 3. Skill prepares |  session_id: sess_1736700000_abc123
-|    delegation     |  delegation_depth: 1
-|    context        |  delegation_path: [orchestrator, research, ...]
-+-------------------+
-         |
-         v
-+-------------------+
-| 4. Skill invokes  |  Task tool with subagent_type: lean-research-agent
-|    agent via Task |  Pass: task_context, delegation_context
-+-------------------+
-         |
-         v
-+-------------------+
-| 5. Agent loads    |  @.claude/context/project/lean4/...
-|    context        |  @specs/state.json
-|    on-demand      |  Task details from TODO.md
-+-------------------+
-         |
-         v
-+-------------------+
-| 6. Agent executes |  Use MCP tools (lean_leansearch, etc.)
-|    workflow       |  Gather findings
-+-------------------+
-         |
-         v
-+-------------------+
-| 7. Agent creates  |  specs/259_{slug}/reports/research-001.md
-|    artifacts      |
-+-------------------+
-         |
-         v
-+-------------------+
-| 8. Agent returns  |  {"status": "researched", "artifacts": [...]}
-|    JSON           |
-+-------------------+
-         |
-         v
-+-------------------+
-| 9. Skill validates|  Check return schema
-|    return         |  Verify session_id matches
-+-------------------+
-         |
-         v
-+-------------------+
-| 10. Postflight    |  Update TODO.md: [RESEARCHED]
-|     (checkpoint)  |  Update state.json
-|                   |  Git commit
-+-------------------+
+         │
+         ▼
+┌───────────────────┐
+│ 1. Command parses │  Extract task_number=259
+│    $ARGUMENTS     │  Determine language=lean
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ 2. Route to skill │  language=lean → skill-lean-research
+│    by language    │
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ 3. Skill prepares │  session_id: sess_1736700000_abc123
+│    delegation     │  delegation_depth: 1
+│    context        │  delegation_path: [orchestrator, research, ...]
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ 4. Skill invokes  │  Task tool with subagent_type: lean-research-agent
+│    agent via Task │  Pass: task_context, delegation_context
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ 5. Agent loads    │  @.claude/context/project/lean4/...
+│    context        │  @specs/state.json
+│    on-demand      │  Task details from TODO.md
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ 6. Agent executes │  Use MCP tools (lean_leansearch, etc.)
+│    workflow       │  Gather findings
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ 7. Agent creates  │  specs/259_{slug}/reports/research-001.md
+│    artifacts      │
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ 8. Agent returns  │  {"status": "researched", "artifacts": [...]}
+│    JSON           │
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ 9. Skill validates│  Check return schema
+│    return         │  Verify session_id matches
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ 10. Postflight    │  Update TODO.md: [RESEARCHED]
+│     (checkpoint)  │  Update state.json
+│                   │  Git commit
+└───────────────────┘
 ```
 
 ---
@@ -330,12 +331,13 @@ All workflow commands follow a three-checkpoint pattern:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  CHECKPOINT 1    -->    STAGE 2    -->    CHECKPOINT 2    -->│
-│   GATE IN               DELEGATE          GATE OUT           │
-│  (Preflight)          (Skill/Agent)     (Postflight)         │
-│                                                    |         │
-│                                             CHECKPOINT 3     │
-│                                               COMMIT         │
+│  CHECKPOINT 1    ─→    STAGE 2    ─→    CHECKPOINT 2    ─→   │
+│   GATE IN              DELEGATE          GATE OUT            │
+│  (Preflight)         (Skill/Agent)     (Postflight)          │
+│                                                   │          │
+│                                                   ▼          │
+│                                            CHECKPOINT 3      │
+│                                              COMMIT          │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -379,10 +381,40 @@ Tasks route to specialized skills/agents based on their `language` field:
 
 | Language | Research | Planning | Implementation |
 |----------|----------|----------|----------------|
-| `lean` | skill-lean-research -> lean-research-agent | skill-planner -> planner-agent | skill-lean-implementation -> lean-implementation-agent |
-| `general` | skill-researcher -> general-research-agent | skill-planner -> planner-agent | skill-implementer -> general-implementation-agent |
-| `meta` | skill-researcher -> general-research-agent | skill-planner -> planner-agent | skill-implementer -> general-implementation-agent |
-| `latex` | skill-researcher -> general-research-agent | skill-planner -> planner-agent | skill-latex-implementation -> latex-implementation-agent |
+| `lean` | skill-lean-research → lean-research-agent | skill-planner → planner-agent | skill-lean-implementation → lean-implementation-agent |
+| `general` | skill-researcher → general-research-agent | skill-planner → planner-agent | skill-implementer → general-implementation-agent |
+| `meta` | skill-researcher → general-research-agent | skill-planner → planner-agent | skill-implementer → general-implementation-agent |
+| `latex` | skill-researcher → general-research-agent | skill-planner → planner-agent | skill-latex-implementation → latex-implementation-agent |
+
+---
+
+## Command-Skill-Agent Mapping
+
+Complete mapping of all commands to their skill and agent paths:
+
+| Command | Routing Type | Skill(s) | Agent(s) | Pattern |
+|---------|--------------|----------|----------|---------|
+| `/research` | Language-based | lean: skill-lean-research, other: skill-researcher | lean-research-agent, general-research-agent | A |
+| `/plan` | Single | skill-planner | planner-agent | A |
+| `/implement` | Language-based | lean: skill-lean-implementation, latex: skill-latex-implementation, other: skill-implementer | lean-implementation-agent, latex-implementation-agent, general-implementation-agent | A |
+| `/revise` | Single | skill-planner (new version) | planner-agent | A |
+| `/meta` | Single | skill-meta | meta-builder-agent | A |
+| `/convert` | Single | skill-document-converter | document-converter-agent | A |
+| `/review` | Direct | skill-orchestrator | (inline execution) | C |
+| `/errors` | Direct | skill-orchestrator | (inline execution) | C |
+| `/todo` | Direct | skill-orchestrator | (inline execution) | C |
+| `/task` | Direct | skill-orchestrator | (inline execution) | C |
+| `/refresh` | Direct | skill-refresh | (no agent) | B |
+
+**Pattern Legend**:
+- **A**: Delegating skill with internal postflight (spawns subagent)
+- **B**: Direct execution skill (no subagent)
+- **C**: Orchestrator/routing skill (central dispatch)
+
+**Routing Types**:
+- **Language-based**: Routes to different skills based on task language field
+- **Single**: Always routes to the same skill regardless of language
+- **Direct**: Executes inline without spawning a subagent
 
 ---
 
@@ -392,18 +424,18 @@ Errors propagate upward through the layers with structured information:
 
 ```
 Agent Error
-    |
-    v
+    │
+    ▼
 Agent returns: {"status": "failed", "errors": [{...}]}
-    |
-    v
+    │
+    ▼
 Skill validates return, passes through error
-    |
-    v
+    │
+    ▼
 Orchestrator receives error, handles based on severity:
-  - Critical: Log to errors.json, return to user
-  - Recoverable: Suggest retry/resume
-  - Partial: Save progress, enable resume
+  ├─ Critical: Log to errors.json, return to user
+  ├─ Recoverable: Suggest retry/resume
+  └─ Partial: Save progress, enable resume
 ```
 
 **Error object schema**:
@@ -438,13 +470,16 @@ Prevent infinite delegation loops with depth tracking:
 
 ## Related Documentation
 
+### User-Facing Documentation
+- @.claude/docs/architecture/system-overview.md - Simplified architecture overview for users
+
 ### Detailed Patterns
 - @.claude/context/core/orchestration/orchestration-core.md - Delegation, routing, session tracking
 - @.claude/context/core/orchestration/orchestration-validation.md - Return validation patterns
 - @.claude/context/core/orchestration/architecture.md - Three-layer detailed explanation
 
 ### Templates
-- @.claude/context/core/templates/thin-wrapper-skill.md - Skill template
+- @.claude/context/core/patterns/thin-wrapper-skill.md - Skill delegation pattern
 - @.claude/context/core/templates/subagent-template.md - Agent template
 - @.claude/context/core/templates/command-template.md - Command template
 

@@ -83,8 +83,9 @@ technical_debt:
 
 ### 612. Improve system-overview.md with architecture patterns
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -92,6 +93,7 @@ technical_debt:
 - **Related**: Task 609
 - **Research**: [research-001.md](specs/612_improve_system_overview_docs_with_architecture/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/612_improve_system_overview_docs_with_architecture/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/612_improve_system_overview_docs_with_architecture/summaries/implementation-summary-20260119.md)
 
 **Description**: Improve .claude/context/core/architecture/system-overview.md to use unicode characters for diagrams AND document all command-skill and command-skill-agent architecture options. Current skills don't use context:fork so document what is used, noting differences and motivations for each approach used by different command types.
 

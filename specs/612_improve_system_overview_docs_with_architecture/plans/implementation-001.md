@@ -1,7 +1,7 @@
 # Implementation Plan: Task #612
 
 - **Task**: 612 - improve_system_overview_docs_with_architecture
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: Task 609 (Document command-skill-agent architecture), Task 611 (Context optimization)
@@ -105,7 +105,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 3: Update Diagrams to Unicode [IN PROGRESS]
+### Phase 3: Update Diagrams to Unicode [COMPLETED]
 
 **Goal**: Convert all ASCII box-drawing to Unicode characters for better rendering
 
@@ -136,7 +136,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 4: Add Command-Skill-Agent Mapping Matrix [NOT STARTED]
+### Phase 4: Add Command-Skill-Agent Mapping Matrix [COMPLETED]
 
 **Goal**: Add comprehensive matrix showing all command routing paths
 
@@ -159,7 +159,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 5: Reconcile Agent and User Documentation [NOT STARTED]
+### Phase 5: Reconcile Agent and User Documentation [COMPLETED]
 
 **Goal**: Ensure consistency between agent-facing and user-facing docs
 

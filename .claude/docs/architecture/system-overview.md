@@ -1,5 +1,7 @@
 # System Architecture Overview
 
+**Last Verified**: 2026-01-19
+
 This document provides a high-level overview of the ProofChecker agent system architecture for users and developers.
 
 ---
@@ -273,3 +275,7 @@ See the guides in `.claude/docs/guides/` for detailed instructions.
 
 - [ARCHITECTURE.md](../../ARCHITECTURE.md) - Detailed system architecture
 - [CLAUDE.md](../../CLAUDE.md) - Quick reference entry point
+
+### Agent-Facing Documentation
+
+- [Agent System Overview](../../context/core/architecture/system-overview.md) - Detailed architecture for agents (includes skill patterns, command mapping matrix)
