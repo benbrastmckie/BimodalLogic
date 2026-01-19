@@ -480,9 +480,7 @@ theorem closure_imp_left (phi psi chi : Formula) (h : Formula.imp psi chi ∈ cl
     psi ∈ closure phi := by
   unfold closure at h ⊢
   simp only [List.mem_toFinset] at h ⊢
-  -- Need to trace through subformulas
-  -- This requires a lemma about subformulas structure
-  sorry
+  exact Formula.mem_subformulas_of_imp_left h
 
 /--
 Subformula of implication: right side.
@@ -491,7 +489,7 @@ theorem closure_imp_right (phi psi chi : Formula) (h : Formula.imp psi chi ∈ c
     chi ∈ closure phi := by
   unfold closure at h ⊢
   simp only [List.mem_toFinset] at h ⊢
-  sorry
+  exact Formula.mem_subformulas_of_imp_right h
 
 /--
 Subformula of box.
@@ -500,7 +498,7 @@ theorem closure_box (phi psi : Formula) (h : Formula.box psi ∈ closure phi) :
     psi ∈ closure phi := by
   unfold closure at h ⊢
   simp only [List.mem_toFinset] at h ⊢
-  sorry
+  exact Formula.mem_subformulas_of_box h
 
 /--
 Subformula of all_past.
@@ -509,7 +507,7 @@ theorem closure_all_past (phi psi : Formula) (h : Formula.all_past psi ∈ closu
     psi ∈ closure phi := by
   unfold closure at h ⊢
   simp only [List.mem_toFinset] at h ⊢
-  sorry
+  exact Formula.mem_subformulas_of_all_past h
 
 /--
 Subformula of all_future.
@@ -518,7 +516,7 @@ theorem closure_all_future (phi psi : Formula) (h : Formula.all_future psi ∈ c
     psi ∈ closure phi := by
   unfold closure at h ⊢
   simp only [List.mem_toFinset] at h ⊢
-  sorry
+  exact Formula.mem_subformulas_of_all_future h
 
 /-!
 ## Implication Closure Property

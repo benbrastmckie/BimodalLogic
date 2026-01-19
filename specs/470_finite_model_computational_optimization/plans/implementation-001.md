@@ -94,7 +94,7 @@ The optimization strategy is:
 
 ---
 
-### Phase 2: Complete Closure.lean Subformula Membership Lemmas [IN PROGRESS]
+### Phase 2: Complete Closure.lean Subformula Membership Lemmas [COMPLETED]
 
 **Goal**: Fill in the 5 sorries for subformula membership lemmas that trace through the Formula structure.
 
@@ -123,7 +123,7 @@ The optimization strategy is:
 
 ---
 
-### Phase 3: Complete Closure.lean MCS Properties [NOT STARTED]
+### Phase 3: Complete Closure.lean MCS Properties [IN PROGRESS]
 
 **Goal**: Fill in the 4 sorries related to MCS negation completeness and implication properties.
 
