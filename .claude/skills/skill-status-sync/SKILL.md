@@ -1,6 +1,6 @@
 ---
 name: skill-status-sync
-description: Atomically update task status across TODO.md and state.json. Invoke when task status changes.
+description: Atomically update task status across TODO.md and state.json. For standalone use only.
 allowed-tools: Bash, Edit, Read
 ---
 
@@ -8,12 +8,26 @@ allowed-tools: Bash, Edit, Read
 
 Direct execution skill for atomic status synchronization across TODO.md and state.json. This skill executes inline without spawning a subagent, avoiding memory issues.
 
+## Standalone Use Only
+
+**IMPORTANT**: This skill is for STANDALONE USE ONLY.
+
+Workflow skills (skill-researcher, skill-planner, skill-implementer, etc.) now handle their own preflight/postflight status updates inline. This eliminates the multi-skill halt boundary problem where Claude may pause between skill invocations.
+
+**Use this skill for**:
+- Manual task status corrections
+- Standalone scripts that need to update task state
+- Recovery operations when workflow skills fail
+- Testing status update behavior in isolation
+
+**Do NOT use this skill in workflow commands** (/research, /plan, /implement, /revise) - those commands now invoke a single skill that handles its own status updates.
+
 ## Trigger Conditions
 
 This skill activates when:
-- Task status needs to change (preflight/postflight updates)
-- Artifacts are added to a task
-- Status synchronization is needed between TODO.md and state.json
+- Manual status correction is needed
+- Artifacts need to be linked outside normal workflow
+- Status synchronization recovery is needed between TODO.md and state.json
 
 ## API Operations
 
@@ -234,26 +248,21 @@ Return failed status with recommendation to check permissions.
 
 ## Integration Notes
 
-Command files should use this skill for ALL status updates:
+**For Workflow Commands**: Do NOT use this skill directly. Workflow skills now handle their own status updates inline.
+
+**For Manual Operations**: Use this skill for standalone status corrections:
 
 ```
-### Preflight (GATE IN)
+### Manual Status Correction
 Invoke skill-status-sync with:
-- operation: preflight_update
+- operation: preflight_update or postflight_update
 - task_number: {N}
-- target_status: researching|planning|implementing
-- session_id: {session_id}
-
-### Postflight (GATE OUT)
-Invoke skill-status-sync with:
-- operation: postflight_update
-- task_number: {N}
-- target_status: researched|planned|implemented|partial
-- artifacts: [{path, type}, ...]
-- session_id: {session_id}
+- target_status: {valid_status}
+- session_id: manual_correction
+- artifacts: [{path, type}, ...] (for postflight only)
 ```
 
-This ensures:
+This skill ensures:
 - Atomic updates across both files
 - Consistent jq/Edit patterns
 - Proper error handling

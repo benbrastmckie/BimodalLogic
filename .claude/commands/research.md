@@ -35,14 +35,9 @@ Conduct research for a task by delegating to the appropriate research skill/suba
    - Status allows research: not_started, planned, partial, blocked, researched
    - If completed/abandoned: ABORT with recommendation
 
-4. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `preflight_update(task_number, "researching", session_id)`
-
-5. **Verify** status is now "researching"
-
 **ABORT** if any validation fails.
 
-**On GATE IN success**: Status is [RESEARCHING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
+**On GATE IN success**: Task validated. **IMMEDIATELY CONTINUE** to STAGE 2 below.
 
 ### STAGE 2: DELEGATE
 
@@ -73,10 +68,9 @@ The skill will spawn the appropriate agent to conduct research and create a repo
 2. **Verify Artifacts**
    Check each artifact path exists on disk
 
-3. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `postflight_update(task_number, "researched", artifacts, session_id)`
-
-4. **Verify** status is "researched" and artifacts are linked
+3. **Verify Status Updated**
+   The skill handles status updates internally (preflight and postflight).
+   Confirm status is now "researched" in state.json.
 
 **RETRY** skill if validation fails.
 

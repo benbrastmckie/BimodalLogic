@@ -1,7 +1,7 @@
 ---
 name: skill-lean-research
 description: Research Lean 4 and Mathlib for theorem proving tasks. Invoke for Lean-language research using LeanSearch, Loogle, and lean-lsp tools.
-allowed-tools: Task
+allowed-tools: Task, Bash, Edit, Read
 # Original context (now loaded by subagent):
 #   - .claude/context/project/lean4/tools/mcp-tools-guide.md
 #   - .claude/context/project/lean4/tools/leansearch-api.md
@@ -37,6 +37,28 @@ This skill activates when:
 ---
 
 ## Execution
+
+### 0. Preflight Status Update
+
+Before delegating to the subagent, update task status to "researching".
+
+**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
+
+**Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "researching" \
+   --arg sid "$session_id" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    session_id: $sid
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+**Update TODO.md**: Use Edit tool to change status marker from `[NOT STARTED]` or `[RESEARCHED]` to `[RESEARCHING]`.
+
+---
 
 ### 1. Input Validation
 
@@ -110,12 +132,37 @@ The subagent will:
 ### 4. Return Validation
 
 Validate return matches `subagent-return.md` schema:
-- Status is one of: completed, partial, failed, blocked
+- Status is one of: researched, partial, failed, blocked
 - Summary is non-empty and <100 tokens
 - Artifacts array present with research report path
 - Metadata contains session_id, agent_type, delegation info
 
-### 5. Return Propagation
+### 5. Postflight Status Update
+
+After successful research, update task status to "researched" and link artifacts.
+
+**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
+
+**Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "researched" \
+   --arg path "$artifact_path" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    researched: $ts,
+    artifacts: ((.artifacts // []) | map(select(.type != "research"))) + [{"path": $path, "type": "research"}]
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+**Update TODO.md**:
+- Use Edit tool to change status marker from `[RESEARCHING]` to `[RESEARCHED]`
+- Add research artifact link: `- **Research**: [research-{NNN}.md]({artifact_path})`
+
+**On partial/failed**: Do NOT run postflight. Keep status as "researching" for resume.
+
+### 6. Return Propagation
 
 Return validated result to caller without modification.
 

@@ -10,18 +10,8 @@ Skills should be self-contained workflows that own their complete lifecycle:
 
 This pattern eliminates the need for multiple skill invocations per workflow command, reducing halt risk.
 
-## Architecture
+## Architecture (Current Standard)
 
-### Before (3 Skills)
-```
-/research N
-├── GATE IN: Skill(skill-status-sync)    ← HALT RISK
-├── DELEGATE: Skill(skill-researcher)     ← HALT RISK
-├── GATE OUT: Skill(skill-status-sync)   ← HALT RISK
-└── COMMIT: Bash
-```
-
-### After (1 Skill)
 ```
 /research N
 ├── VALIDATE: Inline task lookup
@@ -33,20 +23,31 @@ This pattern eliminates the need for multiple skill invocations per workflow com
 └── COMMIT: Bash
 ```
 
+**Benefits**: Single skill invocation reduces halt boundaries from 3-4 to 1 per command.
+
+### Legacy Pattern (Deprecated)
+
+The previous 3-skill pattern is deprecated and should not be used in new implementations:
+```
+/research N
+├── GATE IN: Skill(skill-status-sync)    ← HALT RISK
+├── DELEGATE: Skill(skill-researcher)     ← HALT RISK
+├── GATE OUT: Skill(skill-status-sync)   ← HALT RISK
+└── COMMIT: Bash
+```
+
 ## Skill Structure
 
 ### Frontmatter Requirements
 
 Skills that manage lifecycle need these tools.
 
-**Forked Skills** (delegate to subagent):
+**Workflow Skills** (delegate to subagent with inline status updates):
 ```yaml
 ---
 name: skill-{name}
 description: {description}
-allowed-tools: Task
-context: fork
-agent: {agent-name}
+allowed-tools: Task, Bash, Edit, Read
 ---
 ```
 
@@ -59,7 +60,7 @@ allowed-tools: Bash, Edit, Read
 ---
 ```
 
-Note: skill-status-sync uses direct execution to avoid memory overhead from subagent spawning.
+Note: skill-status-sync is for standalone use only. Workflow skills now handle their own status updates.
 
 ### Section Organization
 
@@ -115,6 +116,38 @@ See: @.claude/context/core/patterns/inline-status-update.md
 2. **Clear Ownership**: Skill owns entire workflow lifecycle
 3. **Simplified Commands**: Commands become thin routers
 4. **Consistent State**: Preflight and postflight always run together
+
+## Exclusion Criteria
+
+Not all skills need inline status updates. Skills that match these patterns are excluded:
+
+| Pattern | Description | Example Skills |
+|---------|-------------|----------------|
+| **Utility** | Provides utility function, no task state management | skill-git-workflow, skill-document-converter |
+| **Task Creation** | Creates new tasks, does not transition existing tasks | skill-meta |
+| **Routing** | Routes only, delegates state management to invoked skill | skill-orchestrator |
+| **Terminal State** | Operates only on completed/abandoned tasks | (archive operations) |
+| **Non-Task** | Operates on different data like errors or reviews | (error/review skills) |
+| **Mechanism** | IS the status update mechanism itself | skill-status-sync |
+
+### Workflow Skills (Require Inline Status Updates)
+
+These skills manage task lifecycle transitions:
+- skill-researcher (not_started/researched -> researching -> researched)
+- skill-planner (researched -> planning -> planned)
+- skill-implementer (planned -> implementing -> completed)
+- skill-lean-research (same as researcher)
+- skill-lean-implementation (same as implementer)
+- skill-latex-implementation (same as implementer)
+
+### Non-Workflow Skills (Excluded from Pattern)
+
+These skills are intentionally excluded:
+- skill-status-sync: IS the mechanism, used for standalone operations
+- skill-git-workflow: Creates commits, no task state
+- skill-orchestrator: Routes to workflow skills which handle state
+- skill-meta: Creates tasks via interview, no transitions
+- skill-document-converter: Standalone file conversion utility
 
 ## References
 

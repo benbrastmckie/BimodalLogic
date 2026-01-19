@@ -1,7 +1,7 @@
 ---
 name: skill-latex-implementation
 description: Implement LaTeX documents following a plan. Invoke for LaTeX-language implementation tasks.
-allowed-tools: Task
+allowed-tools: Task, Bash, Edit, Read
 # Original context (now loaded by subagent):
 #   - .claude/context/project/latex/README.md
 #   - .claude/context/project/latex/standards/latex-style-guide.md
@@ -40,6 +40,29 @@ This skill activates when:
 ---
 
 ## Execution
+
+### 0. Preflight Status Update
+
+Before delegating to the subagent, update task status to "implementing".
+
+**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
+
+**Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "implementing" \
+   --arg sid "$session_id" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    session_id: $sid,
+    started: $ts
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+**Update TODO.md**: Use Edit tool to change status marker from `[PLANNED]` to `[IMPLEMENTING]`.
+
+---
 
 ### 1. Input Validation
 
@@ -125,12 +148,53 @@ The subagent will:
 ### 4. Return Validation
 
 Validate return matches `subagent-return.md` schema:
-- Status is one of: completed, partial, failed, blocked
+- Status is one of: implemented, partial, failed, blocked
 - Summary is non-empty and <100 tokens
 - Artifacts array present (source files, compiled PDF, summary)
 - Metadata contains session_id, agent_type, delegation info
 
-### 5. Return Propagation
+### 5. Postflight Status Update
+
+After implementation, update task status based on result.
+
+**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
+
+**If result.status == "implemented"**:
+
+Update state.json to "completed":
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "completed" \
+   --arg path "$artifact_path" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    completed: $ts,
+    artifacts: ((.artifacts // []) | map(select(.type != "summary"))) + [{"path": $path, "type": "summary"}]
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+Update TODO.md:
+- Change status marker from `[IMPLEMENTING]` to `[COMPLETED]`
+- Add summary artifact link: `- **Summary**: [implementation-summary-{DATE}.md]({artifact_path})`
+
+**If result.status == "partial"**:
+
+Update state.json with resume point (keep status as "implementing"):
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg phase "$completed_phase" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    last_updated: $ts,
+    resume_phase: ($phase | tonumber + 1)
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+TODO.md stays as `[IMPLEMENTING]`.
+
+**On failed**: Do NOT run postflight. Keep status as "implementing" for retry.
+
+### 6. Return Propagation
 
 Return validated result to caller without modification.
 

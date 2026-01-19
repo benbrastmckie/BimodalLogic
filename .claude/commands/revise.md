@@ -64,10 +64,22 @@ For tasks with existing plans (planned, implementing, partial, blocked):
 
    Write to `specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md`
 
-4. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `postflight_update(task_number, "planned", [{type: "plan", path: new_plan_path}], session_id)`
+4. **Update Status Inline**
+   Update state.json to "planned" status and add plan artifact:
+   ```bash
+   jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+      --arg status "planned" \
+      --arg path "{new_plan_path}" \
+     '(.active_projects[] | select(.project_number == {task_number})) |= . + {
+       status: $status,
+       last_updated: $ts,
+       artifacts: ((.artifacts // []) | map(select(.type != "plan"))) + [{"path": $path, "type": "plan"}]
+     }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+   ```
 
-→ Continue to CHECKPOINT 2 (Plan Revision)
+   Update TODO.md status marker using Edit tool.
+
+-> Continue to CHECKPOINT 2 (Plan Revision)
 
 ---
 

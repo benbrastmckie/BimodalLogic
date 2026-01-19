@@ -1,7 +1,7 @@
 ---
 name: skill-planner
 description: Create phased implementation plans from research findings. Invoke when a task needs an implementation plan.
-allowed-tools: Task
+allowed-tools: Task, Bash, Edit, Read
 # Original context (now loaded by subagent):
 #   - .claude/context/core/formats/plan-format.md
 #   - .claude/context/core/workflows/task-breakdown.md
@@ -32,6 +32,28 @@ This skill activates when:
 ---
 
 ## Execution
+
+### 0. Preflight Status Update
+
+Before delegating to the subagent, update task status to "planning".
+
+**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
+
+**Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "planning" \
+   --arg sid "$session_id" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    session_id: $sid
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+**Update TODO.md**: Use Edit tool to change status marker from `[RESEARCHED]` or `[NOT STARTED]` to `[PLANNING]`.
+
+---
 
 ### 1. Input Validation
 
@@ -112,12 +134,37 @@ The subagent will:
 ### 4. Return Validation
 
 Validate return matches `subagent-return.md` schema:
-- Status is one of: completed, partial, failed, blocked
+- Status is one of: planned, partial, failed, blocked
 - Summary is non-empty and <100 tokens
 - Artifacts array present with plan path
 - Metadata contains session_id, agent_type, delegation info
 
-### 5. Return Propagation
+### 5. Postflight Status Update
+
+After successful planning, update task status to "planned" and link artifacts.
+
+**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
+
+**Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "planned" \
+   --arg path "$artifact_path" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    planned: $ts,
+    artifacts: ((.artifacts // []) | map(select(.type != "plan"))) + [{"path": $path, "type": "plan"}]
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+**Update TODO.md**:
+- Use Edit tool to change status marker from `[PLANNING]` to `[PLANNED]`
+- Add plan artifact link: `- **Plan**: [implementation-{NNN}.md]({artifact_path})`
+
+**On partial/failed**: Do NOT run postflight. Keep status as "planning" for resume.
+
+### 6. Return Propagation
 
 Return validated result to caller without modification.
 

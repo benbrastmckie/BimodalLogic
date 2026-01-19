@@ -40,14 +40,9 @@ Create a phased implementation plan for a task by delegating to the planner skil
    - Task description from state.json
    - Research reports from `specs/{N}_{SLUG}/reports/` (if any)
 
-5. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `preflight_update(task_number, "planning", session_id)`
-
-6. **Verify** status is now "planning"
-
 **ABORT** if any validation fails.
 
-**On GATE IN success**: Status is [PLANNING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
+**On GATE IN success**: Task validated. **IMMEDIATELY CONTINUE** to STAGE 2 below.
 
 ### STAGE 2: DELEGATE
 
@@ -71,10 +66,9 @@ The skill spawns `planner-agent` which analyzes task requirements and research f
 2. **Verify Artifacts**
    Check plan file exists on disk
 
-3. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `postflight_update(task_number, "planned", artifacts, session_id)`
-
-4. **Verify** status is "planned" and plan is linked
+3. **Verify Status Updated**
+   The skill handles status updates internally (preflight and postflight).
+   Confirm status is now "planned" in state.json.
 
 **RETRY** skill if validation fails.
 

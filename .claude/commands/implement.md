@@ -50,14 +50,9 @@ Execute implementation plan with automatic resume support by delegating to the a
 
    If all [COMPLETED]: Task already done
 
-6. **Update Status (via skill-status-sync)**
-   Invoke skill-status-sync: `preflight_update(task_number, "implementing", session_id)`
-
-7. **Verify** status is now "implementing"
-
 **ABORT** if any validation fails.
 
-**On GATE IN success**: Status is [IMPLEMENTING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
+**On GATE IN success**: Task validated. **IMMEDIATELY CONTINUE** to STAGE 2 below.
 
 ### STAGE 2: DELEGATE
 
@@ -87,17 +82,16 @@ The skill will spawn the appropriate agent which executes plan phases sequential
    Required fields: status, summary, artifacts, metadata (phases_completed, phases_total)
 
 2. **Verify Artifacts**
-   Check summary file exists on disk (if completed)
+   Check summary file exists on disk (if implemented)
 
-3. **Update Status (via skill-status-sync)**
+3. **Verify Status Updated**
+   The skill handles status updates internally (preflight and postflight).
 
-   **If result.status == "completed":**
-   Invoke skill-status-sync: `postflight_update(task_number, "completed", artifacts, session_id)`
+   **If result.status == "implemented":**
+   Confirm status is now "completed" in state.json.
 
    **If result.status == "partial":**
-   Keep status as "implementing", note resume point
-
-4. **Verify** status and artifact links
+   Confirm status is still "implementing", resume point noted.
 
 **RETRY** skill if validation fails.
 
