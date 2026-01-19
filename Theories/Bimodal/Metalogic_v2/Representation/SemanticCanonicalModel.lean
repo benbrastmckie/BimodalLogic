@@ -3,6 +3,7 @@ import Bimodal.Semantics
 import Bimodal.Metalogic_v2.Representation.FiniteWorldState
 import Bimodal.Metalogic_v2.Soundness.Soundness
 import Mathlib.Data.Set.Basic
+import Mathlib.Data.Finite.Defs
 
 /-!
 # Semantic Canonical Model for Metalogic_v2
@@ -137,6 +138,20 @@ A semantic world state models a formula iff the underlying world state does.
 -/
 def models (w : SemanticWorldState phi) (psi : Formula) (h_mem : psi ∈ closure phi) : Prop :=
   (toFiniteWorldState w).models psi h_mem
+
+/--
+Semantic world states are finite.
+
+Proof: There are finitely many `FiniteWorldState`s, and `SemanticWorldState`
+is a quotient over a type that maps to `FiniteWorldState`. The quotient has
+at most as many elements as there are distinct underlying world states.
+-/
+instance semanticWorldState_finite : Finite (SemanticWorldState phi) := by
+  -- The map toFiniteWorldState is a left inverse of the quotient projection,
+  -- so SemanticWorldState injects into FiniteWorldState
+  apply Finite.of_injective toFiniteWorldState
+  intro w1 w2 h
+  exact (eq_iff_toFiniteWorldState_eq w1 w2).mpr h
 
 end SemanticWorldState
 
@@ -276,6 +291,62 @@ This is used in the completeness proof.
 -/
 def finite_history_from_state (phi : Formula) (w : FiniteWorldState phi) : FiniteHistory phi :=
   FiniteHistory.constant w
+
+/--
+For any SemanticWorldState w, there exists a WorldHistory containing w at time 0.
+
+This shows that every semantic world state is reachable from some world history,
+which is needed to instantiate the `valid` quantifier.
+-/
+theorem semantic_world_state_has_world_history (phi : Formula) (w : SemanticWorldState phi) :
+    ∃ (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0),
+    tau.states 0 ht = w := by
+  -- Strategy: Build a history that places w.toFiniteWorldState at the origin
+  -- Then convert that history to a WorldHistory
+
+  -- Step 1: Get the underlying FiniteWorldState
+  let ws := SemanticWorldState.toFiniteWorldState w
+
+  -- Step 2: Build a FiniteHistory through ws at origin
+  -- finite_history_from_state places ws at ALL times (constant function)
+  let hist := finite_history_from_state phi ws
+
+  -- Step 3: Convert to WorldHistory
+  let tau := finiteHistoryToWorldHistory phi hist
+
+  -- Step 4: Use this history with time 0
+  use tau, True.intro
+
+  -- Step 5: Show tau.states 0 True.intro = w
+  -- tau.states 0 = SemanticWorldState.ofHistoryTime hist (intToFiniteTime 0)
+  -- For the constant history, hist.states t = ws for all t
+  -- So tau.states 0 = ofHistoryTime hist (intToFiniteTime 0)
+  -- We need this to equal w
+
+  -- The key insight: two SemanticWorldStates are equal iff their
+  -- underlying FiniteWorldStates are equal (by eq_iff_toFiniteWorldState_eq)
+  rw [SemanticWorldState.eq_iff_toFiniteWorldState_eq]
+
+  -- Now need: (tau.states 0 True.intro).toFiniteWorldState = w.toFiniteWorldState
+  -- tau.states 0 = ofHistoryTime hist (intToFiniteTime 0)
+  -- (ofHistoryTime hist t).toFiniteWorldState = hist.states t = ws = w.toFiniteWorldState
+
+  -- Key: toFiniteWorldState (ofHistoryTime h t) = h.states t
+  -- And finite_history_from_state phi ws returns a history where states _ = ws (constant)
+
+  -- Goal: (finiteHistoryToWorldHistory phi hist).states 0 True.intro).toFiniteWorldState
+  --     = w.toFiniteWorldState
+
+  -- Unfolding the definitions:
+  -- tau.states 0 True.intro
+  --   = SemanticWorldState.ofHistoryTime hist (intToFiniteTime phi 0 _)
+  -- toFiniteWorldState of that
+  --   = hist.states (intToFiniteTime phi 0 _)
+  --   = (finite_history_from_state phi ws).states _
+  --   = ws                                        (constant function)
+  --   = w.toFiniteWorldState
+
+  rfl
 
 /-!
 ## Truth Correspondence
