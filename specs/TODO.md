@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 11
-  completed: 185
+  active: 8
+  completed: 188
   in_progress: 1
   not_started: 26
   abandoned: 18
@@ -51,22 +51,6 @@ technical_debt:
 
 ---
 
-### 594. Fix Progress Interruptions in Agent System
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-18
-- **Session ID**: sess_1768783488_4198c8
-- **Research**: [research-001.md](specs/594_fix_progress_interruptions_agent_system/reports/research-001.md), [research-002.md](specs/594_fix_progress_interruptions_agent_system/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/594_fix_progress_interruptions_agent_system/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260118.md](specs/594_fix_progress_interruptions_agent_system/summaries/implementation-summary-20260118.md)
-
-**Description**: Investigate and fix progress interruptions where agents require hitting "continue" during execution. This is a persistent issue across multiple commands. Hypothesis: the checkpoint system may be too aggressive and/or JSON output being printed to the console precipitates interruptions. Research example outputs in .claude/output/ and the agent system in .claude/ to identify the root cause and best solution. Related to task 591 (double forking fix) which is now complete.
-
----
-
 ### 585. Add Session Cleanup to Agents
 - **Effort**: 1-2 hours
 - **Status**: [NOT STARTED]
@@ -75,43 +59,6 @@ technical_debt:
 - **Created**: 2026-01-19
 
 **Description**: Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination.
-
----
-
-### 556. Complete Metalogic_v2 Implementation
-- **Effort**: 2-3 hours (revised from 6-10)
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Session ID**: sess_1768782114_60bde9
-- **Created**: 2026-01-17
-- **Researched**: 2026-01-17
-- **Planned**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Dependencies**: 554
-- **Research**: [research-001.md](specs/556_complete_metalogic_v2_implementation/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/556_complete_metalogic_v2_implementation/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260118.md](specs/556_complete_metalogic_v2_implementation/summaries/implementation-summary-20260118.md)
-- **Subtasks**: 557, 558, 559, 560, 561
-
-**Description**: Complete the implementation of Metalogic_v2/ to center on the representation theorem, using it as the basis for completeness, decidability, and compactness. Update documentation to reflect zero sorries and the proven architecture. Prepare for deprecation of old Metalogic/ directory.
-
----
-
-### 561. Cleanup and Documentation
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-17
-- **Completed**: 2026-01-18
-- **Parent**: 556
-- **Dependencies**: 560
-- **Research**: [research-001.md](specs/561_cleanup_and_documentation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/561_cleanup_and_documentation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/561_cleanup_and_documentation/summaries/implementation-summary-20260118.md)
-
-**Description**: Improve documentation for Metalogic_v2/ to be accurate and up to date. Remove historical markers and commentary (words like 'now', 'currently', etc.). Update README.md with accurate completion status. Verify documentation matches implementation state.
 
 ---
 

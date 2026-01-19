@@ -8,11 +8,11 @@
     {
       "project_number": 599,
       "project_name": "troubleshoot_jq_escaping_agent_system",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T01:07:44Z",
-      "last_updated": "2026-01-19T01:15:55Z",
+      "last_updated": "2026-01-19T01:18:24Z",
       "description": "Troubleshoot jq escaping issues in agent system. The not-equals operator is being escaped when passed through bash, causing jq parse errors. Fix skill-task and related skills to properly handle jq operators. Document correct patterns in context files to ensure consistent jq usage across the system.",
       "session_id": "sess_1768785339_ef0824",
       "researched": "2026-01-19T01:15:05Z",
@@ -20,8 +20,13 @@
         {
           "path": "specs/599_troubleshoot_jq_escaping_agent_system/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/599_troubleshoot_jq_escaping_agent_system/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-19T01:18:24Z"
     },
     {
       "project_number": 598,
