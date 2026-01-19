@@ -8,12 +8,12 @@
     {
       "project_number": 600,
       "project_name": "fix_subagent_metadata_passing",
-      "status": "researched",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T01:21:21Z",
-      "last_updated": "2026-01-19T01:30:20Z",
-      "session_id": "sess_1768785893_38f1e2",
+      "last_updated": "2026-01-19T01:42:40Z",
+      "session_id": "sess_1768786945_62eccd",
       "researched": "2026-01-19T01:30:20Z",
       "artifacts": [
         {
@@ -68,7 +68,7 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T01:25:26Z",
+      "last_updated": "2026-01-19T01:36:42Z",
       "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
       "session_id": "sess_1768785913_bd7285",
       "researched": "2026-01-19T01:16:42Z",
@@ -83,17 +83,25 @@
         }
       ],
       "planned": "2026-01-19T01:20:21Z",
-      "started": "2026-01-19T01:25:26Z"
+      "started": "2026-01-19T01:25:26Z",
+      "resume_phase": 2
     },
     {
       "project_number": 596,
       "project_name": "constructive_finite_model_bounds",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T00:56:57Z",
-      "last_updated": "2026-01-19T01:26:26Z",
-      "session_id": "sess_1768785977_eb9479"
+      "last_updated": "2026-01-19T01:32:03Z",
+      "session_id": "sess_1768785977_eb9479",
+      "researched": "2026-01-19T01:32:03Z",
+      "artifacts": [
+        {
+          "path": "specs/596_constructive_finite_model_bounds/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 595,

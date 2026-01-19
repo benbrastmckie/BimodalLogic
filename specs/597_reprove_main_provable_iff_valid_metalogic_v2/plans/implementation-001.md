@@ -1,7 +1,7 @@
 # Implementation Plan: Task #597
 
 - **Task**: 597 - Re-prove main_provable_iff_valid in Metalogic_v2
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 2.5 hours
 - **Priority**: High
 - **Dependencies**: None (all needed infrastructure exists in Metalogic_v2)
@@ -69,26 +69,42 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Canonical-to-Semantic Bridge [IN PROGRESS]
+### Phase 2: Canonical-to-Semantic Bridge [BLOCKED]
 
 **Goal**: Create bridge connecting CanonicalWorldState to TaskModel for countermodel construction
 
+**Status**: BLOCKED - Requires SemanticCanonicalModel infrastructure from old Metalogic (~4000 lines)
+
+**Analysis**:
+The contrapositive proof for completeness (valid phi -> provable phi) requires building a TaskModel
+from a CanonicalWorldState (MCS) such that `truth_at M tau t psi <-> psi in MCS`. This correspondence
+is NOT trivially true for a single-world model because:
+- Box operator: `truth_at (box psi) = forall sigma, truth_at psi` (quantifies over ALL histories)
+- In MCS: `box psi in M` iff `psi in M'` for all box-accessible MCS's M'
+
+A trivial single-world model collapses the modal structure, which doesn't match MCS semantics.
+The old Metalogic builds a SemanticCanonicalModel that properly handles this by:
+1. Building SemanticWorldState from quotients of (FiniteHistory x FiniteTime) pairs
+2. Defining accessibility based on MCS projections
+3. Proving truth correspondence via structural induction on formulas
+
+This infrastructure is ~4000 lines in FiniteCanonicalModel.lean and would need to be migrated
+to Metalogic_v2 for full independence.
+
+**Blocking Issues**:
+1. SemanticCanonicalModel construction is complex (handles modal + temporal operators)
+2. Old FiniteCanonicalModel.lean has pre-existing build errors (line 651)
+3. Migration effort significantly exceeds 2.5 hour estimate
+
 **Tasks**:
-- [ ] Create new file `Metalogic_v2/Completeness/WeakCompleteness.lean`
-- [ ] Define `canonicalCountermodel : CanonicalWorldState -> TaskModel` construction
-- [ ] For countermodel: use trivial domain (Unit or Fin 1), static temporal structure
-- [ ] Prove truth correspondence: phi in MCS iff phi true in canonicalCountermodel at that world
-- [ ] This leverages existing `truthLemma_detailed` from TruthLemma.lean
+- [BLOCKED] Define `canonicalCountermodel : CanonicalWorldState -> TaskModel` construction
+- [BLOCKED] Prove truth correspondence for all formula constructors
+- [BLOCKED] Handle modal box operator (requires multi-world model)
+- [BLOCKED] Handle temporal operators (requires proper time structure)
 
-**Timing**: 1 hour
+**Timing**: Originally 1 hour, actual requirement: 20+ hours (SemanticCanonicalModel migration)
 
-**Files to modify**:
-- `Logos/Theories/Bimodal/Metalogic_v2/Completeness/WeakCompleteness.lean` - Create new file
-
-**Verification**:
-- File compiles without errors
-- Bridge construction has no sorries
-- Truth correspondence lemma proven
+**Recommendation**: Create follow-up task for SemanticCanonicalModel migration to Metalogic_v2
 
 ---
 

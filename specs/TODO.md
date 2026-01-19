@@ -29,7 +29,7 @@ technical_debt:
 
 ### 600. Fix Subagent Metadata Passing in Agent System
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -143,10 +143,11 @@ technical_debt:
 
 ### 596. Constructive Finite Model Bounds
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-18
+- **Research**: [research-001.md](specs/596_constructive_finite_model_bounds/reports/research-001.md)
 
 **Description**: The Finite Model Property currently uses a trivial witness (identity function on satisfiability). Establish constructive finite model bounds instead, archiving the old method to the Bimodal/Boneyard/ once the constructive alternative is fully implemented with zero sorries.
 
