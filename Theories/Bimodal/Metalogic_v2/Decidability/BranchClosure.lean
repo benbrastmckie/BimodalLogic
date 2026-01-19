@@ -174,6 +174,16 @@ def classifyBranch (b : Branch) : BranchStatus :=
 /--
 A closed branch remains closed when extended.
 Adding more formulas cannot "undo" a contradiction.
+
+**Proof Strategy**:
+The closure reason in `b` (bot, contradiction, or axiom negation) will still
+be present in `sf :: b` since `b` is a suffix. The `findClosure` function
+will find the same reason (or possibly a new one involving `sf`).
+
+**Technical Note**:
+This requires showing that `List.findSome?` on a list extension preserves
+finding elements from the original list, or that the branch properties
+(hasBotPos, hasNeg, etc.) are monotonic under extension.
 -/
 theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
     isClosed b → isClosed (sf :: b) := by
@@ -185,17 +195,35 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
     simp only [findClosure, checkBotPos, checkContradiction, checkAxiomNeg] at *
     -- The closure reason from b will still be found in sf :: b
     -- because b is a suffix of sf :: b
-    sorry  -- Technical: would need to show findSome? finds the same element
+    -- Need to show: findClosure (sf :: b) = some _
+    -- Key insight: if b has a closure reason, so does sf :: b
+    -- because the checks are monotonic (adding elements doesn't remove closures)
+    sorry  -- Requires showing findSome? monotonicity or case analysis on reason
 
 /--
 If a branch has T(φ) and we add F(φ), it becomes closed.
+
+**Proof Strategy**:
+1. `hpos : b.hasPos φ` means `SignedFormula.pos φ` is in `b`
+2. Adding `SignedFormula.neg φ` to the front creates a branch with both
+3. `checkContradiction` will find `SignedFormula.neg φ` (negative, first element)
+4. It will then check `hasPos φ` on the original branch, which is true
+
+**Technical Note**:
+The contradiction check looks for positive formulas whose negation exists.
+When we add F(φ) to a branch with T(φ), the check on F(φ) won't find a
+contradiction directly, but the check on T(φ) (from b) will find F(φ) in
+the extended branch.
 -/
 theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
     b.hasPos φ → isClosed (SignedFormula.neg φ :: b) := by
   intro hpos
   simp only [isClosed, findClosure, checkBotPos, checkContradiction]
-  -- The contradiction check will find the pair
-  sorry  -- Technical: would need to unfold definitions
+  -- The contradiction check will find the pair:
+  -- SignedFormula.pos φ is in b (from hpos)
+  -- When we check (SignedFormula.pos φ).isPos ∧ (sf :: b).hasNeg φ
+  -- the first is true, and the second will be true because SignedFormula.neg φ is at the front
+  sorry  -- Requires unfolding hasPos, hasNeg, and List.findSome? behavior
 
 /-!
 ## Closure Detection Statistics

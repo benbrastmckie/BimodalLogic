@@ -1,7 +1,7 @@
 # Implementation Plan: Task #490
 
 - **Task**: 490 - Complete decidability procedure for TM logic
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 8 hours
 - **Priority**: Low
 - **Dependencies**: Task 607 (completed)
@@ -69,7 +69,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Prove expansion_decreases_measure [IN PROGRESS]
+### Phase 2: Prove expansion_decreases_measure [PARTIAL]
 
 **Goal**: Prove the termination measure lemma for tableau expansion.
 
@@ -90,7 +90,7 @@ From research-001.md:
 
 ---
 
-### Phase 3: Prove tableau_complete [NOT STARTED]
+### Phase 3: Prove tableau_complete [PARTIAL]
 
 **Goal**: Prove the main completeness theorem for tableau method.
 
@@ -119,7 +119,7 @@ Therefore all branches must eventually close
 
 ---
 
-### Phase 4: Prove decide_complete [NOT STARTED]
+### Phase 4: Prove decide_complete [PARTIAL]
 
 **Goal**: Derive decision procedure completeness from tableau completeness.
 
@@ -140,7 +140,7 @@ Therefore all branches must eventually close
 
 ---
 
-### Phase 5: Address decide_axiom_valid (Optional) [NOT STARTED]
+### Phase 5: Address decide_axiom_valid (Optional) [PARTIAL]
 
 **Goal**: Prove that axiom instances are correctly decided.
 
@@ -160,7 +160,7 @@ Therefore all branches must eventually close
 
 ---
 
-### Phase 6: Final Verification and Cleanup [NOT STARTED]
+### Phase 6: Final Verification and Cleanup [PARTIAL]
 
 **Goal**: Ensure all proofs compile and documentation is complete.
 
