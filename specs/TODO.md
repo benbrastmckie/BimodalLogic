@@ -156,6 +156,8 @@ technical_debt:
 - **Started**: 2026-01-19
 - **Research**: [research-001.md](specs/596_constructive_finite_model_bounds/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/596_constructive_finite_model_bounds/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/596_constructive_finite_model_bounds/summaries/implementation-summary-20260118.md)
+- **Progress**: Phases 1-4 executed; proofs have sorries in WorldHistory construction and cardinality chain
 
 **Description**: The Finite Model Property currently uses a trivial witness (identity function on satisfiability). Establish constructive finite model bounds instead, archiving the old method to the Bimodal/Boneyard/ once the constructive alternative is fully implemented with zero sorries.
 
