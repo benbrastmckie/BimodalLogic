@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 604,
+      "project_name": "migrate_fmp_to_semanticcanonicalmodel_v2",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T06:44:19Z",
+      "last_updated": "2026-01-19T06:44:19Z"
+    },
+    {
       "project_number": 600,
       "project_name": "fix_subagent_metadata_passing",
       "status": "completed",
@@ -343,5 +352,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 604
+  "next_project_number": 605
 }

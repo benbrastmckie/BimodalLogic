@@ -223,6 +223,18 @@ technical_debt:
 
 ---
 
+### 604. Migrate FMP to SemanticCanonicalModel_v2
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-18
+- **Dependencies**: Task 597
+
+**Description**: Migrate Task 596's constructive FMP implementation to use the new SemanticCanonicalModel_v2 infrastructure from Task 597. Update FiniteModelProperty.lean and ContextProvability.lean to remove dependency on Bimodal.Metalogic.Completeness.FiniteCanonicalModel, enabling full independence of Metalogic_v2 from the old Bimodal/Metalogic/ directory.
+
+---
+
 ## Low Priority
 
 ### 598. Remove deprecated helpers from ContextProvability.lean
