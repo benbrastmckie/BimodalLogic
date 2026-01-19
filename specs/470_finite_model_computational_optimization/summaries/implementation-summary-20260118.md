@@ -26,10 +26,11 @@ This implementation focused on optimizing the Metalogic_v2 representation layer 
   - `closure_all_past`: Using `mem_subformulas_of_all_past`
   - `closure_all_future`: Using `mem_subformulas_of_all_future`
 
-### Phase 3: Closure MCS Properties (COMPLETED - 1 edge case)
+### Phase 3: Closure MCS Properties (COMPLETED)
+- Completed `closure_mcs_neg_complete` with full proof handling double-negation case
+- Completed `mcs_projection_is_closure_mcs` maximality case with split on psi in closure vs negation
 - Completed `closure_mcs_imp_iff` backward direction using `prop_s` axiom and `b_combinator`
-- Completed `mcs_projection_is_closure_mcs` maximality case
-- Documented edge case in `closure_mcs_neg_complete` where double negation escapes closureWithNeg
+- All 3 theorems now have no `sorry` statements
 
 ### Phase 4: Time Arithmetic (COMPLETED)
 - Completed `finiteHistoryToWorldHistory.respects_task` proof
@@ -80,7 +81,7 @@ This implementation focused on optimizing the Metalogic_v2 representation layer 
 | File | Before | After | Notes |
 |------|--------|-------|-------|
 | SemanticCanonicalModel.lean | 4 | 3 | 1 resolved (time arithmetic), 3 documented |
-| Closure.lean | 9 | ~4 | 5 resolved, edge cases remain |
+| Closure.lean | 9 | 0 | 9 resolved (all MCS properties complete) |
 | FiniteWorldState.lean | 1 | 1 | Unchanged (temporal reflexivity) |
 
 ## Notes

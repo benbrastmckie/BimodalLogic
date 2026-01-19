@@ -170,10 +170,20 @@ This means no atom p has both T(p) and F(p) in the branch.
 theorem open_branch_consistent (b : Branch) (hOpen : findClosure b = none) :
     ∀ p, ¬(SignedFormula.pos (.atom p) ∈ b ∧ SignedFormula.neg (.atom p) ∈ b) := by
   intro p ⟨hpos, hneg⟩
-  -- findClosure finds contradictions like T(p), F(p)
-  -- If both T(p) and F(p) are in b, findClosure would return some reason
-  -- This contradicts hOpen : findClosure b = none
-  sorry  -- Technical: show findClosure detects atom contradictions
+  -- findClosure b = none means all checks return none
+  simp only [findClosure, Option.or_eq_none'] at hOpen
+  obtain ⟨_, hNoContra, _⟩ := hOpen
+  -- hNoContra : checkContradiction b = none
+  simp only [checkContradiction, List.findSome?_eq_none] at hNoContra
+  -- Apply to SignedFormula.pos (atom p)
+  have h := hNoContra (SignedFormula.pos (.atom p)) hpos
+  -- SignedFormula.pos (atom p) has isPos = true
+  simp only [SignedFormula.isPos] at h
+  -- Show hasNeg b (atom p) = true from hneg
+  have hhas : hasNeg b (Formula.atom p) = true := by
+    simp only [hasNeg, List.contains_iff, beq_iff_eq]
+    exact ⟨SignedFormula.neg (.atom p), hneg, rfl⟩
+  simp only [hhas, and_self, ↓reduceIte] at h
 
 /--
 Saturation implies all non-atomic formulas are expanded.

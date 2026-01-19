@@ -734,19 +734,121 @@ theorem expansionMeasure_append (l1 l2 : List SignedFormula) :
   simp only [expansionMeasure, List.foldl_append]
 
 /--
+BEq reflexivity for Formula.
+The derived BEq compares subformulas componentwise.
+-/
+theorem formula_beq_of_eq (f g : Formula) (h : f = g) : (f == g) = true := by
+  subst h
+  induction f with
+  | atom p =>
+    show instBEqFormula.beq (Formula.atom p) (Formula.atom p) = true
+    simp only [instBEqFormula.beq, beq_self_eq_true']
+  | bot => rfl
+  | imp f1 f2 ih1 ih2 =>
+    show instBEqFormula.beq (Formula.imp f1 f2) (Formula.imp f1 f2) = true
+    simp only [instBEqFormula.beq, Bool.and_eq_true]
+    exact ⟨ih1, ih2⟩
+  | box f ih =>
+    show instBEqFormula.beq (Formula.box f) (Formula.box f) = true
+    simp only [instBEqFormula.beq]
+    exact ih
+  | all_past f ih =>
+    show instBEqFormula.beq (Formula.all_past f) (Formula.all_past f) = true
+    simp only [instBEqFormula.beq]
+    exact ih
+  | all_future f ih =>
+    show instBEqFormula.beq (Formula.all_future f) (Formula.all_future f) = true
+    simp only [instBEqFormula.beq]
+    exact ih
+
+/-- BEq reflexivity for Formula (specialized). -/
+theorem formula_beq_refl (f : Formula) : (f == f) = true :=
+  formula_beq_of_eq f f rfl
+
+/-- BEq reflexivity for Sign. -/
+theorem sign_beq_refl (s : Sign) : (s == s) = true := by
+  cases s <;> rfl
+
+/--
 BEq reflexivity for SignedFormula.
-Note: This should follow from LawfulBEq but SignedFormula doesn't derive it.
+The derived BEq compares sign and formula fields componentwise.
 -/
 theorem signedFormula_beq_refl (sf : SignedFormula) : (sf == sf) = true := by
-  -- The derived BEq compares signs and formulas component-wise
-  -- Both Sign and Formula have reflexive BEq
-  sorry  -- Technical: BEq reflexivity for derived instances
+  cases sf with
+  | mk s f =>
+    show instBEqSignedFormula.beq { sign := s, formula := f } { sign := s, formula := f } = true
+    unfold instBEqSignedFormula.beq
+    simp only [Bool.and_eq_true]
+    exact ⟨sign_beq_refl s, formula_beq_refl f⟩
 
 /--
 sf != sf = false for SignedFormula.
 -/
 theorem signedFormula_bne_self (sf : SignedFormula) : (sf != sf) = false := by
   simp only [bne, signedFormula_beq_refl, Bool.not_true]
+
+/-- BEq true implies equality for Formula. -/
+theorem formula_eq_of_beq (f g : Formula) (h : (f == g) = true) : f = g := by
+  induction f generalizing g with
+  | atom p =>
+    cases g with
+    | atom q =>
+      simp only [BEq.beq, instBEqFormula.beq] at h
+      have : p = q := of_decide_eq_true h
+      subst this; rfl
+    | _ => simp only [BEq.beq, instBEqFormula.beq] at h; exact False.elim (Bool.false_ne_true h)
+  | bot =>
+    cases g with
+    | bot => rfl
+    | _ => simp only [BEq.beq, instBEqFormula.beq] at h; exact False.elim (Bool.false_ne_true h)
+  | imp f1 f2 ih1 ih2 =>
+    cases g with
+    | imp g1 g2 =>
+      simp only [BEq.beq, instBEqFormula.beq, Bool.and_eq_true] at h
+      obtain ⟨h1, h2⟩ := h
+      have eq1 := ih1 g1 h1
+      have eq2 := ih2 g2 h2
+      subst eq1 eq2; rfl
+    | _ => simp only [BEq.beq, instBEqFormula.beq] at h; exact False.elim (Bool.false_ne_true h)
+  | box f ih =>
+    cases g with
+    | box g =>
+      simp only [BEq.beq, instBEqFormula.beq] at h
+      have eq := ih g h
+      subst eq; rfl
+    | _ => simp only [BEq.beq, instBEqFormula.beq] at h; exact False.elim (Bool.false_ne_true h)
+  | all_past f ih =>
+    cases g with
+    | all_past g =>
+      simp only [BEq.beq, instBEqFormula.beq] at h
+      have eq := ih g h
+      subst eq; rfl
+    | _ => simp only [BEq.beq, instBEqFormula.beq] at h; exact False.elim (Bool.false_ne_true h)
+  | all_future f ih =>
+    cases g with
+    | all_future g =>
+      simp only [BEq.beq, instBEqFormula.beq] at h
+      have eq := ih g h
+      subst eq; rfl
+    | _ => simp only [BEq.beq, instBEqFormula.beq] at h; exact False.elim (Bool.false_ne_true h)
+
+/-- BEq true implies equality for Sign. -/
+theorem sign_eq_of_beq (s1 s2 : Sign) (h : (s1 == s2) = true) : s1 = s2 := by
+  cases s1 <;> cases s2 <;> first | rfl | exact False.elim (Bool.false_ne_true h)
+
+/-- BEq true implies equality for SignedFormula. -/
+theorem signedFormula_eq_of_beq (sf1 sf2 : SignedFormula) (h : (sf1 == sf2) = true) : sf1 = sf2 := by
+  cases sf1 with
+  | mk s1 f1 =>
+    cases sf2 with
+    | mk s2 f2 =>
+      show SignedFormula.mk s1 f1 = SignedFormula.mk s2 f2
+      simp only [BEq.beq, instBEqSignedFormula.beq, Bool.and_eq_true] at h
+      obtain ⟨h1, h2⟩ := h
+      have eq1 := sign_eq_of_beq s1 s2 h1
+      have eq2 := formula_eq_of_beq f1 f2 h2
+      subst eq1 eq2
+      rfl
 
 /--
 Key lemma: removing an unexpanded formula decreases the expansion measure by at least its complexity.
@@ -783,15 +885,13 @@ theorem expansionMeasure_filter_unexpanded (b : Branch) (sf : SignedFormula)
           unfold bne
           simp only [Bool.not_eq_true']
           -- Need (h == sf) = false given h ≠ sf
-          -- DecidableEq gives us if h = sf then ... else ...
-          -- But BEq may differ from DecidableEq
           -- Use contrapositive: if (h == sf) = true then h = sf
           by_contra hcontra
           push_neg at hcontra
-          -- hcontra : (h == sf) = true
-          -- We need to show h = sf, contradiction with h_eq
-          -- This requires LawfulBEq or manual case analysis
-          sorry  -- Technical: BEq agrees with DecidableEq for SignedFormula
+          -- hcontra : (h == sf) ≠ false, convert to = true
+          have hbeq : (h == sf) = true := Bool.eq_true_of_not_eq_false hcontra
+          -- Use signedFormula_eq_of_beq to derive h = sf, contradicting h_eq
+          exact h_eq (signedFormula_eq_of_beq h sf hbeq)
         simp only [h_bne, ↓reduceIte, List.foldl_cons]
         split_ifs with hexp
         · -- h is expanded, contributes 0
