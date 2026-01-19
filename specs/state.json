@@ -137,12 +137,12 @@
     {
       "project_number": 596,
       "project_name": "constructive_finite_model_bounds",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T00:56:57Z",
-      "last_updated": "2026-01-19T02:16:33Z",
-      "session_id": "sess_1768788074_52cf53",
+      "last_updated": "2026-01-19T03:26:13Z",
+      "session_id": "sess_1768792500_4d0fe7",
       "researched": "2026-01-19T01:32:03Z",
       "artifacts": [
         {
@@ -169,8 +169,7 @@
         3,
         4
       ],
-      "partial_since": "2026-01-19T02:16:33Z",
-      "partial_reason": "All phases executed but proofs contain sorries in WorldHistory construction and cardinality chain"
+      "completed": "2026-01-19T03:26:13Z"
     },
     {
       "project_number": 595,

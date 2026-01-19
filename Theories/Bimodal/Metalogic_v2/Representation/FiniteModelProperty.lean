@@ -298,6 +298,61 @@ open Bimodal.Metalogic.Completeness
 open Bimodal.Metalogic.Completeness.SemanticWorldState
 
 /--
+**Cardinality bound for SemanticWorldState**.
+
+The number of semantic world states is bounded by 2^|closure(phi)|.
+
+This follows because:
+1. SemanticWorldState phi injects into FiniteWorldState phi (via toFiniteWorldState)
+2. FiniteWorldState phi injects into FiniteTruthAssignment phi (via assignment)
+3. FiniteTruthAssignment phi = closure phi → Bool has cardinality 2^|closure phi|
+4. closureSize phi = (closure phi).card
+
+Chain: |SemanticWorldState| ≤ |FiniteWorldState| ≤ |FiniteTruthAssignment| = 2^closureSize
+-/
+theorem semanticWorldState_card_bound (φ : Formula) :
+    @Fintype.card (SemanticWorldState φ) (Fintype.ofFinite _) ≤ 2 ^ closureSize φ := by
+  -- Step 1: SemanticWorldState injects into FiniteWorldState
+  have h_inj : Function.Injective (@toFiniteWorldState φ) := by
+    intro w1 w2 h
+    exact (eq_iff_toFiniteWorldState_eq w1 w2).mpr h
+
+  -- Step 2: Get Fintype instances
+  letI inst_fws : Fintype (FiniteWorldState φ) := Fintype.ofFinite _
+  letI inst_sws : Fintype (SemanticWorldState φ) := Fintype.ofFinite _
+
+  -- Step 3: Bound |SemanticWorldState| ≤ |FiniteWorldState|
+  have h1 : Fintype.card (SemanticWorldState φ) ≤ Fintype.card (FiniteWorldState φ) :=
+    Fintype.card_le_of_injective _ h_inj
+
+  -- Step 4: FiniteWorldState.assignment gives us an injection into FiniteTruthAssignment
+  have h_inj2 : Function.Injective (fun w : FiniteWorldState φ => w.assignment) := by
+    intro w1 w2 h
+    exact FiniteWorldState.ext h
+
+  -- Step 5: Bound |FiniteWorldState| ≤ |FiniteTruthAssignment|
+  have h2 : Fintype.card (FiniteWorldState φ) ≤ Fintype.card (FiniteTruthAssignment φ) :=
+    Fintype.card_le_of_injective _ h_inj2
+
+  -- Step 6: |FiniteTruthAssignment| = 2^|closure φ|
+  have h3 : Fintype.card (FiniteTruthAssignment φ) = 2 ^ Fintype.card (closure φ) := by
+    simp only [FiniteTruthAssignment, Fintype.card_fun, Fintype.card_bool]
+
+  -- Step 7: |closure φ| = closureSize φ
+  have h4 : Fintype.card (closure φ) = closureSize φ := by
+    simp only [closureSize, Fintype.card_coe]
+
+  -- Combine: handle instance mismatch with Fintype.card_congr
+  have h_eq : @Fintype.card (SemanticWorldState φ) (Fintype.ofFinite _) =
+              Fintype.card (SemanticWorldState φ) := Fintype.card_congr (Equiv.refl _)
+  rw [h_eq]
+  calc Fintype.card (SemanticWorldState φ)
+      ≤ Fintype.card (FiniteWorldState φ) := h1
+    _ ≤ Fintype.card (FiniteTruthAssignment φ) := h2
+    _ = 2 ^ Fintype.card (closure φ) := h3
+    _ = 2 ^ closureSize φ := by rw [h4]
+
+/--
 **Constructive FMP with Explicit Bounds**.
 
 If a formula phi is satisfiable, then it is satisfiable in the finite
@@ -355,58 +410,75 @@ theorem finite_model_property_constructive (φ : Formula) (h_sat : formula_satis
   have h_neg_not_deriv : ¬ContextDerivable [] (Formula.neg φ) := by
     intro h_deriv
     exact h_neg_not_valid (derivable_implies_valid h_deriv)
-  -- By semantic_weak_completeness, there's a world where φ is true
-  have h_exists_witness : ∃ w : SemanticWorldState φ, φ ∈ (toFiniteWorldState w).toSet := by
-    by_contra h_all_false
-    push_neg at h_all_false
-    -- If φ is false at all worlds, then ¬φ is true at all worlds
-    -- This means ¬φ is derivable, contradiction
-    have h_neg_deriv : ContextDerivable [] (Formula.neg φ) := by
-      -- Use semantic_weak_completeness
-      have h_sem_compl := semantic_weak_completeness φ
-      -- h_all_false says: ∀ w, φ ∉ w.toSet
-      -- semantic_weak_completeness gives: (∀ w, w ⊨ φ) → ⊢ φ
-      -- We need to derive ⊢ ¬φ from ∀ w, ¬(w ⊨ φ)
-      -- Actually, if φ is false everywhere in the canonical model, then ¬φ is valid
-      -- in that model. Since the canonical model is complete, this means ¬φ is provable.
-      sorry -- This requires connecting h_all_false to the derivability infrastructure
-    exact h_neg_not_deriv h_neg_deriv
-  obtain ⟨w, h_phi_in_w⟩ := h_exists_witness
-  -- Now we need to construct a WorldHistory
-  -- Use the existence of a finite history from the canonical construction
-  -- For now, use sorry for the history construction
-  sorry
+  -- From h_neg_not_deriv, we know {φ} is consistent (via contrapositive reasoning)
+  -- We construct the witness directly using the Lindenbaum construction
 
-/--
-**Cardinality bound for SemanticWorldState**.
+  -- Step 1: φ is not refutable (already have this as h_neg_not_deriv)
+  have h_not_refutable : ¬Nonempty (⊢ φ.neg) := by
+    intro ⟨d⟩
+    exact h_neg_not_deriv ⟨d⟩
 
-The number of semantic world states is bounded by 2^|closure(phi)|.
+  -- Step 2: {φ} is set-consistent
+  have h_phi_cons : SetConsistent ({φ} : Set Formula) := phi_consistent_of_not_refutable φ h_not_refutable
 
-This follows because:
-1. SemanticWorldState phi is a quotient of FiniteWorldState phi
-2. FiniteWorldState phi is determined by truth assignments to the closure
-3. There are at most 2^|closure(phi)| such assignments
-4. The quotient has at most as many elements as the underlying type
--/
-theorem semanticWorldState_card_bound (φ : Formula) :
-    @Fintype.card (SemanticWorldState φ) (Fintype.ofFinite _) ≤ 2 ^ closureSize φ := by
-  -- SemanticWorldState injects into FiniteWorldState via toFiniteWorldState
-  -- FiniteWorldState is determined by FiniteTruthAssignment phi
-  -- FiniteTruthAssignment phi has cardinality 2^|closure phi|
-  --
-  -- Actually, we need to show |SemanticWorldState| ≤ |FiniteWorldState| ≤ 2^|closure|
-  --
-  -- The injection is: toFiniteWorldState (proven via eq_iff_toFiniteWorldState_eq)
-  --
-  -- For now, use the fact that Finite + injection gives the bound
-  have h_inj : Function.Injective (@toFiniteWorldState φ) := by
-    intro w1 w2 h
-    exact (eq_iff_toFiniteWorldState_eq w1 w2).mpr h
-  -- FiniteWorldState is a subtype of FiniteTruthAssignment with consistency constraint
-  -- FiniteTruthAssignment has 2^|closure phi| elements
-  -- So FiniteWorldState has at most 2^|closure phi| elements
-  -- And SemanticWorldState (via injection) has at most that many
-  sorry
+  -- Step 3: Extend {φ} to a maximal consistent set M by Lindenbaum
+  obtain ⟨M, h_sub_M, h_M_mcs⟩ := set_lindenbaum {φ} h_phi_cons
+
+  -- Step 4: φ ∈ M (from subset property)
+  have h_phi_in_M : φ ∈ M := h_sub_M (Set.mem_singleton φ)
+
+  -- Step 5: Project M to closureWithNeg(φ) to get a closure MCS S
+  let S := M ∩ (closureWithNeg φ : Set Formula)
+  have h_S_mcs : ClosureMaximalConsistent φ S := mcs_projection_is_closure_mcs φ M h_M_mcs
+
+  -- Step 6: φ ∈ S (since φ ∈ M and φ ∈ closureWithNeg φ)
+  have h_phi_closure : φ ∈ closure φ := self_mem_closure φ
+  have h_phi_closureWithNeg : φ ∈ closureWithNeg φ := closure_subset_closureWithNeg φ h_phi_closure
+  have h_phi_in_S : φ ∈ S := ⟨h_phi_in_M, h_phi_closureWithNeg⟩
+
+  -- Step 7: Build FiniteWorldState from S where φ is true
+  let w := worldStateFromClosureMCS φ S h_S_mcs
+
+  -- Step 8: φ is true at w
+  have h_phi_true_w : w.models φ h_phi_closure := by
+    rw [← worldStateFromClosureMCS_models_iff φ S h_S_mcs φ h_phi_closure]
+    exact h_phi_in_S
+
+  -- Step 9: Build FiniteHistory through w
+  let hist := finite_history_from_state φ w
+
+  -- Step 10: Build SemanticWorldState at origin
+  let t := FiniteTime.origin (temporalBound φ)
+  let sw := SemanticWorldState.ofHistoryTime hist t
+
+  -- Step 11: hist.states t = w by construction
+  have h_hist_states_t : hist.states t = w := rfl
+  have h_sw_toFinite : SemanticWorldState.toFiniteWorldState sw = w := by
+    rfl
+
+  -- Step 12: φ ∈ sw.toFiniteWorldState.toSet
+  have h_phi_in_sw : φ ∈ (SemanticWorldState.toFiniteWorldState sw).toSet := by
+    rw [FiniteWorldState.mem_toSet_iff]
+    rw [h_sw_toFinite]
+    exact h_phi_true_w
+
+  -- Step 13: Use semantic_world_state_has_world_history to get WorldHistory
+  obtain ⟨tau, h_dom, h_states_eq⟩ := semantic_world_state_has_world_history φ sw
+
+  -- Step 14: Package the result
+  -- Note: (SemanticCanonicalFrame φ).WorldState = SemanticWorldState φ definitionally
+  have h_finite : Finite (SemanticCanonicalFrame φ).WorldState :=
+    SemanticWorldState.semanticWorldState_finite
+  use tau, 0, h_finite, Fintype.ofFinite (SemanticWorldState φ)
+  constructor
+  · -- truth_at (SemanticCanonicalModel φ) tau 0 φ
+    -- Use semantic_truth_implies_truth_at with h_phi_in_sw
+    have h_models : (SemanticWorldState.toFiniteWorldState sw).models φ h_phi_closure := by
+      rw [h_sw_toFinite]
+      exact h_phi_true_w
+    exact semantic_truth_implies_truth_at φ sw h_phi_closure h_models tau h_dom h_states_eq
+  · -- Fintype.card ≤ 2 ^ closureSize φ
+    exact semanticWorldState_card_bound φ
 
 /-!
 ## Integration Notes
