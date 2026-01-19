@@ -145,17 +145,22 @@ After successful planning, update task status to "planned" and link artifacts.
 
 **Reference**: `@.claude/context/core/patterns/inline-status-update.md`
 
-**Update state.json**:
+**Update state.json** (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`):
 ```bash
+# Step 1: Update status and timestamps
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "planned" \
-   --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     status: $status,
     last_updated: $ts,
-    planned: $ts,
-    artifacts: ((.artifacts // []) | map(select(.type != "plan"))) + [{"path": $path, "type": "plan"}]
+    planned: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+
+# Step 2: Add artifact
+jq --arg path "$artifact_path" \
+  '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "plan")] + [{"path": $path, "type": "plan"}])' \
+  specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
 **Update TODO.md**:

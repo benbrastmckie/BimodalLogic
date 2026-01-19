@@ -29,10 +29,11 @@ technical_debt:
 
 ### 600. Fix Subagent Metadata Passing in Agent System
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
+- **Research**: [research-001.md](specs/600_fix_subagent_metadata_passing/reports/research-001.md)
 
 **Description**: Study the research output from /home/benjamin/Projects/ProofChecker/.claude/output/research.md which shows agents attempting to pass metadata in JSON blocks back to the primary agent, but the JSON is printing to console instead of being parsed. Research best practices for subagent metadata passing in Claude Code 2026. Improve the agent system to avoid printing JSON output to console and eliminate the 'continue' interruptions demonstrated in the research output.
 
@@ -40,12 +41,14 @@ technical_debt:
 
 ### 599. Troubleshoot jq Escaping in Agent System
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Research**: [research-001.md](specs/599_troubleshoot_jq_escaping_agent_system/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/599_troubleshoot_jq_escaping_agent_system/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/599_troubleshoot_jq_escaping_agent_system/summaries/implementation-summary-20260118.md)
 
 **Description**: Troubleshoot jq escaping issues in agent system. The not-equals operator is being escaped when passed through bash, causing jq parse errors. Fix skill-task and related skills to properly handle jq operators. Document correct patterns in context files to ensure consistent jq usage across the system.
 
@@ -53,7 +56,7 @@ technical_debt:
 
 ### 597. Re-prove main_provable_iff_valid in Metalogic_v2
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -127,10 +130,11 @@ technical_debt:
 
 ### 595. Remove Maintenance Directory and Fix Review State Management
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/595_remove_maintenance_dir_fix_review_state/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/595_remove_maintenance_dir_fix_review_state/plans/implementation-001.md)
 - **Created**: 2026-01-19
 
 **Description**: Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.
@@ -139,7 +143,7 @@ technical_debt:
 
 ### 596. Constructive Finite Model Bounds
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-18

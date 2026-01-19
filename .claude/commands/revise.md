@@ -64,17 +64,23 @@ For tasks with existing plans (planned, implementing, partial, blocked):
 
    Write to `specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md`
 
-4. **Update Status Inline**
+4. **Update Status Inline** (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`)
    Update state.json to "planned" status and add plan artifact:
    ```bash
+   # Step 1: Update status and timestamps
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
       --arg status "planned" \
-      --arg path "{new_plan_path}" \
      '(.active_projects[] | select(.project_number == {task_number})) |= . + {
        status: $status,
        last_updated: $ts,
-       artifacts: ((.artifacts // []) | map(select(.type != "plan"))) + [{"path": $path, "type": "plan"}]
+       planned: $ts
      }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+
+   # Step 2: Add artifact
+   jq --arg path "{new_plan_path}" \
+     '(.active_projects[] | select(.project_number == {task_number})).artifacts =
+       ([(.active_projects[] | select(.project_number == {task_number})).artifacts // [] | .[] | select(.type != "plan")] + [{"path": $path, "type": "plan"}])' \
+     specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
    ```
 
    Update TODO.md status marker using Edit tool.

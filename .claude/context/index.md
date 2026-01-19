@@ -122,6 +122,13 @@ Load for: Behavior patterns that apply across all agents/skills
   - Error handling patterns
   - **MUST load when adding status management to skills**
 
+- **jq-escaping-workarounds.md** (~150 lines) - jq command escaping bug workarounds
+  - Documents Claude Code Issue #1132 (Bash tool jq escaping)
+  - Two-step approach for artifact updates
+  - Pattern templates for research/planning/implementation postflight
+  - Testing checklist for new jq patterns
+  - **MUST load when adding jq commands that use map(select(!=)) patterns**
+
 ---
 
 ## Core Formats (core/formats/)

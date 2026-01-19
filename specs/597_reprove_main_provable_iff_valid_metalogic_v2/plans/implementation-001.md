@@ -47,7 +47,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Helper Lemmas [NOT STARTED]
+### Phase 1: Helper Lemmas [COMPLETED]
 
 **Goal**: Add missing helper lemmas to Metalogic_v2 infrastructure
 
@@ -69,7 +69,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Canonical-to-Semantic Bridge [NOT STARTED]
+### Phase 2: Canonical-to-Semantic Bridge [IN PROGRESS]
 
 **Goal**: Create bridge connecting CanonicalWorldState to TaskModel for countermodel construction
 

@@ -70,16 +70,20 @@ Then update TODO.md: `[PLANNED]` → `[IMPLEMENTING]`
 Update task to "researched" after successful research:
 
 ```bash
-# Update state.json with status and artifact
+# Step 1: Update status and timestamps
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "researched" \
-   --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     status: $status,
     last_updated: $ts,
-    researched: $ts,
-    artifacts: ((.artifacts // []) | map(select(.type != "research"))) + [{"path": $path, "type": "research"}]
+    researched: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+
+# Step 2: Add artifact (avoids jq escaping bug - see jq-escaping-workarounds.md)
+jq --arg path "$artifact_path" \
+  '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "research")] + [{"path": $path, "type": "research"}])' \
+  specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
 Then update TODO.md:
@@ -91,16 +95,20 @@ Then update TODO.md:
 Update task to "planned" after successful planning:
 
 ```bash
-# Update state.json with status and plan artifact
+# Step 1: Update status and timestamps
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "planned" \
-   --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     status: $status,
     last_updated: $ts,
-    planned: $ts,
-    artifacts: ((.artifacts // []) | map(select(.type != "plan"))) + [{"path": $path, "type": "plan"}]
+    planned: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+
+# Step 2: Add artifact (avoids jq escaping bug - see jq-escaping-workarounds.md)
+jq --arg path "$artifact_path" \
+  '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "plan")] + [{"path": $path, "type": "plan"}])' \
+  specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
 Then update TODO.md:
@@ -112,16 +120,20 @@ Then update TODO.md:
 Update task to "completed" after successful implementation:
 
 ```bash
-# Update state.json with status and summary artifact
+# Step 1: Update status and timestamps
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "completed" \
-   --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     status: $status,
     last_updated: $ts,
-    completed: $ts,
-    artifacts: ((.artifacts // []) | map(select(.type != "summary"))) + [{"path": $path, "type": "summary"}]
+    completed: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+
+# Step 2: Add artifact (avoids jq escaping bug - see jq-escaping-workarounds.md)
+jq --arg path "$artifact_path" \
+  '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")] + [{"path": $path, "type": "summary"}])' \
+  specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
 Then update TODO.md:
@@ -214,6 +226,7 @@ fi
 
 ## References
 
+- jq escaping workarounds: `@.claude/context/core/patterns/jq-escaping-workarounds.md`
 - Skill lifecycle pattern: `@.claude/context/core/patterns/skill-lifecycle.md`
 - State management rules: `@.claude/rules/state-management.md`
 - Artifact formats: `@.claude/rules/artifact-formats.md`

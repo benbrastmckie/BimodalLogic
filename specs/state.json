@@ -8,22 +8,30 @@
     {
       "project_number": 600,
       "project_name": "fix_subagent_metadata_passing",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T01:21:21Z",
-      "last_updated": "2026-01-19T01:21:21Z"
+      "last_updated": "2026-01-19T01:30:20Z",
+      "session_id": "sess_1768785893_38f1e2",
+      "researched": "2026-01-19T01:30:20Z",
+      "artifacts": [
+        {
+          "path": "specs/600_fix_subagent_metadata_passing/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 599,
       "project_name": "troubleshoot_jq_escaping_agent_system",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T01:07:44Z",
-      "last_updated": "2026-01-19T01:18:24Z",
+      "last_updated": "2026-01-19T01:30:58Z",
       "description": "Troubleshoot jq escaping issues in agent system. The not-equals operator is being escaped when passed through bash, causing jq parse errors. Fix skill-task and related skills to properly handle jq operators. Document correct patterns in context files to ensure consistent jq usage across the system.",
-      "session_id": "sess_1768785339_ef0824",
+      "session_id": "sess_1768785910_52fa83",
       "researched": "2026-01-19T01:15:05Z",
       "artifacts": [
         {
@@ -33,9 +41,15 @@
         {
           "path": "specs/599_troubleshoot_jq_escaping_agent_system/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/599_troubleshoot_jq_escaping_agent_system/summaries/implementation-summary-20260118.md",
+          "type": "summary"
         }
       ],
-      "planned": "2026-01-19T01:18:24Z"
+      "planned": "2026-01-19T01:18:24Z",
+      "started": "2026-01-19T01:25:28Z",
+      "completed": "2026-01-19T01:30:58Z"
     },
     {
       "project_number": 598,
@@ -50,13 +64,13 @@
     {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T01:20:21Z",
+      "last_updated": "2026-01-19T01:25:26Z",
       "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
-      "session_id": "sess_1768785510_4e535a",
+      "session_id": "sess_1768785913_bd7285",
       "researched": "2026-01-19T01:16:42Z",
       "artifacts": [
         {
@@ -68,34 +82,41 @@
           "type": "plan"
         }
       ],
-      "planned": "2026-01-19T01:20:21Z"
+      "planned": "2026-01-19T01:20:21Z",
+      "started": "2026-01-19T01:25:26Z"
     },
     {
       "project_number": 596,
       "project_name": "constructive_finite_model_bounds",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T00:56:57Z",
-      "last_updated": "2026-01-19T00:56:57Z"
+      "last_updated": "2026-01-19T01:26:26Z",
+      "session_id": "sess_1768785977_eb9479"
     },
     {
       "project_number": 595,
       "project_name": "remove_maintenance_dir_fix_review_state",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T00:53:03Z",
-      "last_updated": "2026-01-19T01:18:58Z",
+      "last_updated": "2026-01-19T01:28:33Z",
       "description": "Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.",
-      "session_id": "sess_1768785395_f05210",
+      "session_id": "sess_1768785981_dfc329",
       "researched": "2026-01-19T01:18:58Z",
       "artifacts": [
         {
           "path": "specs/595_remove_maintenance_dir_fix_review_state/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/595_remove_maintenance_dir_fix_review_state/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-19T01:28:33Z"
     },
     {
       "project_number": 394,

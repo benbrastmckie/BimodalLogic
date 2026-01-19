@@ -131,15 +131,15 @@ Parse task ranges after --recover (e.g., "343-345", "337, 343"):
    slug=$(echo "$task_data" | jq -r '.project_name')
    ```
 
-   **Move to active_projects via jq**:
+   **Move to active_projects via jq** (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`):
    ```bash
-   # Remove from archive
+   # Step 1: Remove from archive using del() instead of map(select(!=))
    jq --arg num "$task_number" \
-     '.completed_projects |= map(select(.project_number != ($num | tonumber)))' \
+     'del(.completed_projects[] | select(.project_number == ($num | tonumber)))' \
      specs/archive/state.json > /tmp/archive.json && \
      mv /tmp/archive.json specs/archive/state.json
 
-   # Add to active with status reset
+   # Step 2: Add to active with status reset
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson task "$task_data" \
      '.active_projects = [$task | .status = "not_started" | .last_updated = $ts] + .active_projects' \
      specs/state.json > /tmp/state.json && \
@@ -239,17 +239,17 @@ Parse task ranges:
    fi
    ```
 
-   **Move to archive via jq**:
+   **Move to archive via jq** (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`):
    ```bash
-   # Add to archive with abandoned status
+   # Step 1: Add to archive with abandoned status
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson task "$task_data" \
      '.completed_projects = [$task | .status = "abandoned" | .abandoned = $ts] + .completed_projects' \
      specs/archive/state.json > /tmp/archive.json && \
      mv /tmp/archive.json specs/archive/state.json
 
-   # Remove from active
+   # Step 2: Remove from active using del() instead of map(select(!=))
    jq --arg num "$task_number" \
-     '.active_projects |= map(select(.project_number != ($num | tonumber)))' \
+     'del(.active_projects[] | select(.project_number == ($num | tonumber)))' \
      specs/state.json > /tmp/state.json && \
      mv /tmp/state.json specs/state.json
    ```
