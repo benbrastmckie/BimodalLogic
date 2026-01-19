@@ -78,7 +78,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Tableau Expansion Rules [IN PROGRESS]
+### Phase 2: Tableau Expansion Rules [COMPLETED]
 
 **Goal**: Port Tableau.lean with minimal changes (rules are logic-specific)
 
@@ -102,7 +102,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Branch Closure Detection [NOT STARTED]
+### Phase 3: Branch Closure Detection [COMPLETED]
 
 **Goal**: Port Closure.lean as BranchClosure.lean to avoid naming conflict
 
@@ -126,7 +126,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Saturation Engine with FMP Integration [NOT STARTED]
+### Phase 4: Saturation Engine with FMP Integration [IN PROGRESS]
 
 **Goal**: Port Saturation.lean with FMP-based fuel calculation
 
