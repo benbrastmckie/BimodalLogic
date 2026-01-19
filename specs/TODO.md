@@ -242,14 +242,16 @@ technical_debt:
 
 ### 607. Port Decidability to Metalogic_v2
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Started**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Source**: Code Review 2026-01-18 (M1)
 - **Research**: [research-001.md](specs/607_port_decidability_to_metalogic_v2/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/607_port_decidability_to_metalogic_v2/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/607_port_decidability_to_metalogic_v2/summaries/implementation-summary-20260119.md)
 
 **Description**: Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.
 

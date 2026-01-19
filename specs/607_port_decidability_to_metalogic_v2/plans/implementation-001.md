@@ -1,7 +1,7 @@
 # Implementation Plan: Port Decidability to Metalogic_v2
 
 - **Task**: 607 - Port Decidability to Metalogic_v2
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Priority**: High
 - **Dependencies**: Task 470

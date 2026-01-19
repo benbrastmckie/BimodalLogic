@@ -323,11 +323,11 @@
     {
       "project_number": 607,
       "project_name": "port_decidability_to_metalogic_v2",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T07:45:00Z",
-      "last_updated": "2026-01-19T21:00:25Z",
+      "last_updated": "2026-01-19T21:14:29Z",
       "description": "Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.",
       "source": "Code Review 2026-01-18 (M1)",
       "session_id": "sess_1768856401_9dc365",
@@ -342,10 +342,16 @@
           "type": "plan",
           "path": "specs/607_port_decidability_to_metalogic_v2/plans/implementation-001.md",
           "summary": "9-phase plan covering core types, tableau rules, branch closure, saturation with FMP bounds, extraction modules, decision procedure, correctness proofs, and hub integration"
+        },
+        {
+          "path": "specs/607_port_decidability_to_metalogic_v2/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with file listing and verification results"
         }
       ],
       "planned": "2026-01-19T20:58:08Z",
-      "started": "2026-01-19T21:00:25Z"
+      "started": "2026-01-19T21:00:25Z",
+      "completed": "2026-01-19T21:14:29Z"
     }
   ],
   "completed_projects": [
