@@ -1,5 +1,5 @@
 ---
-next_project_number: 619
+next_project_number: 620
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -66,6 +66,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 619. Agent system architecture upgrade
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Draw on .claude/context/core/architecture/system-overview.md and research best practices for Claude Code in 2026 to upgrade the .claude/ agent system architecture. Goals: improve progressive disclosure, metadata passing via storage in specs/state.json, and context engineering to reduce pollution of the primary agent's context window. Explore context forking in skills to improve functionality without increasing overhead. Current system is working well; focus on incremental improvements.
+
+---
 
 ### 618. Move Metalogic to Boneyard, make Metalogic_v2 independent
 - **Status**: [NOT STARTED]

@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 619,
+      "project_name": "agent_system_architecture_upgrade",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T20:33:57Z",
+      "last_updated": "2026-01-19T20:33:57Z"
+    },
+    {
       "project_number": 618,
       "project_name": "move_metalogic_to_boneyard_make_v2_independent",
       "status": "not_started",
@@ -255,5 +264,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 619
+  "next_project_number": 620
 }
