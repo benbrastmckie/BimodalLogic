@@ -74,6 +74,11 @@
           "path": "specs/608_restructure_completeness_via_representation_theorem/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase plan covering semantic_truth_at_v2 definition, truth lemma, semantic_weak_completeness port, main theorem update, and documentation"
+        },
+        {
+          "path": "specs/608_restructure_completeness_via_representation_theorem/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary: ported semantic_weak_completeness with sorry-free completeness core"
         }
       ],
       "planned": "2026-01-19T16:59:12Z",
