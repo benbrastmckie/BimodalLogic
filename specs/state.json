@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 600,
+      "project_name": "fix_subagent_metadata_passing",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T01:21:21Z",
+      "last_updated": "2026-01-19T01:21:21Z"
+    },
+    {
       "project_number": 599,
       "project_name": "troubleshoot_jq_escaping_agent_system",
       "status": "planned",
@@ -41,20 +50,25 @@
     {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T01:16:42Z",
+      "last_updated": "2026-01-19T01:20:21Z",
       "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
-      "session_id": "sess_1768785161_554f05",
+      "session_id": "sess_1768785510_4e535a",
       "researched": "2026-01-19T01:16:42Z",
       "artifacts": [
         {
           "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-19T01:20:21Z"
     },
     {
       "project_number": 596,
@@ -68,13 +82,20 @@
     {
       "project_number": 595,
       "project_name": "remove_maintenance_dir_fix_review_state",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T00:53:03Z",
-      "last_updated": "2026-01-19T01:16:50Z",
+      "last_updated": "2026-01-19T01:18:58Z",
       "description": "Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.",
-      "session_id": "sess_1768785395_f05210"
+      "session_id": "sess_1768785395_f05210",
+      "researched": "2026-01-19T01:18:58Z",
+      "artifacts": [
+        {
+          "path": "specs/595_remove_maintenance_dir_fix_review_state/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 394,
@@ -174,5 +195,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 600
+  "next_project_number": 601
 }
