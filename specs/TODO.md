@@ -1,5 +1,5 @@
 ---
-next_project_number: 618
+next_project_number: 619
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -66,6 +66,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 618. Move Metalogic to Boneyard, make Metalogic_v2 independent
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-19
+
+**Description**: Move the interesting parts of Bimodal/Metalogic/ to the Bimodal/Boneyard/, making Bimodal/Metalogic_v2/ stand independently on its own (no imports from the Boneyard/).
+
+---
 
 ### 615. Fix closure_mcs_neg_complete double negation edge case
 - **Status**: [PLANNED]

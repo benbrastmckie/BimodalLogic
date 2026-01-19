@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 618,
+      "project_name": "move_metalogic_to_boneyard_make_v2_independent",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T20:23:03Z",
+      "last_updated": "2026-01-19T20:23:03Z"
+    },
+    {
       "project_number": 617,
       "project_name": "fix_closure_mcs_implies_locally_consistent",
       "status": "researched",
@@ -233,5 +242,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 618
+  "next_project_number": 619
 }
