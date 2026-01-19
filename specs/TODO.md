@@ -29,10 +29,12 @@ technical_debt:
 
 ### 585. Add Session Cleanup to Agents
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
+- **Researched**: 2026-01-19
+- **Research**: [research-001.md](specs/585_add_session_cleanup_to_agents/reports/research-001.md)
 
 **Description**: Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination.
 

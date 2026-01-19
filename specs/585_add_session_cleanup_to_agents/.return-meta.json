@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "summary": "Research revealed 25 orphaned Claude processes consuming 10.7 GB memory. Original proposal to add 'Stage 8: Session Cleanup' to agents is not feasible - agents cannot manage their own process lifecycle. Recommended approach: configure cleanupPeriodDays=7, add systemd timer for orphaned process cleanup, and use shell aliases for monitoring.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/585_add_session_cleanup_to_agents/reports/research-001.md",
+      "summary": "Research report on Claude Code memory management, orphaned process cleanup, and monitoring approaches with immediate action steps"
+    }
+  ],
+  "session_id": "sess_1768839398_ba2d05",
+  "next_steps": "Run /plan 585 to create implementation plan for system-level cleanup automation (settings.json, systemd timer, shell aliases). Consider revising task description since agent-level cleanup is not technically feasible.",
+  "metadata": {
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher"],
+    "findings_count": 8,
+    "critical_finding": "25 orphaned Claude processes consuming 10.7 GB memory",
+    "recommendation": "System-level cleanup via settings.json + systemd timer, NOT agent modifications"
+  }
+}
