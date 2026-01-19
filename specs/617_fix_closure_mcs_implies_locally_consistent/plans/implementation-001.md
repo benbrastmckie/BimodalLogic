@@ -1,7 +1,7 @@
 # Implementation Plan: Task #617
 
 - **Task**: 617 - Fix closure_mcs_implies_locally_consistent
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -45,7 +45,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Modify IsLocallyConsistent Definition [NOT STARTED]
+### Phase 1: Modify IsLocallyConsistent Definition [IN PROGRESS]
 
 **Goal**: Remove temporal reflexivity conditions 4 and 5 from the definition
 

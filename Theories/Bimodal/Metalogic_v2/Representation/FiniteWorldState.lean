@@ -109,7 +109,14 @@ def FiniteTruthAssignment (phi : Formula) : Type :=
 
 /--
 Local consistency for a truth assignment.
-This ensures the assignment respects propositional logic.
+This ensures the assignment respects propositional logic and modal axioms.
+
+NOTE: Temporal reflexivity (H phi -> phi, G phi -> phi) is intentionally NOT included
+because TM logic uses strict temporal semantics where these axioms are not valid.
+The temporal operators quantify over strictly less/greater times:
+- `all_past φ` holds iff φ holds at all s < t (excluding t)
+- `all_future φ` holds iff φ holds at all s > t (excluding t)
+See `Semantics/Truth.lean:109-110` for the semantic definitions.
 -/
 def IsLocallyConsistent (phi : Formula) (v : FiniteTruthAssignment phi) : Prop :=
   -- Bot is false
@@ -127,18 +134,6 @@ def IsLocallyConsistent (phi : Formula) (v : FiniteTruthAssignment phi) : Prop :
     ∀ h_box : Formula.box psi ∈ closure phi,
     ∀ h_psi : psi ∈ closure phi,
     v ⟨Formula.box psi, h_box⟩ = true →
-    v ⟨psi, h_psi⟩ = true) ∧
-  -- Temporal reflexivity for past: all_past(psi) -> psi
-  (∀ psi : Formula,
-    ∀ h_past : Formula.all_past psi ∈ closure phi,
-    ∀ h_psi : psi ∈ closure phi,
-    v ⟨Formula.all_past psi, h_past⟩ = true →
-    v ⟨psi, h_psi⟩ = true) ∧
-  -- Temporal reflexivity for future: all_future(psi) -> psi
-  (∀ psi : Formula,
-    ∀ h_fut : Formula.all_future psi ∈ closure phi,
-    ∀ h_psi : psi ∈ closure phi,
-    v ⟨Formula.all_future psi, h_fut⟩ = true →
     v ⟨psi, h_psi⟩ = true)
 
 /-!

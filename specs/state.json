@@ -8,30 +8,40 @@
     {
       "project_number": 619,
       "project_name": "agent_system_architecture_upgrade",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T20:33:57Z",
-      "last_updated": "2026-01-19T20:33:57Z"
+      "last_updated": "2026-01-19T20:37:56Z",
+      "session_id": "sess_1768855064_c885b3"
     },
     {
       "project_number": 618,
       "project_name": "move_metalogic_to_boneyard_make_v2_independent",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T20:23:03Z",
-      "last_updated": "2026-01-19T20:23:03Z"
+      "last_updated": "2026-01-19T20:37:59Z",
+      "session_id": "sess_1768854915_f4ac0b",
+      "researched": "2026-01-19T20:37:59Z",
+      "artifacts": [
+        {
+          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report confirming Metalogic_v2 independence and documenting migration plan with 4 phases"
+        }
+      ]
     },
     {
       "project_number": 617,
       "project_name": "fix_closure_mcs_implies_locally_consistent",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T17:55:38Z",
-      "last_updated": "2026-01-19T20:26:51Z",
-      "session_id": "sess_1768854269_9c7cfb",
+      "last_updated": "2026-01-19T20:36:39Z",
+      "session_id": "sess_1768854981_700720",
       "researched": "2026-01-19T20:15:28Z",
       "artifacts": [
         {
@@ -45,7 +55,8 @@
           "summary": "3-phase plan: modify IsLocallyConsistent definition, prove theorem, verify downstream code"
         }
       ],
-      "planned": "2026-01-19T20:26:51Z"
+      "planned": "2026-01-19T20:26:51Z",
+      "started": "2026-01-19T20:36:39Z"
     },
     {
       "project_number": 616,
@@ -231,11 +242,13 @@
     },
     {
       "project_number": 490,
-      "status": "not_started",
+      "status": "researching",
       "project_name": "complete_decidability_procedure",
       "section": "Low Priority",
       "language": "lean",
-      "priority": "low"
+      "priority": "low",
+      "last_updated": "2026-01-19T20:37:36Z",
+      "session_id": "sess_1768855950_b8c4d2"
     },
     {
       "project_number": 607,

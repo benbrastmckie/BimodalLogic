@@ -68,7 +68,7 @@ technical_debt:
 ## Medium Priority
 
 ### 619. Agent system architecture upgrade
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -78,10 +78,12 @@ technical_debt:
 ---
 
 ### 618. Move Metalogic to Boneyard, make Metalogic_v2 independent
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Researched**: 2026-01-19
+- **Research**: [research-001.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/reports/research-001.md)
 
 **Description**: Move the interesting parts of Bimodal/Metalogic/ to the Bimodal/Boneyard/, making Bimodal/Metalogic_v2/ stand independently on its own (no imports from the Boneyard/).
 
@@ -172,7 +174,8 @@ technical_debt:
 ---
 
 ### 617. Fix closure_mcs_implies_locally_consistent temporal axioms
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -196,7 +199,7 @@ technical_debt:
 ---
 
 ### 490. Complete decidability procedure
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 469
