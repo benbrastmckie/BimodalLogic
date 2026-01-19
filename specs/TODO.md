@@ -43,28 +43,6 @@ technical_debt:
 
 ---
 
-### 583. Add max_turns Limit to Agent Spawning
-- **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-19
-
-**Description**: Add max_turns parameter to all workflow skill agent spawning calls (Task tool invocations). Set max_turns: 50 to limit agent conversation depth and prevent infinite context accumulation. Update skill-lean-implementation, skill-implementer, skill-latex-implementation, skill-researcher, skill-lean-research, skill-planner, skill-meta.
-
----
-
-### 584. Add Memory Budget to Agent Documentation
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-19
-
-**Description**: Add Memory Budget section to all agent documentation files (.claude/agents/*.md). Document: (1) maximum turns limit (50), (2) turn budget per phase (~10 average), (3) context size limits (max 5 files per phase, skip files >10MB), (4) cleanup strategy (clear intermediate results, do not re-read completed proofs). Target agents: lean-implementation-agent, general-implementation-agent, latex-implementation-agent, lean-research-agent, general-research-agent, planner-agent.
-
----
-
 ### 585. Add Session Cleanup to Agents
 - **Effort**: 1-2 hours
 - **Status**: [NOT STARTED]
