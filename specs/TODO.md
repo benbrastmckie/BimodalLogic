@@ -52,20 +52,20 @@ technical_debt:
 ---
 
 ### 556. Complete Metalogic_v2 Implementation
-- **Effort**: 6-10 hours
-- **Status**: [EXPANDED]
+- **Effort**: 2-3 hours (revised from 6-10)
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
-- **Session ID**: sess_1768682818_dff425
+- **Session ID**: sess_1768782114_60bde9
 - **Created**: 2026-01-17
 - **Researched**: 2026-01-17
-- **Planned**: 2026-01-17
+- **Planned**: 2026-01-19
 - **Dependencies**: 554
 - **Research**: [research-001.md](specs/556_complete_metalogic_v2_implementation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/556_complete_metalogic_v2_implementation/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/556_complete_metalogic_v2_implementation/plans/implementation-002.md)
 - **Subtasks**: 557, 558, 559, 560, 561
 
-**Description**: Complete all aspects of the implementation of the reorganized /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/ directory, completing all sorries and making this directory stand on its own so that I can delete Metalogic/ once Metalogic_v2/ is complete. Begin by improving /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic_v2/README.md to accurately report the current state and what the target organization is.
+**Description**: Complete the implementation of Metalogic_v2/ to center on the representation theorem, using it as the basis for completeness, decidability, and compactness. Update documentation to reflect zero sorries and the proven architecture. Prepare for deprecation of old Metalogic/ directory.
 
 ---
 

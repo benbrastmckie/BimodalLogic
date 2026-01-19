@@ -38,11 +38,11 @@
     {
       "project_number": 556,
       "project_name": "complete_metalogic_v2_implementation",
-      "status": "expanded",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-17T20:45:04Z",
-      "last_updated": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-19T00:35:00Z",
       "researched": "2026-01-17T20:50:35Z",
       "artifacts": [
         {
@@ -52,16 +52,21 @@
         {
           "path": "specs/556_complete_metalogic_v2_implementation/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/556_complete_metalogic_v2_implementation/plans/implementation-002.md",
+          "type": "plan"
         }
       ],
-      "planned": "2026-01-17T20:55:27Z",
+      "planned": "2026-01-19T00:35:00Z",
       "subtasks": [
         557,
         558,
         559,
         560,
         561
-      ]
+      ],
+      "description": "Complete the implementation of Metalogic_v2/ to center on the representation theorem, using it as the basis for completeness, decidability, and compactness. Update documentation to reflect zero sorries and the proven architecture. Prepare for deprecation of old Metalogic/ directory."
     },
     {
       "project_number": 394,
