@@ -130,13 +130,14 @@
     {
       "project_number": 606,
       "project_name": "fix_metalogic_v2_readme_accuracy",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T07:45:00Z",
-      "last_updated": "2026-01-19T07:45:00Z",
+      "last_updated": "2026-01-19T07:51:32Z",
       "description": "Update Metalogic_v2/README.md to accurately document the sorry count and locations. Current README incorrectly claims 'All theorems in Metalogic_v2 are fully proven with no sorry statements' but there are 7 active sorries in the semantic bridge infrastructure. Document which theorems have sorries, their locations, and impact on downstream theorems.",
-      "source": "Code Review 2026-01-18 (H2)"
+      "source": "Code Review 2026-01-18 (H2)",
+      "session_id": "sess_1768809076_a0cc86"
     },
     {
       "project_number": 607,
@@ -148,7 +149,9 @@
       "last_updated": "2026-01-19T07:45:00Z",
       "description": "Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.",
       "source": "Code Review 2026-01-18 (M1)",
-      "dependencies": [470]
+      "dependencies": [
+        470
+      ]
     }
   ],
   "completed_projects": [

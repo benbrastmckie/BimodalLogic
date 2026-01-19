@@ -282,8 +282,23 @@ noncomputable def finiteHistoryToWorldHistory (phi : Formula) (h : FiniteHistory
     use h, fs, ft
     refine ⟨rfl, rfl, ?_⟩
     -- Time arithmetic: toInt ft - toInt fs = t - s
-    -- This is straightforward but requires unfolding definitions carefully
-    sorry
+    -- Key: toInt k (intToFiniteTime phi t _) = t when t in [-k, k]
+    -- ft.val = (t + k).toNat where k = temporalBound phi
+    -- toInt = ft.val - k = (t + k).toNat - k = t (since t + k >= 0)
+    simp only [FiniteTime.toInt]
+    -- Now goal is: ft.val - k - (fs.val - k) = t - s
+    -- which simplifies to: ft.val - fs.val = t - s
+    -- ft = intToFiniteTime phi t ht so ft.val = (t + k).toNat
+    -- fs = intToFiniteTime phi s hs so fs.val = (s + k).toNat
+    show ((intToFiniteTime phi t ht).val : Int) - (temporalBound phi : Int) -
+         (((intToFiniteTime phi s hs).val : Int) - (temporalBound phi : Int)) = t - s
+    simp only [intToFiniteTime]
+    -- Now need: (t + k).toNat - k - ((s + k).toNat - k) = t - s
+    have h_t_nonneg : 0 ≤ t + (temporalBound phi : Int) := by
+      unfold inFiniteDomain at ht; omega
+    have h_s_nonneg : 0 ≤ s + (temporalBound phi : Int) := by
+      unfold inFiniteDomain at hs; omega
+    omega
 
 /--
 Construct a constant finite history from a single world state.

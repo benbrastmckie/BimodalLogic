@@ -158,7 +158,7 @@ The optimization strategy is:
 
 ---
 
-### Phase 4: Implement Time Arithmetic for respects_task [NOT STARTED]
+### Phase 4: Implement Time Arithmetic for respects_task [COMPLETED]
 
 **Goal**: Complete the time arithmetic proof in `finiteHistoryToWorldHistory.respects_task` (line 286).
 
