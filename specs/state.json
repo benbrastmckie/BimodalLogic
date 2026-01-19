@@ -8,12 +8,20 @@
     {
       "project_number": 609,
       "project_name": "document_command_skill_agent_architecture",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T16:03:47Z",
-      "last_updated": "2026-01-19T16:09:22Z",
-      "session_id": "sess_1768838947_6f5497"
+      "last_updated": "2026-01-19T16:15:55Z",
+      "session_id": "sess_1768838947_6f5497",
+      "researched": "2026-01-19T16:15:55Z",
+      "artifacts": [
+        {
+          "path": "specs/609_document_command_skill_agent_architecture/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting three-layer command-skill-agent architecture with recommendations for documentation improvements"
+        }
+      ]
     },
     {
       "project_number": 608,
