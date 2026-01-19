@@ -102,13 +102,15 @@ technical_debt:
 
 ### 605. Sync Plan Metadata Status with Task Status
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Started**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Research**: [research-001.md](specs/605_sync_plan_metadata_status_with_task_status/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/605_sync_plan_metadata_status_with_task_status/plans/implementation-002.md) (supersedes v1)
+- **Summary**: [implementation-summary-20260119.md](specs/605_sync_plan_metadata_status_with_task_status/summaries/implementation-summary-20260119.md)
 
 **Description**: Sync the **Status**: field in plan file metadata with the task status in TODO.md and state.json. Currently, implementation plans have a Status field in their YAML-like header (e.g., **Status**: [NOT STARTED]) that is not updated when the task progresses through research/plan/implement cycles. Update the preflight/postflight patterns in implementation skills to also update this status field in the plan file when task status changes.
 
