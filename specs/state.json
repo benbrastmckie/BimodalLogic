@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 610,
+      "project_name": "complete_truth_bridge_strategy_b",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T16:39:59Z",
+      "last_updated": "2026-01-19T16:39:59Z"
+    },
+    {
       "project_number": 609,
       "project_name": "document_command_skill_agent_architecture",
       "status": "planned",
@@ -256,5 +265,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 610
+  "next_project_number": 611
 }

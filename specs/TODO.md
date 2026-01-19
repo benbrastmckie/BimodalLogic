@@ -1,5 +1,5 @@
 ---
-next_project_number: 610
+next_project_number: 611
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -80,6 +80,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 610. Complete truth bridge (Strategy B) for completeness proof
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-19
+- **Related**: Task 608
+
+**Description**: Complete Strategy B as documented in [research-001.md](specs/608_restructure_completeness_via_representation_theorem/reports/research-001.md). Prove `semantic_truth_implies_truth_at` via structural formula induction to bridge finite model truth (`w.models phi h_mem`) to general semantic truth (`truth_at M tau t phi`). This requires handling: Atom case (valuation check), Bot case (trivial), Imp case (IH on subformulas), Box case (show finite model T-axiom suffices for all histories), and Temporal cases (show behavior outside [-k, k] matches finite evaluation). This is the harder but more general approach that directly connects finite and general semantics.
+
+---
 
 ### 609. Document command-skill-agent architecture
 - **Effort**: 4-6 hours
