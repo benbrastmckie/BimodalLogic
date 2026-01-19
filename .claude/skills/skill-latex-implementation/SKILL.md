@@ -66,6 +66,15 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 
 **Update TODO.md**: Use Edit tool to change status marker from `[PLANNED]` to `[IMPLEMENTING]`.
 
+**Update plan file** (if exists): Update the Status field in plan metadata:
+```bash
+# Find latest plan file
+plan_file=$(ls -1 "specs/${task_number}_${project_name}/plans/implementation-"*.md 2>/dev/null | sort -V | tail -1)
+if [ -n "$plan_file" ] && [ -f "$plan_file" ]; then
+    sed -i "s/^\- \*\*Status\*\*: \[.*\]$/- **Status**: [IMPLEMENTING]/" "$plan_file"
+fi
+```
+
 ---
 
 ### 1. Input Validation
@@ -187,6 +196,14 @@ Update TODO.md:
 - Change status marker from `[IMPLEMENTING]` to `[COMPLETED]`
 - Add summary artifact link: `- **Summary**: [implementation-summary-{DATE}.md]({artifact_path})`
 
+**Update plan file** (if exists): Update the Status field to `[COMPLETED]`:
+```bash
+plan_file=$(ls -1 "specs/${task_number}_${project_name}/plans/implementation-"*.md 2>/dev/null | sort -V | tail -1)
+if [ -n "$plan_file" ] && [ -f "$plan_file" ]; then
+    sed -i "s/^\- \*\*Status\*\*: \[.*\]$/- **Status**: [COMPLETED]/" "$plan_file"
+fi
+```
+
 **If result.status == "partial"**:
 
 Update state.json with resume point (keep status as "implementing"):
@@ -201,7 +218,15 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 
 TODO.md stays as `[IMPLEMENTING]`.
 
-**On failed**: Do NOT run postflight. Keep status as "implementing" for retry.
+**Update plan file** (if exists): Update the Status field to `[PARTIAL]`:
+```bash
+plan_file=$(ls -1 "specs/${task_number}_${project_name}/plans/implementation-"*.md 2>/dev/null | sort -V | tail -1)
+if [ -n "$plan_file" ] && [ -f "$plan_file" ]; then
+    sed -i "s/^\- \*\*Status\*\*: \[.*\]$/- **Status**: [PARTIAL]/" "$plan_file"
+fi
+```
+
+**On failed**: Do NOT run postflight. Keep status as "implementing" for retry. Do not update plan file (leave as `[IMPLEMENTING]` for retry).
 
 ### 6. Return Propagation
 

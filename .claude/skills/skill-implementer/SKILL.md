@@ -228,7 +228,15 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 
 TODO.md stays as `[IMPLEMENTING]`.
 
-**On failed**: Keep status as "implementing" for retry.
+**Update plan file** (if exists): Update the Status field to `[PARTIAL]`:
+```bash
+plan_file=$(ls -1 "specs/${task_number}_${project_name}/plans/implementation-"*.md 2>/dev/null | sort -V | tail -1)
+if [ -n "$plan_file" ] && [ -f "$plan_file" ]; then
+    sed -i "s/^\- \*\*Status\*\*: \[.*\]$/- **Status**: [PARTIAL]/" "$plan_file"
+fi
+```
+
+**On failed**: Keep status as "implementing" for retry. Do not update plan file (leave as `[IMPLEMENTING]` for retry).
 
 ---
 

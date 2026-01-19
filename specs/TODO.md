@@ -139,7 +139,7 @@ technical_debt:
 
 ### 606. Fix Metalogic_v2 README accuracy
 - **Effort**: 30 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19

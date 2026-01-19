@@ -1,7 +1,7 @@
 # Implementation Plan: Task #605
 
 - **Task**: 605 - Sync Plan Metadata Status with Task Status
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -108,7 +108,7 @@ fi
 
 ---
 
-### Phase 2: Update skill-implementer with Unified Pattern [IN PROGRESS]
+### Phase 2: Update skill-implementer with Unified Pattern [COMPLETED]
 
 **Goal**: Replace separate state.json/TODO.md updates with unified pattern in skill-implementer.
 
@@ -130,7 +130,7 @@ fi
 
 ---
 
-### Phase 3: Update skill-lean-implementation with Unified Pattern [NOT STARTED]
+### Phase 3: Update skill-lean-implementation with Unified Pattern [COMPLETED]
 
 **Goal**: Apply the same unified pattern to the Lean implementation skill.
 
@@ -150,7 +150,7 @@ fi
 
 ---
 
-### Phase 4: Update skill-latex-implementation with Unified Pattern [NOT STARTED]
+### Phase 4: Update skill-latex-implementation with Unified Pattern [COMPLETED]
 
 **Goal**: Apply the same unified pattern to the LaTeX implementation skill.
 
