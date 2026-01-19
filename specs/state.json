@@ -358,6 +358,11 @@
           "path": "specs/470_finite_model_computational_optimization/reports/research-002.md",
           "type": "research",
           "summary": "Supplemental research on Metalogic_v2 architecture identifying 4 critical sorries, noncomputable patterns, and optimization recommendations for finite model computations"
+        },
+        {
+          "path": "specs/470_finite_model_computational_optimization/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan for Metalogic_v2 computational optimization covering sorry resolution, dependency migration, and computable definitions"
         }
       ],
       "planned": "2026-01-19T07:36:09Z"
