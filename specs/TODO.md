@@ -142,7 +142,7 @@ technical_debt:
 - **Parent**: 556
 - **Dependencies**: 560
 
-**Description**: Prove consistent_iff_consistent in Basic.lean and necessitation_lemma in TruthLemma.lean. Update README.md with accurate completion status. Verify zero sorries in Metalogic_v2.
+**Description**: Improve documentation for Metalogic_v2/ to be accurate and up to date. Remove historical markers and commentary (words like 'now', 'currently', etc.). Update README.md with accurate completion status. Verify documentation matches implementation state.
 
 ---
 

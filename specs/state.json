@@ -112,12 +112,12 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-17T21:00:15Z",
+      "last_updated": "2026-01-19T00:15:35Z",
       "parent_task": 556,
       "dependencies": [
         560
       ],
-      "description": "Prove consistent_iff_consistent in Basic.lean and necessitation_lemma in TruthLemma.lean. Update README.md with accurate completion status. Verify zero sorries in Metalogic_v2."
+      "description": "Improve documentation for Metalogic_v2/ to be accurate and up to date. Remove historical markers and commentary (words like 'now', 'currently', etc.). Update README.md with accurate completion status. Verify documentation matches implementation state."
     },
     {
       "project_number": 556,
