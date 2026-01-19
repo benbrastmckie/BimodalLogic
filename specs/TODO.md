@@ -264,12 +264,13 @@ technical_debt:
 ---
 
 ### 623. Build FMP-tableau connection infrastructure
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
 - **Research**: [research-001.md](specs/623_build_fmp_tableau_connection_infrastructure/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-001.md)
 
 **Description**: Build infrastructure connecting FMP bounds to tableau semantics. Required lemmas: (1) open_saturated_implies_satisfiable - saturated open branch yields finite countermodel, (2) valid_implies_no_open_branch - contrapositive from FMP, (3) fmpFuel_sufficient_termination - buildTableau doesn't return none with FMP fuel. Prerequisite for tableau_complete proof.
 
