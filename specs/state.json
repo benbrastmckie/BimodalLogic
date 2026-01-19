@@ -168,21 +168,27 @@
     {
       "project_number": 585,
       "project_name": "add_session_cleanup_to_agents",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T00:26:00Z",
-      "last_updated": "2026-01-19T16:21:28Z",
+      "last_updated": "2026-01-19T16:34:36Z",
       "description": "Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination.",
-      "session_id": "sess_1768839398_ba2d05",
+      "session_id": "sess_1768840343_649e8d",
       "researched": "2026-01-19T16:21:28Z",
       "artifacts": [
         {
           "path": "specs/585_add_session_cleanup_to_agents/reports/research-001.md",
           "type": "research",
           "summary": "Research report on Claude Code memory management, orphaned process cleanup, and monitoring approaches with immediate action steps"
+        },
+        {
+          "path": "specs/585_add_session_cleanup_to_agents/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan for /cleanup command and process monitoring infrastructure"
         }
-      ]
+      ],
+      "planned": "2026-01-19T16:34:36Z"
     },
     {
       "project_number": 606,
