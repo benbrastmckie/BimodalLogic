@@ -58,23 +58,24 @@
     {
       "project_number": 598,
       "project_name": "remove_deprecated_helpers_contextprovability",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T01:02:15Z",
-      "last_updated": "2026-01-19T01:02:15Z",
-      "description": "Remove deprecated helper functions from ContextProvability.lean: semantic_world_validity_implies_provable (deprecated 2026-01-18) and semantic_consequence_implies_semantic_world_truth (deprecated 2026-01-18). These are marked @[deprecated] but can be deleted once confirmed unused."
+      "last_updated": "2026-01-19T01:51:49Z",
+      "description": "Remove deprecated helper functions from ContextProvability.lean: semantic_world_validity_implies_provable (deprecated 2026-01-18) and semantic_consequence_implies_semantic_world_truth (deprecated 2026-01-18). These are marked @[deprecated] but can be deleted once confirmed unused.",
+      "session_id": "sess_1768787494_446c6a"
     },
     {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
-      "status": "implementing",
+      "status": "partial",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T01:36:42Z",
+      "last_updated": "2026-01-19T02:50:00Z",
       "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
-      "session_id": "sess_1768785913_bd7285",
+      "session_id": "sess_1768787401_490ed5",
       "researched": "2026-01-19T01:16:42Z",
       "artifacts": [
         {
@@ -88,7 +89,10 @@
       ],
       "planned": "2026-01-19T01:20:21Z",
       "started": "2026-01-19T01:25:26Z",
-      "resume_phase": 2
+      "partial_since": "2026-01-19T02:50:00Z",
+      "completed_phases": [1],
+      "blocked_phase": 2,
+      "blocking_reason": "Phase 2 requires SemanticCanonicalModel infrastructure (~4000 lines) from old Metalogic. Migration effort significantly exceeds original estimate."
     },
     {
       "project_number": 596,

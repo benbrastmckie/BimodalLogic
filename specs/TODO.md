@@ -55,13 +55,15 @@ technical_debt:
 ---
 
 ### 597. Re-prove main_provable_iff_valid in Metalogic_v2
-- **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 4-6 hours (originally), 20+ hours (revised - requires SemanticCanonicalModel migration)
+- **Status**: [PARTIAL]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Research**: [research-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-001.md)
+- **Completed**: Phase 1 (helper lemmas)
+- **Blocked**: Phase 2 - requires SemanticCanonicalModel infrastructure (~4000 lines from old Metalogic)
 
 **Description**: Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.
 
@@ -180,7 +182,7 @@ technical_debt:
 
 ### 598. Remove deprecated helpers from ContextProvability.lean
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
