@@ -27,6 +27,7 @@ This documentation provides comprehensive coverage of the `.claude/` agent syste
 │   ├── command-template.md     # Command template
 │   └── agent-template.md       # Agent template
 ├── architecture/               # Architecture documentation
+│   ├── system-overview.md      # Three-layer architecture overview
 │   └── orchestrator-workflow-execution-issue.md
 ├── troubleshooting/            # Problem resolution
 │   └── status-conflicts.md     # Status sync issues
@@ -348,6 +349,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 - [Copy .claude/ Directory](guides/copy-claude-directory.md) - Install agent system elsewhere
 
 ### System Architecture
+- [System Overview](architecture/system-overview.md) - Three-layer architecture overview
 - [ARCHITECTURE.md](../ARCHITECTURE.md) - Detailed system architecture
 - [CLAUDE.md](../CLAUDE.md) - Quick reference entry point
 

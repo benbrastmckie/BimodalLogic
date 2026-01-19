@@ -17,12 +17,12 @@
     {
       "project_number": 609,
       "project_name": "document_command_skill_agent_architecture",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T16:03:47Z",
-      "last_updated": "2026-01-19T16:38:32Z",
-      "session_id": "sess_1768840569_d8ea74",
+      "last_updated": "2026-01-19T16:52:24Z",
+      "session_id": "sess_1768841523_21d667",
       "researched": "2026-01-19T16:15:55Z",
       "artifacts": [
         {
@@ -36,25 +36,32 @@
           "summary": "4-phase implementation plan for documenting command-skill-agent architecture"
         }
       ],
-      "planned": "2026-01-19T16:38:32Z"
+      "planned": "2026-01-19T16:38:32Z",
+      "started": "2026-01-19T16:52:24Z"
     },
     {
       "project_number": 608,
       "project_name": "restructure_completeness_via_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T15:54:48Z",
-      "last_updated": "2026-01-19T16:11:43Z",
-      "session_id": "sess_1768838897_223d2d",
+      "last_updated": "2026-01-19T16:59:12Z",
+      "session_id": "sess_1768841474_2e9254",
       "researched": "2026-01-19T16:11:43Z",
       "artifacts": [
         {
           "path": "specs/608_restructure_completeness_via_representation_theorem/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of Metalogic_v2 architecture, task 470 limitations, and recommendation to port proven semantic_weak_completeness approach"
+        },
+        {
+          "path": "specs/608_restructure_completeness_via_representation_theorem/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan covering semantic_truth_at_v2 definition, truth lemma, semantic_weak_completeness port, main theorem update, and documentation"
         }
-      ]
+      ],
+      "planned": "2026-01-19T16:59:12Z"
     },
     {
       "project_number": 605,

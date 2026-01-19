@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "summary": "5-phase implementation plan for porting semantic_weak_completeness from old Metalogic to Metalogic_v2, avoiding the truth bridge problem",
+  "artifacts": [
+    {
+      "path": "specs/608_restructure_completeness_via_representation_theorem/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "5-phase plan covering semantic_truth_at_v2 definition, truth lemma, semantic_weak_completeness port, main theorem update, and documentation"
+    }
+  ],
+  "metadata": {
+    "phase_count": 5,
+    "estimated_hours": 4
+  },
+  "session_id": "sess_1768841474_2e9254"
+}
