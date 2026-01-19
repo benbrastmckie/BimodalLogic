@@ -13,7 +13,7 @@
       "priority": "medium",
       "description": "Sync the **Status**: field in plan file metadata with the task status in TODO.md and state.json. Currently, implementation plans have a Status field in their YAML-like header (e.g., **Status**: [NOT STARTED]) that is not updated when the task progresses through research/plan/implement cycles. Update the preflight/postflight patterns in implementation skills to also update this status field in the plan file when task status changes.",
       "created": "2026-01-19T07:27:54Z",
-      "last_updated": "2026-01-19T07:40:12Z",
+      "last_updated": "2026-01-19T07:46:46Z",
       "session_id": "sess_1768808285_52df80",
       "researched": "2026-01-19T07:36:07Z",
       "artifacts": [
@@ -23,12 +23,12 @@
           "summary": "Research report analyzing plan metadata status sync gap with 7 findings and 5 recommendations for updating implementation skills"
         },
         {
-          "path": "specs/605_sync_plan_metadata_status_with_task_status/plans/implementation-001.md",
+          "path": "specs/605_sync_plan_metadata_status_with_task_status/plans/implementation-002.md",
           "type": "plan",
-          "summary": "4-phase implementation plan for syncing plan metadata status with task status across 3 implementation skills"
+          "summary": "4-phase implementation plan with unified status update pattern for atomic updates across state.json, TODO.md, and plan files"
         }
       ],
-      "planned": "2026-01-19T07:40:12Z"
+      "planned": "2026-01-19T07:46:46Z"
     },
     {
       "project_number": 394,
@@ -126,6 +126,29 @@
       "created": "2026-01-19T00:26:00Z",
       "last_updated": "2026-01-19T00:26:00Z",
       "description": "Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination."
+    },
+    {
+      "project_number": 606,
+      "project_name": "fix_metalogic_v2_readme_accuracy",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T07:45:00Z",
+      "last_updated": "2026-01-19T07:45:00Z",
+      "description": "Update Metalogic_v2/README.md to accurately document the sorry count and locations. Current README incorrectly claims 'All theorems in Metalogic_v2 are fully proven with no sorry statements' but there are 7 active sorries in the semantic bridge infrastructure. Document which theorems have sorries, their locations, and impact on downstream theorems.",
+      "source": "Code Review 2026-01-18 (H2)"
+    },
+    {
+      "project_number": 607,
+      "project_name": "port_decidability_to_metalogic_v2",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T07:45:00Z",
+      "last_updated": "2026-01-19T07:45:00Z",
+      "description": "Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.",
+      "source": "Code Review 2026-01-18 (M1)",
+      "dependencies": [470]
     }
   ],
   "completed_projects": [
@@ -140,5 +163,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 606
+  "next_project_number": 608
 }

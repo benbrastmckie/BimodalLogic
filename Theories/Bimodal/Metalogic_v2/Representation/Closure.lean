@@ -2,6 +2,7 @@ import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic_v2.Core.MaximalConsistent
 import Bimodal.Metalogic_v2.Representation.CanonicalModel
+import Bimodal.Theorems.Combinators
 -- Formula.subformulas is now defined in Bimodal.Syntax.Subformulas
 import Bimodal.Syntax.Subformulas
 import Mathlib.Data.Finset.Basic
@@ -327,23 +328,210 @@ theorem closure_mcs_neg_complete (phi : Formula) (S : Set Formula)
     -- By deduction theorem, Γ ⊢ psi.neg
     have d_neg : DerivationTree Γ psi.neg := deduction_theorem Γ psi Formula.bot d_bot'
 
-    -- So Γ derives psi.neg, and Γ ⊆ S
-    -- By theorem_in_mcs-like reasoning, psi.neg should be in S (if S were full MCS)
-    -- But S is only closure-maximal, not full MCS
+    -- We have Γ ⊢ psi.neg where Γ ⊆ S, and we're assuming psi.neg ∉ S
+    -- Now we need to derive a contradiction by showing S is inconsistent
 
-    -- The issue is: we cannot directly conclude psi.neg ∈ S
-    -- However, we can use a different approach:
-    -- If psi.neg ∉ S, then (since psi.neg might be in closureWithNeg) insert psi.neg S is inconsistent
+    -- Case analysis: psi is either in closure, or psi = χ.neg for some χ in closure
+    unfold closureWithNeg at h_clos
+    simp only [Finset.mem_union, Finset.mem_image] at h_clos
+    rcases h_clos with h_in_clos | ⟨chi, h_chi_clos, h_psi_eq⟩
 
-    -- Let's check if psi.neg is in closureWithNeg
-    -- If psi ∈ closure phi, then psi.neg ∈ closureWithNeg phi (by neg_mem_closureWithNeg)
-    -- If psi = χ.neg for some χ ∈ closure phi, then psi.neg = χ.neg.neg
-    --   and χ.neg.neg might not be in closureWithNeg directly
+    · -- Case 1: psi ∈ closure phi
+      -- Then psi.neg ∈ closureWithNeg phi by neg_mem_closureWithNeg
+      have h_psi_neg_in_closneg : psi.neg ∈ closureWithNeg phi :=
+        neg_mem_closureWithNeg phi psi h_in_clos
+      -- Since psi.neg ∈ closureWithNeg and psi.neg ∉ S, by maximality
+      -- insert psi.neg S is inconsistent
+      have h_incons_neg := h_mcs.2 psi.neg h_psi_neg_in_closneg h_neg_not
+      -- So there exists L' ⊆ insert psi.neg S with ¬Consistent L'
+      unfold SetConsistent at h_incons_neg
+      push_neg at h_incons_neg
+      obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons_neg
+      -- L' is inconsistent, so L' ⊢ ⊥
+      have h_bot' : Nonempty (DerivationTree L' Formula.bot) := inconsistent_derives_bot h_L'_incons
+      obtain ⟨d_bot''⟩ := h_bot'
+      -- Define Δ = L'.filter (· ≠ psi.neg)
+      let Δ := L'.filter (· ≠ psi.neg)
+      -- Show Δ ⊆ S
+      have h_Δ_in_S : ∀ χ ∈ Δ, χ ∈ S := by
+        intro χ hχ
+        have hχ' := List.mem_filter.mp hχ
+        have hχL' := hχ'.1
+        have hχne : χ ≠ psi.neg := by simpa using hχ'.2
+        specialize h_L'_sub χ hχL'
+        simp [Set.mem_insert_iff] at h_L'_sub
+        rcases h_L'_sub with rfl | h_in_S
+        · exact absurd rfl hχne
+        · exact h_in_S
+      -- L' ⊆ psi.neg :: Δ
+      have h_L'_sub_psiΔ : L' ⊆ psi.neg :: Δ := by
+        intro χ hχ
+        by_cases hχpsi : χ = psi.neg
+        · simp [hχpsi]
+        · simp only [List.mem_cons]
+          right
+          exact List.mem_filter.mpr ⟨hχ, by simpa⟩
+      -- Weaken derivation from L' to psi.neg :: Δ
+      have d_bot''' : DerivationTree (psi.neg :: Δ) Formula.bot :=
+        DerivationTree.weakening L' (psi.neg :: Δ) Formula.bot d_bot'' h_L'_sub_psiΔ
+      -- By deduction theorem, Δ ⊢ psi.neg.neg
+      have d_neg_neg : DerivationTree Δ psi.neg.neg :=
+        deduction_theorem Δ psi.neg Formula.bot d_bot'''
+      -- Weaken d_neg (Γ ⊢ psi.neg) to Γ ∪ Δ ⊢ psi.neg
+      let ΓΔ := Γ ++ Δ
+      have h_ΓΔ_in_S : ∀ χ ∈ ΓΔ, χ ∈ S := by
+        intro χ hχ
+        simp only [ΓΔ, List.mem_append] at hχ
+        rcases hχ with hχΓ | hχΔ
+        · exact h_Γ_in_S χ hχΓ
+        · exact h_Δ_in_S χ hχΔ
+      have d_neg' : DerivationTree ΓΔ psi.neg :=
+        DerivationTree.weakening Γ ΓΔ _ d_neg (List.subset_append_left Γ Δ)
+      have d_neg_neg' : DerivationTree ΓΔ psi.neg.neg :=
+        DerivationTree.weakening Δ ΓΔ _ d_neg_neg (List.subset_append_right Γ Δ)
+      -- Combine to get ⊥
+      have d_bot_final : DerivationTree ΓΔ Formula.bot :=
+        derives_bot_from_phi_neg_phi d_neg' d_neg_neg'
+      -- This contradicts consistency of S
+      exact h_mcs.1.2 ΓΔ h_ΓΔ_in_S ⟨d_bot_final⟩
 
-    -- For now, let's use a sorry here as this requires detailed case analysis
-    -- on the structure of closureWithNeg. The key insight is that for the
-    -- formulas we care about in the completeness proof, this property holds.
-    sorry
+    · -- Case 2: psi = chi.neg for some chi ∈ closure phi
+      subst h_psi_eq
+      -- psi = chi.neg, so psi.neg = chi.neg.neg = (chi → ⊥) → ⊥
+      -- chi ∈ closure phi, so chi ∈ closureWithNeg phi
+      have h_chi_in_closneg : chi ∈ closureWithNeg phi :=
+        closure_subset_closureWithNeg phi h_chi_clos
+      -- We have: chi.neg ∉ S (since psi = chi.neg and psi ∉ S)
+      -- and chi.neg.neg ∉ S (since psi.neg = chi.neg.neg and psi.neg ∉ S)
+      -- By negation completeness for chi: either chi ∈ S or chi.neg ∈ S
+      -- But chi.neg = psi ∉ S, so chi ∈ S
+      by_cases h_chi_in_S : chi ∈ S
+      · -- chi ∈ S and Γ ⊢ chi.neg.neg (= psi.neg)
+        -- Weaken to show {chi, chi.neg.neg} leads to inconsistency
+        -- DNE: chi.neg.neg → chi is provable
+        -- From chi and chi.neg.neg, we can derive chi, but chi ∈ S already
+        -- Actually, the contradiction comes from: chi ∈ S and insert chi.neg S inconsistent
+        -- means there's a derivation from chi.neg, L where L ⊆ S, deriving ⊥
+        -- But chi.neg ∉ S is our assumption (since psi = chi.neg)
+        -- So we need to show insert chi.neg S is inconsistent
+        -- Since chi.neg ∈ closureWithNeg and chi.neg ∉ S, by maximality:
+        have h_chi_neg_clos : chi.neg ∈ closureWithNeg phi := neg_mem_closureWithNeg phi chi h_chi_clos
+        have h_incons_chi_neg := h_mcs.2 chi.neg h_chi_neg_clos h
+        unfold SetConsistent at h_incons_chi_neg
+        push_neg at h_incons_chi_neg
+        obtain ⟨L'', h_L''_sub, h_L''_incons⟩ := h_incons_chi_neg
+        have h_bot'' : Nonempty (DerivationTree L'' Formula.bot) := inconsistent_derives_bot h_L''_incons
+        obtain ⟨d_bot''⟩ := h_bot''
+        -- Define Λ = L''.filter (· ≠ chi.neg)
+        let Λ := L''.filter (· ≠ chi.neg)
+        have h_Λ_in_S : ∀ χ ∈ Λ, χ ∈ S := by
+          intro χ hχ
+          have hχ' := List.mem_filter.mp hχ
+          have hχL'' := hχ'.1
+          have hχne : χ ≠ chi.neg := by simpa using hχ'.2
+          specialize h_L''_sub χ hχL''
+          simp [Set.mem_insert_iff] at h_L''_sub
+          rcases h_L''_sub with rfl | h_in_S
+          · exact absurd rfl hχne
+          · exact h_in_S
+        have h_L''_sub_Λ : L'' ⊆ chi.neg :: Λ := by
+          intro χ hχ
+          by_cases hχchi : χ = chi.neg
+          · simp [hχchi]
+          · simp only [List.mem_cons]
+            right
+            exact List.mem_filter.mpr ⟨hχ, by simpa⟩
+        have d_bot''' : DerivationTree (chi.neg :: Λ) Formula.bot :=
+          DerivationTree.weakening L'' (chi.neg :: Λ) Formula.bot d_bot'' h_L''_sub_Λ
+        have d_chi_neg_neg : DerivationTree Λ chi.neg.neg :=
+          deduction_theorem Λ chi.neg Formula.bot d_bot'''
+        -- DNE theorem: chi.neg.neg → chi
+        have d_dne : DerivationTree [] (chi.neg.neg.imp chi) :=
+          Bimodal.Theorems.Propositional.double_negation chi
+        have d_dne' : DerivationTree Λ (chi.neg.neg.imp chi) :=
+          DerivationTree.weakening [] Λ _ d_dne (by simp)
+        have d_chi_from_Λ : DerivationTree Λ chi :=
+          DerivationTree.modus_ponens Λ _ _ d_dne' d_chi_neg_neg
+        -- Now Λ ⊆ S and chi ∈ S
+        -- We need to show inconsistency using chi ∈ S and something else
+        -- Actually, we have chi ∈ S but chi.neg ∉ S
+        -- The issue is that d_chi_from_Λ proves chi which is already in S
+        -- This doesn't directly give us a contradiction
+
+        -- KNOWN ISSUE: When psi = chi.neg (chi ∈ closure), psi.neg = chi.neg.neg
+        -- escapes closureWithNeg. This means the maximality condition doesn't
+        -- directly apply to psi.neg.
+        --
+        -- The current situation:
+        -- - chi ∈ S (by h_chi_in_S)
+        -- - chi.neg ∉ S (since psi = chi.neg ∉ S)
+        -- - chi.neg.neg ∉ S (since psi.neg = chi.neg.neg ∉ S by h_neg_not)
+        --
+        -- This is actually consistent with closure MCS properties since
+        -- chi.neg.neg is not required to be in closureWithNeg.
+        --
+        -- The resolution requires either:
+        -- 1. Restricting this theorem to psi ∈ closure (not closureWithNeg), or
+        -- 2. Extending closureWithNeg to include double negations, or
+        -- 3. Using a different approach in the truth lemma that avoids this case
+        --
+        -- For the completeness proof, the key uses of this lemma are for
+        -- formulas that are subformulas (in closure), where this issue doesn't arise.
+        -- The closureWithNeg version is stronger than needed.
+        --
+        -- TODO: Consider refactoring to use closure_mcs_neg_complete_closure
+        -- which restricts to psi ∈ closure and is fully provable.
+        sorry
+
+      · -- chi ∉ S
+        -- Since chi ∈ closureWithNeg and chi ∉ S, by maximality
+        -- insert chi S is inconsistent
+        have h_incons_chi := h_mcs.2 chi h_chi_in_closneg h_chi_in_S
+        unfold SetConsistent at h_incons_chi
+        push_neg at h_incons_chi
+        obtain ⟨L''', h_L'''_sub, h_L'''_incons⟩ := h_incons_chi
+        have h_bot'''' : Nonempty (DerivationTree L''' Formula.bot) := inconsistent_derives_bot h_L'''_incons
+        obtain ⟨d_bot''''⟩ := h_bot''''
+        -- Define Θ = L'''.filter (· ≠ chi)
+        let Θ := L'''.filter (· ≠ chi)
+        have h_Θ_in_S : ∀ χ ∈ Θ, χ ∈ S := by
+          intro χ hχ
+          have hχ' := List.mem_filter.mp hχ
+          have hχL''' := hχ'.1
+          have hχne : χ ≠ chi := by simpa using hχ'.2
+          specialize h_L'''_sub χ hχL'''
+          simp [Set.mem_insert_iff] at h_L'''_sub
+          rcases h_L'''_sub with rfl | h_in_S
+          · exact absurd rfl hχne
+          · exact h_in_S
+        have h_L'''_sub_Θ : L''' ⊆ chi :: Θ := by
+          intro χ hχ
+          by_cases hχchi : χ = chi
+          · simp [hχchi]
+          · simp only [List.mem_cons]
+            right
+            exact List.mem_filter.mpr ⟨hχ, by simpa⟩
+        have d_bot''''' : DerivationTree (chi :: Θ) Formula.bot :=
+          DerivationTree.weakening L''' (chi :: Θ) Formula.bot d_bot'''' h_L'''_sub_Θ
+        have d_chi_neg' : DerivationTree Θ chi.neg :=
+          deduction_theorem Θ chi Formula.bot d_bot'''''
+        -- Now we have: Γ ⊢ chi.neg.neg (= psi.neg) and Θ ⊢ chi.neg
+        -- Combine: Γ ∪ Θ ⊢ chi.neg.neg and Γ ∪ Θ ⊢ chi.neg
+        -- This gives ⊥
+        let ΓΘ := Γ ++ Θ
+        have h_ΓΘ_in_S : ∀ χ ∈ ΓΘ, χ ∈ S := by
+          intro χ hχ
+          simp only [ΓΘ, List.mem_append] at hχ
+          rcases hχ with hχΓ | hχΘ
+          · exact h_Γ_in_S χ hχΓ
+          · exact h_Θ_in_S χ hχΘ
+        have d_chi_neg_neg' : DerivationTree ΓΘ chi.neg.neg :=
+          DerivationTree.weakening Γ ΓΘ _ d_neg (List.subset_append_left Γ Θ)
+        have d_chi_neg'' : DerivationTree ΓΘ chi.neg :=
+          DerivationTree.weakening Θ ΓΘ _ d_chi_neg' (List.subset_append_right Γ Θ)
+        have d_bot_final : DerivationTree ΓΘ Formula.bot :=
+          derives_bot_from_phi_neg_phi d_chi_neg'' d_chi_neg_neg'
+        exact h_mcs.1.2 ΓΘ h_ΓΘ_in_S ⟨d_bot_final⟩
 
 /--
 The projection of a full MCS is closure-maximal consistent.
@@ -465,9 +653,70 @@ theorem mcs_projection_is_closure_mcs (phi : Formula) (M : Set Formula)
     -- b) Using a different definition that's closed under "semantic negation"
     -- c) Handling the cases separately in the completeness proof
 
-    -- For now, we'll use sorry for this technical lemma
-    -- The old Metalogic handles this via FiniteTruthAssignment which has different structure
-    sorry
+    -- KNOWN ISSUE: Same double-negation escape issue as closure_mcs_neg_complete.
+    -- When psi = chi.neg (chi ∈ closure), psi.neg = chi.neg.neg escapes closureWithNeg.
+    --
+    -- The proof works for Case 1 (psi ∈ closure phi) because:
+    -- - psi.neg ∈ closureWithNeg by neg_mem_closureWithNeg
+    -- - psi.neg ∈ M (by mcs_contains_or_neg)
+    -- - Therefore psi.neg ∈ projection
+    -- - {psi, psi.neg} ⊆ insert psi projection is inconsistent
+    --
+    -- For Case 2 (psi = chi.neg), we can show:
+    -- - chi ∈ closure, so chi ∈ closureWithNeg
+    -- - By mcs_contains_or_neg: chi ∈ M or chi.neg ∈ M
+    -- - chi.neg = psi ∉ M (by h_not_M), so chi ∈ M
+    -- - chi ∈ closureWithNeg and chi ∈ M, so chi ∈ projection
+    -- - Need to show {psi, chi} = {chi.neg, chi} makes insert psi projection inconsistent
+    --
+    -- Case 2 implementation:
+    unfold closureWithNeg at h_clos
+    simp only [Finset.mem_union, Finset.mem_image] at h_clos
+    rcases h_clos with h_in_clos | ⟨chi, h_chi_clos, h_psi_eq⟩
+    · -- Case 1: psi ∈ closure phi - psi.neg is in closureWithNeg
+      have h_neg_closneg : psi.neg ∈ closureWithNeg phi := neg_mem_closureWithNeg phi psi h_in_clos
+      have h_neg_proj : psi.neg ∈ mcs_projection phi M := ⟨h_neg_M, h_neg_closneg⟩
+      -- insert psi (projection) contains both psi and psi.neg, so it's inconsistent
+      have h_deriv : DerivationTree [psi, psi.neg] Formula.bot := by
+        have h_psi_assume : DerivationTree [psi, psi.neg] psi :=
+          DerivationTree.assumption _ _ (by simp)
+        have h_neg_assume : DerivationTree [psi, psi.neg] psi.neg :=
+          DerivationTree.assumption _ _ (by simp)
+        exact DerivationTree.modus_ponens _ psi Formula.bot h_neg_assume h_psi_assume
+      have h_sub : ∀ ψ ∈ [psi, psi.neg], ψ ∈ insert psi (mcs_projection phi M) := by
+        intro ψ hψ
+        simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
+        rcases hψ with rfl | rfl
+        · exact Set.mem_insert psi _
+        · exact Set.mem_insert_of_mem psi h_neg_proj
+      exact h_cons_proj [psi, psi.neg] h_sub ⟨h_deriv⟩
+    · -- Case 2: psi = chi.neg for chi ∈ closure
+      subst h_psi_eq
+      -- chi ∈ closure, so chi ∈ closureWithNeg
+      have h_chi_closneg : chi ∈ closureWithNeg phi := closure_subset_closureWithNeg phi h_chi_clos
+      -- By MCS of M: chi ∈ M or chi.neg ∈ M
+      -- chi.neg = psi ∉ M (by h_not_M), so chi ∈ M
+      have h_chi_M : chi ∈ M := by
+        have h_or := mcs_contains_or_neg h_mcs chi
+        cases h_or with
+        | inl h => exact h
+        | inr h => exact absurd h h_not_M
+      -- chi ∈ projection
+      have h_chi_proj : chi ∈ mcs_projection phi M := ⟨h_chi_M, h_chi_closneg⟩
+      -- insert chi.neg (projection) contains both chi and chi.neg, so inconsistent
+      have h_deriv : DerivationTree [chi.neg, chi] Formula.bot := by
+        have h_chi_assume : DerivationTree [chi.neg, chi] chi :=
+          DerivationTree.assumption _ _ (by simp)
+        have h_neg_assume : DerivationTree [chi.neg, chi] chi.neg :=
+          DerivationTree.assumption _ _ (by simp)
+        exact DerivationTree.modus_ponens _ chi Formula.bot h_neg_assume h_chi_assume
+      have h_sub : ∀ ψ ∈ [chi.neg, chi], ψ ∈ insert chi.neg (mcs_projection phi M) := by
+        intro ψ hψ
+        simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
+        rcases hψ with rfl | rfl
+        · exact Set.mem_insert chi.neg _
+        · exact Set.mem_insert_of_mem chi.neg h_chi_proj
+      exact h_cons_proj [chi.neg, chi] h_sub ⟨h_deriv⟩
 
 /-!
 ## Subformula Membership Lemmas
@@ -596,16 +845,88 @@ theorem closure_mcs_imp_iff (phi : Formula) (S : Set Formula)
         -- psi ∈ S, so by h_material, chi ∈ S
         have h_chi := h_material h_psi
         -- Now we have chi ∈ S and (psi → chi).neg ∈ S
-        -- But this leads to inconsistency because:
-        -- From chi, we can prove (psi → chi) using K axiom or similar
+        -- From chi, we can prove (psi → chi) using prop_s: chi → (psi → chi)
         -- Then (psi → chi) and (psi → chi).neg give ⊥
-        -- However, deriving (psi → chi) from chi requires axiom ψ → (φ → ψ)
-        -- This is the K1 axiom pattern
-        sorry
+        have h_incons : ¬Consistent [chi, (psi.imp chi).neg] := by
+          intro h_cons
+          apply h_cons
+          -- Build derivation [chi, (psi → chi).neg] ⊢ ⊥
+          -- Step 1: prop_s chi psi gives chi → (psi → chi)
+          have d_prop_s : DerivationTree [] (chi.imp (psi.imp chi)) :=
+            DerivationTree.axiom [] _ (Axiom.prop_s chi psi)
+          have d_prop_s' : DerivationTree [chi, (psi.imp chi).neg] (chi.imp (psi.imp chi)) :=
+            DerivationTree.weakening [] _ _ d_prop_s (by simp)
+          -- Step 2: Get chi from context
+          have d_chi : DerivationTree [chi, (psi.imp chi).neg] chi :=
+            DerivationTree.assumption _ _ (by simp)
+          -- Step 3: MP to get (psi → chi)
+          have d_imp : DerivationTree [chi, (psi.imp chi).neg] (psi.imp chi) :=
+            DerivationTree.modus_ponens _ _ _ d_prop_s' d_chi
+          -- Step 4: Get (psi → chi).neg from context
+          have d_neg : DerivationTree [chi, (psi.imp chi).neg] (psi.imp chi).neg :=
+            DerivationTree.assumption _ _ (by simp)
+          -- Step 5: MP to get ⊥
+          exact ⟨derives_bot_from_phi_neg_phi d_imp d_neg⟩
+        -- But [chi, (psi → chi).neg] ⊆ S, so S is inconsistent
+        have h_sub : ∀ ψ ∈ [chi, (psi.imp chi).neg], ψ ∈ S := by
+          intro ψ hψ
+          simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
+          rcases hψ with rfl | rfl
+          · exact h_chi
+          · exact h_neg
+        exact h_incons (h_mcs.1.2 [chi, (psi.imp chi).neg] h_sub)
       | inr h_neg_psi =>
         -- psi.neg ∈ S
-        -- From psi.neg = psi → ⊥, we can derive (psi → chi) using explosion
-        -- But this requires propositional reasoning in the proof system
-        sorry
+        -- From psi.neg = psi → ⊥, we can derive (psi → chi) using explosion pattern
+        -- First derive ⊥ from psi, then derive chi from ⊥ using EFQ
+        -- Together: psi → ⊥ and ⊥ → chi give psi → chi
+        have h_incons : ¬Consistent [psi.neg, (psi.imp chi).neg] := by
+          intro h_cons
+          apply h_cons
+          -- Build derivation [psi.neg, (psi → chi).neg] ⊢ ⊥
+          -- We use the fact that psi.neg = psi → ⊥
+          -- From psi → ⊥ and ⊥ → chi (EFQ), we get psi → chi via composition
+          -- Then we have both (psi → chi) and (psi → chi).neg, giving ⊥
+
+          -- EFQ: ⊥ → chi
+          have d_efq : DerivationTree [] (Formula.bot.imp chi) :=
+            DerivationTree.axiom [] _ (Axiom.ex_falso chi)
+          have d_efq' : DerivationTree [psi.neg, (psi.imp chi).neg] (Formula.bot.imp chi) :=
+            DerivationTree.weakening [] _ _ d_efq (by simp)
+
+          -- psi.neg = psi → ⊥ from context
+          have d_psi_neg : DerivationTree [psi.neg, (psi.imp chi).neg] psi.neg :=
+            DerivationTree.assumption _ _ (by simp)
+
+          -- Use b_combinator pattern: (⊥ → chi) → (psi → ⊥) → (psi → chi)
+          -- This is the standard composition pattern
+          have d_b : DerivationTree [] ((Formula.bot.imp chi).imp ((psi.imp Formula.bot).imp (psi.imp chi))) :=
+            Bimodal.Theorems.Combinators.b_combinator
+
+          have d_b' : DerivationTree [psi.neg, (psi.imp chi).neg] ((Formula.bot.imp chi).imp ((psi.imp Formula.bot).imp (psi.imp chi))) :=
+            DerivationTree.weakening [] _ _ d_b (by simp)
+
+          -- MP with EFQ
+          have d_step1 : DerivationTree [psi.neg, (psi.imp chi).neg] ((psi.imp Formula.bot).imp (psi.imp chi)) :=
+            DerivationTree.modus_ponens _ _ _ d_b' d_efq'
+
+          -- MP with psi.neg
+          have d_imp : DerivationTree [psi.neg, (psi.imp chi).neg] (psi.imp chi) :=
+            DerivationTree.modus_ponens _ _ _ d_step1 d_psi_neg
+
+          -- Get (psi → chi).neg from context
+          have d_neg : DerivationTree [psi.neg, (psi.imp chi).neg] (psi.imp chi).neg :=
+            DerivationTree.assumption _ _ (by simp)
+
+          -- MP to get ⊥
+          exact ⟨derives_bot_from_phi_neg_phi d_imp d_neg⟩
+        -- But [psi.neg, (psi → chi).neg] ⊆ S, so S is inconsistent
+        have h_sub : ∀ ψ ∈ [psi.neg, (psi.imp chi).neg], ψ ∈ S := by
+          intro ψ hψ
+          simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
+          rcases hψ with rfl | rfl
+          · exact h_neg_psi
+          · exact h_neg
+        exact h_incons (h_mcs.1.2 [psi.neg, (psi.imp chi).neg] h_sub)
 
 end Bimodal.Metalogic_v2.Representation
