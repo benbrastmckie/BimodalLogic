@@ -8,12 +8,21 @@
     {
       "project_number": 622,
       "project_name": "prove_applyRule_decreases_complexity",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-19T22:38:22Z"
+      "last_updated": "2026-01-19T22:46:15Z",
+      "session_id": "sess_1768862412_8503a5",
+      "researched": "2026-01-19T22:46:15Z",
+      "artifacts": [
+        {
+          "path": "specs/622_prove_applyRule_decreases_complexity/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting all 16 tableau rules, complexity calculations, verified proof patterns, and implementation strategy"
+        }
+      ]
     },
     {
       "project_number": 623,

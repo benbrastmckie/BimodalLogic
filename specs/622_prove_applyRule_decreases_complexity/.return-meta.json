@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Found applyRule_decreases_complexity lemma at Saturation.lean:328-338. Requires case analysis on 16 tableau rules. Identified proof pattern: unfold totalComplexity, simp with Formula.complexity, then omega. Existing complexity lemmas provide all needed inequalities.",
+  "artifacts": [
+    {
+      "path": "specs/622_prove_applyRule_decreases_complexity/reports/research-001.md",
+      "type": "research",
+      "summary": "Research report documenting all 16 tableau rules, complexity calculations, verified proof patterns, and implementation strategy"
+    }
+  ],
+  "next_steps": "Run /plan 622 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1768862412_8503a5",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"],
+    "findings_count": 5
+  }
+}
