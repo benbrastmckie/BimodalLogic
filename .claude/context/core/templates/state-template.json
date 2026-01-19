@@ -47,11 +47,11 @@
   "_comment_recent_activities": "Track up to 50 most recent activities. Prepend new activities to maintain chronological order (newest first).",
   "pending_tasks": [],
   "_comment_pending_tasks": "Populated from TODO.md tasks with status [NOT STARTED]. Each entry should have: project_number, title, status, priority, language.",
-  "maintenance_summary": {
-    "_comment": "Quick reference to maintenance status - full history in maintenance/state.json",
-    "last_maintenance": null,
-    "next_scheduled": null,
-    "health_trend": "unknown"
+  "reviews_summary": {
+    "_comment": "Quick reference to review status - full history in reviews/state.json",
+    "last_review": null,
+    "total_reviews": 0,
+    "total_issues_found": 0
   },
   "archive_summary": {
     "_comment": "Quick reference to archived projects - full details in archive/state.json",

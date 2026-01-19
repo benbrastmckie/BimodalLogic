@@ -29,11 +29,12 @@ technical_debt:
 
 ### 600. Fix Subagent Metadata Passing in Agent System
 - **Effort**: 2-4 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Research**: [research-001.md](specs/600_fix_subagent_metadata_passing/reports/research-001.md), [research-002.md](specs/600_fix_subagent_metadata_passing/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/600_fix_subagent_metadata_passing/plans/implementation-001.md)
 
 **Description**: Study the research output from /home/benjamin/Projects/ProofChecker/.claude/output/research.md which shows agents attempting to pass metadata in JSON blocks back to the primary agent, but the JSON is printing to console instead of being parsed. Research best practices for subagent metadata passing in Claude Code 2026. Improve the agent system to avoid printing JSON output to console and eliminate the 'continue' interruptions demonstrated in the research output.
 
@@ -132,7 +133,7 @@ technical_debt:
 
 ### 595. Remove Maintenance Directory and Fix Review State Management
 - **Effort**: 2-3 hours
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/595_remove_maintenance_dir_fix_review_state/reports/research-001.md)
@@ -148,10 +149,11 @@ technical_debt:
 
 ### 596. Constructive Finite Model Bounds
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-18
+- **Started**: 2026-01-19
 - **Research**: [research-001.md](specs/596_constructive_finite_model_bounds/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/596_constructive_finite_model_bounds/plans/implementation-001.md)
 
@@ -186,11 +188,12 @@ technical_debt:
 
 ### 598. Remove deprecated helpers from ContextProvability.lean
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Research**: [research-001.md](specs/598_remove_deprecated_helpers_contextprovability/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/598_remove_deprecated_helpers_contextprovability/plans/implementation-001.md)
 
 **Description**: Remove deprecated helper functions from ContextProvability.lean: `semantic_world_validity_implies_provable` (deprecated 2026-01-18) and `semantic_consequence_implies_semantic_world_truth` (deprecated 2026-01-18). These are marked `@[deprecated]` but can be deleted once confirmed unused.
 

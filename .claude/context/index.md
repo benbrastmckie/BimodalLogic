@@ -82,7 +82,7 @@
 
 - **state-management.md** (535 lines) - Unified state management standard
   - Status markers and transition rules
-  - State schemas (main, archive, maintenance, project)
+  - State schemas (main, archive, reviews, project)
   - Timestamp formats
   - Status synchronization mechanisms
   - Replaces: status-markers.md, state-schema.md
