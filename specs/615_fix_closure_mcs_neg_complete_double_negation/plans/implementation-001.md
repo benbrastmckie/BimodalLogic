@@ -1,7 +1,7 @@
 # Implementation Plan: Task #615
 
 - **Task**: 615 - Fix closure_mcs_neg_complete double negation edge case
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -44,7 +44,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Modify Theorem Signature [NOT STARTED]
+### Phase 1: Modify Theorem Signature [COMPLETED]
 
 **Goal**: Change `closure_mcs_neg_complete` hypothesis from `closureWithNeg` to `closure`
 
@@ -64,7 +64,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Fix the Proof Body [NOT STARTED]
+### Phase 2: Fix the Proof Body [IN PROGRESS]
 
 **Goal**: Complete the proof without sorry by leveraging the restricted hypothesis
 

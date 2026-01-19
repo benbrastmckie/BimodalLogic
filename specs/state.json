@@ -17,20 +17,26 @@
     {
       "project_number": 617,
       "project_name": "fix_closure_mcs_implies_locally_consistent",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T17:55:38Z",
-      "last_updated": "2026-01-19T20:15:28Z",
-      "session_id": "sess_1768853498_7e0e0c",
+      "last_updated": "2026-01-19T20:26:51Z",
+      "session_id": "sess_1768854269_9c7cfb",
       "researched": "2026-01-19T20:15:28Z",
       "artifacts": [
         {
           "path": "specs/617_fix_closure_mcs_implies_locally_consistent/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing temporal reflexivity mismatch and recommending removal of unused conditions from IsLocallyConsistent definition"
+        },
+        {
+          "path": "specs/617_fix_closure_mcs_implies_locally_consistent/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan: modify IsLocallyConsistent definition, prove theorem, verify downstream code"
         }
-      ]
+      ],
+      "planned": "2026-01-19T20:26:51Z"
     },
     {
       "project_number": 616,
@@ -53,12 +59,12 @@
     {
       "project_number": 615,
       "project_name": "fix_closure_mcs_neg_complete_double_negation",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T17:54:18Z",
-      "last_updated": "2026-01-19T20:19:08Z",
-      "session_id": "sess_1768853806_3fe843",
+      "last_updated": "2026-01-19T20:25:43Z",
+      "session_id": "sess_1768854321_d85703",
       "researched": "2026-01-19T20:06:15Z",
       "artifacts": [
         {
@@ -72,7 +78,8 @@
           "summary": "4-phase implementation plan to fix closure_mcs_neg_complete double negation sorry"
         }
       ],
-      "planned": "2026-01-19T20:19:08Z"
+      "planned": "2026-01-19T20:19:08Z",
+      "started": "2026-01-19T20:25:43Z"
     },
     {
       "project_number": 612,

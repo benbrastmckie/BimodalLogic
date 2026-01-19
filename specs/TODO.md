@@ -78,11 +78,12 @@ technical_debt:
 ---
 
 ### 615. Fix closure_mcs_neg_complete double negation edge case
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Researched**: 2026-01-19
+- **Started**: 2026-01-19
 - **Related**: Task 608
 - **Research**: [research-001.md](specs/615_fix_closure_mcs_neg_complete_double_negation/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/615_fix_closure_mcs_neg_complete_double_negation/plans/implementation-001.md)
@@ -159,12 +160,13 @@ technical_debt:
 ---
 
 ### 617. Fix closure_mcs_implies_locally_consistent temporal axioms
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Related**: Task 608
 - **Research**: [research-001.md](specs/617_fix_closure_mcs_implies_locally_consistent/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/617_fix_closure_mcs_implies_locally_consistent/plans/implementation-001.md)
 
 **Description**: Fix the sorry in `closure_mcs_implies_locally_consistent` at FiniteWorldState.lean:343. The issue is that proving local consistency requires temporal reflexivity axioms (H φ → φ, G φ → φ) which don't hold in TM logic's strict temporal semantics. Options include: (1) Add explicit reflexivity conditions to the local consistency definition, (2) Use a different construction that bypasses temporal reflexivity, or (3) Document as an architectural limitation. Note: The semantic approach via SemanticCanonicalModel bypasses this issue entirely.
 

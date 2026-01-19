@@ -261,10 +261,14 @@ theorem mcs_closure_neg_complete (phi : Formula) (M : Set Formula)
   exact mcs_contains_or_neg h_mcs psi
 
 /--
-Key lemma: In a closure MCS, either psi or psi.neg is in the set (for psi in closureWithNeg).
+Key lemma: In a closure MCS, either psi or psi.neg is in the set (for psi in closure).
+
+By restricting to psi ∈ closure phi (not closureWithNeg), we ensure psi.neg ∈ closureWithNeg phi,
+which is needed for the maximality argument. The stronger statement with closureWithNeg would require
+handling the double negation case where psi.neg.neg escapes closureWithNeg.
 -/
 theorem closure_mcs_neg_complete (phi : Formula) (S : Set Formula)
-    (h_mcs : ClosureMaximalConsistent phi S) (psi : Formula) (h_clos : psi ∈ closureWithNeg phi) :
+    (h_mcs : ClosureMaximalConsistent phi S) (psi : Formula) (h_clos : psi ∈ closure phi) :
     psi ∈ S ∨ psi.neg ∈ S := by
   by_cases h : psi ∈ S
   · left; exact h
