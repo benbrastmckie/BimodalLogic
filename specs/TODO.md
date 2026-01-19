@@ -262,11 +262,12 @@ Changes required:
 ## Low Priority
 
 ### 616. Fix semantic_task_rel_compositionality finite model limitation
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Related**: Task 608
+- **Research**: [research-001.md](specs/616_fix_semantic_task_rel_compositionality_sorry/reports/research-001.md)
 
 **Description**: Fix the sorry in `semantic_task_rel_compositionality` at SemanticCanonicalModel.lean:236. The issue is that task relation compositionality fails for unbounded duration sums in the finite model (time bounds are [-k, k]). Options include: (1) Add a boundedness hypothesis requiring |d1 + d2| <= 2k, (2) Change the task relation definition to be closed under composition, or (3) Use a different frame construction. Note: The completeness proof doesn't directly use this lemma, so this is an acceptable limitation.
 
