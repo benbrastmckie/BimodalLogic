@@ -11,7 +11,7 @@
 #   (none)     Interactive cleanup with confirmation
 #
 # Safety:
-#   - Only targets processes with TTY == "??" (no controlling terminal)
+#   - Only targets processes with TTY == "?" (no controlling terminal)
 #   - Excludes current process and parent process tree
 #   - Uses SIGTERM first, then SIGKILL if needed
 
@@ -119,14 +119,14 @@ get_claude_processes() {
     ps aux 2>/dev/null | grep -E '[c]laude|[n]ode.*claude|[a]nthropic' | grep -v grep || true
 }
 
-# Get orphaned processes (TTY == "??")
+# Get orphaned processes (TTY == "?")
 get_orphaned_processes() {
-    get_claude_processes | awk '$7 == "??" {print $0}'
+    get_claude_processes | awk '$7 == "?" {print $0}'
 }
 
 # Get active processes (have a TTY)
 get_active_processes() {
-    get_claude_processes | awk '$7 != "??"'
+    get_claude_processes | awk '$7 != "?"'
 }
 
 # Calculate total memory from process list
