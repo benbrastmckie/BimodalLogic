@@ -35,11 +35,11 @@
     {
       "project_number": 618,
       "project_name": "move_metalogic_to_boneyard_make_v2_independent",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T20:23:03Z",
-      "last_updated": "2026-01-19T20:44:26Z",
+      "last_updated": "2026-01-19T20:46:23Z",
       "session_id": "sess_1768855453_1cca58",
       "researched": "2026-01-19T20:37:59Z",
       "artifacts": [
@@ -47,8 +47,14 @@
           "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/reports/research-001.md",
           "type": "research",
           "summary": "Research report confirming Metalogic_v2 independence and documenting migration plan with 4 phases"
+        },
+        {
+          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan covering directory move, external consumer migration, Demo.lean relocation, test archival, and final cleanup"
         }
-      ]
+      ],
+      "planned": "2026-01-19T20:46:23Z"
     },
     {
       "project_number": 617,
