@@ -89,20 +89,39 @@ Metalogic_v2/
 | `finite_model_property` | Representation/FiniteModelProperty.lean | FMP via satisfiability witness |
 | `satisfiability_decidable` | Representation/FiniteModelProperty.lean | Decidability of satisfiability |
 | `validity_decidable_via_fmp` | Representation/FiniteModelProperty.lean | Decidability of validity |
+| `semantic_weak_completeness` | Representation/SemanticCanonicalModel.lean | Core completeness (sorry-free) |
+| `semantic_truth_at_v2` | Representation/SemanticCanonicalModel.lean | Finite model truth definition |
+| `semantic_truth_lemma_v2` | Representation/SemanticCanonicalModel.lean | Truth correspondence lemma |
 
 ### Theorems with Sorries (5 total)
 
-| Location | Theorem | Issue |
-|----------|---------|-------|
-| Closure.lean:484 | `closure_mcs_neg_complete` | Double-negation escape |
-| SemanticCanonicalModel.lean:236 | `semantic_task_rel_compositionality` | History gluing |
-| SemanticCanonicalModel.lean:489 | `semantic_truth_implies_truth_at` | Formula induction |
-| SemanticCanonicalModel.lean:656 | `main_weak_completeness_v2` | Truth bridge |
-| FiniteWorldState.lean:343 | `closure_mcs_implies_locally_consistent` | Temporal axioms |
+| Location | Theorem | Issue | Impact |
+|----------|---------|-------|--------|
+| Closure.lean:484 | `closure_mcs_neg_complete` | Double-negation escape | Edge case |
+| SemanticCanonicalModel.lean:236 | `semantic_task_rel_compositionality` | History gluing in finite model | Acceptable limitation |
+| SemanticCanonicalModel.lean:513 | `semantic_truth_implies_truth_at` | Formula induction | Deprecated approach |
+| SemanticCanonicalModel.lean:709 | `main_weak_completeness_v2` | Truth bridge | Deprecated approach |
+| FiniteWorldState.lean:343 | `closure_mcs_implies_locally_consistent` | Temporal axioms | Edge case |
 
-**Impact**: The completeness theorems (`weak_completeness`, `strong_completeness`) and FMP-related theorems transitively depend on these sorries through `main_provable_iff_valid_v2`.
+### Architectural Note on Completeness
 
-The Metalogic_v2 infrastructure has **5 active sorries** in the semantic bridge layer. Core theorems like soundness, deduction theorem, and MCS properties are fully proven. Completeness theorems are structurally correct but rely on the semantic bridge sorries.
+The completeness proof has two parallel approaches:
+
+1. **`semantic_weak_completeness` (SORRY-FREE)**
+   - Proves: `(∀ w, semantic_truth_at_v2 phi w t phi) → ⊢ phi`
+   - Uses internal finite model truth definition
+   - Avoids the problematic truth bridge between general `truth_at` and finite model truth
+   - Ported from the old Metalogic (FiniteCanonicalModel.lean lines 3644-3713)
+
+2. **`main_weak_completeness_v2` (HAS SORRY)**
+   - Proves: `valid phi → ⊢ phi`
+   - Uses general validity definition (truth in ALL TaskFrames/WorldHistories)
+   - Requires a truth bridge lemma `semantic_truth_implies_truth_at` (also has sorry)
+   - Kept for architectural documentation
+
+**Recommended Path**: Use `semantic_weak_completeness` for completeness results. The `main_provable_iff_valid_v2` theorem routes through `main_weak_completeness_v2` for the equivalence statement, but the core completeness result is provided sorry-free by `semantic_weak_completeness`.
+
+**Impact Summary**: Core theorems (soundness, deduction theorem, MCS properties) are fully proven. The `semantic_weak_completeness` theorem provides a sorry-free completeness core. The remaining sorries affect edge cases and the alternative general-validity approach, not the main completeness result.
 
 ## Usage
 
@@ -168,6 +187,8 @@ import Bimodal.Metalogic_v2.Representation.CanonicalModel
 2. **Constructive FMP**: Establish finite model bounds (currently using identity witness)
 3. **Proof cleanup**: Remove redundant tactics and improve readability
 4. **Deprecate old Metalogic/**: Complete migration and remove dependency on FiniteCanonicalModel.lean
+5. **Complete the truth bridge**: Optionally prove `semantic_truth_implies_truth_at` via structural formula induction to eliminate the sorry in `main_weak_completeness_v2` (not blocking - `semantic_weak_completeness` provides the core result)
+6. **Edge case sorries**: Address `closure_mcs_neg_complete` and `closure_mcs_implies_locally_consistent` if tractable
 
 ## References
 

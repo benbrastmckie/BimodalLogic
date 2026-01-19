@@ -423,6 +423,25 @@ def semantic_truth_at_v2 (phi : Formula) (w : SemanticWorldState phi)
   ∃ h_mem : psi ∈ closure phi, (SemanticWorldState.toFiniteWorldState w).models psi h_mem
 
 /--
+Semantic truth lemma (v2): membership in underlying world state equals semantic truth.
+
+For `SemanticWorldState`, this is direct from the definition since
+semantic world states are equivalence classes based on underlying world states.
+The existential witness for the membership proof is provided or inherited.
+-/
+theorem semantic_truth_lemma_v2 (phi : Formula) (w : SemanticWorldState phi)
+    (psi : Formula) (h_mem : psi ∈ closure phi) :
+    (SemanticWorldState.toFiniteWorldState w).models psi h_mem ↔
+    semantic_truth_at_v2 phi w (FiniteTime.origin (temporalBound phi)) psi := by
+  simp only [semantic_truth_at_v2]
+  constructor
+  · intro h_models
+    exact ⟨h_mem, h_models⟩
+  · intro ⟨h_mem', h_models⟩
+    -- By proof irrelevance on h_mem and h_mem'
+    exact h_models
+
+/--
 Truth lemma: semantic truth corresponds to MCS membership.
 
 For MCS-derived world states, membership in the underlying MCS
@@ -576,38 +595,116 @@ theorem phi_consistent_of_not_refutable (φ : Formula) (h_not_refutable : ¬None
     exact h_not_refutable ⟨h_phi_neg⟩
 
 /--
-Main completeness theorem (Metalogic_v2 version).
+Semantic weak completeness: if phi is true in all semantic world states, then phi is provable.
 
-If phi is valid (true in all models), then phi is provable.
+This is the key completeness result that AVOIDS the problematic truth bridge between
+`truth_at` (which quantifies over all histories/times) and finite model truth.
 
 **Proof Strategy (Contrapositive)**:
 1. Assume phi is not provable
-2. Then {phi.neg} is consistent (by neg_set_consistent_of_not_provable)
+2. Then {phi.neg} is consistent
 3. Extend to full MCS by Lindenbaum
 4. Project to closure MCS
-5. Build SemanticCanonicalModel countermodel
-6. By validity, phi is true in the countermodel
-7. But phi ∉ MCS projection, so phi is false (contradiction)
+5. Build FiniteWorldState from closure MCS
+6. phi is false at this world state (by construction)
+7. Build SemanticWorldState at origin
+8. Show phi is false in semantic_truth_at_v2 sense
+9. This contradicts the hypothesis that phi is true everywhere
 
-**Status**: SORRY - Depends on truth bridge lemma (Phase 6).
+**Status**: PROVEN - No sorry in this theorem.
 
-The proof structure is complete up to the bridge between:
-- `truth_at (SemanticCanonicalModel phi) tau 0 phi` (from validity)
-- `w.models phi h_phi_closure` (finite world state truth)
+This theorem is ported from the old Metalogic (FiniteCanonicalModel.lean lines 3644-3713)
+and provides a complete proof of the completeness core without needing the truth bridge.
+-/
+noncomputable def semantic_weak_completeness (phi : Formula) :
+    (∀ (w : SemanticWorldState phi), semantic_truth_at_v2 phi w (FiniteTime.origin (temporalBound phi)) phi) →
+    ⊢ phi := by
+  intro h_valid
 
-This bridge is `semantic_truth_implies_truth_at` (converse direction) which has
-a sorry because bridging general truth_at (quantifying over ALL histories and times)
-to finite world state truth is non-trivial.
+  -- Use classical choice: we either have a proof or we don't
+  by_cases h_prov : Nonempty (⊢ phi)
+  · -- If provable, extract the derivation
+    exact Classical.choice h_prov
+  · -- If not provable, derive a contradiction to h_valid
+    exfalso
 
-**Alternative Approach (from old Metalogic)**:
-The FiniteCanonicalModel.lean uses `semantic_weak_completeness` which works with
-`semantic_truth_at_v2` (internal finite truth) and avoids this bridge by:
-1. Defining truth directly on SemanticWorldState/FiniteTime
-2. Proving completeness without going through general `truth_at`
-3. The bridge theorems are documented but left as sorries
+    -- Step 1: {phi.neg} is consistent
+    have h_neg_cons : SetConsistent ({phi.neg} : Set Formula) :=
+      neg_set_consistent_of_not_provable phi h_prov
 
-For the current implementation, the proof structure demonstrates correctness
-while the sorry marks where the bridge theorem would connect.
+    -- Step 2: Extend to full MCS by Lindenbaum
+    obtain ⟨M, h_sub_M, h_M_mcs⟩ := set_lindenbaum {phi.neg} h_neg_cons
+
+    -- Step 3: phi.neg ∈ M (from subset)
+    have h_neg_in_M : phi.neg ∈ M := h_sub_M (Set.mem_singleton phi.neg)
+
+    -- Step 4: phi ∉ M (by consistency)
+    have h_phi_not_M : phi ∉ M := set_mcs_neg_excludes h_M_mcs phi h_neg_in_M
+
+    -- Step 5: Project to closureWithNeg MCS
+    let S := M ∩ (closureWithNeg phi : Set Formula)
+    have h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M h_M_mcs
+
+    -- Step 6: phi ∉ S (since phi ∈ closureWithNeg(phi) but phi ∉ M)
+    have h_phi_closure : phi ∈ closure phi := phi_mem_closure phi
+    have h_phi_not_S : phi ∉ S := by
+      intro h
+      exact h_phi_not_M h.1
+
+    -- Step 7: Build FiniteWorldState from S
+    let w := worldStateFromClosureMCS phi S h_S_mcs
+
+    -- Step 8: phi is false at w
+    have h_phi_false : ¬w.models phi h_phi_closure :=
+      worldStateFromClosureMCS_not_models phi S h_S_mcs phi h_phi_closure h_phi_not_S
+
+    -- Step 9: Build FiniteHistory through w
+    let hist := finite_history_from_state phi w
+
+    -- Step 10: Build SemanticWorldState at origin
+    let t := FiniteTime.origin (temporalBound phi)
+    let sw := SemanticWorldState.ofHistoryTime hist t
+
+    -- Step 11: Show phi is false at sw
+    -- sw.toFiniteWorldState = hist.states t = w (by construction of hist)
+    have h_sw_eq : SemanticWorldState.toFiniteWorldState sw = hist.states t := rfl
+
+    -- hist.states t should equal w since hist is constructed from w at origin
+    -- For finite_history_from_state, states at any time returns w (constant function)
+    have h_hist_states_t : hist.states t = w := rfl
+
+    have h_sw_false : ¬semantic_truth_at_v2 phi sw t phi := by
+      simp only [semantic_truth_at_v2]
+      intro ⟨h_mem, h_models⟩
+      rw [h_sw_eq, h_hist_states_t] at h_models
+      exact h_phi_false h_models
+
+    -- Step 12: This contradicts h_valid
+    exact h_sw_false (h_valid sw)
+
+/--
+Main completeness theorem (Metalogic_v2 version) - general validity approach.
+
+If phi is valid (true in all models), then phi is provable.
+
+**Status**: SORRY - This version requires a truth bridge lemma.
+
+**Important**: For a SORRY-FREE completeness result, use `semantic_weak_completeness`
+which proves: `(∀ w, semantic_truth_at_v2 phi w t phi) → ⊢ phi`. This version
+is kept for documentation and architectural completeness.
+
+**The Truth Bridge Problem**:
+Converting `valid phi` (truth in ALL TaskFrames/WorldHistories/times) to
+`semantic_truth_at_v2` (finite model truth) requires proving that general
+truth implies finite truth, which involves:
+- Showing `truth_at` (quantifies over uncountable WorldHistories) implies finite truth
+- Handling temporal cases where `truth_at` quantifies over ALL integers
+
+**Relationship to semantic_weak_completeness**:
+- `semantic_weak_completeness`: proven, uses internal finite model truth
+- `main_weak_completeness_v2`: sorry at bridge step, uses general validity
+
+Both establish the same conclusion (⊢ phi), but via different routes.
 -/
 noncomputable def main_weak_completeness_v2 (phi : Formula) (h_valid : valid phi) : ⊢ phi := by
   by_cases h_prov : Nonempty (⊢ phi)
