@@ -219,6 +219,7 @@ technical_debt:
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 469
+- **Dependencies**: Task 607
 - **Research**: [research-001.md](specs/490_complete_decidability_procedure/reports/research-001.md)
 
 **Description**: Complete the decidability procedure for TM logic. The existing Decidability module has tableau infrastructure but needs: proof extraction from closed tableaux, completeness proof connecting to FMP, and full decide function verification. Extends Task 469.
@@ -232,7 +233,6 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Source**: Code Review 2026-01-18 (M1)
-- **Dependencies**: Task 470
 - **Research**: [research-001.md](specs/607_port_decidability_to_metalogic_v2/reports/research-001.md)
 
 **Description**: Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.

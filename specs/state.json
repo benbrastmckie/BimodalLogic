@@ -285,6 +285,9 @@
           "type": "research",
           "summary": "Comprehensive analysis of Metalogic_v2 vs old Metalogic decidability infrastructure, identifying 4 key sorries to resolve and recommending Task 607 as prerequisite"
         }
+      ],
+      "dependencies": [
+        607
       ]
     },
     {
@@ -297,9 +300,6 @@
       "last_updated": "2026-01-19T20:52:15Z",
       "description": "Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.",
       "source": "Code Review 2026-01-18 (M1)",
-      "dependencies": [
-        470
-      ],
       "session_id": "sess_1768855684_1063c6",
       "researched": "2026-01-19T20:52:15Z",
       "artifacts": [
