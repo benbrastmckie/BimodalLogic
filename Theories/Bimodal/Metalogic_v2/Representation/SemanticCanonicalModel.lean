@@ -278,7 +278,7 @@ def inFiniteDomain (phi : Formula) (t : Int) : Prop :=
 /--
 Helper: convert an Int in domain to a FiniteTime.
 -/
-noncomputable def intToFiniteTime (phi : Formula) (t : Int)
+def intToFiniteTime (phi : Formula) (t : Int)
     (h : inFiniteDomain phi t) : FiniteTime (temporalBound phi) :=
   ⟨(t + temporalBound phi).toNat, by
     have h1 : 0 ≤ t + (temporalBound phi : Int) := by

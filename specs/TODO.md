@@ -141,12 +141,13 @@ technical_debt:
 
 ### 606. Fix Metalogic_v2 README accuracy
 - **Effort**: 30 minutes
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Source**: Code Review 2026-01-18 (H2)
 - **Research**: [research-001.md](specs/606_fix_metalogic_v2_readme_accuracy/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/606_fix_metalogic_v2_readme_accuracy/plans/implementation-001.md)
 
 **Description**: Update Metalogic_v2/README.md to accurately document the sorry count and locations. Current README incorrectly claims "All theorems in Metalogic_v2 are fully proven with no sorry statements" but there are 7 active sorries in the semantic bridge infrastructure. Document which theorems have sorries, their locations, and impact on downstream theorems.
 

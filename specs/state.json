@@ -137,11 +137,11 @@
     {
       "project_number": 606,
       "project_name": "fix_metalogic_v2_readme_accuracy",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T07:45:00Z",
-      "last_updated": "2026-01-19T07:55:36Z",
+      "last_updated": "2026-01-19T07:57:49Z",
       "description": "Update Metalogic_v2/README.md to accurately document the sorry count and locations. Current README incorrectly claims 'All theorems in Metalogic_v2 are fully proven with no sorry statements' but there are 7 active sorries in the semantic bridge infrastructure. Document which theorems have sorries, their locations, and impact on downstream theorems.",
       "source": "Code Review 2026-01-18 (H2)",
       "session_id": "sess_1768809321_63d22a",
@@ -151,8 +151,14 @@
           "path": "specs/606_fix_metalogic_v2_readme_accuracy/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting 5 sorries with exact file:line locations, dependency analysis, and README correction recommendations"
+        },
+        {
+          "path": "specs/606_fix_metalogic_v2_readme_accuracy/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan to fix README accuracy: update header, add sorry table, replace false claim, verify"
         }
-      ]
+      ],
+      "planned": "2026-01-19T07:57:49Z"
     },
     {
       "project_number": 607,
