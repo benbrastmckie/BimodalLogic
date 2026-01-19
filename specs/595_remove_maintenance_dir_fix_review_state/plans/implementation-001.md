@@ -151,7 +151,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update Review Command for State Management [IN PROGRESS]
+### Phase 4: Update Review Command for State Management [COMPLETED]
 
 **Goal**: Modify the `/review` command to maintain `reviews/state.json` and properly commit changes.
 
@@ -175,7 +175,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Documentation and Final Verification [NOT STARTED]
+### Phase 5: Documentation and Final Verification [IN PROGRESS]
 
 **Goal**: Update related documentation and verify all changes work together.
 

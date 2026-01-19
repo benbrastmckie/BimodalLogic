@@ -164,6 +164,13 @@ For each High/Critical issue, create a task:
 
 Link tasks to review report.
 
+**Update state:** Add created task numbers to the `tasks_created` array in the review entry:
+```json
+"tasks_created": [601, 602, 603]
+```
+
+Also increment `statistics.total_tasks_created` by the count of new tasks.
+
 ### 6. Update Registries (if applicable)
 
 If reviewing specific domains, update relevant registries:

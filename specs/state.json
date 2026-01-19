@@ -8,12 +8,12 @@
     {
       "project_number": 600,
       "project_name": "fix_subagent_metadata_passing",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T01:21:21Z",
-      "last_updated": "2026-01-19T01:48:14Z",
-      "session_id": "sess_1768786945_62eccd",
+      "last_updated": "2026-01-19T01:57:34Z",
+      "session_id": "sess_1768787839_a238b3",
       "researched": "2026-01-19T01:48:14Z",
       "artifacts": [
         {
@@ -76,13 +76,13 @@
     {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
-      "status": "partial",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T02:50:00Z",
+      "last_updated": "2026-01-19T02:00:41Z",
       "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
-      "session_id": "sess_1768787401_490ed5",
+      "session_id": "sess_1768788022_ec9091",
       "researched": "2026-01-19T01:16:42Z",
       "artifacts": [
         {
@@ -106,12 +106,12 @@
     {
       "project_number": 596,
       "project_name": "constructive_finite_model_bounds",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T00:56:57Z",
-      "last_updated": "2026-01-19T01:55:26Z",
-      "session_id": "sess_1768787586_7583f9",
+      "last_updated": "2026-01-19T02:01:33Z",
+      "session_id": "sess_1768788074_52cf53",
       "researched": "2026-01-19T01:32:03Z",
       "artifacts": [
         {
@@ -123,16 +123,17 @@
           "type": "plan"
         }
       ],
-      "planned": "2026-01-19T01:55:26Z"
+      "planned": "2026-01-19T01:55:26Z",
+      "started": "2026-01-19T02:01:33Z"
     },
     {
       "project_number": 595,
       "project_name": "remove_maintenance_dir_fix_review_state",
-      "status": "implementing",
+      "status": "partial",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T00:53:03Z",
-      "last_updated": "2026-01-19T01:53:54Z",
+      "last_updated": "2026-01-19T02:01:21Z",
       "description": "Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.",
       "session_id": "sess_1768787618_3c4924",
       "researched": "2026-01-19T01:18:58Z",
@@ -147,7 +148,15 @@
         }
       ],
       "planned": "2026-01-19T01:28:33Z",
-      "started": "2026-01-19T01:53:54Z"
+      "started": "2026-01-19T01:53:54Z",
+      "partial_since": "2026-01-19T02:01:21Z",
+      "completed_phases": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "resume_phase": 5
     },
     {
       "project_number": 394,

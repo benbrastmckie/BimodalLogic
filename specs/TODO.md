@@ -29,7 +29,7 @@ technical_debt:
 
 ### 600. Fix Subagent Metadata Passing in Agent System
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -56,7 +56,7 @@ technical_debt:
 
 ### 597. Re-prove main_provable_iff_valid in Metalogic_v2
 - **Effort**: 4-6 hours (originally), 20+ hours (revised - requires SemanticCanonicalModel migration)
-- **Status**: [PARTIAL]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -132,13 +132,15 @@ technical_debt:
 
 ### 595. Remove Maintenance Directory and Fix Review State Management
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/595_remove_maintenance_dir_fix_review_state/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/595_remove_maintenance_dir_fix_review_state/plans/implementation-001.md)
 - **Created**: 2026-01-19
 - **Started**: 2026-01-19
+- **Completed**: Phases 1-4
+- **Remaining**: Phase 5 (Documentation and Final Verification)
 
 **Description**: Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.
 
