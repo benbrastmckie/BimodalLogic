@@ -64,7 +64,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Fix the Proof Body [IN PROGRESS]
+### Phase 2: Fix the Proof Body [COMPLETED]
 
 **Goal**: Complete the proof without sorry by leveraging the restricted hypothesis
 
@@ -88,7 +88,7 @@ From research-001.md:
 
 ---
 
-### Phase 3: Update Callers [NOT STARTED]
+### Phase 3: Update Callers [COMPLETED]
 
 **Goal**: Update `closure_mcs_imp_iff` to use `closure` membership instead of `closureWithNeg`
 
@@ -109,7 +109,7 @@ From research-001.md:
 
 ---
 
-### Phase 4: Verification and Cleanup [NOT STARTED]
+### Phase 4: Verification and Cleanup [COMPLETED]
 
 **Goal**: Ensure the entire file builds without errors or sorries
 
