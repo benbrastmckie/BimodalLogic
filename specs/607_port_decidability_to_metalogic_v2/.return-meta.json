@@ -1,0 +1,23 @@
+{
+  "status": "researched",
+  "summary": "Analyzed 8-file Decidability infrastructure and Metalogic_v2 architecture; identified FMP integration points and recommended phased porting approach",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/607_port_decidability_to_metalogic_v2/reports/research-001.md",
+      "summary": "Research report with dependency mapping, FMP integration strategy, and 5-phase porting plan"
+    }
+  ],
+  "next_steps": "Run /plan 607 to create implementation plan based on the 5-phase porting approach",
+  "metadata": {
+    "session_id": "sess_1768855684_1063c6",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 420,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-lean-research"],
+    "findings_count": 7,
+    "files_analyzed": 16,
+    "old_decidability_files": 8,
+    "metalogic_v2_files": 8
+  }
+}

@@ -290,15 +290,24 @@
     {
       "project_number": 607,
       "project_name": "port_decidability_to_metalogic_v2",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T07:45:00Z",
-      "last_updated": "2026-01-19T07:45:00Z",
+      "last_updated": "2026-01-19T20:52:15Z",
       "description": "Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.",
       "source": "Code Review 2026-01-18 (M1)",
       "dependencies": [
         470
+      ],
+      "session_id": "sess_1768855684_1063c6",
+      "researched": "2026-01-19T20:52:15Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/607_port_decidability_to_metalogic_v2/reports/research-001.md",
+          "summary": "Research report with dependency mapping, FMP integration strategy, and 5-phase porting plan"
+        }
       ]
     }
   ],
