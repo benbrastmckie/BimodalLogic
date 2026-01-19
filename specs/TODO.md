@@ -5,16 +5,16 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 8
-  completed: 188
+  active: 9
+  completed: 197
   in_progress: 1
-  not_started: 26
+  not_started: 4
   abandoned: 18
-  total: 209
+  total: 218
 priority_distribution:
   critical: 0
   high: 5
-  medium: 4
+  medium: 2
   low: 2
 technical_debt:
   sorry_count: 205
@@ -26,67 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 601. Design Task Review Logic and Validation Rules
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/601_design_task_review_logic_validation/reports/research-001.md), [research-002.md](specs/601_design_task_review_logic_validation/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/601_design_task_review_logic_validation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/601_design_task_review_logic_validation/summaries/implementation-summary-20260118.md)
-
-**Description**: Design validation rules for state.json/TODO.md consistency, artifact links, completion verification, follow-up task workflow.
-
----
-
-### 600. Fix Subagent Metadata Passing in Agent System
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/600_fix_subagent_metadata_passing/reports/research-001.md), [research-002.md](specs/600_fix_subagent_metadata_passing/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/600_fix_subagent_metadata_passing/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/600_fix_subagent_metadata_passing/summaries/implementation-summary-20260118.md)
-
-**Description**: Study the research output from /home/benjamin/Projects/ProofChecker/.claude/output/research.md which shows agents attempting to pass metadata in JSON blocks back to the primary agent, but the JSON is printing to console instead of being parsed. Research best practices for subagent metadata passing in Claude Code 2026. Improve the agent system to avoid printing JSON output to console and eliminate the 'continue' interruptions demonstrated in the research output.
-
----
-
-### 599. Troubleshoot jq Escaping in Agent System
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/599_troubleshoot_jq_escaping_agent_system/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/599_troubleshoot_jq_escaping_agent_system/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/599_troubleshoot_jq_escaping_agent_system/summaries/implementation-summary-20260118.md)
-
-**Description**: Troubleshoot jq escaping issues in agent system. The not-equals operator is being escaped when passed through bash, causing jq parse errors. Fix skill-task and related skills to properly handle jq operators. Document correct patterns in context files to ensure consistent jq usage across the system.
-
----
-
-### 597. Re-prove main_provable_iff_valid in Metalogic_v2
-- **Effort**: 20-30 hours (zero technical debt solution)
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md), [research-002.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-002.md), [research-003.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-003.md)
-- **Plan**: [implementation-002.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-002.md) (supersedes v1)
-- **Summary**: [implementation-summary-20260118.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/summaries/implementation-summary-20260118.md)
-
-**Description**: Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. Build SemanticCanonicalModel_v2 to bridge canonical truth (MCS membership) to semantic truth (TaskModel evaluation). Zero technical debt - no imports from old Metalogic.
-
----
 
 ### 585. Add Session Cleanup to Agents
 - **Effort**: 1-2 hours
@@ -137,53 +76,7 @@ technical_debt:
 
 ---
 
-### 568. Create Metalogic_v2 Test Suite
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-18
-- **Completed**: 2026-01-19
-- **Source**: Code Review 2026-01-17
-- **Research**: [research-001.md](specs/568_create_metalogic_v2_test_suite/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/568_create_metalogic_v2_test_suite/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/568_create_metalogic_v2_test_suite/summaries/implementation-summary-20260118.md)
-
-**Description**: Create comprehensive test suite for Bimodal/Metalogic_v2/ to enable eventual deletion of old Bimodal/Metalogic/. Tests should provide good coverage of all Metalogic_v2 modules independently—no imports from old Metalogic. Draw inspiration from old Metalogic/ tests where relevant, but focus on high-quality independent tests for the new metalogic architecture. Cover core modules: MCS properties, canonical model construction, soundness, completeness bridge lemmas, and the provable_iff_valid theorem.
-
----
-
-### 595. Remove Maintenance Directory and Fix Review State Management
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Research**: [research-001.md](specs/595_remove_maintenance_dir_fix_review_state/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/595_remove_maintenance_dir_fix_review_state/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/595_remove_maintenance_dir_fix_review_state/summaries/implementation-summary-20260118.md)
-- **Created**: 2026-01-19
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-19
-
-**Description**: Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.
-
----
-
-### 596. Constructive Finite Model Bounds
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-18
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-18
-- **Research**: [research-001.md](specs/596_constructive_finite_model_bounds/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/596_constructive_finite_model_bounds/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/596_constructive_finite_model_bounds/summaries/implementation-summary-20260118.md)
-
-**Description**: The Finite Model Property currently uses a trivial witness (identity function on satisfiability). Establish constructive finite model bounds instead, archiving the old method to the Bimodal/Boneyard/ once the constructive alternative is fully implemented with zero sorries.
-
----
+## Medium Priority
 
 ### 483. Investigate LaTeX aux file corruption errors
 - **Effort**: 2-3 hours
@@ -200,7 +93,6 @@ technical_debt:
 - **Status**: [RESEARCHED]
 - **Researched**: 2026-01-12
 - **Priority**: Medium
-- **Research Report**: [research-001.md](498_verify_bridge_lemma_infrastructure/reports/research-001.md)
 - **Language**: general
 - **Research**: [research-001.md](specs/431_wezterm_tab_color_notification/reports/research-001.md)
 
@@ -208,26 +100,9 @@ technical_debt:
 
 ---
 
-### 604. Migrate FMP to SemanticCanonicalModel_v2
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-18
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Dependencies**: Task 597
-- **Research**: [research-001.md](specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/summaries/implementation-summary-20260119.md)
-
-**Description**: Migrate Task 596's constructive FMP implementation to use the new SemanticCanonicalModel_v2 infrastructure from Task 597. Update FiniteModelProperty.lean and ContextProvability.lean to remove dependency on Bimodal.Metalogic.Completeness.FiniteCanonicalModel, enabling full independence of Metalogic_v2 from the old Bimodal/Metalogic/ directory.
-
----
-
 ### 605. Sync Plan Metadata Status with Task Status
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -239,29 +114,12 @@ technical_debt:
 
 ## Low Priority
 
-### 598. Remove deprecated helpers from ContextProvability.lean
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: Low
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/598_remove_deprecated_helpers_contextprovability/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/598_remove_deprecated_helpers_contextprovability/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/598_remove_deprecated_helpers_contextprovability/summaries/implementation-summary-20260118.md)
-
-**Description**: Remove deprecated helper functions from ContextProvability.lean: `semantic_world_validity_implies_provable` (deprecated 2026-01-18) and `semantic_consequence_implies_semantic_world_truth` (deprecated 2026-01-18). These are marked `@[deprecated]` but can be deleted once confirmed unused.
-
----
-
 ### 470. Finite model computational optimization
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 458
 - **Research**: [research-001.md](specs/470_finite_model_computational_optimization/reports/research-001.md), [research-002.md](specs/470_finite_model_computational_optimization/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/470_finite_model_computational_optimization/plans/implementation-001.md)
 
 **Description**: Optimize FiniteCanonicalModel.lean for computational efficiency. Current implementation prioritizes correctness over performance. Identify and implement optimizations for the finite world state enumeration, task relation checking, and truth evaluation.
 

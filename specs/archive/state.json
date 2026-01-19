@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-19T01:16:09Z",
+  "_last_updated": "2026-01-19T07:37:26Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -6277,6 +6277,349 @@
       "completed": "2026-01-19T00:54:01Z",
       "archived": "2026-01-19T01:16:09Z",
       "description": "Investigate and fix progress interruptions where agents require hitting continue during execution."
+    },
+    {
+      "project_number": 604,
+      "project_name": "migrate_fmp_to_semanticcanonicalmodel_v2",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T06:44:19Z",
+      "last_updated": "2026-01-19T07:22:51Z",
+      "session_id": "sess_1768806627_23b9c3",
+      "researched": "2026-01-19T07:02:58Z",
+      "artifacts": [
+        {
+          "path": "specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting current dependencies on old Metalogic, available v2 infrastructure, gap analysis with 6-8 definitions to port, and 4-phase migration plan"
+        },
+        {
+          "path": "specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for migrating FMP to v2 infrastructure"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic_v2/Representation/Closure.lean",
+          "type": "implementation",
+          "summary": "Added closureSize definition"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic_v2/Representation/FiniteWorldState.lean",
+          "type": "implementation",
+          "summary": "Added ext, mem_toSet_iff, and Fintype instances"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic_v2/Representation/SemanticCanonicalModel.lean",
+          "type": "implementation",
+          "summary": "Added semanticWorldState_finite, semantic_world_state_has_world_history, phi_consistent_of_not_refutable, semantic_truth_implies_truth_at"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic_v2/Representation/FiniteModelProperty.lean",
+          "type": "implementation",
+          "summary": "Migrated to v2 infrastructure exclusively"
+        },
+        {
+          "path": "specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-19T07:07:19Z",
+      "started": "2026-01-19T07:10:51Z",
+      "completed": "2026-01-19T07:22:51Z",
+      "archived": "2026-01-19T07:37:26Z"
+    },
+    {
+      "project_number": 600,
+      "project_name": "fix_subagent_metadata_passing",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T01:21:21Z",
+      "last_updated": "2026-01-19T02:25:51Z",
+      "session_id": "sess_1768788507_c30ebc",
+      "researched": "2026-01-19T01:48:14Z",
+      "artifacts": [
+        {
+          "path": "specs/600_fix_subagent_metadata_passing/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/600_fix_subagent_metadata_passing/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/600_fix_subagent_metadata_passing/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/600_fix_subagent_metadata_passing/summaries/implementation-summary-20260118.md",
+          "type": "summary",
+          "summary": "Complete implementation of skill-internal postflight pattern with file-based metadata exchange"
+        }
+      ],
+      "planned": "2026-01-19T02:03:04Z",
+      "started": "2026-01-19T02:08:46Z",
+      "completed": "2026-01-19T02:25:51Z",
+      "archived": "2026-01-19T07:37:26Z"
+    },
+    {
+      "project_number": 599,
+      "project_name": "troubleshoot_jq_escaping_agent_system",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-19T01:07:44Z",
+      "last_updated": "2026-01-19T01:30:58Z",
+      "description": "Troubleshoot jq escaping issues in agent system. The not-equals operator is being escaped when passed through bash, causing jq parse errors. Fix skill-task and related skills to properly handle jq operators. Document correct patterns in context files to ensure consistent jq usage across the system.",
+      "session_id": "sess_1768785910_52fa83",
+      "researched": "2026-01-19T01:15:05Z",
+      "artifacts": [
+        {
+          "path": "specs/599_troubleshoot_jq_escaping_agent_system/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/599_troubleshoot_jq_escaping_agent_system/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/599_troubleshoot_jq_escaping_agent_system/summaries/implementation-summary-20260118.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-19T01:18:24Z",
+      "started": "2026-01-19T01:25:28Z",
+      "completed": "2026-01-19T01:30:58Z",
+      "archived": "2026-01-19T07:37:26Z"
+    },
+    {
+      "project_number": 598,
+      "project_name": "remove_deprecated_helpers_contextprovability",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-19T01:02:15Z",
+      "last_updated": "2026-01-19T02:13:40Z",
+      "description": "Remove deprecated helper functions from ContextProvability.lean: semantic_world_validity_implies_provable (deprecated 2026-01-18) and semantic_consequence_implies_semantic_world_truth (deprecated 2026-01-18). These are marked @[deprecated] but can be deleted once confirmed unused.",
+      "session_id": "sess_1768788522_f6b18f",
+      "researched": "2026-01-19T01:54:13Z",
+      "artifacts": [
+        {
+          "path": "specs/598_remove_deprecated_helpers_contextprovability/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/598_remove_deprecated_helpers_contextprovability/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/598_remove_deprecated_helpers_contextprovability/summaries/implementation-summary-20260118.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-19T02:03:30Z",
+      "started": "2026-01-19T02:08:57Z",
+      "completed": "2026-01-19T02:13:40Z",
+      "archived": "2026-01-19T07:37:26Z"
+    },
+    {
+      "project_number": 597,
+      "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-19T01:00:46Z",
+      "last_updated": "2026-01-19T06:54:59Z",
+      "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
+      "session_id": "sess_1768804267_e45a99",
+      "researched": "2026-01-19T02:17:55Z",
+      "artifacts": [
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-003.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-002.md",
+          "type": "plan"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic_v2/Representation/SemanticCanonicalModel.lean",
+          "type": "implementation",
+          "summary": "New semantic canonical model with main_provable_iff_valid_v2 theorem"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic_v2/Representation/Closure.lean",
+          "type": "implementation",
+          "summary": "Subformula closure infrastructure for finite model construction"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic_v2/Representation/FiniteWorldState.lean",
+          "type": "implementation",
+          "summary": "Finite world state and history structures"
+        },
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/summaries/implementation-summary-20260118.md",
+          "type": "summary",
+          "summary": "Implementation summary with changes, limitations, and future work"
+        }
+      ],
+      "planned": "2026-01-19T06:26:33Z",
+      "started": "2026-01-19T01:25:26Z",
+      "completed": "2026-01-19T06:54:59Z",
+      "archived": "2026-01-19T07:37:26Z"
+    },
+    {
+      "project_number": 596,
+      "project_name": "constructive_finite_model_bounds",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T00:56:57Z",
+      "last_updated": "2026-01-19T03:26:13Z",
+      "session_id": "sess_1768792500_4d0fe7",
+      "researched": "2026-01-19T01:32:03Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/596_constructive_finite_model_bounds/reports/research-001.md",
+          "summary": "Research on FMP infrastructure and closure bounds"
+        },
+        {
+          "type": "plan",
+          "path": "specs/596_constructive_finite_model_bounds/plans/implementation-001.md",
+          "summary": "4-phase plan for constructive FMP implementation"
+        },
+        {
+          "type": "summary",
+          "path": "specs/596_constructive_finite_model_bounds/summaries/implementation-summary-20260118.md",
+          "summary": "Implementation summary with verification results and remaining sorries"
+        }
+      ],
+      "planned": "2026-01-19T01:55:26Z",
+      "started": "2026-01-19T02:01:33Z",
+      "completed_phases": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "completed": "2026-01-19T03:26:13Z",
+      "archived": "2026-01-19T07:37:26Z"
+    },
+    {
+      "project_number": 595,
+      "project_name": "remove_maintenance_dir_fix_review_state",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T00:53:03Z",
+      "last_updated": "2026-01-19T02:04:39Z",
+      "description": "Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.",
+      "session_id": "sess_1768788145_d4689b",
+      "researched": "2026-01-19T01:18:58Z",
+      "artifacts": [
+        {
+          "path": "specs/595_remove_maintenance_dir_fix_review_state/reports/research-001.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/595_remove_maintenance_dir_fix_review_state/plans/implementation-001.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/595_remove_maintenance_dir_fix_review_state/summaries/implementation-summary-20260118.md",
+          "type": "summary"
+        }
+      ],
+      "planned": "2026-01-19T01:28:33Z",
+      "started": "2026-01-19T01:53:54Z",
+      "completed": "2026-01-19T02:04:39Z",
+      "archived": "2026-01-19T07:37:26Z"
+    },
+    {
+      "project_number": 568,
+      "project_name": "create_metalogic_v2_test_suite",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-18T02:30:43Z",
+      "last_updated": "2026-01-19T07:13:41Z",
+      "description": "Create comprehensive test suite for Bimodal/Metalogic_v2/ to enable eventual deletion of old Bimodal/Metalogic/. Tests should provide good coverage of all Metalogic_v2 modules independently—no imports from old Metalogic. Draw inspiration from old Metalogic/ tests where relevant, but focus on high-quality independent tests for the new metalogic architecture. Cover core modules: MCS properties, canonical model construction, soundness, completeness bridge lemmas, and the provable_iff_valid theorem.",
+      "session_id": "sess_1768805807_43e8bb",
+      "researched": "2026-01-19T06:49:07Z",
+      "artifacts": [
+        {
+          "path": "specs/568_create_metalogic_v2_test_suite/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on Metalogic_v2 test suite requirements with architecture analysis, coverage gaps, and recommendations"
+        },
+        {
+          "path": "specs/568_create_metalogic_v2_test_suite/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for Metalogic_v2 test suite covering FMP, ContextProvability, TruthLemma, and CanonicalModel tests"
+        },
+        {
+          "path": "specs/568_create_metalogic_v2_test_suite/summaries/implementation-summary-20260118.md",
+          "type": "summary",
+          "summary": "Implementation of comprehensive Metalogic_v2 test suite with 4 new test files and fixes to existing tests"
+        }
+      ],
+      "planned": "2026-01-19T06:53:38Z",
+      "started": "2026-01-19T06:57:08Z",
+      "completed": "2026-01-19T07:13:41Z",
+      "archived": "2026-01-19T07:37:26Z"
+    },
+    {
+      "project_number": 601,
+      "project_name": "design_task_review_logic_validation",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-18T17:36:50Z",
+      "last_updated": "2026-01-19T07:14:17Z",
+      "description": "Design validation rules for state.json/TODO.md consistency, artifact links, completion verification, follow-up task workflow",
+      "session_id": "sess_1768806673_bf73d4",
+      "researched": "2026-01-19T06:56:17Z",
+      "artifacts": [
+        {
+          "path": "specs/601_design_task_review_logic_validation/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive validation rule design covering state/TODO consistency, artifact validation, completion verification, and follow-up task patterns"
+        },
+        {
+          "path": "specs/601_design_task_review_logic_validation/reports/research-002.md",
+          "type": "research",
+          "summary": "Follow-up research analyzing current --sync implementation and designing --review as superset with backwards-compatible migration path"
+        },
+        {
+          "path": "specs/601_design_task_review_logic_validation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan implementing --review as read-only task completion analyzer with interactive follow-up task creation"
+        },
+        {
+          "path": "specs/601_design_task_review_logic_validation/summaries/implementation-summary-20260118.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting /task --review N command with 9-step workflow"
+        }
+      ],
+      "planned": "2026-01-19T07:08:30Z",
+      "started": "2026-01-19T07:11:30Z",
+      "completed": "2026-01-19T07:14:17Z",
+      "archived": "2026-01-19T07:37:26Z"
     }
   ]
 }
