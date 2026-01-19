@@ -1,5 +1,5 @@
 ---
-next_project_number: 608
+next_project_number: 609
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -77,6 +77,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 608. Restructure completeness proof via representation theorem
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-19
+- **Related**: Task 470
+
+**Description**: Use Theories/Bimodal/Metalogic_v2/README.md which outlines the reorganization strategy to make the representation theorem the foundation from which completeness and decidability are derived, and study specs/470_finite_model_computational_optimization/summaries/implementation-summary-20260118.md to determine how best to proceed given the limitations encountered in order to finish restructuring the proof towards using the representation theorem to establish completeness.
+
+---
 
 ### 483. Investigate LaTeX aux file corruption errors
 - **Effort**: 2-3 hours

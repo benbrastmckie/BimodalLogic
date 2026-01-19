@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 608,
+      "project_name": "restructure_completeness_via_representation_theorem",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T15:54:48Z",
+      "last_updated": "2026-01-19T15:54:48Z"
+    },
+    {
       "project_number": 605,
       "project_name": "sync_plan_metadata_status_with_task_status",
       "status": "completed",
@@ -192,5 +201,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 608
+  "next_project_number": 609
 }
