@@ -6,6 +6,52 @@
   },
   "active_projects": [
     {
+      "project_number": 622,
+      "project_name": "prove_applyRule_decreases_complexity",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "parent_task": 490,
+      "created": "2026-01-19T22:38:22Z",
+      "last_updated": "2026-01-19T22:38:22Z"
+    },
+    {
+      "project_number": 623,
+      "project_name": "build_fmp_tableau_connection_infrastructure",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "parent_task": 490,
+      "created": "2026-01-19T22:38:22Z",
+      "last_updated": "2026-01-19T22:38:22Z"
+    },
+    {
+      "project_number": 624,
+      "project_name": "prove_tableau_complete",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "parent_task": 490,
+      "dependencies": [
+        623
+      ],
+      "created": "2026-01-19T22:38:22Z",
+      "last_updated": "2026-01-19T22:38:22Z"
+    },
+    {
+      "project_number": 625,
+      "project_name": "prove_decide_complete",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "parent_task": 490,
+      "dependencies": [
+        624
+      ],
+      "created": "2026-01-19T22:38:22Z",
+      "last_updated": "2026-01-19T22:38:22Z"
+    },
+    {
       "project_number": 621,
       "project_name": "analyze_plan_errors_improve_agent_execution",
       "status": "completed",
@@ -323,12 +369,12 @@
     },
     {
       "project_number": 490,
-      "status": "partial",
+      "status": "expanded",
       "project_name": "complete_decidability_procedure",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low",
-      "last_updated": "2026-01-19T22:47:16Z",
+      "last_updated": "2026-01-19T22:38:22Z",
       "session_id": "sess_1768861636_a5f8bb",
       "researched": "2026-01-19T20:41:56Z",
       "artifacts": [
@@ -353,7 +399,13 @@
       ],
       "planned": "2026-01-19T21:25:47Z",
       "started": "2026-01-19T21:33:26Z",
-      "blocked_phases": "3-4 (tableau_complete, decide_complete require FMP-tableau infrastructure not yet available)"
+      "blocked_phases": "3-4 (tableau_complete, decide_complete require FMP-tableau infrastructure not yet available)",
+      "subtasks": [
+        622,
+        623,
+        624,
+        625
+      ]
     },
     {
       "project_number": 607,
@@ -401,5 +453,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 622
+  "next_project_number": 626
 }

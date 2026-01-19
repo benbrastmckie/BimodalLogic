@@ -1,5 +1,5 @@
 ---
-next_project_number: 622
+next_project_number: 626
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -232,18 +232,60 @@ technical_debt:
 ---
 
 ### 490. Complete decidability procedure
-- **Status**: [PARTIAL]
+- **Status**: [EXPANDED]
 - **Researched**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 469
 - **Dependencies**: Task 607
+- **Subtasks**: 622, 623, 624, 625
 - **Research**: [research-001.md](specs/490_complete_decidability_procedure/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/490_complete_decidability_procedure/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260119.md](specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md)
-- **Blocked**: Phases 3-4 (tableau_complete, decide_complete) require FMP-tableau infrastructure not yet available
 
-**Description**: Complete the decidability procedure for TM logic. Phases 1-2 completed with helper lemmas and proof structure. Phases 3-4 blocked pending FMP-tableau connection infrastructure. Soundness complete, decidability operational with documented sorries.
+**Description**: Complete the decidability procedure for TM logic. Phases 1-2 completed with helper lemmas and proof structure. Expanded into subtasks for remaining work.
+
+---
+
+### 622. Prove applyRule_decreases_complexity
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 490
+
+**Description**: Prove the `applyRule_decreases_complexity` lemma in Saturation.lean. Requires case analysis on all 16 tableau rules showing that rule application decreases formula complexity. This completes the remaining work from Phase 2 of Task 490.
+
+---
+
+### 623. Build FMP-tableau connection infrastructure
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 490
+
+**Description**: Build infrastructure connecting FMP bounds to tableau semantics. Required lemmas: (1) open_saturated_implies_satisfiable - saturated open branch yields finite countermodel, (2) valid_implies_no_open_branch - contrapositive from FMP, (3) fmpFuel_sufficient_termination - buildTableau doesn't return none with FMP fuel. Prerequisite for tableau_complete proof.
+
+---
+
+### 624. Prove tableau_complete
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 490
+- **Dependencies**: Task 623
+
+**Description**: Prove the `tableau_complete` theorem in Correctness.lean connecting FMP to tableau termination. Uses infrastructure from Task 623 to show that valid formulas have closing tableaux within FMP fuel bounds.
+
+---
+
+### 625. Prove decide_complete
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Parent**: Task 490
+- **Dependencies**: Task 624
+
+**Description**: Prove the `decide_complete` theorem in Correctness.lean deriving decision procedure completeness from tableau completeness. Follows directly from tableau_complete (Task 624).
 
 ---
 
