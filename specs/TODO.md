@@ -72,13 +72,14 @@ technical_debt:
 
 ### 561. Cleanup and Documentation
 - **Effort**: 1-2 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-17
 - **Parent**: 556
 - **Dependencies**: 560
 - **Research**: [research-001.md](specs/561_cleanup_and_documentation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/561_cleanup_and_documentation/plans/implementation-001.md)
 
 **Description**: Improve documentation for Metalogic_v2/ to be accurate and up to date. Remove historical markers and commentary (words like 'now', 'currently', etc.). Update README.md with accurate completion status. Verify documentation matches implementation state.
 

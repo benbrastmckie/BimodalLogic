@@ -8,21 +8,21 @@
     {
       "project_number": 594,
       "project_name": "fix_progress_interruptions_agent_system",
-      "status": "planned",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "effort": "2-3 hours",
       "created": "2026-01-19T00:12:36Z",
-      "last_updated": "2026-01-19T00:31:57Z"
+      "last_updated": "2026-01-19T00:35:42Z"
     },
     {
       "project_number": 561,
       "project_name": "cleanup_and_documentation",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-17T21:00:15Z",
-      "last_updated": "2026-01-19T00:30:04Z",
+      "last_updated": "2026-01-19T00:33:34Z",
       "parent_task": 556,
       "dependencies": [
         560
@@ -32,6 +32,10 @@
         {
           "path": "specs/561_cleanup_and_documentation/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/561_cleanup_and_documentation/plans/implementation-001.md",
+          "type": "plan"
         }
       ]
     },
