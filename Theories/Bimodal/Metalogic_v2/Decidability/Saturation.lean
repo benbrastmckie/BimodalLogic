@@ -259,18 +259,56 @@ theorem complexity_all_past (φ : Formula) : φ.complexity < (Formula.all_past �
 -/
 
 /--
-Helper: removing an element from a list doesn't increase the foldl accumulation
-of a non-negative function.
+Helper: foldl is monotonic in the initial value for additive functions.
 -/
-theorem foldl_filter_le (b : Branch) (sf : SignedFormula) (f : Nat → SignedFormula → Nat) :
-    (b.filter (· != sf)).foldl f 0 ≤ b.foldl f 0 := by
-  sorry  -- Standard list lemma: filter produces a sublist
+theorem foldl_add_mono (l : List SignedFormula) (g : SignedFormula → Nat) (m n : Nat) (hmn : m ≤ n) :
+    l.foldl (fun acc sf' => acc + g sf') m ≤ l.foldl (fun acc sf' => acc + g sf') n := by
+  induction l generalizing m n with
+  | nil => exact hmn
+  | cons h t ih =>
+    simp only [List.foldl_cons]
+    apply ih
+    omega
+
+/--
+Helper: removing an element from a list doesn't increase the foldl accumulation
+of a non-negative additive function.
+-/
+theorem foldl_filter_le (b : Branch) (sf : SignedFormula) (g : SignedFormula → Nat) (n : Nat) :
+    (b.filter (· != sf)).foldl (fun acc sf' => acc + g sf') n ≤
+    b.foldl (fun acc sf' => acc + g sf') n := by
+  induction b generalizing n with
+  | nil => simp
+  | cons h t ih =>
+    simp only [List.filter, List.foldl_cons]
+    cases heq : (h != sf)
+    · -- h = sf case
+      calc (t.filter (· != sf)).foldl (fun acc sf' => acc + g sf') n
+          ≤ t.foldl (fun acc sf' => acc + g sf') n := ih n
+        _ ≤ t.foldl (fun acc sf' => acc + g sf') (n + g h) :=
+            foldl_add_mono t g n _ (Nat.le_add_right n _)
+    · -- h != sf case
+      exact ih _
 
 /--
 Total complexity of a list of signed formulas.
 -/
 def totalComplexity (sfs : List SignedFormula) : Nat :=
   sfs.foldl (fun acc sf => acc + sf.formula.complexity) 0
+
+/--
+Helper: the expansionMeasure foldl is monotonic in the initial value.
+-/
+theorem foldl_conditional_mono (l : List SignedFormula) (m n : Nat) (hmn : m ≤ n) :
+    l.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) m ≤
+    l.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) n := by
+  induction l generalizing m n with
+  | nil => exact hmn
+  | cons h t ih =>
+    simp only [List.foldl_cons]
+    split_ifs with hexp
+    · exact ih m n hmn
+    · apply ih; omega
 
 /--
 Key lemma: applying a tableau rule produces formulas with strictly smaller total complexity.
@@ -302,6 +340,19 @@ theorem applyRule_decreases_complexity (rule : TableauRule) (sf : SignedFormula)
 /--
 Helper: if sf is in b and ¬isExpanded sf, then sf contributes positively to expansionMeasure.
 -/
+-- Helper: foldl with conditional always returns at least the initial value
+theorem foldl_conditional_ge_init (l : List SignedFormula) (n : Nat) :
+    l.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) n ≥ n := by
+  induction l generalizing n with
+  | nil => simp
+  | cons h t ih =>
+    simp only [List.foldl_cons]
+    split_ifs with hexp
+    · exact ih n
+    · calc n ≤ n + h.formula.complexity := Nat.le_add_right _ _
+        _ ≤ t.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity)
+              (n + h.formula.complexity) := ih _
+
 theorem unexpanded_contributes (b : Branch) (sf : SignedFormula) (hIn : sf ∈ b) (hUnexp : ¬isExpanded sf) :
     0 < sf.formula.complexity ∧
     expansionMeasure b ≥ sf.formula.complexity := by
@@ -309,7 +360,29 @@ theorem unexpanded_contributes (b : Branch) (sf : SignedFormula) (hIn : sf ∈ b
   · -- complexity is always positive
     cases sf.formula <;> simp [Formula.complexity] <;> omega
   · -- sf contributes to the measure
-    sorry
+    have hUnexp' : isExpanded sf = false := by
+      cases h : isExpanded sf <;> simp_all
+    simp only [expansionMeasure]
+    induction b with
+    | nil => simp at hIn
+    | cons h t ih =>
+      simp only [List.foldl_cons, List.mem_cons] at hIn ⊢
+      rcases hIn with rfl | hmem
+      · -- sf = h case
+        -- hUnexp' : isExpanded sf = false
+        -- Need to show: foldl (...) (if isExpanded sf then 0 else 0 + sf.complexity) t ≥ sf.complexity
+        simp only [hUnexp', Bool.false_eq_true, ↓reduceIte]
+        -- Now: foldl (...) (0 + sf.formula.complexity) t ≥ sf.formula.complexity
+        have h1 := foldl_conditional_ge_init t (0 + sf.formula.complexity)
+        omega
+      · -- sf ∈ t case
+        specialize ih hmem
+        split_ifs with hexp
+        · exact ih
+        · calc sf.formula.complexity
+              ≤ t.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) 0 := ih
+            _ ≤ t.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity)
+                  (0 + h.formula.complexity) := by apply foldl_conditional_mono; omega
 
 /--
 Expansion decreases the measure (for non-saturated branches).

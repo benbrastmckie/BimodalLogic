@@ -4,7 +4,7 @@
 **Completed**: 2026-01-19 (Partial)
 **Duration**: Multiple sessions
 **Status**: PARTIAL
-**Session**: sess_1768859831_ea9dce (latest), sess_1768858875_b3b77f, sess_1768858388_5ac0d4
+**Session**: sess_1768860492_5460af (latest), sess_1768859831_ea9dce, sess_1768858875_b3b77f, sess_1768858388_5ac0d4
 
 ## Overview
 
@@ -14,7 +14,50 @@ This task aimed to complete the decidability procedure for TM bimodal logic by p
 3. `decide_complete` - Decision procedure completeness
 4. `decide_axiom_valid` (optional) - Axiom handling correctness
 
-## Implementation Progress (Session 3 - Current)
+## Implementation Progress (Session 4 - Current)
+
+### Phase 2: Substantial Progress - Helper Lemmas Fully Proven
+
+**Major Accomplishments**:
+- **`foldl_filter_le` - FULLY PROVEN**: Proved that filtering a list doesn't increase foldl of additive function
+- **`foldl_add_mono` - NEW, FULLY PROVEN**: Proved monotonicity of foldl for additive functions
+- **`foldl_conditional_mono` - NEW, FULLY PROVEN**: Proved monotonicity of expansion measure foldl
+- **`foldl_conditional_ge_init` - NEW, FULLY PROVEN**: Proved foldl result >= initial value
+- **`unexpanded_contributes` - FULLY PROVEN**: Completed proof that unexpanded formulas contribute to measure
+
+**Code Changes**:
+```lean
+-- All new helper lemmas (fully proven):
+theorem foldl_add_mono (l : List SignedFormula) (g : SignedFormula -> Nat) (m n : Nat) (hmn : m <= n) :
+    l.foldl (fun acc sf' => acc + g sf') m <= l.foldl (fun acc sf' => acc + g sf') n
+
+theorem foldl_filter_le (b : Branch) (sf : SignedFormula) (g : SignedFormula -> Nat) (n : Nat) :
+    (b.filter (. != sf)).foldl (fun acc sf' => acc + g sf') n <=
+    b.foldl (fun acc sf' => acc + g sf') n
+
+theorem foldl_conditional_mono (l : List SignedFormula) (m n : Nat) (hmn : m <= n) :
+    l.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) m <=
+    l.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) n
+
+theorem foldl_conditional_ge_init (l : List SignedFormula) (n : Nat) :
+    l.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) n >= n
+
+theorem unexpanded_contributes (b : Branch) (sf : SignedFormula) (hIn : sf in b) (hUnexp : not isExpanded sf) :
+    0 < sf.formula.complexity and expansionMeasure b >= sf.formula.complexity
+-- NOW FULLY PROVEN (both parts)
+```
+
+**Sorry Count Reduction**:
+- Saturation.lean: 4 sorries -> 2 sorries
+- Key progress: All foldl-related helper lemmas now proven
+
+**Remaining Sorries in Saturation.lean (2)**:
+1. `applyRule_decreases_complexity`: Case analysis on 16 rules (tedious but straightforward)
+2. Final arithmetic in `expansion_decreases_measure` (depends on #1)
+
+---
+
+## Implementation Progress (Session 3)
 
 ### Phase 2: expansion_decreases_measure - Further Progress
 
@@ -132,11 +175,15 @@ This infrastructure doesn't currently exist and would require:
 
 | File | Sorries | Purpose |
 |------|---------|---------|
-| Saturation.lean | 4 | foldl_filter_le, applyRule_decreases_complexity, expansion_decreases_measure (2 cases) |
+| Saturation.lean | 2 | applyRule_decreases_complexity, expansion_decreases_measure (final arithmetic) |
 | Correctness.lean | 3 | tableau_complete, decide_complete, decide_axiom_valid |
 | BranchClosure.lean | 2 | closed_extend_closed, add_neg_causes_closure |
 
-**Total**: 9 sorries in Decidability modules (helper sorries for documented proof strategy)
+**Total**: 7 sorries in Decidability modules (reduced from 9)
+
+**Session 4 Progress**: Reduced Saturation.lean sorries from 4 to 2 by proving:
+- `foldl_filter_le` (was sorry)
+- `unexpanded_contributes` second part (was sorry)
 
 ## Recommendations for Future Work
 
