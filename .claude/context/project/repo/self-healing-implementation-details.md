@@ -345,7 +345,6 @@ def create_minimal_state():
         },
         "state_references": {
             "archive_state_path": "specs/archive/state.json",
-            "maintenance_state_path": "specs/maintenance/state.json",
             "_comment": "References to specialized state files. These files are auto-created if missing."
         },
         "active_projects": [],

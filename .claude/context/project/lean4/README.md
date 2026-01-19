@@ -11,8 +11,8 @@ Lean-specific context for Logos. Use these files for language, tooling, tactic p
 ## Lean-Specific Files
 - Standards: `standards/lean4-style-guide.md`, `standards/proof-conventions-lean.md`, `standards/proof-readability-criteria.md`
 - Patterns: `patterns/tactic-patterns.md`
-- Processes: `processes/end-to-end-proof-workflow.md`, `processes/maintenance-workflow.md`, `processes/project-structure-best-practices.md`
-- Templates: `templates/definition-template.md`, `templates/maintenance-report-template.md`, `templates/new-file-template.md`, `templates/proof-structure-templates.md`
+- Processes: `processes/end-to-end-proof-workflow.md`, `processes/project-structure-best-practices.md`
+- Templates: `templates/definition-template.md`, `templates/new-file-template.md`, `templates/proof-structure-templates.md`
 - Tools: `tools/aesop-integration.md`, `tools/leansearch-api.md`, `tools/loogle-api.md`, `tools/lsp-integration.md`, `tools/mcp-tools-guide.md`
 - Domain: `domain/dependent-types.md`, `domain/key-mathematical-concepts.md`, `domain/lean4-syntax.md`, `domain/mathlib-overview.md`
 

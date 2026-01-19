@@ -255,7 +255,6 @@ Load for: Lean implementation tasks (Language: lean)
 
 **Processes**:
 - **end-to-end-proof-workflow.md** - Complete proof development workflow
-- **maintenance-workflow.md** - Proof maintenance procedures
 - **project-structure-best-practices.md** - Repository organization
 
 **Domain**:
@@ -268,7 +267,6 @@ Load for: Lean implementation tasks (Language: lean)
 - **definition-template.md** - Definition structure template
 - **new-file-template.md** - New Lean file template
 - **proof-structure-templates.md** - Proof structure templates
-- **maintenance-report-template.md** - Maintenance report template
 
 ### Logic Context (project/logic/)
 

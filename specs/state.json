@@ -106,19 +106,24 @@
     {
       "project_number": 596,
       "project_name": "constructive_finite_model_bounds",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T00:56:57Z",
-      "last_updated": "2026-01-19T01:53:23Z",
+      "last_updated": "2026-01-19T01:55:26Z",
       "session_id": "sess_1768787586_7583f9",
       "researched": "2026-01-19T01:32:03Z",
       "artifacts": [
         {
           "path": "specs/596_constructive_finite_model_bounds/reports/research-001.md",
           "type": "research"
+        },
+        {
+          "path": "specs/596_constructive_finite_model_bounds/plans/implementation-001.md",
+          "type": "plan"
         }
-      ]
+      ],
+      "planned": "2026-01-19T01:55:26Z"
     },
     {
       "project_number": 595,
