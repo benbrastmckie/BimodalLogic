@@ -50,7 +50,7 @@ Research report `specs/561_cleanup_and_documentation/reports/research-001.md` (2
 
 ## Implementation Phases
 
-### Phase 1: Update README.md Accuracy [NOT STARTED]
+### Phase 1: Update README.md Accuracy [COMPLETED]
 
 **Goal**: Correct README.md to reflect zero sorries and add proven theorems
 
@@ -78,7 +78,7 @@ Research report `specs/561_cleanup_and_documentation/reports/research-001.md` (2
 
 ---
 
-### Phase 2: Clean Historical Markers in Lean Comments [NOT STARTED]
+### Phase 2: Clean Historical Markers in Lean Comments [IN PROGRESS]
 
 **Goal**: Remove 3 historical/temporal markers from Lean file comments
 

@@ -62,8 +62,7 @@ The main completeness result for the empty context.
 5. This contradicts validity of φ
 
 **Implementation Status**:
-Uses the representation_theorem_backward_empty axiom from ContextProvability
-which will be proven once the full canonical model machinery is in place.
+Uses representation_theorem_backward_empty from ContextProvability (proven).
 -/
 theorem weak_completeness (φ : Formula) : valid φ → ContextDerivable [] φ := by
   intro h_valid

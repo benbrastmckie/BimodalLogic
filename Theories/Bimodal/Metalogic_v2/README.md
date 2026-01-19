@@ -85,13 +85,12 @@ Metalogic_v2/
 | `representation_theorem_backward_empty` | Representation/ContextProvability.lean | ⊨ φ → ⊢ φ (via main_provable_iff_valid) |
 | `weak_completeness` | Completeness/WeakCompleteness.lean | valid φ → provable φ |
 | `strong_completeness` | Completeness/StrongCompleteness.lean | Γ ⊨ φ → Γ ⊢ φ |
+| `necessitation_lemma` | Representation/TruthLemma.lean | Box operator preservation in MCS |
+| `finite_model_property` | Representation/FiniteModelProperty.lean | FMP via satisfiability witness |
+| `satisfiability_decidable` | Representation/FiniteModelProperty.lean | Decidability of satisfiability |
+| `validity_decidable_via_fmp` | Representation/FiniteModelProperty.lean | Decidability of validity |
 
-### With Sorries (remaining technical debt)
-
-| Theorem | Location | Status |
-|---------|----------|--------|
-| `necessitation_lemma` | Representation/TruthLemma.lean:160 | sorry (needs deductive closure proof) |
-| `finite_model_property` | Representation/FiniteModelProperty.lean | Trivial witness (constructive bounds needed) |
+All theorems in Metalogic_v2 are fully proven with no sorry statements.
 
 ## Usage
 
@@ -153,11 +152,9 @@ import Bimodal.Metalogic_v2.Representation.CanonicalModel
 
 ## Future Work
 
-1. **Complete remaining sorries** (1 total):
-   - `necessitation_lemma`: Prove using deductive closure properties
-2. **Add Decidability layer**: Port Decidability/ with FMP integration
-3. **Constructive FMP**: Establish finite model bounds (currently trivial witness)
-4. **Proof cleanup**: Remove redundant tactics and improve readability
+1. **Add Decidability layer**: Port Decidability/ with FMP integration
+2. **Constructive FMP**: Establish finite model bounds (trivial witness implementation)
+3. **Proof cleanup**: Remove redundant tactics and improve readability
 
 ## References
 
