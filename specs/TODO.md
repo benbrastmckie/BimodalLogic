@@ -29,7 +29,7 @@ technical_debt:
 
 ### 614. Refactor /cleanup command to /refresh
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-19
 - **Research**: [research-001.md](specs/614_refactor_cleanup_to_refresh_command/reports/research-001.md)
 - **Priority**: High
@@ -172,7 +172,7 @@ Changes required:
 ### 610. Complete truth bridge (Strategy B) for completeness proof
 - **Status**: [RESEARCHED]
 - **Researched**: 2026-01-19
-- **Research**: [research-001.md](specs/614_refactor_cleanup_to_refresh_command/reports/research-001.md)
+- **Research**: [research-001.md](specs/610_complete_truth_bridge_strategy_b/reports/research-001.md)
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
