@@ -260,7 +260,7 @@ Changes required:
 ## Low Priority
 
 ### 616. Fix semantic_task_rel_compositionality finite model limitation
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19

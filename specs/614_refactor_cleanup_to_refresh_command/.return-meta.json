@@ -1,0 +1,56 @@
+{
+  "status": "implemented",
+  "summary": "Refactored /cleanup command to /refresh with simplified two-mode interface. Fixed bash arithmetic bug that caused early script exit. Renamed 5 files, updated skill to use AskUserQuestion for interactive confirmation, simplified from 4 flags to 2, and updated all documentation references. All 5 phases finished successfully.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/commands/refresh.md",
+      "summary": "Command file for /refresh with simplified syntax"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-refresh/SKILL.md",
+      "summary": "Skill with AskUserQuestion integration for interactive confirmation"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/scripts/claude-refresh.sh",
+      "summary": "Shell script with fixed arithmetic bug and simplified interface"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/systemd/claude-refresh.service",
+      "summary": "Renamed systemd service file"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/systemd/claude-refresh.timer",
+      "summary": "Renamed systemd timer file"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/scripts/install-aliases.sh",
+      "summary": "Updated alias installer with 2 aliases and migration support"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/scripts/install-systemd-timer.sh",
+      "summary": "Updated timer installer with migration support"
+    },
+    {
+      "type": "summary",
+      "path": "specs/614_refactor_cleanup_to_refresh_command/summaries/implementation-summary-20260119.md",
+      "summary": "Implementation summary with verification results and migration notes"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1768852805_e9b439",
+    "duration_seconds": 5400,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
+  },
+  "next_steps": "Run /todo to archive task. Users with existing aliases should run install-aliases.sh --uninstall then reinstall."
+}
