@@ -248,13 +248,16 @@ technical_debt:
 ---
 
 ### 622. Prove applyRule_decreases_complexity
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-19
+- **Started**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
 - **Research**: [research-001.md](specs/622_prove_applyRule_decreases_complexity/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/622_prove_applyRule_decreases_complexity/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/622_prove_applyRule_decreases_complexity/summaries/implementation-summary-20260119.md)
 
 **Description**: Prove the `applyRule_decreases_complexity` lemma in Saturation.lean. Requires case analysis on all 16 tableau rules showing that rule application decreases formula complexity. This completes the remaining work from Phase 2 of Task 490.
 
