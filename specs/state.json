@@ -8,11 +8,12 @@
     {
       "project_number": 613,
       "project_name": "revise_metalogic_v2_readme_architecture_diagram",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:22:52Z",
-      "last_updated": "2026-01-19T17:22:52Z"
+      "last_updated": "2026-01-19T17:29:05Z",
+      "session_id": "sess_1768843731_595744"
     },
     {
       "project_number": 612,
@@ -26,13 +27,21 @@
     {
       "project_number": 611,
       "project_name": "context_optimization_and_loading_patterns",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:06:04Z",
-      "last_updated": "2026-01-19T17:21:44Z",
-      "session_id": "sess_1768843086_172a83",
-      "researched": "2026-01-19T17:21:44Z"
+      "last_updated": "2026-01-19T17:32:43Z",
+      "session_id": "sess_1768843798_751e73",
+      "researched": "2026-01-19T17:21:44Z",
+      "planned": "2026-01-19T17:32:43Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/611_context_optimization_and_loading_patterns/plans/implementation-001.md",
+          "summary": "5-phase implementation plan for context optimization with 75% target reduction"
+        }
+      ]
     },
     {
       "project_number": 610,
