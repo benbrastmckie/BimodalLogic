@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 612,
+      "project_name": "improve_system_overview_docs_with_architecture",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T17:12:02Z",
+      "last_updated": "2026-01-19T17:12:02Z"
+    },
+    {
       "project_number": 611,
       "project_name": "context_optimization_and_loading_patterns",
       "status": "not_started",
@@ -294,5 +303,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 612
+  "next_project_number": 613
 }

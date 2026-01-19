@@ -1,5 +1,5 @@
 ---
-next_project_number: 612
+next_project_number: 613
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -80,6 +80,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 612. Improve system-overview.md with architecture patterns
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Related**: Task 609
+
+**Description**: Improve .claude/context/core/architecture/system-overview.md to use unicode characters for diagrams AND document all command-skill and command-skill-agent architecture options. Current skills don't use context:fork so document what is used, noting differences and motivations for each approach used by different command types.
+
+---
 
 ### 611. Context optimization and loading patterns
 - **Effort**: 4-6 hours
