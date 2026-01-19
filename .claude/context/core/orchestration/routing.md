@@ -1,8 +1,16 @@
 # Routing Guide - Lightweight Command Routing Context
 
-**Version**: 1.0  
-**Created**: 2025-12-29 (Task 244 Phase 1)  
+**Version**: 1.0
+**Created**: 2025-12-29 (Task 244 Phase 1)
 **Purpose**: Lightweight routing context for orchestrator Stages 1-3 (command parsing and delegation preparation)
+
+---
+
+> **DEPRECATED** (2026-01-19): This file has been consolidated into:
+> - `orchestration-core.md` - Command->Agent mapping, language extraction, routing validation
+> - `orchestration-reference.md` - Troubleshooting routing issues
+>
+> This file is preserved for reference but should not be loaded for new development.
 
 ---
 

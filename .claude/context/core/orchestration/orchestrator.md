@@ -1,8 +1,16 @@
 # Orchestrator Design
 
-**Version**: 5.0  
-**Created**: 2025-12-29  
+**Version**: 5.0
+**Created**: 2025-12-29
 **Purpose**: Document the smart coordinator pattern and orchestrator architecture
+
+---
+
+> **DEPRECATED** (2026-01-19): This file has been consolidated into:
+> - `orchestration-core.md` - Session tracking, delegation safety, return format, routing
+> - `orchestration-reference.md` - Examples and troubleshooting
+>
+> This file is preserved for reference but should not be loaded for new development.
 
 ---
 

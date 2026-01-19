@@ -1,5 +1,14 @@
 # Validation Strategy
 
+---
+
+> **DEPRECATED** (2026-01-19): This file has been consolidated into:
+> - `orchestration-validation.md` - Validation philosophy, return validation, error codes
+>
+> This file is preserved for reference but should not be loaded for new development.
+
+---
+
 ## Orchestrator Validation Philosophy
 
 The orchestrator validates **structural correctness** and **safety constraints**, not business logic or domain-specific rules.

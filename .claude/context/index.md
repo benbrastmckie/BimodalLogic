@@ -78,21 +78,51 @@
 
 ## Core Orchestration (core/orchestration/)
 
-**Consolidated files** - Load for state management, routing, validation
+**Consolidated files** (2026-01-19) - Load for orchestration, delegation, validation
 
-- **state-management.md** (535 lines) - Unified state management standard
+- **orchestration-core.md** (~250 lines) - Essential orchestration patterns
+  - Session ID format and tracking
+  - Delegation safety (depth limits, cycle detection, timeouts)
+  - Return format schema
+  - Command->Agent routing and language extraction
+  - **LOAD for any delegation operation**
+
+- **orchestration-validation.md** (~200 lines) - Validation patterns
+  - Return validation steps (JSON, fields, status, artifacts)
+  - Error codes and handling
+  - /task flag validation
+  - **LOAD when validating agent returns**
+
+- **orchestration-reference.md** (~200 lines) - Examples and troubleshooting
+  - Command execution flow examples
+  - Bulk operation patterns
+  - Troubleshooting guide
+  - **LOAD when debugging orchestration issues**
+
+- **state-management.md** (~300 lines) - Unified state management
   - Status markers and transition rules
-  - State schemas (main, archive, reviews, project)
-  - Timestamp formats
-  - Status synchronization mechanisms
-  - jq patterns for task lookup
-  - TODO.md grep patterns
-  - Replaces: status-markers.md, state-schema.md
+  - State schemas
+  - Fast jq lookup patterns
+  - **LOAD for state queries and updates**
 
-- **delegation.md** - Delegation patterns and context template
-  - Session tracking
-  - Delegation depth management
-  - Context passing patterns
+- **architecture.md** (~750 lines) - Three-layer architecture overview
+  - Command->Skill->Agent delegation pattern
+  - Layer responsibilities
+  - **LOAD for understanding system design**
+
+- **preflight-pattern.md** (~220 lines) - Pre-delegation process
+  - **LOAD when implementing preflight**
+
+- **postflight-pattern.md** (~340 lines) - Post-completion process
+  - **LOAD when implementing postflight**
+
+**Deprecated files** (still available for reference):
+- orchestrator.md -> orchestration-core.md, orchestration-reference.md
+- delegation.md -> orchestration-core.md, orchestration-validation.md
+- routing.md -> orchestration-core.md
+- validation.md -> orchestration-validation.md
+- subagent-validation.md -> orchestration-validation.md
+- sessions.md -> orchestration-core.md
 
 ---
 
@@ -422,7 +452,7 @@ Load selectively: Use grep extraction for specific tasks, avoid loading full fil
 **Research Workflow (researcher.md)**:
 ```
 Stage 4 loads:
-- @.claude/context/core/orchestration/delegation.md
+- @.claude/context/core/orchestration/orchestration-core.md
 - @.claude/context/core/orchestration/state-management.md
 - grep -A 50 "^### {task_number}\." specs/TODO.md
 - @specs/state.json
@@ -435,7 +465,7 @@ Language-specific:
 **Planning Workflow (planner.md)**:
 ```
 Stage 4 loads:
-- @.claude/context/core/orchestration/delegation.md
+- @.claude/context/core/orchestration/orchestration-core.md
 - @.claude/context/core/formats/plan-format.md
 - @.claude/context/core/orchestration/state-management.md
 - grep -A 50 "^### {task_number}\." specs/TODO.md
@@ -446,7 +476,7 @@ Stage 4 loads:
 **Implementation Workflow (implementer.md, task-executor.md)**:
 ```
 Stage 4 loads:
-- @.claude/context/core/orchestration/delegation.md
+- @.claude/context/core/orchestration/orchestration-core.md
 - @.claude/context/core/orchestration/state-management.md
 - @.claude/context/core/system/git-commits.md
 - grep -A 50 "^### {task_number}\." specs/TODO.md
