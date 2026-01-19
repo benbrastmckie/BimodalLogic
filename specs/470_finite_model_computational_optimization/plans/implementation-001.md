@@ -62,7 +62,7 @@ The optimization strategy is:
 
 ## Implementation Phases
 
-### Phase 1: Migrate Formula.subformulas to Bimodal.Syntax [IN PROGRESS]
+### Phase 1: Migrate Formula.subformulas to Bimodal.Syntax [COMPLETED]
 
 **Goal**: Eliminate the dependency on old `Bimodal.Metalogic.Decidability.SignedFormula` by creating a standalone subformulas definition in the Syntax module.
 
@@ -94,7 +94,7 @@ The optimization strategy is:
 
 ---
 
-### Phase 2: Complete Closure.lean Subformula Membership Lemmas [NOT STARTED]
+### Phase 2: Complete Closure.lean Subformula Membership Lemmas [IN PROGRESS]
 
 **Goal**: Fill in the 5 sorries for subformula membership lemmas that trace through the Formula structure.
 
