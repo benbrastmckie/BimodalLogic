@@ -1,5 +1,5 @@
 ---
-next_project_number: 617
+next_project_number: 618
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -262,6 +262,17 @@ Changes required:
 - **Related**: Task 608
 
 **Description**: Fix the sorry in `semantic_task_rel_compositionality` at SemanticCanonicalModel.lean:236. The issue is that task relation compositionality fails for unbounded duration sums in the finite model (time bounds are [-k, k]). Options include: (1) Add a boundedness hypothesis requiring |d1 + d2| <= 2k, (2) Change the task relation definition to be closed under composition, or (3) Use a different frame construction. Note: The completeness proof doesn't directly use this lemma, so this is an acceptable limitation.
+
+---
+
+### 617. Fix closure_mcs_implies_locally_consistent temporal axioms
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Created**: 2026-01-19
+- **Related**: Task 608
+
+**Description**: Fix the sorry in `closure_mcs_implies_locally_consistent` at FiniteWorldState.lean:343. The issue is that proving local consistency requires temporal reflexivity axioms (H φ → φ, G φ → φ) which don't hold in TM logic's strict temporal semantics. Options include: (1) Add explicit reflexivity conditions to the local consistency definition, (2) Use a different construction that bypasses temporal reflexivity, or (3) Document as an architectural limitation. Note: The semantic approach via SemanticCanonicalModel bypasses this issue entirely.
 
 ---
 
