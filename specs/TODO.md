@@ -1,5 +1,5 @@
 ---
-next_project_number: 615
+next_project_number: 616
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -29,7 +29,7 @@ technical_debt:
 
 ### 614. Refactor /cleanup command to /refresh
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -107,6 +107,17 @@ Changes required:
 
 ## Medium Priority
 
+### 615. Fix closure_mcs_neg_complete double negation edge case
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-19
+- **Related**: Task 608
+
+**Description**: Fix the sorry in `closure_mcs_neg_complete` at Closure.lean:484. The issue is a double negation edge case where `chi.neg.neg` (when `chi = psi.neg`) is not in `closureWithNeg`. Options include: (1) Restrict the theorem to `psi ∈ closure` instead of `closureWithNeg`, (2) Extend `closureWithNeg` to include double negations, or (3) Use a different approach in the truth lemma that avoids this case.
+
+---
+
 ### 613. Revise Metalogic_v2 README architecture diagram
 - **Effort**: 1-2 hours
 - **Status**: [COMPLETED]
@@ -157,7 +168,7 @@ Changes required:
 ---
 
 ### 610. Complete truth bridge (Strategy B) for completeness proof
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19

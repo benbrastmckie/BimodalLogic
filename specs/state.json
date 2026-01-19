@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 615,
+      "project_name": "fix_closure_mcs_neg_complete_double_negation",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T17:54:18Z",
+      "last_updated": "2026-01-19T17:54:18Z"
+    },
+    {
       "project_number": 613,
       "project_name": "revise_metalogic_v2_readme_architecture_diagram",
       "status": "completed",
@@ -83,11 +92,12 @@
     {
       "project_number": 610,
       "project_name": "complete_truth_bridge_strategy_b",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T16:39:59Z",
-      "last_updated": "2026-01-19T16:39:59Z"
+      "last_updated": "2026-01-19T17:54:16Z",
+      "session_id": "sess_1768845233_2be8a3"
     },
     {
       "project_number": 609,
@@ -357,13 +367,14 @@
     {
       "project_number": 614,
       "project_name": "refactor_cleanup_to_refresh_command",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T18:00:00Z",
-      "last_updated": "2026-01-19T18:00:00Z",
+      "last_updated": "2026-01-19T17:52:20Z",
       "description": "Refactor /cleanup command to /refresh with simplified two-mode interface. /refresh shows status and prompts user via AskUserQuestion, /refresh --force immediately clears orphaned processes. Remove --status and --dry-run flags. Rename command, skill, and script files. Fix script bug where set -euo pipefail causes early exit after each kill.",
-      "source": "Task 585 followup"
+      "source": "Task 585 followup",
+      "session_id": "sess_1768845127_78e16b"
     }
   ],
   "completed_projects": [
@@ -378,5 +389,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 615
+  "next_project_number": 616
 }
