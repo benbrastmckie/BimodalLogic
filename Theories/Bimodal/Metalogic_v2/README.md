@@ -9,14 +9,14 @@ The architecture follows a bottom-up dependency structure. Arrows point upward, 
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║                         APPLICATIONS (Most Derived)                            ║
-║  Compactness.lean                                                              ║
-║    compactness_entailment, compactness_satisfiability                          ║
+║                         APPLICATIONS (Most Derived)                           ║
+║  Compactness.lean                                                             ║
+║    compactness_entailment, compactness_satisfiability                         ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
                                        ▲
                                        │
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║                         COMPLETENESS (Derived)                                 ║
+║                         COMPLETENESS (Derived)                                ║
 ║  StrongCompleteness.lean: strong_completeness, context_provable_iff_entails   ║
 ║  WeakCompleteness.lean: weak_completeness, provable_iff_valid                 ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
@@ -28,43 +28,43 @@ The architecture follows a bottom-up dependency structure. Arrows point upward, 
                             └──────────┬──────────┘
                                        ▲
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║                     REPRESENTATION (Bridge Layer)                              ║
+║                     REPRESENTATION (Bridge Layer)                             ║
 ║  ┌───────────────────────────────┐  ┌───────────────────────────────────────┐ ║
 ║  │ FiniteModelProperty.lean      │  │ RepresentationTheorem.lean            │ ║
 ║  │   finite_model_property       │  │   representation_theorem              │ ║
 ║  │   validity_decidable_via_fmp  │  │   strong_representation_theorem       │ ║
 ║  │   satisfiability_decidable    │  │   completeness_corollary              │ ║
 ║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
-║                  │                                    │                        ║
+║                  │                                    │                       ║
 ║  ┌───────────────┴───────────────┐  ┌─────────────────┴─────────────────────┐ ║
 ║  │ SemanticCanonicalModel.lean   │  │ ContextProvability.lean               │ ║
 ║  │   semantic_weak_completeness  │  │   representation_validity             │ ║
 ║  │   SemanticWorldState          │  │   valid_implies_derivable             │ ║
 ║  │   SemanticCanonicalFrame      │  │   representation_theorem_backward     │ ║
 ║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
-║                  │                                    │                        ║
+║                  │                                    │                       ║
 ║  ┌───────────────┴───────────────┐  ┌─────────────────┴─────────────────────┐ ║
 ║  │ FiniteWorldState.lean         │  │ TruthLemma.lean                       │ ║
 ║  │   FiniteWorldState            │  │   canonicalTruthAt                    │ ║
 ║  │   FiniteHistory               │  │   truthLemma_*                        │ ║
 ║  │   worldStateFromClosureMCS    │  │   necessitation_lemma                 │ ║
 ║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
-║                  │                                    │                        ║
-║  ┌───────────────┴───────────────┐                    │                        ║
-║  │ Closure.lean                  │                    │                        ║
-║  │   closure, closureWithNeg     │                    │                        ║
-║  │   ClosureMaximalConsistent    │                    │                        ║
-║  │   mcs_projection_is_closure   │                    │                        ║
-║  └───────────────┬───────────────┘                    │                        ║
-║                  └───────────────────┬────────────────┘                        ║
-║                                      │                                         ║
-║                       ┌──────────────┴──────────────┐                          ║
-║                       │ CanonicalModel.lean         │                          ║
-║                       │   CanonicalWorldState       │                          ║
-║                       │   CanonicalFrame, Model     │                          ║
-║                       │   mcs_contains_or_neg       │                          ║
-║                       │   mcs_modus_ponens          │                          ║
-║                       └──────────────┬──────────────┘                          ║
+║                  │                                    │                       ║
+║  ┌───────────────┴───────────────┐                    │                       ║
+║  │ Closure.lean                  │                    │                       ║
+║  │   closure, closureWithNeg     │                    │                       ║
+║  │   ClosureMaximalConsistent    │                    │                       ║
+║  │   mcs_projection_is_closure   │                    │                       ║
+║  └───────────────┬───────────────┘                    │                       ║
+║                  └───────────────────┬────────────────┘                       ║
+║                                      │                                        ║
+║                       ┌──────────────┴──────────────┐                         ║
+║                       │ CanonicalModel.lean         │                         ║
+║                       │   CanonicalWorldState       │                         ║
+║                       │   CanonicalFrame, Model     │                         ║
+║                       │   mcs_contains_or_neg       │                         ║
+║                       │   mcs_modus_ponens          │                         ║
+║                       └──────────────┬──────────────┘                         ║
 ╚══════════════════════════════════════╪════════════════════════════════════════╝
                                        ▲
            ┌───────────────────────────┼───────────────────────────┐
