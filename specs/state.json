@@ -331,19 +331,24 @@
     {
       "project_number": 601,
       "project_name": "design_task_review_logic_validation",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-18T17:36:50Z",
-      "last_updated": "2026-01-19T06:53:37Z",
+      "last_updated": "2026-01-19T06:56:17Z",
       "description": "Design validation rules for state.json/TODO.md consistency, artifact links, completion verification, follow-up task workflow",
       "session_id": "sess_1768805601_09fee6",
-      "researched": "2026-01-19T06:50:09Z",
+      "researched": "2026-01-19T06:56:17Z",
       "artifacts": [
         {
           "path": "specs/601_design_task_review_logic_validation/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive validation rule design covering state/TODO consistency, artifact validation, completion verification, and follow-up task patterns"
+        },
+        {
+          "path": "specs/601_design_task_review_logic_validation/reports/research-002.md",
+          "type": "research",
+          "summary": "Follow-up research analyzing current --sync implementation and designing --review as superset with backwards-compatible migration path"
         }
       ]
     },
