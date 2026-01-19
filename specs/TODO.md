@@ -132,12 +132,13 @@ technical_debt:
 
 ### 595. Remove Maintenance Directory and Fix Review State Management
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Research**: [research-001.md](specs/595_remove_maintenance_dir_fix_review_state/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/595_remove_maintenance_dir_fix_review_state/plans/implementation-001.md)
 - **Created**: 2026-01-19
+- **Started**: 2026-01-19
 
 **Description**: Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.
 
@@ -145,7 +146,7 @@ technical_debt:
 
 ### 596. Constructive Finite Model Bounds
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-18
@@ -182,10 +183,11 @@ technical_debt:
 
 ### 598. Remove deprecated helpers from ContextProvability.lean
 - **Effort**: 1 hour
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Research**: [research-001.md](specs/598_remove_deprecated_helpers_contextprovability/reports/research-001.md)
 
 **Description**: Remove deprecated helper functions from ContextProvability.lean: `semantic_world_validity_implies_provable` (deprecated 2026-01-18) and `semantic_consequence_implies_semantic_world_truth` (deprecated 2026-01-18). These are marked `@[deprecated]` but can be deleted once confirmed unused.
 

@@ -58,13 +58,20 @@
     {
       "project_number": 598,
       "project_name": "remove_deprecated_helpers_contextprovability",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T01:02:15Z",
-      "last_updated": "2026-01-19T01:51:49Z",
+      "last_updated": "2026-01-19T01:54:13Z",
       "description": "Remove deprecated helper functions from ContextProvability.lean: semantic_world_validity_implies_provable (deprecated 2026-01-18) and semantic_consequence_implies_semantic_world_truth (deprecated 2026-01-18). These are marked @[deprecated] but can be deleted once confirmed unused.",
-      "session_id": "sess_1768787494_446c6a"
+      "session_id": "sess_1768787494_446c6a",
+      "researched": "2026-01-19T01:54:13Z",
+      "artifacts": [
+        {
+          "path": "specs/598_remove_deprecated_helpers_contextprovability/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 597,
@@ -90,19 +97,21 @@
       "planned": "2026-01-19T01:20:21Z",
       "started": "2026-01-19T01:25:26Z",
       "partial_since": "2026-01-19T02:50:00Z",
-      "completed_phases": [1],
+      "completed_phases": [
+        1
+      ],
       "blocked_phase": 2,
       "blocking_reason": "Phase 2 requires SemanticCanonicalModel infrastructure (~4000 lines) from old Metalogic. Migration effort significantly exceeds original estimate."
     },
     {
       "project_number": 596,
       "project_name": "constructive_finite_model_bounds",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T00:56:57Z",
-      "last_updated": "2026-01-19T01:32:03Z",
-      "session_id": "sess_1768785977_eb9479",
+      "last_updated": "2026-01-19T01:53:23Z",
+      "session_id": "sess_1768787586_7583f9",
       "researched": "2026-01-19T01:32:03Z",
       "artifacts": [
         {
@@ -114,13 +123,13 @@
     {
       "project_number": 595,
       "project_name": "remove_maintenance_dir_fix_review_state",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T00:53:03Z",
-      "last_updated": "2026-01-19T01:28:33Z",
+      "last_updated": "2026-01-19T01:53:54Z",
       "description": "Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.",
-      "session_id": "sess_1768785981_dfc329",
+      "session_id": "sess_1768787618_3c4924",
       "researched": "2026-01-19T01:18:58Z",
       "artifacts": [
         {
@@ -132,7 +141,8 @@
           "type": "plan"
         }
       ],
-      "planned": "2026-01-19T01:28:33Z"
+      "planned": "2026-01-19T01:28:33Z",
+      "started": "2026-01-19T01:53:54Z"
     },
     {
       "project_number": 394,
