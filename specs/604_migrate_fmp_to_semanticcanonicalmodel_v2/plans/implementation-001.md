@@ -118,7 +118,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 4: Migrate FiniteModelProperty.lean [IN PROGRESS]
+### Phase 4: Migrate FiniteModelProperty.lean [COMPLETED]
 
 **Goal**: Update FiniteModelProperty.lean to use v2 infrastructure exclusively
 

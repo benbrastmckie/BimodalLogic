@@ -3,10 +3,7 @@ import Bimodal.Metalogic_v2.Representation.ContextProvability
 import Bimodal.Metalogic_v2.Representation.SemanticCanonicalModel
 import Bimodal.Metalogic_v2.Soundness.Soundness
 import Bimodal.Semantics.Validity
--- NOTE: FiniteModelProperty uses several old Metalogic constructions
--- (semantic_world_state_has_world_history, semanticWorldState_finite, etc.)
--- that haven't been ported to Metalogic_v2 yet. Future task to complete the port.
-import Bimodal.Metalogic.Completeness.FiniteCanonicalModel
+import Mathlib.Data.Fintype.BigOperators
 
 /-!
 # Finite Model Property for TM Bimodal Logic (Metalogic_v2)
@@ -298,8 +295,8 @@ The key result is `finite_model_property_constructive`, which:
 The bound is 2^|closure(phi)|, matching the theoretical analysis.
 -/
 
-open Bimodal.Metalogic.Completeness
-open Bimodal.Metalogic.Completeness.SemanticWorldState
+open Bimodal.Metalogic_v2.Representation
+open Bimodal.Metalogic_v2.Representation.SemanticWorldState
 
 /--
 **Cardinality bound for SemanticWorldState**.
@@ -436,7 +433,7 @@ theorem finite_model_property_constructive (φ : Formula) (h_sat : formula_satis
   have h_S_mcs : ClosureMaximalConsistent φ S := mcs_projection_is_closure_mcs φ M h_M_mcs
 
   -- Step 6: φ ∈ S (since φ ∈ M and φ ∈ closureWithNeg φ)
-  have h_phi_closure : φ ∈ closure φ := self_mem_closure φ
+  have h_phi_closure : φ ∈ closure φ := phi_mem_closure φ
   have h_phi_closureWithNeg : φ ∈ closureWithNeg φ := closure_subset_closureWithNeg φ h_phi_closure
   have h_phi_in_S : φ ∈ S := ⟨h_phi_in_M, h_phi_closureWithNeg⟩
 
