@@ -683,12 +683,13 @@ theorem mcs_projection_is_closure_mcs (phi : Formula) (M : Set Formula)
         have h_neg_assume : DerivationTree [psi, psi.neg] psi.neg :=
           DerivationTree.assumption _ _ (by simp)
         exact DerivationTree.modus_ponens _ psi Formula.bot h_neg_assume h_psi_assume
-      have h_sub : ∀ ψ ∈ [psi, psi.neg], ψ ∈ insert psi (mcs_projection phi M) := by
-        intro ψ hψ
-        simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
-        rcases hψ with rfl | rfl
-        · exact Set.mem_insert psi _
-        · exact Set.mem_insert_of_mem psi h_neg_proj
+      have h_sub : ∀ x ∈ [psi, psi.neg], x ∈ insert psi (mcs_projection phi M) := by
+        intro x hx
+        simp only [List.mem_cons, List.mem_nil_iff, or_false] at hx
+        rcases hx with rfl | rfl
+        · simp only [Set.mem_insert_iff, true_or]
+        · simp only [Set.mem_insert_iff]
+          right; exact h_neg_proj
       exact h_cons_proj [psi, psi.neg] h_sub ⟨h_deriv⟩
     · -- Case 2: psi = chi.neg for chi ∈ closure
       subst h_psi_eq
@@ -710,12 +711,13 @@ theorem mcs_projection_is_closure_mcs (phi : Formula) (M : Set Formula)
         have h_neg_assume : DerivationTree [chi.neg, chi] chi.neg :=
           DerivationTree.assumption _ _ (by simp)
         exact DerivationTree.modus_ponens _ chi Formula.bot h_neg_assume h_chi_assume
-      have h_sub : ∀ ψ ∈ [chi.neg, chi], ψ ∈ insert chi.neg (mcs_projection phi M) := by
-        intro ψ hψ
-        simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
-        rcases hψ with rfl | rfl
-        · exact Set.mem_insert chi.neg _
-        · exact Set.mem_insert_of_mem chi.neg h_chi_proj
+      have h_sub : ∀ x ∈ [chi.neg, chi], x ∈ insert chi.neg (mcs_projection phi M) := by
+        intro x hx
+        simp only [List.mem_cons, List.mem_nil_iff, or_false] at hx
+        rcases hx with rfl | rfl
+        · simp only [Set.mem_insert_iff, true_or]
+        · simp only [Set.mem_insert_iff]
+          right; exact h_chi_proj
       exact h_cons_proj [chi.neg, chi] h_sub ⟨h_deriv⟩
 
 /-!

@@ -123,7 +123,7 @@ The optimization strategy is:
 
 ---
 
-### Phase 3: Complete Closure.lean MCS Properties [IN PROGRESS]
+### Phase 3: Complete Closure.lean MCS Properties [PARTIAL]
 
 **Goal**: Fill in the 4 sorries related to MCS negation completeness and implication properties.
 
