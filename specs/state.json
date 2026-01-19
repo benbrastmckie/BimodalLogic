@@ -79,6 +79,11 @@
           "path": "specs/612_improve_system_overview_docs_with_architecture/reports/research-001.md",
           "type": "research",
           "summary": "Research report identifying inaccurate context:fork documentation, documenting three skill architecture patterns, and recommending Unicode diagrams"
+        },
+        {
+          "path": "specs/612_improve_system_overview_docs_with_architecture/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for improving system-overview.md documentation accuracy"
         }
       ],
       "planned": "2026-01-19T20:05:17Z"
