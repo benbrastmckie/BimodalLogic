@@ -26,12 +26,12 @@
     {
       "project_number": 618,
       "project_name": "move_metalogic_to_boneyard_make_v2_independent",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T20:23:03Z",
-      "last_updated": "2026-01-19T20:37:59Z",
-      "session_id": "sess_1768854915_f4ac0b",
+      "last_updated": "2026-01-19T20:44:26Z",
+      "session_id": "sess_1768855453_1cca58",
       "researched": "2026-01-19T20:37:59Z",
       "artifacts": [
         {
@@ -44,11 +44,11 @@
     {
       "project_number": 617,
       "project_name": "fix_closure_mcs_implies_locally_consistent",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T17:55:38Z",
-      "last_updated": "2026-01-19T20:36:39Z",
+      "last_updated": "2026-01-19T20:44:13Z",
       "session_id": "sess_1768854981_700720",
       "researched": "2026-01-19T20:15:28Z",
       "artifacts": [
@@ -61,10 +61,16 @@
           "path": "specs/617_fix_closure_mcs_implies_locally_consistent/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase plan: modify IsLocallyConsistent definition, prove theorem, verify downstream code"
+        },
+        {
+          "path": "specs/617_fix_closure_mcs_implies_locally_consistent/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-01-19T20:26:51Z",
-      "started": "2026-01-19T20:36:39Z"
+      "started": "2026-01-19T20:36:39Z",
+      "completed": "2026-01-19T20:44:13Z"
     },
     {
       "project_number": 616,

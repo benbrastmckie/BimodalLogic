@@ -80,7 +80,7 @@ technical_debt:
 ---
 
 ### 618. Move Metalogic to Boneyard, make Metalogic_v2 independent
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -176,14 +176,16 @@ technical_debt:
 ---
 
 ### 617. Fix closure_mcs_implies_locally_consistent temporal axioms
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Related**: Task 608
 - **Research**: [research-001.md](specs/617_fix_closure_mcs_implies_locally_consistent/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/617_fix_closure_mcs_implies_locally_consistent/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/617_fix_closure_mcs_implies_locally_consistent/summaries/implementation-summary-20260119.md)
 
 **Description**: Fix the sorry in `closure_mcs_implies_locally_consistent` at FiniteWorldState.lean:343. The issue is that proving local consistency requires temporal reflexivity axioms (H φ → φ, G φ → φ) which don't hold in TM logic's strict temporal semantics. Options include: (1) Add explicit reflexivity conditions to the local consistency definition, (2) Use a different construction that bypasses temporal reflexivity, or (3) Document as an architectural limitation. Note: The semantic approach via SemanticCanonicalModel bypasses this issue entirely.
 

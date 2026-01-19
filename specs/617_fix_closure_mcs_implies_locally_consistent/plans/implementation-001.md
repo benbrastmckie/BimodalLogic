@@ -1,7 +1,7 @@
 # Implementation Plan: Task #617
 
 - **Task**: 617 - Fix closure_mcs_implies_locally_consistent
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
