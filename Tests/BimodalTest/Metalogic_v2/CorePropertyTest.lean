@@ -1,5 +1,6 @@
 import Bimodal.Metalogic_v2.Core.MaximalConsistent
 import Bimodal.Metalogic_v2.Core.Provability
+import Bimodal.Metalogic_v2.Soundness.Soundness
 import Bimodal.ProofSystem
 
 /-!
@@ -218,9 +219,13 @@ theorem singleton_set_consistent_iff (phi : Formula) :
     by_cases h_emp : L = []
     · rw [h_emp]
       intro ⟨d⟩
-      -- Cannot derive bot from empty context (needs soundness argument)
-      -- For now, we note this is expected to hold
-      sorry
+      -- Cannot derive bot from empty context - use soundness
+      have h_sem := Bimodal.Metalogic_v2.Soundness.soundness [] Formula.bot d
+      -- Build a countermodel where bot is false
+      have h_bot_true := h_sem Int Bimodal.Semantics.TaskFrame.trivial_frame
+          Bimodal.Semantics.TaskModel.all_false Bimodal.Semantics.WorldHistory.trivial 0
+          (fun _ h => (List.not_mem_nil h).elim)
+      simp only [Bimodal.Semantics.truth_at] at h_bot_true
     · -- L is non-empty, so it contains phi (since all elements are in {phi})
       intro ⟨d⟩
       apply h_cons

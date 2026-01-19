@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "summary": "5-phase implementation plan for /task --review N command",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/601_design_task_review_logic_validation/plans/implementation-001.md",
+      "summary": "5-phase plan implementing --review as read-only task completion analyzer with interactive follow-up task creation"
+    }
+  ],
+  "next_steps": "Run /implement 601 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1768806381_0e111b",
+    "agent_type": "planner-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3
+  }
+}

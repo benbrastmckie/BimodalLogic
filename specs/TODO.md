@@ -53,11 +53,12 @@ technical_debt:
 
 ### 601. Design Task Review Logic and Validation Rules
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Research**: [research-001.md](specs/601_design_task_review_logic_validation/reports/research-001.md), [research-002.md](specs/601_design_task_review_logic_validation/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/601_design_task_review_logic_validation/plans/implementation-001.md)
 
 **Description**: Design validation rules for state.json/TODO.md consistency, artifact links, completion verification, follow-up task workflow.
 
