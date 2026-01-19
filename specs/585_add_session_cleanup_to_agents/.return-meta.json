@@ -1,0 +1,17 @@
+{
+  "status": "implemented",
+  "summary": "Implemented /cleanup command and supporting infrastructure for orphaned Claude Code process cleanup",
+  "artifacts": [
+    {
+      "path": "specs/585_add_session_cleanup_to_agents/summaries/implementation-summary-20260119.md",
+      "type": "summary",
+      "summary": "Implementation summary documenting /cleanup command, scripts, aliases, and systemd timer setup"
+    }
+  ],
+  "metadata": {
+    "phases_completed": 5,
+    "phases_total": 5,
+    "session_id": "sess_1768842920_d1f685",
+    "task_number": 585
+  }
+}

@@ -17,11 +17,13 @@
     {
       "project_number": 611,
       "project_name": "context_optimization_and_loading_patterns",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:06:04Z",
-      "last_updated": "2026-01-19T17:06:04Z"
+      "last_updated": "2026-01-19T17:21:44Z",
+      "session_id": "sess_1768843086_172a83",
+      "researched": "2026-01-19T17:21:44Z"
     },
     {
       "project_number": 610,
@@ -221,13 +223,13 @@
     {
       "project_number": 585,
       "project_name": "add_session_cleanup_to_agents",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T00:26:00Z",
-      "last_updated": "2026-01-19T16:34:36Z",
+      "last_updated": "2026-01-19T17:21:14Z",
       "description": "Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination.",
-      "session_id": "sess_1768840343_649e8d",
+      "session_id": "sess_1768842920_d1f685",
       "researched": "2026-01-19T16:21:28Z",
       "artifacts": [
         {
@@ -239,9 +241,16 @@
           "path": "specs/585_add_session_cleanup_to_agents/plans/implementation-001.md",
           "type": "plan",
           "summary": "Implementation plan for /cleanup command and process monitoring infrastructure"
+        },
+        {
+          "path": "specs/585_add_session_cleanup_to_agents/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting /cleanup command, scripts, aliases, and systemd timer setup"
         }
       ],
-      "planned": "2026-01-19T16:34:36Z"
+      "planned": "2026-01-19T16:34:36Z",
+      "started": "2026-01-19T17:15:40Z",
+      "completed": "2026-01-19T17:21:14Z"
     },
     {
       "project_number": 606,

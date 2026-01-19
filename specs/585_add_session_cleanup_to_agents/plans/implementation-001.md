@@ -1,7 +1,7 @@
 # Implementation Plan: Task #585
 
 - **Task**: 585 - Add session cleanup to agents
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -52,7 +52,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Create cleanup skill infrastructure [NOT STARTED]
+### Phase 1: Create cleanup skill infrastructure [COMPLETED]
 
 **Goal**: Create the skill file and basic structure for `/cleanup` command
 
@@ -73,7 +73,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Implement process detection and cleanup logic [NOT STARTED]
+### Phase 2: Implement process detection and cleanup logic [COMPLETED]
 
 **Goal**: Implement the core cleanup functionality that identifies and terminates orphaned processes
 
@@ -97,7 +97,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Add shell aliases and settings configuration [NOT STARTED]
+### Phase 3: Add shell aliases and settings configuration [COMPLETED]
 
 **Goal**: Create convenience aliases and update Claude Code settings
 
@@ -119,7 +119,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Create systemd timer for automated cleanup [NOT STARTED]
+### Phase 4: Create systemd timer for automated cleanup [COMPLETED]
 
 **Goal**: Set up optional automated cleanup via systemd user timer
 
@@ -142,7 +142,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Documentation and integration [NOT STARTED]
+### Phase 5: Documentation and integration [COMPLETED]
 
 **Goal**: Document the cleanup system and integrate with project workflows
 

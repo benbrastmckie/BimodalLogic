@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+#
+# install-aliases.sh - Install Claude Code cleanup aliases
+#
+# This script adds helpful aliases to your shell configuration:
+#   - claude-memory: Check memory usage by Claude processes
+#   - claude-cleanup: Clean up orphaned Claude processes
+#   - claude-orphans: List orphaned Claude processes
+#
+# Usage: ./install-aliases.sh [--uninstall]
+
+set -euo pipefail
+
+# Detect shell config file
+detect_shell_config() {
+    # Check for common shell config files
+    if [ -n "${ZSH_VERSION:-}" ] || [ "$SHELL" = "/bin/zsh" ] || [ "$SHELL" = "/usr/bin/zsh" ]; then
+        if [ -f "$HOME/.zshrc" ]; then
+            echo "$HOME/.zshrc"
+            return
+        fi
+    fi
+
+    if [ -n "${BASH_VERSION:-}" ] || [ "$SHELL" = "/bin/bash" ] || [ "$SHELL" = "/usr/bin/bash" ]; then
+        if [ -f "$HOME/.bashrc" ]; then
+            echo "$HOME/.bashrc"
+            return
+        fi
+    fi
+
+    # Fallback checks
+    for config in "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.profile"; do
+        if [ -f "$config" ]; then
+            echo "$config"
+            return
+        fi
+    done
+
+    echo ""
+}
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CLEANUP_SCRIPT="$SCRIPT_DIR/claude-cleanup.sh"
+
+# Alias block markers
+ALIAS_START="# >>> Claude Code cleanup aliases >>>"
+ALIAS_END="# <<< Claude Code cleanup aliases <<<"
+
+# Generate alias block
+generate_aliases() {
+    cat << EOF
+$ALIAS_START
+# Quick memory check
+alias claude-memory='$CLEANUP_SCRIPT --status'
+
+# Interactive cleanup
+alias claude-cleanup='$CLEANUP_SCRIPT'
+
+# List orphaned processes (dry-run)
+alias claude-orphans='$CLEANUP_SCRIPT --dry-run'
+
+# Force cleanup without confirmation
+alias claude-cleanup-force='$CLEANUP_SCRIPT --force'
+$ALIAS_END
+EOF
+}
+
+# Check if aliases already installed
+check_installed() {
+    local config="$1"
+    if grep -q "$ALIAS_START" "$config" 2>/dev/null; then
+        return 0  # installed
+    fi
+    return 1  # not installed
+}
+
+# Install aliases
+install_aliases() {
+    local config="$1"
+
+    if check_installed "$config"; then
+        echo "Aliases already installed in $config"
+        echo "Run with --uninstall first to reinstall."
+        exit 0
+    fi
+
+    echo "" >> "$config"
+    generate_aliases >> "$config"
+
+    echo "Aliases installed in $config"
+    echo ""
+    echo "Available aliases:"
+    echo "  claude-memory       - Check memory usage"
+    echo "  claude-cleanup      - Interactive cleanup"
+    echo "  claude-orphans      - List orphaned processes"
+    echo "  claude-cleanup-force - Force cleanup"
+    echo ""
+    echo "Run 'source $config' or start a new shell to use the aliases."
+}
+
+# Uninstall aliases
+uninstall_aliases() {
+    local config="$1"
+
+    if ! check_installed "$config"; then
+        echo "Aliases not found in $config"
+        exit 0
+    fi
+
+    # Remove alias block using sed
+    sed -i "/$ALIAS_START/,/$ALIAS_END/d" "$config"
+
+    echo "Aliases removed from $config"
+}
+
+# Main
+UNINSTALL=false
+for arg in "$@"; do
+    case $arg in
+        --uninstall)
+            UNINSTALL=true
+            ;;
+        --help|-h)
+            echo "Usage: $0 [--uninstall]"
+            echo ""
+            echo "Installs Claude Code cleanup aliases to your shell config."
+            echo ""
+            echo "Options:"
+            echo "  --uninstall  Remove previously installed aliases"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $arg"
+            exit 1
+            ;;
+    esac
+done
+
+# Find shell config
+SHELL_CONFIG=$(detect_shell_config)
+
+if [ -z "$SHELL_CONFIG" ]; then
+    echo "Error: Could not detect shell configuration file."
+    echo "Please manually add the aliases to your shell config."
+    echo ""
+    echo "Aliases to add:"
+    generate_aliases
+    exit 1
+fi
+
+echo "Detected shell config: $SHELL_CONFIG"
+
+if $UNINSTALL; then
+    uninstall_aliases "$SHELL_CONFIG"
+else
+    install_aliases "$SHELL_CONFIG"
+fi

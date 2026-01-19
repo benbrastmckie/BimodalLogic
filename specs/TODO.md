@@ -29,13 +29,16 @@ technical_debt:
 
 ### 585. Add Session Cleanup to Agents
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Researched**: 2026-01-19
+- **Started**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Research**: [research-001.md](specs/585_add_session_cleanup_to_agents/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/585_add_session_cleanup_to_agents/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/585_add_session_cleanup_to_agents/summaries/implementation-summary-20260119.md)
 
 **Description**: Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination.
 
@@ -95,11 +98,12 @@ technical_debt:
 
 ### 611. Context optimization and loading patterns
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Related**: Task 609
+- **Research**: [research-001.md](specs/611_context_optimization_and_loading_patterns/reports/research-001.md)
 
 **Description**: Optimize context files created in task 609 for quality and concision. Improve organization, eliminate redundancy, and study how/where context is loaded throughout the command-skill-agent architecture. Ensure majority of context is loaded in agents, loading only what's needed progressively, and never loading unnecessary context.
 
