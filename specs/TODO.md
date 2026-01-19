@@ -156,7 +156,7 @@ technical_debt:
 
 ---
 
-### 568. Expand Logos Test Coverage
+### 568. Create Metalogic_v2 Test Suite
 - **Effort**: 4-6 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
@@ -164,7 +164,7 @@ technical_debt:
 - **Created**: 2026-01-18
 - **Source**: Code Review 2026-01-17
 
-**Description**: Expand test coverage for Logos layer to match Bimodal layer standards. Currently ~40 Logos theory files have limited or no test coverage. Create comprehensive test suite including integration tests for layer extensions and property-based testing for Logos semantics.
+**Description**: Create comprehensive test suite for Bimodal/Metalogic_v2/ to enable eventual deletion of old Bimodal/Metalogic/. Tests should provide good coverage of all Metalogic_v2 modules independently—no imports from old Metalogic. Draw inspiration from old Metalogic/ tests where relevant, but focus on high-quality independent tests for the new metalogic architecture. Cover core modules: MCS properties, canonical model construction, soundness, completeness bridge lemmas, and the provable_iff_valid theorem.
 
 ---
 

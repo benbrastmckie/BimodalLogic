@@ -55,7 +55,7 @@ Building `SemanticCanonicalModel_v2` with a proper truth correspondence lemma el
 
 ## Implementation Phases
 
-### Phase 1: Closure Infrastructure [NOT STARTED]
+### Phase 1: Closure Infrastructure [COMPLETED]
 
 **Goal**: Build finite subformula infrastructure needed for semantic bridge.
 
@@ -92,7 +92,7 @@ theorem mcs_projection_is_closure_mcs (phi : Formula) (M : Set Formula)
 
 ---
 
-### Phase 2: Finite World State [NOT STARTED]
+### Phase 2: Finite World State [COMPLETED]
 
 **Goal**: Define world states as truth assignments on closure.
 
