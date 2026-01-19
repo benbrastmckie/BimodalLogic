@@ -1,7 +1,7 @@
 # Implementation Plan: Port Decidability to Metalogic_v2
 
 - **Task**: 607 - Port Decidability to Metalogic_v2
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Priority**: High
 - **Dependencies**: Task 470
@@ -53,7 +53,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Core Types Foundation [NOT STARTED]
+### Phase 1: Core Types Foundation [COMPLETED]
 
 **Goal**: Port SignedFormula.lean with Metalogic_v2 closure integration
 
@@ -78,7 +78,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Tableau Expansion Rules [NOT STARTED]
+### Phase 2: Tableau Expansion Rules [IN PROGRESS]
 
 **Goal**: Port Tableau.lean with minimal changes (rules are logic-specific)
 
