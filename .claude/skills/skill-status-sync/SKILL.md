@@ -263,6 +263,12 @@ Return failed status with current status and allowed transitions.
 ### File Write Failure
 Return failed status with recommendation to check permissions.
 
+### jq Parse Failure
+If jq commands fail with INVALID_CHARACTER or syntax error (Issue #1132):
+1. Log to errors.json with session_id and original command
+2. Retry with two-step pattern from `jq-escaping-workarounds.md`
+3. If retry succeeds, log recovery action
+
 ---
 
 ## Integration Notes

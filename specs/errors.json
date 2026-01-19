@@ -1,7 +1,7 @@
 {
   "_schema_version": "2.0.0",
   "_last_updated": "2026-01-15T18:35:00Z",
-  "_comment": "Centralized error tracking with session-aware aggregation. Errors are logged here by commands and agents when failures occur. The /errors command analyzes this file to create fix plans.",
+  "_comment": "Centralized error tracking with session-aware aggregation. Errors are logged here by commands and agents when failures occur. The /errors command analyzes this file to create fix plans. Error types: git_commit_failure, build_error, timeout, validation_failed, status_sync_failure, file_not_found, parse_error, delegation_hang, tool_unavailable, jq_parse_failure (Issue #1132).",
   "_schema": {
     "error": {
       "id": "string (err_{timestamp})",

@@ -90,16 +90,17 @@ technical_debt:
 
 ---
 
-### 619. Agent system architecture upgrade
+### 619. Agent system architecture upgrade (context:fork migration)
 - **Status**: [PLANNED]
 - **Researched**: 2026-01-19
-- **Priority**: Medium
+- **Priority**: Low
 - **Language**: meta
 - **Created**: 2026-01-19
+- **Blocked-By**: GitHub #16803 (context:fork bug)
 - **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md), [research-002.md](specs/619_agent_system_architecture_upgrade/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/619_agent_system_architecture_upgrade/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
-**Description**: Draw on .claude/context/core/architecture/system-overview.md and research best practices for Claude Code in 2026 to upgrade the .claude/ agent system architecture. Goals: improve progressive disclosure, metadata passing via storage in specs/state.json, and context engineering to reduce pollution of the primary agent's context window. Explore context forking in skills to improve functionality without increasing overhead. Current system is working well; focus on incremental improvements.
+**Description**: FUTURE UPGRADE: Migrate agent system skills to use native `context: fork` frontmatter once Anthropic fixes GitHub issue #16803. Research-002.md confirmed context:fork IS a real feature (added v2.1.0) but is currently broken. Current Task tool delegation pattern is correct and should remain until the bug is fixed. When fixed, migrate skills to use `context: fork` + `agent:` frontmatter for cleaner context isolation.
 
 ---
 
@@ -228,7 +229,7 @@ technical_debt:
 ---
 
 ### 490. Complete decidability procedure
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean

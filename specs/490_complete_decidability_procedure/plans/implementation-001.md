@@ -1,7 +1,7 @@
 # Implementation Plan: Task #490
 
 - **Task**: 490 - Complete decidability procedure for TM logic
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Priority**: Low
 - **Dependencies**: Task 607 (completed)
@@ -47,7 +47,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Analyze Current State and FMP Connection [NOT STARTED]
+### Phase 1: Analyze Current State and FMP Connection [COMPLETED]
 
 **Goal**: Understand the exact gaps and what FMP provides that can close them.
 
@@ -69,7 +69,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Prove expansion_decreases_measure [NOT STARTED]
+### Phase 2: Prove expansion_decreases_measure [IN PROGRESS]
 
 **Goal**: Prove the termination measure lemma for tableau expansion.
 

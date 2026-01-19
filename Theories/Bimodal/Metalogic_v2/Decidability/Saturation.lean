@@ -227,12 +227,37 @@ def expansionMeasure (b : Branch) : Nat :=
 /--
 Expansion decreases the measure (for non-saturated branches).
 This is the key lemma for termination of the tableau procedure.
+
+**Proof Strategy**:
+1. Since `¬isSaturated b`, there exists an unexpanded formula `sf` in `b`
+2. `expandOnce b` applies a rule to `sf`, producing either:
+   - `.extended b'`: replaces `sf` with its decomposition
+   - `.split bs`: creates branches, each replacing `sf` with part of decomposition
+3. In both cases, `sf` is removed from the branch and replaced with subformulas
+4. Since `sf.formula.complexity > 0` and subformulas have strictly less total complexity,
+   the measure decreases
+
+**Technical Requirements**:
+- Need to show `findUnexpanded b = some sf` for some `sf`
+- Need to show rule application on `sf` produces subformulas
+- Need to show subformula complexities sum to less than `sf.complexity`
+- For `.extended`: show `expansionMeasure b' < expansionMeasure b`
+- For `.split`: show `∀ b' ∈ bs, expansionMeasure b' < expansionMeasure b`
+
+**Difficulty**: Medium-High. Requires case analysis on all tableau rules and
+showing complexity decreases for each decomposition pattern.
 -/
 theorem expansion_decreases_measure (b : Branch) (h : ¬isSaturated b) :
     ∀ b', (expandOnce b = .extended b' ∨
            ∃ bs, expandOnce b = .split bs ∧ b' ∈ bs) →
     expansionMeasure b' < expansionMeasure b := by
-  sorry  -- Technical proof: rule application decomposes formulas
+  -- Proof sketch:
+  -- 1. From ¬isSaturated b, we have findUnexpanded b = some sf for some sf
+  -- 2. expandOnce applies a rule to sf
+  -- 3. Each rule decomposes sf.formula into subformulas with lower total complexity
+  -- 4. The expansionMeasure sums complexities of unexpanded formulas
+  -- 5. Replacing sf with its decomposition decreases this sum
+  sorry  -- Technical: requires case analysis on all tableau rules
 
 /-!
 ## FMP-Based Termination Theorem

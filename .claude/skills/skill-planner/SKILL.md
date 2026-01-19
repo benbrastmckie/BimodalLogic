@@ -284,6 +284,27 @@ If subagent didn't write metadata file:
 ### Git Commit Failure
 Non-blocking: Log failure but continue with success response.
 
+### jq Parse Failure
+If jq commands fail with INVALID_CHARACTER or syntax error (Issue #1132):
+1. Log to errors.json:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg sid "$session_id" \
+   --arg msg "jq parse error in postflight artifact linking" \
+   --argjson task "$task_number" \
+  '.errors += [{
+    "id": ("err_" + ($ts | gsub("[^0-9]"; ""))),
+    "timestamp": $ts,
+    "type": "jq_parse_failure",
+    "severity": "medium",
+    "message": $msg,
+    "context": {"session_id": $sid, "command": "/plan", "task": $task, "checkpoint": "GATE_OUT"},
+    "recovery": {"suggested_action": "Use two-step jq pattern from jq-escaping-workarounds.md", "auto_recoverable": true},
+    "fix_status": "unfixed"
+  }]' specs/errors.json > /tmp/errors.json && mv /tmp/errors.json specs/errors.json
+```
+2. Retry with two-step pattern (already implemented in Stage 8)
+
 ### Subagent Timeout
 Return partial status if subagent times out (default 1800s).
 Keep status as "planning" for resume.

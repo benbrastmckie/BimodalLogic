@@ -31,6 +31,7 @@ Reference (do not load eagerly):
 - Path: `.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 - Path: `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
 - Path: `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O helpers
+- Path: `.claude/context/core/patterns/jq-escaping-workarounds.md` - jq escaping patterns (Issue #1132)
 
 Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
@@ -185,10 +186,14 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     completed: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
-# Step 2: Add artifact
+# Step 2: Filter out existing summary artifacts (two-step pattern for Issue #1132)
+jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+    [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")]' \
+  specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+
+# Step 3: Add new summary artifact
 jq --arg path "$artifact_path" \
-  '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")] + [{"path": $path, "type": "summary"}])' \
+  '(.active_projects[] | select(.project_number == '$task_number')).artifacts += [{"path": $path, "type": "summary"}]' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 

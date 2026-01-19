@@ -23,6 +23,7 @@ Errors from external systems:
 - `git_commit_failure` - Git operation failed
 - `build_error` - Lean/lake build failed
 - `tool_unavailable` - MCP tool not responding
+- `jq_parse_failure` - jq command parse error (often due to Issue #1132)
 
 ## Error Response Pattern
 
@@ -123,6 +124,17 @@ Return structured error:
 3. Keep source unchanged
 4. Report error with context
 ```
+
+### jq Parse Failure Recovery
+```
+1. Capture jq error output (INVALID_CHARACTER, syntax error)
+2. Log to errors.json with original command
+3. Retry using two-step pattern from jq-escaping-workarounds.md
+4. If retry succeeds, log recovery
+```
+
+**Note**: jq failures are often caused by Claude Code Issue #1132. Use the two-step jq pattern
+from `.claude/context/core/patterns/jq-escaping-workarounds.md` to avoid these errors.
 
 ## Non-Blocking Errors
 

@@ -46,7 +46,7 @@
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T20:33:57Z",
-      "last_updated": "2026-01-19T21:33:11Z",
+      "last_updated": "2026-01-19T21:36:36Z",
       "session_id": "sess_1768858110_5ad763",
       "researched": "2026-01-19T20:42:08Z",
       "artifacts": [
@@ -56,17 +56,17 @@
           "summary": "Research report on agent system architecture improvements with 5 prioritized recommendations"
         },
         {
-          "path": "specs/619_agent_system_architecture_upgrade/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan covering CLAUDE.md reduction, state.json schema enhancement, skill descriptions, documentation cleanup, and verification"
-        },
-        {
           "path": "specs/619_agent_system_architecture_upgrade/reports/research-002.md",
           "type": "research",
           "summary": "Supplemental research on context:fork feature and official Claude Code skill documentation"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 3-phase plan for future context:fork migration after GitHub #16803 is fixed"
         }
       ],
-      "planned": "2026-01-19T21:03:48Z"
+      "planned": "2026-01-19T21:36:36Z"
     },
     {
       "project_number": 618,

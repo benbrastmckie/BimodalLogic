@@ -89,6 +89,27 @@ The proof uses the Finite Model Property from Metalogic_v2:
 **FMP Reference**: The `finite_model_property_constructive` theorem in
 `Bimodal.Metalogic_v2.Representation.FiniteModelProperty` provides the key bound:
 any satisfiable formula has a model with bounded world states (≤ 2^|closure φ|).
+
+**Proof Strategy**:
+1. From `⊨ φ` (φ is valid), derive that `¬φ` is unsatisfiable
+2. The tableau for `F(φ)` (asserting φ false) explores branches
+3. By FMP, the search space is bounded by `2^closureSize(φ)` states
+4. Each branch either:
+   - Closes (contradiction found) - contributes to validity
+   - Saturates open - would give a finite countermodel by FMP
+5. Since `¬φ` is unsatisfiable, no branch can saturate open
+6. Therefore all branches close within `fmpBasedFuel φ` steps
+
+**Technical Requirements**:
+- Show `valid φ → ¬formula_satisfiable (φ.neg)`
+- Show open saturated branches yield finite models (FMP direction)
+- Show `buildTableau φ (fmpBasedFuel φ)` doesn't return `none`
+- Show if result is `some t`, then `t.isValid`
+
+**Difficulty**: High. Requires connecting:
+- Semantic validity to satisfiability
+- FMP bounds to tableau fuel sufficiency
+- Saturated branch semantics to model construction
 -/
 theorem tableau_complete (φ : Formula) :
     (⊨ φ) → ∃ (fuel : Nat), (buildTableau φ fuel).isSome ∧
@@ -105,7 +126,13 @@ theorem tableau_complete (φ : Formula) :
   --
   -- The bound is: fuel = 2^closureSize(φ) * 2
   use fmpBasedFuel φ
-  sorry  -- Requires connecting FMP to tableau termination
+  -- Proof requires:
+  -- (a) Show buildTableau with fmpBasedFuel doesn't timeout
+  -- (b) Show the result has isValid = true (all branches closed)
+  --
+  -- Both require connecting FMP state space bounds to tableau termination,
+  -- and showing that valid formulas cannot have open saturated branches.
+  sorry  -- Requires FMP-tableau connection lemmas
 
 /--
 Decision procedure completeness: if a formula is valid and we use
@@ -114,13 +141,37 @@ sufficient fuel, decide will return valid.
 **FMP Connection**: The `finite_model_property_constructive` theorem bounds the search space.
 For a formula with closure size n, the fuel bound is 2^n * 2 which is sufficient
 to explore all possible tableau configurations.
+
+**Proof Strategy**:
+1. From `hvalid : ⊨ φ`, use `tableau_complete` to get fuel where tableau closes
+2. With all branches closed, `buildTableau` returns `some (.allClosed _)`
+3. The `decide` function then attempts proof extraction
+4. Either:
+   - Axiom proof found directly → returns `.valid proof`
+   - Proof search succeeds → returns `.valid proof`
+   - Falls back to timeout (limitation of current extraction)
+5. Need to show proof search succeeds for valid formulas
+
+**Technical Requirements**:
+- Depends on `tableau_complete` (currently has sorry)
+- Need to show proof extraction from closed tableau succeeds
+- Or show proof search `bounded_search_with_proof` finds proof for valid φ
+
+**Difficulty**: Medium-High. Main dependency is on `tableau_complete`.
+Proof extraction itself may not always succeed (known limitation in implementation).
 -/
 theorem decide_complete (φ : Formula) (hvalid : ⊨ φ) :
     ∃ (fuel : Nat), ∃ proof, decide φ 10 fuel = .valid proof := by
   -- From validity, we know the tableau will close all branches
   have ⟨fuel, h_some, h_valid⟩ := tableau_complete φ hvalid
   -- With all branches closed, we can extract a proof
-  sorry  -- Requires proof extraction from closed tableau
+  -- The decide function tries:
+  -- 1. Direct axiom matching (tryAxiomProof)
+  -- 2. Proof search (bounded_search_with_proof)
+  -- 3. Tableau-based extraction
+  --
+  -- For valid φ, at least proof search should succeed (completeness of search)
+  sorry  -- Requires proof extraction from closed tableau or search completeness
 
 /-!
 ## Correctness Summary
@@ -223,12 +274,31 @@ theorem axiom_valid' (φ : Formula) (ax : Axiom φ) : (⊨ φ) := by
 
 /--
 Decision on axiom instances returns valid.
+
+**Proof Strategy**:
+1. `decide φ` first calls `tryAxiomProof φ`
+2. `tryAxiomProof` calls `matchAxiom φ` from ProofSearch
+3. If `matchAxiom` recognizes `φ` as an axiom instance, returns proof
+4. Need to show `matchAxiom` correctly identifies all axiom patterns
+
+**Technical Requirements**:
+- Show `matchAxiom φ = some ⟨φ, ax'⟩` for some `ax'` when `ax : Axiom φ`
+- Show `tryAxiomProof` returns the proof in this case
+- Show `decide` returns `.valid` with this proof
+
+**Difficulty**: Low-Medium. Depends on `matchAxiom` implementation completeness.
+May fail for axiom patterns not recognized by the pattern matcher.
+
+**Note**: This is optional for the core decidability result. The main completeness
+theorem `decide_complete` handles all valid formulas, including axiom instances.
 -/
 theorem decide_axiom_valid (φ : Formula) (ax : Axiom φ) :
     ∃ proof, decide φ = .valid proof := by
   -- matchAxiom should find the axiom and return a proof
   use DerivationTree.axiom [] φ ax
-  sorry  -- Would need to verify matchAxiom behavior
+  -- Requires showing matchAxiom recognizes all Axiom φ patterns
+  -- Current matchAxiom may not cover all axiom schema patterns
+  sorry  -- Depends on matchAxiom completeness for all Axiom patterns
 
 /-!
 ## Statistics and Properties
