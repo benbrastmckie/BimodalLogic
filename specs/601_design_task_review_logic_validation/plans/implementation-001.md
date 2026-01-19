@@ -1,7 +1,7 @@
 # Implementation Plan: Task #601
 
 - **Task**: 601 - Design task review logic and validation rules
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -51,7 +51,7 @@ Implement `/task --review N` as a READ-ONLY information gathering command that a
 
 ## Implementation Phases
 
-### Phase 1: Add --review Flag Parsing [NOT STARTED]
+### Phase 1: Add --review Flag Parsing [COMPLETED]
 
 **Goal**: Extend task.md to recognize and route `--review N` flag
 
@@ -72,7 +72,7 @@ Implement `/task --review N` as a READ-ONLY information gathering command that a
 
 ---
 
-### Phase 2: Implement Task Information Loading [NOT STARTED]
+### Phase 2: Implement Task Information Loading [COMPLETED]
 
 **Goal**: Load all relevant artifacts for the target task
 
@@ -95,7 +95,7 @@ Implement `/task --review N` as a READ-ONLY information gathering command that a
 
 ---
 
-### Phase 3: Implement Plan Phase Analysis [NOT STARTED]
+### Phase 3: Implement Plan Phase Analysis [COMPLETED]
 
 **Goal**: Parse plan file and determine completion status of each phase
 
@@ -118,7 +118,7 @@ Implement `/task --review N` as a READ-ONLY information gathering command that a
 
 ---
 
-### Phase 4: Generate Follow-up Task Suggestions [NOT STARTED]
+### Phase 4: Generate Follow-up Task Suggestions [COMPLETED]
 
 **Goal**: Create actionable follow-up task suggestions for incomplete work
 
@@ -141,7 +141,7 @@ Implement `/task --review N` as a READ-ONLY information gathering command that a
 
 ---
 
-### Phase 5: Implement Interactive User Selection [NOT STARTED]
+### Phase 5: Implement Interactive User Selection [COMPLETED]
 
 **Goal**: Present suggestions and let user choose which tasks to create
 

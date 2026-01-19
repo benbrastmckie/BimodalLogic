@@ -1,7 +1,7 @@
 ---
 description: Create, recover, divide, sync, or abandon tasks
 allowed-tools: Read(specs/*), Edit(specs/TODO.md), Bash(jq:*), Bash(git:*), Bash(mv:*), Bash(date:*), Bash(sed:*)
-argument-hint: "description" | --recover N | --expand N | --sync | --abandon N
+argument-hint: "description" | --recover N | --expand N | --sync | --abandon N | --review N
 model: claude-opus-4-5-20251101
 ---
 
@@ -32,6 +32,7 @@ Check $ARGUMENTS for flags:
 - `--expand N [prompt]` → Expand task into subtasks
 - `--sync` → Sync TODO.md with state.json
 - `--abandon RANGES` → Archive tasks
+- `--review N` → Review task completion status
 - No flag → Create new task with description
 
 ## Create Task Mode (Default)
@@ -221,6 +222,215 @@ Parse task number and optional prompt:
    - Ensure next_project_number matches in both files
 
 6. Git commit: "sync: reconcile TODO.md and state.json"
+
+## Review Mode (--review)
+
+Parse task number after --review (e.g., `--review 597`):
+
+### Step 1: Validate Task Exists
+
+**Lookup task via jq**:
+```bash
+task_number="{N from arguments}"
+task_data=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+  specs/state.json)
+
+if [ -z "$task_data" ]; then
+  echo "Error: Task $task_number not found in active projects"
+  exit 1
+fi
+
+# Extract task metadata
+slug=$(echo "$task_data" | jq -r '.project_name')
+status=$(echo "$task_data" | jq -r '.status')
+language=$(echo "$task_data" | jq -r '.language // "general"')
+priority=$(echo "$task_data" | jq -r '.priority // "medium"')
+```
+
+### Step 2: Load Task Artifacts
+
+**Find and load plan file**:
+```bash
+plan_dir="specs/${task_number}_${slug}/plans"
+plan_file=$(ls -t "$plan_dir"/implementation-*.md 2>/dev/null | head -1)
+
+if [ -z "$plan_file" ]; then
+  echo "No implementation plan found for task $task_number"
+  echo "Recommendation: Run /plan $task_number to create a plan"
+  # Continue - can still report on task status
+fi
+```
+
+**Find and load summary file** (if exists):
+```bash
+summary_dir="specs/${task_number}_${slug}/summaries"
+summary_file=$(ls -t "$summary_dir"/implementation-summary-*.md 2>/dev/null | head -1)
+```
+
+**Find research reports** (for context):
+```bash
+reports_dir="specs/${task_number}_${slug}/reports"
+research_files=$(ls "$reports_dir"/research-*.md 2>/dev/null)
+```
+
+### Step 3: Parse Plan Phases
+
+**Extract phase statuses from plan file**:
+```bash
+# Parse phase headings with status markers
+# Format: ### Phase N: Name [STATUS]
+phases=$(grep -E "^### Phase [0-9]+:" "$plan_file" 2>/dev/null)
+
+# Build phase analysis:
+# - phase_number
+# - phase_name
+# - status: [NOT STARTED], [IN PROGRESS], [COMPLETED], [PARTIAL], [BLOCKED]
+```
+
+**Categorize phases**:
+- **Completed**: Phases with `[COMPLETED]` status
+- **In Progress**: Phases with `[IN PROGRESS]` status
+- **Not Started**: Phases with `[NOT STARTED]` status
+- **Partial**: Phases with `[PARTIAL]` status
+- **Blocked**: Phases with `[BLOCKED]` status
+
+### Step 4: Generate Review Summary
+
+**Display task overview**:
+```
+## Task Review: #{N} - {slug}
+
+**Status**: {status from state.json}
+**Language**: {language}
+**Priority**: {priority}
+
+### Artifacts Found
+- Plan: {path or "Not found"}
+- Summary: {path or "Not found"}
+- Research: {count} report(s)
+
+### Phase Analysis
+| Phase | Name | Status |
+|-------|------|--------|
+| 1 | {name} | [COMPLETED] |
+| 2 | {name} | [IN PROGRESS] |
+| 3 | {name} | [NOT STARTED] |
+
+### Completion Assessment
+- Total phases: {N}
+- Completed: {N}
+- Remaining: {N}
+```
+
+### Step 5: Identify Incomplete Work
+
+For each incomplete phase, extract:
+- Phase number and name
+- Phase goal (from **Goal**: line in plan)
+- Estimated effort (if available)
+- Dependencies (if any)
+
+### Step 6: Generate Follow-up Task Suggestions
+
+**For each incomplete phase, generate suggestion**:
+```markdown
+### Suggested Follow-up Tasks
+
+1. **Complete phase {P} of task {N}: {phase_name}**
+   - Goal: {extracted phase goal}
+   - Effort: {inherited or "TBD"}
+   - Language: {inherited from parent}
+   - Priority: {inherited from parent}
+   - Ref: Parent task #{N}
+```
+
+**No suggestions if**:
+- All phases are `[COMPLETED]`
+- No plan file exists
+
+### Step 7: Interactive User Selection
+
+**Present options to user**:
+```
+Found {N} incomplete phase(s) in task #{task_number}.
+
+Suggested follow-up tasks:
+  [1] Complete phase 2 of task 597: implement_validation_rules
+  [2] Complete phase 3 of task 597: add_error_reporting
+
+Options:
+  - Enter numbers to create (e.g., "1,2" or "1")
+  - "all" to create all suggested tasks
+  - "none" to skip task creation
+
+Your selection:
+```
+
+**Parse user selection**:
+- Numbers → Create those specific tasks
+- "all" → Create all suggested tasks
+- "none" → Exit without creating tasks
+
+### Step 8: Create Selected Follow-up Tasks
+
+For each selected task, use the Create Task jq pattern:
+
+```bash
+# Get next task number
+next_num=$(jq -r '.next_project_number' specs/state.json)
+
+# Create follow-up task
+description="Complete phase {P} of task {parent_N}: {phase_name}. Goal: {phase_goal}. (Follow-up from task #{parent_N})"
+
+# Update state.json
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  --arg desc "$description" \
+  '.next_project_number = ($next_num + 1) |
+   .active_projects = [{
+     "project_number": '$next_num',
+     "project_name": "followup_{parent_N}_phase_{P}",
+     "status": "not_started",
+     "language": "'{language}'",
+     "priority": "'{priority}'",
+     "description": $desc,
+     "parent_task": '{parent_N}',
+     "created": $ts,
+     "last_updated": $ts
+   }] + .active_projects' \
+  specs/state.json > /tmp/state.json && \
+  mv /tmp/state.json specs/state.json
+
+# Update TODO.md (add entry and update frontmatter)
+```
+
+### Step 9: Output Results
+
+**If tasks were created**:
+```
+Created {N} follow-up task(s):
+  - Task #{X}: Complete phase 2 of task 597: implement_validation_rules
+  - Task #{Y}: Complete phase 3 of task 597: add_error_reporting
+```
+
+**Git commit** (only if tasks were created):
+```
+git add specs/
+git commit -m "task {parent_N}: review - created {N} follow-up tasks"
+```
+
+**If no tasks created**:
+```
+Review complete. No follow-up tasks created.
+```
+
+### Review Mode Constraints
+
+- **READ-ONLY** analysis until user explicitly selects tasks to create
+- Does NOT modify the reviewed task's status
+- Does NOT fix inconsistencies (use --sync for that)
+- Does NOT auto-create tasks without user confirmation
+- Gracefully handles missing artifacts (plan, summary, research)
 
 ## Abandon Mode (--abandon)
 

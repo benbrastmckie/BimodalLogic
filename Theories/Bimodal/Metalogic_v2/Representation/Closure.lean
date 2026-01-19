@@ -87,6 +87,13 @@ The closure is a finite set (trivially, since it's a Finset).
 theorem closure_card_finite (phi : Formula) : (closure phi).card < Nat.succ (closure phi).card := by
   omega
 
+/--
+Size of the closure (number of distinct subformulas).
+
+This bounds the complexity of the finite model.
+-/
+def closureSize (phi : Formula) : Nat := (closure phi).card
+
 /-!
 ## Closure with Negations
 

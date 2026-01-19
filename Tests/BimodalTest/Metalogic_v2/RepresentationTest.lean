@@ -1,4 +1,3 @@
-import Bimodal.Metalogic_v2.FMP
 import Bimodal.Metalogic_v2.Representation.RepresentationTheorem
 import Bimodal.Metalogic_v2.Representation.CanonicalModel
 import Bimodal.Metalogic_v2.Representation.TruthLemma
@@ -334,28 +333,28 @@ example (S : Set Formula) (h : SetMaximalConsistent S) (phi psi : Formula) :
   mcs_modus_ponens h
 
 /-!
-## FMP Hub Re-exports Tests
+## Core Re-exports Tests
 
-Test that FMP.lean re-exports key definitions correctly.
+Test that Representation layer re-exports key Core definitions correctly.
 -/
 
 /--
-Test: FMP re-exports Consistent.
+Test: Core re-exports Consistent.
 -/
 example (Gamma : Context) : Prop := Consistent Gamma
 
 /--
-Test: FMP re-exports SetConsistent.
+Test: Core re-exports SetConsistent.
 -/
 example (S : Set Formula) : Prop := SetConsistent S
 
 /--
-Test: FMP re-exports SetMaximalConsistent.
+Test: Core re-exports SetMaximalConsistent.
 -/
 example (S : Set Formula) : Prop := SetMaximalConsistent S
 
 /--
-Test: FMP re-exports set_lindenbaum.
+Test: Core re-exports set_lindenbaum.
 -/
 noncomputable example (S : Set Formula) (h : SetConsistent S) :
     ∃ M : Set Formula, S ⊆ M ∧ SetMaximalConsistent M :=

@@ -53,10 +53,11 @@ technical_debt:
 
 ### 601. Design Task Review Logic and Validation Rules
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
+- **Started**: 2026-01-19
 - **Research**: [research-001.md](specs/601_design_task_review_logic_validation/reports/research-001.md), [research-002.md](specs/601_design_task_review_logic_validation/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/601_design_task_review_logic_validation/plans/implementation-001.md)
 
@@ -160,13 +161,15 @@ technical_debt:
 
 ### 568. Create Metalogic_v2 Test Suite
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-18
+- **Completed**: 2026-01-19
 - **Source**: Code Review 2026-01-17
 - **Research**: [research-001.md](specs/568_create_metalogic_v2_test_suite/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/568_create_metalogic_v2_test_suite/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/568_create_metalogic_v2_test_suite/summaries/implementation-summary-20260118.md)
 
 **Description**: Create comprehensive test suite for Bimodal/Metalogic_v2/ to enable eventual deletion of old Bimodal/Metalogic/. Tests should provide good coverage of all Metalogic_v2 modules independently—no imports from old Metalogic. Draw inspiration from old Metalogic/ tests where relevant, but focus on high-quality independent tests for the new metalogic architecture. Cover core modules: MCS properties, canonical model construction, soundness, completeness bridge lemmas, and the provable_iff_valid theorem.
 
@@ -229,10 +232,11 @@ technical_debt:
 
 ### 604. Migrate FMP to SemanticCanonicalModel_v2
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-18
+- **Started**: 2026-01-19
 - **Dependencies**: Task 597
 - **Research**: [research-001.md](specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/plans/implementation-001.md)
@@ -260,7 +264,7 @@ technical_debt:
 ---
 
 ### 470. Finite model computational optimization
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 458

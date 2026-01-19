@@ -200,7 +200,33 @@ Convert to a set of true formulas.
 def toSet (w : FiniteWorldState phi) : Set Formula :=
   {psi | ∃ h : psi ∈ closure phi, w.assignment ⟨psi, h⟩ = true}
 
+/--
+A formula is in the set iff it's satisfied.
+-/
+theorem mem_toSet_iff (w : FiniteWorldState phi) (psi : Formula) (h : psi ∈ closure phi) :
+    psi ∈ w.toSet ↔ w.models psi h := by
+  simp only [toSet, Set.mem_setOf_eq, models]
+  constructor
+  · intro ⟨h', h_true⟩
+    -- By proof irrelevance, both membership proofs give the same assignment value
+    exact h_true
+  · intro h_true
+    exact ⟨h, h_true⟩
+
 end FiniteWorldState
+
+/--
+Extensionality lemma for FiniteWorldState.
+
+Two world states are equal iff their assignments are equal.
+-/
+@[ext]
+theorem FiniteWorldState.ext {phi : Formula} {w1 w2 : FiniteWorldState phi}
+    (h : w1.assignment = w2.assignment) : w1 = w2 := by
+  cases w1
+  cases w2
+  simp only [FiniteWorldState.mk.injEq]
+  exact h
 
 /-!
 ## Finite History

@@ -346,6 +346,36 @@ theorem neg_set_consistent_of_not_provable (phi : Formula)
     exact h_not_prov ⟨d_phi⟩
 
 /--
+If φ is not refutable, then {φ} is set-consistent.
+
+Proof: If {φ} is inconsistent, then [φ] ⊢ ⊥, so by deduction theorem ⊢ φ → ⊥ = φ.neg.
+-/
+theorem phi_consistent_of_not_refutable (φ : Formula) (h_not_refutable : ¬Nonempty (⊢ φ.neg)) :
+    SetConsistent ({φ} : Set Formula) := by
+  intro L hL h_incons
+  -- hL says every element of L is φ
+  have hL' : ∀ ψ ∈ L, ψ = φ := fun ψ hψ => Set.mem_singleton_iff.mp (hL ψ hψ)
+  by_cases hne : L = []
+  · -- L is empty, so [] ⊢ ⊥, contradicts soundness
+    subst hne
+    obtain ⟨d⟩ := h_incons
+    have h_sem_cons := soundness [] Formula.bot d
+    have h_bot_true := h_sem_cons Int TaskFrame.trivial_frame
+        (TaskModel.all_false) (WorldHistory.trivial) (0 : Int)
+        (fun ψ hψ => (List.not_mem_nil hψ).elim)
+    simp only [truth_at] at h_bot_true
+  · -- L is non-empty, consisting only of φ
+    obtain ⟨d⟩ := h_incons
+    -- Weaken to [φ] ⊢ ⊥
+    have h_from_singleton : [φ] ⊢ Formula.bot := by
+      apply DerivationTree.weakening L [φ] Formula.bot d
+      intro ψ hψ
+      simp [hL' ψ hψ]
+    -- By deduction theorem: [] ⊢ φ → ⊥ = φ.neg
+    have h_phi_neg : [] ⊢ φ.neg := deduction_theorem [] φ Formula.bot h_from_singleton
+    exact h_not_refutable ⟨h_phi_neg⟩
+
+/--
 Main completeness theorem (Metalogic_v2 version).
 
 If phi is valid (true in all models), then phi is provable.
