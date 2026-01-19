@@ -29,7 +29,7 @@ technical_debt:
 
 ### 599. Troubleshoot jq Escaping in Agent System
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -41,10 +41,11 @@ technical_debt:
 
 ### 597. Re-prove main_provable_iff_valid in Metalogic_v2
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Research**: [research-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md)
 
 **Description**: Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.
 
@@ -166,7 +167,7 @@ technical_debt:
 
 ### 595. Remove Maintenance Directory and Fix Review State Management
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
