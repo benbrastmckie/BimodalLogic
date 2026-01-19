@@ -68,7 +68,7 @@ technical_debt:
 ## Medium Priority
 
 ### 621. Analyze plan errors to improve agent execution
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-19
 - **Priority**: Medium
 - **Language**: meta
@@ -96,7 +96,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
-- **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md)
+- **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md), [research-002.md](specs/619_agent_system_architecture_upgrade/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/619_agent_system_architecture_upgrade/plans/implementation-001.md)
 
 **Description**: Draw on .claude/context/core/architecture/system-overview.md and research best practices for Claude Code in 2026 to upgrade the .claude/ agent system architecture. Goals: improve progressive disclosure, metadata passing via storage in specs/state.json, and context engineering to reduce pollution of the primary agent's context window. Explore context forking in skills to improve functionality without increasing overhead. Current system is working well; focus on incremental improvements.

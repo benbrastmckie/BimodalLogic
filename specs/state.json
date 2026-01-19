@@ -8,12 +8,12 @@
     {
       "project_number": 621,
       "project_name": "analyze_plan_errors_improve_agent_execution",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T20:59:50Z",
-      "last_updated": "2026-01-19T21:12:59Z",
-      "session_id": "sess_1768857047_1759f6",
+      "last_updated": "2026-01-19T21:31:35Z",
+      "session_id": "sess_1768858277_1acc69",
       "researched": "2026-01-19T21:06:02Z",
       "artifacts": [
         {
@@ -27,7 +27,8 @@
           "summary": "6-phase implementation plan addressing jq escaping bug in postflight operations"
         }
       ],
-      "planned": "2026-01-19T21:12:59Z"
+      "planned": "2026-01-19T21:12:59Z",
+      "started": "2026-01-19T21:31:35Z"
     },
     {
       "project_number": 620,
@@ -45,8 +46,8 @@
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T20:33:57Z",
-      "last_updated": "2026-01-19T21:03:48Z",
-      "session_id": "sess_1768856497_a9ce8f",
+      "last_updated": "2026-01-19T21:33:11Z",
+      "session_id": "sess_1768858110_5ad763",
       "researched": "2026-01-19T20:42:08Z",
       "artifacts": [
         {
@@ -58,6 +59,11 @@
           "path": "specs/619_agent_system_architecture_upgrade/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan covering CLAUDE.md reduction, state.json schema enhancement, skill descriptions, documentation cleanup, and verification"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplemental research on context:fork feature and official Claude Code skill documentation"
         }
       ],
       "planned": "2026-01-19T21:03:48Z"
@@ -301,13 +307,13 @@
     },
     {
       "project_number": 490,
-      "status": "planned",
+      "status": "implementing",
       "project_name": "complete_decidability_procedure",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low",
-      "last_updated": "2026-01-19T21:25:47Z",
-      "session_id": "sess_1768857770_1fa701",
+      "last_updated": "2026-01-19T21:33:26Z",
+      "session_id": "sess_1768858388_5ac0d4",
       "researched": "2026-01-19T20:41:56Z",
       "artifacts": [
         {
@@ -324,7 +330,8 @@
       "dependencies": [
         607
       ],
-      "planned": "2026-01-19T21:25:47Z"
+      "planned": "2026-01-19T21:25:47Z",
+      "started": "2026-01-19T21:33:26Z"
     },
     {
       "project_number": 607,
