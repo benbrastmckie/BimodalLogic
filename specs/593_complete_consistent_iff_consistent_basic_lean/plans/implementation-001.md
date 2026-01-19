@@ -48,27 +48,38 @@ Research report research-001.md confirms:
 
 ## Implementation Phases
 
-### Phase 1: Search for All References [NOT STARTED]
+### Phase 1: Search for All References [COMPLETED]
 
 **Goal**: Identify all files that reference the consistency definitions or equivalence lemma
 
 **Tasks**:
-- [ ] Search for `Consistent` definition references across codebase
-- [ ] Search for `Consistent'` definition references
-- [ ] Search for `consistent_iff_consistent'` lemma uses
-- [ ] Document all findings with file paths and line numbers
+- [x] Search for `Consistent` definition references across codebase
+- [x] Search for `Consistent'` definition references
+- [x] Search for `consistent_iff_consistent'` lemma uses
+- [x] Document all findings with file paths and line numbers
 
 **Timing**: 15 minutes
 
 **Files to search**:
 - All `.lean` files in `Theories/Bimodal/`
 
+**Findings**:
+- `Consistent'` is NEVER used anywhere (only defined in Basic.lean)
+- `consistent_iff_consistent'` appears only in:
+  - Metalogic_v2/Core/Basic.lean (the definition with sorry)
+  - Metalogic/Core/Basic.lean (old version, same sorry)
+  - Metalogic_v2/README.md (documentation reference)
+- **Critical discovery**: MaximalConsistent.lean (line 58) redefines `Consistent` as "⊥ not derivable", shadowing Basic.lean's definition
+- The codebase uses MaximalConsistent.lean's version throughout
+
 **Verification**:
 - Complete list of files to update documented
+- No files actually USE Consistent' or the equivalence lemma
+- Only need to update: Basic.lean and README.md
 
 ---
 
-### Phase 2: Update Basic.lean Definition [NOT STARTED]
+### Phase 2: Update Basic.lean Definition [IN PROGRESS]
 
 **Goal**: Replace the two definitions with a single `Consistent` definition
 

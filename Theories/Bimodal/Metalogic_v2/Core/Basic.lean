@@ -30,30 +30,16 @@ namespace Bimodal.Metalogic_v2.Core
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 
 /--
-Syntactic consistency: A context is consistent if there exists a formula that is not derivable.
+Syntactic consistency: A context is consistent if it does not derive falsum (⊥).
 
-This is the standard syntactic notion of consistency: Γ is consistent iff
-there is some formula φ such that Γ ⊬ φ. Equivalently, not all formulas are derivable.
+This is the standard syntactic notion of consistency in classical logic:
+Γ is consistent iff Γ ⊬ ⊥.
+
+In classical logic with ex-falso (⊥ → φ), this is equivalent to saying that
+there exists a formula φ that is not derivable from Γ.
 -/
 def Consistent (Γ : Context) : Prop :=
-  ∃ φ : Formula, ¬Nonempty (DerivationTree Γ φ)
-
-/--
-Alternative formulation: Γ is consistent iff it does not derive falsum (⊥).
-
-This is equivalent to the standard definition in classical logic with ex-falso.
--/
-def Consistent' (Γ : Context) : Prop :=
   ¬Nonempty (DerivationTree Γ .bot)
-
-/--
-Consistency equivalence: The two definitions of consistency are equivalent.
-
-Note: This requires ex-falso (¬φ → (φ → ψ)) to be available in the proof system.
--/
-lemma consistent_iff_consistent' {Γ : Context} :
-    Consistent Γ ↔ Consistent' Γ := by
-  sorry  -- Proof depends on having ex-falso axiom in TM system
 
 /--
 Semantic consistency: A context is semantically consistent if it is satisfiable.

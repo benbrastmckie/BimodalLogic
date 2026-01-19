@@ -79,11 +79,11 @@
     {
       "project_number": 590,
       "project_name": "eliminate_axiom_context_provability",
-      "status": "researched",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:49:34Z",
-      "last_updated": "2026-01-19T00:02:42Z",
+      "last_updated": "2026-01-19T00:06:08Z",
       "artifacts": [
         {
           "path": "specs/590_eliminate_axiom_context_provability/reports/research-001.md",
