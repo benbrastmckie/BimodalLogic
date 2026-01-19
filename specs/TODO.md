@@ -29,11 +29,12 @@ technical_debt:
 
 ### 594. Fix Progress Interruptions in Agent System
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Session ID**: sess_1768781888_9f0d4a
+- **Research**: [research-001.md](specs/594_fix_progress_interruptions_agent_system/reports/research-001.md)
 
 **Description**: Investigate and fix progress interruptions where agents require hitting "continue" during execution. This is a persistent issue across multiple commands. Hypothesis: the checkpoint system may be too aggressive and/or JSON output being printed to the console precipitates interruptions. Research example outputs in .claude/output/ and the agent system in .claude/ to identify the root cause and best solution. Related to task 591 (double forking fix) which is now complete.
 
