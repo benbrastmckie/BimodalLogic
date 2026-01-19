@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 616,
+      "project_name": "fix_semantic_task_rel_compositionality_sorry",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-19T17:54:52Z",
+      "last_updated": "2026-01-19T17:54:52Z"
+    },
+    {
       "project_number": 615,
       "project_name": "fix_closure_mcs_neg_complete_double_negation",
       "status": "not_started",
@@ -367,14 +376,22 @@
     {
       "project_number": 614,
       "project_name": "refactor_cleanup_to_refresh_command",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T18:00:00Z",
-      "last_updated": "2026-01-19T17:52:20Z",
+      "last_updated": "2026-01-19T17:54:46Z",
       "description": "Refactor /cleanup command to /refresh with simplified two-mode interface. /refresh shows status and prompts user via AskUserQuestion, /refresh --force immediately clears orphaned processes. Remove --status and --dry-run flags. Rename command, skill, and script files. Fix script bug where set -euo pipefail causes early exit after each kill.",
       "source": "Task 585 followup",
-      "session_id": "sess_1768845127_78e16b"
+      "session_id": "sess_1768845127_78e16b",
+      "researched": "2026-01-19T17:54:46Z",
+      "artifacts": [
+        {
+          "path": "specs/614_refactor_cleanup_to_refresh_command/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with file inventory, script bug analysis, and AskUserQuestion pattern"
+        }
+      ]
     }
   ],
   "completed_projects": [
@@ -389,5 +406,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 616
+  "next_project_number": 617
 }
