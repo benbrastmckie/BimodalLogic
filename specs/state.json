@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 609,
+      "project_name": "document_command_skill_agent_architecture",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T16:03:47Z",
+      "last_updated": "2026-01-19T16:03:47Z"
+    },
+    {
       "project_number": 608,
       "project_name": "restructure_completeness_via_representation_theorem",
       "status": "not_started",
@@ -208,5 +217,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 609
+  "next_project_number": 610
 }

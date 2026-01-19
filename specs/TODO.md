@@ -1,5 +1,5 @@
 ---
-next_project_number: 609
+next_project_number: 610
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -77,6 +77,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 609. Document command-skill-agent architecture
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Research the current command-skill-agent architecture used throughout the .claude/ architecture to improve existing, or create new documentation in .claude/docs/ for users and .claude/context/core/ in appropriate subdirectories for the agent to draw from (e.g., the /meta command agents should have access to context that describes the architecture of the system in order to reproduce those elements when creating new functionality).
+
+---
 
 ### 608. Restructure completeness proof via representation theorem
 - **Status**: [NOT STARTED]
