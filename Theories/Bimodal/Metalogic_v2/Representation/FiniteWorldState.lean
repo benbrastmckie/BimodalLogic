@@ -2,6 +2,8 @@ import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic_v2.Representation.Closure
 import Mathlib.Data.Fin.Basic
+import Mathlib.Data.Finite.Defs
+import Mathlib.Data.Fintype.Pi
 
 /-!
 # Finite World States for Metalogic_v2
@@ -227,6 +229,32 @@ theorem FiniteWorldState.ext {phi : Formula} {w1 w2 : FiniteWorldState phi}
   cases w2
   simp only [FiniteWorldState.mk.injEq]
   exact h
+
+/--
+Fintype instance for closure elements (subtype of Finset).
+-/
+instance closureFintype (phi : Formula) : Fintype (closure phi) :=
+  Finset.fintypeCoeSort (closure phi)
+
+/--
+The type of truth assignments on closure is finite.
+
+We need to explicitly provide this since FiniteTruthAssignment is a dependent function type.
+-/
+instance truthAssignmentFintype (phi : Formula) : Fintype (FiniteTruthAssignment phi) := by
+  unfold FiniteTruthAssignment
+  infer_instance
+
+/--
+The type of finite world states is finite.
+
+Since each world state is determined by its assignment (a function from
+a finite set to Bool), there are at most 2^|closure phi| world states.
+-/
+instance finiteWorldState_finite (phi : Formula) : Finite (FiniteWorldState phi) := by
+  apply Finite.of_injective (fun w => w.assignment)
+  intros w1 w2 h_eq
+  exact FiniteWorldState.ext h_eq
 
 /-!
 ## Finite History

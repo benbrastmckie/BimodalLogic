@@ -72,7 +72,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 2: Port Medium Complexity Definitions [IN PROGRESS]
+### Phase 2: Port Medium Complexity Definitions [COMPLETED]
 
 **Goal**: Add `semanticWorldState_finite` instance and `semantic_world_state_has_world_history` theorem
 
@@ -95,7 +95,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 3: Port Complex Definition with Sorry [NOT STARTED]
+### Phase 3: Port Complex Definition with Sorry [IN PROGRESS]
 
 **Goal**: Port `semantic_truth_implies_truth_at` preserving the existing sorry
 

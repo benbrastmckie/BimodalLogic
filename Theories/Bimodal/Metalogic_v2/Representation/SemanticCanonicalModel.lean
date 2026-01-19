@@ -314,31 +314,33 @@ theorem semantic_world_state_has_world_history (phi : Formula) (w : SemanticWorl
   -- Step 3: Convert to WorldHistory
   let tau := finiteHistoryToWorldHistory phi hist
 
-  -- Step 4: Use this history with time 0
-  use tau, True.intro
+  -- Step 4: Prove 0 is in the domain
+  -- inFiniteDomain phi 0 = -(temporalBound phi) ≤ 0 ∧ 0 ≤ temporalBound phi
+  -- Since temporalBound phi is a Nat, this is always true
+  have h_domain : inFiniteDomain phi 0 := by
+    unfold inFiniteDomain
+    constructor <;> omega
 
-  -- Step 5: Show tau.states 0 True.intro = w
-  -- tau.states 0 = SemanticWorldState.ofHistoryTime hist (intToFiniteTime 0)
-  -- For the constant history, hist.states t = ws for all t
-  -- So tau.states 0 = ofHistoryTime hist (intToFiniteTime 0)
-  -- We need this to equal w
+  -- Step 5: Use this history with time 0
+  use tau, h_domain
 
+  -- Step 6: Show tau.states 0 h_domain = w
   -- The key insight: two SemanticWorldStates are equal iff their
   -- underlying FiniteWorldStates are equal (by eq_iff_toFiniteWorldState_eq)
   rw [SemanticWorldState.eq_iff_toFiniteWorldState_eq]
 
-  -- Now need: (tau.states 0 True.intro).toFiniteWorldState = w.toFiniteWorldState
+  -- Now need: (tau.states 0 h_domain).toFiniteWorldState = w.toFiniteWorldState
   -- tau.states 0 = ofHistoryTime hist (intToFiniteTime 0)
   -- (ofHistoryTime hist t).toFiniteWorldState = hist.states t = ws = w.toFiniteWorldState
 
   -- Key: toFiniteWorldState (ofHistoryTime h t) = h.states t
   -- And finite_history_from_state phi ws returns a history where states _ = ws (constant)
 
-  -- Goal: (finiteHistoryToWorldHistory phi hist).states 0 True.intro).toFiniteWorldState
+  -- Goal: (finiteHistoryToWorldHistory phi hist).states 0 h_domain).toFiniteWorldState
   --     = w.toFiniteWorldState
 
   -- Unfolding the definitions:
-  -- tau.states 0 True.intro
+  -- tau.states 0 h_domain
   --   = SemanticWorldState.ofHistoryTime hist (intToFiniteTime phi 0 _)
   -- toFiniteWorldState of that
   --   = hist.states (intToFiniteTime phi 0 _)
