@@ -301,24 +301,30 @@
     },
     {
       "project_number": 490,
-      "status": "researched",
+      "status": "planned",
       "project_name": "complete_decidability_procedure",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low",
-      "last_updated": "2026-01-19T20:41:56Z",
-      "session_id": "sess_1768855950_b8c4d2",
+      "last_updated": "2026-01-19T21:25:47Z",
+      "session_id": "sess_1768857770_1fa701",
       "researched": "2026-01-19T20:41:56Z",
       "artifacts": [
         {
           "path": "specs/490_complete_decidability_procedure/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of Metalogic_v2 vs old Metalogic decidability infrastructure, identifying 4 key sorries to resolve and recommending Task 607 as prerequisite"
+        },
+        {
+          "path": "specs/490_complete_decidability_procedure/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan covering FMP analysis, expansion_decreases_measure proof, tableau_complete proof, decide_complete proof, optional decide_axiom_valid, and final verification"
         }
       ],
       "dependencies": [
         607
-      ]
+      ],
+      "planned": "2026-01-19T21:25:47Z"
     },
     {
       "project_number": 607,
