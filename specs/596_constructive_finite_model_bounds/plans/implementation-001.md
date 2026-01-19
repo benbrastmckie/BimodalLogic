@@ -49,7 +49,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Complete Semantic Infrastructure Sorries [IN PROGRESS]
+### Phase 1: Complete Semantic Infrastructure Sorries [PARTIAL]
 
 **Goal**: Resolve the core sorries that block constructive FMP proof
 
@@ -73,7 +73,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Complete History Gluing [NOT STARTED]
+### Phase 2: Complete History Gluing [PARTIAL]
 
 **Goal**: Resolve the history gluing sorries that enable compositionality
 
@@ -95,7 +95,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Constructive FMP Statement and Proof [NOT STARTED]
+### Phase 3: Constructive FMP Statement and Proof [PARTIAL]
 
 **Goal**: Define and prove the constructive FMP theorem with explicit bounds
 
@@ -118,7 +118,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Archive Old Implementation [NOT STARTED]
+### Phase 4: Archive Old Implementation [IN PROGRESS]
 
 **Goal**: Move trivial FMP to Boneyard with documentation
 

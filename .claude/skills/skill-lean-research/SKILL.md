@@ -1,7 +1,7 @@
 ---
 name: skill-lean-research
 description: Research Lean 4 and Mathlib for theorem proving tasks. Invoke for Lean-language research using LeanSearch, Loogle, and lean-lsp tools.
-allowed-tools: Task, Bash, Edit, Read
+allowed-tools: Task, Bash, Edit, Read, Write
 # Original context (now loaded by subagent):
 #   - .claude/context/project/lean4/tools/mcp-tools-guide.md
 #   - .claude/context/project/lean4/tools/leansearch-api.md
@@ -18,14 +18,18 @@ allowed-tools: Task, Bash, Edit, Read
 
 Thin wrapper that delegates Lean 4 research to `lean-research-agent` subagent.
 
-## Context Pointers
+**IMPORTANT**: This skill implements the skill-internal postflight pattern. After the subagent returns,
+this skill handles all postflight operations (status update, artifact linking, git commit) before returning.
+This eliminates the "continue" prompt issue between skill return and orchestrator.
+
+## Context References
 
 Reference (do not load eagerly):
-- Path: `.claude/context/core/validation.md`
-- Purpose: Return validation at CHECKPOINT 2
-- Load at: Subagent execution only
+- Path: `.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
+- Path: `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
+- Path: `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O helpers
 
-Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
+Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
 ## Trigger Conditions
 
@@ -36,13 +40,37 @@ This skill activates when:
 
 ---
 
-## Execution
+## Execution Flow
 
-### 0. Preflight Status Update
+### Stage 1: Input Validation
 
-Before delegating to the subagent, update task status to "researching".
+Validate required inputs:
+- `task_number` - Must be provided and exist in state.json
+- `focus_prompt` - Optional focus for research direction
 
-**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
+```bash
+# Lookup task
+task_data=$(jq -r --argjson num "$task_number" \
+  '.active_projects[] | select(.project_number == $num)' \
+  specs/state.json)
+
+# Validate exists
+if [ -z "$task_data" ]; then
+  return error "Task $task_number not found"
+fi
+
+# Extract fields
+language=$(echo "$task_data" | jq -r '.language // "general"')
+status=$(echo "$task_data" | jq -r '.status')
+project_name=$(echo "$task_data" | jq -r '.project_name')
+description=$(echo "$task_data" | jq -r '.description // ""')
+```
+
+---
+
+### Stage 2: Preflight Status Update
+
+Update task status to "researching" BEFORE invoking subagent.
 
 **Update state.json**:
 ```bash
@@ -60,33 +88,29 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 
 ---
 
-### 1. Input Validation
+### Stage 3: Create Postflight Marker
 
-Validate required inputs:
-- `task_number` - Must be provided and exist in state.json
-- `focus_prompt` - Optional focus for research direction
+Create the marker file to prevent premature termination:
 
 ```bash
-# Lookup task
-task_data=$(jq -r --arg num "$task_number" \
-  '.active_projects[] | select(.project_number == ($num | tonumber))' \
-  specs/state.json)
-
-# Validate exists
-if [ -z "$task_data" ]; then
-  return error "Task $task_number not found"
-fi
-
-# Extract fields
-language=$(echo "$task_data" | jq -r '.language // "general"')
-status=$(echo "$task_data" | jq -r '.status')
-project_name=$(echo "$task_data" | jq -r '.project_name')
-description=$(echo "$task_data" | jq -r '.description // ""')
+cat > specs/.postflight-pending << EOF
+{
+  "session_id": "${session_id}",
+  "skill": "skill-lean-research",
+  "task_number": ${task_number},
+  "operation": "research",
+  "reason": "Postflight pending: status update, artifact linking, git commit",
+  "created": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "stop_hook_active": false
+}
+EOF
 ```
 
-### 2. Context Preparation
+---
 
-Prepare delegation context:
+### Stage 4: Prepare Delegation Context
+
+Prepare delegation context for the subagent:
 
 ```json
 {
@@ -100,52 +124,63 @@ Prepare delegation context:
     "description": "{description}",
     "language": "lean"
   },
-  "focus_prompt": "{optional focus}"
+  "focus_prompt": "{optional focus}",
+  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json"
 }
 ```
 
-### 3. Invoke Subagent
+---
+
+### Stage 5: Invoke Subagent
 
 **CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
-
-The `agent` field in this skill's frontmatter specifies the target: `lean-research-agent`
 
 **Required Tool Invocation**:
 ```
 Tool: Task (NOT Skill)
 Parameters:
   - subagent_type: "lean-research-agent"
-  - prompt: [Include task_context, delegation_context, focus_prompt if present]
+  - prompt: [Include task_context, delegation_context, focus_prompt, metadata_file_path]
   - description: "Execute Lean research for task {N}"
 ```
 
 **DO NOT** use `Skill(lean-research-agent)` - this will FAIL.
-Agents live in `.claude/agents/`, not `.claude/skills/`.
-The Skill tool can only invoke skills from `.claude/skills/`.
 
 The subagent will:
 - Load Lean-specific context files
 - Use MCP search tools (leansearch, loogle, leanfinder)
 - Create research report in `specs/{N}_{SLUG}/reports/`
-- Return standardized JSON result
+- Write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+- Return a brief text summary (NOT JSON)
 
-### 4. Return Validation
+---
 
-Validate return matches `subagent-return.md` schema:
-- Status is one of: researched, partial, failed, blocked
-- Summary is non-empty and <100 tokens
-- Artifacts array present with research report path
-- Metadata contains session_id, agent_type, delegation info
+### Stage 6: Parse Subagent Return (Read Metadata File)
 
-### 5. Postflight Status Update
+After subagent returns, read the metadata file:
 
-After successful research, update task status to "researched" and link artifacts.
-
-**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
-
-**Update state.json** (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`):
 ```bash
-# Step 1: Update status and timestamps
+metadata_file="specs/${task_number}_${project_name}/.return-meta.json"
+
+if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
+    status=$(jq -r '.status' "$metadata_file")
+    artifact_path=$(jq -r '.artifacts[0].path // ""' "$metadata_file")
+    artifact_type=$(jq -r '.artifacts[0].type // ""' "$metadata_file")
+    artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
+else
+    echo "Error: Invalid or missing metadata file"
+    status="failed"
+fi
+```
+
+---
+
+### Stage 7: Update Task Status (Postflight)
+
+If status is "researched", update state.json and TODO.md:
+
+**Update state.json**:
+```bash
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "researched" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
@@ -153,50 +188,75 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     last_updated: $ts,
     researched: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-
-# Step 2: Add artifact
-jq --arg path "$artifact_path" \
-  '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "research")] + [{"path": $path, "type": "research"}])' \
-  specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-**Update TODO.md**:
-- Use Edit tool to change status marker from `[RESEARCHING]` to `[RESEARCHED]`
-- Add research artifact link: `- **Research**: [research-{NNN}.md]({artifact_path})`
+**Update TODO.md**: Use Edit tool to change status marker from `[RESEARCHING]` to `[RESEARCHED]`.
 
-**On partial/failed**: Do NOT run postflight. Keep status as "researching" for resume.
-
-### 6. Return Propagation
-
-Return validated result to caller without modification.
+**On partial/failed**: Keep status as "researching" for resume.
 
 ---
 
-## Return Format
+### Stage 8: Link Artifacts
 
-See `.claude/context/core/formats/subagent-return.md` for full specification.
+Add artifact to state.json with summary:
 
-Expected successful return:
-```json
-{
-  "status": "researched",
-  "summary": "Found N relevant theorems for proof approach",
-  "artifacts": [
-    {
-      "type": "research",
-      "path": "specs/{N}_{SLUG}/reports/research-{NNN}.md",
-      "summary": "Lean research report with theorem findings"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_...",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "next_steps": "Run /plan {N} to create implementation plan"
-}
+```bash
+if [ -n "$artifact_path" ]; then
+    jq --arg path "$artifact_path" \
+       --arg type "$artifact_type" \
+       --arg summary "$artifact_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+        ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "research")] +
+         [{"path": $path, "type": $type, "summary": $summary}])' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
+```
+
+**Update TODO.md**: Add research artifact link:
+```markdown
+- **Research**: [research-{NNN}.md]({artifact_path})
+```
+
+---
+
+### Stage 9: Git Commit
+
+Commit changes with session ID:
+
+```bash
+git add -A
+git commit -m "task ${task_number}: complete research
+
+Session: ${session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+
+---
+
+### Stage 10: Cleanup
+
+Remove marker and metadata files:
+
+```bash
+rm -f specs/.postflight-pending
+rm -f specs/.postflight-loop-guard
+rm -f "specs/${task_number}_${project_name}/.return-meta.json"
+```
+
+---
+
+### Stage 11: Return Brief Summary
+
+Return a brief text summary (NOT JSON). Example:
+
+```
+Research completed for task {N}:
+- Found {count} relevant Mathlib theorems
+- Identified proof strategy: {strategy}
+- Created report at specs/{N}_{SLUG}/reports/research-{NNN}.md
+- Status updated to [RESEARCHED]
+- Changes committed
 ```
 
 ---
@@ -204,10 +264,41 @@ Expected successful return:
 ## Error Handling
 
 ### Input Validation Errors
-Return immediately with failed status if task not found.
+Return immediately with error message if task not found.
 
-### Subagent Errors
-Pass through the subagent's error return verbatim.
+### Metadata File Missing
+If subagent didn't write metadata file:
+1. Keep status as "researching"
+2. Do not cleanup postflight marker
+3. Report error to user
 
-### Timeout
+### Git Commit Failure
+Non-blocking: Log failure but continue with success response.
+
+### Subagent Timeout
 Return partial status if subagent times out (default 3600s).
+Keep status as "researching" for resume.
+
+---
+
+## Return Format
+
+This skill returns a **brief text summary** (NOT JSON). The JSON metadata is written to the file and processed internally.
+
+Example successful return:
+```
+Research completed for task 259:
+- Found 5 relevant Mathlib theorems for completeness proof
+- Identified proof strategy using structural induction
+- Created report at specs/259_prove_completeness/reports/research-001.md
+- Status updated to [RESEARCHED]
+- Changes committed with session sess_1736700000_abc123
+```
+
+Example partial return:
+```
+Research partially completed for task 259:
+- Found 2 theorems before rate limit
+- Partial report created at specs/259_prove_completeness/reports/research-001.md
+- Status remains [RESEARCHING] - run /research 259 to continue
+```

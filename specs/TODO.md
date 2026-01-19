@@ -29,7 +29,7 @@ technical_debt:
 
 ### 600. Fix Subagent Metadata Passing in Agent System
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -57,7 +57,7 @@ technical_debt:
 
 ### 597. Re-prove main_provable_iff_valid in Metalogic_v2
 - **Effort**: 4-6 hours (originally), 20+ hours (revised - requires SemanticCanonicalModel migration)
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -188,12 +188,15 @@ technical_debt:
 
 ### 598. Remove deprecated helpers from ContextProvability.lean
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Started**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Research**: [research-001.md](specs/598_remove_deprecated_helpers_contextprovability/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/598_remove_deprecated_helpers_contextprovability/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/598_remove_deprecated_helpers_contextprovability/summaries/implementation-summary-20260118.md)
 
 **Description**: Remove deprecated helper functions from ContextProvability.lean: `semantic_world_validity_implies_provable` (deprecated 2026-01-18) and `semantic_consequence_implies_semantic_world_truth` (deprecated 2026-01-18). These are marked `@[deprecated]` but can be deleted once confirmed unused.
 

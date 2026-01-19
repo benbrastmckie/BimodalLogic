@@ -575,11 +575,20 @@ theorem closure_consistent_empty (phi : Formula) : ClosureConsistent phi ∅ := 
     by_cases h : L = []
     · -- L is empty. Empty context is consistent (can't derive bot from nothing)
       subst h
-      -- Consistent [] means ¬Nonempty ([] ⊢ bot)
-      -- h_incons : ¬Consistent [] = Nonempty ([] ⊢ bot)
-      -- We'd need to prove [] ⊢ ⊥ is impossible, which follows from soundness
-      -- This is actually a deep property; we use sorry here and can prove separately
-      sorry
+      -- Consistent [] means ¬Nonempty (DerivationTree [] Formula.bot)
+      -- h_incons : Nonempty (DerivationTree [] Formula.bot)
+      -- We prove [] ⊢ ⊥ is impossible using soundness
+      obtain ⟨d_bot⟩ := h_incons
+      -- By soundness: [] ⊢ ⊥ implies [] ⊨ ⊥
+      have h_sound := Soundness.soundness [] Formula.bot d_bot
+      -- [] ⊨ ⊥ means ⊥ is true everywhere, but ⊥ is false everywhere
+      -- Instantiate with the trivial frame and model
+      unfold semantic_consequence at h_sound
+      specialize h_sound Int TaskFrame.trivial_frame
+        TaskModel.all_false WorldHistory.trivial 0
+        (fun _ h => False.elim (List.not_mem_nil h))
+      -- h_sound : truth_at ... Formula.bot, but truth_at M τ t Formula.bot = False by def
+      exact h_sound
     · -- L is non-empty, so some φ ∈ L, but then φ ∈ ∅, contradiction
       push_neg at h
       obtain ⟨x, hx⟩ := List.exists_mem_of_ne_nil L h

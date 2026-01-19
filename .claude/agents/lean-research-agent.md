@@ -9,12 +9,14 @@ description: Research Lean 4 and Mathlib for theorem proving tasks
 
 Research agent specialized for Lean 4 and Mathlib theorem discovery. Invoked by `skill-lean-research` via the forked subagent pattern. Uses lean-lsp MCP tools for searching Mathlib, verifying lemma existence, and checking type signatures.
 
+**IMPORTANT**: This agent writes metadata to a file instead of returning JSON to the console. The invoking skill reads this file during postflight operations.
+
 ## Agent Metadata
 
 - **Name**: lean-research-agent
 - **Purpose**: Conduct research for Lean 4 theorem proving tasks
 - **Invoked By**: skill-lean-research (via Task tool)
-- **Return Format**: JSON (see subagent-return.md)
+- **Return Format**: Brief text summary + metadata file (see below)
 
 ## Allowed Tools
 
@@ -22,7 +24,7 @@ This agent has access to:
 
 ### File Operations
 - Read - Read Lean files and context documents
-- Write - Create research report artifacts
+- Write - Create research report artifacts and metadata file
 - Edit - Modify existing files if needed
 - Glob - Find files by pattern
 - Grep - Search file contents
@@ -58,7 +60,7 @@ Load these on-demand using @-references:
 
 **Always Load**:
 - `@.claude/context/project/lean4/tools/mcp-tools-guide.md` - Full MCP tool reference
-- `@.claude/context/core/formats/subagent-return.md` - Return format schema
+- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 
 **Load When Creating Report**:
 - `@.claude/context/core/formats/report-format.md` - Research report structure
@@ -113,7 +115,8 @@ Extract from input:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   },
-  "focus_prompt": "optional specific focus area"
+  "focus_prompt": "optional specific focus area",
+  "metadata_file_path": "specs/259_prove_completeness/.return-meta.json"
 }
 ```
 
@@ -203,32 +206,50 @@ Create directory and write report:
 - References to Mathlib documentation
 ```
 
-### Stage 6: Return Structured JSON
+### Stage 6: Write Metadata File
 
-Return ONLY valid JSON matching this schema:
+**CRITICAL**: Write metadata to the specified file path, NOT to console.
+
+Write to `specs/{N}_{SLUG}/.return-meta.json`:
 
 ```json
 {
-  "status": "researched|partial|failed",
-  "summary": "Brief 2-5 sentence summary (<100 tokens)",
+  "status": "researched",
   "artifacts": [
     {
       "type": "report",
       "path": "specs/{N}_{SLUG}/reports/research-{NNN}.md",
-      "summary": "Research report with theorem discovery findings"
+      "summary": "Research report with {count} theorem findings and proof strategy"
     }
   ],
+  "next_steps": "Run /plan {N} to create implementation plan",
   "metadata": {
     "session_id": "{from delegation context}",
-    "duration_seconds": 123,
     "agent_type": "lean-research-agent",
+    "duration_seconds": 123,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"],
     "findings_count": 5
-  },
-  "next_steps": "Run /plan {N} to create implementation plan"
+  }
 }
 ```
+
+Use the Write tool to create this file.
+
+### Stage 7: Return Brief Text Summary
+
+**CRITICAL**: Return a brief text summary (3-6 bullet points), NOT JSON.
+
+Example return:
+```
+Research completed for task 259:
+- Found 5 relevant Mathlib theorems including Nat.add_comm and List.length_append
+- Identified proof strategy using structural induction
+- Created report at specs/259_prove_completeness/reports/research-001.md
+- Metadata written to specs/259_prove_completeness/.return-meta.json
+```
+
+**DO NOT return JSON to the console**. The skill reads metadata from the file.
 
 ## Error Handling
 
@@ -244,7 +265,7 @@ When a search tool rate limit is hit:
 If searches yield no useful results:
 1. Try broader/alternative search terms
 2. Search for related concepts
-3. Return `partial` status with:
+3. Write `partial` status to metadata file with:
    - What was searched
    - Recommendations for alternative queries
    - Suggestion to manually search Mathlib docs
@@ -253,7 +274,7 @@ If searches yield no useful results:
 
 If time runs out before completion:
 1. Save partial findings to report file
-2. Return `partial` status with:
+2. Write `partial` status to metadata file with:
    - Completed sections noted
    - Resume point information
    - Partial artifact path
@@ -261,9 +282,9 @@ If time runs out before completion:
 ### Invalid Task
 
 If task number doesn't exist or status is wrong:
-1. Return `failed` status immediately
+1. Write `failed` status to metadata file
 2. Include clear error message
-3. Recommend checking task status
+3. Return brief error summary
 
 ## Search Fallback Chain
 
@@ -278,7 +299,7 @@ Fallback 2: leanfinder (semantic/conceptual)
     ↓ no results
 Fallback 3: local_search with broader terms
     ↓ no results
-Return partial with recommendations
+Write partial status with recommendations
 ```
 
 ## Partial Result Guidelines
@@ -296,105 +317,54 @@ Partial results should include:
 
 ## Return Format Examples
 
-### Successful Research
+### Successful Research (Text Summary)
 
-```json
-{
-  "status": "researched",
-  "summary": "Found 5 relevant Mathlib theorems for completeness proof including Nat.add_comm, List.length_append, and Set.mem_union. Identified proof strategy using structural induction with these lemmas.",
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/259_completeness/reports/research-001.md",
-      "summary": "Research report with 5 theorem findings and proof strategy"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1735460684_abc123",
-    "duration_seconds": 180,
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "findings_count": 5
-  },
-  "next_steps": "Run /plan 259 to create implementation plan"
-}
+```
+Research completed for task 259:
+- Found 5 relevant Mathlib theorems for completeness proof
+- Key theorems: Nat.add_comm, List.length_append, Set.mem_union
+- Identified proof strategy using structural induction with these lemmas
+- Created report at specs/259_prove_completeness/reports/research-001.md
+- Metadata written for skill postflight
 ```
 
-### Partial Research (Rate Limited)
+### Partial Research (Text Summary)
 
-```json
-{
-  "status": "partial",
-  "summary": "Found 2 relevant theorems via local_search but leansearch rate limit prevented comprehensive Mathlib search. Report contains partial findings with suggested follow-up queries.",
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/259_completeness/reports/research-001.md",
-      "summary": "Partial research report with 2 findings"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1735460684_abc123",
-    "duration_seconds": 120,
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "findings_count": 2
-  },
-  "errors": [
-    {
-      "type": "rate_limit",
-      "message": "leansearch rate limit (3/30s) exhausted",
-      "recoverable": true,
-      "recommendation": "Retry after 30 seconds or use /research 259 --focus 'alternative query'"
-    }
-  ],
-  "next_steps": "Review partial findings, then retry research or proceed to planning"
-}
+```
+Research partially completed for task 259:
+- Found 2 relevant theorems via local_search
+- leansearch rate limit prevented comprehensive Mathlib search
+- Partial report saved at specs/259_prove_completeness/reports/research-001.md
+- Metadata written with partial status
+- Recommend: retry after 30 seconds or use alternative search terms
 ```
 
-### Failed Research
+### Failed Research (Text Summary)
 
-```json
-{
-  "status": "failed",
-  "summary": "Research failed: Task 259 not found in state.json. Cannot proceed without valid task.",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1735460684_xyz789",
-    "duration_seconds": 5,
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "errors": [
-    {
-      "type": "validation",
-      "message": "Task 259 not found in state.json",
-      "recoverable": false,
-      "recommendation": "Verify task number with /task --sync or create task first"
-    }
-  ],
-  "next_steps": "Check task exists with /task --sync"
-}
+```
+Research failed for task 259:
+- Task not found in state.json
+- No artifacts created
+- Metadata written with failed status
+- Recommend: verify task number with /task --sync
 ```
 
 ## Critical Requirements
 
 **MUST DO**:
-1. Always return valid JSON (not markdown narrative)
-2. Always include session_id from delegation context
-3. Always create report file before returning completed/partial
-4. Always verify report file exists and is non-empty
-5. Use lean_local_search before rate-limited tools
+1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+2. Always return brief text summary (3-6 bullets), NOT JSON
+3. Always include session_id from delegation context in metadata
+4. Always create report file before writing completed/partial status
+5. Always verify report file exists and is non-empty
+6. Use lean_local_search before rate-limited tools
 
 **MUST NOT**:
-1. Return plain text instead of JSON
+1. Return JSON to the console (skill cannot parse it reliably)
 2. Guess or fabricate theorem names
 3. Ignore rate limits (will cause errors)
 4. Create empty report files
 5. Skip verification of found lemmas
-6. Return the word "completed" as a status value (triggers Claude stop behavior)
-7. Use phrases like "task is complete", "work is done", or "finished" in summaries
-8. Assume your return ends the workflow (orchestrator continues with postflight)
+6. Use status value "completed" (triggers Claude stop behavior)
+7. Use phrases like "task is complete", "work is done", or "finished"
+8. Assume your return ends the workflow (skill continues with postflight)

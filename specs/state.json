@@ -8,12 +8,12 @@
     {
       "project_number": 600,
       "project_name": "fix_subagent_metadata_passing",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T01:21:21Z",
-      "last_updated": "2026-01-19T02:03:04Z",
-      "session_id": "sess_1768787839_a238b3",
+      "last_updated": "2026-01-19T02:08:46Z",
+      "session_id": "sess_1768788507_c30ebc",
       "researched": "2026-01-19T01:48:14Z",
       "artifacts": [
         {
@@ -29,7 +29,8 @@
           "type": "plan"
         }
       ],
-      "planned": "2026-01-19T02:03:04Z"
+      "planned": "2026-01-19T02:03:04Z",
+      "started": "2026-01-19T02:08:46Z"
     },
     {
       "project_number": 599,
@@ -63,13 +64,13 @@
     {
       "project_number": 598,
       "project_name": "remove_deprecated_helpers_contextprovability",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T01:02:15Z",
-      "last_updated": "2026-01-19T02:03:30Z",
+      "last_updated": "2026-01-19T02:13:40Z",
       "description": "Remove deprecated helper functions from ContextProvability.lean: semantic_world_validity_implies_provable (deprecated 2026-01-18) and semantic_consequence_implies_semantic_world_truth (deprecated 2026-01-18). These are marked @[deprecated] but can be deleted once confirmed unused.",
-      "session_id": "sess_1768788107_af3d8e",
+      "session_id": "sess_1768788522_f6b18f",
       "researched": "2026-01-19T01:54:13Z",
       "artifacts": [
         {
@@ -79,20 +80,26 @@
         {
           "path": "specs/598_remove_deprecated_helpers_contextprovability/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/598_remove_deprecated_helpers_contextprovability/summaries/implementation-summary-20260118.md",
+          "type": "summary"
         }
       ],
-      "planned": "2026-01-19T02:03:30Z"
+      "planned": "2026-01-19T02:03:30Z",
+      "started": "2026-01-19T02:08:57Z",
+      "completed": "2026-01-19T02:13:40Z"
     },
     {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T02:05:28Z",
+      "last_updated": "2026-01-19T02:13:08Z",
       "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
-      "session_id": "sess_1768788022_ec9091",
+      "session_id": "sess_1768788778_c6161f",
       "researched": "2026-01-19T02:05:28Z",
       "artifacts": [
         {

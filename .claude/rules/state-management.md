@@ -86,9 +86,28 @@ When updating task status:
   "priority": "high",
   "effort": "4 hours",
   "created": "2026-01-08T10:00:00Z",
-  "last_updated": "2026-01-08T14:30:00Z"
+  "last_updated": "2026-01-08T14:30:00Z",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/334_task_slug_here/reports/research-001.md",
+      "summary": "Brief 1-sentence description of artifact"
+    }
+  ]
 }
 ```
+
+### Artifact Object Schema
+
+Each artifact in the `artifacts` array:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | `research`, `plan`, `summary`, `implementation` |
+| `path` | string | Yes | Relative path from project root |
+| `summary` | string | Yes | Brief 1-sentence description of artifact contents |
+
+**Note**: The `summary` field enables skills to link artifacts with meaningful descriptions in postflight operations, without re-reading artifact contents.
 
 ## Status Values Mapping
 
