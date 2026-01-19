@@ -308,7 +308,7 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 | skill-meta | meta-builder-agent | System building and task creation |
 | skill-status-sync | (direct execution) | Atomic status updates for task state |
 | skill-document-converter | document-converter-agent | Document format conversion (PDF/DOCX to Markdown, etc.) |
-| skill-cleanup | (direct execution) | Identify and terminate orphaned Claude Code processes |
+| skill-refresh | (direct execution) | Identify and terminate orphaned Claude Code processes |
 
 ### Thin Wrapper Execution Flow
 
@@ -340,16 +340,14 @@ All delegating skills follow this 5-step pattern:
 
 ## Session Maintenance
 
-Claude Code processes can accumulate over time, consuming memory. Use the `/cleanup` command to manage orphaned processes.
+Claude Code processes can accumulate over time, consuming memory. Use the `/refresh` command to manage orphaned processes.
 
 ### Quick Commands
 
 | Command | Description |
 |---------|-------------|
-| `/cleanup --status` | Check memory usage by Claude processes |
-| `/cleanup --dry-run` | Preview orphaned processes without terminating |
-| `/cleanup` | Interactive cleanup with confirmation |
-| `/cleanup --force` | Terminate orphaned processes immediately |
+| `/refresh` | Show status and prompt for confirmation |
+| `/refresh --force` | Terminate orphaned processes immediately |
 
 ### Shell Aliases (Optional)
 
@@ -358,25 +356,25 @@ Install convenience aliases:
 .claude/scripts/install-aliases.sh
 ```
 
-This adds: `claude-memory`, `claude-cleanup`, `claude-orphans`, `claude-cleanup-force`
+This adds: `claude-refresh`, `claude-refresh-force`
 
-### Automated Cleanup (Optional)
+### Automated Refresh (Optional)
 
-Install a systemd user timer for hourly cleanup:
+Install a systemd user timer for hourly refresh:
 ```bash
 .claude/scripts/install-systemd-timer.sh
 ```
 
 Manage the timer:
 ```bash
-systemctl --user status claude-cleanup.timer    # Check status
-systemctl --user stop claude-cleanup.timer      # Stop timer
+systemctl --user status claude-refresh.timer    # Check status
+systemctl --user stop claude-refresh.timer      # Stop timer
 .claude/scripts/install-systemd-timer.sh --uninstall  # Remove
 ```
 
 ### Safety
 
-The cleanup system only targets orphaned processes (no controlling terminal). Active sessions are never affected.
+The refresh system only targets orphaned processes (no controlling terminal). Active sessions are never affected.
 
 ## Important Notes
 

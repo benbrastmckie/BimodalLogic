@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# install-systemd-timer.sh - Install Claude Code cleanup systemd timer
+# install-systemd-timer.sh - Install Claude Code refresh systemd timer
 #
 # This script installs a user-level systemd timer that runs hourly
 # to clean up orphaned Claude Code processes.
@@ -12,14 +12,14 @@ set -euo pipefail
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SYSTEMD_DIR="$(dirname "$SCRIPT_DIR")/systemd"
-CLEANUP_SCRIPT="$SCRIPT_DIR/claude-cleanup.sh"
+REFRESH_SCRIPT="$SCRIPT_DIR/claude-refresh.sh"
 
 # User systemd directory
 USER_SYSTEMD_DIR="$HOME/.config/systemd/user"
 
 # Service and timer names
-SERVICE_NAME="claude-cleanup.service"
-TIMER_NAME="claude-cleanup.timer"
+SERVICE_NAME="claude-refresh.service"
+TIMER_NAME="claude-refresh.timer"
 
 # Parse arguments
 UNINSTALL=false
@@ -36,7 +36,7 @@ for arg in "$@"; do
         --help|-h)
             echo "Usage: $0 [--uninstall] [--status]"
             echo ""
-            echo "Install a user-level systemd timer for automated Claude cleanup."
+            echo "Install a user-level systemd timer for automated Claude refresh."
             echo ""
             echo "Options:"
             echo "  --uninstall  Remove the timer and service"
@@ -67,7 +67,7 @@ check_systemd() {
 
 # Show status
 show_status() {
-    echo "Claude Code Cleanup Timer Status"
+    echo "Claude Code Refresh Timer Status"
     echo "================================="
     echo ""
 
@@ -87,7 +87,7 @@ show_status() {
 
 # Install the timer
 install_timer() {
-    echo "Installing Claude Code cleanup timer..."
+    echo "Installing Claude Code refresh timer..."
     echo ""
 
     # Create user systemd directory if needed
@@ -96,12 +96,12 @@ install_timer() {
     # Create service file with correct path
     cat > "$USER_SYSTEMD_DIR/$SERVICE_NAME" << EOF
 [Unit]
-Description=Claude Code orphaned process cleanup
+Description=Claude Code orphaned process refresh
 Documentation=https://github.com/anthropics/claude-code
 
 [Service]
 Type=oneshot
-ExecStart=$CLEANUP_SCRIPT --force
+ExecStart=$REFRESH_SCRIPT --force
 
 # Run with normal user permissions
 User=$USER
@@ -113,7 +113,7 @@ Environment=PATH=/usr/bin:/bin
 # Logging
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=claude-cleanup
+SyslogIdentifier=claude-refresh
 
 [Install]
 WantedBy=default.target
@@ -131,7 +131,7 @@ EOF
 
     echo "Timer installed successfully!"
     echo ""
-    echo "The cleanup will run every hour."
+    echo "The refresh will run every hour."
     echo ""
     echo "Commands:"
     echo "  Check status:    systemctl --user status $TIMER_NAME"
@@ -144,18 +144,26 @@ EOF
     show_status
 }
 
-# Uninstall the timer
+# Uninstall the timer (handles both old and new names)
 uninstall_timer() {
-    echo "Uninstalling Claude Code cleanup timer..."
+    echo "Uninstalling Claude Code refresh timer..."
     echo ""
 
-    # Stop and disable
+    # Stop and disable new style
     systemctl --user stop "$TIMER_NAME" 2>/dev/null || true
     systemctl --user disable "$TIMER_NAME" 2>/dev/null || true
 
-    # Remove files
+    # Stop and disable old style (for migration)
+    systemctl --user stop "claude-cleanup.timer" 2>/dev/null || true
+    systemctl --user disable "claude-cleanup.timer" 2>/dev/null || true
+
+    # Remove new style files
     rm -f "$USER_SYSTEMD_DIR/$SERVICE_NAME"
     rm -f "$USER_SYSTEMD_DIR/$TIMER_NAME"
+
+    # Remove old style files (for migration)
+    rm -f "$USER_SYSTEMD_DIR/claude-cleanup.service"
+    rm -f "$USER_SYSTEMD_DIR/claude-cleanup.timer"
 
     # Reload systemd
     systemctl --user daemon-reload

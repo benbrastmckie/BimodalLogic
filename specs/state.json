@@ -67,11 +67,11 @@
     {
       "project_number": 612,
       "project_name": "improve_system_overview_docs_with_architecture",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:12:02Z",
-      "last_updated": "2026-01-19T20:03:13Z",
+      "last_updated": "2026-01-19T20:05:17Z",
       "session_id": "sess_1768852962_9af2ee",
       "researched": "2026-01-19T17:50:37Z",
       "artifacts": [
@@ -80,7 +80,8 @@
           "type": "research",
           "summary": "Research report identifying inaccurate context:fork documentation, documenting three skill architecture patterns, and recommending Unicode diagrams"
         }
-      ]
+      ],
+      "planned": "2026-01-19T20:05:17Z"
     },
     {
       "project_number": 611,

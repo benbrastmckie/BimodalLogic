@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 #
-# install-aliases.sh - Install Claude Code cleanup aliases
+# install-aliases.sh - Install Claude Code refresh aliases
 #
 # This script adds helpful aliases to your shell configuration:
-#   - claude-memory: Check memory usage by Claude processes
-#   - claude-cleanup: Clean up orphaned Claude processes
-#   - claude-orphans: List orphaned Claude processes
+#   - claude-refresh: Show status and prompt for cleanup
+#   - claude-refresh-force: Terminate orphaned processes immediately
 #
 # Usage: ./install-aliases.sh [--uninstall]
 
@@ -41,36 +40,33 @@ detect_shell_config() {
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CLEANUP_SCRIPT="$SCRIPT_DIR/claude-cleanup.sh"
+REFRESH_SCRIPT="$SCRIPT_DIR/claude-refresh.sh"
 
 # Alias block markers
-ALIAS_START="# >>> Claude Code cleanup aliases >>>"
-ALIAS_END="# <<< Claude Code cleanup aliases <<<"
+ALIAS_START="# >>> Claude Code refresh aliases >>>"
+ALIAS_END="# <<< Claude Code refresh aliases <<<"
 
 # Generate alias block
 generate_aliases() {
     cat << EOF
 $ALIAS_START
-# Quick memory check
-alias claude-memory='$CLEANUP_SCRIPT --status'
-
-# Interactive cleanup
-alias claude-cleanup='$CLEANUP_SCRIPT'
-
-# List orphaned processes (dry-run)
-alias claude-orphans='$CLEANUP_SCRIPT --dry-run'
+# Show status and prompt for cleanup
+alias claude-refresh='$REFRESH_SCRIPT'
 
 # Force cleanup without confirmation
-alias claude-cleanup-force='$CLEANUP_SCRIPT --force'
+alias claude-refresh-force='$REFRESH_SCRIPT --force'
 $ALIAS_END
 EOF
 }
 
-# Check if aliases already installed
+# Check if aliases already installed (check both old and new markers)
 check_installed() {
     local config="$1"
     if grep -q "$ALIAS_START" "$config" 2>/dev/null; then
-        return 0  # installed
+        return 0  # installed (new style)
+    fi
+    if grep -q "Claude Code cleanup aliases" "$config" 2>/dev/null; then
+        return 0  # installed (old style)
     fi
     return 1  # not installed
 }
@@ -91,15 +87,13 @@ install_aliases() {
     echo "Aliases installed in $config"
     echo ""
     echo "Available aliases:"
-    echo "  claude-memory       - Check memory usage"
-    echo "  claude-cleanup      - Interactive cleanup"
-    echo "  claude-orphans      - List orphaned processes"
-    echo "  claude-cleanup-force - Force cleanup"
+    echo "  claude-refresh       - Show status and prompt for cleanup"
+    echo "  claude-refresh-force - Force cleanup without confirmation"
     echo ""
     echo "Run 'source $config' or start a new shell to use the aliases."
 }
 
-# Uninstall aliases
+# Uninstall aliases (handles both old and new markers)
 uninstall_aliases() {
     local config="$1"
 
@@ -108,8 +102,11 @@ uninstall_aliases() {
         exit 0
     fi
 
-    # Remove alias block using sed
+    # Remove new style alias block
     sed -i "/$ALIAS_START/,/$ALIAS_END/d" "$config"
+
+    # Remove old style alias block (for migration)
+    sed -i '/# >>> Claude Code cleanup aliases >>>/,/# <<< Claude Code cleanup aliases <<</d' "$config"
 
     echo "Aliases removed from $config"
 }
@@ -124,7 +121,7 @@ for arg in "$@"; do
         --help|-h)
             echo "Usage: $0 [--uninstall]"
             echo ""
-            echo "Installs Claude Code cleanup aliases to your shell config."
+            echo "Installs Claude Code refresh aliases to your shell config."
             echo ""
             echo "Options:"
             echo "  --uninstall  Remove previously installed aliases"

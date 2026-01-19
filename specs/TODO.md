@@ -142,7 +142,7 @@ Changes required:
 
 ### 612. Improve system-overview.md with architecture patterns
 - **Effort**: 3-4 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
