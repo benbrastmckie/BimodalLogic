@@ -1,19 +1,19 @@
 ---
-next_project_number: 614
+next_project_number: 615
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 11
+  active: 12
   completed: 197
   in_progress: 1
-  not_started: 6
+  not_started: 7
   abandoned: 18
   total: 220
 priority_distribution:
   critical: 0
-  high: 5
+  high: 6
   medium: 4
   low: 2
 technical_debt:
@@ -26,6 +26,29 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 614. Refactor /cleanup command to /refresh
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Source**: Task 585 followup
+
+**Description**: Refactor `/cleanup` command to `/refresh` with simplified two-mode interface:
+1. `/refresh` - Show status and use AskUserQuestion to prompt user whether to clear orphaned processes
+2. `/refresh --force` - Immediately clear all orphaned processes without asking
+
+Changes required:
+- Rename `.claude/commands/cleanup.md` to `refresh.md`
+- Rename `.claude/skills/skill-cleanup/` to `skill-refresh/` with updated SKILL.md
+- Rename `.claude/scripts/claude-cleanup.sh` to `claude-refresh.sh`
+- Fix script bug where `set -euo pipefail` causes early exit after each kill operation
+- Update CLAUDE.md references from `/cleanup` to `/refresh`
+- Update or remove systemd timer and shell alias installations
+- Remove `--status` and `--dry-run` flags (status always shown first)
+
+---
 
 ### 585. Add Session Cleanup to Agents
 - **Effort**: 3 hours
@@ -104,7 +127,7 @@ technical_debt:
 
 ### 612. Improve system-overview.md with architecture patterns
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
