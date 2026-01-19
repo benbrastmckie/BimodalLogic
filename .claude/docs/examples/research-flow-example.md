@@ -184,7 +184,7 @@ Step 1: Codebase Exploration
 Step 2: Context File Review
 - Read .claude/context/core/templates/thin-wrapper-skill.md
 - Read .claude/context/core/formats/subagent-return.md
-- Read .claude/context/core/orchestration/delegation.md
+- Read .claude/context/core/orchestration/orchestration-core.md
 
 Step 3: Synthesize Findings
 - 8 key patterns identified

@@ -330,7 +330,7 @@ All delegating skills follow this 5-step pattern:
 ### Related Documentation
 
 - `.claude/context/core/formats/subagent-return.md` - Return format standard
-- `.claude/context/core/orchestration/delegation.md` - Delegation patterns
+- `.claude/context/core/orchestration/orchestration-core.md` - Delegation patterns
 - `.claude/context/core/architecture/system-overview.md` - Three-layer architecture overview
 - `.claude/context/core/architecture/component-checklist.md` - Component creation decision tree
 - `.claude/context/core/architecture/generation-guidelines.md` - Templates for /meta agent

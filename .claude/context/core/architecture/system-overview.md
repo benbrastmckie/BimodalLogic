@@ -346,7 +346,8 @@ Prevent infinite delegation loops with depth tracking:
 ## Related Documentation
 
 ### Detailed Patterns
-- @.claude/context/core/orchestration/delegation.md - Full delegation standard
+- @.claude/context/core/orchestration/orchestration-core.md - Delegation, routing, session tracking
+- @.claude/context/core/orchestration/orchestration-validation.md - Return validation patterns
 - @.claude/context/core/orchestration/architecture.md - Three-layer detailed explanation
 
 ### Templates

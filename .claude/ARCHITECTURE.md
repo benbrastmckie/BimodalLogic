@@ -959,7 +959,7 @@ Subagent context: ~2000 tokens (loaded only in fork)
 
 - `.claude/context/core/templates/thin-wrapper-skill.md` - Template reference
 - `.claude/context/core/formats/subagent-return.md` - Return format standard
-- `.claude/context/core/orchestration/delegation.md` - Delegation patterns
+- `.claude/context/core/orchestration/orchestration-core.md` - Delegation patterns
 - `.claude/CLAUDE.md` - Skill architecture section
 
 ---
@@ -968,7 +968,7 @@ Subagent context: ~2000 tokens (loaded only in fork)
 
 - Quick Start Guide: `.claude/QUICK-START.md`
 - Testing Guide: `.claude/TESTING.md`
-- Delegation Guide: `.claude/context/core/workflows/subagent-delegation-guide.md`
-- Return Format Standard: `.claude/context/core/standards/subagent-return-format.md`
+- Orchestration Core: `.claude/context/core/orchestration/orchestration-core.md`
+- Return Format Standard: `.claude/context/core/formats/subagent-return.md`
 - Task 191 Research: `specs/191_fix_subagent_delegation_hang/reports/research-001.md`
 - Task 191 Plan: `specs/191_fix_subagent_delegation_hang/plans/implementation-001.md`

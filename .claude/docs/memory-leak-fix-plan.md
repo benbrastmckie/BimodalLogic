@@ -368,7 +368,7 @@ git revert <commit-hash>  # Revert specific fix
 ## Related Issues
 
 - **Task 565**: Workflow interruption (may be related to zombie processes)
-- **Delegation standard**: `.claude/context/core/orchestration/delegation.md` (needs max_turns guidance)
+- **Delegation standard**: `.claude/context/core/orchestration/orchestration-core.md` (needs max_turns guidance)
 
 ---
 
