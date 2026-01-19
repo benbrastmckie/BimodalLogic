@@ -74,7 +74,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Clean Up Secondary Documentation References [IN PROGRESS]
+### Phase 2: Clean Up Secondary Documentation References [COMPLETED]
 
 **Goal**: Remove maintenance references from remaining documentation and context files.
 
@@ -97,7 +97,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Create Reviews State Schema and Initial State [NOT STARTED]
+### Phase 3: Create Reviews State Schema and Initial State [IN PROGRESS]
 
 **Goal**: Design and create the `specs/reviews/state.json` file with proper schema.
 
