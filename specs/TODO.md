@@ -29,9 +29,10 @@ technical_debt:
 
 ### 614. Refactor /cleanup command to /refresh
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-19
 - **Research**: [research-001.md](specs/614_refactor_cleanup_to_refresh_command/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/614_refactor_cleanup_to_refresh_command/plans/implementation-001.md)
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19

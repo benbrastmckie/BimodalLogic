@@ -393,11 +393,11 @@
     {
       "project_number": 614,
       "project_name": "refactor_cleanup_to_refresh_command",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T18:00:00Z",
-      "last_updated": "2026-01-19T17:57:47Z",
+      "last_updated": "2026-01-19T17:59:31Z",
       "description": "Refactor /cleanup command to /refresh with simplified two-mode interface. /refresh shows status and prompts user via AskUserQuestion, /refresh --force immediately clears orphaned processes. Remove --status and --dry-run flags. Rename command, skill, and script files. Fix script bug where set -euo pipefail causes early exit after each kill.",
       "source": "Task 585 followup",
       "session_id": "sess_1768845454_c59fca",
@@ -407,8 +407,14 @@
           "path": "specs/614_refactor_cleanup_to_refresh_command/reports/research-001.md",
           "type": "research",
           "summary": "Research report with file inventory, script bug analysis, and AskUserQuestion pattern"
+        },
+        {
+          "path": "specs/614_refactor_cleanup_to_refresh_command/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for refactoring /cleanup to /refresh with simplified interface"
         }
-      ]
+      ],
+      "planned": "2026-01-19T17:59:31Z"
     }
   ],
   "completed_projects": [
