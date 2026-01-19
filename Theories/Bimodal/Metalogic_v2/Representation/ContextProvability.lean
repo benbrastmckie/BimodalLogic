@@ -5,8 +5,8 @@ import Bimodal.Metalogic_v2.Core.Provability
 import Bimodal.Metalogic_v2.Core.DeductionTheorem
 import Bimodal.Metalogic_v2.Core.MaximalConsistent
 import Bimodal.Metalogic_v2.Representation.CanonicalModel
+import Bimodal.Metalogic_v2.Representation.SemanticCanonicalModel
 import Bimodal.Theorems.Propositional
-import Bimodal.Metalogic.Completeness.FiniteCanonicalModel
 import Mathlib.Data.List.Basic
 
 /-!

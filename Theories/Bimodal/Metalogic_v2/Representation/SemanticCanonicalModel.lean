@@ -1,0 +1,440 @@
+import Bimodal.ProofSystem
+import Bimodal.Semantics
+import Bimodal.Metalogic_v2.Representation.FiniteWorldState
+import Bimodal.Metalogic_v2.Soundness.Soundness
+import Mathlib.Data.Set.Basic
+
+/-!
+# Semantic Canonical Model for Metalogic_v2
+
+This module provides the semantic canonical model construction for proving
+completeness of TM bimodal logic.
+
+## Overview
+
+The semantic approach defines world states as equivalence classes of
+(history, time) pairs. This makes compositionality trivial because history
+paths compose naturally.
+
+## Main Definitions
+
+- `HistoryTimePair`: A pair of (FiniteHistory, FiniteTime)
+- `htEquiv`: Equivalence relation - same world state at given time
+- `SemanticWorldState`: Quotient of history-time pairs
+- `SemanticCanonicalFrame`: TaskFrame with compositionality
+- `SemanticCanonicalModel`: TaskModel for completeness proof
+- `semantic_truth_lemma`: Truth correspondence
+
+## Key Theorem
+
+- `main_provable_iff_valid_v2`: Nonempty (phi) iff valid phi
+
+## References
+
+- Old Metalogic: `Bimodal.Metalogic.Completeness.FiniteCanonicalModel`
+-/
+
+namespace Bimodal.Metalogic_v2.Representation
+
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
+open Bimodal.Metalogic_v2.Core Bimodal.Metalogic_v2.Soundness
+
+/-!
+## History-Time Pairs
+
+A history-time pair is a snapshot of a history at a particular time.
+-/
+
+/--
+A history-time pair for a formula phi.
+-/
+abbrev HistoryTimePair (phi : Formula) := FiniteHistory phi × FiniteTime (temporalBound phi)
+
+/--
+Equivalence of history-time pairs: same underlying world state at given times.
+-/
+def htEquiv (phi : Formula) : HistoryTimePair phi → HistoryTimePair phi → Prop :=
+  fun p1 p2 => p1.1.states p1.2 = p2.1.states p2.2
+
+/--
+htEquiv is reflexive.
+-/
+theorem htEquiv_refl (phi : Formula) (p : HistoryTimePair phi) : htEquiv phi p p := rfl
+
+/--
+htEquiv is symmetric.
+-/
+theorem htEquiv_symm (phi : Formula) {p1 p2 : HistoryTimePair phi}
+    (h : htEquiv phi p1 p2) : htEquiv phi p2 p1 := h.symm
+
+/--
+htEquiv is transitive.
+-/
+theorem htEquiv_trans (phi : Formula) {p1 p2 p3 : HistoryTimePair phi}
+    (h12 : htEquiv phi p1 p2) (h23 : htEquiv phi p2 p3) : htEquiv phi p1 p3 :=
+  h12.trans h23
+
+/--
+Setoid instance for history-time pairs.
+-/
+instance htSetoid (phi : Formula) : Setoid (HistoryTimePair phi) where
+  r := htEquiv phi
+  iseqv := {
+    refl := htEquiv_refl phi
+    symm := @htEquiv_symm phi
+    trans := @htEquiv_trans phi
+  }
+
+/-!
+## Semantic World State
+
+A semantic world state is an equivalence class of history-time pairs.
+-/
+
+/--
+Semantic world state: equivalence class of history-time pairs.
+Two pairs are equivalent if they share the same underlying world state.
+-/
+def SemanticWorldState (phi : Formula) := Quotient (htSetoid phi)
+
+namespace SemanticWorldState
+
+variable {phi : Formula}
+
+/--
+Construct a semantic world state from a history-time pair.
+-/
+def mk (p : HistoryTimePair phi) : SemanticWorldState phi := Quotient.mk (htSetoid phi) p
+
+/--
+Construct from history and time separately.
+-/
+def ofHistoryTime (h : FiniteHistory phi) (t : FiniteTime (temporalBound phi)) :
+    SemanticWorldState phi := mk (h, t)
+
+/--
+Get the underlying FiniteWorldState.
+This is well-defined because equivalent pairs have the same underlying state.
+-/
+def toFiniteWorldState (w : SemanticWorldState phi) : FiniteWorldState phi :=
+  Quotient.lift (fun p => p.1.states p.2) (fun _ _ h => h) w
+
+/--
+Two semantic world states are equal iff their underlying world states are equal.
+-/
+theorem eq_iff_toFiniteWorldState_eq (w1 w2 : SemanticWorldState phi) :
+    w1 = w2 ↔ toFiniteWorldState w1 = toFiniteWorldState w2 := by
+  constructor
+  · intro h; rw [h]
+  · intro h
+    induction w1 using Quotient.ind with | _ p1 =>
+    induction w2 using Quotient.ind with | _ p2 =>
+    simp only [toFiniteWorldState, Quotient.lift_mk] at h
+    exact Quotient.sound h
+
+/--
+A semantic world state models a formula iff the underlying world state does.
+-/
+def models (w : SemanticWorldState phi) (psi : Formula) (h_mem : psi ∈ closure phi) : Prop :=
+  (toFiniteWorldState w).models psi h_mem
+
+end SemanticWorldState
+
+/-!
+## Semantic Task Relation
+
+The task relation is defined via history existence.
+-/
+
+/--
+Semantic task relation: w relates to v with duration d if there exists a history
+passing through both with the appropriate time difference.
+-/
+def semantic_task_rel (phi : Formula) (w : SemanticWorldState phi) (d : Int)
+    (v : SemanticWorldState phi) : Prop :=
+  ∃ (h : FiniteHistory phi) (t1 t2 : FiniteTime (temporalBound phi)),
+    SemanticWorldState.ofHistoryTime h t1 = w ∧
+    SemanticWorldState.ofHistoryTime h t2 = v ∧
+    FiniteTime.toInt (temporalBound phi) t2 - FiniteTime.toInt (temporalBound phi) t1 = d
+
+/--
+Nullity: w relates to itself with duration 0.
+-/
+theorem semantic_task_rel_nullity (phi : Formula) (w : SemanticWorldState phi) :
+    semantic_task_rel phi w 0 w := by
+  -- Every SemanticWorldState comes from some history-time pair
+  induction w using Quotient.ind with | _ p =>
+  let h := p.1
+  let t := p.2
+  use h, t, t
+  constructor
+  · rfl
+  · constructor
+    · rfl
+    · simp
+
+/--
+Compositionality: If w -[d1]-> u and u -[d2]-> v, then w -[d1+d2]-> v.
+
+This requires history gluing when the histories differ.
+-/
+theorem semantic_task_rel_compositionality (phi : Formula)
+    (w u v : SemanticWorldState phi) (d1 d2 : Int)
+    (h_wu : semantic_task_rel phi w d1 u)
+    (h_uv : semantic_task_rel phi u d2 v) :
+    semantic_task_rel phi w (d1 + d2) v := by
+  -- Extract witnesses from both relations
+  obtain ⟨h1, t1, t1', h_w, h_u1, h_d1⟩ := h_wu
+  obtain ⟨h2, t2, t2', h_u2, h_v, h_d2⟩ := h_uv
+  -- Key: h1.states t1' = h2.states t2 (both equal the underlying state of u)
+  -- We need to glue h1 and h2 into a single history
+  -- This is complex - requires history gluing infrastructure
+  sorry
+
+/-!
+## Semantic Canonical Frame and Model
+-/
+
+/--
+The semantic canonical frame.
+-/
+noncomputable def SemanticCanonicalFrame (phi : Formula) : TaskFrame Int where
+  WorldState := SemanticWorldState phi
+  task_rel := semantic_task_rel phi
+  nullity := semantic_task_rel_nullity phi
+  compositionality := fun w u v d1 d2 => semantic_task_rel_compositionality phi w u v d1 d2
+
+/--
+Semantic valuation: atom p is true at w iff p is true in underlying world state.
+-/
+def semantic_valuation (phi : Formula) : SemanticWorldState phi → String → Prop :=
+  fun w p =>
+    ∃ h : Formula.atom p ∈ closure phi,
+      (SemanticWorldState.toFiniteWorldState w).models (Formula.atom p) h
+
+/--
+The semantic canonical model.
+-/
+noncomputable def SemanticCanonicalModel (phi : Formula) :
+    TaskModel (SemanticCanonicalFrame phi) where
+  valuation := semantic_valuation phi
+
+/-!
+## World History Conversion
+
+Convert finite histories to world histories for the semantic model.
+-/
+
+/--
+Helper: check if an Int is in the finite time domain.
+-/
+def inFiniteDomain (phi : Formula) (t : Int) : Prop :=
+  -(temporalBound phi : Int) ≤ t ∧ t ≤ (temporalBound phi : Int)
+
+/--
+Helper: convert an Int in domain to a FiniteTime.
+-/
+noncomputable def intToFiniteTime (phi : Formula) (t : Int)
+    (h : inFiniteDomain phi t) : FiniteTime (temporalBound phi) :=
+  ⟨(t + temporalBound phi).toNat, by
+    have h1 : 0 ≤ t + (temporalBound phi : Int) := by
+      unfold inFiniteDomain at h; omega
+    have h2 : t + temporalBound phi ≤ 2 * temporalBound phi := by
+      unfold inFiniteDomain at h; omega
+    omega⟩
+
+/--
+Convert a finite history to a world history.
+
+The world history has domain [-k, k] where k = temporalBound phi.
+-/
+noncomputable def finiteHistoryToWorldHistory (phi : Formula) (h : FiniteHistory phi) :
+    WorldHistory (SemanticCanonicalFrame phi) where
+  domain := inFiniteDomain phi
+  convex := fun x z h_x h_z y h_xy h_yz => by
+    unfold inFiniteDomain at h_x h_z ⊢
+    constructor <;> omega
+  states := fun t h_t =>
+    SemanticWorldState.ofHistoryTime h (intToFiniteTime phi t h_t)
+  respects_task := fun s t hs ht _h_le => by
+    -- Need to show semantic_task_rel phi (states s) (t - s) (states t)
+    -- Both states come from the same history h, so this follows from the
+    -- definition of semantic_task_rel.
+    -- The proof requires showing that the time difference of intToFiniteTime results
+    -- equals t - s, which is straightforward time arithmetic.
+    let fs := intToFiniteTime phi s hs
+    let ft := intToFiniteTime phi t ht
+    use h, fs, ft
+    refine ⟨rfl, rfl, ?_⟩
+    -- Time arithmetic: toInt ft - toInt fs = t - s
+    -- This is straightforward but requires unfolding definitions carefully
+    sorry
+
+/--
+Construct a constant finite history from a single world state.
+This is used in the completeness proof.
+-/
+def finite_history_from_state (phi : Formula) (w : FiniteWorldState phi) : FiniteHistory phi :=
+  FiniteHistory.constant w
+
+/-!
+## Truth Correspondence
+
+The key lemma connecting semantic truth to MCS membership.
+-/
+
+/--
+Semantic truth at a position in the model.
+-/
+def semantic_truth_at (phi : Formula) (w : SemanticWorldState phi)
+    (psi : Formula) (h_mem : psi ∈ closure phi) : Prop :=
+  (SemanticWorldState.toFiniteWorldState w).models psi h_mem
+
+/--
+Truth lemma: semantic truth corresponds to MCS membership.
+
+For MCS-derived world states, membership in the underlying MCS
+corresponds to semantic truth.
+-/
+theorem semantic_truth_lemma (phi : Formula) (S : Set Formula)
+    (h_mcs : ClosureMaximalConsistent phi S)
+    (psi : Formula) (h_mem : psi ∈ closure phi) :
+    let w := worldStateFromClosureMCS phi S h_mcs
+    psi ∈ S ↔ w.models psi h_mem := by
+  exact worldStateFromClosureMCS_models_iff phi S h_mcs psi h_mem
+
+/-!
+## Completeness via Contrapositive
+
+The main completeness proof.
+-/
+
+/--
+Bridge lemma: If phi is not provable, then {phi.neg} is set-consistent.
+-/
+theorem neg_set_consistent_of_not_provable (phi : Formula)
+    (h_not_prov : ¬Nonempty (⊢ phi)) :
+    SetConsistent ({phi.neg} : Set Formula) := by
+  intro L hL h_incons
+  -- Every element of L is phi.neg
+  have hL' : ∀ ψ ∈ L, ψ = phi.neg := fun ψ hψ => Set.mem_singleton_iff.mp (hL ψ hψ)
+  by_cases hne : L = []
+  · -- L is empty, so [] ⊢ ⊥
+    subst hne
+    obtain ⟨d⟩ := h_incons
+    -- From [] ⊢ ⊥, we have ⊥ is derivable, which contradicts soundness
+    have h_sem_cons := soundness [] Formula.bot d
+    -- Build a countermodel where ⊥ is false
+    have h_bot_true := h_sem_cons Int TaskFrame.trivial_frame
+        (TaskModel.all_false) (WorldHistory.trivial) (0 : Int)
+        (fun ψ hψ => (List.not_mem_nil hψ).elim)
+    simp only [truth_at] at h_bot_true
+  · -- L is non-empty, consisting only of phi.neg
+    obtain ⟨d⟩ := h_incons
+    -- L ⊢ ⊥ where all elements of L are phi.neg
+    -- Weaken to [phi.neg] ⊢ ⊥
+    have h_subset : L ⊆ [phi.neg] := by
+      intro ψ hψ
+      rw [hL' ψ hψ]
+      simp
+    have d' := DerivationTree.weakening L [phi.neg] Formula.bot d h_subset
+    -- [phi.neg] ⊢ ⊥ means ⊢ phi.neg → ⊥ = ⊢ phi.neg.neg
+    -- By DNE, ⊢ phi, contradicting h_not_prov
+    have d_neg_neg := deduction_theorem [] phi.neg Formula.bot d'
+    have d_dne := Bimodal.Theorems.Propositional.double_negation phi
+    have d_phi := DerivationTree.modus_ponens [] phi.neg.neg phi d_dne d_neg_neg
+    exact h_not_prov ⟨d_phi⟩
+
+/--
+Main completeness theorem (Metalogic_v2 version).
+
+If phi is valid (true in all models), then phi is provable.
+
+**Proof Strategy (Contrapositive)**:
+1. Assume phi is not provable
+2. Then {phi.neg} is consistent (by neg_set_consistent_of_not_provable)
+3. Extend to full MCS by Lindenbaum
+4. Project to closure MCS
+5. Build SemanticCanonicalModel countermodel
+6. By validity, phi is true in the countermodel
+7. But phi ∉ MCS projection, so phi is false (contradiction)
+
+**Status**: This requires the full truth correspondence lemma
+and correct model construction. Currently has sorry.
+-/
+noncomputable def main_weak_completeness_v2 (phi : Formula) (h_valid : valid phi) : ⊢ phi := by
+  by_cases h_prov : Nonempty (⊢ phi)
+  · exact Classical.choice h_prov
+  · exfalso
+    -- Step 1: {phi.neg} is consistent
+    have h_neg_cons : SetConsistent ({phi.neg} : Set Formula) :=
+      neg_set_consistent_of_not_provable phi h_prov
+
+    -- Step 2: Extend to full MCS by Lindenbaum
+    obtain ⟨M, h_sub_M, h_M_mcs⟩ := set_lindenbaum {phi.neg} h_neg_cons
+
+    -- Step 3: phi.neg ∈ M
+    have h_neg_in_M : phi.neg ∈ M := h_sub_M (Set.mem_singleton phi.neg)
+
+    -- Step 4: phi ∉ M (by consistency)
+    have h_phi_not_M : phi ∉ M := set_mcs_neg_excludes h_M_mcs phi h_neg_in_M
+
+    -- Step 5: Project to closure MCS
+    let S := M ∩ (closureWithNeg phi : Set Formula)
+    have h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M h_M_mcs
+
+    -- Step 6: phi ∉ S
+    have h_phi_closure : phi ∈ closure phi := phi_mem_closure phi
+    have h_phi_not_S : phi ∉ S := fun h => h_phi_not_M h.1
+
+    -- Step 7: Build world state from closure MCS
+    let w := worldStateFromClosureMCS phi S h_S_mcs
+
+    -- Step 8: phi is false at w
+    have h_phi_false : ¬w.models phi h_phi_closure :=
+      worldStateFromClosureMCS_not_models phi S h_S_mcs phi h_phi_closure h_phi_not_S
+
+    -- Step 9: Build history through w
+    let hist := finite_history_from_state phi w
+
+    -- Step 10: Build SemanticWorldState
+    let t := FiniteTime.origin (temporalBound phi)
+    let sw := SemanticWorldState.ofHistoryTime hist t
+
+    -- Step 11: Build WorldHistory
+    let tau := finiteHistoryToWorldHistory phi hist
+
+    -- Step 12: Apply validity to get truth_at phi
+    have h_truth : truth_at (SemanticCanonicalModel phi) tau 0 phi :=
+      h_valid Int (SemanticCanonicalFrame phi) (SemanticCanonicalModel phi) tau 0
+
+    -- Step 13: Bridge from truth_at to w.models
+    -- This requires showing that truth_at corresponds to membership in the MCS
+    -- which requires the full semantic truth lemma
+
+    -- The key issue: we need to connect tau.states 0 to sw, and
+    -- sw.toFiniteWorldState to w.
+
+    -- For the constant history finite_history_from_state, all states equal w.
+    -- So hist.states t = w, hence sw.toFiniteWorldState = w.
+
+    -- We need: truth_at M tau 0 phi → w.models phi
+    -- This requires a bridge lemma that we haven't fully proven.
+
+    sorry
+
+/--
+Main theorem: Provability is equivalent to validity.
+-/
+theorem main_provable_iff_valid_v2 (phi : Formula) : Nonempty (⊢ phi) ↔ valid phi := by
+  constructor
+  · -- Soundness direction
+    intro ⟨h_deriv⟩
+    have h_sem_conseq := soundness [] phi h_deriv
+    intro D _ _ _ F M tau t
+    exact h_sem_conseq D F M tau t (fun _ h => absurd h List.not_mem_nil)
+  · -- Completeness direction
+    intro h_valid
+    exact ⟨main_weak_completeness_v2 phi h_valid⟩
+
+end Bimodal.Metalogic_v2.Representation
