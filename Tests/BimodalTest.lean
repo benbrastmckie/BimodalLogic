@@ -17,6 +17,9 @@ import BimodalTest.Metalogic_v2.SoundnessPropertyTest
 import BimodalTest.Metalogic_v2.RepresentationTest
 import BimodalTest.Metalogic_v2.CompletenessTest
 import BimodalTest.Metalogic_v2.FMPTest
+import BimodalTest.Metalogic_v2.ContextProvabilityTest
+import BimodalTest.Metalogic_v2.TruthLemmaPropertyTest
+import BimodalTest.Metalogic_v2.CanonicalModelPropertyTest
 import BimodalTest.Theorems.PropositionalTest
 import BimodalTest.Theorems.ModalS4Test
 import BimodalTest.Theorems.ModalS5Test

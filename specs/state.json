@@ -8,20 +8,26 @@
     {
       "project_number": 604,
       "project_name": "migrate_fmp_to_semanticcanonicalmodel_v2",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T06:44:19Z",
-      "last_updated": "2026-01-19T07:02:58Z",
-      "session_id": "sess_1768805852_dceec9",
+      "last_updated": "2026-01-19T07:07:19Z",
+      "session_id": "sess_1768806315_24e72a",
       "researched": "2026-01-19T07:02:58Z",
       "artifacts": [
         {
           "path": "specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting current dependencies on old Metalogic, available v2 infrastructure, gap analysis with 6-8 definitions to port, and 4-phase migration plan"
+        },
+        {
+          "path": "specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for migrating FMP to v2 infrastructure"
         }
-      ]
+      ],
+      "planned": "2026-01-19T07:07:19Z"
     },
     {
       "project_number": 600,
@@ -341,13 +347,13 @@
     {
       "project_number": 601,
       "project_name": "design_task_review_logic_validation",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-18T17:36:50Z",
-      "last_updated": "2026-01-19T06:56:17Z",
+      "last_updated": "2026-01-19T07:06:38Z",
       "description": "Design validation rules for state.json/TODO.md consistency, artifact links, completion verification, follow-up task workflow",
-      "session_id": "sess_1768805601_09fee6",
+      "session_id": "sess_1768806381_0e111b",
       "researched": "2026-01-19T06:56:17Z",
       "artifacts": [
         {
