@@ -86,13 +86,14 @@ technical_debt:
 
 ### 613. Revise Metalogic_v2 README architecture diagram
 - **Effort**: 1-2 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Researched**: 2026-01-19
 - **Related**: Task 608
 - **Research**: [research-001.md](specs/613_revise_metalogic_v2_readme_architecture_diagram/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/613_revise_metalogic_v2_readme_architecture_diagram/plans/implementation-001.md)
 
 **Description**: Revise Theories/Bimodal/Metalogic_v2/README.md to be accurate and include a better diagram than the current 'Architecture Overview' section. The more fundamental theorems should come first (earlier line numbers) and the derived theorems should come later in the diagram, while reflecting all relationships accurately.
 
