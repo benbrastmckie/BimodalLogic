@@ -80,7 +80,7 @@ technical_debt:
 
 ### 609. Document command-skill-agent architecture
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -90,11 +90,12 @@ technical_debt:
 ---
 
 ### 608. Restructure completeness proof via representation theorem
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Related**: Task 470
+- **Research**: [research-001.md](specs/608_restructure_completeness_via_representation_theorem/reports/research-001.md)
 
 **Description**: Use Theories/Bimodal/Metalogic_v2/README.md which outlines the reorganization strategy to make the representation theorem the foundation from which completeness and decidability are derived, and study specs/470_finite_model_computational_optimization/summaries/implementation-summary-20260118.md to determine how best to proceed given the limitations encountered in order to finish restructuring the proof towards using the representation theorem to establish completeness.
 

@@ -8,20 +8,30 @@
     {
       "project_number": 609,
       "project_name": "document_command_skill_agent_architecture",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T16:03:47Z",
-      "last_updated": "2026-01-19T16:03:47Z"
+      "last_updated": "2026-01-19T16:09:22Z",
+      "session_id": "sess_1768838947_6f5497"
     },
     {
       "project_number": 608,
       "project_name": "restructure_completeness_via_representation_theorem",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T15:54:48Z",
-      "last_updated": "2026-01-19T15:54:48Z"
+      "last_updated": "2026-01-19T16:11:43Z",
+      "session_id": "sess_1768838897_223d2d",
+      "researched": "2026-01-19T16:11:43Z",
+      "artifacts": [
+        {
+          "path": "specs/608_restructure_completeness_via_representation_theorem/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of Metalogic_v2 architecture, task 470 limitations, and recommendation to port proven semantic_weak_completeness approach"
+        }
+      ]
     },
     {
       "project_number": 605,
