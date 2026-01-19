@@ -1,5 +1,5 @@
 ---
-next_project_number: 613
+next_project_number: 614
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -83,6 +83,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 613. Revise Metalogic_v2 README architecture diagram
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Related**: Task 608
+
+**Description**: Revise Theories/Bimodal/Metalogic_v2/README.md to be accurate and include a better diagram than the current 'Architecture Overview' section. The more fundamental theorems should come first (earlier line numbers) and the derived theorems should come later in the diagram, while reflecting all relationships accurately.
+
+---
 
 ### 612. Improve system-overview.md with architecture patterns
 - **Effort**: 3-4 hours

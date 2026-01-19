@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 613,
+      "project_name": "revise_metalogic_v2_readme_architecture_diagram",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T17:22:52Z",
+      "last_updated": "2026-01-19T17:22:52Z"
+    },
+    {
       "project_number": 612,
       "project_name": "improve_system_overview_docs_with_architecture",
       "status": "not_started",
@@ -312,5 +321,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 613
+  "next_project_number": 614
 }
