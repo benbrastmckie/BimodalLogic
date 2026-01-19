@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 594,
+      "project_name": "fix_progress_interruptions_agent_system",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "effort": "2-3 hours",
+      "created": "2026-01-19T00:12:36Z",
+      "last_updated": "2026-01-19T00:12:36Z"
+    },
+    {
       "project_number": 593,
       "project_name": "complete_consistent_iff_consistent_basic_lean",
       "status": "completed",
@@ -235,5 +245,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 594
+  "next_project_number": 595
 }
