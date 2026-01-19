@@ -27,6 +27,41 @@ technical_debt:
 
 ## High Priority
 
+### 603. Add Completion Verification Logic
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Dependencies**: Task #602
+
+**Description**: Parse plans/summaries, generate remaining work reports, interactive follow-up task creation.
+
+---
+
+### 602. Implement --review Mode in /task Command
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Dependencies**: Task #601
+
+**Description**: Implement flag parsing, metadata consistency detection/correction, user confirmation, git commits.
+
+---
+
+### 601. Design Task Review Logic and Validation Rules
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Design validation rules for state.json/TODO.md consistency, artifact links, completion verification, follow-up task workflow.
+
+---
+
 ### 600. Fix Subagent Metadata Passing in Agent System
 - **Effort**: 2-4 hours
 - **Status**: [COMPLETED]

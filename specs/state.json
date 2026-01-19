@@ -293,6 +293,38 @@
       "created": "2026-01-19T00:26:00Z",
       "last_updated": "2026-01-19T00:26:00Z",
       "description": "Add explicit session cleanup stage to all agent return workflows. Before returning JSON result, agents should clear large context references from memory and log session completion. Add Stage 8 (Session Cleanup) to lean-implementation-agent, general-implementation-agent, latex-implementation-agent after their Stage 7 (Return Structured JSON). This reduces memory footprint before agent termination."
+    },
+    {
+      "project_number": 601,
+      "project_name": "design_task_review_logic_validation",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-18T17:36:50Z",
+      "last_updated": "2026-01-18T17:36:50Z",
+      "description": "Design validation rules for state.json/TODO.md consistency, artifact links, completion verification, follow-up task workflow"
+    },
+    {
+      "project_number": 602,
+      "project_name": "implement_review_mode_task_command",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-18T17:36:50Z",
+      "last_updated": "2026-01-18T17:36:50Z",
+      "description": "Implement flag parsing, metadata consistency detection/correction, user confirmation, git commits",
+      "dependencies": [601]
+    },
+    {
+      "project_number": 603,
+      "project_name": "add_completion_verification_logic",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-18T17:36:50Z",
+      "last_updated": "2026-01-18T17:36:50Z",
+      "description": "Parse plans/summaries, generate remaining work reports, interactive follow-up task creation",
+      "dependencies": [602]
     }
   ],
   "completed_projects": [
@@ -307,5 +339,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 601
+  "next_project_number": 604
 }
