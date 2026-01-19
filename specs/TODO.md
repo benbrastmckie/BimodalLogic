@@ -1,5 +1,5 @@
 ---
-next_project_number: 598
+next_project_number: 599
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -198,6 +198,17 @@ technical_debt:
 ---
 
 ## Low Priority
+
+### 598. Remove deprecated helpers from ContextProvability.lean
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Created**: 2026-01-19
+
+**Description**: Remove deprecated helper functions from ContextProvability.lean: `semantic_world_validity_implies_provable` (deprecated 2026-01-18) and `semantic_consequence_implies_semantic_world_truth` (deprecated 2026-01-18). These are marked `@[deprecated]` but can be deleted once confirmed unused.
+
+---
 
 ### 470. Finite model computational optimization
 - **Status**: [NOT STARTED]

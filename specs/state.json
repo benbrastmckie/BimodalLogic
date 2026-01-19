@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 598,
+      "project_name": "remove_deprecated_helpers_contextprovability",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-19T01:02:15Z",
+      "last_updated": "2026-01-19T01:02:15Z",
+      "description": "Remove deprecated helper functions from ContextProvability.lean: semantic_world_validity_implies_provable (deprecated 2026-01-18) and semantic_consequence_implies_semantic_world_truth (deprecated 2026-01-18). These are marked @[deprecated] but can be deleted once confirmed unused."
+    },
+    {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
       "status": "not_started",
@@ -207,5 +217,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 598
+  "next_project_number": 599
 }
