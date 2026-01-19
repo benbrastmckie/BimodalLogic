@@ -1,5 +1,5 @@
 ---
-next_project_number: 620
+next_project_number: 621
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -66,6 +66,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 620. Refine Metalogic_v2 proofs for publication quality
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-19
+
+**Description**: Refine the Bimodal/Metalogic_v2/ proofs to have no fat whatsoever, optimizing performance and organization while cleaning out old cruft, stray comments, and otherwise improving the presentation to be at the highest quality for publication and reference.
+
+---
 
 ### 619. Agent system architecture upgrade
 - **Status**: [RESEARCHED]

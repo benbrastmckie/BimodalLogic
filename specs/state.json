@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 620,
+      "project_name": "refine_metalogic_v2_proofs",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T20:45:59Z",
+      "last_updated": "2026-01-19T20:45:59Z"
+    },
+    {
       "project_number": 619,
       "project_name": "agent_system_architecture_upgrade",
       "status": "researched",
@@ -299,5 +308,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 620
+  "next_project_number": 621
 }
