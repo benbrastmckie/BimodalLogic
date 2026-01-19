@@ -286,21 +286,27 @@
     {
       "project_number": 568,
       "project_name": "create_metalogic_v2_test_suite",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-18T02:30:43Z",
-      "last_updated": "2026-01-19T06:49:07Z",
+      "last_updated": "2026-01-19T06:53:38Z",
       "description": "Create comprehensive test suite for Bimodal/Metalogic_v2/ to enable eventual deletion of old Bimodal/Metalogic/. Tests should provide good coverage of all Metalogic_v2 modules independently—no imports from old Metalogic. Draw inspiration from old Metalogic/ tests where relevant, but focus on high-quality independent tests for the new metalogic architecture. Cover core modules: MCS properties, canonical model construction, soundness, completeness bridge lemmas, and the provable_iff_valid theorem.",
-      "session_id": "sess_1768805150_dd9971",
+      "session_id": "sess_1768805438_f11c23",
       "researched": "2026-01-19T06:49:07Z",
       "artifacts": [
         {
           "path": "specs/568_create_metalogic_v2_test_suite/reports/research-001.md",
           "type": "research",
           "summary": "Research report on Metalogic_v2 test suite requirements with architecture analysis, coverage gaps, and recommendations"
+        },
+        {
+          "path": "specs/568_create_metalogic_v2_test_suite/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for Metalogic_v2 test suite covering FMP, ContextProvability, TruthLemma, and CanonicalModel tests"
         }
-      ]
+      ],
+      "planned": "2026-01-19T06:53:38Z"
     },
     {
       "project_number": 585,
@@ -315,13 +321,13 @@
     {
       "project_number": 601,
       "project_name": "design_task_review_logic_validation",
-      "status": "researched",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-18T17:36:50Z",
-      "last_updated": "2026-01-19T06:50:09Z",
+      "last_updated": "2026-01-19T06:53:37Z",
       "description": "Design validation rules for state.json/TODO.md consistency, artifact links, completion verification, follow-up task workflow",
-      "session_id": "sess_1768805105_bd5bb9",
+      "session_id": "sess_1768805601_09fee6",
       "researched": "2026-01-19T06:50:09Z",
       "artifacts": [
         {

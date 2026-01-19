@@ -56,8 +56,7 @@ namespace Bimodal.Metalogic_v2.Representation
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic_v2.Core Bimodal.Metalogic_v2.Soundness
 open Bimodal.Theorems.Propositional
-open Bimodal.Metalogic.Completeness (SemanticCanonicalFrame SemanticCanonicalModel
-  SemanticWorldState semantic_weak_completeness FiniteTime temporalBound main_provable_iff_valid)
+-- Using Metalogic_v2 infrastructure (no dependency on old Metalogic/)
 
 /--
 Soundness theorem for context-based provability.
@@ -132,13 +131,13 @@ predicate as an intermediate step. This is cleaner and avoids sorry dependencies
 
 **Dependencies**:
 - `Validity.valid_iff_empty_consequence` (PROVEN in Validity.lean)
-- `main_provable_iff_valid` (PROVEN in FiniteCanonicalModel.lean)
+- `main_provable_iff_valid_v2` (PROVEN in Metalogic_v2/Representation/SemanticCanonicalModel.lean)
 
 **Status**: Fully proven, no sorries.
 
 **References**:
 - Blackburn et al., Modal Logic, Chapter 4.8 (Canonical Model Construction)
-- FiniteCanonicalModel.lean: `main_provable_iff_valid` (PROVEN)
+- SemanticCanonicalModel.lean: `main_provable_iff_valid_v2` (Metalogic_v2)
 - Research: specs/569_analyze_proof_strategy_alternatives/reports/research-002.md
 -/
 theorem representation_theorem_backward_empty {φ : Formula} :
@@ -146,8 +145,8 @@ theorem representation_theorem_backward_empty {φ : Formula} :
   intro h_sem
   -- Step 1: Convert semantic_consequence [] φ to valid φ
   have h_valid : valid φ := (Validity.valid_iff_empty_consequence φ).mpr h_sem
-  -- Step 2: By main_provable_iff_valid, get provability
-  have h_prov : Nonempty (⊢ φ) := (main_provable_iff_valid φ).mpr h_valid
+  -- Step 2: By main_provable_iff_valid_v2 (Metalogic_v2), get provability
+  have h_prov : Nonempty (⊢ φ) := (main_provable_iff_valid_v2 φ).mpr h_valid
   -- Step 3: Return as ContextDerivable
   exact h_prov
 

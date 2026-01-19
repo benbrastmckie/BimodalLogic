@@ -2,6 +2,8 @@ import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic_v2.Core.MaximalConsistent
 import Bimodal.Metalogic_v2.Representation.CanonicalModel
+-- NOTE: This import provides Formula.subformulas. A future task could move
+-- this definition to Bimodal.Syntax to eliminate this dependency.
 import Bimodal.Metalogic.Decidability.SignedFormula
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.List.Basic

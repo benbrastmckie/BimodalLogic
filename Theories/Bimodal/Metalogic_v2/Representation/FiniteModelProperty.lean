@@ -1,7 +1,11 @@
 import Bimodal.Metalogic_v2.Representation.RepresentationTheorem
 import Bimodal.Metalogic_v2.Representation.ContextProvability
+import Bimodal.Metalogic_v2.Representation.SemanticCanonicalModel
 import Bimodal.Metalogic_v2.Soundness.Soundness
 import Bimodal.Semantics.Validity
+-- NOTE: FiniteModelProperty uses several old Metalogic constructions
+-- (semantic_world_state_has_world_history, semanticWorldState_finite, etc.)
+-- that haven't been ported to Metalogic_v2 yet. Future task to complete the port.
 import Bimodal.Metalogic.Completeness.FiniteCanonicalModel
 
 /-!
