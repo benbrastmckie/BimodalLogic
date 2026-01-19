@@ -2,9 +2,8 @@ import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic_v2.Core.MaximalConsistent
 import Bimodal.Metalogic_v2.Representation.CanonicalModel
--- NOTE: This import provides Formula.subformulas. A future task could move
--- this definition to Bimodal.Syntax to eliminate this dependency.
-import Bimodal.Metalogic.Decidability.SignedFormula
+-- Formula.subformulas is now defined in Bimodal.Syntax.Subformulas
+import Bimodal.Syntax.Subformulas
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.List.Basic
 
@@ -40,7 +39,6 @@ namespace Bimodal.Metalogic_v2.Representation
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic_v2.Core
-open Bimodal.Metalogic.Decidability (Formula.subformulas)
 
 /-!
 ## Subformula Closure

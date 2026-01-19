@@ -62,7 +62,7 @@ The optimization strategy is:
 
 ## Implementation Phases
 
-### Phase 1: Migrate Formula.subformulas to Bimodal.Syntax [NOT STARTED]
+### Phase 1: Migrate Formula.subformulas to Bimodal.Syntax [IN PROGRESS]
 
 **Goal**: Eliminate the dependency on old `Bimodal.Metalogic.Decidability.SignedFormula` by creating a standalone subformulas definition in the Syntax module.
 
