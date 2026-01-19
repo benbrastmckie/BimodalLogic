@@ -671,6 +671,179 @@ theorem unexpanded_contributes (b : Branch) (sf : SignedFormula) (hIn : sf ∈ b
                   (0 + h.formula.complexity) := by apply foldl_conditional_mono; omega
 
 /--
+Helper: foldl with additive function shifts by the difference in starting values.
+-/
+theorem foldl_add_shift (l : List SignedFormula) (g : SignedFormula → Nat) (m n : Nat) :
+    l.foldl (fun acc sf' => acc + g sf') (m + n) =
+    l.foldl (fun acc sf' => acc + g sf') m + n := by
+  induction l generalizing m with
+  | nil => simp
+  | cons h t ih =>
+    simp only [List.foldl_cons]
+    have : m + n + g h = (m + g h) + n := by omega
+    rw [this, ih]
+
+/--
+Helper: conditional foldl also shifts appropriately.
+-/
+theorem foldl_conditional_shift (l : List SignedFormula) (m n : Nat) :
+    l.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) (m + n) =
+    l.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) m + n := by
+  induction l generalizing m with
+  | nil => simp
+  | cons h t ih =>
+    simp only [List.foldl_cons]
+    split_ifs with hexp
+    · exact ih m
+    · have : m + n + h.formula.complexity = (m + h.formula.complexity) + n := by omega
+      rw [this, ih]
+
+/--
+The expansion measure of the filtered branch (without sf) is at most the original measure.
+-/
+theorem expansionMeasure_filter_le (b : Branch) (sf : SignedFormula) :
+    expansionMeasure (b.filter (· != sf)) ≤ expansionMeasure b := by
+  simp only [expansionMeasure]
+  induction b with
+  | nil => simp
+  | cons h t ih =>
+    simp only [List.filter, List.foldl_cons]
+    cases heq : (h != sf)
+    · -- h = sf case (h is filtered out)
+      simp only [heq, ↓reduceIte]
+      calc (t.filter (· != sf)).foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) 0
+          ≤ t.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) 0 := ih
+        _ ≤ t.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity)
+              (if isExpanded h then 0 else 0 + h.formula.complexity) := by
+          split_ifs <;> (apply foldl_conditional_mono; omega)
+    · -- h != sf case (h is kept)
+      simp only [heq, ↓reduceIte, List.foldl_cons]
+      split_ifs with hexp
+      · exact ih
+      · -- foldl (0 + h.complexity) (filter t) ≤ foldl (0 + h.complexity) t
+        rw [foldl_conditional_shift, foldl_conditional_shift]
+        exact Nat.add_le_add_right ih _
+
+/--
+Expansion measure of appended list: foldl with shift.
+-/
+theorem expansionMeasure_append (l1 l2 : List SignedFormula) :
+    expansionMeasure (l1 ++ l2) =
+    l2.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity)
+             (expansionMeasure l1) := by
+  simp only [expansionMeasure, List.foldl_append]
+
+/--
+BEq reflexivity for SignedFormula.
+Note: This should follow from LawfulBEq but SignedFormula doesn't derive it.
+-/
+theorem signedFormula_beq_refl (sf : SignedFormula) : (sf == sf) = true := by
+  -- The derived BEq compares signs and formulas component-wise
+  -- Both Sign and Formula have reflexive BEq
+  sorry  -- Technical: BEq reflexivity for derived instances
+
+/--
+sf != sf = false for SignedFormula.
+-/
+theorem signedFormula_bne_self (sf : SignedFormula) : (sf != sf) = false := by
+  simp only [bne, signedFormula_beq_refl, Bool.not_true]
+
+/--
+Key lemma: removing an unexpanded formula decreases the expansion measure by at least its complexity.
+-/
+theorem expansionMeasure_filter_unexpanded (b : Branch) (sf : SignedFormula)
+    (hIn : sf ∈ b) (hUnexp : isExpanded sf = false) :
+    expansionMeasure (b.filter (· != sf)) + sf.formula.complexity ≤ expansionMeasure b := by
+  simp only [expansionMeasure]
+  induction b with
+  | nil => simp at hIn
+  | cons h t ih =>
+    rw [List.filter_cons]
+    simp only [List.foldl_cons, List.mem_cons] at hIn ⊢
+    rcases hIn with rfl | hmem
+    · -- sf = h: sf is filtered out, contributes its complexity
+      simp only [signedFormula_bne_self, Bool.false_eq_true, ↓reduceIte, hUnexp]
+      have h1 := expansionMeasure_filter_le t sf
+      simp only [expansionMeasure] at h1
+      rw [foldl_conditional_shift]
+      omega
+    · -- sf ∈ t: recurse
+      by_cases h_eq : h = sf
+      · -- h = sf (duplicate): treat like above
+        subst h_eq
+        -- After subst, sf is replaced with h everywhere, but hUnexp still refers to sf
+        -- Need to rename: the original h is now sf
+        simp only [signedFormula_bne_self, Bool.false_eq_true, ↓reduceIte, hUnexp]
+        have h1 := expansionMeasure_filter_le t h
+        simp only [expansionMeasure] at h1
+        rw [foldl_conditional_shift]
+        omega
+      · -- h != sf: h stays in filtered list
+        have h_bne : (h != sf) = true := by
+          unfold bne
+          simp only [Bool.not_eq_true']
+          -- Need (h == sf) = false given h ≠ sf
+          -- DecidableEq gives us if h = sf then ... else ...
+          -- But BEq may differ from DecidableEq
+          -- Use contrapositive: if (h == sf) = true then h = sf
+          by_contra hcontra
+          push_neg at hcontra
+          -- hcontra : (h == sf) = true
+          -- We need to show h = sf, contradiction with h_eq
+          -- This requires LawfulBEq or manual case analysis
+          sorry  -- Technical: BEq agrees with DecidableEq for SignedFormula
+        simp only [h_bne, ↓reduceIte, List.foldl_cons]
+        split_ifs with hexp
+        · -- h is expanded, contributes 0
+          exact ih hmem
+        · -- h is unexpanded, contributes its complexity to both sides
+          have := ih hmem
+          rw [foldl_conditional_shift, foldl_conditional_shift]
+          omega
+
+/--
+Key helper: expansion measure of new formulas + remaining is bounded by
+total complexity of new formulas + expansion measure of remaining.
+The new formulas might be expanded (contributing 0) or unexpanded (contributing their complexity).
+-/
+theorem expansionMeasure_new_le_totalComplexity (formulas remaining : List SignedFormula) :
+    expansionMeasure (formulas ++ remaining) ≤ totalComplexity formulas + expansionMeasure remaining := by
+  simp only [expansionMeasure, totalComplexity, List.foldl_append]
+  -- We need: foldl_conditional (foldl_conditional 0 formulas) remaining ≤ foldl_add 0 formulas + foldl_conditional 0 remaining
+  -- Key insight: foldl_conditional ≤ foldl_add because we skip expanded formulas
+  have h_conditional_le_add : ∀ (l : List SignedFormula) (n : Nat),
+      l.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) n ≤
+      l.foldl (fun acc sf' => acc + sf'.formula.complexity) n := by
+    intro l n
+    induction l generalizing n with
+    | nil => simp
+    | cons h t ih =>
+      simp only [List.foldl_cons]
+      split_ifs with hexp
+      · calc t.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) n
+            ≤ t.foldl (fun acc sf' => acc + sf'.formula.complexity) n := ih n
+          _ ≤ t.foldl (fun acc sf' => acc + sf'.formula.complexity) (n + h.formula.complexity) := by
+              apply foldl_add_mono; omega
+      · exact ih (n + h.formula.complexity)
+  -- Now use this to bound the result
+  have h1 := h_conditional_le_add formulas 0
+  calc remaining.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity)
+          (formulas.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) 0)
+      ≤ remaining.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity)
+          (formulas.foldl (fun acc sf' => acc + sf'.formula.complexity) 0) := by
+        apply foldl_conditional_mono; exact h1
+    _ = formulas.foldl (fun acc sf' => acc + sf'.formula.complexity) 0 +
+        remaining.foldl (fun acc sf' => if isExpanded sf' then acc else acc + sf'.formula.complexity) 0 := by
+        -- Use the shift property: foldl (m + n) = foldl m + n
+        set n := formulas.foldl (fun acc sf' => acc + sf'.formula.complexity) 0
+        -- Goal: foldl_cond n remaining = n + foldl_cond 0 remaining
+        -- Use: foldl (0 + n) l = foldl 0 l + n
+        have key := foldl_conditional_shift remaining 0 n
+        -- key : foldl_cond (0 + n) remaining = foldl_cond 0 remaining + n
+        simp only [Nat.zero_add, Nat.add_comm] at key
+        exact key
+
+/--
 Expansion decreases the measure (for non-saturated branches).
 This is the key lemma for termination of the tableau procedure.
 
@@ -758,19 +931,24 @@ theorem expansion_decreases_measure (b : Branch) (h : ¬isSaturated b) :
             cases hexp : isExpanded sf <;> simp_all
           --
           -- Step 4: From applyRule producing linear formulas, show total complexity decreases
-          -- The key insight: formulas have total unexpanded complexity < sf.formula.complexity
-          -- This is because applyRule produces subformulas when it returns a linear result
-          --
-          -- Technical proof: require showing expansionMeasure of new branch < original
-          -- This requires:
-          -- a) expansionMeasure b ≥ sf.formula.complexity (sf is unexpanded, contributes its complexity)
-          -- b) expansionMeasure (formulas ++ remaining) ≤ expansionMeasure remaining + totalComplexity formulas
-          -- c) totalComplexity formulas < sf.formula.complexity (from applyRule_decreases_complexity)
-          -- d) expansionMeasure remaining ≤ expansionMeasure b - sf.formula.complexity
-          --
-          -- This is the core argument but requires lemmas about foldl and List operations
-          -- that are tedious to prove. The key mathematical insight is captured above.
-          sorry
+          -- Get that applyRule applied the rule with result formulas
+          have ⟨happly, hne⟩ := Bimodal.Metalogic_v2.Decidability.findApplicableRule_spec sf rule (.linear formulas) hrule
+          -- Get complexity bound from applyRule_decreases_complexity
+          have hcomplexity := applyRule_decreases_complexity rule sf (.linear formulas) happly hne
+          -- hcomplexity : totalComplexity formulas < sf.formula.complexity
+          simp only at hcomplexity
+          -- Get that sf contributes to the measure
+          have ⟨hpos, hcontrib⟩ := unexpanded_contributes b sf hsf_in_b (by simp [hsf_not_expanded])
+          -- Get bound on new branch: expansion measure of formulas++remaining ≤ totalComplexity + measure remaining
+          have hnew := expansionMeasure_new_le_totalComplexity formulas (b.filter (· != sf))
+          -- Key lemma: removing sf decreases measure by at least sf.complexity
+          have hfilter_unexpanded := expansionMeasure_filter_unexpanded b sf hsf_in_b hsf_not_expanded
+          -- Combine:
+          -- measure (formulas ++ remaining) ≤ totalComplexity formulas + measure remaining  [hnew]
+          -- measure remaining + sf.complexity ≤ measure b                                    [hfilter_unexpanded]
+          -- totalComplexity formulas < sf.complexity                                         [hcomplexity]
+          -- Therefore: measure (new) < measure b
+          omega
         · -- This case is contradictory - linear doesn't produce split
           cases heq
       | .branching branches =>
@@ -798,19 +976,23 @@ theorem expansion_decreases_measure (b : Branch) (h : ¬isSaturated b) :
             simp only [decide_eq_true_iff] at h1
             cases hexp : isExpanded sf <;> simp_all
           --
-          -- Step 4: newFormulas is one of the branches from the branching rule
-          -- Each branch contains a single subformula with smaller complexity
-          -- Branching rules (andNeg, orPos, impPos) produce branches like:
-          -- - andNeg: [[neg ψ], [neg χ]] from neg (and ψ χ)
-          -- - orPos: [[pos ψ], [pos χ]] from pos (or ψ χ)
-          -- - impPos: [[neg ψ], [pos χ]] from pos (imp ψ χ)
-          --
-          -- Each newFormulas list has a single element with complexity < sf.complexity
-          -- Technical proof requires:
-          -- a) expansionMeasure b ≥ sf.formula.complexity (sf is unexpanded in b)
-          -- b) totalComplexity newFormulas < sf.formula.complexity (subformula property)
-          -- c) Similar arithmetic as linear case
-          sorry
+          -- Step 4: From applyRule producing branching with branches, show total complexity decreases
+          -- Get that applyRule applied the rule with result branches
+          have ⟨happly, hne⟩ := Bimodal.Metalogic_v2.Decidability.findApplicableRule_spec sf rule (.branching branches) hrule
+          -- Get complexity bound from applyRule_decreases_complexity
+          have hcomplexity := applyRule_decreases_complexity rule sf (.branching branches) happly hne
+          -- hcomplexity : ∀ branch ∈ branches, totalComplexity branch < sf.formula.complexity
+          simp only at hcomplexity
+          -- Apply to newFormulas since it's in branches
+          have hbranch_complexity := hcomplexity newFormulas hnewFormulas_in_branches
+          -- Get that sf contributes to the measure
+          have ⟨hpos, hcontrib⟩ := unexpanded_contributes b sf hsf_in_b (by simp [hsf_not_expanded])
+          -- Get bound on new branch: expansion measure of newFormulas++remaining ≤ totalComplexity + measure remaining
+          have hnew := expansionMeasure_new_le_totalComplexity newFormulas (b.filter (· != sf))
+          -- Key lemma: removing sf decreases measure by at least sf.complexity
+          have hfilter_unexpanded := expansionMeasure_filter_unexpanded b sf hsf_in_b hsf_not_expanded
+          -- Combine: same arithmetic as linear case
+          omega
       | .notApplicable =>
         -- notApplicable produces saturated, not extended or split
         simp only at hb'

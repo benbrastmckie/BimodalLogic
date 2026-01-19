@@ -314,6 +314,33 @@ def findApplicableRule (sf : SignedFormula) : Option (TableauRule × RuleResult)
     | _ => some (rule, result)
 
 /--
+If findApplicableRule returns some result, then applyRule produces that result.
+-/
+theorem findApplicableRule_spec (sf : SignedFormula) (rule : TableauRule) (result : RuleResult) :
+    findApplicableRule sf = some (rule, result) →
+    applyRule rule sf = result ∧ result ≠ .notApplicable := by
+  intro h
+  -- findApplicableRule uses findSome? which finds the first element where f returns some
+  simp only [findApplicableRule] at h
+  -- From List.findSome?_eq_some, we know there exists some rule in allRules
+  -- where the function returned some (rule, result)
+  have : ∃ r ∈ allRules, (fun rule' =>
+      let result' := applyRule rule' sf
+      match result' with
+      | .notApplicable => none
+      | _ => some (rule', result')) r = some (rule, result) := by
+    exact List.exists_of_findSome?_eq_some h
+  obtain ⟨r, _, hr_some⟩ := this
+  -- From hr_some, we can extract that r = rule and applyRule r sf = result
+  simp only at hr_some
+  split at hr_some
+  · case h_1 => simp at hr_some
+  · case h_2 result' hne =>
+    simp only [Option.some.injEq, Prod.mk.injEq] at hr_some
+    obtain ⟨rfl, rfl⟩ := hr_some
+    exact ⟨rfl, hne⟩
+
+/--
 Check if a signed formula is fully expanded (no rules apply).
 Atoms, bot with appropriate signs, and already-reduced formulas are expanded.
 -/

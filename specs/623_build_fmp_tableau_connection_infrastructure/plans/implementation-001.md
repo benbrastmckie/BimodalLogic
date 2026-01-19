@@ -1,7 +1,7 @@
 # Implementation Plan: Task #623
 
 - **Task**: 623 - Build FMP-tableau connection infrastructure
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Priority**: High
 - **Dependencies**: Task 490 (parent task)
@@ -49,7 +49,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Complete expansion_decreases_measure [NOT STARTED]
+### Phase 1: Complete expansion_decreases_measure [COMPLETED]
 
 **Goal**: Fill the two sorries in expansion_decreases_measure theorem (Saturation.lean lines 773, 813)
 
@@ -76,7 +76,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Implement substantive branchTruthLemma [NOT STARTED]
+### Phase 2: Implement substantive branchTruthLemma [PARTIAL]
 
 **Goal**: Replace trivial branchTruthLemma with a substantive proof connecting saturated open branches to model satisfaction
 

@@ -264,8 +264,9 @@ technical_debt:
 ---
 
 ### 623. Build FMP-tableau connection infrastructure
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-19
+- **Started**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
