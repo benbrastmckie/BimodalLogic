@@ -29,8 +29,9 @@ technical_debt:
 
 ### 614. Refactor /cleanup command to /refresh
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-19
+- **Started**: 2026-01-19
 - **Research**: [research-001.md](specs/614_refactor_cleanup_to_refresh_command/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/614_refactor_cleanup_to_refresh_command/plans/implementation-001.md)
 - **Priority**: High
@@ -111,7 +112,7 @@ Changes required:
 ## Medium Priority
 
 ### 615. Fix closure_mcs_neg_complete double negation edge case
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19

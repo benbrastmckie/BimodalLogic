@@ -302,18 +302,18 @@ for pid in "${orphan_pids[@]}"; do
             # Force kill
             if kill -9 "$pid" 2>/dev/null; then
                 echo "  PID $pid: terminated (forced)"
-                ((terminated++))
+                terminated=$((terminated + 1))
             else
                 echo "  PID $pid: failed to terminate"
-                ((failed++))
+                failed=$((failed + 1))
             fi
         else
             echo "  PID $pid: terminated (graceful)"
-            ((terminated++))
+            terminated=$((terminated + 1))
         fi
     else
         echo "  PID $pid: failed to signal (permission denied?)"
-        ((failed++))
+        failed=$((failed + 1))
     fi
 done
 
