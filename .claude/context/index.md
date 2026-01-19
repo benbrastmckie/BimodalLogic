@@ -426,7 +426,6 @@ Load selectively: Use grep extraction for specific tasks, avoid loading full fil
 Stage 4 loads:
 - @.claude/context/core/orchestration/delegation.md
 - @.claude/context/core/orchestration/state-management.md
-- @.claude/context/core/orchestration/state-management.md
 - grep -A 50 "^### {task_number}\." specs/TODO.md
 - @specs/state.json
 
@@ -440,7 +439,6 @@ Language-specific:
 Stage 4 loads:
 - @.claude/context/core/orchestration/delegation.md
 - @.claude/context/core/formats/plan-format.md
-- @.claude/context/core/orchestration/state-management.md
 - @.claude/context/core/orchestration/state-management.md
 - grep -A 50 "^### {task_number}\." specs/TODO.md
 - @specs/state.json

@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "path": "specs/613_revise_metalogic_v2_readme_architecture_diagram/reports/research-001.md",
+      "type": "research",
+      "summary": "Complete analysis of Metalogic_v2 module dependencies with proposed bottom-up architecture diagram showing foundations first"
+    }
+  ],
+  "summary": "Analyzed all 18 Lean files in Metalogic_v2/ to map actual import dependencies. Found current diagram has inverted hierarchy, missing 4 modules, and misrepresents FMP.lean. Proposed new bottom-up diagram with foundations (Core, Soundness) at bottom and derived theorems (Completeness, Applications) at top.",
+  "next_steps": "Run /plan 613 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1768843731_595744",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher"],
+    "findings_count": 4
+  }
+}
