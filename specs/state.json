@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 596,
+      "project_name": "constructive_finite_model_bounds",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T00:56:57Z",
+      "last_updated": "2026-01-19T00:56:57Z"
+    },
+    {
       "project_number": 595,
       "project_name": "remove_maintenance_dir_fix_review_state",
       "status": "not_started",
@@ -188,5 +197,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 596
+  "next_project_number": 597
 }

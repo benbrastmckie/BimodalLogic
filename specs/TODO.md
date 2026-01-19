@@ -1,5 +1,5 @@
 ---
-next_project_number: 596
+next_project_number: 597
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -149,6 +149,17 @@ technical_debt:
 - **Created**: 2026-01-19
 
 **Description**: Remove specs/maintenance/ directory and all documentation references (unused by any commands). Fix /review command to maintain reviews/state.json with brief descriptions, file links, and metadata. Ensure /review commits changes after updates.
+
+---
+
+### 596. Constructive Finite Model Bounds
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-18
+
+**Description**: The Finite Model Property currently uses a trivial witness (identity function on satisfiability). Establish constructive finite model bounds instead, archiving the old method to the Bimodal/Boneyard/ once the constructive alternative is fully implemented with zero sorries.
 
 ---
 
