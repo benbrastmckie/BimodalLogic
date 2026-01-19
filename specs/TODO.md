@@ -1,5 +1,5 @@
 ---
-next_project_number: 601
+next_project_number: 606
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -249,6 +249,17 @@ technical_debt:
 
 ---
 
+### 605. Sync Plan Metadata Status with Task Status
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Sync the **Status**: field in plan file metadata with the task status in TODO.md and state.json. Currently, implementation plans have a Status field in their YAML-like header (e.g., **Status**: [NOT STARTED]) that is not updated when the task progresses through research/plan/implement cycles. Update the preflight/postflight patterns in implementation skills to also update this status field in the plan file when task status changes.
+
+---
+
 ## Low Priority
 
 ### 598. Remove deprecated helpers from ContextProvability.lean
@@ -268,7 +279,7 @@ technical_debt:
 ---
 
 ### 470. Finite model computational optimization
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 458

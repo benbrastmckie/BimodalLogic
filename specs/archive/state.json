@@ -5,6 +5,34 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 603,
+      "project_name": "add_completion_verification_logic",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-18T17:36:50Z",
+      "last_updated": "2026-01-18T17:36:50Z",
+      "description": "Parse plans/summaries, generate remaining work reports, interactive follow-up task creation",
+      "dependencies": [
+        602
+      ],
+      "abandoned": "2026-01-19T07:28:13Z"
+    },
+    {
+      "project_number": 602,
+      "project_name": "implement_review_mode_task_command",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-18T17:36:50Z",
+      "last_updated": "2026-01-18T17:36:50Z",
+      "description": "Implement flag parsing, metadata consistency detection/correction, user confirmation, git commits",
+      "dependencies": [
+        601
+      ],
+      "abandoned": "2026-01-19T07:28:11Z"
+    },
+    {
       "project_number": 578,
       "project_name": "complete_main_weak_completeness_sorry_free",
       "status": "abandoned",
