@@ -59,11 +59,11 @@
     {
       "project_number": 615,
       "project_name": "fix_closure_mcs_neg_complete_double_negation",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T17:54:18Z",
-      "last_updated": "2026-01-19T20:25:43Z",
+      "last_updated": "2026-01-19T20:31:11Z",
       "session_id": "sess_1768854321_d85703",
       "researched": "2026-01-19T20:06:15Z",
       "artifacts": [
@@ -76,10 +76,16 @@
           "path": "specs/615_fix_closure_mcs_neg_complete_double_negation/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan to fix closure_mcs_neg_complete double negation sorry"
+        },
+        {
+          "path": "specs/615_fix_closure_mcs_neg_complete_double_negation/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with detailed changes and verification results"
         }
       ],
       "planned": "2026-01-19T20:19:08Z",
-      "started": "2026-01-19T20:25:43Z"
+      "started": "2026-01-19T20:25:43Z",
+      "completed": "2026-01-19T20:31:11Z"
     },
     {
       "project_number": 612,

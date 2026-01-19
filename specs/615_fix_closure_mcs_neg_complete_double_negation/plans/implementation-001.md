@@ -1,7 +1,7 @@
 # Implementation Plan: Task #615
 
 - **Task**: 615 - Fix closure_mcs_neg_complete double negation edge case
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Priority**: High
 - **Dependencies**: None

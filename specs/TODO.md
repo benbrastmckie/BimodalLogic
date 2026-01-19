@@ -78,15 +78,17 @@ technical_debt:
 ---
 
 ### 615. Fix closure_mcs_neg_complete double negation edge case
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Researched**: 2026-01-19
 - **Started**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Related**: Task 608
 - **Research**: [research-001.md](specs/615_fix_closure_mcs_neg_complete_double_negation/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/615_fix_closure_mcs_neg_complete_double_negation/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/615_fix_closure_mcs_neg_complete_double_negation/summaries/implementation-summary-20260119.md)
 
 **Description**: Fix the sorry in `closure_mcs_neg_complete` at Closure.lean:484. The issue is a double negation edge case where `chi.neg.neg` (when `chi = psi.neg`) is not in `closureWithNeg`. Options include: (1) Restrict the theorem to `psi ∈ closure` instead of `closureWithNeg`, (2) Extend `closureWithNeg` to include double negations, or (3) Use a different approach in the truth lemma that avoids this case.
 
