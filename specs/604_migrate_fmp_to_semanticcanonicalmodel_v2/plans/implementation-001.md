@@ -95,7 +95,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 3: Port Complex Definition with Sorry [IN PROGRESS]
+### Phase 3: Port Complex Definition with Sorry [COMPLETED]
 
 **Goal**: Port `semantic_truth_implies_truth_at` preserving the existing sorry
 
@@ -118,7 +118,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 4: Migrate FiniteModelProperty.lean [NOT STARTED]
+### Phase 4: Migrate FiniteModelProperty.lean [IN PROGRESS]
 
 **Goal**: Update FiniteModelProperty.lean to use v2 infrastructure exclusively
 

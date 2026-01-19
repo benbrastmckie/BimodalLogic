@@ -376,6 +376,33 @@ theorem semantic_truth_lemma (phi : Formula) (S : Set Formula)
     psi ∈ S ↔ w.models psi h_mem := by
   exact worldStateFromClosureMCS_models_iff phi S h_mcs psi h_mem
 
+/--
+Key bridge theorem: semantic truth in SemanticCanonicalModel implies truth_at.
+
+This shows that if a formula is true according to semantic_truth_at, it is also
+true according to the general truth_at definition when evaluated in the
+SemanticCanonicalModel with an appropriate WorldHistory.
+
+This is the essential connection that allows us to conclude:
+- valid phi (truth in all models including SemanticCanonicalModel)
+- implies truth in SemanticCanonicalModel at all SemanticWorldStates
+- which by semantic_weak_completeness gives derivability
+
+**Note**: This theorem has a sorry inherited from the old Metalogic implementation.
+The proof requires induction on formula structure and careful handling of the
+correspondence between finite world state truth and model truth.
+-/
+theorem semantic_truth_implies_truth_at (phi : Formula) (w : SemanticWorldState phi)
+    (h_mem : phi ∈ closure phi) :
+    w.toFiniteWorldState.models phi h_mem →
+    ∀ (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0),
+    tau.states 0 ht = w →
+    truth_at (SemanticCanonicalModel phi) tau 0 phi := by
+  intro h_models tau ht h_eq
+  -- The proof proceeds by induction on phi, showing that semantic truth
+  -- (membership in the finite world state) matches truth_at in the model
+  sorry  -- Bridge lemma - requires induction on formula structure
+
 /-!
 ## Completeness via Contrapositive
 
