@@ -1,7 +1,7 @@
 ---
 name: skill-lean-implementation
 description: Implement Lean 4 proofs and definitions using lean-lsp tools. Invoke for Lean-language implementation tasks.
-allowed-tools: Task, Bash, Edit, Read
+allowed-tools: Task, Bash, Edit, Read, Write
 # Original context (now loaded by subagent):
 #   - .claude/context/project/lean4/tools/mcp-tools-guide.md
 #   - .claude/context/project/lean4/patterns/tactic-patterns.md
@@ -18,14 +18,18 @@ allowed-tools: Task, Bash, Edit, Read
 
 Thin wrapper that delegates Lean proof implementation to `lean-implementation-agent` subagent.
 
-## Context Pointers
+**IMPORTANT**: This skill implements the skill-internal postflight pattern. After the subagent returns,
+this skill handles all postflight operations (status update, artifact linking, git commit) before returning.
+This eliminates the "continue" prompt issue between skill return and orchestrator.
+
+## Context References
 
 Reference (do not load eagerly):
-- Path: `.claude/context/core/validation.md`
-- Purpose: Return validation at CHECKPOINT 2
-- Load at: Subagent execution only
+- Path: `.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
+- Path: `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
+- Path: `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O helpers
 
-Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
+Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
 ## Trigger Conditions
 
@@ -36,41 +40,19 @@ This skill activates when:
 
 ---
 
-## Execution
+## Execution Flow
 
-### 0. Preflight Status Update
-
-Before delegating to the subagent, update task status to "implementing".
-
-**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
-
-**Update state.json**:
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-   --arg status "implementing" \
-   --arg sid "$session_id" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: $status,
-    last_updated: $ts,
-    session_id: $sid,
-    started: $ts
-  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-```
-
-**Update TODO.md**: Use Edit tool to change status marker from `[PLANNED]` to `[IMPLEMENTING]`.
-
----
-
-### 1. Input Validation
+### Stage 1: Input Validation
 
 Validate required inputs:
 - `task_number` - Must be provided and exist in state.json
 - Task status must allow implementation (planned, implementing, partial)
+- Task language must be "lean"
 
 ```bash
 # Lookup task
-task_data=$(jq -r --arg num "$task_number" \
-  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+task_data=$(jq -r --argjson num "$task_number" \
+  '.active_projects[] | select(.project_number == $num)' \
   specs/state.json)
 
 # Validate exists
@@ -95,9 +77,52 @@ if [ "$status" = "completed" ]; then
 fi
 ```
 
-### 2. Context Preparation
+---
 
-Prepare delegation context:
+### Stage 2: Preflight Status Update
+
+Update task status to "implementing" BEFORE invoking subagent.
+
+**Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "implementing" \
+   --arg sid "$session_id" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    session_id: $sid,
+    started: $ts
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+**Update TODO.md**: Use Edit tool to change status marker from `[PLANNED]` to `[IMPLEMENTING]`.
+
+---
+
+### Stage 3: Create Postflight Marker
+
+Create the marker file to prevent premature termination:
+
+```bash
+cat > specs/.postflight-pending << EOF
+{
+  "session_id": "${session_id}",
+  "skill": "skill-lean-implementation",
+  "task_number": ${task_number},
+  "operation": "implement",
+  "reason": "Postflight pending: status update, artifact linking, git commit",
+  "created": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "stop_hook_active": false
+}
+EOF
+```
+
+---
+
+### Stage 4: Prepare Delegation Context
+
+Prepare delegation context for the subagent:
 
 ```json
 {
@@ -111,28 +136,27 @@ Prepare delegation context:
     "description": "{description}",
     "language": "lean"
   },
-  "plan_path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md"
+  "plan_path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
+  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json"
 }
 ```
 
-### 3. Invoke Subagent
+---
+
+### Stage 5: Invoke Subagent
 
 **CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
-
-The `agent` field in this skill's frontmatter specifies the target: `lean-implementation-agent`
 
 **Required Tool Invocation**:
 ```
 Tool: Task (NOT Skill)
 Parameters:
   - subagent_type: "lean-implementation-agent"
-  - prompt: [Include task_context, delegation_context, plan_path]
+  - prompt: [Include task_context, delegation_context, plan_path, metadata_file_path]
   - description: "Execute Lean implementation for task {N}"
 ```
 
 **DO NOT** use `Skill(lean-implementation-agent)` - this will FAIL.
-Agents live in `.claude/agents/`, not `.claude/skills/`.
-The Skill tool can only invoke skills from `.claude/skills/`.
 
 The subagent will:
 - Load Lean-specific context files
@@ -141,27 +165,39 @@ The subagent will:
 - Create/modify .lean files
 - Run lake build to verify
 - Create implementation summary
-- Return standardized JSON result
+- Write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+- Return a brief text summary (NOT JSON)
 
-### 4. Return Validation
+---
 
-Validate return matches `subagent-return.md` schema:
-- Status is one of: implemented, partial, failed, blocked
-- Summary is non-empty and <100 tokens
-- Artifacts array present (implementation files, summary)
-- Metadata contains session_id, agent_type, delegation info
+### Stage 6: Parse Subagent Return (Read Metadata File)
 
-### 5. Postflight Status Update
+After subagent returns, read the metadata file:
 
-After implementation, update task status based on result.
-
-**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
-
-**If result.status == "implemented"**:
-
-Update state.json to "completed" (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`):
 ```bash
-# Step 1: Update status and timestamps
+metadata_file="specs/${task_number}_${project_name}/.return-meta.json"
+
+if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
+    status=$(jq -r '.status' "$metadata_file")
+    artifact_path=$(jq -r '.artifacts[0].path // ""' "$metadata_file")
+    artifact_type=$(jq -r '.artifacts[0].type // ""' "$metadata_file")
+    artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
+    phases_completed=$(jq -r '.metadata.phases_completed // 0' "$metadata_file")
+    phases_total=$(jq -r '.metadata.phases_total // 0' "$metadata_file")
+else
+    echo "Error: Invalid or missing metadata file"
+    status="failed"
+fi
+```
+
+---
+
+### Stage 7: Update Task Status (Postflight)
+
+**If status is "implemented"**:
+
+Update state.json to "completed":
+```bash
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "completed" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
@@ -169,85 +205,90 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     last_updated: $ts,
     completed: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-
-# Step 2: Add artifact
-jq --arg path "$artifact_path" \
-  '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")] + [{"path": $path, "type": "summary"}])' \
-  specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-Update TODO.md:
-- Change status marker from `[IMPLEMENTING]` to `[COMPLETED]`
-- Add summary artifact link: `- **Summary**: [implementation-summary-{DATE}.md]({artifact_path})`
+Update TODO.md: Change status marker from `[IMPLEMENTING]` to `[COMPLETED]`.
 
-**If result.status == "partial"**:
+**If status is "partial"**:
 
-Update state.json with resume point (keep status as "implementing"):
+Keep status as "implementing" but update resume point:
 ```bash
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-   --arg phase "$completed_phase" \
+   --argjson phase "$phases_completed" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     last_updated: $ts,
-    resume_phase: ($phase | tonumber + 1)
+    resume_phase: ($phase + 1)
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
 TODO.md stays as `[IMPLEMENTING]`.
 
-**On failed**: Do NOT run postflight. Keep status as "implementing" for retry.
-
-### 6. Return Propagation
-
-Return validated result to caller without modification.
+**On failed**: Keep status as "implementing" for retry.
 
 ---
 
-## Return Format
+### Stage 8: Link Artifacts
 
-See `.claude/context/core/formats/subagent-return.md` for full specification.
+Add artifact to state.json with summary:
 
-Expected successful return:
-```json
-{
-  "status": "implemented",
-  "summary": "Implemented N theorems with successful lake build",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "Logos/Layer{N}/File.lean",
-      "summary": "Lean implementation file"
-    },
-    {
-      "type": "summary",
-      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
-      "summary": "Implementation completion summary"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_...",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"]
-  },
-  "next_steps": "Implementation finished. Run /task --sync to verify."
-}
+```bash
+if [ -n "$artifact_path" ]; then
+    jq --arg path "$artifact_path" \
+       --arg type "$artifact_type" \
+       --arg summary "$artifact_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+        ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")] +
+         [{"path": $path, "type": $type, "summary": $summary}])' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
 ```
 
-Expected partial return (proof stuck/timeout):
-```json
-{
-  "status": "partial",
-  "summary": "Implemented 2/4 theorems, stuck on theorem3",
-  "artifacts": [...],
-  "errors": [{
-    "type": "execution",
-    "message": "Could not complete proof for theorem3",
-    "recoverable": true,
-    "recommendation": "Try alternative proof approach"
-  }],
-  "next_steps": "Run /implement {N} to resume"
-}
+**Update TODO.md** (if implemented): Add summary artifact link:
+```markdown
+- **Summary**: [implementation-summary-{DATE}.md]({artifact_path})
+```
+
+---
+
+### Stage 9: Git Commit
+
+Commit changes with session ID:
+
+```bash
+git add -A
+git commit -m "task ${task_number}: complete implementation
+
+Session: ${session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+
+---
+
+### Stage 10: Cleanup
+
+Remove marker and metadata files:
+
+```bash
+rm -f specs/.postflight-pending
+rm -f specs/.postflight-loop-guard
+rm -f "specs/${task_number}_${project_name}/.return-meta.json"
+```
+
+---
+
+### Stage 11: Return Brief Summary
+
+Return a brief text summary (NOT JSON). Example:
+
+```
+Lean implementation completed for task {N}:
+- All {phases_total} phases executed, all proofs verified
+- Lake build: Success
+- Key theorems: {theorem names}
+- Created summary at specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md
+- Status updated to [COMPLETED]
+- Changes committed
 ```
 
 ---
@@ -255,10 +296,43 @@ Expected partial return (proof stuck/timeout):
 ## Error Handling
 
 ### Input Validation Errors
-Return immediately with failed status if task not found, wrong language, or status invalid.
+Return immediately with error message if task not found, wrong language, or status invalid.
 
-### Subagent Errors
-Pass through the subagent's error return verbatim.
+### Metadata File Missing
+If subagent didn't write metadata file:
+1. Keep status as "implementing"
+2. Do not cleanup postflight marker
+3. Report error to user
 
-### Timeout
+### Git Commit Failure
+Non-blocking: Log failure but continue with success response.
+
+### Subagent Timeout
 Return partial status if subagent times out (default 7200s).
+Keep status as "implementing" for resume.
+
+---
+
+## Return Format
+
+This skill returns a **brief text summary** (NOT JSON). The JSON metadata is written to the file and processed internally.
+
+Example successful return:
+```
+Lean implementation completed for task 259:
+- All 3 phases executed, all proofs verified
+- Lake build: Success
+- Implemented completeness theorem with 4 supporting lemmas
+- Created summary at specs/259_completeness/summaries/implementation-summary-20260118.md
+- Status updated to [COMPLETED]
+- Changes committed with session sess_1736700000_abc123
+```
+
+Example partial return:
+```
+Lean implementation partially completed for task 259:
+- Phases 1-2 of 3 executed
+- Phase 3 stuck: induction case requires missing lemma
+- Current proof state documented in summary
+- Status remains [IMPLEMENTING] - run /implement 259 to resume
+```

@@ -29,12 +29,14 @@ technical_debt:
 
 ### 600. Fix Subagent Metadata Passing in Agent System
 - **Effort**: 2-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Research**: [research-001.md](specs/600_fix_subagent_metadata_passing/reports/research-001.md), [research-002.md](specs/600_fix_subagent_metadata_passing/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/600_fix_subagent_metadata_passing/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260118.md](specs/600_fix_subagent_metadata_passing/summaries/implementation-summary-20260118.md)
 
 **Description**: Study the research output from /home/benjamin/Projects/ProofChecker/.claude/output/research.md which shows agents attempting to pass metadata in JSON blocks back to the primary agent, but the JSON is printing to console instead of being parsed. Research best practices for subagent metadata passing in Claude Code 2026. Improve the agent system to avoid printing JSON output to console and eliminate the 'continue' interruptions demonstrated in the research output.
 
@@ -56,15 +58,13 @@ technical_debt:
 ---
 
 ### 597. Re-prove main_provable_iff_valid in Metalogic_v2
-- **Effort**: 4-6 hours (originally), 20+ hours (revised - requires SemanticCanonicalModel migration)
-- **Status**: [RESEARCHING]
+- **Effort**: 20-30 hours (zero technical debt solution)
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-19
-- **Research**: [research-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md), [research-002.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-002.md)
+- **Research**: [research-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md), [research-002.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-002.md), [research-003.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-003.md)
 - **Plan**: [implementation-001.md](specs/597_reprove_main_provable_iff_valid_metalogic_v2/plans/implementation-001.md)
-- **Completed**: Phase 1 (helper lemmas)
-- **Blocked**: Phase 2 - requires SemanticCanonicalModel infrastructure (~4000 lines from old Metalogic)
 
 **Description**: Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.
 

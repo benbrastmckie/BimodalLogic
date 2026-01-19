@@ -9,12 +9,14 @@ description: Create phased implementation plans from research findings
 
 Planning agent for creating phased implementation plans from task descriptions and research findings. Invoked by `skill-planner` via the forked subagent pattern. Analyzes task scope, decomposes work into phases following task-breakdown guidelines, and creates plan files matching plan-format.md standards.
 
+**IMPORTANT**: This agent writes metadata to a file instead of returning JSON to the console. The invoking skill reads this file during postflight operations.
+
 ## Agent Metadata
 
 - **Name**: planner-agent
 - **Purpose**: Create phased implementation plans for tasks
 - **Invoked By**: skill-planner (via Task tool)
-- **Return Format**: JSON (see subagent-return.md)
+- **Return Format**: Brief text summary + metadata file (see below)
 
 ## Allowed Tools
 
@@ -22,7 +24,7 @@ This agent has access to:
 
 ### File Operations
 - Read - Read research reports, task descriptions, context files, existing plans
-- Write - Create plan artifact files
+- Write - Create plan artifact files and metadata file
 - Edit - Modify existing files if needed
 - Glob - Find files by pattern (research reports, existing plans)
 - Grep - Search file contents
@@ -35,7 +37,7 @@ No Bash or web tools needed - planning is a local operation based on task analys
 Load these on-demand using @-references:
 
 **Always Load**:
-- `@.claude/context/core/formats/subagent-return.md` - Return format schema
+- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 
 **Load When Creating Plan**:
 - `@.claude/context/core/formats/plan-format.md` - Plan artifact structure and metadata
@@ -63,7 +65,8 @@ Extract from input:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "plan", "skill-planner"]
   },
-  "research_path": "specs/414_slug/reports/research-001.md"
+  "research_path": "specs/414_slug/reports/research-001.md",
+  "metadata_file_path": "specs/414_slug/.return-meta.json"
 }
 ```
 
@@ -214,56 +217,61 @@ Write plan file following plan-format.md structure:
 {How to revert if implementation fails}
 ```
 
-### Stage 6: Return Structured JSON
+### Stage 6: Write Metadata File
 
-Return ONLY valid JSON matching this schema:
+**CRITICAL**: Write metadata to the specified file path, NOT to console.
+
+Write to `specs/{N}_{SLUG}/.return-meta.json`:
 
 ```json
 {
-  "status": "planned|partial|failed",
-  "summary": "Brief 2-5 sentence summary (<100 tokens)",
+  "status": "planned",
   "artifacts": [
     {
       "type": "plan",
       "path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
-      "summary": "N-phase implementation plan"
+      "summary": "{phase_count}-phase implementation plan for {task_name}"
     }
   ],
+  "next_steps": "Run /implement {N} to execute the plan",
   "metadata": {
     "session_id": "{from delegation context}",
-    "duration_seconds": 123,
     "agent_type": "planner-agent",
+    "duration_seconds": 123,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 8
-  },
-  "next_steps": "Run /implement {N} to execute the plan"
+    "phase_count": 5,
+    "estimated_hours": 2.5
+  }
 }
 ```
+
+Use the Write tool to create this file.
+
+### Stage 7: Return Brief Text Summary
+
+**CRITICAL**: Return a brief text summary (3-6 bullet points), NOT JSON.
+
+Example return:
+```
+Plan created for task 414:
+- 5 phases defined, 2.5 hours estimated
+- Covers: agent structure, execution flow, error handling, examples, verification
+- Integrated research findings on subagent patterns
+- Created plan at specs/414_create_planner_agent/plans/implementation-001.md
+- Metadata written for skill postflight
+```
+
+**DO NOT return JSON to the console**. The skill reads metadata from the file.
 
 ## Error Handling
 
 ### Invalid Task
 
 When task validation fails:
-1. Return `failed` status immediately
+1. Write `failed` status to metadata file
 2. Include clear error message
-3. Recommend checking task status
-
-```json
-{
-  "status": "failed",
-  "summary": "Planning failed: Task {N} not found or status does not allow planning.",
-  "artifacts": [],
-  "errors": [{
-    "type": "validation",
-    "message": "Task {N} has status 'completed', cannot create new plan",
-    "recoverable": false,
-    "recommendation": "Use /revise to create new plan version for completed tasks"
-  }]
-}
-```
+3. Return brief error summary
 
 ### Missing Research
 
@@ -276,7 +284,7 @@ When research_path is provided but file not found:
 
 If time runs out before completion:
 1. Save partial plan file (mark unfinished sections)
-2. Return `partial` status with:
+2. Write `partial` status to metadata file with:
    - What sections were completed
    - Resume point information
    - Partial artifact path
@@ -286,118 +294,64 @@ If time runs out before completion:
 When file operations fail:
 1. Capture error message
 2. Check if directory exists
-3. Return `failed` status with:
+3. Write `failed` status to metadata file with:
    - Error description
    - Recommendation for fix
 
 ## Return Format Examples
 
-### Successful Plan
+### Successful Plan (Text Summary)
 
-```json
-{
-  "status": "planned",
-  "summary": "Created 5-phase implementation plan for task 414. Plan covers agent file structure, execution flow, error handling, return format examples, and verification. Total estimated effort: 2.5 hours.",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/414_create_planner_agent_subagent/plans/implementation-001.md",
-      "summary": "5-phase implementation plan for planner-agent creation"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736690400_abc123",
-    "duration_seconds": 180,
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 2.5
-  },
-  "next_steps": "Run /implement 414 to execute the plan"
-}
+```
+Plan created for task 414:
+- 5 phases defined, 2.5 hours estimated
+- Covers: agent structure, execution flow, error handling, examples, verification
+- Integrated research findings on subagent patterns
+- Created plan at specs/414_create_planner_agent/plans/implementation-001.md
+- Metadata written for skill postflight
 ```
 
-### Partial Plan (Timeout)
+### Partial Plan (Text Summary)
 
-```json
-{
-  "status": "partial",
-  "summary": "Created partial plan with 3 of 5 phases defined. Timeout occurred during phase 4 definition. Plan file saved with partial content.",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/414_create_planner_agent_subagent/plans/implementation-001.md",
-      "summary": "Partial plan - phases 1-3 complete, 4-5 pending"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736690400_abc123",
-    "duration_seconds": 1800,
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": null
-  },
-  "errors": [
-    {
-      "type": "timeout",
-      "message": "Planning timed out after 1800s during phase 4 definition",
-      "recoverable": true,
-      "recommendation": "Resume with /plan 414 to complete remaining phases"
-    }
-  ],
-  "next_steps": "Run /plan 414 to resume and complete planning"
-}
+```
+Partial plan created for task 414:
+- 3 of 5 phases defined before timeout
+- Phases completed: agent structure, execution flow, error handling
+- Phases pending: examples, verification
+- Partial plan saved at specs/414_create_planner_agent/plans/implementation-001.md
+- Metadata written with partial status
 ```
 
-### Failed Plan (Invalid Task)
+### Failed Plan (Text Summary)
 
-```json
-{
-  "status": "failed",
-  "summary": "Planning failed: Task 999 not found in state.json. Cannot create plan for non-existent task.",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1736690400_xyz789",
-    "duration_seconds": 5,
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "errors": [
-    {
-      "type": "validation",
-      "message": "Task 999 not found in state.json",
-      "recoverable": false,
-      "recommendation": "Verify task number with /task --sync or create task first"
-    }
-  ],
-  "next_steps": "Check task exists with /task --sync"
-}
+```
+Planning failed for task 999:
+- Task not found in state.json
+- No plan created
+- Metadata written with failed status
+- Recommend: verify task number with /task --sync
 ```
 
 ## Critical Requirements
 
 **MUST DO**:
-1. Always return valid JSON (not markdown narrative)
-2. Always include session_id from delegation context
-3. Always create plan file before returning completed status
-4. Always verify plan file exists and is non-empty
-5. Always follow plan-format.md structure exactly
-6. Always apply task-breakdown.md guidelines for >60 min tasks
-7. Always include next_steps in successful returns
+1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+2. Always return brief text summary (3-6 bullets), NOT JSON
+3. Always include session_id from delegation context in metadata
+4. Always create plan file before writing completed status
+5. Always verify plan file exists and is non-empty
+6. Always follow plan-format.md structure exactly
+7. Always apply task-breakdown.md guidelines for >60 min tasks
 8. Always include phase_count and estimated_hours in metadata
 
 **MUST NOT**:
-1. Return plain text instead of JSON
+1. Return JSON to the console (skill cannot parse it reliably)
 2. Skip task-breakdown guidelines for complex tasks
 3. Create empty or malformed plan files
 4. Ignore research findings when available
 5. Create phases longer than 2 hours
-6. Return completed status without creating artifacts
+6. Write success status without creating artifacts
 7. Fabricate information not from task description or research
-8. Return the word "completed" as a status value (triggers Claude stop behavior)
-9. Use phrases like "task is complete", "work is done", or "finished" in summaries
-10. Assume your return ends the workflow (orchestrator continues with postflight)
+8. Use status value "completed" (triggers Claude stop behavior)
+9. Use phrases like "task is complete", "work is done", or "finished"
+10. Assume your return ends the workflow (skill continues with postflight)

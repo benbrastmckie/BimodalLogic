@@ -8,11 +8,11 @@
     {
       "project_number": 600,
       "project_name": "fix_subagent_metadata_passing",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-19T01:21:21Z",
-      "last_updated": "2026-01-19T02:08:46Z",
+      "last_updated": "2026-01-19T02:25:51Z",
       "session_id": "sess_1768788507_c30ebc",
       "researched": "2026-01-19T01:48:14Z",
       "artifacts": [
@@ -27,10 +27,16 @@
         {
           "path": "specs/600_fix_subagent_metadata_passing/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/600_fix_subagent_metadata_passing/summaries/implementation-summary-20260118.md",
+          "type": "summary",
+          "summary": "Complete implementation of skill-internal postflight pattern with file-based metadata exchange"
         }
       ],
       "planned": "2026-01-19T02:03:04Z",
-      "started": "2026-01-19T02:08:46Z"
+      "started": "2026-01-19T02:08:46Z",
+      "completed": "2026-01-19T02:25:51Z"
     },
     {
       "project_number": 599,
@@ -93,14 +99,14 @@
     {
       "project_number": 597,
       "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-19T01:00:46Z",
-      "last_updated": "2026-01-19T02:13:08Z",
+      "last_updated": "2026-01-19T02:17:55Z",
       "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.",
       "session_id": "sess_1768788778_c6161f",
-      "researched": "2026-01-19T02:05:28Z",
+      "researched": "2026-01-19T02:17:55Z",
       "artifacts": [
         {
           "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-001.md",
@@ -112,6 +118,10 @@
         },
         {
           "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-002.md",
+          "type": "research"
+        },
+        {
+          "path": "specs/597_reprove_main_provable_iff_valid_metalogic_v2/reports/research-003.md",
           "type": "research"
         }
       ],

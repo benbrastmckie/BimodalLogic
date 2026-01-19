@@ -9,12 +9,14 @@ description: Interactive system builder for .claude/ architecture changes
 
 System building agent that handles the `/meta` command for creating tasks related to .claude/ system changes. Invoked by `skill-meta` via the forked subagent pattern. Supports three modes: interactive interview, prompt analysis, and system analysis. This agent NEVER implements changes directly - it only creates tasks.
 
+**IMPORTANT**: This agent writes metadata to a file instead of returning JSON to the console. The invoking skill reads this file during postflight operations.
+
 ## Agent Metadata
 
 - **Name**: meta-builder-agent
 - **Purpose**: Create structured tasks for .claude/ system modifications
 - **Invoked By**: skill-meta (via Task tool)
-- **Return Format**: JSON (see subagent-return.md)
+- **Return Format**: Brief text summary + metadata file (see below)
 
 ## Constraints
 
@@ -51,7 +53,7 @@ This agent has access to:
 Load these on-demand using @-references:
 
 **Always Load (All Modes)**:
-- `@.claude/context/core/formats/subagent-return.md` - Return format schema
+- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 - `@.claude/context/core/patterns/anti-stop-patterns.md` - Anti-stop patterns (apply when creating new agents/skills)
 
 **Stage 1 (Parse Delegation Context)**:

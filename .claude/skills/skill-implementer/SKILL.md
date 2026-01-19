@@ -1,7 +1,7 @@
 ---
 name: skill-implementer
 description: Execute general implementation tasks following a plan. Invoke for non-Lean implementation work.
-allowed-tools: Task, Bash, Edit, Read
+allowed-tools: Task, Bash, Edit, Read, Write
 # Original context (now loaded by subagent):
 #   - .claude/context/core/formats/summary-format.md
 #   - .claude/context/core/standards/code-patterns.md
@@ -13,14 +13,18 @@ allowed-tools: Task, Bash, Edit, Read
 
 Thin wrapper that delegates general implementation to `general-implementation-agent` subagent.
 
-## Context Pointers
+**IMPORTANT**: This skill implements the skill-internal postflight pattern. After the subagent returns,
+this skill handles all postflight operations (status update, artifact linking, git commit) before returning.
+This eliminates the "continue" prompt issue between skill return and orchestrator.
+
+## Context References
 
 Reference (do not load eagerly):
-- Path: `.claude/context/core/validation.md`
-- Purpose: Return validation at CHECKPOINT 2
-- Load at: Subagent execution only
+- Path: `.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
+- Path: `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
+- Path: `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O helpers
 
-Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
+Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
 ## Trigger Conditions
 
@@ -31,32 +35,9 @@ This skill activates when:
 
 ---
 
-## Execution
+## Execution Flow
 
-### 0. Preflight Status Update
-
-Before delegating to the subagent, update task status to "implementing".
-
-**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
-
-**Update state.json**:
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-   --arg status "implementing" \
-   --arg sid "$session_id" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: $status,
-    last_updated: $ts,
-    session_id: $sid,
-    started: $ts
-  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-```
-
-**Update TODO.md**: Use Edit tool to change status marker from `[PLANNED]` to `[IMPLEMENTING]`.
-
----
-
-### 1. Input Validation
+### Stage 1: Input Validation
 
 Validate required inputs:
 - `task_number` - Must be provided and exist in state.json
@@ -64,8 +45,8 @@ Validate required inputs:
 
 ```bash
 # Lookup task
-task_data=$(jq -r --arg num "$task_number" \
-  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+task_data=$(jq -r --argjson num "$task_number" \
+  '.active_projects[] | select(.project_number == $num)' \
   specs/state.json)
 
 # Validate exists
@@ -85,9 +66,52 @@ if [ "$status" = "completed" ]; then
 fi
 ```
 
-### 2. Context Preparation
+---
 
-Prepare delegation context:
+### Stage 2: Preflight Status Update
+
+Update task status to "implementing" BEFORE invoking subagent.
+
+**Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "implementing" \
+   --arg sid "$session_id" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    session_id: $sid,
+    started: $ts
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+**Update TODO.md**: Use Edit tool to change status marker from `[PLANNED]` to `[IMPLEMENTING]`.
+
+---
+
+### Stage 3: Create Postflight Marker
+
+Create the marker file to prevent premature termination:
+
+```bash
+cat > specs/.postflight-pending << EOF
+{
+  "session_id": "${session_id}",
+  "skill": "skill-implementer",
+  "task_number": ${task_number},
+  "operation": "implement",
+  "reason": "Postflight pending: status update, artifact linking, git commit",
+  "created": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "stop_hook_active": false
+}
+EOF
+```
+
+---
+
+### Stage 4: Prepare Delegation Context
+
+Prepare delegation context for the subagent:
 
 ```json
 {
@@ -101,28 +125,27 @@ Prepare delegation context:
     "description": "{description}",
     "language": "{language}"
   },
-  "plan_path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md"
+  "plan_path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
+  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json"
 }
 ```
 
-### 3. Invoke Subagent
+---
+
+### Stage 5: Invoke Subagent
 
 **CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
-
-The `agent` field in this skill's frontmatter specifies the target: `general-implementation-agent`
 
 **Required Tool Invocation**:
 ```
 Tool: Task (NOT Skill)
 Parameters:
   - subagent_type: "general-implementation-agent"
-  - prompt: [Include task_context, delegation_context, plan_path]
+  - prompt: [Include task_context, delegation_context, plan_path, metadata_file_path]
   - description: "Execute implementation for task {N}"
 ```
 
 **DO NOT** use `Skill(general-implementation-agent)` - this will FAIL.
-Agents live in `.claude/agents/`, not `.claude/skills/`.
-The Skill tool can only invoke skills from `.claude/skills/`.
 
 The subagent will:
 - Load implementation context files
@@ -130,27 +153,39 @@ The subagent will:
 - Execute phases sequentially
 - Create/modify files as needed
 - Create implementation summary
-- Return standardized JSON result
+- Write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+- Return a brief text summary (NOT JSON)
 
-### 4. Return Validation
+---
 
-Validate return matches `subagent-return.md` schema:
-- Status is one of: implemented, partial, failed, blocked
-- Summary is non-empty and <100 tokens
-- Artifacts array present (implementation summary, modified files)
-- Metadata contains session_id, agent_type, delegation info
+### Stage 6: Parse Subagent Return (Read Metadata File)
 
-### 5. Postflight Status Update
+After subagent returns, read the metadata file:
 
-After implementation, update task status based on result.
-
-**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
-
-**If result.status == "implemented"**:
-
-Update state.json to "completed" (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`):
 ```bash
-# Step 1: Update status and timestamps
+metadata_file="specs/${task_number}_${project_name}/.return-meta.json"
+
+if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
+    status=$(jq -r '.status' "$metadata_file")
+    artifact_path=$(jq -r '.artifacts[0].path // ""' "$metadata_file")
+    artifact_type=$(jq -r '.artifacts[0].type // ""' "$metadata_file")
+    artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
+    phases_completed=$(jq -r '.metadata.phases_completed // 0' "$metadata_file")
+    phases_total=$(jq -r '.metadata.phases_total // 0' "$metadata_file")
+else
+    echo "Error: Invalid or missing metadata file"
+    status="failed"
+fi
+```
+
+---
+
+### Stage 7: Update Task Status (Postflight)
+
+**If status is "implemented"**:
+
+Update state.json to "completed":
+```bash
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "completed" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
@@ -158,80 +193,89 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     last_updated: $ts,
     completed: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-
-# Step 2: Add artifact
-jq --arg path "$artifact_path" \
-  '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")] + [{"path": $path, "type": "summary"}])' \
-  specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-Update TODO.md:
-- Change status marker from `[IMPLEMENTING]` to `[COMPLETED]`
-- Add summary artifact link: `- **Summary**: [implementation-summary-{DATE}.md]({artifact_path})`
+Update TODO.md: Change status marker from `[IMPLEMENTING]` to `[COMPLETED]`.
 
-**If result.status == "partial"**:
+**If status is "partial"**:
 
-Update state.json with resume point (keep status as "implementing"):
+Keep status as "implementing" but update resume point:
 ```bash
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-   --arg phase "$completed_phase" \
+   --argjson phase "$phases_completed" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
     last_updated: $ts,
-    resume_phase: ($phase | tonumber + 1)
+    resume_phase: ($phase + 1)
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
 TODO.md stays as `[IMPLEMENTING]`.
 
-**On failed**: Do NOT run postflight. Keep status as "implementing" for retry.
-
-### 6. Return Propagation
-
-Return validated result to caller without modification.
+**On failed**: Keep status as "implementing" for retry.
 
 ---
 
-## Return Format
+### Stage 8: Link Artifacts
 
-See `.claude/context/core/formats/subagent-return.md` for full specification.
+Add artifact to state.json with summary:
 
-Expected successful return:
-```json
-{
-  "status": "implemented",
-  "summary": "Implemented all N phases successfully",
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
-      "summary": "Implementation completion summary"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_...",
-    "agent_type": "general-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
-  },
-  "next_steps": "Implementation finished. Run /task --sync to verify."
-}
+```bash
+if [ -n "$artifact_path" ]; then
+    jq --arg path "$artifact_path" \
+       --arg type "$artifact_type" \
+       --arg summary "$artifact_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+        ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")] +
+         [{"path": $path, "type": $type, "summary": $summary}])' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
 ```
 
-Expected partial return (timeout/error):
-```json
-{
-  "status": "partial",
-  "summary": "Completed phases 1-2, paused at phase 3",
-  "artifacts": [...],
-  "errors": [{
-    "type": "timeout",
-    "message": "Implementation exceeded timeout",
-    "recoverable": true,
-    "recommendation": "Run /implement {N} to resume"
-  }],
-  "next_steps": "Run /implement {N} to resume from phase 3"
-}
+**Update TODO.md** (if implemented): Add summary artifact link:
+```markdown
+- **Summary**: [implementation-summary-{DATE}.md]({artifact_path})
+```
+
+---
+
+### Stage 9: Git Commit
+
+Commit changes with session ID:
+
+```bash
+git add -A
+git commit -m "task ${task_number}: complete implementation
+
+Session: ${session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+
+---
+
+### Stage 10: Cleanup
+
+Remove marker and metadata files:
+
+```bash
+rm -f specs/.postflight-pending
+rm -f specs/.postflight-loop-guard
+rm -f "specs/${task_number}_${project_name}/.return-meta.json"
+```
+
+---
+
+### Stage 11: Return Brief Summary
+
+Return a brief text summary (NOT JSON). Example:
+
+```
+Implementation completed for task {N}:
+- All {phases_total} phases executed successfully
+- Key changes: {summary of changes}
+- Created summary at specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md
+- Status updated to [COMPLETED]
+- Changes committed
 ```
 
 ---
@@ -239,10 +283,42 @@ Expected partial return (timeout/error):
 ## Error Handling
 
 ### Input Validation Errors
-Return immediately with failed status if task not found or status invalid.
+Return immediately with error message if task not found or status invalid.
 
-### Subagent Errors
-Pass through the subagent's error return verbatim.
+### Metadata File Missing
+If subagent didn't write metadata file:
+1. Keep status as "implementing"
+2. Do not cleanup postflight marker
+3. Report error to user
 
-### Timeout
+### Git Commit Failure
+Non-blocking: Log failure but continue with success response.
+
+### Subagent Timeout
 Return partial status if subagent times out (default 7200s).
+Keep status as "implementing" for resume.
+
+---
+
+## Return Format
+
+This skill returns a **brief text summary** (NOT JSON). The JSON metadata is written to the file and processed internally.
+
+Example successful return:
+```
+Implementation completed for task 350:
+- All 5 phases executed successfully
+- Created new feature component with tests
+- Created summary at specs/350_feature/summaries/implementation-summary-20260118.md
+- Status updated to [COMPLETED]
+- Changes committed with session sess_1736700000_abc123
+```
+
+Example partial return:
+```
+Implementation partially completed for task 350:
+- Phases 1-3 of 5 executed
+- Phase 4 failed: TypeScript compilation error
+- Partial summary at specs/350_feature/summaries/implementation-summary-20260118.md
+- Status remains [IMPLEMENTING] - run /implement 350 to resume
+```

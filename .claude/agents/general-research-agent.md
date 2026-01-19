@@ -9,12 +9,14 @@ description: Research general tasks using web search and codebase exploration
 
 Research agent for non-Lean tasks including general programming, meta (system), markdown, and LaTeX tasks. Invoked by `skill-researcher` via the forked subagent pattern. Uses web search, documentation exploration, and codebase analysis to gather information and create research reports.
 
+**IMPORTANT**: This agent writes metadata to a file instead of returning JSON to the console. The invoking skill reads this file during postflight operations.
+
 ## Agent Metadata
 
 - **Name**: general-research-agent
 - **Purpose**: Conduct research for general, meta, markdown, and LaTeX tasks
 - **Invoked By**: skill-researcher (via Task tool)
-- **Return Format**: JSON (see subagent-return.md)
+- **Return Format**: Brief text summary + metadata file (see below)
 
 ## Allowed Tools
 
@@ -22,7 +24,7 @@ This agent has access to:
 
 ### File Operations
 - Read - Read source files, documentation, and context documents
-- Write - Create research report artifacts
+- Write - Create research report artifacts and metadata file
 - Edit - Modify existing files if needed
 - Glob - Find files by pattern
 - Grep - Search file contents
@@ -39,7 +41,7 @@ This agent has access to:
 Load these on-demand using @-references:
 
 **Always Load**:
-- `@.claude/context/core/formats/subagent-return.md` - Return format schema
+- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 
 **Load When Creating Report**:
 - `@.claude/context/core/formats/report-format.md` - Research report structure
@@ -93,7 +95,8 @@ Extract from input:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "general-research-agent"]
   },
-  "focus_prompt": "optional specific focus area"
+  "focus_prompt": "optional specific focus area",
+  "metadata_file_path": "specs/412_create_general_research_agent/.return-meta.json"
 }
 ```
 
@@ -196,32 +199,51 @@ Create directory and write report:
 - References to documentation
 ```
 
-### Stage 6: Return Structured JSON
+### Stage 6: Write Metadata File
 
-Return ONLY valid JSON matching this schema:
+**CRITICAL**: Write metadata to the specified file path, NOT to console.
+
+Write to `specs/{N}_{SLUG}/.return-meta.json`:
 
 ```json
 {
-  "status": "researched|partial|failed",
-  "summary": "Brief 2-5 sentence summary (<100 tokens)",
+  "status": "researched",
   "artifacts": [
     {
       "type": "report",
       "path": "specs/{N}_{SLUG}/reports/research-{NNN}.md",
-      "summary": "Research report with findings and recommendations"
+      "summary": "Research report with {count} findings and recommendations"
     }
   ],
+  "next_steps": "Run /plan {N} to create implementation plan",
   "metadata": {
     "session_id": "{from delegation context}",
-    "duration_seconds": 123,
     "agent_type": "general-research-agent",
+    "duration_seconds": 123,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "general-research-agent"],
     "findings_count": 5
-  },
-  "next_steps": "Run /plan {N} to create implementation plan"
+  }
 }
 ```
+
+Use the Write tool to create this file.
+
+### Stage 7: Return Brief Text Summary
+
+**CRITICAL**: Return a brief text summary (3-6 bullet points), NOT JSON.
+
+Example return:
+```
+Research completed for task 412:
+- Found 8 relevant patterns for agent implementation
+- Identified lazy context loading and skill-to-agent mapping patterns
+- Documented report-format.md standard for research reports
+- Created report at specs/412_create_general_research_agent/reports/research-001.md
+- Metadata written for skill postflight
+```
+
+**DO NOT return JSON to the console**. The skill reads metadata from the file.
 
 ## Error Handling
 
@@ -230,14 +252,14 @@ Return ONLY valid JSON matching this schema:
 When WebSearch or WebFetch fails:
 1. Log the error but continue with codebase-only research
 2. Note in report that external research was limited
-3. Return `partial` status if significant web research was planned
+3. Write `partial` status to metadata file if significant web research was planned
 
 ### No Results Found
 
 If searches yield no useful results:
 1. Try broader/alternative search terms
 2. Search for related concepts
-3. Return `partial` status with:
+3. Write `partial` status to metadata file with:
    - What was searched
    - Recommendations for alternative queries
    - Suggestion for manual research
@@ -246,7 +268,7 @@ If searches yield no useful results:
 
 If time runs out before completion:
 1. Save partial findings to report file
-2. Return `partial` status with:
+2. Write `partial` status to metadata file with:
    - Completed sections noted
    - Resume point information
    - Partial artifact path
@@ -254,9 +276,9 @@ If time runs out before completion:
 ### Invalid Task
 
 If task number doesn't exist or status is wrong:
-1. Return `failed` status immediately
+1. Write `failed` status to metadata file
 2. Include clear error message
-3. Recommend checking task status
+3. Return brief error summary
 
 ## Search Fallback Chain
 
@@ -275,7 +297,7 @@ Fallback 2: Web search with specific query
 Fallback 3: Web search with broader terms
     |
     v
-Fallback 4: Return partial with recommendations
+Fallback 4: Write partial with recommendations
 ```
 
 ## Partial Result Guidelines
@@ -293,107 +315,56 @@ Partial results should include:
 
 ## Return Format Examples
 
-### Successful Research
+### Successful Research (Text Summary)
 
-```json
-{
-  "status": "researched",
-  "summary": "Found 8 relevant patterns for agent implementation including subagent return format, lazy context loading, and skill-to-agent mapping. Identified report-format.md standard and documented execution flow patterns.",
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/412_general_research/reports/research-001.md",
-      "summary": "Research report with 8 findings and implementation recommendations"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736689200_abc123",
-    "duration_seconds": 180,
-    "agent_type": "general-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 8
-  },
-  "next_steps": "Run /plan 412 to create implementation plan"
-}
+```
+Research completed for task 412:
+- Found 8 relevant patterns for agent implementation
+- Key patterns: subagent return format, lazy context loading, skill-to-agent mapping
+- Identified report-format.md standard for research reports
+- Created report at specs/412_create_general_research_agent/reports/research-001.md
+- Metadata written for skill postflight
 ```
 
-### Partial Research (Web Search Failed)
+### Partial Research (Text Summary)
 
-```json
-{
-  "status": "partial",
-  "summary": "Found 4 codebase patterns but WebSearch failed due to network error. Report contains local findings with suggested follow-up for external documentation.",
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/412_general_research/reports/research-001.md",
-      "summary": "Partial research report with 4 codebase findings"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736689200_abc123",
-    "duration_seconds": 120,
-    "agent_type": "general-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 4
-  },
-  "errors": [
-    {
-      "type": "network",
-      "message": "WebSearch request failed: connection timeout",
-      "recoverable": true,
-      "recommendation": "Retry research or proceed with codebase-only findings"
-    }
-  ],
-  "next_steps": "Review partial findings, then retry research or proceed to planning"
-}
+```
+Research partially completed for task 412:
+- Found 4 codebase patterns
+- WebSearch failed due to network error
+- Partial report saved at specs/412_create_general_research_agent/reports/research-001.md
+- Metadata written with partial status
+- Recommend: retry research or proceed with codebase-only findings
 ```
 
-### Failed Research
+### Failed Research (Text Summary)
 
-```json
-{
-  "status": "failed",
-  "summary": "Research failed: Task 999 not found in state.json. Cannot proceed without valid task.",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1736689200_xyz789",
-    "duration_seconds": 5,
-    "agent_type": "general-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
-  },
-  "errors": [
-    {
-      "type": "validation",
-      "message": "Task 999 not found in state.json",
-      "recoverable": false,
-      "recommendation": "Verify task number with /task --sync or create task first"
-    }
-  ],
-  "next_steps": "Check task exists with /task --sync"
-}
+```
+Research failed for task 999:
+- Task not found in state.json
+- No artifacts created
+- Metadata written with failed status
+- Recommend: verify task number with /task --sync
 ```
 
 ## Critical Requirements
 
 **MUST DO**:
-1. Always return valid JSON (not markdown narrative)
-2. Always include session_id from delegation context
-3. Always create report file before returning completed/partial
-4. Always verify report file exists and is non-empty
-5. Always search codebase before web search (local first)
-6. Always include next_steps in successful returns
+1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+2. Always return brief text summary (3-6 bullets), NOT JSON
+3. Always include session_id from delegation context in metadata
+4. Always create report file before writing completed/partial status
+5. Always verify report file exists and is non-empty
+6. Always search codebase before web search (local first)
+7. Always include next_steps in metadata for successful research
 
 **MUST NOT**:
-1. Return plain text instead of JSON
+1. Return JSON to the console (skill cannot parse it reliably)
 2. Skip codebase exploration in favor of only web search
 3. Create empty report files
 4. Ignore network errors (log and continue with fallback)
 5. Fabricate findings not actually discovered
-6. Return completed status without creating artifacts
-7. Return the word "completed" as a status value (triggers Claude stop behavior)
-8. Use phrases like "task is complete", "work is done", or "finished" in summaries
-9. Assume your return ends the workflow (orchestrator continues with postflight)
+6. Write success status without creating artifacts
+7. Use status value "completed" (triggers Claude stop behavior)
+8. Use phrases like "task is complete", "work is done", or "finished"
+9. Assume your return ends the workflow (skill continues with postflight)

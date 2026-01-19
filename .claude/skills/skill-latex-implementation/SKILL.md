@@ -1,7 +1,7 @@
 ---
 name: skill-latex-implementation
 description: Implement LaTeX documents following a plan. Invoke for LaTeX-language implementation tasks.
-allowed-tools: Task, Bash, Edit, Read
+allowed-tools: Task, Bash, Edit, Read, Write
 # Original context (now loaded by subagent):
 #   - .claude/context/project/latex/README.md
 #   - .claude/context/project/latex/standards/latex-style-guide.md
@@ -21,14 +21,18 @@ allowed-tools: Task, Bash, Edit, Read
 
 Thin wrapper that delegates LaTeX document implementation to `latex-implementation-agent` subagent.
 
-## Context Pointers
+**IMPORTANT**: This skill implements the skill-internal postflight pattern. After the subagent returns,
+this skill handles all postflight operations (status update, artifact linking, git commit) before returning.
+This eliminates the "continue" prompt issue between skill return and orchestrator.
+
+## Context References
 
 Reference (do not load eagerly):
-- Path: `.claude/context/core/validation.md`
-- Purpose: Return validation at CHECKPOINT 2
-- Load at: Subagent execution only
+- Path: `.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
+- Path: `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
+- Path: `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O helpers
 
-Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
+Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
 ## Trigger Conditions
 

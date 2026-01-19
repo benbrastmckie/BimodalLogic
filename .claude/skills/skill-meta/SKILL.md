@@ -1,7 +1,7 @@
 ---
 name: skill-meta
 description: Interactive system builder. Invoke for /meta command to create tasks for .claude/ system changes.
-allowed-tools: Task
+allowed-tools: Task, Bash, Edit, Read, Write
 # Original context (now loaded by subagent):
 #   - .claude/docs/guides/component-selection.md
 #   - .claude/docs/guides/creating-commands.md
@@ -15,14 +15,18 @@ allowed-tools: Task
 
 Thin wrapper that delegates system building to `meta-builder-agent` subagent. This skill handles all three modes of /meta: interactive interview, prompt analysis, and system analysis.
 
-## Context Pointers
+**IMPORTANT**: This skill implements the skill-internal postflight pattern. After the subagent returns,
+this skill handles all postflight operations (git commit if tasks created) before returning.
+This eliminates the "continue" prompt issue between skill return and orchestrator.
+
+## Context References
 
 Reference (do not load eagerly):
-- Path: `.claude/context/core/validation.md`
-- Purpose: Return validation at CHECKPOINT 2
-- Load at: Subagent execution only
+- Path: `.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
+- Path: `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
+- Path: `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O helpers
 
-Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
+Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
 ## Trigger Conditions
 

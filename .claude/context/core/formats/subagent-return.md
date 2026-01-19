@@ -1,16 +1,28 @@
 # Subagent Return Format Standard
 
+**IMPORTANT - FILE-BASED METADATA EXCHANGE (v2)**:
+As of Task 600, agents write metadata to files instead of returning JSON to the console. This enables reliable structured data exchange without console pollution. The schema below is now written to `specs/{N}_{SLUG}/.return-meta.json`, NOT returned as console output.
+
+See `.claude/context/core/formats/return-metadata-file.md` for the file-based protocol.
+
 **CRITICAL WARNING - ANTI-STOP PATTERN**:
-Do NOT use `"status": "completed"` - it triggers Claude to stop execution prematurely, preventing orchestrator postflight (status updates, git commits). Use contextual values like `"researched"`, `"planned"`, `"implemented"` instead. See `.claude/context/core/patterns/anti-stop-patterns.md` for full documentation.
+Do NOT use `"status": "completed"` - it triggers Claude to stop execution prematurely. Use contextual values like `"researched"`, `"planned"`, `"implemented"` instead. See `.claude/context/core/patterns/anti-stop-patterns.md` for full documentation.
 
 ## Overview
 
-All subagents MUST return valid JSON matching this schema. This is enforced by:
+**v2 Pattern (Current)**:
+1. Agents write structured metadata to `specs/{N}_{SLUG}/.return-meta.json`
+2. Agents return brief text summaries (3-6 bullets) to console
+3. Skills read metadata file during postflight
+4. Skills handle status updates, artifact linking, and git commits
+
+**Legacy Pattern (v1)**:
+All subagents MUST return valid JSON matching this schema. This was enforced by:
 1. **Orchestrator Stage 3**: Appends explicit JSON format instruction to all subagent invocations
 2. **Orchestrator Stage 4**: Validates return is valid JSON with required fields
 3. **Subagent Specification**: Each agent's markdown file defines this return format
 
-**CRITICAL**: When invoked via task tool, you MUST return ONLY valid JSON. Do NOT return plain text, markdown narrative, or any other format. Orchestrator Stage 4 will reject non-JSON returns with "Return is not valid JSON" error.
+**NOTE**: The JSON schema below is still used, but now written to a file instead of console output.
 
 ## Schema
 

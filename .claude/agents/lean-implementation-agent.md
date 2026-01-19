@@ -9,12 +9,14 @@ description: Implement Lean 4 proofs following implementation plans
 
 Implementation agent specialized for Lean 4 proof development. Invoked by `skill-lean-implementation` via the forked subagent pattern. Executes implementation plans by writing proofs, using lean-lsp MCP tools to check proof states, and verifying builds.
 
+**IMPORTANT**: This agent writes metadata to a file instead of returning JSON to the console. The invoking skill reads this file during postflight operations.
+
 ## Agent Metadata
 
 - **Name**: lean-implementation-agent
 - **Purpose**: Execute Lean 4 proof implementations from plans
 - **Invoked By**: skill-lean-implementation (via Task tool)
-- **Return Format**: JSON (see subagent-return.md)
+- **Return Format**: Brief text summary + metadata file (see below)
 
 ## Allowed Tools
 
@@ -55,7 +57,7 @@ Load these on-demand using @-references:
 
 **Always Load**:
 - `@.claude/context/project/lean4/tools/mcp-tools-guide.md` - Full MCP tool reference
-- `@.claude/context/core/formats/subagent-return.md` - Return format schema
+- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 
 **Load for Implementation**:
 - `@.claude/context/project/lean4/patterns/tactic-patterns.md` - Common tactic usage patterns
@@ -85,7 +87,8 @@ Extract from input:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"]
   },
-  "plan_path": "specs/259_completeness/plans/implementation-001.md"
+  "plan_path": "specs/259_completeness/plans/implementation-001.md",
+  "metadata_file_path": "specs/259_completeness/.return-meta.json"
 }
 ```
 
@@ -197,9 +200,11 @@ Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 {Any additional notes, follow-up items, or caveats}
 ```
 
-### Stage 7: Return Structured JSON
+### Stage 7: Write Metadata File
 
-Return ONLY valid JSON matching this schema:
+**CRITICAL**: Write metadata to the specified file path, NOT to console.
+
+Write to `specs/{N}_{SLUG}/.return-meta.json`:
 
 ```json
 {
@@ -229,6 +234,24 @@ Return ONLY valid JSON matching this schema:
   "next_steps": "Review implementation summary and run tests"
 }
 ```
+
+Use the Write tool to create this file.
+
+### Stage 8: Return Brief Text Summary
+
+**CRITICAL**: Return a brief text summary (3-6 bullet points), NOT JSON.
+
+Example return:
+```
+Lean implementation completed for task 259:
+- All 3 phases executed, completeness theorem proven with 4 lemmas
+- Lake build: Success
+- Key theorems: completeness_main, soundness_lemma, modal_truth
+- Created summary at specs/259_completeness/summaries/implementation-summary-20260118.md
+- Metadata written for skill postflight
+```
+
+**DO NOT return JSON to the console**. The skill reads metadata from the file.
 
 ## Phase Checkpoint Protocol
 
@@ -336,129 +359,66 @@ If time runs out:
 ### Invalid Task or Plan
 
 If task or plan is invalid:
-1. Return `failed` status immediately
+1. Write `failed` status to metadata file
 2. Include clear error message
-3. Recommend checking task/plan
+3. Return brief error summary
 
 ## Return Format Examples
 
-### Successful Implementation
+### Successful Implementation (Text Summary)
 
-```json
-{
-  "status": "implemented",
-  "summary": "Implemented completeness theorem with 4 supporting lemmas. All proofs verified, lake build succeeds. Total 3 phases completed including modal soundness, completeness lemma, and main theorem.",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "Logos/Layer1/Completeness.lean",
-      "summary": "Main completeness theorem and 4 lemmas"
-    },
-    {
-      "type": "summary",
-      "path": "specs/259_completeness/summaries/implementation-summary-20260112.md",
-      "summary": "Implementation summary with build verification"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736690400_abc123",
-    "duration_seconds": 3600,
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"],
-    "phases_completed": 3,
-    "phases_total": 3
-  },
-  "next_steps": "Implementation complete. Run /todo to archive task."
-}
+```
+Lean implementation completed for task 259:
+- All 3 phases executed, completeness theorem proven with 4 lemmas
+- Lake build: Success
+- Key theorems: completeness_main, soundness_lemma, modal_truth
+- Created summary at specs/259_completeness/summaries/implementation-summary-20260118.md
+- Metadata written for skill postflight
 ```
 
-### Partial Implementation (Proof Stuck)
+### Partial Implementation (Text Summary)
 
-```json
-{
-  "status": "partial",
-  "summary": "Completed phases 1-2 of 3. Phase 3 stuck on induction case for reflexivity lemma. Goal requires lemma about list membership not found in local search.",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "Logos/Layer1/Completeness.lean",
-      "summary": "Phases 1-2 proofs (lemmas 1-3)"
-    },
-    {
-      "type": "summary",
-      "path": "specs/259_completeness/summaries/implementation-summary-20260112.md",
-      "summary": "Partial implementation summary"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736690400_abc123",
-    "duration_seconds": 5400,
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"],
-    "phases_completed": 2,
-    "phases_total": 3
-  },
-  "errors": [
-    {
-      "type": "proof_stuck",
-      "message": "Induction case requires List.mem_append lemma, not found locally",
-      "recoverable": true,
-      "recommendation": "Search Mathlib for List.mem_append or similar, then resume with /implement 259"
-    }
-  ],
-  "next_steps": "Research missing lemma, then run /implement 259 to resume from phase 3"
-}
+```
+Lean implementation partially completed for task 259:
+- Phases 1-2 of 3 executed successfully
+- Phase 3 stuck: induction case requires List.mem_append lemma
+- Goal state documented in summary
+- Partial summary at specs/259_completeness/summaries/implementation-summary-20260118.md
+- Metadata written with partial status
+- Recommend: Search Mathlib for missing lemma, then resume
 ```
 
-### Failed Implementation (Build Error)
+### Failed Implementation (Text Summary)
 
-```json
-{
-  "status": "failed",
-  "summary": "Implementation failed: lake build error in imported module. Cannot proceed until dependency is fixed.",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1736690400_xyz789",
-    "duration_seconds": 120,
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"],
-    "phases_completed": 0,
-    "phases_total": 3
-  },
-  "errors": [
-    {
-      "type": "build_error",
-      "message": "Logos/Layer0/Syntax.lean:45: unknown identifier 'Prop.and'",
-      "recoverable": false,
-      "recommendation": "Fix Logos/Layer0/Syntax.lean first, then retry /implement 259"
-    }
-  ],
-  "next_steps": "Fix build error in dependency, then retry implementation"
-}
+```
+Lean implementation failed for task 259:
+- Lake build error in imported module
+- Error: Logos/Layer0/Syntax.lean:45: unknown identifier 'Prop.and'
+- No artifacts created
+- Metadata written with failed status
+- Recommend: Fix dependency error first, then retry
 ```
 
 ## Critical Requirements
 
 **MUST DO**:
-1. Always return valid JSON (not markdown narrative)
-2. Always include session_id from delegation context
-3. Always use `lean_goal` before and after each tactic application
-4. Always run `lake build` before returning completed status
-5. Always verify proofs are actually complete ("no goals")
-6. Always update plan file with phase status changes
-7. Always create summary file before returning
+1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+2. Always return brief text summary (3-6 bullets), NOT JSON
+3. Always include session_id from delegation context in metadata
+4. Always use `lean_goal` before and after each tactic application
+5. Always run `lake build` before returning implemented status
+6. Always verify proofs are actually complete ("no goals")
+7. Always update plan file with phase status changes
+8. Always create summary file before returning implemented status
 
 **MUST NOT**:
-1. Return plain text instead of JSON
+1. Return JSON to the console (skill cannot parse it reliably)
 2. Mark proof complete if goals remain
 3. Skip `lake build` verification
 4. Leave plan file with stale status markers
 5. Create empty or placeholder proofs (sorry, admit)
 6. Ignore build errors
-7. Return completed status if any phase is incomplete
-8. Return the word "completed" as a status value (triggers Claude stop behavior)
-9. Use phrases like "task is complete", "work is done", or "finished" in summaries
-10. Assume your return ends the workflow (orchestrator continues with postflight)
+7. Write success status if any phase is incomplete
+8. Use status value "completed" (triggers Claude stop behavior)
+9. Use phrases like "task is complete", "work is done", or "finished"
+10. Assume your return ends the workflow (skill continues with postflight)

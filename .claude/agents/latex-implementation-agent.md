@@ -9,12 +9,14 @@ description: Implement LaTeX documents following implementation plans
 
 Implementation agent specialized for LaTeX document creation and compilation. Invoked by `skill-latex-implementation` via the forked subagent pattern. Executes implementation plans by creating/modifying .tex files, running compilation, and producing PDF outputs with implementation summaries.
 
+**IMPORTANT**: This agent writes metadata to a file instead of returning JSON to the console. The invoking skill reads this file during postflight operations.
+
 ## Agent Metadata
 
 - **Name**: latex-implementation-agent
 - **Purpose**: Execute LaTeX document implementations from plans
 - **Invoked By**: skill-latex-implementation (via Task tool)
-- **Return Format**: JSON (see subagent-return.md)
+- **Return Format**: Brief text summary + metadata file (see below)
 
 ## Allowed Tools
 
@@ -60,7 +62,7 @@ latexmk -pdf document.tex
 Load these on-demand using @-references:
 
 **Always Load**:
-- `@.claude/context/core/formats/subagent-return.md` - Return format schema
+- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 
 **Load for LaTeX Work**:
 - `@.claude/context/project/latex/style/latex-style-guide.md` - Formatting conventions (if exists)
@@ -205,9 +207,11 @@ Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 {Any additional notes, follow-up items, or known issues}
 ```
 
-### Stage 7: Return Structured JSON
+### Stage 7: Write Metadata File
 
-Return ONLY valid JSON matching this schema:
+**CRITICAL**: Write metadata to the specified file path, NOT to console.
+
+Write to `specs/{N}_{SLUG}/.return-meta.json`:
 
 ```json
 {
@@ -243,6 +247,24 @@ Return ONLY valid JSON matching this schema:
   "next_steps": "Review PDF output and verify formatting"
 }
 ```
+
+Use the Write tool to create this file.
+
+### Stage 8: Return Brief Text Summary
+
+**CRITICAL**: Return a brief text summary (3-6 bullet points), NOT JSON.
+
+Example return:
+```
+LaTeX implementation completed for task 334:
+- All 4 phases executed, document compiles cleanly
+- Created 42-page PDF with 4 chapters
+- PDF at docs/logos-manual.pdf
+- Created summary at specs/334_logos_docs/summaries/implementation-summary-20260118.md
+- Metadata written for skill postflight
+```
+
+**DO NOT return JSON to the console**. The skill reads metadata from the file.
 
 ## Phase Checkpoint Protocol
 

@@ -1,7 +1,7 @@
 ---
 name: skill-planner
 description: Create phased implementation plans from research findings. Invoke when a task needs an implementation plan.
-allowed-tools: Task, Bash, Edit, Read
+allowed-tools: Task, Bash, Edit, Read, Write
 # Original context (now loaded by subagent):
 #   - .claude/context/core/formats/plan-format.md
 #   - .claude/context/core/workflows/task-breakdown.md
@@ -13,14 +13,18 @@ allowed-tools: Task, Bash, Edit, Read
 
 Thin wrapper that delegates plan creation to `planner-agent` subagent.
 
-## Context Pointers
+**IMPORTANT**: This skill implements the skill-internal postflight pattern. After the subagent returns,
+this skill handles all postflight operations (status update, artifact linking, git commit) before returning.
+This eliminates the "continue" prompt issue between skill return and orchestrator.
+
+## Context References
 
 Reference (do not load eagerly):
-- Path: `.claude/context/core/validation.md`
-- Purpose: Return validation at CHECKPOINT 2
-- Load at: Subagent execution only
+- Path: `.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
+- Path: `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
+- Path: `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O helpers
 
-Note: This skill is a thin wrapper. Context is loaded by the delegated agent, not this skill.
+Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
 ## Trigger Conditions
 
@@ -31,31 +35,9 @@ This skill activates when:
 
 ---
 
-## Execution
+## Execution Flow
 
-### 0. Preflight Status Update
-
-Before delegating to the subagent, update task status to "planning".
-
-**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
-
-**Update state.json**:
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-   --arg status "planning" \
-   --arg sid "$session_id" \
-  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-    status: $status,
-    last_updated: $ts,
-    session_id: $sid
-  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-```
-
-**Update TODO.md**: Use Edit tool to change status marker from `[RESEARCHED]` or `[NOT STARTED]` to `[PLANNING]`.
-
----
-
-### 1. Input Validation
+### Stage 1: Input Validation
 
 Validate required inputs:
 - `task_number` - Must be provided and exist in state.json
@@ -63,8 +45,8 @@ Validate required inputs:
 
 ```bash
 # Lookup task
-task_data=$(jq -r --arg num "$task_number" \
-  '.active_projects[] | select(.project_number == ($num | tonumber))' \
+task_data=$(jq -r --argjson num "$task_number" \
+  '.active_projects[] | select(.project_number == $num)' \
   specs/state.json)
 
 # Validate exists
@@ -84,9 +66,51 @@ if [ "$status" = "completed" ]; then
 fi
 ```
 
-### 2. Context Preparation
+---
 
-Prepare delegation context:
+### Stage 2: Preflight Status Update
+
+Update task status to "planning" BEFORE invoking subagent.
+
+**Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "planning" \
+   --arg sid "$session_id" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    session_id: $sid
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+**Update TODO.md**: Use Edit tool to change status marker from `[RESEARCHED]` or `[NOT STARTED]` to `[PLANNING]`.
+
+---
+
+### Stage 3: Create Postflight Marker
+
+Create the marker file to prevent premature termination:
+
+```bash
+cat > specs/.postflight-pending << EOF
+{
+  "session_id": "${session_id}",
+  "skill": "skill-planner",
+  "task_number": ${task_number},
+  "operation": "plan",
+  "reason": "Postflight pending: status update, artifact linking, git commit",
+  "created": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "stop_hook_active": false
+}
+EOF
+```
+
+---
+
+### Stage 4: Prepare Delegation Context
+
+Prepare delegation context for the subagent:
 
 ```json
 {
@@ -100,28 +124,27 @@ Prepare delegation context:
     "description": "{description}",
     "language": "{language}"
   },
-  "research_path": "{path to research report if exists}"
+  "research_path": "{path to research report if exists}",
+  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json"
 }
 ```
 
-### 3. Invoke Subagent
+---
+
+### Stage 5: Invoke Subagent
 
 **CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
-
-The `agent` field in this skill's frontmatter specifies the target: `planner-agent`
 
 **Required Tool Invocation**:
 ```
 Tool: Task (NOT Skill)
 Parameters:
   - subagent_type: "planner-agent"
-  - prompt: [Include task_context, delegation_context, research_path if available]
+  - prompt: [Include task_context, delegation_context, research_path, metadata_file_path]
   - description: "Execute planning for task {N}"
 ```
 
 **DO NOT** use `Skill(planner-agent)` - this will FAIL.
-Agents live in `.claude/agents/`, not `.claude/skills/`.
-The Skill tool can only invoke skills from `.claude/skills/`.
 
 The subagent will:
 - Load planning context files
@@ -129,25 +152,37 @@ The subagent will:
 - Decompose into logical phases
 - Identify risks and mitigations
 - Create plan in `specs/{N}_{SLUG}/plans/`
-- Return standardized JSON result
+- Write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+- Return a brief text summary (NOT JSON)
 
-### 4. Return Validation
+---
 
-Validate return matches `subagent-return.md` schema:
-- Status is one of: planned, partial, failed, blocked
-- Summary is non-empty and <100 tokens
-- Artifacts array present with plan path
-- Metadata contains session_id, agent_type, delegation info
+### Stage 6: Parse Subagent Return (Read Metadata File)
 
-### 5. Postflight Status Update
+After subagent returns, read the metadata file:
 
-After successful planning, update task status to "planned" and link artifacts.
-
-**Reference**: `@.claude/context/core/patterns/inline-status-update.md`
-
-**Update state.json** (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`):
 ```bash
-# Step 1: Update status and timestamps
+metadata_file="specs/${task_number}_${project_name}/.return-meta.json"
+
+if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
+    status=$(jq -r '.status' "$metadata_file")
+    artifact_path=$(jq -r '.artifacts[0].path // ""' "$metadata_file")
+    artifact_type=$(jq -r '.artifacts[0].type // ""' "$metadata_file")
+    artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
+else
+    echo "Error: Invalid or missing metadata file"
+    status="failed"
+fi
+```
+
+---
+
+### Stage 7: Update Task Status (Postflight)
+
+If status is "planned", update state.json and TODO.md:
+
+**Update state.json**:
+```bash
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "planned" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
@@ -155,50 +190,75 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     last_updated: $ts,
     planned: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-
-# Step 2: Add artifact
-jq --arg path "$artifact_path" \
-  '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "plan")] + [{"path": $path, "type": "plan"}])' \
-  specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-**Update TODO.md**:
-- Use Edit tool to change status marker from `[PLANNING]` to `[PLANNED]`
-- Add plan artifact link: `- **Plan**: [implementation-{NNN}.md]({artifact_path})`
+**Update TODO.md**: Use Edit tool to change status marker from `[PLANNING]` to `[PLANNED]`.
 
-**On partial/failed**: Do NOT run postflight. Keep status as "planning" for resume.
-
-### 6. Return Propagation
-
-Return validated result to caller without modification.
+**On partial/failed**: Keep status as "planning" for resume.
 
 ---
 
-## Return Format
+### Stage 8: Link Artifacts
 
-See `.claude/context/core/formats/subagent-return.md` for full specification.
+Add artifact to state.json with summary:
 
-Expected successful return:
-```json
-{
-  "status": "planned",
-  "summary": "Created N-phase implementation plan",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
-      "summary": "Phased implementation plan"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_...",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "next_steps": "Run /implement {N} to execute the plan"
-}
+```bash
+if [ -n "$artifact_path" ]; then
+    jq --arg path "$artifact_path" \
+       --arg type "$artifact_type" \
+       --arg summary "$artifact_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+        ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "plan")] +
+         [{"path": $path, "type": $type, "summary": $summary}])' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
+```
+
+**Update TODO.md**: Add plan artifact link:
+```markdown
+- **Plan**: [implementation-{NNN}.md]({artifact_path})
+```
+
+---
+
+### Stage 9: Git Commit
+
+Commit changes with session ID:
+
+```bash
+git add -A
+git commit -m "task ${task_number}: create implementation plan
+
+Session: ${session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+
+---
+
+### Stage 10: Cleanup
+
+Remove marker and metadata files:
+
+```bash
+rm -f specs/.postflight-pending
+rm -f specs/.postflight-loop-guard
+rm -f "specs/${task_number}_${project_name}/.return-meta.json"
+```
+
+---
+
+### Stage 11: Return Brief Summary
+
+Return a brief text summary (NOT JSON). Example:
+
+```
+Plan created for task {N}:
+- {phase_count} phases defined, {estimated_hours} hours estimated
+- Key phases: {phase names}
+- Created plan at specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+- Status updated to [PLANNED]
+- Changes committed
 ```
 
 ---
@@ -206,10 +266,41 @@ Expected successful return:
 ## Error Handling
 
 ### Input Validation Errors
-Return immediately with failed status if task not found or status invalid.
+Return immediately with error message if task not found or status invalid.
 
-### Subagent Errors
-Pass through the subagent's error return verbatim.
+### Metadata File Missing
+If subagent didn't write metadata file:
+1. Keep status as "planning"
+2. Do not cleanup postflight marker
+3. Report error to user
 
-### Timeout
+### Git Commit Failure
+Non-blocking: Log failure but continue with success response.
+
+### Subagent Timeout
 Return partial status if subagent times out (default 1800s).
+Keep status as "planning" for resume.
+
+---
+
+## Return Format
+
+This skill returns a **brief text summary** (NOT JSON). The JSON metadata is written to the file and processed internally.
+
+Example successful return:
+```
+Plan created for task 414:
+- 5 phases defined, 2.5 hours estimated
+- Covers: agent structure, execution flow, error handling, examples, verification
+- Created plan at specs/414_create_planner_agent/plans/implementation-001.md
+- Status updated to [PLANNED]
+- Changes committed with session sess_1736700000_abc123
+```
+
+Example partial return:
+```
+Plan partially created for task 414:
+- 3 of 5 phases defined before timeout
+- Partial plan saved at specs/414_create_planner_agent/plans/implementation-001.md
+- Status remains [PLANNING] - run /plan 414 to complete
+```
