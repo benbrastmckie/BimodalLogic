@@ -70,7 +70,7 @@ Metalogic_v2/
 
 ## Key Theorems
 
-### Proven (no sorry)
+### Core Theorems
 
 | Theorem | Location | Description |
 |---------|----------|-------------|
@@ -90,7 +90,19 @@ Metalogic_v2/
 | `satisfiability_decidable` | Representation/FiniteModelProperty.lean | Decidability of satisfiability |
 | `validity_decidable_via_fmp` | Representation/FiniteModelProperty.lean | Decidability of validity |
 
-All theorems in Metalogic_v2 are fully proven with no sorry statements.
+### Theorems with Sorries (5 total)
+
+| Location | Theorem | Issue |
+|----------|---------|-------|
+| Closure.lean:484 | `closure_mcs_neg_complete` | Double-negation escape |
+| SemanticCanonicalModel.lean:236 | `semantic_task_rel_compositionality` | History gluing |
+| SemanticCanonicalModel.lean:489 | `semantic_truth_implies_truth_at` | Formula induction |
+| SemanticCanonicalModel.lean:656 | `main_weak_completeness_v2` | Truth bridge |
+| FiniteWorldState.lean:343 | `closure_mcs_implies_locally_consistent` | Temporal axioms |
+
+**Impact**: The completeness theorems (`weak_completeness`, `strong_completeness`) and FMP-related theorems transitively depend on these sorries through `main_provable_iff_valid_v2`.
+
+The Metalogic_v2 infrastructure has **5 active sorries** in the semantic bridge layer. Core theorems like soundness, deduction theorem, and MCS properties are fully proven. Completeness theorems are structurally correct but rely on the semantic bridge sorries.
 
 ## Usage
 
