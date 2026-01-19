@@ -1,5 +1,5 @@
 ---
-next_project_number: 597
+next_project_number: 598
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 597. Re-prove main_provable_iff_valid in Metalogic_v2
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-19
+
+**Description**: Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory.
+
+---
 
 ### 594. Fix Progress Interruptions in Agent System
 - **Effort**: 2-3 hours

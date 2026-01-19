@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 597,
+      "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-19T01:00:46Z",
+      "last_updated": "2026-01-19T01:00:46Z",
+      "description": "Re-prove main_provable_iff_valid within Metalogic_v2 to achieve full independence from old Metalogic/. This will allow complete deprecation of Theories/Bimodal/Metalogic/ directory."
+    },
+    {
       "project_number": 596,
       "project_name": "constructive_finite_model_bounds",
       "status": "not_started",
@@ -197,5 +207,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 597
+  "next_project_number": 598
 }
