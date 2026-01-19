@@ -1,0 +1,66 @@
+{
+  "status": "implemented",
+  "summary": "Ported 8 Decidability files from old Metalogic/ to Metalogic_v2/ architecture. Created SignedFormula, Tableau, BranchClosure, Saturation, ProofExtraction, CountermodelExtraction, DecisionProcedure, Correctness, and hub Decidability.lean. Integrated with FMP for termination bounds via closureSizeOf and fmpBasedFuel. Lake build succeeds with 976 jobs.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability/SignedFormula.lean",
+      "summary": "Core types (Sign, SignedFormula, Branch) with Metalogic_v2 closure integration"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability/Tableau.lean",
+      "summary": "Tableau expansion rules for TM bimodal logic"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability/BranchClosure.lean",
+      "summary": "Branch closure detection (renamed from Closure.lean)"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability/Saturation.lean",
+      "summary": "Tableau saturation with FMP-based fuel calculation"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability/ProofExtraction.lean",
+      "summary": "Proof term extraction from closed tableaux"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability/CountermodelExtraction.lean",
+      "summary": "Countermodel construction from open branches"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability/DecisionProcedure.lean",
+      "summary": "Main decision procedure with three-phase algorithm"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability/Correctness.lean",
+      "summary": "Soundness/completeness theorems with FMP integration"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability.lean",
+      "summary": "Hub module re-exporting all Decidability components"
+    },
+    {
+      "type": "summary",
+      "path": "specs/607_port_decidability_to_metalogic_v2/summaries/implementation-summary-20260119.md",
+      "summary": "Implementation summary with file listing and verification results"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1768856401_9dc365",
+    "duration_seconds": 0,
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phases_completed": 9,
+    "phases_total": 9
+  },
+  "next_steps": "Review implementation summary and run tests. Consider completing remaining sorries in completeness proofs."
+}
