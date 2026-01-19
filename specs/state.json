@@ -8,11 +8,20 @@
     {
       "project_number": 604,
       "project_name": "migrate_fmp_to_semanticcanonicalmodel_v2",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T06:44:19Z",
-      "last_updated": "2026-01-19T06:44:19Z"
+      "last_updated": "2026-01-19T07:02:58Z",
+      "session_id": "sess_1768805852_dceec9",
+      "researched": "2026-01-19T07:02:58Z",
+      "artifacts": [
+        {
+          "path": "specs/604_migrate_fmp_to_semanticcanonicalmodel_v2/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting current dependencies on old Metalogic, available v2 infrastructure, gap analysis with 6-8 definitions to port, and 4-phase migration plan"
+        }
+      ]
     },
     {
       "project_number": 600,
@@ -296,13 +305,13 @@
     {
       "project_number": 568,
       "project_name": "create_metalogic_v2_test_suite",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-18T02:30:43Z",
-      "last_updated": "2026-01-19T06:53:38Z",
+      "last_updated": "2026-01-19T06:57:08Z",
       "description": "Create comprehensive test suite for Bimodal/Metalogic_v2/ to enable eventual deletion of old Bimodal/Metalogic/. Tests should provide good coverage of all Metalogic_v2 modules independently—no imports from old Metalogic. Draw inspiration from old Metalogic/ tests where relevant, but focus on high-quality independent tests for the new metalogic architecture. Cover core modules: MCS properties, canonical model construction, soundness, completeness bridge lemmas, and the provable_iff_valid theorem.",
-      "session_id": "sess_1768805438_f11c23",
+      "session_id": "sess_1768805807_43e8bb",
       "researched": "2026-01-19T06:49:07Z",
       "artifacts": [
         {
@@ -316,7 +325,8 @@
           "summary": "5-phase implementation plan for Metalogic_v2 test suite covering FMP, ContextProvability, TruthLemma, and CanonicalModel tests"
         }
       ],
-      "planned": "2026-01-19T06:53:38Z"
+      "planned": "2026-01-19T06:53:38Z",
+      "started": "2026-01-19T06:57:08Z"
     },
     {
       "project_number": 585,
