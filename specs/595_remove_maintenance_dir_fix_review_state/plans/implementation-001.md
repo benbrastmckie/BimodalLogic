@@ -97,7 +97,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Create Reviews State Schema and Initial State [IN PROGRESS]
+### Phase 3: Create Reviews State Schema and Initial State [COMPLETED]
 
 **Goal**: Design and create the `specs/reviews/state.json` file with proper schema.
 
@@ -151,7 +151,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update Review Command for State Management [NOT STARTED]
+### Phase 4: Update Review Command for State Management [IN PROGRESS]
 
 **Goal**: Modify the `/review` command to maintain `reviews/state.json` and properly commit changes.
 
