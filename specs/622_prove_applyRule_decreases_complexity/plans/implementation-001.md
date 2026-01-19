@@ -1,7 +1,7 @@
 # Implementation Plan: Task #622
 
 - **Task**: 622 - prove_applyRule_decreases_complexity
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Priority**: High
 - **Dependencies**: Task 490 (parent task - partial)
@@ -45,7 +45,7 @@ The research report identified:
 
 ## Implementation Phases
 
-### Phase 1: Simple Linear Rules (box, allFuture, allPast) [NOT STARTED]
+### Phase 1: Simple Linear Rules (box, allFuture, allPast) [COMPLETED]
 
 **Goal**: Prove the 6 simplest cases - rules that extract a single subformula from box/all_future/all_past.
 
@@ -68,7 +68,7 @@ The research report identified:
 
 ---
 
-### Phase 2: Negation Linear Rules (negPos, negNeg) [NOT STARTED]
+### Phase 2: Negation Linear Rules (negPos, negNeg) [COMPLETED]
 
 **Goal**: Prove the 2 negation cases - rules that extract subformula from `A.imp .bot`.
 
@@ -86,7 +86,7 @@ The research report identified:
 
 ---
 
-### Phase 3: Implication Linear Rule (impNeg) [NOT STARTED]
+### Phase 3: Implication Linear Rule (impNeg) [COMPLETED]
 
 **Goal**: Prove the `impNeg` case - produces two formulas from implication.
 
@@ -104,7 +104,7 @@ The research report identified:
 
 ---
 
-### Phase 4: Conjunction/Disjunction Linear Rules (andPos, orNeg) [NOT STARTED]
+### Phase 4: Conjunction/Disjunction Linear Rules (andPos, orNeg) [COMPLETED]
 
 **Goal**: Prove linear rules for And and Or patterns.
 
@@ -124,7 +124,7 @@ The research report identified:
 
 ---
 
-### Phase 5: Diamond Linear Rules (diamondPos, diamondNeg) [NOT STARTED]
+### Phase 5: Diamond Linear Rules (diamondPos, diamondNeg) [COMPLETED]
 
 **Goal**: Prove diamond cases - extract subformula from `((A.imp .bot).box).imp .bot`.
 
@@ -143,7 +143,7 @@ The research report identified:
 
 ---
 
-### Phase 6: Branching Rules (impPos, andNeg, orPos) [NOT STARTED]
+### Phase 6: Branching Rules (impPos, andNeg, orPos) [COMPLETED]
 
 **Goal**: Prove the 3 branching rules where goal becomes `forall branch in branches, ...`.
 
@@ -164,7 +164,7 @@ The research report identified:
 
 ---
 
-### Phase 7: Final Verification and Cleanup [NOT STARTED]
+### Phase 7: Final Verification and Cleanup [COMPLETED]
 
 **Goal**: Verify complete proof compiles and clean up any redundant tactics.
 

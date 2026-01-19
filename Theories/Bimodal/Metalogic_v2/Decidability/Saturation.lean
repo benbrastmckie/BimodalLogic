@@ -255,6 +255,41 @@ theorem complexity_all_past (φ : Formula) : φ.complexity < (Formula.all_past �
   simp only [Formula.complexity]; omega
 
 /-!
+### Pattern Matching Lemmas for Decomposition Functions
+
+These lemmas characterize when the pattern matching functions return `some`,
+connecting the matched result to the formula structure.
+-/
+
+/-- `asAnd?` returns `some (a, b)` iff the formula has the And pattern structure. -/
+theorem asAnd?_eq_some_iff (f : Formula) (a b : Formula) :
+    asAnd? f = some (a, b) ↔ f = (a.imp (b.imp .bot)).imp .bot := by
+  constructor
+  · intro h; simp only [asAnd?] at h; split at h <;> simp at h; obtain ⟨rfl, rfl⟩ := h; rfl
+  · intro h; subst h; simp only [asAnd?]
+
+/-- `asOr?` returns `some (a, b)` iff the formula has the Or pattern structure. -/
+theorem asOr?_eq_some_iff (f : Formula) (a b : Formula) :
+    asOr? f = some (a, b) ↔ f = (a.imp .bot).imp b := by
+  constructor
+  · intro h; simp only [asOr?] at h; split at h <;> simp at h; obtain ⟨rfl, rfl⟩ := h; rfl
+  · intro h; subst h; simp only [asOr?]
+
+/-- `asNeg?` returns `some a` iff the formula has the Neg pattern structure. -/
+theorem asNeg?_eq_some_iff (f : Formula) (a : Formula) :
+    asNeg? f = some a ↔ f = a.imp .bot := by
+  constructor
+  · intro h; simp only [asNeg?] at h; split at h <;> simp at h; subst h; rfl
+  · intro h; subst h; simp only [asNeg?]
+
+/-- `asDiamond?` returns `some a` iff the formula has the Diamond pattern structure. -/
+theorem asDiamond?_eq_some_iff (f : Formula) (a : Formula) :
+    asDiamond? f = some a ↔ f = ((a.imp .bot).box).imp .bot := by
+  constructor
+  · intro h; simp only [asDiamond?] at h; split at h <;> simp at h; subst h; rfl
+  · intro h; subst h; simp only [asDiamond?]
+
+/-!
 ### List Measure Lemmas
 -/
 
@@ -331,11 +366,262 @@ theorem applyRule_decreases_complexity (rule : TableauRule) (sf : SignedFormula)
     | .linear formulas => totalComplexity formulas < sf.formula.complexity
     | .branching branches => ∀ branch ∈ branches, totalComplexity branch < sf.formula.complexity
     | .notApplicable => True := by
-  -- Each case requires showing that subformulas have smaller total complexity
-  -- This follows from complexity_imp_sum, complexity_box, complexity_all_future, complexity_all_past
-  cases rule <;> simp only [applyRule] at h <;>
-  try (cases sf.sign <;> simp at h hApplicable)
-  all_goals sorry  -- Each case follows from complexity lemmas
+  -- Case analysis on each of the 16 tableau rules
+  cases rule
+
+  -- andPos: pos ((a.imp (b.imp .bot)).imp .bot) → [pos a, pos b]
+  case andPos =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h
+      cases hAnd : asAnd? sf.formula with
+      | none => simp only [hAnd] at h; subst h; simp at hApplicable
+      | some ab =>
+        obtain ⟨a, b⟩ := ab
+        simp only [hAnd] at h; subst h
+        rw [(asAnd?_eq_some_iff sf.formula a b).mp hAnd]
+        simp only [totalComplexity, List.foldl, SignedFormula.pos, Formula.complexity]; omega
+    | neg =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+
+  -- andNeg: neg ((a.imp (b.imp .bot)).imp .bot) → [[neg a], [neg b]] (branching)
+  case andNeg =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h
+      cases hAnd : asAnd? sf.formula with
+      | none => simp only [hAnd] at h; subst h; simp at hApplicable
+      | some ab =>
+        obtain ⟨a, b⟩ := ab
+        simp only [hAnd] at h; subst h
+        intro branch hmem
+        rw [(asAnd?_eq_some_iff sf.formula a b).mp hAnd]
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hmem
+        rcases hmem with rfl | rfl <;>
+        simp only [totalComplexity, List.foldl, SignedFormula.neg, Formula.complexity] <;> omega
+
+  -- orPos: pos ((a.imp .bot).imp b) → [[pos a], [pos b]] (branching)
+  case orPos =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h
+      cases hOr : asOr? sf.formula with
+      | none => simp only [hOr] at h; subst h; simp at hApplicable
+      | some ab =>
+        obtain ⟨a, b⟩ := ab
+        simp only [hOr] at h; subst h
+        intro branch hmem
+        rw [(asOr?_eq_some_iff sf.formula a b).mp hOr]
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hmem
+        rcases hmem with rfl | rfl <;>
+        simp only [totalComplexity, List.foldl, SignedFormula.pos, Formula.complexity] <;> omega
+    | neg =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+
+  -- orNeg: neg ((a.imp .bot).imp b) → [neg a, neg b]
+  case orNeg =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h
+      cases hOr : asOr? sf.formula with
+      | none => simp only [hOr] at h; subst h; simp at hApplicable
+      | some ab =>
+        obtain ⟨a, b⟩ := ab
+        simp only [hOr] at h; subst h
+        rw [(asOr?_eq_some_iff sf.formula a b).mp hOr]
+        simp only [totalComplexity, List.foldl, SignedFormula.neg, Formula.complexity]; omega
+
+  -- impPos: pos (a.imp b) → [[neg a], [pos b]] (branching)
+  case impPos =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h
+      match hf : sf.formula with
+      | .imp a b =>
+        simp only [hf] at h; subst h
+        intro branch hmem
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hmem
+        rcases hmem with rfl | rfl
+        · simp only [totalComplexity, List.foldl, SignedFormula.neg, Formula.complexity]; omega
+        · simp only [totalComplexity, List.foldl, SignedFormula.pos, Formula.complexity]; omega
+      | .atom _ | .bot | .box _ | .all_past _ | .all_future _ =>
+        simp only [hf] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+
+  -- impNeg: neg (a.imp b) → [pos a, neg b]
+  case impNeg =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h
+      match hf : sf.formula with
+      | .imp a b =>
+        simp only [hf] at h; subst h
+        simp only [totalComplexity, List.foldl, SignedFormula.pos, SignedFormula.neg, Formula.complexity]; omega
+      | .atom _ | .bot | .box _ | .all_past _ | .all_future _ =>
+        simp only [hf] at h; subst h; simp at hApplicable
+
+  -- negPos: pos (a.imp .bot) → [neg a]
+  case negPos =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h
+      cases hNeg : asNeg? sf.formula with
+      | none => simp only [hNeg] at h; subst h; simp at hApplicable
+      | some a =>
+        simp only [hNeg] at h; subst h
+        rw [(asNeg?_eq_some_iff sf.formula a).mp hNeg]
+        simp only [totalComplexity, List.foldl, SignedFormula.neg, Formula.complexity]; omega
+    | neg =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+
+  -- negNeg: neg (a.imp .bot) → [pos a]
+  case negNeg =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h
+      cases hNeg : asNeg? sf.formula with
+      | none => simp only [hNeg] at h; subst h; simp at hApplicable
+      | some a =>
+        simp only [hNeg] at h; subst h
+        rw [(asNeg?_eq_some_iff sf.formula a).mp hNeg]
+        simp only [totalComplexity, List.foldl, SignedFormula.pos, Formula.complexity]; omega
+
+  -- boxPos: pos (.box φ) → [pos φ]
+  case boxPos =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h
+      match hf : sf.formula with
+      | .box φ =>
+        simp only [hf] at h; subst h
+        simp only [totalComplexity, List.foldl, SignedFormula.pos, Formula.complexity]; omega
+      | .atom _ | .bot | .imp _ _ | .all_past _ | .all_future _ =>
+        simp only [hf] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+
+  -- boxNeg: neg (.box φ) → [neg φ]
+  case boxNeg =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h
+      match hf : sf.formula with
+      | .box φ =>
+        simp only [hf] at h; subst h
+        simp only [totalComplexity, List.foldl, SignedFormula.neg, Formula.complexity]; omega
+      | .atom _ | .bot | .imp _ _ | .all_past _ | .all_future _ =>
+        simp only [hf] at h; subst h; simp at hApplicable
+
+  -- diamondPos: pos (((a.imp .bot).box).imp .bot) → [pos a]
+  case diamondPos =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h
+      cases hDia : asDiamond? sf.formula with
+      | none => simp only [hDia] at h; subst h; simp at hApplicable
+      | some a =>
+        simp only [hDia] at h; subst h
+        rw [(asDiamond?_eq_some_iff sf.formula a).mp hDia]
+        simp only [totalComplexity, List.foldl, SignedFormula.pos, Formula.complexity]; omega
+    | neg =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+
+  -- diamondNeg: neg (((a.imp .bot).box).imp .bot) → [neg a]
+  case diamondNeg =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h
+      cases hDia : asDiamond? sf.formula with
+      | none => simp only [hDia] at h; subst h; simp at hApplicable
+      | some a =>
+        simp only [hDia] at h; subst h
+        rw [(asDiamond?_eq_some_iff sf.formula a).mp hDia]
+        simp only [totalComplexity, List.foldl, SignedFormula.neg, Formula.complexity]; omega
+
+  -- allFuturePos: pos (.all_future φ) → [pos φ]
+  case allFuturePos =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h
+      match hf : sf.formula with
+      | .all_future φ =>
+        simp only [hf] at h; subst h
+        simp only [totalComplexity, List.foldl, SignedFormula.pos, Formula.complexity]; omega
+      | .atom _ | .bot | .imp _ _ | .box _ | .all_past _ =>
+        simp only [hf] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+
+  -- allFutureNeg: neg (.all_future φ) → [neg φ]
+  case allFutureNeg =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h
+      match hf : sf.formula with
+      | .all_future φ =>
+        simp only [hf] at h; subst h
+        simp only [totalComplexity, List.foldl, SignedFormula.neg, Formula.complexity]; omega
+      | .atom _ | .bot | .imp _ _ | .box _ | .all_past _ =>
+        simp only [hf] at h; subst h; simp at hApplicable
+
+  -- allPastPos: pos (.all_past φ) → [pos φ]
+  case allPastPos =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h
+      match hf : sf.formula with
+      | .all_past φ =>
+        simp only [hf] at h; subst h
+        simp only [totalComplexity, List.foldl, SignedFormula.pos, Formula.complexity]; omega
+      | .atom _ | .bot | .imp _ _ | .box _ | .all_future _ =>
+        simp only [hf] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+
+  -- allPastNeg: neg (.all_past φ) → [neg φ]
+  case allPastNeg =>
+    simp only [applyRule] at h
+    cases hSign : sf.sign with
+    | pos =>
+      simp only [hSign] at h; subst h; simp at hApplicable
+    | neg =>
+      simp only [hSign] at h
+      match hf : sf.formula with
+      | .all_past φ =>
+        simp only [hf] at h; subst h
+        simp only [totalComplexity, List.foldl, SignedFormula.neg, Formula.complexity]; omega
+      | .atom _ | .bot | .imp _ _ | .box _ | .all_future _ =>
+        simp only [hf] at h; subst h; simp at hApplicable
 
 /--
 Helper: if sf is in b and ¬isExpanded sf, then sf contributes positively to expansionMeasure.
