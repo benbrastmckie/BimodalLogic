@@ -8,11 +8,11 @@
     {
       "project_number": 593,
       "project_name": "complete_consistent_iff_consistent_basic_lean",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T23:47:44Z",
-      "last_updated": "2026-01-19T00:00:40Z",
+      "last_updated": "2026-01-19T00:02:17Z",
       "description": "Complete the sorry remaining in Metalogic_v2/Core/ for consistent_iff_consistent in Basic.lean",
       "artifacts": [
         {
@@ -79,11 +79,17 @@
     {
       "project_number": 590,
       "project_name": "eliminate_axiom_context_provability",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-18T22:49:34Z",
-      "last_updated": "2026-01-18T23:58:31Z"
+      "last_updated": "2026-01-19T00:02:42Z",
+      "artifacts": [
+        {
+          "path": "specs/590_eliminate_axiom_context_provability/reports/research-001.md",
+          "type": "research"
+        }
+      ]
     },
     {
       "project_number": 578,

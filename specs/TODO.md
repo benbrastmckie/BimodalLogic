@@ -57,7 +57,7 @@ technical_debt:
 
 ### 593. Complete consistent_iff_consistent' in Basic.lean
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-18
@@ -89,9 +89,10 @@ technical_debt:
 
 ### 590. Eliminate Axiom in ContextProvability Using Representation Theorem
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
+- **Research**: [research-001.md](specs/590_eliminate_axiom_context_provability/reports/research-001.md)
 - **Dependencies**: 589
 - **Related**: 556, 566
 - **Created**: 2026-01-18
