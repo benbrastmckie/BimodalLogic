@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 621,
+      "project_name": "analyze_plan_errors_improve_agent_execution",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T20:59:50Z",
+      "last_updated": "2026-01-19T20:59:50Z"
+    },
+    {
       "project_number": 620,
       "project_name": "refine_metalogic_v2_proofs",
       "status": "not_started",
@@ -329,5 +338,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 621
+  "next_project_number": 622
 }
