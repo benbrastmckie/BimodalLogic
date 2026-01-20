@@ -1,9 +1,0 @@
-{
-  "session_id": "sess_1768870570_94e25e",
-  "skill": "skill-lean-research",
-  "task_number": 628,
-  "operation": "research",
-  "reason": "Postflight pending: status update, artifact linking, git commit",
-  "created": "2026-01-20T00:56:36Z",
-  "stop_hook_active": false
-}
