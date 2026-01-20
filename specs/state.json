@@ -2,17 +2,18 @@
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
     "total_tasks": 19,
-    "last_sync": "2026-01-20T20:55:08Z"
+    "last_sync": "2026-01-20T20:45:51Z"
   },
   "active_projects": [
     {
       "project_number": 649,
       "project_name": "improve_learn_note_tag_dependency_handling",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:40:53Z",
-      "last_updated": "2026-01-20T20:40:53Z"
+      "last_updated": "2026-01-20T20:43:58Z",
+      "session_id": "sess_1768941822_3ef648"
     },
     {
       "project_number": 646,
@@ -27,12 +28,12 @@
     {
       "project_number": 647,
       "project_name": "update_context_latex_theorem_naming_standards",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:55:08Z",
-      "last_updated": "2026-01-20T20:55:08Z",
-      "session_id": "sess_1768941258_a63c63"
+      "last_updated": "2026-01-20T20:43:45Z",
+      "session_id": "sess_1768941808_007803"
     },
     {
       "project_number": 648,
@@ -43,37 +44,6 @@
       "created": "2026-01-20T20:55:08Z",
       "last_updated": "2026-01-20T20:55:08Z",
       "session_id": "sess_1768941258_a63c63"
-    },
-    {
-      "project_number": 645,
-      "project_name": "improve_todo_command_interactive_claudemd",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-20T20:22:02Z",
-      "last_updated": "2026-01-20T20:42:09Z",
-      "session_id": "sess_1768941451_7500f0",
-      "researched": "2026-01-20T20:29:11Z",
-      "artifacts": [
-        {
-          "path": "specs/645_improve_todo_command_interactive_claudemd/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting jq escaping fixes and interactive CLAUDE.md selection implementation approach"
-        },
-        {
-          "path": "specs/645_improve_todo_command_interactive_claudemd/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase implementation plan for jq fixes and interactive CLAUDE.md selection"
-        },
-        {
-          "path": "specs/645_improve_todo_command_interactive_claudemd/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary for task 645"
-        }
-      ],
-      "planned": "2026-01-20T20:35:39Z",
-      "started": "2026-01-20T20:37:52Z",
-      "completed": "2026-01-20T20:42:09Z"
     },
     {
       "project_number": 639,
@@ -355,38 +325,6 @@
         630,
         631
       ]
-    },
-    {
-      "project_number": 644,
-      "project_name": "redesign_learn_interactive_task_selection",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-20T20:40:46Z",
-      "last_updated": "2026-01-20T20:29:37Z",
-      "description": "Redesign /learn command to use interactive task selection instead of auto-creating tasks. Current behavior: /learn scans and auto-creates tasks, with --dry-run for preview. New behavior: /learn always scans and shows findings first, then prompts user to select which task types to create (fix-it, learn-it, individual todo tasks). This avoids background processes, runs synchronously, and gives users control over which tasks are created.",
-      "session_id": "sess_1768940708_5615f9",
-      "artifacts": [
-        {
-          "path": "specs/644_redesign_learn_interactive_task_selection/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing AskUserQuestion patterns and proposing interactive task selection workflow for /learn"
-        },
-        {
-          "path": "specs/644_redesign_learn_interactive_task_selection/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for redesigning /learn command to use interactive task selection"
-        },
-        {
-          "path": "specs/644_redesign_learn_interactive_task_selection/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "researched": "2026-01-20T20:18:19Z",
-      "planned": "2026-01-20T20:22:16Z",
-      "started": "2026-01-20T20:25:30Z",
-      "completed": "2026-01-20T20:29:37Z"
     }
   ],
   "completed_projects": [

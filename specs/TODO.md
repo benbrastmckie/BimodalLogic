@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 21
-  completed: 229
+  active: 19
+  completed: 231
   in_progress: 0
   not_started: 13
   abandoned: 19
@@ -76,27 +76,11 @@ technical_debt:
 
 ---
 
-### 644. Redesign /learn command for interactive task selection
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Research**: [research-001.md](specs/644_redesign_learn_interactive_task_selection/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/644_redesign_learn_interactive_task_selection/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/644_redesign_learn_interactive_task_selection/summaries/implementation-summary-20260120.md)
-
-**Description**: Redesign /learn command to use interactive task selection instead of auto-creating tasks. Current behavior: /learn scans and auto-creates tasks, with --dry-run for preview. New behavior: /learn always scans and shows findings first, then prompts user to select which task types to create (fix-it, learn-it, individual todo tasks). This avoids background processes, runs synchronously, and gives users control over which tasks are created.
-
----
 
 ## Medium Priority
 
 ### 649. Improve /learn NOTE: tag dependency handling
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -106,7 +90,7 @@ technical_debt:
 ---
 
 ### 647. Update context files for LaTeX theorem naming and formatting standards
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -125,20 +109,6 @@ technical_debt:
 
 ---
 
-### 645. Improve /todo command with interactive CLAUDE.md suggestions
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Research**: [research-001.md](specs/645_improve_todo_command_interactive_claudemd/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/645_improve_todo_command_interactive_claudemd/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/645_improve_todo_command_interactive_claudemd/summaries/implementation-summary-20260120.md)
-
-**Description**: Improve the /todo command to fix two issues observed in recent execution: (1) jq syntax errors due to Claude Code Issue #1132 - update to use two-step jq patterns from jq-escaping-workarounds.md consistently, (2) Make CLAUDE.md suggestions interactive - instead of displaying "apply manually", use AskUserQuestion to let user select which suggestions to apply, then auto-apply selected changes. This provides the same interactive experience as orphan/misplaced directory handling but for CLAUDE.md modifications.
-
----
 
 ### 639. Improve /review roadmap matching reliability
 - **Status**: [NOT STARTED]

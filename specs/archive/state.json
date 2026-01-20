@@ -7518,6 +7518,22 @@
       "priority": "medium",
       "archived": "2026-01-20T20:55:00Z",
       "completed": "2026-01-20T18:53:26Z"
+    },
+    {
+      "project_number": 644,
+      "project_name": "redesign_learn_interactive_task_selection",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "archived": "2026-01-20T20:44:55Z"
+    },
+    {
+      "project_number": 645,
+      "project_name": "improve_todo_command_interactive_claudemd",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "archived": "2026-01-20T20:44:55Z"
     }
   ]
 }
