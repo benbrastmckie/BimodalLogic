@@ -1,16 +1,21 @@
 {
-  "status": "planned",
-  "summary": "6-phase implementation plan for adding roadmap update capability to /todo command",
+  "status": "implemented",
+  "summary": "Extended /todo command to update ROAD_MAP.md checkboxes when archiving tasks. Added Step 3.5 for roadmap scanning, Step 5.5 for annotation edits, updated dry-run output and final report sections, and documented the roadmap update behavior in Notes. Completed tasks mark items [x] with completion annotation; abandoned tasks keep [ ] with abandonment note.",
   "artifacts": [
     {
-      "path": "specs/638_add_roadmap_update_to_todo_command/plans/implementation-001.md",
-      "type": "plan",
-      "summary": "6-phase implementation plan covering infrastructure, dry-run preview, roadmap update logic, git commit, output report, and documentation"
+      "path": "specs/638_add_roadmap_update_to_todo_command/summaries/implementation-summary-20260120.md",
+      "type": "summary",
+      "summary": "Implementation summary for /todo roadmap integration"
+    },
+    {
+      "path": ".claude/commands/todo.md",
+      "type": "implementation",
+      "summary": "Modified todo command with roadmap update capability (Steps 3.5, 5.5, updated dry-run, output, and notes)"
     }
   ],
   "metadata": {
-    "phase_count": 6,
-    "estimated_hours": 2.5
+    "phases_completed": 6,
+    "phases_total": 6
   },
-  "session_id": "sess_1768929302_8fa6a9"
+  "session_id": "sess_1768930133_929259"
 }

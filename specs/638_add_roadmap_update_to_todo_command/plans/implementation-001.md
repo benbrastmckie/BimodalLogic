@@ -1,7 +1,7 @@
 # Implementation Plan: Task #638
 
 - **Task**: 638 - add_roadmap_update_to_todo_command
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2-3 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -50,7 +50,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Add Roadmap Tracking Infrastructure [NOT STARTED]
+### Phase 1: Add Roadmap Tracking Infrastructure [COMPLETED]
 
 **Goal**: Add tracking data structures and helper logic for roadmap updates.
 
@@ -101,7 +101,7 @@ Track:
 
 ---
 
-### Phase 2: Update Dry-Run Output [NOT STARTED]
+### Phase 2: Update Dry-Run Output [COMPLETED]
 
 **Goal**: Show roadmap changes in dry-run preview.
 
@@ -143,7 +143,7 @@ Total roadmap items to update: {N}
 
 ---
 
-### Phase 3: Implement Roadmap Update Step [NOT STARTED]
+### Phase 3: Implement Roadmap Update Step [COMPLETED]
 
 **Goal**: Add Step 5.5 to perform actual roadmap updates.
 
@@ -221,7 +221,7 @@ Edit old_string: "- [ ] {item_text} (Task {N})"
 
 ---
 
-### Phase 4: Update Git Commit Message [NOT STARTED]
+### Phase 4: Update Git Commit Message [COMPLETED]
 
 **Goal**: Include roadmap update count in commit message.
 
@@ -262,7 +262,7 @@ git commit -m "todo: archive {N} tasks, update {R} roadmap items, track {M} orph
 
 ---
 
-### Phase 5: Update Output Report [NOT STARTED]
+### Phase 5: Update Output Report [COMPLETED]
 
 **Goal**: Show roadmap changes in final output.
 
@@ -306,7 +306,7 @@ If no roadmap items were updated:
 
 ---
 
-### Phase 6: Documentation and Notes [NOT STARTED]
+### Phase 6: Documentation and Notes [COMPLETED]
 
 **Goal**: Add notes section documenting roadmap integration.
 

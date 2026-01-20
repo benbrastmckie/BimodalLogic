@@ -131,6 +131,39 @@ For each archivable task, collect:
 - completion/abandonment date
 - artifact paths
 
+### 3.5. Scan Roadmap for Task References
+
+For each archivable task, check if ROAD_MAP.md contains `(Task {N})` references:
+
+```bash
+# Initialize roadmap tracking
+roadmap_matches=()
+roadmap_completed_count=0
+roadmap_abandoned_count=0
+
+for task in "${archivable_tasks[@]}"; do
+  project_num=$(echo "$task" | jq -r '.project_number')
+  status=$(echo "$task" | jq -r '.status')
+
+  # Search for exact task reference
+  matches=$(grep -n "(Task ${project_num})" specs/ROAD_MAP.md 2>/dev/null || true)
+
+  if [ -n "$matches" ]; then
+    roadmap_matches+=("${project_num}:${status}:${matches}")
+    if [ "$status" = "completed" ]; then
+      ((roadmap_completed_count++))
+    elif [ "$status" = "abandoned" ]; then
+      ((roadmap_abandoned_count++))
+    fi
+  fi
+done
+```
+
+Track:
+- `roadmap_matches[]` - Array of task:status:line_info tuples
+- `roadmap_completed_count` - Count of completed task matches
+- `roadmap_abandoned_count` - Count of abandoned task matches
+
 ### 4. Dry Run Output (if --dry-run)
 
 ```
@@ -155,12 +188,22 @@ Misplaced directories in specs/ (tracked in archive/, will be moved): {N}
 - {N8}_{SLUG8}/
 - {N9}_{SLUG9}/
 
+Roadmap updates (from Step 3.5):
+- [ ] {item text} (line {N}) -> [x] *(Completed: Task {N}, {DATE})*
+- [ ] {item text} (line {N}) -> [ ] *(Task {N} abandoned: {reason})*
+
+Total roadmap items to update: {N}
+- Completed: {N}
+- Abandoned: {N}
+
 Total tasks: {N}
 Total orphans: {N} (specs: {N}, archive: {N})
 Total misplaced: {N}
 
 Run without --dry-run to archive.
 ```
+
+If no roadmap matches were found (from Step 3.5), omit the "Roadmap updates" section.
 
 Exit here if dry run.
 
@@ -365,6 +408,60 @@ done
 Track misplaced operations for output reporting:
 - misplaced_moved: count of directories moved from specs/ to archive/
 
+### 5.5. Update Roadmap for Archived Tasks
+
+**Context**: Load @.claude/context/core/patterns/roadmap-update.md for matching strategy.
+
+For each archived task with roadmap matches (from Step 3.5):
+
+**1. Read current ROAD_MAP.md content**
+
+**2. For each match, determine if already annotated**:
+```bash
+# Skip if already has completion or abandonment annotation
+if echo "$line_content" | grep -qE '\*(Completed:|\*(Abandoned:|\*(Task [0-9]+ abandoned:'; then
+  echo "Skipped: Line $line_num already annotated"
+  ((roadmap_skipped++))
+  continue
+fi
+```
+
+**3. Apply appropriate annotation**:
+
+For completed tasks:
+```
+Edit old_string: "- [ ] {item_text} (Task {N})"
+     new_string: "- [x] {item_text} (Task {N}) *(Completed: Task {N}, {DATE})*"
+```
+
+For abandoned tasks (checkbox stays unchecked):
+```
+Edit old_string: "- [ ] {item_text} (Task {N})"
+     new_string: "- [ ] {item_text} (Task {N}) *(Task {N} abandoned: {short_reason})*"
+```
+
+**4. Track changes**:
+```json
+{
+  "roadmap_updates": {
+    "completed_annotated": 2,
+    "abandoned_annotated": 1,
+    "skipped_already_annotated": 1
+  }
+}
+```
+
+Track roadmap operations for output reporting:
+- roadmap_completed_annotated: count of completed task items marked
+- roadmap_abandoned_annotated: count of abandoned task items annotated
+- roadmap_skipped: count of items skipped (already annotated)
+
+**Safety Rules** (from roadmap-update.md):
+- Skip items already containing `*(Completed:` or `*(Task` annotations
+- Preserve existing formatting and indentation
+- One edit per item (no batch edits to same line)
+- Never remove existing content
+
 ### 6. Git Commit
 
 ```bash
@@ -372,17 +469,28 @@ git add specs/
 git commit -m "todo: archive {N} completed tasks"
 ```
 
-Include orphan and misplaced counts in message as applicable:
+Include roadmap, orphan, and misplaced counts in message as applicable:
 ```bash
-# If orphans tracked and misplaced moved:
+# If roadmap items updated, orphans tracked, and misplaced moved:
+git commit -m "todo: archive {N} tasks, update {R} roadmap items, track {M} orphans, move {P} misplaced"
+
+# If roadmap items updated only:
+git commit -m "todo: archive {N} tasks, update {R} roadmap items"
+
+# If roadmap items updated and orphans tracked:
+git commit -m "todo: archive {N} tasks, update {R} roadmap items, track {M} orphaned directories"
+
+# If orphans tracked and misplaced moved (no roadmap):
 git commit -m "todo: archive {N} tasks, track {M} orphans, move {P} misplaced directories"
 
-# If only orphans tracked:
+# If only orphans tracked (no roadmap):
 git commit -m "todo: archive {N} tasks and track {M} orphaned directories"
 
-# If only misplaced moved:
+# If only misplaced moved (no roadmap):
 git commit -m "todo: archive {N} tasks and move {P} misplaced directories"
 ```
+
+Where `{R}` = roadmap_completed_annotated + roadmap_abandoned_annotated (total roadmap items updated).
 
 ### 7. Output
 
@@ -408,6 +516,13 @@ Misplaced directories moved: {N}
 - {N8}_{SLUG8}/ (already tracked in archive/state.json)
 - {N9}_{SLUG9}/ (already tracked in archive/state.json)
 
+Roadmap updated: {N} items
+- Marked complete: {N}
+  - {item text} (line {N})
+- Marked abandoned: {N}
+  - {item text} (line {N})
+- Skipped (already annotated): {N}
+
 Skipped (no directory): {N}
 - Task #{N6}
 
@@ -424,6 +539,9 @@ If no orphans were tracked (either none found or user skipped):
 
 If no misplaced directories were moved (either none found or user skipped):
 - Omit the "Misplaced directories moved" section
+
+If no roadmap items were updated (no matches found in Step 3.5):
+- Omit the "Roadmap updated" section
 
 ## Notes
 
@@ -481,3 +599,32 @@ This indicates the directory was archived in state but never physically moved.
 **Recovery**:
 - Use `/task --recover N` to recover misplaced directories (they have valid state entries)
 - After moving, the directory will be in the correct location matching its state
+
+### Roadmap Updates
+
+**Matching Strategy**:
+- Current implementation uses exact `(Task {N})` matching only
+- Title fuzzy matching planned for future enhancement (task 639)
+- File path matching not performed (handled by /review)
+
+**Annotation Formats**:
+
+Completed tasks:
+```markdown
+- [x] {item text} (Task {N}) *(Completed: Task {N}, {DATE})*
+```
+
+Abandoned tasks (checkbox stays unchecked):
+```markdown
+- [ ] {item text} (Task {N}) *(Task {N} abandoned: {short_reason})*
+```
+
+**Safety Rules**:
+- Skip items already annotated (contain `*(Completed:` or `*(Task` patterns)
+- Preserve existing formatting and indentation
+- One edit per item
+- Never remove existing content
+
+**Date Format**: ISO date (YYYY-MM-DD) from task completion/abandonment timestamp
+
+**Abandoned Reason**: Truncated to first 50 characters of `abandoned_reason` field from state.json

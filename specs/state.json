@@ -8,21 +8,22 @@
     {
       "project_number": 640,
       "project_name": "improve_refresh_command_for_claude_directory_cleanup",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:23:39Z",
-      "last_updated": "2026-01-20T17:23:39Z"
+      "last_updated": "2026-01-20T17:31:53Z",
+      "session_id": "sess_1768930298_f6bc78"
     },
     {
       "project_number": 638,
       "project_name": "add_roadmap_update_to_todo_command",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T16:55:00Z",
-      "last_updated": "2026-01-20T17:17:50Z",
-      "session_id": "sess_1768929302_8fa6a9",
+      "last_updated": "2026-01-20T17:33:10Z",
+      "session_id": "sess_1768930133_929259",
       "researched": "2026-01-20T17:03:36Z",
       "artifacts": [
         {
@@ -34,9 +35,16 @@
           "path": "specs/638_add_roadmap_update_to_todo_command/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan covering infrastructure, dry-run preview, roadmap update logic, git commit, output report, and documentation"
+        },
+        {
+          "path": "specs/638_add_roadmap_update_to_todo_command/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary for /todo roadmap integration"
         }
       ],
-      "planned": "2026-01-20T17:17:50Z"
+      "planned": "2026-01-20T17:17:50Z",
+      "started": "2026-01-20T17:29:16Z",
+      "completed": "2026-01-20T17:33:10Z"
     },
     {
       "project_number": 639,
