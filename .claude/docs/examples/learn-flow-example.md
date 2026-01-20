@@ -17,8 +17,10 @@ The `/learn` command recognizes three tag types in source code comments:
 | Tag | Task Type | Behavior |
 |-----|-----------|----------|
 | `FIX:` | fix-it-task | All FIX: and NOTE: tags grouped into single task |
-| `NOTE:` | fix-it-task + learn-it-task | Creates two task types |
+| `NOTE:` | fix-it-task + learn-it-task | Creates two task types (with dependency when both selected) |
 | `TODO:` | todo-task | User selects which TODO: tags become tasks |
+
+**Dependency behavior**: When NOTE: tags exist and both fix-it and learn-it tasks are selected, the learn-it task is created first and the fix-it task depends on it. This ensures proper workflow: learn-it extracts knowledge and converts NOTE: to FIX:, then fix-it addresses the code changes.
 
 ---
 
@@ -205,7 +207,43 @@ User selects:
 
 **Skill Step 6: Create Selected Tasks**
 
-Based on user selections, create tasks:
+Based on user selections, create tasks. **Note**: When NOTE: tags exist and both fix-it and learn-it are selected, learn-it is created first with the fix-it task depending on it.
+
+**Example A: Both fix-it and learn-it selected (with dependency)**
+
+If user selected both "Fix-it task" and "Learn-it task" for NOTE: tags:
+
+**Learn-It Task (Task #650, created FIRST)**:
+```json
+{
+  "project_number": 650,
+  "project_name": "update_context_from_note_tags",
+  "status": "not_started",
+  "language": "meta",
+  "priority": "medium",
+  "description": "Update 1 context files based on learnings:\n\n- Logos/Layer2/Temporal.lean:45 - This pattern should be documented\n\n**Important**: After updating context files, replace all NOTE: tags with FIX: tags in the source files. This enables the dependent fix-it task to make file-local code changes."
+}
+```
+
+**Fix-It Task (Task #651, with dependency)**:
+```json
+{
+  "project_number": 651,
+  "project_name": "fix_issues_from_tags",
+  "status": "not_started",
+  "language": "lean",
+  "priority": "high",
+  "dependencies": [650],
+  "description": "Address 2 items from embedded tags:\n\n- Logos/Layer1/Modal.lean:89 - Handle edge case in frame validation\n- Logos/Layer2/Temporal.lean:45 - This pattern should be documented"
+}
+```
+
+The TODO.md entry for the fix-it task includes:
+```markdown
+- **Dependencies**: 650
+```
+
+**Example B: Only fix-it selected (original behavior, no dependency)**
 
 **Fix-It Task (Task #650)**:
 ```json
@@ -247,6 +285,24 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
 
 ### Step 8: User Sees Results
+
+**Example output when both fix-it and learn-it selected (with dependency)**:
+
+```
+## Tasks Created from Tags
+
+**Tags Processed**: 4 tags scanned, 3 tasks created
+
+### Created Tasks
+
+| # | Type | Title | Priority | Language | Dependencies |
+|---|------|-------|----------|----------|--------------|
+| 650 | learn-it | Update context files from NOTE: tags | Medium | meta | - |
+| 651 | fix-it | Fix issues from FIX:/NOTE: tags | High | lean | 650 |
+| 652 | todo | Add completeness theorem for S5 | Medium | lean | - |
+```
+
+**Example output when only fix-it selected (no dependency)**:
 
 ```
 ## Tasks Created from Tags

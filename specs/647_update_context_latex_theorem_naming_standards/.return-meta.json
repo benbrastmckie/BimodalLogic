@@ -1,0 +1,36 @@
+{
+  "status": "implemented",
+  "summary": "Updated three LaTeX context files to document theorem naming and formatting standards from NOTE: tags. Added named theorem formatting section to latex-style-guide.md, Lean cross-reference in theorem environment section to theorem-environments.md, and code path formatting section to cross-references.md. All four standards documented with underscore escaping noted in each file.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/context/project/latex/standards/latex-style-guide.md",
+      "summary": "Added Theorem and Definition Naming section with formatting table and definition ordering rules"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/project/latex/patterns/theorem-environments.md",
+      "summary": "Added Lean Cross-Reference in Theorem Environment subsection with preferred and deprecated patterns"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/project/latex/patterns/cross-references.md",
+      "summary": "Added Code Path Formatting subsection with directory/file/module/definition formatting table"
+    },
+    {
+      "type": "summary",
+      "path": "specs/647_update_context_latex_theorem_naming_standards/summaries/implementation-summary-20260120.md",
+      "summary": "Implementation summary documenting all changes and verification results"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1768944082_35490d",
+    "duration_seconds": 1200,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Review implementation and run /todo to archive completed task"
+}

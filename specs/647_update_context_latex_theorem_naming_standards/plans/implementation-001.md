@@ -1,7 +1,7 @@
 # Implementation Plan: Task #647
 
 - **Task**: 647 - Update context files for LaTeX theorem naming and formatting standards
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -116,7 +116,7 @@ From research-001.md:
 
 ---
 
-### Phase 4: Validation [IN PROGRESS]
+### Phase 4: Validation [COMPLETED]
 
 **Goal**: Verify all additions are consistent and complete.
 

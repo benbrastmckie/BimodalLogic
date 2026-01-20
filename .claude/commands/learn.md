@@ -30,7 +30,7 @@ This design ensures users always see what was found before any tasks are created
 | Tag | Task Type | Description |
 |-----|-----------|-------------|
 | `FIX:` | fix-it-task | Grouped into single task for small changes |
-| `NOTE:` | fix-it-task + learn-it-task | Creates both task types |
+| `NOTE:` | fix-it-task + learn-it-task | Creates both task types (with dependency) |
 | `TODO:` | todo-task | Individual task per selected tag |
 
 ### Task Type Details
@@ -40,6 +40,19 @@ This design ensures users always see what was found before any tasks are created
 **learn-it-task**: Groups NOTE: tags by target context directory. Creates tasks to update `.claude/context/` files based on the learnings. Only offered if NOTE: tags exist.
 
 **todo-task**: One task per selected TODO: tag. Preserves original text as task description. Language detected from source file type.
+
+### Dependency Workflow for NOTE: Tags
+
+When NOTE: tags exist and you select **both** fix-it and learn-it task types:
+
+1. **Learn-it task is created first** - Updates context files AND replaces all NOTE: tags with FIX: tags in source files
+2. **Fix-it task is created second with dependency** - Has `dependencies: [learn_it_task_num]` pointing to the learn-it task
+
+This ensures proper workflow ordering:
+- Learn-it task handles knowledge extraction to context files and tag conversion
+- Fix-it task handles file-local code changes (now marked as FIX: tags)
+
+This dependency is only added when both task types are selected for NOTE: tags. If you select only one task type, no dependency is created.
 
 ## Supported Comment Styles
 
