@@ -8,11 +8,11 @@
     {
       "project_number": 632,
       "project_name": "integrate_roadmap_review_into_review_command",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:45:00Z",
-      "last_updated": "2026-01-20T02:11:05Z",
+      "last_updated": "2026-01-20T02:13:00Z",
       "session_id": "sess_1768875050_047949",
       "researched": "2026-01-20T02:08:59Z",
       "artifacts": [
@@ -20,8 +20,14 @@
           "path": "specs/632_integrate_roadmap_review_into_review_command/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing /review command structure, ROAD_MAP.md parsing requirements, cross-reference patterns, and task recommendation workflow"
+        },
+        {
+          "path": "specs/632_integrate_roadmap_review_into_review_command/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for integrating roadmap analysis into /review command"
         }
-      ]
+      ],
+      "planned": "2026-01-20T02:13:00Z"
     },
     {
       "project_number": 630,
@@ -60,12 +66,12 @@
     {
       "project_number": 629,
       "project_name": "document_bimodal_metalogic_proofs_latex",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-20T00:41:38Z",
-      "last_updated": "2026-01-20T02:11:33Z",
-      "session_id": "sess_1768874746_c55d7d",
+      "last_updated": "2026-01-20T02:12:58Z",
+      "session_id": "sess_1768875159_4d7ab4",
       "researched": "2026-01-20T02:04:01Z",
       "artifacts": [
         {
@@ -79,7 +85,8 @@
           "summary": "4-phase implementation plan v002: TikZ diagrams for theorem dependencies and import structure (revised from ASCII)"
         }
       ],
-      "planned": "2026-01-20T02:11:33Z"
+      "planned": "2026-01-20T02:11:33Z",
+      "started": "2026-01-20T02:12:58Z"
     },
     {
       "project_number": 628,
