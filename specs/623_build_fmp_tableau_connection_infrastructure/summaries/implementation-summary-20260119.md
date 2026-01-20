@@ -1,87 +1,98 @@
 # Implementation Summary: Task #623
 
-**Completed**: 2026-01-19 (Partial)
-**Duration**: ~4 hours
+**Task**: Build FMP-tableau connection infrastructure
 **Status**: Partial (Phases 1-2 of 6)
+**Completed**: 2026-01-19
+**Session ID**: sess_1768866353_ab089c
 
 ## Changes Made
 
-### Phase 1: expansion_decreases_measure (COMPLETED)
+Completed all sorries in Saturation.lean and CountermodelExtraction.lean. The remaining sorries in Correctness.lean (tableau_complete, decide_complete, decide_axiom_valid) are complex proofs requiring FMP-tableau connection that warrant separate focused effort.
 
-Added helper lemmas and infrastructure for proving termination measure decrease in Saturation.lean:
+### Phase 1: BEq Reflexivity and Lawfulness (Saturation.lean)
 
-1. **Helper theorems added**:
-   - `foldl_add_shift` - Arithmetic shift for foldl accumulator
-   - `foldl_conditional_shift` - Conditional accumulation shift
-   - `expansionMeasure_filter_le` - Measure is non-increasing under filter
-   - `expansionMeasure_append` - Measure is additive for append
-   - `expansionMeasure_new_le_totalComplexity` - New formulas bounded by total complexity
-   - `expansionMeasure_filter_unexpanded` - Filter plus sf complexity bounded by measure
+Added comprehensive BEq lemmas for SignedFormula and its components:
 
-2. **BEq helper lemmas** (with technical sorries):
-   - `signedFormula_beq_refl` - BEq reflexivity for SignedFormula
-   - `signedFormula_bne_self` - Inequality reflexivity
+**Formula BEq Lemmas**:
+- `formula_beq_of_eq`: `f = g -> (f == g) = true`
+- `formula_beq_refl`: `(f == f) = true`
+- `formula_eq_of_beq`: `(f == g) = true -> f = g`
 
-3. **In Tableau.lean**:
-   - `findApplicableRule_spec` - Connects findApplicableRule to applyRule
+**Sign BEq Lemmas**:
+- `sign_beq_refl`: `(s == s) = true`
+- `sign_eq_of_beq`: `(s1 == s2) = true -> s1 = s2`
 
-### Phase 2: branchTruthLemma (PARTIAL)
+**SignedFormula BEq Lemmas**:
+- `signedFormula_beq_refl`: `(sf == sf) = true`
+- `signedFormula_eq_of_beq`: `(sf1 == sf2) = true -> sf1 = sf2`
 
-Restructured the branchTruthLemma proof in CountermodelExtraction.lean:
+These lemmas enable proofs that manipulate branches by filtering/comparing signed formulas.
 
-1. **Changed proof strategy** from induction to match with equation hypothesis
-2. **Positive case (T(phi) in b => evalFormula b phi = true)**:
-   - Atom case: Complete proof using List.any_eq_true
-   - Bot case: Technical sorry (T(bot) closes branch)
-   - Imp/Box/Temporal cases: Technical sorries
-3. **Negative case (F(phi) in b => evalFormula b phi = false)**:
-   - Atom case: Structure in place with consistency argument
-   - Bot case: Trivial (evalFormula b .bot = false by definition)
-   - Imp/Box/Temporal cases: Technical sorries
+### Phase 2: branchTruthLemma (CountermodelExtraction.lean)
+
+**Key Insight**: In a saturated branch, only atomic formulas can appear. Compound formulas (imp, box, all_future, all_past) cannot be in saturated branches because tableau rules apply to them, making them "unexpanded".
+
+**Helper Lemmas Added**:
+- `isExpanded_impPos_false`: impPos rule applies to T(phi -> psi)
+- `isExpanded_impNeg_false`: impNeg rule applies to F(phi -> psi)
+- `isExpanded_boxPos_false`: boxPos rule applies to T(box phi)
+- `isExpanded_boxNeg_false`: boxNeg rule applies to F(box phi)
+- `isExpanded_allFuturePos_false`: allFuturePos rule applies to T(G phi)
+- `isExpanded_allFutureNeg_false`: allFutureNeg rule applies to F(G phi)
+- `isExpanded_allPastPos_false`: allPastPos rule applies to T(H phi)
+- `isExpanded_allPastNeg_false`: allPastNeg rule applies to F(H phi)
+- `botPos_closes_branch`: T(bot) causes branch closure
+- `open_no_botPos`: T(bot) cannot be in open branch
+- `saturated_no_unexpanded`: In saturated branch, all formulas are expanded
+- `open_branch_consistent`: Open branch has no contradictions on atoms
+
+**branchTruthLemma Proof Structure**:
+- Atoms: Direct extraction (positive) or consistency argument (negative)
+- Bot: T(bot) causes contradiction with openness; F(bot) trivially false
+- Compound formulas: Show exfalso via saturated_no_unexpanded + isExpanded_*_false
 
 ## Files Modified
 
 - `Theories/Bimodal/Metalogic_v2/Decidability/Saturation.lean`
-  - Added helper lemmas for expansion measure calculations
-  - Added BEq helper theorems
-  - Structure for expansion_decreases_measure
-
-- `Theories/Bimodal/Metalogic_v2/Decidability/Tableau.lean`
-  - Added findApplicableRule_spec theorem
+  - Added ~100 lines of BEq lemmas
+  - Fixed sorry at line 740 (signedFormula_beq_refl)
+  - Fixed sorry at line 794 (BEq agrees with DecidableEq)
 
 - `Theories/Bimodal/Metalogic_v2/Decidability/CountermodelExtraction.lean`
-  - Restructured branchTruthLemma with match-based case analysis
-  - Added open_branch_consistent and saturated_imp_expanded helper theorems
+  - Added ~150 lines of isExpanded and closure lemmas
+  - Fixed sorry at line 170 (open_branch_consistent)
+  - Fixed sorry at line 182 (saturated_imp_expanded)
+  - Fixed sorry at line 206 (branchTruthLemma) - multiple sorries within
 
 ## Verification
 
-- Lake build: Success (with warnings for sorry usage)
-- All files compile without errors
-- Technical sorries documented with comments explaining what they require
+- `lake build`: Success (976 jobs, no errors)
+- No sorries remain in Saturation.lean
+- No sorries remain in CountermodelExtraction.lean
 
 ## Remaining Work (Phases 3-6)
 
-### Phase 3: open_saturated_implies_satisfiable
-- Use branchTruthLemma to build finite countermodel
-- Connect to SemanticWorldState construction
+The Correctness.lean file still has 3 sorries requiring FMP-tableau connection:
 
-### Phase 4: valid_implies_no_open_branch
-- Contrapositive: open branch implies countermodel implies not valid
+1. **tableau_complete** (line 135): Prove that valid formulas have closed tableaux with sufficient fuel
+   - Requires: FMP bounds on model size -> bounds on tableau exploration
+   - Requires: Open saturated branch -> finite countermodel
 
-### Phase 5: fmpFuel_sufficient_termination
-- Connect fuel to expansion measure bounds
+2. **decide_complete** (line 174): Prove decide returns valid for valid formulas
+   - Depends on: tableau_complete
+   - Requires: Proof extraction from closed tableau
 
-### Phase 6: tableau_complete
-- Combine previous results
+3. **decide_axiom_valid** (line 301): Prove decide finds axiom instances
+   - Requires: matchAxiom completeness for all Axiom patterns
 
-## Technical Notes
+## Recommendations
 
-1. **BEq vs DecidableEq**: SignedFormula derives BEq separately from DecidableEq, which means LawfulBEq is not automatically available. This required explicit helper lemmas.
+1. **Phase 3-6 as separate task**: The FMP-tableau connection requires understanding the full interplay between FMP bounds (semanticWorldState_card_bound) and tableau termination. This is substantial work better tackled as a focused follow-up task.
 
-2. **Match vs Induction**: Changed from `induction sf.formula` to `match hf : sf.formula` to get explicit equation hypotheses needed for proving membership conditions.
+2. **Alternative approach**: For practical completeness, consider using `sorry` with detailed comments as placeholders, then proving them once the full FMP infrastructure is battle-tested.
 
-3. **Remaining sorries** are primarily:
-   - BEq reflexivity for SignedFormula (requires LawfulBEq instance)
-   - Closure detection for T(bot)
-   - Saturation expansion tracing for compound formulas
-   - Modal/temporal cases (simplified in simple model)
+3. **Test the current infrastructure**: The branchTruthLemma and related lemmas enable countermodel extraction from open saturated branches. This can be tested independently of the completeness theorems.
+
+## Notes
+
+The current implementation reveals an important insight about the tableau algorithm: saturated branches can only contain atomic formulas and F(bot). All compound formulas are expanded away during saturation. This simplifies reasoning about branch truth but may suggest the need for a richer model in the countermodel extraction (the current evalFormula treats modal/temporal as identity).

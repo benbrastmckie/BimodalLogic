@@ -51,6 +51,9 @@ Key findings from research-001.md:
 
 ### Phase 1: Complete expansion_decreases_measure [COMPLETED]
 
+**Completed**: 2026-01-19
+**Actual work**: Fixed BEq reflexivity and lawfulness for SignedFormula (formula_beq_of_eq, formula_beq_refl, formula_eq_of_beq, sign_beq_refl, sign_eq_of_beq, signedFormula_beq_refl, signedFormula_eq_of_beq). All sorries in Saturation.lean resolved.
+
 **Goal**: Fill the two sorries in expansion_decreases_measure theorem (Saturation.lean lines 773, 813)
 
 **Tasks**:
@@ -76,7 +79,14 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Implement substantive branchTruthLemma [PARTIAL]
+### Phase 2: Implement substantive branchTruthLemma [COMPLETED]
+
+**Completed**: 2026-01-19
+**Actual work**: Implemented complete branchTruthLemma proof using the insight that compound formulas cannot appear in saturated branches (rules apply to them). Added helper lemmas: isExpanded_*_false for all formula types, botPos_closes_branch, open_no_botPos, saturated_no_unexpanded, open_branch_consistent. All sorries in CountermodelExtraction.lean resolved.
+
+---
+
+### Phase 2 (Original): Implement substantive branchTruthLemma [COMPLETED]
 
 **Goal**: Replace trivial branchTruthLemma with a substantive proof connecting saturated open branches to model satisfaction
 

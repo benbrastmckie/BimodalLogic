@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 626,
+      "project_name": "review_remove_unnecessary_sorries",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-20T00:08:49Z",
+      "last_updated": "2026-01-20T00:08:49Z"
+    },
+    {
       "project_number": 622,
       "project_name": "prove_applyRule_decreases_complexity",
       "status": "completed",
@@ -503,5 +512,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 626
+  "next_project_number": 627
 }
