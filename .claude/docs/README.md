@@ -21,7 +21,8 @@ This documentation provides comprehensive coverage of the `.claude/` agent syste
 │   ├── context-loading-best-practices.md # Context loading patterns
 │   └── permission-configuration.md # Permission setup
 ├── examples/                    # Integration examples
-│   └── research-flow-example.md # End-to-end research flow
+│   ├── research-flow-example.md # End-to-end research flow
+│   └── learn-flow-example.md    # Tag extraction and task creation
 ├── templates/                   # Reusable templates
 │   ├── README.md               # Template overview
 │   ├── command-template.md     # Command template
@@ -64,6 +65,7 @@ This documentation provides comprehensive coverage of the `.claude/` agent syste
 /errors                          # Analyze errors
 /todo                            # Archive completed tasks
 /meta                            # System builder
+/learn                           # Scan for tags, create tasks
 ```
 
 ### Key Paths
@@ -105,7 +107,7 @@ The `.claude/` directory implements a task management and automation system for 
 
 ---
 
-## Commands (9)
+## Commands (10)
 
 Commands are user-invocable operations triggered by `/command` syntax.
 
@@ -120,12 +122,13 @@ Commands are user-invocable operations triggered by `/command` syntax.
 | /errors | Analyze errors | (reads errors.json) |
 | /todo | Archive completed tasks | (no args) |
 | /meta | System builder | `[domain]` or flags |
+| /learn | Scan for tags, create tasks | `[PATH...] [--dry-run]` |
 
 See [`.claude/commands/`](../commands/) for command definitions.
 
 ---
 
-## Skills (9)
+## Skills (10)
 
 Skills are specialized agents invoked by commands or the orchestrator. They use the **thin wrapper pattern** to delegate to agents.
 
@@ -153,11 +156,17 @@ Skills are specialized agents invoked by commands or the orchestrator. They use 
 | skill-lean-implementation | lean-implementation-agent |
 | skill-latex-implementation | latex-implementation-agent |
 
+### Utility Skills
+
+| Skill | Agent |
+|-------|-------|
+| skill-learn | learn-agent |
+
 See [`.claude/skills/`](../skills/) for skill definitions.
 
 ---
 
-## Agents (6)
+## Agents (7)
 
 Agents are execution components invoked by skills via the Task tool.
 
@@ -169,6 +178,7 @@ Agents are execution components invoked by skills via the Task tool.
 | general-implementation-agent | General file implementation |
 | lean-implementation-agent | Lean proof implementation |
 | latex-implementation-agent | LaTeX document implementation |
+| learn-agent | Tag extraction and task creation from source comments |
 
 See [`.claude/agents/`](../agents/) for agent definitions.
 
@@ -362,6 +372,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 ### Examples
 - [Research Flow Example](examples/research-flow-example.md) - End-to-end command flow
+- [Learn Flow Example](examples/learn-flow-example.md) - Tag extraction and task creation
 
 ### ProofChecker Documentation
 - [README.md](../../README.md) - Main project documentation
