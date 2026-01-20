@@ -8,12 +8,21 @@
     {
       "project_number": 633,
       "project_name": "fix_agent_return_format_consistency",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T02:37:36Z",
-      "last_updated": "2026-01-20T02:37:36Z",
-      "description": "Fix contradictory return format instructions in latex-implementation-agent.md that cause JSON to be dumped to console instead of written to .return-meta.json file, requiring user to type continue. Update agent to consistently follow v2 file-based metadata pattern. Add validation in skill postflight to detect accidental JSON console output."
+      "last_updated": "2026-01-20T03:07:00Z",
+      "description": "Fix contradictory return format instructions in latex-implementation-agent.md that cause JSON to be dumped to console instead of written to .return-meta.json file, requiring user to type continue. Update agent to consistently follow v2 file-based metadata pattern. Add validation in skill postflight to detect accidental JSON console output.",
+      "session_id": "sess_1768878255_a7d2a1",
+      "researched": "2026-01-20T03:07:00Z",
+      "artifacts": [
+        {
+          "path": "specs/633_fix_agent_return_format_consistency/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing return format contradictions in latex-implementation-agent.md and general-implementation-agent.md with implementation recommendations"
+        }
+      ]
     },
     {
       "project_number": 632,
