@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Analyzed /learn command TODO handling - currently creates one task per selected item with no topic grouping. Recommended adding Step 7.5 for topic analysis between TODO selection and task creation, using content analysis heuristics to cluster related TODOs.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/652_improve_learn_todo_grouping_by_topic/reports/research-001.md",
+      "summary": "Research report with 7 findings on current TODO handling, topic analysis approaches, and 4-phase implementation plan"
+    }
+  ],
+  "next_steps": "Run /plan 652 to create detailed implementation plan",
+  "metadata": {
+    "session_id": "sess_1768946884_b09df2",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 420,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7
+  }
+}

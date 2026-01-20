@@ -5,16 +5,16 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 20
-  completed: 231
+  active: 15
+  completed: 236
   in_progress: 0
-  not_started: 13
+  not_started: 8
   abandoned: 19
   total: 253
 priority_distribution:
   critical: 0
-  high: 6
-  medium: 10
+  high: 3
+  medium: 6
   low: 6
 technical_debt:
   sorry_count: 205
@@ -26,39 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 650. Implement completion_summary and claudemd_suggestions fields in /implement workflow
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260120.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/summaries/implementation-summary-20260120.md)
-
-**Description**: Make sure that the /implement command-skill-agent workflow will include completion_summary and claudemd_suggestions fields for updating ROAD_MAP.md and CLAUDE.md when appropriate and not otherwise since these will be used by the /todo command.
-
----
-
-### 646. Fix Metalogic LaTeX formatting and structure issues
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: latex
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Started**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/646_fix_metalogic_latex_formatting_issues/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/646_fix_metalogic_latex_formatting_issues/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/646_fix_metalogic_latex_formatting_issues/summaries/implementation-summary-20260120.md)
-
-**Description**: Fix 14 FIX:/NOTE: tags in Theories/Bimodal/latex/subfiles/04-Metalogic.tex covering formatting, structural, and presentation improvements: (1) make negation completeness a definition, (2) merge footnote with explanation for Lindenbaum's lemma, (3) introduce histories/times before canonical world states, (4) define quotient construction, (5) explain strong representation theorem, (6) remove diagram labels and add reference, (7) merge finite model property into decidability section, (8) clarify decision procedure return values, (9) explain tableau concepts and Lean 4 proof search, (10) add context for complexity values, (11) explain why decidability is useful despite limitations, (12) use standardized `\texttt{}` formatting for Lean directories, (13) format directory names in bold with `\texttt{}`, (14) make theorem names italic.
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -103,59 +70,14 @@ technical_debt:
 ## Medium Priority
 
 ### 652. Improve /learn TODO grouping by topic
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
+- **Researched**: 2026-01-20
+- **Research**: [research-001.md](specs/652_improve_learn_todo_grouping_by_topic/reports/research-001.md)
 
 **Description**: Improve the /learn command so that when creating todo-tasks it takes stock of ALL TODOs in the scanned file(s), then creates the smallest number of tasks that will address all TODOs while separating tasks by topic. Currently, /learn creates one task per file or misses TODOs when grouping. The improvement should: (1) inventory all TODO: tags found, (2) analyze topics/themes among them, (3) create grouped tasks that minimize task count while maintaining logical separation. The FIX: and NOTE: tag handling features of /learn should remain unchanged.
-
----
-
-### 651. Simplify /learn NOTE: tag workflow
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/651_simplify_learn_note_tag_workflow/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/651_simplify_learn_note_tag_workflow/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/651_simplify_learn_note_tag_workflow/summaries/implementation-summary-20260120.md)
-
-**Description**: Simplify the /learn command workflow so that learn-it tasks focus only on improving relevant context files and documentation, leaving NOTE: tags in place. The fix-it task created by /learn should then address and remove both NOTE: and FIX: tags when making file changes, while leaving TODO: tags behind for todo tasks. This removes the unnecessary NOTE: to FIX: tag replacement from learn-it tasks.
-
----
-
-### 649. Improve /learn NOTE: tag dependency handling
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Started**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/649_improve_learn_note_tag_dependency_handling/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/649_improve_learn_note_tag_dependency_handling/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/649_improve_learn_note_tag_dependency_handling/summaries/implementation-summary-20260120.md)
-
-**Description**: Improve the /learn command so that if 'NOTE:' tags occur, that the fix-it task has the learn-it task as a dependency so that the learn-it task is completed first. Also, the learn-it task itself should replace all 'NOTE:' instances with 'FIX:' so that the fix-it task can then make the file local changes and the learn-it task can focus on updating context files (clear division of labor).
-
----
-
-### 647. Update context files for LaTeX theorem naming and formatting standards
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/647_update_context_latex_theorem_naming_standards/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/647_update_context_latex_theorem_naming_standards/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/647_update_context_latex_theorem_naming_standards/summaries/implementation-summary-20260120.md)
-
-**Description**: Update .claude/context/ files to document LaTeX theorem naming and formatting standards based on 4 NOTE: tags from 04-Metalogic.tex: (1) make theorem names italic (e.g., 'Representation Theorem' in italics), (2) state definitions before using them (e.g., task relation definition needed before canonical frame), (3) reference Lean theorem names in the theorem environment itself (e.g., replace footnotes with inline `\texttt{representation_theorem}` references), (4) use standardized `\texttt{Metalogic_v2}` formatting for Lean directories throughout. Target context files: .claude/rules/latex.md or create new .claude/context/project/latex/standards.md.
 
 ---
 

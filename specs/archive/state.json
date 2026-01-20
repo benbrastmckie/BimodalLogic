@@ -1,9 +1,198 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-20T17:41:02Z",
+  "_last_updated": "2026-01-20T22:08:37Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 651,
+      "project_name": "simplify_learn_note_tag_workflow",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T21:32:12Z",
+      "last_updated": "2026-01-20T21:54:10Z",
+      "session_id": "sess_1768945867_f68835",
+      "researched": "2026-01-20T21:37:29Z",
+      "artifacts": [
+        {
+          "path": "specs/651_simplify_learn_note_tag_workflow/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying 4 targeted edits across 3 files to simplify /learn NOTE: tag workflow"
+        },
+        {
+          "path": "specs/651_simplify_learn_note_tag_workflow/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan to simplify /learn NOTE: tag workflow by removing tag replacement from learn-it tasks"
+        },
+        {
+          "path": "specs/651_simplify_learn_note_tag_workflow/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes and verification results"
+        },
+        {
+          "path": "specs/651_simplify_learn_note_tag_workflow/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes and verification results"
+        }
+      ],
+      "planned": "2026-01-20T21:50:20Z",
+      "started": "2026-01-20T21:51:35Z",
+      "completed": "2026-01-20T21:54:10Z",
+      "archived": "2026-01-20T22:08:37Z"
+    },
+    {
+      "project_number": 650,
+      "project_name": "implement_completion_summary_claudemd_suggestions_fields",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-20T20:49:27Z",
+      "last_updated": "2026-01-20T21:55:56Z",
+      "session_id": "sess_1768945752_2a6128",
+      "researched": "2026-01-20T20:54:20Z",
+      "artifacts": [
+        {
+          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting field schemas, implementation architecture, and 5-phase modification approach for completion_summary and claudemd_suggestions fields"
+        },
+        {
+          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "5-phase plan v003: simplified claudemd_suggestions to string describing .claude/ changes; moved filtering criteria to /todo"
+        },
+        {
+          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with all modified files"
+        }
+      ],
+      "planned": "2026-01-20T21:47:55Z",
+      "started": "2026-01-20T21:49:36Z",
+      "completed": "2026-01-20T21:55:56Z",
+      "completion_summary": "Implemented completion_data generation in all implementation agents (general, lean, latex) with Stage 6a, and updated skill postflight (implementer, lean-implementation, latex-implementation) to propagate completion_summary and claudemd_suggestions fields to state.json. Simplified claudemd_suggestions from complex object to simple string.",
+      "claudemd_suggestions": "Updated return-metadata-file.md schema with completion_data field, modified 3 agent definitions (general-implementation-agent.md, lean-implementation-agent.md, latex-implementation-agent.md), updated 3 skill SKILL.md files (skill-implementer, skill-lean-implementation, skill-latex-implementation), and simplified claudemd_suggestions schema in state-management.md from object to string type",
+      "archived": "2026-01-20T22:08:37Z"
+    },
+    {
+      "project_number": 649,
+      "project_name": "improve_learn_note_tag_dependency_handling",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T20:40:53Z",
+      "last_updated": "2026-01-20T21:25:47Z",
+      "session_id": "sess_1768944111_7e9311",
+      "researched": "2026-01-20T20:46:32Z",
+      "artifacts": [
+        {
+          "path": "specs/649_improve_learn_note_tag_dependency_handling/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting current /learn implementation, task dependency schema, and 4-phase modification approach for NOTE: tag dependency handling"
+        },
+        {
+          "path": "specs/649_improve_learn_note_tag_dependency_handling/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for NOTE: tag dependency handling in /learn command"
+        },
+        {
+          "path": "specs/649_improve_learn_note_tag_dependency_handling/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        },
+        {
+          "path": "specs/649_improve_learn_note_tag_dependency_handling/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        },
+        {
+          "path": "specs/649_improve_learn_note_tag_dependency_handling/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-20T20:52:58Z",
+      "started": "2026-01-20T21:22:09Z",
+      "completed": "2026-01-20T21:25:47Z",
+      "archived": "2026-01-20T22:08:37Z"
+    },
+    {
+      "project_number": 647,
+      "project_name": "update_context_latex_theorem_naming_standards",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T20:55:08Z",
+      "last_updated": "2026-01-20T21:24:33Z",
+      "session_id": "sess_1768944082_35490d",
+      "researched": "2026-01-20T20:46:27Z",
+      "artifacts": [
+        {
+          "path": "specs/647_update_context_latex_theorem_naming_standards/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting 4 LaTeX standards (theorem name italics, definition ordering, inline Lean references, directory formatting) with gap analysis and implementation recommendations"
+        },
+        {
+          "path": "specs/647_update_context_latex_theorem_naming_standards/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan covering latex-style-guide.md, theorem-environments.md, and cross-references.md updates"
+        },
+        {
+          "path": "specs/647_update_context_latex_theorem_naming_standards/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes and verification results"
+        }
+      ],
+      "planned": "2026-01-20T20:52:17Z",
+      "started": "2026-01-20T21:21:43Z",
+      "completed": "2026-01-20T21:24:33Z",
+      "completion_summary": "Updated three LaTeX context files to document theorem naming and formatting standards from NOTE: tags. Added named theorem formatting section to latex-style-guide.md, Lean cross-reference in theorem environment section to theorem-environments.md, and code path formatting section to cross-references.md.",
+      "archived": "2026-01-20T22:08:37Z"
+    },
+    {
+      "project_number": 646,
+      "project_name": "fix_metalogic_latex_formatting_issues",
+      "status": "completed",
+      "language": "latex",
+      "priority": "high",
+      "created": "2026-01-20T20:55:08Z",
+      "last_updated": "2026-01-20T21:55:59Z",
+      "session_id": "sess_1768945645_c93938",
+      "researched": "2026-01-20T21:30:49Z",
+      "artifacts": [
+        {
+          "path": "specs/646_fix_metalogic_latex_formatting_issues/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing 14 FIX:/NOTE: tags with categorization, phased recommendations, and risk assessment"
+        },
+        {
+          "path": "specs/646_fix_metalogic_latex_formatting_issues/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for fixing 14 FIX:/NOTE: tags in Metalogic LaTeX file"
+        },
+        {
+          "path": "specs/646_fix_metalogic_latex_formatting_issues/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with phase details and verification"
+        }
+      ],
+      "planned": "2026-01-20T21:36:59Z",
+      "started": "2026-01-20T21:47:41Z",
+      "completed": "2026-01-20T21:55:59Z",
+      "completion_summary": "Fixed 14 FIX:/NOTE: tags in 04-Metalogic.tex covering formatting consistency (italics, texttt), content additions (explanatory prose for theorems and concepts), and structural reorganization (new definitions, diagram flip, section merging). Document compiles cleanly to 29-page PDF.",
+      "archived": "2026-01-20T22:08:37Z"
+    },
+    {
+      "project_number": 521,
+      "status": "abandoned",
+      "project_name": "Fix Task 512 Inconsistent Status",
+      "section": "High Priority",
+      "language": "meta",
+      "priority": "high",
+      "archived": "2026-01-16T23:00:00Z",
+      "archived_reason": "abandoned"
+    },
     {
       "project_number": 627,
       "project_name": "prove_valid_implies_semantic_truth_at_v2_bridge",
