@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 636,
+      "project_name": "fix_sorries_temporalproofstrategies_examples",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-20T06:38:29Z",
+      "last_updated": "2026-01-20T06:38:29Z"
+    },
+    {
       "project_number": 635,
       "project_name": "extend_refresh_command_claude_project_cleanup",
       "status": "not_started",
@@ -348,5 +357,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 636
+  "next_project_number": 637
 }

@@ -1,5 +1,5 @@
 ---
-next_project_number: 636
+next_project_number: 637
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -182,6 +182,16 @@ technical_debt:
 ---
 
 ## Low Priority
+
+### 636. Fix sorries in TemporalProofStrategies examples
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Created**: 2026-01-19
+
+**Description**: Fix 5 sorries in example/exploratory proofs in `Theories/Bimodal/Examples/TemporalProofStrategies.lean` (lines 342, 416, 431, 486, 535). Impact: None - examples only, not part of core logic. Recommended approach: Remove examples if they are not needed for any of the main theorems.
+
+---
 
 ### 634. Fix sorry in main_provable_iff_valid_v2
 - **Status**: [NOT STARTED]
