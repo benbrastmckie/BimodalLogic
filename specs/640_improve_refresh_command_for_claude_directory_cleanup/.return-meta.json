@@ -1,0 +1,23 @@
+{
+  "status": "researched",
+  "summary": "Comprehensive research on ~/.claude/ directory cleanup. Found projects/ is 97% of 7.3GB total. Current /refresh only cleans current project. Recommend adding --global mode with tiered age thresholds (8h/2d/all) to clean debug, file-history, todos, session-env, plugins, telemetry directories.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/reports/research-001.md",
+      "summary": "Research report covering directory structure analysis, web research on community cleanup tools, safety considerations, and implementation recommendations for global cleanup mode"
+    }
+  ],
+  "next_steps": "Run /plan 640 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1768930298_f6bc78",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 720,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher"],
+    "findings_count": 5,
+    "directory_size_gb": 7.3,
+    "largest_directory": "projects/ (7.1GB, 97%)",
+    "web_sources_consulted": 4
+  }
+}

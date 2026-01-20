@@ -8,12 +8,20 @@
     {
       "project_number": 640,
       "project_name": "improve_refresh_command_for_claude_directory_cleanup",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:23:39Z",
-      "last_updated": "2026-01-20T17:31:53Z",
-      "session_id": "sess_1768930298_f6bc78"
+      "last_updated": "2026-01-20T17:37:23Z",
+      "session_id": "sess_1768930298_f6bc78",
+      "researched": "2026-01-20T17:37:23Z",
+      "artifacts": [
+        {
+          "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report covering directory structure analysis, web research on community cleanup tools, safety considerations, and implementation recommendations for global cleanup mode"
+        }
+      ]
     },
     {
       "project_number": 638,
