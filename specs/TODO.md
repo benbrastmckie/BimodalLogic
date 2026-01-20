@@ -196,20 +196,22 @@ technical_debt:
 ---
 
 ### 636. Fix sorries in TemporalProofStrategies examples
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Plan**: [implementation-001.md](specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md)
 
 **Description**: Fix 5 sorries in example/exploratory proofs in `Theories/Bimodal/Examples/TemporalProofStrategies.lean` (lines 342, 416, 431, 486, 535). Impact: None - examples only, not part of core logic. Recommended approach: Remove examples if they are not needed for any of the main theorems.
 
 ---
 
 ### 634. Fix sorry in main_provable_iff_valid_v2
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Plan**: [implementation-001.md](specs/634_fix_sorry_main_provable_iff_valid_v2/plans/implementation-001.md)
 
 **Description**: Fix the sorry in main_provable_iff_valid_v2 at `Theories/Bimodal/Metalogic_v2/Representation/SemanticCanonicalModel.lean:647`. Alternative path exists - `semantic_weak_completeness` provides sorry-free version. Impact: None - alternative proof exists. Recommended approach: Continue using sorry-free alternative.
 

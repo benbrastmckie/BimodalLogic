@@ -17,11 +17,20 @@
     {
       "project_number": 636,
       "project_name": "fix_sorries_temporalproofstrategies_examples",
-      "status": "not_started",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-20T06:38:29Z",
-      "last_updated": "2026-01-20T06:38:29Z"
+      "last_updated": "2026-01-20T06:53:37Z",
+      "session_id": "sess_1768891871_91126e",
+      "planned": "2026-01-20T06:53:37Z",
+      "artifacts": [
+        {
+          "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase plan: attempt proof completion first, remove incomplete exercises as fallback"
+        }
+      ]
     },
     {
       "project_number": 635,
@@ -50,12 +59,20 @@
     {
       "project_number": 634,
       "project_name": "fix_sorry_main_provable_iff_valid_v2",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-20T06:31:05Z",
-      "last_updated": "2026-01-20T06:51:11Z",
-      "session_id": "sess_1768891847_a5ea11"
+      "last_updated": "2026-01-20T06:53:41Z",
+      "session_id": "sess_1768891847_a5ea11",
+      "planned": "2026-01-20T06:53:41Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/634_fix_sorry_main_provable_iff_valid_v2/plans/implementation-001.md",
+          "summary": "3-phase documentation plan for sorry in main_provable_iff_valid_v2"
+        }
+      ]
     },
     {
       "project_number": 633,
@@ -382,5 +399,12 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 638
+  "next_project_number": 638,
+  "artifacts": [
+    {
+      "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "2-phase plan: attempt proof completion first, remove incomplete exercises as fallback"
+    }
+  ]
 }
