@@ -72,18 +72,27 @@ These lemmas enable proofs that manipulate branches by filtering/comparing signe
 
 ## Remaining Work (Phases 3-6)
 
-The Correctness.lean file still has 3 sorries requiring FMP-tableau connection:
+The Correctness.lean file still has 3 sorries requiring FMP-tableau connection. Detailed technical commentary has been added to each sorry explaining what's needed:
 
 1. **tableau_complete** (line 135): Prove that valid formulas have closed tableaux with sufficient fuel
-   - Requires: FMP bounds on model size -> bounds on tableau exploration
-   - Requires: Open saturated branch -> finite countermodel
+   - Requires Lemma 1 (Termination): buildTableau with fmpBasedFuel never times out
+   - Requires Lemma 2 (Validity -> Closure): valid formulas have no open saturated branches
+   - Missing infrastructure:
+     - Lemma: `valid phi <-> not formula_satisfiable (phi.neg)`
+     - Lemma: `evalFormula (simplified) -> truth_at (full semantics)`
+     - Lemma: Open saturated branch -> proper TaskModel construction
+   - Gap: Bridging simplified countermodel (evalFormula) to full TaskModel semantics
 
 2. **decide_complete** (line 174): Prove decide returns valid for valid formulas
    - Depends on: tableau_complete
    - Requires: Proof extraction from closed tableau
+   - One of three paths must succeed: axiom matching, proof search, or tableau extraction
 
-3. **decide_axiom_valid** (line 301): Prove decide finds axiom instances
+3. **decide_axiom_valid** (line 321): Prove decide finds axiom instances
    - Requires: matchAxiom completeness for all Axiom patterns
+   - 15+ axiom constructors to verify
+   - Some use complex encodings (diamond = neg box neg, always = H and (phi and G))
+   - Independent of tableau_complete - could be proven separately via case analysis
 
 ## Recommendations
 

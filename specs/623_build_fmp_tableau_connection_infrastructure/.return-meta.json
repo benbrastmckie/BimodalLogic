@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "summary": "Completed phases 1-2 of 6. All sorries in Saturation.lean and CountermodelExtraction.lean resolved. Remaining: tableau_complete, decide_complete, decide_axiom_valid in Correctness.lean.",
+  "summary": "Completed phases 1-2 of 6. All sorries in Saturation.lean and CountermodelExtraction.lean resolved. Added detailed technical commentary to remaining sorries in Correctness.lean (tableau_complete, decide_complete, decide_axiom_valid).",
   "artifacts": [
     {
       "type": "implementation",
@@ -13,9 +13,14 @@
       "summary": "Implemented branchTruthLemma with helper lemmas for saturated branch analysis"
     },
     {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic_v2/Decidability/Correctness.lean",
+      "summary": "Added detailed technical commentary to sorries explaining missing infrastructure"
+    },
+    {
       "type": "summary",
       "path": "specs/623_build_fmp_tableau_connection_infrastructure/summaries/implementation-summary-20260119.md",
-      "summary": "Implementation summary with verification results"
+      "summary": "Implementation summary with verification results and detailed remaining work analysis"
     }
   ],
   "metadata": {
@@ -27,5 +32,5 @@
     "phases_completed": 2,
     "phases_total": 6
   },
-  "next_steps": "Continue with Phase 3-6: prove tableau_complete, decide_complete, decide_axiom_valid in Correctness.lean"
+  "next_steps": "Continue with Phase 3-6: prove tableau_complete requires bridging evalFormula to truth_at semantics; decide_axiom_valid could be proven independently via case analysis on Axiom constructors"
 }

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #623
 
 - **Task**: 623 - Build FMP-tableau connection infrastructure
-- **Status**: [PARTIAL]
+- **Status**: [PARTIAL] (Phases 1-2 completed, Phases 3-6 require FMP-semantics bridge)
 - **Effort**: 6 hours
 - **Priority**: High
 - **Dependencies**: Task 490 (parent task)
