@@ -26,29 +26,36 @@
     {
       "project_number": 635,
       "project_name": "extend_refresh_command_claude_project_cleanup",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T06:33:44Z",
-      "last_updated": "2026-01-20T06:43:44Z",
-      "session_id": "sess_1768891116_df5719",
+      "last_updated": "2026-01-20T06:51:24Z",
+      "session_id": "sess_1768891753_f37d16",
       "researched": "2026-01-20T06:43:44Z",
       "artifacts": [
         {
           "path": "specs/635_extend_refresh_command_claude_project_cleanup/reports/research-001.md",
           "type": "research",
           "summary": "Research report covering current /refresh implementation, project directory structure analysis, cleanup strategies, and multi-mode integration patterns"
+        },
+        {
+          "path": "specs/635_extend_refresh_command_claude_project_cleanup/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan covering cleanup script, skill extension, documentation, and testing"
         }
-      ]
+      ],
+      "planned": "2026-01-20T06:51:24Z"
     },
     {
       "project_number": 634,
       "project_name": "fix_sorry_main_provable_iff_valid_v2",
-      "status": "not_started",
+      "status": "planning",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-20T06:31:05Z",
-      "last_updated": "2026-01-20T06:31:05Z"
+      "last_updated": "2026-01-20T06:51:11Z",
+      "session_id": "sess_1768891847_a5ea11"
     },
     {
       "project_number": 633,

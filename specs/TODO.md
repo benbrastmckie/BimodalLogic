@@ -85,11 +85,12 @@ technical_debt:
 ## Medium Priority
 
 ### 635. Extend /refresh command for Claude Code project cleanup
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Research**: [research-001.md](specs/635_extend_refresh_command_claude_project_cleanup/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/635_extend_refresh_command_claude_project_cleanup/plans/implementation-001.md)
 
 **Description**: Extend the /refresh command to survey and clean up accumulated project files in `~/.claude/projects/-home-benjamin-Projects-ProofChecker/`. Large numbers of project files cause slow Claude Code startup in neovim. The command should: (1) Survey the project directory for cleanup candidates (old sessions, orphaned files), (2) Present findings to the user with size/count statistics, (3) Perform cleanup only with explicit user approval. Integrate this as a new mode in the existing /refresh skill alongside the orphaned process cleanup functionality.
 
@@ -205,7 +206,7 @@ technical_debt:
 ---
 
 ### 634. Fix sorry in main_provable_iff_valid_v2
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
