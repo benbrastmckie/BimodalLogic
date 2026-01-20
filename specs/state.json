@@ -8,12 +8,12 @@
     {
       "project_number": 652,
       "project_name": "improve_learn_todo_grouping_by_topic",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T22:07:14Z",
-      "last_updated": "2026-01-20T22:20:44Z",
-      "session_id": "sess_1768947500_e14947",
+      "last_updated": "2026-01-20T22:24:04Z",
+      "session_id": "sess_1768947824_b236d2",
       "researched": "2026-01-20T22:11:00Z",
       "artifacts": [
         {
@@ -32,7 +32,8 @@
           "summary": "4-phase plan: topic analysis infrastructure, user confirmation UI, task creation modification, documentation updates"
         }
       ],
-      "planned": "2026-01-20T22:20:44Z"
+      "planned": "2026-01-20T22:20:44Z",
+      "started": "2026-01-20T22:24:04Z"
     },
     {
       "project_number": 648,

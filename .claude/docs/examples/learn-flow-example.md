@@ -18,7 +18,7 @@ The `/learn` command recognizes three tag types in source code comments:
 |-----|-----------|----------|
 | `FIX:` | fix-it-task | All FIX: and NOTE: tags grouped into single task |
 | `NOTE:` | fix-it-task + learn-it-task | Creates two task types (with dependency when both selected) |
-| `TODO:` | todo-task | User selects which TODO: tags become tasks |
+| `TODO:` | todo-task | User selects which TODO: tags become tasks (with optional topic grouping) |
 
 **Dependency behavior**: When NOTE: tags exist and both fix-it and learn-it tasks are selected, the learn-it task is created first and the fix-it task depends on it. This ensures proper workflow: learn-it extracts knowledge to context files (NOTE: tags remain in source), then fix-it addresses the code changes and removes both NOTE: and FIX: tags.
 
@@ -42,7 +42,9 @@ User Input: /learn Logos/
        | 4. Display tag summary to user
        | 5. AskUserQuestion: Select task types
        | 6. AskUserQuestion: Select TODO items (if applicable)
-       | 7. Create selected tasks
+       | 7. Analyze TODO topics and cluster (if 2+ items)
+       | 8. AskUserQuestion: Confirm topic grouping (if groups found)
+       | 9. Create selected tasks
        | 8. Git commit postflight
        v
 Output: Created N tasks from M tags
@@ -201,7 +203,68 @@ Since "TODO tasks" was selected, the skill prompts for individual TODO item sele
 
 User selects:
 - ✓ Add completeness theorem for S5
-- ✗ Optimize this function
+- ✓ Add soundness theorem for S5
+- ✓ Optimize this function
+
+### Step 5.5: Topic Grouping (New Feature)
+
+**Skill Step 5.5: Analyze TODO Topics**
+
+Since multiple TODOs were selected (3 items), the skill analyzes them for topic grouping:
+
+```
+TODO analysis:
+  "Add completeness theorem for S5" at Logos/Layer1/Modal.lean:67
+    → key_terms: ["completeness", "theorem", "S5"]
+    → file_section: "Logos/Layer1/"
+    → action_type: "implementation"
+
+  "Add soundness theorem for S5" at Logos/Layer1/Modal.lean:89
+    → key_terms: ["soundness", "theorem", "S5"]
+    → file_section: "Logos/Layer1/"
+    → action_type: "implementation"
+
+  "Optimize this function" at Logos/Shared/Utils.lean:23
+    → key_terms: ["optimize", "function"]
+    → file_section: "Logos/Shared/"
+    → action_type: "improvement"
+
+Clustering result:
+  Group 1: "S5 Theorems" - 2 items (shared: S5, theorem, implementation)
+  Group 2: "Utility Optimization" - 1 item
+```
+
+**Skill Step 5.6: AskUserQuestion for Topic Grouping**
+
+Since there's at least one group with 2+ items, the skill presents grouping options:
+
+```json
+{
+  "questions": [
+    {
+      "question": "How should TODO items be grouped into tasks?",
+      "header": "TODO Topic Grouping",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "Accept suggested topic groups",
+          "description": "Creates 2 grouped tasks: S5 Theorems (2 items), Utility Optimization (1 item)"
+        },
+        {
+          "label": "Keep as separate tasks",
+          "description": "Creates 3 individual tasks (one per TODO item)"
+        },
+        {
+          "label": "Create single combined task",
+          "description": "Creates 1 task containing all 3 TODO items"
+        }
+      ]
+    }
+  ]
+}
+```
+
+User selects: **Accept suggested topic groups**
 
 ### Step 6: Task Creation
 
@@ -243,24 +306,48 @@ The TODO.md entry for the fix-it task includes:
 - **Dependencies**: 650
 ```
 
-**Example B: Only fix-it selected (original behavior, no dependency)**
+**Example B: Topic-grouped TODO tasks (new feature)**
 
-**Fix-It Task (Task #650)**:
+When user selects "Accept suggested topic groups" in Step 5.6:
+
+**Grouped TODO Task #1 (Task #650)**:
 ```json
 {
   "project_number": 650,
-  "project_name": "fix_issues_from_tags",
+  "project_name": "s5_theorems_2_todo_items",
   "status": "not_started",
   "language": "lean",
-  "priority": "high",
-  "description": "Address 2 items from embedded tags:\n\n- Logos/Layer1/Modal.lean:89 - Handle edge case in frame validation\n- Logos/Layer2/Temporal.lean:45 - This pattern should be documented"
+  "priority": "medium",
+  "effort": "1.5 hours",
+  "description": "Address TODO items related to S5 Theorems:\n\n- [ ] Add completeness theorem for S5 (`Logos/Layer1/Modal.lean:67`)\n- [ ] Add soundness theorem for S5 (`Logos/Layer1/Modal.lean:89`)\n\n---\n\nShared context: Related to S5 modal logic theorems"
 }
 ```
 
-**TODO Task (Task #651)**:
+**Grouped TODO Task #2 (Task #651)**:
 ```json
 {
   "project_number": 651,
+  "project_name": "utility_optimization_1_todo_item",
+  "status": "not_started",
+  "language": "lean",
+  "priority": "medium",
+  "effort": "1 hour",
+  "description": "Address TODO items related to Utility Optimization:\n\n- [ ] Optimize this function (`Logos/Shared/Utils.lean:23`)\n\n---\n\nShared context: Performance improvement in shared utilities"
+}
+```
+
+**Effort scaling applied**:
+- S5 Theorems: 2 items = 1h + 30min = 1.5 hours
+- Utility Optimization: 1 item = 1 hour (base)
+
+**Example C: Separate TODO tasks (original behavior)**
+
+When user selects "Keep as separate tasks":
+
+**TODO Task (Task #650)**:
+```json
+{
+  "project_number": 650,
   "project_name": "add_completeness_theorem_s5",
   "status": "not_started",
   "language": "lean",
@@ -269,9 +356,7 @@ The TODO.md entry for the fix-it task includes:
 }
 ```
 
-**Not Created**:
-- Learn-it task (user deselected)
-- "Optimize this function" TODO task (user deselected)
+(Plus 2 more individual tasks for soundness theorem and utility optimization)
 
 ### Step 7: Postflight Git Commit
 
@@ -302,19 +387,20 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 | 652 | todo | Add completeness theorem for S5 | Medium | lean | - |
 ```
 
-**Example output when only fix-it selected (no dependency)**:
+**Example output with topic-grouped TODO tasks (new feature)**:
 
 ```
 ## Tasks Created from Tags
 
-**Tags Processed**: 4 tags scanned, 2 tasks created
+**Tags Processed**: 4 tags scanned, 3 tasks created
 
 ### Created Tasks
 
-| # | Type | Title | Priority | Language |
-|---|------|-------|----------|----------|
-| 650 | fix-it | Fix issues from FIX:/NOTE: tags | High | lean |
-| 651 | todo | Add completeness theorem for S5 | Medium | lean |
+| # | Type | Title | Priority | Language | Effort |
+|---|------|-------|----------|----------|--------|
+| 650 | fix-it | Fix issues from FIX:/NOTE: tags | High | lean | 2-4h |
+| 651 | todo (grouped) | S5 Theorems: 2 TODO items | Medium | lean | 1.5h |
+| 652 | todo (grouped) | Utility Optimization: 1 TODO item | Medium | lean | 1h |
 
 ---
 
@@ -322,6 +408,23 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 1. Review tasks in TODO.md
 2. Run `/research 650` to begin
 3. Progress through /research -> /plan -> /implement cycle
+```
+
+**Example output with separate TODO tasks (original behavior)**:
+
+```
+## Tasks Created from Tags
+
+**Tags Processed**: 4 tags scanned, 4 tasks created
+
+### Created Tasks
+
+| # | Type | Title | Priority | Language |
+|---|------|-------|----------|----------|
+| 650 | fix-it | Fix issues from FIX:/NOTE: tags | High | lean |
+| 651 | todo | Add completeness theorem for S5 | Medium | lean |
+| 652 | todo | Add soundness theorem for S5 | Medium | lean |
+| 653 | todo | Optimize this function | Medium | lean |
 ```
 
 ---
@@ -484,15 +587,17 @@ This example demonstrated:
 1. **Direct Execution**: No subagent delegation, all logic in skill-learn
 2. **Interactive Selection**: AskUserQuestion for task type and TODO item choices
 3. **Tag Extraction**: Using grep patterns for multiple file types
-4. **Task Grouping**: FIX:/NOTE: grouped into fix-it task, TODO: individual tasks
-5. **User Control**: Granular selection of what to create
-6. **Edge Case Handling**: Graceful handling of no tags, user cancelation, large TODO lists
+4. **Task Grouping**: FIX:/NOTE: grouped into fix-it task, TODO: individual or topic-grouped tasks
+5. **Topic Analysis**: Automatic clustering of related TODO items by shared terms and context
+6. **User Control**: Granular selection of what to create and how to group
+7. **Edge Case Handling**: Graceful handling of no tags, user cancelation, large TODO lists
 
 The `/learn` command provides:
 - Automated task discovery from embedded source comments
 - Interactive preview-then-select workflow
+- **Smart topic grouping for related TODO items**
 - Structured task creation following project standards
-- User control over which tasks are created
+- User control over which tasks are created and grouping approach
 
 ---
 

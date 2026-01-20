@@ -21,7 +21,8 @@ The command always runs interactively:
 2. Display tag summary to user
 3. Prompt for task type selection
 4. Optionally prompt for individual TODO selection
-5. Create selected tasks
+5. **Optionally prompt for TODO topic grouping** (if 2+ TODOs selected)
+6. Create selected tasks
 
 This design ensures users always see what was found before any tasks are created.
 
@@ -39,7 +40,35 @@ This design ensures users always see what was found before any tasks are created
 
 **learn-it-task**: Groups NOTE: tags by target context directory. Creates tasks to update `.claude/context/` files based on the learnings. Only offered if NOTE: tags exist.
 
-**todo-task**: One task per selected TODO: tag. Preserves original text as task description. Language detected from source file type.
+**todo-task**: One task per selected TODO: tag (or grouped by topic). Preserves original text as task description. Language detected from source file type.
+
+### TODO Topic Grouping
+
+When multiple TODO items are selected, the command analyzes them for semantic topics and offers grouping options:
+
+1. **Accept suggested topic groups** - Creates grouped tasks based on shared terms, file sections, and action types
+2. **Keep as separate tasks** - Traditional behavior (one task per TODO item)
+3. **Create single combined task** - All TODO items in one task
+
+**Topic detection uses**:
+- Shared key terms (2+ significant terms in common)
+- File section proximity (same directory)
+- Action type similarity (implement, fix, document, test, refactor)
+
+**Example topic groups**:
+```
+Group: "S5 Theorems" (2 items)
+  - Add completeness theorem for S5
+  - Add soundness theorem for S5
+
+Group: "Utility Optimization" (1 item)
+  - Optimize helper function
+```
+
+**Effort scaling for grouped tasks**:
+- Base: 1 hour
+- +30 minutes per additional item
+- Example: 3 items = 2 hours
 
 ### Dependency Workflow for NOTE: Tags
 
@@ -117,7 +146,20 @@ Select TODO items to create as tasks:
 
 For >20 TODO items, a "Select all" option is added.
 
-### 4. Task Creation
+### 4. Topic Grouping (if 2+ TODOs)
+
+When multiple TODOs are selected, the command analyzes them for topics:
+
+```
+[TODO Topic Grouping]
+How should TODO items be grouped into tasks?
+
+( ) Accept suggested topic groups (Creates 2 grouped tasks: S5 Theorems (2 items), Utility Optimization (1 item))
+( ) Keep as separate tasks (Creates 3 individual tasks)
+( ) Create single combined task (Creates 1 task containing all 3 items)
+```
+
+### 5. Task Creation
 
 Selected tasks are created in TODO.md and state.json.
 

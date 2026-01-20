@@ -70,7 +70,7 @@ technical_debt:
 ## Medium Priority
 
 ### 652. Improve /learn TODO grouping by topic
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20

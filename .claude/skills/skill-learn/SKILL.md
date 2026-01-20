@@ -225,6 +225,132 @@ Add a "Select all" option at the top:
 
 If "Select all" is chosen, include all TODOs. Otherwise, only selected items.
 
+### Step 7.5: Topic Grouping for TODO Items
+
+**Condition**: User selected "TODO tasks" AND selected more than 1 TODO item
+
+If only 1 TODO item was selected, skip to Step 8 (no grouping benefit).
+
+#### 7.5.1: Extract Topic Indicators
+
+For each selected TODO item, extract topic indicators:
+
+**Key Terms**: Extract significant words from the TODO content (nouns, verbs). Ignore stop words (the, a, is, to, for, etc.).
+
+**File Section**: Group by file path prefix (e.g., `Logos/Layer1/` vs `Logos/Shared/`).
+
+**Action Type**: Identify common action patterns:
+- "Add/Implement/Create" → implementation tasks
+- "Fix/Handle/Correct" → fix tasks
+- "Document/Update docs" → documentation tasks
+- "Test/Verify" → testing tasks
+- "Refactor/Optimize" → improvement tasks
+
+Example extraction:
+```
+TODO: "Add completeness theorem for S5" at Logos/Layer1/Modal.lean:67
+  → key_terms: ["completeness", "theorem", "S5"]
+  → file_section: "Logos/Layer1/"
+  → action_type: "implementation"
+
+TODO: "Add soundness theorem for S5" at Logos/Layer1/Modal.lean:89
+  → key_terms: ["soundness", "theorem", "S5"]
+  → file_section: "Logos/Layer1/"
+  → action_type: "implementation"
+
+TODO: "Optimize helper function" at Logos/Shared/Utils.lean:23
+  → key_terms: ["optimize", "helper", "function"]
+  → file_section: "Logos/Shared/"
+  → action_type: "improvement"
+```
+
+#### 7.5.2: Cluster TODOs by Shared Terms
+
+Group TODOs that share **2 or more significant terms** or share **file section + action type**.
+
+**Clustering algorithm**:
+1. Start with first TODO as initial group
+2. For each remaining TODO:
+   - If shares 2+ key terms with existing group → add to group
+   - If shares file_section AND action_type with existing group → add to group
+   - Otherwise → start new group
+3. Generate topic label from most common shared terms in group
+
+**Example clustering**:
+```
+Group 1: "S5 Theorems" (shared: S5, theorem, Logos/Layer1/, implementation)
+  - Add completeness theorem for S5
+  - Add soundness theorem for S5
+
+Group 2: "Utility Optimization" (shared: Logos/Shared/, improvement)
+  - Optimize helper function
+```
+
+**Single-item groups**: If a TODO doesn't cluster with others, it becomes its own single-item group.
+
+#### 7.5.3: Store Grouped Topics
+
+Store the topic groups for use in Step 7.5.4:
+
+```
+topic_groups = [
+  {
+    label: "S5 Theorems",
+    items: [
+      {file: "Logos/Layer1/Modal.lean", line: 67, content: "Add completeness theorem for S5"},
+      {file: "Logos/Layer1/Modal.lean", line: 89, content: "Add soundness theorem for S5"}
+    ],
+    shared_terms: ["S5", "theorem"],
+    action_type: "implementation"
+  },
+  {
+    label: "Utility Optimization",
+    items: [
+      {file: "Logos/Shared/Utils.lean", line: 23, content: "Optimize helper function"}
+    ],
+    shared_terms: [],
+    action_type: "improvement"
+  }
+]
+```
+
+### Step 7.5.4: Topic Group Confirmation
+
+**Condition**: topic_groups contains at least one group with 2+ items
+
+If all groups have only 1 item, skip to Step 8 (no grouping benefit).
+
+Present topic groups via AskUserQuestion:
+
+```json
+{
+  "question": "How should TODO items be grouped into tasks?",
+  "header": "TODO Topic Grouping",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Accept suggested topic groups",
+      "description": "Creates {N} grouped tasks: {group_summaries}"
+    },
+    {
+      "label": "Keep as separate tasks",
+      "description": "Creates {M} individual tasks (one per TODO item)"
+    },
+    {
+      "label": "Create single combined task",
+      "description": "Creates 1 task containing all {M} TODO items"
+    }
+  ]
+}
+```
+
+Where:
+- `{N}` = number of topic groups
+- `{M}` = total number of selected TODO items
+- `{group_summaries}` = comma-separated list like "S5 Theorems (2 items), Utility Optimization (1 item)"
+
+**Store user choice**: `grouping_mode = "grouped" | "separate" | "combined"`
+
 ### Step 8: Create Selected Tasks
 
 For each selected task type, create the task. **Important**: When NOTE: tags exist and both fix-it and learn-it tasks are selected, create learn-it FIRST so fix-it can depend on it.
@@ -322,7 +448,69 @@ else -> "general"
 
 **Condition**: User selected "TODO tasks" AND user selected specific TODO items
 
-For each selected TODO item:
+**Check grouping_mode** (from Step 7.5.4, defaults to "separate" if Step 7.5.4 was skipped):
+
+##### 8.4.1: Grouped Mode (grouping_mode == "grouped")
+
+For each topic group in `topic_groups`:
+
+```json
+{
+  "title": "{topic_label}: {item_count} TODO items",
+  "description": "Address TODO items related to {topic_label}:\n\n{item_list}\n\n---\n\nShared context: {shared_terms_description}",
+  "language": "{detected from majority file type in group}",
+  "priority": "medium",
+  "effort": "{scaled_effort}"
+}
+```
+
+Where:
+- `{topic_label}` = generated label (e.g., "S5 Theorems")
+- `{item_count}` = number of items in group
+- `{item_list}` = formatted list of items:
+  ```
+  - [ ] {content} (`{file}:{line}`)
+  - [ ] {content} (`{file}:{line}`)
+  ```
+- `{shared_terms_description}` = brief description of why items are grouped (e.g., "Related to S5 modal logic theorems")
+
+**Effort Scaling Formula**:
+```
+base_effort = 1 hour
+scaled_effort = base_effort + (30 min * (item_count - 1))
+
+Examples:
+  1 item  → 1 hour
+  2 items → 1.5 hours (1h + 30min)
+  3 items → 2 hours (1h + 60min)
+  4 items → 2.5 hours (1h + 90min)
+```
+
+##### 8.4.2: Combined Mode (grouping_mode == "combined")
+
+Create single task containing all selected TODO items:
+
+```json
+{
+  "title": "Address {item_count} TODO items",
+  "description": "Combined TODO items from scan:\n\n{all_items_list}\n\n---\n\nFiles: {unique_files_list}",
+  "language": "{detected from majority file type}",
+  "priority": "medium",
+  "effort": "{scaled_effort}"
+}
+```
+
+Where:
+- `{item_count}` = total number of selected TODO items
+- `{all_items_list}` = formatted list of all items with checkboxes
+- `{unique_files_list}` = comma-separated list of unique files involved
+
+**Effort Scaling**: Same formula as grouped mode.
+
+##### 8.4.3: Separate Mode (grouping_mode == "separate" or default)
+
+For each selected TODO item individually:
+
 ```json
 {
   "title": "{tag content, truncated to 60 chars}",
@@ -333,7 +521,7 @@ For each selected TODO item:
 }
 ```
 
-**Language Detection for Todo-Task**:
+**Language Detection for Todo-Task** (all modes):
 ```
 .lean -> "lean"
 .tex  -> "latex"

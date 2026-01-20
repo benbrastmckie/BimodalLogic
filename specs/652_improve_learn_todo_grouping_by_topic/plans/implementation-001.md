@@ -1,7 +1,7 @@
 # Implementation Plan: Task #652
 
 - **Task**: 652 - Improve /learn TODO grouping by topic
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -51,7 +51,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Add Topic Analysis Infrastructure [NOT STARTED]
+### Phase 1: Add Topic Analysis Infrastructure [COMPLETED]
 
 **Goal**: Create the topic analysis logic that extracts terms and clusters TODOs
 
@@ -72,7 +72,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Add User Confirmation UI for Topic Groups [NOT STARTED]
+### Phase 2: Add User Confirmation UI for Topic Groups [COMPLETED]
 
 **Goal**: Create the AskUserQuestion prompt for topic group confirmation
 
@@ -94,7 +94,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Modify Task Creation for Topic Groups [NOT STARTED]
+### Phase 3: Modify Task Creation for Topic Groups [COMPLETED]
 
 **Goal**: Update Step 8.4 to handle grouped vs individual TODO task creation
 
@@ -116,7 +116,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update Documentation [NOT STARTED]
+### Phase 4: Update Documentation [COMPLETED]
 
 **Goal**: Update command documentation and flow example to reflect new grouping feature
 
