@@ -69,12 +69,14 @@ technical_debt:
 ## Medium Priority
 
 ### 643. Implement /learn command for tag extraction and context improvement
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
+- **Planned**: 2026-01-20
 - **Research**: [research-001.md](specs/643_implement_learn_command_tag_extraction/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/643_implement_learn_command_tag_extraction/plans/implementation-001.md)
 
 **Description**: Create a `/learn` command that scans files and directories for special comment tags (`FIX:`, `NOTE:`, `TODO:`) and creates appropriate tasks based on what is found:
 

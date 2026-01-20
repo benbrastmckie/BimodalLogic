@@ -1,20 +1,16 @@
 {
-  "status": "researched",
-  "summary": "Research completed with comprehensive analysis of command/skill/agent patterns, tag extraction strategies for 6 file types, and context routing heuristics. Identified architecture requiring new /learn command, skill-learn, and learn-agent.",
+  "status": "planned",
+  "summary": "6-phase implementation plan for /learn command with tag extraction and conditional task creation",
   "artifacts": [
     {
-      "path": "specs/643_implement_learn_command_tag_extraction/reports/research-001.md",
-      "type": "research",
-      "summary": "Research report with tag extraction patterns, context routing strategy, task creation infrastructure, and recommended 3-component architecture"
+      "path": "specs/643_implement_learn_command_tag_extraction/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "Implementation plan covering command, skill, agent creation with tag extraction, grouping, and task generation"
     }
   ],
-  "next_steps": "Run /plan 643 to create implementation plan",
   "metadata": {
-    "session_id": "sess_1768937859_a76532",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 420,
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 6
-  }
+    "phase_count": 6,
+    "estimated_hours": 3.0
+  },
+  "session_id": "sess_1768938262_b87c54"
 }
