@@ -1,20 +1,20 @@
 ---
-next_project_number: 646
+next_project_number: 649
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 17
+  active: 20
   completed: 229
   in_progress: 0
-  not_started: 9
+  not_started: 12
   abandoned: 19
-  total: 249
+  total: 252
 priority_distribution:
   critical: 0
-  high: 4
-  medium: 7
+  high: 5
+  medium: 9
   low: 6
 technical_debt:
   sorry_count: 205
@@ -26,6 +26,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 646. Fix Metalogic LaTeX formatting and structure issues
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: latex
+- **Created**: 2026-01-20
+
+**Description**: Fix 14 FIX:/NOTE: tags in Theories/Bimodal/latex/subfiles/04-Metalogic.tex covering formatting, structural, and presentation improvements: (1) make negation completeness a definition, (2) merge footnote with explanation for Lindenbaum's lemma, (3) introduce histories/times before canonical world states, (4) define quotient construction, (5) explain strong representation theorem, (6) remove diagram labels and add reference, (7) merge finite model property into decidability section, (8) clarify decision procedure return values, (9) explain tableau concepts and Lean 4 proof search, (10) add context for complexity values, (11) explain why decidability is useful despite limitations, (12) use standardized `\texttt{}` formatting for Lean directories, (13) format directory names in bold with `\texttt{}`, (14) make theorem names italic.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -84,6 +94,26 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 647. Update context files for LaTeX theorem naming and formatting standards
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Update .claude/context/ files to document LaTeX theorem naming and formatting standards based on 4 NOTE: tags from 04-Metalogic.tex: (1) make theorem names italic (e.g., 'Representation Theorem' in italics), (2) state definitions before using them (e.g., task relation definition needed before canonical frame), (3) reference Lean theorem names in the theorem environment itself (e.g., replace footnotes with inline `\texttt{representation_theorem}` references), (4) use standardized `\texttt{Metalogic_v2}` formatting for Lean directories throughout. Target context files: .claude/rules/latex.md or create new .claude/context/project/latex/standards.md.
+
+---
+
+### 648. Research canonical frame temporal order generalization
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-20
+
+**Description**: Research how to generalize the canonical frame construction to use ANY totally ordered commutative group for temporal order instead of integers. Current approach uses integers which makes time discrete, but the semantics definition specifies frames should work with any totally ordered commutative group. This is the crux of the proof strategy for completeness and needs careful thinking and research. From TODO tag at Theories/Bimodal/latex/subfiles/04-Metalogic.tex:125.
+
+---
 
 ### 645. Improve /todo command with interactive CLAUDE.md suggestions
 - **Status**: [PLANNED]
