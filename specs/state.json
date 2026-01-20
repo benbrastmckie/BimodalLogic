@@ -17,12 +17,20 @@
     {
       "project_number": 628,
       "project_name": "prove_semantic_truth_implies_truth_at_upward_bridge",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T00:25:09Z",
-      "last_updated": "2026-01-20T00:56:25Z",
-      "session_id": "sess_1768870570_94e25e"
+      "last_updated": "2026-01-20T01:01:02Z",
+      "session_id": "sess_1768870570_94e25e",
+      "researched": "2026-01-20T01:01:02Z",
+      "artifacts": [
+        {
+          "path": "specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing the upward bridge theorem with case-by-case feasibility analysis and effort estimation"
+        }
+      ]
     },
     {
       "project_number": 627,
