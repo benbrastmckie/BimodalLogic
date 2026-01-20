@@ -1,8 +1,8 @@
-import Bimodal.Metalogic.Representation.CanonicalModel
+import Bimodal.Boneyard.Metalogic.Representation.CanonicalModel
 
-namespace Bimodal.Metalogic.Representation
+namespace Bimodal.Boneyard.Metalogic.Representation
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Metalogic.Core
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Boneyard.Metalogic.Core
 
 /-!
 # Truth Lemma for Canonical Models
@@ -165,4 +165,4 @@ theorem canonical_complete (w : CanonicalWorldState) (φ : Formula) :
     φ ∈ w.carrier ∨ Formula.neg φ ∈ w.carrier :=
   mcs_contains_or_neg w.property φ
 
-end Bimodal.Metalogic.Representation
+end Bimodal.Boneyard.Metalogic.Representation

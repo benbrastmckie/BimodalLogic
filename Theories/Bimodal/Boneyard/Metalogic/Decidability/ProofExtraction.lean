@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Decidability.Saturation
+import Bimodal.Boneyard.Metalogic.Decidability.Saturation
 
 /-!
 # Proof Extraction from Closed Tableaux
@@ -27,7 +27,7 @@ obtain actual axiom witnesses that can be used in `DerivationTree.axiom`.
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace Bimodal.Boneyard.Metalogic.Decidability
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -208,4 +208,4 @@ structure ProofExtractionStats where
   height : Option Nat
   deriving Repr, Inhabited
 
-end Bimodal.Metalogic.Decidability
+end Bimodal.Boneyard.Metalogic.Decidability

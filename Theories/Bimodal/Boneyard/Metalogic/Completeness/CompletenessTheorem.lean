@@ -1,9 +1,9 @@
-import Bimodal.Metalogic.Completeness
+import Bimodal.Boneyard.Metalogic.Completeness
 
 /-!
 # CompletenessTheorem - Re-export Module
 
-This module re-exports the main completeness theorems from `Bimodal.Metalogic.Completeness`.
+This module re-exports the main completeness theorems from `Bimodal.Boneyard.Metalogic.Completeness`.
 
 ## Purpose
 
@@ -19,13 +19,13 @@ the internal infrastructure of the parent module.
 
 ## References
 
-See `Bimodal.Metalogic.Completeness` for the canonical model construction and
+See `Bimodal.Boneyard.Metalogic.Completeness` for the canonical model construction and
 supporting infrastructure.
 -/
 
-namespace Bimodal.Metalogic.Completeness.Theorems
+namespace Bimodal.Boneyard.Metalogic.Completeness.Theorems
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Metalogic
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Boneyard.Metalogic
 
 /-!
 ## Completeness Theorems
@@ -120,4 +120,4 @@ theorem consistency_iff_satisfiability (Gamma : Context) :
     Consistent Gamma <-> satisfiable_abs Gamma :=
   ⟨consistency_implies_satisfiability, satisfiability_implies_consistency⟩
 
-end Bimodal.Metalogic.Completeness.Theorems
+end Bimodal.Boneyard.Metalogic.Completeness.Theorems

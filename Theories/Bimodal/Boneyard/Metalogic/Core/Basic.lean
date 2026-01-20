@@ -5,7 +5,7 @@ import Mathlib.Data.List.Basic
 import Mathlib.Data.Set.Basic
 import Mathlib.Data.Finset.Basic
 
-namespace Bimodal.Metalogic.Core
+namespace Bimodal.Boneyard.Metalogic.Core
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 
@@ -75,4 +75,4 @@ This is used in completeness proofs with Lindenbaum's lemma.
 def FinitelyConsistent (Γ : Set Formula) : Prop :=
   ∀ (Δ : Finset Formula), (∀ φ ∈ Δ, φ ∈ Γ) → Consistent (Finset.toList Δ)
 
-end Bimodal.Metalogic.Core
+end Bimodal.Boneyard.Metalogic.Core

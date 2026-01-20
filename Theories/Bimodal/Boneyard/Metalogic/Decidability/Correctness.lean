@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.Decidability.DecisionProcedure
-import Bimodal.Metalogic.Soundness.Soundness
+import Bimodal.Boneyard.Metalogic.Decidability.DecisionProcedure
+import Bimodal.Boneyard.Metalogic.Soundness.Soundness
 
 /-!
 # Correctness of the Decision Procedure
@@ -16,7 +16,7 @@ This module proves the correctness of the tableau decision procedure:
 ## Implementation Notes
 
 The soundness proof relies on the existing soundness theorem from
-`Bimodal.Metalogic.Soundness`. The completeness proof is more complex
+`Bimodal.Boneyard.Metalogic.Soundness`. The completeness proof is more complex
 and relies on the finite model property and tableau completeness.
 
 ## References
@@ -25,12 +25,12 @@ and relies on the finite model property and tableau completeness.
 * Gore, R. (1999). Tableau Methods for Modal and Temporal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace Bimodal.Boneyard.Metalogic.Decidability
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Semantics
-open Bimodal.Metalogic
+open Bimodal.Boneyard.Metalogic
 
 /-!
 ## Soundness
@@ -72,7 +72,7 @@ Note: This is a partial formalization. Full completeness requires:
 3. Termination with sufficient fuel
 
 **FMP Reference**: The `finite_model_property` theorem in
-`Bimodal.Metalogic.Representation.FiniteModelProperty` provides the key bound:
+`Bimodal.Boneyard.Metalogic.Representation.FiniteModelProperty` provides the key bound:
 any satisfiable formula has a model with bounded world states (≤ 2^|subformulas|).
 This bounds the tableau exploration space.
 -/
@@ -195,4 +195,4 @@ theorem decide_result_exclusive (φ : Formula) (searchDepth tableauFuel : Nat) :
   simp only [DecisionResult.isValid, DecisionResult.isInvalid, DecisionResult.isTimeout]
   cases decide φ searchDepth tableauFuel <;> simp
 
-end Bimodal.Metalogic.Decidability
+end Bimodal.Boneyard.Metalogic.Decidability

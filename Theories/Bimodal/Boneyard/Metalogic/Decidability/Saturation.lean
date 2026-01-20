@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Decidability.Closure
+import Bimodal.Boneyard.Metalogic.Decidability.Closure
 
 /-!
 # Tableau Saturation and Expansion
@@ -24,7 +24,7 @@ The total complexity decreases with each expansion step.
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace Bimodal.Boneyard.Metalogic.Decidability
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -238,4 +238,4 @@ structure TableauStats where
   expansionSteps : Nat
   deriving Repr, Inhabited
 
-end Bimodal.Metalogic.Decidability
+end Bimodal.Boneyard.Metalogic.Decidability

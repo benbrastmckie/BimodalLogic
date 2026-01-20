@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic.Soundness.Soundness
-import Bimodal.Metalogic.DeductionTheorem
+import Bimodal.Boneyard.Metalogic.Soundness.Soundness
+import Bimodal.Boneyard.Metalogic.DeductionTheorem
 import Bimodal.Theorems.Propositional
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Order.Zorn
@@ -76,7 +76,7 @@ Estimated effort: 60-80 hours of focused metalogic development.
 * LEAN Completeness Proofs: Mathlib's propositional completeness
 -/
 
-namespace Bimodal.Metalogic
+namespace Bimodal.Boneyard.Metalogic
 
 open Syntax ProofSystem Semantics Theorems.Combinators Theorems.Propositional
 
@@ -3583,7 +3583,7 @@ The main results connecting semantic validity with syntactic derivability.
 Equivalently: `(∀ F M τ t, truth_at M τ t φ) → (⊢ φ)`
 
 **Implementation**: See `main_weak_completeness` in
-`Bimodal.Metalogic.Completeness.FiniteCanonicalModel` for the actual proof.
+`Bimodal.Boneyard.Metalogic.Completeness.FiniteCanonicalModel` for the actual proof.
 This axiom is kept for backward compatibility in the module hierarchy
 (FiniteCanonicalModel imports Completeness, so we cannot import back).
 
@@ -3607,7 +3607,7 @@ axiom weak_completeness (φ : Formula) : valid φ → DerivationTree [] φ
 Equivalently: `(∀ F M τ t, (∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M τ t φ) → (Γ ⊢ φ)`
 
 **Implementation**: See `main_strong_completeness` in
-`Bimodal.Metalogic.Completeness.FiniteCanonicalModel` for the actual proof.
+`Bimodal.Boneyard.Metalogic.Completeness.FiniteCanonicalModel` for the actual proof.
 This axiom is kept for backward compatibility in the module hierarchy.
 
 **Proof Strategy** (in FiniteCanonicalModel.lean):
@@ -3716,4 +3716,4 @@ With completeness proven, decidability can be established via:
 This is beyond Layer 0 scope but enabled by completeness proof.
 -/
 
-end Bimodal.Metalogic
+end Bimodal.Boneyard.Metalogic

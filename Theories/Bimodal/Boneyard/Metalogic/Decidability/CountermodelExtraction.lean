@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Decidability.Saturation
+import Bimodal.Boneyard.Metalogic.Decidability.Saturation
 import Bimodal.Semantics
 
 /-!
@@ -31,7 +31,7 @@ This avoids universe level issues with the full semantic machinery.
 * Gore, R. (1999). Tableau Methods for Modal and Temporal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace Bimodal.Boneyard.Metalogic.Decidability
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -175,4 +175,4 @@ def findCountermodel (φ : Formula) (fuel : Nat := 1000) : CountermodelResult φ
   | some (.hasOpen openBranch hSat) =>
       .found (extractCountermodelSimple φ openBranch hSat)
 
-end Bimodal.Metalogic.Decidability
+end Bimodal.Boneyard.Metalogic.Decidability

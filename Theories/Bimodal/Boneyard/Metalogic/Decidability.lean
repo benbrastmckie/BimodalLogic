@@ -1,14 +1,14 @@
-import Bimodal.Metalogic.Decidability.SignedFormula
-import Bimodal.Metalogic.Decidability.Tableau
-import Bimodal.Metalogic.Decidability.Closure
-import Bimodal.Metalogic.Decidability.Saturation
-import Bimodal.Metalogic.Decidability.ProofExtraction
-import Bimodal.Metalogic.Decidability.CountermodelExtraction
-import Bimodal.Metalogic.Decidability.DecisionProcedure
-import Bimodal.Metalogic.Decidability.Correctness
+import Bimodal.Boneyard.Metalogic.Decidability.SignedFormula
+import Bimodal.Boneyard.Metalogic.Decidability.Tableau
+import Bimodal.Boneyard.Metalogic.Decidability.Closure
+import Bimodal.Boneyard.Metalogic.Decidability.Saturation
+import Bimodal.Boneyard.Metalogic.Decidability.ProofExtraction
+import Bimodal.Boneyard.Metalogic.Decidability.CountermodelExtraction
+import Bimodal.Boneyard.Metalogic.Decidability.DecisionProcedure
+import Bimodal.Boneyard.Metalogic.Decidability.Correctness
 
 /-!
-# Bimodal.Metalogic.Decidability - Decision Procedure for TM Logic
+# Bimodal.Boneyard.Metalogic.Decidability - Decision Procedure for TM Logic
 
 Tableau-based decision procedure returning proof terms or countermodels.
 
@@ -32,9 +32,9 @@ Tableau-based decision procedure returning proof terms or countermodels.
 ## Usage
 
 ```lean
-import Bimodal.Metalogic.Decidability
+import Bimodal.Boneyard.Metalogic.Decidability
 
-open Bimodal.Metalogic.Decidability
+open Bimodal.Boneyard.Metalogic.Decidability
 
 #check decide        -- Main decision procedure
 #check isValid       -- Boolean validity check

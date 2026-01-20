@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.Decidability.ProofExtraction
-import Bimodal.Metalogic.Decidability.CountermodelExtraction
+import Bimodal.Boneyard.Metalogic.Decidability.ProofExtraction
+import Bimodal.Boneyard.Metalogic.Decidability.CountermodelExtraction
 
 /-!
 # Decision Procedure for TM Bimodal Logic
@@ -35,7 +35,7 @@ The procedure decides whether a formula is valid, returning either:
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace Bimodal.Boneyard.Metalogic.Decidability
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -261,4 +261,4 @@ def DecisionResult.display {φ : Formula} : DecisionResult φ → String
   | .invalid _ => s!"Invalid (countermodel found)"
   | .timeout => "Timeout (resources exhausted)"
 
-end Bimodal.Metalogic.Decidability
+end Bimodal.Boneyard.Metalogic.Decidability

@@ -30,7 +30,7 @@ We handle each case of the Derivable relation:
 * [Combinators.lean](../Theorems/Combinators.lean) - Combinator infrastructure
 -/
 
-namespace Bimodal.Metalogic
+namespace Bimodal.Boneyard.Metalogic
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -451,4 +451,4 @@ decreasing_by
       rfl
     simp [this, DerivationTree.height]
 
-end Bimodal.Metalogic
+end Bimodal.Boneyard.Metalogic

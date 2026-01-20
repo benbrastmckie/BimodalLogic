@@ -1,8 +1,8 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic.Core.Basic
-import Bimodal.Metalogic.Core.Provability
-import Bimodal.Metalogic.DeductionTheorem
+import Bimodal.Boneyard.Metalogic.Core.Basic
+import Bimodal.Boneyard.Metalogic.Core.Provability
+import Bimodal.Boneyard.Metalogic.DeductionTheorem
 import Mathlib.Data.Set.Basic
 import Mathlib.Order.Zorn
 
@@ -33,9 +33,9 @@ negation). The patterns here are adapted from the working Completeness.lean modu
 - Modal Logic, Blackburn et al., Chapter 4 (Canonical Models)
 -/
 
-namespace Bimodal.Metalogic.Representation
+namespace Bimodal.Boneyard.Metalogic.Representation
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Metalogic.Core
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Boneyard.Metalogic.Core
 
 /-!
 ## Set-Based Consistency Definitions
@@ -326,4 +326,4 @@ theorem mcs_box_accessibility {S T : Set Formula}
     (h_rel : ∀ φ, Formula.box φ ∈ S → φ ∈ T) (φ : Formula) :
     Formula.box φ ∈ S → φ ∈ T := h_rel φ
 
-end Bimodal.Metalogic.Representation
+end Bimodal.Boneyard.Metalogic.Representation

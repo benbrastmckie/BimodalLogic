@@ -30,7 +30,7 @@ or saturate (open branch = countermodel).
 * Wu, M. Verified Decision Procedures for Modal Logics (Lean formalization)
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace Bimodal.Boneyard.Metalogic.Decidability
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -320,4 +320,4 @@ This decreases with each tableau expansion step, ensuring termination.
 def branchUnexpandedComplexity (b : Branch) : Nat :=
   b.foldl (fun acc sf => acc + unexpandedComplexity sf) 0
 
-end Bimodal.Metalogic.Decidability
+end Bimodal.Boneyard.Metalogic.Decidability

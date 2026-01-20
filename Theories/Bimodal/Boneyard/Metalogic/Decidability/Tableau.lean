@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Decidability.SignedFormula
+import Bimodal.Boneyard.Metalogic.Decidability.SignedFormula
 
 /-!
 # Tableau Rules for TM Bimodal Logic
@@ -48,7 +48,7 @@ simplified tableau system that exploits the special properties of S5
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace Bimodal.Boneyard.Metalogic.Decidability
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -376,4 +376,4 @@ def totalUnexpandedComplexity (b : Branch) : Nat :=
   b.filter (fun sf => ¬isExpanded sf)
   |>.foldl (fun acc sf => acc + sf.complexity) 0
 
-end Bimodal.Metalogic.Decidability
+end Bimodal.Boneyard.Metalogic.Decidability

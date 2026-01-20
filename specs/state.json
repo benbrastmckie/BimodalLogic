@@ -7,7 +7,7 @@
   "active_projects": [
     {
       "project_number": 630,
-      "project_name": "build_kripke_model_extraction_from_saturated_branches",
+      "project_name": "build_taskmodel_extraction_from_saturated_branches",
       "status": "not_started",
       "language": "lean",
       "priority": "medium",
@@ -20,7 +20,7 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-20T01:07:10Z"
+      "last_updated": "2026-01-20T01:13:52Z"
     },
     {
       "project_number": 631,

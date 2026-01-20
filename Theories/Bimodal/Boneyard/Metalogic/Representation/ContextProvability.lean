@@ -1,8 +1,8 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic.Soundness.Soundness
-import Bimodal.Metalogic.Completeness
-import Bimodal.Metalogic.Core.Provability
+import Bimodal.Boneyard.Metalogic.Soundness.Soundness
+import Bimodal.Boneyard.Metalogic.Completeness
+import Bimodal.Boneyard.Metalogic.Core.Provability
 import Mathlib.Data.List.Basic
 import Mathlib.Data.Finset.Basic  -- Only for transition period
 import Mathlib.Logic.Basic
@@ -46,9 +46,9 @@ Based on research findings (Tasks 499, 502), this establishes the hierarchy:
 * Jónsson-Tarski Representation Theorem - Algebraic-semantic duality
 -/
 
-namespace Bimodal.Metalogic.Representation
+namespace Bimodal.Boneyard.Metalogic.Representation
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Metalogic.Core Bimodal.Metalogic.Soundness
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Boneyard.Metalogic.Core Bimodal.Boneyard.Metalogic.Soundness
 
 /-- 
 Soundness theorem for context-based provability.
@@ -97,4 +97,4 @@ theorem representation_theorem_empty {φ : Formula} :
   · exact representation_theorem_forward
   · exact representation_theorem_backward_empty
 
-end Bimodal.Metalogic.Representation
+end Bimodal.Boneyard.Metalogic.Representation

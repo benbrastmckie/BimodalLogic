@@ -1,6 +1,6 @@
-import Bimodal.Metalogic.Completeness
-import Bimodal.Metalogic.Representation.CanonicalModel
-import Bimodal.Metalogic.Soundness.Soundness
+import Bimodal.Boneyard.Metalogic.Completeness
+import Bimodal.Boneyard.Metalogic.Representation.CanonicalModel
+import Bimodal.Boneyard.Metalogic.Soundness.Soundness
 import Bimodal.Semantics.Validity
 
 /-!
@@ -18,7 +18,7 @@ the completeness/representation infrastructure and decidability/compactness.
 ## Architecture
 
 The FMP bridges three key modules:
-1. **Completeness** (`Bimodal.Metalogic.Completeness`): Provides `weak_completeness` and
+1. **Completeness** (`Bimodal.Boneyard.Metalogic.Completeness`): Provides `weak_completeness` and
    `provable_iff_valid`, establishing that validity implies provability
 2. **CanonicalModel** (`Representation.CanonicalModel`): Provides the canonical model
    construction with maximal consistent sets
@@ -40,9 +40,9 @@ The FMP is proven via contrapositive of weak completeness:
 - Wu, M., Verified Decision Procedures for Modal Logics
 -/
 
-namespace Bimodal.Metalogic.Representation
+namespace Bimodal.Boneyard.Metalogic.Representation
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Metalogic
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Boneyard.Metalogic
 
 variable {φ : Formula}
 
@@ -201,4 +201,4 @@ The Applications/Compactness.lean module uses FMP via:
 - The ultraproduct or limit construction yields a model for the full set
 -/
 
-end Bimodal.Metalogic.Representation
+end Bimodal.Boneyard.Metalogic.Representation

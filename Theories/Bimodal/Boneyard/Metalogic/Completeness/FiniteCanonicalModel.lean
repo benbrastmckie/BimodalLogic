@@ -2,8 +2,8 @@ import Bimodal.Syntax.Formula
 import Bimodal.Semantics
 import Bimodal.Semantics.Validity
 import Bimodal.ProofSystem
-import Bimodal.Metalogic.Decidability.SignedFormula
-import Bimodal.Metalogic.Completeness
+import Bimodal.Boneyard.Metalogic.Decidability.SignedFormula
+import Bimodal.Boneyard.Metalogic.Completeness
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.List.Basic
 import Mathlib.Data.Fin.Basic
@@ -95,12 +95,12 @@ by working directly with finite structures.
 * Task 473: SemanticWorldState architecture
 -/
 
-namespace Bimodal.Metalogic.Completeness
+namespace Bimodal.Boneyard.Metalogic.Completeness
 
 open Bimodal.Syntax
 open Bimodal.Semantics
 open Bimodal.ProofSystem
-open Bimodal.Metalogic.Decidability
+open Bimodal.Boneyard.Metalogic.Decidability
 
 /-!
 ## Phase 1: Finite Time Domain and Subformula Closure
@@ -3523,7 +3523,7 @@ theorem neg_consistent_of_not_provable (phi : Formula) (h_not_prov : ¬Nonempty 
     subst hne
     obtain ⟨d⟩ := h_incons
     -- From [] ⊢ ⊥, by soundness, [] ⊨ ⊥ (semantic consequence)
-    have h_sem_cons : ([] : Context) ⊨ Formula.bot := Bimodal.Metalogic.Soundness.soundness [] Formula.bot d
+    have h_sem_cons : ([] : Context) ⊨ Formula.bot := Bimodal.Boneyard.Metalogic.Soundness.soundness [] Formula.bot d
     -- This means: for all D, F, M, τ, t, if all formulas in [] are true (vacuously), then ⊥ is true
     -- But ⊥ is never true, so this is a contradiction
     -- Specialize to Int with trivial structures
@@ -4585,7 +4585,7 @@ theorem satisfiable_implies_not_refutable (phi : Formula) :
   -- Extract the derivation of phi.neg
   obtain ⟨d⟩ := h_prov
   -- By soundness, phi.neg is a semantic consequence of []
-  have h_valid := Bimodal.Metalogic.Soundness.soundness [] phi.neg d
+  have h_valid := Bimodal.Boneyard.Metalogic.Soundness.soundness [] phi.neg d
   -- Specialize to our model
   have h_neg_true : truth_at M τ t phi.neg := by
     apply h_valid D
@@ -4612,7 +4612,7 @@ theorem phi_consistent_of_not_refutable (φ : Formula) (h_not_refutable : ¬None
   · -- L is empty, so [] ⊢ ⊥, contradicts soundness
     subst hne
     obtain ⟨d⟩ := h_incons
-    have h_sem_cons : ([] : Context) ⊨ Formula.bot := Bimodal.Metalogic.Soundness.soundness [] Formula.bot d
+    have h_sem_cons : ([] : Context) ⊨ Formula.bot := Bimodal.Boneyard.Metalogic.Soundness.soundness [] Formula.bot d
     have h_bot_true := h_sem_cons Int TaskFrame.trivial_frame
         (TaskModel.all_false) (WorldHistory.trivial) (0 : Int)
         (fun ψ hψ => (List.not_mem_nil hψ).elim)
@@ -4874,4 +4874,4 @@ syntactic approach by defining world states as quotients of history-time pairs,
 making the truth lemma trivial by construction.
 -/
 
-end Bimodal.Metalogic.Completeness
+end Bimodal.Boneyard.Metalogic.Completeness

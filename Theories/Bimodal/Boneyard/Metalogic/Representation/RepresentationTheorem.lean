@@ -1,9 +1,9 @@
-import Bimodal.Metalogic.Representation.CanonicalModel
-import Bimodal.Metalogic.Representation.TruthLemma
+import Bimodal.Boneyard.Metalogic.Representation.CanonicalModel
+import Bimodal.Boneyard.Metalogic.Representation.TruthLemma
 
-namespace Bimodal.Metalogic.Representation
+namespace Bimodal.Boneyard.Metalogic.Representation
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Metalogic.Core
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Boneyard.Metalogic.Core
 
 /-!
 # Representation Theorem for TM Bimodal Logic
@@ -154,4 +154,4 @@ theorem mcs_extension_truth {φ : Formula} (h_cons : Consistent Γ) (h_in : φ �
   obtain ⟨w, h_sat⟩ := representation_theorem h_cons
   exact ⟨w, h_sat φ h_in⟩
 
-end Bimodal.Metalogic.Representation
+end Bimodal.Boneyard.Metalogic.Representation

@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Decidability.Tableau
+import Bimodal.Boneyard.Metalogic.Decidability.Tableau
 import Bimodal.Automation.ProofSearch
 
 /-!
@@ -29,7 +29,7 @@ axioms are valid in all models.
 * Gore, R. (1999). Tableau Methods for Modal and Temporal Logics
 -/
 
-namespace Bimodal.Metalogic.Decidability
+namespace Bimodal.Boneyard.Metalogic.Decidability
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
@@ -211,4 +211,4 @@ Count negated axiom instances in a branch.
 def countNegatedAxioms (b : Branch) : Nat :=
   b.filter (fun sf => sf.isNeg ∧ (matchAxiom sf.formula).isSome) |>.length
 
-end Bimodal.Metalogic.Decidability
+end Bimodal.Boneyard.Metalogic.Decidability

@@ -68,7 +68,7 @@ technical_debt:
 
 ## Medium Priority
 
-### 630. Build Kripke model extraction from saturated branches
+### 630. Build TaskModel extraction from saturated tableau branches
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
@@ -77,7 +77,7 @@ technical_debt:
 - **Dependencies**: Task 623
 - **Related**: Tasks 624, 628
 
-**Description**: Build infrastructure to extract a proper Kripke model from a saturated open tableau branch. Currently `evalFormula` (CountermodelExtraction.lean:158-164) ignores modal semantics (treats box/all_future/all_past as identity), but proving `tableau_complete` requires showing the extracted model is a valid Kripke structure with accessibility relations. This task creates: (1) World type from branch atoms, (2) Accessibility relation R from modal constraints, (3) TaskRel for temporal operators, (4) Prove extracted structure satisfies frame conditions. Unblocks Phase 3 of Task 623 and enables Task 624 (tableau_complete).
+**Description**: Build infrastructure to extract a proper TaskModel from a saturated open tableau branch. The bimodal logic TM uses **task frame semantics** (NOT standard Kripke semantics): TaskFrame `F = (W, D, ·)` with world states, temporal duration type D, and task relation satisfying nullity/compositionality; WorldHistory `τ: X → W` as functions from convex time domains to states; Box `□φ` quantifies over ALL world histories at time t (not worlds via accessibility relation); Temporal `Hφ`/`Gφ` quantify over ALL times in D. Currently `evalFormula` (CountermodelExtraction.lean:158-164) treats modal/temporal operators as identity. This task: (1) Extract WorldState type from branch, (2) Define task relation from modal constraints, (3) Build WorldHistory structure, (4) Prove extracted TaskFrame satisfies nullity and compositionality. Unblocks Phase 3 of Task 623 and enables Task 624 (tableau_complete).
 
 ---
 
@@ -90,7 +90,7 @@ technical_debt:
 - **Dependencies**: Task 630
 - **Related**: Tasks 624, 628
 
-**Description**: Prove the semantic bridge lemma `evalFormula_implies_sat`: if `evalFormula b φ = false` for a saturated open branch, then φ is not satisfiable in the extracted Kripke model. This connects the simplified propositional evaluation in `evalFormula` to full Kripke semantics via `truth_at`. Uses the Kripke model extraction from Task 630. Combined with `branchTruthLemma` (completed in Task 623), this provides the contrapositive needed for `tableau_complete`: valid formulas cannot have open saturated branches.
+**Description**: Prove the semantic bridge lemma `evalFormula_implies_sat`: if `evalFormula b φ = false` for a saturated open branch, then φ is not satisfiable in the extracted TaskModel. This connects the simplified propositional evaluation in `evalFormula` to full task frame semantics via `truth_at M τ t φ`. Uses the TaskModel extraction from Task 630. Key insight: must show that for the extracted model M with some WorldHistory τ and time t, `truth_at M τ t φ = false`. Combined with `branchTruthLemma` (completed in Task 623), this provides the contrapositive needed for `tableau_complete`: valid formulas cannot have open saturated branches.
 
 ---
 
@@ -253,7 +253,5 @@ technical_debt:
 - **Dependencies**: Task 624
 
 **Description**: Prove the `decide_complete` theorem in Correctness.lean deriving decision procedure completeness from tableau completeness. Follows directly from tableau_complete (Task 624).
-
----
 
 ---

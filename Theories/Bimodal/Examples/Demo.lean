@@ -1,10 +1,10 @@
 import Bimodal.Theorems.Perpetuity
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
-import Bimodal.Metalogic.Soundness
-import Bimodal.Metalogic.DeductionTheorem
-import Bimodal.Metalogic.Completeness.FiniteCanonicalModel
-import Bimodal.Metalogic.Decidability.DecisionProcedure
+import Bimodal.Metalogic_v2.Soundness.Soundness
+import Bimodal.Metalogic_v2.Core.DeductionTheorem
+import Bimodal.Metalogic_v2.Representation.SemanticCanonicalModel
+import Bimodal.Metalogic_v2.Decidability.DecisionProcedure
 
 /-!
 # Bimodal TM Logic - Demo Presentation
@@ -44,9 +44,10 @@ open Bimodal.Syntax
 open Bimodal.Syntax.Formula (swap_temporal_involution)
 open Bimodal.ProofSystem
 open Bimodal.Semantics
-open Bimodal.Metalogic
-open Bimodal.Metalogic.Completeness (semantic_weak_completeness main_provable_iff_valid main_weak_completeness)
-open Bimodal.Metalogic.Decidability
+open Bimodal.Metalogic_v2.Core
+open Bimodal.Metalogic_v2.Soundness
+open Bimodal.Metalogic_v2.Representation (semantic_weak_completeness main_provable_iff_valid_v2)
+open Bimodal.Metalogic_v2.Decidability
 open Bimodal.Theorems.Perpetuity
 
 /-!
@@ -149,10 +150,10 @@ Uses semantic canonical model with finite world states. -/
 
 /-! **Main Theorem**: Derivability equals validity.
 
-`main_provable_iff_valid φ : Nonempty (⊢ φ) ↔ valid φ`
+`main_provable_iff_valid_v2 φ : Nonempty (⊢ φ) ↔ valid φ`
 
 The fundamental bi-conditional connecting syntax and semantics. -/
-#check @main_provable_iff_valid  -- ⊢ φ ↔ ⊨ φ
+#check @main_provable_iff_valid_v2  -- ⊢ φ ↔ ⊨ φ
 
 /-!
 ### 1.3 Decision Procedure
@@ -167,10 +168,10 @@ either a proof or a countermodel.
 - `valid proof` = formula is valid with proof term
 - `invalid counter` = formula is invalid with countermodel
 - `timeout` = resources exhausted -/
-#check @Decidability.decide  -- Formula → DecisionResult
+#check @Metalogic_v2.Decidability.decide  -- Formula → DecisionResult
 
 /-! **Convenience functions** for common queries -/
-#check @isValid       -- Formula → Bool
+#check @isValidFormula       -- Formula → Bool
 #check @isSatisfiable -- Formula → Bool
 #check @isTautology   -- Formula → Bool
 
@@ -417,7 +418,7 @@ This is the crowning achievement of the formalization:
 - **Soundness**: If φ is provable, it's true in all models
 - **Completeness**: If φ is true in all models, it's provable -/
 example (φ : Formula) : Nonempty (⊢ φ) ↔ valid φ :=
-  main_provable_iff_valid φ
+  main_provable_iff_valid_v2 φ
 
 end Applications
 

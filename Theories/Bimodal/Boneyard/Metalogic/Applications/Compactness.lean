@@ -1,6 +1,6 @@
-import Bimodal.Metalogic.Completeness.CompletenessTheorem
-import Bimodal.Metalogic.Representation.RepresentationTheorem
-import Bimodal.Metalogic.Core.Basic
+import Bimodal.Boneyard.Metalogic.Completeness.CompletenessTheorem
+import Bimodal.Boneyard.Metalogic.Representation.RepresentationTheorem
+import Bimodal.Boneyard.Metalogic.Core.Basic
 
 /-!
 # Compactness Theorems
@@ -18,11 +18,11 @@ These theorems have `sorry` placeholders as they require deep logical infrastruc
 to fully prove. The signatures are correct and the proofs sketch the approach.
 -/
 
-namespace Bimodal.Metalogic.Applications
+namespace Bimodal.Boneyard.Metalogic.Applications
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
-open Bimodal.Metalogic Bimodal.Metalogic.Core
-open Bimodal.Metalogic.Completeness.Theorems
+open Bimodal.Boneyard.Metalogic Bimodal.Boneyard.Metalogic.Core
+open Bimodal.Boneyard.Metalogic.Completeness.Theorems
 
 variable {Gamma : Context} {phi : Formula}
 
@@ -91,4 +91,4 @@ theorem countable_compactness (_h_countable : Countable Formula) :
     Consistent Gamma -> satisfiable_abs Gamma :=
   consistency_implies_satisfiability
 
-end Bimodal.Metalogic.Applications
+end Bimodal.Boneyard.Metalogic.Applications

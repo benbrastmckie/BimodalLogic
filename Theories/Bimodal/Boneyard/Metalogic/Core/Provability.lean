@@ -2,7 +2,7 @@ import Bimodal.ProofSystem
 import Mathlib.Data.List.Basic
 import Mathlib.Data.Finset.Basic
 
-namespace Bimodal.Metalogic.Core
+namespace Bimodal.Boneyard.Metalogic.Core
 
 open Bimodal.Syntax Bimodal.ProofSystem
 
@@ -61,4 +61,4 @@ Context subset: Check if Γ₁ is a subset of Γ₂ element-wise.
 def Context.subset (Γ₁ Γ₂ : Context) : Prop :=
   ∀ ψ ∈ Γ₁, ψ ∈ Γ₂
 
-end Bimodal.Metalogic.Core
+end Bimodal.Boneyard.Metalogic.Core
