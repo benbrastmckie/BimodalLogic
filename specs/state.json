@@ -2,17 +2,17 @@
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
     "total_tasks": 17,
-    "last_sync": "2026-01-20T22:08:50Z"
+    "last_sync": "2026-01-20T22:40:00Z"
   },
   "active_projects": [
     {
       "project_number": 652,
       "project_name": "improve_learn_todo_grouping_by_topic",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T22:07:14Z",
-      "last_updated": "2026-01-20T22:24:04Z",
+      "last_updated": "2026-01-20T22:40:00Z",
       "session_id": "sess_1768947824_b236d2",
       "researched": "2026-01-20T22:11:00Z",
       "artifacts": [
@@ -30,10 +30,18 @@
           "path": "specs/652_improve_learn_todo_grouping_by_topic/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase plan: topic analysis infrastructure, user confirmation UI, task creation modification, documentation updates"
+        },
+        {
+          "path": "specs/652_improve_learn_todo_grouping_by_topic/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results for TODO topic grouping feature"
         }
       ],
       "planned": "2026-01-20T22:20:44Z",
-      "started": "2026-01-20T22:24:04Z"
+      "started": "2026-01-20T22:24:04Z",
+      "completed": "2026-01-20T22:40:00Z",
+      "completion_summary": "Implemented TODO topic grouping in /learn command with semantic analysis (key terms, file sections, action types), user confirmation UI with 3 grouping options, and effort-scaled task creation.",
+      "claudemd_suggestions": "Modified skill-learn/SKILL.md (added Step 7.5 topic grouping, updated Step 8.4 task creation), commands/learn.md (added grouping section), docs/examples/learn-flow-example.md (added grouping scenario)"
     },
     {
       "project_number": 648,
