@@ -8,30 +8,36 @@
     {
       "project_number": 651,
       "project_name": "simplify_learn_note_tag_workflow",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T21:32:12Z",
-      "last_updated": "2026-01-20T21:37:29Z",
-      "session_id": "sess_1768944913_9a32b0",
+      "last_updated": "2026-01-20T21:50:20Z",
+      "session_id": "sess_1768945692_112dc7",
       "researched": "2026-01-20T21:37:29Z",
       "artifacts": [
         {
           "path": "specs/651_simplify_learn_note_tag_workflow/reports/research-001.md",
           "type": "research",
           "summary": "Research report identifying 4 targeted edits across 3 files to simplify /learn NOTE: tag workflow"
+        },
+        {
+          "path": "specs/651_simplify_learn_note_tag_workflow/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan to simplify /learn NOTE: tag workflow by removing tag replacement from learn-it tasks"
         }
-      ]
+      ],
+      "planned": "2026-01-20T21:50:20Z"
     },
     {
       "project_number": 650,
       "project_name": "implement_completion_summary_claudemd_suggestions_fields",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T20:49:27Z",
-      "last_updated": "2026-01-20T21:47:55Z",
-      "session_id": "sess_1768944058_057f1d",
+      "last_updated": "2026-01-20T21:49:36Z",
+      "session_id": "sess_1768945752_2a6128",
       "researched": "2026-01-20T20:54:20Z",
       "artifacts": [
         {
@@ -45,7 +51,8 @@
           "summary": "5-phase plan v003: simplified claudemd_suggestions to string describing .claude/ changes; moved filtering criteria to /todo"
         }
       ],
-      "planned": "2026-01-20T21:47:55Z"
+      "planned": "2026-01-20T21:47:55Z",
+      "started": "2026-01-20T21:49:36Z"
     },
     {
       "project_number": 649,

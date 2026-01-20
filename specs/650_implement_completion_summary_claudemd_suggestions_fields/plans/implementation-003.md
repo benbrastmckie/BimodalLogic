@@ -2,7 +2,7 @@
 
 - **Task**: 650 - Implement completion_summary and claudemd_suggestions fields in /implement workflow
 - **Version**: 003
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -75,7 +75,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Extend Return Metadata Schema [NOT STARTED]
+### Phase 1: Extend Return Metadata Schema [IN PROGRESS]
 
 **Goal**: Update the return-metadata-file.md schema to document the new `completion_data` field that agents should include.
 
