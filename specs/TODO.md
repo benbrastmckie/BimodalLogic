@@ -1,16 +1,16 @@
 ---
-next_project_number: 638
+next_project_number: 640
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 13
+  active: 15
   completed: 218
   in_progress: 1
-  not_started: 5
+  not_started: 7
   abandoned: 19
-  total: 237
+  total: 239
 priority_distribution:
   critical: 0
   high: 3
@@ -83,6 +83,26 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 638. Add roadmap update capability to /todo command
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Extend the /todo command to update ROAD_MAP.md checkboxes when archiving completed or abandoned tasks. Currently /todo archives tasks to TODO.md and state.json but does not touch ROAD_MAP.md. Use the matching patterns from /review (exact `(Task {N})` references, title fuzzy matching, file path existence checks) but integrate at the task archival point. When a task is archived as completed, check off any matching roadmap items. When a task is archived as abandoned, optionally annotate the roadmap item.
+
+---
+
+### 639. Improve /review roadmap matching reliability
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Improve the reliability of ROAD_MAP.md checkbox matching in the /review command. Current issues: (1) Fuzzy title matching is unreliable, (2) No explicit task-to-roadmap mapping exists, (3) Task 637 had to be manually created to fix checkboxes. Solutions: (1) Add `roadmap_items` field to state.json entries for explicit task-roadmap linking, (2) Update /review to use explicit mappings first, fall back to fuzzy matching, (3) Update /task create to optionally specify linked roadmap items, (4) Improve fuzzy matching heuristics.
+
+---
 
 ### 635. Extend /refresh command for Claude Code project cleanup
 - **Status**: [COMPLETED]
@@ -165,7 +185,7 @@ technical_debt:
 
 ### 483. Investigate LaTeX aux file corruption errors
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: latex
 

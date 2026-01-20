@@ -1,10 +1,28 @@
 {
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
-    "total_tasks": 10,
-    "last_sync": "2026-01-20T06:21:00Z"
+    "total_tasks": 12,
+    "last_sync": "2026-01-20T16:55:00Z"
   },
   "active_projects": [
+    {
+      "project_number": 638,
+      "project_name": "add_roadmap_update_to_todo_command",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T16:55:00Z",
+      "last_updated": "2026-01-20T16:55:00Z"
+    },
+    {
+      "project_number": 639,
+      "project_name": "improve_review_roadmap_matching",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T16:55:00Z",
+      "last_updated": "2026-01-20T16:55:00Z"
+    },
     {
       "project_number": 637,
       "project_name": "fix_roadmap_checkboxes_not_updated",
@@ -373,11 +391,13 @@
     },
     {
       "project_number": 483,
-      "status": "not_started",
+      "status": "researching",
       "project_name": "investigate_latex_aux_file_corruption_errors",
       "section": "Medium Priority",
       "language": "latex",
-      "priority": "medium"
+      "priority": "medium",
+      "last_updated": "2026-01-20T16:47:52Z",
+      "session_id": "sess_1768927647_f21439"
     },
     {
       "project_number": 431,
@@ -442,7 +462,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 638,
+  "next_project_number": 640,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
