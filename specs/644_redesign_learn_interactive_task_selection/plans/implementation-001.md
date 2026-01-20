@@ -1,7 +1,7 @@
 # Implementation Plan: Task #644
 
 - **Task**: 644 - Redesign /learn command to use interactive task selection
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -54,7 +54,7 @@ Research report (research-001.md) provided:
 
 ## Implementation Phases
 
-### Phase 1: Convert skill-learn to direct execution [NOT STARTED]
+### Phase 1: Convert skill-learn to direct execution [COMPLETED]
 
 **Goal**: Remove subagent delegation and implement tag extraction directly in skill-learn
 
@@ -78,7 +78,7 @@ Research report (research-001.md) provided:
 
 ---
 
-### Phase 2: Implement interactive selection flow [NOT STARTED]
+### Phase 2: Implement interactive selection flow [COMPLETED]
 
 **Goal**: Add two-stage AskUserQuestion prompts for task type and TODO item selection
 
@@ -102,7 +102,7 @@ Research report (research-001.md) provided:
 
 ---
 
-### Phase 3: Implement task creation and postflight [NOT STARTED]
+### Phase 3: Implement task creation and postflight [COMPLETED]
 
 **Goal**: Create selected tasks and maintain git commit behavior
 
@@ -127,7 +127,7 @@ Research report (research-001.md) provided:
 
 ---
 
-### Phase 4: Update command and remove agent [NOT STARTED]
+### Phase 4: Update command and remove agent [COMPLETED]
 
 **Goal**: Update command documentation and remove deprecated learn-agent
 
@@ -153,7 +153,7 @@ Research report (research-001.md) provided:
 
 ---
 
-### Phase 5: Testing and edge cases [NOT STARTED]
+### Phase 5: Testing and edge cases [COMPLETED]
 
 **Goal**: Verify the redesign works correctly across all scenarios
 

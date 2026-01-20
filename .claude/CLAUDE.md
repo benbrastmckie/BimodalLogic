@@ -137,11 +137,11 @@ Reads errors.json, creates fix plans
 ### /meta - System builder
 Interactive system builder that creates TASKS for .claude/ changes. Uses skill-meta -> meta-builder-agent delegation. Supports three modes: interactive interview, prompt analysis, and system analysis (--analyze).
 
-### /learn - Scan for tags, create tasks
+### /learn - Scan for tags, create tasks interactively
 ```
-/learn [PATH...] [--dry-run]   # Scan for FIX:/NOTE:/TODO: tags
+/learn [PATH...]   # Scan for FIX:/NOTE:/TODO: tags
 ```
-Scans source files for embedded tags and creates structured tasks.
+Scans source files for embedded tags. Displays findings, then prompts for interactive task type and TODO item selection before creating tasks. Users always see what was found before any tasks are created.
 
 ## State Synchronization
 
@@ -339,7 +339,7 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 | skill-lean-implementation | lean-implementation-agent | Lean proof implementation |
 | skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
 | skill-meta | meta-builder-agent | System building and task creation |
-| skill-learn | learn-agent | Tag extraction and task creation from source comments |
+| skill-learn | (direct execution) | Interactive tag scanning and task creation from source comments |
 | skill-status-sync | (direct execution) | Atomic status updates for task state |
 | skill-document-converter | document-converter-agent | Document format conversion (PDF/DOCX to Markdown, etc.) |
 | skill-refresh | (direct execution) | Manage orphaned processes and project file cleanup |

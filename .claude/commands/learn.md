@@ -1,19 +1,29 @@
 ---
-description: Scan files for FIX:, NOTE:, TODO: tags and create structured tasks
+description: Scan files for FIX:, NOTE:, TODO: tags and create structured tasks interactively
 allowed-tools: Skill
-argument-hint: [PATH...] [--dry-run]
+argument-hint: [PATH...]
 model: claude-opus-4-5-20251101
 ---
 
 # /learn Command
 
-Scans codebase files for embedded tags (`FIX:`, `NOTE:`, `TODO:`) and creates structured tasks based on tag types. This command helps capture work items embedded in source code comments.
+Scans codebase files for embedded tags (`FIX:`, `NOTE:`, `TODO:`) and creates structured tasks based on user selection. This command helps capture work items embedded in source code comments.
 
 ## Arguments
 
 - No args: Scan entire project for tags
 - `PATH...` - Scan specific files or directories
-- `--dry-run` - Preview tasks without creating them
+
+## Interactive Flow
+
+The command always runs interactively:
+1. Scan files for tags
+2. Display tag summary to user
+3. Prompt for task type selection
+4. Optionally prompt for individual TODO selection
+5. Create selected tasks
+
+This design ensures users always see what was found before any tasks are created.
 
 ## Tag Types and Task Generation
 
@@ -21,15 +31,15 @@ Scans codebase files for embedded tags (`FIX:`, `NOTE:`, `TODO:`) and creates st
 |-----|-----------|-------------|
 | `FIX:` | fix-it-task | Grouped into single task for small changes |
 | `NOTE:` | fix-it-task + learn-it-task | Creates both task types |
-| `TODO:` | todo-task | Individual task per tag |
+| `TODO:` | todo-task | Individual task per selected tag |
 
 ### Task Type Details
 
-**fix-it-task**: Combines all FIX: and NOTE: tags into a single task describing fixes needed. Includes file paths and line references. Created only if FIX: or NOTE: tags exist.
+**fix-it-task**: Combines all FIX: and NOTE: tags into a single task describing fixes needed. Includes file paths and line references. Only offered if FIX: or NOTE: tags exist.
 
-**learn-it-task**: Groups NOTE: tags by target context directory. Creates tasks to update `.claude/context/` files based on the learnings. Created only if NOTE: tags exist.
+**learn-it-task**: Groups NOTE: tags by target context directory. Creates tasks to update `.claude/context/` files based on the learnings. Only offered if NOTE: tags exist.
 
-**todo-task**: One task per TODO: tag. Preserves original text as task description. Language detected from source file type.
+**todo-task**: One task per selected TODO: tag. Preserves original text as task description. Language detected from source file type.
 
 ## Supported Comment Styles
 
@@ -42,53 +52,76 @@ Scans codebase files for embedded tags (`FIX:`, `NOTE:`, `TODO:`) and creates st
 
 ## Execution
 
-### 1. Mode Detection
+### 1. Scan and Display
+
+The skill scans specified paths and displays findings:
 
 ```
-if $ARGUMENTS contains "--dry-run":
-    mode = "dry_run"
-    paths = extract paths from $ARGUMENTS (excluding --dry-run)
-elif $ARGUMENTS is empty:
-    mode = "execute"
-    paths = ["."]  # Project root
-else:
-    mode = "execute"
-    paths = $ARGUMENTS
-```
+## Tag Scan Results
 
-### 2. Delegate to Skill
-
-Invoke skill-learn via Skill tool with:
-- Mode (execute or dry_run)
-- Paths to scan
-
-The skill will:
-1. Validate inputs
-2. Prepare delegation context
-3. Invoke learn-agent
-4. Handle postflight (git commit if tasks created)
-5. Return results
-
-### 3. Present Results
-
-Based on agent return:
-- **Dry-run mode**: Display tag summary and preview tasks
-- **Execute mode**: Display created tasks and next steps
-- **No tags found**: Report gracefully
-
-## Output
-
-### Dry-Run Output
-
-```
-## Tag Scan Results (Dry Run)
-
-**Files Scanned**: 42
+**Files Scanned**: Logos/, docs/
 **Tags Found**: 15
 
 ### FIX: Tags (5)
 - `src/module.lean:23` - Handle edge case in parser
 - `src/module.lean:45` - Fix off-by-one error
+...
+
+### NOTE: Tags (3)
+- `docs/guide.tex:89` - Document this pattern
+...
+
+### TODO: Tags (7)
+- `Logos/Layer1/Modal.lean:67` - Add completeness theorem
+...
+```
+
+### 2. Task Type Selection
+
+User selects which task types to create:
+
+```
+[Task Types]
+Which task types should be created?
+
+[ ] fix-it task (Combine 8 FIX:/NOTE: tags into single task)
+[ ] learn-it task (Update context from 3 NOTE: tags)
+[ ] TODO tasks (Create tasks for 7 TODO: items)
+```
+
+### 3. TODO Item Selection
+
+If "TODO tasks" is selected, user picks individual items:
+
+```
+[TODO Selection]
+Select TODO items to create as tasks:
+
+[ ] Add completeness theorem (Logos/Layer1/Modal.lean:67)
+[ ] Implement helper function (Shared/Utils.lean:23)
+...
+```
+
+For >20 TODO items, a "Select all" option is added.
+
+### 4. Task Creation
+
+Selected tasks are created in TODO.md and state.json.
+
+## Output Examples
+
+### Tags Found - Interactive Selection
+
+```
+## Tag Scan Results
+
+**Files Scanned**: .
+**Tags Found**: 15
+
+### FIX: Tags (5)
+- `src/module.lean:23` - Handle edge case in parser
+- `src/module.lean:45` - Fix off-by-one error
+- `docs/guide.tex:56` - Update outdated reference
 
 ### NOTE: Tags (3)
 - `docs/guide.tex:89` - Document this pattern
@@ -96,25 +129,18 @@ Based on agent return:
 
 ### TODO: Tags (7)
 - `Logos/Layer1/Modal.lean:67` - Add completeness theorem
+- `Logos/Shared/Utils.lean:23` - Implement helper function
+...
 
 ---
 
-**Tasks That Would Be Created**:
-1. fix-it-task: "Fix issues from FIX:/NOTE: tags" (5 items)
-2. learn-it-task: "Update context files from NOTE: tags" (3 items)
-3. todo-task: "Add completeness theorem" (Layer1)
-4. todo-task: "Implement helper function" (Shared)
-...
+[User selects task types and TODO items]
 
-Run `/learn` without --dry-run to create these tasks.
-```
+---
 
-### Execute Output
-
-```
 ## Tasks Created from Tags
 
-**Tags Processed**: 15 across 42 files
+**Tags Processed**: 15
 
 ### Created Tasks
 
@@ -129,7 +155,7 @@ Run `/learn` without --dry-run to create these tasks.
 
 **Next Steps**:
 1. Review tasks in TODO.md
-2. Run `/research {first_task}` to begin
+2. Run `/research 650` to begin
 3. Progress through /research -> /plan -> /implement cycle
 ```
 
@@ -138,19 +164,27 @@ Run `/learn` without --dry-run to create these tasks.
 ```
 ## No Tags Found
 
-Scanned 42 files in specified paths.
+Scanned files in: Logos/
 No FIX:, NOTE:, or TODO: tags detected.
 
 Nothing to create.
 ```
 
+### No Selection Made
+
+```
+## Tag Scan Results
+...
+
+---
+
+No task types selected. No tasks created.
+```
+
 ## Examples
 
 ```bash
-# Scan entire project (dry run first)
-/learn --dry-run
-
-# Scan entire project and create tasks
+# Scan entire project interactively
 /learn
 
 # Scan specific directory
@@ -160,12 +194,11 @@ Nothing to create.
 /learn docs/04-Metalogic.tex
 
 # Scan multiple paths
-/learn Logos/ .claude/agents/ --dry-run
+/learn Logos/ .claude/agents/
 ```
 
-## Confirmation Flow
+## Notes
 
-When not in dry-run mode and more than 10 tasks would be created:
-1. Display task count warning
-2. Require explicit confirmation before proceeding
-3. User can cancel to review with --dry-run first
+- The `--dry-run` flag is no longer supported. The interactive flow is inherently "preview first" - users always see findings before any tasks are created.
+- Git commit is performed automatically after tasks are created.
+- Task numbers are assigned sequentially from state.json.

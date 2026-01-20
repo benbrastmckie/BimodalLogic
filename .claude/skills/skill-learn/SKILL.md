@@ -1,52 +1,32 @@
 ---
 name: skill-learn
-description: Scan codebase for FIX:/NOTE:/TODO: tags and create structured tasks. Invoke for /learn command.
-allowed-tools: Task, Bash, Edit, Read, Write
+description: Scan codebase for FIX:/NOTE:/TODO: tags and create structured tasks with interactive selection. Invoke for /learn command.
+allowed-tools: Bash, Grep, Read, Write, Edit, AskUserQuestion
 ---
 
-# Learn Skill
+# Learn Skill (Direct Execution)
 
-Thin wrapper that delegates tag extraction and task creation to `learn-agent` subagent. This skill handles scanning files for embedded tags and creating appropriate tasks based on tag types.
+Direct execution skill for scanning files, presenting findings interactively, and creating user-selected tasks. Replaces the previous delegation-based approach with synchronous execution and AskUserQuestion prompts.
 
-**IMPORTANT**: This skill implements the skill-internal postflight pattern. After the subagent returns, this skill handles all postflight operations (git commit if tasks created) before returning. This eliminates the "continue" prompt issue between skill return and orchestrator.
+**Key behavior**: Users always see tag scan results BEFORE any tasks are created. Users select which task types to create via interactive prompts.
 
 ## Context References
 
 Reference (do not load eagerly):
-- Path: `.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
-- Path: `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
-- Path: `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O helpers
-
-Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
-
-## Trigger Conditions
-
-This skill activates when:
-- /learn command is invoked (with any arguments)
-- User requests tag scanning for task creation
+- Path: `@specs/TODO.md` - Current task list
+- Path: `@specs/state.json` - Machine state
 
 ---
 
 ## Execution
 
-### 1. Input Validation
+### Step 1: Parse Arguments
 
-Parse arguments and determine mode:
+Extract paths from command input:
 
-**Mode Detection Logic**:
 ```bash
-# Parse arguments
-args="$ARGUMENTS"
-
-# Check for dry-run flag
-if [[ "$args" == *"--dry-run"* ]]; then
-  mode="dry_run"
-  # Remove --dry-run from args to get paths
-  paths=$(echo "$args" | sed 's/--dry-run//g' | xargs)
-else
-  mode="execute"
-  paths="$args"
-fi
+# Parse from command input
+paths="$ARGUMENTS"
 
 # Default to project root if no paths specified
 if [ -z "$paths" ]; then
@@ -54,186 +34,378 @@ if [ -z "$paths" ]; then
 fi
 ```
 
-### 2. Context Preparation
+**Note**: The `--dry-run` flag is no longer supported. The interactive flow is inherently "preview first" - users always see findings before any tasks are created.
 
-Prepare delegation context:
+### Step 2: Generate Session ID
+
+Generate session ID for tracking:
+
+```bash
+session_id="sess_$(date +%s)_$(od -An -N3 -tx1 /dev/urandom | tr -d ' ')"
+```
+
+### Step 3: Execute Tag Extraction
+
+Scan for tags using file-type-specific patterns. Use Bash with grep for consistent output parsing.
+
+#### 3.1: Extract FIX: Tags
+
+**Lean files**:
+```bash
+grep -rn --include="*.lean" "-- FIX:" $paths 2>/dev/null || true
+```
+
+**LaTeX files**:
+```bash
+grep -rn --include="*.tex" "% FIX:" $paths 2>/dev/null || true
+```
+
+**Markdown files**:
+```bash
+grep -rn --include="*.md" "<!-- FIX:" $paths 2>/dev/null || true
+```
+
+**Python/Shell/YAML files**:
+```bash
+grep -rn --include="*.py" --include="*.sh" --include="*.yaml" --include="*.yml" "# FIX:" $paths 2>/dev/null || true
+```
+
+#### 3.2: Extract NOTE: Tags
+
+Same patterns as above, replacing `FIX:` with `NOTE:`.
+
+#### 3.3: Extract TODO: Tags
+
+Same patterns as above, replacing `FIX:` with `TODO:`.
+
+#### 3.4: Parse Results
+
+For each grep match, extract:
+- File path
+- Line number
+- Tag type (FIX, NOTE, TODO)
+- Tag content (text after the tag)
+
+Example raw output:
+```
+Logos/Layer1/Modal.lean:67:-- TODO: Add completeness theorem for S5
+docs/04-Metalogic.tex:89:% FIX: Correct the definition reference
+```
+
+Categorize into three arrays:
+- `fix_tags[]` - All FIX: tags
+- `note_tags[]` - All NOTE: tags
+- `todo_tags[]` - All TODO: tags
+
+### Step 4: Display Tag Summary
+
+Present findings to user BEFORE any selection:
+
+```
+## Tag Scan Results
+
+**Files Scanned**: {paths}
+**Tags Found**: {total_count}
+
+### FIX: Tags ({count})
+- `{file}:{line}` - {content}
+- ...
+
+### NOTE: Tags ({count})
+- `{file}:{line}` - {content}
+- ...
+
+### TODO: Tags ({count})
+- `{file}:{line}` - {content}
+- ...
+```
+
+### Step 5: Handle Edge Cases
+
+#### No Tags Found
+
+If no tags found:
+```
+## No Tags Found
+
+Scanned files in: {paths}
+No FIX:, NOTE:, or TODO: tags detected.
+
+Nothing to create.
+```
+
+Exit gracefully without prompts.
+
+#### Only Certain Tag Types
+
+Only show task type options for tag types that exist:
+- FIX: tags exist -> offer "fix-it task"
+- NOTE: tags exist -> offer "fix-it task" AND "learn-it task"
+- TODO: tags exist -> offer "TODO tasks"
+
+### Step 6: Task Type Selection
+
+If tags were found, prompt user to select task types:
 
 ```json
 {
-  "session_id": "sess_{timestamp}_{random}",
-  "delegation_depth": 1,
-  "delegation_path": ["orchestrator", "learn", "skill-learn"],
-  "timeout": 3600,
-  "mode": "execute|dry_run",
-  "paths": ["{path1}", "{path2}", "..."],
-  "metadata_file_path": ".claude/.return-meta-learn.json"
+  "question": "Which task types should be created?",
+  "header": "Task Types",
+  "multiSelect": true,
+  "options": [
+    {
+      "label": "fix-it task",
+      "description": "Combine {N} FIX:/NOTE: tags into single task"
+    },
+    {
+      "label": "learn-it task",
+      "description": "Update context from {N} NOTE: tags"
+    },
+    {
+      "label": "TODO tasks",
+      "description": "Create tasks for {N} TODO: items"
+    }
+  ]
 }
 ```
 
-### 3. Invoke Subagent
+**Important**: Only include options where the tag type exists:
+- Include "fix-it task" only if FIX: or NOTE: tags exist
+- Include "learn-it task" only if NOTE: tags exist
+- Include "TODO tasks" only if TODO: tags exist
 
-**CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
-
-**Required Tool Invocation**:
+If user selects nothing, exit gracefully:
 ```
-Tool: Task (NOT Skill)
-Parameters:
-  - subagent_type: "learn-agent"
-  - prompt: [Include mode, paths, delegation_context]
-  - description: "Scan for tags and create tasks (mode: {mode})"
+No task types selected. No tasks created.
 ```
 
-**DO NOT** use `Skill(learn-agent)` - this will FAIL.
-Agents live in `.claude/agents/`, not `.claude/skills/`.
-The Skill tool can only invoke skills from `.claude/skills/`.
+### Step 7: Individual TODO Selection
 
-The subagent will:
-- Scan specified paths for FIX:/NOTE:/TODO: tags
-- Group tags by type and context
-- Create fix-it, learn-it, and todo tasks (if not dry-run)
-- Write metadata file with results
-- Return brief text summary
+If "TODO tasks" was selected AND there are TODO: tags:
 
-### 4. Postflight Operations
+#### Standard Case (<=20 TODOs)
 
-After subagent returns, this skill handles postflight:
+```json
+{
+  "question": "Select TODO items to create as tasks:",
+  "header": "TODO Selection",
+  "multiSelect": true,
+  "options": [
+    {
+      "label": "{content truncated to 50 chars}",
+      "description": "{file}:{line}"
+    },
+    ...
+  ]
+}
+```
 
-**Read Metadata File**:
+#### Large Number of TODOs (>20)
+
+Add a "Select all" option at the top:
+
+```json
+{
+  "question": "Select TODO items to create as tasks:",
+  "header": "TODO Selection (many items)",
+  "multiSelect": true,
+  "options": [
+    {
+      "label": "Select all ({N} items)",
+      "description": "Create a task for every TODO tag"
+    },
+    {
+      "label": "{content truncated to 50 chars}",
+      "description": "{file}:{line}"
+    },
+    ...
+  ]
+}
+```
+
+If "Select all" is chosen, include all TODOs. Otherwise, only selected items.
+
+### Step 8: Create Selected Tasks
+
+For each selected task type, create the task:
+
+#### 8.1: Get Next Task Number
+
 ```bash
-metadata=$(cat .claude/.return-meta-learn.json)
-status=$(echo "$metadata" | jq -r '.status')
-tasks_created=$(echo "$metadata" | jq -r '.metadata.tasks_created // 0')
+next_num=$(jq -r '.next_project_number' specs/state.json)
 ```
 
-**Git Commit (if tasks created)**:
+#### 8.2: Fix-It Task (if selected)
+
+**Condition**: User selected "fix-it task" AND (FIX: or NOTE: tags exist)
+
+```json
+{
+  "title": "Fix issues from FIX:/NOTE: tags",
+  "description": "Address {N} items from embedded tags:\n\n{list of items with file:line references}",
+  "language": "{predominant language from source files}",
+  "priority": "high",
+  "effort": "2-4 hours"
+}
+```
+
+**Language Detection**:
+```
+if majority of tags from .lean files -> "lean"
+elif majority from .tex files -> "latex"
+elif majority from .claude/ files -> "meta"
+else -> "general"
+```
+
+#### 8.3: Learn-It Task (if selected)
+
+**Condition**: User selected "learn-it task" AND NOTE: tags exist
+
+```json
+{
+  "title": "Update context files from NOTE: tags",
+  "description": "Update {N} context files based on learnings:\n\n{grouped by target context}",
+  "language": "meta",
+  "priority": "medium",
+  "effort": "1-2 hours"
+}
+```
+
+#### 8.4: Todo-Tasks (if selected)
+
+**Condition**: User selected "TODO tasks" AND user selected specific TODO items
+
+For each selected TODO item:
+```json
+{
+  "title": "{tag content, truncated to 60 chars}",
+  "description": "{full tag content}\n\nSource: {file}:{line}",
+  "language": "{detected from file type}",
+  "priority": "medium",
+  "effort": "1 hour"
+}
+```
+
+**Language Detection for Todo-Task**:
+```
+.lean -> "lean"
+.tex  -> "latex"
+.md   -> "markdown"
+.py/.sh -> "general"
+.claude/* -> "meta"
+```
+
+### Step 9: Update State Files
+
+For each task created:
+
+#### 9.1: Update state.json
+
+Read current state, add new task entry, increment next_project_number:
+
 ```bash
-if [ "$status" = "tasks_created" ] && [ "$tasks_created" -gt 0 ]; then
-  git add specs/TODO.md specs/state.json
-  git commit -m "learn: create $tasks_created tasks from tags
+# Create slug from title
+slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd 'a-z0-9_' | cut -c1-50)
+
+# Read current state
+current=$(cat specs/state.json)
+
+# Add task using jq (use two-step pattern to avoid escaping issues)
+# Step 1: Write task data to temp file
+# Step 2: Use jq with slurpfile
+```
+
+#### 9.2: Update TODO.md
+
+Append new task entry in appropriate priority section:
+
+```markdown
+### {N}. {Title}
+- **Effort**: {estimate}
+- **Status**: [NOT STARTED]
+- **Priority**: {priority}
+- **Language**: {language}
+- **Started**: {timestamp}
+
+**Description**: {description}
+
+---
+```
+
+### Step 10: Display Results
+
+Show summary of created tasks:
+
+```
+## Tasks Created from Tags
+
+**Tags Processed**: {N} across scanned files
+
+### Created Tasks
+
+| # | Type | Title | Priority | Language |
+|---|------|-------|----------|----------|
+| {N} | fix-it | Fix issues from FIX:/NOTE: tags | High | {lang} |
+| {N+1} | learn-it | Update context files from NOTE: tags | Medium | meta |
+| {N+2} | todo | {title} | Medium | {lang} |
+
+---
+
+**Next Steps**:
+1. Review tasks in TODO.md
+2. Run `/research {first_task}` to begin
+3. Progress through /research -> /plan -> /implement cycle
+```
+
+### Step 11: Git Commit (Postflight)
+
+If tasks were created, commit changes:
+
+```bash
+task_count={number of tasks created}
+git add specs/TODO.md specs/state.json
+git commit -m "learn: create $task_count tasks from tags
 
 Session: $session_id
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
-fi
-```
-
-**Cleanup**:
-```bash
-rm -f .claude/.return-meta-learn.json
-```
-
-### 5. Return Propagation
-
-Return validated result to caller based on mode:
-
-**Execute mode (tasks created)**:
-- Display created tasks with details
-- Show next steps
-
-**Dry-run mode**:
-- Display tag summary
-- Show preview of tasks that would be created
-
-**No tags found**:
-- Report gracefully
-- No error status needed
-
----
-
-## Return Format
-
-See `.claude/context/core/formats/subagent-return.md` for full specification.
-
-### Expected Return: Tasks Created
-
-```json
-{
-  "status": "tasks_created",
-  "summary": "Created 5 tasks from 12 tags across 8 files: 1 fix-it, 1 learn-it, 3 todo tasks.",
-  "artifacts": [
-    {
-      "type": "task_entry",
-      "path": "specs/TODO.md",
-      "summary": "Tasks #650-654 added"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736700000_abc123",
-    "agent_type": "learn-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "learn", "learn-agent"],
-    "mode": "execute",
-    "tags_found": {
-      "fix": 3,
-      "note": 4,
-      "todo": 5
-    },
-    "tasks_created": 5
-  },
-  "next_steps": "Run /research 650 to begin research on first task"
-}
-```
-
-### Expected Return: Dry Run
-
-```json
-{
-  "status": "preview",
-  "summary": "Found 12 tags across 8 files. Would create 5 tasks: 1 fix-it, 1 learn-it, 3 todo.",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1736700000_xyz789",
-    "agent_type": "learn-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "learn", "learn-agent"],
-    "mode": "dry_run",
-    "tags_found": {
-      "fix": 3,
-      "note": 4,
-      "todo": 5
-    },
-    "tasks_preview": 5
-  },
-  "next_steps": "Run /learn without --dry-run to create tasks"
-}
-```
-
-### Expected Return: No Tags Found
-
-```json
-{
-  "status": "no_tags",
-  "summary": "No FIX:, NOTE:, or TODO: tags found in scanned files.",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1736700000_def456",
-    "agent_type": "learn-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "learn", "learn-agent"],
-    "mode": "execute",
-    "files_scanned": 42,
-    "tags_found": {
-      "fix": 0,
-      "note": 0,
-      "todo": 0
-    }
-  },
-  "next_steps": "No action needed"
-}
 ```
 
 ---
 
 ## Error Handling
 
-### Input Validation Errors
-Return immediately with failed status if paths are invalid.
+### Path Access Errors
 
-### Subagent Errors
-Pass through the subagent's error return verbatim.
+When paths don't exist or can't be accessed:
+1. Log warning for each invalid path
+2. Continue with valid paths
+3. If no valid paths remain, report and exit
+
+### No Tags Found
+
+This is NOT an error condition:
+- Report informatively
+- Exit without prompts
+
+### state.json Update Failure
+
+If jq fails:
+1. Log error with command and output
+2. Try two-step jq pattern
+3. If still failing, report partial success (tags found but tasks not created)
+
+### TODO.md Parse Error
+
+If TODO.md format is corrupted:
+1. Log error
+2. Skip TODO.md update
+3. State.json update may still succeed
+4. Report partial success
 
 ### Git Commit Failure
-Log error (non-blocking), tasks are still created successfully.
 
-### Path Access Errors
-Report which paths could not be accessed, continue with accessible paths.
+Non-blocking:
+1. Log the failure
+2. Tasks are still created successfully
+3. Report that commit failed but tasks exist

@@ -8,11 +8,20 @@
     {
       "project_number": 645,
       "project_name": "improve_todo_command_interactive_claudemd",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:22:02Z",
-      "last_updated": "2026-01-20T20:22:02Z"
+      "last_updated": "2026-01-20T20:29:11Z",
+      "session_id": "sess_1768940772_b1119f",
+      "researched": "2026-01-20T20:29:11Z",
+      "artifacts": [
+        {
+          "path": "specs/645_improve_todo_command_interactive_claudemd/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting jq escaping fixes and interactive CLAUDE.md selection implementation approach"
+        }
+      ]
     },
     {
       "project_number": 639,
@@ -298,13 +307,13 @@
     {
       "project_number": 644,
       "project_name": "redesign_learn_interactive_task_selection",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T20:40:46Z",
-      "last_updated": "2026-01-20T20:22:16Z",
+      "last_updated": "2026-01-20T20:25:30Z",
       "description": "Redesign /learn command to use interactive task selection instead of auto-creating tasks. Current behavior: /learn scans and auto-creates tasks, with --dry-run for preview. New behavior: /learn always scans and shows findings first, then prompts user to select which task types to create (fix-it, learn-it, individual todo tasks). This avoids background processes, runs synchronously, and gives users control over which tasks are created.",
-      "session_id": "sess_1768940395_9ade3c",
+      "session_id": "sess_1768940708_5615f9",
       "artifacts": [
         {
           "path": "specs/644_redesign_learn_interactive_task_selection/reports/research-001.md",
@@ -318,7 +327,8 @@
         }
       ],
       "researched": "2026-01-20T20:18:19Z",
-      "planned": "2026-01-20T20:22:16Z"
+      "planned": "2026-01-20T20:22:16Z",
+      "started": "2026-01-20T20:25:30Z"
     }
   ],
   "completed_projects": [
