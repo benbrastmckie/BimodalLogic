@@ -93,9 +93,24 @@ When updating task status:
       "path": "specs/334_task_slug_here/reports/research-001.md",
       "summary": "Brief 1-sentence description of artifact"
     }
-  ]
+  ],
+  "completion_summary": "1-3 sentence description of what was accomplished (required when status='completed')",
+  "roadmap_items": ["Optional explicit roadmap item text to match"]
 }
 ```
+
+### Completion Fields Schema
+
+When a task transitions to `status: "completed"`, these fields are populated:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `completion_summary` | string | **Yes** (when completed) | 1-3 sentence description of what was accomplished |
+| `roadmap_items` | array of strings | No | Explicit list of ROAD_MAP.md item texts this task addresses |
+
+**Producer Responsibility**: The `/implement` command populates these fields in CHECKPOINT 2: GATE OUT when a task is successfully completed.
+
+**Consumer Usage**: The `/todo` command extracts these fields via `jq` to match completed tasks against ROAD_MAP.md items for annotation.
 
 ### Artifact Object Schema
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #641
 
 - **Task**: 641 - improve_todo_command_roadmap_update
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Version**: 002
 - **Effort**: 3 hours
 - **Priority**: Medium
@@ -97,7 +97,7 @@ Added to `state.json` task entries when status transitions to "completed":
 
 ## Implementation Phases
 
-### Phase 1: Update State Schema Documentation [NOT STARTED]
+### Phase 1: Update State Schema Documentation [COMPLETED]
 
 **Goal**: Document the new `completion_summary` field as a required constraint for completed tasks.
 
@@ -119,7 +119,7 @@ Added to `state.json` task entries when status transitions to "completed":
 
 ---
 
-### Phase 2: Update /implement Postflight [NOT STARTED]
+### Phase 2: Update /implement Postflight [IN PROGRESS]
 
 **Goal**: Modify `/implement` command to populate `completion_summary` at task completion.
 

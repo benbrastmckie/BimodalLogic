@@ -8,12 +8,12 @@
     {
       "project_number": 641,
       "project_name": "improve_todo_command_roadmap_update",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:51:23Z",
-      "last_updated": "2026-01-20T18:40:39Z",
-      "session_id": "sess_1768932515_813936",
+      "last_updated": "2026-01-20T18:44:46Z",
+      "session_id": "sess_1768934665_6b8d2f",
       "researched": "2026-01-20T18:06:36Z",
       "artifacts": [
         {
@@ -32,7 +32,8 @@
           "summary": "7-phase plan using structured completion_summary fields instead of keyword heuristics"
         }
       ],
-      "planned": "2026-01-20T18:40:39Z"
+      "planned": "2026-01-20T18:40:39Z",
+      "started": "2026-01-20T18:44:46Z"
     },
     {
       "project_number": 640,
@@ -298,13 +299,13 @@
     },
     {
       "project_number": 483,
-      "status": "researched",
+      "status": "planned",
       "project_name": "investigate_latex_aux_file_corruption_errors",
       "section": "Medium Priority",
       "language": "latex",
       "priority": "medium",
-      "last_updated": "2026-01-20T18:34:35Z",
-      "session_id": "sess_1768933739_186b91",
+      "last_updated": "2026-01-20T18:45:39Z",
+      "session_id": "sess_1768934613_a25dbd",
       "researched": "2026-01-20T18:34:35Z",
       "artifacts": [
         {
@@ -316,8 +317,14 @@
           "path": "specs/483_investigate_latex_aux_file_corruption_errors/reports/research-002.md",
           "type": "research",
           "summary": "Comprehensive analysis of TEXINPUTS path resolution failure with VimTeX subfiles, including root cause, community solutions, and implementation recommendations"
+        },
+        {
+          "path": "specs/483_investigate_latex_aux_file_corruption_errors/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan: add TEX root to Bimodal subfiles (7), Logos subfiles (10), then verify VimTeX compilation"
         }
-      ]
+      ],
+      "planned": "2026-01-20T18:45:39Z"
     },
     {
       "project_number": 431,
