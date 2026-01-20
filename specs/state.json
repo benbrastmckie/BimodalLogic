@@ -169,11 +169,11 @@
     {
       "project_number": 618,
       "project_name": "move_metalogic_to_boneyard_make_v2_independent",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T20:23:03Z",
-      "last_updated": "2026-01-20T01:05:30Z",
+      "last_updated": "2026-01-20T01:21:14Z",
       "session_id": "sess_1768871105_656b4f",
       "researched": "2026-01-19T20:37:59Z",
       "artifacts": [
@@ -186,10 +186,21 @@
           "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-002.md",
           "type": "plan",
           "summary": "4-phase revised plan: migrate consumers to Metalogic_v2, move Metalogic to Boneyard, archive tests, verify"
+        },
+        {
+          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with file changes, import migration map, and verification results"
+        },
+        {
+          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with file changes, import migration map, and verification results"
         }
       ],
       "planned": "2026-01-20T00:42:11Z",
-      "started": "2026-01-20T01:05:30Z"
+      "started": "2026-01-20T01:05:30Z",
+      "completed": "2026-01-20T01:21:14Z"
     },
     {
       "project_number": 616,

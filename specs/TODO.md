@@ -142,13 +142,15 @@ technical_debt:
 ---
 
 ### 618. Move Metalogic to Boneyard, make Metalogic_v2 independent
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Researched**: 2026-01-19
+- **Completed**: 2026-01-19
 - **Research**: [research-001.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260119.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/summaries/implementation-summary-20260119.md)
 
 **Description**: Move the interesting parts of Bimodal/Metalogic/ to the Bimodal/Boneyard/, making Bimodal/Metalogic_v2/ stand independently on its own (no imports from the Boneyard/).
 

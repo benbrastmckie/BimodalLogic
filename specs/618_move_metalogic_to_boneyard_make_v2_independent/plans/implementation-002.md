@@ -2,7 +2,7 @@
 
 - **Task**: 618 - Move Metalogic to Boneyard, make Metalogic_v2 independent
 - **Version**: 002
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2-2.5 hours (reduced from 3 hours)
 - **Priority**: Medium
 - **Dependencies**: None (task 607 completed, decidability ported)
