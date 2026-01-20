@@ -8,12 +8,12 @@
     {
       "project_number": 652,
       "project_name": "improve_learn_todo_grouping_by_topic",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T22:07:14Z",
-      "last_updated": "2026-01-20T22:11:00Z",
-      "session_id": "sess_1768946884_b09df2",
+      "last_updated": "2026-01-20T22:20:44Z",
+      "session_id": "sess_1768947500_e14947",
       "researched": "2026-01-20T22:11:00Z",
       "artifacts": [
         {
@@ -25,8 +25,14 @@
           "path": "specs/652_improve_learn_todo_grouping_by_topic/reports/research-001.md",
           "type": "research",
           "summary": "Research report with 7 findings on current TODO handling, topic analysis approaches, and 4-phase implementation plan"
+        },
+        {
+          "path": "specs/652_improve_learn_todo_grouping_by_topic/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan: topic analysis infrastructure, user confirmation UI, task creation modification, documentation updates"
         }
-      ]
+      ],
+      "planned": "2026-01-20T22:20:44Z"
     },
     {
       "project_number": 648,

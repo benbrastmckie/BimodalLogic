@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "summary": "4-phase implementation plan for TODO topic grouping in /learn command",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/652_improve_learn_todo_grouping_by_topic/plans/implementation-001.md",
+      "summary": "4-phase plan: topic analysis infrastructure, user confirmation UI, task creation modification, documentation updates"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1768947500_e14947",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.0
+  }
+}
