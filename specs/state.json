@@ -8,21 +8,22 @@
     {
       "project_number": 650,
       "project_name": "implement_completion_summary_claudemd_suggestions_fields",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T20:49:27Z",
-      "last_updated": "2026-01-20T20:49:27Z"
+      "last_updated": "2026-01-20T20:51:33Z",
+      "session_id": "sess_1768942279_aa151d"
     },
     {
       "project_number": 649,
       "project_name": "improve_learn_note_tag_dependency_handling",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:40:53Z",
-      "last_updated": "2026-01-20T20:46:32Z",
-      "session_id": "sess_1768941822_3ef648",
+      "last_updated": "2026-01-20T20:51:11Z",
+      "session_id": "sess_1768942256_b2705c",
       "researched": "2026-01-20T20:46:32Z",
       "artifacts": [
         {
@@ -45,20 +46,26 @@
     {
       "project_number": 647,
       "project_name": "update_context_latex_theorem_naming_standards",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:55:08Z",
-      "last_updated": "2026-01-20T20:46:27Z",
-      "session_id": "sess_1768941808_007803",
+      "last_updated": "2026-01-20T20:52:17Z",
+      "session_id": "sess_1768942207_53ae7a",
       "researched": "2026-01-20T20:46:27Z",
       "artifacts": [
         {
           "path": "specs/647_update_context_latex_theorem_naming_standards/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting 4 LaTeX standards (theorem name italics, definition ordering, inline Lean references, directory formatting) with gap analysis and implementation recommendations"
+        },
+        {
+          "path": "specs/647_update_context_latex_theorem_naming_standards/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan covering latex-style-guide.md, theorem-environments.md, and cross-references.md updates"
         }
-      ]
+      ],
+      "planned": "2026-01-20T20:52:17Z"
     },
     {
       "project_number": 648,
