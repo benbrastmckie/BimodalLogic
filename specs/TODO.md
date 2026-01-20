@@ -1,20 +1,20 @@
 ---
-next_project_number: 649
+next_project_number: 650
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 20
+  active: 21
   completed: 229
   in_progress: 0
-  not_started: 12
+  not_started: 13
   abandoned: 19
-  total: 252
+  total: 253
 priority_distribution:
   critical: 0
   high: 5
-  medium: 9
+  medium: 10
   low: 6
 technical_debt:
   sorry_count: 205
@@ -95,6 +95,16 @@ technical_debt:
 
 ## Medium Priority
 
+### 649. Improve /learn NOTE: tag dependency handling
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Improve the /learn command so that if 'NOTE:' tags occur, that the fix-it task has the learn-it task as a dependency so that the learn-it task is completed first. Also, the learn-it task itself should replace all 'NOTE:' instances with 'FIX:' so that the fix-it task can then make the file local changes and the learn-it task can focus on updating context files (clear division of labor).
+
+---
+
 ### 647. Update context files for LaTeX theorem naming and formatting standards
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
@@ -116,7 +126,8 @@ technical_debt:
 ---
 
 ### 645. Improve /todo command with interactive CLAUDE.md suggestions
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-20
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
