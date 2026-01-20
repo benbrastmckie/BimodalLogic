@@ -179,7 +179,7 @@ technical_debt:
 - **Researched**: 2026-01-20
 - **Priority**: Medium
 - **Language**: latex
-- **Research**: [research-001.md](specs/483_investigate_latex_aux_file_corruption_errors/reports/research-001.md)
+- **Research**: [research-001.md](specs/483_investigate_latex_aux_file_corruption_errors/reports/research-001.md), [research-002.md](specs/483_investigate_latex_aux_file_corruption_errors/reports/research-002.md)
 
 **Description**: When making changes to LaTeX files (e.g., 00-Introduction.tex), rebuilding sometimes produces "File ended while scanning use of \@newl@bel" and "\@@BOOKMARK" errors, plus "Extra }, or forgotten \endgroup" errors in the .aux file. Identify the root cause (likely corrupted auxiliary files from interrupted builds) and document solutions to avoid these errors.
 

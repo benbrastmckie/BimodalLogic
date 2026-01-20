@@ -303,14 +303,19 @@
       "section": "Medium Priority",
       "language": "latex",
       "priority": "medium",
-      "last_updated": "2026-01-20T16:53:38Z",
-      "session_id": "sess_1768927647_f21439",
-      "researched": "2026-01-20T16:53:38Z",
+      "last_updated": "2026-01-20T18:34:35Z",
+      "session_id": "sess_1768933739_186b91",
+      "researched": "2026-01-20T18:34:35Z",
       "artifacts": [
         {
           "path": "specs/483_investigate_latex_aux_file_corruption_errors/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive research report covering aux file corruption root causes, subfiles package usage, latexmk configuration improvements, VimTeX workflow recommendations, and large LaTeX project best practices"
+        },
+        {
+          "path": "specs/483_investigate_latex_aux_file_corruption_errors/reports/research-002.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of TEXINPUTS path resolution failure with VimTeX subfiles, including root cause, community solutions, and implementation recommendations"
         }
       ]
     },

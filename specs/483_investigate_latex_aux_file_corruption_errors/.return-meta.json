@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Root cause identified: latexmkrc uses cwd() at config load time, which fails when invoked from subdirectories. Recommended fix: compute paths relative to project root marker (lakefile.lean) instead of relying on working directory.",
+  "artifacts": [
+    {
+      "path": "specs/483_investigate_latex_aux_file_corruption_errors/reports/research-002.md",
+      "type": "research",
+      "summary": "Comprehensive analysis of TEXINPUTS path resolution failure with VimTeX subfiles, including root cause, community solutions, and implementation recommendations"
+    }
+  ],
+  "next_steps": "Run /plan 483 to create implementation plan for project root detection in latexmkrc",
+  "metadata": {
+    "session_id": "sess_1768933739_186b91",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher"],
+    "findings_count": 6
+  }
+}
