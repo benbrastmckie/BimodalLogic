@@ -65,7 +65,7 @@ This documentation provides comprehensive coverage of the `.claude/` agent syste
 /errors                          # Analyze errors
 /todo                            # Archive completed tasks
 /meta                            # System builder
-/learn                           # Scan for tags, create tasks
+/learn                           # Scan for tags, create tasks interactively
 ```
 
 ### Key Paths
@@ -122,7 +122,7 @@ Commands are user-invocable operations triggered by `/command` syntax.
 | /errors | Analyze errors | (reads errors.json) |
 | /todo | Archive completed tasks | (no args) |
 | /meta | System builder | `[domain]` or flags |
-| /learn | Scan for tags, create tasks | `[PATH...] [--dry-run]` |
+| /learn | Scan for tags, create tasks interactively | `[PATH...]` |
 
 See [`.claude/commands/`](../commands/) for command definitions.
 
@@ -160,13 +160,13 @@ Skills are specialized agents invoked by commands or the orchestrator. They use 
 
 | Skill | Agent |
 |-------|-------|
-| skill-learn | learn-agent |
+| skill-learn | (direct execution) |
 
 See [`.claude/skills/`](../skills/) for skill definitions.
 
 ---
 
-## Agents (7)
+## Agents (6)
 
 Agents are execution components invoked by skills via the Task tool.
 
@@ -178,7 +178,6 @@ Agents are execution components invoked by skills via the Task tool.
 | general-implementation-agent | General file implementation |
 | lean-implementation-agent | Lean proof implementation |
 | latex-implementation-agent | LaTeX document implementation |
-| learn-agent | Tag extraction and task creation from source comments |
 
 See [`.claude/agents/`](../agents/) for agent definitions.
 

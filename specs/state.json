@@ -1,27 +1,63 @@
 {
   "metadata": {
-    "generated_at": "2026-01-17T12:23:06.000000",
-    "total_tasks": 16,
-    "last_sync": "2026-01-20T20:55:00Z"
+    "generated_at": "2026-01-20T20:55:08.000000",
+    "total_tasks": 19,
+    "last_sync": "2026-01-20T20:55:08Z"
   },
   "active_projects": [
     {
+      "project_number": 646,
+      "project_name": "fix_metalogic_latex_formatting_issues",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "high",
+      "created": "2026-01-20T20:55:08Z",
+      "last_updated": "2026-01-20T20:55:08Z",
+      "session_id": "sess_1768941258_a63c63"
+    },
+    {
+      "project_number": 647,
+      "project_name": "update_context_latex_theorem_naming_standards",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T20:55:08Z",
+      "last_updated": "2026-01-20T20:55:08Z",
+      "session_id": "sess_1768941258_a63c63"
+    },
+    {
+      "project_number": 648,
+      "project_name": "research_canonical_frame_temporal_order_generalization",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-20T20:55:08Z",
+      "last_updated": "2026-01-20T20:55:08Z",
+      "session_id": "sess_1768941258_a63c63"
+    },
+    {
       "project_number": 645,
       "project_name": "improve_todo_command_interactive_claudemd",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:22:02Z",
-      "last_updated": "2026-01-20T20:29:11Z",
-      "session_id": "sess_1768940772_b1119f",
+      "last_updated": "2026-01-20T20:35:39Z",
+      "session_id": "sess_1768941199_2e5f78",
       "researched": "2026-01-20T20:29:11Z",
       "artifacts": [
         {
           "path": "specs/645_improve_todo_command_interactive_claudemd/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting jq escaping fixes and interactive CLAUDE.md selection implementation approach"
+        },
+        {
+          "path": "specs/645_improve_todo_command_interactive_claudemd/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for jq fixes and interactive CLAUDE.md selection"
         }
-      ]
+      ],
+      "planned": "2026-01-20T20:35:39Z"
     },
     {
       "project_number": 639,
@@ -349,7 +385,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 646,
+  "next_project_number": 649,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
