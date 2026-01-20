@@ -8,12 +8,20 @@
     {
       "project_number": 650,
       "project_name": "implement_completion_summary_claudemd_suggestions_fields",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T20:49:27Z",
-      "last_updated": "2026-01-20T20:51:33Z",
-      "session_id": "sess_1768942279_aa151d"
+      "last_updated": "2026-01-20T20:54:20Z",
+      "session_id": "sess_1768942279_aa151d",
+      "researched": "2026-01-20T20:54:20Z",
+      "artifacts": [
+        {
+          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting field schemas, implementation architecture, and 5-phase modification approach for completion_summary and claudemd_suggestions fields"
+        }
+      ]
     },
     {
       "project_number": 649,

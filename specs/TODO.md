@@ -28,10 +28,12 @@ technical_debt:
 ## High Priority
 
 ### 650. Implement completion_summary and claudemd_suggestions fields in /implement workflow
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-20
+- **Researched**: 2026-01-20
+- **Research**: [research-001.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/reports/research-001.md)
 
 **Description**: Make sure that the /implement command-skill-agent workflow will include completion_summary and claudemd_suggestions fields for updating ROAD_MAP.md and CLAUDE.md when appropriate and not otherwise since these will be used by the /todo command.
 
