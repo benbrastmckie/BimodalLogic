@@ -8,12 +8,12 @@
     {
       "project_number": 632,
       "project_name": "integrate_roadmap_review_into_review_command",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:45:00Z",
-      "last_updated": "2026-01-20T02:08:59Z",
-      "session_id": "sess_1768874773_7d53c9",
+      "last_updated": "2026-01-20T02:11:05Z",
+      "session_id": "sess_1768875050_047949",
       "researched": "2026-01-20T02:08:59Z",
       "artifacts": [
         {
@@ -64,7 +64,7 @@
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-20T00:41:38Z",
-      "last_updated": "2026-01-20T02:08:12Z",
+      "last_updated": "2026-01-20T02:11:33Z",
       "session_id": "sess_1768874746_c55d7d",
       "researched": "2026-01-20T02:04:01Z",
       "artifacts": [
@@ -74,12 +74,12 @@
           "summary": "Research report documenting Metalogic_v2 architecture, theorem dependencies, and LaTeX documentation recommendations"
         },
         {
-          "path": "specs/629_document_bimodal_metalogic_proofs_latex/plans/implementation-001.md",
+          "path": "specs/629_document_bimodal_metalogic_proofs_latex/plans/implementation-002.md",
           "type": "plan",
-          "summary": "4-phase implementation plan covering section restructuring, representation theory content, completeness reframing, and import structure documentation"
+          "summary": "4-phase implementation plan v002: TikZ diagrams for theorem dependencies and import structure (revised from ASCII)"
         }
       ],
-      "planned": "2026-01-20T02:08:12Z"
+      "planned": "2026-01-20T02:11:33Z"
     },
     {
       "project_number": 628,
