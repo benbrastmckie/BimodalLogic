@@ -47,11 +47,11 @@
     {
       "project_number": 645,
       "project_name": "improve_todo_command_interactive_claudemd",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:22:02Z",
-      "last_updated": "2026-01-20T20:37:52Z",
+      "last_updated": "2026-01-20T20:42:09Z",
       "session_id": "sess_1768941451_7500f0",
       "researched": "2026-01-20T20:29:11Z",
       "artifacts": [
@@ -64,10 +64,16 @@
           "path": "specs/645_improve_todo_command_interactive_claudemd/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase implementation plan for jq fixes and interactive CLAUDE.md selection"
+        },
+        {
+          "path": "specs/645_improve_todo_command_interactive_claudemd/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary for task 645"
         }
       ],
       "planned": "2026-01-20T20:35:39Z",
-      "started": "2026-01-20T20:37:52Z"
+      "started": "2026-01-20T20:37:52Z",
+      "completed": "2026-01-20T20:42:09Z"
     },
     {
       "project_number": 639,

@@ -156,18 +156,21 @@ done
 **Step 3.5.2: Extract non-meta completed tasks with summaries**:
 ```bash
 # Only process non-meta tasks for ROAD_MAP.md matching
-completed_with_summaries=$(jq -r '
-  .active_projects[] |
-  select(.status == "completed") |
-  select(.language != "meta") |
-  select(.completion_summary != null) |
-  {
-    number: .project_number,
-    name: .project_name,
-    summary: .completion_summary,
-    roadmap_items: (.roadmap_items // [])
-  }
-' specs/state.json)
+# Use file-based jq filter to avoid Issue #1132 with != operator
+cat > /tmp/todo_nonmeta_$$.jq << 'EOF'
+.active_projects[] |
+select(.status == "completed") |
+select(.language != "meta") |
+select(.completion_summary != null) |
+{
+  number: .project_number,
+  name: .project_name,
+  summary: .completion_summary,
+  roadmap_items: (.roadmap_items // [])
+}
+EOF
+completed_with_summaries=$(jq -rf /tmp/todo_nonmeta_$$.jq specs/state.json)
+rm -f /tmp/todo_nonmeta_$$.jq
 ```
 
 **Step 3.5.3: Match non-meta tasks against ROAD_MAP.md**:
@@ -260,7 +263,7 @@ for task in "${meta_tasks[@]}"; do
   project_name=$(echo "$task" | jq -r '.project_name')
   status=$(echo "$task" | jq -r '.status')
 
-  # Extract claudemd_suggestions if present
+  # Extract claudemd_suggestions if present (use has() instead of != null for Issue #1132)
   has_suggestions=$(echo "$task" | jq -r 'has("claudemd_suggestions")')
 
   if [ "$has_suggestions" = "true" ]; then
@@ -398,6 +401,8 @@ Total CLAUDE.md suggestions: {N}
 - Remove: {N}
 - None (no changes needed): {N}
 
+Note: Interactive selection will prompt for which suggestions to apply via Edit tool.
+
 Total tasks: {N}
 Total orphans: {N} (specs: {N}, archive: {N})
 Total misplaced: {N}
@@ -408,6 +413,8 @@ Run without --dry-run to archive.
 If no roadmap matches were found (from Step 3.5), omit the "Roadmap updates" section.
 
 If no CLAUDE.md suggestions were found (from Step 3.6), omit the "CLAUDE.md suggestions" section.
+
+If CLAUDE.md suggestions exist, the "Note: Interactive selection..." line is always shown in dry-run.
 
 Exit here if dry run.
 
@@ -499,7 +506,13 @@ Move each task from state.json `active_projects` to archive/state.json `complete
 
 **B. Update state.json**
 
-Remove archived tasks from active_projects array.
+Remove archived tasks from active_projects array using `del()` pattern (avoids Issue #1132 with `!=` operator):
+```bash
+# Use del() instead of map(select(.status != "completed" and .status != "abandoned"))
+# This pattern is Issue #1132-safe
+jq 'del(.active_projects[] | select(.status == "completed" or .status == "abandoned"))' \
+  specs/state.json > specs/state.json.tmp && mv specs/state.json.tmp specs/state.json
+```
 
 **C. Update TODO.md**
 
@@ -689,63 +702,129 @@ Track roadmap operations for output reporting:
 - One edit per item (no batch edits to same line)
 - Never remove existing content
 
-### 5.6. Display CLAUDE.md Suggestions for Meta Tasks
+### 5.6. Interactive CLAUDE.md Suggestion Selection for Meta Tasks
 
-For meta tasks with `claudemd_suggestions` (from Step 3.6), display actionable suggestions for user review.
+For meta tasks with `claudemd_suggestions` (from Step 3.6), use interactive selection to apply suggestions via the Edit tool.
 
-**Note**: Unlike ROAD_MAP.md updates, CLAUDE.md modifications are NOT applied automatically. This step only displays suggestions for the user to manually review and apply.
+**Step 5.6.1: Filter actionable suggestions**:
 
-**Step 5.6.1: Display suggestions with actionable context**:
-
-For each suggestion in `claudemd_suggestions[]` where action is NOT "none":
-
-```
-CLAUDE.md Suggestions (Meta Tasks):
-══════════════════════════════════════════════════════════════════════════════
-
-Task #{N} ({project_name}):
-  Action: {ADD|UPDATE|REMOVE}
-  Section: {section}
-  Rationale: {rationale}
-
-  {For ADD actions:}
-  Suggested content to add:
-  ┌────────────────────────────────────────────────────────────────────────────
-  │ {content}
-  └────────────────────────────────────────────────────────────────────────────
-
-  {For UPDATE actions:}
-  Text to find and replace:
-  ┌── Remove ──────────────────────────────────────────────────────────────────
-  │ {removes}
-  └────────────────────────────────────────────────────────────────────────────
-  ┌── Replace with ────────────────────────────────────────────────────────────
-  │ {content}
-  └────────────────────────────────────────────────────────────────────────────
-
-  {For REMOVE actions:}
-  Text to remove:
-  ┌── Remove ──────────────────────────────────────────────────────────────────
-  │ {removes}
-  └────────────────────────────────────────────────────────────────────────────
-
-══════════════════════════════════════════════════════════════════════════════
+Build list of suggestions where action is NOT "none":
+```bash
+actionable_suggestions=()
+for suggestion in "${claudemd_suggestions[@]}"; do
+  action=$(echo "$suggestion" | jq -r '.action')
+  if [ "$action" != "none" ]; then
+    actionable_suggestions+=("$suggestion")
+  fi
+done
 ```
 
-**Step 5.6.2: Summary of actionable suggestions**:
+If no actionable suggestions exist, skip to Step 5.6.5 (handle "none" actions only).
+
+**Step 5.6.2: Interactive selection via AskUserQuestion**:
+
+If `actionable_suggestions[]` has any entries:
 
 ```
-CLAUDE.md suggestion summary:
-- {N} suggestions to ADD content
-- {N} suggestions to UPDATE content
-- {N} suggestions to REMOVE content
-- {N} tasks with no changes needed
-
-Note: These suggestions require manual review. Apply by editing .claude/CLAUDE.md
-in the sections indicated above.
+AskUserQuestion:
+  question: "Found {N} CLAUDE.md suggestions from meta tasks. Which should be applied?"
+  header: "CLAUDE.md Updates"
+  multiSelect: true
+  options:
+    - label: "Task #{N1}: {ACTION} to {section}"
+      description: "{rationale}"
+    - label: "Task #{N2}: {ACTION} to {section}"
+      description: "{rationale}"
+    ...
+    - label: "Skip all"
+      description: "Don't apply any suggestions (display only for manual review)"
 ```
 
-**Step 5.6.3: Handle tasks with "none" action**:
+Build options dynamically from `actionable_suggestions[]`:
+```bash
+options=()
+for suggestion in "${actionable_suggestions[@]}"; do
+  project_num=$(echo "$suggestion" | jq -r '.project_number')
+  action=$(echo "$suggestion" | jq -r '.action | ascii_upcase')
+  section=$(echo "$suggestion" | jq -r '.section')
+  rationale=$(echo "$suggestion" | jq -r '.rationale')
+
+  label="Task #${project_num}: ${action} to ${section}"
+  options+=("{\"label\": \"$label\", \"description\": \"$rationale\"}")
+done
+# Always add "Skip all" as last option
+options+=("{\"label\": \"Skip all\", \"description\": \"Don't apply any suggestions (display only for manual review)\"}")
+```
+
+Store user selection for Step 5.6.3.
+
+**Step 5.6.3: Apply selected suggestions via Edit tool**:
+
+For each selected suggestion (excluding "Skip all"):
+
+1. Parse suggestion data:
+```bash
+project_num=$(echo "$suggestion" | jq -r '.project_number')
+action=$(echo "$suggestion" | jq -r '.action')
+section=$(echo "$suggestion" | jq -r '.section')
+content=$(echo "$suggestion" | jq -r '.content // empty')
+removes=$(echo "$suggestion" | jq -r '.removes // empty')
+```
+
+2. Read current `.claude/CLAUDE.md` content
+
+3. Apply Edit based on action type:
+
+**For ADD action**:
+- Find section header (e.g., "## {section}" or "### {section}")
+- Edit: Insert content after the section header line
+- old_string: The section header line + following newline
+- new_string: The section header line + newline + content + newline
+
+**For UPDATE action**:
+- Edit: Replace `removes` text with `content`
+- old_string: `{removes}`
+- new_string: `{content}`
+
+**For REMOVE action**:
+- Edit: Remove the `removes` text
+- old_string: `{removes}`
+- new_string: "" (empty)
+
+4. Track result for each edit:
+```bash
+applied_suggestions=()
+failed_suggestions=()
+
+# After each edit attempt:
+if edit_succeeded; then
+  applied_suggestions+=("${project_num}:${action}:${section}")
+else
+  failed_suggestions+=("${project_num}:${action}:${section}:${error_reason}")
+fi
+```
+
+**Step 5.6.4: Display results of applied changes**:
+
+```
+CLAUDE.md suggestions applied: {N}
+- Task #{N1}: Added {section}
+- Task #{N2}: Updated {section}
+- Task #{N3}: Removed {section}
+
+{If any failed:}
+Failed to apply {N} suggestions:
+- Task #{N4}: Section "{section}" not found
+- Task #{N5}: Text to remove not found in file
+
+{If "Skip all" was selected:}
+CLAUDE.md suggestions skipped by user: {N}
+The following suggestions are available for manual review:
+- Task #{N1}: ADD to {section} - {rationale}
+- Task #{N2}: UPDATE {section} - {rationale}
+```
+
+**Step 5.6.5: Handle tasks with "none" action**:
 
 For meta tasks with action "none" (or missing `claudemd_suggestions`), output brief acknowledgment:
 
@@ -755,8 +834,10 @@ Meta tasks with no CLAUDE.md changes:
 - Task #{N2} ({project_name}): No claudemd_suggestions field
 ```
 
-Track suggestion display for output reporting:
-- claudemd_displayed: count of actionable suggestions shown
+Track suggestion operations for output reporting:
+- claudemd_applied: count of successfully applied suggestions
+- claudemd_failed: count of failed edit attempts
+- claudemd_skipped: count of suggestions skipped by user selection
 - claudemd_none_acknowledged: count of "none" action tasks acknowledged
 
 ### 6. Git Commit
@@ -820,13 +901,17 @@ Roadmap updated: {N} items
   - {item text} (line {N})
 - Skipped (already annotated): {N}
 
-CLAUDE.md suggestions displayed: {N}
-- Add: {N}
-- Update: {N}
-- Remove: {N}
-- No changes needed: {N}
+CLAUDE.md suggestions applied: {N}
+- Task #{N1}: Added {section}
+- Task #{N2}: Updated {section}
 
-Note: Review suggestions above and apply manually to .claude/CLAUDE.md
+CLAUDE.md suggestions failed: {N}
+- Task #{N3}: Section not found
+
+CLAUDE.md suggestions skipped: {N}
+- Task #{N4}: Skipped by user
+
+Meta tasks with no changes: {N}
 
 Skipped (no directory): {N}
 - Task #{N6}
@@ -849,7 +934,13 @@ If no roadmap items were updated (no matches found in Step 3.5):
 - Omit the "Roadmap updated" section
 
 If no CLAUDE.md suggestions were collected (no meta tasks or all had "none" action):
-- Omit the "CLAUDE.md suggestions displayed" section
+- Omit the "CLAUDE.md suggestions applied/failed/skipped" sections
+
+If all CLAUDE.md suggestions were successfully applied:
+- Omit the "CLAUDE.md suggestions failed" section
+
+If no suggestions were skipped (all selected or "Skip all" not chosen):
+- Omit the "CLAUDE.md suggestions skipped" section
 
 ## Notes
 
@@ -969,3 +1060,54 @@ The summary should:
 - Be 1-3 sentences describing what was accomplished
 - Focus on outcomes, not process
 - Be specific enough to enable roadmap matching
+
+### Interactive CLAUDE.md Application
+
+**Overview**:
+Meta tasks use `claudemd_suggestions` to propose documentation changes. Unlike ROAD_MAP.md updates (which are automatic), CLAUDE.md suggestions use interactive selection.
+
+**Workflow**:
+1. Actionable suggestions (ADD/UPDATE/REMOVE) are collected from completed meta tasks
+2. User is presented with AskUserQuestion multiSelect prompt
+3. Selected suggestions are applied via the Edit tool
+4. Results show applied, failed, and skipped counts
+
+**Action Types**:
+- **ADD**: Inserts content after a section header
+- **UPDATE**: Replaces existing text with new content
+- **REMOVE**: Deletes specified text
+
+**"Skip all" Option**:
+Users can choose "Skip all" to decline automatic application. Suggestions are then displayed for manual review (preserving the previous behavior).
+
+**Edit Failure Handling**:
+If an Edit operation fails (section not found, text mismatch), the failure is logged and reported. The user can manually apply the suggestion afterward.
+
+### jq Pattern Safety (Issue #1132)
+
+**Problem**: Claude Code Issue #1132 causes jq commands with `!=` operators to fail with `INVALID_CHARACTER` or syntax errors when Claude generates them inline.
+
+**Solution**: This command uses safe jq patterns throughout:
+
+1. **File-based filters** for `!=` operators:
+   ```bash
+   # Instead of: jq 'select(.language != "meta")' file
+   cat > /tmp/filter_$$.jq << 'EOF'
+   select(.language != "meta")
+   EOF
+   jq -f /tmp/filter_$$.jq file && rm -f /tmp/filter_$$.jq
+   ```
+
+2. **`has()` for null checks**:
+   ```bash
+   # Instead of: jq 'select(.field != null)'
+   jq 'select(has("field"))'
+   ```
+
+3. **`del()` for exclusion filters**:
+   ```bash
+   # Instead of: jq '.array |= map(select(.status != "completed"))'
+   jq 'del(.array[] | select(.status == "completed"))'
+   ```
+
+**Reference**: See `.claude/context/core/patterns/jq-escaping-workarounds.md` for comprehensive patterns.
