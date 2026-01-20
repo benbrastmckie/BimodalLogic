@@ -5,17 +5,17 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 12
-  completed: 205
+  active: 16
+  completed: 214
   in_progress: 1
   not_started: 4
-  abandoned: 18
-  total: 228
+  abandoned: 19
+  total: 237
 priority_distribution:
   critical: 0
   high: 3
-  medium: 5
-  low: 4
+  medium: 8
+  low: 5
 technical_debt:
   sorry_count: 205
   axiom_count: 15
@@ -66,38 +66,7 @@ technical_debt:
 
 ---
 
-### 627. Prove valid_implies_semantic_truth_at_v2 bridge for Strategy A completeness
-- **Status**: [ABANDONED]
-- **Researched**: 2026-01-20
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-20
-- **Abandoned**: 2026-01-20
-- **Related**: Tasks 470, 608, 610
-- **Research**: [research-001.md](specs/627_prove_valid_implies_semantic_truth_at_v2_bridge/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/627_prove_valid_implies_semantic_truth_at_v2_bridge/plans/implementation-001.md)
-
-**Description**: ~~Prove the "downward" bridge theorem showing `valid phi` implies all SemanticWorldStates satisfy phi in the `semantic_truth_at_v2` sense (internal finite model semantics).~~ **ABANDONED**: Research-001.md found this bridge is NOT REQUIRED for completeness. The `main_provable_iff_valid_v2` theorem is already PROVEN via `semantic_weak_completeness`, establishing `valid phi <-> Nonempty (Proof phi)` without this bridge. Implementation would require 8-12 hours for no capability gain.
-
----
-
 ## Medium Priority
-
-### 626. Review and remove unnecessary theorems/lemmas with sorries
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-19
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-20
-- **Related**: Task 616
-- **Research**: [research-001.md](specs/626_review_remove_unnecessary_sorries/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/626_review_remove_unnecessary_sorries/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/626_review_remove_unnecessary_sorries/summaries/implementation-summary-20260119.md)
-
-**Description**: Systematically review which theorems or lemmas in Bimodal/Metalogic_v2/ are not needed and can be removed or moved to Bimodal/Boneyard/ if worth keeping. The policy is to only include theorems and lemmas that are needed and provable - no sorries should be "accepted" as permanent. Task 616 research recommended accepting a sorry in semantic_task_rel_compositionality, but this task takes the opposite approach: remove or relocate any theorem that cannot be proven rather than leaving sorries in production code.
-
----
 
 ### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
 - **Status**: [RESEARCHED]
@@ -108,21 +77,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/reports/research-001.md)
 
 **Description**: Prove the "upward" bridge `semantic_truth_implies_truth_at` showing finite model truth implies general `truth_at` semantics. This completes `finite_model_property_constructive` by proving the FMP witness is compatible with arbitrary external model frameworks. NOT on critical path - completeness is handled by task 627 (downward bridge), and decidability only needs the cardinality bound. This is for theoretical completeness and generalization to external semantics. Task 610 contains research on the structural induction approach (Atom/Bot/Imp/Box/Temporal cases). The challenge is Box (quantification over all WorldHistories) and Temporal (behavior outside finite time bounds).
-
----
-
-### 621. Analyze plan errors to improve agent execution
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-19
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/621_analyze_plan_errors_improve_agent_execution/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/621_analyze_plan_errors_improve_agent_execution/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/621_analyze_plan_errors_improve_agent_execution/summaries/implementation-summary-20260119.md)
-
-**Description**: Research the errors in /home/benjamin/Projects/ProofChecker/.claude/output/plan.md in order to identify how I can improve execution going forward of the /plan and other commands in my .claude/ agent system.
 
 ---
 
@@ -171,41 +125,6 @@ technical_debt:
 - **Plan**: [implementation-002.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-002.md)
 
 **Description**: Move the interesting parts of Bimodal/Metalogic/ to the Bimodal/Boneyard/, making Bimodal/Metalogic_v2/ stand independently on its own (no imports from the Boneyard/).
-
----
-
-### 615. Fix closure_mcs_neg_complete double negation edge case
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Researched**: 2026-01-19
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Related**: Task 608
-- **Research**: [research-001.md](specs/615_fix_closure_mcs_neg_complete_double_negation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/615_fix_closure_mcs_neg_complete_double_negation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/615_fix_closure_mcs_neg_complete_double_negation/summaries/implementation-summary-20260119.md)
-
-**Description**: Fix the sorry in `closure_mcs_neg_complete` at Closure.lean:484. The issue is a double negation edge case where `chi.neg.neg` (when `chi = psi.neg`) is not in `closureWithNeg`. Options include: (1) Restrict the theorem to `psi ∈ closure` instead of `closureWithNeg`, (2) Extend `closureWithNeg` to include double negations, or (3) Use a different approach in the truth lemma that avoids this case.
-
----
-
-### 612. Improve system-overview.md with architecture patterns
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Researched**: 2026-01-19
-- **Related**: Task 609
-- **Research**: [research-001.md](specs/612_improve_system_overview_docs_with_architecture/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/612_improve_system_overview_docs_with_architecture/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/612_improve_system_overview_docs_with_architecture/summaries/implementation-summary-20260119.md)
-
-**Description**: Improve .claude/context/core/architecture/system-overview.md to use unicode characters for diagrams AND document all command-skill and command-skill-agent architecture options. Current skills don't use context:fork so document what is used, noting differences and motivations for each approach used by different command types.
 
 ---
 
@@ -258,36 +177,6 @@ technical_debt:
 
 ---
 
-### 617. Fix closure_mcs_implies_locally_consistent temporal axioms
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Priority**: Low
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Related**: Task 608
-- **Research**: [research-001.md](specs/617_fix_closure_mcs_implies_locally_consistent/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/617_fix_closure_mcs_implies_locally_consistent/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/617_fix_closure_mcs_implies_locally_consistent/summaries/implementation-summary-20260119.md)
-
-**Description**: Fix the sorry in `closure_mcs_implies_locally_consistent` at FiniteWorldState.lean:343. The issue is that proving local consistency requires temporal reflexivity axioms (H φ → φ, G φ → φ) which don't hold in TM logic's strict temporal semantics. Options include: (1) Add explicit reflexivity conditions to the local consistency definition, (2) Use a different construction that bypasses temporal reflexivity, or (3) Document as an architectural limitation. Note: The semantic approach via SemanticCanonicalModel bypasses this issue entirely.
-
----
-
-### 470. Finite model computational optimization
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-19
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 458
-- **Research**: [research-001.md](specs/470_finite_model_computational_optimization/reports/research-001.md), [research-002.md](specs/470_finite_model_computational_optimization/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/470_finite_model_computational_optimization/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260118.md](specs/470_finite_model_computational_optimization/summaries/implementation-summary-20260118.md)
-
-**Description**: Optimize FiniteCanonicalModel.lean for computational efficiency. Current implementation prioritizes correctness over performance. Identify and implement optimizations for the finite world state enumeration, task relation checking, and truth evaluation.
-
----
-
 ### 490. Complete decidability procedure
 - **Status**: [EXPANDED]
 - **Researched**: 2026-01-19
@@ -301,22 +190,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260119.md](specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md)
 
 **Description**: Complete the decidability procedure for TM logic. Phases 1-2 completed with helper lemmas and proof structure. Expanded into subtasks for remaining work.
-
----
-
-### 622. Prove applyRule_decreases_complexity
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-19
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 490
-- **Research**: [research-001.md](specs/622_prove_applyRule_decreases_complexity/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/622_prove_applyRule_decreases_complexity/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/622_prove_applyRule_decreases_complexity/summaries/implementation-summary-20260119.md)
-
-**Description**: Prove the `applyRule_decreases_complexity` lemma in Saturation.lean. Requires case analysis on all 16 tableau rules showing that rule application decreases formula complexity. This completes the remaining work from Phase 2 of Task 490.
 
 ---
 
@@ -355,20 +228,5 @@ technical_debt:
 **Description**: Prove the `decide_complete` theorem in Correctness.lean deriving decision procedure completeness from tableau completeness. Follows directly from tableau_complete (Task 624).
 
 ---
-
-### 607. Port Decidability to Metalogic_v2
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Source**: Code Review 2026-01-18 (M1)
-- **Research**: [research-001.md](specs/607_port_decidability_to_metalogic_v2/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/607_port_decidability_to_metalogic_v2/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/607_port_decidability_to_metalogic_v2/summaries/implementation-summary-20260119.md)
-
-**Description**: Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.
 
 ---

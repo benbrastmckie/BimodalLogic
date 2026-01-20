@@ -1,9 +1,300 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-19T20:18:02Z",
+  "_last_updated": "2026-01-20T01:01:38Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 627,
+      "project_name": "prove_valid_implies_semantic_truth_at_v2_bridge",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-20T00:19:00Z",
+      "last_updated": "2026-01-20T00:54:35Z",
+      "session_id": "sess_1768869937_cfcd7a",
+      "researched": "2026-01-20T00:34:10Z",
+      "artifacts": [
+        {
+          "path": "specs/627_prove_valid_implies_semantic_truth_at_v2_bridge/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing the valid_implies_semantic_truth_at_v2 bridge, finding it is not required for the completeness proof architecture"
+        },
+        {
+          "path": "specs/627_prove_valid_implies_semantic_truth_at_v2_bridge/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan with decision gate; recommends ABANDONMENT as bridge not required for completeness"
+        }
+      ],
+      "planned": "2026-01-20T00:48:09Z",
+      "abandoned": "2026-01-20T00:54:35Z",
+      "abandoned_reason": "Research found bridge not required for completeness - main_provable_iff_valid_v2 already proven via semantic_weak_completeness",
+      "archived": "2026-01-20T01:01:38Z"
+    },
+    {
+      "project_number": 607,
+      "project_name": "port_decidability_to_metalogic_v2",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T07:45:00Z",
+      "last_updated": "2026-01-19T21:14:29Z",
+      "description": "Port the Decidability/ infrastructure from old Metalogic/ to Metalogic_v2/ architecture. The old Decidability/ has 8 files (Tableau, SignedFormula, Saturation, DecisionProcedure, ProofExtraction, CountermodelExtraction, Correctness, Closure) totaling 61KB. Integrate with FMP as the bridge theorem following the representation-first architecture.",
+      "source": "Code Review 2026-01-18 (M1)",
+      "session_id": "sess_1768856401_9dc365",
+      "researched": "2026-01-19T20:52:15Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/607_port_decidability_to_metalogic_v2/reports/research-001.md",
+          "summary": "Research report with dependency mapping, FMP integration strategy, and 5-phase porting plan"
+        },
+        {
+          "type": "plan",
+          "path": "specs/607_port_decidability_to_metalogic_v2/plans/implementation-001.md",
+          "summary": "9-phase plan covering core types, tableau rules, branch closure, saturation with FMP bounds, extraction modules, decision procedure, correctness proofs, and hub integration"
+        },
+        {
+          "path": "specs/607_port_decidability_to_metalogic_v2/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with file listing and verification results"
+        }
+      ],
+      "planned": "2026-01-19T20:58:08Z",
+      "started": "2026-01-19T21:00:25Z",
+      "completed": "2026-01-19T21:14:29Z",
+      "archived": "2026-01-20T01:01:38Z"
+    },
+    {
+      "project_number": 470,
+      "status": "completed",
+      "project_name": "finite_model_computational_optimization",
+      "section": "Low Priority",
+      "language": "lean",
+      "priority": "low",
+      "last_updated": "2026-01-19T23:59:49Z",
+      "session_id": "sess_1768867012_be8fba",
+      "researched": "2026-01-19T07:28:54Z",
+      "artifacts": [
+        {
+          "path": "specs/470_finite_model_computational_optimization/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying 5 priority optimization areas: computable decidable instances, precomputed closure decomposition, explicit time arithmetic, lazy consistent assignment generation, and specialized data structures"
+        },
+        {
+          "path": "specs/470_finite_model_computational_optimization/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplemental research on Metalogic_v2 architecture identifying 4 critical sorries, noncomputable patterns, and optimization recommendations for finite model computations"
+        },
+        {
+          "path": "specs/470_finite_model_computational_optimization/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan for Metalogic_v2 computational optimization covering sorry resolution, dependency migration, and computable definitions"
+        },
+        {
+          "path": "specs/470_finite_model_computational_optimization/summaries/implementation-summary-20260118.md",
+          "type": "summary",
+          "summary": "Updated implementation summary reflecting Phase 3 completion and all 7 phases done"
+        }
+      ],
+      "planned": "2026-01-19T07:36:09Z",
+      "started": "2026-01-19T07:38:13Z",
+      "completed": "2026-01-19T23:59:49Z",
+      "archived": "2026-01-20T01:01:38Z"
+    },
+    {
+      "project_number": 612,
+      "project_name": "improve_system_overview_docs_with_architecture",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T17:12:02Z",
+      "last_updated": "2026-01-19T20:22:01Z",
+      "session_id": "sess_1768853844_9bcb0b",
+      "researched": "2026-01-19T17:50:37Z",
+      "artifacts": [
+        {
+          "path": "specs/612_improve_system_overview_docs_with_architecture/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying inaccurate context:fork documentation, documenting three skill architecture patterns, and recommending Unicode diagrams"
+        },
+        {
+          "path": "specs/612_improve_system_overview_docs_with_architecture/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for improving system-overview.md documentation accuracy"
+        },
+        {
+          "path": "specs/612_improve_system_overview_docs_with_architecture/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-19T20:05:17Z",
+      "started": "2026-01-19T20:17:45Z",
+      "completed": "2026-01-19T20:22:01Z",
+      "archived": "2026-01-20T01:01:38Z"
+    },
+    {
+      "project_number": 615,
+      "project_name": "fix_closure_mcs_neg_complete_double_negation",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T17:54:18Z",
+      "last_updated": "2026-01-19T20:31:11Z",
+      "session_id": "sess_1768854321_d85703",
+      "researched": "2026-01-19T20:06:15Z",
+      "artifacts": [
+        {
+          "path": "specs/615_fix_closure_mcs_neg_complete_double_negation/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing double negation escape issue and recommending Option 1 (restrict to closure)"
+        },
+        {
+          "path": "specs/615_fix_closure_mcs_neg_complete_double_negation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan to fix closure_mcs_neg_complete double negation sorry"
+        },
+        {
+          "path": "specs/615_fix_closure_mcs_neg_complete_double_negation/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with detailed changes and verification results"
+        }
+      ],
+      "planned": "2026-01-19T20:19:08Z",
+      "started": "2026-01-19T20:25:43Z",
+      "completed": "2026-01-19T20:31:11Z",
+      "archived": "2026-01-20T01:01:38Z"
+    },
+    {
+      "project_number": 617,
+      "project_name": "fix_closure_mcs_implies_locally_consistent",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-19T17:55:38Z",
+      "last_updated": "2026-01-19T20:44:13Z",
+      "session_id": "sess_1768854981_700720",
+      "researched": "2026-01-19T20:15:28Z",
+      "artifacts": [
+        {
+          "path": "specs/617_fix_closure_mcs_implies_locally_consistent/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing temporal reflexivity mismatch and recommending removal of unused conditions from IsLocallyConsistent definition"
+        },
+        {
+          "path": "specs/617_fix_closure_mcs_implies_locally_consistent/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan: modify IsLocallyConsistent definition, prove theorem, verify downstream code"
+        },
+        {
+          "path": "specs/617_fix_closure_mcs_implies_locally_consistent/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-19T20:26:51Z",
+      "started": "2026-01-19T20:36:39Z",
+      "completed": "2026-01-19T20:44:13Z",
+      "archived": "2026-01-20T01:01:38Z"
+    },
+    {
+      "project_number": 621,
+      "project_name": "analyze_plan_errors_improve_agent_execution",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T20:59:50Z",
+      "last_updated": "2026-01-19T21:38:44Z",
+      "session_id": "sess_1768858277_1acc69",
+      "researched": "2026-01-19T21:06:02Z",
+      "artifacts": [
+        {
+          "path": "specs/621_analyze_plan_errors_improve_agent_execution/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of jq escaping errors in /plan 607 with 4 recommendations for improvement"
+        },
+        {
+          "path": "specs/621_analyze_plan_errors_improve_agent_execution/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan addressing jq escaping bug in postflight operations"
+        },
+        {
+          "path": "specs/621_analyze_plan_errors_improve_agent_execution/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting jq escaping fixes across 7 skill files"
+        }
+      ],
+      "planned": "2026-01-19T21:12:59Z",
+      "started": "2026-01-19T21:31:35Z",
+      "completed": "2026-01-19T21:38:44Z",
+      "archived": "2026-01-20T01:01:38Z"
+    },
+    {
+      "project_number": 622,
+      "project_name": "prove_applyRule_decreases_complexity",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "parent_task": 490,
+      "created": "2026-01-19T22:38:22Z",
+      "last_updated": "2026-01-19T23:02:31Z",
+      "session_id": "sess_1768863148_8d6f42",
+      "researched": "2026-01-19T22:46:15Z",
+      "artifacts": [
+        {
+          "path": "specs/622_prove_applyRule_decreases_complexity/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting all 16 tableau rules, complexity calculations, verified proof patterns, and implementation strategy"
+        },
+        {
+          "path": "specs/622_prove_applyRule_decreases_complexity/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan for proving applyRule_decreases_complexity with case analysis on all 16 tableau rules"
+        },
+        {
+          "path": "specs/622_prove_applyRule_decreases_complexity/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting proof strategy and changes made"
+        }
+      ],
+      "planned": "2026-01-19T22:50:53Z",
+      "started": "2026-01-19T22:52:46Z",
+      "completed": "2026-01-19T23:02:31Z",
+      "archived": "2026-01-20T01:01:38Z"
+    },
+    {
+      "project_number": 626,
+      "project_name": "review_remove_unnecessary_sorries",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-20T00:08:49Z",
+      "last_updated": "2026-01-20T00:51:57Z",
+      "session_id": "sess_1768868978_031d04",
+      "researched": "2026-01-20T00:17:47Z",
+      "artifacts": [
+        {
+          "path": "specs/626_review_remove_unnecessary_sorries/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of all sorries in Metalogic_v2 with classification and recommendations"
+        },
+        {
+          "path": "specs/626_review_remove_unnecessary_sorries/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan to delete 4 unused theorems and relocate 3 deprecated theorems to Boneyard"
+        },
+        {
+          "path": "specs/626_review_remove_unnecessary_sorries/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with before/after sorry counts and verification results"
+        }
+      ],
+      "planned": "2026-01-20T00:25:48Z",
+      "started": "2026-01-20T00:29:58Z",
+      "completed": "2026-01-20T00:51:57Z",
+      "archived": "2026-01-20T01:01:38Z"
+    },
     {
       "project_number": 603,
       "project_name": "add_completion_verification_logic",
