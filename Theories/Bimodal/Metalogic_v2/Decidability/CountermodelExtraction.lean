@@ -171,8 +171,9 @@ theorem open_branch_consistent (b : Branch) (hOpen : findClosure b = none) :
     ∀ p, ¬(SignedFormula.pos (.atom p) ∈ b ∧ SignedFormula.neg (.atom p) ∈ b) := by
   intro p ⟨hpos, hneg⟩
   -- findClosure b = none means all checks return none
-  simp only [findClosure, Option.or_eq_none'] at hOpen
-  obtain ⟨_, hNoContra, _⟩ := hOpen
+  simp only [findClosure] at hOpen
+  rw [Option.orElse_eq_none, Option.orElse_eq_none] at hOpen
+  obtain ⟨⟨_, hNoContra⟩, _⟩ := hOpen
   -- hNoContra : checkContradiction b = none
   simp only [checkContradiction, List.findSome?_eq_none] at hNoContra
   -- Apply to SignedFormula.pos (atom p)
