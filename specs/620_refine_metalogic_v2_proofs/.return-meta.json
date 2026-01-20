@@ -1,19 +1,19 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/620_refine_metalogic_v2_proofs/reports/research-001.md",
-      "summary": "Comprehensive research identifying proof economy issues, organization improvements, documentation gaps, and specific refactoring targets across 27 Metalogic_v2 files"
+      "type": "plan",
+      "path": "specs/620_refine_metalogic_v2_proofs/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for refining Metalogic_v2 proofs to publication quality"
     }
   ],
-  "next_steps": "Run /plan 620 to create implementation plan",
+  "next_steps": "Run /implement 620 to execute the plan",
   "metadata": {
-    "session_id": "sess_1768872323_8986cf",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1768873126_1aa9dc",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research"],
-    "findings_count": 15
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 6.0
   }
 }

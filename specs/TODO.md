@@ -118,9 +118,10 @@ technical_debt:
 ---
 
 ### 620. Refine Metalogic_v2 proofs for publication quality
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-19
 - **Research**: [research-001.md](specs/620_refine_metalogic_v2_proofs/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/620_refine_metalogic_v2_proofs/plans/implementation-001.md)
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
