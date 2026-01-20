@@ -67,12 +67,12 @@
     {
       "project_number": 623,
       "project_name": "build_fmp_tableau_connection_infrastructure",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-20T00:19:16Z",
+      "last_updated": "2026-01-20T00:22:41Z",
       "session_id": "sess_1768866353_ab089c",
       "researched": "2026-01-19T23:08:08Z",
       "artifacts": [
@@ -80,11 +80,6 @@
           "path": "specs/623_build_fmp_tableau_connection_infrastructure/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive research report covering FMP infrastructure, tableau implementation, countermodel extraction, and proof strategies for required lemmas"
-        },
-        {
-          "path": "specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase plan covering expansion_decreases_measure completion, branchTruthLemma implementation, and tableau_complete proof enablement"
         },
         {
           "path": "specs/623_build_fmp_tableau_connection_infrastructure/summaries/implementation-summary-20260119.md",
@@ -95,11 +90,16 @@
           "path": "specs/623_build_fmp_tableau_connection_infrastructure/summaries/implementation-summary-20260119.md",
           "type": "summary",
           "summary": "Partial implementation summary documenting phases 1-2 progress on FMP-tableau infrastructure"
+        },
+        {
+          "path": "specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 4-phase plan with corrected proof techniques for branchTruthLemma and tableau_complete"
         }
       ],
-      "planned": "2026-01-19T23:11:26Z",
+      "planned": "2026-01-20T00:22:41Z",
       "started": "2026-01-19T23:12:43Z",
-      "resume_phase": 2
+      "resume_phase": 1
     },
     {
       "project_number": 624,
