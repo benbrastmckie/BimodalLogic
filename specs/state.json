@@ -26,11 +26,11 @@
     {
       "project_number": 627,
       "project_name": "prove_valid_implies_semantic_truth_at_v2_bridge",
-      "status": "planned",
+      "status": "abandoned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-20T00:19:00Z",
-      "last_updated": "2026-01-20T00:48:09Z",
+      "last_updated": "2026-01-20T00:54:35Z",
       "session_id": "sess_1768869937_cfcd7a",
       "researched": "2026-01-20T00:34:10Z",
       "artifacts": [
@@ -45,7 +45,9 @@
           "summary": "5-phase implementation plan with decision gate; recommends ABANDONMENT as bridge not required for completeness"
         }
       ],
-      "planned": "2026-01-20T00:48:09Z"
+      "planned": "2026-01-20T00:48:09Z",
+      "abandoned": "2026-01-20T00:54:35Z",
+      "abandoned_reason": "Research found bridge not required for completeness - main_provable_iff_valid_v2 already proven via semantic_weak_completeness"
     },
     {
       "project_number": 626,
