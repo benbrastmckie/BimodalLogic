@@ -69,7 +69,8 @@ technical_debt:
 ## Medium Priority
 
 ### 643. Implement /learn command for tag extraction and context improvement
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-20
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -114,7 +115,7 @@ technical_debt:
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Research**: [research-001.md](specs/642_meta_tasks_update_claudemd_not_roadmap/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/642_meta_tasks_update_claudemd_not_roadmap/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/642_meta_tasks_update_claudemd_not_roadmap/plans/implementation-002.md) *(revised)*
 
 **Description**: Update the /todo command so that tasks with 'meta' as the language should not be used to update ROAD_MAP.md. Instead, meta tasks should suggest updates to CLAUDE.md (while avoiding bloating CLAUDE.md). This ensures that system/agent improvements are tracked in the project configuration rather than the project roadmap.
 

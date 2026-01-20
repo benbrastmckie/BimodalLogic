@@ -8,13 +8,13 @@
     {
       "project_number": 643,
       "project_name": "implement_learn_command_tag_extraction",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T19:19:22Z",
-      "last_updated": "2026-01-20T19:52:49Z",
+      "last_updated": "2026-01-20T19:56:27Z",
       "description": "Create /learn command that scans files for FIX:, NOTE:, and TODO: tags and creates appropriate tasks: (1) fix-it-task from FIX: and NOTE: tags for small changes, (2) learn-it-task from NOTE: tags to update context files, (3) todo-tasks from TODO: tags as individual tasks for larger changes. Tags created conditionally based on presence.",
-      "session_id": "sess_1768938262_b87c54",
+      "session_id": "sess_1768938969_bb17cf",
       "researched": "2026-01-20T19:40:56Z",
       "artifacts": [
         {
@@ -28,7 +28,8 @@
           "summary": "7-phase plan with documentation updates: command, skill, agent, tag extraction, task generation, postflight, and docs updates"
         }
       ],
-      "planned": "2026-01-20T19:52:49Z"
+      "planned": "2026-01-20T19:52:49Z",
+      "started": "2026-01-20T19:56:27Z"
     },
     {
       "project_number": 642,
@@ -37,7 +38,7 @@
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T19:06:00Z",
-      "last_updated": "2026-01-20T19:33:24Z",
+      "last_updated": "2026-01-20T19:57:09Z",
       "session_id": "sess_1768937460_e5d40b",
       "researched": "2026-01-20T19:18:45Z",
       "artifacts": [
@@ -47,12 +48,12 @@
           "summary": "Research report with 5-phase implementation plan for meta task CLAUDE.md updates"
         },
         {
-          "path": "specs/642_meta_tasks_update_claudemd_not_roadmap/plans/implementation-001.md",
+          "path": "specs/642_meta_tasks_update_claudemd_not_roadmap/plans/implementation-002.md",
           "type": "plan",
-          "summary": "6-phase plan covering schema docs, CLAUDE.md section, language filtering, scanning, update logic, and documentation"
+          "summary": "5-phase plan with intelligent CLAUDE.md suggestions instead of rolling log"
         }
       ],
-      "planned": "2026-01-20T19:33:24Z"
+      "planned": "2026-01-20T19:57:09Z"
     },
     {
       "project_number": 641,
