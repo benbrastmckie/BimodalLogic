@@ -1,20 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Identified contradictory return format instructions in latex-implementation-agent.md (and general-implementation-agent.md). Both agents have correct v2 file-based metadata in Stages 7-8 but outdated v1 JSON console output in Return Format Examples and Critical Requirements sections. The contradiction causes JSON to be dumped to console instead of written to .return-meta.json. Recommended fix is to update both agents' examples and requirements sections to match the v2 pattern used by lean-implementation-agent.md, plus add postflight validation to detect accidental JSON console output.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/633_fix_agent_return_format_consistency/reports/research-001.md",
-      "summary": "Research report with detailed analysis of return format contradictions and implementation recommendations"
+      "type": "plan",
+      "path": "specs/633_fix_agent_return_format_consistency/plans/implementation-001.md",
+      "summary": "3-phase implementation plan to fix agent return format inconsistencies and add postflight validation"
     }
   ],
-  "next_steps": "Run /plan 633 to create implementation plan",
+  "next_steps": "Run /implement 633 to execute the plan",
   "metadata": {
-    "session_id": "sess_1768878255_a7d2a1",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 420,
+    "session_id": "sess_1768890014_9ed060",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 1.5
   }
 }

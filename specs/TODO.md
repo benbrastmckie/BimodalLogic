@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 17
-  completed: 214
+  active: 13
+  completed: 218
   in_progress: 1
   not_started: 5
   abandoned: 19
@@ -14,7 +14,7 @@ task_counts:
 priority_distribution:
   critical: 0
   high: 3
-  medium: 9
+  medium: 5
   low: 5
 technical_debt:
   sorry_count: 205
@@ -28,12 +28,14 @@ technical_debt:
 ## High Priority
 
 ### 633. Fix agent return format consistency
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
+- **Planned**: 2026-01-20
 - **Research**: [research-001.md](specs/633_fix_agent_return_format_consistency/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/633_fix_agent_return_format_consistency/plans/implementation-001.md)
 
 **Description**: Fix contradictory return format instructions in latex-implementation-agent.md that cause JSON to be dumped to console instead of written to .return-meta.json file, requiring user to type continue. Update agent to consistently follow v2 file-based metadata pattern. Add validation in skill postflight to detect accidental JSON console output.
 
@@ -80,22 +82,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 632. Integrate roadmap review into /review command
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Researched**: 2026-01-20
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/632_integrate_roadmap_review_into_review_command/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/632_integrate_roadmap_review_into_review_command/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260119.md](specs/632_integrate_roadmap_review_into_review_command/summaries/implementation-summary-20260119.md)
-
-**Description**: Modify `/review` command to always engage with and update `specs/ROAD_MAP.md` as part of its standard operation (no flag required). The command should: (1) Parse ROAD_MAP.md structure (phases, checkboxes, status tables), (2) Cross-reference with TODO.md/state.json completed tasks and codebase state (file existence, sorry counts), (3) Edit ROAD_MAP.md to annotate what has been finished with brief notes, (4) Identify current goals and the path toward them, (5) Present recommended tasks to the user for selection, allowing them to choose which tasks to create.
-
----
-
 ### 630. Build TaskModel extraction from saturated tableau branches
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
@@ -134,37 +120,6 @@ technical_debt:
 
 ---
 
-### 620. Refine Metalogic_v2 proofs for publication quality
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-19
-- **Research**: [research-001.md](specs/620_refine_metalogic_v2_proofs/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/620_refine_metalogic_v2_proofs/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/620_refine_metalogic_v2_proofs/summaries/implementation-summary-20260119.md)
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-20
-
-**Description**: Refine the Bimodal/Metalogic_v2/ proofs to have no fat whatsoever, optimizing performance and organization while cleaning out old cruft, stray comments, and otherwise improving the presentation to be at the highest quality for publication and reference.
-
----
-
-### 629. Document Bimodal/Metalogic proofs in LaTeX
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: latex
-- **Created**: 2026-01-20
-- **Dependencies**: 620
-- **Researched**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/629_document_bimodal_metalogic_proofs_latex/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/629_document_bimodal_metalogic_proofs_latex/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260120.md](specs/629_document_bimodal_metalogic_proofs_latex/summaries/implementation-summary-20260120.md)
-
-**Description**: Review the recently completed Bimodal/Metalogic/ proofs which make the representation theorem the central theorem from which completeness follows in order to systematically improve /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/04-Metalogic.tex to fully and accurately report the theorems established, providing some indication of how the proofs go without providing proofs just remarks and discussion, and explaining the organization/dependencies between the theorems (which import from which), providing a clear and well organized narrative arc that guides the reader through the Bimodal/Metalogic/ results that have been established in the Lean source code.
-
----
-
 ### 619. Agent system architecture upgrade (context:fork migration)
 - **Status**: [PLANNED]
 - **Researched**: 2026-01-19
@@ -176,21 +131,6 @@ technical_debt:
 - **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
 **Description**: FUTURE UPGRADE: Migrate agent system skills to use native `context: fork` frontmatter once Anthropic fixes GitHub issue #16803. Research-002.md confirmed context:fork IS a real feature (added v2.1.0) but is currently broken. Current Task tool delegation pattern is correct and should remain until the bug is fixed. When fixed, migrate skills to use `context: fork` + `agent:` frontmatter for cleaner context isolation.
-
----
-
-### 618. Move Metalogic to Boneyard, make Metalogic_v2 independent
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Researched**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260119.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/summaries/implementation-summary-20260119.md)
-
-**Description**: Move the interesting parts of Bimodal/Metalogic/ to the Bimodal/Boneyard/, making Bimodal/Metalogic_v2/ stand independently on its own (no imports from the Boneyard/).
 
 ---
 

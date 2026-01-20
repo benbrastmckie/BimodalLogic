@@ -2,58 +2,33 @@
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
     "total_tasks": 10,
-    "last_sync": "2026-01-19T17:45:00Z"
+    "last_sync": "2026-01-20T06:21:00Z"
   },
   "active_projects": [
     {
       "project_number": 633,
       "project_name": "fix_agent_return_format_consistency",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T02:37:36Z",
-      "last_updated": "2026-01-20T03:07:00Z",
+      "last_updated": "2026-01-20T06:22:40Z",
       "description": "Fix contradictory return format instructions in latex-implementation-agent.md that cause JSON to be dumped to console instead of written to .return-meta.json file, requiring user to type continue. Update agent to consistently follow v2 file-based metadata pattern. Add validation in skill postflight to detect accidental JSON console output.",
-      "session_id": "sess_1768878255_a7d2a1",
+      "session_id": "sess_1768890014_9ed060",
       "researched": "2026-01-20T03:07:00Z",
       "artifacts": [
         {
           "path": "specs/633_fix_agent_return_format_consistency/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing return format contradictions in latex-implementation-agent.md and general-implementation-agent.md with implementation recommendations"
-        }
-      ]
-    },
-    {
-      "project_number": 632,
-      "project_name": "integrate_roadmap_review_into_review_command",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-19T17:45:00Z",
-      "last_updated": "2026-01-20T02:45:01Z",
-      "session_id": "sess_1768876670_df53cf",
-      "researched": "2026-01-20T02:08:59Z",
-      "artifacts": [
-        {
-          "path": "specs/632_integrate_roadmap_review_into_review_command/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing /review command structure, ROAD_MAP.md parsing requirements, cross-reference patterns, and task recommendation workflow"
         },
         {
-          "path": "specs/632_integrate_roadmap_review_into_review_command/plans/implementation-002.md",
+          "path": "specs/633_fix_agent_return_format_consistency/plans/implementation-001.md",
           "type": "plan",
-          "summary": "6-phase implementation plan for integrating roadmap analysis into /review command with context file creation"
-        },
-        {
-          "path": "specs/632_integrate_roadmap_review_into_review_command/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
+          "summary": "3-phase implementation plan to fix agent return format inconsistencies and add postflight validation"
         }
       ],
-      "planned": "2026-01-20T02:16:18Z",
-      "started": "2026-01-20T02:38:11Z",
-      "completed": "2026-01-20T02:45:01Z"
+      "planned": "2026-01-20T06:22:40Z"
     },
     {
       "project_number": 630,
@@ -88,37 +63,6 @@
       ],
       "created": "2026-01-20T01:07:10Z",
       "last_updated": "2026-01-20T01:07:10Z"
-    },
-    {
-      "project_number": 629,
-      "project_name": "document_bimodal_metalogic_proofs_latex",
-      "status": "completed",
-      "language": "latex",
-      "priority": "medium",
-      "created": "2026-01-20T00:41:38Z",
-      "last_updated": "2026-01-20T02:20:39Z",
-      "session_id": "sess_1768875159_4d7ab4",
-      "researched": "2026-01-20T02:04:01Z",
-      "artifacts": [
-        {
-          "path": "specs/629_document_bimodal_metalogic_proofs_latex/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting Metalogic_v2 architecture, theorem dependencies, and LaTeX documentation recommendations"
-        },
-        {
-          "path": "specs/629_document_bimodal_metalogic_proofs_latex/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan v002: TikZ diagrams for theorem dependencies and import structure (revised from ASCII)"
-        },
-        {
-          "path": "specs/629_document_bimodal_metalogic_proofs_latex/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting restructured 04-Metalogic.tex with TikZ diagrams and proof remarks"
-        }
-      ],
-      "planned": "2026-01-20T02:11:33Z",
-      "started": "2026-01-20T02:12:58Z",
-      "completed": "2026-01-20T02:20:39Z"
     },
     {
       "project_number": 628,
@@ -201,37 +145,6 @@
       "last_updated": "2026-01-19T22:38:22Z"
     },
     {
-      "project_number": 620,
-      "project_name": "refine_metalogic_v2_proofs",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-19T20:45:59Z",
-      "last_updated": "2026-01-20T01:55:17Z",
-      "session_id": "sess_1768873487_d17eda",
-      "researched": "2026-01-20T01:28:36Z",
-      "artifacts": [
-        {
-          "path": "specs/620_refine_metalogic_v2_proofs/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive research identifying proof economy issues, organization improvements, documentation gaps, and specific refactoring targets across 27 Metalogic_v2 files"
-        },
-        {
-          "path": "specs/620_refine_metalogic_v2_proofs/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for refining Metalogic_v2 proofs to publication quality"
-        },
-        {
-          "path": "specs/620_refine_metalogic_v2_proofs/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results and metrics"
-        }
-      ],
-      "planned": "2026-01-20T01:41:16Z",
-      "started": "2026-01-20T01:45:07Z",
-      "completed": "2026-01-20T01:55:17Z"
-    },
-    {
       "project_number": 619,
       "project_name": "agent_system_architecture_upgrade",
       "status": "planned",
@@ -259,42 +172,6 @@
         }
       ],
       "planned": "2026-01-19T21:36:36Z"
-    },
-    {
-      "project_number": 618,
-      "project_name": "move_metalogic_to_boneyard_make_v2_independent",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-19T20:23:03Z",
-      "last_updated": "2026-01-20T01:21:14Z",
-      "session_id": "sess_1768871105_656b4f",
-      "researched": "2026-01-19T20:37:59Z",
-      "artifacts": [
-        {
-          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report confirming Metalogic_v2 independence and documenting migration plan with 4 phases"
-        },
-        {
-          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "4-phase revised plan: migrate consumers to Metalogic_v2, move Metalogic to Boneyard, archive tests, verify"
-        },
-        {
-          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary with file changes, import migration map, and verification results"
-        },
-        {
-          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary with file changes, import migration map, and verification results"
-        }
-      ],
-      "planned": "2026-01-20T00:42:11Z",
-      "started": "2026-01-20T01:05:30Z",
-      "completed": "2026-01-20T01:21:14Z"
     },
     {
       "project_number": 616,
