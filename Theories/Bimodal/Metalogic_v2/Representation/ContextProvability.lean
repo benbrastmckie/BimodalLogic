@@ -122,18 +122,22 @@ theorem not_derivable_implies_neg_consistent {φ : Formula} :
 
 **Proof Strategy (Strategy C)**:
 1. Convert `semantic_consequence [] φ` to `valid φ` via `valid_iff_empty_consequence`
-2. Apply `main_provable_iff_valid` to get `Nonempty (⊢ φ)`
+2. Apply `main_provable_iff_valid_v2` to get `Nonempty (⊢ φ)`
 3. Return as `ContextDerivable [] φ`
 
 **Key Insight**: Strategy C bypasses the deprecated bridge lemma
 `semantic_consequence_implies_semantic_world_truth` by going through the `valid`
-predicate as an intermediate step. This is cleaner and avoids sorry dependencies.
+predicate as an intermediate step.
 
 **Dependencies**:
 - `Validity.valid_iff_empty_consequence` (PROVEN in Validity.lean)
-- `main_provable_iff_valid_v2` (PROVEN in Metalogic_v2/Representation/SemanticCanonicalModel.lean)
+- `main_provable_iff_valid_v2` (completeness direction used, which contains sorry)
 
-**Status**: Fully proven, no sorries.
+**Status**: CONTAINS SORRY via `main_provable_iff_valid_v2.mpr`.
+
+The sorry in `main_provable_iff_valid_v2` transitively affects this theorem because
+we use the `.mpr` (completeness) direction. For a sorry-free path, code can use
+`semantic_weak_completeness` directly with the appropriate truth predicate.
 
 **References**:
 - Blackburn et al., Modal Logic, Chapter 4.8 (Canonical Model Construction)

@@ -1,7 +1,7 @@
 # Implementation Plan: Fix sorry in main_provable_iff_valid_v2
 
 - **Task**: 634 - Fix sorry in main_provable_iff_valid_v2
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1 hour
 - **Priority**: Low
 - **Dependencies**: None
@@ -39,7 +39,7 @@ This plan documents the sorry as a known limitation and ensures the codebase is 
 
 ## Implementation Phases
 
-### Phase 1: Audit Usage and Document [NOT STARTED]
+### Phase 1: Audit Usage and Document [COMPLETED]
 
 **Goal**: Understand current usage patterns and add comprehensive documentation.
 
@@ -63,7 +63,7 @@ This plan documents the sorry as a known limitation and ensures the codebase is 
 
 ---
 
-### Phase 2: Add Alternative for Callers [NOT STARTED]
+### Phase 2: Add Alternative for Callers [COMPLETED]
 
 **Goal**: Provide a sorry-free pathway for code that needs the equivalence.
 
@@ -85,7 +85,7 @@ This plan documents the sorry as a known limitation and ensures the codebase is 
 
 ---
 
-### Phase 3: Verify and Close [NOT STARTED]
+### Phase 3: Verify and Close [COMPLETED]
 
 **Goal**: Ensure the codebase builds and the limitation is properly documented.
 

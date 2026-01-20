@@ -152,7 +152,11 @@ Uses semantic canonical model with finite world states. -/
 
 `main_provable_iff_valid_v2 φ : Nonempty (⊢ φ) ↔ valid φ`
 
-The fundamental bi-conditional connecting syntax and semantics. -/
+The fundamental bi-conditional connecting syntax and semantics.
+
+**Note**: The soundness direction (provable → valid) is fully proven.
+The completeness direction (valid → provable) contains a sorry; for
+sorry-free completeness, use `semantic_weak_completeness` above. -/
 #check @main_provable_iff_valid_v2  -- ⊢ φ ↔ ⊨ φ
 
 /-!

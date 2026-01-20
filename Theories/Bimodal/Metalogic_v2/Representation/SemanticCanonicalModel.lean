@@ -617,17 +617,29 @@ noncomputable def semantic_weak_completeness (phi : Formula) :
 /--
 Main theorem: Provability is equivalent to validity.
 
-**Note on completeness direction**:
-The completeness direction (valid phi → provable phi) has a sorry because it requires
-a "truth bridge" lemma connecting general validity (`truth_at` over all models) to
-finite model truth (`semantic_truth_at_v2`).
+**Status**: PARTIAL - The soundness direction (provable → valid) is fully proven.
+The completeness direction (valid → provable) contains a sorry.
 
+**Known Limitation in Completeness Direction**:
+The completeness direction has a sorry because it requires a "truth bridge" lemma
+connecting general validity (`truth_at` over all models) to finite model truth
+(`semantic_truth_at_v2`). This bridge requires showing that if a formula is true
+in ALL models (uncountably many), then it is also true in our specific finite
+canonical model - a non-trivial claim that would require significant theoretical work.
+
+**Recommended Alternative**:
 For a SORRY-FREE completeness result, use `semantic_weak_completeness` which proves:
-`(∀ w, semantic_truth_at_v2 phi w t phi) → ⊢ phi`
+  `(∀ w, semantic_truth_at_v2 phi w t phi) → ⊢ phi`
 
 The `semantic_weak_completeness` approach works by using internal finite model truth
-and avoiding the bridge to general `truth_at` entirely. See Boneyard/DeprecatedCompleteness.lean
-for documentation of the deprecated general validity approach.
+and avoiding the bridge to general `truth_at` entirely. This is the preferred approach
+for code that needs provable completeness without sorry dependencies.
+
+**Usage Guidance**:
+- Soundness direction (`.mp`): Safe to use, fully proven
+- Completeness direction (`.mpr`): Contains sorry, use `semantic_weak_completeness` instead
+
+See Boneyard/DeprecatedCompleteness.lean for documentation of the deprecated approach.
 -/
 theorem main_provable_iff_valid_v2 (phi : Formula) : Nonempty (⊢ phi) ↔ valid phi := by
   constructor
