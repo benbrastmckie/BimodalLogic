@@ -8,11 +8,20 @@
     {
       "project_number": 638,
       "project_name": "add_roadmap_update_to_todo_command",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T16:55:00Z",
-      "last_updated": "2026-01-20T16:55:00Z"
+      "last_updated": "2026-01-20T17:03:36Z",
+      "session_id": "sess_1768928452_045053",
+      "researched": "2026-01-20T17:03:36Z",
+      "artifacts": [
+        {
+          "path": "specs/638_add_roadmap_update_to_todo_command/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing /todo command structure, /review roadmap logic, and integration approach for ROAD_MAP.md checkbox updates"
+        }
+      ]
     },
     {
       "project_number": 639,
