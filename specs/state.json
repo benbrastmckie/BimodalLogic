@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 627,
+      "project_name": "prove_valid_implies_semantic_truth_at_v2_bridge",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-20T00:19:00Z",
+      "last_updated": "2026-01-20T00:19:00Z"
+    },
+    {
       "project_number": 626,
       "project_name": "review_remove_unnecessary_sorries",
       "status": "researched",
@@ -63,7 +72,7 @@
       "priority": "low",
       "parent_task": 490,
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-19T23:50:00Z",
+      "last_updated": "2026-01-20T00:19:16Z",
       "session_id": "sess_1768866353_ab089c",
       "researched": "2026-01-19T23:08:08Z",
       "artifacts": [
@@ -90,7 +99,7 @@
       ],
       "planned": "2026-01-19T23:11:26Z",
       "started": "2026-01-19T23:12:43Z",
-      "resume_phase": 3
+      "resume_phase": 2
     },
     {
       "project_number": 624,
@@ -521,5 +530,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 627
+  "next_project_number": 628
 }

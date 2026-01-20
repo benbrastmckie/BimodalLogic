@@ -1,5 +1,5 @@
 ---
-next_project_number: 627
+next_project_number: 628
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -63,6 +63,17 @@ technical_debt:
 - **Dependencies**: 398
 
 **Description**: Implement the causal operator semantics in Lean based on the approved recursive-semantics.md specification. Extend CoreFrame with closeness ordering, define Evolution and ExpectedEvolution structures, implement CausalContext with background assumptions, and replace the current counterfactual-based definition in Truth.lean with the three-condition hyperintensional semantics.
+
+---
+
+### 627. Prove valid_implies_semantic_truth_at_v2 bridge for Strategy A completeness
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-20
+- **Related**: Tasks 470, 608, 610
+
+**Description**: Prove the "downward" bridge theorem showing `valid phi` implies all SemanticWorldStates satisfy phi in the `semantic_truth_at_v2` sense (internal finite model semantics). This specializes general validity to the SemanticCanonicalModel, enabling the proven `semantic_weak_completeness` theorem to establish `valid → provable` without sorries. Easier than the upward bridge (task 610) because it goes from general to specific. Completes the representation-first architecture by connecting FMP-based finite model to standard completeness via internal semantics (Strategy A from task 608 research).
 
 ---
 
