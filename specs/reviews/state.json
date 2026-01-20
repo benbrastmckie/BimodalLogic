@@ -92,12 +92,34 @@
       },
       "tasks_created": [],
       "registries_updated": []
+    },
+    {
+      "review_id": "review-2026-01-19-roadmap",
+      "date": "2026-01-19",
+      "scope": "all (with roadmap integration)",
+      "report_path": "specs/reviews/review-2026-01-19-roadmap.md",
+      "summary": {
+        "files_reviewed": 27,
+        "critical_issues": 0,
+        "high_issues": 1,
+        "medium_issues": 3,
+        "low_issues": 5
+      },
+      "tasks_created": [],
+      "registries_updated": [],
+      "roadmap_analysis": {
+        "checkboxes_total": 89,
+        "checkboxes_completed": 0,
+        "annotations_made": 0,
+        "annotations_suggested": 2,
+        "completed_tasks_reviewed": ["618", "620", "629", "632"]
+      }
     }
   ],
   "statistics": {
-    "total_reviews": 6,
+    "total_reviews": 7,
     "last_review": "2026-01-19",
-    "total_issues_found": 134,
+    "total_issues_found": 143,
     "total_tasks_created": 2
   }
 }
