@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 629,
+      "project_name": "document_bimodal_metalogic_proofs_latex",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-20T00:41:38Z",
+      "last_updated": "2026-01-20T00:41:38Z"
+    },
+    {
       "project_number": 628,
       "project_name": "prove_semantic_truth_implies_truth_at_upward_bridge",
       "status": "not_started",
@@ -555,5 +564,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 629
+  "next_project_number": 630
 }
