@@ -118,13 +118,15 @@ technical_debt:
 ---
 
 ### 620. Refine Metalogic_v2 proofs for publication quality
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-19
 - **Research**: [research-001.md](specs/620_refine_metalogic_v2_proofs/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/620_refine_metalogic_v2_proofs/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/620_refine_metalogic_v2_proofs/summaries/implementation-summary-20260119.md)
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Completed**: 2026-01-20
 
 **Description**: Refine the Bimodal/Metalogic_v2/ proofs to have no fat whatsoever, optimizing performance and organization while cleaning out old cruft, stray comments, and otherwise improving the presentation to be at the highest quality for publication and reference.
 

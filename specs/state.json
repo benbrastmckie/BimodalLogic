@@ -140,11 +140,11 @@
     {
       "project_number": 620,
       "project_name": "refine_metalogic_v2_proofs",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T20:45:59Z",
-      "last_updated": "2026-01-20T01:45:07Z",
+      "last_updated": "2026-01-20T01:55:17Z",
       "session_id": "sess_1768873487_d17eda",
       "researched": "2026-01-20T01:28:36Z",
       "artifacts": [
@@ -157,10 +157,16 @@
           "path": "specs/620_refine_metalogic_v2_proofs/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for refining Metalogic_v2 proofs to publication quality"
+        },
+        {
+          "path": "specs/620_refine_metalogic_v2_proofs/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results and metrics"
         }
       ],
       "planned": "2026-01-20T01:41:16Z",
-      "started": "2026-01-20T01:45:07Z"
+      "started": "2026-01-20T01:45:07Z",
+      "completed": "2026-01-20T01:55:17Z"
     },
     {
       "project_number": 619,
