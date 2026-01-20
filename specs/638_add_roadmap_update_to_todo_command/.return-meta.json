@@ -1,19 +1,16 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "summary": "6-phase implementation plan for adding roadmap update capability to /todo command",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/638_add_roadmap_update_to_todo_command/reports/research-001.md",
-      "summary": "Research report analyzing /todo command structure, /review roadmap logic, and integration approach for ROAD_MAP.md checkbox updates"
+      "path": "specs/638_add_roadmap_update_to_todo_command/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "6-phase implementation plan covering infrastructure, dry-run preview, roadmap update logic, git commit, output report, and documentation"
     }
   ],
-  "next_steps": "Run /plan 638 to create implementation plan",
   "metadata": {
-    "session_id": "sess_1768928452_045053",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
-    "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 7
-  }
+    "phase_count": 6,
+    "estimated_hours": 2.5
+  },
+  "session_id": "sess_1768929302_8fa6a9"
 }

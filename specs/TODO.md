@@ -85,12 +85,14 @@ technical_debt:
 ## Medium Priority
 
 ### 638. Add roadmap update capability to /todo command
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
+- **Planned**: 2026-01-20
 - **Research**: [research-001.md](specs/638_add_roadmap_update_to_todo_command/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/638_add_roadmap_update_to_todo_command/plans/implementation-001.md)
 
 **Description**: Extend the /todo command to update ROAD_MAP.md checkboxes when archiving completed or abandoned tasks. Currently /todo archives tasks to TODO.md and state.json but does not touch ROAD_MAP.md. Use the matching patterns from /review (exact `(Task {N})` references, title fuzzy matching, file path existence checks) but integrate at the task archival point. When a task is archived as completed, check off any matching roadmap items. When a task is archived as abandoned, optionally annotate the roadmap item.
 
