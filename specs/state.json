@@ -8,12 +8,21 @@
     {
       "project_number": 643,
       "project_name": "implement_learn_command_tag_extraction",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T19:19:22Z",
-      "last_updated": "2026-01-20T19:30:18Z",
-      "description": "Create /learn command that scans files for FIX:, NOTE:, and TODO: tags and creates appropriate tasks: (1) fix-it-task from FIX: and NOTE: tags for small changes, (2) learn-it-task from NOTE: tags to update context files, (3) todo-tasks from TODO: tags as individual tasks for larger changes. Tags created conditionally based on presence."
+      "last_updated": "2026-01-20T19:40:56Z",
+      "description": "Create /learn command that scans files for FIX:, NOTE:, and TODO: tags and creates appropriate tasks: (1) fix-it-task from FIX: and NOTE: tags for small changes, (2) learn-it-task from NOTE: tags to update context files, (3) todo-tasks from TODO: tags as individual tasks for larger changes. Tags created conditionally based on presence.",
+      "session_id": "sess_1768937859_a76532",
+      "researched": "2026-01-20T19:40:56Z",
+      "artifacts": [
+        {
+          "path": "specs/643_implement_learn_command_tag_extraction/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with tag extraction patterns, context routing strategy, task creation infrastructure, and recommended 3-component architecture"
+        }
+      ]
     },
     {
       "project_number": 642,
