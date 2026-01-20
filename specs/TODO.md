@@ -99,14 +99,16 @@ technical_debt:
 ## Medium Priority
 
 ### 651. Simplify /learn NOTE: tag workflow
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
 - **Planned**: 2026-01-20
+- **Completed**: 2026-01-20
 - **Research**: [research-001.md](specs/651_simplify_learn_note_tag_workflow/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/651_simplify_learn_note_tag_workflow/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260120.md](specs/651_simplify_learn_note_tag_workflow/summaries/implementation-summary-20260120.md)
 
 **Description**: Simplify the /learn command workflow so that learn-it tasks focus only on improving relevant context files and documentation, leaving NOTE: tags in place. The fix-it task created by /learn should then address and remove both NOTE: and FIX: tags when making file changes, while leaving TODO: tags behind for todo tasks. This removes the unnecessary NOTE: to FIX: tag replacement from learn-it tasks.
 

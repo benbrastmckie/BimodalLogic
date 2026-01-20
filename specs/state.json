@@ -8,12 +8,12 @@
     {
       "project_number": 651,
       "project_name": "simplify_learn_note_tag_workflow",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T21:32:12Z",
-      "last_updated": "2026-01-20T21:50:20Z",
-      "session_id": "sess_1768945692_112dc7",
+      "last_updated": "2026-01-20T21:54:10Z",
+      "session_id": "sess_1768945867_f68835",
       "researched": "2026-01-20T21:37:29Z",
       "artifacts": [
         {
@@ -25,9 +25,21 @@
           "path": "specs/651_simplify_learn_note_tag_workflow/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan to simplify /learn NOTE: tag workflow by removing tag replacement from learn-it tasks"
+        },
+        {
+          "path": "specs/651_simplify_learn_note_tag_workflow/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes and verification results"
+        },
+        {
+          "path": "specs/651_simplify_learn_note_tag_workflow/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes and verification results"
         }
       ],
-      "planned": "2026-01-20T21:50:20Z"
+      "planned": "2026-01-20T21:50:20Z",
+      "started": "2026-01-20T21:51:35Z",
+      "completed": "2026-01-20T21:54:10Z"
     },
     {
       "project_number": 650,

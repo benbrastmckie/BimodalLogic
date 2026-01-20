@@ -45,12 +45,12 @@ This design ensures users always see what was found before any tasks are created
 
 When NOTE: tags exist and you select **both** fix-it and learn-it task types:
 
-1. **Learn-it task is created first** - Updates context files AND replaces all NOTE: tags with FIX: tags in source files
+1. **Learn-it task is created first** - Updates context files based on learnings (NOTE: tags remain in source files)
 2. **Fix-it task is created second with dependency** - Has `dependencies: [learn_it_task_num]` pointing to the learn-it task
 
 This ensures proper workflow ordering:
-- Learn-it task handles knowledge extraction to context files and tag conversion
-- Fix-it task handles file-local code changes (now marked as FIX: tags)
+- Learn-it task handles knowledge extraction to context files only
+- Fix-it task handles file-local code changes and removes both NOTE: and FIX: tags (TODO: tags are left for separate tasks)
 
 This dependency is only added when both task types are selected for NOTE: tags. If you select only one task type, no dependency is created.
 

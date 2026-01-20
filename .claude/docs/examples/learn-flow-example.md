@@ -20,7 +20,7 @@ The `/learn` command recognizes three tag types in source code comments:
 | `NOTE:` | fix-it-task + learn-it-task | Creates two task types (with dependency when both selected) |
 | `TODO:` | todo-task | User selects which TODO: tags become tasks |
 
-**Dependency behavior**: When NOTE: tags exist and both fix-it and learn-it tasks are selected, the learn-it task is created first and the fix-it task depends on it. This ensures proper workflow: learn-it extracts knowledge and converts NOTE: to FIX:, then fix-it addresses the code changes.
+**Dependency behavior**: When NOTE: tags exist and both fix-it and learn-it tasks are selected, the learn-it task is created first and the fix-it task depends on it. This ensures proper workflow: learn-it extracts knowledge to context files (NOTE: tags remain in source), then fix-it addresses the code changes and removes both NOTE: and FIX: tags.
 
 ---
 
@@ -221,7 +221,7 @@ If user selected both "Fix-it task" and "Learn-it task" for NOTE: tags:
   "status": "not_started",
   "language": "meta",
   "priority": "medium",
-  "description": "Update 1 context files based on learnings:\n\n- Logos/Layer2/Temporal.lean:45 - This pattern should be documented\n\n**Important**: After updating context files, replace all NOTE: tags with FIX: tags in the source files. This enables the dependent fix-it task to make file-local code changes."
+  "description": "Update 1 context files based on learnings:\n\n- Logos/Layer2/Temporal.lean:45 - This pattern should be documented"
 }
 ```
 

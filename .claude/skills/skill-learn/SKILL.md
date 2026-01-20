@@ -259,7 +259,7 @@ has_note_dependency = (NOTE: tags exist) AND (user selected both "fix-it task" A
 ```json
 {
   "title": "Update context files from NOTE: tags",
-  "description": "Update {N} context files based on learnings:\n\n{grouped by target context}\n\n**Important**: After updating context files, replace all NOTE: tags with FIX: tags in the source files. This enables the dependent fix-it task to make file-local code changes.",
+  "description": "Update {N} context files based on learnings:\n\n{grouped by target context}",
   "language": "meta",
   "priority": "medium",
   "effort": "1-2 hours"
@@ -277,7 +277,7 @@ Increment: `next_num = next_num + 1`
 ```json
 {
   "title": "Fix issues from FIX:/NOTE: tags",
-  "description": "Address {N} items from embedded tags:\n\n{list of items with file:line references}",
+  "description": "Address {N} items from embedded tags:\n\n{list of items with file:line references}\n\n**Important**: When making changes, remove the FIX: and NOTE: tags from the source files. Leave TODO: tags untouched (they create separate tasks).",
   "language": "{predominant language from source files}",
   "priority": "high",
   "effort": "2-4 hours",
@@ -289,7 +289,7 @@ Increment: `next_num = next_num + 1`
 ```json
 {
   "title": "Fix issues from FIX:/NOTE: tags",
-  "description": "Address {N} items from embedded tags:\n\n{list of items with file:line references}",
+  "description": "Address {N} items from embedded tags:\n\n{list of items with file:line references}\n\n**Important**: When making changes, remove the FIX: and NOTE: tags from the source files. Leave TODO: tags untouched (they create separate tasks).",
   "language": "{predominant language from source files}",
   "priority": "high",
   "effort": "2-4 hours"
