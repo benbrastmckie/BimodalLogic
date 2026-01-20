@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 628,
+      "project_name": "prove_semantic_truth_implies_truth_at_upward_bridge",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-20T00:25:09Z",
+      "last_updated": "2026-01-20T00:25:09Z"
+    },
+    {
       "project_number": 627,
       "project_name": "prove_valid_implies_semantic_truth_at_v2_bridge",
       "status": "not_started",
@@ -17,12 +26,12 @@
     {
       "project_number": 626,
       "project_name": "review_remove_unnecessary_sorries",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T00:08:49Z",
-      "last_updated": "2026-01-20T00:17:47Z",
-      "session_id": "sess_1768868076_d9994a",
+      "last_updated": "2026-01-20T00:23:37Z",
+      "session_id": "sess_1768868600_79f20e",
       "researched": "2026-01-20T00:17:47Z",
       "artifacts": [
         {
@@ -530,5 +539,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 628
+  "next_project_number": 629
 }

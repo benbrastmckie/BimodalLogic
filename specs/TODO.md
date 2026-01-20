@@ -1,5 +1,5 @@
 ---
-next_project_number: 628
+next_project_number: 629
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -80,7 +80,7 @@ technical_debt:
 ## Medium Priority
 
 ### 626. Review and remove unnecessary theorems/lemmas with sorries
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-19
 - **Priority**: Medium
 - **Language**: lean
@@ -89,6 +89,17 @@ technical_debt:
 - **Research**: [research-001.md](specs/626_review_remove_unnecessary_sorries/reports/research-001.md)
 
 **Description**: Systematically review which theorems or lemmas in Bimodal/Metalogic_v2/ are not needed and can be removed or moved to Bimodal/Boneyard/ if worth keeping. The policy is to only include theorems and lemmas that are needed and provable - no sorries should be "accepted" as permanent. Task 616 research recommended accepting a sorry in semantic_task_rel_compositionality, but this task takes the opposite approach: remove or relocate any theorem that cannot be proven rather than leaving sorries in production code.
+
+---
+
+### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-20
+- **Related**: Tasks 610, 627, 470
+
+**Description**: Prove the "upward" bridge `semantic_truth_implies_truth_at` showing finite model truth implies general `truth_at` semantics. This completes `finite_model_property_constructive` by proving the FMP witness is compatible with arbitrary external model frameworks. NOT on critical path - completeness is handled by task 627 (downward bridge), and decidability only needs the cardinality bound. This is for theoretical completeness and generalization to external semantics. Task 610 contains research on the structural induction approach (Atom/Bot/Imp/Box/Temporal cases). The challenge is Box (quantification over all WorldHistories) and Temporal (behavior outside finite time bounds).
 
 ---
 
