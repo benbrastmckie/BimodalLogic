@@ -1,7 +1,7 @@
 # Implementation Plan: Task #629
 
 - **Task**: 629 - document_bimodal_metalogic_proofs_latex
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Priority**: Medium
 - **Dependencies**: Task 620 (completed - refined Metalogic_v2 proofs)

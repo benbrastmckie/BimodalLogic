@@ -66,11 +66,11 @@
     {
       "project_number": 629,
       "project_name": "document_bimodal_metalogic_proofs_latex",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-20T00:41:38Z",
-      "last_updated": "2026-01-20T02:12:58Z",
+      "last_updated": "2026-01-20T02:20:39Z",
       "session_id": "sess_1768875159_4d7ab4",
       "researched": "2026-01-20T02:04:01Z",
       "artifacts": [
@@ -83,10 +83,16 @@
           "path": "specs/629_document_bimodal_metalogic_proofs_latex/plans/implementation-002.md",
           "type": "plan",
           "summary": "4-phase implementation plan v002: TikZ diagrams for theorem dependencies and import structure (revised from ASCII)"
+        },
+        {
+          "path": "specs/629_document_bimodal_metalogic_proofs_latex/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting restructured 04-Metalogic.tex with TikZ diagrams and proof remarks"
         }
       ],
       "planned": "2026-01-20T02:11:33Z",
-      "started": "2026-01-20T02:12:58Z"
+      "started": "2026-01-20T02:12:58Z",
+      "completed": "2026-01-20T02:20:39Z"
     },
     {
       "project_number": 628,

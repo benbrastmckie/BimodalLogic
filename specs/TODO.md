@@ -136,14 +136,16 @@ technical_debt:
 ---
 
 ### 629. Document Bimodal/Metalogic proofs in LaTeX
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: latex
 - **Created**: 2026-01-20
 - **Dependencies**: 620
 - **Researched**: 2026-01-20
+- **Completed**: 2026-01-20
 - **Research**: [research-001.md](specs/629_document_bimodal_metalogic_proofs_latex/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/629_document_bimodal_metalogic_proofs_latex/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260120.md](specs/629_document_bimodal_metalogic_proofs_latex/summaries/implementation-summary-20260120.md)
 
 **Description**: Review the recently completed Bimodal/Metalogic/ proofs which make the representation theorem the central theorem from which completeness follows in order to systematically improve /home/benjamin/Projects/ProofChecker/Theories/Bimodal/latex/subfiles/04-Metalogic.tex to fully and accurately report the theorems established, providing some indication of how the proofs go without providing proofs just remarks and discussion, and explaining the organization/dependencies between the theorems (which import from which), providing a clear and well organized narrative arc that guides the reader through the Bimodal/Metalogic/ results that have been established in the Lean source code.
 
