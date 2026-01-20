@@ -1,23 +1,21 @@
 {
-  "status": "researched",
-  "summary": "Comprehensive research on ~/.claude/ directory cleanup. Found projects/ is 97% of 7.3GB total. Current /refresh only cleans current project. Recommend adding --global mode with tiered age thresholds (8h/2d/all) to clean debug, file-history, todos, session-env, plugins, telemetry directories.",
+  "status": "planned",
+  "summary": "5-phase implementation plan for improving /refresh with --global mode to clean entire ~/.claude/ directory",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/reports/research-001.md",
-      "summary": "Research report covering directory structure analysis, web research on community cleanup tools, safety considerations, and implementation recommendations for global cleanup mode"
+      "type": "plan",
+      "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-001.md",
+      "summary": "Implementation plan with 5 phases: global cleanup script, skill updates, command docs, CLAUDE.md updates, testing"
     }
   ],
-  "next_steps": "Run /plan 640 to create implementation plan",
+  "next_steps": "Run /implement 640 to execute the plan",
   "metadata": {
-    "session_id": "sess_1768930298_f6bc78",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 720,
+    "session_id": "sess_1768930781_4ed97d",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher"],
-    "findings_count": 5,
-    "directory_size_gb": 7.3,
-    "largest_directory": "projects/ (7.1GB, 97%)",
-    "web_sources_consulted": 4
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 5,
+    "estimated_hours": 4.0
   }
 }

@@ -5,17 +5,17 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 16
-  completed: 218
-  in_progress: 1
+  active: 17
+  completed: 224
+  in_progress: 0
   not_started: 8
   abandoned: 19
   total: 240
 priority_distribution:
   critical: 0
   high: 3
-  medium: 6
-  low: 5
+  medium: 7
+  low: 7
 technical_debt:
   sorry_count: 205
   axiom_count: 15
@@ -26,22 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 633. Fix agent return format consistency
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/633_fix_agent_return_format_consistency/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/633_fix_agent_return_format_consistency/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/633_fix_agent_return_format_consistency/summaries/implementation-summary-20260119.md)
-
-**Description**: Fix contradictory return format instructions in latex-implementation-agent.md that cause JSON to be dumped to console instead of written to .return-meta.json file, requiring user to type continue. Update agent to consistently follow v2 file-based metadata pattern. Add validation in skill postflight to detect accidental JSON console output.
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -84,22 +68,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 638. Add roadmap update capability to /todo command
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/638_add_roadmap_update_to_todo_command/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/638_add_roadmap_update_to_todo_command/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/638_add_roadmap_update_to_todo_command/summaries/implementation-summary-20260120.md)
-
-**Description**: Extend the /todo command to update ROAD_MAP.md checkboxes when archiving completed or abandoned tasks. Currently /todo archives tasks to TODO.md and state.json but does not touch ROAD_MAP.md. Use the matching patterns from /review (exact `(Task {N})` references, title fuzzy matching, file path existence checks) but integrate at the task archival point. When a task is archived as completed, check off any matching roadmap items. When a task is archived as abandoned, optionally annotate the roadmap item.
-
----
-
 ### 639. Improve /review roadmap matching reliability
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
@@ -111,28 +79,16 @@ technical_debt:
 ---
 
 ### 640. Improve /refresh command for ~/.claude/ directory cleanup
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
+- **Planned**: 2026-01-20
 - **Research**: [research-001.md](specs/640_improve_refresh_command_for_claude_directory_cleanup/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-001.md)
 
 **Description**: Claude CLI scans ~/.claude/ on startup and this directory has grown massive. Research the best practices online for garbage collecting this directory, especially the ~/.claude/projects/ directory. Improve the /refresh command to do a better job clearing out the bloated ~/.claude/ directory (running it currently still gives long startup times for running `time claude --version` in a new terminal). Add user options for clearing: everything (clean slate, most aggressive), everything before 8 hours (default), or everything before two days. Keep existing /refresh functionality while improving cleanup capabilities and updating relevant documentation.
-
----
-
-### 635. Extend /refresh command for Claude Code project cleanup
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-19
-- **Research**: [research-001.md](specs/635_extend_refresh_command_claude_project_cleanup/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/635_extend_refresh_command_claude_project_cleanup/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/635_extend_refresh_command_claude_project_cleanup/summaries/implementation-summary-20260119.md)
-
-**Description**: Extend the /refresh command to survey and clean up accumulated project files in `~/.claude/projects/-home-benjamin-Projects-ProofChecker/`. Large numbers of project files cause slow Claude Code startup in neovim. The command should: (1) Survey the project directory for cleanup candidates (old sessions, orphaned files), (2) Present findings to the user with size/count statistics, (3) Perform cleanup only with explicit user approval. Integrate this as a new mode in the existing /refresh skill alongside the orphaned process cleanup functionality.
 
 ---
 
@@ -226,47 +182,6 @@ technical_debt:
 ---
 
 ## Low Priority
-
-### 637. Fix roadmap checkboxes not updated
-- **Status**: [COMPLETED]
-- **Priority**: Low
-- **Language**: general
-- **Created**: 2026-01-19
-- **Researched**: 2026-01-19
-- **Planned**: 2026-01-19
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/637_fix_roadmap_checkboxes_not_updated/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/637_fix_roadmap_checkboxes_not_updated/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/637_fix_roadmap_checkboxes_not_updated/summaries/implementation-summary-20260119.md)
-
-**Description**: Fix roadmap checkboxes in `specs/ROAD_MAP.md` - 89 unchecked items, 0 checked. No items marked complete despite significant progress. Impact: Roadmap doesn't reflect actual project state. Recommended approach: Annotate completed items (see Roadmap Progress section).
-
----
-
-### 636. Fix sorries in TemporalProofStrategies examples
-- **Status**: [COMPLETED]
-- **Priority**: Low
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-20
-- **Plan**: [implementation-001.md](specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/636_fix_sorries_temporalproofstrategies_examples/summaries/implementation-summary-20260120.md)
-
-**Description**: Fix 5 sorries in example/exploratory proofs in `Theories/Bimodal/Examples/TemporalProofStrategies.lean` (lines 342, 416, 431, 486, 535). Impact: None - examples only, not part of core logic. Recommended approach: Remove examples if they are not needed for any of the main theorems.
-
----
-
-### 634. Fix sorry in main_provable_iff_valid_v2
-- **Status**: [COMPLETED]
-- **Priority**: Low
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Plan**: [implementation-001.md](specs/634_fix_sorry_main_provable_iff_valid_v2/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260119.md](specs/634_fix_sorry_main_provable_iff_valid_v2/summaries/implementation-summary-20260119.md)
-
-**Description**: Fix the sorry in main_provable_iff_valid_v2 at `Theories/Bimodal/Metalogic_v2/Representation/SemanticCanonicalModel.lean:647`. Alternative path exists - `semantic_weak_completeness` provides sorry-free version. Impact: None - alternative proof exists. Recommended approach: Continue using sorry-free alternative.
-
----
 
 ### 616. Fix semantic_task_rel_compositionality finite model limitation
 - **Status**: [RESEARCHED]

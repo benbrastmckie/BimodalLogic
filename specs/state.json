@@ -1,58 +1,33 @@
 {
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
-    "total_tasks": 12,
+    "total_tasks": 17,
     "last_sync": "2026-01-20T16:55:00Z"
   },
   "active_projects": [
     {
       "project_number": 640,
       "project_name": "improve_refresh_command_for_claude_directory_cleanup",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:23:39Z",
-      "last_updated": "2026-01-20T17:37:23Z",
-      "session_id": "sess_1768930298_f6bc78",
+      "last_updated": "2026-01-20T17:42:10Z",
+      "session_id": "sess_1768930781_4ed97d",
       "researched": "2026-01-20T17:37:23Z",
       "artifacts": [
         {
           "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/reports/research-001.md",
           "type": "research",
           "summary": "Research report covering directory structure analysis, web research on community cleanup tools, safety considerations, and implementation recommendations for global cleanup mode"
-        }
-      ]
-    },
-    {
-      "project_number": 638,
-      "project_name": "add_roadmap_update_to_todo_command",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-20T16:55:00Z",
-      "last_updated": "2026-01-20T17:33:10Z",
-      "session_id": "sess_1768930133_929259",
-      "researched": "2026-01-20T17:03:36Z",
-      "artifacts": [
-        {
-          "path": "specs/638_add_roadmap_update_to_todo_command/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing /todo command structure, /review roadmap logic, and integration approach for ROAD_MAP.md checkbox updates"
         },
         {
-          "path": "specs/638_add_roadmap_update_to_todo_command/plans/implementation-001.md",
+          "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-001.md",
           "type": "plan",
-          "summary": "6-phase implementation plan covering infrastructure, dry-run preview, roadmap update logic, git commit, output report, and documentation"
-        },
-        {
-          "path": "specs/638_add_roadmap_update_to_todo_command/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary for /todo roadmap integration"
+          "summary": "Implementation plan with 5 phases: global cleanup script, skill updates, command docs, CLAUDE.md updates, testing"
         }
       ],
-      "planned": "2026-01-20T17:17:50Z",
-      "started": "2026-01-20T17:29:16Z",
-      "completed": "2026-01-20T17:33:10Z"
+      "planned": "2026-01-20T17:42:10Z"
     },
     {
       "project_number": 639,
@@ -62,150 +37,6 @@
       "priority": "medium",
       "created": "2026-01-20T16:55:00Z",
       "last_updated": "2026-01-20T16:55:00Z"
-    },
-    {
-      "project_number": 637,
-      "project_name": "fix_roadmap_checkboxes_not_updated",
-      "status": "completed",
-      "language": "general",
-      "priority": "low",
-      "created": "2026-01-20T06:43:45Z",
-      "last_updated": "2026-01-20T07:18:21Z",
-      "session_id": "sess_1768893246_0a6754",
-      "researched": "2026-01-20T07:07:32Z",
-      "artifacts": [
-        {
-          "path": "specs/637_fix_roadmap_checkboxes_not_updated/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing roadmap checkbox status with evidence-based recommendations for 71 items"
-        },
-        {
-          "path": "specs/637_fix_roadmap_checkboxes_not_updated/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for updating ROAD_MAP.md checkboxes to reflect 12-15 completed items identified in research"
-        },
-        {
-          "path": "specs/637_fix_roadmap_checkboxes_not_updated/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting 10 checkbox updates with evidence verification"
-        }
-      ],
-      "planned": "2026-01-20T07:13:20Z",
-      "started": "2026-01-20T07:14:25Z",
-      "completed": "2026-01-20T07:18:21Z"
-    },
-    {
-      "project_number": 636,
-      "project_name": "fix_sorries_temporalproofstrategies_examples",
-      "status": "completed",
-      "language": "lean",
-      "priority": "low",
-      "created": "2026-01-20T06:38:29Z",
-      "last_updated": "2026-01-20T07:06:20Z",
-      "session_id": "sess_1768892176_9410b1",
-      "planned": "2026-01-20T06:53:37Z",
-      "artifacts": [
-        {
-          "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "2-phase plan: attempt proof completion first, remove incomplete exercises as fallback"
-        },
-        {
-          "path": "specs/636_fix_sorries_temporalproofstrategies_examples/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting proof completion and exercise removal"
-        }
-      ],
-      "started": "2026-01-20T06:56:34Z",
-      "completed": "2026-01-20T07:06:20Z"
-    },
-    {
-      "project_number": 635,
-      "project_name": "extend_refresh_command_claude_project_cleanup",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-20T06:33:44Z",
-      "last_updated": "2026-01-20T07:15:00Z",
-      "session_id": "sess_1768892201_8c528e",
-      "researched": "2026-01-20T06:43:44Z",
-      "artifacts": [
-        {
-          "path": "specs/635_extend_refresh_command_claude_project_cleanup/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report covering current /refresh implementation, project directory structure analysis, cleanup strategies, and multi-mode integration patterns"
-        },
-        {
-          "path": "specs/635_extend_refresh_command_claude_project_cleanup/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan covering cleanup script, skill extension, documentation, and testing"
-        },
-        {
-          "path": "specs/635_extend_refresh_command_claude_project_cleanup/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary for /refresh --projects extension with verification results"
-        }
-      ],
-      "planned": "2026-01-20T06:51:24Z",
-      "started": "2026-01-20T06:57:02Z",
-      "completed": "2026-01-20T07:15:00Z"
-    },
-    {
-      "project_number": 634,
-      "project_name": "fix_sorry_main_provable_iff_valid_v2",
-      "status": "completed",
-      "language": "lean",
-      "priority": "low",
-      "created": "2026-01-20T06:31:05Z",
-      "last_updated": "2026-01-20T07:00:54Z",
-      "session_id": "sess_1768892189_34e857",
-      "planned": "2026-01-20T06:53:41Z",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": "specs/634_fix_sorry_main_provable_iff_valid_v2/plans/implementation-001.md",
-          "summary": "3-phase documentation plan for sorry in main_provable_iff_valid_v2"
-        },
-        {
-          "type": "summary",
-          "path": "specs/634_fix_sorry_main_provable_iff_valid_v2/summaries/implementation-summary-20260119.md",
-          "summary": "Implementation summary with verification results and usage recommendations"
-        }
-      ],
-      "started": "2026-01-20T06:56:49Z",
-      "completed": "2026-01-20T07:00:54Z"
-    },
-    {
-      "project_number": 633,
-      "project_name": "fix_agent_return_format_consistency",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-20T02:37:36Z",
-      "last_updated": "2026-01-20T06:29:55Z",
-      "description": "Fix contradictory return format instructions in latex-implementation-agent.md that cause JSON to be dumped to console instead of written to .return-meta.json file, requiring user to type continue. Update agent to consistently follow v2 file-based metadata pattern. Add validation in skill postflight to detect accidental JSON console output.",
-      "session_id": "sess_1768890287_a425d4",
-      "researched": "2026-01-20T03:07:00Z",
-      "artifacts": [
-        {
-          "path": "specs/633_fix_agent_return_format_consistency/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing return format contradictions in latex-implementation-agent.md and general-implementation-agent.md with implementation recommendations"
-        },
-        {
-          "path": "specs/633_fix_agent_return_format_consistency/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase implementation plan to fix agent return format inconsistencies and add postflight validation"
-        },
-        {
-          "path": "specs/633_fix_agent_return_format_consistency/summaries/implementation-summary-20260119.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting v2 pattern fixes for agent return format consistency"
-        }
-      ],
-      "planned": "2026-01-20T06:22:40Z",
-      "started": "2026-01-20T06:25:07Z",
-      "completed": "2026-01-20T06:29:55Z"
     },
     {
       "project_number": 630,
