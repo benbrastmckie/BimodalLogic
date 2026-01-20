@@ -8,11 +8,12 @@
     {
       "project_number": 632,
       "project_name": "integrate_roadmap_review_into_review_command",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:45:00Z",
-      "last_updated": "2026-01-20T02:04:44Z"
+      "last_updated": "2026-01-20T02:06:28Z",
+      "session_id": "sess_1768874773_7d53c9"
     },
     {
       "project_number": 630,
@@ -51,20 +52,26 @@
     {
       "project_number": 629,
       "project_name": "document_bimodal_metalogic_proofs_latex",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-20T00:41:38Z",
-      "last_updated": "2026-01-20T02:04:01Z",
-      "session_id": "sess_1768874440_6e9ea2",
+      "last_updated": "2026-01-20T02:08:12Z",
+      "session_id": "sess_1768874746_c55d7d",
       "researched": "2026-01-20T02:04:01Z",
       "artifacts": [
         {
           "path": "specs/629_document_bimodal_metalogic_proofs_latex/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting Metalogic_v2 architecture, theorem dependencies, and LaTeX documentation recommendations"
+        },
+        {
+          "path": "specs/629_document_bimodal_metalogic_proofs_latex/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan covering section restructuring, representation theory content, completeness reframing, and import structure documentation"
         }
-      ]
+      ],
+      "planned": "2026-01-20T02:08:12Z"
     },
     {
       "project_number": 628,
