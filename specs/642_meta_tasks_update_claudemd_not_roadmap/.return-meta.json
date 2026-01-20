@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Research identified 5 modification points across /todo and /implement commands to filter meta tasks from ROAD_MAP.md updates and redirect to CLAUDE.md. Recommends adding claudemd_items field parallel to roadmap_items, plus a 'Recent System Changes' rolling log section in CLAUDE.md to prevent bloating.",
+  "artifacts": [
+    {
+      "path": "specs/642_meta_tasks_update_claudemd_not_roadmap/reports/research-001.md",
+      "type": "research",
+      "summary": "Research report with 5-phase implementation plan for meta task CLAUDE.md updates"
+    }
+  ],
+  "next_steps": "Run /plan 642 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1768936554_4bf000",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher"],
+    "findings_count": 5
+  }
+}

@@ -6,13 +6,31 @@
   },
   "active_projects": [
     {
-      "project_number": 642,
-      "project_name": "meta_tasks_update_claudemd_not_roadmap",
+      "project_number": 643,
+      "project_name": "implement_learn_command_tag_extraction",
       "status": "not_started",
       "language": "meta",
       "priority": "medium",
+      "created": "2026-01-20T19:19:22Z",
+      "last_updated": "2026-01-20T19:19:22Z"
+    },
+    {
+      "project_number": 642,
+      "project_name": "meta_tasks_update_claudemd_not_roadmap",
+      "status": "researched",
+      "language": "meta",
+      "priority": "medium",
       "created": "2026-01-20T19:06:00Z",
-      "last_updated": "2026-01-20T19:06:00Z"
+      "last_updated": "2026-01-20T19:18:45Z",
+      "session_id": "sess_1768936554_4bf000",
+      "researched": "2026-01-20T19:18:45Z",
+      "artifacts": [
+        {
+          "path": "specs/642_meta_tasks_update_claudemd_not_roadmap/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 5-phase implementation plan for meta task CLAUDE.md updates"
+        }
+      ]
     },
     {
       "project_number": 641,
@@ -411,7 +429,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 643,
+  "next_project_number": 644,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
