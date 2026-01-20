@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/632_integrate_roadmap_review_into_review_command/reports/research-001.md",
+      "summary": "Research report analyzing /review command structure, ROAD_MAP.md parsing requirements, cross-reference patterns, and task recommendation workflow"
+    }
+  ],
+  "next_steps": "Run /plan 632 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1768874773_7d53c9",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 2400,
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 7
+  }
+}
