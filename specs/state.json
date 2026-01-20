@@ -22,9 +22,9 @@
           "summary": "Research report analyzing /review command structure, ROAD_MAP.md parsing requirements, cross-reference patterns, and task recommendation workflow"
         },
         {
-          "path": "specs/632_integrate_roadmap_review_into_review_command/plans/implementation-001.md",
+          "path": "specs/632_integrate_roadmap_review_into_review_command/plans/implementation-002.md",
           "type": "plan",
-          "summary": "5-phase implementation plan for integrating roadmap analysis into /review command"
+          "summary": "6-phase implementation plan for integrating roadmap analysis into /review command with context file creation"
         }
       ],
       "planned": "2026-01-20T02:16:18Z"
