@@ -8,11 +8,11 @@
     {
       "project_number": 641,
       "project_name": "improve_todo_command_roadmap_update",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:51:23Z",
-      "last_updated": "2026-01-20T18:08:53Z",
+      "last_updated": "2026-01-20T18:11:00Z",
       "session_id": "sess_1768932515_813936",
       "researched": "2026-01-20T18:06:36Z",
       "artifacts": [
@@ -25,8 +25,14 @@
           "path": "specs/641_improve_todo_command_roadmap_update/reports/research-002.md",
           "type": "research",
           "summary": "Supplemental research analyzing /revise command and shared matching patterns for /todo and /review roadmap updates"
+        },
+        {
+          "path": "specs/641_improve_todo_command_roadmap_update/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan adding title keyword matching to /todo roadmap updates"
         }
-      ]
+      ],
+      "planned": "2026-01-20T18:11:00Z"
     },
     {
       "project_number": 640,
