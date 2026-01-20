@@ -30,7 +30,7 @@
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T20:49:27Z",
-      "last_updated": "2026-01-20T21:34:54Z",
+      "last_updated": "2026-01-20T21:47:55Z",
       "session_id": "sess_1768944058_057f1d",
       "researched": "2026-01-20T20:54:20Z",
       "artifacts": [
@@ -40,12 +40,12 @@
           "summary": "Research report documenting field schemas, implementation architecture, and 5-phase modification approach for completion_summary and claudemd_suggestions fields"
         },
         {
-          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-002.md",
+          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-003.md",
           "type": "plan",
-          "summary": "5-phase implementation plan v002 emphasizing sparse claudemd_suggestions (default to action: none)"
+          "summary": "5-phase plan v003: simplified claudemd_suggestions to string describing .claude/ changes; moved filtering criteria to /todo"
         }
       ],
-      "planned": "2026-01-20T21:34:54Z"
+      "planned": "2026-01-20T21:47:55Z"
     },
     {
       "project_number": 649,
@@ -91,12 +91,12 @@
     {
       "project_number": 646,
       "project_name": "fix_metalogic_latex_formatting_issues",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "high",
       "created": "2026-01-20T20:55:08Z",
-      "last_updated": "2026-01-20T21:36:59Z",
-      "session_id": "sess_1768944883_6f994f",
+      "last_updated": "2026-01-20T21:47:41Z",
+      "session_id": "sess_1768945645_c93938",
       "researched": "2026-01-20T21:30:49Z",
       "artifacts": [
         {
@@ -110,7 +110,8 @@
           "summary": "3-phase implementation plan for fixing 14 FIX:/NOTE: tags in Metalogic LaTeX file"
         }
       ],
-      "planned": "2026-01-20T21:36:59Z"
+      "planned": "2026-01-20T21:36:59Z",
+      "started": "2026-01-20T21:47:41Z"
     },
     {
       "project_number": 647,

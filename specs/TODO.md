@@ -35,19 +35,20 @@ technical_debt:
 - **Researched**: 2026-01-20
 - **Planned**: 2026-01-20
 - **Research**: [research-001.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-003.md)
 
 **Description**: Make sure that the /implement command-skill-agent workflow will include completion_summary and claudemd_suggestions fields for updating ROAD_MAP.md and CLAUDE.md when appropriate and not otherwise since these will be used by the /todo command.
 
 ---
 
 ### 646. Fix Metalogic LaTeX formatting and structure issues
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
 - **Planned**: 2026-01-20
+- **Started**: 2026-01-20
 - **Research**: [research-001.md](specs/646_fix_metalogic_latex_formatting_issues/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/646_fix_metalogic_latex_formatting_issues/plans/implementation-001.md)
 
