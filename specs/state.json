@@ -131,11 +131,20 @@
     {
       "project_number": 620,
       "project_name": "refine_metalogic_v2_proofs",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T20:45:59Z",
-      "last_updated": "2026-01-19T20:45:59Z"
+      "last_updated": "2026-01-20T01:28:36Z",
+      "session_id": "sess_1768872323_8986cf",
+      "researched": "2026-01-20T01:28:36Z",
+      "artifacts": [
+        {
+          "path": "specs/620_refine_metalogic_v2_proofs/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research identifying proof economy issues, organization improvements, documentation gaps, and specific refactoring targets across 27 Metalogic_v2 files"
+        }
+      ]
     },
     {
       "project_number": 619,
