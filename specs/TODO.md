@@ -198,11 +198,13 @@ technical_debt:
 ---
 
 ### 636. Fix sorries in TemporalProofStrategies examples
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Completed**: 2026-01-20
 - **Plan**: [implementation-001.md](specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260120.md](specs/636_fix_sorries_temporalproofstrategies_examples/summaries/implementation-summary-20260120.md)
 
 **Description**: Fix 5 sorries in example/exploratory proofs in `Theories/Bimodal/Examples/TemporalProofStrategies.lean` (lines 342, 416, 431, 486, 535). Impact: None - examples only, not part of core logic. Recommended approach: Remove examples if they are not needed for any of the main theorems.
 

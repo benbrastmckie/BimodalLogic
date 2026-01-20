@@ -18,11 +18,11 @@
     {
       "project_number": 636,
       "project_name": "fix_sorries_temporalproofstrategies_examples",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-20T06:38:29Z",
-      "last_updated": "2026-01-20T06:56:34Z",
+      "last_updated": "2026-01-20T07:06:20Z",
       "session_id": "sess_1768892176_9410b1",
       "planned": "2026-01-20T06:53:37Z",
       "artifacts": [
@@ -30,9 +30,15 @@
           "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
           "type": "plan",
           "summary": "2-phase plan: attempt proof completion first, remove incomplete exercises as fallback"
+        },
+        {
+          "path": "specs/636_fix_sorries_temporalproofstrategies_examples/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting proof completion and exercise removal"
         }
       ],
-      "started": "2026-01-20T06:56:34Z"
+      "started": "2026-01-20T06:56:34Z",
+      "completed": "2026-01-20T07:06:20Z"
     },
     {
       "project_number": 635,

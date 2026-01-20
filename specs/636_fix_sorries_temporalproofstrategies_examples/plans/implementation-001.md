@@ -1,7 +1,7 @@
 # Implementation Plan: Task #636
 
 - **Task**: 636 - fix_sorries_temporalproofstrategies_examples
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Priority**: Low
 - **Dependencies**: None
