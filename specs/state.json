@@ -12,7 +12,7 @@
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T19:19:22Z",
-      "last_updated": "2026-01-20T19:46:51Z",
+      "last_updated": "2026-01-20T19:52:49Z",
       "description": "Create /learn command that scans files for FIX:, NOTE:, and TODO: tags and creates appropriate tasks: (1) fix-it-task from FIX: and NOTE: tags for small changes, (2) learn-it-task from NOTE: tags to update context files, (3) todo-tasks from TODO: tags as individual tasks for larger changes. Tags created conditionally based on presence.",
       "session_id": "sess_1768938262_b87c54",
       "researched": "2026-01-20T19:40:56Z",
@@ -23,12 +23,12 @@
           "summary": "Research report with tag extraction patterns, context routing strategy, task creation infrastructure, and recommended 3-component architecture"
         },
         {
-          "path": "specs/643_implement_learn_command_tag_extraction/plans/implementation-001.md",
+          "path": "specs/643_implement_learn_command_tag_extraction/plans/implementation-002.md",
           "type": "plan",
-          "summary": "Implementation plan covering command, skill, agent creation with tag extraction, grouping, and task generation"
+          "summary": "7-phase plan with documentation updates: command, skill, agent, tag extraction, task generation, postflight, and docs updates"
         }
       ],
-      "planned": "2026-01-20T19:46:51Z"
+      "planned": "2026-01-20T19:52:49Z"
     },
     {
       "project_number": 642,
