@@ -163,7 +163,7 @@ technical_debt:
 - **Created**: 2026-01-19
 - **Researched**: 2026-01-19
 - **Research**: [research-001.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-002.md)
 
 **Description**: Move the interesting parts of Bimodal/Metalogic/ to the Bimodal/Boneyard/, making Bimodal/Metalogic_v2/ stand independently on its own (no imports from the Boneyard/).
 

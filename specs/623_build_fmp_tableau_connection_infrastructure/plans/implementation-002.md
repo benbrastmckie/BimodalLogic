@@ -86,7 +86,7 @@ This plan implements infrastructure connecting Finite Model Property (FMP) bound
 
 ---
 
-### Phase 2.2: Prove saturated_imp_expanded [NOT STARTED]
+### Phase 2.2: Prove saturated_imp_expanded [COMPLETED]
 
 **Goal**: Complete the `saturated_imp_expanded` proof at line 193
 

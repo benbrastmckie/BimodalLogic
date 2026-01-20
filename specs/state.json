@@ -237,8 +237,8 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T20:23:03Z",
-      "last_updated": "2026-01-19T20:46:23Z",
-      "session_id": "sess_1768855453_1cca58",
+      "last_updated": "2026-01-20T00:42:11Z",
+      "session_id": "sess_1768869612_ecfec1",
       "researched": "2026-01-19T20:37:59Z",
       "artifacts": [
         {
@@ -247,12 +247,12 @@
           "summary": "Research report confirming Metalogic_v2 independence and documenting migration plan with 4 phases"
         },
         {
-          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-001.md",
+          "path": "specs/618_move_metalogic_to_boneyard_make_v2_independent/plans/implementation-002.md",
           "type": "plan",
-          "summary": "6-phase plan covering directory move, external consumer migration, Demo.lean relocation, test archival, and final cleanup"
+          "summary": "4-phase revised plan: migrate consumers to Metalogic_v2, move Metalogic to Boneyard, archive tests, verify"
         }
       ],
-      "planned": "2026-01-19T20:46:23Z"
+      "planned": "2026-01-20T00:42:11Z"
     },
     {
       "project_number": 617,

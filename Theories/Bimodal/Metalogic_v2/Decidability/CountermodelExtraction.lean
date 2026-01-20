@@ -189,17 +189,89 @@ theorem open_branch_consistent (b : Branch) (hOpen : findClosure b = none) :
   cases h
 
 /--
+T(φ→ψ) is not expanded because the impPos rule applies.
+
+The `impPos` rule applies to any `SignedFormula.pos (.imp φ ψ)` and returns
+`.branching [[.neg φ], [.pos ψ]]`, so `isExpanded` returns `false`.
+-/
+lemma isExpanded_pos_imp_false (φ ψ : Formula) :
+    isExpanded (SignedFormula.pos (.imp φ ψ)) = false := by
+  simp only [isExpanded, findApplicableRule, allRules, List.findSome?]
+  simp only [applyRule, asNeg?, asAnd?, asOr?, asDiamond?]
+  repeat (first | rfl | (split; try rfl))
+
+/-- T(□φ) is not expanded because the boxPos rule applies. -/
+lemma isExpanded_pos_box_false (φ : Formula) :
+    isExpanded (SignedFormula.pos (.box φ)) = false := by
+  simp only [isExpanded, findApplicableRule, allRules, List.findSome?]
+  simp only [applyRule, asNeg?, asAnd?, asOr?, asDiamond?]
+  repeat (first | rfl | (split; try rfl))
+
+/-- T(Gφ) is not expanded because the allFuturePos rule applies. -/
+lemma isExpanded_pos_all_future_false (φ : Formula) :
+    isExpanded (SignedFormula.pos (.all_future φ)) = false := by
+  simp only [isExpanded, findApplicableRule, allRules, List.findSome?]
+  simp only [applyRule, asNeg?, asAnd?, asOr?, asDiamond?]
+  repeat (first | rfl | (split; try rfl))
+
+/-- T(Hφ) is not expanded because the allPastPos rule applies. -/
+lemma isExpanded_pos_all_past_false (φ : Formula) :
+    isExpanded (SignedFormula.pos (.all_past φ)) = false := by
+  simp only [isExpanded, findApplicableRule, allRules, List.findSome?]
+  simp only [applyRule, asNeg?, asAnd?, asOr?, asDiamond?]
+  repeat (first | rfl | (split; try rfl))
+
+/-- F(φ→ψ) is not expanded because the impNeg rule applies. -/
+lemma isExpanded_neg_imp_false (φ ψ : Formula) :
+    isExpanded (SignedFormula.neg (.imp φ ψ)) = false := by
+  simp only [isExpanded, findApplicableRule, allRules, List.findSome?]
+  simp only [applyRule, asNeg?, asAnd?, asOr?, asDiamond?]
+  repeat (first | rfl | (split; try rfl))
+
+/-- F(□φ) is not expanded because the boxNeg rule applies. -/
+lemma isExpanded_neg_box_false (φ : Formula) :
+    isExpanded (SignedFormula.neg (.box φ)) = false := by
+  simp only [isExpanded, findApplicableRule, allRules, List.findSome?]
+  simp only [applyRule, asNeg?, asAnd?, asOr?, asDiamond?]
+  repeat (first | rfl | (split; try rfl))
+
+/-- F(Gφ) is not expanded because the allFutureNeg rule applies. -/
+lemma isExpanded_neg_all_future_false (φ : Formula) :
+    isExpanded (SignedFormula.neg (.all_future φ)) = false := by
+  simp only [isExpanded, findApplicableRule, allRules, List.findSome?]
+  simp only [applyRule, asNeg?, asAnd?, asOr?, asDiamond?]
+  repeat (first | rfl | (split; try rfl))
+
+/-- F(Hφ) is not expanded because the allPastNeg rule applies. -/
+lemma isExpanded_neg_all_past_false (φ : Formula) :
+    isExpanded (SignedFormula.neg (.all_past φ)) = false := by
+  simp only [isExpanded, findApplicableRule, allRules, List.findSome?]
+  simp only [applyRule, asNeg?, asAnd?, asOr?, asDiamond?]
+  repeat (first | rfl | (split; try rfl))
+
+/--
 Saturation implies all non-atomic formulas are expanded.
 If T(φ→ψ) is in a saturated branch, then either F(φ) or T(ψ) is in the branch.
+
+**Note**: This theorem is vacuously true. A saturated branch has `findUnexpanded = none`,
+meaning all formulas have `isExpanded = true`. But `T(φ→ψ)` has `isExpanded = false`
+(since the `impPos` rule applies). So `T(φ→ψ)` cannot be in a saturated branch.
 -/
 theorem saturated_imp_expanded (b : Branch) (hSat : findUnexpanded b = none)
     (φ ψ : Formula) :
     SignedFormula.pos (.imp φ ψ) ∈ b → SignedFormula.neg φ ∈ b ∨ SignedFormula.pos ψ ∈ b := by
   intro h_imp_in
-  -- A saturated branch has no unexpanded formulas
-  -- T(φ→ψ) is expanded by impPos rule into branches F(φ) | T(ψ)
-  -- Since the branch is saturated, the expansion has happened
-  sorry  -- Technical: trace through saturation to show expansion
+  -- We prove by contradiction: T(φ→ψ) cannot be in a saturated branch.
+  exfalso
+  -- From saturation: all sf ∈ b have isExpanded sf = true
+  simp only [findUnexpanded, List.find?_eq_none] at hSat
+  have h_expanded := hSat (SignedFormula.pos (.imp φ ψ)) h_imp_in
+  -- h_expanded : ¬(¬isExpanded (...) = true) = true, i.e., isExpanded (...) = true
+  simp only [decide_eq_true_eq, not_not] at h_expanded
+  -- But isExpanded (SignedFormula.pos (.imp φ ψ)) = false
+  rw [isExpanded_pos_imp_false] at h_expanded
+  -- Now h_expanded : false = true, which is a contradiction
+  cases h_expanded
 
 /--
 The branch truth lemma states that a saturated open branch describes
@@ -216,6 +288,15 @@ The key properties are:
 - Implication: saturation ensures correct expansion
 - Modal/Temporal: simplified to identity in this simple model
 -/
+/-- Helper: Derive False from saturation and a formula that's not expanded. -/
+private lemma saturation_contradiction (b : Branch) (hSat : findUnexpanded b = none)
+    (sf : SignedFormula) (hsf_in : sf ∈ b) (h_not_expanded : isExpanded sf = false) : False := by
+  simp only [findUnexpanded, List.find?_eq_none] at hSat
+  have h_expanded := hSat sf hsf_in
+  simp only [decide_eq_true_eq, not_not] at h_expanded
+  rw [h_not_expanded] at h_expanded
+  cases h_expanded
+
 theorem branchTruthLemma (b : Branch) (hSat : findUnexpanded b = none)
     (hOpen : findClosure b = none) :
     ∀ sf ∈ b, (sf.sign = .pos → evalFormula b sf.formula = true) ∧
@@ -236,55 +317,108 @@ theorem branchTruthLemma (b : Branch) (hSat : findUnexpanded b = none)
     | .bot =>
       -- T(⊥) cannot be in an open branch (would close it)
       exfalso
-      -- findClosure should find T(⊥) and return .botPos
-      sorry  -- Technical: show T(⊥) closes branch
+      -- findClosure b = none means checkBotPos b = none, i.e., hasBotPos b = false
+      simp only [findClosure] at hOpen
+      rw [Option.orElse_eq_none, Option.orElse_eq_none] at hOpen
+      obtain ⟨hBotPos, _, _⟩ := hOpen
+      simp only [checkBotPos, ite_eq_right_iff] at hBotPos
+      -- hBotPos : hasBotPos b = true → False
+      -- We need to show hasBotPos b = true
+      have hbot : b.hasBotPos = true := by
+        simp only [Branch.hasBotPos, Branch.contains, List.any_eq_true, beq_iff_eq]
+        have hsf_eq : sf = SignedFormula.pos .bot := by
+          ext <;> simp only [SignedFormula.pos, hpos, hf]
+        exact ⟨sf, hsf_in, hsf_eq⟩
+      exact hBotPos hbot
     | .imp φ ψ =>
-      -- T(φ→ψ) in saturated branch means F(φ) ∨ T(ψ) by expansion
-      simp only [evalFormula]
-      -- For the simple propositional model, we need !eval φ || eval ψ
-      -- From saturation, the impPos rule was applied
-      sorry  -- Technical: case analysis on saturation expansion
+      -- T(φ→ψ) cannot be in a saturated branch (would have been expanded)
+      exfalso
+      have h_not_exp : isExpanded (SignedFormula.pos (.imp φ ψ)) = false := isExpanded_pos_imp_false φ ψ
+      have hsf_eq : sf = SignedFormula.pos (.imp φ ψ) := by ext <;> simp only [SignedFormula.pos, hpos, hf]
+      rw [hsf_eq] at hsf_in
+      exact saturation_contradiction b hSat _ hsf_in h_not_exp
     | .box φ =>
-      -- Simplified: treat box as identity
-      simp only [evalFormula]
-      sorry  -- Technical: show T(□φ) implies φ true
+      -- T(□φ) cannot be in a saturated branch (would have been expanded)
+      exfalso
+      have h_not_exp : isExpanded (SignedFormula.pos (.box φ)) = false := isExpanded_pos_box_false φ
+      have hsf_eq : sf = SignedFormula.pos (.box φ) := by ext <;> simp only [SignedFormula.pos, hpos, hf]
+      rw [hsf_eq] at hsf_in
+      exact saturation_contradiction b hSat _ hsf_in h_not_exp
     | .all_future φ =>
-      simp only [evalFormula]
-      sorry  -- Technical: temporal case
+      -- T(Gφ) cannot be in a saturated branch
+      exfalso
+      have h_not_exp : isExpanded (SignedFormula.pos (.all_future φ)) = false := isExpanded_pos_all_future_false φ
+      have hsf_eq : sf = SignedFormula.pos (.all_future φ) := by ext <;> simp only [SignedFormula.pos, hpos, hf]
+      rw [hsf_eq] at hsf_in
+      exact saturation_contradiction b hSat _ hsf_in h_not_exp
     | .all_past φ =>
-      simp only [evalFormula]
-      sorry  -- Technical: temporal case
+      -- T(Hφ) cannot be in a saturated branch
+      exfalso
+      have h_not_exp : isExpanded (SignedFormula.pos (.all_past φ)) = false := isExpanded_pos_all_past_false φ
+      have hsf_eq : sf = SignedFormula.pos (.all_past φ) := by ext <;> simp only [SignedFormula.pos, hpos, hf]
+      rw [hsf_eq] at hsf_in
+      exact saturation_contradiction b hSat _ hsf_in h_not_exp
   · -- Negative case: F(φ) ∈ b implies evalFormula b φ = false
     intro hneg
     match hf : sf.formula with
     | .atom p =>
       -- F(p) ∈ b and p is false iff T(p) ∉ b (by openness/consistency)
-      -- Technical: use open_branch_consistent to derive contradiction
       simp only [evalFormula, extractValuation]
-      simp only [Bool.eq_false_iff, ne_eq]
-      intro hany
-      -- If List.any finds a witness, we can derive contradiction from consistency
+      simp only [Bool.eq_false_iff, ne_eq, List.any_eq_true, not_exists, not_and]
+      intro sf' hsf'_in hmatch
+      -- hmatch says sf' matches (pos, atom p) pattern
+      -- We need to derive contradiction using open_branch_consistent
       have hconsist := open_branch_consistent b hOpen p
-      -- We have F(p) ∈ b (from sf, hneg, hf)
-      -- If List.any is true, there exists T(p) in b, contradicting consistency
-      sorry  -- Technical: extract witness from hany and derive contradiction
+      -- We have F(p) ∈ b and we're assuming something like T(p) ∈ b
+      -- sf' ∈ b and its (sign, formula) matches pattern for T(p)
+      -- Extract that sf' = SignedFormula.pos (.atom p)
+      split at hmatch
+      · -- sf'.sign = .pos and sf'.formula = .atom q where p == q = true
+        rename_i q heq_sign heq_formula
+        simp only [beq_iff_eq] at hmatch
+        subst hmatch
+        -- So sf' = SignedFormula.pos (.atom p)
+        have hsf'_eq : sf' = SignedFormula.pos (.atom p) := by
+          ext <;> simp only [SignedFormula.pos, heq_sign, heq_formula]
+        rw [hsf'_eq] at hsf'_in
+        -- We have T(p) ∈ b and F(p) ∈ b (since sf = F(p))
+        have hsf_eq : sf = SignedFormula.neg (.atom p) := by ext <;> simp only [SignedFormula.neg, hneg, hf]
+        rw [hsf_eq] at hsf_in
+        exact hconsist ⟨hsf'_in, hsf_in⟩
+      · -- Other cases return false, so hmatch = true means contradiction
+        rename_i heq
+        cases hmatch
     | .bot =>
       -- F(⊥) in branch means ⊥ is false, which is correct
       simp only [evalFormula]
     | .imp φ ψ =>
-      -- F(φ→ψ) means φ is true and ψ is false
-      simp only [evalFormula]
-      -- Saturation ensures T(φ) and F(ψ) are both in branch
-      sorry  -- Technical: impNeg rule expansion
+      -- F(φ→ψ) cannot be in a saturated branch (would have been expanded)
+      exfalso
+      have h_not_exp : isExpanded (SignedFormula.neg (.imp φ ψ)) = false := isExpanded_neg_imp_false φ ψ
+      have hsf_eq : sf = SignedFormula.neg (.imp φ ψ) := by ext <;> simp only [SignedFormula.neg, hneg, hf]
+      rw [hsf_eq] at hsf_in
+      exact saturation_contradiction b hSat _ hsf_in h_not_exp
     | .box φ =>
-      simp only [evalFormula]
-      sorry  -- Technical: modal case
+      -- F(□φ) cannot be in a saturated branch
+      exfalso
+      have h_not_exp : isExpanded (SignedFormula.neg (.box φ)) = false := isExpanded_neg_box_false φ
+      have hsf_eq : sf = SignedFormula.neg (.box φ) := by ext <;> simp only [SignedFormula.neg, hneg, hf]
+      rw [hsf_eq] at hsf_in
+      exact saturation_contradiction b hSat _ hsf_in h_not_exp
     | .all_future φ =>
-      simp only [evalFormula]
-      sorry  -- Technical: temporal case
+      -- F(Gφ) cannot be in a saturated branch
+      exfalso
+      have h_not_exp : isExpanded (SignedFormula.neg (.all_future φ)) = false := isExpanded_neg_all_future_false φ
+      have hsf_eq : sf = SignedFormula.neg (.all_future φ) := by ext <;> simp only [SignedFormula.neg, hneg, hf]
+      rw [hsf_eq] at hsf_in
+      exact saturation_contradiction b hSat _ hsf_in h_not_exp
     | .all_past φ =>
-      simp only [evalFormula]
-      sorry  -- Technical: temporal case
+      -- F(Hφ) cannot be in a saturated branch
+      exfalso
+      have h_not_exp : isExpanded (SignedFormula.neg (.all_past φ)) = false := isExpanded_neg_all_past_false φ
+      have hsf_eq : sf = SignedFormula.neg (.all_past φ) := by ext <;> simp only [SignedFormula.neg, hneg, hf]
+      rw [hsf_eq] at hsf_in
+      exact saturation_contradiction b hSat _ hsf_in h_not_exp
 
 /-!
 ## Integration with Decision Procedure
