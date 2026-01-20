@@ -96,6 +96,37 @@ For the complete semantics, see \leanref{Logos/Core/Semantics.lean}.
 | Core Extension Semantics | `Logos.Core.Semantics` | `satisfies`, `WorldHistory` |
 | Core Extension Axioms | `Logos.Core.Axioms` | `C1`-`C7`, `M1`-`M5` |
 
+### Code Path Formatting
+
+Use consistent formatting for Lean directories, file paths, modules, and definitions.
+
+| Element | Format | Example |
+|---------|--------|---------|
+| Directory | `\texttt{}` with `/` | `\texttt{Logos/Core/}` |
+| File path | `\texttt{}` with `.lean` | `\texttt{Logos/Core/Semantics.lean}` |
+| Module | `\texttt{}` with `.` | `\texttt{Logos.Core.Semantics}` |
+| Definition | `\texttt{}` | `\texttt{soundness\_theorem}` |
+
+**Important**: Underscores in Lean names must be escaped as `\_` in LaTeX source.
+
+**Examples**:
+```latex
+% Directory reference
+The semantics module is located in \texttt{Logos/Core/}.
+
+% File path reference
+See \texttt{Logos/Core/Semantics.lean} for the implementation.
+
+% Module reference
+The \texttt{Logos.Core.Semantics} module defines the satisfaction relation.
+
+% Definition with underscore
+The theorem \texttt{soundness\_theorem} establishes...
+```
+
+**Note**: The `\leansrc` and `\leanref` macros handle this formatting automatically when available.
+Use raw `\texttt{}` only when the macros are not defined.
+
 ## Bibliography References
 
 ### Citation Commands

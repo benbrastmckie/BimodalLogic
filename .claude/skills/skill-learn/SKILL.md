@@ -227,7 +227,7 @@ If "Select all" is chosen, include all TODOs. Otherwise, only selected items.
 
 ### Step 8: Create Selected Tasks
 
-For each selected task type, create the task:
+For each selected task type, create the task. **Important**: When NOTE: tags exist and both fix-it and learn-it tasks are selected, create learn-it FIRST so fix-it can depend on it.
 
 #### 8.1: Get Next Task Number
 
@@ -235,10 +235,57 @@ For each selected task type, create the task:
 next_num=$(jq -r '.next_project_number' specs/state.json)
 ```
 
-#### 8.2: Fix-It Task (if selected)
+#### 8.2: Dependency-Aware Task Creation Order
+
+**Check for NOTE: dependency condition**:
+```
+has_note_dependency = (NOTE: tags exist) AND (user selected both "fix-it task" AND "learn-it task")
+```
+
+**If has_note_dependency is TRUE**:
+- Create learn-it task FIRST (Step 8.2a)
+- Store learn-it task number as `learn_it_task_num`
+- Create fix-it task SECOND with dependency (Step 8.2b)
+
+**If has_note_dependency is FALSE**:
+- Create fix-it task first (if selected)
+- Create learn-it task second (if selected)
+- No dependency relationship
+
+#### 8.2a: Learn-It Task (when created first for dependency)
+
+**Condition**: has_note_dependency is TRUE
+
+```json
+{
+  "title": "Update context files from NOTE: tags",
+  "description": "Update {N} context files based on learnings:\n\n{grouped by target context}\n\n**Important**: After updating context files, replace all NOTE: tags with FIX: tags in the source files. This enables the dependent fix-it task to make file-local code changes.",
+  "language": "meta",
+  "priority": "medium",
+  "effort": "1-2 hours"
+}
+```
+
+Store the task number: `learn_it_task_num = next_num`
+Increment: `next_num = next_num + 1`
+
+#### 8.2b: Fix-It Task (with dependency when has_note_dependency)
 
 **Condition**: User selected "fix-it task" AND (FIX: or NOTE: tags exist)
 
+**When has_note_dependency is TRUE**:
+```json
+{
+  "title": "Fix issues from FIX:/NOTE: tags",
+  "description": "Address {N} items from embedded tags:\n\n{list of items with file:line references}",
+  "language": "{predominant language from source files}",
+  "priority": "high",
+  "effort": "2-4 hours",
+  "dependencies": [learn_it_task_num]
+}
+```
+
+**When has_note_dependency is FALSE**:
 ```json
 {
   "title": "Fix issues from FIX:/NOTE: tags",
@@ -257,9 +304,9 @@ elif majority from .claude/ files -> "meta"
 else -> "general"
 ```
 
-#### 8.3: Learn-It Task (if selected)
+#### 8.3: Learn-It Task (when created without dependency)
 
-**Condition**: User selected "learn-it task" AND NOTE: tags exist
+**Condition**: User selected "learn-it task" AND NOTE: tags exist AND has_note_dependency is FALSE
 
 ```json
 {
@@ -315,16 +362,46 @@ current=$(cat specs/state.json)
 # Step 2: Use jq with slurpfile
 ```
 
+**For fix-it task when has_note_dependency is TRUE**, include dependencies array:
+```json
+{
+  "project_number": {N},
+  "project_name": "{slug}",
+  "status": "not_started",
+  "language": "{language}",
+  "priority": "high",
+  "dependencies": [learn_it_task_num]
+}
+```
+
+**For all other tasks**, no dependencies field needed.
+
 #### 9.2: Update TODO.md
 
 Append new task entry in appropriate priority section:
 
+**Standard format (no dependency)**:
 ```markdown
 ### {N}. {Title}
 - **Effort**: {estimate}
 - **Status**: [NOT STARTED]
 - **Priority**: {priority}
 - **Language**: {language}
+- **Started**: {timestamp}
+
+**Description**: {description}
+
+---
+```
+
+**Fix-it task format when has_note_dependency is TRUE**:
+```markdown
+### {N}. {Title}
+- **Effort**: {estimate}
+- **Status**: [NOT STARTED]
+- **Priority**: {priority}
+- **Language**: {language}
+- **Dependencies**: {learn_it_task_num}
 - **Started**: {timestamp}
 
 **Description**: {description}

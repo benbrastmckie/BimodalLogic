@@ -85,6 +85,33 @@ If $\Gamma \vdash \metaphi$ then $\Gamma \satisfies \metaphi$.
 See \leansrc{Logos.Core.Soundness}{soundness} for the Lean proof.
 ```
 
+### Lean Cross-Reference in Theorem Environment
+
+When a theorem has a corresponding Lean proof, include the Lean identifier directly in the theorem environment bracket using `\texttt{}`.
+This pairs the LaTeX numbering with the Lean identifier inline, removing the need for footnote clutter.
+
+**Preferred Pattern**:
+```latex
+\begin{theorem}[\texttt{soundness\_theorem}]\label{thm:soundness}
+If $\Gamma \vdash \varphi$ then $\Gamma \models \varphi$.
+\end{theorem}
+```
+
+**Deprecated Pattern** (acceptable for backwards compatibility):
+```latex
+\begin{theorem}[Soundness]\label{thm:soundness}
+If $\Gamma \vdash \varphi$ then $\Gamma \models \varphi$.\footnote{%
+  Lean: \texttt{Logos.Core.Soundness.soundness\_theorem}}
+\end{theorem}
+```
+
+**Benefits of inline pattern**:
+- Pairs LaTeX theorem number with Lean identifier visually
+- Reduces footnote clutter in documents with many cross-references
+- Makes the Lean name immediately visible in theorem statement
+
+**Note**: Underscores in Lean names must be escaped as `\_` in LaTeX.
+
 ## Lemma and Proposition
 
 ```latex

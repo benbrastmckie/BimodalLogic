@@ -28,12 +28,14 @@ technical_debt:
 ## High Priority
 
 ### 650. Implement completion_summary and claudemd_suggestions fields in /implement workflow
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
+- **Planned**: 2026-01-20
 - **Research**: [research-001.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-001.md)
 
 **Description**: Make sure that the /implement command-skill-agent workflow will include completion_summary and claudemd_suggestions fields for updating ROAD_MAP.md and CLAUDE.md when appropriate and not otherwise since these will be used by the /todo command.
 
@@ -92,12 +94,13 @@ technical_debt:
 ## Medium Priority
 
 ### 649. Improve /learn NOTE: tag dependency handling
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
 - **Planned**: 2026-01-20
+- **Started**: 2026-01-20
 - **Research**: [research-001.md](specs/649_improve_learn_note_tag_dependency_handling/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/649_improve_learn_note_tag_dependency_handling/plans/implementation-001.md)
 
@@ -106,7 +109,7 @@ technical_debt:
 ---
 
 ### 647. Update context files for LaTeX theorem naming and formatting standards
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20

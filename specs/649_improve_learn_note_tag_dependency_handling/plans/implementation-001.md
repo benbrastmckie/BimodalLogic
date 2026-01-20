@@ -1,7 +1,7 @@
 # Implementation Plan: Task #649
 
 - **Task**: 649 - Improve /learn NOTE: tag dependency handling
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -42,7 +42,7 @@ The research report (research-001.md) identified the specific code locations in 
 
 ## Implementation Phases
 
-### Phase 1: Modify Task Creation Logic [NOT STARTED]
+### Phase 1: Modify Task Creation Logic [COMPLETED]
 
 **Goal**: Reorder task creation when NOTE: tags exist and both fix-it and learn-it tasks are selected
 
@@ -66,7 +66,7 @@ The research report (research-001.md) identified the specific code locations in 
 
 ---
 
-### Phase 2: Add Dependency Field Population [NOT STARTED]
+### Phase 2: Add Dependency Field Population [IN PROGRESS]
 
 **Goal**: Populate dependency fields in both state.json and TODO.md
 

@@ -112,6 +112,64 @@ A frame is reflexive if every world accesses itself,
 and transitive if accessibility composes.
 ```
 
+## Theorem and Definition Naming
+
+### Named Theorem Formatting
+
+When referencing theorems by name (e.g., Soundness Theorem, Lindenbaum's Lemma), use consistent formatting across prose, environments, and Lean cross-references.
+
+| Context | Format | Example |
+|---------|--------|---------|
+| Prose reference | *Italics* | the *Soundness Theorem* states... |
+| Environment name | Normal (in brackets) | `\begin{theorem}[Soundness]` |
+| Lean reference | `\texttt{}` | `\texttt{soundness\_theorem}` |
+
+**Note**: Lean names containing underscores must be escaped as `\_` in LaTeX.
+
+### Pass Example
+```latex
+The \emph{Soundness Theorem} establishes that provable formulas are valid.
+
+\begin{theorem}[Soundness]\label{thm:soundness}
+If $\Gamma \vdash \varphi$ then $\Gamma \models \varphi$.
+\end{theorem}
+
+See \texttt{Logos.Core.Soundness.soundness\_theorem} for the Lean proof.
+```
+
+### Fail Example
+```latex
+% Bad: Inconsistent formatting
+The Soundness Theorem establishes that provable formulas are valid.
+\begin{theorem}[\emph{Soundness}]  % Wrong: italics inside bracket
+```
+
+### Definition Ordering
+
+Definitions must appear before their first use in prose.
+When introducing new concepts, place the formal definition environment before explanatory text that references the defined term.
+
+**Rationale**: Readers should encounter the formal definition before informal explanations that assume familiarity with it.
+
+### Pass Example
+```latex
+\begin{definition}[Constitutive Frame]\label{def:constitutive-frame}
+A \emph{constitutive frame} is a structure $\mathbf{F} = \langle S, \sqsubseteq \rangle$...
+\end{definition}
+
+A constitutive frame captures the mereological structure of states.
+The partial order $\sqsubseteq$ represents the parthood relation.
+```
+
+### Fail Example
+```latex
+% Bad: Using term before defining it
+A constitutive frame captures the mereological structure of states.
+The partial order $\sqsubseteq$ represents the parthood relation.
+
+\begin{definition}[Constitutive Frame]  % Definition comes too late
+```
+
 ## File Organization
 
 ### Main Document Structure
@@ -162,3 +220,5 @@ A constitutive frame is F = <S, ⊑> where S is states and ⊑ is partial order.
 - [ ] Environments properly opened and closed
 - [ ] Cross-references resolve without warnings
 - [ ] No overfull hboxes in compiled output
+- [ ] Named theorems use italics in prose, normal text in environment brackets
+- [ ] Definitions appear before first use in prose

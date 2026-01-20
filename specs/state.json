@@ -8,30 +8,36 @@
     {
       "project_number": 650,
       "project_name": "implement_completion_summary_claudemd_suggestions_fields",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T20:49:27Z",
-      "last_updated": "2026-01-20T20:54:20Z",
-      "session_id": "sess_1768942279_aa151d",
+      "last_updated": "2026-01-20T21:23:25Z",
+      "session_id": "sess_1768944058_057f1d",
       "researched": "2026-01-20T20:54:20Z",
       "artifacts": [
         {
           "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting field schemas, implementation architecture, and 5-phase modification approach for completion_summary and claudemd_suggestions fields"
+        },
+        {
+          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for completion_summary and claudemd_suggestions field population in /implement workflow"
         }
-      ]
+      ],
+      "planned": "2026-01-20T21:23:25Z"
     },
     {
       "project_number": 649,
       "project_name": "improve_learn_note_tag_dependency_handling",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:40:53Z",
-      "last_updated": "2026-01-20T20:52:58Z",
-      "session_id": "sess_1768942256_b2705c",
+      "last_updated": "2026-01-20T21:22:09Z",
+      "session_id": "sess_1768944111_7e9311",
       "researched": "2026-01-20T20:46:32Z",
       "artifacts": [
         {
@@ -45,7 +51,8 @@
           "summary": "4-phase implementation plan for NOTE: tag dependency handling in /learn command"
         }
       ],
-      "planned": "2026-01-20T20:52:58Z"
+      "planned": "2026-01-20T20:52:58Z",
+      "started": "2026-01-20T21:22:09Z"
     },
     {
       "project_number": 646,
@@ -60,12 +67,12 @@
     {
       "project_number": 647,
       "project_name": "update_context_latex_theorem_naming_standards",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:55:08Z",
-      "last_updated": "2026-01-20T20:52:17Z",
-      "session_id": "sess_1768942207_53ae7a",
+      "last_updated": "2026-01-20T21:21:43Z",
+      "session_id": "sess_1768944082_35490d",
       "researched": "2026-01-20T20:46:27Z",
       "artifacts": [
         {
@@ -79,7 +86,8 @@
           "summary": "4-phase implementation plan covering latex-style-guide.md, theorem-environments.md, and cross-references.md updates"
         }
       ],
-      "planned": "2026-01-20T20:52:17Z"
+      "planned": "2026-01-20T20:52:17Z",
+      "started": "2026-01-20T21:21:43Z"
     },
     {
       "project_number": 648,
