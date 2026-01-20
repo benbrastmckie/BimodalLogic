@@ -79,7 +79,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Extend Skill with Mode Detection [NOT STARTED]
+### Phase 2: Extend Skill with Mode Detection [IN PROGRESS]
 
 **Goal**: Add `--projects` mode to skill-refresh SKILL.md with routing logic
 

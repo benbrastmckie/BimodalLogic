@@ -1,7 +1,7 @@
 # Implementation Plan: Fix sorry in main_provable_iff_valid_v2
 
 - **Task**: 634 - Fix sorry in main_provable_iff_valid_v2
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Priority**: Low
 - **Dependencies**: None
