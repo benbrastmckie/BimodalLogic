@@ -90,10 +90,11 @@ technical_debt:
 ---
 
 ### 647. Update context files for LaTeX theorem naming and formatting standards
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
+- **Research**: [research-001.md](specs/647_update_context_latex_theorem_naming_standards/reports/research-001.md)
 
 **Description**: Update .claude/context/ files to document LaTeX theorem naming and formatting standards based on 4 NOTE: tags from 04-Metalogic.tex: (1) make theorem names italic (e.g., 'Representation Theorem' in italics), (2) state definitions before using them (e.g., task relation definition needed before canonical frame), (3) reference Lean theorem names in the theorem environment itself (e.g., replace footnotes with inline `\texttt{representation_theorem}` references), (4) use standardized `\texttt{Metalogic_v2}` formatting for Lean directories throughout. Target context files: .claude/rules/latex.md or create new .claude/context/project/latex/standards.md.
 
