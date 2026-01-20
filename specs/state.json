@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 640,
+      "project_name": "improve_refresh_command_for_claude_directory_cleanup",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T17:23:39Z",
+      "last_updated": "2026-01-20T17:23:39Z"
+    },
+    {
       "project_number": 638,
       "project_name": "add_roadmap_update_to_todo_command",
       "status": "planned",
@@ -485,7 +494,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 640,
+  "next_project_number": 641,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

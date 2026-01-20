@@ -1,20 +1,20 @@
 ---
-next_project_number: 640
+next_project_number: 641
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 15
+  active: 16
   completed: 218
   in_progress: 1
-  not_started: 7
+  not_started: 8
   abandoned: 19
-  total: 239
+  total: 240
 priority_distribution:
   critical: 0
   high: 3
-  medium: 5
+  medium: 6
   low: 5
 technical_debt:
   sorry_count: 205
@@ -105,6 +105,16 @@ technical_debt:
 - **Created**: 2026-01-20
 
 **Description**: Improve the reliability of ROAD_MAP.md checkbox matching in the /review command. Current issues: (1) Fuzzy title matching is unreliable, (2) No explicit task-to-roadmap mapping exists, (3) Task 637 had to be manually created to fix checkboxes. Solutions: (1) Add `roadmap_items` field to state.json entries for explicit task-roadmap linking, (2) Update /review to use explicit mappings first, fall back to fuzzy matching, (3) Update /task create to optionally specify linked roadmap items, (4) Improve fuzzy matching heuristics.
+
+---
+
+### 640. Improve /refresh command for ~/.claude/ directory cleanup
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Claude CLI scans ~/.claude/ on startup and this directory has grown massive. Research the best practices online for garbage collecting this directory, especially the ~/.claude/projects/ directory. Improve the /refresh command to do a better job clearing out the bloated ~/.claude/ directory (running it currently still gives long startup times for running `time claude --version` in a new terminal). Add user options for clearing: everything (clean slate, most aggressive), everything before 8 hours (default), or everything before two days. Keep existing /refresh functionality while improving cleanup capabilities and updating relevant documentation.
 
 ---
 
