@@ -2,7 +2,7 @@ import BimodalTest.Property.Generators
 import BimodalTest.Syntax.FormulaPropertyTest
 import BimodalTest.ProofSystem.DerivationPropertyTest
 import BimodalTest.Semantics.SemanticPropertyTest
-import BimodalTest.Metalogic.SoundnessPropertyTest
+import BimodalTest.Metalogic_v2.SoundnessPropertyTest
 
 /-!
 # Property-Based Tests

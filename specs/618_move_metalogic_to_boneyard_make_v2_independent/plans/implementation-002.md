@@ -95,7 +95,7 @@ Move the entire `Theories/Bimodal/Metalogic/` directory to `Theories/Bimodal/Bon
 
 ---
 
-### Phase 2: Move Metalogic Directory to Boneyard [IN PROGRESS]
+### Phase 2: Move Metalogic Directory to Boneyard [COMPLETED]
 
 **Goal**: Physically relocate all Metalogic files to Boneyard and update internal imports
 
@@ -121,7 +121,7 @@ Move the entire `Theories/Bimodal/Metalogic/` directory to `Theories/Bimodal/Bon
 
 ---
 
-### Phase 3: Archive Old Metalogic Tests [NOT STARTED]
+### Phase 3: Archive Old Metalogic Tests [COMPLETED]
 
 **Goal**: Remove the 3 old Metalogic test files since Metalogic_v2 has comprehensive tests
 
@@ -146,7 +146,7 @@ Move the entire `Theories/Bimodal/Metalogic/` directory to `Theories/Bimodal/Bon
 
 ---
 
-### Phase 4: Final Verification and Cleanup [NOT STARTED]
+### Phase 4: Final Verification and Cleanup [COMPLETED]
 
 **Goal**: Verify no Boneyard imports remain outside Boneyard and add documentation
 

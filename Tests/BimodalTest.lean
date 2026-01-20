@@ -7,9 +7,7 @@ import BimodalTest.ProofSystem.DerivationPropertyTest
 import BimodalTest.Semantics.TruthTest
 import BimodalTest.Semantics.TaskFrameTest
 import BimodalTest.Semantics.SemanticPropertyTest
-import BimodalTest.Metalogic.SoundnessTest
-import BimodalTest.Metalogic.CompletenessTest
-import BimodalTest.Metalogic.SoundnessPropertyTest
+-- Old Metalogic tests removed (Task 618) - using Metalogic_v2 tests only
 import BimodalTest.Metalogic_v2.CoreTest
 import BimodalTest.Metalogic_v2.CorePropertyTest
 import BimodalTest.Metalogic_v2.SoundnessTest

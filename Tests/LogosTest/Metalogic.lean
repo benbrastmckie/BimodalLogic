@@ -1,1 +1,1 @@
-import BimodalTest.Metalogic.SoundnessTest
+import BimodalTest.Metalogic_v2.SoundnessTest
