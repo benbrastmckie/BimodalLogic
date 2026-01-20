@@ -322,112 +322,61 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
 
 /-! ## Axiom Validity (Local) -/
 
+-- Propositional axioms (use tauto for brevity)
 private theorem axiom_prop_k_valid (φ ψ χ : Formula) :
     is_valid D ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h1 h2 h_phi
-  exact h1 h_phi (h2 h_phi)
+  intro F M τ t; simp only [truth_at]; tauto
 
 private theorem axiom_prop_s_valid (φ ψ : Formula) :
     is_valid D (φ.imp (ψ.imp φ)) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_phi _
-  exact h_phi
+  intro F M τ t; simp only [truth_at]; tauto
 
+-- Modal axioms
 private theorem axiom_modal_t_valid (φ : Formula) :
     is_valid D (φ.box.imp φ) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_box
-  exact h_box τ
+  intro F M τ t; simp only [truth_at]; intro h; exact h τ
 
 private theorem axiom_modal_4_valid (φ : Formula) :
     is_valid D ((φ.box).imp (φ.box.box)) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_box σ ρ
-  exact h_box ρ
+  intro F M τ t; simp only [truth_at]; intro h σ ρ; exact h ρ
 
 private theorem axiom_modal_b_valid (φ : Formula) :
     is_valid D (φ.imp (φ.diamond.box)) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_phi σ h_box_neg
-  have h_neg_at_tau := h_box_neg τ
-  simp only [truth_at] at h_neg_at_tau
-  exact h_neg_at_tau h_phi
+  intro F M τ t; simp only [truth_at]; intro h σ h_neg; exact h_neg τ h
 
 private theorem axiom_modal_5_collapse_valid (φ : Formula) :
     is_valid D (φ.box.diamond.imp φ.box) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_diamond_box ρ
-  by_contra h_not_phi
-  apply h_diamond_box
-  intro σ h_box_at_sigma
-  have h_phi_at_rho := h_box_at_sigma ρ
-  exact h_not_phi h_phi_at_rho
+  intro F M τ t; simp only [truth_at]; intro h ρ
+  by_contra h_not; exact h (fun σ h_box => h_not (h_box ρ))
 
 private theorem axiom_ex_falso_valid (φ : Formula) :
     is_valid D (Formula.bot.imp φ) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_bot
-  exfalso
-  exact h_bot
+  intro F M τ t; simp only [truth_at]; tauto
 
 private theorem axiom_peirce_valid (φ ψ : Formula) :
     is_valid D (((φ.imp ψ).imp φ).imp φ) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_peirce
-  by_cases h : truth_at M τ t φ
-  · exact h
-  · have h_imp : truth_at M τ t (φ.imp ψ) := by
-      simp only [truth_at]
-      intro h_phi
-      exfalso
-      exact h h_phi
-    exact h_peirce h_imp
+  intro F M τ t; simp only [truth_at]; intro h
+  by_cases hφ : truth_at M τ t φ
+  · exact hφ
+  · exact h (fun h_phi => absurd h_phi hφ)
 
+-- Distribution axioms
 private theorem axiom_modal_k_dist_valid (φ ψ : Formula) :
     is_valid D ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_box_imp h_box_phi σ
-  have h_imp_at_σ := h_box_imp σ
-  have h_phi_at_σ := h_box_phi σ
-  simp only [truth_at] at h_imp_at_σ
-  exact h_imp_at_σ h_phi_at_σ
+  intro F M τ t; simp only [truth_at]; intro h_imp h_phi σ; exact h_imp σ (h_phi σ)
 
 private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
     is_valid D ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_future_imp h_future_phi s hts
-  have h_imp_at_s := h_future_imp s hts
-  have h_phi_at_s := h_future_phi s hts
-  simp only [truth_at] at h_imp_at_s
-  exact h_imp_at_s h_phi_at_s
+  intro F M τ t; simp only [truth_at]; intro h_imp h_phi s hs; exact h_imp s hs (h_phi s hs)
 
+-- Temporal axioms
 private theorem axiom_temp_4_valid (φ : Formula) :
     is_valid D ((φ.all_future).imp (φ.all_future.all_future)) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_future s hts r hsr
-  have htr : t < r := lt_trans hts hsr
-  exact h_future r htr
+  intro F M τ t; simp only [truth_at]; intro h s hts r hsr; exact h r (lt_trans hts hsr)
 
 private theorem axiom_temp_a_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.all_future φ.sometime_past)) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_phi s hts h_all_neg
-  have h_neg_at_t := h_all_neg t hts
-  simp only [truth_at] at h_neg_at_t
-  exact h_neg_at_t h_phi
+  intro F M τ t; simp only [truth_at]; intro h s hts h_neg; exact h_neg t hts h
 
 private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
   ⟨Classical.byContradiction (fun hP => h (fun p _ => hP p)),
@@ -452,23 +401,16 @@ private theorem axiom_temp_l_valid (φ : Formula) :
   · subst h_eq; exact h_now
   · exact h_future r h_gt
 
+-- Time-shift axioms (share common time-shift pattern)
 private theorem axiom_modal_future_valid (φ : Formula) :
     is_valid D ((φ.box).imp ((φ.all_future).box)) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_box_phi σ s hts
-  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t))
-  have h_preserve := TimeShift.time_shift_preserves_truth M σ t s φ
-  exact h_preserve.mp h_phi_at_shifted
+  intro F M τ t; simp only [truth_at]; intro h σ s hs
+  exact (TimeShift.time_shift_preserves_truth M σ t s φ).mp (h (WorldHistory.time_shift σ (s - t)))
 
 private theorem axiom_temp_future_valid (φ : Formula) :
     is_valid D ((φ.box).imp ((φ.box).all_future)) := by
-  intro F M τ t
-  simp only [truth_at]
-  intro h_box_phi s hts σ
-  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t))
-  have h_preserve := TimeShift.time_shift_preserves_truth M σ t s φ
-  exact h_preserve.mp h_phi_at_shifted
+  intro F M τ t; simp only [truth_at]; intro h s hs σ
+  exact (TimeShift.time_shift_preserves_truth M σ t s φ).mp (h (WorldHistory.time_shift σ (s - t)))
 
 private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ := by
   intro h_axiom

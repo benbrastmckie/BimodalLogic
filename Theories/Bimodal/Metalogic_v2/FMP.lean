@@ -69,57 +69,6 @@ open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic_v2.Core Bimodal.Metalogic_v2.Representation
 
 /-!
-## Re-exports from Representation.FiniteModelProperty
--/
-
--- Core FMP theorem
-#check finite_model_property
-
--- Subformula infrastructure
-#check subformulaList
-#check self_mem_subformulaList
-#check subformulaList_finite
-
--- Decidability corollaries
-#check satisfiability_decidable
-#check validity_decidable_via_fmp
-
--- Size bounds
-#check finite_model_size_bound
-#check fmp_finite_model_exists
-
-/-!
-## Re-exports from Core (for downstream use)
--/
-
--- Consistency definitions
-#check Consistent
-#check SetConsistent
-#check SetMaximalConsistent
-
--- Lindenbaum's lemma
-#check set_lindenbaum
-
--- Deduction theorem
-#check deduction_theorem
-
-/-!
-## Re-exports from Representation (for downstream use)
--/
-
--- Canonical model
-#check CanonicalWorldState
-#check canonicalModel
-
--- Truth lemma
-#check canonicalTruthAt
-#check truthLemma_detailed
-
--- Representation theorem
-#check representation_theorem
-#check strong_representation_theorem
-
-/-!
 ## Convenience Theorems
 
 These combine results from multiple layers for easier use by applications.

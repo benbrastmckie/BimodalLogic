@@ -30,9 +30,20 @@ for finite world states.
 - `mcs_projection`: Project a full MCS to closure
 - `mcs_projection_is_closure_mcs`: The projection is closure-maximal
 
+## Known Issue: Double-Negation Escape
+
+When `ψ = χ.neg` for some `χ ∈ closure φ`, then `ψ.neg = χ.neg.neg` may escape
+`closureWithNeg` because negation (defined as `imp _ bot`) is not involutive.
+This is handled via explicit case analysis in the proofs (see `mcs_projection_is_closure_mcs`).
+
+## Cross-References
+
+- `FiniteWorldState.lean`: Uses closure for finite world construction
+- `FiniteModelProperty.lean`: Uses closure-MCS for FMP proof
+- `CanonicalModel.lean`: Full (infinite) MCS theory
+
 ## References
 
-- Old Metalogic: `Bimodal.Metalogic.Completeness.FiniteCanonicalModel`
 - Modal Logic, Blackburn et al., Chapter 4
 -/
 
@@ -581,52 +592,36 @@ theorem mcs_projection_is_closure_mcs (phi : Formula) (M : Set Formula)
 
 /-!
 ## Subformula Membership Lemmas
+
+These lemmas extract subformula closure membership from compound formulas.
+All proofs use the same pattern: unfold closure, simp to list membership,
+then apply the corresponding subformula property.
 -/
 
-/--
-Subformula of implication: left side.
--/
+-- Helper tactic pattern: unfold closure to list membership
+private theorem closure_mem_iff (phi psi : Formula) :
+    psi ∈ closure phi ↔ psi ∈ phi.subformulas := by
+  unfold closure; simp only [List.mem_toFinset]
+
 theorem closure_imp_left (phi psi chi : Formula) (h : Formula.imp psi chi ∈ closure phi) :
     psi ∈ closure phi := by
-  unfold closure at h ⊢
-  simp only [List.mem_toFinset] at h ⊢
-  exact Formula.mem_subformulas_of_imp_left h
+  rw [closure_mem_iff] at h ⊢; exact Formula.mem_subformulas_of_imp_left h
 
-/--
-Subformula of implication: right side.
--/
 theorem closure_imp_right (phi psi chi : Formula) (h : Formula.imp psi chi ∈ closure phi) :
     chi ∈ closure phi := by
-  unfold closure at h ⊢
-  simp only [List.mem_toFinset] at h ⊢
-  exact Formula.mem_subformulas_of_imp_right h
+  rw [closure_mem_iff] at h ⊢; exact Formula.mem_subformulas_of_imp_right h
 
-/--
-Subformula of box.
--/
 theorem closure_box (phi psi : Formula) (h : Formula.box psi ∈ closure phi) :
     psi ∈ closure phi := by
-  unfold closure at h ⊢
-  simp only [List.mem_toFinset] at h ⊢
-  exact Formula.mem_subformulas_of_box h
+  rw [closure_mem_iff] at h ⊢; exact Formula.mem_subformulas_of_box h
 
-/--
-Subformula of all_past.
--/
 theorem closure_all_past (phi psi : Formula) (h : Formula.all_past psi ∈ closure phi) :
     psi ∈ closure phi := by
-  unfold closure at h ⊢
-  simp only [List.mem_toFinset] at h ⊢
-  exact Formula.mem_subformulas_of_all_past h
+  rw [closure_mem_iff] at h ⊢; exact Formula.mem_subformulas_of_all_past h
 
-/--
-Subformula of all_future.
--/
 theorem closure_all_future (phi psi : Formula) (h : Formula.all_future psi ∈ closure phi) :
     psi ∈ closure phi := by
-  unfold closure at h ⊢
-  simp only [List.mem_toFinset] at h ⊢
-  exact Formula.mem_subformulas_of_all_future h
+  rw [closure_mem_iff] at h ⊢; exact Formula.mem_subformulas_of_all_future h
 
 /-!
 ## Implication Closure Property

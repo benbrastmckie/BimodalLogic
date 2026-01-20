@@ -4,13 +4,24 @@ import Bimodal.Metalogic_v2.Completeness.StrongCompleteness
 # Compactness for TM Bimodal Logic (Metalogic_v2)
 
 This module establishes compactness theorems for TM bimodal logic using
-the Finite Model Property (FMP) and completeness infrastructure.
+the completeness infrastructure.
 
 ## Overview
 
 This is part of the Metalogic_v2 reorganization that establishes a
 representation-first architecture with the Finite Model Property (FMP)
 as the central bridge theorem.
+
+## Important Note: Trivial for List-Based Contexts
+
+**These theorems are trivially true for our list-based `Context` type.**
+Since `Context = List Formula`, every context is already finite, so the
+"finite subset" is simply the context itself. The theorems become:
+- `compactness_satisfiability`: If Γ is satisfiable, then Γ is satisfiable
+- `compactness_entailment`: If Γ ⊨ φ, then Γ ⊨ φ
+
+For meaningful compactness results, one would need set-based infinite contexts.
+This module exists primarily for API completeness and documentation purposes.
 
 ## Main Results
 
@@ -22,13 +33,6 @@ as the central bridge theorem.
 Applications.Compactness depends on:
 - Bimodal.Metalogic_v2.Completeness.StrongCompleteness
 - Transitively: FMP, Representation, Core, Soundness
-
-## Proof Strategy
-
-Compactness follows from completeness + finiteness of derivations:
-1. If Γ ⊨ φ, then by strong completeness Γ ⊢ φ
-2. Any derivation uses finitely many formulas from Γ
-3. That finite subset Δ satisfies Δ ⊨ φ
 
 ## References
 

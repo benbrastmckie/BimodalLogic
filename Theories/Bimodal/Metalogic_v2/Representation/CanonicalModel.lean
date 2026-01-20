@@ -29,9 +29,20 @@ Representation.CanonicalModel depends on:
 - Bimodal.Semantics (semantic definitions)
 - Bimodal.Metalogic_v2.Core.MaximalConsistent (MCS theory)
 
+## Main Theorems
+
+- `mcs_contains_or_neg`: MCS contains φ or ¬φ for every formula
+- `mcs_modus_ponens`: Modus ponens holds within MCS
+- `set_mcs_neg_excludes`: If ¬φ ∈ MCS then φ ∉ MCS
+
+## Cross-References
+
+- `TruthLemma.lean`: Uses MCS properties for truth lemma
+- `RepresentationTheorem.lean`: Uses Lindenbaum's lemma for representation
+- `Core/MaximalConsistent.lean`: SetConsistent, SetMaximalConsistent, set_lindenbaum
+
 ## References
 
-- Metalogic_v2/Core/MaximalConsistent.lean: SetConsistent, SetMaximalConsistent, set_lindenbaum
 - Modal Logic, Blackburn et al., Chapter 4 (Canonical Models)
 -/
 
@@ -39,18 +50,6 @@ namespace Bimodal.Metalogic_v2.Representation
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic_v2.Core
-
-/-!
-## Re-exports from Core
-
-The core consistency and MCS definitions are in Core.MaximalConsistent.
-We re-export the key definitions here for convenience.
--/
-
--- Re-export from Core for module clients
-#check SetConsistent
-#check SetMaximalConsistent
-#check set_lindenbaum
 
 /-!
 ## Canonical World State

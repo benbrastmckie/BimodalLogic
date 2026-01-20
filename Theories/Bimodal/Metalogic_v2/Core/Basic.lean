@@ -63,22 +63,6 @@ Notation for validity: `⊨ φ` means `Valid φ`.
 -/
 notation:50 "⊨ " φ:50 => Valid φ
 
-/--
-Maximum consistent set: A consistent set that cannot be extended
-without losing consistency.
-
-This is key notion used in canonical model constructions.
--/
-def MaximalConsistent (Γ : Set Formula) : Prop :=
-  (∀ φ ∈ Γ, Consistent [φ]) ∧
-  ∀ (Δ : Set Formula), Γ ⊂ Δ → ¬(∀ φ ∈ Δ, Consistent [φ])
-
-/--
-Finite consistency: A set is finitely consistent if every finite subset is consistent.
-
-This is used in completeness proofs with Lindenbaum's lemma.
--/
-def FinitelyConsistent (Γ : Set Formula) : Prop :=
-  ∀ (Δ : Finset Formula), (∀ φ ∈ Δ, φ ∈ Γ) → Consistent (Finset.toList Δ)
+-- Note: SetMaximalConsistent and related MCS lemmas are in Core/MaximalConsistent.lean
 
 end Bimodal.Metalogic_v2.Core

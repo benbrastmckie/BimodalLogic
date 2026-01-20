@@ -37,26 +37,6 @@ Representation.RepresentationTheorem depends on:
 variable {Γ : Context}
 
 /--
-Helper: Convert a list-based context to a set of formulas.
-
-Note: This is also defined in Core.MaximalConsistent, but we provide
-a local version for module independence.
--/
-def contextToSetLocal (Γ : Context) : Set Formula := {φ | φ ∈ Γ}
-
-/--
-If a list context is consistent, its corresponding set is set-consistent.
--/
-lemma consistent_implies_set_consistent_local (h : Consistent Γ) :
-    SetConsistent (contextToSetLocal Γ) := by
-  intro L hL
-  -- Need to show any finite subset of contextToSet Γ is consistent
-  -- Since L contains only elements from Γ (a context), this follows by weakening
-  intro ⟨d⟩
-  apply h
-  exact ⟨DerivationTree.weakening L Γ Formula.bot d (fun φ hφ => hL φ hφ)⟩
-
-/--
 Representation Theorem: Every consistent context is satisfiable in the canonical model.
 
 This is the central theorem of the representation theory. It establishes that
@@ -71,8 +51,8 @@ theorem representation_theorem :
     Consistent Γ → ∃ (w : CanonicalWorldState), ∀ φ ∈ Γ, canonicalTruthAt w φ := by
   intro h_cons
   -- Convert context to set and show it's set-consistent
-  let S := contextToSetLocal Γ
-  have h_set_cons : SetConsistent S := consistent_implies_set_consistent_local h_cons
+  let S := contextToSet Γ
+  have h_set_cons : SetConsistent S := consistent_implies_set_consistent h_cons
   -- Use Lindenbaum's lemma to extend S to a maximal consistent set
   obtain ⟨M, hSM, h_mcs⟩ := set_lindenbaum S h_set_cons
   -- M is a maximal consistent set, so it's a canonical world

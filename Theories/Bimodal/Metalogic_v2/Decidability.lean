@@ -177,55 +177,7 @@ let stats := decideBatch formulas 5000
 
 namespace Bimodal.Metalogic_v2.Decidability
 
--- Re-export key types and functions for convenience
--- The imports already make everything available, but we can add
--- explicit #check statements to document the API.
-
-/-!
-## Key Types
--/
-
-#check Sign
-#check SignedFormula
-#check Branch
-#check TableauRule
-#check RuleResult
-#check ClosureReason
-#check ClosedBranch
-#check ExpandedTableau
-#check DecisionResult
-#check SimpleCountermodel
-
-/-!
-## Key Functions
--/
-
-#check decide
-#check decideAuto
-#check decideWithFMPFuel
-#check buildTableau
-#check buildTableauAuto
-#check extractProof
-#check findCountermodel
-#check isValidFormula
-#check isSatisfiable
-
-/-!
-## Key Theorems
--/
-
-#check decide_sound
-#check decide_sound_when_valid
-#check validity_decidable
-#check decide_result_exclusive
-#check extracted_proof_correct
-
-/-!
-## FMP Integration Points
--/
-
-#check closureSizeOf
-#check fmpBasedFuel
-#check recommendedFuel
+-- All types and functions are available via the imports above.
+-- See the module docstring for the complete API reference.
 
 end Bimodal.Metalogic_v2.Decidability

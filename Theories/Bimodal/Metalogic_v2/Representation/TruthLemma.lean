@@ -27,6 +27,12 @@ as the central bridge theorem.
 
 The truth lemma is defined trivially here as set membership. The deep content is in
 the MCS properties proven in CanonicalModel.lean and Core/MaximalConsistent.lean.
+
+## Cross-References
+
+- `CanonicalModel.lean`: MCS properties (mcs_contains_or_neg, mcs_modus_ponens)
+- `Core/MaximalConsistent.lean`: Lindenbaum's lemma, MCS theory
+- `RepresentationTheorem.lean`: Uses truth lemma for representation theorem
 -/
 
 /--
