@@ -82,6 +82,16 @@ technical_debt:
 
 ## Medium Priority
 
+### 645. Improve /todo command with interactive CLAUDE.md suggestions
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Improve the /todo command to fix two issues observed in recent execution: (1) jq syntax errors due to Claude Code Issue #1132 - update to use two-step jq patterns from jq-escaping-workarounds.md consistently, (2) Make CLAUDE.md suggestions interactive - instead of displaying "apply manually", use AskUserQuestion to let user select which suggestions to apply, then auto-apply selected changes. This provides the same interactive experience as orphan/misplaced directory handling but for CLAUDE.md modifications.
+
+---
+
 ### 639. Improve /review roadmap matching reliability
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
