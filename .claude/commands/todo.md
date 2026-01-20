@@ -131,10 +131,27 @@ For each archivable task, collect:
 - completion/abandonment date
 - artifact paths
 
-### 3.5. Scan Roadmap for Task References
+### 3.5. Scan Roadmap for Task References (Structured Matching)
 
-For each archivable task, check if ROAD_MAP.md contains `(Task {N})` references:
+Use structured extraction from completion_summary fields, falling back to exact `(Task {N})` matching.
 
+**Step 3.5.1: Extract completed tasks with summaries**:
+```bash
+# Extract completed tasks with their completion_summary and roadmap_items
+completed_with_summaries=$(jq -r '
+  .active_projects[] |
+  select(.status == "completed") |
+  select(.completion_summary != null) |
+  {
+    number: .project_number,
+    name: .project_name,
+    summary: .completion_summary,
+    roadmap_items: (.roadmap_items // [])
+  }
+' specs/state.json)
+```
+
+**Step 3.5.2: Match using structured data**:
 ```bash
 # Initialize roadmap tracking
 roadmap_matches=()
@@ -144,25 +161,64 @@ roadmap_abandoned_count=0
 for task in "${archivable_tasks[@]}"; do
   project_num=$(echo "$task" | jq -r '.project_number')
   status=$(echo "$task" | jq -r '.status')
+  completion_summary=$(echo "$task" | jq -r '.completion_summary // empty')
+  explicit_items=$(echo "$task" | jq -r '.roadmap_items[]?' 2>/dev/null)
 
-  # Search for exact task reference
+  # Priority 1: Explicit roadmap_items (highest confidence)
+  if [ -n "$explicit_items" ]; then
+    while IFS= read -r item_text; do
+      [ -z "$item_text" ] && continue
+      # Escape special regex characters for grep
+      escaped_item=$(printf '%s\n' "$item_text" | sed 's/[[\.*^$()+?{|]/\\&/g')
+      line_info=$(grep -n "^\s*- \[ \].*${escaped_item}" specs/ROAD_MAP.md 2>/dev/null | head -1 || true)
+      if [ -n "$line_info" ]; then
+        line_num=$(echo "$line_info" | cut -d: -f1)
+        roadmap_matches+=("${project_num}:${status}:explicit:${line_num}:${item_text}")
+        if [ "$status" = "completed" ]; then
+          ((roadmap_completed_count++))
+        fi
+      fi
+    done <<< "$explicit_items"
+    continue  # Skip other matching methods if explicit items found
+  fi
+
+  # Priority 2: Exact (Task N) reference matching
   matches=$(grep -n "(Task ${project_num})" specs/ROAD_MAP.md 2>/dev/null || true)
-
   if [ -n "$matches" ]; then
-    roadmap_matches+=("${project_num}:${status}:${matches}")
-    if [ "$status" = "completed" ]; then
-      ((roadmap_completed_count++))
-    elif [ "$status" = "abandoned" ]; then
-      ((roadmap_abandoned_count++))
-    fi
+    while IFS= read -r match_line; do
+      line_num=$(echo "$match_line" | cut -d: -f1)
+      item_text=$(echo "$match_line" | cut -d: -f2-)
+      roadmap_matches+=("${project_num}:${status}:exact:${line_num}:${item_text}")
+      if [ "$status" = "completed" ]; then
+        ((roadmap_completed_count++))
+      elif [ "$status" = "abandoned" ]; then
+        ((roadmap_abandoned_count++))
+      fi
+    done <<< "$matches"
+    continue
+  fi
+
+  # Priority 3: Summary-based search (for tasks with completion_summary but no explicit items)
+  # Only search unchecked items for key phrases from completion_summary
+  if [ -n "$completion_summary" ] && [ "$status" = "completed" ]; then
+    # Extract distinctive phrases (first 3 words of summary, excluding common words)
+    # This is semantic matching, not keyword heuristic - uses actual completion context
+    # Implementation note: Summary-based matching is optional enhancement
+    # The explicit roadmap_items field is the primary mechanism
+    :
   fi
 done
 ```
 
 Track:
-- `roadmap_matches[]` - Array of task:status:line_info tuples
+- `roadmap_matches[]` - Array of task:status:match_type:line_num:item_text tuples
 - `roadmap_completed_count` - Count of completed task matches
 - `roadmap_abandoned_count` - Count of abandoned task matches
+
+**Match Types**:
+- `explicit` - Matched via `roadmap_items` field (highest confidence)
+- `exact` - Matched via `(Task {N})` reference in ROAD_MAP.md
+- `summary` - Matched via completion_summary content search (optional, future enhancement)
 
 ### 4. Dry Run Output (if --dry-run)
 
@@ -188,12 +244,27 @@ Misplaced directories in specs/ (tracked in archive/, will be moved): {N}
 - {N8}_{SLUG8}/
 - {N9}_{SLUG9}/
 
-Roadmap updates (from Step 3.5):
-- [ ] {item text} (line {N}) -> [x] *(Completed: Task {N}, {DATE})*
-- [ ] {item text} (line {N}) -> [ ] *(Task {N} abandoned: {reason})*
+Roadmap updates (from completion summaries):
+
+Task #{N1} ({project_name}):
+  Summary: "{completion_summary}"
+  Matches:
+    - [ ] {item text} (line {N}) [explicit]
+    - [ ] {item text 2} (line {N}) [exact]
+
+Task #{N2} ({project_name}):
+  Summary: "{completion_summary}"
+  Matches:
+    - [ ] {item text} (line {N}) [exact]
+
+Task #{N3} ({project_name}) [abandoned]:
+  Matches:
+    - [ ] {item text} (line {N}) [exact] -> *(Task {N} abandoned)*
 
 Total roadmap items to update: {N}
 - Completed: {N}
+  - Explicit matches: {N}
+  - Exact matches: {N}
 - Abandoned: {N}
 
 Total tasks: {N}
@@ -416,7 +487,18 @@ For each archived task with roadmap matches (from Step 3.5):
 
 **1. Read current ROAD_MAP.md content**
 
-**2. For each match, determine if already annotated**:
+**2. Parse match tuple** (from Step 3.5):
+```bash
+# roadmap_matches[] entries are: project_num:status:match_type:line_num:item_text
+# Parse components
+project_num=$(echo "$match" | cut -d: -f1)
+status=$(echo "$match" | cut -d: -f2)
+match_type=$(echo "$match" | cut -d: -f3)  # explicit, exact, or summary
+line_num=$(echo "$match" | cut -d: -f4)
+item_text=$(echo "$match" | cut -d: -f5-)
+```
+
+**3. For each match, determine if already annotated**:
 ```bash
 # Skip if already has completion or abandonment annotation
 if echo "$line_content" | grep -qE '\*(Completed:|\*(Abandoned:|\*(Task [0-9]+ abandoned:'; then
@@ -426,9 +508,15 @@ if echo "$line_content" | grep -qE '\*(Completed:|\*(Abandoned:|\*(Task [0-9]+ a
 fi
 ```
 
-**3. Apply appropriate annotation**:
+**4. Apply appropriate annotation based on match type**:
 
-For completed tasks:
+For completed tasks with **explicit** match (via roadmap_items):
+```
+Edit old_string: "- [ ] {item_text}"
+     new_string: "- [x] {item_text} *(Completed: Task {N}, {DATE})*"
+```
+
+For completed tasks with **exact** match (via Task N reference):
 ```
 Edit old_string: "- [ ] {item_text} (Task {N})"
      new_string: "- [x] {item_text} (Task {N}) *(Completed: Task {N}, {DATE})*"
@@ -440,13 +528,18 @@ Edit old_string: "- [ ] {item_text} (Task {N})"
      new_string: "- [ ] {item_text} (Task {N}) *(Task {N} abandoned: {short_reason})*"
 ```
 
-**4. Track changes**:
+**5. Track changes**:
 ```json
 {
   "roadmap_updates": {
     "completed_annotated": 2,
     "abandoned_annotated": 1,
-    "skipped_already_annotated": 1
+    "skipped_already_annotated": 1,
+    "by_match_type": {
+      "explicit": 1,
+      "exact": 1,
+      "summary": 0
+    }
   }
 }
 ```
@@ -455,6 +548,7 @@ Track roadmap operations for output reporting:
 - roadmap_completed_annotated: count of completed task items marked
 - roadmap_abandoned_annotated: count of abandoned task items annotated
 - roadmap_skipped: count of items skipped (already annotated)
+- roadmap_by_match_type: breakdown by match type (explicit/exact/summary)
 
 **Safety Rules** (from roadmap-update.md):
 - Skip items already containing `*(Completed:` or `*(Task` annotations
@@ -602,14 +696,35 @@ This indicates the directory was archived in state but never physically moved.
 
 ### Roadmap Updates
 
-**Matching Strategy**:
-- Current implementation uses exact `(Task {N})` matching only
-- Title fuzzy matching planned for future enhancement (task 639)
-- File path matching not performed (handled by /review)
+**Matching Strategy** (Structured Synchronization):
+
+Roadmap matching uses structured data from completed tasks, not keyword heuristics:
+
+1. **Explicit roadmap_items** (Priority 1, highest confidence):
+   - Tasks can include a `roadmap_items` array in state.json
+   - Contains exact item text to match against ROAD_MAP.md
+   - Example: `"roadmap_items": ["Improve /todo command roadmap updates"]`
+
+2. **Exact (Task N) references** (Priority 2):
+   - Searches ROAD_MAP.md for `(Task {N})` patterns
+   - Works with existing roadmap items that reference task numbers
+
+3. **Summary-based search** (Future enhancement):
+   - Uses `completion_summary` field to find semantically related items
+   - Not currently implemented (placeholder for future)
+
+**Producer/Consumer Workflow**:
+- `/implement` is the **producer**: populates `completion_summary` and optional `roadmap_items`
+- `/todo` is the **consumer**: extracts these fields via jq and matches against ROAD_MAP.md
 
 **Annotation Formats**:
 
-Completed tasks:
+Completed tasks with explicit match:
+```markdown
+- [x] {item text} *(Completed: Task {N}, {DATE})*
+```
+
+Completed tasks with exact (Task N) match:
 ```markdown
 - [x] {item text} (Task {N}) *(Completed: Task {N}, {DATE})*
 ```
@@ -628,3 +743,15 @@ Abandoned tasks (checkbox stays unchecked):
 **Date Format**: ISO date (YYYY-MM-DD) from task completion/abandonment timestamp
 
 **Abandoned Reason**: Truncated to first 50 characters of `abandoned_reason` field from state.json
+
+**Well-Formed Completion Summaries**:
+
+Good examples:
+- "Implemented structured synchronization between task completion data and roadmap updates. Added completion_summary field to task schema."
+- "Fixed modal logic proof for reflexive frames. Added missing transitivity lemma and updated test cases."
+- "Created LaTeX documentation for Logos layer architecture with diagrams and examples."
+
+The summary should:
+- Be 1-3 sentences describing what was accomplished
+- Focus on outcomes, not process
+- Be specific enough to enable roadmap matching

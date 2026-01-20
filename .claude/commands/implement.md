@@ -93,9 +93,32 @@ The skill will spawn the appropriate agent which executes plan phases sequential
    **If result.status == "partial":**
    Confirm status is still "implementing", resume point noted.
 
+4. **Populate Completion Summary (if implemented)**
+
+   **Only when result.status == "implemented":**
+
+   Extract the summary from the skill result and update state.json:
+   ```bash
+   # Get completion summary from skill result (result.summary field)
+   completion_summary="$result_summary"
+
+   # Update state.json with completion_summary field
+   jq --arg num "$task_number" \
+      --arg summary "$completion_summary" \
+      '(.active_projects[] | select(.project_number == ($num | tonumber))) += {
+        completion_summary: $summary
+      }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+   ```
+
+   **Update TODO.md with Summary line:**
+   Add a `- **Summary**: {completion_summary}` line to the task entry in TODO.md, after the Completed date line.
+
+   **Skip if result.status == "partial":**
+   Partial implementations do not get completion summaries.
+
 **RETRY** skill if validation fails.
 
-**On GATE OUT success**: Artifacts verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
+**On GATE OUT success**: Artifacts and completion summary verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
 
 ### CHECKPOINT 3: COMMIT
 

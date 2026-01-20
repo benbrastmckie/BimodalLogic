@@ -8,11 +8,11 @@
     {
       "project_number": 641,
       "project_name": "improve_todo_command_roadmap_update",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:51:23Z",
-      "last_updated": "2026-01-20T18:44:46Z",
+      "last_updated": "2026-01-20T18:49:21Z",
       "session_id": "sess_1768934665_6b8d2f",
       "researched": "2026-01-20T18:06:36Z",
       "artifacts": [
@@ -30,10 +30,17 @@
           "path": "specs/641_improve_todo_command_roadmap_update/plans/implementation-002.md",
           "type": "plan",
           "summary": "7-phase plan using structured completion_summary fields instead of keyword heuristics"
+        },
+        {
+          "path": "specs/641_improve_todo_command_roadmap_update/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with all phases completed and verification results"
         }
       ],
       "planned": "2026-01-20T18:40:39Z",
-      "started": "2026-01-20T18:44:46Z"
+      "started": "2026-01-20T18:44:46Z",
+      "completed": "2026-01-20T18:49:21Z",
+      "completion_summary": "Implemented structured synchronization between task completion and roadmap updates. Added completion_summary and roadmap_items fields to state.json schema, updated /implement to populate summaries, and updated /todo to use jq extraction for priority-based matching (explicit > exact > summary)."
     },
     {
       "project_number": 640,

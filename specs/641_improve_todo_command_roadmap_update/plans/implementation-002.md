@@ -1,7 +1,7 @@
 # Implementation Plan: Task #641
 
 - **Task**: 641 - improve_todo_command_roadmap_update
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Version**: 002
 - **Effort**: 3 hours
 - **Priority**: Medium
@@ -119,7 +119,7 @@ Added to `state.json` task entries when status transitions to "completed":
 
 ---
 
-### Phase 2: Update /implement Postflight [IN PROGRESS]
+### Phase 2: Update /implement Postflight [COMPLETED]
 
 **Goal**: Modify `/implement` command to populate `completion_summary` at task completion.
 
@@ -154,7 +154,7 @@ jq --arg summary "$completion_summary" \
 
 ---
 
-### Phase 3: Update /todo Roadmap Scanning [NOT STARTED]
+### Phase 3: Update /todo Roadmap Scanning [COMPLETED]
 
 **Goal**: Replace heuristic matching with structured jq extraction and matching.
 
@@ -219,7 +219,7 @@ done
 
 ---
 
-### Phase 4: Update /todo Roadmap Annotation [NOT STARTED]
+### Phase 4: Update /todo Roadmap Annotation [COMPLETED]
 
 **Goal**: Update annotation format to include completion summary reference.
 
@@ -249,7 +249,7 @@ done
 
 ---
 
-### Phase 5: Update Dry-Run Output [NOT STARTED]
+### Phase 5: Update Dry-Run Output [COMPLETED]
 
 **Goal**: Show structured match information in dry-run mode.
 
@@ -291,7 +291,7 @@ Total roadmap items to update: 3
 
 ---
 
-### Phase 6: Update Documentation [NOT STARTED]
+### Phase 6: Update Documentation [COMPLETED]
 
 **Goal**: Document the synchronized workflow and schema constraints.
 
@@ -334,7 +334,7 @@ The `/todo` command uses these summaries to:
 
 ---
 
-### Phase 7: Verification and Testing [NOT STARTED]
+### Phase 7: Verification and Testing [COMPLETED]
 
 **Goal**: Verify the implementation works end-to-end.
 

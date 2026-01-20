@@ -158,11 +158,24 @@ Interactive system builder that creates TASKS for .claude/ changes. Uses skill-m
       "project_name": "task_slug",
       "status": "planned",
       "language": "lean",
-      "priority": "high"
+      "priority": "high",
+      "completion_summary": "Required when status=completed. 1-3 sentence description.",
+      "roadmap_items": ["Optional explicit roadmap item texts to match"]
     }
   ]
 }
 ```
+
+### Completion Summary Workflow
+
+When a task is completed via `/implement`:
+1. The `completion_summary` field is populated with a 1-3 sentence description of what was accomplished
+2. Optional `roadmap_items` array can specify explicit ROAD_MAP.md item texts to match
+
+When `/todo` archives completed tasks:
+1. Extracts `completion_summary` and `roadmap_items` via jq
+2. Matches against ROAD_MAP.md using: explicit roadmap_items (priority 1), exact (Task N) references (priority 2)
+3. Annotates matched items with completion date and task reference
 
 ## Git Commit Conventions
 
