@@ -8,12 +8,12 @@
     {
       "project_number": 641,
       "project_name": "improve_todo_command_roadmap_update",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:51:23Z",
-      "last_updated": "2026-01-20T18:06:36Z",
-      "session_id": "sess_1768932190_4a03c2",
+      "last_updated": "2026-01-20T18:08:53Z",
+      "session_id": "sess_1768932515_813936",
       "researched": "2026-01-20T18:06:36Z",
       "artifacts": [
         {
@@ -31,11 +31,11 @@
     {
       "project_number": 640,
       "project_name": "improve_refresh_command_for_claude_directory_cleanup",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:23:39Z",
-      "last_updated": "2026-01-20T17:54:22Z",
+      "last_updated": "2026-01-20T19:35:00Z",
       "session_id": "sess_1768931641_e9b09a",
       "researched": "2026-01-20T17:37:23Z",
       "artifacts": [
@@ -48,10 +48,16 @@
           "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised implementation plan v002: unified /refresh cleanup with interactive age selection (8h/2d/clean slate)"
+        },
+        {
+          "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results: created claude-cleanup.sh, updated skill-refresh and documentation"
         }
       ],
       "planned": "2026-01-20T17:48:17Z",
-      "started": "2026-01-20T17:54:22Z"
+      "started": "2026-01-20T17:54:22Z",
+      "completed": "2026-01-20T19:35:00Z"
     },
     {
       "project_number": 639,
