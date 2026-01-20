@@ -90,12 +90,14 @@ technical_debt:
 ## Medium Priority
 
 ### 649. Improve /learn NOTE: tag dependency handling
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
+- **Planned**: 2026-01-20
 - **Research**: [research-001.md](specs/649_improve_learn_note_tag_dependency_handling/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/649_improve_learn_note_tag_dependency_handling/plans/implementation-001.md)
 
 **Description**: Improve the /learn command so that if 'NOTE:' tags occur, that the fix-it task has the learn-it task as a dependency so that the learn-it task is completed first. Also, the learn-it task itself should replace all 'NOTE:' instances with 'FIX:' so that the fix-it task can then make the file local changes and the learn-it task can focus on updating context files (clear division of labor).
 

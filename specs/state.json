@@ -18,11 +18,11 @@
     {
       "project_number": 649,
       "project_name": "improve_learn_note_tag_dependency_handling",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:40:53Z",
-      "last_updated": "2026-01-20T20:51:11Z",
+      "last_updated": "2026-01-20T20:52:58Z",
       "session_id": "sess_1768942256_b2705c",
       "researched": "2026-01-20T20:46:32Z",
       "artifacts": [
@@ -30,8 +30,14 @@
           "path": "specs/649_improve_learn_note_tag_dependency_handling/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting current /learn implementation, task dependency schema, and 4-phase modification approach for NOTE: tag dependency handling"
+        },
+        {
+          "path": "specs/649_improve_learn_note_tag_dependency_handling/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for NOTE: tag dependency handling in /learn command"
         }
-      ]
+      ],
+      "planned": "2026-01-20T20:52:58Z"
     },
     {
       "project_number": 646,
