@@ -170,6 +170,52 @@ Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 {Any additional notes, follow-up items, or caveats}
 ```
 
+### Stage 6a: Generate Completion Data
+
+**CRITICAL**: Before writing metadata, prepare the `completion_data` object.
+
+**For ALL tasks (meta and non-meta)**:
+1. Generate `completion_summary`: A 1-3 sentence description of what was accomplished
+   - Focus on the outcome, not the process
+   - Include key artifacts created or modified
+   - Example: "Created new-agent.md with full specification including tools, execution flow, and error handling."
+
+**For META tasks only** (language: "meta"):
+2. Track .claude/ file modifications during implementation
+3. Generate `claudemd_suggestions`:
+   - If any .claude/ files were created or modified: Brief description of changes
+     - Example: "Added completion_data field to return-metadata-file.md, updated general-implementation-agent with Stage 6a"
+   - If NO .claude/ files were modified: Set to `"none"`
+
+**For NON-META tasks**:
+2. Optionally generate `roadmap_items`: Array of explicit ROAD_MAP.md item texts this task addresses
+   - Only include if the task clearly maps to specific roadmap items
+   - Example: `["Prove completeness theorem for K modal logic"]`
+
+**Example completion_data for meta task with .claude/ changes**:
+```json
+{
+  "completion_summary": "Added completion_data generation to all implementation agents and updated skill postflight to propagate fields.",
+  "claudemd_suggestions": "Updated return-metadata-file.md schema, modified 3 agent definitions, updated 3 skill postflight sections"
+}
+```
+
+**Example completion_data for meta task without .claude/ changes**:
+```json
+{
+  "completion_summary": "Created utility script for automated test execution.",
+  "claudemd_suggestions": "none"
+}
+```
+
+**Example completion_data for non-meta task**:
+```json
+{
+  "completion_summary": "Proved completeness theorem using canonical model construction with 4 supporting lemmas.",
+  "roadmap_items": ["Prove completeness theorem for K modal logic"]
+}
+```
+
 ### Stage 7: Write Metadata File
 
 **CRITICAL**: Write metadata to the specified file path, NOT to console.
@@ -192,6 +238,10 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
       "summary": "Implementation summary with verification results"
     }
   ],
+  "completion_data": {
+    "completion_summary": "1-3 sentence description of what was accomplished",
+    "claudemd_suggestions": "Description of .claude/ changes (meta only) or 'none'"
+  },
   "metadata": {
     "session_id": "{from delegation context}",
     "duration_seconds": 123,
@@ -204,6 +254,8 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
   "next_steps": "Review implementation and run verification"
 }
 ```
+
+**Note**: Include `completion_data` when status is `implemented`. For meta tasks, always include `claudemd_suggestions`. For non-meta tasks, optionally include `roadmap_items` instead.
 
 Use the Write tool to create this file.
 

@@ -197,6 +197,10 @@ if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
     artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
     phases_completed=$(jq -r '.metadata.phases_completed // 0' "$metadata_file")
     phases_total=$(jq -r '.metadata.phases_total // 0' "$metadata_file")
+
+    # Extract completion_data fields (if present)
+    completion_summary=$(jq -r '.completion_data.completion_summary // ""' "$metadata_file")
+    roadmap_items=$(jq -c '.completion_data.roadmap_items // []' "$metadata_file")
 else
     echo "Error: Invalid or missing metadata file"
     status="failed"
@@ -217,7 +221,7 @@ After implementation, update task status based on result.
 
 **If result.status == "implemented"**:
 
-Update state.json to "completed" (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`):
+Update state.json to "completed" and add completion_data fields (two-step pattern for Issue #1132):
 ```bash
 # Step 1: Update status and timestamps
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
@@ -228,12 +232,26 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     completed: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
-# Step 2: Filter out existing summary artifacts (two-step pattern for Issue #1132)
+# Step 2: Add completion_summary (always required for completed tasks)
+if [ -n "$completion_summary" ]; then
+    jq --arg summary "$completion_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).completion_summary = $summary' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
+
+# Step 3: Add roadmap_items (if present and non-empty)
+if [ "$roadmap_items" != "[]" ] && [ -n "$roadmap_items" ]; then
+    jq --argjson items "$roadmap_items" \
+      '(.active_projects[] | select(.project_number == '$task_number')).roadmap_items = $items' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
+
+# Step 4: Filter out existing summary artifacts (two-step pattern for Issue #1132)
 jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
     [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")]' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
-# Step 3: Add new summary artifact
+# Step 5: Add new summary artifact
 jq --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts += [{"path": $path, "type": "summary"}]' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json

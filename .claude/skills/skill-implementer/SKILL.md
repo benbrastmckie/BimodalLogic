@@ -206,6 +206,11 @@ if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
     artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
     phases_completed=$(jq -r '.metadata.phases_completed // 0' "$metadata_file")
     phases_total=$(jq -r '.metadata.phases_total // 0' "$metadata_file")
+
+    # Extract completion_data fields (if present)
+    completion_summary=$(jq -r '.completion_data.completion_summary // ""' "$metadata_file")
+    claudemd_suggestions=$(jq -r '.completion_data.claudemd_suggestions // ""' "$metadata_file")
+    roadmap_items=$(jq -c '.completion_data.roadmap_items // []' "$metadata_file")
 else
     echo "Error: Invalid or missing metadata file"
     status="failed"
@@ -218,8 +223,9 @@ fi
 
 **If status is "implemented"**:
 
-Update state.json to "completed":
+Update state.json to "completed" and add completion_data fields:
 ```bash
+# Step 1: Update status and timestamps
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "completed" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
@@ -227,6 +233,28 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     last_updated: $ts,
     completed: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+
+# Step 2: Add completion_summary (always required for completed tasks)
+if [ -n "$completion_summary" ]; then
+    jq --arg summary "$completion_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).completion_summary = $summary' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
+
+# Step 3: Add language-specific completion fields
+# For meta tasks: add claudemd_suggestions
+if [ "$language" = "meta" ] && [ -n "$claudemd_suggestions" ]; then
+    jq --arg suggestions "$claudemd_suggestions" \
+      '(.active_projects[] | select(.project_number == '$task_number')).claudemd_suggestions = $suggestions' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
+
+# For non-meta tasks: add roadmap_items (if present and non-empty)
+if [ "$language" != "meta" ] && [ "$roadmap_items" != "[]" ] && [ -n "$roadmap_items" ]; then
+    jq --argjson items "$roadmap_items" \
+      '(.active_projects[] | select(.project_number == '$task_number')).roadmap_items = $items' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
 ```
 
 Update TODO.md: Change status marker from `[IMPLEMENTING]` to `[COMPLETED]`.

@@ -200,6 +200,34 @@ Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 {Any additional notes, follow-up items, or caveats}
 ```
 
+### Stage 6a: Generate Completion Data
+
+**CRITICAL**: Before writing metadata, prepare the `completion_data` object.
+
+1. Generate `completion_summary`: A 1-3 sentence description of what was accomplished
+   - Focus on the mathematical/proof outcome
+   - Include key theorems and lemmas proven
+   - Example: "Proved completeness theorem using canonical model construction. Implemented 4 supporting lemmas including truth lemma and existence lemma."
+
+2. Optionally generate `roadmap_items`: Array of explicit ROAD_MAP.md item texts this task addresses
+   - Only include if the task clearly maps to specific roadmap items
+   - Example: `["Prove completeness theorem for K modal logic"]`
+
+**Example completion_data for Lean task**:
+```json
+{
+  "completion_summary": "Proved soundness theorem for modal logic K with 3 supporting lemmas. All proofs verified with lake build.",
+  "roadmap_items": ["Prove soundness for K modal logic"]
+}
+```
+
+**Example completion_data without roadmap items**:
+```json
+{
+  "completion_summary": "Refactored Kripke frame definitions to use bundled structures. All existing proofs updated and verified."
+}
+```
+
 ### Stage 7: Write Metadata File
 
 **CRITICAL**: Write metadata to the specified file path, NOT to console.
@@ -222,6 +250,10 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
       "summary": "Implementation summary with verification results"
     }
   ],
+  "completion_data": {
+    "completion_summary": "1-3 sentence description of proofs accomplished",
+    "roadmap_items": ["Optional: roadmap item text this task addresses"]
+  },
   "metadata": {
     "session_id": "{from delegation context}",
     "duration_seconds": 123,
@@ -234,6 +266,8 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
   "next_steps": "Review implementation summary and run tests"
 }
 ```
+
+**Note**: Include `completion_data` when status is `implemented`. The `roadmap_items` field is optional.
 
 Use the Write tool to create this file.
 

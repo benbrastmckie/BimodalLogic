@@ -207,6 +207,34 @@ Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 {Any additional notes, follow-up items, or known issues}
 ```
 
+### Stage 6a: Generate Completion Data
+
+**CRITICAL**: Before writing metadata, prepare the `completion_data` object.
+
+1. Generate `completion_summary`: A 1-3 sentence description of what was accomplished
+   - Focus on the document outcome
+   - Include page count and key sections created
+   - Example: "Created 42-page Logos documentation with 4 chapters covering syntax, semantics, proofs, and examples."
+
+2. Optionally generate `roadmap_items`: Array of explicit ROAD_MAP.md item texts this task addresses
+   - Only include if the task clearly maps to specific roadmap items
+   - Example: `["Create user documentation for Logos system"]`
+
+**Example completion_data for LaTeX task**:
+```json
+{
+  "completion_summary": "Created comprehensive 42-page PDF documentation with 4 chapters. All cross-references resolved, compilation clean.",
+  "roadmap_items": ["Write Logos documentation"]
+}
+```
+
+**Example completion_data without roadmap items**:
+```json
+{
+  "completion_summary": "Updated notation conventions chapter with new symbol definitions. Document compiles cleanly at 58 pages."
+}
+```
+
 ### Stage 7: Write Metadata File
 
 **CRITICAL**: Write metadata to the specified file path, NOT to console.
@@ -234,6 +262,10 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
       "summary": "Implementation summary with compilation results"
     }
   ],
+  "completion_data": {
+    "completion_summary": "1-3 sentence description of document created",
+    "roadmap_items": ["Optional: roadmap item text this task addresses"]
+  },
   "metadata": {
     "session_id": "{from delegation context}",
     "duration_seconds": 123,
@@ -247,6 +279,8 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
   "next_steps": "Review PDF output and verify formatting"
 }
 ```
+
+**Note**: Include `completion_data` when status is `implemented`. The `roadmap_items` field is optional.
 
 Use the Write tool to create this file.
 

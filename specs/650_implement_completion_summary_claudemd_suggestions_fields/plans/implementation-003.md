@@ -75,7 +75,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Extend Return Metadata Schema [IN PROGRESS]
+### Phase 1: Extend Return Metadata Schema [COMPLETED]
 
 **Goal**: Update the return-metadata-file.md schema to document the new `completion_data` field that agents should include.
 
@@ -103,7 +103,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Update General Implementation Agent [NOT STARTED]
+### Phase 2: Update General Implementation Agent [COMPLETED]
 
 **Goal**: Modify general-implementation-agent to generate completion_data in its metadata file. For meta tasks, always include claudemd_suggestions describing .claude/ modifications.
 
@@ -130,7 +130,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update Lean and LaTeX Implementation Agents [NOT STARTED]
+### Phase 3: Update Lean and LaTeX Implementation Agents [COMPLETED]
 
 **Goal**: Modify lean-implementation-agent and latex-implementation-agent to generate completion_data in their metadata files.
 
@@ -154,7 +154,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update Implementation Skills Postflight [NOT STARTED]
+### Phase 4: Update Implementation Skills Postflight [COMPLETED]
 
 **Goal**: Modify all three implementation skills to extract completion_data from the metadata file and propagate it to state.json during postflight.
 
@@ -182,7 +182,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Update Documentation [NOT STARTED]
+### Phase 5: Update Documentation [COMPLETED]
 
 **Goal**: Update state-management.md to reflect the simplified schema and responsibility split.
 

@@ -99,6 +99,25 @@ Additional optional fields for specific agent types:
 - `phases_completed` - Implementation phases completed
 - `phases_total` - Total implementation phases
 
+### completion_data (optional)
+
+**Type**: object
+**Include if**: status is `implemented` (required for successful implementations)
+
+Contains fields needed for task completion processing. Skills extract this data during postflight to update state.json.
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `completion_summary` | string | Yes | 1-3 sentence description of what was accomplished |
+| `roadmap_items` | array of strings | No | Explicit ROAD_MAP.md item texts this task addresses (non-meta tasks only) |
+| `claudemd_suggestions` | string | Yes (meta only) | Description of .claude/ changes made, or `"none"` if no .claude/ files modified |
+
+**Notes**:
+- `completion_summary` is mandatory for all `implemented` status returns
+- `claudemd_suggestions` is mandatory for meta tasks (language: "meta")
+- `roadmap_items` is optional and only relevant for non-meta tasks
+- Skills propagate these fields to state.json for use by `/todo` command
+
 ### errors (optional)
 
 **Type**: array of objects
@@ -186,6 +205,108 @@ rm -f "specs/${task_number}_${task_slug}/.return-meta.json"
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"],
     "findings_count": 5
+  }
+}
+```
+
+### Implementation Success (Non-Meta)
+
+```json
+{
+  "status": "implemented",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": "Logos/Layer1/Modal/Completeness.lean",
+      "summary": "Completeness theorem with 4 supporting lemmas"
+    },
+    {
+      "type": "summary",
+      "path": "specs/259_prove_completeness/summaries/implementation-summary-20260118.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Proved the completeness theorem for modal logic using canonical model construction. Implemented 4 supporting lemmas including truth lemma and existence lemma.",
+    "roadmap_items": ["Prove completeness theorem for K modal logic"]
+  },
+  "next_steps": "Review implementation and verify with /test",
+  "metadata": {
+    "session_id": "sess_1736700000_def456",
+    "agent_type": "lean-implementation-agent",
+    "duration_seconds": 3600,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  }
+}
+```
+
+### Implementation Success (Meta Task with .claude/ Changes)
+
+```json
+{
+  "status": "implemented",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/agents/new-agent.md",
+      "summary": "New agent definition"
+    },
+    {
+      "type": "summary",
+      "path": "specs/412_create_agent/summaries/implementation-summary-20260118.md",
+      "summary": "Implementation summary"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Created new-agent.md with full specification including tools, execution flow, and error handling.",
+    "claudemd_suggestions": "Added new-agent to Skill-to-Agent Mapping table in CLAUDE.md"
+  },
+  "next_steps": "Review agent and test invocation",
+  "metadata": {
+    "session_id": "sess_1736700000_abc123",
+    "agent_type": "general-implementation-agent",
+    "duration_seconds": 1200,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 3,
+    "phases_total": 3
+  }
+}
+```
+
+### Implementation Success (Meta Task without .claude/ Changes)
+
+```json
+{
+  "status": "implemented",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": "scripts/utility.sh",
+      "summary": "Utility script"
+    },
+    {
+      "type": "summary",
+      "path": "specs/413_create_script/summaries/implementation-summary-20260118.md",
+      "summary": "Implementation summary"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Created utility.sh script for automated cleanup operations.",
+    "claudemd_suggestions": "none"
+  },
+  "next_steps": "Test script execution",
+  "metadata": {
+    "session_id": "sess_1736700000_xyz789",
+    "agent_type": "general-implementation-agent",
+    "duration_seconds": 600,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 2,
+    "phases_total": 2
   }
 }
 ```
