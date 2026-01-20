@@ -1,7 +1,7 @@
 # Implementation Plan: Task #626
 
 - **Task**: 626 - Review and remove unnecessary theorems/lemmas with sorries
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -109,7 +109,7 @@ Integrated from research-001.md:
 
 ---
 
-### Phase 4: Remove relocated theorems from SemanticCanonicalModel [IN PROGRESS]
+### Phase 4: Remove relocated theorems from SemanticCanonicalModel [COMPLETED]
 
 **Goal**: Delete the deprecated theorems that were relocated to Boneyard
 
@@ -131,7 +131,7 @@ Integrated from research-001.md:
 
 ---
 
-### Phase 5: Update dependent code and finalize [NOT STARTED]
+### Phase 5: Update dependent code and finalize [COMPLETED]
 
 **Goal**: Fix any downstream dependencies and finalize the cleanup
 

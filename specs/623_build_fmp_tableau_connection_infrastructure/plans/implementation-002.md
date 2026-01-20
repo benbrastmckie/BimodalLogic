@@ -117,7 +117,7 @@ theorem saturated_imp_expanded (b : Branch) (hSat : findUnexpanded b = none)
 
 ---
 
-### Phase 2.3: Prove branchTruthLemma [NOT STARTED]
+### Phase 2.3: Prove branchTruthLemma [COMPLETED]
 
 **Goal**: Complete the `branchTruthLemma` proof at line 217
 
@@ -184,11 +184,11 @@ theorem branchTruthLemma ... := by
 
 ---
 
-### Phase 3: Prove tableau_complete [NOT STARTED]
+### Phase 3: Prove tableau_complete [BLOCKED]
 
 **Goal**: Complete the `tableau_complete` theorem at Correctness.lean line 114
 
-**Current signature**:
+**Current signature** (not yet implemented):
 ```lean
 theorem tableau_complete (φ : Formula) : (⊨ φ) →
     ∃ (fuel : Nat), (buildTableau φ fuel).isSome ∧
@@ -207,12 +207,28 @@ This requires showing that for valid formulas, the tableau always closes (no ope
      - By `branchTruthLemma`, the branch describes a satisfying assignment
      - But we assumed `⊨ φ`, so F(φ) at root contradicts this
 
-**Challenge**: The gap between `evalFormula` (simplified model) and `truth_at` (full semantics) needs bridging. May need to:
-- Add lemma: `evalFormula_implies_sat` connecting simplified evaluation to satisfiability
-- Or use the contrapositive via FMP bounds
+**Blocker**: The semantic bridge between `evalFormula` and `truth_at` is not established.
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic_v2/Decidability/Correctness.lean` - line 114
+**Technical Gap Analysis**:
+- `evalFormula` (CountermodelExtraction.lean:158-164) is a simplified propositional model that treats modal/temporal operators as identity functions
+- `truth_at` (Semantics/TaskFrame.lean) is the full Kripke semantics with accessibility relations
+- To prove `tableau_complete`, we need: `evalFormula b φ = false → ¬(⊨ φ)`
+- This requires showing that the extracted branch describes a proper Kripke model where φ fails
+- The gap is that `evalFormula` ignores modal semantics entirely (box/all_future/all_past = identity)
+
+**What was achieved**:
+- `branchTruthLemma` (CountermodelExtraction.lean:300) proves that saturated open branches correctly evaluate formulas under the simplified model
+- This is the main infrastructure needed for future semantic bridge work
+- `validity_decidable_via_fmp` provides decidability via classical logic as a fallback
+
+**Future work to unblock**:
+1. Create proper Kripke model from saturated branch with accessibility relation
+2. Prove `evalFormula_implies_sat`: if `evalFormula b φ = false` then φ is not satisfiable in the extracted model
+3. Connect extracted model to general `truth_at` semantics
+
+**Files to modify (when unblocked)**:
+- `Theories/Bimodal/Metalogic_v2/Decidability/Correctness.lean` - add tableau_complete
+- `Theories/Bimodal/Metalogic_v2/Decidability/CountermodelExtraction.lean` - add semantic bridge lemmas
 
 ---
 

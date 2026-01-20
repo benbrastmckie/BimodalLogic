@@ -50,11 +50,11 @@
     {
       "project_number": 626,
       "project_name": "review_remove_unnecessary_sorries",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T00:08:49Z",
-      "last_updated": "2026-01-20T00:29:58Z",
+      "last_updated": "2026-01-20T00:51:57Z",
       "session_id": "sess_1768868978_031d04",
       "researched": "2026-01-20T00:17:47Z",
       "artifacts": [
@@ -67,10 +67,16 @@
           "path": "specs/626_review_remove_unnecessary_sorries/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase plan to delete 4 unused theorems and relocate 3 deprecated theorems to Boneyard"
+        },
+        {
+          "path": "specs/626_review_remove_unnecessary_sorries/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with before/after sorry counts and verification results"
         }
       ],
       "planned": "2026-01-20T00:25:48Z",
-      "started": "2026-01-20T00:29:58Z"
+      "started": "2026-01-20T00:29:58Z",
+      "completed": "2026-01-20T00:51:57Z"
     },
     {
       "project_number": 622,

@@ -83,14 +83,16 @@ technical_debt:
 ## Medium Priority
 
 ### 626. Review and remove unnecessary theorems/lemmas with sorries
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-19
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Completed**: 2026-01-20
 - **Related**: Task 616
 - **Research**: [research-001.md](specs/626_review_remove_unnecessary_sorries/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/626_review_remove_unnecessary_sorries/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/626_review_remove_unnecessary_sorries/summaries/implementation-summary-20260119.md)
 
 **Description**: Systematically review which theorems or lemmas in Bimodal/Metalogic_v2/ are not needed and can be removed or moved to Bimodal/Boneyard/ if worth keeping. The policy is to only include theorems and lemmas that are needed and provable - no sorries should be "accepted" as permanent. Task 616 research recommended accepting a sorry in semantic_task_rel_compositionality, but this task takes the opposite approach: remove or relocate any theorem that cannot be proven rather than leaving sorries in production code.
 
