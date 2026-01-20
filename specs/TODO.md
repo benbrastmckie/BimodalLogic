@@ -1,5 +1,5 @@
 ---
-next_project_number: 653
+next_project_number: 655
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -68,6 +68,30 @@ technical_debt:
 
 
 ## Medium Priority
+
+### 654. Research purely syntactic representation theorem approach
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-20
+- **Source**: Theories/Bimodal/latex/subfiles/04-Metalogic.tex:162
+
+**Description**: Research and implement a purely syntactic representation theorem approach that builds semantic objects from pure syntax. The current semantic approach (equivalence classes of history-time pairs) abandons the intended spirit of the representation theorem. A fully general, purely syntactic approach should be carefully researched and implemented, focusing on the crux of the metalogic: constructing a canonical model directly from syntactic consistency without relying on pre-existing semantic structures.
+
+---
+
+### 653. Improve metalogic infrastructure (rename frame, address infinite contexts)
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-20
+- **Source**: Theories/Bimodal/latex/subfiles/04-Metalogic.tex:142,253
+
+**Description**: Two related metalogic improvements: (1) Rename SemanticCanonicalFrame to CanonicalTaskFrame in Lean source code for accuracy (the current name is misleading since it's a task frame, not a general semantic frame). (2) Address infinite contexts/sets which remain unaddressed - this should be handled by proving and applying compactness to extend the current finite-context completeness results to infinite contexts.
+
+---
 
 ### 652. Improve /learn TODO grouping by topic
 - **Status**: [COMPLETED]

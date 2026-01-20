@@ -1,10 +1,34 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 17,
-    "last_sync": "2026-01-20T22:40:00Z"
+    "total_tasks": 19,
+    "last_sync": "2026-01-20T23:16:47Z"
   },
   "active_projects": [
+    {
+      "project_number": 653,
+      "project_name": "improve_metalogic_infrastructure",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-20T23:16:47Z",
+      "last_updated": "2026-01-20T23:16:47Z",
+      "session_id": "sess_1768949007_17adb9",
+      "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
+      "source_lines": [142, 253]
+    },
+    {
+      "project_number": 654,
+      "project_name": "research_purely_syntactic_representation_theorem",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-20T23:16:47Z",
+      "last_updated": "2026-01-20T23:16:47Z",
+      "session_id": "sess_1768949007_17adb9",
+      "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
+      "source_lines": [162]
+    },
     {
       "project_number": 652,
       "project_name": "improve_learn_todo_grouping_by_topic",
@@ -347,7 +371,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 653,
+  "next_project_number": 655,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
