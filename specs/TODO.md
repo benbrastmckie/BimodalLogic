@@ -1,5 +1,5 @@
 ---
-next_project_number: 641
+next_project_number: 642
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -67,6 +67,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 641. Improve /todo command ROAD_MAP.md update reliability
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Review and improve the `/todo` command to reliably update ROAD_MAP.md when archiving completed projects. Task 638 implemented ROAD_MAP.md update functionality but running `/todo` does not show that ROAD_MAP.md was updated. Analyze the current `/todo` command implementation to identify the issue, then improve the command to both archive projects and update ROAD_MAP.md without needless complexity, providing a robust and reliable command.
+
+---
 
 ### 639. Improve /review roadmap matching reliability
 - **Status**: [NOT STARTED]
