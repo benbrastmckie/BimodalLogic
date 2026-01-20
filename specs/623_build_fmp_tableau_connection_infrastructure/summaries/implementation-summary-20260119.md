@@ -1,70 +1,73 @@
 # Implementation Summary: Task #623
 
-**Task**: Build FMP-tableau connection infrastructure
-**Status**: Partial (Phase 1 of 6 complete, Phase 2 in progress)
-**Updated**: 2026-01-19
-**Session ID**: sess_1768866353_ab089c
+**Completed**: 2026-01-19
+**Duration**: ~4 hours
+**Status**: Partial (Phases 1-2.3, 4 completed; Phase 3 blocked)
 
-## Status
+## Changes Made
 
-Phase 1 (expansion_decreases_measure) was completed in a prior session. Phase 2 (branchTruthLemma) implementation was attempted but introduced compilation errors and was reverted to a working state.
+This implementation completed the FMP-tableau connection infrastructure for CountermodelExtraction.lean, proving key lemmas that connect tableau saturation to countermodel extraction.
 
-## Current State
+### Phases Completed
 
-### Saturation.lean
-- **Status**: Complete (prior session)
-- No sorries remain
-- BEq lemmas for SignedFormula added and working
+1. **Phase 1** (prior session): Completed `expansion_decreases_measure` in Saturation.lean
+2. **Phase 2.1**: Fixed `open_branch_consistent` proof error at line 176
+3. **Phase 2.2**: Proved `saturated_imp_expanded` theorem
+4. **Phase 2.3**: Proved `branchTruthLemma` - the main result
+5. **Phase 4**: Code review and cleanup
 
-### CountermodelExtraction.lean
-- **Status**: In Progress
-- Current sorries:
-  - Line 193: `saturated_imp_expanded` - vacuously true because T(φ→ψ) cannot be in saturated branch
-  - Line 217: `branchTruthLemma` - main truth lemma requiring structural induction
-- Prior attempt to complete these introduced errors and was reverted
+### Phase 3 Blocked
 
-### Correctness.lean
-- **Status**: Not Started
-- Current sorries:
-  - Line 114: `tableau_complete`
-  - Line 163: `decide_complete`
-  - Line 295: `decide_axiom_valid`
+The `tableau_complete` theorem was **blocked** due to a semantic bridge gap between:
+- `evalFormula` (simplified propositional model treating modals as identity)
+- `truth_at` (full Kripke semantics with accessibility relations)
 
-## Technical Analysis
+See plan implementation-002.md for detailed technical analysis of the gap.
 
-### Phase 2 Challenge: branchTruthLemma
+## Files Modified
 
-The attempted implementation revealed structural issues:
+- `Theories/Bimodal/Metalogic_v2/Decidability/CountermodelExtraction.lean`
+  - Fixed `open_branch_consistent` pattern matching (line 177: three-tuple destructure)
+  - Added 8 `isExpanded_*_false` helper lemmas for all formula types
+  - Added `saturation_contradiction` helper lemma
+  - Completed `saturated_imp_expanded` proof (vacuously true)
+  - Completed `branchTruthLemma` proof with full case analysis
+  - Fixed SignedFormula equality proofs (replaced `ext` with `cases sf; simp_all`)
 
-1. **`native_decide` limitation**: Theorems like `isExpanded_impPos_false` cannot use `native_decide` because `isExpanded` involves pattern matching on signed formula structures that are not fully decidable at compile time.
+## Key Theorems Proved
 
-2. **Structure equality**: Using `cases sf` followed by `simp only [SignedFormula.sign, SignedFormula.formula]` fails because these are field accessors, not simp lemmas. Need explicit `ext` or manual unpacking.
+### branchTruthLemma
+```lean
+theorem branchTruthLemma (b : Branch) (hSat : findUnexpanded b = none)
+    (hOpen : findClosure b = none) :
+    forall sf in b, (sf.sign = .pos -> evalFormula b sf.formula = true) and
+              (sf.sign = .neg -> evalFormula b sf.formula = false)
+```
 
-3. **BEq vs Eq**: String equality (`(p == q) = true`) requires explicit conversion to propositional equality via `beq_iff_eq` or similar.
+This establishes that saturated open branches correctly evaluate formulas according to their signs.
 
-### Recommended Approach for Phase 2
+### Helper Lemmas Added
+- `isExpanded_pos_imp_false`, `isExpanded_neg_imp_false`
+- `isExpanded_pos_box_false`, `isExpanded_neg_box_false`
+- `isExpanded_pos_all_future_false`, `isExpanded_neg_all_future_false`
+- `isExpanded_pos_all_past_false`, `isExpanded_neg_all_past_false`
+- `saturation_contradiction`
 
-1. First prove helper lemmas about `isExpanded`:
-   - For each compound formula type, prove `isExpanded (SignedFormula.pos/neg (compound φ)) = false` by unfolding definitions and case analysis on `applyRule`
+## Verification
 
-2. The main `branchTruthLemma` proof structure should:
-   - Handle atoms directly via extraction
-   - Handle bot via contradiction with openness
-   - Handle compound formulas via `exfalso` using `saturated_no_unexpanded` + the helper lemmas
+- Lake build: Success (no errors)
+- Remaining warnings: Unused tactic warnings in isExpanded lemmas (minor)
+- All sorries in CountermodelExtraction.lean: Resolved
 
-3. Use `rcases sf with ⟨sign, formula⟩` instead of `cases sf` for cleaner destructuring
+## Technical Notes
 
-## Files in Working State
+### SignedFormula Equality
+Lean ext tactic does not work for SignedFormula (no ext attribute). Fixed with:
+`cases sf; simp only [SignedFormula.pos/neg] at *; simp_all`
 
-- `Theories/Bimodal/Metalogic_v2/Decidability/Saturation.lean` - Complete (no changes this session)
-- `Theories/Bimodal/Metalogic_v2/Decidability/CountermodelExtraction.lean` - Reverted to clean state with original sorries
-- `Theories/Bimodal/Metalogic_v2/Decidability/Correctness.lean` - Unchanged
+## Next Steps (to unblock Phase 3)
 
-## Build Status
-
-`lake build Bimodal` succeeds with 976 jobs. All files compile cleanly with only `sorry` warnings.
-
-## Next Steps
-
-1. Complete Phase 2 with correct proof approach (see Technical Analysis)
-2. Continue with Phases 3-6 as described in implementation plan
+1. Create proper Kripke model construction from saturated branch
+2. Add `evalFormula_implies_sat` lemma
+3. Bridge extracted model to general `truth_at` semantics
+4. Complete `tableau_complete` proof

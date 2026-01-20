@@ -100,7 +100,7 @@ technical_debt:
 ---
 
 ### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
