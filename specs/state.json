@@ -391,13 +391,21 @@
     },
     {
       "project_number": 483,
-      "status": "researching",
+      "status": "researched",
       "project_name": "investigate_latex_aux_file_corruption_errors",
       "section": "Medium Priority",
       "language": "latex",
       "priority": "medium",
-      "last_updated": "2026-01-20T16:47:52Z",
-      "session_id": "sess_1768927647_f21439"
+      "last_updated": "2026-01-20T16:53:38Z",
+      "session_id": "sess_1768927647_f21439",
+      "researched": "2026-01-20T16:53:38Z",
+      "artifacts": [
+        {
+          "path": "specs/483_investigate_latex_aux_file_corruption_errors/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research report covering aux file corruption root causes, subfiles package usage, latexmk configuration improvements, VimTeX workflow recommendations, and large LaTeX project best practices"
+        }
+      ]
     },
     {
       "project_number": 431,
