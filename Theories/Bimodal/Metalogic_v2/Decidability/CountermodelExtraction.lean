@@ -173,18 +173,20 @@ theorem open_branch_consistent (b : Branch) (hOpen : findClosure b = none) :
   -- findClosure b = none means all checks return none
   simp only [findClosure] at hOpen
   rw [Option.orElse_eq_none, Option.orElse_eq_none] at hOpen
-  obtain ⟨⟨_, hNoContra⟩, _⟩ := hOpen
+  -- hOpen is now: checkBotPos b = none ∧ checkContradiction b = none ∧ checkAxiomNeg b = none
+  obtain ⟨_, hNoContra, _⟩ := hOpen
   -- hNoContra : checkContradiction b = none
-  simp only [checkContradiction, List.findSome?_eq_none] at hNoContra
+  simp only [checkContradiction, List.findSome?_eq_none_iff] at hNoContra
   -- Apply to SignedFormula.pos (atom p)
   have h := hNoContra (SignedFormula.pos (.atom p)) hpos
-  -- SignedFormula.pos (atom p) has isPos = true
-  simp only [SignedFormula.isPos] at h
-  -- Show hasNeg b (atom p) = true from hneg
-  have hhas : hasNeg b (Formula.atom p) = true := by
-    simp only [hasNeg, List.contains_iff, beq_iff_eq]
-    exact ⟨SignedFormula.neg (.atom p), hneg, rfl⟩
-  simp only [hhas, and_self, ↓reduceIte] at h
+  -- The condition in h is: if (sign = pos) ∧ (hasNeg formula) then some ... else none = none
+  -- We show the condition is true, making result = some ..., contradicting h
+  have hhas : b.hasNeg (Formula.atom p) = true := by
+    simp only [Branch.hasNeg, Branch.contains, List.any_eq_true]
+    exact ⟨SignedFormula.neg (.atom p), hneg, beq_self_eq_true' _⟩
+  simp only [SignedFormula.isPos, SignedFormula.pos, decide_true, hhas, and_self, ↓reduceIte] at h
+  -- Now h : some (ClosureReason.contradiction (Formula.atom p)) = none
+  cases h
 
 /--
 Saturation implies all non-atomic formulas are expanded.

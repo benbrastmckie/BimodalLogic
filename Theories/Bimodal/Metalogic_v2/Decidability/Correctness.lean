@@ -7,18 +7,19 @@ import Bimodal.Metalogic_v2.FMP
 
 This module proves the correctness of the tableau decision procedure:
 - **Soundness**: If `decide` returns `valid proof`, then the formula is valid
-- **Completeness**: If the formula is valid, `decide` returns `valid proof` (with sufficient fuel)
 
 ## Main Theorems
 
 - `decide_sound`: Decision procedure is sound
-- `decide_complete`: Decision procedure is complete (with sufficient fuel)
+- `decide_sound_when_valid`: Wrapper for soundness
+- `validity_decidable`: Validity is decidable (via FMP)
+- `validity_decidable_via_sat`: Validity decidable via satisfiability
 
 ## FMP Integration
 
-This module integrates with the Finite Model Property from Metalogic_v2 to establish:
-- Termination bounds: FMP gives explicit bounds on tableau exploration
-- Completeness: FMP ensures that valid formulas are decidable
+This module integrates with the Finite Model Property from Metalogic_v2:
+- `satisfiability_decidable_v2`: Satisfiability decidable via FMP
+- `validity_decidable_via_sat`: Validity decidable via FMP
 
 ## Key Theorems from FMP
 
@@ -72,106 +73,6 @@ theorem decide_valid_implies_valid (φ : Formula) (searchDepth tableauFuel : Nat
     (_ : decide φ searchDepth tableauFuel = .valid proof) :
     (⊨ φ) := by
   exact decide_sound φ proof
-
-/-!
-## Completeness (With FMP)
--/
-
-/--
-The tableau method is complete: if a formula is valid, the tableau will
-eventually close all branches.
-
-The proof uses the Finite Model Property from Metalogic_v2:
-1. FMP gives a bound on model size: ≤ 2^closureSize(φ)
-2. This bounds the tableau exploration space
-3. With sufficient fuel, valid formulas close all branches
-
-**FMP Reference**: The `finite_model_property_constructive` theorem in
-`Bimodal.Metalogic_v2.Representation.FiniteModelProperty` provides the key bound:
-any satisfiable formula has a model with bounded world states (≤ 2^|closure φ|).
-
-**Proof Strategy**:
-1. From `⊨ φ` (φ is valid), derive that `¬φ` is unsatisfiable
-2. The tableau for `F(φ)` (asserting φ false) explores branches
-3. By FMP, the search space is bounded by `2^closureSize(φ)` states
-4. Each branch either:
-   - Closes (contradiction found) - contributes to validity
-   - Saturates open - would give a finite countermodel by FMP
-5. Since `¬φ` is unsatisfiable, no branch can saturate open
-6. Therefore all branches close within `fmpBasedFuel φ` steps
-
-**Technical Requirements**:
-- Show `valid φ → ¬formula_satisfiable (φ.neg)`
-- Show open saturated branches yield finite models (FMP direction)
-- Show `buildTableau φ (fmpBasedFuel φ)` doesn't return `none`
-- Show if result is `some t`, then `t.isValid`
-
-**Difficulty**: High. Requires connecting:
-- Semantic validity to satisfiability
-- FMP bounds to tableau fuel sufficiency
-- Saturated branch semantics to model construction
--/
-theorem tableau_complete (φ : Formula) :
-    (⊨ φ) → ∃ (fuel : Nat), (buildTableau φ fuel).isSome ∧
-             ∀ t, buildTableau φ fuel = some t → t.isValid := by
-  intro h_valid
-  -- The FMP gives us that if φ is satisfiable, it has a finite model.
-  -- Contrapositive: if φ is valid (i.e., ¬φ is not satisfiable),
-  -- then the tableau for F(φ) will close all branches.
-  --
-  -- The key observation is:
-  -- 1. Valid φ means ¬φ is not satisfiable
-  -- 2. Not satisfiable means the tableau for F(φ) has no open saturated branches
-  -- 3. FMP bounds the exploration space, so we can find this in finite steps
-  --
-  -- The bound is: fuel = 2^closureSize(φ) * 2
-  use fmpBasedFuel φ
-  -- Proof requires:
-  -- (a) Show buildTableau with fmpBasedFuel doesn't timeout
-  -- (b) Show the result has isValid = true (all branches closed)
-  --
-  -- Both require connecting FMP state space bounds to tableau termination,
-  -- and showing that valid formulas cannot have open saturated branches.
-  sorry  -- Requires FMP-tableau connection lemmas
-
-/--
-Decision procedure completeness: if a formula is valid and we use
-sufficient fuel, decide will return valid.
-
-**FMP Connection**: The `finite_model_property_constructive` theorem bounds the search space.
-For a formula with closure size n, the fuel bound is 2^n * 2 which is sufficient
-to explore all possible tableau configurations.
-
-**Proof Strategy**:
-1. From `hvalid : ⊨ φ`, use `tableau_complete` to get fuel where tableau closes
-2. With all branches closed, `buildTableau` returns `some (.allClosed _)`
-3. The `decide` function then attempts proof extraction
-4. Either:
-   - Axiom proof found directly → returns `.valid proof`
-   - Proof search succeeds → returns `.valid proof`
-   - Falls back to timeout (limitation of current extraction)
-5. Need to show proof search succeeds for valid formulas
-
-**Technical Requirements**:
-- Depends on `tableau_complete` (currently has sorry)
-- Need to show proof extraction from closed tableau succeeds
-- Or show proof search `bounded_search_with_proof` finds proof for valid φ
-
-**Difficulty**: Medium-High. Main dependency is on `tableau_complete`.
-Proof extraction itself may not always succeed (known limitation in implementation).
--/
-theorem decide_complete (φ : Formula) (hvalid : ⊨ φ) :
-    ∃ (fuel : Nat), ∃ proof, decide φ 10 fuel = .valid proof := by
-  -- From validity, we know the tableau will close all branches
-  have ⟨fuel, h_some, h_valid⟩ := tableau_complete φ hvalid
-  -- With all branches closed, we can extract a proof
-  -- The decide function tries:
-  -- 1. Direct axiom matching (tryAxiomProof)
-  -- 2. Proof search (bounded_search_with_proof)
-  -- 3. Tableau-based extraction
-  --
-  -- For valid φ, at least proof search should succeed (completeness of search)
-  sorry  -- Requires proof extraction from closed tableau or search completeness
 
 /-!
 ## Correctness Summary
@@ -289,8 +190,8 @@ Decision on axiom instances returns valid.
 **Difficulty**: Low-Medium. Depends on `matchAxiom` implementation completeness.
 May fail for axiom patterns not recognized by the pattern matcher.
 
-**Note**: This is optional for the core decidability result. The main completeness
-theorem `decide_complete` handles all valid formulas, including axiom instances.
+**Note**: This is optional for the core decidability result. The FMP provides
+`validity_decidable_via_fmp` which establishes decidability without this lemma.
 -/
 theorem decide_axiom_valid (φ : Formula) (ax : Axiom φ) :
     ∃ proof, decide φ = .valid proof := by
@@ -332,8 +233,7 @@ The key insight connecting FMP to tableau completeness:
    - Find an open saturated branch (formula is invalid, by FMP the branch
      describes a finite countermodel)
 
-This connection is formalized partially in `tableau_complete` and
-`decide_complete` above.
+This connection is used by `validity_decidable_via_fmp` to establish decidability.
 -/
 
 end Bimodal.Metalogic_v2.Decidability

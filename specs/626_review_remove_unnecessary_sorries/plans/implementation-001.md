@@ -1,7 +1,7 @@
 # Implementation Plan: Task #626
 
 - **Task**: 626 - Review and remove unnecessary theorems/lemmas with sorries
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -46,7 +46,7 @@ Integrated from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Delete unused BranchClosure theorems [NOT STARTED]
+### Phase 1: Delete unused BranchClosure theorems [COMPLETED]
 
 **Goal**: Remove two unused theorems with sorries from BranchClosure.lean
 
@@ -66,7 +66,7 @@ Integrated from research-001.md:
 
 ---
 
-### Phase 2: Delete decision procedure completeness theorems [NOT STARTED]
+### Phase 2: Delete decision procedure completeness theorems [IN PROGRESS]
 
 **Goal**: Remove tableau completeness and decision procedure completeness theorems (alternative decidability path not taken)
 

@@ -76,8 +76,8 @@ Decidability.lean (this file)
 ### Key Theorems
 
 - `decide_sound`: Decision procedure is sound
-- `decide_complete`: Decision procedure is complete (with sufficient fuel)
 - `validity_decidable`: Validity is decidable (via FMP)
+- `validity_decidable_via_sat`: Validity decidable via satisfiability
 
 ## FMP Integration
 
@@ -162,7 +162,7 @@ let stats := decideBatch formulas 5000
 - `isValidFormula`, `isSatisfiable`, `isTautology`, `isContradiction`
 
 ### From Correctness.lean
-- `decide_sound`, `decide_complete`
+- `decide_sound`, `decide_sound_when_valid`
 - `validity_decidable`, `satisfiability_decidable_v2`
 - `extracted_proof_correct`
 
@@ -215,7 +215,7 @@ namespace Bimodal.Metalogic_v2.Decidability
 -/
 
 #check decide_sound
-#check decide_complete
+#check decide_sound_when_valid
 #check validity_decidable
 #check decide_result_exclusive
 #check extracted_proof_correct
