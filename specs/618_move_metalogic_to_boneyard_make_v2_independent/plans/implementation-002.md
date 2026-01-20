@@ -2,7 +2,7 @@
 
 - **Task**: 618 - Move Metalogic to Boneyard, make Metalogic_v2 independent
 - **Version**: 002
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2-2.5 hours (reduced from 3 hours)
 - **Priority**: Medium
 - **Dependencies**: None (task 607 completed, decidability ported)
@@ -61,7 +61,7 @@ Move the entire `Theories/Bimodal/Metalogic/` directory to `Theories/Bimodal/Bon
 
 ## Implementation Phases
 
-### Phase 1: Migrate External Consumer Imports [NOT STARTED]
+### Phase 1: Migrate External Consumer Imports [IN PROGRESS]
 
 **Goal**: Update all 4 external files to use Metalogic_v2 before moving Metalogic
 

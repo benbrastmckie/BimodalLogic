@@ -1,5 +1,5 @@
 ---
-next_project_number: 630
+next_project_number: 632
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -68,6 +68,32 @@ technical_debt:
 
 ## Medium Priority
 
+### 630. Build Kripke model extraction from saturated branches
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-19
+- **Parent**: Task 490
+- **Dependencies**: Task 623
+- **Related**: Tasks 624, 628
+
+**Description**: Build infrastructure to extract a proper Kripke model from a saturated open tableau branch. Currently `evalFormula` (CountermodelExtraction.lean:158-164) ignores modal semantics (treats box/all_future/all_past as identity), but proving `tableau_complete` requires showing the extracted model is a valid Kripke structure with accessibility relations. This task creates: (1) World type from branch atoms, (2) Accessibility relation R from modal constraints, (3) TaskRel for temporal operators, (4) Prove extracted structure satisfies frame conditions. Unblocks Phase 3 of Task 623 and enables Task 624 (tableau_complete).
+
+---
+
+### 631. Prove evalFormula_implies_satisfiable bridging lemma
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-19
+- **Parent**: Task 490
+- **Dependencies**: Task 630
+- **Related**: Tasks 624, 628
+
+**Description**: Prove the semantic bridge lemma `evalFormula_implies_sat`: if `evalFormula b φ = false` for a saturated open branch, then φ is not satisfiable in the extracted Kripke model. This connects the simplified propositional evaluation in `evalFormula` to full Kripke semantics via `truth_at`. Uses the Kripke model extraction from Task 630. Combined with `branchTruthLemma` (completed in Task 623), this provides the contrapositive needed for `tableau_complete`: valid formulas cannot have open saturated branches.
+
+---
+
 ### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
 - **Status**: [RESEARCHED]
 - **Priority**: Medium
@@ -116,7 +142,7 @@ technical_debt:
 ---
 
 ### 618. Move Metalogic to Boneyard, make Metalogic_v2 independent
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -184,7 +210,7 @@ technical_debt:
 - **Language**: lean
 - **Parent**: Task 469
 - **Dependencies**: Task 607
-- **Subtasks**: 622, 623, 624, 625
+- **Subtasks**: 622, 623, 624, 625, 630, 631
 - **Research**: [research-001.md](specs/490_complete_decidability_procedure/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/490_complete_decidability_procedure/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260119.md](specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md)

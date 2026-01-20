@@ -6,6 +6,40 @@
   },
   "active_projects": [
     {
+      "project_number": 630,
+      "project_name": "build_kripke_model_extraction_from_saturated_branches",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "parent_task": 490,
+      "dependencies": [
+        623
+      ],
+      "related_tasks": [
+        624,
+        628
+      ],
+      "created": "2026-01-20T01:07:10Z",
+      "last_updated": "2026-01-20T01:07:10Z"
+    },
+    {
+      "project_number": 631,
+      "project_name": "prove_evalformula_implies_satisfiable",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "parent_task": 490,
+      "dependencies": [
+        630
+      ],
+      "related_tasks": [
+        624,
+        628
+      ],
+      "created": "2026-01-20T01:07:10Z",
+      "last_updated": "2026-01-20T01:07:10Z"
+    },
+    {
       "project_number": 629,
       "project_name": "document_bimodal_metalogic_proofs_latex",
       "status": "not_started",
@@ -131,12 +165,12 @@
     {
       "project_number": 618,
       "project_name": "move_metalogic_to_boneyard_make_v2_independent",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T20:23:03Z",
-      "last_updated": "2026-01-20T00:42:11Z",
-      "session_id": "sess_1768869612_ecfec1",
+      "last_updated": "2026-01-20T01:05:30Z",
+      "session_id": "sess_1768871105_656b4f",
       "researched": "2026-01-19T20:37:59Z",
       "artifacts": [
         {
@@ -150,7 +184,8 @@
           "summary": "4-phase revised plan: migrate consumers to Metalogic_v2, move Metalogic to Boneyard, archive tests, verify"
         }
       ],
-      "planned": "2026-01-20T00:42:11Z"
+      "planned": "2026-01-20T00:42:11Z",
+      "started": "2026-01-20T01:05:30Z"
     },
     {
       "project_number": 616,
@@ -284,7 +319,9 @@
         622,
         623,
         624,
-        625
+        625,
+        630,
+        631
       ]
     }
   ],
@@ -300,5 +337,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 630
+  "next_project_number": 632
 }
