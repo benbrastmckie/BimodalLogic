@@ -61,7 +61,7 @@ Move the entire `Theories/Bimodal/Metalogic/` directory to `Theories/Bimodal/Bon
 
 ## Implementation Phases
 
-### Phase 1: Migrate External Consumer Imports [IN PROGRESS]
+### Phase 1: Migrate External Consumer Imports [COMPLETED]
 
 **Goal**: Update all 4 external files to use Metalogic_v2 before moving Metalogic
 
@@ -95,7 +95,7 @@ Move the entire `Theories/Bimodal/Metalogic/` directory to `Theories/Bimodal/Bon
 
 ---
 
-### Phase 2: Move Metalogic Directory to Boneyard [NOT STARTED]
+### Phase 2: Move Metalogic Directory to Boneyard [IN PROGRESS]
 
 **Goal**: Physically relocate all Metalogic files to Boneyard and update internal imports
 

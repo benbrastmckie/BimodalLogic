@@ -69,12 +69,12 @@
     {
       "project_number": 623,
       "project_name": "build_fmp_tableau_connection_infrastructure",
-      "status": "implementing",
+      "status": "expanded",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-20T00:58:10Z",
+      "last_updated": "2026-01-20T01:11:05Z",
       "session_id": "sess_1768868826_a57b66",
       "researched": "2026-01-19T23:08:08Z",
       "artifacts": [
@@ -96,7 +96,11 @@
       ],
       "planned": "2026-01-20T00:22:41Z",
       "started": "2026-01-19T23:12:43Z",
-      "resume_phase": 3
+      "resume_phase": 3,
+      "subtasks": [
+        630,
+        631
+      ]
     },
     {
       "project_number": 624,
