@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/644_redesign_learn_interactive_task_selection/reports/research-001.md",
-      "summary": "Research report analyzing AskUserQuestion patterns and proposing interactive task selection workflow for /learn"
+      "type": "plan",
+      "path": "specs/644_redesign_learn_interactive_task_selection/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for redesigning /learn command to use interactive task selection"
     }
   ],
-  "next_steps": "Run /plan 644 to create implementation plan",
+  "next_steps": "Run /implement 644 to execute the plan",
   "metadata": {
-    "session_id": "sess_1768940130_0ca1f7",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 420,
+    "session_id": "sess_1768940395_9ade3c",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 5,
+    "estimated_hours": 2.5
   }
 }
