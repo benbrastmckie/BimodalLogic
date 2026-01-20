@@ -7471,6 +7471,53 @@
       "planned": "2026-01-20T17:17:50Z",
       "started": "2026-01-20T17:29:16Z",
       "completed": "2026-01-20T17:33:10Z"
+    },
+    {
+      "project_number": 643,
+      "project_name": "implement_learn_command_tag_extraction",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "archived": "2026-01-20T20:55:00Z",
+      "completed": "2026-01-20T20:35:00Z",
+      "completion_summary": "Implemented /learn command, skill-learn, and learn-agent for tag extraction and structured task creation. Command supports dry-run mode, scans for FIX:/NOTE:/TODO: tags in Lean, LaTeX, Markdown, and Python/Shell files, creates grouped fix-it tasks, context-routed learn-it tasks, and individual todo-tasks."
+    },
+    {
+      "project_number": 642,
+      "project_name": "meta_tasks_update_claudemd_not_roadmap",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "archived": "2026-01-20T20:55:00Z",
+      "completed": "2026-01-20T20:06:32Z"
+    },
+    {
+      "project_number": 641,
+      "project_name": "improve_todo_command_roadmap_update",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "archived": "2026-01-20T20:55:00Z",
+      "completed": "2026-01-20T18:49:21Z",
+      "completion_summary": "Implemented structured synchronization between task completion and roadmap updates. Added completion_summary and roadmap_items fields to state.json schema, updated /implement to populate summaries, and updated /todo to use jq extraction for priority-based matching (explicit > exact > summary)."
+    },
+    {
+      "project_number": 640,
+      "project_name": "improve_refresh_command_for_claude_directory_cleanup",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "archived": "2026-01-20T20:55:00Z",
+      "completed": "2026-01-20T19:35:00Z"
+    },
+    {
+      "project_number": 483,
+      "project_name": "investigate_latex_aux_file_corruption_errors",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "archived": "2026-01-20T20:55:00Z",
+      "completed": "2026-01-20T18:53:26Z"
     }
   ]
 }

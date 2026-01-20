@@ -1,153 +1,10 @@
 {
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
-    "total_tasks": 17,
-    "last_sync": "2026-01-20T16:55:00Z"
+    "total_tasks": 16,
+    "last_sync": "2026-01-20T20:55:00Z"
   },
   "active_projects": [
-    {
-      "project_number": 643,
-      "project_name": "implement_learn_command_tag_extraction",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-20T19:19:22Z",
-      "last_updated": "2026-01-20T20:35:00Z",
-      "description": "Create /learn command that scans files for FIX:, NOTE:, and TODO: tags and creates appropriate tasks: (1) fix-it-task from FIX: and NOTE: tags for small changes, (2) learn-it-task from NOTE: tags to update context files, (3) todo-tasks from TODO: tags as individual tasks for larger changes. Tags created conditionally based on presence.",
-      "session_id": "sess_1768938969_bb17cf",
-      "researched": "2026-01-20T19:40:56Z",
-      "artifacts": [
-        {
-          "path": "specs/643_implement_learn_command_tag_extraction/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report with tag extraction patterns, context routing strategy, task creation infrastructure, and recommended 3-component architecture"
-        },
-        {
-          "path": "specs/643_implement_learn_command_tag_extraction/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "7-phase plan with documentation updates: command, skill, agent, tag extraction, task generation, postflight, and docs updates"
-        },
-        {
-          "path": "specs/643_implement_learn_command_tag_extraction/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary with all 7 phases completed and verification results"
-        }
-      ],
-      "planned": "2026-01-20T19:52:49Z",
-      "started": "2026-01-20T19:56:27Z",
-      "completed": "2026-01-20T20:35:00Z",
-      "completion_summary": "Implemented /learn command, skill-learn, and learn-agent for tag extraction and structured task creation. Command supports dry-run mode, scans for FIX:/NOTE:/TODO: tags in Lean, LaTeX, Markdown, and Python/Shell files, creates grouped fix-it tasks, context-routed learn-it tasks, and individual todo-tasks.",
-      "claudemd_suggestions": {
-        "action": "add",
-        "section": "Command Workflows",
-        "rationale": "New /learn command needs user documentation for scanning tags and creating tasks",
-        "content": "### /learn - Scan for tags, create tasks\\n```\\n/learn [PATH...] [--dry-run]   # Scan for FIX:/NOTE:/TODO: tags\\n```\\nScans source files for embedded tags and creates structured tasks."
-      }
-    },
-    {
-      "project_number": 642,
-      "project_name": "meta_tasks_update_claudemd_not_roadmap",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-20T19:06:00Z",
-      "last_updated": "2026-01-20T20:06:32Z",
-      "session_id": "sess_1768939314_db9c3c",
-      "researched": "2026-01-20T19:18:45Z",
-      "artifacts": [
-        {
-          "path": "specs/642_meta_tasks_update_claudemd_not_roadmap/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report with 5-phase implementation plan for meta task CLAUDE.md updates"
-        },
-        {
-          "path": "specs/642_meta_tasks_update_claudemd_not_roadmap/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "5-phase plan with intelligent CLAUDE.md suggestions instead of rolling log"
-        },
-        {
-          "path": "specs/642_meta_tasks_update_claudemd_not_roadmap/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary with all changes and verification"
-        },
-        {
-          "path": "specs/642_meta_tasks_update_claudemd_not_roadmap/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary with all changes and verification"
-        }
-      ],
-      "planned": "2026-01-20T19:57:09Z",
-      "started": "2026-01-20T20:02:16Z",
-      "completed": "2026-01-20T20:06:32Z"
-    },
-    {
-      "project_number": 641,
-      "project_name": "improve_todo_command_roadmap_update",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-20T17:51:23Z",
-      "last_updated": "2026-01-20T18:49:21Z",
-      "session_id": "sess_1768934665_6b8d2f",
-      "researched": "2026-01-20T18:06:36Z",
-      "artifacts": [
-        {
-          "path": "specs/641_improve_todo_command_roadmap_update/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report identifying matching strategy gap as root cause, with detailed recommendation for title fuzzy matching implementation"
-        },
-        {
-          "path": "specs/641_improve_todo_command_roadmap_update/reports/research-002.md",
-          "type": "research",
-          "summary": "Supplemental research analyzing /revise command and shared matching patterns for /todo and /review roadmap updates"
-        },
-        {
-          "path": "specs/641_improve_todo_command_roadmap_update/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "7-phase plan using structured completion_summary fields instead of keyword heuristics"
-        },
-        {
-          "path": "specs/641_improve_todo_command_roadmap_update/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary with all phases completed and verification results"
-        }
-      ],
-      "planned": "2026-01-20T18:40:39Z",
-      "started": "2026-01-20T18:44:46Z",
-      "completed": "2026-01-20T18:49:21Z",
-      "completion_summary": "Implemented structured synchronization between task completion and roadmap updates. Added completion_summary and roadmap_items fields to state.json schema, updated /implement to populate summaries, and updated /todo to use jq extraction for priority-based matching (explicit > exact > summary)."
-    },
-    {
-      "project_number": 640,
-      "project_name": "improve_refresh_command_for_claude_directory_cleanup",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-20T17:23:39Z",
-      "last_updated": "2026-01-20T19:35:00Z",
-      "session_id": "sess_1768931641_e9b09a",
-      "researched": "2026-01-20T17:37:23Z",
-      "artifacts": [
-        {
-          "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report covering directory structure analysis, web research on community cleanup tools, safety considerations, and implementation recommendations for global cleanup mode"
-        },
-        {
-          "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised implementation plan v002: unified /refresh cleanup with interactive age selection (8h/2d/clean slate)"
-        },
-        {
-          "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results: created claude-cleanup.sh, updated skill-refresh and documentation"
-        }
-      ],
-      "planned": "2026-01-20T17:48:17Z",
-      "started": "2026-01-20T17:54:22Z",
-      "completed": "2026-01-20T19:35:00Z"
-    },
     {
       "project_number": 639,
       "project_name": "improve_review_roadmap_matching",
@@ -380,41 +237,6 @@
       ]
     },
     {
-      "project_number": 483,
-      "status": "completed",
-      "project_name": "investigate_latex_aux_file_corruption_errors",
-      "section": "Medium Priority",
-      "language": "latex",
-      "priority": "medium",
-      "last_updated": "2026-01-20T18:53:26Z",
-      "session_id": "sess_1768935038_71f788",
-      "researched": "2026-01-20T18:34:35Z",
-      "artifacts": [
-        {
-          "path": "specs/483_investigate_latex_aux_file_corruption_errors/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive research report covering aux file corruption root causes, subfiles package usage, latexmk configuration improvements, VimTeX workflow recommendations, and large LaTeX project best practices"
-        },
-        {
-          "path": "specs/483_investigate_latex_aux_file_corruption_errors/reports/research-002.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of TEXINPUTS path resolution failure with VimTeX subfiles, including root cause, community solutions, and implementation recommendations"
-        },
-        {
-          "path": "specs/483_investigate_latex_aux_file_corruption_errors/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase plan: add TEX root to Bimodal subfiles (7), Logos subfiles (10), then verify VimTeX compilation"
-        },
-        {
-          "path": "specs/483_investigate_latex_aux_file_corruption_errors/summaries/implementation-summary-20260120.md",
-          "type": "summary",
-          "summary": "Implementation summary with file list and verification results"
-        }
-      ],
-      "planned": "2026-01-20T18:45:39Z",
-      "completed": "2026-01-20T18:53:26Z"
-    },
-    {
       "project_number": 431,
       "status": "researched",
       "project_name": "wezterm_tab_color_notification",
@@ -467,13 +289,13 @@
     {
       "project_number": 644,
       "project_name": "redesign_learn_interactive_task_selection",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T20:40:46Z",
-      "last_updated": "2026-01-20T20:40:46Z",
+      "last_updated": "2026-01-20T20:15:45Z",
       "description": "Redesign /learn command to use interactive task selection instead of auto-creating tasks. Current behavior: /learn scans and auto-creates tasks, with --dry-run for preview. New behavior: /learn always scans and shows findings first, then prompts user to select which task types to create (fix-it, learn-it, individual todo tasks). This avoids background processes, runs synchronously, and gives users control over which tasks are created.",
-      "session_id": "sess_1768940046_661be0",
+      "session_id": "sess_1768940130_0ca1f7",
       "artifacts": []
     }
   ],

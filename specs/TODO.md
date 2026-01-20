@@ -1,21 +1,21 @@
 ---
-next_project_number: 644
+next_project_number: 645
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 18
-  completed: 224
+  active: 16
+  completed: 229
   in_progress: 0
   not_started: 9
   abandoned: 19
-  total: 241
+  total: 248
 priority_distribution:
   critical: 0
-  high: 3
-  medium: 8
-  low: 7
+  high: 4
+  medium: 6
+  low: 6
 technical_debt:
   sorry_count: 205
   axiom_count: 15
@@ -67,7 +67,7 @@ technical_debt:
 ---
 
 ### 644. Redesign /learn command for interactive task selection
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -78,64 +78,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 643. Implement /learn command for tag extraction and context improvement
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Research**: [research-001.md](specs/643_implement_learn_command_tag_extraction/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/643_implement_learn_command_tag_extraction/plans/implementation-002.md) *(revised)*
-- **Summary**: [implementation-summary-20260120.md](specs/643_implement_learn_command_tag_extraction/summaries/implementation-summary-20260120.md)
-
-**Description**: Create a `/learn` command that scans files and directories for special comment tags (`FIX:`, `NOTE:`, `TODO:`) and creates appropriate tasks based on what is found:
-
-1. **fix-it-task**: Created when `FIX:` or `NOTE:` tags are present. Combines all small changes from `FIX:` tags with implementation updates suggested by `NOTE:` tags into a single task. If no `FIX:` tags but `NOTE:` tags exist, still creates this task for the `NOTE:` related changes.
-
-2. **learn-it-task**: Created when `NOTE:` tags are present. Gathers all learnings from `NOTE:` tags and creates a task to update the appropriate context files (e.g., a `NOTE:` in a LaTeX file saying "terms should not be used before they are defined" would result in updating the latex context files).
-
-3. **todo-tasks**: Created for each `TODO:` tag. These represent bigger changes that warrant individual tasks rather than being grouped together.
-
-**Conditional creation**: Only creates tasks for tag types that are present (no `TODO:` tags = no todo-tasks; no `NOTE:` tags = no learn-it-task; no `FIX:` or `NOTE:` = no fix-it-task).
-
-**Components needed**: command file `.claude/commands/learn.md`, skill `.claude/skills/skill-learn/SKILL.md`, and agent `.claude/agents/learn-agent.md`.
-
----
-
-### 641. Improve /todo command ROAD_MAP.md update reliability
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/641_improve_todo_command_roadmap_update/reports/research-001.md), [research-002.md](specs/641_improve_todo_command_roadmap_update/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/641_improve_todo_command_roadmap_update/plans/implementation-002.md) *(revised)*
-- **Summary**: [implementation-summary-20260120.md](specs/641_improve_todo_command_roadmap_update/summaries/implementation-summary-20260120.md)
-
-**Description**: Review and improve the `/todo` command to reliably update ROAD_MAP.md when archiving completed projects. Task 638 implemented ROAD_MAP.md update functionality but running `/todo` does not show that ROAD_MAP.md was updated. Analyze the current `/todo` command implementation to identify the issue, then improve the command to both archive projects and update ROAD_MAP.md without needless complexity, providing a robust and reliable command.
-
----
-
-### 642. Meta tasks should suggest CLAUDE.md updates instead of ROAD_MAP.md
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Research**: [research-001.md](specs/642_meta_tasks_update_claudemd_not_roadmap/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/642_meta_tasks_update_claudemd_not_roadmap/plans/implementation-002.md) *(revised)*
-- **Summary**: [implementation-summary-20260120.md](specs/642_meta_tasks_update_claudemd_not_roadmap/summaries/implementation-summary-20260120.md)
-
-**Description**: Update the /todo command so that tasks with 'meta' as the language should not be used to update ROAD_MAP.md. Instead, meta tasks should suggest updates to CLAUDE.md (while avoiding bloating CLAUDE.md). This ensures that system/agent improvements are tracked in the project configuration rather than the project roadmap.
-
----
-
 ### 639. Improve /review roadmap matching reliability
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
@@ -143,22 +85,6 @@ technical_debt:
 - **Created**: 2026-01-20
 
 **Description**: Improve the reliability of ROAD_MAP.md checkbox matching in the /review command. Current issues: (1) Fuzzy title matching is unreliable, (2) No explicit task-to-roadmap mapping exists, (3) Task 637 had to be manually created to fix checkboxes. Solutions: (1) Add `roadmap_items` field to state.json entries for explicit task-roadmap linking, (2) Update /review to use explicit mappings first, fall back to fuzzy matching, (3) Update /task create to optionally specify linked roadmap items, (4) Improve fuzzy matching heuristics.
-
----
-
-### 640. Improve /refresh command for ~/.claude/ directory cleanup
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/640_improve_refresh_command_for_claude_directory_cleanup/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260120.md](specs/640_improve_refresh_command_for_claude_directory_cleanup/summaries/implementation-summary-20260120.md)
-
-**Description**: Claude CLI scans ~/.claude/ on startup and this directory has grown massive. Research the best practices online for garbage collecting this directory, especially the ~/.claude/projects/ directory. Improve the /refresh command to do a better job clearing out the bloated ~/.claude/ directory (running it currently still gives long startup times for running `time claude --version` in a new terminal). Add user options for clearing: everything (clean slate, most aggressive), everything before 8 hours (default), or everything before two days. Keep existing /refresh functionality while improving cleanup capabilities and updating relevant documentation.
 
 ---
 
@@ -224,22 +150,6 @@ technical_debt:
 - **Related**: Task 608
 
 **Description**: Complete Strategy B as documented in [research-001.md](specs/608_restructure_completeness_via_representation_theorem/reports/research-001.md). Prove `semantic_truth_implies_truth_at` via structural formula induction to bridge finite model truth (`w.models phi h_mem`) to general semantic truth (`truth_at M tau t phi`). This requires handling: Atom case (valuation check), Bot case (trivial), Imp case (IH on subformulas), Box case (show finite model T-axiom suffices for all histories), and Temporal cases (show behavior outside [-k, k] matches finite evaluation). This is the harder but more general approach that directly connects finite and general semantics.
-
----
-
-### 483. Investigate LaTeX aux file corruption errors
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Priority**: Medium
-- **Language**: latex
-- **Research**: [research-001.md](specs/483_investigate_latex_aux_file_corruption_errors/reports/research-001.md), [research-002.md](specs/483_investigate_latex_aux_file_corruption_errors/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/483_investigate_latex_aux_file_corruption_errors/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/483_investigate_latex_aux_file_corruption_errors/summaries/implementation-summary-20260120.md)
-
-**Description**: When making changes to LaTeX files (e.g., 00-Introduction.tex), rebuilding sometimes produces "File ended while scanning use of \@newl@bel" and "\@@BOOKMARK" errors, plus "Extra }, or forgotten \endgroup" errors in the .aux file. Identify the root cause (likely corrupted auxiliary files from interrupted builds) and document solutions to avoid these errors.
 
 ---
 
