@@ -32,12 +32,12 @@
     {
       "project_number": 654,
       "project_name": "research_purely_syntactic_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T23:16:47Z",
-      "last_updated": "2026-01-20T23:15:41Z",
-      "session_id": "sess_1768950723_3752e6",
+      "last_updated": "2026-01-20T23:29:38Z",
+      "session_id": "sess_1768951453_c4c28a",
       "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
       "source_lines": [
         162
@@ -48,8 +48,14 @@
           "path": "specs/654_research_purely_syntactic_representation_theorem/reports/research-002.md",
           "type": "research",
           "summary": "Detailed analysis of CanonicalFrame vs TaskFrame discrepancy with 5 approaches and implementation recommendations"
+        },
+        {
+          "path": "specs/654_research_purely_syntactic_representation_theorem/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan to refactor representation theorem from ad-hoc CanonicalFrame to proper SyntacticCanonicalFrame that instantiates TaskFrame Int with MCS worlds and syntactic task relation"
         }
-      ]
+      ],
+      "planned": "2026-01-20T23:29:38Z"
     },
     {
       "project_number": 652,

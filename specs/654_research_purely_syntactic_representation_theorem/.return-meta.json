@@ -1,20 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Identified critical structural discrepancy: CanonicalFrame does not instantiate TaskFrame. The representation theorem proves satisfiability in an ad-hoc structure that doesn't match the semantic model definition. Recommended approach: create SyntacticCanonicalFrame : TaskFrame Int using MCS worlds with a transitive-closure-based task relation.",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/654_research_purely_syntactic_representation_theorem/reports/research-002.md",
-      "type": "research",
-      "summary": "Detailed analysis of CanonicalFrame vs TaskFrame discrepancy with 5 approaches and implementation recommendations"
+      "type": "plan",
+      "path": "specs/654_research_purely_syntactic_representation_theorem/plans/implementation-001.md",
+      "summary": "6-phase plan to refactor representation theorem from ad-hoc CanonicalFrame to proper SyntacticCanonicalFrame that instantiates TaskFrame Int with MCS worlds and syntactic task relation"
     }
   ],
-  "next_steps": "Run /plan 654 to create implementation plan for SyntacticCanonicalFrame",
+  "next_steps": "Run /implement 654 to execute the plan",
   "metadata": {
-    "session_id": "sess_1768950723_3752e6",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1768951453_c4c28a",
+    "agent_type": "planner-agent",
+    "duration_seconds": 147,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 8.0
   }
 }
