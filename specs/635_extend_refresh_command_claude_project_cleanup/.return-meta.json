@@ -1,0 +1,36 @@
+{
+  "status": "implemented",
+  "summary": "Extended /refresh command with --projects mode for surveying and cleaning up old Claude Code project files. Created claude-project-cleanup.sh script, updated skill-refresh with dual-mode execution, and documented new commands in refresh.md and CLAUDE.md.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/scripts/claude-project-cleanup.sh",
+      "summary": "Bash script for surveying and cleaning project files with age threshold, dry-run, and force modes"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-refresh/SKILL.md",
+      "summary": "Extended skill with projects mode detection and execution logic"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/commands/refresh.md",
+      "summary": "Updated command documentation with new syntax and examples"
+    },
+    {
+      "type": "summary",
+      "path": "specs/635_extend_refresh_command_claude_project_cleanup/summaries/implementation-summary-20260119.md",
+      "summary": "Implementation summary with verification results and usage examples"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1768892201_8c528e",
+    "duration_seconds": 2700,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Use /refresh --projects to survey and clean up old project files"
+}

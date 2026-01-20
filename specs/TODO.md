@@ -186,7 +186,7 @@ technical_debt:
 ## Low Priority
 
 ### 637. Fix roadmap checkboxes not updated
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: general
 - **Created**: 2026-01-19
