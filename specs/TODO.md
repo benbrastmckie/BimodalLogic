@@ -1,5 +1,5 @@
 ---
-next_project_number: 655
+next_project_number: 656
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -68,6 +68,16 @@ technical_debt:
 
 
 ## Medium Priority
+
+### 655. Fix jq errors in agent system
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Review the entire .claude/ agent system to fix all jq (and other) errors that occur in commands like /research. Some commands have been fixed individually, but a comprehensive review is needed to identify and fix all remaining jq errors to improve efficiency. The errors may include syntax issues, escaping problems, or other command-line issues in skill and agent definitions.
+
+---
 
 ### 654. Research purely syntactic representation theorem approach
 - **Effort**: 1 hour

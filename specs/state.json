@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 655,
+      "project_name": "fix_jq_errors_in_agent_system",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T23:01:27Z",
+      "last_updated": "2026-01-20T23:01:27Z"
+    },
+    {
       "project_number": 653,
       "project_name": "improve_metalogic_infrastructure",
       "status": "not_started",
@@ -384,7 +393,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 655,
+  "next_project_number": 656,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
