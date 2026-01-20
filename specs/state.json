@@ -7,12 +7,12 @@
   "active_projects": [
     {
       "project_number": 632,
-      "project_name": "add_roadmap_review_mode",
+      "project_name": "integrate_roadmap_review_into_review_command",
       "status": "not_started",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:45:00Z",
-      "last_updated": "2026-01-19T17:45:00Z"
+      "last_updated": "2026-01-20T02:04:44Z"
     },
     {
       "project_number": 630,

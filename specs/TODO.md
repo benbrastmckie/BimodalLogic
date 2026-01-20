@@ -68,14 +68,14 @@ technical_debt:
 
 ## Medium Priority
 
-### 632. Add roadmap review mode to /review command
+### 632. Integrate roadmap review into /review command
 - **Effort**: 4-6 hours
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
 
-**Description**: Extend `/review` command to support `--roadmap` mode that engages with `specs/ROAD_MAP.md`. The mode should: (1) Parse ROAD_MAP.md structure (phases, checkboxes, status tables), (2) Cross-reference with TODO.md/state.json completed tasks and codebase state (file existence, sorry counts), (3) Edit ROAD_MAP.md to annotate what has been finished with brief notes, (4) Identify current goals and the path toward them, (5) Recommend tasks based on uncompleted roadmap items, presenting them to the user for review before creation.
+**Description**: Modify `/review` command to always engage with and update `specs/ROAD_MAP.md` as part of its standard operation (no flag required). The command should: (1) Parse ROAD_MAP.md structure (phases, checkboxes, status tables), (2) Cross-reference with TODO.md/state.json completed tasks and codebase state (file existence, sorry counts), (3) Edit ROAD_MAP.md to annotate what has been finished with brief notes, (4) Identify current goals and the path toward them, (5) Present recommended tasks to the user for selection, allowing them to choose which tasks to create.
 
 ---
 
