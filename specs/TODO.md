@@ -71,11 +71,13 @@ technical_debt:
 
 ### 654. Research purely syntactic representation theorem approach
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-20
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
 - **Source**: Theories/Bimodal/latex/subfiles/04-Metalogic.tex:162
+- **Research**: [research-001.md](specs/654_research_purely_syntactic_representation_theorem/reports/research-001.md)
 
 **Description**: Research and implement a purely syntactic representation theorem approach that builds semantic objects from pure syntax. The current semantic approach (equivalence classes of history-time pairs) abandons the intended spirit of the representation theorem. A fully general, purely syntactic approach should be carefully researched and implemented, focusing on the crux of the metalogic: constructing a canonical model directly from syntactic consistency without relying on pre-existing semantic structures.
 

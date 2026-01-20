@@ -15,19 +15,32 @@
       "last_updated": "2026-01-20T23:16:47Z",
       "session_id": "sess_1768949007_17adb9",
       "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
-      "source_lines": [142, 253]
+      "source_lines": [
+        142,
+        253
+      ]
     },
     {
       "project_number": 654,
       "project_name": "research_purely_syntactic_representation_theorem",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T23:16:47Z",
-      "last_updated": "2026-01-20T23:16:47Z",
-      "session_id": "sess_1768949007_17adb9",
+      "last_updated": "2026-01-20T22:58:35Z",
+      "session_id": "sess_1768949571_39cfdb",
       "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
-      "source_lines": [162]
+      "source_lines": [
+        162
+      ],
+      "researched": "2026-01-20T22:58:35Z",
+      "artifacts": [
+        {
+          "path": "specs/654_research_purely_syntactic_representation_theorem/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research report with analysis of current implementation, historical approaches, canonical model theory, algebraic methods, and recommendations for filtration-based purely syntactic approach"
+        }
+      ]
     },
     {
       "project_number": 652,
