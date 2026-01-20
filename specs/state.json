@@ -32,11 +32,11 @@
     {
       "project_number": 649,
       "project_name": "improve_learn_note_tag_dependency_handling",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T20:40:53Z",
-      "last_updated": "2026-01-20T21:22:09Z",
+      "last_updated": "2026-01-20T21:25:47Z",
       "session_id": "sess_1768944111_7e9311",
       "researched": "2026-01-20T20:46:32Z",
       "artifacts": [
@@ -49,10 +49,26 @@
           "path": "specs/649_improve_learn_note_tag_dependency_handling/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for NOTE: tag dependency handling in /learn command"
+        },
+        {
+          "path": "specs/649_improve_learn_note_tag_dependency_handling/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        },
+        {
+          "path": "specs/649_improve_learn_note_tag_dependency_handling/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        },
+        {
+          "path": "specs/649_improve_learn_note_tag_dependency_handling/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-01-20T20:52:58Z",
-      "started": "2026-01-20T21:22:09Z"
+      "started": "2026-01-20T21:22:09Z",
+      "completed": "2026-01-20T21:25:47Z"
     },
     {
       "project_number": 646,

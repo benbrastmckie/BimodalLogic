@@ -1,0 +1,36 @@
+{
+  "status": "implemented",
+  "summary": "Improved /learn command to create learn-it task before fix-it task when NOTE: tags exist and both are selected. Fix-it task now depends on learn-it task. Learn-it task description includes instruction to replace NOTE: tags with FIX: tags after updating context files.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-learn/SKILL.md",
+      "summary": "Updated skill with dependency-aware task creation logic and NOTE: to FIX: replacement instruction"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/commands/learn.md",
+      "summary": "Updated user documentation with dependency workflow explanation"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/examples/learn-flow-example.md",
+      "summary": "Updated example documentation with dependency scenarios"
+    },
+    {
+      "type": "summary",
+      "path": "specs/649_improve_learn_note_tag_dependency_handling/summaries/implementation-summary-20260120.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1768944111_7e9311",
+    "duration_seconds": 1800,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Review implementation and run manual verification tests as specified in the plan"
+}

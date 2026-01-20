@@ -1,7 +1,7 @@
 # Implementation Plan: Task #649
 
 - **Task**: 649 - Improve /learn NOTE: tag dependency handling
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: None
