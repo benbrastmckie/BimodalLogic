@@ -1,20 +1,20 @@
 ---
-next_project_number: 643
+next_project_number: 644
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 17
+  active: 18
   completed: 224
   in_progress: 0
-  not_started: 8
+  not_started: 9
   abandoned: 19
-  total: 240
+  total: 241
 priority_distribution:
   critical: 0
   high: 3
-  medium: 7
+  medium: 8
   low: 7
 technical_debt:
   sorry_count: 205
@@ -67,6 +67,26 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 643. Implement /learn command for tag extraction and context improvement
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Create a `/learn` command that scans files and directories for special comment tags (`FIX:`, `NOTE:`, `TODO:`) and creates appropriate tasks based on what is found:
+
+1. **fix-it-task**: Created when `FIX:` or `NOTE:` tags are present. Combines all small changes from `FIX:` tags with implementation updates suggested by `NOTE:` tags into a single task. If no `FIX:` tags but `NOTE:` tags exist, still creates this task for the `NOTE:` related changes.
+
+2. **learn-it-task**: Created when `NOTE:` tags are present. Gathers all learnings from `NOTE:` tags and creates a task to update the appropriate context files (e.g., a `NOTE:` in a LaTeX file saying "terms should not be used before they are defined" would result in updating the latex context files).
+
+3. **todo-tasks**: Created for each `TODO:` tag. These represent bigger changes that warrant individual tasks rather than being grouped together.
+
+**Conditional creation**: Only creates tasks for tag types that are present (no `TODO:` tags = no todo-tasks; no `NOTE:` tags = no learn-it-task; no `FIX:` or `NOTE:` = no fix-it-task).
+
+**Components needed**: command file `.claude/commands/learn.md`, skill `.claude/skills/skill-learn/SKILL.md`, and agent `.claude/agents/learn-agent.md`.
+
+---
 
 ### 641. Improve /todo command ROAD_MAP.md update reliability
 - **Status**: [COMPLETED]
