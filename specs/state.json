@@ -8,12 +8,20 @@
     {
       "project_number": 651,
       "project_name": "simplify_learn_note_tag_workflow",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T21:32:12Z",
-      "last_updated": "2026-01-20T21:35:29Z",
-      "session_id": "sess_1768944913_9a32b0"
+      "last_updated": "2026-01-20T21:37:29Z",
+      "session_id": "sess_1768944913_9a32b0",
+      "researched": "2026-01-20T21:37:29Z",
+      "artifacts": [
+        {
+          "path": "specs/651_simplify_learn_note_tag_workflow/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying 4 targeted edits across 3 files to simplify /learn NOTE: tag workflow"
+        }
+      ]
     },
     {
       "project_number": 650,
