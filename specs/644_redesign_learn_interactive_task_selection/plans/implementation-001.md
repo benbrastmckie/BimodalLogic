@@ -1,7 +1,7 @@
 # Implementation Plan: Task #644
 
 - **Task**: 644 - Redesign /learn command to use interactive task selection
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: None

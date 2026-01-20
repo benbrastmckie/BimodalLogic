@@ -67,8 +67,9 @@ technical_debt:
 ---
 
 ### 644. Redesign /learn command for interactive task selection
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-20
+- **Completed**: 2026-01-20
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -76,6 +77,7 @@ technical_debt:
 - **Planned**: 2026-01-20
 - **Research**: [research-001.md](specs/644_redesign_learn_interactive_task_selection/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/644_redesign_learn_interactive_task_selection/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260120.md](specs/644_redesign_learn_interactive_task_selection/summaries/implementation-summary-20260120.md)
 
 **Description**: Redesign /learn command to use interactive task selection instead of auto-creating tasks. Current behavior: /learn scans and auto-creates tasks, with --dry-run for preview. New behavior: /learn always scans and shows findings first, then prompts user to select which task types to create (fix-it, learn-it, individual todo tasks). This avoids background processes, runs synchronously, and gives users control over which tasks are created.
 
