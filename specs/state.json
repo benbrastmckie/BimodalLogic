@@ -8,12 +8,20 @@
     {
       "project_number": 637,
       "project_name": "fix_roadmap_checkboxes_not_updated",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "low",
       "created": "2026-01-20T06:43:45Z",
-      "last_updated": "2026-01-20T07:04:58Z",
-      "session_id": "sess_1768892682_d892f5"
+      "last_updated": "2026-01-20T07:07:32Z",
+      "session_id": "sess_1768892682_d892f5",
+      "researched": "2026-01-20T07:07:32Z",
+      "artifacts": [
+        {
+          "path": "specs/637_fix_roadmap_checkboxes_not_updated/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing roadmap checkbox status with evidence-based recommendations for 71 items"
+        }
+      ]
     },
     {
       "project_number": 636,
