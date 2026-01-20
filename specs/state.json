@@ -1,10 +1,19 @@
 {
   "metadata": {
     "generated_at": "2026-01-17T12:23:06.000000",
-    "total_tasks": 9,
-    "last_sync": "2026-01-19T07:36:42Z"
+    "total_tasks": 10,
+    "last_sync": "2026-01-19T17:45:00Z"
   },
   "active_projects": [
+    {
+      "project_number": 632,
+      "project_name": "add_roadmap_review_mode",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T17:45:00Z",
+      "last_updated": "2026-01-19T17:45:00Z"
+    },
     {
       "project_number": 630,
       "project_name": "build_taskmodel_extraction_from_saturated_branches",
@@ -131,12 +140,12 @@
     {
       "project_number": 620,
       "project_name": "refine_metalogic_v2_proofs",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-19T20:45:59Z",
-      "last_updated": "2026-01-20T01:28:36Z",
-      "session_id": "sess_1768872323_8986cf",
+      "last_updated": "2026-01-20T01:39:04Z",
+      "session_id": "sess_1768873126_1aa9dc",
       "researched": "2026-01-20T01:28:36Z",
       "artifacts": [
         {
@@ -361,5 +370,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 632
+  "next_project_number": 633
 }

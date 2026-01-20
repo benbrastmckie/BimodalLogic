@@ -1,20 +1,20 @@
 ---
-next_project_number: 632
+next_project_number: 633
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 16
+  active: 17
   completed: 214
   in_progress: 1
-  not_started: 4
+  not_started: 5
   abandoned: 19
   total: 237
 priority_distribution:
   critical: 0
   high: 3
-  medium: 8
+  medium: 9
   low: 5
 technical_debt:
   sorry_count: 205
@@ -68,6 +68,17 @@ technical_debt:
 
 ## Medium Priority
 
+### 632. Add roadmap review mode to /review command
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Extend `/review` command to support `--roadmap` mode that engages with `specs/ROAD_MAP.md`. The mode should: (1) Parse ROAD_MAP.md structure (phases, checkboxes, status tables), (2) Cross-reference with TODO.md/state.json completed tasks and codebase state (file existence, sorry counts), (3) Edit ROAD_MAP.md to annotate what has been finished with brief notes, (4) Identify current goals and the path toward them, (5) Recommend tasks based on uncompleted roadmap items, presenting them to the user for review before creation.
+
+---
+
 ### 630. Build TaskModel extraction from saturated tableau branches
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
@@ -107,7 +118,7 @@ technical_debt:
 ---
 
 ### 620. Refine Metalogic_v2 proofs for publication quality
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-19
 - **Research**: [research-001.md](specs/620_refine_metalogic_v2_proofs/reports/research-001.md)
 - **Priority**: Medium
