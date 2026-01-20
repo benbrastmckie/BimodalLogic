@@ -44,7 +44,7 @@ Fix 5 sorries in pedagogical exercise examples in `Theories/Bimodal/Examples/Tem
 
 ## Implementation Phases
 
-### Phase 1: Attempt Proof Completion [IN PROGRESS]
+### Phase 1: Attempt Proof Completion [COMPLETED]
 
 **Goal**: Try to complete the 5 exercises with correct Lean proofs
 
@@ -69,7 +69,7 @@ Fix 5 sorries in pedagogical exercise examples in `Theories/Bimodal/Examples/Tem
 
 ---
 
-### Phase 2: Remove Incomplete Exercises (Fallback) [NOT STARTED]
+### Phase 2: Remove Incomplete Exercises (Fallback) [IN PROGRESS]
 
 **Goal**: If Phase 1 cannot complete all proofs, remove the incomplete exercises
 

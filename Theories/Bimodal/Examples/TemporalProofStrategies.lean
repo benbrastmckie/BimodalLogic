@@ -339,7 +339,7 @@ This requires showing:
 
 Note: Full proof requires temporal K rule application, shown here as a pattern.
 -/
-example (φ : Formula) : ⊢ φ.imp φ.some_past.some_past.all_future.all_future := by
+noncomputable example (φ : Formula) : ⊢ φ.imp φ.some_past.some_past.all_future.all_future := by
   -- Step 1: Get TA for φ (φ → G(Pφ))
   have ta_1 : ⊢ φ.imp φ.some_past.all_future :=
     DerivationTree.axiom [] _ (Axiom.temp_a φ)
