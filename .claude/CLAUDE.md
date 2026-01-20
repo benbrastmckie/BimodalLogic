@@ -137,6 +137,12 @@ Reads errors.json, creates fix plans
 ### /meta - System builder
 Interactive system builder that creates TASKS for .claude/ changes. Uses skill-meta -> meta-builder-agent delegation. Supports three modes: interactive interview, prompt analysis, and system analysis (--analyze).
 
+### /learn - Scan for tags, create tasks
+```
+/learn [PATH...] [--dry-run]   # Scan for FIX:/NOTE:/TODO: tags
+```
+Scans source files for embedded tags and creates structured tasks.
+
 ## State Synchronization
 
 **Critical**: TODO.md and state.json must stay synchronized.
