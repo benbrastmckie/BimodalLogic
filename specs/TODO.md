@@ -28,29 +28,33 @@ technical_debt:
 ## High Priority
 
 ### 650. Implement completion_summary and claudemd_suggestions fields in /implement workflow
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
 - **Planned**: 2026-01-20
+- **Completed**: 2026-01-20
 - **Research**: [research-001.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/reports/research-001.md)
 - **Plan**: [implementation-003.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-003.md)
+- **Summary**: [implementation-summary-20260120.md](specs/650_implement_completion_summary_claudemd_suggestions_fields/summaries/implementation-summary-20260120.md)
 
 **Description**: Make sure that the /implement command-skill-agent workflow will include completion_summary and claudemd_suggestions fields for updating ROAD_MAP.md and CLAUDE.md when appropriate and not otherwise since these will be used by the /todo command.
 
 ---
 
 ### 646. Fix Metalogic LaTeX formatting and structure issues
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
 - **Planned**: 2026-01-20
 - **Started**: 2026-01-20
+- **Completed**: 2026-01-20
 - **Research**: [research-001.md](specs/646_fix_metalogic_latex_formatting_issues/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/646_fix_metalogic_latex_formatting_issues/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260120.md](specs/646_fix_metalogic_latex_formatting_issues/summaries/implementation-summary-20260120.md)
 
 **Description**: Fix 14 FIX:/NOTE: tags in Theories/Bimodal/latex/subfiles/04-Metalogic.tex covering formatting, structural, and presentation improvements: (1) make negation completeness a definition, (2) merge footnote with explanation for Lindenbaum's lemma, (3) introduce histories/times before canonical world states, (4) define quotient construction, (5) explain strong representation theorem, (6) remove diagram labels and add reference, (7) merge finite model property into decidability section, (8) clarify decision procedure return values, (9) explain tableau concepts and Lean 4 proof search, (10) add context for complexity values, (11) explain why decidability is useful despite limitations, (12) use standardized `\texttt{}` formatting for Lean directories, (13) format directory names in bold with `\texttt{}`, (14) make theorem names italic.
 

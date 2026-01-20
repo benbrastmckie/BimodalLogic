@@ -44,11 +44,11 @@
     {
       "project_number": 650,
       "project_name": "implement_completion_summary_claudemd_suggestions_fields",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T20:49:27Z",
-      "last_updated": "2026-01-20T21:49:36Z",
+      "last_updated": "2026-01-20T21:55:56Z",
       "session_id": "sess_1768945752_2a6128",
       "researched": "2026-01-20T20:54:20Z",
       "artifacts": [
@@ -61,10 +61,16 @@
           "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-003.md",
           "type": "plan",
           "summary": "5-phase plan v003: simplified claudemd_suggestions to string describing .claude/ changes; moved filtering criteria to /todo"
+        },
+        {
+          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with all modified files"
         }
       ],
       "planned": "2026-01-20T21:47:55Z",
-      "started": "2026-01-20T21:49:36Z"
+      "started": "2026-01-20T21:49:36Z",
+      "completed": "2026-01-20T21:55:56Z"
     },
     {
       "project_number": 649,
@@ -110,11 +116,11 @@
     {
       "project_number": 646,
       "project_name": "fix_metalogic_latex_formatting_issues",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "high",
       "created": "2026-01-20T20:55:08Z",
-      "last_updated": "2026-01-20T21:47:41Z",
+      "last_updated": "2026-01-20T21:55:59Z",
       "session_id": "sess_1768945645_c93938",
       "researched": "2026-01-20T21:30:49Z",
       "artifacts": [
@@ -127,10 +133,17 @@
           "path": "specs/646_fix_metalogic_latex_formatting_issues/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase implementation plan for fixing 14 FIX:/NOTE: tags in Metalogic LaTeX file"
+        },
+        {
+          "path": "specs/646_fix_metalogic_latex_formatting_issues/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with phase details and verification"
         }
       ],
       "planned": "2026-01-20T21:36:59Z",
-      "started": "2026-01-20T21:47:41Z"
+      "started": "2026-01-20T21:47:41Z",
+      "completed": "2026-01-20T21:55:59Z",
+      "completion_summary": "Fixed 14 FIX:/NOTE: tags in 04-Metalogic.tex covering formatting consistency (italics, texttt), content additions (explanatory prose for theorems and concepts), and structural reorganization (new definitions, diagram flip, section merging). Document compiles cleanly to 29-page PDF."
     },
     {
       "project_number": 647,

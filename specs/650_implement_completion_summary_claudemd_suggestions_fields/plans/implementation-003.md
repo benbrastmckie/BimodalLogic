@@ -2,7 +2,7 @@
 
 - **Task**: 650 - Implement completion_summary and claudemd_suggestions fields in /implement workflow
 - **Version**: 003
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Priority**: High
 - **Dependencies**: None
