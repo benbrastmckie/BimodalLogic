@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 637,
+      "project_name": "fix_roadmap_checkboxes_not_updated",
+      "status": "not_started",
+      "language": "general",
+      "priority": "low",
+      "created": "2026-01-20T06:43:45Z",
+      "last_updated": "2026-01-20T06:43:45Z"
+    },
+    {
       "project_number": 636,
       "project_name": "fix_sorries_temporalproofstrategies_examples",
       "status": "not_started",
@@ -17,11 +26,20 @@
     {
       "project_number": 635,
       "project_name": "extend_refresh_command_claude_project_cleanup",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T06:33:44Z",
-      "last_updated": "2026-01-20T06:33:44Z"
+      "last_updated": "2026-01-20T06:43:44Z",
+      "session_id": "sess_1768891116_df5719",
+      "researched": "2026-01-20T06:43:44Z",
+      "artifacts": [
+        {
+          "path": "specs/635_extend_refresh_command_claude_project_cleanup/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report covering current /refresh implementation, project directory structure analysis, cleanup strategies, and multi-mode integration patterns"
+        }
+      ]
     },
     {
       "project_number": 634,
@@ -357,5 +375,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 637
+  "next_project_number": 638
 }

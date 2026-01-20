@@ -4,72 +4,11 @@ This directory contains a reorganized metalogic infrastructure for TM bimodal lo
 
 ## Architecture Overview
 
-The architecture follows a bottom-up dependency structure. Arrows point upward, meaning
-"is used by" (equivalently: lower modules are imported by higher ones).
+The architecture follows a bottom-up dependency structure. Arrows point downward, showing
+"uses" / "imports" relationships (i.e., higher modules import lower ones).
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║                         APPLICATIONS (Most Derived)                           ║
-║  Compactness.lean                                                             ║
-║    compactness_entailment, compactness_satisfiability                         ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
-                                       ▲
-                                       │
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║                         COMPLETENESS (Derived)                                ║
-║  StrongCompleteness.lean: strong_completeness, context_provable_iff_entails   ║
-║  WeakCompleteness.lean: weak_completeness, provable_iff_valid                 ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
-                                       ▲
-                                       │
-                            ┌──────────┴──────────┐
-                            │     FMP.lean        │
-                            │   (re-export hub)   │
-                            └──────────┬──────────┘
-                                       ▲
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║                     REPRESENTATION (Bridge Layer)                             ║
-║  ┌───────────────────────────────┐  ┌───────────────────────────────────────┐ ║
-║  │ FiniteModelProperty.lean      │  │ RepresentationTheorem.lean            │ ║
-║  │   finite_model_property       │  │   representation_theorem              │ ║
-║  │   validity_decidable_via_fmp  │  │   strong_representation_theorem       │ ║
-║  │   satisfiability_decidable    │  │   completeness_corollary              │ ║
-║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
-║                  │                                    │                       ║
-║  ┌───────────────┴───────────────┐  ┌─────────────────┴─────────────────────┐ ║
-║  │ SemanticCanonicalModel.lean   │  │ ContextProvability.lean               │ ║
-║  │   semantic_weak_completeness  │  │   representation_validity             │ ║
-║  │   SemanticWorldState          │  │   valid_implies_derivable             │ ║
-║  │   SemanticCanonicalFrame      │  │   representation_theorem_backward     │ ║
-║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
-║                  │                                    │                       ║
-║  ┌───────────────┴───────────────┐  ┌─────────────────┴─────────────────────┐ ║
-║  │ FiniteWorldState.lean         │  │ TruthLemma.lean                       │ ║
-║  │   FiniteWorldState            │  │   canonicalTruthAt                    │ ║
-║  │   FiniteHistory               │  │   truthLemma_*                        │ ║
-║  │   worldStateFromClosureMCS    │  │   necessitation_lemma                 │ ║
-║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
-║                  │                                    │                       ║
-║  ┌───────────────┴───────────────┐                    │                       ║
-║  │ Closure.lean                  │                    │                       ║
-║  │   closure, closureWithNeg     │                    │                       ║
-║  │   ClosureMaximalConsistent    │                    │                       ║
-║  │   mcs_projection_is_closure   │                    │                       ║
-║  └───────────────┬───────────────┘                    │                       ║
-║                  └───────────────────┬────────────────┘                       ║
-║                                      │                                        ║
-║                       ┌──────────────┴──────────────┐                         ║
-║                       │ CanonicalModel.lean         │                         ║
-║                       │   CanonicalWorldState       │                         ║
-║                       │   CanonicalFrame, Model     │                         ║
-║                       │   mcs_contains_or_neg       │                         ║
-║                       │   mcs_modus_ponens          │                         ║
-║                       └──────────────┬──────────────┘                         ║
-╚══════════════════════════════════════╪════════════════════════════════════════╝
-                                       ▲
-           ┌───────────────────────────┼───────────────────────────┐
-           │                           │                           │
-┌──────────┴──────────┐     ┌──────────┴──────────┐     ┌──────────┴──────────┐
+┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
 │      SOUNDNESS      │     │         CORE        │     │    (external)       │
 │                     │     │                     │     │  Bimodal.Syntax     │
 │ Soundness.lean      │     │ MaximalConsistent   │     │  Bimodal.Semantics  │
@@ -87,13 +26,73 @@ The architecture follows a bottom-up dependency structure. Arrows point upward, 
 │                     │     │                     │     │                     │
 │                     │     │ Provability.lean    │     │                     │
 │                     │     │   context-based ⊢   │     │                     │
-└─────────────────────┘     └─────────────────────┘     └─────────────────────┘
-        (Foundations - No internal Metalogic_v2 dependencies)
+└──────────┬──────────┘     └──────────┬──────────┘     └──────────┬──────────┘
+           │                           │                           │
+           └───────────────────────────┼───────────────────────────┘
+                                       │
+                                       ▼
+        (FOUNDATIONS - No internal Metalogic_v2 dependencies)
+╔══════════════════════════════════════╤════════════════════════════════════════╗
+║                       ┌──────────────┴──────────────┐                         ║
+║                       │ CanonicalModel.lean         │                         ║
+║                       │   CanonicalWorldState       │                         ║
+║                       │   CanonicalFrame, Model     │                         ║
+║                       │   mcs_contains_or_neg       │                         ║
+║                       │   mcs_modus_ponens          │                         ║
+║                       └──────────────┬──────────────┘                         ║
+║                                      │                                        ║
+║                  ┌───────────────────┴────────────────┐                       ║
+║                  │                                    │                       ║
+║  ┌───────────────┴───────────────┐                    │                       ║
+║  │ Closure.lean                  │                    │                       ║
+║  │   closure, closureWithNeg     │                    │                       ║
+║  │   ClosureMaximalConsistent    │                    │                       ║
+║  │   mcs_projection_is_closure   │                    │                       ║
+║  └───────────────┬───────────────┘                    │                       ║
+║                  │                                    │                       ║
+║  ┌───────────────┴───────────────┐  ┌─────────────────┴─────────────────────┐ ║
+║  │ FiniteWorldState.lean         │  │ TruthLemma.lean                       │ ║
+║  │   FiniteWorldState            │  │   canonicalTruthAt                    │ ║
+║  │   FiniteHistory               │  │   truthLemma_*                        │ ║
+║  │   worldStateFromClosureMCS    │  │   necessitation_lemma                 │ ║
+║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
+║                  │                                    │                       ║
+║  ┌───────────────┴───────────────┐  ┌─────────────────┴─────────────────────┐ ║
+║  │ SemanticCanonicalModel.lean   │  │ ContextProvability.lean               │ ║
+║  │   semantic_weak_completeness  │  │   representation_validity             │ ║
+║  │   SemanticWorldState          │  │   valid_implies_derivable             │ ║
+║  │   SemanticCanonicalFrame      │  │   representation_theorem_backward     │ ║
+║  └───────────────┬───────────────┘  └─────────────────┬─────────────────────┘ ║
+║                  │                                    │                       ║
+║  ┌───────────────┴───────────────┐  ┌─────────────────┴─────────────────────┐ ║
+║  │ FiniteModelProperty.lean      │  │ RepresentationTheorem.lean            │ ║
+║  │   finite_model_property       │  │   representation_theorem              │ ║
+║  │   validity_decidable_via_fmp  │  │   strong_representation_theorem       │ ║
+║  │   satisfiability_decidable    │  │   completeness_corollary              │ ║
+║  └───────────────────────────────┘  └───────────────────────────────────────┘ ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+                     REPRESENTATION (Bridge Layer)
+                                       │
+                                       ▼
+                            ┌──────────┴──────────┐
+                            │     FMP.lean        │
+                            │   (re-export hub)   │
+                            └──────────┬──────────┘
+                                       │
+                                       ▼
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                         COMPLETENESS (Derived)                                ║
+║  WeakCompleteness.lean: weak_completeness, provable_iff_valid                 ║
+║  StrongCompleteness.lean: strong_completeness, context_provable_iff_entails   ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+                                       │
+                                       ▼
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                         APPLICATIONS (Most Derived)                           ║
+║  Compactness.lean                                                             ║
+║    compactness_entailment, compactness_satisfiability                         ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
 ```
-
-**Legend**: Arrows point upward, indicating "is used by" / "is imported by". The three
-foundation columns (Soundness, Core, external imports) have no internal Metalogic_v2
-dependencies - they only import from Bimodal.* and Mathlib.
 
 ## Directory Structure
 

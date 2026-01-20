@@ -1,5 +1,5 @@
 ---
-next_project_number: 637
+next_project_number: 638
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -85,10 +85,11 @@ technical_debt:
 ## Medium Priority
 
 ### 635. Extend /refresh command for Claude Code project cleanup
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
+- **Research**: [research-001.md](specs/635_extend_refresh_command_claude_project_cleanup/reports/research-001.md)
 
 **Description**: Extend the /refresh command to survey and clean up accumulated project files in `~/.claude/projects/-home-benjamin-Projects-ProofChecker/`. Large numbers of project files cause slow Claude Code startup in neovim. The command should: (1) Survey the project directory for cleanup candidates (old sessions, orphaned files), (2) Present findings to the user with size/count statistics, (3) Perform cleanup only with explicit user approval. Integrate this as a new mode in the existing /refresh skill alongside the orphaned process cleanup functionality.
 
@@ -182,6 +183,16 @@ technical_debt:
 ---
 
 ## Low Priority
+
+### 637. Fix roadmap checkboxes not updated
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: general
+- **Created**: 2026-01-19
+
+**Description**: Fix roadmap checkboxes in `specs/ROAD_MAP.md` - 89 unchecked items, 0 checked. No items marked complete despite significant progress. Impact: Roadmap doesn't reflect actual project state. Recommended approach: Annotate completed items (see Roadmap Progress section).
+
+---
 
 ### 636. Fix sorries in TemporalProofStrategies examples
 - **Status**: [NOT STARTED]
