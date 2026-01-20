@@ -12,7 +12,7 @@
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:23:39Z",
-      "last_updated": "2026-01-20T17:42:10Z",
+      "last_updated": "2026-01-20T17:48:17Z",
       "session_id": "sess_1768930781_4ed97d",
       "researched": "2026-01-20T17:37:23Z",
       "artifacts": [
@@ -22,12 +22,12 @@
           "summary": "Research report covering directory structure analysis, web research on community cleanup tools, safety considerations, and implementation recommendations for global cleanup mode"
         },
         {
-          "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-001.md",
+          "path": "specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-002.md",
           "type": "plan",
-          "summary": "Implementation plan with 5 phases: global cleanup script, skill updates, command docs, CLAUDE.md updates, testing"
+          "summary": "Revised implementation plan v002: unified /refresh cleanup with interactive age selection (8h/2d/clean slate)"
         }
       ],
-      "planned": "2026-01-20T17:42:10Z"
+      "planned": "2026-01-20T17:48:17Z"
     },
     {
       "project_number": 639,

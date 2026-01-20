@@ -86,7 +86,7 @@ technical_debt:
 - **Researched**: 2026-01-20
 - **Planned**: 2026-01-20
 - **Research**: [research-001.md](specs/640_improve_refresh_command_for_claude_directory_cleanup/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/640_improve_refresh_command_for_claude_directory_cleanup/plans/implementation-002.md)
 
 **Description**: Claude CLI scans ~/.claude/ on startup and this directory has grown massive. Research the best practices online for garbage collecting this directory, especially the ~/.claude/projects/ directory. Improve the /refresh command to do a better job clearing out the bloated ~/.claude/ directory (running it currently still gives long startup times for running `time claude --version` in a new terminal). Add user options for clearing: everything (clean slate, most aggressive), everything before 8 hours (default), or everything before two days. Keep existing /refresh functionality while improving cleanup capabilities and updating relevant documentation.
 
