@@ -62,6 +62,141 @@ fi
 - Identify missing documentation
 - Verify links work
 
+### 2.5. Roadmap Integration
+
+**Context**: Load @.claude/context/core/formats/roadmap-format.md for parsing patterns.
+
+Parse `specs/ROAD_MAP.md` to extract:
+1. **Phase headers**: `## Phase {N}: {Title} ({Priority})`
+2. **Checkboxes**: `- [ ]` (incomplete) and `- [x]` (complete)
+3. **Status tables**: Pipe-delimited rows with Component/Status/Location
+4. **Priority markers**: `(High Priority)`, `(Medium Priority)`, `(Low Priority)`
+
+Build `roadmap_state` structure:
+```json
+{
+  "phases": [
+    {
+      "number": 1,
+      "title": "Proof Quality and Organization",
+      "priority": "High",
+      "checkboxes": {
+        "total": 15,
+        "completed": 3,
+        "items": [
+          {"text": "Audit proof dependencies", "completed": false},
+          {"text": "Create proof architecture guide", "completed": true}
+        ]
+      }
+    }
+  ],
+  "status_tables": [
+    {
+      "component": "Soundness",
+      "status": "PROVEN",
+      "location": "Soundness/Soundness.lean"
+    }
+  ]
+}
+```
+
+**Error handling**: If ROAD_MAP.md doesn't exist or fails to parse, log warning and continue review without roadmap integration.
+
+### 2.5.2. Cross-Reference Roadmap with Project State
+
+**Context**: Load @.claude/context/core/patterns/roadmap-update.md for matching strategy.
+
+Cross-reference roadmap items with project state to identify completed work:
+
+**1. Query TODO.md for completed tasks:**
+```bash
+# Find completed task titles
+grep -E '^\#\#\#.*\[COMPLETED\]' specs/TODO.md
+```
+
+**2. Query state.json for completion data:**
+```bash
+# Get completed tasks with dates
+jq '.active_projects[] | select(.status == "completed")' specs/state.json
+```
+
+**3. Check file existence for mentioned paths:**
+```bash
+# For each path in roadmap items, check if exists
+# E.g., docs/architecture/proof-structure.md
+```
+
+**4. Count sorries in Lean files:**
+```bash
+# Current sorry count for metrics
+grep -r "sorry" Logos/ --include="*.lean" | wc -l
+```
+
+**Match roadmap items to completed work:**
+
+| Match Type | Confidence | Action |
+|------------|------------|--------|
+| Item contains `(Task {N})` | High | Auto-annotate |
+| Item text matches task title | Medium | Suggest annotation |
+| Item's file path exists | Medium | Suggest annotation |
+| Partial keyword match | Low | Report only |
+
+Build `roadmap_matches` list:
+```json
+[
+  {
+    "roadmap_item": "Create proof architecture guide",
+    "phase": 1,
+    "match_type": "title_match",
+    "confidence": "medium",
+    "matched_task": 628,
+    "completion_date": "2026-01-15"
+  }
+]
+```
+
+### 2.5.3. Annotate Completed Roadmap Items
+
+For high-confidence matches, update ROAD_MAP.md to mark items as complete.
+
+**Annotation format** (per roadmap-format.md):
+```markdown
+- [x] {item text} *(Completed: Task {N}, {DATE})*
+```
+
+**Edit process for checkboxes:**
+
+1. For each high-confidence match:
+   ```
+   old_string: "- [ ] Create proof architecture guide"
+   new_string: "- [x] Create proof architecture guide *(Completed: Task 628, 2026-01-15)*"
+   ```
+
+2. Use Edit tool with exact string matching
+
+**Edit process for status tables:**
+
+1. For components verified as complete:
+   ```
+   old_string: "| **Soundness** | PARTIAL |"
+   new_string: "| **Soundness** | PROVEN |"
+   ```
+
+**Safety rules:**
+- Skip items already annotated (contain `*(Completed:`)
+- Preserve existing formatting and indentation
+- One edit per item (no batch edits)
+- Log skipped items for report
+
+**Track changes:**
+```json
+{
+  "annotations_made": 3,
+  "items_skipped": 2,
+  "skipped_reasons": ["already_annotated", "low_confidence"]
+}
+```
+
 ### 3. Analyze Findings
 
 Categorize issues:
@@ -118,6 +253,22 @@ Write to `specs/reviews/review-{DATE}.md`:
 | TODO count | {N} | {Info} |
 | Build status | {Pass/Fail} | {Status} |
 
+## Roadmap Progress
+
+### Completed Since Last Review
+- [x] {item} *(Completed: Task {N}, {DATE})*
+- [x] {item} *(Completed: Task {N}, {DATE})*
+
+### Current Focus
+| Phase | Priority | Current Goal | Progress |
+|-------|----------|--------------|----------|
+| Phase 1 | High | Audit proof dependencies | 3/15 items |
+| Phase 2 | Medium | Define SetDerivable | 0/8 items |
+
+### Recommended Next Tasks
+1. {Task recommendation} (Phase {N}, {Priority})
+2. {Task recommendation} (Phase {N}, {Priority})
+
 ## Recommendations
 
 1. {Priority recommendation}
@@ -171,6 +322,65 @@ Link tasks to review report.
 
 Also increment `statistics.total_tasks_created` by the count of new tasks.
 
+### 5.5. Roadmap Task Recommendations
+
+Generate task recommendations from incomplete roadmap items.
+
+**1. Identify current goals:**
+For each phase, find first incomplete checkbox (`- [ ]`).
+
+**2. Score items by priority:**
+
+| Factor | Score |
+|--------|-------|
+| Phase priority: High | +6 |
+| Phase priority: Medium | +4 |
+| Phase priority: Low | +2 |
+| First incomplete in phase | +2 |
+| Listed in "Near Term" section | +3 |
+| Contains actionable file path | +1 |
+
+**3. Select top 5-7 recommendations:**
+Sort by score, take top items.
+
+**4. Infer language from content:**
+- Contains `.lean` path: `lean`
+- Contains `.md` path: `meta`
+- Contains `.tex` path: `latex`
+- Otherwise: `general`
+
+**5. Present to user via prompt:**
+
+```
+Based on roadmap analysis, I recommend these tasks:
+
+1. [ ] Audit proof dependencies (Phase 1, High Priority, Score: 11)
+   Language: lean
+
+2. [ ] Visualize import graph (Phase 1, High Priority, Score: 9)
+   Language: general
+
+3. [ ] Create proof architecture guide (Phase 1, High Priority, Score: 8)
+   Language: meta
+
+4. [ ] Define SetDerivable (Phase 2, Medium Priority, Score: 6)
+   Language: lean
+
+5. [ ] Analyze FMP bound complexity (Phase 3, Medium Priority, Score: 5)
+   Language: lean
+
+Which tasks should I create? Enter numbers (e.g., "1,3,5") or "all" or "none":
+```
+
+**6. Create selected tasks:**
+For each selected item, invoke:
+```
+/task "{item text}" --language={inferred_language} --priority={phase_priority}
+```
+
+**7. Track created tasks:**
+Add task numbers to `roadmap_tasks_created` in review state.
+
 ### 6. Update Registries (if applicable)
 
 If reviewing specific domains, update relevant registries:
@@ -179,12 +389,21 @@ If reviewing specific domains, update relevant registries:
 
 ### 7. Git Commit
 
-Commit both the review report and updated state file:
+Commit review report, state file, and any roadmap changes:
 
 ```bash
+# Add review artifacts
 git add specs/reviews/review-{DATE}.md specs/reviews/state.json
+
+# Add roadmap if modified
+if git diff --name-only | grep -q "specs/ROAD_MAP.md"; then
+  git add specs/ROAD_MAP.md
+fi
+
 git commit -m "$(cat <<'EOF'
 review: {scope} code review
+
+Roadmap: {annotations_made} items annotated, {tasks_created} tasks created
 
 Session: {session_id}
 
@@ -193,7 +412,7 @@ EOF
 )"
 ```
 
-This ensures both the review report and state tracking are committed together.
+This ensures review report, state tracking, and roadmap updates are committed together.
 
 ### 8. Output
 
@@ -208,8 +427,18 @@ Summary:
 - Medium: {N} issues
 - Low: {N} issues
 
-{If --create-tasks}
+Roadmap Progress:
+- Annotations made: {N} items marked complete
+- Current focus: {phase_name} ({priority})
+- Recommended tasks: {N}
+
+{If tasks created from issues}
 Created {N} tasks for critical/high issues:
+- Task #{N1}: {title}
+- Task #{N2}: {title}
+
+{If tasks created from roadmap}
+Created {N} tasks from roadmap recommendations:
 - Task #{N1}: {title}
 - Task #{N2}: {title}
 

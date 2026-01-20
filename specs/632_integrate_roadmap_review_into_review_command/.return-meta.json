@@ -1,0 +1,36 @@
+{
+  "status": "implemented",
+  "summary": "Integrated roadmap review into /review command. Created 2 context files (roadmap-format.md, roadmap-update.md) and modified review.md to add Steps 2.5, 2.5.2, 2.5.3, and 5.5 for roadmap parsing, cross-referencing, annotation, and task recommendations. Report now includes Roadmap Progress section.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/context/core/formats/roadmap-format.md",
+      "summary": "ROAD_MAP.md format specification (65 lines)"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/core/patterns/roadmap-update.md",
+      "summary": "Roadmap update process documentation (100 lines)"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/commands/review.md",
+      "summary": "Modified review command with roadmap integration (448 lines)"
+    },
+    {
+      "type": "summary",
+      "path": "specs/632_integrate_roadmap_review_into_review_command/summaries/implementation-summary-20260119.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1768876670_df53cf",
+    "duration_seconds": 2700,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer"],
+    "phases_completed": 6,
+    "phases_total": 6
+  },
+  "next_steps": "Run /review to test roadmap integration functionality"
+}

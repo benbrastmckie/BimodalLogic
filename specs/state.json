@@ -18,12 +18,12 @@
     {
       "project_number": 632,
       "project_name": "integrate_roadmap_review_into_review_command",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T17:45:00Z",
-      "last_updated": "2026-01-20T02:16:18Z",
-      "session_id": "sess_1768875050_047949",
+      "last_updated": "2026-01-20T02:45:01Z",
+      "session_id": "sess_1768876670_df53cf",
       "researched": "2026-01-20T02:08:59Z",
       "artifacts": [
         {
@@ -35,9 +35,16 @@
           "path": "specs/632_integrate_roadmap_review_into_review_command/plans/implementation-002.md",
           "type": "plan",
           "summary": "6-phase implementation plan for integrating roadmap analysis into /review command with context file creation"
+        },
+        {
+          "path": "specs/632_integrate_roadmap_review_into_review_command/summaries/implementation-summary-20260119.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "planned": "2026-01-20T02:16:18Z"
+      "planned": "2026-01-20T02:16:18Z",
+      "started": "2026-01-20T02:38:11Z",
+      "completed": "2026-01-20T02:45:01Z"
     },
     {
       "project_number": 630,

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #632
 
 - **Task**: 632 - Integrate roadmap review into /review command
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -60,7 +60,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 0: Context File Creation [NOT STARTED]
+### Phase 0: Context File Creation [COMPLETED]
 
 **Goal**: Create minimal context files documenting ROAD_MAP.md format and update process
 
@@ -98,7 +98,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 1: Core Roadmap Parsing [NOT STARTED]
+### Phase 1: Core Roadmap Parsing [COMPLETED]
 
 **Goal**: Implement parsing functions to extract structure from ROAD_MAP.md
 
@@ -124,7 +124,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Cross-Reference Logic [NOT STARTED]
+### Phase 2: Cross-Reference Logic [COMPLETED]
 
 **Goal**: Implement cross-referencing between roadmap items and project state
 
@@ -148,7 +148,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Roadmap Annotation [NOT STARTED]
+### Phase 3: Roadmap Annotation [COMPLETED]
 
 **Goal**: Implement roadmap editing to mark completed items
 
@@ -170,7 +170,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Task Recommendation Engine [NOT STARTED]
+### Phase 4: Task Recommendation Engine [COMPLETED]
 
 **Goal**: Generate and present task recommendations from incomplete roadmap items
 
@@ -194,7 +194,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Report Integration and Testing [NOT STARTED]
+### Phase 5: Report Integration and Testing [COMPLETED]
 
 **Goal**: Add roadmap progress section to review report and verify end-to-end flow
 
