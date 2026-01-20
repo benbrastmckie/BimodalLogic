@@ -1,7 +1,7 @@
 ---
 name: skill-refresh
 description: Manage Claude Code resources - terminate orphaned processes and clean up ~/.claude/ directory
-allowed-tools: Bash, Read, AskUserQuestion
+allowed-tools: Bash, AskUserQuestion
 ---
 
 # Refresh Skill (Direct Execution)
@@ -12,223 +12,152 @@ Direct execution skill for managing Claude Code resources. Performs two operatio
 
 This skill executes inline without spawning a subagent.
 
-## Trigger Conditions
-
-This skill activates when:
-- User invokes `/refresh` command
-- Memory usage needs investigation
-- Orphaned processes need cleanup
-- ~/.claude/ directory needs cleanup
-
-## Command Syntax
-
-```
-/refresh [--dry-run] [--force]
-```
-
-### Options
-
-| Flag | Description |
-|------|-------------|
-| `--dry-run` | Preview both cleanups without making changes |
-| `--force` | Skip confirmation and run with 8-hour default |
-| (no flags) | Interactive mode with age selection |
-
----
-
-## Execution Flow
+## Execution
 
 ### Step 1: Parse Arguments
 
-Parse command input for flags:
-- `--dry-run`: Preview mode, no changes made
+Extract flags from command input:
+- `--dry-run`: Preview mode
 - `--force`: Skip confirmation, use 8-hour default
+
+```bash
+# Parse from command input
+dry_run=false
+force=false
+if [[ "$*" == *"--dry-run"* ]]; then
+  dry_run=true
+fi
+if [[ "$*" == *"--force"* ]]; then
+  force=true
+fi
+```
 
 ### Step 2: Run Process Cleanup
 
-First, always run process cleanup:
+Execute process cleanup script:
 
 ```bash
-.claude/scripts/claude-refresh.sh [--force if specified]
+.claude/scripts/claude-refresh.sh $( [ "$force" = true ] && echo "--force" )
 ```
 
-Display the process cleanup output to the user.
+Store process cleanup output for display.
 
-### Step 3: Run Directory Cleanup Survey
+### Step 3: Run Directory Survey
 
-Run the directory cleanup script in survey mode:
+Show current directory status without cleaning yet:
 
 ```bash
 .claude/scripts/claude-cleanup.sh
 ```
 
-This shows:
-- Current ~/.claude/ directory sizes
-- Cleanup candidates for each directory
-- Total space that can be reclaimed
+This displays:
+- Current ~/.claude/ directory size
+- Breakdown by directory
+- Space that can be reclaimed
 
-### Step 4: Handle Based on Mode
+### Step 4: Execute Based on Mode
 
-#### Dry-Run Mode (`--dry-run`)
+#### Dry-Run Mode
 
-Run both scripts in dry-run mode:
+If `--dry-run` is set:
+
 ```bash
-.claude/scripts/claude-refresh.sh
+echo ""
+echo "=== DRY RUN MODE ==="
+echo "Showing 8-hour cleanup preview..."
+echo ""
 .claude/scripts/claude-cleanup.sh --dry-run --age 8
 ```
 
-Display the preview and exit without changes.
+Exit after showing preview.
 
-#### Force Mode (`--force`)
+#### Force Mode
 
-Run process cleanup with force, then directory cleanup with 8-hour default:
+If `--force` is set:
+
 ```bash
-.claude/scripts/claude-refresh.sh --force
+echo ""
+echo "=== EXECUTING CLEANUP (8-hour default) ==="
+echo ""
 .claude/scripts/claude-cleanup.sh --force --age 8
 ```
 
-Display results and exit.
+Show results and exit.
 
 #### Interactive Mode (Default)
 
-1. Display process cleanup status (from Step 2)
+If neither flag is set:
 
-2. If orphaned processes found, prompt for process cleanup:
-   ```json
-   {
-     "question": "Terminate orphaned processes?",
-     "header": "Process Cleanup",
-     "options": [
-       {
-         "label": "Yes, terminate",
-         "description": "Kill orphaned processes and reclaim memory"
-       },
-       {
-         "label": "Skip",
-         "description": "Continue to directory cleanup"
-       }
-     ]
-   }
-   ```
+1. Check if cleanup candidates exist (claude-cleanup.sh exits with code 1 if candidates found)
 
-3. Display directory cleanup survey (from Step 3)
+2. If no candidates, display message and exit:
+```
+No cleanup candidates found within default thresholds.
+All files are either protected or recently modified.
+```
 
-4. If cleanup candidates found (script exits with code 1), prompt for age selection:
-   ```json
-   {
-     "question": "Select cleanup age threshold:",
-     "header": "Directory Cleanup",
-     "options": [
-       {
-         "label": "8 hours (default)",
-         "description": "Remove files older than 8 hours"
-       },
-       {
-         "label": "2 days",
-         "description": "Remove files older than 2 days (conservative)"
-       },
-       {
-         "label": "Clean slate",
-         "description": "Remove everything except safety margin (1 hour)"
-       },
-       {
-         "label": "Cancel",
-         "description": "Exit without cleaning directories"
-       }
-     ]
-   }
-   ```
+3. If candidates exist, prompt user for age selection:
 
-5. Map selection to `--age` parameter:
+```json
+{
+  "question": "Select cleanup age threshold:",
+  "header": "Age Threshold",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "8 hours (default)",
+      "description": "Remove files older than 8 hours - aggressive cleanup"
+    },
+    {
+      "label": "2 days",
+      "description": "Remove files older than 2 days - conservative cleanup"
+    },
+    {
+      "label": "Clean slate",
+      "description": "Remove everything except safety margin (1 hour)"
+    }
+  ]
+}
+```
+
+4. Map user selection to age parameter:
    - "8 hours (default)" → `--age 8`
    - "2 days" → `--age 48`
    - "Clean slate" → `--age 0`
-   - "Cancel" → exit
 
-6. Run cleanup with selected age:
-   ```bash
-   .claude/scripts/claude-cleanup.sh --force --age <selected>
-   ```
-
-7. Display cleanup results
-
----
-
-## Cleanable Directories
-
-The directory cleanup targets these directories in ~/.claude/:
-
-| Directory | Contents | Safe to Clean |
-|-----------|----------|---------------|
-| projects/ | Session .jsonl files, subdirectories | Yes, by age |
-| debug/ | Debug output files | Yes, by age |
-| file-history/ | File version snapshots | Yes, by age |
-| todos/ | Todo list backups | Yes, by age |
-| session-env/ | Environment snapshots | Yes, by age |
-| telemetry/ | Usage telemetry data | Yes, by age |
-| shell-snapshots/ | Shell state | Yes, by age |
-| plugins/cache/ | Old plugin versions | Yes, by age |
-| cache/ | General cache | Yes, by age |
-
----
-
-## Safety Measures
-
-### Process Cleanup
-
-1. **Never kill processes with a TTY** - Active sessions have terminals
-2. **Exclude current process tree** - Don't kill the running command
-3. **SIGTERM before SIGKILL** - Allow graceful shutdown
-4. **Confirmation by default** - Require `--force` to skip
-
-### Directory Cleanup
-
-1. **Never delete protected files**:
-   - `sessions-index.json` (in each project directory)
-   - `settings.json`
-   - `.credentials.json`
-   - `history.jsonl` (user command history)
-
-2. **Safety margin**: Files modified within the last hour are never deleted
-
-3. **Age threshold**: Only deletes files older than selected threshold
-
-4. **Dry-run available**: Preview changes before executing
-
-5. **Confirmation by default**: Require `--force` to skip
-
----
-
-## Integration with Scripts
-
-### Process Cleanup Script
+5. Execute cleanup with selected age:
 
 ```bash
-.claude/scripts/claude-refresh.sh [--force]
+case "$selection" in
+  "8 hours (default)")
+    .claude/scripts/claude-cleanup.sh --force --age 8
+    ;;
+  "2 days")
+    .claude/scripts/claude-cleanup.sh --force --age 48
+    ;;
+  "Clean slate")
+    .claude/scripts/claude-cleanup.sh --force --age 0
+    ;;
+esac
 ```
 
-### Directory Cleanup Script
-
-```bash
-.claude/scripts/claude-cleanup.sh [--age HOURS] [--dry-run] [--force]
-```
-
-Age options:
-- `--age 8`: 8 hours (default)
-- `--age 48`: 2 days
-- `--age 0`: Clean slate (only safety margin applies)
+6. Display cleanup results
 
 ---
 
-## Return Format
+## Example Execution Flows
 
-### Combined Output
+### Interactive Flow
 
-```
+```bash
+# User runs: /refresh
+
+# Output:
 Claude Code Refresh
 ===================
 
-[Process cleanup output...]
+No orphaned processes found.
+All 3 Claude processes are active sessions.
 
 ---
 
@@ -239,59 +168,114 @@ Target: ~/.claude/
 
 Current total size: 7.3 GB
 
-Age threshold: 8 hours
-Safety margin: 1 hour (files modified within last hour are preserved)
-
 Scanning directories...
 
 Directory                   Total    Cleanable    Files
 ----------                -------   ----------    -----
 projects/                  7.0 GB       6.5 GB      980
 debug/                   151.0 MB     140.0 MB      650
-file-history/             56.0 MB      50.0 MB     3100
 ...
 
-TOTAL                      7.3 GB       6.7 GB     4800
+TOTAL                      7.3 GB       6.7 GB     5577
 
 Space that can be reclaimed: 6.7 GB
 
-[After cleanup...]
+# Prompt appears:
+[Age Threshold]
+Select cleanup age threshold:
+  1. 8 hours (default) - Remove files older than 8 hours
+  2. 2 days - Remove files older than 2 days
+  3. Clean slate - Remove everything except safety margin
 
+# User selects option 1
+
+# Cleanup executes:
 Cleanup Complete
 ================
-Deleted: 4800 files
+Deleted: 5577 files
 Failed:  0 files
 Space reclaimed: 6.7 GB
 
 New total size: 600.0 MB
 ```
 
-### Dry Run Output
+### Dry-Run Flow
 
-```
-[Survey output...]
+```bash
+# User runs: /refresh --dry-run
+
+# Shows survey, then:
+=== DRY RUN MODE ===
+Showing 8-hour cleanup preview...
+
+Would delete: 5577 files
+Would reclaim: 6.7 GB
 
 Dry Run Summary
 ===============
-Would delete: 4800 files
-Would reclaim: 6.7 GB
+No changes made.
 ```
+
+### Force Flow
+
+```bash
+# User runs: /refresh --force
+
+# Shows survey, then immediately:
+=== EXECUTING CLEANUP (8-hour default) ===
+
+Cleanup Complete
+================
+Deleted: 5577 files
+Space reclaimed: 6.7 GB
+```
+
+---
+
+## Safety Measures
+
+### Protected Files (Never Deleted)
+
+- `sessions-index.json` (in each project directory)
+- `settings.json`
+- `.credentials.json`
+- `history.jsonl`
+
+### Safety Margin
+
+Files modified within the last hour are **never deleted**, regardless of age threshold.
+
+### Process Safety
+
+- Only targets orphaned processes (TTY = "?")
+- Never kills active sessions
+- Excludes current process tree
 
 ---
 
 ## Error Handling
 
-### Permission Denied (Process Mode)
-If kill fails due to permissions, report which processes couldn't be terminated.
+### Scripts Not Found
 
-### No Orphaned Processes
-Report "All Claude processes are active sessions."
+If scripts don't exist:
+```
+Error: Cleanup scripts not found at .claude/scripts/
+Please ensure claude-refresh.sh and claude-cleanup.sh are installed.
+```
 
-### Process Already Gone
-If process exits between detection and kill, ignore the error and continue.
+### Permission Denied
 
-### Directory Not Found
-If ~/.claude doesn't exist, display error message.
+If kill/delete fails due to permissions:
+```
+Warning: Some operations failed due to insufficient permissions.
+Failed files: 5
+Successfully deleted: 5572 files
+```
 
-### No Cleanup Candidates
-Report "No cleanup candidates found. All files are within the age threshold."
+### No ~/.claude/ Directory
+
+If directory doesn't exist:
+```
+Error: ~/.claude/ directory not found.
+Nothing to clean up.
+```
