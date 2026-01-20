@@ -1,11 +1,11 @@
 ---
-next_project_number: 650
+next_project_number: 651
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 19
+  active: 20
   completed: 231
   in_progress: 0
   not_started: 13
@@ -13,7 +13,7 @@ task_counts:
   total: 253
 priority_distribution:
   critical: 0
-  high: 5
+  high: 6
   medium: 10
   low: 6
 technical_debt:
@@ -26,6 +26,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 650. Implement completion_summary and claudemd_suggestions fields in /implement workflow
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Make sure that the /implement command-skill-agent workflow will include completion_summary and claudemd_suggestions fields for updating ROAD_MAP.md and CLAUDE.md when appropriate and not otherwise since these will be used by the /todo command.
+
+---
 
 ### 646. Fix Metalogic LaTeX formatting and structure issues
 - **Status**: [NOT STARTED]

@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 650,
+      "project_name": "implement_completion_summary_claudemd_suggestions_fields",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-20T20:49:27Z",
+      "last_updated": "2026-01-20T20:49:27Z"
+    },
+    {
       "project_number": 649,
       "project_name": "improve_learn_note_tag_dependency_handling",
       "status": "researched",
@@ -355,7 +364,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 650,
+  "next_project_number": 651,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
