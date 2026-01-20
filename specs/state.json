@@ -8,21 +8,30 @@
     {
       "project_number": 641,
       "project_name": "improve_todo_command_roadmap_update",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:51:23Z",
-      "last_updated": "2026-01-20T17:51:23Z"
+      "last_updated": "2026-01-20T17:56:45Z",
+      "session_id": "sess_1768931598_cf2405",
+      "researched": "2026-01-20T17:56:45Z",
+      "artifacts": [
+        {
+          "path": "specs/641_improve_todo_command_roadmap_update/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying matching strategy gap as root cause, with detailed recommendation for title fuzzy matching implementation"
+        }
+      ]
     },
     {
       "project_number": 640,
       "project_name": "improve_refresh_command_for_claude_directory_cleanup",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:23:39Z",
-      "last_updated": "2026-01-20T17:48:17Z",
-      "session_id": "sess_1768930781_4ed97d",
+      "last_updated": "2026-01-20T17:54:22Z",
+      "session_id": "sess_1768931641_e9b09a",
       "researched": "2026-01-20T17:37:23Z",
       "artifacts": [
         {
@@ -36,7 +45,8 @@
           "summary": "Revised implementation plan v002: unified /refresh cleanup with interactive age selection (8h/2d/clean slate)"
         }
       ],
-      "planned": "2026-01-20T17:48:17Z"
+      "planned": "2026-01-20T17:48:17Z",
+      "started": "2026-01-20T17:54:22Z"
     },
     {
       "project_number": 639,

@@ -2,7 +2,7 @@
 
 - **Task**: 640 - improve_refresh_command_for_claude_directory_cleanup
 - **Version**: 002 (revised from 001)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -61,7 +61,7 @@ The ~/.claude/ directory has grown to 7.3GB (97% in projects/), causing slow sta
 
 ## Implementation Phases
 
-### Phase 1: Create Comprehensive Cleanup Script [NOT STARTED]
+### Phase 1: Create Comprehensive Cleanup Script [IN PROGRESS]
 
 **Goal**: Create a new script `claude-cleanup.sh` that handles comprehensive ~/.claude/ cleanup with age threshold parameter
 
