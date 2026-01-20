@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 633,
+      "project_name": "fix_agent_return_format_consistency",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-20T02:37:36Z",
+      "last_updated": "2026-01-20T02:37:36Z",
+      "description": "Fix contradictory return format instructions in latex-implementation-agent.md that cause JSON to be dumped to console instead of written to .return-meta.json file, requiring user to type continue. Update agent to consistently follow v2 file-based metadata pattern. Add validation in skill postflight to detect accidental JSON console output."
+    },
+    {
       "project_number": 632,
       "project_name": "integrate_roadmap_review_into_review_command",
       "status": "planned",
@@ -420,5 +430,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 633
+  "next_project_number": 634
 }

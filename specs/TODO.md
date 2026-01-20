@@ -1,5 +1,5 @@
 ---
-next_project_number: 633
+next_project_number: 634
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 633. Fix agent return format consistency
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Fix contradictory return format instructions in latex-implementation-agent.md that cause JSON to be dumped to console instead of written to .return-meta.json file, requiring user to type continue. Update agent to consistently follow v2 file-based metadata pattern. Add validation in skill postflight to detect accidental JSON console output.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
