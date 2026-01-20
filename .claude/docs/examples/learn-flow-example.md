@@ -1,12 +1,12 @@
 # Integration Example: Learn Flow
 
-This example traces a complete `/learn` command through all three layers of the ProofChecker agent system, showing how the command extracts tags from source files and creates structured tasks.
+This example traces a complete `/learn` command execution through the ProofChecker agent system, showing how the command scans for tags, presents findings interactively, and creates user-selected tasks.
 
 ---
 
 ## Scenario
 
-A user runs `/learn Logos/ --dry-run` to preview what tasks would be created from embedded tags in the Logos directory, then runs `/learn Logos/` to create the tasks.
+A user runs `/learn Logos/` to scan the Logos directory for embedded tags. The system displays findings, then prompts the user to select which task types to create.
 
 ---
 
@@ -18,112 +18,76 @@ The `/learn` command recognizes three tag types in source code comments:
 |-----|-----------|----------|
 | `FIX:` | fix-it-task | All FIX: and NOTE: tags grouped into single task |
 | `NOTE:` | fix-it-task + learn-it-task | Creates two task types |
-| `TODO:` | todo-task | One task per TODO: tag |
+| `TODO:` | todo-task | User selects which TODO: tags become tasks |
 
 ---
 
 ## Complete Flow Diagram
 
 ```
-User Input: /learn Logos/ --dry-run
+User Input: /learn Logos/
        |
        v
 [Layer 1: Command] .claude/commands/learn.md
        |
        | Frontmatter specifies: allowed-tools: Skill
        v
-[Layer 2: Skill] skill-learn/SKILL.md
+[Layer 2: Skill] skill-learn/SKILL.md (DIRECT EXECUTION)
        |
-       | 1. Parse arguments -> paths = ["Logos/"], mode = "dry_run"
-       | 2. Prepare delegation context
-       | 3. Invoke learn-agent via Task tool
+       | 1. Parse arguments -> paths = ["Logos/"]
+       | 2. Generate session ID
+       | 3. Execute tag extraction (grep patterns)
+       | 4. Display tag summary to user
+       | 5. AskUserQuestion: Select task types
+       | 6. AskUserQuestion: Select TODO items (if applicable)
+       | 7. Create selected tasks
+       | 8. Git commit postflight
        v
-[Layer 3: Agent] learn-agent.md
-       |
-       | 1. Parse delegation context
-       | 2. Validate paths exist
-       | 3. Scan for tags using grep patterns
-       | 4. Categorize tags by type
-       | 5. Generate task preview (dry-run)
-       | 6. Write metadata file
-       | 7. Return text summary
-       v
-[Return Flow]
-       |
-       | Agent -> Skill -> User
-       v
-Output: Preview of 5 tasks from 12 tags across 8 files
+Output: Created N tasks from M tags
 ```
+
+**Key difference from old pattern**: No subagent delegation. Everything executes directly in skill-learn using AskUserQuestion for interactivity.
 
 ---
 
-## Step-by-Step Walkthrough: Dry Run
+## Step-by-Step Walkthrough
 
-### Step 1: User Invokes Command (Dry Run)
+### Step 1: User Invokes Command
 
 ```bash
-/learn Logos/ --dry-run
+/learn Logos/
 ```
 
 Claude Code reads `.claude/commands/learn.md` and sees:
 
 ```yaml
 ---
-description: Scan files for FIX:, NOTE:, TODO: tags and create structured tasks
+description: Scan files for FIX:, NOTE:, TODO: tags and create structured tasks interactively
 allowed-tools: Skill
-argument-hint: [PATH...] [--dry-run]
+argument-hint: [PATH...]
 ---
 ```
 
-### Step 2: Skill Receives Command
+### Step 2: Skill Executes Tag Extraction
 
-The skill (`skill-learn/SKILL.md`) parses arguments:
+The skill (`skill-learn/SKILL.md`) executes directly (no subagent).
 
-```
-Input: $ARGUMENTS = "Logos/ --dry-run"
-Parsed:
-  paths = ["Logos/"]
-  mode = "dry_run"
-```
-
-**Skill Step 1: Prepare Delegation Context**
-
-```json
-{
-  "session_id": "sess_1736700000_abc123",
-  "delegation_depth": 1,
-  "delegation_path": ["orchestrator", "learn", "skill-learn"],
-  "timeout": 3600,
-  "mode": "dry_run",
-  "paths": ["Logos/"],
-  "metadata_file_path": ".claude/.return-meta-learn.json"
-}
-```
-
-**Skill Step 2: Invoke Subagent**
-
-The skill invokes `learn-agent` via the Task tool.
-
-### Step 3: Agent Executes Tag Extraction
-
-The agent (`learn-agent.md`) receives the delegation context.
-
-**Agent Stage 1: Validate Paths**
+**Skill Step 1: Parse Arguments**
 
 ```bash
-# Check path exists
-if [ -d "Logos/" ]; then
-  echo "[INFO] Path validated: Logos/"
-fi
+paths="Logos/"
+session_id="sess_1768940708_a1b2c3"
 ```
 
-**Agent Stage 2: Scan for Tags**
+**Skill Step 2: Scan for Tags**
 
 Execute grep patterns for each file type:
 
 ```bash
 # Lean files
-grep -rn --include="*.lean" "-- \(FIX\|NOTE\|TODO\):" Logos/
+grep -rn --include="*.lean" "-- FIX:" Logos/ 2>/dev/null
+grep -rn --include="*.lean" "-- NOTE:" Logos/ 2>/dev/null
+grep -rn --include="*.lean" "-- TODO:" Logos/ 2>/dev/null
 
 # Example output:
 Logos/Layer1/Modal.lean:67:-- TODO: Add completeness theorem for S5
@@ -132,200 +96,169 @@ Logos/Layer2/Temporal.lean:45:-- NOTE: This pattern should be documented
 Logos/Shared/Utils.lean:23:-- TODO: Optimize this function
 ```
 
-**Agent Stage 3: Parse and Categorize Tags**
+**Skill Step 3: Parse and Categorize**
+
+```
+fix_tags = [
+  {file: "Logos/Layer1/Modal.lean", line: 89, content: "Handle edge case in frame validation"}
+]
+note_tags = [
+  {file: "Logos/Layer2/Temporal.lean", line: 45, content: "This pattern should be documented"}
+]
+todo_tags = [
+  {file: "Logos/Layer1/Modal.lean", line: 67, content: "Add completeness theorem for S5"},
+  {file: "Logos/Shared/Utils.lean", line: 23, content: "Optimize this function"}
+]
+```
+
+### Step 3: Display Tag Summary
+
+User sees:
+
+```
+## Tag Scan Results
+
+**Files Scanned**: Logos/
+**Tags Found**: 4
+
+### FIX: Tags (1)
+- `Logos/Layer1/Modal.lean:89` - Handle edge case in frame validation
+
+### NOTE: Tags (1)
+- `Logos/Layer2/Temporal.lean:45` - This pattern should be documented
+
+### TODO: Tags (2)
+- `Logos/Layer1/Modal.lean:67` - Add completeness theorem for S5
+- `Logos/Shared/Utils.lean:23` - Optimize this function
+```
+
+### Step 4: Interactive Task Type Selection
+
+**Skill Step 4: AskUserQuestion for Task Types**
+
+The skill invokes AskUserQuestion with multi-select enabled:
 
 ```json
 {
-  "fix_tags": [
-    {"file": "Logos/Layer1/Modal.lean", "line": 89, "content": "Handle edge case in frame validation"}
-  ],
-  "note_tags": [
-    {"file": "Logos/Layer2/Temporal.lean", "line": 45, "content": "This pattern should be documented"}
-  ],
-  "todo_tags": [
-    {"file": "Logos/Layer1/Modal.lean", "line": 67, "content": "Add completeness theorem for S5"},
-    {"file": "Logos/Shared/Utils.lean", "line": 23, "content": "Optimize this function"}
+  "questions": [
+    {
+      "question": "Which task types would you like to create from these tags?",
+      "header": "Task Types",
+      "multiSelect": true,
+      "options": [
+        {
+          "label": "Fix-it task (groups all FIX: and NOTE: tags)",
+          "description": "Creates 1 task to address 2 items from FIX:/NOTE: tags"
+        },
+        {
+          "label": "Learn-it task (documents insights from NOTE: tags)",
+          "description": "Creates 1 task to update context files based on 1 NOTE: tag"
+        },
+        {
+          "label": "TODO tasks (individual tasks from TODO: tags)",
+          "description": "Select which of the 2 TODO: items should become tasks"
+        }
+      ]
+    }
   ]
 }
 ```
 
-**Agent Stage 4: Generate Preview**
+User selects:
+- ✓ Fix-it task
+- ✗ Learn-it task
+- ✓ TODO tasks
 
-Since mode is "dry_run", generate preview without creating tasks:
+### Step 5: Interactive TODO Item Selection
 
-```
-Tasks that would be created:
-1. fix-it-task: "Fix issues from FIX:/NOTE: tags" (2 items)
-2. learn-it-task: "Update context files from NOTE: tags" (1 item)
-3. todo-task: "Add completeness theorem for S5"
-4. todo-task: "Optimize this function"
+**Skill Step 5: AskUserQuestion for TODO Items**
 
-Total: 4 tasks from 4 tags
-```
-
-**Agent Stage 5: Write Metadata File**
+Since "TODO tasks" was selected, the skill prompts for individual TODO item selection:
 
 ```json
 {
-  "status": "preview",
-  "summary": "Found 4 tags across 3 files. Would create 4 tasks.",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1736700000_abc123",
-    "agent_type": "learn-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "learn", "learn-agent"],
-    "mode": "dry_run",
-    "files_scanned": 15,
-    "tags_found": {
-      "fix": 1,
-      "note": 1,
-      "todo": 2
-    },
-    "tasks_preview": 4
-  },
-  "next_steps": "Run /learn Logos/ without --dry-run to create tasks"
+  "questions": [
+    {
+      "question": "Select which TODO: items should become individual tasks:",
+      "header": "TODO Items",
+      "multiSelect": true,
+      "options": [
+        {
+          "label": "Add completeness theorem for S5",
+          "description": "From Logos/Layer1/Modal.lean:67"
+        },
+        {
+          "label": "Optimize this function",
+          "description": "From Logos/Shared/Utils.lean:23"
+        }
+      ]
+    }
+  ]
 }
 ```
 
-**Agent Stage 6: Return Text Summary**
+User selects:
+- ✓ Add completeness theorem for S5
+- ✗ Optimize this function
 
-```
-Learn dry-run - preview of tag scan:
-- Scanned 15 files in Logos/
-- Found: 1 FIX:, 1 NOTE:, 2 TODO: tags
-- Would create: 1 fix-it task, 1 learn-it task, 2 todo-tasks
-- Run /learn Logos/ without --dry-run to create tasks
-- Metadata written for skill postflight
-```
+### Step 6: Task Creation
 
-### Step 4: User Reviews and Runs Execute
+**Skill Step 6: Create Selected Tasks**
 
-After reviewing the dry-run output, user runs:
+Based on user selections, create tasks:
 
-```bash
-/learn Logos/
-```
-
----
-
-## Step-by-Step Walkthrough: Execute
-
-### Step 1: Agent Creates Tasks
-
-**Agent Stage 4: Create Tasks (Execute Mode)**
-
-**Fix-It Task Creation**:
+**Fix-It Task (Task #650)**:
 ```json
 {
-  "title": "Fix issues from FIX:/NOTE: tags",
-  "description": "Address 2 items from embedded tags:\n\n- Logos/Layer1/Modal.lean:89 - Handle edge case in frame validation\n- Logos/Layer2/Temporal.lean:45 - This pattern should be documented",
+  "project_number": 650,
+  "project_name": "fix_issues_from_tags",
+  "status": "not_started",
   "language": "lean",
   "priority": "high",
-  "effort": "2-4 hours"
+  "description": "Address 2 items from embedded tags:\n\n- Logos/Layer1/Modal.lean:89 - Handle edge case in frame validation\n- Logos/Layer2/Temporal.lean:45 - This pattern should be documented"
 }
 ```
 
-**Learn-It Task Creation**:
+**TODO Task (Task #651)**:
 ```json
 {
-  "title": "Update context files from NOTE: tags",
-  "description": "Update 1 context files based on learnings:\n\n- .claude/context/project/lean4/ - This pattern should be documented (from Logos/Layer2/Temporal.lean:45)",
-  "language": "meta",
-  "priority": "medium",
-  "effort": "1-2 hours"
-}
-```
-
-**Todo-Task Creation** (one per TODO: tag):
-```json
-{
-  "title": "Add completeness theorem for S5",
-  "description": "Add completeness theorem for S5\n\nSource: Logos/Layer1/Modal.lean:67",
+  "project_number": 651,
+  "project_name": "add_completeness_theorem_s5",
+  "status": "not_started",
   "language": "lean",
   "priority": "medium",
-  "effort": "1 hour"
+  "description": "Add completeness theorem for S5\n\nSource: Logos/Layer1/Modal.lean:67"
 }
 ```
 
-**Agent Stage 5: Update State Files**
+**Not Created**:
+- Learn-it task (user deselected)
+- "Optimize this function" TODO task (user deselected)
 
-```bash
-# Get next task numbers
-next_num=$(jq -r '.next_project_number' specs/state.json)  # Returns 650
-
-# Create 4 tasks: 650, 651, 652, 653
-# Update state.json with new tasks
-# Update TODO.md with task entries
-# Increment next_project_number to 654
-```
-
-**Agent Stage 6: Write Metadata File**
-
-```json
-{
-  "status": "tasks_created",
-  "summary": "Created 4 tasks from 4 tags across 3 files",
-  "artifacts": [
-    {
-      "type": "task_entry",
-      "path": "specs/TODO.md",
-      "summary": "Tasks #650-653 added"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736700100_def456",
-    "agent_type": "learn-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "learn", "learn-agent"],
-    "mode": "execute",
-    "files_scanned": 15,
-    "tags_found": {
-      "fix": 1,
-      "note": 1,
-      "todo": 2
-    },
-    "tasks_created": 4,
-    "task_numbers": [650, 651, 652, 653]
-  },
-  "next_steps": "Run /research 650 to begin research on first task"
-}
-```
-
-### Step 2: Skill Handles Postflight
-
-**Skill Postflight: Git Commit**
+### Step 7: Postflight Git Commit
 
 ```bash
 git add specs/TODO.md specs/state.json
-git commit -m "learn: create 4 tasks from tags
+git commit -m "learn: create 2 tasks from 4 tags
 
-Session: sess_1736700100_def456
+Session: sess_1768940708_a1b2c3
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
 
-**Skill Postflight: Cleanup**
-
-```bash
-rm -f .claude/.return-meta-learn.json
-```
-
-### Step 3: User Sees Results
+### Step 8: User Sees Results
 
 ```
 ## Tasks Created from Tags
 
-**Tags Processed**: 4 across 3 files
+**Tags Processed**: 4 tags scanned, 2 tasks created
 
 ### Created Tasks
 
 | # | Type | Title | Priority | Language |
 |---|------|-------|----------|----------|
 | 650 | fix-it | Fix issues from FIX:/NOTE: tags | High | lean |
-| 651 | learn-it | Update context files from NOTE: tags | Medium | meta |
-| 652 | todo | Add completeness theorem for S5 | Medium | lean |
-| 653 | todo | Optimize this function | Medium | lean |
+| 651 | todo | Add completeness theorem for S5 | Medium | lean |
 
 ---
 
@@ -375,7 +308,7 @@ rm -f .claude/.return-meta-learn.json
 
 ## Context Routing for NOTE: Tags
 
-NOTE: tags are special because they create both fix-it and learn-it tasks. The learn-it task routes to appropriate context directories:
+NOTE: tags are special because they can create both fix-it and learn-it tasks. The learn-it task routes to appropriate context directories:
 
 | Source File Pattern | Target Context Directory |
 |--------------------|-------------------------|
@@ -387,41 +320,104 @@ NOTE: tags are special because they create both fix-it and learn-it tasks. The l
 
 ---
 
-## Error Scenarios
+## Edge Case Scenarios
 
 ### Scenario A: No Tags Found
 
 If user runs `/learn Logos/` but no tags exist:
 
 ```
-Learn scan - no tags found:
-- Scanned 42 files in Logos/
-- No FIX:, NOTE:, or TODO: tags detected
-- Nothing to create
-- Metadata written for skill postflight
+## No Tags Found
+
+Scanned files in: Logos/
+No FIX:, NOTE:, or TODO: tags detected.
+
+Nothing to create.
 ```
 
-### Scenario B: Invalid Path
+Exits gracefully without prompts.
 
-If user runs `/learn nonexistent/`:
+### Scenario B: Only FIX: Tags
+
+If only FIX: tags are found:
+
+- Display tag summary with only FIX: tags section
+- AskUserQuestion offers only "Fix-it task" option (no NOTE:/TODO: options)
+- User can choose to create or skip
+
+### Scenario C: Large Number of TODO Items
+
+If more than 20 TODO: tags are found:
+
+The AskUserQuestion prompt includes an option:
+
+```json
+{
+  "options": [
+    {
+      "label": "Select all TODO items",
+      "description": "Create tasks for all 23 TODO: tags"
+    },
+    ...individual items...
+  ]
+}
+```
+
+This prevents overwhelming the UI with too many checkboxes.
+
+### Scenario D: User Selects Nothing
+
+If user deselects all task types:
 
 ```
-Learn failed:
-- Path not found: nonexistent/
-- No valid paths to scan
-- Metadata written with failed status
+## No Tasks Created
+
+You chose not to create any tasks from the 4 tags found.
+
+Run /learn again if you change your mind.
 ```
 
-### Scenario C: Large Number of Tasks
+Exits gracefully without creating tasks or git commits.
 
-If more than 10 tasks would be created, the agent includes a warning:
+---
+
+## Comparison: Old vs New Flow
+
+### Old Pattern (Deprecated)
 
 ```
-Warning: About to create 15 tasks. This is a large number.
-Consider using /learn --dry-run to review tags first.
-
-Proceeding with task creation...
+User runs: /learn Logos/ --dry-run
+  → skill-learn (thin wrapper)
+    → learn-agent (subagent via Task tool)
+      → Returns JSON metadata to skill
+    → skill reads metadata, displays preview
+User reviews preview
+User runs: /learn Logos/ (without --dry-run)
+  → Same delegation flow, but creates tasks automatically
 ```
+
+**Issues**:
+- Required two commands (dry-run, then execute)
+- Background subagent process
+- No granular control (all or nothing)
+
+### New Pattern (Current)
+
+```
+User runs: /learn Logos/
+  → skill-learn (direct execution)
+    → Scans tags inline
+    → Displays findings
+    → AskUserQuestion: task types
+    → AskUserQuestion: TODO items (if applicable)
+    → Creates selected tasks
+```
+
+**Benefits**:
+- Single command, interactive flow
+- Synchronous execution, no background process
+- Granular control over which tasks to create
+- Always preview before creation
 
 ---
 
@@ -429,18 +425,18 @@ Proceeding with task creation...
 
 This example demonstrated:
 
-1. **Dry-Run Mode**: Preview tasks without creating them
-2. **Tag Extraction**: Using grep patterns for multiple file types
-3. **Task Grouping**: FIX:/NOTE: grouped into fix-it task, TODO: individual tasks
-4. **Context Routing**: NOTE: tags route to appropriate context directories for learn-it tasks
-5. **Postflight**: Git commit after task creation
-6. **Error Handling**: Graceful handling of no tags or invalid paths
+1. **Direct Execution**: No subagent delegation, all logic in skill-learn
+2. **Interactive Selection**: AskUserQuestion for task type and TODO item choices
+3. **Tag Extraction**: Using grep patterns for multiple file types
+4. **Task Grouping**: FIX:/NOTE: grouped into fix-it task, TODO: individual tasks
+5. **User Control**: Granular selection of what to create
+6. **Edge Case Handling**: Graceful handling of no tags, user cancelation, large TODO lists
 
 The `/learn` command provides:
 - Automated task discovery from embedded source comments
+- Interactive preview-then-select workflow
 - Structured task creation following project standards
-- Preview mode for safe review before action
-- Integration with existing task workflow
+- User control over which tasks are created
 
 ---
 
@@ -448,13 +444,12 @@ The `/learn` command provides:
 
 - [Research Flow Example](research-flow-example.md) - End-to-end research flow
 - [Creating Commands](../guides/creating-commands.md) - Command creation guide
-- [Creating Agents](../guides/creating-agents.md) - Agent creation guide
+- [Creating Skills](../guides/creating-skills.md) - Skill creation guide (direct execution pattern)
 - `.claude/commands/learn.md` - Command definition
-- `.claude/skills/skill-learn/SKILL.md` - Skill definition
-- `.claude/agents/learn-agent.md` - Agent definition
+- `.claude/skills/skill-learn/SKILL.md` - Skill definition (direct execution, no agent)
 
 ---
 
-**Document Version**: 1.0
+**Document Version**: 2.0 (Updated 2026-01-20)
 **Created**: 2026-01-20
 **Maintained By**: ProofChecker Development Team
