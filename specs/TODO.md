@@ -42,10 +42,12 @@ technical_debt:
 ---
 
 ### 646. Fix Metalogic LaTeX formatting and structure issues
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-20
+- **Researched**: 2026-01-20
+- **Research**: [research-001.md](specs/646_fix_metalogic_latex_formatting_issues/reports/research-001.md)
 
 **Description**: Fix 14 FIX:/NOTE: tags in Theories/Bimodal/latex/subfiles/04-Metalogic.tex covering formatting, structural, and presentation improvements: (1) make negation completeness a definition, (2) merge footnote with explanation for Lindenbaum's lemma, (3) introduce histories/times before canonical world states, (4) define quotient construction, (5) explain strong representation theorem, (6) remove diagram labels and add reference, (7) merge finite model property into decidability section, (8) clarify decision procedure return values, (9) explain tableau concepts and Lean 4 proof search, (10) add context for complexity values, (11) explain why decidability is useful despite limitations, (12) use standardized `\texttt{}` formatting for Lean directories, (13) format directory names in bold with `\texttt{}`, (14) make theorem names italic.
 

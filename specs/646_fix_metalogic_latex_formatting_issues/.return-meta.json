@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/646_fix_metalogic_latex_formatting_issues/reports/research-001.md",
+      "summary": "Research report analyzing 14 FIX:/NOTE: tags with categorization, phased recommendations, and risk assessment"
+    }
+  ],
+  "next_steps": "Run /plan 646 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1768944484_6c305f",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 14
+  }
+}
