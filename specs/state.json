@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 634,
+      "project_name": "fix_sorry_main_provable_iff_valid_v2",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-20T06:31:05Z",
+      "last_updated": "2026-01-20T06:31:05Z"
+    },
+    {
       "project_number": 633,
       "project_name": "fix_agent_return_format_consistency",
       "status": "completed",
@@ -330,5 +339,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 634
+  "next_project_number": 635
 }
