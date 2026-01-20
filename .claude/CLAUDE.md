@@ -308,7 +308,7 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 | skill-meta | meta-builder-agent | System building and task creation |
 | skill-status-sync | (direct execution) | Atomic status updates for task state |
 | skill-document-converter | document-converter-agent | Document format conversion (PDF/DOCX to Markdown, etc.) |
-| skill-refresh | (direct execution) | Identify and terminate orphaned Claude Code processes |
+| skill-refresh | (direct execution) | Manage orphaned processes and project file cleanup |
 
 ### Thin Wrapper Execution Flow
 
@@ -340,14 +340,20 @@ All delegating skills follow this 5-step pattern:
 
 ## Session Maintenance
 
-Claude Code processes can accumulate over time, consuming memory. Use the `/refresh` command to manage orphaned processes.
+Claude Code resources can accumulate over time. Use the `/refresh` command to manage:
+- **Orphaned processes**: Detached Claude processes consuming memory
+- **Project files**: Old session logs in `~/.claude/projects/`
 
 ### Quick Commands
 
 | Command | Description |
 |---------|-------------|
-| `/refresh` | Show status and prompt for confirmation |
+| `/refresh` | Show orphaned processes, prompt for cleanup |
 | `/refresh --force` | Terminate orphaned processes immediately |
+| `/refresh --projects` | Survey project files, prompt for cleanup |
+| `/refresh --projects --dry-run` | Preview project cleanup without changes |
+| `/refresh --projects --force` | Clean old project files immediately |
+| `/refresh --projects --age 14` | Target files older than 14 days (default: 7) |
 
 ### Shell Aliases (Optional)
 
@@ -374,7 +380,14 @@ systemctl --user stop claude-refresh.timer      # Stop timer
 
 ### Safety
 
-The refresh system only targets orphaned processes (no controlling terminal). Active sessions are never affected.
+**Process cleanup**:
+- Only targets orphaned processes (no controlling terminal)
+- Active sessions are never affected
+
+**Project cleanup**:
+- Never modifies `sessions-index.json`
+- Never deletes files modified within the last hour
+- Age threshold protects recent sessions (default: 7 days)
 
 ## Important Notes
 

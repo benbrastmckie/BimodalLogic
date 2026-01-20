@@ -69,7 +69,7 @@ Fix 5 sorries in pedagogical exercise examples in `Theories/Bimodal/Examples/Tem
 
 ---
 
-### Phase 2: Remove Incomplete Exercises (Fallback) [IN PROGRESS]
+### Phase 2: Remove Incomplete Exercises (Fallback) [COMPLETED]
 
 **Goal**: If Phase 1 cannot complete all proofs, remove the incomplete exercises
 
