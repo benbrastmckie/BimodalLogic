@@ -85,7 +85,7 @@ technical_debt:
 ## Medium Priority
 
 ### 635. Extend /refresh command for Claude Code project cleanup
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -196,7 +196,7 @@ technical_debt:
 ---
 
 ### 636. Fix sorries in TemporalProofStrategies examples
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -207,7 +207,7 @@ technical_debt:
 ---
 
 ### 634. Fix sorry in main_provable_iff_valid_v2
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19

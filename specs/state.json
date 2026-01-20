@@ -17,12 +17,12 @@
     {
       "project_number": 636,
       "project_name": "fix_sorries_temporalproofstrategies_examples",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-20T06:38:29Z",
-      "last_updated": "2026-01-20T06:53:37Z",
-      "session_id": "sess_1768891871_91126e",
+      "last_updated": "2026-01-20T06:56:34Z",
+      "session_id": "sess_1768892176_9410b1",
       "planned": "2026-01-20T06:53:37Z",
       "artifacts": [
         {
@@ -30,17 +30,18 @@
           "type": "plan",
           "summary": "2-phase plan: attempt proof completion first, remove incomplete exercises as fallback"
         }
-      ]
+      ],
+      "started": "2026-01-20T06:56:34Z"
     },
     {
       "project_number": 635,
       "project_name": "extend_refresh_command_claude_project_cleanup",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T06:33:44Z",
-      "last_updated": "2026-01-20T06:51:24Z",
-      "session_id": "sess_1768891753_f37d16",
+      "last_updated": "2026-01-20T06:57:02Z",
+      "session_id": "sess_1768892201_8c528e",
       "researched": "2026-01-20T06:43:44Z",
       "artifacts": [
         {
@@ -54,17 +55,18 @@
           "summary": "4-phase implementation plan covering cleanup script, skill extension, documentation, and testing"
         }
       ],
-      "planned": "2026-01-20T06:51:24Z"
+      "planned": "2026-01-20T06:51:24Z",
+      "started": "2026-01-20T06:57:02Z"
     },
     {
       "project_number": 634,
       "project_name": "fix_sorry_main_provable_iff_valid_v2",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-20T06:31:05Z",
-      "last_updated": "2026-01-20T06:53:41Z",
-      "session_id": "sess_1768891847_a5ea11",
+      "last_updated": "2026-01-20T07:00:54Z",
+      "session_id": "sess_1768892189_34e857",
       "planned": "2026-01-20T06:53:41Z",
       "artifacts": [
         {
@@ -72,7 +74,9 @@
           "path": "specs/634_fix_sorry_main_provable_iff_valid_v2/plans/implementation-001.md",
           "summary": "3-phase documentation plan for sorry in main_provable_iff_valid_v2"
         }
-      ]
+      ],
+      "started": "2026-01-20T06:56:49Z",
+      "completed": "2026-01-20T07:00:54Z"
     },
     {
       "project_number": 633,

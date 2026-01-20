@@ -4,8 +4,7 @@ This directory contains a reorganized metalogic infrastructure for TM bimodal lo
 
 ## Architecture Overview
 
-The architecture follows a bottom-up dependency structure. Arrows point downward, showing
-"uses" / "imports" relationships (i.e., higher modules import lower ones).
+Arrows point in the direction of dependency.
 
 ```
 ┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐

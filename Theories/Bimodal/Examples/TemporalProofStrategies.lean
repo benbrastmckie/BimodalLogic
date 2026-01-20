@@ -348,11 +348,8 @@ example (φ : Formula) : ⊢ φ.imp φ.some_past.some_past.all_future.all_future
   have ta_2 : ⊢ φ.some_past.imp φ.some_past.some_past.all_future :=
     DerivationTree.axiom [] _ (Axiom.temp_a φ.some_past)
 
-  -- Step 3: We need to lift ta_2 under G to get G(Pφ) → GG(PPφ)
-  -- EXERCISE: Complete this proof using temporal K distribution
-  -- Technique: Use `generalized_temporal_k` from GeneralizedNecessitation
-  -- Hint: Lift Pφ → G(PPφ) through G using temporal K rule
-  sorry
+  -- Step 3: Lift ta_2 under G to get G(Pφ) → GG(PPφ) using future_mono
+  exact imp_trans ta_1 (Bimodal.Theorems.Perpetuity.future_mono ta_2)
 
 /--
 Connectedness with T4: `φ → GGG(Pφ)`

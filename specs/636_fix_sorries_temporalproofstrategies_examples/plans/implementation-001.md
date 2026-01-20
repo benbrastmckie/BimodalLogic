@@ -1,7 +1,7 @@
 # Implementation Plan: Task #636
 
 - **Task**: 636 - fix_sorries_temporalproofstrategies_examples
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Priority**: Low
 - **Dependencies**: None
@@ -44,7 +44,7 @@ Fix 5 sorries in pedagogical exercise examples in `Theories/Bimodal/Examples/Tem
 
 ## Implementation Phases
 
-### Phase 1: Attempt Proof Completion [NOT STARTED]
+### Phase 1: Attempt Proof Completion [IN PROGRESS]
 
 **Goal**: Try to complete the 5 exercises with correct Lean proofs
 
