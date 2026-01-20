@@ -1,5 +1,5 @@
 ---
-next_project_number: 635
+next_project_number: 636
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -83,6 +83,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 635. Extend /refresh command for Claude Code project cleanup
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+
+**Description**: Extend the /refresh command to survey and clean up accumulated project files in `~/.claude/projects/-home-benjamin-Projects-ProofChecker/`. Large numbers of project files cause slow Claude Code startup in neovim. The command should: (1) Survey the project directory for cleanup candidates (old sessions, orphaned files), (2) Present findings to the user with size/count statistics, (3) Perform cleanup only with explicit user approval. Integrate this as a new mode in the existing /refresh skill alongside the orphaned process cleanup functionality.
+
+---
 
 ### 630. Build TaskModel extraction from saturated tableau branches
 - **Status**: [NOT STARTED]

@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 635,
+      "project_name": "extend_refresh_command_claude_project_cleanup",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T06:33:44Z",
+      "last_updated": "2026-01-20T06:33:44Z"
+    },
+    {
       "project_number": 634,
       "project_name": "fix_sorry_main_provable_iff_valid_v2",
       "status": "not_started",
@@ -339,5 +348,5 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 635
+  "next_project_number": 636
 }
