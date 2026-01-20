@@ -26,11 +26,11 @@
     {
       "project_number": 626,
       "project_name": "review_remove_unnecessary_sorries",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T00:08:49Z",
-      "last_updated": "2026-01-20T00:23:37Z",
+      "last_updated": "2026-01-20T00:25:48Z",
       "session_id": "sess_1768868600_79f20e",
       "researched": "2026-01-20T00:17:47Z",
       "artifacts": [
@@ -38,8 +38,14 @@
           "path": "specs/626_review_remove_unnecessary_sorries/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of all sorries in Metalogic_v2 with classification and recommendations"
+        },
+        {
+          "path": "specs/626_review_remove_unnecessary_sorries/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan to delete 4 unused theorems and relocate 3 deprecated theorems to Boneyard"
         }
-      ]
+      ],
+      "planned": "2026-01-20T00:25:48Z"
     },
     {
       "project_number": 622,
