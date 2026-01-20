@@ -66,6 +66,16 @@ technical_debt:
 
 ---
 
+### 644. Redesign /learn command for interactive task selection
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Redesign /learn command to use interactive task selection instead of auto-creating tasks. Current behavior: /learn scans and auto-creates tasks, with --dry-run for preview. New behavior: /learn always scans and shows findings first, then prompts user to select which task types to create (fix-it, learn-it, individual todo tasks). This avoids background processes, runs synchronously, and gives users control over which tasks are created.
+
+---
+
 ## Medium Priority
 
 ### 643. Implement /learn command for tag extraction and context improvement

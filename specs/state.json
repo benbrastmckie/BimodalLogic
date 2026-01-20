@@ -463,6 +463,18 @@
         630,
         631
       ]
+    },
+    {
+      "project_number": 644,
+      "project_name": "redesign_learn_interactive_task_selection",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-20T20:40:46Z",
+      "last_updated": "2026-01-20T20:40:46Z",
+      "description": "Redesign /learn command to use interactive task selection instead of auto-creating tasks. Current behavior: /learn scans and auto-creates tasks, with --dry-run for preview. New behavior: /learn always scans and shows findings first, then prompts user to select which task types to create (fix-it, learn-it, individual todo tasks). This avoids background processes, runs synchronously, and gives users control over which tasks are created.",
+      "session_id": "sess_1768940046_661be0",
+      "artifacts": []
     }
   ],
   "completed_projects": [
@@ -477,7 +489,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 644,
+  "next_project_number": 645,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
