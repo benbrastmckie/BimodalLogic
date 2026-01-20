@@ -1,5 +1,5 @@
 ---
-next_project_number: 642
+next_project_number: 643
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -81,6 +81,16 @@ technical_debt:
 - **Summary**: [implementation-summary-20260120.md](specs/641_improve_todo_command_roadmap_update/summaries/implementation-summary-20260120.md)
 
 **Description**: Review and improve the `/todo` command to reliably update ROAD_MAP.md when archiving completed projects. Task 638 implemented ROAD_MAP.md update functionality but running `/todo` does not show that ROAD_MAP.md was updated. Analyze the current `/todo` command implementation to identify the issue, then improve the command to both archive projects and update ROAD_MAP.md without needless complexity, providing a robust and reliable command.
+
+---
+
+### 642. Meta tasks should suggest CLAUDE.md updates instead of ROAD_MAP.md
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Update the /todo command so that tasks with 'meta' as the language should not be used to update ROAD_MAP.md. Instead, meta tasks should suggest updates to CLAUDE.md (while avoiding bloating CLAUDE.md). This ensures that system/agent improvements are tracked in the project configuration rather than the project roadmap.
 
 ---
 
