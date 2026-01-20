@@ -135,12 +135,31 @@ For each archivable task, collect:
 
 Use structured extraction from completion_summary fields, falling back to exact `(Task {N})` matching.
 
-**Step 3.5.1: Extract completed tasks with summaries**:
+**IMPORTANT**: Meta tasks (language: "meta") are excluded from ROAD_MAP.md matching. They use `claudemd_suggestions` instead (see Step 3.6).
+
+**Step 3.5.1: Separate meta and non-meta tasks**:
 ```bash
-# Extract completed tasks with their completion_summary and roadmap_items
+# Separate archivable tasks by language
+meta_tasks=()
+non_meta_tasks=()
+
+for task in "${archivable_tasks[@]}"; do
+  language=$(echo "$task" | jq -r '.language // "general"')
+  if [ "$language" = "meta" ]; then
+    meta_tasks+=("$task")
+  else
+    non_meta_tasks+=("$task")
+  fi
+done
+```
+
+**Step 3.5.2: Extract non-meta completed tasks with summaries**:
+```bash
+# Only process non-meta tasks for ROAD_MAP.md matching
 completed_with_summaries=$(jq -r '
   .active_projects[] |
   select(.status == "completed") |
+  select(.language != "meta") |
   select(.completion_summary != null) |
   {
     number: .project_number,
@@ -151,14 +170,15 @@ completed_with_summaries=$(jq -r '
 ' specs/state.json)
 ```
 
-**Step 3.5.2: Match using structured data**:
+**Step 3.5.3: Match non-meta tasks against ROAD_MAP.md**:
 ```bash
 # Initialize roadmap tracking
 roadmap_matches=()
 roadmap_completed_count=0
 roadmap_abandoned_count=0
 
-for task in "${archivable_tasks[@]}"; do
+# Only iterate non-meta tasks for roadmap matching
+for task in "${non_meta_tasks[@]}"; do
   project_num=$(echo "$task" | jq -r '.project_number')
   status=$(echo "$task" | jq -r '.status')
   completion_summary=$(echo "$task" | jq -r '.completion_summary // empty')
@@ -211,6 +231,8 @@ done
 ```
 
 Track:
+- `meta_tasks[]` - Array of meta tasks (excluded from ROAD_MAP.md matching)
+- `non_meta_tasks[]` - Array of non-meta tasks (matched against ROAD_MAP.md)
 - `roadmap_matches[]` - Array of task:status:match_type:line_num:item_text tuples
 - `roadmap_completed_count` - Count of completed task matches
 - `roadmap_abandoned_count` - Count of abandoned task matches
@@ -219,6 +241,88 @@ Track:
 - `explicit` - Matched via `roadmap_items` field (highest confidence)
 - `exact` - Matched via `(Task {N})` reference in ROAD_MAP.md
 - `summary` - Matched via completion_summary content search (optional, future enhancement)
+
+### 3.6. Scan Meta Tasks for CLAUDE.md Suggestions
+
+Meta tasks use `claudemd_suggestions` instead of ROAD_MAP.md updates. This step collects suggestions for user review.
+
+**Step 3.6.1: Extract claudemd_suggestions from meta tasks**:
+```bash
+# Initialize CLAUDE.md suggestion tracking
+claudemd_suggestions=()
+claudemd_add_count=0
+claudemd_update_count=0
+claudemd_remove_count=0
+claudemd_none_count=0
+
+for task in "${meta_tasks[@]}"; do
+  project_num=$(echo "$task" | jq -r '.project_number')
+  project_name=$(echo "$task" | jq -r '.project_name')
+  status=$(echo "$task" | jq -r '.status')
+
+  # Extract claudemd_suggestions if present
+  has_suggestions=$(echo "$task" | jq -r 'has("claudemd_suggestions")')
+
+  if [ "$has_suggestions" = "true" ]; then
+    action=$(echo "$task" | jq -r '.claudemd_suggestions.action // "none"')
+    section=$(echo "$task" | jq -r '.claudemd_suggestions.section // ""')
+    rationale=$(echo "$task" | jq -r '.claudemd_suggestions.rationale // ""')
+    content=$(echo "$task" | jq -r '.claudemd_suggestions.content // ""')
+    removes=$(echo "$task" | jq -r '.claudemd_suggestions.removes // ""')
+
+    # Track by action type
+    case "$action" in
+      add)
+        ((claudemd_add_count++))
+        ;;
+      update)
+        ((claudemd_update_count++))
+        ;;
+      remove)
+        ((claudemd_remove_count++))
+        ;;
+      none)
+        ((claudemd_none_count++))
+        ;;
+    esac
+
+    # Store suggestion for display (JSON format for structured access)
+    suggestion=$(jq -n \
+      --arg num "$project_num" \
+      --arg name "$project_name" \
+      --arg status "$status" \
+      --arg action "$action" \
+      --arg section "$section" \
+      --arg rationale "$rationale" \
+      --arg content "$content" \
+      --arg removes "$removes" \
+      '{
+        project_number: ($num | tonumber),
+        project_name: $name,
+        status: $status,
+        action: $action,
+        section: $section,
+        rationale: $rationale,
+        content: $content,
+        removes: $removes
+      }')
+    claudemd_suggestions+=("$suggestion")
+  else
+    # Meta task without claudemd_suggestions - note for output
+    # These are treated as implicit "none" (no CLAUDE.md changes suggested)
+    ((claudemd_none_count++))
+  fi
+done
+```
+
+Track:
+- `claudemd_suggestions[]` - Array of suggestion objects from meta tasks
+- `claudemd_add_count` - Count of "add" action suggestions
+- `claudemd_update_count` - Count of "update" action suggestions
+- `claudemd_remove_count` - Count of "remove" action suggestions
+- `claudemd_none_count` - Count of "none" action or missing suggestions
+
+**Note**: Suggestions with action "none" are acknowledged but not displayed as actionable items in the output.
 
 ### 4. Dry Run Output (if --dry-run)
 
@@ -267,6 +371,33 @@ Total roadmap items to update: {N}
   - Exact matches: {N}
 - Abandoned: {N}
 
+CLAUDE.md suggestions (from meta tasks):
+
+Task #{N4} ({project_name}) [meta]:
+  Action: ADD
+  Section: {section}
+  Rationale: {rationale}
+  Content:
+    {content preview, first 3 lines}
+
+Task #{N5} ({project_name}) [meta]:
+  Action: UPDATE
+  Section: {section}
+  Rationale: {rationale}
+  Removes: {removes}
+  Content:
+    {content preview}
+
+Task #{N6} ({project_name}) [meta]:
+  Action: NONE
+  Rationale: {rationale}
+
+Total CLAUDE.md suggestions: {N}
+- Add: {N}
+- Update: {N}
+- Remove: {N}
+- None (no changes needed): {N}
+
 Total tasks: {N}
 Total orphans: {N} (specs: {N}, archive: {N})
 Total misplaced: {N}
@@ -275,6 +406,8 @@ Run without --dry-run to archive.
 ```
 
 If no roadmap matches were found (from Step 3.5), omit the "Roadmap updates" section.
+
+If no CLAUDE.md suggestions were found (from Step 3.6), omit the "CLAUDE.md suggestions" section.
 
 Exit here if dry run.
 
@@ -556,6 +689,76 @@ Track roadmap operations for output reporting:
 - One edit per item (no batch edits to same line)
 - Never remove existing content
 
+### 5.6. Display CLAUDE.md Suggestions for Meta Tasks
+
+For meta tasks with `claudemd_suggestions` (from Step 3.6), display actionable suggestions for user review.
+
+**Note**: Unlike ROAD_MAP.md updates, CLAUDE.md modifications are NOT applied automatically. This step only displays suggestions for the user to manually review and apply.
+
+**Step 5.6.1: Display suggestions with actionable context**:
+
+For each suggestion in `claudemd_suggestions[]` where action is NOT "none":
+
+```
+CLAUDE.md Suggestions (Meta Tasks):
+══════════════════════════════════════════════════════════════════════════════
+
+Task #{N} ({project_name}):
+  Action: {ADD|UPDATE|REMOVE}
+  Section: {section}
+  Rationale: {rationale}
+
+  {For ADD actions:}
+  Suggested content to add:
+  ┌────────────────────────────────────────────────────────────────────────────
+  │ {content}
+  └────────────────────────────────────────────────────────────────────────────
+
+  {For UPDATE actions:}
+  Text to find and replace:
+  ┌── Remove ──────────────────────────────────────────────────────────────────
+  │ {removes}
+  └────────────────────────────────────────────────────────────────────────────
+  ┌── Replace with ────────────────────────────────────────────────────────────
+  │ {content}
+  └────────────────────────────────────────────────────────────────────────────
+
+  {For REMOVE actions:}
+  Text to remove:
+  ┌── Remove ──────────────────────────────────────────────────────────────────
+  │ {removes}
+  └────────────────────────────────────────────────────────────────────────────
+
+══════════════════════════════════════════════════════════════════════════════
+```
+
+**Step 5.6.2: Summary of actionable suggestions**:
+
+```
+CLAUDE.md suggestion summary:
+- {N} suggestions to ADD content
+- {N} suggestions to UPDATE content
+- {N} suggestions to REMOVE content
+- {N} tasks with no changes needed
+
+Note: These suggestions require manual review. Apply by editing .claude/CLAUDE.md
+in the sections indicated above.
+```
+
+**Step 5.6.3: Handle tasks with "none" action**:
+
+For meta tasks with action "none" (or missing `claudemd_suggestions`), output brief acknowledgment:
+
+```
+Meta tasks with no CLAUDE.md changes:
+- Task #{N1} ({project_name}): {rationale}
+- Task #{N2} ({project_name}): No claudemd_suggestions field
+```
+
+Track suggestion display for output reporting:
+- claudemd_displayed: count of actionable suggestions shown
+- claudemd_none_acknowledged: count of "none" action tasks acknowledged
+
 ### 6. Git Commit
 
 ```bash
@@ -617,6 +820,14 @@ Roadmap updated: {N} items
   - {item text} (line {N})
 - Skipped (already annotated): {N}
 
+CLAUDE.md suggestions displayed: {N}
+- Add: {N}
+- Update: {N}
+- Remove: {N}
+- No changes needed: {N}
+
+Note: Review suggestions above and apply manually to .claude/CLAUDE.md
+
 Skipped (no directory): {N}
 - Task #{N6}
 
@@ -636,6 +847,9 @@ If no misplaced directories were moved (either none found or user skipped):
 
 If no roadmap items were updated (no matches found in Step 3.5):
 - Omit the "Roadmap updated" section
+
+If no CLAUDE.md suggestions were collected (no meta tasks or all had "none" action):
+- Omit the "CLAUDE.md suggestions displayed" section
 
 ## Notes
 

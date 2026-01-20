@@ -129,7 +129,7 @@ Increments plan version (implementation-002.md, etc.)
 Code review and registry updates
 
 ### /todo - Archive completed tasks
-Moves completed/abandoned tasks to archive/
+Moves completed/abandoned tasks to archive/. For non-meta tasks, updates ROAD_MAP.md with completion annotations. For meta tasks, displays CLAUDE.md modification suggestions for user review.
 
 ### /errors - Analyze error patterns
 Reads errors.json, creates fix plans
@@ -170,12 +170,26 @@ Interactive system builder that creates TASKS for .claude/ changes. Uses skill-m
 
 When a task is completed via `/implement`:
 1. The `completion_summary` field is populated with a 1-3 sentence description of what was accomplished
-2. Optional `roadmap_items` array can specify explicit ROAD_MAP.md item texts to match
+2. For non-meta tasks: Optional `roadmap_items` array can specify explicit ROAD_MAP.md item texts to match
+3. For meta tasks: Optional `claudemd_suggestions` object can propose CLAUDE.md modifications
 
 When `/todo` archives completed tasks:
+
+**Non-meta tasks** (language != "meta"):
 1. Extracts `completion_summary` and `roadmap_items` via jq
 2. Matches against ROAD_MAP.md using: explicit roadmap_items (priority 1), exact (Task N) references (priority 2)
 3. Annotates matched items with completion date and task reference
+
+**Meta tasks** (language == "meta"):
+1. Extracts `claudemd_suggestions` object if present
+2. Displays suggested CLAUDE.md modifications for user review (add/update/remove actions)
+3. User manually applies suggestions - changes are NOT automatic
+4. Tasks with action "none" or missing suggestions are acknowledged without action
+
+This separation ensures:
+- Project roadmap tracks external deliverables (features, proofs, documentation)
+- Development system documentation (CLAUDE.md) tracks internal tool/workflow changes
+- Meta task changes require user review before applying to prevent accidental bloat
 
 ## Git Commit Conventions
 

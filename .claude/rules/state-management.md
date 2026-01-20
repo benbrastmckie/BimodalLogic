@@ -106,11 +106,94 @@ When a task transitions to `status: "completed"`, these fields are populated:
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `completion_summary` | string | **Yes** (when completed) | 1-3 sentence description of what was accomplished |
-| `roadmap_items` | array of strings | No | Explicit list of ROAD_MAP.md item texts this task addresses |
+| `roadmap_items` | array of strings | No | Explicit list of ROAD_MAP.md item texts this task addresses (non-meta tasks only) |
+| `claudemd_suggestions` | object | No | Suggested CLAUDE.md modifications (meta tasks only) |
 
 **Producer Responsibility**: The `/implement` command populates these fields in CHECKPOINT 2: GATE OUT when a task is successfully completed.
 
-**Consumer Usage**: The `/todo` command extracts these fields via `jq` to match completed tasks against ROAD_MAP.md items for annotation.
+**Consumer Usage**: The `/todo` command extracts these fields via `jq` to:
+- Match non-meta tasks against ROAD_MAP.md items for annotation (using `roadmap_items`)
+- Display CLAUDE.md modification suggestions for user review (using `claudemd_suggestions` from meta tasks)
+
+### claudemd_suggestions Schema (Meta Tasks Only)
+
+When a meta task (language: "meta") is completed, it may include a `claudemd_suggestions` field to propose CLAUDE.md modifications:
+
+```json
+{
+  "claudemd_suggestions": {
+    "action": "add|update|remove|none",
+    "section": "Section Name (e.g., 'Command Workflows', 'Skill Architecture')",
+    "rationale": "Why this change is needed (or why no change is needed)",
+    "content": "The text to add or the updated text (null for remove/none)",
+    "removes": "Text pattern being removed/replaced (null for add/none)"
+  }
+}
+```
+
+**Action Types**:
+
+| Action | When to Use | Required Fields |
+|--------|------------|-----------------|
+| `add` | New user-facing command, workflow, or pattern | `section`, `rationale`, `content` |
+| `update` | Existing documentation is incorrect or incomplete | `section`, `rationale`, `content`, `removes` |
+| `remove` | Feature deprecated or workflow replaced | `section`, `rationale`, `removes` |
+| `none` | Internal change with no user-visible impact | `rationale` |
+
+**Examples**:
+
+Adding a new command:
+```json
+{
+  "claudemd_suggestions": {
+    "action": "add",
+    "section": "Command Workflows",
+    "rationale": "New /debug command needs user documentation",
+    "content": "### /debug - MCP troubleshooting\nDiagnoses MCP server connectivity and tool availability."
+  }
+}
+```
+
+Updating existing documentation:
+```json
+{
+  "claudemd_suggestions": {
+    "action": "update",
+    "section": "Session Maintenance > Quick Commands",
+    "rationale": "Default threshold changed from 8 to 24 hours",
+    "removes": "(8-hour default)",
+    "content": "(24-hour default)"
+  }
+}
+```
+
+Removing deprecated content:
+```json
+{
+  "claudemd_suggestions": {
+    "action": "remove",
+    "section": "Command Workflows",
+    "rationale": "/sync command removed, documentation is now misleading",
+    "removes": "### /sync - Legacy state synchronization"
+  }
+}
+```
+
+No change needed:
+```json
+{
+  "claudemd_suggestions": {
+    "action": "none",
+    "rationale": "Internal refactor of skill routing; no user-visible changes"
+  }
+}
+```
+
+**Design Principle**: Meta tasks improve the development system itself. When completing a meta task, assess whether CLAUDE.md needs updates:
+- **Add**: Only if introducing new user-facing behavior/workflow/pattern
+- **Update**: If existing documentation is now incorrect or incomplete
+- **Remove**: If the task deprecates or replaces existing functionality
+- **None**: If the task is purely internal with no user-visible impact
 
 ### Artifact Object Schema
 
