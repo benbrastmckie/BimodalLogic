@@ -249,6 +249,15 @@ lemma isExpanded_neg_all_past_false (φ : Formula) :
   simp only [applyRule, asNeg?, asAnd?, asOr?, asDiamond?]
   repeat (first | rfl | (split; try rfl))
 
+/-- Helper: Derive False from saturation and a formula that's not expanded. -/
+private lemma saturation_contradiction (b : Branch) (hSat : findUnexpanded b = none)
+    (sf : SignedFormula) (hsf_in : sf ∈ b) (h_not_expanded : isExpanded sf = false) : False := by
+  simp only [findUnexpanded, List.find?_eq_none] at hSat
+  have h_expanded := hSat sf hsf_in
+  simp only [decide_eq_true_eq, not_not] at h_expanded
+  rw [h_not_expanded] at h_expanded
+  cases h_expanded
+
 /--
 Saturation implies all non-atomic formulas are expanded.
 If T(φ→ψ) is in a saturated branch, then either F(φ) or T(ψ) is in the branch.
@@ -288,15 +297,6 @@ The key properties are:
 - Implication: saturation ensures correct expansion
 - Modal/Temporal: simplified to identity in this simple model
 -/
-/-- Helper: Derive False from saturation and a formula that's not expanded. -/
-private lemma saturation_contradiction (b : Branch) (hSat : findUnexpanded b = none)
-    (sf : SignedFormula) (hsf_in : sf ∈ b) (h_not_expanded : isExpanded sf = false) : False := by
-  simp only [findUnexpanded, List.find?_eq_none] at hSat
-  have h_expanded := hSat sf hsf_in
-  simp only [decide_eq_true_eq, not_not] at h_expanded
-  rw [h_not_expanded] at h_expanded
-  cases h_expanded
-
 theorem branchTruthLemma (b : Branch) (hSat : findUnexpanded b = none)
     (hOpen : findClosure b = none) :
     ∀ sf ∈ b, (sf.sign = .pos → evalFormula b sf.formula = true) ∧
@@ -321,15 +321,25 @@ theorem branchTruthLemma (b : Branch) (hSat : findUnexpanded b = none)
       simp only [findClosure] at hOpen
       rw [Option.orElse_eq_none, Option.orElse_eq_none] at hOpen
       obtain ⟨hBotPos, _, _⟩ := hOpen
-      simp only [checkBotPos, ite_eq_right_iff] at hBotPos
-      -- hBotPos : hasBotPos b = true → False
-      -- We need to show hasBotPos b = true
-      have hbot : b.hasBotPos = true := by
-        simp only [Branch.hasBotPos, Branch.contains, List.any_eq_true, beq_iff_eq]
-        have hsf_eq : sf = SignedFormula.pos .bot := by
-          ext <;> simp only [SignedFormula.pos, hpos, hf]
-        exact ⟨sf, hsf_in, hsf_eq⟩
-      exact hBotPos hbot
+      simp only [checkBotPos] at hBotPos
+      -- hBotPos : (if b.hasBotPos then some .botPos else none) = none
+      -- This means b.hasBotPos = false
+      split at hBotPos
+      · -- b.hasBotPos = true branch, gives some .botPos = none, contradiction
+        cases hBotPos
+      · -- b.hasBotPos = false branch
+        rename_i h_not_bot
+        -- But we have sf ∈ b with sf.sign = pos and sf.formula = bot
+        -- So SignedFormula.pos .bot is in b
+        simp only [Branch.hasBotPos, Branch.contains, List.any_eq_true] at h_not_bot
+        push_neg at h_not_bot
+        -- We need to show sf is SignedFormula.pos .bot
+        -- sf is a structure, so we prove equality via cases
+        rcases sf with ⟨sign, formula⟩
+        simp only [SignedFormula.pos] at *
+        subst hpos hf
+        have := h_not_bot ⟨.pos, .bot⟩ hsf_in
+        exact this (by native_decide)
     | .imp φ ψ =>
       -- T(φ→ψ) cannot be in a saturated branch (would have been expanded)
       exfalso

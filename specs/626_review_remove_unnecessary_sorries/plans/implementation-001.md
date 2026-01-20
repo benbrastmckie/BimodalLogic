@@ -66,7 +66,7 @@ Integrated from research-001.md:
 
 ---
 
-### Phase 2: Delete decision procedure completeness theorems [IN PROGRESS]
+### Phase 2: Delete decision procedure completeness theorems [COMPLETED]
 
 **Goal**: Remove tableau completeness and decision procedure completeness theorems (alternative decidability path not taken)
 
@@ -86,7 +86,7 @@ Integrated from research-001.md:
 
 ---
 
-### Phase 3: Create Boneyard file for deprecated SemanticCanonicalModel code [NOT STARTED]
+### Phase 3: Create Boneyard file for deprecated SemanticCanonicalModel code [COMPLETED]
 
 **Goal**: Create a new Boneyard file to hold deprecated theorems from SemanticCanonicalModel.lean
 
@@ -109,7 +109,7 @@ Integrated from research-001.md:
 
 ---
 
-### Phase 4: Remove relocated theorems from SemanticCanonicalModel [NOT STARTED]
+### Phase 4: Remove relocated theorems from SemanticCanonicalModel [IN PROGRESS]
 
 **Goal**: Delete the deprecated theorems that were relocated to Boneyard
 

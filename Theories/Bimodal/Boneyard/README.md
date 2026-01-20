@@ -54,6 +54,25 @@ Two alternative approaches to proving completeness were explored before the succ
 
 **Key insight**: The Duration construction was mathematically interesting but overcomplicated. The finite model property shows we only need bounded time domains, making the general Duration construction unnecessary.
 
+### 3. DeprecatedCompleteness.lean
+
+**Source**: Documents deprecated theorems from `Metalogic_v2/Representation/SemanticCanonicalModel.lean`
+
+**What it documents**:
+- `semantic_task_rel_compositionality` - Compositionality axiom (mathematically false for unbounded durations)
+- `semantic_truth_implies_truth_at` - Truth bridge lemma (formula induction issues)
+- `main_weak_completeness_v2` - Alternative completeness via general validity
+
+**Why deprecated**:
+- `semantic_task_rel_compositionality` is mathematically impossible to prove without bounding the duration sum
+- `semantic_truth_implies_truth_at` requires formula induction with problematic modal/temporal cases
+- `main_weak_completeness_v2` depends on the truth bridge which has a sorry
+- The sorry-free `semantic_weak_completeness` provides the same result via a different approach
+
+**Key insight**: The `semantic_weak_completeness` theorem works by using `semantic_truth_at_v2` (internal finite model truth) and avoiding the bridge to general `truth_at` entirely. This bypasses the need for both the compositionality proof and the truth bridge.
+
+**Note**: The `semantic_task_rel_compositionality` sorry remains in SemanticCanonicalModel.lean because the SemanticCanonicalFrame requires it for its TaskFrame instance. This is an acceptable limitation documented in the code.
+
 ## Replacement: Semantic Approach (Task 473)
 
 The successful approach is in `Metalogic/Completeness/FiniteCanonicalModel.lean`:
@@ -75,7 +94,8 @@ This approach works because:
 - **Task 473**: SemanticWorldState architecture (the fix)
 - **Task 481**: finite_history_from_state
 - **Task 482**: History gluing lemma
-- **Task 487**: This Boneyard creation
+- **Task 487**: Boneyard creation (SyntacticApproach, DurationConstruction)
+- **Task 626**: Review and remove unnecessary sorries (DeprecatedCompleteness)
 
 ## Status
 
@@ -85,5 +105,5 @@ For completeness proofs, use the semantic approach in `FiniteCanonicalModel.lean
 
 ---
 
-*Archived: 2026-01-13*
+*Last updated: 2026-01-19*
 *Reason: Superseded by SemanticWorldState approach*

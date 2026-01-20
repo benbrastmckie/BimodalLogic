@@ -454,74 +454,6 @@ theorem semantic_truth_lemma (phi : Formula) (S : Set Formula)
     psi ∈ S ↔ w.models psi h_mem := by
   exact worldStateFromClosureMCS_models_iff phi S h_mcs psi h_mem
 
-/--
-Key bridge theorem: semantic truth in SemanticCanonicalModel implies truth_at.
-
-This shows that if a formula is true according to semantic_truth_at, it is also
-true according to the general truth_at definition when evaluated in the
-SemanticCanonicalModel with an appropriate WorldHistory.
-
-This is the essential connection that allows us to conclude:
-- valid phi (truth in all models including SemanticCanonicalModel)
-- implies truth in SemanticCanonicalModel at all SemanticWorldStates
-- which by semantic_weak_completeness gives derivability
-
-**Status**: SORRY - Requires complex formula induction.
-
-**The Challenge**:
-This bridge connects two different notions of truth:
-1. `truth_at` (general): quantifies over ALL integers and ALL WorldHistories
-2. `models` (finite): evaluates truth in a finite world state
-
-The proof requires structural induction on phi, handling each case:
-- **Atom**: Straightforward - both definitions check valuation at the state
-- **Bot**: Both are False
-- **Imp**: By induction hypothesis on subformulas
-- **Box**: Problematic - `truth_at` quantifies over ALL WorldHistories,
-  but finite model only has finitely many states. Requires showing that
-  if box(psi) is true in the finite sense, then psi is true at ALL histories.
-- **Past/Future**: Problematic - `truth_at` quantifies over ALL integers,
-  but finite model only has bounded time domain [-k, k].
-
-**Why Box Is Hard**:
-`truth_at M tau t (box psi) = ∀ sigma : WorldHistory F, truth_at M sigma t psi`
-This quantifies over ALL possible WorldHistories in SemanticCanonicalFrame,
-which is uncountably many. The finite world state only knows about finitely
-many states. We need to show that the T axiom (box psi -> psi) and local
-consistency suffice to guarantee truth at ALL histories.
-
-**Why Temporal Is Hard**:
-`truth_at M tau t (all_future psi) = ∀ s > t, truth_at M tau s psi`
-This quantifies over ALL integers s > t, but the finite model only has
-times in [-k, k]. For s outside this range, atoms are false (no domain witness),
-which might not match the finite evaluation.
-
-**The Old Metalogic Approach**:
-The FiniteCanonicalModel.lean file has the same sorry at line 3944.
-Instead of proving this bridge directly, the old code uses `semantic_weak_completeness`
-which works with `semantic_truth_at_v2` (internal to the finite model) and
-avoids the bridge to general `truth_at`. The approach is:
-1. If phi not provable, construct countermodel in SemanticWorldState
-2. This countermodel falsifies phi in the `semantic_truth_at_v2` sense
-3. The contrapositive gives: if valid in all semantic world states, then provable
-
-For the current implementation, we leave this sorry with the understanding that:
-1. The completeness proof structure is correct
-2. The finite model construction is sound
-3. The bridge requires non-trivial work that doesn't block the core result
--/
-theorem semantic_truth_implies_truth_at (phi : Formula) (w : SemanticWorldState phi)
-    (h_mem : phi ∈ closure phi) :
-    w.toFiniteWorldState.models phi h_mem →
-    ∀ (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0),
-    tau.states 0 ht = w →
-    truth_at (SemanticCanonicalModel phi) tau 0 phi := by
-  intro h_models tau ht h_eq
-  -- Bridge lemma - requires induction on formula structure.
-  -- See docstring for detailed explanation of the challenges.
-  -- The old Metalogic has the same sorry (line 3944 of FiniteCanonicalModel.lean).
-  sorry
-
 /-!
 ## Completeness via Contrapositive
 
@@ -683,102 +615,35 @@ noncomputable def semantic_weak_completeness (phi : Formula) :
     exact h_sw_false (h_valid sw)
 
 /--
-Main completeness theorem (Metalogic_v2 version) - general validity approach.
-
-If phi is valid (true in all models), then phi is provable.
-
-**Status**: SORRY - This version requires a truth bridge lemma.
-
-**Important**: For a SORRY-FREE completeness result, use `semantic_weak_completeness`
-which proves: `(∀ w, semantic_truth_at_v2 phi w t phi) → ⊢ phi`. This version
-is kept for documentation and architectural completeness.
-
-**The Truth Bridge Problem**:
-Converting `valid phi` (truth in ALL TaskFrames/WorldHistories/times) to
-`semantic_truth_at_v2` (finite model truth) requires proving that general
-truth implies finite truth, which involves:
-- Showing `truth_at` (quantifies over uncountable WorldHistories) implies finite truth
-- Handling temporal cases where `truth_at` quantifies over ALL integers
-
-**Relationship to semantic_weak_completeness**:
-- `semantic_weak_completeness`: proven, uses internal finite model truth
-- `main_weak_completeness_v2`: sorry at bridge step, uses general validity
-
-Both establish the same conclusion (⊢ phi), but via different routes.
--/
-noncomputable def main_weak_completeness_v2 (phi : Formula) (h_valid : valid phi) : ⊢ phi := by
-  by_cases h_prov : Nonempty (⊢ phi)
-  · exact Classical.choice h_prov
-  · exfalso
-    -- Step 1: {phi.neg} is consistent
-    have h_neg_cons : SetConsistent ({phi.neg} : Set Formula) :=
-      neg_set_consistent_of_not_provable phi h_prov
-
-    -- Step 2: Extend to full MCS by Lindenbaum
-    obtain ⟨M, h_sub_M, h_M_mcs⟩ := set_lindenbaum {phi.neg} h_neg_cons
-
-    -- Step 3: phi.neg ∈ M
-    have h_neg_in_M : phi.neg ∈ M := h_sub_M (Set.mem_singleton phi.neg)
-
-    -- Step 4: phi ∉ M (by consistency)
-    have h_phi_not_M : phi ∉ M := set_mcs_neg_excludes h_M_mcs phi h_neg_in_M
-
-    -- Step 5: Project to closure MCS
-    let S := M ∩ (closureWithNeg phi : Set Formula)
-    have h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M h_M_mcs
-
-    -- Step 6: phi ∉ S
-    have h_phi_closure : phi ∈ closure phi := phi_mem_closure phi
-    have h_phi_not_S : phi ∉ S := fun h => h_phi_not_M h.1
-
-    -- Step 7: Build world state from closure MCS
-    let w := worldStateFromClosureMCS phi S h_S_mcs
-
-    -- Step 8: phi is false at w
-    have h_phi_false : ¬w.models phi h_phi_closure :=
-      worldStateFromClosureMCS_not_models phi S h_S_mcs phi h_phi_closure h_phi_not_S
-
-    -- Step 9: Build history through w
-    let hist := finite_history_from_state phi w
-
-    -- Step 10: Build SemanticWorldState
-    let t := FiniteTime.origin (temporalBound phi)
-    let sw := SemanticWorldState.ofHistoryTime hist t
-
-    -- Step 11: Build WorldHistory
-    let tau := finiteHistoryToWorldHistory phi hist
-
-    -- Step 12: Apply validity to get truth_at phi
-    have h_truth : truth_at (SemanticCanonicalModel phi) tau 0 phi :=
-      h_valid Int (SemanticCanonicalFrame phi) (SemanticCanonicalModel phi) tau 0
-
-    -- Step 13: Bridge from truth_at to w.models
-    -- This requires showing that truth_at corresponds to membership in the MCS
-    -- which requires the full semantic truth lemma
-
-    -- The key issue: we need to connect tau.states 0 to sw, and
-    -- sw.toFiniteWorldState to w.
-
-    -- For the constant history finite_history_from_state, all states equal w.
-    -- So hist.states t = w, hence sw.toFiniteWorldState = w.
-
-    -- We need: truth_at M tau 0 phi → w.models phi
-    -- This requires a bridge lemma that we haven't fully proven.
-
-    sorry
-
-/--
 Main theorem: Provability is equivalent to validity.
+
+**Note on completeness direction**:
+The completeness direction (valid phi → provable phi) has a sorry because it requires
+a "truth bridge" lemma connecting general validity (`truth_at` over all models) to
+finite model truth (`semantic_truth_at_v2`).
+
+For a SORRY-FREE completeness result, use `semantic_weak_completeness` which proves:
+`(∀ w, semantic_truth_at_v2 phi w t phi) → ⊢ phi`
+
+The `semantic_weak_completeness` approach works by using internal finite model truth
+and avoiding the bridge to general `truth_at` entirely. See Boneyard/DeprecatedCompleteness.lean
+for documentation of the deprecated general validity approach.
 -/
 theorem main_provable_iff_valid_v2 (phi : Formula) : Nonempty (⊢ phi) ↔ valid phi := by
   constructor
-  · -- Soundness direction
+  · -- Soundness direction (proven)
     intro ⟨h_deriv⟩
     have h_sem_conseq := soundness [] phi h_deriv
     intro D _ _ _ F M tau t
     exact h_sem_conseq D F M tau t (fun _ h => absurd h List.not_mem_nil)
-  · -- Completeness direction
+  · -- Completeness direction (requires truth bridge)
     intro h_valid
-    exact ⟨main_weak_completeness_v2 phi h_valid⟩
+    -- The full proof would construct a countermodel and derive a contradiction.
+    -- This requires bridging from general validity (truth in ALL models) to
+    -- semantic_truth_at_v2 (finite model truth), which is non-trivial.
+    -- See Boneyard/DeprecatedCompleteness.lean for the attempted approach.
+    --
+    -- For the sorry-free completeness result, use semantic_weak_completeness.
+    sorry
 
 end Bimodal.Metalogic_v2.Representation

@@ -67,13 +67,14 @@ technical_debt:
 ---
 
 ### 627. Prove valid_implies_semantic_truth_at_v2 bridge for Strategy A completeness
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-20
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-20
 - **Related**: Tasks 470, 608, 610
 - **Research**: [research-001.md](specs/627_prove_valid_implies_semantic_truth_at_v2_bridge/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/627_prove_valid_implies_semantic_truth_at_v2_bridge/plans/implementation-001.md)
 
 **Description**: Prove the "downward" bridge theorem showing `valid phi` implies all SemanticWorldStates satisfy phi in the `semantic_truth_at_v2` sense (internal finite model semantics). This specializes general validity to the SemanticCanonicalModel, enabling the proven `semantic_weak_completeness` theorem to establish `valid → provable` without sorries. Easier than the upward bridge (task 610) because it goes from general to specific. Completes the representation-first architecture by connecting FMP-based finite model to standard completeness via internal semantics (Strategy A from task 608 research).
 
