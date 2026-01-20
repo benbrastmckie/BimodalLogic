@@ -1,5 +1,5 @@
 ---
-next_project_number: 652
+next_project_number: 653
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -101,6 +101,16 @@ technical_debt:
 
 
 ## Medium Priority
+
+### 652. Improve /learn TODO grouping by topic
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-20
+
+**Description**: Improve the /learn command so that when creating todo-tasks it takes stock of ALL TODOs in the scanned file(s), then creates the smallest number of tasks that will address all TODOs while separating tasks by topic. Currently, /learn creates one task per file or misses TODOs when grouping. The improvement should: (1) inventory all TODO: tags found, (2) analyze topics/themes among them, (3) create grouped tasks that minimize task count while maintaining logical separation. The FIX: and NOTE: tag handling features of /learn should remain unchanged.
+
+---
 
 ### 651. Simplify /learn NOTE: tag workflow
 - **Status**: [COMPLETED]
