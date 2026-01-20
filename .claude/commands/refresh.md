@@ -1,35 +1,52 @@
 # /refresh Command
 
-Manage Claude Code resources - terminate orphaned processes or clean up old project files.
+Comprehensive cleanup of Claude Code resources - terminate orphaned processes and clean up ~/.claude/ directory.
 
 ## Syntax
 
 ```
-/refresh [--force]                              # Process cleanup (default)
-/refresh --projects [--age DAYS] [--dry-run] [--force]  # Project cleanup
+/refresh [--dry-run] [--force]
 ```
 
-## Modes
-
-### Process Cleanup (Default)
-
-Identify and terminate orphaned Claude Code processes to reclaim memory.
+## Options
 
 | Flag | Description |
 |------|-------------|
-| `--force` | Terminate orphaned processes immediately without confirmation |
-| (no flags) | Show status and prompt for confirmation |
+| `--dry-run` | Preview both process and directory cleanup without making changes |
+| `--force` | Skip confirmation and execute immediately (8-hour default for directory cleanup) |
+| (no flags) | Interactive mode with process cleanup and age threshold selection |
 
-### Project Cleanup (--projects)
+## What It Cleans
 
-Survey and clean up accumulated session files in `~/.claude/projects/`.
+### Process Cleanup
 
-| Flag | Description |
-|------|-------------|
-| `--projects` | Enable project file cleanup mode |
-| `--age DAYS` | Only target sessions older than DAYS (default: 7) |
-| `--dry-run` | Show what would be cleaned without making changes |
-| `--force` | Skip confirmation and clean immediately |
+Identifies and terminates orphaned Claude Code processes (detached processes without a controlling terminal).
+
+### Directory Cleanup
+
+Cleans accumulated files in ~/.claude/:
+
+| Directory | Contents |
+|-----------|----------|
+| projects/ | Session .jsonl files and subdirectories |
+| debug/ | Debug output files |
+| file-history/ | File version snapshots |
+| todos/ | Todo list backups |
+| session-env/ | Environment snapshots |
+| telemetry/ | Usage telemetry data |
+| shell-snapshots/ | Shell state |
+| plugins/cache/ | Old plugin versions |
+| cache/ | General cache |
+
+## Interactive Mode
+
+When run without flags, `/refresh` operates in interactive mode:
+
+1. **Process cleanup**: Shows orphaned processes and prompts for confirmation
+2. **Directory cleanup**: Shows cleanup candidates and prompts for age threshold:
+   - **8 hours (default)** - Remove files older than 8 hours
+   - **2 days** - Remove files older than 2 days (conservative)
+   - **Clean slate** - Remove everything except safety margin
 
 ## Execution
 
@@ -40,87 +57,125 @@ skill: skill-refresh
 args: {flags from command}
 ```
 
-### Process Mode
-
-The skill will:
-1. Run the detection script to identify orphaned Claude processes
-2. Display status report with process list and memory usage
-3. Based on flags:
-   - `--force`: Terminate orphaned processes immediately
-   - default: Use AskUserQuestion to prompt for confirmation, then terminate if confirmed
-
-### Project Mode
-
-The skill will:
-1. Run the project cleanup script to survey project files
-2. Display usage statistics and cleanup candidates
-3. Based on flags:
-   - `--dry-run`: Show what would be deleted without changes
-   - `--force`: Delete old files immediately
-   - default: Use AskUserQuestion to prompt for confirmation, then clean if confirmed
+The skill executes both cleanup types sequentially:
+1. Process cleanup (using claude-refresh.sh)
+2. Directory cleanup (using claude-cleanup.sh)
 
 ## Safety
 
-### Process Cleanup
+### Protected Files (Never Deleted)
 
-- **Never kills active sessions** - Only targets processes without TTY
-- **Preserves current session** - Excludes the current process tree
-- **Graceful shutdown first** - Sends SIGTERM before SIGKILL
+- `sessions-index.json` - System file in each project directory
+- `settings.json` - User settings
+- `.credentials.json` - Authentication credentials
+- `history.jsonl` - User command history
 
-### Project Cleanup
+### Safety Margin
 
-- **Never modifies sessions-index.json** - System file managed by Claude Code
-- **Never deletes recent files** - Files modified within last hour are protected
-- **Age threshold** - Only targets sessions older than threshold (default: 7 days)
-- **Dry-run available** - Preview changes before executing
+Files modified within the last hour are **never deleted**, regardless of age threshold.
+
+### Process Protection
+
+- Only targets processes without a controlling terminal (TTY = "?")
+- Never kills active Claude Code sessions
+- Excludes current process tree
 
 ## Examples
 
-### Process Cleanup
+### Interactive Cleanup (Recommended)
 
 ```bash
-# Show status and prompt for confirmation
+# Show status, prompt for process cleanup, then prompt for age selection
 /refresh
-
-# Terminate orphaned processes immediately
-/refresh --force
 ```
 
-### Project Cleanup
+### Preview Mode
 
 ```bash
-# Survey project files and prompt for cleanup
-/refresh --projects
+# Show what would be cleaned without making changes
+/refresh --dry-run
+```
 
-# Preview cleanup without making changes
-/refresh --projects --dry-run
+### Automated Cleanup
 
-# Clean files older than 14 days
-/refresh --projects --age 14
-
-# Clean files immediately without confirmation
-/refresh --projects --force
-
-# Preview cleanup with custom age threshold
-/refresh --projects --age 3 --dry-run
+```bash
+# Skip prompts, clean with 8-hour default
+/refresh --force
 ```
 
 ## Output
 
-### Process Mode
+### Survey Output
 
-Reports include:
-- Total Claude processes and their memory usage
-- Count of active vs orphaned processes
-- List of orphaned processes with PID, memory, age, and command
-- Memory reclaimed (after cleanup)
-- Any processes that couldn't be terminated
+```
+Claude Code Refresh
+===================
 
-### Project Mode
+No orphaned processes found.
+All 3 Claude processes are active sessions.
 
-Reports include:
-- Project path and Claude Code project directory
-- Total disk usage (size, session count, JSONL count)
-- Cleanup candidates (files/dirs older than threshold)
-- Size that can be reclaimed
-- Detailed list of files (in dry-run or force mode)
+---
+
+Claude Code Directory Cleanup
+=============================
+
+Target: ~/.claude/
+
+Current total size: 7.3 GB
+
+Age threshold: 8 hours
+Safety margin: 1 hour (files modified within last hour are preserved)
+
+Scanning directories...
+
+Directory                   Total    Cleanable    Files
+----------                -------   ----------    -----
+projects/                  7.0 GB       6.5 GB      980
+debug/                   151.0 MB     140.0 MB      650
+file-history/             56.0 MB      50.0 MB     3100
+todos/                      23 KB        20 KB      600
+session-env/                  0 B            -        -
+telemetry/                 1.5 MB       1.5 MB       11
+shell-snapshots/           271 KB       250 KB      220
+plugins/cache/              2.4 MB       2.0 MB       15
+cache/                      70 KB        70 KB        1
+
+TOTAL                      7.3 GB       6.7 GB     5577
+
+Space that can be reclaimed: 6.7 GB
+```
+
+### After Cleanup
+
+```
+Cleanup Complete
+================
+Deleted: 5577 files
+Failed:  0 files
+Space reclaimed: 6.7 GB
+
+New total size: 600.0 MB
+```
+
+### Dry Run
+
+```
+Dry Run Summary
+===============
+Would delete: 5577 files
+Would reclaim: 6.7 GB
+```
+
+## Troubleshooting
+
+### No cleanup candidates found
+
+All files are either protected or within the selected age threshold. This is normal for a recently-used system.
+
+### Permission denied
+
+Some processes may require elevated permissions to terminate. Run as root if needed, or manually kill specific processes.
+
+### Large cleanup size
+
+If ~/.claude/ is very large (>5GB), consider starting with the "2 days" option to preserve recent work, then progressively clean older files.

@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 #
-# install-aliases.sh - Install Claude Code refresh aliases
+# install-aliases.sh - Install Claude Code refresh and cleanup aliases
 #
 # This script adds helpful aliases to your shell configuration:
-#   - claude-refresh: Show status and prompt for cleanup
-#   - claude-refresh-force: Terminate orphaned processes immediately
+#   - claude-refresh: Show orphaned process status
+#   - claude-refresh-force: Force terminate orphaned processes
+#   - claude-cleanup: Preview directory cleanup (dry-run)
+#   - claude-cleanup-force: Force cleanup with 8-hour threshold
+#   - claude-cleanup-all: Clean everything except safety margin
 #
 # Usage: ./install-aliases.sh [--uninstall]
 
@@ -41,6 +44,7 @@ detect_shell_config() {
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REFRESH_SCRIPT="$SCRIPT_DIR/claude-refresh.sh"
+CLEANUP_SCRIPT="$SCRIPT_DIR/claude-cleanup.sh"
 
 # Alias block markers
 ALIAS_START="# >>> Claude Code refresh aliases >>>"
@@ -50,11 +54,20 @@ ALIAS_END="# <<< Claude Code refresh aliases <<<"
 generate_aliases() {
     cat << EOF
 $ALIAS_START
-# Show status and prompt for cleanup
+# Show orphaned process status
 alias claude-refresh='$REFRESH_SCRIPT'
 
-# Force cleanup without confirmation
+# Force terminate orphaned processes
 alias claude-refresh-force='$REFRESH_SCRIPT --force'
+
+# Comprehensive ~/.claude/ directory cleanup (dry-run preview)
+alias claude-cleanup='$CLEANUP_SCRIPT --dry-run'
+
+# Force cleanup with 8-hour default
+alias claude-cleanup-force='$CLEANUP_SCRIPT --force --age 8'
+
+# Clean slate - remove everything except safety margin (interactive confirmation)
+alias claude-cleanup-all='$CLEANUP_SCRIPT --age 0'
 $ALIAS_END
 EOF
 }
@@ -87,8 +100,11 @@ install_aliases() {
     echo "Aliases installed in $config"
     echo ""
     echo "Available aliases:"
-    echo "  claude-refresh       - Show status and prompt for cleanup"
-    echo "  claude-refresh-force - Force cleanup without confirmation"
+    echo "  claude-refresh        - Show orphaned process status"
+    echo "  claude-refresh-force  - Force terminate orphaned processes"
+    echo "  claude-cleanup        - Preview directory cleanup (dry-run)"
+    echo "  claude-cleanup-force  - Force cleanup with 8-hour threshold"
+    echo "  claude-cleanup-all    - Clean everything except safety margin"
     echo ""
     echo "Run 'source $config' or start a new shell to use the aliases."
 }

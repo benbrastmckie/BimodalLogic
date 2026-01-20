@@ -1,19 +1,21 @@
 {
   "status": "researched",
-  "summary": "Identified root cause: roadmap update feature works correctly but ROAD_MAP.md has zero (Task N) patterns to match. The exact-match-only strategy (from task 638) has no targets. Title fuzzy matching (deferred to task 639, never implemented) is the missing piece. Recommend implementing keyword-based title matching with 2+ keyword threshold.",
+  "summary": "Supplemental research found /revise command correctly scoped (no roadmap issues). Identified shared matching utility opportunity for /todo and /review. Recommended consolidating roadmap improvements via shared pattern and title keyword matching.",
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/641_improve_todo_command_roadmap_update/reports/research-001.md",
-      "summary": "Research report identifying matching strategy gap as root cause, with detailed recommendation for title fuzzy matching implementation"
+      "path": "specs/641_improve_todo_command_roadmap_update/reports/research-002.md",
+      "summary": "Supplemental research analyzing /revise command and shared matching patterns for /todo and /review roadmap updates"
     }
   ],
-  "next_steps": "Run /plan 641 to create implementation plan for title fuzzy matching",
+  "next_steps": "Run /plan 641 to create implementation plan incorporating both research reports",
   "metadata": {
-    "session_id": "sess_1768931598_cf2405",
+    "session_id": "sess_1768932190_4a03c2",
     "agent_type": "general-research-agent",
+    "duration_seconds": 180,
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 6
+    "findings_count": 6,
+    "supplemental_to": "research-001.md"
   }
 }

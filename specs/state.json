@@ -12,14 +12,19 @@
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T17:51:23Z",
-      "last_updated": "2026-01-20T17:56:45Z",
-      "session_id": "sess_1768931598_cf2405",
-      "researched": "2026-01-20T17:56:45Z",
+      "last_updated": "2026-01-20T18:06:36Z",
+      "session_id": "sess_1768932190_4a03c2",
+      "researched": "2026-01-20T18:06:36Z",
       "artifacts": [
         {
           "path": "specs/641_improve_todo_command_roadmap_update/reports/research-001.md",
           "type": "research",
           "summary": "Research report identifying matching strategy gap as root cause, with detailed recommendation for title fuzzy matching implementation"
+        },
+        {
+          "path": "specs/641_improve_todo_command_roadmap_update/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplemental research analyzing /revise command and shared matching patterns for /todo and /review roadmap updates"
         }
       ]
     },

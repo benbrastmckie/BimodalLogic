@@ -342,18 +342,35 @@ All delegating skills follow this 5-step pattern:
 
 Claude Code resources can accumulate over time. Use the `/refresh` command to manage:
 - **Orphaned processes**: Detached Claude processes consuming memory
-- **Project files**: Old session logs in `~/.claude/projects/`
+- **Directory cleanup**: Old files in `~/.claude/` (projects, debug, file-history, todos, etc.)
 
 ### Quick Commands
 
 | Command | Description |
 |---------|-------------|
-| `/refresh` | Show orphaned processes, prompt for cleanup |
-| `/refresh --force` | Terminate orphaned processes immediately |
-| `/refresh --projects` | Survey project files, prompt for cleanup |
-| `/refresh --projects --dry-run` | Preview project cleanup without changes |
-| `/refresh --projects --force` | Clean old project files immediately |
-| `/refresh --projects --age 14` | Target files older than 14 days (default: 7) |
+| `/refresh` | Interactive: cleanup processes, then select age threshold for directories |
+| `/refresh --dry-run` | Preview both cleanups without making changes |
+| `/refresh --force` | Execute both cleanups immediately (8-hour default) |
+
+### Age Threshold Options
+
+When running `/refresh` interactively, you'll be prompted to select an age threshold:
+- **8 hours (default)** - Remove files older than 8 hours
+- **2 days** - Remove files older than 2 days (conservative)
+- **Clean slate** - Remove everything except safety margin (1 hour)
+
+### Cleanable Directories
+
+The following directories in `~/.claude/` are cleaned based on age:
+- `projects/` - Session .jsonl files and subdirectories
+- `debug/` - Debug output files
+- `file-history/` - File version snapshots
+- `todos/` - Todo list backups
+- `session-env/` - Environment snapshots
+- `telemetry/` - Usage telemetry data
+- `shell-snapshots/` - Shell state
+- `plugins/cache/` - Old plugin versions
+- `cache/` - General cache
 
 ### Shell Aliases (Optional)
 
@@ -364,30 +381,16 @@ Install convenience aliases:
 
 This adds: `claude-refresh`, `claude-refresh-force`
 
-### Automated Refresh (Optional)
-
-Install a systemd user timer for hourly refresh:
-```bash
-.claude/scripts/install-systemd-timer.sh
-```
-
-Manage the timer:
-```bash
-systemctl --user status claude-refresh.timer    # Check status
-systemctl --user stop claude-refresh.timer      # Stop timer
-.claude/scripts/install-systemd-timer.sh --uninstall  # Remove
-```
-
 ### Safety
 
 **Process cleanup**:
 - Only targets orphaned processes (no controlling terminal)
 - Active sessions are never affected
 
-**Project cleanup**:
-- Never modifies `sessions-index.json`
-- Never deletes files modified within the last hour
-- Age threshold protects recent sessions (default: 7 days)
+**Directory cleanup**:
+- Never deletes: `sessions-index.json`, `settings.json`, `.credentials.json`, `history.jsonl`
+- Never deletes files modified within the last hour (safety margin)
+- Age threshold selectable interactively or defaults to 8 hours with `--force`
 
 ## Important Notes
 

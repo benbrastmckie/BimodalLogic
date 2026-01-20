@@ -74,7 +74,7 @@ technical_debt:
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
-- **Research**: [research-001.md](specs/641_improve_todo_command_roadmap_update/reports/research-001.md)
+- **Research**: [research-001.md](specs/641_improve_todo_command_roadmap_update/reports/research-001.md), [research-002.md](specs/641_improve_todo_command_roadmap_update/reports/research-002.md)
 
 **Description**: Review and improve the `/todo` command to reliably update ROAD_MAP.md when archiving completed projects. Task 638 implemented ROAD_MAP.md update functionality but running `/todo` does not show that ROAD_MAP.md was updated. Analyze the current `/todo` command implementation to identify the issue, then improve the command to both archive projects and update ROAD_MAP.md without needless complexity, providing a robust and reliable command.
 
