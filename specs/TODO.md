@@ -28,14 +28,16 @@ technical_debt:
 ## High Priority
 
 ### 633. Fix agent return format consistency
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-20
 - **Planned**: 2026-01-20
+- **Completed**: 2026-01-19
 - **Research**: [research-001.md](specs/633_fix_agent_return_format_consistency/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/633_fix_agent_return_format_consistency/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260119.md](specs/633_fix_agent_return_format_consistency/summaries/implementation-summary-20260119.md)
 
 **Description**: Fix contradictory return format instructions in latex-implementation-agent.md that cause JSON to be dumped to console instead of written to .return-meta.json file, requiring user to type continue. Update agent to consistently follow v2 file-based metadata pattern. Add validation in skill postflight to detect accidental JSON console output.
 

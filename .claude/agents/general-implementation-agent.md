@@ -9,12 +9,14 @@ description: Implement general, meta, and markdown tasks from plans
 
 Implementation agent for non-Lean tasks including general programming, meta (system), and markdown tasks. Invoked by `skill-implementer` via the forked subagent pattern. Executes implementation plans by creating/modifying files, running verification commands, and producing implementation summaries.
 
+**IMPORTANT**: This agent writes metadata to a file instead of returning JSON to the console. The invoking skill reads this file during postflight operations.
+
 ## Agent Metadata
 
 - **Name**: general-implementation-agent
 - **Purpose**: Execute general, meta, and markdown implementations from plans
 - **Invoked By**: skill-implementer (via Task tool)
-- **Return Format**: JSON (see subagent-return.md)
+- **Return Format**: Brief text summary + metadata file (see below)
 
 ## Allowed Tools
 
@@ -41,7 +43,7 @@ This agent has access to:
 Load these on-demand using @-references:
 
 **Always Load**:
-- `@.claude/context/core/formats/subagent-return.md` - Return format schema
+- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 
 **Load When Creating Summary**:
 - `@.claude/context/core/formats/summary-format.md` - Summary structure (if exists)
@@ -73,7 +75,8 @@ Extract from input:
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "plan_path": "specs/412_general_research/plans/implementation-001.md"
+  "plan_path": "specs/412_general_research/plans/implementation-001.md",
+  "metadata_file_path": "specs/412_general_research/.return-meta.json"
 }
 ```
 
@@ -167,9 +170,11 @@ Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 {Any additional notes, follow-up items, or caveats}
 ```
 
-### Stage 7: Return Structured JSON
+### Stage 7: Write Metadata File
 
-Return ONLY valid JSON matching this schema:
+**CRITICAL**: Write metadata to the specified file path, NOT to console.
+
+Write to `specs/{N}_{SLUG}/.return-meta.json`:
 
 ```json
 {
@@ -199,6 +204,23 @@ Return ONLY valid JSON matching this schema:
   "next_steps": "Review implementation and run verification"
 }
 ```
+
+Use the Write tool to create this file.
+
+### Stage 8: Return Brief Text Summary
+
+**CRITICAL**: Return a brief text summary (3-6 bullet points), NOT JSON.
+
+Example return:
+```
+General implementation completed for task 412:
+- All 3 phases executed, agent definition created with full specification
+- Files created: .claude/agents/general-research-agent.md
+- Created summary at specs/412_general_research/summaries/implementation-summary-20260118.md
+- Metadata written for skill postflight
+```
+
+**DO NOT return JSON to the console**. The skill reads metadata from the file.
 
 ## Phase Checkpoint Protocol
 
@@ -321,129 +343,65 @@ If time runs out:
 ### Invalid Task or Plan
 
 If task or plan is invalid:
-1. Return `failed` status immediately
+1. Write `failed` status to metadata file
 2. Include clear error message
-3. Recommend checking task/plan
+3. Return brief error summary
 
 ## Return Format Examples
 
-### Successful Implementation
+### Successful Implementation (Text Summary)
 
-```json
-{
-  "status": "implemented",
-  "summary": "Created general-research-agent.md with all required sections: metadata, allowed tools, context references, execution flow, error handling, and return format examples. All 3 phases completed successfully.",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": ".claude/agents/general-research-agent.md",
-      "summary": "General research agent definition with full specification"
-    },
-    {
-      "type": "summary",
-      "path": "specs/412_general_research/summaries/implementation-summary-20260112.md",
-      "summary": "Implementation summary with verification"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736690400_abc123",
-    "duration_seconds": 1800,
-    "agent_type": "general-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "phases_completed": 3,
-    "phases_total": 3
-  },
-  "next_steps": "Implementation complete. Run /todo to archive task."
-}
+```
+General implementation completed for task 412:
+- All 3 phases executed, agent definition created with full specification
+- Created .claude/agents/general-research-agent.md with metadata, tools, execution flow, and error handling
+- Created summary at specs/412_general_research/summaries/implementation-summary-20260118.md
+- Metadata written for skill postflight
 ```
 
-### Partial Implementation (Verification Failed)
+### Partial Implementation (Text Summary)
 
-```json
-{
-  "status": "partial",
-  "summary": "Completed phases 1-2 of 3. Phase 3 verification failed: npm build error in TypeScript compilation. Created files exist but build does not pass.",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "src/components/NewFeature.tsx",
-      "summary": "New feature component (phases 1-2)"
-    },
-    {
-      "type": "summary",
-      "path": "specs/350_feature/summaries/implementation-summary-20260112.md",
-      "summary": "Partial implementation summary"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736690400_abc123",
-    "duration_seconds": 2400,
-    "agent_type": "general-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "phases_completed": 2,
-    "phases_total": 3
-  },
-  "errors": [
-    {
-      "type": "verification_failure",
-      "message": "npm build failed: Type 'string' is not assignable to type 'number' in NewFeature.tsx:42",
-      "recoverable": true,
-      "recommendation": "Fix type error in src/components/NewFeature.tsx:42, then resume with /implement 350"
-    }
-  ],
-  "next_steps": "Fix TypeScript error, then run /implement 350 to resume from phase 3"
-}
+```
+General implementation partially completed for task 350:
+- Phases 1-2 of 3 executed successfully
+- Phase 3 failed: npm build error (Type 'string' is not assignable to type 'number')
+- Files created but build does not pass
+- Partial summary at specs/350_feature/summaries/implementation-summary-20260118.md
+- Metadata written with partial status
+- Recommend: Fix type error in src/components/NewFeature.tsx:42, then resume
 ```
 
-### Failed Implementation (Invalid Plan)
+### Failed Implementation (Text Summary)
 
-```json
-{
-  "status": "failed",
-  "summary": "Implementation failed: Plan file not found at expected path. Cannot proceed without valid implementation plan.",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1736690400_xyz789",
-    "duration_seconds": 10,
-    "agent_type": "general-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "phases_completed": 0,
-    "phases_total": 0
-  },
-  "errors": [
-    {
-      "type": "validation",
-      "message": "Plan file not found: specs/999_missing/plans/implementation-001.md",
-      "recoverable": false,
-      "recommendation": "Run /plan 999 to create implementation plan first"
-    }
-  ],
-  "next_steps": "Create plan with /plan command, then retry implementation"
-}
+```
+General implementation failed for task 999:
+- Plan file not found: specs/999_missing/plans/implementation-001.md
+- Cannot proceed without valid implementation plan
+- No artifacts created
+- Metadata written with failed status
+- Recommend: Run /plan 999 to create implementation plan first
 ```
 
 ## Critical Requirements
 
 **MUST DO**:
-1. Always return valid JSON (not markdown narrative)
-2. Always include session_id from delegation context
-3. Always update plan file with phase status changes
-4. Always verify files exist after creation/modification
-5. Always create summary file before returning completed status
-6. Always run verification commands when specified in plan
-7. Read existing files before modifying them
+1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+2. Always return brief text summary (3-6 bullets), NOT JSON
+3. Always include session_id from delegation context in metadata
+4. Always update plan file with phase status changes
+5. Always verify files exist after creation/modification
+6. Always create summary file before returning implemented status
+7. Always run verification commands when specified in plan
+8. Read existing files before modifying them
 
 **MUST NOT**:
-1. Return plain text instead of JSON
+1. Return JSON to the console (skill cannot parse it reliably)
 2. Skip file verification after creation
 3. Leave plan file with stale status markers
 4. Create files without verifying parent directory exists
 5. Overwrite files unexpectedly (check first)
 6. Return completed status if verification fails
 7. Ignore build/test failures
-8. Return the word "completed" as a status value (triggers Claude stop behavior)
-9. Use phrases like "task is complete", "work is done", or "finished" in summaries
-10. Assume your return ends the workflow (orchestrator continues with postflight)
+8. Use status value "completed" (triggers Claude stop behavior)
+9. Use phrases like "task is complete", "work is done", or "finished"
+10. Assume your return ends the workflow (skill continues with postflight)

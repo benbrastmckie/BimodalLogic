@@ -168,6 +168,30 @@ The subagent will:
 
 ---
 
+### Stage 5a: Validate Subagent Return Format
+
+**IMPORTANT**: Check if subagent accidentally returned JSON to console (v1 pattern) instead of writing to file (v2 pattern).
+
+If the subagent's text return parses as valid JSON, log a warning:
+
+```bash
+# Check if subagent return looks like JSON (starts with { and is valid JSON)
+subagent_return="$SUBAGENT_TEXT_RETURN"
+if echo "$subagent_return" | grep -q '^{' && echo "$subagent_return" | jq empty 2>/dev/null; then
+    echo "WARNING: Subagent returned JSON to console instead of writing metadata file."
+    echo "This indicates the agent may have outdated instructions (v1 pattern instead of v2)."
+    echo "The skill will continue by reading the metadata file, but this should be fixed."
+fi
+```
+
+This validation:
+- Does NOT fail the operation (continues to read metadata file)
+- Logs a warning for debugging
+- Indicates the subagent instructions need updating
+- Allows graceful handling of mixed v1/v2 agents
+
+---
+
 ### Stage 6: Parse Subagent Return (Read Metadata File)
 
 After subagent returns, read the metadata file:

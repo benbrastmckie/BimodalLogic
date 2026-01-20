@@ -383,140 +383,61 @@ If task or plan is invalid:
 
 ## Return Format Examples
 
-### Successful Implementation
+### Successful Implementation (Text Summary)
 
-```json
-{
-  "status": "implemented",
-  "summary": "Created Logos documentation with 4 chapters covering syntax, semantics, proofs, and examples. PDF compiles cleanly with latexmk, producing 42-page document with all cross-references resolved.",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "docs/logos-manual.tex",
-      "summary": "Main document file"
-    },
-    {
-      "type": "implementation",
-      "path": "docs/chapters/syntax.tex",
-      "summary": "Chapter 1: Syntax definitions"
-    },
-    {
-      "type": "implementation",
-      "path": "docs/chapters/semantics.tex",
-      "summary": "Chapter 2: Kripke semantics"
-    },
-    {
-      "type": "implementation",
-      "path": "docs/logos-manual.pdf",
-      "summary": "Compiled PDF (42 pages)"
-    },
-    {
-      "type": "summary",
-      "path": "specs/334_logos_docs/summaries/implementation-summary-20260112.md",
-      "summary": "Implementation summary with compilation verification"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736690400_abc123",
-    "duration_seconds": 2400,
-    "agent_type": "latex-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "latex-implementation-agent"],
-    "phases_completed": 4,
-    "phases_total": 4,
-    "page_count": 42
-  },
-  "next_steps": "Implementation complete. Review PDF and run /todo to archive task."
-}
+```
+LaTeX implementation completed for task 334:
+- All 4 phases executed, document compiles cleanly
+- Created 42-page PDF with 4 chapters (syntax, semantics, proofs, examples)
+- PDF at docs/logos-manual.pdf
+- Created summary at specs/334_logos_docs/summaries/implementation-summary-20260118.md
+- Metadata written for skill postflight
 ```
 
-### Partial Implementation (Compilation Error)
+### Partial Implementation (Text Summary)
 
-```json
-{
-  "status": "partial",
-  "summary": "Completed phases 1-2 of 3. Phase 3 has compilation error: missing tikz-cd package for commutative diagrams. Source files created but PDF incomplete.",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "docs/logos-manual.tex",
-      "summary": "Main document (phases 1-2 complete)"
-    },
-    {
-      "type": "summary",
-      "path": "specs/334_logos_docs/summaries/implementation-summary-20260112.md",
-      "summary": "Partial implementation summary"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1736690400_abc123",
-    "duration_seconds": 1800,
-    "agent_type": "latex-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "latex-implementation-agent"],
-    "phases_completed": 2,
-    "phases_total": 3
-  },
-  "errors": [
-    {
-      "type": "compilation_error",
-      "message": "! LaTeX Error: File `tikz-cd.sty' not found.",
-      "recoverable": true,
-      "recommendation": "Install tikz-cd package: tlmgr install tikz-cd, then resume with /implement 334"
-    }
-  ],
-  "next_steps": "Install missing package, then run /implement 334 to resume from phase 3"
-}
+```
+LaTeX implementation partially completed for task 334:
+- Phases 1-2 of 3 executed successfully
+- Phase 3 blocked: missing tikz-cd package for commutative diagrams
+- Source files created but PDF incomplete
+- Partial summary at specs/334_logos_docs/summaries/implementation-summary-20260118.md
+- Metadata written with partial status
+- Recommend: Install tikz-cd package (tlmgr install tikz-cd), then resume
 ```
 
-### Failed Implementation (Missing Source Template)
+### Failed Implementation (Text Summary)
 
-```json
-{
-  "status": "failed",
-  "summary": "Implementation failed: Required template file docs/template/main.tex not found. Cannot proceed without document template.",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1736690400_xyz789",
-    "duration_seconds": 15,
-    "agent_type": "latex-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "latex-implementation-agent"],
-    "phases_completed": 0,
-    "phases_total": 3
-  },
-  "errors": [
-    {
-      "type": "file_not_found",
-      "message": "Template file not found: docs/template/main.tex",
-      "recoverable": false,
-      "recommendation": "Create document template first or update plan to specify different template path"
-    }
-  ],
-  "next_steps": "Create required template or revise plan with /revise 334"
-}
+```
+LaTeX implementation failed for task 334:
+- Template file not found: docs/template/main.tex
+- Cannot proceed without document template
+- No artifacts created
+- Metadata written with failed status
+- Recommend: Create document template first or revise plan
 ```
 
 ## Critical Requirements
 
 **MUST DO**:
-1. Always return valid JSON (not markdown narrative)
-2. Always include session_id from delegation context
-3. Always run `latexmk -pdf` to verify compilation
-4. Always update plan file with phase status changes
-5. Always create summary file before returning
-6. Always include PDF in artifacts if compilation succeeds
-7. Always parse .log file for errors after compilation
-8. Clean auxiliary files with `latexmk -c` on partial/failed
+1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+2. Always return brief text summary (3-6 bullets), NOT JSON
+3. Always include session_id from delegation context in metadata
+4. Always run `latexmk -pdf` to verify compilation
+5. Always update plan file with phase status changes
+6. Always create summary file before returning implemented status
+7. Always include PDF in artifacts if compilation succeeds
+8. Always parse .log file for errors after compilation
+9. Clean auxiliary files with `latexmk -c` on partial/failed
 
 **MUST NOT**:
-1. Return plain text instead of JSON
+1. Return JSON to the console (skill cannot parse it reliably)
 2. Mark completed without successful compilation
 3. Leave auxiliary files (.aux, .log, etc.) uncommitted
 4. Ignore compilation warnings for undefined references
 5. Skip compilation verification step
 6. Create .tex files without running compilation check
 7. Return completed status if PDF doesn't exist or is empty
-8. Return the word "completed" as a status value (triggers Claude stop behavior)
-9. Use phrases like "task is complete", "work is done", or "finished" in summaries
-10. Assume your return ends the workflow (orchestrator continues with postflight)
+8. Use status value "completed" (triggers Claude stop behavior)
+9. Use phrases like "task is complete", "work is done", or "finished"
+10. Assume your return ends the workflow (skill continues with postflight)

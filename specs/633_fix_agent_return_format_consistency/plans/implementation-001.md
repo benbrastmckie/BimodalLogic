@@ -1,7 +1,7 @@
 # Implementation Plan: Task #633
 
 - **Task**: 633 - fix_agent_return_format_consistency
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -44,7 +44,7 @@ Research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Fix latex-implementation-agent.md [NOT STARTED]
+### Phase 1: Fix latex-implementation-agent.md [COMPLETED]
 
 **Goal**: Update Return Format Examples and Critical Requirements sections to match v2 file-based metadata pattern
 
@@ -66,7 +66,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Fix general-implementation-agent.md [NOT STARTED]
+### Phase 2: Fix general-implementation-agent.md [COMPLETED]
 
 **Goal**: Update Stage 7, Return Format Examples, and Critical Requirements sections to match v2 file-based metadata pattern
 
@@ -92,7 +92,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 3: Add Postflight Validation [NOT STARTED]
+### Phase 3: Add Postflight Validation [COMPLETED]
 
 **Goal**: Add validation in skill postflight to detect if subagent accidentally returned JSON to console
 

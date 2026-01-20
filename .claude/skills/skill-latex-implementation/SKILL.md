@@ -128,7 +128,8 @@ Prepare delegation context:
     "description": "{description}",
     "language": "latex"
   },
-  "plan_path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md"
+  "plan_path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
+  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json"
 }
 ```
 
@@ -157,11 +158,52 @@ The subagent will:
 - Execute compilation loop (pdflatex/latexmk)
 - Handle bibliography processing (bibtex/biber)
 - Create implementation summary
-- Return standardized JSON result
+- Write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+- Return a brief text summary (NOT JSON)
 
-### 4. Return Validation
+### 3a. Validate Subagent Return Format
 
-Validate return matches `subagent-return.md` schema:
+**IMPORTANT**: Check if subagent accidentally returned JSON to console (v1 pattern) instead of writing to file (v2 pattern).
+
+If the subagent's text return parses as valid JSON, log a warning:
+
+```bash
+# Check if subagent return looks like JSON (starts with { and is valid JSON)
+subagent_return="$SUBAGENT_TEXT_RETURN"
+if echo "$subagent_return" | grep -q '^{' && echo "$subagent_return" | jq empty 2>/dev/null; then
+    echo "WARNING: Subagent returned JSON to console instead of writing metadata file."
+    echo "This indicates the agent may have outdated instructions (v1 pattern instead of v2)."
+    echo "The skill will continue by reading the metadata file, but this should be fixed."
+fi
+```
+
+This validation:
+- Does NOT fail the operation (continues to read metadata file)
+- Logs a warning for debugging
+- Indicates the subagent instructions need updating
+- Allows graceful handling of mixed v1/v2 agents
+
+### 4. Parse Subagent Return (Read Metadata File)
+
+After subagent returns, read the metadata file:
+
+```bash
+metadata_file="specs/${task_number}_${project_name}/.return-meta.json"
+
+if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
+    status=$(jq -r '.status' "$metadata_file")
+    artifact_path=$(jq -r '.artifacts[0].path // ""' "$metadata_file")
+    artifact_type=$(jq -r '.artifacts[0].type // ""' "$metadata_file")
+    artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
+    phases_completed=$(jq -r '.metadata.phases_completed // 0' "$metadata_file")
+    phases_total=$(jq -r '.metadata.phases_total // 0' "$metadata_file")
+else
+    echo "Error: Invalid or missing metadata file"
+    status="failed"
+fi
+```
+
+Validate the metadata contains required fields:
 - Status is one of: implemented, partial, failed, blocked
 - Summary is non-empty and <100 tokens
 - Artifacts array present (source files, compiled PDF, summary)
@@ -233,62 +275,54 @@ fi
 
 **On failed**: Do NOT run postflight. Keep status as "implementing" for retry. Do not update plan file (leave as `[IMPLEMENTING]` for retry).
 
-### 6. Return Propagation
+### 6. Git Commit
 
-Return validated result to caller without modification.
+Commit changes with session ID:
+
+```bash
+git add -A
+git commit -m "task ${task_number}: complete implementation
+
+Session: ${session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+
+### 7. Cleanup
+
+Remove metadata file after postflight processing:
+
+```bash
+rm -f "specs/${task_number}_${project_name}/.return-meta.json"
+```
+
+### 8. Return Brief Summary
+
+Return a brief text summary (NOT JSON) describing the implementation results.
 
 ---
 
 ## Return Format
 
-See `.claude/context/core/formats/subagent-return.md` for full specification.
+This skill returns a **brief text summary** (NOT JSON). The JSON metadata is written to the file and processed internally.
 
-Expected successful return:
-```json
-{
-  "status": "implemented",
-  "summary": "Implemented N document sections with successful compilation",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "docs/output.tex",
-      "summary": "LaTeX source file"
-    },
-    {
-      "type": "output",
-      "path": "docs/output.pdf",
-      "summary": "Compiled PDF document"
-    },
-    {
-      "type": "summary",
-      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
-      "summary": "Implementation completion summary"
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_...",
-    "agent_type": "latex-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "latex-implementation-agent"]
-  },
-  "next_steps": "Implementation finished. Run /task --sync to verify."
-}
+Example successful return:
+```
+LaTeX implementation completed for task 334:
+- All 4 phases executed, document compiles cleanly
+- Created 42-page PDF at docs/logos-manual.pdf
+- Created summary at specs/334_logos_docs/summaries/implementation-summary-20260118.md
+- Status updated to [COMPLETED]
+- Changes committed with session sess_1736700000_abc123
 ```
 
-Expected partial return (compilation error/timeout):
-```json
-{
-  "status": "partial",
-  "summary": "Implemented 3/5 sections, compilation error in section 4",
-  "artifacts": [...],
-  "errors": [{
-    "type": "execution",
-    "message": "LaTeX compilation failed: undefined reference",
-    "recoverable": true,
-    "recommendation": "Fix cross-reference and recompile"
-  }],
-  "next_steps": "Run /implement {N} to resume"
-}
+Example partial return:
+```
+LaTeX implementation partially completed for task 334:
+- Phases 1-2 of 3 executed
+- Phase 3 blocked: missing tikz-cd package
+- Partial summary at specs/334_logos_docs/summaries/implementation-summary-20260118.md
+- Status remains [IMPLEMENTING] - run /implement 334 to resume
 ```
 
 ---
