@@ -8,11 +8,12 @@
     {
       "project_number": 651,
       "project_name": "simplify_learn_note_tag_workflow",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T21:32:12Z",
-      "last_updated": "2026-01-20T21:32:12Z"
+      "last_updated": "2026-01-20T21:35:29Z",
+      "session_id": "sess_1768944913_9a32b0"
     },
     {
       "project_number": 650,
@@ -21,7 +22,7 @@
       "language": "meta",
       "priority": "high",
       "created": "2026-01-20T20:49:27Z",
-      "last_updated": "2026-01-20T21:23:25Z",
+      "last_updated": "2026-01-20T21:34:54Z",
       "session_id": "sess_1768944058_057f1d",
       "researched": "2026-01-20T20:54:20Z",
       "artifacts": [
@@ -31,12 +32,12 @@
           "summary": "Research report documenting field schemas, implementation architecture, and 5-phase modification approach for completion_summary and claudemd_suggestions fields"
         },
         {
-          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-001.md",
+          "path": "specs/650_implement_completion_summary_claudemd_suggestions_fields/plans/implementation-002.md",
           "type": "plan",
-          "summary": "5-phase implementation plan for completion_summary and claudemd_suggestions field population in /implement workflow"
+          "summary": "5-phase implementation plan v002 emphasizing sparse claudemd_suggestions (default to action: none)"
         }
       ],
-      "planned": "2026-01-20T21:23:25Z"
+      "planned": "2026-01-20T21:34:54Z"
     },
     {
       "project_number": 649,
@@ -82,12 +83,12 @@
     {
       "project_number": 646,
       "project_name": "fix_metalogic_latex_formatting_issues",
-      "status": "researched",
+      "status": "planning",
       "language": "latex",
       "priority": "high",
       "created": "2026-01-20T20:55:08Z",
-      "last_updated": "2026-01-20T21:30:49Z",
-      "session_id": "sess_1768944484_6c305f",
+      "last_updated": "2026-01-20T21:34:58Z",
+      "session_id": "sess_1768944883_6f994f",
       "researched": "2026-01-20T21:30:49Z",
       "artifacts": [
         {
