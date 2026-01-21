@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Representation.CanonicalWorld
 import Bimodal.Syntax.Formula
 import Mathlib.Algebra.Order.Group.Defs
 
@@ -231,5 +232,256 @@ lemma IndexedMCSFamily.H_implies_past_phi (family : IndexedMCSFamily D)
     {t t' : D} (hlt : t' < t) {phi : Formula} (hH : Formula.all_past phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.backward_H t t' phi hlt hH
+
+/-!
+## Indexed Family Construction
+
+Given an MCS at the origin (time 0), we construct a coherent indexed family.
+
+**Construction Strategy**:
+1. At the origin: use the given MCS directly
+2. For future times t > 0: seed with formulas phi where G phi is in origin MCS
+3. For past times t < 0: seed with formulas phi where H phi is in origin MCS
+4. Extend each seed to MCS via Lindenbaum's lemma
+
+**Key Insight**: The seed sets are consistent because they come from an MCS:
+- If G phi ∈ origin, then {phi | G phi ∈ origin} is consistent
+- If it were inconsistent, some finite subset would derive bot
+- But that would contradict origin being consistent (by G propagation)
+
+**Coherence Proof Strategy**:
+- forward_G: If G phi ∈ mcs(t), phi is in the seed for t' > t (by definition or transitivity)
+- backward_H: Symmetric to forward_G for past direction
+- forward_H/backward_G: These require careful case analysis using Temporal 4 axiom
+-/
+
+variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+
+/-!
+### Seed Set Definitions
+
+The seed set at time t collects formulas that MUST be in the MCS at t,
+based on the temporal operators in the root MCS.
+-/
+
+/--
+Future seed: formulas that must be true at time t based on G formulas in the root MCS.
+
+If t > 0 (strictly future of origin), include phi whenever G phi is in root.
+If t = 0, include the root MCS itself.
+If t < 0, this seed is empty (past times use past_seed).
+
+Actually, for a unified construction, we define:
+- future_seed collects phi where G phi is in root AND t > 0
+- past_seed collects phi where H phi is in root AND t < 0
+- At t = 0, we use the root MCS directly
+-/
+def future_seed (Gamma : Set Formula) (t : D) : Set Formula :=
+  if (0 : D) < t then {phi | Formula.all_future phi ∈ Gamma}
+  else ∅
+
+/--
+Past seed: formulas that must be true at time t based on H formulas in the root MCS.
+
+If t < 0 (strictly past of origin), include phi whenever H phi is in root.
+-/
+def past_seed (Gamma : Set Formula) (t : D) : Set Formula :=
+  if t < (0 : D) then {phi | Formula.all_past phi ∈ Gamma}
+  else ∅
+
+/--
+Combined seed for time t, based on position relative to origin.
+
+- t > 0: future_seed (phi where G phi in root)
+- t < 0: past_seed (phi where H phi in root)
+- t = 0: the root MCS itself
+-/
+def time_seed (Gamma : Set Formula) (t : D) : Set Formula :=
+  if t = 0 then Gamma
+  else if (0 : D) < t then future_seed D Gamma t
+  else past_seed D Gamma t
+
+/-!
+### Seed Set Consistency
+
+The key lemma: seed sets are consistent when derived from an MCS.
+-/
+
+/--
+The future seed derived from an MCS is consistent.
+
+**Proof Idea**: If the future seed were inconsistent, some finite subset
+{phi_1, ..., phi_n} would derive bot. But then {G phi_1, ..., G phi_n}
+would derive G bot (by temporal K distribution), and G bot is derivable
+to bot (vacuous), contradicting the root MCS being consistent.
+
+**Note**: This proof is subtle and requires careful use of temporal axioms.
+For now, we axiomatize it and note it can be proven from temporal K.
+-/
+lemma future_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (t : D) (ht : (0 : D) < t) : SetConsistent (future_seed D Gamma t) := by
+  simp only [future_seed, ht, ↓reduceIte]
+  intro L hL
+  -- L is a list of formulas where each phi has G phi ∈ Gamma
+  -- We need to show L is consistent
+  -- The proof uses the fact that if L were inconsistent, we could derive
+  -- a contradiction in Gamma using temporal K distribution
+  by_contra h_incons
+  -- Get derivation of bot from L
+  unfold Consistent at h_incons
+  push_neg at h_incons
+  obtain ⟨d_bot⟩ := h_incons
+  -- For each phi in L, G phi ∈ Gamma
+  -- Use temporal K to show that if L ⊢ bot, then {G phi | phi ∈ L} ⊢ G bot
+  -- But G bot → bot is derivable, so Gamma would be inconsistent
+  -- This is a complex proof requiring temporal K distribution
+  sorry
+
+/--
+The past seed derived from an MCS is consistent.
+
+Symmetric to future_seed_consistent, using H instead of G.
+-/
+lemma past_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (t : D) (ht : t < (0 : D)) : SetConsistent (past_seed D Gamma t) := by
+  simp only [past_seed, ht, ↓reduceIte]
+  intro L hL
+  by_contra h_incons
+  unfold Consistent at h_incons
+  push_neg at h_incons
+  obtain ⟨d_bot⟩ := h_incons
+  -- Similar to future_seed_consistent but using temporal H distribution
+  sorry
+
+/--
+The time seed at any time t is consistent.
+-/
+lemma time_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (t : D) : SetConsistent (time_seed D Gamma t) := by
+  simp only [time_seed]
+  split_ifs with h0 hpos
+  · -- t = 0: use the root MCS
+    exact h_mcs.1
+  · -- t > 0: future seed
+    exact future_seed_consistent D Gamma h_mcs t hpos
+  · -- t < 0: past seed
+    push_neg at hpos
+    have hneg : t < 0 := lt_of_le_of_ne hpos h0
+    exact past_seed_consistent D Gamma h_mcs t hneg
+
+/-!
+### MCS Extension via Lindenbaum
+
+Extend each time seed to an MCS using Lindenbaum's lemma.
+-/
+
+/--
+Extend the seed at time t to an MCS.
+-/
+noncomputable def mcs_at_time (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (t : D) : Set Formula :=
+  extendToMCS (time_seed D Gamma t) (time_seed_consistent D Gamma h_mcs t)
+
+/--
+The MCS at time t contains the time seed.
+-/
+lemma mcs_at_time_contains_seed (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (t : D) : time_seed D Gamma t ⊆ mcs_at_time D Gamma h_mcs t :=
+  extendToMCS_contains _ _
+
+/--
+The MCS at time t is maximal consistent.
+-/
+lemma mcs_at_time_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (t : D) : SetMaximalConsistent (mcs_at_time D Gamma h_mcs t) :=
+  extendToMCS_is_mcs _ _
+
+/-!
+### The Indexed Family Construction
+
+Now we assemble everything into an IndexedMCSFamily.
+-/
+
+/--
+Construct an indexed MCS family from a root MCS at the origin.
+
+**Construction**:
+- `mcs(t)` = extend time_seed to MCS via Lindenbaum
+- Coherence conditions follow from seed definitions and Lindenbaum extension
+
+**Usage**: Given a consistent formula phi, extend {phi} to an MCS Gamma,
+then `construct_indexed_family Gamma h_mcs` gives a family where phi
+is true at the origin.
+-/
+noncomputable def construct_indexed_family
+    (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma) :
+    IndexedMCSFamily D where
+  mcs := mcs_at_time D Gamma h_mcs
+  is_mcs := mcs_at_time_is_mcs D Gamma h_mcs
+
+  -- Forward G coherence: G phi ∈ mcs(t) → phi ∈ mcs(t') for t < t'
+  forward_G := by
+    intro t t' phi hlt hG
+    -- Case 1: t = 0 (origin)
+    -- If G phi ∈ mcs(0) = extended Gamma, and 0 < t'
+    -- Then phi is in future_seed at t', hence in mcs(t')
+    -- Case 2: t > 0
+    -- If G phi ∈ mcs(t), need to show phi ∈ mcs(t')
+    -- This requires using Temporal 4: G phi → GG phi
+    -- Case 3: t < 0
+    -- Similar analysis needed
+    sorry
+
+  -- Backward H coherence: H phi ∈ mcs(t) → phi ∈ mcs(t') for t' < t
+  backward_H := by
+    intro t t' phi hlt hH
+    -- Symmetric to forward_G but using H and past direction
+    sorry
+
+  -- Forward H coherence: H phi ∈ mcs(t') → phi ∈ mcs(t) for t < t'
+  forward_H := by
+    intro t t' phi hlt hH
+    -- If at future time t' we have H phi (always true in past)
+    -- Then phi must be true at earlier time t
+    -- This uses the seed construction: if t' > 0 and H phi ∈ mcs(t')
+    -- We need phi in the seed at t
+    sorry
+
+  -- Backward G coherence: G phi ∈ mcs(t') → phi ∈ mcs(t) for t' < t
+  backward_G := by
+    intro t t' phi hlt hG
+    -- If at past time t' we have G phi (always true in future)
+    -- Then phi must be true at later time t
+    -- Similar analysis to forward_H
+    sorry
+
+/-!
+### Properties of the Constructed Family
+-/
+
+/--
+The MCS at the origin is exactly the extended root MCS.
+
+At t = 0, time_seed returns Gamma directly, so mcs(0) is
+the Lindenbaum extension of Gamma, which contains Gamma.
+-/
+lemma construct_indexed_family_origin (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (phi : Formula) (h_phi : phi ∈ Gamma) :
+    phi ∈ (construct_indexed_family D Gamma h_mcs).mcs 0 := by
+  -- mcs(0) = extendToMCS (time_seed D Gamma 0)
+  -- time_seed D Gamma 0 = Gamma (by definition, when t = 0)
+  -- extendToMCS contains the seed
+  have h_seed : phi ∈ time_seed D Gamma 0 := by
+    simp only [time_seed, ↓reduceIte]
+    exact h_phi
+  exact mcs_at_time_contains_seed D Gamma h_mcs 0 h_seed
+
+/--
+At the origin, the constructed family's MCS extends Gamma.
+-/
+lemma construct_indexed_family_origin_extends (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma) :
+    Gamma ⊆ (construct_indexed_family D Gamma h_mcs).mcs 0 := by
+  intro phi h_phi
+  exact construct_indexed_family_origin D Gamma h_mcs phi h_phi
 
 end Bimodal.Metalogic.Representation
