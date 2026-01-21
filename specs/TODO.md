@@ -102,7 +102,7 @@ technical_debt:
 
 ### 663. Archive stale research/fix plan documents
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-21
