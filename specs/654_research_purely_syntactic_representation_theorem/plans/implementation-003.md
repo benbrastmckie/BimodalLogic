@@ -145,7 +145,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 2: Define Canonical World Structure [IN PROGRESS]
+### Phase 2: Define Canonical World Structure [COMPLETED]
 
 **Goal**: Create the CanonicalWorld structure pairing MCS with abstract time points
 
@@ -174,7 +174,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 3: Define Canonical Task Relation [NOT STARTED]
+### Phase 3: Define Canonical Task Relation [IN PROGRESS]
 
 **Goal**: Define task_rel using D's algebraic operations so frame conditions hold by construction
 
