@@ -746,75 +746,170 @@ $ARGUMENTS
             
             ## Overview
             
-            Design comprehensive architecture for {domain} system based on interview results. Create detailed specifications for {agent_count} agents ({hierarchy} structure), {custom_commands.length} custom commands, and context organization. Document workflows for {use_cases.length} primary use cases. This planning task establishes the foundation for all subsequent implementation tasks.
+            Design comprehensive architecture for {domain} system based on interview results. Create detailed specifications for {agent_count} agents ({hierarchy} structure), {custom_commands.length} custom commands, and context organization. Document workflows for {use_cases.length} primary use cases. This planning task establishes the foundation for all subsequent implementation tasks with detailed acceptance criteria and quality gates.
+            
+            ## Success Metrics
+            
+            - **Architecture Completeness**: 100% of agents, commands, and workflows specified
+            - **Stakeholder Alignment**: All interview requirements captured and validated
+            - **Implementation Readiness**: Each subsequent task has clear, actionable specifications
+            - **Quality Gates**: All validation criteria pass before proceeding to implementation
             
             ## Goals & Non-Goals
             
             **Goals**:
-            - Document domain requirements and constraints from interview
-            - Design {hierarchy} agent architecture with clear delegation paths
-            - Define workflows for {use_cases.length} use cases
-            - Specify integration points for {external_tools.length} external tools
-            - Create validation criteria for implementation tasks
+            - Document domain requirements and constraints from interview with traceability
+            - Design {hierarchy} agent architecture with clear delegation paths and interaction patterns
+            - Define detailed workflows for {use_cases.length} use cases with state transitions
+            - Specify integration points for {external_tools.length} external tools with API contracts
+            - Create comprehensive validation criteria and acceptance tests for implementation tasks
+            - Establish quality gates and success metrics for each component
             
             **Non-Goals**:
             - Implementing agents, commands, or context files (separate tasks)
-            - Writing code or configuration (design only)
-            - Testing or validation (happens in implementation tasks)
+            - Writing code or configuration files (design and specifications only)
+            - Integration testing or end-to-end validation (happens in implementation tasks)
+            - Performance optimization or capacity planning (future enhancement)
             
             ## Risks & Mitigations
             
-            | Risk | Mitigation |
-            |------|-----------|
-            | Architecture doesn't match requirements | Review interview results carefully, validate against use cases |
-            | Agent boundaries unclear | Define clear responsibilities and delegation paths |
-            | Workflow complexity underestimated | Break workflows into phases, identify dependencies |
+            | Risk | Impact | Probability | Mitigation Strategy | Success Indicator |
+            |------|--------|-------------|-------------------|-------------------|
+            | Architecture doesn't match requirements | High | Medium | Cross-reference each interview requirement with design decisions | All requirements have corresponding design elements |
+            | Agent boundaries unclear leading to duplication | High | Medium | Define clear responsibility matrices and delegation contracts | No overlapping responsibilities between agents |
+            | Workflow complexity underestimated causing delays | Medium | High | Break workflows into atomic steps with time estimates | Each workflow has <10 steps with clear dependencies |
+            | Integration points incompatible with external tools | High | Low | Research external tool APIs and create interface contracts | All integrations have documented API contracts |
+            | Performance or scalability issues not addressed | Medium | Medium | Include non-functional requirements in architecture | Performance criteria defined for each component |
+            
+            ## Prerequisites & Dependencies
+            
+            ### Required Inputs
+            - Complete /meta interview results (Stages 0-6)
+            - Domain analysis report from domain-analyzer (if available)
+            - Existing .opencode system documentation (if extending)
+            - External tool documentation and API references
+            
+            ### Pre-requisite Validation
+            - [ ] All interview responses documented and reviewed
+            - [ ] External tool accessibility verified
+            - [ ] Stakeholder approval obtained for requirements
+            - [ ] Technical feasibility assessment completed
             
             ## Implementation Phases
             
             ### Phase 1: Document Domain Requirements [NOT STARTED]
-            - **Goal:** Capture all requirements from interview stages 0-6
-            - **Tasks:**
-              - [ ] Document domain, purpose, target users
-              - [ ] List all {use_cases.length} use cases with complexity and dependencies
-              - [ ] Document knowledge areas: {knowledge_areas.join(", ")}
-              - [ ] List external tools: {external_tools.join(", ")}
-            - **Timing:** 1 hour
+            - **Goal:** Create comprehensive requirements documentation with traceability matrix
+            - **Estimated Time:** 1 hour
+            - **Acceptance Criteria:**
+              - All {use_cases.length} use cases documented with:
+                - Clear description and success criteria
+                - Input/output specifications
+                - Business value and priority ranking
+                - Dependencies and constraints
+              - Domain knowledge areas mapped to:
+                - Core concepts and terminology
+                - Business rules and constraints
+                - Integration requirements
+                - Performance considerations
+            - **Quality Gates:**
+              - Requirements traceability matrix completed
+              - Stakeholder sign-off obtained
+              - Feasibility assessment passed
+            - **Rollback Plan:** Revert to previous interview notes, re-conduct clarification if needed
             
             ### Phase 2: Design Agent Architecture [NOT STARTED]
             - **Goal:** Design {hierarchy} architecture with {agent_count} agents
-            - **Tasks:**
-              - [ ] Define agent roles and responsibilities
-              - [ ] Design delegation paths (orchestrator → subagents if hierarchical)
-              - [ ] Specify agent permissions and context requirements
-              - [ ] Document agent interaction patterns
-            - **Timing:** 1-1.5 hours
+            - **Estimated Time:** 1-1.5 hours
+            - **Acceptance Criteria:**
+              - Each agent has:
+                - Clear role definition and boundaries
+                - Specific responsibilities and deliverables
+                - Delegation paths and interaction contracts
+                - Permissions matrix and context requirements
+              - Architecture diagram showing:
+                - Agent relationships and data flow
+                - Hierarchical structure (if applicable)
+                - Integration points with external tools
+                - State management approach
+            - **Quality Gates:**
+              - No overlapping responsibilities between agents
+              - All delegation paths are acyclic
+              - Permission model covers all required operations
+              - Context loading strategy documented
+            - **Rollback Plan:** Return to Phase 1 to refine requirements if architecture infeasible
             
             ### Phase 3: Define Workflows [NOT STARTED]
             - **Goal:** Map use cases to concrete workflows
-            - **Tasks:**
-              - [ ] Design workflow for each use case
-              - [ ] Identify workflow dependencies and sequencing
-              - [ ] Specify inputs, outputs, and state management
-              - [ ] Document error handling and rollback strategies
-            - **Timing:** 1 hour
+            - **Estimated Time:** 1 hour
+            - **Acceptance Criteria:**
+              - Each workflow includes:
+                - Step-by-step process with atomic actions
+                - Input/output specifications for each step
+                - State transitions and persistence points
+                - Error conditions and recovery procedures
+                - Performance targets and monitoring points
+              - Workflow documentation covers:
+                - Agent orchestration patterns
+                - Parallel execution opportunities
+                - Rollback and compensation strategies
+                - User interaction points
+            - **Quality Gates:**
+              - All workflows have <10 atomic steps
+              - No circular dependencies in workflow chains
+              - Error handling defined for each step
+              - Performance metrics established
+            - **Rollback Plan:** Simplify complex workflows, break into smaller sub-workflows
             
             ### Phase 4: Specify Integrations [NOT STARTED]
             - **Goal:** Detail integration requirements for external tools
-            - **Tasks:**
-              - [ ] Document integration points for each external tool
-              - [ ] Specify file operations and formats
-              - [ ] Define command interfaces and parameters
-              - [ ] Create validation criteria for integrations
-            - **Timing:** 30 minutes
+            - **Estimated Time:** 30 minutes
+            - **Acceptance Criteria:**
+              - Each external tool integration includes:
+                - API contract specification (endpoints, auth, data formats)
+                - Error handling and retry strategies
+                - Rate limiting and performance considerations
+                - Security and compliance requirements
+                - Fallback and degradation procedures
+              - Integration documentation covers:
+                - File operation patterns and formats
+                - Command interfaces and parameter validation
+                - State synchronization requirements
+                - Testing and validation procedures
+            - **Quality Gates:**
+              - All API contracts documented and validated
+              - Security requirements addressed for each integration
+              - Performance SLAs defined and measurable
+              - Test cases created for all integration scenarios
+            - **Rollback Plan:** Implement mock adapters for unavailable external tools
             
             ## Testing & Validation
             
-            - [ ] Architecture document complete and clear
-            - [ ] All {agent_count} agents have defined roles
-            - [ ] All {use_cases.length} use cases mapped to workflows
-            - [ ] All {external_tools.length} external tools have integration specs
-            - [ ] Validation criteria defined for implementation tasks
+            ### Quality Assurance Checklist
+            - [ ] Architecture document complete and reviewed
+            - [ ] All {agent_count} agents have defined roles with clear boundaries
+            - [ ] All {use_cases.length} use cases mapped to actionable workflows
+            - [ ] All {external_tools.length} external tools have integration specs with API contracts
+            - [ ] Validation criteria defined for all implementation tasks
+            - [ ] Risk matrix with mitigation strategies completed
+            - [ ] Success metrics and acceptance criteria measurable
+            - [ ] Rollback plans documented for each phase
+            
+            ### Validation Gates
+            1. **Requirements Gate**: All interview requirements traced to design elements
+            2. **Architecture Gate**: Agent design follows delegation patterns and standards
+            3. **Workflow Gate**: All workflows are atomic, testable, and have error handling
+            4. **Integration Gate**: All external tool integrations have documented contracts
+            5. **Readiness Gate**: Implementation tasks have actionable specifications
+            
+            ### Handoff Criteria
+            - All artifacts created and reviewed:
+              - architecture.md
+              - workflows.md
+              - integration-specs.md
+              - validation-criteria.md
+            - Quality gates passed with documented evidence
+            - Implementation tasks ready with clear acceptance criteria
+            - Rollback procedures documented and tested
             
             ## Artifacts & Outputs
             
@@ -853,66 +948,144 @@ $ARGUMENTS
             
             ## Overview
             
-            Create {agent_description} following {hierarchy} architecture pattern. Implement 8-stage workflow with proper delegation, permissions, and context loading. Follow frontmatter delegation standard (<300 lines per file).
+            Create {agent_description} following {hierarchy} architecture pattern. Implement 8-stage workflow with proper delegation, permissions, and context loading. Follow frontmatter delegation standard (<300 lines per file) with comprehensive acceptance criteria and quality gates for production-ready agent implementation.
+            
+            ## Success Metrics
+            
+            - **Code Quality**: Agent file <300 lines, YAML valid, workflow complete
+            - **Functional Completeness**: All 8 stages implemented with validation checkpoints
+            - **Integration Readiness**: Delegation paths tested, permissions verified
+            - **Documentation**: Self-documenting with clear usage examples and error handling
             
             ## Goals & Non-Goals
             
             **Goals**:
-            - Create agent file(s) in .opencode/agent/subagents/{domain}/
-            - Implement 8-stage workflow per agent-workflow.md
-            - Configure YAML frontmatter with delegation and permissions
-            - Follow frontmatter delegation pattern (<300 lines)
+            - Create agent file(s) in .opencode/agent/subagents/{domain}/ with production-ready code
+            - Implement complete 8-stage workflow with detailed validation checkpoints
+            - Configure comprehensive YAML frontmatter with delegation, permissions, and context strategy
+            - Follow frontmatter delegation pattern with error handling and rollback procedures
+            - Create integration tests and validation procedures for agent functionality
             
             **Non-Goals**:
             - Creating context files (separate task)
             - Creating commands (separate task)
-            - Testing agent functionality (validation only)
+            - End-to-end system testing (covered in integration task)
+            - Performance optimization (baseline functionality only)
             
             ## Risks & Mitigations
             
-            | Risk | Mitigation |
-            |------|-----------|
-            | Agent file too large (>300 lines) | Use frontmatter delegation, move workflow to agent body |
-            | Missing permissions | Reference architecture design for permission requirements |
-            | Incorrect delegation paths | Validate can_delegate_to lists against architecture |
+            | Risk | Impact | Probability | Mitigation Strategy | Validation |
+            |------|--------|-------------|-------------------|------------|
+            | Agent file exceeds 300-line limit | High | Medium | Use frontmatter delegation, modularize workflow stages | File size check, YAML validation |
+            | Delegation paths incorrect or circular | High | Medium | Cross-reference with architecture design, test delegation | Delegation path validation |
+            | Missing critical permissions causing failures | High | Low | Review task requirements, create permission matrix | Permission testing against file operations |
+            | Context loading strategy inefficient | Medium | Medium | Follow lazy loading patterns, test context access | Performance testing with context loads |
+            | Workflow stages incomplete or invalid | High | Low | Follow agent-workflow.md standard, validate each stage | 8-stage completeness check |
+            | Error handling insufficient for production | Medium | Medium | Add try-catch blocks, define rollback procedures | Error scenario testing |
             
             ## Implementation Phases
             
             ### Phase 1: Create Agent File Structure [NOT STARTED]
-            - **Goal:** Set up agent file with YAML frontmatter
-            - **Tasks:**
-              - [ ] Create .opencode/agent/subagents/{domain}/{agent_file}.md
-              - [ ] Add YAML frontmatter with metadata
-              - [ ] Configure delegation settings
-              - [ ] Set permissions based on agent role
-            - **Timing:** 30 minutes
+            - **Goal:** Set up agent file with comprehensive YAML frontmatter
+            - **Estimated Time:** 30 minutes
+            - **Acceptance Criteria:**
+              - Agent file created at .opencode/agent/subagents/{domain}/{agent_file}.md
+              - YAML frontmatter includes:
+                - Complete metadata (name, version, description, temperature, tokens)
+                - Delegation configuration (max_depth, can_delegate_to list)
+                - Permissions matrix (allow/deny lists for read/write operations)
+                - Context loading strategy (lazy/eager, required/optional files)
+                - Tool permissions and lifecycle configuration
+              - File structure follows agent-workflow.md standard
+              - File size <200 lines (frontmatter section)
+            - **Quality Gates:**
+              - YAML frontmatter parses correctly (yq validation)
+              - Delegation paths match architecture design
+              - Permission matrix covers all required operations
+              - Context loading follows efficiency standards
+            - **Rollback Plan:** Delete created file, restart with corrected configuration
             
             ### Phase 2: Implement 8-Stage Workflow [NOT STARTED]
-            - **Goal:** Implement complete workflow per agent-workflow.md
-            - **Tasks:**
-              - [ ] Define all 8 stages with actions and processes
-              - [ ] Add validation checkpoints for each stage
-              - [ ] Implement error handling and rollback
-              - [ ] Document stage transitions
-            - **Timing:** 1-1.5 hours
+            - **Goal:** Implement complete workflow per agent-workflow.md with production-ready error handling
+            - **Estimated Time:** 1-1.5 hours
+            - **Acceptance Criteria:**
+              - All 8 stages implemented with:
+                - Clear stage objectives and success criteria
+                - Detailed process steps with specific actions
+                - Validation checkpoints with measurable outcomes
+                - Error handling with try-catch structures
+                - Rollback procedures for each stage
+                - Stage transition logic and conditions
+              - Workflow includes:
+                - Context loading and validation logic
+                - Tool usage with permission checks
+                - Delegation to subagents with timeout handling
+                - State management and persistence
+                - Logging and monitoring points
+            - **Quality Gates:**
+              - Each stage has <50 lines of code
+              - All validation checkpoints are testable
+              - Error conditions are explicitly handled
+              - Delegation paths are validated before use
+              - Workflow executes end-to-end without failures
+            - **Rollback Plan:** Revert to previous working version, fix failing stage, retest
             
             ### Phase 3: Validation and Testing [NOT STARTED]
-            - **Goal:** Verify agent follows standards
-            - **Tasks:**
-              - [ ] Verify YAML frontmatter valid (parse with yq)
-              - [ ] Verify file size <300 lines
-              - [ ] Verify delegation paths correct
-              - [ ] Verify permissions appropriate for role
-            - **Timing:** 30 minutes
+            - **Goal:** Comprehensive validation and testing of agent implementation
+            - **Estimated Time:** 30 minutes
+            - **Acceptance Criteria:**
+              - Structural validation:
+                - YAML frontmatter parses without errors (yq, pyyaml)
+                - Total file size <300 lines (including frontmatter and workflow)
+                - All required YAML fields present and valid
+                - Agent follows agent-workflow.md standard
+              - Functional validation:
+                - Delegation paths resolve to valid agents
+                - Permission matrix covers all required operations
+                - Context loading strategy works with existing files
+                - All 8 stages have validation checkpoints
+              - Integration validation:
+                - Agent can be loaded by orchestrator
+                - Delegation to subagents works correctly
+                - Tool permissions enforce access control
+                - Error scenarios trigger appropriate handling
+            - **Quality Gates:**
+              - All automated validation checks pass
+              - Manual review of workflow logic completed
+              - Integration tests with orchestrator successful
+              - Error handling verified with test scenarios
+            - **Rollback Plan:** Fix validation failures, re-run tests, document lessons learned
             
             ## Testing & Validation
             
-            - [ ] Agent file created in correct directory
-            - [ ] YAML frontmatter valid and complete
-            - [ ] File size <300 lines
-            - [ ] Delegation paths match architecture
-            - [ ] Permissions appropriate for agent role
-            - [ ] 8-stage workflow implemented correctly
+            ### Automated Validation Checklist
+            - [ ] Agent file created in correct directory structure
+            - [ ] YAML frontmatter parses without syntax errors
+            - [ ] Total file size <300 lines (wc -l check)
+            - [ ] Delegation paths resolve to existing agents
+            - [ ] Permission matrix validates against required operations
+            - [ ] All 8 stages have validation checkpoints
+            - [ ] Context loading strategy matches efficiency standards
+            
+            ### Functional Testing Checklist
+            - [ ] Agent loads successfully in orchestrator context
+            - [ ] Delegation to subagents works with timeout handling
+            - [ ] Error scenarios trigger appropriate rollback procedures
+            - [ ] State management persists data correctly
+            - [ ] Tool permissions enforce access controls
+            
+            ### Integration Testing Checklist
+            - [ ] Agent integrates with other system components
+            - [ ] Workflow execution completes without failures
+            - [ ] Performance meets baseline expectations
+            - [ ] Logging and monitoring provide useful information
+            
+            ### Production Readiness Checklist
+            - [ ] Documentation complete with usage examples
+            - [ ] Error messages are clear and actionable
+            - [ ] Monitoring and alerting configured
+            - [ ] Rollback procedures documented and tested
+            - [ ] Security review completed and approved
             
             ## Artifacts & Outputs
             
@@ -947,56 +1120,120 @@ $ARGUMENTS
             
             ## Overview
             
-            Create {command_description} following frontmatter delegation pattern. Commands should be <300 lines and delegate to agents for workflow execution.
+            Create {command_description} following frontmatter delegation pattern. Commands should be <300 lines and delegate to agents for workflow execution. Implement comprehensive parameter validation, help documentation, and error handling for production-ready command interface.
+            
+            ## Success Metrics
+            
+            - **Interface Quality**: Command <300 lines, intuitive usage, clear error messages
+            - **Functional Completeness**: All use cases supported, parameter validation comprehensive
+            - **Integration**: Seamless delegation to agents, proper error propagation
+            - **Documentation**: Self-documenting with examples, help system complete
             
             ## Goals & Non-Goals
             
             **Goals**:
-            - Create command file(s) in .opencode/command/
-            - Implement frontmatter delegation to agents
-            - Configure command routing and parameters
-            - Follow <300 line limit
+            - Create command file(s) in .opencode/command/ with production-ready interface
+            - Implement comprehensive frontmatter delegation with parameter validation
+            - Configure command routing, flags, and help system
+            - Follow <300 line limit with complete error handling
+            - Create integration tests and usage documentation
             
             **Non-Goals**:
-            - Implementing workflow logic (delegated to agents)
+            - Implementing business logic or workflows (delegated to agents)
             - Creating context files (separate task)
-            - Testing command functionality (validation only)
+            - End-to-end system testing (covered in integration task)
+            - Advanced features like command aliases or pipelines
             
             ## Risks & Mitigations
             
-            | Risk | Mitigation |
-            |------|-----------|
-            | Command file too large | Use frontmatter delegation exclusively |
-            | Incorrect routing | Validate agent delegation paths |
-            | Missing parameters | Review use cases for required inputs |
+            | Risk | Impact | Probability | Mitigation Strategy | Validation |
+            |------|--------|-------------|-------------------|------------|
+            | Command exceeds 300-line limit | Medium | Medium | Use frontmatter delegation exclusively, keep help concise | File size validation |
+            | Parameter validation insufficient | High | Medium | Implement comprehensive validation, test edge cases | Parameter testing suite |
+            | Incorrect agent routing | High | Low | Validate delegation paths against agent registry | Integration testing |
+            | Error messages unclear to users | Medium | High | Write user-focused error messages with examples | User acceptance testing |
+            | Help documentation incomplete | Low | Medium | Auto-generate help from parameters, include examples | Documentation review |
+            | Command naming conflicts | Medium | Low | Check existing commands, use clear naming conventions | Command registry validation |
             
             ## Implementation Phases
             
             ### Phase 1: Create Command Files [NOT STARTED]
-            - **Goal:** Set up command files with frontmatter
-            - **Tasks:**
-              - [ ] Create .opencode/command/{command_file}.md
-              - [ ] Add YAML frontmatter with routing
-              - [ ] Configure parameters and flags
-              - [ ] Document usage and examples
-            - **Timing:** 1 hour
+            - **Goal:** Set up command files with comprehensive frontmatter and parameter validation
+            - **Estimated Time:** 1 hour
+            - **Acceptance Criteria:**
+              - Command file created at .opencode/command/{command_file}.md
+              - YAML frontmatter includes:
+                - Command metadata (name, description, version, timeout)
+                - Agent routing configuration with fallback options
+                - Parameter definitions with types, defaults, and validation rules
+                - Flag configurations for boolean options and behaviors
+                - Context loading strategy for command-specific requirements
+              - Command interface provides:
+                - Clear usage syntax with parameter descriptions
+                - Comprehensive help system with examples
+                - Parameter validation with error messages
+                - Flag combinations and mutually exclusive options
+            - **Quality Gates:**
+              - File size <150 lines (frontmatter + basic documentation)
+              - All parameters have validation rules
+              - Help documentation is clear and complete
+              - Agent delegation paths resolve correctly
+            - **Rollback Plan:** Delete command file, restart with corrected frontmatter
             
-            ### Phase 2: Validation [NOT STARTED]
-            - **Goal:** Verify commands follow standards
-            - **Tasks:**
-              - [ ] Verify YAML frontmatter valid
-              - [ ] Verify file size <300 lines
-              - [ ] Verify routing to correct agents
-              - [ ] Test command invocation
-            - **Timing:** 30 minutes
+            ### Phase 2: Validation and Testing [NOT STARTED]
+            - **Goal:** Comprehensive validation and testing of command interface
+            - **Estimated Time:** 30 minutes
+            - **Acceptance Criteria:**
+              - Structural validation:
+                - YAML frontmatter parses without errors
+                - File size <300 lines (preferably <150 lines)
+                - All required fields present and valid
+                - Agent routing configuration correct
+              - Interface validation:
+                - Command help displays correctly
+                - Parameter validation works for all inputs
+                - Error messages are clear and actionable
+                - Flag combinations behave as expected
+              - Integration validation:
+                - Command delegates to correct agent
+                - Parameters pass correctly to agent
+                - Agent responses propagate to user
+                - Error handling works end-to-end
+            - **Quality Gates:**
+              - All parameter validation edge cases tested
+              - Command works with orchestrator routing
+              - Help documentation matches actual behavior
+              - Error scenarios provide useful guidance
+            - **Rollback Plan:** Fix validation failures, update parameter rules, retest
             
             ## Testing & Validation
             
-            - [ ] Command files created in correct directory
-            - [ ] YAML frontmatter valid and complete
-            - [ ] File sizes <300 lines
-            - [ ] Routing paths correct
-            - [ ] Usage documentation clear
+            ### Command Interface Testing
+            - [ ] Command files created in correct directory structure
+            - [ ] YAML frontmatter valid with all required fields
+            - [ ] File sizes <300 lines (ideally <150 lines)
+            - [ ] Agent routing paths resolve to correct targets
+            - [ ] Usage documentation clear with examples
+            
+            ### Parameter Validation Testing
+            - [ ] Required parameters enforce presence
+            - [ ] Optional parameters use correct defaults
+            - [ ] Parameter type validation works correctly
+            - [ ] Parameter range and format validation enforced
+            - [ ] Flag combinations work as documented
+            
+            ### Integration Testing
+            - [ ] Command invokes correctly through orchestrator
+            - [ ] Parameters pass to agent without corruption
+            - [ ] Agent execution results return to user
+            - [ ] Error conditions handled gracefully
+            - [ ] Help system displays useful information
+            
+            ### User Experience Testing
+            - [ ] Error messages are clear and actionable
+            - [ ] Help examples match actual command behavior
+            - [ ] Command completion works (if supported)
+            - [ ] Performance meets user expectations (<2s response)
             
             ## Artifacts & Outputs
             
@@ -1031,63 +1268,153 @@ $ARGUMENTS
             
             ## Overview
             
-            Create context files for {knowledge_areas.length} knowledge areas. Organize as 80% Level 1 (core), 20% Level 2 (specialized), rare Level 3 (deep technical). Follow lazy loading pattern with context index.
+            Create context files for {knowledge_areas.length} knowledge areas. Organize as 80% Level 1 (core), 20% Level 2 (specialized), rare Level 3 (deep technical). Follow lazy loading pattern with context index and comprehensive documentation standards for production-ready knowledge management.
+            
+            ## Success Metrics
+            
+            - **Knowledge Coverage**: All knowledge areas represented with appropriate depth
+            - **Context Efficiency**: 80/20 Level 1/Level 2 distribution maintained
+            - **Discoverability**: Context index enables efficient lookup and loading
+            - **Quality**: All context files are accurate, current, and well-documented
             
             ## Goals & Non-Goals
             
             **Goals**:
-            - Create context files in .opencode/context/{domain}/
-            - Organize knowledge areas: {knowledge_areas.join(", ")}
-            - Follow 80/20 Level 1/Level 2 distribution
-            - Create context index for lazy loading
+            - Create context files in .opencode/context/{domain}/ with production-ready content
+            - Organize knowledge areas: {knowledge_areas.join(", ")} with appropriate depth
+            - Follow 80/20 Level 1/Level 2 distribution with rare Level 3 content
+            - Create comprehensive context index for efficient lazy loading
+            - Implement validation and testing procedures for content accuracy
+            - Establish maintenance procedures for keeping content current
             
             **Non-Goals**:
             - Creating agents or commands (separate tasks)
             - Implementing workflows (separate task)
-            - Testing context loading (validation only)
+            - Performance optimization beyond baseline loading standards
+            - Advanced features like knowledge graphs or semantic search
             
             ## Risks & Mitigations
             
-            | Risk | Mitigation |
-            |------|-----------|
-            | Context files too large | Split into smaller focused files |
-            | Wrong level distribution | Review context efficiency standard |
-            | Missing knowledge areas | Review interview results |
+            | Risk | Impact | Probability | Mitigation Strategy | Validation |
+            |------|--------|-------------|-------------------|------------|
+            | Context files exceed efficiency guidelines | Medium | Medium | Split large files, implement level review process | File size and content analysis |
+            | Incorrect Level 1/Level 2 distribution | Medium | High | Regular content audits, level assignment guidelines | Distribution analysis and review |
+            | Missing critical knowledge areas | High | Low | Cross-reference with interview results, gap analysis | Knowledge coverage validation |
+            | Content becomes outdated quickly | Medium | Medium | Establish maintenance schedule, version control | Content freshness checks |
+            | Context index doesn't enable efficient lookup | Medium | Low | Test loading strategies, optimize search terms | Loading performance tests |
+            | Duplicate or conflicting information | Medium | Medium | Cross-reference validation, single source of truth | Content consistency checks |
             
             ## Implementation Phases
             
             ### Phase 1: Create Level 1 Context [NOT STARTED]
-            - **Goal:** Create core domain knowledge files
-            - **Tasks:**
-              - [ ] Create .opencode/context/{domain}/ directory
-              - [ ] Create Level 1 files for core knowledge
-              - [ ] Document domain concepts and terminology
-              - [ ] Create integration guides for external tools
-            - **Timing:** 1-1.5 hours
+            - **Goal:** Create core domain knowledge files with comprehensive coverage
+            - **Estimated Time:** 1-1.5 hours
+            - **Acceptance Criteria:**
+              - Core knowledge files created for each primary knowledge area:
+                - Domain concepts and terminology (definitions, examples)
+                - Business rules and constraints (applicable scenarios)
+                - Integration patterns (common approaches, best practices)
+                - External tool guides (setup, configuration, usage)
+              - Each Level 1 file includes:
+                - Clear structure with headings and subheadings
+                - Practical examples and use cases
+                - Cross-references to related content
+                - Metadata (creation date, last reviewed, author)
+              - Content standards:
+                - Files 50-200 lines (focused but comprehensive)
+                - Clear, actionable language
+                - Current and accurate information
+                - Consistent formatting and style
+            - **Quality Gates:**
+              - 80% of content classified as Level 1 (core knowledge)
+              - Each file has clear navigation and searchability
+              - Cross-references work correctly
+              - Content validated against domain requirements
+            - **Rollback Plan:** Review and reorganize content, adjust level assignments
             
             ### Phase 2: Create Level 2 Context [NOT STARTED]
-            - **Goal:** Create specialized knowledge files
-            - **Tasks:**
-              - [ ] Create Level 2 files for specialized topics
-              - [ ] Document advanced concepts
-              - [ ] Create detailed integration examples
-            - **Timing:** 30-45 minutes
+            - **Goal:** Create specialized knowledge files with expert-level detail
+            - **Estimated Time:** 30-45 minutes
+            - **Acceptance Criteria:**
+              - Specialized files created for complex topics:
+                - Advanced techniques and patterns
+                - Detailed integration examples
+                - Troubleshooting guides and edge cases
+                - Performance optimization strategies
+              - Each Level 2 file includes:
+                - Prerequisites and assumed knowledge
+                - Detailed technical explanations
+                - Code examples and configurations
+                - Links to external resources
+              - Content standards:
+                - Files 100-300 lines (comprehensive but focused)
+                - Technical depth appropriate for experts
+                - Practical, implementable guidance
+                - Clear separation from Level 1 content
+            - **Quality Gates:**
+              - 20% of content classified as Level 2 (specialized knowledge)
+              - Clear distinction from Level 1 content
+              - Advanced topics properly contextualized
+              - Examples tested and verified
+            - **Rollback Plan:** Simplify overly complex content, move misplaced items to correct level
             
-            ### Phase 3: Create Context Index [NOT STARTED]
-            - **Goal:** Enable lazy loading of context
-            - **Tasks:**
-              - [ ] Create context index file
-              - [ ] Map knowledge areas to files
-              - [ ] Document loading strategy
-            - **Timing:** 15 minutes
+            ### Phase 3: Create Context Index and Loading Strategy [NOT STARTED]
+            - **Goal:** Enable efficient lazy loading and discovery of context
+            - **Estimated Time:** 15 minutes
+            - **Acceptance Criteria:**
+              - Context index file created with:
+                - Complete file inventory with metadata
+                - Knowledge area mapping and categorization
+                - Loading strategy and priority rules
+                - Search terms and keywords for discovery
+              - Loading strategy includes:
+                - Lazy loading rules for different contexts
+                - Dependency relationships between files
+                - Performance optimization guidelines
+                - Integration with agent context loading
+              - Index provides:
+                - Efficient lookup by knowledge area
+                - Search functionality with keywords
+                - File relationship mapping
+                - Version and freshness information
+            - **Quality Gates:**
+              - Index accurately reflects file structure
+              - Loading strategy meets performance standards
+              - Search functionality works correctly
+              - Dependencies are properly tracked
+            - **Rollback Plan:** Rebuild index, adjust loading rules, test performance
             
             ## Testing & Validation
             
-            - [ ] All context files created
-            - [ ] 80/20 Level 1/Level 2 distribution
-            - [ ] Context index complete
-            - [ ] All knowledge areas covered
-            - [ ] Integration guides present
+            ### Content Quality Validation
+            - [ ] All context files created in correct directory structure
+            - [ ] 80/20 Level 1/Level 2 distribution maintained
+            - [ ] Context index complete and accurate
+            - [ ] All knowledge areas covered with appropriate depth
+            - [ ] Integration guides present and actionable
+            - [ ] Content accuracy verified by domain expert
+            - [ ] Examples tested and verified to work
+            
+            ### Structure and Organization Validation
+            - [ ] File sizes follow efficiency guidelines
+            - [ ] Cross-references work correctly
+            - [ ] Navigation is logical and intuitive
+            - [ ] Metadata complete and accurate
+            - [ ] Version control information present
+            
+            ### Loading Performance Validation
+            - [ ] Context index enables efficient lookup
+            - [ ] Lazy loading works within performance targets
+            - [ ] Dependencies load correctly
+            - [ ] Search functionality returns relevant results
+            - [ ] Memory usage stays within limits
+            
+            ### Maintenance and Sustainability Validation
+            - [ ] Maintenance procedures documented
+            - [ ] Content freshness tracking implemented
+            - [ ] Update processes defined and tested
+            - [ ] Ownership and responsibility assigned
+            - [ ] Quality review schedule established
             
             ## Artifacts & Outputs
             
@@ -1108,18 +1435,27 @@ $ARGUMENTS
             - Command tasks: Use Command Implementation Task Template
             - Context tasks: Use Context Implementation Task Template
             
-            **Template Population**:
-            - Replace {domain} with interview domain
-            - Replace {agent_count} with interview agent_count
-            - Replace {hierarchy} with interview hierarchy
-            - Replace {use_cases.length} with count of use cases
-            - Replace {knowledge_areas} with interview knowledge_areas
-            - Replace {external_tools} with interview external_tools
-            - Replace {custom_commands} with interview custom_commands
-            - Replace {effort} with calculated effort based on complexity
-            - Replace {number} with task_number
-            - Replace {planning_task_number} with first task number
-            - Replace {agent_task_number} with agent task number (if applicable)
+**Enhanced Template Population**:
+             - Replace {domain} with interview domain
+             - Replace {agent_count} with interview agent_count
+             - Replace {hierarchy} with interview hierarchy
+             - Replace {use_cases.length} with count of use cases
+             - Replace {knowledge_areas} with interview knowledge_areas.join(", ")
+             - Replace {external_tools} with interview external_tools.join(", ")
+             - Replace {custom_commands} with interview custom_commands
+             - Replace {effort} with calculated effort based on complexity:
+               * Simple system: base_effort = 2-3 hours per task
+               * Moderate system: base_effort = 3-5 hours per task
+               * Complex system: base_effort = 5-8 hours per task
+             - Replace {number} with task_number
+             - Replace {planning_task_number} with first task number
+             - Replace {agent_task_number} with agent task number (if applicable)
+             - Add enhanced fields for improved plan quality:
+               * Success metrics specific to each task type
+               * Quality gates with measurable criteria
+               * Rollback procedures for each phase
+               * Pre-requisite validation requirements
+               * Integration points with other tasks
             
          e. Write plan artifact to disk
          f. Validate plan artifact exists and is non-empty
@@ -1167,18 +1503,34 @@ $ARGUMENTS
             - Uses plan link replacement logic (replaces existing plan link if any)
             - Rollback on failure
       
-      6. Validate all artifacts:
-         a. Check all project directories created
-         b. Check all plan artifacts exist and are non-empty
-         c. Check plan metadata extracted (phase_count, estimated_hours, complexity)
-         d. Check task entries in TODO.md follow tasks.md standard (created by status-sync-manager)
-         e. Check task entries have description field (created by status-sync-manager)
-         f. Check language field set to 'meta' for meta tasks (created by status-sync-manager)
-         g. Check state.json updates are correct (created by status-sync-manager)
-         h. Check plan artifact links added to TODO.md and state.json
-         i. Check dependencies field set correctly for each task (created by status-sync-manager)
-         j. Verify no circular dependencies exist
-         k. Verify all dependency task numbers are valid
+6. Validate all artifacts with enhanced quality checks:
+          a. Check all project directories created with correct structure
+          b. Check all plan artifacts exist and are non-empty
+          c. Enhanced plan artifact validation:
+             - Verify each plan has success metrics section
+             - Verify each plan has quality gates with measurable criteria
+             - Verify each plan has rollback procedures for each phase
+             - Verify each plan has acceptance criteria for each phase
+             - Verify plan metadata extracted (phase_count, estimated_hours, complexity)
+          d. Check task entries in TODO.md follow tasks.md standard (created by status-sync-manager)
+          e. Check task entries have description field (created by status-sync-manager)
+          f. Check language field set to 'meta' for meta tasks (created by status-sync-manager)
+          g. Check state.json updates are correct (created by status-sync-manager)
+          h. Check plan artifact links added to TODO.md and state.json
+          i. Check dependencies field set correctly for each task (created by status-sync-manager)
+          j. Verify no circular dependencies exist
+          k. Verify all dependency task numbers are valid
+          l. Enhanced quality validation:
+             - Verify planning tasks have comprehensive architecture specifications
+             - Verify agent tasks have detailed implementation criteria
+             - Verify command tasks have parameter validation requirements
+             - Verify context tasks have content quality standards
+             - Verify all tasks have measurable success metrics
+          m. Actionability validation:
+             - Verify each phase has specific, actionable tasks
+             - Verify time estimates are reasonable for complexity
+             - Verify prerequisites are clearly identified
+             - Verify quality gates have pass/fail criteria
       
       7. If validation fails:
          - Log errors
@@ -1189,19 +1541,34 @@ $ARGUMENTS
           - Collect task numbers and artifact paths
           - Proceed to Stage 9
     </process>
-     <validation>
-      - All plan artifacts must exist and be non-empty
-      - All task entries must follow tasks.md standard (enforced by status-sync-manager)
-      - All task entries must have description field (enforced by status-sync-manager)
-      - Language field must be set to 'meta' for meta tasks (enforced by status-sync-manager)
-      - Dependencies field must be set correctly for each task (enforced by status-sync-manager)
-      - No circular dependencies exist
-      - All dependency task numbers are valid
-      - state.json must be updated correctly (enforced by status-sync-manager)
-      - next_project_number must be incremented for each task (enforced by status-sync-manager)
-      - Tasks created atomically (both TODO.md and state.json or neither)
-      - Plan artifact links added to both TODO.md and state.json
-    </validation>
+<validation>
+       - All plan artifacts must exist and be non-empty
+       - All task entries must follow tasks.md standard (enforced by status-sync-manager)
+       - All task entries must have description field (enforced by status-sync-manager)
+       - Language field must be set to 'meta' for meta tasks (enforced by status-sync-manager)
+       - Dependencies field must be set correctly for each task (enforced by status-sync-manager)
+       - No circular dependencies exist
+       - All dependency task numbers are valid
+       - state.json must be updated correctly (enforced by status-sync-manager)
+       - next_project_number must be incremented for each task (enforced by status-sync-manager)
+       - Tasks created atomically (both TODO.md and state.json or neither)
+       - Plan artifact links added to both TODO.md and state.json
+       - **Enhanced Plan Quality Validation**:
+         - All plans have success metrics with measurable criteria
+         - All plans have quality gates with specific pass/fail conditions
+         - All plans have rollback procedures for each implementation phase
+         - All plans have acceptance criteria that are specific and testable
+         - All plans have pre-requisite validation requirements
+         - Time estimates are realistic for task complexity
+         - Phase breakdown follows logical progression
+         - Integration points between tasks are clearly identified
+       - **Actionability Validation**:
+         - Each phase has concrete, executable tasks
+         - Success criteria are objectively measurable
+         - Quality gates provide clear go/no-go decisions
+         - Rollback plans are practical and tested
+         - Dependencies are realistic and achievable
+     </validation>
     <checkpoint>Tasks created with plan artifacts</checkpoint>
   </stage>
 

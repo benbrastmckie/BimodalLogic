@@ -29,11 +29,11 @@ context_loading:
 
 ## Purpose
 
-The `/meta` command creates tasks to implement new .opencode system capabilities. It supports three modes:
+The `/meta` command creates **detailed implementation plans and structured tasks** for new .opencode system capabilities. It does NOT implement changes directly - instead, it produces comprehensive, actionable plans that guide step-by-step implementation through the `/implement` command. It supports three modes:
 
-1. **Direct Mode** (`/meta {description}`): Creates tasks immediately from description
-2. **Clarification Mode** (`/meta --ask {description}`): Asks follow-up questions before creating tasks
-3. **Interactive Mode** (`/meta`): Conducts full guided interview to gather requirements
+1. **Direct Mode** (`/meta {description}`): Creates detailed plans and tasks immediately from description
+2. **Clarification Mode** (`/meta --ask {description}`): Asks follow-up questions before creating detailed plans and tasks
+3. **Interactive Mode** (`/meta`): Conducts full guided interview to gather requirements and create detailed plans
 
 **Use this command when you need to**:
 - Create a new .opencode system for a specific domain
@@ -49,25 +49,32 @@ The `/meta` command creates tasks to implement new .opencode system capabilities
 /meta [--ask] [DESCRIPTION]
 ```
 
-- **Direct Mode**: Provide description, tasks created immediately
-- **Clarification Mode**: Provide description with --ask flag, answer follow-up questions
-- **Interactive Mode**: No arguments, full guided interview
+- **Direct Mode**: Provide description, detailed implementation plans and tasks created immediately
+- **Clarification Mode**: Provide description with --ask flag, answer follow-up questions, receive detailed plans
+- **Interactive Mode**: No arguments, full guided interview with comprehensive plan generation
 
 ### Examples
 
 ```
-# Example 1: Direct mode - create tasks immediately
+# Example 1: Direct mode - create detailed plans and tasks immediately
 /meta "Add proof verification capabilities to the system"
+> Creates 4-7 tasks with comprehensive implementation plans
+> Each plan includes phases, acceptance criteria, quality gates
 
-# Example 2: Direct mode - create new system
+# Example 2: Direct mode - create new system with detailed plans
 /meta "Create a system for managing customer support tickets with automated routing"
+> Creates architecture design, agent implementation, command, and context tasks
+> All with detailed step-by-step implementation guidance
 
-# Example 3: Clarification mode - ask follow-up questions
+# Example 3: Clarification mode - ask follow-up questions, then create detailed plans
 /meta --ask "Improve the testing workflow"
+> Asks 3-5 targeted questions
+> Generates comprehensive plans with specific implementation steps
 
-# Example 4: Interactive mode - full guided interview
+# Example 4: Interactive mode - full guided interview with detailed plans
 /meta
-> [Interactive interview follows]
+> [Interactive interview follows with progressive disclosure]
+> Results in complete task breakdown with actionable implementation plans
 ```
 
 ---
@@ -216,7 +223,22 @@ This command creates the following artifacts:
   - Commit message: "meta: create tasks for {domain} system ({N} tasks)"
   - Includes: TODO.md, state.json, all task directories with plan artifacts
 
-**Note**: The /meta command creates TASKS with PLAN ARTIFACTS, not the final system. Use `/implement {task_number}` to implement each task, which will route to meta subagents (domain-analyzer, workflow-designer, agent-generator, command-creator, context-organizer) to create the actual agents, commands, and context files.
+**Important**: The `/meta` command creates DETAILED IMPLEMENTATION PLANS and STRUCTURED TASKS, not the final system. Each task includes:
+
+- Comprehensive implementation phases with specific, actionable steps
+- Success metrics and quality gates with measurable criteria  
+- Acceptance criteria for each implementation phase
+- Risk mitigation strategies and rollback procedures
+- Pre-requisite validation and integration requirements
+
+Use `/implement {task_number}` to execute each plan step-by-step. Implementation routes to specialized meta subagents:
+- **domain-analyzer**: Domain research and analysis
+- **workflow-designer**: Workflow architecture and design
+- **agent-generator**: Agent implementation with 8-stage workflows
+- **command-creator**: Command interface development
+- **context-organizer**: Knowledge base and context file creation
+
+The plans are production-ready with validation criteria ensuring high-quality implementation.
 
 ---
 
@@ -278,14 +300,17 @@ When extending an existing .opencode system, /meta offers:
 
 ## Quality Standards
 
-All generated artifacts follow current ProofChecker standards:
+All generated plans and artifacts follow current ProofChecker standards:
 
+- **Comprehensive Planning**: Each task includes detailed phases with acceptance criteria, success metrics, quality gates, and rollback procedures
 - **Frontmatter Delegation**: Commands <300 lines, agents own workflow
 - **8-Stage Workflow**: All agents implement complete workflow with Stage 7 critical
-- **Context Efficiency**: Lazy loading, context index integration
-- **Validation**: Pre-execution and post-execution checks
+- **Context Efficiency**: Lazy loading, context index integration  
+- **Validation**: Comprehensive pre-execution and post-execution checks with measurable criteria
 - **Git Workflow**: Scoped commits via git-workflow-manager
 - **Status Tracking**: Atomic updates via status-sync-manager
+- **Actionability**: Plans are step-by-step, specific, and executable without ambiguity
+- **Production Ready**: Quality gates ensure implementation meets production standards
 - **NO EMOJI**: Text-based status indicators ([PASS]/[FAIL]/[WARN])
 
 ---
