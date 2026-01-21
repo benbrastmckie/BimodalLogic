@@ -1,20 +1,20 @@
 ---
-next_project_number: 661
+next_project_number: 666
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 15
+  active: 20
   completed: 236
   in_progress: 0
-  not_started: 8
+  not_started: 13
   abandoned: 19
-  total: 253
+  total: 258
 priority_distribution:
   critical: 0
-  high: 3
-  medium: 6
+  high: 5
+  medium: 9
   low: 6
 technical_debt:
   sorry_count: 205
@@ -26,6 +26,29 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 661. Create documentation standards file
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-21
+
+**Description**: Create `.claude/context/core/standards/DOCUMENTATION_STANDARDS.md` (ALL_CAPS naming) that specifies: (1) file naming conventions (ALL_CAPS vs lowercase); (2) prohibition of "quick start" and "quick reference" document patterns; (3) README.md usage over README files; (4) present tense requirement with no historical language; (5) what belongs in docs/ vs context/. Fix the corrupted/duplicated content in existing `documentation.md`.
+
+---
+
+### 662. Consolidate and update DOCS/README.md
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-21
+- **Dependencies**: 661
+
+**Description**: Rewrite `.claude/docs/README.md` to: remove "Quick Start" section; use present tense throughout (no historical references); consolidate with system-overview.md where appropriate; ensure accurate file paths and references; follow new documentation standards from Task 661.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -68,6 +91,42 @@ technical_debt:
 
 
 ## Medium Priority
+
+### 663. Archive stale research/fix plan documents
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-21
+- **Dependencies**: 661
+
+**Description**: Move stale research artifacts from docs/ to archive or delete: `research-skill-agent-contexts.md` (research artifact), `skills-vs-agents-context-behavior.md` (distill to context/ first), `memory-leak-fix-plan.md` (historical fix plan), `orchestrator-workflow-execution-issue.md` (issue document). Extract any valuable permanent guidance to appropriate context files before archiving.
+
+---
+
+### 664. Remove STANDARDS_QUICK_REF.md and quick reference patterns
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-21
+- **Dependencies**: 661
+
+**Description**: Delete `STANDARDS_QUICK_REF.md` from .claude/docs/. Ensure information is properly captured in authoritative sources. Update any references to this file throughout the codebase.
+
+---
+
+### 665. Update guides and templates to follow new standards
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-21
+- **Dependencies**: 661, 662
+
+**Description**: Update remaining files in `docs/guides/` and `docs/templates/`: remove "quick start" sections from `user-installation.md`; ensure present tense throughout; fix references to non-existent paths; apply ALL_CAPS naming where appropriate; update templates/README.md to remove version numbers and version history references.
+
+---
 
 ### 655. Fix jq errors in agent system
 - **Status**: [NOT STARTED]

@@ -6,6 +6,60 @@
   },
   "active_projects": [
     {
+      "project_number": 661,
+      "project_name": "create_documentation_standards_file",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-21T20:39:02Z",
+      "last_updated": "2026-01-21T20:39:02Z",
+      "session_id": "sess_1769027939_a0506d"
+    },
+    {
+      "project_number": 662,
+      "project_name": "consolidate_update_docs_readme",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-21T20:39:02Z",
+      "last_updated": "2026-01-21T20:39:02Z",
+      "session_id": "sess_1769027939_a0506d",
+      "dependencies": [661]
+    },
+    {
+      "project_number": 663,
+      "project_name": "archive_stale_research_fix_plan_documents",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-21T20:39:02Z",
+      "last_updated": "2026-01-21T20:39:02Z",
+      "session_id": "sess_1769027939_a0506d",
+      "dependencies": [661]
+    },
+    {
+      "project_number": 664,
+      "project_name": "remove_standards_quick_ref_and_quick_reference_patterns",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-21T20:39:02Z",
+      "last_updated": "2026-01-21T20:39:02Z",
+      "session_id": "sess_1769027939_a0506d",
+      "dependencies": [661]
+    },
+    {
+      "project_number": 665,
+      "project_name": "update_guides_templates_to_follow_new_standards",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-21T20:39:02Z",
+      "last_updated": "2026-01-21T20:39:02Z",
+      "session_id": "sess_1769027939_a0506d",
+      "dependencies": [661, 662]
+    },
+    {
       "project_number": 656,
       "project_name": "complete_truth_lemma_forward_direction",
       "status": "not_started",
@@ -399,7 +453,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 661,
+  "next_project_number": 666,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
