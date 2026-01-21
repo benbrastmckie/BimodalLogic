@@ -174,7 +174,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 3: Define Canonical Task Relation [IN PROGRESS]
+### Phase 3: Define Canonical Task Relation [PARTIAL]
 
 **Goal**: Define task_rel using D's algebraic operations so frame conditions hold by construction
 
@@ -213,7 +213,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 4: Construct Canonical WorldHistory [NOT STARTED]
+### Phase 4: Construct Canonical WorldHistory [IN PROGRESS]
 
 **Goal**: For each MCS, construct a WorldHistory that respects the task relation
 
