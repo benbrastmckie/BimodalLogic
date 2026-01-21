@@ -115,7 +115,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 1: Port Core MCS Infrastructure [IN PROGRESS]
+### Phase 1: Port Core MCS Infrastructure [COMPLETED]
 
 **Goal**: Port minimal MCS theory needed for canonical world definition
 
@@ -145,7 +145,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 2: Define Canonical World Structure [NOT STARTED]
+### Phase 2: Define Canonical World Structure [IN PROGRESS]
 
 **Goal**: Create the CanonicalWorld structure pairing MCS with abstract time points
 
