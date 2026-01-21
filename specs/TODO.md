@@ -79,23 +79,6 @@ technical_debt:
 
 ---
 
-### 654. Research purely syntactic representation theorem approach
-- **Effort**: 24 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-21
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Source**: Theories/Bimodal/latex/subfiles/04-Metalogic.tex:162
-- **Research**: [research-004.md](specs/654_research_purely_syntactic_representation_theorem/reports/research-004.md) (indexed MCS family approach)
-- **Plan**: [implementation-004.md](specs/654_research_purely_syntactic_representation_theorem/plans/implementation-004.md)
-- **Summary**: [implementation-summary-20260120.md](specs/654_research_purely_syntactic_representation_theorem/summaries/implementation-summary-20260120.md)
-
-**Description**: Research and implement a purely syntactic representation theorem approach that builds semantic objects from pure syntax. The current semantic approach (equivalence classes of history-time pairs) abandons the intended spirit of the representation theorem. A fully general, purely syntactic approach should be carefully researched and implemented, focusing on the crux of the metalogic: constructing a canonical model directly from syntactic consistency without relying on pre-existing semantic structures.
-
----
-
 ### 653. Improve metalogic infrastructure (rename frame, address infinite contexts)
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -105,22 +88,6 @@ technical_debt:
 - **Source**: Theories/Bimodal/latex/subfiles/04-Metalogic.tex:142,253
 
 **Description**: Two related metalogic improvements: (1) Rename SemanticCanonicalFrame to CanonicalTaskFrame in Lean source code for accuracy (the current name is misleading since it's a task frame, not a general semantic frame). (2) Address infinite contexts/sets which remain unaddressed - this should be handled by proving and applying compactness to extend the current finite-context completeness results to infinite contexts.
-
----
-
-### 652. Improve /learn TODO grouping by topic
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-20
-- **Planned**: 2026-01-20
-- **Completed**: 2026-01-20
-- **Research**: [research-001.md](specs/652_improve_learn_todo_grouping_by_topic/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/652_improve_learn_todo_grouping_by_topic/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260120.md](specs/652_improve_learn_todo_grouping_by_topic/summaries/implementation-summary-20260120.md)
-
-**Description**: Improve the /learn command so that when creating todo-tasks it takes stock of ALL TODOs in the scanned file(s), then creates the smallest number of tasks that will address all TODOs while separating tasks by topic. Currently, /learn creates one task per file or misses TODOs when grouping. The improvement should: (1) inventory all TODO: tags found, (2) analyze topics/themes among them, (3) create grouped tasks that minimize task count while maintaining logical separation. The FIX: and NOTE: tag handling features of /learn should remain unchanged.
 
 ---
 

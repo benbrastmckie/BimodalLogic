@@ -7723,6 +7723,86 @@
       "language": "meta",
       "priority": "medium",
       "archived": "2026-01-20T20:44:55Z"
+    },
+    {
+      "project_number": 654,
+      "project_name": "research_purely_syntactic_representation_theorem",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-20T23:16:47Z",
+      "last_updated": "2026-01-21T01:13:11Z",
+      "session_id": "sess_1768957168_fc4de0",
+      "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
+      "source_lines": [
+        162
+      ],
+      "researched": "2026-01-21T00:52:07Z",
+      "artifacts": [
+        {
+          "path": "specs/654_research_purely_syntactic_representation_theorem/reports/research-003.md",
+          "type": "research",
+          "summary": "In-depth analysis of algebraic vs parametric canonical model approaches, recommending universal construction parametric over D"
+        },
+        {
+          "path": "specs/654_research_purely_syntactic_representation_theorem/reports/research-004.md",
+          "type": "research",
+          "summary": "Research report analyzing reflexive vs irreflexive temporal operators, recommending indexed MCS family approach over same-MCS or reflexive primitive approaches"
+        },
+        {
+          "path": "specs/654_research_purely_syntactic_representation_theorem/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "Revised 7-phase plan using indexed MCS family approach; keeps G/H primitive, 24 hours estimated"
+        },
+        {
+          "path": "specs/654_research_purely_syntactic_representation_theorem/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results and documented sorries"
+        }
+      ],
+      "planned": "2026-01-21T00:57:31Z",
+      "started": "2026-01-21T00:20:24Z",
+      "resume_phase": 3,
+      "completed": "2026-01-21T01:13:11Z",
+      "completion_summary": "Proved representation theorem for TM bimodal logic using indexed MCS family approach. The main theorem (consistent formulas are satisfiable) is proven without sorry. Key insight: indexed family with temporal coherence conditions avoids T-axiom requirement that blocked previous same-MCS-at-all-times approach."
+    },
+    {
+      "project_number": 652,
+      "project_name": "improve_learn_todo_grouping_by_topic",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T22:07:14Z",
+      "last_updated": "2026-01-20T22:40:00Z",
+      "session_id": "sess_1768947824_b236d2",
+      "researched": "2026-01-20T22:11:00Z",
+      "artifacts": [
+        {
+          "path": "specs/652_improve_learn_todo_grouping_by_topic/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 7 findings on current TODO handling, topic analysis approaches, and 4-phase implementation plan"
+        },
+        {
+          "path": "specs/652_improve_learn_todo_grouping_by_topic/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 7 findings on current TODO handling, topic analysis approaches, and 4-phase implementation plan"
+        },
+        {
+          "path": "specs/652_improve_learn_todo_grouping_by_topic/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan: topic analysis infrastructure, user confirmation UI, task creation modification, documentation updates"
+        },
+        {
+          "path": "specs/652_improve_learn_todo_grouping_by_topic/summaries/implementation-summary-20260120.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results for TODO topic grouping feature"
+        }
+      ],
+      "planned": "2026-01-20T22:20:44Z",
+      "started": "2026-01-20T22:24:04Z",
+      "completed": "2026-01-20T22:40:00Z",
+      "completion_summary": "Implemented TODO topic grouping in /learn command with semantic analysis (key terms, file sections, action types), user confirmation UI with 3 grouping options, and effort-scaled task creation.",
+      "claudemd_suggestions": "Modified skill-learn/SKILL.md (added Step 7.5 topic grouping, updated Step 8.4 task creation), commands/learn.md (added grouping section), docs/examples/learn-flow-example.md (added grouping scenario)"
     }
   ]
 }
