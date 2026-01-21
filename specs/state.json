@@ -127,6 +127,27 @@
       "claudemd_suggestions": "none"
     },
     {
+      "project_number": 666,
+      "project_name": "revise_lean_source_code_logos_theory_definitions",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-21T22:50:00Z",
+      "last_updated": "2026-01-21T22:50:00Z",
+      "session_id": "task-666-recovery",
+      "source_file": "Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
+      "source_lines": [
+        72
+      ],
+      "artifacts": [
+        {
+          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-001.md",
+          "type": "research",
+          "summary": "Task created manually due to system failure - research report with constitutive model definitions from LaTeX"
+        }
+      ]
+    },
+    {
       "project_number": 665,
       "project_name": "update_guides_templates_to_follow_new_standards",
       "status": "planned",
@@ -533,6 +554,19 @@
         630,
         631
       ]
+    },
+    {
+      "project_number": 666,
+      "project_name": "revise_lean_source_code_logos_theory_definitions",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-21T00:00:00Z",
+      "last_updated": "2026-01-21T00:00:00Z",
+      "description": "Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": []
     }
   ],
   "completed_projects": [
@@ -547,7 +581,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 666,
+  "next_project_number": 667,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

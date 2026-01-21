@@ -55,6 +55,21 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 
 ## Medium Priority (Complete within 3 months)
 
+### 666. Revise Lean source code in Logos/ theory to match constitutive model definitions
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: Lean
+- **Created**: 2026-01-21
+- **Description**: Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex
+- **Source**: Definitions include structure $\model = \tuple{\statespace, \parthood, \interp{\cdot}}$, n-place function symbols $\interp{f} : (\Fin\;n \to \statespace) \to \statespace$, and n-place predicates $\verifiertype{F}, \falsifiertype{F} : (\Fin\;n \to \statespace) \to \statespace \to \Prop$
+- **Acceptance Criteria**:
+  - [ ] Research current Lean implementation in Logos/ theory
+  - [ ] Compare with LaTeX definitions from constitutive model
+  - [ ] Revise Lean code to match LaTeX definitions
+  - [ ] Ensure compilation passes after changes
+- **Impact**: Aligns Lean and LaTeX sources for constitutive model definitions
+
 ### 516. Test task creation after refactoring
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
