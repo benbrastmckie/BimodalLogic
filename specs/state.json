@@ -129,15 +129,23 @@
     {
       "project_number": 665,
       "project_name": "update_guides_templates_to_follow_new_standards",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-21T20:39:02Z",
-      "last_updated": "2026-01-21T20:39:02Z",
-      "session_id": "sess_1769027939_a0506d",
+      "last_updated": "2026-01-21T22:21:00Z",
+      "session_id": "sess_1769032896_acf687",
       "dependencies": [
         661,
         662
+      ],
+      "researched": "2026-01-21T22:21:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/665_update_guides_templates_to_follow_new_standards/reports/research-001.md",
+          "summary": "Research report documenting 12 documentation standards violations across 6 files in guides/ and templates/ with specific line numbers and required changes"
+        }
       ]
     },
     {

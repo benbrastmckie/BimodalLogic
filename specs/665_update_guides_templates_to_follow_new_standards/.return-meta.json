@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "summary": "Found 12 violations across 6 files in docs/guides/ and docs/templates/: 2 Quick Start sections to rename, 8 version footers/headers to remove, 3 invalid path references to fix. All files already use present tense correctly.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/665_update_guides_templates_to_follow_new_standards/reports/research-001.md",
+      "summary": "Research report documenting documentation standards violations in guides and templates directories with specific line numbers and required changes"
+    }
+  ],
+  "session_id": "sess_1769032896_acf687",
+  "metadata": {
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 12,
+    "files_analyzed": 11
+  },
+  "next_steps": "Run /plan 665 to create implementation plan"
+}

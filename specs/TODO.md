@@ -137,11 +137,14 @@ technical_debt:
 
 ### 665. Update guides and templates to follow new standards
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-21
+- **Started**: 2026-01-21
+- **Researched**: 2026-01-21
 - **Dependencies**: 661, 662
+- **Research**: [research-001.md](specs/665_update_guides_templates_to_follow_new_standards/reports/research-001.md)
 
 **Description**: Update remaining files in `docs/guides/` and `docs/templates/`: remove "quick start" sections from `user-installation.md`; ensure present tense throughout; fix references to non-existent paths; apply ALL_CAPS naming where appropriate; update templates/README.md to remove version numbers and version history references.
 
