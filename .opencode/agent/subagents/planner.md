@@ -224,7 +224,7 @@ lifecycle:
          d. Scan reports directory for all research reports:
             ```bash
             # Determine project directory from task_number
-            project_dir=$(find .opencode/specs -maxdepth 1 -type d -name "${task_number}_*" | head -1)
+            project_dir=$(find specs -maxdepth 1 -type d -name "${task_number}_*" | head -1)
             reports_dir="${project_dir}/reports"
             
             # Scan for research reports if directory exists

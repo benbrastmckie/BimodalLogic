@@ -449,7 +449,7 @@ def archive_tasks(
         todo_path: Path to TODO.md
         state_path: Path to state.json
         archive_state_path: Path to archive/state.json
-        specs_dir: Path to .opencode/specs directory
+        specs_dir: Path to specs directory
         dry_run: If True, don't modify files
         verbose: If True, print detailed progress
 
@@ -690,10 +690,10 @@ def main():
     project_root = script_dir.parent.parent
 
     # Define paths - use specs/ as the canonical location
-    todo_path = project_root / ".opencode" / "specs" / "TODO.md"
-    state_path = project_root / ".opencode" / "specs" / "state.json"
-    archive_state_path = project_root / ".opencode" / "specs" / "archive" / "state.json"
-    specs_dir = project_root / ".opencode" / "specs"
+    todo_path = project_root / "specs" / "TODO.md"
+    state_path = project_root / "specs" / "state.json"
+    archive_state_path = project_root / "specs" / "archive" / "state.json"
+    specs_dir = project_root / "specs"
 
     try:
         # Validate-only mode

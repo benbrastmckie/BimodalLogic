@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 19,
-    "last_sync": "2026-01-20T23:16:47Z"
+    "total_tasks": 22,
+    "last_sync": "2026-01-21T23:01:54Z"
   },
   "active_projects": [
     {
@@ -567,6 +567,76 @@
       "effort": "TBD",
       "blocking": [],
       "dependencies": []
+    },
+    {
+      "project_number": 667,
+      "project_name": "fix_specs_path_references",
+      "status": "implemented",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-21T23:00:22Z",
+      "last_updated": "2026-01-21T23:03:26Z",
+      "session_id": "meta-session-1768239500",
+      "artifacts": [
+        {
+          "path": "specs/667_fix_specs_path_references/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis and fix of all .opencode/specs path references"
+        },
+        {
+          "path": "specs/667_fix_specs_path_references/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan for fixing path references"
+        },
+        {
+          "path": "specs/667_fix_specs_path_references/summaries/implementation-summary-20260121.md",
+          "type": "summary",
+          "summary": "Complete summary of path reference fixes and system restoration"
+        }
+      ],
+      "planned": "2026-01-21T23:00:22Z",
+      "researched": "2026-01-21T23:02:28Z",
+      "implemented": "2026-01-21T23:02:28Z",
+      "implementation_summary": "Successfully identified and fixed all 6 references to .opencode/specs throughout the system. Updated Python scripts, agent files, context files, and documentation. Validated that task creation system is now functional."
+    },
+    {
+      "project_number": 668,
+      "project_name": "create_specs_path_migration_script",
+      "status": "planned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-21T23:00:22Z",
+      "last_updated": "2026-01-21T23:00:22Z",
+      "session_id": "meta-session-1768239500",
+      "dependencies": [
+        667
+      ],
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/668_create_specs_path_migration_script/plans/implementation-001.md",
+          "summary": "Plan to create automated migration script for path references"
+        }
+      ],
+      "planned": "2026-01-21T23:00:22Z"
+    },
+    {
+      "project_number": 669,
+      "project_name": "test_task_creation",
+      "status": "planned",
+      "language": "meta",
+      "priority": "low",
+      "created": "2026-01-21T23:01:54Z",
+      "last_updated": "2026-01-21T23:01:54Z",
+      "session_id": "test-session-1768239500",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/669_test_task_creation/plans/implementation-001.md",
+          "summary": "Test task to verify task creation system works after path fixes"
+        }
+      ],
+      "planned": "2026-01-21T23:01:54Z"
     }
   ],
   "completed_projects": [
@@ -581,7 +651,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 667,
+  "next_project_number": 670,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -474,7 +474,7 @@ permissions:
 
 ### Pattern 2: Spec-Only Writer
 
-**Use Case**: Agent writes to .opencode/specs only
+**Use Case**: Agent writes to specs only
 
 ```yaml
 permissions:

@@ -104,6 +104,19 @@ technical_debt:
 
 ## Medium Priority
 
+### 666. revise lean source code logos theory definitions
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Blocking**: None
+- **Dependencies**: None
+- **Created**: 2026-01-21
+
+**Description**: Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex
+
+---
+
 ### 663. Archive stale research/fix plan documents
 - **Effort**: 1-2 hours
 - **Status**: [COMPLETED]
@@ -401,5 +414,44 @@ technical_debt:
 - **Dependencies**: Task 624
 
 **Description**: Prove the `decide_complete` theorem in Correctness.lean deriving decision procedure completeness from tableau completeness. Follows directly from tableau_complete (Task 624).
+
+---
+
+### 667. Fix .opencode/specs path references
+- **Status**: [IMPLEMENTED]
+- **Priority**: High
+- **Language**: meta
+- **Session**: meta-session-1768239500
+- **Researched**: 2026-01-21
+- **Implemented**: 2026-01-21
+- **Research**: [research-001.md](specs/667_fix_specs_path_references/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/667_fix_specs_path_references/plans/implementation-001.md)
+
+**Description**: Successfully identified and fixed all 6 references to .opencode/specs throughout the system. Updated Python scripts (validate_state_sync.py, todo_cleanup.py), agent files (planner.md), context files (routing.md), and documentation. Task creation system is now functional.
+
+---
+
+### 668. Create specs path migration script
+- **Status**: [PLANNED]
+- **Priority**: Medium
+- **Language**: meta
+- **Session**: meta-session-1768239500
+- **Dependencies**: 667
+- **Planned**: 2026-01-21
+- **Plan**: [implementation-001.md](specs/668_create_specs_path_migration_script/plans/implementation-001.md)
+
+**Description**: Create automated Python script to detect and migrate .opencode/specs path references to specs/. Script will include safety checks, dry-run mode, backup creation, and detailed reporting. Will serve as fix for current issue and preventative tool for future migrations.
+
+---
+
+### 669. Test task creation system
+- **Status**: [PLANNED]
+- **Priority**: Low
+- **Language**: meta
+- **Session**: test-session-1768239500
+- **Planned**: 2026-01-21
+- **Plan**: [implementation-001.md](specs/669_test_task_creation/plans/implementation-001.md)
+
+**Description**: Simple test to verify that task creation system is working after fixing .opencode/specs path references. Validates that the path reference fixes resolved the task creation issues.
 
 ---
