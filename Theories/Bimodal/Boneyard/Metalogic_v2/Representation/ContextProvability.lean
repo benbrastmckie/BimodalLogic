@@ -1,11 +1,11 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic_v2.Soundness.Soundness
-import Bimodal.Metalogic_v2.Core.Provability
-import Bimodal.Metalogic_v2.Core.DeductionTheorem
-import Bimodal.Metalogic_v2.Core.MaximalConsistent
-import Bimodal.Metalogic_v2.Representation.CanonicalModel
-import Bimodal.Metalogic_v2.Representation.SemanticCanonicalModel
+import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
+import Bimodal.Boneyard.Metalogic_v2.Core.Provability
+import Bimodal.Boneyard.Metalogic_v2.Core.DeductionTheorem
+import Bimodal.Boneyard.Metalogic_v2.Core.MaximalConsistent
+import Bimodal.Boneyard.Metalogic_v2.Representation.CanonicalModel
+import Bimodal.Boneyard.Metalogic_v2.Representation.SemanticCanonicalModel
 import Bimodal.Theorems.Propositional
 import Mathlib.Data.List.Basic
 

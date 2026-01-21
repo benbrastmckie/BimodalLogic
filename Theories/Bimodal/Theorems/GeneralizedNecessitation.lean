@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Context
-import Bimodal.Metalogic_v2.Core.DeductionTheorem
+import Bimodal.Boneyard.Metalogic_v2.Core.DeductionTheorem
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Combinators
 

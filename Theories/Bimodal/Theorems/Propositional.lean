@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Combinators
-import Bimodal.Metalogic_v2.Core.DeductionTheorem
+import Bimodal.Boneyard.Metalogic_v2.Core.DeductionTheorem
 
 /-!
 # Propositional Theorems

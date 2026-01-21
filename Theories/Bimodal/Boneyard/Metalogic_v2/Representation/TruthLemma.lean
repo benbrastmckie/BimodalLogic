@@ -1,5 +1,5 @@
-import Bimodal.Metalogic_v2.Representation.CanonicalModel
-import Bimodal.Metalogic_v2.Core.Provability
+import Bimodal.Boneyard.Metalogic_v2.Representation.CanonicalModel
+import Bimodal.Boneyard.Metalogic_v2.Core.Provability
 
 namespace Bimodal.Metalogic_v2.Representation
 

@@ -1,4 +1,4 @@
-import Bimodal.Metalogic_v2.Decidability.Saturation
+import Bimodal.Boneyard.Metalogic_v2.Decidability.Saturation
 
 /-!
 # Proof Extraction from Closed Tableaux (Metalogic_v2)

@@ -1,10 +1,10 @@
 import Bimodal.Theorems.Perpetuity
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
-import Bimodal.Metalogic_v2.Soundness.Soundness
-import Bimodal.Metalogic_v2.Core.DeductionTheorem
-import Bimodal.Metalogic_v2.Representation.SemanticCanonicalModel
-import Bimodal.Metalogic_v2.Decidability.DecisionProcedure
+import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
+import Bimodal.Boneyard.Metalogic_v2.Core.DeductionTheorem
+import Bimodal.Boneyard.Metalogic_v2.Representation.SemanticCanonicalModel
+import Bimodal.Boneyard.Metalogic_v2.Decidability.DecisionProcedure
 
 /-!
 # Bimodal TM Logic - Demo Presentation

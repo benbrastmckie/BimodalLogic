@@ -1,7 +1,7 @@
-import Bimodal.Metalogic_v2.Representation.RepresentationTheorem
-import Bimodal.Metalogic_v2.Representation.ContextProvability
-import Bimodal.Metalogic_v2.Representation.SemanticCanonicalModel
-import Bimodal.Metalogic_v2.Soundness.Soundness
+import Bimodal.Boneyard.Metalogic_v2.Representation.RepresentationTheorem
+import Bimodal.Boneyard.Metalogic_v2.Representation.ContextProvability
+import Bimodal.Boneyard.Metalogic_v2.Representation.SemanticCanonicalModel
+import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
 import Bimodal.Semantics.Validity
 import Mathlib.Data.Fintype.BigOperators
 

@@ -1,4 +1,4 @@
-import Bimodal.Metalogic_v2.Decidability.BranchClosure
+import Bimodal.Boneyard.Metalogic_v2.Decidability.BranchClosure
 
 /-!
 # Tableau Saturation and Expansion (Metalogic_v2)

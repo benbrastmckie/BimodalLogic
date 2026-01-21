@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic_v2.Core.MaximalConsistent
+import Bimodal.Boneyard.Metalogic_v2.Core.MaximalConsistent
 import Bimodal.Theorems.Propositional
 import Mathlib.Data.Set.Basic
 

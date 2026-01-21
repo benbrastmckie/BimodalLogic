@@ -1,4 +1,4 @@
-import Bimodal.Metalogic_v2.Representation.FiniteModelProperty
+import Bimodal.Boneyard.Metalogic_v2.Representation.FiniteModelProperty
 
 /-!
 # Finite Model Property Hub (Metalogic_v2)

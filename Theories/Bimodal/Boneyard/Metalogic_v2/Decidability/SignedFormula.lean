@@ -1,7 +1,7 @@
 import Bimodal.Syntax.Formula
 import Bimodal.ProofSystem
 import Bimodal.Syntax.Subformulas
-import Bimodal.Metalogic_v2.Representation.Closure
+import Bimodal.Boneyard.Metalogic_v2.Representation.Closure
 
 /-!
 # Signed Formula and Branch Types for Tableau Decidability (Metalogic_v2)

@@ -1,4 +1,4 @@
-import Bimodal.Metalogic_v2.Decidability.SignedFormula
+import Bimodal.Boneyard.Metalogic_v2.Decidability.SignedFormula
 
 /-!
 # Tableau Rules for TM Bimodal Logic (Metalogic_v2)

@@ -1,5 +1,5 @@
-import Bimodal.Metalogic_v2.FMP
-import Bimodal.Metalogic_v2.Representation.ContextProvability
+import Bimodal.Boneyard.Metalogic_v2.FMP
+import Bimodal.Boneyard.Metalogic_v2.Representation.ContextProvability
 
 /-!
 # Weak Completeness for TM Bimodal Logic (Metalogic_v2)

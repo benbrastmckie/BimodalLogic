@@ -1,14 +1,14 @@
 -- Decidability Hub Module (Metalogic_v2)
 -- Re-exports all Decidability infrastructure
 
-import Bimodal.Metalogic_v2.Decidability.SignedFormula
-import Bimodal.Metalogic_v2.Decidability.Tableau
-import Bimodal.Metalogic_v2.Decidability.BranchClosure
-import Bimodal.Metalogic_v2.Decidability.Saturation
-import Bimodal.Metalogic_v2.Decidability.ProofExtraction
-import Bimodal.Metalogic_v2.Decidability.CountermodelExtraction
-import Bimodal.Metalogic_v2.Decidability.DecisionProcedure
-import Bimodal.Metalogic_v2.Decidability.Correctness
+import Bimodal.Boneyard.Metalogic_v2.Decidability.SignedFormula
+import Bimodal.Boneyard.Metalogic_v2.Decidability.Tableau
+import Bimodal.Boneyard.Metalogic_v2.Decidability.BranchClosure
+import Bimodal.Boneyard.Metalogic_v2.Decidability.Saturation
+import Bimodal.Boneyard.Metalogic_v2.Decidability.ProofExtraction
+import Bimodal.Boneyard.Metalogic_v2.Decidability.CountermodelExtraction
+import Bimodal.Boneyard.Metalogic_v2.Decidability.DecisionProcedure
+import Bimodal.Boneyard.Metalogic_v2.Decidability.Correctness
 
 /-!
 # Decidability Module Hub (Metalogic_v2)
@@ -97,7 +97,7 @@ The key insight is that FMP bounds the tableau exploration space:
 ### Basic Decision
 
 ```lean
-import Bimodal.Metalogic_v2.Decidability
+import Bimodal.Boneyard.Metalogic_v2.Decidability
 
 open Bimodal.Metalogic_v2.Decidability
 

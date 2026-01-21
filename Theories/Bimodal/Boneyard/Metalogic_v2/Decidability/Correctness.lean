@@ -1,6 +1,6 @@
-import Bimodal.Metalogic_v2.Decidability.DecisionProcedure
-import Bimodal.Metalogic_v2.Soundness.Soundness
-import Bimodal.Metalogic_v2.FMP
+import Bimodal.Boneyard.Metalogic_v2.Decidability.DecisionProcedure
+import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
+import Bimodal.Boneyard.Metalogic_v2.FMP
 
 /-!
 # Correctness of the Decision Procedure (Metalogic_v2)

@@ -1,56 +1,35 @@
--- Metalogic_v2: Representation-First Architecture Hub Module
--- Import the top-level modules from each layer
+-- Metalogic_v2: Re-export from Boneyard for backwards compatibility
+-- The actual implementation has been moved to Bimodal.Boneyard.Metalogic_v2
 
 -- FMP (includes Core, Soundness, Representation transitively)
-import Bimodal.Metalogic_v2.FMP
+import Bimodal.Boneyard.Metalogic_v2.FMP
 
 -- Application Layers
-import Bimodal.Metalogic_v2.Completeness.StrongCompleteness
-import Bimodal.Metalogic_v2.Applications.Compactness
+import Bimodal.Boneyard.Metalogic_v2.Completeness.StrongCompleteness
+import Bimodal.Boneyard.Metalogic_v2.Applications.Compactness
 
 /-!
-# Metalogic_v2: Representation-First Architecture
+# DEPRECATED: Bimodal.Metalogic_v2
 
-This is the top-level hub module for the Metalogic_v2 reorganization.
+This module has been moved to `Bimodal.Boneyard.Metalogic_v2/` as part of the
+Task 654 migration to a Universal Parametric Canonical Model approach.
 
-## Overview
+**Migration Guide**:
+- This file re-exports from Boneyard for backwards compatibility
+- New development should use `Bimodal.Metalogic` once Task 654 completes
+- The old implementation is preserved in `Bimodal.Boneyard.Metalogic_v2/` for reference
 
-Metalogic_v2 establishes a representation-first architecture where the
+## Metalogic_v2 Architecture (Archived)
+
+Metalogic_v2 established a representation-first architecture where the
 Finite Model Property (FMP) serves as the central bridge theorem. The
-dependency structure is:
+dependency structure was:
 
 ```
 Core -> Soundness -> Representation -> FMP -> {Completeness, Decidability, Applications}
 ```
 
-## Architecture
-
-### Core Layer (Foundation)
-- `Core/Basic.lean` - Consistency definitions
-- `Core/Provability.lean` - Context-based provability
-- `Core/DeductionTheorem.lean` - Deduction theorem (proven)
-- `Core/MaximalConsistent.lean` - MCS theory, Lindenbaum's lemma (proven)
-
-### Soundness Layer
-- `Soundness/SoundnessLemmas.lean` - Bridge theorems for temporal duality
-- `Soundness/Soundness.lean` - Soundness theorem (proven)
-
-### Representation Layer
-- `Representation/CanonicalModel.lean` - Canonical model construction
-- `Representation/TruthLemma.lean` - Truth lemma
-- `Representation/RepresentationTheorem.lean` - Representation theorem
-- `Representation/ContextProvability.lean` - Context provability bridge
-- `Representation/FiniteModelProperty.lean` - FMP statement
-
-### FMP Bridge
-- `FMP.lean` - Central hub re-exporting key theorems
-
-### Application Layers
-- `Completeness/WeakCompleteness.lean` - valid phi -> derivable phi
-- `Completeness/StrongCompleteness.lean` - Gamma entails phi -> Gamma derives phi
-- `Applications/Compactness.lean` - Compactness theorems
-
-## Key Results
+## Key Results (Re-exported from Boneyard)
 
 - `soundness`: derivable phi -> valid phi (proven)
 - `set_lindenbaum`: Every consistent set extends to MCS (proven)
@@ -59,11 +38,4 @@ Core -> Soundness -> Representation -> FMP -> {Completeness, Decidability, Appli
 - `finite_model_property`: Satisfiable -> satisfiable in finite model
 - `weak_completeness`: valid phi -> derivable phi (via axiom)
 - `strong_completeness`: Gamma entails phi -> Gamma derives phi
-
-## Usage
-
-Import this module for access to all Metalogic_v2 results.
-Or import specific layers for more targeted access.
-
-See README.md in the Metalogic_v2 directory for detailed documentation.
 -/

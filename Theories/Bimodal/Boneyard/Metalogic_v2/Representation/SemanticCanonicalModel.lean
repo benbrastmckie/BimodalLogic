@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic_v2.Representation.FiniteWorldState
-import Bimodal.Metalogic_v2.Soundness.Soundness
+import Bimodal.Boneyard.Metalogic_v2.Representation.FiniteWorldState
+import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
 import Mathlib.Data.Set.Basic
 import Mathlib.Data.Finite.Defs
 

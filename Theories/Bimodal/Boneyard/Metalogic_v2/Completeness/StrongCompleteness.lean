@@ -1,4 +1,4 @@
-import Bimodal.Metalogic_v2.Completeness.WeakCompleteness
+import Bimodal.Boneyard.Metalogic_v2.Completeness.WeakCompleteness
 
 /-!
 # Strong Completeness for TM Bimodal Logic (Metalogic_v2)

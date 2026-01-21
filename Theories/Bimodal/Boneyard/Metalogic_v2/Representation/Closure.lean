@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic_v2.Core.MaximalConsistent
-import Bimodal.Metalogic_v2.Representation.CanonicalModel
+import Bimodal.Boneyard.Metalogic_v2.Core.MaximalConsistent
+import Bimodal.Boneyard.Metalogic_v2.Representation.CanonicalModel
 import Bimodal.Theorems.Combinators
 -- Formula.subformulas is now defined in Bimodal.Syntax.Subformulas
 import Bimodal.Syntax.Subformulas

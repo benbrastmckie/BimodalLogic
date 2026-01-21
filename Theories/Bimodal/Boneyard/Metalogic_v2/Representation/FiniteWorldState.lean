@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic_v2.Representation.Closure
+import Bimodal.Boneyard.Metalogic_v2.Representation.Closure
 import Mathlib.Data.Fin.Basic
 import Mathlib.Data.Finite.Defs
 import Mathlib.Data.Fintype.Pi

@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic_v2.Core.DeductionTheorem
+import Bimodal.Boneyard.Metalogic_v2.Core.DeductionTheorem
 import Bimodal.Theorems.Propositional
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Order.Zorn

@@ -1,4 +1,4 @@
-import Bimodal.Metalogic_v2.Decidability.Tableau
+import Bimodal.Boneyard.Metalogic_v2.Decidability.Tableau
 import Bimodal.Automation.ProofSearch
 
 /-!

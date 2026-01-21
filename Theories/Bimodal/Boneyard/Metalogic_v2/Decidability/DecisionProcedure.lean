@@ -1,5 +1,5 @@
-import Bimodal.Metalogic_v2.Decidability.ProofExtraction
-import Bimodal.Metalogic_v2.Decidability.CountermodelExtraction
+import Bimodal.Boneyard.Metalogic_v2.Decidability.ProofExtraction
+import Bimodal.Boneyard.Metalogic_v2.Decidability.CountermodelExtraction
 
 /-!
 # Decision Procedure for TM Bimodal Logic (Metalogic_v2)
