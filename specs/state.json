@@ -36,8 +36,8 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T23:16:47Z",
-      "last_updated": "2026-01-21T00:33:18Z",
-      "session_id": "sess_1768954803_767444",
+      "last_updated": "2026-01-21T00:40:27Z",
+      "session_id": "sess_1768955728_3752bb",
       "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
       "source_lines": [
         162
@@ -55,14 +55,14 @@
           "summary": "7-phase implementation plan: archive Metalogic_v2 to Boneyard, build Universal Parametric Canonical Model in fresh Metalogic/, 38 hours estimated"
         },
         {
-          "path": "specs/654_research_purely_syntactic_representation_theorem/summaries/implementation-summary-20260120.md",
+          "path": "specs/654_research_purely_syntactic_representation_theorem/summaries/implementation-summary-20260121.md",
           "type": "summary",
-          "summary": "Implementation summary for phases 0-4 with detailed progress and recommendations"
+          "summary": "Detailed analysis of design flaw and recommended fixes"
         }
       ],
       "planned": "2026-01-21T00:14:48Z",
       "started": "2026-01-21T00:20:24Z",
-      "resume_phase": 5
+      "resume_phase": 3
     },
     {
       "project_number": 652,

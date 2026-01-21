@@ -2,7 +2,7 @@
 
 - **Task**: 654 - Research Purely Syntactic Representation Theorem
 - **Version**: 003
-- **Status**: [BLOCKED]
+- **Status**: [PARTIAL]
 - **Effort**: 38 hours
 - **Priority**: High
 - **Dependencies**: None
