@@ -28,8 +28,7 @@ This documentation provides comprehensive coverage of the `.claude/` agent syste
 │   ├── command-template.md     # Command template
 │   └── agent-template.md       # Agent template
 ├── architecture/               # Architecture documentation
-│   ├── system-overview.md      # Three-layer architecture overview
-│   └── orchestrator-workflow-execution-issue.md
+│   └── system-overview.md      # Three-layer architecture overview
 ├── troubleshooting/            # Problem resolution
 │   └── status-conflicts.md     # Status sync issues
 └── migrations/                 # Migration guides
