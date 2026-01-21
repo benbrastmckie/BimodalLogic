@@ -1,44 +1,27 @@
 {
-  "status": "partial",
-  "summary": "Phases 0-2 completed. Phases 3-6 blocked by fundamental design flaw: canonical history construction assumes same MCS at all times, which requires temporal T-axioms (G phi -> phi, H phi -> phi) that TM logic does NOT have. Architectural redesign needed to allow different MCS at different times.",
+  "status": "researched",
+  "summary": "Analyzed reflexive vs irreflexive temporal operators for canonical model construction. Recommended keeping G/H primitive (irreflexive) with indexed MCS family approach that uses different maximal consistent sets at each time point connected by temporal coherence conditions.",
   "artifacts": [
     {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean",
-      "summary": "Re-exports Boneyard MCS theory for set-based maximal consistent sets"
-    },
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Representation/CanonicalWorld.lean",
-      "summary": "CanonicalWorld D structure pairing MCS with time point (2 sorries)"
-    },
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Representation/TaskRelation.lean",
-      "summary": "Task relation definition with nullity proven (6 sorries in compositionality)"
-    },
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Representation/CanonicalHistory.lean",
-      "summary": "UniversalCanonicalFrame and canonical history (2 sorries for T-axiom)"
-    },
-    {
-      "type": "summary",
-      "path": "specs/654_research_purely_syntactic_representation_theorem/summaries/implementation-summary-20260121.md",
-      "summary": "Detailed analysis of design flaw and recommended fixes"
+      "path": "specs/654_research_purely_syntactic_representation_theorem/reports/research-004.md",
+      "type": "research",
+      "summary": "Research report analyzing reflexive vs irreflexive temporal operators, recommending indexed MCS family approach over same-MCS or reflexive primitive approaches"
     }
   ],
-  "completion_data": {
-    "completion_summary": "Partially implemented universal parametric canonical model. Phases 0-2 completed (archive, setup, MCS infrastructure, CanonicalWorld structure). Phases 3-6 blocked by fundamental issue: canonical history construction requires temporal T-axioms absent from TM logic. Detailed analysis and recommendations documented."
-  },
+  "next_steps": "Run /plan 654 to create updated implementation plan incorporating indexed MCS family construction",
   "metadata": {
-    "session_id": "sess_1768955728_3752bb",
-    "duration_seconds": 7200,
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1768956432_500f61",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 5400,
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 2,
-    "phases_total": 7
-  },
-  "next_steps": "Redesign canonical history to use different MCS at different times connected by formula propagation. See implementation summary for detailed recommendations (Option 1: Full redesign ~20-30 hours, Option 2: Use existing SemanticCanonicalModel, Option 3: Hybrid approach)."
+    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"],
+    "findings_count": 5,
+    "key_findings": [
+      "Same-MCS-at-all-times approach fundamentally fails for irreflexive G/H operators",
+      "Keeping G/H primitive is feasible using indexed MCS families with coherence conditions",
+      "Switching to reflexive G'/H' is not recommended due to axiom changes and unclean derivability",
+      "The Temporal 4 axiom (G phi -> GG phi) is crucial for compositionality in indexed approach",
+      "Estimated effort for indexed MCS implementation: ~24 hours"
+    ]
+  }
 }
