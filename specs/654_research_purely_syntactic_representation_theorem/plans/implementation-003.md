@@ -2,7 +2,7 @@
 
 - **Task**: 654 - Research Purely Syntactic Representation Theorem
 - **Version**: 003
-- **Status**: [PARTIAL]
+- **Status**: [BLOCKED]
 - **Effort**: 38 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -174,7 +174,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 3: Define Canonical Task Relation [PARTIAL]
+### Phase 3: Define Canonical Task Relation [BLOCKED]
 
 **Goal**: Define task_rel using D's algebraic operations so frame conditions hold by construction
 
@@ -213,7 +213,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 4: Construct Canonical WorldHistory [PARTIAL]
+### Phase 4: Construct Canonical WorldHistory [BLOCKED]
 
 **Goal**: For each MCS, construct a WorldHistory that respects the task relation
 
@@ -238,9 +238,19 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 5: Prove Truth Lemma [IN PROGRESS]
+### Phase 5: Prove Truth Lemma [BLOCKED]
 
 **Goal**: Connect MCS membership to semantic truth in canonical model
+
+**Status Note**: This phase is BLOCKED due to a fundamental design issue discovered during
+implementation. The `canonical_history` construction (Phase 4) assumes all worlds have the
+SAME MCS at all times. This requires the T-axiom for temporal operators (`G φ → φ` and `H φ → φ`),
+which TM logic does NOT have. The canonical task relation formula propagation conditions
+(`G φ ∈ w.mcs → φ ∈ v.mcs` when w.mcs = v.mcs) cannot be satisfied without these axioms.
+
+**Required Redesign**: The canonical history construction needs to allow DIFFERENT MCS at different
+times, connected by appropriate formula propagation. This is a substantial architectural change
+that affects Phases 3-6.
 
 **Tasks**:
 - [ ] Create `Theories/Bimodal/Metalogic/Representation/TruthLemma.lean`
@@ -271,7 +281,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 6: Instantiate TaskFrame and TaskModel [NOT STARTED]
+### Phase 6: Instantiate TaskFrame and TaskModel [BLOCKED]
 
 **Goal**: Package construction into TaskFrame and TaskModel instances
 
