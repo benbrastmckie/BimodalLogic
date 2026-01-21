@@ -81,7 +81,7 @@ technical_debt:
 
 ### 654. Research purely syntactic representation theorem approach
 - **Effort**: 24 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-21
 - **Priority**: Medium
 - **Language**: lean
