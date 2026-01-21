@@ -213,7 +213,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 4: Construct Canonical WorldHistory [IN PROGRESS]
+### Phase 4: Construct Canonical WorldHistory [PARTIAL]
 
 **Goal**: For each MCS, construct a WorldHistory that respects the task relation
 
@@ -238,7 +238,7 @@ Same as implementation-002.md (research-003.md findings):
 
 ---
 
-### Phase 5: Prove Truth Lemma [NOT STARTED]
+### Phase 5: Prove Truth Lemma [IN PROGRESS]
 
 **Goal**: Connect MCS membership to semantic truth in canonical model
 
