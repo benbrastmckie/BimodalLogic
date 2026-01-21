@@ -34,9 +34,9 @@ technical_debt:
 - **Language**: meta
 - **Created**: 2026-01-21
 - **Research**: [research-001.md](specs/661_create_documentation_standards_file/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/661_create_documentation_standards_file/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/661_create_documentation_standards_file/plans/implementation-002.md)
 
-**Description**: Create `.claude/context/core/standards/DOCUMENTATION_STANDARDS.md` (ALL_CAPS naming) that specifies: (1) file naming conventions (ALL_CAPS vs lowercase); (2) prohibition of "quick start" and "quick reference" document patterns; (3) README.md usage over README files; (4) present tense requirement with no historical language; (5) what belongs in docs/ vs context/. Fix the corrupted/duplicated content in existing `documentation.md`.
+**Description**: Create `.claude/context/core/standards/documentation-standards.md` (kebab-case naming) that specifies: (1) file naming conventions (kebab-case.md for all docs, README.md as only ALL_CAPS exception); (2) README.md required in all subdirectories of docs/; (3) prohibition of "quick start" and "quick reference" document patterns; (4) present tense requirement with no historical language; (5) what belongs in docs/ vs context/. Fix the corrupted/duplicated content in existing `documentation.md`.
 
 ---
 
