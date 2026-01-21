@@ -32,11 +32,11 @@
     {
       "project_number": 654,
       "project_name": "research_purely_syntactic_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T23:16:47Z",
-      "last_updated": "2026-01-21T00:52:07Z",
+      "last_updated": "2026-01-21T00:57:31Z",
       "session_id": "sess_1768956432_500f61",
       "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
       "source_lines": [
@@ -50,11 +50,6 @@
           "summary": "In-depth analysis of algebraic vs parametric canonical model approaches, recommending universal construction parametric over D"
         },
         {
-          "path": "specs/654_research_purely_syntactic_representation_theorem/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan: archive Metalogic_v2 to Boneyard, build Universal Parametric Canonical Model in fresh Metalogic/, 38 hours estimated"
-        },
-        {
           "path": "specs/654_research_purely_syntactic_representation_theorem/summaries/implementation-summary-20260121.md",
           "type": "summary",
           "summary": "Detailed analysis of design flaw and recommended fixes"
@@ -63,9 +58,14 @@
           "path": "specs/654_research_purely_syntactic_representation_theorem/reports/research-004.md",
           "type": "research",
           "summary": "Research report analyzing reflexive vs irreflexive temporal operators, recommending indexed MCS family approach over same-MCS or reflexive primitive approaches"
+        },
+        {
+          "path": "specs/654_research_purely_syntactic_representation_theorem/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "Revised 7-phase plan using indexed MCS family approach; keeps G/H primitive, 24 hours estimated"
         }
       ],
-      "planned": "2026-01-21T00:14:48Z",
+      "planned": "2026-01-21T00:57:31Z",
       "started": "2026-01-21T00:20:24Z",
       "resume_phase": 3
     },
