@@ -1,21 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Analyzed 4 stale documents in .claude/docs/. All contain historical content already captured in context/ files or superseded by current architecture. Recommend deleting all 4 files and updating README.md to remove broken reference.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/663_archive_stale_research_fix_plan_documents/reports/research-001.md",
-      "summary": "Research report analyzing 4 stale docs with deletion recommendations for each"
+      "type": "plan",
+      "path": "specs/663_archive_stale_research_fix_plan_documents/plans/implementation-001.md",
+      "summary": "3-phase plan to delete stale documents and update README.md"
     }
   ],
-  "completion_data": null,
-  "next_steps": "Run /plan 663 to create implementation plan for file deletion and README.md update",
+  "next_steps": "Run /implement 663 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769030564_55df94",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1769030860_3f3885",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher"],
-    "findings_count": 4
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 3,
+    "estimated_hours": 0.5
   }
 }
