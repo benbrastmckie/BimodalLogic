@@ -1,31 +1,38 @@
 import Bimodal.Metalogic.Representation.TaskRelation
+import Bimodal.Metalogic.Representation.IndexedMCSFamily
 import Bimodal.Semantics.WorldHistory
 
 /-!
 # Canonical History Construction for Universal Parametric Canonical Model
 
-This module constructs canonical world histories from maximal consistent sets.
-For each MCS Gamma, we construct a history that:
+This module constructs canonical world histories from indexed MCS families.
+For each `IndexedMCSFamily`, we construct a history that:
 1. Has full domain (all times in D)
-2. Assigns a canonical world at each time
-3. Respects the canonical task relation
+2. Assigns a canonical world at each time using the family's MCS
+3. Respects the canonical task relation via family coherence conditions
 
 ## Overview
 
-The key insight is that given an MCS Gamma, we can construct a history where:
-- The time domain is all of D (full/universal domain)
-- At time t, the world is (Gamma, t) - same MCS, varying time
-- The task relation is automatically satisfied by construction
+**Key Insight (from research-004.md)**: The "same MCS at all times" approach fails
+because it requires temporal T-axioms (G phi -> phi, H phi -> phi) that TM logic
+does NOT have. G/H are irreflexive operators.
+
+**Solution**: Use an `IndexedMCSFamily` where each time has its own MCS, connected
+by temporal coherence conditions:
+- forward_G: G phi in mcs(t) implies phi in mcs(t') for t' > t
+- backward_H: H phi in mcs(t) implies phi in mcs(t') for t' < t
+- forward_H: H phi in mcs(t') implies phi in mcs(t) for t < t'
+- backward_G: G phi in mcs(t') implies phi in mcs(t) for t' < t
 
 ## Main Definitions
 
 - `UniversalCanonicalFrame`: The canonical TaskFrame over D
-- `canonical_history`: The WorldHistory for an MCS
+- `canonical_history_family`: WorldHistory from an IndexedMCSFamily
 
 ## References
 
-- Research report: specs/654_.../reports/research-003.md
-- Implementation plan: specs/654_.../plans/implementation-003.md
+- Research report: specs/654_.../reports/research-004.md (indexed family approach)
+- Implementation plan: specs/654_.../plans/implementation-004.md
 -/
 
 namespace Bimodal.Metalogic.Representation
@@ -180,6 +187,150 @@ All times are in the domain of a canonical history.
 -/
 lemma canonical_history_full_domain (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
     (t : D) : (canonical_history D Gamma h_mcs).domain t :=
+  trivial
+
+/-!
+## Indexed Family-Based Canonical History (v004)
+
+This section provides the refactored canonical history using IndexedMCSFamily
+instead of a single MCS at all times.
+
+**Why this approach works**:
+- The old approach required G phi -> phi (T-axiom) to show task relation
+- TM logic does NOT have this axiom (G is irreflexive)
+- IndexedMCSFamily provides coherence conditions that work without T-axiom
+- forward_G gives us: G phi in mcs(t) implies phi in mcs(t') for t' > t
+- This is exactly what we need for the positive duration case
+-/
+
+/--
+Canonical history states from an indexed family.
+
+At time t, the canonical world uses the family's MCS at t.
+-/
+def canonical_history_family_states (family : IndexedMCSFamily D) :
+    (t : D) → full_domain D t → (UniversalCanonicalFrame D).WorldState :=
+  fun t _ => { mcs := family.mcs t, time := t, is_mcs := family.is_mcs t }
+
+/--
+The task relation holds between consecutive states in a family-based canonical history.
+
+**Proof Strategy**:
+- d = 0: trivial (nullity)
+- d > 0: use forward_G for G formulas, forward_H for H formulas
+- d < 0: use backward_G and backward_H
+
+**Key Insight**: Unlike the single-MCS approach, we don't need T-axioms.
+The family coherence conditions directly provide the formula propagation.
+-/
+lemma canonical_history_family_respects (family : IndexedMCSFamily D) :
+    ∀ (s t : D) (hs : full_domain D s) (ht : full_domain D t),
+      s ≤ t → (UniversalCanonicalFrame D).task_rel
+        (canonical_history_family_states D family s hs)
+        (t - s)
+        (canonical_history_family_states D family t ht) := by
+  intro s t _hs _ht hst
+  unfold canonical_history_family_states UniversalCanonicalFrame canonical_task_rel
+  simp only
+  by_cases hd : t - s = 0
+  · -- t - s = 0 case: same time, so s = t
+    simp only [hd, dite_eq_ite, ite_true]
+    constructor
+    · -- MCS equality at same time
+      have heq : t = s := by
+        have h : t - s + s = 0 + s := by rw [hd]
+        simp at h
+        exact h
+      subst heq
+      rfl
+    · -- Time equality
+      have heq : t = s := by
+        have h : t - s + s = 0 + s := by rw [hd]
+        simp at h
+        exact h
+      exact heq.symm
+  · -- t - s ≠ 0 case
+    simp only [hd, dite_eq_ite, ite_false]
+    by_cases hpos : 0 < t - s
+    · -- Positive duration (t > s, moving forward in time)
+      simp only [hpos, ite_true]
+      refine ⟨?_, ?_, ?_⟩
+      · -- G φ ∈ family.mcs s → φ ∈ family.mcs t
+        -- Use forward_G: G phi at s implies phi at t since s < t
+        intro φ hG
+        have hlt : s < t := by
+          have hpos' : 0 < t - s := hpos
+          have : s < s + (t - s) := by
+            rw [add_comm]
+            exact lt_add_of_pos_left s hpos'
+          simp at this
+          exact this
+        exact family.forward_G s t φ hlt hG
+      · -- H φ ∈ family.mcs t → φ ∈ family.mcs s
+        -- Use forward_H: H phi at t implies phi at s since s < t
+        intro φ hH
+        have hlt : s < t := by
+          have hpos' : 0 < t - s := hpos
+          have : s < s + (t - s) := by
+            rw [add_comm]
+            exact lt_add_of_pos_left s hpos'
+          simp at this
+          exact this
+        exact family.forward_H s t φ hlt hH
+      · -- Time arithmetic: t = s + (t - s)
+        simp only [add_sub_cancel]
+    · -- Negative duration case: impossible since s ≤ t implies t - s ≥ 0
+      exfalso
+      have hnonneg : 0 ≤ t - s := sub_nonneg.mpr hst
+      have hlt : t - s < 0 := by
+        push_neg at hpos
+        exact lt_of_le_of_ne hpos (fun h => hd h)
+      exact not_le.mpr hlt hnonneg
+
+/--
+The canonical history from an indexed MCS family.
+
+This WorldHistory:
+- Has full domain (all times in D)
+- Uses the family's MCS at each time (different MCS at different times)
+- Satisfies the task relation via family coherence conditions
+
+**Contrast with `canonical_history`**:
+- `canonical_history` uses same MCS at all times (BLOCKED by T-axiom requirement)
+- `canonical_history_family` uses family's varying MCS (works without T-axiom)
+-/
+def canonical_history_family (family : IndexedMCSFamily D) :
+    WorldHistory (UniversalCanonicalFrame D) where
+  domain := full_domain D
+  convex := full_domain_convex D
+  states := canonical_history_family_states D family
+  respects_task := canonical_history_family_respects D family
+
+/-!
+### Properties of Family-Based Canonical Histories
+-/
+
+/--
+The MCS at time t in a family-based canonical history is the family's MCS at t.
+-/
+lemma canonical_history_family_mcs (family : IndexedMCSFamily D)
+    (t : D) (ht : (canonical_history_family D family).domain t) :
+    ((canonical_history_family D family).states t ht).mcs = family.mcs t :=
+  rfl
+
+/--
+The time at any point in a family-based canonical history matches the parameter.
+-/
+lemma canonical_history_family_time (family : IndexedMCSFamily D)
+    (t : D) (ht : (canonical_history_family D family).domain t) :
+    ((canonical_history_family D family).states t ht).time = t :=
+  rfl
+
+/--
+All times are in the domain of a family-based canonical history.
+-/
+lemma canonical_history_family_full_domain (family : IndexedMCSFamily D)
+    (t : D) : (canonical_history_family D family).domain t :=
   trivial
 
 end Bimodal.Metalogic.Representation
