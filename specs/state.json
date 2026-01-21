@@ -41,12 +41,12 @@
     {
       "project_number": 662,
       "project_name": "consolidate_update_docs_readme",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-21T20:39:02Z",
-      "last_updated": "2026-01-21T21:18:44Z",
-      "session_id": "sess_1769030195_694132",
+      "last_updated": "2026-01-21T21:51:41Z",
+      "session_id": "sess_1769032170_71853f",
       "dependencies": [
         661
       ],
@@ -56,8 +56,14 @@
           "path": "specs/662_consolidate_update_docs_readme/reports/research-001.md",
           "type": "research",
           "summary": "Research report with detailed analysis of README.md, consolidation opportunities with system-overview.md, and specific recommendations for rewrite"
+        },
+        {
+          "path": "specs/662_consolidate_update_docs_readme/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan: remove duplicated content, restructure as navigation hub, verify links"
         }
-      ]
+      ],
+      "planned": "2026-01-21T21:51:41Z"
     },
     {
       "project_number": 663,
