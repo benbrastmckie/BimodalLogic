@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Review state tracking for code review history",
-  "_last_updated": "2026-01-19T18:17:49Z",
+  "_last_updated": "2026-01-21T01:31:51Z",
   "reviews": [
     {
       "review_id": "review-20260110",
@@ -60,7 +60,10 @@
         "medium_issues": 3,
         "low_issues": 2
       },
-      "tasks_created": [606, 607],
+      "tasks_created": [
+        606,
+        607
+      ],
       "registries_updated": []
     },
     {
@@ -112,14 +115,38 @@
         "checkboxes_completed": 0,
         "annotations_made": 0,
         "annotations_suggested": 2,
-        "completed_tasks_reviewed": ["618", "620", "629", "632"]
+        "completed_tasks_reviewed": [
+          "618",
+          "620",
+          "629",
+          "632"
+        ]
+      }
+    },
+    {
+      "review_id": "review-20260121",
+      "date": "2026-01-21",
+      "scope": "Task 654 Implementation - Bimodal/Metalogic/Representation/",
+      "report_path": "specs/reviews/review-20260121.md",
+      "summary": {
+        "files_reviewed": 4,
+        "critical_issues": 0,
+        "high_issues": 0,
+        "medium_issues": 1,
+        "low_issues": 0
+      },
+      "tasks_created": [],
+      "registries_updated": [],
+      "roadmap_updates": {
+        "sections_added": 1,
+        "task_654_documented": true
       }
     }
   ],
   "statistics": {
-    "total_reviews": 7,
-    "last_review": "2026-01-19",
-    "total_issues_found": 143,
+    "total_reviews": 8,
+    "last_review": "2026-01-21",
+    "total_issues_found": 144,
     "total_tasks_created": 2
   }
 }
