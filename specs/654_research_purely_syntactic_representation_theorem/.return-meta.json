@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/654_research_purely_syntactic_representation_theorem/reports/research-003.md",
-      "summary": "In-depth analysis of algebraic vs parametric canonical model approaches, recommending universal construction parametric over D"
+      "type": "plan",
+      "path": "specs/654_research_purely_syntactic_representation_theorem/plans/implementation-002.md",
+      "summary": "5-phase implementation plan for Universal Parametric Canonical Model construction, 34 hours estimated"
     }
   ],
-  "next_steps": "Run /plan 654 to create implementation plan for universal canonical model construction",
+  "next_steps": "Run /implement 654 to execute the plan",
   "metadata": {
-    "session_id": "sess_1768952120_31bb44",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 7200,
+    "session_id": "sess_1768953584_a0f502",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 5,
+    "estimated_hours": 34
   }
 }

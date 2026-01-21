@@ -59,7 +59,7 @@ This report analyzes Approaches 4 and 5 from research-002.md in depth and propos
 **Technical Requirements**:
 - Need to show the quotient forms a Boolean algebra (distributivity, complementation)
 - Need Boolean algebra with operators (BAO) structure for modal/temporal connectives
-- Need Stone representation theorem to extract Kripke-style frame
+- Need Stone representation theorem to extract a task frame
 - Need to extract a task_rel satisfying nullity/compositionality from the algebraic structure
 
 **Advantages**:
