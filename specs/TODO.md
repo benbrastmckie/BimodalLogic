@@ -45,11 +45,14 @@ technical_debt:
 
 ### 662. Consolidate and update DOCS/README.md
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-21
+- **Started**: 2026-01-21
+- **Researched**: 2026-01-21
 - **Dependencies**: 661
+- **Research**: [research-001.md](specs/662_consolidate_update_docs_readme/reports/research-001.md)
 
 **Description**: Rewrite `.claude/docs/README.md` to: remove "Quick Start" section; use present tense throughout (no historical references); consolidate with system-overview.md where appropriate; ensure accurate file paths and references; follow new documentation standards from Task 661.
 
