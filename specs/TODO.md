@@ -1,5 +1,5 @@
 ---
-next_project_number: 656
+next_project_number: 661
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -112,6 +112,58 @@ technical_debt:
 
 ---
 
+### 656. Complete truth lemma forward direction (imp/box cases)
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-21
+- **Related**: Task 654
+- **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:144,155
+
+**Description**: Complete the imp and box cases in the truth lemma forward direction for the parametric canonical model. The imp case (line 144) requires proving MCS modus ponens closure. The box case (line 155) requires witness construction for modal accessibility. These gaps don't affect the main representation theorem but are needed for a complete truth lemma biconditional. From review-20260121-task654.md recommendations.
+
+---
+
+### 657. Prove seed consistency (temporal K distribution)
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-21
+- **Related**: Task 654
+- **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:338,354
+
+**Description**: Prove the seed consistency lemmas in IndexedMCSFamily.lean that require the temporal K distribution axiom. Lines 338 and 354 contain sorries for proving that seeds constructed during family building are consistent. This requires careful application of TM logic axioms, specifically the K distribution axiom for temporal operators. From review-20260121-task654.md medium priority recommendations.
+
+---
+
+### 658. Prove indexed family coherence conditions
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-21
+- **Related**: Task 654
+- **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:433,439,448,456
+
+**Description**: Prove the four coherence condition sorries in the construct_indexed_family function (lines 433, 439, 448, 456). These ensure the indexed MCS family satisfies the coherence requirements that make it work with irreflexive temporal semantics (avoiding the T-axiom problem). Completing these would make the family construction fully constructive. From review-20260121-task654.md medium priority recommendations.
+
+---
+
+### 660. Prove parametric completeness theorems
+- **Effort**: 10-15 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-21
+- **Dependencies**: Tasks 656, 657, 658
+- **Related**: Task 654
+
+**Description**: Use the representation theorem from Task 654 to prove weak and strong completeness for TM logic over arbitrary ordered additive groups. The representation theorem establishes that consistent formulas are satisfiable in the parametric canonical model. This task completes the metalogic by deriving completeness: (1) Weak completeness: if ⊨ φ then ⊢ φ, (2) Strong completeness: if Γ ⊨ φ then Γ ⊢ φ. Builds on the foundation established by Tasks 656-658. From review-20260121-task654.md future work section.
+
+---
+
 ### 630. Build TaskModel extraction from saturated tableau branches
 - **Status**: [NOT STARTED]
 - **Priority**: Medium
@@ -200,6 +252,19 @@ technical_debt:
 - **Research**: [research-001.md](specs/616_fix_semantic_task_rel_compositionality_sorry/reports/research-001.md)
 
 **Description**: Fix the sorry in `semantic_task_rel_compositionality` at SemanticCanonicalModel.lean:236. The issue is that task relation compositionality fails for unbounded duration sums in the finite model (time bounds are [-k, k]). Options include: (1) Add a boundedness hypothesis requiring |d1 + d2| <= 2k, (2) Change the task relation definition to be closed under composition, or (3) Use a different frame construction. Note: The completeness proof doesn't directly use this lemma, so this is an acceptable limitation.
+
+---
+
+### 659. Prove negation completeness lemmas
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Created**: 2026-01-21
+- **Related**: Tasks 654, 656
+- **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:211,219,228,237
+
+**Description**: Prove the negation completeness lemmas required for the truth lemma backward direction. These include the imp, box, and temporal cases in the backward direction (lines 211, 219, 228, 237). Requires showing that MCS are complete with respect to negation. Not critical since the representation theorem only needs the forward direction, but would complete the full biconditional truth lemma. From review-20260121-task654.md low priority recommendations.
 
 ---
 

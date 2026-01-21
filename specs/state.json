@@ -6,6 +6,72 @@
   },
   "active_projects": [
     {
+      "project_number": 656,
+      "project_name": "complete_truth_lemma_forward_direction",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-21T01:38:29Z",
+      "related_tasks": [
+        654
+      ]
+    },
+    {
+      "project_number": 657,
+      "project_name": "prove_seed_consistency_temporal_k_distribution",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-21T01:38:29Z",
+      "related_tasks": [
+        654
+      ]
+    },
+    {
+      "project_number": 658,
+      "project_name": "prove_indexed_family_coherence_conditions",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-21T01:38:29Z",
+      "related_tasks": [
+        654
+      ]
+    },
+    {
+      "project_number": 659,
+      "project_name": "prove_negation_completeness_lemmas",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-21T01:38:29Z",
+      "related_tasks": [
+        654,
+        656
+      ]
+    },
+    {
+      "project_number": 660,
+      "project_name": "prove_parametric_completeness_theorems",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-21T01:38:29Z",
+      "dependencies": [
+        656,
+        657,
+        658
+      ],
+      "related_tasks": [
+        654
+      ]
+    },
+    {
       "project_number": 655,
       "project_name": "fix_jq_errors_in_agent_system",
       "status": "not_started",
@@ -333,7 +399,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 656,
+  "next_project_number": 661,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
