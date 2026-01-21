@@ -29,12 +29,15 @@ technical_debt:
 
 ### 661. Create documentation standards file
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-21
+- **Started**: 2026-01-21
+- **Completed**: 2026-01-21
 - **Research**: [research-001.md](specs/661_create_documentation_standards_file/reports/research-001.md)
 - **Plan**: [implementation-003.md](specs/661_create_documentation_standards_file/plans/implementation-003.md)
+- **Summary**: [implementation-summary-20260121.md](specs/661_create_documentation_standards_file/summaries/implementation-summary-20260121.md)
 
 **Description**: Create `.claude/context/core/standards/documentation-standards.md` (kebab-case naming) that specifies: (1) file naming conventions (kebab-case.md for all docs, README.md as only ALL_CAPS exception); (2) README.md required in all subdirectories of docs/; (3) prohibition of "quick start" and "quick reference" document patterns; (4) prohibition of emojis (unicode OK); (5) present tense requirement with no historical language; (6) what belongs in docs/ vs context/. Fix the corrupted/duplicated content in existing `documentation.md`.
 
