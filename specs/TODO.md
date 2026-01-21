@@ -102,11 +102,13 @@ technical_debt:
 
 ### 663. Archive stale research/fix plan documents
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-21
+- **Started**: 2026-01-21
 - **Dependencies**: 661
+- **Research**: [specs/663_archive_stale_research_fix_plan_documents/reports/research-001.md]
 
 **Description**: Move stale research artifacts from docs/ to archive or delete: `research-skill-agent-contexts.md` (research artifact), `skills-vs-agents-context-behavior.md` (distill to context/ first), `memory-leak-fix-plan.md` (historical fix plan), `orchestrator-workflow-execution-issue.md` (issue document). Extract any valuable permanent guidance to appropriate context files before archiving.
 
