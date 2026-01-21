@@ -90,15 +90,18 @@
     {
       "project_number": 664,
       "project_name": "remove_standards_quick_ref_and_quick_reference_patterns",
-      "status": "not_started",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-21T20:39:02Z",
-      "last_updated": "2026-01-21T20:39:02Z",
-      "session_id": "sess_1769027939_a0506d",
+      "last_updated": "2026-01-21T21:50:00Z",
+      "session_id": "sess_1769031353_cdfb76",
       "dependencies": [
         661
-      ]
+      ],
+      "completed": "2026-01-21T21:50:00Z",
+      "completion_summary": "Deleted STANDARDS_QUICK_REF.md as part of Task 663 scope incorporation. Quick reference patterns prohibited by documentation-standards.md.",
+      "claudemd_suggestions": "none"
     },
     {
       "project_number": 665,
