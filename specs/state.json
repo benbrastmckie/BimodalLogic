@@ -8,12 +8,20 @@
     {
       "project_number": 661,
       "project_name": "create_documentation_standards_file",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-21T20:39:02Z",
-      "last_updated": "2026-01-21T20:39:02Z",
-      "session_id": "sess_1769027939_a0506d"
+      "last_updated": "2026-01-21T20:47:11Z",
+      "session_id": "sess_1769028265_e3cca4",
+      "researched": "2026-01-21T20:47:11Z",
+      "artifacts": [
+        {
+          "path": "specs/661_create_documentation_standards_file/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 7 findings on documentation patterns, naming conventions, and corrupted content requiring fix"
+        }
+      ]
     },
     {
       "project_number": 662,
@@ -24,7 +32,9 @@
       "created": "2026-01-21T20:39:02Z",
       "last_updated": "2026-01-21T20:39:02Z",
       "session_id": "sess_1769027939_a0506d",
-      "dependencies": [661]
+      "dependencies": [
+        661
+      ]
     },
     {
       "project_number": 663,
@@ -35,7 +45,9 @@
       "created": "2026-01-21T20:39:02Z",
       "last_updated": "2026-01-21T20:39:02Z",
       "session_id": "sess_1769027939_a0506d",
-      "dependencies": [661]
+      "dependencies": [
+        661
+      ]
     },
     {
       "project_number": 664,
@@ -46,7 +58,9 @@
       "created": "2026-01-21T20:39:02Z",
       "last_updated": "2026-01-21T20:39:02Z",
       "session_id": "sess_1769027939_a0506d",
-      "dependencies": [661]
+      "dependencies": [
+        661
+      ]
     },
     {
       "project_number": 665,
@@ -57,7 +71,10 @@
       "created": "2026-01-21T20:39:02Z",
       "last_updated": "2026-01-21T20:39:02Z",
       "session_id": "sess_1769027939_a0506d",
-      "dependencies": [661, 662]
+      "dependencies": [
+        661,
+        662
+      ]
     },
     {
       "project_number": 656,

@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Research identified corrupted/duplicated content in documentation.md (lines 313-473), established that file naming convention is lowercase kebab-case (not ALL_CAPS as task description suggests), found 54+ occurrences of prohibited quick start/reference patterns, and clarified docs/ vs context/ directory purposes.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/661_create_documentation_standards_file/reports/research-001.md",
+      "summary": "Research report with 7 findings on documentation patterns, naming conventions, and corrupted content requiring fix"
+    }
+  ],
+  "next_steps": "Run /plan 661 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1769028265_e3cca4",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher"],
+    "findings_count": 7
+  }
+}

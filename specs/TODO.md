@@ -29,10 +29,11 @@ technical_debt:
 
 ### 661. Create documentation standards file
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-21
+- **Research**: [research-001.md](specs/661_create_documentation_standards_file/reports/research-001.md)
 
 **Description**: Create `.claude/context/core/standards/DOCUMENTATION_STANDARDS.md` (ALL_CAPS naming) that specifies: (1) file naming conventions (ALL_CAPS vs lowercase); (2) prohibition of "quick start" and "quick reference" document patterns; (3) README.md usage over README files; (4) present tense requirement with no historical language; (5) what belongs in docs/ vs context/. Fix the corrupted/duplicated content in existing `documentation.md`.
 

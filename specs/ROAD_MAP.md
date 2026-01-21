@@ -19,7 +19,9 @@ This roadmap outlines the current state of the ProofChecker project and charts t
 
 **Status**: Core theorems proven, architecture clean, ready for reporting
 
-#### Core Infrastructure (Fully Proven)
+<!-- FIX: these need to be updated based on the actual lean source code -->
+
+#### Core Infrastructure (Proven)
 
 | Component | Status | Location |
 |-----------|--------|----------|
@@ -47,9 +49,13 @@ This roadmap outlines the current state of the ProofChecker project and charts t
 | Entailment compactness | ✅ | Via finiteness of derivations |
 | Satisfiability compactness | ✅ | Via strong completeness |
 
+<!-- FIX: remove historical language like 'Key Architectural Achievement', focusing instead on just stating the architecture in this case -->
+
 #### Key Architectural Achievement
 
 **Representation-First Design**: The architecture places canonical model construction as the foundation, with FMP as the central bridge. This is a significant improvement over traditional modal logic developments that treat completeness as primary.
+
+<!-- FIX: reverse the order so that foundations come above and derived comes below -->
 
 ```
 Applications (Compactness)
@@ -63,11 +69,15 @@ Representation (Canonical Model, Truth Lemma)
 Core (Soundness, Deduction, MCS)
 ```
 
+<!-- NOTE: remove all emojies throughout, but unicode characters are OK -->
+
 ### ✅ Bimodal/Metalogic: Universal Parametric Representation Theorem (Task 654)
 
 **Status**: Representation theorem proven, indexed MCS family approach successful
 
 **Completed**: 2026-01-20 (Task 654)
+
+<!-- NOTE: avoid historical language like 'innovation' or 'problem solved'. Just state the current state -->
 
 #### Key Innovation: Indexed MCS Family Approach
 
@@ -118,6 +128,8 @@ These conditions match the irreflexive semantics **without requiring T-axioms**.
 2. Truth lemma forward direction for temporal operators (fully proven)
 3. Lindenbaum extension (already proven)
 
+<!-- NOTE: I don't need past comparisons which also fall under historical language that should be excluded -->
+
 #### Design Comparison
 
 | Aspect | Metalogic_v2 (Semantic) | Bimodal/Metalogic (Parametric) |
@@ -141,6 +153,8 @@ theorem representation_theorem (phi : Formula) (h_cons : SetConsistent {phi}) :
 
 This establishes the foundation for completeness: **consistent formulas are satisfiable in a parametric canonical model**.
 
+<!-- NOTE: links to reports are also not needed here -->
+
 #### Research Documentation
 
 - Research report: `specs/archive/654_.../reports/research-004.md`
@@ -148,6 +162,8 @@ This establishes the foundation for completeness: **consistent formulas are sati
 - Implementation summary: `specs/archive/654_.../summaries/implementation-summary-20260120.md`
 
 ---
+
+<!-- FIX: Check that these tables are accurate by comparing the lean source code-->
 
 ### ✅ Syntax and Semantics
 
@@ -168,6 +184,8 @@ This establishes the foundation for completeness: **consistent formulas are sati
 | **Soundness** | ✅ PROVEN | Decidability/Correctness.lean |
 
 ---
+
+<!-- FIX: include an initial phase here devoted to finishing the proof in full, porting elements over from the Boneyard as needed -->
 
 ## Phase 1: Proof Quality and Organization (High Priority)
 
@@ -269,6 +287,8 @@ Individual proofs are documented, but the overall narrative is unclear.
 6. The Applications: Decidability and Compactness
 
 ---
+
+<!-- TODO: Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof -->
 
 ## Phase 2: Generalization (Medium Priority)
 
