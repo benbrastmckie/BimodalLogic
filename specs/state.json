@@ -662,24 +662,40 @@
     {
       "project_number": 671,
       "project_name": "combine_dynamics_foundation_latex_files",
-      "status": "not_started",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "description": "combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate",
       "created": "2026-01-22T00:46:50Z",
-      "last_updated": "2026-01-22T00:46:50Z",
-      "session_id": "sess_1769042810_"
+      "last_updated": "2026-01-22T00:48:07Z",
+      "session_id": "sess_1769042859_latex_research",
+      "researched": "2026-01-22T00:48:07Z",
+      "artifacts": [
+        {
+          "path": "specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing three Dynamics Foundation LaTeX files with proposed structure for combination"
+        }
+      ]
     },
     {
       "project_number": 671,
       "project_name": "combine_dynamics_foundation_latex_files",
-      "status": "not_started",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "description": "combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate",
       "created": "2026-01-22T00:46:56Z",
-      "last_updated": "2026-01-22T00:46:56Z",
-      "session_id": "sess_1769042816_abc123"
+      "last_updated": "2026-01-22T00:48:07Z",
+      "session_id": "sess_1769042859_latex_research",
+      "researched": "2026-01-22T00:48:07Z",
+      "artifacts": [
+        {
+          "path": "specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing three Dynamics Foundation LaTeX files with proposed structure for combination"
+        }
+      ]
     }
   ],
   "completed_projects": [

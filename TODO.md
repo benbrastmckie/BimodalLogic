@@ -1164,12 +1164,13 @@ Improves MAINTENANCE.md documentation quality and completeness, providing clear 
 
 ### 671. Combine Dynamics Foundation LaTeX Files
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: latex
 - **Created**: 2026-01-22
 - **Description**: combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate
-- **Next Steps**: Run `/research 671` to analyze the LaTeX files, then `/implement 671` to create the combined file
+- **Research**: [research-001.md](specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md)
+- **Next Steps**: Run `/implement 671` to create the combined file
 
 ---
 
