@@ -104,7 +104,7 @@ technical_debt:
 
 ### 672. Implement agent system upgrade plan
 - **Effort**: 6 weeks
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -112,7 +112,9 @@ technical_debt:
 - **Created**: 2026-01-22T00:48:23Z
 - **Started**: 2025-01-22T12:52:47Z
 - **Researched**: 2025-01-22T12:53:47Z
+- **Planned**: 2025-01-22T13:04:47Z
 - **Research**: [research-001.md](specs/672_implement_agent_system_upgrade_plan/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/672_implement_agent_system_upgrade_plan/plans/implementation-001.md)
 
 **Description**: Implement the .opencode system upgrade plan following specs/agent_system_upgrade_plan.md and specs/implementation_roadmap.md. This 6-week upgrade involves 4 phases: Phase 1 (Week 1): Foundation - implement hook system, file-based metadata exchange, and state management; Phase 2 (Week 2): Workflow Ownership Migration - transfer postflight responsibilities to subagents; Phase 3 (Weeks 3-4): Meta System Builder Port - enable dynamic system extension; Phase 4 (Weeks 5-6): Forked Subagent Pattern - achieve token efficiency.
 
@@ -123,12 +125,13 @@ technical_debt:
 
 ### 671. combine dynamics foundation latex files
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: latex
 - **Created**: 2026-01-22
 - **Started**: 2026-01-22
 - **Research**: [research-001.md](specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/671_combine_dynamics_foundation_latex_files/plans/implementation-001.md)
 
 **Description**: Combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate
 

@@ -662,7 +662,7 @@
     {
       "project_number": 671,
       "project_name": "combine_dynamics_foundation_latex_files",
-      "status": "implementing",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "description": "combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate",
@@ -670,22 +670,34 @@
       "last_updated": "2026-01-22T00:48:28Z",
       "session_id": "sess_1769042908_latex_impl",
       "researched": "2026-01-22T00:48:07Z",
+      "planned": "2026-01-22T00:46:50Z",
       "artifacts": [
         {
           "path": "specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing three Dynamics Foundation LaTeX files with proposed structure for combination"
+        },
+        {
+          "path": "specs/671_combine_dynamics_foundation_latex_files/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan with 5 phases for combining LaTeX files"
         }
       ],
-      "started": "2026-01-22T00:48:28Z"
+      "started": "2026-01-22T00:48:28Z",
+      "plan_metadata": {
+        "phase_count": 5,
+        "estimated_hours": 2.5,
+        "complexity": "medium"
+      },
+      "plan_path": "specs/671_combine_dynamics_foundation_latex_files/plans/implementation-001.md"
     },
 
     {
       "project_number": 672,
       "project_name": "implement_agent_system_upgrade_plan",
       "type": "feature",
-      "phase": "not_started",
-      "status": "researched",
+      "phase": "planned",
+      "status": "planned",
       "priority": "high",
       "language": "meta",
       "description": "Implement the .opencode system upgrade plan following specs/agent_system_upgrade_plan.md and specs/implementation_roadmap.md. This 6-week upgrade involves 4 phases: Phase 1 (Week 1): Foundation - implement hook system, file-based metadata exchange, and state management; Phase 2 (Week 2): Workflow Ownership Migration - transfer postflight responsibilities to subagents; Phase 3 (Weeks 3-4): Meta System Builder Port - enable dynamic system extension; Phase 4 (Weeks 5-6): Forked Subagent Pattern - achieve token efficiency.",
@@ -693,15 +705,21 @@
       "blocking": [],
       "dependencies": [],
       "created": "2026-01-22T00:48:23Z",
-      "last_updated": "2025-01-22T12:53:47Z",
-      "session_id": "sess_1769043047_pegth",
+      "last_updated": "2025-01-22T13:04:47Z",
+      "session_id": "sess_1769043708_tq9iv",
       "started": "2025-01-22T12:52:47Z",
       "researched": "2025-01-22T12:53:47Z",
+      "planned": "2025-01-22T13:04:47Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/672_implement_agent_system_upgrade_plan/reports/research-001.md",
           "summary": "Research report for .opencode system upgrade plan implementation"
+        },
+        {
+          "type": "plan",
+          "path": "specs/672_implement_agent_system_upgrade_plan/plans/implementation-001.md",
+          "summary": "Implementation plan for .opencode system upgrade with UX optimization focus"
         }
       ]
     }
