@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 22,
-    "last_sync": "2026-01-21T23:01:54Z"
+    "total_tasks": 38,
+    "last_sync": "2026-01-22T00:48:23Z"
   },
   "active_projects": [
     {
@@ -662,13 +662,13 @@
     {
       "project_number": 671,
       "project_name": "combine_dynamics_foundation_latex_files",
-      "status": "researched",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "description": "combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate",
       "created": "2026-01-22T00:46:50Z",
-      "last_updated": "2026-01-22T00:48:07Z",
-      "session_id": "sess_1769042859_latex_research",
+      "last_updated": "2026-01-22T00:48:28Z",
+      "session_id": "sess_1769042908_latex_impl",
       "researched": "2026-01-22T00:48:07Z",
       "artifacts": [
         {
@@ -676,24 +676,32 @@
           "type": "research",
           "summary": "Research report analyzing three Dynamics Foundation LaTeX files with proposed structure for combination"
         }
-      ]
+      ],
+      "started": "2026-01-22T00:48:28Z"
     },
+
     {
-      "project_number": 671,
-      "project_name": "combine_dynamics_foundation_latex_files",
+      "project_number": 672,
+      "project_name": "implement_agent_system_upgrade_plan",
+      "type": "feature",
+      "phase": "not_started",
       "status": "researched",
-      "language": "latex",
-      "priority": "medium",
-      "description": "combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate",
-      "created": "2026-01-22T00:46:56Z",
-      "last_updated": "2026-01-22T00:48:07Z",
-      "session_id": "sess_1769042859_latex_research",
-      "researched": "2026-01-22T00:48:07Z",
+      "priority": "high",
+      "language": "meta",
+      "description": "Implement the .opencode system upgrade plan following specs/agent_system_upgrade_plan.md and specs/implementation_roadmap.md. This 6-week upgrade involves 4 phases: Phase 1 (Week 1): Foundation - implement hook system, file-based metadata exchange, and state management; Phase 2 (Week 2): Workflow Ownership Migration - transfer postflight responsibilities to subagents; Phase 3 (Weeks 3-4): Meta System Builder Port - enable dynamic system extension; Phase 4 (Weeks 5-6): Forked Subagent Pattern - achieve token efficiency.",
+      "effort": "6 weeks",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-22T00:48:23Z",
+      "last_updated": "2025-01-22T12:53:47Z",
+      "session_id": "sess_1769043047_pegth",
+      "started": "2025-01-22T12:52:47Z",
+      "researched": "2025-01-22T12:53:47Z",
       "artifacts": [
         {
-          "path": "specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md",
           "type": "research",
-          "summary": "Research report analyzing three Dynamics Foundation LaTeX files with proposed structure for combination"
+          "path": "specs/672_implement_agent_system_upgrade_plan/reports/research-001.md",
+          "summary": "Research report for .opencode system upgrade plan implementation"
         }
       ]
     }
