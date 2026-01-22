@@ -55,6 +55,24 @@ Logos has completed its MVP phase with a functional implementation of the TM bim
 
 ## Medium Priority (Complete within 3 months)
 
+### 670. Implement agent system upgrade plan
+- **Effort**: 40 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-22
+- **Session ID**: task_creation-1768239349
+- **Description**: Implement the .opencode system upgrade plan from specs/agent_system_upgrade_plan.md and copy this file into the plans/ directory for this task. This upgrade will incorporate key .claude innovations while preserving formal verification strengths.
+- **Source Plan**: specs/agent_system_upgrade_plan.md (275 lines, comprehensive upgrade with 4 phases)
+- **Acceptance Criteria**:
+  - [ ] Copy agent_system_upgrade_plan.md to specs/670_implement_agent_system_upgrade_plan/plans/
+  - [ ] Implement Phase 1: Foundation (hook system, file-based metadata, state management)
+  - [ ] Implement Phase 2: Workflow Ownership (subagent workflows, remove postflight from commands)
+  - [ ] Implement Phase 3: Meta Builder (port meta system builder for formal verification)
+  - [ ] Implement Phase 4: Architecture Migration (forked subagent pattern, skill wrappers)
+  - [ ] Achieve 15-20% token usage reduction and eliminate "continue" prompts
+- **Impact**: Upgrades .opencode with .claude innovations while maintaining formal verification specialization
+
 ### 666. Revise Lean source code in Logos/ theory to match constitutive model definitions
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
@@ -1141,6 +1159,17 @@ Improve MAINTENANCE.md documentation by adding missing registry references (FEAT
 
 **Impact**:
 Improves MAINTENANCE.md documentation quality and completeness, providing clear guidance on registry synchronization and backwards compatibility policy.
+
+---
+
+### 671. Combine Dynamics Foundation LaTeX Files
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+- **Created**: 2026-01-22
+- **Description**: combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate
+- **Next Steps**: Run `/research 671` to analyze the LaTeX files, then `/implement 671` to create the combined file
 
 ---
 
