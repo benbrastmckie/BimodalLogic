@@ -82,18 +82,18 @@ main() {
   esac
   
   # Extract task metadata
-  task_description=$(echo "$task_data" | jq -r '.description')
-  task_language=$(echo "$task_data" | jq -r '.language // "general"')
-  task_slug=$(echo "$task_description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-\|-$//g')
+  local task_description=$(echo "$task_data" | jq -r '.description')
+  local task_language=$(echo "$task_data" | jq -r '.language // "general"')
+  local task_slug=$(echo "$task_description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-\|-$//g')
   
   # Create task directory
-  task_dir="specs/${task_number}_${task_slug}"
+  local task_dir="specs/${task_number}_${task_slug}"
   mkdir -p "$task_dir/reports" "$task_dir/plans" "$task_dir/.meta"
   
   echo "✓ Task validated, route: $revise_type revision"
   
   # Preflight status update
-  timestamp_iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  local timestamp_iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)
   
   # Update state.json
   jq --arg num "$task_number" \
@@ -128,8 +128,8 @@ main() {
       echo "✓ Current plan: $current_plan"
       
       # Extract current version
-      current_version=$(echo "$current_plan" | sed 's/.*implementation-\([0-9]*\)\.md/\1/')
-      new_version=$((current_version + 1))
+      local current_version=$(echo "$current_plan" | sed 's/.*implementation-\([0-9]*\)\.md/\1/')
+      local new_version=$((current_version + 1))
       
       echo "✓ Creating new plan version: implementation-$(printf "%03d" $new_version).md"
       
@@ -137,7 +137,7 @@ main() {
       echo "Analyzing implementation progress..."
       
       # Create revised plan
-      new_plan_file="$task_dir/plans/implementation-$(printf "%03d" $new_version).md"
+      local new_plan_file="$task_dir/plans/implementation-$(printf "%03d" $new_version).md"
       
       # Copy current plan and update version info
       cp "$current_plan" "$new_plan_file"
@@ -157,13 +157,13 @@ Previous Plan: $current_plan
 "
       
       # Insert revision note after Language section
-      sed -i "/## Language/a\\
+      sed -i "/## Language/a\\\\
 $revision_note" "$new_plan_file"
       
       echo "✓ Revised plan created"
       
       # Create metadata
-      metadata_file="$task_dir/.meta/revise-return-meta.json"
+      local metadata_file="$task_dir/.meta/revise-return-meta.json"
       cat > "$metadata_file" <<EOF
 {
   "status": "completed",
@@ -192,8 +192,8 @@ EOF
       exit 1
     fi
     
-    old_description="$task_description"
-    new_description="$revision_reason"
+    local old_description="$task_description"
+    local new_description="$revision_reason"
     
     echo "Previous: $old_description"
     echo "New: $new_description"
@@ -214,7 +214,7 @@ EOF
     echo "✓ Description updated"
     
     # Create metadata
-    metadata_file="$task_dir/.meta/revise-return-meta.json"
+    local metadata_file="$task_dir/.meta/revise-return-meta.json"
     cat > "$metadata_file" <<EOF
 {
   "status": "completed",
@@ -239,9 +239,9 @@ EOF
     exit 1
   fi
   
-  revise_status=$(jq -r '.status // "unknown"' "$metadata_file")
-  revise_summary=$(jq -r '.summary // ""' "$metadata_file")
-  revise_artifacts=$(jq -r '.artifacts // []' "$metadata_file")
+  local revise_status=$(jq -r '.status // "unknown"' "$metadata_file")
+  local revise_summary=$(jq -r '.summary // ""' "$metadata_file")
+  local revise_artifacts=$(jq -r '.artifacts // []' "$metadata_file")
   
   if [ "$revise_status" = "unknown" ] || [ -z "$revise_status" ]; then
     echo "Error: Missing or invalid status in revision metadata"
