@@ -63,16 +63,20 @@ technical_debt:
 ---
 
 ### 394.
+- **Implementation Started**: 2026-01-23T21:47:29Z
+- **Status**: [IMPLEMENTING]
+- **Implementation Started**: 2026-01-23T21:46:34Z
+- **Status**: [IMPLEMENTING]
 - **Planning Started**: 2026-01-23T21:46:31Z
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Planning Started**: 2026-01-23T21:46:02Z
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Planning Started**: 2026-01-23T21:45:58Z
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Planning Started**: 2026-01-23T21:45:54Z
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-23T21:45:20Z
-- **Status**: [PLANNED] Research and port causal semantics from paper
+- **Status**: [IMPLEMENTING] Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [EXPANDED]
 - **Researched**: 2026-01-12
@@ -88,7 +92,7 @@ technical_debt:
 
 ### 398. Port causal semantics to recursive-semantics.md
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: markdown
 - **Parent**: Task 394
@@ -101,7 +105,7 @@ technical_debt:
 
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 394
@@ -136,7 +140,7 @@ technical_debt:
 
 ### 671. combine dynamics foundation latex files
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: latex
 - **Created**: 2026-01-22
@@ -150,7 +154,7 @@ technical_debt:
 
 ### 666. revise lean source code logos theory definitions
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -196,7 +200,7 @@ technical_debt:
 
 ### 665. Update guides and templates to follow new standards
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-21
@@ -214,7 +218,7 @@ technical_debt:
 
 
 ### 655. Fix jq errors in agent system
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -225,7 +229,7 @@ technical_debt:
 
 ### 653. Improve metalogic infrastructure (rename frame, address infinite contexts)
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
@@ -236,7 +240,7 @@ technical_debt:
 ---
 
 ### 648. Research canonical frame temporal order generalization
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
@@ -247,7 +251,7 @@ technical_debt:
 
 
 ### 639. Improve /review roadmap matching reliability
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -258,7 +262,7 @@ technical_debt:
 
 ### 656. Complete truth lemma forward direction (imp/box cases)
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -271,7 +275,7 @@ technical_debt:
 
 ### 657. Prove seed consistency (temporal K distribution)
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -284,7 +288,7 @@ technical_debt:
 
 ### 658. Prove indexed family coherence conditions
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -297,7 +301,7 @@ technical_debt:
 
 ### 660. Prove parametric completeness theorems
 - **Effort**: 10-15 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -309,7 +313,7 @@ technical_debt:
 ---
 
 ### 630. Build TaskModel extraction from saturated tableau branches
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -322,7 +326,7 @@ technical_debt:
 ---
 
 ### 631. Prove evalFormula_implies_satisfiable bridging lemma
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -335,7 +339,7 @@ technical_debt:
 ---
 
 ### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
@@ -347,7 +351,7 @@ technical_debt:
 ---
 
 ### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-19
 - **Priority**: Low
 - **Language**: meta
@@ -361,7 +365,7 @@ technical_debt:
 ---
 
 ### 610. Complete truth bridge (Strategy B) for completeness proof
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-19
 - **Research**: [research-001.md](specs/610_complete_truth_bridge_strategy_b/reports/research-001.md)
 - **Priority**: Medium
@@ -375,7 +379,7 @@ technical_debt:
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
@@ -388,7 +392,7 @@ technical_debt:
 ## Low Priority
 
 ### 616. Fix semantic_task_rel_compositionality finite model limitation
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -401,7 +405,7 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -444,7 +448,7 @@ technical_debt:
 ---
 
 ### 624. Prove tableau_complete
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
@@ -455,7 +459,7 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
@@ -480,7 +484,7 @@ technical_debt:
 ---
 
 ### 668. Create specs path migration script
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Session**: meta-session-1768239500
@@ -493,7 +497,7 @@ technical_debt:
 ---
 
 ### 669. Test task creation system
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: meta
 - **Session**: test-session-1768239500

@@ -443,7 +443,7 @@
     },
     {
       "project_number": 394,
-      "status": "planned",
+      "status": "implementing",
       "project_name": "research_port_causal_semantics_from_paper",
       "section": "Medium Priority",
       "language": "lean",
@@ -452,17 +452,23 @@
         398,
         399
       ],
-      "last_updated": "2026-01-23T21:46:31Z",
+      "last_updated": "2026-01-23T21:47:29Z",
       "researching": "2026-01-23T21:45:20Z",
       "researched": "2026-01-23T21:45:20Z",
       "research_summary": "Research completed for task #394: null",
       "artifacts": [
         "specs/394_null/reports/research-sess_1769204720_dead.md",
-        "specs/394_null/plans/implementation-001.md"
+        "specs/394_null/plans/implementation-001.md",
+        "specs/394_null/summaries/implementation-sess_1769204849_feed.md"
       ],
       "planning": "2026-01-23T21:46:31Z",
       "planned": "2026-01-23T21:46:31Z",
-      "plan_summary": "Implementation plan created for task #394: null"
+      "plan_summary": "Implementation plan created for task #394: null",
+      "implementing": "2026-01-23T21:47:29Z",
+      "resume_phase": 1,
+      "implementation_summary": "Partial implementation for task #394: phases 1-1 of 4",
+      "phases_completed": 1,
+      "phases_total": 4
     },
     {
       "project_number": 398,

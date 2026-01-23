@@ -82,16 +82,16 @@ main() {
   esac
   
   # Extract task metadata
-  task_description=$(echo "$task_data" | jq -r '.description')
-  task_language=$(echo "$task_data" | jq -r '.language // "general"')
-  task_slug=$(echo "$task_description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-\|-$//g')
+  local task_description=$(echo "$task_data" | jq -r '.description')
+  local task_language=$(echo "$task_data" | jq -r '.language // "general"')
+  local task_slug=$(echo "$task_description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-\|-$//g')
   
   # Create task directory
-  task_dir="specs/${task_number}_${task_slug}"
+  local task_dir="specs/${task_number}_${task_slug}"
   mkdir -p "$task_dir/reports" "$task_dir/plans" "$task_dir/.meta" "$task_dir/summaries"
   
   # Load implementation plan
-  plan_file=$(ls -t "$task_dir/plans"/implementation-*.md 2>/dev/null | head -1)
+  local plan_file=$(ls -t "$task_dir/plans"/implementation-*.md 2>/dev/null | head -1)
   
   if [ ! -f "$plan_file" ]; then
     echo "Error: No implementation plan found for task #$task_number"
@@ -107,8 +107,8 @@ main() {
   echo "Scanning plan for resume point..."
   
   # Simple phase detection - look for [NOT STARTED], [IN PROGRESS], [PARTIAL], [COMPLETED]
-  resume_phase=0
-  phase_count=0
+  local resume_phase=0
+  local phase_count=0
   
   while IFS= read -r line; do
     if [[ $line =~ ^###\ Phase\ ([0-9]+): ]]; then
@@ -136,7 +136,7 @@ main() {
   echo "✓ Resume point: Phase $resume_phase"
   
   # Preflight status update
-  timestamp_iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  local timestamp_iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)
   
   # Update state.json
   jq --arg num "$task_number" \
@@ -162,6 +162,7 @@ main() {
   echo "=== STAGE 2: DELEGATING IMPLEMENTATION ==="
   
   # Language-based routing
+  local subagent
   case "$task_language" in
     "lean")
       subagent="lean-implementation-agent"
@@ -184,7 +185,7 @@ main() {
   echo "Proceeding with simulation..."
   
   # Create implementation summary
-  summary_file="$task_dir/summaries/implementation-$session_id.md"
+  local summary_file="$task_dir/summaries/implementation-$session_id.md"
   cat > "$summary_file" <<EOF
 # Implementation Summary for Task #$task_number
 
@@ -237,6 +238,8 @@ EOF
 EOF
   
   # Determine completion status
+  local impl_status
+  local impl_summary
   if [ $phases_completed -eq $phases_total ]; then
     impl_status="completed"
     impl_summary="Implementation completed for task #$task_number: $task_description"
@@ -246,7 +249,7 @@ EOF
   fi
   
   # Create metadata file
-  metadata_file="$task_dir/.meta/implement-return-meta.json"
+  local metadata_file="$task_dir/.meta/implement-return-meta.json"
   cat > "$metadata_file" <<EOF
 {
   "status": "$impl_status",
@@ -272,11 +275,11 @@ EOF
     exit 1
   fi
   
-  impl_status=$(jq -r '.status // "unknown"' "$metadata_file")
-  impl_summary=$(jq -r '.summary // ""' "$metadata_file")
-  impl_artifacts=$(jq -r '.artifacts // []' "$metadata_file")
-  phases_completed=$(jq -r '.phases_completed // 0' "$metadata_file")
-  phases_total=$(jq -r '.phases_total // 0' "$metadata_file")
+  local impl_status=$(jq -r '.status // "unknown"' "$metadata_file")
+  local impl_summary=$(jq -r '.summary // ""' "$metadata_file")
+  local impl_artifacts=$(jq -r '.artifacts // []' "$metadata_file")
+  local phases_completed=$(jq -r '.phases_completed // 0' "$metadata_file")
+  local phases_total=$(jq -r '.phases_total // 0' "$metadata_file")
   
   if [ "$impl_status" = "unknown" ] || [ -z "$impl_status" ]; then
     echo "Error: Missing or invalid status in implementation metadata"
@@ -298,18 +301,18 @@ EOF
   done
   
   # Postflight status update
+  local new_status
+  local status_marker
   if [ "$impl_status" = "completed" ]; then
     new_status="completed"
-    timestamp_field="completed"
     status_marker="[COMPLETED]"
   else
     new_status="implementing"
-    timestamp_field="implementing"
     status_marker="[IMPLEMENTING]"
   fi
   
   # Update state.json
-  state_update=$(jq --arg num "$task_number" \
+  local state_update=$(jq --arg num "$task_number" \
      --arg status "$new_status" \
      --arg ts "$timestamp_iso" \
      --arg summary "$impl_summary" \
@@ -323,7 +326,7 @@ EOF
        artifacts: .artifacts + $artifacts,
        phases_completed: $phases_completed,
        phases_total: $phases_total
-     } + {($timestamp_field): $ts}' specs/state.json)
+     } + if $status == "completed" then {completed: $ts} else {implementing: $ts} end' specs/state.json)
   
   echo "$state_update" > /tmp/state.json && mv /tmp/state.json specs/state.json
   
