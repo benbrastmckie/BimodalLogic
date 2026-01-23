@@ -301,7 +301,7 @@ jq '.next_project_number = (.next_project_number + 1) |
 2. **No Preflight/Postflight**: Task doesn't exist yet, so no status to update
 3. **No Git Commit**: Task creation doesn't create artifacts (only TODO.md + state.json updates)
 4. **Inline Implementation**: No delegation to subagent (executable pseudocode in command file)
-5. **Matches /research Pattern**: Stage 1 has executable logic that Claude can directly follow
+5. **Matches /research Pattern**: Stage 1 has executable logic that OpenCode can directly follow
 
 ### Atomic Updates
 
@@ -334,6 +334,66 @@ jq '.next_project_number = (.next_project_number + 1) |
 - **Task Standards:** `.opencode/context/core/standards/tasks.md`
 - **Original Implementation Plan:** `specs/task-command-improvement-plan.md`
 - **Fix Plan:** `specs/task-command-fix-plan.md`
+
+## Control Flow in Commands
+
+### The Continuation Marker Pattern
+
+Workflow commands (`/research`, `/plan`, `/implement`) use explicit continuation markers to ensure OpenCode executes the full checkpoint-based flow without stopping prematurely.
+
+**Problem**: Without explicit continuation markers, OpenCode may interpret skill invocation returns (JSON responses) as transaction boundaries and stop execution after GATE IN or DELEGATE, failing to complete the full workflow.
+
+**Solution**: Each checkpoint ends with an explicit continuation marker:
+
+```markdown
+**On {CHECKPOINT} success**: {State note}. **IMMEDIATELY CONTINUE** to {NEXT_SECTION} below.
+```
+
+### Standard Continuation Markers
+
+| After | Marker Template |
+|-------|-----------------|
+| CHECKPOINT 1 (GATE IN) | `**On GATE IN success**: Status is [{STATUS}]. **IMMEDIATELY CONTINUE** to STAGE 2 below.` |
+| STAGE 2 (DELEGATE) | `**On DELEGATE success**: {Work} complete. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.` |
+| CHECKPOINT 2 (GATE OUT) | `**On GATE OUT success**: Artifacts verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.` |
+
+### Examples
+
+**In /research command**:
+```markdown
+**On GATE IN success**: Status is [RESEARCHING]. **IMMEDIATELY CONTINUE** to STAGE 2 below.
+```
+
+**In /plan command**:
+```markdown
+**On DELEGATE success**: Plan created. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
+```
+
+**In /implement command**:
+```markdown
+**On GATE OUT success**: Artifacts verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
+```
+
+### Why This Works
+
+1. **Explicit over implicit**: The marker explicitly tells OpenCode what to do next, removing ambiguity
+2. **State confirmation**: The marker confirms the expected state (e.g., "Status is [RESEARCHING]")
+3. **Directional guidance**: "below" indicates the next section is in the same document
+4. **Imperative language**: "IMMEDIATELY CONTINUE" is unambiguous directive language
+
+### Commands That Do Not Need Continuation Markers
+
+The `/meta` command does not require continuation markers because:
+- It has no preflight checkpoint (no intermediate skill returns before delegation)
+- It delegates directly to a skill without multiple return points
+
+### Adding Continuation Markers to New Commands
+
+When creating new checkpoint-based commands:
+1. Add a continuation marker after each checkpoint that precedes another section
+2. Use the standard template format
+3. Include the expected state in the marker
+4. Test that OpenCode executes the full flow without stopping
 
 ## References
 

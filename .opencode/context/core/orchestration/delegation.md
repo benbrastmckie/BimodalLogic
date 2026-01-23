@@ -1,9 +1,18 @@
 # Delegation Standard
 
-**Version**: 2.0  
-**Status**: Active  
-**Created**: 2025-12-29  
+**Version**: 2.0
+**Status**: Active
+**Created**: 2025-12-29
 **Purpose**: Unified delegation standard defining return format, delegation patterns, and safety mechanisms
+
+---
+
+> **DEPRECATED** (2026-01-19): This file has been consolidated into:
+> - `orchestration-core.md` - Return format, delegation context, safety mechanisms
+> - `orchestration-validation.md` - Validation framework
+> - `orchestration-reference.md` - Bulk operation patterns, examples
+>
+> This file is preserved for reference but should not be loaded for new development.
 
 ---
 
@@ -168,7 +177,7 @@ Every delegation MUST have a unique session ID.
 Track the full delegation path to detect cycles.
 
 **Path Format**: Array of agent names  
-**Example**: `["orchestrator", "implement", "task-executor", "implementer"]`
+**Example**: `{"delegation_path": ["orchestrator", "implement", "task-executor", "implementer"]}`
 
 **Cycle Detection**:
 ```python
@@ -790,7 +799,7 @@ Updated in Stage 4 (PrepareContext) and Stage 7 (PostflightCleanup).
 
 ## JSON Return Format Enforcement
 
-**Problem**: When orchestrator invokes subagents via task tool, Claude does NOT automatically follow the JSON return format specified in the agent's markdown file. This causes validation failures in orchestrator Stage 4 because subagents return plain text instead of required JSON structure.
+**Problem**: When orchestrator invokes subagents via task tool, OpenCode does NOT automatically follow the JSON return format specified in the agent's markdown file. This causes validation failures in orchestrator Stage 4 because subagents return plain text instead of required JSON structure.
 
 **Solution**: Orchestrator Stage 3 (RegisterAndDelegate) appends explicit JSON format instruction to all subagent invocations.
 

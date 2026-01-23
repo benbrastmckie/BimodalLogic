@@ -45,7 +45,7 @@ This document describes the complete planning workflow executed by the planner s
 **Process**:
 1. Read task from TODO.md using grep (selective loading):
    ```bash
-   grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
+   grep -A 50 "^### ${task_number}." specs/TODO.md > /tmp/task-${task_number}.md
    ```
 2. Extract task metadata:
    - Task number
@@ -334,7 +334,7 @@ Revise plans when:
    - Update TODO.md to point to latest version
 
 5. **Update Status**:
-   - Status: [PLANNED] → [REVISED]
+   - Status: [PLANNED] → [REVISING]
    - Update plan link to new version
    - Preserve previous plan link in history
 
@@ -380,7 +380,7 @@ Planner loads context on-demand per `.opencode/context/index.md`:
 - `core/standards/status-markers.md` (status transitions)
 - `core/system/artifact-management.md` (lazy directory creation)
 - `core/standards/plan.md` (plan template)
-- Task entry via `grep -A 50 "^### ${task_number}\." TODO.md` (~2KB vs 109KB full file)
+- Task entry via `grep -A 50 "^### ${task_number}." TODO.md` (~2KB vs 109KB full file)
 - `state.json` (project state)
 - Research artifacts if linked in TODO.md
 
@@ -510,7 +510,7 @@ If no research available, planner proceeds without research context.
 Extract only specific task entry from TODO.md to reduce context load:
 
 ```bash
-grep -A 50 "^### ${task_number}\." specs/TODO.md > /tmp/task-${task_number}.md
+grep -A 50 "^### ${task_number}." specs/TODO.md > /tmp/task-${task_number}.md
 ```
 
 **Impact**: Reduces context from 109KB (full TODO.md) to ~2KB (task entry only), 98% reduction.

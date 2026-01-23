@@ -293,7 +293,7 @@ def populate_state_from_template(template, todo_data):
             }
         ],
         "pending_tasks": extract_pending_tasks(todo_data),
-        "maintenance_summary": template["maintenance_summary"],
+        "reviews_summary": template["reviews_summary"],
         "archive_summary": template["archive_summary"],
         "schema_info": {
             **template["schema_info"],
@@ -345,7 +345,6 @@ def create_minimal_state():
         },
         "state_references": {
             "archive_state_path": "specs/archive/state.json",
-            "maintenance_state_path": "specs/maintenance/state.json",
             "_comment": "References to specialized state files. These files are auto-created if missing."
         },
         "active_projects": [],
@@ -368,11 +367,11 @@ def create_minimal_state():
             }
         ],
         "pending_tasks": [],
-        "maintenance_summary": {
-            "_comment": "Quick reference to maintenance status - full history in maintenance/state.json",
-            "last_maintenance": None,
-            "next_scheduled": None,
-            "health_trend": "unknown"
+        "reviews_summary": {
+            "_comment": "Quick reference to review status - full history in reviews/state.json",
+            "last_review": None,
+            "total_reviews": 0,
+            "total_issues_found": 0
         },
         "archive_summary": {
             "_comment": "Quick reference to archived projects - full details in archive/state.json",

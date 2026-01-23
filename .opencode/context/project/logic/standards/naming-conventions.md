@@ -210,6 +210,7 @@ theorem or_intro_right (φ ψ : Formula) : ⊢ ψ → ⊢ (φ ∨ ψ) := by sorr
 -- Avoid: Cryptic names
 theorem and_i (φ ψ : Formula) : ⊢ φ → ⊢ ψ → ⊢ (φ ∧ ψ) := by sorry
 theorem and_e1 (φ ψ : Formula) : ⊢ (φ ∧ ψ) → ⊢ φ := by sorry
+theorem and_e2 (φ ψ : Formula) : ⊢ (φ ∧ ψ) → ⊢ ψ := by sorry
 ```
 
 ### Negation Helpers

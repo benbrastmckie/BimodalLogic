@@ -1,8 +1,16 @@
 # Routing Guide - Lightweight Command Routing Context
 
-**Version**: 1.0  
-**Created**: 2025-12-29 (Task 244 Phase 1)  
+**Version**: 1.0
+**Created**: 2025-12-29 (Task 244 Phase 1)
 **Purpose**: Lightweight routing context for orchestrator Stages 1-3 (command parsing and delegation preparation)
+
+---
+
+> **DEPRECATED** (2026-01-19): This file has been consolidated into:
+> - `orchestration-core.md` - Command->Agent mapping, language extraction, routing validation
+> - `orchestration-reference.md` - Troubleshooting routing issues
+>
+> This file is preserved for reference but should not be loaded for new development.
 
 ---
 
@@ -216,7 +224,7 @@ Some commands support flags:
 | `/plan` | `--phased` | Create phased implementation plan |
 | `/implement` | `--resume` | Resume from incomplete phase |
 | `/task` | `--recover` | Unarchive tasks from archive/ (supports ranges/lists) |
-| `/task` | `--divide` | Divide existing task into subtasks (single task only) |
+| `/task` | `--expand` | Expand existing task into subtasks (single task only) |
 | `/task` | `--sync` | Synchronize TODO.md and state.json (git blame conflict resolution) |
 | `/task` | `--abandon` | Abandon tasks to archive/ (supports ranges/lists) |
 
@@ -230,9 +238,9 @@ The `/task` command uses flag-based routing to different operations:
 if [[ "$ARGUMENTS" =~ --recover ]]; then
   operation="recover"
   args="${ARGUMENTS#*--recover }"  # Extract task ranges
-elif [[ "$ARGUMENTS" =~ --divide ]]; then
-  operation="divide"
-  args="${ARGUMENTS#*--divide }"  # Extract task number and optional prompt
+elif [[ "$ARGUMENTS" =~ --expand ]]; then
+  operation="expand"
+  args="${ARGUMENTS#*--expand }"  # Extract task number and optional prompt
 elif [[ "$ARGUMENTS" =~ --sync ]]; then
   operation="sync"
   args="${ARGUMENTS#*--sync }"  # Extract optional task ranges
@@ -539,7 +547,7 @@ For commands with `routing.language_based: true`, extract language from task met
 
 ```bash
 # Find task directory
-task_dir=$(find specs -maxdepth 1 -type d -name "${task_number}_*" | head -n 1)
+task_dir=$(find .opencode/specs -maxdepth 1 -type d -name "${task_number}_*" | head -n 1)
 
 # Extract language from state.json
 if [ -n "$task_dir" ] && [ -f "${task_dir}/state.json" ]; then

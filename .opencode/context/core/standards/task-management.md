@@ -120,7 +120,7 @@ The `/task` command supports unified task lifecycle management through flags:
 
 **Inline Division**:
 ```bash
-/task "Refactor system: update commands, fix agents, improve docs" --divide
+/task "Refactor system: update commands, fix agents, improve docs" --expand
 # Creates 3 tasks: one for each natural division
 ```
 
@@ -150,12 +150,12 @@ The `/task` command supports unified task lifecycle management through flags:
 - Updates TODO.md, state.json, archive/state.json
 - Moves directories from archive/ to specs/ (if exist, non-critical)
 
-### Task Division (--divide)
+### Task Expansion (--expand)
 
 **Usage**:
 ```bash
-/task --divide 326                     # Divide task 326
-/task --divide 326 "Focus on UI, backend, tests"  # With prompt
+/task --expand 326                     # Expand task 326
+/task --expand 326 "Focus on UI, backend, tests"  # With prompt
 ```
 
 **Standards**:
@@ -307,7 +307,7 @@ The `/task` command supports unified task lifecycle management through flags:
 
 **Solution**:
 1. Find all metadata fields using incorrect format (e.g., `*Effort**:`, `*Status**:`)
-2. Replace with correct format: `- **Effort**:`, `- **Status**:`
+2. Replace with correct format: `- **Field**:`
 3. Ensure each field is on its own line
 4. Verify formatting matches task standards
 

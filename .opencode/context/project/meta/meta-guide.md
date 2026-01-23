@@ -381,11 +381,13 @@ After generation, you can customize:
 ## Performance Expectations
 
 ### Context Efficiency
+
 - 80% of tasks use Level 1 context (isolation)
 - 20% of tasks use Level 2 context (filtered)
 - Level 3 context (windowed) is rare
 
 ### Quality Improvements
+
 - **Routing Accuracy**: +20% (LLM-based decisions)
 - **Consistency**: +25% (XML structure)
 - **Context Efficiency**: 80% reduction in overhead

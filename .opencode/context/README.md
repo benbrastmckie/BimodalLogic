@@ -18,7 +18,6 @@
 │   │   ├── delegation.md           # Delegation patterns and safety
 │   │   ├── validation.md           # Validation strategies and rules
 │   │   ├── state-management.md     # State and artifact management
-│   │   ├── state-lookup.md         # State.json query patterns
 │   │   └── sessions.md             # Session management
 │   │
 │   ├── formats/                    # Output formats and structures (7 files)
@@ -116,7 +115,7 @@
 - `orchestration/architecture.md` - Three-layer delegation pattern (critical for meta-builder)
 - `formats/command-structure.md` - Commands as agents pattern
 - `workflows/preflight-postflight.md` - Workflow timing standards
-- `orchestration/state-lookup.md` - State.json query patterns (8x faster than TODO.md)
+- `orchestration/state-management.md` - State management and fast lookup patterns (8x faster than TODO.md)
 
 ### project/
 **Purpose**: ProofChecker-specific domain knowledge
@@ -154,7 +153,7 @@
 
 **Performance Optimization**:
 - State.json queries are 8x faster than TODO.md parsing (12ms vs 100ms)
-- See `orchestration/state-lookup.md` for query patterns
+- See `orchestration/state-management.md` for query patterns
 
 ---
 

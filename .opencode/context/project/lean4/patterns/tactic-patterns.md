@@ -241,7 +241,7 @@ import Lean.Meta.Tactic.Simp -- Simplification
 ### Essential Types and Functions
 
 | Type/Function | Purpose |
-|---------------|---------|
+|--------------|---------|
 | `MVarId` | Goal identifier (metavariable) |
 | `Expr` | Expression/term representation |
 | `TacticM` | Monad for tactic execution |

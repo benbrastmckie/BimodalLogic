@@ -301,7 +301,7 @@ The identity formula `φ → φ` is a tautology - it's true in all possible worl
 
 ### Related Strategies
 
-- **Combined Modal-Propositional Reasoning** (Strategy 6) - For mixing combinators with modal axioms
+- **Combined Modal-Propositional Reasoning** (Strategy 6) - For combinator usage
 - **S5 Characteristic Theorems** (Strategy 4) - For necessitation patterns
 
 ### Source Reference

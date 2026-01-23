@@ -1,5 +1,14 @@
 # Subagent Return Validation
 
+---
+
+> **DEPRECATED** (2026-01-19): This file has been consolidated into:
+> - `orchestration-validation.md` - Return validation steps, artifact verification
+>
+> This file is preserved for reference but should not be loaded for new development.
+
+---
+
 ## Overview
 
 All workflow commands (`/research`, `/plan`, `/revise`, `/implement`) MUST validate subagent returns using this standardized process before executing postflight operations.
