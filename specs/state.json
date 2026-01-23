@@ -127,33 +127,6 @@
       "claudemd_suggestions": "none"
     },
     {
-      "project_number": 666,
-      "project_name": "revise_lean_source_code_logos_theory_definitions",
-      "status": "researched",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-21T22:50:00Z",
-      "last_updated": "2026-01-23T20:16:21Z",
-      "session_id": "task-666-recovery",
-      "source_file": "Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
-      "source_lines": [
-        72
-      ],
-      "artifacts": [
-        {
-          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-001.md",
-          "type": "research",
-          "summary": "Task created manually due to system failure - research report with constitutive model definitions from LaTeX"
-        },
-        {
-          "type": "research",
-          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md",
-          "summary": "Research report confirming alignment between Lean code and LaTeX definitions"
-        }
-      ],
-      "researched": "2026-01-23T20:16:21Z"
-    },
-    {
       "project_number": 665,
       "project_name": "update_guides_templates_to_follow_new_standards",
       "status": "planned",
@@ -562,27 +535,6 @@
       ]
     },
     {
-      "project_number": 666,
-      "project_name": "revise_lean_source_code_logos_theory_definitions",
-      "status": "researched",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-21T00:00:00Z",
-      "last_updated": "2026-01-23T20:16:21Z",
-      "description": "Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
-      "effort": "TBD",
-      "blocking": [],
-      "dependencies": [],
-      "researched": "2026-01-23T20:16:21Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md",
-          "summary": "Research report confirming alignment between Lean code and LaTeX definitions"
-        }
-      ]
-    },
-    {
       "project_number": 667,
       "project_name": "fix_specs_path_references",
       "status": "implemented",
@@ -735,6 +687,37 @@
           "type": "plan",
           "path": "specs/672_implement_agent_system_upgrade_plan/plans/implementation-002.md",
           "summary": "Revised upgrade plan enforcing workflow contract sequencing and cross-command consistency"
+        }
+      ]
+    },
+    {
+      "project_number": 666,
+      "project_name": "revise_lean_source_code_logos_theory_definitions",
+      "status": "researched",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-21T22:50:00Z",
+      "last_updated": "2026-01-23T20:16:21Z",
+      "description": "Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
+      "effort": "TBD",
+      "blocking": [],
+      "dependencies": [],
+      "session_id": "task-666-recovery",
+      "source_file": "Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
+      "source_lines": [
+        72
+      ],
+      "researched": "2026-01-23T20:16:21Z",
+      "artifacts": [
+        {
+          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-001.md",
+          "type": "research",
+          "summary": "Task created manually due to system failure - research report with constitutive model definitions from LaTeX"
+        },
+        {
+          "type": "research",
+          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md",
+          "summary": "Research report confirming alignment between Lean code and LaTeX definitions"
         }
       ]
     }

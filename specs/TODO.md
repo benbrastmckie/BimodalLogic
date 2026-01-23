@@ -104,7 +104,7 @@ technical_debt:
 
 ### 672. Implement agent system upgrade plan
 - **Effort**: 6 weeks
-- **Status**: [PLANNED]
+- **Status**: [REVISED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -113,10 +113,11 @@ technical_debt:
 - **Started**: 2025-01-22T12:52:47Z
 - **Researched**: 2025-01-22T12:53:47Z
 - **Planned**: 2025-01-22T13:04:47Z
+- **Revised**: 2026-01-22T01:27:39Z
 - **Research**: [research-001.md](specs/672_implement_agent_system_upgrade_plan/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/672_implement_agent_system_upgrade_plan/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/672_implement_agent_system_upgrade_plan/plans/implementation-002.md)
 
-**Description**: Implement the .opencode system upgrade plan following specs/agent_system_upgrade_plan.md and specs/implementation_roadmap.md. This 6-week upgrade involves 4 phases: Phase 1 (Week 1): Foundation - implement hook system, file-based metadata exchange, and state management; Phase 2 (Week 2): Workflow Ownership Migration - transfer postflight responsibilities to subagents; Phase 3 (Weeks 3-4): Meta System Builder Port - enable dynamic system extension; Phase 4 (Weeks 5-6): Forked Subagent Pattern - achieve token efficiency.
+**Description**: Implement the .opencode system upgrade plan following specs/agent_system_upgrade_plan.md and specs/implementation_roadmap.md. This 6-week upgrade involves 4 phases: Phase 1 (Week 1): Foundation - file-based metadata exchange and state management; Phase 2 (Week 2): Workflow Ownership Migration - transfer postflight responsibilities to subagents; Phase 3 (Weeks 3-4): Meta System Builder Port - enable dynamic system extension; Phase 4 (Weeks 5-6): Forked Subagent Pattern - achieve token efficiency.
 
 ---
 
@@ -139,12 +140,14 @@ technical_debt:
 
 ### 666. revise lean source code logos theory definitions
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
 - **Dependencies**: None
 - **Created**: 2026-01-21
+- **Artifacts**:
+  - [Research Report](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md)
 
 **Description**: Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex
 
