@@ -95,7 +95,7 @@ For tasks with existing plans (planned, implementing, partial, blocked):
    Write to `specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md`
 
 4. **Update Status Inline** (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`)
-   Update state.json to "planned" status and add plan artifact:
+   Update specs/state.json to "planned" status and add plan artifact:
    ```bash
    # Step 1: Update status and timestamps
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
@@ -113,7 +113,7 @@ For tasks with existing plans (planned, implementing, partial, blocked):
      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
    ```
 
-   Update TODO.md status marker using Edit tool.
+   Update specs/TODO.md status marker using Edit tool.
 
 -> Continue to CHECKPOINT 2 (Plan Revision)
 
@@ -131,7 +131,7 @@ For tasks without plans (not_started, researched):
 2. **Validate Revision Reason**
    If no revision_reason provided: ABORT "No revision reason provided. Usage: /revise N \"new description\""
 
-3. **Update state.json**
+3. **Update specs/state.json**
    ```bash
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg desc "$new_description" \
      '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
@@ -141,7 +141,7 @@ For tasks without plans (not_started, researched):
      mv /tmp/state.json specs/state.json
    ```
 
-4. **Update TODO.md**
+4. **Update specs/TODO.md**
    Use Edit tool to replace description
 
 → Continue to CHECKPOINT 2 (Description Update)
@@ -153,11 +153,11 @@ For tasks without plans (not_started, researched):
 **For Plan Revision (Stage 2A):**
 1. Verify new plan file exists
 2. Verify status is "planned"
-3. Verify plan link updated in TODO.md
+3. Verify plan link updated in specs/TODO.md
 
 **For Description Update (Stage 2B):**
-1. Verify description updated in state.json
-2. Verify description updated in TODO.md
+1. Verify description updated in specs/state.json
+2. Verify description updated in specs/TODO.md
 
 **PROCEED** to commit.
 

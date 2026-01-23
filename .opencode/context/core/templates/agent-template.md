@@ -313,7 +313,7 @@ All templates follow the 8-stage workflow pattern:
 
 ### Stage 7: Postflight (Critical)
 - Validate all artifacts created
-- Update TODO.md and state.json (via status-sync-manager)
+- Update specs/TODO.md and specs/state.json (via status-sync-manager)
 - Create git commit (via git-workflow-manager)
 - Log errors to errors.json
 

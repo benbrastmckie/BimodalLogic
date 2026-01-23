@@ -1,12 +1,7 @@
 ---
-name: "meta-builder-agent"
-version: "1.0.0"
 description: "Interactive system builder for .opencode architecture changes"
-mode: orchestrator
-agent_type: orchestration
+mode: subagent
 temperature: 0.2
-max_tokens: 6000
-timeout: 3600
 tools:
   read: true
   write: true
@@ -16,29 +11,14 @@ tools:
   bash: false
   grep: false
 permissions:
-  allow:
-    - read: ["**/*.md", ".opencode/**/*", "specs/**/*"]
-    - write: ["specs/**/*"]
-  deny:
-    - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/formats/return-metadata-file.md"
-    - "project/meta/meta-guide.md"
-  optional:
-    - "project/meta/interview-patterns.md"
-  max_context_size: 50000
-delegation:
-  max_depth: 3
-  can_delegate_to: ["domain-analyzer", "agent-generator", "context-organizer", "workflow-designer", "command-creator"]
-  timeout_default: 3600
-  timeout_max: 7200
-lifecycle:
-  stage: 4
-  command: "/meta"
-  return_format: "core/formats/return-metadata-file.md"
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+    "specs/**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+  bash:
+    "*": "deny"
 ---
 
 # Meta Builder Agent
@@ -82,7 +62,7 @@ directly; it creates tasks and writes metadata for postflight handling.
 - Write any files outside specs/
 
 **REQUIRED** - This agent must:
-- Track all work via tasks in TODO.md + state.json
+- Track all work via tasks in specs/TODO.md + specs/state.json
 - Require explicit user confirmation before creating tasks
 - Follow staged workflow with checkpoints
 

@@ -61,7 +61,7 @@ algebraic methods that may be relevant here."
 ● Read(specs/TODO.md)                                                       
   ⎿  Read 276 lines                                                         
                                                                              
-● Now I need to update TODO.md to change task 654's status from [NOT        
+● Now I need to update specs/TODO.md to change task 654's status from [NOT        
   STARTED] to [RESEARCHING].                                                
                                                                              
 ● Update(specs/TODO.md)                                                     
@@ -169,7 +169,7 @@ algebraic methods that may be relevant here."
                                                                              
                                                                              
 ● The artifact is already linked (the subagent added it). Let me update     
-  TODO.md with the research link:                                           
+  specs/TODO.md with the research link:                                           
                                                                              
 ● Update(specs/TODO.md)                                                     
   ⎿  Added 1 line                                                            

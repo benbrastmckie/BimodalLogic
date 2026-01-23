@@ -30,7 +30,7 @@
 
 ## Plan Metadata Schema
 
-Plans may include a `plan_metadata` object in state.json tracking plan characteristics:
+Plans may include a `plan_metadata` object in specs/state.json tracking plan characteristics:
 
 ```json
 {

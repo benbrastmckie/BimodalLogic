@@ -118,7 +118,7 @@ The skill will spawn the appropriate agent which executes plan phases sequential
    The skill handles status updates internally (preflight and postflight).
 
    **If result.status == "implemented":**
-   Confirm status is now "completed" in state.json.
+   Confirm status is now "completed" in specs/state.json.
 
    **If result.status == "partial":**
    Confirm status is still "implementing", resume point noted.
@@ -127,12 +127,12 @@ The skill will spawn the appropriate agent which executes plan phases sequential
 
    **Only when result.status == "implemented":**
 
-   Extract the summary from the skill result and update state.json:
+   Extract the summary from the skill result and update specs/state.json:
    ```bash
    # Get completion summary from skill result (result.summary field)
    completion_summary="$result_summary"
 
-   # Update state.json with completion_summary field
+   # Update specs/state.json with completion_summary field
    jq --arg num "$task_number" \
       --arg summary "$completion_summary" \
       '(.active_projects[] | select(.project_number == ($num | tonumber))) += {
@@ -140,8 +140,8 @@ The skill will spawn the appropriate agent which executes plan phases sequential
       }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
    ```
 
-   **Update TODO.md with Summary line:**
-   Add a `- **Summary**: {completion_summary}` line to the task entry in TODO.md, after the Completed date line.
+   **Update specs/TODO.md with Summary line:**
+   Add a `- **Summary**: {completion_summary}` line to the task entry in specs/TODO.md, after the Completed date line.
 
    **Skip if result.status == "partial":**
    Partial implementations do not get completion summaries.

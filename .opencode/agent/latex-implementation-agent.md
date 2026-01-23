@@ -1,12 +1,7 @@
 ---
-name: "latex-implementation-agent"
-version: "1.0.0"
 description: "Implement LaTeX documents following implementation plans"
 mode: subagent
-agent_type: implementation
 temperature: 0.2
-max_tokens: 6000
-timeout: 7200
 tools:
   read: true
   write: true
@@ -16,33 +11,33 @@ tools:
   bash: true
   task: false
 permissions:
-  allow:
-    - read: ["**/*"]
-    - write: ["specs/**/*", "**/*.tex", "**/*.md", "**/*.pdf"]
-    - bash: ["latexmk", "pdflatex", "bibtex", "biber", "rg", "find", "ls", "cat", "pwd", "jq", "sed", "awk", "mkdir", "mv", "cp"]
-  deny:
-    - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/formats/return-metadata-file.md"
-    - "core/formats/summary-format.md"
-    - "project/latex/standards/latex-style-guide.md"
-    - "project/latex/tools/compilation-guide.md"
-  optional:
-    - "project/latex/standards/notation-conventions.md"
-    - "project/latex/standards/document-structure.md"
-  max_context_size: 50000
-delegation:
-  max_depth: 3
-  can_delegate_to: []
-  timeout_default: 7200
-  timeout_max: 7200
-lifecycle:
-  stage: 4
-  command: "/implement"
-  return_format: "core/formats/return-metadata-file.md"
+  read:
+    "**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+    "**/*.tex": "allow"
+    "**/*.md": "allow"
+    "**/*.pdf": "allow"
+  bash:
+    "latexmk": "allow"
+    "pdflatex": "allow"
+    "bibtex": "allow"
+    "biber": "allow"
+    "rg": "allow"
+    "find": "allow"
+    "ls": "allow"
+    "cat": "allow"
+    "pwd": "allow"
+    "jq": "allow"
+    "sed": "allow"
+    "awk": "allow"
+    "mkdir": "allow"
+    "mv": "allow"
+    "cp": "allow"
+    "rm -rf": "deny"
+    "sudo": "deny"
+    "chmod +x": "deny"
+    "dd": "deny"
 ---
 
 # LaTeX Implementation Agent

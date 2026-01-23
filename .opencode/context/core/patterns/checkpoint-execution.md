@@ -34,7 +34,7 @@ All workflow commands (/research, /plan, /implement, /revise) follow a three-che
 
 **Operations**:
 1. Generate session_id: `sess_{timestamp}_{random}`
-2. Validate task exists in state.json
+2. Validate task exists in specs/state.json
 3. Validate current status allows operation
 4. Update status to "in_progress" variant
 5. PROCEED or ABORT
@@ -84,8 +84,8 @@ session_id="sess_$(date +%s)_$(od -An -N3 -tx1 /dev/urandom | tr -d ' ')"
 1. Validate return structure (JSON schema)
 2. Verify artifacts exist on disk
 3. Update status to success variant
-4. Link artifacts to task in state.json
-5. Update TODO.md with artifact links
+4. Link artifacts to task in specs/state.json
+5. Update specs/TODO.md with artifact links
 6. PROCEED, RETRY, or PARTIAL
 
 **Status Transitions**:

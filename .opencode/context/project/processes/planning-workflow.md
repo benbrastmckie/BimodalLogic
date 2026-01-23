@@ -32,7 +32,7 @@ This document describes the complete planning workflow executed by the planner s
 - Preserves previous plan versions
 - Incorporates new information
 - Adjusts approach based on learnings
-- Updates TODO.md to point to latest version
+- Updates specs/TODO.md to point to latest version
 
 ---
 
@@ -43,7 +43,7 @@ This document describes the complete planning workflow executed by the planner s
 **Action**: Load task details and harvest research findings
 
 **Process**:
-1. Read task from TODO.md using grep (selective loading):
+1. Read task from specs/TODO.md using grep (selective loading):
    ```bash
    grep -A 50 "^### ${task_number}." specs/TODO.md > /tmp/task-${task_number}.md
    ```
@@ -203,11 +203,11 @@ All plans must follow `.opencode/context/core/standards/plan.md` template exactl
    - Invoke status-sync-manager
    - Wait for return
 2. status-sync-manager performs atomic update:
-   - Update TODO.md:
+   - Update specs/TODO.md:
      - Status: [NOT STARTED] or [RESEARCHED] → [PLANNED]
      - Add **Plan**: {plan_path}
      - Add **Completed**: {date}
-   - Update state.json:
+   - Update specs/state.json:
      - Update status and timestamps
      - Add plan_path
      - Add plan_metadata
@@ -226,14 +226,14 @@ All plans must follow `.opencode/context/core/standards/plan.md` template exactl
      ```json
      {
        "operation": "planning_commit",
-       "scope": ["{plan_path}", "TODO.md", "state.json"],
+       "scope": ["{plan_path}", "specs/TODO.md", "specs/state.json"],
        "message": "task {number}: plan created"
      }
      ```
    - Invoke git-workflow-manager
    - Wait for return
 2. git-workflow-manager creates commit:
-   - Stage plan file, TODO.md, state.json
+   - Stage plan file, specs/TODO.md, specs/state.json
    - Create commit
    - Verify commit created
 3. If commit fails:
@@ -312,7 +312,7 @@ Revise plans when:
 ### Revision Process
 
 1. **Load Existing Plan**:
-   - Read current plan from TODO.md link
+   - Read current plan from specs/TODO.md link
    - Parse current plan version
    - Extract current phases and status
    - Note what worked/didn't work
@@ -331,7 +331,7 @@ Revise plans when:
 4. **Preserve Previous Plan**:
    - Never modify previous plan files
    - Keep all plan versions in plans/ directory
-   - Update TODO.md to point to latest version
+   - Update specs/TODO.md to point to latest version
 
 5. **Update Status**:
    - Status: [PLANNED] → [REVISING]
@@ -358,7 +358,7 @@ Revise plans when:
 | [PLANNED] | [REVISING] | Plan revision started |
 | [REVISING] | [REVISED] | Plan revision completed |
 
-**Status Update**: Delegated to `status-sync-manager` for atomic synchronization across TODO.md and state.json.
+**Status Update**: Delegated to `status-sync-manager` for atomic synchronization across specs/TODO.md and specs/state.json.
 
 **Timestamps**:
 - `**Started**: {date}` added when status → [PLANNING]
@@ -380,9 +380,9 @@ Planner loads context on-demand per `.opencode/context/index.md`:
 - `core/standards/status-markers.md` (status transitions)
 - `core/system/artifact-management.md` (lazy directory creation)
 - `core/standards/plan.md` (plan template)
-- Task entry via `grep -A 50 "^### ${task_number}." TODO.md` (~2KB vs 109KB full file)
-- `state.json` (project state)
-- Research artifacts if linked in TODO.md
+- Task entry via `grep -A 50 "^### ${task_number}." specs/TODO.md` (~2KB vs 109KB full file)
+- `specs/state.json` (project state)
+- Research artifacts if linked in specs/TODO.md
 
 **Optimization**: Task extraction reduces context from 109KB to ~2KB, 98% reduction.
 
@@ -395,7 +395,7 @@ Planner loads context on-demand per `.opencode/context/index.md`:
 ```
 Error: Task {task_number} not found in specs/TODO.md
 
-Recommendation: Verify task number exists in TODO.md
+Recommendation: Verify task number exists in specs/TODO.md
 ```
 
 ### Invalid Task Number
@@ -477,8 +477,8 @@ All plans must follow `.opencode/context/core/standards/plan.md` template:
 
 Status updates delegated to `status-sync-manager` for atomic synchronization:
 - `specs/TODO.md` (status, timestamps, plan link)
-- `state.json` (status, timestamps, plan_path, plan_metadata)
-- Project state.json (lazy created if needed)
+- `specs/state.json` (status, timestamps, plan_path, plan_metadata)
+- Project specs/state.json (lazy created if needed)
 
 Two-phase commit ensures consistency across all files.
 
@@ -492,7 +492,7 @@ No directories created during routing or validation stages.
 
 ### Research Integration
 
-Planner automatically harvests research findings from TODO.md:
+Planner automatically harvests research findings from specs/TODO.md:
 1. Scan task entry for research artifact links
 2. Load research reports and summaries if present
 3. Extract key findings and recommendations
@@ -507,13 +507,13 @@ If no research available, planner proceeds without research context.
 
 ### Task Extraction
 
-Extract only specific task entry from TODO.md to reduce context load:
+Extract only specific task entry from specs/TODO.md to reduce context load:
 
 ```bash
 grep -A 50 "^### ${task_number}." specs/TODO.md > /tmp/task-${task_number}.md
 ```
 
-**Impact**: Reduces context from 109KB (full TODO.md) to ~2KB (task entry only), 98% reduction.
+**Impact**: Reduces context from 109KB (full specs/TODO.md) to ~2KB (task entry only), 98% reduction.
 
 ### Lazy Context Loading
 

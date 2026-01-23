@@ -115,7 +115,7 @@
 - `orchestration/architecture.md` - Three-layer delegation pattern (critical for meta-builder)
 - `formats/command-structure.md` - Commands as agents pattern
 - `workflows/preflight-postflight.md` - Workflow timing standards
-- `orchestration/state-management.md` - State management and fast lookup patterns (8x faster than TODO.md)
+- `orchestration/state-management.md` - State management and fast lookup patterns (8x faster than specs/TODO.md)
 
 ### project/
 **Purpose**: ProofChecker-specific domain knowledge
@@ -152,7 +152,7 @@
 - Purpose: Domain-specific work with full context
 
 **Performance Optimization**:
-- State.json queries are 8x faster than TODO.md parsing (12ms vs 100ms)
+- State.json queries are 8x faster than specs/TODO.md parsing (12ms vs 100ms)
 - See `orchestration/state-management.md` for query patterns
 
 ---

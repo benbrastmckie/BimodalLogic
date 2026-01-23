@@ -11,13 +11,13 @@
 - specs/implementation_roadmap.md
 - .claude/hooks/ (source reference patterns)
 - .claude/context/core/formats/ (source reference patterns)  
-- Web research on hook systems, metadata exchange, and agent patterns
+- Web research on metadata exchange and agent patterns
 
 ---
 
 ## Executive Summary
 
-The .opencode system upgrade is a comprehensive 6-week, 4-phase initiative to integrate key .claude innovations while preserving formal verification specialization. Based on research findings, this upgrade is technically feasible with clear implementation paths. The primary innovations to port are: (1) Hook System for workflow reliability, (2) File-Based Metadata Exchange for artifact tracking, (3) Meta System Builder for dynamic extension, and (4) Forked Subagent Pattern for token efficiency.
+The .opencode system upgrade is a comprehensive 6-week, 4-phase initiative to integrate key .claude innovations while preserving formal verification specialization. Based on research findings, this upgrade is technically feasible with clear implementation paths. The primary innovations to port are: (1) File-Based Metadata Exchange for artifact tracking, (2) Meta System Builder for dynamic extension, and (3) Forked Subagent Pattern for token efficiency. The hook system remains valuable but can be deferred until after the foundation work stabilizes.
 
 ---
 
@@ -36,25 +36,7 @@ This upgrade involves migrating .opencode from its current 2-layer architecture 
 
 ## Key Findings
 
-### 1. Hook System Implementation (Phase 1)
-
-**Finding**: Hook system is well-documented with clear implementation patterns from .claude system.
-
-**Evidence**: The .claude/hooks/ directory contains three core hooks:
-- `subagent-postflight.sh` - Prevents premature workflow termination using marker files
-- `log-session.sh` - Session tracking and logging
-- `validate-state-sync.sh` - Consistency validation between TODO.md and state.json
-
-**Implementation Path**:
-1. Copy .claude/hooks/* to .opencode/hooks/
-2. Update paths from .claude → .opencode in hook scripts
-3. Create .opencode/hooks/ directory structure
-4. Test hook activation with marker file protocol
-
-**Complexity**: Low - direct port with path updates
-**Effort**: 6-8 hours
-
-### 2. File-Based Metadata Exchange (Phase 1)
+### 1. File-Based Metadata Exchange (Phase 1)
 
 **Finding**: File-based metadata exchange provides reliable artifact tracking without console pollution.
 
@@ -82,6 +64,24 @@ This upgrade involves migrating .opencode from its current 2-layer architecture 
 
 **Complexity**: Low - schema already defined and tested
 **Effort**: 4-6 hours
+
+### 2. Hook System Implementation (Deferred)
+
+**Finding**: Hook system is well-documented, but can be deferred until metadata exchange and state validation stabilize.
+
+**Evidence**: The .claude/hooks/ directory contains three core hooks:
+- `subagent-postflight.sh` - Prevents premature workflow termination using marker files
+- `log-session.sh` - Session tracking and logging
+- `validate-state-sync.sh` - Consistency validation between TODO.md and state.json
+
+**Implementation Path (Deferred)**:
+1. Copy .claude/hooks/* to .opencode/hooks/
+2. Update paths from .claude → .opencode in hook scripts
+3. Create .opencode/hooks/ directory structure
+4. Test hook activation with marker file protocol
+
+**Complexity**: Low - direct port with path updates
+**Effort**: 6-8 hours
 
 ### 3. Workflow Ownership Migration (Phase 2)
 
@@ -167,17 +167,14 @@ agent: {target-agent}
 
 ### Phase 1: Foundation (Week 1)
 **Deliverables**:
-- Hook system (3 scripts)
 - File-based metadata exchange schema
 - Updated state management patterns
 - Workflow reliability testing
 
 **Risks**: 
-- Hook script path dependencies
 - Metadata file cleanup reliability
 
 **Mitigations**:
-- Comprehensive testing of hook activation
 - Automated cleanup protocols
 
 ### Phase 2: Workflow Ownership (Week 2)  
@@ -190,10 +187,12 @@ agent: {target-agent}
 **Risks**:
 - Breaking existing workflows
 - Status synchronization issues
+- Deferred hook coverage gaps
 
 **Mitigations**:
 - Feature flags for gradual rollout
 - Atomic two-phase commits
+- Manual validation before hooks
 
 ### Phase 3: Meta Builder (Weeks 3-4)
 **Deliverables**:
@@ -235,8 +234,8 @@ agent: {target-agent}
 - Rollback documentation at each phase
 
 ### 2. Prioritize Workflow Safety First
-- Implement hooks and metadata exchange before other changes
-- These provide foundation for reliable subsequent migrations
+- Implement metadata exchange and state validation before other changes
+- Defer hooks until workflows stabilize
 - Test thoroughly before proceeding
 
 ### 3. Leverage Existing .claude Patterns

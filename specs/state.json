@@ -443,7 +443,7 @@
     },
     {
       "project_number": 394,
-      "status": "expanded",
+      "status": "researched",
       "project_name": "research_port_causal_semantics_from_paper",
       "section": "Medium Priority",
       "language": "lean",
@@ -451,6 +451,13 @@
       "subtasks": [
         398,
         399
+      ],
+      "last_updated": "2026-01-23T21:45:20Z",
+      "researching": "2026-01-23T21:45:20Z",
+      "researched": "2026-01-23T21:45:20Z",
+      "research_summary": "Research completed for task #394: null",
+      "artifacts": [
+        "specs/394_null/reports/research-sess_1769204720_dead.md"
       ]
     },
     {

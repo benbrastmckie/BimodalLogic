@@ -14,11 +14,11 @@ All workflow commands follow a standardized 8-stage lifecycle:
 
 **Stage 1 (PreflightValidation):**
 - Parse task number from $ARGUMENTS
-- Validate task exists in TODO.md
+- Validate task exists in specs/TODO.md
 - Extract task metadata
 
 **Stage 2 (DetermineRouting):**
-- Extract language from task entry (state.json or TODO.md)
+- Extract language from task entry (specs/state.json or specs/TODO.md)
 - Map language to appropriate subagent using routing table
 - Validate routing decision
 
@@ -115,7 +115,7 @@ All workflow subagents (researcher, planner, implementer) follow a **two-phase s
 **Error Handling:**
 - If status update fails: Log error (non-critical)
 - Work artifacts already created
-- Manual recovery: Update TODO.md and state.json manually
+- Manual recovery: Update specs/TODO.md and specs/state.json manually
 
 ## Status Transitions
 
@@ -160,10 +160,10 @@ All workflow subagents (researcher, planner, implementer) follow a **two-phase s
 ### User Visibility
 - Users can see when work starts (in-progress markers)
 - Users can see when work completes (completion markers)
-- Clear progress tracking in TODO.md and state.json
+- Clear progress tracking in specs/TODO.md and specs/state.json
 
 ### Atomic Updates
-- status-sync-manager ensures atomic updates across TODO.md and state.json
+- status-sync-manager ensures atomic updates across specs/TODO.md and specs/state.json
 - Both files updated together or neither updated
 - No partial state updates
 
@@ -197,14 +197,14 @@ All workflow subagents implement a `<step_0_preflight>` or `<stage_1_preflight>`
        a. Prepare delegation context
        b. Invoke status-sync-manager with timeout (60s)
        c. Validate return status == "completed"
-       d. Verify files_updated includes ["TODO.md", "state.json"]
+       d. Verify files_updated includes ["specs/TODO.md", "specs/state.json"]
        e. If status update fails: Abort with error
     8. Log preflight completion
   </process>
   <validation>
     - Task exists and is valid for operation
     - Status updated to [COMMAND-ING] atomically
-    - Timestamp added to TODO.md and state.json
+    - Timestamp added to specs/TODO.md and specs/state.json
   </validation>
   <error_handling>
     If status update fails:
@@ -239,7 +239,7 @@ All workflow subagents implement a `<step_7>` section for postflight:
       
       INVOKE status-sync-manager with timeout (60s)
       VALIDATE return status == "completed"
-      VERIFY files_updated includes ["TODO.md", "state.json"]
+      VERIFY files_updated includes ["specs/TODO.md", "specs/state.json"]
     
     STEP 7.2: INVOKE git-workflow-manager
       PREPARE delegation context with scope_files
@@ -263,10 +263,10 @@ The `/task` command follows a different pattern from workflow commands since it 
 - Validate all inputs (description non-empty, priority valid, etc.)
 
 **Stage 2 (CreateTask):**
-- Read next_project_number from state.json using jq
-- Format TODO.md entry with proper metadata
-- Append to correct priority section in TODO.md
-- Update state.json (increment next_project_number, add to active_projects)
+- Read next_project_number from specs/state.json using jq
+- Format specs/TODO.md entry with proper metadata
+- Append to correct priority section in specs/TODO.md
+- Update specs/state.json (increment next_project_number, add to active_projects)
 - Verify updates succeeded
 - Return task number to user
 
@@ -278,7 +278,7 @@ Unlike /research and /implement which delegate to subagents, /task uses **inline
 # Read next project number
 next_number=$(jq -r '.next_project_number' specs/state.json)
 
-# Format TODO.md entry
+# Format specs/TODO.md entry
 entry="### ${next_number}. ${description}
 - **Effort**: ${effort}
 - **Status**: [NOT STARTED]
@@ -289,8 +289,8 @@ entry="### ${next_number}. ${description}
 
 ---"
 
-# Append to TODO.md (using Edit tool)
-# Update state.json (using jq)
+# Append to specs/TODO.md (using Edit tool)
+# Update specs/state.json (using jq)
 jq '.next_project_number = (.next_project_number + 1) | 
     .active_projects += [...]' specs/state.json
 ```
@@ -299,18 +299,18 @@ jq '.next_project_number = (.next_project_number + 1) |
 
 1. **No Two-Phase Status Update**: Task creation is atomic (single file update operation)
 2. **No Preflight/Postflight**: Task doesn't exist yet, so no status to update
-3. **No Git Commit**: Task creation doesn't create artifacts (only TODO.md + state.json updates)
+3. **No Git Commit**: Task creation doesn't create artifacts (only specs/TODO.md + specs/state.json updates)
 4. **Inline Implementation**: No delegation to subagent (executable pseudocode in command file)
 5. **Matches /research Pattern**: Stage 1 has executable logic that OpenCode can directly follow
 
 ### Atomic Updates
 
 /task ensures atomic updates by:
-- Reading state.json to get next_project_number
-- Updating TODO.md first (using Edit tool)
-- Updating state.json second (using jq)
+- Reading specs/state.json to get next_project_number
+- Updating specs/TODO.md first (using Edit tool)
+- Updating specs/state.json second (using jq)
 - Verifying both updates succeeded
-- If state.json update fails: Manual rollback required (documented in error message)
+- If specs/state.json update fails: Manual rollback required (documented in error message)
 
 ### Validation
 
@@ -323,8 +323,8 @@ jq '.next_project_number = (.next_project_number + 1) |
 
 **Post-execution:**
 - Task number allocated correctly
-- TODO.md contains new task entry
-- state.json next_project_number incremented
+- specs/TODO.md contains new task entry
+- specs/state.json next_project_number incremented
 - Language field is set
 - Metadata format uses `- **Field**:` pattern
 
@@ -409,7 +409,7 @@ When creating new checkpoint-based commands:
 
 ### Pre-execution Validation
 - Verify task_number is positive integer
-- Verify task exists in TODO.md
+- Verify task exists in specs/TODO.md
 - Verify task not [COMPLETED] or [ABANDONED]
 - Verify task in valid starting status
 
@@ -425,12 +425,12 @@ When testing workflow commands, verify:
 
 1. **Preflight Status Update:**
    - Status changes from starting status to in-progress marker
-   - Timestamp added to TODO.md and state.json
+   - Timestamp added to specs/TODO.md and specs/state.json
    - Both files updated atomically
 
 2. **Postflight Status Update:**
    - Status changes from in-progress marker to completion marker
-   - Timestamp updated in TODO.md and state.json
+   - Timestamp updated in specs/TODO.md and specs/state.json
    - Both files updated atomically
 
 3. **Error Cases:**
@@ -439,7 +439,7 @@ When testing workflow commands, verify:
    - Clear error messages with recovery instructions
 
 4. **Atomic Updates:**
-   - Both TODO.md and state.json updated together
+   - Both specs/TODO.md and specs/state.json updated together
    - No partial updates (both files or neither)
    - Rollback on failure
 

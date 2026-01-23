@@ -6,7 +6,7 @@ Standards for creating, formatting, and managing tasks within the .opencode syst
 
 ## Core Principles
 
-1.  **Unique IDs**: Every task MUST have a unique ID derived from `state.json`.
+1.  **Unique IDs**: Every task MUST have a unique ID derived from `specs/state.json`.
 2.  **Atomic**: Tasks should be actionable units of work.
 3.  **Tracked**: Status and priority must be explicitly tracked using the standard markers.
 4.  **Linked**: Tasks must link to relevant artifacts (reports, plans, summaries).
@@ -19,7 +19,7 @@ Standards for creating, formatting, and managing tasks within the .opencode syst
 **Do**:
 -   Retrieve Task IDs from `specs/state.json`.
 -   Use the `next_project_number` field.
--   Increment `next_project_number` in `state.json` immediately after use.
+-   Increment `next_project_number` in `specs/state.json` immediately after use.
 
 **Don't**:
 -   Guess the next number by reading `specs/TODO.md`.
@@ -92,7 +92,7 @@ Override Impact when:
 
 ## Command Integration
 
-- `/task` **must** use description-clarifier to research and clarify rough task descriptions, then delegate to task-creator for atomic task creation. description-clarifier generates clear 2-3 sentence descriptions and detects metadata (language, priority, effort). task-creator enforces task standards (Description field mandatory, Language field mandatory, metadata format, required fields) and performs atomic TODO.md + state.json updates. Direct file manipulation is forbidden. Users can skip clarification with --skip-clarification flag if providing complete metadata.
+- `/task` **must** use description-clarifier to research and clarify rough task descriptions, then delegate to task-creator for atomic task creation. description-clarifier generates clear 2-3 sentence descriptions and detects metadata (language, priority, effort). task-creator enforces task standards (Description field mandatory, Language field mandatory, metadata format, required fields) and performs atomic specs/TODO.md + specs/state.json updates. Direct file manipulation is forbidden. Users can skip clarification with --skip-clarification flag if providing complete metadata.
 - `/implement` **must** reuse the plan link attached in specs/TODO.md when present and update that plan in place with status markers. When no plan is linked, `/implement` executes directly (no failure) while preserving lazy directory creation (no project roots/subdirs unless an artifact is written) and numbering/state sync; guidance to use `/plan {task}` remains recommended for complex work.
 - `/implement`, `/review`, and `/todo` **must** keep IMPLEMENTATION_STATUS.md, SORRY_REGISTRY.md, and TACTIC_REGISTRY.md in sync when they change task/plan/implementation status or sorry/tactic counts.
 - `/implement` must emit an implementation summary artifact (standard naming) whenever task execution writes implementation artifacts; status-only paths do not emit summaries. Maintain lazy directory creation.
@@ -130,7 +130,7 @@ The `/task` command supports unified task lifecycle management through flags:
 - Priority defaults to Medium (Low|Medium|High)
 - Effort defaults to TBD
 - Creates task entries ONLY (never implements)
-- Delegates to task-creator for atomic TODO.md + state.json updates
+- Delegates to task-creator for atomic specs/TODO.md + specs/state.json updates
 
 ### Task Recovery (--recover)
 
@@ -144,10 +144,10 @@ The `/task` command supports unified task lifecycle management through flags:
 **Standards**:
 - Supports range syntax: "343-345" expands to [343, 344, 345]
 - Supports list syntax: "337, 343-345" expands to [337, 343, 344, 345]
-- All tasks must exist in archive/state.json
+- All tasks must exist in specs/archive/state.json
 - All tasks reset to [NOT STARTED] status
 - Atomic operation: all tasks recovered or none
-- Updates TODO.md, state.json, archive/state.json
+- Updates specs/TODO.md, specs/state.json, specs/archive/state.json
 - Moves directories from archive/ to specs/ (if exist, non-critical)
 
 ### Task Expansion (--expand)
@@ -182,18 +182,18 @@ The `/task` command supports unified task lifecycle management through flags:
 - Supports range/list syntax for selective sync
 - Git blame conflict resolution: latest commit wins
 - For each field that differs:
-  1. Run git blame on TODO.md and state.json
+  1. Run git blame on specs/TODO.md and specs/state.json
   2. Extract commit timestamps
   3. Use value from file with latest commit
   4. Log conflict resolution details
 - Atomic operation: both files updated or neither
-- Updates TODO.md and state.json only
+- Updates specs/TODO.md and specs/state.json only
 
 **Git Blame Conflict Resolution**:
 - Compare timestamps for each differing field
 - Latest commit wins (most recent change)
-- Tie-breaker: state.json wins (source of truth)
-- Log format: "Task 343: status from state.json (2026-01-07) > TODO.md (2026-01-06)"
+- Tie-breaker: specs/state.json wins (source of truth)
+- Log format: "Task 343: status from specs/state.json (2026-01-07) > specs/TODO.md (2026-01-06)"
 
 ### Task Abandonment (--abandon)
 
@@ -207,7 +207,7 @@ The `/task` command supports unified task lifecycle management through flags:
 - Supports range/list syntax
 - All tasks must exist in active_projects
 - Atomic operation: all tasks abandoned or none
-- Updates TODO.md, state.json, archive/state.json
+- Updates specs/TODO.md, specs/state.json, specs/archive/state.json
 - Moves directories from specs/ to archive/ (if exist, non-critical)
 - Tasks can be recovered later with --recover
 
@@ -228,13 +228,13 @@ The `/task` command supports unified task lifecycle management through flags:
 
 **Atomic Guarantees**:
 - Two-phase commit: prepare updates, then commit atomically
-- All files updated or none (TODO.md, state.json, archive/state.json)
+- All files updated or none (specs/TODO.md, specs/state.json, specs/archive/state.json)
 - Rollback on failure: remove temp files, rely on git for recovery
 - No partial updates: either all tasks processed or none
 
 ## Quality Checklist
 
--   [ ] Task ID is unique and retrieved from `state.json`.
+-   [ ] Task ID is unique and retrieved from `specs/state.json`.
 -   [ ] Title is clear and descriptive (max 200 chars).
 -   [ ] Description is clear and actionable (50-500 chars, 2-3 sentences).
 -   [ ] Metadata (Description, Language, Effort, Status, Priority) is complete.
@@ -257,7 +257,7 @@ The `/task` command supports unified task lifecycle management through flags:
 - Violates task standards (Description is MANDATORY per quality checklist)
 
 **Solution**:
-1. Add Description field to task metadata in TODO.md:
+1. Add Description field to task metadata in specs/TODO.md:
    ```markdown
    **Description**: {2-3 sentence description of the task}
    ```
@@ -267,7 +267,7 @@ The `/task` command supports unified task lifecycle management through flags:
 
 **Prevention**:
 - Use /task command to create tasks (enforces Description field via description-clarifier)
-- Avoid manual editing of TODO.md
+- Avoid manual editing of specs/TODO.md
 - If manual editing required, follow task standards exactly
 
 ### Missing Language Field
@@ -288,12 +288,12 @@ The `/task` command supports unified task lifecycle management through flags:
    - Shell scripts → `- **Language**: shell`
    - Meta work (agents, commands, context) → `- **Language**: meta`
    - JSON/YAML/TOML tasks → `- **Language**: json`
-2. Add Language field to task metadata in TODO.md
+2. Add Language field to task metadata in specs/TODO.md
 3. Ensure Language field is on its own line with correct formatting
 
 **Prevention**:
 - Use /task command to create tasks (enforces Language field via description-clarifier)
-- Avoid manual editing of TODO.md
+- Avoid manual editing of specs/TODO.md
 - If manual editing required, follow task standards exactly
 
 ### Incorrect Metadata Format
@@ -327,7 +327,7 @@ AFTER (correct):
 **Prevention**:
 - Use /task command to create tasks (enforces correct format)
 - Use /review command to create tasks (validates format)
-- Avoid manual editing of TODO.md
+- Avoid manual editing of specs/TODO.md
 
 ### Validation Errors from /task Command
 
@@ -359,7 +359,7 @@ AFTER (correct):
 **Common Violations**:
 
 1. "Task {number} missing required Type field"
-   - Solution: Manually add Type field to task in TODO.md
+   - Solution: Manually add Type field to task in specs/TODO.md
    - Follow format: `- **Type**: {lean|markdown|general|meta}`
 
 2. "Task {number} has incorrect metadata format"
@@ -367,7 +367,7 @@ AFTER (correct):
    - Replace `*Field**:` with `- **Field**:`
 
 3. "Task {number} missing required field: {field_name}"
-   - Solution: Add missing field to task in TODO.md
+   - Solution: Add missing field to task in specs/TODO.md
    - Follow task standards for field format
 
 **Prevention**:
@@ -379,4 +379,4 @@ AFTER (correct):
 
 ### Archival
 -   Completed tasks should be archived when the project is finished.
--   Update `state.json` to move project from `active_projects` to `completed_projects` (and eventually `archive/state.json`).
+-   Update `specs/state.json` to move project from `active_projects` to `completed_projects` (and eventually `specs/archive/state.json`).

@@ -62,7 +62,7 @@ Create a phased implementation plan for a task by delegating to the planner skil
    - If implementing: ABORT "Task in progress, use /revise instead"
 
 4. **Load Context**
-   - Task description from state.json
+   - Task description from specs/state.json
    - Research reports from `specs/{N}_{SLUG}/reports/` (if any)
 
 **ABORT** if any validation fails.
@@ -93,7 +93,7 @@ The skill spawns `planner-agent` which analyzes task requirements and research f
 
 3. **Verify Status Updated**
    The skill handles status updates internally (preflight and postflight).
-   Confirm status is now "planned" in state.json.
+   Confirm status is now "planned" in specs/state.json.
 
 **RETRY** skill if validation fails.
 

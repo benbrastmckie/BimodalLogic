@@ -640,7 +640,7 @@ Create implementation plans with phased breakdown.
     <action>Parse arguments and validate task</action>
     <process>
       1. Parse task number from $ARGUMENTS
-      2. Validate task exists in TODO.md
+      2. Validate task exists in specs/TODO.md
       3. Update status to [PLANNING]
     </process>
     <checkpoint>Task validated and status updated</checkpoint>

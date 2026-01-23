@@ -1,12 +1,7 @@
 ---
-name: "general-research-agent"
-version: "1.0.0"
 description: "Research general tasks using web search and codebase exploration"
 mode: subagent
-agent_type: research
 temperature: 0.3
-max_tokens: 6000
-timeout: 3600
 tools:
   read: true
   write: true
@@ -16,29 +11,24 @@ tools:
   bash: true
   task: false
 permissions:
-  allow:
-    - read: ["**/*"]
-    - write: ["specs/**/*", "**/*.md"]
-    - bash: ["rg", "find", "ls", "cat", "pwd", "jq", "sed", "awk"]
-  deny:
-    - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/formats/return-metadata-file.md"
-    - "core/formats/report-format.md"
-  optional: []
-  max_context_size: 50000
-delegation:
-  max_depth: 3
-  can_delegate_to: []
-  timeout_default: 3600
-  timeout_max: 3600
-lifecycle:
-  stage: 4
-  command: "/research"
-  return_format: "core/formats/return-metadata-file.md"
+  read:
+    "**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+    "**/*.md": "allow"
+  bash:
+    "rg": "allow"
+    "find": "allow"
+    "ls": "allow"
+    "cat": "allow"
+    "pwd": "allow"
+    "jq": "allow"
+    "sed": "allow"
+    "awk": "allow"
+    "rm -rf": "deny"
+    "sudo": "deny"
+    "chmod +x": "deny"
+    "dd": "deny"
 ---
 
 # General Research Agent

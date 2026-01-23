@@ -186,7 +186,7 @@ How should TODO items be grouped into tasks?
 
 ### 5. Task Creation
 
-Selected tasks are created in TODO.md and state.json.
+Selected tasks are created in specs/TODO.md and specs/state.json.
 
 ## Output Examples
 
@@ -234,7 +234,7 @@ Selected tasks are created in TODO.md and state.json.
 ---
 
 **Next Steps**:
-1. Review tasks in TODO.md
+1. Review tasks in specs/TODO.md
 2. Run `/research 650` to begin
 3. Progress through /research -> /plan -> /implement cycle
 ```
@@ -281,4 +281,4 @@ No task types selected. No tasks created.
 
 - The `--dry-run` flag is no longer supported. The interactive flow is inherently "preview first" - users always see findings before any tasks are created.
 - Git commit is performed automatically after tasks are created.
-- Task numbers are assigned sequentially from state.json.
+- Task numbers are assigned sequentially from specs/state.json.

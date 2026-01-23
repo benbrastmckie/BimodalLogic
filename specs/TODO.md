@@ -62,7 +62,9 @@ technical_debt:
 
 ---
 
-### 394. Research and port causal semantics from paper
+### 394.
+- **Started**: 2026-01-23T21:45:20Z
+- **Status**: [RESEARCHED] Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [EXPANDED]
 - **Researched**: 2026-01-12
@@ -91,7 +93,7 @@ technical_debt:
 
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 394
@@ -204,7 +206,7 @@ technical_debt:
 
 
 ### 655. Fix jq errors in agent system
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -215,7 +217,7 @@ technical_debt:
 
 ### 653. Improve metalogic infrastructure (rename frame, address infinite contexts)
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
@@ -226,7 +228,7 @@ technical_debt:
 ---
 
 ### 648. Research canonical frame temporal order generalization
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
@@ -237,7 +239,7 @@ technical_debt:
 
 
 ### 639. Improve /review roadmap matching reliability
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -248,7 +250,7 @@ technical_debt:
 
 ### 656. Complete truth lemma forward direction (imp/box cases)
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -261,7 +263,7 @@ technical_debt:
 
 ### 657. Prove seed consistency (temporal K distribution)
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -274,7 +276,7 @@ technical_debt:
 
 ### 658. Prove indexed family coherence conditions
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -287,7 +289,7 @@ technical_debt:
 
 ### 660. Prove parametric completeness theorems
 - **Effort**: 10-15 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -299,7 +301,7 @@ technical_debt:
 ---
 
 ### 630. Build TaskModel extraction from saturated tableau branches
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -312,7 +314,7 @@ technical_debt:
 ---
 
 ### 631. Prove evalFormula_implies_satisfiable bridging lemma
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -391,7 +393,7 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -434,7 +436,7 @@ technical_debt:
 ---
 
 ### 624. Prove tableau_complete
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
@@ -445,7 +447,7 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490

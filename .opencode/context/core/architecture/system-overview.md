@@ -33,7 +33,7 @@ ProofChecker uses a three-layer delegation architecture:
   -> command validates task
   -> skill-researcher handles lifecycle
   -> lean-research-agent writes report
-  -> skill updates state.json + TODO.md
+  -> skill updates specs/state.json + specs/TODO.md
 ```
 
 ---

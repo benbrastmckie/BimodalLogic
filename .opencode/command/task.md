@@ -18,7 +18,7 @@ arguments:
   - name: sync
     type: boolean
     required: false
-    description: Sync TODO.md and state.json (flag: --sync)
+    description: Sync specs/TODO.md and specs/state.json (flag: --sync)
   - name: abandon
     type: string
     required: false
@@ -76,7 +76,7 @@ Unified task lifecycle management. Parse $ARGUMENTS to determine operation mode.
 Check $ARGUMENTS for flags:
 - `--recover RANGES` → Recover tasks from archive
 - `--expand N [prompt]` → Expand task into subtasks
-- `--sync` → Sync TODO.md with state.json
+- `--sync` → Sync specs/TODO.md with specs/state.json
 - `--abandon RANGES` → Archive tasks
 - `--review N` → Review task completion status
 - No flag → Create new task with description
@@ -106,7 +106,7 @@ When $ARGUMENTS contains a description (no flags):
    - Remove special characters
    - Max 50 characters
 
-5. **Update state.json** (via jq):
+5. **Update specs/state.json** (via jq):
    ```bash
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
      '.next_project_number = {NEW_NUMBER} |
@@ -123,7 +123,7 @@ When $ARGUMENTS contains a description (no flags):
      mv /tmp/state.json specs/state.json
    ```
 
-6. **Update TODO.md** (TWO parts - frontmatter AND entry):
+6. **Update specs/TODO.md** (TWO parts - frontmatter AND entry):
 
    **Part A - Update frontmatter** (increment next_project_number):
    ```bash
@@ -143,7 +143,7 @@ When $ARGUMENTS contains a description (no flags):
    **Description**: {description}
    ```
 
-   **CRITICAL**: Both state.json AND TODO.md frontmatter MUST have matching next_project_number values.
+   **CRITICAL**: Both specs/state.json AND specs/TODO.md frontmatter MUST have matching next_project_number values.
 
 7. **Git commit**:
    ```
@@ -200,7 +200,7 @@ Parse task ranges after --recover (e.g., "343-345", "337, 343"):
    fi
    ```
 
-   **Update TODO.md**: Add recovered task entry under appropriate priority section
+   **Update specs/TODO.md**: Add recovered task entry under appropriate priority section
 
 2. Git commit: "task: recover tasks {ranges}"
 
@@ -237,37 +237,37 @@ Parse task number and optional prompt:
      mv /tmp/state.json specs/state.json
    ```
 
-   **Also update TODO.md**: Change task status to `[EXPANDED]`
+   **Also update specs/TODO.md**: Change task status to `[EXPANDED]`
 
 5. Git commit: "task {N}: expand into subtasks"
 
 ## Sync Mode (--sync)
 
-1. **Read state.json task list via jq**:
+1. **Read specs/state.json task list via jq**:
    ```bash
    state_tasks=$(jq -r '.active_projects[].project_number' specs/state.json | sort -n)
    state_next=$(jq -r '.next_project_number' specs/state.json)
    ```
 
-2. **Read TODO.md task list via grep**:
+2. **Read specs/TODO.md task list via grep**:
    ```bash
    todo_tasks=$(grep -o "^### [0-9]\+." specs/TODO.md | sed 's/[^0-9]//g' | sort -n)
    todo_next=$(grep "^next_project_number:" specs/TODO.md | awk '{print $2}')
    ```
 
 3. **Compare entries for consistency**:
-   - Tasks in state.json but not TODO.md → Add to TODO.md
-   - Tasks in TODO.md but not state.json → Add to state.json or mark as orphaned
+   - Tasks in specs/state.json but not specs/TODO.md → Add to specs/TODO.md
+   - Tasks in specs/TODO.md but not specs/state.json → Add to specs/state.json or mark as orphaned
    - next_project_number mismatch → Use higher value
 
 4. **Use git blame to determine "latest wins"** for conflicting data
 
 5. **Sync discrepancies**:
-   - Use jq to update state.json
-   - Use Edit to update TODO.md
+   - Use jq to update specs/state.json
+   - Use Edit to update specs/TODO.md
    - Ensure next_project_number matches in both files
 
-6. Git commit: "sync: reconcile TODO.md and state.json"
+6. Git commit: "sync: reconcile specs/TODO.md and specs/state.json"
 
 ## Review Mode (--review)
 
@@ -347,7 +347,7 @@ phases=$(grep -E "^### Phase [0-9]+:" "$plan_file" 2>/dev/null)
 ```
 ## Task Review: #{N} - {slug}
 
-**Status**: {status from state.json}
+**Status**: {status from specs/state.json}
 **Language**: {language}
 **Priority**: {priority}
 
@@ -429,7 +429,7 @@ next_num=$(jq -r '.next_project_number' specs/state.json)
 # Create follow-up task
 description="Complete phase {P} of task {parent_N}: {phase_name}. Goal: {phase_goal}. (Follow-up from task #{parent_N})"
 
-# Update state.json
+# Update specs/state.json
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg desc "$description" \
   '.next_project_number = ($next_num + 1) |
@@ -447,7 +447,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   specs/state.json > /tmp/state.json && \
   mv /tmp/state.json specs/state.json
 
-# Update TODO.md (add entry and update frontmatter)
+# Update specs/TODO.md (add entry and update frontmatter)
 ```
 
 ### Step 9: Output Results
@@ -510,7 +510,7 @@ Parse task ranges:
      mv /tmp/state.json specs/state.json
    ```
 
-   **Update TODO.md**: Remove the task entry (abandoned tasks should not appear in TODO.md)
+   **Update specs/TODO.md**: Remove the task entry (abandoned tasks should not appear in specs/TODO.md)
 
    **Move task directory to archive** (if it exists):
    ```bash

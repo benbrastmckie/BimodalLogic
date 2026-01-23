@@ -181,7 +181,7 @@ Next: /implement {N} to fix errors
 
 ### 1. Load Fix Task
 
-Read task {N} from state.json
+Read task {N} from specs/state.json
 Verify it's an error-fix task
 
 ### 2. Identify Related Errors

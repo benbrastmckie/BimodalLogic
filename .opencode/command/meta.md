@@ -54,7 +54,7 @@ Interactive system builder that delegates to `skill-meta` for creating TASKS for
 - Write any files outside specs/
 
 **REQUIRED** - This command MUST:
-- Track all work via tasks in TODO.md + state.json
+- Track all work via tasks in specs/TODO.md + specs/state.json
 - Require explicit user confirmation before creating any tasks
 - Create task directories for each task
 - Delegate execution to skill-meta
@@ -105,7 +105,7 @@ Full 7-stage interview:
 4. IdentifyUseCases - Task breakdown
 5. AssessComplexity - Effort and priority
 6. ReviewAndConfirm - Mandatory confirmation
-7. CreateTasks - Update TODO.md and state.json
+7. CreateTasks - Update specs/TODO.md and specs/state.json
 
 Uses AskUserQuestion for multi-turn conversation.
 
@@ -144,7 +144,7 @@ Created {N} task(s) for {domain}:
   Path: specs/{N}_{slug}/
 
 **Next Steps**:
-1. Review tasks in TODO.md
+1. Review tasks in specs/TODO.md
 2. Run `/research {N}` to begin research on first task
 3. Progress through /research -> /plan -> /implement cycle
 ```

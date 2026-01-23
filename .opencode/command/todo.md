@@ -70,15 +70,15 @@ for dir in specs/[0-9]*_*/; do
   [ -d "$dir" ] || continue
   project_num=$(basename "$dir" | cut -d_ -f1)
 
-  # Check if in state.json active_projects
+  # Check if in specs/state.json active_projects
   in_active=$(jq -r --arg n "$project_num" \
     '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
     specs/state.json 2>/dev/null)
 
-  # Check if in archive/state.json completed_projects
+  # Check if in specs/archive/state.json completed_projects
   in_archive=$(jq -r --arg n "$project_num" \
     '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-    specs/archive/state.json 2>/dev/null)
+    specs/specs/archive/state.json 2>/dev/null)
 
   # If not in either, it's an orphan
   if [ -z "$in_active" ] && [ -z "$in_archive" ]; then
@@ -86,16 +86,16 @@ for dir in specs/[0-9]*_*/; do
   fi
 done
 
-# Get orphaned directories in specs/archive/ (not tracked in archive/state.json)
+# Get orphaned directories in specs/archive/ (not tracked in specs/archive/state.json)
 orphaned_in_archive=()
 for dir in specs/archive/[0-9]*_*/; do
   [ -d "$dir" ] || continue
   project_num=$(basename "$dir" | cut -d_ -f1)
 
-  # Check if in archive/state.json completed_projects
+  # Check if in specs/archive/state.json completed_projects
   in_archive=$(jq -r --arg n "$project_num" \
     '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-    specs/archive/state.json 2>/dev/null)
+    specs/specs/archive/state.json 2>/dev/null)
 
   # If not tracked, it's an orphan
   if [ -z "$in_archive" ]; then
@@ -109,18 +109,18 @@ orphaned_dirs=("${orphaned_in_specs[@]}" "${orphaned_in_archive[@]}")
 
 Collect orphaned directories in two categories:
 - `orphaned_in_specs[]` - Directories in specs/ not tracked anywhere (will be moved to archive/)
-- `orphaned_in_archive[]` - Directories in archive/ not tracked in archive/state.json (already in archive/, need state entries)
+- `orphaned_in_archive[]` - Directories in archive/ not tracked in specs/archive/state.json (already in archive/, need state entries)
 
 Store counts and lists for later use.
 
 ### 2.6. Detect Misplaced Directories
 
-Scan for project directories in specs/ that ARE tracked in archive/state.json (meaning they should be in archive/ but aren't).
+Scan for project directories in specs/ that ARE tracked in specs/archive/state.json (meaning they should be in archive/ but aren't).
 
 **CRITICAL**: This is distinct from orphans - misplaced directories have correct state entries but are in the wrong location.
 
 ```bash
-# Get misplaced directories (in specs/ but tracked in archive/state.json)
+# Get misplaced directories (in specs/ but tracked in specs/archive/state.json)
 misplaced_in_specs=()
 for dir in specs/[0-9]*_*/; do
   [ -d "$dir" ] || continue
@@ -131,10 +131,10 @@ for dir in specs/[0-9]*_*/; do
     '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
     specs/state.json 2>/dev/null)
 
-  # Check if tracked in archive/state.json (should be in archive/)
+  # Check if tracked in specs/archive/state.json (should be in archive/)
   in_archive=$(jq -r --arg n "$project_num" \
     '.completed_projects[] | select(.project_number == ($n | tonumber)) | .project_number' \
-    specs/archive/state.json 2>/dev/null)
+    specs/specs/archive/state.json 2>/dev/null)
 
   # If in archive state but not in active state, it's misplaced
   if [ -z "$in_active" ] && [ -n "$in_archive" ]; then
@@ -144,7 +144,7 @@ done
 ```
 
 Collect misplaced directories:
-- `misplaced_in_specs[]` - Directories in specs/ that are tracked in archive/state.json (need physical move only, no state update)
+- `misplaced_in_specs[]` - Directories in specs/ that are tracked in specs/archive/state.json (need physical move only, no state update)
 
 Store count for later reporting.
 
@@ -498,7 +498,7 @@ If misplaced directories were detected in Step 2.6:
 **Use AskUserQuestion**:
 ```
 AskUserQuestion:
-  question: "Found {N} misplaced directories in specs/ that should be in archive/ (already tracked in archive/state.json). Move them?"
+  question: "Found {N} misplaced directories in specs/ that should be in archive/ (already tracked in specs/archive/state.json). Move them?"
   header: "Misplaced"
   options:
     - label: "Move all"
@@ -514,14 +514,14 @@ If no misplaced directories were found, skip this step and proceed.
 
 ### 5. Archive Tasks
 
-**A. Update archive/state.json**
+**A. Update specs/archive/state.json**
 
 Ensure archive directory exists:
 ```bash
 mkdir -p specs/archive/
 ```
 
-Read or create specs/archive/state.json:
+Read or create specs/specs/archive/state.json:
 ```json
 {
   "archived_projects": [],
@@ -529,9 +529,9 @@ Read or create specs/archive/state.json:
 }
 ```
 
-Move each task from state.json `active_projects` to archive/state.json `completed_projects` (for completed tasks) or `archived_projects` (for abandoned tasks).
+Move each task from specs/state.json `active_projects` to specs/archive/state.json `completed_projects` (for completed tasks) or `archived_projects` (for abandoned tasks).
 
-**B. Update state.json**
+**B. Update specs/state.json**
 
 Remove archived tasks from active_projects array using `del()` pattern (avoids Issue #1132 with `!=` operator):
 ```bash
@@ -541,7 +541,7 @@ jq 'del(.active_projects[] | select(.status == "completed" or .status == "abando
   specs/state.json > specs/state.json.tmp && mv specs/state.json.tmp specs/state.json
 ```
 
-**C. Update TODO.md**
+**C. Update specs/TODO.md**
 
 Remove archived task entries from main sections.
 
@@ -601,7 +601,7 @@ for orphan_dir in "${orphaned_dirs[@]}"; do
   [ -d "$archive_path/plans" ] && artifacts=$(echo "$artifacts" | jq '. + ["plans/"]')
   [ -d "$archive_path/summaries" ] && artifacts=$(echo "$artifacts" | jq '. + ["summaries/"]')
 
-  # Add entry to archive/state.json
+  # Add entry to specs/archive/state.json
   jq --arg num "$project_num" \
      --arg name "$project_name" \
      --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
@@ -613,8 +613,8 @@ for orphan_dir in "${orphaned_dirs[@]}"; do
        archived: $date,
        source: "orphan_recovery",
        detected_artifacts: $arts
-     }]' specs/archive/state.json > specs/archive/state.json.tmp \
-  && mv specs/archive/state.json.tmp specs/archive/state.json
+     }]' specs/specs/archive/state.json > specs/specs/archive/state.json.tmp \
+  && mv specs/specs/archive/state.json.tmp specs/specs/archive/state.json
 
   echo "Added state entry for orphan: ${dir_name}"
 done
@@ -622,7 +622,7 @@ done
 
 Track orphan operations for output reporting:
 - orphans_moved: count of directories moved from specs/ to archive/
-- orphans_tracked: count of state entries added to archive/state.json
+- orphans_tracked: count of state entries added to specs/archive/state.json
 
 **F. Move Misplaced Directories (if approved in Step 4.6)**
 
@@ -647,7 +647,7 @@ for dir in "${misplaced_in_specs[@]}"; do
 done
 ```
 
-**Note**: Unlike orphans, misplaced directories do NOT need state entries added - they are already correctly tracked in archive/state.json. Only the physical move is needed.
+**Note**: Unlike orphans, misplaced directories do NOT need state entries added - they are already correctly tracked in specs/archive/state.json. Only the physical move is needed.
 
 Track misplaced operations for output reporting:
 - misplaced_moved: count of directories moved from specs/ to archive/
@@ -918,8 +918,8 @@ Orphaned directories tracked: {N}
 - {N5}_{SLUG5}/ (already in archive/, state entry added)
 
 Misplaced directories moved: {N}
-- {N8}_{SLUG8}/ (already tracked in archive/state.json)
-- {N9}_{SLUG9}/ (already tracked in archive/state.json)
+- {N8}_{SLUG8}/ (already tracked in specs/archive/state.json)
+- {N9}_{SLUG9}/ (already tracked in specs/archive/state.json)
 
 Roadmap updated: {N} items
 - Marked complete: {N}
@@ -975,18 +975,18 @@ If no suggestions were skipped (all selected or "Skip all" not chosen):
 - Artifacts (plans, reports, summaries) are preserved in archive/{N}_{SLUG}/
 - Tasks can be recovered with `/task --recover N`
 - Archive is append-only (for audit trail)
-- Run periodically to keep TODO.md and specs/ manageable
+- Run periodically to keep specs/TODO.md and specs/ manageable
 
 ### Orphan Tracking
 
 **Orphan Categories**:
 1. **Orphaned in specs/** - Directories in `specs/` not tracked in any state file
-   - Action: Move to archive/ AND add entry to archive/state.json
-2. **Orphaned in archive/** - Directories in `specs/archive/` not tracked in archive/state.json
-   - Action: Add entry to archive/state.json (no move needed)
+   - Action: Move to archive/ AND add entry to specs/archive/state.json
+2. **Orphaned in archive/** - Directories in `specs/archive/` not tracked in specs/archive/state.json
+   - Action: Add entry to specs/archive/state.json (no move needed)
 
 **orphan_archived Status**:
-- Orphaned directories receive status "orphan_archived" in archive/state.json
+- Orphaned directories receive status "orphan_archived" in specs/archive/state.json
 - The `source` field is set to "orphan_recovery" to distinguish from normal archival
 - The `detected_artifacts` field lists any existing subdirectories (reports/, plans/, summaries/)
 
@@ -997,13 +997,13 @@ If no suggestions were skipped (all selected or "Skip all" not chosen):
 
 ### Misplaced Directories
 
-**Definition**: Directories in `specs/` that ARE tracked in `archive/state.json`.
+**Definition**: Directories in `specs/` that ARE tracked in `specs/archive/state.json`.
 
 This indicates the directory was archived in state but never physically moved.
 
 **Directory Categories Summary**:
 
-| Category | Location | Tracked in state.json? | Tracked in archive/state.json? | Action |
+| Category | Location | Tracked in specs/state.json? | Tracked in specs/archive/state.json? | Action |
 |----------|----------|------------------------|--------------------------------|--------|
 | Active | specs/ | Yes | No | Normal (no action) |
 | Orphaned in specs/ | specs/ | No | No | Move + add state entry |
@@ -1012,7 +1012,7 @@ This indicates the directory was archived in state but never physically moved.
 | Archived | archive/ | No | Yes | Normal (no action) |
 
 **Misplaced Directories**:
-- Already have correct state entries in archive/state.json
+- Already have correct state entries in specs/archive/state.json
 - Only need to be physically moved to specs/archive/
 - No state updates required
 
@@ -1033,7 +1033,7 @@ This indicates the directory was archived in state but never physically moved.
 Roadmap matching uses structured data from completed tasks, not keyword heuristics:
 
 1. **Explicit roadmap_items** (Priority 1, highest confidence):
-   - Tasks can include a `roadmap_items` array in state.json
+   - Tasks can include a `roadmap_items` array in specs/state.json
    - Contains exact item text to match against ROAD_MAP.md
    - Example: "roadmap_items": ["Improve /todo command roadmap updates"]
 
@@ -1074,7 +1074,7 @@ Abandoned tasks (checkbox stays unchecked):
 
 **Date Format**: ISO date (YYYY-MM-DD) from task completion/abandonment timestamp
 
-**Abandoned Reason**: Truncated to first 50 characters of `abandoned_reason` field from state.json
+**Abandoned Reason**: Truncated to first 50 characters of `abandoned_reason` field from specs/state.json
 
 **Well-Formed Completion Summaries**:
 

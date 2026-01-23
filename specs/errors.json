@@ -47,10 +47,32 @@
       "recovery": {
         "suggested_action": "Check if files were already committed. If not, stage files manually and retry.",
         "auto_recoverable": true
-      },
-      "fix_status": "unfixed"
-    }
-  ],
+    },
+    "fix_status": "unfixed"
+  },
+  {
+    "id": "err_1769043710000",
+    "timestamp": "2026-01-22T01:01:50Z",
+    "type": "git_commit_failure",
+    "severity": "medium",
+    "message": "Git commit failed: nothing to commit, working tree clean. Scoped files already committed.",
+    "context": {
+      "session_id": "sess_1769043708_tq9iv",
+      "command": "plan",
+      "task": 672,
+      "checkpoint": "COMMIT"
+    },
+    "trajectory": {
+      "delegation_path": ["orchestrator", "plan", "git-workflow-manager"],
+      "failed_at_depth": 1
+    },
+    "recovery": {
+      "suggested_action": "Files in scope already committed in commit 001ab0c4. No action needed.",
+      "auto_recoverable": true
+    },
+    "fix_status": "unfixed"
+  }
+],
   "aggregations": {
     "_comment": "Pattern aggregations for recurring errors",
     "by_type": {},

@@ -145,8 +145,8 @@ Subagent writes metadata to `.return-meta.json` and returns brief summary.
 ### Stage 4: Execute Postflight (Hook Ensures We Reach Here)
 
 1. Read `.return-meta.json`
-2. Update state.json status
-3. Update TODO.md status
+2. Update specs/state.json status
+3. Update specs/TODO.md status
 4. Link artifacts
 5. Git commit changes
 

@@ -236,7 +236,7 @@ Artifacts in `specs/` are organized by project:
 - Increment plan versions when revising
 - Keep summaries to 1-2 pages maximum
 - Link artifacts to specs/TODO.md tasks
-- Update state.json after operations
+- Update specs/state.json after operations
 
 ## Validation
 

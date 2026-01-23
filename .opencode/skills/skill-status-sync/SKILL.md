@@ -1,21 +1,21 @@
 ---
 name: skill-status-sync
-description: Atomically update task status across TODO.md and state.json.
+description: Atomically update task status across specs/TODO.md and specs/state.json.
 allowed-tools: Bash, Edit, Read
 ---
 
 # Status Sync Skill
 
-Direct execution skill for atomic status synchronization across TODO.md and state.json.
+Direct execution skill for atomic status synchronization across specs/TODO.md and specs/state.json.
 
 <context>
   <system_context>OpenCode task status synchronization.</system_context>
-  <task_context>Synchronize TODO.md and state.json statuses.</task_context>
+  <task_context>Synchronize specs/TODO.md and specs/state.json statuses.</task_context>
 </context>
 
 <role>Direct execution skill for status updates.</role>
 
-<task>Update state.json and TODO.md atomically.</task>
+<task>Update specs/state.json and specs/TODO.md atomically.</task>
 
 <execution>Use the Operation sections for status updates.</execution>
 

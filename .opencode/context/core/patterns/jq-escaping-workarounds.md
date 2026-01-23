@@ -170,8 +170,8 @@ Before using jq patterns in production:
 ### Test Script
 
 ```bash
-# Create test state.json
-cat > /tmp/test-state.json << 'EOF'
+# Create test specs/state.json
+cat > /tmp/test-specs/state.json << 'EOF'
 {
   "active_projects": [
     {
@@ -195,13 +195,13 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     status: $status,
     last_updated: $ts,
     researched: $ts
-  }' /tmp/test-state.json > /tmp/test-out.json && mv /tmp/test-out.json /tmp/test-state.json
+  }' /tmp/test-specs/state.json > /tmp/test-out.json && mv /tmp/test-out.json /tmp/test-specs/state.json
 
 # Step 2
 jq --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
     ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "research")] + [{"path": $path, "type": "research"}])' \
-  /tmp/test-state.json
+  /tmp/test-specs/state.json
 
 # Expected output should show status "researched" and artifact added
 ```
@@ -212,9 +212,9 @@ Reusable shell scripts are available in `.opencode/scripts/` that encapsulate co
 
 | Script | Purpose |
 |--------|---------|
-| `postflight-research.sh TASK_NUM ARTIFACT_PATH [SUMMARY]` | Update state.json after research completion |
-| `postflight-plan.sh TASK_NUM ARTIFACT_PATH [SUMMARY]` | Update state.json after plan creation |
-| `postflight-implement.sh TASK_NUM ARTIFACT_PATH [SUMMARY]` | Update state.json after implementation |
+| `postflight-research.sh TASK_NUM ARTIFACT_PATH [SUMMARY]` | Update specs/state.json after research completion |
+| `postflight-plan.sh TASK_NUM ARTIFACT_PATH [SUMMARY]` | Update specs/state.json after plan creation |
+| `postflight-implement.sh TASK_NUM ARTIFACT_PATH [SUMMARY]` | Update specs/state.json after implementation |
 
 Example usage:
 ```bash

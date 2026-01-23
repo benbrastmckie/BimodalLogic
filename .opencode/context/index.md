@@ -174,7 +174,7 @@ Load for: Behavior patterns that apply across all agents/skills
 - **inline-status-update.md** (~200 lines) - Reusable status update snippets
   - Preflight patterns for research/planning/implementation
   - Postflight patterns with artifact linking
-  - TODO.md edit patterns
+  - specs/TODO.md edit patterns
   - Error handling patterns
   - **MUST load when adding status management to skills**
 
@@ -221,7 +221,7 @@ Load for: Task validation, artifact creation, documentation standards
 
 - **status-markers.md** (350 lines) - **Complete** status marker reference
   - Standard status markers (NOT STARTED, RESEARCHING, PLANNED, etc.)
-  - TODO.md vs state.json mapping
+  - specs/TODO.md vs specs/state.json mapping
   - Command → Status mapping
   - Valid transition rules and diagrams
   - Atomic synchronization protocol
@@ -443,8 +443,8 @@ Load for: /meta command and meta-builder-agent workflows
 
 Load selectively: Use grep extraction for specific tasks, avoid loading full file
 
-- **TODO.md** - Active task list (large file - load via: `grep -A 50 "^### {task_number}\." TODO.md`)
-- **state.json** - Project state tracking (load full file, ~8KB)
+- **TODO.md** - Active task list (large file - load via: `grep -A 50 "^### {task_number}\." specs/TODO.md`)
+- **specs/state.json** - Project state tracking (load full file, ~8KB)
 
 ---
 

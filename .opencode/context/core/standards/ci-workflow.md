@@ -44,7 +44,7 @@ The marker can appear anywhere in the commit message:
 |-------------|------------|--------|
 | Research reports (.md) | No | No build impact |
 | Implementation plans (.md) | No | No build impact |
-| TODO.md / state.json | No | Task management only |
+| specs/TODO.md / specs/state.json | No | Task management only |
 | CLAUDE.md updates | No | Configuration only |
 | Context files (.opencode/context/) | No | Documentation only |
 | Skills/agents (.opencode/skills/, .opencode/agents/) | No | Orchestration only |

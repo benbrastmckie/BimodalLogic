@@ -67,7 +67,7 @@ This skill activates when:
 ### 1. Input Validation
 
 Validate required inputs:
-- `task_number` - Must be provided and exist in state.json
+- `task_number` - Must be provided and exist in specs/state.json
 - `focus_prompt` - Optional additional context
 
 ```bash
@@ -233,7 +233,7 @@ Specialized research for Lean 4 theorem proving tasks.
 
 ### 1. Input Validation
 Extract task_number from arguments.
-Validate task exists in state.json.
+Validate task exists in specs/state.json.
 Extract optional focus_prompt.
 
 ### 2. Context Preparation

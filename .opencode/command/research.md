@@ -99,7 +99,7 @@ The skill will spawn the appropriate agent to conduct research and create a repo
 
 3. **Verify Status Updated**
    The skill handles status updates internally (preflight and postflight).
-   Confirm status is now "researched" in state.json.
+   Confirm status is now "researched" in specs/state.json.
 
 **RETRY** skill if validation fails.
 

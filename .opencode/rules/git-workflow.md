@@ -27,12 +27,12 @@ task {N}: {action} {description}
 | Archive tasks | `todo: archive {N} completed tasks` |
 | Error fixes | `errors: create fix plan for {N} errors (task {M})` |
 | Review | `review: {summary}` |
-| State sync | `sync: reconcile TODO.md and state.json` |
+| State sync | `sync: reconcile specs/TODO.md and specs/state.json` |
 
 ## Commit Timing
 
 ### Create Commits After
-- Task creation (includes TODO.md + state.json updates)
+- Task creation (includes specs/TODO.md + specs/state.json updates)
 - Research completion (includes report file)
 - Plan creation (includes plan file)
 - Each implementation phase completion

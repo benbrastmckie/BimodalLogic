@@ -265,7 +265,7 @@
   - ✓ Return validated (status: implemented, summary present, artifacts    
   listed)                                                                  
   - ✓ Summary artifact exists on disk                                      
-  - ✓ Status confirmed as "completed" in state.json                        
+  - ✓ Status confirmed as "completed" in specs/state.json                        
                                                                             
   CHECKPOINT 3: COMMIT - Creating Git Commit                               
                                                                             

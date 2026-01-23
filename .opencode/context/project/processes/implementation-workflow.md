@@ -16,7 +16,7 @@ This document describes the complete implementation workflow executed by the imp
 
 ### Plan-Based Implementation (Phased)
 
-**When**: Task has existing plan in TODO.md  
+**When**: Task has existing plan in specs/TODO.md  
 **Characteristics**:
 - Multi-phase execution
 - Resume support
@@ -55,7 +55,7 @@ This document describes the complete implementation workflow executed by the imp
 
 ### Language Extraction
 
-Language is extracted from task entry in TODO.md:
+Language is extracted from task entry in specs/TODO.md:
 
 ```bash
 grep -A 20 "^### ${task_number}." specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
@@ -83,7 +83,7 @@ grep -A 20 "^### ${task_number}." specs/TODO.md | grep "Language" | sed 's/\*\*L
 **Action**: Load task details and determine implementation mode
 
 **Process**:
-1. Read task from TODO.md using grep (selective loading):
+1. Read task from specs/TODO.md using grep (selective loading):
    ```bash
    grep -A 50 "^### ${task_number}." specs/TODO.md > /tmp/task-${task_number}.md
    ```
@@ -223,11 +223,11 @@ Multi-file implementations create N+1 artifacts (N implementation files + 1 summ
    - Invoke status-sync-manager
    - Wait for return
 2. status-sync-manager performs atomic update:
-   - Update TODO.md:
+   - Update specs/TODO.md:
      - Status: [IMPLEMENTING] → [COMPLETED]
      - Add **Completed**: {date}
      - Add artifact links
-   - Update state.json:
+   - Update specs/state.json:
      - Update status and timestamps
      - Add artifact_paths
    - Update plan file (if phased):
@@ -239,7 +239,7 @@ Multi-file implementations create N+1 artifacts (N implementation files + 1 summ
    - Verify files updated on disk
 
 **Atomic Update Guarantee**:
-status-sync-manager ensures TODO.md, state.json, and plan file (if exists) are updated atomically. If any update fails, all are rolled back.
+status-sync-manager ensures specs/TODO.md, specs/state.json, and plan file (if exists) are updated atomically. If any update fails, all are rolled back.
 
 **Checkpoint**: Status updated atomically
 
@@ -253,7 +253,7 @@ status-sync-manager ensures TODO.md, state.json, and plan file (if exists) are u
      ```json
      {
        "operation": "implementation_commit",
-       "scope": [{all_artifacts}, "TODO.md", "state.json"],
+       "scope": [{all_artifacts}, "specs/TODO.md", "specs/state.json"],
        "message": "task {number}: {description}",
        "mode": "phased|direct"
      }
@@ -392,7 +392,7 @@ On timeout or failure:
 | [IMPLEMENTING] | [IMPLEMENTING] | Implementation failed or partial |
 | [IMPLEMENTING] | [BLOCKED] | Implementation blocked by dependency |
 
-**Status Update**: Delegated to `status-sync-manager` for atomic synchronization across TODO.md and state.json.
+**Status Update**: Delegated to `status-sync-manager` for atomic synchronization across specs/TODO.md and specs/state.json.
 
 **Timestamps**:
 - `**Started**: {date}` added when status → [IMPLEMENTING]
@@ -413,8 +413,8 @@ Implementer loads context on-demand per `.opencode/context/index.md`:
 - `core/standards/subagent-return-format.md` (return format)
 - `core/standards/status-markers.md` (status transitions)
 - `core/system/artifact-management.md` (lazy directory creation)
-- Task entry via `grep -A 50 "^### ${task_number}." TODO.md` (~2KB vs 109KB full file)
-- `state.json` (project state)
+- Task entry via `grep -A 50 "^### ${task_number}." specs/TODO.md` (~2KB vs 109KB full file)
+- `specs/state.json` (project state)
 - Plan file if exists (for phase tracking and resume)
 
 **Language-specific context**:
@@ -432,7 +432,7 @@ Implementer loads context on-demand per `.opencode/context/index.md`:
 ```
 Error: Task {task_number} not found in specs/TODO.md
 
-Recommendation: Verify task number exists in TODO.md
+Recommendation: Verify task number exists in specs/TODO.md
 ```
 
 ### Invalid Task Number
@@ -496,7 +496,7 @@ Warning: Could not extract language from task entry
 Defaulting to: general
 Agent: implementer
 
-Recommendation: Add **Language**: {language} to task entry in TODO.md
+Recommendation: Add **Language**: {language} to task entry in specs/TODO.md
 ```
 
 ---
@@ -507,9 +507,9 @@ Recommendation: Add **Language**: {language} to task entry in TODO.md
 
 Status updates delegated to `status-sync-manager` for atomic synchronization:
 - `specs/TODO.md` (status, timestamps, artifact links)
-- `state.json` (status, timestamps, artifact_paths)
+- `specs/state.json` (status, timestamps, artifact_paths)
 - Plan file (phase status markers if plan exists)
-- Project state.json (lazy created if needed)
+- Project specs/state.json (lazy created if needed)
 
 Two-phase commit ensures consistency across all files.
 
@@ -525,7 +525,7 @@ No directories created during routing or validation stages.
 
 Git commits delegated to `git-workflow-manager` for standardized commits:
 - Commit message format: `task {number}: {description}`
-- Scope files: All implementation artifacts + TODO.md + state.json
+- Scope files: All implementation artifacts + specs/TODO.md + specs/state.json
 - Per-phase commits if plan exists
 - Single commit if no plan
 
@@ -541,13 +541,13 @@ Git commits delegated to `git-workflow-manager` for standardized commits:
 
 ### Task Extraction
 
-Extract only specific task entry from TODO.md to reduce context load:
+Extract only specific task entry from specs/TODO.md to reduce context load:
 
 ```bash
 grep -A 50 "^### ${task_number}." specs/TODO.md > /tmp/task-${task_number}.md
 ```
 
-**Impact**: Reduces context from 109KB (full TODO.md) to ~2KB (task entry only), 98% reduction.
+**Impact**: Reduces context from 109KB (full specs/TODO.md) to ~2KB (task entry only), 98% reduction.
 
 ### Lazy Context Loading
 

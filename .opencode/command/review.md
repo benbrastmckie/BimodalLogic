@@ -138,13 +138,13 @@ Build `roadmap_state` structure:
 
 Cross-reference roadmap items with project state to identify completed work:
 
-**1. Query TODO.md for completed tasks:**
+**1. Query specs/TODO.md for completed tasks:**
 ```bash
 # Find completed task titles
 grep -E '^\#\#\#.*\[COMPLETED\]' specs/TODO.md
 ```
 
-**2. Query state.json for completion data:**
+**2. Query specs/state.json for completion data:**
 ```bash
 # Get completed tasks with dates
 jq '.active_projects[] | select(.status == "completed")' specs/state.json

@@ -13,7 +13,7 @@
 - **Artifacts**: list of produced artifacts (paths)
 - **Standards**: status-markers.md, artifact-management.md, tasks.md, this file
 
-**Note**: Status metadata (e.g., `[RESEARCHING]`, `[COMPLETED]`) belongs in TODO.md and state.json only, NOT in research reports. Reports are artifacts that document findings, not workflow state.
+**Note**: Status metadata (e.g., `[RESEARCHING]`, `[COMPLETED]`) belongs in specs/TODO.md and specs/state.json only, NOT in research reports. Reports are artifacts that document findings, not workflow state.
 
 ## Structure
 1. **Executive Summary** – 4-6 bullets.
@@ -28,7 +28,7 @@
 - Include **Started** timestamp when research/analysis begins
 - Include **Completed** timestamp when report is finalized
 - Do not use emojis
-- Do not include status markers (status tracked in TODO.md and state.json only)
+- Do not include status markers (status tracked in specs/TODO.md and specs/state.json only)
 
 ## Writing Guidance
 - Be objective, cite sources/paths.
