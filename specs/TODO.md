@@ -63,8 +63,16 @@ technical_debt:
 ---
 
 ### 394.
+- **Planning Started**: 2026-01-23T21:46:31Z
+- **Status**: [PLANNED]
+- **Planning Started**: 2026-01-23T21:46:02Z
+- **Status**: [PLANNED]
+- **Planning Started**: 2026-01-23T21:45:58Z
+- **Status**: [PLANNED]
+- **Planning Started**: 2026-01-23T21:45:54Z
+- **Status**: [PLANNED]
 - **Started**: 2026-01-23T21:45:20Z
-- **Status**: [RESEARCHED] Research and port causal semantics from paper
+- **Status**: [PLANNED] Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [EXPANDED]
 - **Researched**: 2026-01-12
@@ -93,7 +101,7 @@ technical_debt:
 
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 394
@@ -142,7 +150,7 @@ technical_debt:
 
 ### 666. revise lean source code logos theory definitions
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -206,7 +214,7 @@ technical_debt:
 
 
 ### 655. Fix jq errors in agent system
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -217,7 +225,7 @@ technical_debt:
 
 ### 653. Improve metalogic infrastructure (rename frame, address infinite contexts)
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
@@ -228,7 +236,7 @@ technical_debt:
 ---
 
 ### 648. Research canonical frame temporal order generalization
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
@@ -239,7 +247,7 @@ technical_debt:
 
 
 ### 639. Improve /review roadmap matching reliability
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -250,7 +258,7 @@ technical_debt:
 
 ### 656. Complete truth lemma forward direction (imp/box cases)
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -263,7 +271,7 @@ technical_debt:
 
 ### 657. Prove seed consistency (temporal K distribution)
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -276,7 +284,7 @@ technical_debt:
 
 ### 658. Prove indexed family coherence conditions
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -289,7 +297,7 @@ technical_debt:
 
 ### 660. Prove parametric completeness theorems
 - **Effort**: 10-15 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -301,7 +309,7 @@ technical_debt:
 ---
 
 ### 630. Build TaskModel extraction from saturated tableau branches
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -314,7 +322,7 @@ technical_debt:
 ---
 
 ### 631. Prove evalFormula_implies_satisfiable bridging lemma
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -327,7 +335,7 @@ technical_debt:
 ---
 
 ### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
@@ -353,7 +361,7 @@ technical_debt:
 ---
 
 ### 610. Complete truth bridge (Strategy B) for completeness proof
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-19
 - **Research**: [research-001.md](specs/610_complete_truth_bridge_strategy_b/reports/research-001.md)
 - **Priority**: Medium
@@ -367,7 +375,7 @@ technical_debt:
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
@@ -380,7 +388,7 @@ technical_debt:
 ## Low Priority
 
 ### 616. Fix semantic_task_rel_compositionality finite model limitation
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -393,7 +401,7 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -436,7 +444,7 @@ technical_debt:
 ---
 
 ### 624. Prove tableau_complete
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
@@ -447,7 +455,7 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490

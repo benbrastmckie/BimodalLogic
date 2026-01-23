@@ -92,9 +92,9 @@ main() {
   mkdir -p "$task_dir/reports" "$task_dir/plans" "$task_dir/.meta"
   
   # Load context
-  research_path=""
+  local research_path=""
   if [ -d "$task_dir/reports" ]; then
-    latest_report=$(ls -t "$task_dir/reports"/*.md 2>/dev/null | head -1)
+    local latest_report=$(ls -t "$task_dir/reports"/*.md 2>/dev/null | head -1)
     if [ -n "$latest_report" ] && [ -f "$latest_report" ]; then
       research_path="$latest_report"
       echo "✓ Found research report: $research_path"
@@ -102,7 +102,7 @@ main() {
   fi
   
   # Preflight status update
-  timestamp_iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  local timestamp_iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)
   
   # Update state.json
   jq --arg num "$task_number" \
@@ -129,7 +129,7 @@ main() {
   echo "Session ID: $session_id"
   
   # Find next plan version
-  plan_version=$(ls "$task_dir/plans"/implementation-*.md 2>/dev/null | \
+  local plan_version=$(ls "$task_dir/plans"/implementation-*.md 2>/dev/null | \
     sed 's/.*implementation-\([0-9]*\)\.md/\1/' | sort -n | tail -1)
   if [ -z "$plan_version" ]; then
     plan_version=1
@@ -137,7 +137,7 @@ main() {
     plan_version=$((plan_version + 1))
   fi
   
-  plan_file="$task_dir/plans/implementation-$(printf "%03d" $plan_version).md"
+  local plan_file="$task_dir/plans/implementation-$(printf "%03d" $plan_version).md"
   
   # Create a sample implementation plan
   cat > "$plan_file" <<EOF
@@ -202,7 +202,7 @@ EOF
   echo "✓ Implementation plan created"
   
   # Create metadata file
-  metadata_file="$task_dir/.meta/plan-return-meta.json"
+  local metadata_file="$task_dir/.meta/plan-return-meta.json"
   cat > "$metadata_file" <<EOF
 {
   "status": "completed",
@@ -227,9 +227,9 @@ EOF
     exit 1
   fi
   
-  plan_status=$(jq -r '.status // "unknown"' "$metadata_file")
-  plan_summary=$(jq -r '.summary // ""' "$metadata_file")
-  plan_artifacts=$(jq -r '.artifacts // []' "$metadata_file")
+  local plan_status=$(jq -r '.status // "unknown"' "$metadata_file")
+  local plan_summary=$(jq -r '.summary // ""' "$metadata_file")
+  local plan_artifacts=$(jq -r '.artifacts // []' "$metadata_file")
   
   if [ "$plan_status" = "unknown" ] || [ -z "$plan_status" ]; then
     echo "Error: Missing or invalid status in plan metadata"
