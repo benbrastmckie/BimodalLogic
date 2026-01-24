@@ -813,6 +813,11 @@
           "type": "research",
           "path": "specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-002.md",
           "summary": "Focused analysis of preflight/postflight inconsistencies, command bypass vulnerabilities, and detailed implementation roadmap with 5-phase priority matrix"
+        },
+        {
+          "type": "research",
+          "path": "specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-003.md",
+          "summary": "Integrated preflight/postflight operations design confirming existing patterns, identifying implementation gap, and providing 3-phase migration approach"
         }
       ],
       "last_updated": "2026-01-24T17:30:00Z"
