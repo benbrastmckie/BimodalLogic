@@ -2,24 +2,38 @@
 command: refresh
 description: Refresh OpenCode sessions and clean up temporary data
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: dry_run
-    type: boolean
-    required: false
-    description: Preview cleanup (flag: --dry-run)
-  - name: force
-    type: boolean
-    required: false
-    description: Skip confirmation (flag: --force)
-allowed-tools: Bash, AskUserQuestion
-argument-hint: [--dry-run] [--force]
+  name: dry_run
+  type: boolean
+  required: false
+  description: Preview cleanup (flag dry-run)
+  name: force
+  type: boolean
+  required: false
+  description: Skip confirmation (flag force)
+tools:
+  read: false
+  write: false
+  edit: false
+  glob: false
+  bash: true
+permissions:
+  read:
+    "*": "deny"
+  write:
+    "*": "deny"
+  bash:
+    "*": "allow"
+allowed_tools: Bash, AskUserQuestion
+argument_hint: [--dry-run] [--force]
 delegation_depth: 0
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance

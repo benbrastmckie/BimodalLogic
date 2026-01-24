@@ -1,21 +1,37 @@
 ---
 command: learn
-description: Scan files for FIX:, NOTE:, TODO: tags and create structured tasks interactively
+description: Scan files for FIX, NOTE, TODO tags and create structured tasks interactively
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: paths
-    type: string
-    required: false
-    description: Paths to scan
-allowed-tools: Skill
-argument-hint: [PATH...]
+  name: paths
+  type: string
+  required: false
+  description: Paths to scan
+tools:
+  read: true
+  write: false
+  edit: false
+  glob: false
+  bash: false
+  skill: true
+permissions:
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+  write:
+    "*": "deny"
+  bash:
+    "*": "deny"
+allowed_tools: Skill
+argument_hint: [PATH...]
 delegation_depth: 1
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance

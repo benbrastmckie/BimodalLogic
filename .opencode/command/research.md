@@ -2,24 +2,43 @@
 command: research
 description: Research a task and create reports
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: task_number
-    type: integer
-    required: true
-    description: Task number to research
-  - name: focus
-    type: string
-    required: false
-    description: Optional focus prompt
-allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit
-argument-hint: TASK_NUMBER [FOCUS]
+  name: task_number
+  type: integer
+  required: true
+  description: Task number to research
+  name: focus
+  type: string
+  required: false
+  description: Optional focus prompt
+tools:
+  read: true
+  write: true
+  edit: true
+  glob: true
+  bash: true
+  skill: true
+permissions:
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+    "specs/**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+  bash:
+    "git:*": "allow"
+    "jq:*": "allow"
+    "*": "deny"
+allowed_tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit
+argument_hint: TASK_NUMBER [FOCUS]
 delegation_depth: 1
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance

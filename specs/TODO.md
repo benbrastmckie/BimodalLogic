@@ -81,28 +81,9 @@ technical_debt:
 
 ---
 
-### 394.
-- **Revision Started**: 2026-01-23T21:48:17Z
-- **Status**: [REVISED]
-- **Revision Started**: 2026-01-23T21:47:32Z
-- **Status**: [REVISED]
-- **Implementation Started**: 2026-01-23T21:47:29Z
-- **Status**: [IMPLEMENTING]
-- **Implementation Started**: 2026-01-23T21:46:34Z
-- **Status**: [IMPLEMENTING]
-- **Planning Started**: 2026-01-23T21:46:31Z
-- **Status**: [IMPLEMENTING]
-- **Planning Started**: 2026-01-23T21:46:02Z
-- **Status**: [IMPLEMENTING]
-- **Planning Started**: 2026-01-23T21:45:58Z
-- **Status**: [IMPLEMENTING]
-- **Planning Started**: 2026-01-23T21:45:54Z
-- **Status**: [IMPLEMENTING]
-- **Started**: 2026-01-23T21:45:20Z
-- **Status**: [IMPLEMENTING] Research and port causal semantics from paper
+### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [EXPANDED]
-- **Researched**: 2026-01-12
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 381
@@ -194,7 +175,7 @@ technical_debt:
 
 ### 674. systematic command skill agent architecture improvement
 - **Effort**: 3-4 days
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None
@@ -204,6 +185,7 @@ technical_debt:
   - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-001.md) - Comprehensive architecture analysis with 5-phase implementation plan
   - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-002.md) - Focused analysis of preflight/postflight inconsistencies and architecture gaps
   - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-003.md) - Integrated preflight/postflight operations design with 3-phase migration approach
+  - [Implementation Plan](specs/674_systematic_command_skill_agent_architecture_improvement/plans/implementation-001.md) - 4-phase implementation plan for integrated preflight/postflight operations in workflow skills
 
 **Description**: Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management
 

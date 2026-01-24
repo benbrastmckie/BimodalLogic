@@ -751,7 +751,7 @@
     {
       "project_number": 666,
       "project_name": "revise_lean_source_code_logos_theory_definitions",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T22:50:00Z",
@@ -790,12 +790,20 @@
           "lean-research-agent"
         ],
         "findings_count": 5
+      },
+      "planned": "2026-01-24T02:43:00Z",
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 1.5,
+        "complexity": "low",
+        "research_integrated": true,
+        "plan_version": 1
       }
     },
     {
       "project_number": 674,
       "project_name": "systematic_command_skill_agent_architecture_improvement",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-24T17:00:00Z",
@@ -820,7 +828,7 @@
           "summary": "Integrated preflight/postflight operations design confirming existing patterns, identifying implementation gap, and providing 3-phase migration approach"
         }
       ],
-      "last_updated": "2026-01-24T17:30:00Z"
+      "last_updated": "2026-01-24T00:59:55Z"
     }
   ],
   "completed_projects": [

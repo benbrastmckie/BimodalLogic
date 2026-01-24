@@ -2,40 +2,61 @@
 command: task
 description: Create, recover, divide, sync, or abandon tasks
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: description
-    type: string
-    required: false
-    description: Task description when no flags are provided
-  - name: recover
-    type: string
-    required: false
-    description: Task ranges to recover (flag: --recover)
-  - name: expand
-    type: string
-    required: false
-    description: Task number and optional prompt (flag: --expand)
-  - name: sync
-    type: boolean
-    required: false
-    description: Sync specs/TODO.md and specs/state.json (flag: --sync)
-  - name: abandon
-    type: string
-    required: false
-    description: Task ranges to archive (flag: --abandon)
-  - name: review
-    type: integer
-    required: false
-    description: Task number to review (flag: --review)
-allowed-tools: Read(specs/*), Edit(specs/TODO.md), Bash(jq:*), Bash(git:*), Bash(mv:*), Bash(date:*), Bash(sed:*)
-argument-hint: "\"description\" | --recover N | --expand N | --sync | --abandon N | --review N"
+  name: description
+  type: string
+  required: false
+  description: Task description when no flags are provided
+  name: recover
+  type: string
+  required: false
+  description: Task ranges to recover (flag recover)
+  name: expand
+  type: string
+  required: false
+  description: Task number and optional prompt (flag expand)
+  name: sync
+  type: boolean
+  required: false
+  description: Sync specs/TODO.md and specs/state.json (flag sync)
+  name: abandon
+  type: string
+  required: false
+  description: Task ranges to archive (flag abandon)
+  name: review
+  type: integer
+  required: false
+  description: Task number to review (flag review)
+tools:
+  read: true
+  write: true
+  edit: true
+  glob: false
+  bash: true
+permissions:
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+    "specs/**/*": "allow"
+  write:
+    "specs/TODO.md": "allow"
+  bash:
+    "git:*": "allow"
+    "jq:*": "allow"
+    "mv:*": "allow"
+    "date:*": "allow"
+    "sed:*": "allow"
+    "*": "deny"
+allowed_tools: Read(specs/*), Edit(specs/TODO.md), Bash(jq:*), Bash(git:*), Bash(mv:*), Bash(date:*), Bash(sed:*)
+argument_hint: "\"description\" | --recover N | --expand N | --sync | --abandon N | --review N"
 delegation_depth: 0
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance

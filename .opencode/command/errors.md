@@ -2,20 +2,38 @@
 command: errors
 description: Analyze errors and create fix plans
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: fix
-    type: integer
-    required: false
-    description: Task number to fix (flag: --fix)
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), TodoWrite, Task
-argument-hint: [--fix TASK_NUMBER]
+  name: fix
+  type: integer
+  required: false
+  description: Task number to fix (flag fix)
+tools:
+  read: true
+  write: true
+  edit: true
+  glob: true
+  grep: true
+  bash: true
+permissions:
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+    "specs/**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+  bash:
+    "git:*": "allow"
+    "*": "deny"
+allowed_tools: Read, Write, Edit, Glob, Grep, Bash(git:*), TodoWrite, Task
+argument_hint: [--fix TASK_NUMBER]
 delegation_depth: 1
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance

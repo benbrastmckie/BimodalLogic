@@ -2,24 +2,43 @@
 command: revise
 description: Create new version of implementation plan, or update task description if no plan exists
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: task_number
-    type: integer
-    required: true
-    description: Task number to revise
-  - name: reason
-    type: string
-    required: false
-    description: Optional reason for revision
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(jq:*), Bash(git:*), TodoWrite
-argument-hint: TASK_NUMBER [REASON]
+  name: task_number
+  type: integer
+  required: true
+  description: Task number to revise
+  name: reason
+  type: string
+  required: false
+  description: Optional reason for revision
+tools:
+  read: true
+  write: true
+  edit: true
+  glob: true
+  grep: true
+  bash: true
+permissions:
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+    "specs/**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+  bash:
+    "git:*": "allow"
+    "jq:*": "allow"
+    "*": "deny"
+allowed_tools: Read, Write, Edit, Glob, Grep, Bash(jq:*), Bash(git:*), TodoWrite
+argument_hint: TASK_NUMBER [REASON]
 delegation_depth: 1
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance

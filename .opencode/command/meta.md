@@ -2,25 +2,40 @@
 command: meta
 description: Interactive system builder that creates TASKS for agent architecture changes (never implements directly)
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: prompt
-    type: string
-    required: false
-    description: Optional prompt for abbreviated flow
-  - name: analyze
-    type: boolean
-    required: false
-    description: Analyze existing system (flag: --analyze)
-allowed-tools: Skill
-argument-hint: [PROMPT] | --analyze
-
+  name: prompt
+  type: string
+  required: false
+  description: Optional prompt for abbreviated flow
+  name: analyze
+  type: boolean
+  required: false
+  description: Analyze existing system (flag analyze)
+tools:
+  read: true
+  write: false
+  edit: false
+  glob: false
+  bash: false
+  skill: true
+permissions:
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+  write:
+    "*": "deny"
+  bash:
+    "*": "deny"
+allowed_tools: Skill
+argument_hint: [PROMPT] | --analyze
 delegation_depth: 1
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance

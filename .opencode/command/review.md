@@ -2,24 +2,42 @@
 command: review
 description: Review code and create analysis reports
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: scope
-    type: string
-    required: false
-    description: File path, directory, or "all"
-  - name: create_tasks
-    type: boolean
-    required: false
-    description: Create tasks for findings (flag: --create-tasks)
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), TodoWrite, mcp__lean-lsp__*
-argument-hint: [SCOPE] [--create-tasks]
+  name: scope
+  type: string
+  required: false
+  description: File path, directory, or "all"
+  name: create_tasks
+  type: boolean
+  required: false
+  description: Create tasks for findings (flag create-tasks)
+tools:
+  read: true
+  write: true
+  edit: true
+  glob: true
+  grep: true
+  bash: true
+permissions:
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+    "specs/**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+  bash:
+    "git:*": "allow"
+    "*": "deny"
+allowed_tools: Read, Write, Edit, Glob, Grep, Bash(git:*), TodoWrite, mcp__lean-lsp__*
+argument_hint: [SCOPE] [--create-tasks]
 delegation_depth: 0
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance

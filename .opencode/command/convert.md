@@ -2,24 +2,43 @@
 command: convert
 description: Convert documents between formats (PDF/DOCX to Markdown, Markdown to PDF)
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: source_path
-    type: string
-    required: true
-    description: Source file path
-  - name: output_path
-    type: string
-    required: false
-    description: Optional output path
-allowed-tools: Skill, Bash(jq:*), Bash(test:*), Bash(dirname:*), Bash(basename:*), Read
-argument-hint: SOURCE_PATH [OUTPUT_PATH]
+  name: source_path
+  type: string
+  required: true
+  description: Source file path
+  name: output_path
+  type: string
+  required: false
+  description: Optional output path
+tools:
+  read: true
+  write: false
+  edit: false
+  glob: false
+  bash: true
+  skill: true
+permissions:
+  read:
+    "**/*": "allow"
+  write:
+    "*": "deny"
+  bash:
+    "jq:*": "allow"
+    "test:*": "allow"
+    "dirname:*": "allow"
+    "basename:*": "allow"
+    "*": "deny"
+allowed_tools: Skill, Bash(jq:*), Bash(test:*), Bash(dirname:*), Bash(basename:*), Read
+argument_hint: SOURCE_PATH [OUTPUT_PATH]
 delegation_depth: 1
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance

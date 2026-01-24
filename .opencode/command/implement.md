@@ -2,25 +2,43 @@
 command: implement
 description: Execute implementation with resume support
 version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: task_number
-    type: integer
-    required: true
-    description: Task number to implement
-  - name: force
-    type: boolean
-    required: false
-    description: Override status validation (flag: --force)
-allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit, Glob
-argument-hint: TASK_NUMBER
-
+  name: task_number
+  type: integer
+  required: true
+  description: Task number to implement
+  name: force
+  type: boolean
+  required: false
+  description: Override status validation
+tools:
+  read: true
+  write: true
+  edit: true
+  glob: true
+  bash: true
+  skill: true
+permissions:
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+    "specs/**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+  bash:
+    "git:*": "allow"
+    "jq:*": "allow"
+    "*": "deny"
+allowed_tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit, Glob
+argument_hint: TASK_NUMBER [--force]
 delegation_depth: 1
 max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required:
-    - "core/workflows/command-lifecycle.md"
+  required: "core/workflows/command-lifecycle.md"
 ---
 
 ## Context Loading Guidance
