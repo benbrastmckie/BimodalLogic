@@ -194,7 +194,7 @@ technical_debt:
 
 ### 674. systematic command skill agent architecture improvement
 - **Effort**: 3-4 days
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Blocking**: None

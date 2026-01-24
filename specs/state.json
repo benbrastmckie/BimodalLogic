@@ -795,7 +795,7 @@
     {
       "project_number": 674,
       "project_name": "systematic_command_skill_agent_architecture_improvement",
-      "status": "planned",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-24T17:00:00Z",
@@ -809,7 +809,8 @@
           "path": "specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-001.md",
           "summary": "Comprehensive architecture analysis identifying command bypass issues, lifecycle inconsistencies, and providing 5-phase implementation plan for systematic improvement"
         }
-      ]
+      ],
+      "last_updated": "2026-01-24T17:30:00Z"
     }
   ],
   "completed_projects": [
