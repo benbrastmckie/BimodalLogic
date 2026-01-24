@@ -201,7 +201,7 @@ technical_debt:
 - **Dependencies**: None
 - **Created**: 2026-01-24
 - **Artifacts**:
-  - [Task Specification](specs/674_systematic_command_skill_agent_architecture_improvement/task-specification.md) - Comprehensive architecture improvement plan with 5-phase implementation
+  - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-001.md) - Comprehensive architecture analysis with 5-phase implementation plan
 
 **Description**: Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management
 

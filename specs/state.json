@@ -805,9 +805,9 @@
       "dependencies": [],
       "artifacts": [
         {
-          "type": "specification",
-          "path": "specs/674_systematic_command_skill_agent_architecture_improvement/task-specification.md",
-          "summary": "Comprehensive task specification for architecture improvement including analysis, implementation plan, and acceptance criteria"
+          "type": "research",
+          "path": "specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-001.md",
+          "summary": "Comprehensive architecture analysis identifying command bypass issues, lifecycle inconsistencies, and providing 5-phase implementation plan for systematic improvement"
         }
       ]
     }
