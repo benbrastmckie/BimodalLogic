@@ -19,7 +19,7 @@
         {
           "type": "plan",
           "path": "specs/673_lean_opencode_overhaul/plans/implementation-001.md",
-           "summary": "4-phase implementation plan to create missing command execution infrastructure and integrate existing ported components for LEAN 4 workflows"
+          "summary": "4-phase implementation plan to create missing command execution infrastructure and integrate existing ported components for LEAN 4 workflows"
         },
         {
           "type": "research",
@@ -768,14 +768,46 @@
       "researched": "2026-01-23T20:16:21Z",
       "artifacts": [
         {
-          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-001.md",
-          "type": "research",
-          "summary": "Task created manually due to system failure - research report with constitutive model definitions from LaTeX"
+          "type": "report",
+          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md",
+          "summary": "Comprehensive research report correcting previous analysis, identifying Set vs Prop mathematical equivalence in Lean 4"
         },
         {
-          "type": "research",
-          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md",
-          "summary": "Research report confirming alignment between Lean code and LaTeX definitions"
+          "type": "report",
+          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md",
+          "summary": "Comprehensive research report correcting previous analysis, identifying Set vs Prop mathematical equivalence in Lean 4"
+        }
+      ],
+      "next_steps": "Review research findings and determine if documentation updates are needed for LaTeX and/or Lean source files",
+      "metadata": {
+        "session_id": "sess_1769209102_12880",
+        "agent_type": "lean-research-agent",
+        "duration_seconds": 7200,
+        "delegation_depth": 1,
+        "delegation_path": [
+          "orchestrator",
+          "research",
+          "lean-research-agent"
+        ],
+        "findings_count": 5
+      }
+    },
+    {
+      "project_number": 674,
+      "project_name": "systematic_command_skill_agent_architecture_improvement",
+      "status": "planned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-24T17:00:00Z",
+      "description": "Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management",
+      "effort": "3-4 days",
+      "blocking": [],
+      "dependencies": [],
+      "artifacts": [
+        {
+          "type": "specification",
+          "path": "specs/674_systematic_command_skill_agent_architecture_improvement/task-specification.md",
+          "summary": "Comprehensive task specification for architecture improvement including analysis, implementation plan, and acceptance criteria"
         }
       ]
     }

@@ -1,5 +1,5 @@
 ---
-next_project_number: 674
+next_project_number: 675
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -178,7 +178,7 @@ technical_debt:
 
 ### 666. revise lean source code logos theory definitions
 - **Effort**: TBD
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -186,8 +186,24 @@ technical_debt:
 - **Created**: 2026-01-21
 - **Artifacts**:
   - [Research Report](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md)
+  - [Research Report (Corrected)](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md) - Set vs Prop mathematical equivalence analysis
 
 **Description**: Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex
+
+---
+
+### 674. systematic command skill agent architecture improvement
+- **Effort**: 3-4 days
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: meta
+- **Blocking**: None
+- **Dependencies**: None
+- **Created**: 2026-01-24
+- **Artifacts**:
+  - [Task Specification](specs/674_systematic_command_skill_agent_architecture_improvement/task-specification.md) - Comprehensive architecture improvement plan with 5-phase implementation
+
+**Description**: Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management
 
 ---
 
