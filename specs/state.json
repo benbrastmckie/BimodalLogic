@@ -808,6 +808,11 @@
           "type": "research",
           "path": "specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-001.md",
           "summary": "Comprehensive architecture analysis identifying command bypass issues, lifecycle inconsistencies, and providing 5-phase implementation plan for systematic improvement"
+        },
+        {
+          "type": "research",
+          "path": "specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-002.md",
+          "summary": "Focused analysis of preflight/postflight inconsistencies, command bypass vulnerabilities, and detailed implementation roadmap with 5-phase priority matrix"
         }
       ],
       "last_updated": "2026-01-24T17:30:00Z"
