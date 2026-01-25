@@ -186,7 +186,7 @@ technical_debt:
 ---
 
 ### 630. Build TaskModel extraction from saturated tableau branches
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -239,9 +239,9 @@ technical_debt:
 ---
 
 ### 610. Complete truth bridge (Strategy B) for completeness proof
-- **Status**: [IMPLEMENTING]
-- **Researched**: 2026-01-19
-- **Research**: [research-001.md](specs/610_complete_truth_bridge_strategy_b/reports/research-001.md)
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-25
+- **Research**: [research-001.md](specs/610_complete_truth_bridge_strategy_b/reports/research-001.md), [research-002.md](specs/610_complete_truth_bridge_strategy_b/reports/research-002.md)
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
