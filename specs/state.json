@@ -118,12 +118,12 @@
     {
       "project_number": 653,
       "project_name": "improve_metalogic_infrastructure",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T23:16:47Z",
-      "last_updated": "2026-01-25T18:45:46Z",
-      "session_id": "sess_1769366647_31e5fa",
+      "last_updated": "2026-01-25T18:47:46Z",
+      "session_id": "sess_1769366850_aed9f3",
       "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
       "source_lines": [
         142,
@@ -146,17 +146,19 @@
       ],
       "planning": "2026-01-25T18:44:15Z",
       "planned": "2026-01-25T18:45:46Z",
-      "plan_summary": "4-phase implementation plan for documentation alignment between LaTeX and IndexedMCSFamily-based Lean implementation"
+      "plan_summary": "4-phase implementation plan for documentation alignment between LaTeX and IndexedMCSFamily-based Lean implementation",
+      "started": "2026-01-25T18:47:46Z"
     },
     {
       "project_number": 648,
       "project_name": "research_canonical_frame_temporal_order_generalization",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T20:55:08Z",
-      "last_updated": "2026-01-20T20:55:08Z",
-      "session_id": "sess_1768941258_a63c63"
+      "last_updated": "2026-01-25T18:46:58Z",
+      "session_id": "sess_1768941258_a63c63",
+      "researching": "2026-01-25T18:46:58Z"
     },
     {
       "project_number": 639,
@@ -649,6 +651,16 @@
         }
       ],
       "last_updated": "2026-01-24T00:59:55Z"
+    },
+    {
+      "project_number": 675,
+      "project_name": "enforce_skill_postflight_checkpoint_pattern",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-25T18:49:46Z",
+      "last_updated": "2026-01-25T18:49:46Z",
+      "description": "Ensure all command workflows enforce the skill-based checkpoint pattern (GATE IN → DELEGATE → GATE OUT → COMMIT) by preventing direct agent invocation and guaranteeing postflight operations execute. Current issue: Commands can bypass skills and call agents directly via Task tool, causing missing status updates, artifact linking, and git commits. Solution: Add validation layer that enforces skill delegation, implement postflight verification, and document the checkpoint contract."
     }
   ],
   "completed_projects": [
@@ -663,7 +675,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 674,
+  "next_project_number": 676,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

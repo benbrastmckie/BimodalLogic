@@ -5,15 +5,15 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 13
+  active: 14
   completed: 242
   in_progress: 0
   not_started: 13
   abandoned: 20
-  total: 265
+  total: 266
 priority_distribution:
   critical: 0
-  high: 5
+  high: 6
   medium: 9
   low: 6
 technical_debt:
@@ -26,6 +26,19 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 675. Enforce skill postflight checkpoint pattern
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-25T18:49:46Z
+
+**Description**: Ensure all command workflows enforce the skill-based checkpoint pattern (GATE IN → DELEGATE → GATE OUT → COMMIT) by preventing direct agent invocation and guaranteeing postflight operations execute. Current issue: Commands can bypass skills and call agents directly via Task tool, causing missing status updates, artifact linking, and git commits. Solution: Add validation layer that enforces skill delegation, implement postflight verification, and document the checkpoint contract.
+
+---
+
+
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -174,6 +187,8 @@ technical_debt:
 ---
 
 ### 648. Research canonical frame temporal order generalization
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-25T18:47:01Z
 - **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
