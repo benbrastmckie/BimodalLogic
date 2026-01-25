@@ -146,10 +146,12 @@ technical_debt:
 
 
 ### 655. Fix jq errors in agent system
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
+- **Researched**: 2026-01-25T18:45:39Z
+- **Research**: [research-001.md](specs/655_fix_jq_errors_in_agent_system/reports/research-001.md)
 
 **Description**: Review the entire .claude/ agent system to fix all jq (and other) errors that occur in commands like /research. Some commands have been fixed individually, but a comprehensive review is needed to identify and fix all remaining jq errors to improve efficiency. The errors may include syntax issues, escaping problems, or other command-line issues in skill and agent definitions.
 
