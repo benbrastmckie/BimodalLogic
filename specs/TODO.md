@@ -301,7 +301,7 @@ technical_debt:
 ### 658. Prove indexed family coherence conditions
 - **Plan**: [implementation-001.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-001.md)
 - **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md)
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Started**: 2026-01-25T21:32:07Z
 - **Session**: sess_1769395200_f8a2b9
 - **Effort**: 8-12 hours
@@ -310,8 +310,12 @@ technical_debt:
 - **Created**: 2026-01-21
 - **Related**: Task 654
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:433,439,448,456
+- **Summary**: [implementation-summary-20260125.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260125.md)
+- **Blocked-By**: Fundamental construction issue - independent Lindenbaum extensions don't preserve temporal coherence
 
 **Description**: Prove the four coherence condition sorries in the construct_indexed_family function (lines 433, 439, 448, 456). These ensure the indexed MCS family satisfies the coherence requirements that make it work with irreflexive temporal semantics (avoiding the T-axiom problem). Completing these would make the family construction fully constructive. From review-20260121-task654.md medium priority recommendations.
+
+**Blocker**: The construct_indexed_family function uses independent Lindenbaum extensions at each time point, which don't preserve temporal coherence. Requires redesign using coherent construction (see Boneyard's canonical_task_rel pattern).
 
 ---
 
