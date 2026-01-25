@@ -153,7 +153,14 @@
       "created": "2026-01-20T01:07:10Z",
       "last_updated": "2026-01-25T22:52:03Z",
       "session_id": "sess_1769380945_90f0f5",
-      "researched": "2026-01-25T22:52:03Z"
+      "researched": "2026-01-25T22:52:03Z",
+      "artifacts": [
+        {
+          "path": "specs/630_build_taskmodel_extraction_from_saturated_branches/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report covering TaskModel extraction from saturated tableau branches with 5-phase implementation approach"
+        }
+      ]
     },
     {
       "project_number": 631,
