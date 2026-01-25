@@ -17,11 +17,11 @@
     {
       "project_number": 665,
       "project_name": "update_guides_templates_to_follow_new_standards",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-21T20:39:02Z",
-      "last_updated": "2026-01-25T20:37:49Z",
+      "last_updated": "2026-01-25T20:41:52Z",
       "session_id": "sess_1769390827_c4e8f1",
       "dependencies": [
         661,
@@ -38,9 +38,17 @@
         {
           "path": "specs/665_update_guides_templates_to_follow_new_standards/plans/implementation-001.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/665_update_guides_templates_to_follow_new_standards/summaries/implementation-summary-20260125.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "started": "2026-01-25T20:37:49Z"
+      "started": "2026-01-25T20:37:49Z",
+      "completed": "2026-01-25T20:41:52Z",
+      "completion_summary": "Updated 10 documentation files to comply with new standards: removed Quick Start references from user-installation.md and copy-claude-directory.md, removed version metadata from 8 guide and template files, and fixed invalid path references in 3 files.",
+      "claudemd_suggestions": "none"
     },
     {
       "project_number": 656,
@@ -111,11 +119,11 @@
     {
       "project_number": 655,
       "project_name": "fix_jq_errors_in_agent_system",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T23:01:27Z",
-      "last_updated": "2026-01-25T18:45:39Z",
+      "last_updated": "2026-01-25T20:42:01Z",
       "researched": "2026-01-25T18:45:39Z",
       "artifacts": [
         {
@@ -123,7 +131,8 @@
           "path": "specs/655_fix_jq_errors_in_agent_system/reports/research-001.md",
           "summary": "Comprehensive analysis finding zero active jq errors, one structural error in /todo, and 5 priority improvements for command architecture"
         }
-      ]
+      ],
+      "session_id": "sess_1769373708_1272f1"
     },
     {
       "project_number": 653,

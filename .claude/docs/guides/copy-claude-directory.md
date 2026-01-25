@@ -179,17 +179,17 @@ You should see directories including:
 - `skills/` - Specialized agent skills
 - `rules/` - Automatic behavior rules
 - `context/` - Domain knowledge
-- `specs/` - Task artifacts and state
 - `docs/` - Documentation
+- `agents/` - Execution agents
 
 ### 2. Check Key Files Exist
 
 ```bash
-# macOS/Linux
-ls specs/TODO.md specs/state.json
+# macOS/Linux - specs/ is at project root, not inside .claude/
+ls -la .claude/CLAUDE.md specs/TODO.md specs/state.json
 
 # Windows PowerShell
-Test-Path .claude\specs\TODO.md, .claude\specs\state.json
+Test-Path .claude\CLAUDE.md, specs\TODO.md, specs\state.json
 ```
 
 ### 3. Restart Claude Code

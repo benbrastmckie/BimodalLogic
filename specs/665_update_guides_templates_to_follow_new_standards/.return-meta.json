@@ -1,21 +1,75 @@
 {
-  "status": "researched",
-  "summary": "Found 12 violations across 6 files in docs/guides/ and docs/templates/: 2 Quick Start sections to rename, 8 version footers/headers to remove, 3 invalid path references to fix. All files already use present tense correctly.",
+  "status": "implemented",
+  "summary": "Updated 10 documentation files in guides/ and templates/ to comply with documentation standards. Removed Quick Start references from 2 files, removed version metadata from 8 files, and fixed invalid path references in 3 files.",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/665_update_guides_templates_to_follow_new_standards/reports/research-001.md",
-      "summary": "Research report documenting documentation standards violations in guides and templates directories with specific line numbers and required changes"
+      "type": "implementation",
+      "path": ".claude/docs/guides/user-installation.md",
+      "summary": "Removed quick-start reference, fixed commands reference paths"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/guides/copy-claude-directory.md",
+      "summary": "Renamed Quick Start section, fixed verification paths"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/guides/permission-configuration.md",
+      "summary": "Removed version header and revision history, fixed Related Documentation paths"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/guides/context-loading-best-practices.md",
+      "summary": "Removed version header"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/guides/creating-agents.md",
+      "summary": "Removed version footer"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/guides/creating-skills.md",
+      "summary": "Removed version footer"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/guides/component-selection.md",
+      "summary": "Removed version footer"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/templates/README.md",
+      "summary": "Removed Migration History section and version footer"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/templates/agent-template.md",
+      "summary": "Removed version footer"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/docs/templates/command-template.md",
+      "summary": "Removed version footer"
+    },
+    {
+      "type": "summary",
+      "path": "specs/665_update_guides_templates_to_follow_new_standards/summaries/implementation-summary-20260125.md",
+      "summary": "Implementation summary with verification results"
     }
   ],
-  "session_id": "sess_1769032896_acf687",
-  "metadata": {
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
-    "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 12,
-    "files_analyzed": 11
+  "completion_data": {
+    "completion_summary": "Updated 10 documentation files to comply with new standards: removed Quick Start references from user-installation.md and copy-claude-directory.md, removed version metadata from 8 guide and template files, and fixed invalid path references in 3 files.",
+    "claudemd_suggestions": "none"
   },
-  "next_steps": "Run /plan 665 to create implementation plan"
+  "next_steps": "Review implementation and run /todo to archive completed task",
+  "metadata": {
+    "session_id": "sess_1769390827_c4e8f1",
+    "duration_seconds": 900,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  }
 }

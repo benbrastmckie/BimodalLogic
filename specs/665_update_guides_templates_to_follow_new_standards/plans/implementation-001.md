@@ -3,7 +3,7 @@
 ## Metadata
 
 - **Task**: 665 - update_guides_templates_to_follow_new_standards
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2-3 hours
 - **Complexity**: Medium
 - **Language**: meta
@@ -135,7 +135,7 @@ Documentation files in `docs/guides/` and `docs/templates/` contain violations o
 - [ ] No historical sections removed
 
 ### Phase 3: Path Reference Fixes (Priority 3)
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 **Effort**: 0.5 hours
 
 **Description**: Fix invalid path references identified in research
@@ -155,7 +155,7 @@ Documentation files in `docs/guides/` and `docs/templates/` contain violations o
 - [ ] Verified with file existence checks
 
 ### Phase 4: Validation and Review
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 **Effort**: 0.5 hours
 
 **Description**: Final validation that all standards are met

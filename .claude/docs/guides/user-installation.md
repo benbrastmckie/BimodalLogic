@@ -161,9 +161,9 @@ the .claude/ directory into my current working directory.
    ```
    /task "Test task"
    ```
-3. **Learn the commands** - Read the full command reference:
+3. **Learn the commands** - Read the full reference:
    ```
-   https://raw.githubusercontent.com/benbrastmckie/ProofChecker/main/.claude/docs/commands/README.md
+   https://raw.githubusercontent.com/benbrastmckie/ProofChecker/main/.claude/CLAUDE.md
    ```
 
 ### Available Commands
@@ -176,7 +176,7 @@ the .claude/ directory into my current working directory.
 | `/implement` | Execute implementation |
 | `/todo` | Archive completed tasks |
 
-For complete documentation, see the [Commands Reference](../commands/README.md).
+For complete documentation, see [CLAUDE.md](../../CLAUDE.md).
 
 ---
 
@@ -413,7 +413,7 @@ claude auth login
 
 - **[Architecture](../../ARCHITECTURE.md)** - System architecture overview
 - **[CLAUDE.md](../../CLAUDE.md)** - Quick reference for the agent system
-- **[Commands Reference](../commands/README.md)** - Full command documentation
+- **[CLAUDE.md](../../CLAUDE.md)** - Full command documentation
 
 ### Project Documentation
 

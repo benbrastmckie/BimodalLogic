@@ -155,25 +155,29 @@ technical_debt:
 
 ### 665. Update guides and templates to follow new standards
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-21
+- **Completed**: 2026-01-25
 - **Started**: 2026-01-21
 - **Researched**: 2026-01-21
 - **Planned**: 2026-01-21T22:40:42Z
 - **Dependencies**: 661, 662
 - **Research**: [research-001.md](specs/665_update_guides_templates_to_follow_new_standards/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/665_update_guides_templates_to_follow_new_standards/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260125.md](specs/665_update_guides_templates_to_follow_new_standards/summaries/implementation-summary-20260125.md)
 
 **Description**: Update remaining files in `docs/guides/` and `docs/templates/`: remove "quick start" sections from `user-installation.md`; ensure present tense throughout; fix references to non-existent paths; apply ALL_CAPS naming where appropriate; update templates/README.md to remove version numbers and version history references.
+
+**Completion Summary**: Updated 10 documentation files to comply with new standards: removed Quick Start references from user-installation.md and copy-claude-directory.md, removed version metadata from 8 guide and template files, and fixed invalid path references in 3 files.
 
 ---
 
 
 
 ### 655. Fix jq errors in agent system
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
