@@ -1,7 +1,7 @@
 # Implementation Plan: Task #680
 
 - **Task**: 680 - unify_todo_review_roadmap_matching
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Priority**: high
 - **Dependencies**: Task 639 (completed)
@@ -46,7 +46,7 @@ Research report (research-001.md) confirms:
 
 ## Implementation Phases
 
-### Phase 1: Remove Warning from /review [NOT STARTED]
+### Phase 1: Remove Warning from /review [COMPLETED]
 
 **Goal**: Remove unmatched tasks warning sections from /review command
 

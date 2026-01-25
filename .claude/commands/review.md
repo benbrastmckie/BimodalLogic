@@ -170,24 +170,6 @@ Build `roadmap_matches` list:
 ]
 ```
 
-**Unmatched Tasks Warning:**
-
-Track tasks that could not be matched to any roadmap item:
-```json
-{
-  "unmatched_tasks": [
-    {
-      "task_number": 630,
-      "task_name": "refactor_kripke_frames",
-      "reason": "No roadmap_items specified, no (Task 630) reference in ROAD_MAP.md"
-    }
-  ],
-  "warning": "3 completed tasks have no roadmap item match. Consider adding roadmap_items during implementation."
-}
-```
-
-Include unmatched tasks in the review report under a dedicated warning section.
-
 ### 2.5.3. Annotate Completed Roadmap Items
 
 For matched items (from Priority 1 or Priority 2 matching), update ROAD_MAP.md to mark items as complete.
@@ -299,15 +281,6 @@ Write to `specs/reviews/review-{DATE}.md`:
 
 *Matched via (Task N) reference:*
 - [x] {item} *(Completed: Task {N}, {DATE})*
-
-### Unmatched Completed Tasks
-
-> **Warning**: The following completed tasks have no roadmap item match.
-> Consider adding `roadmap_items` during implementation for future tasks.
-
-| Task | Name | Reason |
-|------|------|--------|
-| {N} | {task_name} | No roadmap_items, no (Task N) ref |
 
 ### Current Focus
 | Phase | Priority | Current Goal | Progress |
@@ -481,13 +454,8 @@ Roadmap Progress:
 - Annotations made: {N} items marked complete
   - Via explicit roadmap_items: {N}
   - Via (Task N) references: {N}
-- Unmatched completed tasks: {N} (see report for details)
 - Current focus: {phase_name} ({priority})
 - Recommended tasks: {N}
-
-{If unmatched tasks > 0}
-**Warning**: {N} completed tasks could not be matched to roadmap items.
-Agents should populate `roadmap_items` during implementation.
 
 {If tasks created from issues}
 Created {N} tasks for critical/high issues:
