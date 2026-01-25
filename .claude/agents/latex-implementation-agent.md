@@ -277,7 +277,7 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
   ],
   "completion_data": {
     "completion_summary": "1-3 sentence description of document created",
-    "roadmap_items": ["Optional: roadmap item text this task addresses"]
+    "roadmap_items": ["Exact ROAD_MAP.md checkbox text this task addresses"]
   },
   "metadata": {
     "session_id": "{from delegation context}",
