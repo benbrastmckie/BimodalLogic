@@ -264,7 +264,7 @@ technical_debt:
 ---
 
 ### 656. Complete truth lemma forward direction (imp/box cases)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Effort**: 4-6 hours
 - **Priority**: Medium
 - **Language**: lean
@@ -277,7 +277,7 @@ technical_debt:
 ---
 
 ### 657. Prove seed consistency (temporal K distribution)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-25T20:53:16Z
 - **Effort**: 6-8 hours
 - **Status**: [IMPLEMENTING]
@@ -292,7 +292,8 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [RESEARCHING]
+- **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md)
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-25T21:32:07Z
 - **Session**: sess_1769376706_e66bd8
 - **Effort**: 8-12 hours
