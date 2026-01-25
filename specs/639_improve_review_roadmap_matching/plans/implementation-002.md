@@ -85,7 +85,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Update Agent Guidance for roadmap_items [NOT STARTED]
+### Phase 2: Update Agent Guidance for roadmap_items [IN PROGRESS]
 
 **Goal**: Add clear instructions for agents to populate roadmap_items during implementation
 

@@ -216,9 +216,21 @@ Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
    - Include page count and key sections created
    - Example: "Created 42-page Logos documentation with 4 chapters covering syntax, semantics, proofs, and examples."
 
-2. Optionally generate `roadmap_items`: Array of explicit ROAD_MAP.md item texts this task addresses
-   - Only include if the task clearly maps to specific roadmap items
+2. **REQUIRED**: Generate `roadmap_items`: Array of explicit ROAD_MAP.md item texts this task addresses
+   - Read `specs/ROAD_MAP.md` to find matching checkbox items
+   - Copy exact text from roadmap (must match precisely for /review to annotate)
+   - If no roadmap items match, set to empty array `[]`
    - Example: `["Create user documentation for Logos system"]`
+
+**Finding Relevant Roadmap Items**:
+1. Read `specs/ROAD_MAP.md` before completing the task
+2. Search for checkbox items (`- [ ]`) related to documentation or reports
+3. Copy the exact checkbox text (after `- [ ]` but before any existing annotations)
+4. Include all matching items in the `roadmap_items` array
+
+**Why This Matters**: The `/review` command uses `roadmap_items` to automatically annotate
+completed work in ROAD_MAP.md. Without explicit items, completed documentation won't be
+tracked on the roadmap. This is intentional - we prioritize precision over recall.
 
 **Example completion_data for LaTeX task**:
 ```json

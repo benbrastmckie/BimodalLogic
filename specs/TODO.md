@@ -29,10 +29,12 @@ technical_debt:
 
 ### 677. Study preflight/postflight patterns for improvements
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
+- **Researched**: 2026-01-25T21:40:00Z
+- **Research**: [research-001.md](specs/677_study_preflight_postflight_patterns_for_improvements/reports/research-001.md)
 
 **Description**: When /research 675 was run, the output showed failure to update task status during preflight. Carefully study the preflight and postflight patterns used throughout the .claude/ agent system to identify all improvements that could be made to improve performance and efficiency without needless complexity. Analyze: (1) Command preflight patterns in .claude/commands/, (2) Skill postflight patterns in .claude/skills/, (3) Agent return metadata patterns, (4) State synchronization between TODO.md and state.json, (5) Git commit timing and error handling. Document findings and recommend concrete improvements.
 
@@ -211,13 +213,14 @@ technical_debt:
 
 
 ### 639. Improve /review roadmap matching reliability
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-25T21:30:00Z
 - **Planned**: 2026-01-25T21:35:00Z
 - **Revised**: 2026-01-25T21:37:00Z
+- **Started**: 2026-01-25T21:40:00Z
 - **Research**: [research-001.md](specs/639_improve_review_roadmap_matching/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/639_improve_review_roadmap_matching/plans/implementation-002.md) (v2 - clean break, no fuzzy matching)
 
