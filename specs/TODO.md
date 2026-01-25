@@ -172,17 +172,21 @@ technical_debt:
 
 ### 653. Improve metalogic infrastructure (rename frame, address infinite contexts)
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
 - **Source**: Theories/Bimodal/latex/subfiles/04-Metalogic.tex:142,253
 - **Researched**: 2026-01-25T08:34:17Z
 - **Planned**: 2026-01-25T21:57:27Z
+- **Completed**: 2026-01-25T22:01:00Z
 - **Research**: [research-001.md](specs/653_improve_metalogic_infrastructure/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/653_improve_metalogic_infrastructure/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260125.md](specs/653_improve_metalogic_infrastructure/summaries/implementation-summary-20260125.md)
 
 **Description**: Two related metalogic improvements: (1) Rename SemanticCanonicalFrame to CanonicalTaskFrame in Lean source code for accuracy (the current name is misleading since it's a task frame, not a general semantic frame). (2) Address infinite contexts/sets which remain unaddressed - this should be handled by proving and applying compactness to extend the current finite-context completeness results to infinite contexts.
+
+**Completion Summary**: Updated LaTeX documentation to reference IndexedMCSFamily approach instead of deprecated SemanticCanonicalFrame, created Metalogic/README.md architecture documentation, and added deprecation notices to Boneyard files. All documentation now accurately reflects the current Lean implementation.
 
 ---
 

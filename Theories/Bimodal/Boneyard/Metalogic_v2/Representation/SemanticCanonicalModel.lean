@@ -6,18 +6,28 @@ import Mathlib.Data.Set.Basic
 import Mathlib.Data.Finite.Defs
 
 /-!
-# Semantic Canonical Model for Metalogic_v2
+# DEPRECATED: Semantic Canonical Model (Metalogic_v2)
+
+**Status**: This file is in the Boneyard and should not be used for active development.
+**Deprecated**: 2026-01-25
+**Replacement**: Use `IndexedMCSFamily` approach in `Theories/Bimodal/Metalogic/`
+
+See `Boneyard/README.md` for deprecation rationale.
+
+---
+
+## Historical Documentation
 
 This module provides the semantic canonical model construction for proving
 completeness of TM bimodal logic.
 
-## Overview
+### Overview
 
 The semantic approach defines world states as equivalence classes of
 (history, time) pairs. This makes compositionality trivial because history
 paths compose naturally.
 
-## Main Definitions
+### Main Definitions
 
 - `HistoryTimePair`: A pair of (FiniteHistory, FiniteTime)
 - `htEquiv`: Equivalence relation - same world state at given time
@@ -26,13 +36,21 @@ paths compose naturally.
 - `SemanticCanonicalModel`: TaskModel for completeness proof
 - `semantic_truth_lemma`: Truth correspondence
 
-## Key Theorem
+### Known Limitations (Why Deprecated)
+
+1. `semantic_task_rel_compositionality` has a sorry - mathematically impossible
+   for unbounded durations in finite time domain [-k, k]
+2. Formula-specific construction (not universally parametric)
+3. Truth bridge from general validity to finite model truth is incomplete
+
+### Key Theorem
 
 - `main_provable_iff_valid_v2`: Nonempty (phi) iff valid phi
 
-## References
+### References
 
 - Old Metalogic: `Bimodal.Metalogic.Completeness.FiniteCanonicalModel`
+- Replacement: `Bimodal.Metalogic.Representation.IndexedMCSFamily`
 -/
 
 namespace Bimodal.Metalogic_v2.Representation
