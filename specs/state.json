@@ -6,25 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 677,
-      "project_name": "study_preflight_postflight_patterns_for_improvements",
-      "status": "researched",
-      "language": "meta",
-      "priority": "high",
-      "description": "When /research 675 was run, the output showed failure to update task status during preflight. Carefully study the preflight and postflight patterns used throughout the .claude/ agent system to identify all improvements that could be made to improve performance and efficiency without needless complexity. Analyze: (1) Command preflight patterns in .claude/commands/, (2) Skill postflight patterns in .claude/skills/, (3) Agent return metadata patterns, (4) State synchronization between TODO.md and state.json, (5) Git commit timing and error handling. Document findings and recommend concrete improvements.",
-      "created": "2026-01-25T20:50:34Z",
-      "last_updated": "2026-01-25T21:01:59Z",
-      "researched": "2026-01-25T21:01:59Z",
-      "research_summary": "Comprehensive analysis identifying command simulation code as root cause, with phased migration roadmap to enforce skill-based checkpoint pattern",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/677_study_preflight_postflight_patterns_for_improvements/reports/research-001.md",
-          "summary": "Comprehensive analysis identifying command simulation code as root cause, with phased migration roadmap to enforce skill-based checkpoint pattern"
-        }
-      ]
-    },
-    {
       "project_number": 676,
       "project_name": "investigate_skill_registration_integrate_task_command",
       "status": "planned",

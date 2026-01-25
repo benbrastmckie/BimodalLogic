@@ -39,19 +39,6 @@ technical_debt:
 
 ---
 
-### 677. Study preflight/postflight patterns for improvements
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-25
-- **Researched**: 2026-01-25T21:40:00Z
-- **Research**: [research-001.md](specs/677_study_preflight_postflight_patterns_for_improvements/reports/research-001.md)
-
-**Description**: When /research 675 was run, the output showed failure to update task status during preflight. Carefully study the preflight and postflight patterns used throughout the .claude/ agent system to identify all improvements that could be made to improve performance and efficiency without needless complexity. Analyze: (1) Command preflight patterns in .claude/commands/, (2) Skill postflight patterns in .claude/skills/, (3) Agent return metadata patterns, (4) State synchronization between TODO.md and state.json, (5) Git commit timing and error handling. Document findings and recommend concrete improvements.
-
----
-
 ### 676. Investigate skill registration and integrate /task command with checkpoint pattern
 - **Effort**: 8 hours
 - **Status**: [PLANNED]

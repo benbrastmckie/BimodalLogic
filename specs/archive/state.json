@@ -5,6 +5,26 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 677,
+      "project_name": "study_preflight_postflight_patterns_for_improvements",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "description": "When /research 675 was run, the output showed failure to update task status during preflight. Carefully study the preflight and postflight patterns used throughout the .claude/ agent system to identify all improvements that could be made to improve performance and efficiency without needless complexity.",
+      "created": "2026-01-25T20:50:34Z",
+      "last_updated": "2026-01-25T21:01:59Z",
+      "researched": "2026-01-25T21:01:59Z",
+      "research_summary": "Comprehensive analysis identifying command simulation code as root cause, with phased migration roadmap to enforce skill-based checkpoint pattern",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/677_study_preflight_postflight_patterns_for_improvements/reports/research-001.md",
+          "summary": "Comprehensive analysis identifying command simulation code as root cause, with phased migration roadmap to enforce skill-based checkpoint pattern"
+        }
+      ],
+      "abandoned": "2026-01-25T21:18:09Z"
+    },
+    {
       "project_number": 655,
       "project_name": "fix_jq_errors_in_agent_system",
       "status": "abandoned",
