@@ -139,7 +139,7 @@
     {
       "project_number": 630,
       "project_name": "build_taskmodel_extraction_from_saturated_branches",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "parent_task": 490,
@@ -151,14 +151,20 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-25T22:54:09Z",
+      "last_updated": "2026-01-25T22:56:00Z",
       "session_id": "sess_1769381643_cc6fe6",
       "researched": "2026-01-25T22:52:03Z",
+      "planned": "2026-01-25T22:56:00Z",
       "artifacts": [
         {
           "path": "specs/630_build_taskmodel_extraction_from_saturated_branches/reports/research-001.md",
           "type": "research",
           "summary": "Research report covering TaskModel extraction from saturated tableau branches with 5-phase implementation approach"
+        },
+        {
+          "path": "specs/630_build_taskmodel_extraction_from_saturated_branches/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for TaskModel extraction from saturated branches"
         }
       ]
     },
