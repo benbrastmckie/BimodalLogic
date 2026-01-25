@@ -139,7 +139,7 @@
     {
       "project_number": 630,
       "project_name": "build_taskmodel_extraction_from_saturated_branches",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "parent_task": 490,
@@ -151,8 +151,9 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-25T22:42:32Z",
-      "session_id": "sess_1769380945_90f0f5"
+      "last_updated": "2026-01-25T22:52:03Z",
+      "session_id": "sess_1769380945_90f0f5",
+      "researched": "2026-01-25T22:52:03Z"
     },
     {
       "project_number": 631,
@@ -254,13 +255,13 @@
     {
       "project_number": 619,
       "project_name": "agent_system_architecture_upgrade",
-      "status": "planned",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T20:33:57Z",
-      "last_updated": "2026-01-19T21:36:36Z",
-      "session_id": "sess_1768858110_5ad763",
-      "researched": "2026-01-19T20:42:08Z",
+      "last_updated": "2026-01-25T22:51:54Z",
+      "session_id": "sess_1769381425_3e9b2c",
+      "researched": "2026-01-25T22:51:54Z",
       "artifacts": [
         {
           "path": "specs/619_agent_system_architecture_upgrade/reports/research-001.md",
@@ -276,6 +277,11 @@
           "path": "specs/619_agent_system_architecture_upgrade/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 3-phase plan for future context:fork migration after GitHub #16803 is fixed"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/reports/research-003.md",
+          "type": "research",
+          "summary": "Status check on GitHub #16803 revealing plugin vs user-level skill distinction for context:fork functionality"
         }
       ],
       "planned": "2026-01-19T21:36:36Z"

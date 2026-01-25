@@ -186,7 +186,7 @@ technical_debt:
 ---
 
 ### 630. Build TaskModel extraction from saturated tableau branches
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -224,14 +224,14 @@ technical_debt:
 ---
 
 ### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [IMPLEMENTING]
-- **Researched**: 2026-01-19
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-25
 - **Priority**: Low
 - **Language**: meta
 - **Created**: 2026-01-19
-- **Blocked-By**: GitHub #16803 (context:fork bug)
-- **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md), [research-002.md](specs/619_agent_system_architecture_upgrade/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-003.md)
+- **Blocked-By**: Needs local verification (GitHub #16803 may only affect plugins)
+- **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md), [research-002.md](specs/619_agent_system_architecture_upgrade/reports/research-002.md), [research-003.md](specs/619_agent_system_architecture_upgrade/reports/research-003.md)
+- **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
 **Description**: FUTURE UPGRADE: Migrate agent system skills to use native `context: fork` frontmatter once Anthropic fixes GitHub issue #16803. Research-002.md confirmed context:fork IS a real feature (added v2.1.0) but is currently broken. Current Task tool delegation pattern is correct and should remain until the bug is fixed. When fixed, migrate skills to use `context: fork` + `agent:` frontmatter for cleaner context isolation.
 
