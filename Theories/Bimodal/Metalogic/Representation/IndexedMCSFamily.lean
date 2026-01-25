@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Representation.CanonicalWorld
 import Bimodal.Syntax.Formula
+import Bimodal.Boneyard.Metalogic.Completeness  -- For set_mcs_closed_under_derivation and set_mcs_all_future_all_future
 import Mathlib.Algebra.Order.Group.Defs
 
 /-!
@@ -422,37 +423,99 @@ noncomputable def construct_indexed_family
   -- Forward G coherence: G phi ∈ mcs(t) → phi ∈ mcs(t') for t < t'
   forward_G := by
     intro t t' phi hlt hG
-    -- Case 1: t = 0 (origin)
-    -- If G phi ∈ mcs(0) = extended Gamma, and 0 < t'
-    -- Then phi is in future_seed at t', hence in mcs(t')
-    -- Case 2: t > 0
-    -- If G phi ∈ mcs(t), need to show phi ∈ mcs(t')
-    -- This requires using Temporal 4: G phi → GG phi
-    -- Case 3: t < 0
-    -- Similar analysis needed
+    -- **Key Insight**: This proof relies on the relationship between
+    -- G phi ∈ mcs(t) and the seed structure. We use:
+    -- 1. MCS deductive closure (set_mcs_closed_under_derivation)
+    -- 2. Temporal 4 axiom (G phi → GG phi, via set_mcs_all_future_all_future)
+    -- 3. Seed containment in MCS (mcs_at_time_contains_seed)
+    --
+    -- The proof proceeds by showing phi is in the seed for mcs(t'),
+    -- which requires relating G phi ∈ mcs(t) to G phi ∈ Gamma.
+    --
+    -- **Case Analysis on t**:
+    -- When t = 0: G phi ∈ mcs(0) = extendToMCS(Gamma)
+    -- When t > 0: G phi ∈ mcs(t) = extendToMCS(future_seed), need GG phi ∈ Gamma
+    -- When t < 0: G phi ∈ mcs(t) = extendToMCS(past_seed), cross-origin case
+    --
+    -- **Main Strategy**:
+    -- Use the contrapositive with MCS negation completeness (neg_complete).
+    -- If phi ∉ mcs(t'), then ¬phi ∈ mcs(t') by negation completeness.
+    -- This should lead to G phi ∉ mcs(t) by temporal semantics.
+    --
+    -- However, this strategy requires connecting different MCS at different times,
+    -- which is exactly what the indexed family construction is trying to establish.
+    --
+    -- **Current Status**: This proof is incomplete. The construction may need
+    -- refinement to ensure coherence. See research-001.md for detailed analysis.
+    --
+    -- The sorries mark where additional infrastructure is needed:
+    -- - Lemma relating MCS extension to seed membership
+    -- - Lemma for cross-time-point MCS coherence
     sorry
 
   -- Backward H coherence: H phi ∈ mcs(t) → phi ∈ mcs(t') for t' < t
   backward_H := by
     intro t t' phi hlt hH
-    -- Symmetric to forward_G but using H and past direction
+    -- **Symmetric to forward_G** but using H (all_past) and past direction.
+    --
+    -- **Key Components**:
+    -- 1. Temporal 4 for H: H phi → HH phi (via set_mcs_all_past_all_past)
+    -- 2. Past seed: {psi | H psi ∈ Gamma} for t < 0
+    -- 3. Seed containment in MCS
+    --
+    -- **Main Strategy**: Similar to forward_G, use temporal axioms and
+    -- MCS closure properties to show phi is in the seed or extension at t'.
+    --
+    -- **Current Status**: This proof mirrors forward_G and has the same
+    -- infrastructure requirements.
     sorry
 
   -- Forward H coherence: H phi ∈ mcs(t') → phi ∈ mcs(t) for t < t'
   forward_H := by
     intro t t' phi hlt hH
-    -- If at future time t' we have H phi (always true in past)
-    -- Then phi must be true at earlier time t
-    -- This uses the seed construction: if t' > 0 and H phi ∈ mcs(t')
-    -- We need phi in the seed at t
+    -- **The "inverse" direction**: "Looking back from the future"
+    --
+    -- If H phi ∈ mcs(t') where t < t', then phi ∈ mcs(t).
+    -- Semantically: if "phi was always true in the past" holds at t',
+    -- then phi must have been true at the earlier time t.
+    --
+    -- **Key Difference from forward_G**:
+    -- This is NOT about seed propagation but semantic coherence.
+    -- The MCS at t' claims something about ALL past times, including t.
+    --
+    -- **Proof Strategy (Contrapositive)**:
+    -- 1. Assume phi ∉ mcs(t)
+    -- 2. By MCS negation completeness: ¬phi ∈ mcs(t)
+    -- 3. Show this contradicts H phi ∈ mcs(t') for t < t'
+    --    (Because H phi means phi at ALL past times, but t is past of t')
+    --
+    -- This requires connecting mcs(t) and mcs(t') through temporal semantics.
+    -- The key lemma needed: if ¬phi ∈ mcs(t) and t < t', then ¬(H phi) ∈ mcs(t')
+    -- which uses the Temporal A axiom or similar.
+    --
+    -- **Current Status**: Requires negation completeness lemma (neg_complete)
+    -- which has a sorry in CanonicalWorld.lean.
     sorry
 
   -- Backward G coherence: G phi ∈ mcs(t') → phi ∈ mcs(t) for t' < t
   backward_G := by
     intro t t' phi hlt hG
-    -- If at past time t' we have G phi (always true in future)
-    -- Then phi must be true at later time t
-    -- Similar analysis to forward_H
+    -- **The "inverse" direction**: "Looking forward from the past"
+    --
+    -- If G phi ∈ mcs(t') where t' < t, then phi ∈ mcs(t).
+    -- Semantically: if "phi will always be true in the future" holds at t',
+    -- then phi must be true at the later time t.
+    --
+    -- **Proof Strategy (Contrapositive)**: Similar to forward_H
+    -- 1. Assume phi ∉ mcs(t)
+    -- 2. By MCS negation completeness: ¬phi ∈ mcs(t)
+    -- 3. Show this contradicts G phi ∈ mcs(t') for t' < t
+    --    (Because G phi means phi at ALL future times, but t is future of t')
+    --
+    -- **Key Lemma Needed**: if ¬phi ∈ mcs(t) and t' < t, then ¬(G phi) ∈ mcs(t')
+    --
+    -- **Current Status**: Requires negation completeness and cross-time
+    -- coherence infrastructure.
     sorry
 
 /-!

@@ -47,29 +47,51 @@ Integrated from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Setup and Helper Lemmas [IN PROGRESS]
+### Phase 1: Setup and Helper Lemmas [BLOCKED]
 
 **Goal**: Create infrastructure for time-based case analysis and temporal axiom application
 
+**Status**: BLOCKED - Fundamental construction issue discovered.
+
+**Blocker Analysis** (discovered 2026-01-25):
+
+The coherence conditions cannot be proven with the current construction because:
+
+1. **Independent Lindenbaum Extensions**: The `mcs_at_time` function creates INDEPENDENT Lindenbaum extensions at each time point:
+   - `mcs(0) = extendToMCS(Gamma)`
+   - `mcs(t) = extendToMCS(future_seed(Gamma))` for t > 0
+   - `mcs(t) = extendToMCS(past_seed(Gamma))` for t < 0
+
+   These extensions are NOT coordinated - different invocations of `extendToMCS` can add different formulas.
+
+2. **Coherence Requires Cross-MCS Coordination**: The coherence condition `G phi ∈ mcs(t) → phi ∈ mcs(t')` requires formulas in `mcs(t)` to appear in `mcs(t')`. But:
+   - If `G phi` is added by Lindenbaum to `mcs(t)` (not from seed), there's no guarantee `phi` is in `mcs(t')`
+   - The independent extensions don't preserve temporal coherence
+
+3. **Circular Dependency**: Using contrapositive reasoning leads to circularity:
+   - To prove `phi ∉ mcs(t') → G phi ∉ mcs(t)`, we need to show `¬phi ∈ mcs(t') → F(¬phi) ∈ mcs(t)` (semantic coherence)
+   - But this requires the very coherence conditions we're trying to prove
+
+**Recommended Resolution**:
+- Option A: Modify `construct_indexed_family` to use a SINGLE coherent MCS extension that satisfies all temporal requirements from the start
+- Option B: Use the Boneyard's canonical model construction pattern (canonical_task_rel) which defines relations BETWEEN world states rather than a family from a root
+- Option C: Add an axiom/assumption that the Lindenbaum extensions are temporally coherent (weakens the theorem)
+
 **Tasks**:
-- [ ] Examine existing helper lemmas in IndexedMCSFamily.lean
-- [ ] Create helper lemma for G formula propagation via Temporal 4: `G phi in mcs(t) -> G phi in mcs(t')` for appropriate t, t'
-- [ ] Create helper lemma for H formula propagation (symmetric to G)
+- [x] Examine existing helper lemmas in IndexedMCSFamily.lean
+- [x] Added import for set_mcs_closed_under_derivation from Boneyard
+- [ ] Create helper lemma for G formula propagation - BLOCKED by construction issue
+- [ ] Create helper lemma for H formula propagation - BLOCKED by construction issue
 - [ ] Verify helpers compile and type-check
 
-**Timing**: 2 hours
+**Timing**: 2 hours (actual: exceeded, blocked)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean` - Add helper lemmas before coherence proofs
-
-**Verification**:
-- Helper lemmas compile without errors
-- Types match expected usage in coherence conditions
-- Use `lean_goal` to verify lemma statements
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean` - Added import for Boneyard lemmas, documented coherence condition sorries with detailed analysis
 
 ---
 
-### Phase 2: Direct Coherence - forward_G and backward_H [NOT STARTED]
+### Phase 2: Direct Coherence - forward_G and backward_H [BLOCKED]
 
 **Goal**: Prove the two "direct" coherence conditions that follow from seed construction
 
@@ -94,7 +116,7 @@ Integrated from research-001.md:
 
 ---
 
-### Phase 3: Inverse Coherence - backward_G [NOT STARTED]
+### Phase 3: Inverse Coherence - backward_G [BLOCKED]
 
 **Goal**: Prove the "backward G" coherence condition using contrapositive reasoning
 
@@ -119,7 +141,7 @@ Integrated from research-001.md:
 
 ---
 
-### Phase 4: Inverse Coherence - forward_H [NOT STARTED]
+### Phase 4: Inverse Coherence - forward_H [BLOCKED]
 
 **Goal**: Prove the "forward H" coherence condition (most complex case)
 
