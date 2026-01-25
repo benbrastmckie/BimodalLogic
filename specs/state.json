@@ -12,7 +12,7 @@
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T20:39:43Z",
-      "last_updated": "2026-01-25T21:10:02Z",
+      "last_updated": "2026-01-25T21:22:02Z",
       "artifacts": [
         {
           "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md",
@@ -21,11 +21,21 @@
         },
         {
           "type": "plan",
-          "path": "specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-002.md",
-          "summary": "6-phase implementation plan (v2) incorporating Task 677 research findings - removes simulation code and wires real skill delegation"
+          "path": "specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-003.md",
+          "summary": "5-phase implementation plan (v3) - moves checkpoints from skills to commands to address Issue #17351, no hooks required"
+        },
+        {
+          "type": "research",
+          "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md",
+          "summary": "Claude Code 2026 best practices and commands-skills merge findings"
+        },
+        {
+          "type": "research",
+          "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-003.md",
+          "summary": "Root cause analysis - Issue #17351 causes subagent returns to main session, postflight in skills never executes"
         }
       ],
-      "planned": "2026-01-25T21:10:02Z",
+      "planned": "2026-01-25T21:22:02Z",
       "plan_summary": "5-phase implementation plan for preflight/postflight integration improvements leveraging Claude Code 2026 features",
       "plan_metadata": {
         "phases": 5,

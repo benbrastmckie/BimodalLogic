@@ -47,22 +47,20 @@ technical_debt:
 - **Created**: 2026-01-25
 - **Planned**: 2026-01-25T21:25:00Z
 - **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md), [research-002.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-002.md)
+- **Plan**: [implementation-001.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-003.md)
 
 **Description**: Improve preflight/postflight integration across the .claude/ agent system by leveraging Claude Code 2026 features. Key discovery: commands and skills merged in Jan 2026 - `.claude/commands/*.md` ARE skills. The `.opencode/` directory is legacy OpenCode that should be archived. Plan covers: (1) Archive .opencode legacy system, (2) Create checkpoint hook infrastructure, (3) Update /task with skill-scoped hooks, (4) Document 2026 architecture in CLAUDE.md, (5) Validation and testing. Coordinates with Tasks 674, 675, 677.
 
 ---
 
 ### 678. Fix Constitutive Foundation LaTeX definitions
-- **Status**: [RESEARCHED]
-- **Researched**: 2026-01-25T21:10:58Z
-- **Research**: [research-001.md](specs/678_fix_constitutive_foundation_latex_definitions/reports/research-001.md)
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-25
 - **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex:32,34,130,249
+- **Research**: [research-001.md](specs/678_fix_constitutive_foundation_latex_definitions/reports/research-001.md)
 
 **Description**: Fix LaTeX definition issues in 02-ConstitutiveFoundation.tex: (1) Define well-formed sentences using standard double colon and identity sign with pipes between constructions (line 32), (2) Define non-primitive symbols including \exists' and quantifier notations (line 34), (3) Add term algebra definition matching Lean source code (line 130), (4) Expand definition to include \Rightarrow for reduction as conjunction of essence and ground (line 249)
 
@@ -103,7 +101,7 @@ technical_debt:
 - **Language**: markdown
 - **Parent**: Task 394
 - **Research**: [research-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/plans/implementation-002.md)
+- **Plan**: [implementation-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/plans/implementation-003.md)
 
 **Description**: Port the causal semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Carefully study the counterfactual semantics already included in the recursive-semantics.md in order to adapt existing resources rather than positing additional resources in order to construct the three-condition truth clause for causation.
 
@@ -135,7 +133,7 @@ technical_debt:
 - **Planned**: 2025-01-22T13:04:47Z
 - **Revised**: 2026-01-22T01:27:39Z
 - **Research**: [research-001.md](specs/672_implement_agent_system_upgrade_plan/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/672_implement_agent_system_upgrade_plan/plans/implementation-002.md)
+- **Plan**: [implementation-002.md](specs/672_implement_agent_system_upgrade_plan/plans/implementation-003.md)
 
 **Description**: Implement the .opencode system upgrade plan following specs/agent_system_upgrade_plan.md and specs/implementation_roadmap.md. This 6-week upgrade involves 4 phases: Phase 1 (Week 1): Foundation - file-based metadata exchange and state management; Phase 2 (Week 2): Workflow Ownership Migration - transfer postflight responsibilities to subagents; Phase 3 (Weeks 3-4): Meta System Builder Port - enable dynamic system extension; Phase 4 (Weeks 5-6): Forked Subagent Pattern - achieve token efficiency.
 
@@ -169,13 +167,13 @@ technical_debt:
 - **Artifacts**:
   - [Research Report](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md)
   - [Research Report (Corrected)](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md) - Set vs Prop mathematical equivalence analysis
-  - [Implementation Plan](specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-002.md) - 3-phase documentation update plan
+  - [Implementation Plan](specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-003.md) - 3-phase documentation update plan
   - [Implementation Summary](specs/666_revise_lean_source_code_logos_theory_definitions/summaries/implementation-summary-20260125.md)
 
 **Description**: Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex
 
 **Research**: Set vs Prop mathematical equivalence analysis showing Lean implementation is mathematically correct (specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md)
-**Plan**: 3-phase documentation update to clarify Set/Prop equivalence and improve code readability (specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-002.md)
+**Plan**: 3-phase documentation update to clarify Set/Prop equivalence and improve code readability (specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-003.md)
 
 ---
 
@@ -191,7 +189,7 @@ technical_debt:
   - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-001.md) - Comprehensive architecture analysis with 5-phase implementation plan
   - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-002.md) - Focused analysis of preflight/postflight inconsistencies and architecture gaps
   - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-003.md) - Integrated preflight/postflight operations design with 3-phase migration approach
-  - [Implementation Plan](specs/674_systematic_command_skill_agent_architecture_improvement/plans/implementation-002.md) - 4-phase implementation plan for integrated preflight/postflight operations in workflow skills
+  - [Implementation Plan](specs/674_systematic_command_skill_agent_architecture_improvement/plans/implementation-003.md) - 4-phase implementation plan for integrated preflight/postflight operations in workflow skills
 
 **Description**: Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management
 
@@ -209,7 +207,7 @@ technical_debt:
 - **Planned**: 2026-01-21T22:40:42Z
 - **Dependencies**: 661, 662
 - **Research**: [research-001.md](specs/665_update_guides_templates_to_follow_new_standards/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/665_update_guides_templates_to_follow_new_standards/plans/implementation-002.md)
+- **Plan**: [implementation-001.md](specs/665_update_guides_templates_to_follow_new_standards/plans/implementation-003.md)
 - **Summary**: [implementation-summary-20260125.md](specs/665_update_guides_templates_to_follow_new_standards/summaries/implementation-summary-20260125.md)
 
 **Description**: Update remaining files in `docs/guides/` and `docs/templates/`: remove "quick start" sections from `user-installation.md`; ensure present tense throughout; fix references to non-existent paths; apply ALL_CAPS naming where appropriate; update templates/README.md to remove version numbers and version history references.
@@ -230,7 +228,7 @@ technical_debt:
 - **Planned**: 2026-01-25T21:57:27Z
 - **Completed**: 2026-01-25T22:01:00Z
 - **Research**: [research-001.md](specs/653_improve_metalogic_infrastructure/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/653_improve_metalogic_infrastructure/plans/implementation-002.md)
+- **Plan**: [implementation-001.md](specs/653_improve_metalogic_infrastructure/plans/implementation-003.md)
 - **Summary**: [implementation-summary-20260125.md](specs/653_improve_metalogic_infrastructure/summaries/implementation-summary-20260125.md)
 
 **Description**: Two related metalogic improvements: (1) Rename SemanticCanonicalFrame to CanonicalTaskFrame in Lean source code for accuracy (the current name is misleading since it's a task frame, not a general semantic frame). (2) Address infinite contexts/sets which remain unaddressed - this should be handled by proving and applying compactness to extend the current finite-context completeness results to infinite contexts.
@@ -251,7 +249,7 @@ technical_debt:
 - **Started**: 2026-01-25T21:40:00Z
 - **Completed**: 2026-01-25T21:45:00Z
 - **Research**: [research-001.md](specs/639_improve_review_roadmap_matching/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/639_improve_review_roadmap_matching/plans/implementation-002.md) (v2 - clean break, no fuzzy matching)
+- **Plan**: [implementation-002.md](specs/639_improve_review_roadmap_matching/plans/implementation-003.md) (v2 - clean break, no fuzzy matching)
 - **Summary**: [implementation-summary-20260125.md](specs/639_improve_review_roadmap_matching/summaries/implementation-summary-20260125.md)
 
 **Description**: Improve the reliability of ROAD_MAP.md checkbox matching in the /review command. Current issues: (1) Fuzzy title matching is unreliable, (2) No explicit task-to-roadmap mapping exists, (3) Task 637 had to be manually created to fix checkboxes. Solutions: (1) Add `roadmap_items` field to state.json entries for explicit task-roadmap linking, (2) Update /review to use explicit mappings only (no fuzzy fallback - clean break approach), (3) Update agent guidance to require roadmap_items population.
@@ -360,7 +358,7 @@ technical_debt:
 - **Created**: 2026-01-19
 - **Blocked-By**: GitHub #16803 (context:fork bug)
 - **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md), [research-002.md](specs/619_agent_system_architecture_upgrade/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-002.md)
+- **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-003.md)
 
 **Description**: FUTURE UPGRADE: Migrate agent system skills to use native `context: fork` frontmatter once Anthropic fixes GitHub issue #16803. Research-002.md confirmed context:fork IS a real feature (added v2.1.0) but is currently broken. Current Task tool delegation pattern is correct and should remain until the bug is fixed. When fixed, migrate skills to use `context: fork` + `agent:` frontmatter for cleaner context isolation.
 
@@ -427,7 +425,7 @@ technical_debt:
 - **Dependencies**: Task 607
 - **Subtasks**: 622, 623, 624, 625, 630, 631
 - **Research**: [research-001.md](specs/490_complete_decidability_procedure/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/490_complete_decidability_procedure/plans/implementation-002.md)
+- **Plan**: [implementation-001.md](specs/490_complete_decidability_procedure/plans/implementation-003.md)
 - **Summary**: [implementation-summary-20260119.md](specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md)
 
 **Description**: Complete the decidability procedure for TM logic. Phases 1-2 completed with helper lemmas and proof structure. Expanded into subtasks for remaining work.
@@ -443,7 +441,7 @@ technical_debt:
 - **Parent**: Task 490
 - **Subtasks**: 630, 631
 - **Research**: [research-001.md](specs/623_build_fmp_tableau_connection_infrastructure/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-002.md)
+- **Plan**: [implementation-002.md](specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-003.md)
 
 **Description**: Build infrastructure connecting FMP bounds to tableau semantics. Phases 1-2.3 and 4 completed (expansion/saturation lemmas, branchTruthLemma). Phase 3 blocked on semantic bridge gap. Expanded into Tasks 630 (Kripke model extraction) and 631 (evalFormula_implies_sat lemma) to address the blocker.
 
@@ -479,7 +477,7 @@ technical_debt:
 - **Researched**: 2026-01-21
 - **Implemented**: 2026-01-21
 - **Research**: [research-001.md](specs/667_fix_specs_path_references/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/667_fix_specs_path_references/plans/implementation-002.md)
+- **Plan**: [implementation-001.md](specs/667_fix_specs_path_references/plans/implementation-003.md)
 
 **Description**: Successfully identified and fixed all 6 references to .opencode/specs throughout the system. Updated Python scripts (validate_state_sync.py, todo_cleanup.py), agent files (planner.md), context files (routing.md), and documentation. Task creation system is now functional.
 
@@ -492,7 +490,7 @@ technical_debt:
 - **Session**: meta-session-1768239500
 - **Dependencies**: 667
 - **Planned**: 2026-01-21
-- **Plan**: [implementation-001.md](specs/668_create_specs_path_migration_script/plans/implementation-002.md)
+- **Plan**: [implementation-001.md](specs/668_create_specs_path_migration_script/plans/implementation-003.md)
 
 **Description**: Create automated Python script to detect and migrate .opencode/specs path references to specs/. Script will include safety checks, dry-run mode, backup creation, and detailed reporting. Will serve as fix for current issue and preventative tool for future migrations.
 
@@ -504,7 +502,7 @@ technical_debt:
 - **Language**: meta
 - **Session**: test-session-1768239500
 - **Planned**: 2026-01-21
-- **Plan**: [implementation-001.md](specs/669_test_task_creation/plans/implementation-002.md)
+- **Plan**: [implementation-001.md](specs/669_test_task_creation/plans/implementation-003.md)
 
 **Description**: Simple test to verify that task creation system is working after fixing .opencode/specs path references. Validates that the path reference fixes resolved the task creation issues.
 
