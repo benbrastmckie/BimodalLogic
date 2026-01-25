@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 38,
-    "last_sync": "2026-01-22T00:48:23Z"
+    "total_tasks": 40,
+    "last_sync": "2026-01-25T21:02:41Z"
   },
   "active_projects": [
     {
@@ -741,6 +741,40 @@
           "summary": "Comprehensive analysis of checkpoint bypass issue: commands contain simulation code that creates stub artifacts without invoking skills, bypassing validation and postflight operations"
         }
       ]
+    },
+    {
+      "project_number": 678,
+      "project_name": "fix_constitutive_foundation_latex_definitions",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "high",
+      "created": "2026-01-25T21:15:00Z",
+      "last_updated": "2026-01-25T21:15:00Z",
+      "description": "Fix LaTeX definition issues in 02-ConstitutiveFoundation.tex: (1) Define well-formed sentences using standard double colon and identity sign with pipes between constructions (line 32), (2) Define non-primitive symbols including \\exists' and quantifier notations (line 34), (3) Add term algebra definition matching Lean source code (line 130), (4) Expand definition to include \\Rightarrow for reduction as conjunction of essence and ground (line 249)",
+      "source_file": "Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex",
+      "source_lines": [
+        32,
+        34,
+        130,
+        249
+      ],
+      "effort": "2-3 hours"
+    },
+    {
+      "project_number": 679,
+      "project_name": "identityaboutness_research_for_semantic_explanations",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-25T21:15:00Z",
+      "last_updated": "2026-01-25T21:15:00Z",
+      "description": "Research /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex to: (1) Extract semantic clause explanations for boolean operators and extrapolate to other clauses (line 153), (2) Find and include bilattice definition with clear explanations (line 283). Both items support improving documentation in 02-ConstitutiveFoundation.tex.",
+      "source_file": "Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex",
+      "source_lines": [
+        153,
+        283
+      ],
+      "effort": "1.5 hours"
     }
   ],
   "completed_projects": [
@@ -755,7 +789,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 678,
+  "next_project_number": 680,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

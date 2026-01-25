@@ -1,20 +1,20 @@
 ---
-next_project_number: 678
+next_project_number: 680
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 15
+  active: 17
   completed: 242
   in_progress: 0
-  not_started: 14
+  not_started: 16
   abandoned: 20
-  total: 267
+  total: 269
 priority_distribution:
   critical: 0
-  high: 7
-  medium: 9
+  high: 8
+  medium: 10
   low: 6
 technical_debt:
   sorry_count: 205
@@ -49,6 +49,18 @@ technical_debt:
 - **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md)
 
 **Description**: Investigate missing skill registration and integrate /task command with checkpoint pattern. The /task command exists but is not properly exposed through the Skill tool, preventing agents from creating tasks programmatically. This creates a workflow gap where task creation must be done manually via bash, bypassing preflight/postflight checkpoints. Research: (1) Why skill-task is not in Skill tool registry despite being documented in CLAUDE.md, (2) Current /task command implementation and skill architecture, (3) How skill-orchestrator should route task creation, (4) Integration points with checkpoint pattern from Task 675. Plan and implement: Complete skill registration, add checkpoint enforcement, enable programmatic task creation, maintain backward compatibility with user-invoked /task command.
+
+---
+
+### 678. Fix Constitutive Foundation LaTeX definitions
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: latex
+- **Created**: 2026-01-25
+- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex:32,34,130,249
+
+**Description**: Fix LaTeX definition issues in 02-ConstitutiveFoundation.tex: (1) Define well-formed sentences using standard double colon and identity sign with pipes between constructions (line 32), (2) Define non-primitive symbols including \exists' and quantifier notations (line 34), (3) Add term algebra definition matching Lean source code (line 130), (4) Expand definition to include \Rightarrow for reduction as conjunction of essence and ground (line 249)
 
 ---
 
@@ -127,6 +139,18 @@ technical_debt:
 
 
 ## Medium Priority
+
+### 679. IdentityAboutness research for semantic explanations
+- **Effort**: 1.5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: latex
+- **Created**: 2026-01-25
+- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex:153,283
+
+**Description**: Research /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex to: (1) Extract semantic clause explanations for boolean operators and extrapolate to other clauses (line 153), (2) Find and include bilattice definition with clear explanations (line 283). Both items support improving documentation in 02-ConstitutiveFoundation.tex.
+
+---
 
 ### 666. revise lean source code logos theory definitions
 - **Effort**: 1.5 hours
