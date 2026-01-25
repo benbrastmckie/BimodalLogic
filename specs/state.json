@@ -83,14 +83,16 @@
     {
       "project_number": 657,
       "project_name": "prove_seed_consistency_temporal_k_distribution",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-25T20:53:16Z",
       "related_tasks": [
         654
-      ]
+      ],
+      "researching": "2026-01-25T20:53:16Z",
+      "session_id": "sess_1769374385_f12861"
     },
     {
       "project_number": 658,
@@ -178,12 +180,12 @@
     {
       "project_number": 639,
       "project_name": "improve_review_roadmap_matching",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T16:55:00Z",
-      "last_updated": "2026-01-25T20:49:33Z",
-      "session_id": "sess_1769373935_9b67be",
+      "last_updated": "2026-01-25T20:53:25Z",
+      "session_id": "sess_1769374292_14744e",
       "researched": "2026-01-25T20:49:33Z",
       "artifacts": [
         {
@@ -200,8 +202,15 @@
           "type": "research",
           "path": "specs/639_improve_review_roadmap_matching/reports/research-001.md",
           "summary": "Comprehensive analysis finding roadmap_items field already exists, /todo has structured matching implemented, /review needs update to use explicit roadmap_items (priority 1) instead of unreliable fuzzy matching"
+        },
+        {
+          "type": "plan",
+          "path": "specs/639_improve_review_roadmap_matching/plans/implementation-001.md",
+          "summary": "4-phase plan covering /review command updates, agent guidance, documentation sync, and testing"
         }
-      ]
+      ],
+      "planning": "2026-01-25T20:51:46Z",
+      "planned": "2026-01-25T20:53:25Z"
     },
     {
       "project_number": 630,
