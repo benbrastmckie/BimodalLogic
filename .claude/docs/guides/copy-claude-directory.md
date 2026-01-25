@@ -310,7 +310,7 @@ After installation, explore the available commands:
 - **[User Installation Guide](user-installation.md)** - Complete setup guide
 - **[Documentation Hub](../README.md)** - All documentation
 
-### Quick Start with Commands
+### Using Commands
 
 ```
 /task "My first task"     # Create a task

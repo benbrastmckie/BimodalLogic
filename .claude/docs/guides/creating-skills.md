@@ -530,8 +530,3 @@ allowed-tools: Task
 - `.claude/context/core/templates/thin-wrapper-skill.md` - Skill template
 - `.claude/context/core/formats/subagent-return.md` - Return format schema
 
----
-
-**Document Version**: 1.0
-**Created**: 2026-01-12
-**Maintained By**: ProofChecker Development Team

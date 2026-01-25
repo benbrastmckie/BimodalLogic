@@ -2,7 +2,7 @@
 
 [Back to Docs](../README.md) | [Detailed Installation](../../../docs/installation/README.md)
 
-A quick-start guide for installing Claude Code and using it to work with ProofChecker.
+Instructions for installing Claude Code and using it to work with ProofChecker.
 
 ---
 
@@ -23,7 +23,7 @@ This guide helps you:
 
 Claude Code is Anthropic's command-line interface for AI-assisted development.
 
-### Quick Installation
+### Installation
 
 **macOS:**
 ```bash

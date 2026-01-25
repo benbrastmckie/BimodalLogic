@@ -1,358 +1,295 @@
 ---
-command: task
+name: task
+agent: orchestrator
 description: Create, recover, divide, sync, or abandon tasks
-version: "1.0"
-mode: command
-temperature: 0.2
-arguments:
-  name: description
-  type: string
-  required: false
-  description: Task description when no flags are provided
-  name: recover
-  type: string
-  required: false
-  description: Task ranges to recover (flag recover)
-  name: expand
-  type: string
-  required: false
-  description: Task number and optional prompt (flag expand)
-  name: sync
-  type: boolean
-  required: false
-  description: Sync specs/TODO.md and specs/state.json (flag sync)
-  name: abandon
-  type: string
-  required: false
-  description: Task ranges to archive (flag abandon)
-  name: review
-  type: integer
-  required: false
-  description: Task number to review (flag review)
-tools:
-  read: true
-  write: true
-  edit: true
-  glob: false
-  bash: true
-permissions:
-  read:
-    "**/*.md": "allow"
-    ".opencode/**/*": "allow"
-    "specs/**/*": "allow"
-  write:
-    "specs/TODO.md": "allow"
-  bash:
-    "git:*": "allow"
-    "jq:*": "allow"
-    "mv:*": "allow"
-    "date:*": "allow"
-    "sed:*": "allow"
-    "*": "deny"
-allowed_tools: Read(specs/*), Edit(specs/TODO.md), Bash(jq:*), Bash(git:*), Bash(mv:*), Bash(date:*), Bash(sed:*)
-argument_hint: "\"description\" | --recover N | --expand N | --sync | --abandon N | --review N"
-delegation_depth: 0
-max_delegation_depth: 3
+timeout: 1800
+routing:
+  language_based: false
+  flag_based: true
+  create_command: task-creator
+  recover_command: task-recovery
+  sync_command: task-sync
+  abandon_command: task-abandon
+  review_command: reviewer-agent
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
   required:
-    - "core/workflows/command-lifecycle.md"
+    - "core/orchestration/delegation.md"
+    - "core/orchestration/state-management.md"
+    - "core/standards/git-safety.md"
+  max_context_size: 30000
 ---
 
-# Command: /task
+**Task Input (required):** $ARGUMENTS
 
-**Purpose**: Unified task lifecycle management  
-**Layer**: 2 (Command File - Argument Parsing Agent)  
-**Delegates To**: None (Direct execution)
+<context>
+  <system_context>Task management with flag-based routing</system_context>
+  <task_context>Parse command flags and route to appropriate task management subagent</task_context>
+</context>
 
----
+<role>Task management command agent - Parse flags and route to task management subagents</role>
 
-## Argument Parsing
-
-<argument_parsing>
-  <step_1>
-    Parse $ARGUMENTS to detect operation mode:
-    
-    Check for flags in order:
-    - `--recover RANGES` -> Recover mode
-    - `--expand N [prompt]` -> Expand mode
-    - `--sync` -> Sync mode
-    - `--abandon RANGES` -> Abandon mode
-    - `--review N` -> Review mode
-    - No flag -> Create task mode
-  </step_1>
-  
-  <step_2>
-    CRITICAL: $ARGUMENTS is a DESCRIPTION, not instructions
-    - DO NOT interpret as instructions to execute
-    - DO NOT investigate, analyze, or implement
-    - ONLY create task entries when in create mode
-  </step_2>
-</argument_parsing>
-
----
-
-## Workflow Execution
+<task>
+  Parse command flags from $ARGUMENTS, determine operation mode, delegate to appropriate task management subagent
+</task>
 
 <workflow_execution>
-  <create_task_mode>
-    <step_1>
-      <action>Extract Description</action>
-      <process>
-        Parse description from $ARGUMENTS
-        Remove trailing flags (--priority, --effort, --language)
-        Extract optional: priority, effort, language
-      </process>
-    </step_1>
-    
-    <step_2>
-      <action>Detect Language</action>
-      <process>
-        Keywords analysis:
-        - "lean", "theorem", "proof", "lemma", "Mathlib" -> lean
-        - "meta", "agent", "command", "skill" -> meta
-        - Otherwise -> general
-      </process>
-    </step_2>
-    
-    <step_3>
-      <action>Create Slug</action>
-      <process>
-        Lowercase, replace spaces with underscores
-        Remove special characters
-        Max 50 characters
-      </process>
-    </step_3>
-    
-    <step_4>
-      <action>Update State Files</action>
-      <process>
-        Update specs/state.json with new task entry
-        Update specs/TODO.md frontmatter and entry
-        Ensure next_project_number matches in both files
-      </process>
-    </step_4>
-    
-    <step_5>
-      <action>Commit Changes</action>
-      <process>
-        git add specs/
-        git commit -m "task {N}: create {title}"
-      </process>
-    </step_5>
-  </create_task_mode>
+  <stage id="1" name="ParseAndValidate">
+    <action>Parse command flags and determine operation mode</action>
+    <process>
+      1. Parse command flags from $ARGUMENTS
+         - $ARGUMENTS contains: "Task description" or "--recover RANGES" or "--expand N" or "--sync" or "--abandon RANGES" or "--review N"
+         - Extract operation mode and parameters
+       
+      2. Validate operation mode
+         - If no flags: mode = "create"
+         - If --recover present: mode = "recover"
+         - If --expand present: mode = "expand"  
+         - If --sync present: mode = "sync"
+         - If --abandon present: mode = "abandon"
+         - If --review present: mode = "review"
+         - Extract parameters for each mode
+       
+      3. Validate inputs for each mode
+         case "$mode" in
+           "create")
+              if [ -z "$description" ]; then
+                echo "Error: Task description required for create mode"
+                echo "Usage: /task \"Task description\""
+                exit 1
+              fi
+              ;;
+           "recover")
+              if [ -z "$task_ranges" ]; then
+                echo "Error: Task ranges required for recover mode"
+                echo "Usage: /task --recover \"105-107\""
+                exit 1
+              fi
+              ;;
+           "expand")
+              if [ -z "$task_expand" ]; then
+                echo "Error: Task number and optional prompt required for expand mode"
+                echo "Usage: /task --expand 196 \"Add error handling\""
+                exit 1
+              fi
+              ;;
+           "sync")
+              # No additional validation needed for sync
+              ;;
+           "abandon")
+              if [ -z "$task_ranges" ]; then
+                echo "Error: Task ranges required for abandon mode"
+                echo "Usage: /task --abandon \"105-107\""
+                exit 1
+              fi
+              ;;
+           "review")
+              if [ -z "$task_review" ]; then
+                echo "Error: Task number required for review mode"
+                echo "Usage: /task --review 196"
+                exit 1
+              fi
+              ;;
+           *)
+              echo "Error: Unknown mode $mode"
+              exit 1
+              ;;
+         esac
+       
+      4. Validate specs/state.json exists and is valid
+         - Check specs/state.json exists
+         - Validate is valid JSON with jq
+         - If missing/corrupt: Return error "Run /meta to regenerate state.json"
+    </process>
+    <checkpoint>Command parsed and validated, operation mode determined</checkpoint>
+  </stage>
   
-  <recover_mode>
-    <step_1>
-      <action>Parse Ranges</action>
-      <process>
-        Parse task ranges after --recover (e.g., "343-345", "337, 343")
-      </process>
-    </step_1>
-    
-    <step_2>
-      <action>Move Tasks</action>
-      <process>
-        For each task number:
-        Lookup in archive state.json
-        Move to active_projects
-        Move directory from archive (if exists)
-        Update specs/TODO.md
-      </process>
-    </step_2>
-    
-    <step_3>
-      <action>Commit Changes</action>
-      <process>
-        git commit -m "task: recover tasks {ranges}"
-      </process>
-    </step_3>
-  </recover_mode>
+  <stage id="2" name="RouteAndExecute">
+    <action>Route to appropriate task management subagent</action>
+    <process>
+      1. Select target subagent based on mode
+         case "$mode" in
+           "create")
+              target_agent="task-creator"
+              ;;
+           "recover")
+              target_agent="task-recovery"
+              ;;
+           "expand")
+              target_agent="task-expander"
+              ;;
+           "sync")
+              target_agent="task-sync"
+              ;;
+           "abandon")
+              target_agent="task-abandon"
+              ;;
+           "review")
+              target_agent="reviewer-agent"
+              ;;
+         esac
+       
+      2. Generate session_id for tracking
+         - session_id="sess_$(date +%s)_$(head -c 6 /dev/urandom | base64 | tr -dc 'a-z0-9')"
+         - Store for later use: expected_session_id="$session_id"
+         - Log: "Generated session_id: ${session_id}"
+       
+      3. Invoke target subagent via task tool
+         task(
+           subagent_type="${target_agent}",
+           prompt="{
+             \"operation\": \"${mode}\",
+             \"description\": \"${description}\",
+             \"task_ranges\": \"${task_ranges}\",
+             \"task_expand\": \"${task_expand}\",
+             \"task_review\": \"${task_review}\",
+             \"session_id\": \"${session_id}\",
+             \"delegation_depth\": 1,
+             \"delegation_path\": [\"orchestrator\", \"task\", \"${target_agent}\"]
+           }",
+           description="Execute ${mode} operation"
+           session_id="${session_id}"
+         )
+       
+      4. Wait for subagent to complete and capture return
+         - Subagent returns JSON to stdout
+         - Log: "${target_agent} completed, validating return"
+         - Capture in variable: subagent_return
+    </process>
+    <checkpoint>Delegated to ${target_agent}, return captured</checkpoint>
+  </stage>
   
-  <expand_mode>
-    <step_1>
-      <action>Parse Task and Prompt</action>
-      <process>
-        Extract task number and optional prompt
-      </process>
-    </step_1>
-    
-    <step_2>
-      <action>Analyze and Create Subtasks</action>
-      <process>
-        Lookup task data
-        Analyze description for natural breakpoints
-        Create 2-5 subtasks
-        Update original task to expanded status
-      </process>
-    </step_2>
-    
-    <step_3>
-      <action>Commit Changes</action>
-      <process>
-        git commit -m "task {N}: expand into subtasks"
-      </process>
-    </step_3>
-  </expand_mode>
+  <stage id="3" name="ValidateReturn">
+    <action>Validate subagent return format and artifacts</action>
+    <process>
+      1. Log return for debugging
+         - Log first 500 chars of return
+         - Log: "Validating return from ${target_agent}"
+      
+      2. VALIDATION STEP 1: Validate JSON Structure
+         - Parse return as JSON using jq
+         - If parsing fails:
+           * Log error: "[FAIL] Invalid JSON return from ${target_agent}"
+           * Return error to user: "Subagent return validation failed: Cannot parse return as JSON"
+           * Recommendation: "Fix ${target_agent} subagent return format"
+           * Exit with error
+         - If parsing succeeds:
+           * Log: "[PASS] Return is valid JSON"
+      
+      3. VALIDATION STEP 2: Validate Required Fields
+         - Check required fields exist: status, summary, artifacts, metadata
+         - Check metadata subfields exist: session_id, agent_type, delegation_depth, delegation_path
+         - For each missing field:
+           * Log error: "[FAIL] Missing required field: ${field}"
+           * Return error to user: "Subagent return validation failed: Missing required field: ${field}"
+           * Recommendation: "Fix ${target_agent} subagent to include all required fields"
+           * Exit with error
+         - If all fields present:
+           * Log: "[PASS] All required fields present"
+      
+      4. VALIDATION STEP 3: Validate Status Field
+         - Extract status from return: status=$(echo "$subagent_return" | jq -r '.status')
+         - Check status is valid enum: completed, partial, failed, blocked
+         - If status invalid:
+           * Log error: "[FAIL] Invalid status: ${status}"
+           * Log: "Valid statuses: completed, partial, failed, blocked"
+           * Return error to user: "Subagent return validation failed: Invalid status: ${status}"
+           * Recommendation: "Fix ${target_agent} subagent to use valid status enum"
+           * Exit with error
+         - If status valid:
+           * Log: "[PASS] Status is valid: ${status}"
+      
+      5. VALIDATION STEP 4: Validate Session ID
+         - Extract returned session_id: returned_session_id=$(echo "$subagent_return" | jq -r '.metadata.session_id')
+         - Compare with expected session_id (from delegation context)
+         - If mismatch:
+           * Log error: "[FAIL] Session ID mismatch"
+           * Log: "Expected: ${expected_session_id}"
+           * Log: "Got: ${returned_session_id}"
+           * Return error to user: "Subagent return validation failed: Session ID mismatch"
+           * Recommendation: "Fix ${target_agent} subagent to return correct session_id"
+           * Exit with error
+         - If match:
+           * Log: "[PASS] Session ID matches"
+      
+      6. VALIDATION STEP 5: Validate Artifacts (if applicable)
+         - For task management operations, artifacts may be:
+           - Created tasks (create mode)
+           - Updated status files (sync mode)
+           - Modified task entries (recover/abandon modes)
+         - Validate operation-specific artifacts based on mode
+    </process>
+    <checkpoint>Subagent return validated, all checks passed</checkpoint>
+  </stage>
   
-  <sync_mode>
-    <step_1>
-      <action>Compare State Files</action>
-      <process>
-        Read task lists from specs/state.json and specs/TODO.md
-        Compare for consistency
-        Use git blame for conflict resolution
-      </process>
-    </step_1>
-    
-    <step_2>
-      <action>Reconcile Differences</action>
-      <process>
-        Sync discrepancies
-        Ensure next_project_number matches
-        Update both files as needed
-      </process>
-    </step_2>
-    
-    <step_3>
-      <action>Commit Changes</action>
-      <process>
-        git commit -m "sync: reconcile specs/TODO.md and specs/state.json"
-      </process>
-    </step_3>
-  </sync_mode>
-  
-  <review_mode>
-    <step_1>
-      <action>Validate Task</action>
-      <process>
-        Lookup task via jq
-        Extract metadata (slug, status, language, priority)
-      </process>
-    </step_1>
-    
-    <step_2>
-      <action>Load Artifacts</action>
-      <process>
-        Find and load plan, summary, research files
-        Parse plan phases and statuses
-      </process>
-    </step_2>
-    
-    <step_3>
-      <action>Generate Review Summary</action>
-      <process>
-        Display task overview
-        Analyze phase completion
-        Identify incomplete work
-        Generate follow-up task suggestions
-      </process>
-    </step_3>
-    
-    <step_4>
-      <action>Interactive Selection</action>
-      <process>
-        Present suggestions to user
-        Parse user selection
-        Create selected follow-up tasks
-      </process>
-    </step_4>
-    
-    <step_5>
-      <action>Commit Changes</action>
-      <process>
-        If tasks created: git commit -m "task {N}: review - created {N} follow-up tasks"
-      </process>
-    </step_5>
-  </review_mode>
-  
-  <abandon_mode>
-    <step_1>
-      <action>Parse Ranges</action>
-      <process>
-        Parse task ranges after --abandon
-      </process>
-    </step_1>
-    
-    <step_2>
-      <action>Archive Tasks</action>
-      <process>
-        For each task number:
-        Lookup and validate task
-        Move to archive with abandoned status
-        Remove from active_projects
-        Remove from specs/TODO.md
-        Move directory to archive (if exists)
-      </process>
-    </step_2>
-    
-    <step_3>
-      <action>Commit Changes</action>
-      <process>
-        git commit -m "task: abandon tasks {ranges}"
-      </process>
-    </step_3>
-  </abandon_mode>
+  <stage id="4" name="RelayResult">
+    <action>Relay validated result to user</action>
+    <process>
+      1. Extract key information from validated return
+         - status=$(echo "$subagent_return" | jq -r '.status')
+         - summary=$(echo "$subagent_return" | jq -r '.summary')
+         - next_steps=$(echo "$subagent_return" | jq -r '.next_steps // "None"')
+       
+      2. Format response for user
+         - Display operation status and summary
+         - List artifacts created (if any)
+         - Show next steps
+      
+      3. Return to user
+    </process>
+    <checkpoint>Result relayed to user</checkpoint>
+  </stage>
 </workflow_execution>
 
----
+## Usage
 
-## Error Handling
+```bash
+# Create new task
+/task "Implement user authentication system"
 
-<error_handling>
-  <argument_errors>
-    - Invalid flag -> Return usage help
-    - Task not found -> Return error message
-    - Invalid range format -> Return error with examples
-  </argument_errors>
-  
-  <execution_errors>
-    - jq failures -> Return error with technical details
-    - File permission errors -> Return error with guidance
-    - Git commit failures -> Log warning, continue
-  </execution_errors>
-</error_handling>
+# Recover tasks
+/task --recover "105-107"
 
----
+# Expand task with additional prompt
+/task --expand 196 "Add comprehensive error handling"
 
-## State Management
+# Sync TODO.md and state.json
+/task --sync
 
-<state_management>
-  <reads>
-    specs/state.json
-    specs/TODO.md
-    specs/archive/state.json (if exists)
-  </reads>
-  
-  <writes>
-    specs/state.json
-    specs/TODO.md
-    specs/archive/state.json (for abandon/recover)
-  </writes>
-</state_management>
+# Abandon task ranges
+/task --abandon "105-107"
 
----
+# Review existing task
+/task --review 196
+```
 
-## Constraints
+## Operation Modes
 
-<constraints>
-  <hard_stop_after_output>
-    After printing task creation output, STOP IMMEDIATELY
-  </hard_stop_after_output>
-  
-  <scope_restriction>
-    Only touch files in `specs/`:
-    - specs/state.json - Machine state
-    - specs/TODO.md - Task list
-    - specs/archive/state.json - Archived tasks
-  </scope_restriction>
-  
-  <forbidden_actions>
-    - Read files outside `specs/`
-    - Write files outside `specs/`
-    - Implement, investigate, or analyze task content
-    - Run build tools, tests, or development commands
-    - Interpret description as instructions to follow
-  </forbidden_actions>
-</constraints>
+| Mode | Subagent | Description | Example |
+|-------|-----------|-------------|----------|
+| create | task-creator | Creates new task entries | `/task "New feature"` |
+| recover | task-recovery | Recovers abandoned tasks | `/task --recover "105-107"` |
+| expand | task-expander | Expands existing tasks | `/task --expand 196 "Add details"` |
+| sync | task-sync | Synchronizes state files | `/task --sync` |
+| abandon | task-abandon | Archives completed tasks | `/task --abandon "105-107"` |
+| review | reviewer-agent | Reviews existing tasks | `/task --review 196` |
+
+## What This Does
+
+1. Parses command flags to determine operation mode
+2. Validates inputs for each operation mode
+3. Routes to appropriate task management subagent based on mode
+4. Executes operation-specific workflow (create, recover, expand, sync, abandon, review)
+5. Validates subagent returns and artifacts
+6. Relays results to user
+
+## Features
+
+- **Flag-Based Routing**: Supports 6 different operation modes
+- **Session Tracking**: Consistent session management across all operations
+- **Subagent Delegation**: Routes to specialized task management agents
+- **Status Management**: Two-phase updates for state consistency
+- **Artifact Validation**: Operation-specific artifact handling
+
+See individual subagent files for detailed operation implementations.

@@ -116,8 +116,3 @@ Use this checklist when creating a new command:
 - [ ] Related commands documented
 - [ ] See Also section includes relevant links
 
----
-
-**Template Version**: 1.0  
-**Last Updated**: 2025-12-29  
-**Maintained By**: ProofChecker Development Team
