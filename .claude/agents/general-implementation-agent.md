@@ -220,11 +220,19 @@ on the roadmap. This is intentional - we prioritize precision over recall.
 }
 ```
 
-**Example completion_data for non-meta task**:
+**Example completion_data for non-meta task with roadmap match**:
 ```json
 {
   "completion_summary": "Proved completeness theorem using canonical model construction with 4 supporting lemmas.",
   "roadmap_items": ["Prove completeness theorem for K modal logic"]
+}
+```
+
+**Example completion_data for non-meta task without roadmap match**:
+```json
+{
+  "completion_summary": "Refactored test utilities for better isolation.",
+  "roadmap_items": []
 }
 ```
 
@@ -267,7 +275,7 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
 }
 ```
 
-**Note**: Include `completion_data` when status is `implemented`. For meta tasks, always include `claudemd_suggestions`. For non-meta tasks, optionally include `roadmap_items` instead.
+**Note**: Include `completion_data` when status is `implemented`. For meta tasks, always include `claudemd_suggestions`. For non-meta tasks, always include `roadmap_items` (use empty array `[]` if no roadmap items match).
 
 Use the Write tool to create this file.
 

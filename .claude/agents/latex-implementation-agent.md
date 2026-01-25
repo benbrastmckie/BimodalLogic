@@ -240,10 +240,11 @@ tracked on the roadmap. This is intentional - we prioritize precision over recal
 }
 ```
 
-**Example completion_data without roadmap items**:
+**Example completion_data without roadmap match**:
 ```json
 {
-  "completion_summary": "Updated notation conventions chapter with new symbol definitions. Document compiles cleanly at 58 pages."
+  "completion_summary": "Updated notation conventions chapter with new symbol definitions. Document compiles cleanly at 58 pages.",
+  "roadmap_items": []
 }
 ```
 
@@ -292,7 +293,7 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
 }
 ```
 
-**Note**: Include `completion_data` when status is `implemented`. The `roadmap_items` field is optional.
+**Note**: Include `completion_data` when status is `implemented`. The `roadmap_items` field is required for non-meta tasks (use empty array `[]` if no roadmap items match).
 
 Use the Write tool to create this file.
 
