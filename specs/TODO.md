@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 20
-  completed: 236
+  active: 13
+  completed: 242
   in_progress: 0
   not_started: 13
-  abandoned: 19
-  total: 258
+  abandoned: 20
+  total: 265
 priority_distribution:
   critical: 0
   high: 5
@@ -26,60 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 673. Complete .opencode/ System Functionality
-- **Effort**: 6 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-
-**Description**: Complete .opencode/ system functionality by creating missing command execution infrastructure and fixing integration issues. Successfully implemented 4-phase overhaul: command execution infrastructure, component integration, LEAN 4 optimization, and system testing. Resolved 'poetry: command not found' errors and made .opencode/ fully functional for LEAN 4 theorem proving.
-
-**Research**: System analysis of current .opencode/ state (specs/673_lean_opencode_overhaul/analysis/system-analysis-report.md)
-**Plan**: 4-phase implementation plan focused on command execution infrastructure and component integration (specs/673_lean_opencode_overhaul/plans/implementation-001.md)
-**Implementation**: ✅ COMPLETED - All phases successful
-
-**Results**: 
-- ✅ Command execution infrastructure created and functional
-- ✅ All ported components integrated with bash system
-- ✅ LEAN 4 optimization completed (Mathlib, Lake, lean-lsp integration)
-- ✅ System testing and validation passed
-- ✅ Error "poetry: command not found" completely resolved
-
-### 661. Create documentation standards file
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-21
-- **Started**: 2026-01-21
-- **Completed**: 2026-01-21
-- **Research**: [research-001.md](specs/661_create_documentation_standards_file/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/661_create_documentation_standards_file/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260121.md](specs/661_create_documentation_standards_file/summaries/implementation-summary-20260121.md)
-
-**Description**: Create `.claude/context/core/standards/documentation-standards.md` (kebab-case naming) that specifies: (1) file naming conventions (kebab-case.md for all docs, README.md as only ALL_CAPS exception); (2) README.md required in all subdirectories of docs/; (3) prohibition of "quick start" and "quick reference" document patterns; (4) prohibition of emojis (unicode OK); (5) present tense requirement with no historical language; (6) what belongs in docs/ vs context/. Fix the corrupted/duplicated content in existing `documentation.md`.
-
----
-
-### 662. Consolidate and update DOCS/README.md
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-21
-- **Started**: 2026-01-21
-- **Researched**: 2026-01-21
-- **Planned**: 2026-01-21
-- **Completed**: 2026-01-21
-- **Dependencies**: 661
-- **Research**: [research-001.md](specs/662_consolidate_update_docs_readme/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/662_consolidate_update_docs_readme/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260121.md](specs/662_consolidate_update_docs_readme/summaries/implementation-summary-20260121.md)
-
-**Description**: Rewrite `.claude/docs/README.md` to: remove "Quick Start" section; use present tense throughout (no historical references); consolidate with system-overview.md where appropriate; ensure accurate file paths and references; follow new documentation standards from Task 661.
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -142,24 +88,9 @@ technical_debt:
 
 ## Medium Priority
 
-### 671. combine dynamics foundation latex files
-- **Effort**: 2-3 hours
-- **Status**: [ABANDONED]
-- **Priority**: Low
-- **Language**: latex
-- **Created**: 2026-01-22
-- **Started**: 2026-01-22
-- **Abandoned**: 2026-01-23
-- **Research**: [research-001.md](specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/671_combine_dynamics_foundation_latex_files/plans/implementation-001.md)
-
-**Description**: Combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate
-
----
-
 ### 666. revise lean source code logos theory definitions
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 1.5 hours
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Blocking**: None
@@ -168,8 +99,12 @@ technical_debt:
 - **Artifacts**:
   - [Research Report](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md)
   - [Research Report (Corrected)](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md) - Set vs Prop mathematical equivalence analysis
+  - [Implementation Plan](specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-001.md) - 3-phase documentation update plan
 
 **Description**: Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex
+
+**Research**: Set vs Prop mathematical equivalence analysis showing Lean implementation is mathematically correct (specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md)
+**Plan**: 3-phase documentation update to clarify Set/Prop equivalence and improve code readability (specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-001.md)
 
 ---
 
@@ -188,37 +123,6 @@ technical_debt:
   - [Implementation Plan](specs/674_systematic_command_skill_agent_architecture_improvement/plans/implementation-001.md) - 4-phase implementation plan for integrated preflight/postflight operations in workflow skills
 
 **Description**: Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management
-
----
-
-### 663. Archive stale research/fix plan documents
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-21
-- **Started**: 2026-01-21
-- **Completed**: 2026-01-21
-- **Dependencies**: 661
-- **Research**: [specs/663_archive_stale_research_fix_plan_documents/reports/research-001.md]
-- **Plan**: [implementation-002.md](specs/663_archive_stale_research_fix_plan_documents/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260121.md](specs/663_archive_stale_research_fix_plan_documents/summaries/implementation-summary-20260121.md)
-
-**Description**: Move stale research artifacts from docs/ to archive or delete: `research-skill-agent-contexts.md` (research artifact), `skills-vs-agents-context-behavior.md` (distill to context/ first), `memory-leak-fix-plan.md` (historical fix plan), `orchestrator-workflow-execution-issue.md` (issue document), and `STANDARDS_QUICK_REF.md` (Task 664 scope incorporated). Extract any valuable permanent guidance to appropriate context files before archiving.
-
----
-
-### 664. Remove STANDARDS_QUICK_REF.md and quick reference patterns
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-21
-- **Completed**: 2026-01-21
-- **Dependencies**: 661
-- **Note**: Completed as part of Task 663 scope incorporation
-
-**Description**: Delete `STANDARDS_QUICK_REF.md` from .claude/docs/. Ensure information is properly captured in authoritative sources. Update any references to this file throughout the codebase.
 
 ---
 
@@ -532,15 +436,3 @@ technical_debt:
 
 ---
 
-### 670. Verify task creation system functionality
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: Low
-- **Language**: meta
-- **Created**: 2026-01-22
-- **Completed**: 2026-01-22
-- **Research**: [research-001.md](specs/670_verify_task_creation_system_functionality/reports/research-001.md)
-
-**Description**: Verify that the task creation system is working correctly after the .opencode/specs path reference fixes. This task serves as a functional test of the atomic update mechanism and ensures synchronization between TODO.md and state.json.
-
----

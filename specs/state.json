@@ -6,165 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 673,
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "description": "Complete .opencode/ system functionality by creating missing command execution infrastructure and fixing integration issues. Successfully implemented 4-phase overhaul: command execution infrastructure, component integration, LEAN 4 optimization, and system testing. Resolved 'poetry: command not found' errors and made system fully functional for LEAN 4 theorem proving workflows.",
-      "effort": "6 hours",
-      "created": "2026-01-23T22:30:00Z",
-      "last_updated": "2026-01-23T22:30:00Z",
-      "session_id": "overhaul-20260123",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": "specs/673_lean_opencode_overhaul/plans/implementation-001.md",
-          "summary": "4-phase implementation plan to create missing command execution infrastructure and integrate existing ported components for LEAN 4 workflows"
-        },
-        {
-          "type": "research",
-          "path": "specs/673_lean_opencode_overhaul/analysis/system-analysis-report.md",
-          "summary": "Architecture analysis comparing working .claude/ system vs broken .opencode/ system with migration strategy"
-        }
-      ],
-      "planned": "2026-01-23T22:30:00Z",
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 8,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 3,
-        "reports_integrated": [
-          {
-            "path": ".opencode/plans/reports/system-analysis-report.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-01-23"
-          }
-        ]
-      }
-    },
-    {
-      "project_number": 661,
-      "project_name": "create_documentation_standards_file",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-21T20:39:02Z",
-      "last_updated": "2026-01-21T21:14:10Z",
-      "session_id": "sess_1769029791_0d5e1c",
-      "researched": "2026-01-21T20:47:11Z",
-      "artifacts": [
-        {
-          "path": "specs/661_create_documentation_standards_file/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report with 7 findings on documentation patterns, naming conventions, and corrupted content requiring fix"
-        },
-        {
-          "path": "specs/661_create_documentation_standards_file/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "Revised 3-phase plan adding emoji prohibition to v002 requirements"
-        },
-        {
-          "path": "specs/661_create_documentation_standards_file/summaries/implementation-summary-20260121.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-21T21:04:31Z",
-      "started": "2026-01-21T21:10:10Z",
-      "completed": "2026-01-21T21:14:10Z",
-      "completion_summary": "Created comprehensive documentation-standards.md file specifying file naming conventions (kebab-case), README.md requirements, emoji prohibition, Quick Start/Reference prohibitions, temporal language requirements, and docs/ vs context/ directory distinctions. Fixed corrupted documentation.md by removing duplicate section.",
-      "claudemd_suggestions": "Created .claude/context/core/standards/documentation-standards.md - new standards file referenced from documentation.md. Provides authoritative documentation conventions for the .claude/ system."
-    },
-    {
-      "project_number": 662,
-      "project_name": "consolidate_update_docs_readme",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-21T20:39:02Z",
-      "last_updated": "2026-01-21T22:00:39Z",
-      "session_id": "sess_1769032584_40a86e",
-      "dependencies": [
-        661
-      ],
-      "researched": "2026-01-21T21:18:44Z",
-      "artifacts": [
-        {
-          "path": "specs/662_consolidate_update_docs_readme/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report with detailed analysis of README.md, consolidation opportunities with system-overview.md, and specific recommendations for rewrite"
-        },
-        {
-          "path": "specs/662_consolidate_update_docs_readme/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase plan: remove duplicated content, restructure as navigation hub, verify links"
-        },
-        {
-          "path": "specs/662_consolidate_update_docs_readme/summaries/implementation-summary-20260121.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-21T21:51:41Z",
-      "started": "2026-01-21T21:56:50Z",
-      "completed": "2026-01-21T22:00:39Z",
-      "completion_summary": "Rewrote .claude/docs/README.md from 382-line content document to 96-line navigation hub, removing Quick Start section and eliminating 60% content duplication with system-overview.md.",
-      "claudemd_suggestions": "Modified .claude/docs/README.md - consolidated with system-overview.md, removed Quick Start section, restructured as navigation hub per documentation-standards.md"
-    },
-    {
-      "project_number": 663,
-      "project_name": "archive_stale_research_fix_plan_documents",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-21T20:39:02Z",
-      "last_updated": "2026-01-21T21:39:31Z",
-      "session_id": "sess_1769031353_cdfb76",
-      "dependencies": [
-        661
-      ],
-      "researched": "2026-01-21T21:30:00Z",
-      "artifacts": [
-        {
-          "path": "specs/663_archive_stale_research_fix_plan_documents/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing 4 stale docs with deletion recommendations for each"
-        },
-        {
-          "path": "specs/663_archive_stale_research_fix_plan_documents/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "4-phase plan to delete 5 stale documents and mark Task 664 completed"
-        },
-        {
-          "path": "specs/663_archive_stale_research_fix_plan_documents/summaries/implementation-summary-20260121.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting deleted files, state updates, and verification results"
-        }
-      ],
-      "planned": "2026-01-21T21:32:29Z",
-      "started": "2026-01-21T21:36:12Z",
-      "completed": "2026-01-21T21:39:31Z",
-      "completion_summary": "Deleted 5 stale documents from .claude/docs/ that were superseded by context files or violated documentation standards. Updated README.md and marked Task 664 as completed.",
-      "claudemd_suggestions": "Deleted 5 files from .claude/docs/: research-skill-agent-contexts.md, skills-vs-agents-context-behavior.md, memory-leak-fix-plan.md, architecture/orchestrator-workflow-execution-issue.md, STANDARDS_QUICK_REF.md. Updated README.md documentation map."
-    },
-    {
-      "project_number": 664,
-      "project_name": "remove_standards_quick_ref_and_quick_reference_patterns",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-21T20:39:02Z",
-      "last_updated": "2026-01-21T21:50:00Z",
-      "session_id": "sess_1769031353_cdfb76",
-      "dependencies": [
-        661
-      ],
-      "completed": "2026-01-21T21:50:00Z",
-      "completion_summary": "Deleted STANDARDS_QUICK_REF.md as part of Task 663 scope incorporation. Quick reference patterns prohibited by documentation-standards.md.",
-      "claudemd_suggestions": "none"
-    },
-    {
       "project_number": 665,
       "project_name": "update_guides_templates_to_follow_new_standards",
       "status": "planned",
@@ -663,59 +504,6 @@
       "planned": "2026-01-21T23:01:54Z"
     },
     {
-      "project_number": 670,
-      "project_name": "verify_task_creation_system_functionality",
-      "status": "completed",
-      "language": "meta",
-      "priority": "low",
-      "created": "2026-01-22T00:15:00Z",
-      "last_updated": "2026-01-22T00:15:00Z",
-      "session_id": "task-670-creation-20260122",
-      "description": "Verify that the task creation system is working correctly after the .opencode/specs path reference fixes. This task serves as a functional test of the atomic update mechanism and ensures synchronization between TODO.md and state.json.",
-      "effort": "1 hour",
-      "completed": "2026-01-22T00:15:00Z",
-      "completion_summary": "Successfully created task 670 to verify task creation system functionality. Atomic updates to TODO.md and state.json completed successfully.",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/670_verify_task_creation_system_functionality/reports/research-001.md",
-          "summary": "Research report verifying task creation system functionality"
-        }
-      ]
-    },
-    {
-      "project_number": 671,
-      "project_name": "combine_dynamics_foundation_latex_files",
-      "status": "planned",
-      "language": "latex",
-      "priority": "medium",
-      "description": "combine /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/02-DynamicsFoundation-Syntax.tex, /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/03-DynamicsFoundation-Semantics.tex, and /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/04-DynamicsFoundation-Axioms.tex into a single file without changing the content of those files while nevertheless improving organizaton and sections titles as appropriate",
-      "created": "2026-01-22T00:46:50Z",
-      "last_updated": "2026-01-22T00:48:28Z",
-      "session_id": "sess_1769042908_latex_impl",
-      "researched": "2026-01-22T00:48:07Z",
-      "planned": "2026-01-22T00:46:50Z",
-      "artifacts": [
-        {
-          "path": "specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing three Dynamics Foundation LaTeX files with proposed structure for combination"
-        },
-        {
-          "path": "specs/671_combine_dynamics_foundation_latex_files/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "Implementation plan with 5 phases for combining LaTeX files"
-        }
-      ],
-      "started": "2026-01-22T00:48:28Z",
-      "plan_metadata": {
-        "phase_count": 5,
-        "estimated_hours": 2.5,
-        "complexity": "medium"
-      },
-      "plan_path": "specs/671_combine_dynamics_foundation_latex_files/plans/implementation-001.md"
-    },
-    {
       "project_number": 672,
       "project_name": "implement_agent_system_upgrade_plan",
       "type": "feature",
@@ -751,16 +539,16 @@
     {
       "project_number": 666,
       "project_name": "revise_lean_source_code_logos_theory_definitions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T22:50:00Z",
-      "last_updated": "2026-01-23T20:16:21Z",
+      "last_updated": "2026-01-25T04:50:00Z",
       "description": "Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
-      "effort": "TBD",
+      "effort": "1.5 hours",
       "blocking": [],
       "dependencies": [],
-      "session_id": "task-666-recovery",
+      "session_id": "sess_1769316544_e373c4",
       "source_file": "Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex",
       "source_lines": [
         72
@@ -776,6 +564,11 @@
           "type": "report",
           "path": "specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md",
           "summary": "Comprehensive research report correcting previous analysis, identifying Set vs Prop mathematical equivalence in Lean 4"
+        },
+        {
+          "type": "plan",
+          "path": "specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-001.md",
+          "summary": "3-phase documentation update plan to clarify Set vs Prop mathematical equivalence"
         }
       ],
       "next_steps": "Review research findings and determine if documentation updates are needed for LaTeX and/or Lean source files",
@@ -798,7 +591,8 @@
         "complexity": "low",
         "research_integrated": true,
         "plan_version": 1
-      }
+      },
+      "started": "2026-01-25T04:50:00Z"
     },
     {
       "project_number": 674,

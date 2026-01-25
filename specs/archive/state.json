@@ -7803,6 +7803,177 @@
       "completed": "2026-01-20T22:40:00Z",
       "completion_summary": "Implemented TODO topic grouping in /learn command with semantic analysis (key terms, file sections, action types), user confirmation UI with 3 grouping options, and effort-scaled task creation.",
       "claudemd_suggestions": "Modified skill-learn/SKILL.md (added Step 7.5 topic grouping, updated Step 8.4 task creation), commands/learn.md (added grouping section), docs/examples/learn-flow-example.md (added grouping scenario)"
+    },
+    {
+      "project_number": 673,
+      "project_name": "unknown",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completion_summary": null,
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/673_lean_opencode_overhaul/plans/implementation-001.md",
+          "summary": "4-phase implementation plan to create missing command execution infrastructure and integrate existing ported components for LEAN 4 workflows"
+        },
+        {
+          "type": "research",
+          "path": "specs/673_lean_opencode_overhaul/analysis/system-analysis-report.md",
+          "summary": "Architecture analysis comparing working .claude/ system vs broken .opencode/ system with migration strategy"
+        }
+      ]
+    },
+    {
+      "project_number": 661,
+      "project_name": "create_documentation_standards_file",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completion_summary": "Created comprehensive documentation-standards.md file specifying file naming conventions (kebab-case), README.md requirements, emoji prohibition, Quick Start/Reference prohibitions, temporal language requirements, and docs/ vs context/ directory distinctions. Fixed corrupted documentation.md by removing duplicate section.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "path": "specs/661_create_documentation_standards_file/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 7 findings on documentation patterns, naming conventions, and corrupted content requiring fix"
+        },
+        {
+          "path": "specs/661_create_documentation_standards_file/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "Revised 3-phase plan adding emoji prohibition to v002 requirements"
+        },
+        {
+          "path": "specs/661_create_documentation_standards_file/summaries/implementation-summary-20260121.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ]
+    },
+    {
+      "project_number": 662,
+      "project_name": "consolidate_update_docs_readme",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completion_summary": "Rewrote .claude/docs/README.md from 382-line content document to 96-line navigation hub, removing Quick Start section and eliminating 60% content duplication with system-overview.md.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "path": "specs/662_consolidate_update_docs_readme/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with detailed analysis of README.md, consolidation opportunities with system-overview.md, and specific recommendations for rewrite"
+        },
+        {
+          "path": "specs/662_consolidate_update_docs_readme/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan: remove duplicated content, restructure as navigation hub, verify links"
+        },
+        {
+          "path": "specs/662_consolidate_update_docs_readme/summaries/implementation-summary-20260121.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ]
+    },
+    {
+      "project_number": 663,
+      "project_name": "archive_stale_research_fix_plan_documents",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completion_summary": "Deleted 5 stale documents from .claude/docs/ that were superseded by context files or violated documentation standards. Updated README.md and marked Task 664 as completed.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "path": "specs/663_archive_stale_research_fix_plan_documents/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing 4 stale docs with deletion recommendations for each"
+        },
+        {
+          "path": "specs/663_archive_stale_research_fix_plan_documents/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "4-phase plan to delete 5 stale documents and mark Task 664 completed"
+        },
+        {
+          "path": "specs/663_archive_stale_research_fix_plan_documents/summaries/implementation-summary-20260121.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting deleted files, state updates, and verification results"
+        }
+      ]
+    },
+    {
+      "project_number": 664,
+      "project_name": "remove_standards_quick_ref_and_quick_reference_patterns",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completion_summary": "Deleted STANDARDS_QUICK_REF.md as part of Task 663 scope incorporation. Quick reference patterns prohibited by documentation-standards.md.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 670,
+      "project_name": "verify_task_creation_system_functionality",
+      "status": "completed",
+      "language": "meta",
+      "priority": "low",
+      "completion_summary": "Successfully created task 670 to verify task creation system functionality. Atomic updates to TODO.md and state.json completed successfully.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/670_verify_task_creation_system_functionality/reports/research-001.md",
+          "summary": "Research report verifying task creation system functionality"
+        }
+      ]
+    },
+    {
+      "project_number": 671,
+      "project_name": "combine_dynamics_foundation_latex_files",
+      "status": "abandoned",
+      "language": "latex",
+      "priority": "medium",
+      "completion_summary": null,
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "path": "specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing three Dynamics Foundation LaTeX files with proposed structure for combination"
+        },
+        {
+          "path": "specs/671_combine_dynamics_foundation_latex_files/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan with 5 phases for combining LaTeX files"
+        }
+      ]
+    },
+    {
+      "project_number": 394,
+      "project_name": "null",
+      "status": "orphan_archived",
+      "archived": "2026-01-25T04:54:51Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/",
+        ".meta/"
+      ],
+      "notes": "Stale orphan directory - likely from test/abandoned workflow"
+    },
+    {
+      "project_number": 673,
+      "project_name": "port_claude_to_opencode",
+      "status": "orphan_archived",
+      "archived": "2026-01-25T04:54:51Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ],
+      "notes": "Superseded by 673_lean_opencode_overhaul"
     }
   ]
 }
