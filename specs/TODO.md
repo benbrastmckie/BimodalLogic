@@ -29,7 +29,7 @@ technical_debt:
 
 ### 680. Unify /todo and /review roadmap matching
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
@@ -43,7 +43,7 @@ technical_debt:
 
 ### 676. Investigate skill registration and integrate /task command with checkpoint pattern
 - **Effort**: 8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
@@ -77,7 +77,7 @@ technical_debt:
 
 ### 675. Enforce skill postflight checkpoint pattern
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25T18:49:46Z
@@ -152,8 +152,10 @@ technical_debt:
 ## Medium Priority
 
 ### 679. IdentityAboutness research for semantic explanations
+- **Started**: 2026-01-25T21:41:29Z
+- **Status**: [RESEARCHING]
 - **Effort**: 1.5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: latex
 - **Created**: 2026-01-25
@@ -268,7 +270,7 @@ technical_debt:
 ---
 
 ### 656. Complete truth lemma forward direction (imp/box cases)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Effort**: 4-6 hours
 - **Priority**: Medium
 - **Language**: lean
@@ -281,7 +283,7 @@ technical_debt:
 ---
 
 ### 657. Prove seed consistency (temporal K distribution)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-25T20:53:16Z
 - **Effort**: 6-8 hours
 - **Status**: [IMPLEMENTING]
@@ -296,8 +298,9 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
+- **Plan**: [implementation-001.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-001.md)
 - **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-25T21:32:07Z
 - **Session**: sess_1769376706_e66bd8
 - **Effort**: 8-12 hours
