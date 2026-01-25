@@ -238,19 +238,6 @@ technical_debt:
 
 ---
 
-### 610. Complete truth bridge (Strategy B) for completeness proof
-- **Status**: [RESEARCHED]
-- **Researched**: 2026-01-25
-- **Research**: [research-001.md](specs/610_complete_truth_bridge_strategy_b/reports/research-001.md), [research-002.md](specs/610_complete_truth_bridge_strategy_b/reports/research-002.md)
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Related**: Task 608
-
-**Description**: Complete Strategy B as documented in [research-001.md](specs/608_restructure_completeness_via_representation_theorem/reports/research-001.md). Prove `semantic_truth_implies_truth_at` via structural formula induction to bridge finite model truth (`w.models phi h_mem`) to general semantic truth (`truth_at M tau t phi`). This requires handling: Atom case (valuation check), Bot case (trivial), Imp case (IH on subformulas), Box case (show finite model T-axiom suffices for all histories), and Temporal cases (show behavior outside [-k, k] matches finite evaluation). This is the harder but more general approach that directly connects finite and general semantics.
-
----
-
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
 - **Status**: [IMPLEMENTING]

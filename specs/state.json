@@ -312,29 +312,6 @@
       ]
     },
     {
-      "project_number": 610,
-      "project_name": "complete_truth_bridge_strategy_b",
-      "status": "researched",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-19T16:39:59Z",
-      "last_updated": "2026-01-25T22:57:57Z",
-      "session_id": "sess_1769381799_82bd7f",
-      "researched": "2026-01-25T22:57:57Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/610_complete_truth_bridge_strategy_b/reports/research-001.md",
-          "summary": "Research report analyzing Strategy B for truth bridge, with detailed case analysis for structural induction and comparison to Strategy A"
-        },
-        {
-          "path": "specs/610_complete_truth_bridge_strategy_b/reports/research-002.md",
-          "type": "research",
-          "summary": "Relevance assessment: task superseded by 628, Strategy A proven via 608, recommend ABANDON"
-        }
-      ]
-    },
-    {
       "project_number": 394,
       "status": "planned",
       "project_name": "research_port_causal_semantics_from_paper",
