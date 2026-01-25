@@ -5,15 +5,15 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 14
+  active: 15
   completed: 242
   in_progress: 0
-  not_started: 13
+  not_started: 14
   abandoned: 20
-  total: 266
+  total: 267
 priority_distribution:
   critical: 0
-  high: 6
+  high: 7
   medium: 9
   low: 6
 technical_debt:
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 676. Investigate skill registration and integrate /task command with checkpoint pattern
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-25
+
+**Description**: Investigate missing skill registration and integrate /task command with checkpoint pattern. The /task command exists but is not properly exposed through the Skill tool, preventing agents from creating tasks programmatically. This creates a workflow gap where task creation must be done manually via bash, bypassing preflight/postflight checkpoints. Research: (1) Why skill-task is not in Skill tool registry despite being documented in CLAUDE.md, (2) Current /task command implementation and skill architecture, (3) How skill-orchestrator should route task creation, (4) Integration points with checkpoint pattern from Task 675. Plan and implement: Complete skill registration, add checkpoint enforcement, enable programmatic task creation, maintain backward compatibility with user-invoked /task command.
+
+---
 
 ### 675. Enforce skill postflight checkpoint pattern
 - **Effort**: 6-8 hours
