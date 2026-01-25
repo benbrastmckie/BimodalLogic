@@ -27,6 +27,18 @@ technical_debt:
 
 ## High Priority
 
+### 680. Unify /todo and /review roadmap matching
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-25
+- **Related**: Task 639
+
+**Description**: Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic.
+
+---
+
 ### 677. Study preflight/postflight patterns for improvements
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]

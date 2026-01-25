@@ -820,6 +820,19 @@
         283
       ],
       "effort": "1.5 hours"
+    },
+    {
+      "project_number": 680,
+      "project_name": "unify_todo_review_roadmap_matching",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-25T21:12:02Z",
+      "last_updated": "2026-01-25T21:12:02Z",
+      "related_tasks": [
+        639
+      ],
+      "description": "Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic."
     }
   ],
   "completed_projects": [
@@ -834,7 +847,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 680,
+  "next_project_number": 681,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
