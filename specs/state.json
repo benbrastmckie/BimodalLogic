@@ -31,7 +31,7 @@
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T20:39:43Z",
-      "last_updated": "2026-01-25T21:25:00Z",
+      "last_updated": "2026-01-25T21:10:02Z",
       "artifacts": [
         {
           "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md",
@@ -40,11 +40,11 @@
         },
         {
           "type": "plan",
-          "path": "specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-001.md",
-          "summary": "5-phase implementation plan covering .opencode archival, checkpoint hooks, /task integration, CLAUDE.md updates, and validation"
+          "path": "specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-002.md",
+          "summary": "6-phase implementation plan (v2) incorporating Task 677 research findings - removes simulation code and wires real skill delegation"
         }
       ],
-      "planned": "2026-01-25T21:25:00Z",
+      "planned": "2026-01-25T21:10:02Z",
       "plan_summary": "5-phase implementation plan for preflight/postflight integration improvements leveraging Claude Code 2026 features",
       "plan_metadata": {
         "phases": 5,
@@ -779,11 +779,11 @@
     {
       "project_number": 678,
       "project_name": "fix_constitutive_foundation_latex_definitions",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "priority": "high",
       "created": "2026-01-25T21:15:00Z",
-      "last_updated": "2026-01-25T21:15:00Z",
+      "last_updated": "2026-01-25T21:09:10Z",
       "description": "Fix LaTeX definition issues in 02-ConstitutiveFoundation.tex: (1) Define well-formed sentences using standard double colon and identity sign with pipes between constructions (line 32), (2) Define non-primitive symbols including \\exists' and quantifier notations (line 34), (3) Add term algebra definition matching Lean source code (line 130), (4) Expand definition to include \\Rightarrow for reduction as conjunction of essence and ground (line 249)",
       "source_file": "Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex",
       "source_lines": [
@@ -792,7 +792,9 @@
         130,
         249
       ],
-      "effort": "2-3 hours"
+      "effort": "2-3 hours",
+      "researching": "2026-01-25T21:09:10Z",
+      "session_id": "sess_1769375343_7cfd86"
     },
     {
       "project_number": 679,

@@ -48,7 +48,7 @@ technical_debt:
 - **Created**: 2026-01-25
 - **Planned**: 2026-01-25T21:25:00Z
 - **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md), [research-002.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-002.md)
 
 **Description**: Improve preflight/postflight integration across the .claude/ agent system by leveraging Claude Code 2026 features. Key discovery: commands and skills merged in Jan 2026 - `.claude/commands/*.md` ARE skills. The `.opencode/` directory is legacy OpenCode that should be archived. Plan covers: (1) Archive .opencode legacy system, (2) Create checkpoint hook infrastructure, (3) Update /task with skill-scoped hooks, (4) Document 2026 architecture in CLAUDE.md, (5) Validation and testing. Coordinates with Tasks 674, 675, 677.
 
@@ -101,7 +101,7 @@ technical_debt:
 - **Language**: markdown
 - **Parent**: Task 394
 - **Research**: [research-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/plans/implementation-002.md)
 
 **Description**: Port the causal semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Carefully study the counterfactual semantics already included in the recursive-semantics.md in order to adapt existing resources rather than positing additional resources in order to construct the three-condition truth clause for causation.
 
@@ -167,13 +167,13 @@ technical_debt:
 - **Artifacts**:
   - [Research Report](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md)
   - [Research Report (Corrected)](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md) - Set vs Prop mathematical equivalence analysis
-  - [Implementation Plan](specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-001.md) - 3-phase documentation update plan
+  - [Implementation Plan](specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-002.md) - 3-phase documentation update plan
   - [Implementation Summary](specs/666_revise_lean_source_code_logos_theory_definitions/summaries/implementation-summary-20260125.md)
 
 **Description**: Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex
 
 **Research**: Set vs Prop mathematical equivalence analysis showing Lean implementation is mathematically correct (specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md)
-**Plan**: 3-phase documentation update to clarify Set/Prop equivalence and improve code readability (specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-001.md)
+**Plan**: 3-phase documentation update to clarify Set/Prop equivalence and improve code readability (specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-002.md)
 
 ---
 
@@ -189,7 +189,7 @@ technical_debt:
   - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-001.md) - Comprehensive architecture analysis with 5-phase implementation plan
   - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-002.md) - Focused analysis of preflight/postflight inconsistencies and architecture gaps
   - [Research Report](specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-003.md) - Integrated preflight/postflight operations design with 3-phase migration approach
-  - [Implementation Plan](specs/674_systematic_command_skill_agent_architecture_improvement/plans/implementation-001.md) - 4-phase implementation plan for integrated preflight/postflight operations in workflow skills
+  - [Implementation Plan](specs/674_systematic_command_skill_agent_architecture_improvement/plans/implementation-002.md) - 4-phase implementation plan for integrated preflight/postflight operations in workflow skills
 
 **Description**: Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management
 
@@ -207,7 +207,7 @@ technical_debt:
 - **Planned**: 2026-01-21T22:40:42Z
 - **Dependencies**: 661, 662
 - **Research**: [research-001.md](specs/665_update_guides_templates_to_follow_new_standards/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/665_update_guides_templates_to_follow_new_standards/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/665_update_guides_templates_to_follow_new_standards/plans/implementation-002.md)
 - **Summary**: [implementation-summary-20260125.md](specs/665_update_guides_templates_to_follow_new_standards/summaries/implementation-summary-20260125.md)
 
 **Description**: Update remaining files in `docs/guides/` and `docs/templates/`: remove "quick start" sections from `user-installation.md`; ensure present tense throughout; fix references to non-existent paths; apply ALL_CAPS naming where appropriate; update templates/README.md to remove version numbers and version history references.
@@ -228,7 +228,7 @@ technical_debt:
 - **Planned**: 2026-01-25T21:57:27Z
 - **Completed**: 2026-01-25T22:01:00Z
 - **Research**: [research-001.md](specs/653_improve_metalogic_infrastructure/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/653_improve_metalogic_infrastructure/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/653_improve_metalogic_infrastructure/plans/implementation-002.md)
 - **Summary**: [implementation-summary-20260125.md](specs/653_improve_metalogic_infrastructure/summaries/implementation-summary-20260125.md)
 
 **Description**: Two related metalogic improvements: (1) Rename SemanticCanonicalFrame to CanonicalTaskFrame in Lean source code for accuracy (the current name is misleading since it's a task frame, not a general semantic frame). (2) Address infinite contexts/sets which remain unaddressed - this should be handled by proving and applying compactness to extend the current finite-context completeness results to infinite contexts.
@@ -425,7 +425,7 @@ technical_debt:
 - **Dependencies**: Task 607
 - **Subtasks**: 622, 623, 624, 625, 630, 631
 - **Research**: [research-001.md](specs/490_complete_decidability_procedure/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/490_complete_decidability_procedure/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/490_complete_decidability_procedure/plans/implementation-002.md)
 - **Summary**: [implementation-summary-20260119.md](specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md)
 
 **Description**: Complete the decidability procedure for TM logic. Phases 1-2 completed with helper lemmas and proof structure. Expanded into subtasks for remaining work.
@@ -477,7 +477,7 @@ technical_debt:
 - **Researched**: 2026-01-21
 - **Implemented**: 2026-01-21
 - **Research**: [research-001.md](specs/667_fix_specs_path_references/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/667_fix_specs_path_references/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/667_fix_specs_path_references/plans/implementation-002.md)
 
 **Description**: Successfully identified and fixed all 6 references to .opencode/specs throughout the system. Updated Python scripts (validate_state_sync.py, todo_cleanup.py), agent files (planner.md), context files (routing.md), and documentation. Task creation system is now functional.
 
@@ -490,7 +490,7 @@ technical_debt:
 - **Session**: meta-session-1768239500
 - **Dependencies**: 667
 - **Planned**: 2026-01-21
-- **Plan**: [implementation-001.md](specs/668_create_specs_path_migration_script/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/668_create_specs_path_migration_script/plans/implementation-002.md)
 
 **Description**: Create automated Python script to detect and migrate .opencode/specs path references to specs/. Script will include safety checks, dry-run mode, backup creation, and detailed reporting. Will serve as fix for current issue and preventative tool for future migrations.
 
@@ -502,7 +502,7 @@ technical_debt:
 - **Language**: meta
 - **Session**: test-session-1768239500
 - **Planned**: 2026-01-21
-- **Plan**: [implementation-001.md](specs/669_test_task_creation/plans/implementation-001.md)
+- **Plan**: [implementation-001.md](specs/669_test_task_creation/plans/implementation-002.md)
 
 **Description**: Simple test to verify that task creation system is working after fixing .opencode/specs path references. Validates that the path reference fixes resolved the task creation issues.
 
