@@ -8059,6 +8059,86 @@
         "plans/"
       ],
       "notes": "Superseded by 673_lean_opencode_overhaul"
+    },
+    {
+      "project_number": 676,
+      "project_name": "investigate_skill_registration_integrate_task_command",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completed": "2026-01-25T22:34:04Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Migrated checkpoint operations from skills to commands across the entire .claude/ system. 8 skills converted to thin wrappers, 6 commands updated with full checkpoint pattern, SubagentStop hook archived, and comprehensive documentation created."
+    },
+    {
+      "project_number": 665,
+      "project_name": "update_guides_templates_to_follow_new_standards",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completed": "2026-01-25T20:41:52Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Updated 10 documentation files to comply with new standards: removed Quick Start references from user-installation.md and copy-claude-directory.md, removed version metadata from 8 guide and template files, and fixed invalid path references in 3 files."
+    },
+    {
+      "project_number": 653,
+      "project_name": "improve_metalogic_infrastructure",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "completed": "2026-01-25T18:52:33Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Updated LaTeX documentation to reference IndexedMCSFamily approach instead of deprecated SemanticCanonicalFrame, created Metalogic/README.md architecture documentation, and added deprecation notices to Boneyard files. All documentation now accurately reflects the current Lean implementation."
+    },
+    {
+      "project_number": 639,
+      "project_name": "improve_review_roadmap_matching",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completed": "2026-01-25T21:04:58Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Implemented explicit two-tier roadmap matching for /review command (roadmap_items + exact Task refs) with fuzzy matching removed. Updated 3 implementation agents with required roadmap_items guidance and rewrote roadmap-update.md documentation."
+    },
+    {
+      "project_number": 666,
+      "project_name": "revise_lean_source_code_logos_theory_definitions",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "completed": "2026-01-25T20:38:49Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Updated LaTeX documentation to acknowledge mathematically equivalent Set-based formulation in Lean implementation. Added explanatory footnote about Set/Prop equivalence and removed outdated TODO comment. Verified Lean code builds successfully."
+    },
+    {
+      "project_number": 678,
+      "project_name": "fix_constitutive_foundation_latex_definitions",
+      "status": "completed",
+      "language": "latex",
+      "priority": "high",
+      "completed": "2026-01-25T21:37:48Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Added 4 missing definitions to ConstitutiveFoundation LaTeX documentation: well-formed formulas (BNF definition), quantifier notation clarification, term algebra with free variables and substitution, and reduction operator. Added supporting macros to logos-notation.sty. All changes compile cleanly."
+    },
+    {
+      "project_number": 679,
+      "project_name": "identityaboutness_research_for_semantic_explanations",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "completed": "2026-01-25T22:27:41Z",
+      "archived": "2026-01-25T22:45:21Z",
+      "completion_summary": "Added pedagogical explanations for boolean operator semantics (negation, conjunction, disjunction) and formal bilattice definition with two-order interpretation (essence/ground) to the Constitutive Foundation LaTeX documentation. Removed TODO comments. Document compiles cleanly to 34 pages."
+    },
+    {
+      "project_number": 680,
+      "project_name": "unify_todo_review_roadmap_matching",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completed": "2026-01-25T22:38:13Z",
+      "archived": "2026-01-25T22:45:21Z",
+      "completion_summary": "Unified /review and /todo roadmap matching by removing unmatched tasks warning from /review. Updated roadmap-update.md to document precision over recall design philosophy."
     }
   ]
 }

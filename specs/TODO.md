@@ -5,17 +5,17 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 16
-  completed: 242
+  active: 25
+  completed: 250
   in_progress: 0
   not_started: 15
   abandoned: 21
-  total: 269
+  total: 277
 priority_distribution:
   critical: 0
-  high: 7
-  medium: 10
-  low: 6
+  high: 4
+  medium: 12
+  low: 9
 technical_debt:
   sorry_count: 205
   axiom_count: 15
@@ -26,65 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 680. Unify /todo and /review roadmap matching
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-25
-- **Researched**: 2026-01-25T21:55:00Z
-- **Completed**: 2026-01-25
-- **Related**: Task 639
-- **Research**: [research-001.md](specs/680_unify_todo_review_roadmap_matching/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/680_unify_todo_review_roadmap_matching/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260125.md](specs/680_unify_todo_review_roadmap_matching/summaries/implementation-summary-20260125.md)
-
-**Description**: Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic.
-
-**Completion Summary**: Unified /review and /todo roadmap matching by removing unmatched tasks warning from /review. Updated roadmap-update.md to document precision over recall design philosophy.
-
----
-
-### 676. Migrate command-skill-agent checkpoint pattern across .claude/ system
-- **Effort**: 16 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-25
-- **Revised**: 2026-01-25T21:58:42Z
-- **Completed**: 2026-01-25
-- **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md), [research-002.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md), [research-003.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-003.md), [research-004.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-004.md)
-- **Plan**: [implementation-004.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-004.md) (v4)
-- **Summary**: [implementation-summary-20260125.md](specs/676_investigate_skill_registration_integrate_task_command/summaries/implementation-summary-20260125.md)
-
-**Description**: Migrate ALL command-skill-agent patterns to command-level checkpoints per Option C from research-004.md. 9 industry patterns validate this architecture: API Gateway, Cross-Cutting Concerns, Transaction Boundaries, Command Pattern & SRP, CQRS, Workflow Orchestration, AWS CLI Agent Orchestrator, Root Cause Analysis, Architectural Principles. 8-phase plan covers: /research (2 skills), /plan, /implement (3 skills), /meta, /convert, cleanup obsolete hook code, comprehensive documentation, validation testing. Coordinates with Tasks 674, 675.
-
-**Completion Summary**: Migrated checkpoint operations from skills to commands across the entire .claude/ system. 8 skills converted to thin wrappers, 6 commands updated with full checkpoint pattern, SubagentStop hook archived, and comprehensive documentation created.
-
----
-
-### 678. Fix Constitutive Foundation LaTeX definitions
-- **Effort**: 1.5-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: latex
-- **Created**: 2026-01-25
-- **Planned**: 2026-01-25T21:30:00Z
-- **Completed**: 2026-01-25
-- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex:32,34,130,249
-- **Research**: [research-001.md](specs/678_fix_constitutive_foundation_latex_definitions/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/678_fix_constitutive_foundation_latex_definitions/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260125.md](specs/678_fix_constitutive_foundation_latex_definitions/summaries/implementation-summary-20260125.md)
-
-**Description**: Fix LaTeX definition issues in 02-ConstitutiveFoundation.tex: (1) Define well-formed sentences using `\Define` (mapped to `\Coloneq` for `::=`) with pipes between constructions (line 32), (2) Define non-primitive symbols including quantifier notation clarification (line 34), (3) Add term algebra definition matching Lean source code (line 130), (4) Expand definition to include `\Rightarrow` for reduction as conjunction of essence and ground (line 249). NOTE: Use `\Define` for inductive definitions (`::=`) vs `\define` for definitional equations (`:=`)
-
-**Completion Summary**: Added 4 missing definitions to ConstitutiveFoundation LaTeX documentation: well-formed formulas (BNF definition), quantifier notation clarification, term algebra with free variables and substitution, and reduction operator. Added supporting macros to logos-notation.sty. All changes compile cleanly.
-
----
-
-
-
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -163,47 +104,6 @@ technical_debt:
 
 ---
 
-### 679. IdentityAboutness research for semantic explanations
-- **Started**: 2026-01-25T21:41:29Z
-- **Status**: [COMPLETED]
-- **Effort**: 1.5 hours
-- **Priority**: Medium
-- **Language**: latex
-- **Created**: 2026-01-25
-- **Researched**: 2026-01-25T21:27:55Z
-- **Completed**: 2026-01-25
-- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex:153,283
-- **Research**: [research-001.md](specs/679_identityaboutness_research_for_semantic_explanations/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/679_identityaboutness_research_for_semantic_explanations/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260125.md](specs/679_identityaboutness_research_for_semantic_explanations/summaries/implementation-summary-20260125.md)
-
-**Description**: Research /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex to: (1) Extract semantic clause explanations for boolean operators and extrapolate to other clauses (line 153), (2) Find and include bilattice definition with clear explanations (line 283). Both items support improving documentation in 02-ConstitutiveFoundation.tex.
-
-**Completion Summary**: Added pedagogical explanations for boolean operator semantics (negation, conjunction, disjunction) and formal bilattice definition with two-order interpretation (essence/ground) to the Constitutive Foundation LaTeX documentation. Removed TODO comments. Document compiles cleanly to 34 pages.
-
----
-
-### 666. revise lean source code logos theory definitions
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Blocking**: None
-- **Dependencies**: None
-- **Created**: 2026-01-21
-- **Completed**: 2026-01-25
-- **Summary**: Updated LaTeX documentation to acknowledge mathematically equivalent Set-based formulation in Lean implementation. Added explanatory footnote about Set/Prop equivalence and removed outdated TODO comment. Verified Lean code builds successfully.
-- **Artifacts**:
-  - [Research Report](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-002.md)
-  - [Research Report (Corrected)](specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md) - Set vs Prop mathematical equivalence analysis
-  - [Implementation Plan](specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-003.md) - 3-phase documentation update plan
-  - [Implementation Summary](specs/666_revise_lean_source_code_logos_theory_definitions/summaries/implementation-summary-20260125.md)
-
-**Description**: Revise the Lean source code in the Logos/ theory to match the definitions provided in def:constitutive-model (line 72) in /home/benjamin/Projects/ProofChecker/Theories/Logos/latex/subfiles/01-ConstitutiveFoundation.tex
-
-**Research**: Set vs Prop mathematical equivalence analysis showing Lean implementation is mathematically correct (specs/666_revise_lean_source_code_logos_theory_definitions/reports/research-003.md)
-**Plan**: 3-phase documentation update to clarify Set/Prop equivalence and improve code readability (specs/666_revise_lean_source_code_logos_theory_definitions/plans/implementation-003.md)
-
 ---
 
 ### 674. systematic command skill agent architecture improvement
@@ -224,69 +124,6 @@ technical_debt:
 
 ---
 
-### 665. Update guides and templates to follow new standards
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-21
-- **Completed**: 2026-01-25
-- **Started**: 2026-01-21
-- **Researched**: 2026-01-21
-- **Planned**: 2026-01-21T22:40:42Z
-- **Dependencies**: 661, 662
-- **Research**: [research-001.md](specs/665_update_guides_templates_to_follow_new_standards/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/665_update_guides_templates_to_follow_new_standards/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260125.md](specs/665_update_guides_templates_to_follow_new_standards/summaries/implementation-summary-20260125.md)
-
-**Description**: Update remaining files in `docs/guides/` and `docs/templates/`: remove "quick start" sections from `user-installation.md`; ensure present tense throughout; fix references to non-existent paths; apply ALL_CAPS naming where appropriate; update templates/README.md to remove version numbers and version history references.
-
-**Completion Summary**: Updated 10 documentation files to comply with new standards: removed Quick Start references from user-installation.md and copy-claude-directory.md, removed version metadata from 8 guide and template files, and fixed invalid path references in 3 files.
-
----
-
-
-### 653. Improve metalogic infrastructure (rename frame, address infinite contexts)
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-20
-- **Source**: Theories/Bimodal/latex/subfiles/04-Metalogic.tex:142,253
-- **Researched**: 2026-01-25T08:34:17Z
-- **Planned**: 2026-01-25T21:57:27Z
-- **Completed**: 2026-01-25T22:01:00Z
-- **Research**: [research-001.md](specs/653_improve_metalogic_infrastructure/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/653_improve_metalogic_infrastructure/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260125.md](specs/653_improve_metalogic_infrastructure/summaries/implementation-summary-20260125.md)
-
-**Description**: Two related metalogic improvements: (1) Rename SemanticCanonicalFrame to CanonicalTaskFrame in Lean source code for accuracy (the current name is misleading since it's a task frame, not a general semantic frame). (2) Address infinite contexts/sets which remain unaddressed - this should be handled by proving and applying compactness to extend the current finite-context completeness results to infinite contexts.
-
-**Completion Summary**: Updated LaTeX documentation to reference IndexedMCSFamily approach instead of deprecated SemanticCanonicalFrame, created Metalogic/README.md architecture documentation, and added deprecation notices to Boneyard files. All documentation now accurately reflects the current Lean implementation.
-
----
-
-
-### 639. Improve /review roadmap matching reliability
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-20
-- **Researched**: 2026-01-25T21:30:00Z
-- **Planned**: 2026-01-25T21:35:00Z
-- **Revised**: 2026-01-25T21:37:00Z
-- **Started**: 2026-01-25T21:40:00Z
-- **Completed**: 2026-01-25T21:45:00Z
-- **Research**: [research-001.md](specs/639_improve_review_roadmap_matching/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/639_improve_review_roadmap_matching/plans/implementation-003.md) (v2 - clean break, no fuzzy matching)
-- **Summary**: [implementation-summary-20260125.md](specs/639_improve_review_roadmap_matching/summaries/implementation-summary-20260125.md)
-
-**Description**: Improve the reliability of ROAD_MAP.md checkbox matching in the /review command. Current issues: (1) Fuzzy title matching is unreliable, (2) No explicit task-to-roadmap mapping exists, (3) Task 637 had to be manually created to fix checkboxes. Solutions: (1) Add `roadmap_items` field to state.json entries for explicit task-roadmap linking, (2) Update /review to use explicit mappings only (no fuzzy fallback - clean break approach), (3) Update agent guidance to require roadmap_items population.
-
-**Completion Summary**: Implemented explicit two-tier roadmap matching for /review command (roadmap_items + exact Task refs) with fuzzy matching removed. Updated 3 implementation agents with required roadmap_items guidance and rewrote roadmap-update.md documentation.
-
----
-
 ### 656. Complete truth lemma forward direction (imp/box cases)
 - **Status**: [PLANNED]
 - **Effort**: 4-6 hours
@@ -301,7 +138,6 @@ technical_debt:
 ---
 
 ### 657. Prove seed consistency (temporal K distribution)
-- **Status**: [PLANNED]
 - **Started**: 2026-01-25T20:53:16Z
 - **Effort**: 6-8 hours
 - **Status**: [IMPLEMENTING]
@@ -350,7 +186,7 @@ technical_debt:
 ---
 
 ### 630. Build TaskModel extraction from saturated tableau branches
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
