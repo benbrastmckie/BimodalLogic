@@ -36,7 +36,7 @@ inductive ConstitutiveFormula where
 \begin{definition}[Well-Formed Formulas]\label{def:wff}
 The set of \emph{well-formed formulas} is defined inductively:
 \begin{align*}
-  \metaA ::={}& p \mid F(t_1, \ldots, t_n) \mid \top \mid \bot \\
+  \metaA \Define{}& p \mid F(t_1, \ldots, t_n) \mid \top \mid \bot \\
   \mid{}& \neg\metaA \mid (\metaA \land \metaB) \mid (\metaA \lor \metaB) \\
   \mid{}& (\metaA \equiv \metaB) \mid (\lambda x.\metaA)(t)
 \end{align*}
@@ -44,7 +44,7 @@ where $p$ ranges over sentence letters, $F$ over predicates, $t, t_i$ over terms
 \end{definition}
 ```
 
-**LaTeX Symbol**: `::=` is standard (typeset as `::=` or use `\coloneqq` for `:=`)
+**LaTeX Symbol**: Use `\Define` (mapped to `\Coloneq` producing `::=`) for inductive/BNF definitions, distinct from `\define` (single colon `:=`) used for definitional equations
 
 **Placement**: After line 30 (syntactic primitives list), before "Derived Operators" subsection
 
@@ -120,7 +120,7 @@ end Term
 \begin{definition}[Term Algebra]\label{def:term-algebra}
 The set $\Term$ of \emph{terms} is defined inductively:
 \begin{align*}
-  t ::= x \mid c \mid f(t_1, \ldots, t_n)
+  t \Define x \mid c \mid f(t_1, \ldots, t_n)
 \end{align*}
 where $x$ ranges over variables, $c$ over individual constants (0-place function symbols), and $f$ over $n$-place function symbols.
 
@@ -203,10 +203,18 @@ def reduction (φ ψ : ConstitutiveFormula) : ConstitutiveFormula :=
 ### Notation Requirements
 
 Ensure these macros exist in `logos-notation.sty`:
+- `\Define` → `\Coloneq` (produces `::=` for inductive/BNF definitions) - **ADD THIS**
+- `\define` (produces `:=` for definitional equations) - likely exists
 - `\metaA`, `\metaB` (meta-variables for formulas) - likely exist
 - `\Term` (term set) - may need adding
 - `\FV` (free variables function) - may need adding
 - Standard symbols: `\top`, `\bot`, `\neg`, `\land`, `\lor`, `\equiv`, `\Rightarrow` - should exist
+
+**Notation Distinction**:
+| Macro | Symbol | Usage |
+|-------|--------|-------|
+| `\Define` | `::=` | Inductive/BNF grammars (e.g., `t \Define x \mid c`) |
+| `\define` | `:=` | Definitional equations (e.g., `A \to B \define \neg A \lor B`) |
 
 ### Semantic Linefeeds
 

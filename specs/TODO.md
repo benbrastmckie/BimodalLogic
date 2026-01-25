@@ -62,7 +62,7 @@ technical_debt:
 - **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex:32,34,130,249
 - **Research**: [research-001.md](specs/678_fix_constitutive_foundation_latex_definitions/reports/research-001.md)
 
-**Description**: Fix LaTeX definition issues in 02-ConstitutiveFoundation.tex: (1) Define well-formed sentences using standard double colon and identity sign with pipes between constructions (line 32), (2) Define non-primitive symbols including \exists' and quantifier notations (line 34), (3) Add term algebra definition matching Lean source code (line 130), (4) Expand definition to include \Rightarrow for reduction as conjunction of essence and ground (line 249)
+**Description**: Fix LaTeX definition issues in 02-ConstitutiveFoundation.tex: (1) Define well-formed sentences using `\Define` (mapped to `\Coloneq` for `::=`) with pipes between constructions (line 32), (2) Define non-primitive symbols including quantifier notation clarification (line 34), (3) Add term algebra definition matching Lean source code (line 130), (4) Expand definition to include `\Rightarrow` for reduction as conjunction of essence and ground (line 249). NOTE: Use `\Define` for inductive definitions (`::=`) vs `\define` for definitional equations (`:=`)
 
 ---
 
