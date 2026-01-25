@@ -38,222 +38,209 @@ max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required: "core/workflows/command-lifecycle.md"
+  required:
+    - "core/workflows/command-lifecycle.md"
 ---
 
-## Context Loading Guidance
+# Command: /revise
 
-- Routing stages: do not load context.
-- Execution stages: use `.opencode/context/index.md` for targeted context loading.
-
-
-
-## Context Loading Guidance
-
-- Routing stages: do not load context.
-- Execution stages: use `.opencode/context/index.md` for targeted context loading.
-
-
-# /revise Command
-
-Create a new version of an implementation plan, or update task description if no plan exists.
-
-## Arguments
-
-- `$1` - Task number (required)
-- Remaining args - Optional reason for revision
-
-## Execution
-
-### CHECKPOINT 1: GATE IN
-
-1. **Generate Session ID**
-   ```
-   session_id = sess_{timestamp}_{random}
-   ```
-
-2. **Lookup Task**
-   ```bash
-   task_data=$(jq -r --arg num "$task_number" \
-     '.active_projects[] | select(.project_number == ($num | tonumber))' \
-     specs/state.json)
-   ```
-
-3. **Validate and Route**
-   - Task exists (ABORT if not)
-   - Route based on status:
-
-   | Status | Action |
-   |--------|--------|
-   | planned, implementing, partial, blocked | → Plan Revision (Stage 2A) |
-   | not_started, researched | → Description Update (Stage 2B) |
-   | completed | ABORT "Task completed, no revision needed" |
-   | abandoned | ABORT "Task abandoned, use /task --recover first" |
-
-**ABORT** if any validation fails. **PROCEED** to appropriate stage.
+**Purpose**: Create a new version of an implementation plan, or update task description if no plan exists  
+**Layer**: 2 (Command File - Argument Parsing Agent)  
+**Delegates To**: skill-reviser
 
 ---
 
-### STAGE 2A: Plan Revision
+## Argument Parsing
 
-For tasks with existing plans (planned, implementing, partial, blocked):
-
-1. **Load Current Context**
-   - Current plan from `specs/{N}_{SLUG}/plans/implementation-{LATEST}.md`
-   - Research reports if any
-   - Implementation progress (phase statuses)
-
-2. **Analyze What Changed**
-   - What phases succeeded/failed?
-   - What new information emerged?
-   - What dependencies weren't anticipated?
-
-3. **Create Revised Plan**
-   Increment version: implementation-002.md, implementation-003.md, etc.
-
-   Write to `specs/{N}_{SLUG}/plans/implementation-{NEW_VERSION}.md`
-
-4. **Update Status Inline** (two-step to avoid jq escaping bug - see `jq-escaping-workarounds.md`)
-   Update specs/state.json to "planned" status and add plan artifact:
-   ```bash
-   # Step 1: Update status and timestamps
-   jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-      --arg status "planned" \
-     '(.active_projects[] | select(.project_number == {task_number})) |= . + {
-       status: $status,
-       last_updated: $ts,
-       planned: $ts
-     }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-
-   # Step 2: Add artifact
-   jq --arg path "{new_plan_path}" \
-     '(.active_projects[] | select(.project_number == {task_number})).artifacts =
-       ([(.active_projects[] | select(.project_number == {task_number})).artifacts // [] | .[] | select(.type != "plan")] + [{"path": $path, "type": "plan"}])' \
-     specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
-   ```
-
-   Update specs/TODO.md status marker using Edit tool.
-
--> Continue to CHECKPOINT 2 (Plan Revision)
+<argument_parsing>
+  <step_1>
+    Extract task_number from args[0]
+    Extract revision_reason from remaining args (optional)
+    
+    If task_number missing: Return error "Usage: /revise <task_number> [reason]"
+  </step_1>
+  
+  <step_2>
+    Generate Session ID:
+    session_id = sess_{timestamp}_{random}
+  </step_2>
+  
+  <step_3>
+    Lookup Task in specs/state.json:
+    ```bash
+    task_data=$(jq -r --arg num "$task_number" \
+      '.active_projects[] | select(.project_number == ($num | tonumber))' \
+      specs/state.json)
+    ```
+    
+    If task not found: Return error "Task {task_number} not found"
+  </step_3>
+  
+  <step_4>
+    Determine Revision Type based on status:
+    - planned, implementing, partial, blocked → Plan Revision
+    - not_started, researched → Description Update
+    - completed → Return error "Task completed, no revision needed"
+    - abandoned → Return error "Task abandoned, use /task --recover first"
+  </step_4>
+</argument_parsing>
 
 ---
 
-### STAGE 2B: Description Update
+## Workflow Execution
 
-For tasks without plans (not_started, researched):
+<workflow_execution>
+  <plan_revision>
+    <step_1>
+      <action>Load Current Context</action>
+      <process>
+        - Current plan from specs/{N}_{SLUG}/plans/implementation-{LATEST}.md
+        - Research reports if any
+        - Implementation progress (phase statuses)
+      </process>
+    </step_1>
 
-1. **Read Current Description**
-   ```bash
-   old_description=$(echo "$task_data" | jq -r '.description // ""')
-   ```
+    <step_2>
+      <action>Delegate to Reviser Skill</action>
+      <input>
+        - skill: "skill-reviser"
+        - args: "task_number={task_number} revision_type=plan reason={reason} session_id={session_id}"
+      </input>
+      <expected_return>
+        {
+          "status": "revised",
+          "plan_version": "implementation-002.md",
+          "changes_summary": [...]
+        }
+      </expected_return>
+    </step_2>
 
-2. **Validate Revision Reason**
-   If no revision_reason provided: ABORT "No revision reason provided. Usage: /revise N \"new description\""
+    <step_3>
+      <action>Update State</action>
+      <process>
+        Update specs/state.json:
+        - status to "planned"
+        - Add new plan artifact
+        - Update timestamps
+        
+        Update specs/TODO.md status marker
+      </process>
+    </step_3>
 
-3. **Update specs/state.json**
-   ```bash
-   jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg desc "$new_description" \
-     '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
-       description: $desc,
-       last_updated: $ts
-     }' specs/state.json > /tmp/state.json && \
-     mv /tmp/state.json specs/state.json
-   ```
+    <step_4>
+      <action>Git Commit</action>
+      <process>
+        ```bash
+        git add -A
+        git commit -m "task {N}: revise plan (v{VERSION})
+        
+        Session: {session_id}
+        
+        Co-Authored-By: OpenCode <noreply@opencode.ai>"
+        ```
+      </process>
+    </step_4>
+  </plan_revision>
 
-4. **Update specs/TODO.md**
-   Use Edit tool to replace description
+  <description_update>
+    <step_1>
+      <action>Load Current Description</action>
+      <process>
+        Extract old_description from task_data
+      </process>
+    </step_1>
 
-→ Continue to CHECKPOINT 2 (Description Update)
+    <step_2>
+      <action>Validate Revision Reason</action>
+      <validation>
+        If no revision_reason provided: Return error "No revision reason provided. Usage: /revise N \"new description\""
+      </validation>
+    </step_2>
+
+    <step_3>
+      <action>Delegate to Reviser Skill</action>
+      <input>
+        - skill: "skill-reviser"
+        - args: "task_number={task_number} revision_type=description new_description={reason} session_id={session_id}"
+      </input>
+      <expected_return>
+        {
+          "status": "updated",
+          "description": "new description text"
+        }
+      </expected_return>
+    </step_3>
+
+    <step_4>
+      <action>Update State</action>
+      <process>
+        Update specs/state.json description and timestamp
+        Update specs/TODO.md description
+      </process>
+    </step_4>
+
+    <step_5>
+      <action>Git Commit</action>
+      <process>
+        ```bash
+        git add -A
+        git commit -m "task {N}: revise description
+        
+        Session: {session_id}
+        
+        Co-Authored-By: OpenCode <noreply@opencode.ai>"
+        ```
+      </process>
+    </step_5>
+  </description_update>
+
+  <step_6>
+    <action>Return Result</action>
+    <output>
+      Display revision summary:
+      - Task number
+      - Revision type
+      - Changes made
+      - New status
+      - Next steps
+      
+      Return to orchestrator
+    </output>
+  </step_6>
+</workflow_execution>
 
 ---
-
-### CHECKPOINT 2: GATE OUT
-
-**For Plan Revision (Stage 2A):**
-1. Verify new plan file exists
-2. Verify status is "planned"
-3. Verify plan link updated in specs/TODO.md
-
-**For Description Update (Stage 2B):**
-1. Verify description updated in specs/state.json
-2. Verify description updated in specs/TODO.md
-
-**PROCEED** to commit.
-
----
-
-### CHECKPOINT 3: COMMIT
-
-**For Plan Revision:**
-```bash
-git add -A
-git commit -m "$(cat <<'EOF'
-task {N}: revise plan (v{NEW_VERSION})
-
-Session: {session_id}
-
-Co-Authored-By: OpenCode <noreply@opencode.ai>
-EOF
-)"
-```
-
-**For Description Update:**
-```bash
-git add -A
-git commit -m "$(cat <<'EOF'
-task {N}: revise description
-
-Session: {session_id}
-
-Co-Authored-By: OpenCode <noreply@opencode.ai>
-EOF
-)"
-```
-
-Commit failure is non-blocking (log and continue).
-
-## Output
-
-**Plan Revision:**
-```
-Plan revised for Task #{N}
-
-Previous: implementation-{PREV}.md
-New: implementation-{NEW}.md
-
-Key changes:
-- {Change 1}
-- {Change 2}
-
-Preserved phases: 1
-Revised phases: 2-3
-
-Status: [PLANNED]
-Next: /implement {N}
-```
-
-**Description Update:**
-```
-Description updated for Task #{N}
-
-Previous: {old_description}
-New: {new_description}
-
-Status: [{current_status}]
-```
 
 ## Error Handling
 
-### GATE IN Failure
-- Task not found: Return error with guidance
-- Invalid status: Return error with current status
+<error_handling>
+  <argument_errors>
+    - Task not found -> Return error with guidance
+    - Invalid status -> Return error with current status
+    - No revision reason -> Return error with usage
+  </argument_errors>
+  
+  <execution_errors>
+    - Skill failure -> Return error message
+    - Missing plan file -> Fall back to description update
+    - Write failures -> Log error, preserve original
+  </execution_errors>
+</error_handling>
 
-### STAGE Failure
-- Missing plan for revision: Fall back to description update
-- Write failure: Log error, preserve original
+---
 
-### GATE OUT Failure
-- Verification failure: Log warning, continue
+## State Management
 
-### COMMIT Failure
-- Non-blocking: Log warning, continue with success
+<state_management>
+  <reads>
+    specs/state.json
+    task plan files
+    specs/TODO.md
+  </reads>
+  
+  <writes>
+    specs/state.json
+    specs/TODO.md
+    New plan files (in specs/{N}_{SLUG}/plans/)
+  </writes>
+</state_management>

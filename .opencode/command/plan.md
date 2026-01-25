@@ -34,130 +34,150 @@ max_delegation_depth: 3
 context_loading:
   strategy: lazy
   index: ".opencode/context/index.md"
-  required: "core/workflows/command-lifecycle.md"
+  required:
+    - "core/workflows/command-lifecycle.md"
 ---
 
-## Context Loading Guidance
+# Command: /plan
 
-- Routing stages: do not load context.
-- Execution stages: use `.opencode/context/index.md` for targeted context loading.
+**Purpose**: Create phased implementation plan for a task  
+**Layer**: 2 (Command File - Argument Parsing Agent)  
+**Delegates To**: skill-planner
 
+---
 
-## Context Loading Guidance
+## Argument Parsing
 
-- Routing stages: do not load context.
-- Execution stages: use `.opencode/context/index.md` for targeted context loading.
+<argument_parsing>
+  <step_1>
+    Extract task_number from args[0]
+    If missing: Return error "Usage: /plan <task_number>"
+  </step_1>
+  
+  <step_2>
+    Generate Session ID:
+    session_id = sess_{timestamp}_{random}
+  </step_2>
+  
+  <step_3>
+    Lookup Task in specs/state.json:
+    ```bash
+    task_data=$(jq -r --arg num "$task_number" \
+      '.active_projects[] | select(.project_number == ($num | tonumber))' \
+      specs/state.json)
+    ```
+    If task not found: Return error "Task {task_number} not found"
+  </step_3>
+  
+  <step_4>
+    Validate Status:
+    status=$(echo "$task_data" | jq -r '.status')
+    allowed_statuses=["not_started", "researched", "partial"]
+    
+    If status not in allowed_statuses:
+      If status == "planned": Note existing plan, offer --force (if implemented)
+      If status == "completed": Return error "Task already completed"
+      If status == "implementing": Return error "Task in progress, use /revise instead"
+      Else: Return error "Task status is {status}, expected {allowed_statuses}"
+  </step_4>
+</argument_parsing>
 
+---
 
-# /plan Command
+## Workflow Execution
 
-Create a phased implementation plan for a task by delegating to the planner skill/subagent.
+<workflow_execution>
+  <step_1>
+    <action>Load Context</action>
+    <process>
+      - Task description from specs/state.json
+      - Research reports from `specs/{N}_{SLUG}/reports/` (if any)
+    </process>
+  </step_1>
 
-## Arguments
+  <step_2>
+    <action>Delegate to Planner Skill</action>
+    <input>
+      - skill: "skill-planner"
+      - args: "task_number={N} research_path={path} session_id={session_id}"
+    </input>
+    <expected_return>
+      {
+        "status": "planned",
+        "summary": "...",
+        "artifacts": [...],
+        "metadata": {"phase_count": N, "estimated_hours": M}
+      }
+    </expected_return>
+  </step_2>
+  
+  <step_3>
+    <action>Validate Return and Update State</action>
+    <validation>
+      - status is "planned"
+      - artifacts array is present
+      - plan file exists on disk
+    </validation>
+    <process>
+      Confirm status is now "planned" in specs/state.json (Skill handles update)
+    </process>
+  </step_3>
+  
+  <step_4>
+    <action>Commit Changes</action>
+    <process>
+      ```bash
+      git add -A
+      git commit -m "$(cat <<'EOF'
+      task {N}: create implementation plan
+      
+      Session: {session_id}
+      
+      Co-Authored-By: OpenCode <noreply@opencode.ai>
+      EOF
+      )"
+      ```
+    </process>
+  </step_4>
+  
+  <step_5>
+    <action>Return Result</action>
+    <output>
+      Display plan path, phase count, estimated effort
+      Return to orchestrator
+    </output>
+  </step_5>
+</workflow_execution>
 
-- `$1` - Task number (required)
-
-## Execution
-
-### CHECKPOINT 1: GATE IN
-
-1. **Generate Session ID**
-   ```
-   session_id = sess_{timestamp}_{random}
-   ```
-
-2. **Lookup Task**
-   ```bash
-   task_data=$(jq -r --arg num "$task_number" \
-     '.active_projects[] | select(.project_number == ($num | tonumber))' \
-     specs/state.json)
-   ```
-
-3. **Validate**
-   - Task exists (ABORT if not)
-   - Status allows planning: not_started, researched, partial
-   - If planned: Note existing plan, offer --force for revision
-   - If completed: ABORT "Task already completed"
-   - If implementing: ABORT "Task in progress, use /revise instead"
-
-4. **Load Context**
-   - Task description from specs/state.json
-   - Research reports from `specs/{N}_{SLUG}/reports/` (if any)
-
-**ABORT** if any validation fails.
-
-**On GATE IN success**: Task validated. **IMMEDIATELY CONTINUE** to STAGE 2 below.
-
-### STAGE 2: DELEGATE
-
-**EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
-
-**Invoke the Skill tool NOW** with:
-```
-skill: "skill-planner"
-args: "task_number={N} research_path={path to research report if exists} session_id={session_id}"
-```
-
-The skill spawns `planner-agent` which analyzes task requirements and research findings, decomposes into logical phases, identifies risks and mitigations, and creates a plan in `specs/{N}_{SLUG}/plans/`.
-
-**On DELEGATE success**: Plan created. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
-
-### CHECKPOINT 2: GATE OUT
-
-1. **Validate Return**
-   Required fields: status, summary, artifacts, metadata (phase_count, estimated_hours)
-
-2. **Verify Artifacts**
-   Check plan file exists on disk
-
-3. **Verify Status Updated**
-   The skill handles status updates internally (preflight and postflight).
-   Confirm status is now "planned" in specs/state.json.
-
-**RETRY** skill if validation fails.
-
-**On GATE OUT success**: Plan verified. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below.
-
-### CHECKPOINT 3: COMMIT
-
-```bash
-git add -A
-git commit -m "$(cat <<'EOF'
-task {N}: create implementation plan
-
-Session: {session_id}
-
-Co-Authored-By: OpenCode <noreply@opencode.ai>
-EOF
-)"
-```
-
-Commit failure is non-blocking (log and continue).
-
-## Output
-
-```
-Plan created for Task #{N}
-
-Plan: {artifact_path from skill result}
-
-Phases: {phase_count from metadata}
-Total estimated effort: {estimated_hours from metadata}
-
-Status: [PLANNED]
-Next: /implement {N}
-```
+---
 
 ## Error Handling
 
-### GATE IN Failure
-- Task not found: Return error with guidance
-- Invalid status: Return error with current status
+<error_handling>
+  <argument_errors>
+    - Task not found -> Return error with guidance
+    - Invalid status -> Return error with current status
+  </argument_errors>
+  
+  <workflow_errors>
+    - Skill failure -> Keep [PLANNING], log error
+    - Timeout -> Partial plan preserved, user can re-run
+    - Missing artifacts -> Log warning, continue with available
+    - Commit failure -> Log warning, continue
+  </workflow_errors>
+</error_handling>
 
-### DELEGATE Failure
-- Skill fails: Keep [PLANNING], log error
-- Timeout: Partial plan preserved, user can re-run
+---
 
-### GATE OUT Failure
-- Missing artifacts: Log warning, continue with available
-- Link failure: Non-blocking warning
+## State Management
+
+<state_management>
+  <reads>
+    task_data=$(jq ...)
+  </reads>
+  
+  <writes>
+    # Delegated to skill for internal updates
+    # Direct commit in Step 4
+  </writes>
+</state_management>

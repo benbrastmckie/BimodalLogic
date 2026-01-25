@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "task": 250,
+    "date": "2025-12-29",
+    "source": "Task 245 Validation Report",
+    "description": "Baseline metrics from Phase 2 migration (Task 245) for comparison"
+  },
+  "phase1_pre_migration": {
+    "orchestrator_lines": 1108,
+    "command_files": {
+      "plan_md": 652,
+      "implement_md": 802,
+      "revise_md": 646,
+      "research_md": 748,
+      "total": 2848
+    },
+    "context_system_lines": 8093,
+    "context_window_usage": {
+      "routing_stage": "60-70%",
+      "execution_stage": "30-40%"
+    },
+    "stage7_completion_rate": "0%",
+    "notes": "Pre-migration baseline from Task 244/245 planning"
+  },
+  "phase2_post_migration": {
+    "orchestrator_lines": 66,
+    "command_files": {
+      "plan_md": 186,
+      "implement_md": 289,
+      "revise_md": 323,
+      "research_md": 272,
+      "total": 1070
+    },
+    "context_system_lines": 23294,
+    "context_window_usage": {
+      "routing_stage": "<10%",
+      "execution_stage": ">90%"
+    },
+    "stage7_completion_rate": "Not tested",
+    "notes": "Post-migration metrics from Task 245 validation report"
+  },
+  "targets": {
+    "orchestrator_lines": 100,
+    "command_files": {
+      "plan_md": 250,
+      "implement_md": 300,
+      "revise_md": 250,
+      "research_md": 272,
+      "total": 1000
+    },
+    "context_window_routing": "<10%",
+    "stage7_completion_rate": "100%",
+    "delegation_depth_max": 3
+  },
+  "improvements": {
+    "orchestrator_reduction": "94.0%",
+    "command_files_reduction": "62.4%",
+    "context_system_growth": "187.8%",
+    "routing_context_reduction": "~85%"
+  }
+}

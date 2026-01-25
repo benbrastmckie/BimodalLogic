@@ -1,0 +1,26 @@
+[2025-12-29 09:56:08] Starting context window usage measurement
+[2025-12-29 09:56:08] Configuration:
+[2025-12-29 09:56:08]   Total context window: 100000 tokens
+[2025-12-29 09:56:08]   Target routing usage: <10% (<10000 tokens)
+[2025-12-29 09:56:08] 
+[2025-12-29 09:56:08] Measuring orchestrator routing context (Checkpoint 1)
+[2025-12-29 09:56:08]   Orchestrator file: 0 tokens
+[2025-12-29 09:56:08]   Context index: 2595 tokens
+[2025-12-29 09:56:08]   Checkpoint 1 total: 2595 tokens
+[2025-12-29 09:56:08] 
+[2025-12-29 09:56:08] Measuring command routing context for /research (Checkpoint 2)
+[2025-12-29 09:56:08]   Command file: 0 tokens
+[2025-12-29 09:56:08]   Checkpoint 2 total: 0 tokens
+[2025-12-29 09:56:08] 
+[2025-12-29 09:56:08] Measuring command routing context for /plan (Checkpoint 2)
+[2025-12-29 09:56:08]   Command file: 0 tokens
+[2025-12-29 09:56:08]   Checkpoint 2 total: 0 tokens
+[2025-12-29 09:56:08] 
+[2025-12-29 09:56:08] Measuring command routing context for /implement (Checkpoint 2)
+[2025-12-29 09:56:08]   Command file: 0 tokens
+[2025-12-29 09:56:08]   Checkpoint 2 total: 0 tokens
+[2025-12-29 09:56:08] 
+[2025-12-29 09:56:08] Measuring command routing context for /revise (Checkpoint 2)
+[2025-12-29 09:56:08]   Command file: 0 tokens
+[2025-12-29 09:56:08]   Checkpoint 2 total: 0 tokens
+[2025-12-29 09:56:08] 

@@ -1,6 +1,6 @@
 # Implementation Plan: Revise Lean Source Code for Logos Theory Definitions
 - **Task**: 666 - Revise Lean Source Code for Logos Theory Definitions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -38,7 +38,7 @@ Research identified that while the Lean implementation uses `Set ((Fin n → Sta
 
 ## Implementation Phases
 
-### Phase 1: Update Lean Source Code Documentation [NOT STARTED]
+### Phase 1: Update Lean Source Code Documentation [IN PROGRESS]
 - **Goal:** Add explanatory comments about Set/Prop equivalence in Interpretation.lean
 - **Tasks:**
   - [ ] Add module-level comment explaining Set/Prop relationship in Lean 4
