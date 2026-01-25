@@ -14,8 +14,8 @@ Add four missing definitions to `02-ConstitutiveFoundation.tex` with proper nota
 
 ### Phase 0: Add \Define Macro
 
-**Estimated effort**: 15 minutes  
-**Status**: [NOT STARTED]
+**Estimated effort**: 15 minutes
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add `\Define` macro to `logos-notation.sty` for BNF-style definitions
@@ -43,8 +43,8 @@ Add four missing definitions to `02-ConstitutiveFoundation.tex` with proper nota
 
 ### Phase 1: Add Term Algebra Definition
 
-**Estimated effort**: 20 minutes  
-**Status**: [NOT STARTED]
+**Estimated effort**: 20 minutes
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add formal term algebra definition before line 132
@@ -94,8 +94,8 @@ Add four missing definitions to `02-ConstitutiveFoundation.tex` with proper nota
 
 ### Phase 2: Add Well-Formed Formulas Definition
 
-**Estimated effort**: 20 minutes  
-**Status**: [NOT STARTED]
+**Estimated effort**: 20 minutes
+**Status**: [IN PROGRESS]
 
 **Objectives**:
 1. Add WFF definition after line 30 (syntactic primitives list)

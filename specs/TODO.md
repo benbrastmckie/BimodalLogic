@@ -43,13 +43,13 @@ technical_debt:
 
 ### 676. Investigate skill registration and integrate /task command with checkpoint pattern
 - **Effort**: 8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
 - **Planned**: 2026-01-25T21:25:00Z
-- **Researching**: 2026-01-25T21:42:36Z
-- **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md), [research-002.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md)
+- **Researched**: 2026-01-25T21:42:36Z
+- **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md), [research-002.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md), [research-004.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-004.md)
 - **Plan**: [implementation-001.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-003.md)
 
 **Description**: Improve preflight/postflight integration across the .claude/ agent system by leveraging Claude Code 2026 features. Key discovery: commands and skills merged in Jan 2026 - `.claude/commands/*.md` ARE skills. The `.opencode/` directory is legacy OpenCode that should be archived. Plan covers: (1) Archive .opencode legacy system, (2) Create checkpoint hook infrastructure, (3) Update /task with skill-scoped hooks, (4) Document 2026 architecture in CLAUDE.md, (5) Validation and testing. Coordinates with Tasks 674, 675, 677.
@@ -58,7 +58,7 @@ technical_debt:
 
 ### 678. Fix Constitutive Foundation LaTeX definitions
 - **Effort**: 1.5-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-25
@@ -292,6 +292,9 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-25T21:32:07Z
+- **Session**: sess_1769376706_e66bd8
 - **Effort**: 8-12 hours
 - **Status**: [IMPLEMENTING]
 - **Priority**: Medium
