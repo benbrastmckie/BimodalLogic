@@ -29,7 +29,7 @@ technical_debt:
 
 ### 680. Unify /todo and /review roadmap matching
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
@@ -156,14 +156,16 @@ technical_debt:
 ## Medium Priority
 
 ### 681. Redesign construct_indexed_family with coherent approach
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 14 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
 - **Researched**: 2026-01-25T22:26:00Z
+- **Planned**: 2026-01-25T22:32:00Z
 - **Related**: Task 658
 - **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-001.md)
 
 **Description**: Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyard's canonical_task_rel pattern), or research alternative approaches.
 

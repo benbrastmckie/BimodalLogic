@@ -8,11 +8,11 @@
     {
       "project_number": 681,
       "project_name": "redesign_construct_indexed_family_coherent_approach",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-25T22:30:14Z",
+      "last_updated": "2026-01-25T22:36:27Z",
       "related_tasks": [
         658
       ],
@@ -30,9 +30,15 @@
           "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md",
           "type": "report",
           "summary": "Research report analyzing Task 658 blocking issue and recommending relational coherent MCS construction approach based on Boneyard canonical_task_rel pattern"
+        },
+        {
+          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for redesigning construct_indexed_family using coherent relational approach"
         }
       ],
-      "planning": "2026-01-25T22:30:14Z"
+      "planning": "2026-01-25T22:30:14Z",
+      "planned": "2026-01-25T22:36:27Z"
     },
     {
       "project_number": 676,
@@ -959,16 +965,16 @@
     {
       "project_number": 680,
       "project_name": "unify_todo_review_roadmap_matching",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T21:12:02Z",
-      "last_updated": "2026-01-25T21:29:00Z",
+      "last_updated": "2026-01-25T22:35:04Z",
       "related_tasks": [
         639
       ],
       "description": "Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic.",
-      "session_id": "sess_1769376490_3e5c02",
+      "session_id": "sess_1769380486_5be5eb",
       "researched": "2026-01-25T21:27:37Z",
       "artifacts": [
         {
@@ -983,7 +989,8 @@
         }
       ],
       "planning": "2026-01-25T21:28:28Z",
-      "planned": "2026-01-25T21:29:00Z"
+      "planned": "2026-01-25T21:29:00Z",
+      "started": "2026-01-25T22:35:04Z"
     }
   ],
   "completed_projects": [
