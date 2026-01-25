@@ -157,25 +157,6 @@
       "completion_summary": "Updated LaTeX documentation to reference IndexedMCSFamily approach instead of deprecated SemanticCanonicalFrame, created Metalogic/README.md architecture documentation, and added deprecation notices to Boneyard files. All documentation now accurately reflects the current Lean implementation."
     },
     {
-      "project_number": 648,
-      "project_name": "research_canonical_frame_temporal_order_generalization",
-      "status": "researched",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-20T20:55:08Z",
-      "last_updated": "2026-01-25T18:50:17Z",
-      "session_id": "sess_1768941258_a63c63",
-      "researching": "2026-01-25T18:46:58Z",
-      "researched": "2026-01-25T18:50:17Z",
-      "artifacts": [
-        {
-          "path": "specs/648_research_canonical_frame_temporal_order_generalization/reports/research-001.md",
-          "type": "report",
-          "summary": "Research report documenting complete parametric generalization of canonical frame over any totally ordered commutative group D, showing LaTeX TODO is outdated"
-        }
-      ]
-    },
-    {
       "project_number": 639,
       "project_name": "improve_review_roadmap_matching",
       "status": "not_started",
