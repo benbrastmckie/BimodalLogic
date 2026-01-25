@@ -55,8 +55,11 @@ technical_debt:
 ---
 
 ### 678. Fix Constitutive Foundation LaTeX definitions
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-25T21:10:58Z
+- **Research**: [research-001.md](specs/678_fix_constitutive_foundation_latex_definitions/reports/research-001.md)
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-25
@@ -144,7 +147,7 @@ technical_debt:
 
 ### 679. IdentityAboutness research for semantic explanations
 - **Effort**: 1.5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: latex
 - **Created**: 2026-01-25
