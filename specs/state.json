@@ -27,18 +27,44 @@
     {
       "project_number": 676,
       "project_name": "investigate_skill_registration_integrate_task_command",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T20:39:43Z",
-      "last_updated": "2026-01-25T20:46:48Z",
+      "last_updated": "2026-01-25T21:25:00Z",
       "artifacts": [
         {
           "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive investigation revealing skills are properly registered, commands are bash scripts bypassing skill layer, /task lacks skill wrapper, and checkpoint pattern lacks architectural enforcement"
+        },
+        {
+          "type": "plan",
+          "path": "specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-001.md",
+          "summary": "5-phase implementation plan covering .opencode archival, checkpoint hooks, /task integration, CLAUDE.md updates, and validation"
         }
-      ]
+      ],
+      "planned": "2026-01-25T21:25:00Z",
+      "plan_summary": "5-phase implementation plan for preflight/postflight integration improvements leveraging Claude Code 2026 features",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 8,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-25"
+          },
+          {
+            "path": "reports/research-002.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-01-25"
+          }
+        ]
+      }
     },
     {
       "project_number": 665,
