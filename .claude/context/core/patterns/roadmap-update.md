@@ -35,18 +35,12 @@ Roadmap updates occur in two places:
 **Important**: No fuzzy title matching is performed. This is intentional:
 - Fuzzy matching produced unreliable results
 - Explicit items ensure precision over recall
-- Tasks without `roadmap_items` or `(Task N)` refs will be reported as unmatched
+- Not all completed tasks update the roadmap - this is intentional design
 
-### Unmatched Tasks
-
-Tasks that don't match any roadmap item are:
-- Reported in the review report under "Unmatched Completed Tasks"
-- Included in summary output with warning message
-- NOT automatically annotated anywhere
-
-To fix unmatched tasks:
-1. Add `(Task N)` annotation to relevant ROAD_MAP.md item, OR
-2. For future tasks, populate `roadmap_items` during implementation
+**Design Philosophy**: Precision takes priority over recall. Tasks without explicit
+`roadmap_items` or existing `(Task N)` references are silently ignored rather than
+generating warnings. This avoids false positives since many internal tasks (meta,
+refactoring, tooling) do not correspond to roadmap deliverables.
 
 ---
 
