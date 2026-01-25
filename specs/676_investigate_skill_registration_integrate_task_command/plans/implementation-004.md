@@ -1,7 +1,7 @@
 # Implementation Plan: Task #676 (v4)
 
 - **Task**: 676 - Investigate skill registration and integrate /task command with checkpoint pattern
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours (expanded from 12h to include all commands)
 - **Priority**: High
 - **Dependencies**: Coordinate with Tasks 674, 675
@@ -113,7 +113,7 @@ These commands execute directly without skill delegation:
 
 ## Implementation Phases
 
-### Phase 1: Complete /research Migration [NOT STARTED]
+### Phase 1: Complete /research Migration [COMPLETED]
 
 **Goal**: Ensure both research skills (general and Lean) use command-level checkpoints
 
@@ -142,7 +142,7 @@ These commands execute directly without skill delegation:
 
 ---
 
-### Phase 2: Migrate /plan Command [NOT STARTED]
+### Phase 2: Migrate /plan Command [COMPLETED]
 
 **Goal**: Move checkpoint operations from skill-planner to /plan command
 
@@ -174,7 +174,7 @@ These commands execute directly without skill delegation:
 
 ---
 
-### Phase 3: Migrate /implement Command [NOT STARTED]
+### Phase 3: Migrate /implement Command [IN PROGRESS]
 
 **Goal**: Move checkpoint operations to /implement for all three implementation skills
 
