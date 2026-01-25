@@ -60,14 +60,15 @@
     {
       "project_number": 656,
       "project_name": "complete_truth_lemma_forward_direction",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-25T20:47:39Z",
       "related_tasks": [
         654
-      ]
+      ],
+      "researching": "2026-01-25T20:47:39Z"
     },
     {
       "project_number": 657,
@@ -167,12 +168,30 @@
     {
       "project_number": 639,
       "project_name": "improve_review_roadmap_matching",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T16:55:00Z",
-      "last_updated": "2026-01-25T20:45:52Z",
-      "session_id": "sess_1769373935_9b67be"
+      "last_updated": "2026-01-25T20:49:33Z",
+      "session_id": "sess_1769373935_9b67be",
+      "researched": "2026-01-25T20:49:33Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/639_improve_review_roadmap_matching/reports/research-001.md",
+          "summary": "Comprehensive analysis finding roadmap_items field already exists, /todo has structured matching implemented, /review needs update to use explicit roadmap_items (priority 1) instead of unreliable fuzzy matching"
+        },
+        {
+          "type": "research",
+          "path": "specs/639_improve_review_roadmap_matching/reports/research-001.md",
+          "summary": "Comprehensive analysis finding roadmap_items field already exists, /todo has structured matching implemented, /review needs update to use explicit roadmap_items (priority 1) instead of unreliable fuzzy matching"
+        },
+        {
+          "type": "research",
+          "path": "specs/639_improve_review_roadmap_matching/reports/research-001.md",
+          "summary": "Comprehensive analysis finding roadmap_items field already exists, /todo has structured matching implemented, /review needs update to use explicit roadmap_items (priority 1) instead of unreliable fuzzy matching"
+        }
+      ]
     },
     {
       "project_number": 630,
