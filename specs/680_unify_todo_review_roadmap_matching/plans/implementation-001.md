@@ -1,7 +1,7 @@
 # Implementation Plan: Task #680
 
 - **Task**: 680 - unify_todo_review_roadmap_matching
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Priority**: high
 - **Dependencies**: Task 639 (completed)

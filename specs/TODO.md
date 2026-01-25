@@ -29,16 +29,20 @@ technical_debt:
 
 ### 680. Unify /todo and /review roadmap matching
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
 - **Researched**: 2026-01-25T21:55:00Z
+- **Completed**: 2026-01-25
 - **Related**: Task 639
 - **Research**: [research-001.md](specs/680_unify_todo_review_roadmap_matching/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/680_unify_todo_review_roadmap_matching/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260125.md](specs/680_unify_todo_review_roadmap_matching/summaries/implementation-summary-20260125.md)
 
 **Description**: Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic.
+
+**Completion Summary**: Unified /review and /todo roadmap matching by removing unmatched tasks warning from /review. Updated roadmap-update.md to document precision over recall design philosophy.
 
 ---
 
@@ -157,7 +161,7 @@ technical_debt:
 
 ### 681. Redesign construct_indexed_family with coherent approach
 - **Effort**: 14 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
