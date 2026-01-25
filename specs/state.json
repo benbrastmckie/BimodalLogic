@@ -139,7 +139,7 @@
     {
       "project_number": 630,
       "project_name": "build_taskmodel_extraction_from_saturated_branches",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "parent_task": 490,
@@ -151,8 +151,8 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-25T22:56:00Z",
-      "session_id": "sess_1769381643_cc6fe6",
+      "last_updated": "2026-01-25T23:02:07Z",
+      "session_id": "sess_1769382114_52ccb6",
       "researched": "2026-01-25T22:52:03Z",
       "planned": "2026-01-25T22:56:00Z",
       "artifacts": [
@@ -166,7 +166,8 @@
           "type": "plan",
           "summary": "5-phase implementation plan for TaskModel extraction from saturated branches"
         }
-      ]
+      ],
+      "started": "2026-01-25T23:02:07Z"
     },
     {
       "project_number": 631,
@@ -301,21 +302,22 @@
     },
     {
       "project_number": 616,
-      "project_name": "fix_semantic_task_rel_compositionality_sorry",
+      "project_name": "remove_false_semantic_task_rel_compositionality",
       "status": "researched",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T17:54:52Z",
-      "last_updated": "2026-01-19T20:08:51Z",
-      "session_id": "sess_1768853180_4c6f86",
+      "last_updated": "2026-01-25T23:03:21Z",
+      "session_id": "sess_1769382194_2a7634",
       "researched": "2026-01-19T20:08:51Z",
       "artifacts": [
         {
           "type": "research",
-          "path": "specs/616_fix_semantic_task_rel_compositionality_sorry/reports/research-001.md",
+          "path": "specs/616_remove_false_semantic_task_rel_compositionality/reports/research-001.md",
           "summary": "Research report analyzing the finite model compositionality limitation and recommending acceptance of the sorry"
         }
-      ]
+      ],
+      "description": "Remove the mathematically false theorem semantic_task_rel_compositionality and its sorry from SemanticCanonicalModel.lean. Research confirmed this theorem cannot be proven (unbounded duration sums exceed finite time domain), and it is not needed for the completeness proof which uses a different approach. Remove the false claim rather than accepting a sorry for an unprovable statement."
     },
     {
       "project_number": 394,

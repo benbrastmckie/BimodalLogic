@@ -186,7 +186,7 @@ technical_debt:
 ---
 
 ### 630. Build TaskModel extraction from saturated tableau branches
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -253,15 +253,15 @@ technical_debt:
 
 ## Low Priority
 
-### 616. Fix semantic_task_rel_compositionality finite model limitation
-- **Status**: [IMPLEMENTING]
+### 616. Remove false theorem semantic_task_rel_compositionality
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Related**: Task 608
-- **Research**: [research-001.md](specs/616_fix_semantic_task_rel_compositionality_sorry/reports/research-001.md)
+- **Research**: [research-001.md](specs/616_remove_false_semantic_task_rel_compositionality/reports/research-001.md)
 
-**Description**: Fix the sorry in `semantic_task_rel_compositionality` at SemanticCanonicalModel.lean:236. The issue is that task relation compositionality fails for unbounded duration sums in the finite model (time bounds are [-k, k]). Options include: (1) Add a boundedness hypothesis requiring |d1 + d2| <= 2k, (2) Change the task relation definition to be closed under composition, or (3) Use a different frame construction. Note: The completeness proof doesn't directly use this lemma, so this is an acceptable limitation.
+**Description**: Remove the mathematically false theorem semantic_task_rel_compositionality and its sorry from SemanticCanonicalModel.lean. Research confirmed this theorem cannot be proven (unbounded duration sums exceed finite time domain), and it is not needed for the completeness proof which uses a different approach. Remove the false claim rather than accepting a sorry for an unprovable statement.
 
 ---
 
