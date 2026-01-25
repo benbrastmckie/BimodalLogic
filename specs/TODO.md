@@ -217,10 +217,11 @@ technical_debt:
 - **Created**: 2026-01-20
 - **Researched**: 2026-01-25T21:30:00Z
 - **Planned**: 2026-01-25T21:35:00Z
+- **Revised**: 2026-01-25T21:37:00Z
 - **Research**: [research-001.md](specs/639_improve_review_roadmap_matching/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/639_improve_review_roadmap_matching/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/639_improve_review_roadmap_matching/plans/implementation-002.md) (v2 - clean break, no fuzzy matching)
 
-**Description**: Improve the reliability of ROAD_MAP.md checkbox matching in the /review command. Current issues: (1) Fuzzy title matching is unreliable, (2) No explicit task-to-roadmap mapping exists, (3) Task 637 had to be manually created to fix checkboxes. Solutions: (1) Add `roadmap_items` field to state.json entries for explicit task-roadmap linking, (2) Update /review to use explicit mappings first, fall back to fuzzy matching, (3) Update /task create to optionally specify linked roadmap items, (4) Improve fuzzy matching heuristics.
+**Description**: Improve the reliability of ROAD_MAP.md checkbox matching in the /review command. Current issues: (1) Fuzzy title matching is unreliable, (2) No explicit task-to-roadmap mapping exists, (3) Task 637 had to be manually created to fix checkboxes. Solutions: (1) Add `roadmap_items` field to state.json entries for explicit task-roadmap linking, (2) Update /review to use explicit mappings only (no fuzzy fallback - clean break approach), (3) Update agent guidance to require roadmap_items population.
 
 ---
 

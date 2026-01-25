@@ -184,7 +184,7 @@
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T16:55:00Z",
-      "last_updated": "2026-01-25T20:53:25Z",
+      "last_updated": "2026-01-25T20:58:22Z",
       "session_id": "sess_1769374292_14744e",
       "researched": "2026-01-25T20:49:33Z",
       "artifacts": [
@@ -207,10 +207,16 @@
           "type": "plan",
           "path": "specs/639_improve_review_roadmap_matching/plans/implementation-001.md",
           "summary": "4-phase plan covering /review command updates, agent guidance, documentation sync, and testing"
+        },
+        {
+          "path": "specs/639_improve_review_roadmap_matching/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 4-phase plan with clean break approach - removes fuzzy matching entirely"
         }
       ],
       "planning": "2026-01-25T20:51:46Z",
-      "planned": "2026-01-25T20:53:25Z"
+      "planned": "2026-01-25T20:58:22Z",
+      "revised": "2026-01-25T20:58:22Z"
     },
     {
       "project_number": 630,
