@@ -36,6 +36,7 @@ technical_debt:
 - **Researched**: 2026-01-25T21:55:00Z
 - **Related**: Task 639
 - **Research**: [research-001.md](specs/680_unify_todo_review_roadmap_matching/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/680_unify_todo_review_roadmap_matching/plans/implementation-001.md)
 
 **Description**: Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic.
 
@@ -43,15 +44,19 @@ technical_debt:
 
 ### 676. Migrate command-skill-agent checkpoint pattern across .claude/ system
 - **Effort**: 16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
 - **Revised**: 2026-01-25T21:58:42Z
+- **Completed**: 2026-01-25
 - **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md), [research-002.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md), [research-003.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-003.md), [research-004.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-004.md)
 - **Plan**: [implementation-004.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-004.md) (v4)
+- **Summary**: [implementation-summary-20260125.md](specs/676_investigate_skill_registration_integrate_task_command/summaries/implementation-summary-20260125.md)
 
 **Description**: Migrate ALL command-skill-agent patterns to command-level checkpoints per Option C from research-004.md. 9 industry patterns validate this architecture: API Gateway, Cross-Cutting Concerns, Transaction Boundaries, Command Pattern & SRP, CQRS, Workflow Orchestration, AWS CLI Agent Orchestrator, Root Cause Analysis, Architectural Principles. 8-phase plan covers: /research (2 skills), /plan, /implement (3 skills), /meta, /convert, cleanup obsolete hook code, comprehensive documentation, validation testing. Coordinates with Tasks 674, 675.
+
+**Completion Summary**: Migrated checkpoint operations from skills to commands across the entire .claude/ system. 8 skills converted to thin wrappers, 6 commands updated with full checkpoint pattern, SubagentStop hook archived, and comprehensive documentation created.
 
 ---
 
@@ -152,7 +157,7 @@ technical_debt:
 
 ### 681. Redesign construct_indexed_family with coherent approach
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25

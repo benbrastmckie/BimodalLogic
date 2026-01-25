@@ -63,7 +63,7 @@ Tasks have a `Language` field that determines tool selection:
 
 ## Checkpoint-Based Execution Model
 
-All workflow commands follow a three-checkpoint pattern:
+All workflow commands follow a three-checkpoint pattern where **commands own all checkpoint operations**. Skills are thin wrappers that only delegate to subagents.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -76,6 +76,17 @@ All workflow commands follow a three-checkpoint pattern:
 └─────────────────────────────────────────────────────────────┘
 ```
 
+### Checkpoint Ownership
+
+| Checkpoint | Owner | Operations |
+|------------|-------|------------|
+| GATE IN | Command | Generate session_id, validate, update to "in progress" |
+| DELEGATE | Skill | Validate inputs, invoke subagent via Task tool |
+| GATE OUT | Command | Read metadata, update to "completed", link artifacts |
+| COMMIT | Command | Git commit with session_id |
+
+**Why commands?** Skill postflight code may not execute due to Claude Code Issue #17351. Command code always executes, ensuring reliable checkpoint completion.
+
 ### Session Tracking
 
 Each command generates a session ID at GATE IN: `sess_{timestamp}_{random}`
@@ -85,9 +96,17 @@ Session ID is:
 - Included in error logs for traceability
 - Included in git commits for correlation
 
+### Metadata File Exchange
+
+Subagents communicate results via metadata files:
+- Location: `specs/{N}_{SLUG}/.meta/{operation}-return-meta.json`
+- Created by: Subagent (before returning)
+- Read by: Command (in GATE OUT)
+- Contains: status, summary, artifacts, completion_data
+
 ### Checkpoint Details
 
-Reference: `.claude/context/core/checkpoints/`
+Reference: `.claude/context/core/patterns/checkpoint-in-commands.md`
 
 ---
 
@@ -284,18 +303,21 @@ Domain knowledge (load as needed):
 
 ## Skill Architecture
 
-### Lazy Context Loading
+### Thin Wrapper Pattern
 
-All skills use lazy context loading - context is never loaded eagerly via frontmatter arrays. Instead:
+Workflow skills are **thin wrappers** that only:
+1. Validate inputs from the calling command
+2. Prepare delegation context
+3. Invoke a subagent via Task tool
+4. Return the subagent's text summary
 
-1. **Delegating skills**: Use Task tool to spawn subagents which load their own context
-2. **Direct skills**: Document required context via @-references in a "Context Loading" section
+**Skills do NOT**:
+- Handle checkpoints (preflight/postflight)
+- Update state.json or TODO.md
+- Link artifacts
+- Create git commits
 
-Reference `@.claude/context/index.md` for the full context discovery index.
-
-### Thin Wrapper Skill Pattern
-
-Workflow skills use a thin wrapper pattern that delegates to subagents via the Task tool:
+All checkpoint operations are handled by the **calling command**.
 
 ```yaml
 ---
@@ -305,15 +327,25 @@ allowed-tools: Task
 ---
 ```
 
-**Key characteristics**:
-- Skills contain minimal routing logic only
-- All context loading happens in the subagent (via Task tool)
-- Skill instructions specify which agent to invoke (e.g., `subagent_type: "general-research-agent"`)
-- No `context: fork` or `agent:` fields needed - delegation is explicit via Task tool
+Reference: `.claude/context/core/patterns/thin-wrapper-skill.md`
 
-**When NOT to use thin wrapper pattern**:
-- Skills that execute work directly without spawning a subagent (e.g., skill-status-sync)
-- Skills that need to process results before returning (use direct execution instead)
+### Checkpoint Responsibility Split
+
+| Component | Responsibility |
+|-----------|---------------|
+| **Command** | GATE IN: validate, update to "in progress" |
+| **Skill** | DELEGATE: validate inputs, invoke subagent |
+| **Subagent** | Execute work, write metadata file, return text summary |
+| **Command** | GATE OUT: read metadata, update to "completed", link artifacts |
+| **Command** | COMMIT: git commit with session_id |
+
+### Lazy Context Loading
+
+Context is loaded lazily:
+1. **Delegating skills**: Use Task tool to spawn subagents which load their own context
+2. **Direct skills**: Document required context via @-references in a "Context Loading" section
+
+Reference `@.claude/context/index.md` for the full context discovery index.
 
 ### Custom Agent Registration
 
@@ -326,7 +358,7 @@ description: {one-line description}
 ---
 ```
 
-Without frontmatter, Claude Code silently ignores agent files and they won't appear as valid `subagent_type` values. Agent registration takes effect on session restart.
+Without frontmatter, Claude Code silently ignores agent files. Agent registration takes effect on session restart.
 
 ### Skill-to-Agent Mapping
 
@@ -344,18 +376,9 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 | skill-document-converter | document-converter-agent | Document format conversion (PDF/DOCX to Markdown, etc.) |
 | skill-refresh | (direct execution) | Manage orphaned processes and project file cleanup |
 
-### Thin Wrapper Execution Flow
-
-All delegating skills follow this 5-step pattern:
-
-1. **Input Validation** - Verify task exists, status allows operation
-2. **Context Preparation** - Build delegation context with session_id
-3. **Invoke Subagent** - Call Task tool with target agent
-4. **Return Validation** - Verify return matches `subagent-return.md` schema
-5. **Return Propagation** - Pass validated result to caller
-
 ### Benefits
 
+- **Reliability**: Checkpoints in commands always execute
 - **Token Efficiency**: Context loaded only in subagent conversation
 - **Isolation**: Subagent context doesn't bloat parent conversation
 - **Reusability**: Same subagent usable from multiple entry points

@@ -1,6 +1,6 @@
 ---
 description: Interactive system builder that creates TASKS for agent architecture changes (never implements directly)
-allowed-tools: Skill
+allowed-tools: Skill, Bash(jq:*), Bash(git:*), Bash(mkdir:*), Bash(date:*), Bash(od:*), Bash(tr:*), Read, Edit
 argument-hint: [PROMPT] | --analyze
 model: claude-opus-4-5-20251101
 ---
@@ -31,38 +31,157 @@ Interactive system builder that delegates to `skill-meta` for creating TASKS for
 
 ## Execution
 
-### 1. Mode Detection
+### CHECKPOINT 1: GATE IN (Preflight)
 
-Determine mode from arguments:
+1. **Generate Session ID**
+   ```bash
+   session_id="sess_$(date +%s)_$(od -An -N3 -tx1 /dev/urandom | tr -d ' ')"
+   ```
+
+2. **Determine Mode**
+   ```bash
+   args="$ARGUMENTS"
+
+   if [ -z "$args" ]; then
+     mode="interactive"
+     prompt=""
+   elif [ "$args" = "--analyze" ]; then
+     mode="analyze"
+     prompt=""
+   else
+     mode="prompt"
+     prompt="$args"
+   fi
+   ```
+
+3. **Create Meta Directory** (for metadata file)
+   ```bash
+   mkdir -p specs/.meta
+   ```
+
+**On GATE IN success**: Mode determined. **IMMEDIATELY CONTINUE** to STAGE 2 below.
+
+### STAGE 2: DELEGATE
+
+**EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
+
+**Invoke the Skill tool NOW** with:
+```
+skill: "skill-meta"
+args: "mode={mode} session_id={session_id} prompt={prompt}"
+```
+
+The skill will spawn `meta-builder-agent` which:
+- **Interactive mode**: Runs 7-stage interview with user confirmation
+- **Prompt mode**: Analyzes request and proposes task breakdown
+- **Analyze mode**: Inventories existing components and provides recommendations
+
+**On DELEGATE success**: Skill returns text summary. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
+
+### CHECKPOINT 2: GATE OUT (Postflight)
+
+1. **Read Metadata File**
+   ```bash
+   metadata_file="specs/.meta/meta-return-meta.json"
+
+   if [ ! -f "$metadata_file" ]; then
+     echo "Error: Meta metadata file not found at $metadata_file"
+     echo "The skill may have failed to complete properly"
+     exit 1
+   fi
+
+   # Extract metadata
+   meta_status=$(jq -r '.status // "unknown"' "$metadata_file")
+   meta_summary=$(jq -r '.summary // ""' "$metadata_file")
+   tasks_created=$(jq -r '.metadata.tasks_created // 0' "$metadata_file")
+   result_mode=$(jq -r '.metadata.mode // "unknown"' "$metadata_file")
+   ```
+
+2. **Validate Required Fields**
+   ```bash
+   if [ "$meta_status" = "unknown" ] || [ -z "$meta_status" ]; then
+     echo "Error: Missing or invalid status in meta metadata"
+     exit 1
+   fi
+
+   if [ -z "$meta_summary" ]; then
+     echo "Error: Missing summary in meta metadata"
+     exit 1
+   fi
+   ```
+
+3. **Process Based on Status**
+
+   **If meta_status is "tasks_created" or "completed"**:
+   Proceed to CHECKPOINT 3 for git commit (if tasks were created).
+
+   **If meta_status is "analyzed"**:
+   No tasks created, no commit needed. Skip to output.
+
+   **If meta_status is "cancelled"**:
+   User cancelled, no commit needed. Skip to output.
+
+4. **Cleanup Metadata File**
+   ```bash
+   rm -f "$metadata_file"
+   ```
+
+**On GATE OUT success**: Results processed. **IMMEDIATELY CONTINUE** to CHECKPOINT 3 below (if tasks created).
+
+### CHECKPOINT 3: COMMIT (if tasks created)
+
+Only commit if tasks were created (status is "tasks_created"):
+
+```bash
+if [ "$meta_status" = "tasks_created" ] && [ "$tasks_created" -gt 0 ]; then
+  git add -A
+  git commit -m "$(cat <<'EOF'
+meta: create {tasks_created} task(s)
+
+Session: {session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
+fi
+```
+
+Commit failure is non-blocking (log and continue).
+
+## Output
+
+### Tasks Created
 
 ```
-if $ARGUMENTS is empty:
-    mode = "interactive"
-elif $ARGUMENTS == "--analyze":
-    mode = "analyze"
-else:
-    mode = "prompt"
-    prompt = $ARGUMENTS
+## Tasks Created
+
+Created {tasks_created} task(s):
+
+{task list from summary}
+
+**Next Steps**:
+1. Review tasks in TODO.md
+2. Run `/research {first_task_number}` to begin research on first task
+3. Progress through /research -> /plan -> /implement cycle
 ```
 
-### 2. Delegate to Skill
+### Analysis Output
 
-Invoke skill-meta via Skill tool with:
-- Mode (interactive, prompt, or analyze)
-- Prompt (if provided)
+```
+## Current .claude/ Structure
 
-The skill will:
-1. Validate inputs
-2. Prepare delegation context
-3. Invoke meta-builder-agent
-4. Return standardized JSON result
+{analysis summary from agent}
 
-### 3. Present Results
+**Recommendations**:
+{recommendations from agent}
+```
 
-Based on agent return:
-- **Interactive/Prompt modes**: Display created tasks and next steps
-- **Analyze mode**: Display component inventory and recommendations
-- **Cancelled**: Acknowledge user cancellation
+### User Cancelled
+
+```
+Task creation cancelled. No tasks were created.
+Run /meta again when ready.
+```
 
 ## Modes Summary
 
@@ -100,90 +219,15 @@ Read-only system analysis:
 
 Example: `/meta --analyze`
 
-## Output
+## Error Handling
 
-### Tasks Created
+### GATE IN Failure
+- Invalid arguments: Return error with usage
 
-```
-## Tasks Created
+### DELEGATE Failure
+- Skill fails: Report error
+- Timeout: Partial progress may be lost for interactive mode
 
-Created {N} task(s) for {domain}:
-
-**High Priority**:
-- Task #{N}: {title}
-  Path: specs/{N}_{slug}/
-
-**Next Steps**:
-1. Review tasks in TODO.md
-2. Run `/research {N}` to begin research on first task
-3. Progress through /research -> /plan -> /implement cycle
-```
-
-### Analysis Output
-
-```
-## Current .claude/ Structure
-
-**Commands ({N})**:
-- /{command} - {description}
-
-**Skills ({N})**:
-- {skill} - {description}
-
-**Agents ({N})**:
-- {agent}
-
-**Active Tasks ({N})**:
-- #{N}: {title} [{status}]
-
-**Recommendations**:
-1. {suggestion}
-```
-
-### User Cancelled
-
-```
-Task creation cancelled. No tasks were created.
-Run /meta again when ready.
-```
-
-## Reference Templates
-
-These templates are provided for reference when creating tasks. Actual file creation happens during `/implement`, not `/meta`.
-
-### Command Template Reference
-
-```markdown
----
-description: {description}
-allowed-tools: {tools}
-argument-hint: {hint}
-model: claude-opus-4-5-20251101
----
-
-# /{command} Command
-
-{documentation}
-```
-
-### Skill Template Reference
-
-```markdown
----
-name: {skill-name}
-description: {when to invoke}
-allowed-tools: Task
-context: fork
-agent: {agent-name}
----
-
-# {Skill Name}
-
-## Trigger Conditions
-## Execution
-## Return Format
-```
-
-### Agent Template Reference
-
-See `.claude/docs/guides/creating-agents.md` for full 8-stage workflow template.
+### GATE OUT Failure
+- Missing metadata file: Report error
+- Invalid status: Report error

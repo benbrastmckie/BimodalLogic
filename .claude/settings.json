@@ -75,18 +75,6 @@
           }
         ]
       }
-    ],
-    "SubagentStop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/subagent-postflight.sh 2>/dev/null || echo '{}'",
-            "timeout": 30000
-          }
-        ]
-      }
     ]
   },
   "model": "sonnet"

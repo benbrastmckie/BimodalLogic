@@ -8,17 +8,17 @@
     {
       "project_number": 681,
       "project_name": "redesign_construct_indexed_family_coherent_approach",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-25T22:27:00Z",
+      "last_updated": "2026-01-25T22:30:14Z",
       "related_tasks": [
         658
       ],
       "description": "Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyards canonical_task_rel pattern), or research alternative approaches.",
       "researching": "2026-01-25T22:22:57Z",
-      "session_id": "sess_1769379770_72c798",
+      "session_id": "sess_1769380208_8c6df7",
       "researched": "2026-01-25T22:27:00Z",
       "artifacts": [
         {
@@ -31,16 +31,17 @@
           "type": "report",
           "summary": "Research report analyzing Task 658 blocking issue and recommending relational coherent MCS construction approach based on Boneyard canonical_task_rel pattern"
         }
-      ]
+      ],
+      "planning": "2026-01-25T22:30:14Z"
     },
     {
       "project_number": 676,
       "project_name": "investigate_skill_registration_integrate_task_command",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T20:39:43Z",
-      "last_updated": "2026-01-25T22:22:13Z",
+      "last_updated": "2026-01-25T22:34:04Z",
       "artifacts": [
         {
           "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md",
@@ -76,6 +77,16 @@
           "path": "specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-004.md",
           "type": "plan",
           "summary": "Expanded 8-phase plan covering all command-skill-agent patterns (v4) - industry patterns validate Option C"
+        },
+        {
+          "path": "specs/676_investigate_skill_registration_integrate_task_command/summaries/implementation-summary-20260125.md",
+          "type": "summary",
+          "summary": "Implementation summary with full details of skills migrated, commands updated, and verification results"
+        },
+        {
+          "path": "specs/676_investigate_skill_registration_integrate_task_command/summaries/implementation-summary-20260125.md",
+          "type": "summary",
+          "summary": "Implementation summary with full details of skills migrated, commands updated, and verification results"
         }
       ],
       "planned": "2026-01-25T21:22:02Z",
@@ -113,7 +124,10 @@
       "researching": "2026-01-25T21:42:36Z",
       "researched": "2026-01-25T21:42:36Z",
       "revised": "2026-01-25T21:47:31Z",
-      "implementing": "2026-01-25T22:22:13Z"
+      "implementing": "2026-01-25T22:22:13Z",
+      "completed": "2026-01-25T22:34:04Z",
+      "completion_summary": "Migrated checkpoint operations from skills to commands across the entire .claude/ system. 8 skills converted to thin wrappers, 6 commands updated with full checkpoint pattern, SubagentStop hook archived, and comprehensive documentation created.",
+      "claudemd_suggestions": "Updated CLAUDE.md Checkpoint-Based Execution Model and Skill Architecture sections, created checkpoint-in-commands.md pattern doc, updated thin-wrapper-skill.md, created archive/README.md"
     },
     {
       "project_number": 665,
@@ -945,11 +959,11 @@
     {
       "project_number": 680,
       "project_name": "unify_todo_review_roadmap_matching",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T21:12:02Z",
-      "last_updated": "2026-01-25T21:28:28Z",
+      "last_updated": "2026-01-25T21:29:00Z",
       "related_tasks": [
         639
       ],
@@ -961,9 +975,15 @@
           "path": "specs/680_unify_todo_review_roadmap_matching/reports/research-001.md",
           "type": "research",
           "summary": "Research report identifying unmatched tasks warning in /review (lines 173-189, 303-310) and confirming matching logic is already unified between /todo and /review"
+        },
+        {
+          "path": "specs/680_unify_todo_review_roadmap_matching/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan to remove unmatched tasks warning from /review command and unify documentation"
         }
       ],
-      "planning": "2026-01-25T21:28:28Z"
+      "planning": "2026-01-25T21:28:28Z",
+      "planned": "2026-01-25T21:29:00Z"
     }
   ],
   "completed_projects": [
