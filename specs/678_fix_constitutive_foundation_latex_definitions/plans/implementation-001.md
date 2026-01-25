@@ -95,7 +95,7 @@ Add four missing definitions to `02-ConstitutiveFoundation.tex` with proper nota
 ### Phase 2: Add Well-Formed Formulas Definition
 
 **Estimated effort**: 20 minutes
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add WFF definition after line 30 (syntactic primitives list)
@@ -131,8 +131,8 @@ Add four missing definitions to `02-ConstitutiveFoundation.tex` with proper nota
 
 ### Phase 3: Add Reduction Operator
 
-**Estimated effort**: 15 minutes  
-**Status**: [NOT STARTED]
+**Estimated effort**: 15 minutes
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add reduction operator definition after line 256 (def:essence-ground)
@@ -163,8 +163,8 @@ Add four missing definitions to `02-ConstitutiveFoundation.tex` with proper nota
 
 ### Phase 4: Add Quantifier Clarification
 
-**Estimated effort**: 15 minutes  
-**Status**: [NOT STARTED]
+**Estimated effort**: 15 minutes
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add remark clarifying quantifier notation after line 48 (biconditional def)
@@ -197,8 +197,8 @@ Add four missing definitions to `02-ConstitutiveFoundation.tex` with proper nota
 
 ### Phase 5: Build and Verify
 
-**Estimated effort**: 15 minutes  
-**Status**: [NOT STARTED]
+**Estimated effort**: 15 minutes
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Build PDF to verify all LaTeX compiles
