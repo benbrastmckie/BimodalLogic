@@ -29,7 +29,7 @@ technical_debt:
 
 ### 680. Unify /todo and /review roadmap matching
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
@@ -43,11 +43,12 @@ technical_debt:
 
 ### 676. Investigate skill registration and integrate /task command with checkpoint pattern
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
 - **Planned**: 2026-01-25T21:25:00Z
+- **Researching**: 2026-01-25T21:42:36Z
 - **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md), [research-002.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-003.md)
 
@@ -56,13 +57,15 @@ technical_debt:
 ---
 
 ### 678. Fix Constitutive Foundation LaTeX definitions
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 1.5-2 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-25
+- **Planned**: 2026-01-25T21:30:00Z
 - **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex:32,34,130,249
 - **Research**: [research-001.md](specs/678_fix_constitutive_foundation_latex_definitions/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/678_fix_constitutive_foundation_latex_definitions/plans/implementation-001.md)
 
 **Description**: Fix LaTeX definition issues in 02-ConstitutiveFoundation.tex: (1) Define well-formed sentences using `\Define` (mapped to `\Coloneq` for `::=`) with pipes between constructions (line 32), (2) Define non-primitive symbols including quantifier notation clarification (line 34), (3) Add term algebra definition matching Lean source code (line 130), (4) Expand definition to include `\Rightarrow` for reduction as conjunction of essence and ground (line 249). NOTE: Use `\Define` for inductive definitions (`::=`) vs `\define` for definitional equations (`:=`)
 

@@ -8,11 +8,11 @@
     {
       "project_number": 676,
       "project_name": "investigate_skill_registration_integrate_task_command",
-      "status": "planned",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T20:39:43Z",
-      "last_updated": "2026-01-25T21:22:02Z",
+      "last_updated": "2026-01-25T21:42:36Z",
       "artifacts": [
         {
           "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md",
@@ -55,7 +55,9 @@
             "integrated_date": "2026-01-25"
           }
         ]
-      }
+      },
+      "session_id": "sess_1769376556_acddf6",
+      "researching": "2026-01-25T21:42:36Z"
     },
     {
       "project_number": 665,
@@ -770,11 +772,11 @@
     {
       "project_number": 678,
       "project_name": "fix_constitutive_foundation_latex_definitions",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "high",
       "created": "2026-01-25T21:15:00Z",
-      "last_updated": "2026-01-25T21:23:33Z",
+      "last_updated": "2026-01-25T21:31:25Z",
       "description": "Fix LaTeX definition issues in 02-ConstitutiveFoundation.tex: (1) Define well-formed sentences using \\\\Define (mapped to \\\\Coloneq for ::=) with pipes between constructions (line 32), (2) Define non-primitive symbols including quantifier notation clarification (line 34), (3) Add term algebra definition matching Lean source code (line 130), (4) Expand definition to include \\\\Rightarrow for reduction as conjunction of essence and ground (line 249). NOTE: Use \\\\Define for inductive definitions (::=) vs \\\\define for definitional equations (:=)",
       "source_file": "Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex",
       "source_lines": [
@@ -785,7 +787,7 @@
       ],
       "effort": "2-3 hours",
       "researching": "2026-01-25T21:09:10Z",
-      "session_id": "sess_1769376162_7c48d6",
+      "session_id": "sess_1769376608_bbf804",
       "researched": "2026-01-25T21:10:48Z",
       "research_summary": "Comprehensive analysis of four LaTeX definition gaps with specific recommendations: WFF BNF grammar, quantifier clarification, term algebra definition, and reduction operator",
       "artifacts": [
@@ -793,9 +795,16 @@
           "type": "research",
           "path": "specs/678_fix_constitutive_foundation_latex_definitions/reports/research-001.md",
           "summary": "Comprehensive analysis of four LaTeX definition gaps with specific recommendations: WFF BNF grammar, quantifier clarification, term algebra definition, and reduction operator"
+        },
+        {
+          "type": "plan",
+          "path": "specs/678_fix_constitutive_foundation_latex_definitions/plans/implementation-001.md",
+          "summary": "6-phase implementation plan for LaTeX definitions and notation macros"
         }
       ],
-      "revised": "2026-01-25T21:23:33Z"
+      "revised": "2026-01-25T21:23:33Z",
+      "planning": "2026-01-25T21:30:08Z",
+      "planned": "2026-01-25T21:31:25Z"
     },
     {
       "project_number": 679,
@@ -816,16 +825,16 @@
     {
       "project_number": 680,
       "project_name": "unify_todo_review_roadmap_matching",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T21:12:02Z",
-      "last_updated": "2026-01-25T21:27:37Z",
+      "last_updated": "2026-01-25T21:28:28Z",
       "related_tasks": [
         639
       ],
       "description": "Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic.",
-      "session_id": "sess_1769376255_79020b",
+      "session_id": "sess_1769376490_3e5c02",
       "researched": "2026-01-25T21:27:37Z",
       "artifacts": [
         {
@@ -833,7 +842,8 @@
           "type": "research",
           "summary": "Research report identifying unmatched tasks warning in /review (lines 173-189, 303-310) and confirming matching logic is already unified between /todo and /review"
         }
-      ]
+      ],
+      "planning": "2026-01-25T21:28:28Z"
     }
   ],
   "completed_projects": [
