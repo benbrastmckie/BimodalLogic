@@ -152,7 +152,7 @@ technical_debt:
 
 ### 679. IdentityAboutness research for semantic explanations
 - **Started**: 2026-01-25T21:41:29Z
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Language**: latex
@@ -160,6 +160,7 @@ technical_debt:
 - **Researched**: 2026-01-25T21:27:55Z
 - **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex:153,283
 - **Research**: [research-001.md](specs/679_identityaboutness_research_for_semantic_explanations/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/679_identityaboutness_research_for_semantic_explanations/plans/implementation-001.md)
 
 **Description**: Research /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex to: (1) Extract semantic clause explanations for boolean operators and extrapolate to other clauses (line 153), (2) Find and include bilattice definition with clear explanations (line 283). Both items support improving documentation in 02-ConstitutiveFoundation.tex.
 
