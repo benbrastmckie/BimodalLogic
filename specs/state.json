@@ -8,11 +8,11 @@
     {
       "project_number": 676,
       "project_name": "investigate_skill_registration_integrate_task_command",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T20:39:43Z",
-      "last_updated": "2026-01-25T21:42:36Z",
+      "last_updated": "2026-01-25T21:47:31Z",
       "artifacts": [
         {
           "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md",
@@ -43,16 +43,21 @@
           "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-004.md",
           "type": "research",
           "summary": "Comprehensive analysis of checkpoint placement strategy with 9 industry patterns validating Option C (commands handle checkpoints)"
+        },
+        {
+          "path": "specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "Expanded 8-phase plan covering all command-skill-agent patterns (v4) - industry patterns validate Option C"
         }
       ],
       "planned": "2026-01-25T21:22:02Z",
-      "plan_summary": "5-phase implementation plan for preflight/postflight integration improvements leveraging Claude Code 2026 features",
+      "plan_summary": "Expanded 8-phase plan covering all command-skill-agent patterns (v4) - industry patterns validate Option C",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 8,
+        "phases": 8,
+        "total_effort_hours": 16,
         "complexity": "medium",
         "research_integrated": true,
-        "plan_version": 1,
+        "plan_version": 4,
         "reports_integrated": [
           {
             "path": "reports/research-001.md",
@@ -63,12 +68,23 @@
             "path": "reports/research-002.md",
             "integrated_in_plan_version": 1,
             "integrated_date": "2026-01-25"
+          },
+          {
+            "path": "reports/research-003.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-01-25"
+          },
+          {
+            "path": "reports/research-004.md",
+            "integrated_in_plan_version": 4,
+            "integrated_date": "2026-01-25"
           }
         ]
       },
       "session_id": "sess_1769376556_acddf6",
       "researching": "2026-01-25T21:42:36Z",
-      "researched": "2026-01-25T21:42:36Z"
+      "researched": "2026-01-25T21:42:36Z",
+      "revised": "2026-01-25T21:47:31Z"
     },
     {
       "project_number": 665,
@@ -136,16 +152,16 @@
     {
       "project_number": 658,
       "project_name": "prove_indexed_family_coherence_conditions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-25T21:44:09Z",
+      "last_updated": "2026-01-25T21:46:22Z",
       "related_tasks": [
         654
       ],
       "researching": "2026-01-25T21:32:07Z",
-      "session_id": "sess_1769376706_5a1862",
+      "session_id": "sess_1769395200_f8a2b9",
       "researched": "2026-01-25T21:37:00Z",
       "research_summary": "Research completed for indexed family coherence conditions. Analyzed four coherence condition sorries (lines 433, 439, 448, 456) in IndexedMCSFamily.lean. Identified proof strategies using temporal axioms (Temporal 4, Temporal K distribution). Forward_G and backward_H are directly provable from seed construction (5-7 hours). Forward_H and backward_G require MCS negation completeness lemma (additional 4-5 hours prerequisite). Created comprehensive report with phased proof strategy, case analysis patterns, and dependency analysis.",
       "artifacts": [
@@ -161,7 +177,8 @@
         }
       ],
       "planning": "2026-01-25T21:42:13Z",
-      "planned": "2026-01-25T21:44:09Z"
+      "planned": "2026-01-25T21:44:09Z",
+      "started": "2026-01-25T21:46:22Z"
     },
     {
       "project_number": 659,
@@ -846,11 +863,11 @@
     {
       "project_number": 679,
       "project_name": "identityaboutness_research_for_semantic_explanations",
-      "status": "researched",
+      "status": "planning",
       "language": "latex",
       "priority": "medium",
       "created": "2026-01-25T21:15:00Z",
-      "last_updated": "2026-01-25T21:44:56Z",
+      "last_updated": "2026-01-25T21:47:05Z",
       "description": "Research /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex to: (1) Extract semantic clause explanations for boolean operators and extrapolate to other clauses (line 153), (2) Find and include bilattice definition with clear explanations (line 283). Both items support improving documentation in 02-ConstitutiveFoundation.tex.",
       "source_file": "Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex",
       "source_lines": [
@@ -859,7 +876,7 @@
       ],
       "effort": "1.5 hours",
       "researching": "2026-01-25T21:41:29Z",
-      "session_id": "sess_1769377281_c206ab",
+      "session_id": "sess_1769377606_d6cf99",
       "researched": "2026-01-25T21:44:56Z",
       "artifacts": [
         {
@@ -872,7 +889,8 @@
           "type": "research",
           "summary": "Extracted semantic clause explanations (lines 497-511) and comprehensive bilattice definition (line 749) with two orders, properties, and pedagogical examples from IdentityAboutness.tex"
         }
-      ]
+      ],
+      "planning": "2026-01-25T21:47:05Z"
     },
     {
       "project_number": 680,

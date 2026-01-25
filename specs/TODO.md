@@ -41,18 +41,17 @@ technical_debt:
 
 ---
 
-### 676. Investigate skill registration and integrate /task command with checkpoint pattern
-- **Effort**: 8 hours
+### 676. Migrate command-skill-agent checkpoint pattern across .claude/ system
+- **Effort**: 16 hours
 - **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
-- **Planned**: 2026-01-25T21:25:00Z
-- **Researched**: 2026-01-25T21:42:36Z
-- **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md), [research-002.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md), [research-004.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-004.md)
-- **Plan**: [implementation-001.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-003.md)
+- **Revised**: 2026-01-25T21:58:42Z
+- **Research**: [research-001.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md), [research-002.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-002.md), [research-003.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-003.md), [research-004.md](specs/676_investigate_skill_registration_integrate_task_command/reports/research-004.md)
+- **Plan**: [implementation-004.md](specs/676_investigate_skill_registration_integrate_task_command/plans/implementation-004.md) (v4)
 
-**Description**: Improve preflight/postflight integration across the .claude/ agent system by leveraging Claude Code 2026 features. Key discovery: commands and skills merged in Jan 2026 - `.claude/commands/*.md` ARE skills. The `.opencode/` directory is legacy OpenCode that should be archived. Plan covers: (1) Archive .opencode legacy system, (2) Create checkpoint hook infrastructure, (3) Update /task with skill-scoped hooks, (4) Document 2026 architecture in CLAUDE.md, (5) Validation and testing. Coordinates with Tasks 674, 675, 677.
+**Description**: Migrate ALL command-skill-agent patterns to command-level checkpoints per Option C from research-004.md. 9 industry patterns validate this architecture: API Gateway, Cross-Cutting Concerns, Transaction Boundaries, Command Pattern & SRP, CQRS, Workflow Orchestration, AWS CLI Agent Orchestrator, Root Cause Analysis, Architectural Principles. 8-phase plan covers: /research (2 skills), /plan, /implement (3 skills), /meta, /convert, cleanup obsolete hook code, comprehensive documentation, validation testing. Coordinates with Tasks 674, 675.
 
 ---
 
@@ -153,7 +152,7 @@ technical_debt:
 
 ### 679. IdentityAboutness research for semantic explanations
 - **Started**: 2026-01-25T21:41:29Z
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Language**: latex
@@ -301,11 +300,10 @@ technical_debt:
 ### 658. Prove indexed family coherence conditions
 - **Plan**: [implementation-001.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-001.md)
 - **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md)
-- **Status**: [PLANNED]
-- **Started**: 2026-01-25T21:32:07Z
-- **Session**: sess_1769376706_e66bd8
-- **Effort**: 8-12 hours
 - **Status**: [IMPLEMENTING]
+- **Started**: 2026-01-25T21:32:07Z
+- **Session**: sess_1769395200_f8a2b9
+- **Effort**: 8-12 hours
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
