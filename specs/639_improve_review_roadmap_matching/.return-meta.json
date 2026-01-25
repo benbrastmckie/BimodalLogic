@@ -1,0 +1,50 @@
+{
+  "status": "implemented",
+  "summary": "Improved /review roadmap matching reliability by implementing explicit two-tier matching (roadmap_items + exact Task refs) and removing fuzzy title matching entirely. Updated all implementation agents with required roadmap_items guidance.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/commands/review.md",
+      "summary": "Updated with two-tier matching and unmatched tasks warning"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/general-implementation-agent.md",
+      "summary": "Added required roadmap_items guidance"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-implementation-agent.md",
+      "summary": "Added required roadmap_items guidance"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/latex-implementation-agent.md",
+      "summary": "Added required roadmap_items guidance"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/core/patterns/roadmap-update.md",
+      "summary": "Rewrote for explicit-only matching strategy"
+    },
+    {
+      "type": "summary",
+      "path": "specs/639_improve_review_roadmap_matching/summaries/implementation-summary-20260125.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Implemented explicit two-tier roadmap matching for /review command (roadmap_items + exact Task refs) with fuzzy matching removed. Updated 3 implementation agents with required roadmap_items guidance and rewrote roadmap-update.md documentation.",
+    "claudemd_suggestions": "Updated commands/review.md matching logic, agents (general/lean/latex-implementation-agent.md) with roadmap_items guidance, context/core/patterns/roadmap-update.md with two-tier matching documentation"
+  },
+  "metadata": {
+    "session_id": "sess_1769374780_90e9e9",
+    "duration_seconds": 2700,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Review implementation and run /review to verify matching behavior"
+}
