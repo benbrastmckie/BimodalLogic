@@ -8,11 +8,18 @@
     {
       "project_number": 676,
       "project_name": "investigate_skill_registration_integrate_task_command",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T20:39:43Z",
-      "last_updated": "2026-01-25T20:39:43Z"
+      "last_updated": "2026-01-25T20:46:48Z",
+      "artifacts": [
+        {
+          "path": "specs/676_investigate_skill_registration_integrate_task_command/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive investigation revealing skills are properly registered, commands are bash scripts bypassing skill layer, /task lacks skill wrapper, and checkpoint pattern lacks architectural enforcement"
+        }
+      ]
     },
     {
       "project_number": 665,
@@ -184,11 +191,12 @@
     {
       "project_number": 639,
       "project_name": "improve_review_roadmap_matching",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T16:55:00Z",
-      "last_updated": "2026-01-20T16:55:00Z"
+      "last_updated": "2026-01-25T20:45:52Z",
+      "session_id": "sess_1769373935_9b67be"
     },
     {
       "project_number": 630,
