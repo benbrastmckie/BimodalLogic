@@ -1,5 +1,5 @@
 ---
-next_project_number: 680
+next_project_number: 682
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -149,6 +149,18 @@ technical_debt:
 
 
 ## Medium Priority
+
+### 681. Redesign construct_indexed_family with coherent approach
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-25
+- **Related**: Task 658
+
+**Description**: Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyard's canonical_task_rel pattern), or research alternative approaches.
+
+---
 
 ### 679. IdentityAboutness research for semantic explanations
 - **Started**: 2026-01-25T21:41:29Z
