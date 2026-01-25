@@ -237,7 +237,7 @@ technical_debt:
 
 
 ### 639. Improve /review roadmap matching reliability
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-20
@@ -245,10 +245,14 @@ technical_debt:
 - **Planned**: 2026-01-25T21:35:00Z
 - **Revised**: 2026-01-25T21:37:00Z
 - **Started**: 2026-01-25T21:40:00Z
+- **Completed**: 2026-01-25T21:45:00Z
 - **Research**: [research-001.md](specs/639_improve_review_roadmap_matching/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/639_improve_review_roadmap_matching/plans/implementation-002.md) (v2 - clean break, no fuzzy matching)
+- **Summary**: [implementation-summary-20260125.md](specs/639_improve_review_roadmap_matching/summaries/implementation-summary-20260125.md)
 
 **Description**: Improve the reliability of ROAD_MAP.md checkbox matching in the /review command. Current issues: (1) Fuzzy title matching is unreliable, (2) No explicit task-to-roadmap mapping exists, (3) Task 637 had to be manually created to fix checkboxes. Solutions: (1) Add `roadmap_items` field to state.json entries for explicit task-roadmap linking, (2) Update /review to use explicit mappings only (no fuzzy fallback - clean break approach), (3) Update agent guidance to require roadmap_items population.
+
+**Completion Summary**: Implemented explicit two-tier roadmap matching for /review command (roadmap_items + exact Task refs) with fuzzy matching removed. Updated 3 implementation agents with required roadmap_items guidance and rewrote roadmap-update.md documentation.
 
 ---
 

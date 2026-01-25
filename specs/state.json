@@ -189,11 +189,11 @@
     {
       "project_number": 639,
       "project_name": "improve_review_roadmap_matching",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-20T16:55:00Z",
-      "last_updated": "2026-01-25T20:59:54Z",
+      "last_updated": "2026-01-25T21:04:58Z",
       "session_id": "sess_1769374780_90e9e9",
       "researched": "2026-01-25T20:49:33Z",
       "artifacts": [
@@ -221,12 +221,20 @@
           "path": "specs/639_improve_review_roadmap_matching/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 4-phase plan with clean break approach - removes fuzzy matching entirely"
+        },
+        {
+          "path": "specs/639_improve_review_roadmap_matching/summaries/implementation-summary-20260125.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results for two-tier roadmap matching"
         }
       ],
       "planning": "2026-01-25T20:51:46Z",
       "planned": "2026-01-25T20:58:22Z",
       "revised": "2026-01-25T20:58:22Z",
-      "started": "2026-01-25T20:59:54Z"
+      "started": "2026-01-25T20:59:54Z",
+      "completed": "2026-01-25T21:04:58Z",
+      "completion_summary": "Implemented explicit two-tier roadmap matching for /review command (roadmap_items + exact Task refs) with fuzzy matching removed. Updated 3 implementation agents with required roadmap_items guidance and rewrote roadmap-update.md documentation.",
+      "claudemd_suggestions": "Updated commands/review.md matching logic, agents (general/lean/latex-implementation-agent.md) with roadmap_items guidance, context/core/patterns/roadmap-update.md with two-tier matching documentation"
     },
     {
       "project_number": 630,
