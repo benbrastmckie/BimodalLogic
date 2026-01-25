@@ -816,15 +816,24 @@
     {
       "project_number": 680,
       "project_name": "unify_todo_review_roadmap_matching",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-25T21:12:02Z",
-      "last_updated": "2026-01-25T21:12:02Z",
+      "last_updated": "2026-01-25T21:27:37Z",
       "related_tasks": [
         639
       ],
-      "description": "Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic."
+      "description": "Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic.",
+      "session_id": "sess_1769376255_79020b",
+      "researched": "2026-01-25T21:27:37Z",
+      "artifacts": [
+        {
+          "path": "specs/680_unify_todo_review_roadmap_matching/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying unmatched tasks warning in /review (lines 173-189, 303-310) and confirming matching logic is already unified between /todo and /review"
+        }
+      ]
     }
   ],
   "completed_projects": [

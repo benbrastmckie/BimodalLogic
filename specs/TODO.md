@@ -29,11 +29,13 @@ technical_debt:
 
 ### 680. Unify /todo and /review roadmap matching
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-25
+- **Researched**: 2026-01-25T21:55:00Z
 - **Related**: Task 639
+- **Research**: [research-001.md](specs/680_unify_todo_review_roadmap_matching/reports/research-001.md)
 
 **Description**: Follow-up to Task 639: (1) Remove unmatched tasks warning from /review - no warning needed when completed tasks have no roadmap items, (2) Unify /todo and /review roadmap matching to use the same two-tier pattern (explicit roadmap_items + exact Task refs) for clarity and consistency. Both commands should update ROAD_MAP.md using identical matching logic.
 
