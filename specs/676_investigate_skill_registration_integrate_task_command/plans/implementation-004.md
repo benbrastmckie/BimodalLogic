@@ -174,7 +174,7 @@ These commands execute directly without skill delegation:
 
 ---
 
-### Phase 3: Migrate /implement Command [IN PROGRESS]
+### Phase 3: Migrate /implement Command [COMPLETED]
 
 **Goal**: Move checkpoint operations to /implement for all three implementation skills
 
@@ -212,7 +212,7 @@ These commands execute directly without skill delegation:
 
 ---
 
-### Phase 4: Migrate /meta Command [NOT STARTED]
+### Phase 4: Migrate /meta Command [IN PROGRESS]
 
 **Goal**: Move checkpoint operations from skill-meta to /meta command
 
