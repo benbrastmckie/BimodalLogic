@@ -5,15 +5,15 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 17
+  active: 16
   completed: 242
   in_progress: 0
-  not_started: 16
-  abandoned: 20
+  not_started: 15
+  abandoned: 21
   total: 269
 priority_distribution:
   critical: 0
-  high: 8
+  high: 7
   medium: 10
   low: 6
 technical_debt:
@@ -83,18 +83,6 @@ technical_debt:
 
 ---
 
-### 675. Enforce skill postflight checkpoint pattern
-- **Effort**: 6-8 hours
-- **Status**: [PLANNED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-25T18:49:46Z
-- **Researched**: 2026-01-25T21:30:00Z
-- **Research**: [research-001.md](specs/675_enforce_skill_postflight_checkpoint_pattern/reports/research-001.md)
-
-**Description**: Ensure all command workflows enforce the skill-based checkpoint pattern (GATE IN → DELEGATE → GATE OUT → COMMIT) by preventing direct agent invocation and guaranteeing postflight operations execute. Current issue: Commands can bypass skills and call agents directly via Task tool, causing missing status updates, artifact linking, and git commits. Solution: Add validation layer that enforces skill delegation, implement postflight verification, and document the checkpoint contract.
-
----
 
 
 

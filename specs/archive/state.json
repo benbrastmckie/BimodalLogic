@@ -5,6 +5,26 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 675,
+      "project_name": "enforce_skill_postflight_checkpoint_pattern",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-25T18:49:46Z",
+      "last_updated": "2026-01-25T20:45:12Z",
+      "description": "Ensure all command workflows enforce the skill-based checkpoint pattern (GATE IN → DELEGATE → GATE OUT → COMMIT) by preventing direct agent invocation and guaranteeing postflight operations execute. Current issue: Commands can bypass skills and call agents directly via Task tool, causing missing status updates, artifact linking, and git commits. Solution: Add validation layer that enforces skill delegation, implement postflight verification, and document the checkpoint contract.",
+      "researched": "2026-01-25T20:45:12Z",
+      "research_summary": "Comprehensive analysis of checkpoint bypass issue: commands contain simulation code that creates stub artifacts without invoking skills, bypassing validation and postflight operations",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/675_enforce_skill_postflight_checkpoint_pattern/reports/research-001.md",
+          "summary": "Comprehensive analysis of checkpoint bypass issue: commands contain simulation code that creates stub artifacts without invoking skills, bypassing validation and postflight operations"
+        }
+      ],
+      "abandoned": "2026-01-25T22:39:15Z"
+    },
+    {
       "project_number": 677,
       "project_name": "study_preflight_postflight_patterns_for_improvements",
       "status": "abandoned",

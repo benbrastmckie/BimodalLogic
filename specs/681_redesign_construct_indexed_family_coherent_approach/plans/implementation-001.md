@@ -1,7 +1,7 @@
 # Implementation Plan: Task #681
 
 - **Task**: 681 - Redesign construct_indexed_family with coherent approach
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Priority**: Medium
 - **Dependencies**: None (unblocks Task 658)
