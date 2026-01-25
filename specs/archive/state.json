@@ -5,6 +5,31 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 655,
+      "project_name": "fix_jq_errors_in_agent_system",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T23:01:27Z",
+      "last_updated": "2026-01-25T20:43:46Z",
+      "researched": "2026-01-25T18:45:39Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/655_fix_jq_errors_in_agent_system/reports/research-001.md",
+          "summary": "Comprehensive analysis finding zero active jq errors, one structural error in /todo, and 5 priority improvements for command architecture"
+        },
+        {
+          "path": "specs/655_fix_jq_errors_in_agent_system/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for enhancing jq error handling and documentation in agent system"
+        }
+      ],
+      "session_id": "sess_1769373708_1272f1",
+      "planned": "2026-01-25T20:43:46Z",
+      "abandoned": "2026-01-25T20:47:08Z"
+    },
+    {
       "project_number": 648,
       "project_name": "research_canonical_frame_temporal_order_generalization",
       "status": "abandoned",
