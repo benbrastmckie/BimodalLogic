@@ -118,11 +118,11 @@
     {
       "project_number": 653,
       "project_name": "improve_metalogic_infrastructure",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T23:16:47Z",
-      "last_updated": "2026-01-25T18:44:15Z",
+      "last_updated": "2026-01-25T18:45:46Z",
       "session_id": "sess_1769366647_31e5fa",
       "source_file": "Theories/Bimodal/latex/subfiles/04-Metalogic.tex",
       "source_lines": [
@@ -137,9 +137,16 @@
           "type": "research",
           "path": "specs/653_improve_metalogic_infrastructure/reports/research-001.md",
           "summary": "Comprehensive analysis of metalogic infrastructure with findings on SemanticCanonicalFrame (deprecated), infinite contexts limitation, and LaTeX-Lean architecture gap"
+        },
+        {
+          "type": "plan",
+          "path": "specs/653_improve_metalogic_infrastructure/plans/implementation-001.md",
+          "summary": "4-phase implementation plan for documentation alignment between LaTeX and IndexedMCSFamily-based Lean implementation"
         }
       ],
-      "planning": "2026-01-25T18:44:15Z"
+      "planning": "2026-01-25T18:44:15Z",
+      "planned": "2026-01-25T18:45:46Z",
+      "plan_summary": "4-phase implementation plan for documentation alignment between LaTeX and IndexedMCSFamily-based Lean implementation"
     },
     {
       "project_number": 648,
