@@ -187,12 +187,13 @@ technical_debt:
 ---
 
 ### 648. Research canonical frame temporal order generalization
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-25T18:47:01Z
-- **Status**: [IMPLEMENTING]
+- **Researched**: 2026-01-25T18:47:03Z
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
+- **Research**: [research-001.md](specs/648_research_canonical_frame_temporal_order_generalization/reports/research-001.md)
 
 **Description**: Research how to generalize the canonical frame construction to use ANY totally ordered commutative group for temporal order instead of integers. Current approach uses integers which makes time discrete, but the semantics definition specifies frames should work with any totally ordered commutative group. This is the crux of the proof strategy for completeness and needs careful thinking and research. From TODO tag at Theories/Bimodal/latex/subfiles/04-Metalogic.tex:125.
 
