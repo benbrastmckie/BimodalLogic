@@ -65,7 +65,6 @@ technical_debt:
 
 ---
 
-
 ### 672. Implement agent system upgrade plan
 - **Effort**: 6 weeks
 - **Status**: [REVISED]
@@ -110,7 +109,6 @@ technical_debt:
 **Description**: Fix 11 LaTeX formatting and structural issues in 03-DynamicsFoundation.tex: (1) line 38: define well-formed sentences using standard BNF notation with double colon and pipes; (2) line 58: include more derived symbols; (3) line 104: rename 'core frame' to 'dynamical frame'; (4) lines 131, 144: convert definitions to dependent type theory notation for consistency with Lean; (5) line 153: improve world-state definition using dependent type theory; (6) line 190: research Containment subsection to restate world-history as maximal possible evolution; (7) line 202: update notation to use dependent type theory consistently; (8) line 224: restate interpretation definition from Constitutive Foundation; (9) line 248: convert remark to theorem for Lean implementation; (10) line 270: define \forall v \metaA(v) as \forall (\lambda v_1. \metaA)(v_2); (11) lines 303, 312, 322, 333: restructure to give semantic clauses only for primitives, introduce stability operator, move derived operators to definitions section; (12) lines 352, 374: move operator readings to primitive symbol introduction; (13) line 368: define \altworlds in terms of imposition.
 
 ---
-
 
 ## Medium Priority
 
@@ -167,8 +165,6 @@ technical_debt:
 
 ---
 
----
-
 ### 674. systematic command skill agent architecture improvement
 - **Effort**: 3-4 days
 - **Status**: [PLANNED]
@@ -203,13 +199,14 @@ technical_debt:
 ### 657. Prove seed consistency (temporal K distribution)
 - **Started**: 2026-01-25T20:53:16Z
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
 - **Related**: Task 654
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:338,354
 - **Research**: [research-001.md](specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/657_prove_seed_consistency_temporal_k_distribution/plans/implementation-001.md)
 
 **Description**: Prove the seed consistency lemmas in IndexedMCSFamily.lean that require the temporal K distribution axiom. Lines 338 and 354 contain sorries for proving that seeds constructed during family building are consistent. This requires careful application of TM logic axioms, specifically the K distribution axiom for temporal operators. From review-20260121-task654.md medium priority recommendations.
 
