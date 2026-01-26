@@ -45,7 +45,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Remove theorem and update frame construction [IN PROGRESS]
+### Phase 1: Remove theorem and update frame construction [COMPLETED]
 
 **Goal**: Remove the false theorem and inline sorry into SemanticCanonicalFrame
 

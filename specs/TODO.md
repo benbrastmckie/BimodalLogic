@@ -203,12 +203,13 @@ technical_debt:
 ### 657. Prove seed consistency (temporal K distribution)
 - **Started**: 2026-01-25T20:53:16Z
 - **Effort**: 6-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
 - **Related**: Task 654
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:338,354
+- **Research**: [research-001.md](specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-001.md)
 
 **Description**: Prove the seed consistency lemmas in IndexedMCSFamily.lean that require the temporal K distribution axiom. Lines 338 and 354 contain sorries for proving that seeds constructed during family building are consistent. This requires careful application of TM logic axioms, specifically the K distribution axiom for temporal operators. From review-20260121-task654.md medium priority recommendations.
 
