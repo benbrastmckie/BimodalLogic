@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Representation.CanonicalWorld
 import Bimodal.Syntax.Formula
 import Bimodal.Boneyard.Metalogic.Completeness  -- For set_mcs_closed_under_derivation and set_mcs_all_future_all_future
+import Bimodal.Theorems.GeneralizedNecessitation  -- For generalized_temporal_k
 import Mathlib.Algebra.Order.Group.Defs
 
 /-!
@@ -46,7 +47,7 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
-open Bimodal.Metalogic_v2.Core
+-- Use Core's SetMaximalConsistent, but Boneyard.Metalogic for set_mcs_closed_under_derivation
 
 /-!
 ## Indexed MCS Family Structure
@@ -334,8 +335,54 @@ lemma future_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent
   obtain ⟨d_bot⟩ := h_incons
   -- For each phi in L, G phi ∈ Gamma
   -- Use temporal K to show that if L ⊢ bot, then {G phi | phi ∈ L} ⊢ G bot
-  -- But G bot → bot is derivable, so Gamma would be inconsistent
-  -- This is a complex proof requiring temporal K distribution
+  -- Since all elements of L.map all_future are in Gamma (by seed definition),
+  -- and Gamma is deductively closed, G bot ∈ Gamma
+  -- We then derive a contradiction using the interaction between G bot and MCS properties
+
+  -- Step 1: Apply generalized_temporal_k to get derivation of G bot from G L
+  let L_G := L.map Formula.all_future
+  have d_G_bot : L_G ⊢ Formula.all_future Formula.bot :=
+    Bimodal.Theorems.generalized_temporal_k L Formula.bot d_bot
+
+  -- Step 2: Show all elements of L_G are in Gamma
+  have h_L_G_sub : ∀ ψ ∈ L_G, ψ ∈ Gamma := by
+    intro ψ h_mem
+    simp only [L_G, List.mem_map] at h_mem
+    obtain ⟨φ, h_φ_in_L, rfl⟩ := h_mem
+    -- φ ∈ L means φ ∈ {phi | G phi ∈ Gamma}, so G φ ∈ Gamma
+    exact hL φ h_φ_in_L
+
+  -- Step 3: By MCS deductive closure, G bot ∈ Gamma
+  have h_G_bot_in : Formula.all_future Formula.bot ∈ Gamma :=
+    Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs L_G h_L_G_sub d_G_bot
+
+  -- Step 4: Now we need to derive a contradiction from G bot ∈ Gamma
+  --
+  -- **Analysis**: In TM logic with IRREFLEXIVE temporal operators (G looks at strictly
+  -- future times only), we CANNOT derive `bot` from `G bot` syntactically. This is
+  -- because TM lacks the temporal T axiom (`G phi → phi`), which would require the
+  -- temporal accessibility relation to be reflexive.
+  --
+  -- The formula `G bot` means "at all STRICTLY future times, bot holds", which is
+  -- vacuously true if there are no future times. So `G bot` is actually SATISFIABLE
+  -- in models with bounded future (e.g., at the last moment of a finite time structure).
+  --
+  -- **Semantic Argument**: In canonical models with UNBOUNDED time structures (like Z
+  -- or R), there are always future times, so `G bot` is false (since bot is never true).
+  -- This means `G bot ∉ Gamma` for any MCS Gamma that's satisfiable in such a model.
+  --
+  -- **Resolution Options**:
+  -- 1. Restrict to unbounded time structures (add axiom `sometime_future top`)
+  -- 2. Use semantic satisfiability from soundness/completeness (circular for proving completeness)
+  -- 3. Strengthen the MCS construction to exclude `G bot` by construction
+  --
+  -- For now, we note that in the standard TM canonical construction with Z as the time
+  -- domain, this holds by the completeness theorem itself. The sorry marks where this
+  -- semantic property needs to be formally connected.
+  --
+  -- **Key Insight**: The issue is that `¬(G bot)` = `sometime_future top` is VALID in
+  -- unbounded time models but NOT derivable as a theorem in TM without an additional
+  -- axiom asserting unbounded time (like `sometime_future top`).
   sorry
 
 /--
@@ -347,11 +394,34 @@ lemma past_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent G
     (t : D) (ht : t < (0 : D)) : SetConsistent (past_seed D Gamma t) := by
   simp only [past_seed, ht, ↓reduceIte]
   intro L hL
+  -- L is a list of formulas where each phi has H phi ∈ Gamma
+  -- We need to show L is consistent
   by_contra h_incons
   unfold Consistent at h_incons
   push_neg at h_incons
   obtain ⟨d_bot⟩ := h_incons
-  -- Similar to future_seed_consistent but using temporal H distribution
+
+  -- Step 1: Apply temporal duality to get generalized_past_k
+  -- From L ⊢ bot, we derive H L ⊢ H bot
+  -- This uses the temporal duality: if we have G-version proofs, we can get H-version
+  -- by swapping past/future operators.
+  --
+  -- The generalized past K rule: If L ⊢ phi, then (L.map all_past) ⊢ all_past phi
+  -- is derivable via temporal duality applied to generalized_temporal_k.
+
+  -- Step 2: Show all elements of L.map all_past are in Gamma
+  -- For each phi ∈ L, H phi ∈ Gamma (by past_seed definition)
+
+  -- Step 3: By MCS deductive closure, H bot ∈ Gamma
+
+  -- Step 4: Same issue as future_seed_consistent - we cannot derive bot from H bot
+  -- in TM logic because H is also irreflexive (looks at strictly PAST times only).
+  --
+  -- **Symmetric Analysis**: Just as G bot is vacuously true if there are no future times,
+  -- H bot is vacuously true if there are no past times. In canonical models with
+  -- unbounded past, H bot would be false, so H bot ∉ any satisfiable MCS.
+  --
+  -- The proof requires the same infrastructure as future_seed_consistent.
   sorry
 
 /--
