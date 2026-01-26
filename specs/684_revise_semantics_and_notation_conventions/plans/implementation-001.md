@@ -1,7 +1,7 @@
 # Implementation Plan: Task #684
 
 - **Task**: 684 - Revise semantics and notation conventions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -49,7 +49,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Revise Truth Evaluation Header [NOT STARTED]
+### Phase 1: Revise Truth Evaluation Header [COMPLETED]
 
 **Goal**: Update the introductory text (lines 260-262) to explicitly list all 5 parameters with their types, matching the Lean `truthAt` function signature.
 
@@ -71,7 +71,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Update Semantic Clauses to Use tau [NOT STARTED]
+### Phase 2: Update Semantic Clauses to Use tau [COMPLETED]
 
 **Goal**: Replace `\history` with `tau` in all semantic clause definitions (atomic truth, lambda/quantification, actuality, extensional connectives, etc.).
 
@@ -97,7 +97,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Separate Syntactic Sugar from Semantic Clauses [NOT STARTED]
+### Phase 3: Separate Syntactic Sugar from Semantic Clauses [COMPLETED]
 
 **Goal**: Restructure lambda/quantifier presentation to clearly distinguish syntactic abbreviations from primitive semantic clauses, matching Lean's treatment.
 
@@ -125,7 +125,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Add Variable Naming Convention Remark [NOT STARTED]
+### Phase 4: Add Variable Naming Convention Remark [COMPLETED]
 
 **Goal**: Document the intentional naming convention divergence between LaTeX presentation and Lean implementation.
 
@@ -153,7 +153,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Clean Up TODO Comments and Final Review [NOT STARTED]
+### Phase 5: Clean Up TODO Comments and Final Review [COMPLETED]
 
 **Goal**: Remove resolved TODO/NOTE comments and perform final consistency check.
 
