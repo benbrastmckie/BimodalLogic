@@ -1,7 +1,7 @@
 # Implementation Plan: Task #684
 
 - **Task**: 684 - Revise semantics and notation conventions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Priority**: Medium
 - **Dependencies**: None

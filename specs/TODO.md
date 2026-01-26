@@ -162,14 +162,16 @@ technical_debt:
 
 ### 684. Revise semantics and notation conventions
 - **Effort**: 4-5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: latex
 - **Created**: 2026-01-26
 - **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
 - **Started**: 2026-01-26T18:00:00Z
+- **Completed**: 2026-01-26
 - **Research**: [research-001.md](specs/684_revise_semantics_and_notation_conventions/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/684_revise_semantics_and_notation_conventions/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260126.md](specs/684_revise_semantics_and_notation_conventions/summaries/implementation-summary-20260126.md)
 
 **Description**: Systematically revise dynamical semantics and notation conventions in 03-DynamicsFoundation.tex based on 2 grouped TODO items: (1) line 235: Revise dynamical semantics to evaluate sentences at model, evolutions, time, variable assignment, and temporal index, using \tau for evolutions; (2) line 259: Clean up lambda abstraction and quantification conventions where lambdas bind the last free variable (if any) and universal quantifiers quantify the last open variable (if any), researching careful conventions and definitions to match Lean code.
 
