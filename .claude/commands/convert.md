@@ -1,6 +1,6 @@
 ---
 description: Convert documents between formats (PDF/DOCX to Markdown, Markdown to PDF)
-allowed-tools: Skill, Bash(jq:*), Bash(git:*), Bash(test:*), Bash(dirname:*), Bash(basename:*), Bash(date:*), Bash(od:*), Bash(tr:*), Bash(wc:*), Bash(mkdir:*), Bash(rm:*), Read
+allowed-tools: Skill, Bash(jq:*), Bash(test:*), Bash(dirname:*), Bash(basename:*), Read
 argument-hint: SOURCE_PATH [OUTPUT_PATH]
 ---
 
@@ -46,7 +46,7 @@ Convert documents between formats by delegating to the document converter skill/
 
 ## Execution
 
-### CHECKPOINT 1: GATE IN (Preflight)
+### CHECKPOINT 1: GATE IN
 
 1. **Generate Session ID**
    ```bash
@@ -107,12 +107,6 @@ Convert documents between formats by delegating to the document converter skill/
    fi
    ```
 
-5. **Create Output Directory** (if needed)
-   ```bash
-   output_dir=$(dirname "$output_path")
-   mkdir -p "$output_dir"
-   ```
-
 **ABORT** if source file does not exist or format is unsupported.
 
 **On GATE IN success**: Arguments validated. **IMMEDIATELY CONTINUE** to STAGE 2 below.
@@ -129,58 +123,31 @@ args: "source_path={source_path} output_path={output_path} session_id={session_i
 
 The skill will spawn the document-converter-agent to perform the conversion.
 
-**On DELEGATE success**: Skill returns text summary. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
+**On DELEGATE success**: Conversion attempted. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
 
-### CHECKPOINT 2: GATE OUT (Postflight)
+### CHECKPOINT 2: GATE OUT
 
-1. **Read Metadata File**
-   ```bash
-   output_dir=$(dirname "$output_path")
-   metadata_file="${output_dir}/.convert-return-meta.json"
+1. **Validate Return**
+   Required fields: status, summary, artifacts
 
-   if [ ! -f "$metadata_file" ]; then
-     echo "Error: Conversion metadata file not found at $metadata_file"
-     echo "The skill may have failed to complete properly"
-     exit 1
-   fi
-
-   # Extract metadata
-   convert_status=$(jq -r '.status // "unknown"' "$metadata_file")
-   convert_summary=$(jq -r '.summary // ""' "$metadata_file")
-   tool_used=$(jq -r '.metadata.tool_used // "unknown"' "$metadata_file")
-   ```
-
-2. **Validate Required Fields**
-   ```bash
-   if [ "$convert_status" = "unknown" ] || [ -z "$convert_status" ]; then
-     echo "Error: Missing or invalid status in conversion metadata"
-     exit 1
-   fi
-   ```
-
-3. **Verify Output File Exists**
+2. **Verify Output File Exists**
    ```bash
    if [ ! -f "$output_path" ]; then
      echo "Warning: Output file not created"
-     # Include error details from metadata
+     # Return skill error details
    fi
    ```
 
-4. **Verify Output Non-Empty**
+3. **Verify Output Non-Empty**
    ```bash
-   if [ -f "$output_path" ] && [ ! -s "$output_path" ]; then
+   if [ ! -s "$output_path" ]; then
      echo "Warning: Output file is empty"
    fi
    ```
 
-5. **Cleanup Metadata File**
-   ```bash
-   rm -f "$metadata_file"
-   ```
-
 **On GATE OUT success**: Output verified.
 
-### CHECKPOINT 3: COMMIT (Optional)
+### CHECKPOINT 3: COMMIT
 
 Git commit is **optional** for standalone conversions.
 
@@ -211,7 +178,7 @@ Conversion complete!
 
 Source: {source_path}
 Output: {output_path}
-Tool:   {tool_used}
+Tool:   {tool_used from metadata}
 Size:   {output_size}
 
 Status: converted

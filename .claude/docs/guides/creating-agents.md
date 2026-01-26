@@ -682,3 +682,8 @@ Research completed successfully. Found 5 patterns. See report at ...
 - `.claude/context/core/formats/subagent-return.md` - Return format schema
 - `.claude/docs/templates/agent-template.md` - Agent template
 
+---
+
+**Document Version**: 1.0
+**Created**: 2026-01-12
+**Maintained By**: ProofChecker Development Team

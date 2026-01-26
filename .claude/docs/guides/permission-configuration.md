@@ -1,5 +1,9 @@
 # Permission Configuration Guide
 
+**Version**: 1.0.0  
+**Last Updated**: 2026-01-05  
+**Audience**: OpenCode system maintainers and developers  
+
 ---
 
 ## Table of Contents
@@ -747,10 +751,18 @@ git status
 
 ## Related Documentation
 
-- [Frontmatter Format](.claude/context/core/formats/frontmatter.md) - Agent frontmatter format
-- [Git Safety](.claude/context/core/standards/git-safety.md) - Git-based safety mechanism
-- [Delegation](.claude/context/core/orchestration/delegation.md) - Agent delegation patterns
-- [State Management](.claude/context/core/orchestration/state-management.md) - State file management
+- [Frontmatter Standard](.claude/context/core/standards/frontmatter-standard.md) - Agent frontmatter format
+- [Git Safety](.claude/docs/guides/git-safety.md) - Git-based safety mechanism
+- [Delegation](.claude/context/core/standards/delegation.md) - Agent delegation patterns
+- [State Management](.claude/context/core/system/state-management.md) - State file management
+
+---
+
+## Revision History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0.0 | 2026-01-05 | Initial permission configuration guide |
 
 ---
 

@@ -106,64 +106,49 @@ Build `roadmap_state` structure:
 
 **Context**: Load @.claude/context/core/patterns/roadmap-update.md for matching strategy.
 
-Cross-reference roadmap items with project state to identify completed work.
+Cross-reference roadmap items with project state to identify completed work:
 
-**Data Queries:**
-
-**1. Query state.json for completed tasks with roadmap_items:**
+**1. Query TODO.md for completed tasks:**
 ```bash
-# Get completed tasks with their completion data
-jq '.active_projects[] | select(.status == "completed") | {
-  project_number,
-  project_name,
-  roadmap_items: (.roadmap_items // []),
-  completion_summary: (.completion_summary // "")
-}' specs/state.json
+# Find completed task titles
+grep -E '^\#\#\#.*\[COMPLETED\]' specs/TODO.md
 ```
 
-**2. Query TODO.md for completed task references:**
+**2. Query state.json for completion data:**
 ```bash
-# Find completed task numbers for cross-reference
-grep -E '^\#\#\#.*\[COMPLETED\]' specs/TODO.md | grep -oE '^### [0-9]+'
+# Get completed tasks with dates
+jq '.active_projects[] | select(.status == "completed")' specs/state.json
 ```
 
-**3. Count sorries in Lean files (for metrics):**
+**3. Check file existence for mentioned paths:**
 ```bash
-# Current sorry count for roadmap progress tracking
+# For each path in roadmap items, check if exists
+# E.g., docs/architecture/proof-structure.md
+```
+
+**4. Count sorries in Lean files:**
+```bash
+# Current sorry count for metrics
 grep -r "sorry" Logos/ --include="*.lean" | wc -l
 ```
 
-**Matching Strategy (Two-Tier Only):**
+**Match roadmap items to completed work:**
 
-| Priority | Match Type | Confidence | Action |
-|----------|------------|------------|--------|
-| 1 | Explicit `roadmap_items` array match | High | Auto-annotate |
-| 2 | Item contains `(Task {N})` reference | High | Auto-annotate |
-
-**IMPORTANT**: No fuzzy title matching. Tasks without explicit `roadmap_items` OR existing `(Task N)`
-references in ROAD_MAP.md will NOT be matched. This is intentional - agents must populate
-`roadmap_items` during implementation.
-
-**Matching Process:**
-
-For each completed task in state.json:
-
-1. **Check explicit roadmap_items** (Priority 1):
-   - If task has `roadmap_items` array, look for exact text match in ROAD_MAP.md checkboxes
-   - Example: `roadmap_items: ["Prove soundness for K modal logic"]` matches `- [ ] Prove soundness for K modal logic`
-
-2. **Check exact task references** (Priority 2):
-   - Scan ROAD_MAP.md for `(Task N)` where N is the task number
-   - Example: `- [ ] Create proof guide (Task 628)` matches task 628
+| Match Type | Confidence | Action |
+|------------|------------|--------|
+| Item contains `(Task {N})` | High | Auto-annotate |
+| Item text matches task title | Medium | Suggest annotation |
+| Item's file path exists | Medium | Suggest annotation |
+| Partial keyword match | Low | Report only |
 
 Build `roadmap_matches` list:
 ```json
 [
   {
-    "roadmap_item": "Prove soundness for K modal logic",
-    "phase": 2,
-    "match_type": "explicit_roadmap_items",
-    "confidence": "high",
+    "roadmap_item": "Create proof architecture guide",
+    "phase": 1,
+    "match_type": "title_match",
+    "confidence": "medium",
     "matched_task": 628,
     "completion_date": "2026-01-15"
   }
@@ -172,7 +157,7 @@ Build `roadmap_matches` list:
 
 ### 2.5.3. Annotate Completed Roadmap Items
 
-For matched items (from Priority 1 or Priority 2 matching), update ROAD_MAP.md to mark items as complete.
+For high-confidence matches, update ROAD_MAP.md to mark items as complete.
 
 **Annotation format** (per roadmap-format.md):
 ```markdown
@@ -181,7 +166,7 @@ For matched items (from Priority 1 or Priority 2 matching), update ROAD_MAP.md t
 
 **Edit process for checkboxes:**
 
-1. For each matched item:
+1. For each high-confidence match:
    ```
    old_string: "- [ ] Create proof architecture guide"
    new_string: "- [x] Create proof architecture guide *(Completed: Task 628, 2026-01-15)*"
@@ -208,11 +193,7 @@ For matched items (from Priority 1 or Priority 2 matching), update ROAD_MAP.md t
 {
   "annotations_made": 3,
   "items_skipped": 2,
-  "skipped_reasons": ["already_annotated"],
-  "match_types": {
-    "explicit_roadmap_items": 2,
-    "exact_task_ref": 1
-  }
+  "skipped_reasons": ["already_annotated", "low_confidence"]
 }
 ```
 
@@ -275,11 +256,7 @@ Write to `specs/reviews/review-{DATE}.md`:
 ## Roadmap Progress
 
 ### Completed Since Last Review
-
-*Matched via explicit roadmap_items:*
 - [x] {item} *(Completed: Task {N}, {DATE})*
-
-*Matched via (Task N) reference:*
 - [x] {item} *(Completed: Task {N}, {DATE})*
 
 ### Current Focus
@@ -452,8 +429,6 @@ Summary:
 
 Roadmap Progress:
 - Annotations made: {N} items marked complete
-  - Via explicit roadmap_items: {N}
-  - Via (Task N) references: {N}
 - Current focus: {phase_name} ({priority})
 - Recommended tasks: {N}
 

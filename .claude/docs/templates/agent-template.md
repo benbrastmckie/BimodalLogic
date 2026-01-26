@@ -384,3 +384,8 @@ Use this checklist when creating a new agent:
 - **Context Index**: `.claude/context/index.md`
 - **Command Template**: `.claude/docs/templates/command-template.md`
 
+---
+
+**Template Version**: 1.0  
+**Last Updated**: 2025-12-29  
+**Maintained By**: ProofChecker Development Team

@@ -2,7 +2,7 @@
 
 [Back to Docs](../README.md) | [Detailed Installation](../../../docs/installation/README.md)
 
-Instructions for installing Claude Code and using it to work with ProofChecker.
+A quick-start guide for installing Claude Code and using it to work with ProofChecker.
 
 ---
 
@@ -23,7 +23,7 @@ This guide helps you:
 
 Claude Code is Anthropic's command-line interface for AI-assisted development.
 
-### Installation
+### Quick Installation
 
 **macOS:**
 ```bash
@@ -161,9 +161,9 @@ the .claude/ directory into my current working directory.
    ```
    /task "Test task"
    ```
-3. **Learn the commands** - Read the full reference:
+3. **Learn the commands** - Read the full command reference:
    ```
-   https://raw.githubusercontent.com/benbrastmckie/ProofChecker/main/.claude/CLAUDE.md
+   https://raw.githubusercontent.com/benbrastmckie/ProofChecker/main/.claude/docs/commands/README.md
    ```
 
 ### Available Commands
@@ -176,7 +176,7 @@ the .claude/ directory into my current working directory.
 | `/implement` | Execute implementation |
 | `/todo` | Archive completed tasks |
 
-For complete documentation, see [CLAUDE.md](../../CLAUDE.md).
+For complete documentation, see the [Commands Reference](../commands/README.md).
 
 ---
 
@@ -413,7 +413,7 @@ claude auth login
 
 - **[Architecture](../../ARCHITECTURE.md)** - System architecture overview
 - **[CLAUDE.md](../../CLAUDE.md)** - Quick reference for the agent system
-- **[CLAUDE.md](../../CLAUDE.md)** - Full command documentation
+- **[Commands Reference](../commands/README.md)** - Full command documentation
 
 ### Project Documentation
 
