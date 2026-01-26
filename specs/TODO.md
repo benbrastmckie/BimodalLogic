@@ -196,10 +196,11 @@ technical_debt:
 ---
 
 ### 656. Complete truth lemma forward direction (imp/box cases)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Effort**: 4-6 hours
 - **Priority**: Medium
 - **Language**: lean
+- **Research**: [research-001.md](specs/656_complete_truth_lemma_forward_direction/reports/research-001.md)
 - **Created**: 2026-01-21
 - **Related**: Task 654
 - **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:144,155

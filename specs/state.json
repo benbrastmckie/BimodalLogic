@@ -96,15 +96,24 @@
     {
       "project_number": 656,
       "project_name": "complete_truth_lemma_forward_direction",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-25T20:47:39Z",
+      "last_updated": "2026-01-26T17:15:21Z",
       "related_tasks": [
         654
       ],
-      "researching": "2026-01-25T20:47:39Z"
+      "researching": "2026-01-25T20:47:39Z",
+      "researched": "2026-01-26T17:15:21Z",
+      "research_summary": "Comprehensive research on imp and box cases with proof strategies, found existing MCS modus ponens lemma, identified box case requires semantic changes or witness construction",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/656_complete_truth_lemma_forward_direction/reports/research-001.md",
+          "summary": "Comprehensive research on imp and box cases with proof strategies, found existing MCS modus ponens lemma, identified box case requires semantic changes or witness construction"
+        }
+      ]
     },
     {
       "project_number": 657,
@@ -251,8 +260,8 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-26T15:54:41Z",
-      "session_id": "sess_1769418260_f4e2b8",
+      "last_updated": "2026-01-26T17:10:45Z",
+      "session_id": "sess_1769447415_033179",
       "researched": "2026-01-25T22:52:03Z",
       "planned": "2026-01-25T22:56:00Z",
       "artifacts": [
