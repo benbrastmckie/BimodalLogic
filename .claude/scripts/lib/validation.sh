@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # validation.sh - Reusable validation functions for postflight operations
 #
 # This library provides validation functions to verify state.json and TODO.md

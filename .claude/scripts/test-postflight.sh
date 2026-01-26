@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # test-postflight.sh - Test suite for atomic postflight operations
 #
 # Usage: ./test-postflight.sh [--verbose]

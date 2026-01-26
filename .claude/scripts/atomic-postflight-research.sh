@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # atomic-postflight-research.sh - Atomic state update with validation
 #
 # Usage: atomic-postflight-research.sh TASK_NUMBER ARTIFACT_PATH ARTIFACT_SUMMARY PROJECT_NAME
