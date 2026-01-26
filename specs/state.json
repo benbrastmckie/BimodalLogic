@@ -155,6 +155,11 @@
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-005.md",
           "type": "report",
           "summary": "Comprehensive analysis of axiomatizing reflexive G'/H' as primitives (Approach B/C from research-002) - VERDICT: NO-GO, 10-16 weeks effort for same result achievable in 12-17 hours via Approach A"
+        },
+        {
+          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-006.md",
+          "type": "report",
+          "summary": "Comprehensive pedagogical deep dive on Approach A (Semantic Bridge) with proof structure, infrastructure analysis, philosophical justification, implementation guide, and complete code templates"
         }
       ],
       "planning": "2026-01-26T06:22:01Z",
