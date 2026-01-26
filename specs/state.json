@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 44,
-    "last_sync": "2026-01-25T21:02:41Z"
+    "total_tasks": 46,
+    "last_sync": "2026-01-26T17:10:00Z"
   },
   "active_projects": [
     {
@@ -164,7 +164,7 @@
           "summary": "Analysis concluding that operator interdefinability does not provide a solution path; semantic bridge (Approach A) remains necessary"
         },
         {
-          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-004.md",
+          "path": "657_prove_seed_consistency_temporal_k_distribution/reports/research-004.md",
           "type": "report",
           "summary": "Analysis of defining reflexive G' as G ∨ φ, concluding that definitional approach does not solve seed consistency issue since G' ⊥ simplifies to G ⊥"
         },
@@ -738,6 +738,31 @@
       "created": "2026-01-26T04:45:00Z",
       "last_updated": "2026-01-26T04:45:00Z",
       "description": "Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas."
+    },
+    {
+      "project_number": 689,
+      "project_name": "update_context_from_constitutive_foundation_notes",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-26T17:10:00Z",
+      "last_updated": "2026-01-26T17:10:00Z",
+      "session_id": "sess_1769449239_a3cef6",
+      "description": "Update .claude/context/ files based on NOTE: tag from 02-ConstitutiveFoundation.tex line 21: Update variable naming convention documentation to reserve x, y, z for metalanguage durations and use v_1, v_2, v_3, ... for object language variables in Logos system."
+    },
+    {
+      "project_number": 690,
+      "project_name": "fix_constitutive_foundation_latex_issues",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "high",
+      "created": "2026-01-26T17:10:00Z",
+      "last_updated": "2026-01-26T17:10:00Z",
+      "session_id": "sess_1769449239_a3cef6",
+      "dependencies": [
+        689
+      ],
+      "description": "Fix LaTeX formatting issues in 02-ConstitutiveFoundation.tex based on FIX: and NOTE: tags: (1) line 49: Combine material conditional, biconditional definitions, and quantifier notation into single definition setting metalinguistic conventions (syntactic sugar) for the language; (2) line 406: Precisely define identity sentences in both Lean source and LaTeX, where inductive definition is in terms of well-formed sentences but takes identity sentences to be atomic; (3) line 21 (NOTE): Update variable notation from x, y, z to v_1, v_2, v_3, ... for object language (x, y, z reserved for metalanguage durations). Source: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex"
     }
   ],
   "completed_projects": [
@@ -752,7 +777,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 689,
+  "next_project_number": 691,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -761,8 +786,8 @@
     }
   ],
   "task_counts": {
-    "active": 4,
-    "not_started": 4,
-    "total": 4
+    "active": 46,
+    "not_started": 6,
+    "total": 46
   }
 }

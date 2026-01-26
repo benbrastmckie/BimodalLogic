@@ -122,6 +122,19 @@ technical_debt:
 
 ---
 
+### 690. Fix constitutive foundation LaTeX issues
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: latex
+- **Created**: 2026-01-26
+- **Dependencies**: 689
+- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex (2 FIX:, 1 NOTE: tags)
+
+**Description**: Fix LaTeX formatting issues in 02-ConstitutiveFoundation.tex based on FIX: and NOTE: tags: (1) line 49: Combine material conditional, biconditional definitions, and quantifier notation into single definition setting metalinguistic conventions (syntactic sugar) for the language; (2) line 406: Precisely define identity sentences in both Lean source and LaTeX, where inductive definition is in terms of well-formed sentences but takes identity sentences to be atomic; (3) line 21 (NOTE): Update variable notation from x, y, z to v_1, v_2, v_3, ... for object language (x, y, z reserved for metalanguage durations). Source: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex
+
+---
+
 ## Medium Priority
 
 ### 683. Update context from dynamics foundation notes
@@ -158,6 +171,18 @@ technical_debt:
 - **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
 
 **Description**: Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.
+
+---
+
+### 689. Update context from constitutive foundation notes
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-26
+- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex (1 NOTE: tag)
+
+**Description**: Update .claude/context/ files based on NOTE: tag from 02-ConstitutiveFoundation.tex line 21: Update variable naming convention documentation to reserve x, y, z for metalanguage durations and use v_1, v_2, v_3, ... for object language variables in Logos system.
 
 ---
 
