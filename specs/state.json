@@ -135,6 +135,11 @@
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-004.md",
           "type": "report",
           "summary": "Analysis of defining reflexive G' as G ∨ φ, concluding that definitional approach does not solve seed consistency issue since G' ⊥ simplifies to G ⊥"
+        },
+        {
+          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-005.md",
+          "type": "report",
+          "summary": "Comprehensive analysis of axiomatizing reflexive G'/H' as primitives (Approach B/C from research-002) - VERDICT: NO-GO, 10-16 weeks effort for same result achievable in 12-17 hours via Approach A"
         }
       ],
       "planning": "2026-01-26T06:22:01Z",
