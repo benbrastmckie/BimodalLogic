@@ -103,6 +103,11 @@
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/summaries/implementation-summary-20260126.md",
           "type": "summary",
           "summary": "Partial implementation - identified blocking issue with temporal T axiom"
+        },
+        {
+          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-002.md",
+          "type": "report",
+          "summary": "Comprehensive analysis of temporal T axiom blocking issue with complete dialectic covering four viable approaches and recommended semantic bridge solution"
         }
       ],
       "planning": "2026-01-26T06:22:01Z",
