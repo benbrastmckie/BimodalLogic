@@ -692,13 +692,13 @@
     {
       "project_number": 682,
       "project_name": "fix_dynamics_foundation_latex_issues",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "high",
       "created": "2026-01-26T04:45:00Z",
-      "last_updated": "2026-01-26T05:58:49Z",
+      "last_updated": "2026-01-26T19:53:31Z",
       "description": "Fix 11 LaTeX formatting and structural issues in 03-DynamicsFoundation.tex: (1) line 38: define well-formed sentences using standard BNF notation with double colon and pipes; (2) line 58: include more derived symbols; (3) line 104: rename 'core frame' to 'dynamical frame'; (4) lines 131, 144: convert definitions to dependent type theory notation for consistency with Lean; (5) line 153: improve world-state definition using dependent type theory; (6) line 190: research Containment subsection to restate world-history as maximal possible evolution; (7) line 202: update notation to use dependent type theory consistently; (8) line 224: restate interpretation definition from Constitutive Foundation; (9) line 248: convert remark to theorem for Lean implementation; (10) line 270: define \\forall v \\metaA(v) as \\forall (\\lambda v_1. \\metaA)(v_2); (11) lines 303, 312, 322, 333: restructure to give semantic clauses only for primitives, introduce stability operator, move derived operators to definitions section; (12) lines 352, 374: move operator readings to primitive symbol introduction; (13) line 368: define \\altworlds in terms of imposition.",
-      "session_id": "sess_1769406616_077604",
+      "session_id": "sess_1769457003_4b23d9",
       "researching": "2026-01-26T05:50:22Z",
       "researched": "2026-01-26T05:58:49Z",
       "artifacts": [
@@ -706,8 +706,15 @@
           "path": "specs/682_fix_dynamics_foundation_latex_issues/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting 13 LaTeX issues with specific recommendations, LaTeX code examples, and phased implementation order"
+        },
+        {
+          "path": "specs/682_fix_dynamics_foundation_latex_issues/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan covering BNF notation, type theory conversion, primitive/derived restructure, evolution definitions, and cleanup"
         }
-      ]
+      ],
+      "planning": "2026-01-26T19:50:23Z",
+      "planned": "2026-01-26T19:53:31Z"
     },
     {
       "project_number": 683,
@@ -753,16 +760,17 @@
     {
       "project_number": 690,
       "project_name": "fix_constitutive_foundation_latex_issues",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "priority": "high",
       "created": "2026-01-26T17:10:00Z",
-      "last_updated": "2026-01-26T17:10:00Z",
+      "last_updated": "2026-01-26T19:51:02Z",
       "session_id": "sess_1769449239_a3cef6",
       "dependencies": [
         689
       ],
-      "description": "Fix LaTeX formatting issues in 02-ConstitutiveFoundation.tex based on FIX: and NOTE: tags: (1) line 49: Combine material conditional, biconditional definitions, and quantifier notation into single definition setting metalinguistic conventions (syntactic sugar) for the language; (2) line 406: Precisely define identity sentences in both Lean source and LaTeX, where inductive definition is in terms of well-formed sentences but takes identity sentences to be atomic; (3) line 21 (NOTE): Update variable notation from x, y, z to v_1, v_2, v_3, ... for object language (x, y, z reserved for metalanguage durations). Source: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex"
+      "description": "Fix LaTeX formatting issues in 02-ConstitutiveFoundation.tex based on FIX: and NOTE: tags: (1) line 49: Combine material conditional, biconditional definitions, and quantifier notation into single definition setting metalinguistic conventions (syntactic sugar) for the language; (2) line 406: Precisely define identity sentences in both Lean source and LaTeX, where inductive definition is in terms of well-formed sentences but takes identity sentences to be atomic; (3) line 21 (NOTE): Update variable notation from x, y, z to v_1, v_2, v_3, ... for object language (x, y, z reserved for metalanguage durations). Source: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex",
+      "researching": "2026-01-26T19:51:02Z"
     }
   ],
   "completed_projects": [

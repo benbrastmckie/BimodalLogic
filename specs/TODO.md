@@ -111,18 +111,21 @@ technical_debt:
 
 ### 682. Fix dynamics foundation LaTeX issues
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-26
 - **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (11 FIX: tags)
 - **Research**: [research-001.md](specs/682_fix_dynamics_foundation_latex_issues/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/682_fix_dynamics_foundation_latex_issues/plans/implementation-001.md)
 
 **Description**: Fix 11 LaTeX formatting and structural issues in 03-DynamicsFoundation.tex: (1) line 38: define well-formed sentences using standard BNF notation with double colon and pipes; (2) line 58: include more derived symbols; (3) line 104: rename 'core frame' to 'dynamical frame'; (4) lines 131, 144: convert definitions to dependent type theory notation for consistency with Lean; (5) line 153: improve world-state definition using dependent type theory; (6) line 190: research Containment subsection to restate world-history as maximal possible evolution; (7) line 202: update notation to use dependent type theory consistently; (8) line 224: restate interpretation definition from Constitutive Foundation; (9) line 248: convert remark to theorem for Lean implementation; (10) line 270: define \forall v \metaA(v) as \forall (\lambda v_1. \metaA)(v_2); (11) lines 303, 312, 322, 333: restructure to give semantic clauses only for primitives, introduce stability operator, move derived operators to definitions section; (12) lines 352, 374: move operator readings to primitive symbol introduction; (13) line 368: define \altworlds in terms of imposition.
 
 ---
 
 ### 690. Fix constitutive foundation LaTeX issues
+- **Status**: [RESEARCHING]
+- **Started**: 2026-01-26T19:51:02Z
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
 - **Priority**: High
