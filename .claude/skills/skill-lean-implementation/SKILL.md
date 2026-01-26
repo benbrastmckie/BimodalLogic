@@ -110,6 +110,38 @@ fi
 
 ---
 
+### Stage 2.5: Zombie Cleanup (Pre-Delegation)
+
+**Purpose**: Clean up orphaned lean-lsp-mcp processes with zombie children BEFORE invoking the subagent.
+This prevents MCP-induced hangs from accumulated zombie `lake` processes.
+
+**Execution**:
+```bash
+# Run zombie cleanup if script exists (non-blocking)
+CLEANUP_SCRIPT=".claude/scripts/lean-zombie-cleanup.sh"
+if [ -x "$CLEANUP_SCRIPT" ]; then
+    # Use --force and short age threshold (5 min) for automatic cleanup
+    # Errors are logged but do not block implementation
+    "$CLEANUP_SCRIPT" --force --age-threshold 5 2>&1 || {
+        echo "Warning: Zombie cleanup failed (non-fatal)"
+    }
+fi
+```
+
+**Behavior**:
+- Runs only if the cleanup script exists and is executable
+- Uses `--force` for non-interactive execution
+- Uses short age threshold (5 minutes) to catch recent zombies
+- Non-blocking: Errors are logged but do not prevent implementation from starting
+- Targets only orphaned lean-lsp-mcp processes with zombie children
+
+**Rationale**:
+The lean-lsp MCP server spawns `lake` subprocesses that can become zombies when not properly reaped.
+These zombies cause subsequent MCP calls to block indefinitely. Cleaning up before the subagent starts
+gives it a fresh MCP environment.
+
+---
+
 ### Stage 3: Create Postflight Marker
 
 Create the marker file to prevent premature termination:
