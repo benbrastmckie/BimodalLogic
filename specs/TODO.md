@@ -85,18 +85,6 @@ technical_debt:
 
 ---
 
-### 687. Investigate research 682 postflight failure
-- **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-26
-- **Related**: 682, 686
-
-**Description**: Look at /home/benjamin/Projects/ProofChecker/.claude/output/research.md output from running /research 682 which shows that postflight failed to run to see what is causing this failing, and what the root cause is to fix it.
-
----
-
 ### 686. Fix agent interruption MCP abort errors
 - **Effort**: 8-12 hours
 - **Status**: [RESEARCHED]

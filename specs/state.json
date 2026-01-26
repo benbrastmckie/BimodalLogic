@@ -6,20 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 687,
-      "project_name": "investigate_research_682_postflight_failure",
-      "status": "not_started",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-26T06:01:26Z",
-      "last_updated": "2026-01-26T06:01:26Z",
-      "description": "Look at /home/benjamin/Projects/ProofChecker/.claude/output/research.md output from running /research 682 which shows that postflight failed to run to see what is causing this failing, and what the root cause is to fix it.",
-      "related_tasks": [
-        682,
-        686
-      ]
-    },
-    {
       "project_number": 686,
       "project_name": "fix_agent_interruption_mcp_abort_errors",
       "status": "researched",
@@ -46,13 +32,13 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-25T22:38:05Z",
+      "last_updated": "2026-01-26T06:15:53Z",
       "related_tasks": [
         658
       ],
       "description": "Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyards canonical_task_rel pattern), or research alternative approaches.",
       "researching": "2026-01-25T22:22:57Z",
-      "session_id": "sess_1769380669_f1377d",
+      "session_id": "sess_1769408137_bca649",
       "researched": "2026-01-25T22:27:00Z",
       "artifacts": [
         {

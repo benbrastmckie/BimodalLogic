@@ -5,6 +5,21 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 687,
+      "project_name": "investigate_research_682_postflight_failure",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-26T06:01:26Z",
+      "last_updated": "2026-01-26T06:01:26Z",
+      "description": "Look at /home/benjamin/Projects/ProofChecker/.claude/output/research.md output from running /research 682 which shows that postflight failed to run to see what is causing this failing, and what the root cause is to fix it.",
+      "related_tasks": [
+        682,
+        686
+      ],
+      "abandoned": "2026-01-26T06:15:54Z"
+    },
+    {
       "project_number": 610,
       "project_name": "complete_truth_bridge_strategy_b",
       "status": "abandoned",
