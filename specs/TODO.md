@@ -127,9 +127,9 @@ technical_debt:
 
 ### 690. Fix constitutive foundation LaTeX issues
 - **Status**: [RESEARCHED]
+- **Research**: [research-001.md](specs/690_fix_constitutive_foundation_latex_issues/reports/research-001.md)
 - **Started**: 2026-01-26T19:51:02Z
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-26
@@ -144,7 +144,7 @@ technical_debt:
 
 ### 683. Update context from dynamics foundation notes
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-26

@@ -137,6 +137,45 @@ The `logos-notation.sty` package provides consistent notation for Logos document
 | Formula φ | `\metaphi` | φ | Greek meta-variable |
 | Formula ψ | `\metapsi` | ψ | Greek meta-variable |
 
+## Variable Naming Conventions
+
+### Metalanguage vs Object Language
+
+Reserve specific variable names to distinguish metalanguage time parameters from object-language first-order variables.
+
+| Variable Type | Notation | Domain | Usage |
+|---------------|----------|--------|-------|
+| **Time (metalanguage)** | x, y, z | D (temporal order) | Evaluation times in semantics clauses |
+| **First-order variables** | v, w or v_1, v_2, v_3 | S (state space) | Bound variables in quantifiers/lambdas |
+| **States** | s, t, r | S (state space) | State space elements |
+| **World-states** | w | W (subset of S) | Maximal possible states |
+| **World-histories** | tau, sigma, alpha, beta | D -> S | Functions from times to states |
+
+### Examples
+
+**Time variables** (metalanguage):
+```latex
+\model, \history, x, \assignment, \tempindex \trueat \allpast\metaA
+  \iff \model, \history, y, \assignment, \tempindex \trueat \metaA
+       \text{ for all } y : D \text{ where } y < x
+```
+
+**First-order variables** (object language):
+```latex
+\model, \history, x, \assignment, \tempindex \trueat (\lambda v.\metaA)(t)
+  \iff \model, \history, x, \assignsub{\sem{t}^\assignment_\model}{v}, \tempindex \trueat \metaA
+
+\model, \history, x, \assignment, \tempindex \trueat \forall v.\metaA
+  \iff \model, \history, x, \assignsub{s}{v}, \tempindex \trueat \metaA
+       \text{ for all } s : \statespace
+```
+
+### Rationale
+
+This convention reserves `x, y, z` for metalanguage temporal parameters, preventing confusion with first-order variables in the object language. First-order variables use `v` notation (optionally indexed as v_1, v_2, v_3) to distinguish them from time parameters.
+
+**Cross-reference**: See `.claude/context/project/logic/standards/naming-conventions.md` for Lean variable naming conventions (uses `t, s` for time parameters).
+
 ## Lean Cross-References
 
 | Concept | Macro | Usage |
