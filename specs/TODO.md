@@ -1,5 +1,5 @@
 ---
-next_project_number: 687
+next_project_number: 688
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -82,6 +82,18 @@ technical_debt:
 - **Plan**: [implementation-002.md](specs/672_implement_agent_system_upgrade_plan/plans/implementation-003.md)
 
 **Description**: Implement the .opencode system upgrade plan following specs/agent_system_upgrade_plan.md and specs/implementation_roadmap.md. This 6-week upgrade involves 4 phases: Phase 1 (Week 1): Foundation - file-based metadata exchange and state management; Phase 2 (Week 2): Workflow Ownership Migration - transfer postflight responsibilities to subagents; Phase 3 (Weeks 3-4): Meta System Builder Port - enable dynamic system extension; Phase 4 (Weeks 5-6): Forked Subagent Pattern - achieve token efficiency.
+
+---
+
+### 687. Investigate research 682 postflight failure
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-26
+- **Related**: 682, 686
+
+**Description**: Look at /home/benjamin/Projects/ProofChecker/.claude/output/research.md output from running /research 682 which shows that postflight failed to run to see what is causing this failing, and what the root cause is to fix it.
 
 ---
 
