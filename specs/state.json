@@ -1,7 +1,7 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 40,
+    "total_tasks": 44,
     "last_sync": "2026-01-25T21:02:41Z"
   },
   "active_projects": [
@@ -303,21 +303,28 @@
     {
       "project_number": 616,
       "project_name": "remove_false_semantic_task_rel_compositionality",
-      "status": "researched",
+      "status": "implementing",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T17:54:52Z",
-      "last_updated": "2026-01-25T23:03:21Z",
-      "session_id": "sess_1769382194_2a7634",
+      "last_updated": "2026-01-26T04:33:50Z",
+      "session_id": "sess_1769402017_a5b849",
       "researched": "2026-01-19T20:08:51Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/616_remove_false_semantic_task_rel_compositionality/reports/research-001.md",
           "summary": "Research report analyzing the finite model compositionality limitation and recommending acceptance of the sorry"
+        },
+        {
+          "path": "specs/616_remove_false_semantic_task_rel_compositionality/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase implementation plan: remove false theorem with inline sorry, update Boneyard documentation"
         }
       ],
-      "description": "Remove the mathematically false theorem semantic_task_rel_compositionality and its sorry from SemanticCanonicalModel.lean. Research confirmed this theorem cannot be proven (unbounded duration sums exceed finite time domain), and it is not needed for the completeness proof which uses a different approach. Remove the false claim rather than accepting a sorry for an unprovable statement."
+      "description": "Remove the mathematically false theorem semantic_task_rel_compositionality and its sorry from SemanticCanonicalModel.lean. Research confirmed this theorem cannot be proven (unbounded duration sums exceed finite time domain), and it is not needed for the completeness proof which uses a different approach. Remove the false claim rather than accepting a sorry for an unprovable statement.",
+      "planned": "2026-01-26T00:30:14Z",
+      "started": "2026-01-26T00:30:58Z"
     },
     {
       "project_number": 394,
@@ -564,6 +571,46 @@
         }
       ],
       "last_updated": "2026-01-24T00:59:55Z"
+    },
+    {
+      "project_number": 682,
+      "project_name": "fix_dynamics_foundation_latex_issues",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "high",
+      "created": "2026-01-26T04:45:00Z",
+      "last_updated": "2026-01-26T04:45:00Z",
+      "description": "Fix 11 LaTeX formatting and structural issues in 03-DynamicsFoundation.tex: (1) line 38: define well-formed sentences using standard BNF notation with double colon and pipes; (2) line 58: include more derived symbols; (3) line 104: rename 'core frame' to 'dynamical frame'; (4) lines 131, 144: convert definitions to dependent type theory notation for consistency with Lean; (5) line 153: improve world-state definition using dependent type theory; (6) line 190: research Containment subsection to restate world-history as maximal possible evolution; (7) line 202: update notation to use dependent type theory consistently; (8) line 224: restate interpretation definition from Constitutive Foundation; (9) line 248: convert remark to theorem for Lean implementation; (10) line 270: define \\forall v \\metaA(v) as \\forall (\\lambda v_1. \\metaA)(v_2); (11) lines 303, 312, 322, 333: restructure to give semantic clauses only for primitives, introduce stability operator, move derived operators to definitions section; (12) lines 352, 374: move operator readings to primitive symbol introduction; (13) line 368: define \\altworlds in terms of imposition."
+    },
+    {
+      "project_number": 683,
+      "project_name": "update_context_from_dynamics_foundation_notes",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-26T04:45:00Z",
+      "last_updated": "2026-01-26T04:45:00Z",
+      "description": "Update .claude/context/ files based on 2 NOTE: tags from 03-DynamicsFoundation.tex: (1) line 214: Update LaTeX patterns context to use italics for defining terms instead of named definitions like '[Dynamical Model]'; (2) line 257: Update variable naming convention documentation to reserve x, y, z for metalanguage times and use v_1, v_2, v_3, ... for first-order variables in Logos system."
+    },
+    {
+      "project_number": 684,
+      "project_name": "revise_semantics_and_notation_conventions",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-26T04:45:00Z",
+      "last_updated": "2026-01-26T04:45:00Z",
+      "description": "Systematically revise dynamical semantics and notation conventions in 03-DynamicsFoundation.tex based on 2 grouped TODO items: (1) line 235: Revise dynamical semantics to evaluate sentences at model, evolutions, time, variable assignment, and temporal index, using \\tau for evolutions; (2) line 259: Clean up lambda abstraction and quantification conventions where lambdas bind the last free variable (if any) and universal quantifiers quantify the last open variable (if any), researching careful conventions and definitions to match Lean code."
+    },
+    {
+      "project_number": 685,
+      "project_name": "derive_world_history_and_barcan_theorems",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-26T04:45:00Z",
+      "last_updated": "2026-01-26T04:45:00Z",
+      "description": "Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas."
     }
   ],
   "completed_projects": [
@@ -578,12 +625,17 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 682,
+  "next_project_number": 686,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
       "type": "plan",
       "summary": "2-phase plan: attempt proof completion first, remove incomplete exercises as fallback"
     }
-  ]
+  ],
+  "task_counts": {
+    "active": 4,
+    "not_started": 4,
+    "total": 4
+  }
 }
