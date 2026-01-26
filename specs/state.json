@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 688,
+      "project_name": "add_zombie_cleanup_timeout_protection_lean_skill",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-26T16:37:09Z",
+      "last_updated": "2026-01-26T16:37:09Z"
+    },
+    {
       "project_number": 686,
       "project_name": "fix_agent_interruption_mcp_abort_errors",
       "status": "researched",
@@ -693,7 +702,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 688,
+  "next_project_number": 689,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

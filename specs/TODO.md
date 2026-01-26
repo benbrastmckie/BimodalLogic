@@ -1,5 +1,5 @@
 ---
-next_project_number: 688
+next_project_number: 689
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,16 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 688. Add zombie cleanup and timeout protection to lean implementation skill
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+
+**Description**: Add pre-flight zombie process cleanup and timeout protection to skill-lean-implementation to prevent MCP-induced hangs from accumulating zombie lake processes and causing indefinite agent stalls. The lean-lsp MCP server spawns lake subprocesses that become zombies when not properly reaped, causing MCP tool calls to hang indefinitely. Fix by: (1) adding pre-flight cleanup in Stage 2 to kill zombie lake processes before invoking subagent, (2) adding timeout parameter to Task tool invocation in Stage 5 to force-kill hung agents, (3) optionally adding age-based deadlock detection to postflight hook.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
