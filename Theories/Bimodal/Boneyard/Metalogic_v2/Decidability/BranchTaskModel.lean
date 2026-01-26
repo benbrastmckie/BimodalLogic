@@ -67,7 +67,15 @@ uniqueness and enable decidable equality.
 structure BranchWorldState where
   /-- The set of atoms true at this world state. -/
   atoms : Finset String
-  deriving DecidableEq, Repr
+
+instance : DecidableEq BranchWorldState := fun w₁ w₂ =>
+  if h : w₁.atoms = w₂.atoms then
+    isTrue (by cases w₁; cases w₂; simp at h; subst h; rfl)
+  else
+    isFalse (by intro heq; cases heq; exact h rfl)
+
+instance : Repr BranchWorldState where
+  reprPrec w _ := "BranchWorldState"
 
 namespace BranchWorldState
 
@@ -136,7 +144,7 @@ def branchWorldStateValuation (w : BranchWorldState) (p : String) : Prop :=
 /--
 Decidable valuation predicate for branch world states.
 -/
-instance : DecidablePred (branchWorldStateValuation w) := fun p =>
+instance (w : BranchWorldState) : DecidablePred (branchWorldStateValuation w) := fun p =>
   if h : p ∈ w.atoms then isTrue h else isFalse h
 
 /-!
@@ -259,67 +267,57 @@ def extractBranchWorldHistory (b : Branch) : WorldHistory BranchTaskFrame :=
 /--
 Atom truth in extracted model: p is true at extracted world state
 iff T(p) appears in the branch.
+
+This is a key lemma for relating branch membership to model truth.
 -/
 theorem atom_true_iff_pos_in_branch (b : Branch) (p : String) :
     branchWorldStateValuation (extractBranchWorldState b) p ↔
     SignedFormula.pos (.atom p) ∈ b := by
   unfold branchWorldStateValuation extractBranchWorldState extractTrueAtomSet
-  simp only [Finset.mem_foldl_insert]
+  -- We prove both directions by induction on b
   constructor
-  · intro h
-    -- If p is in the fold result, then T(p) is in b
+  · -- Forward: p in fold result implies T(p) in branch
+    intro h
     induction b with
-    | nil => simp at h
+    | nil =>
+      simp only [List.foldl_nil, Finset.not_mem_empty] at h
     | cons sf rest ih =>
       simp only [List.foldl_cons] at h
-      cases hsign : sf.sign with
-      | pos =>
-        cases hform : sf.formula with
-        | atom q =>
-          simp only [hsign, hform] at h
-          by_cases hpq : p = q
-          · subst hpq
-            left
-            simp only [SignedFormula.pos]
-            rfl
-          · simp only [Finset.mem_insert, hpq, false_or] at h
-            right
-            exact ih h
-        | _ =>
-          simp only [hsign] at h
-          right
-          exact ih h
-      | neg =>
-        simp only [hsign] at h
-        right
-        exact ih h
-  · intro h
-    -- If T(p) is in b, then p is in the fold result
+      match hsign : sf.sign, hform : sf.formula with
+      | .pos, .atom q =>
+        simp only [hsign, hform, Finset.mem_insert] at h
+        cases h with
+        | inl hpq =>
+          left; simp only [SignedFormula.pos]; constructor <;> assumption
+        | inr h' =>
+          right; exact ih h'
+      | .pos, .bot | .pos, .imp _ _ | .pos, .box _ | .pos, .all_past _ | .pos, .all_future _ =>
+        simp only [hsign, hform] at h; right; exact ih h
+      | .neg, _ =>
+        simp only [hsign] at h; right; exact ih h
+  · -- Backward: T(p) in branch implies p in fold result
+    intro h
     induction b with
     | nil => cases h
     | cons sf rest ih =>
+      simp only [List.foldl_cons, List.mem_cons] at h ⊢
       cases h with
-      | head heq =>
+      | inl heq =>
         simp only [SignedFormula.pos] at heq
-        simp only [List.foldl_cons]
-        have hsf : sf = ⟨.pos, .atom p⟩ := heq
-        rw [hsf]
-        simp only [Finset.mem_insert, true_or]
-      | tail _ hin =>
-        simp only [List.foldl_cons]
-        cases hsign : sf.sign with
-        | pos =>
-          cases hform : sf.formula with
-          | atom q =>
-            simp only [hsign, hform, Finset.mem_insert]
-            right
-            exact ih hin
-          | _ =>
-            simp only [hsign]
-            exact ih hin
-        | neg =>
-          simp only [hsign]
-          exact ih hin
+        match hsf : sf with
+        | ⟨sign, form⟩ =>
+          simp only [hsf] at heq
+          obtain ⟨hsign, hform⟩ := heq
+          simp only [hsign, hform, Finset.mem_insert, true_or]
+      | inr hmem =>
+        match hsign : sf.sign, hform : sf.formula with
+        | .pos, .atom q =>
+          simp only [hsign, hform, Finset.mem_insert]
+          right; exact ih hmem
+        | .pos, .bot | .pos, .imp _ _ | .pos, .box _ | .pos, .all_past _ | .pos, .all_future _ =>
+          simp only [hsign, hform]; exact ih hmem
+        | .neg, _ =>
+          simp only [hsign]; exact ih hmem
 
 /--
 Atom falsity in extracted model: p is NOT in extracted world state

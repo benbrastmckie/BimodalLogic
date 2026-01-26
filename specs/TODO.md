@@ -124,10 +124,10 @@ technical_debt:
 ---
 
 ### 690. Fix constitutive foundation LaTeX issues
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Started**: 2026-01-26T19:51:02Z
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-26
@@ -142,7 +142,7 @@ technical_debt:
 
 ### 683. Update context from dynamics foundation notes
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-26
@@ -155,7 +155,7 @@ technical_debt:
 
 ### 684. Revise semantics and notation conventions
 - **Effort**: 4-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: latex
 - **Created**: 2026-01-26
@@ -167,7 +167,7 @@ technical_debt:
 
 ### 685. Derive world-history and Barcan theorems
 - **Effort**: 8-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-26
@@ -179,7 +179,7 @@ technical_debt:
 
 ### 689. Update context from constitutive foundation notes
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-26
