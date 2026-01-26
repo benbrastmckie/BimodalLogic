@@ -92,6 +92,98 @@ Extract from input:
 }
 ```
 
+### Stage 1.5: Initialize Progress Tracking and Build Management (NEW - Phase 2)
+
+Create progress tracking file and build lock for concurrent build prevention (Issue #118 mitigation):
+
+```bash
+TASK_NUMBER=$(jq -r '.task_context.task_number' <<< "$DELEGATION_CONTEXT")
+TASK_SLUG=$(jq -r '.task_context.task_name // "unknown"' <<< "$DELEGATION_CONTEXT")
+SESSION_ID=$(jq -r '.metadata.session_id' <<< "$DELEGATION_CONTEXT")
+PROGRESS_FILE="specs/${TASK_NUMBER}_${TASK_SLUG}/.agent-progress.json"
+BUILD_LOCK_FILE="specs/${TASK_NUMBER}_${TASK_SLUG}/.diagnostic-lock"
+
+# Initialize progress file
+mkdir -p "$(dirname "$PROGRESS_FILE")"
+echo "{
+  \"session_id\": \"$SESSION_ID\",
+  \"task_number\": $TASK_NUMBER,
+  \"last_update\": \"$(date -Iseconds)\",
+  \"phase\": 0,
+  \"operation\": \"initializing\",
+  \"diagnostic_calls\": 0,
+  \"skipped_diagnostics\": 0
+}" > "$PROGRESS_FILE"
+
+# Function to update progress
+update_progress() {
+    local phase=$1
+    local operation=$2
+    local proof=${3:-""}
+
+    local diag_calls=$(jq -r '.diagnostic_calls // 0' "$PROGRESS_FILE" 2>/dev/null || echo "0")
+    local skipped=$(jq -r '.skipped_diagnostics // 0' "$PROGRESS_FILE" 2>/dev/null || echo "0")
+
+    echo "{
+      \"session_id\": \"$SESSION_ID\",
+      \"task_number\": $TASK_NUMBER,
+      \"last_update\": \"$(date -Iseconds)\",
+      \"phase\": $phase,
+      \"operation\": \"$operation\",
+      \"proof\": \"$proof\",
+      \"diagnostic_calls\": $diag_calls,
+      \"skipped_diagnostics\": $skipped
+    }" > "$PROGRESS_FILE"
+}
+
+# Function to safely call lean_diagnostic_messages with concurrency protection (Issue #118)
+safe_diagnostic_call() {
+    local file_path=$1
+    local max_wait_secs=30
+
+    # Check if another diagnostic call is in progress
+    if [ -f "$BUILD_LOCK_FILE" ]; then
+        local lock_age_secs=$(( $(date +%s) - $(stat -c %Y "$BUILD_LOCK_FILE") ))
+
+        if [ $lock_age_secs -lt $max_wait_secs ]; then
+            # Recent lock - another diagnostic is running, skip this one
+            local skipped=$(jq -r '.skipped_diagnostics // 0' "$PROGRESS_FILE" 2>/dev/null || echo "0")
+            echo "Skipping diagnostic call - another build in progress (${lock_age_secs}s old)"
+            jq ".skipped_diagnostics = $((skipped + 1))" "$PROGRESS_FILE" > "$PROGRESS_FILE.tmp" && mv "$PROGRESS_FILE.tmp" "$PROGRESS_FILE"
+            return 1  # Skipped
+        else
+            # Stale lock (>30s) - assume previous call hung, remove lock
+            echo "Removing stale diagnostic lock (${lock_age_secs}s old)"
+            rm -f "$BUILD_LOCK_FILE"
+        fi
+    fi
+
+    # Acquire lock
+    touch "$BUILD_LOCK_FILE"
+
+    # Increment diagnostic call counter
+    local diag_calls=$(jq -r '.diagnostic_calls // 0' "$PROGRESS_FILE" 2>/dev/null || echo "0")
+    jq ".diagnostic_calls = $((diag_calls + 1))" "$PROGRESS_FILE" > "$PROGRESS_FILE.tmp" && mv "$PROGRESS_FILE.tmp" "$PROGRESS_FILE"
+
+    # Make the diagnostic call
+    local current_phase=$(jq -r '.phase // 0' "$PROGRESS_FILE")
+    local current_proof=$(jq -r '.proof // ""' "$PROGRESS_FILE")
+    update_progress "$current_phase" "checking_diagnostics" "$current_proof"
+    mcp__lean-lsp__lean_diagnostic_messages file_path="$file_path"
+    local result=$?
+    update_progress "$current_phase" "completed_diagnostics" "$current_proof"
+
+    # Release lock
+    rm -f "$BUILD_LOCK_FILE"
+
+    return $result
+}
+```
+
+**Rationale**: Prevents concurrent `lake build` processes (Issue #118) that exhaust memory and create zombies. The build lock ensures only one diagnostic call runs at a time, and stale lock detection prevents permanent blocking.
+
+---
+
 ### Stage 2: Load and Parse Implementation Plan
 
 Read the plan file and extract:
@@ -112,14 +204,53 @@ If all phases are `[COMPLETED]`: Task already done, return completed status.
 
 ### Stage 4: Execute Proof Development Loop
 
+## MCP Tool Expected Timings (Reference - NEW Phase 2)
+
+⚠️ **Hang Indicators**:
+- Any tool >2 min without progress
+- Multiple concurrent lake build processes (Issue #118)
+- **Current Project**: Lean v4.27.0-rc1 (Issue #115 fixed)
+
+**Fast** (<30s): lean_goal (5-10s), lean_hover_info (2-5s), lean_multi_attempt (10-20s)
+**Normal** (30-60s): lean_diagnostic_messages (15-60s - **CONCURRENCY RISK**, Issue #118)
+**Slow** (1-5 min): lean_build (full rebuild)
+
+---
+
 For each phase starting from resume point:
 
 **A. Mark Phase In Progress**
 Edit plan file: Change phase status to `[IN PROGRESS]`
 
-**B. Execute Proof Development**
+Initialize diagnostic tracking (Issue #118 Mitigation):
+```bash
+PROOF_COUNT=0
+DIAGNOSTIC_MODE="full"  # full | minimal | disabled
+BATCH_BUILD_DONE=false
+```
+
+**B. Defensive Diagnostic Strategy (NEW - Phase 2)**
+
+**Strategy**:
+- **First 3 proofs**: Always call `safe_diagnostic_call()` after each proof
+- **Proofs 4-6**: Skip diagnostics, use `lean_goal` only
+- **After proof 6**: Run single `lake build` (batch verification)
+- **If batch build succeeds**: Resume diagnostics for remaining proofs
+- **If batch build hangs (>5 min)**: Disable diagnostics, mark [PARTIAL]
+
+**Rationale**: Reduces diagnostic calls by ~50%, prevents concurrent builds (Issue #118)
+
+---
+
+**C. Execute Proof Development**
 
 For each proof/theorem in the phase:
+
+```bash
+PROOF_COUNT=$((PROOF_COUNT + 1))
+CURRENT_PROOF="$proof_name"
+update_progress "$PHASE" "developing_proof" "$CURRENT_PROOF"
+```
 
 1. **Read target file, locate proof point**
    - Use `Read` to get current file contents
@@ -149,15 +280,37 @@ For each proof/theorem in the phase:
         - Return partial with recommendation
    ```
 
-4. **Verify step completion**
-   - Use `lean_diagnostic_messages` to check for errors
-   - Use `lean_goal` to confirm goals are closed
+4. **Selective verification (NEW - Phase 2)**:
+```bash
+if [ "$DIAGNOSTIC_MODE" = "full" ] && [ $PROOF_COUNT -le 3 ]; then
+    # Early proofs: Always check diagnostics (with concurrency protection)
+    safe_diagnostic_call "$FILE_PATH" || echo "Diagnostic skipped (concurrent build)"
 
-**C. Verify Phase Completion**
-- Run `lake build` to verify full project builds
+elif [ "$DIAGNOSTIC_MODE" = "full" ] && [ $PROOF_COUNT -eq 6 ] && [ "$BATCH_BUILD_DONE" = false ]; then
+    # Batch verification after first 6 proofs
+    update_progress "$PHASE" "running_batch_build" ""
+    timeout 300s lake build 2>&1 | tee /tmp/batch-build.log || {
+        if [ $? -eq 124 ]; then
+            echo "WARNING: Batch build timed out (5 min) - disabling diagnostics"
+            DIAGNOSTIC_MODE="disabled"
+            update_progress "$PHASE" "batch_build_timeout" ""
+        fi
+    }
+    BATCH_BUILD_DONE=true
+
+elif [ "$DIAGNOSTIC_MODE" = "minimal" ]; then
+    # Minimal mode: Only verify goal closure
+    mcp__lean-lsp__lean_goal file_path="$FILE_PATH" line=$PROOF_LINE | grep "no goals" || {
+        echo "Warning: Goals remain at proof completion"
+    }
+fi
+```
+
+**D. Verify Phase Completion**
+- Run `lake build` with timeout to verify full project builds
 - Check verification criteria from plan
 
-**D. Mark Phase Complete**
+**E. Mark Phase Complete**
 Edit plan file: Change phase status to `[COMPLETED]`
 
 ### Stage 5: Run Final Build Verification
