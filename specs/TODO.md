@@ -1,5 +1,5 @@
 ---
-next_project_number: 686
+next_project_number: 687
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -85,9 +85,21 @@ technical_debt:
 
 ---
 
+### 686. Fix agent interruption MCP abort errors
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-26
+- **Related**: 619, 672, 674
+
+**Description**: Fix agent system interruption failures where MCP tool calls return AbortError (-32001) and agents get stuck at "Interrupted" prompt. Root cause analysis from `/research 657` and `/implement 630` failures shows: (1) lean-research-agent interrupted during lean_local_search calls, (2) lean-implementation-agent interrupted during lean_diagnostic_messages call. Both agents failed to write return metadata files, leaving tasks stuck in researching/implementing status. System improvements needed: error recovery for MCP tool failures, graceful interruption handling, partial progress preservation, and metadata file writing on timeout/abort.
+
+---
+
 ### 682. Fix dynamics foundation LaTeX issues
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-26

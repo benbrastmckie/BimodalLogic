@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 686,
+      "project_name": "fix_agent_interruption_mcp_abort_errors",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-26T05:51:18Z",
+      "last_updated": "2026-01-26T05:51:18Z",
+      "description": "Fix agent system interruption failures where MCP tool calls return AbortError (-32001) and agents get stuck at Interrupted prompt. Root cause analysis from /research 657 and /implement 630 failures shows: (1) lean-research-agent interrupted during lean_local_search calls, (2) lean-implementation-agent interrupted during lean_diagnostic_messages call. Both agents failed to write return metadata files, leaving tasks stuck in researching/implementing status. System improvements needed: error recovery for MCP tool failures, graceful interruption handling, partial progress preservation, and metadata file writing on timeout/abort."
+    },
+    {
       "project_number": 681,
       "project_name": "redesign_construct_indexed_family_coherent_approach",
       "status": "implementing",
@@ -575,12 +585,14 @@
     {
       "project_number": 682,
       "project_name": "fix_dynamics_foundation_latex_issues",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "priority": "high",
       "created": "2026-01-26T04:45:00Z",
-      "last_updated": "2026-01-26T04:45:00Z",
-      "description": "Fix 11 LaTeX formatting and structural issues in 03-DynamicsFoundation.tex: (1) line 38: define well-formed sentences using standard BNF notation with double colon and pipes; (2) line 58: include more derived symbols; (3) line 104: rename 'core frame' to 'dynamical frame'; (4) lines 131, 144: convert definitions to dependent type theory notation for consistency with Lean; (5) line 153: improve world-state definition using dependent type theory; (6) line 190: research Containment subsection to restate world-history as maximal possible evolution; (7) line 202: update notation to use dependent type theory consistently; (8) line 224: restate interpretation definition from Constitutive Foundation; (9) line 248: convert remark to theorem for Lean implementation; (10) line 270: define \\forall v \\metaA(v) as \\forall (\\lambda v_1. \\metaA)(v_2); (11) lines 303, 312, 322, 333: restructure to give semantic clauses only for primitives, introduce stability operator, move derived operators to definitions section; (12) lines 352, 374: move operator readings to primitive symbol introduction; (13) line 368: define \\altworlds in terms of imposition."
+      "last_updated": "2026-01-26T05:50:22Z",
+      "description": "Fix 11 LaTeX formatting and structural issues in 03-DynamicsFoundation.tex: (1) line 38: define well-formed sentences using standard BNF notation with double colon and pipes; (2) line 58: include more derived symbols; (3) line 104: rename 'core frame' to 'dynamical frame'; (4) lines 131, 144: convert definitions to dependent type theory notation for consistency with Lean; (5) line 153: improve world-state definition using dependent type theory; (6) line 190: research Containment subsection to restate world-history as maximal possible evolution; (7) line 202: update notation to use dependent type theory consistently; (8) line 224: restate interpretation definition from Constitutive Foundation; (9) line 248: convert remark to theorem for Lean implementation; (10) line 270: define \\forall v \\metaA(v) as \\forall (\\lambda v_1. \\metaA)(v_2); (11) lines 303, 312, 322, 333: restructure to give semantic clauses only for primitives, introduce stability operator, move derived operators to definitions section; (12) lines 352, 374: move operator readings to primitive symbol introduction; (13) line 368: define \\altworlds in terms of imposition.",
+      "session_id": "sess_1769406616_077604",
+      "researching": "2026-01-26T05:50:22Z"
     },
     {
       "project_number": 683,
@@ -625,7 +637,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 686,
+  "next_project_number": 687,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
