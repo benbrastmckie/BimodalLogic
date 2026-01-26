@@ -113,6 +113,11 @@
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-003.md",
           "type": "report",
           "summary": "Analysis concluding that operator interdefinability does not provide a solution path; semantic bridge (Approach A) remains necessary"
+        },
+        {
+          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-004.md",
+          "type": "report",
+          "summary": "Analysis of defining reflexive G' as G ∨ φ, concluding that definitional approach does not solve seed consistency issue since G' ⊥ simplifies to G ⊥"
         }
       ],
       "planning": "2026-01-26T06:22:01Z",
