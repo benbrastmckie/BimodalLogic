@@ -184,33 +184,4 @@ Count negated axiom instances in a branch.
 def countNegatedAxioms (b : Branch) : Nat :=
   b.filter (fun sf => sf.isNeg ∧ (matchAxiom sf.formula).isSome) |>.length
 
-/-!
-## Branch Consistency Properties
--/
-
-/--
-Openness implies consistency: a branch is open if it has no closure.
-This means no atom p has both T(p) and F(p) in the branch.
--/
-theorem open_branch_consistent (b : Branch) (hOpen : findClosure b = none) :
-    ∀ p, ¬(SignedFormula.pos (.atom p) ∈ b ∧ SignedFormula.neg (.atom p) ∈ b) := by
-  intro p ⟨hpos, hneg⟩
-  -- findClosure b = none means all checks return none
-  simp only [findClosure] at hOpen
-  rw [Option.orElse_eq_none, Option.orElse_eq_none] at hOpen
-  -- hOpen is now: checkBotPos b = none ∧ checkContradiction b = none ∧ checkAxiomNeg b = none
-  obtain ⟨_, hNoContra, _⟩ := hOpen
-  -- hNoContra : checkContradiction b = none
-  simp only [checkContradiction, List.findSome?_eq_none_iff] at hNoContra
-  -- Apply to SignedFormula.pos (atom p)
-  have h := hNoContra (SignedFormula.pos (.atom p)) hpos
-  -- The condition in h is: if (sign = pos) ∧ (hasNeg formula) then some ... else none = none
-  -- We show the condition is true, making result = some ..., contradicting h
-  have hhas : b.hasNeg (Formula.atom p) = true := by
-    simp only [Branch.hasNeg, Branch.contains, List.any_eq_true]
-    exact ⟨SignedFormula.neg (.atom p), hneg, beq_self_eq_true' _⟩
-  simp only [SignedFormula.isPos, SignedFormula.pos, decide_true, hhas, and_self, ↓reduceIte] at h
-  -- Now h : some (ClosureReason.contradiction (Formula.atom p)) = none
-  cases h
-
 end Bimodal.Metalogic_v2.Decidability

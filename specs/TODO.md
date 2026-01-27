@@ -111,32 +111,14 @@ technical_debt:
 
 ### 682. Fix dynamics foundation LaTeX issues
 - **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: latex
 - **Created**: 2026-01-26
-- **Completed**: 2026-01-26
 - **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (11 FIX: tags)
 - **Research**: [research-001.md](specs/682_fix_dynamics_foundation_latex_issues/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/682_fix_dynamics_foundation_latex_issues/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260126.md](specs/682_fix_dynamics_foundation_latex_issues/summaries/implementation-summary-20260126.md)
 
 **Description**: Fix 11 LaTeX formatting and structural issues in 03-DynamicsFoundation.tex: (1) line 38: define well-formed sentences using standard BNF notation with double colon and pipes; (2) line 58: include more derived symbols; (3) line 104: rename 'core frame' to 'dynamical frame'; (4) lines 131, 144: convert definitions to dependent type theory notation for consistency with Lean; (5) line 153: improve world-state definition using dependent type theory; (6) line 190: research Containment subsection to restate world-history as maximal possible evolution; (7) line 202: update notation to use dependent type theory consistently; (8) line 224: restate interpretation definition from Constitutive Foundation; (9) line 248: convert remark to theorem for Lean implementation; (10) line 270: define \forall v \metaA(v) as \forall (\lambda v_1. \metaA)(v_2); (11) lines 303, 312, 322, 333: restructure to give semantic clauses only for primitives, introduce stability operator, move derived operators to definitions section; (12) lines 352, 374: move operator readings to primitive symbol introduction; (13) line 368: define \altworlds in terms of imposition.
-
----
-
-### 690. Fix constitutive foundation LaTeX issues
-- **Status**: [RESEARCHED]
-- **Research**: [research-001.md](specs/690_fix_constitutive_foundation_latex_issues/reports/research-001.md)
-- **Started**: 2026-01-26T19:51:02Z
-- **Effort**: 2-3 hours
-- **Priority**: High
-- **Language**: latex
-- **Created**: 2026-01-26
-- **Dependencies**: 689
-- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex (2 FIX:, 1 NOTE: tags)
-
-**Description**: Fix LaTeX formatting issues in 02-ConstitutiveFoundation.tex based on FIX: and NOTE: tags: (1) line 49: Combine material conditional, biconditional definitions, and quantifier notation into single definition setting metalinguistic conventions (syntactic sugar) for the language; (2) line 406: Precisely define identity sentences in both Lean source and LaTeX, where inductive definition is in terms of well-formed sentences but takes identity sentences to be atomic; (3) line 21 (NOTE): Update variable notation from x, y, z to v_1, v_2, v_3, ... for object language (x, y, z reserved for metalanguage durations). Source: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex
 
 ---
 
@@ -144,17 +126,12 @@ technical_debt:
 
 ### 683. Update context from dynamics foundation notes
 - **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-26
-- **Started**: 2026-01-26T20:14:03Z
-- **Completed**: 2026-01-26
 - **Dependencies**: 682
 - **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 NOTE: tags)
-- **Research**: [research-001.md](specs/683_update_context_from_dynamics_foundation_notes/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/683_update_context_from_dynamics_foundation_notes/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260126.md](specs/683_update_context_from_dynamics_foundation_notes/summaries/implementation-summary-20260126.md)
 
 **Description**: Update .claude/context/ files based on 2 NOTE: tags from 03-DynamicsFoundation.tex: (1) line 214: Update LaTeX patterns context to use italics for defining terms instead of named definitions like '[Dynamical Model]'; (2) line 257: Update variable naming convention documentation to reserve x, y, z for metalanguage times and use v_1, v_2, v_3, ... for first-order variables in Logos system.
 
@@ -162,16 +139,11 @@ technical_debt:
 
 ### 684. Revise semantics and notation conventions
 - **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: latex
 - **Created**: 2026-01-26
 - **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
-- **Started**: 2026-01-26T18:00:00Z
-- **Completed**: 2026-01-26
-- **Research**: [research-001.md](specs/684_revise_semantics_and_notation_conventions/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/684_revise_semantics_and_notation_conventions/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260126.md](specs/684_revise_semantics_and_notation_conventions/summaries/implementation-summary-20260126.md)
 
 **Description**: Systematically revise dynamical semantics and notation conventions in 03-DynamicsFoundation.tex based on 2 grouped TODO items: (1) line 235: Revise dynamical semantics to evaluate sentences at model, evolutions, time, variable assignment, and temporal index, using \tau for evolutions; (2) line 259: Clean up lambda abstraction and quantification conventions where lambdas bind the last free variable (if any) and universal quantifiers quantify the last open variable (if any), researching careful conventions and definitions to match Lean code.
 
@@ -179,25 +151,13 @@ technical_debt:
 
 ### 685. Derive world-history and Barcan theorems
 - **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-26
 - **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
 
 **Description**: Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.
-
----
-
-### 689. Update context from constitutive foundation notes
-- **Effort**: 1 hour
-- **Status**: [RESEARCHED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-26
-- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex (1 NOTE: tag)
-
-**Description**: Update .claude/context/ files based on NOTE: tag from 02-ConstitutiveFoundation.tex line 21: Update variable naming convention documentation to reserve x, y, z for metalanguage durations and use v_1, v_2, v_3, ... for object language variables in Logos system.
 
 ---
 
