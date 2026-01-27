@@ -185,11 +185,6 @@
           "summary": "Comprehensive research on seed consistency proofs requiring temporal K distribution axiom with 4-phase implementation strategy"
         },
         {
-          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for proving seed consistency lemmas using temporal K distribution"
-        },
-        {
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/summaries/implementation-summary-20260126.md",
           "type": "summary",
           "summary": "Partial implementation - identified blocking issue with temporal T axiom"
@@ -228,6 +223,11 @@
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-008.md",
           "type": "report",
           "summary": "Analysis of syntactic vs semantic proof concerns - semantic bridge is standard and appropriate for completeness proofs"
+        },
+        {
+          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised implementation plan using Approach A (Semantic Bridge)"
         }
       ],
       "planning": "2026-01-26T06:22:01Z",
