@@ -1,5 +1,5 @@
 ---
-next_project_number: 692
+next_project_number: 693
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -130,6 +130,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 692. Port Bimodal/latex/ to Bimodal/typst/
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-27
+
+**Description**: Port Bimodal/latex/ to Bimodal/typst/ directory, converting the latex project to a typst project while maintaining the same formal notation and file contents while leaving Bimodal/latex/ unchanged.
+
+---
 
 ### 685. Derive world-history and Barcan theorems
 - **Effort**: 8-10 hours

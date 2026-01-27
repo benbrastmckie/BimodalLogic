@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 692,
+      "project_name": "port_bimodal_latex_to_typst",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-27T22:59:10Z",
+      "last_updated": "2026-01-27T22:59:10Z"
+    },
+    {
       "project_number": 691,
       "project_name": "improve_lean_lsp_mcp_agent_integration",
       "status": "completed",
@@ -799,7 +808,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 692,
+  "next_project_number": 693,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
