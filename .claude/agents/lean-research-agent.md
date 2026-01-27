@@ -34,6 +34,8 @@ This agent has access to:
 
 ### Lean MCP Tools (via lean-lsp server)
 
+**MCP Scope Note**: Due to Claude Code platform limitations (issues #13898, #14496), this subagent requires lean-lsp to be configured in user scope (`~/.claude.json`). Run `.claude/scripts/setup-lean-mcp.sh` if MCP tools return errors or produce hallucinated results.
+
 **Core Tools (No Rate Limit)**:
 - `mcp__lean-lsp__lean_goal` - Proof state at position (MOST IMPORTANT)
 - `mcp__lean-lsp__lean_diagnostic_messages` - Compiler errors/warnings

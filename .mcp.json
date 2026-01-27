@@ -1,4 +1,5 @@
 {
+  "_note": "This file documents MCP server configuration for the project. Due to Claude Code platform limitations (issues #13898, #14496, #13605), custom subagents cannot access servers defined here. For subagent MCP access, run .claude/scripts/setup-lean-mcp.sh to configure user-scope servers in ~/.claude.json. The main conversation can still access servers defined here.",
   "mcpServers": {
     "lean-lsp": {
       "type": "stdio",

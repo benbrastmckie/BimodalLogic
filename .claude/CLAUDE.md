@@ -237,6 +237,27 @@ Standard actions:
 4. "What's the Lean name for concept X?" → lean_leanfinder
 5. "What closes this goal?" → lean_state_search
 
+### MCP Server Configuration
+
+**Known Issue**: Custom subagents (spawned via Task tool) cannot access project-scoped MCP servers defined in `.mcp.json`. This is a Claude Code platform limitation tracked in GitHub issues #13898, #14496, and #13605.
+
+**Workaround**: Configure lean-lsp in user scope (`~/.claude.json`) instead of project scope:
+
+```bash
+# Run the setup script from project root
+.claude/scripts/setup-lean-mcp.sh
+
+# Or with custom project path
+.claude/scripts/setup-lean-mcp.sh --project /path/to/ProofChecker
+
+# Verify configuration
+.claude/scripts/verify-lean-mcp.sh
+```
+
+After setup, restart Claude Code for changes to take effect.
+
+**Note**: The project `.mcp.json` file is kept for documentation purposes and works correctly for the main conversation - only subagents have the access limitation.
+
 ## Rules References
 
 Core rules (automatically applied based on file paths):
