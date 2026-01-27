@@ -161,17 +161,17 @@
     {
       "project_number": 657,
       "project_name": "prove_seed_consistency_temporal_k_distribution",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-27T23:32:29Z",
+      "last_updated": "2026-01-27T23:36:08Z",
       "related_tasks": [
         654
       ],
       "researching": "2026-01-25T20:53:16Z",
       "session_id": "sess_1769556744_23e640",
-      "researched": "2026-01-27T23:27:14Z",
+      "researched": "2026-01-27T23:36:08Z",
       "artifacts": [
         {
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-001.md",
@@ -217,6 +217,11 @@
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-007.md",
           "type": "report",
           "summary": "Comparative analysis of Approach A (Semantic Bridge) vs G' definition approaches for seed consistency - G' phi := G phi AND phi does NOT help because MCS contains G BOT, not G' BOT"
+        },
+        {
+          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-008.md",
+          "type": "report",
+          "summary": "Analysis of syntactic vs semantic proof concerns - semantic bridge is standard and appropriate for completeness proofs"
         }
       ],
       "planning": "2026-01-26T06:22:01Z",
