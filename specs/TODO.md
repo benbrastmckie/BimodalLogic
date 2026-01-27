@@ -112,10 +112,12 @@ technical_debt:
 ---
 
 ### 690. Fix constitutive foundation LaTeX issues
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Research**: [research-001.md](specs/690_fix_constitutive_foundation_latex_issues/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/690_fix_constitutive_foundation_latex_issues/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260127.md](specs/690_fix_constitutive_foundation_latex_issues/summaries/implementation-summary-20260127.md)
 - **Started**: 2026-01-26T19:51:02Z
+- **Completed**: 2026-01-27
 - **Effort**: 2-3 hours
 - **Priority**: High
 - **Language**: latex
@@ -191,7 +193,7 @@ technical_debt:
 ---
 
 ### 656. Complete truth lemma forward direction (imp/box cases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Priority**: Medium
 - **Language**: lean

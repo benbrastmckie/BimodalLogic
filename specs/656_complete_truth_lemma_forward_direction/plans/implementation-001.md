@@ -1,7 +1,7 @@
 # Implementation Plan: Task #656
 
 - **Task**: 656 - Complete truth lemma forward direction (imp/box cases)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Priority**: Medium
 - **Dependencies**: None (standalone proof task)
