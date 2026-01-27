@@ -18,7 +18,7 @@
 The .opencode system requires a comprehensive upgrade to integrate proven .claude innovations while maintaining its formal verification specialization. Current limitations include: workflow friction with "continue" prompts, lack of dynamic system extension capabilities, and suboptimal token efficiency.
 
 ### Scope
-This 6-week upgrade implements 4 phases: (1) Foundation - hook system, metadata exchange, and state management; (2) Workflow Ownership Migration - seamless UX through subagent-owned workflows; (3) Meta System Builder Port - dynamic system extension; (4) Forked Subagent Pattern - token efficiency optimization.
+This 6-week upgrade implements 4 phases: (1) Foundation - metadata exchange and state management; (2) Workflow Ownership Migration - seamless UX through subagent-owned workflows; (3) Meta System Builder Port - dynamic system extension; (4) Forked Subagent Pattern - token efficiency optimization.
 
 ### Constraints
 - Maintain backward compatibility during transition
@@ -41,7 +41,7 @@ This plan integrates findings from 1 research report:
 - **research-001.md** (2026-01-22): Comprehensive analysis of .opencode vs .claude architectures with implementation paths for all 4 upgrade phases
 
 **Key Findings Applied**:
-- Hook system implementation via direct port from .claude with path updates
+- Metadata exchange schema for reliable artifact tracking
 - File-based metadata exchange schema for reliable artifact tracking
 - Complete workflow ownership transfer to subagents
 - Meta System Builder with formal verification domain adaptations
@@ -53,7 +53,7 @@ This plan integrates findings from 1 research report:
 1. **Eliminate workflow friction** - Remove "continue" prompts through subagent-owned postflight
 2. **Enable dynamic extension** - Meta System Builder for domain-specific agent generation
 3. **Achieve token efficiency** - Forked subagent pattern with 15-20% savings
-4. **Maintain reliability** - Hook system for automated error recovery
+4. **Maintain reliability** - Automated error recovery with state validation
 5. **Preserve specialization** - Formal verification focus throughout upgrade
 
 ### Non-Goals
@@ -76,33 +76,27 @@ This plan integrates findings from 1 research report:
 **Probability**: Low | **Impact**: Medium
 **Mitigation**: Benchmarking at each phase, fallback mechanisms, performance monitoring
 
-### Low Risk: Hook System Integration
+### Low Risk: State Validation Integration
 **Probability**: Low | **Impact**: Low
-**Mitigation**: Direct port from proven .claude implementation, comprehensive testing
+**Mitigation**: Build on existing workflows and validate with targeted tests
 
 ## Implementation Phases
 
 ### Phase 1: Foundation - Workflow Safety (Week 1) - [NOT STARTED]
-**Estimated Effort**: 18 hours
+**Estimated Effort**: 10 hours
 
 **Tasks**:
-1. **Implement Hook System (8 hours)**
-   - Port 3 hook scripts from .claude with .opencode path updates
-   - Create .opencode/hooks/ directory structure
-   - Test hook activation with marker file protocol
-
-2. **Add File-Based Metadata Exchange (6 hours)**
+1. **Add File-Based Metadata Exchange (6 hours)**
    - Add return-metadata-file.md to .opencode context
    - Update researcher subagent to write metadata files
    - Remove JSON console returns in favor of file-based exchange
 
-3. **Update State Management (4 hours)**
+2. **Update State Management (4 hours)**
    - Adopt atomic two-phase commit patterns
    - Add rollback mechanisms
-   - Implement validation hooks
+   - Implement validation checks
 
 **Acceptance Criteria**:
-- Hooks prevent premature workflow termination
 - Metadata files created and parsed reliably
 - State synchronization passes validation tests
 - No "continue" prompts in basic research workflows
@@ -186,8 +180,8 @@ This plan integrates findings from 1 research report:
 
 ### Unit Testing Strategy
 ```bash
-.test/test_hooks.sh                    # Hook system validation
 .test/test_metadata_exchange.sh         # Metadata file reliability
+.test/test_state_validation.sh          # State synchronization checks
 .test/test_workflow_ownership.sh        # Subagent workflow ownership
 .test/test_meta_builder.sh              # Meta system generation
 .test/test_forked_pattern.sh            # Context isolation
@@ -218,10 +212,9 @@ Each phase must pass:
 ## Artifacts and Outputs
 
 ### Phase 1 Deliverables
-- .opencode/hooks/ (3 scripts)
 - .opencode/context/core/formats/return-metadata-file.md
 - Updated researcher subagent with metadata support
-- Hook integration documentation
+- State management validation updates
 
 ### Phase 2 Deliverables
 - Updated all subagents with complete workflow ownership
@@ -251,14 +244,14 @@ Each phase must pass:
 
 ### Phase-Level Rollback
 Each phase includes rollback procedures:
-- **Phase 1**: Disable hooks, revert to console JSON
+- **Phase 1**: Revert metadata exchange, restore console JSON
 - **Phase 2**: Restore postflight to commands, revert subagent ownership
 - **Phase 3**: Disable /meta command, remove ported subagents
 - **Phase 4**: Revert to direct agent calls, disable skill wrappers
 
 ### Feature Flags
 All major changes include feature flags for gradual rollout:
-- `OPENCODE_HOOKS_ENABLED` (Phase 1)
+- `OPENCODE_METADATA_EXCHANGE` (Phase 1)
 - `OPENCODE_SUBAGENT_OWNERSHIP` (Phase 2)
 - `OPENCODE_META_ENABLED` (Phase 3)
 - `OPENCODE_FORKED_PATTERN` (Phase 4)
@@ -281,7 +274,7 @@ All major changes include feature flags for gradual rollout:
 - **User Satisfaction**: Eliminate "continue" prompts
 - **Maintainability**: Clear separation of concerns (skills= routing, agents=execution)
 - **Extensibility**: Easy domain addition via /meta command
-- **Reliability**: Self-healing workflows with hooks
+- **Reliability**: Reliable workflows with state validation
 
 ### Validation Criteria
 Each phase validated by:
@@ -296,7 +289,7 @@ Each phase validated by:
 - Existing .claude system (reference implementations)
 - Current .opencode subagents and commands
 - Git workflow for commit tracking
-- Hooks support in execution environment
+- Metadata exchange support in execution environment
 
 ### Skill Dependencies
 - Understanding of .claude architecture patterns
@@ -305,16 +298,15 @@ Each phase validated by:
 - Performance optimization knowledge
 
 ### External Dependencies
-- Hook system support in execution environment
+- Metadata exchange support in execution environment
 - Git repository access for commit operations
 - Sufficient test environments for validation
 
 ## Timeline and Milestones
 
 ### Week 1: Foundation
-- Day 1-2: Hook system implementation
-- Day 3-4: Metadata exchange integration
-- Day 5: State management updates and testing
+- Day 1-3: Metadata exchange integration
+- Day 4-5: State management updates and testing
 
 ### Week 2: Workflow Ownership
 - Day 1-2: Research subagent complete ownership
@@ -349,7 +341,7 @@ Each phase validated by:
 - **Documentation**: Phase 3 and final documentation
 
 ### Tool and Infrastructure Requirements
-- Development environment with hook support
+- Development environment with metadata exchange support
 - Test environments for each phase
 - Performance monitoring tools
 - Documentation generation tools

@@ -129,7 +129,7 @@ All agents follow standardized 8-stage workflow:
 
 Stage 7 (Postflight) is critical for system consistency:
 - Validate all artifacts created successfully
-- Update TODO.md and state.json atomically (via status-sync-manager)
+- Update specs/TODO.md and specs/state.json atomically (via status-sync-manager)
 - Create scoped git commit (via git-workflow-manager)
 - Log any errors to errors.json
 

@@ -59,7 +59,7 @@ Create tasks via /task command for identified work:
 Follows @.opencode/context/core/orchestration/state-management.md:
 - Lazy directory creation (project root created when writing first file)
 - Only summaries/ subdirectory created (not reports/ or plans/)
-- Review summary artifact triggers project state.json creation via status-sync-manager
+- Review summary artifact triggers project specs/state.json creation via status-sync-manager
 
 ## Principles
 

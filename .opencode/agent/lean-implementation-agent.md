@@ -1,12 +1,7 @@
 ---
-name: "lean-implementation-agent"
-version: "1.0.0"
 description: "Implement Lean 4 proofs following implementation plans"
 mode: subagent
-agent_type: implementation
 temperature: 0.2
-max_tokens: 6000
-timeout: 7200
 tools:
   read: true
   write: true
@@ -17,32 +12,29 @@ tools:
   task: false
   mcp__lean-lsp__*: true
 permissions:
-  allow:
-    - read: ["**/*"]
-    - write: ["specs/**/*", "**/*.lean", "**/*.md"]
-    - bash: ["lake", "rg", "find", "ls", "cat", "pwd", "jq", "sed", "awk", "mkdir", "mv", "cp"]
-  deny:
-    - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/formats/return-metadata-file.md"
-    - "core/formats/summary-format.md"
-    - "project/lean4/tools/mcp-tools-guide.md"
-    - "project/lean4/standards/lean4-style-guide.md"
-  optional:
-    - "project/lean4/patterns/tactic-patterns.md"
-  max_context_size: 50000
-delegation:
-  max_depth: 3
-  can_delegate_to: []
-  timeout_default: 7200
-  timeout_max: 7200
-lifecycle:
-  stage: 4
-  command: "/implement"
-  return_format: "core/formats/return-metadata-file.md"
+  read:
+    "**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+    "**/*.lean": "allow"
+    "**/*.md": "allow"
+  bash:
+    "lake": "allow"
+    "rg": "allow"
+    "find": "allow"
+    "ls": "allow"
+    "cat": "allow"
+    "pwd": "allow"
+    "jq": "allow"
+    "sed": "allow"
+    "awk": "allow"
+    "mkdir": "allow"
+    "mv": "allow"
+    "cp": "allow"
+    "rm -rf": "deny"
+    "sudo": "deny"
+    "chmod +x": "deny"
+    "dd": "deny"
 ---
 
 # Lean Implementation Agent

@@ -72,7 +72,7 @@ GATE OUT:
 - Status: implemented
 - Artifacts: research-001.md (2,450 bytes)
 - Status update: [RESEARCHED]
-- Artifact link: added to TODO.md
+- Artifact link: added to specs/TODO.md
 
 COMMIT:
 - Git commit: "task 197: complete research"
@@ -124,7 +124,7 @@ Validation:
 - Task 345: exists in archive: YES
 
 Result: 4 tasks recovered
-Files updated: TODO.md, state.json, archive/state.json
+Files updated: specs/TODO.md, specs/state.json, specs/archive/state.json
 ```
 
 ---
@@ -176,7 +176,7 @@ Error: Phantom research detected
 ```
 
 **Fix**:
-1. Verify **Language** field in TODO.md
+1. Verify **Language** field in specs/TODO.md
 2. Check routing configuration
 3. Re-run after fixing language field
 
@@ -209,7 +209,7 @@ Actual: implementing
 
 **Fix**:
 1. Run `/task --sync {task_number}` to fix state
-2. Check TODO.md and state.json for inconsistencies
+2. Check specs/TODO.md and specs/state.json for inconsistencies
 3. Review skill-status-sync logs
 
 ---
@@ -248,7 +248,7 @@ Actual: implementing
     "task_numbers": [337, 343, 344, 345],
     "success_count": 4,
     "failure_count": 0,
-    "files_updated": ["TODO.md", "state.json", "archive/state.json"]
+    "files_updated": ["specs/TODO.md", "specs/state.json", "specs/archive/state.json"]
   }
 }
 ```
@@ -262,7 +262,7 @@ For conflict resolution, git blame determines which file has more recent changes
   "conflict_details": [{
     "task_number": 343,
     "field": "status",
-    "winner": "state.json",
+    "winner": "specs/state.json",
     "timestamp_state": "2026-01-07T10:00:00Z",
     "timestamp_todo": "2026-01-06T09:00:00Z"
   }]

@@ -38,7 +38,7 @@ jq --arg status "planned" --arg ts "$timestamp" \
     last_updated: $ts
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
-# 4. Link artifact in TODO.md
+# 4. Link artifact in specs/TODO.md
 # 5. Commit
 ```
 

@@ -6,15 +6,15 @@ paths: specs/**/*
 
 ## File Synchronization
 
-TODO.md and state.json MUST stay synchronized. Any update to one requires updating the other.
+specs/TODO.md and specs/state.json MUST stay synchronized. Any update to one requires updating the other.
 
 ### Canonical Sources
-- **state.json**: Machine-readable source of truth
+- **specs/state.json**: Machine-readable source of truth
   - next_project_number
   - active_projects array with status, language, priority
-  - Faster to query (12ms vs 100ms for TODO.md parsing)
+  - Faster to query (12ms vs 100ms for specs/TODO.md parsing)
 
-- **TODO.md**: User-facing source of truth
+- **specs/TODO.md**: User-facing source of truth
   - Human-readable task list with descriptions
   - Status markers in brackets: [STATUS]
   - Grouped by priority (High/Medium/Low)
@@ -47,8 +47,8 @@ When updating task status:
 
 ### Phase 1: Prepare
 ```
-1. Read current state.json
-2. Read current TODO.md
+1. Read current specs/state.json
+2. Read current specs/TODO.md
 3. Validate task exists in both
 4. Prepare updated content in memory
 5. Validate updates are consistent
@@ -56,15 +56,15 @@ When updating task status:
 
 ### Phase 2: Commit
 ```
-1. Write state.json (machine state first)
-2. Write TODO.md (user-facing second)
+1. Write specs/state.json (machine state first)
+2. Write specs/TODO.md (user-facing second)
 3. Verify both writes succeeded
 4. If either fails: log error, preserve original state
 ```
 
 ## Task Entry Format
 
-### TODO.md Entry
+### specs/TODO.md Entry
 ```markdown
 ### {NUMBER}. {TITLE}
 - **Effort**: {estimate}
@@ -79,7 +79,7 @@ When updating task status:
 **Description**: {full description}
 ```
 
-### state.json Entry
+### specs/state.json Entry
 ```json
 {
   "project_number": 334,
@@ -116,7 +116,7 @@ When a task transitions to `status: "completed"`, these fields are populated:
 - **`/implement` (Producer)**: Reports what was changed factually. Always populates `claudemd_suggestions` for meta tasks describing .opencode/ modifications, or `"none"` if no .opencode/ files were modified.
 - **`/todo` (Consumer)**: Evaluates `claudemd_suggestions` content and decides what warrants CLAUDE.md updates. The filtering criteria belongs here, not in `/implement`.
 
-**Producer Responsibility**: The `/implement` command populates these fields in skill postflight (Stage 7) when a task is successfully completed. The agent generates `completion_data` in the metadata file, and the skill propagates it to state.json.
+**Producer Responsibility**: The `/implement` command populates these fields in skill postflight (Stage 7) when a task is successfully completed. The agent generates `completion_data` in the metadata file, and the skill propagates it to specs/state.json.
 
 **Consumer Usage**: The `/todo` command extracts these fields via `jq` to:
 - Match non-meta tasks against ROAD_MAP.md items for annotation (using `roadmap_items`)
@@ -165,7 +165,7 @@ Each artifact in the `artifacts` array:
 
 ## Status Values Mapping
 
-| TODO.md Marker | state.json status |
+| specs/TODO.md Marker | specs/state.json status |
 |----------------|-------------------|
 | [NOT STARTED] | not_started |
 | [RESEARCHING] | researching |
@@ -181,7 +181,7 @@ Each artifact in the `artifacts` array:
 
 ## Artifact Linking
 
-When creating artifacts, update TODO.md with links:
+When creating artifacts, update specs/TODO.md with links:
 
 ### Research Completion
 ```markdown

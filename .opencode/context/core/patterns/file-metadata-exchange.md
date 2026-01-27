@@ -19,7 +19,7 @@ Where:
 ### Deriving the Path
 
 ```bash
-# Given task_number and task data from state.json
+# Given task_number and task data from specs/state.json
 task_number=259
 task_slug=$(jq -r --argjson num "$task_number" \
   '.active_projects[] | select(.project_number == $num) | .project_name' \
@@ -251,7 +251,7 @@ if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
     session_id=$(jq -r '.metadata.session_id // ""' "$metadata_file")
 
     if [ "$status" = "researched" ] || [ "$status" = "planned" ] || [ "$status" = "implemented" ]; then
-        # Update state.json
+        # Update specs/state.json
         jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
            --arg status "$status" \
           '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
@@ -259,7 +259,7 @@ if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
             last_updated: $ts
           }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
-        # Add artifact to state.json (if present)
+        # Add artifact to specs/state.json (if present)
         if [ -n "$artifact_path" ]; then
             jq --arg path "$artifact_path" \
                --arg type "$(jq -r '.artifacts[0].type' "$metadata_file")" \

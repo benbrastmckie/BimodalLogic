@@ -42,7 +42,7 @@ This document describes the complete research workflow executed by the researche
 
 ### Language Extraction
 
-Language is extracted from task entry in TODO.md:
+Language is extracted from task entry in specs/TODO.md:
 
 ```bash
 grep -A 20 "^### ${task_number}." specs/TODO.md | grep "Language" | sed 's/\*\*Language\*\*: //'
@@ -70,7 +70,7 @@ grep -A 20 "^### ${task_number}." specs/TODO.md | grep "Language" | sed 's/\*\*L
 **Action**: Load task details and determine research scope
 
 **Process**:
-1. Read task from TODO.md using grep (selective loading):
+1. Read task from specs/TODO.md using grep (selective loading):
    ```bash
    grep -A 50 "^### ${task_number}." specs/TODO.md > /tmp/task-${task_number}.md
    ```
@@ -238,11 +238,11 @@ grep -A 20 "^### ${task_number}." specs/TODO.md | grep "Language" | sed 's/\*\*L
    - Invoke status-sync-manager
    - Wait for return
 2. status-sync-manager performs atomic update:
-   - Update TODO.md:
+   - Update specs/TODO.md:
      - Status: [NOT STARTED] → [RESEARCHED]
      - Add **Research**: {report_path}
      - Add **Completed**: {date}
-   - Update state.json:
+   - Update specs/state.json:
      - Update status and timestamps
      - Add research_path
      - Add research_metadata
@@ -261,14 +261,14 @@ grep -A 20 "^### ${task_number}." specs/TODO.md | grep "Language" | sed 's/\*\*L
      ```json
      {
        "operation": "research_commit",
-       "scope": ["{report_path}", "TODO.md", "state.json"],
+       "scope": ["{report_path}", "specs/TODO.md", "specs/state.json"],
        "message": "task {number}: research completed"
      }
      ```
    - Invoke git-workflow-manager
    - Wait for return
 2. git-workflow-manager creates commit:
-   - Stage report file, TODO.md, state.json
+   - Stage report file, specs/TODO.md, specs/state.json
    - Create commit
    - Verify commit created
 3. If commit fails:
@@ -389,7 +389,7 @@ Sub-topics:
 | [RESEARCHING] | [RESEARCHING] | Research failed or partial |
 | [RESEARCHING] | [BLOCKED] | Research blocked by dependency |
 
-**Status Update**: Delegated to `status-sync-manager` for atomic synchronization across TODO.md and state.json.
+**Status Update**: Delegated to `status-sync-manager` for atomic synchronization across specs/TODO.md and specs/state.json.
 
 **Timestamps**:
 - `**Started**: {date}` added when status → [RESEARCHING]
@@ -410,8 +410,8 @@ Researcher loads context on-demand per `.opencode/context/index.md`:
 - `core/standards/subagent-return-format.md` (return format)
 - `core/standards/status-markers.md` (status transitions)
 - `core/system/artifact-management.md` (lazy directory creation)
-- Task entry via `grep -A 50 "^### ${task_number}." TODO.md` (~2KB vs 109KB full file)
-- `state.json` (project state)
+- Task entry via `grep -A 50 "^### ${task_number}." specs/TODO.md` (~2KB vs 109KB full file)
+- `specs/state.json` (project state)
 
 **Language-specific context**:
 - If lean: `project/lean4/tools/leansearch-api.md`, `project/lean4/tools/loogle-api.md`
@@ -428,7 +428,7 @@ Researcher loads context on-demand per `.opencode/context/index.md`:
 ```
 Error: Task {task_number} not found in specs/TODO.md
 
-Recommendation: Verify task number exists in TODO.md
+Recommendation: Verify task number exists in specs/TODO.md
 ```
 
 ### Invalid Task Number
@@ -480,8 +480,8 @@ Artifacts created:
 
 Manual recovery steps:
 1. Verify research artifact exists: {report_path}
-2. Manually update TODO.md status to [RESEARCHED]
-3. Manually update state.json status to "researched"
+2. Manually update specs/TODO.md status to [RESEARCHED]
+3. Manually update specs/state.json status to "researched"
 
 Or retry: /research {task_number}
 ```
@@ -522,7 +522,7 @@ Error: {git_error}
 ### Atomic Updates
 
 - Status updates delegated to status-sync-manager
-- Two-phase commit ensures atomicity across TODO.md and state.json
+- Two-phase commit ensures atomicity across specs/TODO.md and specs/state.json
 - Rollback on failure to maintain consistency
 
 ---
@@ -538,13 +538,13 @@ Directories created only when writing artifacts:
 
 ### Task Extraction Optimization
 
-Extract only specific task entry from TODO.md to reduce context load:
+Extract only specific task entry from specs/TODO.md to reduce context load:
 
 ```bash
 grep -A 50 "^### ${task_number}." specs/TODO.md > /tmp/task-${task_number}.md
 ```
 
-**Impact**: Reduces context from 109KB (full TODO.md) to ~2KB (task entry only), 98% reduction.
+**Impact**: Reduces context from 109KB (full specs/TODO.md) to ~2KB (task entry only), 98% reduction.
 
 ### Delegation Safety
 
@@ -599,13 +599,13 @@ Results: Nat.add_comm, Int.add_comm, etc.
 
 ### Task Extraction
 
-Extract only specific task entry from TODO.md to reduce context load:
+Extract only specific task entry from specs/TODO.md to reduce context load:
 
 ```bash
 grep -A 50 "^### ${task_number}." specs/TODO.md > /tmp/task-${task_number}.md
 ```
 
-**Impact**: Reduces context from 109KB (full TODO.md) to ~2KB (task entry only), 98% reduction.
+**Impact**: Reduces context from 109KB (full specs/TODO.md) to ~2KB (task entry only), 98% reduction.
 
 ### Lazy Context Loading
 

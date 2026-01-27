@@ -44,7 +44,7 @@ Commands that invoke agents directly without command-lifecycle.md:
 
 | Command | Agent | Description |
 |---------|-------|-------------|
-| `/status` | `status-sync-manager` | Synchronize task status across TODO.md and state.json |
+| `/status` | `status-sync-manager` | Synchronize task status across specs/TODO.md and specs/state.json |
 | `/commit` | `git-workflow-manager` | Create targeted git commits for task artifacts |
 
 ---
@@ -53,7 +53,7 @@ Commands that invoke agents directly without command-lifecycle.md:
 
 ### Language Extraction
 
-Extract language from task entry in TODO.md:
+Extract language from task entry in specs/TODO.md:
 
 ```bash
 # Extract language field from task entry
@@ -102,8 +102,8 @@ echo "[PASS] Routing validation succeeded"
 ### Implementation Status
 
 **Stage 2 (DetermineRouting) Implementation:**
-- ✅ Language extraction from state.json (Priority 1)
-- ✅ Language extraction from TODO.md (Priority 2)
+- ✅ Language extraction from specs/state.json (Priority 1)
+- ✅ Language extraction from specs/TODO.md (Priority 2)
 - ✅ Default to "general" fallback (Priority 3)
 - ✅ Routing table lookup from command frontmatter
 - ✅ Agent file existence validation
@@ -207,9 +207,9 @@ if ! [[ "$task_number" =~ ^[0-9]+$ ]]; then
   exit 1
 fi
 
-# Verify task exists in TODO.md
+# Verify task exists in specs/TODO.md
 if ! grep -q "^### ${task_number}\." specs/TODO.md; then
-  echo "[FAIL] Task ${task_number} not found in TODO.md"
+  echo "[FAIL] Task ${task_number} not found in specs/TODO.md"
   exit 1
 fi
 ```
@@ -225,7 +225,7 @@ Some commands support flags:
 | `/implement` | `--resume` | Resume from incomplete phase |
 | `/task` | `--recover` | Unarchive tasks from archive/ (supports ranges/lists) |
 | `/task` | `--expand` | Expand existing task into subtasks (single task only) |
-| `/task` | `--sync` | Synchronize TODO.md and state.json (git blame conflict resolution) |
+| `/task` | `--sync` | Synchronize specs/TODO.md and specs/state.json (git blame conflict resolution) |
 | `/task` | `--abandon` | Abandon tasks to archive/ (supports ranges/lists) |
 
 ### /task Flag-Based Routing
@@ -332,7 +332,7 @@ Commands update task status using text-based markers:
 }
 ```
 
-**DO NOT** update TODO.md or state.json directly. Always delegate to status-sync-manager.
+**DO NOT** update specs/TODO.md or specs/state.json directly. Always delegate to status-sync-manager.
 
 ---
 
@@ -342,7 +342,7 @@ Commands update task status using text-based markers:
 
 | Error | Cause | Resolution |
 |-------|-------|------------|
-| Task not found | Task number doesn't exist in TODO.md | Verify task number, check TODO.md |
+| Task not found | Task number doesn't exist in specs/TODO.md | Verify task number, check specs/TODO.md |
 | Invalid language | Language extraction failed | Default to "general", log warning |
 | Routing mismatch | Language doesn't match agent | Abort with validation error |
 | Missing agent | Command frontmatter missing `agent:` field | Add frontmatter to command file |
@@ -354,10 +354,10 @@ Commands update task status using text-based markers:
 ```json
 {
   "status": "failed",
-  "summary": "Routing failed: Task 244 not found in TODO.md",
+  "summary": "Routing failed: Task 244 not found in specs/TODO.md",
   "errors": [{
     "type": "validation",
-    "message": "Task 244 not found in TODO.md",
+    "message": "Task 244 not found in specs/TODO.md",
     "code": "TASK_NOT_FOUND",
     "recoverable": false,
     "recommendation": "Verify task number exists in specs/TODO.md"
@@ -399,7 +399,7 @@ See `.opencode/context/index.md` for execution context loading patterns.
 ### Routing Checklist
 
 - [ ] Parse command and extract task number
-- [ ] Validate task exists in TODO.md
+- [ ] Validate task exists in specs/TODO.md
 - [ ] Extract language from task entry
 - [ ] Determine target agent based on command + language
 - [ ] Validate routing (language matches agent)
@@ -457,110 +457,11 @@ Error: Routing mismatch: Lean task must route to lean-* agent
 2. If language!="lean": Agent must NOT start with "lean-"
 
 **Recovery:**
-1. Verify **Language** field in TODO.md task entry
-2. Verify routing configuration in command frontmatter
-3. Re-run command after fixing language field
-
-### Language Extraction Failed
-
-**Symptom:** Warning message "Language not found for task {N}, defaulting to 'general'".
-
-**Root Cause:** Task entry missing **Language** field in TODO.md.
-
-**Detection:** Stage 2 language extraction logs warning:
-```
-[WARN] Language not found for task 258, defaulting to 'general'
-```
-
-**Fix:**
-1. Add **Language** field to task entry in TODO.md:
-   ```markdown
-   ### 258. Resolve Truth.lean sorries
-   - **Status**: [NOT STARTED]
-   - **Language**: lean
-   - **Priority**: High
-   ```
-2. Re-run command
-
-### Agent File Not Found
-
-**Symptom:** Error "Agent file not found: {agent}".
-
-**Root Cause:** Routing configuration references non-existent agent.
-
-**Detection:** Stage 2 agent file validation:
-```
-[FAIL] Agent file not found: lean-research-agent
-```
-
-**Fix:**
-1. Verify agent file exists: `.opencode/agent/subagents/{agent}.md`
-2. Fix routing configuration in command frontmatter
-3. Create missing agent file if needed
-
-### Routing Logs
-
-**Example successful routing (Lean task):**
-```
-[INFO] Task 258 language: lean
-[INFO] Routing to lean-research-agent (language=lean)
-[PASS] Routing validation succeeded
-```
-
-**Example successful routing (Markdown task):**
-```
-[INFO] Task 256 language: markdown
-[INFO] Routing to researcher (language=markdown)
-[PASS] Routing validation succeeded
-```
-
-**Example failed routing (mismatch):**
-```
-[INFO] Task 258 language: lean
-[INFO] Routing to researcher (language=lean)
-[FAIL] Routing validation failed: language=lean but agent=researcher
-Error: Routing mismatch: Lean task must route to lean-* agent
-```
-
----
-
-**End of Routing Guide**
-# Routing Logic Standard
-
-## Overview
-
-This standard defines how the orchestrator determines which agent to route commands to, including language-based routing for Lean-specific tasks.
-
-## Language Extraction
-
-For commands with `routing.language_based: true`, extract language from task metadata.
-
-### Priority Order
-
-1. **Priority 1**: Project state.json (task-specific)
-2. **Priority 2**: TODO.md task entry (**Language** field)
-3. **Priority 3**: Default "general" (fallback)
-
-### Implementation
-
-#### Priority 1: Project state.json
-
-```bash
-# Find task directory
-task_dir=$(find .opencode/specs -maxdepth 1 -type d -name "${task_number}_*" | head -n 1)
-
-# Extract language from state.json
-if [ -n "$task_dir" ] && [ -f "${task_dir}/state.json" ]; then
-  language=$(jq -r '.language // empty' "${task_dir}/state.json")
-  
-  if [ -n "$language" ]; then
-    echo "[INFO] Language extracted from state.json: ${language}"
-    # Use this language, skip to agent mapping
-  fi
-fi
-```
-
-#### Priority 2: TODO.md task entry
+1. Verify **Language** field in specs/TODO.md task entry
+**Root Cause:** Task entry missing **Language** field in specs/TODO.md.
+1. Add **Language** field to task entry in specs/TODO.md:
+2. **Priority 2**: specs/TODO.md task entry (**Language** field)
+#### Priority 2: specs/TODO.md task entry
 
 ```bash
 # Extract task entry (20 lines after task header)
@@ -570,7 +471,7 @@ task_entry=$(grep -A 20 "^### ${task_number}\." specs/TODO.md)
 language=$(echo "$task_entry" | grep "Language" | sed 's/\*\*Language\*\*: //' | tr -d ' ')
 
 if [ -n "$language" ]; then
-  echo "[INFO] Language extracted from TODO.md: ${language}"
+  echo "[INFO] Language extracted from specs/TODO.md: ${language}"
   # Use this language, skip to agent mapping
 fi
 ```
@@ -706,7 +607,7 @@ echo "[INFO] Routing to ${target_agent} (direct command)"
 
 ### Language Extraction Failed
 
-**Symptom**: Cannot extract language from state.json or TODO.md
+**Symptom**: Cannot extract language from specs/state.json or specs/TODO.md
 
 **Action**: Default to "general" and log warning
 
@@ -717,7 +618,7 @@ echo "[WARN] Language not found for task ${task_number}, defaulting to 'general'
 
 **Impact**: Task routes to general agent instead of Lean-specific agent
 
-**Resolution**: Add **Language** field to task entry in TODO.md
+**Resolution**: Add **Language** field to task entry in specs/TODO.md
 
 ### Agent File Not Found
 

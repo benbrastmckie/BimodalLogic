@@ -104,7 +104,7 @@ Additional optional fields for specific agent types:
 **Type**: object
 **Include if**: status is `implemented` (required for successful implementations)
 
-Contains fields needed for task completion processing. Skills extract this data during postflight to update state.json.
+Contains fields needed for task completion processing. Skills extract this data during postflight to update specs/state.json.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -116,7 +116,7 @@ Contains fields needed for task completion processing. Skills extract this data 
 - `completion_summary` is mandatory for all `implemented` status returns
 - `claudemd_suggestions` is mandatory for meta tasks (language: "meta")
 - `roadmap_items` is optional and only relevant for non-meta tasks
-- Skills propagate these fields to state.json for use by `/todo` command
+- Skills propagate these fields to specs/state.json for use by `/todo` command
 
 ### errors (optional)
 

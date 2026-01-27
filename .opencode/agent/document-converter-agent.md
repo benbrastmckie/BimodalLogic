@@ -1,12 +1,7 @@
 ---
-name: "document-converter-agent"
-version: "1.0.0"
 description: "Convert documents between formats"
 mode: subagent
-agent_type: execution
 temperature: 0.2
-max_tokens: 4000
-timeout: 3600
 tools:
   read: true
   write: true
@@ -16,29 +11,28 @@ tools:
   bash: true
   task: false
 permissions:
-  allow:
-    - read: ["**/*"]
-    - write: ["**/*.md", "**/*.pdf", "specs/**/*"]
-    - bash: ["markitdown", "pandoc", "typst", "ls", "cat", "mkdir", "mv", "cp", "rg", "find", "pwd"]
-  deny:
-    - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/formats/return-metadata-file.md"
-    - "core/formats/subagent-return.md"
-  optional: []
-  max_context_size: 50000
-delegation:
-  max_depth: 3
-  can_delegate_to: []
-  timeout_default: 1800
-  timeout_max: 3600
-lifecycle:
-  stage: 4
-  command: "/convert"
-  return_format: "core/formats/return-metadata-file.md"
+  read:
+    "**/*": "allow"
+  write:
+    "**/*.md": "allow"
+    "**/*.pdf": "allow"
+    "specs/**/*": "allow"
+  bash:
+    "markitdown": "allow"
+    "pandoc": "allow"
+    "typst": "allow"
+    "ls": "allow"
+    "cat": "allow"
+    "mkdir": "allow"
+    "mv": "allow"
+    "cp": "allow"
+    "rg": "allow"
+    "find": "allow"
+    "pwd": "allow"
+    "rm -rf": "deny"
+    "sudo": "deny"
+    "chmod +x": "deny"
+    "dd": "deny"
 ---
 
 # Document Converter Agent

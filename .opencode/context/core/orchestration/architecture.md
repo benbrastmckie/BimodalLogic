@@ -34,7 +34,7 @@
 - Load required context files
 - Invoke the correct agent via Task tool
 - Validate agent return
-- Update state.json and TODO.md
+- Update specs/state.json and specs/TODO.md
 
 **Characteristics**:
 - Thin wrapper pattern

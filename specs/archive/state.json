@@ -5,6 +5,130 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 687,
+      "project_name": "investigate_research_682_postflight_failure",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-26T06:01:26Z",
+      "last_updated": "2026-01-26T06:01:26Z",
+      "description": "Look at /home/benjamin/Projects/ProofChecker/.claude/output/research.md output from running /research 682 which shows that postflight failed to run to see what is causing this failing, and what the root cause is to fix it.",
+      "related_tasks": [
+        682,
+        686
+      ],
+      "abandoned": "2026-01-26T06:15:54Z"
+    },
+    {
+      "project_number": 610,
+      "project_name": "complete_truth_bridge_strategy_b",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-19T16:39:59Z",
+      "last_updated": "2026-01-25T22:57:57Z",
+      "session_id": "sess_1769381799_82bd7f",
+      "researched": "2026-01-25T22:57:57Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/610_complete_truth_bridge_strategy_b/reports/research-001.md",
+          "summary": "Research report analyzing Strategy B for truth bridge, with detailed case analysis for structural induction and comparison to Strategy A"
+        },
+        {
+          "path": "specs/610_complete_truth_bridge_strategy_b/reports/research-002.md",
+          "type": "research",
+          "summary": "Relevance assessment: task superseded by 628, Strategy A proven via 608, recommend ABANDON"
+        }
+      ],
+      "abandoned": "2026-01-25T23:00:10Z"
+    },
+    {
+      "project_number": 675,
+      "project_name": "enforce_skill_postflight_checkpoint_pattern",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-25T18:49:46Z",
+      "last_updated": "2026-01-25T20:45:12Z",
+      "description": "Ensure all command workflows enforce the skill-based checkpoint pattern (GATE IN → DELEGATE → GATE OUT → COMMIT) by preventing direct agent invocation and guaranteeing postflight operations execute. Current issue: Commands can bypass skills and call agents directly via Task tool, causing missing status updates, artifact linking, and git commits. Solution: Add validation layer that enforces skill delegation, implement postflight verification, and document the checkpoint contract.",
+      "researched": "2026-01-25T20:45:12Z",
+      "research_summary": "Comprehensive analysis of checkpoint bypass issue: commands contain simulation code that creates stub artifacts without invoking skills, bypassing validation and postflight operations",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/675_enforce_skill_postflight_checkpoint_pattern/reports/research-001.md",
+          "summary": "Comprehensive analysis of checkpoint bypass issue: commands contain simulation code that creates stub artifacts without invoking skills, bypassing validation and postflight operations"
+        }
+      ],
+      "abandoned": "2026-01-25T22:39:15Z"
+    },
+    {
+      "project_number": 677,
+      "project_name": "study_preflight_postflight_patterns_for_improvements",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "description": "When /research 675 was run, the output showed failure to update task status during preflight. Carefully study the preflight and postflight patterns used throughout the .claude/ agent system to identify all improvements that could be made to improve performance and efficiency without needless complexity.",
+      "created": "2026-01-25T20:50:34Z",
+      "last_updated": "2026-01-25T21:01:59Z",
+      "researched": "2026-01-25T21:01:59Z",
+      "research_summary": "Comprehensive analysis identifying command simulation code as root cause, with phased migration roadmap to enforce skill-based checkpoint pattern",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/677_study_preflight_postflight_patterns_for_improvements/reports/research-001.md",
+          "summary": "Comprehensive analysis identifying command simulation code as root cause, with phased migration roadmap to enforce skill-based checkpoint pattern"
+        }
+      ],
+      "abandoned": "2026-01-25T21:18:09Z"
+    },
+    {
+      "project_number": 655,
+      "project_name": "fix_jq_errors_in_agent_system",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-20T23:01:27Z",
+      "last_updated": "2026-01-25T20:43:46Z",
+      "researched": "2026-01-25T18:45:39Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/655_fix_jq_errors_in_agent_system/reports/research-001.md",
+          "summary": "Comprehensive analysis finding zero active jq errors, one structural error in /todo, and 5 priority improvements for command architecture"
+        },
+        {
+          "path": "specs/655_fix_jq_errors_in_agent_system/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for enhancing jq error handling and documentation in agent system"
+        }
+      ],
+      "session_id": "sess_1769373708_1272f1",
+      "planned": "2026-01-25T20:43:46Z",
+      "abandoned": "2026-01-25T20:47:08Z"
+    },
+    {
+      "project_number": 648,
+      "project_name": "research_canonical_frame_temporal_order_generalization",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-20T20:55:08Z",
+      "last_updated": "2026-01-25T18:50:17Z",
+      "session_id": "sess_1768941258_a63c63",
+      "researching": "2026-01-25T18:46:58Z",
+      "researched": "2026-01-25T18:50:17Z",
+      "artifacts": [
+        {
+          "path": "specs/648_research_canonical_frame_temporal_order_generalization/reports/research-001.md",
+          "type": "report",
+          "summary": "Research report documenting complete parametric generalization of canonical frame over any totally ordered commutative group D, showing LaTeX TODO is outdated"
+        }
+      ],
+      "abandoned": "2026-01-25T20:34:08Z"
+    },
+    {
       "project_number": 651,
       "project_name": "simplify_learn_note_tag_workflow",
       "status": "completed",
@@ -7803,6 +7927,257 @@
       "completed": "2026-01-20T22:40:00Z",
       "completion_summary": "Implemented TODO topic grouping in /learn command with semantic analysis (key terms, file sections, action types), user confirmation UI with 3 grouping options, and effort-scaled task creation.",
       "claudemd_suggestions": "Modified skill-learn/SKILL.md (added Step 7.5 topic grouping, updated Step 8.4 task creation), commands/learn.md (added grouping section), docs/examples/learn-flow-example.md (added grouping scenario)"
+    },
+    {
+      "project_number": 673,
+      "project_name": "unknown",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completion_summary": null,
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/673_lean_opencode_overhaul/plans/implementation-001.md",
+          "summary": "4-phase implementation plan to create missing command execution infrastructure and integrate existing ported components for LEAN 4 workflows"
+        },
+        {
+          "type": "research",
+          "path": "specs/673_lean_opencode_overhaul/analysis/system-analysis-report.md",
+          "summary": "Architecture analysis comparing working .claude/ system vs broken .opencode/ system with migration strategy"
+        }
+      ]
+    },
+    {
+      "project_number": 661,
+      "project_name": "create_documentation_standards_file",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completion_summary": "Created comprehensive documentation-standards.md file specifying file naming conventions (kebab-case), README.md requirements, emoji prohibition, Quick Start/Reference prohibitions, temporal language requirements, and docs/ vs context/ directory distinctions. Fixed corrupted documentation.md by removing duplicate section.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "path": "specs/661_create_documentation_standards_file/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 7 findings on documentation patterns, naming conventions, and corrupted content requiring fix"
+        },
+        {
+          "path": "specs/661_create_documentation_standards_file/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "Revised 3-phase plan adding emoji prohibition to v002 requirements"
+        },
+        {
+          "path": "specs/661_create_documentation_standards_file/summaries/implementation-summary-20260121.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ]
+    },
+    {
+      "project_number": 662,
+      "project_name": "consolidate_update_docs_readme",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completion_summary": "Rewrote .claude/docs/README.md from 382-line content document to 96-line navigation hub, removing Quick Start section and eliminating 60% content duplication with system-overview.md.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "path": "specs/662_consolidate_update_docs_readme/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with detailed analysis of README.md, consolidation opportunities with system-overview.md, and specific recommendations for rewrite"
+        },
+        {
+          "path": "specs/662_consolidate_update_docs_readme/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan: remove duplicated content, restructure as navigation hub, verify links"
+        },
+        {
+          "path": "specs/662_consolidate_update_docs_readme/summaries/implementation-summary-20260121.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ]
+    },
+    {
+      "project_number": 663,
+      "project_name": "archive_stale_research_fix_plan_documents",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completion_summary": "Deleted 5 stale documents from .claude/docs/ that were superseded by context files or violated documentation standards. Updated README.md and marked Task 664 as completed.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "path": "specs/663_archive_stale_research_fix_plan_documents/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing 4 stale docs with deletion recommendations for each"
+        },
+        {
+          "path": "specs/663_archive_stale_research_fix_plan_documents/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "4-phase plan to delete 5 stale documents and mark Task 664 completed"
+        },
+        {
+          "path": "specs/663_archive_stale_research_fix_plan_documents/summaries/implementation-summary-20260121.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting deleted files, state updates, and verification results"
+        }
+      ]
+    },
+    {
+      "project_number": 664,
+      "project_name": "remove_standards_quick_ref_and_quick_reference_patterns",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completion_summary": "Deleted STANDARDS_QUICK_REF.md as part of Task 663 scope incorporation. Quick reference patterns prohibited by documentation-standards.md.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 670,
+      "project_name": "verify_task_creation_system_functionality",
+      "status": "completed",
+      "language": "meta",
+      "priority": "low",
+      "completion_summary": "Successfully created task 670 to verify task creation system functionality. Atomic updates to TODO.md and state.json completed successfully.",
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/670_verify_task_creation_system_functionality/reports/research-001.md",
+          "summary": "Research report verifying task creation system functionality"
+        }
+      ]
+    },
+    {
+      "project_number": 671,
+      "project_name": "combine_dynamics_foundation_latex_files",
+      "status": "abandoned",
+      "language": "latex",
+      "priority": "medium",
+      "completion_summary": null,
+      "archived": "2026-01-25T04:53:24Z",
+      "artifacts": [
+        {
+          "path": "specs/671_combine_dynamics_foundation_latex_files/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing three Dynamics Foundation LaTeX files with proposed structure for combination"
+        },
+        {
+          "path": "specs/671_combine_dynamics_foundation_latex_files/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan with 5 phases for combining LaTeX files"
+        }
+      ]
+    },
+    {
+      "project_number": 394,
+      "project_name": "null",
+      "status": "orphan_archived",
+      "archived": "2026-01-25T04:54:51Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/",
+        ".meta/"
+      ],
+      "notes": "Stale orphan directory - likely from test/abandoned workflow"
+    },
+    {
+      "project_number": 673,
+      "project_name": "port_claude_to_opencode",
+      "status": "orphan_archived",
+      "archived": "2026-01-25T04:54:51Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ],
+      "notes": "Superseded by 673_lean_opencode_overhaul"
+    },
+    {
+      "project_number": 676,
+      "project_name": "investigate_skill_registration_integrate_task_command",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completed": "2026-01-25T22:34:04Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Migrated checkpoint operations from skills to commands across the entire .claude/ system. 8 skills converted to thin wrappers, 6 commands updated with full checkpoint pattern, SubagentStop hook archived, and comprehensive documentation created."
+    },
+    {
+      "project_number": 665,
+      "project_name": "update_guides_templates_to_follow_new_standards",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completed": "2026-01-25T20:41:52Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Updated 10 documentation files to comply with new standards: removed Quick Start references from user-installation.md and copy-claude-directory.md, removed version metadata from 8 guide and template files, and fixed invalid path references in 3 files."
+    },
+    {
+      "project_number": 653,
+      "project_name": "improve_metalogic_infrastructure",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "completed": "2026-01-25T18:52:33Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Updated LaTeX documentation to reference IndexedMCSFamily approach instead of deprecated SemanticCanonicalFrame, created Metalogic/README.md architecture documentation, and added deprecation notices to Boneyard files. All documentation now accurately reflects the current Lean implementation."
+    },
+    {
+      "project_number": 639,
+      "project_name": "improve_review_roadmap_matching",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completed": "2026-01-25T21:04:58Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Implemented explicit two-tier roadmap matching for /review command (roadmap_items + exact Task refs) with fuzzy matching removed. Updated 3 implementation agents with required roadmap_items guidance and rewrote roadmap-update.md documentation."
+    },
+    {
+      "project_number": 666,
+      "project_name": "revise_lean_source_code_logos_theory_definitions",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "completed": "2026-01-25T20:38:49Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Updated LaTeX documentation to acknowledge mathematically equivalent Set-based formulation in Lean implementation. Added explanatory footnote about Set/Prop equivalence and removed outdated TODO comment. Verified Lean code builds successfully."
+    },
+    {
+      "project_number": 678,
+      "project_name": "fix_constitutive_foundation_latex_definitions",
+      "status": "completed",
+      "language": "latex",
+      "priority": "high",
+      "completed": "2026-01-25T21:37:48Z",
+      "archived": "2026-01-25T22:45:20Z",
+      "completion_summary": "Added 4 missing definitions to ConstitutiveFoundation LaTeX documentation: well-formed formulas (BNF definition), quantifier notation clarification, term algebra with free variables and substitution, and reduction operator. Added supporting macros to logos-notation.sty. All changes compile cleanly."
+    },
+    {
+      "project_number": 679,
+      "project_name": "identityaboutness_research_for_semantic_explanations",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "completed": "2026-01-25T22:27:41Z",
+      "archived": "2026-01-25T22:45:21Z",
+      "completion_summary": "Added pedagogical explanations for boolean operator semantics (negation, conjunction, disjunction) and formal bilattice definition with two-order interpretation (essence/ground) to the Constitutive Foundation LaTeX documentation. Removed TODO comments. Document compiles cleanly to 34 pages."
+    },
+    {
+      "project_number": 680,
+      "project_name": "unify_todo_review_roadmap_matching",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completed": "2026-01-25T22:38:13Z",
+      "archived": "2026-01-25T22:45:21Z",
+      "completion_summary": "Unified /review and /todo roadmap matching by removing unmatched tasks warning from /review. Updated roadmap-update.md to document precision over recall design philosophy."
     }
   ]
 }

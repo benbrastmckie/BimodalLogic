@@ -192,14 +192,14 @@ Every delegation MUST include this context:
 
 Priority order for extracting task language:
 
-1. **state.json** (fast, ~12ms):
+1. **specs/state.json** (fast, ~12ms):
    ```bash
    language=$(jq -r --arg num "$task_number" \
      '.active_projects[] | select(.project_number == ($num | tonumber)) | .language // "general"' \
      specs/state.json)
    ```
 
-2. **TODO.md** (fallback, ~100ms):
+2. **specs/TODO.md** (fallback, ~100ms):
    ```bash
    language=$(grep -A 20 "^### ${task_number}\." specs/TODO.md | grep "Language" | sed 's/.*: //')
    ```
@@ -224,7 +224,7 @@ fi
 
 ### Preflight Checklist
 - [ ] Parse task number from arguments
-- [ ] Validate task exists in state.json
+- [ ] Validate task exists in specs/state.json
 - [ ] Extract language for routing
 - [ ] Generate session_id
 - [ ] Prepare delegation context

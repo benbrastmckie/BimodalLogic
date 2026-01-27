@@ -9,7 +9,7 @@ Reusable patterns for updating task status directly in skills without invoking s
 Update task to "researching" before starting research:
 
 ```bash
-# Update state.json
+# Update specs/state.json
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "researching" \
    --arg sid "$session_id" \
@@ -20,7 +20,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-Then update TODO.md status marker using Edit tool:
+Then update specs/TODO.md status marker using Edit tool:
 - Find: `[NOT STARTED]` or `[RESEARCHED]` (for re-research)
 - Replace with: `[RESEARCHING]`
 
@@ -29,7 +29,7 @@ Then update TODO.md status marker using Edit tool:
 Update task to "planning" before creating plan:
 
 ```bash
-# Update state.json
+# Update specs/state.json
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "planning" \
    --arg sid "$session_id" \
@@ -40,14 +40,14 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-Then update TODO.md: `[RESEARCHED]` → `[PLANNING]`
+Then update specs/TODO.md: `[RESEARCHED]` → `[PLANNING]`
 
 ### Implementation Preflight
 
 Update task to "implementing" before starting implementation:
 
 ```bash
-# Update state.json
+# Update specs/state.json
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg status "implementing" \
    --arg sid "$session_id" \
@@ -59,7 +59,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-Then update TODO.md: `[PLANNED]` → `[IMPLEMENTING]`
+Then update specs/TODO.md: `[PLANNED]` → `[IMPLEMENTING]`
 
 ---
 
@@ -86,7 +86,7 @@ jq --arg path "$artifact_path" \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-Then update TODO.md:
+Then update specs/TODO.md:
 - `[RESEARCHING]` → `[RESEARCHED]`
 - Add/update research artifact link
 
@@ -111,7 +111,7 @@ jq --arg path "$artifact_path" \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-Then update TODO.md:
+Then update specs/TODO.md:
 - `[PLANNING]` → `[PLANNED]`
 - Add plan artifact link
 
@@ -136,7 +136,7 @@ jq --arg path "$artifact_path" \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-Then update TODO.md:
+Then update specs/TODO.md:
 - `[IMPLEMENTING]` → `[COMPLETED]`
 - Add summary artifact link
 
@@ -145,7 +145,7 @@ Then update TODO.md:
 Keep task as "implementing" when partially complete:
 
 ```bash
-# Update state.json with progress note
+# Update specs/state.json with progress note
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
    --arg phase "$completed_phase" \
   '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
@@ -154,11 +154,11 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-TODO.md stays as `[IMPLEMENTING]`.
+specs/TODO.md stays as `[IMPLEMENTING]`.
 
 ---
 
-## TODO.md Edit Patterns
+## specs/TODO.md Edit Patterns
 
 ### Finding Task Entry
 

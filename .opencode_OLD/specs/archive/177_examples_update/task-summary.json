@@ -1,0 +1,285 @@
+{
+  "task_id": 177,
+  "title": "Update examples to use latest APIs and add new feature demonstrations",
+  "status": "research_complete",
+  "date": "2025-12-25",
+  "phase": "analysis_and_planning",
+  
+  "research_objective": "Identify API changes from recent tasks (126, 127, 129, 130) that may have affected example files",
+  
+  "key_findings": {
+    "breaking_changes": 0,
+    "api_additions": 15,
+    "deprecated_patterns": 0,
+    "new_capabilities": 4,
+    "risk_level": "low"
+  },
+  
+  "tasks_analyzed": [
+    {
+      "task_id": 126,
+      "name": "ProofSearch.lean implementation",
+      "features": [
+        "bounded_search",
+        "search_with_heuristics",
+        "search_with_cache",
+        "SearchStats",
+        "ProofCache",
+        "HeuristicWeights"
+      ],
+      "impact": "additive_only",
+      "breaking_changes": 0
+    },
+    {
+      "task_id": 127,
+      "name": "Heuristic scoring and branch ordering",
+      "features": [
+        "heuristic_score",
+        "orderSubgoalsByScore"
+      ],
+      "impact": "integrated_into_126",
+      "breaking_changes": 0
+    },
+    {
+      "task_id": 129,
+      "name": "Truth.lean temporal swap",
+      "features": [
+        "time_shift_preserves_truth",
+        "truth_proof_irrel",
+        "truth_history_eq"
+      ],
+      "impact": "internal_infrastructure",
+      "breaking_changes": 0
+    },
+    {
+      "task_id": 130,
+      "name": "Domain extension lemmas",
+      "features": [
+        "axiom_swap_valid",
+        "derivable_implies_swap_valid"
+      ],
+      "impact": "internal_infrastructure",
+      "breaking_changes": 0
+    }
+  ],
+  
+  "files_analyzed": {
+    "core_api": [
+      {
+        "path": "Logos/Core/Automation/ProofSearch.lean",
+        "lines": 461,
+        "changes": "new_file"
+      },
+      {
+        "path": "Logos/Core/Automation/Tactics.lean",
+        "lines": 626,
+        "changes": "stable"
+      },
+      {
+        "path": "Logos/Core/Semantics/Truth.lean",
+        "lines": 1195,
+        "changes": "internal_additions"
+      },
+      {
+        "path": "Logos/Core/Theorems/Perpetuity/Principles.lean",
+        "lines": 897,
+        "changes": "stable"
+      },
+      {
+        "path": "Logos/Core/Theorems/Perpetuity/Bridge.lean",
+        "lines": 985,
+        "changes": "stable"
+      },
+      {
+        "path": "Logos/Core/Theorems/Perpetuity/Helpers.lean",
+        "lines": 155,
+        "changes": "stable"
+      }
+    ],
+    "examples": [
+      {
+        "path": "Archive/ModalProofs.lean",
+        "lines": 241,
+        "recommended_additions": 90,
+        "breaking_changes": 0
+      },
+      {
+        "path": "Archive/TemporalProofs.lean",
+        "lines": 301,
+        "recommended_additions": 40,
+        "breaking_changes": 0
+      },
+      {
+        "path": "Archive/BimodalProofs.lean",
+        "lines": 216,
+        "recommended_additions": 30,
+        "breaking_changes": 0
+      }
+    ],
+    "total_lines_analyzed": 5116
+  },
+  
+  "recommended_updates": {
+    "ModalProofs.lean": {
+      "current_lines": 241,
+      "new_lines": 90,
+      "sections": [
+        {
+          "name": "Automated Proof Search",
+          "lines": 30,
+          "priority": "high"
+        },
+        {
+          "name": "Search Performance",
+          "lines": 20,
+          "priority": "medium"
+        },
+        {
+          "name": "Heuristic Strategies",
+          "lines": 25,
+          "priority": "medium"
+        },
+        {
+          "name": "Context Transformation",
+          "lines": 15,
+          "priority": "low"
+        }
+      ]
+    },
+    "TemporalProofs.lean": {
+      "current_lines": 301,
+      "new_lines": 40,
+      "sections": [
+        {
+          "name": "Automated Temporal Search",
+          "lines": 25,
+          "priority": "high"
+        },
+        {
+          "name": "Temporal Context",
+          "lines": 15,
+          "priority": "low"
+        }
+      ]
+    },
+    "BimodalProofs.lean": {
+      "current_lines": 216,
+      "new_lines": 30,
+      "sections": [
+        {
+          "name": "Automated Bimodal Search",
+          "lines": 30,
+          "priority": "high"
+        }
+      ]
+    },
+    "total_new_lines": 160
+  },
+  
+  "new_capabilities": [
+    {
+      "name": "Automated Proof Search",
+      "functions": ["bounded_search", "search_with_heuristics", "search_with_cache"],
+      "description": "Bounded depth-first search with caching and heuristics",
+      "example_opportunity": "Demonstrate automated proof discovery"
+    },
+    {
+      "name": "Search Performance Analysis",
+      "types": ["SearchStats"],
+      "description": "Expose search statistics for educational purposes",
+      "example_opportunity": "Show cache hits, misses, visited nodes"
+    },
+    {
+      "name": "Custom Heuristic Strategies",
+      "types": ["HeuristicWeights"],
+      "description": "Configure search priorities via weights",
+      "example_opportunity": "Compare different search strategies"
+    },
+    {
+      "name": "Context Transformation Utilities",
+      "functions": ["box_context", "future_context", "find_implications_to"],
+      "description": "Show modal/temporal K rule mechanics",
+      "example_opportunity": "Educational demonstrations of inference rules"
+    }
+  ],
+  
+  "risk_assessment": {
+    "overall_risk": "low",
+    "breaking_changes_risk": "none",
+    "api_stability_risk": "none",
+    "example_validity_risk": "none",
+    "update_complexity_risk": "low",
+    "confidence_level": "high"
+  },
+  
+  "next_steps": [
+    {
+      "phase": "review",
+      "status": "complete",
+      "tasks": [
+        "Analyze API changes",
+        "Document findings",
+        "Assess risk",
+        "Plan updates"
+      ]
+    },
+    {
+      "phase": "implementation",
+      "status": "pending",
+      "tasks": [
+        "Create example update PRs",
+        "Add automation demonstrations",
+        "Add performance examples",
+        "Add heuristic examples",
+        "Update file headers"
+      ],
+      "estimated_hours": 4
+    },
+    {
+      "phase": "validation",
+      "status": "pending",
+      "tasks": [
+        "Test all examples compile",
+        "Verify new examples work correctly",
+        "Update documentation",
+        "Review with maintainers"
+      ],
+      "estimated_hours": 2
+    }
+  ],
+  
+  "deliverables": [
+    {
+      "name": "API Changes Analysis Report",
+      "path": "reports/api-changes-analysis.md",
+      "status": "complete",
+      "description": "Detailed API review with migration patterns"
+    },
+    {
+      "name": "Summary Report",
+      "path": "reports/summary.md",
+      "status": "complete",
+      "description": "Executive summary of findings"
+    },
+    {
+      "name": "Example Code Snippets",
+      "path": "reports/example-code-snippets.md",
+      "status": "complete",
+      "description": "Ready-to-use code for example updates"
+    },
+    {
+      "name": "Task Summary JSON",
+      "path": "task-summary.json",
+      "status": "complete",
+      "description": "Machine-readable summary"
+    }
+  ],
+  
+  "conclusion": {
+    "summary": "Low-risk, high-value update opportunity with zero breaking changes",
+    "recommendation": "Enhance rather than fix - add new examples demonstrating automation",
+    "estimated_effort_hours": 6,
+    "priority": "medium",
+    "ready_for_implementation": true
+  }
+}

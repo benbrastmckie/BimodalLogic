@@ -1,12 +1,7 @@
 ---
-name: "planner-agent"
-version: "1.0.0"
 description: "Create phased implementation plans from research findings"
 mode: subagent
-agent_type: planning
 temperature: 0.2
-max_tokens: 6000
-timeout: 1800
 tools:
   read: true
   write: true
@@ -16,29 +11,13 @@ tools:
   task: false
   bash: false
 permissions:
-  allow:
-    - read: ["**/*"]
-    - write: ["specs/**/*", "**/*.md"]
-  deny:
-    - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/formats/return-metadata-file.md"
-    - "core/formats/plan-format.md"
-    - "core/workflows/task-breakdown.md"
-  optional: []
-  max_context_size: 50000
-delegation:
-  max_depth: 3
-  can_delegate_to: []
-  timeout_default: 1800
-  timeout_max: 3600
-lifecycle:
-  stage: 4
-  command: "/plan"
-  return_format: "core/formats/return-metadata-file.md"
+  read:
+    "**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+    "**/*.md": "allow"
+  bash:
+    "*": "deny"
 ---
 
 # Planner Agent

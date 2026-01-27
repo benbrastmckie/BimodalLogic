@@ -1,12 +1,7 @@
 ---
-name: "skill-orchestrator"
-version: "1.0.0"
 description: "Route commands to appropriate workflows based on task language and status"
 mode: subagent
-agent_type: orchestration
 temperature: 0.2
-max_tokens: 4000
-timeout: 1800
 tools:
   read: true
   glob: true
@@ -16,27 +11,11 @@ tools:
   edit: false
   bash: false
 permissions:
-  allow:
-    - read: ["specs/**/*", ".opencode/**/*"]
-  deny:
-    - bash: ["rm -rf", "sudo", "chmod +x", "dd"]
-context_loading:
-  strategy: lazy
-  index: ".opencode/context/index.md"
-  required:
-    - "core/orchestration/orchestration-core.md"
-    - "core/orchestration/state-management.md"
-  optional: []
-  max_context_size: 50000
-delegation:
-  max_depth: 3
-  can_delegate_to: ["skill-researcher", "skill-planner", "skill-implementer", "skill-lean-research", "skill-lean-implementation", "skill-latex-implementation", "skill-meta"]
-  timeout_default: 1800
-  timeout_max: 3600
-lifecycle:
-  stage: 4
-  command: "/task"
-  return_format: "core/formats/return-metadata-file.md"
+  read:
+    "specs/**/*": "allow"
+    ".opencode/**/*": "allow"
+  bash:
+    "*": "deny"
 ---
 
 # Orchestrator Agent

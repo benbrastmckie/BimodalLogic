@@ -14,7 +14,7 @@ Errors during command execution:
 
 ### State Errors
 Errors in state management:
-- `status_sync_failure` - TODO.md/state.json desync
+- `status_sync_failure` - specs/TODO.md/specs/state.json desync
 - `file_not_found` - Expected file missing
 - `parse_error` - JSON/YAML parse failure
 

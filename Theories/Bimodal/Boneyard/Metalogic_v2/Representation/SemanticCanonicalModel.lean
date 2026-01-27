@@ -6,18 +6,28 @@ import Mathlib.Data.Set.Basic
 import Mathlib.Data.Finite.Defs
 
 /-!
-# Semantic Canonical Model for Metalogic_v2
+# DEPRECATED: Semantic Canonical Model (Metalogic_v2)
+
+**Status**: This file is in the Boneyard and should not be used for active development.
+**Deprecated**: 2026-01-25
+**Replacement**: Use `IndexedMCSFamily` approach in `Theories/Bimodal/Metalogic/`
+
+See `Boneyard/README.md` for deprecation rationale.
+
+---
+
+## Historical Documentation
 
 This module provides the semantic canonical model construction for proving
 completeness of TM bimodal logic.
 
-## Overview
+### Overview
 
 The semantic approach defines world states as equivalence classes of
 (history, time) pairs. This makes compositionality trivial because history
 paths compose naturally.
 
-## Main Definitions
+### Main Definitions
 
 - `HistoryTimePair`: A pair of (FiniteHistory, FiniteTime)
 - `htEquiv`: Equivalence relation - same world state at given time
@@ -26,13 +36,22 @@ paths compose naturally.
 - `SemanticCanonicalModel`: TaskModel for completeness proof
 - `semantic_truth_lemma`: Truth correspondence
 
-## Key Theorem
+### Known Limitations (Why Deprecated)
+
+1. `SemanticCanonicalFrame.compositionality` uses sorry - mathematically impossible
+   for unbounded durations in finite time domain [-k, k]. The false theorem
+   `semantic_task_rel_compositionality` was removed (Task #616).
+2. Formula-specific construction (not universally parametric)
+3. Truth bridge from general validity to finite model truth is incomplete
+
+### Key Theorem
 
 - `main_provable_iff_valid_v2`: Nonempty (phi) iff valid phi
 
-## References
+### References
 
 - Old Metalogic: `Bimodal.Metalogic.Completeness.FiniteCanonicalModel`
+- Replacement: `Bimodal.Metalogic.Representation.IndexedMCSFamily`
 -/
 
 namespace Bimodal.Metalogic_v2.Representation
@@ -188,53 +207,6 @@ theorem semantic_task_rel_nullity (phi : Formula) (w : SemanticWorldState phi) :
     · rfl
     · simp
 
-/--
-Compositionality: If w -[d1]-> u and u -[d2]-> v, then w -[d1+d2]-> v.
-
-**Status**: SORRY - Known limitation of finite semantic model.
-
-**The Problem**:
-The semantic_task_rel definition requires witness times in the finite domain [-k, k]
-where k = temporalBound phi. This means:
-- d1 can be any value in [-2k, 2k] (difference of two times in [-k, k])
-- d2 can be any value in [-2k, 2k]
-- d1 + d2 can be any value in [-4k, 4k]
-
-However, the conclusion semantic_task_rel phi w (d1+d2) v requires witness times
-with difference d1+d2, which is only possible if |d1+d2| <= 2k.
-
-When d1 and d2 have the same sign and are both near 2k (or -2k), their sum
-exceeds the representable range and no witness times exist.
-
-**Why This Is Acceptable**:
-1. The completeness proof doesn't directly use this lemma - it only needs
-   the TaskFrame structure to exist.
-2. The durations that actually arise during formula evaluation are bounded
-   by the temporal depth, so problematic cases don't occur in practice.
-3. This matches the approach in the old Metalogic code which also has this
-   limitation documented (see FiniteCanonicalModel.lean line 1936).
-
-**Alternative Approaches (Not Implemented)**:
-1. Add a boundedness hypothesis: require |d1 + d2| <= 2k
-2. Change the task relation definition to be closed under composition
-3. Use a different frame construction that avoids finite time bounds
-
-For the completeness proof, the current sorry is acceptable because the
-frame is only used to instantiate the validity quantifier, and the actual
-truth evaluation uses direct time comparisons rather than compositionality.
--/
-theorem semantic_task_rel_compositionality (phi : Formula)
-    (w u v : SemanticWorldState phi) (d1 d2 : Int)
-    (h_wu : semantic_task_rel phi w d1 u)
-    (h_uv : semantic_task_rel phi u d2 v) :
-    semantic_task_rel phi w (d1 + d2) v := by
-  -- This theorem is false for unrestricted Int durations in the finite model.
-  -- See docstring above for detailed explanation.
-  -- The sorry is acceptable because:
-  -- 1. Completeness proof doesn't call this lemma directly
-  -- 2. Durations in actual evaluation are bounded by temporalDepth
-  sorry
-
 /-!
 ## Semantic Canonical Frame and Model
 -/
@@ -246,7 +218,10 @@ noncomputable def SemanticCanonicalFrame (phi : Formula) : TaskFrame Int where
   WorldState := SemanticWorldState phi
   task_rel := semantic_task_rel phi
   nullity := semantic_task_rel_nullity phi
-  compositionality := fun w u v d1 d2 => semantic_task_rel_compositionality phi w u v d1 d2
+  -- SORRY: Compositionality is mathematically false for unbounded durations in finite time
+  -- domain [-k, k]. Sum d1 + d2 can exceed representable range [-2k, 2k]. Not needed for
+  -- completeness proof which uses semantic_weak_completeness via semantic_truth_at_v2.
+  compositionality := fun _ _ _ _ _ => sorry
 
 /--
 Semantic valuation: atom p is true at w iff p is true in underlying world state.

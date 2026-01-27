@@ -24,7 +24,7 @@ specs/{N}_{SLUG}/.return-meta.json
 
 Where:
 - `{N}` = Task number (unpadded)
-- `{SLUG}` = Task slug from state.json project_name
+- `{SLUG}` = Task slug from specs/state.json project_name
 
 Example: `specs/259_prove_completeness/.return-meta.json`
 

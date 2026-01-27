@@ -1,0 +1,64 @@
+{
+  "_schema_version": "1.1.0",
+  "project_number": 265,
+  "project_name": "clean_up_context_directory_structure_by_migrating_common_to_core_and_removing_archive",
+  "type": "refactoring",
+  "phase": "planned",
+  "status": "planned",
+  "priority": "high",
+  "language": "markdown",
+  "created": "2025-12-30T00:38:18.504339Z",
+  "started": "2026-01-03",
+  "research_completed": "2025-12-29",
+  "plan_created": "2026-01-03",
+  "last_updated": "2026-01-03T06:36:00.000000Z",
+  "artifacts": [
+    "reports/research-001.md",
+    "plans/implementation-001.md"
+  ],
+  "plan_path": "plans/implementation-001.md",
+  "plan_metadata": {
+    "phases": 5,
+    "total_effort_hours": 10,
+    "complexity": "medium",
+    "research_integrated": true
+  },
+  "phases": {
+    "1": {
+      "name": "Archive Directory Removal",
+      "status": "not_started",
+      "estimated_hours": 0.5
+    },
+    "2": {
+      "name": "Content Conflict Resolution",
+      "status": "not_started",
+      "estimated_hours": 2
+    },
+    "3": {
+      "name": "Common Directory Migration",
+      "status": "not_started",
+      "estimated_hours": 2
+    },
+    "4": {
+      "name": "Reference Updates and Validation",
+      "status": "not_started",
+      "estimated_hours": 4
+    },
+    "5": {
+      "name": "Documentation and Cleanup",
+      "status": "not_started",
+      "estimated_hours": 1.5
+    }
+  },
+  "files_to_migrate": 24,
+  "files_to_delete": 10,
+  "references_to_update": 120,
+  "migration_strategy": "phased",
+  "rollback_points": [
+    "After Phase 1: Archive removal",
+    "After Phase 2: Content conflicts resolved",
+    "After Phase 3: Files migrated",
+    "After Phase 4: References updated",
+    "After Phase 5: Documentation complete"
+  ]
+}

@@ -54,11 +54,11 @@ This standard defines the complete state management system for ProofChecker:
 
 ```
 specs/
-├── state.json           # Main state (cross-references, health)
-├── TODO.md              # User-facing task list
-├── archive/state.json   # Archived project tracking
+├── specs/state.json           # Main state (cross-references, health)
+├── specs/TODO.md              # User-facing task list
+├── specs/archive/state.json   # Archived project tracking
 └── NNN_project_name/
-    └── state.json       # Project-specific state
+    └── specs/state.json       # Project-specific state
 ```
 
 ### Main State File (`specs/state.json`)
@@ -95,7 +95,7 @@ specs/
 - `language`: Task language (`lean`, `general`, `meta`, `markdown`, `latex`)
 - `description`: Task description (50-500 chars, optional for legacy tasks)
 
-### Archive State File (`specs/archive/state.json`)
+### Archive State File (`specs/specs/archive/state.json`)
 
 Tracks archived projects with timeline, artifacts, and impact metadata.
 
@@ -103,16 +103,16 @@ Tracks archived projects with timeline, artifacts, and impact metadata.
 
 ## Fast Lookup Patterns
 
-### Why state.json for Reads?
+### Why specs/state.json for Reads?
 
 - ✅ **8x faster**: JSON parsing (~12ms) vs markdown parsing (~100ms)
 - ✅ **Structured**: Direct field access with jq
 - ✅ **Reliable**: No regex/grep fragility
-- ✅ **Synchronized**: status-sync-manager keeps state.json ↔ TODO.md in sync
+- ✅ **Synchronized**: status-sync-manager keeps specs/state.json ↔ specs/TODO.md in sync
 
 ### Read/Write Separation
 
-- **Reads** (validation, routing): Use `state.json` (this document)
+- **Reads** (validation, routing): Use `specs/state.json` (this document)
 - **Writes** (status updates, artifacts): Use `skill-status-sync`
 - **Synchronization**: Automatic via skill-status-sync
 
@@ -161,13 +161,13 @@ archival_tasks=$(jq -r '.active_projects[] |
   specs/state.json)
 ```
 
-**Performance**: ~15ms (vs ~200ms with TODO.md scanning)
+**Performance**: ~15ms (vs ~200ms with specs/TODO.md scanning)
 
 ---
 
 ## Timestamp Formats
 
-### TODO.md: Date Only
+### specs/TODO.md: Date Only
 ```markdown
 **Started**: 2025-12-20
 **Completed**: 2025-12-20
@@ -211,7 +211,7 @@ All writes go through `skill-status-sync` which provides:
 4. If validation fails, abort
 
 **Phase 2 (Commit)**:
-1. Write state.json → TODO.md → plan (dependency order)
+1. Write specs/state.json → specs/TODO.md → plan (dependency order)
 2. Verify each write
 3. On failure, rollback all
 4. Atomic guarantee: all updated or none updated
@@ -236,7 +236,7 @@ skill-status-sync operation=postflight_update task_number=$N new_status=complete
 - No extra whitespace
 
 ### Timestamp Validation
-- TODO.md: YYYY-MM-DD
+- specs/TODO.md: YYYY-MM-DD
 - State files: ISO 8601
 - Required for all status transitions
 
@@ -249,7 +249,7 @@ skill-status-sync operation=postflight_update task_number=$N new_status=complete
 
 ## Best Practices
 
-### 1. Use state.json for Reads
+### 1. Use specs/state.json for Reads
 
 ✅ **Good**: Fast jq lookup
 ```bash
@@ -258,7 +258,7 @@ task_data=$(jq -r --arg num "$task_number" \
   specs/state.json)
 ```
 
-❌ **Bad**: Slow TODO.md parsing
+❌ **Bad**: Slow specs/TODO.md parsing
 ```bash
 grep -A 20 "### ${task_number}\." specs/TODO.md
 ```

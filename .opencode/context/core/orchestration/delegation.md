@@ -541,7 +541,7 @@ Bulk operations (--recover, --sync, --abandon) delegate to status-sync-manager w
     "task_numbers": [343, 344, 345, 337],
     "success_count": 4,
     "failure_count": 0,
-    "files_updated": ["TODO.md", "state.json", "archive/state.json"]
+    "files_updated": ["specs/TODO.md", "specs/state.json", "specs/archive/state.json"]
   },
   "errors": []
 }
@@ -561,144 +561,13 @@ Bulk operations (--recover, --sync, --abandon) delegate to status-sync-manager w
 ```
 
 **Git Blame Conflict Resolution**:
-- For each field that differs between TODO.md and state.json:
-  1. Run `git blame` on both files to get commit timestamps
-  2. Compare timestamps: latest commit wins
-  3. Log conflict resolution: "Task 343: status from state.json (2026-01-07) > TODO.md (2026-01-06)"
-  4. Apply resolved value to both files
-
-**Return Format**:
-```json
-{
-  "status": "completed",
-  "summary": "Synced 3 tasks, resolved 2 conflicts using git blame",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1735460684_a1b2c3",
-    "synced_tasks": 3,
-    "conflicts_resolved": 2,
-    "conflict_details": [
-      {
-        "task_number": 343,
-        "field": "status",
-        "winner": "state.json",
-        "timestamp_state": "2026-01-07T10:00:00Z",
-        "timestamp_todo": "2026-01-06T09:00:00Z"
-      }
-    ],
-    "files_updated": ["TODO.md", "state.json"]
-  },
-  "errors": []
-}
-```
-
-### Delegation Pattern for Bulk Abandonment
-
-```json
-{
-  "operation": "archive_tasks",
-  "task_numbers": [343, 344, 345],
-  "reason": "abandoned",
-  "session_id": "sess_1735460684_a1b2c3",
-  "delegation_depth": 1,
-  "delegation_path": ["orchestrator", "task", "status-sync-manager"]
-}
-```
-
-**Return Format**:
-```json
-{
-  "status": "completed",
-  "summary": "Abandoned 3 tasks to archive",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1735460684_a1b2c3",
-    "task_numbers": [343, 344, 345],
-    "success_count": 3,
-    "files_updated": ["TODO.md", "state.json", "archive/state.json"]
-  },
-  "errors": []
-}
-```
-
-### Rollback Mechanism for Task Division
-
-When dividing a task into subtasks, rollback is required if any subtask creation fails:
-
-**Delegation Pattern**:
-```json
-{
-  "operation": "divide_task",
-  "task_number": 326,
-  "optional_prompt": "Focus on UI, backend, tests",
-  "session_id": "sess_1735460684_a1b2c3",
-  "delegation_depth": 1,
-  "delegation_path": ["orchestrator", "task", "task-divider"]
-}
-```
-
-**Rollback on Failure**:
-1. Track created subtasks during loop
-2. If any subtask creation fails:
-   - Delete all created subtasks from TODO.md and state.json
-   - Restore next_project_number to original value
-   - Return error with rollback details
-3. If all subtasks created successfully:
-   - Update parent task dependencies
-   - Return success
-
-**Return Format (Success)**:
-```json
-{
-  "status": "completed",
-  "summary": "Divided task 326 into 3 subtasks",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1735460684_a1b2c3",
-    "parent_task": 326,
-    "subtasks": [327, 328, 329],
-    "files_updated": ["TODO.md", "state.json"]
-  },
-  "errors": []
-}
-```
-
-**Return Format (Failure with Rollback)**:
-```json
-{
-  "status": "failed",
-  "summary": "Failed to divide task 326, rolled back 2 created subtasks",
-  "artifacts": [],
-  "metadata": {
-    "session_id": "sess_1735460684_a1b2c3",
-    "parent_task": 326,
-    "subtasks_created": [327, 328],
-    "subtasks_rolled_back": [327, 328]
-  },
-  "errors": [
-    {
-      "type": "execution",
-      "message": "Failed to create subtask 3: validation error",
-      "code": "SUBTASK_CREATION_FAILED",
-      "recoverable": true,
-      "recommendation": "Fix validation error and retry division"
-    }
-  ]
-}
-```
-
-### Status-Sync-Manager New Operations
-
-The status-sync-manager subagent now supports these additional operations:
-
-| Operation | Description | Bulk Support |
-|-----------|-------------|--------------|
-| `create_task` | Create single task entry | No |
-| `update_status` | Update task status | No |
-| `update_task_metadata` | Update task metadata fields | No |
-| `archive_tasks` | Move tasks to archive/ | Yes (ranges/lists) |
-| `unarchive_tasks` | Recover tasks from archive/ | Yes (ranges/lists) |
-| `sync_tasks` | Sync TODO.md ↔ state.json with git blame | Yes (ranges/lists or "all") |
+- For each field that differs between specs/TODO.md and specs/state.json:
+  3. Log conflict resolution: "Task 343: status from specs/state.json (2026-01-07) > specs/TODO.md (2026-01-06)"
+    "files_updated": ["specs/TODO.md", "specs/state.json"]
+    "files_updated": ["specs/TODO.md", "specs/state.json", "specs/archive/state.json"]
+   - Delete all created subtasks from specs/TODO.md and specs/state.json
+    "files_updated": ["specs/TODO.md", "specs/state.json"]
+| `sync_tasks` | Sync specs/TODO.md ↔ specs/state.json with git blame | Yes (ranges/lists or "all") |
 
 **Bulk Operation Characteristics**:
 - Support range syntax: "343-345" expands to [343, 344, 345]

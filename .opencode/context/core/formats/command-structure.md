@@ -28,24 +28,107 @@ This pattern enables:
 
 ## Command File Anatomy
 
+### YAML Frontmatter Rules
+
+To ensure proper parsing and loading of command files, strictly adhere to these YAML formatting rules:
+
+1.  **No Dashes in Argument Lists**: Use a flat list of key-value pairs for arguments. Do not use dashes (`-`) to start argument definitions.
+    *   **Correct**:
+        ```yaml
+        arguments:
+          name: arg1
+          type: string
+          required: true
+          description: Description 1
+          name: arg2
+          type: boolean
+          required: false
+          description: Description 2
+        ```
+    *   **Incorrect**:
+        ```yaml
+        arguments:
+          - name: arg1
+            type: string
+            ...
+        ```
+
+2.  **No Dashes in Permission Lists**: Use a dictionary (map) format for permissions.
+    *   **Correct**:
+        ```yaml
+        permissions:
+          read:
+            "**/*.md": "allow"
+            ".opencode/**/*": "allow"
+        ```
+    *   **Incorrect**:
+        ```yaml
+        permissions:
+          read:
+            - "**/*.md": "allow"
+        ```
+
+3.  **Single String for Required Context**: The `required` field in `context_loading` must be a single string, not a list.
+    *   **Correct**: `required: "core/workflows/command-lifecycle.md"`
+    *   **Incorrect**:
+        ```yaml
+        required:
+          - "core/workflows/command-lifecycle.md"
+        ```
+
+4.  **No Dashes in Flag Descriptions**: Do not include dashes in the flag name within the description field.
+    *   **Correct**: `description: Analyze existing system (flag: analyze)`
+    *   **Incorrect**: `description: Analyze existing system (flag: --analyze)`
+
+5.  **No Colons in Descriptions**: Do not use colons (`:`) within the description string unless the string is quoted. It is safer to avoid them entirely.
+    *   **Correct**: `description: Scan files for FIX, NOTE, TODO tags`
+    *   **Incorrect**: `description: Scan files for FIX:, NOTE:, TODO: tags`
+
 ### Complete Structure
 
 ```markdown
 ---
 command: plan
 description: Create implementation plan for a task
-version: 1.0
+version: "1.0"
+mode: command
+temperature: 0.2
 arguments:
-  - name: task_number
-    type: integer
-    required: true
-    description: Task number to create plan for
-  - name: research_report
-    type: string
-    required: false
-    description: Optional research report number to integrate
+  name: task_number
+  type: integer
+  required: true
+  description: Task number to create plan for
+  name: research_report
+  type: string
+  required: false
+  description: Optional research report number to integrate
+tools:
+  read: true
+  write: true
+  edit: true
+  glob: true
+  bash: true
+  skill: true
+permissions:
+  read:
+    "**/*.md": "allow"
+    ".opencode/**/*": "allow"
+    "specs/**/*": "allow"
+  write:
+    "specs/**/*": "allow"
+  bash:
+    "git:*": "allow"
+    "jq:*": "allow"
+    "*": "deny"
+allowed_tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit, Glob
+argument_hint: TASK_NUMBER [RESEARCH_REPORT]
 delegation_depth: 1
 max_delegation_depth: 3
+context_loading:
+  strategy: lazy
+  index: ".opencode/context/index.md"
+  required:
+    - "core/workflows/command-lifecycle.md"
 ---
 
 # Command: /plan
@@ -71,7 +154,7 @@ max_delegation_depth: 3
   </step_2>
   
   <step_3>
-    Load task context from state.json:
+    Load task context from specs/state.json:
     task_status=$(jq -r ".tasks[] | select(.number == $task_number) | .status" .opencode/state.json)
     task_title=$(jq -r ".tasks[] | select(.number == $task_number) | .title" .opencode/state.json)
   </step_3>
@@ -157,7 +240,7 @@ max_delegation_depth: 3
   <argument_errors>
     - Missing task_number → "Usage: /plan <task_number> [research_report]"
     - Invalid task_number → "Task number must be a positive integer"
-    - Task not found → "Task {task_number} not found in state.json"
+    - Task not found → "Task {task_number} not found in specs/state.json"
     - Task not ready → "Task {task_number} status is {status}, expected research_complete or ready"
   </argument_errors>
   
@@ -273,7 +356,7 @@ Benefit: Clear separation, easy to test, flexible composition
    - Provide clear error messages for invalid arguments
 
 2. **Load Context**:
-   - Query state.json for task metadata
+   - Query specs/state.json for task metadata
    - Load related artifacts (plans, reports)
    - Validate preconditions
 
@@ -303,7 +386,7 @@ Benefit: Clear separation, easy to test, flexible composition
 1. **Execute Work Directly**:
    - ❌ Write implementation files directly
    - ❌ Create git commits directly
-   - ❌ Update state.json directly
+   - ❌ Update specs/state.json directly
    - ✅ Delegate to specialized subagents instead
 
 2. **Route to Other Commands**:
@@ -412,7 +495,7 @@ Benefit: Clear separation, easy to test, flexible composition
 
 <workflow_execution>
   <step_1>
-    Load items from state.json
+    Load items from specs/state.json
   </step_1>
   
   <step_2>
@@ -538,7 +621,7 @@ Benefit: Clear separation, easy to test, flexible composition
   </step_1>
   
   <step_2>
-    Load task context from state.json:
+    Load task context from specs/state.json:
     task_status=$(jq -r ".tasks[] | select(.number == $task_number) | .status" .opencode/state.json)
     
     If task not found: Return "Task {task_number} not found"
@@ -564,7 +647,7 @@ Benefit: Clear separation, easy to test, flexible composition
 <validation>
   <argument_validation>
     - task_number is positive integer
-    - task_number exists in state.json
+    - task_number exists in specs/state.json
     - task status is valid for this command
     - All required arguments provided
   </argument_validation>
@@ -745,8 +828,8 @@ Benefit: Clear separation, easy to test, flexible composition
   </step_1>
   
   <step_2>
-    Update state.json directly:
-    jq ".tasks[] | select(.number == $task_number) | .status = \"planned\"" state.json
+    Update specs/state.json directly:
+    jq ".tasks[] | select(.number == $task_number) | .status = \"planned\"" specs/state.json
   </step_2>
 </workflow_execution>
 ```
@@ -816,7 +899,7 @@ Benefit: Clear separation, easy to test, flexible composition
 
 <state_management>
   <write>
-    # Direct write to state.json
+    # Direct write to specs/state.json
     jq ".tasks[] | select(.number == $task_number) | .status = \"completed\"" .opencode/state.json > tmp.json
     mv tmp.json .opencode/state.json
   </write>
@@ -935,7 +1018,7 @@ Layer 3: Execution Subagent (Work Executor)
 4. ✅ **Commands validate** arguments and subagent returns
 5. ✅ **Commands aggregate** results from multiple subagents
 6. ✅ **Commands handle errors** and provide recovery recommendations
-7. ✅ **Commands use state.json** for fast reads, delegate writes
+7. ✅ **Commands use specs/state.json** for fast reads, delegate writes
 
 **Common Patterns**:
 - Simple delegation (one subagent)
@@ -946,7 +1029,7 @@ Layer 3: Execution Subagent (Work Executor)
 
 **Avoid**:
 - ❌ Executing work directly
-- ❌ Updating state.json directly
+- ❌ Updating specs/state.json directly
 - ❌ Skipping validation
 - ❌ Missing error handling
 
