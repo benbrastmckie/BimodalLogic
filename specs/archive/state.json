@@ -1,9 +1,57 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-20T22:08:37Z",
+  "_last_updated": "2026-01-27T05:00:00Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 688,
+      "project_name": "add_zombie_cleanup_timeout_protection_lean_skill",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-26T16:37:09Z",
+      "last_updated": "2026-01-26T16:58:41Z",
+      "completed": "2026-01-26T16:58:41Z",
+      "completion_summary": "Added zombie cleanup script and integrated into skill-lean-implementation preflight. Enhanced postflight hook with age-based deadlock detection.",
+      "archived": "2026-01-27T05:00:00Z"
+    },
+    {
+      "project_number": 682,
+      "project_name": "fix_dynamics_foundation_latex_issues",
+      "status": "completed",
+      "language": "latex",
+      "priority": "high",
+      "created": "2026-01-26T04:45:00Z",
+      "last_updated": "2026-01-26T20:01:45Z",
+      "completed": "2026-01-26T20:01:45Z",
+      "completion_summary": "Fixed 13 LaTeX formatting issues in 03-DynamicsFoundation.tex including BNF notation for WFFs, type theory predicate notation, primitive vs derived operator restructuring with new stability operator, and evolution-based world-history definitions with Containment theorem.",
+      "archived": "2026-01-27T05:00:00Z"
+    },
+    {
+      "project_number": 683,
+      "project_name": "update_context_from_dynamics_foundation_notes",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-26T04:45:00Z",
+      "last_updated": "2026-01-26T21:16:17Z",
+      "completed": "2026-01-26T21:16:17Z",
+      "completion_summary": "Updated three .claude/context documentation files with LaTeX definition formatting preference and variable naming conventions.",
+      "archived": "2026-01-27T05:00:00Z"
+    },
+    {
+      "project_number": 684,
+      "project_name": "revise_semantics_and_notation_conventions",
+      "status": "completed",
+      "language": "latex",
+      "priority": "medium",
+      "created": "2026-01-26T04:45:00Z",
+      "last_updated": "2026-01-26T23:10:41Z",
+      "completed": "2026-01-26T23:10:41Z",
+      "completion_summary": "Systematically revised dynamical semantics notation in 03-DynamicsFoundation.tex to use tau consistently for evolutions and separated syntactic sugar from primitive semantic clauses.",
+      "archived": "2026-01-27T05:00:00Z"
+    },
     {
       "project_number": 687,
       "project_name": "investigate_research_682_postflight_failure",
