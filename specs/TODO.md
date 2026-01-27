@@ -137,7 +137,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-27
-- **Research**: [research-001.md](specs/692_port_bimodal_latex_to_typst/reports/research-001.md)
+- **Research**: [research-001.md](specs/692_port_bimodal_latex_to_typst/reports/research-001.md), [research-002.md](specs/692_port_bimodal_latex_to_typst/reports/research-002.md)
 
 **Description**: Port Bimodal/latex/ to Bimodal/typst/ directory, converting the latex project to a typst project while maintaining the same formal notation and file contents while leaving Bimodal/latex/ unchanged.
 
@@ -225,7 +225,7 @@ technical_debt:
 ### 657. Prove seed consistency (temporal K distribution)
 - **Started**: 2026-01-25T20:53:16Z
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
