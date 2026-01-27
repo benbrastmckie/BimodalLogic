@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "summary": "4-phase implementation plan for 3 LaTeX formatting fixes in Constitutive Foundation document",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/690_fix_constitutive_foundation_latex_issues/plans/implementation-001.md",
+      "summary": "Implementation plan covering variable notation update, derived operators consolidation, and identity sentence definition"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1769485427_758f15",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "/plan", "skill-planner", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 1.5
+  }
+}

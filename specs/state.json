@@ -68,13 +68,13 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-27T03:17:55Z",
+      "last_updated": "2026-01-27T03:45:20Z",
       "related_tasks": [
         658
       ],
       "description": "Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyards canonical_task_rel pattern), or research alternative approaches.",
       "researching": "2026-01-25T22:22:57Z",
-      "session_id": "sess_1769483862_449e47",
+      "session_id": "sess_1769485494_e290e8",
       "researched": "2026-01-25T22:27:00Z",
       "artifacts": [
         {
@@ -749,12 +749,12 @@
     {
       "project_number": 690,
       "project_name": "fix_constitutive_foundation_latex_issues",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "high",
       "created": "2026-01-26T17:10:00Z",
-      "last_updated": "2026-01-26T19:54:43Z",
-      "session_id": "sess_1769449239_a3cef6",
+      "last_updated": "2026-01-27T03:46:09Z",
+      "session_id": "sess_1769485427_758f15",
       "dependencies": [
         689
       ],
@@ -767,8 +767,15 @@
           "type": "report",
           "path": "specs/690_fix_constitutive_foundation_latex_issues/reports/research-001.md",
           "summary": "Research report analyzing three LaTeX formatting issues with specific recommendations for variable notation, derived operator consolidation, and identity sentence definition"
+        },
+        {
+          "path": "specs/690_fix_constitutive_foundation_latex_issues/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan covering variable notation update, derived operators consolidation, and identity sentence definition"
         }
-      ]
+      ],
+      "planning": "2026-01-27T03:44:07Z",
+      "planned": "2026-01-27T03:46:09Z"
     }
   ],
   "completed_projects": [

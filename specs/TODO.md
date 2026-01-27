@@ -112,8 +112,9 @@ technical_debt:
 ---
 
 ### 690. Fix constitutive foundation LaTeX issues
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Research**: [research-001.md](specs/690_fix_constitutive_foundation_latex_issues/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/690_fix_constitutive_foundation_latex_issues/plans/implementation-001.md)
 - **Started**: 2026-01-26T19:51:02Z
 - **Effort**: 2-3 hours
 - **Priority**: High
