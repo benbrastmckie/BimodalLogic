@@ -27,12 +27,9 @@
 
 ## Definition Environment
 
-### Preferred Pattern: Unnamed Definitions with Italics
-
-Use italics (`\emph{...}`) to mark the defining term within the definition body; omit bracket names.
-
+### Basic Definition
 ```latex
-\begin{definition}\label{def:constitutive-frame}
+\begin{definition}[Constitutive Frame]
 A \emph{constitutive frame} is a structure $\frame = \langle \statespace, \parthood \rangle$ where:
 \begin{itemize}
   \item $\statespace$ is a nonempty set of states
@@ -41,16 +38,7 @@ A \emph{constitutive frame} is a structure $\frame = \langle \statespace, \parth
 \end{definition}
 ```
 
-**Rationale**:
-- The italicized term in the definition body already indicates what is being defined
-- LaTeX auto-numbering (e.g., "Definition 3.1") provides unique identification
-- Labels like `\label{def:...}` enable cross-references via `\cref{def:...}`
-- Bracket names add redundant clutter when italics already mark the defining term
-
-### Alternative Pattern (acceptable for backwards compatibility)
-
-Use named definitions when the name adds meaningful context or for backwards compatibility with existing references.
-
+### Definition with Label
 ```latex
 \begin{definition}[Core Frame]\label{def:core-frame}
 A \emph{core frame} is a structure $\frame = \langle \statespace, \parthood, \temporalorder, \taskrel \rangle$ where:
@@ -62,17 +50,9 @@ A \emph{core frame} is a structure $\frame = \langle \statespace, \parthood, \te
 \end{definition}
 ```
 
-**Use the named pattern when**:
-- The definition introduces multiple related terms
-- The bracket name provides useful context in generated lists
-- Backwards compatibility with existing references is required
-
 ### Definition with Multiple Parts
-
-When a definition introduces multiple related terms, use enumeration with italics for each:
-
 ```latex
-\begin{definition}\label{def:state-modality}
+\begin{definition}[State Modality]
 Let $\frame$ be a core frame. We define:
 \begin{enumerate}
   \item A state $s$ is \emph{possible} ($s \in \possible$) iff $\task{s}{0}{s}$

@@ -171,121 +171,68 @@ fi
 
 ---
 
-### Stage 7: Atomic State Update (Postflight)
+### Stage 7: Update Task Status (Postflight)
 
-**NEW ATOMIC PATTERN**: Use atomic postflight script to ensure both state.json AND TODO.md update together or neither (rollback on failure).
+If status is "researched", update state.json and TODO.md:
 
-**CRITICAL**: This prevents the task 690 failure mode where state.json was updated but TODO.md was not.
-
+**Update state.json**:
 ```bash
-if [ "$status" = "researched" ]; then
-    echo "Executing atomic postflight update..."
-
-    if ! .claude/scripts/atomic-postflight-research.sh \
-        "$task_number" \
-        "$artifact_path" \
-        "$artifact_summary" \
-        "$project_name"; then
-
-        echo "ERROR: Atomic postflight failed"
-        rm -f specs/.postflight-pending
-
-        # Attempt rollback from backups
-        if [ -f /tmp/state.json.backup ]; then
-            cp /tmp/state.json.backup specs/state.json
-            echo "Rolled back state.json"
-        fi
-        if [ -f /tmp/TODO.md.backup ]; then
-            cp /tmp/TODO.md.backup specs/TODO.md
-            echo "Rolled back TODO.md"
-        fi
-
-        return "Research completed but state update failed. Task status unchanged. Run /research ${task_number} to retry."
-    fi
-
-    echo "✓ Atomic state update successful"
-else
-    # On partial/failed: Keep status as "researching" for resume
-    echo "Research incomplete - status remains [RESEARCHING]"
-fi
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "researched" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    researched: $ts
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
-**What the atomic script does**:
-1. Creates backups of state.json and TODO.md
-2. Updates both files to temp locations
-3. Validates both temp files
-4. Atomically replaces both (or neither on validation failure)
-5. Returns success/failure status
+**Update TODO.md**: Use Edit tool to change status marker from `[RESEARCHING]` to `[RESEARCHED]`.
+
+**On partial/failed**: Keep status as "researching" for resume.
 
 ---
 
-### Stage 8: Validation Checkpoint (NEW)
+### Stage 8: Link Artifacts
 
-**Read-back verification** to catch silent failures (prevents task 690 scenario):
+Add artifact to state.json with summary.
+
+**IMPORTANT**: Use two-step jq pattern to avoid Issue #1132 escaping bug. See `jq-escaping-workarounds.md`.
 
 ```bash
-if [ "$status" = "researched" ]; then
-    echo "Validating postflight updates..."
+if [ -n "$artifact_path" ]; then
+    # Step 1: Filter out existing research artifacts (two-step pattern for Issue #1132)
+    jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+        [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "research")]' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
-    # Load validation library
-    source .claude/scripts/lib/validation.sh
-
-    # Validate state.json
-    if ! validate_state_json specs/state.json "$task_number" "researched" "report"; then
-        echo "CRITICAL: state.json validation failed after atomic update"
-        rm -f specs/.postflight-pending
-        return "State validation failed - manual inspection required. See specs/state.json task ${task_number}"
-    fi
-
-    # Validate TODO.md
-    if ! validate_todo_md specs/TODO.md "$task_number" "RESEARCHED" "Research"; then
-        echo "CRITICAL: TODO.md validation failed after atomic update"
-        rm -f specs/.postflight-pending
-        return "TODO.md validation failed - manual inspection required. Check specs/TODO.md task ${task_number}"
-    fi
-
-    echo "✓ Validation passed: all state updates confirmed"
+    # Step 2: Add new research artifact
+    jq --arg path "$artifact_path" \
+       --arg type "$artifact_type" \
+       --arg summary "$artifact_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).artifacts += [{"path": $path, "type": $type, "summary": $summary}]' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 fi
 ```
 
-**Validation checks**:
-- state.json: Task exists, status = "researched", artifact present
-- TODO.md: Task exists, exactly one [RESEARCHED] marker, research link present
-
-**On validation failure**: Abort workflow, report error to user, preserve state for manual inspection
+**Update TODO.md**: Add research artifact link:
+```markdown
+- **Research**: [research-{NNN}.md]({artifact_path})
+```
 
 ---
 
-### Stage 9: Conditional Git Commit
+### Stage 9: Git Commit
 
-**CHANGED**: Only commit if validation passed (prevents committing inconsistent state).
+Commit changes with session ID:
 
 ```bash
-if [ "$status" = "researched" ]; then
-    # Only reached if atomic update AND validation succeeded
-    echo "Committing changes..."
-
-    git add specs/state.json specs/TODO.md "specs/${task_number}_${project_name}/reports/"
-
-    if git commit -m "task ${task_number}: complete research
-
-${artifact_summary}
+git add -A
+git commit -m "task ${task_number}: complete research
 
 Session: ${session_id}
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"; then
-        echo "✓ Changes committed successfully"
-        commit_status="committed"
-    else
-        echo "⚠ Git commit failed (non-blocking)"
-        commit_status="commit_failed"
-    fi
-else
-    commit_status="skipped"
-fi
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
-
-**Note**: Git commit failure is non-blocking (logged but doesn't fail workflow)
 
 ---
 
@@ -303,22 +250,16 @@ rm -f "specs/${task_number}_${project_name}/.return-meta.json"
 
 ### Stage 11: Return Brief Summary
 
-Return a brief text summary (NOT JSON) with validation status. Example:
+Return a brief text summary (NOT JSON). Example:
 
 ```
 Research completed for task {N}:
 - Found {count} relevant patterns and resources
 - Identified implementation approach: {approach}
 - Created report at specs/{N}_{SLUG}/reports/research-{NNN}.md
-- Status updated to [RESEARCHED] (validated)
-- Changes committed (${commit_status})
+- Status updated to [RESEARCHED]
+- Changes committed
 ```
-
-**Validation indicators**:
-- `(validated)` - Atomic update and validation passed
-- `(commit_status: committed)` - Git commit succeeded
-- `(commit_status: commit_failed)` - Git commit failed (non-blocking)
-- `(commit_status: skipped)` - Research incomplete, commit skipped
 
 ---
 

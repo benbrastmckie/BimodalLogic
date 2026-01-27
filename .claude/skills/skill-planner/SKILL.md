@@ -178,98 +178,67 @@ fi
 
 ---
 
-### Stage 7: Atomic State Update (Postflight)
+### Stage 7: Update Task Status (Postflight)
 
-**ATOMIC PATTERN**: Use atomic postflight script (same pattern as skill-researcher).
+If status is "planned", update state.json and TODO.md:
+
+**Update state.json**:
+```bash
+jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+   --arg status "planned" \
+  '(.active_projects[] | select(.project_number == '$task_number')) |= . + {
+    status: $status,
+    last_updated: $ts,
+    planned: $ts
+  }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+**Update TODO.md**: Use Edit tool to change status marker from `[PLANNING]` to `[PLANNED]`.
+
+**On partial/failed**: Keep status as "planning" for resume.
+
+---
+
+### Stage 8: Link Artifacts
+
+Add artifact to state.json with summary.
+
+**IMPORTANT**: Use two-step jq pattern to avoid Issue #1132 escaping bug. See `jq-escaping-workarounds.md`.
 
 ```bash
-if [ "$status" = "planned" ]; then
-    echo "Executing atomic postflight update..."
+if [ -n "$artifact_path" ]; then
+    # Step 1: Filter out existing plan artifacts (two-step pattern for Issue #1132)
+    jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+        [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "plan")]' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
-    if ! .claude/scripts/atomic-postflight-plan.sh \
-        "$task_number" \
-        "$artifact_path" \
-        "$artifact_summary" \
-        "$project_name"; then
-
-        echo "ERROR: Atomic postflight failed"
-        rm -f specs/.postflight-pending
-
-        # Attempt rollback from backups
-        if [ -f /tmp/state.json.backup ]; then
-            cp /tmp/state.json.backup specs/state.json
-            echo "Rolled back state.json"
-        fi
-        if [ -f /tmp/TODO.md.backup ]; then
-            cp /tmp/TODO.md.backup specs/TODO.md
-            echo "Rolled back TODO.md"
-        fi
-
-        return "Planning completed but state update failed. Task status unchanged. Run /plan ${task_number} to retry."
-    fi
-
-    echo "✓ Atomic state update successful"
-else
-    echo "Planning incomplete - status remains [PLANNING]"
+    # Step 2: Add new plan artifact
+    jq --arg path "$artifact_path" \
+       --arg type "$artifact_type" \
+       --arg summary "$artifact_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).artifacts += [{"path": $path, "type": $type, "summary": $summary}]' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 fi
+```
+
+**Update TODO.md**: Add plan artifact link:
+```markdown
+- **Plan**: [implementation-{NNN}.md]({artifact_path})
 ```
 
 ---
 
-### Stage 8: Validation Checkpoint
+### Stage 9: Git Commit
 
-**Read-back verification** to catch silent failures:
-
-```bash
-if [ "$status" = "planned" ]; then
-    echo "Validating postflight updates..."
-
-    source .claude/scripts/lib/validation.sh
-
-    if ! validate_state_json specs/state.json "$task_number" "planned" "plan"; then
-        echo "CRITICAL: state.json validation failed"
-        rm -f specs/.postflight-pending
-        return "State validation failed - manual inspection required"
-    fi
-
-    if ! validate_todo_md specs/TODO.md "$task_number" "PLANNED" "Plan"; then
-        echo "CRITICAL: TODO.md validation failed"
-        rm -f specs/.postflight-pending
-        return "TODO.md validation failed - manual inspection required"
-    fi
-
-    echo "✓ Validation passed: all state updates confirmed"
-fi
-```
-
----
-
-### Stage 9: Conditional Git Commit
-
-**Only commit if validation passed**:
+Commit changes with session ID:
 
 ```bash
-if [ "$status" = "planned" ]; then
-    echo "Committing changes..."
-
-    git add specs/state.json specs/TODO.md "specs/${task_number}_${project_name}/plans/"
-
-    if git commit -m "task ${task_number}: create implementation plan
-
-${artifact_summary}
+git add -A
+git commit -m "task ${task_number}: create implementation plan
 
 Session: ${session_id}
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"; then
-        echo "✓ Changes committed successfully"
-        commit_status="committed"
-    else
-        echo "⚠ Git commit failed (non-blocking)"
-        commit_status="commit_failed"
-    fi
-else
-    commit_status="skipped"
-fi
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
 
 ---
@@ -288,18 +257,16 @@ rm -f "specs/${task_number}_${project_name}/.return-meta.json"
 
 ### Stage 11: Return Brief Summary
 
-Return a brief text summary (NOT JSON) with validation status. Example:
+Return a brief text summary (NOT JSON). Example:
 
 ```
 Plan created for task {N}:
 - {phase_count} phases defined, {estimated_hours} hours estimated
 - Key phases: {phase names}
 - Created plan at specs/{N}_{SLUG}/plans/implementation-{NNN}.md
-- Status updated to [PLANNED] (validated)
-- Changes committed (${commit_status})
+- Status updated to [PLANNED]
+- Changes committed
 ```
-
-**Validation indicators**: Same as skill-researcher (validated, commit_status)
 
 ---
 

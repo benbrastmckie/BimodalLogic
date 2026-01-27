@@ -393,31 +393,13 @@ theorem weakening (c1 c2 : Context) (φ : Formula) : ... := by sorry
 
 ```lean
 -- Good: Standard semantic variable names
-theorem soundness (F : TaskFrame T) (M : TaskModel F) (τ : WorldHistory F)
-    (t : T) (ht : t ∈ τ.domain) (φ : Formula) :
+theorem soundness (F : TaskFrame T) (M : TaskModel F) (τ : WorldHistory F) 
+    (t : T) (ht : t ∈ τ.domain) (φ : Formula) : 
   ⊢ φ → truth_at M τ t ht φ := by sorry
 
 -- Avoid: Non-standard semantic names
 theorem soundness (frame : TaskFrame T) (model : TaskModel frame) (hist : WorldHistory frame)
     (time : T) (h : time ∈ hist.domain) (form : Formula) : ... := by sorry
-```
-
-### Time Variables vs First-Order Variables
-
-**LaTeX Convention**: In LaTeX semantics, reserve `x, y, z` for metalanguage time parameters (elements of temporal order `D`). Use `v, w` or indexed `v_1, v_2, v_3` for first-order object variables in quantifiers and lambdas.
-
-**Lean Convention**: For time parameters, prefer descriptive names like `t`, `s`, or `time` rather than `x, y, z`. For first-order variables, use `v`, `w`, or descriptive names.
-
-**Cross-reference**: See `.claude/context/project/latex/standards/notation-conventions.md` for detailed variable naming conventions in LaTeX semantics.
-
-```lean
--- Good: Descriptive time parameter
-theorem truth_at_time (M : Model) (τ : WorldHistory) (t : T) (φ : Formula) :
-  truth_at M τ t φ → ...
-
--- Good: First-order variable
-theorem quantifier_semantics (M : Model) (τ : WorldHistory) (t : T) (v : State) :
-  ...
 ```
 
 ---
