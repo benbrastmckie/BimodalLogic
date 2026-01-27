@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "summary": "The issue is a known Claude Code platform bug, not a configuration problem. Custom subagents cannot access project-scoped MCP servers - they hallucinate results instead. The workaround is to migrate lean-lsp to user scope.",
+  "artifacts": [
+    {
+      "path": "specs/691_improve_lean_lsp_mcp_agent_integration/reports/research-001.md",
+      "type": "report",
+      "summary": "Research report documenting root cause (Claude Code bugs #13898, #14496), workarounds (user-scope migration, simple prompts), and recommendations"
+    }
+  ],
+  "next_steps": "Run /plan 691 to create implementation plan for workarounds",
+  "metadata": {
+    "session_id": "sess_1769484206_cc564f",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 2700,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5,
+    "key_issues": ["#13898", "#14496", "#13605", "#13254"],
+    "primary_recommendation": "migrate_to_user_scope"
+  }
+}

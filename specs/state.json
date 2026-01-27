@@ -8,12 +8,22 @@
     {
       "project_number": 691,
       "project_name": "improve_lean_lsp_mcp_agent_integration",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-27T03:22:46Z",
-      "last_updated": "2026-01-27T03:22:46Z",
-      "description": "Investigate and fix lean-lsp-mcp integration issues where agents do not receive or continue with tokens returned by the MCP server. Study current integration patterns and compare against best practices for MCP servers with Claude Code 2026 conventions to design systematic improvements that avoid needless complexity but enhance performance."
+      "last_updated": "2026-01-27T03:26:44Z",
+      "description": "Investigate and fix lean-lsp-mcp integration issues where agents do not receive or continue with tokens returned by the MCP server. Study current integration patterns and compare against best practices for MCP servers with Claude Code 2026 conventions to design systematic improvements that avoid needless complexity but enhance performance.",
+      "session_id": "sess_1769484206_cc564f",
+      "researching": "2026-01-27T03:23:38Z",
+      "researched": "2026-01-27T03:26:44Z",
+      "artifacts": [
+        {
+          "path": "specs/691_improve_lean_lsp_mcp_agent_integration/reports/research-001.md",
+          "type": "report",
+          "summary": "Research report documenting root cause (Claude Code bugs #13898, #14496), workarounds (user-scope migration, simple prompts), and recommendations"
+        }
+      ]
     },
     {
       "project_number": 686,
