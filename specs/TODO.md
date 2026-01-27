@@ -140,13 +140,14 @@ technical_debt:
 ---
 
 ### 689. Update context from constitutive foundation notes
-- **Effort**: 1 hour
-- **Status**: [PLANNING]
+- **Effort**: 1.5 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-26
 - **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex (1 NOTE: tag)
 - **Research**: [research-001.md](specs/689_update_context_from_constitutive_foundation_notes/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/689_update_context_from_constitutive_foundation_notes/plans/implementation-001.md)
 
 **Description**: Update .claude/context/ files based on NOTE: tag from 02-ConstitutiveFoundation.tex line 21: Update variable naming convention documentation to reserve x, y, z for metalanguage durations and use v_1, v_2, v_3, ... for object language variables in Logos system.
 
