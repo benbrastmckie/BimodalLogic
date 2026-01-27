@@ -55,7 +55,7 @@ technical_debt:
 
 ### 398. Port causal semantics to recursive-semantics.md
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: markdown
 - **Parent**: Task 394
@@ -68,7 +68,7 @@ technical_debt:
 
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [NOT STARTED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 394
@@ -129,7 +129,7 @@ technical_debt:
 
 ### 685. Derive world-history and Barcan theorems
 - **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-26
@@ -242,7 +242,7 @@ technical_debt:
 
 ### 660. Prove parametric completeness theorems
 - **Effort**: 10-15 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -269,7 +269,7 @@ technical_debt:
 ---
 
 ### 631. Prove evalFormula_implies_satisfiable bridging lemma
-- **Status**: [IMPLEMENTING]
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -282,7 +282,7 @@ technical_debt:
 ---
 
 ### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
@@ -309,7 +309,7 @@ technical_debt:
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Researched**: 2026-01-12
 - **Priority**: Medium
 - **Language**: general
@@ -336,7 +336,7 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -379,7 +379,7 @@ technical_debt:
 ---
 
 ### 624. Prove tableau_complete
-- **Status**: [IMPLEMENTING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
@@ -390,7 +390,7 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [IMPLEMENTING]
+- **Status**: [NOT STARTED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
@@ -415,7 +415,7 @@ technical_debt:
 ---
 
 ### 668. Create specs path migration script
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Session**: meta-session-1768239500
@@ -428,7 +428,7 @@ technical_debt:
 ---
 
 ### 669. Test task creation system
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: meta
 - **Session**: test-session-1768239500
