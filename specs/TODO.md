@@ -132,12 +132,13 @@ technical_debt:
 ## Medium Priority
 
 ### 692. Port Bimodal/latex/ to Bimodal/typst/
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 4 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-27
 - **Research**: [research-001.md](specs/692_port_bimodal_latex_to_typst/reports/research-001.md), [research-002.md](specs/692_port_bimodal_latex_to_typst/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/692_port_bimodal_latex_to_typst/plans/implementation-001.md)
 
 **Description**: Port Bimodal/latex/ to Bimodal/typst/ directory, converting the latex project to a typst project while maintaining the same formal notation and file contents while leaving Bimodal/latex/ unchanged.
 

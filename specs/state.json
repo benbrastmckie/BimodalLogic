@@ -8,12 +8,12 @@
     {
       "project_number": 692,
       "project_name": "port_bimodal_latex_to_typst",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-27T22:59:10Z",
-      "last_updated": "2026-01-27T23:32:35Z",
-      "session_id": "sess_1769556479_971b55",
+      "last_updated": "2026-01-27T23:39:53Z",
+      "session_id": "sess_1769557051_a0b44c",
       "researched": "2026-01-27T23:32:35Z",
       "artifacts": [
         {
@@ -25,8 +25,14 @@
           "path": "specs/692_port_bimodal_latex_to_typst/reports/research-002.md",
           "type": "research",
           "summary": "Research report on Typst advantages over LaTeX, best practices for project structure, and maintainability recommendations"
+        },
+        {
+          "path": "specs/692_port_bimodal_latex_to_typst/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for porting Bimodal/latex/ to Typst format"
         }
-      ]
+      ],
+      "planned": "2026-01-27T23:39:53Z"
     },
     {
       "project_number": 691,
@@ -161,11 +167,11 @@
     {
       "project_number": 657,
       "project_name": "prove_seed_consistency_temporal_k_distribution",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-27T23:36:08Z",
+      "last_updated": "2026-01-27T23:39:55Z",
       "related_tasks": [
         654
       ],
@@ -225,7 +231,7 @@
         }
       ],
       "planning": "2026-01-26T06:22:01Z",
-      "planned": "2026-01-26T06:24:44Z",
+      "planned": "2026-01-27T23:39:55Z",
       "started": "2026-01-26T06:25:38Z",
       "resume_phase": 2,
       "blocked_reason": "TM logic lacks temporal T axiom - cannot derive bot from G bot syntactically",
