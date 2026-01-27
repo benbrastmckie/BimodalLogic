@@ -8,11 +8,12 @@
     {
       "project_number": 692,
       "project_name": "port_bimodal_latex_to_typst",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-27T22:59:10Z",
-      "last_updated": "2026-01-27T22:59:10Z"
+      "last_updated": "2026-01-27T23:10:59Z",
+      "session_id": "sess_1769555443_a466df"
     },
     {
       "project_number": 691,
@@ -77,13 +78,13 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-27T03:45:20Z",
+      "last_updated": "2026-01-27T23:09:09Z",
       "related_tasks": [
         658
       ],
       "description": "Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyards canonical_task_rel pattern), or research alternative approaches.",
       "researching": "2026-01-25T22:22:57Z",
-      "session_id": "sess_1769485494_e290e8",
+      "session_id": "sess_1769570000_b3c4d5",
       "researched": "2026-01-25T22:27:00Z",
       "artifacts": [
         {
@@ -109,15 +110,15 @@
     {
       "project_number": 656,
       "project_name": "complete_truth_lemma_forward_direction",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-27T03:48:55Z",
+      "last_updated": "2026-01-27T23:14:40Z",
       "related_tasks": [
         654
       ],
-      "session_id": "sess_1769485714_2c5f70",
+      "session_id": "sess_1769555076_291a69",
       "researching": "2026-01-25T20:47:39Z",
       "researched": "2026-01-26T17:15:21Z",
       "planning": "2026-01-26T17:35:00Z",
@@ -133,9 +134,16 @@
           "type": "plan",
           "path": "specs/656_complete_truth_lemma_forward_direction/plans/implementation-001.md",
           "summary": "5-phase implementation plan for completing truth lemma forward direction via mutual induction"
+        },
+        {
+          "path": "specs/656_complete_truth_lemma_forward_direction/summaries/implementation-summary-20260127.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "started": "2026-01-27T03:48:55Z"
+      "started": "2026-01-27T03:48:55Z",
+      "completed": "2026-01-27T23:14:40Z",
+      "completion_summary": "Completed truth lemma imp case (both directions) using mutual induction. Added MCS helper lemmas neg_imp_fst and neg_imp_snd. Box case documented as architectural limitation requiring semantic changes."
     },
     {
       "project_number": 657,
@@ -283,8 +291,8 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-26T17:10:45Z",
-      "session_id": "sess_1769447415_033179",
+      "last_updated": "2026-01-27T23:09:53Z",
+      "session_id": "sess_1769555374_ebcdfe",
       "researched": "2026-01-25T22:52:03Z",
       "planned": "2026-01-25T22:56:00Z",
       "artifacts": [

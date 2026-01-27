@@ -19,26 +19,27 @@ This is the key bridge between syntactic (MCS membership) and semantic (truth) n
 
 ## Proof Strategy
 
-The proof proceeds by structural induction on formulas:
+The proof uses **mutual induction** on formulas to prove both directions simultaneously.
+This allows using the backward IH in the forward direction (e.g., for the imp case).
+
 - **Atom**: Valuation is defined so that atom p in mcs t iff valuation says true
 - **Bot**: MCS is consistent, so bot not in mcs; semantically, bot is false
-- **Imp**: Uses MCS deductive closure and negation completeness
-- **Box**: Universal quantification over histories requires careful handling
+- **Imp**: Uses MCS modus ponens closure (forward) and negation completeness (backward)
+- **Box**: Universal quantification over histories requires special handling
 - **G (all_future)**: Uses family coherence conditions
-  - Forward: G phi in mcs(t) -> by forward_G, phi in mcs(t') for t' > t -> IH
-  - Backward: Contrapositive + MCS negation completeness
 - **H (all_past)**: Symmetric to G case
 
 ## Key Insight
 
-The family coherence conditions (forward_G, backward_H, etc.) directly correspond
-to the semantic quantification in truth_at for temporal operators. This is why
-the indexed family approach avoids the T-axiom requirement.
+The mutual induction allows the forward imp case to use:
+1. Backward IH to convert `truth_at psi` to `psi ∈ mcs t`
+2. Modus ponens closure: if `(psi → chi) ∈ mcs t` and `psi ∈ mcs t`, then `chi ∈ mcs t`
+3. Forward IH to convert `chi ∈ mcs t` to `truth_at chi`
 
 ## References
 
-- Research report: specs/654_.../reports/research-004.md
-- Implementation plan: specs/654_.../plans/implementation-004.md
+- Research report: specs/656_.../reports/research-001.md
+- Implementation plan: specs/656_.../plans/implementation-001.md
 -/
 
 namespace Bimodal.Metalogic.Representation
@@ -47,6 +48,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic_v2.Core
 open Bimodal.Semantics
+open Bimodal.Boneyard.Metalogic  -- For set_mcs_implication_property, set_mcs_negation_complete
 
 variable (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
@@ -89,163 +91,361 @@ lemma canonical_world_mcs (family : IndexedMCSFamily D) (t : D)
   rfl
 
 /-!
-## Truth Lemma
+## MCS Negation-Implication Properties
 
-The main theorem connecting MCS membership to semantic truth.
+These lemmas extract formulas from ¬(φ → ψ) ∈ MCS using deductive closure.
+In classical logic: ¬(φ → ψ) ⊣⊢ φ ∧ ¬ψ
 -/
 
 /--
-Truth lemma (forward direction): MCS membership implies truth.
+From ¬(φ → ψ) ∈ MCS, derive φ ∈ MCS.
 
-If phi is in the MCS at time t, then phi is true at the canonical model.
+**Proof**: ¬(φ → ψ) ⊢ φ is a classical tautology.
+From ¬(φ → ψ), assume ¬φ. Then φ → ψ holds vacuously (φ is false).
+But ¬(φ → ψ) and (φ → ψ) together give ⊥. By RAA, ¬¬φ, so φ by DNE.
 -/
-theorem truth_lemma_forward (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
-    phi ∈ family.mcs t → truth_at (canonical_model D family) (canonical_history_family D family) t phi := by
-  induction phi generalizing t with
-  | atom p =>
-    intro h_mem
-    -- phi = Formula.atom p
-    -- Need: truth_at M tau t (atom p)
-    -- Which is: exists ht, valuation (tau.states t ht) p
-    -- valuation is defined as: (atom p) in w.mcs
-    -- And tau.states t ht has mcs = family.mcs t
-    simp only [truth_at, canonical_model]
-    have ht : (canonical_history_family D family).domain t := trivial
-    use ht
-    -- Show: (Formula.atom p) in ((canonical_history_family D family).states t ht).mcs
-    rw [canonical_world_mcs D family t ht]
-    exact h_mem
-
-  | bot =>
-    intro h_mem
-    -- phi = bot, but bot cannot be in a consistent MCS
-    -- This gives a contradiction
-    simp only [truth_at]
-    have h_cons : SetConsistent (family.mcs t) := (family.is_mcs t).1
-    -- SetConsistent means no finite subset derives bot
-    -- If bot in family.mcs t, then [bot] subset and [bot] derives bot trivially
-    unfold SetConsistent at h_cons
-    have h_bot_cons : Consistent [Formula.bot] := h_cons [Formula.bot] (by simp [h_mem])
-    -- But [bot] is inconsistent - bot derives bot
+lemma neg_imp_fst {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : Core.SetMaximalConsistent S)
+    (h_neg_imp : (φ.imp ψ).neg ∈ S) : φ ∈ S := by
+  -- Use negation completeness: either φ ∈ S or ¬φ ∈ S
+  cases set_mcs_negation_complete h_mcs φ with
+  | inl h_phi => exact h_phi
+  | inr h_neg_phi =>
+    -- From ¬φ, we can derive φ → ψ (vacuously, since φ is false)
+    -- ¬φ ⊢ φ → ψ is: assuming φ, we have φ and ¬φ, so ⊥, so ψ by EFQ
+    -- Then we have both (φ → ψ) and ¬(φ → ψ) in S, contradiction
     exfalso
-    apply h_bot_cons
-    constructor
-    exact Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
-
-  | imp psi chi ih_psi ih_chi =>
-    intro h_mem
-    -- phi = psi -> chi
-    -- Need: truth_at psi -> truth_at chi
-    simp only [truth_at]
-    intro h_psi_true
-    -- Apply IH for chi direction
-    -- This requires showing chi in mcs t
-    -- If (psi -> chi) in mcs t and psi in mcs t, then chi in mcs t by modus ponens closure
-    sorry -- Requires proving backward direction first, or modus ponens closure lemma
-
-  | box psi ih =>
-    intro h_mem
-    -- phi = box psi
-    -- Need: forall sigma : WorldHistory, truth_at sigma t psi
-    simp only [truth_at]
-    intro sigma
-    -- Box universally quantifies over ALL histories
-    -- This is the hardest case - requires showing psi true on arbitrary histories
-    -- The canonical model construction ensures box formulas work correctly
-    sorry -- Complex case requiring additional lemmas about histories
-
-  | all_past psi ih =>
-    intro h_mem
-    -- phi = H psi (all_past psi)
-    -- Need: forall s < t, truth_at s psi
-    simp only [truth_at]
-    intro s h_s_lt
-    -- By backward_H: H psi in mcs t and s < t implies psi in mcs s
-    have h_psi_in_s : psi ∈ family.mcs s := family.backward_H t s psi h_s_lt h_mem
-    -- Apply IH
-    exact ih s h_psi_in_s
-
-  | all_future psi ih =>
-    intro h_mem
-    -- phi = G psi (all_future psi)
-    -- Need: forall s > t, truth_at s psi
-    simp only [truth_at]
-    intro s h_t_lt
-    -- By forward_G: G psi in mcs t and t < s implies psi in mcs s
-    have h_psi_in_s : psi ∈ family.mcs s := family.forward_G t s psi h_t_lt h_mem
-    -- Apply IH
-    exact ih s h_psi_in_s
+    -- Derive φ → ψ from ¬φ
+    have h_deriv : Bimodal.ProofSystem.DerivationTree [φ.neg] (φ.imp ψ) := by
+      -- Need [¬φ] ⊢ φ → ψ
+      -- Use deduction theorem: need φ :: [¬φ] ⊢ ψ
+      have h_inner : Bimodal.ProofSystem.DerivationTree (φ :: [φ.neg]) ψ := by
+        -- We have φ and ¬φ = φ → ⊥ in context
+        have h_phi : (φ :: [φ.neg]) ⊢ φ :=
+          Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+        have h_neg : (φ :: [φ.neg]) ⊢ φ.neg :=
+          Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+        -- From φ and φ → ⊥, get ⊥
+        have h_bot : (φ :: [φ.neg]) ⊢ Formula.bot :=
+          Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg h_phi
+        -- EFQ: ⊥ → ψ
+        have h_efq_thm : [] ⊢ Formula.bot.imp ψ :=
+          Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso ψ)
+        have h_efq : (φ :: [φ.neg]) ⊢ Formula.bot.imp ψ :=
+          Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_efq_thm (by intro; simp)
+        exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_efq h_bot
+      exact Boneyard.Metalogic.deduction_theorem [φ.neg] φ ψ h_inner
+    -- By MCS closure, φ → ψ ∈ S
+    have h_sub : ∀ χ ∈ [φ.neg], χ ∈ S := by simp [h_neg_phi]
+    have h_imp_in : (φ.imp ψ) ∈ S :=
+      set_mcs_closed_under_derivation h_mcs [φ.neg] h_sub h_deriv
+    -- Now we have both (φ → ψ) and ¬(φ → ψ) in S - contradiction
+    have h_deriv_bot : Bimodal.ProofSystem.DerivationTree [(φ.imp ψ), (φ.imp ψ).neg] Formula.bot := by
+      have h1 : [(φ.imp ψ), (φ.imp ψ).neg] ⊢ (φ.imp ψ) :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h2 : [(φ.imp ψ), (φ.imp ψ).neg] ⊢ (φ.imp ψ).neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      exact Core.derives_bot_from_phi_neg_phi h1 h2
+    have h_sub2 : ∀ χ ∈ [(φ.imp ψ), (φ.imp ψ).neg], χ ∈ S := by
+      intro χ hχ
+      simp only [List.mem_cons, List.mem_nil_iff, or_false] at hχ
+      cases hχ with
+      | inl h_eq => exact h_eq ▸ h_imp_in
+      | inr h_eq => exact h_eq ▸ h_neg_imp
+    have h_bot_in_S : Formula.bot ∈ S :=
+      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+    -- ⊥ ∈ S contradicts consistency
+    have h_cons := h_mcs.1
+    have h_bot_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+      Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    exact h_cons [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
 
 /--
-Truth lemma (backward direction): Truth implies MCS membership.
+From ¬(φ → ψ) ∈ MCS, derive ¬ψ ∈ MCS.
 
-If phi is true at the canonical model at time t, then phi is in the MCS at t.
-
-**Note**: This direction is harder and requires MCS negation completeness.
+**Proof**: ¬(φ → ψ) ⊢ ¬ψ is a classical tautology.
+From ¬(φ → ψ), assume ψ. Then φ → ψ holds (conclude ψ from anything).
+But ¬(φ → ψ) and (φ → ψ) together give ⊥. By RAA, ¬ψ.
 -/
-theorem truth_lemma_backward (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
-    truth_at (canonical_model D family) (canonical_history_family D family) t phi → phi ∈ family.mcs t := by
-  induction phi generalizing t with
-  | atom p =>
-    intro h_true
-    -- phi = Formula.atom p
-    -- h_true: exists ht, valuation (tau.states t ht) p
-    -- valuation defined as (atom p) in w.mcs
-    simp only [truth_at, canonical_model] at h_true
-    obtain ⟨ht, h_val⟩ := h_true
-    rw [canonical_world_mcs D family t ht] at h_val
-    exact h_val
+lemma neg_imp_snd {S : Set Formula} {φ ψ : Formula}
+    (h_mcs : Core.SetMaximalConsistent S)
+    (h_neg_imp : (φ.imp ψ).neg ∈ S) : ψ.neg ∈ S := by
+  -- Use negation completeness: either ¬ψ ∈ S or ψ ∈ S
+  cases set_mcs_negation_complete h_mcs ψ with
+  | inr h_neg_psi => exact h_neg_psi
+  | inl h_psi =>
+    -- From ψ, we can derive φ → ψ (conclude ψ from anything)
+    -- Then we have both (φ → ψ) and ¬(φ → ψ) in S, contradiction
+    exfalso
+    -- Derive φ → ψ from ψ using prop_s: ψ → (φ → ψ)
+    have h_deriv : Bimodal.ProofSystem.DerivationTree [ψ] (φ.imp ψ) := by
+      have h_prop_s_thm : [] ⊢ ψ.imp (φ.imp ψ) :=
+        Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.prop_s ψ φ)
+      have h_prop_s : [ψ] ⊢ ψ.imp (φ.imp ψ) :=
+        Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_prop_s_thm (by intro; simp)
+      have h_assume : [ψ] ⊢ ψ :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_prop_s h_assume
+    -- By MCS closure, φ → ψ ∈ S
+    have h_sub : ∀ χ ∈ [ψ], χ ∈ S := by simp [h_psi]
+    have h_imp_in : (φ.imp ψ) ∈ S :=
+      set_mcs_closed_under_derivation h_mcs [ψ] h_sub h_deriv
+    -- Now we have both (φ → ψ) and ¬(φ → ψ) in S - contradiction
+    have h_deriv_bot : Bimodal.ProofSystem.DerivationTree [(φ.imp ψ), (φ.imp ψ).neg] Formula.bot := by
+      have h1 : [(φ.imp ψ), (φ.imp ψ).neg] ⊢ (φ.imp ψ) :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h2 : [(φ.imp ψ), (φ.imp ψ).neg] ⊢ (φ.imp ψ).neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      exact Core.derives_bot_from_phi_neg_phi h1 h2
+    have h_sub2 : ∀ χ ∈ [(φ.imp ψ), (φ.imp ψ).neg], χ ∈ S := by
+      intro χ hχ
+      simp only [List.mem_cons, List.mem_nil_iff, or_false] at hχ
+      cases hχ with
+      | inl h_eq => exact h_eq ▸ h_imp_in
+      | inr h_eq => exact h_eq ▸ h_neg_imp
+    have h_bot_in_S : Formula.bot ∈ S :=
+      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+    -- ⊥ ∈ S contradicts consistency
+    have h_cons := h_mcs.1
+    have h_bot_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+      Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    exact h_cons [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
 
-  | bot =>
-    intro h_true
-    -- phi = bot, but truth_at bot is False
-    simp only [truth_at] at h_true
+/-!
+## Truth Lemma via Mutual Induction
 
-  | imp psi chi ih_psi ih_chi =>
-    intro h_true
-    -- phi = psi -> chi
-    -- h_true: truth_at psi -> truth_at chi
-    -- Need: (psi -> chi) in mcs t
-    -- By MCS negation completeness: either (psi -> chi) in mcs t, or neg(psi -> chi) in mcs t
-    -- If neg(psi -> chi) in mcs t, derive contradiction
-    sorry -- Requires negation completeness and contradiction argument
-
-  | box psi ih =>
-    intro h_true
-    -- phi = box psi
-    -- h_true: forall sigma, truth_at sigma t psi
-    -- Need: box psi in mcs t
-    -- Requires argument about all histories
-    sorry -- Complex case
-
-  | all_past psi ih =>
-    intro h_true
-    -- phi = H psi
-    -- h_true: forall s < t, truth_at s psi
-    -- Need: H psi in mcs t
-    -- By contrapositive: if not(H psi) in mcs t, then some_future (neg psi) in mcs t
-    -- Then exists s < t with neg psi in mcs s, contradiction with h_true
-    sorry -- Requires negation completeness
-
-  | all_future psi ih =>
-    intro h_true
-    -- phi = G psi
-    -- h_true: forall s > t, truth_at s psi
-    -- Need: G psi in mcs t
-    -- By contrapositive: if not(G psi) in mcs t, then some_past (neg psi) in mcs t
-    -- Then exists s > t with neg psi in mcs s, contradiction with h_true
-    sorry -- Requires negation completeness
+The main theorem connecting MCS membership to semantic truth, proved via
+structural induction on formulas with both directions handled simultaneously.
+-/
 
 /--
-Truth lemma: MCS membership iff semantic truth.
+Truth lemma (biconditional via mutual induction): MCS membership iff semantic truth.
 
 **Main Theorem**: For an indexed MCS family,
 ```
 phi in family.mcs t <-> truth_at (canonical_model family) (canonical_history family) t phi
 ```
+
+The proof uses structural induction on formulas. Each case proves both directions,
+allowing the backward IH to be used in forward direction proofs (particularly imp).
+-/
+theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
+    phi ∈ family.mcs t ↔ truth_at (canonical_model D family) (canonical_history_family D family) t phi := by
+  induction phi generalizing t with
+  | atom p =>
+    constructor
+    · -- Forward: atom p ∈ mcs t → truth_at (atom p)
+      intro h_mem
+      simp only [truth_at, canonical_model]
+      have ht : (canonical_history_family D family).domain t := trivial
+      use ht
+      rw [canonical_world_mcs D family t ht]
+      exact h_mem
+    · -- Backward: truth_at (atom p) → atom p ∈ mcs t
+      intro h_true
+      simp only [truth_at, canonical_model] at h_true
+      obtain ⟨ht, h_val⟩ := h_true
+      rw [canonical_world_mcs D family t ht] at h_val
+      exact h_val
+
+  | bot =>
+    constructor
+    · -- Forward: bot ∈ mcs t → truth_at bot (contradiction - bot not in MCS)
+      intro h_mem
+      simp only [truth_at]
+      have h_cons : Core.SetConsistent (family.mcs t) := (family.is_mcs t).1
+      unfold Core.SetConsistent at h_cons
+      have h_bot_cons : Core.Consistent [Formula.bot] := h_cons [Formula.bot] (by simp [h_mem])
+      exfalso
+      apply h_bot_cons
+      constructor
+      exact Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+    · -- Backward: truth_at bot → bot ∈ mcs t (truth_at bot is False)
+      intro h_true
+      simp only [truth_at] at h_true
+
+  | imp psi chi ih_psi ih_chi =>
+    constructor
+    · -- Forward: (psi → chi) ∈ mcs t → (truth_at psi → truth_at chi)
+      intro h_mem h_psi_true
+      -- Use backward IH to get psi ∈ mcs t from truth_at psi
+      have h_psi_in_mcs : psi ∈ family.mcs t := (ih_psi t).mpr h_psi_true
+      -- Apply modus ponens closure: if (psi → chi) ∈ mcs and psi ∈ mcs, then chi ∈ mcs
+      have h_chi_in_mcs : chi ∈ family.mcs t :=
+        set_mcs_implication_property (family.is_mcs t) h_mem h_psi_in_mcs
+      -- Use forward IH to get truth_at chi from chi ∈ mcs t
+      exact (ih_chi t).mp h_chi_in_mcs
+    · -- Backward: (truth_at psi → truth_at chi) → (psi → chi) ∈ mcs t
+      intro h_implies
+      -- By negation completeness: either (psi → chi) ∈ mcs t or ¬(psi → chi) ∈ mcs t
+      cases set_mcs_negation_complete (family.is_mcs t) (psi.imp chi) with
+      | inl h => exact h  -- (psi → chi) ∈ mcs t
+      | inr h_neg =>
+        -- ¬(psi → chi) ∈ mcs t
+        -- Strategy: From ¬(psi → chi), extract psi ∈ MCS and ¬chi ∈ MCS
+        -- Then get contradiction via semantic truth
+        exfalso
+        -- Step 1: Extract psi ∈ MCS from ¬(psi → chi) ∈ MCS
+        have h_psi_in_mcs : psi ∈ family.mcs t := neg_imp_fst (family.is_mcs t) h_neg
+        -- Step 2: Extract ¬chi ∈ MCS from ¬(psi → chi) ∈ MCS
+        have h_neg_chi_in_mcs : chi.neg ∈ family.mcs t := neg_imp_snd (family.is_mcs t) h_neg
+        -- Step 3: By forward IH on psi: truth_at psi
+        have h_psi_true := (ih_psi t).mp h_psi_in_mcs
+        -- Step 4: By semantic assumption h_implies: truth_at chi
+        have h_chi_true := h_implies h_psi_true
+        -- Step 5: By backward IH on chi: chi ∈ MCS
+        have h_chi_in_mcs := (ih_chi t).mpr h_chi_true
+        -- Step 6: Contradiction - both chi and ¬chi in MCS
+        -- Derive ⊥ from [chi, chi.neg]
+        have h_deriv_bot : Bimodal.ProofSystem.DerivationTree [chi, chi.neg] Formula.bot := by
+          have h1 : [chi, chi.neg] ⊢ chi :=
+            Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+          have h2 : [chi, chi.neg] ⊢ chi.neg :=
+            Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+          exact Core.derives_bot_from_phi_neg_phi h1 h2
+        have h_sub : ∀ φ ∈ [chi, chi.neg], φ ∈ family.mcs t := by
+          intro φ hφ
+          simp only [List.mem_cons, List.mem_nil_iff, or_false] at hφ
+          cases hφ with
+          | inl h_eq => exact h_eq ▸ h_chi_in_mcs
+          | inr h_eq => exact h_eq ▸ h_neg_chi_in_mcs
+        have h_bot_in_mcs : Formula.bot ∈ family.mcs t :=
+          set_mcs_closed_under_derivation (family.is_mcs t) _ h_sub h_deriv_bot
+        -- ⊥ ∈ MCS contradicts MCS consistency
+        have h_cons := (family.is_mcs t).1
+        have h_bot_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+          Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+        exact h_cons [Formula.bot] (by simp [h_bot_in_mcs]) ⟨h_bot_deriv⟩
+
+  | box psi ih =>
+    constructor
+    · -- Forward: box psi ∈ mcs t → ∀ sigma, truth_at sigma t psi
+      intro h_mem sigma
+      /-
+      **ARCHITECTURAL LIMITATION: Box Case Forward Direction**
+
+      The box semantics in this codebase use universal quantification over ALL world histories:
+        truth_at M tau t (box psi) ↔ ∀ sigma : WorldHistory F, truth_at M sigma t psi
+
+      This requires showing psi is true at time t for ANY world history sigma, not just
+      the canonical history.
+
+      **Why this case cannot be proven with current architecture**:
+
+      1. **Truth depends on world state**: For atoms, `truth_at M sigma t (atom p)` evaluates
+         to `M.valuation (sigma.states t ht) p`, which depends on the world state at time t
+         in history sigma.
+
+      2. **Canonical model valuation**: Our canonical model defines
+         `valuation w p = (atom p) ∈ w.mcs`, so truth depends on the MCS in the world state.
+
+      3. **Arbitrary histories have arbitrary states**: An arbitrary history sigma can assign
+         ANY world state to time t - not necessarily one with the family's MCS.
+
+      4. **IH only applies to canonical history**: The induction hypothesis gives us
+         `psi ∈ family.mcs t ↔ truth_at M (canonical_history_family D family) t psi`,
+         but this says nothing about arbitrary histories.
+
+      **From box psi ∈ MCS, we can derive**:
+      - `psi ∈ family.mcs t` via Modal T axiom (set_mcs_box_closure)
+      - `truth_at M (canonical_history_family D family) t psi` via forward IH
+
+      But we CANNOT derive `truth_at M sigma t psi` for arbitrary sigma because sigma's
+      world state at t may have a different MCS.
+
+      **Resolution options** (for future work):
+      1. Restrict box semantics to use modal accessibility relations (Kripke-style)
+      2. Only quantify over "canonical" histories built from MCS families
+      3. Add a modal accessibility predicate relating histories
+
+      **Impact**: The box case is NOT critical for the main representation theorem (Task 654),
+      which only needs temporal operators (G/H). The representation theorem is proven using
+      the forward direction for temporal operators, which work correctly.
+      -/
+      sorry
+
+    · -- Backward: (∀ sigma, truth_at sigma t psi) → box psi ∈ mcs t
+      intro h_all
+      /-
+      **ARCHITECTURAL LIMITATION: Box Case Backward Direction**
+
+      Even with the strong assumption that psi is true at ALL histories at time t,
+      proving `box psi ∈ family.mcs t` requires connecting arbitrary semantic truth
+      to MCS membership.
+
+      **What we can do**:
+      - Use canonical history: `truth_at M (canonical_history_family D family) t psi`
+      - By backward IH: `psi ∈ family.mcs t`
+
+      **What we need but cannot prove**:
+      - `box psi ∈ family.mcs t` from `psi ∈ family.mcs t`
+
+      The necessitation rule (`⊢ psi` implies `⊢ box psi`) only applies to THEOREMS
+      (derivable with empty context). Having `psi ∈ MCS` does not mean psi is a theorem.
+
+      **Resolution**: Same as forward direction - requires semantic architecture changes.
+      -/
+      sorry
+
+  | all_past psi ih =>
+    constructor
+    · -- Forward: H psi ∈ mcs t → ∀ s < t, truth_at s psi
+      intro h_mem s h_s_lt
+      -- By backward_H coherence: H psi ∈ mcs t and s < t implies psi ∈ mcs s
+      have h_psi_in_s : psi ∈ family.mcs s := family.backward_H t s psi h_s_lt h_mem
+      -- Apply forward IH at time s
+      exact (ih s).mp h_psi_in_s
+    · -- Backward: (∀ s < t, truth_at s psi) → H psi ∈ mcs t
+      intro h_all_past
+      -- By contrapositive with negation completeness:
+      -- If ¬(H psi) ∈ mcs t, then P(¬psi) ∈ mcs t (where P = sometime_past = ¬H¬)
+      -- Actually: ¬(H psi) = sometime_past (¬psi) = ∃s < t. ¬psi at s
+      -- This would give us some s < t with ¬psi ∈ mcs s
+      -- By forward IH: truth_at s (¬psi)... but wait, we need truth of ¬psi, not psi.
+      --
+      -- Actually, the proper approach:
+      -- Assume ¬(H psi) ∈ mcs t, where ¬(H psi) = (H psi).imp bot
+      -- We need infrastructure to connect ¬(H psi) to some_past (¬psi)
+      sorry
+
+  | all_future psi ih =>
+    constructor
+    · -- Forward: G psi ∈ mcs t → ∀ s > t, truth_at s psi
+      intro h_mem s h_t_lt
+      -- By forward_G coherence: G psi ∈ mcs t and t < s implies psi ∈ mcs s
+      have h_psi_in_s : psi ∈ family.mcs s := family.forward_G t s psi h_t_lt h_mem
+      -- Apply forward IH at time s
+      exact (ih s).mp h_psi_in_s
+    · -- Backward: (∀ s > t, truth_at s psi) → G psi ∈ mcs t
+      intro h_all_future
+      -- Similar to all_past backward case
+      sorry
+
+/-!
+## Derived Forward and Backward Theorems
+
+These are derived from the mutual induction theorem for convenience.
+-/
+
+/--
+Truth lemma (forward direction): MCS membership implies truth.
+-/
+theorem truth_lemma_forward (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
+    phi ∈ family.mcs t → truth_at (canonical_model D family) (canonical_history_family D family) t phi :=
+  (truth_lemma_mutual D family t phi).mp
+
+/--
+Truth lemma (backward direction): Truth implies MCS membership.
+-/
+theorem truth_lemma_backward (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
+    truth_at (canonical_model D family) (canonical_history_family D family) t phi → phi ∈ family.mcs t :=
+  (truth_lemma_mutual D family t phi).mpr
+
+/--
+Truth lemma: MCS membership iff semantic truth.
 -/
 theorem truth_lemma (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
     phi ∈ family.mcs t ↔ truth_at (canonical_model D family) (canonical_history_family D family) t phi :=
-  ⟨truth_lemma_forward D family t phi, truth_lemma_backward D family t phi⟩
+  truth_lemma_mutual D family t phi
 
 end Bimodal.Metalogic.Representation

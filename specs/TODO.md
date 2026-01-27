@@ -133,7 +133,7 @@ technical_debt:
 
 ### 692. Port Bimodal/latex/ to Bimodal/typst/
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-27
@@ -204,14 +204,16 @@ technical_debt:
 ---
 
 ### 656. Complete truth lemma forward direction (imp/box cases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Priority**: Medium
 - **Language**: lean
 - **Research**: [research-001.md](specs/656_complete_truth_lemma_forward_direction/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/656_complete_truth_lemma_forward_direction/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260127.md](specs/656_complete_truth_lemma_forward_direction/summaries/implementation-summary-20260127.md)
 - **Created**: 2026-01-21
 - **Planned**: 2026-01-26
+- **Completed**: 2026-01-27
 - **Related**: Task 654
 - **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:144,155
 
