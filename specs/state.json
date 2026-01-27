@@ -8,12 +8,20 @@
     {
       "project_number": 692,
       "project_name": "port_bimodal_latex_to_typst",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-27T22:59:10Z",
-      "last_updated": "2026-01-27T23:10:59Z",
-      "session_id": "sess_1769555443_a466df"
+      "last_updated": "2026-01-27T23:15:33Z",
+      "session_id": "sess_1769555443_a466df",
+      "researched": "2026-01-27T23:15:33Z",
+      "artifacts": [
+        {
+          "path": "specs/692_port_bimodal_latex_to_typst/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report covering LaTeX to Typst symbol mapping, great-theorems for theorem environments, CeTZ for diagrams, and multi-file structure recommendations"
+        }
+      ]
     },
     {
       "project_number": 691,
