@@ -28,12 +28,13 @@ technical_debt:
 ## High Priority
 
 ### 691. Improve lean-lsp-mcp agent integration
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 2.5 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-27
 - **Research**: [research-001.md](specs/691_improve_lean_lsp_mcp_agent_integration/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/691_improve_lean_lsp_mcp_agent_integration/plans/implementation-001.md)
 
 **Description**: Investigate and fix lean-lsp-mcp integration issues where agents do not receive or continue with tokens returned by the MCP server. Study current integration patterns and compare against best practices for MCP servers with Claude Code 2026 conventions to design systematic improvements that avoid needless complexity but enhance performance.
 
@@ -140,7 +141,7 @@ technical_debt:
 
 ### 689. Update context from constitutive foundation notes
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-26

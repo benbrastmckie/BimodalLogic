@@ -8,13 +8,13 @@
     {
       "project_number": 691,
       "project_name": "improve_lean_lsp_mcp_agent_integration",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-27T03:22:46Z",
-      "last_updated": "2026-01-27T03:26:44Z",
+      "last_updated": "2026-01-27T03:30:30Z",
       "description": "Investigate and fix lean-lsp-mcp integration issues where agents do not receive or continue with tokens returned by the MCP server. Study current integration patterns and compare against best practices for MCP servers with Claude Code 2026 conventions to design systematic improvements that avoid needless complexity but enhance performance.",
-      "session_id": "sess_1769484206_cc564f",
+      "session_id": "sess_1769484502_6a00f0",
       "researching": "2026-01-27T03:23:38Z",
       "researched": "2026-01-27T03:26:44Z",
       "artifacts": [
@@ -22,8 +22,15 @@
           "path": "specs/691_improve_lean_lsp_mcp_agent_integration/reports/research-001.md",
           "type": "report",
           "summary": "Research report documenting root cause (Claude Code bugs #13898, #14496), workarounds (user-scope migration, simple prompts), and recommendations"
+        },
+        {
+          "path": "specs/691_improve_lean_lsp_mcp_agent_integration/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for lean-lsp MCP user-scope workaround"
         }
-      ]
+      ],
+      "planning": "2026-01-27T03:28:34Z",
+      "planned": "2026-01-27T03:30:30Z"
     },
     {
       "project_number": 686,
@@ -690,12 +697,12 @@
     {
       "project_number": 689,
       "project_name": "update_context_from_constitutive_foundation_notes",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-26T17:10:00Z",
-      "last_updated": "2026-01-27T01:36:23Z",
-      "session_id": "sess_1769477613_e61622",
+      "last_updated": "2026-01-27T03:29:46Z",
+      "session_id": "sess_1769484573_4f4be0",
       "description": "Update .claude/context/ files based on NOTE: tag from 02-ConstitutiveFoundation.tex line 21: Update variable naming convention documentation to reserve x, y, z for metalanguage durations and use v_1, v_2, v_3, ... for object language variables in Logos system.",
       "researching": "2026-01-27T01:33:53Z",
       "researched": "2026-01-27T01:36:23Z",
@@ -705,7 +712,8 @@
           "type": "report",
           "summary": "Research report documenting 5 files needing variable naming convention updates with specific change recommendations"
         }
-      ]
+      ],
+      "planning": "2026-01-27T03:29:46Z"
     },
     {
       "project_number": 690,
