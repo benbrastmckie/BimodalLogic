@@ -1,5 +1,5 @@
 ---
-next_project_number: 689
+next_project_number: 692
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 691. Improve lean-lsp-mcp agent integration
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-27
+
+**Description**: Investigate and fix lean-lsp-mcp integration issues where agents do not receive or continue with tokens returned by the MCP server. Study current integration patterns and compare against best practices for MCP servers with Claude Code 2026 conventions to design systematic improvements that avoid needless complexity but enhance performance.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
