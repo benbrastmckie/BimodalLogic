@@ -64,7 +64,7 @@ The Constitutive Foundation provides the foundational semantic structure based o
 The Constitutive Foundation interprets the following syntactic primitives:
 
 \begin{itemize}
-  \item \textbf{Variables}: $x, y, z, \ldots$ (ranging over states)
+  \item \textbf{Variables}: $v_1, v_2, v_3, \ldots$ (ranging over states)
   \item \textbf{Individual constants}: $a, b, c, \ldots$ (0-place function symbols)
   \item \textbf{n-place function symbols}: $f, g, h, \ldots$
   \item \textbf{n-place predicates}: $F, G, H, \ldots$

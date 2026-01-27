@@ -59,9 +59,12 @@ def My_Function_Name (My_Variable : my_type) : my_other_type :=
 | **Functions/Defs** | snake_case | `truth_at`, `swap_temporal`, `canonical_history` |
 | **Theorems/Lemmas** | snake_case | `soundness`, `modal_t_valid`, `perpetuity_1` |
 | **Variables (formulas)** | Greek letters | `φ`, `ψ`, `χ` (phi, psi, chi) |
+| **Variables (object lang)** | Subscripted v | `v₁`, `v₂`, `v₃` (bound by quantifiers) |
 | **Variables (contexts)** | Greek capitals | `Γ`, `Δ` (Gamma, Delta) |
 | **Variables (models)** | Capitals | `M`, `N` (models), `F` (frames) |
-| **Variables (times)** | Lowercase | `t`, `s` (times), `τ`, `σ` (histories) |
+| **Variables (times/durations)** | Lowercase | `t`, `s` (times), `x`, `y`, `z` (durations), `τ`, `σ` (histories) |
+
+**Note**: The letters `x, y, z` are reserved for metalanguage durations (time intervals). Object language variables use subscripted `v` notation (`v₁, v₂, v₃, ...`) to avoid confusion with temporal constructs.
 
 ### Examples
 

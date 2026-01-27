@@ -173,11 +173,14 @@ theorem example : ⊢ ((p → q) → ((q → r) → (p → r))) := by sorry
 |------|-----------|-------|
 | Formulas | φ, ψ, χ | Primary formula variables (phi, psi, chi) |
 | Atoms | p, q, r, s | Propositional atoms |
+| Object Language Vars | v₁, v₂, v₃ | Variables in object language (bound by quantifiers) |
 | Contexts | Γ, Δ | Proof contexts (Gamma, Delta) |
 | Models | M, N | Task models |
 | Frames | F | Task frames |
 | Histories | τ, σ | World histories (tau, sigma) |
-| Times | t, s, x, y | Time points or durations |
+| Times/Durations | t, s, x, y, z | Time points or durations (metalanguage only) |
+
+**Note**: The letters `x, y, z` are reserved for metalanguage durations and time variables. Object language variables use subscripted `v` notation (`v₁, v₂, v₃, ...`) to maintain clear separation between syntactic levels.
 
 **Example**:
 ```lean

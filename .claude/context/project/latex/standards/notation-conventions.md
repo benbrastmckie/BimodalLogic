@@ -137,6 +137,23 @@ The `logos-notation.sty` package provides consistent notation for Logos document
 | Formula φ | `\metaphi` | φ | Greek meta-variable |
 | Formula ψ | `\metapsi` | ψ | Greek meta-variable |
 
+## Variable Naming
+
+### Object Language Variables
+| Variable | Usage | Example |
+|----------|-------|---------|
+| v₁, v₂, v₃, ... | Object language variables (bound by quantifiers) | `$v_1, v_2, v_3, \ldots$` |
+| `\objvar{n}` | Macro for object language variable vₙ | `\objvar{1}` → v₁ |
+
+### Metalanguage Variables
+| Variable | Usage | Example |
+|----------|-------|---------|
+| x, y, z | Time durations in metalanguage | `$x, y, z \in \mathbb{R}$` |
+| t, s | Time points | `$t < s$` |
+| τ, σ | World histories | `$\tau : D \to W$` |
+
+**Important**: The letters `x, y, z` are reserved for metalanguage durations (time intervals). Use subscripted `v` notation (`v_1, v_2, v_3, ...`) or the `\objvar{n}` macro for object language variables to maintain clear separation between syntactic levels.
+
 ## Lean Cross-References
 
 | Concept | Macro | Usage |
