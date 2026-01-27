@@ -8,13 +8,13 @@
     {
       "project_number": 691,
       "project_name": "improve_lean_lsp_mcp_agent_integration",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-27T03:22:46Z",
-      "last_updated": "2026-01-27T03:30:30Z",
+      "last_updated": "2026-01-27T03:36:56Z",
       "description": "Investigate and fix lean-lsp-mcp integration issues where agents do not receive or continue with tokens returned by the MCP server. Study current integration patterns and compare against best practices for MCP servers with Claude Code 2026 conventions to design systematic improvements that avoid needless complexity but enhance performance.",
-      "session_id": "sess_1769484502_6a00f0",
+      "session_id": "sess_1769484763_9481ba",
       "researching": "2026-01-27T03:23:38Z",
       "researched": "2026-01-27T03:26:44Z",
       "artifacts": [
@@ -27,10 +27,19 @@
           "path": "specs/691_improve_lean_lsp_mcp_agent_integration/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for lean-lsp MCP user-scope workaround"
+        },
+        {
+          "path": "specs/691_improve_lean_lsp_mcp_agent_integration/summaries/implementation-summary-20260127.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planning": "2026-01-27T03:28:34Z",
-      "planned": "2026-01-27T03:30:30Z"
+      "planned": "2026-01-27T03:30:30Z",
+      "started": "2026-01-27T03:33:03Z",
+      "completed": "2026-01-27T03:36:56Z",
+      "completion_summary": "Created setup and verification scripts for lean-lsp user-scope MCP configuration. Updated CLAUDE.md with MCP troubleshooting section and added MCP scope notes to lean-research-agent and lean-implementation-agent definitions.",
+      "claudemd_suggestions": "Added MCP Server Configuration subsection to Lean 4 Integration section in CLAUDE.md documenting the workaround and setup instructions"
     },
     {
       "project_number": 686,
@@ -121,7 +130,7 @@
     {
       "project_number": 657,
       "project_name": "prove_seed_consistency_temporal_k_distribution",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
@@ -178,7 +187,8 @@
       "planned": "2026-01-26T06:24:44Z",
       "started": "2026-01-26T06:25:38Z",
       "resume_phase": 2,
-      "blocked_reason": "TM logic lacks temporal T axiom - cannot derive bot from G bot syntactically"
+      "blocked_reason": "TM logic lacks temporal T axiom - cannot derive bot from G bot syntactically",
+      "completion_summary": "- Added import for `Bimodal.Theorems.GeneralizedNecessitation` to access `generalized_temporal_k`"
     },
     {
       "project_number": 658,
@@ -381,7 +391,7 @@
     {
       "project_number": 619,
       "project_name": "agent_system_architecture_upgrade",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-19T20:33:57Z",
@@ -440,7 +450,7 @@
     },
     {
       "project_number": 394,
-      "status": "planned",
+      "status": "researched",
       "project_name": "research_port_causal_semantics_from_paper",
       "section": "Medium Priority",
       "language": "lean",
@@ -554,7 +564,7 @@
     {
       "project_number": 667,
       "project_name": "fix_specs_path_references",
-      "status": "implemented",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-21T23:00:22Z",
@@ -580,7 +590,8 @@
       "planned": "2026-01-21T23:00:22Z",
       "researched": "2026-01-21T23:02:28Z",
       "implemented": "2026-01-21T23:02:28Z",
-      "implementation_summary": "Successfully identified and fixed all 6 references to .opencode/specs throughout the system. Updated Python scripts, agent files, context files, and documentation. Validated that task creation system is now functional."
+      "implementation_summary": "Successfully identified and fixed all 6 references to .opencode/specs throughout the system. Updated Python scripts, agent files, context files, and documentation. Validated that task creation system is now functional.",
+      "completion_summary": "The task creation system was broken because the `specs/` directory had been moved from `.opencode/specs/` to the root level `specs/`, but many components throughout the system still referenced the old"
     },
     {
       "project_number": 668,
@@ -697,12 +708,12 @@
     {
       "project_number": 689,
       "project_name": "update_context_from_constitutive_foundation_notes",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-26T17:10:00Z",
-      "last_updated": "2026-01-27T03:31:40Z",
-      "session_id": "sess_1769484573_4f4be0",
+      "last_updated": "2026-01-27T03:37:18Z",
+      "session_id": "sess_1769484799_57686a",
       "description": "Update .claude/context/ files based on NOTE: tag from 02-ConstitutiveFoundation.tex line 21: Update variable naming convention documentation to reserve x, y, z for metalanguage durations and use v_1, v_2, v_3, ... for object language variables in Logos system.",
       "researching": "2026-01-27T01:33:53Z",
       "researched": "2026-01-27T01:36:23Z",
@@ -719,7 +730,10 @@
         }
       ],
       "planning": "2026-01-27T03:29:46Z",
-      "planned": "2026-01-27T03:31:40Z"
+      "planned": "2026-01-27T03:31:40Z",
+      "started": "2026-01-27T03:33:37Z",
+      "completion_summary": "Updated variable naming conventions across 5 .claude/context/ files and 2 LaTeX files to distinguish object language variables (v_1, v_2, v_3) from metalanguage durations (x, y, z). Added \\objvar{n} macro to logos-notation.sty.",
+      "completed": "2026-01-27T03:37:18Z"
     },
     {
       "project_number": 690,

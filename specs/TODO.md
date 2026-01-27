@@ -29,12 +29,13 @@ technical_debt:
 
 ### 691. Improve lean-lsp-mcp agent integration
 - **Effort**: 2.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-27
 - **Research**: [research-001.md](specs/691_improve_lean_lsp_mcp_agent_integration/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/691_improve_lean_lsp_mcp_agent_integration/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260127.md](specs/691_improve_lean_lsp_mcp_agent_integration/summaries/implementation-summary-20260127.md)
 
 **Description**: Investigate and fix lean-lsp-mcp integration issues where agents do not receive or continue with tokens returned by the MCP server. Study current integration patterns and compare against best practices for MCP servers with Claude Code 2026 conventions to design systematic improvements that avoid needless complexity but enhance performance.
 
@@ -42,7 +43,7 @@ technical_debt:
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 381
@@ -141,13 +142,14 @@ technical_debt:
 
 ### 689. Update context from constitutive foundation notes
 - **Effort**: 1.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-26
 - **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex (1 NOTE: tag)
 - **Research**: [research-001.md](specs/689_update_context_from_constitutive_foundation_notes/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/689_update_context_from_constitutive_foundation_notes/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260127.md](specs/689_update_context_from_constitutive_foundation_notes/summaries/implementation-summary-20260127.md)
 
 **Description**: Update .claude/context/ files based on NOTE: tag from 02-ConstitutiveFoundation.tex line 21: Update variable naming convention documentation to reserve x, y, z for metalanguage durations and use v_1, v_2, v_3, ... for object language variables in Logos system.
 
@@ -206,7 +208,7 @@ technical_debt:
 ### 657. Prove seed consistency (temporal K distribution)
 - **Started**: 2026-01-25T20:53:16Z
 - **Effort**: 6-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -214,6 +216,7 @@ technical_debt:
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:338,354
 - **Research**: [research-001.md](specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/657_prove_seed_consistency_temporal_k_distribution/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260126.md](specs/657_prove_seed_consistency_temporal_k_distribution/summaries/implementation-summary-20260126.md)
 
 **Description**: Prove the seed consistency lemmas in IndexedMCSFamily.lean that require the temporal K distribution axiom. Lines 338 and 354 contain sorries for proving that seeds constructed during family building are consistent. This requires careful application of TM logic axioms, specifically the K distribution axiom for temporal operators. From review-20260121-task654.md medium priority recommendations.
 
@@ -294,7 +297,7 @@ technical_debt:
 ---
 
 ### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-25
 - **Priority**: Low
 - **Language**: meta
@@ -401,7 +404,7 @@ technical_debt:
 ---
 
 ### 667. Fix .opencode/specs path references
-- **Status**: [IMPLEMENTED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Session**: meta-session-1768239500
@@ -409,6 +412,7 @@ technical_debt:
 - **Implemented**: 2026-01-21
 - **Research**: [research-001.md](specs/667_fix_specs_path_references/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/667_fix_specs_path_references/plans/implementation-003.md)
+- **Summary**: [implementation-summary-20260121.md](specs/667_fix_specs_path_references/summaries/implementation-summary-20260121.md)
 
 **Description**: Successfully identified and fixed all 6 references to .opencode/specs throughout the system. Updated Python scripts (validate_state_sync.py, todo_cleanup.py), agent files (planner.md), context files (routing.md), and documentation. Task creation system is now functional.
 
