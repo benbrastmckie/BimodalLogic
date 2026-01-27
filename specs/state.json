@@ -8,12 +8,12 @@
     {
       "project_number": 692,
       "project_name": "port_bimodal_latex_to_typst",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-27T22:59:10Z",
-      "last_updated": "2026-01-27T23:39:53Z",
-      "session_id": "sess_1769557051_a0b44c",
+      "last_updated": "2026-01-27T23:49:33Z",
+      "session_id": "sess_1769557752_0c5b28",
       "researched": "2026-01-27T23:32:35Z",
       "artifacts": [
         {
@@ -32,7 +32,8 @@
           "summary": "5-phase implementation plan for porting Bimodal/latex/ to Typst format"
         }
       ],
-      "planned": "2026-01-27T23:39:53Z"
+      "planned": "2026-01-27T23:39:53Z",
+      "started": "2026-01-27T23:49:33Z"
     },
     {
       "project_number": 691,
@@ -167,27 +168,22 @@
     {
       "project_number": 657,
       "project_name": "prove_seed_consistency_temporal_k_distribution",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-27T23:39:55Z",
+      "last_updated": "2026-01-27T23:58:27Z",
       "related_tasks": [
         654
       ],
       "researching": "2026-01-25T20:53:16Z",
-      "session_id": "sess_1769556744_23e640",
+      "session_id": "sess_1769557576_2f46d8",
       "researched": "2026-01-27T23:36:08Z",
       "artifacts": [
         {
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-001.md",
           "type": "report",
           "summary": "Comprehensive research on seed consistency proofs requiring temporal K distribution axiom with 4-phase implementation strategy"
-        },
-        {
-          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/summaries/implementation-summary-20260126.md",
-          "type": "summary",
-          "summary": "Partial implementation - identified blocking issue with temporal T axiom"
         },
         {
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-002.md",
@@ -228,12 +224,17 @@
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised implementation plan using Approach A (Semantic Bridge)"
+        },
+        {
+          "path": "specs/657_prove_seed_consistency_temporal_k_distribution/summaries/implementation-summary-20260127.md",
+          "type": "summary",
+          "summary": "Partial implementation - completed future_seed_consistent with new hypotheses approach"
         }
       ],
       "planning": "2026-01-26T06:22:01Z",
       "planned": "2026-01-27T23:39:55Z",
       "started": "2026-01-26T06:25:38Z",
-      "resume_phase": 2,
+      "resume_phase": 5,
       "blocked_reason": "TM logic lacks temporal T axiom - cannot derive bot from G bot syntactically",
       "completion_summary": "- Added import for `Bimodal.Theorems.GeneralizedNecessitation` to access `generalized_temporal_k`"
     },
@@ -358,12 +359,12 @@
     {
       "project_number": 628,
       "project_name": "prove_semantic_truth_implies_truth_at_upward_bridge",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T00:25:09Z",
-      "last_updated": "2026-01-20T01:01:02Z",
-      "session_id": "sess_1768870570_94e25e",
+      "last_updated": "2026-01-27T23:48:51Z",
+      "session_id": "sess_1769557711_38b458",
       "researched": "2026-01-20T01:01:02Z",
       "artifacts": [
         {
