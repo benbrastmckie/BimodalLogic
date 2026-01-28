@@ -1,5 +1,5 @@
 ---
-next_project_number: 711
+next_project_number: 712
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,18 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 711. Test context:fork for direct execution skills
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+- **Related**: Task 619
+
+**Description**: Create a test skill to verify context:fork works for user-level direct execution skills before proceeding with task 619. Create a copy of skill-lean-research with context:fork frontmatter added, test it, and document whether the feature works for the ProofChecker environment. This is a prerequisite for implementing context isolation in Lean skills.
+
+---
 
 ### 701. Fix lean-lsp-mcp hanging issue
 - **Effort**: 3.5 hours
