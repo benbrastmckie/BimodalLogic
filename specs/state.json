@@ -88,11 +88,6 @@
           "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/reports/research-001.md",
           "type": "research",
           "summary": "Research report on Typst formatting techniques for arrow annotations, italic text, and subscript/superscript stacking"
-        },
-        {
-          "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report on Typst formatting techniques for arrow annotations, italic text, and subscript/superscript stacking"
         }
       ]
     },
@@ -198,7 +193,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-28T04:17:07Z",
+      "last_updated": "2026-01-28T05:57:09Z",
       "related_tasks": [
         654
       ],
@@ -236,7 +231,8 @@
       "planning": "2026-01-25T21:42:13Z",
       "planned": "2026-01-28T04:11:51Z",
       "started": "2026-01-25T21:46:22Z",
-      "resume_phase": 1
+      "resume_phase": 4,
+      "partial_summary": "Implemented reflexive temporal semantics (5 phases): Added T-axioms temp_t_future and temp_t_past, changed semantics from < to ≤, fixed time-shift theorems, updated documentation. Coherence proofs (forward_G, backward_H, forward_H, backward_G) remain with sorry due to missing formula propagation infrastructure between independent Lindenbaum extensions. T-axioms necessary but not sufficient with current construction."
     },
     {
       "project_number": 659,

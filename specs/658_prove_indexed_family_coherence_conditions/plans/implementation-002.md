@@ -2,7 +2,7 @@
 
 - **Task**: 658 - Prove indexed family coherence conditions
 - **Version**: 002 (Complete Revision)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 12-16 hours
 - **Priority**: High (upgraded from Medium due to scope)
 - **Dependencies**: None (self-contained after revision)
