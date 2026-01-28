@@ -202,13 +202,15 @@ technical_debt:
 
 ### 707. Replace 'propositional atom' with 'sentence letter' in Bimodal documentation
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
 - **Dependencies**: 706
+- **Completed**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/chapters/01-syntax.typ:20 (NOTE: tag)
 - **Plan**: [implementation-001.md](specs/707_replace_propositional_atom_with_sentence_letter_in_bimodal/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/707_replace_propositional_atom_with_sentence_letter_in_bimodal/summaries/implementation-summary-20260128.md)
 
 **Description**: Replace 'propositional atom' with 'sentence letter' throughout the Bimodal reference documentation. Source: Theories/Bimodal/typst/chapters/01-syntax.typ:20 NOTE tag requesting this terminology change. After completing the learn-it task (706) which documents the terminology preference, update all Bimodal documentation files to use 'sentence letter' instead of 'propositional atom' for consistency.
 
@@ -317,7 +319,7 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Session**: sess_1769580842_d8f88e
 - **Effort**: 6-8 hours
 - **Priority**: High

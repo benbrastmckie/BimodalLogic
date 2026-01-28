@@ -2,7 +2,7 @@
 
 - **Task**: 658 - Prove indexed family coherence conditions
 - **Version**: 003 (Option A: Propagation Lemmas)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6-8 hours
 - **Priority**: High
 - **Dependencies**: None (builds on implementation-002 infrastructure)
