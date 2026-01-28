@@ -147,12 +147,14 @@ technical_debt:
 
 ### 713. Create Lean lake build and repair skill and /lake command which calls this skill
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
+- **Planned**: 2026-01-28
 - **Research**: [research-001.md](specs/713_create_lean_build_repair_skill_and_command/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/713_create_lean_build_repair_skill_and_command/plans/implementation-001.md)
 
 **Description**: Create automated Lean build repair skill with /lake command that runs lake clean, lake build, and automatically fixes build errors (like missing pattern match cases) until build succeeds.
 
