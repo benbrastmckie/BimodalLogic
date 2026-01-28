@@ -587,6 +587,8 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
   | temp_4 ψ => exact swap_axiom_t4_valid ψ
   | temp_a ψ => exact swap_axiom_ta_valid ψ
   | temp_l ψ => exact swap_axiom_tl_valid ψ
+  | temp_t_future ψ => sorry
+  | temp_t_past ψ => sorry
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 
@@ -786,6 +788,8 @@ private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ 
   | temp_4 ψ => exact axiom_temp_4_valid ψ
   | temp_a ψ => exact axiom_temp_a_valid ψ
   | temp_l ψ => exact axiom_temp_l_valid ψ
+  | temp_t_future ψ => sorry
+  | temp_t_past ψ => sorry
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 
