@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 724,
+      "project_name": "investigate_revise_command_errors_design_solution",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-28T22:03:21Z",
+      "last_updated": "2026-01-28T22:03:21Z"
+    },
+    {
       "project_number": 723,
       "project_name": "update_claude_documentation",
       "status": "planned",
@@ -737,7 +746,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 723,
+  "next_project_number": 725,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

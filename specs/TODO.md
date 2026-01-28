@@ -1,5 +1,5 @@
 ---
-next_project_number: 723
+next_project_number: 725
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -149,6 +149,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 724. Investigate revise command errors and design elegant solution
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Identify the root cause of the errors in /home/benjamin/Projects/ProofChecker/.claude/output/revise.md in order to design an elegant solution that avoids these errors in any command or skill which may suffer from similar problems.
+
+---
 
 ### 723. Update .claude/ documentation for accuracy and completeness
 - **Effort**: 3-4 hours
