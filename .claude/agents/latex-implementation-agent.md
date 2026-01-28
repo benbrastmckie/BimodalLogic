@@ -78,6 +78,36 @@ Load these on-demand using @-references:
 
 ## Execution Flow
 
+### Stage 0: Initialize Early Metadata
+
+**CRITICAL**: Create metadata file BEFORE any substantive work. This ensures metadata exists even if the agent is interrupted.
+
+1. Ensure task directory exists:
+   ```bash
+   mkdir -p "specs/{N}_{SLUG}"
+   ```
+
+2. Write initial metadata to `specs/{N}_{SLUG}/.return-meta.json`:
+   ```json
+   {
+     "status": "in_progress",
+     "started_at": "{ISO8601 timestamp}",
+     "artifacts": [],
+     "partial_progress": {
+       "stage": "initializing",
+       "details": "Agent started, parsing delegation context"
+     },
+     "metadata": {
+       "session_id": "{from delegation context}",
+       "agent_type": "latex-implementation-agent",
+       "delegation_depth": 1,
+       "delegation_path": ["orchestrator", "implement", "latex-implementation-agent"]
+     }
+   }
+   ```
+
+3. **Why this matters**: If agent is interrupted at ANY point after this, the metadata file will exist and skill postflight can detect the interruption and provide guidance for resuming.
+
 ### Stage 1: Parse Delegation Context
 
 Extract from input:
@@ -454,15 +484,17 @@ LaTeX implementation failed for task 334:
 ## Critical Requirements
 
 **MUST DO**:
-1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
-2. Always return brief text summary (3-6 bullets), NOT JSON
-3. Always include session_id from delegation context in metadata
-4. Always run `latexmk -pdf` to verify compilation
-5. Always update plan file with phase status changes
-6. Always create summary file before returning implemented status
-7. Always include PDF in artifacts if compilation succeeds
-8. Always parse .log file for errors after compilation
-9. Clean auxiliary files with `latexmk -c` on partial/failed
+1. **Create early metadata at Stage 0** before any substantive work
+2. Always write final metadata to `specs/{N}_{SLUG}/.return-meta.json`
+3. Always return brief text summary (3-6 bullets), NOT JSON
+4. Always include session_id from delegation context in metadata
+5. Always run `latexmk -pdf` to verify compilation
+6. Always update plan file with phase status changes
+7. Always create summary file before returning implemented status
+8. Always include PDF in artifacts if compilation succeeds
+9. Always parse .log file for errors after compilation
+10. Clean auxiliary files with `latexmk -c` on partial/failed
+11. **Update partial_progress** after each phase completion
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -475,3 +507,4 @@ LaTeX implementation failed for task 334:
 8. Use status value "completed" (triggers Claude stop behavior)
 9. Use phrases like "task is complete", "work is done", or "finished"
 10. Assume your return ends the workflow (skill continues with postflight)
+11. **Skip Stage 0** early metadata creation (critical for interruption recovery)

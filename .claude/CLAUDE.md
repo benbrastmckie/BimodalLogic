@@ -258,6 +258,16 @@ After setup, restart Claude Code for changes to take effect.
 
 **Note**: The project `.mcp.json` file is kept for documentation purposes and works correctly for the main conversation - only subagents have the access limitation.
 
+### Multi-Instance Optimization
+
+Running multiple concurrent Claude sessions can cause MCP AbortError -32001 due to resource contention. Key prevention strategies:
+
+1. **Pre-build**: Run `lake build` before starting multiple sessions
+2. **Environment variables**: Configure `LEAN_LOG_LEVEL: "WARNING"` in `~/.claude.json`
+3. **Session throttling**: Limit concurrent Lean implementation tasks
+
+See `.claude/context/project/lean4/operations/multi-instance-optimization.md` for detailed guidance.
+
 ## Rules References
 
 Core rules (automatically applied based on file paths):
@@ -286,6 +296,13 @@ Domain knowledge (load as needed):
 ### On Timeout
 - Mark current phase [PARTIAL]
 - Next /implement resumes from incomplete phase
+
+### On MCP Tool Failure (AbortError -32001)
+- Agents use early metadata pattern to preserve progress
+- MCP recovery pattern: retry once, try alternative tool, continue with available info
+- Postflight detects `status: "in_progress"` and provides resume guidance
+- See `.claude/context/core/patterns/mcp-tool-recovery.md` for details
+- See `.claude/context/core/patterns/early-metadata-pattern.md` for interruption handling
 
 ## Session Patterns
 

@@ -132,21 +132,21 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 4: General Agent Updates [IN PROGRESS]
+### Phase 4: General Agent Updates [COMPLETED]
 
 **Goal**: Update remaining agents with consistent interruption-aware patterns
 
 **Tasks**:
-- [ ] Update `.claude/agents/general-research-agent.md`:
+- [x] Update `.claude/agents/general-research-agent.md`:
   - Add Stage 0 for early metadata file creation
   - Note: Web tools less prone to abort but consistency valuable
-- [ ] Update `.claude/agents/general-implementation-agent.md`:
+- [x] Update `.claude/agents/general-implementation-agent.md`:
   - Add Stage 0 for early metadata file creation
   - Add incremental progress for multi-phase work
-- [ ] Update `.claude/agents/latex-implementation-agent.md`:
+- [x] Update `.claude/agents/latex-implementation-agent.md`:
   - Add Stage 0 for early metadata file creation
   - Add graceful handling for pdflatex timeouts
-- [ ] Update `.claude/agents/planner-agent.md`:
+- [x] Update `.claude/agents/planner-agent.md`:
   - Add Stage 0 for early metadata file creation
   - Planner is lower risk but consistency important
 
@@ -164,17 +164,17 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 5: Command Postflight Enhancement [NOT STARTED]
+### Phase 5: Command Postflight Enhancement [COMPLETED]
 
 **Goal**: Enhance command postflight to handle partial/in_progress metadata
 
 **Tasks**:
-- [ ] Update `.claude/context/core/patterns/checkpoint-in-commands.md`:
+- [x] Update `.claude/context/core/patterns/checkpoint-execution.md`:
   - Add "Handling Interrupted Agents" section
   - Document partial metadata detection and handling
   - Add error logging for delegation_interrupted
   - Add resume guidance messaging
-- [ ] Update `.claude/context/core/formats/return-metadata-file.md`:
+- [x] Update `.claude/context/core/formats/return-metadata-file.md`:
   - Add complete examples for partial/in_progress states
   - Document how skills should interpret these states
 
@@ -190,17 +190,17 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 6: Documentation and Optimization Guide [NOT STARTED]
+### Phase 6: Documentation and Optimization Guide [COMPLETED]
 
 **Goal**: Document multi-instance optimization and update system documentation
 
 **Tasks**:
-- [ ] Create `.claude/context/project/lean4/operations/multi-instance-optimization.md`:
+- [x] Create `.claude/context/project/lean4/operations/multi-instance-optimization.md`:
   - Document pre-build workflow recommendation
   - Document environment variable configuration
   - Document session management strategy
   - Reference lean-lsp-mcp Issues #118, #115
-- [ ] Update `.claude/CLAUDE.md`:
+- [x] Update `.claude/CLAUDE.md`:
   - Add brief mention of MCP error recovery patterns under Error Handling section
   - Reference multi-instance optimization guide under Lean 4 Integration
 

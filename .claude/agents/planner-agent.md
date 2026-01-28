@@ -49,6 +49,36 @@ Load these on-demand using @-references:
 
 ## Execution Flow
 
+### Stage 0: Initialize Early Metadata
+
+**CRITICAL**: Create metadata file BEFORE any substantive work. This ensures metadata exists even if the agent is interrupted.
+
+1. Ensure task directory exists:
+   ```bash
+   mkdir -p "specs/{N}_{SLUG}"
+   ```
+
+2. Write initial metadata to `specs/{N}_{SLUG}/.return-meta.json`:
+   ```json
+   {
+     "status": "in_progress",
+     "started_at": "{ISO8601 timestamp}",
+     "artifacts": [],
+     "partial_progress": {
+       "stage": "initializing",
+       "details": "Agent started, parsing delegation context"
+     },
+     "metadata": {
+       "session_id": "{from delegation context}",
+       "agent_type": "planner-agent",
+       "delegation_depth": 1,
+       "delegation_path": ["orchestrator", "plan", "planner-agent"]
+     }
+   }
+   ```
+
+3. **Why this matters**: If agent is interrupted at ANY point after this, the metadata file will exist and skill postflight can detect the interruption and provide guidance for resuming.
+
 ### Stage 1: Parse Delegation Context
 
 Extract from input:
@@ -335,14 +365,15 @@ Planning failed for task 999:
 ## Critical Requirements
 
 **MUST DO**:
-1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
-2. Always return brief text summary (3-6 bullets), NOT JSON
-3. Always include session_id from delegation context in metadata
-4. Always create plan file before writing completed status
-5. Always verify plan file exists and is non-empty
-6. Always follow plan-format.md structure exactly
-7. Always apply task-breakdown.md guidelines for >60 min tasks
-8. Always include phase_count and estimated_hours in metadata
+1. **Create early metadata at Stage 0** before any substantive work
+2. Always write final metadata to `specs/{N}_{SLUG}/.return-meta.json`
+3. Always return brief text summary (3-6 bullets), NOT JSON
+4. Always include session_id from delegation context in metadata
+5. Always create plan file before writing completed status
+6. Always verify plan file exists and is non-empty
+7. Always follow plan-format.md structure exactly
+8. Always apply task-breakdown.md guidelines for >60 min tasks
+9. Always include phase_count and estimated_hours in metadata
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -355,3 +386,4 @@ Planning failed for task 999:
 8. Use status value "completed" (triggers Claude stop behavior)
 9. Use phrases like "task is complete", "work is done", or "finished"
 10. Assume your return ends the workflow (skill continues with postflight)
+11. **Skip Stage 0** early metadata creation (critical for interruption recovery)

@@ -380,13 +380,15 @@ Research failed for task 999:
 ## Critical Requirements
 
 **MUST DO**:
-1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
-2. Always return brief text summary (3-6 bullets), NOT JSON
-3. Always include session_id from delegation context in metadata
-4. Always create report file before writing completed/partial status
-5. Always verify report file exists and is non-empty
-6. Always search codebase before web search (local first)
-7. Always include next_steps in metadata for successful research
+1. **Create early metadata at Stage 0** before any substantive work
+2. Always write final metadata to `specs/{N}_{SLUG}/.return-meta.json`
+3. Always return brief text summary (3-6 bullets), NOT JSON
+4. Always include session_id from delegation context in metadata
+5. Always create report file before writing completed/partial status
+6. Always verify report file exists and is non-empty
+7. Always search codebase before web search (local first)
+8. Always include next_steps in metadata for successful research
+9. **Update partial_progress** on significant milestones (search completion, synthesis)
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -398,3 +400,4 @@ Research failed for task 999:
 7. Use status value "completed" (triggers Claude stop behavior)
 8. Use phrases like "task is complete", "work is done", or "finished"
 9. Assume your return ends the workflow (skill continues with postflight)
+10. **Skip Stage 0** early metadata creation (critical for interruption recovery)

@@ -59,6 +59,36 @@ Load these on-demand using @-references:
 
 ## Execution Flow
 
+### Stage 0: Initialize Early Metadata
+
+**CRITICAL**: Create metadata file BEFORE any substantive work. This ensures metadata exists even if the agent is interrupted.
+
+1. Ensure task directory exists:
+   ```bash
+   mkdir -p "specs/{N}_{SLUG}"
+   ```
+
+2. Write initial metadata to `specs/{N}_{SLUG}/.return-meta.json`:
+   ```json
+   {
+     "status": "in_progress",
+     "started_at": "{ISO8601 timestamp}",
+     "artifacts": [],
+     "partial_progress": {
+       "stage": "initializing",
+       "details": "Agent started, parsing delegation context"
+     },
+     "metadata": {
+       "session_id": "{from delegation context}",
+       "agent_type": "general-implementation-agent",
+       "delegation_depth": 1,
+       "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+     }
+   }
+   ```
+
+3. **Why this matters**: If agent is interrupted at ANY point after this, the metadata file will exist and skill postflight can detect the interruption and provide guidance for resuming.
+
 ### Stage 1: Parse Delegation Context
 
 Extract from input:
@@ -437,14 +467,16 @@ General implementation failed for task 999:
 ## Critical Requirements
 
 **MUST DO**:
-1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
-2. Always return brief text summary (3-6 bullets), NOT JSON
-3. Always include session_id from delegation context in metadata
-4. Always update plan file with phase status changes
-5. Always verify files exist after creation/modification
-6. Always create summary file before returning implemented status
-7. Always run verification commands when specified in plan
-8. Read existing files before modifying them
+1. **Create early metadata at Stage 0** before any substantive work
+2. Always write final metadata to `specs/{N}_{SLUG}/.return-meta.json`
+3. Always return brief text summary (3-6 bullets), NOT JSON
+4. Always include session_id from delegation context in metadata
+5. Always update plan file with phase status changes
+6. Always verify files exist after creation/modification
+7. Always create summary file before returning implemented status
+8. Always run verification commands when specified in plan
+9. Read existing files before modifying them
+10. **Update partial_progress** after each phase completion
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -457,3 +489,4 @@ General implementation failed for task 999:
 8. Use status value "completed" (triggers Claude stop behavior)
 9. Use phrases like "task is complete", "work is done", or "finished"
 10. Assume your return ends the workflow (skill continues with postflight)
+11. **Skip Stage 0** early metadata creation (critical for interruption recovery)

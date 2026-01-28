@@ -147,6 +147,52 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 - Agent error: Pass through error to GATE OUT
 - Keep status in "in_progress" variant
 
+### Handling Interrupted Agents
+
+When agent is interrupted (MCP abort, timeout, Claude Code abort), the early metadata pattern
+ensures a metadata file exists. Postflight should handle this gracefully:
+
+**Detection**: Metadata file exists but `status: "in_progress"`
+
+**Response**:
+1. Extract `partial_progress.stage` and `partial_progress.details`
+2. **Keep task status unchanged** (still "researching" or "implementing")
+3. Log error to errors.json:
+   ```json
+   {
+     "type": "delegation_interrupted",
+     "severity": "high",
+     "message": "Agent interrupted at stage: {stage}",
+     "context": {
+       "session_id": "{session_id}",
+       "task": {N},
+       "partial_progress": {
+         "stage": "{stage}",
+         "details": "{details}"
+       }
+     },
+     "recovery": {
+       "suggested_action": "Run command again to resume",
+       "auto_recoverable": true
+     }
+   }
+   ```
+4. Display guidance to user:
+   ```
+   Agent interrupted at {stage}: {details}
+   Run /research N or /implement N to resume.
+   ```
+5. Skip COMMIT checkpoint (nothing to commit)
+
+**Why keep status unchanged**: The task should remain in "researching" or "implementing" status
+so that:
+- Next invocation of the same command can resume
+- Task is not incorrectly marked as failed or completed
+- Partial progress is preserved
+
+See `.claude/context/core/patterns/early-metadata-pattern.md` for details on how agents create
+early metadata, and `.claude/rules/error-handling.md` for the `delegation_interrupted` error type.
+
 ### GATE OUT Failure
 - Missing artifacts: Log warning, return partial
 - State update failure: Log error, artifacts still exist
@@ -203,4 +249,7 @@ Session ID links all operations in a single command execution:
 - @.claude/context/core/checkpoints/ - Detailed checkpoint specifications
 - @.claude/context/core/patterns/skill-lifecycle.md - Skill lifecycle pattern
 - @.claude/context/core/patterns/inline-status-update.md - Status update patterns
+- @.claude/context/core/patterns/early-metadata-pattern.md - Early metadata creation for interruption recovery
+- @.claude/context/core/patterns/mcp-tool-recovery.md - MCP error recovery patterns
 - @.claude/rules/git-workflow.md - Git commit conventions
+- @.claude/rules/error-handling.md - Error types including delegation_interrupted
