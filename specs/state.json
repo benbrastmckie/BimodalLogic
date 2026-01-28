@@ -669,11 +669,11 @@
     {
       "project_number": 698,
       "project_name": "fix_roadmap_content_and_style_issues",
-      "status": "planning",
+      "status": "planned",
       "language": "markdown",
       "priority": "medium",
       "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-28T04:10:48Z",
+      "last_updated": "2026-01-28T04:13:02Z",
       "session_id": "sess_1769573429_59158c",
       "description": "Update ROAD_MAP.md to fix content accuracy and style issues identified in FIX: and NOTE: tags. Tasks include: (1) Update architecture tables to match actual Lean source code (lines 22, 166), (2) Remove historical language and emojis (lines 52, 72, 80, 131), (3) Reverse diagram order to show foundations first (line 58), (4) Remove unnecessary links to reports (line 156), (5) Add initial phase for completing proofs and porting Boneyard elements (line 188).",
       "researched": "2026-01-28T04:08:34Z",
@@ -682,8 +682,14 @@
           "path": "specs/698_fix_roadmap_content_and_style_issues/reports/research-001.md",
           "type": "research",
           "summary": "Detailed analysis of 9 ROAD_MAP.md issues with current vs desired state comparisons and specific line-by-line change recommendations"
+        },
+        {
+          "path": "specs/698_fix_roadmap_content_and_style_issues/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan covering emoji removal, historical language cleanup, section removal, diagram reversal, architecture table updates, and Phase 0 addition for proof completion"
         }
-      ]
+      ],
+      "planned": "2026-01-28T04:13:02Z"
     },
     {
       "project_number": 699,
