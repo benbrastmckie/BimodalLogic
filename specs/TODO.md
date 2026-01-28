@@ -1,20 +1,20 @@
 ---
-next_project_number: 705
+next_project_number: 706
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 26
+  active: 27
   completed: 264
   in_progress: 0
-  not_started: 22
+  not_started: 23
   abandoned: 21
-  total: 294
+  total: 295
 priority_distribution:
   critical: 0
   high: 5
-  medium: 15
+  medium: 16
   low: 6
 technical_debt:
   sorry_count: 205
@@ -131,6 +131,18 @@ technical_debt:
 
 ## Medium Priority
 
+### 705. Fix Bimodal introduction Typst issues
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-28
+- **Source**: Theories/Bimodal/typst/chapters/00-introduction.typ (FIX: tags at lines 18, 78)
+
+**Description**: Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document.
+
+---
+
 ### 704. Create typst agent and skill
 - **Effort**: 6-8 hours
 - **Status**: [NOT STARTED]
@@ -170,7 +182,7 @@ technical_debt:
 
 ### 700. Research algebraic representation theorem proof
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28

@@ -1,10 +1,21 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 30,
-    "last_sync": "2026-01-28T02:53:15Z"
+    "total_tasks": 31,
+    "last_sync": "2026-01-28T05:31:57Z"
   },
   "active_projects": [
+    {
+      "project_number": 705,
+      "project_name": "fix_bimodal_introduction_typst_issues",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-28T05:31:57Z",
+      "last_updated": "2026-01-28T05:31:57Z",
+      "session_id": "sess_1769569117_87f47b",
+      "description": "Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document."
+    },
     {
       "project_number": 701,
       "project_name": "fix_lean_lsp_mcp_hanging",
@@ -645,12 +656,12 @@
     {
       "project_number": 700,
       "project_name": "research_algebraic_representation_theorem_proof",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-28T02:28:05Z",
-      "session_id": "sess_1769565837_bafe97",
+      "last_updated": "2026-01-28T02:59:36Z",
+      "session_id": "sess_1769569155_7c17ab",
       "description": "Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.",
       "researched": "2026-01-28T02:28:05Z",
       "artifacts": [
@@ -710,7 +721,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 705,
+  "next_project_number": 706,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -719,8 +730,8 @@
     }
   ],
   "task_counts": {
-    "active": 28,
-    "not_started": 6,
-    "total": 28
+    "active": 29,
+    "not_started": 7,
+    "total": 29
   }
 }
