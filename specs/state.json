@@ -718,11 +718,6 @@
           "path": "specs/703_fix_bimodal_typst_formatting_issues/summaries/implementation-summary-20260128.md",
           "type": "summary",
           "summary": "Implementation summary with verification results"
-        },
-        {
-          "path": "specs/703_fix_bimodal_typst_formatting_issues/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-01-28T06:54:42Z",
