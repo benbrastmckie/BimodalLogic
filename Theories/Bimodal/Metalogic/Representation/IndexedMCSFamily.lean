@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.MCSProperties  -- For set_mcs_closed_under_derivation, set_mcs_all_future_all_future
 import Bimodal.Metalogic.Representation.CanonicalWorld
 import Bimodal.Syntax.Formula
-import Bimodal.Boneyard.Metalogic.Completeness  -- For set_mcs_closed_under_derivation and set_mcs_all_future_all_future
 import Bimodal.Theorems.GeneralizedNecessitation  -- For generalized_temporal_k
 import Bimodal.Semantics.Truth  -- For truth_at semantics (Approach A semantic bridge)
 import Mathlib.Algebra.Order.Group.Defs
@@ -49,7 +49,7 @@ namespace Bimodal.Metalogic.Representation
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
--- Use Core's SetMaximalConsistent, but Boneyard.Metalogic for set_mcs_closed_under_derivation
+-- Use Core's SetMaximalConsistent and MCSProperties
 
 /-!
 ## Indexed MCS Family Structure
@@ -270,7 +270,7 @@ lemma mcs_closed_temp_t_future {Gamma : Set Formula} (h_mcs : SetMaximalConsiste
     DerivationTree.modus_ponens _ _ _ h_imp h_G_assume
   -- By MCS closure
   have h_sub : ∀ ψ ∈ [Formula.all_future φ], ψ ∈ Gamma := by simp [h_G]
-  exact Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
+  exact set_mcs_closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
 
 /--
 MCS closure under T-axiom for past: Hφ ∈ mcs implies φ ∈ mcs.
@@ -293,7 +293,7 @@ lemma mcs_closed_temp_t_past {Gamma : Set Formula} (h_mcs : SetMaximalConsistent
     DerivationTree.modus_ponens _ _ _ h_imp h_H_assume
   -- By MCS closure
   have h_sub : ∀ ψ ∈ [Formula.all_past φ], ψ ∈ Gamma := by simp [h_H]
-  exact Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
+  exact set_mcs_closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
 
 /-!
 ## Indexed Family Construction
@@ -456,7 +456,7 @@ lemma future_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent
 
   -- Step 3: By MCS deductive closure, G ⊥ ∈ Gamma
   have h_G_bot_in : Formula.all_future Formula.bot ∈ Gamma :=
-    Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs L_G h_L_G_sub d_G_bot
+    set_mcs_closed_under_derivation h_mcs L_G h_L_G_sub d_G_bot
 
   -- Step 4: Contradiction with hypothesis h_no_G_bot
   exact h_no_G_bot h_G_bot_in
@@ -507,7 +507,7 @@ lemma past_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent G
 
   -- Step 3: By MCS deductive closure, H ⊥ ∈ Gamma
   have h_H_bot_in : Formula.all_past Formula.bot ∈ Gamma :=
-    Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs L_H h_L_H_sub d_H_bot
+    set_mcs_closed_under_derivation h_mcs L_H h_L_H_sub d_H_bot
 
   -- Step 4: Contradiction with hypothesis h_no_H_bot
   exact h_no_H_bot h_H_bot_in

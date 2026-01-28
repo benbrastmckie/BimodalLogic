@@ -121,7 +121,7 @@ Move 5 essential MCS lemmas from `Boneyard/Metalogic/Completeness.lean` to `Meta
 
 ---
 
-### Phase 4: Update IndexedMCSFamily.lean imports [NOT STARTED]
+### Phase 4: Update IndexedMCSFamily.lean imports [COMPLETED]
 
 **Goal**: Replace Boneyard import with Core import in IndexedMCSFamily
 
