@@ -150,15 +150,18 @@ technical_debt:
 
 ### 704. Create typst agent and skill
 - **Effort**: 6-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-28
+- **Started**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/BimodalReference.typ:14
 - **Research**: [research-001.md](specs/704_create_typst_agent_and_skill/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/704_create_typst_agent_and_skill/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/704_create_typst_agent_and_skill/summaries/implementation-summary-20260128.md)
 
 **Description**: Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks.
 
@@ -166,12 +169,13 @@ technical_debt:
 
 ### 703. Fix Bimodal Typst formatting issues
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-28
+- **Started**: 2026-01-28
 - **Dependencies**: 702
 - **Source**: Theories/Bimodal/typst/BimodalReference.typ (FIX: and NOTE: tags)
 - **Research**: [research-001.md](specs/703_fix_bimodal_typst_formatting_issues/reports/research-001.md)
