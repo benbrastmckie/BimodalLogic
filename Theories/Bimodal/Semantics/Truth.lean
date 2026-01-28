@@ -7,6 +7,10 @@ import Bimodal.Syntax.Formula
 
 This module defines truth evaluation for TM formulas in task models.
 
+**Reflexive Temporal Semantics**: As of Task #658, temporal operators G (all_future)
+and H (all_past) use REFLEXIVE semantics (≤ instead of <), meaning "now and future/past"
+rather than "strictly future/past". This change enables coherence proofs via T-axioms.
+
 ## Paper Specification Reference
 
 **Bimodal Logic Semantics (app:TaskSemantics, def:BL-semantics, lines 1857-1872)**:
