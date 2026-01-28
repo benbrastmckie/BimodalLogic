@@ -8,21 +8,30 @@
     {
       "project_number": 730,
       "project_name": "investigate_reflexive_semantics_motivation",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T23:21:54Z",
-      "last_updated": "2026-01-28T23:21:54Z"
+      "last_updated": "2026-01-28T23:28:34Z",
+      "session_id": "sess_1769642746_b74ab6",
+      "researched": "2026-01-28T23:28:34Z",
+      "artifacts": [
+        {
+          "path": "specs/730_investigate_reflexive_semantics_motivation/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of whether reflexive semantics for tense operators was well-motivated - concluded YES, due to fundamental construction impossibility, not backwards TruthLemma"
+        }
+      ]
     },
     {
       "project_number": 729,
       "project_name": "prevent_blocked_mcp_tool_calls_in_agents",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T23:03:26Z",
-      "last_updated": "2026-01-28T23:08:08Z",
-      "session_id": "sess_1769641507_62efb0",
+      "last_updated": "2026-01-28T23:27:09Z",
+      "session_id": "sess_1769642809_498ad6",
       "researching": "2026-01-28T23:05:28Z",
       "researched": "2026-01-28T23:08:08Z",
       "artifacts": [
@@ -31,7 +40,8 @@
           "type": "research",
           "summary": "Analysis of why blocked MCP tools are still being called, with 5 prioritized recommendations"
         }
-      ]
+      ],
+      "planning": "2026-01-28T23:27:09Z"
     },
     {
       "project_number": 728,
