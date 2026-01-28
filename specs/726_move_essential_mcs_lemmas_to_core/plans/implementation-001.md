@@ -71,7 +71,7 @@ Move 5 essential MCS lemmas from `Boneyard/Metalogic/Completeness.lean` to `Meta
 
 ---
 
-### Phase 2: Create Core/MCSProperties.lean [NOT STARTED]
+### Phase 2: Create Core/MCSProperties.lean [COMPLETED]
 
 **Goal**: Copy the 5 essential MCS lemmas with provenance comments
 
