@@ -21,6 +21,11 @@
           "type": "report",
           "path": "specs/701_fix_lean_lsp_mcp_hanging/reports/research-001.md",
           "summary": "Root cause analysis identifying Issue #14496 (complex prompts break MCP access) as primary cause, with workarounds including resume pattern and agent simplification"
+        },
+        {
+          "type": "report",
+          "path": "specs/701_fix_lean_lsp_mcp_hanging/reports/research-002.md",
+          "summary": "Refined analysis showing AbortError -32001 freezes agents at API layer. Elegant fix design: MCP canary check + agent simplification"
         }
       ]
     },

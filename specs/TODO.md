@@ -33,7 +33,7 @@ technical_debt:
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
-- **Research**: [research-001.md](specs/701_fix_lean_lsp_mcp_hanging/reports/research-001.md)
+- **Research**: [research-001.md](specs/701_fix_lean_lsp_mcp_hanging/reports/research-001.md), [research-002.md](specs/701_fix_lean_lsp_mcp_hanging/reports/research-002.md)
 
 **Description**: I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.
 
