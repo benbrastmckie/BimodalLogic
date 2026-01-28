@@ -122,7 +122,7 @@ Key findings from research-004.md:
 
 ---
 
-### Phase 4: Document obsoleted IndexedMCSFamily code [NOT STARTED]
+### Phase 4: Document obsoleted IndexedMCSFamily code [COMPLETED]
 
 **Goal**: Mark the obsoleted `construct_indexed_family` coherence fields (lines 600-663) as superseded by CoherentConstruction.
 

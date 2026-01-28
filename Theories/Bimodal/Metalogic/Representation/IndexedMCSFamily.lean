@@ -579,8 +579,31 @@ lemma mcs_at_time_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gam
 Now we assemble everything into an IndexedMCSFamily.
 -/
 
+/-!
+## SUPERSEDED CONSTRUCTION
+
+**Note**: The `construct_indexed_family` function below uses an independent Lindenbaum
+extension approach that cannot prove the required coherence conditions. This approach
+has been superseded by `CoherentConstruction.lean`.
+
+**Why this approach fails**:
+- Independent Lindenbaum extensions at each time point can add conflicting formulas
+- If `Gφ ∈ mcs(t)` but `Gφ ∉ Gamma`, there's no guarantee `φ ∈ mcs(t')` for t' > t
+- The four coherence conditions cannot be "proven after construction"
+
+**Use instead**: `CoherentConstruction.construct_coherent_family` builds coherence
+into the construction itself, then bridges to `IndexedMCSFamily` trivially.
+
+The sorries below match gaps in the Boneyard `canonical_task_rel` implementation
+(see `Boneyard/Metalogic_v3/README.md`).
+-/
+
 /--
 Construct an indexed MCS family from a root MCS at the origin.
+
+**SUPERSEDED**: Use `CoherentConstruction.construct_coherent_family` instead.
+This construction's coherence conditions cannot be proven with the current approach.
+The sorries below are documented in `Boneyard/Metalogic_v3/`.
 
 **Construction**:
 - `mcs(t)` = extend time_seed to MCS via Lindenbaum
@@ -608,57 +631,29 @@ noncomputable def construct_indexed_family
   -- Forward G coherence: G phi ∈ mcs(t) → phi ∈ mcs(t') for t < t'
   forward_G := by
     intro t t' phi hlt hG
-    -- **Strategy with Reflexive Semantics + T Axioms (Task #658)**:
-    -- 1. From G phi ∈ mcs(t), derive phi ∈ mcs(t) using T axiom temp_t_future
-    -- 2. However, mcs(t) and mcs(t') are independent Lindenbaum extensions
-    -- 3. Need infrastructure to propagate formulas between time points
-    --
-    -- **Required Lemmas** (not yet implemented):
-    -- - seed_coherence: Show that reflexive semantics ensures seeds are connected
-    -- - mcs_propagation: Formulas in mcs(t) propagate to mcs(t') via axioms
-    --
-    -- **Note**: With current seed construction (based only on Gamma at origin),
-    -- this requires either:
-    --   (a) Modifying seed to be recursive/dependent on previous times
-    --   (b) Proving that independent Lindenbaum extensions satisfy coherence
-    --
-    -- **Current Status**: Blocked pending infrastructure development.
-    -- The T axioms are necessary but not sufficient with the current construction.
+    -- SUPERSEDED by CoherentConstruction.lean
+    -- Independent Lindenbaum extensions cannot satisfy this - use construct_coherent_family instead
     sorry
 
   -- Backward H coherence: H phi ∈ mcs(t) → phi ∈ mcs(t') for t' < t
   backward_H := by
     intro t t' phi hlt hH
-    -- **Strategy with Reflexive Semantics + T Axioms (Task #658)**:
-    -- Symmetric to forward_G but using H (all_past) and past direction.
-    -- 1. T axiom temp_t_past: H phi → phi gives phi ∈ mcs(t)
-    -- 2. But mcs(t) and mcs(t') are independent, need propagation
-    --
-    -- **Current Status**: Same infrastructure requirements as forward_G.
+    -- SUPERSEDED by CoherentConstruction.lean
+    -- Independent Lindenbaum extensions cannot satisfy this - use construct_coherent_family instead
     sorry
 
   -- Forward H coherence: H phi ∈ mcs(t') → phi ∈ mcs(t) for t < t'
   forward_H := by
     intro t t' phi hlt hH
-    -- **Strategy with Reflexive Semantics + T Axioms (Task #658)**:
-    -- "Looking back from the future": H phi at t' means phi at all s ≤ t'.
-    -- Since t < t', we have t ≤ t', so phi should hold at t.
-    -- 1. T axiom temp_t_past at t': H phi → phi gives phi ∈ mcs(t')
-    -- 2. Need to propagate phi from mcs(t') back to mcs(t)
-    --
-    -- **Current Status**: Requires backward propagation infrastructure.
+    -- SUPERSEDED by CoherentConstruction.lean
+    -- Independent Lindenbaum extensions cannot satisfy this - use construct_coherent_family instead
     sorry
 
   -- Backward G coherence: G phi ∈ mcs(t') → phi ∈ mcs(t) for t' < t
   backward_G := by
     intro t t' phi hlt hG
-    -- **Strategy with Reflexive Semantics + T Axioms (Task #658)**:
-    -- "Looking forward from the past": G phi at t' means phi at all s ≥ t'.
-    -- Since t' < t, we have t' ≤ t, so phi should hold at t.
-    -- 1. T axiom temp_t_future at t': G phi → phi gives phi ∈ mcs(t')
-    -- 2. Need to propagate phi from mcs(t') forward to mcs(t)
-    --
-    -- **Current Status**: Requires forward propagation infrastructure.
+    -- SUPERSEDED by CoherentConstruction.lean
+    -- Independent Lindenbaum extensions cannot satisfy this - use construct_coherent_family instead
     sorry
 
 /-!

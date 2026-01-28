@@ -35,6 +35,23 @@ Contains unused Truth Lemma directions:
   - `all_past` backward case
   - `all_future` backward case
 
+## Obsoleted Code (Still in Source)
+
+### IndexedMCSFamily.lean construct_indexed_family
+
+The `construct_indexed_family` function in `Metalogic/Representation/IndexedMCSFamily.lean`
+uses an **independent Lindenbaum extension approach** that fundamentally cannot prove the
+required coherence conditions. Its four coherence field sorries are obsoleted by
+`CoherentConstruction.construct_coherent_family`.
+
+**Why independent extensions fail**:
+- Each time point gets an independent Lindenbaum extension
+- Extensions can add conflicting formulas
+- No infrastructure connects mcs(t) to mcs(t')
+
+**Status**: Code remains in place for historical reference with "SUPERSEDED" documentation.
+Use `CoherentConstruction.construct_coherent_family.toIndexedMCSFamily` instead.
+
 ## Potential Future Use
 
 If you need:
