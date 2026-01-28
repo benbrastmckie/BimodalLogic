@@ -1,5 +1,5 @@
 ---
-next_project_number: 716
+next_project_number: 717
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,18 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 716. Fix SoundnessLemmas type mismatches
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-28
+- **Source**: Theories/Bimodal/Boneyard/Metalogic/Soundness/SoundnessLemmas.lean
+
+**Description**: Fix type mismatches in SoundnessLemmas temporal logic proofs. 7 errors involving `<` vs `≤` inequality operators and `truth_at` applications at lines 263, 287, 288, 339, 363, 707, 738. The errors stem from mismatches between strict less-than (`<`) and less-than-or-equal (`≤`) in temporal operator definitions.
+
+---
 
 ### 715. Fix /lake command execution
 - **Effort**: 1 hour
