@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.MCSProperties  -- For set_mcs_closed_under_derivation, set_mcs_all_future_all_future, etc.
 import Bimodal.Metalogic.Representation.IndexedMCSFamily
-import Bimodal.Boneyard.Metalogic.Completeness  -- For Bimodal.Boneyard.Metalogic.set_mcs_all_future_all_future, etc.
 import Bimodal.Theorems.GeneralizedNecessitation  -- For generalized_temporal_k
 import Mathlib.Algebra.Order.Group.Defs
 
@@ -66,8 +66,7 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
--- NOTE: We import Boneyard.Metalogic.Completeness for helper lemmas but use Core definitions.
--- Use fully qualified names for Boneyard lemmas to avoid namespace conflicts.
+-- NOTE: MCSProperties provides helper lemmas (previously from Boneyard).
 
 /-!
 ## Coherent Relation
@@ -222,7 +221,7 @@ lemma forward_seed_consistent_of_no_G_bot (S : Set Formula) (h_mcs : SetMaximalC
 
   -- Step 3: By MCS deductive closure, G ⊥ ∈ S
   have h_G_bot_in : Formula.all_future Formula.bot ∈ S :=
-    Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs L_G h_L_G_sub d_G_bot
+    set_mcs_closed_under_derivation h_mcs L_G h_L_G_sub d_G_bot
 
   -- Step 4: Contradiction with hypothesis h_no_G_bot
   exact h_no_G_bot h_G_bot_in
@@ -257,7 +256,7 @@ lemma backward_seed_consistent_of_no_H_bot (S : Set Formula) (h_mcs : SetMaximal
 
   -- Step 3: By MCS deductive closure, H ⊥ ∈ S
   have h_H_bot_in : Formula.all_past Formula.bot ∈ S :=
-    Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs L_H h_L_H_sub d_H_bot
+    set_mcs_closed_under_derivation h_mcs L_H h_L_H_sub d_H_bot
 
   -- Step 4: Contradiction with hypothesis h_no_H_bot
   exact h_no_H_bot h_H_bot_in
@@ -275,7 +274,7 @@ G formulas persist through forward extension.
 If Gφ ∈ S and T is a forward extension (via forward_seed), then Gφ ∈ T.
 
 **Proof**:
-1. Gφ ∈ S → GGφ ∈ S (by G-4 axiom via Bimodal.Boneyard.Metalogic.set_mcs_all_future_all_future)
+1. Gφ ∈ S → GGφ ∈ S (by G-4 axiom via set_mcs_all_future_all_future)
 2. GGφ ∈ S → Gφ ∈ forward_seed(S) (by definition of forward_seed)
 3. forward_seed(S) ⊆ T → Gφ ∈ T
 
@@ -284,9 +283,9 @@ If Gφ ∈ S and T is a forward extension (via forward_seed), then Gφ ∈ T.
 lemma forward_G_persistence {S T : Set Formula} (h_mcs_S : SetMaximalConsistent S)
     (h_sub : forward_seed S ⊆ T) (φ : Formula)
     (hG : Formula.all_future φ ∈ S) : Formula.all_future φ ∈ T := by
-  -- From Gφ ∈ S, get GGφ ∈ S via Bimodal.Boneyard.Metalogic.set_mcs_all_future_all_future (G-4 axiom)
+  -- From Gφ ∈ S, get GGφ ∈ S via set_mcs_all_future_all_future (G-4 axiom)
   have h_gg : (Formula.all_future φ).all_future ∈ S :=
-    Bimodal.Boneyard.Metalogic.set_mcs_all_future_all_future h_mcs_S hG
+    set_mcs_all_future_all_future h_mcs_S hG
   -- GGφ ∈ S means Gφ ∈ forward_seed(S)
   have h_in_seed : Formula.all_future φ ∈ forward_seed S := h_gg
   -- forward_seed(S) ⊆ T
@@ -300,9 +299,9 @@ Symmetric to forward_G_persistence.
 lemma backward_H_persistence {S T : Set Formula} (h_mcs_S : SetMaximalConsistent S)
     (h_sub : backward_seed S ⊆ T) (φ : Formula)
     (hH : Formula.all_past φ ∈ S) : Formula.all_past φ ∈ T := by
-  -- From Hφ ∈ S, get HHφ ∈ S via Bimodal.Boneyard.Metalogic.set_mcs_all_past_all_past (H-4 axiom)
+  -- From Hφ ∈ S, get HHφ ∈ S via set_mcs_all_past_all_past (H-4 axiom)
   have h_hh : (Formula.all_past φ).all_past ∈ S :=
-    Bimodal.Boneyard.Metalogic.set_mcs_all_past_all_past h_mcs_S hH
+    set_mcs_all_past_all_past h_mcs_S hH
   -- HHφ ∈ S means Hφ ∈ backward_seed(S)
   have h_in_seed : Formula.all_past φ ∈ backward_seed S := h_hh
   -- backward_seed(S) ⊆ T

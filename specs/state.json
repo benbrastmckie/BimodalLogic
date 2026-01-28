@@ -15,74 +15,6 @@
       "last_updated": "2026-01-28T23:47:43Z"
     },
     {
-      "project_number": 729,
-      "project_name": "prevent_blocked_mcp_tool_calls_in_agents",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-28T23:03:26Z",
-      "last_updated": "2026-01-28T23:42:09Z",
-      "session_id": "sess_1769643416_7ae208",
-      "researching": "2026-01-28T23:05:28Z",
-      "researched": "2026-01-28T23:08:08Z",
-      "artifacts": [
-        {
-          "path": "specs/729_prevent_blocked_mcp_tool_calls_in_agents/reports/research-001.md",
-          "type": "research",
-          "summary": "Analysis of why blocked MCP tools are still being called, with 5 prioritized recommendations"
-        },
-        {
-          "path": "specs/729_prevent_blocked_mcp_tool_calls_in_agents/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase plan to prevent blocked MCP tool calls by fixing deprecated agents, creating centralized reference, and updating documentation"
-        },
-        {
-          "path": "specs/729_prevent_blocked_mcp_tool_calls_in_agents/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with all modified files and verification results"
-        }
-      ],
-      "planning": "2026-01-28T23:27:09Z",
-      "planned": "2026-01-28T23:29:18Z",
-      "implementing": "2026-01-28T23:37:15Z",
-      "completed": "2026-01-28T23:42:09Z",
-      "completion_summary": "Created blocked-mcp-tools.md as authoritative reference, updated 8 .claude/ files to consistently document blocked tools with CRITICAL/NEVER USE warnings and bug references.",
-      "claudemd_suggestions": "Updated CLAUDE.md Blocked MCP Tools section with table format and CRITICAL warning, created blocked-mcp-tools.md, updated mcp-tools-guide.md, deprecated agent files, user-installation.md, mcp-tool-recovery.md, skill-lake-repair.md"
-    },
-    {
-      "project_number": 728,
-      "project_name": "create_user_guide_command_workflows",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-28T22:59:09Z",
-      "last_updated": "2026-01-28T23:21:30Z",
-      "session_id": "sess_1769642200_4b3fea",
-      "researched": "2026-01-28T23:07:44Z",
-      "artifacts": [
-        {
-          "path": "specs/728_create_user_guide_command_workflows/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting 13 commands across core workflow, maintenance, and utility categories with recommended user guide structure"
-        },
-        {
-          "path": "specs/728_create_user_guide_command_workflows/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for user guide documenting all command workflows"
-        },
-        {
-          "path": "specs/728_create_user_guide_command_workflows/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-28T23:12:53Z",
-      "started": "2026-01-28T23:17:16Z",
-      "completed": "2026-01-28T23:21:30Z",
-      "completion_summary": "Created user-guide.md documenting all 13 commands (task lifecycle, maintenance, utilities) with syntax, examples, status transitions, and troubleshooting. Updated docs README with navigation links.",
-      "claudemd_suggestions": "Added .claude/docs/guides/user-guide.md, updated .claude/docs/README.md Documentation Map and Guides section"
-    },
-    {
       "project_number": 726,
       "project_name": "move_essential_mcs_lemmas_to_core",
       "status": "implementing",
@@ -126,33 +58,6 @@
       ]
     },
     {
-      "project_number": 725,
-      "project_name": "update_docs_readme_and_rename_architecture",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-28T22:28:14Z",
-      "last_updated": "2026-01-28T22:47:01Z",
-      "session_id": "sess_1769639997_99ffa7",
-      "planned": "2026-01-28T22:34:21Z",
-      "artifacts": [
-        {
-          "path": "specs/725_update_docs_readme_and_rename_architecture/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for updating docs README and renaming ARCHITECTURE.md"
-        },
-        {
-          "path": "specs/725_update_docs_readme_and_rename_architecture/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with all file changes and verification results"
-        }
-      ],
-      "started": "2026-01-28T22:40:15Z",
-      "completed": "2026-01-28T22:47:01Z",
-      "completion_summary": "Renamed ARCHITECTURE.md to README.md, updated 15 cross-references across 9 files, and removed references to deleted troubleshooting/ and migrations/ directories from documentation.",
-      "claudemd_suggestions": "Renamed .claude/ARCHITECTURE.md to .claude/README.md. Updated .claude/CLAUDE.md references. Updated .claude/docs/README.md documentation map and links. Updated .claude/docs/templates/README.md to remove migration history. Updated .claude/context/project/meta/meta-guide.md, project-overview.md, and task-semantics.md references."
-    },
-    {
       "project_number": 697,
       "project_name": "fix_universalcanonicalmodel_compilation_error",
       "status": "planned",
@@ -180,66 +85,6 @@
         }
       ],
       "planned": "2026-01-28T23:52:00Z"
-    },
-    {
-      "project_number": 681,
-      "project_name": "redesign_construct_indexed_family_coherent_approach",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-28T23:43:15Z",
-      "related_tasks": [
-        658
-      ],
-      "description": "Draw on research-004.md to move all proofs that are not required to the Bimodal/Boneyard/ with good documentation in comments, updating Theories/Bimodal/Metalogic/README.md and creating a Metalogic/Representation/README.md to accurately document the full structure of the representation theorem including what has been completed and what remains to be completed, where all unneeded elements should have been removed.",
-      "researching": "2026-01-25T22:22:57Z",
-      "session_id": "sess_1769643293_3a5cd7",
-      "researched": "2026-01-28T23:12:43Z",
-      "artifacts": [
-        {
-          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md",
-          "type": "report",
-          "summary": "Research report analyzing Task 658 blocking issue and recommending relational coherent MCS construction approach based on Boneyard canonical_task_rel pattern"
-        },
-        {
-          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md",
-          "type": "report",
-          "summary": "Research report analyzing Task 658 blocking issue and recommending relational coherent MCS construction approach based on Boneyard canonical_task_rel pattern"
-        },
-        {
-          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-002.md",
-          "type": "research",
-          "summary": "Mathematical elegance analysis comparing Option A (impossible), B1 (discrete only), and B2 (recommended). Proves Option A is fundamentally flawed; recommends B2 for elegance, generality, and Boneyard alignment."
-        },
-        {
-          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-003.md",
-          "type": "research",
-          "summary": "Methods for eliminating proof gaps; explains 'sufficient infrastructure for completeness'; recommends accepting Boneyard-matching gaps"
-        },
-        {
-          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-004.md",
-          "type": "research",
-          "summary": "Gap analysis: confirms completeness only needs proven cases (forward_G Case 1, backward_H Case 4); identifies 9 sorries as non-blocking for completeness"
-        },
-        {
-          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-006.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan covering Boneyard extraction, documentation updates, and README creation"
-        },
-        {
-          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128-v4.md",
-          "type": "summary",
-          "summary": "Implementation summary v4: 7 phases complete - Boneyard documentation, README updates, gap analysis"
-        }
-      ],
-      "planning": "2026-01-25T22:30:14Z",
-      "planned": "2026-01-28T23:31:31Z",
-      "revised": "2026-01-28T17:48:14Z",
-      "started": "2026-01-25T22:38:05Z",
-      "resume_phase": 4,
-      "completed": "2026-01-28T23:43:15Z",
-      "completion_summary": "Documented non-critical sorries in completeness proof and created Boneyard/Metalogic_v3 with comprehensive documentation. Proved that only forward_G Case 1 and backward_H Case 4 are needed for completeness (both proven). Created READMEs for Metalogic and Representation directories."
     },
     {
       "project_number": 658,
@@ -769,12 +614,12 @@
     {
       "project_number": 700,
       "project_name": "research_algebraic_representation_theorem_proof",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-28T03:03:35Z",
-      "session_id": "sess_1769569155_7c17ab",
+      "last_updated": "2026-01-28T23:59:29Z",
+      "session_id": "sess_1769644707_fe458c",
       "description": "Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.",
       "researched": "2026-01-28T03:03:35Z",
       "artifacts": [
