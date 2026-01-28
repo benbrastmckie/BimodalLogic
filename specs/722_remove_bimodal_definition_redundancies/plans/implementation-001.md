@@ -126,29 +126,21 @@ This eliminates namespace conflicts without breaking Boneyard internal code.
 
 ---
 
-### Phase 3: Move Essential Lemmas to Core [NOT STARTED]
+### Phase 3: Move Essential Lemmas to Core [DEFERRED]
 
 **Goal**: Relocate essential lemmas that active code needs from deprecated Completeness.lean to canonical Core location
 
-**Tasks**:
-- [ ] Identify lemmas used by active code but only in deprecated source (`set_mcs_closed_under_derivation`, `set_mcs_all_future_all_future`, etc.)
-- [ ] Move or re-prove essential lemmas in `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean`
-- [ ] Update re-exports in `Metalogic/Core/MaximalConsistent.lean`
-- [ ] Update imports in `IndexedMCSFamily.lean` to use Core instead of Completeness.lean
-- [ ] Update imports in `CoherentConstruction.lean` to use Core instead of Completeness.lean
-- [ ] Run `lake build` and verify
+**Status**: DEFERRED - Given the success of Phase 2 (fully qualified names eliminate namespace conflicts),
+moving lemmas is no longer blocking. The lemmas (`set_mcs_closed_under_derivation`, `set_mcs_all_future_all_future`,
+etc.) have complex dependencies that would require significant refactoring to move.
 
-**Timing**: 1.5 hours
+**Future Work**: If/when Boneyard/Metalogic/Completeness.lean is to be fully deprecated, these lemmas should be:
+1. Moved to `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean`
+2. Dependencies like `deduction_theorem`, `derivation_exchange` must move first
+3. Re-exports updated in `Metalogic/Core/MaximalConsistent.lean`
 
-**Files to modify**:
-- `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean` - add essential lemmas
-- `Metalogic/Core/MaximalConsistent.lean` - extend re-exports
-- `Metalogic/Representation/IndexedMCSFamily.lean` - simplify imports
-- `Metalogic/Representation/CoherentConstruction.lean` - simplify imports
-
-**Verification**:
-- Active files no longer import from `Boneyard/Metalogic/Completeness.lean`
-- `lake build` passes
+**Current State**: Active code uses fully qualified names to access these lemmas without namespace conflicts.
+The import statement `import Bimodal.Boneyard.Metalogic.Completeness` remains necessary but harmless.
 
 ---
 

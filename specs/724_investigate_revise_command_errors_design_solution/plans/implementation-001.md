@@ -47,7 +47,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Fix /revise Command [NOT STARTED]
+### Phase 1: Fix /revise Command [COMPLETED]
 
 **Goal**: Make /revise command work by delegating to postflight-plan.sh
 
@@ -69,7 +69,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Fix Skill Files [NOT STARTED]
+### Phase 2: Fix Skill Files [COMPLETED]
 
 **Goal**: Update all 7 affected skill files to use postflight scripts instead of inline jq
 
@@ -100,7 +100,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update Documentation [NOT STARTED]
+### Phase 3: Update Documentation [IN PROGRESS]
 
 **Goal**: Document the `!=` escaping issue explicitly and update pattern examples
 

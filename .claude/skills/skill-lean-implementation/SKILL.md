@@ -385,9 +385,9 @@ artifact_type="summary"
 artifact_summary="Implementation summary with verification results"
 
 if [ -n "$artifact_path" ]; then
-    # Step 1: Filter out existing summary artifacts (two-step pattern for Issue #1132)
+    # Step 1: Filter out existing summary artifacts (use "| not" pattern to avoid != escaping - Issue #1132)
     jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-        [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")]' \
+        [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "summary" | not)]' \
       specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
     # Step 2: Add new summary artifact

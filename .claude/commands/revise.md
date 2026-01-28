@@ -76,10 +76,10 @@ For tasks with existing plans (planned, implementing, partial, blocked):
        planned: $ts
      }' specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
-   # Step 2: Add artifact
+   # Step 2: Add artifact (use "| not" pattern to avoid != escaping - Issue #1132)
    jq --arg path "{new_plan_path}" \
      '(.active_projects[] | select(.project_number == {task_number})).artifacts =
-       ([(.active_projects[] | select(.project_number == {task_number})).artifacts // [] | .[] | select(.type != "plan")] + [{"path": $path, "type": "plan"}])' \
+       ([(.active_projects[] | select(.project_number == {task_number})).artifacts // [] | .[] | select(.type == "plan" | not)] + [{"path": $path, "type": "plan"}])' \
      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
    ```
 

@@ -291,9 +291,9 @@ artifact_type="research"
 artifact_summary="Research report with theorem findings and proof strategy"
 
 if [ -n "$artifact_path" ]; then
-    # Step 1: Filter out existing research artifacts (two-step pattern for Issue #1132)
+    # Step 1: Filter out existing research artifacts (use "| not" pattern to avoid != escaping - Issue #1132)
     jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-        [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "research")]' \
+        [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "research" | not)]' \
       specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
     # Step 2: Add new research artifact
