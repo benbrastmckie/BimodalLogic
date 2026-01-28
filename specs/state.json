@@ -8,20 +8,12 @@
     {
       "project_number": 697,
       "project_name": "fix_universalcanonicalmodel_compilation_error",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-28T01:24:47Z",
-      "last_updated": "2026-01-28T01:24:47Z"
-    },
-    {
-      "project_number": 696,
-      "project_name": "clean_up_road_map_fix_note_todo_tags",
-      "status": "not_started",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-28T01:19:36Z",
-      "last_updated": "2026-01-28T01:19:36Z"
+      "last_updated": "2026-01-28T01:50:32Z",
+      "session_id": "sess_1769565009_8f71de"
     },
     {
       "project_number": 695,

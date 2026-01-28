@@ -5,6 +5,16 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 696,
+      "project_name": "clean_up_road_map_fix_note_todo_tags",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-28T01:19:36Z",
+      "last_updated": "2026-01-28T01:19:36Z",
+      "abandoned": "2026-01-28T01:56:44Z"
+    },
+    {
       "project_number": 688,
       "project_name": "add_zombie_cleanup_timeout_protection_lean_skill",
       "status": "completed",
