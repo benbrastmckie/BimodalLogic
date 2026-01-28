@@ -157,7 +157,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
-- **Research**: [research-001.md](specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-001.md)
+- **Research**: [research-001.md](specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-001.md), [research-002.md](specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-002.md)
 
 **Description**: Review and remove misleading material from the Boneyard related to past completeness attempts: (1) an approach that did not make the representation theorem central, and (2) an approach using the wrong definition of a canonical model that did not match the task semantics. Preserve results that could be of general use, but add notes to avoid confusing standard Kripke constructions (which are not relevant to the current task semantics) with the task-specific approach.
 
