@@ -26,11 +26,11 @@
     {
       "project_number": 729,
       "project_name": "prevent_blocked_mcp_tool_calls_in_agents",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T23:03:26Z",
-      "last_updated": "2026-01-28T23:27:09Z",
+      "last_updated": "2026-01-28T23:29:18Z",
       "session_id": "sess_1769642809_498ad6",
       "researching": "2026-01-28T23:05:28Z",
       "researched": "2026-01-28T23:08:08Z",
@@ -39,9 +39,15 @@
           "path": "specs/729_prevent_blocked_mcp_tool_calls_in_agents/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of why blocked MCP tools are still being called, with 5 prioritized recommendations"
+        },
+        {
+          "path": "specs/729_prevent_blocked_mcp_tool_calls_in_agents/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan to prevent blocked MCP tool calls by fixing deprecated agents, creating centralized reference, and updating documentation"
         }
       ],
-      "planning": "2026-01-28T23:27:09Z"
+      "planning": "2026-01-28T23:27:09Z",
+      "planned": "2026-01-28T23:29:18Z"
     },
     {
       "project_number": 728,
@@ -142,17 +148,17 @@
     {
       "project_number": 681,
       "project_name": "redesign_construct_indexed_family_coherent_approach",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-28T23:25:24Z",
+      "last_updated": "2026-01-28T23:29:09Z",
       "related_tasks": [
         658
       ],
       "description": "Draw on research-004.md to move all proofs that are not required to the Bimodal/Boneyard/ with good documentation in comments, updating Theories/Bimodal/Metalogic/README.md and creating a Metalogic/Representation/README.md to accurately document the full structure of the representation theorem including what has been completed and what remains to be completed, where all unneeded elements should have been removed.",
       "researching": "2026-01-25T22:22:57Z",
-      "session_id": "sess_1769639981_d41809",
+      "session_id": "sess_1769642934_9ac669",
       "researched": "2026-01-28T23:12:43Z",
       "artifacts": [
         {

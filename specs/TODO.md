@@ -29,11 +29,12 @@ technical_debt:
 
 ### 729. Prevent blocked MCP tool calls in agent system
 - **Effort**: 2-4 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Research**: [research-001.md](specs/729_prevent_blocked_mcp_tool_calls_in_agents/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/729_prevent_blocked_mcp_tool_calls_in_agents/plans/implementation-001.md)
 
 **Description**: Investigate why the agent system is still calling blocked MCP tools (lean_diagnostic_messages, lean_file_outline) despite previous attempts to prevent this. Review /home/benjamin/Projects/ProofChecker/.claude/output/research.md for example of hanging 'lean-lsp - Diagnostics (MCP)' call. Identify all places where agents can call these tools and implement robust blocking. Update agent prompts, skill definitions, and any relevant documentation in .claude/ to ensure agents use alternative patterns (lean_goal, Read + lean_hover_info) instead of the known-buggy tools.
 
@@ -224,7 +225,7 @@ technical_debt:
 
 ### 681. Redesign construct_indexed_family with coherent approach
 - **Effort**: 8 hours (remaining)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
