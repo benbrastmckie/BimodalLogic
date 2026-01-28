@@ -226,6 +226,11 @@
           "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 5-phase plan: add temporal T axioms, change to reflexive semantics, fix soundness proofs, complete coherence proofs"
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Partial implementation: T-axioms and reflexive semantics complete, coherence proofs blocked"
         }
       ],
       "planning": "2026-01-25T21:42:13Z",
