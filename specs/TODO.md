@@ -1,5 +1,5 @@
 ---
-next_project_number: 701
+next_project_number: 702
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 701. Fix lean-lsp-mcp hanging issue
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.
+
+---
 
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 4-6 hours
@@ -118,7 +129,7 @@ technical_debt:
 
 ### 700. Research algebraic representation theorem proof
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28

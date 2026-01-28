@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 701,
+      "project_name": "fix_lean_lsp_mcp_hanging",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "description": "I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.",
+      "created": "2026-01-28T02:04:45Z",
+      "last_updated": "2026-01-28T02:04:45Z"
+    },
+    {
       "project_number": 697,
       "project_name": "fix_universalcanonicalmodel_compilation_error",
       "status": "researching",
@@ -570,12 +580,12 @@
     {
       "project_number": 700,
       "project_name": "research_algebraic_representation_theorem_proof",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-28T01:34:44Z",
-      "session_id": "sess_1769565484_d36c20",
+      "last_updated": "2026-01-28T02:04:11Z",
+      "session_id": "sess_1769565837_bafe97",
       "description": "Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291."
     }
   ],
@@ -591,7 +601,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 701,
+  "next_project_number": 702,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
