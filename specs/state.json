@@ -12,8 +12,8 @@
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T17:55:09Z",
-      "last_updated": "2026-01-28T18:26:27Z",
-      "session_id": "sess_1769624638_9f6e1c",
+      "last_updated": "2026-01-28T18:34:34Z",
+      "session_id": "sess_1769625232_df16d0",
       "researched": "2026-01-28T18:00:06Z",
       "artifacts": [
         {
@@ -22,12 +22,12 @@
           "summary": "Research report with file-by-file analysis and modification recommendations for avoiding hanging lean MCP calls"
         },
         {
-          "path": "specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-001.md",
+          "path": "specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-002.md",
           "type": "plan",
-          "summary": "2-phase plan removing lean_diagnostic_messages and lean_file_outline from 4 skill/command files"
+          "summary": "2-phase plan adding warnings to discourage use of hanging lean-lsp tools while keeping them in allowed-tools"
         }
       ],
-      "planned": "2026-01-28T18:26:27Z"
+      "planned": "2026-01-28T18:34:34Z"
     },
     {
       "project_number": 719,
