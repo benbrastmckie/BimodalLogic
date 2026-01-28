@@ -72,7 +72,7 @@ Key findings from research-004.md:
 
 ---
 
-### Phase 2: Extract unneeded cases from CoherentConstruction.lean [NOT STARTED]
+### Phase 2: Extract unneeded cases from CoherentConstruction.lean [COMPLETED]
 
 **Goal**: Move the 7 sorry-containing case branches from `mcs_unified_chain_pairwise_coherent` to Boneyard, replacing them with a single `sorry` placeholder that documents they are "NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3".
 

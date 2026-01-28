@@ -1,7 +1,7 @@
 # Implementation Plan: Task #729
 
 - **Task**: 729 - prevent_blocked_mcp_tool_calls_in_agents
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Priority**: High
 - **Dependencies**: None

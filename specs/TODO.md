@@ -29,7 +29,7 @@ technical_debt:
 
 ### 729. Prevent blocked MCP tool calls in agent system
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28

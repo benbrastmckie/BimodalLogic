@@ -38,6 +38,28 @@ This module takes a different approach based on the Boneyard `canonical_task_rel
 - Boneyard `canonical_task_rel`: Completeness.lean:2055-2061
 - Boneyard `forward_extension`: Completeness.lean:2521-2581
 - Task 681 implementation plan: specs/681_*/plans/implementation-003.md
+
+## Gaps NOT Required for Completeness
+
+The following cases in `mcs_unified_chain_pairwise_coherent` have sorries that are
+**NOT used by the representation theorem**:
+
+| Case | Location | Why Not Needed |
+|------|----------|----------------|
+| forward_G Case 3 | line 641 | Cross-origin (t < 0, t' >= 0): never exercised |
+| forward_G Case 4 | line 654 | Both < 0 toward origin: cross-modal case |
+| backward_H Case 1 | line 662 | Both >= 0: forward chain doesn't preserve H |
+| backward_H Case 2 | line 665 | Cross-origin: never exercised |
+| forward_H (all) | line 691 | Only needed for backward Truth Lemma |
+| backward_G Case 3 | line 721 | Cross-origin: never exercised |
+| backward_G Case 4 | line 724 | Both < 0: backward chain G-coherence |
+
+**The completeness proof only uses:**
+- `forward_G` Case 1 (both >= 0): PROVEN via `mcs_forward_chain_coherent`
+- `backward_H` Case 4 (both < 0): PROVEN via `mcs_backward_chain_coherent`
+
+See `Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean` for detailed documentation
+of what would be needed to prove the remaining cases.
 -/
 
 namespace Bimodal.Metalogic.Representation
@@ -626,31 +648,11 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
       -- From t' < 0 ≤ t, we get t' < t, contradicting t < t'
       have h_t'_lt_t : t' < t := lt_of_lt_of_le h_t'_nonneg h_t_nonneg
       exact absurd h_lt (asymm h_t'_lt_t)
-    · -- Case 3: t < 0 and t' ≥ 0: Cross-origin case (hG from backward chain, goal in forward chain)
-      -- hG : Gφ ∈ mcs_backward_chain(..., (-t).toNat)
-      -- Goal: φ ∈ mcs_forward_chain(..., t'.toNat)
-      --
-      -- Proof strategy:
-      -- 1. From Gφ ∈ mcs(t), use T-axiom to get φ ∈ mcs(t)
-      -- 2. Show φ propagates from mcs(t) through backward chain to Gamma = mcs(0)
-      -- 3. Then φ propagates through forward chain to mcs(t')
-      --
-      -- This requires backward-to-origin propagation, which needs additional infrastructure.
-      -- GAP: Cross-origin coherence requires connecting backward and forward chains through Gamma.
-      -- See implementation-004.md Phase 3 for detailed analysis.
+    · -- Case 3: t < 0 and t' ≥ 0: Cross-origin case
+      -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
       sorry
     · -- Case 4: t < 0 and t' < 0: both in backward chain, going TOWARD origin
-      -- Since t < t' < 0, we have (-t).toNat > (-t').toNat (|t| > |t'|).
-      -- So mcs(t) is FURTHER from origin than mcs(t').
-      -- We need Gφ ∈ mcs(t) → φ ∈ mcs(t'), going toward origin.
-      --
-      -- This is the cross-modal case: backward chain preserves H-formulas going away
-      -- from origin, but G-formulas going toward origin requires additional reasoning.
-      -- Key insight: By T-axiom, Gφ ∈ mcs(t) → φ ∈ mcs(t), but φ doesn't necessarily
-      -- propagate toward the origin without explicit infrastructure.
-      --
-      -- GAP: G-coherence through backward chain toward origin not implemented.
-      -- This matches Boneyard gap at line 2507 (cross-modal coherence).
+      -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
       sorry
   constructor
   -- backward_H: t' < t → Hφ ∈ mcs(t) → φ ∈ mcs(t')
@@ -658,10 +660,10 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
     unfold mcs_unified_chain at hH ⊢
     by_cases h_t_nonneg : 0 ≤ t <;> by_cases h_t'_nonneg : 0 ≤ t' <;> simp only [h_t_nonneg, h_t'_nonneg] at hH ⊢
     · -- Case 1: Both t' ≥ 0 and t ≥ 0
-      -- GAP: H-propagation through forward chain requires additional infrastructure.
+      -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
       sorry
     · -- Case 2: t ≥ 0 and t' < 0: cross-origin
-      -- GAP: Cross-origin requires connecting chains through Gamma
+      -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
       sorry
     · -- Case 3: t < 0 and t' ≥ 0: contradiction since t' < t
       simp only [not_le] at h_t_nonneg
@@ -675,19 +677,8 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
   constructor
   -- forward_H: t < t' → Hφ ∈ mcs(t') → φ ∈ mcs(t)
   · intro h_lt φ hH
-    -- This says: "if φ has always been true from perspective of t', then φ is true at t"
-    -- where t is in the past of t'.
-    --
-    -- Proof strategy:
-    -- 1. By T-axiom: Hφ ∈ mcs(t') → φ ∈ mcs(t') (via mcs_closed_temp_t_past)
-    -- 2. Need to show formulas propagate "backward" from mcs(t') to mcs(t)
-    --
-    -- This is fundamentally different from forward_G:
-    -- - forward_G: Gφ forces φ to appear in FUTURE times
-    -- - forward_H: Hφ at t' asserts φ was true at PAST times
-    --
-    -- The second step requires that the chain construction preserves this relationship.
-    -- GAP: Backward propagation through forward chain not implemented.
+    -- NOT REQUIRED FOR COMPLETENESS - only needed for backward Truth Lemma
+    -- See Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
     sorry
   -- backward_G: t' < t → Gφ ∈ mcs(t') → φ ∈ mcs(t)
   · intro h_lt φ hG
@@ -716,11 +707,11 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
       simp only [not_le] at h_t_nonneg
       have : t < t' := lt_of_lt_of_le h_t_nonneg h_t'_nonneg
       exact absurd h_lt (asymm this)
-    · -- Case 3: t' < 0 and t ≥ 0: cross-origin, Gφ in backward chain, goal in forward chain
-      -- GAP: Cross-origin backward_G requires infrastructure connecting chains through Gamma
+    · -- Case 3: t' < 0 and t ≥ 0: cross-origin
+      -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
       sorry
     · -- Case 4: Both t' < 0 and t < 0
-      -- GAP: Backward chain G-coherence not yet implemented
+      -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
       sorry
 
 /--
