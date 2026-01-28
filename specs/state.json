@@ -136,11 +136,11 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-28T23:12:43Z",
+      "last_updated": "2026-01-28T23:25:24Z",
       "related_tasks": [
         658
       ],
-      "description": "Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyards canonical_task_rel pattern), or research alternative approaches.",
+      "description": "Draw on research-004.md to move all proofs that are not required to the Bimodal/Boneyard/ with good documentation in comments, updating Theories/Bimodal/Metalogic/README.md and creating a Metalogic/Representation/README.md to accurately document the full structure of the representation theorem including what has been completed and what remains to be completed, where all unneeded elements should have been removed.",
       "researching": "2026-01-25T22:22:57Z",
       "session_id": "sess_1769639981_d41809",
       "researched": "2026-01-28T23:12:43Z",

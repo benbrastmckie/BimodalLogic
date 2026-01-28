@@ -235,7 +235,7 @@ technical_debt:
 - **Plan**: [implementation-005.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-005.md)
 - **Summary**: [implementation-summary-20260128-v3.md](specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128-v3.md)
 
-**Description**: Plug remaining 10 sorries in CoherentConstruction.lean based on research-003.md. Key insight: the completeness theorem only needs forward_G Case 1 and backward_H Case 4, both of which are ALREADY PROVEN. Plan documents sufficiency for completeness, attempts seed consistency proofs, and accepts remaining gaps as Boneyard-matching theoretical limitations.
+**Description**: Draw on research-004.md to move all proofs that are not required to the Bimodal/Boneyard/ with good documentation in comments, updating Theories/Bimodal/Metalogic/README.md and creating a Metalogic/Representation/README.md to accurately document the full structure of the representation theorem including what has been completed and what remains to be completed, where all unneeded elements should have been removed.
 
 ---
 
