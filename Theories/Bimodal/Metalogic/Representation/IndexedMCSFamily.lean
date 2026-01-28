@@ -15,9 +15,9 @@ proper formula propagation.
 
 ## Overview
 
-The key insight from research-004.md: The same-MCS-at-all-times approach fails because
-it requires temporal T-axioms (`G phi -> phi`, `H phi -> phi`) that TM logic does NOT have.
-G/H are IRREFLEXIVE operators that exclude the present moment.
+**Design Evolution**: Originally, TM logic used irreflexive temporal operators (G = "strictly future",
+H = "strictly past") without T-axioms. As of Task #658, we switched to REFLEXIVE temporal operators
+with T-axioms (`G phi -> phi`, `H phi -> phi`) to enable coherence proofs.
 
 **Solution**: Build a family of MCS indexed by time, where each time point has its own
 MCS connected to adjacent times via temporal coherence conditions.
@@ -32,11 +32,11 @@ MCS connected to adjacent times via temporal coherence conditions.
 
 ## Design Rationale
 
-The coherence conditions are weaker than T-axioms:
-- T-axiom would say: `G phi in MCS(t) -> phi in MCS(t)` (REFLEXIVE - NOT VALID for TM)
-- Our condition says: `G phi in MCS(t) -> phi in MCS(t')` for t' > t (STRICTLY FUTURE)
-
-This matches the irreflexive semantics of G ("strictly future") and H ("strictly past").
+With reflexive semantics (Task #658):
+- T-axiom temp_t_future: `G phi -> phi` (φ includes present)
+- T-axiom temp_t_past: `H phi -> phi` (φ includes present)
+- Semantics: `G phi` at t means φ holds at all s where t ≤ s (not s > t)
+- Coherence: `G phi in MCS(t) -> phi in MCS(t')` for t < t' connects MCS across time
 
 ## References
 
@@ -549,99 +549,57 @@ noncomputable def construct_indexed_family
   -- Forward G coherence: G phi ∈ mcs(t) → phi ∈ mcs(t') for t < t'
   forward_G := by
     intro t t' phi hlt hG
-    -- **Key Insight**: This proof relies on the relationship between
-    -- G phi ∈ mcs(t) and the seed structure. We use:
-    -- 1. MCS deductive closure (set_mcs_closed_under_derivation)
-    -- 2. Temporal 4 axiom (G phi → GG phi, via set_mcs_all_future_all_future)
-    -- 3. Seed containment in MCS (mcs_at_time_contains_seed)
+    -- **Strategy with Reflexive Semantics + T Axioms (Task #658)**:
+    -- 1. From G phi ∈ mcs(t), derive phi ∈ mcs(t) using T axiom temp_t_future
+    -- 2. However, mcs(t) and mcs(t') are independent Lindenbaum extensions
+    -- 3. Need infrastructure to propagate formulas between time points
     --
-    -- The proof proceeds by showing phi is in the seed for mcs(t'),
-    -- which requires relating G phi ∈ mcs(t) to G phi ∈ Gamma.
+    -- **Required Lemmas** (not yet implemented):
+    -- - seed_coherence: Show that reflexive semantics ensures seeds are connected
+    -- - mcs_propagation: Formulas in mcs(t) propagate to mcs(t') via axioms
     --
-    -- **Case Analysis on t**:
-    -- When t = 0: G phi ∈ mcs(0) = extendToMCS(Gamma)
-    -- When t > 0: G phi ∈ mcs(t) = extendToMCS(future_seed), need GG phi ∈ Gamma
-    -- When t < 0: G phi ∈ mcs(t) = extendToMCS(past_seed), cross-origin case
+    -- **Note**: With current seed construction (based only on Gamma at origin),
+    -- this requires either:
+    --   (a) Modifying seed to be recursive/dependent on previous times
+    --   (b) Proving that independent Lindenbaum extensions satisfy coherence
     --
-    -- **Main Strategy**:
-    -- Use the contrapositive with MCS negation completeness (neg_complete).
-    -- If phi ∉ mcs(t'), then ¬phi ∈ mcs(t') by negation completeness.
-    -- This should lead to G phi ∉ mcs(t) by temporal semantics.
-    --
-    -- However, this strategy requires connecting different MCS at different times,
-    -- which is exactly what the indexed family construction is trying to establish.
-    --
-    -- **Current Status**: This proof is incomplete. The construction may need
-    -- refinement to ensure coherence. See research-001.md for detailed analysis.
-    --
-    -- The sorries mark where additional infrastructure is needed:
-    -- - Lemma relating MCS extension to seed membership
-    -- - Lemma for cross-time-point MCS coherence
+    -- **Current Status**: Blocked pending infrastructure development.
+    -- The T axioms are necessary but not sufficient with the current construction.
     sorry
 
   -- Backward H coherence: H phi ∈ mcs(t) → phi ∈ mcs(t') for t' < t
   backward_H := by
     intro t t' phi hlt hH
-    -- **Symmetric to forward_G** but using H (all_past) and past direction.
+    -- **Strategy with Reflexive Semantics + T Axioms (Task #658)**:
+    -- Symmetric to forward_G but using H (all_past) and past direction.
+    -- 1. T axiom temp_t_past: H phi → phi gives phi ∈ mcs(t)
+    -- 2. But mcs(t) and mcs(t') are independent, need propagation
     --
-    -- **Key Components**:
-    -- 1. Temporal 4 for H: H phi → HH phi (via set_mcs_all_past_all_past)
-    -- 2. Past seed: {psi | H psi ∈ Gamma} for t < 0
-    -- 3. Seed containment in MCS
-    --
-    -- **Main Strategy**: Similar to forward_G, use temporal axioms and
-    -- MCS closure properties to show phi is in the seed or extension at t'.
-    --
-    -- **Current Status**: This proof mirrors forward_G and has the same
-    -- infrastructure requirements.
+    -- **Current Status**: Same infrastructure requirements as forward_G.
     sorry
 
   -- Forward H coherence: H phi ∈ mcs(t') → phi ∈ mcs(t) for t < t'
   forward_H := by
     intro t t' phi hlt hH
-    -- **The "inverse" direction**: "Looking back from the future"
+    -- **Strategy with Reflexive Semantics + T Axioms (Task #658)**:
+    -- "Looking back from the future": H phi at t' means phi at all s ≤ t'.
+    -- Since t < t', we have t ≤ t', so phi should hold at t.
+    -- 1. T axiom temp_t_past at t': H phi → phi gives phi ∈ mcs(t')
+    -- 2. Need to propagate phi from mcs(t') back to mcs(t)
     --
-    -- If H phi ∈ mcs(t') where t < t', then phi ∈ mcs(t).
-    -- Semantically: if "phi was always true in the past" holds at t',
-    -- then phi must have been true at the earlier time t.
-    --
-    -- **Key Difference from forward_G**:
-    -- This is NOT about seed propagation but semantic coherence.
-    -- The MCS at t' claims something about ALL past times, including t.
-    --
-    -- **Proof Strategy (Contrapositive)**:
-    -- 1. Assume phi ∉ mcs(t)
-    -- 2. By MCS negation completeness: ¬phi ∈ mcs(t)
-    -- 3. Show this contradicts H phi ∈ mcs(t') for t < t'
-    --    (Because H phi means phi at ALL past times, but t is past of t')
-    --
-    -- This requires connecting mcs(t) and mcs(t') through temporal semantics.
-    -- The key lemma needed: if ¬phi ∈ mcs(t) and t < t', then ¬(H phi) ∈ mcs(t')
-    -- which uses the Temporal A axiom or similar.
-    --
-    -- **Current Status**: Requires negation completeness lemma (neg_complete)
-    -- which has a sorry in CanonicalWorld.lean.
+    -- **Current Status**: Requires backward propagation infrastructure.
     sorry
 
   -- Backward G coherence: G phi ∈ mcs(t') → phi ∈ mcs(t) for t' < t
   backward_G := by
     intro t t' phi hlt hG
-    -- **The "inverse" direction**: "Looking forward from the past"
+    -- **Strategy with Reflexive Semantics + T Axioms (Task #658)**:
+    -- "Looking forward from the past": G phi at t' means phi at all s ≥ t'.
+    -- Since t' < t, we have t' ≤ t, so phi should hold at t.
+    -- 1. T axiom temp_t_future at t': G phi → phi gives phi ∈ mcs(t')
+    -- 2. Need to propagate phi from mcs(t') forward to mcs(t)
     --
-    -- If G phi ∈ mcs(t') where t' < t, then phi ∈ mcs(t).
-    -- Semantically: if "phi will always be true in the future" holds at t',
-    -- then phi must be true at the later time t.
-    --
-    -- **Proof Strategy (Contrapositive)**: Similar to forward_H
-    -- 1. Assume phi ∉ mcs(t)
-    -- 2. By MCS negation completeness: ¬phi ∈ mcs(t)
-    -- 3. Show this contradicts G phi ∈ mcs(t') for t' < t
-    --    (Because G phi means phi at ALL future times, but t is future of t')
-    --
-    -- **Key Lemma Needed**: if ¬phi ∈ mcs(t) and t' < t, then ¬(G phi) ∈ mcs(t')
-    --
-    -- **Current Status**: Requires negation completeness and cross-time
-    -- coherence infrastructure.
+    -- **Current Status**: Requires forward propagation infrastructure.
     sorry
 
 /-!

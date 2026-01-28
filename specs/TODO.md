@@ -133,7 +133,7 @@ technical_debt:
 
 ### 714. Refine Typst styling for journal aesthetic
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
@@ -143,14 +143,14 @@ technical_debt:
 
 ---
 
-### 713. Create Lean build repair skill and /build-repair command
+### 713. Create Lean lake build and repair skill and /lake command which calls this skill
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
+- **Status**: [RESEARCHING]
+ **Priority**: Medium
+ **Language**: meta
+ **Created**: 2026-01-28
 
-**Description**: Create automated Lean build repair skill with /build-repair command that runs lake clean, lake build, and automatically fixes build errors (like missing pattern match cases) until build succeeds.
+**Description**: Create automated Lean build repair skill with /lake command that runs lake clean, lake build, and automatically fixes build errors (like missing pattern match cases) until build succeeds.
 
 ---
 
@@ -174,7 +174,7 @@ technical_debt:
 
 ### 708. Fix Bimodal semantics Typst formatting issues
 - **Effort**: 1.5-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28

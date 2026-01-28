@@ -189,7 +189,7 @@ theorem temp_t_past_valid (φ : Formula) : ⊨ (Formula.all_past φ).imp φ := b
 
 ---
 
-### Phase 4: Complete Coherence Proofs [IN PROGRESS]
+### Phase 4: Complete Coherence Proofs [PARTIAL]
 
 **Goal**: Prove the four coherence conditions (now trivial with T axioms)
 

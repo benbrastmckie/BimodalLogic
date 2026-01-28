@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Researched Lean build repair patterns. Recommend direct execution skill using lean_build MCP tool with iterative error parsing and auto-fix loop. Key auto-fixable errors: missing pattern match cases. Command syntax: /lake [--clean] [--max-retries N] [--module NAME].",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/713_create_lean_build_repair_skill_and_command/reports/research-001.md",
+      "summary": "Research report with skill architecture, error parsing patterns, auto-fix strategies, and implementation recommendations"
+    }
+  ],
+  "next_steps": "Run /plan 713 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1769579529_e7232c",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 2700,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7
+  }
+}
