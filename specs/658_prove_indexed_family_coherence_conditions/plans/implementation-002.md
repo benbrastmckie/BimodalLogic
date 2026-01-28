@@ -145,7 +145,7 @@ Semantically: if φ holds at all times s ≤ t, then φ holds at t.
 
 ---
 
-### Phase 3: Fix Soundness and Dependent Proofs [NOT STARTED]
+### Phase 3: Fix Soundness and Dependent Proofs [COMPLETED]
 
 **Goal**: Update all proofs broken by semantic change
 

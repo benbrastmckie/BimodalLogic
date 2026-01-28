@@ -378,18 +378,18 @@ theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y 
       exact (truth_double_shift_cancel M ρ (x - y) x ψ).mp h2'
 
   | all_past ψ ih =>
-    -- Past quantifies over earlier times
-    -- Times shift together: s < y in σ corresponds to s-(y-x) < x in shifted history
+    -- Past quantifies over times up to and including now (reflexive)
+    -- Times shift together: s ≤ y in σ corresponds to s-(y-x) ≤ x in shifted history
     simp only [truth_at]
     constructor
-    · intro h_past s h_s_lt_y
-      -- s < y in σ, need to show truth at s in σ
-      -- Use shifted time: s' = s - (y - x) < x
-      have h_s_shifted_lt_x : s - (y - x) < x := by
-        have h := sub_lt_sub_right h_s_lt_y (y - x)
+    · intro h_past s h_s_le_y
+      -- s ≤ y in σ, need to show truth at s in σ
+      -- Use shifted time: s' = s - (y - x) ≤ x
+      have h_s_shifted_le_x : s - (y - x) ≤ x := by
+        have h := sub_le_sub_right h_s_le_y (y - x)
         simp only [sub_sub_cancel] at h
         exact h
-      have h_truth_shifted := h_past (s - (y - x)) h_s_shifted_lt_x
+      have h_truth_shifted := h_past (s - (y - x)) h_s_shifted_le_x
       -- Apply IH: need to show (time_shift σ (y - x), s - (y - x)) ↔ (σ, s)
       -- The shift amount should be: s - (s - (y - x)) = y - x
       have h_shift_eq : s - (s - (y - x)) = y - x := sub_sub_cancel s (y - x)
@@ -399,16 +399,16 @@ theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y 
         exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
       have h_truth_ih := (truth_history_eq M _ _ (s - (y - x)) h_hist_eq.symm ψ).mp h_truth_shifted
       exact (ih σ (s - (y - x)) s).mp h_truth_ih
-    · intro h_past s' h_s'_lt_x
-      -- s' < x in shifted σ, need to show truth at s' in shifted σ
+    · intro h_past s' h_s'_le_x
+      -- s' ≤ x in shifted σ, need to show truth at s' in shifted σ
       -- s' corresponds to time s = s' + (y - x) in σ
-      have h_s_lt_y : s' + (y - x) < y := by
-        have h := add_lt_add_right h_s'_lt_x (y - x)
+      have h_s_le_y : s' + (y - x) ≤ y := by
+        have h := add_le_add_right h_s'_le_x (y - x)
         calc s' + (y - x) = (y - x) + s' := add_comm s' (y - x)
-          _ < (y - x) + x := h
+          _ ≤ (y - x) + x := h
           _ = x + (y - x) := add_comm (y - x) x
           _ = y := by rw [add_sub, add_sub_cancel_left]
-      have h_truth_orig := h_past (s' + (y - x)) h_s_lt_y
+      have h_truth_orig := h_past (s' + (y - x)) h_s_le_y
       -- Apply IH: need shift amount = (s' + (y - x)) - s' = y - x
       have h_shift_eq : (s' + (y - x)) - s' = y - x :=
         add_sub_cancel_left s' (y - x)
@@ -421,17 +421,17 @@ theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y 
       exact (truth_history_eq M _ _ s' h_hist_eq ψ).mp h_ih
 
   | all_future ψ ih =>
-    -- Similar to past case: s > y in σ corresponds to s-(y-x) > x in shifted history
+    -- Similar to past case: s ≥ y (i.e., y ≤ s) in σ corresponds to s-(y-x) ≥ x in shifted history
     simp only [truth_at]
     constructor
-    · intro h_future s h_y_lt_s
-      -- y < s in σ, need to show truth at s in σ
-      -- Use shifted time: s' = s - (y - x) > x
-      have h_x_lt_s_shifted : x < s - (y - x) := by
-        have h := sub_lt_sub_right h_y_lt_s (y - x)
+    · intro h_future s h_y_le_s
+      -- y ≤ s in σ, need to show truth at s in σ
+      -- Use shifted time: s' = s - (y - x) and x ≤ s'
+      have h_x_le_s_shifted : x ≤ s - (y - x) := by
+        have h := sub_le_sub_right h_y_le_s (y - x)
         simp only [sub_sub_cancel] at h
         exact h
-      have h_truth_shifted := h_future (s - (y - x)) h_x_lt_s_shifted
+      have h_truth_shifted := h_future (s - (y - x)) h_x_le_s_shifted
       -- Apply IH with shift amount s - (s - (y - x)) = y - x
       have h_shift_eq : s - (s - (y - x)) = y - x := sub_sub_cancel s (y - x)
       have h_hist_eq :
@@ -440,17 +440,17 @@ theorem time_shift_preserves_truth (M : TaskModel F) (σ : WorldHistory F) (x y 
         exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
       have h_truth_ih := (truth_history_eq M _ _ (s - (y - x)) h_hist_eq.symm ψ).mp h_truth_shifted
       exact (ih σ (s - (y - x)) s).mp h_truth_ih
-    · intro h_future s' h_x_lt_s'
-      -- x < s' in shifted σ, need to show truth at s' in shifted σ
+    · intro h_future s' h_x_le_s'
+      -- x ≤ s' in shifted σ, need to show truth at s' in shifted σ
       -- s' corresponds to time s = s' + (y - x) in σ
-      have h_y_lt_s : y < s' + (y - x) := by
-        have h := add_lt_add_right h_x_lt_s' (y - x)
+      have h_y_le_s : y ≤ s' + (y - x) := by
+        have h := add_le_add_right h_x_le_s' (y - x)
         have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
         calc y = x + (y - x) := h_eq.symm
           _ = (y - x) + x := add_comm x (y - x)
-          _ < (y - x) + s' := h
+          _ ≤ (y - x) + s' := h
           _ = s' + (y - x) := add_comm (y - x) s'
-      have h_truth_orig := h_future (s' + (y - x)) h_y_lt_s
+      have h_truth_orig := h_future (s' + (y - x)) h_y_le_s
       -- Apply IH with shift amount (s' + (y - x)) - s' = y - x
       have h_shift_eq : (s' + (y - x)) - s' = y - x :=
         add_sub_cancel_left s' (y - x)
