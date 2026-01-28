@@ -5,17 +5,17 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 25
-  completed: 284
+  active: 20
+  completed: 289
   in_progress: 4
   not_started: 8
   abandoned: 21
-  total: 310
+  total: 315
 priority_distribution:
   critical: 0
-  high: 2
-  medium: 16
-  low: 6
+  high: 6
+  medium: 9
+  low: 5
 technical_debt:
   sorry_count: 205
   axiom_count: 15
@@ -26,40 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 721. Prevent MCP tool hanging with multi-layer defense
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Plan**: [implementation-001.md](specs/721_prevent_mcp_tool_hanging_multi_layer_defense/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/721_prevent_mcp_tool_hanging_multi_layer_defense/summaries/implementation-summary-20260128.md)
-
-**Description**: Implement multi-layer defense to prevent hanging MCP tool calls (lean_diagnostic_messages, lean_file_outline) at primary agent and skill levels. Task 720 removed tools from allowed-tools lists, but agents still call them because: (1) primary agent has unrestricted MCP access, (2) skill body text still references using them. Fix with minimal, focused additions to CLAUDE.md, skills, and commands.
-
----
-
-### 716. Fix SoundnessLemmas type mismatches
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Source**: Theories/Bimodal/Boneyard/Metalogic/Soundness/SoundnessLemmas.lean
-- **Research**: [research-001.md](specs/716_fix_soundnesslemmas_type_mismatches/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/716_fix_soundnesslemmas_type_mismatches/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/716_fix_soundnesslemmas_type_mismatches/summaries/implementation-summary-20260128.md)
-
-**Description**: Fix type mismatches in SoundnessLemmas temporal logic proofs. 7 errors involving `<` vs `≤` inequality operators and `truth_at` applications at lines 263, 287, 288, 339, 363, 707, 738. The errors stem from mismatches between strict less-than (`<`) and less-than-or-equal (`≤`) in temporal operator definitions.
-
----
 
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 4-6 hours
@@ -160,60 +126,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/725_update_docs_readme_and_rename_architecture/plans/implementation-001.md)
 
 **Description**: Update README.md documents in .claude/docs/ to reflect removed files (check git for what was removed). Rename .claude/ARCHITECTURE.md to .claude/README.md while keeping contents and improving cross-linking between documentation files.
-
----
-
-### 724. Investigate revise command errors and design elegant solution
-- **Effort**: 3.75 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/724_investigate_revise_command_errors_design_solution/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/724_investigate_revise_command_errors_design_solution/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/724_investigate_revise_command_errors_design_solution/summaries/implementation-summary-20260128.md)
-
-**Description**: Identify the root cause of the errors in /home/benjamin/Projects/ProofChecker/.claude/output/revise.md in order to design an elegant solution that avoids these errors in any command or skill which may suffer from similar problems.
-
----
-
-### 723. Update .claude/ documentation for accuracy and completeness
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-28
-- **Research**: [research-001.md](specs/723_update_claude_documentation/reports/research-001.md)
-- **Planned**: 2026-01-28
-- **Plan**: [implementation-002.md](specs/723_update_claude_documentation/plans/implementation-002.md)
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Summary**: [implementation-summary-20260128.md](specs/723_update_claude_documentation/summaries/implementation-summary-20260128.md)
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
-
-**Description**: Update the documentation for .claude/ to be fully accurate, complete, and concise. Clearly outline how to use the task management system by describing the full workflow using all the different commands for running the primary workflows (/research, /plan, /implement) and the other commands like /todo, /lake, /review, etc., for maintenance along the way.
-
----
-
-### 722. Remove redundant definitions from Bimodal project
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/722_remove_bimodal_definition_redundancies/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/722_remove_bimodal_definition_redundancies/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/722_remove_bimodal_definition_redundancies/summaries/implementation-summary-20260128.md)
-
-**Description**: Remove redundant/duplicate definitions throughout the Bimodal/ project to maintain a consistent and maintainable theory. Starting example: SetMaximalConsistent has two definitions (1) Boneyard.Metalogic.SetMaximalConsistent and (2) Core.SetMaximalConsistent from Bimodal.Metalogic.Core.MaximalConsistent. Search for similar cases of redundancy and consolidate to single canonical definitions.
 
 ---
 
