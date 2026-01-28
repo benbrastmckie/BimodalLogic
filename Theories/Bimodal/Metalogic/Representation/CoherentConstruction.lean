@@ -1,187 +1,579 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Representation.IndexedMCSFamily
-import Bimodal.Syntax.Formula
-import Bimodal.Boneyard.Metalogic.Completeness
+import Bimodal.Boneyard.Metalogic.Completeness  -- For set_mcs_all_future_all_future, etc.
+import Bimodal.Theorems.GeneralizedNecessitation  -- For generalized_temporal_k
 import Mathlib.Algebra.Order.Group.Defs
 
 /-!
-# Coherent Indexed MCS Family Construction
+# Coherent Indexed Family Construction
 
-This module implements a coherent construction approach for IndexedMCSFamily
-that guarantees temporal coherence by building it into the construction rather
-than trying to prove it after the fact.
+This module implements Option B2: a relational coherent construction for indexed MCS families.
+The key insight is that coherence must be **definitional** - built into the construction itself -
+rather than something proven after the fact.
 
-## Design Approach
+## Design Philosophy
 
-The key insight from research-001.md: Independent Lindenbaum extensions at each
-time point cannot guarantee coherence because each makes independent choices about
-which formulas to add beyond the seed. The solution is to define coherence
-RELATIONALLY between neighboring MCS pairs, adapted from the Boneyard's
-`canonical_task_rel` pattern.
+The original `construct_indexed_family` in IndexedMCSFamily.lean used independent Lindenbaum
+extensions at each time point. This approach is fundamentally flawed because:
+- Independent extensions can add conflicting formulas
+- If `Gφ ∈ mcs(t)` but `Gφ ∉ Gamma`, there's no guarantee `φ ∈ mcs(t')` for t' > t
+- The four coherence conditions cannot be "proven after construction"
 
-## Construction Strategy
+This module takes a different approach based on the Boneyard `canonical_task_rel` pattern:
+1. Define `coherent_at` relation that directly encodes the four coherence conditions
+2. Build extension lemmas that construct MCS satisfying this relation
+3. Extract IndexedMCSFamily conditions trivially from the relation definition
 
-1. Define `coherent_at` relation between MCS pairs that encodes all four
-   IndexedMCSFamily coherence conditions
-2. Define `CoherentIndexedFamily` structure using pairwise coherence
-3. Prove forward/backward extension existence lemmas
-4. Prove that pairwise coherence implies transitivity
-5. Construct a complete family from a root MCS
-6. Bridge to IndexedMCSFamily by proving coherence conditions follow from
-   pairwise coherence
+## Main Definitions
+
+- `coherent_at`: Two MCS are coherent at times t, t' if temporal formulas propagate correctly
+- `CoherentIndexedFamily`: A family of MCS with pairwise coherence
+- `forward_seed`: Seed for constructing MCS at future time
+- `forward_extension`: Existence of forward-coherent MCS extensions
+- `backward_seed`: Seed for constructing MCS at past time
+- `backward_extension`: Existence of backward-coherent MCS extensions
 
 ## References
 
-- Research report: specs/681_.../reports/research-001.md
-- Implementation plan: specs/681_.../plans/implementation-001.md
-- Boneyard pattern: Theories/Bimodal/Boneyard/Metalogic/Completeness.lean:2055-2581
+- Boneyard `canonical_task_rel`: Completeness.lean:2055-2061
+- Boneyard `forward_extension`: Completeness.lean:2521-2581
+- Task 681 implementation plan: specs/681_*/plans/implementation-003.md
 -/
 
 namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
-open Bimodal.Metalogic_v2.Core
+open Bimodal.Boneyard.Metalogic
+
+/-!
+## Coherent Relation
+
+The `coherent_at` relation directly encodes the four IndexedMCSFamily coherence conditions.
+This makes coherence **definitional** rather than something to prove after construction.
+-/
 
 variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
-/-!
-## Coherent Relation Definition
+/--
+Two MCS are coherent at times t, t' if temporal formulas propagate correctly.
 
-The `coherent_at` relation defines what it means for two MCS to be coherent
-at their respective time points. This encodes all four IndexedMCSFamily coherence
-conditions in a single relational definition.
+This directly encodes the four IndexedMCSFamily coherence conditions:
+- forward_G: Gφ ∈ mcs(t) → φ ∈ mcs(t') for t < t'
+- backward_H: Hφ ∈ mcs(t) → φ ∈ mcs(t') for t' < t
+- forward_H: Hφ ∈ mcs(t') → φ ∈ mcs(t) for t < t'
+- backward_G: Gφ ∈ mcs(t') → φ ∈ mcs(t) for t' < t
+
+The relation is designed so that if we build a family with pairwise coherence,
+the IndexedMCSFamily conditions follow trivially by extracting the appropriate conjunct.
+
+**Reference**: Inspired by Boneyard `canonical_task_rel` (Completeness.lean:2055), but
+simplified to focus purely on temporal coherence (omitting modal transfer since we're
+building an indexed family, not a task relation).
 -/
+def coherent_at (mcs_t mcs_t' : Set Formula) (t t' : D) : Prop :=
+  (t < t' → ∀ φ, Formula.all_future φ ∈ mcs_t → φ ∈ mcs_t') ∧  -- forward_G
+  (t' < t → ∀ φ, Formula.all_past φ ∈ mcs_t → φ ∈ mcs_t') ∧    -- backward_H
+  (t < t' → ∀ φ, Formula.all_past φ ∈ mcs_t' → φ ∈ mcs_t) ∧    -- forward_H
+  (t' < t → ∀ φ, Formula.all_future φ ∈ mcs_t' → φ ∈ mcs_t)     -- backward_G
 
 /--
-Two MCS are coherent at times t and t' if they satisfy temporal transfer conditions.
+A family of MCS indexed by time with pairwise coherence.
 
-This relation captures the four IndexedMCSFamily coherence conditions:
-1. Forward G: If t < t', then G φ at t implies φ at t'
-2. Backward H: If t' < t, then H φ at t implies φ at t'
-3. Forward H: If t < t', then H φ at t' implies φ at t ("looking back")
-4. Backward G: If t' < t, then G φ at t' implies φ at t ("looking forward")
+The `pairwise_coherent` field directly implies all four IndexedMCSFamily conditions
+by extracting the appropriate conjunct from `coherent_at`.
 
-**Key Design**: The conditions are IMPLICATIONS guarded by time ordering.
-This makes the relation reflexive at equal times (all implications vacuous).
--/
-def coherent_at (mcs_t : Set Formula) (mcs_t' : Set Formula) (t t' : D) : Prop :=
-  (t < t' → ∀ φ, Formula.all_future φ ∈ mcs_t → φ ∈ mcs_t') ∧
-  (t' < t → ∀ φ, Formula.all_past φ ∈ mcs_t → φ ∈ mcs_t') ∧
-  (t < t' → ∀ φ, Formula.all_past φ ∈ mcs_t' → φ ∈ mcs_t) ∧
-  (t' < t → ∀ φ, Formula.all_future φ ∈ mcs_t' → φ ∈ mcs_t)
-
-/-!
-## Coherent Indexed Family Structure
-
-A `CoherentIndexedFamily` is an indexed family of MCS where pairwise coherence
-is guaranteed by construction. This is stronger than `IndexedMCSFamily` because
-it requires coherence between ALL pairs, not just specific patterns.
--/
-
-/--
-An indexed family of MCS with pairwise temporal coherence.
-
-**Structure**:
-- `mcs`: Assignment of MCS to each time point
-- `is_mcs`: Proof that each assigned set is maximal consistent
-- `pairwise_coherent`: All pairs of time points have coherent MCS
-
-**Key Property**: The `pairwise_coherent` field is the construction constraint.
-By requiring coherence at construction time, we avoid the impossible task of
-proving it after independent Lindenbaum extensions.
+**Key Insight**: Unlike the original `construct_indexed_family` which tried to prove
+coherence after building independent MCS extensions, this structure requires coherence
+as part of the construction. The bridge to IndexedMCSFamily is then trivial.
 -/
 structure CoherentIndexedFamily where
-  /-- MCS assignment to each time point -/
+  /-- The MCS assignment: each time t gets an MCS -/
   mcs : D → Set Formula
   /-- Each assigned set is maximal consistent -/
   is_mcs : ∀ t, SetMaximalConsistent (mcs t)
-  /-- Pairwise temporal coherence between all time points -/
+  /-- Every pair of MCS is coherent with respect to their times -/
   pairwise_coherent : ∀ t t', coherent_at D (mcs t) (mcs t') t t'
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
 /-!
-## Basic Properties of Coherent Relation
+### Basic Properties of Coherent Relation
 -/
 
 /--
-Reflexivity: Any MCS is coherent with itself at the same time.
+Coherence is reflexive: any MCS is coherent with itself at the same time.
 
-**Proof**: All four conditions are vacuous when t = t' (no strict inequality).
+All four conditions are vacuously true since neither `t < t` nor `t > t` holds.
 -/
-theorem coherent_at_refl (S : Set Formula) (t : D) :
-    coherent_at D S S t t := by
+lemma coherent_at_refl (S : Set Formula) (t : D) : coherent_at D S S t t := by
   unfold coherent_at
-  refine ⟨?_, ?_, ?_, ?_⟩
-  -- Forward G: t < t → ... (vacuous, t < t is false)
+  constructor
   · intro h_lt
-    exfalso
-    exact lt_irrefl t h_lt
-  -- Backward H: t < t → ... (vacuous, t < t is false)
+    exact absurd h_lt (lt_irrefl t)
+  constructor
   · intro h_lt
-    exfalso
-    exact lt_irrefl t h_lt
-  -- Forward H: t < t → ... (vacuous, t < t is false)
+    exact absurd h_lt (lt_irrefl t)
+  constructor
   · intro h_lt
-    exfalso
-    exact lt_irrefl t h_lt
-  -- Backward G: t < t → ... (vacuous, t < t is false)
+    exact absurd h_lt (lt_irrefl t)
   · intro h_lt
-    exfalso
-    exact lt_irrefl t h_lt
+    exact absurd h_lt (lt_irrefl t)
 
 /--
-Coherence conditions are symmetric in a specific sense: if S is coherent with T
-at times (t, t'), then T is coherent with S at times (t', t) with swapped
-directions.
+Coherence is symmetric in a crossed sense: coherent_at S T t t' ↔ coherent_at T S t' t.
 
-This is not quite symmetry (coherent_at S T t t' ↔ coherent_at T S t' t)
-but rather a relationship between the conditions.
+This swaps both the sets and the time points, maintaining the correct relationship
+between the conditions.
 -/
-theorem coherent_at_swap (S T : Set Formula) (t t' : D)
-    (h : coherent_at D S T t t') :
-    coherent_at D T S t' t := by
-  unfold coherent_at at *
-  obtain ⟨h_fwd_G, h_bwd_H, h_fwd_H, h_bwd_G⟩ := h
-  refine ⟨?_, ?_, ?_, ?_⟩
-  -- Forward G for (T, S) at (t', t): t' < t → G φ ∈ T → φ ∈ S
-  -- This is exactly h_bwd_G (backward G for (S, T) at (t, t'))
-  · exact h_bwd_G
-  -- Backward H for (T, S) at (t', t): t < t' → H φ ∈ T → φ ∈ S
-  -- This is exactly h_fwd_H (forward H for (S, T) at (t, t'))
-  · intro h_lt
-    exact h_fwd_H h_lt
-  -- Forward H for (T, S) at (t', t): t' < t → H φ ∈ S → φ ∈ T
-  -- This is exactly h_bwd_H (backward H for (S, T) at (t, t'))
-  · exact h_bwd_H
-  -- Backward G for (T, S) at (t', t): t < t' → G φ ∈ S → φ ∈ T
-  -- This is exactly h_fwd_G (forward G for (S, T) at (t, t'))
-  · intro h_lt
-    exact h_fwd_G h_lt
+lemma coherent_at_symm (S T : Set Formula) (t t' : D) :
+    coherent_at D S T t t' ↔ coherent_at D T S t' t := by
+  unfold coherent_at
+  constructor <;> intro ⟨h1, h2, h3, h4⟩ <;> exact ⟨h4, h3, h2, h1⟩
 
 /-!
-## Properties of CoherentIndexedFamily
+## Forward Seed and Extension
+
+The forward seed `{φ | Gφ ∈ S}` contains exactly the formulas that *must* be in any
+coherent future MCS. By extending this seed to an MCS, we guarantee forward_G by construction.
 -/
 
 /--
-Get the MCS at a specific time from a coherent family.
+Seed for constructing MCS at future time.
+
+If T is any MCS containing forward_seed(S), then:
+- Gφ ∈ S implies φ ∈ forward_seed(S) by definition
+- φ ∈ forward_seed(S) implies φ ∈ T by subset
+- Therefore Gφ ∈ S → φ ∈ T, which is forward_G
+
+**Reference**: Mirrors Boneyard forward_seed (Completeness.lean:2472)
 -/
-def CoherentIndexedFamily.at (family : CoherentIndexedFamily D) (t : D) : Set Formula :=
-  family.mcs t
+def forward_seed (S : Set Formula) : Set Formula :=
+  {φ | Formula.all_future φ ∈ S}
 
 /--
-The MCS at any time in a coherent family is consistent.
+Seed for constructing MCS at past time.
+
+Symmetric to forward_seed, using H instead of G.
 -/
-lemma CoherentIndexedFamily.consistent (family : CoherentIndexedFamily D) (t : D) :
-    SetConsistent (family.mcs t) :=
-  (family.is_mcs t).1
+def backward_seed (S : Set Formula) : Set Formula :=
+  {φ | Formula.all_past φ ∈ S}
 
 /--
-The MCS at any time in a coherent family is maximal.
+The forward seed of an MCS is consistent.
+
+**Proof Idea**:
+1. If forward_seed(S) were inconsistent, some finite subset {φ₁, ..., φₙ} would derive ⊥
+2. By generalized necessitation, {Gφ₁, ..., Gφₙ} derives G⊥
+3. But Gφᵢ ∈ S for all i, so by MCS deductive closure, G⊥ ∈ S
+4. This contradicts h_no_G_bot
+
+**Reference**: Matches Boneyard gap at line 2507 in structure, but our proof is complete
+because we have the h_no_G_bot hypothesis.
 -/
-lemma CoherentIndexedFamily.maximal (family : CoherentIndexedFamily D) (t : D) :
-    ∀ φ : Formula, φ ∉ family.mcs t → ¬SetConsistent (insert φ (family.mcs t)) :=
-  (family.is_mcs t).2
+lemma forward_seed_consistent_of_no_G_bot (S : Set Formula) (h_mcs : SetMaximalConsistent S)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ S) :
+    SetConsistent (forward_seed S) := by
+  intro L hL
+  -- L is a list of formulas where each φ has G φ ∈ S
+  -- We need to show L is consistent
+  by_contra h_incons
+  unfold Consistent at h_incons
+  push_neg at h_incons
+  obtain ⟨d_bot⟩ := h_incons
+
+  -- Step 1: Apply generalized_temporal_k to get derivation of G ⊥ from G L
+  let L_G := L.map Formula.all_future
+  have d_G_bot : L_G ⊢ Formula.all_future Formula.bot :=
+    Bimodal.Theorems.generalized_temporal_k L Formula.bot d_bot
+
+  -- Step 2: Show all elements of L_G are in S
+  have h_L_G_sub : ∀ ψ ∈ L_G, ψ ∈ S := by
+    intro ψ h_mem
+    simp only [List.mem_map] at h_mem
+    obtain ⟨φ, h_φ_in_L, rfl⟩ := h_mem
+    -- φ ∈ L and L ⊆ forward_seed S, so Gφ ∈ S
+    have h_in_seed : φ ∈ forward_seed S := hL φ h_φ_in_L
+    exact h_in_seed
+
+  -- Step 3: By MCS deductive closure, G ⊥ ∈ S
+  have h_G_bot_in : Formula.all_future Formula.bot ∈ S :=
+    set_mcs_closed_under_derivation h_mcs L_G h_L_G_sub d_G_bot
+
+  -- Step 4: Contradiction with hypothesis h_no_G_bot
+  exact h_no_G_bot h_G_bot_in
+
+/--
+The backward seed of an MCS is consistent.
+
+Symmetric to forward_seed_consistent_of_no_G_bot, using H (all_past) instead of G (all_future).
+-/
+lemma backward_seed_consistent_of_no_H_bot (S : Set Formula) (h_mcs : SetMaximalConsistent S)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ S) :
+    SetConsistent (backward_seed S) := by
+  intro L hL
+  by_contra h_incons
+  unfold Consistent at h_incons
+  push_neg at h_incons
+  obtain ⟨d_bot⟩ := h_incons
+
+  -- Step 1: Apply generalized_past_k to get derivation of H ⊥ from H L
+  let L_H := L.map Formula.all_past
+  have d_H_bot : L_H ⊢ Formula.all_past Formula.bot :=
+    Bimodal.Theorems.generalized_past_k L Formula.bot d_bot
+
+  -- Step 2: Show all elements of L_H are in S
+  have h_L_H_sub : ∀ ψ ∈ L_H, ψ ∈ S := by
+    intro ψ h_mem
+    simp only [List.mem_map] at h_mem
+    obtain ⟨φ, h_φ_in_L, rfl⟩ := h_mem
+    have h_in_seed : φ ∈ backward_seed S := hL φ h_φ_in_L
+    exact h_in_seed
+
+  -- Step 3: By MCS deductive closure, H ⊥ ∈ S
+  have h_H_bot_in : Formula.all_past Formula.bot ∈ S :=
+    set_mcs_closed_under_derivation h_mcs L_H h_L_H_sub d_H_bot
+
+  -- Step 4: Contradiction with hypothesis h_no_H_bot
+  exact h_no_H_bot h_H_bot_in
+
+/-!
+## G and H Persistence
+
+These lemmas establish that G-formulas persist through forward coherent extensions
+and H-formulas persist through backward coherent extensions. This uses the G-4 and H-4 axioms.
+-/
+
+/--
+G formulas persist through forward extension.
+
+If Gφ ∈ S and T is a forward extension (via forward_seed), then Gφ ∈ T.
+
+**Proof**:
+1. Gφ ∈ S → GGφ ∈ S (by G-4 axiom via set_mcs_all_future_all_future)
+2. GGφ ∈ S → Gφ ∈ forward_seed(S) (by definition of forward_seed)
+3. forward_seed(S) ⊆ T → Gφ ∈ T
+
+**Reference**: Boneyard future_formula_persistence (Completeness.lean:2130-2143)
+-/
+lemma forward_G_persistence {S T : Set Formula} (h_mcs_S : SetMaximalConsistent S)
+    (h_sub : forward_seed S ⊆ T) (φ : Formula)
+    (hG : Formula.all_future φ ∈ S) : Formula.all_future φ ∈ T := by
+  -- From Gφ ∈ S, get GGφ ∈ S via set_mcs_all_future_all_future (G-4 axiom)
+  have h_gg : (Formula.all_future φ).all_future ∈ S :=
+    set_mcs_all_future_all_future h_mcs_S hG
+  -- GGφ ∈ S means Gφ ∈ forward_seed(S)
+  have h_in_seed : Formula.all_future φ ∈ forward_seed S := h_gg
+  -- forward_seed(S) ⊆ T
+  exact h_sub h_in_seed
+
+/--
+H formulas persist through backward extension.
+
+Symmetric to forward_G_persistence.
+-/
+lemma backward_H_persistence {S T : Set Formula} (h_mcs_S : SetMaximalConsistent S)
+    (h_sub : backward_seed S ⊆ T) (φ : Formula)
+    (hH : Formula.all_past φ ∈ S) : Formula.all_past φ ∈ T := by
+  -- From Hφ ∈ S, get HHφ ∈ S via set_mcs_all_past_all_past (H-4 axiom)
+  have h_hh : (Formula.all_past φ).all_past ∈ S :=
+    set_mcs_all_past_all_past h_mcs_S hH
+  -- HHφ ∈ S means Hφ ∈ backward_seed(S)
+  have h_in_seed : Formula.all_past φ ∈ backward_seed S := h_hh
+  -- backward_seed(S) ⊆ T
+  exact h_sub h_in_seed
+
+/-!
+## Forward and Backward Extension Theorems
+
+For any MCS S, there exist forward and backward coherent extensions.
+-/
+
+/--
+For any MCS S (not containing G⊥), there exists an MCS T that is forward-coherent with S.
+
+**Construction**:
+1. forward_seed(S) is consistent (by forward_seed_consistent_of_no_G_bot)
+2. Extend via set_lindenbaum to MCS T
+3. The forward_G condition holds because forward_seed ⊆ T
+4. Other conditions require T-axiom reasoning
+
+**Reference**: Mirrors Boneyard forward_extension (Completeness.lean:2521-2581)
+-/
+theorem forward_extension (S : Set Formula) (h_mcs : SetMaximalConsistent S)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ S)
+    (t t' : D) (h_lt : t < t') :
+    ∃ T : Set Formula, SetMaximalConsistent T ∧
+      (∀ φ, Formula.all_future φ ∈ S → φ ∈ T) ∧  -- forward_G
+      (forward_seed S ⊆ T) := by
+  -- 1. Get consistent seed
+  have h_cons := forward_seed_consistent_of_no_G_bot S h_mcs h_no_G_bot
+  -- 2. Extend to MCS
+  obtain ⟨T, h_sub, h_mcs_T⟩ := set_lindenbaum (forward_seed S) h_cons
+  use T, h_mcs_T
+  constructor
+  -- forward_G: Gφ ∈ S → φ ∈ T
+  · intro φ hG
+    have h_in_seed : φ ∈ forward_seed S := hG
+    exact h_sub h_in_seed
+  -- forward_seed ⊆ T
+  · exact h_sub
+
+/--
+For any MCS S (not containing H⊥), there exists an MCS T that is backward-coherent with S.
+
+Symmetric to forward_extension.
+-/
+theorem backward_extension (S : Set Formula) (h_mcs : SetMaximalConsistent S)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ S)
+    (t t' : D) (h_lt : t' < t) :
+    ∃ T : Set Formula, SetMaximalConsistent T ∧
+      (∀ φ, Formula.all_past φ ∈ S → φ ∈ T) ∧  -- backward_H
+      (backward_seed S ⊆ T) := by
+  -- 1. Get consistent seed
+  have h_cons := backward_seed_consistent_of_no_H_bot S h_mcs h_no_H_bot
+  -- 2. Extend to MCS
+  obtain ⟨T, h_sub, h_mcs_T⟩ := set_lindenbaum (backward_seed S) h_cons
+  use T, h_mcs_T
+  constructor
+  -- backward_H: Hφ ∈ S → φ ∈ T
+  · intro φ hH
+    have h_in_seed : φ ∈ backward_seed S := hH
+    exact h_sub h_in_seed
+  -- backward_seed ⊆ T
+  · exact h_sub
+
+/-!
+## Coherent Family Construction for ℤ
+
+Build a CoherentIndexedFamily from a root MCS, specialized to D = ℤ.
+
+**Strategy**:
+1. Define forward chain: mcs(n+1) as forward extension of mcs(n)
+2. Define backward chain: mcs(-n-1) as backward extension of mcs(-n)
+3. Combine into unified function ℤ → Set Formula
+4. Prove pairwise coherence by induction on |t - t'|
+
+**Note**: The general D case requires Dependent Choice axiom. For v1, we restrict to ℤ.
+-/
+
+/--
+Forward chain construction: Build MCS for non-negative times.
+
+At time 0, use Gamma directly.
+At time n+1, extend mcs(n) using forward_seed.
+-/
+noncomputable def mcs_forward_chain (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) : ℕ → Set Formula
+  | 0 => Gamma
+  | n+1 =>
+    let S := mcs_forward_chain Gamma h_mcs h_no_G_bot n
+    -- The forward seed of S is consistent (will prove this inductively)
+    -- For now, use extendToMCS with a sorry for consistency
+    extendToMCS (forward_seed S) (by
+      -- Need to show forward_seed S is consistent
+      -- This follows from S being MCS (induction) and G⊥ ∉ S (propagated)
+      -- Full proof requires inductive infrastructure
+      sorry)
+
+/--
+Backward chain construction: Build MCS for negative times.
+
+Similar to forward chain, but using backward_seed.
+-/
+noncomputable def mcs_backward_chain (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) : ℕ → Set Formula
+  | 0 => Gamma
+  | n+1 =>
+    let S := mcs_backward_chain Gamma h_mcs h_no_H_bot n
+    extendToMCS (backward_seed S) (by
+      sorry)
+
+/--
+Unified MCS function for ℤ.
+
+Combines forward and backward chains:
+- mcs_unified(t) = mcs_forward_chain(t.toNat) for t ≥ 0
+- mcs_unified(t) = mcs_backward_chain((-t).toNat) for t < 0
+-/
+noncomputable def mcs_unified_chain (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) : ℤ → Set Formula :=
+  fun t =>
+    if h : 0 ≤ t then
+      mcs_forward_chain Gamma h_mcs h_no_G_bot t.toNat
+    else
+      mcs_backward_chain Gamma h_mcs h_no_H_bot ((-t).toNat)
+
+/--
+The MCS at any time in the unified construction is maximal consistent.
+-/
+lemma mcs_unified_chain_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma)
+    (t : ℤ) : SetMaximalConsistent (mcs_unified_chain Gamma h_mcs h_no_G_bot h_no_H_bot t) := by
+  unfold mcs_unified_chain
+  split_ifs with h
+  · -- t ≥ 0: mcs_forward_chain
+    induction t.toNat with
+    | zero => exact h_mcs
+    | succ n ih =>
+      unfold mcs_forward_chain
+      exact extendToMCS_is_mcs _ _
+  · -- t < 0: mcs_backward_chain
+    induction ((-t).toNat) with
+    | zero => exact h_mcs
+    | succ n ih =>
+      unfold mcs_backward_chain
+      exact extendToMCS_is_mcs _ _
+
+/--
+Forward chain preserves forward_seed containment.
+
+For n ≥ 0, forward_seed(mcs(n)) ⊆ mcs(n+1).
+-/
+lemma mcs_forward_chain_seed_containment (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) (n : ℕ) :
+    forward_seed (mcs_forward_chain Gamma h_mcs h_no_G_bot n) ⊆
+      mcs_forward_chain Gamma h_mcs h_no_G_bot (n + 1) := by
+  unfold mcs_forward_chain
+  exact extendToMCS_contains _ _
+
+/--
+Backward chain preserves backward_seed containment.
+
+For n ≥ 0, backward_seed(mcs(-n)) ⊆ mcs(-n-1).
+-/
+lemma mcs_backward_chain_seed_containment (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) (n : ℕ) :
+    backward_seed (mcs_backward_chain Gamma h_mcs h_no_H_bot n) ⊆
+      mcs_backward_chain Gamma h_mcs h_no_H_bot (n + 1) := by
+  unfold mcs_backward_chain
+  exact extendToMCS_contains _ _
+
+/--
+Forward coherence between adjacent times in the forward chain.
+
+For n < m in ℕ, mcs(n) and mcs(m) satisfy forward_G.
+-/
+lemma mcs_forward_chain_coherent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
+    (n m : ℕ) (h_lt : n < m) (φ : Formula)
+    (hG : Formula.all_future φ ∈ mcs_forward_chain Gamma h_mcs h_no_G_bot n) :
+    φ ∈ mcs_forward_chain Gamma h_mcs h_no_G_bot m := by
+  -- Induction on the gap m - n
+  induction m with
+  | zero => exact absurd h_lt (Nat.not_lt_zero n)
+  | succ m' ih =>
+    by_cases h : n < m'
+    · -- n < m' < m'+1: Apply ih to get φ ∈ mcs(m'), then use seed containment
+      have h_phi_m' : φ ∈ mcs_forward_chain Gamma h_mcs h_no_G_bot m' := ih h
+      -- Need Gφ ∈ mcs(m') to conclude φ ∈ mcs(m'+1)
+      -- This is the key gap: we have φ ∈ mcs(m'), but need Gφ ∈ mcs(m')
+      -- to apply seed containment for the next step.
+      -- This requires G-persistence through the chain.
+      sorry
+    · -- n ≥ m', so n = m' (since n < m'+1 and n ≥ m' means n = m')
+      push_neg at h
+      have h_eq : n = m' := Nat.eq_of_le_of_lt_succ h h_lt
+      subst h_eq
+      -- n = m', so we need φ ∈ mcs(n+1) from Gφ ∈ mcs(n)
+      have h_in_seed : φ ∈ forward_seed (mcs_forward_chain Gamma h_mcs h_no_G_bot n) := hG
+      exact mcs_forward_chain_seed_containment Gamma h_mcs h_no_G_bot n h_in_seed
+
+/--
+Pairwise coherence of the unified chain construction.
+-/
+lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma)
+    (t t' : ℤ) :
+    coherent_at ℤ (mcs_unified_chain Gamma h_mcs h_no_G_bot h_no_H_bot t)
+                  (mcs_unified_chain Gamma h_mcs h_no_G_bot h_no_H_bot t') t t' := by
+  unfold coherent_at
+  constructor
+  -- forward_G: t < t' → Gφ ∈ mcs(t) → φ ∈ mcs(t')
+  · intro h_lt φ hG
+    -- Several cases based on signs of t and t'
+    unfold mcs_unified_chain at hG ⊢
+    split_ifs at hG ⊢ with ht ht'
+    · -- t ≥ 0 and t' ≥ 0: Both in forward chain
+      have h_nat_lt : t.toNat < t'.toNat := by
+        omega
+      exact mcs_forward_chain_coherent Gamma h_mcs h_no_G_bot t.toNat t'.toNat h_nat_lt φ hG
+    · -- t ≥ 0 and t' < 0: Contradiction since t < t' and t ≥ 0, t' < 0
+      omega
+    · -- t < 0 and t' ≥ 0: Crosses the origin
+      sorry
+    · -- t < 0 and t' < 0: Both in backward chain
+      sorry
+  constructor
+  -- backward_H: t' < t → Hφ ∈ mcs(t) → φ ∈ mcs(t')
+  · intro h_lt φ hH
+    sorry
+  constructor
+  -- forward_H: t < t' → Hφ ∈ mcs(t') → φ ∈ mcs(t)
+  · intro h_lt φ hH
+    -- This is the "looking back from the future" condition
+    -- Requires T-axiom: Hφ → φ in mcs(t')
+    -- Then need to propagate φ back to mcs(t)
+    sorry
+  -- backward_G: t' < t → Gφ ∈ mcs(t') → φ ∈ mcs(t)
+  · intro h_lt φ hG
+    -- This is the "looking forward from the past" condition
+    -- Symmetric to forward_H
+    sorry
+
+/--
+Construct a CoherentIndexedFamily from a root MCS.
+
+**Hypotheses**:
+- `h_no_G_bot`: G ⊥ ∉ Gamma (ensures forward temporal extension)
+- `h_no_H_bot`: H ⊥ ∉ Gamma (ensures backward temporal extension)
+
+These conditions ensure the MCS is satisfiable in an UNBOUNDED temporal model.
+-/
+noncomputable def construct_coherent_family
+    (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) :
+    CoherentIndexedFamily ℤ where
+  mcs := mcs_unified_chain Gamma h_mcs h_no_G_bot h_no_H_bot
+  is_mcs := mcs_unified_chain_is_mcs Gamma h_mcs h_no_G_bot h_no_H_bot
+  pairwise_coherent := mcs_unified_chain_pairwise_coherent Gamma h_mcs h_no_G_bot h_no_H_bot
+
+/-!
+## Bridge to IndexedMCSFamily
+
+Convert CoherentIndexedFamily to IndexedMCSFamily. This is the payoff of making
+coherence definitional - the four conditions are trivially extracted from pairwise_coherent.
+-/
+
+/--
+Convert CoherentIndexedFamily to IndexedMCSFamily.
+
+This is trivial because coherent_at directly encodes the four conditions.
+Each field extraction is a one-liner applying the appropriate conjunct.
+-/
+def CoherentIndexedFamily.toIndexedMCSFamily (F : CoherentIndexedFamily D) :
+    IndexedMCSFamily D where
+  mcs := F.mcs
+  is_mcs := F.is_mcs
+  forward_G := fun t t' φ h_lt h_G => (F.pairwise_coherent t t').1 h_lt φ h_G
+  backward_H := fun t t' φ h_lt h_H => (F.pairwise_coherent t t').2.1 h_lt φ h_H
+  forward_H := fun t t' φ h_lt h_H => (F.pairwise_coherent t t').2.2.1 h_lt φ h_H
+  backward_G := fun t t' φ h_lt h_G => (F.pairwise_coherent t t').2.2.2 h_lt φ h_G
+
+/--
+The origin formula is preserved in the constructed coherent family.
+-/
+lemma construct_coherent_family_origin (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma)
+    (φ : Formula) (h_phi : φ ∈ Gamma) :
+    φ ∈ (construct_coherent_family Gamma h_mcs h_no_G_bot h_no_H_bot).mcs 0 := by
+  unfold construct_coherent_family mcs_unified_chain mcs_forward_chain
+  simp only [Int.toNat_zero, le_refl, ↓reduceIte]
+  exact h_phi
 
 end Bimodal.Metalogic.Representation

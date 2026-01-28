@@ -27,6 +27,19 @@ technical_debt:
 
 ## High Priority
 
+### 721. Prevent MCP tool hanging with multi-layer defense
+- **Effort**: 2-3 hours
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+- **Planned**: 2026-01-28
+- **Plan**: [implementation-001.md](specs/721_prevent_mcp_tool_hanging_multi_layer_defense/plans/implementation-001.md)
+
+**Description**: Implement multi-layer defense to prevent hanging MCP tool calls (lean_diagnostic_messages, lean_file_outline) at primary agent and skill levels. Task 720 removed tools from allowed-tools lists, but agents still call them because: (1) primary agent has unrestricted MCP access, (2) skill body text still references using them. Fix with minimal, focused additions to CLAUDE.md, skills, and commands.
+
+---
+
 ### 716. Fix SoundnessLemmas type mismatches
 - **Effort**: 2-3 hours
 - **Status**: [COMPLETED]
