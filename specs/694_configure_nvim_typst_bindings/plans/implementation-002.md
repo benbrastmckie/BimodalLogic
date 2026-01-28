@@ -1,7 +1,7 @@
 # Implementation Plan: Task #694 (Revised)
 
 - **Task**: 694 - configure_nvim_typst_bindings
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Priority**: Normal
 - **Dependencies**: None

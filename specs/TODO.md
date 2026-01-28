@@ -153,13 +153,14 @@ technical_debt:
 
 ### 694. Configure Neovim Typst bindings similar to LaTeX
 - **Effort**: 3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
-- **Started**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Research**: [research-001.md](specs/694_configure_nvim_typst_bindings/reports/research-001.md), [research-002.md](specs/694_configure_nvim_typst_bindings/reports/research-002.md)
 - **Plan**: [implementation-002.md](specs/694_configure_nvim_typst_bindings/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260128.md](specs/694_configure_nvim_typst_bindings/summaries/implementation-summary-20260128.md)
 
 **Description**: Research and configure ~/.config/nvim/ appropriately to include bindings similar to those used for LaTeX in .tex files for Typst (.typ) files.
 
@@ -278,8 +279,6 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Plan**: [implementation-001.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-001.md)
-- **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md)
 - **Status**: [RESEARCHED]
 - **Started**: 2026-01-25T21:32:07Z
 - **Session**: sess_1769395200_f8a2b9
@@ -289,6 +288,8 @@ technical_debt:
 - **Created**: 2026-01-21
 - **Related**: Task 654, Task 657
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:433,439,448,456
+- **Plan**: [implementation-001.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-001.md)
+- **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md)
 - **Summary**: [implementation-summary-20260125.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260125.md)
 
 **Description**: Prove the four coherence condition sorries in the construct_indexed_family function (lines 433, 439, 448, 456). These ensure the indexed MCS family satisfies the coherence requirements that make it work with irreflexive temporal semantics (avoiding the T-axiom problem). Completing these would make the family construction fully constructive. From review-20260121-task654.md medium priority recommendations.
