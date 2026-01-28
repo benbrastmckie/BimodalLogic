@@ -12,6 +12,7 @@ This directory contains the documentation for the `.claude/` agent system. The s
 .claude/docs/
 ├── README.md                    # This file - documentation hub
 ├── guides/                      # How-to guides
+│   ├── user-guide.md           # Comprehensive command workflows guide
 │   ├── user-installation.md    # Quick-start for new users
 │   ├── copy-claude-directory.md # Copy .claude/ to another project
 │   ├── component-selection.md  # When to create command vs skill vs agent
@@ -43,6 +44,7 @@ The `.claude/` directory implements a three-layer architecture: Commands, Skills
 
 ### Getting Started
 - [User Installation Guide](guides/user-installation.md) - Install Claude Code, set up ProofChecker, and learn the basics
+- [Command Workflows User Guide](guides/user-guide.md) - Comprehensive guide to all commands with examples and troubleshooting
 - [Copy .claude/ Directory](guides/copy-claude-directory.md) - Install the agent system in another project
 
 ### Component Development

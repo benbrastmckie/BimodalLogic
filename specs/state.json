@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 730,
+      "project_name": "investigate_reflexive_semantics_motivation",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-28T23:21:54Z",
+      "last_updated": "2026-01-28T23:21:54Z"
+    },
+    {
       "project_number": 729,
       "project_name": "prevent_blocked_mcp_tool_calls_in_agents",
       "status": "researched",
@@ -27,12 +36,12 @@
     {
       "project_number": 728,
       "project_name": "create_user_guide_command_workflows",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:59:09Z",
-      "last_updated": "2026-01-28T23:12:53Z",
-      "session_id": "sess_1769641849_0c3b75",
+      "last_updated": "2026-01-28T23:21:30Z",
+      "session_id": "sess_1769642200_4b3fea",
       "researched": "2026-01-28T23:07:44Z",
       "artifacts": [
         {
@@ -44,9 +53,18 @@
           "path": "specs/728_create_user_guide_command_workflows/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for user guide documenting all command workflows"
+        },
+        {
+          "path": "specs/728_create_user_guide_command_workflows/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "planned": "2026-01-28T23:12:53Z"
+      "planned": "2026-01-28T23:12:53Z",
+      "started": "2026-01-28T23:17:16Z",
+      "completed": "2026-01-28T23:21:30Z",
+      "completion_summary": "Created user-guide.md documenting all 13 commands (task lifecycle, maintenance, utilities) with syntax, examples, status transitions, and troubleshooting. Updated docs README with navigation links.",
+      "claudemd_suggestions": "Added .claude/docs/guides/user-guide.md, updated .claude/docs/README.md Documentation Map and Guides section"
     },
     {
       "project_number": 726,
@@ -756,7 +774,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 730,
+  "next_project_number": 731,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

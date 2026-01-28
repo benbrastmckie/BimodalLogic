@@ -1,5 +1,5 @@
 ---
-next_project_number: 730
+next_project_number: 731
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -131,12 +131,14 @@ technical_debt:
 
 ### 728. Create user guide for command workflows
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Research**: [research-001.md](specs/728_create_user_guide_command_workflows/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/728_create_user_guide_command_workflows/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/728_create_user_guide_command_workflows/summaries/implementation-summary-20260128.md)
 
 **Description**: Create a user guide in `.claude/docs/` explaining all command workflows: `/task` (with all flags including --recover, --expand, --sync, --abandon, --review), `/research` (repeatable), `/plan`, `/revise` (zero or more times to refine plans), `/implement` (repeated if needed). Also document maintenance commands: `/todo`, `/review`, `/refresh`, `/lake`, `/meta`, `/errors`, and the `/convert` command for file format conversion. Add a brief overview in `.claude/docs/README.md` with a link to the full guide.
 
