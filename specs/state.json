@@ -6,6 +6,20 @@
   },
   "active_projects": [
     {
+      "project_number": 712,
+      "project_name": "create_lean_research_command_with_context_fork",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "description": "Create a /lean-research command similar to /research but which calls a copy of the lean-research skill called test-lean-research. This test skill uses context:fork instead of direct execution to isolate whether context:fork is working without making other changes to the production skills. This provides a controlled A/B test of context:fork functionality.",
+      "created": "2026-01-28T04:26:13Z",
+      "last_updated": "2026-01-28T04:26:13Z",
+      "related_tasks": [
+        619,
+        711
+      ]
+    },
+    {
       "project_number": 708,
       "project_name": "fix_bimodal_semantics_typst_formatting_issues",
       "status": "not_started",
@@ -686,7 +700,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 712,
+  "next_project_number": 713,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 712
+next_project_number: 713
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,18 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 712. Create /lean-research command with context:fork
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+- **Related**: Task 619, 711
+
+**Description**: Create a /lean-research command similar to /research but which calls a copy of the lean-research skill called test-lean-research. This test skill uses context:fork instead of direct execution to isolate whether context:fork is working without making other changes to the production skills. This provides a controlled A/B test of context:fork functionality.
+
+---
 
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 4-6 hours
