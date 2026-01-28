@@ -566,6 +566,8 @@ theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   | temp_4 ψ => exact temp_4_valid ψ
   | temp_a ψ => exact temp_a_valid ψ
   | temp_l ψ => exact temp_l_valid ψ
+  | temp_t_future ψ => sorry
+  | temp_t_past ψ => sorry
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
 

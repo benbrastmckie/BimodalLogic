@@ -56,12 +56,12 @@
     {
       "project_number": 709,
       "project_name": "research_professional_typst_templates_for_bimodal_documentation",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T03:23:17Z",
-      "last_updated": "2026-01-28T04:37:40Z",
-      "session_id": "sess_1769574703_c09752",
+      "last_updated": "2026-01-28T04:48:18Z",
+      "session_id": "sess_1769575546_d51629",
       "description": "Research professional Typst templates for math publications to improve the appearance of Bimodal TM logic documentation. The current styling is OK but should look more professional like LaTeX. Research online templates for professional math book publications to find ways to enhance the typeset appearance. Source: Theories/Bimodal/typst/chapters/02-semantics.typ:19",
       "researched": "2026-01-28T04:37:40Z",
       "artifacts": [
@@ -69,8 +69,14 @@
           "path": "specs/709_research_professional_typst_templates_for_bimodal_documentation/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive research report covering Typst packages, LaTeX-like styling configuration, and specific fixes for issues flagged in source comments"
+        },
+        {
+          "path": "specs/709_research_professional_typst_templates_for_bimodal_documentation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan covering link styling, TOC formatting, abstract header, notation commands, page layout, theorem environments, and final polish"
         }
-      ]
+      ],
+      "planned": "2026-01-28T04:48:18Z"
     },
     {
       "project_number": 705,
