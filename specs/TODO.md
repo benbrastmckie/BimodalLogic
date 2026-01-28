@@ -286,17 +286,17 @@ technical_debt:
 
 ### 681. Redesign construct_indexed_family with coherent approach
 - **Effort**: 12-14 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
 - **Researched**: 2026-01-28T17:36:17Z
-- **Planned**: 2026-01-28 (revised)
+- **Planned**: 2026-01-28 (v3)
 - **Related**: Task 658
 - **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md), [research-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-003.md)
 
-**Description**: Implement Option B2 (relational coherent construction) to unblock Task 658. Defines `coherent_at` relation encoding all four coherence conditions, then proves forward/backward extension lemmas and transitivity to construct `CoherentIndexedFamily` from root MCS. Research-002.md confirms Option A is mathematically impossible; B2 is the most elegant solution.
+**Description**: Implement Option B2 (relational coherent construction) to unblock Task 658. Plan v3 includes explicit mathematical justification for each phase, specific Boneyard line references (2055, 2507, 2521-2581), and detailed case analysis for transitivity proof. Coherence is definitional via `coherent_at` relation, making IndexedMCSFamily conditions trivially extractable.
 
 ---
 
