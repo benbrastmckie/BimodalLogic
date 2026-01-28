@@ -19,10 +19,11 @@
 ## Executive Summary
 
 - MCP AbortError -32001 is a request timeout error that occurs when MCP tool calls exceed timeout limits (typically 60 seconds)
+- **NEW FINDING**: Multiple concurrent lean-lsp-mcp instances via STDIO transport create resource contention, contributing significantly to timeout issues (confirmed by lean-lsp-mcp Issue #118 and #115)
 - Claude Code has documented subagent termination bugs where errors cascade to kill all subagents via shared AbortController
 - Agents fail to write metadata files when interrupted, leaving tasks stuck in "researching" or "implementing" status
 - The current agent architecture lacks defensive patterns for MCP tool failures and interruption handling
-- Solution requires three-pronged approach: early metadata file creation, MCP error recovery patterns, and interruption-aware cleanup
+- Solution requires four-pronged approach: optimize multi-instance setup, early metadata file creation, MCP error recovery patterns, and interruption-aware cleanup
 
 ## Context & Scope
 
@@ -171,6 +172,132 @@ The existing error schema supports relevant error types:
 
 **Gap**: No specific type for MCP AbortError, which is distinct from simple timeout.
 
+### 9. Multi-Instance STDIO Transport Contention (NEW FINDING)
+
+**Context**: ProofChecker workflow uses multiple concurrent Claude Code sessions (7+ instances) on the same project, each spawning independent lean-lsp-mcp server processes via STDIO transport.
+
+**Root Cause Discovery**: Research confirms multiple concurrent lean-lsp-mcp instances via STDIO transport create resource contention and are a contributing factor to AbortError -32001 timeouts.
+
+#### 9.1 STDIO Transport Architecture Limitation
+
+**Source**: [MCP Framework - STDIO Transport](https://mcp-framework.com/docs/Transports/stdio-transport/), [MCPcat - Configuring Multiple Connections](https://mcpcat.io/guides/configuring-mcp-servers-multiple-simultaneous-connections/)
+
+**Evidence**:
+- STDIO transport supports **single client connection only**
+- Each Claude session spawns **separate server process** (no sharing)
+- Processes requests **sequentially** through stdin/stdout
+- Benchmark performance: **0.64 requests/sec** under concurrent load
+- Concurrent load failure rate: **96%** when handling multiple simultaneous requests
+- Designed for "local, single-client scenarios like CLI tools and desktop applications"
+
+**Impact**: 7 concurrent Claude sessions = 7 independent lean-lsp-mcp processes with 7x resource multiplication.
+
+#### 9.2 Confirmed Resource Exhaustion Issue
+
+**Source**: [lean-lsp-mcp Issue #118 - Build Concurrency Configuration](https://github.com/oOo0oOo/lean-lsp-mcp/issues/118)
+
+**Issue Description** (Opened Jan 23, 2026):
+> "Some clients (or usage patterns) can cause **multiple concurrent lake build processes** to run, which may **exhaust memory and crash the MCP server** or host."
+
+**Reported Behavior**:
+> "Certain AI agents (notably Copilot) can trigger excessive memory consumption **exceeding 16GB** when improperly utilizing the server."
+
+**Proposed Solution**: Three configurable build concurrency modes:
+1. Permissive - Allow simultaneous builds (current behavior)
+2. Abort with error - Cancel prior builds when new requests arrive
+3. Abort with supersession - Replace prior builds, deliver final result to all subscribers
+
+**Status**: Open issue with active discussion, no implementation yet.
+
+#### 9.3 Confirmed Diagnostic Hang Issue
+
+**Source**: [lean-lsp-mcp Issue #115 - Server Halts on Diagnostic Messages](https://github.com/oOo0oOo/lean-lsp-mcp/issues/115)
+
+**Issue Description** (Opened Jan 13, 2026, Reopened):
+Server becomes unresponsive when calling `lean_diagnostic_messages` after editing Lean file imports (e.g., adding `import Mathlib`). Initial tool call works, but subsequent calls after import modifications cause indefinite hangs.
+
+**Root Cause**:
+> "Gets stuck in the function `_wait_for_diagnostics` of `leanclient/file_manager.py`, in particular on the loop `while pending_uris:` starting at line 877, as the `if future.done():` at line 888 is never satisfied"
+
+Timeout detection fails because `any_rpc_pending` remains `True`, preventing loop exit.
+
+**Reproducibility**: Fully reproducible on Lean 4.24.0 with Mathlib-dependent projects.
+
+**Resolution**: Bug fixed in Lean 4.26.0 (LSP server bug, not lean-lsp-mcp bug).
+
+**Workarounds**:
+1. Upgrade to Lean 4.26.0
+2. Restart server before tool calls
+3. Run `lake build` manually before starting MCP server
+
+#### 9.4 MCP General Concurrency Issues
+
+**Source**: [agent0 Issue #912 - Resource Contention/Deadlock](https://github.com/agent0ai/agent-zero/issues/912)
+
+**Evidence**:
+> "When running multiple concurrent sessions, the system frequently **hangs or blocks** when both sessions attempt to use MCP tools simultaneously"
+
+> "Sessions may be competing for the same MCP server process or local StdIO stream. If the framework does not isolate MCP instances per session or handle concurrent requests to a single-threaded MCP server, it results in **permanent block/timeout**"
+
+**Key Insight**: Single-threaded MCP servers with STDIO transport cannot handle concurrent access safely.
+
+#### 9.5 LSP Protocol Single-Server Assumption
+
+**Source**: [Microsoft LSP Specification 3.17](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/), [GitHub Issue #1160 - Multiple Clients Support](https://github.com/microsoft/language-server-protocol/issues/1160)
+
+**Protocol Limitation**:
+> "The protocol currently assumes that **one server serves one tool**... Such sharing would require **additional protocol like document locking** to support concurrent editing."
+
+**Resource Intensity**:
+> "Language features can be resource intensive - to correctly validate a file, a Language Server needs to parse a large amount of files, build up Abstract Syntax Trees, and perform static program analysis."
+
+#### 9.6 Lean 4 Build System Behavior
+
+**Source**: [Lean 4 Lake README](https://github.com/leanprover/lean4/blob/master/src/lake/README.md), [Lean Theorem Prover - ArchWiki](https://wiki.archlinux.org/title/Lean_Theorem_Prover)
+
+**Build System Behavior**:
+- Each LSP instance triggers `lake build` on file changes
+- Build cache (`.lake/` directory with `.olean` files) is **shared** across instances
+- Build **processes** are independent (no coordination)
+- Parallel compilation uses `j$(nproc)` workers per build
+- Multiple concurrent builds = file locking contention on `.olean` files
+
+**Calculation**: 7 instances × `lake build` × `j$(nproc)` workers = severe CPU/memory pressure
+
+#### 9.7 Contributing Factor Analysis
+
+**Why Multiple Instances Cause Timeouts**:
+
+1. **Resource Multiplication**: 7 STDIO processes × memory footprint × CPU load = resource exhaustion
+2. **Build Contention**: Concurrent `lake build` processes compete for:
+   - Shared `.olean` file access (file locking)
+   - CPU cores (7 × nproc parallel workers)
+   - Memory (Issue #118: >16GB possible)
+3. **Diagnostic Processing**: Each instance independently processes diagnostics for same files
+4. **Timeout Cascade**: Resource exhaustion → slow diagnostics → 60s timeout → AbortError -32001
+5. **Abort Controller Bug**: Claude Code Issue #6594 cascades abort to all subagents
+
+**Why It Worked Before**:
+- Fewer concurrent sessions (< 3-4 tolerable)
+- Simpler Lean files (faster diagnostics)
+- Smaller dependency graphs (less build overhead)
+- Lean 4.24.0 LSP bug (Issue #115) recently emerged
+
+**Critical Bottleneck Identified**:
+```
+Multiple STDIO instances × lake build × diagnostic processing
+    ↓
+Memory + CPU exhaustion
+    ↓
+lean_diagnostic_messages timeout (>60s)
+    ↓
+AbortError -32001
+    ↓
+Claude Code shared AbortController cascade
+    ↓
+All subagents terminated, no metadata written
+```
+
 ## Decisions
 
 Based on the research findings, the following architectural decisions are recommended:
@@ -305,6 +432,111 @@ If metadata file contains status="in_progress" or is missing entirely:
 4. Display message: "Agent interrupted. Run command again to resume."
 ```
 
+### Priority 6: Optimize Multi-Instance lean-lsp-mcp Setup (High Impact, Low-Medium Risk)
+
+**Context**: Multiple concurrent Claude Code sessions create resource multiplication via STDIO transport, contributing to timeout issues (Finding 9).
+
+#### 6.1 Immediate Actions (Low Risk)
+
+**A. Upgrade Lean to 4.26.0** (Fixes Issue #115):
+```bash
+cd /home/benjamin/Projects/ProofChecker
+echo "leanprover/lean4:v4.26.0" > lean-toolchain
+lake update
+```
+
+**Benefit**: Eliminates diagnostic hang bug in Lean LSP server
+
+**B. Pre-build Project Before Sessions** (Prevents Issue #118):
+```bash
+cd /home/benjamin/Projects/ProofChecker
+lake build
+```
+
+**Benefit**:
+- Avoids concurrent `lake build` triggers
+- Eliminates timeout on first diagnostic call
+- Reduces memory pressure from parallel builds
+
+**C. Configure Environment Variables**:
+
+Add to `~/.claude.json` (user-scope MCP configuration):
+```json
+{
+  "mcpServers": {
+    "lean-lsp": {
+      "command": "uvx",
+      "args": ["lean-lsp-mcp"],
+      "env": {
+        "LEAN_LOG_LEVEL": "WARNING",
+        "LEAN_PROJECT_PATH": "/home/benjamin/Projects/ProofChecker"
+      }
+    }
+  }
+}
+```
+
+**Benefit**:
+- Reduces log I/O overhead
+- Explicit project path prevents detection overhead
+- Consistent configuration across sessions
+
+#### 6.2 Moderate Actions (Medium Risk)
+
+**D. Reduce Active Sessions During Lean Work**:
+- Limit to 3-4 concurrent Claude sessions when using lean-lsp-mcp
+- Keep other sessions for non-Lean tasks
+- Monitor with `ps aux | grep lean-lsp-mcp | wc -l`
+
+**Benefit**: Reduces resource multiplication factor by 50%+
+
+#### 6.3 Advanced Solutions (Requires Testing)
+
+**E. HTTP Transport Shared Server** (Medium Risk):
+
+Instead of 7 STDIO instances, run 1 shared HTTP server:
+
+```bash
+# Terminal 1: Start single lean-lsp-mcp server
+uvx lean-lsp-mcp --transport http --port 8080
+```
+
+Update **all** Claude sessions to connect:
+```json
+{
+  "mcpServers": {
+    "lean-lsp": {
+      "transport": "http",
+      "url": "http://localhost:8080",
+      "env": {
+        "LEAN_PROJECT_PATH": "/home/benjamin/Projects/ProofChecker"
+      }
+    }
+  }
+}
+```
+
+**Benefits**:
+- 1 server process instead of 7 (7x resource reduction)
+- HTTP transport designed for concurrent connections
+- Shared build coordination (no parallel `lake build` conflicts)
+
+**Risks**:
+- Different latency characteristics than STDIO
+- Single point of failure (one crash affects all sessions)
+- Requires session restart to apply configuration
+
+**Recommendation**: Test with 2-3 sessions before full adoption
+
+#### 6.4 Future Solution (Awaiting Upstream)
+
+**F. Monitor Issue #118 Implementation**:
+- Track [lean-lsp-mcp Issue #118](https://github.com/oOo0oOo/lean-lsp-mcp/issues/118)
+- Implement build queue when available
+- Expected behavior: Queue concurrent builds instead of parallel execution
+
+**Benefit**: Prevents memory exhaustion without workflow changes
+
 ## Risks & Mitigations
 
 | Risk | Severity | Mitigation |
@@ -316,6 +548,12 @@ If metadata file contains status="in_progress" or is missing entirely:
 | Claude Code internal abort not interceptable | High | Focus on defensive patterns within our control |
 
 ## Implementation Phases
+
+**Phase 0 (Immediate): Multi-Instance Optimization**
+- Upgrade Lean to 4.26.0 (`echo "leanprover/lean4:v4.26.0" > lean-toolchain && lake update`)
+- Run `lake build` before starting Claude sessions
+- Configure environment variables in `~/.claude.json`
+- Optional: Test HTTP transport shared server approach
 
 **Phase 1 (Day 1): Core Patterns**
 - Create mcp-tool-recovery.md pattern file
@@ -337,6 +575,11 @@ If metadata file contains status="in_progress" or is missing entirely:
 - Test full workflow with interruption scenarios
 - Document recovery procedures
 
+**Phase 5 (Ongoing): Monitor Upstream**
+- Track lean-lsp-mcp Issue #118 for build queue implementation
+- Evaluate HTTP transport adoption based on Phase 0 testing
+- Adjust session count recommendations based on observed performance
+
 ## Appendix
 
 ### Search Queries Used
@@ -345,16 +588,40 @@ If metadata file contains status="in_progress" or is missing entirely:
 - "MCP server timeout graceful degradation error handling best practices"
 
 ### Key GitHub Issues Referenced
+
+**Claude Code Issues**:
 - [#6594 - Subagent Termination Bug](https://github.com/anthropics/claude-code/issues/6594) - Shared AbortController cascade
 - [#18057 - Skill Tool Abort Crash](https://github.com/anthropics/claude-code/issues/18057) - Error handling crash
 - [#19623 - ExitPlanMode AbortError](https://github.com/anthropics/claude-code/issues/19623) - MCP interaction hang
 
+**lean-lsp-mcp Issues**:
+- [#118 - Build Concurrency Configuration](https://github.com/oOo0oOo/lean-lsp-mcp/issues/118) - Multiple concurrent builds exhaust memory
+- [#115 - Server Halts on Diagnostic Messages](https://github.com/oOo0oOo/lean-lsp-mcp/issues/115) - Diagnostic hang after import edits (fixed in Lean 4.26.0)
+
+**MCP/LSP Protocol Issues**:
+- [agent0 #912 - Resource Contention/Deadlock](https://github.com/agent0ai/agent-zero/issues/912) - MCP STDIO concurrent access hangs
+- [LSP #1160 - Multiple Clients Support](https://github.com/microsoft/language-server-protocol/issues/1160) - Protocol single-server assumption
+
 ### Documentation References
+
+**MCP Protocol & Transport**:
+- [MCP Framework - STDIO Transport](https://mcp-framework.com/docs/Transports/stdio-transport/) - STDIO architecture and limitations
+- [MCPcat - Configuring Multiple Connections](https://mcpcat.io/guides/configuring-mcp-servers-multiple-simultaneous-connections/) - Multi-connection best practices
+- [MCPcat - Transport Comparison](https://mcpcat.io/guides/comparing-stdio-sse-streamablehttp/) - STDIO vs HTTP vs SSE
 - [MCPcat Error Handling Guide](https://mcpcat.io/guides/error-handling-custom-mcp-servers/)
 - [MCPcat Fix Error -32001](https://mcpcat.io/guides/fixing-mcp-error-32001-request-timeout/)
 - [Stainless MCP Error Handling](https://www.stainless.com/mcp/error-handling-and-debugging-mcp-servers/)
 - [Octopus MCP Timeout Retry](https://octopus.com/blog/mcp-timeout-retry)
+
+**LSP Protocol**:
+- [Microsoft LSP Specification 3.17](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/) - Protocol assumptions and limitations
 - [Claude Code Subagents Doc](https://code.claude.com/docs/en/sub-agents)
+
+**Lean 4 & lean-lsp-mcp**:
+- [lean-lsp-mcp GitHub](https://github.com/oOo0oOo/lean-lsp-mcp) - Main repository
+- [lean-lsp-mcp PyPI](https://pypi.org/project/lean-lsp-mcp/) - Package documentation
+- [Lean 4 Lake README](https://github.com/leanprover/lean4/blob/master/src/lake/README.md) - Build system documentation
+- [Lean Theorem Prover - ArchWiki](https://wiki.archlinux.org/title/Lean_Theorem_Prover) - Build and cache behavior
 
 ### Related Internal Documentation
 - .claude/agents/lean-research-agent.md
