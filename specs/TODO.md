@@ -152,7 +152,7 @@ technical_debt:
 
 ### 723. Update .claude/ documentation for accuracy and completeness
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-28
 - **Research**: [research-001.md](specs/723_update_claude_documentation/reports/research-001.md)
 - **Priority**: Medium
@@ -165,7 +165,7 @@ technical_debt:
 
 ### 722. Remove redundant definitions from Bimodal project
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
@@ -200,18 +200,19 @@ technical_debt:
 ---
 
 ### 681. Redesign construct_indexed_family with coherent approach
-- **Effort**: 12-14 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 4-6 hours (remaining)
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
 - **Researched**: 2026-01-28T17:36:17Z
-- **Planned**: 2026-01-28 (v3)
+- **Planned**: 2026-01-28 (v4)
 - **Related**: Task 658
 - **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md), [research-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-002.md)
-- **Plan**: [implementation-003.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-003.md)
+- **Plan**: [implementation-004.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-004.md)
+- **Summary**: [implementation-summary-20260128.md](specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128.md)
 
-**Description**: Implement Option B2 (relational coherent construction) to unblock Task 658. Plan v3 includes explicit mathematical justification for each phase, specific Boneyard line references (2055, 2507, 2521-2581), and detailed case analysis for transitivity proof. Coherence is definitional via `coherent_at` relation, making IndexedMCSFamily conditions trivially extractable.
+**Description**: Complete remaining Phase 4 sorries from Option B2 (relational coherent construction). Phases 1-3, 5-6 done. Remaining work: seed consistency induction (2 sorries), G-persistence through chain (1 sorry), pairwise coherence cases (5 sorries) including cross-origin and backward chain cases. Uses T-axiom for reflexive semantics.
 
 ---
 
