@@ -8,12 +8,12 @@
     {
       "project_number": 705,
       "project_name": "fix_bimodal_introduction_typst_issues",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T05:31:57Z",
-      "last_updated": "2026-01-28T06:54:12Z",
-      "session_id": "sess_1769583132_37f4b0",
+      "last_updated": "2026-01-28T06:55:31Z",
+      "session_id": "sess_1769583313_0c8fbc",
       "description": "Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document.",
       "researched": "2026-01-28T06:31:44Z",
       "artifacts": [
@@ -28,7 +28,8 @@
           "summary": "2-phase plan for light cone diagram fix and bold TM formatting"
         }
       ],
-      "planned": "2026-01-28T06:54:12Z"
+      "planned": "2026-01-28T06:54:12Z",
+      "started": "2026-01-28T06:55:31Z"
     },
     {
       "project_number": 697,
@@ -657,11 +658,11 @@
     {
       "project_number": 704,
       "project_name": "create_typst_agent_and_skill",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T02:53:15Z",
-      "last_updated": "2026-01-28T06:53:28Z",
+      "last_updated": "2026-01-28T06:56:21Z",
       "session_id": "sess_1769583185_e3ac35",
       "description": "Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks.",
       "researched": "2026-01-28T06:34:37Z",
@@ -670,8 +671,14 @@
           "path": "specs/704_create_typst_agent_and_skill/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing existing LaTeX infrastructure, current Typst usage, and proposing parallel context files and agent/skill structure for Typst"
+        },
+        {
+          "path": "specs/704_create_typst_agent_and_skill/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for creating Typst agent and skill infrastructure"
         }
-      ]
+      ],
+      "planned": "2026-01-28T06:56:21Z"
     }
   ],
   "completed_projects": [

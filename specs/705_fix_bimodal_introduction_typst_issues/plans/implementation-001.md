@@ -1,7 +1,7 @@
 # Implementation Plan: Task #705
 
 - **Task**: 705 - Fix Bimodal Introduction Typst Issues
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.75 hours
 - **Priority**: medium
 - **Dependencies**: None
@@ -44,7 +44,7 @@ The research report identified:
 
 ## Implementation Phases
 
-### Phase 1: Fix Light Cone Diagram [NOT STARTED]
+### Phase 1: Fix Light Cone Diagram [COMPLETED]
 
 **Goal**: Replace the current 6-line cone drawing code with 2 properly filled closed polygons
 
@@ -101,7 +101,7 @@ line(
 
 ---
 
-### Phase 2: Add Bold TM Show Rule [NOT STARTED]
+### Phase 2: Add Bold TM Show Rule [IN PROGRESS]
 
 **Goal**: Automatically bold all "TM" occurrences throughout the document
 

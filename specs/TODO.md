@@ -118,12 +118,13 @@ technical_debt:
 
 ### 705. Fix Bimodal introduction Typst issues
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-28
+- **Started**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/chapters/00-introduction.typ (FIX: tags at lines 18, 78)
 - **Research**: [research-001.md](specs/705_fix_bimodal_introduction_typst_issues/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/705_fix_bimodal_introduction_typst_issues/plans/implementation-001.md)
@@ -134,13 +135,15 @@ technical_debt:
 
 ### 704. Create typst agent and skill
 - **Effort**: 6-8 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
+- **Planned**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/BimodalReference.typ:14
 - **Research**: [research-001.md](specs/704_create_typst_agent_and_skill/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/704_create_typst_agent_and_skill/plans/implementation-001.md)
 
 **Description**: Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks.
 
@@ -165,7 +168,7 @@ technical_debt:
 
 ### 702. Update context files from Bimodal Typst notes
 - **Effort**: 0.5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
