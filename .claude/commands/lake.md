@@ -208,6 +208,162 @@ Would apply {count} fixes:
 No changes made (dry run mode).
 ```
 
+**If unfixable_errors exist and dry_run=false**: **IMMEDIATELY CONTINUE** to STEP 5.
+**Otherwise**: **Execution complete.**
+
+---
+
+### STEP 5: Create Tasks for Unfixable Errors (Optional)
+
+**EXECUTE NOW**: If unfixable errors remain and dry_run=false, offer to create tasks.
+
+This step only runs when:
+- Build did not fully succeed
+- There are unfixable errors remaining
+- User is not in dry-run mode
+
+#### 5A: Group Errors by File
+
+Group the unfixable errors by source file:
+```
+file_groups = {}
+for each error in unfixable_errors:
+    file = error.file
+    if file not in file_groups:
+        file_groups[file] = []
+    file_groups[file].append(error)
+```
+
+Count: `{len(file_groups)}` files with unfixable errors
+
+#### 5B: Confirm with User
+
+**EXECUTE NOW**: Display summary and ask for confirmation using AskUserQuestion.
+
+Display:
+```
+Task Creation Opportunity
+=========================
+
+{len(file_groups)} files have unfixable errors:
+
+{for file, errors in file_groups:}
+- {file}: {len(errors)} error(s)
+  - {error.severity}: {error.message[:60]}...
+
+Would you like to create tasks for these errors?
+Each file will get one task with a linked error report.
+```
+
+**Use AskUserQuestion** with options:
+- "Yes, create tasks"
+- "No, skip task creation"
+
+**If user selects "No"**:
+```
+Skipping task creation.
+Run /lake again after fixing errors manually.
+```
+**STOP** - execution complete.
+
+**If user selects "Yes"**: **IMMEDIATELY CONTINUE** to 5C.
+
+#### 5C: Create Tasks and Error Reports
+
+**EXECUTE NOW**: For each file group, create a task and error report.
+
+For each `(file, errors)` in `file_groups`:
+
+1. **Get next task number**:
+   ```bash
+   next_num=$(jq -r '.next_project_number' specs/state.json)
+   ```
+
+2. **Generate slug**:
+   ```bash
+   slug="fix_build_errors_$(basename "$file" .lean | tr '[:upper:]' '[:lower:]')"
+   ```
+
+3. **Create task directory**:
+   ```bash
+   mkdir -p "specs/${next_num}_${slug}/reports"
+   ```
+
+4. **Write error report** to `specs/${next_num}_${slug}/reports/error-report-{DATE}.md`:
+   ```markdown
+   # Build Error Report: Task #{next_num}
+
+   **Generated**: {ISO_DATE}
+   **Source file**: {file}
+   **Error count**: {len(errors)} errors
+
+   ## Errors
+
+   {for i, error in enumerate(errors):}
+   ### Error {i+1}: Line {error.line}
+   **Type**: {error.severity}
+   **Column**: {error.column}
+   **Message**:
+   ```
+   {error.message}
+   ```
+
+   ## Suggested Approach
+
+   Review each error and apply appropriate fixes.
+   Run /lake after fixing to verify the build passes.
+   ```
+
+5. **Update state.json** with new task:
+   ```bash
+   jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+      --arg slug "$slug" \
+      --arg source "$file" \
+      --argjson error_count $error_count \
+      --arg report_path "specs/${next_num}_${slug}/reports/error-report-{DATE}.md" \
+      '.next_project_number = (.next_project_number + 1) |
+       .active_projects = [{
+         "project_number": .next_project_number - 1,
+         "project_name": $slug,
+         "status": "not_started",
+         "language": "lean",
+         "priority": "high",
+         "source": $source,
+         "created": $ts,
+         "last_updated": $ts,
+         "artifacts": [{
+           "type": "error_report",
+           "path": $report_path,
+           "summary": ("Build error report with " + ($error_count | tostring) + " errors")
+         }]
+       }] + .active_projects' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+   ```
+
+6. **Update TODO.md** - Add entry in High Priority section:
+   ```markdown
+   ### {next_num}. Fix build errors in {basename(file)}
+   - **Effort**: 1-2 hours
+   - **Status**: [NOT STARTED]
+   - **Priority**: High
+   - **Language**: lean
+   - **Source**: {file}
+
+   **Description**: Fix {error_count} build errors in {file}. See error report for details.
+   ```
+
+**After all tasks created**:
+```
+Tasks Created
+=============
+
+Created {len(file_groups)} tasks:
+{for (file, task_num) in created_tasks:}
+- Task #{task_num}: Fix build errors in {basename(file)}
+
+Run /implement {task_num} to work on each task.
+```
+
 **Execution complete.**
 
 ---

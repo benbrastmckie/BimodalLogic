@@ -508,6 +508,182 @@ No changes made (dry run mode).
 
 ---
 
+### Step 13: Create Tasks for Unfixable Errors (Optional)
+
+This step only executes when:
+- Build has unfixable errors remaining
+- `dry_run=false`
+- User has been prompted and confirmed
+
+**Reference**: See STEP 5 in `@.claude/commands/lake.md` for the high-level workflow.
+
+#### 13A: Group Errors by File
+
+Iterate through `unfixable_errors` and group by source file:
+
+```python
+# Conceptual logic
+file_groups = {}
+for error in unfixable_errors:
+    file = error["file"]
+    if file not in file_groups:
+        file_groups[file] = []
+    file_groups[file].append(error)
+```
+
+#### 13B: User Confirmation
+
+Use `AskUserQuestion` tool to confirm task creation:
+
+**Prompt**:
+```
+Task Creation Opportunity
+
+{len(file_groups)} files have unfixable errors:
+
+- {file}: {len(errors)} error(s)
+  (First error: {first_error_message_truncated}...)
+
+Would you like to create tasks for these errors?
+```
+
+**Options**:
+- "Yes, create tasks"
+- "No, skip task creation"
+
+If user declines, output message and stop execution.
+
+#### 13C: Error Report Format
+
+For each file group, create an error report artifact:
+
+**Path**: `specs/{N}_{SLUG}/reports/error-report-{DATE}.md`
+
+**Template**:
+```markdown
+# Build Error Report: Task #{N}
+
+**Generated**: {ISO_DATE}
+**Source file**: {file_path}
+**Error count**: {error_count} errors
+
+## Errors
+
+### Error 1: Line {line}
+**Type**: {severity}
+**Column**: {column}
+**Message**:
+```
+{full_error_message}
+```
+
+### Error 2: Line {line}
+...
+
+## Suggested Approach
+
+Review the error messages above and apply appropriate fixes.
+Common patterns:
+- Type mismatches: Check the expected vs actual types
+- Unknown identifiers: Verify imports and namespaces
+- Proof failures: May need additional hypotheses or different tactics
+
+After fixing, run `/lake` again to verify the build passes.
+```
+
+#### 13D: Task Creation - state.json
+
+For each file in `file_groups`:
+
+```bash
+# Get current task number
+next_num=$(jq -r '.next_project_number' specs/state.json)
+
+# Generate slug from filename
+base_name=$(basename "$file" .lean)
+slug="fix_build_errors_$(echo "$base_name" | tr '[:upper:]' '[:lower:]' | tr ' ' '_')"
+
+# Date for report filename
+date_stamp=$(date +%Y%m%d)
+iso_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+# Create directory
+mkdir -p "specs/${next_num}_${slug}/reports"
+
+# Write error report (using Write tool with content above)
+# Path: specs/${next_num}_${slug}/reports/error-report-${date_stamp}.md
+
+# Update state.json
+jq --arg ts "$iso_date" \
+   --arg slug "$slug" \
+   --arg source "$file" \
+   --argjson error_count "$error_count" \
+   --arg report_path "specs/${next_num}_${slug}/reports/error-report-${date_stamp}.md" \
+   --argjson next_num "$next_num" \
+   '.next_project_number = ($next_num + 1) |
+    .active_projects = [{
+      "project_number": $next_num,
+      "project_name": $slug,
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "source": $source,
+      "created": $ts,
+      "last_updated": $ts,
+      "artifacts": [{
+        "type": "error_report",
+        "path": $report_path,
+        "summary": ("Build error report with " + ($error_count | tostring) + " errors")
+      }]
+    }] + .active_projects' \
+   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+```
+
+#### 13E: Task Creation - TODO.md
+
+Use Edit tool to add task entry after the "## High Priority" header:
+
+**Find pattern**: `## High Priority` section header
+
+**Insert after header**:
+```markdown
+
+### {next_num}. Fix build errors in {basename}
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Source**: {file_path}
+- **Error Report**: [specs/{next_num}_{slug}/reports/error-report-{date_stamp}.md]
+
+**Description**: Fix {error_count} build errors in {file_path}. See linked error report for detailed error messages and suggested approaches.
+```
+
+**Edit pattern**:
+```
+old_string: "## High Priority\n"
+new_string: "## High Priority\n\n### {next_num}. Fix build errors in {basename}\n..."
+```
+
+#### 13F: Final Report
+
+After all tasks created:
+
+```
+Tasks Created
+=============
+
+Created {len(file_groups)} tasks for unfixable build errors:
+
+- Task #{task_num}: Fix build errors in {basename} ({error_count} errors)
+  Report: specs/{task_num}_{slug}/reports/error-report-{date}.md
+
+Run /implement {task_num} to work on each task.
+Or fix manually and run /lake again.
+```
+
+---
+
 ## Error Handling
 
 ### MCP Tool Failure
