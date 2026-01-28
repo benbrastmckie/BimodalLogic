@@ -501,25 +501,20 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
   · intro h_lt φ hG
     -- Several cases based on signs of t and t'
     unfold mcs_unified_chain at hG ⊢
-    -- split_ifs generates: ht for first if, ht' for second if
-    -- But the names depend on evaluation order in goal vs hypotheses
-    split_ifs at hG ⊢ with h1 h2
-    · -- h1 : 0 ≤ t (first branch, from goal), h2 : 0 ≤ t' (second branch, from goal)
-      -- Both in forward chain
+    -- Use by_cases instead of split_ifs for clearer control
+    by_cases h_t_nonneg : 0 ≤ t <;> by_cases h_t'_nonneg : 0 ≤ t' <;> simp only [h_t_nonneg, h_t'_nonneg, ↓reduceIte] at hG ⊢
+    · -- Case 1: t ≥ 0 and t' ≥ 0: both in forward chain
       have h_nat_lt : t.toNat < t'.toNat := by omega
       exact mcs_forward_chain_coherent Gamma h_mcs h_no_G_bot t.toNat t'.toNat h_nat_lt φ hG
-    · -- Contradiction case: first if true, second if false
-      -- h1 and h2 have some form; one says something ≤ t or ≤ t'
-      -- Use simp_all to resolve the contradiction
-      simp_all only [not_le]
-      -- Now h2 should be t' < 0 or similar
-      -- And we can derive a contradiction from t < t' and the bounds
-      omega
-    · -- h1 : ¬(0 ≤ t), h2 : 0 ≤ t'
-      -- Crosses the origin: t < 0 ≤ t'
+    · -- Case 2: t ≥ 0 and t' < 0: Contradiction with h_lt : t < t'
+      simp only [not_le] at h_t'_nonneg
+      -- h_t'_nonneg : t' < 0, h_t_nonneg : 0 ≤ t, h_lt : t < t'
+      -- From t' < 0 ≤ t, we get t' < t, contradicting t < t'
+      have h_t'_lt_t : t' < t := lt_of_lt_of_le h_t'_nonneg h_t_nonneg
+      exact absurd h_lt (asymm h_t'_lt_t)
+    · -- Case 3: t < 0 and t' ≥ 0: Cross-origin case (hG from backward chain, goal in forward chain)
       sorry
-    · -- h1 : ¬(0 ≤ t), h2 : ¬(0 ≤ t')
-      -- Both in backward chain: t, t' < 0
+    · -- Case 4: t < 0 and t' < 0: both in backward chain
       sorry
   constructor
   -- backward_H: t' < t → Hφ ∈ mcs(t) → φ ∈ mcs(t')

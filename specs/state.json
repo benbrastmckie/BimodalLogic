@@ -8,22 +8,30 @@
     {
       "project_number": 724,
       "project_name": "investigate_revise_command_errors_design_solution",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:03:21Z",
-      "last_updated": "2026-01-28T22:06:31Z",
-      "session_id": "sess_1769637974_98360f"
+      "last_updated": "2026-01-28T22:09:21Z",
+      "session_id": "sess_1769637974_98360f",
+      "researched": "2026-01-28T22:09:21Z",
+      "artifacts": [
+        {
+          "path": "specs/724_investigate_revise_command_errors_design_solution/reports/research-001.md",
+          "type": "research",
+          "summary": "Identified Claude Code Bash tool escaping of \\!= as root cause; catalogued 15+ affected files; recommended shell script encapsulation pattern"
+        }
+      ]
     },
     {
       "project_number": 723,
       "project_name": "update_claude_documentation",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T20:22:14Z",
-      "last_updated": "2026-01-28T22:07:17Z",
-      "session_id": "sess_1769637636_a0acaf",
+      "last_updated": "2026-01-28T22:09:04Z",
+      "session_id": "sess_1769638125_1c9be6",
       "researched": "2026-01-28T21:59:17Z",
       "artifacts": [
         {
@@ -37,16 +45,17 @@
           "summary": "Revised 5-phase plan: streamline CLAUDE.md as agent context, keep ARCHITECTURE.md as user docs"
         }
       ],
-      "planned": "2026-01-28T22:07:17Z"
+      "planned": "2026-01-28T22:07:17Z",
+      "started": "2026-01-28T22:09:04Z"
     },
     {
       "project_number": 722,
       "project_name": "remove_bimodal_definition_redundancies",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T20:18:45Z",
-      "last_updated": "2026-01-28T22:07:13Z",
+      "last_updated": "2026-01-28T22:09:26Z",
       "session_id": "sess_1769638023_8cecab",
       "researched": "2026-01-28T22:02:19Z",
       "artifacts": [
@@ -55,7 +64,8 @@
           "type": "research",
           "summary": "Analysis of redundant MCS definitions across Boneyard directories with consolidation plan"
         }
-      ]
+      ],
+      "planned": "2026-01-28T22:09:26Z"
     },
     {
       "project_number": 721,

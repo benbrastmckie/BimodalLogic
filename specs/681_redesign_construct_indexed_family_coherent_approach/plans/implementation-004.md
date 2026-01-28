@@ -2,7 +2,7 @@
 
 - **Task**: 681 - Redesign construct_indexed_family with coherent approach
 - **Version**: 004 (Complete remaining Phase 4 proofs)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4-6 hours
 - **Priority**: Medium
 - **Dependencies**: None (unblocks Task 658)

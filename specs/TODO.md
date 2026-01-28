@@ -152,10 +152,12 @@ technical_debt:
 
 ### 724. Investigate revise command errors and design elegant solution
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
+- **Researched**: 2026-01-28
+- **Research**: [research-001.md](specs/724_investigate_revise_command_errors_design_solution/reports/research-001.md)
 
 **Description**: Identify the root cause of the errors in /home/benjamin/Projects/ProofChecker/.claude/output/revise.md in order to design an elegant solution that avoids these errors in any command or skill which may suffer from similar problems.
 
@@ -163,11 +165,12 @@ technical_debt:
 
 ### 723. Update .claude/ documentation for accuracy and completeness
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-28
 - **Research**: [research-001.md](specs/723_update_claude_documentation/reports/research-001.md)
 - **Planned**: 2026-01-28
 - **Plan**: [implementation-002.md](specs/723_update_claude_documentation/plans/implementation-002.md)
+- **Started**: 2026-01-28
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -178,12 +181,14 @@ technical_debt:
 
 ### 722. Remove redundant definitions from Bimodal project
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
+- **Planned**: 2026-01-28
 - **Research**: [research-001.md](specs/722_remove_bimodal_definition_redundancies/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/722_remove_bimodal_definition_redundancies/plans/implementation-001.md)
 
 **Description**: Remove redundant/duplicate definitions throughout the Bimodal/ project to maintain a consistent and maintainable theory. Starting example: SetMaximalConsistent has two definitions (1) Boneyard.Metalogic.SetMaximalConsistent and (2) Core.SetMaximalConsistent from Bimodal.Metalogic.Core.MaximalConsistent. Search for similar cases of redundancy and consolidate to single canonical definitions.
 

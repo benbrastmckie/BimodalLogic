@@ -1,0 +1,199 @@
+# Implementation Plan: Task #722
+
+- **Task**: 722 - Remove Bimodal Definition Redundancies
+- **Status**: [NOT STARTED]
+- **Effort**: 5 hours
+- **Priority**: Medium
+- **Dependencies**: None
+- **Research Inputs**: specs/722_remove_bimodal_definition_redundancies/reports/research-001.md
+- **Artifacts**: plans/implementation-001.md (this file)
+- **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
+- **Type**: lean
+- **Lean Intent**: true
+
+## Overview
+
+Remove redundant definitions throughout the Bimodal/ project by consolidating to single canonical sources in `Boneyard/Metalogic_v2/Core/`. The project has three parallel metalogic implementations with significant duplication - `SetMaximalConsistent`, `SetConsistent`, `Consistent`, and `set_lindenbaum` each appear 3-4 times. The active code (`Metalogic/`) already uses `hiding` clauses to manage conflicts, indicating awareness of redundancy. This plan follows an incremental approach: first audit dependencies, then consolidate core definitions, and finally clean up imports.
+
+### Research Integration
+
+Key findings from research-001.md:
+- Core MCS definitions (`SetConsistent`, `SetMaximalConsistent`) have 4 definitions each
+- `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean` is the canonical source
+- `Metalogic/Core/MaximalConsistent.lean` already re-exports from the canonical source
+- Active code uses `hiding` clauses to avoid conflicts (IndexedMCSFamily.lean, CoherentConstruction.lean, TruthLemma.lean)
+- Helper lemmas like `set_mcs_closed_under_derivation` and `set_mcs_all_future_all_future` are imported from deprecated `Boneyard/Metalogic/Completeness.lean`
+
+## Goals & Non-Goals
+
+**Goals**:
+- Each core MCS definition exists in exactly one location
+- Remove need for `hiding` clauses in active Metalogic/ code
+- Simplify import statements in active files
+- `lake build` passes with no new errors
+
+**Non-Goals**:
+- Complete removal of all Boneyard code (may still have unique content)
+- Refactoring proof strategies (only addressing duplicate definitions)
+- Removing deprecated Duration construction code
+
+## Risks & Mitigations
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Breaking active builds | High | Medium | Run `lake build` after each file modification |
+| Missing hidden dependencies | Medium | Low | Search for fully qualified names before each removal |
+| Circular import dependencies | Medium | Low | Map dependency graph in Phase 1 before changes |
+| Scope creep into proof refactoring | Medium | Medium | Focus only on duplicate definitions, not proof structure |
+
+## Implementation Phases
+
+### Phase 1: Audit Import Dependencies [NOT STARTED]
+
+**Goal**: Map all dependencies before making changes to understand the impact of each removal
+
+**Tasks**:
+- [ ] List all imports from `Boneyard/Metalogic/Completeness.lean` across the codebase
+- [ ] Identify which specific definitions are used from each import
+- [ ] Map the `hiding` clauses in active Metalogic/ files to understand conflicts
+- [ ] Document which lemmas in deprecated code have no equivalent in canonical source
+- [ ] Create dependency graph showing which files depend on which definitions
+
+**Timing**: 45 minutes
+
+**Files to analyze**:
+- `Metalogic/Representation/IndexedMCSFamily.lean` - uses `set_mcs_closed_under_derivation`
+- `Metalogic/Representation/CoherentConstruction.lean` - uses `set_mcs_all_future_all_future`
+- `Metalogic/Representation/TruthLemma.lean` - imports from both sources
+
+**Verification**:
+- Dependency graph documented
+- All `hiding` clauses catalogued
+- List of definitions without canonical equivalent identified
+
+---
+
+### Phase 2: Consolidate Core MCS Definitions [NOT STARTED]
+
+**Goal**: Remove duplicate `SetConsistent`, `SetMaximalConsistent`, `Consistent` definitions from deprecated files
+
+**Tasks**:
+- [ ] Verify `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean` has complete definitions
+- [ ] Remove duplicate definitions from `Boneyard/Metalogic/Completeness.lean` (lines ~99-142)
+- [ ] Remove duplicate definitions from `Boneyard/Metalogic/Representation/CanonicalModel.lean` (lines ~52-74)
+- [ ] Update imports in affected files to use `Metalogic.Core` exports
+- [ ] Remove `hiding` clauses that are no longer needed
+- [ ] Run `lake build` and fix any breakages
+
+**Timing**: 1.5 hours
+
+**Files to modify**:
+- `Boneyard/Metalogic/Completeness.lean` - remove duplicate MCS definitions
+- `Boneyard/Metalogic/Representation/CanonicalModel.lean` - remove duplicate definitions
+- `Metalogic/Core/MaximalConsistent.lean` - may need to extend re-exports
+
+**Verification**:
+- `lake build` passes
+- No `hiding SetMaximalConsistent SetConsistent Consistent` clauses needed
+
+---
+
+### Phase 3: Move Essential Lemmas to Core [NOT STARTED]
+
+**Goal**: Relocate essential lemmas that active code needs from deprecated Completeness.lean to canonical Core location
+
+**Tasks**:
+- [ ] Identify lemmas used by active code but only in deprecated source (`set_mcs_closed_under_derivation`, `set_mcs_all_future_all_future`, etc.)
+- [ ] Move or re-prove essential lemmas in `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean`
+- [ ] Update re-exports in `Metalogic/Core/MaximalConsistent.lean`
+- [ ] Update imports in `IndexedMCSFamily.lean` to use Core instead of Completeness.lean
+- [ ] Update imports in `CoherentConstruction.lean` to use Core instead of Completeness.lean
+- [ ] Run `lake build` and verify
+
+**Timing**: 1.5 hours
+
+**Files to modify**:
+- `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean` - add essential lemmas
+- `Metalogic/Core/MaximalConsistent.lean` - extend re-exports
+- `Metalogic/Representation/IndexedMCSFamily.lean` - simplify imports
+- `Metalogic/Representation/CoherentConstruction.lean` - simplify imports
+
+**Verification**:
+- Active files no longer import from `Boneyard/Metalogic/Completeness.lean`
+- `lake build` passes
+
+---
+
+### Phase 4: Consolidate set_lindenbaum [NOT STARTED]
+
+**Goal**: Remove duplicate `set_lindenbaum` theorem definitions
+
+**Tasks**:
+- [ ] Verify `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean:290` has complete theorem
+- [ ] Check if `Boneyard/Metalogic/Completeness.lean:360` version is identical
+- [ ] Check if `Boneyard/Metalogic/Representation/CanonicalModel.lean:139` version is identical
+- [ ] Remove duplicates, keeping canonical version
+- [ ] Update any imports that relied on removed versions
+- [ ] Run `lake build` and verify
+
+**Timing**: 45 minutes
+
+**Files to modify**:
+- `Boneyard/Metalogic/Completeness.lean` - remove duplicate `set_lindenbaum`
+- `Boneyard/Metalogic/Representation/CanonicalModel.lean` - remove duplicate
+
+**Verification**:
+- `set_lindenbaum` exists in exactly one location
+- `lake build` passes
+
+---
+
+### Phase 5: Clean Up and Verify [NOT STARTED]
+
+**Goal**: Final verification that all redundancies are resolved and code is clean
+
+**Tasks**:
+- [ ] Run full `lake build` to verify no regressions
+- [ ] Search for any remaining `hiding` clauses for MCS definitions
+- [ ] Verify no fully-qualified references to removed definitions remain
+- [ ] Check that active Metalogic/ files have simplified import lists
+- [ ] Document any remaining intentional duplicates (if any)
+
+**Timing**: 30 minutes
+
+**Files to review**:
+- All active Metalogic/ files
+- All modified Boneyard/ files
+
+**Verification**:
+- `lake build` passes with no warnings about unused imports
+- No `hiding` clauses for core MCS definitions in active code
+- Import statements are cleaner than before
+
+---
+
+## Testing & Validation
+
+- [ ] `lake build` passes after each phase
+- [ ] No new errors or warnings introduced
+- [ ] Each core MCS definition (`SetConsistent`, `SetMaximalConsistent`, `Consistent`, `set_lindenbaum`) exists in exactly one location
+- [ ] Active Metalogic/ files compile without `hiding` clauses for MCS definitions
+- [ ] Import statements simplified in active files
+
+## Artifacts & Outputs
+
+- `specs/722_remove_bimodal_definition_redundancies/plans/implementation-001.md` (this file)
+- `specs/722_remove_bimodal_definition_redundancies/summaries/implementation-summary-YYYYMMDD.md` (upon completion)
+
+## Rollback/Contingency
+
+If changes break the build in unexpected ways:
+1. Use `git diff` to identify breaking change
+2. Revert specific file with `git checkout -- <file>`
+3. If widespread breakage, `git checkout .` for full revert
+4. Re-analyze dependencies before retrying
+
+For partial failures within a phase:
+1. Keep completed removals that pass build
+2. Revert only the breaking removal
+3. Note dependency for investigation in next session
