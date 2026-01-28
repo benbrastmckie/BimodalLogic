@@ -8,20 +8,26 @@
     {
       "project_number": 720,
       "project_name": "avoid_hanging_lean_mcp_calls",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T17:55:09Z",
-      "last_updated": "2026-01-28T18:00:06Z",
-      "session_id": "sess_1769623027_48ab61",
+      "last_updated": "2026-01-28T18:26:27Z",
+      "session_id": "sess_1769624638_9f6e1c",
       "researched": "2026-01-28T18:00:06Z",
       "artifacts": [
         {
           "path": "specs/720_avoid_hanging_lean_mcp_calls/reports/research-001.md",
           "type": "research",
           "summary": "Research report with file-by-file analysis and modification recommendations for avoiding hanging lean MCP calls"
+        },
+        {
+          "path": "specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase plan removing lean_diagnostic_messages and lean_file_outline from 4 skill/command files"
         }
-      ]
+      ],
+      "planned": "2026-01-28T18:26:27Z"
     },
     {
       "project_number": 719,
