@@ -69,7 +69,7 @@ With T axioms, the coherence conditions become direct consequences:
 
 ## Implementation Phases
 
-### Phase 1: Add Temporal T Axioms [IN PROGRESS]
+### Phase 1: Add Temporal T Axioms [COMPLETED]
 
 **Goal**: Add `temp_t_future` and `temp_t_past` axiom constructors
 
