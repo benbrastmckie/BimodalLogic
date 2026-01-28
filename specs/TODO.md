@@ -176,10 +176,12 @@ technical_debt:
 
 ### 708. Fix Bimodal semantics Typst formatting issues
 - **Effort**: 1.5-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
+- **Researched**: 2026-01-28
+- **Research**: [research-001.md](specs/708_fix_bimodal_semantics_typst_formatting_issues/reports/research-001.md)
 - **Source**: Theories/Bimodal/typst/chapters/02-semantics.typ (FIX: tags at lines 17, 80, 111)
 
 **Description**: Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol).

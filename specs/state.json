@@ -75,13 +75,26 @@
     {
       "project_number": 708,
       "project_name": "fix_bimodal_semantics_typst_formatting_issues",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T03:23:17Z",
-      "last_updated": "2026-01-28T05:53:26Z",
+      "last_updated": "2026-01-28T05:56:33Z",
       "session_id": "sess_1769570601_708res",
-      "description": "Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol)."
+      "description": "Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol).",
+      "researched": "2026-01-28T05:56:33Z",
+      "artifacts": [
+        {
+          "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on Typst formatting techniques for arrow annotations, italic text, and subscript/superscript stacking"
+        },
+        {
+          "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on Typst formatting techniques for arrow annotations, italic text, and subscript/superscript stacking"
+        }
+      ]
     },
     {
       "project_number": 709,
