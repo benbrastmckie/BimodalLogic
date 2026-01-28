@@ -32,7 +32,7 @@ The `/lake` command fails to execute because it lacks explicit execution directi
 ### Phase 1: Update lake.md command file
 
 **Estimated effort**: 30 minutes
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Add YAML frontmatter with allowed-tools

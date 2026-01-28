@@ -37,20 +37,183 @@ Errors not in this list are reported but not auto-fixed.
 
 ## Execution
 
-Invoke skill-lake-repair:
+**EXECUTE NOW**: Follow these steps in sequence. Do not just describe what should happen - actually perform each step.
+
+### STEP 1: Parse Arguments
+
+**EXECUTE NOW**: Parse the command arguments to extract flags.
 
 ```
-skill: skill-lake-repair
-args: {flags from command}
+# Default values
+clean=false
+max_retries=3
+dry_run=false
+module=""
+
+# Parse flags from $ARGUMENTS
 ```
 
-The skill executes a repair loop:
+Track:
+- `--clean` → set clean=true
+- `--dry-run` → set dry_run=true
+- `--max-retries N` → set max_retries=N
+- `--module NAME` → set module=NAME
 
-1. **Initial Build**: Run `lake build` (with `lake clean` if `--clean`)
-2. **Parse Errors**: Extract errors from build output
-3. **Classify Errors**: Identify auto-fixable vs unfixable errors
-4. **Apply Fixes**: Edit source files to fix errors (unless `--dry-run`)
-5. **Retry Build**: Rebuild and repeat until success or max retries
+**On success**: **IMMEDIATELY CONTINUE** to STEP 2.
+
+---
+
+### STEP 2: Run Initial Build
+
+**EXECUTE NOW**: Run the initial build (with clean if requested).
+
+If `clean=true`:
+```bash
+lake clean
+```
+
+Then run the build:
+```bash
+lake build $module 2>&1
+```
+
+Capture the output and exit code.
+
+**If build succeeds (exit code 0, no error: lines)**:
+```
+Lake Build Complete
+===================
+
+Build succeeded on first attempt.
+No fixes needed.
+```
+**STOP** - execution complete.
+
+**If build has errors**: **IMMEDIATELY CONTINUE** to STEP 3.
+
+---
+
+### STEP 3: Parse and Fix Errors (Loop)
+
+**EXECUTE NOW**: Initialize the repair loop.
+
+```
+retry_count=0
+fix_log=[]
+previous_error_hash=""
+```
+
+**EXECUTE NOW**: Begin the repair loop. For each iteration:
+
+#### 3A: Parse Build Errors
+
+Extract errors from build output using pattern:
+```
+^(.+\.lean):(\d+):(\d+): (error|warning): (.+)$
+```
+
+Create error records with: file, line, column, severity, message
+
+#### 3B: Classify Errors
+
+For each error, check if auto-fixable:
+
+| Pattern | Fix Type |
+|---------|----------|
+| `Missing cases:` | missing_cases |
+| `unused variable '{name}'` | unused_variable |
+| `unused import '{module}'` | unused_import |
+| Other | UNFIXABLE |
+
+#### 3C: Check Stop Conditions
+
+**STOP** the loop if ANY of these are true:
+1. No fixable errors remain (only unfixable errors)
+2. `retry_count >= max_retries`
+3. Same errors repeated (cycle detection via hash comparison)
+
+If stopping, **IMMEDIATELY CONTINUE** to STEP 4.
+
+#### 3D: Apply Fixes
+
+**If dry_run=true**: Add each proposed fix to preview list, do NOT apply changes.
+
+**If dry_run=false**: **EXECUTE NOW** - For each fixable error, apply the fix:
+
+- **Missing cases**: Read file, find last match case, insert `| {CaseName} => sorry` branches
+- **Unused variable**: Read file, rename `{name}` to `_{name}` at the declaration
+- **Unused import**: Read file, remove the import line (only clean single-import lines)
+
+Log each fix to `fix_log`.
+
+#### 3E: Rebuild and Continue Loop
+
+```bash
+retry_count=$((retry_count + 1))
+lake build $module 2>&1
+```
+
+If build succeeds: **IMMEDIATELY CONTINUE** to STEP 4.
+If build has errors: **Go back to 3A** (loop continues).
+
+---
+
+### STEP 4: Report Results
+
+**EXECUTE NOW**: Generate the appropriate report based on outcome.
+
+**On Success (build passed)**:
+```
+Lake Build Complete
+===================
+
+Build succeeded after {retry_count} iterations.
+
+Fixes applied:
+{for each fix in fix_log:}
+- {file}:{line} - {description}
+
+All modules built successfully.
+```
+
+**On Max Retries or Unfixable Errors**:
+```
+Lake Build Partial
+==================
+
+Max retries ({max_retries}) reached. Build not yet passing.
+
+Fixes applied ({retry_count} iterations):
+{for each fix in fix_log:}
+- {file}:{line} - {description}
+
+Remaining errors (unfixable):
+{list unfixable_errors}
+
+Recommendation: Fix the remaining errors manually, then run /lake again.
+```
+
+**On Dry Run**:
+```
+Lake Build Dry Run
+==================
+
+Would apply {count} fixes:
+
+{for each proposed fix:}
+{index}. {file}:{line}
+   Error: {message}
+   Fix: {description}
+
+No changes made (dry run mode).
+```
+
+**Execution complete.**
+
+---
+
+**For detailed fix algorithms** (pattern matching, edge cases, safety rules):
+See @.claude/skills/skill-lake-repair/SKILL.md
 
 ## Examples
 

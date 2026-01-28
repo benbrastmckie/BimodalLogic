@@ -158,7 +158,7 @@ Fix Typst formatting issues in BimodalReference.typ to achieve visual parity wit
 
 ---
 
-### Phase 4: Adjust Hyperlink Color to Light Blue [NOT STARTED]
+### Phase 4: Adjust Hyperlink Color to Light Blue [IN PROGRESS]
 
 **Goal**: Change hyperlink color from dark blue rgb(0,0,150) to light blue rgb(30,144,255) (Dodger Blue) for better visibility.
 
