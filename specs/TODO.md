@@ -133,11 +133,13 @@ technical_debt:
 
 ### 714. Refine Typst styling for journal aesthetic
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
+- **Researched**: 2026-01-28
 - **Related**: Task 709
+- **Research**: [research-001.md](specs/714_refine_typst_styling_for_journal_aesthetic/reports/research-001.md)
 
 **Description**: Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions.
 
@@ -176,7 +178,7 @@ technical_debt:
 
 ### 708. Fix Bimodal semantics Typst formatting issues
 - **Effort**: 1.5-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28

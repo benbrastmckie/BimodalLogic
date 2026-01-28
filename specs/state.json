@@ -8,13 +8,21 @@
     {
       "project_number": 714,
       "project_name": "refine_typst_styling_for_journal_aesthetic",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "description": "Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions.",
       "created": "2026-01-28T05:50:33Z",
-      "last_updated": "2026-01-28T05:52:47Z",
-      "session_id": "sess_1769579553_295219"
+      "last_updated": "2026-01-28T05:57:57Z",
+      "session_id": "sess_1769579553_295219",
+      "researched": "2026-01-28T05:57:57Z",
+      "artifacts": [
+        {
+          "path": "specs/714_refine_typst_styling_for_journal_aesthetic/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing current Typst styling vs. AMS/journal conventions, with specific recommendations for achieving austere academic aesthetic"
+        }
+      ]
     },
     {
       "project_number": 713,
@@ -75,12 +83,12 @@
     {
       "project_number": 708,
       "project_name": "fix_bimodal_semantics_typst_formatting_issues",
-      "status": "researched",
+      "status": "planning",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T03:23:17Z",
-      "last_updated": "2026-01-28T05:56:33Z",
-      "session_id": "sess_1769570601_708res",
+      "last_updated": "2026-01-28T05:58:03Z",
+      "session_id": "sess_1769579500_708pln",
       "description": "Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol).",
       "researched": "2026-01-28T05:56:33Z",
       "artifacts": [
