@@ -16,29 +16,6 @@
       "session_id": "sess_1769565009_8f71de"
     },
     {
-      "project_number": 695,
-      "project_name": "review_boneyard_completeness_remove_misleading_material",
-      "status": "researched",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-28T00:47:45Z",
-      "last_updated": "2026-01-28T01:05:22Z",
-      "session_id": "sess_1769562119_7fedbe",
-      "researched": "2026-01-28T01:05:22Z",
-      "artifacts": [
-        {
-          "path": "specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of Boneyard completeness approaches, identifying three deprecated methods and recommending documentation enhancements rather than removal"
-        },
-        {
-          "path": "specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-002.md",
-          "type": "research",
-          "summary": "Verification audit of current metalogic alignment with representation theorem approach and task semantics"
-        }
-      ]
-    },
-    {
       "project_number": 681,
       "project_name": "redesign_construct_indexed_family_coherent_approach",
       "status": "implementing",
