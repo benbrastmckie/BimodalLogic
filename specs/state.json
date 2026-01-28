@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 693,
+      "project_name": "implement_generalized_past_k_theorem",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-28T00:04:07Z",
+      "last_updated": "2026-01-28T00:04:07Z"
+    },
+    {
       "project_number": 692,
       "project_name": "port_bimodal_latex_to_typst",
       "status": "completed",
@@ -328,8 +337,8 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-27T23:09:53Z",
-      "session_id": "sess_1769555374_ebcdfe",
+      "last_updated": "2026-01-28T00:02:48Z",
+      "session_id": "sess_1769558547_187ccb",
       "researched": "2026-01-25T22:52:03Z",
       "planned": "2026-01-25T22:56:00Z",
       "artifacts": [
@@ -853,7 +862,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 693,
+  "next_project_number": 694,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 693
+next_project_number: 694
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,19 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 693. Implement generalized_past_k theorem
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-28
+- **Related**: Task 657
+- **Source**: Theories/Bimodal/Theorems/GeneralizedNecessitation.lean
+
+**Description**: Implement `generalized_past_k` theorem in GeneralizedNecessitation.lean, mirroring the structure of `generalized_temporal_k`. This theorem shows that if `L ⊢ φ` then `(H L) ⊢ H φ` (applying the past operator H to all formulas in the premise list). Required to unblock `past_seed_consistent` proof in Task 657. Can be derived from `generalized_temporal_k` via temporal duality, or implemented directly following the same pattern.
+
+---
 
 ### 691. Improve lean-lsp-mcp agent integration
 - **Effort**: 2.5 hours
