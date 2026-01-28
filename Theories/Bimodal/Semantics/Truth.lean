@@ -15,8 +15,8 @@ The JPL paper defines truth evaluation for TM formulas as follows:
 - `M,τ,x ⊨ ⊥` is false (bottom)
 - `M,τ,x ⊨ φ → ψ` iff `M,τ,x ⊨ φ` implies `M,τ,x ⊨ ψ` (implication)
 - `M,τ,x ⊨ □φ` iff `M,σ,x ⊨ φ` for all σ ∈ Ω (box: necessity)
-- `M,τ,x ⊨ Past φ` iff `M,τ,y ⊨ φ` for all y ∈ D where y < x (past, lines 896-897)
-- `M,τ,x ⊨ Future φ` iff `M,τ,y ⊨ φ` for all y ∈ D where x < y (future, lines 896-897)
+- `M,τ,x ⊨ Past φ` iff `M,τ,y ⊨ φ` for all y ∈ D where y ≤ x (past, reflexive)
+- `M,τ,x ⊨ Future φ` iff `M,τ,y ⊨ φ` for all y ∈ D where x ≤ y (future, reflexive)
 
 **Critical Semantic Design (lines 899-919)**:
 The paper explicitly quantifies temporal operators over ALL times `y ∈ D` (the entire
@@ -32,10 +32,10 @@ temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice
 ✓ Imp: Standard material conditional matches paper
 ✓ Box: `∀ (σ : WorldHistory F), truth_at M σ t φ`
   matches paper's quantification over all histories
-✓ Past: `∀ (s : D), s < t → truth_at M τ s φ`
-  matches paper's quantification over all times (lines 896-897, 1869-1870)
-✓ Future: `∀ (s : D), t < s → truth_at M τ s φ`
-  matches paper's quantification over all times (lines 896-897, 1869-1870)
+✓ Past: `∀ (s : D), s ≤ t → truth_at M τ s φ`
+  uses reflexive ordering (includes present) for coherence
+✓ Future: `∀ (s : D), t ≤ s → truth_at M τ s φ`
+  uses reflexive ordering (includes present) for coherence
 
 ## Main Definitions
 
@@ -106,8 +106,8 @@ def truth_at (M : TaskModel F) (τ : WorldHistory F) (t : D) : Formula → Prop
   | Formula.bot => False
   | Formula.imp φ ψ => truth_at M τ t φ → truth_at M τ t ψ
   | Formula.box φ => ∀ (σ : WorldHistory F), truth_at M σ t φ
-  | Formula.all_past φ => ∀ (s : D), s < t → truth_at M τ s φ
-  | Formula.all_future φ => ∀ (s : D), t < s → truth_at M τ s φ
+  | Formula.all_past φ => ∀ (s : D), s ≤ t → truth_at M τ s φ
+  | Formula.all_future φ => ∀ (s : D), t ≤ s → truth_at M τ s φ
 
 -- Note: We avoid defining a notation for truth_at as it causes parsing conflicts
 -- with the validity notation in Validity.lean. Use truth_at directly.
@@ -182,7 +182,7 @@ theorem box_iff
   rfl
 
 /--
-Truth of past: formula true at all earlier times.
+Truth of past: formula true at all times up to and including now (reflexive).
 -/
 theorem past_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -190,11 +190,11 @@ theorem past_iff
     {t : D}
     (φ : Formula) :
     (truth_at M τ t φ.all_past) ↔
-      ∀ (s : D), s < t → (truth_at M τ s φ) := by
+      ∀ (s : D), s ≤ t → (truth_at M τ s φ) := by
   rfl
 
 /--
-Truth of future: formula true at all later times.
+Truth of future: formula true at all times from now onward (reflexive).
 -/
 theorem future_iff
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -202,7 +202,7 @@ theorem future_iff
     {t : D}
     (φ : Formula) :
     (truth_at M τ t φ.all_future) ↔
-      ∀ (s : D), t < s → (truth_at M τ s φ) := by
+      ∀ (s : D), t ≤ s → (truth_at M τ s φ) := by
   rfl
 
 end Truth

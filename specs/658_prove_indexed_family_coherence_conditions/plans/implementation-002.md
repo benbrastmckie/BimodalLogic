@@ -112,7 +112,7 @@ Semantically: if φ holds at all times s ≤ t, then φ holds at t.
 
 ---
 
-### Phase 2: Update Semantic Clauses [NOT STARTED]
+### Phase 2: Update Semantic Clauses [COMPLETED]
 
 **Goal**: Change G/H semantics from strict (`<`) to reflexive (`≤`)
 
