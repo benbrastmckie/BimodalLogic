@@ -6,24 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 730,
-      "project_name": "investigate_reflexive_semantics_motivation",
-      "status": "researched",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-28T23:21:54Z",
-      "last_updated": "2026-01-28T23:28:34Z",
-      "session_id": "sess_1769642746_b74ab6",
-      "researched": "2026-01-28T23:28:34Z",
-      "artifacts": [
-        {
-          "path": "specs/730_investigate_reflexive_semantics_motivation/reports/research-001.md",
-          "type": "research",
-          "summary": "Analysis of whether reflexive semantics for tense operators was well-motivated - concluded YES, due to fundamental construction impossibility, not backwards TruthLemma"
-        }
-      ]
-    },
-    {
       "project_number": 729,
       "project_name": "prevent_blocked_mcp_tool_calls_in_agents",
       "status": "planned",
@@ -148,17 +130,17 @@
     {
       "project_number": 681,
       "project_name": "redesign_construct_indexed_family_coherent_approach",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-28T23:31:31Z",
+      "last_updated": "2026-01-28T23:35:18Z",
       "related_tasks": [
         658
       ],
       "description": "Draw on research-004.md to move all proofs that are not required to the Bimodal/Boneyard/ with good documentation in comments, updating Theories/Bimodal/Metalogic/README.md and creating a Metalogic/Representation/README.md to accurately document the full structure of the representation theorem including what has been completed and what remains to be completed, where all unneeded elements should have been removed.",
       "researching": "2026-01-25T22:22:57Z",
-      "session_id": "sess_1769642934_9ac669",
+      "session_id": "sess_1769643293_3a5cd7",
       "researched": "2026-01-28T23:12:43Z",
       "artifacts": [
         {

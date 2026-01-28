@@ -130,19 +130,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 730. Investigate reflexive semantics motivation for tense operators
-- **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-28
-- **Related**: Task 681
-- **Research**: [research-001.md](specs/730_investigate_reflexive_semantics_motivation/reports/research-001.md)
-
-**Description**: Investigate the motivation for switching to reflexive semantics for tense operators G and H. Research report specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-004.md suggests this may have been unnecessary. Find what originally motivated moving to reflexive semantics and diagnose if the switch was well-motivated, or only motivated by trying to prove the backwards TruthLemma which is not needed for the representation theorem.
-
----
-
 ### 728. Create user guide for command workflows
 - **Effort**: 3-4 hours
 - **Status**: [COMPLETED]
@@ -225,7 +212,7 @@ technical_debt:
 
 ### 681. Redesign construct_indexed_family with coherent approach
 - **Effort**: 8 hours (remaining)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
