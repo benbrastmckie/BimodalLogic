@@ -406,6 +406,11 @@
           "path": "specs/619_agent_system_architecture_upgrade/reports/research-003.md",
           "type": "research",
           "summary": "Status check on GitHub #16803 revealing plugin vs user-level skill distinction for context:fork functionality"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/reports/research-004.md",
+          "type": "research",
+          "summary": "Context fork analysis for Lean direct execution skills post-Task 710 refactoring"
         }
       ],
       "planned": "2026-01-19T21:36:36Z"
