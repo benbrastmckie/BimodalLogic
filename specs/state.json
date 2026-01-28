@@ -27,13 +27,13 @@
     {
       "project_number": 713,
       "project_name": "create_lean_build_repair_skill_and_command",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "description": "Create automated Lean build repair skill with /build-repair command that runs lake clean, lake build, and automatically fixes build errors (like missing pattern match cases) until build succeeds",
       "created": "2026-01-28T05:38:11Z",
-      "last_updated": "2026-01-28T05:55:40Z",
-      "session_id": "sess_1769579529_e7232c",
+      "last_updated": "2026-01-28T05:58:21Z",
+      "session_id": "sess_1769579887_873d9c",
       "researched": "2026-01-28T05:55:40Z",
       "artifacts": [
         {
@@ -83,11 +83,11 @@
     {
       "project_number": 708,
       "project_name": "fix_bimodal_semantics_typst_formatting_issues",
-      "status": "planning",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T03:23:17Z",
-      "last_updated": "2026-01-28T05:58:03Z",
+      "last_updated": "2026-01-28T05:59:48Z",
       "session_id": "sess_1769579500_708pln",
       "description": "Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol).",
       "researched": "2026-01-28T05:56:33Z",
@@ -96,8 +96,14 @@
           "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/reports/research-001.md",
           "type": "research",
           "summary": "Research report on Typst formatting techniques for arrow annotations, italic text, and subscript/superscript stacking"
+        },
+        {
+          "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan to fix arrow annotation, italic iff, and subscript/superscript stacking using Typst limits() and math.italic()"
         }
-      ]
+      ],
+      "planned": "2026-01-28T05:59:48Z"
     },
     {
       "project_number": 709,

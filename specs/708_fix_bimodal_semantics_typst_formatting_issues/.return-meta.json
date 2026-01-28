@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "summary": "4-phase implementation plan for Typst formatting fixes: overset arrow positioning, Iff italics, timeshift stacking",
+  "artifacts": [
+    {
+      "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "4-phase plan to fix arrow annotation, italic iff, and subscript/superscript stacking using Typst limits() and math.italic()"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1769579500_708pln",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 0.5
+  }
+}
