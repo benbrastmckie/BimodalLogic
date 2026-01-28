@@ -29,11 +29,12 @@ technical_debt:
 
 ### 712. Create /lean-research command with context:fork
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Related**: Task 619, 711
+- **Plan**: [implementation-001.md](specs/712_create_lean_research_command_with_context_fork/plans/implementation-001.md)
 
 **Description**: Create a /lean-research command similar to /research but which calls a copy of the lean-research skill called test-lean-research. This test skill uses context:fork instead of direct execution to isolate whether context:fork is working without making other changes to the production skills. This provides a controlled A/B test of context:fork functionality.
 
@@ -130,7 +131,7 @@ technical_debt:
 
 ### 709. Research professional Typst templates for Bimodal documentation
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28

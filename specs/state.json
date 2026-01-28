@@ -8,15 +8,24 @@
     {
       "project_number": 712,
       "project_name": "create_lean_research_command_with_context_fork",
-      "status": "not_started",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "description": "Create a /lean-research command similar to /research but which calls a copy of the lean-research skill called test-lean-research. This test skill uses context:fork instead of direct execution to isolate whether context:fork is working without making other changes to the production skills. This provides a controlled A/B test of context:fork functionality.",
       "created": "2026-01-28T04:26:13Z",
-      "last_updated": "2026-01-28T04:26:13Z",
+      "last_updated": "2026-01-28T04:31:48Z",
       "related_tasks": [
         619,
         711
+      ],
+      "session_id": "sess_1769574536_5bb4d7",
+      "planned": "2026-01-28T04:31:48Z",
+      "artifacts": [
+        {
+          "path": "specs/712_create_lean_research_command_with_context_fork/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for /lean-research command with context:fork A/B test"
+        }
       ]
     },
     {
@@ -33,12 +42,12 @@
     {
       "project_number": 709,
       "project_name": "research_professional_typst_templates_for_bimodal_documentation",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T03:23:17Z",
-      "last_updated": "2026-01-28T03:23:17Z",
-      "session_id": "sess_1769570601_c0f95a",
+      "last_updated": "2026-01-28T04:31:57Z",
+      "session_id": "sess_1769574703_c09752",
       "description": "Research professional Typst templates for math publications to improve the appearance of Bimodal TM logic documentation. The current styling is OK but should look more professional like LaTeX. Research online templates for professional math book publications to find ways to enhance the typeset appearance. Source: Theories/Bimodal/typst/chapters/02-semantics.typ:19"
     },
     {
