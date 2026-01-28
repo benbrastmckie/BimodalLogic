@@ -85,29 +85,36 @@
     {
       "project_number": 726,
       "project_name": "move_essential_mcs_lemmas_to_core",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T22:45:08Z",
-      "last_updated": "2026-01-28T23:46:40Z",
-      "session_id": "sess_1769643871_09e4cf",
+      "last_updated": "2026-01-28T23:50:22Z",
+      "session_id": "sess_1769644082_524424",
       "researched": "2026-01-28T23:46:40Z",
       "artifacts": [
         {
           "path": "specs/726_move_essential_mcs_lemmas_to_core/reports/research-001.md",
           "type": "research",
           "summary": "Research on eliminating Boneyard imports: identified 5 lemmas to move to Metalogic/Core with provenance comments"
+        },
+        {
+          "path": "specs/726_move_essential_mcs_lemmas_to_core/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan: create DeductionTheorem.lean, create MCSProperties.lean, update Core re-exports, update imports in Representation files, verify and document"
         }
-      ]
+      ],
+      "planned": "2026-01-28T23:50:22Z"
     },
     {
       "project_number": 727,
       "project_name": "consolidate_set_lindenbaum",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T22:45:08Z",
-      "last_updated": "2026-01-28T22:45:08Z"
+      "last_updated": "2026-01-28T23:49:34Z",
+      "session_id": "sess_1769644149_231b16"
     },
     {
       "project_number": 725,
@@ -139,12 +146,12 @@
     {
       "project_number": 697,
       "project_name": "fix_universalcanonicalmodel_compilation_error",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-28T01:24:47Z",
-      "last_updated": "2026-01-28T23:45:58Z",
-      "session_id": "sess_1769643884_2a79d8",
+      "last_updated": "2026-01-28T23:50:30Z",
+      "session_id": "sess_1769644214_00ef06",
       "researched": "2026-01-28T23:10:20Z",
       "artifacts": [
         {
