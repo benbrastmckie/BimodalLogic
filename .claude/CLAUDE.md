@@ -58,6 +58,7 @@ Tasks have a `Language` field that determines tool selection:
 |----------|----------------|---------------------|
 | `lean` | lean_leansearch, lean_loogle, lean_leanfinder | lean_goal, lean_diagnostic_messages, lean_hover_info |
 | `latex` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash (pdflatex, latexmk) |
+| `typst` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash (typst compile) |
 | `general` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash |
 | `meta` | Read, Grep, Glob | Write, Edit |
 
@@ -387,6 +388,7 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 | skill-planner | planner-agent | Implementation plan creation |
 | skill-implementer | general-implementation-agent | General file implementation |
 | skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
+| skill-typst-implementation | typst-implementation-agent | Typst document implementation |
 | skill-meta | meta-builder-agent | System building and task creation |
 | skill-learn | (direct execution) | Interactive tag scanning and task creation from source comments |
 | skill-status-sync | (direct execution) | Atomic status updates for task state |

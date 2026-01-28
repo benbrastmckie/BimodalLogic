@@ -1,7 +1,7 @@
 # Context Index - Lazy-Loading Quick Map
 
 **Created**: 2025-12-23
-**Updated**: 2026-01-28 (Task 701 - Lean agent flow extraction)
+**Updated**: 2026-01-28 (Task 702 - Added Typst context section)
 **Purpose**: Quick reference map for on-demand context loading following checkpoint-based execution
 
 ---
@@ -376,6 +376,40 @@ Load for: Proof theory tasks
 - **metalogic-concepts.md** - Metalogic theory
 - **proof-theory-concepts.md** - Proof theory foundations
 - **task-semantics.md** - Task-based semantics
+
+### Typst Context (project/typst/)
+
+Load for: Typst implementation tasks (Language: typst)
+
+**Overview**:
+- **README.md** (~80 lines) - Directory overview and loading strategy
+
+**Standards**:
+- **typst-style-guide.md** (~230 lines) - Document setup, typography, show rules
+  - Page layout and margins (1.5in x 1.25in, matching LaTeX)
+  - URLblue hyperlink styling (rgb(0, 0, 150))
+  - URL text formatting with raw() (texttt equivalent)
+  - Heading spacing (above: 1.4em, below: 1em)
+- **notation-conventions.md** - shared-notation.typ and theory-specific modules
+- **document-structure.md** - Main document and chapter organization
+
+**Patterns**:
+- **theorem-environments.md** - thmbox setup and usage
+- **cross-references.md** - Labels, refs, Lean cross-references
+
+**Templates**:
+- **chapter-template.md** - Boilerplate for new chapters
+
+**Tools**:
+- **compilation-guide.md** - `typst compile` and `typst watch` usage
+
+**When to Load**:
+- Load README.md for overview on any Typst task
+- Load typst-style-guide.md when setting up document formatting
+- Load theorem-environments.md when working with definitions/theorems
+- Load chapter-template.md when creating new chapters
+
+---
 
 ### Repo Context (project/repo/)
 
