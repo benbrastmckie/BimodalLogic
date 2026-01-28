@@ -13,7 +13,7 @@
       "priority": "high",
       "description": "I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.",
       "created": "2026-01-28T02:04:45Z",
-      "last_updated": "2026-01-28T02:16:03Z",
+      "last_updated": "2026-01-28T02:23:02Z",
       "session_id": "sess_1769566499_7e2787",
       "researched": "2026-01-28T02:17:24Z",
       "artifacts": [
@@ -28,13 +28,13 @@
           "summary": "Refined analysis showing AbortError -32001 freezes agents at API layer. Elegant fix design: MCP canary check + agent simplification"
         },
         {
+          "path": "specs/701_fix_lean_lsp_mcp_hanging/plans/implementation-002.md",
           "type": "plan",
-          "path": "specs/701_fix_lean_lsp_mcp_hanging/plans/implementation-001.md",
-          "summary": "4-phase plan: MCP canary check, flow file extraction, agent simplification, validation"
+          "summary": "Revised 7-phase plan: extract flow files first, defer MCP canary check"
         }
       ],
       "planning": "2026-01-28T02:15:10Z",
-      "planned": "2026-01-28T02:16:03Z"
+      "planned": "2026-01-28T02:23:02Z"
     },
     {
       "project_number": 697,
@@ -579,12 +579,12 @@
     {
       "project_number": 698,
       "project_name": "fix_roadmap_content_and_style_issues",
-      "status": "not_started",
+      "status": "researching",
       "language": "markdown",
       "priority": "medium",
       "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-28T01:34:44Z",
-      "session_id": "sess_1769565484_d36c20",
+      "last_updated": "2026-01-28T02:22:27Z",
+      "session_id": "sess_1769566930_2ca78a",
       "description": "Update ROAD_MAP.md to fix content accuracy and style issues identified in FIX: and NOTE: tags. Tasks include: (1) Update architecture tables to match actual Lean source code (lines 22, 166), (2) Remove historical language and emojis (lines 52, 72, 80, 131), (3) Reverse diagram order to show foundations first (line 58), (4) Remove unnecessary links to reports (line 156), (5) Add initial phase for completing proofs and porting Boneyard elements (line 188)."
     },
     {
