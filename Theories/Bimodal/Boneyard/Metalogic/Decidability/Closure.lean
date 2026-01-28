@@ -96,7 +96,7 @@ def checkAxiomNeg (b : Branch) : Option ClosureReason :=
     if sf.isNeg then
       match matchAxiom sf.formula with
       | some ⟨φ, witness⟩ =>
-          if h : sf.formula = φ then
+          if _h : sf.formula = φ then
             some (.axiomNeg φ witness)
           else
             none

@@ -379,7 +379,7 @@ elab "modal_4_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -429,7 +429,7 @@ elab "modal_b_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -481,7 +481,7 @@ elab "temp_4_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -532,13 +532,13 @@ elab "temp_a_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
 
       match rhs with
-      | .app (.const ``Formula.all_future _) sometimePastPart =>
+      | .app (.const ``Formula.all_future _) _sometimePastPart =>
 
         -- Apply axiom directly - let Lean unify the patterns
         let axiomProof ← mkAppM ``Axiom.temp_a #[lhs]

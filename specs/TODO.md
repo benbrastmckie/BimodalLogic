@@ -1,5 +1,5 @@
 ---
-next_project_number: 717
+next_project_number: 718
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,23 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 717. Enhance /lake to create tasks for unfixable errors
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Enhance the /lake command to automatically create tasks for unfixable build errors. When the repair loop completes with remaining unfixable errors, group errors by file and prompt user to create one task per affected file. Each task should link an error report artifact containing the error details. This automates the current manual workflow of creating fix tasks after a failed build.
+
+**Scope**:
+- Add STEP 5 to lake.md for task creation workflow with user confirmation
+- Update skill-lake-repair/SKILL.md with error grouping and report generation logic
+- Create error report artifact format: `specs/{N}_{SLUG}/reports/error-report-{DATE}.md`
+- Integrate with existing /task creation pattern (updating TODO.md + state.json)
+
+---
 
 ### 716. Fix SoundnessLemmas type mismatches
 - **Effort**: 2-3 hours
