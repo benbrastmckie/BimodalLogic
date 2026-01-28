@@ -1,6 +1,6 @@
 # ProofChecker Development System
 
-This project uses a structured task management and agent orchestration system for Lean 4 theorem proving and research workflows.
+Task management and agent orchestration for Lean 4 theorem proving. For comprehensive documentation, see @.claude/ARCHITECTURE.md.
 
 ## Quick Reference
 
@@ -9,490 +9,167 @@ This project uses a structured task management and agent orchestration system fo
 - **Error Tracking**: @specs/errors.json
 - **Architecture**: @.claude/ARCHITECTURE.md
 
-## System Overview
-
-ProofChecker is a formal verification project implementing modal, temporal, and epistemic logics in Lean 4 with Mathlib. The development workflow uses numbered tasks with structured research → plan → implement cycles.
-
-### Project Structure
+## Project Structure
 
 ```
-Logos/                    # Lean 4 source code (layered logic system)
-├── Layer0/              # Classical propositional logic
-├── Layer1/              # Modal logic extensions
-├── Layer2/              # Temporal logic
+Theories/                 # Lean 4 source code
+├── Bimodal/             # Modal logic theories
+├── PropositionalLogic/  # Classical propositional logic
 └── Shared/              # Common definitions
-
-docs/           # Project documentation
-specs/           # Task management artifacts
+docs/                    # Project documentation
+specs/                   # Task management artifacts
 .claude/                 # Claude Code configuration
 ```
 
 ## Task Management
 
 ### Status Markers
-Tasks progress through these states:
 - `[NOT STARTED]` - Initial state
-- `[RESEARCHING]` → `[RESEARCHED]` - Research phase
-- `[PLANNING]` → `[PLANNED]` - Planning phase
-- `[IMPLEMENTING]` → `[COMPLETED]` - Implementation phase
+- `[RESEARCHING]` -> `[RESEARCHED]` - Research phase
+- `[PLANNING]` -> `[PLANNED]` - Planning phase
+- `[IMPLEMENTING]` -> `[COMPLETED]` - Implementation phase
 - `[BLOCKED]`, `[ABANDONED]`, `[PARTIAL]`, `[EXPANDED]` - Terminal/exception states
 
-### Task Artifact Paths
+### Artifact Paths
 ```
 specs/{N}_{SLUG}/
-├── reports/                    # Research artifacts
-│   └── research-{NNN}.md
-├── plans/                      # Implementation plans
-│   └── implementation-{NNN}.md
-└── summaries/                  # Completion summaries
-    └── implementation-summary-{DATE}.md
+├── reports/research-{NNN}.md
+├── plans/implementation-{NNN}.md
+└── summaries/implementation-summary-{DATE}.md
 ```
-
-**Note**: `{N}` = unpadded task number, `{NNN}` = 3-digit padded artifact version. See @.claude/rules/artifact-formats.md for full conventions.
+`{N}` = unpadded task number, `{NNN}` = 3-digit padded version, `{DATE}` = YYYYMMDD.
 
 ### Language-Based Routing
-
-Tasks have a `Language` field that determines tool selection:
 
 | Language | Research Tools | Implementation Tools |
 |----------|----------------|---------------------|
 | `lean` | lean_leansearch, lean_loogle, lean_leanfinder | lean_goal, lean_hover_info, lean_multi_attempt |
-| `latex` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash (pdflatex, latexmk) |
+| `latex` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash (pdflatex) |
 | `typst` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash (typst compile) |
 | `general` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash |
 | `meta` | Read, Grep, Glob | Write, Edit |
 
-## Checkpoint-Based Execution Model
+## Command Reference
 
-All workflow commands follow a three-checkpoint pattern:
+All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (skill/agent) -> GATE OUT (postflight) -> COMMIT.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  CHECKPOINT 1    →    STAGE 2    →    CHECKPOINT 2    →    │
-│   GATE IN             DELEGATE         GATE OUT            │
-│  (Preflight)        (Skill/Agent)    (Postflight)          │
-│                                                 ↓          │
-│                                          CHECKPOINT 3      │
-│                                            COMMIT          │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Session Tracking
-
-Each command generates a session ID at GATE IN: `sess_{timestamp}_{random}`
-
-Session ID is:
-- Passed through delegation to skill/agent
-- Included in error logs for traceability
-- Included in git commits for correlation
-
-### Checkpoint Details
-
-Reference: `.claude/context/core/checkpoints/`
-
----
-
-## Command Workflows
-
-All commands use checkpoint-based execution via skill-status-sync.
-
-### /task - Create or manage tasks
-```
-/task "Description"          # Create new task
-/task --recover 343-345      # Recover from archive
-/task --expand 326           # Expand into subtasks
-/task --sync                 # Sync TODO.md with state.json
-/task --abandon 343-345      # Archive tasks
-```
-
-### /research N [focus] - Research a task
-GATE IN → Validate, update to [RESEARCHING]
-DELEGATE → Route by language (lean→skill-lean-research, other→skill-researcher)
-GATE OUT → Link report artifact, update to [RESEARCHED]
-COMMIT → Git commit with session ID
-
-### /plan N - Create implementation plan
-GATE IN → Validate, update to [PLANNING]
-DELEGATE → skill-planner creates phased plan
-GATE OUT → Link plan artifact, update to [PLANNED]
-COMMIT → Git commit with session ID
-
-### /implement N - Execute implementation
-GATE IN → Validate, find resume point, update to [IMPLEMENTING]
-DELEGATE → Route by language (lean→skill-lean-implementation, etc.)
-GATE OUT → Link summary artifact, update to [COMPLETED]
-COMMIT → Git commit with session ID
-
-### /revise N - Create new plan version
-Increments plan version (implementation-002.md, etc.)
-
-### /review - Analyze codebase
-Code review and registry updates
-
-### /todo - Archive completed tasks
-Moves completed/abandoned tasks to archive/. For non-meta tasks, updates ROAD_MAP.md with completion annotations. For meta tasks, displays CLAUDE.md modification suggestions for user review.
-
-### /errors - Analyze error patterns
-Reads errors.json, creates fix plans
-
-### /meta - System builder
-Interactive system builder that creates TASKS for .claude/ changes. Uses skill-meta -> meta-builder-agent delegation. Supports three modes: interactive interview, prompt analysis, and system analysis (--analyze).
-
-### /learn - Scan for tags, create tasks interactively
-```
-/learn [PATH...]   # Scan for FIX:/NOTE:/TODO: tags
-```
-Scans source files for embedded tags. Displays findings, then prompts for interactive task type and TODO item selection before creating tasks. Users always see what was found before any tasks are created.
-
-### /lake - Build with automatic error repair
-```
-/lake [--clean] [--max-retries N] [--dry-run] [--module NAME]
-```
-Runs `lake build` with automatic repair of common mechanical errors. Iteratively builds, parses errors, and fixes missing pattern match cases, unused variables, and unused imports until build succeeds or max retries reached. Use `--dry-run` to preview fixes without applying.
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/task` | `/task "Description"` | Create task |
+| `/task` | `/task --recover N`, `--expand N`, `--sync`, `--abandon N` | Manage tasks |
+| `/research` | `/research N [focus]` | Research task, route by language |
+| `/plan` | `/plan N` | Create implementation plan |
+| `/implement` | `/implement N` | Execute plan, resume from incomplete phase |
+| `/revise` | `/revise N` | Create new plan version |
+| `/review` | `/review` | Analyze codebase |
+| `/todo` | `/todo` | Archive completed/abandoned tasks |
+| `/errors` | `/errors` | Analyze error patterns, create fix plans |
+| `/meta` | `/meta` | System builder for .claude/ changes |
+| `/learn` | `/learn [PATH...]` | Scan for FIX:/NOTE:/TODO: tags |
+| `/lake` | `/lake [--clean] [--max-retries N]` | Build with automatic error repair |
+| `/refresh` | `/refresh [--dry-run] [--force]` | Clean orphaned processes and old files |
 
 ## State Synchronization
 
-**Critical**: TODO.md and state.json must stay synchronized.
-
-### Two-Phase Update Pattern
-1. Read both files
-2. Prepare updates in memory
-3. Write state.json first (machine state)
-4. Write TODO.md second (user-facing)
-5. If either fails, log error
+TODO.md and state.json must stay synchronized. Update state.json first (machine state), then TODO.md (user-facing).
 
 ### state.json Structure
 ```json
 {
   "next_project_number": 346,
-  "active_projects": [
-    {
-      "project_number": 334,
-      "project_name": "task_slug",
-      "status": "planned",
-      "language": "lean",
-      "priority": "high",
-      "completion_summary": "Required when status=completed. 1-3 sentence description.",
-      "roadmap_items": ["Optional explicit roadmap item texts to match"]
-    }
-  ]
+  "active_projects": [{
+    "project_number": 334,
+    "project_name": "task_slug",
+    "status": "planned",
+    "language": "lean",
+    "priority": "high",
+    "completion_summary": "Required when status=completed",
+    "roadmap_items": ["Optional explicit roadmap items"]
+  }]
 }
 ```
 
-### Completion Summary Workflow
-
-When a task is completed via `/implement`:
-1. The `completion_summary` field is populated with a 1-3 sentence description of what was accomplished
-2. For non-meta tasks: Optional `roadmap_items` array can specify explicit ROAD_MAP.md item texts to match
-3. For meta tasks: Optional `claudemd_suggestions` object can propose CLAUDE.md modifications
-
-When `/todo` archives completed tasks:
-
-**Non-meta tasks** (language != "meta"):
-1. Extracts `completion_summary` and `roadmap_items` via jq
-2. Matches against ROAD_MAP.md using: explicit roadmap_items (priority 1), exact (Task N) references (priority 2)
-3. Annotates matched items with completion date and task reference
-
-**Meta tasks** (language == "meta"):
-1. Extracts `claudemd_suggestions` object if present
-2. Displays suggested CLAUDE.md modifications for user review (add/update/remove actions)
-3. User manually applies suggestions - changes are NOT automatic
-4. Tasks with action "none" or missing suggestions are acknowledged without action
-
-This separation ensures:
-- Project roadmap tracks external deliverables (features, proofs, documentation)
-- Development system documentation (CLAUDE.md) tracks internal tool/workflow changes
-- Meta task changes require user review before applying to prevent accidental bloat
+### Completion Workflow
+- Non-meta tasks: `completion_summary` + optional `roadmap_items` -> /todo annotates ROAD_MAP.md
+- Meta tasks: `completion_summary` + `claudemd_suggestions` -> /todo displays for user review
 
 ## Git Commit Conventions
 
-Commits are scoped to task operations with session tracking:
+Format: `task {N}: {action}` with session ID in body.
 ```
-task {N}: {action}
+task 334: complete research
 
-Session: sess_{timestamp}_{random}
+Session: sess_1736700000_abc123
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
 
-Standard actions:
-- `task {N}: create {title}`
-- `task {N}: complete research`
-- `task {N}: create implementation plan`
-- `task {N} phase {P}: {phase_name}`
-- `task {N}: complete implementation`
-- `todo: archive {N} completed tasks`
-- `errors: create fix plan for {N} errors`
+Standard actions: `create`, `complete research`, `create implementation plan`, `phase {P}: {name}`, `complete implementation`.
 
 ## Lean 4 Integration
 
-### Blocked MCP Tools
-
-**DO NOT call directly** - these tools hang indefinitely:
+### Blocked MCP Tools (DO NOT call directly)
 - `lean_diagnostic_messages` -> Use `lean_goal` or `lake build`
 - `lean_file_outline` -> Use `Read` + `lean_hover_info`
 
-Delegate Lean work to skills which enforce this restriction.
-
 ### MCP Tools (via lean-lsp server)
-- `lean_goal` - Proof state at position (use often!)
-- `lean_hover_info` - Type signatures and docs
-- `lean_completions` - IDE autocomplete
-- `lean_leansearch` - Natural language → Mathlib
-- `lean_loogle` - Type pattern search
-- `lean_leanfinder` - Semantic concept search
-- `lean_multi_attempt` - Test tactics without editing
-- `lean_local_search` - Fast local declaration search
+`lean_goal`, `lean_hover_info`, `lean_completions`, `lean_leansearch`, `lean_loogle`, `lean_leanfinder`, `lean_multi_attempt`, `lean_local_search`, `lean_state_search`, `lean_hammer_premise`
 
 ### Search Decision Tree
-1. "Does X exist locally?" → lean_local_search
-2. "I need a lemma that says X" → lean_leansearch
-3. "Find lemma with type pattern" → lean_loogle
-4. "What's the Lean name for concept X?" → lean_leanfinder
-5. "What closes this goal?" → lean_state_search
+1. "Does X exist locally?" -> lean_local_search
+2. "I need a lemma that says X" -> lean_leansearch
+3. "Find lemma with type pattern" -> lean_loogle
+4. "What's the Lean name for concept X?" -> lean_leanfinder
+5. "What closes this goal?" -> lean_state_search
 
-### MCP Server Configuration
+### MCP Configuration
+Configure lean-lsp in user scope (`~/.claude.json`) for subagent access. Run `.claude/scripts/setup-lean-mcp.sh`. Lean skills use direct execution to avoid MCP hanging issues in subagents.
 
-**Known Issue**: Custom subagents (spawned via Task tool) cannot access project-scoped MCP servers defined in `.mcp.json`. This is a Claude Code platform limitation tracked in GitHub issues #13898, #14496, and #13605.
-
-**Workaround**: Configure lean-lsp in user scope (`~/.claude.json`) instead of project scope:
-
-```bash
-# Run the setup script from project root
-.claude/scripts/setup-lean-mcp.sh
-
-# Or with custom project path
-.claude/scripts/setup-lean-mcp.sh --project /path/to/ProofChecker
-
-# Verify configuration
-.claude/scripts/verify-lean-mcp.sh
-```
-
-After setup, restart Claude Code for changes to take effect.
-
-**Note**: The project `.mcp.json` file is kept for documentation purposes and works correctly for the main conversation - only subagents have the access limitation.
-
-**Direct Execution Migration**: Due to additional MCP bugs (#15945, #13254, #4580) causing
-indefinite hanging in subagents, the Lean skills (`skill-lean-research`, `skill-lean-implementation`)
-were refactored from the thin wrapper delegation pattern to direct execution. MCP tools now execute
-directly in the skill rather than in a delegated subagent, eliminating the hanging issue.
-
-### Multi-Instance Optimization
-
-Running multiple concurrent Claude sessions can cause MCP AbortError -32001 due to resource contention. Key prevention strategies:
-
-1. **Pre-build**: Run `lake build` before starting multiple sessions
-2. **Environment variables**: Configure `LEAN_LOG_LEVEL: "WARNING"` in `~/.claude.json`
-3. **Session throttling**: Limit concurrent Lean implementation tasks
-
-See `.claude/context/project/lean4/operations/multi-instance-optimization.md` for detailed guidance.
-
-## Rules References
-
-Core rules (automatically applied based on file paths):
-- @.claude/rules/state-management.md - Task state patterns (paths: specs/**)
-- @.claude/rules/git-workflow.md - Commit conventions
-- @.claude/rules/lean4.md - Lean development patterns (paths: **/*.lean)
-- @.claude/rules/error-handling.md - Error recovery patterns (paths: .claude/**)
-- @.claude/rules/artifact-formats.md - Report/plan formats (paths: specs/**)
-- @.claude/rules/workflows.md - Command lifecycle patterns (paths: .claude/**)
-
-## Project Context Imports
-
-Domain knowledge (load as needed):
-- @.claude/context/project/lean4/tools/mcp-tools-guide.md - Lean MCP tools reference
-- @.claude/context/project/lean4/patterns/tactic-patterns.md - Lean tactic usage
-- @.claude/context/project/logic/domain/kripke-semantics-overview.md - Modal logic semantics
-- @.claude/context/project/repo/project-overview.md - Project structure
-
-## Error Handling
-
-### On Command Failure
-- Keep task in current status (don't regress)
-- Log error to errors.json if persistent
-- Preserve partial progress for resume
-
-### On Timeout
-- Mark current phase [PARTIAL]
-- Next /implement resumes from incomplete phase
-
-### On MCP Tool Failure (AbortError -32001)
-- Agents use early metadata pattern to preserve progress
-- MCP recovery pattern: retry once, try alternative tool, continue with available info
-- Postflight detects `status: "in_progress"` and provides resume guidance
-- See `.claude/context/core/patterns/mcp-tool-recovery.md` for details
-- See `.claude/context/core/patterns/early-metadata-pattern.md` for interruption handling
-
-## Session Patterns
-
-### Starting Work on a Task
-```
-1. Read TODO.md to find task
-2. Check current status
-3. Use appropriate command (/research, /plan, /implement)
-```
-
-### Resuming Interrupted Work
-```
-1. /implement N automatically detects resume point
-2. Continues from last incomplete phase
-3. No manual intervention needed
-```
-
-## Skill Architecture
-
-### Lazy Context Loading
-
-All skills use lazy context loading - context is never loaded eagerly via frontmatter arrays. Instead:
-
-1. **Delegating skills**: Use Task tool to spawn subagents which load their own context
-2. **Direct skills**: Document required context via @-references in a "Context Loading" section
-
-Reference `@.claude/context/index.md` for the full context discovery index.
-
-### Thin Wrapper Skill Pattern
-
-Workflow skills use a thin wrapper pattern that delegates to subagents via the Task tool:
-
-```yaml
----
-name: skill-{name}
-description: {description}
-allowed-tools: Task
----
-```
-
-**Key characteristics**:
-- Skills contain minimal routing logic only
-- All context loading happens in the subagent (via Task tool)
-- Skill instructions specify which agent to invoke (e.g., `subagent_type: "general-research-agent"`)
-- No `context: fork` or `agent:` fields needed - delegation is explicit via Task tool
-
-**When NOT to use thin wrapper pattern**:
-- Skills that execute work directly without spawning a subagent (e.g., skill-status-sync)
-- Skills that need to process results before returning (use direct execution instead)
-
-### Custom Agent Registration
-
-Custom agents in `.claude/agents/` **require YAML frontmatter** to be recognized by Claude Code:
-
-```yaml
----
-name: {agent-name}
-description: {one-line description}
----
-```
-
-Without frontmatter, Claude Code silently ignores agent files and they won't appear as valid `subagent_type` values. Agent registration takes effect on session restart.
-
-### Skill-to-Agent Mapping
+## Skill-to-Agent Mapping
 
 | Skill | Agent | Purpose |
 |-------|-------|---------|
-| skill-lean-research | (direct execution) | Lean 4/Mathlib research using MCP tools |
-| skill-lean-implementation | (direct execution) | Lean proof implementation using MCP tools |
+| skill-lean-research | (direct execution) | Lean 4/Mathlib research |
+| skill-lean-implementation | (direct execution) | Lean proof implementation |
 | skill-researcher | general-research-agent | General web/codebase research |
 | skill-planner | planner-agent | Implementation plan creation |
 | skill-implementer | general-implementation-agent | General file implementation |
 | skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
 | skill-typst-implementation | typst-implementation-agent | Typst document implementation |
 | skill-meta | meta-builder-agent | System building and task creation |
-| skill-learn | (direct execution) | Interactive tag scanning and task creation from source comments |
-| skill-status-sync | (direct execution) | Atomic status updates for task state |
-| skill-document-converter | document-converter-agent | Document format conversion (PDF/DOCX to Markdown, etc.) |
-| skill-refresh | (direct execution) | Manage orphaned processes and project file cleanup |
-| skill-lake-repair | (direct execution) | Run Lean build with automatic error repair |
+| skill-document-converter | document-converter-agent | Document format conversion |
+| skill-status-sync | (direct execution) | Atomic status updates |
+| skill-refresh | (direct execution) | Process and file cleanup |
+| skill-lake-repair | (direct execution) | Build with error repair |
 
-**Note**: Lean skills use direct execution to avoid MCP tool hanging issues in subagents
-(Claude Code bugs #15945, #13254, #4580). The deprecated agent files remain in
-`.claude/agents/` for reference, with backups in `.claude/agents/archive/`.
+## Rules References
 
-### Thin Wrapper Execution Flow
+Core rules (auto-applied by file path):
+- @.claude/rules/state-management.md - Task state patterns (specs/**)
+- @.claude/rules/git-workflow.md - Commit conventions
+- @.claude/rules/lean4.md - Lean development (**/*.lean)
+- @.claude/rules/error-handling.md - Error recovery (.claude/**)
+- @.claude/rules/artifact-formats.md - Report/plan formats (specs/**)
+- @.claude/rules/workflows.md - Command lifecycle (.claude/**)
 
-All delegating skills follow this 5-step pattern:
+## Context Imports
 
-1. **Input Validation** - Verify task exists, status allows operation
-2. **Context Preparation** - Build delegation context with session_id
-3. **Invoke Subagent** - Call Task tool with target agent
-4. **Return Validation** - Verify return matches `subagent-return.md` schema
-5. **Return Propagation** - Pass validated result to caller
+Domain knowledge (load as needed):
+- @.claude/context/project/lean4/tools/mcp-tools-guide.md
+- @.claude/context/project/lean4/patterns/tactic-patterns.md
+- @.claude/context/project/logic/domain/kripke-semantics-overview.md
+- @.claude/context/project/repo/project-overview.md
 
-### Benefits
+## Error Handling
 
-- **Token Efficiency**: Context loaded only in subagent conversation
-- **Isolation**: Subagent context doesn't bloat parent conversation
-- **Reusability**: Same subagent usable from multiple entry points
-- **Maintainability**: Skills = routing, Agents = execution
-
-### Related Documentation
-
-- `.claude/context/core/formats/subagent-return.md` - Return format standard
-- `.claude/context/core/orchestration/orchestration-core.md` - Delegation patterns
-- `.claude/context/core/architecture/system-overview.md` - Three-layer architecture overview
-- `.claude/context/core/architecture/component-checklist.md` - Component creation decision tree
-- `.claude/context/core/architecture/generation-guidelines.md` - Templates for /meta agent
-- `.claude/context/core/patterns/thin-wrapper-skill.md` - Skill delegation pattern
-- `.claude/context/core/patterns/checkpoint-execution.md` - Command checkpoint pattern
-- `.claude/docs/architecture/system-overview.md` - User-facing architecture overview
-
-## Session Maintenance
-
-Claude Code resources can accumulate over time. Use the `/refresh` command to manage:
-- **Orphaned processes**: Detached Claude processes consuming memory
-- **Directory cleanup**: Old files in `~/.claude/` (projects, debug, file-history, todos, etc.)
-
-### Quick Commands
-
-| Command | Description |
-|---------|-------------|
-| `/refresh` | Interactive: cleanup processes, then select age threshold for directories |
-| `/refresh --dry-run` | Preview both cleanups without making changes |
-| `/refresh --force` | Execute both cleanups immediately (8-hour default) |
-
-### Age Threshold Options
-
-When running `/refresh` interactively, you'll be prompted to select an age threshold:
-- **8 hours (default)** - Remove files older than 8 hours
-- **2 days** - Remove files older than 2 days (conservative)
-- **Clean slate** - Remove everything except safety margin (1 hour)
-
-### Cleanable Directories
-
-The following directories in `~/.claude/` are cleaned based on age:
-- `projects/` - Session .jsonl files and subdirectories
-- `debug/` - Debug output files
-- `file-history/` - File version snapshots
-- `todos/` - Todo list backups
-- `session-env/` - Environment snapshots
-- `telemetry/` - Usage telemetry data
-- `shell-snapshots/` - Shell state
-- `plugins/cache/` - Old plugin versions
-- `cache/` - General cache
-
-### Shell Aliases (Optional)
-
-Install convenience aliases:
-```bash
-.claude/scripts/install-aliases.sh
-```
-
-This adds: `claude-refresh`, `claude-refresh-force`
-
-### Safety
-
-**Process cleanup**:
-- Only targets orphaned processes (no controlling terminal)
-- Active sessions are never affected
-
-**Directory cleanup**:
-- Never deletes: `sessions-index.json`, `settings.json`, `.credentials.json`, `history.jsonl`
-- Never deletes files modified within the last hour (safety margin)
-- Age threshold selectable interactively or defaults to 8 hours with `--force`
+- **On failure**: Keep task in current status, log to errors.json, preserve partial progress
+- **On timeout**: Mark phase [PARTIAL], next /implement resumes
+- **On MCP error**: Retry once, try alternative tool, continue with available info
+- **Git failures**: Non-blocking (logged, not fatal)
 
 ## Important Notes
 
-- Always update status BEFORE starting work (preflight)
-- Always update status AFTER completing work (postflight)
-- State.json is source of truth for machine operations
-- TODO.md is source of truth for user visibility
-- Git commits are non-blocking (failures logged, not fatal)
+- Update status BEFORE starting work (preflight) and AFTER completing (postflight)
+- state.json = machine truth, TODO.md = user visibility
+- All skills use lazy context loading via @-references
+- Session ID format: `sess_{timestamp}_{random}` - generated at GATE IN, included in commits

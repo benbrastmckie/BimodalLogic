@@ -457,6 +457,57 @@ lemma mcs_backward_chain_seed_containment (Gamma : Set Formula) (h_mcs : SetMaxi
   exact extendToMCS_contains _ _
 
 /--
+Each element in the forward chain is an MCS.
+-/
+lemma mcs_forward_chain_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) (n : ℕ) :
+    SetMaximalConsistent (mcs_forward_chain Gamma h_mcs h_no_G_bot n) := by
+  induction n with
+  | zero => exact h_mcs
+  | succ n _ih =>
+    unfold mcs_forward_chain
+    exact extendToMCS_is_mcs _ _
+
+/--
+G-formulas persist through the forward chain.
+
+If Gφ ∈ mcs(n), then Gφ ∈ mcs(m) for all m ≥ n.
+
+**Proof**:
+By induction on m. The key step is using `forward_G_persistence`:
+- From Gφ ∈ mcs(k), we get GGφ ∈ mcs(k) (by G-4 axiom)
+- GGφ ∈ mcs(k) means Gφ ∈ forward_seed(mcs(k))
+- forward_seed(mcs(k)) ⊆ mcs(k+1), so Gφ ∈ mcs(k+1)
+-/
+lemma mcs_forward_chain_G_persistence (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
+    (n m : ℕ) (h_le : n ≤ m) (φ : Formula)
+    (hG : Formula.all_future φ ∈ mcs_forward_chain Gamma h_mcs h_no_G_bot n) :
+    Formula.all_future φ ∈ mcs_forward_chain Gamma h_mcs h_no_G_bot m := by
+  induction m with
+  | zero =>
+    -- n ≤ 0, so n = 0
+    have h_n_eq : n = 0 := Nat.eq_zero_of_le_zero h_le
+    subst h_n_eq
+    exact hG
+  | succ m' ih =>
+    by_cases h : n ≤ m'
+    · -- n ≤ m': Use IH to get Gφ ∈ mcs(m'), then forward_G_persistence
+      have hG_m' := ih h
+      -- Need to show Gφ ∈ mcs(m'+1)
+      have h_mcs_m' : SetMaximalConsistent (mcs_forward_chain Gamma h_mcs h_no_G_bot m') :=
+        mcs_forward_chain_is_mcs Gamma h_mcs h_no_G_bot m'
+      have h_seed_sub := mcs_forward_chain_seed_containment Gamma h_mcs h_no_G_bot m'
+      exact forward_G_persistence h_mcs_m' h_seed_sub φ hG_m'
+    · -- n > m', so n = m' + 1 (since n ≤ m'+1 and ¬(n ≤ m'))
+      push_neg at h
+      -- h : m' < n, h_le : n ≤ m' + 1
+      -- Together: m' < n ≤ m' + 1, so n = m' + 1
+      have h_eq : n = m' + 1 := Nat.le_antisymm h_le h
+      subst h_eq
+      exact hG
+
+/--
 Forward coherence between adjacent times in the forward chain.
 
 For n < m in ℕ, mcs(n) and mcs(m) satisfy forward_G.
@@ -466,25 +517,23 @@ lemma mcs_forward_chain_coherent (Gamma : Set Formula) (h_mcs : SetMaximalConsis
     (n m : ℕ) (h_lt : n < m) (φ : Formula)
     (hG : Formula.all_future φ ∈ mcs_forward_chain Gamma h_mcs h_no_G_bot n) :
     φ ∈ mcs_forward_chain Gamma h_mcs h_no_G_bot m := by
-  -- Induction on the gap m - n
-  induction m with
-  | zero => exact absurd h_lt (Nat.not_lt_zero n)
-  | succ m' ih =>
-    by_cases h : n < m'
-    · -- n < m' < m'+1: Apply ih to get φ ∈ mcs(m'), then use seed containment
-      have h_phi_m' : φ ∈ mcs_forward_chain Gamma h_mcs h_no_G_bot m' := ih h
-      -- Need Gφ ∈ mcs(m') to conclude φ ∈ mcs(m'+1)
-      -- This is the key gap: we have φ ∈ mcs(m'), but need Gφ ∈ mcs(m')
-      -- to apply seed containment for the next step.
-      -- This requires G-persistence through the chain.
-      sorry
-    · -- n ≥ m', so n = m' (since n < m'+1 and n ≥ m' means n = m')
-      push_neg at h
-      have h_eq : n = m' := Nat.eq_of_le_of_lt_succ h h_lt
-      subst h_eq
-      -- n = m', so we need φ ∈ mcs(n+1) from Gφ ∈ mcs(n)
-      have h_in_seed : φ ∈ forward_seed (mcs_forward_chain Gamma h_mcs h_no_G_bot n) := hG
-      exact mcs_forward_chain_seed_containment Gamma h_mcs h_no_G_bot n h_in_seed
+  -- Two approaches:
+  -- 1. Direct: Gφ ∈ mcs(n) → φ ∈ forward_seed(mcs(n)) → φ ∈ mcs(n+1), then iterate
+  -- 2. Via persistence: Gφ persists to mcs(m-1), then seed containment gives φ ∈ mcs(m)
+  --
+  -- Using approach 2:
+  match m with
+  | 0 => exact absurd h_lt (Nat.not_lt_zero n)
+  | m' + 1 =>
+    -- We need φ ∈ mcs(m'+1)
+    -- First get Gφ ∈ mcs(m') using G-persistence (n ≤ m' since n < m'+1)
+    have h_le : n ≤ m' := Nat.lt_succ_iff.mp h_lt
+    have hG_m' : Formula.all_future φ ∈ mcs_forward_chain Gamma h_mcs h_no_G_bot m' :=
+      mcs_forward_chain_G_persistence Gamma h_mcs h_no_G_bot n m' h_le φ hG
+    -- Now Gφ ∈ mcs(m') means φ ∈ forward_seed(mcs(m'))
+    have h_in_seed : φ ∈ forward_seed (mcs_forward_chain Gamma h_mcs h_no_G_bot m') := hG_m'
+    -- And forward_seed(mcs(m')) ⊆ mcs(m'+1)
+    exact mcs_forward_chain_seed_containment Gamma h_mcs h_no_G_bot m' h_in_seed
 
 /--
 Pairwise coherence of the unified chain construction.

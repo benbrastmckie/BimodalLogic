@@ -1,10 +1,29 @@
 # Claude Code System Architecture
 
-**Version**: 2.1
+**Version**: 2.2
 **Status**: Active
 **Created**: 2025-12-26
-**Updated**: 2026-01-10
-**Purpose**: Document the architecture of the .claude skill and task management system
+**Updated**: 2026-01-28
+**Purpose**: Comprehensive user documentation for the .claude skill and task management system
+
+This document provides detailed explanations of the system architecture for users who want to understand how the agent system works. For minimal agent context loaded every session, see `.claude/CLAUDE.md`.
+
+---
+
+## Table of Contents
+
+1. [System Overview](#system-overview)
+2. [Architecture Principles](#architecture-principles)
+3. [Component Hierarchy](#component-hierarchy)
+4. [Delegation Flow](#delegation-flow)
+5. [State Management](#state-management)
+6. [Git Workflow](#git-workflow)
+7. [Language Routing](#language-routing)
+8. [Error Handling and Recovery](#error-handling-and-recovery)
+9. [Meta System Builder](#meta-system-builder)
+10. [Forked Subagent Pattern](#forked-subagent-pattern)
+11. [Session Maintenance](#session-maintenance)
+12. [MCP Server Configuration](#mcp-server-configuration)
 
 ---
 
@@ -154,36 +173,27 @@ See `.claude/context/core/system/context-loading-strategy.md` for details.
 
 The system has four levels of components:
 
-### Level 0: Orchestrator
+### Level 0: Orchestration Layer
 
-**File**: `.claude/agent/orchestrator.md`
+**Files**: `.claude/commands/*.md` (commands invoke skills via `Skill` tool)
 
 **Responsibilities**:
-- Central coordination and routing
-- Delegation registry management
-- Cycle detection and depth enforcement
-- Timeout monitoring
-- Return validation
+- Central coordination and routing via commands
+- Session ID generation and tracking
+- Language-based routing to appropriate skills
+- Checkpoint-based execution (preflight -> delegate -> postflight -> commit)
 
-**Delegation Registry**:
-```javascript
-{
-  "sess_20251226_abc123": {
-    "command": "implement",
-    "subagent": "task-executor",
-    "task_number": 191,
-    "start_time": "2025-12-26T10:00:00Z",
-    "timeout": 3600,
-    "status": "running",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "task-executor"]
-  }
-}
+**Session Format**:
 ```
+sess_{timestamp}_{random_6char}
+Example: sess_1703606400_a1b2c3
+```
+
+Session IDs are generated at command preflight and passed through delegation for traceability.
 
 ### Level 1: Commands
 
-**Directory**: `.claude/command/`
+**Directory**: `.claude/commands/`
 
 **Commands**:
 - `/task`: Create tasks in TODO.md
@@ -237,7 +247,7 @@ All commands that invoke subagents follow this workflow:
 
 ### Level 2: Subagents
 
-**Directory**: `.claude/agent/subagents/`
+**Directory**: `.claude/agents/`
 
 **Core Subagents**:
 - `atomic-task-numberer`: Thread-safe task number allocation
@@ -272,7 +282,7 @@ All subagents follow this structure:
 
 ### Level 3: Specialists
 
-**Directory**: `.claude/agent/subagents/specialists/` (future)
+**Directory**: `.claude/agents/specialists/` (future)
 
 **Purpose**: Highly focused helpers for specific tasks (e.g., web-research-specialist)
 
@@ -689,8 +699,8 @@ Two-phase commit ensures:
 
 The architecture supports extension through:
 - New commands (add to .claude/command/)
-- New subagents (add to .claude/agent/subagents/)
-- New specialists (add to .claude/agent/subagents/specialists/)
+- New subagents (add to .claude/agents/)
+- New specialists (add to .claude/agents/specialists/)
 - New language routing (update orchestrator routing logic)
 - New error types (add to errors.json schema)
 
@@ -964,10 +974,106 @@ Subagent context: ~2000 tokens (loaded only in fork)
 
 ---
 
+## Session Maintenance
+
+Claude Code resources can accumulate over time. The `/refresh` command helps manage these resources.
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `/refresh` | Interactive: cleanup processes, then select age threshold for directories |
+| `/refresh --dry-run` | Preview both cleanups without making changes |
+| `/refresh --force` | Execute both cleanups immediately (8-hour default) |
+
+### Age Threshold Options
+
+When running `/refresh` interactively, you'll be prompted to select an age threshold:
+- **8 hours (default)** - Remove files older than 8 hours
+- **2 days** - Remove files older than 2 days (conservative)
+- **Clean slate** - Remove everything except safety margin (1 hour)
+
+### Cleanable Directories
+
+The following directories in `~/.claude/` are cleaned based on age:
+- `projects/` - Session .jsonl files and subdirectories
+- `debug/` - Debug output files
+- `file-history/` - File version snapshots
+- `todos/` - Todo list backups
+- `session-env/` - Environment snapshots
+- `telemetry/` - Usage telemetry data
+- `shell-snapshots/` - Shell state
+- `plugins/cache/` - Old plugin versions
+- `cache/` - General cache
+
+### Safety
+
+**Process cleanup**:
+- Only targets orphaned processes (no controlling terminal)
+- Active sessions are never affected
+
+**Directory cleanup**:
+- Never deletes: `sessions-index.json`, `settings.json`, `.credentials.json`, `history.jsonl`
+- Never deletes files modified within the last hour (safety margin)
+- Age threshold selectable interactively or defaults to 8 hours with `--force`
+
+### Shell Aliases (Optional)
+
+Install convenience aliases:
+```bash
+.claude/scripts/install-aliases.sh
+```
+
+This adds: `claude-refresh`, `claude-refresh-force`
+
+---
+
+## MCP Server Configuration
+
+### Known Issue
+
+Custom subagents (spawned via Task tool) cannot access project-scoped MCP servers defined in `.mcp.json`. This is a Claude Code platform limitation tracked in GitHub issues #13898, #14496, and #13605.
+
+### Workaround
+
+Configure lean-lsp in user scope (`~/.claude.json`) instead of project scope:
+
+```bash
+# Run the setup script from project root
+.claude/scripts/setup-lean-mcp.sh
+
+# Or with custom project path
+.claude/scripts/setup-lean-mcp.sh --project /path/to/ProofChecker
+
+# Verify configuration
+.claude/scripts/verify-lean-mcp.sh
+```
+
+After setup, restart Claude Code for changes to take effect.
+
+**Note**: The project `.mcp.json` file is kept for documentation purposes and works correctly for the main conversation - only subagents have the access limitation.
+
+### Direct Execution Migration
+
+Due to additional MCP bugs (#15945, #13254, #4580) causing indefinite hanging in subagents, the Lean skills (`skill-lean-research`, `skill-lean-implementation`) were refactored from the thin wrapper delegation pattern to direct execution. MCP tools now execute directly in the skill rather than in a delegated subagent, eliminating the hanging issue.
+
+### Multi-Instance Optimization
+
+Running multiple concurrent Claude sessions can cause MCP AbortError -32001 due to resource contention. Key prevention strategies:
+
+1. **Pre-build**: Run `lake build` before starting multiple sessions
+2. **Environment variables**: Configure `LEAN_LOG_LEVEL: "WARNING"` in `~/.claude.json`
+3. **Session throttling**: Limit concurrent Lean implementation tasks
+
+See `.claude/context/project/lean4/operations/multi-instance-optimization.md` for detailed guidance.
+
+---
+
 ## Related Documentation
 
 - Quick Start Guide: `.claude/QUICK-START.md`
 - Testing Guide: `.claude/TESTING.md`
+- Agent Context: `.claude/CLAUDE.md`
 - Orchestration Core: `.claude/context/core/orchestration/orchestration-core.md`
 - Return Format Standard: `.claude/context/core/formats/subagent-return.md`
 - Task 191 Research: `specs/191_fix_subagent_delegation_hang/reports/research-001.md`
