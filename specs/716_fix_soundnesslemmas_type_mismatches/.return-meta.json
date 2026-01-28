@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "summary": "6-phase plan to fix SoundnessLemmas type mismatches: update transitivity lemmas, use reflexivity for temporal T axioms, adapt case analysis, and complete 4 sorry placeholders",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/716_fix_soundnesslemmas_type_mismatches/plans/implementation-001.md",
+      "summary": "6-phase implementation plan for fixing strict-to-reflexive inequality type mismatches"
+    }
+  ],
+  "next_steps": "Run /implement 716 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1769628312_730ae7",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 2
+  }
+}
