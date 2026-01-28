@@ -1,5 +1,5 @@
 ---
-next_project_number: 731
+next_project_number: 732
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -131,6 +131,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 731. Clean Bimodal documentation - remove historical comments
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-28
+- **Related**: Task 681
+
+**Description**: Clean up Lean source code documentation in Bimodal/ theory. Remove all historical comments about past attempts, comparative mentions, and implementation history from the main source files. The Bimodal/ source code should be clearly and cleanly documented explaining only the present state of the code. Move all historical/comparative comments to Boneyard/ files with appropriate documentation. Ensure Boneyard/ is completely isolated from other Bimodal/ directories (no imports from Boneyard anywhere, no references to Boneyard in comments outside of Boneyard/).
+
+---
 
 ### 728. Create user guide for command workflows
 - **Effort**: 3-4 hours
