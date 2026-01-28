@@ -1,20 +1,20 @@
 ---
-next_project_number: 706
+next_project_number: 708
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 27
+  active: 29
   completed: 264
   in_progress: 0
-  not_started: 23
+  not_started: 25
   abandoned: 21
-  total: 295
+  total: 297
 priority_distribution:
   critical: 0
   high: 5
-  medium: 16
+  medium: 18
   low: 6
 technical_debt:
   sorry_count: 205
@@ -130,6 +130,31 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 707. Replace 'propositional atom' with 'sentence letter' in Bimodal documentation
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-28
+- **Dependencies**: 706
+- **Source**: Theories/Bimodal/typst/chapters/01-syntax.typ:20 (NOTE: tag)
+
+**Description**: Replace 'propositional atom' with 'sentence letter' throughout the Bimodal reference documentation. Source: Theories/Bimodal/typst/chapters/01-syntax.typ:20 NOTE tag requesting this terminology change. After completing the learn-it task (706) which documents the terminology preference, update all Bimodal documentation files to use 'sentence letter' instead of 'propositional atom' for consistency.
+
+---
+
+### 706. Update context files from Bimodal syntax terminology note
+- **Effort**: 0.5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-28
+- **Source**: Theories/Bimodal/typst/chapters/01-syntax.typ:20 (NOTE: tag)
+
+**Description**: Update .claude/context/ files to document the terminology preference 'sentence letter' instead of 'propositional atom' for the Bimodal TM logic. This learning comes from Theories/Bimodal/typst/chapters/01-syntax.typ:20 where the author notes wanting to use 'sentence letter' throughout. This pattern should be applied to context documentation to ensure consistent terminology in all Bimodal-related documentation and code.
+
+---
 
 ### 705. Fix Bimodal introduction Typst issues
 - **Effort**: 2-3 hours

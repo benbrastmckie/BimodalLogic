@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 31,
-    "last_sync": "2026-01-28T05:31:57Z"
+    "total_tasks": 33,
+    "last_sync": "2026-01-28T05:35:29Z"
   },
   "active_projects": [
     {
@@ -707,6 +707,31 @@
       "last_updated": "2026-01-28T02:53:15Z",
       "session_id": "sess_1769568795_a2d87f",
       "description": "Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks."
+    },
+    {
+      "project_number": 706,
+      "project_name": "update_context_files_from_bimodal_syntax_terminology_note",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-28T05:35:29Z",
+      "last_updated": "2026-01-28T05:35:29Z",
+      "session_id": "sess_1769569329_d9ee2f",
+      "description": "Update .claude/context/ files to document the terminology preference 'sentence letter' instead of 'propositional atom' for the Bimodal TM logic. This learning comes from Theories/Bimodal/typst/chapters/01-syntax.typ:20 where the author notes wanting to use 'sentence letter' throughout. This pattern should be applied to context documentation to ensure consistent terminology in all Bimodal-related documentation and code."
+    },
+    {
+      "project_number": 707,
+      "project_name": "replace_propositional_atom_with_sentence_letter_in_bimodal",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-28T05:35:29Z",
+      "last_updated": "2026-01-28T05:35:29Z",
+      "session_id": "sess_1769569329_d9ee2f",
+      "dependencies": [
+        706
+      ],
+      "description": "Replace 'propositional atom' with 'sentence letter' throughout the Bimodal reference documentation. Source: Theories/Bimodal/typst/chapters/01-syntax.typ:20 NOTE tag requesting this terminology change. After completing the learn-it task (706) which documents the terminology preference, update all Bimodal documentation files to use 'sentence letter' instead of 'propositional atom' for consistency."
     }
   ],
   "completed_projects": [
@@ -721,7 +746,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 706,
+  "next_project_number": 708,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
