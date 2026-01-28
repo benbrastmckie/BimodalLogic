@@ -14,7 +14,14 @@
       "created": "2026-01-28T07:17:18Z",
       "last_updated": "2026-01-28T19:08:03Z",
       "session_id": "sess_1769627062_999f79",
-      "researched": "2026-01-28T19:08:03Z"
+      "researched": "2026-01-28T19:08:03Z",
+      "artifacts": [
+        {
+          "path": "specs/716_fix_soundnesslemmas_type_mismatches/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying cause of type mismatches (task 658 semantics change) and fix strategies for all 7 errors"
+        }
+      ]
     },
     {
       "project_number": 697,

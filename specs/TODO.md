@@ -29,11 +29,13 @@ technical_debt:
 
 ### 716. Fix SoundnessLemmas type mismatches
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-28
+- **Researched**: 2026-01-28
 - **Source**: Theories/Bimodal/Boneyard/Metalogic/Soundness/SoundnessLemmas.lean
+- **Research**: [research-001.md](specs/716_fix_soundnesslemmas_type_mismatches/reports/research-001.md)
 
 **Description**: Fix type mismatches in SoundnessLemmas temporal logic proofs. 7 errors involving `<` vs `≤` inequality operators and `truth_at` applications at lines 263, 287, 288, 339, 363, 707, 738. The errors stem from mismatches between strict less-than (`<`) and less-than-or-equal (`≤`) in temporal operator definitions.
 
