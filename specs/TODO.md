@@ -36,7 +36,7 @@ technical_debt:
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-28
 - **Research**: [research-001.md](specs/720_avoid_hanging_lean_mcp_calls/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-002.md)
+- **Plan**: [implementation-001.md](specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-001.md)
 
 **Description**: The lean-lsp MCP is hanging on diagnostics/outline calls due to a bug. Until the bug is fixed, modify the lean skills to avoid making such calls (lean_diagnostic_messages, lean_file_outline), while otherwise maintaining their existing functionality. This is a temporary workaround until the upstream MCP bug is resolved.
 

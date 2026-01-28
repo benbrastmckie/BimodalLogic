@@ -22,9 +22,9 @@
           "summary": "Research report with file-by-file analysis and modification recommendations for avoiding hanging lean MCP calls"
         },
         {
-          "path": "specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-002.md",
+          "path": "specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-001.md",
           "type": "plan",
-          "summary": "2-phase plan adding warnings to discourage use of hanging lean-lsp tools while keeping them in allowed-tools"
+          "summary": "2-phase plan removing lean_diagnostic_messages and lean_file_outline from 4 skill/command files"
         }
       ],
       "planned": "2026-01-28T18:34:34Z"
