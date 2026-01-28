@@ -1,5 +1,5 @@
 ---
-next_project_number: 694
+next_project_number: 695
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -143,6 +143,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 694. Configure Neovim Typst bindings similar to LaTeX
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-28
+
+**Description**: Research and configure ~/.config/nvim/ appropriately to include bindings similar to those used for LaTeX in .tex files for Typst (.typ) files.
+
+---
 
 ### 692. Port Bimodal/latex/ to Bimodal/typst/
 - **Effort**: 4 hours
