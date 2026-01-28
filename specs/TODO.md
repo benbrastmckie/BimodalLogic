@@ -1,21 +1,21 @@
 ---
-next_project_number: 695
+next_project_number: 696
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 25
-  completed: 254
+  active: 23
+  completed: 264
   in_progress: 0
   not_started: 19
   abandoned: 21
-  total: 281
+  total: 291
 priority_distribution:
   critical: 0
   high: 5
-  medium: 15
-  low: 9
+  medium: 12
+  low: 6
 technical_debt:
   sorry_count: 205
   axiom_count: 15
@@ -26,37 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 693. Implement generalized_past_k theorem
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Related**: Task 657
-- **Source**: Theories/Bimodal/Theorems/GeneralizedNecessitation.lean
-- **Research**: [research-001.md](specs/693_implement_generalized_past_k_theorem/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/693_implement_generalized_past_k_theorem/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/693_implement_generalized_past_k_theorem/summaries/implementation-summary-20260128.md)
-
-**Description**: Implement `generalized_past_k` theorem in GeneralizedNecessitation.lean, mirroring the structure of `generalized_temporal_k`. This theorem shows that if `L ⊢ φ` then `(H L) ⊢ H φ` (applying the past operator H to all formulas in the premise list). Required to unblock `past_seed_consistent` proof in Task 657. Can be derived from `generalized_temporal_k` via temporal duality, or implemented directly following the same pattern.
-
----
-
-### 691. Improve lean-lsp-mcp agent integration
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-27
-- **Research**: [research-001.md](specs/691_improve_lean_lsp_mcp_agent_integration/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/691_improve_lean_lsp_mcp_agent_integration/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260127.md](specs/691_improve_lean_lsp_mcp_agent_integration/summaries/implementation-summary-20260127.md)
-
-**Description**: Investigate and fix lean-lsp-mcp integration issues where agents do not receive or continue with tokens returned by the MCP server. Study current integration patterns and compare against best practices for MCP servers with Claude Code 2026 conventions to design systematic improvements that avoid needless complexity but enhance performance.
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -115,127 +84,6 @@ technical_debt:
 
 ---
 
-### 686. Fix agent interruption MCP abort errors
-- **Effort**: 6 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-26
-- **Completed**: 2026-01-28
-- **Related**: 619, 672, 674
-- **Research**: [research-001.md](specs/686_fix_agent_interruption_mcp_abort_errors/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/686_fix_agent_interruption_mcp_abort_errors/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/686_fix_agent_interruption_mcp_abort_errors/summaries/implementation-summary-20260128.md)
-
-**Description**: Fix agent system interruption failures where MCP tool calls return AbortError (-32001) and agents get stuck at "Interrupted" prompt. Root cause analysis from `/research 657` and `/implement 630` failures shows: (1) lean-research-agent interrupted during lean_local_search calls, (2) lean-implementation-agent interrupted during lean_diagnostic_messages call. Both agents failed to write return metadata files, leaving tasks stuck in researching/implementing status. System improvements needed: error recovery for MCP tool failures, graceful interruption handling, partial progress preservation, and metadata file writing on timeout/abort.
-
----
-
-### 690. Fix constitutive foundation LaTeX issues
-- **Status**: [COMPLETED]
-- **Research**: [research-001.md](specs/690_fix_constitutive_foundation_latex_issues/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/690_fix_constitutive_foundation_latex_issues/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260127.md](specs/690_fix_constitutive_foundation_latex_issues/summaries/implementation-summary-20260127.md)
-- **Started**: 2026-01-26T19:51:02Z
-- **Completed**: 2026-01-27
-- **Effort**: 2-3 hours
-- **Priority**: High
-- **Language**: latex
-- **Created**: 2026-01-26
-- **Dependencies**: 689
-- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex (2 FIX:, 1 NOTE: tags)
-
-**Description**: Fix LaTeX formatting issues in 02-ConstitutiveFoundation.tex based on FIX: and NOTE: tags: (1) line 49: Combine material conditional, biconditional definitions, and quantifier notation into single definition setting metalinguistic conventions (syntactic sugar) for the language; (2) line 406: Precisely define identity sentences in both Lean source and LaTeX, where inductive definition is in terms of well-formed sentences but takes identity sentences to be atomic; (3) line 21 (NOTE): Update variable notation from x, y, z to v_1, v_2, v_3, ... for object language (x, y, z reserved for metalanguage durations). Source: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex
-
----
-
-## Medium Priority
-
-### 695. Review Boneyard completeness attempts and remove misleading material
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-28
-- **Research**: [research-001.md](specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-001.md), [research-002.md](specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-002.md)
-
-**Description**: Review and remove misleading material from the Boneyard related to past completeness attempts: (1) an approach that did not make the representation theorem central, and (2) an approach using the wrong definition of a canonical model that did not match the task semantics. Preserve results that could be of general use, but add notes to avoid confusing standard Kripke constructions (which are not relevant to the current task semantics) with the task-specific approach.
-
----
-
-### 694. Configure Neovim Typst bindings similar to LaTeX
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/694_configure_nvim_typst_bindings/reports/research-001.md), [research-002.md](specs/694_configure_nvim_typst_bindings/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/694_configure_nvim_typst_bindings/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260128.md](specs/694_configure_nvim_typst_bindings/summaries/implementation-summary-20260128.md)
-
-**Description**: Research and configure ~/.config/nvim/ appropriately to include bindings similar to those used for LaTeX in .tex files for Typst (.typ) files.
-
----
-
-### 692. Port Bimodal/latex/ to Bimodal/typst/
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-27
-- **Completed**: 2026-01-27
-- **Research**: [research-001.md](specs/692_port_bimodal_latex_to_typst/reports/research-001.md), [research-002.md](specs/692_port_bimodal_latex_to_typst/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/692_port_bimodal_latex_to_typst/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260127.md](specs/692_port_bimodal_latex_to_typst/summaries/implementation-summary-20260127.md)
-
-**Description**: Port Bimodal/latex/ to Bimodal/typst/ directory, converting the latex project to a typst project while maintaining the same formal notation and file contents while leaving Bimodal/latex/ unchanged.
-
----
-
-### 685. Derive world-history and Barcan theorems
-- **Effort**: 8-10 hours
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-26
-- **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
-
-**Description**: Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.
-
----
-
-### 689. Update context from constitutive foundation notes
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-26
-- **Source**: Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex (1 NOTE: tag)
-- **Research**: [research-001.md](specs/689_update_context_from_constitutive_foundation_notes/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/689_update_context_from_constitutive_foundation_notes/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260127.md](specs/689_update_context_from_constitutive_foundation_notes/summaries/implementation-summary-20260127.md)
-
-**Description**: Update .claude/context/ files based on NOTE: tag from 02-ConstitutiveFoundation.tex line 21: Update variable naming convention documentation to reserve x, y, z for metalanguage durations and use v_1, v_2, v_3, ... for object language variables in Logos system.
-
----
-
-### 681. Redesign construct_indexed_family with coherent approach
-- **Effort**: 14 hours
-- **Status**: [IMPLEMENTING]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-25
-- **Researched**: 2026-01-25T22:26:00Z
-- **Planned**: 2026-01-25T22:32:00Z
-- **Related**: Task 658
-- **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-001.md)
-
-**Description**: Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyard's canonical_task_rel pattern), or research alternative approaches.
-
----
-
 ### 674. systematic command skill agent architecture improvement
 - **Effort**: 3-4 days
 - **Status**: [PLANNED]
@@ -254,39 +102,45 @@ technical_debt:
 
 ---
 
-### 656. Complete truth lemma forward direction (imp/box cases)
-- **Status**: [COMPLETED]
-- **Effort**: 10 hours
+## Medium Priority
+
+### 695. Review Boneyard completeness attempts and remove misleading material
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
-- **Research**: [research-001.md](specs/656_complete_truth_lemma_forward_direction/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/656_complete_truth_lemma_forward_direction/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260127.md](specs/656_complete_truth_lemma_forward_direction/summaries/implementation-summary-20260127.md)
-- **Created**: 2026-01-21
-- **Planned**: 2026-01-26
-- **Completed**: 2026-01-27
-- **Related**: Task 654
-- **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:144,155
+- **Created**: 2026-01-28
+- **Research**: [research-001.md](specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-001.md), [research-002.md](specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-002.md)
 
-**Description**: Complete the imp and box cases in the truth lemma forward direction for the parametric canonical model. The imp case (line 144) requires proving MCS modus ponens closure. The box case (line 155) requires witness construction for modal accessibility. These gaps don't affect the main representation theorem but are needed for a complete truth lemma biconditional. From review-20260121-task654.md recommendations.
+**Description**: Review and remove misleading material from the Boneyard related to past completeness attempts: (1) an approach that did not make the representation theorem central, and (2) an approach using the wrong definition of a canonical model that did not match the task semantics. Preserve results that could be of general use, but add notes to avoid confusing standard Kripke constructions (which are not relevant to the current task semantics) with the task-specific approach.
 
 ---
 
-### 657. Prove seed consistency (temporal K distribution)
-- **Started**: 2026-01-25T20:53:16Z
-- **Effort**: 6-9 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-28
+### 685. Derive world-history and Barcan theorems
+- **Effort**: 8-10 hours
+- **Status**: [NOT STARTED]
 - **Priority**: Medium
 - **Language**: lean
-- **Created**: 2026-01-21
-- **Related**: Task 654, Task 693
-- **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:338,354
-- **Research**: [research-001.md](specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/657_prove_seed_consistency_temporal_k_distribution/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260128.md](specs/657_prove_seed_consistency_temporal_k_distribution/summaries/implementation-summary-20260128.md)
+- **Created**: 2026-01-26
+- **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
 
-**Description**: Prove the seed consistency lemmas in IndexedMCSFamily.lean that require the temporal K distribution axiom. Lines 338 and 354 contain sorries for proving that seeds constructed during family building are consistent. This requires careful application of TM logic axioms, specifically the K distribution axiom for temporal operators. From review-20260121-task654.md medium priority recommendations.
+**Description**: Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.
+
+---
+
+### 681. Redesign construct_indexed_family with coherent approach
+- **Effort**: 14 hours
+- **Status**: [IMPLEMENTING]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-25
+- **Researched**: 2026-01-25T22:26:00Z
+- **Planned**: 2026-01-25T22:32:00Z
+- **Related**: Task 658
+- **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-001.md)
+
+**Description**: Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyard's canonical_task_rel pattern), or research alternative approaches.
 
 ---
 
@@ -468,21 +322,6 @@ technical_debt:
 - **Dependencies**: Task 624
 
 **Description**: Prove the `decide_complete` theorem in Correctness.lean deriving decision procedure completeness from tableau completeness. Follows directly from tableau_complete (Task 624).
-
----
-
-### 667. Fix .opencode/specs path references
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Session**: meta-session-1768239500
-- **Researched**: 2026-01-21
-- **Implemented**: 2026-01-21
-- **Research**: [research-001.md](specs/667_fix_specs_path_references/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/667_fix_specs_path_references/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260121.md](specs/667_fix_specs_path_references/summaries/implementation-summary-20260121.md)
-
-**Description**: Successfully identified and fixed all 6 references to .opencode/specs throughout the system. Updated Python scripts (validate_state_sync.py, todo_cleanup.py), agent files (planner.md), context files (routing.md), and documentation. Task creation system is now functional.
 
 ---
 
