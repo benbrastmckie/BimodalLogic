@@ -11,10 +11,11 @@ paths: "**/*.lean"
 | Tool | Purpose | Use When |
 |------|---------|----------|
 | `lean_goal` | Proof state at position | MOST IMPORTANT - use constantly while proving |
-| `lean_diagnostic_messages` | Compiler errors/warnings | After any edit to check for errors |
 | `lean_hover_info` | Type signatures + docs | Understanding APIs and types |
 | `lean_completions` | IDE autocomplete | On incomplete code after `.` or partial name |
 | `lean_local_search` | Fast local declaration search | BEFORE trying a lemma name |
+
+**Note**: `lean_diagnostic_messages` is BLOCKED (hangs indefinitely). Use `lean_goal` + `lake build` instead.
 
 ### Search Tools (Rate Limited)
 
@@ -58,10 +59,10 @@ paths: "**/*.lean"
 2. During proof development:
    lean_goal (constantly) → see proof state
    lean_multi_attempt → test tactics ["simp", "ring", "omega"]
-   lean_diagnostic_messages → check for errors
+   lake build → check for errors
 
 3. After editing:
-   lean_diagnostic_messages → verify no errors
+   lake build → verify no errors
    lean_goal → confirm proof progress
 ```
 
@@ -125,7 +126,7 @@ conv => ...              -- Conversion mode
 | "unsolved goals" | Incomplete proof | Use lean_goal to see remaining |
 
 ### Debugging Steps
-1. Run `lean_diagnostic_messages` to see all errors
+1. Run `lake build` to see all errors
 2. Use `lean_goal` at error location
 3. Use `lean_hover_info` on problematic terms
 4. Search for relevant lemmas with lean_leansearch
@@ -175,5 +176,5 @@ lake clean && lake build
 
 After implementation:
 1. Run `lake build` to check compilation
-2. Use `lean_diagnostic_messages` to verify no errors
+2. Verify build succeeds with no errors
 3. Check that all theorems compile without `sorry`

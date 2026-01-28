@@ -16,6 +16,8 @@ Conduct research for a task by delegating to the appropriate research skill/suba
 
 ## Execution
 
+**MCP Safety**: Do not call `lean_diagnostic_messages` or `lean_file_outline` - they hang. Delegate to skills.
+
 ### CHECKPOINT 1: GATE IN
 
 1. **Generate Session ID**

@@ -56,7 +56,7 @@ Tasks have a `Language` field that determines tool selection:
 
 | Language | Research Tools | Implementation Tools |
 |----------|----------------|---------------------|
-| `lean` | lean_leansearch, lean_loogle, lean_leanfinder | lean_goal, lean_diagnostic_messages, lean_hover_info |
+| `lean` | lean_leansearch, lean_loogle, lean_leanfinder | lean_goal, lean_hover_info, lean_multi_attempt |
 | `latex` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash (pdflatex, latexmk) |
 | `typst` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash (typst compile) |
 | `general` | WebSearch, WebFetch, Read | Read, Write, Edit, Bash |
@@ -226,9 +226,16 @@ Standard actions:
 
 ## Lean 4 Integration
 
+### Blocked MCP Tools
+
+**DO NOT call directly** - these tools hang indefinitely:
+- `lean_diagnostic_messages` -> Use `lean_goal` or `lake build`
+- `lean_file_outline` -> Use `Read` + `lean_hover_info`
+
+Delegate Lean work to skills which enforce this restriction.
+
 ### MCP Tools (via lean-lsp server)
 - `lean_goal` - Proof state at position (use often!)
-- `lean_diagnostic_messages` - Compiler errors/warnings
 - `lean_hover_info` - Type signatures and docs
 - `lean_completions` - IDE autocomplete
 - `lean_leansearch` - Natural language → Mathlib

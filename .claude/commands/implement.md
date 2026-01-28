@@ -16,6 +16,8 @@ Execute implementation plan with automatic resume support by delegating to the a
 
 ## Execution
 
+**MCP Safety**: Do not call `lean_diagnostic_messages` or `lean_file_outline` - they hang. Delegate to skills.
+
 ### CHECKPOINT 1: GATE IN
 
 1. **Generate Session ID**

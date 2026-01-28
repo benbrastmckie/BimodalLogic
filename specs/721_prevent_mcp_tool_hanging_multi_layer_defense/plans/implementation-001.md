@@ -30,7 +30,7 @@ Implement multi-layer defense against MCP tool hanging by adding minimal, target
 
 ## Implementation Phases
 
-### Phase 1: CLAUDE.md - Primary Agent Guard [NOT STARTED]
+### Phase 1: CLAUDE.md - Primary Agent Guard [COMPLETED]
 
 **Goal**: Stop primary agent from calling blocked tools before skill delegation.
 
@@ -53,7 +53,7 @@ Delegate Lean work to skills which enforce this restriction.
 
 ---
 
-### Phase 2: Skill Instruction Cleanup [NOT STARTED]
+### Phase 2: Skill Instruction Cleanup [COMPLETED]
 
 **Goal**: Remove references that tell agents to use blocked tools.
 
@@ -88,7 +88,7 @@ Delegate Lean work to skills which enforce this restriction.
 
 ---
 
-### Phase 3: Command-Level Warnings [NOT STARTED]
+### Phase 3: Command-Level Warnings [COMPLETED]
 
 **Goal**: Add brief warning to commands that involve Lean work.
 
@@ -103,7 +103,7 @@ Delegate Lean work to skills which enforce this restriction.
 
 ---
 
-### Phase 4: Verify and Test [NOT STARTED]
+### Phase 4: Verify and Test [COMPLETED]
 
 **Goal**: Confirm multi-layer defense is in place.
 

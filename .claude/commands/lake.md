@@ -37,6 +37,8 @@ Errors not in this list are reported but not auto-fixed.
 
 ## Execution
 
+**MCP Safety**: Do not call `lean_diagnostic_messages` or `lean_file_outline` - they hang. Delegate to skills.
+
 **EXECUTE NOW**: Follow these steps in sequence. Do not just describe what should happen - actually perform each step.
 
 ### STEP 1: Parse Arguments

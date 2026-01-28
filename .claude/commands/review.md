@@ -46,7 +46,7 @@ fi
 ### 2. Gather Context
 
 **For Lean files (.lean):**
-- Run `lean_diagnostic_messages` for each file
+- Run `lake build` to check for errors
 - Check for `sorry`, axioms, admitted proofs
 - Identify incomplete theorems
 - Check import organization

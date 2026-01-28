@@ -4,6 +4,13 @@
 
 This guide describes the lean-lsp-mcp tools available for Lean 4 development in Claude Code. These tools are accessed directly via MCP (Model Context Protocol) with the `mcp__lean-lsp__*` prefix.
 
+### Blocked Tools (Temporary)
+
+| Tool | Status | Alternative |
+|------|--------|-------------|
+| `lean_diagnostic_messages` | BLOCKED | `lean_goal` + `lake build` |
+| `lean_file_outline` | BLOCKED | `Read` + `lean_hover_info` |
+
 ## Configuration
 
 The MCP server is configured in `.mcp.json`:
@@ -275,7 +282,7 @@ After finding a name:
 1. Write initial code structure
 2. Check lean_goal for proof state
 3. Apply tactics
-4. Check lean_diagnostic_messages for errors
+4. Check lean_goal to confirm progress
 5. Iterate until "no goals"
 6. Verify with lake build
 ```
@@ -347,7 +354,6 @@ If MCP tools unavailable:
 ### skill-lean-implementation
 Uses core tools for proof development:
 - `lean_goal` - Check proof state
-- `lean_diagnostic_messages` - Verify compilation
 - `lean_hover_info` - Check types
 - `lean_completions` - Get completions
 - `lean_multi_attempt` - Try tactics
@@ -372,7 +378,7 @@ Uses search tools for theorem discovery:
 | Task | Tool |
 |------|------|
 | Check proof state | `lean_goal` |
-| Check for errors | `lean_diagnostic_messages` |
+| Check for errors | `lake build` (see Blocked Tools) |
 | Get type info | `lean_hover_info` |
 | Try multiple tactics | `lean_multi_attempt` |
 | Verify name exists | `lean_local_search` |
@@ -385,8 +391,8 @@ Uses search tools for theorem discovery:
 In Claude Code, tools are called directly:
 ```
 mcp__lean-lsp__lean_goal
-mcp__lean-lsp__lean_diagnostic_messages
 mcp__lean-lsp__lean_hover_info
+mcp__lean-lsp__lean_completions
 ... etc
 ```
 

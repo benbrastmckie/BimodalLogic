@@ -198,8 +198,8 @@ For each proof/theorem in the phase:
    ```
 
 4. **Verify step completion**
-   - Use `lean_diagnostic_messages` to check for errors
    - Use `lean_goal` to confirm goals are closed
+   - Run `lake build` to verify no compilation errors
 
 ### Tactic Selection Strategy
 
@@ -475,7 +475,7 @@ When MCP tool calls fail (AbortError -32001 or similar):
 
 When `lake build` fails:
 1. Capture full error output
-2. Use `lean_diagnostic_messages` to get details
+2. Use `lean_goal` to check proof state at error location
 3. Attempt to fix if error is clear
 4. If unfixable, return partial with:
    - Build error message
