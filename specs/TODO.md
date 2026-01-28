@@ -1,5 +1,5 @@
 ---
-next_project_number: 720
+next_project_number: 721
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 720. Avoid hanging lean-lsp MCP calls in lean skills
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: The lean-lsp MCP is hanging on diagnostics/outline calls due to a bug. Until the bug is fixed, modify the lean skills to avoid making such calls (lean_diagnostic_messages, lean_file_outline), while otherwise maintaining their existing functionality. This is a temporary workaround until the upstream MCP bug is resolved.
+
+---
 
 ### 719. Add redundancy check to /lake task creation
 - **Effort**: 1-2 hours

@@ -6,13 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 720,
+      "project_name": "avoid_hanging_lean_mcp_calls",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-28T17:55:09Z",
+      "last_updated": "2026-01-28T17:55:09Z"
+    },
+    {
       "project_number": 719,
       "project_name": "lake_task_redundancy_check",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T17:46:56Z",
-      "last_updated": "2026-01-28T17:53:17Z",
+      "last_updated": "2026-01-28T17:55:12Z",
       "session_id": "sess_1769622782_ee4c60",
       "description": "Enhance /lake task creation to check state.json for existing tasks before creating new ones. Prevents redundant task creation when a task already exists for a file with build errors.",
       "researched": "2026-01-28T17:51:08Z",
@@ -27,7 +36,8 @@
           "type": "research",
           "summary": "Research report documenting redundancy check pattern using jq query on active_projects for source/project_name matching"
         }
-      ]
+      ],
+      "planned": "2026-01-28T17:55:12Z"
     },
     {
       "project_number": 717,
@@ -851,7 +861,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 720,
+  "next_project_number": 721,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
