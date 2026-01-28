@@ -100,7 +100,7 @@ Move 5 essential MCS lemmas from `Boneyard/Metalogic/Completeness.lean` to `Meta
 
 ---
 
-### Phase 3: Update Core/Core.lean module re-export [NOT STARTED]
+### Phase 3: Update Core/Core.lean module re-export [COMPLETED]
 
 **Goal**: Add new modules to Core re-export
 

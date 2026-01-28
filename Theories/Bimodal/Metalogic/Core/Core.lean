@@ -2,6 +2,8 @@
 -- Re-exports MCS theory needed for canonical world construction
 
 import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.DeductionTheorem
+import Bimodal.Metalogic.Core.MCSProperties
 
 /-!
 # Core Module for Metalogic
@@ -12,6 +14,8 @@ canonical model construction.
 ## Contents
 
 - `MaximalConsistent.lean`: MCS theory (re-exported from Boneyard with additions)
+- `DeductionTheorem.lean`: Deduction theorem infrastructure
+- `MCSProperties.lean`: Essential MCS lemmas for Representation layer
 
 ## Dependencies
 
