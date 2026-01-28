@@ -117,7 +117,7 @@ technical_debt:
 
 ### 686. Fix agent interruption MCP abort errors
 - **Effort**: 6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-26
@@ -151,11 +151,11 @@ technical_debt:
 
 ### 694. Configure Neovim Typst bindings similar to LaTeX
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
-- **Research**: [research-001.md](specs/694_configure_nvim_typst_bindings/reports/research-001.md)
+- **Research**: [research-001.md](specs/694_configure_nvim_typst_bindings/reports/research-001.md), [research-002.md](specs/694_configure_nvim_typst_bindings/reports/research-002.md)
 
 **Description**: Research and configure ~/.config/nvim/ appropriately to include bindings similar to those used for LaTeX in .tex files for Typst (.typ) files.
 
@@ -258,7 +258,7 @@ technical_debt:
 ### 657. Prove seed consistency (temporal K distribution)
 - **Started**: 2026-01-25T20:53:16Z
 - **Effort**: 6-9 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21

@@ -8,18 +8,23 @@
     {
       "project_number": 694,
       "project_name": "configure_nvim_typst_bindings",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T00:05:54Z",
-      "last_updated": "2026-01-28T00:23:50Z",
+      "last_updated": "2026-01-28T00:28:29Z",
       "session_id": "sess_1769559817_d088c1",
-      "researched": "2026-01-28T00:15:58Z",
+      "researched": "2026-01-28T00:28:29Z",
       "artifacts": [
         {
           "path": "specs/694_configure_nvim_typst_bindings/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive research report with 4-phase implementation plan covering NixOS packages, plugin configuration, ftplugin bindings, and snippets"
+        },
+        {
+          "path": "specs/694_configure_nvim_typst_bindings/reports/research-002.md",
+          "type": "research",
+          "summary": "Follow-up research correcting research-001.md recommendations with modern 2026 Typst Neovim ecosystem analysis"
         }
       ]
     },
@@ -233,16 +238,16 @@
     {
       "project_number": 657,
       "project_name": "prove_seed_consistency_temporal_k_distribution",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-28T00:25:39Z",
+      "last_updated": "2026-01-28T00:27:27Z",
       "related_tasks": [
         654
       ],
       "researching": "2026-01-25T20:53:16Z",
-      "session_id": "sess_1769557576_2f46d8",
+      "session_id": "sess_1769560016_fe7666",
       "researched": "2026-01-27T23:36:08Z",
       "artifacts": [
         {
@@ -383,8 +388,8 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-28T00:02:48Z",
-      "session_id": "sess_1769558547_187ccb",
+      "last_updated": "2026-01-28T00:26:52Z",
+      "session_id": "sess_1769559995_50d672",
       "researched": "2026-01-25T22:52:03Z",
       "planned": "2026-01-25T22:56:00Z",
       "artifacts": [

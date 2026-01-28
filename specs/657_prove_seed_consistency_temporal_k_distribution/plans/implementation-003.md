@@ -2,7 +2,7 @@
 
 - **Task**: 657 - Prove seed consistency (temporal K distribution)
 - **Version**: 003
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2-3 hours
 - **Priority**: Medium
 - **Dependencies**: Task 654 (completed), Task 693 (completed - generalized_past_k now available)
