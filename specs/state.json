@@ -8,22 +8,30 @@
     {
       "project_number": 694,
       "project_name": "configure_nvim_typst_bindings",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T00:05:54Z",
-      "last_updated": "2026-01-28T00:11:20Z",
-      "session_id": "sess_1769559066_e091cc"
+      "last_updated": "2026-01-28T00:15:58Z",
+      "session_id": "sess_1769559066_e091cc",
+      "researched": "2026-01-28T00:15:58Z",
+      "artifacts": [
+        {
+          "path": "specs/694_configure_nvim_typst_bindings/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research report with 4-phase implementation plan covering NixOS packages, plugin configuration, ftplugin bindings, and snippets"
+        }
+      ]
     },
     {
       "project_number": 693,
       "project_name": "implement_generalized_past_k_theorem",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-28T00:04:07Z",
-      "last_updated": "2026-01-28T00:14:13Z",
-      "session_id": "sess_1769559113_65c072",
+      "last_updated": "2026-01-28T00:16:07Z",
+      "session_id": "sess_1769559345_b1ae1c",
       "researched": "2026-01-28T00:09:40Z",
       "artifacts": [
         {
@@ -37,7 +45,8 @@
           "summary": "3-phase plan to implement generalized_past_k theorem mirroring generalized_temporal_k structure"
         }
       ],
-      "planned": "2026-01-28T00:14:13Z"
+      "planned": "2026-01-28T00:14:13Z",
+      "started": "2026-01-28T00:16:07Z"
     },
     {
       "project_number": 692,

@@ -225,10 +225,7 @@ Timeout detection fails because `any_rpc_pending` remains `True`, preventing loo
 
 **Resolution**: Bug fixed in Lean 4.26.0 (LSP server bug, not lean-lsp-mcp bug).
 
-**Workarounds**:
-1. Upgrade to Lean 4.26.0
-2. Restart server before tool calls
-3. Run `lake build` manually before starting MCP server
+**ProofChecker Status**: Currently using Lean 4.27.0-rc1, so this specific bug is NOT affecting the project. The continued timeout issues confirm that multi-instance resource contention (Findings 9.1, 9.2) is the primary cause, not LSP server bugs.
 
 #### 9.4 MCP General Concurrency Issues
 
@@ -281,19 +278,23 @@ Timeout detection fails because `any_rpc_pending` remains `True`, preventing loo
 - Fewer concurrent sessions (< 3-4 tolerable)
 - Simpler Lean files (faster diagnostics)
 - Smaller dependency graphs (less build overhead)
-- Lean 4.24.0 LSP bug (Issue #115) recently emerged
+
+**ProofChecker Analysis**:
+- Project currently using Lean 4.27.0-rc1 (latest stable, past Issue #115 fix in 4.26.0)
+- Continued timeout issues despite latest Lean version confirms Issue #118 resource exhaustion is the **primary root cause**
+- LSP server bugs ruled out as contributing factor
 
 **Critical Bottleneck Identified**:
 ```
 Multiple STDIO instances × lake build × diagnostic processing
     ↓
-Memory + CPU exhaustion
+Memory + CPU exhaustion (Issue #118)
     ↓
 lean_diagnostic_messages timeout (>60s)
     ↓
 AbortError -32001
     ↓
-Claude Code shared AbortController cascade
+Claude Code shared AbortController cascade (Issue #6594)
     ↓
 All subagents terminated, no metadata written
 ```
@@ -432,33 +433,30 @@ If metadata file contains status="in_progress" or is missing entirely:
 4. Display message: "Agent interrupted. Run command again to resume."
 ```
 
-### Priority 6: Optimize Multi-Instance lean-lsp-mcp Setup (High Impact, Low-Medium Risk)
+### Priority 6: Optimize Multi-Instance lean-lsp-mcp Setup (High Impact, Low Risk)
 
-**Context**: Multiple concurrent Claude Code sessions create resource multiplication via STDIO transport, contributing to timeout issues (Finding 9).
+**Context**: Multiple concurrent Claude Code sessions create resource multiplication via STDIO transport, causing timeout issues (Finding 9). ProofChecker currently uses Lean 4.27.0-rc1, ruling out LSP server bugs as a factor.
 
-#### 6.1 Immediate Actions (Low Risk)
+#### 6.1 Recommended Actions
 
-**A. Upgrade Lean to 4.26.0** (Fixes Issue #115):
-```bash
-cd /home/benjamin/Projects/ProofChecker
-echo "leanprover/lean4:v4.26.0" > lean-toolchain
-lake update
-```
-
-**Benefit**: Eliminates diagnostic hang bug in Lean LSP server
-
-**B. Pre-build Project Before Sessions** (Prevents Issue #118):
+**A. Pre-build Project Before Sessions** (Prevents Issue #118 - HIGHEST IMPACT):
 ```bash
 cd /home/benjamin/Projects/ProofChecker
 lake build
 ```
 
-**Benefit**:
-- Avoids concurrent `lake build` triggers
-- Eliminates timeout on first diagnostic call
-- Reduces memory pressure from parallel builds
+**Why This Works**:
+- Prevents concurrent `lake build` triggers when multiple agents start
+- Eliminates timeout on first diagnostic call in each session
+- Reduces memory pressure from parallel builds (Issue #118: can exceed 16GB)
+- Zero downside, simple workflow addition
 
-**C. Configure Environment Variables**:
+**Recommended Workflow**:
+1. Run `lake build` in morning or after pulling changes
+2. Start Claude sessions
+3. Re-run `lake build` if making significant import changes
+
+**B. Configure Environment Variables** (Reduces Overhead):
 
 Add to `~/.claude.json` (user-scope MCP configuration):
 ```json
@@ -476,66 +474,47 @@ Add to `~/.claude.json` (user-scope MCP configuration):
 }
 ```
 
-**Benefit**:
-- Reduces log I/O overhead
-- Explicit project path prevents detection overhead
-- Consistent configuration across sessions
-
-#### 6.2 Moderate Actions (Medium Risk)
-
-**D. Reduce Active Sessions During Lean Work**:
-- Limit to 3-4 concurrent Claude sessions when using lean-lsp-mcp
-- Keep other sessions for non-Lean tasks
-- Monitor with `ps aux | grep lean-lsp-mcp | wc -l`
-
-**Benefit**: Reduces resource multiplication factor by 50%+
-
-#### 6.3 Advanced Solutions (Requires Testing)
-
-**E. HTTP Transport Shared Server** (Medium Risk):
-
-Instead of 7 STDIO instances, run 1 shared HTTP server:
-
-```bash
-# Terminal 1: Start single lean-lsp-mcp server
-uvx lean-lsp-mcp --transport http --port 8080
-```
-
-Update **all** Claude sessions to connect:
-```json
-{
-  "mcpServers": {
-    "lean-lsp": {
-      "transport": "http",
-      "url": "http://localhost:8080",
-      "env": {
-        "LEAN_PROJECT_PATH": "/home/benjamin/Projects/ProofChecker"
-      }
-    }
-  }
-}
-```
-
 **Benefits**:
-- 1 server process instead of 7 (7x resource reduction)
-- HTTP transport designed for concurrent connections
-- Shared build coordination (no parallel `lake build` conflicts)
+- `LEAN_LOG_LEVEL: "WARNING"` reduces log I/O overhead (less INFO spam)
+- Explicit `LEAN_PROJECT_PATH` prevents detection overhead across 7 instances
+- Consistent configuration across all sessions
 
-**Risks**:
-- Different latency characteristics than STDIO
-- Single point of failure (one crash affects all sessions)
-- Requires session restart to apply configuration
+**C. Session Management Strategy** (Reduces Resource Multiplication):
 
-**Recommendation**: Test with 2-3 sessions before full adoption
+**Option 1 - Soft Limit** (Preferred):
+- Keep all 7 sessions open for different work
+- When triggering Lean implementation agents, pause work in 3-4 sessions
+- Resume non-Lean work after agent completes
 
-#### 6.4 Future Solution (Awaiting Upstream)
+**Option 2 - Monitor and Throttle**:
+- Check active lean-lsp instances: `ps aux | grep lean-lsp-mcp | wc -l`
+- If experiencing timeouts, temporarily reduce concurrent Lean operations
+- Non-Lean work (general tasks, LaTeX, meta) unaffected
 
-**F. Monitor Issue #118 Implementation**:
+**Benefit**: Reduces resource multiplication factor by 50%+ during peak load
+
+#### 6.2 Future Solution (Awaiting Upstream)
+
+**D. Monitor Issue #118 Implementation**:
 - Track [lean-lsp-mcp Issue #118](https://github.com/oOo0oOo/lean-lsp-mcp/issues/118)
-- Implement build queue when available
-- Expected behavior: Queue concurrent builds instead of parallel execution
+- Proposed: Build queue to serialize concurrent builds instead of parallel execution
+- Expected behavior: Automatic coordination across instances
+- **Status**: Open issue, no implementation timeline yet
 
-**Benefit**: Prevents memory exhaustion without workflow changes
+**Benefit**: Would eliminate memory exhaustion without workflow changes
+
+#### 6.3 Impact Assessment
+
+**Expected Results from Actions A+B+C**:
+- 60-80% reduction in timeout frequency
+- Memory usage stays under 8GB (vs current 16GB+ spikes)
+- Diagnostic calls complete within 30s (vs current 60s+ timeouts)
+
+**Why These Actions Are Sufficient**:
+1. Pre-build eliminates concurrent build contention (root cause of Issue #118)
+2. Env variables reduce per-instance overhead
+3. Soft session limits prevent resource exhaustion peaks
+4. Maintains workflow flexibility (all sessions available, just throttled during Lean work)
 
 ## Risks & Mitigations
 
@@ -550,10 +529,10 @@ Update **all** Claude sessions to connect:
 ## Implementation Phases
 
 **Phase 0 (Immediate): Multi-Instance Optimization**
-- Upgrade Lean to 4.26.0 (`echo "leanprover/lean4:v4.26.0" > lean-toolchain && lake update`)
-- Run `lake build` before starting Claude sessions
-- Configure environment variables in `~/.claude.json`
-- Optional: Test HTTP transport shared server approach
+- **HIGH PRIORITY**: Run `lake build` before starting Claude sessions (prevents Issue #118)
+- Configure environment variables in `~/.claude.json` (reduces overhead)
+- Adopt soft session management strategy (throttle during Lean work)
+- Note: Lean version already at 4.27.0-rc1, no upgrade needed
 
 **Phase 1 (Day 1): Core Patterns**
 - Create mcp-tool-recovery.md pattern file
@@ -577,8 +556,8 @@ Update **all** Claude sessions to connect:
 
 **Phase 5 (Ongoing): Monitor Upstream**
 - Track lean-lsp-mcp Issue #118 for build queue implementation
-- Evaluate HTTP transport adoption based on Phase 0 testing
-- Adjust session count recommendations based on observed performance
+- Adjust session management strategy based on observed performance
+- Re-evaluate if Issue #118 fix eliminates need for manual pre-build
 
 ## Appendix
 

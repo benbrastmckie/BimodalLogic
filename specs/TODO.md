@@ -29,7 +29,7 @@ technical_debt:
 
 ### 693. Implement generalized_past_k theorem
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-28
@@ -148,10 +148,11 @@ technical_debt:
 
 ### 694. Configure Neovim Typst bindings similar to LaTeX
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
+- **Research**: [research-001.md](specs/694_configure_nvim_typst_bindings/reports/research-001.md)
 
 **Description**: Research and configure ~/.config/nvim/ appropriately to include bindings similar to those used for LaTeX in .tex files for Typst (.typ) files.
 
