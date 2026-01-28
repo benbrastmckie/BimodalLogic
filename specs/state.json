@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 718,
+      "project_name": "investigate_lean_lsp_mcp_hanging",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-28T17:16:42Z",
+      "last_updated": "2026-01-28T17:16:42Z"
+    },
+    {
       "project_number": 717,
       "project_name": "enhance_lake_create_tasks_for_unfixable_errors",
       "status": "researched",
@@ -141,7 +150,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-28T06:59:20Z",
+      "last_updated": "2026-01-28T17:54:00Z",
       "related_tasks": [
         654
       ],
@@ -186,9 +195,9 @@
           "summary": "Partial implementation summary: Phase 1 (T-axiom closure lemmas) complete, Phases 2-6 blocked by construction design"
         },
         {
-          "path": "specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128-v2.md",
-          "type": "summary",
-          "summary": "Partial implementation summary: Phase 1 (T-axiom closure lemmas) complete, Phases 2-6 blocked by construction design"
+          "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md",
+          "type": "research",
+          "summary": "Detailed comparison of Option B1 (Recursive Seeds) vs Option B2 (Relational/Coherent Construction) for completing coherence proofs. Recommends Option B2 (relational approach via Task 681) due to proven Boneyard pattern and dense time support."
         }
       ],
       "planning": "2026-01-25T21:42:13Z",
@@ -800,7 +809,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 718,
+  "next_project_number": 719,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -291,12 +291,12 @@ technical_debt:
 - **Related**: Task 654, Task 657, Task 700
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:550-603
 - **Plan**: [implementation-003.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-003.md)
-- **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md)
+- **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md), [research-004.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md)
 - **Summary**: [implementation-summary-20260128.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md)
 
 **Description**: Complete the four coherence condition proofs in IndexedMCSFamily.lean (forward_G, backward_H, forward_H, backward_G). T-axioms and reflexive semantics were added in v2, but coherence proofs remain blocked due to independent Lindenbaum extensions.
 
-**Revised Approach (v3)**: Option A from implementation-summary-20260125.md - develop propagation lemmas to connect formulas across MCS at different time points, leveraging T4 axiom chain and MCS closure properties.
+**Current Status**: Option A (propagation lemmas) proven insufficient. Research-004.md compares Option B1 (recursive/dependent seeds) vs Option B2 (relational construction). **Recommendation: Option B2** via Task 681 due to Boneyard pattern alignment and dense time support.
 
 ---
 
