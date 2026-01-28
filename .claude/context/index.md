@@ -1,7 +1,7 @@
 # Context Index - Lazy-Loading Quick Map
 
 **Created**: 2025-12-23
-**Updated**: 2026-01-12 (Task 432 - Agent System Overhaul)
+**Updated**: 2026-01-28 (Task 701 - Lean agent flow extraction)
 **Purpose**: Quick reference map for on-demand context loading following checkpoint-based execution
 
 ---
@@ -327,6 +327,19 @@ Load for: Lean implementation tasks (Language: lean)
 
 **Patterns**:
 - **tactic-patterns.md** - Common tactic patterns
+
+**Agents** (project/lean4/agents/):
+- **lean-research-flow.md** (~250 lines) - Detailed execution flow for lean-research-agent
+  - Stages 1-7: Parse context, search strategy, execute searches, synthesize, report, metadata, return
+  - Error handling patterns and MCP recovery
+  - Search fallback chain and partial result guidelines
+  - **MUST load after Stage 0 in lean-research-agent**
+- **lean-implementation-flow.md** (~340 lines) - Detailed execution flow for lean-implementation-agent
+  - Stages 1-8: Parse context, load plan, find resume, proof loop, verify, summary, metadata, return
+  - Phase checkpoint protocol
+  - Proof development loop details (tactic selection, when stuck)
+  - Error handling and MCP recovery
+  - **MUST load after Stage 0 in lean-implementation-agent**
 
 **Processes**:
 - **end-to-end-proof-workflow.md** - Complete proof development workflow

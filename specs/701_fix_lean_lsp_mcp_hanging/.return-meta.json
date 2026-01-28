@@ -1,0 +1,50 @@
+{
+  "status": "implemented",
+  "summary": "Extracted detailed execution instructions from lean-research-agent (437->143 lines, 67% reduction) and lean-implementation-agent (527->135 lines, 74% reduction) into dedicated context flow files. Created lean-research-flow.md (326 lines) and lean-implementation-flow.md (429 lines). Updated context index.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/context/project/lean4/agents/lean-research-flow.md",
+      "summary": "Detailed execution stages 1-7 for lean-research-agent including search strategy, MCP recovery, and return formats"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/project/lean4/agents/lean-implementation-flow.md",
+      "summary": "Detailed execution stages 1-8 for lean-implementation-agent including proof development loop and phase checkpoint protocol"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-research-agent.md",
+      "summary": "Simplified agent file (143 lines) with @-reference to flow file"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-implementation-agent.md",
+      "summary": "Simplified agent file (135 lines) with @-reference to flow file"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/index.md",
+      "summary": "Added new agent flow files to Lean4 context section"
+    },
+    {
+      "type": "summary",
+      "path": "specs/701_fix_lean_lsp_mcp_hanging/summaries/implementation-summary-20260128.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Extracted detailed execution instructions from lean-research-agent and lean-implementation-agent into dedicated context flow files, reducing agent file sizes by 70%. Created lean-research-flow.md and lean-implementation-flow.md with complete stage-by-stage execution guidance, error handling, and MCP recovery patterns.",
+    "claudemd_suggestions": "Added 2 new context files to .claude/context/project/lean4/agents/, simplified 2 agent files in .claude/agents/, updated .claude/context/index.md with new file entries"
+  },
+  "metadata": {
+    "session_id": "sess_1769568096_fe79f7",
+    "duration_seconds": 1800,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 6,
+    "phases_total": 7
+  },
+  "next_steps": "Review simplified agents and test with actual /research and /implement commands. Phase 7 (MCP Canary Check) is deferred pending validation of simplified agents."
+}

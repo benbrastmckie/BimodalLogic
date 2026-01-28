@@ -8,13 +8,13 @@
     {
       "project_number": 701,
       "project_name": "fix_lean_lsp_mcp_hanging",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "description": "I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.",
       "created": "2026-01-28T02:04:45Z",
-      "last_updated": "2026-01-28T02:23:02Z",
-      "session_id": "sess_1769566499_7e2787",
+      "last_updated": "2026-01-28T03:15:00Z",
+      "session_id": "sess_1769568096_fe79f7",
       "researched": "2026-01-28T02:17:24Z",
       "artifacts": [
         {
@@ -31,10 +31,29 @@
           "path": "specs/701_fix_lean_lsp_mcp_hanging/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 7-phase plan: extract flow files first, defer MCP canary check"
+        },
+        {
+          "type": "implementation",
+          "path": ".claude/context/project/lean4/agents/lean-research-flow.md",
+          "summary": "Detailed execution stages 1-7 for lean-research-agent including search strategy, MCP recovery, and return formats"
+        },
+        {
+          "type": "implementation",
+          "path": ".claude/context/project/lean4/agents/lean-implementation-flow.md",
+          "summary": "Detailed execution stages 1-8 for lean-implementation-agent including proof development loop and phase checkpoint protocol"
+        },
+        {
+          "type": "summary",
+          "path": "specs/701_fix_lean_lsp_mcp_hanging/summaries/implementation-summary-20260128.md",
+          "summary": "Implementation summary documenting agent simplification and flow file extraction"
         }
       ],
       "planning": "2026-01-28T02:15:10Z",
-      "planned": "2026-01-28T02:23:02Z"
+      "planned": "2026-01-28T02:23:02Z",
+      "started": "2026-01-28T02:41:57Z",
+      "completed": "2026-01-28T03:15:00Z",
+      "completion_summary": "Extracted detailed execution instructions from lean-research-agent and lean-implementation-agent into dedicated context flow files, reducing agent file sizes by 70%. Created lean-research-flow.md and lean-implementation-flow.md with complete stage-by-stage execution guidance, error handling, and MCP recovery patterns.",
+      "claudemd_suggestions": "Added 2 new context files to .claude/context/project/lean4/agents/, simplified 2 agent files in .claude/agents/, updated .claude/context/index.md with new file entries"
     },
     {
       "project_number": 697,
@@ -169,8 +188,8 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-28T00:39:33Z",
-      "session_id": "sess_1769560756_72b20f",
+      "last_updated": "2026-01-28T02:34:31Z",
+      "session_id": "sess_1769567650_1131e8",
       "researched": "2026-01-25T22:52:03Z",
       "planned": "2026-01-25T22:56:00Z",
       "artifacts": [
