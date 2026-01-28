@@ -19,12 +19,20 @@
     {
       "project_number": 728,
       "project_name": "create_user_guide_command_workflows",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:59:09Z",
-      "last_updated": "2026-01-28T23:04:41Z",
-      "session_id": "sess_1769641470_c154ca"
+      "last_updated": "2026-01-28T23:07:44Z",
+      "session_id": "sess_1769641470_c154ca",
+      "researched": "2026-01-28T23:07:44Z",
+      "artifacts": [
+        {
+          "path": "specs/728_create_user_guide_command_workflows/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting 13 commands across core workflow, maintenance, and utility categories with recommended user guide structure"
+        }
+      ]
     },
     {
       "project_number": 726,

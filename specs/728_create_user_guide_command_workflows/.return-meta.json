@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "started_at": "2026-01-28T12:00:00Z",
+  "completed_at": "2026-01-28T12:30:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/728_create_user_guide_command_workflows/reports/research-001.md",
+      "summary": "Research report documenting 13 commands across core workflow, maintenance, and utility categories with recommended user guide structure"
+    }
+  ],
+  "next_steps": "Run /plan 728 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1769641470_c154ca",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 300,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 11
+  }
+}
