@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "summary": "3-phase implementation plan for terminology replacement in Bimodal documentation",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/707_replace_propositional_atom_with_sentence_letter_in_bimodal/plans/implementation-001.md",
+      "summary": "3-phase plan to replace 'propositional atom' with 'sentence letter' in 2 Typst files"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1769581118_5175ff",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 0.5
+  }
+}

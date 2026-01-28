@@ -156,18 +156,46 @@ For each match, create error record:
 
 ### Step 7: Classify Errors
 
-For each error, determine if it's auto-fixable:
+For each error, determine if it's auto-fixable using these patterns:
 
-| Error Pattern | Classification | Fix Type |
-|---------------|----------------|----------|
-| `Missing cases:` | AUTO_FIX | missing_cases |
-| `unused variable` | AUTO_FIX | unused_variable |
-| `unused import` | AUTO_FIX (cautious) | unused_import |
-| All other errors | UNFIXABLE | - |
+| Error Pattern | Regex | Fix Type |
+|---------------|-------|----------|
+| Missing cases | `error: Missing cases:` | missing_cases |
+| Unused variable | `warning: unused variable ['`]([^'`]+)['`]` | unused_variable |
+| Unused import | `warning: unused import ['`]([^'`]+)['`]` | unused_import |
+| All other | (no match) | UNFIXABLE |
+
+**Classification logic**:
+
+```python
+def classify_error(message: str) -> tuple[str, dict]:
+    # Missing cases - HIGH priority
+    if "Missing cases:" in message:
+        # Extract case names from subsequent lines
+        return ("missing_cases", {"cases": extract_case_names(message)})
+
+    # Unused variable - HIGH priority
+    match = re.search(r"unused variable ['`]([^'`]+)['`]", message)
+    if match:
+        return ("unused_variable", {"name": match.group(1)})
+
+    # Unused import - MEDIUM priority (more cautious)
+    match = re.search(r"unused import ['`]([^'`]+)['`]", message)
+    if match:
+        return ("unused_import", {"module": match.group(1)})
+
+    # Everything else is unfixable
+    return ("unfixable", {})
+```
 
 Group errors by classification:
 - `fixable_errors[]` - Errors we can auto-fix
 - `unfixable_errors[]` - Errors requiring manual attention
+
+**Priority order for fixes**:
+1. Missing cases (often causes cascading errors)
+2. Unused variables (quick fix, no side effects)
+3. Unused imports (cautious, done last)
 
 ---
 
@@ -206,7 +234,7 @@ For each fixable error:
 
 #### 9A: Missing Cases Fix
 
-**Detection**: Error message contains "Missing cases:" followed by case names.
+**Detection**: Error message contains "Missing cases:" followed by case names on subsequent lines.
 
 **Example error**:
 ```
@@ -215,15 +243,53 @@ Formula.implies
 Formula.iff
 ```
 
+**Parsing**:
+1. Match the error line: `{file}:{line}:{col}: error: Missing cases:`
+2. Capture all subsequent non-empty lines until the next error pattern as case names
+3. Each case name is a constructor reference (e.g., `Formula.implies`)
+
 **Fix strategy**:
-1. Read the source file
-2. Find the match expression at the error location
-3. Locate the last existing case branch (`| ... =>`)
-4. Insert new case branches for each missing case:
+1. Read the source file using Read tool
+2. Locate line {line} (the match expression or first case)
+3. Find the last existing case branch by searching backwards from end of match for `| ... =>`
+4. Determine indentation from existing cases
+5. For each missing case, generate:
    ```lean
-   | Formula.implies => sorry  -- TODO: implement
-   | Formula.iff => sorry  -- TODO: implement
+   | {CaseName} => sorry
    ```
+6. Insert after the last existing case
+
+**Implementation example**:
+
+Given this source (line 45):
+```lean
+def eval : Formula → Bool
+  | Formula.atom n => atoms n
+  | Formula.neg φ => !eval φ
+  | Formula.conj φ ψ => eval φ && eval ψ
+```
+
+And error: `Missing cases: Formula.implies, Formula.iff`
+
+Read source, find last case line:
+```lean
+  | Formula.conj φ ψ => eval φ && eval ψ
+```
+
+Generate and insert after:
+```lean
+  | Formula.implies => sorry
+  | Formula.iff => sorry
+```
+
+**Edit tool call**:
+```json
+{
+  "file_path": "/path/to/file.lean",
+  "old_string": "  | Formula.conj φ ψ => eval φ && eval ψ",
+  "new_string": "  | Formula.conj φ ψ => eval φ && eval ψ\n  | Formula.implies => sorry\n  | Formula.iff => sorry"
+}
+```
 
 **Dry-run output**:
 ```
@@ -238,17 +304,54 @@ Would fix: Logos/Layer1/Syntax.lean:45
 
 #### 9B: Unused Variable Fix
 
-**Detection**: Warning message contains "unused variable".
+**Detection**: Warning message matches pattern `unused variable '{name}'` or `unused variable \`{name}\``.
 
-**Example warning**:
+**Example warnings**:
 ```
 Logos/Layer0/Basic.lean:23:10: warning: unused variable 'h'
+Logos/Layer0/Basic.lean:45:5: warning: unused variable `hyp`
 ```
 
+**Parsing**:
+1. Match: `{file}:{line}:{col}: warning: unused variable ['`]{name}['`]`
+2. Extract variable name from quotes or backticks
+
 **Fix strategy**:
-1. Read the source file
-2. Find the variable declaration at the exact location
-3. Rename the variable by adding underscore prefix: `h` -> `_h`
+1. Read the source file using Read tool
+2. Navigate to line {line}, column {col}
+3. Find the variable declaration (the identifier at that position)
+4. Rename by adding underscore prefix: `{name}` -> `_{name}`
+5. Only rename the declaration, not usages (there are none if it's unused)
+
+**Common contexts**:
+- Lambda parameters: `fun h => ...` → `fun _h => ...`
+- Let bindings: `let h := ...` → `let _h := ...`
+- Match patterns: `| (h, x) => ...` → `| (_h, x) => ...`
+- Function parameters: `def foo (h : P) ...` → `def foo (_h : P) ...`
+
+**Implementation example**:
+
+Given source line 23:
+```lean
+theorem foo (h : P) (x : Q) : R := by
+```
+
+And warning: `unused variable 'h'` at column 13
+
+Locate `h` at position:
+```lean
+theorem foo (h : P) (x : Q) : R := by
+            ^-- column 13
+```
+
+**Edit tool call**:
+```json
+{
+  "file_path": "/path/to/file.lean",
+  "old_string": "theorem foo (h : P)",
+  "new_string": "theorem foo (_h : P)"
+}
+```
 
 **Dry-run output**:
 ```
@@ -263,19 +366,57 @@ Would fix: Logos/Layer0/Basic.lean:23
 
 #### 9C: Unused Import Fix
 
-**Detection**: Warning message contains "unused import".
+**Detection**: Warning message matches pattern `unused import ['`]{module}['`]`.
 
-**Example warning**:
+**Example warnings**:
 ```
 Logos/Layer0/Basic.lean:5:1: warning: unused import 'Mathlib.Data.Nat.Basic'
+Logos/Layer0/Basic.lean:7:1: warning: unused import `Init.Data.List`
 ```
 
-**Fix strategy**:
-1. Read the source file
-2. Find the import line at the specified location
-3. Remove the entire import line
+**Parsing**:
+1. Match: `{file}:{line}:{col}: warning: unused import ['`]{module}['`]`
+2. Extract module name from quotes or backticks
 
-**Caution**: Only remove if the import line is a single import. If multiple imports on one line, do not modify.
+**Fix strategy**:
+1. Read the source file using Read tool
+2. Navigate to line {line}
+3. Check if the line is a simple import statement: `import {module}`
+4. **Safety check**: Only remove if:
+   - Line contains exactly one import (no multi-imports)
+   - Module name matches the warning
+5. Remove the entire line (including newline)
+
+**Safety rules**:
+- DO NOT modify lines like `import A, B, C` (multiple imports)
+- DO NOT modify lines with comments after import
+- ONLY remove clean single-import lines
+
+**Implementation example**:
+
+Given source line 5:
+```lean
+import Mathlib.Data.Nat.Basic
+```
+
+And warning: `unused import 'Mathlib.Data.Nat.Basic'`
+
+Verify it's a clean single import, then remove.
+
+**Edit tool call**:
+```json
+{
+  "file_path": "/path/to/file.lean",
+  "old_string": "import Mathlib.Data.Nat.Basic\n",
+  "new_string": ""
+}
+```
+
+**Edge cases - DO NOT FIX**:
+```lean
+import Mathlib.Data.Nat.Basic -- needed for X  -- has comment, skip
+import A import B  -- multiple imports, skip (rare)
+```
 
 **Dry-run output**:
 ```

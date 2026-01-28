@@ -33,12 +33,12 @@
     {
       "project_number": 713,
       "project_name": "create_lean_build_repair_skill_and_command",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "description": "Create automated Lean build repair skill with /build-repair command that runs lake clean, lake build, and automatically fixes build errors (like missing pattern match cases) until build succeeds",
       "created": "2026-01-28T05:38:11Z",
-      "last_updated": "2026-01-28T06:15:30Z",
+      "last_updated": "2026-01-28T06:20:59Z",
       "session_id": "sess_1769580910_8f8ee3",
       "researched": "2026-01-28T05:55:40Z",
       "artifacts": [
@@ -64,7 +64,10 @@
         }
       ],
       "planned": "2026-01-28T06:00:32Z",
-      "started": "2026-01-28T06:15:30Z"
+      "started": "2026-01-28T06:15:30Z",
+      "completed": "2026-01-28T06:20:59Z",
+      "completion_summary": "Created /lake command and skill-lake-repair direct execution skill for automated Lean build repair. Implements auto-fix for missing pattern match cases, unused variables, and unused imports with iterative retry loop and dry-run support.",
+      "claudemd_suggestions": "Added /lake command to Command Workflows section, added skill-lake-repair to Skill-to-Agent Mapping table, created .claude/commands/lake.md and .claude/skills/skill-lake-repair/SKILL.md"
     },
     {
       "project_number": 712,
@@ -820,16 +823,24 @@
     {
       "project_number": 707,
       "project_name": "replace_propositional_atom_with_sentence_letter_in_bimodal",
-      "status": "not_started",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T05:35:29Z",
-      "last_updated": "2026-01-28T05:35:29Z",
-      "session_id": "sess_1769569329_d9ee2f",
+      "last_updated": "2026-01-28T06:20:47Z",
+      "session_id": "sess_1769581118_5175ff",
       "dependencies": [
         706
       ],
-      "description": "Replace 'propositional atom' with 'sentence letter' throughout the Bimodal reference documentation. Source: Theories/Bimodal/typst/chapters/01-syntax.typ:20 NOTE tag requesting this terminology change. After completing the learn-it task (706) which documents the terminology preference, update all Bimodal documentation files to use 'sentence letter' instead of 'propositional atom' for consistency."
+      "description": "Replace 'propositional atom' with 'sentence letter' throughout the Bimodal reference documentation. Source: Theories/Bimodal/typst/chapters/01-syntax.typ:20 NOTE tag requesting this terminology change. After completing the learn-it task (706) which documents the terminology preference, update all Bimodal documentation files to use 'sentence letter' instead of 'propositional atom' for consistency.",
+      "planned": "2026-01-28T06:20:47Z",
+      "artifacts": [
+        {
+          "path": "specs/707_replace_propositional_atom_with_sentence_letter_in_bimodal/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan to replace 'propositional atom' with 'sentence letter' in 2 Typst files"
+        }
+      ]
     }
   ],
   "completed_projects": [

@@ -200,12 +200,13 @@ technical_debt:
 
 ### 707. Replace 'propositional atom' with 'sentence letter' in Bimodal documentation
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
 - **Dependencies**: 706
 - **Source**: Theories/Bimodal/typst/chapters/01-syntax.typ:20 (NOTE: tag)
+- **Plan**: [implementation-001.md](specs/707_replace_propositional_atom_with_sentence_letter_in_bimodal/plans/implementation-001.md)
 
 **Description**: Replace 'propositional atom' with 'sentence letter' throughout the Bimodal reference documentation. Source: Theories/Bimodal/typst/chapters/01-syntax.typ:20 NOTE tag requesting this terminology change. After completing the learn-it task (706) which documents the terminology preference, update all Bimodal documentation files to use 'sentence letter' instead of 'propositional atom' for consistency.
 

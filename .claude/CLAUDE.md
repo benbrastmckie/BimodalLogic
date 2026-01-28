@@ -143,6 +143,12 @@ Interactive system builder that creates TASKS for .claude/ changes. Uses skill-m
 ```
 Scans source files for embedded tags. Displays findings, then prompts for interactive task type and TODO item selection before creating tasks. Users always see what was found before any tasks are created.
 
+### /lake - Build with automatic error repair
+```
+/lake [--clean] [--max-retries N] [--dry-run] [--module NAME]
+```
+Runs `lake build` with automatic repair of common mechanical errors. Iteratively builds, parses errors, and fixes missing pattern match cases, unused variables, and unused imports until build succeeds or max retries reached. Use `--dry-run` to preview fixes without applying.
+
 ## State Synchronization
 
 **Critical**: TODO.md and state.json must stay synchronized.
@@ -386,6 +392,7 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 | skill-status-sync | (direct execution) | Atomic status updates for task state |
 | skill-document-converter | document-converter-agent | Document format conversion (PDF/DOCX to Markdown, etc.) |
 | skill-refresh | (direct execution) | Manage orphaned processes and project file cleanup |
+| skill-lake-repair | (direct execution) | Run Lean build with automatic error repair |
 
 **Note**: Lean skills use direct execution to avoid MCP tool hanging issues in subagents
 (Claude Code bugs #15945, #13254, #4580). The deprecated agent files remain in
