@@ -1,20 +1,20 @@
 ---
-next_project_number: 698
+next_project_number: 701
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 23
+  active: 26
   completed: 264
   in_progress: 0
-  not_started: 19
+  not_started: 22
   abandoned: 21
-  total: 291
+  total: 294
 priority_distribution:
   critical: 0
   high: 5
-  medium: 12
+  medium: 15
   low: 6
 technical_debt:
   sorry_count: 205
@@ -115,6 +115,42 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 700. Research algebraic representation theorem proof
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-28
+- **Source**: specs/ROAD_MAP.md:291
+
+**Description**: Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.
+
+---
+
+### 699. Update context files from ROAD_MAP.md learnings
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-28
+- **Source**: specs/ROAD_MAP.md (NOTE: tags)
+
+**Description**: Update .claude/context/ files based on NOTE: tag learnings from ROAD_MAP.md. Key learnings: (1) Remove emojis throughout documentation, unicode characters OK (line 72), (2) Avoid historical language like 'innovation', 'problem solved', 'key achievement' - state current state factually (lines 80, 131), (3) Remove past comparisons and historical narrative (line 131), (4) Remove unnecessary artifact links in overview documents (line 156). These patterns should be applied to context documentation style guides.
+
+---
+
+### 698. Fix ROAD_MAP.md content and style issues
+- **Effort**: 4-5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Created**: 2026-01-28
+- **Source**: specs/ROAD_MAP.md (FIX: and NOTE: tags)
+
+**Description**: Update ROAD_MAP.md to fix content accuracy and style issues identified in FIX: and NOTE: tags. Tasks include: (1) Update architecture tables to match actual Lean source code (lines 22, 166), (2) Remove historical language and emojis (lines 52, 72, 80, 131), (3) Reverse diagram order to show foundations first (line 58), (4) Remove unnecessary links to reports (line 156), (5) Add initial phase for completing proofs and porting Boneyard elements (line 188).
+
+---
 
 ### 685. Derive world-history and Barcan theorems
 - **Effort**: 8-10 hours
