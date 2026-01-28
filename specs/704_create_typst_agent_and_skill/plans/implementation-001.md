@@ -104,7 +104,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Create Typst Implementation Skill [IN PROGRESS]
+### Phase 3: Create Typst Implementation Skill [COMPLETED]
 
 **Goal**: Create the thin-wrapper skill that delegates to the typst-implementation-agent
 
@@ -129,7 +129,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update System Documentation [NOT STARTED]
+### Phase 4: Update System Documentation [IN PROGRESS]
 
 **Goal**: Integrate Typst into the orchestration system
 
