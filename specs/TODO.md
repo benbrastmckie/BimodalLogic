@@ -29,7 +29,7 @@ technical_debt:
 
 ### 718. Investigate lean-lsp MCP hanging on diagnostics/outline calls
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -281,18 +281,18 @@ technical_debt:
 ---
 
 ### 681. Redesign construct_indexed_family with coherent approach
-- **Effort**: 14 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 12-14 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
 - **Researched**: 2026-01-25T22:26:00Z
-- **Planned**: 2026-01-25T22:32:00Z
+- **Planned**: 2026-01-28 (revised)
 - **Related**: Task 658
 - **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-002.md)
 
-**Description**: Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyard's canonical_task_rel pattern), or research alternative approaches.
+**Description**: Implement Option B2 (relational coherent construction) to unblock Task 658. Defines `coherent_at` relation encoding all four coherence conditions, then proves forward/backward extension lemmas and transitivity to construct `CoherentIndexedFamily` from root MCS. Revised plan incorporates research-004.md analysis comparing B1 vs B2 approaches.
 
 ---
 
