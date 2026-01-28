@@ -151,6 +151,17 @@ technical_debt:
 
 ## Medium Priority
 
+### 695. Review Boneyard completeness attempts and remove misleading material
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-28
+
+**Description**: Review and remove misleading material from the Boneyard related to past completeness attempts: (1) an approach that did not make the representation theorem central, and (2) an approach using the wrong definition of a canonical model that did not match the task semantics. Preserve results that could be of general use, but add notes to avoid confusing standard Kripke constructions (which are not relevant to the current task semantics) with the task-specific approach.
+
+---
+
 ### 694. Configure Neovim Typst bindings similar to LaTeX
 - **Effort**: 3 hours
 - **Status**: [COMPLETED]
