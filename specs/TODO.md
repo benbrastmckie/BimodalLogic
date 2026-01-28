@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 24
-  completed: 269
+  active: 23
+  completed: 275
   in_progress: 0
   not_started: 25
   abandoned: 21
@@ -116,101 +116,16 @@ technical_debt:
 
 ## Medium Priority
 
-### 714. Refine Typst styling for journal aesthetic
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Related**: Task 709
-- **Research**: [research-001.md](specs/714_refine_typst_styling_for_journal_aesthetic/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/714_refine_typst_styling_for_journal_aesthetic/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260128.md](specs/714_refine_typst_styling_for_journal_aesthetic/summaries/implementation-summary-20260128.md)
-
-**Description**: Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions. **Revised**: Preserve colored links, apply AMS/journal aesthetic consistently throughout all Bimodal/typst/ documents.
-
----
-
-### 713. Create Lean lake build and repair skill and /lake command which calls this skill
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/713_create_lean_build_repair_skill_and_command/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/713_create_lean_build_repair_skill_and_command/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/713_create_lean_build_repair_skill_and_command/summaries/implementation-summary-20260128.md)
-
-**Description**: Create automated Lean build repair skill with /lake command that runs lake clean, lake build, and automatically fixes build errors (like missing pattern match cases) until build succeeds.
-
----
-
-### 709. Research professional Typst templates for Bimodal documentation
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Source**: Theories/Bimodal/typst/chapters/02-semantics.typ:19 (TODO: tag)
-- **Research**: [research-001.md](specs/709_research_professional_typst_templates_for_bimodal_documentation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/709_research_professional_typst_templates_for_bimodal_documentation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/709_research_professional_typst_templates_for_bimodal_documentation/summaries/implementation-summary-20260128.md)
-
-**Description**: Research professional Typst templates for math publications to improve the appearance of Bimodal TM logic documentation. The current styling is OK but should look more professional like LaTeX. Research online templates for professional math book publications to find ways to enhance the typeset appearance. Source: Theories/Bimodal/typst/chapters/02-semantics.typ:19
-
----
-
-### 708. Fix Bimodal semantics Typst formatting issues
-- **Effort**: 1.5-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/708_fix_bimodal_semantics_typst_formatting_issues/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/708_fix_bimodal_semantics_typst_formatting_issues/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/708_fix_bimodal_semantics_typst_formatting_issues/summaries/implementation-summary-20260128.md)
-- **Source**: Theories/Bimodal/typst/chapters/02-semantics.typ (FIX: tags at lines 17, 80, 111)
-
-**Description**: Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol).
-
----
-
-### 707. Replace 'propositional atom' with 'sentence letter' in Bimodal documentation
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-28
-- **Dependencies**: 706
-- **Completed**: 2026-01-28
-- **Source**: Theories/Bimodal/typst/chapters/01-syntax.typ:20 (NOTE: tag)
-- **Plan**: [implementation-001.md](specs/707_replace_propositional_atom_with_sentence_letter_in_bimodal/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/707_replace_propositional_atom_with_sentence_letter_in_bimodal/summaries/implementation-summary-20260128.md)
-
-**Description**: Replace 'propositional atom' with 'sentence letter' throughout the Bimodal reference documentation. Source: Theories/Bimodal/typst/chapters/01-syntax.typ:20 NOTE tag requesting this terminology change. After completing the learn-it task (706) which documents the terminology preference, update all Bimodal documentation files to use 'sentence letter' instead of 'propositional atom' for consistency.
-
----
-
 ### 706. Update context files from Bimodal syntax terminology note
 - **Effort**: 0.5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/chapters/01-syntax.typ:20 (NOTE: tag)
 - **Plan**: [implementation-001.md](specs/706_update_context_files_from_bimodal_syntax_terminology_note/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/706_update_context_files_from_bimodal_syntax_terminology_note/summaries/implementation-summary-20260128.md)
 
 **Description**: Update .claude/context/ logic files to document the terminology preference 'sentence letter' instead of 'propositional atom'. This convention applies to ALL logic syntax (not just Bimodal TM), and should be included in relevant logic context files. Key terminology notes: (1) 'Sentence letter' is preferred over 'propositional atom' in all logic documentation; (2) In languages with predicates, a sentence letter is equivalent to a zero-place predicate.
 

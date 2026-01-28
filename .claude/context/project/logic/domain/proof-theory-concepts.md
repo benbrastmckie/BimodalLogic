@@ -14,7 +14,7 @@ Core proof-theoretic concepts for bimodal logic systems, including axioms, infer
 ### Inference Rules
 - **Modus Ponens**: From p and p → q, infer q
 - **Necessitation**: From ⊢ p, infer ⊢ □p
-- **Uniform Substitution**: Replace propositional variables uniformly
+- **Uniform Substitution**: Replace sentence letters uniformly
 
 ### Derived Rules
 - **Modal Modus Ponens**: From □p and □(p → q), infer □q
@@ -24,13 +24,13 @@ Core proof-theoretic concepts for bimodal logic systems, including axioms, infer
 
 ### Axiom Encoding
 ```lean
--- Propositional variables
+-- Sentence letters (represented as PropVar in code)
 inductive PropVar : Type
   | mk : String → PropVar
 
 -- Modal formulas
 inductive Formula : Type
-  | var : PropVar → Formula
+  | var : PropVar → Formula  -- Sentence letter
   | bot : Formula
   | imp : Formula → Formula → Formula
   | box1 : Formula → Formula  -- First modality

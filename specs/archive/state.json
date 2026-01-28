@@ -1,9 +1,19 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-28T06:31:23Z",
+  "_last_updated": "2026-01-28T06:34:06Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 706,
+      "project_name": "update_context_files_from_bimodal_syntax_terminology_note",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completed": "2026-01-28T06:33:31Z",
+      "completion_summary": "Updated 4 .claude/context/project/logic/ files to establish sentence letter as the preferred terminology.",
+      "archived": "2026-01-28T06:34:06Z"
+    },
     {
       "project_number": 714,
       "project_name": "refine_typst_styling_for_journal_aesthetic",
