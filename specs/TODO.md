@@ -286,17 +286,17 @@ technical_debt:
 
 ### 681. Redesign construct_indexed_family with coherent approach
 - **Effort**: 12-14 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
-- **Researched**: 2026-01-25T22:26:00Z
+- **Researched**: 2026-01-28T17:36:17Z
 - **Planned**: 2026-01-28 (revised)
 - **Related**: Task 658
-- **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md)
+- **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md), [research-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-002.md)
 - **Plan**: [implementation-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-002.md)
 
-**Description**: Implement Option B2 (relational coherent construction) to unblock Task 658. Defines `coherent_at` relation encoding all four coherence conditions, then proves forward/backward extension lemmas and transitivity to construct `CoherentIndexedFamily` from root MCS. Revised plan incorporates research-004.md analysis comparing B1 vs B2 approaches.
+**Description**: Implement Option B2 (relational coherent construction) to unblock Task 658. Defines `coherent_at` relation encoding all four coherence conditions, then proves forward/backward extension lemmas and transitivity to construct `CoherentIndexedFamily` from root MCS. Research-002.md confirms Option A is mathematically impossible; B2 is the most elegant solution.
 
 ---
 
