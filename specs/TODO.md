@@ -170,13 +170,15 @@ technical_debt:
 
 ### 702. Update context files from Bimodal Typst notes
 - **Effort**: 0.5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
+- **Planned**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/BimodalReference.typ (NOTE: tags)
 - **Research**: [research-001.md](specs/702_update_context_files_from_bimodal_typst_notes/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/702_update_context_files_from_bimodal_typst_notes/plans/implementation-001.md)
 
 **Description**: Update .claude/context/ files based on NOTE: tag learnings from BimodalReference.typ. Key learnings: (1) Match margins between Typst and LaTeX documents (line 16), (2) Use light blue for hyperlinks and clickable references (line 18), (3) Use texttt-equivalent formatting for website URLs (line 71), (4) Center section headers with spacing (line 93). These patterns should be applied to context documentation formatting guides.
 
