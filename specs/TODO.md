@@ -5,16 +5,16 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 29
-  completed: 264
+  active: 24
+  completed: 269
   in_progress: 0
   not_started: 25
   abandoned: 21
-  total: 297
+  total: 302
 priority_distribution:
   critical: 0
-  high: 5
-  medium: 18
+  high: 2
+  medium: 16
   low: 6
 technical_debt:
   sorry_count: 205
@@ -26,50 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 711. Test context:fork for direct execution skills
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Related**: Task 619
-- **Summary**: [implementation-summary-20260128.md](specs/711_test_context_fork_for_direct_execution_skills/summaries/implementation-summary-20260128.md)
-
-**Description**: Create a test skill to verify context:fork works for user-level direct execution skills before proceeding with task 619. Create a copy of skill-lean-research with context:fork frontmatter added, test it, and document whether the feature works for the ProofChecker environment. This is a prerequisite for implementing context isolation in Lean skills.
-
----
-
-### 701. Fix lean-lsp-mcp hanging issue
-- **Effort**: 3.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/701_fix_lean_lsp_mcp_hanging/reports/research-001.md), [research-002.md](specs/701_fix_lean_lsp_mcp_hanging/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/701_fix_lean_lsp_mcp_hanging/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260128.md](specs/701_fix_lean_lsp_mcp_hanging/summaries/implementation-summary-20260128.md)
-
-**Description**: I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.
-
----
-
-### 710. Refactor Lean skills to direct execution pattern
-- **Effort**: 5 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/710_refactor_lean_skills_direct_execution/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/710_refactor_lean_skills_direct_execution/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/710_refactor_lean_skills_direct_execution/summaries/implementation-summary-20260128.md)
-
-**Description**: Refactor skill-lean-research and skill-lean-implementation from subagent delegation pattern to direct execution pattern to fix indefinite MCP tool hanging. Root cause: Claude Code bugs (#15945, #13254, #4580) cause MCP tools to hang indefinitely in subagents with no timeout mechanism. Solution: Execute Lean MCP operations directly in skills rather than delegating to lean-research-agent and lean-implementation-agent subagents, eliminating the problematic delegation layer while preserving all functionality.
-
----
 
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 4-6 hours
@@ -268,38 +224,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-001.md), [research-002.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-002.md)
 
 **Description**: Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.
-
----
-
-### 699. Update context files from ROAD_MAP.md learnings
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Source**: specs/ROAD_MAP.md (NOTE: tags)
-- **Research**: [research-001.md](specs/699_update_context_files_from_roadmap_notes/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/699_update_context_files_from_roadmap_notes/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/699_update_context_files_from_roadmap_notes/summaries/implementation-summary-20260128.md)
-
-**Description**: Update .claude/context/ files based on NOTE: tag learnings from ROAD_MAP.md. Key learnings: (1) Remove emojis throughout documentation, unicode characters OK (line 72), (2) Avoid historical language like 'innovation', 'problem solved', 'key achievement' - state current state factually (lines 80, 131), (3) Remove past comparisons and historical narrative (line 131), (4) Remove unnecessary artifact links in overview documents (line 156). These patterns should be applied to context documentation style guides.
-
----
-
-### 698. Fix ROAD_MAP.md content and style issues
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Source**: specs/ROAD_MAP.md (FIX: and NOTE: tags)
-- **Research**: [research-001.md](698_fix_roadmap_content_and_style_issues/reports/research-001.md)
-- **Plan**: [implementation-001.md](698_fix_roadmap_content_and_style_issues/plans/implementation-001.md)
-- **Summary**: Updated ROAD_MAP.md to fix 9 content and style issues: removed emojis and historical language, deleted Design Comparison and Research Documentation sections, reversed architecture diagram to show foundations first, clarified Boneyard/active code distinction in tables, and added Phase 0 for completing proofs.
-
-**Description**: Update ROAD_MAP.md to fix content accuracy and style issues identified in FIX: and NOTE: tags. Tasks include: (1) Update architecture tables to match actual Lean source code (lines 22, 166), (2) Remove historical language and emojis (lines 52, 72, 80, 131), (3) Reverse diagram order to show foundations first (line 58), (4) Remove unnecessary links to reports (line 156), (5) Add initial phase for completing proofs and porting Boneyard elements (line 188).
 
 ---
 

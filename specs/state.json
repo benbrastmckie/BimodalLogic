@@ -2,62 +2,9 @@
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
     "total_tasks": 35,
-    "last_sync": "2026-01-28T03:23:17Z"
+    "last_sync": "2026-01-28T04:23:35Z"
   },
   "active_projects": [
-    {
-      "project_number": 711,
-      "project_name": "test_context_fork_for_direct_execution_skills",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "description": "Create a test skill to verify context:fork works for user-level direct execution skills before proceeding with task 619. Create a copy of skill-lean-research with context:fork frontmatter added, test it, and document whether the feature works for the ProofChecker environment. This is a prerequisite for implementing context isolation in Lean skills.",
-      "created": "2026-01-28T04:13:26Z",
-      "last_updated": "2026-01-28T04:15:53Z",
-      "related_tasks": [
-        619
-      ],
-      "session_id": "sess_1769573694_8fc0ff",
-      "started": "2026-01-28T04:15:03Z",
-      "completed": "2026-01-28T04:15:53Z",
-      "completion_summary": "Created test-context-fork skill with context:fork frontmatter to verify context isolation for direct execution skills. User can run /test-context-fork to determine if the feature works before applying to Lean skills.",
-      "claudemd_suggestions": "none",
-      "artifacts": [
-        {
-          "path": "specs/711_test_context_fork_for_direct_execution_skills/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting test-context-fork skill creation"
-        }
-      ]
-    },
-    {
-      "project_number": 710,
-      "project_name": "refactor_lean_skills_direct_execution",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-28T03:26:53Z",
-      "last_updated": "2026-01-28T03:53:29Z",
-      "description": "Refactor skill-lean-research and skill-lean-implementation from subagent delegation pattern to direct execution pattern to fix indefinite MCP tool hanging. Root cause: Claude Code bugs (#15945, #13254, #4580) cause MCP tools to hang indefinitely in subagents with no timeout mechanism. Solution: Execute Lean MCP operations directly in skills rather than delegating to lean-research-agent and lean-implementation-agent subagents, eliminating the problematic delegation layer while preserving all functionality.",
-      "session_id": "sess_1769571965_9fad04",
-      "researched": "2026-01-28T03:32:17Z",
-      "artifacts": [
-        {
-          "path": "specs/710_refactor_lean_skills_direct_execution/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for refactoring Lean skills to direct execution"
-        },
-        {
-          "path": "specs/710_refactor_lean_skills_direct_execution/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting architectural change from delegation to direct execution"
-        }
-      ],
-      "started": "2026-01-28T03:46:27Z",
-      "completed": "2026-01-28T03:53:29Z",
-      "completion_summary": "Refactored skill-lean-research and skill-lean-implementation from subagent delegation to direct execution pattern, fixing MCP tool hanging issues in subagents (Claude Code bugs #15945, #13254, #4580).",
-      "claudemd_suggestions": "Updated CLAUDE.md Skill-to-Agent Mapping table to mark Lean skills as direct execution, added migration note to MCP Server Configuration section"
-    },
     {
       "project_number": 708,
       "project_name": "fix_bimodal_semantics_typst_formatting_issues",
@@ -90,56 +37,6 @@
       "last_updated": "2026-01-28T05:31:57Z",
       "session_id": "sess_1769569117_87f47b",
       "description": "Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document."
-    },
-    {
-      "project_number": 701,
-      "project_name": "fix_lean_lsp_mcp_hanging",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "description": "I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.",
-      "created": "2026-01-28T02:04:45Z",
-      "last_updated": "2026-01-28T03:15:00Z",
-      "session_id": "sess_1769568096_fe79f7",
-      "researched": "2026-01-28T02:17:24Z",
-      "artifacts": [
-        {
-          "type": "report",
-          "path": "specs/701_fix_lean_lsp_mcp_hanging/reports/research-001.md",
-          "summary": "Root cause analysis identifying Issue #14496 (complex prompts break MCP access) as primary cause, with workarounds including resume pattern and agent simplification"
-        },
-        {
-          "type": "report",
-          "path": "specs/701_fix_lean_lsp_mcp_hanging/reports/research-002.md",
-          "summary": "Refined analysis showing AbortError -32001 freezes agents at API layer. Elegant fix design: MCP canary check + agent simplification"
-        },
-        {
-          "path": "specs/701_fix_lean_lsp_mcp_hanging/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 7-phase plan: extract flow files first, defer MCP canary check"
-        },
-        {
-          "type": "implementation",
-          "path": ".claude/context/project/lean4/agents/lean-research-flow.md",
-          "summary": "Detailed execution stages 1-7 for lean-research-agent including search strategy, MCP recovery, and return formats"
-        },
-        {
-          "type": "implementation",
-          "path": ".claude/context/project/lean4/agents/lean-implementation-flow.md",
-          "summary": "Detailed execution stages 1-8 for lean-implementation-agent including proof development loop and phase checkpoint protocol"
-        },
-        {
-          "type": "summary",
-          "path": "specs/701_fix_lean_lsp_mcp_hanging/summaries/implementation-summary-20260128.md",
-          "summary": "Implementation summary documenting agent simplification and flow file extraction"
-        }
-      ],
-      "planning": "2026-01-28T02:15:10Z",
-      "planned": "2026-01-28T02:23:02Z",
-      "started": "2026-01-28T02:41:57Z",
-      "completed": "2026-01-28T03:15:00Z",
-      "completion_summary": "Extracted detailed execution instructions from lean-research-agent and lean-implementation-agent into dedicated context flow files, reducing agent file sizes by 70%. Created lean-research-flow.md and lean-implementation-flow.md with complete stage-by-stage execution guidance, error handling, and MCP recovery patterns.",
-      "claudemd_suggestions": "Added 2 new context files to .claude/context/project/lean4/agents/, simplified 2 agent files in .claude/agents/, updated .claude/context/index.md with new file entries"
     },
     {
       "project_number": 697,
@@ -690,70 +587,6 @@
       "created": "2026-01-26T04:45:00Z",
       "last_updated": "2026-01-26T04:45:00Z",
       "description": "Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas."
-    },
-    {
-      "project_number": 698,
-      "project_name": "fix_roadmap_content_and_style_issues",
-      "status": "completed",
-      "language": "markdown",
-      "priority": "medium",
-      "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-28T04:13:02Z",
-      "session_id": "sess_1769573429_59158c",
-      "description": "Update ROAD_MAP.md to fix content accuracy and style issues identified in FIX: and NOTE: tags. Tasks include: (1) Update architecture tables to match actual Lean source code (lines 22, 166), (2) Remove historical language and emojis (lines 52, 72, 80, 131), (3) Reverse diagram order to show foundations first (line 58), (4) Remove unnecessary links to reports (line 156), (5) Add initial phase for completing proofs and porting Boneyard elements (line 188).",
-      "researched": "2026-01-28T04:08:34Z",
-      "artifacts": [
-        {
-          "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "2-phase plan: attempt proof completion first, remove incomplete exercises as fallback"
-        },
-        {
-          "path": "specs/698_fix_roadmap_content_and_style_issues/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting all 6 phases of ROAD_MAP.md cleanup"
-        }
-      ],
-      "planned": "2026-01-28T04:13:02Z",
-      "started": "2026-01-28T05:03:45Z",
-      "completed": "2026-01-28T05:10:32Z",
-      "completion_summary": "Updated ROAD_MAP.md to fix 9 content and style issues: removed emojis and historical language, deleted Design Comparison and Research Documentation sections, reversed architecture diagram to show foundations first, clarified Boneyard/active code distinction in tables, and added Phase 0 for completing proofs."
-    },
-    {
-      "project_number": 699,
-      "project_name": "update_context_files_from_roadmap_notes",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-28T02:20:07Z",
-      "session_id": "sess_1769566464_22f644",
-      "description": "Update .claude/context/ files based on NOTE: tag learnings from ROAD_MAP.md. Key learnings: (1) Remove emojis throughout documentation, unicode characters OK (line 72), (2) Avoid historical language like 'innovation', 'problem solved', 'key achievement' - state current state factually (lines 80, 131), (3) Remove past comparisons and historical narrative (line 131), (4) Remove unnecessary artifact links in overview documents (line 156). These patterns should be applied to context documentation style guides.",
-      "researching": "2026-01-28T02:05:39Z",
-      "researched": "2026-01-28T02:08:00Z",
-      "artifacts": [
-        {
-          "path": "specs/699_update_context_files_from_roadmap_notes/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting style issues in .claude/context/ files and recommended changes"
-        },
-        {
-          "path": "specs/699_update_context_files_from_roadmap_notes/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "2-phase plan for applying ROAD_MAP.md documentation style learnings to context files"
-        },
-        {
-          "path": "specs/699_update_context_files_from_roadmap_notes/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting all 40 file modifications"
-        }
-      ],
-      "planning": "2026-01-28T02:11:37Z",
-      "planned": "2026-01-28T02:13:27Z",
-      "started": "2026-01-28T02:14:40Z",
-      "completed": "2026-01-28T02:20:07Z",
-      "completion_summary": "Updated 40 .claude/context/ files to apply documentation style learnings from ROAD_MAP.md: renamed 'Problem Solved' to 'Purpose' header in postflight-control.md, removed Version metadata fields from 39 files.",
-      "claudemd_suggestions": "Modified .claude/context/ documentation files only (patterns, orchestration, architecture, standards, templates, workflows). No CLAUDE.md changes needed as these are subordinate context files, not the main project configuration."
     },
     {
       "project_number": 700,
