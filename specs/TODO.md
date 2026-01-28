@@ -1,5 +1,5 @@
 ---
-next_project_number: 722
+next_project_number: 723
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -149,6 +149,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 723. Update .claude/ documentation for accuracy and completeness
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Update the documentation for .claude/ to be fully accurate, complete, and concise. Clearly outline how to use the task management system by describing the full workflow using all the different commands for running the primary workflows (/research, /plan, /implement) and the other commands like /todo, /lake, /review, etc., for maintenance along the way.
+
+---
 
 ### 722. Remove redundant definitions from Bimodal project
 - **Effort**: 4-6 hours

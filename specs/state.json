@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 723,
+      "project_name": "update_claude_documentation",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-28T20:22:14Z",
+      "last_updated": "2026-01-28T20:22:14Z"
+    },
+    {
       "project_number": 722,
       "project_name": "remove_bimodal_definition_redundancies",
       "status": "not_started",
@@ -693,7 +702,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 722,
+  "next_project_number": 723,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
