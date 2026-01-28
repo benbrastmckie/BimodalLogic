@@ -1,6 +1,6 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-01-20
+**Last Updated**: 2026-01-28
 **Status**: Universal Parametric Representation (Task 654) Complete, Metalogic_v2 Architecture Refinement Phase
 
 ## Overview
@@ -148,7 +148,40 @@ This establishes the foundation for completeness: **consistent formulas are sati
 
 ---
 
-<!-- FIX: include an initial phase here devoted to finishing the proof in full, porting elements over from the Boneyard as needed -->
+## Phase 0: Complete Core Proofs (High Priority)
+
+**Goal**: Finish the main proof by eliminating sorries and porting proven elements from the Boneyard.
+
+### 0.1 Audit Current Sorries
+
+**Tasks**:
+- [ ] Audit `Theories/Bimodal/Metalogic/` for sorries (research found 20+)
+- [ ] Categorize by difficulty and dependency
+- [ ] Prioritize which sorries block main theorem path
+
+### 0.2 Port from Boneyard
+
+**Tasks**:
+- [ ] Review `Boneyard/Metalogic_v2/Core/` for reusable elements
+- [ ] Evaluate DeductionTheorem.lean compatibility
+- [ ] Evaluate MaximalConsistent.lean compatibility
+- [ ] Port applicable proofs to active Metalogic directory
+
+### 0.3 Decidability Decision
+
+**Tasks**:
+- [ ] Decide: deprecate or resurrect `Decidability/` infrastructure
+- [ ] If resurrecting: create migration plan
+- [ ] If deprecating: update roadmap to reflect this
+
+### 0.4 Document Inventory
+
+**Tasks**:
+- [ ] Create sorry-free theorem inventory
+- [ ] Update ROAD_MAP tables with verified status
+- [ ] Document proof dependencies clearly
+
+---
 
 ## Phase 1: Proof Quality and Organization (High Priority)
 
