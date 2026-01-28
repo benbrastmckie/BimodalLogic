@@ -27,20 +27,26 @@
     {
       "project_number": 728,
       "project_name": "create_user_guide_command_workflows",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:59:09Z",
-      "last_updated": "2026-01-28T23:07:44Z",
-      "session_id": "sess_1769641470_c154ca",
+      "last_updated": "2026-01-28T23:12:53Z",
+      "session_id": "sess_1769641849_0c3b75",
       "researched": "2026-01-28T23:07:44Z",
       "artifacts": [
         {
           "path": "specs/728_create_user_guide_command_workflows/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting 13 commands across core workflow, maintenance, and utility categories with recommended user guide structure"
+        },
+        {
+          "path": "specs/728_create_user_guide_command_workflows/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for user guide documenting all command workflows"
         }
-      ]
+      ],
+      "planned": "2026-01-28T23:12:53Z"
     },
     {
       "project_number": 726,
@@ -108,18 +114,18 @@
     {
       "project_number": 681,
       "project_name": "redesign_construct_indexed_family_coherent_approach",
-      "status": "planned",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-28T23:06:14Z",
+      "last_updated": "2026-01-28T23:12:43Z",
       "related_tasks": [
         658
       ],
       "description": "Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyards canonical_task_rel pattern), or research alternative approaches.",
       "researching": "2026-01-25T22:22:57Z",
       "session_id": "sess_1769639981_d41809",
-      "researched": "2026-01-28T22:43:55Z",
+      "researched": "2026-01-28T23:12:43Z",
       "artifacts": [
         {
           "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md",
@@ -170,6 +176,11 @@
           "path": "specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-005.md",
           "type": "plan",
           "summary": "Revised plan v5: Plug remaining gaps based on research-003.md, document sufficiency for completeness"
+        },
+        {
+          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-004.md",
+          "type": "research",
+          "summary": "Gap analysis: confirms completeness only needs proven cases (forward_G Case 1, backward_H Case 4); identifies 9 sorries as non-blocking for completeness"
         }
       ],
       "planning": "2026-01-25T22:30:14Z",
