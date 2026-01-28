@@ -27,6 +27,19 @@ technical_debt:
 
 ## High Priority
 
+### 715. Fix /lake command execution
+- **Effort**: 1 hour
+- **Status**: [PLANNED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+- **Planned**: 2026-01-28
+- **Plan**: [implementation-001.md](specs/715_fix_lake_command_execution/plans/implementation-001.md)
+
+**Description**: Fix /lake command to actually execute the skill-lake-repair instructions. Currently the command file describes the skill but lacks explicit 'EXECUTE NOW' directives like /implement has. Add frontmatter with allowed-tools and explicit execution instructions following the pattern of working commands.
+
+---
+
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHING]
