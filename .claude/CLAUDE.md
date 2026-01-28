@@ -258,6 +258,11 @@ After setup, restart Claude Code for changes to take effect.
 
 **Note**: The project `.mcp.json` file is kept for documentation purposes and works correctly for the main conversation - only subagents have the access limitation.
 
+**Direct Execution Migration**: Due to additional MCP bugs (#15945, #13254, #4580) causing
+indefinite hanging in subagents, the Lean skills (`skill-lean-research`, `skill-lean-implementation`)
+were refactored from the thin wrapper delegation pattern to direct execution. MCP tools now execute
+directly in the skill rather than in a delegated subagent, eliminating the hanging issue.
+
 ### Multi-Instance Optimization
 
 Running multiple concurrent Claude sessions can cause MCP AbortError -32001 due to resource contention. Key prevention strategies:
@@ -370,17 +375,21 @@ Without frontmatter, Claude Code silently ignores agent files and they won't app
 
 | Skill | Agent | Purpose |
 |-------|-------|---------|
-| skill-lean-research | lean-research-agent | Lean 4/Mathlib research |
+| skill-lean-research | (direct execution) | Lean 4/Mathlib research using MCP tools |
+| skill-lean-implementation | (direct execution) | Lean proof implementation using MCP tools |
 | skill-researcher | general-research-agent | General web/codebase research |
 | skill-planner | planner-agent | Implementation plan creation |
 | skill-implementer | general-implementation-agent | General file implementation |
-| skill-lean-implementation | lean-implementation-agent | Lean proof implementation |
 | skill-latex-implementation | latex-implementation-agent | LaTeX document implementation |
 | skill-meta | meta-builder-agent | System building and task creation |
 | skill-learn | (direct execution) | Interactive tag scanning and task creation from source comments |
 | skill-status-sync | (direct execution) | Atomic status updates for task state |
 | skill-document-converter | document-converter-agent | Document format conversion (PDF/DOCX to Markdown, etc.) |
 | skill-refresh | (direct execution) | Manage orphaned processes and project file cleanup |
+
+**Note**: Lean skills use direct execution to avoid MCP tool hanging issues in subagents
+(Claude Code bugs #15945, #13254, #4580). The deprecated agent files remain in
+`.claude/agents/` for reference, with backups in `.claude/agents/archive/`.
 
 ### Thin Wrapper Execution Flow
 

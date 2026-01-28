@@ -154,11 +154,27 @@ Use direct execution instead when:
 - Skill executes atomic operations (skill-status-sync)
 - No subagent needed
 - Work is trivial
+- **MCP tools are involved** - Subagents cannot reliably use MCP tools due to Claude Code
+  platform bugs (#15945, #13254, #4580) that cause indefinite hanging
 
 Direct execution skills use:
 ```yaml
 allowed-tools: Bash, Edit, Read
 ```
+
+### Lean Skills Exception
+
+The Lean skills (`skill-lean-research`, `skill-lean-implementation`) were originally thin wrappers
+delegating to `lean-research-agent` and `lean-implementation-agent`. They were refactored to
+direct execution in January 2026 to fix MCP tool hanging issues.
+
+**Why**: MCP tool calls in subagents hang indefinitely with no timeout mechanism. Since Lean
+skills require heavy MCP tool usage (lean_goal, lean_leansearch, lean_loogle, etc.), direct
+execution is required.
+
+**How**: The agent logic was inlined into the skill, and MCP tools were added to the
+`allowed-tools` frontmatter. The deprecated agent files are kept in `.claude/agents/archive/`
+for reference.
 
 ---
 

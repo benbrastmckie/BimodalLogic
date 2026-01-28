@@ -3,6 +3,11 @@ name: lean-research-agent
 description: Research Lean 4 and Mathlib for theorem proving tasks
 ---
 
+> **DEPRECATED (2026-01-28)**: This agent is no longer invoked. The Lean research functionality
+> has been moved to direct execution in `skill-lean-research` to fix MCP tool hanging issues
+> in subagents (Claude Code bugs #15945, #13254, #4580). This file is kept for reference only.
+> See backup at `.claude/agents/archive/lean-research-agent.md.bak`.
+
 # Lean Research Agent
 
 ## Overview

@@ -3,6 +3,11 @@ name: lean-implementation-agent
 description: Implement Lean 4 proofs following implementation plans
 ---
 
+> **DEPRECATED (2026-01-28)**: This agent is no longer invoked. The Lean implementation functionality
+> has been moved to direct execution in `skill-lean-implementation` to fix MCP tool hanging issues
+> in subagents (Claude Code bugs #15945, #13254, #4580). This file is kept for reference only.
+> See backup at `.claude/agents/archive/lean-implementation-agent.md.bak`.
+
 # Lean Implementation Agent
 
 ## Overview

@@ -1,36 +1,28 @@
 ---
 name: skill-lean-research
 description: Research Lean 4 and Mathlib for theorem proving tasks. Invoke for Lean-language research using LeanSearch, Loogle, and lean-lsp tools.
-allowed-tools: Task, Bash, Edit, Read, Write
-# Original context (now loaded by subagent):
-#   - .claude/context/project/lean4/tools/mcp-tools-guide.md
-#   - .claude/context/project/lean4/tools/leansearch-api.md
-#   - .claude/context/project/lean4/tools/loogle-api.md
-# Original tools (now used by subagent):
-#   - Read, Write, Edit, Glob, Grep
-#   - mcp__lean-lsp__lean_leansearch, mcp__lean-lsp__lean_loogle
-#   - mcp__lean-lsp__lean_leanfinder, mcp__lean-lsp__lean_local_search
-#   - mcp__lean-lsp__lean_hover_info, mcp__lean-lsp__lean_state_search
-#   - mcp__lean-lsp__lean_hammer_premise
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, mcp__lean-lsp__lean_leansearch, mcp__lean-lsp__lean_loogle, mcp__lean-lsp__lean_leanfinder, mcp__lean-lsp__lean_local_search, mcp__lean-lsp__lean_hover_info, mcp__lean-lsp__lean_state_search, mcp__lean-lsp__lean_hammer_premise, mcp__lean-lsp__lean_goal, mcp__lean-lsp__lean_file_outline, mcp__lean-lsp__lean_diagnostic_messages, mcp__lean-lsp__lean_completions, mcp__lean-lsp__lean_declaration_file, mcp__lean-lsp__lean_run_code
 ---
 
 # Lean Research Skill
 
-Thin wrapper that delegates Lean 4 research to `lean-research-agent` subagent.
+Direct execution skill for Lean 4 research. Executes MCP tools directly instead of delegating to a subagent.
 
-**IMPORTANT**: This skill implements the skill-internal postflight pattern. After the subagent returns,
-this skill handles all postflight operations (status update, artifact linking, git commit) before returning.
-This eliminates the "continue" prompt issue between skill return and orchestrator.
+**Note**: This skill was refactored from thin wrapper delegation pattern to direct execution to fix
+MCP tool hanging issues in subagents (Claude Code bugs #15945, #13254, #4580).
 
 ## Context References
 
-Reference (do not load eagerly):
-- Path: `.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
-- Path: `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
-- Path: `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O helpers
-- Path: `.claude/context/core/patterns/jq-escaping-workarounds.md` - jq escaping patterns (Issue #1132)
+Load on-demand using @-references:
 
-Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
+**Always Load**:
+- `@.claude/context/project/lean4/tools/mcp-tools-guide.md` - Full MCP tool reference
+
+**Load When Creating Report**:
+- `@.claude/context/core/formats/report-format.md` - Research report structure
+
+**Load for Pattern Reference**:
+- `@.claude/context/core/patterns/jq-escaping-workarounds.md` - jq escaping patterns (Issue #1132)
 
 ## Trigger Conditions
 
@@ -71,7 +63,7 @@ description=$(echo "$task_data" | jq -r '.description // ""')
 
 ### Stage 2: Preflight Status Update
 
-Update task status to "researching" BEFORE invoking subagent.
+Update task status to "researching" BEFORE starting research.
 
 **Update state.json**:
 ```bash
@@ -109,76 +101,164 @@ EOF
 
 ---
 
-### Stage 4: Prepare Delegation Context
+### Stage 4: Analyze Task and Determine Search Strategy
 
-Prepare delegation context for the subagent:
+Based on task description and focus:
 
-```json
-{
-  "session_id": "sess_{timestamp}_{random}",
-  "delegation_depth": 1,
-  "delegation_path": ["orchestrator", "research", "skill-lean-research"],
-  "timeout": 3600,
-  "task_context": {
-    "task_number": N,
-    "task_name": "{project_name}",
-    "description": "{description}",
-    "language": "lean"
-  },
-  "focus_prompt": "{optional focus}",
-  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json"
-}
-```
+1. **Theorem Discovery**: Need natural language -> use leansearch
+2. **Type Matching**: Have specific type signature -> use loogle
+3. **Conceptual Search**: Looking for mathematical concept -> use leanfinder
+4. **Goal-Directed**: Have specific proof goal -> use state_search
+5. **Local Verification**: Check what exists in project -> use local_search
 
 ---
 
-### Stage 5: Invoke Subagent
+### Stage 5: Execute Primary Searches
 
-**CRITICAL**: You MUST use the **Task** tool to spawn the subagent.
+Execute searches based on strategy. Use the Search Decision Tree:
 
-**Required Tool Invocation**:
+1. "Does X exist locally?" -> lean_local_search (no rate limit, always try first)
+2. "I need a lemma that says X" (natural language) -> lean_leansearch (3 req/30s)
+3. "Find lemma with type pattern like A -> B -> C" -> lean_loogle (3 req/30s)
+4. "What's the Lean name for mathematical concept X?" -> lean_leanfinder (10 req/30s)
+5. "What lemma closes this specific goal?" -> lean_state_search (3 req/30s)
+6. "What premises should I feed to simp/aesop?" -> lean_hammer_premise (3 req/30s)
+
+**After Finding a Candidate Name**:
+1. `lean_local_search` to verify it exists in project/mathlib
+2. `lean_hover_info` to get full type signature and docs
+
+### Rate Limit Management
+
+- Track request counts per tool
+- Space out rate-limited calls
+- Prefer lean_leanfinder (10/30s) over leansearch/loogle (3/30s) when both work
+- Use lean_local_search freely (no limit)
+
+### Rate Limits Reference
+
+| Tool | Limit |
+|------|-------|
+| `lean_local_search` | No limit |
+| `lean_leanfinder` | 10 req/30s |
+| `lean_leansearch` | 3 req/30s |
+| `lean_loogle` | 3 req/30s |
+| `lean_state_search` | 3 req/30s |
+| `lean_hammer_premise` | 3 req/30s |
+
+### Search Fallback Chain
+
+When primary search fails, try this chain:
+
 ```
-Tool: Task (NOT Skill)
-Parameters:
-  - subagent_type: "lean-research-agent"
-  - prompt: [Include task_context, delegation_context, focus_prompt, metadata_file_path]
-  - description: "Execute Lean research for task {N}"
+Primary: leansearch (natural language)
+    | no results
+    v
+Fallback 1: loogle (type pattern extracted from description)
+    | no results
+    v
+Fallback 2: leanfinder (semantic/conceptual)
+    | no results
+    v
+Fallback 3: local_search with broader terms
+    | no results
+    v
+Return partial status with recommendations
 ```
 
-**DO NOT** use `Skill(lean-research-agent)` - this will FAIL.
+### MCP Tool Error Recovery
 
-The subagent will:
-- Load Lean-specific context files
-- Use MCP search tools (leansearch, loogle, leanfinder)
-- Create research report in `specs/{N}_{SLUG}/reports/`
-- Write metadata to `specs/{N}_{SLUG}/.return-meta.json`
-- Return a brief text summary (NOT JSON)
+When MCP tool calls fail (AbortError -32001 or similar):
+
+1. **Log the error context** (tool name, operation, task number, session_id)
+2. **Retry once** after 5-second delay for timeout errors
+3. **Try alternative search tool** per this fallback table:
+
+| Primary Tool | Alternative 1 | Alternative 2 |
+|--------------|---------------|---------------|
+| `lean_leansearch` | `lean_loogle` | `lean_leanfinder` |
+| `lean_loogle` | `lean_leansearch` | `lean_leanfinder` |
+| `lean_leanfinder` | `lean_leansearch` | `lean_loogle` |
+| `lean_local_search` | (no alternative) | Continue with partial |
+
+4. **If all fail**: Continue with codebase-only findings
+5. **Document in report** what searches failed and recommendations
 
 ---
 
-### Stage 6: Parse Subagent Return (Read Metadata File)
+### Stage 6: Synthesize Findings
 
-After subagent returns, read the metadata file:
+Compile discovered information:
+- Relevant theorems/lemmas with type signatures
+- Documentation excerpts
+- Usage patterns from existing code
+- Potential proof strategies
 
+---
+
+### Stage 7: Create Research Report
+
+Create directory and write report.
+
+**Path**: `specs/{N}_{SLUG}/reports/research-{NNN}.md`
+
+Ensure directory exists:
 ```bash
-metadata_file="specs/${task_number}_${project_name}/.return-meta.json"
+mkdir -p "specs/${task_number}_${project_name}/reports"
+```
 
-if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
-    status=$(jq -r '.status' "$metadata_file")
-    artifact_path=$(jq -r '.artifacts[0].path // ""' "$metadata_file")
-    artifact_type=$(jq -r '.artifacts[0].type // ""' "$metadata_file")
-    artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
-else
-    echo "Error: Invalid or missing metadata file"
-    status="failed"
-fi
+**Structure**:
+```markdown
+# Research Report: Task #{N}
+
+**Task**: {id} - {title}
+**Started**: {ISO8601}
+**Completed**: {ISO8601}
+**Effort**: {estimate}
+**Priority**: {priority}
+**Dependencies**: {list or None}
+**Sources/Inputs**: - Mathlib, lean_leansearch, lean_loogle, etc.
+**Artifacts**: - path to this report
+**Standards**: report-format.md
+
+## Executive Summary
+- Key finding 1
+- Key finding 2
+- Recommended approach
+
+## Context & Scope
+{What was researched, constraints}
+
+## Findings
+### Relevant Theorems
+- `Theorem.name` : {type signature}
+  - {description, usage}
+
+### Proof Strategies
+- {Recommended approaches}
+
+### Dependencies
+- {Required imports, lemmas}
+
+## Decisions
+- {Explicit decisions made during research}
+
+## Recommendations
+1. {Prioritized recommendations}
+
+## Risks & Mitigations
+- {Potential issues and solutions}
+
+## Appendix
+- Search queries used
+- References to Mathlib documentation
 ```
 
 ---
 
-### Stage 7: Update Task Status (Postflight)
+### Stage 8: Update Task Status (Postflight)
 
-If status is "researched", update state.json and TODO.md:
+If research is complete, update state.json and TODO.md:
 
 **Update state.json**:
 ```bash
@@ -197,13 +277,17 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 
 ---
 
-### Stage 8: Link Artifacts
+### Stage 9: Link Artifacts
 
 Add artifact to state.json with summary.
 
 **IMPORTANT**: Use two-step jq pattern to avoid Issue #1132 escaping bug. See `jq-escaping-workarounds.md`.
 
 ```bash
+artifact_path="specs/${task_number}_${project_name}/reports/research-001.md"
+artifact_type="research"
+artifact_summary="Research report with theorem findings and proof strategy"
+
 if [ -n "$artifact_path" ]; then
     # Step 1: Filter out existing research artifacts (two-step pattern for Issue #1132)
     jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
@@ -226,7 +310,7 @@ fi
 
 ---
 
-### Stage 9: Git Commit
+### Stage 10: Git Commit
 
 Commit changes with session ID:
 
@@ -241,19 +325,18 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 ---
 
-### Stage 10: Cleanup
+### Stage 11: Cleanup
 
-Remove marker and metadata files:
+Remove marker files:
 
 ```bash
 rm -f specs/.postflight-pending
 rm -f specs/.postflight-loop-guard
-rm -f "specs/${task_number}_${project_name}/.return-meta.json"
 ```
 
 ---
 
-### Stage 11: Return Brief Summary
+### Stage 12: Return Brief Summary
 
 Return a brief text summary (NOT JSON). Example:
 
@@ -273,24 +356,35 @@ Research completed for task {N}:
 ### Input Validation Errors
 Return immediately with error message if task not found.
 
-### Metadata File Missing
-If subagent didn't write metadata file:
-1. Keep status as "researching"
-2. Do not cleanup postflight marker
-3. Report error to user
+### MCP Tool Failures
+Apply recovery pattern: retry once, try alternative tool, continue with available info.
+See Stage 5 for fallback chain.
 
 ### Git Commit Failure
 Non-blocking: Log failure but continue with success response.
 
-### Subagent Timeout
-Return partial status if subagent times out (default 3600s).
-Keep status as "researching" for resume.
+### Rate Limit Handling
+
+When a search tool rate limit is hit:
+1. Switch to alternative tool (leansearch <-> loogle <-> leanfinder)
+2. Use lean_local_search (no limit) for verification
+3. If all limited, wait briefly and continue with partial results
+
+### No Results Found
+
+If searches yield no useful results:
+1. Try broader/alternative search terms
+2. Search for related concepts
+3. Return partial status with:
+   - What was searched
+   - Recommendations for alternative queries
+   - Suggestion to manually search Mathlib docs
 
 ---
 
 ## Return Format
 
-This skill returns a **brief text summary** (NOT JSON). The JSON metadata is written to the file and processed internally.
+This skill returns a **brief text summary** (NOT JSON).
 
 Example successful return:
 ```

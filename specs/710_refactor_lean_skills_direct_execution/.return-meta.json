@@ -1,20 +1,24 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "summary": "Refactored skill-lean-research and skill-lean-implementation from subagent delegation to direct execution pattern. Archived original agents, added deprecation notices, inlined MCP tool execution into skills, updated CLAUDE.md and pattern documentation.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/710_refactor_lean_skills_direct_execution/plans/implementation-001.md",
-      "summary": "5-phase implementation plan for refactoring Lean skills from subagent delegation to direct execution pattern"
+      "type": "summary",
+      "path": "specs/710_refactor_lean_skills_direct_execution/summaries/implementation-summary-20260128.md",
+      "summary": "Implementation summary documenting architectural change from delegation to direct execution"
     }
   ],
-  "next_steps": "Run /implement 710 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Refactored skill-lean-research and skill-lean-implementation from subagent delegation to direct execution pattern, fixing MCP tool hanging issues in subagents (Claude Code bugs #15945, #13254, #4580).",
+    "claudemd_suggestions": "Updated CLAUDE.md Skill-to-Agent Mapping table to mark Lean skills as direct execution, added migration note to MCP Server Configuration section"
+  },
   "metadata": {
-    "session_id": "sess_1769571177_ec3aa6",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1769571965_9fad04",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner"],
-    "phase_count": 5,
-    "estimated_hours": 5
-  }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
+  },
+  "next_steps": "Test refactored skills by running /research and /implement on a Lean task"
 }
