@@ -224,7 +224,7 @@ technical_debt:
 - **Created**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/chapters/01-syntax.typ:20 (NOTE: tag)
 
-**Description**: Update .claude/context/ files to document the terminology preference 'sentence letter' instead of 'propositional atom' for the Bimodal TM logic. This learning comes from Theories/Bimodal/typst/chapters/01-syntax.typ:20 where the author notes wanting to use 'sentence letter' throughout. This pattern should be applied to context documentation to ensure consistent terminology in all Bimodal-related documentation and code.
+**Description**: Update .claude/context/ logic files to document the terminology preference 'sentence letter' instead of 'propositional atom'. This convention applies to ALL logic syntax (not just Bimodal TM), and should be included in relevant logic context files. Key terminology notes: (1) 'Sentence letter' is preferred over 'propositional atom' in all logic documentation; (2) In languages with predicates, a sentence letter is equivalent to a zero-place predicate.
 
 ---
 
