@@ -1,5 +1,5 @@
 ---
-next_project_number: 729
+next_project_number: 730
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 729. Prevent blocked MCP tool calls in agent system
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Investigate why the agent system is still calling blocked MCP tools (lean_diagnostic_messages, lean_file_outline) despite previous attempts to prevent this. Review /home/benjamin/Projects/ProofChecker/.claude/output/research.md for example of hanging 'lean-lsp - Diagnostics (MCP)' call. Identify all places where agents can call these tools and implement robust blocking. Update agent prompts, skill definitions, and any relevant documentation in .claude/ to ensure agents use alternative patterns (lean_goal, Read + lean_hover_info) instead of the known-buggy tools.
+
+---
 
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 4-6 hours
