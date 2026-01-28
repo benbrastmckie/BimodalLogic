@@ -118,7 +118,7 @@ Ask Claude:
 ```
 Please verify the ProofChecker setup by:
 1. Checking that lake build succeeds
-2. Running lean_diagnostic_messages on Logos/Layer0/Propositional.lean
+2. Running lean_goal on a proof in Theories/Bimodal/Soundness.lean
 3. Confirming the Lean LSP tools are available
 ```
 
@@ -221,10 +221,12 @@ Claude has access to specialized Lean tools:
 | Tool | Purpose |
 |------|---------|
 | `lean_goal` | See proof state at a position |
-| `lean_diagnostic_messages` | Check for compiler errors |
 | `lean_hover_info` | Get type signatures |
 | `lean_leansearch` | Search Mathlib by natural language |
 | `lean_loogle` | Search by type signature |
+| `lake build` | Check for compiler errors (via Bash) |
+
+**Note**: Some MCP tools are blocked due to known bugs. See `.claude/context/core/patterns/blocked-mcp-tools.md` for details.
 
 ---
 

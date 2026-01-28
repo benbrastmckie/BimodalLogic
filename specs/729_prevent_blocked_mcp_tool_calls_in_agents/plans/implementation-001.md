@@ -1,7 +1,7 @@
 # Implementation Plan: Task #729
 
 - **Task**: 729 - prevent_blocked_mcp_tool_calls_in_agents
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -47,7 +47,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Fix Deprecated Agent Files [NOT STARTED]
+### Phase 1: Fix Deprecated Agent Files [COMPLETED]
 
 **Goal**: Remove blocked tools from deprecated agent files that create conflicting signals.
 
@@ -68,7 +68,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Create Blocked-Tools Reference [NOT STARTED]
+### Phase 2: Create Blocked-Tools Reference [COMPLETED]
 
 **Goal**: Establish single authoritative reference for blocked MCP tools.
 
@@ -89,7 +89,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update mcp-tools-guide.md [NOT STARTED]
+### Phase 3: Update mcp-tools-guide.md [COMPLETED]
 
 **Goal**: Remove detailed documentation for blocked tools and strengthen warnings.
 
@@ -112,7 +112,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update CLAUDE.md Blocking Section [NOT STARTED]
+### Phase 4: Update CLAUDE.md Blocking Section [COMPLETED]
 
 **Goal**: Make blocked tool warning more prominent in the main configuration file.
 
@@ -133,7 +133,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Audit and Update Remaining Files [NOT STARTED]
+### Phase 5: Audit and Update Remaining Files [COMPLETED]
 
 **Goal**: Ensure all other files referencing blocked tools have appropriate warnings.
 
@@ -155,7 +155,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 6: Documentation Cleanup [NOT STARTED]
+### Phase 6: Documentation Cleanup [COMPLETED]
 
 **Goal**: Ensure consistency and add upstream tracking for future cleanup.
 

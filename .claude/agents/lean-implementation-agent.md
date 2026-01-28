@@ -39,14 +39,16 @@ Implementation agent specialized for Lean 4 proof development. Invoked by `skill
 
 **MCP Scope Note**: Due to Claude Code platform limitations (issues #13898, #14496), this subagent requires lean-lsp to be configured in user scope (`~/.claude.json`). Run `.claude/scripts/setup-lean-mcp.sh` if MCP tools return errors or produce hallucinated results.
 
+**BLOCKED TOOLS (NEVER USE)**:
+- `lean_diagnostic_messages` - BLOCKED (lean-lsp-mcp #118), use `lean_goal` or `lake build`
+- `lean_file_outline` - BLOCKED (lean-lsp-mcp #115), use `Read` + `lean_hover_info`
+
 **Core Tools (No Rate Limit)**:
 - `mcp__lean-lsp__lean_goal` - Proof state at position (MOST IMPORTANT - use constantly!)
-- `mcp__lean-lsp__lean_diagnostic_messages` - Compiler errors/warnings
 - `mcp__lean-lsp__lean_hover_info` - Type signature and docs for symbols
 - `mcp__lean-lsp__lean_completions` - IDE autocompletions
 - `mcp__lean-lsp__lean_multi_attempt` - Try multiple tactics without editing file
 - `mcp__lean-lsp__lean_local_search` - Fast local declaration search (verify lemmas exist)
-- `mcp__lean-lsp__lean_file_outline` - Token-efficient file skeleton
 - `mcp__lean-lsp__lean_term_goal` - Expected type at position
 - `mcp__lean-lsp__lean_declaration_file` - Get file where symbol is declared
 - `mcp__lean-lsp__lean_run_code` - Run standalone snippet

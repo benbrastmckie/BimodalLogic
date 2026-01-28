@@ -4,12 +4,16 @@
 
 This guide describes the lean-lsp-mcp tools available for Lean 4 development in Claude Code. These tools are accessed directly via MCP (Model Context Protocol) with the `mcp__lean-lsp__*` prefix.
 
-### Blocked Tools (Temporary)
+### CRITICAL: Blocked Tools - DO NOT USE
 
-| Tool | Status | Alternative |
-|------|--------|-------------|
-| `lean_diagnostic_messages` | BLOCKED | `lean_goal` + `lake build` |
-| `lean_file_outline` | BLOCKED | `Read` + `lean_hover_info` |
+**NEVER call these tools directly.** They have known bugs that cause incorrect behavior.
+
+| Tool | Bug | Alternative | Details |
+|------|-----|-------------|---------|
+| `lean_diagnostic_messages` | lean-lsp-mcp #118 | `lean_goal` or `lake build` | See blocked-mcp-tools.md |
+| `lean_file_outline` | lean-lsp-mcp #115 | `Read` + `lean_hover_info` | See blocked-mcp-tools.md |
+
+**Full documentation**: `.claude/context/core/patterns/blocked-mcp-tools.md`
 
 ## Configuration
 
@@ -49,22 +53,6 @@ Parameters:
 - file_path: Absolute path to Lean file
 - line: Line number (1-indexed)
 - column: Column (1-indexed, optional)
-```
-
-#### lean_diagnostic_messages
-**Purpose**: Get compiler errors, warnings, and info messages.
-
-**Usage**:
-- Check after every edit
-- "no goals to be solved" = remove tactics
-- Filter by line range or declaration name
-
-```
-Parameters:
-- file_path: Absolute path to Lean file
-- start_line: Filter from line (optional)
-- end_line: Filter to line (optional)
-- declaration_name: Filter to declaration (optional, slower)
 ```
 
 #### lean_hover_info
@@ -121,18 +109,6 @@ Parameters:
 - query: Declaration name or prefix
 - limit: Max matches (default: 10)
 - project_root: Project root (optional, inferred if omitted)
-```
-
-#### lean_file_outline
-**Purpose**: Get imports and declarations with type signatures.
-
-**Usage**:
-- Token-efficient file skeleton
-- Good for understanding file structure
-
-```
-Parameters:
-- file_path: Absolute path to Lean file
 ```
 
 #### lean_term_goal
@@ -398,5 +374,5 @@ mcp__lean-lsp__lean_completions
 
 ## Version
 
-**Last Updated**: 2026-01-10
+**Last Updated**: 2026-01-28
 **Platform**: Claude Code (migrated from OpenCode)

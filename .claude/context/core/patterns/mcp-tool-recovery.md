@@ -81,7 +81,7 @@ If the primary tool fails, use fallback alternatives:
 | `lean_loogle` | `lean_leansearch` | `lean_leanfinder` |
 | `lean_leanfinder` | `lean_leansearch` | `lean_loogle` |
 | `lean_local_search` | (no alternative - but no rate limit) | Continue with partial |
-| `lean_diagnostic_messages` | `lean_goal` | Continue with available info |
+| `lean_diagnostic_messages` | `lean_goal` (BLOCKED - use this) | `lake build` via Bash |
 | `lean_state_search` | `lean_hammer_premise` | Manual tactic exploration |
 
 ### Step 4: Write Partial Status
@@ -129,7 +129,7 @@ When MCP tool calls fail during proof development:
 
 1. **Log the error context** (tool, operation, proof state)
 2. **Retry once** after 5-second delay for timeout errors
-3. **If lean_diagnostic_messages fails**: Use lean_goal instead
+3. **lean_diagnostic_messages is BLOCKED**: Use `lean_goal` or `lake build` instead
 4. **If lean_goal fails**: Use Bash to run lake build and capture errors
 5. **Save partial progress** before returning
 6. **Update metadata** with partial status and recovery info

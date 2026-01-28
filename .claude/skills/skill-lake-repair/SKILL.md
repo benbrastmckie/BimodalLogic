@@ -726,7 +726,9 @@ Or fix manually and run /lake again.
 
 ### MCP Tool Failure
 
-If `lean_build` or `lean_diagnostic_messages` MCP tools fail:
+**Note**: `lean_diagnostic_messages` is BLOCKED (lean-lsp-mcp #118). Always use `lake build` via Bash.
+
+If `lean_build` MCP tool fails:
 1. Log the error
 2. Fall back to `lake build` via Bash
 3. Parse stdout/stderr directly

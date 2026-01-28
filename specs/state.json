@@ -8,11 +8,11 @@
     {
       "project_number": 729,
       "project_name": "prevent_blocked_mcp_tool_calls_in_agents",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T23:03:26Z",
-      "last_updated": "2026-01-28T23:37:15Z",
+      "last_updated": "2026-01-28T23:42:09Z",
       "session_id": "sess_1769643416_7ae208",
       "researching": "2026-01-28T23:05:28Z",
       "researched": "2026-01-28T23:08:08Z",
@@ -26,11 +26,19 @@
           "path": "specs/729_prevent_blocked_mcp_tool_calls_in_agents/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase plan to prevent blocked MCP tool calls by fixing deprecated agents, creating centralized reference, and updating documentation"
+        },
+        {
+          "path": "specs/729_prevent_blocked_mcp_tool_calls_in_agents/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with all modified files and verification results"
         }
       ],
       "planning": "2026-01-28T23:27:09Z",
       "planned": "2026-01-28T23:29:18Z",
-      "implementing": "2026-01-28T23:37:15Z"
+      "implementing": "2026-01-28T23:37:15Z",
+      "completed": "2026-01-28T23:42:09Z",
+      "completion_summary": "Created blocked-mcp-tools.md as authoritative reference, updated 8 .claude/ files to consistently document blocked tools with CRITICAL/NEVER USE warnings and bug references.",
+      "claudemd_suggestions": "Updated CLAUDE.md Blocked MCP Tools section with table format and CRITICAL warning, created blocked-mcp-tools.md, updated mcp-tools-guide.md, deprecated agent files, user-installation.md, mcp-tool-recovery.md, skill-lake-repair.md"
     },
     {
       "project_number": 728,

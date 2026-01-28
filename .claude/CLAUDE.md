@@ -108,9 +108,16 @@ Standard actions: `create`, `complete research`, `create implementation plan`, `
 
 ## Lean 4 Integration
 
-### Blocked MCP Tools (DO NOT call directly)
-- `lean_diagnostic_messages` -> Use `lean_goal` or `lake build`
-- `lean_file_outline` -> Use `Read` + `lean_hover_info`
+### CRITICAL: Blocked MCP Tools - NEVER CALL THESE
+
+**DO NOT call these tools under any circumstances.** They have known bugs that cause incorrect behavior.
+
+| Tool | Bug | Alternative |
+|------|-----|-------------|
+| `lean_diagnostic_messages` | lean-lsp-mcp #118 | `lean_goal` or `lake build` |
+| `lean_file_outline` | lean-lsp-mcp #115 | `Read` + `lean_hover_info` |
+
+**Full documentation**: @.claude/context/core/patterns/blocked-mcp-tools.md
 
 ### MCP Tools (via lean-lsp server)
 `lean_goal`, `lean_hover_info`, `lean_completions`, `lean_leansearch`, `lean_loogle`, `lean_leanfinder`, `lean_multi_attempt`, `lean_local_search`, `lean_state_search`, `lean_hammer_premise`
