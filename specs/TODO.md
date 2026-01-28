@@ -1,5 +1,5 @@
 ---
-next_project_number: 714
+next_project_number: 715
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -130,6 +130,18 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 714. Refine Typst styling for journal aesthetic
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-28
+- **Related**: Task 709
+
+**Description**: Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions.
+
+---
 
 ### 713. Create Lean build repair skill and /build-repair command
 - **Effort**: 4-6 hours

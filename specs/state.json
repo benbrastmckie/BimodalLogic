@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 714,
+      "project_name": "refine_typst_styling_for_journal_aesthetic",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "description": "Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions.",
+      "created": "2026-01-28T05:50:33Z",
+      "last_updated": "2026-01-28T05:50:33Z"
+    },
+    {
       "project_number": 713,
       "project_name": "create_lean_build_repair_skill_and_command",
       "status": "not_started",
@@ -765,7 +775,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 714,
+  "next_project_number": 715,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
