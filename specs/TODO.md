@@ -41,11 +41,12 @@ technical_debt:
 
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Source**: Theories/Bimodal/Metalogic/Representation/UniversalCanonicalModel.lean:77
+- **Research**: [research-001.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-001.md)
 
 **Description**: Fix the compilation error in UniversalCanonicalModel.lean where representation_theorem calls construct_indexed_family without the required h_no_G_bot and h_no_H_bot proofs. Must either prove G⊥ ∉ Gamma and H⊥ ∉ Gamma from the consistency of {phi}, or handle the bounded endpoint case separately. Identified in research-002.md for task 695.
 
