@@ -1,7 +1,7 @@
 # Implementation Plan: Task #726
 
 - **Task**: 726 - Move essential MCS lemmas to Core
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4-5 hours
 - **Priority**: High
 - **Dependencies**: None (subtask of Task 722)
@@ -47,7 +47,7 @@ Move 5 essential MCS lemmas from `Boneyard/Metalogic/Completeness.lean` to `Meta
 
 ## Implementation Phases
 
-### Phase 1: Create Core/DeductionTheorem.lean [NOT STARTED]
+### Phase 1: Create Core/DeductionTheorem.lean [COMPLETED]
 
 **Goal**: Copy deduction theorem and helper lemmas from Boneyard with provenance comments
 

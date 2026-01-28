@@ -85,12 +85,12 @@
     {
       "project_number": 726,
       "project_name": "move_essential_mcs_lemmas_to_core",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T22:45:08Z",
-      "last_updated": "2026-01-28T23:50:22Z",
-      "session_id": "sess_1769644082_524424",
+      "last_updated": "2026-01-28T23:53:47Z",
+      "session_id": "sess_1769644406_f56183",
       "researched": "2026-01-28T23:46:40Z",
       "artifacts": [
         {
@@ -104,7 +104,8 @@
           "summary": "6-phase plan: create DeductionTheorem.lean, create MCSProperties.lean, update Core re-exports, update imports in Representation files, verify and document"
         }
       ],
-      "planned": "2026-01-28T23:50:22Z"
+      "planned": "2026-01-28T23:50:22Z",
+      "started": "2026-01-28T23:53:47Z"
     },
     {
       "project_number": 727,

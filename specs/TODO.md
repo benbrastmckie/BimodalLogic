@@ -162,10 +162,11 @@ technical_debt:
 
 ### 726. Move essential MCS lemmas to Core
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
+- **Started**: 2026-01-28
 - **Parent**: Task 722
 - **Research**: [research-001.md](specs/726_move_essential_mcs_lemmas_to_core/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/726_move_essential_mcs_lemmas_to_core/plans/implementation-001.md)
