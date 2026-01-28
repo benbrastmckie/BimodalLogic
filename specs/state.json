@@ -157,7 +157,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-28T22:03:49Z",
+      "last_updated": "2026-01-28T22:17:00Z",
       "related_tasks": [
         658
       ],
@@ -195,13 +195,23 @@
           "path": "specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-004.md",
           "type": "plan",
           "summary": "Revised plan v4: Complete remaining Phase 4 sorries"
+        },
+        {
+          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128-v2.md",
+          "type": "summary",
+          "summary": "Implementation v2: Phase 2 complete (G-persistence), Phases 1 and 3 documented as Boneyard-matching gaps"
+        },
+        {
+          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128-v2.md",
+          "type": "summary",
+          "summary": "Implementation v2: Phase 2 complete (G-persistence), Phases 1 and 3 documented as Boneyard-matching gaps"
         }
       ],
       "planning": "2026-01-25T22:30:14Z",
       "planned": "2026-01-28T22:00:27Z",
       "revised": "2026-01-28T17:48:14Z",
       "started": "2026-01-25T22:38:05Z",
-      "resume_phase": 4
+      "resume_phase": 3
     },
     {
       "project_number": 658,

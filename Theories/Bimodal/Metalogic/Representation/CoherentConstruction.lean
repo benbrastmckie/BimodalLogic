@@ -551,7 +551,7 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
     -- Several cases based on signs of t and t'
     unfold mcs_unified_chain at hG ⊢
     -- Use by_cases instead of split_ifs for clearer control
-    by_cases h_t_nonneg : 0 ≤ t <;> by_cases h_t'_nonneg : 0 ≤ t' <;> simp only [h_t_nonneg, h_t'_nonneg, ↓reduceIte] at hG ⊢
+    by_cases h_t_nonneg : 0 ≤ t <;> by_cases h_t'_nonneg : 0 ≤ t' <;> simp only [h_t_nonneg, h_t'_nonneg] at hG ⊢
     · -- Case 1: t ≥ 0 and t' ≥ 0: both in forward chain
       have h_nat_lt : t.toNat < t'.toNat := by omega
       exact mcs_forward_chain_coherent Gamma h_mcs h_no_G_bot t.toNat t'.toNat h_nat_lt φ hG
@@ -562,24 +562,64 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
       have h_t'_lt_t : t' < t := lt_of_lt_of_le h_t'_nonneg h_t_nonneg
       exact absurd h_lt (asymm h_t'_lt_t)
     · -- Case 3: t < 0 and t' ≥ 0: Cross-origin case (hG from backward chain, goal in forward chain)
+      -- hG : Gφ ∈ mcs_backward_chain(..., (-t).toNat)
+      -- Goal: φ ∈ mcs_forward_chain(..., t'.toNat)
+      --
+      -- Proof strategy:
+      -- 1. From Gφ ∈ mcs(t), use T-axiom to get φ ∈ mcs(t)
+      -- 2. Show φ propagates from mcs(t) through backward chain to Gamma = mcs(0)
+      -- 3. Then φ propagates through forward chain to mcs(t')
+      --
+      -- This requires backward-to-origin propagation, which needs additional infrastructure.
+      -- GAP: Cross-origin coherence requires connecting backward and forward chains through Gamma.
+      -- See implementation-004.md Phase 3 for detailed analysis.
       sorry
     · -- Case 4: t < 0 and t' < 0: both in backward chain
+      -- Both times are negative, so both are in the backward chain.
+      -- Since t < t' < 0, we have (-t).toNat > (-t').toNat in ℕ.
+      -- This is the backward chain analog of forward coherence.
+      --
+      -- Requires: mcs_backward_chain_coherent (symmetric to forward)
+      -- GAP: Need to implement backward chain coherence proof.
       sorry
   constructor
   -- backward_H: t' < t → Hφ ∈ mcs(t) → φ ∈ mcs(t')
   · intro h_lt φ hH
+    -- Symmetric to forward_G but for H and reversed direction.
+    -- Cases based on signs of t and t':
+    -- 1. Both ≥ 0: Need H-propagation through forward chain (non-trivial)
+    -- 2. Both < 0: Use backward chain H-coherence
+    -- 3. Cross-origin: t' < 0 ≤ t
+    --
+    -- GAP: Requires backward_H infrastructure parallel to forward_G.
     sorry
   constructor
   -- forward_H: t < t' → Hφ ∈ mcs(t') → φ ∈ mcs(t)
   · intro h_lt φ hH
-    -- This is the "looking back from the future" condition
-    -- Requires T-axiom: Hφ → φ in mcs(t')
-    -- Then need to propagate φ back to mcs(t)
+    -- This says: "if φ has always been true from perspective of t', then φ is true at t"
+    -- where t is in the past of t'.
+    --
+    -- Proof strategy:
+    -- 1. By T-axiom: Hφ ∈ mcs(t') → φ ∈ mcs(t') (via mcs_closed_temp_t_past)
+    -- 2. Need to show formulas propagate "backward" from mcs(t') to mcs(t)
+    --
+    -- This is fundamentally different from forward_G:
+    -- - forward_G: Gφ forces φ to appear in FUTURE times
+    -- - forward_H: Hφ at t' asserts φ was true at PAST times
+    --
+    -- The second step requires that the chain construction preserves this relationship.
+    -- GAP: Backward propagation through forward chain not implemented.
     sorry
   -- backward_G: t' < t → Gφ ∈ mcs(t') → φ ∈ mcs(t)
   · intro h_lt φ hG
-    -- This is the "looking forward from the past" condition
-    -- Symmetric to forward_H
+    -- Symmetric to forward_H:
+    -- 1. By T-axiom: Gφ ∈ mcs(t') → φ ∈ mcs(t') (via mcs_closed_temp_t_future)
+    -- 2. Need to propagate φ "forward" from mcs(t') to mcs(t) where t' < t
+    --
+    -- If both t', t ≥ 0: This reduces to forward_G but we only have φ not Gφ at t'.
+    -- The key insight is that Gφ at t' means φ at all s ≥ t', so φ at t.
+    --
+    -- GAP: Need T-axiom + forward propagation combination.
     sorry
 
 /--
@@ -631,7 +671,7 @@ lemma construct_coherent_family_origin (Gamma : Set Formula) (h_mcs : SetMaximal
     (φ : Formula) (h_phi : φ ∈ Gamma) :
     φ ∈ (construct_coherent_family Gamma h_mcs h_no_G_bot h_no_H_bot).mcs 0 := by
   unfold construct_coherent_family mcs_unified_chain mcs_forward_chain
-  simp only [Int.toNat_zero, le_refl, ↓reduceIte]
+  simp only [Int.toNat_zero, le_refl]
   exact h_phi
 
 end Bimodal.Metalogic.Representation
