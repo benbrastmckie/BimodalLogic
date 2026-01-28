@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "summary": "Analyzed Boneyard completeness approaches: found three deprecated approaches (Syntactic, Duration, Semantic Canonical Model) all well-documented with deprecation notices. Existing material should be preserved as valuable historical documentation. Recommended adding cross-reference notes to clarify standard Kripke vs task-specific semantics distinction.",
+  "artifacts": [
+    {
+      "path": "specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-001.md",
+      "type": "research",
+      "summary": "Comprehensive analysis of Boneyard completeness approaches, identifying three deprecated methods and recommending documentation enhancements rather than removal"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1769561627_fac9fc",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-lean-research"],
+    "findings_count": 5,
+    "approaches_analyzed": 3,
+    "files_reviewed": 18,
+    "recommendation": "preserve_and_enhance_documentation"
+  }
+}

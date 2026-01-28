@@ -8,11 +8,20 @@
     {
       "project_number": 695,
       "project_name": "review_boneyard_completeness_remove_misleading_material",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T00:47:45Z",
-      "last_updated": "2026-01-28T00:47:45Z"
+      "last_updated": "2026-01-28T00:57:01Z",
+      "session_id": "sess_1769561627_fac9fc",
+      "researched": "2026-01-28T00:57:01Z",
+      "artifacts": [
+        {
+          "path": "specs/695_review_boneyard_completeness_remove_misleading_material/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Boneyard completeness approaches, identifying three deprecated methods and recommending documentation enhancements rather than removal"
+        }
+      ]
     },
     {
       "project_number": 694,
