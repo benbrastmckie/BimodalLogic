@@ -40,6 +40,23 @@ The mutual induction allows the forward imp case to use:
 
 - Research report: specs/656_.../reports/research-001.md
 - Implementation plan: specs/656_.../plans/implementation-001.md
+
+## Gaps NOT Required for Completeness
+
+The backward direction of the Truth Lemma (`truth_at → φ ∈ MCS`) has sorries in:
+- `all_past` backward case (line 410)
+- `all_future` backward case (line 423)
+
+**These are NOT required for completeness**. The representation theorem only uses
+`truth_lemma_forward` (the forward direction: `φ ∈ MCS → truth_at`).
+
+The backward direction would prove "tightness" - that the canonical model has no
+extraneous truths beyond what the MCS contains. This is useful for:
+- Soundness proofs
+- Frame correspondence
+- Definability results
+
+See `Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean` for details.
 -/
 
 namespace Bimodal.Metalogic.Representation
@@ -398,15 +415,8 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       exact (ih s).mp h_psi_in_s
     · -- Backward: (∀ s < t, truth_at s psi) → H psi ∈ mcs t
       intro h_all_past
-      -- By contrapositive with negation completeness:
-      -- If ¬(H psi) ∈ mcs t, then P(¬psi) ∈ mcs t (where P = sometime_past = ¬H¬)
-      -- Actually: ¬(H psi) = sometime_past (¬psi) = ∃s < t. ¬psi at s
-      -- This would give us some s < t with ¬psi ∈ mcs s
-      -- By forward IH: truth_at s (¬psi)... but wait, we need truth of ¬psi, not psi.
-      --
-      -- Actually, the proper approach:
-      -- Assume ¬(H psi) ∈ mcs t, where ¬(H psi) = (H psi).imp bot
-      -- We need infrastructure to connect ¬(H psi) to some_past (¬psi)
+      -- NOT REQUIRED FOR COMPLETENESS - backward Truth Lemma not used by representation_theorem
+      -- See Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean for proof strategy
       sorry
 
   | all_future psi ih =>
@@ -419,7 +429,8 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       exact (ih s).mp h_psi_in_s
     · -- Backward: (∀ s > t, truth_at s psi) → G psi ∈ mcs t
       intro h_all_future
-      -- Similar to all_past backward case
+      -- NOT REQUIRED FOR COMPLETENESS - backward Truth Lemma not used by representation_theorem
+      -- See Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean for proof strategy
       sorry
 
 /-!

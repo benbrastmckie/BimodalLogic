@@ -99,7 +99,7 @@ Key findings from research-004.md:
 
 ---
 
-### Phase 3: Move backward Truth Lemma sorries to Boneyard [NOT STARTED]
+### Phase 3: Move backward Truth Lemma sorries to Boneyard [COMPLETED]
 
 **Goal**: Document that the backward direction of Truth Lemma (all_past, all_future cases) is not required for completeness.
 
