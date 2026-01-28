@@ -137,7 +137,7 @@ technical_debt:
 
 ### 704. Create typst agent and skill
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28

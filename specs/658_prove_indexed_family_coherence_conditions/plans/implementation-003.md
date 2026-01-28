@@ -2,7 +2,7 @@
 
 - **Task**: 658 - Prove indexed family coherence conditions
 - **Version**: 003 (Option A: Propagation Lemmas)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 6-8 hours
 - **Priority**: High
 - **Dependencies**: None (builds on implementation-002 infrastructure)
@@ -318,3 +318,51 @@ This plan takes a middle ground: rather than fully redesigning the construction 
 3. **Alternative**: Redesign seed construction to be recursive/dependent on previous times
 
 This plan addresses items 1 and 2 directly. Item 3 is the fallback if 1-2 prove insufficient.
+
+---
+
+## Implementation Progress (Task #658)
+
+### Phase 1: COMPLETED
+- Implemented `mcs_closed_temp_t_future` and `mcs_closed_temp_t_past` lemmas
+- These provide T-axiom closure within a single MCS (Gφ ∈ mcs → φ ∈ mcs)
+- Location: IndexedMCSFamily.lean lines 260-296
+
+### Phases 2-6: BLOCKED
+
+**Fundamental Issue Discovered**: The coherence proofs are **blocked by the construction design**, not just missing lemmas.
+
+**Problem**: The MCS at each time `t` is constructed independently via:
+```
+mcs(t) = extendToMCS(time_seed(Gamma, t))
+```
+
+Where `extendToMCS` uses **choice** (Lindenbaum's lemma) to arbitrarily extend the seed to a maximal consistent set. This means:
+- `mcs(t)` and `mcs(t')` are **independent** choices
+- There is **no canonical relationship** between them
+- T-axioms provide local closure (Gφ → φ within one MCS) but don't connect different MCS
+
+**Why T-Axioms Are Insufficient**:
+1. `Gφ ∈ mcs(t)` gives `φ ∈ mcs(t)` by T-axiom (local closure)
+2. But `mcs(t')` is a separate Lindenbaum extension with no constraint to include `φ`
+3. The seed at `t'` only includes formulas from **Gamma** (root MCS), not from `mcs(t)`
+
+**Why Propagation Lemmas Don't Work**:
+- Even if `Gφ ∈ Gamma`, we get `φ ∈ future_seed(t')` and thus `φ ∈ mcs(t')` ✓
+- But if `Gφ ∉ Gamma` (added by Lindenbaum at time t), there's no path to `mcs(t')`
+- T4 gives `GGφ ∈ mcs(t)`, but that still doesn't appear in `mcs(t')`'s seed
+
+**Required Solution** (Option B from research):
+The construction needs **fundamental redesign** to make MCS depend on each other:
+
+**Option B1: Recursive/Dependent Seeds**
+```
+mcs(0) = extendToMCS(Gamma)
+mcs(t+1) = extendToMCS({φ | Gφ ∈ mcs(t)})  -- Seed from PREVIOUS mcs, not Gamma
+mcs(t-1) = extendToMCS({φ | Hφ ∈ mcs(t)})
+```
+
+**Option B2: Single Coherent Construction**
+Build one maximal consistent set of time-indexed formulas simultaneously, ensuring coherence by construction (similar to Boneyard's `canonical_task_rel` pattern).
+
+**Recommendation**: Pause implementation of this plan (v3). Create a new task to redesign the construction using Option B1 or B2. The propagation lemma approach (Option A) cannot work with independent Lindenbaum extensions.
