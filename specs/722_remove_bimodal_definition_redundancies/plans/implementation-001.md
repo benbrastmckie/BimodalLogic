@@ -1,7 +1,7 @@
 # Implementation Plan: Task #722
 
 - **Task**: 722 - Remove Bimodal Definition Redundancies
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -48,16 +48,36 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Audit Import Dependencies [NOT STARTED]
+### Phase 1: Audit Import Dependencies [COMPLETED]
 
 **Goal**: Map all dependencies before making changes to understand the impact of each removal
 
 **Tasks**:
-- [ ] List all imports from `Boneyard/Metalogic/Completeness.lean` across the codebase
-- [ ] Identify which specific definitions are used from each import
-- [ ] Map the `hiding` clauses in active Metalogic/ files to understand conflicts
-- [ ] Document which lemmas in deprecated code have no equivalent in canonical source
-- [ ] Create dependency graph showing which files depend on which definitions
+- [x] List all imports from `Boneyard/Metalogic/Completeness.lean` across the codebase
+- [x] Identify which specific definitions are used from each import
+- [x] Map the `hiding` clauses in active Metalogic/ files to understand conflicts
+- [x] Document which lemmas in deprecated code have no equivalent in canonical source
+- [x] Create dependency graph showing which files depend on which definitions
+
+**Audit Results**:
+
+Files importing `Boneyard/Metalogic/Completeness.lean`:
+- `Metalogic.lean` (root)
+- `IndexedMCSFamily.lean` - uses `set_mcs_closed_under_derivation`
+- `CoherentConstruction.lean` - uses `set_mcs_all_future_all_future`, `set_mcs_all_past_all_past`, `set_mcs_closed_under_derivation`
+- `TruthLemma.lean` - uses `set_mcs_negation_complete`, `set_mcs_implication_property`, `set_mcs_closed_under_derivation`
+
+Hiding clauses:
+- `CoherentConstruction.lean:48` hides `SetMaximalConsistent SetConsistent Consistent set_lindenbaum`
+
+Lemmas in deprecated code WITHOUT equivalent in canonical source:
+- `set_mcs_closed_under_derivation` (Completeness.lean:577)
+- `set_mcs_implication_property` (Completeness.lean:655)
+- `set_mcs_negation_complete` (Completeness.lean:679)
+- `set_mcs_all_future_all_future` (Completeness.lean:1055)
+- `set_mcs_all_past_all_past` (Completeness.lean:1115)
+
+These 5 lemmas need to be moved or re-exported before we can remove the import.
 
 **Timing**: 45 minutes
 

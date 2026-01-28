@@ -612,15 +612,37 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
     sorry
   -- backward_G: t' < t → Gφ ∈ mcs(t') → φ ∈ mcs(t)
   · intro h_lt φ hG
-    -- Symmetric to forward_H:
-    -- 1. By T-axiom: Gφ ∈ mcs(t') → φ ∈ mcs(t') (via mcs_closed_temp_t_future)
-    -- 2. Need to propagate φ "forward" from mcs(t') to mcs(t) where t' < t
-    --
-    -- If both t', t ≥ 0: This reduces to forward_G but we only have φ not Gφ at t'.
-    -- The key insight is that Gφ at t' means φ at all s ≥ t', so φ at t.
-    --
-    -- GAP: Need T-axiom + forward propagation combination.
-    sorry
+    -- Key insight: Gφ at t' persists to t-1 (by G-4), then forward_G gives φ at t.
+    unfold mcs_unified_chain at hG ⊢
+    by_cases h_t'_nonneg : 0 ≤ t' <;> by_cases h_t_nonneg : 0 ≤ t <;> simp only [h_t'_nonneg, h_t_nonneg] at hG ⊢
+    · -- Case 1: Both t' ≥ 0 and t ≥ 0
+      -- Have: Gφ ∈ mcs_forward_chain(t'.toNat)
+      -- Goal: φ ∈ mcs_forward_chain(t.toNat)
+      have h_nat_lt : t'.toNat < t.toNat := by omega
+      -- Since t' < t and both ≥ 0, we have t > 0 so t.toNat > 0
+      have h_t_pos : 0 < t.toNat := by omega
+      -- Let m = t.toNat - 1, so t.toNat = m + 1
+      set m := t.toNat - 1 with hm_def
+      have ht_eq : t.toNat = m + 1 := by omega
+      have h_le : t'.toNat ≤ m := by omega
+      -- Gφ persists from t'.toNat to m
+      have hG_m := mcs_forward_chain_G_persistence Gamma h_mcs h_no_G_bot t'.toNat m h_le φ hG
+      -- Gφ ∈ mcs(m) → φ ∈ forward_seed(mcs(m)) → φ ∈ mcs(m+1)
+      have h_in_seed : φ ∈ forward_seed (mcs_forward_chain Gamma h_mcs h_no_G_bot m) := hG_m
+      have h_result := mcs_forward_chain_seed_containment Gamma h_mcs h_no_G_bot m h_in_seed
+      -- Rewrite the goal using ht_eq
+      rw [ht_eq]
+      exact h_result
+    · -- Case 2: t' ≥ 0 but t < 0: contradiction since t' < t
+      simp only [not_le] at h_t_nonneg
+      have : t < t' := lt_of_lt_of_le h_t_nonneg h_t'_nonneg
+      exact absurd h_lt (asymm this)
+    · -- Case 3: t' < 0 and t ≥ 0: cross-origin, Gφ in backward chain, goal in forward chain
+      -- GAP: Cross-origin backward_G requires infrastructure connecting chains through Gamma
+      sorry
+    · -- Case 4: Both t' < 0 and t < 0
+      -- GAP: Backward chain G-coherence not yet implemented
+      sorry
 
 /--
 Construct a CoherentIndexedFamily from a root MCS.

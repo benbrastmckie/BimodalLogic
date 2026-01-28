@@ -163,7 +163,7 @@ technical_debt:
 
 ### 724. Investigate revise command errors and design elegant solution
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -194,12 +194,13 @@ technical_debt:
 
 ### 722. Remove redundant definitions from Bimodal project
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-28
+- **Started**: 2026-01-28
 - **Research**: [research-001.md](specs/722_remove_bimodal_definition_redundancies/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/722_remove_bimodal_definition_redundancies/plans/implementation-001.md)
 
