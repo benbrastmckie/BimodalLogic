@@ -1,5 +1,5 @@
 ---
-next_project_number: 728
+next_project_number: 729
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -115,6 +115,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 728. Create user guide for command workflows
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Create a user guide in `.claude/docs/` explaining all command workflows: `/task` (with all flags including --recover, --expand, --sync, --abandon, --review), `/research` (repeatable), `/plan`, `/revise` (zero or more times to refine plans), `/implement` (repeated if needed). Also document maintenance commands: `/todo`, `/review`, `/refresh`, `/lake`, `/meta`, `/errors`, and the `/convert` command for file format conversion. Add a brief overview in `.claude/docs/README.md` with a link to the full guide.
+
+---
 
 ### 726. Move essential MCS lemmas to Core
 - **Effort**: 4-6 hours
