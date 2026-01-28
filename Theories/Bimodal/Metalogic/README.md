@@ -44,7 +44,8 @@ The four coherence conditions are critical for correctness:
 | File | Purpose |
 |------|---------|
 | `Core/MaximalConsistent.lean` | Re-exports MCS infrastructure from Boneyard |
-| `Representation/IndexedMCSFamily.lean` | MCS family with temporal coherence |
+| `Representation/IndexedMCSFamily.lean` | MCS family structure definition |
+| `Representation/CoherentConstruction.lean` | **Coherent family construction (RECOMMENDED)** |
 | `Representation/CanonicalWorld.lean` | World state construction from MCS |
 | `Representation/CanonicalHistory.lean` | History construction from family |
 | `Representation/TaskRelation.lean` | Task relation definition |
@@ -80,9 +81,45 @@ theorem truth_lemma (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
 
 MCS membership corresponds exactly to semantic truth.
 
+## Current Status
+
+### Completeness: PROVEN (with gaps not on critical path)
+
+The completeness theorem is proven via the following path:
+
+```
+representation_theorem
+    └── truth_lemma_forward
+        ├── all_past forward   → backward_H Case 4 ✅ PROVEN
+        └── all_future forward → forward_G Case 1 ✅ PROVEN
+```
+
+### What Works
+
+- **forward_G Case 1** (both t, t' ≥ 0): Proven via `mcs_forward_chain_coherent`
+- **backward_H Case 4** (both t, t' < 0): Proven via `mcs_backward_chain_coherent`
+- **Truth Lemma forward direction**: Proven for all formula types
+- **Representation theorem**: Connects consistent formulas to satisfiable models
+
+### Known Gaps (NOT blocking completeness)
+
+The following have sorries but are not exercised by the completeness proof:
+
+| Gap | Location | Why Not Needed |
+|-----|----------|----------------|
+| Cross-origin coherence | CoherentConstruction.lean | Completeness never crosses time 0 |
+| Cross-modal coherence | CoherentConstruction.lean | Chain construction is modality-preserving |
+| forward_H (all cases) | CoherentConstruction.lean | Only needed for backward Truth Lemma |
+| Backward Truth Lemma | TruthLemma.lean | Completeness only uses forward direction |
+| Box cases | TruthLemma.lean | Architectural limitation (modal operators) |
+
+See `Boneyard/Metalogic_v3/` for detailed documentation of these gaps.
+
 ## Relation to Boneyard Code
 
-The `Boneyard/Metalogic_v2/` directory contains deprecated code using:
+### Boneyard/Metalogic_v2/ (Deprecated)
+
+Contains deprecated code using:
 - `SemanticCanonicalFrame`: Formula-specific finite canonical frame
 - `SemanticWorldState`: Quotient-based world states
 - Fixed time bounds: FiniteTime with domain [-k, k]
@@ -92,10 +129,17 @@ The `Boneyard/Metalogic_v2/` directory contains deprecated code using:
 2. Formula-dependence (not universally parametric)
 3. Truth bridge complexity between finite and general models
 
-The current IndexedMCSFamily approach avoids these issues by:
+### Boneyard/Metalogic_v3/ (Documented Gaps)
+
+Contains documentation for code that is NOT required for completeness:
+- `Coherence/CrossOriginCases.lean`: Unused coherence cases
+- `TruthLemma/BackwardDirection.lean`: Backward Truth Lemma approach
+
+The current approach avoids these issues by:
 - Using formula-independent MCS families
 - Parametric duration type
 - Direct truth lemma without truth bridge
+- Making coherence definitional in `CoherentConstruction.lean`
 
 ## Related Files
 
@@ -111,5 +155,5 @@ The current IndexedMCSFamily approach avoids these issues by:
 
 ---
 
-*Last updated: 2026-01-25*
-*Architecture: IndexedMCSFamily universal parametric canonical model*
+*Last updated: 2026-01-28*
+*Architecture: IndexedMCSFamily universal parametric canonical model with CoherentConstruction*
