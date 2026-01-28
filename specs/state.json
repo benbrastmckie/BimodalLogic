@@ -2,7 +2,7 @@
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
     "total_tasks": 35,
-    "last_sync": "2026-01-28T06:31:29Z"
+    "last_sync": "2026-01-28T06:34:13Z"
   },
   "active_projects": [
     {
@@ -623,55 +623,36 @@
     {
       "project_number": 703,
       "project_name": "fix_bimodal_typst_formatting_issues",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T02:53:15Z",
-      "last_updated": "2026-01-28T06:30:40Z",
+      "last_updated": "2026-01-28T06:35:10Z",
       "session_id": "sess_1769581824_42c666",
       "dependencies": [
         702
       ],
-      "description": "Fix Typst formatting issues in BimodalReference.typ identified in FIX: and NOTE: tags. Tasks include: (1) Match margins to LogosReference.tex (line 16), (2) Set hyperlink colors to light blue (line 18), (3) Format website URL in texttt-equivalent (line 71), (4) Center Abstract header with spacing (line 93), (5) Format Contents header with spacing and style chapter/section entries appropriately (line 104)."
+      "description": "Fix Typst formatting issues in BimodalReference.typ identified in FIX: and NOTE: tags. Tasks include: (1) Match margins to LogosReference.tex (line 16), (2) Set hyperlink colors to light blue (line 18), (3) Format website URL in texttt-equivalent (line 71), (4) Center Abstract header with spacing (line 93), (5) Format Contents header with spacing and style chapter/section entries appropriately (line 104).",
+      "researched": "2026-01-28T06:35:10Z"
     },
     {
       "project_number": 704,
       "project_name": "create_typst_agent_and_skill",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T02:53:15Z",
-      "last_updated": "2026-01-28T06:30:05Z",
+      "last_updated": "2026-01-28T06:34:37Z",
       "session_id": "sess_1769581784_d41426",
-      "description": "Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks."
-    },
-    {
-      "project_number": 706,
-      "project_name": "update_context_files_from_bimodal_syntax_terminology_note",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-28T05:35:29Z",
-      "last_updated": "2026-01-28T06:33:31Z",
-      "session_id": "sess_1769581797_3f34d4",
-      "description": "Update .claude/context/ logic files to document the terminology preference 'sentence letter' instead of 'propositional atom'. This convention applies to ALL logic syntax (not just Bimodal TM), and should be included in relevant logic context files. Key terminology notes: (1) 'Sentence letter' is preferred over 'propositional atom' in all logic documentation; (2) In languages with predicates, a sentence letter is equivalent to a zero-place predicate.",
-      "planned": "2026-01-28T06:29:04Z",
+      "description": "Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks.",
+      "researched": "2026-01-28T06:34:37Z",
       "artifacts": [
         {
-          "path": "specs/706_update_context_files_from_bimodal_syntax_terminology_note/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for updating logic context files with sentence letter terminology"
-        },
-        {
-          "path": "specs/706_update_context_files_from_bimodal_syntax_terminology_note/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with all changes and verification results"
+          "path": "specs/704_create_typst_agent_and_skill/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing existing LaTeX infrastructure, current Typst usage, and proposing parallel context files and agent/skill structure for Typst"
         }
-      ],
-      "started": "2026-01-28T06:30:13Z",
-      "completed": "2026-01-28T06:33:31Z",
-      "completion_summary": "Updated 4 .claude/context/project/logic/ files to establish 'sentence letter' as the preferred terminology in all logic documentation, replacing 'propositional atom' and 'propositional variable'. Added terminology conventions section to README with rationale and updated tables in notation-standards, naming-conventions, and proof-theory-concepts.",
-      "claudemd_suggestions": "Updated .claude/context/project/logic/README.md (added Terminology Conventions section), .claude/context/project/logic/standards/notation-standards.md (updated tables and added terminology note), .claude/context/project/logic/standards/naming-conventions.md (updated table and added terminology note), .claude/context/project/logic/domain/proof-theory-concepts.md (updated comments)"
+      ]
     }
   ],
   "completed_projects": [
@@ -695,7 +676,7 @@
     }
   ],
   "task_counts": {
-    "active": 29,
+    "active": 28,
     "not_started": 9,
     "total": 31
   }

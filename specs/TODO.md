@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 23
-  completed: 275
+  active: 22
+  completed: 276
   in_progress: 0
   not_started: 25
   abandoned: 21
@@ -116,21 +116,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 706. Update context files from Bimodal syntax terminology note
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Source**: Theories/Bimodal/typst/chapters/01-syntax.typ:20 (NOTE: tag)
-- **Plan**: [implementation-001.md](specs/706_update_context_files_from_bimodal_syntax_terminology_note/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/706_update_context_files_from_bimodal_syntax_terminology_note/summaries/implementation-summary-20260128.md)
-
-**Description**: Update .claude/context/ logic files to document the terminology preference 'sentence letter' instead of 'propositional atom'. This convention applies to ALL logic syntax (not just Bimodal TM), and should be included in relevant logic context files. Key terminology notes: (1) 'Sentence letter' is preferred over 'propositional atom' in all logic documentation; (2) In languages with predicates, a sentence letter is equivalent to a zero-place predicate.
-
----
-
 ### 705. Fix Bimodal introduction Typst issues
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHED]
@@ -147,11 +132,13 @@ technical_debt:
 
 ### 704. Create typst agent and skill
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
+- **Researched**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/BimodalReference.typ:14
+- **Research**: [research-001.md](specs/704_create_typst_agent_and_skill/reports/research-001.md)
 
 **Description**: Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks.
 
