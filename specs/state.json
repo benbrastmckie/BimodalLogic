@@ -8,20 +8,21 @@
     {
       "project_number": 718,
       "project_name": "investigate_lean_lsp_mcp_hanging",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T17:16:42Z",
-      "last_updated": "2026-01-28T17:16:42Z"
+      "last_updated": "2026-01-28T17:23:52Z",
+      "session_id": "sess_1769621015_a2c3b6"
     },
     {
       "project_number": 717,
       "project_name": "enhance_lake_create_tasks_for_unfixable_errors",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T09:10:00Z",
-      "last_updated": "2026-01-28T17:14:04Z",
+      "last_updated": "2026-01-28T17:25:28Z",
       "description": "Enhance the /lake command to automatically create tasks for unfixable build errors. When the repair loop completes with remaining unfixable errors, group errors by file and prompt user to create one task per affected file. Each task should link an error report artifact containing the error details.",
       "researched": "2026-01-28T17:14:04Z",
       "artifacts": [
@@ -29,8 +30,14 @@
           "type": "research",
           "path": "specs/717_enhance_lake_create_tasks_for_unfixable_errors/reports/research-001.md",
           "summary": "Research on task creation patterns, error report formats, and integration with /task workflow"
+        },
+        {
+          "type": "plan",
+          "path": "specs/717_enhance_lake_create_tasks_for_unfixable_errors/plans/implementation-001.md",
+          "summary": "4-phase plan: add STEP 5 to lake.md, update skill, document artifact format, verify"
         }
-      ]
+      ],
+      "planned": "2026-01-28T17:25:28Z"
     },
     {
       "project_number": 716,

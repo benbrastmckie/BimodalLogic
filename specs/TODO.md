@@ -29,7 +29,7 @@ technical_debt:
 
 ### 718. Investigate lean-lsp MCP hanging on diagnostics/outline calls
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -40,12 +40,14 @@ technical_debt:
 
 ### 717. Enhance /lake to create tasks for unfixable errors
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
+- **Planned**: 2026-01-28
 - **Research**: [research-001.md](specs/717_enhance_lake_create_tasks_for_unfixable_errors/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/717_enhance_lake_create_tasks_for_unfixable_errors/plans/implementation-001.md)
 
 **Description**: Enhance the /lake command to automatically create tasks for unfixable build errors. When the repair loop completes with remaining unfixable errors, group errors by file and prompt user to create one task per affected file. Each task should link an error report artifact containing the error details. This automates the current manual workflow of creating fix tasks after a failed build.
 
