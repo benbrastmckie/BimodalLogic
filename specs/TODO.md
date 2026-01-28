@@ -158,7 +158,7 @@ technical_debt:
 - **Language**: general
 - **Created**: 2026-01-28
 - **Research**: [research-001.md](specs/694_configure_nvim_typst_bindings/reports/research-001.md), [research-002.md](specs/694_configure_nvim_typst_bindings/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/694_configure_nvim_typst_bindings/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/694_configure_nvim_typst_bindings/plans/implementation-002.md)
 
 **Description**: Research and configure ~/.config/nvim/ appropriately to include bindings similar to those used for LaTeX in .tex files for Typst (.typ) files.
 
