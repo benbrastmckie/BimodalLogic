@@ -8,13 +8,13 @@
     {
       "project_number": 714,
       "project_name": "refine_typst_styling_for_journal_aesthetic",
-      "status": "researched",
+      "status": "planning",
       "language": "general",
       "priority": "medium",
       "description": "Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions.",
       "created": "2026-01-28T05:50:33Z",
-      "last_updated": "2026-01-28T05:57:57Z",
-      "session_id": "sess_1769579553_295219",
+      "last_updated": "2026-01-28T06:16:02Z",
+      "session_id": "sess_1769580949_bd4f7d",
       "researched": "2026-01-28T05:57:57Z",
       "artifacts": [
         {
@@ -27,13 +27,13 @@
     {
       "project_number": 713,
       "project_name": "create_lean_build_repair_skill_and_command",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "description": "Create automated Lean build repair skill with /build-repair command that runs lake clean, lake build, and automatically fixes build errors (like missing pattern match cases) until build succeeds",
       "created": "2026-01-28T05:38:11Z",
-      "last_updated": "2026-01-28T06:00:32Z",
-      "session_id": "sess_1769579887_873d9c",
+      "last_updated": "2026-01-28T06:15:30Z",
+      "session_id": "sess_1769580910_8f8ee3",
       "researched": "2026-01-28T05:55:40Z",
       "artifacts": [
         {
@@ -57,7 +57,8 @@
           "summary": "4-phase implementation plan for /lake command and skill-lake-repair direct execution skill"
         }
       ],
-      "planned": "2026-01-28T06:00:32Z"
+      "planned": "2026-01-28T06:00:32Z",
+      "started": "2026-01-28T06:15:30Z"
     },
     {
       "project_number": 712,
@@ -99,12 +100,12 @@
     {
       "project_number": 708,
       "project_name": "fix_bimodal_semantics_typst_formatting_issues",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T03:23:17Z",
-      "last_updated": "2026-01-28T05:59:48Z",
-      "session_id": "sess_1769579500_708pln",
+      "last_updated": "2026-01-28T06:14:38Z",
+      "session_id": "sess_1769580200_708imp",
       "description": "Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol).",
       "researched": "2026-01-28T05:56:33Z",
       "artifacts": [
@@ -119,7 +120,8 @@
           "summary": "4-phase plan to fix arrow annotation, italic iff, and subscript/superscript stacking using Typst limits() and math.italic()"
         }
       ],
-      "planned": "2026-01-28T05:59:48Z"
+      "planned": "2026-01-28T05:59:48Z",
+      "started": "2026-01-28T06:14:38Z"
     },
     {
       "project_number": 709,
@@ -219,11 +221,11 @@
     {
       "project_number": 658,
       "project_name": "prove_indexed_family_coherence_conditions",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-28T05:57:09Z",
+      "last_updated": "2026-01-28T06:15:56Z",
       "related_tasks": [
         654
       ],
@@ -253,21 +255,21 @@
           "summary": "Analysis of T axiom impact: NOT including T axioms makes proofs impossible (fundamental construction issue). Adding T axioms would make coherence trivial. Recommends adding T axioms or accepting limitation."
         },
         {
-          "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 5-phase plan: add temporal T axioms, change to reflexive semantics, fix soundness proofs, complete coherence proofs"
-        },
-        {
           "path": "specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md",
           "type": "summary",
           "summary": "Partial implementation: T-axioms and reflexive semantics complete, coherence proofs blocked"
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "Revised plan v3: Option A propagation lemmas approach to complete coherence proofs"
         }
       ],
       "planning": "2026-01-25T21:42:13Z",
-      "planned": "2026-01-28T04:11:51Z",
+      "planned": "2026-01-28T06:15:56Z",
       "started": "2026-01-25T21:46:22Z",
-      "resume_phase": 4,
-      "partial_summary": "Implemented reflexive temporal semantics (5 phases): Added T-axioms temp_t_future and temp_t_past, changed semantics from < to ≤, fixed time-shift theorems, updated documentation. Coherence proofs (forward_G, backward_H, forward_H, backward_G) remain with sorry due to missing formula propagation infrastructure between independent Lindenbaum extensions. T-axioms necessary but not sufficient with current construction."
+      "resume_phase": null,
+      "partial_summary": null
     },
     {
       "project_number": 659,

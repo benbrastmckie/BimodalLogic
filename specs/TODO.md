@@ -133,7 +133,7 @@ technical_debt:
 
 ### 714. Refine Typst styling for journal aesthetic
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
@@ -147,7 +147,7 @@ technical_debt:
 
 ### 713. Create Lean lake build and repair skill and /lake command which calls this skill
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -180,7 +180,7 @@ technical_debt:
 
 ### 708. Fix Bimodal semantics Typst formatting issues
 - **Effort**: 1.5-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
@@ -310,22 +310,21 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [IMPLEMENTING]
-- **Started**: 2026-01-25T21:32:07Z
-- **Session**: sess_1769573421_2bf013
-- **Effort**: 12-16 hours
+- **Status**: [PLANNED]
+- **Session**: sess_1769580842_d8f88e
+- **Effort**: 6-8 hours
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-21
 - **Related**: Task 654, Task 657, Task 700
-- **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:433,439,448,456
-- **Plan**: [implementation-002.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-002.md)
+- **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:550-603
+- **Plan**: [implementation-003.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-003.md)
 - **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md)
-- **Summary**: [implementation-summary-20260125.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260125.md)
+- **Summary**: [implementation-summary-20260128.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md)
 
-**Description**: Switch to reflexive tense operators throughout the Bimodal/ theory (add temporal T axioms for G and H, change semantic clauses from < to ≤), then prove the four coherence conditions. Research confirmed that adding T axioms makes coherence trivial (~10 lines each) while without them the proofs are impossible due to fundamental construction issues.
+**Description**: Complete the four coherence condition proofs in IndexedMCSFamily.lean (forward_G, backward_H, forward_H, backward_G). T-axioms and reflexive semantics were added in v2, but coherence proofs remain blocked due to independent Lindenbaum extensions.
 
-**Revised Approach**: 5 phases - (1) Add temporal T axioms, (2) Change semantic clauses to reflexive, (3) Fix soundness proofs, (4) Complete coherence proofs, (5) Update documentation.
+**Revised Approach (v3)**: Option A from implementation-summary-20260125.md - develop propagation lemmas to connect formulas across MCS at different time points, leveraging T4 axiom chain and MCS closure properties.
 
 ---
 
