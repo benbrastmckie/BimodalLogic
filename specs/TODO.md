@@ -44,12 +44,13 @@ technical_debt:
 
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:413
 - **Research**: [research-001.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-001.md), [research-002.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/697_fix_universalcanonicalmodel_compilation_error/plans/implementation-001.md)
 
 **Description**: Fix the reflexive/irreflexive semantics mismatch in TruthLemma.lean. Semantics use `s ≤ t` but coherence conditions use `s < t`. Fix by splitting proof cases with `eq_or_lt_of_le` and using T-axiom closure lemmas for the reflexive case. Task 681 addressed documentation but not this compilation error.
 

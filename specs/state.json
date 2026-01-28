@@ -146,11 +146,11 @@
     {
       "project_number": 697,
       "project_name": "fix_universalcanonicalmodel_compilation_error",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-28T01:24:47Z",
-      "last_updated": "2026-01-28T23:50:30Z",
+      "last_updated": "2026-01-28T23:52:00Z",
       "session_id": "sess_1769644214_00ef06",
       "researched": "2026-01-28T23:10:20Z",
       "artifacts": [
@@ -163,8 +163,14 @@
           "path": "specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-002.md",
           "type": "research",
           "summary": "Post-681 evaluation: Task 697 still has actionable work - TruthLemma type mismatch not fixed"
+        },
+        {
+          "path": "specs/697_fix_universalcanonicalmodel_compilation_error/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan: fix all_past case, fix all_future case, verify build"
         }
-      ]
+      ],
+      "planned": "2026-01-28T23:52:00Z"
     },
     {
       "project_number": 681,
