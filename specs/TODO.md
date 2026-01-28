@@ -275,7 +275,7 @@ technical_debt:
 
 ### 698. Fix ROAD_MAP.md content and style issues
 - **Effort**: 4-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: markdown
 - **Created**: 2026-01-28
@@ -315,22 +315,22 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [RESEARCHING]
+- **Status**: [PLANNED]
 - **Started**: 2026-01-25T21:32:07Z
-- **Session**: sess_1769395200_f8a2b9
-- **Effort**: 8-12 hours
-- **Priority**: Medium
+- **Session**: sess_1769573421_2bf013
+- **Effort**: 12-16 hours
+- **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-21
-- **Related**: Task 654, Task 657
+- **Related**: Task 654, Task 657, Task 700
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:433,439,448,456
-- **Plan**: [implementation-001.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-001.md)
-- **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md)
+- **Plan**: [implementation-002.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-002.md)
+- **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md)
 - **Summary**: [implementation-summary-20260125.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260125.md)
 
-**Description**: Prove the four coherence condition sorries in the construct_indexed_family function (lines 433, 439, 448, 456). These ensure the indexed MCS family satisfies the coherence requirements that make it work with irreflexive temporal semantics (avoiding the T-axiom problem). Completing these would make the family construction fully constructive. From review-20260121-task654.md medium priority recommendations.
+**Description**: Switch to reflexive tense operators throughout the Bimodal/ theory (add temporal T axioms for G and H, change semantic clauses from < to ≤), then prove the four coherence conditions. Research confirmed that adding T axioms makes coherence trivial (~10 lines each) while without them the proofs are impossible due to fundamental construction issues.
 
-**Blocker**: The construct_indexed_family function uses independent Lindenbaum extensions at each time point, which don't preserve temporal coherence. Requires redesign using coherent construction (see Boneyard's canonical_task_rel pattern).
+**Revised Approach**: 5 phases - (1) Add temporal T axioms, (2) Change semantic clauses to reflexive, (3) Fix soundness proofs, (4) Complete coherence proofs, (5) Update documentation.
 
 ---
 
