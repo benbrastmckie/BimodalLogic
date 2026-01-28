@@ -20,6 +20,11 @@
           "path": "specs/723_update_claude_documentation/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing .claude/ documentation structure, cataloging all 13 commands, identifying gaps and redundancies, and providing recommendations for consolidation"
+        },
+        {
+          "path": "specs/723_update_claude_documentation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for restructuring CLAUDE.md documentation"
         }
       ],
       "planned": "2026-01-28T22:02:45Z"
