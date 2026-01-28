@@ -29,7 +29,7 @@ technical_debt:
 
 ### 729. Prevent blocked MCP tool calls in agent system
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -129,7 +129,7 @@ technical_debt:
 
 ### 728. Create user guide for command workflows
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -204,20 +204,20 @@ technical_debt:
 ---
 
 ### 681. Redesign construct_indexed_family with coherent approach
-- **Effort**: 4-6 hours (remaining)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 8 hours (remaining)
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
 - **Researched**: 2026-01-28T17:36:17Z
-- **Planned**: 2026-01-28 (v4)
+- **Planned**: 2026-01-28 (v5)
 - **Started**: 2026-01-28
 - **Related**: Task 658
-- **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md), [research-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-002.md)
-- **Plan**: [implementation-004.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-004.md)
-- **Summary**: [implementation-summary-20260128.md](specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128.md)
+- **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md), [research-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-002.md), [research-003.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-003.md)
+- **Plan**: [implementation-005.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-005.md)
+- **Summary**: [implementation-summary-20260128-v3.md](specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128-v3.md)
 
-**Description**: Complete remaining Phase 4 sorries from Option B2 (relational coherent construction). Phases 1-3, 5-6 done. Remaining work: seed consistency induction (2 sorries), G-persistence through chain (1 sorry), pairwise coherence cases (5 sorries) including cross-origin and backward chain cases. Uses T-axiom for reflexive semantics.
+**Description**: Plug remaining 10 sorries in CoherentConstruction.lean based on research-003.md. Key insight: the completeness theorem only needs forward_G Case 1 and backward_H Case 4, both of which are ALREADY PROVEN. Plan documents sufficiency for completeness, attempts seed consistency proofs, and accepts remaining gaps as Boneyard-matching theoretical limitations.
 
 ---
 
