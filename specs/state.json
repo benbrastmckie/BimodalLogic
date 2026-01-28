@@ -76,12 +76,20 @@
     {
       "project_number": 726,
       "project_name": "move_essential_mcs_lemmas_to_core",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T22:45:08Z",
-      "last_updated": "2026-01-28T23:44:44Z",
-      "session_id": "sess_1769643871_09e4cf"
+      "last_updated": "2026-01-28T23:46:40Z",
+      "session_id": "sess_1769643871_09e4cf",
+      "researched": "2026-01-28T23:46:40Z",
+      "artifacts": [
+        {
+          "path": "specs/726_move_essential_mcs_lemmas_to_core/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on eliminating Boneyard imports: identified 5 lemmas to move to Metalogic/Core with provenance comments"
+        }
+      ]
     },
     {
       "project_number": 727,

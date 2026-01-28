@@ -149,11 +149,12 @@ technical_debt:
 
 ### 726. Move essential MCS lemmas to Core
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Parent**: Task 722
+- **Research**: [research-001.md](specs/726_move_essential_mcs_lemmas_to_core/reports/research-001.md)
 
 **Description**: Move 5 essential MCS lemmas from deprecated `Boneyard/Metalogic/Completeness.lean` to the canonical Core location (`Boneyard/Metalogic_v2/Core/MaximalConsistent.lean`). Lemmas to move: `set_mcs_closed_under_derivation`, `set_mcs_implication_property`, `set_mcs_negation_complete`, `set_mcs_all_future_all_future`, `set_mcs_all_past_all_past`. Dependencies like `deduction_theorem` and `derivation_exchange` must move first. Update re-exports in `Metalogic/Core/MaximalConsistent.lean`. Deferred from Task 722 Phase 3.
 
@@ -233,22 +234,22 @@ technical_debt:
 
 ### 658. Prove indexed family coherence conditions
 - **Status**: [PLANNED]
-- **Session**: sess_1769622662_f98899
-- **Effort**: 2-3 hours (post Task 681)
-- **Priority**: High
+- **Session**: sess_1769643916_4b2ccf
+- **Effort**: 1-2 hours
+- **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
-- **Planned**: 2026-01-28 (v4)
-- **Dependencies**: Task 681
+- **Planned**: 2026-01-29 (v5)
+- **Dependencies**: Task 681 (COMPLETED)
 - **Related**: Task 654, Task 657, Task 700
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:550-603
-- **Plan**: [implementation-004.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-004.md)
+- **Plan**: [implementation-005.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-005.md)
 - **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md), [research-004.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md)
 - **Summary**: [implementation-summary-20260128.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md)
 
-**Description**: Complete the four coherence condition proofs in IndexedMCSFamily.lean (forward_G, backward_H, forward_H, backward_G) using Task 681's coherent construction. Previous approaches (v1-v3) failed because independent Lindenbaum extensions cannot satisfy coherence. Plan v4 integrates `CoherentIndexedFamily.toIndexedMCSFamily` where coherence is definitional.
+**Description**: Complete the integration of Task 681's coherent construction into IndexedMCSFamily.lean. The sorries in `construct_indexed_family` are now SUPERSEDED by CoherentConstruction.lean. This task either removes, replaces, or wraps the superseded function based on downstream dependencies.
 
-**Current Status**: Blocked on Task 681. Once 681 completes, this task integrates the coherent construction into `construct_indexed_family` (one-liner replacement).
+**Current Status**: Task 681 completed. Ready to integrate: analyze dependencies, then remove/replace/wrap `construct_indexed_family`.
 
 ---
 
