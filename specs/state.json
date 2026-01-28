@@ -8,11 +8,12 @@
     {
       "project_number": 724,
       "project_name": "investigate_revise_command_errors_design_solution",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:03:21Z",
-      "last_updated": "2026-01-28T22:03:21Z"
+      "last_updated": "2026-01-28T22:06:31Z",
+      "session_id": "sess_1769637974_98360f"
     },
     {
       "project_number": 723,
@@ -21,7 +22,7 @@
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T20:22:14Z",
-      "last_updated": "2026-01-28T22:02:45Z",
+      "last_updated": "2026-01-28T22:07:17Z",
       "session_id": "sess_1769637636_a0acaf",
       "researched": "2026-01-28T21:59:17Z",
       "artifacts": [
@@ -31,22 +32,22 @@
           "summary": "Research report analyzing .claude/ documentation structure, cataloging all 13 commands, identifying gaps and redundancies, and providing recommendations for consolidation"
         },
         {
-          "path": "specs/723_update_claude_documentation/plans/implementation-001.md",
+          "path": "specs/723_update_claude_documentation/plans/implementation-002.md",
           "type": "plan",
-          "summary": "5-phase implementation plan for restructuring CLAUDE.md documentation"
+          "summary": "Revised 5-phase plan: streamline CLAUDE.md as agent context, keep ARCHITECTURE.md as user docs"
         }
       ],
-      "planned": "2026-01-28T22:02:45Z"
+      "planned": "2026-01-28T22:07:17Z"
     },
     {
       "project_number": 722,
       "project_name": "remove_bimodal_definition_redundancies",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T20:18:45Z",
-      "last_updated": "2026-01-28T22:02:19Z",
-      "session_id": "sess_1769637570_03a971",
+      "last_updated": "2026-01-28T22:07:13Z",
+      "session_id": "sess_1769638023_8cecab",
       "researched": "2026-01-28T22:02:19Z",
       "artifacts": [
         {
@@ -129,17 +130,17 @@
     {
       "project_number": 681,
       "project_name": "redesign_construct_indexed_family_coherent_approach",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-28T22:00:27Z",
+      "last_updated": "2026-01-28T22:03:49Z",
       "related_tasks": [
         658
       ],
       "description": "Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyards canonical_task_rel pattern), or research alternative approaches.",
       "researching": "2026-01-25T22:22:57Z",
-      "session_id": "sess_1769631186_31664f",
+      "session_id": "sess_1769637804_bebe3a",
       "researched": "2026-01-28T17:36:17Z",
       "artifacts": [
         {

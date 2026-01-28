@@ -152,7 +152,7 @@ technical_debt:
 
 ### 724. Investigate revise command errors and design elegant solution
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -167,7 +167,7 @@ technical_debt:
 - **Researched**: 2026-01-28
 - **Research**: [research-001.md](specs/723_update_claude_documentation/reports/research-001.md)
 - **Planned**: 2026-01-28
-- **Plan**: [implementation-001.md](specs/723_update_claude_documentation/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/723_update_claude_documentation/plans/implementation-002.md)
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -178,7 +178,7 @@ technical_debt:
 
 ### 722. Remove redundant definitions from Bimodal project
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
@@ -216,12 +216,13 @@ technical_debt:
 
 ### 681. Redesign construct_indexed_family with coherent approach
 - **Effort**: 4-6 hours (remaining)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
 - **Researched**: 2026-01-28T17:36:17Z
 - **Planned**: 2026-01-28 (v4)
+- **Started**: 2026-01-28
 - **Related**: Task 658
 - **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md), [research-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-002.md)
 - **Plan**: [implementation-004.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-004.md)
