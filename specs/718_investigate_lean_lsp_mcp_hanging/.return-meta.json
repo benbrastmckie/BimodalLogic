@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-28T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "researched",
+  "summary": "Root cause identified: combination of Claude Code MCP timeout gaps (issue #15945) and lean-lsp-mcp diagnostic processing delays on files with compilation errors. Project already has key mitigations in place (direct execution, early metadata). Main recommendation is to fix SoundnessLemmas.lean errors and pre-build before diagnostics.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/718_investigate_lean_lsp_mcp_hanging/reports/research-001.md",
+      "summary": "Research report documenting 4 Claude Code issues, 2 lean-lsp-mcp issues, file-specific analysis, and recommendations"
+    }
+  ],
+  "next_steps": "Run /plan 718 to create implementation plan for recommended actions",
   "metadata": {
     "session_id": "sess_1769621015_a2c3b6",
     "agent_type": "general-research-agent",
+    "duration_seconds": 300,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 8
   }
 }

@@ -8,12 +8,20 @@
     {
       "project_number": 718,
       "project_name": "investigate_lean_lsp_mcp_hanging",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T17:16:42Z",
-      "last_updated": "2026-01-28T17:23:52Z",
-      "session_id": "sess_1769621015_a2c3b6"
+      "last_updated": "2026-01-28T17:27:58Z",
+      "session_id": "sess_1769621015_a2c3b6",
+      "researched": "2026-01-28T17:27:58Z",
+      "artifacts": [
+        {
+          "path": "specs/718_investigate_lean_lsp_mcp_hanging/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting 4 Claude Code issues, 2 lean-lsp-mcp issues, file-specific analysis, and recommendations"
+        }
+      ]
     },
     {
       "project_number": 717,
