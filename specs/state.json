@@ -8,11 +8,11 @@
     {
       "project_number": 723,
       "project_name": "update_claude_documentation",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T20:22:14Z",
-      "last_updated": "2026-01-28T22:00:50Z",
+      "last_updated": "2026-01-28T22:02:45Z",
       "session_id": "sess_1769637636_a0acaf",
       "researched": "2026-01-28T21:59:17Z",
       "artifacts": [
@@ -21,17 +21,26 @@
           "type": "research",
           "summary": "Research report analyzing .claude/ documentation structure, cataloging all 13 commands, identifying gaps and redundancies, and providing recommendations for consolidation"
         }
-      ]
+      ],
+      "planned": "2026-01-28T22:02:45Z"
     },
     {
       "project_number": 722,
       "project_name": "remove_bimodal_definition_redundancies",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T20:18:45Z",
-      "last_updated": "2026-01-28T21:59:47Z",
-      "session_id": "sess_1769637570_03a971"
+      "last_updated": "2026-01-28T22:02:19Z",
+      "session_id": "sess_1769637570_03a971",
+      "researched": "2026-01-28T22:02:19Z",
+      "artifacts": [
+        {
+          "path": "specs/722_remove_bimodal_definition_redundancies/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of redundant MCS definitions across Boneyard directories with consolidation plan"
+        }
+      ]
     },
     {
       "project_number": 721,

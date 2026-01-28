@@ -165,10 +165,12 @@ technical_debt:
 
 ### 722. Remove redundant definitions from Bimodal project
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
+- **Researched**: 2026-01-28
+- **Research**: [research-001.md](specs/722_remove_bimodal_definition_redundancies/reports/research-001.md)
 
 **Description**: Remove redundant/duplicate definitions throughout the Bimodal/ project to maintain a consistent and maintainable theory. Starting example: SetMaximalConsistent has two definitions (1) Boneyard.Metalogic.SetMaximalConsistent and (2) Core.SetMaximalConsistent from Bimodal.Metalogic.Core.MaximalConsistent. Search for similar cases of redundancy and consolidate to single canonical definitions.
 
