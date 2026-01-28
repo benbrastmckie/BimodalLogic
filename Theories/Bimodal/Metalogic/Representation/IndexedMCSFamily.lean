@@ -48,6 +48,7 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
+open Bimodal.ProofSystem
 -- Use Core's SetMaximalConsistent, but Boneyard.Metalogic for set_mcs_closed_under_derivation
 
 /-!
@@ -402,11 +403,11 @@ lemma G_bot_forbids_future
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     (h_G_bot : truth_at M τ (0 : D) (Formula.all_future Formula.bot))
     {t : D} (ht : (0 : D) < t) : False := by
-  -- G ⊥ at time 0 means: ∀ s > 0, ⊥ is true at s
-  -- truth_at for all_future: ∀ s, 0 < s → truth_at M τ s φ
+  -- G ⊥ at time 0 means: ∀ s ≥ 0, ⊥ is true at s (reflexive semantics)
+  -- truth_at for all_future: ∀ s, 0 ≤ s → truth_at M τ s φ
   -- truth_at for bot: False
-  -- Apply h_G_bot to t with ht to get truth_at M τ t Formula.bot = False
-  have h_bot_at_t : truth_at M τ t Formula.bot := h_G_bot t ht
+  -- Apply h_G_bot to t with (le_of_lt ht) to get truth_at M τ t Formula.bot = False
+  have h_bot_at_t : truth_at M τ t Formula.bot := h_G_bot t (le_of_lt ht)
   -- truth_at M τ t Formula.bot = False by definition
   exact h_bot_at_t
 

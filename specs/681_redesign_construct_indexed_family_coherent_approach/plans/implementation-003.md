@@ -2,7 +2,7 @@
 
 - **Task**: 681 - Redesign construct_indexed_family with coherent approach
 - **Version**: 003 (Final Option B2 with mathematical justification)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 12-14 hours
 - **Priority**: Medium
 - **Dependencies**: None (unblocks Task 658)
@@ -60,7 +60,7 @@ Research-002.md proves that coherence cannot be "proven after construction" - it
 
 ## Implementation Phases
 
-### Phase 1: Define Coherent Relation Structure [IN PROGRESS]
+### Phase 1: Define Coherent Relation Structure [COMPLETED]
 
 **Goal**: Define `coherent_at` relation and `CoherentIndexedFamily` structure.
 
@@ -121,7 +121,7 @@ Research-002.md proves that coherence cannot be "proven after construction" - it
 
 ---
 
-### Phase 2: Forward Seed and Extension [NOT STARTED]
+### Phase 2: Forward Seed and Extension [COMPLETED]
 
 **Goal**: Define forward seed and prove extension existence.
 
@@ -200,7 +200,7 @@ Research-002.md proves that coherence cannot be "proven after construction" - it
 
 ---
 
-### Phase 3: Backward Seed and Extension [NOT STARTED]
+### Phase 3: Backward Seed and Extension [COMPLETED]
 
 **Goal**: Define backward seed and prove extension existence (symmetric to Phase 2).
 
@@ -240,7 +240,7 @@ Research-002.md proves that coherence cannot be "proven after construction" - it
 
 ---
 
-### Phase 4: Coherence Transitivity [NOT STARTED]
+### Phase 4: Coherence Transitivity [PARTIAL]
 
 **Goal**: Prove pairwise coherence composes transitively.
 
@@ -292,7 +292,7 @@ Research-002.md proves that coherence cannot be "proven after construction" - it
 
 ---
 
-### Phase 5: Construct Coherent Family [NOT STARTED]
+### Phase 5: Construct Coherent Family [COMPLETED]
 
 **Goal**: Build `CoherentIndexedFamily` from root MCS.
 
@@ -342,7 +342,7 @@ Research-002.md proves that coherence cannot be "proven after construction" - it
 
 ---
 
-### Phase 6: Bridge to IndexedMCSFamily [NOT STARTED]
+### Phase 6: Bridge to IndexedMCSFamily [COMPLETED]
 
 **Goal**: Convert `CoherentIndexedFamily` to `IndexedMCSFamily`, unblocking Task 658.
 

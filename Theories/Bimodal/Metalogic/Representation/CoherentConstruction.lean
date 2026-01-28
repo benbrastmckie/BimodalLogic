@@ -44,7 +44,8 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
-open Bimodal.Boneyard.Metalogic
+-- Hide conflicting definitions from Boneyard (we use Core's versions)
+open Bimodal.Boneyard.Metalogic hiding SetMaximalConsistent SetConsistent Consistent set_lindenbaum
 
 /-!
 ## Coherent Relation
@@ -190,10 +191,11 @@ lemma forward_seed_consistent_of_no_G_bot (S : Set Formula) (h_mcs : SetMaximalC
   -- Step 2: Show all elements of L_G are in S
   have h_L_G_sub : ∀ ψ ∈ L_G, ψ ∈ S := by
     intro ψ h_mem
-    simp only [List.mem_map] at h_mem
-    obtain ⟨φ, h_φ_in_L, rfl⟩ := h_mem
+    rw [List.mem_map] at h_mem
+    obtain ⟨φ, h_φ_in_L, h_eq⟩ := h_mem
     -- φ ∈ L and L ⊆ forward_seed S, so Gφ ∈ S
     have h_in_seed : φ ∈ forward_seed S := hL φ h_φ_in_L
+    rw [← h_eq]
     exact h_in_seed
 
   -- Step 3: By MCS deductive closure, G ⊥ ∈ S
@@ -225,9 +227,10 @@ lemma backward_seed_consistent_of_no_H_bot (S : Set Formula) (h_mcs : SetMaximal
   -- Step 2: Show all elements of L_H are in S
   have h_L_H_sub : ∀ ψ ∈ L_H, ψ ∈ S := by
     intro ψ h_mem
-    simp only [List.mem_map] at h_mem
-    obtain ⟨φ, h_φ_in_L, rfl⟩ := h_mem
+    rw [List.mem_map] at h_mem
+    obtain ⟨φ, h_φ_in_L, h_eq⟩ := h_mem
     have h_in_seed : φ ∈ backward_seed S := hL φ h_φ_in_L
+    rw [← h_eq]
     exact h_in_seed
 
   -- Step 3: By MCS deductive closure, H ⊥ ∈ S
@@ -436,7 +439,8 @@ lemma mcs_forward_chain_seed_containment (Gamma : Set Formula) (h_mcs : SetMaxim
     (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) (n : ℕ) :
     forward_seed (mcs_forward_chain Gamma h_mcs h_no_G_bot n) ⊆
       mcs_forward_chain Gamma h_mcs h_no_G_bot (n + 1) := by
-  unfold mcs_forward_chain
+  -- mcs_forward_chain _ _ _ (n + 1) = extendToMCS (forward_seed (mcs_forward_chain _ _ _ n)) _
+  simp only [mcs_forward_chain, Nat.add_eq, Nat.add_zero]
   exact extendToMCS_contains _ _
 
 /--
@@ -448,7 +452,8 @@ lemma mcs_backward_chain_seed_containment (Gamma : Set Formula) (h_mcs : SetMaxi
     (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) (n : ℕ) :
     backward_seed (mcs_backward_chain Gamma h_mcs h_no_H_bot n) ⊆
       mcs_backward_chain Gamma h_mcs h_no_H_bot (n + 1) := by
-  unfold mcs_backward_chain
+  -- mcs_backward_chain _ _ _ (n + 1) = extendToMCS (backward_seed (mcs_backward_chain _ _ _ n)) _
+  simp only [mcs_backward_chain, Nat.add_eq, Nat.add_zero]
   exact extendToMCS_contains _ _
 
 /--
@@ -496,16 +501,25 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
   · intro h_lt φ hG
     -- Several cases based on signs of t and t'
     unfold mcs_unified_chain at hG ⊢
-    split_ifs at hG ⊢ with ht ht'
-    · -- t ≥ 0 and t' ≥ 0: Both in forward chain
-      have h_nat_lt : t.toNat < t'.toNat := by
-        omega
+    -- split_ifs generates: ht for first if, ht' for second if
+    -- But the names depend on evaluation order in goal vs hypotheses
+    split_ifs at hG ⊢ with h1 h2
+    · -- h1 : 0 ≤ t (first branch, from goal), h2 : 0 ≤ t' (second branch, from goal)
+      -- Both in forward chain
+      have h_nat_lt : t.toNat < t'.toNat := by omega
       exact mcs_forward_chain_coherent Gamma h_mcs h_no_G_bot t.toNat t'.toNat h_nat_lt φ hG
-    · -- t ≥ 0 and t' < 0: Contradiction since t < t' and t ≥ 0, t' < 0
+    · -- Contradiction case: first if true, second if false
+      -- h1 and h2 have some form; one says something ≤ t or ≤ t'
+      -- Use simp_all to resolve the contradiction
+      simp_all only [not_le]
+      -- Now h2 should be t' < 0 or similar
+      -- And we can derive a contradiction from t < t' and the bounds
       omega
-    · -- t < 0 and t' ≥ 0: Crosses the origin
+    · -- h1 : ¬(0 ≤ t), h2 : 0 ≤ t'
+      -- Crosses the origin: t < 0 ≤ t'
       sorry
-    · -- t < 0 and t' < 0: Both in backward chain
+    · -- h1 : ¬(0 ≤ t), h2 : ¬(0 ≤ t')
+      -- Both in backward chain: t, t' < 0
       sorry
   constructor
   -- backward_H: t' < t → Hφ ∈ mcs(t) → φ ∈ mcs(t')
