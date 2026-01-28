@@ -79,6 +79,36 @@ Use this decision tree to select the right search approach:
 
 ## Execution Flow
 
+### Stage 0: Initialize Early Metadata
+
+**CRITICAL**: Create metadata file BEFORE any substantive work. This ensures metadata exists even if the agent is interrupted.
+
+1. Ensure task directory exists:
+   ```bash
+   mkdir -p "specs/{N}_{SLUG}"
+   ```
+
+2. Write initial metadata to `specs/{N}_{SLUG}/.return-meta.json`:
+   ```json
+   {
+     "status": "in_progress",
+     "started_at": "{ISO8601 timestamp}",
+     "artifacts": [],
+     "partial_progress": {
+       "stage": "initializing",
+       "details": "Agent started, parsing delegation context"
+     },
+     "metadata": {
+       "session_id": "{from delegation context}",
+       "agent_type": "general-research-agent",
+       "delegation_depth": 1,
+       "delegation_path": ["orchestrator", "research", "general-research-agent"]
+     }
+   }
+   ```
+
+3. **Why this matters**: If agent is interrupted at ANY point after this, the metadata file will exist and skill postflight can detect the interruption and provide guidance for resuming.
+
 ### Stage 1: Parse Delegation Context
 
 Extract from input:

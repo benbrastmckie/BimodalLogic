@@ -101,6 +101,36 @@ Use this decision tree to select the right search tool:
 
 ## Execution Flow
 
+### Stage 0: Initialize Early Metadata
+
+**CRITICAL**: Create metadata file BEFORE any substantive work. This ensures metadata exists even if the agent is interrupted.
+
+1. Ensure task directory exists:
+   ```bash
+   mkdir -p "specs/{N}_{SLUG}"
+   ```
+
+2. Write initial metadata to `specs/{N}_{SLUG}/.return-meta.json`:
+   ```json
+   {
+     "status": "in_progress",
+     "started_at": "{ISO8601 timestamp}",
+     "artifacts": [],
+     "partial_progress": {
+       "stage": "initializing",
+       "details": "Agent started, parsing delegation context"
+     },
+     "metadata": {
+       "session_id": "{from delegation context}",
+       "agent_type": "lean-research-agent",
+       "delegation_depth": 1,
+       "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+     }
+   }
+   ```
+
+3. **Why this matters**: If agent is interrupted at ANY point after this, the metadata file will exist and skill postflight can detect the interruption and provide guidance for resuming.
+
 ### Stage 1: Parse Delegation Context
 
 Extract from input:
@@ -255,6 +285,36 @@ Research completed for task 259:
 
 ## Error Handling
 
+### MCP Tool Error Recovery
+
+When MCP tool calls fail (AbortError -32001 or similar):
+
+1. **Log the error context** (tool name, operation, task number, session_id)
+2. **Retry once** after 5-second delay for timeout errors
+3. **Try alternative search tool** per this fallback table:
+
+| Primary Tool | Alternative 1 | Alternative 2 |
+|--------------|---------------|---------------|
+| `lean_leansearch` | `lean_loogle` | `lean_leanfinder` |
+| `lean_loogle` | `lean_leansearch` | `lean_leanfinder` |
+| `lean_leanfinder` | `lean_leansearch` | `lean_loogle` |
+| `lean_local_search` | (no alternative) | Continue with partial |
+
+4. **If all fail**: Continue with codebase-only findings
+5. **Update metadata** with partial_progress:
+   ```json
+   {
+     "status": "in_progress",
+     "partial_progress": {
+       "stage": "mcp_recovery",
+       "details": "MCP tool {tool_name} failed. Continuing with available data."
+     }
+   }
+   ```
+6. **Document in report** what searches failed and recommendations
+
+See `.claude/context/core/patterns/mcp-tool-recovery.md` for detailed recovery patterns.
+
 ### Rate Limit Handling
 
 When a search tool rate limit is hit:
@@ -354,12 +414,15 @@ Research failed for task 259:
 ## Critical Requirements
 
 **MUST DO**:
-1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
-2. Always return brief text summary (3-6 bullets), NOT JSON
-3. Always include session_id from delegation context in metadata
-4. Always create report file before writing completed/partial status
-5. Always verify report file exists and is non-empty
-6. Use lean_local_search before rate-limited tools
+1. **Create early metadata at Stage 0** before any substantive work
+2. Always write final metadata to `specs/{N}_{SLUG}/.return-meta.json`
+3. Always return brief text summary (3-6 bullets), NOT JSON
+4. Always include session_id from delegation context in metadata
+5. Always create report file before writing completed/partial status
+6. Always verify report file exists and is non-empty
+7. Use lean_local_search before rate-limited tools
+8. **Update partial_progress** on significant milestones (search completion, synthesis)
+9. **Apply MCP recovery pattern** when tools fail (retry, alternative, continue)
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -370,3 +433,5 @@ Research failed for task 259:
 6. Use status value "completed" (triggers Claude stop behavior)
 7. Use phrases like "task is complete", "work is done", or "finished"
 8. Assume your return ends the workflow (skill continues with postflight)
+9. **Skip Stage 0** early metadata creation (critical for interruption recovery)
+10. **Block on MCP failures** - always continue with available information

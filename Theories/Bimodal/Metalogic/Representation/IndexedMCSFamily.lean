@@ -434,20 +434,24 @@ lemma past_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent G
   push_neg at h_incons
   obtain ⟨d_bot⟩ := h_incons
 
-  -- The proof follows the same structure as future_seed_consistent:
-  -- 1. L ⊢ ⊥
-  -- 2. Apply generalized past K: H L ⊢ H ⊥
-  -- 3. H L ⊆ Gamma (by past_seed definition)
-  -- 4. By MCS closure: H ⊥ ∈ Gamma
-  -- 5. Contradiction with h_no_H_bot
-  --
-  -- **Infrastructure needed**: generalized_past_k theorem
-  -- This can be derived from generalized_temporal_k via temporal duality,
-  -- but requires additional infrastructure to apply swap_past_future at context level.
-  --
-  -- For now, we use sorry and note the required infrastructure in the proof sketch.
-  -- The logical structure is complete; only the generalized_past_k theorem is missing.
-  sorry
+  -- Step 1: Apply generalized_past_k to get derivation of H ⊥ from H L
+  let L_H := L.map Formula.all_past
+  have d_H_bot : L_H ⊢ Formula.all_past Formula.bot :=
+    Bimodal.Theorems.generalized_past_k L Formula.bot d_bot
+
+  -- Step 2: Show all elements of L_H are in Gamma
+  have h_L_H_sub : ∀ ψ ∈ L_H, ψ ∈ Gamma := by
+    intro ψ h_mem
+    simp only [L_H, List.mem_map] at h_mem
+    obtain ⟨φ, h_φ_in_L, rfl⟩ := h_mem
+    exact hL φ h_φ_in_L
+
+  -- Step 3: By MCS deductive closure, H ⊥ ∈ Gamma
+  have h_H_bot_in : Formula.all_past Formula.bot ∈ Gamma :=
+    Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs L_H h_L_H_sub d_H_bot
+
+  -- Step 4: Contradiction with hypothesis h_no_H_bot
+  exact h_no_H_bot h_H_bot_in
 
 /--
 The time seed at any time t is consistent, assuming G ⊥ and H ⊥ are not in the MCS.

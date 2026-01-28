@@ -61,7 +61,7 @@ Key findings integrated from research-001.md:
   - Graceful degradation when tool unavailable
   - Fallback to alternative tools
   - Error logging to errors.json with mcp_abort_error type
-- [ ] Create `.claude/context/core/patterns/early-metadata-pattern.md` with:
+- [x] Create `.claude/context/core/patterns/early-metadata-pattern.md` with:
   - Stage 0 metadata file creation template
   - Incremental progress update guidelines
   - Partial status handling specifications
@@ -78,15 +78,15 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 2: Error Schema Enhancement [NOT STARTED]
+### Phase 2: Error Schema Enhancement [COMPLETED]
 
 **Goal**: Add mcp_abort_error type to error handling infrastructure
 
 **Tasks**:
-- [ ] Update `.claude/rules/error-handling.md`:
+- [x] Update `.claude/rules/error-handling.md`:
   - Add `mcp_abort_error` to External Errors category
   - Document recovery strategy for MCP abort errors
-- [ ] Update `.claude/context/core/formats/return-metadata-file.md`:
+- [x] Update `.claude/context/core/formats/return-metadata-file.md`:
   - Document `in_progress` as valid status for early metadata
   - Add `partial_progress` field documentation
   - Add `started_at` field documentation
@@ -103,17 +103,17 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 3: Lean Agent Updates [NOT STARTED]
+### Phase 3: Lean Agent Updates [COMPLETED]
 
 **Goal**: Update lean-research-agent and lean-implementation-agent with interruption-aware patterns
 
 **Tasks**:
-- [ ] Update `.claude/agents/lean-research-agent.md`:
+- [x] Update `.claude/agents/lean-research-agent.md`:
   - Add Stage 0 for early metadata file creation with status="in_progress"
   - Add MCP tool recovery pattern to error handling section
   - Add incremental progress updates for long operations
   - Update Critical Requirements with interruption-aware patterns
-- [ ] Update `.claude/agents/lean-implementation-agent.md`:
+- [x] Update `.claude/agents/lean-implementation-agent.md`:
   - Add Stage 0 for early metadata file creation
   - Add MCP tool recovery for lean_diagnostic_messages and lean_goal
   - Add phase-level progress tracking to metadata
@@ -132,7 +132,7 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 4: General Agent Updates [NOT STARTED]
+### Phase 4: General Agent Updates [IN PROGRESS]
 
 **Goal**: Update remaining agents with consistent interruption-aware patterns
 

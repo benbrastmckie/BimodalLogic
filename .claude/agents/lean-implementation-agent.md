@@ -73,6 +73,36 @@ Load these on-demand using @-references:
 
 ## Execution Flow
 
+### Stage 0: Initialize Early Metadata
+
+**CRITICAL**: Create metadata file BEFORE any substantive work. This ensures metadata exists even if the agent is interrupted.
+
+1. Ensure task directory exists:
+   ```bash
+   mkdir -p "specs/{N}_{SLUG}"
+   ```
+
+2. Write initial metadata to `specs/{N}_{SLUG}/.return-meta.json`:
+   ```json
+   {
+     "status": "in_progress",
+     "started_at": "{ISO8601 timestamp}",
+     "artifacts": [],
+     "partial_progress": {
+       "stage": "initializing",
+       "details": "Agent started, parsing delegation context"
+     },
+     "metadata": {
+       "session_id": "{from delegation context}",
+       "agent_type": "lean-implementation-agent",
+       "delegation_depth": 1,
+       "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"]
+     }
+   }
+   ```
+
+3. **Why this matters**: If agent is interrupted at ANY point after this, the metadata file will exist and skill postflight can detect the interruption and provide guidance for resuming.
+
 ### Stage 1: Parse Delegation Context
 
 Extract from input:
@@ -359,6 +389,38 @@ If a proof gets stuck after 5-10 attempts:
 
 ## Error Handling
 
+### MCP Tool Error Recovery
+
+When MCP tool calls fail during proof development (AbortError -32001 or similar):
+
+1. **Log the error context** (tool name, operation, proof state, session_id)
+2. **Retry once** after 5-second delay for timeout errors
+3. **Try alternative tool** per this fallback table:
+
+| Primary Tool | Alternative | Fallback |
+|--------------|-------------|----------|
+| `lean_diagnostic_messages` | `lean_goal` | `lake build` via Bash |
+| `lean_goal` | (essential - retry more) | Document state manually |
+| `lean_state_search` | `lean_hammer_premise` | Manual tactic exploration |
+| `lean_local_search` | (no alternative) | Continue with available info |
+
+4. **Update partial_progress** in metadata:
+   ```json
+   {
+     "status": "in_progress",
+     "partial_progress": {
+       "stage": "phase_{N}_mcp_recovery",
+       "details": "MCP tool {tool_name} failed during phase {N}. Attempting recovery.",
+       "phases_completed": {N-1},
+       "phases_total": {total}
+     }
+   }
+   ```
+5. **If lean_goal fails repeatedly**: Save current proof state to file, document what was attempted
+6. **Continue with available information** - don't block entire implementation on one tool failure
+
+See `.claude/context/core/patterns/mcp-tool-recovery.md` for detailed recovery patterns.
+
 ### Build Failure
 
 When `lake build` fails:
@@ -438,14 +500,17 @@ Lean implementation failed for task 259:
 ## Critical Requirements
 
 **MUST DO**:
-1. Always write metadata to `specs/{N}_{SLUG}/.return-meta.json`
-2. Always return brief text summary (3-6 bullets), NOT JSON
-3. Always include session_id from delegation context in metadata
-4. Always use `lean_goal` before and after each tactic application
-5. Always run `lake build` before returning implemented status
-6. Always verify proofs are actually complete ("no goals")
-7. Always update plan file with phase status changes
-8. Always create summary file before returning implemented status
+1. **Create early metadata at Stage 0** before any substantive work
+2. Always write final metadata to `specs/{N}_{SLUG}/.return-meta.json`
+3. Always return brief text summary (3-6 bullets), NOT JSON
+4. Always include session_id from delegation context in metadata
+5. Always use `lean_goal` before and after each tactic application
+6. Always run `lake build` before returning implemented status
+7. Always verify proofs are actually complete ("no goals")
+8. Always update plan file with phase status changes
+9. Always create summary file before returning implemented status
+10. **Update partial_progress** after each phase completion
+11. **Apply MCP recovery pattern** when tools fail (retry, alternative, continue)
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -458,3 +523,5 @@ Lean implementation failed for task 259:
 8. Use status value "completed" (triggers Claude stop behavior)
 9. Use phrases like "task is complete", "work is done", or "finished"
 10. Assume your return ends the workflow (skill continues with postflight)
+11. **Skip Stage 0** early metadata creation (critical for interruption recovery)
+12. **Block on MCP failures** - always save progress and continue or return partial

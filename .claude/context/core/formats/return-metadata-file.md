@@ -56,6 +56,7 @@ Example: `specs/259_prove_completeness/.return-meta.json`
 
 | Value | Description |
 |-------|-------------|
+| `in_progress` | Work started but not finished (early metadata, see below) |
 | `researched` | Research completed successfully |
 | `planned` | Plan created successfully |
 | `implemented` | Implementation completed successfully |
@@ -64,6 +65,10 @@ Example: `specs/259_prove_completeness/.return-meta.json`
 | `blocked` | Blocked by external dependency |
 
 **Note**: Never use `"completed"` - it triggers Claude stop behavior.
+
+**Early Metadata Pattern**: Agents should write metadata with `status: "in_progress"` at the START
+of execution (Stage 0), then update to the final status on completion. This ensures metadata exists
+even if the agent is interrupted. See `.claude/context/core/patterns/early-metadata-pattern.md`.
 
 ### artifacts (required)
 
@@ -98,6 +103,31 @@ Additional optional fields for specific agent types:
 - `findings_count` - Number of research findings
 - `phases_completed` - Implementation phases completed
 - `phases_total` - Total implementation phases
+
+### started_at (optional)
+
+**Type**: string (ISO8601 timestamp)
+**Include if**: status is `in_progress` (early metadata)
+
+Timestamp when agent started execution. Used to calculate duration on completion or detect
+long-running interrupted agents.
+
+### partial_progress (optional)
+
+**Type**: object
+**Include if**: status is `in_progress` or `partial`
+
+Tracks progress for interrupted or partially completed work:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `stage` | string | Yes | Current execution stage (e.g., "strategy_determined", "phase_2_completed") |
+| `details` | string | Yes | Human-readable description of progress |
+| `phases_completed` | number | No | For implementation agents: phases completed |
+| `phases_total` | number | No | For implementation agents: total phases |
+
+**Purpose**: Enables skill postflight to determine resume point and provide user guidance when
+an agent is interrupted before completion.
 
 ### completion_data (optional)
 
@@ -374,6 +404,80 @@ rm -f "specs/${task_number}_${task_slug}/.return-meta.json"
 }
 ```
 
+### Early Metadata (In Progress)
+
+Written at Stage 0, before substantive work begins:
+
+```json
+{
+  "status": "in_progress",
+  "started_at": "2026-01-28T10:30:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
+  "metadata": {
+    "session_id": "sess_1736700000_abc123",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
+```
+
+### In Progress with Partial Work
+
+Written after significant progress, before completion:
+
+```json
+{
+  "status": "in_progress",
+  "started_at": "2026-01-28T10:30:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/259_prove_completeness/reports/research-001.md",
+      "summary": "Partial research report (in progress)"
+    }
+  ],
+  "partial_progress": {
+    "stage": "searches_completed",
+    "details": "Completed 3 searches, found 5 theorems. Starting synthesis."
+  },
+  "metadata": {
+    "session_id": "sess_1736700000_abc123",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
+```
+
+### Implementation In Progress (Phase-Level)
+
+For implementation agents tracking phase progress:
+
+```json
+{
+  "status": "in_progress",
+  "started_at": "2026-01-28T10:30:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "phase_2_in_progress",
+    "details": "Phase 1 completed. Phase 2 in progress: implementing core definitions.",
+    "phases_completed": 1,
+    "phases_total": 4
+  },
+  "metadata": {
+    "session_id": "sess_1736700000_def456",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"]
+  }
+}
+```
+
 ## Relationship to subagent-return.md
 
 This file-based format complements `subagent-return.md`:
@@ -393,4 +497,7 @@ This file-based format complements `subagent-return.md`:
 - `.claude/context/core/formats/subagent-return.md` - Original console-based format
 - `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
 - `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O patterns
+- `.claude/context/core/patterns/early-metadata-pattern.md` - Early metadata creation pattern
+- `.claude/context/core/patterns/mcp-tool-recovery.md` - MCP error recovery patterns
 - `.claude/rules/state-management.md` - State update patterns
+- `.claude/rules/error-handling.md` - Error types including mcp_abort_error and delegation_interrupted
