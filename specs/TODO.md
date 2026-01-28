@@ -141,9 +141,9 @@ technical_debt:
 - **Planned**: 2026-01-28
 - **Related**: Task 709
 - **Research**: [research-001.md](specs/714_refine_typst_styling_for_journal_aesthetic/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/714_refine_typst_styling_for_journal_aesthetic/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/714_refine_typst_styling_for_journal_aesthetic/plans/implementation-002.md)
 
-**Description**: Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions.
+**Description**: Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions. **Revised**: Preserve colored links, apply AMS/journal aesthetic consistently throughout all Bimodal/typst/ documents.
 
 ---
 
