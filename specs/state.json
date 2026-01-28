@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 696,
+      "project_name": "clean_up_road_map_fix_note_todo_tags",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-28T01:19:36Z",
+      "last_updated": "2026-01-28T01:19:36Z"
+    },
+    {
       "project_number": 695,
       "project_name": "review_boneyard_completeness_remove_misleading_material",
       "status": "researched",
@@ -571,7 +580,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 696,
+  "next_project_number": 697,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

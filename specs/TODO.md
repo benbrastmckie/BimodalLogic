@@ -1,5 +1,5 @@
 ---
-next_project_number: 696
+next_project_number: 697
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 696. Clean up ROAD_MAP.md FIX/NOTE/TODO tags
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Process the 10 embedded FIX:, NOTE:, and TODO: tags in specs/ROAD_MAP.md. Address documentation issues (update tables based on Lean source, remove historical language, reverse architecture diagram order) or convert actionable items to proper tasks. Identified in review-20260128.md.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
