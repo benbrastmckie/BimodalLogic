@@ -1,5 +1,5 @@
 ---
-next_project_number: 713
+next_project_number: 714
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -130,6 +130,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 713. Create Lean build repair skill and /build-repair command
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Create automated Lean build repair skill with /build-repair command that runs lake clean, lake build, and automatically fixes build errors (like missing pattern match cases) until build succeeds.
+
+---
 
 ### 709. Research professional Typst templates for Bimodal documentation
 - **Effort**: 2-3 hours
