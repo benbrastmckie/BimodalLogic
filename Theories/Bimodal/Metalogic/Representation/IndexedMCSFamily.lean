@@ -237,6 +237,64 @@ lemma IndexedMCSFamily.H_implies_past_phi (family : IndexedMCSFamily D)
   family.backward_H t t' phi hlt hH
 
 /-!
+## MCS Closure Under T-Axioms
+
+These lemmas establish that MCS are closed under the T-axioms for temporal operators.
+The T-axioms (temp_t_future and temp_t_past) provide reflexivity: Gφ → φ and Hφ → φ.
+-/
+
+/--
+MCS closure under T-axiom for future: Gφ ∈ mcs implies φ ∈ mcs.
+
+**Proof Strategy**:
+1. T-axiom temp_t_future gives: ⊢ (Gφ → φ)
+2. With Gφ ∈ mcs, apply modus ponens via MCS closure
+3. Get φ ∈ mcs
+
+This lemma is critical for coherence proofs, as it connects temporal formulas to their unwrapped form within a single MCS.
+-/
+lemma mcs_closed_temp_t_future {Gamma : Set Formula} (h_mcs : SetMaximalConsistent Gamma)
+    (φ : Formula) (h_G : Formula.all_future φ ∈ Gamma) : φ ∈ Gamma := by
+  -- T-axiom: Gφ → φ is derivable
+  have h_axiom : [] ⊢ (Formula.all_future φ).imp φ :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_future φ)
+  -- Weaken to context [Gφ]
+  have h_imp : [Formula.all_future φ] ⊢ (Formula.all_future φ).imp φ :=
+    DerivationTree.weakening [] _ _ h_axiom (by intro; simp)
+  -- Gφ in context
+  have h_G_assume : [Formula.all_future φ] ⊢ Formula.all_future φ :=
+    DerivationTree.assumption _ _ (by simp)
+  -- Apply modus ponens
+  have h_deriv : [Formula.all_future φ] ⊢ φ :=
+    DerivationTree.modus_ponens _ _ _ h_imp h_G_assume
+  -- By MCS closure
+  have h_sub : ∀ ψ ∈ [Formula.all_future φ], ψ ∈ Gamma := by simp [h_G]
+  exact Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
+
+/--
+MCS closure under T-axiom for past: Hφ ∈ mcs implies φ ∈ mcs.
+
+**Proof Strategy**: Symmetric to mcs_closed_temp_t_future, using temp_t_past axiom.
+-/
+lemma mcs_closed_temp_t_past {Gamma : Set Formula} (h_mcs : SetMaximalConsistent Gamma)
+    (φ : Formula) (h_H : Formula.all_past φ ∈ Gamma) : φ ∈ Gamma := by
+  -- T-axiom: Hφ → φ is derivable
+  have h_axiom : [] ⊢ (Formula.all_past φ).imp φ :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_past φ)
+  -- Weaken to context [Hφ]
+  have h_imp : [Formula.all_past φ] ⊢ (Formula.all_past φ).imp φ :=
+    DerivationTree.weakening [] _ _ h_axiom (by intro; simp)
+  -- Hφ in context
+  have h_H_assume : [Formula.all_past φ] ⊢ Formula.all_past φ :=
+    DerivationTree.assumption _ _ (by simp)
+  -- Apply modus ponens
+  have h_deriv : [Formula.all_past φ] ⊢ φ :=
+    DerivationTree.modus_ponens _ _ _ h_imp h_H_assume
+  -- By MCS closure
+  have h_sub : ∀ ψ ∈ [Formula.all_past φ], ψ ∈ Gamma := by simp [h_H]
+  exact Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
+
+/-!
 ## Indexed Family Construction
 
 Given an MCS at the origin (time 0), we construct a coherent indexed family.

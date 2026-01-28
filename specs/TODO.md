@@ -133,15 +133,17 @@ technical_debt:
 
 ### 714. Refine Typst styling for journal aesthetic
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Related**: Task 709
 - **Research**: [research-001.md](specs/714_refine_typst_styling_for_journal_aesthetic/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/714_refine_typst_styling_for_journal_aesthetic/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260128.md](specs/714_refine_typst_styling_for_journal_aesthetic/summaries/implementation-summary-20260128.md)
 
 **Description**: Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions. **Revised**: Preserve colored links, apply AMS/journal aesthetic consistently throughout all Bimodal/typst/ documents.
 
@@ -218,11 +220,12 @@ technical_debt:
 
 ### 706. Update context files from Bimodal syntax terminology note
 - **Effort**: 0.5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/chapters/01-syntax.typ:20 (NOTE: tag)
+- **Plan**: [implementation-001.md](specs/706_update_context_files_from_bimodal_syntax_terminology_note/plans/implementation-001.md)
 
 **Description**: Update .claude/context/ logic files to document the terminology preference 'sentence letter' instead of 'propositional atom'. This convention applies to ALL logic syntax (not just Bimodal TM), and should be included in relevant logic context files. Key terminology notes: (1) 'Sentence letter' is preferred over 'propositional atom' in all logic documentation; (2) In languages with predicates, a sentence letter is equivalent to a zero-place predicate.
 
@@ -230,7 +233,7 @@ technical_debt:
 
 ### 705. Fix Bimodal introduction Typst issues
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28

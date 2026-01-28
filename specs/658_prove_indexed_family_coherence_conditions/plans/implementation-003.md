@@ -83,7 +83,7 @@ For `forward_G`: Use contrapositive with negation completeness.
 
 ## Implementation Phases
 
-### Phase 1: MCS Infrastructure Lemmas [NOT STARTED]
+### Phase 1: MCS Infrastructure Lemmas [IN PROGRESS]
 
 **Goal**: Establish lemmas about MCS closure under axiom application
 
