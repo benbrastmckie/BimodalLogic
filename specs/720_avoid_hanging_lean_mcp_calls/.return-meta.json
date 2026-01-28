@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Identified 4 files requiring modification: 3 skill files and 1 command file that use hanging lean_diagnostic_messages and lean_file_outline MCP tools. Existing fallback patterns (lean_goal, lake build via Bash) are already documented and can replace these tools.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/720_avoid_hanging_lean_mcp_calls/reports/research-001.md",
+      "summary": "Research report with file-by-file analysis and modification recommendations for avoiding hanging lean MCP calls"
+    }
+  ],
+  "next_steps": "Run /plan 720 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1769623027_48ab61",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 8
+  }
+}

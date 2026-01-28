@@ -270,9 +270,32 @@ Run /lake again after fixing errors manually.
 
 #### 5C: Create Tasks and Error Reports
 
-**EXECUTE NOW**: For each file group, create a task and error report.
+**EXECUTE NOW**: For each file group, check for existing tasks and create new tasks where needed.
+
+Initialize tracking arrays:
+```bash
+skipped_files=()
+created_tasks=()
+```
 
 For each `(file, errors)` in `file_groups`:
+
+**First, check for existing task**:
+```bash
+base_name=$(basename "$file" .lean | tr '[:upper:]' '[:lower:]')
+existing_task=$(jq -r --arg source "$file" --arg basename "$base_name" '
+  .active_projects[] |
+  select((.source == $source) or (.project_name | contains("fix_build_errors_" + $basename))) |
+  .project_number' specs/state.json | head -1)
+
+if [ -n "$existing_task" ]; then
+  echo "Skipping $file - existing task #$existing_task"
+  skipped_files+=("$file:$existing_task")
+  continue
+fi
+```
+
+**If no existing task**, proceed with task creation:
 
 1. **Get next task number**:
    ```bash
@@ -352,14 +375,21 @@ For each `(file, errors)` in `file_groups`:
    **Description**: Fix {error_count} build errors in {file}. See error report for details.
    ```
 
-**After all tasks created**:
+**After all tasks processed**:
 ```
 Tasks Created
 =============
 
-Created {len(file_groups)} tasks:
-{for (file, task_num) in created_tasks:}
+{If skipped_files not empty:}
+Files skipped (existing tasks):
+- {file}: Task #{existing_task_number}
+
+{If created_tasks not empty:}
+Created {len(created_tasks)} tasks:
 - Task #{task_num}: Fix build errors in {basename(file)}
+
+{If no tasks created and no files skipped:}
+No tasks created.
 
 Run /implement {task_num} to work on each task.
 ```

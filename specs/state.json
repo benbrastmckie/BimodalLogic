@@ -8,21 +8,30 @@
     {
       "project_number": 720,
       "project_name": "avoid_hanging_lean_mcp_calls",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T17:55:09Z",
-      "last_updated": "2026-01-28T17:55:09Z"
+      "last_updated": "2026-01-28T18:00:06Z",
+      "session_id": "sess_1769623027_48ab61",
+      "researched": "2026-01-28T18:00:06Z",
+      "artifacts": [
+        {
+          "path": "specs/720_avoid_hanging_lean_mcp_calls/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with file-by-file analysis and modification recommendations for avoiding hanging lean MCP calls"
+        }
+      ]
     },
     {
       "project_number": 719,
       "project_name": "lake_task_redundancy_check",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T17:46:56Z",
-      "last_updated": "2026-01-28T17:55:12Z",
-      "session_id": "sess_1769622782_ee4c60",
+      "last_updated": "2026-01-28T17:58:12Z",
+      "session_id": "sess_1769623071_b40e60",
       "description": "Enhance /lake task creation to check state.json for existing tasks before creating new ones. Prevents redundant task creation when a task already exists for a file with build errors.",
       "researched": "2026-01-28T17:51:08Z",
       "artifacts": [
@@ -42,7 +51,8 @@
           "summary": "3-phase implementation plan for adding redundancy check to /lake task creation"
         }
       ],
-      "planned": "2026-01-28T17:55:12Z"
+      "planned": "2026-01-28T17:55:12Z",
+      "started": "2026-01-28T17:58:12Z"
     },
     {
       "project_number": 717,

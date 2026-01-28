@@ -553,6 +553,35 @@ Would you like to create tasks for these errors?
 
 If user declines, output message and stop execution.
 
+#### 13B': Check for Existing Tasks
+
+For each file in `file_groups`, check if an active task already exists before creating:
+
+```bash
+# Extract basename for project_name matching
+base_name=$(basename "$file" .lean | tr '[:upper:]' '[:lower:]')
+
+# Query state.json for existing task
+existing_task=$(jq -r --arg source "$file" --arg basename "$base_name" '
+  .active_projects[] |
+  select(
+    (.source == $source) or
+    (.project_name | contains("fix_build_errors_" + $basename))
+  ) |
+  .project_number' specs/state.json | head -1)
+
+if [ -n "$existing_task" ]; then
+  echo "Skipping $file - existing task #$existing_task"
+  skipped_files+=("$file:$existing_task")
+  continue
+fi
+```
+
+**Skip tracking**:
+- `skipped_files[]` - Array of "file:task_number" pairs for files with existing tasks
+- Files in this array are excluded from task creation
+- Initialize `skipped_files=()` before the loop
+
 #### 13C: Error Report Format
 
 For each file group, create an error report artifact:
@@ -667,16 +696,23 @@ new_string: "## High Priority\n\n### {next_num}. Fix build errors in {basename}\
 
 #### 13F: Final Report
 
-After all tasks created:
+After all tasks processed:
 
 ```
 Tasks Created
 =============
 
-Created {len(file_groups)} tasks for unfixable build errors:
+{If skipped_files not empty:}
+Files skipped (existing tasks):
+- {file}: Task #{task_num}
 
+{If created_tasks not empty:}
+Created {len(created_tasks)} tasks for unfixable build errors:
 - Task #{task_num}: Fix build errors in {basename} ({error_count} errors)
   Report: specs/{task_num}_{slug}/reports/error-report-{date}.md
+
+{If no tasks created and no files skipped:}
+No tasks created.
 
 Run /implement {task_num} to work on each task.
 Or fix manually and run /lake again.
