@@ -152,7 +152,9 @@ technical_debt:
 
 ### 723. Update .claude/ documentation for accuracy and completeness
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-28
+- **Research**: [research-001.md](specs/723_update_claude_documentation/reports/research-001.md)
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
