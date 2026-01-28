@@ -28,12 +28,13 @@ technical_debt:
 ## High Priority
 
 ### 701. Fix lean-lsp-mcp hanging issue
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 3.5 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Research**: [research-001.md](specs/701_fix_lean_lsp_mcp_hanging/reports/research-001.md), [research-002.md](specs/701_fix_lean_lsp_mcp_hanging/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/701_fix_lean_lsp_mcp_hanging/plans/implementation-001.md)
 
 **Description**: I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.
 
@@ -142,7 +143,7 @@ technical_debt:
 
 ### 699. Update context files from ROAD_MAP.md learnings
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28

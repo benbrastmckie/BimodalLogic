@@ -4,9 +4,9 @@
 
 This pattern enables uninterrupted workflow execution by using a marker file to signal when postflight operations are pending. The SubagentStop hook checks for this marker and blocks premature termination.
 
-## Problem Solved
+## Purpose
 
-Claude Code has a known limitation (GitHub Issue #17351): nested skills return to the main session instead of the invoking skill. This causes workflow interruptions requiring user "continue" input between skill return and orchestrator postflight.
+Claude Code skill returns can bypass the invoking skill and return directly to the main session (GitHub Issue #17351). This pattern uses a marker file to ensure postflight operations execute after subagent return.
 
 ## Solution Architecture
 
