@@ -2,7 +2,7 @@
 
 - **Task**: 658 - Prove indexed family coherence conditions
 - **Version**: 002 (Complete Revision)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12-16 hours
 - **Priority**: High (upgraded from Medium due to scope)
 - **Dependencies**: None (self-contained after revision)
@@ -69,7 +69,7 @@ With T axioms, the coherence conditions become direct consequences:
 
 ## Implementation Phases
 
-### Phase 1: Add Temporal T Axioms [NOT STARTED]
+### Phase 1: Add Temporal T Axioms [IN PROGRESS]
 
 **Goal**: Add `temp_t_future` and `temp_t_past` axiom constructors
 

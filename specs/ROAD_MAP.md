@@ -15,75 +15,59 @@ This roadmap outlines the current state of the ProofChecker project and charts t
 
 ## Current State: What's Been Accomplished
 
-### ✅ Metalogic_v2: Representation-First Architecture
+### Metalogic_v2: Representation-First Architecture (Boneyard)
 
-**Status**: Core theorems proven, architecture clean, ready for reporting
+**Status**: Deprecated. This code is preserved in `Boneyard/Metalogic_v2/` and served as a reference for the current parametric approach.
 
-<!-- FIX: these need to be updated based on the actual lean source code -->
+**Note**: The tables below document the Boneyard architecture. For active development, see the Bimodal/Metalogic section.
 
-#### Core Infrastructure (Proven)
+#### Core Infrastructure
 
-| Component | Status | Location |
-|-----------|--------|----------|
-| **Soundness** | ✅ PROVEN | Soundness/Soundness.lean |
-| **Deduction Theorem** | ✅ PROVEN | Core/DeductionTheorem.lean |
-| **Lindenbaum's Lemma** | ✅ PROVEN | Core/MaximalConsistent.lean |
-| **MCS Properties** | ✅ PROVEN | Core/MaximalConsistent.lean, Representation/CanonicalModel.lean |
-| **Canonical Model** | ✅ PROVEN | Representation/CanonicalModel.lean |
-| **Truth Lemma** | ✅ PROVEN | Representation/TruthLemma.lean |
-| **Representation Theorem** | ✅ PROVEN | Representation/RepresentationTheorem.lean |
+| Component | Status | Location (Boneyard/Metalogic_v2/) |
+|-----------|--------|-----------------------------------|
+| **Soundness** | PROVEN | Soundness/Soundness.lean |
+| **Deduction Theorem** | PROVEN | Core/DeductionTheorem.lean |
+| **Lindenbaum's Lemma** | PROVEN | Core/MaximalConsistent.lean |
+| **MCS Properties** | PROVEN | Core/MaximalConsistent.lean |
+| **Canonical Model** | PROVEN | Representation/CanonicalModel.lean |
+| **Truth Lemma** | PROVEN | Representation/TruthLemma.lean |
+| **Representation Theorem** | PROVEN | Representation/RepresentationTheorem.lean |
 
-#### Metalogical Results (Proven)
+#### Metalogical Results
 
-| Result | Status | Location |
-|--------|--------|----------|
-| **Weak Completeness** | ✅ PROVEN | Completeness/WeakCompleteness.lean |
-| `⊨ φ → ⊢ φ` | ✅ | Via `representation_theorem_backward_empty` |
-| **Strong Completeness** | ✅ PROVEN | Completeness/StrongCompleteness.lean |
-| `Γ ⊨ φ → Γ ⊢ φ` | ✅ | Via deduction theorem + weak completeness |
-| **Finite Model Property** | ✅ PROVEN | Representation/FiniteModelProperty.lean |
-| **Decidability** | ✅ PROVEN (noncomputable) | Representation/FiniteModelProperty.lean |
-| Satisfiability decidable | ✅ | Via FMP |
-| Validity decidable | ✅ | Via FMP |
-| **Compactness** | ✅ PROVEN | Applications/Compactness.lean |
-| Entailment compactness | ✅ | Via finiteness of derivations |
-| Satisfiability compactness | ✅ | Via strong completeness |
+| Result | Status | Location (Boneyard/Metalogic_v2/) |
+|--------|--------|-----------------------------------|
+| **Weak Completeness** | PROVEN | Completeness/WeakCompleteness.lean |
+| **Strong Completeness** | PROVEN | Completeness/StrongCompleteness.lean |
+| **Finite Model Property** | PROVEN | Representation/FiniteModelProperty.lean |
+| **Decidability** | PROVEN (noncomputable) | Representation/FiniteModelProperty.lean |
+| **Compactness** | PROVEN | Applications/Compactness.lean |
 
-<!-- FIX: remove historical language like 'Key Architectural Achievement', focusing instead on just stating the architecture in this case -->
+#### Architecture
 
-#### Key Architectural Achievement
-
-**Representation-First Design**: The architecture places canonical model construction as the foundation, with FMP as the central bridge. This is a significant improvement over traditional modal logic developments that treat completeness as primary.
-
-<!-- FIX: reverse the order so that foundations come above and derived comes below -->
+The architecture places canonical model construction as the foundation, with FMP as the central bridge. Completeness derives from representation rather than being treated as primary.
 
 ```
-Applications (Compactness)
-    ↓
-Completeness (Strong, Weak)
-    ↓
-FMP (Central Bridge)
+Core (Soundness, Deduction, MCS)
     ↓
 Representation (Canonical Model, Truth Lemma)
     ↓
-Core (Soundness, Deduction, MCS)
+FMP (Central Bridge)
+    ↓
+Completeness (Strong, Weak)
+    ↓
+Applications (Compactness)
 ```
 
-<!-- NOTE: remove all emojies throughout, but unicode characters are OK -->
-
-### ✅ Bimodal/Metalogic: Universal Parametric Representation Theorem (Task 654)
+### Bimodal/Metalogic: Universal Parametric Representation Theorem (Task 654)
 
 **Status**: Representation theorem proven, indexed MCS family approach successful
 
 **Completed**: 2026-01-20 (Task 654)
 
-<!-- NOTE: avoid historical language like 'innovation' or 'problem solved'. Just state the current state -->
+#### Indexed MCS Family Approach
 
-#### Key Innovation: Indexed MCS Family Approach
-
-**Problem Solved**: The previous "same-MCS-at-all-times" approach required temporal T-axioms (`G phi -> phi`, `H phi -> phi`) that TM logic does NOT have. TM's G/H operators are **irreflexive** (strictly future/past, excluding present).
-
-**Solution**: Build a **family of MCS indexed by time** `mcs : D -> Set Formula`, where each time point has its own MCS connected via temporal coherence conditions:
+TM's G/H operators are **irreflexive** (strictly future/past, excluding present), so the design uses a **family of MCS indexed by time** `mcs : D -> Set Formula`, where each time point has its own MCS connected via temporal coherence conditions:
 - `forward_G`: G phi ∈ mcs(t) → phi ∈ mcs(t') for all t' > t (strictly future)
 - `backward_H`: H phi ∈ mcs(t) → phi ∈ mcs(t') for all t' < t (strictly past)
 - `forward_H`: H phi ∈ mcs(t') → phi ∈ mcs(t) for t < t' (looking back from future)
@@ -128,22 +112,9 @@ These conditions match the irreflexive semantics **without requiring T-axioms**.
 2. Truth lemma forward direction for temporal operators (fully proven)
 3. Lindenbaum extension (already proven)
 
-<!-- NOTE: I don't need past comparisons which also fall under historical language that should be excluded -->
+#### Main Result
 
-#### Design Comparison
-
-| Aspect | Metalogic_v2 (Semantic) | Bimodal/Metalogic (Parametric) |
-|--------|-------------------------|--------------------------------|
-| Time type | Fixed to `Int` | **Parametric over D** (any ordered additive group) |
-| Approach | Semantic canonical model | **Purely syntactic** (indexed MCS family) |
-| T-axiom | Required (has sorries) | **Not required** (avoided by design) |
-| MCS structure | Same MCS at all times | **Varying MCS per time** (indexed family) |
-| Status | Complete but limited | Representation proven, gaps documented |
-| Generality | Specific to Int | **Works for Int, Rat, Real, etc.** |
-
-#### Key Achievement
-
-**Representation Theorem Proven Without T-Axiom**:
+**Representation Theorem**:
 ```lean
 theorem representation_theorem (phi : Formula) (h_cons : SetConsistent {phi}) :
     ∃ (family : IndexedMCSFamily D) (t : D),
@@ -153,35 +124,27 @@ theorem representation_theorem (phi : Formula) (h_cons : SetConsistent {phi}) :
 
 This establishes the foundation for completeness: **consistent formulas are satisfiable in a parametric canonical model**.
 
-<!-- NOTE: links to reports are also not needed here -->
-
-#### Research Documentation
-
-- Research report: `specs/archive/654_.../reports/research-004.md`
-- Implementation plan: `specs/archive/654_.../plans/implementation-004.md`
-- Implementation summary: `specs/archive/654_.../summaries/implementation-summary-20260120.md`
-
 ---
 
-<!-- FIX: Check that these tables are accurate by comparing the lean source code-->
-
-### ✅ Syntax and Semantics
-
-| Component | Status | Notes |
-|-----------|--------|-------|
-| **Bimodal Syntax** | ✅ COMPLETE | Formula, complexity, subformulas |
-| **TM Semantics** | ✅ COMPLETE | TaskFrame, truth_at, validity |
-| **Proof System** | ✅ COMPLETE | Hilbert-style with temporal axioms |
-
-### ✅ Decidability Infrastructure
+### Syntax and Semantics
 
 | Component | Status | Location |
 |-----------|--------|----------|
-| **Tableau System** | ✅ COMPLETE | Decidability/Tableau.lean |
-| **Saturation** | ✅ COMPLETE | Decidability/Saturation.lean |
-| **Branch Closure** | ✅ COMPLETE | Decidability/BranchClosure.lean |
-| **Decision Procedure** | ✅ COMPLETE | Decidability/DecisionProcedure.lean |
-| **Soundness** | ✅ PROVEN | Decidability/Correctness.lean |
+| **Bimodal Syntax** | COMPLETE | Theories/Bimodal/Basic.lean |
+| **TM Semantics** | COMPLETE | Theories/Bimodal/Semantics.lean |
+| **Proof System** | COMPLETE | Theories/Bimodal/Proof.lean |
+
+### Decidability Infrastructure (Boneyard)
+
+**Note**: This infrastructure is in `Boneyard/Metalogic_v2/Decidability/` (deprecated).
+
+| Component | Status | Location (Boneyard/Metalogic_v2/) |
+|-----------|--------|-----------------------------------|
+| **Tableau System** | COMPLETE | Decidability/Tableau.lean |
+| **Saturation** | COMPLETE | Decidability/Saturation.lean |
+| **Branch Closure** | COMPLETE | Decidability/BranchClosure.lean |
+| **Decision Procedure** | COMPLETE | Decidability/DecisionProcedure.lean |
+| **Soundness** | PROVEN | Decidability/Correctness.lean |
 
 ---
 

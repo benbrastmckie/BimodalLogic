@@ -330,7 +330,7 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Started**: 2026-01-25T21:32:07Z
 - **Session**: sess_1769573421_2bf013
 - **Effort**: 12-16 hours

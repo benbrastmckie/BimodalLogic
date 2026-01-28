@@ -3,14 +3,14 @@ import Bimodal.Syntax.Formula
 /-!
 # Axioms - TM Axiom Schemata
 
-This module defines the 13 axiom schemata for bimodal logic TM (Tense and Modality).
+This module defines the 15 axiom schemata for bimodal logic TM (Tense and Modality).
 
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 14 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
+- 16 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
   `modal_b`, `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_l`,
-  `modal_future`, `temp_future`
+  `temp_t_future`, `temp_t_past`, `modal_future`, `temp_future`
 
 ## Axiom Schemata
 
@@ -31,11 +31,13 @@ The TM logic includes:
 - **MB** (Modal B): `φ → □◇φ` - truths are necessarily possible (symmetry)
 - **MK** (Modal K Distribution): `□(φ → ψ) → (□φ → □ψ)` - necessity distributes over implication
 
-### Temporal Axioms (future F, past P)
-- **TK** (Temporal K Distribution): `F(φ → ψ) → (Fφ → Fψ)` - future distributes over implication
-- **T4** (Temporal 4): `Fφ → FFφ` - future of future is future (transitivity)
-- **TA** (Temporal A): `φ → FPφ` - the present was in the past of the future
-- **TL** (Temporal L): `always φ → FPφ` - perpetuity implies recurrence
+### Temporal Axioms (future G, past H)
+- **TK** (Temporal K Distribution): `G(φ → ψ) → (Gφ → Gψ)` - future distributes over implication
+- **T4** (Temporal 4): `Gφ → GGφ` - future of future is future (transitivity)
+- **TA** (Temporal A): `φ → GPφ` - the present was in the past of the future
+- **TL** (Temporal L): `always φ → GPφ` - perpetuity implies recurrence
+- **TT-G** (Temporal T Future): `Gφ → φ` - what is always future is true now (reflexivity)
+- **TT-H** (Temporal T Past): `Hφ → φ` - what has always been is true now (reflexivity)
 
 ### Modal-Temporal Interaction Axioms
 - **MF** (Modal-Future): `□φ → □Fφ` - necessary truths remain necessary in future
@@ -60,7 +62,7 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM.
 
-A formula `φ` is an axiom if it matches one of the 13 axiom schema patterns.
+A formula `φ` is an axiom if it matches one of the 15 axiom schema patterns.
 Each constructor takes formula parameters representing the schema instantiation.
 -/
 inductive Axiom : Formula → Type where
@@ -245,6 +247,32 @@ inductive Axiom : Formula → Type where
   immediately implies the conclusion (φ at times w < z for any z).
   -/
   | temp_l (φ : Formula) : Axiom (φ.always.imp (Formula.all_future (Formula.all_past φ)))
+
+  /--
+  Temporal T axiom for future: `Gφ → φ` (temporal reflexivity).
+
+  If something will always be true (from now on), it is true now.
+  This makes G reflexive: G includes the present moment.
+  Semantically: if φ holds at all times s ≥ t, then φ holds at t.
+
+  This axiom, together with `temp_t_past`, enables the coherence proofs
+  for the canonical model construction by providing a local constraint
+  connecting Gφ to φ within a single MCS.
+  -/
+  | temp_t_future (φ : Formula) : Axiom ((Formula.all_future φ).imp φ)
+
+  /--
+  Temporal T axiom for past: `Hφ → φ` (temporal reflexivity).
+
+  If something has always been true (until now), it is true now.
+  This makes H reflexive: H includes the present moment.
+  Semantically: if φ holds at all times s ≤ t, then φ holds at t.
+
+  This axiom, together with `temp_t_future`, enables the coherence proofs
+  for the canonical model construction by providing a local constraint
+  connecting Hφ to φ within a single MCS.
+  -/
+  | temp_t_past (φ : Formula) : Axiom ((Formula.all_past φ).imp φ)
 
   /--
   Modal-Future axiom: `□φ → □Fφ` (modal-future interaction).
