@@ -146,12 +146,14 @@ technical_debt:
 
 ### 703. Fix Bimodal Typst formatting issues
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
+- **Researched**: 2026-01-28
 - **Dependencies**: 702
 - **Source**: Theories/Bimodal/typst/BimodalReference.typ (FIX: and NOTE: tags)
+- **Research**: [research-001.md](specs/703_fix_bimodal_typst_formatting_issues/reports/research-001.md)
 
 **Description**: Fix Typst formatting issues in BimodalReference.typ identified in FIX: and NOTE: tags. Tasks include: (1) Match margins to LogosReference.tex (line 16), (2) Set hyperlink colors to light blue (line 18), (3) Format website URL in texttt-equivalent (line 71), (4) Center Abstract header with spacing (line 93), (5) Format Contents header with spacing and style chapter/section entries appropriately (line 104).
 
