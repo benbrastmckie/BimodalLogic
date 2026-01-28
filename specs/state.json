@@ -8,12 +8,21 @@
     {
       "project_number": 701,
       "project_name": "fix_lean_lsp_mcp_hanging",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "description": "I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.",
       "created": "2026-01-28T02:04:45Z",
-      "last_updated": "2026-01-28T02:04:45Z"
+      "last_updated": "2026-01-28T02:17:24Z",
+      "session_id": "sess_1769566244_016a85",
+      "researched": "2026-01-28T02:17:24Z",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/701_fix_lean_lsp_mcp_hanging/reports/research-001.md",
+          "summary": "Root cause analysis identifying Issue #14496 (complex prompts break MCP access) as primary cause, with workarounds including resume pattern and agent simplification"
+        }
+      ]
     },
     {
       "project_number": 697,
