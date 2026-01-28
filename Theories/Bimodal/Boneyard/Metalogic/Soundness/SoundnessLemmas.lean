@@ -256,12 +256,12 @@ theorem swap_axiom_t4_valid (φ : Formula) :
        (Formula.all_future (Formula.all_future φ))).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
-  intro h_past_swap r h_r_lt_t u h_u_lt_r
-  -- h_past_swap : ∀ (s : D), s < t → truth_at M τ s φ.swap_past_future
+  intro h_past_swap r h_r_le_t u h_u_le_r
+  -- h_past_swap : ∀ (s : D), s ≤ t → truth_at M τ s φ.swap_past_future
   -- Need: truth_at M τ u φ.swap_past_future
-  -- Since u < r < t, we have u < t, so apply h_past_swap
-  have h_u_lt_t : u < t := lt_trans h_u_lt_r h_r_lt_t
-  exact h_past_swap u h_u_lt_t
+  -- Since u ≤ r ≤ t, we have u ≤ t, so apply h_past_swap
+  have h_u_le_t : u ≤ t := le_trans h_u_le_r h_r_le_t
+  exact h_past_swap u h_u_le_t
 
 /--
 Temporal A axiom (TA) swaps to a valid formula: `φ → F(sometime_past φ)` swaps to
@@ -279,13 +279,12 @@ theorem swap_axiom_ta_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.all_future φ.sometime_past)).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_past_future, Formula.sometime_past, Formula.sometime_future, truth_at]
-  intro h_swap_φ s h_s_lt_t
-  -- Goal: ¬ ∀ (u : D), u > s → ¬ truth_at M τ u φ.swap_past_future
-  -- Equivalently: ∃ u > s : swap φ at u
+  intro h_swap_φ s h_s_le_t
+  -- Goal: ¬ ∀ (u : D), u ≥ s → ¬ truth_at M τ u φ.swap_past_future
+  -- Equivalently: ∃ u ≥ s : swap φ at u
   intro h_all_not_future
-  -- We can choose u = t, since t > s (from h_s_lt_t)
-  have h_t_gt_s : s < t := h_s_lt_t
-  exact h_all_not_future t h_t_gt_s h_swap_φ
+  -- We can choose u = t, since s ≤ t (from h_s_le_t)
+  exact h_all_not_future t h_s_le_t h_swap_φ
 
 /--
 Temporal L axiom (TL) swaps to a valid formula: `△φ → FPφ` swaps to `△(swap φ) → P(F(swap φ))`.
@@ -316,16 +315,16 @@ theorem swap_axiom_tl_valid (φ : Formula) :
   --               there exists u > s where swap φ holds
   -- This is trivially valid: if swap φ holds everywhere, pick any u > s
   simp only [Formula.swap_temporal, truth_at]
-  intro h_always s h_s_lt_t u h_s_lt_u
+  intro h_always s h_s_le_t u h_s_le_u
   -- h_always encodes: ¬(future(swap φ) → ¬(swap φ ∧ past(swap φ)))
   -- which is classically equivalent to: future(swap φ) ∧ swap φ ∧ past(swap φ)
   -- meaning swap φ holds at all times
   --
-  -- We need: truth_at M τ u φ.swap_past_future where s < u and s < t
+  -- We need: truth_at M τ u φ.swap_past_future where s ≤ u and s ≤ t
   -- Consider cases on u relative to t:
   by_cases h_ut : u < t
   · -- Case: u < t, use the "past" component
-    -- From h_always, we can extract that swap φ holds at all s' < t
+    -- From h_always, we can extract that swap φ holds at all s' ≤ t
     apply Classical.byContradiction
     intro h_neg
     apply h_always
@@ -334,9 +333,9 @@ theorem swap_axiom_tl_valid (φ : Formula) :
     apply h_conj
     intro h_now
     intro h_past
-    -- h_past : ∀ s' < t, swap φ holds at s'
-    -- Since u < t, swap φ holds at u
-    exact h_neg (h_past u h_ut)
+    -- h_past : ∀ s' ≤ t, swap φ holds at s'
+    -- Since u < t, we have u ≤ t, swap φ holds at u
+    exact h_neg (h_past u (le_of_lt h_ut))
   · -- Case: u ≥ t
     by_cases h_eq : u = t
     · -- Case: u = t, use the "present" component
@@ -358,9 +357,9 @@ theorem swap_axiom_tl_valid (φ : Formula) :
       apply h_always
       intro h_fut_all
       intro h_conj
-      -- h_fut_all : ∀ r > t, swap φ holds at r
-      -- Since u > t, swap φ holds at u
-      exact h_neg (h_fut_all u h_gt)
+      -- h_fut_all : ∀ r ≥ t, swap φ holds at r
+      -- Since u > t, we have t ≤ u, swap φ holds at u
+      exact h_neg (h_fut_all u (le_of_lt h_gt))
 
 /--
 Modal-Future axiom (MF) swaps to a valid formula: `□φ → □Fφ` swaps to `□(swap φ) → □P(swap φ)`.
@@ -587,8 +586,22 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
   | temp_4 ψ => exact swap_axiom_t4_valid ψ
   | temp_a ψ => exact swap_axiom_ta_valid ψ
   | temp_l ψ => exact swap_axiom_tl_valid ψ
-  | temp_t_future ψ => sorry
-  | temp_t_past ψ => sorry
+  | temp_t_future ψ =>
+    -- temp_t_future is Gψ → ψ, after swap: Hψ.swap → ψ.swap
+    -- With reflexive semantics: (∀ s ≤ t, ψ.swap(s)) → ψ.swap(t)
+    -- Valid by instantiating s = t using le_refl
+    intro F M τ t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_past
+    exact h_past t (le_refl t)
+  | temp_t_past ψ =>
+    -- temp_t_past is Hψ → ψ, after swap: Gψ.swap → ψ.swap
+    -- With reflexive semantics: (∀ s ≥ t, ψ.swap(s)) → ψ.swap(t)
+    -- Valid by instantiating s = t using le_refl
+    intro F M τ t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_future
+    exact h_future t (le_refl t)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 
@@ -704,7 +717,8 @@ private theorem axiom_temp_4_valid (φ : Formula) :
   intro F M τ t
   simp only [truth_at]
   intro h_future s hts r hsr
-  have htr : t < r := lt_trans hts hsr
+  -- hts : t ≤ s, hsr : s ≤ r, so t ≤ r by transitivity
+  have htr : t ≤ r := le_trans hts hsr
   exact h_future r htr
 
 /-- Helper for temporal A axiom. -/
@@ -728,22 +742,44 @@ private theorem axiom_temp_l_valid (φ : Formula) :
   intro F M τ t
   simp only [truth_at]
   intro h_always s hts r hrs
-  -- h_always encodes: ¬(future(φ) → ¬(φ ∧ past(φ)))
-  -- which is classically equivalent to: future(φ) ∧ φ ∧ past(φ)
-  -- meaning φ holds at all times
+  -- h_always encodes: ¬(past(φ) → ¬(φ ∧ future(φ)))
+  -- which is classically equivalent to: past(φ) ∧ φ ∧ future(φ)
+  -- meaning φ holds at all times (with reflexive semantics using ≤)
   have h1 :
-    (∀ (u : D), u < t → truth_at M τ u φ) ∧
+    (∀ (u : D), u ≤ t → truth_at M τ u φ) ∧
     ((truth_at M τ t φ →
-      (∀ (v : D), t < v → truth_at M τ v φ) → False) → False) :=
+      (∀ (v : D), t ≤ v → truth_at M τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : truth_at M τ t φ ∧ (∀ (v : D), t < v → truth_at M τ v φ) :=
+  have h2 : truth_at M τ t φ ∧ (∀ (v : D), t ≤ v → truth_at M τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
-  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
-  · exact h_past r h_lt
-  · subst h_eq; exact h_now
-  · exact h_future r h_gt
+  -- With reflexive semantics, r is in past of s which is in future of t
+  -- hrs : r ≤ s, hts : t ≤ s
+  -- Case analysis: r ≤ t or t ≤ r
+  rcases le_or_lt r t with h_le | h_gt
+  · exact h_past r h_le
+  · exact h_future r (le_of_lt h_gt)
+
+/-- Temporal T axiom (future) is locally valid: Gφ → φ.
+With reflexive semantics, Gφ at t means ∀ s ≥ t, φ(s).
+Taking s = t gives φ(t) by le_refl. -/
+private theorem axiom_temp_t_future_valid (φ : Formula) :
+    is_valid D ((φ.all_future).imp φ) := by
+  intro F M τ t
+  simp only [truth_at]
+  intro h_future
+  exact h_future t (le_refl t)
+
+/-- Temporal T axiom (past) is locally valid: Hφ → φ.
+With reflexive semantics, Hφ at t means ∀ s ≤ t, φ(s).
+Taking s = t gives φ(t) by le_refl. -/
+private theorem axiom_temp_t_past_valid (φ : Formula) :
+    is_valid D ((φ.all_past).imp φ) := by
+  intro F M τ t
+  simp only [truth_at]
+  intro h_past
+  exact h_past t (le_refl t)
 
 /-- Modal-Future axiom is locally valid. -/
 private theorem axiom_modal_future_valid (φ : Formula) :
@@ -788,8 +824,8 @@ private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ 
   | temp_4 ψ => exact axiom_temp_4_valid ψ
   | temp_a ψ => exact axiom_temp_a_valid ψ
   | temp_l ψ => exact axiom_temp_l_valid ψ
-  | temp_t_future ψ => sorry
-  | temp_t_past ψ => sorry
+  | temp_t_future ψ => exact axiom_temp_t_future_valid ψ
+  | temp_t_past ψ => exact axiom_temp_t_past_valid ψ
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 

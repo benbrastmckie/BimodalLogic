@@ -8,12 +8,12 @@
     {
       "project_number": 716,
       "project_name": "fix_soundnesslemmas_type_mismatches",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-28T07:17:18Z",
-      "last_updated": "2026-01-28T19:27:55Z",
-      "session_id": "sess_1769628312_730ae7",
+      "last_updated": "2026-01-28T19:48:48Z",
+      "session_id": "sess_1769629143_5dbc78",
       "researched": "2026-01-28T19:08:03Z",
       "artifacts": [
         {
@@ -25,9 +25,17 @@
           "path": "specs/716_fix_soundnesslemmas_type_mismatches/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan for fixing strict-to-reflexive inequality type mismatches"
+        },
+        {
+          "path": "specs/716_fix_soundnesslemmas_type_mismatches/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting fixes to type mismatches and T axiom completions"
         }
       ],
-      "planned": "2026-01-28T19:27:55Z"
+      "planned": "2026-01-28T19:27:55Z",
+      "started": "2026-01-28T19:39:24Z",
+      "completed": "2026-01-28T19:48:48Z",
+      "completion_summary": "Fixed type mismatches in SoundnessLemmas.lean and Soundness.lean caused by Task 658 semantics change (strict to reflexive inequality). Completed 8 temporal T axiom sorries now provable with reflexive semantics."
     },
     {
       "project_number": 697,

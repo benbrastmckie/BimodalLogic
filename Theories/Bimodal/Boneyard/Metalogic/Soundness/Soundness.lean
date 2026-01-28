@@ -354,12 +354,12 @@ theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.al
   intro T _ _ _ F M τ t
   unfold truth_at
   intro h_future
-  -- h_future : ∀ s, t < s → truth_at M τ s φ
-  -- Goal: ∀ s, t < s → (∀ r, s < r → truth_at M τ r φ)
+  -- h_future : ∀ s, t ≤ s → truth_at M τ s φ
+  -- Goal: ∀ s, t ≤ s → (∀ r, s ≤ r → truth_at M τ r φ)
   intro s hts r hsr
   -- Need to show: truth_at M τ r φ
-  -- We have: t < s and s < r, so t < r
-  have htr : t < r := lt_trans hts hsr
+  -- We have: t ≤ s and s ≤ r, so t ≤ r
+  have htr : t ≤ r := le_trans hts hsr
   exact h_future r htr
 
 /--
@@ -453,25 +453,48 @@ theorem temp_l_valid (φ : Formula) :
   simp only [Formula.always, Formula.and, Formula.neg, truth_at] at h_always
 
   -- Extract using classical logic (conjunction encoded as ¬(P → ¬Q))
+  -- With reflexive semantics: past uses ≤, future uses ≥
   have h1 :
-    (∀ (u : T), u < t → truth_at M τ u φ) ∧
+    (∀ (u : T), u ≤ t → truth_at M τ u φ) ∧
     ((truth_at M τ t φ →
-      (∀ (v : T), t < v → truth_at M τ v φ) → False) → False) :=
+      (∀ (v : T), t ≤ v → truth_at M τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
 
-  have h2 : truth_at M τ t φ ∧ (∀ (v : T), t < v → truth_at M τ v φ) :=
+  have h2 : truth_at M τ t φ ∧ (∀ (v : T), t ≤ v → truth_at M τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
 
-  -- Case split on whether r is before, at, or after t
-  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
-  · -- r < t: use h_past
-    exact h_past r h_lt
-  · -- r = t: use h_now
-    subst h_eq; exact h_now
+  -- With reflexive semantics, use le_or_lt for case analysis
+  rcases le_or_lt r t with h_le | h_gt
+  · -- r ≤ t: use h_past
+    exact h_past r h_le
   · -- t < r: use h_future
-    exact h_future r h_gt
+    exact h_future r (le_of_lt h_gt)
+
+/--
+Temporal T axiom (future) validity: `Gφ → φ` is valid in all task semantic models.
+
+With reflexive semantics, Gφ at t means ∀ s ≥ t, φ(s).
+Taking s = t gives φ(t) by le_refl.
+-/
+theorem temp_t_future_valid (φ : Formula) : ⊨ ((φ.all_future).imp φ) := by
+  intro T _ _ _ F M τ t
+  unfold truth_at
+  intro h_future
+  exact h_future t (le_refl t)
+
+/--
+Temporal T axiom (past) validity: `Hφ → φ` is valid in all task semantic models.
+
+With reflexive semantics, Hφ at t means ∀ s ≤ t, φ(s).
+Taking s = t gives φ(t) by le_refl.
+-/
+theorem temp_t_past_valid (φ : Formula) : ⊨ ((φ.all_past).imp φ) := by
+  intro T _ _ _ F M τ t
+  unfold truth_at
+  intro h_past
+  exact h_past t (le_refl t)
 
 /--
 MF axiom validity: `□φ → □(Fφ)` is valid in all task semantic models.
@@ -566,8 +589,8 @@ theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   | temp_4 ψ => exact temp_4_valid ψ
   | temp_a ψ => exact temp_a_valid ψ
   | temp_l ψ => exact temp_l_valid ψ
-  | temp_t_future ψ => sorry
-  | temp_t_past ψ => sorry
+  | temp_t_future ψ => exact temp_t_future_valid ψ
+  | temp_t_past ψ => exact temp_t_past_valid ψ
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
 
