@@ -29,12 +29,15 @@ technical_debt:
 
 ### 715. Fix /lake command execution
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Planned**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Plan**: [implementation-001.md](specs/715_fix_lake_command_execution/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/715_fix_lake_command_execution/summaries/implementation-summary-20260128.md)
+- **Result**: Added explicit EXECUTE NOW directives to /lake command following the pattern of working commands like /implement. Restructured Execution section into 4 clear steps with IMMEDIATELY CONTINUE transitions.
 
 **Description**: Fix /lake command to actually execute the skill-lake-repair instructions. Currently the command file describes the skill but lacks explicit 'EXECUTE NOW' directives like /implement has. Add frontmatter with allowed-tools and explicit execution instructions following the pattern of working commands.
 
@@ -169,17 +172,19 @@ technical_debt:
 
 ### 703. Fix Bimodal Typst formatting issues
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-28
 - **Started**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Dependencies**: 702
 - **Source**: Theories/Bimodal/typst/BimodalReference.typ (FIX: and NOTE: tags)
 - **Research**: [research-001.md](specs/703_fix_bimodal_typst_formatting_issues/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/703_fix_bimodal_typst_formatting_issues/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/703_fix_bimodal_typst_formatting_issues/summaries/implementation-summary-20260128.md)
 
 **Description**: Fix Typst formatting issues in BimodalReference.typ identified in FIX: and NOTE: tags. Tasks include: (1) Match margins to LogosReference.tex (line 16), (2) Set hyperlink colors to light blue (line 18), (3) Format website URL in texttt-equivalent (line 71), (4) Center Abstract header with spacing (line 93), (5) Format Contents header with spacing and style chapter/section entries appropriately (line 104).
 

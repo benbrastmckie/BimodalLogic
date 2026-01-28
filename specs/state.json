@@ -8,11 +8,11 @@
     {
       "project_number": 715,
       "project_name": "fix_lake_command_execution",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T07:30:00Z",
-      "last_updated": "2026-01-28T08:48:54Z",
+      "last_updated": "2026-01-28T08:55:00Z",
       "session_id": "sess_1769587800_lakecmd",
       "description": "Fix /lake command to actually execute the skill-lake-repair instructions. Currently the command file describes the skill but lacks explicit 'EXECUTE NOW' directives like /implement has. Add frontmatter with allowed-tools and explicit execution instructions following the pattern of working commands.",
       "artifacts": [
@@ -22,7 +22,10 @@
           "summary": "Plan to add execution directives to /lake command"
         }
       ],
-      "planned": "2026-01-28T07:30:00Z"
+      "planned": "2026-01-28T07:30:00Z",
+      "completed": "2026-01-28T08:55:00Z",
+      "completion_summary": "Added explicit EXECUTE NOW directives to /lake command following the pattern of working commands like /implement. Restructured Execution section into 4 clear steps with IMMEDIATELY CONTINUE transitions.",
+      "claudemd_suggestions": "none"
     },
     {
       "project_number": 705,
@@ -689,11 +692,11 @@
     {
       "project_number": 703,
       "project_name": "fix_bimodal_typst_formatting_issues",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T02:53:15Z",
-      "last_updated": "2026-01-28T07:08:22Z",
+      "last_updated": "2026-01-28T07:11:10Z",
       "session_id": "sess_1769584081_c84b16",
       "dependencies": [
         702
@@ -710,10 +713,22 @@
           "path": "specs/703_fix_bimodal_typst_formatting_issues/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for Typst formatting fixes (margins, abstract spacing, TOC styling, hyperlink color)"
+        },
+        {
+          "path": "specs/703_fix_bimodal_typst_formatting_issues/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        },
+        {
+          "path": "specs/703_fix_bimodal_typst_formatting_issues/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-01-28T06:54:42Z",
-      "started": "2026-01-28T07:08:22Z"
+      "started": "2026-01-28T07:08:22Z",
+      "completed": "2026-01-28T07:11:10Z",
+      "completion_summary": "Fixed Typst formatting issues in BimodalReference.typ: updated margins to 1.75in uniform, added Abstract header spacing, styled Contents header with centering, and changed hyperlink color to light blue."
     },
     {
       "project_number": 704,
