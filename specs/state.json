@@ -8,13 +8,21 @@
     {
       "project_number": 729,
       "project_name": "prevent_blocked_mcp_tool_calls_in_agents",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T23:03:26Z",
-      "last_updated": "2026-01-28T23:05:28Z",
+      "last_updated": "2026-01-28T23:08:08Z",
       "session_id": "sess_1769641507_62efb0",
-      "researching": "2026-01-28T23:05:28Z"
+      "researching": "2026-01-28T23:05:28Z",
+      "researched": "2026-01-28T23:08:08Z",
+      "artifacts": [
+        {
+          "path": "specs/729_prevent_blocked_mcp_tool_calls_in_agents/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of why blocked MCP tools are still being called, with 5 prioritized recommendations"
+        }
+      ]
     },
     {
       "project_number": 728,
