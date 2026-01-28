@@ -1,7 +1,7 @@
 # Implementation Plan: Task #628
 
 - **Task**: 628 - Prove semantic_truth_implies_truth_at (upward bridge)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Priority**: Low
 - **Dependencies**: None (related to Tasks 610, 627, but independent)
@@ -47,7 +47,7 @@ The research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Bounded Relevance Lemma [NOT STARTED]
+### Phase 1: Bounded Relevance Lemma [IN PROGRESS]
 
 **Goal**: Prove that truth at time 0 for a formula depends only on times within the temporal depth bound.
 

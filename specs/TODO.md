@@ -151,7 +151,7 @@ technical_debt:
 
 ### 694. Configure Neovim Typst bindings similar to LaTeX
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
@@ -258,15 +258,14 @@ technical_debt:
 ### 657. Prove seed consistency (temporal K distribution)
 - **Started**: 2026-01-25T20:53:16Z
 - **Effort**: 6-9 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
-- **Related**: Task 654
+- **Related**: Task 654, Task 693
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:338,354
 - **Research**: [research-001.md](specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/657_prove_seed_consistency_temporal_k_distribution/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260126.md](specs/657_prove_seed_consistency_temporal_k_distribution/summaries/implementation-summary-20260126.md)
+- **Plan**: [implementation-003.md](specs/657_prove_seed_consistency_temporal_k_distribution/plans/implementation-003.md)
 
 **Description**: Prove the seed consistency lemmas in IndexedMCSFamily.lean that require the temporal K distribution axiom. Lines 338 and 354 contain sorries for proving that seeds constructed during family building are consistent. This requires careful application of TM logic axioms, specifically the K distribution axiom for temporal operators. From review-20260121-task654.md medium priority recommendations.
 
@@ -335,7 +334,7 @@ technical_debt:
 ---
 
 ### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-20
