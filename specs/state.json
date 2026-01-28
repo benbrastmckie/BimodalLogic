@@ -6,6 +6,24 @@
   },
   "active_projects": [
     {
+      "project_number": 726,
+      "project_name": "move_essential_mcs_lemmas_to_core",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-28T22:45:08Z",
+      "last_updated": "2026-01-28T22:45:08Z"
+    },
+    {
+      "project_number": 727,
+      "project_name": "consolidate_set_lindenbaum",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-28T22:45:08Z",
+      "last_updated": "2026-01-28T22:45:08Z"
+    },
+    {
       "project_number": 725,
       "project_name": "update_docs_readme_and_rename_architecture",
       "status": "implementing",
@@ -674,7 +692,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 726,
+  "next_project_number": 728,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
