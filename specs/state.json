@@ -8,11 +8,11 @@
     {
       "project_number": 718,
       "project_name": "investigate_lean_lsp_mcp_hanging",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T17:16:42Z",
-      "last_updated": "2026-01-28T17:29:07Z",
+      "last_updated": "2026-01-28T17:31:26Z",
       "session_id": "sess_1769621329_9aaa2c",
       "researched": "2026-01-28T17:27:58Z",
       "artifacts": [
@@ -20,17 +20,33 @@
           "path": "specs/718_investigate_lean_lsp_mcp_hanging/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting 4 Claude Code issues, 2 lean-lsp-mcp issues, file-specific analysis, and recommendations"
+        },
+        {
+          "path": "specs/718_investigate_lean_lsp_mcp_hanging/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for documentation updates addressing MCP hanging issues"
+        },
+        {
+          "path": "specs/718_investigate_lean_lsp_mcp_hanging/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for documentation updates addressing MCP hanging issues"
+        },
+        {
+          "path": "specs/718_investigate_lean_lsp_mcp_hanging/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for documentation updates addressing MCP hanging issues"
         }
-      ]
+      ],
+      "planned": "2026-01-28T17:31:26Z"
     },
     {
       "project_number": 717,
       "project_name": "enhance_lake_create_tasks_for_unfixable_errors",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T09:10:00Z",
-      "last_updated": "2026-01-28T17:25:28Z",
+      "last_updated": "2026-01-28T17:31:18Z",
       "description": "Enhance the /lake command to automatically create tasks for unfixable build errors. When the repair loop completes with remaining unfixable errors, group errors by file and prompt user to create one task per affected file. Each task should link an error report artifact containing the error details.",
       "researched": "2026-01-28T17:14:04Z",
       "artifacts": [
@@ -45,7 +61,9 @@
           "summary": "4-phase plan: add STEP 5 to lake.md, update skill, document artifact format, verify"
         }
       ],
-      "planned": "2026-01-28T17:25:28Z"
+      "planned": "2026-01-28T17:25:28Z",
+      "session_id": "sess_1738092000_a7b3e2",
+      "started": "2026-01-28T17:31:18Z"
     },
     {
       "project_number": 716,

@@ -28,13 +28,15 @@ technical_debt:
 ## High Priority
 
 ### 718. Investigate lean-lsp MCP hanging on diagnostics/outline calls
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 2.5 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
+- **Planned**: 2026-01-28
 - **Research**: [research-001.md](specs/718_investigate_lean_lsp_mcp_hanging/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/718_investigate_lean_lsp_mcp_hanging/plans/implementation-001.md)
 
 **Description**: Investigate root cause of lean-lsp MCP hanging during Lean tasks. The operations that hang most often are `lean_diagnostic_messages` and `lean_file_outline` MCP tool calls. Example: Stage 4 & 5 operations reading SoundnessLemmas.lean hang indefinitely on diagnostics and file outline calls. Need to identify whether this is a lean-lsp server issue, MCP transport issue, or file-specific compilation bottleneck.
 
@@ -42,7 +44,7 @@ technical_debt:
 
 ### 717. Enhance /lake to create tasks for unfixable errors
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
