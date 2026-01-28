@@ -225,16 +225,16 @@ technical_debt:
 
 ### 681. Redesign construct_indexed_family with coherent approach
 - **Effort**: 8 hours (remaining)
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-25
 - **Researched**: 2026-01-29
-- **Planned**: 2026-01-28 (v5)
+- **Planned**: 2026-01-29 (v6)
 - **Started**: 2026-01-28
 - **Related**: Task 658
 - **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md), [research-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-002.md), [research-003.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-003.md), [research-004.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-004.md)
-- **Plan**: [implementation-005.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-005.md)
+- **Plan**: [implementation-006.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-006.md)
 - **Summary**: [implementation-summary-20260128-v3.md](specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128-v3.md)
 
 **Description**: Draw on research-004.md to move all proofs that are not required to the Bimodal/Boneyard/ with good documentation in comments, updating Theories/Bimodal/Metalogic/README.md and creating a Metalogic/Representation/README.md to accurately document the full structure of the representation theorem including what has been completed and what remains to be completed, where all unneeded elements should have been removed.
