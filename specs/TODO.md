@@ -27,21 +27,6 @@ technical_debt:
 
 ## High Priority
 
-### 712. Create /lean-research command with context:fork
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Related**: Task 619, 711
-- **Plan**: [implementation-001.md](specs/712_create_lean_research_command_with_context_fork/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/712_create_lean_research_command_with_context_fork/summaries/implementation-summary-20260128.md)
-
-**Description**: Create a /lean-research command similar to /research but which calls a copy of the lean-research skill called test-lean-research. This test skill uses context:fork instead of direct execution to isolate whether context:fork is working without making other changes to the production skills. This provides a controlled A/B test of context:fork functionality.
-
----
-
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHING]
@@ -220,7 +205,7 @@ technical_debt:
 
 ### 706. Update context files from Bimodal syntax terminology note
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -233,11 +218,13 @@ technical_debt:
 
 ### 705. Fix Bimodal introduction Typst issues
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
+- **Researched**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/chapters/00-introduction.typ (FIX: tags at lines 18, 78)
+- **Research**: [research-001.md](specs/705_fix_bimodal_introduction_typst_issues/reports/research-001.md)
 
 **Description**: Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document.
 
@@ -245,7 +232,7 @@ technical_debt:
 
 ### 704. Create typst agent and skill
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -257,7 +244,7 @@ technical_debt:
 
 ### 703. Fix Bimodal Typst formatting issues
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28

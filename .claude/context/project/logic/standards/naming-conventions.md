@@ -363,8 +363,10 @@ theorem rule1 (φ : Formula) : ⊢ □φ → ⊢ φ := by sorry
 | Variable | Usage | Example |
 |----------|-------|---------|
 | φ, ψ, χ | Primary formulas | `theorem example (φ ψ : Formula) : ...` |
-| p, q, r, s | Atomic propositions | `def p := Formula.atom "p"` |
+| p, q, r, s | Sentence letters | `def p := Formula.atom "p"` |
 | v₁, v₂, v₃ | Object language variables | `∀v₁.φ` (in syntax definitions) |
+
+**Terminology Note**: We use "sentence letters" instead of "propositional atoms" or "propositional variables" in documentation. The Lean constructor name `atom` remains for code compatibility.
 
 **Note**: The letters `x, y, z` are reserved for metalanguage durations (time intervals). Use `v₁, v₂, v₃, ...` (subscripted v) for object language variables to avoid ambiguity with temporal constructs.
 

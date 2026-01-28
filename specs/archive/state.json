@@ -1,9 +1,69 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-28T04:23:30Z",
+  "_last_updated": "2026-01-28T06:31:23Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 714,
+      "project_name": "refine_typst_styling_for_journal_aesthetic",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "completed": "2026-01-28T06:29:09Z",
+      "completion_summary": "Refined Typst styling to match austere journal aesthetic. Removed colored backgrounds from all theorem environments while preserving hyperlink colors. Added AMS-style typography with italic theorem bodies and upright definition bodies.",
+      "archived": "2026-01-28T06:31:23Z"
+    },
+    {
+      "project_number": 713,
+      "project_name": "create_lean_build_repair_skill_and_command",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "completed": "2026-01-28T06:20:59Z",
+      "completion_summary": "Created /lake command and skill-lake-repair direct execution skill for automated Lean build repair.",
+      "archived": "2026-01-28T06:31:23Z"
+    },
+    {
+      "project_number": 712,
+      "project_name": "create_lean_research_command_with_context_fork",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "completed": "2026-01-28T04:35:50Z",
+      "completion_summary": "Created test-lean-research skill with context:fork enabled and full Lean MCP toolset.",
+      "archived": "2026-01-28T06:31:23Z"
+    },
+    {
+      "project_number": 709,
+      "project_name": "research_professional_typst_templates_for_bimodal_documentation",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "completed": "2026-01-28T05:46:37Z",
+      "completion_summary": "Implemented professional LaTeX-like styling for Bimodal TM Logic Typst documentation.",
+      "archived": "2026-01-28T06:31:23Z"
+    },
+    {
+      "project_number": 708,
+      "project_name": "fix_bimodal_semantics_typst_formatting_issues",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "completed": "2026-01-28T06:17:24Z",
+      "completion_summary": "Fixed 3 Typst formatting issues: arrow overset positioning, italic iff, and timeshift stacking.",
+      "archived": "2026-01-28T06:31:23Z"
+    },
+    {
+      "project_number": 707,
+      "project_name": "replace_propositional_atom_with_sentence_letter_in_bimodal",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "completed": "2026-01-28T06:24:20Z",
+      "completion_summary": "Standardized terminology: replaced propositional atom with sentence letter in Bimodal documentation.",
+      "archived": "2026-01-28T06:31:23Z"
+    },
     {
       "project_number": 695,
       "project_name": "review_boneyard_completeness_remove_misleading_material",

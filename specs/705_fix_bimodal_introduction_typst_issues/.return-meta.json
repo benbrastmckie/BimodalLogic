@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-28T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "researched",
+  "summary": "Research completed on Typst CeTZ light cone drawing and show rule bold formatting",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/705_fix_bimodal_introduction_typst_issues/reports/research-001.md",
+      "summary": "Research on Typst light cone diagrams using CeTZ line() with close:true and fill, plus show rule for automatic TM bold formatting"
+    }
+  ],
+  "next_steps": "Run /plan 705 to create implementation plan",
   "metadata": {
     "session_id": "sess_1769581602_1fe230",
     "agent_type": "general-research-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 2
   }
 }

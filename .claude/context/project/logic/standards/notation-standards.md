@@ -31,12 +31,14 @@ This document defines the notation standards for modal and temporal logic in the
 
 | Operator | Symbol | LEAN Notation | Unicode | Description |
 |----------|--------|---------------|---------|-------------|
-| Atom | p, q, r | `Formula.atom "p"` | - | Propositional variables |
+| Sentence letter | p, q, r | `Formula.atom "p"` | - | Sentence letters (atomic formulas) |
 | Bottom | ⊥ | `Formula.bot` | U+22A5 | Falsity/contradiction |
 | Implication | → | `φ.imp ψ` | U+2192 | Material implication |
 | Negation | ¬ | `φ.neg` | U+00AC | Derived: `φ → ⊥` |
 | Conjunction | ∧ | `φ.and ψ` | U+2227 | Derived: `¬(φ → ¬ψ)` |
 | Disjunction | ∨ | `φ.or ψ` | U+2228 | Derived: `¬φ → ψ` |
+
+**Terminology Note**: We use "sentence letter" instead of "propositional atom" or "propositional variable". The Lean constructor name `atom` remains for code compatibility.
 
 **Naming Convention**: Use descriptive function names (`imp`, `neg`, `and`, `or`) with method syntax.
 
@@ -172,7 +174,7 @@ theorem example : ⊢ ((p → q) → ((q → r) → (p → r))) := by sorry
 | Type | Variables | Usage |
 |------|-----------|-------|
 | Formulas | φ, ψ, χ | Primary formula variables (phi, psi, chi) |
-| Atoms | p, q, r, s | Propositional atoms |
+| Sentence letters | p, q, r, s | Sentence letters (atomic formulas) |
 | Object Language Vars | v₁, v₂, v₃ | Variables in object language (bound by quantifiers) |
 | Contexts | Γ, Δ | Proof contexts (Gamma, Delta) |
 | Models | M, N | Task models |

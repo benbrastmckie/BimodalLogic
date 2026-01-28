@@ -2,204 +2,27 @@
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
     "total_tasks": 35,
-    "last_sync": "2026-01-28T04:23:35Z"
+    "last_sync": "2026-01-28T06:31:29Z"
   },
   "active_projects": [
     {
-      "project_number": 714,
-      "project_name": "refine_typst_styling_for_journal_aesthetic",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "description": "Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions.",
-      "created": "2026-01-28T05:50:33Z",
-      "last_updated": "2026-01-28T06:29:09Z",
-      "session_id": "sess_1769587000_a4c1b2",
-      "researched": "2026-01-28T05:57:57Z",
-      "artifacts": [
-        {
-          "path": "specs/714_refine_typst_styling_for_journal_aesthetic/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing current Typst styling vs. AMS/journal conventions, with specific recommendations for achieving austere academic aesthetic"
-        },
-        {
-          "path": "specs/714_refine_typst_styling_for_journal_aesthetic/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "5-phase plan (v002): remove fills, preserve link colors, verify typography, check all chapters, update docs"
-        },
-        {
-          "path": "specs/714_refine_typst_styling_for_journal_aesthetic/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-28T06:21:36Z",
-      "started": "2026-01-28T06:25:26Z",
-      "completed": "2026-01-28T06:29:09Z",
-      "completion_summary": "Refined Typst styling to match austere journal aesthetic. Removed colored backgrounds from all theorem environments while preserving hyperlink colors. Added AMS-style typography with italic theorem bodies and upright definition bodies."
-    },
-    {
-      "project_number": 713,
-      "project_name": "create_lean_build_repair_skill_and_command",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "description": "Create automated Lean build repair skill with /build-repair command that runs lake clean, lake build, and automatically fixes build errors (like missing pattern match cases) until build succeeds",
-      "created": "2026-01-28T05:38:11Z",
-      "last_updated": "2026-01-28T06:20:59Z",
-      "session_id": "sess_1769580910_8f8ee3",
-      "researched": "2026-01-28T05:55:40Z",
-      "artifacts": [
-        {
-          "path": "specs/713_create_lean_build_repair_skill_and_command/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report with skill architecture, error parsing patterns, auto-fix strategies, and implementation recommendations"
-        },
-        {
-          "path": "specs/713_create_lean_build_repair_skill_and_command/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for /lake command and skill-lake-repair direct execution skill"
-        },
-        {
-          "path": "specs/713_create_lean_build_repair_skill_and_command/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for /lake command and skill-lake-repair direct execution skill"
-        },
-        {
-          "path": "specs/713_create_lean_build_repair_skill_and_command/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for /lake command and skill-lake-repair direct execution skill"
-        },
-        {
-          "path": "specs/713_create_lean_build_repair_skill_and_command/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-28T06:00:32Z",
-      "started": "2026-01-28T06:15:30Z",
-      "completed": "2026-01-28T06:20:59Z",
-      "completion_summary": "Created /lake command and skill-lake-repair direct execution skill for automated Lean build repair. Implements auto-fix for missing pattern match cases, unused variables, and unused imports with iterative retry loop and dry-run support.",
-      "claudemd_suggestions": "Added /lake command to Command Workflows section, added skill-lake-repair to Skill-to-Agent Mapping table, created .claude/commands/lake.md and .claude/skills/skill-lake-repair/SKILL.md"
-    },
-    {
-      "project_number": 712,
-      "project_name": "create_lean_research_command_with_context_fork",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "description": "Create a /lean-research command similar to /research but which calls a copy of the lean-research skill called test-lean-research. This test skill uses context:fork instead of direct execution to isolate whether context:fork is working without making other changes to the production skills. This provides a controlled A/B test of context:fork functionality.",
-      "created": "2026-01-28T04:26:13Z",
-      "last_updated": "2026-01-28T04:35:50Z",
-      "related_tasks": [
-        619,
-        711
-      ],
-      "session_id": "sess_1769574759_1cdd24",
-      "planned": "2026-01-28T04:31:48Z",
-      "artifacts": [
-        {
-          "path": "specs/712_create_lean_research_command_with_context_fork/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase implementation plan for /lean-research command with context:fork A/B test"
-        },
-        {
-          "path": ".claude/skills/test-lean-research/SKILL.md",
-          "type": "implementation",
-          "summary": "Test skill with context:fork and full Lean MCP allowed-tools for context isolation testing"
-        },
-        {
-          "path": "specs/712_create_lean_research_command_with_context_fork/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with test instructions and expected outcomes"
-        }
-      ],
-      "started": "2026-01-28T04:32:56Z",
-      "completed": "2026-01-28T04:35:50Z",
-      "completion_summary": "Created test-lean-research skill with context:fork enabled and full Lean MCP toolset. Enables A/B testing of context isolation before potentially migrating production Lean skills.",
-      "claudemd_suggestions": "Added test-lean-research skill to .claude/skills/. Consider adding to Skill-to-Agent Mapping table in CLAUDE.md after testing confirms context:fork works."
-    },
-    {
-      "project_number": 708,
-      "project_name": "fix_bimodal_semantics_typst_formatting_issues",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-28T03:23:17Z",
-      "last_updated": "2026-01-28T06:17:24Z",
-      "session_id": "sess_1769580200_708imp",
-      "description": "Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol).",
-      "researched": "2026-01-28T05:56:33Z",
-      "artifacts": [
-        {
-          "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report on Typst formatting techniques for arrow annotations, italic text, and subscript/superscript stacking"
-        },
-        {
-          "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase plan to fix arrow annotation, italic iff, and subscript/superscript stacking using Typst limits() and math.italic()"
-        },
-        {
-          "path": "specs/708_fix_bimodal_semantics_typst_formatting_issues/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-28T05:59:48Z",
-      "started": "2026-01-28T06:14:38Z",
-      "completed": "2026-01-28T06:17:24Z",
-      "completion_summary": "Fixed 3 Typst formatting issues: arrow overset positioning with limits(), italic iff with math.italic(), and timeshift stacking with limits()."
-    },
-    {
-      "project_number": 709,
-      "project_name": "research_professional_typst_templates_for_bimodal_documentation",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-28T03:23:17Z",
-      "last_updated": "2026-01-28T05:46:37Z",
-      "session_id": "sess_1769578752_e57034",
-      "description": "Research professional Typst templates for math publications to improve the appearance of Bimodal TM logic documentation. The current styling is OK but should look more professional like LaTeX. Research online templates for professional math book publications to find ways to enhance the typeset appearance. Source: Theories/Bimodal/typst/chapters/02-semantics.typ:19",
-      "researched": "2026-01-28T04:37:40Z",
-      "artifacts": [
-        {
-          "path": "specs/709_research_professional_typst_templates_for_bimodal_documentation/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive research report covering Typst packages, LaTeX-like styling configuration, and specific fixes for issues flagged in source comments"
-        },
-        {
-          "path": "specs/709_research_professional_typst_templates_for_bimodal_documentation/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan covering link styling, TOC formatting, abstract header, notation commands, page layout, theorem environments, and final polish"
-        },
-        {
-          "path": "specs/709_research_professional_typst_templates_for_bimodal_documentation/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results for professional LaTeX-like Typst styling"
-        },
-        {
-          "path": "specs/709_research_professional_typst_templates_for_bimodal_documentation/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results for professional LaTeX-like Typst styling"
-        }
-      ],
-      "planned": "2026-01-28T04:48:18Z",
-      "started": "2026-01-28T05:39:32Z",
-      "completed": "2026-01-28T05:46:37Z",
-      "completion_summary": "Implemented professional LaTeX-like styling for Bimodal TM Logic Typst documentation, including thmbox theorem environments, URLblue hyperlinks, LaTeX-like page layout and typography, and notation commands for mathematical expressions."
-    },
-    {
       "project_number": 705,
       "project_name": "fix_bimodal_introduction_typst_issues",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T05:31:57Z",
-      "last_updated": "2026-01-28T06:26:57Z",
+      "last_updated": "2026-01-28T06:31:44Z",
       "session_id": "sess_1769581602_1fe230",
-      "description": "Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document."
+      "description": "Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document.",
+      "researched": "2026-01-28T06:31:44Z",
+      "artifacts": [
+        {
+          "path": "specs/705_fix_bimodal_introduction_typst_issues/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on Typst light cone diagrams using CeTZ line() with close:true and fill, plus show rule for automatic TM bold formatting"
+        }
+      ]
     },
     {
       "project_number": 697,
@@ -800,12 +623,12 @@
     {
       "project_number": 703,
       "project_name": "fix_bimodal_typst_formatting_issues",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T02:53:15Z",
-      "last_updated": "2026-01-28T02:53:15Z",
-      "session_id": "sess_1769568795_a2d87f",
+      "last_updated": "2026-01-28T06:30:40Z",
+      "session_id": "sess_1769581824_42c666",
       "dependencies": [
         702
       ],
@@ -814,23 +637,23 @@
     {
       "project_number": 704,
       "project_name": "create_typst_agent_and_skill",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T02:53:15Z",
-      "last_updated": "2026-01-28T02:53:15Z",
-      "session_id": "sess_1769568795_a2d87f",
+      "last_updated": "2026-01-28T06:30:05Z",
+      "session_id": "sess_1769581784_d41426",
       "description": "Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks."
     },
     {
       "project_number": 706,
       "project_name": "update_context_files_from_bimodal_syntax_terminology_note",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T05:35:29Z",
-      "last_updated": "2026-01-28T06:29:04Z",
-      "session_id": "sess_1769581580_ab0a25",
+      "last_updated": "2026-01-28T06:30:13Z",
+      "session_id": "sess_1769581797_3f34d4",
       "description": "Update .claude/context/ logic files to document the terminology preference 'sentence letter' instead of 'propositional atom'. This convention applies to ALL logic syntax (not just Bimodal TM), and should be included in relevant logic context files. Key terminology notes: (1) 'Sentence letter' is preferred over 'propositional atom' in all logic documentation; (2) In languages with predicates, a sentence letter is equivalent to a zero-place predicate.",
       "planned": "2026-01-28T06:29:04Z",
       "artifacts": [
@@ -839,37 +662,8 @@
           "type": "plan",
           "summary": "5-phase implementation plan for updating logic context files with sentence letter terminology"
         }
-      ]
-    },
-    {
-      "project_number": 707,
-      "project_name": "replace_propositional_atom_with_sentence_letter_in_bimodal",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-28T05:35:29Z",
-      "last_updated": "2026-01-28T06:24:20Z",
-      "session_id": "sess_1769581317_f9afd0",
-      "dependencies": [
-        706
       ],
-      "description": "Replace 'propositional atom' with 'sentence letter' throughout the Bimodal reference documentation. Source: Theories/Bimodal/typst/chapters/01-syntax.typ:20 NOTE tag requesting this terminology change. After completing the learn-it task (706) which documents the terminology preference, update all Bimodal documentation files to use 'sentence letter' instead of 'propositional atom' for consistency.",
-      "planned": "2026-01-28T06:20:47Z",
-      "artifacts": [
-        {
-          "path": "specs/707_replace_propositional_atom_with_sentence_letter_in_bimodal/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase plan to replace 'propositional atom' with 'sentence letter' in 2 Typst files"
-        },
-        {
-          "path": "specs/707_replace_propositional_atom_with_sentence_letter_in_bimodal/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "started": "2026-01-28T06:22:15Z",
-      "completed": "2026-01-28T06:24:20Z",
-      "completion_summary": "Standardized terminology in Bimodal documentation by replacing 'propositional atom' with 'sentence letter' in 01-syntax.typ and 04-metalogic.typ, aligning with existing usage in 02-semantics.typ."
+      "started": "2026-01-28T06:30:13Z"
     }
   ],
   "completed_projects": [
@@ -893,7 +687,7 @@
     }
   ],
   "task_counts": {
-    "active": 31,
+    "active": 29,
     "not_started": 9,
     "total": 31
   }
