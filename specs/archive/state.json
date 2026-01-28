@@ -8947,6 +8947,287 @@
       "completion_summary": "Updated 40 .claude/context/ files to apply documentation style learnings from ROAD_MAP.md: renamed 'Problem Solved' to 'Purpose' header in postflight-control.md, removed Version metadata fields from 39 files.",
       "claudemd_suggestions": "Modified .claude/context/ documentation files only (patterns, orchestration, architecture, standards, templates, workflows). No CLAUDE.md changes needed as these are subordinate context files, not the main project configuration.",
       "archived": "2026-01-28T04:23:30Z"
+    },
+    {
+      "project_number": 720,
+      "project_name": "avoid_hanging_lean_mcp_calls",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-28T17:55:09Z",
+      "last_updated": "2026-01-28T18:40:52Z",
+      "session_id": "sess_1769625462_041388",
+      "researched": "2026-01-28T18:00:06Z",
+      "artifacts": [
+        {
+          "path": "specs/720_avoid_hanging_lean_mcp_calls/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with file-by-file analysis and modification recommendations for avoiding hanging lean MCP calls"
+        },
+        {
+          "path": "specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase plan removing lean_diagnostic_messages and lean_file_outline from 4 skill/command files"
+        },
+        {
+          "path": "specs/720_avoid_hanging_lean_mcp_calls/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-28T18:34:34Z",
+      "started": "2026-01-28T18:38:04Z",
+      "completed": "2026-01-28T18:40:52Z",
+      "completion_summary": "Removed lean_diagnostic_messages and lean_file_outline from skill allowed-tools lists as temporary workaround for MCP hanging bug. Added workaround notes to 3 skill files referencing lean-lsp-mcp issues #118, #115.",
+      "claudemd_suggestions": "Updated skill-lean-implementation/SKILL.md, skill-lean-research/SKILL.md, skill-lake-repair/SKILL.md, and commands/lake.md",
+      "archived": "2026-01-28T19:06:51Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 719,
+      "project_name": "lake_task_redundancy_check",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-28T17:46:56Z",
+      "last_updated": "2026-01-28T18:01:39Z",
+      "session_id": "sess_1769623071_b40e60",
+      "description": "Enhance /lake task creation to check state.json for existing tasks before creating new ones. Prevents redundant task creation when a task already exists for a file with build errors.",
+      "researched": "2026-01-28T17:51:08Z",
+      "artifacts": [
+        {
+          "path": "specs/719_lake_task_redundancy_check/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting redundancy check pattern using jq query on active_projects for source/project_name matching"
+        },
+        {
+          "path": "specs/719_lake_task_redundancy_check/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting redundancy check pattern using jq query on active_projects for source/project_name matching"
+        },
+        {
+          "path": "specs/719_lake_task_redundancy_check/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for adding redundancy check to /lake task creation"
+        },
+        {
+          "path": "specs/719_lake_task_redundancy_check/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-28T17:55:12Z",
+      "started": "2026-01-28T17:58:12Z",
+      "completed": "2026-01-28T18:01:39Z",
+      "completion_summary": "Enhanced /lake task creation to check state.json for existing tasks before creating new ones. Added jq query checking source path and project_name pattern, skip tracking arrays, and updated final report to show skipped files.",
+      "claudemd_suggestions": "Updated commands/lake.md STEP 5C with redundancy check, updated skills/skill-lake-repair/SKILL.md Step 13 with redundancy check section",
+      "archived": "2026-01-28T19:06:51Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 717,
+      "project_name": "enhance_lake_create_tasks_for_unfixable_errors",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-28T09:10:00Z",
+      "last_updated": "2026-01-28T17:35:40Z",
+      "description": "Enhance the /lake command to automatically create tasks for unfixable build errors. When the repair loop completes with remaining unfixable errors, group errors by file and prompt user to create one task per affected file. Each task should link an error report artifact containing the error details.",
+      "researched": "2026-01-28T17:14:04Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/717_enhance_lake_create_tasks_for_unfixable_errors/reports/research-001.md",
+          "summary": "Research on task creation patterns, error report formats, and integration with /task workflow"
+        },
+        {
+          "type": "plan",
+          "path": "specs/717_enhance_lake_create_tasks_for_unfixable_errors/plans/implementation-001.md",
+          "summary": "4-phase plan: add STEP 5 to lake.md, update skill, document artifact format, verify"
+        },
+        {
+          "path": "specs/717_enhance_lake_create_tasks_for_unfixable_errors/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary for task 717"
+        }
+      ],
+      "planned": "2026-01-28T17:25:28Z",
+      "session_id": "sess_1738092000_a7b3e2",
+      "started": "2026-01-28T17:31:18Z",
+      "completed": "2026-01-28T17:35:40Z",
+      "completion_summary": "Implemented automatic task creation for unfixable build errors in /lake command. Added STEP 5 to lake.md, Step 13 to SKILL.md with detailed jq patterns and TODO.md update instructions, and documented error report artifact format.",
+      "claudemd_suggestions": "Added STEP 5 to commands/lake.md, added Step 13 to skills/skill-lake-repair/SKILL.md, added Error Reports section to rules/artifact-formats.md",
+      "archived": "2026-01-28T19:06:51Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 715,
+      "project_name": "fix_lake_command_execution",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-28T07:30:00Z",
+      "last_updated": "2026-01-28T08:55:00Z",
+      "session_id": "sess_1769587800_lakecmd",
+      "description": "Fix /lake command to actually execute the skill-lake-repair instructions. Currently the command file describes the skill but lacks explicit 'EXECUTE NOW' directives like /implement has. Add frontmatter with allowed-tools and explicit execution instructions following the pattern of working commands.",
+      "artifacts": [
+        {
+          "path": "specs/715_fix_lake_command_execution/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Plan to add execution directives to /lake command"
+        }
+      ],
+      "planned": "2026-01-28T07:30:00Z",
+      "completed": "2026-01-28T08:55:00Z",
+      "completion_summary": "Added explicit EXECUTE NOW directives to /lake command following the pattern of working commands like /implement. Restructured Execution section into 4 clear steps with IMMEDIATELY CONTINUE transitions.",
+      "claudemd_suggestions": "none",
+      "archived": "2026-01-28T19:06:51Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 705,
+      "project_name": "fix_bimodal_introduction_typst_issues",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-28T05:31:57Z",
+      "last_updated": "2026-01-28T06:57:40Z",
+      "session_id": "sess_1769583313_0c8fbc",
+      "description": "Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document.",
+      "researched": "2026-01-28T06:31:44Z",
+      "artifacts": [
+        {
+          "path": "specs/705_fix_bimodal_introduction_typst_issues/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on Typst light cone diagrams using CeTZ line() with close:true and fill, plus show rule for automatic TM bold formatting"
+        },
+        {
+          "path": "specs/705_fix_bimodal_introduction_typst_issues/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase plan for light cone diagram fix and bold TM formatting"
+        },
+        {
+          "path": "specs/705_fix_bimodal_introduction_typst_issues/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-28T06:54:12Z",
+      "started": "2026-01-28T06:55:31Z",
+      "completed": "2026-01-28T06:57:40Z",
+      "completion_summary": "Fixed light cone diagram in Bimodal introduction by replacing 6 incorrect line commands with 2 properly filled closed polygons. Added show rule in BimodalReference.typ to automatically bold TM throughout the document. Removed both FIX comments.",
+      "archived": "2026-01-28T19:06:51Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 702,
+      "project_name": "update_context_files_from_bimodal_typst_notes",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-28T02:53:15Z",
+      "last_updated": "2026-01-28T07:07:17Z",
+      "session_id": "sess_1769583900_7a2b3c",
+      "description": "Update .claude/context/ files based on NOTE: tag learnings from BimodalReference.typ. Key learnings: (1) Match margins between Typst and LaTeX documents (line 16), (2) Use light blue for hyperlinks and clickable references (line 18), (3) Use texttt-equivalent formatting for website URLs (line 71), (4) Center section headers with spacing (line 93). These patterns should be applied to context documentation formatting guides.",
+      "researched": "2026-01-28T06:57:30Z",
+      "artifacts": [
+        {
+          "path": "specs/702_update_context_files_from_bimodal_typst_notes/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 4 formatting patterns, gap analysis, and implementation recommendations"
+        },
+        {
+          "path": "specs/702_update_context_files_from_bimodal_typst_notes/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan covering style guide creation, README, index update, and verification"
+        },
+        {
+          "path": "specs/702_update_context_files_from_bimodal_typst_notes/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification of all four patterns"
+        }
+      ],
+      "planned": "2026-01-28T07:02:12Z",
+      "started": "2026-01-28T07:04:01Z",
+      "completed": "2026-01-28T07:07:17Z",
+      "completion_summary": "Updated context index with Typst section and added URL text formatting (raw()) pattern. All four patterns from BimodalReference.typ NOTE: tags are now documented in .claude/context/.",
+      "claudemd_suggestions": "Added Typst Context section to index.md, added URL formatting to typst-style-guide.md",
+      "archived": "2026-01-28T19:06:51Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 703,
+      "project_name": "fix_bimodal_typst_formatting_issues",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-28T02:53:15Z",
+      "last_updated": "2026-01-28T07:11:10Z",
+      "session_id": "sess_1769584081_c84b16",
+      "dependencies": [
+        702
+      ],
+      "description": "Fix Typst formatting issues in BimodalReference.typ identified in FIX: and NOTE: tags. Tasks include: (1) Match margins to LogosReference.tex (line 16), (2) Set hyperlink colors to light blue (line 18), (3) Format website URL in texttt-equivalent (line 71), (4) Center Abstract header with spacing (line 93), (5) Format Contents header with spacing and style chapter/section entries appropriately (line 104).",
+      "researched": "2026-01-28T06:35:10Z",
+      "artifacts": [
+        {
+          "path": "specs/703_fix_bimodal_typst_formatting_issues/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research report with Typst solutions for margin, link color, raw text, abstract header, and TOC styling to match LaTeX reference documents"
+        },
+        {
+          "path": "specs/703_fix_bimodal_typst_formatting_issues/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for Typst formatting fixes (margins, abstract spacing, TOC styling, hyperlink color)"
+        },
+        {
+          "path": "specs/703_fix_bimodal_typst_formatting_issues/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-28T06:54:42Z",
+      "started": "2026-01-28T07:08:22Z",
+      "completed": "2026-01-28T07:11:10Z",
+      "completion_summary": "Fixed Typst formatting issues in BimodalReference.typ: updated margins to 1.75in uniform, added Abstract header spacing, styled Contents header with centering, and changed hyperlink color to light blue.",
+      "archived": "2026-01-28T19:06:51Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 704,
+      "project_name": "create_typst_agent_and_skill",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-28T02:53:15Z",
+      "last_updated": "2026-01-28T07:08:40Z",
+      "session_id": "sess_1769583475_e73d68",
+      "description": "Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks.",
+      "researched": "2026-01-28T06:34:37Z",
+      "artifacts": [
+        {
+          "path": "specs/704_create_typst_agent_and_skill/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing existing LaTeX infrastructure, current Typst usage, and proposing parallel context files and agent/skill structure for Typst"
+        },
+        {
+          "path": "specs/704_create_typst_agent_and_skill/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for creating Typst agent and skill infrastructure"
+        },
+        {
+          "path": "specs/704_create_typst_agent_and_skill/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-28T06:56:21Z",
+      "started": "2026-01-28T06:58:19Z",
+      "completed": "2026-01-28T07:08:40Z",
+      "completion_summary": "Created complete Typst skill/agent infrastructure: 8 context files from project patterns, implementation agent with 8-stage flow and single-pass compilation, thin-wrapper skill with postflight handling, and CLAUDE.md/index.md updates for typst language routing.",
+      "claudemd_suggestions": "Added typst row to Language-Based Routing table, added skill-typst-implementation to Skill-to-Agent Mapping table, added Typst Context section to context/index.md",
+      "archived": "2026-01-28T19:06:51Z",
+      "source": "archival"
     }
   ]
 }

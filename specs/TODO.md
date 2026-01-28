@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 22
-  completed: 276
-  in_progress: 0
-  not_started: 25
+  active: 25
+  completed: 284
+  in_progress: 4
+  not_started: 8
   abandoned: 21
-  total: 302
+  total: 310
 priority_distribution:
   critical: 0
   high: 2
@@ -27,71 +27,6 @@ technical_debt:
 
 ## High Priority
 
-### 720. Avoid hanging lean-lsp MCP calls in lean skills
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/720_avoid_hanging_lean_mcp_calls/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/720_avoid_hanging_lean_mcp_calls/summaries/implementation-summary-20260128.md)
-
-**Description**: The lean-lsp MCP is hanging on diagnostics/outline calls due to a bug. Until the bug is fixed, modify the lean skills to avoid making such calls (lean_diagnostic_messages, lean_file_outline), while otherwise maintaining their existing functionality. This is a temporary workaround until the upstream MCP bug is resolved.
-
----
-
-### 719. Add redundancy check to /lake task creation
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/719_lake_task_redundancy_check/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/719_lake_task_redundancy_check/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/719_lake_task_redundancy_check/summaries/implementation-summary-20260128.md)
-
-**Description**: Enhance /lake command's task creation workflow (STEP 5 / Step 13) to check state.json for existing active tasks before creating new ones. When unfixable errors are detected, the command should:
-1. Read active_projects from state.json
-2. For each file with errors, check if an existing task already covers that file (via `source` field match or `project_name` containing the file basename)
-3. Skip task creation for files with existing tasks
-4. Report which files were skipped and link to existing tasks
-
-This prevents redundant task creation when running /lake on a codebase that already has fix tasks tracked.
-
----
-
-### 717. Enhance /lake to create tasks for unfixable errors
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/717_enhance_lake_create_tasks_for_unfixable_errors/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/717_enhance_lake_create_tasks_for_unfixable_errors/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/717_enhance_lake_create_tasks_for_unfixable_errors/summaries/implementation-summary-20260128.md)
-
-**Description**: Enhance the /lake command to automatically create tasks for unfixable build errors. When the repair loop completes with remaining unfixable errors, group errors by file and prompt user to create one task per affected file. Each task should link an error report artifact containing the error details. This automates the current manual workflow of creating fix tasks after a failed build.
-
-**Scope**:
-- Add STEP 5 to lake.md for task creation workflow with user confirmation
-- Update skill-lake-repair/SKILL.md with error grouping and report generation logic
-- Create error report artifact format: `specs/{N}_{SLUG}/reports/error-report-{DATE}.md`
-- Integrate with existing /task creation pattern (updating TODO.md + state.json)
-
----
-
 ### 716. Fix SoundnessLemmas type mismatches
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHING]
@@ -101,22 +36,6 @@ This prevents redundant task creation when running /lake on a codebase that alre
 - **Source**: Theories/Bimodal/Boneyard/Metalogic/Soundness/SoundnessLemmas.lean
 
 **Description**: Fix type mismatches in SoundnessLemmas temporal logic proofs. 7 errors involving `<` vs `≤` inequality operators and `truth_at` applications at lines 263, 287, 288, 339, 363, 707, 738. The errors stem from mismatches between strict less-than (`<`) and less-than-or-equal (`≤`) in temporal operator definitions.
-
----
-
-### 715. Fix /lake command execution
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Plan**: [implementation-001.md](specs/715_fix_lake_command_execution/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/715_fix_lake_command_execution/summaries/implementation-summary-20260128.md)
-- **Result**: Added explicit EXECUTE NOW directives to /lake command following the pattern of working commands like /implement. Restructured Execution section into 4 clear steps with IMMEDIATELY CONTINUE transitions.
-
-**Description**: Fix /lake command to actually execute the skill-lake-repair instructions. Currently the command file describes the skill but lacks explicit 'EXECUTE NOW' directives like /implement has. Add frontmatter with allowed-tools and explicit execution instructions following the pattern of working commands.
 
 ---
 
@@ -208,83 +127,6 @@ This prevents redundant task creation when running /lake on a codebase that alre
 ---
 
 ## Medium Priority
-
-### 705. Fix Bimodal introduction Typst issues
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Source**: Theories/Bimodal/typst/chapters/00-introduction.typ (FIX: tags at lines 18, 78)
-- **Research**: [research-001.md](specs/705_fix_bimodal_introduction_typst_issues/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/705_fix_bimodal_introduction_typst_issues/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/705_fix_bimodal_introduction_typst_issues/summaries/implementation-summary-20260128.md)
-
-**Description**: Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document.
-
----
-
-### 704. Create typst agent and skill
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Source**: Theories/Bimodal/typst/BimodalReference.typ:14
-- **Research**: [research-001.md](specs/704_create_typst_agent_and_skill/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/704_create_typst_agent_and_skill/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/704_create_typst_agent_and_skill/summaries/implementation-summary-20260128.md)
-
-**Description**: Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks.
-
----
-
-### 703. Fix Bimodal Typst formatting issues
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Dependencies**: 702
-- **Source**: Theories/Bimodal/typst/BimodalReference.typ (FIX: and NOTE: tags)
-- **Research**: [research-001.md](specs/703_fix_bimodal_typst_formatting_issues/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/703_fix_bimodal_typst_formatting_issues/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/703_fix_bimodal_typst_formatting_issues/summaries/implementation-summary-20260128.md)
-
-**Description**: Fix Typst formatting issues in BimodalReference.typ identified in FIX: and NOTE: tags. Tasks include: (1) Match margins to LogosReference.tex (line 16), (2) Set hyperlink colors to light blue (line 18), (3) Format website URL in texttt-equivalent (line 71), (4) Center Abstract header with spacing (line 93), (5) Format Contents header with spacing and style chapter/section entries appropriately (line 104).
-
----
-
-### 702. Update context files from Bimodal Typst notes
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Source**: Theories/Bimodal/typst/BimodalReference.typ (NOTE: tags)
-- **Research**: [research-001.md](specs/702_update_context_files_from_bimodal_typst_notes/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/702_update_context_files_from_bimodal_typst_notes/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/702_update_context_files_from_bimodal_typst_notes/summaries/implementation-summary-20260128.md)
-
-**Description**: Update .claude/context/ files based on NOTE: tag learnings from BimodalReference.typ. Key learnings: (1) Match margins between Typst and LaTeX documents (line 16), (2) Use light blue for hyperlinks and clickable references (line 18), (3) Use texttt-equivalent formatting for website URLs (line 71), (4) Center section headers with spacing (line 93). These patterns should be applied to context documentation formatting guides.
-
----
 
 ### 700. Research algebraic representation theorem proof
 - **Effort**: 6-8 hours
