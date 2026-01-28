@@ -1,7 +1,7 @@
 # Implementation Plan: Task #705
 
 - **Task**: 705 - Fix Bimodal Introduction Typst Issues
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.75 hours
 - **Priority**: medium
 - **Dependencies**: None
@@ -101,7 +101,7 @@ line(
 
 ---
 
-### Phase 2: Add Bold TM Show Rule [IN PROGRESS]
+### Phase 2: Add Bold TM Show Rule [COMPLETED]
 
 **Goal**: Automatically bold all "TM" occurrences throughout the document
 

@@ -118,16 +118,18 @@ technical_debt:
 
 ### 705. Fix Bimodal introduction Typst issues
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-28
 - **Started**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/chapters/00-introduction.typ (FIX: tags at lines 18, 78)
 - **Research**: [research-001.md](specs/705_fix_bimodal_introduction_typst_issues/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/705_fix_bimodal_introduction_typst_issues/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/705_fix_bimodal_introduction_typst_issues/summaries/implementation-summary-20260128.md)
 
 **Description**: Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document.
 
@@ -168,11 +170,13 @@ technical_debt:
 
 ### 702. Update context files from Bimodal Typst notes
 - **Effort**: 0.5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
+- **Researched**: 2026-01-28
 - **Source**: Theories/Bimodal/typst/BimodalReference.typ (NOTE: tags)
+- **Research**: [research-001.md](specs/702_update_context_files_from_bimodal_typst_notes/reports/research-001.md)
 
 **Description**: Update .claude/context/ files based on NOTE: tag learnings from BimodalReference.typ. Key learnings: (1) Match margins between Typst and LaTeX documents (line 16), (2) Use light blue for hyperlinks and clickable references (line 18), (3) Use texttt-equivalent formatting for website URLs (line 71), (4) Center section headers with spacing (line 93). These patterns should be applied to context documentation formatting guides.
 

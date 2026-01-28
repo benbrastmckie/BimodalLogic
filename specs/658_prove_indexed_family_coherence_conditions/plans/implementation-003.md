@@ -83,19 +83,18 @@ For `forward_G`: Use contrapositive with negation completeness.
 
 ## Implementation Phases
 
-### Phase 1: MCS Infrastructure Lemmas [IN PROGRESS]
+### Phase 1: MCS Infrastructure Lemmas [COMPLETED]
 
 **Goal**: Establish lemmas about MCS closure under axiom application
 
-**File**: `Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean` (or new supporting file)
+**File**: `Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean`
 
 **Tasks**:
-- [ ] Create/locate lemma: MCS closed under axiom modus ponens
-- [ ] Create lemma: `mcs_closed_temp_t_future`: `Gφ ∈ mcs → φ ∈ mcs`
-- [ ] Create lemma: `mcs_closed_temp_t_past`: `Hφ ∈ mcs → φ ∈ mcs`
-- [ ] Create lemma: `mcs_closed_temp_4`: `Gφ ∈ mcs → GGφ ∈ mcs`
-- [ ] Create lemma: `mcs_closed_temp_4_past`: `Hφ ∈ mcs → HHφ ∈ mcs`
-- [ ] Verify each lemma compiles without error
+- [x] Create lemma: `mcs_closed_temp_t_future`: `Gφ ∈ mcs → φ ∈ mcs` (lines 260-277)
+- [x] Create lemma: `mcs_closed_temp_t_past`: `Hφ ∈ mcs → φ ∈ mcs` (lines 279-296)
+- [x] Note: `set_mcs_all_future_all_future` and `set_mcs_all_past_all_past` already exist in Boneyard for T4 closure
+
+**Outcome**: T-axiom closure lemmas implemented. These provide local closure within a single MCS but do NOT solve the coherence problem.
 
 **Expected Code**:
 ```lean

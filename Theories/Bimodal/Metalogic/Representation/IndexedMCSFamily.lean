@@ -607,44 +607,23 @@ noncomputable def construct_indexed_family
   -- Forward G coherence: G phi ∈ mcs(t) → phi ∈ mcs(t') for t < t'
   forward_G := by
     intro t t' phi hlt hG
-    -- Strategy: Case analysis on the origin time t
-    -- Key insight: All MCS derive from seeds rooted in Gamma
-    by_cases ht_zero : t = 0
-    · -- Case 1: t = 0 (origin time)
-      -- mcs(0) = extendToMCS(Gamma), so mcs(0) ⊇ Gamma
-      -- If G phi ∈ mcs(0), we consider two subcases
-      rw [ht_zero] at hG
-      by_cases hG_in_Gamma : Formula.all_future phi ∈ Gamma
-      · -- Subcase 1a: G phi ∈ Gamma
-        -- Then phi ∈ future_seed(t') for t' > 0
-        have ht'_pos : (0 : D) < t' := by rw [← ht_zero]; exact hlt
-        -- phi ∈ future_seed(t')
-        have h_in_seed : phi ∈ future_seed D Gamma t' := by
-          simp only [future_seed, ht'_pos, ↓reduceIte, Set.mem_setOf_eq]
-          exact hG_in_Gamma
-        -- future_seed(t') ⊆ time_seed(t')
-        have h_seed_eq : time_seed D Gamma t' = future_seed D Gamma t' := by
-          simp only [time_seed]
-          split_ifs with h0 hpos
-          · -- t' = 0, but we have t' > 0, contradiction
-            omega
-          · rfl
-          · -- t' < 0, but we have t' > 0, contradiction
-            omega
-        rw [← h_seed_eq] at h_in_seed
-        -- time_seed ⊆ mcs by Lindenbaum
-        exact mcs_at_time_contains_seed D Gamma h_mcs h_no_G_bot h_no_H_bot t' h_in_seed
-      · -- Subcase 1b: G phi ∉ Gamma (added by Lindenbaum)
-        -- Use T4: G phi → GG phi, so GG phi ∈ mcs(0)
-        have hGG : (Formula.all_future phi).all_future ∈ mcs_at_time D Gamma h_mcs h_no_G_bot h_no_H_bot 0 := by
-          exact Bimodal.Boneyard.Metalogic.set_mcs_all_future_all_future
-            (mcs_at_time_is_mcs D Gamma h_mcs h_no_G_bot h_no_H_bot 0) hG
-        -- But GG phi ∈ mcs(0) still doesn't directly give us phi ∈ mcs(t')
-        -- We need a different approach: use contrapositive with negation completeness
-        sorry
-    · -- Case 2: t ≠ 0
-      -- Similar analysis needed for t > 0 and t < 0 cases
-      sorry
+    -- **Strategy with Reflexive Semantics + T Axioms (Task #658)**:
+    -- 1. From G phi ∈ mcs(t), derive phi ∈ mcs(t) using T axiom temp_t_future
+    -- 2. However, mcs(t) and mcs(t') are independent Lindenbaum extensions
+    -- 3. Need infrastructure to propagate formulas between time points
+    --
+    -- **Required Lemmas** (not yet implemented):
+    -- - seed_coherence: Show that reflexive semantics ensures seeds are connected
+    -- - mcs_propagation: Formulas in mcs(t) propagate to mcs(t') via axioms
+    --
+    -- **Note**: With current seed construction (based only on Gamma at origin),
+    -- this requires either:
+    --   (a) Modifying seed to be recursive/dependent on previous times
+    --   (b) Proving that independent Lindenbaum extensions satisfy coherence
+    --
+    -- **Current Status**: Blocked pending infrastructure development.
+    -- The T axioms are necessary but not sufficient with the current construction.
+    sorry
 
   -- Backward H coherence: H phi ∈ mcs(t) → phi ∈ mcs(t') for t' < t
   backward_H := by

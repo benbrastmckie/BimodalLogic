@@ -8,11 +8,11 @@
     {
       "project_number": 705,
       "project_name": "fix_bimodal_introduction_typst_issues",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-28T05:31:57Z",
-      "last_updated": "2026-01-28T06:55:31Z",
+      "last_updated": "2026-01-28T06:57:40Z",
       "session_id": "sess_1769583313_0c8fbc",
       "description": "Fix Typst issues in Theories/Bimodal/typst/chapters/00-introduction.typ identified in FIX: tags. Tasks include: (1) Line 18: Research how to draw a double light cone (looking forwards and backwards) from a point on a curve to fix the diagram. (2) Line 78: Ensure TM always appears in bold throughout the document.",
       "researched": "2026-01-28T06:31:44Z",
@@ -29,7 +29,9 @@
         }
       ],
       "planned": "2026-01-28T06:54:12Z",
-      "started": "2026-01-28T06:55:31Z"
+      "started": "2026-01-28T06:55:31Z",
+      "completed": "2026-01-28T06:57:40Z",
+      "completion_summary": "Fixed light cone diagram in Bimodal introduction by replacing 6 incorrect line commands with 2 properly filled closed polygons. Added show rule in BimodalReference.typ to automatically bold TM throughout the document. Removed both FIX comments."
     },
     {
       "project_number": 697,
@@ -619,13 +621,21 @@
     {
       "project_number": 702,
       "project_name": "update_context_files_from_bimodal_typst_notes",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T02:53:15Z",
-      "last_updated": "2026-01-28T06:54:48Z",
+      "last_updated": "2026-01-28T06:57:30Z",
       "session_id": "sess_1769583270_479f83",
-      "description": "Update .claude/context/ files based on NOTE: tag learnings from BimodalReference.typ. Key learnings: (1) Match margins between Typst and LaTeX documents (line 16), (2) Use light blue for hyperlinks and clickable references (line 18), (3) Use texttt-equivalent formatting for website URLs (line 71), (4) Center section headers with spacing (line 93). These patterns should be applied to context documentation formatting guides."
+      "description": "Update .claude/context/ files based on NOTE: tag learnings from BimodalReference.typ. Key learnings: (1) Match margins between Typst and LaTeX documents (line 16), (2) Use light blue for hyperlinks and clickable references (line 18), (3) Use texttt-equivalent formatting for website URLs (line 71), (4) Center section headers with spacing (line 93). These patterns should be applied to context documentation formatting guides.",
+      "researched": "2026-01-28T06:57:30Z",
+      "artifacts": [
+        {
+          "path": "specs/702_update_context_files_from_bimodal_typst_notes/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 4 formatting patterns, gap analysis, and implementation recommendations"
+        }
+      ]
     },
     {
       "project_number": 703,
