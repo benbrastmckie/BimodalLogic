@@ -2,18 +2,18 @@
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
     "total_tasks": 35,
-    "last_sync": "2026-01-28T19:06:57Z"
+    "last_sync": "2026-01-28T22:43:50Z"
   },
   "active_projects": [
     {
       "project_number": 725,
       "project_name": "update_docs_readme_and_rename_architecture",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:28:14Z",
-      "last_updated": "2026-01-28T22:34:21Z",
-      "session_id": "sess_1769639479_ed37a4",
+      "last_updated": "2026-01-28T22:40:15Z",
+      "session_id": "sess_1769639997_99ffa7",
       "planned": "2026-01-28T22:34:21Z",
       "artifacts": [
         {
@@ -21,165 +21,8 @@
           "type": "plan",
           "summary": "4-phase implementation plan for updating docs README and renaming ARCHITECTURE.md"
         }
-      ]
-    },
-    {
-      "project_number": 724,
-      "project_name": "investigate_revise_command_errors_design_solution",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-28T22:03:21Z",
-      "last_updated": "2026-01-28T22:36:48Z",
-      "session_id": "sess_1769639497_e9fdaa",
-      "researched": "2026-01-28T22:09:21Z",
-      "artifacts": [
-        {
-          "path": "specs/724_investigate_revise_command_errors_design_solution/reports/research-001.md",
-          "type": "research",
-          "summary": "Identified Claude Code Bash tool escaping of \\!= as root cause; catalogued 15+ affected files; recommended shell script encapsulation pattern"
-        },
-        {
-          "path": "specs/724_investigate_revise_command_errors_design_solution/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase plan to fix jq \\!= escaping issues via shell script encapsulation across 1 command, 7 skills, and 4 documentation files"
-        },
-        {
-          "path": "specs/724_investigate_revise_command_errors_design_solution/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting all file changes and verification results"
-        }
       ],
-      "planned": "2026-01-28T22:30:41Z",
-      "started": "2026-01-28T22:31:59Z",
-      "completed": "2026-01-28T22:36:48Z",
-      "completion_summary": "Fixed Claude Code Issue #1132 jq escaping bug across all skill and command files. Replaced 8 instances of select(.type \\!= \"X\") with select(.type == \"X\" | not) pattern, updated documentation with safe pattern guidance, and added jq Command Safety section to CLAUDE.md.",
-      "claudemd_suggestions": "Added jq Command Safety section to CLAUDE.md with safe pattern quick reference. Updated jq-escaping-workarounds.md with \\!= escaping documentation, inline-status-update.md with warning note, and error-handling.md jq_parse_failure section."
-    },
-    {
-      "project_number": 723,
-      "project_name": "update_claude_documentation",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-28T20:22:14Z",
-      "last_updated": "2026-01-28T22:14:14Z",
-      "session_id": "sess_1769638125_1c9be6",
-      "researched": "2026-01-28T21:59:17Z",
-      "artifacts": [
-        {
-          "path": "specs/723_update_claude_documentation/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing .claude/ documentation structure, cataloging all 13 commands, identifying gaps and redundancies, and providing recommendations for consolidation"
-        },
-        {
-          "path": "specs/723_update_claude_documentation/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 5-phase plan: streamline CLAUDE.md as agent context, keep ARCHITECTURE.md as user docs"
-        },
-        {
-          "path": "specs/723_update_claude_documentation/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-28T22:07:17Z",
-      "started": "2026-01-28T22:09:04Z",
-      "completed": "2026-01-28T22:14:14Z",
-      "completion_summary": "Streamlined CLAUDE.md to 176 lines (from ~500) with essential agent context only. Enhanced ARCHITECTURE.md as comprehensive user documentation with table of contents, session maintenance, and MCP configuration sections.",
-      "claudemd_suggestions": "Significant restructuring of CLAUDE.md - reduced by 65% keeping only essential agent context. ARCHITECTURE.md enhanced with moved content. All changes already applied during implementation."
-    },
-    {
-      "project_number": 722,
-      "project_name": "remove_bimodal_definition_redundancies",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-28T20:18:45Z",
-      "last_updated": "2026-01-28T22:36:38Z",
-      "session_id": "sess_1769639301_c6ebca",
-      "researched": "2026-01-28T22:02:19Z",
-      "artifacts": [
-        {
-          "path": "specs/722_remove_bimodal_definition_redundancies/reports/research-001.md",
-          "type": "research",
-          "summary": "Analysis of redundant MCS definitions across Boneyard directories with consolidation plan"
-        },
-        {
-          "path": "specs/722_remove_bimodal_definition_redundancies/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for removing redundant MCS definitions from Bimodal project"
-        },
-        {
-          "path": "specs/722_remove_bimodal_definition_redundancies/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting namespace conflict resolution via fully qualified names"
-        }
-      ],
-      "planned": "2026-01-28T22:09:26Z",
-      "started": "2026-01-28T22:28:46Z",
-      "completed": "2026-01-28T22:36:38Z",
-      "completion_summary": "Eliminated namespace conflicts for MCS definitions in active Metalogic code by removing hiding clauses and using fully qualified names for Boneyard helper lemmas. Active code uses canonical definitions via Core re-exports. Build passes with 977 jobs."
-    },
-    {
-      "project_number": 721,
-      "project_name": "prevent_mcp_tool_hanging_multi_layer_defense",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-28T19:58:30Z",
-      "last_updated": "2026-01-28T20:08:09Z",
-      "session_id": "sess_1769630413_f532f6",
-      "description": "Implement multi-layer defense to prevent hanging MCP tool calls (lean_diagnostic_messages, lean_file_outline) at both primary agent and skill levels. Minimal, focused additions only.",
-      "planned": "2026-01-28T19:59:17Z",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": "specs/721_prevent_mcp_tool_hanging_multi_layer_defense/plans/implementation-001.md",
-          "summary": "4-phase plan for multi-layer MCP tool blocking defense"
-        },
-        {
-          "path": "specs/721_prevent_mcp_tool_hanging_multi_layer_defense/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results and full file change list"
-        }
-      ],
-      "started": "2026-01-28T20:00:36Z",
-      "completed": "2026-01-28T20:08:09Z",
-      "completion_summary": "Added 'Blocked MCP Tools' section to CLAUDE.md, MCP Safety warnings to 3 command files, blocked tools table to mcp-tools-guide.md, and replaced instructional uses in lean4.md, skills, and context files. All 4 phases executed with verification showing no instructional references to blocked tools remain.",
-      "claudemd_suggestions": "Added 'Blocked MCP Tools' subsection in Lean 4 Integration section of .claude/CLAUDE.md, updated Language-Based Routing table, removed blocked tool from MCP Tools list"
-    },
-    {
-      "project_number": 716,
-      "project_name": "fix_soundnesslemmas_type_mismatches",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-28T07:17:18Z",
-      "last_updated": "2026-01-28T19:48:48Z",
-      "session_id": "sess_1769629143_5dbc78",
-      "researched": "2026-01-28T19:08:03Z",
-      "artifacts": [
-        {
-          "path": "specs/716_fix_soundnesslemmas_type_mismatches/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report identifying cause of type mismatches (task 658 semantics change) and fix strategies for all 7 errors"
-        },
-        {
-          "path": "specs/716_fix_soundnesslemmas_type_mismatches/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for fixing strict-to-reflexive inequality type mismatches"
-        },
-        {
-          "path": "specs/716_fix_soundnesslemmas_type_mismatches/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting fixes to type mismatches and T axiom completions"
-        }
-      ],
-      "planned": "2026-01-28T19:27:55Z",
-      "started": "2026-01-28T19:39:24Z",
-      "completed": "2026-01-28T19:48:48Z",
-      "completion_summary": "Fixed type mismatches in SoundnessLemmas.lean and Soundness.lean caused by Task 658 semantics change (strict to reflexive inequality). Completed 8 temporal T axiom sorries now provable with reflexive semantics."
+      "started": "2026-01-28T22:40:15Z"
     },
     {
       "project_number": 697,
@@ -194,18 +37,18 @@
     {
       "project_number": 681,
       "project_name": "redesign_construct_indexed_family_coherent_approach",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-25T22:20:28Z",
-      "last_updated": "2026-01-28T22:33:11Z",
+      "last_updated": "2026-01-28T22:43:55Z",
       "related_tasks": [
         658
       ],
       "description": "Overcome the blocked status of 658 by redesigning construct_indexed_family using a coherent construction approach (similar to Boneyards canonical_task_rel pattern), or research alternative approaches.",
       "researching": "2026-01-25T22:22:57Z",
-      "session_id": "sess_1769639105_6dd7f4",
-      "researched": "2026-01-28T17:36:17Z",
+      "session_id": "sess_1769639981_d41809",
+      "researched": "2026-01-28T22:43:55Z",
       "artifacts": [
         {
           "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md",
@@ -251,6 +94,11 @@
           "path": "specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128-v3.md",
           "type": "summary",
           "summary": "Implementation v3: Added backward chain lemmas, proved backward_G Case 1 and backward_H Case 4, documented remaining gaps"
+        },
+        {
+          "path": "specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-003.md",
+          "type": "research",
+          "summary": "Methods for eliminating proof gaps; explains 'sufficient infrastructure for completeness'; recommends accepting Boneyard-matching gaps"
         }
       ],
       "planning": "2026-01-25T22:30:14Z",

@@ -27,12 +27,8 @@ This directory contains the documentation for the `.claude/` agent system. The s
 │   ├── README.md               # Template overview
 │   ├── command-template.md     # Command template
 │   └── agent-template.md       # Agent template
-├── architecture/               # Architecture documentation
-│   └── system-overview.md      # Three-layer architecture overview
-├── troubleshooting/            # Problem resolution
-│   └── status-conflicts.md     # Status sync issues
-└── migrations/                 # Migration guides
-    └── 001-openagents-migration/
+└── architecture/               # Architecture documentation
+    └── system-overview.md      # Three-layer architecture overview
 ```
 
 ---
@@ -71,12 +67,6 @@ The `.claude/` directory implements a three-layer architecture: Commands, Skills
 ## Templates
 
 Reusable templates for creating new system components are available in [templates/](templates/). See [templates/README.md](templates/README.md) for an overview of available templates and usage instructions.
-
----
-
-## Troubleshooting
-
-- [Status Conflicts](troubleshooting/status-conflicts.md) - Resolve TODO.md and state.json synchronization issues
 
 ---
 

@@ -152,7 +152,7 @@ technical_debt:
 
 ### 725. Update docs README files and rename ARCHITECTURE.md
 - **Effort**: 1.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28

@@ -1,9 +1,177 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-28T06:34:06Z",
+  "_last_updated": "2026-01-28T22:43:50Z",
   "archived_projects": [],
   "completed_projects": [
+    {
+      "project_number": 724,
+      "project_name": "investigate_revise_command_errors_design_solution",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-28T22:03:21Z",
+      "last_updated": "2026-01-28T22:36:48Z",
+      "session_id": "sess_1769639497_e9fdaa",
+      "researched": "2026-01-28T22:09:21Z",
+      "artifacts": [
+        {
+          "path": "specs/724_investigate_revise_command_errors_design_solution/reports/research-001.md",
+          "type": "research",
+          "summary": "Identified Claude Code Bash tool escaping of \\!= as root cause; catalogued 15+ affected files; recommended shell script encapsulation pattern"
+        },
+        {
+          "path": "specs/724_investigate_revise_command_errors_design_solution/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan to fix jq \\!= escaping issues via shell script encapsulation across 1 command, 7 skills, and 4 documentation files"
+        },
+        {
+          "path": "specs/724_investigate_revise_command_errors_design_solution/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all file changes and verification results"
+        }
+      ],
+      "planned": "2026-01-28T22:30:41Z",
+      "started": "2026-01-28T22:31:59Z",
+      "completed": "2026-01-28T22:36:48Z",
+      "completion_summary": "Fixed Claude Code Issue #1132 jq escaping bug across all skill and command files. Replaced 8 instances of select(.type \\!= \"X\") with select(.type == \"X\" | not) pattern, updated documentation with safe pattern guidance, and added jq Command Safety section to CLAUDE.md.",
+      "claudemd_suggestions": "Added jq Command Safety section to CLAUDE.md with safe pattern quick reference. Updated jq-escaping-workarounds.md with \\!= escaping documentation, inline-status-update.md with warning note, and error-handling.md jq_parse_failure section.",
+      "archived": "2026-01-28T22:43:50Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 723,
+      "project_name": "update_claude_documentation",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-28T20:22:14Z",
+      "last_updated": "2026-01-28T22:14:14Z",
+      "session_id": "sess_1769638125_1c9be6",
+      "researched": "2026-01-28T21:59:17Z",
+      "artifacts": [
+        {
+          "path": "specs/723_update_claude_documentation/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing .claude/ documentation structure, cataloging all 13 commands, identifying gaps and redundancies, and providing recommendations for consolidation"
+        },
+        {
+          "path": "specs/723_update_claude_documentation/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 5-phase plan: streamline CLAUDE.md as agent context, keep ARCHITECTURE.md as user docs"
+        },
+        {
+          "path": "specs/723_update_claude_documentation/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-28T22:07:17Z",
+      "started": "2026-01-28T22:09:04Z",
+      "completed": "2026-01-28T22:14:14Z",
+      "completion_summary": "Streamlined CLAUDE.md to 176 lines (from ~500) with essential agent context only. Enhanced ARCHITECTURE.md as comprehensive user documentation with table of contents, session maintenance, and MCP configuration sections.",
+      "claudemd_suggestions": "Significant restructuring of CLAUDE.md - reduced by 65% keeping only essential agent context. ARCHITECTURE.md enhanced with moved content. All changes already applied during implementation.",
+      "archived": "2026-01-28T22:43:50Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 722,
+      "project_name": "remove_bimodal_definition_redundancies",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-28T20:18:45Z",
+      "last_updated": "2026-01-28T22:36:38Z",
+      "session_id": "sess_1769639301_c6ebca",
+      "researched": "2026-01-28T22:02:19Z",
+      "artifacts": [
+        {
+          "path": "specs/722_remove_bimodal_definition_redundancies/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of redundant MCS definitions across Boneyard directories with consolidation plan"
+        },
+        {
+          "path": "specs/722_remove_bimodal_definition_redundancies/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for removing redundant MCS definitions from Bimodal project"
+        },
+        {
+          "path": "specs/722_remove_bimodal_definition_redundancies/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting namespace conflict resolution via fully qualified names"
+        }
+      ],
+      "planned": "2026-01-28T22:09:26Z",
+      "started": "2026-01-28T22:28:46Z",
+      "completed": "2026-01-28T22:36:38Z",
+      "completion_summary": "Eliminated namespace conflicts for MCS definitions in active Metalogic code by removing hiding clauses and using fully qualified names for Boneyard helper lemmas. Active code uses canonical definitions via Core re-exports. Build passes with 977 jobs.",
+      "archived": "2026-01-28T22:43:50Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 721,
+      "project_name": "prevent_mcp_tool_hanging_multi_layer_defense",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-28T19:58:30Z",
+      "last_updated": "2026-01-28T20:08:09Z",
+      "session_id": "sess_1769630413_f532f6",
+      "description": "Implement multi-layer defense to prevent hanging MCP tool calls (lean_diagnostic_messages, lean_file_outline) at both primary agent and skill levels. Minimal, focused additions only.",
+      "planned": "2026-01-28T19:59:17Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/721_prevent_mcp_tool_hanging_multi_layer_defense/plans/implementation-001.md",
+          "summary": "4-phase plan for multi-layer MCP tool blocking defense"
+        },
+        {
+          "path": "specs/721_prevent_mcp_tool_hanging_multi_layer_defense/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results and full file change list"
+        }
+      ],
+      "started": "2026-01-28T20:00:36Z",
+      "completed": "2026-01-28T20:08:09Z",
+      "completion_summary": "Added 'Blocked MCP Tools' section to CLAUDE.md, MCP Safety warnings to 3 command files, blocked tools table to mcp-tools-guide.md, and replaced instructional uses in lean4.md, skills, and context files. All 4 phases executed with verification showing no instructional references to blocked tools remain.",
+      "claudemd_suggestions": "Added 'Blocked MCP Tools' subsection in Lean 4 Integration section of .claude/CLAUDE.md, updated Language-Based Routing table, removed blocked tool from MCP Tools list",
+      "archived": "2026-01-28T22:43:50Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 716,
+      "project_name": "fix_soundnesslemmas_type_mismatches",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-28T07:17:18Z",
+      "last_updated": "2026-01-28T19:48:48Z",
+      "session_id": "sess_1769629143_5dbc78",
+      "researched": "2026-01-28T19:08:03Z",
+      "artifacts": [
+        {
+          "path": "specs/716_fix_soundnesslemmas_type_mismatches/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying cause of type mismatches (task 658 semantics change) and fix strategies for all 7 errors"
+        },
+        {
+          "path": "specs/716_fix_soundnesslemmas_type_mismatches/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for fixing strict-to-reflexive inequality type mismatches"
+        },
+        {
+          "path": "specs/716_fix_soundnesslemmas_type_mismatches/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting fixes to type mismatches and T axiom completions"
+        }
+      ],
+      "planned": "2026-01-28T19:27:55Z",
+      "started": "2026-01-28T19:39:24Z",
+      "completed": "2026-01-28T19:48:48Z",
+      "completion_summary": "Fixed type mismatches in SoundnessLemmas.lean and Soundness.lean caused by Task 658 semantics change (strict to reflexive inequality). Completed 8 temporal T axiom sorries now provable with reflexive semantics.",
+      "archived": "2026-01-28T22:43:50Z",
+      "source": "archival"
+    },
     {
       "project_number": 718,
       "project_name": "investigate_lean_lsp_mcp_hanging",
@@ -228,7 +396,7 @@
       "priority": "high",
       "created": "2026-01-25T18:49:46Z",
       "last_updated": "2026-01-25T20:45:12Z",
-      "description": "Ensure all command workflows enforce the skill-based checkpoint pattern (GATE IN → DELEGATE → GATE OUT → COMMIT) by preventing direct agent invocation and guaranteeing postflight operations execute. Current issue: Commands can bypass skills and call agents directly via Task tool, causing missing status updates, artifact linking, and git commits. Solution: Add validation layer that enforces skill delegation, implement postflight verification, and document the checkpoint contract.",
+      "description": "Ensure all command workflows enforce the skill-based checkpoint pattern (GATE IN \u2192 DELEGATE \u2192 GATE OUT \u2192 COMMIT) by preventing direct agent invocation and guaranteeing postflight operations execute. Current issue: Commands can bypass skills and call agents directly via Task tool, causing missing status updates, artifact linking, and git commits. Solution: Add validation layer that enforces skill delegation, implement postflight verification, and document the checkpoint contract.",
       "researched": "2026-01-25T20:45:12Z",
       "research_summary": "Comprehensive analysis of checkpoint bypass issue: commands contain simulation code that creates stub artifacts without invoking skills, bypassing validation and postflight operations",
       "artifacts": [
@@ -1836,7 +2004,7 @@
       "created": "2026-01-05T08:34:20.462436Z",
       "last_updated": "2026-01-10T22:57:38Z",
       "effort": "61-97 hours",
-      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom φ is a Prop, not a Type, making it impossible to return Option (Axiom φ) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
+      "description": "Research and implement solution to unblock Phase 1 (Proof Term Construction) of task 260. The blocker is that Axiom \u03c6 is a Prop, not a Type, making it impossible to return Option (Axiom \u03c6) from find_axiom_witness. Investigate three approaches: (1) Classical.choice with decidability, (2) Refactor Axiom to Type instead of Prop, (3) Pivot to tactic-mode proof construction. Choose and implement the most viable approach to enable programmatic proof term construction.",
       "started": "2026-01-05",
       "researched": "2026-01-05",
       "artifacts": [
@@ -2332,7 +2500,7 @@
       "plan_path": "specs/349_fix_recursive_semantics_documentation/plans/implementation-002.md",
       "plan_metadata": {
         "plan_version": 2,
-        "revision_reason": "Maintain ⟨S, ⊑, I⟩ notation instead of replacing with ⟨S, ⊑, | |⟩"
+        "revision_reason": "Maintain \u27e8S, \u2291, I\u27e9 notation instead of replacing with \u27e8S, \u2291, | |\u27e9"
       },
       "artifacts": [
         "specs/349_fix_recursive_semantics_documentation/reports/research-001.md",
@@ -4708,7 +4876,7 @@
       "session_id": "sess_1768269755_071a27",
       "plan_version": "001",
       "completed": "2026-01-13T09:00:00Z",
-      "description": "The Lean implementation restricts temporal quantification to times in the world history's domain dom(τ) despite the fact the source paper /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (lines 896-7 and lines 1862-1872) quantifies over all times. It is also important that the times are unrestricted in the definition of logical consequence in line 924 and 2273. Fix the lean source code to match the paper exactly.",
+      "description": "The Lean implementation restricts temporal quantification to times in the world history's domain dom(\u03c4) despite the fact the source paper /home/benjamin/Projects/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (lines 896-7 and lines 1862-1872) quantifies over all times. It is also important that the times are unrestricted in the definition of logical consequence in line 924 and 2273. Fix the lean source code to match the paper exactly.",
       "artifacts": [
         {
           "path": "specs/454_fix_temporal_quantification_to_match_paper/reports/research-001.md",
@@ -4962,7 +5130,7 @@
       "created": "2026-01-13T04:51:37Z",
       "last_updated": "2026-01-13T05:36:12Z",
       "parent_task": 458,
-      "description": "Research alternative approaches to solve the canonical_history coherence problem. Current chain construction (Strategy C) provides coherence for discrete ℤ-indexed positions but cannot extend to full Duration domain. Investigate Strategy A from research-002.md: strengthen canonical_task_rel to include persistence conditions, making compositionality provable by construction. Also consider: (1) proving Duration discreteness (≅ ℤ·chain_step), (2) modifying forward/backward_extension to return chain-coherent witnesses, (3) quotient-based approaches.",
+      "description": "Research alternative approaches to solve the canonical_history coherence problem. Current chain construction (Strategy C) provides coherence for discrete \u2124-indexed positions but cannot extend to full Duration domain. Investigate Strategy A from research-002.md: strengthen canonical_task_rel to include persistence conditions, making compositionality provable by construction. Also consider: (1) proving Duration discreteness (\u2245 \u2124\u00b7chain_step), (2) modifying forward/backward_extension to return chain-coherent witnesses, (3) quotient-based approaches.",
       "session_id": "sess_1768281942_e65015",
       "artifacts": [
         {
@@ -6195,7 +6363,7 @@
       "dependencies": [
         542
       ],
-      "description": "Phase 2: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership ↔ canonical model truth equivalence.",
+      "description": "Phase 2: Build out the representation theorem chain. Fix TruthLemma.lean imports, adapt truth lemma from Completeness.lean, fix RepresentationTheorem.lean to export MCS membership \u2194 canonical model truth equivalence.",
       "session_id": "sess_1768663596_17844a",
       "researched": "2026-01-17T15:11:07Z",
       "artifacts": [
@@ -7339,7 +7507,7 @@
       "priority": "medium",
       "created": "2026-01-18T02:30:43Z",
       "last_updated": "2026-01-19T07:13:41Z",
-      "description": "Create comprehensive test suite for Bimodal/Metalogic_v2/ to enable eventual deletion of old Bimodal/Metalogic/. Tests should provide good coverage of all Metalogic_v2 modules independently—no imports from old Metalogic. Draw inspiration from old Metalogic/ tests where relevant, but focus on high-quality independent tests for the new metalogic architecture. Cover core modules: MCS properties, canonical model construction, soundness, completeness bridge lemmas, and the provable_iff_valid theorem.",
+      "description": "Create comprehensive test suite for Bimodal/Metalogic_v2/ to enable eventual deletion of old Bimodal/Metalogic/. Tests should provide good coverage of all Metalogic_v2 modules independently\u2014no imports from old Metalogic. Draw inspiration from old Metalogic/ tests where relevant, but focus on high-quality independent tests for the new metalogic architecture. Cover core modules: MCS properties, canonical model construction, soundness, completeness bridge lemmas, and the provable_iff_valid theorem.",
       "session_id": "sess_1768805807_43e8bb",
       "researched": "2026-01-19T06:49:07Z",
       "artifacts": [
@@ -8617,7 +8785,7 @@
         {
           "path": "657_prove_seed_consistency_temporal_k_distribution/reports/research-004.md",
           "type": "report",
-          "summary": "Analysis of defining reflexive G' as G ∨ φ, concluding that definitional approach does not solve seed consistency issue since G' ⊥ simplifies to G ⊥"
+          "summary": "Analysis of defining reflexive G' as G \u2228 \u03c6, concluding that definitional approach does not solve seed consistency issue since G' \u22a5 simplifies to G \u22a5"
         },
         {
           "path": "specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-005.md",
