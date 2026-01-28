@@ -63,6 +63,11 @@
           "path": "specs/722_remove_bimodal_definition_redundancies/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of redundant MCS definitions across Boneyard directories with consolidation plan"
+        },
+        {
+          "path": "specs/722_remove_bimodal_definition_redundancies/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for removing redundant MCS definitions from Bimodal project"
         }
       ],
       "planned": "2026-01-28T22:09:26Z"
