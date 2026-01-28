@@ -275,11 +275,12 @@ technical_debt:
 
 ### 698. Fix ROAD_MAP.md content and style issues
 - **Effort**: 4-5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Created**: 2026-01-28
 - **Source**: specs/ROAD_MAP.md (FIX: and NOTE: tags)
+- **Research**: [research-001.md](698_fix_roadmap_content_and_style_issues/reports/research-001.md)
 
 **Description**: Update ROAD_MAP.md to fix content accuracy and style issues identified in FIX: and NOTE: tags. Tasks include: (1) Update architecture tables to match actual Lean source code (lines 22, 166), (2) Remove historical language and emojis (lines 52, 72, 80, 131), (3) Reverse diagram order to show foundations first (line 58), (4) Remove unnecessary links to reports (line 156), (5) Add initial phase for completing proofs and porting Boneyard elements (line 188).
 
@@ -388,7 +389,7 @@ technical_debt:
 ---
 
 ### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Researched**: 2026-01-25
 - **Priority**: Low
 - **Language**: meta
