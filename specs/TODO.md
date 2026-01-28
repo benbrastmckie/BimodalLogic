@@ -1,5 +1,5 @@
 ---
-next_project_number: 702
+next_project_number: 705
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -130,6 +130,43 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 704. Create typst agent and skill
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-28
+- **Source**: Theories/Bimodal/typst/BimodalReference.typ:14
+
+**Description**: Create a typst agent and skill similar to the latex skill and agent for handling Typst document implementation tasks.
+
+---
+
+### 703. Fix Bimodal Typst formatting issues
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-28
+- **Dependencies**: 702
+- **Source**: Theories/Bimodal/typst/BimodalReference.typ (FIX: and NOTE: tags)
+
+**Description**: Fix Typst formatting issues in BimodalReference.typ identified in FIX: and NOTE: tags. Tasks include: (1) Match margins to LogosReference.tex (line 16), (2) Set hyperlink colors to light blue (line 18), (3) Format website URL in texttt-equivalent (line 71), (4) Center Abstract header with spacing (line 93), (5) Format Contents header with spacing and style chapter/section entries appropriately (line 104).
+
+---
+
+### 702. Update context files from Bimodal Typst notes
+- **Effort**: 0.5 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-28
+- **Source**: Theories/Bimodal/typst/BimodalReference.typ (NOTE: tags)
+
+**Description**: Update .claude/context/ files based on NOTE: tag learnings from BimodalReference.typ. Key learnings: (1) Match margins between Typst and LaTeX documents (line 16), (2) Use light blue for hyperlinks and clickable references (line 18), (3) Use texttt-equivalent formatting for website URLs (line 71), (4) Center section headers with spacing (line 93). These patterns should be applied to context documentation formatting guides.
+
+---
 
 ### 700. Research algebraic representation theorem proof
 - **Effort**: 6-8 hours
