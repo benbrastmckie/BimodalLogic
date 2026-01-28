@@ -133,13 +133,15 @@ technical_debt:
 
 ### 714. Refine Typst styling for journal aesthetic
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
+- **Planned**: 2026-01-28
 - **Related**: Task 709
 - **Research**: [research-001.md](specs/714_refine_typst_styling_for_journal_aesthetic/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/714_refine_typst_styling_for_journal_aesthetic/plans/implementation-001.md)
 
 **Description**: Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions.
 

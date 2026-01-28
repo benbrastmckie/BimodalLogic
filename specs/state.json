@@ -8,12 +8,12 @@
     {
       "project_number": 714,
       "project_name": "refine_typst_styling_for_journal_aesthetic",
-      "status": "planning",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "description": "Refine Typst styling from task 709 to be more professional and less colorful. The current implementation looks too much like a high-school textbook. Shift the styling to match the austere aesthetic of mathematics journals - less color, more traditional formatting conventions.",
       "created": "2026-01-28T05:50:33Z",
-      "last_updated": "2026-01-28T06:16:02Z",
+      "last_updated": "2026-01-28T06:17:56Z",
       "session_id": "sess_1769580949_bd4f7d",
       "researched": "2026-01-28T05:57:57Z",
       "artifacts": [
@@ -21,8 +21,14 @@
           "path": "specs/714_refine_typst_styling_for_journal_aesthetic/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing current Typst styling vs. AMS/journal conventions, with specific recommendations for achieving austere academic aesthetic"
+        },
+        {
+          "path": "specs/714_refine_typst_styling_for_journal_aesthetic/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan: remove colored fills, verify typography, compile and quality check, update documentation"
         }
-      ]
+      ],
+      "planned": "2026-01-28T06:17:56Z"
     },
     {
       "project_number": 713,
