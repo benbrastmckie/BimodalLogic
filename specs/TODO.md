@@ -131,11 +131,12 @@ technical_debt:
 
 ### 700. Research algebraic representation theorem proof
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Source**: specs/ROAD_MAP.md:291
+- **Research**: [research-001.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-001.md)
 
 **Description**: Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.
 
