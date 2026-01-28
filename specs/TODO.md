@@ -29,14 +29,16 @@ technical_debt:
 
 ### 693. Implement generalized_past_k theorem
 - **Effort**: 2-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Related**: Task 657
 - **Source**: Theories/Bimodal/Theorems/GeneralizedNecessitation.lean
 - **Research**: [research-001.md](specs/693_implement_generalized_past_k_theorem/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/693_implement_generalized_past_k_theorem/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/693_implement_generalized_past_k_theorem/summaries/implementation-summary-20260128.md)
 
 **Description**: Implement `generalized_past_k` theorem in GeneralizedNecessitation.lean, mirroring the structure of `generalized_temporal_k`. This theorem shows that if `L ⊢ φ` then `(H L) ⊢ H φ` (applying the past operator H to all formulas in the premise list). Required to unblock `past_seed_consistent` proof in Task 657. Can be derived from `generalized_temporal_k` via temporal duality, or implemented directly following the same pattern.
 

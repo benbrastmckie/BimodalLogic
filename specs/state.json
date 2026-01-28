@@ -26,11 +26,11 @@
     {
       "project_number": 693,
       "project_name": "implement_generalized_past_k_theorem",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-28T00:04:07Z",
-      "last_updated": "2026-01-28T00:16:07Z",
+      "last_updated": "2026-01-28T00:20:08Z",
       "session_id": "sess_1769559345_b1ae1c",
       "researched": "2026-01-28T00:09:40Z",
       "artifacts": [
@@ -43,10 +43,17 @@
           "path": "specs/693_implement_generalized_past_k_theorem/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase plan to implement generalized_past_k theorem mirroring generalized_temporal_k structure"
+        },
+        {
+          "path": "specs/693_implement_generalized_past_k_theorem/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting changes and verification"
         }
       ],
       "planned": "2026-01-28T00:14:13Z",
-      "started": "2026-01-28T00:16:07Z"
+      "started": "2026-01-28T00:16:07Z",
+      "completed": "2026-01-28T00:20:08Z",
+      "completion_summary": "Implemented generalized_past_k theorem enabling propagation of derivations through the past temporal operator H. Added supporting past_necessitation and past_k_dist theorems using temporal duality pattern. Unblocks Task 657's past_seed_consistent proof."
     },
     {
       "project_number": 692,
@@ -416,11 +423,11 @@
     {
       "project_number": 628,
       "project_name": "prove_semantic_truth_implies_truth_at_upward_bridge",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-20T00:25:09Z",
-      "last_updated": "2026-01-28T00:18:18Z",
+      "last_updated": "2026-01-28T00:20:30Z",
       "session_id": "sess_1769559484_65dd7a",
       "researched": "2026-01-20T01:01:02Z",
       "artifacts": [
@@ -429,7 +436,8 @@
           "type": "research",
           "summary": "Research report analyzing the upward bridge theorem with case-by-case feasibility analysis and effort estimation"
         }
-      ]
+      ],
+      "planned": "2026-01-28T00:20:30Z"
     },
     {
       "project_number": 623,
