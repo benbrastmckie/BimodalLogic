@@ -239,7 +239,7 @@ exact mcs_closed_axiom (Axiom.temp_t_future φ) h_G_at_t
 
 ---
 
-### Phase 5: Update Documentation and Module Docstrings [NOT STARTED]
+### Phase 5: Update Documentation and Module Docstrings [IN PROGRESS]
 
 **Goal**: Document the reflexive semantics design choice throughout
 
