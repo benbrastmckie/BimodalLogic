@@ -1,6 +1,5 @@
 # Loogle CLI API Documentation
 
-**Version**: Lean 4 (v4.27.0-rc1)  
 **Last Updated**: 2025-12-27  
 **Binary Location**: `/home/benjamin/.cache/loogle/.lake/build/bin/loogle`
 

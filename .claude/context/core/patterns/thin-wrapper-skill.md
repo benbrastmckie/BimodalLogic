@@ -1,6 +1,5 @@
 # Thin Wrapper Skill Pattern
 
-**Version**: 1.0
 **Created**: 2026-01-19
 **Purpose**: Quick reference for the thin wrapper skill pattern
 **Audience**: /meta agent, skill developers

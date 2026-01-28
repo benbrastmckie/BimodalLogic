@@ -1,6 +1,5 @@
 # Delegation Standard
 
-**Version**: 2.0
 **Status**: Active
 **Created**: 2025-12-29
 **Purpose**: Unified delegation standard defining return format, delegation patterns, and safety mechanisms

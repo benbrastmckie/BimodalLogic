@@ -1,6 +1,5 @@
 # Orchestration Reference
 
-**Version**: 1.0
 **Created**: 2026-01-19
 **Purpose**: Examples, troubleshooting, and quick reference for orchestration
 **Consolidates**: orchestrator.md (examples/troubleshooting), delegation.md (examples)

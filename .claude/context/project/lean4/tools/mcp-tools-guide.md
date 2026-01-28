@@ -392,6 +392,5 @@ mcp__lean-lsp__lean_hover_info
 
 ## Version
 
-**Version**: 2.0.0
 **Last Updated**: 2026-01-10
 **Platform**: Claude Code (migrated from OpenCode)

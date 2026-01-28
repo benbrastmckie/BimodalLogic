@@ -1,6 +1,5 @@
 # Status Markers Convention
 
-**Version**: 1.0  
 **Status**: Active  
 **Created**: 2026-01-05  
 **Purpose**: Single source of truth for status markers across TODO.md and state.json

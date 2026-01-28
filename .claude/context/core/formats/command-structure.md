@@ -1,6 +1,5 @@
 # Command File Structure: Commands as Agents with Workflows
 
-**Version**: 1.0  
 **Created**: 2026-01-05  
 **Purpose**: Document command file anatomy and patterns  
 **Audience**: Command developers, meta-builder, system architects

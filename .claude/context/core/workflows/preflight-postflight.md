@@ -1,6 +1,5 @@
 # Preflight/Postflight Workflow Standards
 
-**Version**: 2.0  
 **Updated**: 2026-01-07  
 **Purpose**: Command-level status update patterns  
 **Audience**: Command developers, workflow designers

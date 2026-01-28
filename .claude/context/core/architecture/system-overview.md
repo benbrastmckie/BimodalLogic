@@ -1,6 +1,5 @@
 # System Architecture Overview
 
-**Version**: 1.1
 **Created**: 2026-01-19
 **Last Verified**: 2026-01-19
 **Purpose**: Consolidated architecture reference for agents generating new components

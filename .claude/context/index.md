@@ -1,6 +1,5 @@
 # Context Index - Lazy-Loading Quick Map
 
-**Version**: 4.0
 **Created**: 2025-12-23
 **Updated**: 2026-01-12 (Task 432 - Agent System Overhaul)
 **Purpose**: Quick reference map for on-demand context loading following checkpoint-based execution

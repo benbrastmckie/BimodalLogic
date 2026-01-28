@@ -1,6 +1,5 @@
 # Orchestration Core
 
-**Version**: 1.0
 **Created**: 2026-01-19
 **Purpose**: Essential orchestration patterns for delegation, session tracking, and routing
 **Consolidates**: orchestrator.md, delegation.md (partial), routing.md (partial), sessions.md (partial)

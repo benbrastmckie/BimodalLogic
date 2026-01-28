@@ -1,6 +1,5 @@
 # Research Workflow
 
-**Version**: 1.0.0  
 **Created**: 2025-12-29  
 **Purpose**: Detailed research workflow for conducting research and creating reports
 

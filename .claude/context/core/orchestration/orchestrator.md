@@ -1,6 +1,5 @@
 # Orchestrator Design
 
-**Version**: 5.0
 **Created**: 2025-12-29
 **Purpose**: Document the smart coordinator pattern and orchestrator architecture
 
@@ -386,7 +385,6 @@ Agents own workflows, orchestrator just coordinates
 - `.claude/agent/orchestrator.md` - Orchestrator implementation
 # Orchestrator Guide - Examples and Troubleshooting
 
-**Version**: 1.0  
 **Created**: 2025-12-29 (Task 245 Phase 5)  
 **Purpose**: Examples, troubleshooting, and detailed guidance for orchestrator usage
 

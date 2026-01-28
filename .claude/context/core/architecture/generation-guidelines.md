@@ -1,6 +1,5 @@
 # Component Generation Guidelines
 
-**Version**: 1.0
 **Created**: 2026-01-19
 **Purpose**: Guidelines and templates for /meta agent when generating new components
 **Audience**: meta-builder-agent, system developers

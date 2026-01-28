@@ -1,6 +1,5 @@
 # ProofChecker Architecture: Three-Layer Delegation Pattern
 
-**Version**: 1.0  
 **Created**: 2026-01-05  
 **Purpose**: Document ProofChecker's unique three-layer delegation architecture  
 **Audience**: Meta-builder, system developers, architecture reviewers

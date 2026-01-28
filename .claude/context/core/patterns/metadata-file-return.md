@@ -1,6 +1,5 @@
 # Metadata File Return Pattern
 
-**Version**: 1.0
 **Created**: 2026-01-19
 **Purpose**: Quick reference for agent return via metadata file
 **Audience**: Agents, skill developers

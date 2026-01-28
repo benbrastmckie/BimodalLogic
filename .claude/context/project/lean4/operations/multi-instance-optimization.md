@@ -1,6 +1,5 @@
 # Multi-Instance Lean-LSP Optimization Guide
 
-**Version**: 1.0
 **Created**: 2026-01-28
 **Purpose**: Reduce MCP AbortError -32001 timeouts when running multiple Claude Code sessions
 **Audience**: Users running multiple concurrent Lean development sessions

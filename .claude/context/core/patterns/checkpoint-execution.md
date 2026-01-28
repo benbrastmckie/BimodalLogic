@@ -1,6 +1,5 @@
 # Checkpoint Execution Pattern
 
-**Version**: 1.0
 **Created**: 2026-01-19
 **Purpose**: Quick reference for command checkpoint-based execution
 **Audience**: Command developers, skill implementers

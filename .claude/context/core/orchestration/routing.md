@@ -1,6 +1,5 @@
 # Routing Guide - Lightweight Command Routing Context
 
-**Version**: 1.0
 **Created**: 2025-12-29 (Task 244 Phase 1)
 **Purpose**: Lightweight routing context for orchestrator Stages 1-3 (command parsing and delegation preparation)
 

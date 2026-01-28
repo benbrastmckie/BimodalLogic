@@ -1,6 +1,5 @@
 # Git Safety Guide
 
-**Version**: 1.0.0  
 **Created**: 2025-12-29  
 **Purpose**: Define git-based safety patterns for risky operations (NO backup files)
 

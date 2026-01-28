@@ -1,6 +1,5 @@
 # Implementation Workflow
 
-**Version**: 1.0.0  
 **Created**: 2025-12-29  
 **Purpose**: Detailed implementation workflow for ProofChecker tasks
 

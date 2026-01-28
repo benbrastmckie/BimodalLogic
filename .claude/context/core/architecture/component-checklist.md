@@ -1,6 +1,5 @@
 # Component Creation Checklist
 
-**Version**: 1.0
 **Created**: 2026-01-19
 **Purpose**: Decision tree and checklists for creating new components
 **Audience**: /meta agent, developers extending the system

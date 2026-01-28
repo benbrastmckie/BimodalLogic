@@ -1,6 +1,5 @@
 # State Management Standard
 
-**Version**: 3.0
 **Status**: Active
 **Created**: 2025-12-29
 **Updated**: 2026-01-17

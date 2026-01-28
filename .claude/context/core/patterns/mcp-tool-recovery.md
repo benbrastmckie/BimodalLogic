@@ -1,6 +1,5 @@
 # MCP Tool Recovery Pattern
 
-**Version**: 1.0
 **Created**: 2026-01-28
 **Purpose**: Defensive patterns for handling MCP tool failures, especially AbortError -32001
 **Audience**: Agent developers, particularly lean-research-agent and lean-implementation-agent

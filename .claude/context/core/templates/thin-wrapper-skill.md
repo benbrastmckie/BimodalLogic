@@ -1,7 +1,6 @@
 # Thin Wrapper Skill Template
 
 **Purpose**: Standard structure for skills that delegate to forked subagents
-**Version**: 1.0
 **Created**: 2026-01-12
 
 ---

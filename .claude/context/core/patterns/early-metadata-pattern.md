@@ -1,6 +1,5 @@
 # Early Metadata Pattern
 
-**Version**: 1.0
 **Created**: 2026-01-28
 **Purpose**: Ensure metadata files exist even when agents are interrupted
 **Audience**: Agent developers

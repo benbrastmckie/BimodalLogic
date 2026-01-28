@@ -1,6 +1,5 @@
 # Subagent YAML Frontmatter Standard
 
-**Version**: 1.0.0  
 **Created**: 2025-12-29  
 **Purpose**: Comprehensive standard for subagent YAML frontmatter configuration  
 **Scope**: All subagent files in `.claude/agent/subagents/`
