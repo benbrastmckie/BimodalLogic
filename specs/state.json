@@ -8,21 +8,22 @@
     {
       "project_number": 725,
       "project_name": "update_docs_readme_and_rename_architecture",
-      "status": "not_started",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:28:14Z",
-      "last_updated": "2026-01-28T22:28:14Z"
+      "last_updated": "2026-01-28T22:32:05Z",
+      "session_id": "sess_1769639479_ed37a4"
     },
     {
       "project_number": 724,
       "project_name": "investigate_revise_command_errors_design_solution",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:03:21Z",
-      "last_updated": "2026-01-28T22:30:41Z",
-      "session_id": "sess_1769639293_0e02da",
+      "last_updated": "2026-01-28T22:31:59Z",
+      "session_id": "sess_1769639497_e9fdaa",
       "researched": "2026-01-28T22:09:21Z",
       "artifacts": [
         {
@@ -36,7 +37,8 @@
           "summary": "5-phase plan to fix jq \\!= escaping issues via shell script encapsulation across 1 command, 7 skills, and 4 documentation files"
         }
       ],
-      "planned": "2026-01-28T22:30:41Z"
+      "planned": "2026-01-28T22:30:41Z",
+      "started": "2026-01-28T22:31:59Z"
     },
     {
       "project_number": 723,

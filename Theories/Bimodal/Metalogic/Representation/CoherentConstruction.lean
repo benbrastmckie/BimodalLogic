@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Representation.IndexedMCSFamily
-import Bimodal.Boneyard.Metalogic.Completeness  -- For set_mcs_all_future_all_future, etc.
+import Bimodal.Boneyard.Metalogic.Completeness  -- For Bimodal.Boneyard.Metalogic.set_mcs_all_future_all_future, etc.
 import Bimodal.Theorems.GeneralizedNecessitation  -- For generalized_temporal_k
 import Mathlib.Algebra.Order.Group.Defs
 
@@ -200,7 +200,7 @@ lemma forward_seed_consistent_of_no_G_bot (S : Set Formula) (h_mcs : SetMaximalC
 
   -- Step 3: By MCS deductive closure, G ⊥ ∈ S
   have h_G_bot_in : Formula.all_future Formula.bot ∈ S :=
-    set_mcs_closed_under_derivation h_mcs L_G h_L_G_sub d_G_bot
+    Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs L_G h_L_G_sub d_G_bot
 
   -- Step 4: Contradiction with hypothesis h_no_G_bot
   exact h_no_G_bot h_G_bot_in
@@ -235,7 +235,7 @@ lemma backward_seed_consistent_of_no_H_bot (S : Set Formula) (h_mcs : SetMaximal
 
   -- Step 3: By MCS deductive closure, H ⊥ ∈ S
   have h_H_bot_in : Formula.all_past Formula.bot ∈ S :=
-    set_mcs_closed_under_derivation h_mcs L_H h_L_H_sub d_H_bot
+    Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs L_H h_L_H_sub d_H_bot
 
   -- Step 4: Contradiction with hypothesis h_no_H_bot
   exact h_no_H_bot h_H_bot_in
@@ -253,7 +253,7 @@ G formulas persist through forward extension.
 If Gφ ∈ S and T is a forward extension (via forward_seed), then Gφ ∈ T.
 
 **Proof**:
-1. Gφ ∈ S → GGφ ∈ S (by G-4 axiom via set_mcs_all_future_all_future)
+1. Gφ ∈ S → GGφ ∈ S (by G-4 axiom via Bimodal.Boneyard.Metalogic.set_mcs_all_future_all_future)
 2. GGφ ∈ S → Gφ ∈ forward_seed(S) (by definition of forward_seed)
 3. forward_seed(S) ⊆ T → Gφ ∈ T
 
@@ -262,9 +262,9 @@ If Gφ ∈ S and T is a forward extension (via forward_seed), then Gφ ∈ T.
 lemma forward_G_persistence {S T : Set Formula} (h_mcs_S : SetMaximalConsistent S)
     (h_sub : forward_seed S ⊆ T) (φ : Formula)
     (hG : Formula.all_future φ ∈ S) : Formula.all_future φ ∈ T := by
-  -- From Gφ ∈ S, get GGφ ∈ S via set_mcs_all_future_all_future (G-4 axiom)
+  -- From Gφ ∈ S, get GGφ ∈ S via Bimodal.Boneyard.Metalogic.set_mcs_all_future_all_future (G-4 axiom)
   have h_gg : (Formula.all_future φ).all_future ∈ S :=
-    set_mcs_all_future_all_future h_mcs_S hG
+    Bimodal.Boneyard.Metalogic.set_mcs_all_future_all_future h_mcs_S hG
   -- GGφ ∈ S means Gφ ∈ forward_seed(S)
   have h_in_seed : Formula.all_future φ ∈ forward_seed S := h_gg
   -- forward_seed(S) ⊆ T
@@ -278,9 +278,9 @@ Symmetric to forward_G_persistence.
 lemma backward_H_persistence {S T : Set Formula} (h_mcs_S : SetMaximalConsistent S)
     (h_sub : backward_seed S ⊆ T) (φ : Formula)
     (hH : Formula.all_past φ ∈ S) : Formula.all_past φ ∈ T := by
-  -- From Hφ ∈ S, get HHφ ∈ S via set_mcs_all_past_all_past (H-4 axiom)
+  -- From Hφ ∈ S, get HHφ ∈ S via Bimodal.Boneyard.Metalogic.set_mcs_all_past_all_past (H-4 axiom)
   have h_hh : (Formula.all_past φ).all_past ∈ S :=
-    set_mcs_all_past_all_past h_mcs_S hH
+    Bimodal.Boneyard.Metalogic.set_mcs_all_past_all_past h_mcs_S hH
   -- HHφ ∈ S means Hφ ∈ backward_seed(S)
   have h_in_seed : Formula.all_past φ ∈ backward_seed S := h_hh
   -- backward_seed(S) ⊆ T
@@ -639,25 +639,39 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
       -- GAP: Cross-origin coherence requires connecting backward and forward chains through Gamma.
       -- See implementation-004.md Phase 3 for detailed analysis.
       sorry
-    · -- Case 4: t < 0 and t' < 0: both in backward chain
-      -- Both times are negative, so both are in the backward chain.
-      -- Since t < t' < 0, we have (-t).toNat > (-t').toNat in ℕ.
-      -- This is the backward chain analog of forward coherence.
+    · -- Case 4: t < 0 and t' < 0: both in backward chain, going TOWARD origin
+      -- Since t < t' < 0, we have (-t).toNat > (-t').toNat (|t| > |t'|).
+      -- So mcs(t) is FURTHER from origin than mcs(t').
+      -- We need Gφ ∈ mcs(t) → φ ∈ mcs(t'), going toward origin.
       --
-      -- Requires: mcs_backward_chain_coherent (symmetric to forward)
-      -- GAP: Need to implement backward chain coherence proof.
+      -- This is the cross-modal case: backward chain preserves H-formulas going away
+      -- from origin, but G-formulas going toward origin requires additional reasoning.
+      -- Key insight: By T-axiom, Gφ ∈ mcs(t) → φ ∈ mcs(t), but φ doesn't necessarily
+      -- propagate toward the origin without explicit infrastructure.
+      --
+      -- GAP: G-coherence through backward chain toward origin not implemented.
+      -- This matches Boneyard gap at line 2507 (cross-modal coherence).
       sorry
   constructor
   -- backward_H: t' < t → Hφ ∈ mcs(t) → φ ∈ mcs(t')
   · intro h_lt φ hH
-    -- Symmetric to forward_G but for H and reversed direction.
-    -- Cases based on signs of t and t':
-    -- 1. Both ≥ 0: Need H-propagation through forward chain (non-trivial)
-    -- 2. Both < 0: Use backward chain H-coherence
-    -- 3. Cross-origin: t' < 0 ≤ t
-    --
-    -- GAP: Requires backward_H infrastructure parallel to forward_G.
-    sorry
+    unfold mcs_unified_chain at hH ⊢
+    by_cases h_t_nonneg : 0 ≤ t <;> by_cases h_t'_nonneg : 0 ≤ t' <;> simp only [h_t_nonneg, h_t'_nonneg] at hH ⊢
+    · -- Case 1: Both t' ≥ 0 and t ≥ 0
+      -- GAP: H-propagation through forward chain requires additional infrastructure.
+      sorry
+    · -- Case 2: t ≥ 0 and t' < 0: cross-origin
+      -- GAP: Cross-origin requires connecting chains through Gamma
+      sorry
+    · -- Case 3: t < 0 and t' ≥ 0: contradiction since t' < t
+      simp only [not_le] at h_t_nonneg
+      have : t < t' := lt_of_lt_of_le h_t_nonneg h_t'_nonneg
+      exact absurd h_lt (asymm this)
+    · -- Case 4: Both t < 0 and t' < 0
+      -- Since t' < t < 0, we have (-t).toNat < (-t').toNat
+      simp only [not_le] at h_t_nonneg h_t'_nonneg
+      have h_nat_lt : (-t).toNat < (-t').toNat := by omega
+      exact mcs_backward_chain_coherent Gamma h_mcs h_no_H_bot (-t).toNat (-t').toNat h_nat_lt φ hH
   constructor
   -- forward_H: t < t' → Hφ ∈ mcs(t') → φ ∈ mcs(t)
   · intro h_lt φ hH

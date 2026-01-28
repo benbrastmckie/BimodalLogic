@@ -93,17 +93,25 @@ These 5 lemmas need to be moved or re-exported before we can remove the import.
 
 ---
 
-### Phase 2: Consolidate Core MCS Definitions [IN PROGRESS]
+### Phase 2: Consolidate Core MCS Definitions [COMPLETED]
 
 **Goal**: Remove duplicate `SetConsistent`, `SetMaximalConsistent`, `Consistent` definitions from deprecated files
 
 **Tasks**:
-- [ ] Verify `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean` has complete definitions
-- [ ] Remove duplicate definitions from `Boneyard/Metalogic/Completeness.lean` (lines ~99-142)
-- [ ] Remove duplicate definitions from `Boneyard/Metalogic/Representation/CanonicalModel.lean` (lines ~52-74)
-- [ ] Update imports in affected files to use `Metalogic.Core` exports
-- [ ] Remove `hiding` clauses that are no longer needed
-- [ ] Run `lake build` and fix any breakages
+- [x] Verify `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean` has complete definitions
+- [x] Update imports in affected files to use `Metalogic.Core` exports
+- [x] Remove `hiding` clauses - replaced with fully qualified names
+- [x] Run `lake build` and verify no new breakages
+
+**Approach Change**: Rather than removing duplicate definitions from Boneyard files (which would break
+internal Boneyard dependencies), we:
+1. Removed `open Bimodal.Boneyard.Metalogic hiding ...` from CoherentConstruction.lean
+2. Removed `open Bimodal.Boneyard.Metalogic` from TruthLemma.lean
+3. Changed all usages to fully qualified names (e.g., `Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation`)
+
+This eliminates namespace conflicts without breaking Boneyard internal code.
+
+**Note**: TruthLemma.lean has pre-existing type mismatch errors at lines 396 and 417 (unrelated to our changes).
 
 **Timing**: 1.5 hours
 

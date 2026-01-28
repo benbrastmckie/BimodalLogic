@@ -1,7 +1,7 @@
 # Implementation Plan: Task #724
 
 - **Task**: 724 - Investigate /revise command errors and design solution
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3-4 hours
 - **Priority**: High
 - **Dependencies**: None

@@ -101,7 +101,7 @@ technical_debt:
 
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: lean
 - **Parent**: Task 394
@@ -152,7 +152,7 @@ technical_debt:
 
 ### 725. Update docs README files and rename ARCHITECTURE.md
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -163,12 +163,13 @@ technical_debt:
 
 ### 724. Investigate revise command errors and design elegant solution
 - **Effort**: 3.75 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-28
+- **Started**: 2026-01-28
 - **Research**: [research-001.md](specs/724_investigate_revise_command_errors_design_solution/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/724_investigate_revise_command_errors_design_solution/plans/implementation-001.md)
 
@@ -225,7 +226,7 @@ technical_debt:
 
 ### 685. Derive world-history and Barcan theorems
 - **Effort**: 8-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-26
@@ -276,7 +277,7 @@ technical_debt:
 
 ### 660. Prove parametric completeness theorems
 - **Effort**: 10-15 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -303,7 +304,7 @@ technical_debt:
 ---
 
 ### 631. Prove evalFormula_implies_satisfiable bridging lemma
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
@@ -371,7 +372,7 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -414,7 +415,7 @@ technical_debt:
 ---
 
 ### 624. Prove tableau_complete
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
@@ -425,7 +426,7 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
