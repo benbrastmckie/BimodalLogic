@@ -43,12 +43,13 @@ technical_debt:
 ---
 
 ### 710. Refactor Lean skills to direct execution pattern
-- **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 5 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Research**: [research-001.md](specs/710_refactor_lean_skills_direct_execution/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/710_refactor_lean_skills_direct_execution/plans/implementation-001.md)
 
 **Description**: Refactor skill-lean-research and skill-lean-implementation from subagent delegation pattern to direct execution pattern to fix indefinite MCP tool hanging. Root cause: Claude Code bugs (#15945, #13254, #4580) cause MCP tools to hang indefinitely in subagents with no timeout mechanism. Solution: Execute Lean MCP operations directly in skills rather than delegating to lean-research-agent and lean-implementation-agent subagents, eliminating the problematic delegation layer while preserving all functionality.
 
