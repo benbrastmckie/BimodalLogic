@@ -26,6 +26,11 @@
           "path": "specs/714_refine_typst_styling_for_journal_aesthetic/plans/implementation-002.md",
           "type": "plan",
           "summary": "5-phase plan (v002): remove fills, preserve link colors, verify typography, check all chapters, update docs"
+        },
+        {
+          "path": "specs/714_refine_typst_styling_for_journal_aesthetic/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-01-28T06:21:36Z",

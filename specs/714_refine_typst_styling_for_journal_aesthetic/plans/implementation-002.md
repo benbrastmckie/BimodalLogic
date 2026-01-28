@@ -2,7 +2,7 @@
 
 - **Task**: 714 - Refine Typst styling for journal aesthetic
 - **Version**: 002
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: Task 709 (completed)
