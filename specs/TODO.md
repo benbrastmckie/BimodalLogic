@@ -1,5 +1,5 @@
 ---
-next_project_number: 719
+next_project_number: 720
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -27,16 +27,33 @@ technical_debt:
 
 ## High Priority
 
+### 719. Add redundancy check to /lake task creation
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Enhance /lake command's task creation workflow (STEP 5 / Step 13) to check state.json for existing active tasks before creating new ones. When unfixable errors are detected, the command should:
+1. Read active_projects from state.json
+2. For each file with errors, check if an existing task already covers that file (via `source` field match or `project_name` containing the file basename)
+3. Skip task creation for files with existing tasks
+4. Report which files were skipped and link to existing tasks
+
+This prevents redundant task creation when running /lake on a codebase that already has fix tasks tracked.
+
+---
+
 ### 718. Investigate lean-lsp MCP hanging on diagnostics/outline calls
-- **Effort**: 2.5 hours
+- **Effort**: 1 hour
 - **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
-- **Planned**: 2026-01-28
+- **Planned**: 2026-01-28 (revised)
 - **Research**: [research-001.md](specs/718_investigate_lean_lsp_mcp_hanging/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/718_investigate_lean_lsp_mcp_hanging/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/718_investigate_lean_lsp_mcp_hanging/plans/implementation-002.md)
 
 **Description**: Investigate root cause of lean-lsp MCP hanging during Lean tasks. The operations that hang most often are `lean_diagnostic_messages` and `lean_file_outline` MCP tool calls. Example: Stage 4 & 5 operations reading SoundnessLemmas.lean hang indefinitely on diagnostics and file outline calls. Need to identify whether this is a lean-lsp server issue, MCP transport issue, or file-specific compilation bottleneck.
 
