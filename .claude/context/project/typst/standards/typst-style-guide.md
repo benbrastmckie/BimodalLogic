@@ -98,6 +98,23 @@ Style hyperlinks with a consistent color:
 #show link: set text(fill: URLblue)
 ```
 
+### URL Text Formatting
+
+Use `raw()` for monospace URL display (equivalent to LaTeX `\texttt{}`):
+
+```typst
+// URL with monospace text display
+#link("https://www.example.com")[#raw("www.example.com")]
+
+// Citation links
+See #link("https://arxiv.org/abs/2401.12345")[#raw("arxiv.org/abs/2401.12345")]
+```
+
+This matches the LaTeX convention:
+```latex
+\href{https://www.example.com}{\texttt{www.example.com}}
+```
+
 ### Theorem Environment Initialization
 
 Enable thmbox theorem environments:
