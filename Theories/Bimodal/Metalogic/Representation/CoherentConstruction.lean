@@ -44,8 +44,8 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
--- Hide conflicting definitions from Boneyard (we use Core's versions)
-open Bimodal.Boneyard.Metalogic hiding SetMaximalConsistent SetConsistent Consistent set_lindenbaum
+-- NOTE: We import Boneyard.Metalogic.Completeness for helper lemmas but use Core definitions.
+-- Use fully qualified names for Boneyard lemmas to avoid namespace conflicts.
 
 /-!
 ## Coherent Relation
@@ -534,6 +534,71 @@ lemma mcs_forward_chain_coherent (Gamma : Set Formula) (h_mcs : SetMaximalConsis
     have h_in_seed : φ ∈ forward_seed (mcs_forward_chain Gamma h_mcs h_no_G_bot m') := hG_m'
     -- And forward_seed(mcs(m')) ⊆ mcs(m'+1)
     exact mcs_forward_chain_seed_containment Gamma h_mcs h_no_G_bot m' h_in_seed
+
+/-!
+## Backward Chain Analogous Lemmas
+
+These mirror the forward chain lemmas but for H-formulas and the backward chain.
+-/
+
+/--
+Each element in the backward chain is an MCS.
+-/
+lemma mcs_backward_chain_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) (n : ℕ) :
+    SetMaximalConsistent (mcs_backward_chain Gamma h_mcs h_no_H_bot n) := by
+  induction n with
+  | zero => exact h_mcs
+  | succ n _ih =>
+    unfold mcs_backward_chain
+    exact extendToMCS_is_mcs _ _
+
+/--
+H-formulas persist through the backward chain.
+
+If Hφ ∈ mcs(-n), then Hφ ∈ mcs(-m) for all m ≥ n.
+Uses backward_H_persistence.
+-/
+lemma mcs_backward_chain_H_persistence (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma)
+    (n m : ℕ) (h_le : n ≤ m) (φ : Formula)
+    (hH : Formula.all_past φ ∈ mcs_backward_chain Gamma h_mcs h_no_H_bot n) :
+    Formula.all_past φ ∈ mcs_backward_chain Gamma h_mcs h_no_H_bot m := by
+  induction m with
+  | zero =>
+    have h_n_eq : n = 0 := Nat.eq_zero_of_le_zero h_le
+    subst h_n_eq
+    exact hH
+  | succ m' ih =>
+    by_cases h : n ≤ m'
+    · have hH_m' := ih h
+      have h_mcs_m' : SetMaximalConsistent (mcs_backward_chain Gamma h_mcs h_no_H_bot m') :=
+        mcs_backward_chain_is_mcs Gamma h_mcs h_no_H_bot m'
+      have h_seed_sub := mcs_backward_chain_seed_containment Gamma h_mcs h_no_H_bot m'
+      exact backward_H_persistence h_mcs_m' h_seed_sub φ hH_m'
+    · push_neg at h
+      have h_eq : n = m' + 1 := Nat.le_antisymm h_le h
+      subst h_eq
+      exact hH
+
+/--
+Backward coherence: Hφ ∈ mcs(-n) → φ ∈ mcs(-m) for n < m.
+
+This is the backward chain analog of mcs_forward_chain_coherent.
+-/
+lemma mcs_backward_chain_coherent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma)
+    (n m : ℕ) (h_lt : n < m) (φ : Formula)
+    (hH : Formula.all_past φ ∈ mcs_backward_chain Gamma h_mcs h_no_H_bot n) :
+    φ ∈ mcs_backward_chain Gamma h_mcs h_no_H_bot m := by
+  match m with
+  | 0 => exact absurd h_lt (Nat.not_lt_zero n)
+  | m' + 1 =>
+    have h_le : n ≤ m' := Nat.lt_succ_iff.mp h_lt
+    have hH_m' : Formula.all_past φ ∈ mcs_backward_chain Gamma h_mcs h_no_H_bot m' :=
+      mcs_backward_chain_H_persistence Gamma h_mcs h_no_H_bot n m' h_le φ hH
+    have h_in_seed : φ ∈ backward_seed (mcs_backward_chain Gamma h_mcs h_no_H_bot m') := hH_m'
+    exact mcs_backward_chain_seed_containment Gamma h_mcs h_no_H_bot m' h_in_seed
 
 /--
 Pairwise coherence of the unified chain construction.

@@ -93,7 +93,7 @@ These 5 lemmas need to be moved or re-exported before we can remove the import.
 
 ---
 
-### Phase 2: Consolidate Core MCS Definitions [NOT STARTED]
+### Phase 2: Consolidate Core MCS Definitions [IN PROGRESS]
 
 **Goal**: Remove duplicate `SetConsistent`, `SetMaximalConsistent`, `Consistent` definitions from deprecated files
 

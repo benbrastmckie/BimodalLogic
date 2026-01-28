@@ -162,13 +162,15 @@ technical_debt:
 ---
 
 ### 724. Investigate revise command errors and design elegant solution
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 3.75 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Researched**: 2026-01-28
+- **Planned**: 2026-01-28
 - **Research**: [research-001.md](specs/724_investigate_revise_command_errors_design_solution/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/724_investigate_revise_command_errors_design_solution/plans/implementation-001.md)
 
 **Description**: Identify the root cause of the errors in /home/benjamin/Projects/ProofChecker/.claude/output/revise.md in order to design an elegant solution that avoids these errors in any command or skill which may suffer from similar problems.
 

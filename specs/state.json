@@ -17,11 +17,11 @@
     {
       "project_number": 724,
       "project_name": "investigate_revise_command_errors_design_solution",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:03:21Z",
-      "last_updated": "2026-01-28T22:28:31Z",
+      "last_updated": "2026-01-28T22:30:41Z",
       "session_id": "sess_1769639293_0e02da",
       "researched": "2026-01-28T22:09:21Z",
       "artifacts": [
@@ -29,8 +29,14 @@
           "path": "specs/724_investigate_revise_command_errors_design_solution/reports/research-001.md",
           "type": "research",
           "summary": "Identified Claude Code Bash tool escaping of \\!= as root cause; catalogued 15+ affected files; recommended shell script encapsulation pattern"
+        },
+        {
+          "path": "specs/724_investigate_revise_command_errors_design_solution/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan to fix jq \\!= escaping issues via shell script encapsulation across 1 command, 7 skills, and 4 documentation files"
         }
-      ]
+      ],
+      "planned": "2026-01-28T22:30:41Z"
     },
     {
       "project_number": 723,
