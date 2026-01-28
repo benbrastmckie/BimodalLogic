@@ -76,11 +76,12 @@
     {
       "project_number": 726,
       "project_name": "move_essential_mcs_lemmas_to_core",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T22:45:08Z",
-      "last_updated": "2026-01-28T22:45:08Z"
+      "last_updated": "2026-01-28T23:44:44Z",
+      "session_id": "sess_1769643871_09e4cf"
     },
     {
       "project_number": 727,
@@ -125,14 +126,19 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-28T01:24:47Z",
-      "last_updated": "2026-01-28T23:10:20Z",
-      "session_id": "sess_1769641604_bd7ab8",
+      "last_updated": "2026-01-28T23:45:58Z",
+      "session_id": "sess_1769643884_2a79d8",
       "researched": "2026-01-28T23:10:20Z",
       "artifacts": [
         {
           "path": "specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-001.md",
           "type": "research",
           "summary": "Research on reflexive/irreflexive semantics mismatch causing TruthLemma compilation errors"
+        },
+        {
+          "path": "specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-002.md",
+          "type": "research",
+          "summary": "Post-681 evaluation: Task 697 still has actionable work - TruthLemma type mismatch not fixed"
         }
       ]
     },
@@ -203,7 +209,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-28T17:53:27Z",
+      "last_updated": "2026-01-28T23:46:08Z",
       "related_tasks": [
         654
       ],
@@ -238,16 +244,6 @@
           "summary": "Partial implementation: T-axioms and reflexive semantics complete, coherence proofs blocked"
         },
         {
-          "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "Revised plan v3: Option A propagation lemmas approach to complete coherence proofs"
-        },
-        {
-          "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "Plan v4: Option B2 integration via Task 681 for coherent construction approach"
-        },
-        {
           "path": "specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128-v2.md",
           "type": "summary",
           "summary": "Partial implementation summary: Phase 1 (T-axiom closure lemmas) complete, Phases 2-6 blocked by construction design"
@@ -256,10 +252,15 @@
           "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md",
           "type": "research",
           "summary": "Detailed comparison of Option B1 (Recursive Seeds) vs Option B2 (Relational/Coherent Construction) for completing coherence proofs. Recommends Option B2 (relational approach via Task 681) due to proven Boneyard pattern and dense time support."
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-005.md",
+          "type": "plan",
+          "summary": "Revised plan v5 for post-Task 681 integration"
         }
       ],
       "planning": "2026-01-25T21:42:13Z",
-      "planned": "2026-01-28T17:53:27Z",
+      "planned": "2026-01-28T23:46:08Z",
       "started": "2026-01-25T21:46:22Z",
       "resume_phase": 2,
       "partial_summary": "Phase 1 complete (T-axiom closure lemmas). Phases 2-6 blocked by fundamental construction issue: independent Lindenbaum extensions prevent coherence proofs. Requires construction redesign (Option B)."

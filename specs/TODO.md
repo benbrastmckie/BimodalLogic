@@ -43,15 +43,15 @@ technical_debt:
 ---
 
 ### 697. Fix UniversalCanonicalModel.lean compilation error
-- **Effort**: 4-6 hours
+- **Effort**: 1-2 hours
 - **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-28
-- **Source**: Theories/Bimodal/Metalogic/Representation/UniversalCanonicalModel.lean:77
-- **Research**: [research-001.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-001.md)
+- **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:413
+- **Research**: [research-001.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-001.md), [research-002.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-002.md)
 
-**Description**: Fix the compilation error in UniversalCanonicalModel.lean where representation_theorem calls construct_indexed_family without the required h_no_G_bot and h_no_H_bot proofs. Must either prove G⊥ ∉ Gamma and H⊥ ∉ Gamma from the consistency of {phi}, or handle the bounded endpoint case separately. Identified in research-002.md for task 695.
+**Description**: Fix the reflexive/irreflexive semantics mismatch in TruthLemma.lean. Semantics use `s ≤ t` but coherence conditions use `s < t`. Fix by splitting proof cases with `eq_or_lt_of_le` and using T-axiom closure lemmas for the reflexive case. Task 681 addressed documentation but not this compilation error.
 
 ---
 
@@ -149,7 +149,7 @@ technical_debt:
 
 ### 726. Move essential MCS lemmas to Core
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
