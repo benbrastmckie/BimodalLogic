@@ -29,7 +29,7 @@ technical_debt:
 
 ### 719. Add redundancy check to /lake task creation
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-28
@@ -305,21 +305,23 @@ This prevents redundant task creation when running /lake on a codebase that alre
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [IMPLEMENTING]
-- **Session**: sess_1769580842_d8f88e
-- **Effort**: 6-8 hours
+- **Status**: [PLANNED]
+- **Session**: sess_1769622662_f98899
+- **Effort**: 2-3 hours (post Task 681)
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-21
+- **Planned**: 2026-01-28 (v4)
+- **Dependencies**: Task 681
 - **Related**: Task 654, Task 657, Task 700
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:550-603
-- **Plan**: [implementation-003.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-003.md)
+- **Plan**: [implementation-004.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-004.md)
 - **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md), [research-004.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md)
 - **Summary**: [implementation-summary-20260128.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md)
 
-**Description**: Complete the four coherence condition proofs in IndexedMCSFamily.lean (forward_G, backward_H, forward_H, backward_G). T-axioms and reflexive semantics were added in v2, but coherence proofs remain blocked due to independent Lindenbaum extensions.
+**Description**: Complete the four coherence condition proofs in IndexedMCSFamily.lean (forward_G, backward_H, forward_H, backward_G) using Task 681's coherent construction. Previous approaches (v1-v3) failed because independent Lindenbaum extensions cannot satisfy coherence. Plan v4 integrates `CoherentIndexedFamily.toIndexedMCSFamily` where coherence is definitional.
 
-**Current Status**: Option A (propagation lemmas) proven insufficient. Research-004.md compares Option B1 (recursive/dependent seeds) vs Option B2 (relational construction). **Recommendation: Option B2** via Task 681 due to Boneyard pattern alignment and dense time support.
+**Current Status**: Blocked on Task 681. Once 681 completes, this task integrates the coherent construction into `construct_indexed_family` (one-liner replacement).
 
 ---
 
