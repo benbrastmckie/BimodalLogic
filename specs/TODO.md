@@ -1,5 +1,5 @@
 ---
-next_project_number: 708
+next_project_number: 711
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -39,6 +39,17 @@ technical_debt:
 - **Summary**: [implementation-summary-20260128.md](specs/701_fix_lean_lsp_mcp_hanging/summaries/implementation-summary-20260128.md)
 
 **Description**: I have tried many times to get the lean-lsp-mcp to work (it used to work great) but now it works for a while and then seems to go on forever without changing (e.g., showing 1.7k tokens but it stops increasing and doesn't break out of the agent). Think hardest about the root cause and then research this issue online to identify a solution.
+
+---
+
+### 710. Refactor Lean skills to direct execution pattern
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Refactor skill-lean-research and skill-lean-implementation from subagent delegation pattern to direct execution pattern to fix indefinite MCP tool hanging. Root cause: Claude Code bugs (#15945, #13254, #4580) cause MCP tools to hang indefinitely in subagents with no timeout mechanism. Solution: Execute Lean MCP operations directly in skills rather than delegating to lean-research-agent and lean-implementation-agent subagents, eliminating the problematic delegation layer while preserving all functionality.
 
 ---
 
