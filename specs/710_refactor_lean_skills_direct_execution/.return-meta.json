@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "summary": "Analyzed current thin wrapper delegation pattern for Lean skills and documented migration strategy to direct execution pattern. Identified MCP tools to move inline, context loading patterns, and created detailed migration checklist.",
+  "artifacts": [
+    {
+      "path": "specs/710_refactor_lean_skills_direct_execution/reports/research-001.md",
+      "type": "research",
+      "summary": "Research report with current architecture analysis, direct execution pattern comparison, detailed migration strategy with 5 phases, and risk mitigations"
+    }
+  ],
+  "next_steps": "Run /plan 710 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1769570933_644602",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 8
+  }
+}
