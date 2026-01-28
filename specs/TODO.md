@@ -117,13 +117,15 @@ technical_debt:
 
 ### 686. Fix agent interruption MCP abort errors
 - **Effort**: 6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-26
+- **Completed**: 2026-01-28
 - **Related**: 619, 672, 674
 - **Research**: [research-001.md](specs/686_fix_agent_interruption_mcp_abort_errors/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/686_fix_agent_interruption_mcp_abort_errors/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/686_fix_agent_interruption_mcp_abort_errors/summaries/implementation-summary-20260128.md)
 
 **Description**: Fix agent system interruption failures where MCP tool calls return AbortError (-32001) and agents get stuck at "Interrupted" prompt. Root cause analysis from `/research 657` and `/implement 630` failures shows: (1) lean-research-agent interrupted during lean_local_search calls, (2) lean-implementation-agent interrupted during lean_diagnostic_messages call. Both agents failed to write return metadata files, leaving tasks stuck in researching/implementing status. System improvements needed: error recovery for MCP tool failures, graceful interruption handling, partial progress preservation, and metadata file writing on timeout/abort.
 
