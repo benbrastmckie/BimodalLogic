@@ -30,30 +30,6 @@
       ]
     },
     {
-      "project_number": 718,
-      "project_name": "investigate_lean_lsp_mcp_hanging",
-      "status": "planned",
-      "language": "meta",
-      "priority": "high",
-      "created": "2026-01-28T17:16:42Z",
-      "last_updated": "2026-01-28T17:47:20Z",
-      "session_id": "sess_1769621329_9aaa2c",
-      "researched": "2026-01-28T17:27:58Z",
-      "artifacts": [
-        {
-          "path": "specs/718_investigate_lean_lsp_mcp_hanging/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting 4 Claude Code issues, 2 lean-lsp-mcp issues, file-specific analysis, and recommendations"
-        },
-        {
-          "path": "specs/718_investigate_lean_lsp_mcp_hanging/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "2-phase simplified plan: create SoundnessLemmas task, document accept-and-wait resolution"
-        }
-      ],
-      "planned": "2026-01-28T17:47:20Z"
-    },
-    {
       "project_number": 717,
       "project_name": "enhance_lake_create_tasks_for_unfixable_errors",
       "status": "completed",
