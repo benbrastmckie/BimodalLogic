@@ -336,22 +336,15 @@ Analyzes code for potential issues and suggests improvements.
 - **Return Format**: `.claude/context/core/formats/subagent-return.md`
 - **Skill Template**: `.claude/context/core/templates/thin-wrapper-skill.md`
 
-### Migration History
-- **Migration Guide**: `.claude/docs/migrations/001-openagents-migration/README.md`
-- **ADR-001: Context Index**: `.claude/docs/migrations/001-openagents-migration/adr/ADR-001-context-index.md`
-- **ADR-002: Agent Workflow Ownership**: `.claude/docs/migrations/001-openagents-migration/adr/ADR-002-agent-workflow-ownership.md`
-- **ADR-003: Frontmatter Delegation**: `.claude/docs/migrations/001-openagents-migration/adr/ADR-003-frontmatter-delegation.md`
-
 ---
 
 ## Support
 
 For questions or issues with templates:
 
-1. Review migration guide and ADRs
-2. Check existing commands and agents for examples
-3. Consult workflow standard and return format documentation
-4. Create task for template improvements if needed
+1. Check existing commands and agents for examples
+2. Consult workflow standard and return format documentation
+3. Create task for template improvements if needed
 
 ---
 

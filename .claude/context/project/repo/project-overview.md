@@ -202,13 +202,13 @@ See [IMPLEMENTATION_STATUS.md](../../../docs/project-info/IMPLEMENTATION_STATUS.
 
 **Documentation**:
 - [Project README](../../../README.md) - Overview and theoretical foundations
-- [Architecture Guide](../../../docs/user-guide/ARCHITECTURE.md) - System architecture
+- [Architecture Guide](../../../docs/user-guide/README.md) - System architecture
 - [Tutorial](../../../docs/user-guide/TUTORIAL.md) - Getting started
 - [Examples](../../../docs/user-guide/EXAMPLES.md) - Example proofs
 
 **AI System**:
 - [.claude/README.md](../../README.md) - AI system overview
-- [.claude/ARCHITECTURE.md](../../ARCHITECTURE.md) - Agent system architecture
+- [.claude/README.md](../../README.md) - Agent system architecture
 - [.claude/QUICK-START.md](../../QUICK-START.md) - AI workflow guide
 
 **External**:

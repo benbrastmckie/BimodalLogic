@@ -411,7 +411,7 @@ claude auth login
 
 ### Documentation
 
-- **[Architecture](../../ARCHITECTURE.md)** - System architecture overview
+- **[Architecture](../../README.md)** - System architecture overview
 - **[CLAUDE.md](../../CLAUDE.md)** - Quick reference for the agent system
 - **[Commands Reference](../commands/README.md)** - Full command documentation
 

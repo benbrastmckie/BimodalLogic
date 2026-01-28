@@ -142,12 +142,15 @@ technical_debt:
 
 ### 725. Update docs README files and rename ARCHITECTURE.md
 - **Effort**: 1.5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-28
 - **Planned**: 2026-01-28
+- **Started**: 2026-01-28
+- **Completed**: 2026-01-28
 - **Plan**: [implementation-001.md](specs/725_update_docs_readme_and_rename_architecture/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260128.md](specs/725_update_docs_readme_and_rename_architecture/summaries/implementation-summary-20260128.md)
 
 **Description**: Update README.md documents in .claude/docs/ to reflect removed files (check git for what was removed). Rename .claude/ARCHITECTURE.md to .claude/README.md while keeping contents and improving cross-linking between documentation files.
 

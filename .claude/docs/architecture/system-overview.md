@@ -273,7 +273,7 @@ See the guides in `.claude/docs/guides/` for detailed instructions.
 
 ### Architecture Details
 
-- [ARCHITECTURE.md](../../ARCHITECTURE.md) - Detailed system architecture
+- [README.md](../../README.md) - Detailed system architecture
 - [CLAUDE.md](../../CLAUDE.md) - Quick reference entry point
 
 ### Agent-Facing Documentation

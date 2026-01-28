@@ -1,6 +1,6 @@
 # Claude Agent System Documentation
 
-[Back to ProofChecker](../../README.md) | [Architecture](../ARCHITECTURE.md) | [CLAUDE.md](../CLAUDE.md)
+[Back to ProofChecker](../../README.md) | [Architecture](../README.md) | [CLAUDE.md](../CLAUDE.md)
 
 This directory contains the documentation for the `.claude/` agent system. The system provides structured task management, research workflows, and implementation automation for ProofChecker development. For comprehensive system details, see [architecture/system-overview.md](architecture/system-overview.md).
 
@@ -74,7 +74,7 @@ Reusable templates for creating new system components are available in [template
 
 ### Core References
 - [CLAUDE.md](../CLAUDE.md) - Quick reference entry point with command syntax and workflow summaries
-- [ARCHITECTURE.md](../ARCHITECTURE.md) - Detailed system architecture and component specifications
+- [README.md](../README.md) - Detailed system architecture and component specifications
 
 ### ProofChecker Project
 - [ProofChecker README](../../README.md) - Main project documentation
@@ -82,4 +82,4 @@ Reusable templates for creating new system components are available in [template
 
 ---
 
-[Back to ProofChecker](../../README.md) | [Architecture](../ARCHITECTURE.md) | [CLAUDE.md](../CLAUDE.md)
+[Back to ProofChecker](../../README.md) | [Architecture](../README.md) | [CLAUDE.md](../CLAUDE.md)

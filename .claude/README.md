@@ -220,7 +220,7 @@ Example from `/research` command:
   <invocation_format>
     /research TASK_NUMBER [PROMPT]
   </invocation_format>
-  
+
   <parameters>
     <task_number>
       <position>1</position>
@@ -1074,6 +1074,7 @@ See `.claude/context/project/lean4/operations/multi-instance-optimization.md` fo
 - Quick Start Guide: `.claude/QUICK-START.md`
 - Testing Guide: `.claude/TESTING.md`
 - Agent Context: `.claude/CLAUDE.md`
+- Documentation Hub: `.claude/docs/README.md`
 - Orchestration Core: `.claude/context/core/orchestration/orchestration-core.md`
 - Return Format Standard: `.claude/context/core/formats/subagent-return.md`
 - Task 191 Research: `specs/191_fix_subagent_delegation_hang/reports/research-001.md`

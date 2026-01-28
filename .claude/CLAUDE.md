@@ -1,13 +1,13 @@
 # ProofChecker Development System
 
-Task management and agent orchestration for Lean 4 theorem proving. For comprehensive documentation, see @.claude/ARCHITECTURE.md.
+Task management and agent orchestration for Lean 4 theorem proving. For comprehensive documentation, see @.claude/README.md.
 
 ## Quick Reference
 
 - **Task List**: @specs/TODO.md
 - **Machine State**: @specs/state.json
 - **Error Tracking**: @specs/errors.json
-- **Architecture**: @.claude/ARCHITECTURE.md
+- **Architecture**: @.claude/README.md
 
 ## Project Structure
 

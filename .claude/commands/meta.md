@@ -19,7 +19,7 @@ Interactive system builder that delegates to `skill-meta` for creating TASKS for
 
 **FORBIDDEN** - This command MUST NOT:
 - Directly create commands, skills, rules, or context files
-- Directly modify CLAUDE.md or ARCHITECTURE.md
+- Directly modify CLAUDE.md or README.md
 - Implement any work without user confirmation
 - Write any files outside specs/
 
