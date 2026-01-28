@@ -8,12 +8,20 @@
     {
       "project_number": 717,
       "project_name": "enhance_lake_create_tasks_for_unfixable_errors",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T09:10:00Z",
-      "last_updated": "2026-01-28T09:10:00Z",
-      "description": "Enhance the /lake command to automatically create tasks for unfixable build errors. When the repair loop completes with remaining unfixable errors, group errors by file and prompt user to create one task per affected file. Each task should link an error report artifact containing the error details."
+      "last_updated": "2026-01-28T17:14:04Z",
+      "description": "Enhance the /lake command to automatically create tasks for unfixable build errors. When the repair loop completes with remaining unfixable errors, group errors by file and prompt user to create one task per affected file. Each task should link an error report artifact containing the error details.",
+      "researched": "2026-01-28T17:14:04Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/717_enhance_lake_create_tasks_for_unfixable_errors/reports/research-001.md",
+          "summary": "Research on task creation patterns, error report formats, and integration with /task workflow"
+        }
+      ]
     },
     {
       "project_number": 716,
