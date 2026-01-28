@@ -1,5 +1,5 @@
 ---
-next_project_number: 725
+next_project_number: 726
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -149,6 +149,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 725. Update docs README files and rename ARCHITECTURE.md
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-28
+
+**Description**: Update README.md documents in .claude/docs/ to reflect removed files (check git for what was removed). Rename .claude/ARCHITECTURE.md to .claude/README.md while keeping contents and improving cross-linking between documentation files.
+
+---
 
 ### 724. Investigate revise command errors and design elegant solution
 - **Effort**: TBD
