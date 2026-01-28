@@ -131,6 +131,30 @@ technical_debt:
 
 ## Medium Priority
 
+### 709. Research professional Typst templates for Bimodal documentation
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-28
+- **Source**: Theories/Bimodal/typst/chapters/02-semantics.typ:19 (TODO: tag)
+
+**Description**: Research professional Typst templates for math publications to improve the appearance of Bimodal TM logic documentation. The current styling is OK but should look more professional like LaTeX. Research online templates for professional math book publications to find ways to enhance the typeset appearance. Source: Theories/Bimodal/typst/chapters/02-semantics.typ:19
+
+---
+
+### 708. Fix Bimodal semantics Typst formatting issues
+- **Effort**: 1.5-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-28
+- **Source**: Theories/Bimodal/typst/chapters/02-semantics.typ (FIX: tags at lines 17, 80, 111)
+
+**Description**: Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol).
+
+---
+
 ### 707. Replace 'propositional atom' with 'sentence letter' in Bimodal documentation
 - **Effort**: 1-2 hours
 - **Status**: [NOT STARTED]

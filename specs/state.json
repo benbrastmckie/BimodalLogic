@@ -1,10 +1,32 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 33,
-    "last_sync": "2026-01-28T05:35:29Z"
+    "total_tasks": 35,
+    "last_sync": "2026-01-28T03:23:17Z"
   },
   "active_projects": [
+    {
+      "project_number": 708,
+      "project_name": "fix_bimodal_semantics_typst_formatting_issues",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-28T03:23:17Z",
+      "last_updated": "2026-01-28T03:23:17Z",
+      "session_id": "sess_1769570601_c0f95a",
+      "description": "Fix Typst formatting issues in Theories/Bimodal/typst/chapters/02-semantics.typ identified in FIX: tags. Tasks include: (1) Line 17: Place duration over the arrow instead of under, (2) Line 80: Display 'iff' in italics with dedicated command if easy, (3) Line 111: Style approx sub/superscripts like LaTeX (stacked directly after symbol)."
+    },
+    {
+      "project_number": 709,
+      "project_name": "research_professional_typst_templates_for_bimodal_documentation",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-28T03:23:17Z",
+      "last_updated": "2026-01-28T03:23:17Z",
+      "session_id": "sess_1769570601_c0f95a",
+      "description": "Research professional Typst templates for math publications to improve the appearance of Bimodal TM logic documentation. The current styling is OK but should look more professional like LaTeX. Research online templates for professional math book publications to find ways to enhance the typeset appearance. Source: Theories/Bimodal/typst/chapters/02-semantics.typ:19"
+    },
     {
       "project_number": 705,
       "project_name": "fix_bimodal_introduction_typst_issues",
@@ -476,7 +498,7 @@
         {
           "path": "specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md",
           "type": "summary",
-          "summary": "Updated implementation summary with Session 4 progress and reduced sorry count"
+          "summary": "Partial implementation summary with Session 4 progress and reduced sorry count"
         }
       ],
       "dependencies": [
@@ -751,7 +773,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 708,
+  "next_project_number": 710,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -760,8 +782,8 @@
     }
   ],
   "task_counts": {
-    "active": 29,
-    "not_started": 7,
-    "total": 29
+    "active": 31,
+    "not_started": 9,
+    "total": 31
   }
 }
