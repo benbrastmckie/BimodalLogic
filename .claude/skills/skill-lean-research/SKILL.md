@@ -1,7 +1,7 @@
 ---
 name: skill-lean-research
 description: Research Lean 4 and Mathlib for theorem proving tasks. Invoke for Lean-language research using LeanSearch, Loogle, and lean-lsp tools.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, mcp__lean-lsp__lean_leansearch, mcp__lean-lsp__lean_loogle, mcp__lean-lsp__lean_leanfinder, mcp__lean-lsp__lean_local_search, mcp__lean-lsp__lean_hover_info, mcp__lean-lsp__lean_state_search, mcp__lean-lsp__lean_hammer_premise, mcp__lean-lsp__lean_goal, mcp__lean-lsp__lean_file_outline, mcp__lean-lsp__lean_diagnostic_messages, mcp__lean-lsp__lean_completions, mcp__lean-lsp__lean_declaration_file, mcp__lean-lsp__lean_run_code
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, mcp__lean-lsp__lean_leansearch, mcp__lean-lsp__lean_loogle, mcp__lean-lsp__lean_leanfinder, mcp__lean-lsp__lean_local_search, mcp__lean-lsp__lean_hover_info, mcp__lean-lsp__lean_state_search, mcp__lean-lsp__lean_hammer_premise, mcp__lean-lsp__lean_goal, mcp__lean-lsp__lean_completions, mcp__lean-lsp__lean_declaration_file, mcp__lean-lsp__lean_run_code
 ---
 
 # Lean Research Skill
@@ -10,6 +10,8 @@ Direct execution skill for Lean 4 research. Executes MCP tools directly instead 
 
 **Note**: This skill was refactored from thin wrapper delegation pattern to direct execution to fix
 MCP tool hanging issues in subagents (Claude Code bugs #15945, #13254, #4580).
+
+**Temporary Workaround**: `lean_diagnostic_messages` and `lean_file_outline` removed due to MCP hanging bug (lean-lsp-mcp issues #118, #115). Use `lean_goal` + `lake build` for diagnostics, `Read` + `lean_hover_info` for file structure.
 
 ## Context References
 

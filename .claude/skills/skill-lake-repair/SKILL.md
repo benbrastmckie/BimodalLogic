@@ -1,7 +1,7 @@
 ---
 name: skill-lake-repair
 description: Run Lean build with automatic error repair for missing cases, unused variables, and unused imports
-allowed-tools: Read, Write, Edit, Bash, mcp__lean-lsp__lean_build, mcp__lean-lsp__lean_diagnostic_messages
+allowed-tools: Read, Write, Edit, Bash, mcp__lean-lsp__lean_build
 ---
 
 # Lake Repair Skill (Direct Execution)
@@ -9,6 +9,8 @@ allowed-tools: Read, Write, Edit, Bash, mcp__lean-lsp__lean_build, mcp__lean-lsp
 Direct execution skill for automated Lean build repair. Runs `lake build`, parses errors, and automatically fixes common mechanical errors in an iterative loop.
 
 This skill executes inline without spawning a subagent.
+
+**Temporary Workaround**: `lean_diagnostic_messages` removed due to MCP hanging bug (lean-lsp-mcp issues #118, #115). Use `lake build` via Bash for diagnostics.
 
 ## Context References
 

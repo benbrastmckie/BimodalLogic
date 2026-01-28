@@ -31,7 +31,7 @@ Remove `lean_diagnostic_messages` and `lean_file_outline` from skill allowed-too
 
 ## Implementation Phases
 
-### Phase 1: Modify Skill and Command Files [NOT STARTED]
+### Phase 1: Modify Skill and Command Files [COMPLETED]
 
 **Goal**: Remove hanging tools from allowed-tools and update workflow text in all 4 affected files.
 
@@ -67,7 +67,7 @@ Remove `lean_diagnostic_messages` and `lean_file_outline` from skill allowed-too
 
 ---
 
-### Phase 2: Verify and Document [NOT STARTED]
+### Phase 2: Verify and Document [COMPLETED]
 
 **Goal**: Verify changes are complete and add restoration TODO comments.
 

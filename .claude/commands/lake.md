@@ -1,6 +1,6 @@
 ---
 description: Run Lean build with automatic error repair
-allowed-tools: Read, Write, Edit, Bash, mcp__lean-lsp__lean_build, mcp__lean-lsp__lean_diagnostic_messages
+allowed-tools: Read, Write, Edit, Bash, mcp__lean-lsp__lean_build
 argument-hint: [--clean] [--max-retries N] [--dry-run] [--module NAME]
 ---
 

@@ -8,12 +8,12 @@
     {
       "project_number": 720,
       "project_name": "avoid_hanging_lean_mcp_calls",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "created": "2026-01-28T17:55:09Z",
-      "last_updated": "2026-01-28T18:34:34Z",
-      "session_id": "sess_1769625232_df16d0",
+      "last_updated": "2026-01-28T18:40:52Z",
+      "session_id": "sess_1769625462_041388",
       "researched": "2026-01-28T18:00:06Z",
       "artifacts": [
         {
@@ -25,9 +25,18 @@
           "path": "specs/720_avoid_hanging_lean_mcp_calls/plans/implementation-001.md",
           "type": "plan",
           "summary": "2-phase plan removing lean_diagnostic_messages and lean_file_outline from 4 skill/command files"
+        },
+        {
+          "path": "specs/720_avoid_hanging_lean_mcp_calls/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "planned": "2026-01-28T18:34:34Z"
+      "planned": "2026-01-28T18:34:34Z",
+      "started": "2026-01-28T18:38:04Z",
+      "completed": "2026-01-28T18:40:52Z",
+      "completion_summary": "Removed lean_diagnostic_messages and lean_file_outline from skill allowed-tools lists as temporary workaround for MCP hanging bug. Added workaround notes to 3 skill files referencing lean-lsp-mcp issues #118, #115.",
+      "claudemd_suggestions": "Updated skill-lean-implementation/SKILL.md, skill-lean-research/SKILL.md, skill-lake-repair/SKILL.md, and commands/lake.md"
     },
     {
       "project_number": 719,

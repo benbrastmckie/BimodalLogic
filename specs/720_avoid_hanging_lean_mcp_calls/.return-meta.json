@@ -1,0 +1,45 @@
+{
+  "status": "implemented",
+  "summary": "Removed lean_diagnostic_messages and lean_file_outline from 4 skill/command files. Added workaround notes referencing lean-lsp-mcp issues #118 and #115. Verified all allowed-tools lines no longer contain the removed tools.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-lean-implementation/SKILL.md",
+      "summary": "Removed both MCP tools from allowed-tools, added workaround note"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-lean-research/SKILL.md",
+      "summary": "Removed both MCP tools from allowed-tools, added workaround note"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-lake-repair/SKILL.md",
+      "summary": "Removed lean_diagnostic_messages from allowed-tools, added workaround note"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/commands/lake.md",
+      "summary": "Removed lean_diagnostic_messages from allowed-tools"
+    },
+    {
+      "type": "summary",
+      "path": "specs/720_avoid_hanging_lean_mcp_calls/summaries/implementation-summary-20260128.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Removed lean_diagnostic_messages and lean_file_outline from skill allowed-tools lists as temporary workaround for MCP hanging bug. Added workaround notes to 3 skill files referencing lean-lsp-mcp issues #118, #115.",
+    "claudemd_suggestions": "Updated skill-lean-implementation/SKILL.md, skill-lean-research/SKILL.md, skill-lake-repair/SKILL.md, and commands/lake.md"
+  },
+  "metadata": {
+    "session_id": "sess_1769625462_041388",
+    "duration_seconds": 900,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 2,
+    "phases_total": 2
+  },
+  "next_steps": "Review implementation and run verification"
+}
