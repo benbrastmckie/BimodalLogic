@@ -435,6 +435,11 @@
           "path": "specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing the upward bridge theorem with case-by-case feasibility analysis and effort estimation"
+        },
+        {
+          "path": "specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for upward bridge theorem proving finite model truth implies general semantics"
         }
       ],
       "planned": "2026-01-28T00:20:30Z"
