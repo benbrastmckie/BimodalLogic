@@ -131,12 +131,16 @@ Return structured error:
 ```
 1. Capture jq error output (INVALID_CHARACTER, syntax error)
 2. Log to errors.json with original command
-3. Retry using two-step pattern from jq-escaping-workarounds.md
+3. Retry using "| not" pattern from jq-escaping-workarounds.md
 4. If retry succeeds, log recovery
 ```
 
-**Note**: jq failures are often caused by Claude Code Issue #1132. Use the two-step jq pattern
-from `.claude/context/core/patterns/jq-escaping-workarounds.md` to avoid these errors.
+**Note**: jq failures are often caused by Claude Code Issue #1132 variants:
+- **Pipe injection**: `|` in quoted strings triggers `< /dev/null` injection
+- **`!=` escaping**: The `!=` operator gets escaped as `\!=`
+
+**Solution**: Use `select(.type == "X" | not)` instead of `select(.type != "X")`.
+See `.claude/context/core/patterns/jq-escaping-workarounds.md` for full documentation.
 
 ### MCP Abort Error Recovery
 ```

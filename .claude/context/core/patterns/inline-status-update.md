@@ -2,6 +2,8 @@
 
 Reusable patterns for updating task status directly in skills without invoking skill-status-sync.
 
+**IMPORTANT**: All artifact filtering uses `select(.type == "X" | not)` instead of `select(.type != "X")` to avoid Claude Code Issue #1132 which escapes `!=` as `\!=`. See `jq-escaping-workarounds.md` for details.
+
 ## Preflight Patterns
 
 ### Research Preflight
@@ -82,7 +84,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 # Step 2: Add artifact (avoids jq escaping bug - see jq-escaping-workarounds.md)
 jq --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "research")] + [{"path": $path, "type": "research"}])' \
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "research" | not)] + [{"path": $path, "type": "research"}])' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
@@ -107,7 +109,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 # Step 2: Add artifact (avoids jq escaping bug - see jq-escaping-workarounds.md)
 jq --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "plan")] + [{"path": $path, "type": "plan"}])' \
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "plan" | not)] + [{"path": $path, "type": "plan"}])' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
@@ -132,7 +134,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 # Step 2: Add artifact (avoids jq escaping bug - see jq-escaping-workarounds.md)
 jq --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")] + [{"path": $path, "type": "summary"}])' \
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "summary" | not)] + [{"path": $path, "type": "summary"}])' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 

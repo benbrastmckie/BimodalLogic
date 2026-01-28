@@ -167,6 +167,22 @@ Domain knowledge (load as needed):
 - **On MCP error**: Retry once, try alternative tool, continue with available info
 - **Git failures**: Non-blocking (logged, not fatal)
 
+## jq Command Safety
+
+Claude Code Issue #1132 causes jq parse errors when using `!=` operator (escaped as `\!=`).
+
+**Safe pattern**: Use `select(.type == "X" | not)` instead of `select(.type != "X")`
+
+```bash
+# SAFE - use "| not" pattern
+select(.type == "plan" | not)
+
+# UNSAFE - gets escaped as \!=
+select(.type != "plan")
+```
+
+Full documentation: @.claude/context/core/patterns/jq-escaping-workarounds.md
+
 ## Important Notes
 
 - Update status BEFORE starting work (preflight) and AFTER completing (postflight)

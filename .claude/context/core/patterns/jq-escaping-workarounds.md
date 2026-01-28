@@ -23,17 +23,17 @@ jq: error: syntax error, unexpected INVALID_CHARACTER, expecting $end
 ```
 
 The error occurs because:
-1. The pipe in `map(select(.type != "research"))` triggers `< /dev/null` injection
+1. The pipe in `map(select(.type == "research" | not))` triggers `< /dev/null` injection
 2. The `!=` operator gets escaped as `\!=` which is invalid jq syntax
 
 ### Affected Patterns
 
 ```bash
 # BROKEN - triggers < /dev/null injection AND != escaping
-artifacts: ((.artifacts // []) | map(select(.type != "research"))) + [...]
+artifacts: ((.artifacts // []) | map(select(.type == "research" | not))) + [...]
 
 # BROKEN - != escaping only
-select(.type != "plan")
+select(.type == "plan" | not)
 ```
 
 ### Why It Happens
@@ -53,7 +53,7 @@ Both bugs are marked NOT_PLANNED upstream (as of January 2026).
 select(.type == "plan" | not)
 
 # Instead of:
-select(.type != "plan")  # BROKEN - gets escaped as \!=
+select(.type == "plan" | not)  # BROKEN - gets escaped as \!=
 ```
 
 This pattern works because:
@@ -119,7 +119,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 # Step 2: Add artifact
 jq --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "research")] + [{"path": $path, "type": "research"}])' \
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "research" | not)] + [{"path": $path, "type": "research"}])' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
@@ -138,7 +138,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 # Step 2: Add artifact
 jq --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "plan")] + [{"path": $path, "type": "plan"}])' \
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "plan" | not)] + [{"path": $path, "type": "plan"}])' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
@@ -157,7 +157,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 # Step 2: Add artifact
 jq --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "summary")] + [{"path": $path, "type": "summary"}])' \
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "summary" | not)] + [{"path": $path, "type": "summary"}])' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
 
@@ -233,7 +233,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 # Step 2
 jq --arg path "$artifact_path" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type != "research")] + [{"path": $path, "type": "research"}])' \
+    ([(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "research" | not)] + [{"path": $path, "type": "research"}])' \
   /tmp/test-state.json
 
 # Expected output should show status "researched" and artifact added

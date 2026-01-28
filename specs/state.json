@@ -26,11 +26,11 @@
     {
       "project_number": 724,
       "project_name": "investigate_revise_command_errors_design_solution",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-28T22:03:21Z",
-      "last_updated": "2026-01-28T22:31:59Z",
+      "last_updated": "2026-01-28T22:36:48Z",
       "session_id": "sess_1769639497_e9fdaa",
       "researched": "2026-01-28T22:09:21Z",
       "artifacts": [
@@ -43,10 +43,18 @@
           "path": "specs/724_investigate_revise_command_errors_design_solution/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase plan to fix jq \\!= escaping issues via shell script encapsulation across 1 command, 7 skills, and 4 documentation files"
+        },
+        {
+          "path": "specs/724_investigate_revise_command_errors_design_solution/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all file changes and verification results"
         }
       ],
       "planned": "2026-01-28T22:30:41Z",
-      "started": "2026-01-28T22:31:59Z"
+      "started": "2026-01-28T22:31:59Z",
+      "completed": "2026-01-28T22:36:48Z",
+      "completion_summary": "Fixed Claude Code Issue #1132 jq escaping bug across all skill and command files. Replaced 8 instances of select(.type \\!= \"X\") with select(.type == \"X\" | not) pattern, updated documentation with safe pattern guidance, and added jq Command Safety section to CLAUDE.md.",
+      "claudemd_suggestions": "Added jq Command Safety section to CLAUDE.md with safe pattern quick reference. Updated jq-escaping-workarounds.md with \\!= escaping documentation, inline-status-update.md with warning note, and error-handling.md jq_parse_failure section."
     },
     {
       "project_number": 723,
@@ -84,11 +92,11 @@
     {
       "project_number": 722,
       "project_name": "remove_bimodal_definition_redundancies",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T20:18:45Z",
-      "last_updated": "2026-01-28T22:28:46Z",
+      "last_updated": "2026-01-28T22:36:38Z",
       "session_id": "sess_1769639301_c6ebca",
       "researched": "2026-01-28T22:02:19Z",
       "artifacts": [
@@ -101,10 +109,17 @@
           "path": "specs/722_remove_bimodal_definition_redundancies/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for removing redundant MCS definitions from Bimodal project"
+        },
+        {
+          "path": "specs/722_remove_bimodal_definition_redundancies/summaries/implementation-summary-20260128.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting namespace conflict resolution via fully qualified names"
         }
       ],
       "planned": "2026-01-28T22:09:26Z",
-      "started": "2026-01-28T22:28:46Z"
+      "started": "2026-01-28T22:28:46Z",
+      "completed": "2026-01-28T22:36:38Z",
+      "completion_summary": "Eliminated namespace conflicts for MCS definitions in active Metalogic code by removing hiding clauses and using fully qualified names for Boneyard helper lemmas. Active code uses canonical definitions via Core re-exports. Build passes with 977 jobs."
     },
     {
       "project_number": 721,
