@@ -1,5 +1,5 @@
 ---
-next_project_number: 765
+next_project_number: 766
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -104,6 +104,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 765. Exclude Boneyard and Examples from sorry count metrics
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+
+**Description**: Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep at todo.md:850, (2) /review command at review.md:132, (3) state-management.md documentation, (4) current metrics in state.json and TODO.md (~72 instead of ~322).
+
+---
 
 ### 760. Determine sorry disposition: archive vs complete
 - **Effort**: 4-5 hours
