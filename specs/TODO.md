@@ -27,22 +27,6 @@ technical_debt:
 
 ## High Priority
 
-### 758. Audit and reduce Metalogic sorries
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Source**: review-20260129-2
-- **Research**: [research-001.md](specs/758_audit_and_reduce_metalogic_sorries/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md)
-- **Summary**: Ported soundness proof from Boneyard to WeakCompleteness.lean, eliminating the critical sorry. Phases 2-4 deferred (non-critical/architectural). Main theorem semantic_weak_completeness remains sorry-free.
-
-**Description**: Audit and reduce sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard). Currently 45 sorries: 33 in Representation/, remainder in Core/, Completeness/, FMP/, Algebraic/. Categorize by (a) blocking main theorem path, (b) required for full biconditional but not main result, (c) optional/exploratory. Prioritize elimination of category (a) sorries. Related: Task 750 (forward Truth Lemma refactor)
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -130,9 +114,9 @@ technical_debt:
 - **Started**: 2026-01-29
 - **Revised**: 2026-01-29
 - **Research**: [research-001.md](specs/760_determine_sorry_disposition_archive_vs_complete/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-003.md)
+- **Plan**: [implementation-004.md](specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-004.md)
 
-**Description**: Archive sorried code to Boneyard (non-overlapping with Task 750). Targets: Examples/ exercise files (12 sorries), IndexedMCSFamily dead code (4), CoherentConstruction cross-origin (8), TaskRelation compositionality (5). Total: 29 sorries.
+**Description**: Archive sorried code to Boneyard (complementing completed Task 750). Targets: Examples/ exercise files (12 sorries), IndexedMCSFamily dead code (4), CoherentConstruction cross-origin (8), TaskRelation compositionality (5). Total: 29 sorries.
 
 ---
 
@@ -152,54 +136,8 @@ technical_debt:
 
 ---
 
-### 744. Update documentation for restored Lean agent architecture
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Dependencies**: Tasks 742, 743
-- **Research**: [research-001.md](specs/744_update_documentation_lean_agent_architecture/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/744_update_documentation_lean_agent_architecture/plans/implementation-001.md)
-- **Summary**: Updated documentation to reflect restoration of Lean agent delegation patterns. Removed outdated 'deprecated' and 'direct execution' references from blocked-mcp-tools.md, README.md, and thin-wrapper-skill.md.
 
-**Description**: Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.
 
----
-
-### 762. Fix planner-agent to enforce Status field in plan metadata
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/762_fix_planner_agent_enforce_status_field/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/762_fix_planner_agent_enforce_status_field/plans/implementation-001.md)
-- **Summary**: Modified planner-agent.md to enforce Status field presence: moved plan-format.md to Always Load, added Stage 6a verification step, added MUST DO item 10.
-
-**Description**: Move plan-format.md from "Load When Creating Plan" to "Always Load" section in planner-agent.md (line 43). Add explicit verification step in Stage 5 (around line 173) to ensure Status field exists in plan file before writing success metadata. Evidence: Task 750's v005 plan missing Status line while older plans (758, 759, 741) have it.
-
----
-
-### 763. Add plan status updates to skill-lean-implementation
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/763_add_plan_status_updates_skill_lean_implementation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/763_add_plan_status_updates_skill_lean_implementation/plans/implementation-001.md)
-- **Summary**: Added plan file status update pattern to skill-lean-implementation at three locations, ensuring plan files accurately reflect implementation state (IMPLEMENTING/COMPLETED/PARTIAL).
-
-**Description**: Add plan status update pattern (sed commands to update `- **Status**: [...]` line) to skill-lean-implementation/SKILL.md in three locations: (1) Stage 2 Preflight: Update to [IMPLEMENTING] before invoking agent, (2) Stage 7 Postflight (implemented): Update to [COMPLETED], (3) Stage 7 Postflight (partial): Update to [PARTIAL]. Pattern exists in skill-implementer (lines 91-98, 265-271, 287-293), skill-latex-implementation (lines 70-76, 282-288, 304-310), skill-typst-implementation (lines 70-76, 282-288, 304-310).
-
----
 
 ### 685. Derive world-history and Barcan theorems
 - **Effort**: 8-10 hours
@@ -256,20 +194,5 @@ technical_debt:
 
 ## Low Priority
 
-### 759. Update TODO.md sorry metrics
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Priority**: Low
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Source**: review-20260129-2
-- **Research**: [research-001.md](specs/759_update_todo_md_sorry_metrics/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/759_update_todo_md_sorry_metrics/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/759_update_todo_md_sorry_metrics/summaries/implementation-summary-20260129.md)
-
-**Description**: Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.
-
----
 
 
