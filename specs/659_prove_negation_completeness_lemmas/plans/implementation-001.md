@@ -21,121 +21,64 @@ This plan addresses the two tractable backward direction cases in the truth lemm
 ### Phase 1: Witness Extraction Lemmas
 
 **Estimated effort**: 2-3 hours
-**Status**: [NOT STARTED]
+**Status**: [BLOCKED]
 
-**Objectives**:
-1. Prove witness extraction lemma for `all_past` negation
-2. Prove witness extraction lemma for `all_future` negation
+**Block Reason**: Witness extraction requires semantic bridge properties not available in current architecture.
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean` - Add witness extraction lemmas
+**Analysis Findings**:
+The witness extraction lemmas require proving: if `some_past (¬ψ) ∈ mcs(t)`, then `∃ s < t. (¬ψ) ∈ mcs(s)`.
+This is an **existential witness** property that does not follow from the current coherence conditions.
 
-**Steps**:
+The current `IndexedMCSFamily` coherence conditions provide **universal propagation**:
+- `forward_G`: `G φ ∈ mcs(t) → φ ∈ mcs(t')` for `t < t'`
+- `backward_H`: `H φ ∈ mcs(t) → φ ∈ mcs(t')` for `t' < t`
 
-1. **Add `neg_H_implies_witness` lemma**:
-   ```lean
-   /--
-   Witness extraction for negated all_past: If H ψ is not in the MCS at time t,
-   then there exists some time s < t where ψ is not in the MCS.
+But NOT existential witness extraction:
+- Need: `some_past φ ∈ mcs(t) → ∃ s < t. φ ∈ mcs(s)`
 
-   **Proof Strategy**: Contrapositive of universal property.
-   If ψ ∈ mcs(s) for all s < t, then by forward_H coherence looking back from any future time,
-   combined with MCS closure properties, we can construct H ψ ∈ mcs(t).
+The `forward_H` property in CoherentConstruction.lean (line 681) that would help has a sorry.
 
-   This uses the classical fact that if ψ holds at all past times and at t (by T-axiom),
-   then H ψ must hold at t.
-   -/
-   lemma neg_H_implies_witness (family : IndexedMCSFamily D) (t : D) (ψ : Formula)
-       (h : Formula.all_past ψ ∉ family.mcs t) : ∃ s, s < t ∧ ψ ∉ family.mcs s := by
-     -- Contrapositive: assume ∀ s < t, ψ ∈ mcs s
-     by_contra h_all
-     push_neg at h_all
-     -- Need to show: H ψ ∈ mcs t
-     -- Strategy: Use the fact that if ψ holds at all s ≤ t, then H ψ ∈ mcs t
-     -- This requires the indexed family construction's "coherent extension" property
-     sorry
-   ```
+**Options Identified**:
+1. **Option A**: Add `witness_past` coherence to IndexedMCSFamily (major architecture change)
+2. **Option B**: Prove from construction properties (requires proving forward_H first)
+3. **Option C**: Leave as sorry (documented as not required for completeness)
 
-2. **Add `neg_G_implies_witness` lemma** (symmetric):
-   ```lean
-   /--
-   Witness extraction for negated all_future: If G ψ is not in the MCS at time t,
-   then there exists some time s > t where ψ is not in the MCS.
-   -/
-   lemma neg_G_implies_witness (family : IndexedMCSFamily D) (t : D) (ψ : Formula)
-       (h : Formula.all_future ψ ∉ family.mcs t) : ∃ s, t < s ∧ ψ ∉ family.mcs s := by
-     by_contra h_all
-     push_neg at h_all
-     sorry
-   ```
-
-3. **Investigate coherent construction properties**:
-   - Read `CoherentConstruction.lean` for additional properties that might help
-   - The key challenge: proving `∀ s < t, ψ ∈ mcs s` implies `H ψ ∈ mcs t`
-   - This is essentially the converse of backward_H coherence
-
-**Key Insight**: The witness extraction may require an additional property of the indexed family:
-```lean
--- "Completeness" of temporal operators in the family
--- If ψ ∈ mcs(s) for all s < t, then H ψ ∈ mcs(t)
-coherent_H : ∀ t ψ, (∀ s, s < t → ψ ∈ mcs s) → (∀ s, s ≤ t → ψ ∈ mcs s) → Formula.all_past ψ ∈ mcs t
-```
-
-If this property doesn't exist, we may need to:
-- Add it as a hypothesis to the witness extraction lemmas
-- Or derive it from existing coherence conditions
-
-**Verification**:
-- [ ] `lake build` succeeds with no new errors
-- [ ] Lemma types match the required signatures
-- [ ] Proof compiles (even if with sorry initially)
+**Recommendation**: Defer to a future architecture task. The backward Truth Lemma is explicitly documented as NOT REQUIRED for the representation theorem or completeness proof.
 
 ---
 
 ### Phase 2: Proof Analysis - Determine if Additional Coherence is Needed
 
-**Estimated effort**: 1-2 hours
-**Status**: [NOT STARTED]
+**Estimated effort**: 1-2 hours (already completed inline with Phase 1)
+**Status**: [COMPLETED]
 
-**Objectives**:
-1. Determine if existing coherence conditions suffice for witness extraction
-2. If not, identify the minimal additional property needed
+**Findings**:
+1. **CoherentConstruction.lean analysis**: The construction has a sorry at `forward_H` (line 681). This means "looking back from the future" is not proven.
 
-**Files to analyze**:
-- `Theories/Bimodal/Metalogic/Representation/CoherentConstruction.lean`
-- `Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean`
+2. **Negation + coherence analysis**:
+   - Given: `H ψ ∉ mcs t` → `¬(H ψ) ∈ mcs t` by negation completeness
+   - `¬(H ψ) = some_past (¬ψ)` by temporal De Morgan
+   - But extracting witness from `some_past (¬ψ) ∈ mcs t` requires the semantic bridge
 
-**Steps**:
+3. **Temporal K axiom approach**: `H (ψ → χ) → (H ψ → H χ)` gives distribution, not witness
 
-1. **Analyze CoherentConstruction.lean**:
-   - Check if the construction provides the "completeness" property
-   - The construction builds MCS at each time from seeds + Lindenbaum extension
-   - Question: Does the construction ensure `∀ s < t, ψ ∈ mcs s` → `H ψ ∈ mcs t`?
-
-2. **Check if negation + coherence suffices**:
-   - Given: `H ψ ∉ mcs t` (by assumption)
-   - By negation completeness: `¬(H ψ) ∈ mcs t`
-   - The key question: Does `¬(H ψ) ∈ mcs t` give us a witness?
-
-3. **Alternative approach - use temporal K axiom**:
-   - `H (ψ → χ) → (H ψ → H χ)` (temporal K distribution)
-   - Combined with negation completeness, this might give witness
-
-**Decision Point**: Based on analysis, choose one of:
-- A: Existing coherence conditions suffice (proceed to Phase 3)
-- B: Need to add coherence property to IndexedMCSFamily (add Phase 2b)
-- C: Use derivation-based approach with temporal axioms (modify Phase 1)
+**Decision**: The task requires architecture changes beyond the current scope.
+- The backward Truth Lemma cases are NOT required for completeness
+- Pursuing them would require proving `forward_H` in CoherentConstruction.lean first
+- This is documented in Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean
 
 **Verification**:
-- [ ] Clear determination of which approach to use
-- [ ] Documented reasoning in code comments
+- [x] Clear determination: Need architectural changes to prove
+- [x] Documented reasoning in analysis above
 
 ---
 
 ### Phase 3: Complete Backward all_past Case
 
 **Estimated effort**: 1-2 hours
-**Status**: [NOT STARTED]
+**Status**: [BLOCKED]
+
+**Block Reason**: Depends on Phase 1 witness extraction lemmas which require architecture changes.
 
 **Objectives**:
 1. Fill the `sorry` at line 423 of TruthLemma.lean
@@ -185,7 +128,9 @@ If this property doesn't exist, we may need to:
 ### Phase 4: Complete Backward all_future Case
 
 **Estimated effort**: 1 hour
-**Status**: [NOT STARTED]
+**Status**: [BLOCKED]
+
+**Block Reason**: Depends on Phase 1 witness extraction lemmas which require architecture changes.
 
 **Objectives**:
 1. Fill the `sorry` at line 441 of TruthLemma.lean
@@ -224,7 +169,9 @@ If this property doesn't exist, we may need to:
 ### Phase 5: Final Verification and Documentation
 
 **Estimated effort**: 0.5 hours
-**Status**: [NOT STARTED]
+**Status**: [BLOCKED]
+
+**Block Reason**: Depends on completion of Phases 3-4.
 
 **Objectives**:
 1. Verify all changes build successfully
@@ -270,7 +217,18 @@ If this property doesn't exist, we may need to:
 | Truth contradiction step is more complex than expected | Low | Truth semantics are well-defined; may need helper lemma |
 | CoherentConstruction doesn't provide needed property | Medium | May need to strengthen the construction or add hypothesis |
 
-## Success Criteria
+## Implementation Status: BLOCKED
+
+**Reason**: The backward Truth Lemma cases require witness extraction from temporal "sometime" formulas,
+which depends on the `forward_H` coherence property that has a sorry in CoherentConstruction.lean.
+
+**Prerequisites for Unblocking**:
+1. Prove `forward_H` in `CoherentConstruction.lean` (line 681)
+2. Or add explicit `witness_past` and `witness_future` properties to `IndexedMCSFamily`
+
+**Alternative**: Accept that backward Truth Lemma is not required for completeness (current state).
+
+## Success Criteria (DEFERRED)
 
 - [ ] `sorry` at line 423 (all_past backward) is eliminated
 - [ ] `sorry` at line 441 (all_future backward) is eliminated

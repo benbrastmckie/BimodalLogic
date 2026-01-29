@@ -106,10 +106,11 @@ technical_debt:
 
 ### 739. Update report-format.md with Project Context section
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Plan**: [implementation-001.md](specs/739_update_report_format_with_project_context_section/plans/implementation-001.md)
 
 **Description**: Update .claude/context/core/formats/report-format.md to include a new "Project Context" section in the research report template. The section should appear after metadata and before Executive Summary to provide early orientation. Define fields: relation to project goals, component location, relevant modules, and integration points. This provides researchers with context on how their work fits into the broader project structure.
 
@@ -132,7 +133,7 @@ technical_debt:
 
 ### 735. Complete phase 5 of task 700: Ultrafilter-MCS Correspondence
 - **Effort**: 1.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 700
@@ -306,7 +307,7 @@ technical_debt:
 
 ### 737. Fix unused simp arguments in TemporalProofStrategies.lean
 - **Effort**: 30 min
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-29

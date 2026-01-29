@@ -19,24 +19,25 @@
     {
       "project_number": 737,
       "project_name": "fix_unused_simp_arguments_temporalproofstrategies",
-      "status": "not_started",
+      "status": "planning",
       "language": "lean",
       "priority": "low",
       "description": "Fix unused simp arguments in TemporalProofStrategies.lean. Remove Formula.swap_temporal_involution from simp calls at lines 174, 203, 242, 459 where the linter reports it is unused.",
       "created": "2026-01-29T04:04:51Z",
-      "last_updated": "2026-01-29T04:04:51Z"
+      "last_updated": "2026-01-29T04:09:08Z",
+      "session_id": "sess_1769659724_182b40"
     },
     {
       "project_number": 735,
       "project_name": "complete_task700_phase5_ultrafilter_mcs_correspondence",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "description": "Complete phase 5 of task 700: Ultrafilter-MCS Correspondence. Fill ultrafilterToSet_mcs consistency proof - show that if L ⊢ ⊥ and all [φᵢ] ∈ U, then ⊥ ∈ U. Requires relating list conjunction to fold of quotients. (Follow-up from task #700)",
       "parent_task": 700,
       "created": "2026-01-29T01:21:00Z",
-      "last_updated": "2026-01-29T04:05:08Z",
-      "session_id": "sess_1769650330_448062",
+      "last_updated": "2026-01-29T04:08:30Z",
+      "session_id": "sess_1769659692_29c23a",
       "researched": "2026-01-29T01:30:16Z",
       "artifacts": [
         {
@@ -50,7 +51,8 @@
           "summary": "3-phase implementation plan for ultrafilterToSet_mcs consistency proof"
         }
       ],
-      "planned": "2026-01-29T04:05:08Z"
+      "planned": "2026-01-29T04:05:08Z",
+      "started": "2026-01-29T04:08:30Z"
     },
     {
       "project_number": 736,
@@ -666,12 +668,21 @@
     {
       "project_number": 739,
       "project_name": "update_report_format_with_project_context_section",
-      "status": "not_started",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "description": "Update .claude/context/core/formats/report-format.md to include a new \"Project Context\" section in the research report template. The section should appear after metadata and before Executive Summary to provide early orientation. Define fields: relation to project goals, component location, relevant modules, and integration points. This provides researchers with context on how their work fits into the broader project structure.",
       "created": "2026-01-29T01:45:00Z",
-      "last_updated": "2026-01-29T01:45:00Z"
+      "last_updated": "2026-01-29T04:09:32Z",
+      "session_id": "sess_1769659648_a6aabb",
+      "planned": "2026-01-29T04:09:32Z",
+      "artifacts": [
+        {
+          "path": "specs/739_update_report_format_with_project_context_section/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase implementation plan for adding Project Context section to research report template"
+        }
+      ]
     },
     {
       "project_number": 740,

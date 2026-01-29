@@ -1,7 +1,7 @@
 # Implementation Plan: Task #735
 
 - **Task**: 735 - Complete task 700 phase 5: Ultrafilter-MCS Correspondence
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Priority**: high
 - **Dependencies**: Task 700 phases 1-4 (completed)
@@ -44,7 +44,7 @@ From research report:
 
 ## Implementation Phases
 
-### Phase 1: Implement `fold_le_of_derives` Helper [NOT STARTED]
+### Phase 1: Implement `fold_le_of_derives` Helper [IN PROGRESS]
 
 **Goal**: Create a lemma showing that if L ⊢ ψ, then the fold of quotients of L is ≤ [ψ].
 
