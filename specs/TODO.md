@@ -264,12 +264,13 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
 - **Dependencies**: Task 624
 - **Research**: [research-001.md](specs/625_prove_decide_complete/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/625_prove_decide_complete/plans/implementation-001.md)
 
 **Description**: Prove the `decide_complete` theorem in Correctness.lean deriving decision procedure completeness from tableau completeness. Follows directly from tableau_complete (Task 624).
 

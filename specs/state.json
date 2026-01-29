@@ -195,7 +195,7 @@
     {
       "project_number": 625,
       "project_name": "prove_decide_complete",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -203,7 +203,7 @@
         624
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T14:17:46Z",
+      "last_updated": "2026-01-29T14:19:47Z",
       "session_id": "sess_1769696253_abceac",
       "researched": "2026-01-29T14:14:55Z",
       "artifacts": [
@@ -211,8 +211,14 @@
           "path": "specs/625_prove_decide_complete/reports/research-001.md",
           "type": "research",
           "summary": "Research on proving decide_complete theorem, analyzing gap between tableau completeness and proof extraction"
+        },
+        {
+          "path": "specs/625_prove_decide_complete/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for proving decide_complete theorem"
         }
-      ]
+      ],
+      "planned": "2026-01-29T14:19:47Z"
     },
     {
       "project_number": 619,

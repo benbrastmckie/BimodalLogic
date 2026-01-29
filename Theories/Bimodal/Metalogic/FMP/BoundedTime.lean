@@ -65,6 +65,8 @@ abbrev BoundedTime (k : Nat) := Fin (2 * k + 1)
 
 namespace BoundedTime
 
+variable {k : Nat}
+
 /-!
 ## Core Operations
 -/
@@ -80,14 +82,14 @@ def origin (k : Nat) : BoundedTime k :=
 Convert to a centered integer offset.
 Maps index i ∈ [0, 2k] to integer i - k ∈ [-k, k].
 -/
-def toInt (k : Nat) (t : BoundedTime k) : Int :=
+def toInt (t : BoundedTime k) : Int :=
   (t.val : Int) - (k : Int)
 
 /--
 Construct a bounded time from an integer offset in range [-k, k].
 Returns none if the offset is out of range.
 -/
-def ofInt? (k : Nat) (n : Int) : Option (BoundedTime k) :=
+def ofInt? (n : Int) : Option (BoundedTime k) :=
   let i := n + k
   if h : 0 ≤ i ∧ i < 2 * k + 1 then
     some ⟨i.toNat, by omega⟩
@@ -97,7 +99,7 @@ def ofInt? (k : Nat) (n : Int) : Option (BoundedTime k) :=
 /--
 Construct a bounded time from a natural number index.
 -/
-def ofNat (k : Nat) (n : Nat) (h : n < 2 * k + 1) : BoundedTime k :=
+def ofNat' (n : Nat) (h : n < 2 * k + 1) : BoundedTime k :=
   ⟨n, h⟩
 
 /-!
@@ -107,13 +109,13 @@ def ofNat (k : Nat) (n : Nat) (h : n < 2 * k + 1) : BoundedTime k :=
 /--
 The origin maps to 0 under toInt.
 -/
-theorem origin_toInt (k : Nat) : toInt k (origin k) = 0 := by
+theorem origin_toInt : (origin k).toInt = 0 := by
   simp [origin, toInt]
 
 /--
 toInt is injective.
 -/
-theorem toInt_injective (k : Nat) : Function.Injective (toInt k) := by
+theorem toInt_injective : Function.Injective (toInt (k := k)) := by
   intros t1 t2 h
   simp [toInt] at h
   ext
@@ -122,8 +124,8 @@ theorem toInt_injective (k : Nat) : Function.Injective (toInt k) := by
 /--
 The range of toInt is [-k, k].
 -/
-theorem toInt_range (k : Nat) (t : BoundedTime k) :
-    -(k : Int) ≤ toInt k t ∧ toInt k t ≤ (k : Int) := by
+theorem toInt_range (t : BoundedTime k) :
+    -(k : Int) ≤ t.toInt ∧ t.toInt ≤ (k : Int) := by
   constructor
   · simp only [toInt]; omega
   · simp only [toInt]
@@ -133,14 +135,14 @@ theorem toInt_range (k : Nat) (t : BoundedTime k) :
 /--
 Lower bound of toInt range.
 -/
-theorem toInt_lower (k : Nat) (t : BoundedTime k) : -(k : Int) ≤ toInt k t := by
-  exact (toInt_range k t).1
+theorem toInt_lower (t : BoundedTime k) : -(k : Int) ≤ t.toInt := by
+  exact (toInt_range t).1
 
 /--
 Upper bound of toInt range.
 -/
-theorem toInt_upper (k : Nat) (t : BoundedTime k) : toInt k t ≤ (k : Int) := by
-  exact (toInt_range k t).2
+theorem toInt_upper (t : BoundedTime k) : t.toInt ≤ (k : Int) := by
+  exact (toInt_range t).2
 
 /-!
 ## Fintype Properties
@@ -157,12 +159,12 @@ theorem card (k : Nat) : Fintype.card (BoundedTime k) = 2 * k + 1 := by
 /--
 Bounded time is nonempty (has at least origin).
 -/
-instance instNonempty (k : Nat) : Nonempty (BoundedTime k) := ⟨origin k⟩
+instance instNonempty : Nonempty (BoundedTime k) := ⟨origin k⟩
 
 /--
 Bounded time is inhabited with origin.
 -/
-instance instInhabited (k : Nat) : Inhabited (BoundedTime k) := ⟨origin k⟩
+instance instInhabited : Inhabited (BoundedTime k) := ⟨origin k⟩
 
 /-!
 ## Successor/Predecessor Operations
@@ -193,25 +195,24 @@ def pred? (t : BoundedTime k) : Option (BoundedTime k) :=
 /--
 Successor increases toInt by 1.
 -/
-theorem succ_toInt {k : Nat} {t t' : BoundedTime k}
-    (h : succ? t = some t') : toInt k t' = toInt k t + 1 := by
+theorem succ_toInt {t t' : BoundedTime k}
+    (h : t.succ? = some t') : t'.toInt = t.toInt + 1 := by
   simp only [succ?] at h
-  split_ifs at h with h'
-  · simp only [Option.some_inj] at h
-    simp [toInt, h]
-  · simp at h
+  split_ifs at h with h' <;> simp only [Option.some_inj] at h
+  subst h
+  simp only [toInt]
+  omega
 
 /--
 Predecessor decreases toInt by 1.
 -/
-theorem pred_toInt {k : Nat} {t t' : BoundedTime k}
-    (h : pred? t = some t') : toInt k t' = toInt k t - 1 := by
+theorem pred_toInt {t t' : BoundedTime k}
+    (h : t.pred? = some t') : t'.toInt = t.toInt - 1 := by
   simp only [pred?] at h
-  split_ifs at h with h'
-  · simp only [Option.some_inj] at h
-    simp [toInt, h]
-    omega
-  · simp at h
+  split_ifs at h with h' <;> simp only [Option.some_inj] at h
+  subst h
+  simp only [toInt]
+  omega
 
 /-!
 ## Order Properties
@@ -222,34 +223,38 @@ BoundedTime inherits linear order from Fin.
 /--
 toInt preserves order.
 -/
-theorem toInt_mono {k : Nat} {t1 t2 : BoundedTime k}
-    (h : t1 ≤ t2) : toInt k t1 ≤ toInt k t2 := by
+theorem toInt_mono {t1 t2 : BoundedTime k}
+    (h : t1 ≤ t2) : t1.toInt ≤ t2.toInt := by
   simp only [toInt]
+  have h' : t1.val ≤ t2.val := h
   omega
 
 /--
 toInt reflects order.
 -/
-theorem le_of_toInt_le {k : Nat} {t1 t2 : BoundedTime k}
-    (h : toInt k t1 ≤ toInt k t2) : t1 ≤ t2 := by
+theorem le_of_toInt_le {t1 t2 : BoundedTime k}
+    (h : t1.toInt ≤ t2.toInt) : t1 ≤ t2 := by
   simp only [toInt] at h
-  exact h
+  have h' : t1.val ≤ t2.val := by omega
+  exact h'
 
 /--
 toInt is strictly monotone.
 -/
-theorem toInt_strictMono {k : Nat} {t1 t2 : BoundedTime k}
-    (h : t1 < t2) : toInt k t1 < toInt k t2 := by
+theorem toInt_strictMono {t1 t2 : BoundedTime k}
+    (h : t1 < t2) : t1.toInt < t2.toInt := by
   simp only [toInt]
+  have h' : t1.val < t2.val := h
   omega
 
 /--
 toInt strictly reflects order.
 -/
-theorem lt_of_toInt_lt {k : Nat} {t1 t2 : BoundedTime k}
-    (h : toInt k t1 < toInt k t2) : t1 < t2 := by
+theorem lt_of_toInt_lt {t1 t2 : BoundedTime k}
+    (h : t1.toInt < t2.toInt) : t1 < t2 := by
   simp only [toInt] at h
-  exact Fin.lt_iff_val_lt_val.mpr (by omega)
+  have h' : t1.val < t2.val := by omega
+  exact h'
 
 /-!
 ## Enumeration
@@ -272,24 +277,25 @@ def max (k : Nat) : BoundedTime k :=
 /--
 Minimum maps to -k.
 -/
-theorem min_toInt (k : Nat) : toInt k (min k) = -(k : Int) := by
+theorem min_toInt : (min k).toInt = -(k : Int) := by
   simp [min, toInt]
 
 /--
 Maximum maps to +k.
 -/
-theorem max_toInt (k : Nat) : toInt k (max k) = (k : Int) := by
+theorem max_toInt : (max k).toInt = (k : Int) := by
   simp [max, toInt]
   omega
 
 /--
 Origin is between min and max.
 -/
-theorem min_le_origin (k : Nat) : min k ≤ origin k := by
-  simp [min, origin]
+theorem min_le_origin : min k ≤ origin k := by
+  simp only [min, origin, Fin.le_def]
+  omega
 
-theorem origin_le_max (k : Nat) : origin k ≤ max k := by
-  simp only [origin, max]
+theorem origin_le_max : origin k ≤ max k := by
+  simp only [origin, max, Fin.le_def]
   omega
 
 end BoundedTime
