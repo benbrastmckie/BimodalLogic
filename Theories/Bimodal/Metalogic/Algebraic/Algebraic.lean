@@ -4,6 +4,7 @@ import Bimodal.Metalogic.Algebraic.InteriorOperators
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 import Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
 import Bimodal.Metalogic.Algebraic.AlgebraicSemanticBridge
+import Bimodal.Metalogic.Algebraic.HybridCompleteness
 
 /-!
 # Algebraic Representation Theorem
@@ -20,7 +21,8 @@ Algebraic/
 ├── InteriorOperators.lean       # G/H as interior operators (using T-axioms)
 ├── UltrafilterMCS.lean          # Bijection: ultrafilters ↔ MCS
 ├── AlgebraicRepresentation.lean # Main theorem
-└── AlgebraicSemanticBridge.lean # Bridge to standard Kripke semantics
+├── AlgebraicSemanticBridge.lean # Bridge to standard Kripke semantics
+└── HybridCompleteness.lean      # Hybrid approach: algebraic + FMP path
 ```
 
 ## Mathematical Overview
@@ -68,5 +70,6 @@ open Bimodal.Metalogic.Algebraic.InteriorOperators
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
 open Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
 open Bimodal.Metalogic.Algebraic.AlgebraicSemanticBridge
+open Bimodal.Metalogic.Algebraic.HybridCompleteness
 
 end Bimodal.Metalogic.Algebraic

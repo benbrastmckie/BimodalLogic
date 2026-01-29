@@ -253,127 +253,30 @@ noncomputable def hybrid_weak_completeness (phi : Formula) :
     -- should hold if phi is valid.
 
     -- Let's use valid directly on our constructed history
-    have tau := finiteHistoryToWorldHistory phi hist
+    let tau := finiteHistoryToWorldHistory phi hist
     have h_truth := h_valid Int (SemanticCanonicalFrame phi) (SemanticCanonicalModel phi) tau 0
 
     -- h_truth : truth_at (SemanticCanonicalModel phi) tau 0 phi
     -- We need to connect this to semantic_truth_at_v2
 
-    -- The connection requires truth_at_implies_semantic_truth, which has sorry.
-    -- But let's trace through what we actually have.
-
-    -- Key observation: The issue is that truth_at evaluates phi recursively,
-    -- while semantic_truth_at_v2 checks a boolean assignment.
-    -- For MCS-derived world states (which sw is), these SHOULD match.
-
-    -- For now, we'll use the fact that semantic_weak_completeness
-    -- is fully proven and provides the same result via contrapositive.
-    -- The semantic_weak_completeness proof doesn't require valid_implies_semantic_truth.
-
-    -- We can just apply semantic_weak_completeness to get the derivation,
-    -- but then h_prov says it doesn't exist - contradiction.
-
-    -- Wait - we're in the else branch where ¬Nonempty (⊢ phi).
-    -- But semantic_weak_completeness CONSTRUCTS a derivation when its
-    -- hypothesis holds. If we could prove the hypothesis, we'd have ⊢ phi.
-
-    -- The issue is exactly the gap between validity and the hypothesis of
-    -- semantic_weak_completeness. That gap is truth_at_implies_semantic_truth.
-
-    -- For a truly sorry-free proof, we need to bridge this.
-    -- The cleanest approach is to note that our sw is MCS-derived,
-    -- and for MCS-derived states, there IS a truth correspondence.
-
-    -- Let's check if we can prove this specific case.
-    -- tau.states 0 (inFiniteDomain_0) = sw by construction.
-
-    have h_domain : inFiniteDomain phi 0 := by
-      unfold inFiniteDomain
-      constructor <;> omega
-
-    have h_tau_0 : tau.states 0 h_domain = sw := by
-      unfold tau finiteHistoryToWorldHistory
-      simp only [SemanticWorldState.ofHistoryTime, SemanticWorldState.mk]
-      congr 1
-      · rfl
-      · -- intToBoundedTime phi 0 h_domain = BoundedTime.origin (temporalBound phi)
-        unfold intToBoundedTime BoundedTime.origin
-        congr
-        simp only [Int.toNat_zero, zero_add]
-
-    -- Now we need: truth_at ... tau 0 phi → semantic_truth_at_v2 phi sw t phi
-    -- For sw specifically, which is MCS-derived.
-
-    -- The MCS-derived property means sw.toFiniteWorldState = w
-    -- where w = worldStateFromClosureMCS phi S h_S_mcs.
-    -- And worldStateFromClosureMCS has the property:
-    --   worldStateFromClosureMCS_models_iff : psi ∈ S ↔ w.models psi h_mem
-
-    -- So for phi: phi ∈ S ↔ w.models phi h_phi_closure
-    -- We know phi ∉ S, so ¬(w.models phi h_phi_closure).
-    -- This is exactly what we have as h_phi_false.
-
-    -- The question is: does truth_at (SemanticCanonicalModel phi) tau 0 phi
-    -- imply w.models phi h_phi_closure for MCS-derived w?
-
-    -- For atoms: truth_at checks semantic_valuation which checks the MCS assignment.
-    -- For implication: truth_at is ¬truth_at psi ∨ truth_at chi.
-    --                  semantic_truth_at_v2 checks the assignment directly.
-    --                  For MCS, closure_mcs_imp_iff gives correspondence.
-    -- For box: truth_at quantifies over ALL histories (not just constant ones).
-    --          This is where the gap occurs.
-
-    -- For the specific formula phi, if phi has no box subformulas,
-    -- the correspondence should hold. But phi can be arbitrary.
-
-    -- Actually, let's think about this differently.
-    -- We have h_valid : valid phi, meaning truth_at holds at ALL world histories.
-    -- In particular, at tau (the constant history through sw).
-
-    -- We also have h_sw_false : ¬semantic_truth_at_v2 phi sw t phi.
-
-    -- If we could prove: for MCS-derived sw, truth_at ... phi → semantic_truth_at_v2 ... phi,
-    -- we'd have our contradiction.
-
-    -- The issue is that truth_at uses recursive evaluation while semantic_truth_at_v2
-    -- uses the assignment. For MCS-derived states, the assignment IS the characteristic
-    -- function of MCS membership. And MCS membership follows provability patterns.
-
+    -- The gap: truth_at evaluates phi recursively (especially box quantifies over ALL histories)
+    -- while semantic_truth_at_v2 checks a boolean assignment in FiniteWorldState.
+    -- For MCS-derived world states, the assignment IS the MCS membership function.
     -- But the gap is in BOX: truth_at box psi requires truth at ALL histories,
-    -- while the MCS assignment for box psi depends on whether box psi was in S.
+    -- while the MCS assignment depends on whether box psi was in S.
 
-    -- For S = M ∩ closureWithNeg(phi), box psi ∈ S requires box psi ∈ M AND box psi ∈ closureWithNeg(phi).
-    -- If box psi is a subformula of phi, the second condition holds.
-    -- The first condition (box psi ∈ M) is determined by MCS maximality.
+    -- This is exactly the "forward truth lemma" gap identified in research.
+    -- The EXISTING semantic_weak_completeness IS sorry-free - it works by contrapositive
+    -- (¬⊢ phi → ∃ countermodel) and doesn't need this forward direction.
 
-    -- The truth_at check says: for ALL histories tau', truth_at at tau' psi.
-    -- This is stronger than "box psi ∈ M".
-
-    -- So the gap is: valid phi → truth_at box (sub)psi at our specific tau
-    --                → box (sub)psi ∈ M (NOT automatic!)
-
-    -- The soundness direction IS automatic: if box psi ∈ M (so provable context),
-    -- then truth_at box psi. But we need the other direction.
-
-    -- This is exactly the completeness direction! So our "proof" is circular
-    -- unless we can show the correspondence directly for this specific model.
-
-    -- Given the architectural limitations, let's use sorry here and document it clearly.
-    -- The sorry is specifically in connecting valid phi → semantic_truth_at_v2 at MCS-derived sw.
-
-    -- This represents the "forward truth lemma" gap that was identified in research.
-
-    -- For a truly sorry-free completion, we would need one of:
+    -- For a truly sorry-free completion of valid → ⊢, we would need:
     -- 1. Restrict validity to specific model class (but valid quantifies over ALL models)
-    -- 2. Prove correspondence for MCS-derived states (requires showing the model IS the canonical one)
+    -- 2. Prove correspondence for MCS-derived states
     -- 3. Use a different proof structure entirely
 
-    -- IMPORTANT: The EXISTING semantic_weak_completeness IS sorry-free.
-    -- It works by contrapositive: ¬⊢ phi → ∃ countermodel.
-    -- What we're trying to do here (valid → ⊢) requires the forward direction
-    -- of the truth lemma, which is where the gap is.
-
-    sorry
+    -- Apply valid_implies_semantic_truth which has the same sorry
+    have h_sem := valid_implies_semantic_truth phi h_valid sw
+    exact h_sw_false h_sem
 
 /-!
 ## Alternative: Direct Reuse of semantic_weak_completeness

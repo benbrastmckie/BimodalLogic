@@ -34,11 +34,11 @@
     {
       "project_number": 758,
       "project_name": "audit_and_reduce_metalogic_sorries",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-29T17:15:00Z",
-      "last_updated": "2026-01-29T18:25:52Z",
+      "last_updated": "2026-01-29T18:28:21Z",
       "description": "Audit and reduce sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard). Currently 45 sorries: 33 in Representation/, remainder in Core/, Completeness/, FMP/, Algebraic/. Categorize by (a) blocking main theorem path, (b) required for full biconditional but not main result, (c) optional/exploratory. Prioritize elimination of category (a) sorries. Related: Task 750 (forward Truth Lemma refactor)",
       "source": "review-20260129-2",
       "session_id": "sess_1769711137_b2e046",
@@ -48,8 +48,14 @@
           "path": "specs/758_audit_and_reduce_metalogic_sorries/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive audit categorizing sorries as (a) critical: 1 soundness sorry, (b) secondary: 21 sorries on alternative paths, (c) exploratory: 13 cross-origin/compositionality sorries. Includes priority ranking and implementation recommendations."
+        },
+        {
+          "path": "specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan targeting 20 sorry reduction through proof porting, fixes, and archival"
         }
-      ]
+      ],
+      "planned": "2026-01-29T18:28:21Z"
     },
     {
       "project_number": 750,

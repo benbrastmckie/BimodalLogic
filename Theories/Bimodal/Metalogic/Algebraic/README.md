@@ -13,11 +13,13 @@ The algebraic approach proves the representation theorem using Lindenbaum-Tarski
 | Module | Purpose | Status |
 |--------|---------|--------|
 | `Algebraic.lean` | Module root, re-exports all components | Complete |
-| `LindenbaumQuotient.lean` | Quotient by provable equivalence | Proven |
-| `BooleanStructure.lean` | Boolean algebra instance | Has sorries |
-| `InteriorOperators.lean` | G/H as interior operators | Partial |
-| `UltrafilterMCS.lean` | Ultrafilter-MCS bijection | Has sorries |
-| `AlgebraicRepresentation.lean` | Main representation theorem | Has sorries |
+| `LindenbaumQuotient.lean` | Quotient by provable equivalence | **Proven** |
+| `BooleanStructure.lean` | Boolean algebra instance | **Proven** |
+| `InteriorOperators.lean` | G/H as interior operators | **Proven** |
+| `UltrafilterMCS.lean` | Ultrafilter-MCS bijection | **Proven** |
+| `AlgebraicRepresentation.lean` | Main representation theorem | **Proven** |
+| `AlgebraicSemanticBridge.lean` | Bridge to standard Kripke semantics | Has sorries (modal/temporal) |
+| `HybridCompleteness.lean` | Hybrid algebraic + FMP completeness path | Has 1 sorry (truth lemma gap) |
 
 ## Key Definitions
 
@@ -93,14 +95,41 @@ The algebraic approach proceeds as follows:
 - **Self-contained**: Does not modify existing metalogic files
 - **Alternative path**: Provides independent proof, not replacement
 
-## Known Sorries
+## Current State (Updated 2026-01-29)
 
-| Location | Description | Status |
-|----------|-------------|--------|
-| `BooleanStructure.lean` | Various Boolean algebra axioms | Pending propositional helpers |
-| `InteriorOperators.lean` | Idempotence from 4-axiom | Partial |
-| `UltrafilterMCS.lean` | Bijection completeness | Pending MCS helpers |
-| `AlgebraicRepresentation.lean` | Main theorem | Depends on earlier phases |
+The core algebraic modules are now **sorry-free**:
+- `LindenbaumQuotient.lean` - Complete
+- `BooleanStructure.lean` - Complete
+- `InteriorOperators.lean` - Complete
+- `UltrafilterMCS.lean` - Complete
+- `AlgebraicRepresentation.lean` - Complete
+
+### Completeness Paths
+
+**1. Existing sorry-free path** (`FMP/SemanticCanonicalModel.lean`):
+```lean
+semantic_weak_completeness : (forall w, semantic_truth_at_v2 phi w) -> derives phi
+```
+This works by contrapositive - constructing a countermodel when phi is not provable.
+
+**2. Hybrid path** (`HybridCompleteness.lean`):
+```lean
+hybrid_weak_completeness : valid phi -> derives phi
+```
+This connects algebraic consistency to FMP via:
+```
+not-provable -> AlgConsistent phi.neg -> ultrafilter U -> MCS Gamma -> closure MCS -> FMP countermodel
+```
+The remaining sorry is in connecting `valid phi` (truth at ALL models) to `semantic_truth_at_v2` (truth in specific model).
+
+### Remaining Sorry Analysis
+
+| Location | Description | Root Cause |
+|----------|-------------|------------|
+| `AlgebraicSemanticBridge.lean` | Box/temporal cases in truth lemma | Box quantifies over ALL histories; single ultrafilter insufficient |
+| `HybridCompleteness.lean` | `valid_implies_semantic_truth` | Forward truth lemma gap: recursive truth != assignment check |
+
+**Key insight**: The gap is in proving that `truth_at` (recursive evaluation, especially for box) matches `semantic_truth_at_v2` (boolean assignment check). For MCS-derived states, this SHOULD hold, but proving it requires showing the model IS the canonical model, which is circular.
 
 ## Dependencies
 
