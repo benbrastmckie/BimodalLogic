@@ -1,7 +1,7 @@
 # Implementation Plan: Task #760
 
 - **Task**: 760 - Archive sorried code to Boneyard (complementing completed Task 750)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4-5 hours
 - **Priority**: Medium
 - **Dependencies**: Task 750 (COMPLETED - Boneyard/Metalogic_v3/ structure exists)
@@ -68,7 +68,7 @@ This informs our approach - we're archiving these sorries not because they're "f
 
 ## Implementation Phases
 
-### Phase 1: Dependency Analysis [NOT STARTED]
+### Phase 1: Dependency Analysis [COMPLETED]
 
 **Goal**: Verify import dependencies for files to be archived.
 
@@ -104,7 +104,7 @@ grep -r "canonical_task_rel_compositionality" Theories/ --include="*.lean"
 
 ---
 
-### Phase 2: Archive Examples/ Files (12 sorries) [NOT STARTED]
+### Phase 2: Archive Examples/ Files (12 sorries) [IN PROGRESS]
 
 **Goal**: Move exercise files to Boneyard/Examples/. These are leaf files with no dependents.
 

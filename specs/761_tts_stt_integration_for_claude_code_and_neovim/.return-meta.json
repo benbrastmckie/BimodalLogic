@@ -1,0 +1,30 @@
+{
+  "status": "researched",
+  "started_at": "2026-01-29T12:00:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-002.md",
+      "summary": "Supplementary research evaluating 6 Neovim STT plugins against user requirements, recommending whisper.nvim over custom implementation"
+    }
+  ],
+  "next_steps": "Run /plan 761 to update implementation plan to use whisper.nvim instead of custom plugin",
+  "metadata": {
+    "session_id": "sess_1769723833_ba5690",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7,
+    "plugins_evaluated": [
+      "whisper.nvim (Avi-D-coder) - RECOMMENDED",
+      "murmur.nvim - ARCHIVED",
+      "vocal.nvim - VIABLE ALTERNATIVE",
+      "speech-to-text.nvim - NOT RECOMMENDED",
+      "gp.nvim - NOT SUITABLE (cloud-only STT)",
+      "nvim-speech - NOT SUITABLE",
+      "nerd-dictation - ALTERNATIVE (external tool)"
+    ],
+    "recommendation": "Use whisper.nvim - do not build custom plugin"
+  }
+}

@@ -26,6 +26,11 @@
           "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase implementation plan for TTS notifications and Neovim STT integration"
+        },
+        {
+          "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplementary research evaluating 6 Neovim STT plugins, recommending whisper.nvim over custom implementation"
         }
       ],
       "planned": "2026-01-29T21:52:43Z"
@@ -33,13 +38,13 @@
     {
       "project_number": 760,
       "project_name": "determine_sorry_disposition_archive_vs_complete",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T20:26:56Z",
-      "last_updated": "2026-01-29T21:52:57Z",
+      "last_updated": "2026-01-29T21:55:05Z",
       "description": "Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase",
-      "session_id": "sess_1769721934_352e7e",
+      "session_id": "sess_1769723685_01e218",
       "researched": "2026-01-29T20:50:41Z",
       "artifacts": [
         {
@@ -53,7 +58,8 @@
           "summary": "7-phase plan to archive 29 sorries (updated after Task 750 completion)"
         }
       ],
-      "planned": "2026-01-29T21:52:57Z"
+      "planned": "2026-01-29T21:52:57Z",
+      "started": "2026-01-29T21:55:05Z"
     },
     {
       "project_number": 619,
