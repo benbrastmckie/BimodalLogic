@@ -263,16 +263,53 @@ This establishes the correspondence between:
 - p being in the extracted atom set (extractTrueAtomSet b)
 - SignedFormula.pos (.atom p) being in the branch b
 
-The proof proceeds by induction on the branch, checking whether each
-signed formula contributes to the atom set.
-
-**Note**: This is a Phase 4 (Truth Lemma) proof component. The full proof
-requires careful handling of the fold accumulator.
+The proof is by induction on the branch list, checking how each signed formula
+contributes to the fold accumulator.
 -/
 lemma mem_extractTrueAtomSet_iff (b : Branch) (p : String) :
     p ∈ extractTrueAtomSet b ↔ SignedFormula.pos (.atom p) ∈ b := by
-  -- TODO: Complete proof in Phase 4
-  sorry
+  unfold extractTrueAtomSet
+  -- Generalize with arbitrary accumulator
+  suffices ∀ acc : Finset String, p ∈ b.foldl (fun acc sf =>
+      match sf.sign, sf.formula with
+      | .pos, .atom q => insert q acc
+      | _, _ => acc) acc ↔ p ∈ acc ∨ SignedFormula.pos (.atom p) ∈ b by
+    simpa using this ∅
+  intro acc
+  induction b generalizing acc with
+  | nil => simp
+  | cons sf rest ih =>
+    simp only [List.foldl_cons, List.mem_cons]
+    -- Case split on whether sf is a positive atom
+    rcases hsf : sf with ⟨sign, form⟩
+    cases sign with
+    | pos =>
+      cases form with
+      | atom q =>
+        -- sf = ⟨.pos, .atom q⟩
+        simp only [ih, Finset.mem_insert]
+        constructor
+        · intro h
+          rcases h with heq | hin | hmem
+          · left; left; exact heq
+          · right; exact hin
+          · right; right; exact hmem
+        · intro h
+          rcases h with hin | (heq | hmem)
+          · right; left; exact hin
+          · -- sf = SignedFormula.pos (.atom p)
+            simp only [SignedFormula.pos] at heq
+            left
+            simp only [hsf, SignedFormula.mk.injEq, Formula.atom.injEq] at heq
+            exact heq.2.symm
+          · right; right; exact hmem
+      | bot => simp only [ih]; tauto
+      | imp _ _ => simp only [ih]; tauto
+      | box _ => simp only [ih]; tauto
+      | H _ => simp only [ih]; tauto
+      | G _ => simp only [ih]; tauto
+    | neg =>
+      cases form <;> simp only [ih] <;> tauto
 
 /--
 Atom truth in extracted model: p is true at extracted world state

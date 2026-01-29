@@ -59,11 +59,11 @@
     {
       "project_number": 727,
       "project_name": "consolidate_set_lindenbaum",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T22:45:08Z",
-      "last_updated": "2026-01-29T00:19:26Z",
+      "last_updated": "2026-01-29T00:22:01Z",
       "session_id": "sess_1769645944_e36272",
       "researched": "2026-01-28T23:52:34Z",
       "artifacts": [
@@ -76,10 +76,17 @@
           "path": "specs/727_consolidate_set_lindenbaum/plans/implementation-002.md",
           "type": "plan",
           "summary": "4-phase revised plan: verify isolation, add deprecation notices to Boneyard only, update Boneyard READMEs, final verification"
+        },
+        {
+          "path": "specs/727_consolidate_set_lindenbaum/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-01-29T00:13:38Z",
-      "started": "2026-01-29T00:19:26Z"
+      "started": "2026-01-29T00:19:26Z",
+      "completed": "2026-01-29T00:22:01Z",
+      "completion_summary": "Added deprecation notices to duplicate set_lindenbaum definitions in Boneyard/Metalogic/ files, pointing to canonical source at Metalogic.Core.MaximalConsistent. Updated Boneyard README files with deprecation documentation."
     },
     {
       "project_number": 697,
@@ -646,12 +653,12 @@
     {
       "project_number": 700,
       "project_name": "research_algebraic_representation_theorem_proof",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-29T00:09:18Z",
-      "session_id": "sess_1769645156_aa34cd",
+      "last_updated": "2026-01-29T00:21:36Z",
+      "session_id": "sess_1769646072_699915",
       "description": "Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.",
       "researched": "2026-01-29T00:01:07Z",
       "artifacts": [
@@ -676,7 +683,8 @@
           "summary": "6-phase implementation plan for algebraic representation theorem using Lindenbaum quotient and interior operators"
         }
       ],
-      "planned": "2026-01-29T00:09:18Z"
+      "planned": "2026-01-29T00:09:18Z",
+      "started": "2026-01-29T00:21:36Z"
     }
   ],
   "completed_projects": [

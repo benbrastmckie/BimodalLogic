@@ -1,7 +1,7 @@
 # Implementation Plan: Task #727 (v2)
 
 - **Task**: 727 - Consolidate set_lindenbaum duplicates
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Priority**: Medium
 - **Dependencies**: Task 726 (completed)
@@ -147,7 +147,7 @@ Historical code preserved for reference. Active development uses `Metalogic/`.
 
 ---
 
-### Phase 4: Final Verification [NOT STARTED]
+### Phase 4: Final Verification [COMPLETED]
 
 **Goal**: Verify all changes are correct and confined to Boneyard
 

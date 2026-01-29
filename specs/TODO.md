@@ -152,14 +152,16 @@ technical_debt:
 
 ### 727. Consolidate set_lindenbaum duplicates
 - **Effort**: 1 hour
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
+- **Completed**: 2026-01-29
 - **Parent**: Task 722
 - **Dependencies**: Task 726 (COMPLETED)
 - **Research**: [research-001.md](specs/727_consolidate_set_lindenbaum/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/727_consolidate_set_lindenbaum/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260129.md](specs/727_consolidate_set_lindenbaum/summaries/implementation-summary-20260129.md)
 
 **Description**: Remove duplicate `set_lindenbaum` theorem definitions from deprecated Boneyard/Metalogic/ files when those files are fully deprecated. Current duplicates: `Boneyard/Metalogic/Completeness.lean:360` and `Boneyard/Metalogic/Representation/CanonicalModel.lean:139`. Canonical source is `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean:290`, re-exported via `Metalogic/Core/MaximalConsistent.lean`. Deferred from Task 722 Phase 4.
 
@@ -167,11 +169,11 @@ technical_debt:
 
 ### 700. Research algebraic representation theorem proof
 - **Effort**: 12-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
-- **Planned**: 2026-01-29
+- **Started**: 2026-01-29
 - **Source**: specs/ROAD_MAP.md:291
 - **Research**: [research-001.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-001.md), [research-002.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-002.md), [research-003.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-003.md)
 - **Plan**: [implementation-001.md](specs/700_research_algebraic_representation_theorem_proof/plans/implementation-001.md)
