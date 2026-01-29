@@ -60,12 +60,12 @@
     {
       "project_number": 753,
       "project_name": "prove_sorries_in_coherentconstruction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T16:50:59Z",
-      "last_updated": "2026-01-29T17:51:04Z",
-      "session_id": "sess_1769706752_5bf372",
+      "last_updated": "2026-01-29T17:59:09Z",
+      "session_id": "sess_1769709527_8a6048",
       "researched": "2026-01-29T16:56:39Z",
       "artifacts": [
         {
@@ -231,20 +231,26 @@
     {
       "project_number": 748,
       "project_name": "revise_roadmap_for_metalogic_progress",
-      "status": "researched",
+      "status": "planned",
       "language": "markdown",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T17:46:37Z",
-      "session_id": "sess_1769708785_f2349d",
+      "last_updated": "2026-01-29T18:00:43Z",
+      "session_id": "sess_1769709492_48981e",
       "researched": "2026-01-29T17:49:00Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/748_revise_roadmap_for_metalogic_progress/reports/research-001.md",
           "summary": "Comprehensive analysis of ROAD_MAP.md vs current Metalogic progress"
+        },
+        {
+          "path": "specs/748_revise_roadmap_for_metalogic_progress/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for revising ROAD_MAP.md with Metalogic progress"
         }
-      ]
+      ],
+      "planned": "2026-01-29T18:00:43Z"
     },
     {
       "project_number": 741,

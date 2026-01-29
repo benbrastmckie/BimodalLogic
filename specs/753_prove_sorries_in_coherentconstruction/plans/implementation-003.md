@@ -37,7 +37,7 @@ Version 003 embraces the principle: **quality and consistency over backwards com
 
 ## Implementation Phases
 
-### Phase 1: Sigma-Type Chain Refactoring [NOT STARTED]
+### Phase 1: Sigma-Type Chain Refactoring [IN PROGRESS]
 
 **Goal**: Eliminate infrastructure sorries by carrying invariants through the recursion.
 

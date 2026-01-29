@@ -147,7 +147,7 @@ technical_debt:
 
 ### 753. Prove sorries in CoherentConstruction for standard completeness
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -221,11 +221,13 @@ technical_debt:
 
 ### 748. Revise ROAD_MAP.md for Metalogic progress
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Created**: 2026-01-29
+- **Planned**: 2026-01-29
 - **Research**: [research-001.md](specs/748_revise_roadmap_for_metalogic_progress/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/748_revise_roadmap_for_metalogic_progress/plans/implementation-001.md)
 
 **Description**: Systematically revise /home/benjamin/Projects/ProofChecker/specs/ROAD_MAP.md given progress made in Bimodal/Metalogic/, what remains to be done, and future ambitions. Update completion status of achieved milestones, add new goals discovered during implementation, and ensure the roadmap accurately reflects the project's trajectory.
 
