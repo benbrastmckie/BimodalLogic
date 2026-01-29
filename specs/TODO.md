@@ -133,10 +133,11 @@ technical_debt:
 
 ### 733. Ultraproduct-based proof of compactness
 - **Effort**: 5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Research**: [research-001.md](specs/733_ultraproduct_based_compactness_proof/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/733_ultraproduct_based_compactness_proof/plans/implementation-001.md)
 
@@ -216,7 +217,7 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -225,6 +226,8 @@ technical_debt:
 - **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:211,219,228,237
 - **Research**: [research-001.md](specs/659_prove_negation_completeness_lemmas/reports/research-001.md), [research-002.md](specs/659_prove_negation_completeness_lemmas/reports/research-002.md), [research-003.md](specs/659_prove_negation_completeness_lemmas/reports/research-003.md), [research-004.md](specs/659_prove_negation_completeness_lemmas/reports/research-004.md)
 - **Plan**: [implementation-002.md](specs/659_prove_negation_completeness_lemmas/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260129.md](specs/659_prove_negation_completeness_lemmas/summaries/implementation-summary-20260129.md)
+- **Partial**: Phases 1,2,5 complete; Phases 3,4 blocked (backward Truth Lemma requires architectural changes)
 
 **Description**: Prove the negation completeness lemmas required for the truth lemma backward direction. These include the imp, box, and temporal cases in the backward direction (lines 211, 219, 228, 237). Requires showing that MCS are complete with respect to negation. Not critical since the representation theorem only needs the forward direction, but would complete the full biconditional truth lemma. From review-20260121-task654.md low priority recommendations.
 
