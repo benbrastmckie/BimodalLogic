@@ -103,7 +103,7 @@ H-persistence brings Hφ to where it's needed.
 ### Phase 2: Assess Backward Truth Lemma Enablement
 
 **Estimated effort**: 1 hour
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objective**: Determine if the proven `forward_H` Case 4 enables the backward Truth Lemma cases.
 
@@ -136,13 +136,28 @@ The backward Truth Lemma cases (lines 423, 441) use witness extraction:
 
 **Decision Point**: If witness extraction is achievable, proceed to Phase 3. Otherwise, document as blocked.
 
+**Assessment Result (2026-01-29)**:
+
+The proven `forward_H` Case 4 does NOT enable the backward Truth Lemma cases:
+
+1. **Direction mismatch**: forward_H is an intra-family coherence property (Hφ ∈ mcs(t') → φ ∈ mcs(t)). The backward Truth Lemma requires the semantic-to-syntactic direction: if ψ is true at all past times, then Hψ ∈ mcs(t).
+
+2. **Contrapositive analysis**: The contrapositive of forward_H gives `φ ∉ mcs(t) → Hφ ∉ mcs(t')`, which is the wrong direction. We need `Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s)`.
+
+3. **What would be needed**: The backward temporal cases require proving that if ψ ∈ mcs(s) for ALL s < t, then Hψ ∈ mcs(t). This is "H-completeness" within the MCS family - a much stronger property than coherence.
+
+4. **Semantic argument limitation**: The alternative approach (backward_H repeatedly) doesn't work because backward_H goes from Hφ to φ, not the reverse.
+
+**Conclusion**: Phases 3-4 remain BLOCKED. The forward_H Case 4 proof is valuable (reduces sorries in CoherentConstruction.lean) but doesn't unlock the backward Truth Lemma.
+
 ---
 
 ### Phase 3: Complete Backward all_past Case (Conditional)
 
 **Estimated effort**: 2-3 hours
-**Status**: [NOT STARTED]
+**Status**: [BLOCKED]
 **Dependency**: Phase 2 assessment must show witness extraction is achievable
+**Block Reason**: Phase 2 assessment shows forward_H Case 4 does not enable witness extraction
 
 **Objective**: Fill the `sorry` at line 423 of TruthLemma.lean
 
@@ -178,8 +193,9 @@ The backward Truth Lemma cases (lines 423, 441) use witness extraction:
 ### Phase 4: Complete Backward all_future Case (Conditional)
 
 **Estimated effort**: 1-2 hours
-**Status**: [NOT STARTED]
+**Status**: [BLOCKED]
 **Dependency**: Phase 3 must succeed (symmetric proof)
+**Block Reason**: Phase 3 is blocked, so Phase 4 cannot proceed
 
 **Objective**: Fill the `sorry` at line 441 of TruthLemma.lean
 
@@ -198,7 +214,7 @@ The backward Truth Lemma cases (lines 423, 441) use witness extraction:
 ### Phase 5: Update Documentation
 
 **Estimated effort**: 0.5 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objective**: Update documentation to reflect what was proven and what remains.
 

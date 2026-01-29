@@ -6,10 +6,11 @@ This file documents the coherence cases from `CoherentConstruction.lean` that ar
 
 ## Why These Cases Are Not Needed
 
-The completeness proof path only exercises two specific cases:
+The completeness proof path only exercises three specific cases:
 
 1. **forward_G Case 1** (both t, t' >= 0): PROVEN via `mcs_forward_chain_coherent`
 2. **backward_H Case 4** (both t, t' < 0): PROVEN via `mcs_backward_chain_coherent`
+3. **forward_H Case 4** (both t, t' < 0): PROVEN via `mcs_backward_chain_H_persistence` (Task 659)
 
 The canonical model construction centers the MCS Gamma at time 0 and evaluates formulas
 from there. Since:
@@ -59,21 +60,28 @@ The cross-origin cases (where t and t' have opposite signs) are never exercised.
 -- Similar to forward_G Case 3 but in opposite direction.
 ```
 
-### forward_H: All cases (t < t' → Hφ ∈ mcs(t') → φ ∈ mcs(t))
+### forward_H Cases (t < t' → Hφ ∈ mcs(t') → φ ∈ mcs(t))
+
+**Case 4 (both t, t' < 0): PROVEN** (Task 659)
 
 ```lean
--- This says: "if φ has always been true from perspective of t', then φ is true at t"
--- where t is in the past of t'.
+-- Since t < t' < 0, we have |t| > |t'|, so (-t).toNat > (-t').toNat.
+-- In backward chain: mcs(t') is built BEFORE mcs(t) (going away from origin).
+-- This is symmetric to backward_G Case 1:
+-- - Hφ persists from (-t').toNat to m = (-t).toNat - 1
+-- - φ ∈ backward_seed(mcs(m)) → φ ∈ mcs(m+1) = mcs((-t).toNat)
+-- Uses: mcs_backward_chain_H_persistence, mcs_backward_chain_seed_containment
+```
+
+**Cases 1, 2, 3: SORRY**
+
+```lean
+-- Case 1 (both >= 0): H doesn't persist in forward chain
+-- Case 2 (t >= 0, t' < 0): Contradiction (t < t' impossible)
+-- Case 3 (t < 0, t' >= 0): Cross-origin, not exercised by completeness proof
 --
--- Proof strategy:
--- 1. By T-axiom: Hφ ∈ mcs(t') → φ ∈ mcs(t') (via mcs_closed_temp_t_past)
--- 2. Need to show formulas propagate "backward" from mcs(t') to mcs(t)
---
--- This is fundamentally different from forward_G:
--- - forward_G: Gφ forces φ to appear in FUTURE times
--- - forward_H: Hφ at t' asserts φ was true at PAST times
---
--- The second step requires that the chain construction preserves this relationship.
+-- Note: Only Case 4 is needed for the backward Truth Lemma temporal cases,
+-- but it does NOT directly enable them (see Task 659 assessment).
 ```
 
 ### backward_G Case 3: t' < 0 and t >= 0 (cross-origin)

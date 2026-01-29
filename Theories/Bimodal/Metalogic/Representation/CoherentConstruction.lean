@@ -44,19 +44,23 @@ This module takes a different approach based on the Boneyard `canonical_task_rel
 The following cases in `mcs_unified_chain_pairwise_coherent` have sorries that are
 **NOT used by the representation theorem**:
 
-| Case | Location | Why Not Needed |
-|------|----------|----------------|
-| forward_G Case 3 | line 641 | Cross-origin (t < 0, t' >= 0): never exercised |
-| forward_G Case 4 | line 654 | Both < 0 toward origin: cross-modal case |
-| backward_H Case 1 | line 662 | Both >= 0: forward chain doesn't preserve H |
-| backward_H Case 2 | line 665 | Cross-origin: never exercised |
-| forward_H (all) | line 691 | Only needed for backward Truth Lemma |
-| backward_G Case 3 | line 721 | Cross-origin: never exercised |
-| backward_G Case 4 | line 724 | Both < 0: backward chain G-coherence |
+| Case | Location | Status |
+|------|----------|--------|
+| forward_G Case 3 | line 641 | SORRY - Cross-origin (t < 0, t' >= 0): never exercised |
+| forward_G Case 4 | line 654 | SORRY - Both < 0 toward origin: cross-modal case |
+| backward_H Case 1 | line 662 | SORRY - Both >= 0: forward chain doesn't preserve H |
+| backward_H Case 2 | line 665 | SORRY - Cross-origin: never exercised |
+| forward_H Case 1 | line 684 | SORRY - Both >= 0: H doesn't persist in forward chain |
+| forward_H Case 2 | line 688 | PROVEN - Contradiction (t ≥ 0 but t' < 0 with t < t') |
+| forward_H Case 3 | line 691 | SORRY - Cross-origin: never exercised |
+| forward_H Case 4 | line 692 | PROVEN - Uses H-persistence (symmetric to backward_G Case 1) |
+| backward_G Case 3 | line 731 | SORRY - Cross-origin: never exercised |
+| backward_G Case 4 | line 734 | SORRY - Both < 0: backward chain G-coherence |
 
 **The completeness proof only uses:**
 - `forward_G` Case 1 (both >= 0): PROVEN via `mcs_forward_chain_coherent`
 - `backward_H` Case 4 (both < 0): PROVEN via `mcs_backward_chain_coherent`
+- `forward_H` Case 4 (both < 0): PROVEN via `mcs_backward_chain_H_persistence` (Task 659)
 
 See `Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean` for detailed documentation
 of what would be needed to prove the remaining cases.
