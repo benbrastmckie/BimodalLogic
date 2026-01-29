@@ -53,6 +53,11 @@
           "path": "specs/738_port_fmp_to_parametric_architecture/reports/research-001.md",
           "type": "research",
           "summary": "Research on FMP port: identifies components (Closure, FiniteWorldState, SemanticCanonicalModel), known sorries, and 4-phase port strategy"
+        },
+        {
+          "path": "specs/738_port_fmp_to_parametric_architecture/reports/research-002.md",
+          "type": "research",
+          "summary": "FMP/decidability dependency map: relationship between FMP, tableau methods, parametric architecture, and decidability chain with porting recommendations"
         }
       ]
     },
