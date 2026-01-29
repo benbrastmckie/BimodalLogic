@@ -1,15 +1,19 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T10:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, analyzing research reports"
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/624_prove_tableau_complete/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for proving tableau_complete theorem connecting FMP to tableau termination"
+    }
+  ],
+  "next_steps": "Run /implement 624 to execute the plan",
   "metadata": {
     "session_id": "sess_1769694428_6200f0",
     "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 6
   }
 }

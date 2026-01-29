@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T00:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "creating_plan",
-    "details": "Analyzed task scope, creating implementation plan"
-  },
+  "status": "planned",
+  "summary": "3-phase implementation plan to add Project Context section to skill-lean-research reports",
+  "artifacts": [
+    {
+      "path": "specs/740_update_skill_lean_research_to_generate_project_context/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "3-phase plan: update SKILL.md context refs and Stage 7 template, update lean-research-flow.md Stage 5, verify consistency"
+    }
+  ],
+  "next_steps": "Run /implement 740 to execute the plan",
   "metadata": {
     "session_id": "sess_1769694475_e877d2",
     "agent_type": "planner-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 1
   }
 }
