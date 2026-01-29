@@ -128,14 +128,16 @@ technical_debt:
 
 ### 732. Complete phase 4 of task 630: Truth Lemma proof
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Parent**: Task 630
 - **Research**: [research-001.md](specs/732_complete_630_phase4_truth_lemma_proof/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/732_complete_630_phase4_truth_lemma_proof/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/732_complete_630_phase4_truth_lemma_proof/summaries/implementation-summary-20260129.md)
 
 **Description**: Complete phase 4 of task 630: Prove mem_extractTrueAtomSet_iff helper lemma. This establishes that p ∈ extractTrueAtomSet b ↔ SignedFormula.pos (.atom p) ∈ b. The proof is mechanical (induction on branch with case splits on Formula constructors: atom, bot, imp, box, all_past, all_future for both pos and neg signs). Currently has sorry at Theories/Bimodal/Boneyard/Metalogic_v2/Decidability/BranchTaskModel.lean:269. (Follow-up from task #630)
 
@@ -219,15 +221,16 @@ technical_debt:
 ---
 
 ### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
-- **Status**: [IMPLEMENTING]
-- **Priority**: Medium
+- **Status**: [PLANNED] → ABANDON RECOMMENDED
+- **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-20
+- **Revised**: 2026-01-29
 - **Related**: Tasks 610, 627, 470
 - **Research**: [research-001.md](specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/plans/implementation-002.md)
 
-**Description**: Prove the "upward" bridge `semantic_truth_implies_truth_at` showing finite model truth implies general `truth_at` semantics. This completes `finite_model_property_constructive` by proving the FMP witness is compatible with arbitrary external model frameworks. NOT on critical path - completeness is handled by task 627 (downward bridge), and decidability only needs the cardinality bound. This is for theoretical completeness and generalization to external semantics. Task 610 contains research on the structural induction approach (Atom/Bot/Imp/Box/Temporal cases). The challenge is Box (quantification over all WorldHistories) and Temporal (behavior outside finite time bounds).
+**Description**: **OBSOLETE**: The completeness architecture was restructured (Task 660). Weak/strong completeness are now proven via representation theorem in `Theories/Bimodal/Metalogic/Completeness/`. The upward bridge is no longer needed - the Boneyard code this task targeted is deprecated. Recommend ABANDON.
 
 ---
 

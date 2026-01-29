@@ -285,222 +285,47 @@ lemma mem_extractTrueAtomSet_iff (b : Branch) (p : String) :
     simp only [List.foldl_nil, List.not_mem_nil, or_false]
   | cons sf rest ih =>
     simp only [List.foldl_cons, List.mem_cons]
-    -- Case split on sign and formula
-    cases hsign : sf.sign with
-    | pos =>
-      cases hform : sf.formula with
-      | atom q =>
-        rw [ih]
-        simp only [Finset.mem_insert]
-        -- Goal: p = q ∨ p ∈ acc ∨ pos(atom p) ∈ rest ↔
-        --       (sf = pos(atom p) ∨ pos(atom p) ∈ rest) ∨ p ∈ acc
+    -- Case split on sign and formula - use split for the match
+    split
+    -- Case: pos, atom q (accumulator gets q inserted)
+    next q hsign hform =>
+      simp only [Finset.mem_insert, ih, SignedFormula.pos]
+      -- Goal: (p = q ∨ p ∈ acc) ∨ pos(atom p) ∈ rest ↔
+      --       p ∈ acc ∨ {pos, atom p} = sf ∨ pos(atom p) ∈ rest
+      -- Use hsign : sf.sign = .pos and hform : sf.formula = .atom q to establish sf
+      have hsf_eq : SignedFormula.mk .pos (.atom p) = sf ↔ p = q := by
         constructor
-        · intro h
-          by_cases heq : p = q
-          · apply Or.inl; apply Or.inl
-            simp only [SignedFormula.pos, hsign, hform]; exact ⟨rfl, heq⟩
-          · simp only [heq, false_or] at h
-            cases h with
-            | inl hin => exact Or.inr hin
-            | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq =>
-              simp only [SignedFormula.pos, SignedFormula.mk.injEq] at heq
-              exact Or.inl heq.2
-            | inr hinrest => exact Or.inr (Or.inr hinrest)
-          | inr hin => exact Or.inr (Or.inl hin)
-      | bot =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq, and_false,
-            not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-      | imp _ _ =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq, and_false,
-            not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-      | box _ =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq, and_false,
-            not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-      | all_past _ =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq, and_false,
-            not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-      | all_future _ =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq, and_false,
-            not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-    | neg =>
-      cases hform : sf.formula with
-      | atom _ =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq,
-            reduceCtorEq, false_and, not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-      | bot =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq,
-            reduceCtorEq, false_and, not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-      | imp _ _ =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq,
-            reduceCtorEq, false_and, not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-      | box _ =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq,
-            reduceCtorEq, false_and, not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-      | all_past _ =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq,
-            reduceCtorEq, false_and, not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
-      | all_future _ =>
-        rw [ih]
-        have hne : sf ≠ SignedFormula.pos (.atom p) := by
-          simp only [SignedFormula.pos, hsign, hform, ne_eq, SignedFormula.mk.injEq,
-            reduceCtorEq, false_and, not_false_eq_true]
-        constructor
-        · intro h
-          cases h with
-          | inl hin => exact Or.inr hin
-          | inr hinrest => exact Or.inl (Or.inr hinrest)
-        · intro h
-          cases h with
-          | inl hdisj =>
-            cases hdisj with
-            | inl heq => exact absurd heq hne
-            | inr hinrest => exact Or.inr hinrest
-          | inr hin => exact Or.inl hin
+        · intro heq
+          have h1 : (SignedFormula.mk .pos (.atom p)).formula = sf.formula := by rw [heq]
+          simp only at h1
+          rw [hform] at h1
+          exact Formula.atom.injEq p q ▸ h1
+        · intro hp
+          cases sf with
+          | mk s f =>
+            simp only at hsign hform
+            simp only [hsign, hform, hp]
+      simp only [hsf_eq]
+      -- Now: (p = q ∨ p ∈ acc) ∨ pos(atom p) ∈ rest ↔ p ∈ acc ∨ p = q ∨ pos(atom p) ∈ rest
+      tauto
+    -- Case: anything else (accumulator unchanged)
+    next hnotmatch =>
+      simp only [ih]
+      -- Goal: p ∈ acc ∨ pos(atom p) ∈ rest ↔ p ∈ acc ∨ pos(atom p) = sf ∨ pos(atom p) ∈ rest
+      -- Since sf is not of form pos(atom _), the middle disjunct is false
+      have hne : SignedFormula.pos (.atom p) = sf → False := by
+        intro heq
+        have hsign : sf.sign = .pos := by rw [← heq]; rfl
+        have hform : sf.formula = .atom p := by rw [← heq]; rfl
+        exact hnotmatch p hsign hform
+      constructor
+      · intro h
+        exact h.elim (fun hm => Or.inl hm) (fun hr => Or.inr (Or.inr hr))
+      · intro h
+        rcases h with hmem | heq | hrest
+        · exact Or.inl hmem
+        · exact absurd heq hne
+        · exact Or.inr hrest
 
 /--
 Atom truth in extracted model: p is true at extracted world state
