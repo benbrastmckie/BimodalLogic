@@ -122,7 +122,7 @@ technical_debt:
 
 ### 752. Refactor temporary file handling in agent system
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -344,17 +344,19 @@ technical_debt:
 ---
 
 ### 623. Build FMP-tableau connection infrastructure
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-19
 - **Started**: 2026-01-19
+- **Completed**: 2026-01-29
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
 - **Subtasks**: 630 (completed), 631 (completed)
 - **Research**: [research-001.md](specs/623_build_fmp_tableau_connection_infrastructure/reports/research-001.md)
 - **Plan**: [implementation-003.md](specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-003.md)
+- **Summary**: [implementation-summary-20260129.md](specs/623_build_fmp_tableau_connection_infrastructure/summaries/implementation-summary-20260129.md)
 
-**Description**: Build infrastructure connecting FMP bounds to tableau semantics. Phases 1-4 completed. Subtasks 630 (TaskModel extraction) and 631 (evalFormula_implies_sat) resolved the semantic bridge gap. Ready for final verification and closure.
+**Description**: Established FMP-tableau connection infrastructure for bimodal decidability. Core modules have 0 sorries. Subtasks 630 (TaskModel extraction) and 631 (evalFormula_implies_sat) completed, enabling tableau_complete proof.
 
 ---
 
