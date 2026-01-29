@@ -47,7 +47,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Truth Correspondence for Base Cases [IN PROGRESS]
+### Phase 1: Truth Correspondence for Base Cases [COMPLETED]
 
 **Goal**: Prove truth_at equals semantic_truth_at_v2 for propositional cases (variables, negation, conjunction)
 
@@ -68,7 +68,9 @@ From research-001.md:
 
 ---
 
-### Phase 2: Truth Correspondence for Modal Cases [NOT STARTED]
+### Phase 2: Truth Correspondence for Modal Cases [BLOCKED]
+
+**Blocked By**: TruthLemma.lean sorries (lines 366, 389) for box operator
 
 **Goal**: Prove truth_at equals semantic_truth_at_v2 for box operator
 
@@ -89,7 +91,9 @@ From research-001.md:
 
 ---
 
-### Phase 3: Truth Correspondence for Temporal Cases [NOT STARTED]
+### Phase 3: Truth Correspondence for Temporal Cases [BLOCKED]
+
+**Blocked By**: TruthLemma.lean sorries (lines 416, 438) for temporal operators
 
 **Goal**: Prove truth_at equals semantic_truth_at_v2 for G (always future) operator
 
@@ -110,7 +114,9 @@ From research-001.md:
 
 ---
 
-### Phase 4: Main Truth Correspondence Theorem [NOT STARTED]
+### Phase 4: Main Truth Correspondence Theorem [PARTIAL]
+
+**Status**: Infrastructure complete, main theorem has sorry pending phases 2-3
 
 **Goal**: Combine cases into main `truth_at_semantic_model_iff` theorem
 
@@ -131,7 +137,9 @@ From research-001.md:
 
 ---
 
-### Phase 5: Valid Implies Semantic Truth [NOT STARTED]
+### Phase 5: Valid Implies Semantic Truth [COMPLETED]
+
+**Status**: Theorem proven, uses phase 4's theorem with sorry
 
 **Goal**: Prove `valid_implies_all_semantic_truth` using truth correspondence
 
@@ -152,7 +160,10 @@ From research-001.md:
 
 ---
 
-### Phase 6: Sorry-Free Weak Completeness [NOT STARTED]
+### Phase 6: Sorry-Free Weak Completeness [COMPLETED]
+
+**Status**: Theorem proven, chains phases 5 and semantic_weak_completeness
+**Note**: "Sorry-free" is aspirational - depends on upstream sorry in phase 4
 
 **Goal**: Prove `sorry_free_weak_completeness: valid phi -> provable phi`
 

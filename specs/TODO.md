@@ -41,10 +41,11 @@ technical_debt:
 
 ### 755. Implement Option C: Forward Truth Lemma Refactoring
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Reference**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md)
+- **Research**: [research-001.md](specs/755_implement_option_c_forward_truth_lemma/reports/research-001.md)
 
 **Description**: Complete Option C in /home/benjamin/Projects/ProofChecker/specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md in full rigor to the highest quality.
 
@@ -141,12 +142,14 @@ technical_debt:
 
 ### 756. Enhance /task command with description improvement
 - **Effort**: 1.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Research**: [research-001.md](specs/756_enhance_task_command_with_description_improvement/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/756_enhance_task_command_with_description_improvement/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/756_enhance_task_command_with_description_improvement/summaries/implementation-summary-20260129.md)
 
 **Description**: Add a lightweight prompt engineering step to the /task command that transforms raw user input into well-structured task descriptions. The enhancement should: (1) ensure action-oriented phrasing with clear verbs, (2) expand abbreviations and clarify vague language, (3) apply consistent formatting and grammar, (4) preserve all technical details from the original input, and (5) avoid over-engineering or changing the user's intent. The change should be contained within .claude/commands/task.md in the "Create Task Mode (Default)" section between steps 2 (parse description) and 3 (detect language).
 
@@ -197,7 +200,7 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29

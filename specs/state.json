@@ -41,12 +41,20 @@
     {
       "project_number": 755,
       "project_name": "implement_option_c_forward_truth_lemma",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-29T16:54:59Z",
-      "last_updated": "2026-01-29T17:22:59Z",
-      "session_id": "sess_1769707365_e18f2a"
+      "last_updated": "2026-01-29T17:27:03Z",
+      "session_id": "sess_1769707365_e18f2a",
+      "researched": "2026-01-29T17:27:03Z",
+      "artifacts": [
+        {
+          "path": "specs/755_implement_option_c_forward_truth_lemma/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of Option C FMP path approach to achieve sorry-free completeness via truth correspondence over subformula closure"
+        }
+      ]
     },
     {
       "project_number": 753,
@@ -109,12 +117,12 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T17:22:42Z",
-      "session_id": "sess_1769707313_57e282",
+      "last_updated": "2026-01-29T17:25:04Z",
+      "session_id": "sess_1769707481_b4363b",
       "researched": "2026-01-29T16:36:22Z",
       "artifacts": [
         {
@@ -138,7 +146,8 @@
           "summary": "5-phase implementation plan for algebraic semantic bridge; documentation deferred until sorry-free results complete"
         }
       ],
-      "planned": "2026-01-29T17:22:42Z"
+      "planned": "2026-01-29T17:22:42Z",
+      "started": "2026-01-29T17:25:04Z"
     },
     {
       "project_number": 749,
@@ -517,12 +526,12 @@
     {
       "project_number": 756,
       "project_name": "enhance_task_command_with_description_improvement",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T17:05:12Z",
-      "last_updated": "2026-01-29T17:15:15Z",
-      "session_id": "sess_1769706811_1a6700",
+      "last_updated": "2026-01-29T17:26:49Z",
+      "session_id": "sess_1769707396_ef39ff",
       "researched": "2026-01-29T17:12:03Z",
       "artifacts": [
         {
@@ -534,9 +543,18 @@
           "path": "specs/756_enhance_task_command_with_description_improvement/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase plan covering Step 2.5 implementation, examples/edge cases, and verification"
+        },
+        {
+          "path": "specs/756_enhance_task_command_with_description_improvement/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "planned": "2026-01-29T17:15:15Z"
+      "planned": "2026-01-29T17:15:15Z",
+      "started": "2026-01-29T17:23:35Z",
+      "completed": "2026-01-29T17:26:49Z",
+      "completion_summary": "Enhanced /task command with Step 3 (Improve description) that transforms raw user input via slug expansion, verb inference, and formatting normalization. Added transformation examples table and edge case documentation.",
+      "claudemd_suggestions": "Modified .claude/commands/task.md - added Step 3 (Description Improvement) with sub-steps 3.1-3.3, examples table, edge cases, and action verb categories"
     }
   ],
   "completed_projects": [

@@ -1,0 +1,8 @@
+{
+  "status": "researched",
+  "artifacts": [{
+    "type": "research",
+    "path": "specs/755_implement_option_c_forward_truth_lemma/reports/research-001.md",
+    "summary": "Analysis of Option C FMP path approach to achieve sorry-free completeness via truth correspondence over subformula closure"
+  }]
+}

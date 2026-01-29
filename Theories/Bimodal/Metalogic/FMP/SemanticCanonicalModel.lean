@@ -595,7 +595,7 @@ which contains closure phi.
 -/
 theorem neg_in_closureWithNeg_of_in_closure (phi psi : Formula) (h : psi ∈ closure phi) :
     psi.neg ∈ closureWithNeg phi := by
-  exact neg_in_closureWithNeg_of_closure phi psi h
+  exact neg_mem_closureWithNeg phi psi h
 
 /--
 For implication psi → chi in the closure, both psi and chi are in the closure.
@@ -603,7 +603,7 @@ For implication psi → chi in the closure, both psi and chi are in the closure.
 theorem imp_subformulas_in_closure (phi psi chi : Formula)
     (h : Formula.imp psi chi ∈ closure phi) :
     psi ∈ closure phi ∧ chi ∈ closure phi := by
-  exact ⟨closure_subformula_left h, closure_subformula_right h⟩
+  exact ⟨closure_imp_left phi psi chi h, closure_imp_right phi psi chi h⟩
 
 /--
 Main truth correspondence theorem for the target formula.
@@ -733,7 +733,7 @@ requires showing that recursive truth implies assignment truth.
 
 **Status**: Partial - depends on truth correspondence lemma with sorry.
 -/
-theorem sorry_free_weak_completeness (phi : Formula) :
+noncomputable def sorry_free_weak_completeness (phi : Formula) :
     valid phi → ⊢ phi := by
   intro h_valid
   apply semantic_weak_completeness phi

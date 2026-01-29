@@ -50,17 +50,73 @@ When $ARGUMENTS contains a description (no flags):
    - Remove any trailing flags (--priority, --effort, --language)
    - Extract optional: priority (default: medium), effort, language
 
-3. **Detect language** from keywords:
+3. **Improve description** (transform raw input into well-structured task description):
+
+   **3.1 Slug Expansion** (if input looks like snake_case or abbreviated):
+   - Replace underscores with spaces: `prove_sorries_in_file` -> `prove sorries in file`
+   - Capitalize first letter: `prove sorries in file` -> `Prove sorries in file`
+   - Preserve CamelCase identifiers (e.g., `CoherentConstruction`, `PropositionalLogic`)
+   - Preserve technical terms verbatim: file paths, version numbers, function names
+
+   **3.2 Verb Inference** (if description lacks action verb):
+   - Detect missing verb: descriptions starting with nouns like "bug", "error", "issue", "problem"
+   - Infer appropriate verb by keyword:
+     - "bug", "error", "issue", "problem", "failure" -> Prepend "Fix"
+     - "documentation", "docs", "readme", "comments" -> Prepend "Update"
+     - "test", "tests", "spec" -> Prepend "Add"
+     - Otherwise -> Prepend "Implement" (safe default)
+   - Example: `bug in modal evaluator` -> `Fix bug in modal evaluator`
+
+   **3.3 Formatting Normalization**:
+   - Capitalize first letter of description
+   - Collapse multiple spaces to single space
+   - Trim leading/trailing whitespace
+   - Ensure no trailing period (task titles don't end with periods)
+
+   **Preserve Exactly** (DO NOT transform):
+   - File paths: `src/components/Button.tsx`
+   - CamelCase identifiers: `CoherentConstruction`, `PropositionalLogic`
+   - Quoted strings: `"exact phrase here"`
+   - Technical identifiers: `lean4`, `v4.3.0`, `#123`
+   - Already well-formed descriptions (start with verb, proper capitalization)
+
+   **Transformation Examples**:
+
+   | Input | Output | Transformation Applied |
+   |-------|--------|------------------------|
+   | `prove_sorries_in_coherentconstruction` | `Prove sorries in CoherentConstruction` | Slug expansion + CamelCase preserved |
+   | `bug in modal evaluator` | `Fix bug in modal evaluator` | Verb inference (Fix) + capitalize |
+   | `documentation for new API` | `Update documentation for new API` | Verb inference (Update) |
+   | `tests for validation module` | `Add tests for validation module` | Verb inference (Add) |
+   | `new caching layer` | `Implement new caching layer` | Verb inference (Implement default) |
+   | `Update TODO.md header metrics` | `Update TODO.md header metrics` | No change (already well-formed) |
+   | `Fix the race condition in handlers` | `Fix the race condition in handlers` | No change (starts with verb) |
+   | `implement_option_b_canonical_models` | `Implement option b canonical models` | Slug expansion |
+
+   **Edge Cases**:
+   - Input with quotes: `Add "hello world" test` -> No change to quoted content
+   - Input with file path: `Fix bug in src/Modal.lean` -> Preserve path exactly
+   - Input with version: `Update to lean4 v4.5.0` -> Preserve version identifier
+   - Input with issue ref: `Fix #123 memory leak` -> Preserve issue reference
+   - CamelCase preserved: `prove_CoherentConstruction_complete` -> `Prove CoherentConstruction complete`
+
+   **Action Verb Categories**:
+   - **Fix**: bug, error, issue, problem, failure, crash, regression
+   - **Update**: documentation, docs, readme, comments, config, settings
+   - **Add**: test, tests, spec, feature, support, capability
+   - **Implement**: (default for unrecognized patterns)
+
+4. **Detect language** from keywords:
    - "lean", "theorem", "proof", "lemma", "Mathlib" → lean
    - "meta", "agent", "command", "skill" → meta
    - Otherwise → general
 
-4. **Create slug** from description:
+5. **Create slug** from description:
    - Lowercase, replace spaces with underscores
    - Remove special characters
    - Max 50 characters
 
-5. **Update state.json** (via jq):
+6. **Update state.json** (via jq):
    ```bash
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
      '.next_project_number = {NEW_NUMBER} |
@@ -77,7 +133,7 @@ When $ARGUMENTS contains a description (no flags):
      mv /tmp/state.json specs/state.json
    ```
 
-6. **Update TODO.md** (TWO parts - frontmatter AND entry):
+7. **Update TODO.md** (TWO parts - frontmatter AND entry):
 
    **Part A - Update frontmatter** (increment next_project_number):
    ```bash
@@ -99,13 +155,13 @@ When $ARGUMENTS contains a description (no flags):
 
    **CRITICAL**: Both state.json AND TODO.md frontmatter MUST have matching next_project_number values.
 
-7. **Git commit**:
+8. **Git commit**:
    ```
    git add specs/
    git commit -m "task {N}: create {title}"
    ```
 
-8. **Output**:
+9. **Output**:
    ```
    Task #{N} created: {TITLE}
    Status: [NOT STARTED]

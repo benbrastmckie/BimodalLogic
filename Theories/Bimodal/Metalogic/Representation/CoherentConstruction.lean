@@ -69,6 +69,7 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
+open Bimodal.ProofSystem
 
 /-!
 ## Coherent Relation
@@ -386,16 +387,16 @@ lemma set_consistent_not_both_mem {S : Set Formula} (h_cons : SetConsistent S)
   let L := [φ, Formula.neg φ]
   have h_L_sub : ∀ ψ ∈ L, ψ ∈ S := by
     intro ψ hψ
-    simp only [L, List.mem_cons, List.mem_singleton] at hψ
-    rcases hψ with rfl | rfl
-    · exact h_phi
-    · exact h_neg
+    simp only [List.mem_cons, List.mem_singleton] at hψ
+    cases hψ with
+    | inl h => rw [h]; exact h_phi
+    | inr h => rw [h]; exact h_neg
   have h_L_cons : Consistent L := h_cons L h_L_sub
-  have h_deriv : DerivationTree L Formula.bot := by
-    have h_phi_assume : DerivationTree L φ :=
-      DerivationTree.assumption L φ (by simp [L])
-    have h_neg_assume : DerivationTree L (Formula.neg φ) :=
-      DerivationTree.assumption L (Formula.neg φ) (by simp [L])
+  have h_deriv : L ⊢ Formula.bot := by
+    have h_phi_assume : L ⊢ φ :=
+      DerivationTree.assumption L φ (List.mem_cons_self φ _)
+    have h_neg_assume : L ⊢ Formula.neg φ :=
+      DerivationTree.assumption L (Formula.neg φ) (List.mem_cons_of_mem _ (List.mem_singleton_self _))
     exact derives_bot_from_phi_neg_phi h_phi_assume h_neg_assume
   exact h_L_cons ⟨h_deriv⟩
 
@@ -407,7 +408,7 @@ The T-axiom gives G⊥ → ⊥ (i.e., ¬G⊥), which is in every MCS.
 lemma G_bot_not_in_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent S) :
     Formula.all_future Formula.bot ∉ S := by
   have h_neg_G_bot_thm : [] ⊢ Formula.neg (Formula.all_future Formula.bot) :=
-    DerivationTree.axiom [] _ (Axiom.temp_T Formula.bot)
+    DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)
   have h_neg_in : Formula.neg (Formula.all_future Formula.bot) ∈ S :=
     theorem_in_mcs h_mcs h_neg_G_bot_thm
   intro h_G_bot_in
@@ -421,7 +422,7 @@ The T-axiom for past gives H⊥ → ⊥ (i.e., ¬H⊥), which is in every MCS.
 lemma H_bot_not_in_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent S) :
     Formula.all_past Formula.bot ∉ S := by
   have h_neg_H_bot_thm : [] ⊢ Formula.neg (Formula.all_past Formula.bot) :=
-    DerivationTree.axiom [] _ (Axiom.temp_T_past Formula.bot)
+    DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)
   have h_neg_in : Formula.neg (Formula.all_past Formula.bot) ∈ S :=
     theorem_in_mcs h_mcs h_neg_H_bot_thm
   intro h_H_bot_in
