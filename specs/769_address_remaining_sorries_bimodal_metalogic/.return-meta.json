@@ -1,18 +1,18 @@
 {
-  "status": "researched",
-  "started_at": "2026-01-29T12:00:00Z",
-  "completed_at": "2026-01-29T12:15:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/769_address_remaining_sorries_bimodal_metalogic/reports/research-001.md",
-      "type": "research",
-      "summary": "Found 20 sorries in Metalogic/: 7 are architectural limitations (impossible), 13 are not required for completeness; semantic_weak_completeness is already sorry-free"
+      "path": "specs/769_address_remaining_sorries_bimodal_metalogic/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "6-phase implementation plan to achieve zero sorry count in Metalogic/ by removing unused/impossible sorried code"
     }
   ],
   "metadata": {
-    "session_id": "sess_1769730458_b7942b",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1769730980_17ec43",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 4
   }
 }

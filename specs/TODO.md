@@ -107,13 +107,15 @@ technical_debt:
 
 ### 769. Address remaining sorries in Bimodal/Metalogic
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Researched**: 2026-01-29
+- **Planned**: 2026-01-29
 - **Research**: [research-001.md](specs/769_address_remaining_sorries_bimodal_metalogic/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/769_address_remaining_sorries_bimodal_metalogic/plans/implementation-001.md)
 
 **Description**: Address all remaining sorries in Bimodal/Metalogic/, excluding Examples/ and Boneyard/ directories. Goal is zero sorry count for the Metalogic/ directory.
 
@@ -228,7 +230,7 @@ technical_debt:
 
 ### 768. Create Ctrl-Backslash STT toggle for Claude Code sidebar in neovim
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29

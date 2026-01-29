@@ -8,32 +8,38 @@
     {
       "project_number": 769,
       "project_name": "address_remaining_sorries_bimodal_metalogic",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Address all remaining sorries in Bimodal/Metalogic/, excluding Examples/ and Boneyard/ directories. Goal is zero sorry count for the Metalogic/ directory.",
       "created": "2026-01-29T23:46:54Z",
-      "last_updated": "2026-01-29T23:51:53Z",
-      "session_id": "sess_1769730458_b7942b",
+      "last_updated": "2026-01-29T23:59:17Z",
+      "session_id": "sess_1769730980_17ec43",
       "researched": "2026-01-29T23:51:53Z",
       "artifacts": [
         {
           "path": "specs/769_address_remaining_sorries_bimodal_metalogic/reports/research-001.md",
           "type": "research",
           "summary": "Found 20 sorries in Metalogic/: 7 are architectural limitations (impossible), 13 are not required for completeness; semantic_weak_completeness is already sorry-free"
+        },
+        {
+          "path": "specs/769_address_remaining_sorries_bimodal_metalogic/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan to achieve zero sorry count in Metalogic/ by removing unused/impossible sorried code"
         }
-      ]
+      ],
+      "planned": "2026-01-29T23:59:17Z"
     },
     {
       "project_number": 768,
       "project_name": "neovim_ctrl_backslash_stt_toggle_claude_code",
-      "status": "researched",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "description": "Create a <C-\\> mapping in neovim config at /home/benjamin/.config/nvim/lua/neotex/config/keymaps.lua for use within the Claude Code sidebar in neovim (via plugin) to toggle STT. Research the claude-code.nvim plugin online to scan for solutions in GitHub issues or elsewhere.",
       "created": "2026-01-29T23:36:23Z",
-      "last_updated": "2026-01-29T23:42:33Z",
-      "session_id": "sess_1769729861_427ad2",
+      "last_updated": "2026-01-29T23:54:50Z",
+      "session_id": "sess_1769730854_6e0a42",
       "researched": "2026-01-29T23:42:33Z",
       "artifacts": [
         {

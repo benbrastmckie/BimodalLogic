@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "started_at": "2026-01-29T12:00:00Z",
+  "completed_at": "2026-01-29T12:45:00Z",
+  "summary": "Identified two root causes: (1) <C-\\> is reserved in terminal mode and cannot be remapped - Neovim intercepts it for escape sequences; (2) TermOpen autocmd pattern timing means buffer isn't named yet when event fires. Recommended solutions: use <C-\\><C-s> sequence, <M-\\>, or <C-Space> instead.",
+  "artifacts": [
+    {
+      "path": "specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-002.md",
+      "type": "research",
+      "summary": "Root cause analysis of why <C-\\> mapping fails in Claude Code sidebar with 5 solution recommendations"
+    }
+  ],
+  "next_steps": "Run /plan 768 to create implementation plan for chosen solution",
+  "metadata": {
+    "session_id": "sess_1769730854_6e0a42",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 2700,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5,
+    "root_causes": [
+      "<C-\\> is reserved in Neovim terminal mode - intercepts before user mappings",
+      "TermOpen fires before buffer is renamed by claude-code.nvim plugin"
+    ],
+    "recommended_solution": "Use <C-\\><C-s> sequence which follows terminal escape pattern"
+  }
+}
