@@ -524,11 +524,11 @@
     {
       "project_number": 756,
       "project_name": "enhance_task_command_with_description_improvement",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T17:05:12Z",
-      "last_updated": "2026-01-29T17:13:46Z",
+      "last_updated": "2026-01-29T17:15:15Z",
       "session_id": "sess_1769706811_1a6700",
       "researched": "2026-01-29T17:12:03Z",
       "artifacts": [
@@ -536,8 +536,14 @@
           "path": "specs/756_enhance_task_command_with_description_improvement/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting current implementation analysis, transformation algorithm design, and implementation recommendations for task description improvement"
+        },
+        {
+          "path": "specs/756_enhance_task_command_with_description_improvement/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan covering Step 2.5 implementation, examples/edge cases, and verification"
         }
-      ]
+      ],
+      "planned": "2026-01-29T17:15:15Z"
     }
   ],
   "completed_projects": [
