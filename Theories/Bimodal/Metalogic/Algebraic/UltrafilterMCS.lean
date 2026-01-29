@@ -490,6 +490,43 @@ theorem mcsToSet_compl_not {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ)
   exact h_cons ⟨d_bot⟩
 
 /-!
+## MCS to Ultrafilter Construction
+
+Using the helper lemmas, we construct an ultrafilter from an MCS.
+-/
+
+/--
+Convert an MCS to an ultrafilter on the Lindenbaum algebra.
+
+Given a maximal consistent set Γ, the set `{ [φ] | φ ∈ Γ }` forms an ultrafilter.
+-/
+def mcsToUltrafilter (Γ : {S : Set Formula // SetMaximalConsistent S}) : Ultrafilter LindenbaumAlg where
+  carrier := mcsToSet Γ.val
+  top_mem := mcsToSet_top Γ.property
+  bot_not_mem := mcsToSet_bot_not_mem Γ.property
+  mem_of_le := fun ha h_le => mcsToSet_mem_of_le Γ.property ha h_le
+  inf_mem := fun ha hb => mcsToSet_inf_mem Γ.property ha hb
+  compl_or := mcsToSet_compl_or Γ.property
+  compl_not := fun _ ha => mcsToSet_compl_not Γ.property ha
+
+/--
+The carrier of mcsToUltrafilter is mcsToSet.
+-/
+@[simp]
+theorem mcsToUltrafilter_carrier (Γ : {S : Set Formula // SetMaximalConsistent S}) :
+    (mcsToUltrafilter Γ).carrier = mcsToSet Γ.val := by
+  unfold mcsToUltrafilter
+  rfl
+
+/--
+Membership in mcsToUltrafilter iff formula in MCS.
+-/
+theorem mem_mcsToUltrafilter_iff (Γ : {S : Set Formula // SetMaximalConsistent S}) (a : LindenbaumAlg) :
+    a ∈ (mcsToUltrafilter Γ).carrier ↔ a ∈ mcsToSet Γ.val := by
+  unfold mcsToUltrafilter
+  constructor <;> exact id
+
+/-!
 ## Fold-Derives Lemma
 
 The key lemma relating list derivation to the quotient algebra ordering.
