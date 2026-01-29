@@ -8,12 +8,12 @@
     {
       "project_number": 752,
       "project_name": "refactor_temporary_file_handling_in_agent_system",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T15:00:21Z",
-      "last_updated": "2026-01-29T15:16:38Z",
-      "session_id": "sess_1769699615_c00b7d",
+      "last_updated": "2026-01-29T15:24:29Z",
+      "session_id": "sess_1769700257_acad6f",
       "researched": "2026-01-29T15:16:38Z",
       "artifacts": [
         {
@@ -494,12 +494,12 @@
     },
     {
       "project_number": 490,
-      "status": "expanded",
+      "status": "completed",
       "project_name": "complete_decidability_procedure",
       "section": "Low Priority",
       "language": "lean",
       "priority": "low",
-      "last_updated": "2026-01-19T22:38:22Z",
+      "last_updated": "2026-01-29T15:24:07Z",
       "session_id": "sess_1768861636_a5f8bb",
       "researched": "2026-01-19T20:41:56Z",
       "artifacts": [
@@ -509,14 +509,14 @@
           "summary": "Comprehensive analysis of Metalogic_v2 vs old Metalogic decidability infrastructure, identifying 4 key sorries to resolve and recommending Task 607 as prerequisite"
         },
         {
-          "path": "specs/490_complete_decidability_procedure/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase plan covering FMP analysis, expansion_decreases_measure proof, tableau_complete proof, decide_complete proof, optional decide_axiom_valid, and final verification"
-        },
-        {
           "path": "specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md",
           "type": "summary",
           "summary": "Partial implementation summary with Session 4 progress and reduced sorry count"
+        },
+        {
+          "path": "specs/490_complete_decidability_procedure/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Post-completion revision documenting subtask completion and cleanup tasks"
         }
       ],
       "dependencies": [
@@ -532,7 +532,9 @@
         625,
         630,
         631
-      ]
+      ],
+      "completed": "2026-01-29T15:24:07Z",
+      "completion_summary": "Completed decidability procedure for TM bimodal logic via 6 subtasks (622-625, 630-631). All core theorems proven: expansion_decreases_measure, tableau_complete, decide_complete. Only 1 optional sorry remains (decide_axiom_valid). Work organized in Boneyard/Metalogic_v2/Decidability/."
     },
     {
       "project_number": 672,

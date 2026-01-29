@@ -331,18 +331,20 @@ technical_debt:
 ---
 
 ### 490. Complete decidability procedure
-- **Status**: [EXPANDED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-19
+- **Started**: 2026-01-19
+- **Completed**: 2026-01-29
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 469
 - **Dependencies**: Task 607
-- **Subtasks**: 622, 623, 624, 625, 630, 631
+- **Subtasks**: 622, 623, 624, 625, 630, 631 (all completed)
 - **Research**: [research-001.md](specs/490_complete_decidability_procedure/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/490_complete_decidability_procedure/plans/implementation-003.md)
+- **Plan**: [implementation-002.md](specs/490_complete_decidability_procedure/plans/implementation-002.md)
 - **Summary**: [implementation-summary-20260119.md](specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md)
 
-**Description**: Complete the decidability procedure for TM logic. Phases 1-2 completed with helper lemmas and proof structure. Expanded into subtasks for remaining work.
+**Description**: Completed decidability procedure for TM bimodal logic via 6 subtasks (622-625, 630-631). All core theorems proven: expansion_decreases_measure, tableau_complete, decide_complete. Only 1 optional sorry remains (decide_axiom_valid). Work organized in Boneyard/Metalogic_v2/Decidability/.
 
 ---
 
