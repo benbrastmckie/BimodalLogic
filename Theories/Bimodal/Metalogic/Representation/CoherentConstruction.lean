@@ -41,25 +41,32 @@ This module takes a different approach based on the Boneyard `canonical_task_rel
 ## Gaps NOT Required for Completeness
 
 The following cases in `mcs_unified_chain_pairwise_coherent` have sorries that are
-**NOT used by the representation theorem**:
+**NOT used by the representation theorem**. All 8 remaining sorries are in cross-origin
+or cross-direction coherence cases that the completeness proof never exercises.
 
-| Case | Location | Status |
-|------|----------|--------|
-| forward_G Case 3 | line 641 | SORRY - Cross-origin (t < 0, t' >= 0): never exercised |
-| forward_G Case 4 | line 654 | SORRY - Both < 0 toward origin: cross-modal case |
-| backward_H Case 1 | line 662 | SORRY - Both >= 0: forward chain doesn't preserve H |
-| backward_H Case 2 | line 665 | SORRY - Cross-origin: never exercised |
-| forward_H Case 1 | line 684 | SORRY - Both >= 0: H doesn't persist in forward chain |
-| forward_H Case 2 | line 688 | PROVEN - Contradiction (t ≥ 0 but t' < 0 with t < t') |
-| forward_H Case 3 | line 691 | SORRY - Cross-origin: never exercised |
-| forward_H Case 4 | line 692 | PROVEN - Uses H-persistence (symmetric to backward_G Case 1) |
-| backward_G Case 3 | line 731 | SORRY - Cross-origin: never exercised |
-| backward_G Case 4 | line 734 | SORRY - Both < 0: backward chain G-coherence |
+| Condition | Case | Line | Status | Reason |
+|-----------|------|------|--------|--------|
+| forward_G | 3 (t<0, t'>=0) | 705 | SORRY | Cross-origin: never exercised |
+| forward_G | 4 (both<0, toward origin) | 708 | SORRY | Cross-direction in backward chain |
+| backward_H | 1 (both>=0) | 716 | SORRY | Forward chain doesn't preserve H |
+| backward_H | 2 (t>=0, t'<0) | 719 | SORRY | Cross-origin: never exercised |
+| forward_H | 1 (both>=0) | 737 | SORRY | H doesn't persist in forward chain |
+| forward_H | 3 (t<0, t'>=0) | 744 | SORRY | Cross-origin: never exercised |
+| backward_G | 3 (t'<0, t>=0) | 792 | SORRY | Cross-origin: never exercised |
+| backward_G | 4 (both<0) | 795 | SORRY | Backward chain G-coherence |
 
-**The completeness proof only uses:**
+**Cases PROVEN** (used by completeness):
 - `forward_G` Case 1 (both >= 0): PROVEN via `mcs_forward_chain_coherent`
 - `backward_H` Case 4 (both < 0): PROVEN via `mcs_backward_chain_coherent`
 - `forward_H` Case 4 (both < 0): PROVEN via `mcs_backward_chain_H_persistence`
+- `backward_G` Case 1 (both >= 0): PROVEN via `mcs_forward_chain_G_persistence`
+
+**Why these are intentional scope exclusions**:
+The completeness theorem only requires temporal coherence along single-direction chains:
+- For G-formulas: coherence in the forward chain (t >= 0)
+- For H-formulas: coherence in the backward chain (t < 0)
+Cross-origin cases (where we need coherence between t < 0 and t' >= 0) would require
+additional axioms or a fundamentally different construction approach.
 
 See `Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean` for detailed documentation
 of what would be needed to prove the remaining cases.
@@ -527,11 +534,15 @@ lemma mcs_forward_chain_seed_containment (Gamma : Set Formula) (h_mcs : SetMaxim
     (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) (n : ℕ) :
     forward_seed (mcs_forward_chain Gamma h_mcs h_no_G_bot n) ⊆
       mcs_forward_chain Gamma h_mcs h_no_G_bot (n + 1) := by
-  unfold mcs_forward_chain mcs_forward_chain_aux
-  -- Need to show forward_seed (mcs_forward_chain_aux ... n).val ⊆ (mcs_forward_chain_aux ... (n+1)).val
-  -- By definition of mcs_forward_chain_aux (n+1), the value is extendToMCS (forward_seed S) h_cons
-  -- where S = (mcs_forward_chain_aux ... n).val
-  simp only [Nat.add_eq, Nat.add_zero]
+  unfold mcs_forward_chain
+  -- Goal: forward_seed (mcs_forward_chain_aux ... n).val ⊆ (mcs_forward_chain_aux ... (n+1)).val
+  -- Get the MCS property of the chain element at n
+  have h_S_mcs := (mcs_forward_chain_aux Gamma h_mcs h_no_G_bot n).property
+  have h_no_G_bot_S := mcs_no_G_bot h_S_mcs
+  have h_cons := forward_seed_consistent_of_no_G_bot _ h_S_mcs h_no_G_bot_S
+  -- The (n+1) element is extendToMCS of forward_seed of the n element
+  -- This is exactly what extendToMCS_contains gives us
+  simp only [mcs_forward_chain_aux]
   exact extendToMCS_contains _ _
 
 /--
@@ -543,8 +554,11 @@ lemma mcs_backward_chain_seed_containment (Gamma : Set Formula) (h_mcs : SetMaxi
     (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) (n : ℕ) :
     backward_seed (mcs_backward_chain Gamma h_mcs h_no_H_bot n) ⊆
       mcs_backward_chain Gamma h_mcs h_no_H_bot (n + 1) := by
-  unfold mcs_backward_chain mcs_backward_chain_aux
-  simp only [Nat.add_eq, Nat.add_zero]
+  unfold mcs_backward_chain
+  have h_S_mcs := (mcs_backward_chain_aux Gamma h_mcs h_no_H_bot n).property
+  have h_no_H_bot_S := mcs_no_H_bot h_S_mcs
+  have h_cons := backward_seed_consistent_of_no_H_bot _ h_S_mcs h_no_H_bot_S
+  simp only [mcs_backward_chain_aux]
   exact extendToMCS_contains _ _
 
 /--

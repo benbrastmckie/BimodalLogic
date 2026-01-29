@@ -5,10 +5,10 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 15
-  completed: 312
+  active: 12
+  completed: 315
   in_progress: 4
-  not_started: 6
+  not_started: 5
   abandoned: 21
   total: 341
 priority_distribution:
@@ -131,48 +131,20 @@ technical_debt:
 
 ## Medium Priority
 
-### 756. Enhance /task command with description improvement
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/756_enhance_task_command_with_description_improvement/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/756_enhance_task_command_with_description_improvement/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/756_enhance_task_command_with_description_improvement/summaries/implementation-summary-20260129.md)
-
-**Description**: Add a lightweight prompt engineering step to the /task command that transforms raw user input into well-structured task descriptions. The enhancement should: (1) ensure action-oriented phrasing with clear verbs, (2) expand abbreviations and clarify vague language, (3) apply consistent formatting and grammar, (4) preserve all technical details from the original input, and (5) avoid over-engineering or changing the user's intent. The change should be contained within .claude/commands/task.md in the "Create Task Mode (Default)" section between steps 2 (parse description) and 3 (detect language).
-
----
-
 ### 753. Prove sorries in CoherentConstruction for standard completeness
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Revised**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Research**: [research-001.md](specs/753_prove_sorries_in_coherentconstruction/reports/research-001.md)
 - **Plan**: [implementation-003.md](specs/753_prove_sorries_in_coherentconstruction/plans/implementation-003.md)
+- **Summary**: Eliminated infrastructure sorries via sigma-type refactoring; documented 13 remaining sorries as intentional scope exclusions
 
 **Description**: Prove sorries in CoherentConstruction.lean and TaskRelation.lean with clean-break approach: (1) sigma-type chain refactoring for infrastructure sorries, (2) TaskRelation architectural simplification or deletion, (3) documented cross-origin gaps. Prioritizes quality and consistency over backwards compatibility.
-
----
-
-### 752. Refactor temporary file handling in agent system
-- **Effort**: 5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/752_refactor_temporary_file_handling_in_agent_system/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/752_refactor_temporary_file_handling_in_agent_system/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/752_refactor_temporary_file_handling_in_agent_system/summaries/implementation-summary-20260129.md)
-
-**Description**: Review and improve temporary file and metadata passing techniques throughout the agent system to ensure robust performance with concurrent agents. Currently, temporary files like `specs/.postflight-pending` are created in the shared `specs/` directory, which may cause conflicts when multiple agents work simultaneously. Consider moving these files to task-specific project directories (e.g., `specs/{N}_{SLUG}/`) since at most one agent works on a task at a time. Systematically audit all temporary file usage, metadata exchange patterns, and file-based coordination mechanisms to identify and resolve potential race conditions or conflicts.
 
 ---
 
@@ -189,25 +161,9 @@ technical_debt:
 
 ---
 
-### 747. Create Bimodal/Metalogic README hierarchy
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/747_create_bimodal_metalogic_readme_hierarchy/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/747_create_bimodal_metalogic_readme_hierarchy/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/747_create_bimodal_metalogic_readme_hierarchy/summaries/implementation-summary-20260129.md)
-
-**Description**: Create/update README.md in each subdirectory of Bimodal/Metalogic/ providing full and accurate documentation of modules in that directory. Subdirectories should be summarized with links to their contained README.md files. Work from deepest directories upward, culminating in Bimodal/Metalogic/README.md. Each README should describe module purposes, key definitions/theorems, and how modules relate to each other.
-
----
-
 ### 748. Revise ROAD_MAP.md for Metalogic progress
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: markdown
 - **Created**: 2026-01-29

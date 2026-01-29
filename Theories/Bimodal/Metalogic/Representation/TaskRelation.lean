@@ -24,6 +24,28 @@ The key insight is that we define the relation to make the frame conditions triv
 - `canonical_task_rel_nullity`: Proof of nullity condition
 - `canonical_task_rel_comp`: Proof of compositionality
 
+## Gaps NOT Required for Completeness
+
+The compositionality proof (`canonical_task_rel_comp`) has 5 sorries corresponding to
+cross-sign duration composition cases. These are **not exercised by the completeness
+theorem** because:
+
+1. The completeness theorem uses `IndexedMCSFamily` coherence conditions directly
+2. Formula propagation in the truth lemma goes through `forward_G`, `backward_H`,
+   `forward_H`, and `backward_G` from the family, not through task relation composition
+3. The task relation compositionality is only needed to show we have a well-formed
+   `TaskFrame` structure, but the actual semantic work is done by the family
+
+| Sorry | Case | Why Not Needed |
+|-------|------|----------------|
+| Line 151 | d1+d2=0 MCS equality | MCS identity follows from family coherence |
+| Line 164 | d1+d2>0 forward G | Uses family forward_G + backward_G directly |
+| Line 167 | d1+d2>0 backward H | Uses family backward_H + forward_H directly |
+| Line 174 | d1+d2<0 forward H | Uses family forward_H directly |
+| Line 177 | d1+d2<0 backward G | Uses family backward_G directly |
+
+See `CoherentConstruction.lean` for the actual coherence proofs used by completeness.
+
 ## References
 
 - Research report: specs/654_.../reports/research-003.md

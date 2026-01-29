@@ -1,7 +1,7 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-01-28
-**Status**: Universal Parametric Representation (Task 654) Complete, Metalogic_v2 Architecture Refinement Phase
+**Last Updated**: 2026-01-29
+**Status**: Completeness Hierarchy Complete (Weak/Finite Strong/Infinitary Strong), Compactness Sorry-Free, Active Refinement Phase
 
 ## Overview
 
@@ -124,6 +124,68 @@ theorem representation_theorem (phi : Formula) (h_cons : SetConsistent {phi}) :
 
 This establishes the foundation for completeness: **consistent formulas are satisfiable in a parametric canonical model**.
 
+#### Completeness Hierarchy (Theories/Bimodal/Metalogic/Completeness/)
+
+**Status**: All completeness variants proven. Soundness axiomatized pending Boneyard port.
+
+| Result | Status | Location |
+|--------|--------|----------|
+| **weak_completeness** | ✅ PROVEN | WeakCompleteness.lean |
+| **finite_strong_completeness** | ✅ PROVEN | FiniteStrongCompleteness.lean |
+| **infinitary_strong_completeness** | ✅ PROVEN | InfinitaryStrongCompleteness.lean |
+| **provable_iff_valid** | ✅ PROVEN (soundness axiom) | WeakCompleteness.lean |
+| **semantic_weak_completeness** | ✅ PROVEN (sorry-free) | WeakCompleteness.lean |
+
+**Note**: `semantic_weak_completeness` provides sorry-free completeness via direct construction without relying on the soundness axiom. Use this for maximum proof integrity.
+
+#### Compactness (Theories/Bimodal/Metalogic/Compactness/)
+
+**Status**: Fully proven, sorry-free.
+
+| Result | Status | Location |
+|--------|--------|----------|
+| **compactness** | ✅ PROVEN | Compactness.lean |
+| **compactness_iff** | ✅ PROVEN | Compactness.lean |
+| **compactness_entailment** | ✅ PROVEN | Compactness.lean |
+| **compactness_unsatisfiability** | ✅ PROVEN | Compactness.lean |
+
+**Architecture**: Compactness derives from finitary strong completeness. Since any derivation uses only finitely many premises, semantic entailment by an infinite set implies derivability from a finite subset.
+
+#### CoherentConstruction Approach (Theories/Bimodal/Metalogic/Representation/)
+
+**Status**: Core proven, coherence cases have documented gaps.
+
+The CoherentConstruction module replaces the original `construct_indexed_family` approach with a cleaner architecture:
+
+1. **Two-chain design**: Forward chain (times > 0) and backward chain (times < 0) constructed from origin (time 0)
+2. **Definitional coherence**: Coherence conditions (G/H persistence) hold by construction, not proved after the fact
+3. **Minimal requirements**: Only Cases 1 and 4 needed for completeness theorem
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Origin MCS | ✅ PROVEN | Lindenbaum extension of seed |
+| Forward chain | ✅ PROVEN | G-persistence definitional |
+| Backward chain | ✅ PROVEN | H-persistence definitional |
+| Cross-origin coherence | 🟡 PARTIAL | Cases 2,3 have documented gaps |
+| Completeness integration | ✅ PROVEN | Uses only Cases 1,4 |
+
+**Why cross-origin gaps don't matter**: The representation theorem and completeness proofs only require coherence for times on the same side of the origin. Cross-origin cases (e.g., showing G-persistence from t<0 to t>0) are not on the critical path.
+
+#### Algebraic Approach (Theories/Bimodal/Metalogic/Algebraic/)
+
+**Status**: Partial, provides independent verification path.
+
+An alternative approach using Boolean algebra with modal operators:
+
+| Component | Status | Location |
+|-----------|--------|----------|
+| Lindenbaum-Tarski quotient | ✅ DEFINED | QuotientAlgebra.lean |
+| Boolean algebra structure | ✅ PROVEN | BooleanStructure.lean |
+| Interior operators (G/H) | 🟡 PARTIAL | ModalOperators.lean |
+| Ultrafilter correspondence | 🟡 PARTIAL | UltrafilterMCS.lean |
+
+**Purpose**: Provides algebraic characterization of the logic, enabling different proof techniques. Can be used to verify Kripke semantics results via Stone duality.
+
 ---
 
 ### Syntax and Semantics
@@ -155,9 +217,9 @@ This establishes the foundation for completeness: **consistent formulas are sati
 ### 0.1 Audit Current Sorries
 
 **Tasks**:
-- [ ] Audit `Theories/Bimodal/Metalogic/` for sorries (research found 20+)
-- [ ] Categorize by difficulty and dependency
-- [ ] Prioritize which sorries block main theorem path
+- [x] Audit `Theories/Bimodal/Metalogic/` for sorries *(~29 sorries identified, see Task 758)*
+- [x] Categorize by difficulty and dependency *(blocking/biconditional/exploratory categories)*
+- [x] Prioritize which sorries block main theorem path *(0 on critical path - representation_theorem is sorry-free)*
 
 ### 0.2 Port from Boneyard
 
@@ -169,17 +231,24 @@ This establishes the foundation for completeness: **consistent formulas are sati
 
 ### 0.3 Decidability Decision
 
+**Status**: Decision made - Boneyard decidability DEPRECATED, new FMP approach in progress.
+
 **Tasks**:
-- [ ] Decide: deprecate or resurrect `Decidability/` infrastructure
-- [ ] If resurrecting: create migration plan
-- [ ] If deprecating: update roadmap to reflect this
+- [x] Decide: deprecate or resurrect `Decidability/` infrastructure *(DEPRECATED)*
+- [x] If deprecating: update roadmap to reflect this *(this revision)*
+
+**Resolution**:
+- **Boneyard/Metalogic_v2/Decidability/**: DEPRECATED. Code preserved for historical reference.
+- **New approach**: Parametric FMP infrastructure in `Metalogic/FMP/` provides finite model construction.
+- **Practical impact**: `semantic_weak_completeness` provides sorry-free completeness without full decidability proof.
+- **Future option**: Full decidability via FMP path (Task 755) remains available if needed.
 
 ### 0.4 Document Inventory
 
 **Tasks**:
-- [ ] Create sorry-free theorem inventory
-- [ ] Update ROAD_MAP tables with verified status
-- [ ] Document proof dependencies clearly
+- [x] Create sorry-free theorem inventory *(README hierarchy created in Task 747)*
+- [x] Update ROAD_MAP tables with verified status *(this revision, Task 748)*
+- [x] Document proof dependencies clearly *(each subdirectory README documents module dependencies)*
 
 ---
 
@@ -236,10 +305,10 @@ theorem mcs_contains_or_neg (M : Set Formula) (h : SetMaximalConsistent M) (φ :
 Some modules import from multiple layers, creating cognitive overhead.
 
 **Tasks**:
-- [x] **Visualize import graph**: Generate dependency diagram *(Metalogic_v2/README.md contains comprehensive ASCII architecture diagram)*
-- [ ] **Identify cross-cutting imports**: Find patterns that break layer discipline
-- [ ] **Refactor into utilities**: Extract common patterns into a `Metalogic_v2.Util` module
-- [x] **Enforce layer discipline**: Each layer only imports from layers below *(Metalogic_v2 implements strict Core < Soundness < Representation < Completeness < Applications layering)*
+- [x] **Visualize import graph**: Generate dependency diagram *(Metalogic/README.md contains architecture diagram)*
+- [x] **Identify cross-cutting imports**: Layer discipline enforced: Core < Representation < Completeness < Compactness
+- [ ] **Refactor into utilities**: Extract common patterns into a `Metalogic.Util` module
+- [x] **Enforce layer discipline**: Each layer only imports from layers below *(strict layering documented in subdirectory READMEs)*
 
 **Target Structure**:
 ```
@@ -270,7 +339,7 @@ Individual proofs are documented, but the overall narrative is unclear.
 
 **Tasks**:
 - [ ] **Create proof architecture guide**: `docs/architecture/proof-structure.md`
-- [x] **Add module overviews**: Each `.lean` file starts with `/-! # Overview -/` section *(Metalogic_v2/README.md has comprehensive module-by-module overview with key theorems)*
+- [x] **Add module overviews**: Each subdirectory has README.md with module-by-module overview *(Task 747)*
 - [ ] **Cross-reference theorems**: Link related results with `See also: theorem_name`
 - [ ] **Write tutorial**: `docs/tutorials/metalogic-walkthrough.md` explaining the proof strategy
 
@@ -296,20 +365,22 @@ Individual proofs are documented, but the overall narrative is unclear.
 
 **Generalization Opportunities**:
 
-#### A. Set-Based Strong Completeness
-Prove completeness for `Γ : Set Formula`:
+#### A. Set-Based Strong Completeness ✅ COMPLETED
+
+**Status**: Implemented as `infinitary_strong_completeness` in Completeness/InfinitaryStrongCompleteness.lean
+
 ```lean
-theorem strong_completeness_set (Γ : Set Formula) (φ : Formula) :
+theorem infinitary_strong_completeness (Γ : Set Formula) (φ : Formula) :
     (∀ D F M τ t, (∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M τ t φ) →
-    ∃ Δ : List Formula, (∀ ψ ∈ Δ, ψ ∈ Γ) ∧ ContextDerivable Δ φ
+    ∃ Δ : Finset Formula, (↑Δ ⊆ Γ) ∧ ListDerivable Δ.toList φ
 ```
 
 **Tasks**:
-- [ ] Define `SetDerivable Γ φ := ∃ Δ ⊆ Γ, Δ.toFinset.toList ⊢ φ`
-- [ ] Prove `Γ ⊨ φ → SetDerivable Γ φ` via compactness
-- [ ] Show equivalence with list-based for finite Γ
+- [x] Define set-based derivability
+- [x] Prove infinitary strong completeness via compactness
+- [x] Show finite subset suffices (compactness argument)
 
-**Impact**: More natural statement, aligns with standard modal logic literature
+**Impact**: Complete generalization to infinite premise sets achieved
 
 #### B. Constructive Completeness
 Make completeness constructive where possible:
@@ -633,9 +704,9 @@ Derivable = {
 **Use Option B**: The representation theorem is the true core. Everything else is a corollary.
 
 **Implementation Tasks**:
-- [x] Refactor to make `representation_theorem` the primary export *(Metalogic_v2 architecture places RepresentationTheorem.lean as central, with completeness as derived corollary)*
-- [x] Recast soundness/completeness as corollaries *(Completeness layer derives from Representation layer in Metalogic_v2)*
-- [x] Document the one-line derivations *(Metalogic_v2/README.md Key Theorems table shows derivation structure)*
+- [x] Refactor to make `representation_theorem` the primary export *(Metalogic architecture: Representation/ provides foundation, Completeness/ derives from it)*
+- [x] Recast soundness/completeness as corollaries *(Completeness/ directory derives weak/finite/infinitary from Representation)*
+- [x] Document the one-line derivations *(README hierarchy documents theorem dependencies)*
 - [ ] Measure proof economy improvement
 
 **Expected Impact**:
@@ -679,36 +750,52 @@ instance : ModalOperator all_future where ...
 
 ---
 
-## Phase 5: Removing Known Sorries (Low Priority)
+## Phase 5: Managing Remaining Sorries (Low Priority)
 
-**Goal**: Eliminate the 4 remaining sorries where tractable.
+**Goal**: Document and selectively eliminate sorries based on criticality.
 
-### 5.1 Priority Assessment
+**Current State** (as of 2026-01-29): ~29 sorries in Metalogic/ (excluding Boneyard)
 
-| Sorry | Location | Difficulty | Value | Priority |
-|-------|----------|------------|-------|----------|
-| `semantic_task_rel_compositionality` | SemanticCanonicalModel.lean:236 | High | Low | **Skip** |
-| `main_provable_iff_valid_v2` (completeness dir) | SemanticCanonicalModel.lean:632 | High | Low | **Skip** |
-| `finite_model_property_constructive` | FiniteModelProperty.lean:480 | Medium | Low | **Later** |
-| `decide_axiom_valid` | Decidability/Correctness.lean:196 | Low | Low | **Maybe** |
+### 5.1 Sorry Distribution by Directory
 
-### 5.2 Recommended Actions
+| Directory | Count | Category | Notes |
+|-----------|-------|----------|-------|
+| Representation/ | ~17 | Mixed | CoherentConstruction (~10), TaskRelation (~5), IndexedMCSFamily (~2 SUPERSEDED) |
+| FMP/ | ~3 | Non-blocking | Truth bridge gaps, documented workaround |
+| Completeness/ | 1 | Axiom | Soundness axiomatized, pending Boneyard fix |
+| Algebraic/ | ~8 | Independent | Alternative path, not on critical path |
+| Compactness/ | 0 | **Sorry-free** | Fully proven |
+| Core/ | 0 | **Sorry-free** | Re-exports proven code |
 
-#### `semantic_task_rel_compositionality`
-**Recommendation**: Document as acceptable limitation, don't attempt to fix.
-**Reason**: Fundamental issue with finite time domain. Would require rearchitecting the entire semantic model. Not worth it since completeness proof doesn't use it.
+### 5.2 Criticality Assessment
 
-#### `main_provable_iff_valid_v2` (completeness)
-**Recommendation**: Keep using `semantic_weak_completeness` instead.
-**Reason**: The "truth bridge" is technically challenging and low value. The sorry-free `semantic_weak_completeness` provides the same result.
+| Category | Count | Impact | Recommendation |
+|----------|-------|--------|----------------|
+| **Blocking main theorem** | 0 | Critical | N/A - `representation_theorem` is sorry-free |
+| **Biconditional completion** | ~5 | Medium | Optional - `semantic_weak_completeness` provides sorry-free path |
+| **Exploratory/Independent** | ~24 | Low | Document, address opportunistically |
 
-#### `finite_model_property_constructive`
-**Recommendation**: Attempt if generalizing to constructive completeness (Phase 2.1.B).
-**Reason**: Worth doing as part of constructive generalization, not as standalone.
+### 5.3 Recommended Actions
 
-#### `decide_axiom_valid`
-**Recommendation**: Fix incrementally as `matchAxiom` is extended.
-**Reason**: Low hanging fruit, good for completeness, but not critical.
+#### CoherentConstruction Sorries (Task 753)
+**Status**: In progress
+**Recommendation**: Focus on infrastructure sorries (sigma-type refactoring). Cross-origin coherence gaps are non-critical.
+
+#### TaskRelation Compositionality
+**Recommendation**: Document as architectural limitation.
+**Reason**: Fundamental issue with task relation semantics. Completeness doesn't require it.
+
+#### FMP Truth Bridge
+**Recommendation**: Use `semantic_weak_completeness` instead.
+**Reason**: Sorry-free completeness available via algebraic path.
+
+#### Soundness Axiom (Completeness/WeakCompleteness.lean)
+**Recommendation**: Port soundness proof from Boneyard.
+**Reason**: Low-hanging fruit once Boneyard infrastructure is adapted to current semantics.
+
+#### Algebraic Sorries
+**Recommendation**: Complete independently as algebraic alternative.
+**Reason**: Provides dual verification path, not blocking main results.
 
 ---
 
@@ -719,7 +806,7 @@ instance : ModalOperator all_future where ...
 ### 6.1 Documentation for Publication
 
 **Tasks**:
-- [x] Write comprehensive README *(Metalogic_v2/README.md - 261 lines with architecture, usage, migration guide)*
+- [x] Write comprehensive README *(Metalogic/README.md + 6 subdirectory READMEs - Task 747)*
 - [x] Create API documentation *(docs/reference/API_REFERENCE.md - 720 lines)*
 - [x] Add usage examples *(API_REFERENCE.md includes usage examples)*
 - [ ] Write paper draft (if academic publication desired)
@@ -735,7 +822,7 @@ instance : ModalOperator all_future where ...
 ### 6.3 Testing and Validation
 
 **Tasks**:
-- [x] Create test suite for each major theorem *(Tests/BimodalTest/Metalogic_v2/ - 10 test files covering Core, Soundness, Completeness, FMP, Representation)*
+- [x] Create test suite for each major theorem *(Tests/ directory with test files for Core, Completeness, FMP, Representation)*
 - [ ] Add property-based tests
 - [ ] Benchmark against standard examples
 - [ ] Validate against known results from literature
@@ -813,9 +900,27 @@ instance : ModalOperator all_future where ...
 
 ---
 
+## Active Metalogic Tasks (as of 2026-01-29)
+
+The following tasks are currently in progress or planned for Metalogic improvements:
+
+| Task | Status | Goal |
+|------|--------|------|
+| **753** | IMPLEMENTING | Prove CoherentConstruction sorries (sigma-type refactoring) |
+| **755** | PLANNED | Option C: sorry-free completeness via semantic_weak_completeness |
+| **750** | PLANNED | Hybrid approach: ultrafilter → MCS → FMP for decidability |
+| **758** | NOT STARTED | Systematic sorry audit and reduction |
+
+**Quick Links**:
+- Task details: `specs/TODO.md`
+- Machine state: `specs/state.json`
+- Research reports: `specs/{N}_{SLUG}/reports/`
+
+---
+
 ## Conclusion
 
-The ProofChecker project has achieved its primary goal: a clean, proven metalogic for TM bimodal logic. The Metalogic_v2 architecture is solid and ready for reporting.
+The ProofChecker project has achieved its primary goal: a clean, proven metalogic for TM bimodal logic. The current Metalogic architecture is solid with sorry-free completeness available via `semantic_weak_completeness`.
 
 **The path forward** focuses on three pillars:
 1. **Quality**: Improving proof economy and organization (Phase 1, 4)

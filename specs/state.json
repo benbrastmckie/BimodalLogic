@@ -60,11 +60,11 @@
     {
       "project_number": 753,
       "project_name": "prove_sorries_in_coherentconstruction",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T16:50:59Z",
-      "last_updated": "2026-01-29T17:59:09Z",
+      "last_updated": "2026-01-29T18:11:06Z",
       "session_id": "sess_1769709527_8a6048",
       "researched": "2026-01-29T16:56:39Z",
       "artifacts": [
@@ -77,43 +77,17 @@
           "path": "specs/753_prove_sorries_in_coherentconstruction/plans/implementation-003.md",
           "type": "plan",
           "summary": "Clean-break v003 plan: sigma-type refactoring, TaskRelation simplification, documented cross-origin gaps"
+        },
+        {
+          "path": "specs/753_prove_sorries_in_coherentconstruction/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting sigma-type refactoring, documentation updates, and verification results"
         }
       ],
       "planned": "2026-01-29T17:51:04Z",
-      "started": "2026-01-29T17:12:53Z"
-    },
-    {
-      "project_number": 752,
-      "project_name": "refactor_temporary_file_handling_in_agent_system",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-29T15:00:21Z",
-      "last_updated": "2026-01-29T15:38:19Z",
-      "session_id": "sess_1769700674_a485a3",
-      "researched": "2026-01-29T15:16:38Z",
-      "artifacts": [
-        {
-          "path": "specs/752_refactor_temporary_file_handling_in_agent_system/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report identifying concurrency risks in global coordination files and recommending task-scoped file paths"
-        },
-        {
-          "path": "specs/752_refactor_temporary_file_handling_in_agent_system/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase plan covering hook update, skill updates (7 files), documentation updates (3 files), refresh enhancement, and integration testing"
-        },
-        {
-          "path": "specs/752_refactor_temporary_file_handling_in_agent_system/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-29T15:26:49Z",
-      "started": "2026-01-29T15:31:34Z",
-      "completed": "2026-01-29T15:38:19Z",
-      "completion_summary": "Refactored postflight coordination files from global specs/ location to task-scoped specs/{N}_{SLUG}/ directories, enabling safe concurrent agent execution on different tasks. Updated hook script, 7 skill files, 3 documentation files, and enhanced /refresh with marker cleanup.",
-      "claudemd_suggestions": "Updated hooks/subagent-postflight.sh, 7 skill SKILL.md files (marker creation/cleanup), 3 context pattern/troubleshooting files, and skill-refresh/SKILL.md"
+      "started": "2026-01-29T17:12:53Z",
+      "completed": "2026-01-29T18:11:06Z",
+      "completion_summary": "Eliminated infrastructure sorries in CoherentConstruction.lean using sigma-type chain refactoring. The 2 sorries at lines 403/416 are now proven by carrying the MCS invariant through recursion. Added mcs_no_G_bot and mcs_no_H_bot lemmas using T-axiom reasoning. Documented remaining 13 sorries as intentional scope exclusions for cross-origin coherence cases not exercised by the completeness theorem."
     },
     {
       "project_number": 750,
@@ -166,46 +140,14 @@
       "started": "2026-01-29T17:25:04Z"
     },
     {
-      "project_number": 747,
-      "project_name": "create_bimodal_metalogic_readme_hierarchy",
-      "status": "completed",
-      "language": "markdown",
-      "priority": "medium",
-      "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T16:36:02Z",
-      "session_id": "sess_1769704261_332461",
-      "researched": "2026-01-29T15:12:40Z",
-      "artifacts": [
-        {
-          "path": "specs/747_create_bimodal_metalogic_readme_hierarchy/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting 6 Metalogic subdirectories, identifying 3 missing READMEs (Algebraic, Compactness, Completeness), and proposing README structure"
-        },
-        {
-          "path": "specs/747_create_bimodal_metalogic_readme_hierarchy/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for creating 4 README files in Bimodal/Metalogic subdirectories"
-        },
-        {
-          "path": "specs/747_create_bimodal_metalogic_readme_hierarchy/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results for 4 README files"
-        }
-      ],
-      "planned": "2026-01-29T15:22:07Z",
-      "started": "2026-01-29T16:31:22Z",
-      "completed": "2026-01-29T16:36:02Z",
-      "completion_summary": "Created 4 README.md files documenting the Completeness, Algebraic, Compactness, and Core subdirectories of Theories/Bimodal/Metalogic/, following the established format with module tables, key definitions, and cross-references."
-    },
-    {
       "project_number": 748,
       "project_name": "revise_roadmap_for_metalogic_progress",
-      "status": "planned",
+      "status": "implementing",
       "language": "markdown",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T18:00:43Z",
-      "session_id": "sess_1769709492_48981e",
+      "last_updated": "2026-01-29T18:07:54Z",
+      "session_id": "sess_1769710043_1439c8",
       "researched": "2026-01-29T17:49:00Z",
       "artifacts": [
         {
@@ -219,7 +161,8 @@
           "summary": "4-phase implementation plan for revising ROAD_MAP.md with Metalogic progress"
         }
       ],
-      "planned": "2026-01-29T18:00:43Z"
+      "planned": "2026-01-29T18:00:43Z",
+      "started": "2026-01-29T18:07:54Z"
     },
     {
       "project_number": 741,
@@ -528,39 +471,6 @@
         742,
         743
       ]
-    },
-    {
-      "project_number": 756,
-      "project_name": "enhance_task_command_with_description_improvement",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-29T17:05:12Z",
-      "last_updated": "2026-01-29T17:26:49Z",
-      "session_id": "sess_1769707396_ef39ff",
-      "researched": "2026-01-29T17:12:03Z",
-      "artifacts": [
-        {
-          "path": "specs/756_enhance_task_command_with_description_improvement/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting current implementation analysis, transformation algorithm design, and implementation recommendations for task description improvement"
-        },
-        {
-          "path": "specs/756_enhance_task_command_with_description_improvement/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase plan covering Step 2.5 implementation, examples/edge cases, and verification"
-        },
-        {
-          "path": "specs/756_enhance_task_command_with_description_improvement/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-29T17:15:15Z",
-      "started": "2026-01-29T17:23:35Z",
-      "completed": "2026-01-29T17:26:49Z",
-      "completion_summary": "Enhanced /task command with Step 3 (Improve description) that transforms raw user input via slug expansion, verb inference, and formatting normalization. Added transformation examples table and edge case documentation.",
-      "claudemd_suggestions": "Modified .claude/commands/task.md - added Step 3 (Description Improvement) with sub-steps 3.1-3.3, examples table, edge cases, and action verb categories"
     }
   ],
   "completed_projects": [
@@ -584,7 +494,7 @@
     }
   ],
   "task_counts": {
-    "active": 18,
+    "active": 17,
     "not_started": 8,
     "total": 334
   }

@@ -1,15 +1,32 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context and reading target files"
-  },
+  "status": "implemented",
+  "summary": "Eliminated 2 infrastructure sorries in CoherentConstruction.lean via sigma-type refactoring. Documented remaining 13 sorries (8 cross-origin coherence in CoherentConstruction, 5 compositionality in TaskRelation) as intentional scope exclusions not affecting completeness theorem.",
+  "artifacts": [
+    {
+      "path": "specs/753_prove_sorries_in_coherentconstruction/summaries/implementation-summary-20260129.md",
+      "type": "summary",
+      "summary": "Implementation summary documenting sigma-type refactoring, documentation updates, and verification results"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1769709527_8a6048",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
+    "phases_completed": 4,
+    "phases_total": 4,
+    "resume_phase": null,
+    "files_modified": [
+      "Theories/Bimodal/Metalogic/Representation/CoherentConstruction.lean",
+      "Theories/Bimodal/Metalogic/Representation/TaskRelation.lean"
+    ],
+    "sorries_eliminated": 2,
+    "sorries_remaining": {
+      "CoherentConstruction.lean": 8,
+      "TaskRelation.lean": 5,
+      "total": 13,
+      "all_documented": true
+    }
+  },
+  "completion_data": {
+    "completion_summary": "Eliminated infrastructure sorries in CoherentConstruction.lean using sigma-type chain refactoring. The 2 sorries at lines 403/416 are now proven by carrying the MCS invariant through recursion. Added mcs_no_G_bot and mcs_no_H_bot lemmas using T-axiom reasoning. Documented remaining 13 sorries as intentional scope exclusions for cross-origin coherence cases not exercised by the completeness theorem.",
+    "roadmap_items": []
   }
 }

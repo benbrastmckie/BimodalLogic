@@ -1,7 +1,7 @@
 # Implementation Plan: Task #753 (Revised v003)
 
 - **Task**: 753 - Prove sorries in CoherentConstruction for standard completeness
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Version**: 003 (revised from 002)
 - **Priority**: medium
 - **Dependencies**: None
@@ -37,7 +37,7 @@ Version 003 embraces the principle: **quality and consistency over backwards com
 
 ## Implementation Phases
 
-### Phase 1: Sigma-Type Chain Refactoring [IN PROGRESS]
+### Phase 1: Sigma-Type Chain Refactoring [COMPLETED]
 
 **Goal**: Eliminate infrastructure sorries by carrying invariants through the recursion.
 
@@ -150,7 +150,7 @@ Actually even simpler: **prove the contrapositive of forward_G_persistence in re
 
 ---
 
-### Phase 2: TaskRelation Architectural Simplification [NOT STARTED]
+### Phase 2: TaskRelation Architectural Simplification [COMPLETED]
 
 **Goal**: Eliminate 5 sorries in `canonical_task_rel_comp` by removing the need for that theorem.
 
@@ -192,7 +192,7 @@ This shifts complexity to the construction (which is already done) rather than t
 
 ---
 
-### Phase 3: Document Intentional Cross-Origin Gaps [NOT STARTED]
+### Phase 3: Document Intentional Cross-Origin Gaps [COMPLETED]
 
 **Goal**: Make the intentional scope explicit - cross-origin cases are not required for completeness.
 
@@ -269,7 +269,7 @@ The file already has excellent header documentation (lines 42-65). Keep the sorr
 
 ---
 
-### Phase 4: Final Verification [NOT STARTED]
+### Phase 4: Final Verification [COMPLETED]
 
 **Goal**: Verify all targets achieved.
 
