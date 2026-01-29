@@ -2,6 +2,330 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 737,
+      "project_name": "fix_unused_simp_arguments_temporalproofstrategies",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "description": "Fix unused simp arguments in TemporalProofStrategies.lean. Remove Formula.swap_temporal_involution from simp calls at lines 174, 203, 242, 459 where the linter reports it is unused.",
+      "created": "2026-01-29T04:04:51Z",
+      "last_updated": "2026-01-29T04:14:51Z",
+      "session_id": "sess_1769659919_aefadb",
+      "planned": "2026-01-29T04:10:38Z",
+      "artifacts": [
+        {
+          "path": "specs/737_fix_unused_simp_arguments_temporalproofstrategies/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase plan for removing unused simp arguments at lines 174, 203, 242, 459"
+        },
+        {
+          "path": "specs/737_fix_unused_simp_arguments_temporalproofstrategies/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "started": "2026-01-29T04:12:23Z",
+      "completed": "2026-01-29T04:14:51Z",
+      "completion_summary": "Removed unused Formula.swap_temporal_involution arguments from 4 simp calls at lines 174, 203, 242, 459 in TemporalProofStrategies.lean. Linter warnings eliminated, all proofs remain valid.",
+      "archived": "2026-01-29T05:02:01Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 735,
+      "project_name": "complete_task700_phase5_ultrafilter_mcs_correspondence",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Complete phase 5 of task 700: Ultrafilter-MCS Correspondence. Fill ultrafilterToSet_mcs consistency proof - show that if L ⊢ ⊥ and all [φᵢ] ∈ U, then ⊥ ∈ U. Requires relating list conjunction to fold of quotients. (Follow-up from task #700)",
+      "parent_task": 700,
+      "created": "2026-01-29T01:21:00Z",
+      "last_updated": "2026-01-29T04:12:15Z",
+      "session_id": "sess_1769659692_29c23a",
+      "researched": "2026-01-29T01:30:16Z",
+      "artifacts": [
+        {
+          "path": "specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing ultrafilterToSet_mcs consistency proof strategy using fold_le_of_derives helper lemma"
+        },
+        {
+          "path": "specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for ultrafilterToSet_mcs consistency proof"
+        },
+        {
+          "path": "specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting fold_le_of_derives lemma and ultrafilterToSet_mcs completion"
+        }
+      ],
+      "planned": "2026-01-29T04:05:08Z",
+      "started": "2026-01-29T04:08:30Z",
+      "completed": "2026-01-29T04:12:15Z",
+      "completion_summary": "Proved ultrafilterToSet_mcs consistency using new fold_le_of_derives lemma. The lemma shows that if L ⊢ ψ, then the meet of quotients of L is ≤ [ψ] in the Lindenbaum algebra, enabling the contradiction via ultrafilter properties.",
+      "archived": "2026-01-29T05:02:01Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 736,
+      "project_name": "complete_task700_phase6_algebraic_representation",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Complete phase 6 of task 700: Algebraic Representation Theorem. Prove ultrafilter existence (consistent_implies_satisfiable) using Zorn's lemma adaptation - for any non-⊥ element a, there exists ultrafilter containing a. Also complete mcs_ultrafilter_correspondence bijection proof. (Follow-up from task #700)",
+      "parent_task": 700,
+      "created": "2026-01-29T01:21:00Z",
+      "last_updated": "2026-01-29T04:59:51Z",
+      "session_id": "sess_1769661973_4cb2d6",
+      "researched": "2026-01-29T04:14:23Z",
+      "artifacts": [
+        {
+          "path": "specs/736_complete_task700_phase6_algebraic_representation/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report: ultrafilter existence and MCS-ultrafilter bijection proof strategies using Lindenbaum lemma"
+        },
+        {
+          "path": "specs/736_complete_task700_phase6_algebraic_representation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for completing algebraic representation theorem proofs"
+        },
+        {
+          "path": "specs/736_complete_task700_phase6_algebraic_representation/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-29T04:43:55Z",
+      "started": "2026-01-29T04:46:38Z",
+      "completed": "2026-01-29T04:59:51Z",
+      "completion_summary": "Proved ultrafilter existence (consistent_implies_satisfiable) and MCS-ultrafilter bijection (mcs_ultrafilter_correspondence) completing the algebraic representation theorem. Added 5 helper lemmas and mcsToUltrafilter construction.",
+      "archived": "2026-01-29T05:02:01Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 732,
+      "project_name": "complete_630_phase4_truth_lemma_proof",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Complete phase 4 of task 630: Prove mem_extractTrueAtomSet_iff helper lemma. This establishes that p ∈ extractTrueAtomSet b ↔ SignedFormula.pos (.atom p) ∈ b. The proof is mechanical (induction on branch with case splits on Formula constructors: atom, bot, imp, box, all_past, all_future for both pos and neg signs). Currently has sorry at Theories/Bimodal/Boneyard/Metalogic_v2/Decidability/BranchTaskModel.lean:269. (Follow-up from task #630)",
+      "parent_task": 630,
+      "created": "2026-01-29T00:41:08Z",
+      "last_updated": "2026-01-29T01:16:39Z",
+      "session_id": "sess_1769648440_e96750",
+      "researched": "2026-01-29T00:48:46Z",
+      "artifacts": [
+        {
+          "path": "specs/732_complete_630_phase4_truth_lemma_proof/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with proof strategy for mem_extractTrueAtomSet_iff lemma using generalized accumulator induction"
+        },
+        {
+          "path": "specs/732_complete_630_phase4_truth_lemma_proof/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan covering proof structure, base case, inductive setup, case splits, and verification"
+        },
+        {
+          "path": "specs/732_complete_630_phase4_truth_lemma_proof/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with proof approach and verification results"
+        }
+      ],
+      "planned": "2026-01-29T00:52:59Z",
+      "started": "2026-01-29T01:01:03Z",
+      "completed": "2026-01-29T01:16:39Z",
+      "completion_summary": "Proved mem_extractTrueAtomSet_iff lemma establishing p ∈ extractTrueAtomSet b ↔ SignedFormula.pos (.atom p) ∈ b. Used generalized accumulator induction pattern with match-split for all 12 sign/formula cases.",
+      "archived": "2026-01-29T05:02:01Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 658,
+      "project_name": "prove_indexed_family_coherence_conditions",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-29T00:41:39Z",
+      "related_tasks": [
+        654
+      ],
+      "researching": "2026-01-29T00:25:36Z",
+      "session_id": "sess_1769646818_2df0bc",
+      "researched": "2026-01-29T00:28:11Z",
+      "research_summary": "Research completed for indexed family coherence conditions. Analyzed four coherence condition sorries (lines 433, 439, 448, 456) in IndexedMCSFamily.lean. Identified proof strategies using temporal axioms (Temporal 4, Temporal K distribution). Forward_G and backward_H are directly provable from seed construction (5-7 hours). Forward_H and backward_G require MCS negation completeness lemma (additional 4-5 hours prerequisite). Created comprehensive report with phased proof strategy, case analysis patterns, and dependency analysis.",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md",
+          "summary": "Research report analyzing four coherence conditions with proof strategies, dependencies, and implementation recommendations"
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of coherence blocker, Boneyard patterns, and architectural solutions for task 658"
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md",
+          "type": "research",
+          "summary": "Analysis of T axiom impact: NOT including T axioms makes proofs impossible (fundamental construction issue). Adding T axioms would make coherence trivial. Recommends adding T axioms or accepting limitation."
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md",
+          "type": "research",
+          "summary": "Detailed comparison of Option B1 (Recursive Seeds) vs Option B2 (Relational/Coherent Construction) for completing coherence proofs. Recommends Option B2 (relational approach via Task 681) due to proven Boneyard pattern and dense time support."
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-005.md",
+          "type": "research",
+          "summary": "Dependency chain analysis: representation_theorem incorrectly uses superseded construct_indexed_family instead of construct_coherent_family. Documents code-documentation mismatch and refactoring plan."
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-007.md",
+          "type": "plan",
+          "summary": "Revised plan v7 incorporating research-005 findings: switch representation_theorem to use construct_coherent_family"
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Final implementation summary: Phases 3-4 complete, coherent construction now used"
+        }
+      ],
+      "planning": "2026-01-25T21:42:13Z",
+      "planned": "2026-01-29T00:32:13Z",
+      "started": "2026-01-25T21:46:22Z",
+      "resume_phase": 2,
+      "partial_summary": "Phase 1 complete (T-axiom closure lemmas). Phases 2-6 blocked by fundamental construction issue: independent Lindenbaum extensions prevent coherence proofs. Requires construction redesign (Option B).",
+      "implementing": "2026-01-29T00:33:57Z",
+      "completed": "2026-01-29T00:41:39Z",
+      "completion_summary": "Completed switch of representation_theorem to use coherent construction. Phases 3-4 finished: analyzed superseded code (kept for reference), updated documentation line numbers. Build passes. Coherence proofs now definitional via CoherentConstruction.lean.",
+      "archived": "2026-01-29T05:02:01Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 660,
+      "project_name": "prove_parametric_completeness_theorems",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-29T01:18:18Z",
+      "dependencies": [
+        656,
+        657,
+        658
+      ],
+      "related_tasks": [
+        654
+      ],
+      "session_id": "sess_1769648714_48ac95",
+      "researched": "2026-01-29T00:40:54Z",
+      "artifacts": [
+        {
+          "path": "specs/660_prove_parametric_completeness_theorems/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on compactness, completeness, and representation theorem relationships - compactness follows from strong completeness"
+        },
+        {
+          "path": "specs/660_prove_parametric_completeness_theorems/reports/research-002.md",
+          "type": "research",
+          "summary": "Corrected analysis: distinguishes finite-premise vs infinitary strong completeness; FMP is orthogonal; true compactness requires additional work"
+        },
+        {
+          "path": "specs/660_prove_parametric_completeness_theorems/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan covering weak completeness through true compactness for TM logic over arbitrary ordered additive groups"
+        },
+        {
+          "path": "specs/660_prove_parametric_completeness_theorems/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results for completeness hierarchy"
+        }
+      ],
+      "planned": "2026-01-29T01:01:36Z",
+      "started": "2026-01-29T01:05:35Z",
+      "completed": "2026-01-29T01:18:18Z",
+      "completion_summary": "Implemented complete hierarchy of completeness theorems for TM bimodal logic: weak completeness, finite-premise strong completeness, infinitary strong completeness (axiomatized for infinite sets), and compactness. Created 5 files in Completeness/ and Compactness/ modules.",
+      "archived": "2026-01-29T05:02:01Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 631,
+      "project_name": "prove_evalformula_implies_satisfiable",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "parent_task": 490,
+      "dependencies": [
+        630
+      ],
+      "related_tasks": [
+        624,
+        628
+      ],
+      "created": "2026-01-20T01:07:10Z",
+      "last_updated": "2026-01-29T04:58:34Z",
+      "session_id": "sess_1769662538_c30b1c",
+      "researched": "2026-01-29T01:18:02Z",
+      "artifacts": [
+        {
+          "path": "specs/631_prove_evalformula_implies_satisfiable/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report: proved bridge is viable via saturation vacuity, 3-5 hour estimate"
+        },
+        {
+          "path": "specs/631_prove_evalformula_implies_satisfiable/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for evalFormula_implies_sat semantic bridge lemma"
+        },
+        {
+          "path": "specs/631_prove_evalformula_implies_satisfiable/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results for evalFormula_implies_sat theorem"
+        }
+      ],
+      "planned": "2026-01-29T04:50:31Z",
+      "started": "2026-01-29T04:55:57Z",
+      "completed": "2026-01-29T04:58:34Z",
+      "completion_summary": "Proved evalFormula_implies_sat semantic bridge lemma connecting tableau evaluation to task frame semantics. Proof uses saturation to show complex formula cases are vacuous, with atom case using existing atom_false_if_neg_in_open_branch lemma.",
+      "archived": "2026-01-29T05:02:01Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 616,
+      "project_name": "remove_false_semantic_task_rel_compositionality",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "created": "2026-01-19T17:54:52Z",
+      "last_updated": "2026-01-29T01:01:55Z",
+      "session_id": "sess_1769402017_a5b849",
+      "researched": "2026-01-19T20:08:51Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/616_remove_false_semantic_task_rel_compositionality/reports/research-001.md",
+          "summary": "Research report analyzing the finite model compositionality limitation and recommending acceptance of the sorry"
+        },
+        {
+          "path": "specs/616_remove_false_semantic_task_rel_compositionality/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase implementation plan: remove false theorem with inline sorry, update Boneyard documentation"
+        },
+        {
+          "path": "specs/616_remove_false_semantic_task_rel_compositionality/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting theorem removal and documentation updates"
+        }
+      ],
+      "description": "Remove the mathematically false theorem semantic_task_rel_compositionality and its sorry from SemanticCanonicalModel.lean. Research confirmed this theorem cannot be proven (unbounded duration sums exceed finite time domain), and it is not needed for the completeness proof which uses a different approach. Remove the false claim rather than accepting a sorry for an unprovable statement.",
+      "planned": "2026-01-26T00:30:14Z",
+      "started": "2026-01-26T00:30:58Z",
+      "completed": "2026-01-29T01:01:55Z",
+      "completion_summary": "Removed mathematically false theorem semantic_task_rel_compositionality from SemanticCanonicalModel.lean. Sorry now inlined in SemanticCanonicalFrame definition. Updated all related documentation.",
+      "archived": "2026-01-29T05:02:01Z",
+      "source": "archival"
+    },
+    {
       "project_number": 734,
       "project_name": "full_decision_procedure_bimodal_logic",
       "status": "abandoned",
