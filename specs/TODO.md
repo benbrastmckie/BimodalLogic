@@ -1,5 +1,5 @@
 ---
-next_project_number: 737
+next_project_number: 738
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -105,13 +105,14 @@ technical_debt:
 ## Medium Priority
 
 ### 735. Complete phase 5 of task 700: Ultrafilter-MCS Correspondence
-- **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 1.5 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 700
 - **Created**: 2026-01-29
 - **Research**: [research-001.md](specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/plans/implementation-001.md)
 
 **Description**: Complete phase 5 of task 700: Ultrafilter-MCS Correspondence. Fill ultrafilterToSet_mcs consistency proof - show that if L ⊢ ⊥ and all [φᵢ] ∈ U, then ⊥ ∈ U. Requires relating list conjunction to fold of quotients. (Follow-up from task #700)
 
@@ -276,6 +277,18 @@ technical_debt:
 ---
 
 ## Low Priority
+
+### 738. Port FMP to parametric architecture
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Created**: 2026-01-29
+- **Parent Task**: 660
+
+**Description**: Complete phase 3 of task 660: Finite Model Property Port. Port FMP to parametric architecture with explicit cardinality bounds on finite models. This provides decidability foundation (orthogonal to completeness chain). Follow-up from task #660.
+
+---
 
 ### 616. Remove false theorem semantic_task_rel_compositionality
 - **Status**: [COMPLETED]
