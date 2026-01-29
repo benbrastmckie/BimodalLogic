@@ -149,7 +149,7 @@ technical_debt:
 ---
 
 ### 727. Consolidate set_lindenbaum duplicates
-- **Effort**: 1.5 hours
+- **Effort**: 1 hour
 - **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
@@ -157,7 +157,7 @@ technical_debt:
 - **Parent**: Task 722
 - **Dependencies**: Task 726 (COMPLETED)
 - **Research**: [research-001.md](specs/727_consolidate_set_lindenbaum/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/727_consolidate_set_lindenbaum/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/727_consolidate_set_lindenbaum/plans/implementation-002.md)
 
 **Description**: Remove duplicate `set_lindenbaum` theorem definitions from deprecated Boneyard/Metalogic/ files when those files are fully deprecated. Current duplicates: `Boneyard/Metalogic/Completeness.lean:360` and `Boneyard/Metalogic/Representation/CanonicalModel.lean:139`. Canonical source is `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean:290`, re-exported via `Metalogic/Core/MaximalConsistent.lean`. Deferred from Task 722 Phase 4.
 
