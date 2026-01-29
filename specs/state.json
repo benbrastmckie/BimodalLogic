@@ -19,12 +19,14 @@
     {
       "project_number": 760,
       "project_name": "determine_sorry_disposition_archive_vs_complete",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T20:26:56Z",
-      "last_updated": "2026-01-29T20:26:56Z",
-      "description": "Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase"
+      "last_updated": "2026-01-29T20:50:41Z",
+      "description": "Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase",
+      "session_id": "sess_1769719653_d385e6",
+      "researched": "2026-01-29T20:50:41Z"
     },
     {
       "project_number": 759,
@@ -461,15 +463,24 @@
     {
       "project_number": 744,
       "project_name": "update_documentation_lean_agent_architecture",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "description": "Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.",
       "created": "2026-01-29T13:39:29Z",
-      "last_updated": "2026-01-29T13:39:29Z",
+      "last_updated": "2026-01-29T20:50:40Z",
       "dependencies": [
         742,
         743
+      ],
+      "session_id": "sess_1769719689_e46915",
+      "researched": "2026-01-29T20:50:40Z",
+      "artifacts": [
+        {
+          "path": "specs/744_update_documentation_lean_agent_architecture/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying 3 files requiring updates to remove outdated direct execution references"
+        }
       ]
     }
   ],

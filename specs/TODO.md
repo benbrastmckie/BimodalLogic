@@ -123,10 +123,11 @@ technical_debt:
 
 ### 760. Determine sorry disposition: archive vs complete
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 
 **Description**: Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase
 
@@ -147,11 +148,13 @@ technical_debt:
 
 ### 744. Update documentation for restored Lean agent architecture
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Dependencies**: Tasks 742, 743
+- **Research**: [research-001.md](specs/744_update_documentation_lean_agent_architecture/reports/research-001.md)
 
 **Description**: Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.
 
