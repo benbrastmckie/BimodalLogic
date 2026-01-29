@@ -524,4 +524,219 @@ theorem semanticWorldState_card_bound (phi : Formula) :
       ≤ Fintype.card (FiniteWorldState phi) := h_card_le
     _ ≤ 2 ^ closureSize phi := finiteWorldState_card_bound phi
 
+/-!
+## Sorry-Free Weak Completeness via Semantic Model
+
+The goal is to prove `valid phi → ⊢ phi` without sorries by using the existing
+sorry-free `semantic_weak_completeness` theorem.
+
+### Strategy
+
+1. For any SemanticWorldState w, there exists a WorldHistory tau with tau.states 0 _ = w
+   (via `semantic_world_state_has_world_history`)
+2. If valid phi, then truth_at (SemanticCanonicalModel phi) tau 0 phi for this history
+3. We need to show this implies semantic_truth_at_v2 phi w origin phi
+
+The challenge is that `truth_at` evaluates formulas recursively while `semantic_truth_at_v2`
+just checks the assignment. This requires proving truth correspondence between the two notions.
+
+For the target formula phi, we prove truth correspondence by induction on phi's structure.
+-/
+
+/--
+Truth correspondence for atoms: truth_at equals semantic_truth_at_v2 for atomic formulas.
+
+For atoms, the correspondence is direct:
+- truth_at checks valuation at the world state
+- semantic_valuation checks assignment in the FiniteWorldState
+- These are defined to be the same
+-/
+theorem truth_at_atom_iff_semantic (phi : Formula) (p : String)
+    (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0)
+    (h_atom_closure : Formula.atom p ∈ closure phi) :
+    truth_at (SemanticCanonicalModel phi) tau 0 (Formula.atom p) ↔
+    semantic_truth_at_v2 phi (tau.states 0 ht)
+      (BoundedTime.origin (temporalBound phi)) (Formula.atom p) := by
+  simp only [truth_at, SemanticCanonicalModel, semantic_valuation]
+  simp only [semantic_truth_at_v2, SemanticWorldState.toFiniteWorldState,
+             FiniteWorldState.models]
+  constructor
+  · intro ⟨ht', h_val⟩
+    obtain ⟨h_mem, h_models⟩ := h_val
+    exact ⟨h_mem, h_models⟩
+  · intro ⟨h_mem, h_models⟩
+    exact ⟨ht, h_mem, h_models⟩
+
+/--
+Truth correspondence for bot: bot is false in both notions.
+-/
+theorem truth_at_bot_iff_semantic (phi : Formula)
+    (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0) :
+    truth_at (SemanticCanonicalModel phi) tau 0 Formula.bot ↔
+    semantic_truth_at_v2 phi (tau.states 0 ht)
+      (BoundedTime.origin (temporalBound phi)) Formula.bot := by
+  simp only [truth_at, semantic_truth_at_v2]
+  constructor
+  · intro h; exact h.elim
+  · intro ⟨h_mem, h_models⟩
+    -- Bot is in closure iff it's a subformula, and models bot is false by consistency
+    have h_false : ¬(SemanticWorldState.toFiniteWorldState (tau.states 0 ht)).models
+                     Formula.bot h_mem := by
+      simp only [FiniteWorldState.models]
+      have h_cons := (SemanticWorldState.toFiniteWorldState (tau.states 0 ht)).consistent
+      exact Bool.eq_false_iff.mp (h_cons.1 h_mem)
+    exact (h_false h_models).elim
+
+/--
+Helper lemma: negation in the closure if the formula is in the closure.
+
+For formula psi in closure phi, psi.neg is also in closureWithNeg phi,
+which contains closure phi.
+-/
+theorem neg_in_closureWithNeg_of_in_closure (phi psi : Formula) (h : psi ∈ closure phi) :
+    psi.neg ∈ closureWithNeg phi := by
+  exact neg_in_closureWithNeg_of_closure phi psi h
+
+/--
+For implication psi → chi in the closure, both psi and chi are in the closure.
+-/
+theorem imp_subformulas_in_closure (phi psi chi : Formula)
+    (h : Formula.imp psi chi ∈ closure phi) :
+    psi ∈ closure phi ∧ chi ∈ closure phi := by
+  exact ⟨closure_subformula_left h, closure_subformula_right h⟩
+
+/--
+Main truth correspondence theorem for the target formula.
+
+This is the key lemma: for the specific formula phi (the target), truth_at in the
+SemanticCanonicalModel equals semantic_truth_at_v2.
+
+The proof strategy is by structural induction on phi. For each constructor:
+- atom: Direct from valuation definition
+- bot: Both are false
+- imp: Requires showing assignment respects modus ponens
+- box: Requires modal reasoning
+- all_past/all_future: Requires temporal reasoning
+
+**Note**: This theorem is restricted to the case where psi = phi (the target formula)
+and works because of how the semantic model is constructed. For general psi in closure,
+the correspondence would require the full truth lemma which has open sorries.
+
+**Current Status**: We prove this for the specific psi = phi case where we only need
+to show that if phi is true recursively then it's marked true in the assignment.
+The reverse direction is provided by the MCS construction used in semantic_weak_completeness.
+-/
+theorem truth_at_implies_semantic_truth (phi : Formula)
+    (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0)
+    (h_truth : truth_at (SemanticCanonicalModel phi) tau 0 phi) :
+    semantic_truth_at_v2 phi (tau.states 0 ht)
+      (BoundedTime.origin (temporalBound phi)) phi := by
+  -- The key insight is that we need to show if phi is true according to recursive
+  -- evaluation, then phi is true according to the shallow assignment check.
+  --
+  -- For SemanticWorldStates built from the canonical construction, the assignment
+  -- is determined by membership in a closure MCS. If phi is true recursively,
+  -- we need to show phi would be in any MCS that could give rise to this world state.
+  --
+  -- However, not all SemanticWorldStates come from MCS - any locally consistent
+  -- assignment yields a valid FiniteWorldState.
+  --
+  -- The approach: Use the structure of the semantic canonical model.
+  -- In SemanticCanonicalModel, the valuation semantic_valuation only defines
+  -- truth for atoms. For compound formulas, truth_at evaluates recursively.
+  --
+  -- The semantic_truth_at_v2 check is: exists h_mem, w.assignment ⟨phi, h_mem⟩ = true
+  --
+  -- We need to bridge these. The key observation is:
+  -- - semantic_weak_completeness proves: if ¬⊢phi then ∃w, ¬semantic_truth_at_v2 phi w _ phi
+  -- - Contrapositive: if ∀w, semantic_truth_at_v2 phi w _ phi then ⊢phi
+  -- - We want: valid phi → ∀w, semantic_truth_at_v2 phi w _ phi
+  --
+  -- The approach is proof by contradiction within semantic_weak_completeness:
+  -- If some w has semantic_truth_at_v2 phi w _ phi = false, then w comes from an
+  -- MCS where phi.neg ∈ MCS, hence phi ∉ MCS.
+  --
+  -- But if valid phi, can we have such an MCS? If phi.neg ∈ MCS then the MCS
+  -- extended to a semantic world state should have phi false recursively too.
+  -- This would contradict valid phi.
+  --
+  -- The issue is we need to show: if phi is true at all (tau, 0) in SemanticCanonicalModel,
+  -- then no MCS can have phi.neg.
+  --
+  -- Key lemma needed: If valid phi, then {phi.neg} is inconsistent.
+  -- This is essentially soundness + valid → provable, but we're trying to prove provable!
+  --
+  -- Alternative approach: Accept that this correspondence requires the truth lemma
+  -- and use the available structure.
+  --
+  -- For now, we use a general approach based on the structure of semantic_truth_at_v2:
+  have h_phi_closure : phi ∈ closure phi := phi_mem_closure phi
+  -- We need: (tau.states 0 ht).toFiniteWorldState.assignment ⟨phi, h_phi_closure⟩ = true
+  -- This is semantic_truth_at_v2's requirement.
+  --
+  -- The proof here is delicate. We proceed by showing that if the assignment were false,
+  -- we could derive a contradiction from validity.
+  by_contra h_not_semantic
+  simp only [semantic_truth_at_v2] at h_not_semantic
+  push_neg at h_not_semantic
+  -- h_not_semantic : ∀ h_mem, ¬((tau.states 0 ht).toFiniteWorldState.models phi h_mem)
+  -- This means the assignment has phi = false.
+  -- We need to derive a contradiction from h_truth and this.
+  --
+  -- The issue is that h_truth is about recursive evaluation while h_not_semantic is about assignment.
+  -- Without the full truth lemma, we cannot directly connect these.
+  --
+  -- We need a different approach. Let's use the structure of the problem:
+  -- If validity gives us truth_at, but the assignment says false, we have a model
+  -- where recursive truth differs from assignment truth. This is exactly the gap
+  -- that the truth lemma bridges.
+  --
+  -- For the sorry-free proof, we need to avoid this gap. One way:
+  -- Restrict to formulas where truth_at = assignment truth (e.g., propositional only).
+  -- But this limits generality.
+  --
+  -- For now, we leave this as sorry and document the gap.
+  sorry
+
+/--
+Validity in all models implies semantic truth at all SemanticWorldStates.
+
+This is the bridge lemma connecting universal validity to the semantic model truth.
+-/
+theorem valid_implies_semantic_truth (phi : Formula)
+    (h_valid : valid phi) :
+    ∀ (w : SemanticWorldState phi),
+      semantic_truth_at_v2 phi w (BoundedTime.origin (temporalBound phi)) phi := by
+  intro w
+  -- Get a WorldHistory containing w at time 0
+  obtain ⟨tau, ht, h_eq⟩ := semantic_world_state_has_world_history phi w
+  -- Apply validity to SemanticCanonicalModel
+  have h_truth := h_valid Int (SemanticCanonicalFrame phi) (SemanticCanonicalModel phi) tau 0
+  -- Convert to semantic truth
+  have h_semantic := truth_at_implies_semantic_truth phi tau ht h_truth
+  -- Transport along the equality
+  rw [← h_eq]
+  exact h_semantic
+
+/--
+Sorry-free weak completeness: validity implies provability.
+
+**IMPORTANT**: This theorem currently requires the `truth_at_implies_semantic_truth` lemma
+which has a sorry. The sorry represents the gap between:
+- Recursive truth evaluation (`truth_at`)
+- Assignment-based truth check (`semantic_truth_at_v2`)
+
+This is exactly the "truth lemma" gap that exists in the canonical model construction.
+The `semantic_weak_completeness` theorem is fully proven using the contrapositive
+(building a countermodel from a non-provable formula), but this forward direction
+requires showing that recursive truth implies assignment truth.
+
+**Status**: Partial - depends on truth correspondence lemma with sorry.
+-/
+theorem sorry_free_weak_completeness (phi : Formula) :
+    valid phi → ⊢ phi := by
+  intro h_valid
+  apply semantic_weak_completeness phi
+  exact valid_implies_semantic_truth phi h_valid
+
 end Bimodal.Metalogic.FMP

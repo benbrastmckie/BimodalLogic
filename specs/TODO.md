@@ -41,7 +41,7 @@ technical_debt:
 
 ### 755. Implement Option C: Forward Truth Lemma Refactoring
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Reference**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md)
@@ -202,7 +202,7 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md)
-- **Plan**: [implementation-002.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-003.md)
 
 **Description**: Following the contingency approach from task 745 (which kept mutual induction structure but marked backward cases as sorry with comments), refactor the forward Truth Lemma to avoid all sorries and completely remove the backward direction which is not needed for the metalogic as it stands.
 

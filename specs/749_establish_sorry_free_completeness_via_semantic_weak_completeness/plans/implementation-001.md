@@ -47,7 +47,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Truth Correspondence for Base Cases [NOT STARTED]
+### Phase 1: Truth Correspondence for Base Cases [IN PROGRESS]
 
 **Goal**: Prove truth_at equals semantic_truth_at_v2 for propositional cases (variables, negation, conjunction)
 

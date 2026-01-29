@@ -370,6 +370,64 @@ theorem backward_extension (S : Set Formula) (h_mcs : SetMaximalConsistent S)
   · exact h_sub
 
 /-!
+## G-bot and H-bot Non-Membership
+
+The key insight is that G⊥ → ⊥ and H⊥ → ⊥ are theorems (the T-axiom instantiated at ⊥).
+Therefore ¬G⊥ and ¬H⊥ are theorems, which are in every MCS.
+Since MCS are consistent, they cannot contain both φ and ¬φ.
+Therefore G⊥ and H⊥ are not in any MCS.
+-/
+
+/--
+SetConsistent sets cannot contain both φ and ¬φ.
+-/
+lemma set_consistent_not_both_mem {S : Set Formula} (h_cons : SetConsistent S)
+    (φ : Formula) (h_phi : φ ∈ S) (h_neg : Formula.neg φ ∈ S) : False := by
+  let L := [φ, Formula.neg φ]
+  have h_L_sub : ∀ ψ ∈ L, ψ ∈ S := by
+    intro ψ hψ
+    simp only [L, List.mem_cons, List.mem_singleton] at hψ
+    rcases hψ with rfl | rfl
+    · exact h_phi
+    · exact h_neg
+  have h_L_cons : Consistent L := h_cons L h_L_sub
+  have h_deriv : DerivationTree L Formula.bot := by
+    have h_phi_assume : DerivationTree L φ :=
+      DerivationTree.assumption L φ (by simp [L])
+    have h_neg_assume : DerivationTree L (Formula.neg φ) :=
+      DerivationTree.assumption L (Formula.neg φ) (by simp [L])
+    exact derives_bot_from_phi_neg_phi h_phi_assume h_neg_assume
+  exact h_L_cons ⟨h_deriv⟩
+
+/--
+G⊥ is not in any MCS.
+
+The T-axiom gives G⊥ → ⊥ (i.e., ¬G⊥), which is in every MCS.
+-/
+lemma G_bot_not_in_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent S) :
+    Formula.all_future Formula.bot ∉ S := by
+  have h_neg_G_bot_thm : [] ⊢ Formula.neg (Formula.all_future Formula.bot) :=
+    DerivationTree.axiom [] _ (Axiom.temp_T Formula.bot)
+  have h_neg_in : Formula.neg (Formula.all_future Formula.bot) ∈ S :=
+    theorem_in_mcs h_mcs h_neg_G_bot_thm
+  intro h_G_bot_in
+  exact set_consistent_not_both_mem h_mcs.1 (Formula.all_future Formula.bot) h_G_bot_in h_neg_in
+
+/--
+H⊥ is not in any MCS.
+
+The T-axiom for past gives H⊥ → ⊥ (i.e., ¬H⊥), which is in every MCS.
+-/
+lemma H_bot_not_in_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent S) :
+    Formula.all_past Formula.bot ∉ S := by
+  have h_neg_H_bot_thm : [] ⊢ Formula.neg (Formula.all_past Formula.bot) :=
+    DerivationTree.axiom [] _ (Axiom.temp_T_past Formula.bot)
+  have h_neg_in : Formula.neg (Formula.all_past Formula.bot) ∈ S :=
+    theorem_in_mcs h_mcs h_neg_H_bot_thm
+  intro h_H_bot_in
+  exact set_consistent_not_both_mem h_mcs.1 (Formula.all_past Formula.bot) h_H_bot_in h_neg_in
+
+/-!
 ## Coherent Family Construction for ℤ
 
 Build a CoherentIndexedFamily from a root MCS, specialized to D = ℤ.
@@ -394,13 +452,14 @@ noncomputable def mcs_forward_chain (Gamma : Set Formula) (h_mcs : SetMaximalCon
   | 0 => Gamma
   | n+1 =>
     let S := mcs_forward_chain Gamma h_mcs h_no_G_bot n
-    -- The forward seed of S is consistent (will prove this inductively)
-    -- For now, use extendToMCS with a sorry for consistency
+    -- S is MCS and G⊥ ∉ any MCS, so forward_seed S is consistent
     extendToMCS (forward_seed S) (by
-      -- Need to show forward_seed S is consistent
-      -- This follows from S being MCS (induction) and G⊥ ∉ S (propagated)
-      -- Full proof requires inductive infrastructure
-      sorry)
+      have h_mcs_S : SetMaximalConsistent S := by
+        match n with
+        | 0 => exact h_mcs
+        | k+1 => exact extendToMCS_is_mcs _ _
+      have h_no_G_bot_S : Formula.all_future Formula.bot ∉ S := G_bot_not_in_mcs h_mcs_S
+      exact forward_seed_consistent_of_no_G_bot S h_mcs_S h_no_G_bot_S)
 
 /--
 Backward chain construction: Build MCS for negative times.
@@ -413,7 +472,12 @@ noncomputable def mcs_backward_chain (Gamma : Set Formula) (h_mcs : SetMaximalCo
   | n+1 =>
     let S := mcs_backward_chain Gamma h_mcs h_no_H_bot n
     extendToMCS (backward_seed S) (by
-      sorry)
+      have h_mcs_S : SetMaximalConsistent S := by
+        match n with
+        | 0 => exact h_mcs
+        | k+1 => exact extendToMCS_is_mcs _ _
+      have h_no_H_bot_S : Formula.all_past Formula.bot ∉ S := H_bot_not_in_mcs h_mcs_S
+      exact backward_seed_consistent_of_no_H_bot S h_mcs_S h_no_H_bot_S)
 
 /--
 Unified MCS function for ℤ.
