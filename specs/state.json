@@ -19,13 +19,13 @@
     {
       "project_number": 737,
       "project_name": "fix_unused_simp_arguments_temporalproofstrategies",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "low",
       "description": "Fix unused simp arguments in TemporalProofStrategies.lean. Remove Formula.swap_temporal_involution from simp calls at lines 174, 203, 242, 459 where the linter reports it is unused.",
       "created": "2026-01-29T04:04:51Z",
-      "last_updated": "2026-01-29T04:10:38Z",
-      "session_id": "sess_1769659724_182b40",
+      "last_updated": "2026-01-29T04:12:23Z",
+      "session_id": "sess_1769659919_aefadb",
       "planned": "2026-01-29T04:10:38Z",
       "artifacts": [
         {
@@ -33,18 +33,19 @@
           "type": "plan",
           "summary": "1-phase plan for removing unused simp arguments at lines 174, 203, 242, 459"
         }
-      ]
+      ],
+      "started": "2026-01-29T04:12:23Z"
     },
     {
       "project_number": 735,
       "project_name": "complete_task700_phase5_ultrafilter_mcs_correspondence",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "description": "Complete phase 5 of task 700: Ultrafilter-MCS Correspondence. Fill ultrafilterToSet_mcs consistency proof - show that if L ⊢ ⊥ and all [φᵢ] ∈ U, then ⊥ ∈ U. Requires relating list conjunction to fold of quotients. (Follow-up from task #700)",
       "parent_task": 700,
       "created": "2026-01-29T01:21:00Z",
-      "last_updated": "2026-01-29T04:08:30Z",
+      "last_updated": "2026-01-29T04:12:15Z",
       "session_id": "sess_1769659692_29c23a",
       "researched": "2026-01-29T01:30:16Z",
       "artifacts": [
@@ -57,10 +58,17 @@
           "path": "specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase implementation plan for ultrafilterToSet_mcs consistency proof"
+        },
+        {
+          "path": "specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting fold_le_of_derives lemma and ultrafilterToSet_mcs completion"
         }
       ],
       "planned": "2026-01-29T04:05:08Z",
-      "started": "2026-01-29T04:08:30Z"
+      "started": "2026-01-29T04:08:30Z",
+      "completed": "2026-01-29T04:12:15Z",
+      "completion_summary": "Proved ultrafilterToSet_mcs consistency using new fold_le_of_derives lemma. The lemma shows that if L ⊢ ψ, then the meet of quotients of L is ≤ [ψ] in the Lindenbaum algebra, enabling the contradiction via ultrafilter properties."
     },
     {
       "project_number": 736,
@@ -77,12 +85,13 @@
     {
       "project_number": 733,
       "project_name": "ultraproduct_based_compactness_proof",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T01:03:08Z",
-      "last_updated": "2026-01-29T01:03:08Z",
-      "description": "Provide an ultraproduct-based proof of compactness for TM logic."
+      "last_updated": "2026-01-29T04:12:35Z",
+      "description": "Provide an ultraproduct-based proof of compactness for TM logic.",
+      "session_id": "sess_1769659939_a03b28"
     },
     {
       "project_number": 732,
