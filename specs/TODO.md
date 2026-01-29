@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 20
-  completed: 289
+  active: 16
+  completed: 293
   in_progress: 4
   not_started: 8
   abandoned: 21
-  total: 315
+  total: 319
 priority_distribution:
   critical: 0
   high: 6
@@ -26,21 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 729. Prevent blocked MCP tool calls in agent system
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/729_prevent_blocked_mcp_tool_calls_in_agents/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/729_prevent_blocked_mcp_tool_calls_in_agents/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/729_prevent_blocked_mcp_tool_calls_in_agents/summaries/implementation-summary-20260128.md)
-
-**Description**: Investigate why the agent system is still calling blocked MCP tools (lean_diagnostic_messages, lean_file_outline) despite previous attempts to prevent this. Review /home/benjamin/Projects/ProofChecker/.claude/output/research.md for example of hanging 'lean-lsp - Diagnostics (MCP)' call. Identify all places where agents can call these tools and implement robust blocking. Update agent prompts, skill definitions, and any relevant documentation in .claude/ to ensure agents use alternative patterns (lean_goal, Read + lean_hover_info) instead of the known-buggy tools.
-
----
 
 ### 697. Fix UniversalCanonicalModel.lean compilation error
 - **Effort**: 1-2 hours
@@ -145,31 +130,18 @@ technical_debt:
 
 ---
 
-### 728. Create user guide for command workflows
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Research**: [research-001.md](specs/728_create_user_guide_command_workflows/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/728_create_user_guide_command_workflows/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/728_create_user_guide_command_workflows/summaries/implementation-summary-20260128.md)
-
-**Description**: Create a user guide in `.claude/docs/` explaining all command workflows: `/task` (with all flags including --recover, --expand, --sync, --abandon, --review), `/research` (repeatable), `/plan`, `/revise` (zero or more times to refine plans), `/implement` (repeated if needed). Also document maintenance commands: `/todo`, `/review`, `/refresh`, `/lake`, `/meta`, `/errors`, and the `/convert` command for file format conversion. Add a brief overview in `.claude/docs/README.md` with a link to the full guide.
-
----
-
 ### 726. Move essential MCS lemmas to Core
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Started**: 2026-01-28
+- **Completed**: 2026-01-29
 - **Parent**: Task 722
 - **Research**: [research-001.md](specs/726_move_essential_mcs_lemmas_to_core/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/726_move_essential_mcs_lemmas_to_core/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/726_move_essential_mcs_lemmas_to_core/summaries/implementation-summary-20260129.md)
 
 **Description**: Move 5 essential MCS lemmas from deprecated `Boneyard/Metalogic/Completeness.lean` to the canonical Core location (`Boneyard/Metalogic_v2/Core/MaximalConsistent.lean`). Lemmas to move: `set_mcs_closed_under_derivation`, `set_mcs_implication_property`, `set_mcs_negation_complete`, `set_mcs_all_future_all_future`, `set_mcs_all_past_all_past`. Dependencies like `deduction_theorem` and `derivation_exchange` must move first. Update re-exports in `Metalogic/Core/MaximalConsistent.lean`. Deferred from Task 722 Phase 3.
 
@@ -186,22 +158,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/727_consolidate_set_lindenbaum/reports/research-001.md)
 
 **Description**: Remove duplicate `set_lindenbaum` theorem definitions from deprecated Boneyard/Metalogic/ files when those files are fully deprecated. Current duplicates: `Boneyard/Metalogic/Completeness.lean:360` and `Boneyard/Metalogic/Representation/CanonicalModel.lean:139`. Canonical source is `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean:290`, re-exported via `Metalogic/Core/MaximalConsistent.lean`. Deferred from Task 722 Phase 4.
-
----
-
-### 725. Update docs README files and rename ARCHITECTURE.md
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-28
-- **Planned**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Plan**: [implementation-001.md](specs/725_update_docs_readme_and_rename_architecture/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260128.md](specs/725_update_docs_readme_and_rename_architecture/summaries/implementation-summary-20260128.md)
-
-**Description**: Update README.md documents in .claude/docs/ to reflect removed files (check git for what was removed). Rename .claude/ARCHITECTURE.md to .claude/README.md while keeping contents and improving cross-linking between documentation files.
 
 ---
 
@@ -227,25 +183,6 @@ technical_debt:
 - **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
 
 **Description**: Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.
-
----
-
-### 681. Redesign construct_indexed_family with coherent approach
-- **Effort**: 8 hours (remaining)
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-25
-- **Researched**: 2026-01-29
-- **Planned**: 2026-01-29 (v6)
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-28
-- **Related**: Task 658
-- **Research**: [research-001.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-001.md), [research-002.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-002.md), [research-003.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-003.md), [research-004.md](specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-004.md)
-- **Plan**: [implementation-006.md](specs/681_redesign_construct_indexed_family_coherent_approach/plans/implementation-006.md)
-- **Summary**: [implementation-summary-20260128-v4.md](specs/681_redesign_construct_indexed_family_coherent_approach/summaries/implementation-summary-20260128-v4.md)
-
-**Description**: Draw on research-004.md to move all proofs that are not required to the Bimodal/Boneyard/ with good documentation in comments, updating Theories/Bimodal/Metalogic/README.md and creating a Metalogic/Representation/README.md to accurately document the full structure of the representation theorem including what has been completed and what remains to be completed, where all unneeded elements should have been removed.
 
 ---
 

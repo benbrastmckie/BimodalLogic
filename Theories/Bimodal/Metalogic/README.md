@@ -44,6 +44,8 @@ The four coherence conditions are critical for correctness:
 | File | Purpose |
 |------|---------|
 | `Core/MaximalConsistent.lean` | Re-exports MCS infrastructure from Boneyard |
+| `Core/DeductionTheorem.lean` | Deduction theorem infrastructure |
+| `Core/MCSProperties.lean` | Essential MCS lemmas for Representation layer |
 | `Representation/IndexedMCSFamily.lean` | MCS family structure definition |
 | `Representation/CoherentConstruction.lean` | **Coherent family construction (RECOMMENDED)** |
 | `Representation/CanonicalWorld.lean` | World state construction from MCS |

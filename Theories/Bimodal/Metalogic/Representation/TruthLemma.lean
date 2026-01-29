@@ -65,8 +65,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic_v2.Core
 open Bimodal.Semantics
--- NOTE: Boneyard.Metalogic is imported for helper lemmas but not opened to avoid namespace conflicts.
--- Use fully qualified names for Boneyard lemmas (Bimodal.Boneyard.Metalogic.set_mcs_implication_property, Bimodal.Boneyard.Metalogic.set_mcs_negation_complete, etc.)
+-- NOTE: MCSProperties provides helper lemmas (previously from Boneyard).
 
 variable (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
@@ -126,7 +125,7 @@ lemma neg_imp_fst {S : Set Formula} {φ ψ : Formula}
     (h_mcs : Core.SetMaximalConsistent S)
     (h_neg_imp : (φ.imp ψ).neg ∈ S) : φ ∈ S := by
   -- Use negation completeness: either φ ∈ S or ¬φ ∈ S
-  cases Bimodal.Boneyard.Metalogic.set_mcs_negation_complete h_mcs φ with
+  cases set_mcs_negation_complete h_mcs φ with
   | inl h_phi => exact h_phi
   | inr h_neg_phi =>
     -- From ¬φ, we can derive φ → ψ (vacuously, since φ is false)
@@ -152,11 +151,11 @@ lemma neg_imp_fst {S : Set Formula} {φ ψ : Formula}
         have h_efq : (φ :: [φ.neg]) ⊢ Formula.bot.imp ψ :=
           Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_efq_thm (by intro; simp)
         exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_efq h_bot
-      exact Boneyard.Metalogic.deduction_theorem [φ.neg] φ ψ h_inner
+      exact deduction_theorem [φ.neg] φ ψ h_inner
     -- By MCS closure, φ → ψ ∈ S
     have h_sub : ∀ χ ∈ [φ.neg], χ ∈ S := by simp [h_neg_phi]
     have h_imp_in : (φ.imp ψ) ∈ S :=
-      Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs [φ.neg] h_sub h_deriv
+      set_mcs_closed_under_derivation h_mcs [φ.neg] h_sub h_deriv
     -- Now we have both (φ → ψ) and ¬(φ → ψ) in S - contradiction
     have h_deriv_bot : Bimodal.ProofSystem.DerivationTree [(φ.imp ψ), (φ.imp ψ).neg] Formula.bot := by
       have h1 : [(φ.imp ψ), (φ.imp ψ).neg] ⊢ (φ.imp ψ) :=
@@ -171,7 +170,7 @@ lemma neg_imp_fst {S : Set Formula} {φ ψ : Formula}
       | inl h_eq => exact h_eq ▸ h_imp_in
       | inr h_eq => exact h_eq ▸ h_neg_imp
     have h_bot_in_S : Formula.bot ∈ S :=
-      Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
     -- ⊥ ∈ S contradicts consistency
     have h_cons := h_mcs.1
     have h_bot_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
@@ -189,7 +188,7 @@ lemma neg_imp_snd {S : Set Formula} {φ ψ : Formula}
     (h_mcs : Core.SetMaximalConsistent S)
     (h_neg_imp : (φ.imp ψ).neg ∈ S) : ψ.neg ∈ S := by
   -- Use negation completeness: either ¬ψ ∈ S or ψ ∈ S
-  cases Bimodal.Boneyard.Metalogic.set_mcs_negation_complete h_mcs ψ with
+  cases set_mcs_negation_complete h_mcs ψ with
   | inr h_neg_psi => exact h_neg_psi
   | inl h_psi =>
     -- From ψ, we can derive φ → ψ (conclude ψ from anything)
@@ -207,7 +206,7 @@ lemma neg_imp_snd {S : Set Formula} {φ ψ : Formula}
     -- By MCS closure, φ → ψ ∈ S
     have h_sub : ∀ χ ∈ [ψ], χ ∈ S := by simp [h_psi]
     have h_imp_in : (φ.imp ψ) ∈ S :=
-      Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs [ψ] h_sub h_deriv
+      set_mcs_closed_under_derivation h_mcs [ψ] h_sub h_deriv
     -- Now we have both (φ → ψ) and ¬(φ → ψ) in S - contradiction
     have h_deriv_bot : Bimodal.ProofSystem.DerivationTree [(φ.imp ψ), (φ.imp ψ).neg] Formula.bot := by
       have h1 : [(φ.imp ψ), (φ.imp ψ).neg] ⊢ (φ.imp ψ) :=
@@ -222,7 +221,7 @@ lemma neg_imp_snd {S : Set Formula} {φ ψ : Formula}
       | inl h_eq => exact h_eq ▸ h_imp_in
       | inr h_eq => exact h_eq ▸ h_neg_imp
     have h_bot_in_S : Formula.bot ∈ S :=
-      Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
     -- ⊥ ∈ S contradicts consistency
     have h_cons := h_mcs.1
     have h_bot_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
@@ -290,13 +289,13 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       have h_psi_in_mcs : psi ∈ family.mcs t := (ih_psi t).mpr h_psi_true
       -- Apply modus ponens closure: if (psi → chi) ∈ mcs and psi ∈ mcs, then chi ∈ mcs
       have h_chi_in_mcs : chi ∈ family.mcs t :=
-        Bimodal.Boneyard.Metalogic.set_mcs_implication_property (family.is_mcs t) h_mem h_psi_in_mcs
+        set_mcs_implication_property (family.is_mcs t) h_mem h_psi_in_mcs
       -- Use forward IH to get truth_at chi from chi ∈ mcs t
       exact (ih_chi t).mp h_chi_in_mcs
     · -- Backward: (truth_at psi → truth_at chi) → (psi → chi) ∈ mcs t
       intro h_implies
       -- By negation completeness: either (psi → chi) ∈ mcs t or ¬(psi → chi) ∈ mcs t
-      cases Bimodal.Boneyard.Metalogic.set_mcs_negation_complete (family.is_mcs t) (psi.imp chi) with
+      cases set_mcs_negation_complete (family.is_mcs t) (psi.imp chi) with
       | inl h => exact h  -- (psi → chi) ∈ mcs t
       | inr h_neg =>
         -- ¬(psi → chi) ∈ mcs t
@@ -328,7 +327,7 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
           | inl h_eq => exact h_eq ▸ h_chi_in_mcs
           | inr h_eq => exact h_eq ▸ h_neg_chi_in_mcs
         have h_bot_in_mcs : Formula.bot ∈ family.mcs t :=
-          Bimodal.Boneyard.Metalogic.set_mcs_closed_under_derivation (family.is_mcs t) _ h_sub h_deriv_bot
+          set_mcs_closed_under_derivation (family.is_mcs t) _ h_sub h_deriv_bot
         -- ⊥ ∈ MCS contradicts MCS consistency
         have h_cons := (family.is_mcs t).1
         have h_bot_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
