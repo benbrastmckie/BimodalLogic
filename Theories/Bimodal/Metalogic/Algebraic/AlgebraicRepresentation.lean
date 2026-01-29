@@ -104,7 +104,8 @@ theorem satisfiable_implies_consistent {φ : Formula} (h : AlgSatisfiable φ) :
     have h_compl : neg_quot (toQuot φ) = toQuot φ.neg := rfl
     have h_eq : neg_quot (toQuot φ) = ⊤ := h_compl ▸ h_top
     -- In a Boolean algebra, if aᶜ = ⊤ then a = ⊥
-    sorry
+    -- neg_quot is the complement in our BooleanAlgebra instance
+    exact compl_eq_top.mp h_eq
   rw [h_phi_bot] at hU
   exact Ultrafilter.empty_not_mem U hU
 
