@@ -55,11 +55,11 @@
     {
       "project_number": 753,
       "project_name": "prove_sorries_in_coherentconstruction",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T16:50:59Z",
-      "last_updated": "2026-01-29T17:37:05Z",
+      "last_updated": "2026-01-29T17:42:56Z",
       "session_id": "sess_1769706752_5bf372",
       "researched": "2026-01-29T16:56:39Z",
       "artifacts": [
@@ -69,12 +69,12 @@
           "summary": "Comprehensive analysis of 10 sorries in CoherentConstruction.lean, identifying 2 critical infrastructure sorries (lines 403, 416) needed for completeness and 8 non-critical coherence case sorries"
         },
         {
-          "path": "specs/753_prove_sorries_in_coherentconstruction/plans/implementation-001.md",
+          "path": "specs/753_prove_sorries_in_coherentconstruction/plans/implementation-002.md",
           "type": "plan",
-          "summary": "11-phase implementation plan to achieve zero sorries in Bimodal/Metalogic/ (34 sorries across 11 files)"
+          "summary": "Revised 4-phase plan targeting 15 sorries in CoherentConstruction.lean and TaskRelation.lean"
         }
       ],
-      "planned": "2026-01-29T17:09:52Z",
+      "planned": "2026-01-29T17:42:56Z",
       "started": "2026-01-29T17:12:53Z"
     },
     {
