@@ -252,12 +252,12 @@
     {
       "project_number": 623,
       "project_name": "build_fmp_tableau_connection_infrastructure",
-      "status": "expanded",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-20T01:11:05Z",
+      "last_updated": "2026-01-29T14:56:40Z",
       "session_id": "sess_1768868826_a57b66",
       "researched": "2026-01-19T23:08:08Z",
       "artifacts": [
@@ -267,17 +267,17 @@
           "summary": "Comprehensive research report covering FMP infrastructure, tableau implementation, countermodel extraction, and proof strategies for required lemmas"
         },
         {
-          "path": "specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 4-phase plan with corrected proof techniques for branchTruthLemma and tableau_complete"
-        },
-        {
           "path": "specs/623_build_fmp_tableau_connection_infrastructure/summaries/implementation-summary-20260119.md",
           "type": "summary",
           "summary": "Partial implementation summary - Phases 1-2.3, 4 completed, Phase 3 blocked on semantic bridge gap"
+        },
+        {
+          "path": "specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "Revision 3: Final cleanup plan after subtasks 630/631 completed semantic bridge"
         }
       ],
-      "planned": "2026-01-20T00:22:41Z",
+      "planned": "2026-01-29T14:56:40Z",
       "started": "2026-01-19T23:12:43Z",
       "resume_phase": 3,
       "subtasks": [

@@ -327,17 +327,17 @@ technical_debt:
 ---
 
 ### 623. Build FMP-tableau connection infrastructure
-- **Status**: [EXPANDED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-19
 - **Started**: 2026-01-19
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
-- **Subtasks**: 630, 631
+- **Subtasks**: 630 (completed), 631 (completed)
 - **Research**: [research-001.md](specs/623_build_fmp_tableau_connection_infrastructure/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-003.md)
+- **Plan**: [implementation-003.md](specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-003.md)
 
-**Description**: Build infrastructure connecting FMP bounds to tableau semantics. Phases 1-2.3 and 4 completed (expansion/saturation lemmas, branchTruthLemma). Phase 3 blocked on semantic bridge gap. Expanded into Tasks 630 (Kripke model extraction) and 631 (evalFormula_implies_sat lemma) to address the blocker.
+**Description**: Build infrastructure connecting FMP bounds to tableau semantics. Phases 1-4 completed. Subtasks 630 (TaskModel extraction) and 631 (evalFormula_implies_sat) resolved the semantic bridge gap. Ready for final verification and closure.
 
 ---
 
