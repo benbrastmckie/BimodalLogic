@@ -5,16 +5,16 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 11
+  active: 13
   completed: 298
   in_progress: 4
-  not_started: 8
+  not_started: 10
   abandoned: 21
-  total: 324
+  total: 326
 priority_distribution:
   critical: 0
   high: 6
-  medium: 9
+  medium: 11
   low: 5
 technical_debt:
   sorry_count: 205
@@ -103,6 +103,32 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 739. Update report-format.md with Project Context section
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+
+**Description**: Update .claude/context/core/formats/report-format.md to include a new "Project Context" section in the research report template. The section should appear after metadata and before Executive Summary to provide early orientation. Define fields: relation to project goals, component location, relevant modules, and integration points. This provides researchers with context on how their work fits into the broader project structure.
+
+---
+
+### 740. Update skill-lean-research to generate Project Context
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Dependencies**: Task 739
+- **Created**: 2026-01-29
+
+**Description**: Update skill-lean-research to generate the Project Context section in lean research reports. Add context reference loading from project-overview.md, modify Stage 7 report generation to include the Project Context section as specified in report-format.md, and update .claude/context/project/lean4/agents/lean-research-flow.md Stage 5 documentation to reflect the new section. This ensures all lean research outputs include orientation information.
+
+---
+
+
+
 
 ### 735. Complete phase 5 of task 700: Ultrafilter-MCS Correspondence
 - **Effort**: 1.5 hours
@@ -319,10 +345,11 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
+- **Started**: 2026-01-29
 - **Related**: Tasks 654, 656
 - **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:211,219,228,237
 - **Research**: [research-001.md](specs/659_prove_negation_completeness_lemmas/reports/research-001.md), [research-002.md](specs/659_prove_negation_completeness_lemmas/reports/research-002.md)
