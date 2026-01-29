@@ -122,10 +122,11 @@ technical_debt:
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Research**: [research-001.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/reports/research-001.md)
 
 **Description**: Establish sorry-free completeness using `semantic_weak_completeness` which works directly with finite model truth, avoiding the truth bridge, or other methods if better.
 
@@ -133,7 +134,7 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -144,7 +145,7 @@ technical_debt:
 
 ### 751. Enhance /review with grouped interactive task proposals
 - **Effort**: 8-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -155,10 +156,11 @@ technical_debt:
 
 ### 746. Improve Bimodal/Metalogic source comments
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Research**: [research-001.md](specs/746_improve_bimodal_metalogic_source_comments/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/746_improve_bimodal_metalogic_source_comments/plans/implementation-001.md)
 

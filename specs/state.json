@@ -8,31 +8,40 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T14:50:31Z"
+      "last_updated": "2026-01-29T14:54:49Z",
+      "session_id": "sess_1738163614_40057a"
     },
     {
       "project_number": 749,
       "project_name": "establish_sorry_free_completeness_via_semantic_weak_completeness",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:48:21Z",
-      "last_updated": "2026-01-29T14:52:33Z",
-      "session_id": "sess_1769698335_fafa38"
+      "last_updated": "2026-01-29T14:56:05Z",
+      "session_id": "sess_1769698335_fafa38",
+      "researched": "2026-01-29T14:56:05Z",
+      "artifacts": [
+        {
+          "path": "specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of semantic_weak_completeness and path to sorry-free completeness via truth bridge"
+        }
+      ]
     },
     {
       "project_number": 746,
       "project_name": "improve_bimodal_metalogic_source_comments",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T14:53:02Z",
-      "session_id": "sess_1769698249_7e6060",
+      "last_updated": "2026-01-29T14:55:30Z",
+      "session_id": "sess_1769698507_8a6dea",
       "researched": "2026-01-29T14:47:56Z",
       "artifacts": [
         {
@@ -46,7 +55,8 @@
           "summary": "5-phase plan to improve comments in 15 Metalogic files by removing temporal language and standardizing documentation"
         }
       ],
-      "planned": "2026-01-29T14:53:02Z"
+      "planned": "2026-01-29T14:53:02Z",
+      "started": "2026-01-29T14:55:30Z"
     },
     {
       "project_number": 747,
@@ -609,13 +619,14 @@
     {
       "project_number": 751,
       "project_name": "enhance_review_with_grouped_interactive_task_proposals",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T14:51:49Z",
-      "last_updated": "2026-01-29T14:51:49Z",
+      "last_updated": "2026-01-29T14:55:45Z",
       "description": "Modify the /review command to always conclude with an interactive task proposal experience. Currently, task creation requires the --create-tasks flag and presents a flat numbered list. This task implements intelligent task grouping and interactive selection across 3 phases: (1) Task Grouping Logic - implement algorithm to cluster related issues by file/component area, type of fix, and priority level; (2) Interactive Selection Interface - modify Section 5.5 to always display grouped task proposals with checkboxes for groups and individual tasks; (3) Task Creation Integration - wire selected tasks to actual creation with proper dependency linking.",
-      "effort": "8-10 hours"
+      "effort": "8-10 hours",
+      "session_id": "sess_1769698532_0c384d"
     }
   ],
   "completed_projects": [
