@@ -124,7 +124,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 4: Remove SUPERSEDED/DEPRECATED Markers from Active Code [NOT STARTED]
+### Phase 4: Remove SUPERSEDED/DEPRECATED Markers from Active Code [COMPLETED]
 
 **Goal**: Remove historical SUPERSEDED and DEPRECATED markers from non-Boneyard files
 
