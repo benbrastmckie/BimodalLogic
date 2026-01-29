@@ -1,5 +1,5 @@
 ---
-next_project_number: 760
+next_project_number: 761
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -120,6 +120,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 760. Determine sorry disposition: archive vs complete
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-29
+
+**Description**: Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase
+
+---
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 8-10 hours

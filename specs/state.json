@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 760,
+      "project_name": "determine_sorry_disposition_archive_vs_complete",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-29T20:26:56Z",
+      "last_updated": "2026-01-29T20:26:56Z",
+      "description": "Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase"
+    },
+    {
       "project_number": 759,
       "project_name": "update_todo_md_sorry_metrics",
       "status": "completed",
@@ -459,7 +469,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 760,
+  "next_project_number": 761,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
