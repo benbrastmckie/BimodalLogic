@@ -1,7 +1,7 @@
 # Implementation Plan: Task #616
 
 - **Task**: 616 - Remove mathematically false theorem semantic_task_rel_compositionality
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -70,7 +70,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Update related documentation [NOT STARTED]
+### Phase 2: Update related documentation [COMPLETED]
 
 **Goal**: Ensure documentation reflects the removal
 

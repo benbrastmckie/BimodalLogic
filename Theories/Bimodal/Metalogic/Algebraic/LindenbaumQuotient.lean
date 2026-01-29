@@ -2,6 +2,7 @@ import Bimodal.ProofSystem
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Theorems.Propositional
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.Perpetuity
 
 /-!
 # Lindenbaum Quotient Construction
@@ -187,29 +188,68 @@ theorem provEquiv_all_future_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
 /--
 Provable equivalence respects all_past (H): `φ ≈ₚ ψ → Hφ ≈ₚ Hψ`.
 
-This uses temporal duality to transfer the result from G.
+This uses `past_mono` from Perpetuity which derives it via temporal duality.
 -/
 theorem provEquiv_all_past_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
     φ.all_past ≈ₚ ψ.all_past := by
   unfold ProvEquiv Derives at *
   obtain ⟨⟨d_fwd⟩, ⟨d_bwd⟩⟩ := h
-  constructor <;> {
-    -- The proof uses temporal duality
-    -- From ⊢ φ → ψ, derive ⊢ Hφ → Hψ
-    -- Step 1: swap(φ → ψ) via temporal duality
-    -- Step 2: G(swap(φ → ψ)) via temporal necessitation
-    -- Step 3: swap back to get H(φ → ψ)
-    -- Step 4: Use temp_k_dist for H (derived via duality)
-    sorry
-  }
+  constructor
+  · exact ⟨Bimodal.Theorems.Perpetuity.past_mono d_fwd⟩
+  · exact ⟨Bimodal.Theorems.Perpetuity.past_mono d_bwd⟩
 
 /--
 Provable equivalence respects implication.
 -/
 theorem provEquiv_imp_congr {φ₁ φ₂ ψ₁ ψ₂ : Formula}
     (hφ : φ₁ ≈ₚ φ₂) (hψ : ψ₁ ≈ₚ ψ₂) : φ₁.imp ψ₁ ≈ₚ φ₂.imp ψ₂ := by
-  -- Uses imp_trans and contraposition from propositional theorems
-  sorry
+  -- Uses b_combinator (composition) to chain the equivalences
+  -- (φ₁ → ψ₁) → (φ₂ → ψ₂) requires: φ₂ → φ₁ and ψ₁ → ψ₂
+  -- (φ₂ → ψ₂) → (φ₁ → ψ₁) requires: φ₁ → φ₂ and ψ₂ → ψ₁
+  unfold ProvEquiv Derives at *
+  obtain ⟨⟨d_φ_fwd⟩, ⟨d_φ_bwd⟩⟩ := hφ
+  obtain ⟨⟨d_ψ_fwd⟩, ⟨d_ψ_bwd⟩⟩ := hψ
+  constructor
+  · -- Show ⊢ (φ₁ → ψ₁) → (φ₂ → ψ₂)
+    -- b_combinator: ⊢ (B → C) → (A → B) → (A → C)
+    -- Step 1: (ψ₁ → ψ₂) → (φ₂ → ψ₁) → (φ₂ → ψ₂)
+    have b1 : ⊢ (ψ₁.imp ψ₂).imp ((φ₂.imp ψ₁).imp (φ₂.imp ψ₂)) :=
+      Bimodal.Theorems.Combinators.b_combinator
+    have h1 : ⊢ (φ₂.imp ψ₁).imp (φ₂.imp ψ₂) :=
+      DerivationTree.modus_ponens [] _ _ b1 d_ψ_fwd
+
+    -- Step 2: (φ₂ → φ₁) → (φ₁ → ψ₁) → (φ₂ → ψ₁) via flipped b_combinator
+    have b2_pre : ⊢ (φ₁.imp ψ₁).imp ((φ₂.imp φ₁).imp (φ₂.imp ψ₁)) :=
+      Bimodal.Theorems.Combinators.b_combinator
+    have flip2 : ⊢ ((φ₁.imp ψ₁).imp ((φ₂.imp φ₁).imp (φ₂.imp ψ₁))).imp
+                    ((φ₂.imp φ₁).imp ((φ₁.imp ψ₁).imp (φ₂.imp ψ₁))) :=
+      Bimodal.Theorems.Combinators.theorem_flip
+    have b2 : ⊢ (φ₂.imp φ₁).imp ((φ₁.imp ψ₁).imp (φ₂.imp ψ₁)) :=
+      DerivationTree.modus_ponens [] _ _ flip2 b2_pre
+    have h2 : ⊢ (φ₁.imp ψ₁).imp (φ₂.imp ψ₁) :=
+      DerivationTree.modus_ponens [] _ _ b2 d_φ_bwd
+
+    -- Compose h2 and h1
+    exact ⟨Bimodal.Theorems.Combinators.imp_trans h2 h1⟩
+
+  · -- Show ⊢ (φ₂ → ψ₂) → (φ₁ → ψ₁)
+    -- Symmetric: use d_φ_fwd and d_ψ_bwd
+    have b1 : ⊢ (ψ₂.imp ψ₁).imp ((φ₁.imp ψ₂).imp (φ₁.imp ψ₁)) :=
+      Bimodal.Theorems.Combinators.b_combinator
+    have h1 : ⊢ (φ₁.imp ψ₂).imp (φ₁.imp ψ₁) :=
+      DerivationTree.modus_ponens [] _ _ b1 d_ψ_bwd
+
+    have b2_pre : ⊢ (φ₂.imp ψ₂).imp ((φ₁.imp φ₂).imp (φ₁.imp ψ₂)) :=
+      Bimodal.Theorems.Combinators.b_combinator
+    have flip2 : ⊢ ((φ₂.imp ψ₂).imp ((φ₁.imp φ₂).imp (φ₁.imp ψ₂))).imp
+                    ((φ₁.imp φ₂).imp ((φ₂.imp ψ₂).imp (φ₁.imp ψ₂))) :=
+      Bimodal.Theorems.Combinators.theorem_flip
+    have b2 : ⊢ (φ₁.imp φ₂).imp ((φ₂.imp ψ₂).imp (φ₁.imp ψ₂)) :=
+      DerivationTree.modus_ponens [] _ _ flip2 b2_pre
+    have h2 : ⊢ (φ₂.imp ψ₂).imp (φ₁.imp ψ₂) :=
+      DerivationTree.modus_ponens [] _ _ b2 d_φ_fwd
+
+    exact ⟨Bimodal.Theorems.Combinators.imp_trans h2 h1⟩
 
 /--
 Provable equivalence respects conjunction.

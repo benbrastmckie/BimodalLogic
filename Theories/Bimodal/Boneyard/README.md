@@ -71,7 +71,7 @@ Two alternative approaches to proving completeness were explored before the succ
 
 **Key insight**: The `semantic_weak_completeness` theorem works by using `semantic_truth_at_v2` (internal finite model truth) and avoiding the bridge to general `truth_at` entirely. This bypasses the need for both the compositionality proof and the truth bridge.
 
-**Note**: The `semantic_task_rel_compositionality` sorry remains in SemanticCanonicalModel.lean because the SemanticCanonicalFrame requires it for its TaskFrame instance. This is an acceptable limitation documented in the code.
+**Note**: The `semantic_task_rel_compositionality` theorem was removed in Task #616. The sorry is now inlined directly in the `SemanticCanonicalFrame` definition where the TaskFrame instance requires it. This keeps the sorry localized and avoids a named theorem claiming something mathematically false.
 
 ## Replacement: Semantic Approach (Task 473)
 
@@ -95,6 +95,7 @@ This approach works because:
 - **Task 481**: finite_history_from_state
 - **Task 482**: History gluing lemma
 - **Task 487**: Boneyard creation (SyntacticApproach, DurationConstruction)
+- **Task 616**: Remove false theorem semantic_task_rel_compositionality
 - **Task 626**: Review and remove unnecessary sorries (DeprecatedCompleteness)
 
 ## Status

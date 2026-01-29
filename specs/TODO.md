@@ -106,10 +106,11 @@ technical_debt:
 
 ### 732. Complete phase 4 of task 630: Truth Lemma proof
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Parent**: Task 630
 - **Research**: [research-001.md](specs/732_complete_630_phase4_truth_lemma_proof/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/732_complete_630_phase4_truth_lemma_proof/plans/implementation-001.md)
@@ -168,7 +169,7 @@ technical_debt:
 
 ### 660. Prove parametric completeness theorems
 - **Effort**: 10-15 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21

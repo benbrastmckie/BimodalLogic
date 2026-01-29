@@ -153,9 +153,12 @@ Metalogic_v2/
 | Location | Theorem | Issue | Impact |
 |----------|---------|-------|--------|
 | Closure.lean:484 | `closure_mcs_neg_complete` | Double-negation escape | Edge case |
-| SemanticCanonicalModel.lean:236 | `semantic_task_rel_compositionality` | History gluing in finite model | Acceptable limitation |
+| SemanticCanonicalModel.lean:220 | (inline sorry in SemanticCanonicalFrame) | Compositionality for TaskFrame instance | Acceptable limitation |
 | SemanticCanonicalModel.lean | `main_provable_iff_valid_v2` | Truth bridge for completeness direction | See note below |
 | FiniteWorldState.lean:343 | `closure_mcs_implies_locally_consistent` | Temporal axioms | Edge case |
+
+Note: The `semantic_task_rel_compositionality` theorem was removed in Task #616. The sorry is now inlined
+directly in the `SemanticCanonicalFrame` definition where the TaskFrame instance requires it.
 
 Note: The deprecated theorems `semantic_truth_implies_truth_at` and `main_weak_completeness_v2` have been
 removed. See `Boneyard/DeprecatedCompleteness.lean` for documentation of the deprecated approach.

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #732
 
 - **Task**: 732 - Complete phase 4 of task 630: Prove mem_extractTrueAtomSet_iff helper lemma
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1 hour
 - **Priority**: Medium
 - **Dependencies**: None

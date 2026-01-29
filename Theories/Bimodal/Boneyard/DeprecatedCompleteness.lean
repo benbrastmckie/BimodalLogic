@@ -11,9 +11,9 @@ and were superseded by the sorry-free `semantic_weak_completeness` approach.
 
 ## Why These Theorems Were Deprecated
 
-### 1. `semantic_task_rel_compositionality`
+### 1. `semantic_task_rel_compositionality` (REMOVED - Task #616)
 
-**Original location**: SemanticCanonicalModel.lean (lines 191-236)
+**Original location**: SemanticCanonicalModel.lean (lines 191-236) [now removed]
 
 **Problem**: The compositionality axiom is mathematically false for unbounded
 durations in a finite time model.
@@ -35,9 +35,10 @@ needs the TaskFrame structure to exist. The durations that actually arise during
 formula evaluation are bounded by the temporal depth, so problematic cases don't
 occur in practice.
 
-**Current status**: A sorry remains in the SemanticCanonicalFrame definition
-because TaskFrame requires the compositionality axiom. This is documented in the
-code as an acceptable limitation.
+**Current status**: The theorem was removed in Task #616. The sorry is now inlined
+directly in the SemanticCanonicalFrame definition where the TaskFrame instance
+requires it. This keeps the sorry localized and avoids a named theorem claiming
+something mathematically false.
 
 ### 2. `semantic_truth_implies_truth_at`
 
@@ -96,6 +97,7 @@ This approach avoids the truth bridge by working entirely within the finite mode
 
 ## Task Reference
 
+- **Task 616**: Remove false theorem semantic_task_rel_compositionality
 - **Task 626**: Review and remove unnecessary theorems with sorries
 - **Research**: specs/626_review_remove_unnecessary_sorries/reports/research-001.md
 

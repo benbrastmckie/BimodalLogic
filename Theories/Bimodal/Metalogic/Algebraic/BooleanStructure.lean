@@ -131,8 +131,12 @@ theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a 
   induction c using Quotient.ind
   rename_i φ ψ χ
   show Derives φ (ψ.and χ)
-  -- Need conjunction introduction: from ⊢ φ → ψ and ⊢ φ → χ, derive ⊢ φ → (ψ ∧ χ)
-  sorry
+  -- Use combine_imp_conj: from ⊢ φ → ψ and ⊢ φ → χ, derive ⊢ φ → (ψ ∧ χ)
+  have h_ab : Derives φ ψ := hab
+  have h_ac : Derives φ χ := hac
+  obtain ⟨d_ab⟩ := h_ab
+  obtain ⟨d_ac⟩ := h_ac
+  exact ⟨Bimodal.Theorems.Combinators.combine_imp_conj d_ab d_ac⟩
 
 /--
 `a ≤ a ⊔ b`: first disjunct implies disjunction.
@@ -142,9 +146,11 @@ theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ or_quot a b := by
   induction b using Quotient.ind
   rename_i φ ψ
   show Derives φ (φ.or ψ)
-  -- Need disjunction introduction left: ⊢ φ → (φ ∨ ψ)
   -- φ ∨ ψ = ¬φ → ψ, so we need ⊢ φ → (¬φ → ψ)
-  sorry
+  -- This is raa (Reductio ad Absurdum): ⊢ φ → (¬φ → ψ)
+  unfold Derives
+  unfold Formula.or
+  exact ⟨Bimodal.Theorems.Propositional.raa φ ψ⟩
 
 /--
 `b ≤ a ⊔ b`: second disjunct implies disjunction.
@@ -171,8 +177,37 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : or
   induction c using Quotient.ind
   rename_i φ ψ χ
   show Derives (φ.or ψ) χ
-  -- Need disjunction elimination
-  sorry
+  -- Need disjunction elimination: from ⊢ φ → χ and ⊢ ψ → χ, derive ⊢ (φ ∨ ψ) → χ
+  -- φ ∨ ψ = ¬φ → ψ
+  -- Strategy: Build (¬φ → ψ) → χ by:
+  -- 1. From ⊢ ψ → χ and ⊢ ¬φ → ψ, get ⊢ ¬φ → χ via composition
+  -- 2. From ⊢ φ → χ and ⊢ ¬φ → χ, get χ via classical_merge
+  have h_ac : Derives φ χ := hac
+  have h_bc : Derives ψ χ := hbc
+  obtain ⟨d_ac⟩ := h_ac
+  obtain ⟨d_bc⟩ := h_bc
+  unfold Derives Formula.or
+  -- We need: ⊢ (¬φ → ψ) → χ
+  -- Step 1: Build (¬φ → χ) using composition with (¬φ → ψ) → (ψ → χ) → (¬φ → χ)
+  -- b_combinator: (ψ → χ) → (¬φ → ψ) → (¬φ → χ)
+  have b1 : ⊢ (ψ.imp χ).imp ((φ.neg.imp ψ).imp (φ.neg.imp χ)) :=
+    Bimodal.Theorems.Combinators.b_combinator
+  have neg_phi_to_chi_given_disj : ⊢ (φ.neg.imp ψ).imp (φ.neg.imp χ) :=
+    DerivationTree.modus_ponens [] _ _ b1 d_bc
+  -- Step 2: Use classical_merge: (φ → χ) → ((¬φ → χ) → χ)
+  -- We have d_ac : ⊢ φ → χ
+  -- We need to combine with the above to get: (¬φ → ψ) → χ
+  -- Build: (φ → χ) → ((¬φ → χ) → χ) and compose with (¬φ → ψ) → (¬φ → χ)
+  have cm : ⊢ (φ.imp χ).imp ((φ.neg.imp χ).imp χ) :=
+    Bimodal.Theorems.Propositional.classical_merge φ χ
+  have step1 : ⊢ (φ.neg.imp χ).imp χ :=
+    DerivationTree.modus_ponens [] _ _ cm d_ac
+  -- Now compose: (¬φ → ψ) → (¬φ → χ) with (¬φ → χ) → χ
+  have b2 : ⊢ ((φ.neg.imp χ).imp χ).imp (((φ.neg.imp ψ).imp (φ.neg.imp χ)).imp ((φ.neg.imp ψ).imp χ)) :=
+    Bimodal.Theorems.Combinators.b_combinator
+  have step2 : ⊢ ((φ.neg.imp ψ).imp (φ.neg.imp χ)).imp ((φ.neg.imp ψ).imp χ) :=
+    DerivationTree.modus_ponens [] _ _ b2 step1
+  exact ⟨DerivationTree.modus_ponens [] _ _ step2 neg_phi_to_chi_given_disj⟩
 
 /--
 `⊥ ≤ a`: bot is least element.
@@ -208,8 +243,16 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   induction c using Quotient.ind
   rename_i φ ψ χ
   -- Need: ⊢ ((φ ∨ ψ) ∧ (φ ∨ χ)) → (φ ∨ (ψ ∧ χ))
-  -- This is classical distributivity
+  -- This is classical distributivity - requires case analysis via LEM
+  -- Proof sketch:
+  --   Case φ: φ ∨ (ψ ∧ χ) by left disjunction intro
+  --   Case ¬φ: From (φ ∨ ψ) and ¬φ get ψ; from (φ ∨ χ) and ¬φ get χ
+  --            Then ψ ∧ χ, so φ ∨ (ψ ∧ χ) by right disjunction intro
   show Derives ((φ.or ψ).and (φ.or χ)) (φ.or (ψ.and χ))
+  unfold Derives Formula.or Formula.and
+  -- Goal: ⊢ ((¬φ → ψ).¬).¬ → (¬φ → (ψ → ¬χ).¬)
+  -- This is provable via nested case analysis using classical_merge
+  -- Implementation deferred - requires helper lemmas for nested classical reasoning
   sorry
 
 /-!
@@ -225,9 +268,29 @@ theorem inf_compl_le_bot_quot (a : LindenbaumAlg) : and_quot a (neg_quot a) ≤ 
   induction a using Quotient.ind
   rename_i φ
   -- Need: ⊢ (φ ∧ ¬φ) → ⊥
-  -- This is the principle of non-contradiction
+  -- From [φ ∧ ¬φ] we can derive ⊥ via lce, rce, and modus ponens
   show Derives (φ.and φ.neg) Formula.bot
-  sorry
+  unfold Derives
+  -- Use deduction theorem: from [φ ∧ ¬φ] ⊢ ⊥, derive ⊢ (φ ∧ ¬φ) → ⊥
+  have h_conj_ctx : [φ.and φ.neg] ⊢ φ.and φ.neg := by
+    apply DerivationTree.assumption
+    simp
+  have h_phi : [φ.and φ.neg] ⊢ φ := by
+    apply DerivationTree.modus_ponens [φ.and φ.neg] _ _
+    · apply DerivationTree.weakening [] [φ.and φ.neg]
+      · exact Bimodal.Theorems.Propositional.lce_imp φ φ.neg
+      · intro; simp
+    · exact h_conj_ctx
+  have h_neg_phi : [φ.and φ.neg] ⊢ φ.neg := by
+    apply DerivationTree.modus_ponens [φ.and φ.neg] _ _
+    · apply DerivationTree.weakening [] [φ.and φ.neg]
+      · exact Bimodal.Theorems.Propositional.rce_imp φ φ.neg
+      · intro; simp
+    · exact h_conj_ctx
+  -- φ.neg = φ → ⊥, so modus ponens gives ⊥
+  have h_bot : [φ.and φ.neg] ⊢ Formula.bot :=
+    DerivationTree.modus_ponens [φ.and φ.neg] φ Formula.bot h_neg_phi h_phi
+  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and φ.neg) Formula.bot h_bot⟩
 
 /--
 `⊤ ≤ a ⊔ aᶜ`: top is at most join with complement.
@@ -236,9 +299,15 @@ theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ or_quot a (neg_quot 
   induction a using Quotient.ind
   rename_i φ
   -- Need: ⊢ ⊤ → (φ ∨ ¬φ)
-  -- This is the law of excluded middle
+  -- ⊤ = ⊥ → ⊥, so need: ⊢ (⊥ → ⊥) → (φ ∨ ¬φ)
+  -- This follows from LEM (⊢ φ ∨ ¬φ) by weakening
   show Derives (Formula.bot.imp Formula.bot) (φ.or φ.neg)
-  sorry
+  unfold Derives
+  have h_lem : ⊢ φ.or φ.neg := Bimodal.Theorems.Propositional.lem φ
+  -- Weaken: ⊢ (φ ∨ ¬φ) → ((⊥ → ⊥) → (φ ∨ ¬φ))
+  have h_s : ⊢ (φ.or φ.neg).imp ((Formula.bot.imp Formula.bot).imp (φ.or φ.neg)) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s (φ.or φ.neg) (Formula.bot.imp Formula.bot))
+  exact ⟨DerivationTree.modus_ponens [] _ _ h_s h_lem⟩
 
 /--
 Sup is commutative.

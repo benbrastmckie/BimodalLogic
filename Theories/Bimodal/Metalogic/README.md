@@ -127,7 +127,7 @@ Contains deprecated code using:
 - Fixed time bounds: FiniteTime with domain [-k, k]
 
 **Why deprecated**:
-1. `semantic_task_rel_compositionality` has a sorry (mathematically impossible for unbounded durations in finite domain)
+1. Compositionality sorry in SemanticCanonicalFrame (Task #616 removed the named theorem, sorry now inlined)
 2. Formula-dependence (not universally parametric)
 3. Truth bridge complexity between finite and general models
 

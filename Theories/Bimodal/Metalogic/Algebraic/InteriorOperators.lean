@@ -1,4 +1,6 @@
 import Bimodal.Metalogic.Algebraic.BooleanStructure
+import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Theorems.Perpetuity
 
 /-!
 # Interior Operators for Temporal Modalities
@@ -123,20 +125,21 @@ theorem H_le_self (a : LindenbaumAlg) : H_quot a ≤ a := by
 /--
 H is monotone: `φ ≤ ψ → Hφ ≤ Hψ`.
 
-Uses temporal duality from G's monotonicity proof.
+Uses `past_mono` from Perpetuity (derived via temporal duality).
 -/
 theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : H_quot a ≤ H_quot b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
   show Derives φ.all_past ψ.all_past
-  -- The proof uses temporal duality - see detailed proof in LindenbaumQuotient
-  sorry
+  have h' : Derives φ ψ := h
+  obtain ⟨d⟩ := h'
+  exact ⟨Bimodal.Theorems.Perpetuity.past_mono d⟩
 
 /--
 H is idempotent: `H(Hφ) = Hφ`.
 
-Uses temporal duality from the 4-axiom for G.
+Uses `temp_4_past` (derived via temporal duality from temp_4).
 -/
 theorem H_idempotent (a : LindenbaumAlg) : H_quot (H_quot a) = H_quot a := by
   induction a using Quotient.ind
@@ -145,8 +148,7 @@ theorem H_idempotent (a : LindenbaumAlg) : H_quot (H_quot a) = H_quot a := by
   show ProvEquiv φ.all_past.all_past φ.all_past
   constructor
   · exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ.all_past)⟩
-  · -- Uses temporal duality on 4-axiom
-    sorry
+  · exact ⟨Bimodal.Metalogic.Core.temp_4_past φ⟩
 
 /--
 H is an interior operator on the Lindenbaum algebra.
