@@ -560,6 +560,140 @@ For selected groups, ask how tasks should be created:
 
 After manual selection, proceed to Section 5.6 with individual task creation for selected issues.
 
+### 5.6. Task Creation from Selection
+
+Create tasks based on selection and granularity choices from Sections 5.5.6 and 5.5.7.
+
+#### 5.6.1. Grouped Task Creation
+
+When "Keep as grouped tasks" is selected, create one task per group:
+
+**Task fields:**
+```json
+{
+  "title": "{group_label}: {item_count} issues",
+  "description": "{combined issue descriptions with file:line references}",
+  "language": "{majority_language}",
+  "priority": "{max_priority_in_group}"
+}
+```
+
+**Language inference by majority file type in group:**
+| File pattern | Language |
+|--------------|----------|
+| `*.lean` | lean |
+| `*.md`, `*.json`, `.claude/**` | meta |
+| `*.tex` | latex |
+| `*.typ` | typst |
+| Other | general |
+
+**Description format:**
+```markdown
+Review issues from {scope} review on {DATE}:
+
+1. [{severity}] {file}:{line} - {description}
+   Impact: {impact}
+   Fix: {recommended_fix}
+
+2. [{severity}] {file}:{line} - {description}
+   ...
+
+Related files: {file_list}
+```
+
+#### 5.6.2. Individual Task Creation
+
+When "Expand into individual tasks" or manual selection is chosen:
+
+**Task fields:**
+```json
+{
+  "title": "{issue_description, truncated to 60 chars}",
+  "description": "{full issue details}",
+  "language": "{language_from_file}",
+  "priority": "{priority_from_severity}"
+}
+```
+
+**Priority mapping:**
+| Severity | Priority |
+|----------|----------|
+| Critical | critical |
+| High | high |
+| Medium | medium |
+| Low | low |
+
+**Description format:**
+```markdown
+Review issue from {scope} review on {DATE}:
+
+**File**: `{file}:{line}`
+**Severity**: {severity}
+**Description**: {description}
+**Impact**: {impact}
+**Recommended Fix**: {recommended_fix}
+```
+
+#### 5.6.3. State Updates
+
+**1. Read current state:**
+```bash
+next_num=$(jq -r '.next_project_number' specs/state.json)
+```
+
+**2. Create slug from title:**
+```bash
+# Lowercase, replace spaces/special chars with underscore, truncate to 40 chars
+slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g' | cut -c1-40)
+```
+
+**3. Add task to state.json:**
+```bash
+jq --arg num "$next_num" --arg slug "$slug" --arg title "$title" \
+   --arg desc "$description" --arg lang "$language" --arg prio "$priority" \
+   '.active_projects += [{
+     "project_number": ($num | tonumber),
+     "project_name": $slug,
+     "status": "not_started",
+     "language": $lang,
+     "priority": $prio,
+     "description": $title,
+     "created": (now | strftime("%Y-%m-%dT%H:%M:%SZ"))
+   }] | .next_project_number = (($num | tonumber) + 1)' \
+   specs/state.json > specs/state.json.tmp && mv specs/state.json.tmp specs/state.json
+```
+
+**4. Update TODO.md:**
+Add task entry following existing format in TODO.md frontmatter section.
+
+**5. Track in review state:**
+```bash
+# Add task numbers to review entry
+jq --argjson tasks "[${task_nums}]" \
+   '.reviews[-1].tasks_created = $tasks' \
+   specs/reviews/state.json > specs/reviews/state.json.tmp && \
+   mv specs/reviews/state.json.tmp specs/reviews/state.json
+
+# Update statistics
+jq --argjson count "${task_count}" \
+   '.statistics.total_tasks_created += $count' \
+   specs/reviews/state.json > specs/reviews/state.json.tmp && \
+   mv specs/reviews/state.json.tmp specs/reviews/state.json
+```
+
+#### 5.6.4. Duplicate Prevention
+
+Before creating each task, check for existing similar tasks:
+
+```bash
+# Check state.json for tasks with similar names or file paths
+existing=$(jq -r '.active_projects[] | select(.project_name | contains("'"$slug"'"))' specs/state.json)
+if [ -n "$existing" ]; then
+  # Skip creation, log as duplicate
+  echo "Skipping duplicate: $title (similar to existing task)"
+fi
+```
+
 ### 6. Update Registries (if applicable)
 
 If reviewing specific domains, update relevant registries:
@@ -568,7 +702,7 @@ If reviewing specific domains, update relevant registries:
 
 ### 7. Git Commit
 
-Commit review report, state file, and any roadmap changes:
+Commit review report, state files, task state, and any roadmap changes:
 
 ```bash
 # Add review artifacts
@@ -579,10 +713,16 @@ if git diff --name-only | grep -q "specs/ROAD_MAP.md"; then
   git add specs/ROAD_MAP.md
 fi
 
+# Add task state if tasks were created
+if git diff --name-only | grep -q "specs/state.json"; then
+  git add specs/state.json specs/TODO.md
+fi
+
 git commit -m "$(cat <<'EOF'
 review: {scope} code review
 
-Roadmap: {annotations_made} items annotated, {tasks_created} tasks created
+Roadmap: {annotations_made} items annotated
+Tasks: {tasks_created} created ({grouped_count} grouped, {individual_count} individual)
 
 Session: {session_id}
 
@@ -591,7 +731,7 @@ EOF
 )"
 ```
 
-This ensures review report, state tracking, and roadmap updates are committed together.
+This ensures review report, state tracking, task state, and roadmap updates are committed together.
 
 ### 8. Output
 
@@ -606,22 +746,31 @@ Summary:
 - Medium: {N} issues
 - Low: {N} issues
 
+Issue Groups Identified:
+- {N} groups formed from {M} total issues
+- Groups: {group_labels}
+
 Roadmap Progress:
 - Annotations made: {N} items marked complete
 - Current focus: {phase_name} ({priority})
-- Recommended tasks: {N}
 
-{If tasks created from issues}
-Created {N} tasks for critical/high issues:
+{If tasks created via interactive selection}
+Tasks Created: {N} total
+- Grouped tasks: {grouped_count}
+  - Task #{N1}: {group_label} ({item_count} issues)
+- Individual tasks: {individual_count}
+  - Task #{N2}: {title}
+  - Task #{N3}: {title}
+
+{If tasks created via --create-tasks flag}
+Auto-created {N} tasks for critical/high issues:
 - Task #{N1}: {title}
 - Task #{N2}: {title}
 
-{If tasks created from roadmap}
-Created {N} tasks from roadmap recommendations:
-- Task #{N1}: {title}
-- Task #{N2}: {title}
+{If no tasks created}
+No tasks created (user selected "none" or empty selection).
 
-Top recommendations:
+Top recommendations for next review:
 1. {recommendation}
 2. {recommendation}
 ```
