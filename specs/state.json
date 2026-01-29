@@ -8,11 +8,11 @@
     {
       "project_number": 759,
       "project_name": "update_todo_md_sorry_metrics",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "low",
       "created": "2026-01-29T17:15:00Z",
-      "last_updated": "2026-01-29T18:36:09Z",
+      "last_updated": "2026-01-29T18:41:16Z",
       "description": "Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.",
       "source": "review-20260129-2",
       "session_id": "sess_1769711749_d9be54",
@@ -27,10 +27,18 @@
           "path": "specs/759_update_todo_md_sorry_metrics/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan: fix immediate metrics, add state.json schema, add metrics sync to /todo, documentation"
+        },
+        {
+          "path": "specs/759_update_todo_md_sorry_metrics/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with all phases completed"
         }
       ],
       "planned": "2026-01-29T18:26:01Z",
-      "started": "2026-01-29T18:36:09Z"
+      "started": "2026-01-29T18:36:09Z",
+      "completed": "2026-01-29T18:41:16Z",
+      "completion_summary": "Fixed stale TODO.md sorry metrics (205->295), added repository_health to state.json schema, and implemented automatic metrics sync in /todo command Section 5.7.",
+      "claudemd_suggestions": "Updated CLAUDE.md /todo command description to include 'sync repository metrics', added repository_health section to state.json Structure example"
     },
     {
       "project_number": 758,
@@ -457,5 +465,12 @@
     "active": 15,
     "not_started": 8,
     "total": 334
+  },
+  "repository_health": {
+    "last_assessed": "2026-01-29T18:38:22Z",
+    "sorry_count": 295,
+    "axiom_count": 10,
+    "build_errors": 0,
+    "status": "manageable"
   }
 }

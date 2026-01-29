@@ -3,7 +3,7 @@ next_project_number: 760
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-17T02:30:00Z
+  last_assessed: 2026-01-29T18:38:22Z
 task_counts:
   active: 10
   completed: 317
@@ -17,8 +17,8 @@ priority_distribution:
   medium: 4
   low: 5
 technical_debt:
-  sorry_count: 205
-  axiom_count: 15
+  sorry_count: 295
+  axiom_count: 10
   build_errors: 0
   status: manageable
 ---
@@ -29,10 +29,11 @@ technical_debt:
 
 ### 758. Audit and reduce Metalogic sorries
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Source**: review-20260129-2
 - **Research**: [research-001.md](specs/758_audit_and_reduce_metalogic_sorries/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md)
@@ -186,13 +187,15 @@ technical_debt:
 
 ### 759. Update TODO.md sorry metrics
 - **Effort**: 30 minutes
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Low
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Source**: review-20260129-2
 - **Research**: [research-001.md](specs/759_update_todo_md_sorry_metrics/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/759_update_todo_md_sorry_metrics/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/759_update_todo_md_sorry_metrics/summaries/implementation-summary-20260129.md)
 
 **Description**: Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.
 

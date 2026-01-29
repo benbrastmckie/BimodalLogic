@@ -99,6 +99,32 @@ When updating task status:
 }
 ```
 
+### Repository Health Section
+
+The `repository_health` section tracks repository-wide technical debt metrics:
+
+```json
+{
+  "repository_health": {
+    "last_assessed": "2026-01-29T18:38:22Z",
+    "sorry_count": 295,
+    "axiom_count": 10,
+    "build_errors": 0,
+    "status": "manageable"
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `last_assessed` | string | ISO8601 timestamp of last metrics update |
+| `sorry_count` | number | Total `sorry` occurrences in Theories/ (from grep) |
+| `axiom_count` | number | Total `axiom` declarations in Theories/ |
+| `build_errors` | number | Current build error count (0 = clean build) |
+| `status` | string | Overall debt status: `manageable`, `concerning`, `critical` |
+
+**Update Mechanism**: The `/todo` command updates `repository_health` during postflight (Section 5.7). Values are computed via grep and synced to both state.json and TODO.md frontmatter.
+
 ### Completion Fields Schema
 
 When a task transitions to `status: "completed"`, these fields are populated:

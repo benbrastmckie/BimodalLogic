@@ -4,6 +4,7 @@ import Bimodal.Semantics.Truth
 import Bimodal.Metalogic.Representation.UniversalCanonicalModel
 import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Theorems.Propositional
+import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
 
 /-!
 # Weak Completeness for TM Bimodal Logic
@@ -29,7 +30,7 @@ The completeness proof proceeds via contrapositive using the representation theo
 ## Dependencies
 
 - Representation theorem: `Bimodal.Metalogic.Representation.representation_theorem`
-- Soundness is axiomatized with sorry pending Boneyard fix (see `soundness` lemma)
+- Soundness theorem: Imported from `Bimodal.Boneyard.Metalogic_v2.Soundness.soundness`
 
 ## References
 
@@ -74,22 +75,24 @@ def Consistent (Γ : Context) : Prop :=
   ¬Nonempty (DerivationTree Γ Formula.bot)
 
 /-!
-## Soundness (Axiomatized)
+## Soundness (Imported from Boneyard)
 
-Soundness is needed for the equivalence theorem but not for weak completeness.
-The full soundness proof is in Boneyard/Metalogic_v2/Soundness but has broken
-lemmas due to the reflexive semantics change. We axiomatize it here.
+Soundness is imported from Boneyard/Metalogic_v2/Soundness which contains the
+fully proven soundness theorem for TM bimodal logic.
 -/
 
 /--
 Soundness for context derivability: If Γ ⊢ φ, then Γ ⊨ φ.
 
-**Status**: Axiomatized with sorry. Full proof in Boneyard/Metalogic_v2/Soundness
-requires fixing SoundnessLemmas.lean for reflexive temporal semantics.
+**Status**: Proven via import from Boneyard/Metalogic_v2/Soundness/Soundness.lean.
+The Boneyard soundness theorem handles all derivation rules including
+temporal_duality via derivation-indexed induction.
 -/
 theorem soundness (Γ : Context) (φ : Formula) :
     (DerivationTree Γ φ) → semantic_consequence Γ φ := by
-  sorry
+  intro h_deriv
+  -- Use the proven soundness theorem from Boneyard
+  exact Bimodal.Metalogic_v2.Soundness.soundness Γ φ (by exact h_deriv)
 
 /--
 Soundness for empty context: If ⊢ φ, then ⊨ φ (valid).

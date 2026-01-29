@@ -840,6 +840,77 @@ Track suggestion operations for output reporting:
 - claudemd_skipped: count of suggestions skipped by user selection
 - claudemd_none_acknowledged: count of "none" action tasks acknowledged
 
+### 5.7. Sync Repository Metrics
+
+Update repository-wide technical debt metrics in both state.json and TODO.md header.
+
+**Step 5.7.1: Compute current metrics**:
+```bash
+# Count sorries (all Theories/ files, including Boneyard for historical consistency)
+sorry_count=$(grep -r "sorry" Theories/ --include="*.lean" | wc -l)
+
+# Count axiom declarations
+axiom_count=$(grep -E "^axiom " Theories/ -r --include="*.lean" | wc -l)
+
+# Get current timestamp
+ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+# Build errors (0 if last lake build succeeded, check for .lake/build/*)
+if [ -f ".lake/build/lib/Theories.olean" ]; then
+  build_errors=0
+else
+  build_errors=1
+fi
+```
+
+**Step 5.7.2: Update state.json repository_health**:
+```bash
+jq --arg sorry "$sorry_count" \
+   --arg axiom "$axiom_count" \
+   --arg ts "$ts" \
+   --arg errors "$build_errors" \
+   '.repository_health = {
+     "last_assessed": $ts,
+     "sorry_count": ($sorry | tonumber),
+     "axiom_count": ($axiom | tonumber),
+     "build_errors": ($errors | tonumber),
+     "status": (if ($sorry | tonumber) < 100 then "good" elif ($sorry | tonumber) < 300 then "manageable" else "concerning" end)
+   }' specs/state.json > specs/state.json.tmp && mv specs/state.json.tmp specs/state.json
+```
+
+**Step 5.7.3: Update TODO.md frontmatter**:
+
+Read TODO.md and update the YAML frontmatter `technical_debt` section to match state.json:
+```bash
+# Using Edit tool to update TODO.md frontmatter
+# old_string: current technical_debt block
+# new_string: updated technical_debt block with current values
+```
+
+The technical_debt block should be updated to:
+```yaml
+technical_debt:
+  sorry_count: {sorry_count}
+  axiom_count: {axiom_count}
+  build_errors: {build_errors}
+  status: {status}
+```
+
+Also update `last_assessed` in repository_health:
+```yaml
+repository_health:
+  overall_score: 90
+  production_readiness: improved
+  last_assessed: {ts}
+```
+
+**Step 5.7.4: Report metrics sync**:
+Track for output:
+- `metrics_sorry_count`: Current sorry count
+- `metrics_axiom_count`: Current axiom count
+- `metrics_build_errors`: Current build errors
+- `metrics_synced`: true/false indicating if sync was performed
+
 ### 6. Git Commit
 
 ```bash
@@ -920,6 +991,12 @@ Active tasks remaining: {N}
 - High priority: {N}
 - Medium priority: {N}
 - Low priority: {N}
+
+Repository metrics updated:
+- sorry_count: {N}
+- axiom_count: {N}
+- build_errors: {N}
+- last_assessed: {timestamp}
 
 Archives: specs/archive/
 ```

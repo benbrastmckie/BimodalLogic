@@ -1,20 +1,15 @@
 {
-  "status": "planned",
-  "summary": "5-phase plan to reduce Metalogic sorries from 28 to 8 by porting soundness proof, fixing classical logic lemmas, fixing IndexedMCSFamily delegation, archiving exploratory code, and documenting architectural limitations",
-  "artifacts": [
-    {
-      "path": "specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md",
-      "type": "plan",
-      "summary": "5-phase implementation plan targeting 20 sorry reduction through proof porting, fixes, and archival"
-    }
-  ],
-  "next_steps": "Run /implement 758 to execute the plan",
+  "status": "in_progress",
+  "started_at": "2026-01-29T10:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
   "metadata": {
-    "session_id": "sess_1769711137_b2e046",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1769711795_52a0e1",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 8
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
   }
 }

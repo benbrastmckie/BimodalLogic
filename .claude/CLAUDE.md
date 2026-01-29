@@ -62,7 +62,7 @@ All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (sk
 | `/implement` | `/implement N` | Execute plan, resume from incomplete phase |
 | `/revise` | `/revise N` | Create new plan version |
 | `/review` | `/review` | Analyze codebase |
-| `/todo` | `/todo` | Archive completed/abandoned tasks |
+| `/todo` | `/todo` | Archive completed/abandoned tasks, sync repository metrics |
 | `/errors` | `/errors` | Analyze error patterns, create fix plans |
 | `/meta` | `/meta` | System builder for .claude/ changes |
 | `/learn` | `/learn [PATH...]` | Scan for FIX:/NOTE:/TODO: tags |
@@ -85,7 +85,14 @@ TODO.md and state.json must stay synchronized. Update state.json first (machine 
     "priority": "high",
     "completion_summary": "Required when status=completed",
     "roadmap_items": ["Optional explicit roadmap items"]
-  }]
+  }],
+  "repository_health": {
+    "last_assessed": "ISO8601 timestamp",
+    "sorry_count": 295,
+    "axiom_count": 10,
+    "build_errors": 0,
+    "status": "manageable"
+  }
 }
 ```
 
