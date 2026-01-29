@@ -1,7 +1,7 @@
 # Implementation Plan: Task #743
 
 - **Task**: 743 - restore_lean_implementation_agent_thin_wrapper
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Priority**: high
 - **Dependencies**: None (Task 742 completed successfully, provides parallel template)
@@ -50,7 +50,7 @@ This task restores lean-implementation-agent from deprecated state and converts 
 
 ## Implementation Phases
 
-### Phase 1: Restore lean-implementation-agent.md [NOT STARTED]
+### Phase 1: Restore lean-implementation-agent.md [IN PROGRESS]
 
 **Goal**: Remove DEPRECATED notice and add explicit blocked tools guardrails to the agent
 

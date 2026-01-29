@@ -1,6 +1,5 @@
 import Bimodal.Metalogic.Representation.CanonicalHistory
 import Bimodal.Metalogic.Representation.IndexedMCSFamily
-import Bimodal.Metalogic.Representation.TemporalCompleteness  -- Task 741: witness extraction infrastructure
 import Bimodal.Semantics.Truth
 
 /-!

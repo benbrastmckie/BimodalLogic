@@ -1,7 +1,7 @@
 # Implementation Plan: Task #745
 
 - **Task**: 745 - Move backward Truth Lemma to Boneyard
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -52,7 +52,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Move TemporalCompleteness.lean to Boneyard [NOT STARTED]
+### Phase 1: Move TemporalCompleteness.lean to Boneyard [COMPLETED]
 
 **Goal**: Move backward temporal infrastructure to Boneyard with documentation.
 

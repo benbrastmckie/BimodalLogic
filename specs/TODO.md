@@ -29,7 +29,7 @@ technical_debt:
 
 ### 743. Restore lean-implementation-agent and skill-lean-implementation thin wrapper
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -120,7 +120,7 @@ technical_debt:
 
 ### 745. Move backward Truth Lemma to Boneyard
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29

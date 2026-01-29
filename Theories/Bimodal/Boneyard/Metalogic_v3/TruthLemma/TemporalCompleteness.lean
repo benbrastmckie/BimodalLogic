@@ -4,63 +4,56 @@ import Bimodal.Metalogic.Representation.IndexedMCSFamily
 import Mathlib.Algebra.Order.Group.Defs
 
 /-!
-# Temporal Completeness for Indexed MCS Families
+# Temporal Completeness Infrastructure (Boneyard)
 
-This module provides the infrastructure for the backward direction of the Truth Lemma
-temporal cases.
+**BONEYARD**: This module was moved from `Bimodal/Metalogic/Representation/` as part of Task 745.
+It is preserved here for historical reference and documentation of the omega-rule limitation.
 
-## Status: NOT REQUIRED FOR COMPLETENESS
+## Why This Was Moved
 
-The backward Truth Lemma temporal cases (TruthLemma.lean lines 423, 441) are **not used**
-by the representation theorem. The completeness proof only requires the forward direction.
+The H/G-completeness infrastructure is **NOT REQUIRED for completeness**:
+- The representation theorem only uses `truth_lemma_forward`
+- The backward Truth Lemma temporal cases are blocked by a fundamental omega-rule limitation
+- Keeping this in the main Representation/ directory would leave sorries in production code
 
-This module documents the proof approach and provides the lemma signatures, but the
-core H/G-completeness lemmas have `sorry` due to a fundamental limitation:
+## The Omega-Rule Problem
 
-**The Omega-Rule Problem**: Proving `(forall s < t, psi in mcs(s)) -> H psi in mcs(t)`
-requires deriving `H psi` from infinitely many instances of `psi`. Standard proof systems
-(including TM logic) lack this "omega-rule". The IndexedMCSFamily coherence conditions
-only guarantee the CONVERSE direction.
+**Core Lemmas (both have sorry)**:
+- `H_completeness`: `(∀ s < t, psi ∈ mcs(s)) → H psi ∈ mcs(t)`
+- `G_completeness`: `(∀ s > t, psi ∈ mcs(s)) → G psi ∈ mcs(t)`
 
-## Core Problem
+**Why These Cannot Be Proven**:
+Standard proof systems (including TM logic) lack the "omega-rule" needed to derive
+`H psi` from infinitely many instances of `psi`. The IndexedMCSFamily coherence
+conditions only guarantee the CONVERSE direction (H psi → psi at past times).
 
-The backward Truth Lemma needs to prove:
-- `(forall s <= t, truth_at s psi) -> H psi in mcs(t)`
-- `(forall s >= t, truth_at s psi) -> G psi in mcs(t)`
+## Alternative Approaches Analyzed
 
-The proof strategy uses the **contrapositive**:
-1. Assume `H psi not-in mcs(t)`
-2. Extract a witness: `exists s < t. psi not-in mcs(s)`
-3. Use forward IH + negation completeness to get contradiction
+Task 741 (research-002.md) analyzed all alternatives - all are blocked:
+1. **Construction-specific proof**: Lindenbaum is non-deterministic
+2. **Semantic bridge**: Circular (would need backward Truth Lemma)
+3. **Negation duality**: Doesn't extract witnesses
+4. **Finite approximation**: Needs TM compactness (unavailable)
 
-Step 2 requires "H-completeness", which is blocked by the omega-rule issue.
+## Original Location
 
-## Architectural Options for Future Work
-
-1. **Extend IndexedMCSFamily**: Add H/G-completeness as axioms in the structure
-2. **Construction-specific proof**: Prove for specific constructions (e.g., CoherentConstruction)
-3. **Semantic bridge**: Use canonical model truth to derive membership (may be circular)
-4. **Finite witness bounds**: For bounded domains, the omega-rule becomes finite
-
-## Main Definitions
-
-- `H_completeness`: If psi in every past MCS, then H psi in current MCS (SORRY)
-- `G_completeness`: Symmetric for future direction (SORRY)
-- `witness_from_not_H`: Corollary - direct witness extraction (depends on H_completeness)
-- `witness_from_not_G`: Symmetric for future direction (depends on G_completeness)
+`Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean`
+- Removed in Task 745 (2026-01-29)
+- TruthLemma.lean import removed
+- Backward temporal cases now documented as architectural limitation
 
 ## References
 
-- Research: specs/741_.../reports/research-001.md (Approach analysis)
-- Plan: specs/741_.../plans/implementation-001.md
-- Boneyard: Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean
-- TruthLemma.lean backward temporal cases: lines 423, 441
+- Task 741: specs/741_witness_extraction_architecture_for_backward_truth_lemma/
+- Task 745: specs/745_move_backward_truth_lemma_to_boneyard/
+- BackwardDirection.lean: Theories/Bimodal/Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean
 -/
 
-namespace Bimodal.Metalogic.Representation
+namespace Bimodal.Metalogic.Representation.Boneyard
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Representation
 
 variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
@@ -84,7 +77,7 @@ The IndexedMCSFamily coherence only guarantees:
 It does NOT guarantee the converse. Proving the converse requires deriving H psi
 from infinitely many psi instances, which needs an omega-rule that TM logic lacks.
 
-**Potential Solutions**:
+**Potential Solutions** (all blocked per Task 741 research):
 1. Add H/G-completeness as axioms to IndexedMCSFamily structure
 2. Prove for specific constructions (CoherentConstruction over Z)
 3. Use finite domain restriction where omega becomes finite conjunction
@@ -175,4 +168,4 @@ lemma witness_from_not_G (family : IndexedMCSFamily D) (t : D) (psi : Formula)
   have h_G := G_completeness D family t psi h_no_witness
   exact h_not_G h_G
 
-end Bimodal.Metalogic.Representation
+end Bimodal.Metalogic.Representation.Boneyard
