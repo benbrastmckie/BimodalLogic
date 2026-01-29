@@ -183,6 +183,11 @@
           "path": "specs/624_prove_tableau_complete/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing tableau_complete proof requirements, comparing Metalogic vs Metalogic_v2 infrastructure"
+        },
+        {
+          "path": "specs/624_prove_tableau_complete/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for proving tableau_complete theorem connecting FMP to tableau termination"
         }
       ],
       "planned": "2026-01-29T13:49:51Z"
