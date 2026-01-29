@@ -55,7 +55,7 @@
       "description": "Complete phase 3 of task 660: Finite Model Property Port. Port FMP to parametric architecture with explicit cardinality bounds on finite models. This provides decidability foundation (orthogonal to completeness chain). Follow-up from task #660.",
       "parent_task": 660,
       "created": "2026-01-29T04:05:03Z",
-      "last_updated": "2026-01-29T13:48:35Z",
+      "last_updated": "2026-01-29T14:00:07Z",
       "session_id": "sess_1769694325_69312e",
       "researched": "2026-01-29T13:18:58Z",
       "artifacts": [
@@ -70,12 +70,12 @@
           "summary": "FMP/decidability dependency map: relationship between FMP, tableau methods, parametric architecture, and decidability chain with porting recommendations"
         },
         {
-          "path": "specs/738_port_fmp_to_parametric_architecture/plans/implementation-001.md",
+          "path": "specs/738_port_fmp_to_parametric_architecture/plans/implementation-002.md",
           "type": "plan",
-          "summary": "5-phase plan covering Closure port, FiniteWorldState port, SemanticCanonicalModel port, FMP theorems, and integration"
+          "summary": "6-phase parametric FMP port (Option A): Closure, BoundedTime abstraction, FiniteWorldState, SemanticCanonicalModel, FMP theorems, integration"
         }
       ],
-      "planned": "2026-01-29T13:48:35Z"
+      "planned": "2026-01-29T14:00:07Z"
     },
     {
       "project_number": 659,

@@ -213,14 +213,14 @@ technical_debt:
 ## Low Priority
 
 ### 738. Port FMP to parametric architecture
-- **Effort**: 6-8 hours
+- **Effort**: 10-14 hours
 - **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Parent Task**: 660
 - **Research**: [research-001.md](specs/738_port_fmp_to_parametric_architecture/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/738_port_fmp_to_parametric_architecture/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/738_port_fmp_to_parametric_architecture/plans/implementation-002.md) (v002 - Option A)
 
 **Description**: Complete phase 3 of task 660: Finite Model Property Port. Port FMP to parametric architecture with explicit cardinality bounds on finite models. This provides decidability foundation (orthogonal to completeness chain). Follow-up from task #660.
 
