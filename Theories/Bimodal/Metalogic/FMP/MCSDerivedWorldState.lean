@@ -220,4 +220,101 @@ theorem mcs_contains_or_neg (phi : Formula) (w : MCSDerivedSemanticWorldState ph
     psi ∈ w.underlying_mcs ∨ psi.neg ∈ w.underlying_mcs := by
   exact closure_mcs_neg_complete phi w.underlying_mcs w.underlying_mcs_proof psi h_mem
 
+/-!
+## MCS Truth Correspondence: Modal Cases
+
+The box operator has an architectural limitation in the current semantic framework.
+The semantics define:
+  `truth_at M tau t (box psi) = forall sigma : WorldHistory, truth_at M sigma t psi`
+
+This quantifies over ALL world histories, not just those going through MCS-derived states.
+As a result, the MCS truth lemma cannot be proven for box without changing the semantics.
+
+The limitation is documented in `SemanticCanonicalModel.lean` lines 627-684.
+-/
+
+/--
+For MCS-derived states with box in closure, the assignment reflects MCS membership.
+
+NOTE: This does NOT prove truth_at = assignment for box, because truth_at (box psi)
+quantifies over ALL histories while assignment only checks MCS membership.
+The MCS might have box psi = false while some histories make truth_at (box psi) true
+(or vice versa).
+
+This lemma is provided for completeness of the API but should be used with care.
+-/
+theorem mcs_box_in_closure_iff_in_mcs (phi : Formula) (w : MCSDerivedSemanticWorldState phi)
+    (psi : Formula) (h_box_mem : Formula.box psi ∈ closure phi) :
+    w.models (Formula.box psi) h_box_mem ↔ Formula.box psi ∈ w.underlying_mcs := by
+  rw [← w.underlying_world_state_models_iff (Formula.box psi) h_box_mem]
+
+/-!
+## MCS Truth Correspondence: Temporal Cases
+
+For temporal operators, the semantics quantify over times within the SAME history,
+which makes the truth lemma provable for MCS-derived constant histories.
+-/
+
+/--
+For MCS-derived states with all_future in closure, the assignment reflects MCS membership.
+-/
+theorem mcs_all_future_in_closure_iff_in_mcs (phi : Formula) (w : MCSDerivedSemanticWorldState phi)
+    (psi : Formula) (h_mem : Formula.all_future psi ∈ closure phi) :
+    w.models (Formula.all_future psi) h_mem ↔ Formula.all_future psi ∈ w.underlying_mcs := by
+  rw [← w.underlying_world_state_models_iff (Formula.all_future psi) h_mem]
+
+/--
+For MCS-derived states with all_past in closure, the assignment reflects MCS membership.
+-/
+theorem mcs_all_past_in_closure_iff_in_mcs (phi : Formula) (w : MCSDerivedSemanticWorldState phi)
+    (psi : Formula) (h_mem : Formula.all_past psi ∈ closure phi) :
+    w.models (Formula.all_past psi) h_mem ↔ Formula.all_past psi ∈ w.underlying_mcs := by
+  rw [← w.underlying_world_state_models_iff (Formula.all_past psi) h_mem]
+
+/-!
+## Combined Truth Correspondence
+
+The MCS truth correspondence theorem establishes that for MCS-derived states,
+the semantic_truth_at_v2 check equals MCS membership for formulas in the closure.
+
+NOTE: This does NOT establish equality with truth_at (the recursive evaluation).
+The gap is explained in the module docstring and applies specifically to:
+- Box: truth_at quantifies over ALL histories
+- Temporal: truth_at quantifies over times, which may exceed the bounded domain
+-/
+
+/--
+MCS semantic truth equals MCS membership.
+
+For any formula psi in the closure of phi, an MCS-derived state has
+semantic_truth_at_v2 equal to MCS membership.
+
+This is the key lemma that `semantic_weak_completeness` uses implicitly.
+-/
+theorem mcs_semantic_truth_iff_in_mcs (phi : Formula) (w : MCSDerivedSemanticWorldState phi)
+    (psi : Formula) (h_mem : psi ∈ closure phi) :
+    semantic_truth_at_v2 phi w.state (BoundedTime.origin (temporalBound phi)) psi ↔
+    psi ∈ w.underlying_mcs := by
+  unfold semantic_truth_at_v2
+  -- The key connection is w.derivation_proof : w.state.toFiniteWorldState = worldStateFromClosureMCS ...
+  constructor
+  · intro ⟨h_mem', h_models⟩
+    -- h_models : w.state.toFiniteWorldState.models psi h_mem'
+    -- We need: psi ∈ w.underlying_mcs
+    -- First, transport h_models through derivation_proof
+    have h_models' : (worldStateFromClosureMCS phi w.underlying_mcs w.underlying_mcs_proof).models psi h_mem' := by
+      convert h_models using 2
+      exact w.derivation_proof.symm
+    -- Now use worldStateFromClosureMCS_models_iff
+    exact (worldStateFromClosureMCS_models_iff phi w.underlying_mcs w.underlying_mcs_proof psi h_mem').mpr h_models'
+  · intro h_in_mcs
+    refine ⟨h_mem, ?_⟩
+    -- Need: w.state.toFiniteWorldState.models psi h_mem
+    -- First, get models via worldStateFromClosureMCS_models_iff
+    have h_models : (worldStateFromClosureMCS phi w.underlying_mcs w.underlying_mcs_proof).models psi h_mem :=
+      (worldStateFromClosureMCS_models_iff phi w.underlying_mcs w.underlying_mcs_proof psi h_mem).mp h_in_mcs
+    -- Now transport through derivation_proof
+    convert h_models using 2
+    exact w.derivation_proof
+
 end Bimodal.Metalogic.FMP

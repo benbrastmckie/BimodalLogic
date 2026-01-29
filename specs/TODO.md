@@ -1,5 +1,5 @@
 ---
-next_project_number: 762
+next_project_number: 764
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -160,6 +160,28 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/744_update_documentation_lean_agent_architecture/plans/implementation-001.md)
 
 **Description**: Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.
+
+---
+
+### 762. Fix planner-agent to enforce Status field in plan metadata
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+
+**Description**: Move plan-format.md from "Load When Creating Plan" to "Always Load" section in planner-agent.md (line 43). Add explicit verification step in Stage 5 (around line 173) to ensure Status field exists in plan file before writing success metadata. Evidence: Task 750's v005 plan missing Status line while older plans (758, 759, 741) have it.
+
+---
+
+### 763. Add plan status updates to skill-lean-implementation
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+
+**Description**: Add plan status update pattern (sed commands to update `- **Status**: [...]` line) to skill-lean-implementation/SKILL.md in three locations: (1) Stage 2 Preflight: Update to [IMPLEMENTING] before invoking agent, (2) Stage 7 Postflight (implemented): Update to [COMPLETED], (3) Stage 7 Postflight (partial): Update to [PARTIAL]. Pattern exists in skill-implementer (lines 91-98, 265-271, 287-293), skill-latex-implementation (lines 70-76, 282-288, 304-310), skill-typst-implementation (lines 70-76, 282-288, 304-310).
 
 ---
 
