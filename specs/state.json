@@ -8,13 +8,14 @@
     {
       "project_number": 732,
       "project_name": "complete_630_phase4_truth_lemma_proof",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Complete phase 4 of task 630: Prove mem_extractTrueAtomSet_iff helper lemma. This establishes that p ∈ extractTrueAtomSet b ↔ SignedFormula.pos (.atom p) ∈ b. The proof is mechanical (induction on branch with case splits on Formula constructors: atom, bot, imp, box, all_past, all_future for both pos and neg signs). Currently has sorry at Theories/Bimodal/Boneyard/Metalogic_v2/Decidability/BranchTaskModel.lean:269. (Follow-up from task #630)",
       "parent_task": 630,
       "created": "2026-01-29T00:41:08Z",
-      "last_updated": "2026-01-29T00:41:08Z"
+      "last_updated": "2026-01-29T00:42:59Z",
+      "session_id": "sess_1769647364_7e1309"
     },
     {
       "project_number": 658,
@@ -513,13 +514,21 @@
     {
       "project_number": 685,
       "project_name": "derive_world_history_and_barcan_theorems",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-26T04:45:00Z",
-      "last_updated": "2026-01-29T00:40:41Z",
+      "last_updated": "2026-01-29T00:43:32Z",
       "description": "Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.",
-      "session_id": "sess_1769647223_f805de"
+      "session_id": "sess_1769647223_f805de",
+      "researched": "2026-01-29T00:43:32Z",
+      "artifacts": [
+        {
+          "path": "specs/685_derive_world_history_and_barcan_theorems/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on Evolution/WorldHistory containment theorem and Barcan formula proofs for Logos Dynamics"
+        }
+      ]
     },
     {
       "project_number": 700,

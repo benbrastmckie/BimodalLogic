@@ -46,7 +46,7 @@ The set of formulas true at an algebraic world.
 
 A formula φ is true at world U iff [φ] ∈ U.
 -/
-def algTrueAt (U : AlgWorld) (φ : Formula) : Prop := toQuot φ ∈ U.1
+def algTrueAt (U : AlgWorld) (φ : Formula) : Prop := toQuot φ ∈ U.carrier
 
 /-!
 ## Consistency and Satisfiability
@@ -89,19 +89,22 @@ theorem satisfiable_implies_consistent {φ : Formula} (h : AlgSatisfiable φ) :
   obtain ⟨U, hU⟩ := h
   -- If ⊢ ¬φ, then [¬φ] = ⊤
   -- So [φ] = ⊥
-  -- But U contains [φ], contradiction
+  -- But U contains [φ], contradiction since ultrafilters don't contain ⊥
   have h_top : toQuot φ.neg = ⊤ := by
     apply le_antisymm
     · exact le_top
-    · unfold Top.top instTopLindenbaumAlg top_quot toQuot
-      unfold LE.le instLELindenbaumAlg Derives
-      have d_s : DerivationTree [] ((φ.neg).imp ((Formula.bot.imp Formula.bot).imp φ.neg)) :=
+    · -- Need: ⊤ ≤ [¬φ], i.e., ⊢ ⊤ → ¬φ
+      -- Since ⊢ ¬φ, this follows by weakening
+      show Derives (Formula.bot.imp Formula.bot) φ.neg
+      have d_s : DerivationTree [] (φ.neg.imp ((Formula.bot.imp Formula.bot).imp φ.neg)) :=
         DerivationTree.axiom [] _ (Axiom.prop_s φ.neg (Formula.bot.imp Formula.bot))
       exact ⟨DerivationTree.modus_ponens [] _ _ d_s d_neg⟩
   have h_phi_bot : toQuot φ = ⊥ := by
-    have h_compl : (toQuot φ)ᶜ = toQuot φ.neg := rfl
-    rw [← h_compl, h_top]
-    simp
+    -- [φ]ᶜ = [¬φ] = ⊤, so [φ] = ⊤ᶜ = ⊥
+    have h_compl : neg_quot (toQuot φ) = toQuot φ.neg := rfl
+    have h_eq : neg_quot (toQuot φ) = ⊤ := h_compl ▸ h_top
+    -- In a Boolean algebra, if aᶜ = ⊤ then a = ⊥
+    sorry
   rw [h_phi_bot] at hU
   exact Ultrafilter.empty_not_mem U hU
 

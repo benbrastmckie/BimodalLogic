@@ -35,7 +35,7 @@
               v                               |
     FINITE-PREMISE STRONG                     |
     COMPLETENESS                              |
-    (Γ_finite ⊨ φ → Γ ⊢ φ)                   |
+    (Γ_finite ⊨ φ → Γ ⊢ φ)                    |
               |                               |
               +---------------+---------------+
                               |
