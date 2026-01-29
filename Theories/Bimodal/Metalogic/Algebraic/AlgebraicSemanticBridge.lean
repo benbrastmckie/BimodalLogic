@@ -157,6 +157,35 @@ ultrafilters via the interior operator properties.
 -/
 
 /-!
+## Valuation Coherence
+
+The key property linking algebraic and semantic truth for atoms:
+valuation says p is true at U iff [p] ∈ U.
+-/
+
+/--
+Valuation coherence: the algebraic valuation matches ultrafilter membership.
+
+This is immediate from the definition of `algValuation`.
+-/
+theorem valuation_coherence (U : AlgWorld) (p : String) :
+    algModel.valuation U p ↔ toQuot (Formula.atom p) ∈ U.carrier := by
+  rfl
+
+/--
+States in algHistory at time 0 are the ultrafilter U itself.
+-/
+theorem algHistory_states_eq (U : AlgWorld) (t : ℤ) (ht : (algHistory U).domain t) :
+    (algHistory U).states t ht = U := by
+  rfl
+
+/--
+The domain of algHistory is universal (all integers).
+-/
+theorem algHistory_domain (U : AlgWorld) (t : ℤ) : (algHistory U).domain t := by
+  exact True.intro
+
+/-!
 ## Type Infrastructure Summary
 
 We have defined:

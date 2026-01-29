@@ -3,6 +3,7 @@ import Bimodal.Metalogic.Algebraic.BooleanStructure
 import Bimodal.Metalogic.Algebraic.InteriorOperators
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 import Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
+import Bimodal.Metalogic.Algebraic.AlgebraicSemanticBridge
 
 /-!
 # Algebraic Representation Theorem
@@ -14,11 +15,12 @@ as an alternative to the seed-extension approach in CoherentConstruction.lean.
 
 ```
 Algebraic/
-├── LindenbaumQuotient.lean   # Quotient construction via provable equivalence
-├── BooleanStructure.lean     # Boolean algebra instance
-├── InteriorOperators.lean    # G/H as interior operators (using T-axioms)
-├── UltrafilterMCS.lean       # Bijection: ultrafilters ↔ MCS
-└── AlgebraicRepresentation.lean  # Main theorem
+├── LindenbaumQuotient.lean      # Quotient construction via provable equivalence
+├── BooleanStructure.lean        # Boolean algebra instance
+├── InteriorOperators.lean       # G/H as interior operators (using T-axioms)
+├── UltrafilterMCS.lean          # Bijection: ultrafilters ↔ MCS
+├── AlgebraicRepresentation.lean # Main theorem
+└── AlgebraicSemanticBridge.lean # Bridge to standard Kripke semantics
 ```
 
 ## Mathematical Overview
@@ -65,5 +67,6 @@ open Bimodal.Metalogic.Algebraic.BooleanStructure
 open Bimodal.Metalogic.Algebraic.InteriorOperators
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
 open Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
+open Bimodal.Metalogic.Algebraic.AlgebraicSemanticBridge
 
 end Bimodal.Metalogic.Algebraic
