@@ -1,16 +1,16 @@
 ---
-next_project_number: 751
+next_project_number: 752
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 14
+  active: 15
   completed: 312
   in_progress: 4
-  not_started: 5
+  not_started: 6
   abandoned: 21
-  total: 340
+  total: 341
 priority_distribution:
   critical: 0
   high: 4
@@ -142,9 +142,20 @@ technical_debt:
 
 ---
 
+### 751. Enhance /review with grouped interactive task proposals
+- **Effort**: 8-10 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+
+**Description**: Modify the /review command to always conclude with an interactive task proposal experience. Currently, task creation requires the --create-tasks flag and presents a flat numbered list. This task implements intelligent task grouping and interactive selection across 3 phases: (1) Task Grouping Logic - implement algorithm to cluster related issues by file/component area, type of fix, and priority level; (2) Interactive Selection Interface - modify Section 5.5 to always display grouped task proposals with checkboxes for groups and individual tasks; (3) Task Creation Integration - wire selected tasks to actual creation with proper dependency linking.
+
+---
+
 ### 746. Improve Bimodal/Metalogic source comments
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29

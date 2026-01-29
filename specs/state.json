@@ -26,12 +26,12 @@
     {
       "project_number": 746,
       "project_name": "improve_bimodal_metalogic_source_comments",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T14:47:56Z",
-      "session_id": "sess_1769697897_a93d54",
+      "last_updated": "2026-01-29T14:51:00Z",
+      "session_id": "sess_1769698249_7e6060",
       "researched": "2026-01-29T14:47:56Z",
       "artifacts": [
         {
@@ -598,6 +598,17 @@
         742,
         743
       ]
+    },
+    {
+      "project_number": 751,
+      "project_name": "enhance_review_with_grouped_interactive_task_proposals",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-29T14:51:49Z",
+      "last_updated": "2026-01-29T14:51:49Z",
+      "description": "Modify the /review command to always conclude with an interactive task proposal experience. Currently, task creation requires the --create-tasks flag and presents a flat numbered list. This task implements intelligent task grouping and interactive selection across 3 phases: (1) Task Grouping Logic - implement algorithm to cluster related issues by file/component area, type of fix, and priority level; (2) Interactive Selection Interface - modify Section 5.5 to always display grouped task proposals with checkboxes for groups and individual tasks; (3) Task Creation Integration - wire selected tasks to actual creation with proper dependency linking.",
+      "effort": "8-10 hours"
     }
   ],
   "completed_projects": [
@@ -612,7 +623,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 751,
+  "next_project_number": 752,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
