@@ -99,6 +99,11 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md",
           "type": "research",
           "summary": "Semantic gap analysis between algebraic representation and Kripke semantics - confirms gap exists but is architectural, not problematic"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-007.md",
+          "type": "research",
+          "summary": "Relationship analysis between tasks 749 and 750 - confirms 749 should proceed as independent FMP path to sorry-free completeness"
         }
       ],
       "planned": "2026-01-29T15:31:46Z"
