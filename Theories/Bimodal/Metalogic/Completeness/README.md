@@ -1,5 +1,7 @@
 # Completeness Theorem Hierarchy
 
+**Status**: Self-Contained (No Boneyard Dependencies)
+
 This directory contains the completeness hierarchy for TM bimodal logic, progressing from weak completeness through finite-premise strong completeness to infinitary strong completeness.
 
 ## Overview
@@ -13,52 +15,68 @@ The proof proceeds via contraposition using the representation theorem from the 
 | Module | Purpose | Status |
 |--------|---------|--------|
 | `Completeness.lean` | Module root, re-exports hierarchy | Complete |
-| `WeakCompleteness.lean` | Weak completeness: valid implies provable | Proven |
-| `FiniteStrongCompleteness.lean` | Strong completeness for List-based contexts | Proven |
-| `InfinitaryStrongCompleteness.lean` | Strong completeness for Set-based contexts | Proven |
+| `WeakCompleteness.lean` | Weak completeness: valid implies provable | **Sorry-free** |
+| `FiniteStrongCompleteness.lean` | Strong completeness for List-based contexts | **Sorry-free** |
+| `InfinitaryStrongCompleteness.lean` | Strong completeness for Set-based contexts | **Sorry-free** |
+
+## Dependency Flowchart
+
+```
+           Representation/
+           representation_theorem
+                   │
+                   v
+        WeakCompleteness.lean
+                   │
+                   v
+    FiniteStrongCompleteness.lean
+                   │
+                   v
+  InfinitaryStrongCompleteness.lean
+```
 
 ## Key Theorems
 
 ### Weak Completeness (`WeakCompleteness.lean`)
 
 ```lean
-theorem weak_completeness (phi : Formula) :
-    valid phi -> ContextDerivable [] phi
+theorem weak_completeness (φ : Formula) :
+    valid φ → ContextDerivable [] φ
 
-theorem provable_iff_valid (phi : Formula) :
-    ContextDerivable [] phi <-> valid phi
+theorem provable_iff_valid (φ : Formula) :
+    ContextDerivable [] φ ↔ valid φ
 ```
 
 Every valid formula is provable (from the empty context).
 
 **Proof Strategy**: Contrapositive using the representation theorem:
-1. Assume phi is not provable
-2. Then {neg phi} is consistent
-3. By representation theorem, {neg phi} is satisfiable
-4. Therefore neg phi is true somewhere, so phi is not valid
+1. Assume φ is not provable
+2. Then {¬φ} is consistent
+3. By representation theorem, {¬φ} is satisfiable
+4. Therefore ¬φ is true somewhere, so φ is not valid
 
 ### Finite-Premise Strong Completeness (`FiniteStrongCompleteness.lean`)
 
 ```lean
-theorem finite_strong_completeness (Gamma : Context) (phi : Formula) :
-    semantic_consequence Gamma phi -> ContextDerivable Gamma phi
+theorem finite_strong_completeness (Gamma : Context) (φ : Formula) :
+    semantic_consequence Gamma φ → ContextDerivable Gamma φ
 
-theorem context_provable_iff_entails (Gamma : Context) (phi : Formula) :
-    ContextDerivable Gamma phi <-> semantic_consequence Gamma phi
+theorem context_provable_iff_entails (Gamma : Context) (φ : Formula) :
+    ContextDerivable Gamma φ ↔ semantic_consequence Gamma φ
 ```
 
 Extends weak completeness to List-based contexts via the deduction theorem.
 
 **Key Construction**:
 - `impChain`: Builds implication chain from context to formula
-- `impChain Gamma phi = psi_1 -> (psi_2 -> ... -> (psi_n -> phi)...)`
+- `impChain Gamma φ = ψ₁ → (ψ₂ → ... → (ψₙ → φ)...)`
 
 ### Infinitary Strong Completeness (`InfinitaryStrongCompleteness.lean`)
 
 ```lean
-theorem infinitary_strong_completeness (Gamma : Set Formula) (phi : Formula) :
-    set_semantic_consequence Gamma phi ->
-    exists (Delta : Finset Formula), Delta.toSet ⊆ Gamma /\ ContextDerivable Delta.toList phi
+theorem infinitary_strong_completeness (Gamma : Set Formula) (φ : Formula) :
+    set_semantic_consequence Gamma φ →
+    ∃ (Delta : Finset Formula), Delta.toSet ⊆ Gamma ∧ ContextDerivable Delta.toList φ
 ```
 
 Every Set-based semantic consequence has a finite derivation witness.
@@ -71,25 +89,18 @@ Every Set-based semantic consequence has a finite derivation witness.
 
 ```
                       COMPLETENESS THEOREM
-                              |
+                              │
                               v
-           +------------------+------------------+
-           |                  |                  |
+           ┌──────────────────┼──────────────────┐
+           │                  │                  │
            v                  v                  v
     weak_completeness   finite_strong    infinitary_strong
-           |              completeness      completeness
-           |                  |                  |
+           │              completeness      completeness
+           │                  │                  │
            v                  v                  v
     representation      deduction_theorem   Lindenbaum +
        theorem                              MCS extension
 ```
-
-## Dependencies
-
-- **Representation Theorem**: `Bimodal.Metalogic.Representation.representation_theorem`
-- **Deduction Theorem**: `Bimodal.Metalogic.Core.DeductionTheorem`
-- **MCS Theory**: `Bimodal.Metalogic.Core.MCSProperties`
-- **Soundness**: Axiomatized pending Boneyard migration
 
 ## Design Notes
 
@@ -99,12 +110,19 @@ Every Set-based semantic consequence has a finite derivation witness.
 2. **Finite-premise strong** handles proofs from finite assumption sets (practical reasoning)
 3. **Infinitary strong** enables the compactness theorem via finite witness extraction
 
-### Soundness Dependency
+### Soundness Integration
 
-The bidirectional equivalences (e.g., `provable_iff_valid`) require soundness. Soundness is axiomatized with sorry pending Boneyard migration; the one-directional completeness theorems do not require it.
+The bidirectional equivalences (e.g., `provable_iff_valid`) use the soundness theorem from `../Soundness/`. The soundness theorem is now self-contained (migrated from Boneyard).
+
+## Dependencies
+
+- **Representation**: `representation_theorem` (canonical model satisfiability)
+- **Soundness**: `soundness` (derivability implies validity)
+- **Core**: `deduction_theorem`, MCS properties
 
 ## Related Files
 
+- `../Soundness/README.md` - Soundness theorem (used for iff statements)
 - `../Representation/README.md` - Representation theorem implementation
 - `../Compactness/README.md` - Compactness theorem (uses infinitary completeness)
 - `../Core/README.md` - MCS and deduction theorem foundations
@@ -112,7 +130,6 @@ The bidirectional equivalences (e.g., `provable_iff_valid`) require soundness. S
 ## References
 
 - Modal Logic, Blackburn et al., Chapter 4 (Completeness via Canonical Models)
-- Research report: specs/654_.../reports/research-004.md (indexed family approach)
 
 ---
 

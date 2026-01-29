@@ -54,7 +54,6 @@ namespace Bimodal.Metalogic.FMP
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic.Core Bimodal.Metalogic.Completeness
-open Bimodal.Metalogic_v2.Representation
 
 /-!
 ## Finite Model Property Statement

@@ -1,5 +1,7 @@
 # Compactness Theorem
 
+**Status**: Self-Contained (No Boneyard Dependencies)
+
 This directory contains the compactness theorem for TM bimodal logic.
 
 ## Overview
@@ -10,7 +12,7 @@ The compactness theorem establishes that a (possibly infinite) set of formulas i
 
 | Module | Purpose | Status |
 |--------|---------|--------|
-| `Compactness.lean` | Compactness theorem and variants | Proven |
+| `Compactness.lean` | Compactness theorem and variants | **Sorry-free** |
 
 ## Key Theorems
 
@@ -18,7 +20,7 @@ The compactness theorem establishes that a (possibly infinite) set of formulas i
 
 ```lean
 theorem compactness (Gamma : Set Formula) :
-    (forall (Delta : Finset Formula), Delta.toSet ⊆ Gamma -> set_satisfiable Delta.toSet) ->
+    (∀ (Delta : Finset Formula), Delta.toSet ⊆ Gamma → set_satisfiable Delta.toSet) →
     set_satisfiable Gamma
 ```
 
@@ -28,16 +30,16 @@ If every finite subset of Gamma is satisfiable, then Gamma is satisfiable.
 
 ```lean
 theorem compactness_iff (Gamma : Set Formula) :
-    set_satisfiable Gamma <->
-    forall (Delta : Finset Formula), Delta.toSet ⊆ Gamma -> set_satisfiable Delta.toSet
+    set_satisfiable Gamma ↔
+    ∀ (Delta : Finset Formula), Delta.toSet ⊆ Gamma → set_satisfiable Delta.toSet
 ```
 
 ### Compactness for Entailment
 
 ```lean
-theorem compactness_entailment (Gamma : Set Formula) (phi : Formula) :
-    set_semantic_consequence Gamma phi ->
-    exists (Delta : Finset Formula), Delta.toSet ⊆ Gamma /\ set_semantic_consequence Delta.toSet phi
+theorem compactness_entailment (Gamma : Set Formula) (φ : Formula) :
+    set_semantic_consequence Gamma φ →
+    ∃ (Delta : Finset Formula), Delta.toSet ⊆ Gamma ∧ set_semantic_consequence Delta.toSet φ
 ```
 
 Semantic consequence from infinite sets always has a finite witness.
@@ -46,8 +48,8 @@ Semantic consequence from infinite sets always has a finite witness.
 
 ```lean
 theorem compactness_unsatisfiability (Gamma : Set Formula) :
-    not (set_satisfiable Gamma) ->
-    exists (Delta : Finset Formula), Delta.toSet ⊆ Gamma /\ not (set_satisfiable Delta.toSet)
+    ¬set_satisfiable Gamma →
+    ∃ (Delta : Finset Formula), Delta.toSet ⊆ Gamma ∧ ¬set_satisfiable Delta.toSet
 ```
 
 Unsatisfiability of infinite sets always has a finite witness.
@@ -58,28 +60,28 @@ The proof uses contraposition via infinitary strong completeness:
 
 1. Assume every finite subset of Gamma is satisfiable
 2. Suppose (for contradiction) Gamma is not satisfiable
-3. Then Gamma |= bot (false is a semantic consequence of Gamma)
-4. By infinitary strong completeness: some finite Delta ⊆ Gamma derives bot
+3. Then Gamma ⊨ ⊥ (false is a semantic consequence of Gamma)
+4. By infinitary strong completeness: some finite Delta ⊆ Gamma derives ⊥
 5. By soundness: Delta is unsatisfiable
 6. Contradiction with assumption
 
 ```
              Compactness
-                  |
+                  │
                   v
     Infinitary Strong Completeness
-                  |
-         +--------+--------+
-         |                 |
-         v                 v
-    Lindenbaum         Soundness
-       Lemma           (axiomatized)
+                  │
+         ┌───────┴───────┐
+         │               │
+         v               v
+    Lindenbaum       Soundness
+       Lemma
 ```
 
 ## Dependencies
 
 - **Infinitary Strong Completeness**: `Bimodal.Metalogic.Completeness.InfinitaryStrongCompleteness`
-- **Soundness**: Axiomatized pending Boneyard migration
+- **Soundness**: `Bimodal.Metalogic.Soundness.soundness` (now self-contained)
 
 ## Design Notes
 
@@ -101,13 +103,13 @@ Compactness enables:
 ## Related Files
 
 - `../Completeness/README.md` - Infinitary strong completeness (prerequisite)
+- `../Soundness/README.md` - Soundness theorem (prerequisite)
 - `../Representation/README.md` - Representation theorem (foundation for completeness)
 - `../README.md` - Overall metalogic architecture
 
 ## References
 
 - Modal Logic, Blackburn et al., Chapter 4 (Compactness)
-- Research report: specs/654_.../reports/research-004.md
 
 ---
 

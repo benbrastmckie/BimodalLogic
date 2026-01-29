@@ -1,76 +1,90 @@
--- Metalogic: Universal Parametric Canonical Model for TM Logic
+-- Metalogic: TM Bimodal Logic Metalogic Infrastructure
+-- Self-contained (no Boneyard dependencies)
 
--- Finite Model Property infrastructure
+-- Finite Model Property infrastructure (includes all subdirectory dependencies)
 import Bimodal.Metalogic.FMP
 
 /-!
-# Universal Parametric Canonical Model
+# TM Bimodal Logic Metalogic
 
-This module implements a purely syntactic representation theorem approach
-using a universal parametric canonical model construction.
+This module provides the complete metalogic infrastructure for TM bimodal logic,
+including soundness, completeness, representation theorems, and the finite model property.
+
+**Status**: Self-contained (NO Boneyard dependencies as of 2026-01-29)
 
 ## Architecture
 
+The metalogic is organized into 7 subdirectories:
+
 ```
-Core/                    # MCS theory, provability
-├── MaximalConsistent.lean
-├── Provability.lean
-└── Basic.lean
-
-Representation/          # Canonical model construction
-├── CanonicalWorld.lean
-├── TaskRelation.lean
-├── CanonicalHistory.lean
-├── TruthLemma.lean
-├── UniversalCanonicalModel.lean
-└── RepresentationTheorem.lean
-
-FMP/                     # Finite Model Property (Parametric)
-├── Closure.lean
-├── BoundedTime.lean
-├── FiniteWorldState.lean
-├── SemanticCanonicalModel.lean
-└── FiniteModelProperty.lean
+Metalogic/
+├── Core/              # Foundational definitions and MCS theory
+├── Soundness/         # Soundness theorem (15 axioms, 7 rules)
+├── Representation/    # Canonical model construction
+├── FMP/               # Finite Model Property (parametric)
+├── Completeness/      # Weak completeness theorem
+├── Compactness/       # Compactness theorem
+└── Algebraic/         # Alternative algebraic approach (future extension)
 ```
 
-## Key Features
+## Dependency Layers
 
-- **Universal**: Parametric over ANY totally ordered additive commutative group D
-- **Syntactic**: Builds semantic objects from pure syntax (MCS membership)
-- **Compositional**: Task relation satisfies nullity and compositionality by construction
-- **Type-theoretic**: Uses Lean 4 typeclasses for algebraic structure
+```
+Layer 1 (Foundations):
+    Core/
+      │
+Layer 2 (Proof Theory):
+    Soundness/
+      │
+Layer 3 (Model Theory):
+    Representation/
+      │
+Layer 4 (Finiteness):
+    FMP/
+      │
+Layer 5 (Results):
+    Completeness/ ── Compactness/
+      │
+Layer 6 (Extensions):
+    Algebraic/
+```
 
 ## Main Results
 
-- `CanonicalWorld D`: MCS paired with abstract time point from D
-- `canonical_task_rel`: Task relation defined via D's algebraic operations
-- `UniversalCanonicalFrame D : TaskFrame D`: Valid frame for any D
-- `UniversalCanonicalModel D : TaskModel (UniversalCanonicalFrame D)`
-- `representation_theorem`: Consistent formulas satisfiable in canonical model
+### Soundness (`Soundness/`)
+```lean
+theorem soundness : (Gamma ⊢ φ) → (Gamma ⊨ φ)
+```
+Derivability implies semantic validity. All 15 TM axioms and 7 derivation rules proven sound.
 
-## FMP Results
+### Representation (`Representation/`)
+```lean
+theorem representation_theorem : SetConsistent {φ} → satisfiable φ
+```
+Consistent formulas are satisfiable in the universal canonical model.
 
-- `finite_model_property`: If φ satisfiable → φ has finite model
-- `semanticWorldState_card_bound`: |worlds| ≤ 2^closureSize
-- `semantic_weak_completeness`: (∀ w, truth w φ) → ⊢ φ (sorry-free)
+### Finite Model Property (`FMP/`)
+```lean
+theorem finite_model_property : satisfiable φ → ∃ finite_model, satisfiable_in φ
+theorem semanticWorldState_card_bound : card worlds ≤ 2^closureSize
+```
 
-## Canonical Completeness Result
+### Weak Completeness (`Completeness/`)
+```lean
+theorem weak_completeness : valid φ → ContextDerivable [] φ
+theorem provable_iff_valid : ContextDerivable [] φ ↔ valid φ
+```
 
-**`semantic_weak_completeness` is THE completeness theorem** for this logic:
-
+### Canonical Completeness Result
 ```lean
 theorem semantic_weak_completeness (phi : Formula) :
     (∀ w : SemanticWorldState phi, semantic_truth_at_v2 phi w origin phi) → ⊢ phi
 ```
-
-**Why this is the correct form**: Research (Task 750) confirmed that the "forward truth lemma"
-(`truth_at → semantic_truth_at_v2`) is blocked by S5-style Box semantics that quantify over
-ALL world histories. The contrapositive approach used by `semantic_weak_completeness` avoids
-this limitation entirely by constructing MCS-derived countermodels when formulas are unprovable.
+This is **THE completeness theorem** - it avoids the truth bridge gap via contrapositive.
 
 ## Known Architectural Limitations
 
-These limitations are **final** (not future work):
+These are **final limitations** (not future work):
 
 | Location | Limitation | Reason |
 |----------|------------|--------|
@@ -78,11 +92,25 @@ These limitations are **final** (not future work):
 | `truth_at_implies_semantic_truth` | Sorry | Box quantifies over ALL histories (Task 750) |
 | `Representation/TruthLemma.lean` box case | Sorry | Same Box semantics limitation |
 
-See `Boneyard/Metalogic_v3/FailedTruthLemma/` for archived approaches that failed.
+## Key Features
+
+- **Universal**: Parametric over ANY totally ordered additive commutative group D
+- **Syntactic**: Builds semantic objects from pure syntax (MCS membership)
+- **Self-contained**: No dependencies on Boneyard/ deprecated code
+- **Type-theoretic**: Uses Lean 4 typeclasses for algebraic structure
+
+## Subdirectory READMEs
+
+- `Core/README.md` - MCS theory and foundational definitions
+- `Soundness/README.md` - Soundness proof organization
+- `Representation/README.md` - Canonical model construction
+- `FMP/README.md` - Finite Model Property infrastructure
+- `Completeness/README.md` - Weak completeness proof
+- `Compactness/README.md` - Compactness theorem
+- `Algebraic/README.md` - Alternative algebraic approach (future extension)
+
+## References
+
+- Modal Logic, Blackburn et al., Chapters 4-5 (Completeness via Canonical Models)
+- Research reports: Task 750 (truth bridge analysis), Task 764 (migration)
 -/
-
--- Core layer (to be populated)
--- import Bimodal.Metalogic.Core
-
--- Representation layer (to be populated)
--- import Bimodal.Metalogic.Representation

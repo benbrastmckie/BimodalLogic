@@ -63,17 +63,32 @@ fi
 # Get WezTerm tab info
 TAB_LABEL=""
 if [[ -n "${WEZTERM_PANE:-}" ]] && command -v wezterm &>/dev/null; then
-    # Get tab_id for current pane
-    # Note: tab_id is 0-indexed internal ID, tab_title may be more useful
-    TAB_INFO=$(wezterm cli list --format=json 2>/dev/null | jq -r ".[] | select(.pane_id == $WEZTERM_PANE)" 2>/dev/null || echo "")
-    if [[ -n "$TAB_INFO" ]]; then
-        # Extract tab index (1-based for human readability)
-        TAB_ID=$(echo "$TAB_INFO" | jq -r '.tab_id' 2>/dev/null || echo "")
-        if [[ -n "$TAB_ID" && "$TAB_ID" != "null" ]]; then
-            # Add 1 to convert from 0-indexed to 1-indexed for humans
-            TAB_NUM=$((TAB_ID + 1))
-            TAB_LABEL="Tab $TAB_NUM: "
-        fi
+    # Get all panes data
+    ALL_PANES=$(wezterm cli list --format=json 2>/dev/null)
+
+    # Get the tab_id for the current pane
+    CURRENT_TAB_ID=$(echo "$ALL_PANES" | jq -r ".[] | select(.pane_id == $WEZTERM_PANE) | .tab_id" 2>/dev/null || echo "")
+
+    # Check if we got a valid tab_id (workaround for != escaping bug)
+    if [[ -n "$CURRENT_TAB_ID" ]] && ! [[ "$CURRENT_TAB_ID" == "null" ]]; then
+        # Get list of unique tab_ids in the order they appear
+        # WezTerm lists panes in tab order, so first occurrence gives us the position
+        UNIQUE_TAB_IDS=$(echo "$ALL_PANES" | jq -r '.[].tab_id' | awk '!seen[$0]++')
+
+        # Find the position (0-indexed) of current tab
+        TAB_INDEX=0
+        POSITION=0
+        while IFS= read -r tab_id; do
+            if [[ "$tab_id" == "$CURRENT_TAB_ID" ]]; then
+                POSITION=$TAB_INDEX
+                break
+            fi
+            ((TAB_INDEX++))
+        done <<< "$UNIQUE_TAB_IDS"
+
+        # Convert to 1-indexed for display
+        TAB_NUM=$((POSITION + 1))
+        TAB_LABEL="Tab $TAB_NUM: "
     fi
 fi
 

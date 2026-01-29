@@ -4,7 +4,7 @@ import Bimodal.Semantics.Truth
 import Bimodal.Metalogic.Representation.UniversalCanonicalModel
 import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Theorems.Propositional
-import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
+import Bimodal.Metalogic.Soundness.Soundness
 
 /-!
 # Weak Completeness for TM Bimodal Logic
@@ -30,7 +30,7 @@ The completeness proof proceeds via contrapositive using the representation theo
 ## Dependencies
 
 - Representation theorem: `Bimodal.Metalogic.Representation.representation_theorem`
-- Soundness theorem: Imported from `Bimodal.Boneyard.Metalogic_v2.Soundness.soundness`
+- Soundness theorem: `Bimodal.Metalogic.Soundness.soundness`
 
 ## References
 
@@ -75,24 +75,24 @@ def Consistent (Γ : Context) : Prop :=
   ¬Nonempty (DerivationTree Γ Formula.bot)
 
 /-!
-## Soundness (Imported from Boneyard)
+## Soundness
 
-Soundness is imported from Boneyard/Metalogic_v2/Soundness which contains the
+Soundness is proven in Bimodal.Metalogic.Soundness.Soundness which contains the
 fully proven soundness theorem for TM bimodal logic.
 -/
 
 /--
-Soundness for context derivability: If Γ ⊢ φ, then Γ ⊨ φ.
+Soundness for context derivability: If Gamma derives phi, then Gamma entails phi.
 
-**Status**: Proven via import from Boneyard/Metalogic_v2/Soundness/Soundness.lean.
-The Boneyard soundness theorem handles all derivation rules including
+**Status**: Proven via `Bimodal.Metalogic.Soundness.soundness`.
+The soundness theorem handles all derivation rules including
 temporal_duality via derivation-indexed induction.
 -/
-theorem soundness (Γ : Context) (φ : Formula) :
-    (DerivationTree Γ φ) → semantic_consequence Γ φ := by
+theorem soundness (Gamma : Context) (φ : Formula) :
+    (DerivationTree Gamma φ) → semantic_consequence Gamma φ := by
   intro h_deriv
-  -- Use the proven soundness theorem from Boneyard
-  exact Bimodal.Metalogic_v2.Soundness.soundness Γ φ (by exact h_deriv)
+  -- Use the proven soundness theorem
+  exact Bimodal.Metalogic.Soundness.soundness Gamma φ (by exact h_deriv)
 
 /--
 Soundness for empty context: If ⊢ φ, then ⊨ φ (valid).

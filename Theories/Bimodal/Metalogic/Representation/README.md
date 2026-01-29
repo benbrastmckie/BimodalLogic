@@ -1,48 +1,84 @@
 # Representation Theorem Implementation
 
+**Status**: Self-Contained (No Boneyard Dependencies)
+
 This directory contains the core implementation of the representation theorem (completeness) for TM bimodal logic using indexed MCS families.
 
-## File Purposes
+## Overview
 
-| File | Purpose | Status |
-|------|---------|--------|
-| `IndexedMCSFamily.lean` | Structure definition for MCS families | ✅ Complete |
-| `CoherentConstruction.lean` | Coherent family construction | ✅ Core proven |
-| `CanonicalWorld.lean` | World state from MCS | ✅ Complete |
-| `CanonicalHistory.lean` | History construction | ✅ Complete |
-| `TaskRelation.lean` | Task relation definition | ✅ Complete |
-| `TruthLemma.lean` | MCS membership ↔ semantic truth | ✅ Forward proven |
-| `UniversalCanonicalModel.lean` | Representation theorem | ✅ Uses forward only |
+The representation theorem establishes that consistent formulas are satisfiable in the universal canonical model. This is the key semantic result that enables completeness.
+
+## Modules
+
+| Module | Purpose | Status |
+|--------|---------|--------|
+| `IndexedMCSFamily.lean` | Structure definition for MCS families | **Complete** |
+| `CoherentConstruction.lean` | Coherent family construction | **Core proven** |
+| `CanonicalWorld.lean` | World state from MCS | **Complete** |
+| `CanonicalHistory.lean` | History construction | **Complete** |
+| `TaskRelation.lean` | Task relation definition | **Complete** |
+| `TruthLemma.lean` | MCS membership ↔ semantic truth | **Forward proven** |
+| `UniversalCanonicalModel.lean` | Representation theorem | **Uses forward only** |
+
+## Dependency Flowchart
+
+```
+                IndexedMCSFamily.lean
+                        │
+                        v
+              CoherentConstruction.lean
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+        v               v               v
+  CanonicalWorld  CanonicalHistory  TaskRelation
+        │               │               │
+        └───────────────┼───────────────┘
+                        │
+                        v
+                  TruthLemma.lean
+                        │
+                        v
+           UniversalCanonicalModel.lean
+```
+
+## Main Result
+
+```lean
+theorem representation_theorem (φ : Formula) (h_cons : SetConsistent {φ}) :
+    ∃ (family : IndexedMCSFamily D) (t : D) (h_mem : φ ∈ family.gamma t),
+      truth_at (canonical_model D family) (canonical_history_family D family) t φ
+```
+
+Consistent formulas are satisfiable in the universal canonical model.
 
 ## Proof Architecture
-
-### The Completeness Path
 
 ```
                       COMPLETENESS THEOREM
                               │
-                              ▼
-                 representation_theorem ✅
+                              v
+                 representation_theorem
                               │
            ┌──────────────────┼──────────────────┐
            │                  │                  │
-           ▼                  ▼                  ▼
+           v                  v                  v
       Lindenbaum        construct_          truth_lemma_
-          ✅           coherent_family       forward ✅
+                       coherent_family       forward
                               │                  │
-                              ▼                  │
+                              v                  │
                     CoherentConstruction         │
                     ┌─────────┴─────────┐        │
                     │                   │        │
             forward_G             backward_H     │
-            Case 1 ✅             Case 4 ✅      │
+            Case 1              Case 4           │
                     │                   │        │
                     └───────────────────┘        │
                               │                  │
                               └──────────────────┘
                                      │
-                                     ▼
-                            φ satisfiable ✅
+                                     v
+                            φ satisfiable
 ```
 
 ### Why Only Two Cases Matter
@@ -76,36 +112,43 @@ CoherentConstruction builds two chains:
 Both chains meet at Gamma (time 0). This design makes coherence **definitional**
 rather than something proven after construction.
 
-## Gaps NOT Required for Completeness
+## Known Sorries (Architectural)
 
-See `Boneyard/Metalogic_v3/` for detailed documentation.
+These gaps are NOT required for completeness:
 
 ### CoherentConstruction.lean
 
-| Case | Lines | Why Not Needed |
-|------|-------|----------------|
-| forward_G Cases 3-4 | 652, 655 | Cross-origin / cross-modal |
-| backward_H Cases 1-2 | 663, 666 | Both ≥ 0 / cross-origin |
-| forward_H (all) | 681 | Only for backward Truth Lemma |
-| backward_G Cases 3-4 | 711, 714 | Cross-origin / cross-modal |
+| Case | Why Not Needed |
+|------|----------------|
+| forward_G Cases 3-4 | Cross-origin / cross-modal |
+| backward_H Cases 1-2 | Both ≥ 0 / cross-origin |
+| forward_H (all) | Only for backward Truth Lemma |
+| backward_G Cases 3-4 | Cross-origin / cross-modal |
 
 ### TruthLemma.lean
 
-| Case | Lines | Why Not Needed |
-|------|-------|----------------|
-| all_past backward | 405 | Backward Truth Lemma |
-| all_future backward | 423 | Backward Truth Lemma |
-| box (both) | 382, 441 | Architectural limitation |
+| Case | Why Not Needed |
+|------|----------------|
+| all_past backward | Backward Truth Lemma |
+| all_future backward | Backward Truth Lemma |
+| box (both) | Architectural limitation (Task 750) |
 
-### IndexedMCSFamily.lean
+## Dependencies
 
-All four coherence sorries (lines 636-657) are SUPERSEDED by CoherentConstruction.
+- **Core**: MCS theory, Lindenbaum's lemma, deduction theorem
+- **Semantics**: Truth relation and task model definitions
+
+## Related Files
+
+- `../Core/README.md` - MCS foundations
+- `../Completeness/README.md` - Uses representation theorem
+- `../FMP/README.md` - Alternative finite model approach
+- `../README.md` - Overall metalogic architecture
 
 ## References
 
-- Gap analysis: `specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-004.md`
-- Parent README: `Theories/Bimodal/Metalogic/README.md`
-- Boneyard docs: `Theories/Bimodal/Boneyard/Metalogic_v3/README.md`
+- Modal Logic, Blackburn et al., Chapter 4 (Canonical Model Construction)
+- Gap analysis: specs/681_redesign.../reports/research-004.md
 
 ---
 

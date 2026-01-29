@@ -1,5 +1,7 @@
 # Parametric Finite Model Property Infrastructure
 
+**Status**: Self-Contained (No Boneyard Dependencies)
+
 This directory contains the parametric FMP (Finite Model Property) infrastructure for TM bimodal logic.
 
 ## Overview
@@ -8,13 +10,31 @@ The FMP establishes that if a formula is satisfiable, it is satisfiable in a **f
 
 ## Modules
 
-| Module | Purpose |
-|--------|---------|
-| `Closure.lean` | Subformula closure, closureWithNeg, closure-maximal consistent sets |
-| `BoundedTime.lean` | Finite time domain `BoundedTime k = Fin (2*k+1)` |
-| `FiniteWorldState.lean` | Finite world states as truth assignments on closure |
-| `SemanticCanonicalModel.lean` | Semantic canonical model with finite world states |
-| `FiniteModelProperty.lean` | FMP theorem and cardinality bounds |
+| Module | Purpose | Status |
+|--------|---------|--------|
+| `Closure.lean` | Subformula closure, closureWithNeg, closure-maximal consistent sets | **Sorry-free** |
+| `BoundedTime.lean` | Finite time domain `BoundedTime k = Fin (2*k+1)` | **Sorry-free** |
+| `FiniteWorldState.lean` | Finite world states as truth assignments on closure | **Sorry-free** |
+| `SemanticCanonicalModel.lean` | Semantic canonical model with finite world states | Has 2 architectural sorries |
+| `FiniteModelProperty.lean` | FMP theorem and cardinality bounds | Has 1 architectural sorry |
+
+## Dependency Flowchart
+
+```
+        Closure.lean
+             │
+             v
+      BoundedTime.lean
+             │
+             v
+    FiniteWorldState.lean
+             │
+             v
+  SemanticCanonicalModel.lean
+             │
+             v
+  FiniteModelProperty.lean
+```
 
 ## Key Definitions
 
@@ -68,12 +88,12 @@ theorem semanticWorldState_card_bound (φ : Formula) :
 
 ### Why Parametric?
 
-The original `Boneyard/Metalogic_v2/` implementation was hardcoded to `Int` duration. The parametric approach:
+The original Boneyard implementation was hardcoded to `Int` duration. The parametric approach:
 
 1. **Architectural consistency**: Matches the parametric Metalogic/ design using generic D
 2. **Maximum generality**: Works for any ordered group D
 3. **Future-proofing**: New duration types work automatically
-4. **Mathematical elegance**: The bound is D-independent - the proof should reflect this
+4. **Mathematical elegance**: The bound is D-independent - the proof reflects this
 
 ### BoundedTime Abstraction
 
@@ -82,12 +102,12 @@ The `BoundedTime k` type is the key innovation:
 - Provides canonical integer interpretation via `toInt : BoundedTime k → Int`
 - Combinatorial structure - the cardinality bound comes from this, not from D
 
-## Known Sorries
+## Known Architectural Sorries
 
 | Location | Description | Status |
 |----------|-------------|--------|
-| `SemanticCanonicalFrame.compositionality` | Frame compositionality axiom | Architectural (false for unbounded durations) |
-| `finite_model_property_constructive` truth bridge | Connecting finite model truth to `truth_at` | Architectural (Box semantics limitation - Task 750) |
+| `SemanticCanonicalFrame.compositionality` | Frame compositionality axiom | **Architectural** (false for unbounded durations) |
+| `finite_model_property_constructive` truth bridge | Connecting finite model truth to `truth_at` | **Architectural** (Box semantics limitation - Task 750) |
 
 ### Resolution (Task 750)
 
@@ -114,26 +134,22 @@ forward truth lemma entirely.
 
 **This is THE completeness theorem for this logic.**
 
-## Usage Examples
+## Dependencies
 
-### Decidability Analysis
+- **Core**: MCS theory and Lindenbaum's lemma
+- **Semantics**: Truth relation and validity
 
-```lean
--- Use the cardinality bound for complexity analysis
-theorem semanticWorldState_card_bound (φ : Formula) :
-    Fintype.card (SemanticWorldState φ) ≤ 2 ^ closureSize φ
-```
+## Related Files
 
-### Completeness Proofs
-
-```lean
--- Prefer semantic_weak_completeness (sorry-free)
-noncomputable def semantic_weak_completeness (φ : Formula) :
-    (∀ w, semantic_truth_at_v2 φ w t φ) → ⊢ φ
-```
+- `../Core/README.md` - MCS foundations
+- `../Completeness/README.md` - Uses FMP for completeness
+- `../README.md` - Overall metalogic architecture
 
 ## References
 
-- Original: `Boneyard/Metalogic_v2/Representation/` FMP modules
 - Blackburn et al., Modal Logic, Chapter 4 (Finite Model Property)
 - Wu, M., Verified Decision Procedures for Modal Logics
+
+---
+
+*Last updated: 2026-01-29*

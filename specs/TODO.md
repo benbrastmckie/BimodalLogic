@@ -214,16 +214,13 @@ technical_debt:
 
 ### 764. Improve Bimodal/Metalogic structure and documentation
 - **Effort**: 18-22 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
-- **Researched**: 2026-01-29
-- **Planned**: 2026-01-29
-- **Revised**: 2026-01-29
-- **Research**: [research-001.md](specs/764_improve_metalogic_structure_and_documentation/reports/research-001.md), [research-002.md](specs/764_improve_metalogic_structure_and_documentation/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/764_improve_metalogic_structure_and_documentation/plans/implementation-002.md)
+- **Completed**: 2026-01-29
+- **Summary**: [implementation-summary-20260129.md](specs/764_improve_metalogic_structure_and_documentation/summaries/implementation-summary-20260129.md)
 
 **Description**: Migrate ALL Boneyard dependencies to create self-contained Metalogic/: (1) full MCS theory migration (~500 lines), (2) full Soundness proof migration (~400 lines), (3) FMP/Closure fix, (4) document Algebraic/ as future extension, (5) comprehensive README documentation from deepest to top-level.
 

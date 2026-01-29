@@ -165,7 +165,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ)
       push_neg at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
       -- hL_incons: ¬Consistent L
-      have ⟨d_bot⟩ := Bimodal.Metalogic_v2.Core.inconsistent_derives_bot hL_incons
+      have ⟨d_bot⟩ := inconsistent_derives_bot hL_incons
       -- Since [] ⊢ φ → ψ and φ ∈ Γ, we have that any list containing ψ
       -- can replace ψ with φ and φ → ψ and still derive ⊥
       -- Actually, we need to construct a derivation from L \ {ψ} ∪ {φ}
@@ -263,7 +263,7 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ)
     unfold SetConsistent at h_incons
     push_neg at h_incons
     obtain ⟨L, hL, hL_incons⟩ := h_incons
-    have ⟨d_bot⟩ := Bimodal.Metalogic_v2.Core.inconsistent_derives_bot hL_incons
+    have ⟨d_bot⟩ := inconsistent_derives_bot hL_incons
 
     -- Similar to above, extract the part without φ ∧ ψ
     let Γ' := L.filter (· ≠ φ.and ψ)
@@ -361,7 +361,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ)
       unfold SetConsistent at h_incons
       push_neg at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
-      have ⟨d_bot⟩ := Bimodal.Metalogic_v2.Core.inconsistent_derives_bot hL_incons
+      have ⟨d_bot⟩ := inconsistent_derives_bot hL_incons
 
       -- Extract Γ' = L.filter (· ≠ φ)
       let Γ' := L.filter (· ≠ φ)
@@ -395,7 +395,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ)
         unfold SetConsistent at h_incons'
         push_neg at h_incons'
         obtain ⟨L', hL', hL'_incons⟩ := h_incons'
-        have ⟨d_bot'⟩ := Bimodal.Metalogic_v2.Core.inconsistent_derives_bot hL'_incons
+        have ⟨d_bot'⟩ := inconsistent_derives_bot hL'_incons
 
         let Γ'' := L'.filter (· ≠ φ.neg)
         have h_Γ''_sub : ∀ χ ∈ Γ'', χ ∈ Γ := by
@@ -799,7 +799,7 @@ theorem mcs_ultrafilter_correspondence :
       unfold SetConsistent at h_incons
       push_neg at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
-      have ⟨d_bot⟩ := Bimodal.Metalogic_v2.Core.inconsistent_derives_bot hL_incons
+      have ⟨d_bot⟩ := inconsistent_derives_bot hL_incons
 
       let Γ' := L.filter (· ≠ φ)
       have h_Γ'_sub : ∀ χ ∈ Γ', χ ∈ Γ.val := by

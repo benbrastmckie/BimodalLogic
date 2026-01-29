@@ -1,7 +1,6 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic.Core.MaximalConsistent
-import Bimodal.Boneyard.Metalogic_v2.Representation.CanonicalModel
 import Bimodal.Theorems.Combinators
 import Bimodal.Syntax.Subformulas
 import Mathlib.Data.Finset.Basic
@@ -50,7 +49,6 @@ namespace Bimodal.Metalogic.FMP
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic.Core
-open Bimodal.Metalogic_v2.Representation
 
 /-!
 ## Subformula Closure
