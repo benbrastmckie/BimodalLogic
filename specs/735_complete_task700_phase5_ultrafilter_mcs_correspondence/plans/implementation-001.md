@@ -44,7 +44,7 @@ From research report:
 
 ## Implementation Phases
 
-### Phase 1: Implement `fold_le_of_derives` Helper [IN PROGRESS]
+### Phase 1: Implement `fold_le_of_derives` Helper [COMPLETED]
 
 **Goal**: Create a lemma showing that if L ⊢ ψ, then the fold of quotients of L is ≤ [ψ].
 
@@ -78,7 +78,7 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
 
 ---
 
-### Phase 2: Complete the Sorry [NOT STARTED]
+### Phase 2: Complete the Sorry [IN PROGRESS]
 
 **Goal**: Fill the sorry at line 162 using `fold_le_of_derives`.
 

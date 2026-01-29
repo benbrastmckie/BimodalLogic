@@ -307,11 +307,12 @@ technical_debt:
 
 ### 737. Fix unused simp arguments in TemporalProofStrategies.lean
 - **Effort**: 30 min
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Source**: Review 20260129
+- **Plan**: [implementation-001.md](specs/737_fix_unused_simp_arguments_temporalproofstrategies/plans/implementation-001.md)
 
 **Description**: Fix unused simp arguments in TemporalProofStrategies.lean. Remove Formula.swap_temporal_involution from simp calls at lines 174, 203, 242, 459 where the linter reports it is unused.
 
@@ -346,11 +347,12 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
 - **Started**: 2026-01-29
+- **Blocked-By**: Requires forward_H coherence property (CoherentConstruction.lean:681) or architecture changes
 - **Related**: Tasks 654, 656
 - **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:211,219,228,237
 - **Research**: [research-001.md](specs/659_prove_negation_completeness_lemmas/reports/research-001.md), [research-002.md](specs/659_prove_negation_completeness_lemmas/reports/research-002.md)

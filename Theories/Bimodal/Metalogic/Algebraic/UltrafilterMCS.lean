@@ -96,6 +96,112 @@ theorem mcsToSet_top {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ) :
   exact ⟨Formula.bot.imp Formula.bot, h, rfl⟩
 
 /-!
+## Fold-Derives Lemma
+
+The key lemma relating list derivation to the quotient algebra ordering.
+-/
+
+/--
+If L derives ψ, then the meet of quotients of L is ≤ [ψ].
+
+This is the key lemma for showing that ultrafilterToSet is consistent:
+from `L ⊢ ⊥` we get `fold L ≤ ⊥`, so if `fold L ∈ U`, then `⊥ ∈ U` by upward closure.
+-/
+theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
+    (h : DerivationTree L ψ) :
+    List.foldl (fun acc φ => acc ⊓ toQuot φ) ⊤ L ≤ toQuot ψ := by
+  induction L generalizing ψ with
+  | nil =>
+    -- [] ⊢ ψ means ⊢ ψ (a theorem), so ⊤ ≤ [ψ]
+    -- Need to show: ⊤ ≤ toQuot ψ
+    -- ⊤ = toQuot (⊥ → ⊥), so need ⊢ (⊥ → ⊥) → ψ
+    simp only [List.foldl_nil]
+    -- Since h : [] ⊢ ψ, we have ⊢ ψ
+    -- From ⊢ ψ, derive ⊢ ⊤ → ψ (where ⊤ = ⊥ → ⊥)
+    show top_quot ≤ toQuot ψ
+    unfold top_quot
+    -- Need to show: [⊥ → ⊥] ≤ [ψ], i.e., ⊢ (⊥ → ⊥) → ψ
+    show Derives (Formula.bot.imp Formula.bot) ψ
+    unfold Derives
+    -- From h : [] ⊢ ψ, we get ⊢ ψ. Then ⊢ T → ψ by prop_s.
+    have d_s : DerivationTree [] (ψ.imp ((Formula.bot.imp Formula.bot).imp ψ)) :=
+      DerivationTree.axiom [] _ (Axiom.prop_s ψ (Formula.bot.imp Formula.bot))
+    exact ⟨DerivationTree.modus_ponens [] _ _ d_s h⟩
+  | cons φ L' ih =>
+    -- (φ :: L') ⊢ ψ, need to show: ⊤ ⊓ [φ] ⊓ fold(L') ≤ [ψ]
+    -- Use deduction theorem: L' ⊢ φ → ψ
+    -- By IH: fold(L') ≤ [φ → ψ]
+    -- Then: ⊤ ⊓ [φ] ⊓ fold(L') ≤ [φ] ⊓ [φ → ψ] ≤ [ψ]
+    simp only [List.foldl_cons]
+    -- Apply deduction theorem to get L' ⊢ φ → ψ
+    have d_imp : DerivationTree L' (φ.imp ψ) :=
+      Bimodal.Metalogic.Core.deduction_theorem L' φ ψ h
+    -- By IH: fold(L') ≤ [φ → ψ]
+    have ih_applied : List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ L' ≤ toQuot (φ.imp ψ) :=
+      ih (φ.imp ψ) d_imp
+    -- We have: List.foldl ... (⊤ ⊓ toQuot φ) L' ≤ [ψ]
+    -- The left side is fold(L') starting from ⊤ ⊓ [φ]
+    -- We need to relate fold from (⊤ ⊓ [φ]) with fold from ⊤
+
+    -- Lemma: fold from x = x ⊓ (fold from ⊤)
+    have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
+        List.foldl (fun acc χ => acc ⊓ toQuot χ) x M =
+        x ⊓ List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ M := by
+      intro M
+      induction M with
+      | nil => intro x; simp
+      | cons m M' ih_M =>
+        intro x
+        simp only [List.foldl_cons]
+        rw [ih_M (x ⊓ toQuot m), ih_M (⊤ ⊓ toQuot m)]
+        simp only [top_inf_eq]
+        -- Need: x ⊓ (toQuot m ⊓ fold(M')) = x ⊓ toQuot m ⊓ fold(M')
+        -- This is associativity
+        rw [← inf_assoc]
+
+    rw [fold_from_x L' (⊤ ⊓ toQuot φ)]
+    simp only [top_inf_eq]
+    -- Now we have: [φ] ⊓ fold(L') ≤ [ψ]
+    -- We know fold(L') ≤ [φ → ψ]
+    -- And [φ] ⊓ [φ → ψ] ≤ [ψ] (modus ponens in the algebra)
+    -- So [φ] ⊓ fold(L') ≤ [φ] ⊓ [φ → ψ] ≤ [ψ]
+
+    -- First show: [φ] ⊓ [φ → ψ] ≤ [ψ]
+    have mp_le : toQuot φ ⊓ toQuot (φ.imp ψ) ≤ toQuot ψ := by
+      -- [φ ∧ (φ → ψ)] ≤ [ψ] means ⊢ (φ ∧ (φ → ψ)) → ψ
+      show and_quot (toQuot φ) (toQuot (φ.imp ψ)) ≤ toQuot ψ
+      -- The BooleanAlgebra instance gives us: inf = and_quot
+      -- and_quot [φ] [φ → ψ] = [φ ∧ (φ → ψ)]
+      -- Actually, the inf is defined in the BooleanAlgebra as and_quot
+      -- Let's unfold carefully
+      change Derives (φ.and (φ.imp ψ)) ψ
+      unfold Derives
+      -- Need: ⊢ (φ ∧ (φ → ψ)) → ψ
+      -- From [φ ∧ (φ → ψ)] we get φ and φ → ψ, then ψ by MP
+      have h_ctx : [φ.and (φ.imp ψ)] ⊢ ψ := by
+        have h_conj : [φ.and (φ.imp ψ)] ⊢ φ.and (φ.imp ψ) := by
+          apply DerivationTree.assumption; simp
+        have h_φ : [φ.and (φ.imp ψ)] ⊢ φ := by
+          apply DerivationTree.modus_ponens [φ.and (φ.imp ψ)] _ _
+          · apply DerivationTree.weakening [] [φ.and (φ.imp ψ)]
+            · exact Bimodal.Theorems.Propositional.lce_imp φ (φ.imp ψ)
+            · intro; simp
+          · exact h_conj
+        have h_imp : [φ.and (φ.imp ψ)] ⊢ φ.imp ψ := by
+          apply DerivationTree.modus_ponens [φ.and (φ.imp ψ)] _ _
+          · apply DerivationTree.weakening [] [φ.and (φ.imp ψ)]
+            · exact Bimodal.Theorems.Propositional.rce_imp φ (φ.imp ψ)
+            · intro; simp
+          · exact h_conj
+        exact DerivationTree.modus_ponens [φ.and (φ.imp ψ)] φ ψ h_imp h_φ
+      exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and (φ.imp ψ)) ψ h_ctx⟩
+
+    -- Now use monotonicity: [φ] ⊓ fold(L') ≤ [φ] ⊓ [φ → ψ] ≤ [ψ]
+    calc toQuot φ ⊓ List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ L'
+        ≤ toQuot φ ⊓ toQuot (φ.imp ψ) := inf_le_inf_left (toQuot φ) ih_applied
+      _ ≤ toQuot ψ := mp_le
+
+/-!
 ## Ultrafilter to MCS Direction
 
 Given an ultrafilter U on LindenbaumAlg, we construct an MCS.

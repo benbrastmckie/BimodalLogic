@@ -19,13 +19,21 @@
     {
       "project_number": 737,
       "project_name": "fix_unused_simp_arguments_temporalproofstrategies",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "description": "Fix unused simp arguments in TemporalProofStrategies.lean. Remove Formula.swap_temporal_involution from simp calls at lines 174, 203, 242, 459 where the linter reports it is unused.",
       "created": "2026-01-29T04:04:51Z",
-      "last_updated": "2026-01-29T04:09:08Z",
-      "session_id": "sess_1769659724_182b40"
+      "last_updated": "2026-01-29T04:10:38Z",
+      "session_id": "sess_1769659724_182b40",
+      "planned": "2026-01-29T04:10:38Z",
+      "artifacts": [
+        {
+          "path": "specs/737_fix_unused_simp_arguments_temporalproofstrategies/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase plan for removing unused simp arguments at lines 174, 203, 242, 459"
+        }
+      ]
     },
     {
       "project_number": 735,
@@ -183,11 +191,11 @@
     {
       "project_number": 659,
       "project_name": "prove_negation_completeness_lemmas",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T04:06:12Z",
+      "last_updated": "2026-01-29T04:10:01Z",
       "related_tasks": [
         654,
         656
@@ -212,7 +220,8 @@
         }
       ],
       "planned": "2026-01-29T01:21:06Z",
-      "started": "2026-01-29T04:06:12Z"
+      "started": "2026-01-29T04:06:12Z",
+      "blocked_reason": "Requires forward_H coherence property (CoherentConstruction.lean:681) or architecture changes for witness extraction"
     },
     {
       "project_number": 660,
