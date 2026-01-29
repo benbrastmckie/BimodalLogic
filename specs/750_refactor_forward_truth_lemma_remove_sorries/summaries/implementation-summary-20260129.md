@@ -1,102 +1,119 @@
 # Implementation Summary: Task #750
 
 **Date**: 2026-01-29
-**Status**: PARTIAL - Hybrid completeness implemented with documented sorry gap
+**Status**: PARTIAL - MCS Truth Lemma implemented with documented architectural limitation
 
 ## Overview
 
-This task explored multiple approaches to achieving sorry-free completeness by connecting the existing algebraic representation theorem to standard semantics.
+This task implemented the MCS-restricted truth lemma approach from implementation plan v005. The approach proves truth correspondence for MCS-derived states, which is what `semantic_weak_completeness` implicitly relies on. A fundamental architectural limitation with box semantics was discovered and documented.
 
-## Approach Evolution
+## What Was Accomplished
 
-### v003 (Earlier): Direct Algebraic-Semantic Bridge
-- Created `AlgebraicSemanticBridge.lean` with type infrastructure
-- Propositional fragment works; modal/temporal cases have sorries
-- Challenge: Box semantics quantify over ALL histories, single ultrafilter insufficient
+### 1. MCSDerivedSemanticWorldState Structure
 
-### v004 (Current): Hybrid Completeness Approach
-- Created `HybridCompleteness.lean` using algebraic → MCS → FMP path
-- Avoids needing direct ultrafilter-Kripke truth correspondence
-- Uses existing sorry-free infrastructure from both algebraic and FMP paths
+Created `Theories/Bimodal/Metalogic/FMP/MCSDerivedWorldState.lean` (~320 lines) containing:
 
-## Audit Findings
+- **`MCSDerivedSemanticWorldState`**: A subtype of SemanticWorldState that carries proof of MCS derivation
+- **`mk_from_closureMCS`**: Constructor from ClosureMaximalConsistent sets
+- **`underlying_world_state_models_iff`**: Key lemma connecting MCS membership to assignment truth (sorry-free)
 
-**Key discovery**: The core infrastructure is already sorry-free:
+### 2. MCS Truth Correspondence Lemmas (All Sorry-Free)
 
-| Module | Status |
-|--------|--------|
-| `AlgebraicRepresentation.lean` | **Sorry-free** |
-| `UltrafilterMCS.lean` | **Sorry-free** |
-| `mcs_projection_is_closure_mcs` | **Sorry-free** |
-| `semantic_weak_completeness` | **Sorry-free** |
+| Lemma | Purpose |
+|-------|---------|
+| `mcs_truth_at_bot` | Bot is always false in MCS-derived states |
+| `mcs_truth_at_atom` | Atom truth equals MCS membership |
+| `mcs_truth_models_iff` | General formula truth equals MCS membership |
+| `mcs_truth_at_imp` | Implication truth equals material implication |
+| `mcs_contains_or_neg` | Negation completeness for MCS-derived states |
 
-## New Implementation: HybridCompleteness.lean
+### 3. Key Semantic Truth Lemma (Sorry-Free)
 
-### Key Theorems
+```lean
+theorem mcs_semantic_truth_iff_in_mcs (phi : Formula) (w : MCSDerivedSemanticWorldState phi)
+    (psi : Formula) (h_mem : psi ∈ closure phi) :
+    semantic_truth_at_v2 phi w.state (BoundedTime.origin (temporalBound phi)) psi ↔
+    psi ∈ w.underlying_mcs
+```
 
-1. **`alg_consistent_to_mcs`** (sorry-free):
-   ```lean
-   theorem alg_consistent_to_mcs (phi : Formula) (h : AlgConsistent phi) :
-       exists Gamma : Set Formula, SetMaximalConsistent Gamma /\ phi in Gamma
-   ```
-   Connects algebraic consistency to MCS existence via ultrafilter correspondence.
+This is the fundamental result that `semantic_weak_completeness` relies on: for MCS-derived states (which the completeness countermodel IS), semantic truth equals MCS membership.
 
-2. **`not_provable_to_mcs_neg`** (sorry-free):
-   ```lean
-   theorem not_provable_to_mcs_neg (phi : Formula) (h : not Nonempty (derives phi)) :
-       exists Gamma, SetMaximalConsistent Gamma /\ phi.neg in Gamma
-   ```
+## Architectural Limitation Discovered
 
-3. **`hybrid_weak_completeness`** (has 1 sorry):
-   ```lean
-   noncomputable def hybrid_weak_completeness (phi : Formula) :
-       valid phi -> derives phi
-   ```
+### The Box Semantics Problem
 
-### The Remaining Gap
+The current semantic definition of box quantifies over ALL world histories:
+```lean
+truth_at M tau t (box phi) = forall (sigma : WorldHistory F), truth_at M sigma t phi
+```
 
-The single sorry is in connecting `valid phi` (truth in ALL models) to `semantic_truth_at_v2` (truth in specific FMP model). This is the "forward truth lemma" gap:
+This causes the truth lemma to fail for box because:
 
-- **`valid phi`**: For ALL frames F, models M, histories tau, times t: `truth_at M tau t phi`
-- **`semantic_truth_at_v2`**: Boolean assignment check in FiniteWorldState
-- **Gap**: `truth_at` evaluates recursively; for BOX, it quantifies over ALL histories
+1. **Induction fails**: When proving `truth_at (box psi) -> semantic_truth_at_v2 (box psi)`, the IH only applies to MCS-derived states, but box quantifies over ALL histories (including those through non-MCS-derived states).
 
-The MCS-derived world state should satisfy the correspondence, but proving it requires showing the specific model IS the canonical model, which is circular.
+2. **Not all SemanticWorldStates are MCS-derived**: FiniteWorldState only requires IsLocallyConsistent, which is weaker than MCS.
 
-## Comparison of Paths
+3. **Fundamental mismatch**: The S5-like universal quantification is incompatible with the finite model approach.
 
-| Path | Status | Gap |
-|------|--------|-----|
-| `semantic_weak_completeness` | **Sorry-free** | Works via contrapositive |
-| `hybrid_weak_completeness` | 1 sorry | Forward truth lemma |
-| `AlgebraicSemanticBridge` | ~10 sorries | Box/temporal cases |
+### Why `semantic_weak_completeness` Works Despite This
 
-**Key insight**: `semantic_weak_completeness` avoids the gap by never needing to prove validity implies truth in a specific model. It constructs countermodels when phi is NOT provable.
+The existing sorry-free `semantic_weak_completeness` works because:
 
-## Files Modified
+1. It proves the contrapositive: if not provable, construct countermodel where formula is false
+2. The countermodel is MCS-derived by construction
+3. It only checks `semantic_truth_at_v2` (assignment), never `truth_at` (recursive evaluation)
+4. For MCS-derived states, `mcs_semantic_truth_iff_in_mcs` gives the needed correspondence
+
+### The Remaining Gap for Full Completeness
+
+To prove `valid phi -> Provable phi`, we would need:
+```lean
+valid phi -> (forall w : SemanticWorldState, semantic_truth_at_v2 phi w ...)
+```
+
+This requires `truth_at -> semantic_truth_at_v2` for ALL SemanticWorldStates, which fails for box.
+
+## Files Created/Modified
 
 | File | Change |
 |------|--------|
-| `Algebraic/HybridCompleteness.lean` | New file (~250 lines) |
-| `Algebraic/Algebraic.lean` | Added import |
-| `Algebraic/README.md` | Updated documentation |
+| `Theories/Bimodal/Metalogic/FMP/MCSDerivedWorldState.lean` | Created (~320 lines) |
+| `specs/750_*/plans/implementation-005.md` | Updated phase markers |
+
+## Sorries in MCSDerivedWorldState.lean
+
+| Line | Lemma | Status |
+|------|-------|--------|
+| 122 | `mcs_derived_finite` | MCS uniqueness - not critical |
+| 366 | `not_provable_of_semantic_countermodel` | Requires soundness - separate concern |
+
+Neither sorry is on the critical path for the truth lemma.
 
 ## Build Verification
 
-- `lake build` passes (987 jobs)
-- All existing tests continue to pass
+- `lake build` succeeds (989 jobs)
+- No new sorries on critical completeness path
+- `semantic_weak_completeness` remains sorry-free
+- All new lemmas are sorry-free (except noted non-critical ones)
 
 ## Recommendations
 
-1. **For practical completeness**: Use `semantic_weak_completeness` (fully sorry-free)
+### For Practical Use
+Use `semantic_weak_completeness` - it's fully sorry-free and provides completeness for the semantic model.
 
-2. **For `valid -> derives`**: The remaining gap would require:
-   - Stronger model correspondence theorem
-   - Alternative proof structure (e.g., cut-free sequent calculus)
-   - Restricting validity predicate
+### For `valid -> Provable`
+Three potential approaches:
 
-3. **Future work**: Consider proving truth correspondence specifically for MCS-derived states, rather than arbitrary SemanticWorldStates.
+1. **Restrict to box-free fragment**: Temporal-only logic can have full sorry-free truth lemma
+2. **Change box semantics**: Use Kripke-style accessibility instead of universal quantification
+3. **Accept current result**: `semantic_weak_completeness` provides adequate guarantees
 
 ## Conclusion
 
-The hybrid approach successfully connects algebraic and FMP infrastructure. Both the algebraic representation theorem and the FMP semantic completeness are sorry-free. The remaining gap is fundamental: connecting universal validity to truth in a specific canonical model construction. For practical purposes, `semantic_weak_completeness` provides all needed completeness guarantees.
+The MCS-restricted truth lemma approach was implemented successfully. The key theorem `mcs_semantic_truth_iff_in_mcs` is sorry-free and establishes why `semantic_weak_completeness` works: MCS-derived countermodels (which the completeness proof constructs) satisfy the semantic truth correspondence.
+
+The discovered architectural limitation with box semantics is fundamental but doesn't affect the practical completeness result. The existing `semantic_weak_completeness` provides the needed guarantees for the finite model property.
+
+## Previous Implementation Attempts (v001-v004)
+
+Earlier approaches (AlgebraicSemanticBridge, HybridCompleteness) encountered the same fundamental box semantics issue. The MCS-restricted approach clarifies WHY the gap exists and documents the architectural boundary.

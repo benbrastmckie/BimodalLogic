@@ -118,7 +118,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T20:56:04Z",
+      "last_updated": "2026-01-29T21:09:19Z",
       "session_id": "sess_1769720147_342164",
       "researched": "2026-01-29T20:41:02Z",
       "artifacts": [
@@ -141,11 +141,6 @@
           "path": "Theories/Bimodal/Metalogic/Algebraic/AlgebraicSemanticBridge.lean",
           "type": "implementation",
           "summary": "New file: algebraic semantic bridge with task frame, model, and partial truth lemma"
-        },
-        {
-          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting partial completion and technical insights"
         },
         {
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md",
@@ -176,6 +171,16 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-005.md",
           "type": "plan",
           "summary": "MCS-Restricted Truth Lemma approach - proves truth correspondence for MCSDerivedWorldState subtype"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting achievements and architectural limitations"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/FMP/MCSDerivedWorldState.lean",
+          "type": "implementation",
+          "summary": "MCS-derived world state subtype with sorry-free truth correspondence lemmas"
         }
       ],
       "planned": "2026-01-29T20:46:53Z",
