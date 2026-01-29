@@ -50,7 +50,9 @@ The research report identified that:
 
 ## Implementation Phases
 
-### Phase 1: CoherentConstruction Infrastructure [COMPLETED]
+### Phase 1: CoherentConstruction Infrastructure [BLOCKED]
+
+**Note**: Requires simultaneous induction to prove G/H-bot invariant propagation through chain construction. Skipped pending plan revision.
 
 **Goal**: Prove the 2 infrastructure sorries (lines 403, 416) that block chain consistency.
 
@@ -72,7 +74,7 @@ The research report identified that:
 
 ---
 
-### Phase 2: UniversalCanonicalModel Boundary Conditions [NOT STARTED]
+### Phase 2: UniversalCanonicalModel Boundary Conditions [COMPLETED]
 
 **Goal**: Prove the 4 sorries related to G-bot/H-bot boundary conditions in UniversalCanonicalModel.
 
@@ -92,7 +94,9 @@ The research report identified that:
 
 ---
 
-### Phase 3: IndexedMCSFamily Coherence Bridge [NOT STARTED]
+### Phase 3: IndexedMCSFamily Coherence Bridge [SKIPPED]
+
+**Note**: `construct_indexed_family` is unused in the codebase. These sorries don't block completeness.
 
 **Goal**: Connect IndexedMCSFamily coherence fields to CoherentConstruction proofs.
 
@@ -112,7 +116,7 @@ The research report identified that:
 
 ---
 
-### Phase 4: CanonicalWorld MCS Properties [NOT STARTED]
+### Phase 4: CanonicalWorld MCS Properties [COMPLETED]
 
 **Goal**: Complete the 2 sorries for set-based MCS properties.
 
@@ -130,7 +134,7 @@ The research report identified that:
 
 ---
 
-### Phase 5: CanonicalHistory T-Axiom Cases [NOT STARTED]
+### Phase 5: CanonicalHistory T-Axiom Cases [COMPLETED]
 
 **Goal**: Prove the 2 T-axiom application sorries.
 

@@ -50,12 +50,12 @@
     {
       "project_number": 755,
       "project_name": "implement_option_c_forward_truth_lemma",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-29T16:54:59Z",
-      "last_updated": "2026-01-29T17:33:50Z",
-      "session_id": "sess_1769707843_159317",
+      "last_updated": "2026-01-29T17:37:14Z",
+      "session_id": "sess_1769708216_82cffb",
       "researched": "2026-01-29T17:27:03Z",
       "artifacts": [
         {
@@ -69,7 +69,8 @@
           "summary": "5-phase implementation plan for sorry-free completeness via FMP truth correspondence"
         }
       ],
-      "planned": "2026-01-29T17:33:50Z"
+      "planned": "2026-01-29T17:33:50Z",
+      "started": "2026-01-29T17:37:14Z"
     },
     {
       "project_number": 753,
@@ -78,7 +79,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T16:50:59Z",
-      "last_updated": "2026-01-29T17:12:53Z",
+      "last_updated": "2026-01-29T17:37:05Z",
       "session_id": "sess_1769706752_5bf372",
       "researched": "2026-01-29T16:56:39Z",
       "artifacts": [
