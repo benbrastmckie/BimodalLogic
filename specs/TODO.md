@@ -29,7 +29,7 @@ technical_debt:
 
 ### 758. Audit and reduce Metalogic sorries
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -185,12 +185,13 @@ technical_debt:
 
 ### 759. Update TODO.md sorry metrics
 - **Effort**: 30 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: meta
 - **Created**: 2026-01-29
 - **Source**: review-20260129-2
 - **Research**: [research-001.md](specs/759_update_todo_md_sorry_metrics/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/759_update_todo_md_sorry_metrics/plans/implementation-001.md)
 
 **Description**: Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.
 

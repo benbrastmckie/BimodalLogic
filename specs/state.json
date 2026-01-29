@@ -8,34 +8,40 @@
     {
       "project_number": 759,
       "project_name": "update_todo_md_sorry_metrics",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "low",
       "created": "2026-01-29T17:15:00Z",
-      "last_updated": "2026-01-29T18:20:48Z",
+      "last_updated": "2026-01-29T18:26:01Z",
       "description": "Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.",
       "source": "review-20260129-2",
-      "session_id": "sess_1769710618_a4a7cb",
+      "session_id": "sess_1769711021_2dd2f4",
       "researched": "2026-01-29T18:20:48Z",
       "artifacts": [
         {
           "path": "specs/759_update_todo_md_sorry_metrics/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of metadata sync gaps: TODO.md has stale repo-wide metrics (sorry_count 205 vs actual 275) not present in state.json, /review computes but doesn't persist, recommends adding metrics sync step to /todo command."
+        },
+        {
+          "path": "specs/759_update_todo_md_sorry_metrics/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan: fix immediate metrics, add state.json schema, add metrics sync to /todo, documentation"
         }
-      ]
+      ],
+      "planned": "2026-01-29T18:26:01Z"
     },
     {
       "project_number": 758,
       "project_name": "audit_and_reduce_metalogic_sorries",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-29T17:15:00Z",
-      "last_updated": "2026-01-29T18:17:20Z",
+      "last_updated": "2026-01-29T18:25:52Z",
       "description": "Audit and reduce sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard). Currently 45 sorries: 33 in Representation/, remainder in Core/, Completeness/, FMP/, Algebraic/. Categorize by (a) blocking main theorem path, (b) required for full biconditional but not main result, (c) optional/exploratory. Prioritize elimination of category (a) sorries. Related: Task 750 (forward Truth Lemma refactor)",
       "source": "review-20260129-2",
-      "session_id": "sess_1769710427_28a303",
+      "session_id": "sess_1769711137_b2e046",
       "researched": "2026-01-29T18:17:20Z",
       "artifacts": [
         {

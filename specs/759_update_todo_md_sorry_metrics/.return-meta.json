@@ -1,21 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-01-29T12:30:00Z",
-  "completed_at": "2026-01-29T12:45:00Z",
+  "status": "planned",
+  "summary": "4-phase plan to fix TODO.md metrics discrepancy and add metrics sync to /todo command",
   "artifacts": [
     {
-      "path": "specs/759_update_todo_md_sorry_metrics/reports/research-001.md",
-      "type": "research",
-      "summary": "Comprehensive analysis of metadata sync gaps: TODO.md has stale repo-wide metrics (sorry_count 205 vs actual 275) not present in state.json, /review computes but doesn't persist, recommends adding metrics sync step to /todo command."
+      "type": "plan",
+      "path": "specs/759_update_todo_md_sorry_metrics/plans/implementation-001.md",
+      "summary": "4-phase implementation plan: fix immediate metrics, add state.json schema, add metrics sync to /todo, documentation"
     }
   ],
-  "next_steps": "Run /plan 759 to create implementation plan",
+  "next_steps": "Run /implement 759 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769710618_a4a7cb",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 900,
+    "session_id": "sess_1769711021_2dd2f4",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.5
   }
 }
