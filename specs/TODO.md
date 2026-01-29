@@ -131,11 +131,12 @@ technical_debt:
 
 ### 757. Fix task state sync issues
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
 - **Source**: review-20260129-2
+- **Plan**: [implementation-001.md](specs/757_fix_task_state_sync_issues/plans/implementation-001.md)
 
 **Description**: Fix task state synchronization issues from review: (1) Task 741 documented as blocked by omega-rule limitation but status shows researching - update to blocked; (2) Task 750 has planned timestamp and implementation plan but status shows researching - resolve direction; (3) Task 747 work appears complete but status shows implementing - finalize completion
 
