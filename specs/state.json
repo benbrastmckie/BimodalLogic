@@ -6,6 +6,19 @@
   },
   "active_projects": [
     {
+      "project_number": 745,
+      "project_name": "move_backward_truth_lemma_to_boneyard",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Move backward Truth Lemma cases to Boneyard with documentation. The backward temporal cases (all_past/all_future backward directions) in TruthLemma.lean lines 423, 441 are blocked by fundamental omega-rule limitation and NOT REQUIRED for completeness. Clean up Bimodal/Metalogic/Representation/ to contain only working proofs. Move backward cases to Boneyard with clear documentation explaining they require H/G-completeness (which needs omega-rule that TM logic lacks). Update TruthLemma.lean to only expose truth_lemma_forward (the direction actually used by representation theorem). Keep TemporalCompleteness.lean infrastructure in Boneyard for reference.",
+      "related_tasks": [
+        741
+      ],
+      "created": "2026-01-29T14:04:25Z",
+      "last_updated": "2026-01-29T14:04:25Z"
+    },
+    {
       "project_number": 741,
       "project_name": "witness_extraction_architecture_for_backward_truth_lemma",
       "status": "researching",
@@ -172,7 +185,7 @@
     {
       "project_number": 624,
       "project_name": "prove_tableau_complete",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -180,8 +193,8 @@
         623
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T13:49:51Z",
-      "session_id": "sess_1769694428_6200f0",
+      "last_updated": "2026-01-29T14:00:47Z",
+      "session_id": "sess_1769695229_0b71c9",
       "researched": "2026-01-29T13:22:16Z",
       "artifacts": [
         {
@@ -195,7 +208,8 @@
           "summary": "5-phase implementation plan for proving tableau_complete theorem connecting FMP to tableau termination"
         }
       ],
-      "planned": "2026-01-29T13:49:51Z"
+      "planned": "2026-01-29T13:49:51Z",
+      "started": "2026-01-29T14:00:47Z"
     },
     {
       "project_number": 625,
@@ -579,7 +593,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 745,
+  "next_project_number": 746,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
