@@ -8,11 +8,11 @@
     {
       "project_number": 731,
       "project_name": "clean_bimodal_documentation_remove_historical_comments",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T23:47:43Z",
-      "last_updated": "2026-01-29T00:26:13Z",
+      "last_updated": "2026-01-29T00:32:49Z",
       "description": "Clean up Lean source code documentation in Bimodal/ theory to present only the current state with no historical mentions. **Scope change**: Remove ALL historical artifacts including: (1) provenance comments ('-- Origin: Boneyard/...') from Core/*.lean files, (2) SUPERSEDED/DEPRECATED docblocks and markers, (3) narrative history explaining past approaches or 'why we did X instead of Y', (4) references to Boneyard in active code comments. Goal is clean, present-tense documentation describing what the code IS, not where it came from or what it replaced. Also: (a) update remaining Boneyard imports in GeneralizedNecessitation.lean and Propositional.lean to use Core, (b) move compatibility shims Metalogic.lean and Metalogic_v2.lean to Boneyard/Compat/, (c) verify complete Boneyard isolation.",
       "session_id": "sess_1769646356_be0582",
       "researched": "2026-01-29T00:11:16Z",
@@ -29,7 +29,9 @@
         }
       ],
       "planned": "2026-01-29T00:22:50Z",
-      "started": "2026-01-29T00:26:13Z"
+      "started": "2026-01-29T00:26:13Z",
+      "completed": "2026-01-29T00:32:49Z",
+      "completion_summary": "Cleaned Bimodal codebase documentation by removing 20 provenance comments from Core files, moving 2 compatibility shims to Boneyard/Compat, and updating all active code to use canonical Metalogic.Core namespace. Verified Boneyard isolation with only intentional re-exports remaining."
     },
     {
       "project_number": 726,
@@ -184,14 +186,14 @@
           "summary": "Detailed comparison of Option B1 (Recursive Seeds) vs Option B2 (Relational/Coherent Construction) for completing coherence proofs. Recommends Option B2 (relational approach via Task 681) due to proven Boneyard pattern and dense time support."
         },
         {
-          "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-006.md",
-          "type": "plan",
-          "summary": "Revised plan v6 incorporating Task 697 findings"
-        },
-        {
           "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-005.md",
           "type": "research",
           "summary": "Dependency chain analysis: representation_theorem incorrectly uses superseded construct_indexed_family instead of construct_coherent_family. Documents code-documentation mismatch and refactoring plan."
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-007.md",
+          "type": "plan",
+          "summary": "Revised plan v7 incorporating research-005 findings: switch representation_theorem to use construct_coherent_family"
         }
       ],
       "planning": "2026-01-25T21:42:13Z",

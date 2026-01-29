@@ -122,13 +122,15 @@ technical_debt:
 
 ### 731. Clean Bimodal documentation - remove historical comments
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
+- **Completed**: 2026-01-29
 - **Related**: Task 681
 - **Research**: [research-001.md](specs/731_clean_bimodal_documentation_remove_historical_comments/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/731_clean_bimodal_documentation_remove_historical_comments/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/731_clean_bimodal_documentation_remove_historical_comments/summaries/implementation-summary-20260129.md)
 
 **Description**: Clean up Lean source code documentation in Bimodal/ theory to present only the current state with no historical mentions. **Scope change**: Remove ALL historical artifacts including: (1) provenance comments (`-- Origin: Boneyard/...`) from Core/*.lean files, (2) SUPERSEDED/DEPRECATED docblocks and markers, (3) narrative history explaining past approaches or "why we did X instead of Y", (4) references to Boneyard in active code comments. Goal is clean, present-tense documentation describing what the code IS, not where it came from or what it replaced. Also: (a) update remaining Boneyard imports in GeneralizedNecessitation.lean and Propositional.lean to use Core, (b) move compatibility shims Metalogic.lean and Metalogic_v2.lean to Boneyard/Compat/, (c) verify complete Boneyard isolation.
 
@@ -196,23 +198,23 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [RESEARCHED]
-- **Session**: sess_1769646323_6a0334
-- **Effort**: 45 min - 1 hour
+- **Status**: [PLANNED]
+- **Session**: sess_1769646678_e60e81
+- **Effort**: 30-45 min
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
-- **Planned**: 2026-01-29 (v6)
+- **Planned**: 2026-01-29 (v7)
 - **Dependencies**: Task 681 (COMPLETED), Task 697 (COMPLETED)
 - **Related**: Task 654, Task 657, Task 700
-- **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:550-603
-- **Plan**: [implementation-006.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-006.md)
-- **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md), [research-004.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md)
+- **Source**: Theories/Bimodal/Metalogic/Representation/UniversalCanonicalModel.lean:77
+- **Plan**: [implementation-007.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-007.md)
+- **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md), [research-004.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md), [research-005.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-005.md)
 - **Summary**: [implementation-summary-20260128.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md)
 
-**Description**: Trace the actual construction path from `representation_theorem` to verify it uses the coherent construction (Task 681). Task 697 fixed TruthLemma.lean's usage of the coherence conditions, confirming they're actively used. This task ensures the sorry-free path (via `construct_coherent_family`) is actually invoked.
+**Description**: Switch `representation_theorem` to use `construct_coherent_family` instead of superseded `construct_indexed_family`. Research-005 confirmed the code-documentation mismatch: README shows the coherent path but code still uses the old 4-sorry construction.
 
-**Current Status**: Tasks 681 and 697 completed. Need to trace dependency chain from representation_theorem and ensure coherent construction is used.
+**Current Status**: Ready to implement. Straightforward refactoring - update UniversalCanonicalModel.lean:77 to use coherent construction.
 
 ---
 
