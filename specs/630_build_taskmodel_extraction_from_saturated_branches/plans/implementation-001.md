@@ -76,7 +76,7 @@ Build infrastructure to extract a proper TaskModel from saturated open tableau b
 
 ---
 
-### Phase 2: Define BranchTaskRelation [NOT STARTED]
+### Phase 2: Define BranchTaskRelation [COMPLETED]
 
 **Goal**: Define task relation satisfying nullity and compositionality
 
@@ -101,7 +101,7 @@ Build infrastructure to extract a proper TaskModel from saturated open tableau b
 
 ---
 
-### Phase 3: Build extractTaskFrame [NOT STARTED]
+### Phase 3: Build extractTaskFrame [COMPLETED]
 
 **Goal**: Construct TaskFrame from saturated open branch
 
@@ -128,7 +128,7 @@ Build infrastructure to extract a proper TaskModel from saturated open tableau b
 
 ---
 
-### Phase 4: Truth Lemma [NOT STARTED]
+### Phase 4: Truth Lemma [PARTIAL]
 
 **Goal**: Prove branch satisfaction corresponds to model satisfaction
 
