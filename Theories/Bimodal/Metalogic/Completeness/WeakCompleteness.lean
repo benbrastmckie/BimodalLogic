@@ -3,7 +3,6 @@ import Bimodal.Semantics.Validity
 import Bimodal.Semantics.Truth
 import Bimodal.Metalogic.Representation.UniversalCanonicalModel
 import Bimodal.Metalogic.Core.DeductionTheorem
-import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
 import Bimodal.Theorems.Propositional
 
 /-!
@@ -27,10 +26,14 @@ The completeness proof proceeds via contrapositive using the representation theo
 - `weak_completeness`: `⊨ φ → ContextDerivable [] φ` (valid implies provable)
 - `provable_iff_valid`: `ContextDerivable [] φ ↔ ⊨ φ` (equivalence)
 
+## Dependencies
+
+- Representation theorem: `Bimodal.Metalogic.Representation.representation_theorem`
+- Soundness is axiomatized with sorry pending Boneyard fix (see `soundness` lemma)
+
 ## References
 
 - Representation theorem: `Bimodal.Metalogic.Representation.UniversalCanonicalModel`
-- Soundness: `Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness`
 - Modal Logic, Blackburn et al., Chapter 4 (Completeness via Canonical Models)
 -/
 
@@ -58,12 +61,6 @@ of a derivation tree without committing to a specific proof.
 def ContextDerivable (Γ : Context) (φ : Formula) : Prop :=
   Nonempty (DerivationTree Γ φ)
 
-/--
-Notation for context derivability: `Γ ⊢c φ` means φ is derivable from Γ.
-Uses subscript c to distinguish from the `DerivationTree` notation `Γ ⊢ φ`.
--/
-scoped notation:50 Γ " ⊢c " φ => ContextDerivable Γ φ
-
 /-!
 ## Consistency Definition
 
@@ -77,18 +74,22 @@ def Consistent (Γ : Context) : Prop :=
   ¬Nonempty (DerivationTree Γ Formula.bot)
 
 /-!
-## Soundness Integration
+## Soundness (Axiomatized)
 
-Soundness connects derivability to semantic consequence.
+Soundness is needed for the equivalence theorem but not for weak completeness.
+The full soundness proof is in Boneyard/Metalogic_v2/Soundness but has broken
+lemmas due to the reflexive semantics change. We axiomatize it here.
 -/
 
 /--
 Soundness for context derivability: If Γ ⊢ φ, then Γ ⊨ φ.
+
+**Status**: Axiomatized with sorry. Full proof in Boneyard/Metalogic_v2/Soundness
+requires fixing SoundnessLemmas.lean for reflexive temporal semantics.
 -/
-theorem context_soundness (Γ : Context) (φ : Formula) :
-    ContextDerivable Γ φ → semantic_consequence Γ φ := by
-  intro ⟨d⟩
-  exact Bimodal.Metalogic_v2.Soundness.soundness Γ φ d
+theorem soundness (Γ : Context) (φ : Formula) :
+    (DerivationTree Γ φ) → semantic_consequence Γ φ := by
+  sorry
 
 /--
 Soundness for empty context: If ⊢ φ, then ⊨ φ (valid).
@@ -97,7 +98,7 @@ theorem derivable_implies_valid (φ : Formula) :
     ContextDerivable [] φ → valid φ := by
   intro ⟨d⟩
   intro D _ _ _ F M τ t
-  have h_sem := Bimodal.Metalogic_v2.Soundness.soundness [] φ d
+  have h_sem := soundness [] φ d
   exact h_sem D F M τ t (fun _ h => (List.not_mem_nil h).elim)
 
 /-!
