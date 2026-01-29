@@ -203,7 +203,7 @@
     {
       "project_number": 625,
       "project_name": "prove_decide_complete",
-      "status": "researching",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -211,7 +211,7 @@
         624
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T14:29:25Z",
+      "last_updated": "2026-01-29T14:32:46Z",
       "session_id": "sess_1769696950_ac053a",
       "researched": "2026-01-29T14:14:55Z",
       "artifacts": [
@@ -224,6 +224,11 @@
           "path": "specs/625_prove_decide_complete/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for proving decide_complete theorem"
+        },
+        {
+          "path": "specs/625_prove_decide_complete/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplementary research analyzing full proof reconstruction from closed tableau branches - what it would require (150-280 hours), what it would provide, and why it is correctly excluded from scope"
         }
       ],
       "planned": "2026-01-29T14:19:47Z"

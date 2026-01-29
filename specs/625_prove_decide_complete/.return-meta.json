@@ -1,15 +1,33 @@
 {
-  "status": "in_progress",
+  "status": "done",
   "started_at": "2026-01-29T14:30:00Z",
-  "artifacts": [],
+  "completed_at": "2026-01-29T14:45:00Z",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/625_prove_decide_complete/reports/research-002.md",
+      "summary": "Supplementary research analyzing full proof reconstruction from closed tableau branches - what it would require (150-280 hours estimated), what it would provide (stronger completeness with proof terms), and why it is correctly excluded from Task 625 scope"
+    }
+  ],
   "partial_progress": {
-    "stage": "writing_report",
-    "details": "Analyzed DerivationTree, ClosedBranch, and proof extraction - writing research-002.md"
+    "stage": "complete",
+    "details": "Analyzed DerivationTree, ClosedBranch, tableau expansion, and proof extraction systems"
   },
   "metadata": {
     "session_id": "sess_1769696950_ac053a",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "skill-lean-research"]
+  },
+  "findings_summary": {
+    "main_question": "What would full proof reconstruction from closed branches amount to?",
+    "key_findings": [
+      "Current gap: ClosedBranch provides semantic closure evidence, but DerivationTree needs syntactic proof terms",
+      "Current extraction only works for direct axiom matches; contradiction/botPos closures produce no proof",
+      "Full reconstruction requires: enhanced closure tracking (history), rule correspondence proofs (14 rules), reconstruction algorithm, propositional infrastructure",
+      "Estimated effort: 150-280 hours (4-8 weeks focused work)",
+      "Alternative approaches available: selective reconstruction (~60-80 hours), axiom-based trust, external checker"
+    ],
+    "recommendation": "Proceed with Task 625 using existing infrastructure; document gaps; consider weaker theorem statement if needed; create separate task for full reconstruction when ready"
   }
 }

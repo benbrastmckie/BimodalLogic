@@ -78,7 +78,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Restructure TruthLemma.lean to Forward-Only [NOT STARTED]
+### Phase 2: Restructure TruthLemma.lean to Forward-Only [IN PROGRESS]
 
 **Goal**: Restructure TruthLemma.lean to only prove the forward direction, eliminating all sorries.
 

@@ -2,7 +2,7 @@ import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic.FMP.FiniteWorldState
 import Bimodal.Metalogic.FMP.BoundedTime
-import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
+import Bimodal.Metalogic.Completeness.WeakCompleteness
 import Mathlib.Data.Set.Basic
 import Mathlib.Data.Finite.Defs
 
@@ -51,7 +51,7 @@ This module uses:
 namespace Bimodal.Metalogic.FMP
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
-open Bimodal.Metalogic.Core Bimodal.Metalogic_v2.Soundness
+open Bimodal.Metalogic.Core Bimodal.Metalogic.Completeness
 
 /-!
 ## History-Time Pairs
