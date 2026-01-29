@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/763_add_plan_status_updates_skill_lean_implementation/plans/implementation-001.md",
+      "summary": "3-phase implementation plan to add plan status updates to skill-lean-implementation"
+    }
+  ],
+  "next_steps": "Run /implement 763 to execute the plan",
   "metadata": {
     "session_id": "sess_1769721524_3e665d",
     "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 0.5
   }
 }

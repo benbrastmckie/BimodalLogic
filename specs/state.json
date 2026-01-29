@@ -545,11 +545,11 @@
     {
       "project_number": 763,
       "project_name": "add_plan_status_updates_skill_lean_implementation",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T21:04:06Z",
-      "last_updated": "2026-01-29T21:18:56Z",
+      "last_updated": "2026-01-29T21:20:44Z",
       "session_id": "sess_1769721524_3e665d",
       "description": "Add plan status update pattern (sed commands to update - **Status**: [...] line) to skill-lean-implementation/SKILL.md in three locations: (1) Stage 2 Preflight: Update to [IMPLEMENTING] before invoking agent, (2) Stage 7 Postflight (implemented): Update to [COMPLETED], (3) Stage 7 Postflight (partial): Update to [PARTIAL]. Pattern exists in skill-implementer (lines 91-98, 265-271, 287-293), skill-latex-implementation (lines 70-76, 282-288, 304-310), skill-typst-implementation (lines 70-76, 282-288, 304-310).",
       "researched": "2026-01-29T21:15:16Z",
@@ -558,6 +558,11 @@
           "path": "specs/763_add_plan_status_updates_skill_lean_implementation/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of plan status update pattern from sister skills with exact insertion points for skill-lean-implementation"
+        },
+        {
+          "path": "specs/763_add_plan_status_updates_skill_lean_implementation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan to add plan status updates to skill-lean-implementation"
         }
       ]
     }
