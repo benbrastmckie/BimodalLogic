@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 749,
+      "project_name": "establish_sorry_free_completeness_via_semantic_weak_completeness",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-29T14:48:21Z",
+      "last_updated": "2026-01-29T14:48:21Z"
+    },
+    {
       "project_number": 746,
       "project_name": "improve_bimodal_metalogic_source_comments",
       "status": "researched",
@@ -589,7 +598,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 749,
+  "next_project_number": 750,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

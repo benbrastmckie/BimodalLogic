@@ -1,5 +1,5 @@
 ---
-next_project_number: 749
+next_project_number: 750
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -119,6 +119,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 749. Establish sorry-free completeness via semantic_weak_completeness
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-29
+
+**Description**: Establish sorry-free completeness using `semantic_weak_completeness` which works directly with finite model truth, avoiding the truth bridge, or other methods if better.
+
+---
 
 ### 746. Improve Bimodal/Metalogic source comments
 - **Effort**: 4-6 hours
