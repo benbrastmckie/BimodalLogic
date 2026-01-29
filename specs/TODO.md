@@ -105,14 +105,14 @@ technical_debt:
 ## Medium Priority
 
 ### 739. Update report-format.md with Project Context section
-- **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 0.5 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
-- **Plan**: [implementation-001.md](specs/739_update_report_format_with_project_context_section/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/739_update_report_format_with_project_context_section/plans/implementation-002.md)
 
-**Description**: Update .claude/context/core/formats/report-format.md to include a new "Project Context" section in the research report template. The section should appear after metadata and before Executive Summary to provide early orientation. Define fields: relation to project goals, component location, relevant modules, and integration points. This provides researchers with context on how their work fits into the broader project structure.
+**Description**: Update .claude/context/core/formats/report-format.md to include a Lean-specific "Project Context" section focused on proof dependencies. The section documents upstream dependencies, downstream dependents, alternative paths, and potential extensions to help researchers understand how a topic fits into the Lean codebase. This is optional for non-Lean reports.
 
 ---
 
