@@ -144,23 +144,21 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [IMPLEMENTING]
-- **Session**: sess_1769646678_e60e81
+- **Status**: [COMPLETED]
+- **Session**: sess_1769647181_06ee35
 - **Effort**: 30-45 min
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
-- **Planned**: 2026-01-29 (v7)
+- **Completed**: 2026-01-29
 - **Dependencies**: Task 681 (COMPLETED), Task 697 (COMPLETED)
 - **Related**: Task 654, Task 657, Task 700
 - **Source**: Theories/Bimodal/Metalogic/Representation/UniversalCanonicalModel.lean:77
 - **Plan**: [implementation-007.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-007.md)
 - **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md), [research-004.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md), [research-005.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-005.md)
-- **Summary**: [implementation-summary-20260128.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md)
+- **Summary**: [implementation-summary-20260129.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260129.md)
 
-**Description**: Switch `representation_theorem` to use `construct_coherent_family` instead of superseded `construct_indexed_family`. Research-005 confirmed the code-documentation mismatch: README shows the coherent path but code still uses the old 4-sorry construction.
-
-**Current Status**: Ready to implement. Straightforward refactoring - update UniversalCanonicalModel.lean:77 to use coherent construction.
+**Description**: Switched `representation_theorem` to use `construct_coherent_family` instead of superseded `construct_indexed_family`. Coherence proofs now definitional via CoherentConstruction.lean two-chain architecture.
 
 ---
 

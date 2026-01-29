@@ -38,11 +38,6 @@
           "summary": "Research report analyzing four coherence conditions with proof strategies, dependencies, and implementation recommendations"
         },
         {
-          "path": "specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260125.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting the blocking issue and recommendations"
-        },
-        {
           "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md",
           "type": "research",
           "summary": "Comprehensive analysis of coherence blocker, Boneyard patterns, and architectural solutions for task 658"
@@ -51,16 +46,6 @@
           "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md",
           "type": "research",
           "summary": "Analysis of T axiom impact: NOT including T axioms makes proofs impossible (fundamental construction issue). Adding T axioms would make coherence trivial. Recommends adding T axioms or accepting limitation."
-        },
-        {
-          "path": "specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md",
-          "type": "summary",
-          "summary": "Partial implementation: T-axioms and reflexive semantics complete, coherence proofs blocked"
-        },
-        {
-          "path": "specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128-v2.md",
-          "type": "summary",
-          "summary": "Partial implementation summary: Phase 1 (T-axiom closure lemmas) complete, Phases 2-6 blocked by construction design"
         },
         {
           "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md",
@@ -76,6 +61,11 @@
           "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-007.md",
           "type": "plan",
           "summary": "Revised plan v7 incorporating research-005 findings: switch representation_theorem to use construct_coherent_family"
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Final implementation summary: Phases 3-4 complete, coherent construction now used"
         }
       ],
       "planning": "2026-01-25T21:42:13Z",
