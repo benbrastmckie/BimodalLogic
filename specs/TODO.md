@@ -193,15 +193,17 @@ technical_debt:
 
 ### 660. Prove parametric completeness theorems
 - **Effort**: 10-15 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Dependencies**: Tasks 656, 657, 658
 - **Related**: Task 654
 - **Research**: [research-001.md](specs/660_prove_parametric_completeness_theorems/reports/research-001.md), [research-002.md](specs/660_prove_parametric_completeness_theorems/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/660_prove_parametric_completeness_theorems/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/660_prove_parametric_completeness_theorems/summaries/implementation-summary-20260129.md)
 
 **Description**: Use the representation theorem from Task 654 to prove weak and strong completeness for TM logic over arbitrary ordered additive groups. The representation theorem establishes that consistent formulas are satisfiable in the parametric canonical model. This task completes the metalogic by deriving completeness: (1) Weak completeness: if ⊨ φ then ⊢ φ, (2) Strong completeness: if Γ ⊨ φ then Γ ⊢ φ. Builds on the foundation established by Tasks 656-658. From review-20260121-task654.md future work section.
 
@@ -280,7 +282,7 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
