@@ -27,6 +27,29 @@ technical_debt:
 
 ## High Priority
 
+### 742. Restore lean-research-agent and skill-lean-research thin wrapper
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-29
+
+**Description**: Restore lean-research-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-research from 408-line direct execution to ~80-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0). Follow patterns from skill-researcher and general-research-agent.
+
+---
+
+### 743. Restore lean-implementation-agent and skill-lean-implementation thin wrapper
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: meta
+- **Created**: 2026-01-29
+- **Dependencies**: Task 742
+
+**Description**: Restore lean-implementation-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-implementation from 524-line direct execution to ~100-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0), (4) completion_data generation. Follow patterns from skill-implementer and general-implementation-agent.
+
+---
+
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
@@ -104,6 +127,18 @@ technical_debt:
 
 ## Medium Priority
 
+### 744. Update documentation for restored Lean agent architecture
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+- **Dependencies**: Tasks 742, 743
+
+**Description**: Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.
+
+---
+
 ### 739. Update report-format.md with Project Context section
 - **Effort**: 0.5 hours
 - **Status**: [COMPLETED]
@@ -120,7 +155,7 @@ technical_debt:
 
 ### 740. Update skill-lean-research to generate Project Context
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: Task 739
@@ -204,10 +239,11 @@ technical_debt:
 
 ### 741. Witness extraction architecture for backward Truth Lemma
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Related**: Tasks 654, 656, 659
 - **Research**: [research-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/plans/implementation-001.md)

@@ -8,7 +8,7 @@
     {
       "project_number": 741,
       "project_name": "witness_extraction_architecture_for_backward_truth_lemma",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "description": "Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s) (and symmetric for G). Task 659 Phase 2 assessment showed that forward_H coherence does NOT provide this—the contrapositive gives universal (∀) statements, not existential (∃) witnesses. This task explores architectural approaches: (1) direct witness construction via MCS chain properties, (2) semantic completeness argument (if ψ ∈ mcs(s) for all s < t, then Hψ ∈ mcs(t)), or (3) alternative proof strategies that bypass witness extraction. Reference: specs/659_prove_negation_completeness_lemmas/plans/implementation-002.md Phase 2 assessment.",
@@ -18,8 +18,8 @@
         659
       ],
       "created": "2026-01-29T13:10:43Z",
-      "last_updated": "2026-01-29T13:21:10Z",
-      "session_id": "sess_1769692718_36dac5",
+      "last_updated": "2026-01-29T13:36:23Z",
+      "session_id": "sess_1769693765_bff7b0",
       "researched": "2026-01-29T13:16:15Z",
       "artifacts": [
         {
@@ -33,7 +33,8 @@
           "summary": "6-phase plan: infrastructure analysis, H-completeness, G-completeness, witness extraction lemmas, backward Truth Lemma completion, verification"
         }
       ],
-      "planned": "2026-01-29T13:21:10Z"
+      "planned": "2026-01-29T13:21:10Z",
+      "started": "2026-01-29T13:36:23Z"
     },
     {
       "project_number": 738,
@@ -452,14 +453,52 @@
     {
       "project_number": 740,
       "project_name": "update_skill_lean_research_to_generate_project_context",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "description": "Update skill-lean-research to generate the Project Context section in lean research reports. Add context reference loading from project-overview.md, modify Stage 7 report generation to include the Project Context section as specified in report-format.md, and update .claude/context/project/lean4/agents/lean-research-flow.md Stage 5 documentation to reflect the new section. This ensures all lean research outputs include orientation information.",
       "created": "2026-01-29T01:45:00Z",
-      "last_updated": "2026-01-29T01:45:00Z",
+      "last_updated": "2026-01-29T13:37:47Z",
       "dependencies": [
         739
+      ],
+      "session_id": "sess_1769693852_1d9b5f"
+    },
+    {
+      "project_number": 742,
+      "project_name": "restore_lean_research_agent_thin_wrapper",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "description": "Restore lean-research-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-research from 408-line direct execution to ~80-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0). Follow patterns from skill-researcher and general-research-agent.",
+      "created": "2026-01-29T13:39:29Z",
+      "last_updated": "2026-01-29T13:39:29Z"
+    },
+    {
+      "project_number": 743,
+      "project_name": "restore_lean_implementation_agent_thin_wrapper",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "description": "Restore lean-implementation-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-implementation from 524-line direct execution to ~100-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0), (4) completion_data generation. Follow patterns from skill-implementer and general-implementation-agent.",
+      "created": "2026-01-29T13:39:29Z",
+      "last_updated": "2026-01-29T13:39:29Z",
+      "dependencies": [
+        742
+      ]
+    },
+    {
+      "project_number": 744,
+      "project_name": "update_documentation_lean_agent_architecture",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.",
+      "created": "2026-01-29T13:39:29Z",
+      "last_updated": "2026-01-29T13:39:29Z",
+      "dependencies": [
+        742,
+        743
       ]
     }
   ],
@@ -475,7 +514,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 742,
+  "next_project_number": 745,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
