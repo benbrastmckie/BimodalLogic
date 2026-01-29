@@ -8,11 +8,20 @@
     {
       "project_number": 766,
       "project_name": "improve_metalogic_documentation_ordering",
-      "status": "not_started",
+      "status": "researched",
       "language": "markdown",
       "priority": "medium",
       "created": "2026-01-29T23:10:10Z",
-      "last_updated": "2026-01-29T23:10:10Z"
+      "last_updated": "2026-01-29T23:13:25Z",
+      "session_id": "sess_1769728243_5b850b",
+      "researched": "2026-01-29T23:13:25Z",
+      "artifacts": [
+        {
+          "path": "specs/766_improve_metalogic_documentation_ordering/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 5 findings: README ordering issues, dependency layer diagram errors, Algebraic module status, Metalogic.lean missing imports, and Mermaid flowchart design"
+        }
+      ]
     },
     {
       "project_number": 765,

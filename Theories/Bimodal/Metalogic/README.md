@@ -1,7 +1,5 @@
 # TM Bimodal Logic Metalogic
 
-**Status**: Self-Contained (NO Boneyard Dependencies as of 2026-01-29)
-
 This directory contains the complete metalogic infrastructure for TM bimodal logic, including soundness, completeness, the finite model property, and compactness.
 
 ## What the Metalogic Establishes
@@ -38,13 +36,6 @@ theorem representation_theorem : SetConsistent {φ} → satisfiable_in_canonical
 theorem finite_model_property : satisfiable φ → ∃ finite_model, satisfiable_in φ
 theorem semanticWorldState_card_bound : card worlds ≤ 2^closureSize
 ```
-
-### Canonical Completeness Result
-```lean
-theorem semantic_weak_completeness (φ : Formula) :
-    (∀ w : SemanticWorldState φ, semantic_truth_at_v2 φ w origin φ) → ⊢ φ
-```
-**This is THE completeness theorem** - avoids truth bridge gap via contrapositive.
 
 ### Compactness (`Compactness/`)
 ```lean

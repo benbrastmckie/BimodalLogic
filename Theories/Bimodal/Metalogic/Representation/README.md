@@ -71,7 +71,7 @@ Consistent formulas are satisfiable in the universal canonical model.
                     ┌─────────┴─────────┐        │
                     │                   │        │
             forward_G             backward_H     │
-            Case 1              Case 4           │
+            Case 1                 Case 4        │
                     │                   │        │
                     └───────────────────┘        │
                               │                  │

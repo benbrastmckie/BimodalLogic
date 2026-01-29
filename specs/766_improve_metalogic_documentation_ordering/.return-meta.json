@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Identified 6 documentation ordering issues in Metalogic README where Completeness is presented before Representation (its dependency), incorrect dependency layer diagram, and incomplete Algebraic module documentation. Created Mermaid flowchart design for dependency visualization.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/766_improve_metalogic_documentation_ordering/reports/research-001.md",
+      "summary": "Research report with 5 findings: README ordering issues, dependency layer diagram errors, Algebraic module status, Metalogic.lean missing imports, and Mermaid flowchart design"
+    }
+  ],
+  "next_steps": "Run /plan 766 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1769728243_5b850b",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 5
+  }
+}
