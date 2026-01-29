@@ -202,7 +202,7 @@
     {
       "project_number": 625,
       "project_name": "prove_decide_complete",
-      "status": "planned",
+      "status": "researching",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -210,8 +210,8 @@
         624
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T14:19:47Z",
-      "session_id": "sess_1769696253_abceac",
+      "last_updated": "2026-01-29T14:29:25Z",
+      "session_id": "sess_1769696950_ac053a",
       "researched": "2026-01-29T14:14:55Z",
       "artifacts": [
         {

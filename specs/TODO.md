@@ -266,7 +266,7 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
