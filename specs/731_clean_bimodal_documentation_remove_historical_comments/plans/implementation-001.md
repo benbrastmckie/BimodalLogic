@@ -74,7 +74,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Move Compatibility Shims to Boneyard/Compat [NOT STARTED]
+### Phase 2: Move Compatibility Shims to Boneyard/Compat [COMPLETED]
 
 **Goal**: Relocate deprecated Metalogic.lean and Metalogic_v2.lean files to Boneyard/Compat/
 

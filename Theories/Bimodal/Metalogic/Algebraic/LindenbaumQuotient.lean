@@ -1,5 +1,5 @@
 import Bimodal.ProofSystem
-import Bimodal.Boneyard.Metalogic_v2.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Theorems.Propositional
 
 /-!

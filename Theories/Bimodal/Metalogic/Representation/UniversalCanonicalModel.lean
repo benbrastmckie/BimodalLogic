@@ -38,7 +38,7 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
-open Bimodal.Metalogic_v2.Core
+open Bimodal.Metalogic.Core
 open Bimodal.Semantics
 
 variable (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]

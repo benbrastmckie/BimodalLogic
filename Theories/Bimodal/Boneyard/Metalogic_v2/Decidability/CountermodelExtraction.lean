@@ -45,6 +45,7 @@ namespace Bimodal.Metalogic_v2.Decidability
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
+open Bimodal.Semantics
 
 /-!
 ## Simple Countermodel Type
@@ -164,30 +165,7 @@ def evalFormula (b : Branch) : Formula → Bool
   | .all_future φ => evalFormula b φ  -- Simplified: temporal treated as identity
   | .all_past φ => evalFormula b φ
 
-/--
-Openness implies consistency: a branch is open if it has no closure.
-This means no atom p has both T(p) and F(p) in the branch.
--/
-theorem open_branch_consistent (b : Branch) (hOpen : findClosure b = none) :
-    ∀ p, ¬(SignedFormula.pos (.atom p) ∈ b ∧ SignedFormula.neg (.atom p) ∈ b) := by
-  intro p ⟨hpos, hneg⟩
-  -- findClosure b = none means all checks return none
-  simp only [findClosure] at hOpen
-  rw [Option.orElse_eq_none, Option.orElse_eq_none] at hOpen
-  -- hOpen is now: checkBotPos b = none ∧ checkContradiction b = none ∧ checkAxiomNeg b = none
-  obtain ⟨_, hNoContra, _⟩ := hOpen
-  -- hNoContra : checkContradiction b = none
-  simp only [checkContradiction, List.findSome?_eq_none_iff] at hNoContra
-  -- Apply to SignedFormula.pos (atom p)
-  have h := hNoContra (SignedFormula.pos (.atom p)) hpos
-  -- The condition in h is: if (sign = pos) ∧ (hasNeg formula) then some ... else none = none
-  -- We show the condition is true, making result = some ..., contradicting h
-  have hhas : b.hasNeg (Formula.atom p) = true := by
-    simp only [Branch.hasNeg, Branch.contains, List.any_eq_true]
-    exact ⟨SignedFormula.neg (.atom p), hneg, beq_self_eq_true' _⟩
-  simp only [SignedFormula.isPos, SignedFormula.pos, decide_true, hhas, and_self, ↓reduceIte] at h
-  -- Now h : some (ClosureReason.contradiction (Formula.atom p)) = none
-  cases h
+-- Note: open_branch_consistent is now imported from BranchClosure.lean via BranchTaskModel
 
 /--
 T(φ→ψ) is not expanded because the impPos rule applies.
@@ -487,18 +465,20 @@ This provides the full semantic structure needed for modal/temporal operators:
 - TaskModel with valuation
 - World history for evaluation
 - Initial time point
+
+The types are fixed to use BranchTaskFrame to avoid universe level issues.
 -/
 structure TaskModelCountermodel where
   /-- The formula being refuted. -/
   formula : Formula
-  /-- The task frame. -/
-  frame : TaskFrame Int
-  /-- The task model (valuation). -/
-  model : TaskModel frame
+  /-- The task model (valuation over BranchTaskFrame). -/
+  model : TaskModel BranchTaskFrame
   /-- The world history for evaluation. -/
-  history : WorldHistory frame
+  history : WorldHistory BranchTaskFrame
   /-- The initial time point. -/
   time : Int
+  /-- The initial world state (from the branch). -/
+  worldState : BranchWorldState
 
 /--
 Extract a TaskModel-based countermodel from a saturated open branch.
@@ -511,18 +491,17 @@ def extractTaskModelCountermodel (φ : Formula) (b : Branch)
     (_hSat : findUnexpanded b = none) (_hOpen : findClosure b = none) :
     TaskModelCountermodel :=
   { formula := φ
-  , frame := extractBranchTaskFrame b
   , model := extractBranchTaskModel b
   , history := extractBranchWorldHistory b
   , time := 0
+  , worldState := extractBranchWorldState b
   }
 
 /--
 Display a TaskModel countermodel.
 -/
-def TaskModelCountermodel.display (cm : TaskModelCountermodel) : String :=
-  let ws := cm.history.states cm.time (by trivial : cm.frame.domain 0 cm.time)
-  let atoms := ws.atoms.toList
+noncomputable def TaskModelCountermodel.display (cm : TaskModelCountermodel) : String :=
+  let atoms := cm.worldState.atoms.toList
   let atomStr := if atoms.isEmpty then "none" else String.intercalate ", " atoms
   s!"TaskModel Countermodel for {repr cm.formula}:\n  World state atoms: {atomStr}\n  Time: {cm.time}"
 
@@ -538,7 +517,6 @@ inductive CountermodelResultEx (φ : Formula) where
   | valid
   /-- Extraction failed. -/
   | failed (reason : String)
-  deriving Repr
 
 /--
 Find countermodel with extended result type.
@@ -549,9 +527,9 @@ def findCountermodelEx (φ : Formula) (fuel : Nat := 1000) : CountermodelResultE
   | none => .failed "Tableau construction timeout"
   | some (.allClosed _) => .valid
   | some (.hasOpen openBranch hSat) =>
-      match findClosure openBranch with
+      match hOpen : findClosure openBranch with
       | some _ => .failed "Branch has closure (internal error)"
       | none =>
-        .taskModel (extractTaskModelCountermodel φ openBranch hSat (by rfl))
+        .taskModel (extractTaskModelCountermodel φ openBranch hSat hOpen)
 
 end Bimodal.Metalogic_v2.Decidability

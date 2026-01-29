@@ -50,7 +50,7 @@ The algebraic approach proceeds as follows:
 ## Dependencies
 
 - Mathlib: BooleanAlgebra, Ultrafilter, ClosureOperator
-- ProofChecker: Bimodal.ProofSystem, Bimodal.Metalogic_v2.Core
+- ProofChecker: Bimodal.ProofSystem, Bimodal.Metalogic.Core
 
 ## Status
 

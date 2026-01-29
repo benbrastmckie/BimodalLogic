@@ -44,7 +44,7 @@ open Bimodal.Syntax
 open Bimodal.Syntax.Formula (swap_temporal_involution)
 open Bimodal.ProofSystem
 open Bimodal.Semantics
-open Bimodal.Metalogic_v2.Core
+open Bimodal.Metalogic.Core
 open Bimodal.Metalogic_v2.Soundness
 open Bimodal.Metalogic_v2.Representation (semantic_weak_completeness main_provable_iff_valid_v2)
 open Bimodal.Metalogic_v2.Decidability

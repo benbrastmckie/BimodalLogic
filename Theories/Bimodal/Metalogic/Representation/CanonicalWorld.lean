@@ -34,7 +34,7 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
-open Bimodal.Metalogic_v2.Core
+open Bimodal.Metalogic.Core
 
 /-!
 ## Canonical World Structure
@@ -156,7 +156,7 @@ lemma CanonicalWorld.deductively_closed (w : CanonicalWorld D) (L : List Formula
   -- Weaken to φ :: M'
   have d_bot' := Bimodal.ProofSystem.DerivationTree.weakening M (φ :: M') Formula.bot d_bot hM_sub'
   -- By deduction theorem, M' ⊢ ¬φ
-  have d_neg := Bimodal.Metalogic_v2.Core.deduction_theorem M' φ Formula.bot d_bot'
+  have d_neg := Bimodal.Metalogic.Core.deduction_theorem M' φ Formula.bot d_bot'
   -- Weaken L ⊢ φ to M' ⊢ φ (if L ⊆ M')
   -- Actually we need L ⊆ M' or similar, which may not hold directly
   -- The proof is more subtle - we need to combine the derivations properly
