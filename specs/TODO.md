@@ -345,7 +345,7 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21

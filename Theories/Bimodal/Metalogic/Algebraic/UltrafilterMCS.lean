@@ -108,7 +108,7 @@ theorem mcsToSet_bot_not_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ
   -- This means [φ] = [⊥], i.e., ⊢ φ ↔ ⊥
   -- In particular, ⊢ φ → ⊥ (i.e., ⊢ ¬φ)
   have h_le : toQuot φ ≤ (⊥ : LindenbaumAlg) := by
-    rw [← h_eq]; exact le_refl _
+    rw [← h_eq]
   -- toQuot φ ≤ ⊥ means Derives φ ⊥, i.e., ⊢ φ → ⊥
   have h_derives : Derives φ Formula.bot := h_le
   obtain ⟨d_neg⟩ := h_derives
@@ -167,7 +167,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ)
 
       -- We need contraposition: ⊢ (φ → ψ) → (¬ψ → ¬φ)
       have d_contra : DerivationTree [] ((φ.imp ψ).imp (ψ.neg.imp φ.neg)) :=
-        Bimodal.Theorems.Propositional.contraposition φ ψ
+        Bimodal.Theorems.Propositional.contrapose_imp φ ψ
       have d_neg_ψ_to_neg_φ : DerivationTree [] (ψ.neg.imp φ.neg) :=
         DerivationTree.modus_ponens [] _ _ d_contra d_imp
 
@@ -211,7 +211,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ)
         Bimodal.Metalogic.Core.deduction_theorem Γ' ψ Formula.bot d_bot'
       -- Weaken to add φ: (φ :: Γ') ⊢ ¬ψ
       have d_neg_ψ' : DerivationTree (φ :: Γ') ψ.neg :=
-        DerivationTree.weakening Γ' (φ :: Γ') ψ.neg d_neg_ψ (List.subset_cons_self Γ')
+        DerivationTree.weakening Γ' (φ :: Γ') ψ.neg d_neg_ψ (fun x hx => List.mem_cons_of_mem φ hx)
       -- We also have (φ :: Γ') ⊢ φ → ψ
       have d_imp' : DerivationTree (φ :: Γ') (φ.imp ψ) :=
         DerivationTree.weakening [] (φ :: Γ') (φ.imp ψ) d_imp (by simp)
@@ -290,12 +290,30 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ)
     have d_ψ : DerivationTree (ψ :: φ :: Γ') ψ :=
       DerivationTree.assumption (ψ :: φ :: Γ') ψ (by simp)
     -- Derive φ ∧ ψ using conjunction introduction
+    -- φ.and ψ = (φ.imp ψ.neg).neg
+    -- Need to show: from φ and ψ, derive ¬(φ → ¬ψ)
+    -- Strategy: assume (φ → ¬ψ), from φ get ¬ψ, but we have ψ, contradiction
     have d_and : DerivationTree (ψ :: φ :: Γ') (φ.and ψ) := by
-      have h_ci := Bimodal.Theorems.Propositional.conjunction_intro φ ψ
-      have h1 : DerivationTree (ψ :: φ :: Γ') (φ.imp (ψ.imp (φ.and ψ))) :=
-        DerivationTree.weakening [] (ψ :: φ :: Γ') _ h_ci (by simp)
-      have h2 := DerivationTree.modus_ponens (ψ :: φ :: Γ') φ (ψ.imp (φ.and ψ)) h1 d_φ
-      exact DerivationTree.modus_ponens (ψ :: φ :: Γ') ψ (φ.and ψ) h2 d_ψ
+      -- φ.and ψ = (φ.imp ψ.neg).neg
+      -- To prove ¬(φ → ¬ψ), assume (φ → ¬ψ) and derive ⊥
+      -- Then apply deduction theorem
+      let ctx := ψ :: φ :: Γ'
+      let hyp := φ.imp ψ.neg
+      -- In (hyp :: ctx), we have φ → ¬ψ, φ, and ψ
+      have d_hyp : DerivationTree (hyp :: ctx) hyp :=
+        DerivationTree.assumption (hyp :: ctx) hyp (by simp)
+      have d_φ' : DerivationTree (hyp :: ctx) φ :=
+        DerivationTree.assumption (hyp :: ctx) φ (by simp [ctx])
+      have d_ψ' : DerivationTree (hyp :: ctx) ψ :=
+        DerivationTree.assumption (hyp :: ctx) ψ (by simp [ctx])
+      -- From φ → ¬ψ and φ, get ¬ψ
+      have d_neg_ψ' : DerivationTree (hyp :: ctx) ψ.neg :=
+        DerivationTree.modus_ponens (hyp :: ctx) φ ψ.neg d_hyp d_φ'
+      -- From ψ and ¬ψ = ψ → ⊥, get ⊥
+      have d_bot' : DerivationTree (hyp :: ctx) Formula.bot :=
+        DerivationTree.modus_ponens (hyp :: ctx) ψ Formula.bot d_neg_ψ' d_ψ'
+      -- By deduction theorem, ctx ⊢ ¬hyp = ctx ⊢ (φ → ¬ψ) → ⊥
+      exact Bimodal.Metalogic.Core.deduction_theorem ctx hyp Formula.bot d_bot'
     -- From φ ∧ ψ and ¬(φ ∧ ψ), derive ⊥
     have d_bot'' : DerivationTree (ψ :: φ :: Γ') Formula.bot :=
       DerivationTree.modus_ponens (ψ :: φ :: Γ') (φ.and ψ) Formula.bot d_neg' d_and
@@ -373,10 +391,11 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent Γ)
         have h_Γ''_sub : ∀ χ ∈ Γ'', χ ∈ Γ := by
           intro χ hχ
           have hχ' := List.mem_filter.mp hχ
+          have hχne : χ ≠ φ.neg := by simpa using hχ'.2
           specialize hL' χ hχ'.1
           simp [Set.mem_insert_iff] at hL'
           rcases hL' with rfl | h_in_Γ
-          · simp at hχ'; exact absurd rfl hχ'
+          · exact absurd rfl hχne
           · exact h_in_Γ
         have h_L'_sub : L' ⊆ φ.neg :: Γ'' := by
           intro χ hχ
