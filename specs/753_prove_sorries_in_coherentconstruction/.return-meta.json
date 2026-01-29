@@ -4,16 +4,16 @@
   "artifacts": [],
   "partial_progress": {
     "stage": "implementing",
-    "details": "Phase 1 complete: Proved G_bot_not_in_mcs and H_bot_not_in_mcs using T-axiom, resolved sorries in mcs_forward_chain and mcs_backward_chain definitions"
+    "details": "Phases 2,4,5 complete: Resolved 8 sorries (UniversalCanonicalModel, CanonicalWorld, CanonicalHistory). Remaining: 24 sorries in 4 files."
   },
   "metadata": {
     "session_id": "sess_1769706752_5bf372",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 1,
+    "phases_completed": 5,
     "phases_total": 11,
-    "sorries_resolved": 2,
-    "sorries_remaining": 32
+    "sorries_resolved": 10,
+    "sorries_remaining": 24
   }
 }

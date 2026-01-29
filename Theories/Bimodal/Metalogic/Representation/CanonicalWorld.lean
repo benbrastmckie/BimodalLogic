@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 import Mathlib.Algebra.Order.Group.Defs
 
@@ -89,27 +90,8 @@ This is a crucial property for the truth lemma: if φ is not in the MCS,
 then its negation must be.
 -/
 lemma CanonicalWorld.neg_complete (w : CanonicalWorld D) (φ : Formula) :
-    φ ∈ w.mcs ∨ Formula.neg φ ∈ w.mcs := by
-  by_cases h : φ ∈ w.mcs
-  · left; exact h
-  · right
-    -- Use the MCS theory: if φ ∉ w.mcs, then insert φ is inconsistent
-    have h_incons : ¬SetConsistent (insert φ w.mcs) := w.maximal φ h
-    -- Need to derive ¬φ ∈ w.mcs from this
-    -- This requires showing that the deduction theorem argument works for sets
-    -- For now, use a classical argument
-    by_contra h_neg_not_in
-    -- If neither φ nor ¬φ is in w.mcs, we have a contradiction with MCS maximality
-    -- Actually, we need a more direct argument
-    -- From h_incons, we know adding φ is inconsistent
-    -- From h_neg_not_in, we could add ¬φ, but by maximality that should also be inconsistent
-    have h_neg_incons : ¬SetConsistent (insert (Formula.neg φ) w.mcs) := w.maximal (Formula.neg φ) h_neg_not_in
-    -- But this contradicts the fact that one of them must be addable to a consistent set
-    -- Actually this argument is getting circular. Let's use a different approach.
-    -- We use the fact that MCS + deduction theorem gives us negation completeness
-    -- This is already proven in the Boneyard MCS theory for list-based MCS
-    -- For set-based, we need to adapt the proof
-    sorry -- TODO: Complete this proof using set-based MCS properties
+    φ ∈ w.mcs ∨ Formula.neg φ ∈ w.mcs :=
+  Bimodal.Metalogic.Core.set_mcs_negation_complete w.is_mcs φ
 
 /--
 Canonical worlds are deductively closed for finite derivations.
@@ -118,45 +100,8 @@ If a finite list L ⊆ mcs derives φ, then φ ∈ mcs.
 -/
 lemma CanonicalWorld.deductively_closed (w : CanonicalWorld D) (L : List Formula)
     (hL : ∀ ψ ∈ L, ψ ∈ w.mcs) (φ : Formula) (h_deriv : Bimodal.ProofSystem.DerivationTree L φ) :
-    φ ∈ w.mcs := by
-  -- By contradiction: assume φ ∉ w.mcs
-  by_contra h_not_in
-  -- By maximality, insert φ w.mcs is inconsistent
-  have h_incons : ¬SetConsistent (insert φ w.mcs) := w.maximal φ h_not_in
-  -- So there exists some finite M ⊆ insert φ w.mcs that derives ⊥
-  unfold SetConsistent at h_incons
-  push_neg at h_incons
-  obtain ⟨M, hM_sub, hM_incons⟩ := h_incons
-  -- Filter out φ from M to get M' ⊆ w.mcs
-  let M' := M.filter (· ≠ φ)
-  have hM'_sub : ∀ ψ ∈ M', ψ ∈ w.mcs := by
-    intro ψ hψ
-    have hψ' := List.mem_filter.mp hψ
-    have hψM := hψ'.1
-    have hψne : ψ ≠ φ := by simpa using hψ'.2
-    have := hM_sub ψ hψM
-    simp [Set.mem_insert_iff] at this
-    rcases this with rfl | h
-    · exact absurd rfl hψne
-    · exact h
-  -- M ⊆ φ :: M', so we can weaken the derivation of ⊥
-  have hM_sub' : M ⊆ φ :: M' := by
-    intro ψ hψ
-    by_cases hψφ : ψ = φ
-    · simp [hψφ]
-    · simp only [List.mem_cons]
-      right
-      exact List.mem_filter.mpr ⟨hψ, by simpa⟩
-  -- Get derivation of ⊥ from M
-  have ⟨d_bot⟩ := inconsistent_derives_bot hM_incons
-  -- Weaken to φ :: M'
-  have d_bot' := Bimodal.ProofSystem.DerivationTree.weakening M (φ :: M') Formula.bot d_bot hM_sub'
-  -- By deduction theorem, M' ⊢ ¬φ
-  have d_neg := Bimodal.Metalogic.Core.deduction_theorem M' φ Formula.bot d_bot'
-  -- Weaken L ⊢ φ to M' ⊢ φ (if L ⊆ M')
-  -- Actually we need L ⊆ M' or similar, which may not hold directly
-  -- The proof is more subtle - we need to combine the derivations properly
-  sorry -- TODO: Complete using proper derivation combination
+    φ ∈ w.mcs :=
+  Bimodal.Metalogic.Core.set_mcs_closed_under_derivation w.is_mcs L hL h_deriv
 
 /--
 Theorems (formulas derivable from empty context) are in every canonical world.

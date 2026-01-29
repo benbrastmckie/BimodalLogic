@@ -131,12 +131,13 @@ lemma canonical_history_respects (Gamma : Set Formula) (h_mcs : SetMaximalConsis
       simp only [hpos, ite_true]
       refine ⟨?_, ?_, ?_⟩
       · -- G φ ∈ Gamma → φ ∈ Gamma
-        -- This follows from the T-axiom for G: G φ → φ
+        -- This follows from the T-axiom for G: G φ → φ (temp_t_future)
         intro φ hG
-        sorry -- T-axiom application for future
+        exact mcs_closed_temp_t_future h_mcs φ hG
       · -- H φ ∈ Gamma → φ ∈ Gamma
+        -- This follows from the T-axiom for H: H φ → φ (temp_t_past)
         intro φ hH
-        sorry -- T-axiom application for past
+        exact mcs_closed_temp_t_past h_mcs φ hH
       · -- Time arithmetic: t = s + (t - s)
         simp only [add_sub_cancel]
     · -- Negative duration case: impossible since s ≤ t implies t - s ≥ 0

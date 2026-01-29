@@ -40,12 +40,13 @@ technical_debt:
 ---
 
 ### 755. Implement Option C: Forward Truth Lemma Refactoring
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 12 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Reference**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md)
 - **Research**: [research-001.md](specs/755_implement_option_c_forward_truth_lemma/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/755_implement_option_c_forward_truth_lemma/plans/implementation-001.md)
 
 **Description**: Complete Option C in /home/benjamin/Projects/ProofChecker/specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md in full rigor to the highest quality.
 
@@ -130,7 +131,7 @@ technical_debt:
 
 ### 757. Fix task state sync issues
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29

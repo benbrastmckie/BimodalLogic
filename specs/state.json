@@ -30,31 +30,39 @@
     {
       "project_number": 757,
       "project_name": "fix_task_state_sync_issues",
-      "status": "not_started",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T17:15:00Z",
-      "last_updated": "2026-01-29T17:15:00Z",
+      "last_updated": "2026-01-29T17:34:14Z",
       "description": "Fix task state synchronization issues from review: (1) Task 741 documented as blocked by omega-rule limitation but status shows researching - update to blocked; (2) Task 750 has planned timestamp and implementation plan but status shows researching - resolve direction; (3) Task 747 work appears complete but status shows implementing - finalize completion",
-      "source": "review-20260129-2"
+      "source": "review-20260129-2",
+      "session_id": "sess_1769707933_60bff7",
+      "planned": "2026-01-29T17:34:14Z"
     },
     {
       "project_number": 755,
       "project_name": "implement_option_c_forward_truth_lemma",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-29T16:54:59Z",
-      "last_updated": "2026-01-29T17:27:03Z",
-      "session_id": "sess_1769707365_e18f2a",
+      "last_updated": "2026-01-29T17:33:50Z",
+      "session_id": "sess_1769707843_159317",
       "researched": "2026-01-29T17:27:03Z",
       "artifacts": [
         {
           "path": "specs/755_implement_option_c_forward_truth_lemma/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of Option C FMP path approach to achieve sorry-free completeness via truth correspondence over subformula closure"
+        },
+        {
+          "path": "specs/755_implement_option_c_forward_truth_lemma/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for sorry-free completeness via FMP truth correspondence"
         }
-      ]
+      ],
+      "planned": "2026-01-29T17:33:50Z"
     },
     {
       "project_number": 753,

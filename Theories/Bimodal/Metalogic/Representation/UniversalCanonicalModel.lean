@@ -72,14 +72,30 @@ theorem representation_theorem (phi : Formula) (h_cons : SetConsistent {phi}) :
   obtain ⟨Gamma, h_extends, h_mcs⟩ := set_lindenbaum {phi} h_cons
   -- Step 2: Prove the temporal boundary conditions
   -- These hypotheses ensure the MCS can be extended temporally in both directions.
-  -- G⊥ ∉ Gamma and H⊥ ∉ Gamma are required because MCS containing these formulas
-  -- are only satisfiable at bounded temporal endpoints.
-  -- TODO: Prove these from h_mcs properties (G⊥ and H⊥ in MCS implies inconsistency
-  -- with unbounded time). For now, use sorry to unblock the coherent construction.
+  -- G⊥ ∉ Gamma and H⊥ ∉ Gamma follow from MCS consistency via T-axioms:
+  -- If G⊥ ∈ Gamma, then by T-axiom (Gφ → φ), ⊥ ∈ Gamma, contradicting consistency.
   have h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma := by
-    sorry
+    -- If G⊥ ∈ Gamma, then by T-axiom (Gφ → φ), ⊥ ∈ Gamma
+    -- But ⊥ ∈ Gamma contradicts MCS consistency
+    intro h_G_bot_in
+    -- T-axiom: G⊥ ∈ Gamma implies ⊥ ∈ Gamma
+    have h_bot_in : Formula.bot ∈ Gamma := mcs_closed_temp_t_future h_mcs Formula.bot h_G_bot_in
+    -- But [⊥] ⊢ ⊥, so Gamma is inconsistent
+    apply h_mcs.1 [Formula.bot]
+    · intro ψ hψ; simp at hψ; rw [hψ]; exact h_bot_in
+    · constructor
+      exact Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
   have h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma := by
-    sorry
+    -- If H⊥ ∈ Gamma, then by T-axiom (Hφ → φ), ⊥ ∈ Gamma
+    -- But ⊥ ∈ Gamma contradicts MCS consistency
+    intro h_H_bot_in
+    -- T-axiom: H⊥ ∈ Gamma implies ⊥ ∈ Gamma
+    have h_bot_in : Formula.bot ∈ Gamma := mcs_closed_temp_t_past h_mcs Formula.bot h_H_bot_in
+    -- But [⊥] ⊢ ⊥, so Gamma is inconsistent
+    apply h_mcs.1 [Formula.bot]
+    · intro ψ hψ; simp at hψ; rw [hψ]; exact h_bot_in
+    · constructor
+      exact Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
   -- Step 3: Construct the coherent family with Gamma at origin 0
   let coherent := construct_coherent_family Gamma h_mcs h_no_G_bot h_no_H_bot
   let family := coherent.toIndexedMCSFamily
@@ -153,11 +169,26 @@ theorem non_provable_satisfiable (phi : Formula)
     ∃ (family : IndexedMCSFamily ℤ) (t : ℤ),
       phi ∈ family.mcs t := by
   -- If neg phi is not provable, then {phi} is consistent
+  -- Proof: If {phi} is inconsistent, L ⊆ {phi} derives bot.
+  --        Since L can only contain phi, [phi] ⊢ bot (by weakening).
+  --        By deduction theorem, [] ⊢ phi -> bot = neg phi. Contradiction.
   have h_cons : SetConsistent {phi} := by
     intro L hL
     intro ⟨d⟩
-    -- Similar argument to above
-    sorry -- Requires detailed proof about consistency
+    apply h_not_prov
+    -- L ⊆ {phi} means L contains only phi (or is empty)
+    -- Weaken to [phi]
+    have h_weak : L ⊆ [phi] := fun ψ hψ => by
+      simp
+      have h := hL ψ hψ
+      simp at h
+      exact h
+    have d_bot : Bimodal.ProofSystem.DerivationTree [phi] Formula.bot :=
+      Bimodal.ProofSystem.DerivationTree.weakening L [phi] Formula.bot d h_weak
+    -- By deduction theorem: [] ⊢ phi -> bot = neg phi
+    have d_neg : Bimodal.ProofSystem.DerivationTree [] (Formula.neg phi) :=
+      Bimodal.Metalogic.Core.deduction_theorem [] phi Formula.bot d_bot
+    exact ⟨d_neg⟩
   obtain ⟨family, t, h_mem, _⟩ := representation_theorem phi h_cons
   exact ⟨family, t, h_mem⟩
 
@@ -173,8 +204,39 @@ theorem completeness_contrapositive (phi : Formula)
     (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] phi)) :
     ∃ (family : IndexedMCSFamily ℤ) (t : ℤ),
       ¬truth_at (canonical_model ℤ family) (canonical_history_family ℤ family) t phi := by
-  -- If phi is not provable, then neg phi is consistent
+  -- If phi is not provable, then {neg phi} is consistent
+  -- Proof: If {neg phi} is inconsistent, [neg phi] ⊢ bot.
+  --        By deduction theorem, [] ⊢ neg phi -> bot = neg (neg phi).
+  --        By double negation elimination, [] ⊢ phi. Contradiction.
+  have h_cons : SetConsistent {phi.neg} := by
+    intro L hL
+    intro ⟨d⟩
+    apply h_not_prov
+    -- L ⊆ {phi.neg} means L contains only phi.neg
+    have h_weak : L ⊆ [phi.neg] := fun ψ hψ => by
+      simp
+      have h := hL ψ hψ
+      simp at h
+      exact h
+    have d_bot : Bimodal.ProofSystem.DerivationTree [phi.neg] Formula.bot :=
+      Bimodal.ProofSystem.DerivationTree.weakening L [phi.neg] Formula.bot d h_weak
+    -- By deduction theorem: [] ⊢ phi.neg -> bot = neg (neg phi)
+    have d_neg_neg : Bimodal.ProofSystem.DerivationTree [] phi.neg.neg :=
+      Bimodal.Metalogic.Core.deduction_theorem [] phi.neg Formula.bot d_bot
+    -- By double negation elimination: ⊢ neg neg phi -> phi
+    have dne : [] ⊢ phi.neg.neg.imp phi := Bimodal.Theorems.Propositional.double_negation phi
+    -- Apply modus ponens: [] ⊢ phi
+    have d_phi : Bimodal.ProofSystem.DerivationTree [] phi :=
+      Bimodal.ProofSystem.DerivationTree.modus_ponens [] phi.neg.neg phi
+        (Bimodal.ProofSystem.DerivationTree.weakening [] [] (phi.neg.neg.imp phi) dne (by simp))
+        d_neg_neg
+    exact ⟨d_phi⟩
   -- Apply representation theorem to neg phi
-  sorry -- Requires negation consistency argument
+  obtain ⟨family, t, h_mem, h_true⟩ := representation_theorem phi.neg h_cons
+  -- h_true : truth_at ... t phi.neg
+  -- phi.neg = phi -> bot, so truth_at phi.neg means: truth_at phi -> truth_at bot
+  use family, t
+  simp only [Formula.neg, truth_at] at h_true
+  exact h_true
 
 end Bimodal.Metalogic.Representation
