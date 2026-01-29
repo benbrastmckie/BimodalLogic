@@ -1,112 +1,102 @@
 # Implementation Summary: Task #750
 
 **Date**: 2026-01-29
-**Status**: PARTIAL - Type infrastructure complete, truth lemma has sorries
+**Status**: PARTIAL - Hybrid completeness implemented with documented sorry gap
 
 ## Overview
 
-This task aimed to achieve sorry-free completeness by building an algebraic semantic bridge connecting the existing sorry-free algebraic representation theorem to standard Kripke semantics.
+This task explored multiple approaches to achieving sorry-free completeness by connecting the existing algebraic representation theorem to standard semantics.
 
-## What Was Accomplished
+## Approach Evolution
 
-### Phase 1: Type Infrastructure [COMPLETED]
+### v003 (Earlier): Direct Algebraic-Semantic Bridge
+- Created `AlgebraicSemanticBridge.lean` with type infrastructure
+- Propositional fragment works; modal/temporal cases have sorries
+- Challenge: Box semantics quantify over ALL histories, single ultrafilter insufficient
 
-Created `AlgebraicSemanticBridge.lean` with:
+### v004 (Current): Hybrid Completeness Approach
+- Created `HybridCompleteness.lean` using algebraic → MCS → FMP path
+- Avoids needing direct ultrafilter-Kripke truth correspondence
+- Uses existing sorry-free infrastructure from both algebraic and FMP paths
 
-1. **algTaskFrame : TaskFrame Z** - Task frame where:
-   - World states are `AlgWorld` (ultrafilters of Lindenbaum algebra)
-   - Task relation is always True (maximally permissive)
-   - Nullity and compositionality trivially satisfied
+## Audit Findings
 
-2. **algModel : TaskModel algTaskFrame** - Model with valuation from ultrafilter membership
+**Key discovery**: The core infrastructure is already sorry-free:
 
-3. **algHistory : AlgWorld -> WorldHistory algTaskFrame** - Constant history at each ultrafilter
+| Module | Status |
+|--------|--------|
+| `AlgebraicRepresentation.lean` | **Sorry-free** |
+| `UltrafilterMCS.lean` | **Sorry-free** |
+| `mcs_projection_is_closure_mcs` | **Sorry-free** |
+| `semantic_weak_completeness` | **Sorry-free** |
 
-### Phase 2: Model Construction [COMPLETED]
+## New Implementation: HybridCompleteness.lean
 
-- Frame axioms verified (trivial for universal task relation)
-- Valuation coherence proven: `algValuation U p <-> toQuot (atom p) in U.carrier`
-- Helper lemmas for algHistory domain and states
+### Key Theorems
 
-### Phase 3: Semantic Truth Lemma [PARTIAL]
+1. **`alg_consistent_to_mcs`** (sorry-free):
+   ```lean
+   theorem alg_consistent_to_mcs (phi : Formula) (h : AlgConsistent phi) :
+       exists Gamma : Set Formula, SetMaximalConsistent Gamma /\ phi in Gamma
+   ```
+   Connects algebraic consistency to MCS existence via ultrafilter correspondence.
 
-**Completed without sorries**:
-- Atom case: Direct correspondence between ultrafilter membership and valuation
-- Bot case: Ultrafilters don't contain bottom
-- Imp case (forward direction): Uses modus ponens in Lindenbaum algebra
+2. **`not_provable_to_mcs_neg`** (sorry-free):
+   ```lean
+   theorem not_provable_to_mcs_neg (phi : Formula) (h : not Nonempty (derives phi)) :
+       exists Gamma, SetMaximalConsistent Gamma /\ phi.neg in Gamma
+   ```
 
-**Has sorries**:
-- Imp case (backward direction): 2 sorries for classical propositional lemmas:
-  - `|- not(psi -> chi) -> psi`
-  - `|- not(psi -> chi) -> not chi`
-- Box case (both directions): Requires reasoning about ALL ultrafilters, not just one
-- Past/Future cases: Require time-independence lemma for constant histories
+3. **`hybrid_weak_completeness`** (has 1 sorry):
+   ```lean
+   noncomputable def hybrid_weak_completeness (phi : Formula) :
+       valid phi -> derives phi
+   ```
 
-### Phase 4-5: Not Started
+### The Remaining Gap
 
-Completeness theorem and documentation phases were not reached due to sorries in Phase 3.
+The single sorry is in connecting `valid phi` (truth in ALL models) to `semantic_truth_at_v2` (truth in specific FMP model). This is the "forward truth lemma" gap:
 
-## Technical Insights
+- **`valid phi`**: For ALL frames F, models M, histories tau, times t: `truth_at M tau t phi`
+- **`semantic_truth_at_v2`**: Boolean assignment check in FiniteWorldState
+- **Gap**: `truth_at` evaluates recursively; for BOX, it quantifies over ALL histories
 
-### Why the Bridge is Hard
+The MCS-derived world state should satisfy the correspondence, but proving it requires showing the specific model IS the canonical model, which is circular.
 
-The fundamental challenge is that the algebraic truth lemma tries to prove:
-```
-algTrueAt U phi <-> truth_at algModel (algHistory U) 0 phi
-```
+## Comparison of Paths
 
-But the semantic `truth_at` for box quantifies over ALL histories:
-```
-truth_at M tau t (box phi) = forall sigma : WorldHistory F, truth_at M sigma t phi
-```
+| Path | Status | Gap |
+|------|--------|-----|
+| `semantic_weak_completeness` | **Sorry-free** | Works via contrapositive |
+| `hybrid_weak_completeness` | 1 sorry | Forward truth lemma |
+| `AlgebraicSemanticBridge` | ~10 sorries | Box/temporal cases |
 
-This requires relating ultrafilter U to arbitrary histories sigma, which may correspond to different ultrafilters V. The induction hypothesis only gives us information about U, not V.
-
-### Potential Solutions (Not Implemented)
-
-1. **Generalized Induction**: Prove the truth lemma with a stronger induction that quantifies over all ultrafilters simultaneously.
-
-2. **Different Model Construction**: Instead of constant histories, use a model where the box semantics matches the algebraic box operator more directly.
-
-3. **Syntactic Completeness**: Prove completeness syntactically without a semantic bridge, using only algebraic properties.
+**Key insight**: `semantic_weak_completeness` avoids the gap by never needing to prove validity implies truth in a specific model. It constructs countermodels when phi is NOT provable.
 
 ## Files Modified
 
-- Created: `Theories/Bimodal/Metalogic/Algebraic/AlgebraicSemanticBridge.lean` (new)
-- Modified: `Theories/Bimodal/Metalogic/Algebraic/Algebraic.lean` (added import)
+| File | Change |
+|------|--------|
+| `Algebraic/HybridCompleteness.lean` | New file (~250 lines) |
+| `Algebraic/Algebraic.lean` | Added import |
+| `Algebraic/README.md` | Updated documentation |
 
-## Sorry Count
+## Build Verification
 
-New file has **10 sorries**:
-- 2 in imp backward case (classical propositional logic)
-- 2 in box case
-- 4 in past/future cases
-- 2 in past/future forward (time-independence)
-
-## Build Status
-
-- `lake build` passes
-- Existing code unaffected
-- Algebraic representation theorem still sorry-free
-
-## Lessons Learned
-
-1. **Single-ultrafilter induction is insufficient for box**: The box operator's semantics require global reasoning about all possible worlds/histories.
-
-2. **Constant histories simplify temporal cases partially**: The T-axiom gives us the implication from [Gphi] to [phi], but not the reverse.
-
-3. **Classical propositional logic lemmas need derivation**: The lemmas about negated implications require explicit proof system derivations.
+- `lake build` passes (987 jobs)
+- All existing tests continue to pass
 
 ## Recommendations
 
-1. **Keep this foundation**: The type infrastructure is correct and compiles. It provides a starting point for future work.
+1. **For practical completeness**: Use `semantic_weak_completeness` (fully sorry-free)
 
-2. **Focus on propositional fragment first**: The propositional cases demonstrate the approach works for that fragment.
+2. **For `valid -> derives`**: The remaining gap would require:
+   - Stronger model correspondence theorem
+   - Alternative proof structure (e.g., cut-free sequent calculus)
+   - Restricting validity predicate
 
-3. **Alternative approach for modal**: Consider proving completeness for the propositional-modal fragment separately, without temporal operators.
-
-4. **Time-independence lemma**: Prove that for constant histories, truth of formulas is independent of time. This would complete the temporal forward cases.
+3. **Future work**: Consider proving truth correspondence specifically for MCS-derived states, rather than arbitrary SemanticWorldStates.
 
 ## Conclusion
 
-The algebraic semantic bridge approach is viable for propositional logic but faces fundamental challenges with modal and temporal operators. The type infrastructure is sound and provides a foundation for future work. Full sorry-free completeness via this path would require significant additional infrastructure, particularly for handling the universal quantification in box semantics.
+The hybrid approach successfully connects algebraic and FMP infrastructure. Both the algebraic representation theorem and the FMP semantic completeness are sorry-free. The remaining gap is fundamental: connecting universal validity to truth in a specific canonical model construction. For practical purposes, `semantic_weak_completeness` provides all needed completeness guarantees.
