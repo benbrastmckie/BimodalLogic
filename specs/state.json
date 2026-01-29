@@ -85,12 +85,20 @@
     {
       "project_number": 747,
       "project_name": "create_bimodal_metalogic_readme_hierarchy",
-      "status": "researching",
+      "status": "researched",
       "language": "markdown",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T15:09:01Z",
-      "session_id": "sess_1769699324_ff2b9e"
+      "last_updated": "2026-01-29T15:12:40Z",
+      "session_id": "sess_1769699324_ff2b9e",
+      "researched": "2026-01-29T15:12:40Z",
+      "artifacts": [
+        {
+          "path": "specs/747_create_bimodal_metalogic_readme_hierarchy/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting 6 Metalogic subdirectories, identifying 3 missing READMEs (Algebraic, Compactness, Completeness), and proposing README structure"
+        }
+      ]
     },
     {
       "project_number": 748,
