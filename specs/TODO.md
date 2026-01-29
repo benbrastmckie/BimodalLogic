@@ -47,7 +47,7 @@ technical_debt:
 - **Language**: markdown
 - **Parent**: Task 394
 - **Research**: [research-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/plans/implementation-003.md)
+- **Plan**: [implementation-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/plans/implementation-001.md)
 
 **Description**: Port the causal semantics from /home/benjamin/Projects/Philosophy/Papers/HypCausation/sn-article.tex (line 626) to recursive-semantics.md. Adapt the 2-place task relation from the paper to the more sophisticated 3-place task relation (with duration) in Logos. Carefully study the counterfactual semantics already included in the recursive-semantics.md in order to adapt existing resources rather than positing additional resources in order to construct the three-condition truth clause for causation.
 
@@ -202,12 +202,13 @@ technical_debt:
 
 ### 741. Witness extraction architecture for backward Truth Lemma
 - **Effort**: 8-12 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Related**: Tasks 654, 656, 659
 - **Research**: [research-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/plans/implementation-001.md)
 
 **Description**: Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: `Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s)` (and symmetric for G). Task 659 Phase 2 assessment showed that forward_H coherence does NOT provide this—the contrapositive gives universal (∀) statements, not existential (∃) witnesses. This task explores architectural approaches: (1) direct witness construction via MCS chain properties, (2) semantic completeness argument (if ψ ∈ mcs(s) for all s < t, then Hψ ∈ mcs(t)), or (3) alternative proof strategies that bypass witness extraction. Reference: specs/659_prove_negation_completeness_lemmas/plans/implementation-002.md Phase 2 assessment.
 

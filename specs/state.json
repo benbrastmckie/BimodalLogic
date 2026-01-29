@@ -8,7 +8,7 @@
     {
       "project_number": 741,
       "project_name": "witness_extraction_architecture_for_backward_truth_lemma",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s) (and symmetric for G). Task 659 Phase 2 assessment showed that forward_H coherence does NOT provide this—the contrapositive gives universal (∀) statements, not existential (∃) witnesses. This task explores architectural approaches: (1) direct witness construction via MCS chain properties, (2) semantic completeness argument (if ψ ∈ mcs(s) for all s < t, then Hψ ∈ mcs(t)), or (3) alternative proof strategies that bypass witness extraction. Reference: specs/659_prove_negation_completeness_lemmas/plans/implementation-002.md Phase 2 assessment.",
@@ -18,7 +18,7 @@
         659
       ],
       "created": "2026-01-29T13:10:43Z",
-      "last_updated": "2026-01-29T13:18:56Z",
+      "last_updated": "2026-01-29T13:21:10Z",
       "session_id": "sess_1769692718_36dac5",
       "researched": "2026-01-29T13:16:15Z",
       "artifacts": [
@@ -26,8 +26,14 @@
           "path": "specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of witness extraction approaches: contrapositive via H-completeness recommended, with construction-based proof strategy"
+        },
+        {
+          "path": "specs/741_witness_extraction_architecture_for_backward_truth_lemma/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan: infrastructure analysis, H-completeness, G-completeness, witness extraction lemmas, backward Truth Lemma completion, verification"
         }
-      ]
+      ],
+      "planned": "2026-01-29T13:21:10Z"
     },
     {
       "project_number": 738,
