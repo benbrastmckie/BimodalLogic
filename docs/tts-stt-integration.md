@@ -264,7 +264,7 @@ This format is optimal for speech recognition and keeps file sizes small.
 |------|---------|
 | `.claude/hooks/tts-notify.sh` | Claude Code TTS hook |
 | `~/.config/nvim/lua/neotex/plugins/tools/stt/init.lua` | Neovim STT plugin |
-| `~/.config/nvim/lua/neotex/plugins/tools/stt.lua` | Lazy.nvim plugin spec |
+| `~/.config/nvim/lua/neotex/plugins/tools/stt-plugin.lua` | Lazy.nvim plugin spec |
 | `~/.config/nvim/lua/neotex/plugins/editor/which-key.lua` | Keybinding configuration |
 | `~/.local/bin/vosk-transcribe.py` | Vosk transcription script |
 | `/tmp/claude-tts-last-notify` | Cooldown timestamp |
@@ -293,7 +293,7 @@ Total disk usage: ~95 MB for both features.
 1. Remove the STT entry from `~/.config/nvim/lua/neotex/plugins/tools/init.lua`
 2. Remove the `<leader>v` voice group from `~/.config/nvim/lua/neotex/plugins/editor/which-key.lua`
 3. Delete `~/.config/nvim/lua/neotex/plugins/tools/stt/` directory
-4. Delete `~/.config/nvim/lua/neotex/plugins/tools/stt.lua`
+4. Delete `~/.config/nvim/lua/neotex/plugins/tools/stt-plugin.lua`
 5. Delete `~/.local/bin/vosk-transcribe.py`
 6. Optionally delete `~/.local/share/vosk/` to remove speech models
 
