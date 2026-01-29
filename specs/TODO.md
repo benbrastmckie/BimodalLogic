@@ -1,5 +1,5 @@
 ---
-next_project_number: 761
+next_project_number: 762
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -193,6 +193,17 @@ technical_debt:
 - **Research**: [research-001.md](specs/431_wezterm_tab_color_notification/reports/research-001.md)
 
 **Description**: Set up WezTerm tab color notification when Claude Code needs input. Using Claude Code in neovim via a plugin and WezTerm for the terminal on NixOS (software managed in ~/.dotfiles/). Configure so that when Claude Code completes or needs input, the numbered tab in WezTerm turns a visible color to indicate which tabs need attention.
+
+---
+
+### 761. Integrate TTS and STT for Claude Code and neovim
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-29
+
+**Description**: Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM).
 
 ---
 

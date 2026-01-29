@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 761,
+      "project_name": "tts_stt_integration_for_claude_code_and_neovim",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-29T20:42:47Z",
+      "last_updated": "2026-01-29T20:42:47Z",
+      "description": "Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM)."
+    },
+    {
       "project_number": 760,
       "project_name": "determine_sorry_disposition_archive_vs_complete",
       "status": "not_started",
@@ -474,7 +484,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 761,
+  "next_project_number": 762,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
