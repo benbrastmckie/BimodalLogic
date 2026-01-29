@@ -118,11 +118,11 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T17:48:01Z",
+      "last_updated": "2026-01-29T18:02:25Z",
       "session_id": "sess_1769708635_55a91e",
       "researched": "2026-01-29T17:48:01Z",
       "artifacts": [
@@ -142,11 +142,6 @@
           "summary": "Relationship analysis between tasks 749 and 750 - confirms 749 should proceed as independent FMP path to sorry-free completeness"
         },
         {
-          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for algebraic semantic bridge; documentation deferred until sorry-free results complete"
-        },
-        {
           "path": "Theories/Bimodal/Metalogic/Algebraic/AlgebraicSemanticBridge.lean",
           "type": "implementation",
           "summary": "New file: algebraic semantic bridge with task frame, model, and partial truth lemma"
@@ -160,9 +155,14 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md",
           "type": "research",
           "summary": "Comprehensive options analysis evaluating syntactic completeness, algebraic bridge, FMP path, and representation path fixes"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "Hybrid approach: ultrafilter as consistency witness to seed FMP construction, bypassing semantic truth lemma"
         }
       ],
-      "planned": "2026-01-29T17:22:42Z",
+      "planned": "2026-01-29T18:02:25Z",
       "started": "2026-01-29T17:25:04Z"
     },
     {
