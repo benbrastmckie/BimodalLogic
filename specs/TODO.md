@@ -1,5 +1,5 @@
 ---
-next_project_number: 764
+next_project_number: 765
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -194,5 +194,14 @@ technical_debt:
 
 ## Low Priority
 
+### 764. Improve Bimodal/Metalogic structure and documentation
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+- **Created**: 2026-01-29
 
+**Description**: Improve structure and organization of Bimodal/Metalogic/ and create complete, accurate documentation with clear dependency flowcharts. Work systematically from deepest directories back to Metalogic/README.md. Flowcharts should show derivatives below (higher line numbers) and foundations above (smaller line numbers) in README.md documents. The top-level Metalogic/README.md should include clear high-level explanation of how the metalogic is structured and what it establishes.
+
+---
 
