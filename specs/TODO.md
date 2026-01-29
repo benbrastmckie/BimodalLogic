@@ -165,7 +165,7 @@ technical_debt:
 
 ### 733. Ultraproduct-based proof of compactness
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -350,16 +350,15 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
 - **Started**: 2026-01-29
-- **Blocked-By**: Requires forward_H coherence property (CoherentConstruction.lean:681) or architecture changes
 - **Related**: Tasks 654, 656
 - **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:211,219,228,237
 - **Research**: [research-001.md](specs/659_prove_negation_completeness_lemmas/reports/research-001.md), [research-002.md](specs/659_prove_negation_completeness_lemmas/reports/research-002.md), [research-003.md](specs/659_prove_negation_completeness_lemmas/reports/research-003.md), [research-004.md](specs/659_prove_negation_completeness_lemmas/reports/research-004.md)
-- **Plan**: [implementation-001.md](specs/659_prove_negation_completeness_lemmas/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/659_prove_negation_completeness_lemmas/plans/implementation-002.md)
 
 **Description**: Prove the negation completeness lemmas required for the truth lemma backward direction. These include the imp, box, and temporal cases in the backward direction (lines 211, 219, 228, 237). Requires showing that MCS are complete with respect to negation. Not critical since the representation theorem only needs the forward direction, but would complete the full biconditional truth lemma. From review-20260121-task654.md low priority recommendations.
 
