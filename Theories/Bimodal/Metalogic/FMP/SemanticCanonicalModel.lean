@@ -718,20 +718,77 @@ theorem valid_implies_semantic_truth (phi : Formula)
   rw [← h_eq]
   exact h_semantic
 
+/-!
+## Alternative Completeness via Soundness Contrapositive
+
+The challenge with `truth_at_implies_semantic_truth` is that it requires showing
+recursive truth implies assignment truth for arbitrary SemanticWorldStates.
+
+An alternative approach is to use soundness more directly:
+1. If φ is valid, then φ.neg is unsatisfiable in all models
+2. If φ.neg were satisfiable, there would exist a model where φ.neg is true
+3. But φ is valid, so φ is true in all models at all times
+4. φ and φ.neg cannot both be true (by semantic consistency)
+5. So φ.neg is unsatisfiable
+6. By contrapositive of satisfiability-implies-consistency: φ.neg unsatisfiable implies {φ.neg} inconsistent
+7. {φ.neg} inconsistent implies φ is derivable
+
+The gap in this argument is step 6: we need to show that if φ.neg is unsatisfiable in all
+models, then {φ.neg} is syntactically inconsistent. This is exactly completeness!
+
+So this alternative doesn't avoid the fundamental issue - completeness IS the statement
+that semantic unsatisfiability implies syntactic inconsistency.
+-/
+
+/--
+Lemma: If φ is valid, then there is no model where φ.neg is true.
+
+This is a direct consequence of validity and the semantics of negation.
+-/
+theorem valid_implies_neg_unsatisfiable (phi : Formula) (h_valid : valid phi) :
+    ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+      (F : TaskFrame D) (M : TaskModel F) (tau : WorldHistory F) (t : D),
+    ¬truth_at M tau t phi.neg := by
+  intro D _ _ _ F M tau t h_neg
+  -- phi.neg = phi.imp bot, so truth_at phi.neg means truth_at phi → False
+  simp only [truth_at, Formula.neg] at h_neg
+  -- h_neg : truth_at M tau t phi → False
+  have h_phi := h_valid D F M tau t
+  exact h_neg h_phi
+
+/--
+Helper: negation excludes membership in MCS using full MCS property.
+-/
+theorem set_mcs_neg_excludes_helper (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_neg : phi.neg ∈ M) : phi ∉ M :=
+  set_mcs_neg_excludes h_mcs phi h_neg
+
 /--
 Sorry-free weak completeness: validity implies provability.
 
-**IMPORTANT**: This theorem currently requires the `truth_at_implies_semantic_truth` lemma
-which has a sorry. The sorry represents the gap between:
-- Recursive truth evaluation (`truth_at`)
-- Assignment-based truth check (`semantic_truth_at_v2`)
+**Current Status**: This theorem has a sorry in `truth_at_implies_semantic_truth`.
 
-This is exactly the "truth lemma" gap that exists in the canonical model construction.
-The `semantic_weak_completeness` theorem is fully proven using the contrapositive
-(building a countermodel from a non-provable formula), but this forward direction
-requires showing that recursive truth implies assignment truth.
+**Mathematical Analysis**:
+The sorry represents the "truth lemma" gap in canonical model completeness proofs.
+The issue is fundamental:
+- `truth_at` evaluates formulas recursively (especially box quantifies over ALL histories)
+- `semantic_truth_at_v2` checks a boolean assignment in a FiniteWorldState
+- For non-MCS-derived world states, there's no guarantee the assignment respects recursion
 
-**Status**: Partial - depends on truth correspondence lemma with sorry.
+**Why semantic_weak_completeness is fully proven**:
+It works by contrapositive - constructing an MCS-derived countermodel where the formula
+is false BOTH in assignment AND recursively. The MCS construction ensures correspondence.
+
+**Why this direction is hard**:
+We need to show: for ALL SemanticWorldStates, if truth_at holds, then assignment is true.
+But arbitrary SemanticWorldStates may have assignments that don't respect recursive truth.
+
+**Potential solutions (not yet implemented)**:
+1. Restrict to MCS-derived world states only (sufficient for completeness)
+2. Show that for VALID formulas, the specific structure forces correspondence
+3. Use a different model construction where all states are MCS-derived
+
+**Dependencies**: `truth_at_implies_semantic_truth` (has sorry)
 -/
 noncomputable def sorry_free_weak_completeness (phi : Formula) :
     valid phi → ⊢ phi := by

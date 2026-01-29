@@ -113,13 +113,13 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T17:34:15Z",
-      "session_id": "sess_1769707481_b4363b",
-      "researched": "2026-01-29T16:36:22Z",
+      "last_updated": "2026-01-29T17:48:01Z",
+      "session_id": "sess_1769708635_55a91e",
+      "researched": "2026-01-29T17:48:01Z",
       "artifacts": [
         {
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md",
@@ -150,6 +150,11 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/summaries/implementation-summary-20260129.md",
           "type": "summary",
           "summary": "Implementation summary documenting partial completion and technical insights"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md",
+          "type": "research",
+          "summary": "Comprehensive options analysis evaluating syntactic completeness, algebraic bridge, FMP path, and representation path fixes"
         }
       ],
       "planned": "2026-01-29T17:22:42Z",
@@ -158,12 +163,12 @@
     {
       "project_number": 749,
       "project_name": "establish_sorry_free_completeness_via_semantic_weak_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:48:21Z",
-      "last_updated": "2026-01-29T17:38:12Z",
-      "session_id": "sess_1769706942_63059b",
+      "last_updated": "2026-01-29T17:45:33Z",
+      "session_id": "sess_1769708707_3aa4c6",
       "researched": "2026-01-29T14:56:05Z",
       "artifacts": [
         {
@@ -220,11 +225,12 @@
     {
       "project_number": 748,
       "project_name": "revise_roadmap_for_metalogic_progress",
-      "status": "not_started",
+      "status": "researching",
       "language": "markdown",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T14:37:48Z"
+      "last_updated": "2026-01-29T17:46:37Z",
+      "session_id": "sess_1769708785_f2349d"
     },
     {
       "project_number": 741,

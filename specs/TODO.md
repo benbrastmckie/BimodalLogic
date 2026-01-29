@@ -177,7 +177,7 @@ technical_debt:
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
 - **Effort**: 6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8-12 hours
 - **Priority**: Medium
 - **Language**: lean
@@ -191,11 +191,11 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
-- **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md)
+- **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md), [research-008.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md)
 - **Plan**: [implementation-003.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-003.md)
 
 **Description**: Following the contingency approach from task 745 (which kept mutual induction structure but marked backward cases as sorry with comments), refactor the forward Truth Lemma to avoid all sorries and completely remove the backward direction which is not needed for the metalogic as it stands.
@@ -220,7 +220,7 @@ technical_debt:
 
 ### 748. Revise ROAD_MAP.md for Metalogic progress
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: markdown
 - **Created**: 2026-01-29

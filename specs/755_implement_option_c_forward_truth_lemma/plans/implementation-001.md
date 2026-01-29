@@ -48,116 +48,173 @@ Research report research-001.md identifies:
 
 ## Implementation Phases
 
-### Phase 1: Strengthen Implication Truth Correspondence [NOT STARTED]
+### Phase 1: Strengthen Implication Truth Correspondence [BLOCKED]
 
 **Goal**: Prove complete truth correspondence for implications, establishing the pattern for other constructors.
 
+**Status**: BLOCKED - Fundamental architectural issue discovered.
+
+**Analysis Findings**:
+The truth correspondence for implications requires BOTH directions:
+1. Forward: truth_at (psi.imp chi) → assignment (psi.imp chi) = true
+2. Backward: assignment (psi.imp chi) = true → truth_at (psi.imp chi)
+
+For MCS-derived world states, `closure_mcs_imp_iff` provides material implication equivalence:
+- (psi.imp chi) ∈ S ↔ (psi ∈ S → chi ∈ S)
+
+However, `truth_at_implies_semantic_truth` is called with ARBITRARY SemanticWorldStates,
+not just MCS-derived ones. The assignment of a general FiniteWorldState is only required
+to satisfy `IsLocallyConsistent`, which is weaker than MCS properties.
+
+**Key Insight**: Local consistency enforces:
+- v(psi.imp chi) = true AND v(psi) = true IMPLIES v(chi) = true
+
+But it does NOT enforce:
+- (v(psi) = true → v(chi) = true) IMPLIES v(psi.imp chi) = true
+
+This is the forward direction we need but don't have for general world states.
+
 **Tasks**:
-- [ ] Analyze existing `closure_mcs_imp_iff` and `IsLocallyConsistent` infrastructure
-- [ ] Implement `truth_at_imp_iff_semantic` theorem
-- [ ] Handle both forward (recursive -> assignment) and backward (assignment -> recursive) directions
-- [ ] Verify with lean_goal at each proof step
+- [x] Analyze existing `closure_mcs_imp_iff` and `IsLocallyConsistent` infrastructure
+- [ ] ~~Implement `truth_at_imp_iff_semantic` theorem~~ BLOCKED: Cannot prove for arbitrary world states
+- [ ] ~~Handle both directions~~ BLOCKED: Forward direction fails for non-MCS states
 
-**Timing**: 2 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` - Add implication correspondence theorem
-
-**Verification**:
-- New theorem compiles without sorry
-- `lean_goal` shows no unsolved goals
-- `lake build` passes with no new errors
+**Files modified**:
+- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` - Added documentation and helper lemmas
 
 ---
 
-### Phase 2: Prove Box Collapse in Finite Model [NOT STARTED]
+### Phase 2: Prove Box Collapse in Finite Model [BLOCKED]
 
 **Goal**: Prove that box semantics collapse in the finite bounded-time model - the key insight that makes FMP completeness work.
 
+**Status**: BLOCKED - Box semantics are fundamentally incompatible with the current model structure.
+
+**Analysis Findings**:
+The box operator has semantics: `truth_at M tau t (box psi) = forall sigma, truth_at M sigma t psi`
+
+This quantifies over ALL WorldHistory, which corresponds to ALL SemanticWorldStates at time t.
+For `truth_at (box psi) → assignment (box psi) = true` to hold, we need:
+- If psi is true at ALL world states, then the assignment says box psi is true
+
+But for an arbitrary FiniteWorldState, the assignment of box psi is just a boolean that
+satisfies IsLocallyConsistent. The T-axiom in IsLocallyConsistent says:
+- v(box psi) = true IMPLIES v(psi) = true
+
+This is the REVERSE direction. We need:
+- If psi is true at ALL worlds, then v(box psi) = true
+
+For MCS-derived world states, this works because:
+- If box psi ∈ MCS, then by T-axiom, psi ∈ MCS
+- In S5, if psi holds at all worlds, box psi is true
+
+But for arbitrary locally consistent assignments, v(box psi) could be false even when
+psi is true at all worlds - local consistency only constrains the converse.
+
 **Tasks**:
-- [ ] Understand the `htEquiv` quotient structure and how histories relate
-- [ ] Prove helper lemma: histories at same bounded time with same SemanticWorldState are equivalent for truth
-- [ ] Implement `box_truth_in_finite_model` theorem
-- [ ] Handle the universal quantification over all WorldHistory
+- [x] Understand the `htEquiv` quotient structure and how histories relate
+- [ ] ~~Implement `box_truth_in_finite_model` theorem~~ BLOCKED: Requires MCS properties not available for general states
 
-**Timing**: 2-3 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` - Add box collapse lemmas
-
-**Verification**:
-- Box collapse theorem compiles without sorry
-- Proof connects `forall sigma, truth_at ... sigma 0 psi` to `semantic_truth_at_v2 ... psi.box`
+**Key Obstacle**: The SemanticCanonicalModel allows world states that are merely locally consistent,
+not necessarily MCS-derived. Box semantics require global consistency across ALL world states.
 
 ---
 
-### Phase 3: Prove Temporal Operator Correspondence [NOT STARTED]
+### Phase 3: Prove Temporal Operator Correspondence [BLOCKED]
 
 **Goal**: Prove truth correspondence for `all_past` and `all_future` operators.
 
+**Status**: BLOCKED - Similar structural issues to box case.
+
+**Analysis Findings**:
+Temporal operators have semantics:
+- `truth_at M tau t (all_past psi) = forall s, s <= t -> truth_at M tau s psi`
+- `truth_at M tau t (all_future psi) = forall s, t <= s -> truth_at M tau s psi`
+
+Unlike box, temporal operators quantify over times (not histories) on the SAME history.
+This is actually more tractable for constant histories (finite_history_from_state).
+
+However, the issue is that temporal semantics quantify over ALL times s in the duration
+type (Int), not just times in the bounded domain [-k, k]. For times outside the domain:
+- Atoms are false (no domain proof)
+- Compound formulas still recurse
+
+This means `all_past psi` might be false because psi is false at some time s < -k,
+even though within the bounded domain everything is consistent.
+
+Additionally, for non-MCS-derived world states, the same forward direction issue applies:
+we need to show that if all_past psi is true recursively, then the assignment says so.
+Local consistency doesn't enforce this direction for temporal operators.
+
 **Tasks**:
-- [ ] Analyze temporal semantics (reflexive: uses <= not <)
-- [ ] Understand `BoundedTime` domain structure [-k, k]
-- [ ] Implement `all_past_truth_correspondence` theorem
-- [ ] Implement `all_future_truth_correspondence` theorem
-- [ ] Handle the quantification over bounded time domain
-
-**Timing**: 2-3 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` - Add temporal correspondence theorems
-
-**Verification**:
-- Both temporal correspondence theorems compile without sorry
-- Proofs correctly handle the reflexive semantics (T-axiom)
+- [x] Analyze temporal semantics (reflexive: uses <= not <)
+- [x] Understand `BoundedTime` domain structure [-k, k]
+- [ ] ~~Implement correspondence theorems~~ BLOCKED: Same structural issues as box
 
 ---
 
-### Phase 4: Assemble Full Inductive Proof [NOT STARTED]
+### Phase 4: Assemble Full Inductive Proof [BLOCKED]
 
 **Goal**: Combine all constructor cases into the main `truth_at_implies_semantic_truth` theorem, removing the sorry.
 
+**Status**: BLOCKED - Depends on Phases 1-3 which are all blocked.
+
+**Analysis Findings**:
+The structural induction proof cannot proceed because:
+1. Atom case: Would work (semantic_valuation defined via assignment)
+2. Bot case: Would work (both are always false)
+3. Implication case: BLOCKED (forward direction fails for non-MCS states)
+4. Box case: BLOCKED (requires global MCS properties)
+5. Temporal cases: BLOCKED (same structural issues)
+
+**Fundamental Architectural Issue**:
+The theorem `truth_at_implies_semantic_truth` is called with arbitrary SemanticWorldStates.
+The `valid_implies_semantic_truth` function gets a world state `w` and builds a history
+through it, then tries to show truth_at implies the assignment.
+
+But `w` might not be MCS-derived - any locally consistent assignment yields a valid
+FiniteWorldState. Local consistency is WEAKER than MCS properties.
+
+**Potential Architectural Solutions** (not implemented):
+1. Modify SemanticCanonicalModel to only contain MCS-derived world states
+2. Prove a different version of completeness that doesn't require this lemma
+3. Show that for VALID formulas, the structure forces correspondence
+4. Use a completely different model construction (e.g., coherent MCS family)
+
 **Tasks**:
-- [ ] Review existing atom and bot cases (already proven)
-- [ ] Integrate implication case from Phase 1
-- [ ] Integrate box case from Phase 2
-- [ ] Integrate temporal cases from Phase 3
-- [ ] Replace the sorry with the complete structural induction
-- [ ] Verify the proof handles all formula constructors
-
-**Timing**: 2 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` - Complete `truth_at_implies_semantic_truth`
-
-**Verification**:
-- `truth_at_implies_semantic_truth` has no sorry
-- `sorry_free_weak_completeness` compiles without sorry
-- `lake build` shows no sorries in FMP path
+- [x] Review existing atom and bot cases (already proven in the codebase)
+- [ ] ~~Integrate implication/box/temporal cases~~ BLOCKED: Phases 1-3 are blocked
+- [ ] ~~Replace the sorry~~ BLOCKED: Cannot prove without resolving architectural issue
 
 ---
 
-### Phase 5: Verification and Cleanup [NOT STARTED]
+### Phase 5: Verification and Cleanup [PARTIAL]
 
 **Goal**: Final verification, cleanup, and documentation of the sorry-free completeness theorem.
 
+**Status**: PARTIAL - Added documentation but sorry remains.
+
 **Tasks**:
-- [ ] Run `lake build` and verify no sorries in FMP/ directory
-- [ ] Run `grep -r "sorry" Theories/Bimodal/Metalogic/FMP/` to confirm
-- [ ] Add documentation comments explaining the proof strategy
-- [ ] Update module docstring to reflect sorry-free status
-- [ ] Clean up any temporary helper lemmas or scaffolding
+- [x] Run `lake build` and verify module compiles
+- [x] Add documentation comments explaining the proof challenge
+- [ ] ~~Remove sorry from truth_at_implies_semantic_truth~~ BLOCKED: Architectural issue
+- [x] Document the architectural gap between truth_at and semantic_truth_at_v2
 
-**Timing**: 1-2 hours
+**Files modified**:
+- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean`:
+  - Added detailed documentation explaining the truth lemma gap
+  - Added `valid_implies_neg_unsatisfiable` helper lemma (proven)
+  - Added `set_mcs_neg_excludes_helper` helper (delegates to existing lemma)
+  - Enhanced documentation for `sorry_free_weak_completeness`
+  - Documented potential solutions and architectural considerations
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` - Documentation updates
-- Potentially `Theories/Bimodal/Metalogic/FMP/FiniteModelProperty.lean` if verification extends there
+**Current sorry count in FMP path**:
+- `SemanticCanonicalModel.lean:219` - compositionality (documented as mathematically false)
+- `SemanticCanonicalModel.lean:629` - truth_at_implies_semantic_truth (architectural gap)
 
 **Verification**:
-- `lake build` passes with no new errors
-- `grep sorry` returns only the documented compositionality sorry
-- Module docstrings accurately describe theorem status
+- `lake build` passes with no errors
+- Documentation accurately describes the current status and challenges
 
 ## Testing & Validation
 
