@@ -29,6 +29,7 @@ open Bimodal.Metalogic.Algebraic.LindenbaumQuotient
 open Bimodal.Metalogic.Algebraic.BooleanStructure
 open Bimodal.Metalogic.Algebraic.InteriorOperators
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
+open Bimodal.Metalogic.Core
 
 /-!
 ## Algebraic Canonical Frame
@@ -71,10 +72,65 @@ theorem consistent_implies_satisfiable {φ : Formula} (h : AlgConsistent φ) :
     AlgSatisfiable φ := by
   unfold AlgConsistent at h
   unfold AlgSatisfiable algTrueAt
-  -- If ⊬ ¬φ, then [¬φ] ≠ ⊤
-  -- So [φ] = [¬φ]ᶜ ≠ ⊥
-  -- There exists an ultrafilter containing any non-⊥ element
-  sorry
+  -- h : ¬Nonempty (⊢ φ.neg)
+  -- Strategy: Show {φ} is consistent, extend to MCS, convert to ultrafilter
+
+  -- Step 1: Show {φ} is set-consistent
+  have h_singleton_cons : SetConsistent {φ} := by
+    intro L hL
+    -- Assume L ⊢ ⊥ and derive contradiction
+    intro ⟨d_bot⟩
+    -- Every formula in L equals φ (since L ⊆ {φ})
+    -- So L = [φ, φ, ..., φ] for some repetition
+    -- This means [φ] ⊢ ⊥, i.e., φ ⊢ ⊥
+    -- By deduction theorem, ⊢ φ → ⊥ = ⊢ ¬φ
+    -- Contradiction with h
+
+    -- First, filter L to get a single element if φ is in L
+    by_cases hL_empty : L = []
+    · -- L = [], so [] ⊢ ⊥ means ⊢ ⊥
+      -- But the system is consistent (no proof of ⊥ from empty context)
+      -- Actually we need to derive ⊢ ¬φ from this
+      rw [hL_empty] at d_bot
+      -- [] ⊢ ⊥ means ⊢ ⊥
+      -- From ⊢ ⊥ derive ⊢ φ → ⊥ = ⊢ ¬φ
+      have d_neg : DerivationTree [] φ.neg := by
+        have d_efq : DerivationTree [] (Formula.bot.imp φ.neg) :=
+          DerivationTree.axiom [] _ (Axiom.ex_falso φ.neg)
+        exact DerivationTree.modus_ponens [] _ _ d_efq d_bot
+      exact h ⟨d_neg⟩
+    · -- L is non-empty, so L ⊆ {φ} means L = [φ, ..., φ]
+      -- All elements of L are φ, so we can derive [φ] ⊢ ⊥
+      have h_all_phi : ∀ ψ ∈ L, ψ = φ := by
+        intro ψ hψ
+        have := hL ψ hψ
+        simp at this
+        exact this
+      -- Derive [φ] ⊢ ⊥ from L ⊢ ⊥
+      have d_phi_bot : DerivationTree [φ] Formula.bot := by
+        apply DerivationTree.weakening L [φ] Formula.bot d_bot
+        intro ψ hψ
+        simp [h_all_phi ψ hψ]
+      -- By deduction theorem: ⊢ ¬φ
+      have d_neg : DerivationTree [] φ.neg :=
+        Bimodal.Metalogic.Core.deduction_theorem [] φ Formula.bot d_phi_bot
+      exact h ⟨d_neg⟩
+
+  -- Step 2: Extend {φ} to MCS using Lindenbaum
+  obtain ⟨Γ, h_sub, h_mcs⟩ := set_lindenbaum {φ} h_singleton_cons
+
+  -- Step 3: φ ∈ Γ (since {φ} ⊆ Γ)
+  have h_phi_in : φ ∈ Γ := h_sub (Set.mem_singleton φ)
+
+  -- Step 4: Convert MCS to ultrafilter
+  let U := mcsToUltrafilter ⟨Γ, h_mcs⟩
+
+  -- Step 5: Show [φ] ∈ U.carrier
+  use U
+  -- Need: toQuot φ ∈ U.carrier
+  -- U.carrier = mcsToSet Γ = { [ψ] | ψ ∈ Γ }
+  -- Since φ ∈ Γ, we have [φ] ∈ mcsToSet Γ
+  exact mem_mcsToSet h_phi_in
 
 /--
 Satisfiable formulas are consistent.

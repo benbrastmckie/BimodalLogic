@@ -109,7 +109,7 @@ Key findings from research-001.md integrated into this plan:
 
 ---
 
-### Phase 4: Complete consistent_implies_satisfiable [NOT STARTED]
+### Phase 4: Complete consistent_implies_satisfiable [COMPLETED]
 
 **Goal**: Fill in the `sorry` in `consistent_implies_satisfiable` using the MCS-ultrafilter machinery.
 
