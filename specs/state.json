@@ -132,6 +132,11 @@
           "path": "specs/659_prove_negation_completeness_lemmas/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing truth lemma backward direction gaps, proof strategies for temporal cases, and architectural limitations for box cases"
+        },
+        {
+          "path": "specs/659_prove_negation_completeness_lemmas/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplementary research on negation completeness usefulness and best proof approach using contrapositive plus witness extraction"
         }
       ]
     },
@@ -176,7 +181,7 @@
     {
       "project_number": 631,
       "project_name": "prove_evalformula_implies_satisfiable",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "parent_task": 490,
@@ -188,7 +193,8 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-20T01:07:10Z"
+      "last_updated": "2026-01-29T01:14:28Z",
+      "session_id": "sess_1769649253_b06f16"
     },
     {
       "project_number": 628,
