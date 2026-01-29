@@ -278,6 +278,18 @@ technical_debt:
 
 ## Low Priority
 
+### 737. Fix unused simp arguments in TemporalProofStrategies.lean
+- **Effort**: 30 min
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: lean
+- **Created**: 2026-01-29
+- **Source**: Review 20260129
+
+**Description**: Fix unused simp arguments in TemporalProofStrategies.lean. Remove Formula.swap_temporal_involution from simp calls at lines 174, 203, 242, 459 where the linter reports it is unused.
+
+---
+
 ### 738. Port FMP to parametric architecture
 - **Effort**: 3 hours
 - **Status**: [NOT STARTED]
