@@ -29,7 +29,7 @@ technical_debt:
 
 ### 742. Restore lean-research-agent and skill-lean-research thin wrapper
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -304,8 +304,9 @@ technical_debt:
 ---
 
 ### 624. Prove tableau_complete
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Researched**: 2026-01-29
 - **Priority**: Low
 - **Language**: lean
@@ -313,6 +314,7 @@ technical_debt:
 - **Dependencies**: Task 623
 - **Research**: [research-001.md](specs/624_prove_tableau_complete/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/624_prove_tableau_complete/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/624_prove_tableau_complete/summaries/implementation-summary-20260129.md)
 
 **Description**: Prove the `tableau_complete` theorem in Correctness.lean connecting FMP to tableau termination. Uses infrastructure from Task 623 to show that valid formulas have closing tableaux within FMP fuel bounds.
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #742
 
 - **Task**: 742 - restore_lean_research_agent_thin_wrapper
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Priority**: high
 - **Dependencies**: None
@@ -52,7 +52,7 @@ Research report (research-001.md) provided:
 
 ## Implementation Phases
 
-### Phase 1: Restore lean-research-agent.md [NOT STARTED]
+### Phase 1: Restore lean-research-agent.md [COMPLETED]
 
 **Goal**: Remove deprecation and add blocked tool guardrails to lean-research-agent.md
 
@@ -80,7 +80,7 @@ Research report (research-001.md) provided:
 
 ---
 
-### Phase 2: Convert skill-lean-research to Thin Wrapper [NOT STARTED]
+### Phase 2: Convert skill-lean-research to Thin Wrapper [COMPLETED]
 
 **Goal**: Transform skill-lean-research from 408-line direct execution to ~80-line thin wrapper
 
@@ -115,7 +115,7 @@ Research report (research-001.md) provided:
 
 ---
 
-### Phase 3: Update CLAUDE.md Skill-to-Agent Mapping [NOT STARTED]
+### Phase 3: Update CLAUDE.md Skill-to-Agent Mapping [COMPLETED]
 
 **Goal**: Update documentation to reflect restored delegation pattern
 
@@ -135,7 +135,7 @@ Research report (research-001.md) provided:
 
 ---
 
-### Phase 4: Verification and Testing [NOT STARTED]
+### Phase 4: Verification and Testing [COMPLETED]
 
 **Goal**: Verify complete integration works correctly
 

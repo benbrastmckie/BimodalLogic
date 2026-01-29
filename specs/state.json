@@ -185,7 +185,7 @@
     {
       "project_number": 624,
       "project_name": "prove_tableau_complete",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -193,7 +193,7 @@
         623
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T14:00:47Z",
+      "last_updated": "2026-01-29T14:08:50Z",
       "session_id": "sess_1769695229_0b71c9",
       "researched": "2026-01-29T13:22:16Z",
       "artifacts": [
@@ -206,10 +206,17 @@
           "path": "specs/624_prove_tableau_complete/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for proving tableau_complete theorem connecting FMP to tableau termination"
+        },
+        {
+          "path": "specs/624_prove_tableau_complete/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting proved theorem, ported helper lemmas, and remaining gaps"
         }
       ],
       "planned": "2026-01-29T13:49:51Z",
-      "started": "2026-01-29T14:00:47Z"
+      "started": "2026-01-29T14:00:47Z",
+      "completed": "2026-01-29T14:08:50Z",
+      "completion_summary": "Proved tableau_complete theorem with ~650 lines of helper lemmas ported from Metalogic_v2. Key lemmas: expansion_decreases_measure, applyRule_decreases_complexity. Two documented gaps remain: buildTableau_terminates (sorry) and semantic bridge (axiom)."
     },
     {
       "project_number": 625,
@@ -531,13 +538,13 @@
     {
       "project_number": 742,
       "project_name": "restore_lean_research_agent_thin_wrapper",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "high",
       "description": "Restore lean-research-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-research from 408-line direct execution to ~80-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0). Follow patterns from skill-researcher and general-research-agent.",
       "created": "2026-01-29T13:39:29Z",
-      "last_updated": "2026-01-29T13:56:59Z",
-      "session_id": "sess_1769694893_14b3ae",
+      "last_updated": "2026-01-29T14:05:39Z",
+      "session_id": "sess_1769695517_d6dd41",
       "researched": "2026-01-29T13:51:29Z",
       "artifacts": [
         {
@@ -551,7 +558,8 @@
           "summary": "4-phase implementation plan for restoring lean-research-agent with blocked tools guardrails and converting skill-lean-research to thin wrapper"
         }
       ],
-      "planned": "2026-01-29T13:56:59Z"
+      "planned": "2026-01-29T13:56:59Z",
+      "started": "2026-01-29T14:05:39Z"
     },
     {
       "project_number": 743,

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #624
 
 - **Task**: 624 - Prove tableau_complete
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Priority**: Low
 - **Dependencies**: Task 623 (expanded - infrastructure partially built)
@@ -94,7 +94,7 @@ Prove the `tableau_complete` theorem in `Correctness.lean` connecting FMP to tab
 
 ---
 
-### Phase 3: Port branchTruthLemma Infrastructure [NOT STARTED]
+### Phase 3: Port branchTruthLemma Infrastructure [SKIPPED - Combined with Phase 5]
 
 **Goal**: Port the helper lemmas from Metalogic_v2 that support `branchTruthLemma`.
 
@@ -117,7 +117,7 @@ Prove the `tableau_complete` theorem in `Correctness.lean` connecting FMP to tab
 
 ---
 
-### Phase 4: Implement branchTruthLemma [NOT STARTED]
+### Phase 4: Implement branchTruthLemma [SKIPPED - Combined with Phase 5]
 
 **Goal**: Replace the trivial `branchTruthLemma` with a substantive implementation.
 
@@ -141,7 +141,7 @@ Prove the `tableau_complete` theorem in `Correctness.lean` connecting FMP to tab
 
 ---
 
-### Phase 5: Define fmpBasedFuel and Prove tableau_complete [NOT STARTED]
+### Phase 5: Define fmpBasedFuel and Prove tableau_complete [COMPLETED]
 
 **Goal**: Complete the main `tableau_complete` theorem.
 

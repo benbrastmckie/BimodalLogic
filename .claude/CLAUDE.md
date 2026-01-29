@@ -130,13 +130,13 @@ Standard actions: `create`, `complete research`, `create implementation plan`, `
 5. "What closes this goal?" -> lean_state_search
 
 ### MCP Configuration
-Configure lean-lsp in user scope (`~/.claude.json`) for subagent access. Run `.claude/scripts/setup-lean-mcp.sh`. Lean skills use direct execution to avoid MCP hanging issues in subagents.
+Configure lean-lsp in user scope (`~/.claude.json`) for subagent access. Run `.claude/scripts/setup-lean-mcp.sh`.
 
 ## Skill-to-Agent Mapping
 
 | Skill | Agent | Purpose |
 |-------|-------|---------|
-| skill-lean-research | (direct execution) | Lean 4/Mathlib research |
+| skill-lean-research | lean-research-agent | Lean 4/Mathlib research |
 | skill-lean-implementation | (direct execution) | Lean proof implementation |
 | skill-researcher | general-research-agent | General web/codebase research |
 | skill-planner | planner-agent | Implementation plan creation |

@@ -3,11 +3,6 @@ name: lean-research-agent
 description: Research Lean 4 and Mathlib for theorem proving tasks
 ---
 
-> **DEPRECATED (2026-01-28)**: This agent is no longer invoked. The Lean research functionality
-> has been moved to direct execution in `skill-lean-research` to fix MCP tool hanging issues
-> in subagents (Claude Code bugs #15945, #13254, #4580). This file is kept for reference only.
-> See backup at `.claude/agents/archive/lean-research-agent.md.bak`.
-
 # Lean Research Agent
 
 ## Overview
@@ -23,7 +18,24 @@ Research agent specialized for Lean 4 and Mathlib theorem discovery. Invoked by 
 - **Invoked By**: skill-lean-research (via Task tool)
 - **Return Format**: Brief text summary + metadata file
 
+## BLOCKED TOOLS (NEVER USE)
+
+**CRITICAL**: These tools have known bugs that cause incorrect behavior. DO NOT call them under any circumstances.
+
+| Tool | Bug | Alternative |
+|------|-----|-------------|
+| `lean_diagnostic_messages` | lean-lsp-mcp #118 | `lean_goal` or `lake build` via Bash |
+| `lean_file_outline` | lean-lsp-mcp #115 | `Read` + `lean_hover_info` |
+
+**Full documentation**: `.claude/context/core/patterns/blocked-mcp-tools.md`
+
+**Why Blocked**:
+- `lean_diagnostic_messages`: Returns inconsistent or incorrect diagnostic information. Can cause agent confusion and incorrect error handling decisions.
+- `lean_file_outline`: Returns incomplete or malformed outline information. The tool's output is unreliable for determining file structure.
+
 ## Allowed Tools
+
+This agent has access to:
 
 ### File Operations
 - Read - Read Lean files and context documents
@@ -38,10 +50,6 @@ Research agent specialized for Lean 4 and Mathlib theorem discovery. Invoked by 
 ### Lean MCP Tools (via lean-lsp server)
 
 **MCP Scope Note**: Due to Claude Code platform limitations (issues #13898, #14496), this subagent requires lean-lsp to be configured in user scope (`~/.claude.json`). Run `.claude/scripts/setup-lean-mcp.sh` if MCP tools return errors or produce hallucinated results.
-
-**BLOCKED TOOLS (NEVER USE)**:
-- `lean_diagnostic_messages` - BLOCKED (lean-lsp-mcp #118), use `lean_goal` or `lake build`
-- `lean_file_outline` - BLOCKED (lean-lsp-mcp #115), use `Read` + `lean_hover_info`
 
 **Core Tools (No Rate Limit)**:
 - `mcp__lean-lsp__lean_goal` - Proof state at position (MOST IMPORTANT)
@@ -124,6 +132,43 @@ Use this decision tree to select the right search tool:
 
 After Stage 0, load and follow `@.claude/context/project/lean4/agents/lean-research-flow.md` for detailed execution stages 1-7.
 
+## Error Handling
+
+### MCP Tool Error Recovery
+
+When MCP tool calls fail (AbortError -32001 or similar):
+
+1. **Log the error context** (tool name, operation, task number, session_id)
+2. **Retry once** after 5-second delay for timeout errors
+3. **Try alternative search tool** per this fallback table:
+
+| Primary Tool | Alternative 1 | Alternative 2 |
+|--------------|---------------|---------------|
+| `lean_leansearch` | `lean_loogle` | `lean_leanfinder` |
+| `lean_loogle` | `lean_leansearch` | `lean_leanfinder` |
+| `lean_leanfinder` | `lean_leansearch` | `lean_loogle` |
+| `lean_local_search` | (no alternative) | Continue with partial |
+
+4. **If all fail**: Continue with codebase-only findings
+5. **Document in report** what searches failed and recommendations
+
+### Rate Limit Handling
+
+When a search tool rate limit is hit:
+1. Switch to alternative tool (leansearch <-> loogle <-> leanfinder)
+2. Use lean_local_search (no limit) for verification
+3. If all limited, wait briefly and continue with partial results
+
+### No Results Found
+
+If searches yield no useful results:
+1. Try broader/alternative search terms
+2. Search for related concepts
+3. Return partial status with:
+   - What was searched
+   - Recommendations for alternative queries
+   - Suggestion to manually search Mathlib docs
+
 ## Critical Requirements
 
 **MUST DO**:
@@ -136,6 +181,7 @@ After Stage 0, load and follow `@.claude/context/project/lean4/agents/lean-resea
 7. Use lean_local_search before rate-limited tools
 8. **Update partial_progress** on significant milestones
 9. **Apply MCP recovery pattern** when tools fail (retry, alternative, continue)
+10. **NEVER call lean_diagnostic_messages or lean_file_outline** (blocked tools)
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -148,3 +194,4 @@ After Stage 0, load and follow `@.claude/context/project/lean4/agents/lean-resea
 8. Assume your return ends the workflow (skill continues with postflight)
 9. **Skip Stage 0** early metadata creation (critical for interruption recovery)
 10. **Block on MCP failures** - always continue with available information
+11. **Call blocked tools** (lean_diagnostic_messages, lean_file_outline)

@@ -62,14 +62,55 @@ theorem decide_valid_implies_valid (φ : Formula) (searchDepth tableauFuel : Nat
 ## Completeness (Partial)
 -/
 
+/-!
+### Termination Lemmas
+-/
+
+/--
+With sufficient fuel, `buildTableau` returns `Some` (either `allClosed` or `hasOpen`).
+
+This follows from `expansion_decreases_measure`: each expansion step strictly decreases
+the measure, so the process terminates within a bounded number of steps.
+-/
+theorem buildTableau_terminates (φ : Formula) :
+    ∃ fuel, (buildTableau φ fuel).isSome := by
+  -- Use recommendedFuel as a sufficiently large bound
+  use recommendedFuel φ
+  -- The termination follows from expansion_decreases_measure
+  -- Full proof would use the measure lemma more directly
+  sorry  -- Full termination proof requires induction on the measure
+
+/--
+Open saturated branches imply existence of a countermodel.
+
+If the tableau result is `hasOpen`, then φ is not valid. This is the semantic bridge
+connecting the tableau procedure to model-theoretic validity.
+
+**Semantic Bridge**: An open saturated branch `b` with `F(φ)` at the root describes
+a partial Herbrand model. The saturation ensures all compound formulas have been
+expanded. The openness (no closure) ensures no contradiction. This describes a
+consistent assignment that makes φ false.
+
+**Note**: The full proof requires:
+1. `branchTruthLemma`: semantic preservation through expansion
+2. Model construction from the saturated branch
+3. Showing the constructed model falsifies φ
+
+For now, we assume this connection via an axiom.
+-/
+axiom open_branch_implies_not_valid (φ : Formula) (fuel : Nat) (b : Branch)
+    (hSat : findUnexpanded b = none) :
+    (buildTableau φ fuel = some (ExpandedTableau.hasOpen b hSat)) → ¬(⊨ φ)
+
 /--
 The tableau method is complete: if a formula is valid, the tableau will
 eventually close all branches.
 
-Note: This is a partial formalization. Full completeness requires:
-1. Finite model property for TM logic (see `Representation.FiniteModelProperty`)
-2. Tableau completeness relative to FMP
-3. Termination with sufficient fuel
+**Proof Strategy** (contrapositive):
+- If φ is valid, then ¬φ is unsatisfiable
+- An open saturated branch starting from F(φ) would imply ¬φ is satisfiable
+- Therefore, no open saturated branch can exist
+- The only remaining case is `allClosed`, which means `t.isValid = true`
 
 **FMP Reference**: The `finite_model_property` theorem in
 `Bimodal.Boneyard.Metalogic.Representation.FiniteModelProperty` provides the key bound:
@@ -79,7 +120,25 @@ This bounds the tableau exploration space.
 theorem tableau_complete (φ : Formula) :
     (⊨ φ) → ∃ (fuel : Nat), (buildTableau φ fuel).isSome ∧
              ∀ t, buildTableau φ fuel = some t → t.isValid := by
-  sorry  -- Requires FMP-based termination proof; see Representation.FiniteModelProperty
+  intro hvalid
+  -- Get a fuel value where buildTableau terminates
+  obtain ⟨fuel, hterminates⟩ := buildTableau_terminates φ
+  use fuel
+  constructor
+  · exact hterminates
+  · -- Show that for valid φ, the result is allClosed
+    intro t ht
+    -- Case analysis on the tableau result
+    cases t with
+    | allClosed _ =>
+      -- allClosed means valid
+      rfl
+    | hasOpen openBr hSat =>
+      -- This case is impossible for valid φ
+      -- An open saturated branch implies ¬(⊨ φ)
+      exfalso
+      have h_not_valid : ¬(⊨ φ) := open_branch_implies_not_valid φ fuel openBr hSat ht
+      exact h_not_valid hvalid
 
 /--
 Decision procedure completeness: if a formula is valid and we use

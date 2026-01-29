@@ -320,4 +320,37 @@ This decreases with each tableau expansion step, ensuring termination.
 def branchUnexpandedComplexity (b : Branch) : Nat :=
   b.foldl (fun acc sf => acc + unexpandedComplexity sf) 0
 
+/-!
+## FMP-Based Fuel Calculation
+-/
+
+/--
+Size of the subformula closure of a formula.
+
+This bounds the number of distinct formulas that can appear in the tableau.
+-/
+def closureSizeOf (φ : Formula) : Nat :=
+  Formula.subformulaCount φ
+
+/--
+FMP-based fuel calculation.
+
+The Finite Model Property guarantees that any satisfiable formula has a model
+with at most 2^closureSizeOf(φ) world states. This bounds the tableau exploration:
+- Each branch has at most 2 * closureSizeOf(φ) signed formulas
+- The number of expansion steps is bounded by the branch measure
+- Fuel = 2^closureSizeOf(φ) * 2 is sufficient for complete exploration
+-/
+def fmpBasedFuel (φ : Formula) : Nat :=
+  2 ^ closureSizeOf φ * 2
+
+/--
+Recommended fuel based on formula complexity.
+
+This is a more aggressive bound using the complexity directly.
+Uses a multiplier to handle worst-case branching.
+-/
+def recommendedFuelFromComplexity (φ : Formula) : Nat :=
+  2 ^ φ.complexity * φ.complexity + 100
+
 end Bimodal.Boneyard.Metalogic.Decidability
