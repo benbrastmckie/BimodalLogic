@@ -322,64 +322,146 @@ Link tasks to review report.
 
 Also increment `statistics.total_tasks_created` by the count of new tasks.
 
-### 5.5. Roadmap Task Recommendations
+### 5.5. Issue Grouping and Task Recommendations
 
-Generate task recommendations from incomplete roadmap items.
+Group review issues and roadmap items into coherent task proposals, then present for interactive selection.
 
-**1. Identify current goals:**
-For each phase, find first incomplete checkbox (`- [ ]`).
+#### 5.5.1. Collect All Issues
 
-**2. Score items by priority:**
+Combine issues from review findings and incomplete roadmap items:
+
+**From Review Findings** (Section 3-4):
+```json
+{
+  "source": "review",
+  "file_path": "Theories/Bimodal/Soundness.lean",
+  "line": 42,
+  "severity": "high",
+  "description": "Missing case in pattern match",
+  "impact": "May cause incomplete evaluation",
+  "recommended_fix": "Add wildcard case handler"
+}
+```
+
+**From Roadmap Items** (Section 2.5):
+```json
+{
+  "source": "roadmap",
+  "file_path": null,
+  "phase": 1,
+  "priority": "high",
+  "description": "Audit proof dependencies",
+  "item_text": "Audit proof dependencies for Soundness.lean"
+}
+```
+
+#### 5.5.2. Extract Grouping Indicators
+
+For each issue, extract grouping indicators:
+
+| Indicator | Extraction Rule |
+|-----------|-----------------|
+| `file_section` | Path prefix up to first-level directory (e.g., `Theories/Bimodal/` from `Theories/Bimodal/Soundness.lean:42`) |
+| `issue_type` | Map severity: Critical/High -> "fix", Medium -> "quality", Low -> "improvement". For roadmap: "roadmap" |
+| `priority` | Direct from severity (Critical=4, High=3, Medium=2, Low=1) or phase priority |
+| `key_terms` | Extract significant words (>4 chars, not stopwords) from description |
+
+**Example extracted indicators:**
+```json
+{
+  "file_section": "Theories/Bimodal/",
+  "issue_type": "fix",
+  "priority": 3,
+  "key_terms": ["pattern", "match", "evaluation", "incomplete"]
+}
+```
+
+#### 5.5.3. Clustering Algorithm
+
+Group issues using file_section + issue_type as primary criteria:
+
+```
+groups = []
+
+for each issue in all_issues:
+  matched = false
+
+  # Primary match: same file_section AND same issue_type
+  for each group in groups:
+    if issue.file_section == group.file_section AND issue.issue_type == group.issue_type:
+      add issue to group.items
+      matched = true
+      break
+
+  # Secondary match: 2+ shared key_terms AND same priority
+  if not matched:
+    for each group in groups:
+      shared_terms = intersection(issue.key_terms, group.key_terms)
+      if len(shared_terms) >= 2 AND issue.priority == group.priority:
+        add issue to group.items
+        update group.key_terms with union
+        matched = true
+        break
+
+  # No match: create new group
+  if not matched:
+    new_group = {
+      "file_section": issue.file_section,
+      "issue_type": issue.issue_type,
+      "priority": issue.priority,
+      "key_terms": issue.key_terms,
+      "items": [issue]
+    }
+    append new_group to groups
+```
+
+#### 5.5.4. Group Post-Processing
+
+Apply size limits and generate labels:
+
+**1. Combine small groups:**
+Groups with <2 items are merged into nearest match or "Other" group.
+
+**2. Cap total groups:**
+Maximum 10 groups. If exceeded, merge lowest-priority groups.
+
+**3. Generate group labels:**
+
+| Condition | Label Format |
+|-----------|--------------|
+| Has file_section | "{directory} {issue_type}s" (e.g., "Bimodal fixes") |
+| Same priority, no section | "{key_term} issues" (e.g., "Proof quality issues") |
+| Roadmap items | "Roadmap: {phase_name}" |
+| Mixed/Other | "Other {issue_type}s" |
+
+**4. Calculate group metadata:**
+```json
+{
+  "label": "Bimodal fixes",
+  "item_count": 3,
+  "severity_breakdown": {"critical": 1, "high": 2},
+  "file_list": ["Soundness.lean", "Correctness.lean"],
+  "max_priority": 3,
+  "total_score": 11
+}
+```
+
+#### 5.5.5. Score Groups for Ordering
+
+Sort groups by combined score:
 
 | Factor | Score |
 |--------|-------|
-| Phase priority: High | +6 |
-| Phase priority: Medium | +4 |
-| Phase priority: Low | +2 |
-| First incomplete in phase | +2 |
-| Listed in "Near Term" section | +3 |
-| Contains actionable file path | +1 |
+| Contains critical issue | +10 |
+| Contains high issue | +5 |
+| Group max priority: Critical | +8 |
+| Group max priority: High | +6 |
+| Group max priority: Medium | +4 |
+| Group max priority: Low | +2 |
+| Number of items (capped at 5) | +N |
+| Roadmap "Near Term" items | +3 |
 
-**3. Select top 5-7 recommendations:**
-Sort by score, take top items.
-
-**4. Infer language from content:**
-- Contains `.lean` path: `lean`
-- Contains `.md` path: `meta`
-- Contains `.tex` path: `latex`
-- Otherwise: `general`
-
-**5. Present to user via prompt:**
-
-```
-Based on roadmap analysis, I recommend these tasks:
-
-1. [ ] Audit proof dependencies (Phase 1, High Priority, Score: 11)
-   Language: lean
-
-2. [ ] Visualize import graph (Phase 1, High Priority, Score: 9)
-   Language: general
-
-3. [ ] Create proof architecture guide (Phase 1, High Priority, Score: 8)
-   Language: meta
-
-4. [ ] Define SetDerivable (Phase 2, Medium Priority, Score: 6)
-   Language: lean
-
-5. [ ] Analyze FMP bound complexity (Phase 3, Medium Priority, Score: 5)
-   Language: lean
-
-Which tasks should I create? Enter numbers (e.g., "1,3,5") or "all" or "none":
-```
-
-**6. Create selected tasks:**
-For each selected item, invoke:
-```
-/task "{item text}" --language={inferred_language} --priority={phase_priority}
-```
-
-**7. Track created tasks:**
-Add task numbers to `roadmap_tasks_created` in review state.
+Sort groups by descending score.
 
 ### 6. Update Registries (if applicable)
 
