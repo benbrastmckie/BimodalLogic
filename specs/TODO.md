@@ -241,13 +241,14 @@ technical_debt:
 ---
 
 ### 761. Integrate TTS and STT for Claude Code and neovim
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 4.5 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Research**: [research-001.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/plans/implementation-001.md)
 
 **Description**: Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM).
 

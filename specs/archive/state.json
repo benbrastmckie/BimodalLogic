@@ -10813,6 +10813,187 @@
       "claudemd_suggestions": "Updated .claude/commands/review.md with ~200 lines: added AskUserQuestion to allowed-tools, rewrote Sections 5 and 5.5 with grouping algorithm and interactive selection, added Section 5.6 for task creation from selection",
       "archived": "2026-01-29T15:31:00Z",
       "source": "archival"
+    },
+    {
+      "project_number": 758,
+      "project_name": "audit_and_reduce_metalogic_sorries",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-29T17:15:00Z",
+      "last_updated": "2026-01-29T20:25:21Z",
+      "description": "Audit and reduce sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard). Currently 45 sorries: 33 in Representation/, remainder in Core/, Completeness/, FMP/, Algebraic/. Categorize by (a) blocking main theorem path, (b) required for full biconditional but not main result, (c) optional/exploratory. Prioritize elimination of category (a) sorries. Related: Task 750 (forward Truth Lemma refactor)",
+      "source": "archival",
+      "session_id": "sess_1769711795_52a0e1",
+      "researched": "2026-01-29T18:17:20Z",
+      "artifacts": [
+        {
+          "path": "specs/758_audit_and_reduce_metalogic_sorries/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive audit categorizing sorries as (a) critical: 1 soundness sorry, (b) secondary: 21 sorries on alternative paths, (c) exploratory: 13 cross-origin/compositionality sorries. Includes priority ranking and implementation recommendations."
+        },
+        {
+          "path": "specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan targeting 20 sorry reduction through proof porting, fixes, and archival"
+        },
+        {
+          "path": "specs/758_audit_and_reduce_metalogic_sorries/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting soundness port and sorry analysis"
+        }
+      ],
+      "planned": "2026-01-29T18:28:21Z",
+      "started": "2026-01-29T18:36:53Z",
+      "completion_summary": "Ported soundness proof from Boneyard to WeakCompleteness.lean, eliminating the critical sorry that blocked bidirectional soundness-completeness. Fixed Boneyard soundness proofs for reflexive temporal semantics. Phases 2-4 were deferred after analysis showed they are either non-critical, architecturally impossible, or require careful dependency work. The main completeness theorem semantic_weak_completeness remains sorry-free.",
+      "archived": "2026-01-29T21:52:39Z"
+    },
+    {
+      "project_number": 759,
+      "project_name": "update_todo_md_sorry_metrics",
+      "status": "completed",
+      "language": "meta",
+      "priority": "low",
+      "created": "2026-01-29T17:15:00Z",
+      "last_updated": "2026-01-29T18:41:16Z",
+      "description": "Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.",
+      "source": "archival",
+      "session_id": "sess_1769711749_d9be54",
+      "researched": "2026-01-29T18:20:48Z",
+      "artifacts": [
+        {
+          "path": "specs/759_update_todo_md_sorry_metrics/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of metadata sync gaps: TODO.md has stale repo-wide metrics (sorry_count 205 vs actual 275) not present in state.json, /review computes but doesn't persist, recommends adding metrics sync step to /todo command."
+        },
+        {
+          "path": "specs/759_update_todo_md_sorry_metrics/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan: fix immediate metrics, add state.json schema, add metrics sync to /todo, documentation"
+        },
+        {
+          "path": "specs/759_update_todo_md_sorry_metrics/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with all phases completed"
+        }
+      ],
+      "planned": "2026-01-29T18:26:01Z",
+      "started": "2026-01-29T18:36:09Z",
+      "completed": "2026-01-29T18:41:16Z",
+      "completion_summary": "Fixed stale TODO.md sorry metrics (205->295), added repository_health to state.json schema, and implemented automatic metrics sync in /todo command Section 5.7.",
+      "claudemd_suggestions": "Updated CLAUDE.md /todo command description to include 'sync repository metrics', added repository_health section to state.json Structure example",
+      "archived": "2026-01-29T21:52:39Z"
+    },
+    {
+      "project_number": 744,
+      "project_name": "update_documentation_lean_agent_architecture",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "description": "Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.",
+      "created": "2026-01-29T13:39:29Z",
+      "last_updated": "2026-01-29T21:07:49Z",
+      "dependencies": [
+        742,
+        743
+      ],
+      "session_id": "sess_1769720703_fb9339",
+      "researched": "2026-01-29T20:50:40Z",
+      "artifacts": [
+        {
+          "path": "specs/744_update_documentation_lean_agent_architecture/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying 3 files requiring updates to remove outdated direct execution references"
+        },
+        {
+          "path": "specs/744_update_documentation_lean_agent_architecture/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for updating Lean agent delegation documentation"
+        },
+        {
+          "path": "specs/744_update_documentation_lean_agent_architecture/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-29T21:01:14Z",
+      "started": "2026-01-29T21:05:24Z",
+      "completed": "2026-01-29T21:07:49Z",
+      "completion_summary": "Updated documentation to reflect restoration of Lean agent delegation patterns. Removed outdated 'deprecated' and 'direct execution' references from blocked-mcp-tools.md, README.md, and thin-wrapper-skill.md.",
+      "claudemd_suggestions": "Updated blocked-mcp-tools.md (removed Deprecated from agent references), README.md (replaced Direct Execution Migration section), thin-wrapper-skill.md (removed MCP caveat and Lean Skills Exception)",
+      "archived": "2026-01-29T21:52:39Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 762,
+      "project_name": "fix_planner_agent_enforce_status_field",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-29T21:04:03Z",
+      "last_updated": "2026-01-29T21:28:57Z",
+      "session_id": "sess_1769721961_4a56bb",
+      "description": "Move plan-format.md from Load When Creating Plan to Always Load section in planner-agent.md (line 43). Add explicit verification step in Stage 5 (around line 173) to ensure Status field exists in plan file before writing success metadata. Evidence: Task 750 v005 plan missing Status line while older plans (758, 759, 741) have it.",
+      "researched": "2026-01-29T21:12:15Z",
+      "artifacts": [
+        {
+          "path": "specs/762_fix_planner_agent_enforce_status_field/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting the Status field gap in task 750 v005 plan, comparison with correct older plans, and recommended changes to planner-agent.md"
+        },
+        {
+          "path": "specs/762_fix_planner_agent_enforce_status_field/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan: update context references, add verification step, update critical requirements, verify changes"
+        },
+        {
+          "path": "specs/762_fix_planner_agent_enforce_status_field/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-01-29T21:23:49Z",
+      "started": "2026-01-29T21:26:22Z",
+      "completed": "2026-01-29T21:28:57Z",
+      "completion_summary": "Modified planner-agent.md to enforce Status field presence: moved plan-format.md to Always Load, added Stage 6a verification step, added MUST DO item 10.",
+      "claudemd_suggestions": "Updated .claude/agents/planner-agent.md: added plan-format.md to Always Load section, added Stage 6a verification step for required metadata fields, added MUST DO item 10 for Status field verification",
+      "archived": "2026-01-29T21:52:39Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 763,
+      "project_name": "add_plan_status_updates_skill_lean_implementation",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-29T21:04:06Z",
+      "last_updated": "2026-01-29T21:25:14Z",
+      "session_id": "sess_1769721755_8ea77d",
+      "description": "Add plan status update pattern (sed commands to update - **Status**: [...] line) to skill-lean-implementation/SKILL.md in three locations: (1) Stage 2 Preflight: Update to [IMPLEMENTING] before invoking agent, (2) Stage 7 Postflight (implemented): Update to [COMPLETED], (3) Stage 7 Postflight (partial): Update to [PARTIAL]. Pattern exists in skill-implementer (lines 91-98, 265-271, 287-293), skill-latex-implementation (lines 70-76, 282-288, 304-310), skill-typst-implementation (lines 70-76, 282-288, 304-310).",
+      "researched": "2026-01-29T21:15:16Z",
+      "artifacts": [
+        {
+          "path": "specs/763_add_plan_status_updates_skill_lean_implementation/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of plan status update pattern from sister skills with exact insertion points for skill-lean-implementation"
+        },
+        {
+          "path": "specs/763_add_plan_status_updates_skill_lean_implementation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan to add plan status updates to skill-lean-implementation"
+        },
+        {
+          "path": "specs/763_add_plan_status_updates_skill_lean_implementation/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes and verification results"
+        }
+      ],
+      "started": "2026-01-29T21:22:52Z",
+      "completed": "2026-01-29T21:25:14Z",
+      "completion_summary": "Added plan file status update pattern to skill-lean-implementation at three locations, ensuring plan files accurately reflect implementation state (IMPLEMENTING/COMPLETED/PARTIAL).",
+      "claudemd_suggestions": "Modified .claude/skills/skill-lean-implementation/SKILL.md with 3 new code blocks for plan status synchronization",
+      "archived": "2026-01-29T21:52:39Z",
+      "source": "archival"
     }
   ]
 }

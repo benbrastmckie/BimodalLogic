@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/plans/implementation-001.md",
+      "summary": "3-phase implementation plan for TTS notifications and Neovim STT integration"
+    }
+  ],
+  "next_steps": "Run /implement 761 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1769723424_c411b2",
+    "agent_type": "planner-agent",
+    "duration_seconds": 45,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 4.5
+  }
+}
