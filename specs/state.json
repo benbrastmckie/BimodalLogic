@@ -33,13 +33,13 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T15:34:10Z",
+      "last_updated": "2026-01-29T15:37:11Z",
       "session_id": "sess_1769700837_8e9202",
-      "researched": "2026-01-29T15:22:22Z",
+      "researched": "2026-01-29T15:37:11Z",
       "artifacts": [
         {
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-003.md",
@@ -50,6 +50,11 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan to refactor metalogic to Two-Pillar Architecture, removing sorries from TruthLemma and archiving superseded files"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-004.md",
+          "type": "research",
+          "summary": "Dependency analysis showing proposed archival would break completeness proofs; recommends documentation-only approach"
         }
       ],
       "planned": "2026-01-29T15:31:46Z"
