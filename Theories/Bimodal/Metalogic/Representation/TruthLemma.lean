@@ -25,9 +25,9 @@ This allows using the backward IH in the forward direction (e.g., for the imp ca
 - **Atom**: Valuation is defined so that atom p in mcs t iff valuation says true
 - **Bot**: MCS is consistent, so bot not in mcs; semantically, bot is false
 - **Imp**: Uses MCS modus ponens closure (forward) and negation completeness (backward)
-- **Box**: Universal quantification over histories requires special handling
-- **G (all_future)**: Uses family coherence conditions
-- **H (all_past)**: Symmetric to G case
+- **Box**: Universal quantification over histories (architectural limitation, see below)
+- **G (all_future)**: Uses family coherence conditions (forward direction complete)
+- **H (all_past)**: Symmetric to G case (forward direction complete)
 
 ## Key Insight
 
@@ -36,27 +36,11 @@ The mutual induction allows the forward imp case to use:
 2. Modus ponens closure: if `(psi → chi) ∈ mcs t` and `psi ∈ mcs t`, then `chi ∈ mcs t`
 3. Forward IH to convert `chi ∈ mcs t` to `truth_at chi`
 
-## References
+## Completeness
 
-- Research report: specs/656_.../reports/research-001.md
-- Implementation plan: specs/656_.../plans/implementation-001.md
-
-## Gaps NOT Required for Completeness
-
-The backward direction of the Truth Lemma (`truth_at → φ ∈ MCS`) has sorries in:
-- `all_past` backward case (line 410)
-- `all_future` backward case (line 423)
-
-**These are NOT required for completeness**. The representation theorem only uses
-`truth_lemma_forward` (the forward direction: `φ ∈ MCS → truth_at`).
-
-The backward direction would prove "tightness" - that the canonical model has no
-extraneous truths beyond what the MCS contains. This is useful for:
-- Soundness proofs
-- Frame correspondence
-- Definability results
-
-See `Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean` for details.
+The representation theorem only requires `truth_lemma_forward` (the forward direction).
+The backward direction for temporal operators (H/G) and both directions for box have
+architectural limitations documented inline. These do not affect the completeness proof.
 -/
 
 namespace Bimodal.Metalogic.Representation
@@ -65,7 +49,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Core
 open Bimodal.Semantics
--- NOTE: MCSProperties provides helper lemmas (previously from Boneyard).
+-- MCSProperties provides helper lemmas for MCS deductive closure.
 
 variable (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
@@ -420,17 +404,15 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       intro h_all_past
       -- NOT REQUIRED FOR COMPLETENESS - the representation theorem only uses truth_lemma_forward.
       --
-      -- BLOCKED BY OMEGA-RULE LIMITATION (Task 741):
+      -- ARCHITECTURAL LIMITATION (omega-rule):
       -- The proof strategy is contrapositive: assume H psi ∉ mcs(t), extract witness s < t
       -- with psi ∉ mcs(s), then use forward IH to get contradiction.
       --
       -- The witness extraction requires H-completeness:
       --   (∀ s < t, psi ∈ mcs(s)) → H psi ∈ mcs(t)
       -- This requires deriving H psi from infinitely many psi instances (omega-rule),
-      -- which TM logic cannot express.
-      --
-      -- See: TemporalCompleteness.lean for infrastructure and detailed documentation
-      -- See: specs/741_.../reports/research-001.md for analysis
+      -- which TM logic cannot express. The IndexedMCSFamily coherence only provides
+      -- the converse direction (H psi ∈ mcs(t) → psi ∈ mcs(s) for s < t).
       sorry
 
   | all_future psi ih =>

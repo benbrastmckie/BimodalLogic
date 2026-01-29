@@ -52,6 +52,7 @@ namespace Bimodal.Metalogic.FMP
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
 open Bimodal.Metalogic.Core Bimodal.Metalogic.Completeness
+open Bimodal.Metalogic_v2.Representation
 
 /-!
 ## History-Time Pairs
@@ -165,6 +166,13 @@ instance semanticWorldState_finite : Finite (SemanticWorldState phi) := by
   apply Finite.of_injective toFiniteWorldState
   intro w1 w2 h
   exact (eq_iff_toFiniteWorldState_eq w1 w2).mpr h
+
+/--
+Fintype instance for SemanticWorldState.
+Derives from Finite.
+-/
+noncomputable instance semanticWorldState_fintype : Fintype (SemanticWorldState phi) :=
+  Fintype.ofFinite _
 
 end SemanticWorldState
 
@@ -511,8 +519,6 @@ theorem semanticWorldState_card_bound (phi : Formula) :
   have h_inj : Function.Injective (SemanticWorldState.toFiniteWorldState (phi := phi)) := by
     intros w1 w2 heq
     exact (SemanticWorldState.eq_iff_toFiniteWorldState_eq w1 w2).mpr heq
-  have h_fintype_ws : Fintype (FiniteWorldState phi) := finiteWorldState_fintype phi
-  have h_fintype_sws : Fintype (SemanticWorldState phi) := Fintype.ofFinite _
   have h_card_le := Fintype.card_le_of_injective _ h_inj
   calc Fintype.card (SemanticWorldState phi)
       ≤ Fintype.card (FiniteWorldState phi) := h_card_le
