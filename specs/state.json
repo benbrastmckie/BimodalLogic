@@ -8,12 +8,13 @@
     {
       "project_number": 731,
       "project_name": "clean_bimodal_documentation_remove_historical_comments",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T23:47:43Z",
-      "last_updated": "2026-01-29T00:07:31Z",
-      "description": "Clean up Lean source code documentation in Bimodal/ theory. Remove historical comments about past attempts, comparative mentions, and implementation history from main source files. **Important context from Task 726**: Core/DeductionTheorem.lean and Core/MCSProperties.lean now contain Boneyard-origin lemmas with provenance comments (e.g., '-- Origin: Boneyard/...'); these provenance comments should be PRESERVED as they document code lineage, not removed. The cleanup focuses on: (1) removing narrative history in comments explaining 'why we did X instead of Y', (2) removing references to abandoned approaches, (3) ensuring Boneyard/ is completely isolated (no imports from Boneyard in active code - already done by Task 726 for Representation/ files). Move historical context to Boneyard/ documentation where appropriate. Post-726 structure: Representation/ files now import from Core/ instead of Boneyard/."
+      "last_updated": "2026-01-29T00:09:17Z",
+      "description": "Clean up Lean source code documentation in Bimodal/ theory. Remove historical comments about past attempts, comparative mentions, and implementation history from main source files. **Important context from Task 726**: Core/DeductionTheorem.lean and Core/MCSProperties.lean now contain Boneyard-origin lemmas with provenance comments (e.g., '-- Origin: Boneyard/...'); these provenance comments should be PRESERVED as they document code lineage, not removed. The cleanup focuses on: (1) removing narrative history in comments explaining 'why we did X instead of Y', (2) removing references to abandoned approaches, (3) ensuring Boneyard/ is completely isolated (no imports from Boneyard in active code - already done by Task 726 for Representation/ files). Move historical context to Boneyard/ documentation where appropriate. Post-726 structure: Representation/ files now import from Core/ instead of Boneyard/.",
+      "session_id": "sess_1769645348_7ee08a"
     },
     {
       "project_number": 726,
@@ -50,11 +51,11 @@
     {
       "project_number": 727,
       "project_name": "consolidate_set_lindenbaum",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T22:45:08Z",
-      "last_updated": "2026-01-29T00:07:39Z",
+      "last_updated": "2026-01-29T00:09:37Z",
       "session_id": "sess_1769645240_99fe88",
       "researched": "2026-01-28T23:52:34Z",
       "artifacts": [
@@ -63,7 +64,8 @@
           "type": "research",
           "summary": "Analysis of set_lindenbaum duplicates with consolidation strategy dependent on Task 726"
         }
-      ]
+      ],
+      "planned": "2026-01-29T00:09:37Z"
     },
     {
       "project_number": 697,
@@ -72,7 +74,7 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-28T01:24:47Z",
-      "last_updated": "2026-01-28T23:52:00Z",
+      "last_updated": "2026-01-29T00:09:04Z",
       "session_id": "sess_1769644214_00ef06",
       "researched": "2026-01-28T23:10:20Z",
       "artifacts": [
@@ -87,12 +89,12 @@
           "summary": "Post-681 evaluation: Task 697 still has actionable work - TruthLemma type mismatch not fixed"
         },
         {
-          "path": "specs/697_fix_universalcanonicalmodel_compilation_error/plans/implementation-001.md",
+          "path": "specs/697_fix_universalcanonicalmodel_compilation_error/plans/implementation-002.md",
           "type": "plan",
-          "summary": "3-phase plan: fix all_past case, fix all_future case, verify build"
+          "summary": "3-phase plan revised post-726: fix all_past case, fix all_future case, verify build"
         }
       ],
-      "planned": "2026-01-28T23:52:00Z"
+      "planned": "2026-01-29T00:09:04Z"
     },
     {
       "project_number": 658,
@@ -622,11 +624,11 @@
     {
       "project_number": 700,
       "project_name": "research_algebraic_representation_theorem_proof",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-29T00:06:12Z",
+      "last_updated": "2026-01-29T00:09:18Z",
       "session_id": "sess_1769645156_aa34cd",
       "description": "Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.",
       "researched": "2026-01-29T00:01:07Z",
@@ -645,8 +647,14 @@
           "path": "specs/700_research_algebraic_representation_theorem_proof/reports/research-003.md",
           "type": "research",
           "summary": "Impact of reflexive G/H semantics on purely algebraic approach - finds reflexivity already implemented, identifies closure/interior operator connection to Mathlib"
+        },
+        {
+          "path": "specs/700_research_algebraic_representation_theorem_proof/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for algebraic representation theorem using Lindenbaum quotient and interior operators"
         }
-      ]
+      ],
+      "planned": "2026-01-29T00:09:18Z"
     }
   ],
   "completed_projects": [

@@ -35,9 +35,9 @@ technical_debt:
 - **Created**: 2026-01-28
 - **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:413
 - **Research**: [research-001.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-001.md), [research-002.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/697_fix_universalcanonicalmodel_compilation_error/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/697_fix_universalcanonicalmodel_compilation_error/plans/implementation-002.md)
 
-**Description**: Fix the reflexive/irreflexive semantics mismatch in TruthLemma.lean. Semantics use `s ≤ t` but coherence conditions use `s < t`. Fix by splitting proof cases with `eq_or_lt_of_le` and using T-axiom closure lemmas for the reflexive case. Task 681 addressed documentation but not this compilation error.
+**Description**: Fix the reflexive/irreflexive semantics mismatch in TruthLemma.lean. Semantics use `s ≤ t` but coherence conditions use `s < t`. Fix by splitting proof cases with `eq_or_lt_of_le` and using T-axiom closure lemmas for the reflexive case. Plan revised post-726 (MCS lemma reorganization).
 
 ---
 
@@ -120,7 +120,7 @@ technical_debt:
 
 ### 731. Clean Bimodal documentation - remove historical comments
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
@@ -149,12 +149,12 @@ technical_debt:
 
 ### 727. Consolidate set_lindenbaum duplicates
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Parent**: Task 722
-- **Dependencies**: Task 726
+- **Dependencies**: Task 726 (COMPLETED)
 - **Research**: [research-001.md](specs/727_consolidate_set_lindenbaum/reports/research-001.md)
 
 **Description**: Remove duplicate `set_lindenbaum` theorem definitions from deprecated Boneyard/Metalogic/ files when those files are fully deprecated. Current duplicates: `Boneyard/Metalogic/Completeness.lean:360` and `Boneyard/Metalogic/Representation/CanonicalModel.lean:139`. Canonical source is `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean:290`, re-exported via `Metalogic/Core/MaximalConsistent.lean`. Deferred from Task 722 Phase 4.
@@ -162,15 +162,17 @@ technical_debt:
 ---
 
 ### 700. Research algebraic representation theorem proof
-- **Effort**: 6-8 hours
-- **Status**: [PLANNING]
+- **Effort**: 12-16 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
+- **Planned**: 2026-01-29
 - **Source**: specs/ROAD_MAP.md:291
 - **Research**: [research-001.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-001.md), [research-002.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-002.md), [research-003.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-003.md)
+- **Plan**: [implementation-001.md](specs/700_research_algebraic_representation_theorem_proof/plans/implementation-001.md)
 
-**Description**: Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.
+**Description**: Develop a purely algebraic approach to the representation theorem as an alternative to the current seed-extension approach. Leverages reflexive G/H semantics to show temporal operators form interior operators on the Lindenbaum-Tarski algebra. All algebraic infrastructure isolated in `Metalogic/Algebraic/` for clean removal if approach fails.
 
 ---
 
