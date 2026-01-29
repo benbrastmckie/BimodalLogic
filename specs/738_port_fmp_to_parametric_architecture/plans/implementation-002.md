@@ -2,7 +2,7 @@
 
 - **Task**: 738 - Port FMP to parametric architecture with explicit cardinality bounds
 - **Version**: 002 (Revised for Option A - Full Parametric Port)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 10-14 hours
 - **Priority**: medium
 - **Dependencies**: Task 660 (parent task - Phase 3)

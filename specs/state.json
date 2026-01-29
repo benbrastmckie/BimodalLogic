@@ -77,7 +77,7 @@
       "description": "Complete phase 3 of task 660: Finite Model Property Port. Port FMP to parametric architecture with explicit cardinality bounds on finite models. This provides decidability foundation (orthogonal to completeness chain). Follow-up from task #660.",
       "parent_task": 660,
       "created": "2026-01-29T04:05:03Z",
-      "last_updated": "2026-01-29T14:10:53Z",
+      "last_updated": "2026-01-29T14:20:29Z",
       "session_id": "sess_1769695833_20538b",
       "researched": "2026-01-29T13:18:58Z",
       "artifacts": [
@@ -98,7 +98,8 @@
         }
       ],
       "planned": "2026-01-29T14:00:07Z",
-      "started": "2026-01-29T14:10:53Z"
+      "started": "2026-01-29T14:10:53Z",
+      "resume_phase": 3
     },
     {
       "project_number": 659,
