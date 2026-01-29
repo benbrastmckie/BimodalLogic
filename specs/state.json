@@ -8,7 +8,7 @@
     {
       "project_number": 741,
       "project_name": "witness_extraction_architecture_for_backward_truth_lemma",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s) (and symmetric for G). Task 659 Phase 2 assessment showed that forward_H coherence does NOT provide this—the contrapositive gives universal (∀) statements, not existential (∃) witnesses. This task explores architectural approaches: (1) direct witness construction via MCS chain properties, (2) semantic completeness argument (if ψ ∈ mcs(s) for all s < t, then Hψ ∈ mcs(t)), or (3) alternative proof strategies that bypass witness extraction. Reference: specs/659_prove_negation_completeness_lemmas/plans/implementation-002.md Phase 2 assessment.",
@@ -18,19 +18,28 @@
         659
       ],
       "created": "2026-01-29T13:10:43Z",
-      "last_updated": "2026-01-29T13:12:24Z",
-      "session_id": "sess_1769692327_3d5070"
+      "last_updated": "2026-01-29T13:16:15Z",
+      "session_id": "sess_1769692327_3d5070",
+      "researched": "2026-01-29T13:16:15Z",
+      "artifacts": [
+        {
+          "path": "specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of witness extraction approaches: contrapositive via H-completeness recommended, with construction-based proof strategy"
+        }
+      ]
     },
     {
       "project_number": 738,
       "project_name": "port_fmp_to_parametric_architecture",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "low",
       "description": "Complete phase 3 of task 660: Finite Model Property Port. Port FMP to parametric architecture with explicit cardinality bounds on finite models. This provides decidability foundation (orthogonal to completeness chain). Follow-up from task #660.",
       "parent_task": 660,
       "created": "2026-01-29T04:05:03Z",
-      "last_updated": "2026-01-29T04:05:03Z"
+      "last_updated": "2026-01-29T13:16:42Z",
+      "session_id": "sess_1738179892_7bc375"
     },
     {
       "project_number": 659,
