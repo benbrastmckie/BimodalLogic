@@ -137,7 +137,7 @@ Configure lean-lsp in user scope (`~/.claude.json`) for subagent access. Run `.c
 | Skill | Agent | Purpose |
 |-------|-------|---------|
 | skill-lean-research | lean-research-agent | Lean 4/Mathlib research |
-| skill-lean-implementation | (direct execution) | Lean proof implementation |
+| skill-lean-implementation | lean-implementation-agent | Lean proof implementation |
 | skill-researcher | general-research-agent | General web/codebase research |
 | skill-planner | planner-agent | Implementation plan creation |
 | skill-implementer | general-implementation-agent | General file implementation |

@@ -127,7 +127,7 @@ This task restores lean-implementation-agent from deprecated state and converts 
 
 ---
 
-### Phase 3: Update CLAUDE.md Skill-to-Agent Mapping [IN PROGRESS]
+### Phase 3: Update CLAUDE.md Skill-to-Agent Mapping [COMPLETED]
 
 **Goal**: Update documentation to reflect skill-lean-implementation now delegates to lean-implementation-agent
 
