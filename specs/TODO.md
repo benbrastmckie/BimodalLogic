@@ -1,5 +1,5 @@
 ---
-next_project_number: 766
+next_project_number: 767
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -211,6 +211,17 @@ technical_debt:
 ---
 
 ## Low Priority
+
+### 766. Improve metalogic documentation ordering and add dependency flowchart
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Created**: 2026-01-29
+
+**Description**: Improve the order in which the main metalogical results are presented in the documentation for Theories/Bimodal/Metalogic/ to correspond to the dependency structure. For instance, in Theories/Bimodal/Metalogic/README.md line 10, completeness is stated when it follows from representation which is below it. Find and fix all similar issues for improved consistency. Add the Algebraic module (currently in development) to support further results. Add a dependency flowchart for the metalogic as a whole.
+
+---
 
 ### 764. Improve Bimodal/Metalogic structure and documentation
 - **Effort**: 18-22 hours

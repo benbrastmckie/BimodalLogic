@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 766,
+      "project_name": "improve_metalogic_documentation_ordering",
+      "status": "not_started",
+      "language": "markdown",
+      "priority": "medium",
+      "created": "2026-01-29T23:10:10Z",
+      "last_updated": "2026-01-29T23:10:10Z"
+    },
+    {
       "project_number": 765,
       "project_name": "exclude_boneyard_examples_from_sorry_count",
       "status": "planned",
@@ -367,7 +376,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 766,
+  "next_project_number": 767,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
