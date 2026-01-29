@@ -317,13 +317,15 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
 - **Dependencies**: Task 624
+- **Completed**: 2026-01-29
 - **Research**: [research-001.md](specs/625_prove_decide_complete/reports/research-001.md), [research-002.md](specs/625_prove_decide_complete/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/625_prove_decide_complete/plans/implementation-001.md)
+- **Summary**: Implemented decide_complete theorem using tableau_complete foundation with documented gap for proof extraction completeness
 
 **Description**: Prove the `decide_complete` theorem in Correctness.lean deriving decision procedure completeness from tableau completeness. Follows directly from tableau_complete (Task 624).
 

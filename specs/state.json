@@ -288,6 +288,11 @@
           "path": "specs/625_prove_decide_complete/reports/research-002.md",
           "type": "research",
           "summary": "Supplementary research analyzing full proof reconstruction from closed tableau branches - what it would require (150-280 hours), what it would provide, and why it is correctly excluded from scope"
+        },
+        {
+          "path": "specs/625_prove_decide_complete/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting changes to Correctness.lean and gap analysis"
         }
       ],
       "planned": "2026-01-29T14:19:47Z",
