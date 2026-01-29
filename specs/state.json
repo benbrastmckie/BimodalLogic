@@ -6,6 +6,33 @@
   },
   "active_projects": [
     {
+      "project_number": 746,
+      "project_name": "improve_bimodal_metalogic_source_comments",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-29T14:37:48Z",
+      "last_updated": "2026-01-29T14:37:48Z"
+    },
+    {
+      "project_number": 747,
+      "project_name": "create_bimodal_metalogic_readme_hierarchy",
+      "status": "not_started",
+      "language": "markdown",
+      "priority": "medium",
+      "created": "2026-01-29T14:37:48Z",
+      "last_updated": "2026-01-29T14:37:48Z"
+    },
+    {
+      "project_number": 748,
+      "project_name": "revise_roadmap_for_metalogic_progress",
+      "status": "not_started",
+      "language": "markdown",
+      "priority": "medium",
+      "created": "2026-01-29T14:37:48Z",
+      "last_updated": "2026-01-29T14:37:48Z"
+    },
+    {
       "project_number": 745,
       "project_name": "move_backward_truth_lemma_to_boneyard",
       "status": "completed",
@@ -85,13 +112,13 @@
     {
       "project_number": 738,
       "project_name": "port_fmp_to_parametric_architecture",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "description": "Complete phase 3 of task 660: Finite Model Property Port. Port FMP to parametric architecture with explicit cardinality bounds on finite models. This provides decidability foundation (orthogonal to completeness chain). Follow-up from task #660.",
       "parent_task": 660,
       "created": "2026-01-29T04:05:03Z",
-      "last_updated": "2026-01-29T14:20:29Z",
+      "last_updated": "2026-01-29T14:37:53Z",
       "session_id": "sess_1769695833_20538b",
       "researched": "2026-01-29T13:18:58Z",
       "artifacts": [
@@ -109,11 +136,18 @@
           "path": "specs/738_port_fmp_to_parametric_architecture/plans/implementation-002.md",
           "type": "plan",
           "summary": "6-phase parametric FMP port (Option A): Closure, BoundedTime abstraction, FiniteWorldState, SemanticCanonicalModel, FMP theorems, integration"
+        },
+        {
+          "path": "specs/738_port_fmp_to_parametric_architecture/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with FMP port details and verification results"
         }
       ],
       "planned": "2026-01-29T14:00:07Z",
       "started": "2026-01-29T14:10:53Z",
-      "resume_phase": 3
+      "resume_phase": 3,
+      "completed": "2026-01-29T14:37:53Z",
+      "completion_summary": "Ported FMP to parametric architecture with BoundedTime abstraction. Created FiniteWorldState, SemanticCanonicalModel, and FiniteModelProperty modules. Key theorem: semanticWorldState_card_bound proves |worlds| ≤ 2^closureSize."
     },
     {
       "project_number": 659,
@@ -543,7 +577,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 746,
+  "next_project_number": 749,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

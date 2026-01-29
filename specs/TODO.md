@@ -1,5 +1,5 @@
 ---
-next_project_number: 738
+next_project_number: 749
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -119,6 +119,39 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 746. Improve Bimodal/Metalogic source comments
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-29
+
+**Description**: Systematically improve comments throughout Bimodal/Metalogic/ source files to be accurate, clear, and consistent. Remove historical language comparing past attempts or otherwise presenting results in anything but a clear and direct way (avoid temporal language like 'now', 'currently', 'previously', etc.). Ensure comments explain what the code does without unnecessary meta-commentary.
+
+---
+
+### 747. Create Bimodal/Metalogic README hierarchy
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Created**: 2026-01-29
+
+**Description**: Create/update README.md in each subdirectory of Bimodal/Metalogic/ providing full and accurate documentation of modules in that directory. Subdirectories should be summarized with links to their contained README.md files. Work from deepest directories upward, culminating in Bimodal/Metalogic/README.md. Each README should describe module purposes, key definitions/theorems, and how modules relate to each other.
+
+---
+
+### 748. Revise ROAD_MAP.md for Metalogic progress
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: markdown
+- **Created**: 2026-01-29
+
+**Description**: Systematically revise /home/benjamin/Projects/ProofChecker/specs/ROAD_MAP.md given progress made in Bimodal/Metalogic/, what remains to be done, and future ambitions. Update completion status of achieved milestones, add new goals discovered during implementation, and ensure the roadmap accurately reflects the project's trajectory.
+
+---
 
 ### 745. Move backward Truth Lemma to Boneyard
 - **Effort**: 2-3 hours
