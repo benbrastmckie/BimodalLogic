@@ -49,9 +49,9 @@ theorem compactness : (∀ finite Delta ⊆ Gamma, satisfiable Delta) → satisf
 ```
 Metalogic/
 ├── Core/              # Foundational definitions and MCS theory
-│   ├── MaximalConsistent.lean   # Complete MCS theory (sorry-free)
-│   ├── DeductionTheorem.lean    # Deduction theorem (sorry-free)
-│   └── MCSProperties.lean       # MCS lemmas (sorry-free)
+│   ├── MaximalConsistent.lean   # Complete MCS theory
+│   ├── DeductionTheorem.lean    # Deduction theorem
+│   └── MCSProperties.lean       # MCS lemmas
 │
 ├── Soundness/         # Soundness theorem (NEW - migrated 2026-01-29)
 │   ├── Soundness.lean           # Main theorem + 15 axiom validity
@@ -69,42 +69,18 @@ Metalogic/
 │   └── FiniteModelProperty.lean # FMP theorem
 │
 ├── Completeness/      # Weak and strong completeness
-│   ├── WeakCompleteness.lean    # valid → provable (sorry-free)
+│   ├── WeakCompleteness.lean    # valid → provable
 │   └── ...StrongCompleteness.lean  # Context-based versions
 │
 ├── Compactness/       # Compactness theorem
-│   └── Compactness.lean         # (sorry-free)
+│   └── Compactness.lean
 │
-└── Algebraic/         # Alternative algebraic approach (sorry-free)
+└── Algebraic/         # Alternative algebraic approach
     ├── LindenbaumQuotient.lean     # Quotient construction via provable equivalence
     ├── BooleanStructure.lean       # Boolean algebra instance for quotient
     ├── InteriorOperators.lean      # G/H as interior operators
     ├── UltrafilterMCS.lean         # Bijection: ultrafilters <-> MCS
     └── AlgebraicRepresentation.lean # Main representation theorem
-```
-
-## Dependency Layers
-
-```
-Layer 1 (Foundations):
-    Core/
-      │
-      ├─────────────────┐
-      │                 │
-Layer 2:          Soundness/
-    Representation/     │
-      │            (For provable_iff_valid
-Layer 3:           equivalence only)
-    Completeness/
-      │
-      ├─────────────────┐
-      │                 │
-Layer 4:            Compactness/
-    FMP/
-    (includes decidability)
-      │
-Layer 5 (Extensions):
-    Algebraic/
 ```
 
 ### Dependency Flowchart (GitHub Rendering)
@@ -178,13 +154,13 @@ flowchart TD
 
 | Directory | Purpose | Status |
 |-----------|---------|--------|
-| `Core/` | MCS theory, Lindenbaum's lemma, deduction theorem | **Sorry-free** |
-| `Soundness/` | Soundness theorem (15 axioms, 7 rules) | **Sorry-free** |
+| `Core/` | MCS theory, Lindenbaum's lemma, deduction theorem | Complete |
+| `Soundness/` | Soundness theorem (15 axioms, 7 rules) | Complete |
 | `Representation/` | Canonical model via indexed MCS families | Core proven |
-| `Completeness/` | Weak/strong completeness hierarchy | **Sorry-free** |
+| `Completeness/` | Weak/strong completeness hierarchy | Complete |
 | `FMP/` | Finite model property with 2^n bound | Architectural sorries |
-| `Compactness/` | Compactness theorem | **Sorry-free** |
-| `Algebraic/` | Alternative algebraic approach | **Sorry-free** (complete) |
+| `Compactness/` | Compactness theorem | Complete |
+| `Algebraic/` | Alternative algebraic approach | Complete |
 
 ## Known Architectural Limitations
 
