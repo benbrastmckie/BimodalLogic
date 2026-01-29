@@ -109,29 +109,48 @@ Layer 6 (Extensions):
 
 ```mermaid
 flowchart TD
-    subgraph "Layer 1: Foundations"
-        Core[Core/<br/>MCS theory, Lindenbaum lemma]
+    subgraph Foundations
+        Core["`**Core**
+        MCS theory
+        Lindenbaum lemma
+        Deduction theorem`"]
     end
 
-    subgraph "Layer 2: Proof Theory"
-        Soundness[Soundness/<br/>15 axioms, 7 rules]
+    subgraph ProofTheory["Proof Theory"]
+        Soundness["`**Soundness**
+        15 TM axioms
+        7 derivation rules
+        Validity preservation`"]
     end
 
-    subgraph "Layer 3: Model Theory"
-        Representation[Representation/<br/>Canonical model construction]
+    subgraph ModelTheory["Model Theory"]
+        Representation["`**Representation**
+        Canonical model construction
+        Indexed MCS families
+        Truth lemma`"]
     end
 
-    subgraph "Layer 4: Completeness"
-        Completeness[Completeness/<br/>Weak & strong completeness]
+    subgraph CompletenessResults["Completeness Results"]
+        Completeness["`**Completeness**
+        Weak completeness: valid → provable
+        Strong completeness: Γ ⊨ φ → Γ ⊢ φ`"]
     end
 
-    subgraph "Layer 5: Applications"
-        FMP[FMP/<br/>Finite Model Property]
-        Compactness[Compactness/<br/>Compactness theorem]
+    subgraph MetalogicalApplications["Metalogical Applications"]
+        FMP["`**Finite Model Property**
+        Satisfiable → finite model
+        Bound: 2^(closure size)`"]
+        Compactness["`**Compactness**
+        Infinite satisfiability
+        from finite satisfiability`"]
     end
 
-    subgraph "Layer 6: Extensions"
-        Algebraic[Algebraic/<br/>Alternative algebraic approach]
+    subgraph AlgebraicExtension["Algebraic Extension"]
+        Algebraic["`**Algebraic Approach**
+        Lindenbaum quotient
+        Boolean algebra structure
+        Interior operators G/H
+        Ultrafilter-MCS bijection`"]
     end
 
     Core --> Soundness
@@ -141,6 +160,20 @@ flowchart TD
     Completeness --> FMP
     Completeness --> Compactness
     Core --> Algebraic
+
+    classDef foundationStyle fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef proofStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef modelStyle fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef completenessStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef applicationStyle fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef algebraicStyle fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+
+    class Core foundationStyle
+    class Soundness proofStyle
+    class Representation modelStyle
+    class Completeness completenessStyle
+    class FMP,Compactness applicationStyle
+    class Algebraic algebraicStyle
 ```
 
 ## Subdirectory Summaries
