@@ -5,11 +5,11 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-29T18:38:22Z
 task_counts:
-  active: 10
+  active: 8
   completed: 317
   in_progress: 3
   not_started: 5
-  abandoned: 21
+  abandoned: 23
   total: 341
 priority_distribution:
   critical: 0
@@ -269,37 +269,4 @@ technical_debt:
 
 ---
 
-### 659. Prove negation completeness lemmas
-- **Effort**: 6-10 hours
-- **Status**: [PARTIAL]
-- **Priority**: Low
-- **Language**: lean
-- **Created**: 2026-01-21
-- **Started**: 2026-01-29
-- **Related**: Tasks 654, 656
-- **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:211,219,228,237
-- **Research**: [research-001.md](specs/659_prove_negation_completeness_lemmas/reports/research-001.md), [research-002.md](specs/659_prove_negation_completeness_lemmas/reports/research-002.md), [research-003.md](specs/659_prove_negation_completeness_lemmas/reports/research-003.md), [research-004.md](specs/659_prove_negation_completeness_lemmas/reports/research-004.md), [research-005.md](specs/659_prove_negation_completeness_lemmas/reports/research-005.md)
-- **Plan**: [implementation-002.md](specs/659_prove_negation_completeness_lemmas/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260129.md](specs/659_prove_negation_completeness_lemmas/summaries/implementation-summary-20260129.md)
-- **Partial**: Phases 1,2,5 complete; Phases 3,4 blocked (backward Truth Lemma requires architectural changes)
-
-**Description**: Prove the negation completeness lemmas required for the truth lemma backward direction. These include the imp, box, and temporal cases in the backward direction (lines 211, 219, 228, 237). Requires showing that MCS are complete with respect to negation. Not critical since the representation theorem only needs the forward direction, but would complete the full biconditional truth lemma. From review-20260121-task654.md low priority recommendations.
-
----
-
-### 741. Witness extraction architecture for backward Truth Lemma
-- **Effort**: 8-12 hours
-- **Status**: [PARTIAL]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Related**: Tasks 654, 656, 659
-- **Research**: [research-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-001.md), [research-002.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/summaries/implementation-summary-20260129.md)
-
-**Description**: Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: `Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s)` (and symmetric for G). **STATUS**: BLOCKED by fundamental omega-rule limitation - proving H-completeness requires deriving H psi from infinitely many psi instances. Supplementary research (research-002.md) confirms all alternative approaches are blocked: construction-specific proof (Lindenbaum non-deterministic), semantic bridge (circular), negation duality (doesn't extract witnesses), finite approximation (needs TM compactness). Created infrastructure in TemporalCompleteness.lean. NOT REQUIRED FOR COMPLETENESS - the representation theorem only uses truth_lemma_forward. Recommended resolution: document as known limitation.
-
----
 
