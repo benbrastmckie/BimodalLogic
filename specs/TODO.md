@@ -146,7 +146,7 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -158,10 +158,11 @@ technical_debt:
 
 ### 751. Enhance /review with grouped interactive task proposals
 - **Effort**: 8-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Research**: [research-001.md](specs/751_enhance_review_with_grouped_interactive_task_proposals/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/751_enhance_review_with_grouped_interactive_task_proposals/plans/implementation-001.md)
 
@@ -187,11 +188,12 @@ technical_debt:
 
 ### 747. Create Bimodal/Metalogic README hierarchy
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: markdown
 - **Created**: 2026-01-29
 - **Research**: [research-001.md](specs/747_create_bimodal_metalogic_readme_hierarchy/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/747_create_bimodal_metalogic_readme_hierarchy/plans/implementation-001.md)
 
 **Description**: Create/update README.md in each subdirectory of Bimodal/Metalogic/ providing full and accurate documentation of modules in that directory. Subdirectories should be summarized with links to their contained README.md files. Work from deepest directories upward, culminating in Bimodal/Metalogic/README.md. Each README should describe module purposes, key definitions/theorems, and how modules relate to each other.
 

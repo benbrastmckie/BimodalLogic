@@ -30,9 +30,9 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T15:10:30Z",
-      "session_id": "sess_1738164070_3b4111",
-      "researched": "2026-01-29T15:10:30Z",
+      "last_updated": "2026-01-29T15:22:22Z",
+      "session_id": "sess_1769699919_495b15",
+      "researched": "2026-01-29T15:22:22Z",
       "artifacts": [
         {
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-002.md",
@@ -94,20 +94,26 @@
     {
       "project_number": 747,
       "project_name": "create_bimodal_metalogic_readme_hierarchy",
-      "status": "researched",
+      "status": "planned",
       "language": "markdown",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T15:12:40Z",
-      "session_id": "sess_1769699324_ff2b9e",
+      "last_updated": "2026-01-29T15:22:07Z",
+      "session_id": "sess_1769700002_3b80ed",
       "researched": "2026-01-29T15:12:40Z",
       "artifacts": [
         {
           "path": "specs/747_create_bimodal_metalogic_readme_hierarchy/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting 6 Metalogic subdirectories, identifying 3 missing READMEs (Algebraic, Compactness, Completeness), and proposing README structure"
+        },
+        {
+          "path": "specs/747_create_bimodal_metalogic_readme_hierarchy/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for creating 4 README files in Bimodal/Metalogic subdirectories"
         }
-      ]
+      ],
+      "planned": "2026-01-29T15:22:07Z"
     },
     {
       "project_number": 748,
@@ -664,14 +670,14 @@
     {
       "project_number": 751,
       "project_name": "enhance_review_with_grouped_interactive_task_proposals",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T14:51:49Z",
-      "last_updated": "2026-01-29T15:11:24Z",
+      "last_updated": "2026-01-29T15:21:00Z",
       "description": "Modify the /review command to always conclude with an interactive task proposal experience. Currently, task creation requires the --create-tasks flag and presents a flat numbered list. This task implements intelligent task grouping and interactive selection across 3 phases: (1) Task Grouping Logic - implement algorithm to cluster related issues by file/component area, type of fix, and priority level; (2) Interactive Selection Interface - modify Section 5.5 to always display grouped task proposals with checkboxes for groups and individual tasks; (3) Task Creation Integration - wire selected tasks to actual creation with proper dependency linking.",
       "effort": "8-10 hours",
-      "session_id": "sess_1769699363_c04c36",
+      "session_id": "sess_1769700036_ee9176",
       "researched": "2026-01-29T14:58:40Z",
       "artifacts": [
         {
@@ -685,7 +691,8 @@
           "summary": "3-phase implementation plan for grouped interactive task proposals in /review"
         }
       ],
-      "planned": "2026-01-29T15:11:24Z"
+      "planned": "2026-01-29T15:11:24Z",
+      "started": "2026-01-29T15:21:00Z"
     }
   ],
   "completed_projects": [
