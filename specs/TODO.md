@@ -1,5 +1,5 @@
 ---
-next_project_number: 755
+next_project_number: 756
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 755. Implement Option C: Forward Truth Lemma Refactoring
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Reference**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md)
+
+**Description**: Complete Option C in /home/benjamin/Projects/ProofChecker/specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md in full rigor to the highest quality.
+
+---
 
 ### 754. Implement Option B: Forward Truth Lemma Refactoring
 - **Effort**: TBD

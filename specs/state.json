@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 755,
+      "project_name": "implement_option_c_forward_truth_lemma",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-29T16:54:59Z",
+      "last_updated": "2026-01-29T16:54:59Z"
+    },
+    {
       "project_number": 754,
       "project_name": "implement_option_b_forward_truth_lemma",
       "status": "not_started",
@@ -466,7 +475,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 755,
+  "next_project_number": 756,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
