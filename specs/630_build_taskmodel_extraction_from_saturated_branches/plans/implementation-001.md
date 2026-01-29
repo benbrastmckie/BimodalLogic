@@ -1,7 +1,7 @@
 # Implementation Plan: Task #630
 
 - **Task**: 630 - Build TaskModel Extraction from Saturated Branches
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6-8 hours
 - **Priority**: Medium
 - **Dependencies**: Task 623 (tableau completeness infrastructure)
@@ -162,7 +162,7 @@ Build infrastructure to extract a proper TaskModel from saturated open tableau b
 
 ---
 
-### Phase 5: Integration and Testing [NOT STARTED]
+### Phase 5: Integration and Testing [COMPLETED]
 
 **Goal**: Connect new extraction to existing countermodel infrastructure
 

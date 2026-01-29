@@ -6,11 +6,6 @@ import Bimodal.Theorems.Combinators
 
 This module proves the deduction theorem for the TM logic Hilbert system.
 
-## Origin
-
-**Provenance**: Copied from `Boneyard/Metalogic_v2/Core/DeductionTheorem.lean`
-with minor namespace adjustments for the `Metalogic.Core` layer.
-
 ## Main Results
 
 - `deduction_axiom`: If φ is an axiom, then `Γ ⊢ A → φ`
@@ -52,7 +47,6 @@ attribute [local instance] Classical.propDecidable
 
 /-! ## Helper Lemmas -/
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Helper: Apply implication introduction pattern.
 If `⊢ φ` then `⊢ A → φ` for any A.
@@ -63,7 +57,6 @@ private def weaken_under_imp {φ A : Formula} (h : ⊢ φ) : ⊢ A.imp φ := by
   have s_ax : ⊢ φ.imp (A.imp φ) := DerivationTree.axiom [] _ (Axiom.prop_s φ A)
   exact DerivationTree.modus_ponens [] φ (A.imp φ) s_ax h
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Helper: Lift weakening to contexts.
 If `Γ ⊢ φ` then `Γ ⊢ A → φ` for formulas φ that are axioms.
@@ -74,7 +67,6 @@ private def weaken_under_imp_ctx {Γ : Context} {φ A : Formula}
   have weakened : ⊢ A.imp φ := weaken_under_imp ax_deriv
   exact DerivationTree.weakening [] Γ (A.imp φ) weakened (List.nil_subset Γ)
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Exchange lemma: Derivability is preserved under context permutation.
 
@@ -92,7 +84,6 @@ private def exchange {Γ Γ' : Context} {φ : Formula}
   intro x hx
   exact (h_perm x).mp hx
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Helper: Remove an element from a list.
 
@@ -101,7 +92,6 @@ Returns the list with all occurrences of `a` removed.
 private def removeAll {α : Type _} [DecidableEq α] (l : List α) (a : α) : List α :=
   l.filter (· ≠ a)
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Helper: If `A ∈ Γ'` and `Γ' ⊆ A :: Γ`, then `removeAll Γ' A ⊆ Γ`.
 
@@ -123,7 +113,6 @@ private theorem removeAll_subset {A : Formula} {Γ Γ' : Context}
     exact absurd h_eq h_ne
   | inr h_mem => exact h_mem
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Helper: If `A ∈ Γ'`, then `A :: removeAll Γ' A` has the same elements as `Γ'`.
 
@@ -156,7 +145,6 @@ private theorem cons_removeAll_perm {A : Formula} {Γ' : Context}
 
 /-! ## Deduction Theorem Cases -/
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Deduction case for axioms: If φ is an axiom, then `Γ ⊢ A → φ`.
 
@@ -166,7 +154,6 @@ def deduction_axiom (Γ : Context) (A φ : Formula) (h_ax : Axiom φ) :
     Γ ⊢ A.imp φ := by
   exact weaken_under_imp_ctx h_ax
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Deduction case for same assumption: `Γ ⊢ A → A`.
 
@@ -177,7 +164,6 @@ def deduction_assumption_same (Γ : Context) (A : Formula) :
   have id : ⊢ A.imp A := identity A
   exact DerivationTree.weakening [] Γ (A.imp A) id (List.nil_subset Γ)
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Deduction case for other assumptions: If `B ∈ Γ`, then `Γ ⊢ A → B`.
 
@@ -191,7 +177,6 @@ def deduction_assumption_other (Γ : Context) (A B : Formula)
     DerivationTree.weakening [] Γ (B.imp (A.imp B)) s_ax (List.nil_subset Γ)
   exact DerivationTree.modus_ponens Γ B (A.imp B) s_weak b_deriv
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Deduction case for modus ponens:
 If `Γ ⊢ A → (C → D)` and `Γ ⊢ A → C` then `Γ ⊢ A → D`.
@@ -212,7 +197,6 @@ def deduction_mp (Γ : Context) (A C D : Formula)
     DerivationTree.modus_ponens Γ (A.imp (C.imp D)) ((A.imp C).imp (A.imp D)) k_weak h1
   exact DerivationTree.modus_ponens Γ (A.imp C) (A.imp D) step1 h2
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 Deduction theorem for contexts where A appears in the middle.
 
@@ -323,7 +307,6 @@ decreasing_by
 
 /-! ## Main Deduction Theorem -/
 
--- Origin: Boneyard/Metalogic_v2/Core/DeductionTheorem.lean
 /--
 The Deduction Theorem: If `A :: Γ ⊢ B` then `Γ ⊢ A → B`.
 

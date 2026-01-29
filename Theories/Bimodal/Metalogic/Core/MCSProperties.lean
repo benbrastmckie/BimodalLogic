@@ -7,11 +7,6 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 This module provides essential lemmas about Set-based Maximal Consistent Sets (MCS)
 needed for the Representation layer's canonical model construction.
 
-## Origin
-
-**Provenance**: Lemmas copied from `Boneyard/Metalogic/Completeness.lean`
-with namespace adjustments for `Metalogic.Core`.
-
 ## Main Results
 
 - `cons_filter_neq_perm`: Helper for context permutation with filter
@@ -36,7 +31,6 @@ open Bimodal.ProofSystem
 
 /-! ## Helper Lemmas -/
 
--- Origin: Boneyard/Metalogic/Completeness.lean (line ~544)
 /--
 Helper: If `A ∈ Γ'`, then `A :: Γ'.filter (fun x => decide (x ≠ A))` has the same elements as `Γ'`.
 -/
@@ -61,7 +55,6 @@ lemma cons_filter_neq_perm {A : Formula} {Γ' : Context}
       right
       exact ⟨h, hx⟩
 
--- Origin: Boneyard/Metalogic/Completeness.lean (line ~568)
 /--
 Exchange lemma for derivations: If Γ and Γ' have the same elements, derivation is preserved.
 -/
@@ -71,7 +64,6 @@ def derivation_exchange {Γ Γ' : Context} {φ : Formula}
 
 /-! ## Set-Based MCS Properties -/
 
--- Origin: Boneyard/Metalogic/Completeness.lean (line ~577)
 /--
 For set-based MCS, derivable formulas are in the set.
 
@@ -150,7 +142,6 @@ lemma set_mcs_closed_under_derivation {S : Set Formula} {φ : Formula}
     push_neg at h_L'_incons
     exact h_mcs.1 L' h_L'_in_S h_L'_incons
 
--- Origin: Boneyard/Metalogic/Completeness.lean (line ~655)
 /--
 Set-based MCS implication property: modus ponens is reflected in membership.
 
@@ -175,7 +166,6 @@ theorem set_mcs_implication_property {S : Set Formula} {φ ψ : Formula}
     exact DerivationTree.modus_ponens [φ, φ.imp ψ] φ ψ h_assume_imp h_assume_phi
   exact set_mcs_closed_under_derivation h_mcs [φ, φ.imp ψ] h_sub h_deriv
 
--- Origin: Boneyard/Metalogic/Completeness.lean (line ~679)
 /--
 Set-based MCS: negation completeness.
 
@@ -238,7 +228,6 @@ theorem set_mcs_negation_complete {S : Set Formula}
 
 /-! ## Temporal Properties -/
 
--- Origin: Boneyard/Metalogic/Completeness.lean (line ~1055)
 /--
 Set-based MCS: temporal 4 axiom property for all_future.
 
@@ -270,7 +259,6 @@ theorem set_mcs_all_future_all_future {S : Set Formula} {φ : Formula}
   have h_sub : ∀ χ ∈ [Formula.all_future φ], χ ∈ S := by simp [h_all_future]
   exact set_mcs_closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
 
--- Origin: Boneyard/Metalogic/Completeness.lean (line ~1079)
 /--
 Derivation of temporal 4 axiom for past: Hφ → HHφ.
 
@@ -300,7 +288,6 @@ def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.
   rw [h3] at h2
   exact h2
 
--- Origin: Boneyard/Metalogic/Completeness.lean (line ~1115)
 /--
 Set-based MCS: temporal 4 axiom property for all_past.
 

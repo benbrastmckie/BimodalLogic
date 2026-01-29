@@ -218,7 +218,7 @@ technical_debt:
 
 ### 660. Prove parametric completeness theorems
 - **Effort**: 10-15 hours
-- **Status**: [PLANNING]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -230,15 +230,17 @@ technical_debt:
 ---
 
 ### 630. Build TaskModel extraction from saturated tableau branches
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Completed**: 2026-01-29
 - **Parent**: Task 490
 - **Dependencies**: Task 623
 - **Related**: Tasks 624, 628
 - **Research**: [research-001.md](specs/630_build_taskmodel_extraction_from_saturated_branches/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/630_build_taskmodel_extraction_from_saturated_branches/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/630_build_taskmodel_extraction_from_saturated_branches/summaries/implementation-summary-20260129.md)
 
 **Description**: Build infrastructure to extract a proper TaskModel from a saturated open tableau branch. The bimodal logic TM uses **task frame semantics** (NOT standard Kripke semantics): TaskFrame `F = (W, D, ·)` with world states, temporal duration type D, and task relation satisfying nullity/compositionality; WorldHistory `τ: X → W` as functions from convex time domains to states; Box `□φ` quantifies over ALL world histories at time t (not worlds via accessibility relation); Temporal `Hφ`/`Gφ` quantify over ALL times in D. Currently `evalFormula` (CountermodelExtraction.lean:158-164) treats modal/temporal operators as identity. This task: (1) Extract WorldState type from branch, (2) Define task relation from modal constraints, (3) Build WorldHistory structure, (4) Prove extracted TaskFrame satisfies nullity and compositionality. Unblocks Phase 3 of Task 623 and enables Task 624 (tableau_complete).
 

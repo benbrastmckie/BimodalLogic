@@ -1,6 +1,7 @@
 import Bimodal.ProofSystem
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Combinators
 
 /-!
 # Lindenbaum Quotient Construction
@@ -59,7 +60,7 @@ Identity derivation: `⊢ φ → φ`.
 -/
 theorem derives_refl (φ : Formula) : Derives φ φ := by
   unfold Derives
-  exact ⟨Bimodal.Theorems.Propositional.identity φ⟩
+  exact ⟨Bimodal.Theorems.Combinators.identity φ⟩
 
 /--
 Provable equivalence is reflexive.
@@ -81,7 +82,7 @@ theorem derives_trans {φ ψ χ : Formula} (h1 : Derives φ ψ) (h2 : Derives ψ
   unfold Derives at *
   obtain ⟨d1⟩ := h1
   obtain ⟨d2⟩ := h2
-  exact ⟨Bimodal.Theorems.Propositional.hypothetical_syllogism d1 d2⟩
+  exact ⟨Bimodal.Theorems.Combinators.imp_trans d1 d2⟩
 
 /--
 Provable equivalence is transitive.
@@ -139,9 +140,9 @@ theorem provEquiv_neg_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) : φ.neg ≈ₚ
   constructor
   · -- Show ⊢ ¬φ → ¬ψ, i.e., ⊢ (φ → ⊥) → (ψ → ⊥)
     -- From ⊢ ψ → φ (d_bwd), derive ⊢ (φ → ⊥) → (ψ → ⊥) by contraposition
-    exact ⟨Bimodal.Theorems.Propositional.contrapositive d_bwd⟩
+    exact ⟨Bimodal.Theorems.Propositional.contraposition d_bwd⟩
   · -- Show ⊢ ¬ψ → ¬φ, i.e., ⊢ (ψ → ⊥) → (φ → ⊥)
-    exact ⟨Bimodal.Theorems.Propositional.contrapositive d_fwd⟩
+    exact ⟨Bimodal.Theorems.Propositional.contraposition d_fwd⟩
 
 /--
 Derivability respects negation contravariantly: `Derives ψ φ → Derives φ.neg ψ.neg`.
@@ -149,7 +150,7 @@ Derivability respects negation contravariantly: `Derives ψ φ → Derives φ.ne
 theorem derives_neg_antitone {φ ψ : Formula} (h : Derives ψ φ) : Derives φ.neg ψ.neg := by
   unfold Derives at *
   obtain ⟨d⟩ := h
-  exact ⟨Bimodal.Theorems.Propositional.contrapositive d⟩
+  exact ⟨Bimodal.Theorems.Propositional.contraposition d⟩
 
 /--
 Provable equivalence respects implication: `φ₁ ≈ₚ φ₂ → ψ₁ ≈ₚ ψ₂ → (φ₁ → ψ₁) ≈ₚ (φ₂ → ψ₂)`.

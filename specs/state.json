@@ -216,11 +216,11 @@
     {
       "project_number": 660,
       "project_name": "prove_parametric_completeness_theorems",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-29T00:29:49Z",
       "dependencies": [
         656,
         657,
@@ -228,12 +228,13 @@
       ],
       "related_tasks": [
         654
-      ]
+      ],
+      "session_id": "sess_1769646577_378d67"
     },
     {
       "project_number": 630,
       "project_name": "build_taskmodel_extraction_from_saturated_branches",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "parent_task": 490,
@@ -245,7 +246,7 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-29T00:17:48Z",
+      "last_updated": "2026-01-29T00:30:14Z",
       "session_id": "sess_1769645846_f0fa91",
       "researched": "2026-01-25T22:52:03Z",
       "planned": "2026-01-25T22:56:00Z",
@@ -259,9 +260,16 @@
           "path": "specs/630_build_taskmodel_extraction_from_saturated_branches/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for TaskModel extraction from saturated branches"
+        },
+        {
+          "path": "specs/630_build_taskmodel_extraction_from_saturated_branches/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary for TaskModel extraction from saturated branches"
         }
       ],
-      "started": "2026-01-25T23:02:07Z"
+      "started": "2026-01-25T23:02:07Z",
+      "completed": "2026-01-29T00:30:14Z",
+      "completion_summary": "Built TaskModel extraction infrastructure with BranchTaskFrame, BranchTaskModel, and WorldHistory construction. Integrated with CountermodelExtraction for proper modal/temporal countermodel semantics. One sorry remains in truth lemma helper (mechanical proof)."
     },
     {
       "project_number": 631,

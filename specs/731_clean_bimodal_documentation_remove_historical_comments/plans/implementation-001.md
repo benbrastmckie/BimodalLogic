@@ -100,7 +100,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 3: Remove Provenance Comments from Core [NOT STARTED]
+### Phase 3: Remove Provenance Comments from Core [COMPLETED]
 
 **Goal**: Remove all `-- Origin: Boneyard/...` comments from Core/*.lean files
 
