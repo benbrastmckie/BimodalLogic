@@ -8,12 +8,21 @@
     {
       "project_number": 768,
       "project_name": "neovim_ctrl_backslash_stt_toggle_claude_code",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "description": "Create a <C-\\> mapping in neovim config at /home/benjamin/.config/nvim/lua/neotex/config/keymaps.lua for use within the Claude Code sidebar in neovim (via plugin) to toggle STT. Research the claude-code.nvim plugin online to scan for solutions in GitHub issues or elsewhere.",
       "created": "2026-01-29T23:36:23Z",
-      "last_updated": "2026-01-29T23:36:23Z"
+      "last_updated": "2026-01-29T23:42:33Z",
+      "session_id": "sess_1769729861_427ad2",
+      "researched": "2026-01-29T23:42:33Z",
+      "artifacts": [
+        {
+          "path": "specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report finding that the <C-\\> STT toggle mapping is already implemented in claudecode.lua with buffer-local terminal mode binding"
+        }
+      ]
     },
     {
       "project_number": 767,

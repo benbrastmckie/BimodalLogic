@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "started_at": "2026-01-29T12:00:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-001.md",
+      "summary": "Research report finding that the <C-\\> STT toggle mapping is already implemented in claudecode.lua with buffer-local terminal mode binding"
+    }
+  ],
+  "next_steps": "Task may already be complete - verify existing implementation works or run /plan 768 if changes needed",
+  "metadata": {
+    "session_id": "sess_1769729861_427ad2",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7
+  }
+}
