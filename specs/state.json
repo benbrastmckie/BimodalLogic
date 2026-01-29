@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 767,
+      "project_name": "tts_stt_claude_code_keybinding_resolution",
+      "status": "not_started",
+      "language": "general",
+      "priority": "low",
+      "description": "Comprehensive report documenting TTS/STT integration implementation and Claude Code keybinding resolution: (1) Initial STT plugin implementation with neotex.plugins.tools structure and which-key integration, (2) Bug fixes including module name collision (stt.lua to stt-plugin.lua) and WezTerm tab detection using position instead of tab_id, (3) Keybinding attempts with leader-vv for regular Neovim and Ctrl-backslash for Claude Code compatibility, (4) Research findings on Claude Code keybindings.json limitations and greggh/claude-code.nvim terminal mode requirements, (5) Final solution with buffer-local terminal mode keybinding in TermOpen autocmd for Claude Code sidebar. Documents all implementation attempts, debugging steps, and final working configuration for future reference.",
+      "created": "2026-01-29T23:30:14Z",
+      "last_updated": "2026-01-29T23:30:14Z"
+    },
+    {
       "project_number": 766,
       "project_name": "improve_metalogic_documentation_ordering",
       "status": "completed",
@@ -399,7 +409,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 767,
+  "next_project_number": 768,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
