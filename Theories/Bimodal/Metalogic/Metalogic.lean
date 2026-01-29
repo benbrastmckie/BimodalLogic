@@ -49,3 +49,6 @@ Work in progress (Task 654).
 
 -- Representation layer (to be populated)
 -- import Bimodal.Metalogic.Representation
+
+-- Finite Model Property infrastructure
+import Bimodal.Metalogic.FMP

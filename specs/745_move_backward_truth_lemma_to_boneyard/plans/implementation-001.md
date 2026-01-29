@@ -1,7 +1,7 @@
 # Implementation Plan: Task #745
 
 - **Task**: 745 - Move backward Truth Lemma to Boneyard
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Priority**: Medium
 - **Dependencies**: None

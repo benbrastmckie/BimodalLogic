@@ -29,6 +29,11 @@
           "path": "specs/745_move_backward_truth_lemma_to_boneyard/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase plan to move backward Truth Lemma infrastructure to Boneyard and present forward-only proof cleanly"
+        },
+        {
+          "path": "specs/745_move_backward_truth_lemma_to_boneyard/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-01-29T14:25:48Z",
