@@ -95,32 +95,32 @@ have h_phi_in : phi ∈ family.mcs 0 := by
 
 ---
 
-### Phase 3: Cleanup Superseded Code (Optional) [NOT STARTED]
+### Phase 3: Cleanup Superseded Code (Optional) [COMPLETED]
 
 **Goal**: Remove dead code now that the call site is updated.
 
-**Analysis Needed**:
-- Search for other callers of `construct_indexed_family`
-- If none found: Move to Boneyard or delete
+**Analysis Performed**:
+- Searched for other callers of `construct_indexed_family` - none found outside self-referential lemmas
+- The function and its helpers (`time_seed`, `mcs_at_time`) are only used internally
 
-**Files to Potentially Clean**:
-- `IndexedMCSFamily.lean`: `construct_indexed_family` function (lines 623-657)
-- Related helpers: `time_seed`, `mcs_at_time` if unused elsewhere
+**Decision**: Keep code in place (well-documented as SUPERSEDED) rather than move to Boneyard.
+- Code is clearly marked with SUPERSEDED notices
+- Documentation explains why the approach fails
+- Serves as reference for understanding the coherent approach design
+- Moving to Boneyard would add unnecessary churn with no functional benefit
 
-**Decision Point**: Skip this phase if time-constrained; can be a follow-up task.
-
-**Timing**: 10 minutes (if performed)
+**Timing**: 5 minutes (analysis only)
 
 ---
 
-### Phase 4: Update Documentation [NOT STARTED]
+### Phase 4: Update Documentation [COMPLETED]
 
 **Goal**: Ensure documentation matches implementation.
 
 **Tasks**:
-- [ ] Update UniversalCanonicalModel.lean docstring if needed
-- [ ] Verify Representation/README.md matches actual code path
-- [ ] Remove any "SUPERSEDED" markers if code is actually removed
+- [x] UniversalCanonicalModel.lean docstring already accurate (uses coherent construction)
+- [x] Updated Representation/README.md sorry line numbers to match current code
+- [x] SUPERSEDED markers retained (code kept for reference per Phase 3 decision)
 
 **Timing**: 5 minutes
 

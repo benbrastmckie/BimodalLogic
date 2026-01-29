@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.Algebraic.LindenbaumQuotient
-import Mathlib.Order.BooleanAlgebra
+import Mathlib.Order.BooleanAlgebra.Defs
+import Mathlib.Order.BooleanAlgebra.Basic
 
 /-!
 # Boolean Algebra Structure on Lindenbaum Algebra
@@ -85,18 +86,6 @@ We now establish the lattice operations (sup = or, inf = and).
 -/
 
 /--
-Sup (join) is given by disjunction.
--/
-instance instSupLindenbaumAlg : Sup LindenbaumAlg where
-  sup := or_quot
-
-/--
-Inf (meet) is given by conjunction.
--/
-instance instInfLindenbaumAlg : Inf LindenbaumAlg where
-  inf := and_quot
-
-/--
 Top is the class of Truth.
 -/
 instance instTopLindenbaumAlg : Top LindenbaumAlg where
@@ -114,7 +103,7 @@ instance instBotLindenbaumAlg : Bot LindenbaumAlg where
 /--
 `a ⊓ b ≤ a`: conjunction implies first conjunct.
 -/
-theorem inf_le_left_quot (a b : LindenbaumAlg) : a ⊓ b ≤ a := by
+theorem inf_le_left_quot (a b : LindenbaumAlg) : and_quot a b ≤ a := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
@@ -125,7 +114,7 @@ theorem inf_le_left_quot (a b : LindenbaumAlg) : a ⊓ b ≤ a := by
 /--
 `a ⊓ b ≤ b`: conjunction implies second conjunct.
 -/
-theorem inf_le_right_quot (a b : LindenbaumAlg) : a ⊓ b ≤ b := by
+theorem inf_le_right_quot (a b : LindenbaumAlg) : and_quot a b ≤ b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
@@ -136,7 +125,7 @@ theorem inf_le_right_quot (a b : LindenbaumAlg) : a ⊓ b ≤ b := by
 /--
 `a ≤ b → a ≤ c → a ≤ b ⊓ c`: greatest lower bound property.
 -/
-theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a ≤ b ⊓ c := by
+theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a ≤ and_quot b c := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   induction c using Quotient.ind
@@ -148,7 +137,7 @@ theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a 
 /--
 `a ≤ a ⊔ b`: first disjunct implies disjunction.
 -/
-theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ a ⊔ b := by
+theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ or_quot a b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
@@ -160,7 +149,7 @@ theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ a ⊔ b := by
 /--
 `b ≤ a ⊔ b`: second disjunct implies disjunction.
 -/
-theorem le_sup_right_quot (a b : LindenbaumAlg) : b ≤ a ⊔ b := by
+theorem le_sup_right_quot (a b : LindenbaumAlg) : b ≤ or_quot a b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
@@ -176,7 +165,7 @@ theorem le_sup_right_quot (a b : LindenbaumAlg) : b ≤ a ⊔ b := by
 /--
 `a ≤ c → b ≤ c → a ⊔ b ≤ c`: least upper bound property.
 -/
-theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : a ⊔ b ≤ c := by
+theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : or_quot a b ≤ c := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   induction c using Quotient.ind
@@ -209,74 +198,11 @@ theorem le_top_quot (a : LindenbaumAlg) : a ≤ ⊤ := by
     DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp Formula.bot) φ)
   exact ⟨DerivationTree.modus_ponens [] _ _ d_s d_id⟩
 
-instance : SemilatticeSup LindenbaumAlg where
-  sup := or_quot
-  le_sup_left := le_sup_left_quot
-  le_sup_right := le_sup_right_quot
-  sup_le := fun _ _ _ => sup_le_quot
-
-instance : SemilatticeInf LindenbaumAlg where
-  inf := and_quot
-  inf_le_left := inf_le_left_quot
-  inf_le_right := inf_le_right_quot
-  le_inf := fun _ _ _ => le_inf_quot
-
-instance : Lattice LindenbaumAlg where
-  sup := or_quot
-  inf := and_quot
-  inf_le_left := inf_le_left_quot
-  inf_le_right := inf_le_right_quot
-  le_inf := fun _ _ _ => le_inf_quot
-  le_sup_left := le_sup_left_quot
-  le_sup_right := le_sup_right_quot
-  sup_le := fun _ _ _ => sup_le_quot
-
-instance : BoundedOrder LindenbaumAlg where
-  top := top_quot
-  bot := bot_quot
-  bot_le := bot_le_quot
-  le_top := le_top_quot
-
-/-!
-## Complement and Boolean Algebra
-
-The complement is given by negation.
--/
-
-/--
-Complement is given by negation.
--/
-instance : HasCompl LindenbaumAlg where
-  compl := neg_quot
-
-/--
-`a ⊓ aᶜ ≤ ⊥`: meet with complement is at most bot.
--/
-theorem inf_compl_le_bot_quot (a : LindenbaumAlg) : a ⊓ aᶜ ≤ ⊥ := by
-  induction a using Quotient.ind
-  rename_i φ
-  -- a ⊓ aᶜ = [φ ∧ ¬φ], ⊥ = [⊥]
-  -- Need: ⊢ (φ ∧ ¬φ) → ⊥
-  -- This is the principle of non-contradiction
-  show Derives (φ.and φ.neg) Formula.bot
-  sorry
-
-/--
-`⊤ ≤ a ⊔ aᶜ`: top is at most join with complement.
--/
-theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ a ⊔ aᶜ := by
-  induction a using Quotient.ind
-  rename_i φ
-  -- ⊤ = [⊤], a ⊔ aᶜ = [φ ∨ ¬φ]
-  -- Need: ⊢ ⊤ → (φ ∨ ¬φ)
-  -- This is the law of excluded middle
-  show Derives (Formula.bot.imp Formula.bot) (φ.or φ.neg)
-  sorry
-
 /--
 Stronger form of distributivity: `(a ⊔ b) ⊓ (a ⊔ c) ≤ a ⊔ (b ⊓ c)`.
 -/
-theorem le_sup_inf_quot (a b c : LindenbaumAlg) : (a ⊔ b) ⊓ (a ⊔ c) ≤ a ⊔ (b ⊓ c) := by
+theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
+    and_quot (or_quot a b) (or_quot a c) ≤ or_quot a (and_quot b c) := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   induction c using Quotient.ind
@@ -286,23 +212,67 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) : (a ⊔ b) ⊓ (a ⊔ c) ≤ a 
   show Derives ((φ.or ψ).and (φ.or χ)) (φ.or (ψ.and χ))
   sorry
 
-/--
-SDiff placeholder for BooleanAlgebra.
--/
-instance : SDiff LindenbaumAlg where
-  sdiff a b := a ⊓ bᶜ
+/-!
+## Complement and Boolean Algebra
 
-instance : DistribLattice LindenbaumAlg where
-  le_sup_inf := le_sup_inf_quot
+The complement is given by negation.
+-/
+
+/--
+`a ⊓ aᶜ ≤ ⊥`: meet with complement is at most bot.
+-/
+theorem inf_compl_le_bot_quot (a : LindenbaumAlg) : and_quot a (neg_quot a) ≤ ⊥ := by
+  induction a using Quotient.ind
+  rename_i φ
+  -- Need: ⊢ (φ ∧ ¬φ) → ⊥
+  -- This is the principle of non-contradiction
+  show Derives (φ.and φ.neg) Formula.bot
+  sorry
+
+/--
+`⊤ ≤ a ⊔ aᶜ`: top is at most join with complement.
+-/
+theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ or_quot a (neg_quot a) := by
+  induction a using Quotient.ind
+  rename_i φ
+  -- Need: ⊢ ⊤ → (φ ∨ ¬φ)
+  -- This is the law of excluded middle
+  show Derives (Formula.bot.imp Formula.bot) (φ.or φ.neg)
+  sorry
+
+/--
+Sup is commutative.
+-/
+theorem sup_comm_quot (a b : LindenbaumAlg) : or_quot a b = or_quot b a := by
+  apply le_antisymm
+  · apply sup_le_quot
+    · exact le_sup_right_quot b a
+    · exact le_sup_left_quot b a
+  · apply sup_le_quot
+    · exact le_sup_right_quot a b
+    · exact le_sup_left_quot a b
 
 /--
 The Lindenbaum algebra is a Boolean algebra.
 -/
 instance : BooleanAlgebra LindenbaumAlg where
+  sup := or_quot
+  inf := and_quot
+  compl := neg_quot
+  sdiff := fun a b => and_quot a (neg_quot b)
+  himp := fun a b => or_quot (neg_quot a) b
+  le_sup_left := le_sup_left_quot
+  le_sup_right := le_sup_right_quot
+  sup_le := fun _ _ _ => sup_le_quot
+  inf_le_left := inf_le_left_quot
+  inf_le_right := inf_le_right_quot
+  le_inf := fun _ _ _ => le_inf_quot
+  le_top := le_top_quot
+  bot_le := bot_le_quot
+  le_sup_inf := le_sup_inf_quot
   inf_compl_le_bot := inf_compl_le_bot_quot
   top_le_sup_compl := top_le_sup_compl_quot
-  sdiff_eq := fun a b => rfl
-  himp := fun a b => aᶜ ⊔ b
-  himp_eq := fun a b => rfl
+  sdiff_eq := fun _ _ => rfl
+  himp_eq := fun a b => sup_comm_quot _ _
 
 end Bimodal.Metalogic.Algebraic.BooleanStructure

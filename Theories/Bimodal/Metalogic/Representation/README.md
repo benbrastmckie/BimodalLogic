@@ -84,22 +84,22 @@ See `Boneyard/Metalogic_v3/` for detailed documentation.
 
 | Case | Lines | Why Not Needed |
 |------|-------|----------------|
-| forward_G Cases 3-4 | 641, 654 | Cross-origin / cross-modal |
-| backward_H Cases 1-2 | 662, 665 | Both ≥ 0 / cross-origin |
-| forward_H (all) | 691 | Only for backward Truth Lemma |
-| backward_G Cases 3-4 | 721, 724 | Cross-origin / cross-modal |
+| forward_G Cases 3-4 | 652, 655 | Cross-origin / cross-modal |
+| backward_H Cases 1-2 | 663, 666 | Both ≥ 0 / cross-origin |
+| forward_H (all) | 681 | Only for backward Truth Lemma |
+| backward_G Cases 3-4 | 711, 714 | Cross-origin / cross-modal |
 
 ### TruthLemma.lean
 
 | Case | Lines | Why Not Needed |
 |------|-------|----------------|
-| all_past backward | 410 | Backward Truth Lemma |
+| all_past backward | 405 | Backward Truth Lemma |
 | all_future backward | 423 | Backward Truth Lemma |
-| box (both) | 366, 389 | Architectural limitation |
+| box (both) | 382, 441 | Architectural limitation |
 
 ### IndexedMCSFamily.lean
 
-All four coherence sorries (lines 609-627) are SUPERSEDED by CoherentConstruction.
+All four coherence sorries (lines 636-657) are SUPERSEDED by CoherentConstruction.
 
 ## References
 
@@ -109,4 +109,4 @@ All four coherence sorries (lines 609-627) are SUPERSEDED by CoherentConstructio
 
 ---
 
-*Last updated: 2026-01-28*
+*Last updated: 2026-01-29*

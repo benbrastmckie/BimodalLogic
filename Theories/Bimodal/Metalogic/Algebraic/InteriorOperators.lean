@@ -61,7 +61,7 @@ Uses T-axiom `temp_t_future`: `Gφ → φ`.
 theorem G_le_self (a : LindenbaumAlg) : G_quot a ≤ a := by
   induction a using Quotient.ind
   rename_i φ
-  unfold Derives
+  show Derives φ.all_future φ
   exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future φ)⟩
 
 /--
@@ -73,8 +73,9 @@ theorem G_monotone (a b : LindenbaumAlg) (h : a ≤ b) : G_quot a ≤ G_quot b :
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  unfold Derives at *
-  obtain ⟨d⟩ := h
+  show Derives φ.all_future ψ.all_future
+  have h' : Derives φ ψ := h
+  obtain ⟨d⟩ := h'
   have d_temp : DerivationTree [] (Formula.all_future (φ.imp ψ)) :=
     DerivationTree.temporal_necessitation (φ.imp ψ) d
   have d_k : DerivationTree [] ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) :=
@@ -90,7 +91,7 @@ theorem G_idempotent (a : LindenbaumAlg) : G_quot (G_quot a) = G_quot a := by
   induction a using Quotient.ind
   rename_i φ
   apply Quotient.sound
-  unfold ProvEquiv Derives
+  show ProvEquiv φ.all_future.all_future φ.all_future
   constructor
   · exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future φ.all_future)⟩
   · exact ⟨DerivationTree.axiom [] _ (Axiom.temp_4 φ)⟩
@@ -116,7 +117,7 @@ Uses T-axiom `temp_t_past`: `Hφ → φ`.
 theorem H_le_self (a : LindenbaumAlg) : H_quot a ≤ a := by
   induction a using Quotient.ind
   rename_i φ
-  unfold Derives
+  show Derives φ.all_past φ
   exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ)⟩
 
 /--
@@ -128,7 +129,7 @@ theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : H_quot a ≤ H_quot b :
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  unfold Derives at *
+  show Derives φ.all_past ψ.all_past
   -- The proof uses temporal duality - see detailed proof in LindenbaumQuotient
   sorry
 
@@ -141,7 +142,7 @@ theorem H_idempotent (a : LindenbaumAlg) : H_quot (H_quot a) = H_quot a := by
   induction a using Quotient.ind
   rename_i φ
   apply Quotient.sound
-  unfold ProvEquiv Derives
+  show ProvEquiv φ.all_past.all_past φ.all_past
   constructor
   · exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ.all_past)⟩
   · -- Uses temporal duality on 4-axiom
@@ -168,7 +169,7 @@ Uses T-axiom `modal_t`: `□φ → φ`.
 theorem box_le_self (a : LindenbaumAlg) : box_quot a ≤ a := by
   induction a using Quotient.ind
   rename_i φ
-  unfold Derives
+  show Derives φ.box φ
   exact ⟨DerivationTree.axiom [] _ (Axiom.modal_t φ)⟩
 
 /--
@@ -180,8 +181,9 @@ theorem box_monotone (a b : LindenbaumAlg) (h : a ≤ b) : box_quot a ≤ box_qu
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  unfold Derives at *
-  obtain ⟨d⟩ := h
+  show Derives φ.box ψ.box
+  have h' : Derives φ ψ := h
+  obtain ⟨d⟩ := h'
   have d_box : DerivationTree [] (Formula.box (φ.imp ψ)) :=
     DerivationTree.necessitation (φ.imp ψ) d
   have d_k : DerivationTree [] ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) :=
@@ -197,7 +199,7 @@ theorem box_idempotent (a : LindenbaumAlg) : box_quot (box_quot a) = box_quot a 
   induction a using Quotient.ind
   rename_i φ
   apply Quotient.sound
-  unfold ProvEquiv Derives
+  show ProvEquiv φ.box.box φ.box
   constructor
   · exact ⟨DerivationTree.axiom [] _ (Axiom.modal_t φ.box)⟩
   · exact ⟨DerivationTree.axiom [] _ (Axiom.modal_4 φ)⟩

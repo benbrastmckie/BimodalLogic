@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Algebraic.InteriorOperators
 import Bimodal.Metalogic.Core.MaximalConsistent
-import Mathlib.Order.Filter.Ultrafilter
+import Mathlib.Order.Filter.Ultrafilter.Defs
+import Mathlib.Order.Filter.Ultrafilter.Basic
 
 /-!
 # Ultrafilter-MCS Correspondence
