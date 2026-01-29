@@ -36,7 +36,7 @@ From research-001.md and research-002.md:
 
 ### Phase 1: Fix all_past forward case
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Modify TruthLemma.lean lines 407-414 (all_past forward direction)
