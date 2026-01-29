@@ -171,11 +171,12 @@ technical_debt:
 
 ### 738. Port FMP to parametric architecture
 - **Effort**: 3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Parent Task**: 660
+- **Research**: [research-001.md](specs/738_port_fmp_to_parametric_architecture/reports/research-001.md)
 
 **Description**: Complete phase 3 of task 660: Finite Model Property Port. Port FMP to parametric architecture with explicit cardinality bounds on finite models. This provides decidability foundation (orthogonal to completeness chain). Follow-up from task #660.
 
@@ -201,7 +202,7 @@ technical_debt:
 
 ### 741. Witness extraction architecture for backward Truth Lemma
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -244,7 +245,7 @@ technical_debt:
 ---
 
 ### 624. Prove tableau_complete
-- **Status**: [PLANNING]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
