@@ -1,6 +1,6 @@
 ---
 description: Review code and create analysis reports
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), TodoWrite, mcp__lean-lsp__*
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), TodoWrite, AskUserQuestion, mcp__lean-lsp__*
 argument-hint: [SCOPE] [--create-tasks]
 model: claude-opus-4-5-20251101
 ---
@@ -305,12 +305,17 @@ After creating the review report, update `specs/reviews/state.json`:
    - Add issue counts to `total_issues_found`
 4. **Update `_last_updated` timestamp**
 
-### 5. Create Tasks (if --create-tasks)
+### 5. Task Proposal Mode
 
-For each High/Critical issue, create a task:
+The review command always presents task proposals after analysis. The `--create-tasks` flag controls the interaction mode:
+
+**Default (no flag)**: Proceed to Section 5.5 for interactive group selection via AskUserQuestion.
+
+**With `--create-tasks` flag**: Auto-create tasks for all Critical/High severity issues without prompting:
 
 ```
-/task "Fix: {issue title}"
+For each Critical/High issue:
+  /task "Fix: {issue title}" --language={inferred_language} --priority={severity}
 ```
 
 Link tasks to review report.
@@ -321,6 +326,8 @@ Link tasks to review report.
 ```
 
 Also increment `statistics.total_tasks_created` by the count of new tasks.
+
+**Note**: When `--create-tasks` is used, skip Section 5.5 interactive selection.
 
 ### 5.5. Issue Grouping and Task Recommendations
 
@@ -462,6 +469,96 @@ Sort groups by combined score:
 | Roadmap "Near Term" items | +3 |
 
 Sort groups by descending score.
+
+#### 5.5.6. Interactive Group Selection (Tier 1)
+
+Present grouped task proposals via AskUserQuestion with multiSelect:
+
+```json
+{
+  "question": "Which task groups should be created?",
+  "header": "Review Task Proposals",
+  "multiSelect": true,
+  "options": [
+    {
+      "label": "[Group] {group_label} ({item_count} issues)",
+      "description": "{severity_breakdown} | Files: {file_list}"
+    }
+  ]
+}
+```
+
+**Option generation:**
+
+For each group (sorted by score):
+```json
+{
+  "label": "[Group] Bimodal fixes (3 issues)",
+  "description": "Critical: 1, High: 2 | Files: Soundness.lean, Correctness.lean"
+}
+```
+
+For ungrouped individual issues (if <2 items couldn't form groups):
+```json
+{
+  "label": "[Individual] {issue_title, truncated to 50 chars}",
+  "description": "{severity} | {file}:{line}"
+}
+```
+
+**Selection handling:**
+- Empty selection: No tasks created, proceed to Section 6
+- Any selection: Proceed to Tier 2 granularity selection
+
+#### 5.5.7. Granularity Selection (Tier 2)
+
+For selected groups, ask how tasks should be created:
+
+```json
+{
+  "question": "How should selected groups be created as tasks?",
+  "header": "Task Granularity",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Keep as grouped tasks",
+      "description": "Creates {N} tasks (one per selected group)"
+    },
+    {
+      "label": "Expand into individual tasks",
+      "description": "Creates {M} tasks (one per issue in selected groups)"
+    },
+    {
+      "label": "Show issues and select manually",
+      "description": "See all issues in selected groups for manual selection"
+    }
+  ]
+}
+```
+
+**Option handling:**
+
+**"Keep as grouped tasks"**: Proceed to Section 5.6 with grouped task creation.
+
+**"Expand into individual tasks"**: Proceed to Section 5.6 with individual task creation for all issues in selected groups.
+
+**"Show issues and select manually"**: Present Tier 3 manual selection:
+
+```json
+{
+  "question": "Select individual issues to create as tasks:",
+  "header": "Issue Selection",
+  "multiSelect": true,
+  "options": [
+    {
+      "label": "{issue_description, truncated to 60 chars}",
+      "description": "{severity} | {file}:{line} | From: {group_label}"
+    }
+  ]
+}
+```
+
+After manual selection, proceed to Section 5.6 with individual task creation for selected issues.
 
 ### 6. Update Registries (if applicable)
 

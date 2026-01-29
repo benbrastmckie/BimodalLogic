@@ -81,7 +81,7 @@ The research report identified:
 
 ---
 
-### Phase 2: Interactive Selection Interface [IN PROGRESS]
+### Phase 2: Interactive Selection Interface [COMPLETED]
 
 **Goal**: Modify Section 5.5 to always display grouped task proposals with AskUserQuestion multiSelect support.
 
@@ -130,7 +130,7 @@ The research report identified:
 
 ---
 
-### Phase 3: Task Creation Integration [NOT STARTED]
+### Phase 3: Task Creation Integration [IN PROGRESS]
 
 **Goal**: Wire selected tasks to actual creation with proper state.json/TODO.md updates and dependency linking.
 
