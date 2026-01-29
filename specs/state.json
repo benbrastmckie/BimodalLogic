@@ -311,7 +311,7 @@
     {
       "project_number": 631,
       "project_name": "prove_evalformula_implies_satisfiable",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "parent_task": 490,
@@ -323,7 +323,7 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-29T04:55:57Z",
+      "last_updated": "2026-01-29T04:58:34Z",
       "session_id": "sess_1769662538_c30b1c",
       "researched": "2026-01-29T01:18:02Z",
       "artifacts": [
@@ -336,10 +336,17 @@
           "path": "specs/631_prove_evalformula_implies_satisfiable/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for evalFormula_implies_sat semantic bridge lemma"
+        },
+        {
+          "path": "specs/631_prove_evalformula_implies_satisfiable/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results for evalFormula_implies_sat theorem"
         }
       ],
       "planned": "2026-01-29T04:50:31Z",
-      "started": "2026-01-29T04:55:57Z"
+      "started": "2026-01-29T04:55:57Z",
+      "completed": "2026-01-29T04:58:34Z",
+      "completion_summary": "Proved evalFormula_implies_sat semantic bridge lemma connecting tableau evaluation to task frame semantics. Proof uses saturation to show complex formula cases are vacuous, with atom case using existing atom_false_if_neg_in_open_branch lemma."
     },
     {
       "project_number": 623,

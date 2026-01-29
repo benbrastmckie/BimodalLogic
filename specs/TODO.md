@@ -258,16 +258,18 @@ technical_debt:
 ---
 
 ### 631. Prove evalFormula_implies_satisfiable bridging lemma
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Parent**: Task 490
 - **Dependencies**: Task 630
 - **Related**: Tasks 624, 628
 - **Research**: [research-001.md](specs/631_prove_evalformula_implies_satisfiable/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/631_prove_evalformula_implies_satisfiable/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/631_prove_evalformula_implies_satisfiable/summaries/implementation-summary-20260129.md)
 
 **Description**: Prove the semantic bridge lemma `evalFormula_implies_sat`: if `evalFormula b φ = false` for a saturated open branch, then φ is not satisfiable in the extracted TaskModel. This connects the simplified propositional evaluation in `evalFormula` to full task frame semantics via `truth_at M τ t φ`. Uses the TaskModel extraction from Task 630. Key insight: must show that for the extracted model M with some WorldHistory τ and time t, `truth_at M τ t φ = false`. Combined with `branchTruthLemma` (completed in Task 623), this provides the contrapositive needed for `tableau_complete`: valid formulas cannot have open saturated branches.
 

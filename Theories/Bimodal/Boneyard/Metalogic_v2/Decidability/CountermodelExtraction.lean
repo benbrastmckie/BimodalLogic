@@ -560,6 +560,43 @@ theorem evalFormula_implies_sat (b : Branch) (hSat : findUnexpanded b = none)
     (hOpen : findClosure b = none) (φ : Formula)
     (hneg : SignedFormula.neg φ ∈ b) :
     ¬truth_at (extractBranchTaskModel b) (extractBranchWorldHistory b) 0 φ := by
-  sorry
+  -- Case split on the formula structure
+  cases φ with
+  | atom p =>
+    -- Atom case: use atom_false_if_neg_in_open_branch
+    -- We need to show ¬truth_at M τ 0 (atom p)
+    -- truth_at ... (atom p) = ∃ (ht : τ.domain 0), M.valuation (τ.states 0 ht) p
+    simp only [truth_at]
+    intro ⟨ht, hval⟩
+    -- hval : M.valuation (τ.states 0 ht) p
+    -- For extractBranchWorldHistory, states is constant (extractInitialWorldState b)
+    -- So hval : branchWorldStateValuation (extractBranchWorldState b) p
+    -- But atom_false_if_neg_in_open_branch says ¬branchWorldStateValuation ... p
+    have hfalse := atom_false_if_neg_in_open_branch b hOpen p hneg
+    -- Need to show hval contradicts hfalse
+    -- extractBranchTaskModel b has valuation = branchWorldStateValuation
+    -- extractBranchWorldHistory b has states _ _ = extractInitialWorldState b = extractBranchWorldState b
+    simp only [extractBranchTaskModel, extractBranchWorldHistory, constantBranchHistory,
+               extractInitialWorldState] at hval
+    exact hfalse hval
+  | bot =>
+    -- Bot case: truth_at ... bot = False, so ¬False is trivial
+    simp only [truth_at, not_false_eq_true]
+  | imp φ₁ φ₂ =>
+    -- F(φ→ψ) cannot be in a saturated branch (would have been expanded)
+    exfalso
+    exact saturation_contradiction b hSat _ hneg (isExpanded_neg_imp_false φ₁ φ₂)
+  | box φ₁ =>
+    -- F(□φ) cannot be in a saturated branch
+    exfalso
+    exact saturation_contradiction b hSat _ hneg (isExpanded_neg_box_false φ₁)
+  | all_future φ₁ =>
+    -- F(Gφ) cannot be in a saturated branch
+    exfalso
+    exact saturation_contradiction b hSat _ hneg (isExpanded_neg_all_future_false φ₁)
+  | all_past φ₁ =>
+    -- F(Hφ) cannot be in a saturated branch
+    exfalso
+    exact saturation_contradiction b hSat _ hneg (isExpanded_neg_all_past_false φ₁)
 
 end Bimodal.Metalogic_v2.Decidability

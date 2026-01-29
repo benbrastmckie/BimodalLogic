@@ -1,7 +1,7 @@
 # Implementation Plan: Task #631
 
 - **Task**: 631 - Prove evalFormula_implies_satisfiable bridging lemma
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Priority**: Medium
 - **Dependencies**: Task 630 (BranchTaskModel extraction - completed)
@@ -67,7 +67,7 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 2: Atom Case [IN PROGRESS]
+### Phase 2: Atom Case [COMPLETED]
 
 **Goal**: Prove the atom case using `atom_false_if_neg_in_open_branch`.
 
@@ -87,7 +87,7 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 3: Bot Case [NOT STARTED]
+### Phase 3: Bot Case [COMPLETED]
 
 **Goal**: Prove the trivial bot case.
 
@@ -105,7 +105,7 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 4: Complex Formula Cases via Saturation [NOT STARTED]
+### Phase 4: Complex Formula Cases via Saturation [COMPLETED]
 
 **Goal**: Prove all complex formula cases (imp, box, all_future, all_past) are vacuous.
 
@@ -127,7 +127,7 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 5: Integration and Documentation [NOT STARTED]
+### Phase 5: Integration and Documentation [COMPLETED]
 
 **Goal**: Finalize theorem, add documentation, verify integration with decidability.
 
