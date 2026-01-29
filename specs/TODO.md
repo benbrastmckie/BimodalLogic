@@ -107,10 +107,11 @@ technical_debt:
 
 ### 765. Exclude Boneyard and Examples from sorry count metrics
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 
 **Description**: Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep at todo.md:850, (2) /review command at review.md:132, (3) state-management.md documentation, (4) current metrics in state.json and TODO.md (~72 instead of ~322).
 
@@ -199,7 +200,7 @@ technical_debt:
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-001.md), [research-002.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-002.md)
+- **Research**: [research-001.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-001.md), [research-002.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-002.md), [research-003.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-003.md)
 - **Plan**: [implementation-001.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260129.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/summaries/implementation-summary-20260129.md)
 
