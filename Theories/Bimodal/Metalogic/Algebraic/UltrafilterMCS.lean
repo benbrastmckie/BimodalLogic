@@ -59,6 +59,16 @@ instance instMembershipUltrafilter {α : Type*} [BooleanAlgebra α] :
   mem U a := a ∈ U.carrier
 
 /--
+Ultrafilter extensionality: two ultrafilters are equal iff their carriers are equal.
+-/
+@[ext]
+theorem Ultrafilter.ext {α : Type*} [BooleanAlgebra α] {U V : Ultrafilter α}
+    (h : U.carrier = V.carrier) : U = V := by
+  cases U; cases V
+  simp only [Ultrafilter.mk.injEq]
+  exact h
+
+/--
 An ultrafilter doesn't contain ⊥.
 -/
 theorem Ultrafilter.empty_not_mem {α : Type*} [BooleanAlgebra α] (U : Ultrafilter α) :
@@ -751,12 +761,122 @@ The two directions are inverses.
 -/
 
 /--
-Placeholder for the bijection proof.
+The MCS-ultrafilter correspondence is a bijection.
+
+`mcsToUltrafilter` and `ultrafilterToSet` are inverses of each other.
 -/
 theorem mcs_ultrafilter_correspondence :
     ∃ (f : {Γ : Set Formula // SetMaximalConsistent Γ} → Ultrafilter LindenbaumAlg)
       (g : Ultrafilter LindenbaumAlg → {Γ : Set Formula // SetMaximalConsistent Γ}),
       Function.LeftInverse g f ∧ Function.RightInverse g f := by
-  sorry
+  -- f = mcsToUltrafilter
+  -- g = fun U => ⟨ultrafilterToSet U, ultrafilterToSet_mcs U⟩
+  use mcsToUltrafilter
+  use fun U => ⟨ultrafilterToSet U, ultrafilterToSet_mcs U⟩
+  constructor
+  · -- LeftInverse: g (f Γ) = Γ for all MCS Γ
+    -- i.e., ultrafilterToSet (mcsToUltrafilter Γ) = Γ.val
+    intro Γ
+    apply Subtype.ext
+    -- Need to show: ultrafilterToSet (mcsToUltrafilter Γ) = Γ.val
+    ext φ
+    simp only [ultrafilterToSet, Set.mem_setOf_eq]
+    -- toQuot φ ∈ (mcsToUltrafilter Γ).carrier ↔ φ ∈ Γ.val
+    constructor
+    · -- toQuot φ ∈ mcsToSet Γ.val → φ ∈ Γ.val
+      intro h_mem
+      -- h_mem : toQuot φ ∈ mcsToSet Γ.val
+      -- mcsToSet Γ.val = { a | ∃ ψ ∈ Γ.val, a = toQuot ψ }
+      obtain ⟨ψ, h_psi_in, h_eq⟩ := h_mem
+      -- h_eq : toQuot φ = toQuot ψ
+      -- This means [φ] = [ψ], i.e., ⊢ φ ↔ ψ
+      -- Since Γ is MCS and ψ ∈ Γ, we get φ ∈ Γ by closure
+      have h_le : toQuot ψ ≤ toQuot φ := by rw [← h_eq]
+      obtain ⟨d_imp⟩ := (h_le : Derives ψ φ)
+      -- From ψ ∈ Γ and ⊢ ψ → φ, derive φ ∈ Γ
+      by_contra h_not
+      have h_incons : ¬SetConsistent (insert φ Γ.val) := Γ.property.2 φ h_not
+      unfold SetConsistent at h_incons
+      push_neg at h_incons
+      obtain ⟨L, hL, hL_incons⟩ := h_incons
+      have ⟨d_bot⟩ := Bimodal.Metalogic_v2.Core.inconsistent_derives_bot hL_incons
+
+      let Γ' := L.filter (· ≠ φ)
+      have h_Γ'_sub : ∀ χ ∈ Γ', χ ∈ Γ.val := by
+        intro χ hχ
+        have hχ' := List.mem_filter.mp hχ
+        have hχne : χ ≠ φ := by simpa using hχ'.2
+        specialize hL χ hχ'.1
+        simp [Set.mem_insert_iff] at hL
+        rcases hL with rfl | h_in_Γ
+        · exact absurd rfl hχne
+        · exact h_in_Γ
+      have h_L_sub : L ⊆ φ :: Γ' := by
+        intro χ hχ
+        by_cases hχeq : χ = φ
+        · simp [hχeq]
+        · simp only [List.mem_cons]; right
+          exact List.mem_filter.mpr ⟨hχ, by simpa⟩
+
+      have d_bot' : DerivationTree (φ :: Γ') Formula.bot :=
+        DerivationTree.weakening L (φ :: Γ') Formula.bot d_bot h_L_sub
+      have d_neg : DerivationTree Γ' φ.neg :=
+        Bimodal.Metalogic.Core.deduction_theorem Γ' φ Formula.bot d_bot'
+
+      -- Now from ψ ∈ Γ and ⊢ ψ → φ, we have [ψ, Γ'] ⊢ φ
+      -- But also [Γ'] ⊢ ¬φ, so [ψ, Γ'] ⊢ ¬φ
+      -- Contradiction
+      have d_neg' : DerivationTree (ψ :: Γ') φ.neg :=
+        DerivationTree.weakening Γ' (ψ :: Γ') φ.neg d_neg (fun x hx => List.mem_cons_of_mem ψ hx)
+      have d_ψ : DerivationTree (ψ :: Γ') ψ :=
+        DerivationTree.assumption (ψ :: Γ') ψ (by simp)
+      have d_imp' : DerivationTree (ψ :: Γ') (ψ.imp φ) :=
+        DerivationTree.weakening [] (ψ :: Γ') (ψ.imp φ) d_imp (by simp)
+      have d_φ : DerivationTree (ψ :: Γ') φ :=
+        DerivationTree.modus_ponens (ψ :: Γ') ψ φ d_imp' d_ψ
+      have d_bot'' : DerivationTree (ψ :: Γ') Formula.bot :=
+        DerivationTree.modus_ponens (ψ :: Γ') φ Formula.bot d_neg' d_φ
+
+      have h_cons : Consistent (ψ :: Γ') := by
+        apply Γ.property.1 (ψ :: Γ')
+        intro χ hχ
+        simp at hχ
+        rcases hχ with rfl | hχ'
+        · exact h_psi_in
+        · exact h_Γ'_sub χ hχ'
+      exact h_cons ⟨d_bot''⟩
+    · -- φ ∈ Γ.val → toQuot φ ∈ mcsToSet Γ.val
+      intro h_mem
+      exact mem_mcsToSet h_mem
+  · -- RightInverse: f (g U) = U for all ultrafilters U
+    -- i.e., mcsToUltrafilter ⟨ultrafilterToSet U, ...⟩ = U
+    intro U
+    -- Two ultrafilters are equal iff their carriers are equal
+    apply Ultrafilter.ext
+    -- Need: (mcsToUltrafilter ⟨ultrafilterToSet U, ...⟩).carrier = U.carrier
+    -- LHS = mcsToSet (ultrafilterToSet U) = { [φ] | φ ∈ ultrafilterToSet U }
+    --     = { [φ] | [φ] ∈ U.carrier }
+    ext a
+    simp only [mcsToUltrafilter]
+    -- a ∈ mcsToSet (ultrafilterToSet U) ↔ a ∈ U.carrier
+    constructor
+    · -- a ∈ mcsToSet (ultrafilterToSet U) → a ∈ U.carrier
+      intro ⟨φ, h_phi_in, h_eq⟩
+      -- h_phi_in : φ ∈ ultrafilterToSet U, i.e., toQuot φ ∈ U.carrier
+      -- h_eq : a = toQuot φ
+      rw [h_eq]
+      exact h_phi_in
+    · -- a ∈ U.carrier → a ∈ mcsToSet (ultrafilterToSet U)
+      intro h_mem
+      induction a using Quotient.ind with
+      | _ φ =>
+        -- h_mem : toQuot φ ∈ U.carrier
+        -- Need: toQuot φ ∈ mcsToSet (ultrafilterToSet U)
+        -- i.e., ∃ ψ ∈ ultrafilterToSet U, toQuot φ = toQuot ψ
+        use φ
+        constructor
+        · -- φ ∈ ultrafilterToSet U
+          exact h_mem
+        · rfl
 
 end Bimodal.Metalogic.Algebraic.UltrafilterMCS

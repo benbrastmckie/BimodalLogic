@@ -258,10 +258,11 @@ technical_debt:
 ---
 
 ### 631. Prove evalFormula_implies_satisfiable bridging lemma
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Started**: 2026-01-29
 - **Parent**: Task 490
 - **Dependencies**: Task 630
 - **Related**: Tasks 624, 628

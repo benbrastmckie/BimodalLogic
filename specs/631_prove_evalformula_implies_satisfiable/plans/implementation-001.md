@@ -1,7 +1,7 @@
 # Implementation Plan: Task #631
 
 - **Task**: 631 - Prove evalFormula_implies_satisfiable bridging lemma
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Priority**: Medium
 - **Dependencies**: Task 630 (BranchTaskModel extraction - completed)
@@ -47,7 +47,7 @@ Key findings integrated from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Setup and Imports [NOT STARTED]
+### Phase 1: Setup and Imports [COMPLETED]
 
 **Goal**: Create the theorem file structure with correct imports and verify existing infrastructure.
 
@@ -67,7 +67,7 @@ Key findings integrated from research-001.md:
 
 ---
 
-### Phase 2: Atom Case [NOT STARTED]
+### Phase 2: Atom Case [IN PROGRESS]
 
 **Goal**: Prove the atom case using `atom_false_if_neg_in_open_branch`.
 
