@@ -114,12 +114,12 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T20:46:53Z",
-      "session_id": "sess_1769719016_ca96c7",
+      "last_updated": "2026-01-29T20:56:04Z",
+      "session_id": "sess_1769720147_342164",
       "researched": "2026-01-29T20:41:02Z",
       "artifacts": [
         {
@@ -478,25 +478,31 @@
     {
       "project_number": 744,
       "project_name": "update_documentation_lean_agent_architecture",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "description": "Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.",
       "created": "2026-01-29T13:39:29Z",
-      "last_updated": "2026-01-29T20:50:40Z",
+      "last_updated": "2026-01-29T21:01:14Z",
       "dependencies": [
         742,
         743
       ],
-      "session_id": "sess_1769719689_e46915",
+      "session_id": "sess_1769720348_353e9d",
       "researched": "2026-01-29T20:50:40Z",
       "artifacts": [
         {
           "path": "specs/744_update_documentation_lean_agent_architecture/reports/research-001.md",
           "type": "research",
           "summary": "Research report identifying 3 files requiring updates to remove outdated direct execution references"
+        },
+        {
+          "path": "specs/744_update_documentation_lean_agent_architecture/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for updating Lean agent delegation documentation"
         }
-      ]
+      ],
+      "planned": "2026-01-29T21:01:14Z"
     }
   ],
   "completed_projects": [

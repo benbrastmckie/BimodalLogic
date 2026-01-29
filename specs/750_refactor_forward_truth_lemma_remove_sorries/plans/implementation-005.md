@@ -63,7 +63,7 @@ We just need the middle implication: valid → true at MCS-derived states.
 
 ## Implementation Phases
 
-### Phase 1: Define MCSDerivedSemanticWorldState [NOT STARTED]
+### Phase 1: Define MCSDerivedSemanticWorldState [COMPLETED]
 
 **Goal**: Create the restricted subtype that carries proof of MCS derivation
 
@@ -91,7 +91,7 @@ We just need the middle implication: valid → true at MCS-derived states.
 
 ---
 
-### Phase 2: Prove MCS Truth Lemma for Propositions [NOT STARTED]
+### Phase 2: Prove MCS Truth Lemma for Propositions [COMPLETED]
 
 **Goal**: Prove truth correspondence for base cases (atoms, negation, implication, bot)
 

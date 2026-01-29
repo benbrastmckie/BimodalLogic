@@ -136,10 +136,11 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 8-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md), [research-008.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md), [research-011.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-011.md)
 - **Plan**: [implementation-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-005.md)
 
@@ -149,13 +150,14 @@ technical_debt:
 
 ### 744. Update documentation for restored Lean agent architecture
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Dependencies**: Tasks 742, 743
 - **Research**: [research-001.md](specs/744_update_documentation_lean_agent_architecture/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/744_update_documentation_lean_agent_architecture/plans/implementation-001.md)
 
 **Description**: Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.
 
