@@ -122,13 +122,14 @@ technical_debt:
 ## Medium Priority
 
 ### 760. Determine sorry disposition: archive vs complete
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 3.25 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Research**: [research-001.md](specs/760_determine_sorry_disposition_archive_vs_complete/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-001.md)
 
 **Description**: Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase
 
@@ -167,7 +168,7 @@ technical_debt:
 
 ### 762. Fix planner-agent to enforce Status field in plan metadata
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29

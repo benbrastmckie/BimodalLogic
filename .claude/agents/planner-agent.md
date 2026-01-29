@@ -38,9 +38,9 @@ Load these on-demand using @-references:
 
 **Always Load**:
 - `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
+- `@.claude/context/core/formats/plan-format.md` - Plan artifact structure and REQUIRED metadata fields
 
 **Load When Creating Plan**:
-- `@.claude/context/core/formats/plan-format.md` - Plan artifact structure and metadata
 - `@.claude/context/core/workflows/task-breakdown.md` - Task decomposition guidelines
 
 **Load for Context**:
@@ -247,7 +247,31 @@ Write plan file following plan-format.md structure:
 {How to revert if implementation fails}
 ```
 
-### Stage 6: Write Metadata File
+### Stage 6: Verify Plan and Write Metadata File
+
+**CRITICAL**: Before writing success metadata, verify the plan file contains all required fields.
+
+#### 6a. Verify Required Metadata Fields
+
+Re-read the plan file and verify these fields exist (per plan-format.md):
+- `- **Status**: [NOT STARTED]` - **REQUIRED** - Must be present in plan header
+- `- **Task**: {N} - {title}` - Task identifier
+- `- **Effort**:` - Time estimate
+- `- **Priority**:` - Task priority
+- `- **Type**:` - Language type
+
+**If any required field is missing**:
+1. Edit the plan file to add the missing field
+2. Re-read the plan file to confirm the field was added
+3. Only proceed to write success metadata after all required fields are present
+
+**Verification command** (conceptual):
+```bash
+# Check for Status field - must exist
+grep -q "^\- \*\*Status\*\*:" plan_file || echo "ERROR: Missing Status field"
+```
+
+#### 6b. Write Metadata File
 
 **CRITICAL**: Write metadata to the specified file path, NOT to console.
 
@@ -374,6 +398,7 @@ Planning failed for task 999:
 7. Always follow plan-format.md structure exactly
 8. Always apply task-breakdown.md guidelines for >60 min tasks
 9. Always include phase_count and estimated_hours in metadata
+10. Always verify Status field exists in plan before writing success metadata (Stage 6a)
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)

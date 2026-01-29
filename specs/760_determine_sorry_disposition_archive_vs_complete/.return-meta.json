@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-001.md",
+      "summary": "4-phase implementation plan to complete 12 exercise sorries in Examples/ files"
+    }
+  ],
+  "next_steps": "Run /implement 760 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1769721934_352e7e",
+    "agent_type": "planner-agent",
+    "duration_seconds": 45,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.25
+  }
+}

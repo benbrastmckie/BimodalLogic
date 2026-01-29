@@ -27,21 +27,27 @@
     {
       "project_number": 760,
       "project_name": "determine_sorry_disposition_archive_vs_complete",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T20:26:56Z",
-      "last_updated": "2026-01-29T20:50:41Z",
+      "last_updated": "2026-01-29T21:27:47Z",
       "description": "Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase",
-      "session_id": "sess_1769719653_d385e6",
+      "session_id": "sess_1769721934_352e7e",
       "researched": "2026-01-29T20:50:41Z",
       "artifacts": [
         {
           "path": "specs/760_determine_sorry_disposition_archive_vs_complete/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive categorization of 48 sorries into ARCHIVE (25), COMPLETE (12), and KEEP (11) dispositions"
+        },
+        {
+          "path": "specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan to complete 12 exercise sorries in Examples/ files"
         }
-      ]
+      ],
+      "planned": "2026-01-29T21:27:47Z"
     },
     {
       "project_number": 759,
@@ -526,12 +532,12 @@
     {
       "project_number": 762,
       "project_name": "fix_planner_agent_enforce_status_field",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T21:04:03Z",
-      "last_updated": "2026-01-29T21:23:49Z",
-      "session_id": "sess_1769721704_3eb431",
+      "last_updated": "2026-01-29T21:26:22Z",
+      "session_id": "sess_1769721961_4a56bb",
       "description": "Move plan-format.md from Load When Creating Plan to Always Load section in planner-agent.md (line 43). Add explicit verification step in Stage 5 (around line 173) to ensure Status field exists in plan file before writing success metadata. Evidence: Task 750 v005 plan missing Status line while older plans (758, 759, 741) have it.",
       "researched": "2026-01-29T21:12:15Z",
       "artifacts": [
@@ -546,7 +552,8 @@
           "summary": "4-phase implementation plan: update context references, add verification step, update critical requirements, verify changes"
         }
       ],
-      "planned": "2026-01-29T21:23:49Z"
+      "planned": "2026-01-29T21:23:49Z",
+      "started": "2026-01-29T21:26:22Z"
     },
     {
       "project_number": 763,
