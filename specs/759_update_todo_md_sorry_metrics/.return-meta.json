@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "started_at": "2026-01-29T12:30:00Z",
+  "completed_at": "2026-01-29T12:45:00Z",
+  "artifacts": [
+    {
+      "path": "specs/759_update_todo_md_sorry_metrics/reports/research-001.md",
+      "type": "research",
+      "summary": "Comprehensive analysis of metadata sync gaps: TODO.md has stale repo-wide metrics (sorry_count 205 vs actual 275) not present in state.json, /review computes but doesn't persist, recommends adding metrics sync step to /todo command."
+    }
+  ],
+  "next_steps": "Run /plan 759 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1769710618_a4a7cb",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 900,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 5
+  }
+}

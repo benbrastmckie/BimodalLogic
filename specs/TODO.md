@@ -40,21 +40,6 @@ technical_debt:
 
 ---
 
-### 755. Implement Option C: Forward Truth Lemma Refactoring
-- **Effort**: 4-6 hours
-- **Status**: [PLANNED]
-- **Priority**: High
-- **Language**: lean
-- **Reference**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md)
-- **Research**: [research-001.md](specs/755_implement_option_c_forward_truth_lemma/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/755_implement_option_c_forward_truth_lemma/plans/implementation-002.md)
-- **Started**: 2026-01-29
-- **Revised**: 2026-01-29
-
-**Description**: Revised approach: Use existing `semantic_weak_completeness` as sorry-free completeness. Create `finite_valid` predicate, document architectural limitations, update README with usage guidance.
-
----
-
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
@@ -200,7 +185,7 @@ technical_debt:
 
 ### 759. Update TODO.md sorry metrics
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: meta
 - **Created**: 2026-01-29

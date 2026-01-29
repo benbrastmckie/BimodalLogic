@@ -2,6 +2,37 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 755,
+      "project_name": "implement_option_c_forward_truth_lemma",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-29T16:54:59Z",
+      "last_updated": "2026-01-29T18:05:40Z",
+      "session_id": "sess_1769708216_82cffb",
+      "researched": "2026-01-29T17:27:03Z",
+      "artifacts": [
+        {
+          "path": "specs/755_implement_option_c_forward_truth_lemma/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of Option C FMP path approach to achieve sorry-free completeness via truth correspondence over subformula closure"
+        },
+        {
+          "path": "specs/755_implement_option_c_forward_truth_lemma/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Detailed analysis of architectural blocker preventing sorry removal from truth_at_implies_semantic_truth"
+        },
+        {
+          "path": "specs/755_implement_option_c_forward_truth_lemma/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 5-phase plan using existing semantic_weak_completeness as sorry-free completeness"
+        }
+      ],
+      "planned": "2026-01-29T18:05:40Z",
+      "started": "2026-01-29T17:37:14Z",
+      "abandoned": "2026-01-29T18:20:47Z"
+    },
+    {
       "project_number": 748,
       "project_name": "revise_roadmap_for_metalogic_progress",
       "status": "completed",
