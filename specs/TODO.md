@@ -128,10 +128,11 @@ technical_debt:
 
 ### 753. Prove sorries in CoherentConstruction for standard completeness
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Research**: [research-001.md](specs/753_prove_sorries_in_coherentconstruction/reports/research-001.md)
 
 **Description**: Invest in proving the sorries in CoherentConstruction since this is the shortest path to standard completeness. Risk: 20+ sorries, some mathematically challenging.
 
