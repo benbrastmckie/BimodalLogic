@@ -4,7 +4,22 @@
 This file documents what would be needed to prove the backward direction of the Truth Lemma,
 which is **NOT REQUIRED for the completeness theorem**.
 
-## Task 741 Update (2026-01-29)
+## Task 745 Update (2026-01-29)
+
+Task 745 moved the backward direction infrastructure from Representation/ to Boneyard/ and
+cleaned up TruthLemma.lean to present only the forward direction cleanly. Key changes:
+
+- **TemporalCompleteness.lean**: Moved to `Boneyard/Metalogic_v3/TruthLemma/TemporalCompleteness.lean`
+  Contains H/G-completeness lemmas (with sorry) blocked by omega-rule limitation.
+
+- **TruthLemma.lean**: Documentation cleaned to remove Boneyard references and historical
+  mentions. The sorries remain but are now documented as architectural limitations inline.
+
+The mutual induction structure in TruthLemma.lean must be retained because the forward
+imp case genuinely requires the backward IH to convert `truth_at psi` to `psi ∈ MCS`
+before applying modus ponens.
+
+## Task 741 Analysis (2026-01-29)
 
 Task 741 performed detailed analysis of the witness extraction architecture.
 The key finding is that the proof is blocked by the **omega-rule limitation**:
@@ -15,8 +30,9 @@ The key finding is that the proof is blocked by the **omega-rule limitation**:
 - The IndexedMCSFamily coherence only provides the converse direction
 
 See:
-- `Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean` for infrastructure
+- `Boneyard/Metalogic_v3/TruthLemma/TemporalCompleteness.lean` for infrastructure (sorry'd)
 - `specs/741_witness_extraction_architecture_for_backward_truth_lemma/` for research and plan
+- `specs/745_move_backward_truth_lemma_to_boneyard/` for Task 745 implementation
 
 ## What the Backward Truth Lemma Would Prove
 
@@ -92,20 +108,21 @@ extraneous truths - every true formula is in the MCS. This is useful for:
 -- 3. Forward IH application at the witness time
 ```
 
-## Estimated Effort
+## Estimated Effort (Blocked)
 
-To prove the backward Truth Lemma cases:
-- 4-6 hours for negation completeness lemmas for temporal operators
-- 2-3 hours for witness extraction infrastructure
-- 2-3 hours for connecting to forward IH
-
-Total: ~10-12 hours
+All approaches analyzed in Task 741 are blocked:
+1. **Construction-specific proof**: Lindenbaum is non-deterministic
+2. **Semantic bridge**: Circular (would need backward Truth Lemma)
+3. **Negation duality**: Doesn't extract witnesses
+4. **Finite approximation**: Needs TM compactness (unavailable)
 
 ## Reference
 
-- Original location: `Bimodal/Metalogic/Representation/TruthLemma.lean` lines 410, 423
+- Original location: `Bimodal/Metalogic/Representation/TruthLemma.lean` lines 420-435, 449-459
+- Moved infrastructure: `Boneyard/Metalogic_v3/TruthLemma/TemporalCompleteness.lean`
 - Gap analysis: `specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-004.md`
-- Task: 681
+- Witness extraction: `specs/741_witness_extraction_architecture_for_backward_truth_lemma/`
+- Boneyard cleanup: `specs/745_move_backward_truth_lemma_to_boneyard/`
 -/
 
 -- This file is documentation only. No compilable Lean code here.

@@ -120,7 +120,7 @@ have h_psi_in_mcs : psi ∈ family.mcs t := (ih_psi t).mpr h_psi_true
 
 ---
 
-### Phase 3: Clean Up Module Header and Documentation [NOT STARTED]
+### Phase 3: Clean Up Module Header and Documentation [COMPLETED]
 
 **Goal**: Present TruthLemma.lean as a clean, self-contained result.
 
@@ -146,7 +146,7 @@ have h_psi_in_mcs : psi ∈ family.mcs t := (ih_psi t).mpr h_psi_true
 
 ---
 
-### Phase 4: Update Boneyard Documentation [NOT STARTED]
+### Phase 4: Update Boneyard Documentation [COMPLETED]
 
 **Goal**: Consolidate all backward direction documentation in Boneyard.
 
