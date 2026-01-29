@@ -147,24 +147,13 @@ technical_debt:
 
 ### 736. Complete phase 6 of task 700: Algebraic Representation Theorem
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 700
 - **Created**: 2026-01-29
 
 **Description**: Complete phase 6 of task 700: Algebraic Representation Theorem. Prove ultrafilter existence (consistent_implies_satisfiable) using Zorn's lemma adaptation - for any non-⊥ element a, there exists ultrafilter containing a. Also complete mcs_ultrafilter_correspondence bijection proof. (Follow-up from task #700)
-
----
-
-### 734. Full decision procedure for Bimodal logic
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-29
-
-**Description**: Establish a full decision procedure for the Bimodal/ logic.
 
 ---
 

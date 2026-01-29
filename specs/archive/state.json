@@ -2,6 +2,17 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 734,
+      "project_name": "full_decision_procedure_bimodal_logic",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-29T01:03:53Z",
+      "last_updated": "2026-01-29T01:03:53Z",
+      "description": "Establish a full decision procedure for the Bimodal/ logic.",
+      "abandoned": "2026-01-29T04:11:44Z"
+    },
+    {
       "project_number": 628,
       "project_name": "prove_semantic_truth_implies_truth_at_upward_bridge",
       "status": "abandoned",
