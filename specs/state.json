@@ -116,12 +116,12 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T16:48:06Z",
-      "session_id": "sess_1769705067_0d75ea",
+      "last_updated": "2026-01-29T17:11:25Z",
+      "session_id": "sess_1769706658_46025d",
       "researched": "2026-01-29T16:36:22Z",
       "artifacts": [
         {
@@ -523,12 +523,20 @@
     {
       "project_number": 756,
       "project_name": "enhance_task_command_with_description_improvement",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T17:05:12Z",
-      "last_updated": "2026-01-29T17:09:43Z",
-      "session_id": "sess_1769706566_144a4a"
+      "last_updated": "2026-01-29T17:12:03Z",
+      "session_id": "sess_1769706566_144a4a",
+      "researched": "2026-01-29T17:12:03Z",
+      "artifacts": [
+        {
+          "path": "specs/756_enhance_task_command_with_description_improvement/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting current implementation analysis, transformation algorithm design, and implementation recommendations for task description improvement"
+        }
+      ]
     }
   ],
   "completed_projects": [

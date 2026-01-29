@@ -152,10 +152,11 @@ technical_debt:
 
 ### 756. Enhance /task command with description improvement
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Research**: [research-001.md](specs/756_enhance_task_command_with_description_improvement/reports/research-001.md)
 
 **Description**: Add a lightweight prompt engineering step to the /task command that transforms raw user input into well-structured task descriptions. The enhancement should: (1) ensure action-oriented phrasing with clear verbs, (2) expand abbreviations and clarify vague language, (3) apply consistent formatting and grammar, (4) preserve all technical details from the original input, and (5) avoid over-engineering or changing the user's intent. The change should be contained within .claude/commands/task.md in the "Create Task Mode (Default)" section between steps 2 (parse description) and 3 (detect language).
 
@@ -204,7 +205,7 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
