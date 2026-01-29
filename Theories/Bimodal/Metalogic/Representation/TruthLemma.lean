@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.Representation.CanonicalHistory
 import Bimodal.Metalogic.Representation.IndexedMCSFamily
+import Bimodal.Metalogic.Representation.TemporalCompleteness  -- Task 741: witness extraction infrastructure
 import Bimodal.Semantics.Truth
 
 /-!
@@ -418,8 +419,19 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
         exact (ih s).mp h_psi_in_s
     · -- Backward: (∀ s < t, truth_at s psi) → H psi ∈ mcs t
       intro h_all_past
-      -- NOT REQUIRED FOR COMPLETENESS - backward Truth Lemma not used by representation_theorem
-      -- See Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean for proof strategy
+      -- NOT REQUIRED FOR COMPLETENESS - the representation theorem only uses truth_lemma_forward.
+      --
+      -- BLOCKED BY OMEGA-RULE LIMITATION (Task 741):
+      -- The proof strategy is contrapositive: assume H psi ∉ mcs(t), extract witness s < t
+      -- with psi ∉ mcs(s), then use forward IH to get contradiction.
+      --
+      -- The witness extraction requires H-completeness:
+      --   (∀ s < t, psi ∈ mcs(s)) → H psi ∈ mcs(t)
+      -- This requires deriving H psi from infinitely many psi instances (omega-rule),
+      -- which TM logic cannot express.
+      --
+      -- See: TemporalCompleteness.lean for infrastructure and detailed documentation
+      -- See: specs/741_.../reports/research-001.md for analysis
       sorry
 
   | all_future psi ih =>
@@ -436,8 +448,14 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
         exact (ih s).mp h_psi_in_s
     · -- Backward: (∀ s > t, truth_at s psi) → G psi ∈ mcs t
       intro h_all_future
-      -- NOT REQUIRED FOR COMPLETENESS - backward Truth Lemma not used by representation_theorem
-      -- See Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean for proof strategy
+      -- NOT REQUIRED FOR COMPLETENESS - the representation theorem only uses truth_lemma_forward.
+      --
+      -- BLOCKED BY OMEGA-RULE LIMITATION (Task 741):
+      -- Symmetric to the all_past case. Requires G-completeness:
+      --   (∀ s > t, psi ∈ mcs(s)) → G psi ∈ mcs(t)
+      -- Same omega-rule issue applies.
+      --
+      -- See: TemporalCompleteness.lean for infrastructure and detailed documentation
       sorry
 
 /-!

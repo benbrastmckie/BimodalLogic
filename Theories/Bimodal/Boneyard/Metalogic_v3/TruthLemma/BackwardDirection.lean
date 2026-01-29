@@ -4,6 +4,20 @@
 This file documents what would be needed to prove the backward direction of the Truth Lemma,
 which is **NOT REQUIRED for the completeness theorem**.
 
+## Task 741 Update (2026-01-29)
+
+Task 741 performed detailed analysis of the witness extraction architecture.
+The key finding is that the proof is blocked by the **omega-rule limitation**:
+
+- H-completeness requires: `(∀ s < t, psi ∈ mcs(s)) → H psi ∈ mcs(t)`
+- This requires deriving H psi from infinitely many psi instances
+- TM logic (and standard proof systems) lack this "omega-rule"
+- The IndexedMCSFamily coherence only provides the converse direction
+
+See:
+- `Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean` for infrastructure
+- `specs/741_witness_extraction_architecture_for_backward_truth_lemma/` for research and plan
+
 ## What the Backward Truth Lemma Would Prove
 
 ```lean

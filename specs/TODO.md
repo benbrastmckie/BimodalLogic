@@ -240,7 +240,7 @@ technical_debt:
 
 ### 741. Witness extraction architecture for backward Truth Lemma
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -248,8 +248,9 @@ technical_debt:
 - **Related**: Tasks 654, 656, 659
 - **Research**: [research-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/summaries/implementation-summary-20260129.md)
 
-**Description**: Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: `Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s)` (and symmetric for G). Task 659 Phase 2 assessment showed that forward_H coherence does NOT provide this—the contrapositive gives universal (∀) statements, not existential (∃) witnesses. This task explores architectural approaches: (1) direct witness construction via MCS chain properties, (2) semantic completeness argument (if ψ ∈ mcs(s) for all s < t, then Hψ ∈ mcs(t)), or (3) alternative proof strategies that bypass witness extraction. Reference: specs/659_prove_negation_completeness_lemmas/plans/implementation-002.md Phase 2 assessment.
+**Description**: Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: `Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s)` (and symmetric for G). **STATUS**: BLOCKED by omega-rule limitation - proving H-completeness requires deriving H psi from infinitely many psi instances. Created infrastructure in TemporalCompleteness.lean. NOT REQUIRED FOR COMPLETENESS - the representation theorem only uses truth_lemma_forward.
 
 ---
 

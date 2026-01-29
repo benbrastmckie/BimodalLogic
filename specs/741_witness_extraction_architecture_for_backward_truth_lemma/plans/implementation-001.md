@@ -1,7 +1,7 @@
 # Implementation Plan: Task #741
 
 - **Task**: 741 - Witness extraction architecture for backward Truth Lemma
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 10 hours
 - **Priority**: Medium
 - **Dependencies**: Tasks 654, 656, 659
@@ -73,116 +73,109 @@ The research report (research-001.md) established:
 
 ---
 
-### Phase 2: Prove H-completeness Lemma [IN PROGRESS]
+### Phase 2: Prove H-completeness Lemma [PARTIAL]
 
 **Goal**: Establish that universal past membership implies Hpsi membership
 
+**Status**: BLOCKED by omega-rule limitation. The proof requires deriving H psi from
+infinitely many psi instances, which TM logic cannot express. The lemma signature
+and partial proof structure are in place, but the core derivation is `sorry`.
+
 **Tasks**:
-- [ ] Define H_completeness lemma signature with appropriate type constraints
-- [ ] Implement proof via contrapositive: assume Hpsi not-in mcs(t)
-- [ ] Use set_mcs_negation_complete to derive neg(Hpsi) in mcs(t)
-- [ ] Show this leads to witness s < t with psi not-in mcs(s) (or derive contradiction)
-- [ ] Handle edge cases for domain boundaries (if applicable)
-- [ ] Verify proof compiles without sorry
+- [x] Define H_completeness lemma signature with appropriate type constraints
+- [x] Implement proof structure via contrapositive: assume Hpsi not-in mcs(t)
+- [x] Use set_mcs_negation_complete to derive neg(Hpsi) in mcs(t)
+- [ ] BLOCKED: Show this leads to contradiction (requires omega-rule)
+- [N/A] Handle edge cases for domain boundaries (blocked by main proof)
+- [ ] BLOCKED: Verify proof compiles without sorry
 
-**Timing**: 3 hours
+**Timing**: 3 hours (actual: 1.5 hours to analyze and document blocker)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean` - add H_completeness lemma
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean` - lemma with sorry
 
-**Verification**:
-- `lake build` succeeds
-- `lean_goal` shows no remaining goals
-- Proof uses only forward-direction IH (no circularity)
+**Blocker Analysis**:
+The IndexedMCSFamily coherence provides `backward_H: H psi in mcs(t) -> psi in mcs(s)`,
+but we need the converse. The converse requires an omega-rule: deriving H psi from
+{psi at time s : s < t}, which is an infinite set. Standard proof systems lack this.
+
+**Future Options**:
+1. Add H/G-completeness as axioms to IndexedMCSFamily structure
+2. Prove for specific constructions (e.g., CoherentConstruction over Z with finite bounds)
+3. Accept this as a limitation and document that backward Truth Lemma is not required
 
 ---
 
-### Phase 3: Prove G-completeness Lemma [NOT STARTED]
+### Phase 3: Prove G-completeness Lemma [PARTIAL]
 
 **Goal**: Establish symmetric property for universal future membership
 
+**Status**: BLOCKED by same omega-rule limitation as H_completeness.
+
 **Tasks**:
-- [ ] Define G_completeness lemma signature (symmetric to H_completeness)
-- [ ] Adapt H_completeness proof structure for forward temporal direction
-- [ ] Adjust for forward_G coherence instead of backward_H
-- [ ] Verify symmetry with H-completeness proof
-- [ ] Ensure proof compiles without sorry
+- [x] Define G_completeness lemma signature (symmetric to H_completeness)
+- [x] Adapt H_completeness proof structure for forward temporal direction
+- [ ] BLOCKED: Core proof (same omega-rule issue)
 
-**Timing**: 1.5 hours
+**Timing**: 0.5 hours (structure only)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean` - add G_completeness lemma
-
-**Verification**:
-- `lake build` succeeds
-- Proof structure mirrors H_completeness
-- lean_goal shows no remaining goals
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean` - lemma with sorry
 
 ---
 
-### Phase 4: Derive Witness Extraction Lemmas [NOT STARTED]
+### Phase 4: Derive Witness Extraction Lemmas [COMPLETED]
 
 **Goal**: Create convenient wrapper lemmas that extract witnesses from non-membership
 
+**Status**: COMPLETED. The lemmas are defined and proven (by contrapositive), but they
+inherit the sorries from H/G_completeness.
+
 **Tasks**:
-- [ ] Define witness_from_not_H: `Hpsi not-in mcs(t) -> exists s < t. psi not-in mcs(s)`
-- [ ] Prove by contrapositive using H_completeness
-- [ ] Define witness_from_not_G: `Gpsi not-in mcs(t) -> exists s > t. psi not-in mcs(s)`
-- [ ] Prove by contrapositive using G_completeness
-- [ ] Add doc comments explaining the relationship to Truth Lemma
+- [x] Define witness_from_not_H: `Hpsi not-in mcs(t) -> exists s < t. psi not-in mcs(s)`
+- [x] Prove by contrapositive using H_completeness (proof complete, inherits sorry)
+- [x] Define witness_from_not_G: `Gpsi not-in mcs(t) -> exists s > t. psi not-in mcs(s)`
+- [x] Prove by contrapositive using G_completeness (proof complete, inherits sorry)
+- [x] Add doc comments explaining the relationship to Truth Lemma
 
-**Timing**: 1 hour
+**Timing**: 0.5 hours
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean` - add witness extraction lemmas
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean`
 
-**Verification**:
-- Both lemmas compile without sorry
-- Proofs are short (direct contrapositive application)
-- Doc comments reference TruthLemma.lean usage
+**Note**: The witness extraction proofs are COMPLETE - they correctly invoke the
+contrapositive of H/G_completeness. The sorries are in the underlying completeness lemmas.
 
 ---
 
-### Phase 5: Complete Backward Truth Lemma Cases [NOT STARTED]
+### Phase 5: Complete Backward Truth Lemma Cases [BLOCKED]
 
 **Goal**: Replace sorries at lines 423 and 441 with complete proofs
 
-**Tasks**:
-- [ ] Import TemporalCompleteness into TruthLemma.lean
-- [ ] At line 423 (all_past backward): apply witness_from_not_H
-- [ ] Use forward IH on witness to get contradiction with h_all_past
-- [ ] At line 441 (all_future backward): apply witness_from_not_G
-- [ ] Use forward IH on witness to get contradiction with h_all_future
-- [ ] Remove NOT REQUIRED comments and BackwardDirection.lean references
+**Status**: BLOCKED - depends on Phase 2-3 (H/G-completeness). Cannot proceed without
+resolving the omega-rule limitation.
 
-**Timing**: 2 hours
+**Alternative**: Document that the backward Truth Lemma cases are NOT REQUIRED for
+the completeness theorem and update TruthLemma.lean comments to reference this task's
+analysis.
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Representation/TruthLemma.lean` - complete sorries at lines 423, 441
-
-**Verification**:
-- `lake build` succeeds with no sorries in TruthLemma.lean temporal cases
-- Both backward cases for all_past and all_future are complete
-- Forward IH is used correctly without circularity
+**Tasks** (if proceeding with documentation-only approach):
+- [ ] Update TruthLemma.lean comments at lines 423, 441 to reference task 741 analysis
+- [ ] Add import of TemporalCompleteness to document the infrastructure exists
+- [ ] Keep sorries with clearer documentation of why they're blocked
 
 ---
 
-### Phase 6: Verification and Cleanup [NOT STARTED]
+### Phase 6: Verification and Documentation [COMPLETED]
 
-**Goal**: Ensure implementation is complete and properly integrated
+**Goal**: Ensure infrastructure is properly documented and integrated
 
 **Tasks**:
-- [ ] Run full `lake build` to verify no regressions
-- [ ] Check that truth_lemma, truth_lemma_forward, truth_lemma_backward all work
-- [ ] Verify no orphaned sorries remain in TruthLemma.lean
-- [ ] Update module documentation if needed
-- [ ] Check if BackwardDirection.lean in Boneyard can be archived or deleted
-
-**Timing**: 1 hour
-
-**Files to modify**:
-- Potentially update doc comments in TruthLemma.lean
-- Potentially remove/archive Boneyard/Metalogic_v3/TruthLemma/BackwardDirection.lean
+- [x] Run full `lake build` to verify no regressions
+- [x] Created TemporalCompleteness.lean with infrastructure
+- [x] Update TruthLemma.lean to import and reference TemporalCompleteness
+- [x] Update BackwardDirection.lean in Boneyard to reference task 741 findings
+- [x] Create implementation summary documenting the omega-rule limitation
 
 **Verification**:
 - Full project builds successfully
