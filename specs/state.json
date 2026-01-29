@@ -230,12 +230,20 @@
     {
       "project_number": 748,
       "project_name": "revise_roadmap_for_metalogic_progress",
-      "status": "researching",
+      "status": "researched",
       "language": "markdown",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
       "last_updated": "2026-01-29T17:46:37Z",
-      "session_id": "sess_1769708785_f2349d"
+      "session_id": "sess_1769708785_f2349d",
+      "researched": "2026-01-29T17:49:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/748_revise_roadmap_for_metalogic_progress/reports/research-001.md",
+          "summary": "Comprehensive analysis of ROAD_MAP.md vs current Metalogic progress"
+        }
+      ]
     },
     {
       "project_number": 741,

@@ -1,15 +1,19 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "analyzing",
-    "details": "Read ROAD_MAP.md and all Metalogic README files, now scanning for sorries"
-  },
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/748_revise_roadmap_for_metalogic_progress/reports/research-001.md",
+      "summary": "Comprehensive analysis of ROAD_MAP.md vs current Metalogic progress, with 15+ items to mark completed, 10+ items to update, and 5 new sections to add"
+    }
+  ],
+  "next_steps": "Run /plan 748 to create implementation plan for ROAD_MAP.md revision",
   "metadata": {
     "session_id": "sess_1769708785_f2349d",
     "agent_type": "general-research-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 8
   }
 }
