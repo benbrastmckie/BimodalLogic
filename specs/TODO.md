@@ -107,7 +107,7 @@ technical_debt:
 
 ### 765. Exclude Boneyard and Examples from sorry count metrics
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -196,15 +196,11 @@ technical_debt:
 
 ### 761. Integrate TTS and STT for Claude Code and neovim
 - **Effort**: 4.5 hours
-- **Status**: [COMPLETED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-001.md), [research-002.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-002.md), [research-003.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-003.md)
-- **Plan**: [implementation-001.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/summaries/implementation-summary-20260129.md)
 
 **Description**: Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM).
 
@@ -213,14 +209,16 @@ technical_debt:
 ## Low Priority
 
 ### 764. Improve Bimodal/Metalogic structure and documentation
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 12 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Researched**: 2026-01-29
+- **Planned**: 2026-01-29
 - **Research**: [research-001.md](specs/764_improve_metalogic_structure_and_documentation/reports/research-001.md), [research-002.md](specs/764_improve_metalogic_structure_and_documentation/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/764_improve_metalogic_structure_and_documentation/plans/implementation-001.md)
 
 **Description**: Improve structure and organization of Bimodal/Metalogic/ and create complete, accurate documentation with clear dependency flowcharts. Work systematically from deepest directories back to Metalogic/README.md. Flowcharts should show derivatives below (higher line numbers) and foundations above (smaller line numbers) in README.md documents. The top-level Metalogic/README.md should include clear high-level explanation of how the metalogic is structured and what it establishes.
 
