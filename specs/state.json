@@ -118,7 +118,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T21:09:19Z",
+      "last_updated": "2026-01-29T21:19:56Z",
       "session_id": "sess_1769720147_342164",
       "researched": "2026-01-29T20:41:02Z",
       "artifacts": [
@@ -181,6 +181,11 @@
           "path": "Theories/Bimodal/Metalogic/FMP/MCSDerivedWorldState.lean",
           "type": "implementation",
           "summary": "MCS-derived world state subtype with sorry-free truth correspondence lemmas"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-012.md",
+          "type": "research",
+          "summary": "Analysis of Box semantics limitation - confirms gap is fundamental, recommends accepting semantic_weak_completeness as canonical completeness theorem"
         }
       ],
       "planned": "2026-01-29T20:46:53Z",
@@ -540,12 +545,12 @@
     {
       "project_number": 763,
       "project_name": "add_plan_status_updates_skill_lean_implementation",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T21:04:06Z",
-      "last_updated": "2026-01-29T21:15:16Z",
-      "session_id": "sess_1769721164_432b25",
+      "last_updated": "2026-01-29T21:18:56Z",
+      "session_id": "sess_1769721524_3e665d",
       "description": "Add plan status update pattern (sed commands to update - **Status**: [...] line) to skill-lean-implementation/SKILL.md in three locations: (1) Stage 2 Preflight: Update to [IMPLEMENTING] before invoking agent, (2) Stage 7 Postflight (implemented): Update to [COMPLETED], (3) Stage 7 Postflight (partial): Update to [PARTIAL]. Pattern exists in skill-implementer (lines 91-98, 265-271, 287-293), skill-latex-implementation (lines 70-76, 282-288, 304-310), skill-typst-implementation (lines 70-76, 282-288, 304-310).",
       "researched": "2026-01-29T21:15:16Z",
       "artifacts": [

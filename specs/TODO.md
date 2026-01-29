@@ -180,7 +180,7 @@ technical_debt:
 
 ### 763. Add plan status updates to skill-lean-implementation
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
