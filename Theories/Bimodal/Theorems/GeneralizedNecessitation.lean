@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Context
-import Bimodal.Boneyard.Metalogic_v2.Core.DeductionTheorem
+import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Combinators
 
@@ -39,7 +39,7 @@ namespace Bimodal.Theorems
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
-open Bimodal.Metalogic_v2.Core
+open Bimodal.Metalogic.Core
 
 /--
 The reverse of the deduction theorem. If `Γ ⊢ A → B`, then `A :: Γ ⊢ B`.

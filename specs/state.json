@@ -8,13 +8,13 @@
     {
       "project_number": 731,
       "project_name": "clean_bimodal_documentation_remove_historical_comments",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T23:47:43Z",
-      "last_updated": "2026-01-29T00:22:50Z",
+      "last_updated": "2026-01-29T00:26:13Z",
       "description": "Clean up Lean source code documentation in Bimodal/ theory to present only the current state with no historical mentions. **Scope change**: Remove ALL historical artifacts including: (1) provenance comments ('-- Origin: Boneyard/...') from Core/*.lean files, (2) SUPERSEDED/DEPRECATED docblocks and markers, (3) narrative history explaining past approaches or 'why we did X instead of Y', (4) references to Boneyard in active code comments. Goal is clean, present-tense documentation describing what the code IS, not where it came from or what it replaced. Also: (a) update remaining Boneyard imports in GeneralizedNecessitation.lean and Propositional.lean to use Core, (b) move compatibility shims Metalogic.lean and Metalogic_v2.lean to Boneyard/Compat/, (c) verify complete Boneyard isolation.",
-      "session_id": "sess_1769646036_61668d",
+      "session_id": "sess_1769646356_be0582",
       "researched": "2026-01-29T00:11:16Z",
       "artifacts": [
         {
@@ -28,7 +28,8 @@
           "summary": "5-phase plan covering import updates, shim relocation, provenance removal, SUPERSEDED/DEPRECATED cleanup, and isolation verification"
         }
       ],
-      "planned": "2026-01-29T00:22:50Z"
+      "planned": "2026-01-29T00:22:50Z",
+      "started": "2026-01-29T00:26:13Z"
     },
     {
       "project_number": 726,
@@ -134,16 +135,16 @@
     {
       "project_number": 658,
       "project_name": "prove_indexed_family_coherence_conditions",
-      "status": "planned",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T00:20:30Z",
+      "last_updated": "2026-01-29T00:25:36Z",
       "related_tasks": [
         654
       ],
-      "researching": "2026-01-25T21:32:07Z",
-      "session_id": "sess_1769581302_d98fea",
+      "researching": "2026-01-29T00:25:36Z",
+      "session_id": "sess_1769646323_6a0334",
       "researched": "2026-01-28T00:43:05Z",
       "research_summary": "Research completed for indexed family coherence conditions. Analyzed four coherence condition sorries (lines 433, 439, 448, 456) in IndexedMCSFamily.lean. Identified proof strategies using temporal axioms (Temporal 4, Temporal K distribution). Forward_G and backward_H are directly provable from seed construction (5-7 hours). Forward_H and backward_G require MCS negation completeness lemma (additional 4-5 hours prerequisite). Created comprehensive report with phased proof strategy, case analysis patterns, and dependency analysis.",
       "artifacts": [

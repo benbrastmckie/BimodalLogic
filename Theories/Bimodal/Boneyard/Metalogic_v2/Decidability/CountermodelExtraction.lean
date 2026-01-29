@@ -1,4 +1,5 @@
 import Bimodal.Boneyard.Metalogic_v2.Decidability.Saturation
+import Bimodal.Boneyard.Metalogic_v2.Decidability.BranchTaskModel
 import Bimodal.Semantics
 
 /-!
@@ -470,5 +471,87 @@ Try to find a countermodel using FMP-based fuel.
 -/
 def findCountermodelWithFMPFuel (φ : Formula) : CountermodelResult φ :=
   findCountermodel φ (fmpBasedFuel φ)
+
+/-!
+## TaskModel-Based Countermodel Extraction
+
+The following provides proper task-semantic countermodel extraction,
+replacing the simplified evalFormula which treats modal/temporal as identity.
+-/
+
+/--
+A countermodel with proper task frame semantics.
+
+This provides the full semantic structure needed for modal/temporal operators:
+- TaskFrame with nullity and compositionality
+- TaskModel with valuation
+- World history for evaluation
+- Initial time point
+-/
+structure TaskModelCountermodel where
+  /-- The formula being refuted. -/
+  formula : Formula
+  /-- The task frame. -/
+  frame : TaskFrame Int
+  /-- The task model (valuation). -/
+  model : TaskModel frame
+  /-- The world history for evaluation. -/
+  history : WorldHistory frame
+  /-- The initial time point. -/
+  time : Int
+
+/--
+Extract a TaskModel-based countermodel from a saturated open branch.
+
+This provides semantically correct countermodel extraction where:
+- Box quantifies over ALL world histories at a given time
+- G/H operators quantify over ALL times in the duration group
+-/
+def extractTaskModelCountermodel (φ : Formula) (b : Branch)
+    (_hSat : findUnexpanded b = none) (_hOpen : findClosure b = none) :
+    TaskModelCountermodel :=
+  { formula := φ
+  , frame := extractBranchTaskFrame b
+  , model := extractBranchTaskModel b
+  , history := extractBranchWorldHistory b
+  , time := 0
+  }
+
+/--
+Display a TaskModel countermodel.
+-/
+def TaskModelCountermodel.display (cm : TaskModelCountermodel) : String :=
+  let ws := cm.history.states cm.time (by trivial : cm.frame.domain 0 cm.time)
+  let atoms := ws.atoms.toList
+  let atomStr := if atoms.isEmpty then "none" else String.intercalate ", " atoms
+  s!"TaskModel Countermodel for {repr cm.formula}:\n  World state atoms: {atomStr}\n  Time: {cm.time}"
+
+/--
+Result type for countermodel extraction with TaskModel variant.
+-/
+inductive CountermodelResultEx (φ : Formula) where
+  /-- Simple countermodel (atom valuation only). -/
+  | simple (cm : SimpleCountermodel)
+  /-- TaskModel countermodel (full modal/temporal semantics). -/
+  | taskModel (cm : TaskModelCountermodel)
+  /-- Formula is valid, no countermodel exists. -/
+  | valid
+  /-- Extraction failed. -/
+  | failed (reason : String)
+  deriving Repr
+
+/--
+Find countermodel with extended result type.
+Returns TaskModel countermodel for proper modal/temporal semantics.
+-/
+def findCountermodelEx (φ : Formula) (fuel : Nat := 1000) : CountermodelResultEx φ :=
+  match buildTableau φ fuel with
+  | none => .failed "Tableau construction timeout"
+  | some (.allClosed _) => .valid
+  | some (.hasOpen openBranch hSat) =>
+      match findClosure openBranch with
+      | some _ => .failed "Branch has closure (internal error)"
+      | none =>
+        .taskModel (extractTaskModelCountermodel φ openBranch hSat (by rfl))
 
 end Bimodal.Metalogic_v2.Decidability

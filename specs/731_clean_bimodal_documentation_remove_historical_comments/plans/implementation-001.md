@@ -1,7 +1,7 @@
 # Implementation Plan: Task #731
 
 - **Task**: 731 - Clean Bimodal documentation - remove historical comments
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: Task 726 (completed - MCS lemmas moved to Core)
@@ -53,7 +53,7 @@ Research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Update Boneyard Imports in Theorem Files [NOT STARTED]
+### Phase 1: Update Boneyard Imports in Theorem Files [COMPLETED]
 
 **Goal**: Change GeneralizedNecessitation.lean and Propositional.lean to import from Core instead of Boneyard
 

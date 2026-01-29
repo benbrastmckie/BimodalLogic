@@ -122,7 +122,7 @@ technical_debt:
 
 ### 731. Clean Bimodal documentation - remove historical comments
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
@@ -196,8 +196,8 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [PLANNED]
-- **Session**: sess_1769645980_03ade5
+- **Status**: [RESEARCHING]
+- **Session**: sess_1769646323_6a0334
 - **Effort**: 45 min - 1 hour
 - **Priority**: Medium
 - **Language**: lean

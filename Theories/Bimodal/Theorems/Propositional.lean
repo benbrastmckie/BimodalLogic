@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Combinators
-import Bimodal.Boneyard.Metalogic_v2.Core.DeductionTheorem
+import Bimodal.Metalogic.Core.DeductionTheorem
 
 /-!
 # Propositional Theorems
@@ -737,7 +737,7 @@ The context-based version `lce` is proven. This implication form would enable:
 def lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
   -- Use deduction theorem: from [A ∧ B] ⊢ A, derive ⊢ (A ∧ B) → A
   have h : [A.and B] ⊢ A := lce A B
-  exact Bimodal.Metalogic_v2.Core.deduction_theorem [] (A.and B) A h
+  exact Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) A h
 
 /--
 Right Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → B`.
@@ -755,7 +755,7 @@ The context-based version `rce` is proven. This implication form would enable:
 def rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
   -- Use deduction theorem: from [A ∧ B] ⊢ B, derive ⊢ (A ∧ B) → B
   have h : [A.and B] ⊢ B := rce A B
-  exact Bimodal.Metalogic_v2.Core.deduction_theorem [] (A.and B) B h
+  exact Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) B h
 
 /-!
 ## Phase 3: Context Manipulation and Classical Reasoning
@@ -845,16 +845,16 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
 
     -- Apply deduction theorem: [A → ¬B, A → B] ⊢ A → ⊥ = ¬A
     have step1 : [(A.imp B.neg), (A.imp B)] ⊢ A.neg :=
-      Bimodal.Metalogic_v2.Core.deduction_theorem
+      Bimodal.Metalogic.Core.deduction_theorem
         [(A.imp B.neg), (A.imp B)] A Formula.bot h_in_ctx
 
     -- Apply deduction theorem: [A → B] ⊢ (A → ¬B) → ¬A
     have step2 : [(A.imp B)] ⊢ (A.imp B.neg).imp A.neg :=
-      Bimodal.Metalogic_v2.Core.deduction_theorem
+      Bimodal.Metalogic.Core.deduction_theorem
         [(A.imp B)] (A.imp B.neg) A.neg step1
 
     -- Apply deduction theorem: [] ⊢ (A → B) → ((A → ¬B) → ¬A)
-    exact Bimodal.Metalogic_v2.Core.deduction_theorem
+    exact Bimodal.Metalogic.Core.deduction_theorem
       [] (A.imp B) ((A.imp B.neg).imp A.neg) step2
 
   -- Now use this with A = ¬Q, B = ¬P
@@ -955,9 +955,9 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
   -- deduction_theorem Γ A B h requires h : (A :: Γ) ⊢ B
   -- For step1: Γ = [P → Q], A = (¬P → Q), so need [(¬P → Q), (P → Q)] ⊢ Q ✓
   have step1 : [(P.imp Q)] ⊢ (P.neg.imp Q).imp Q :=
-    Bimodal.Metalogic_v2.Core.deduction_theorem [(P.imp Q)] (P.neg.imp Q) Q h_combined
+    Bimodal.Metalogic.Core.deduction_theorem [(P.imp Q)] (P.neg.imp Q) Q h_combined
 
-  exact Bimodal.Metalogic_v2.Core.deduction_theorem [] (P.imp Q) ((P.neg.imp Q).imp Q) step1
+  exact Bimodal.Metalogic.Core.deduction_theorem [] (P.imp Q) ((P.neg.imp Q).imp Q) step1
 
 /--
 Biconditional Introduction: From `⊢ A → B` and `⊢ B → A`, derive `⊢ A ↔ B`.
@@ -1325,7 +1325,7 @@ def demorgan_conj_neg_backward (A B : Formula) :
   have step1 :
     [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
     (A.and B).imp Formula.bot :=
-    Bimodal.Metalogic_v2.Core.deduction_theorem
+    Bimodal.Metalogic.Core.deduction_theorem
       [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))]
       (A.and B) Formula.bot h_in_ctx
 
@@ -1333,7 +1333,7 @@ def demorgan_conj_neg_backward (A B : Formula) :
   have step2 :
     ⊢ (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp
       ((A.and B).imp Formula.bot) :=
-    Bimodal.Metalogic_v2.Core.deduction_theorem []
+    Bimodal.Metalogic.Core.deduction_theorem []
       (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
       ((A.and B).imp Formula.bot) step1
 
@@ -1510,7 +1510,7 @@ def ni (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ)
   have h_bot : (A :: Γ) ⊢ Formula.bot :=
     DerivationTree.modus_ponens (A :: Γ) B Formula.bot h1 h2
   -- Apply deduction theorem: Γ ⊢ A → ⊥ = Γ ⊢ ¬A
-  exact Bimodal.Metalogic_v2.Core.deduction_theorem Γ A Formula.bot h_bot
+  exact Bimodal.Metalogic.Core.deduction_theorem Γ A Formula.bot h_bot
 
 /--
 Negation Elimination (NE): If `Γ, ¬A ⊢ B` and `Γ, ¬A ⊢ ¬B`, then `Γ ⊢ A`.
@@ -1534,7 +1534,7 @@ def ne (Γ : Context) (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.ne
     DerivationTree.modus_ponens (A.neg :: Γ) B Formula.bot h1 h2
   -- Apply deduction theorem: Γ ⊢ ¬A → ⊥ = Γ ⊢ ¬¬A
   have h_neg_neg : Γ ⊢ A.neg.neg :=
-    Bimodal.Metalogic_v2.Core.deduction_theorem Γ A.neg Formula.bot h_bot
+    Bimodal.Metalogic.Core.deduction_theorem Γ A.neg Formula.bot h_bot
   -- Apply DNE: ¬¬A → A
   have dne : ⊢ A.neg.neg.imp A :=
     double_negation A
@@ -1585,10 +1585,10 @@ def bi_imp (A B : Formula) :
 
   -- Apply deduction theorem: [(A → B)] ⊢ (B → A) → ((A → B) ∧ (B → A))
   have step1 : [(A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
-    Bimodal.Metalogic_v2.Core.deduction_theorem [(A.imp B)] (B.imp A) _ h_in_ctx
+    Bimodal.Metalogic.Core.deduction_theorem [(A.imp B)] (B.imp A) _ h_in_ctx
 
   -- Apply deduction theorem: [] ⊢ (A → B) → ((B → A) → ((A → B) ∧ (B → A)))
-  exact Bimodal.Metalogic_v2.Core.deduction_theorem [] (A.imp B) _ step1
+  exact Bimodal.Metalogic.Core.deduction_theorem [] (A.imp B) _ step1
 
 /--
 Disjunction Elimination (DE): If `Γ, A ⊢ C` and `Γ, B ⊢ C`, then `Γ, A ∨ B ⊢ C`.
@@ -1615,11 +1615,11 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
     ((A.or B) :: Γ) ⊢ C := by
   -- Apply deduction theorem to get Γ ⊢ A → C
   have ac : Γ ⊢ A.imp C :=
-    Bimodal.Metalogic_v2.Core.deduction_theorem Γ A C h1
+    Bimodal.Metalogic.Core.deduction_theorem Γ A C h1
 
   -- Apply deduction theorem to get Γ ⊢ B → C
   have bc : Γ ⊢ B.imp C :=
-    Bimodal.Metalogic_v2.Core.deduction_theorem Γ B C h2
+    Bimodal.Metalogic.Core.deduction_theorem Γ B C h2
 
   -- Weaken A → C to context ((A.or B) :: Γ)
   have ac_ctx : ((A.or B) :: Γ) ⊢ A.imp C :=

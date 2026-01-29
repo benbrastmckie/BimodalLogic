@@ -268,16 +268,12 @@ contributes to the fold accumulator.
 -/
 lemma mem_extractTrueAtomSet_iff (b : Branch) (p : String) :
     p ∈ extractTrueAtomSet b ↔ SignedFormula.pos (.atom p) ∈ b := by
-  unfold extractTrueAtomSet
-  -- This proof requires careful induction on the branch with accumulator generalization.
-  -- The key insight is that p is in the fold result iff either p was in the accumulator
-  -- or some element of the branch is SignedFormula.pos (.atom p).
-  --
-  -- The proof is tedious but straightforward: at each step, if the head is pos/atom q,
-  -- we insert q; otherwise we pass through unchanged. The membership then follows
-  -- from tracking when p = q or p is in the recursive result.
-  --
-  -- TODO: Complete this proof - it's mechanical but verbose due to case splits on Formula.
+  -- The proof proceeds by generalizing the accumulator and inducting on the branch.
+  -- At each step, we track whether p was added (if head is pos/atom p) or not.
+  -- This is a mechanical but verbose proof due to case splits on all Formula constructors.
+  -- TODO: Complete this proof - the structure is:
+  --   suffices h : ∀ acc, p ∈ foldl(..., acc) ↔ p ∈ acc ∨ pos(atom p) ∈ b
+  --   then induct on b, case split on sf.sign and sf.formula
   sorry
 
 /--
