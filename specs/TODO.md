@@ -27,6 +27,18 @@ technical_debt:
 
 ## High Priority
 
+### 758. Audit and reduce Metalogic sorries
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-29
+- **Source**: review-20260129-2
+
+**Description**: Audit and reduce sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard). Currently 45 sorries: 33 in Representation/, remainder in Core/, Completeness/, FMP/, Algebraic/. Categorize by (a) blocking main theorem path, (b) required for full biconditional but not main result, (c) optional/exploratory. Prioritize elimination of category (a) sorries. Related: Task 750 (forward Truth Lemma refactor)
+
+---
+
 ### 755. Implement Option C: Forward Truth Lemma Refactoring
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
@@ -126,6 +138,18 @@ technical_debt:
 
 ## Medium Priority
 
+### 757. Fix task state sync issues
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+- **Source**: review-20260129-2
+
+**Description**: Fix task state synchronization issues from review: (1) Task 741 documented as blocked by omega-rule limitation but status shows researching - update to blocked; (2) Task 750 has planned timestamp and implementation plan but status shows researching - resolve direction; (3) Task 747 work appears complete but status shows implementing - finalize completion
+
+---
+
 ### 756. Enhance /task command with description improvement
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHING]
@@ -167,11 +191,12 @@ technical_debt:
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
 - **Effort**: 6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Research**: [research-001.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/plans/implementation-001.md)
 
 **Description**: Establish sorry-free completeness using `semantic_weak_completeness` which works directly with finite model truth, avoiding the truth bridge, or other methods if better.
 
@@ -269,6 +294,18 @@ technical_debt:
 ---
 
 ## Low Priority
+
+### 759. Update TODO.md sorry metrics
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Low
+- **Language**: meta
+- **Created**: 2026-01-29
+- **Source**: review-20260129-2
+
+**Description**: Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.
+
+---
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
