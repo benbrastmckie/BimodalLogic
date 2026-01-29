@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Completeness.FiniteStrongCompleteness
+import Bimodal.Metalogic.Representation.UniversalCanonicalModel
 import Mathlib.Data.Finset.Basic
 
 /-!
@@ -20,21 +21,28 @@ This bridges the gap between:
 
 - `set_semantic_consequence`: Semantic consequence for Set-based contexts
 - `set_satisfiable`: Satisfiability for Set-based contexts
+- `no_finite_witness_implies_union_consistent`: If no finite subset derives phi,
+  then Gamma ∪ {¬phi} is SetConsistent
 - `infinitary_strong_completeness`: Every Set-based semantic consequence
-  has a finite derivation witness
+  has a finite derivation witness (PROVEN)
 
 ## Proof Strategy
 
-The key insight is that proof-theoretic derivations use only finitely many
-premises. The full infinitary strong completeness theorem requires either:
-1. Model-theoretic compactness (proved separately)
-2. Or: axiomatized as the semantic compactness principle
+The proof uses contraposition:
+1. Assume no finite Delta ⊆ Gamma derives phi
+2. Show Gamma ∪ {¬phi} is SetConsistent (via `no_finite_witness_implies_union_consistent`)
+3. Extend Gamma ∪ {¬phi} to an MCS via Lindenbaum's lemma
+4. Prove G⊥ ∉ MCS and H⊥ ∉ MCS using temporal T axioms (temp_t_future, temp_t_past)
+5. Build canonical model from the MCS using `construct_coherent_family`
+6. Use truth lemma: all of Gamma ∪ {¬phi} is true at the canonical model
+7. This contradicts Gamma |= phi (semantic consequence)
 
 For finite sets, the theorem follows directly from finite_strong_completeness.
 
 ## References
 
 - Finite strong completeness: `Bimodal.Metalogic.Completeness.FiniteStrongCompleteness`
+- Representation theorem: `Bimodal.Metalogic.Representation.UniversalCanonicalModel`
 - Modal Logic, Blackburn et al., Chapter 4
 -/
 
@@ -43,6 +51,8 @@ namespace Bimodal.Metalogic.Completeness
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Semantics
+open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Representation
 
 /-!
 ## Set-Based Semantic Notions
@@ -140,39 +150,311 @@ finite derivation witness.
 -/
 
 /--
-**Infinitary Strong Completeness**: If phi is a Set-based semantic consequence of Gamma,
-then there exists a finite subset Delta ⊆ Gamma such that Delta ⊢ phi.
+Helper lemma: If no finite subset Delta ⊆ Gamma derives phi, then Gamma ∪ {¬phi} is SetConsistent.
 
-**Statement**: `set_semantic_consequence Gamma phi →
-  ∃ (Delta : Finset Formula), ↑Delta ⊆ Gamma ∧ ContextDerivable Delta.toList phi`
-
-**Proof Status**: Axiomatized with sorry.
-
-The full proof requires either:
-1. Model-theoretic compactness (ultraproducts), or
-2. A proof-theoretic argument showing derivations use finite premises
-
-For finite Gamma, use `infinitary_strong_completeness_finset` which is fully proven.
-
-**Note**: This theorem together with soundness establishes the semantic compactness
-principle for TM logic: if Gamma |= phi, then some finite Delta ⊆ Gamma satisfies Delta |= phi.
+The key insight is that if Delta ⊆ Gamma derives phi (Delta ⊢ phi), then Delta ∪ {¬phi} derives ⊥.
+Therefore, if no finite Delta ⊆ Gamma derives phi, then any finite subset of Gamma ∪ {¬phi}
+is consistent.
 -/
+lemma no_finite_witness_implies_union_consistent (Gamma : Set Formula) (phi : Formula) :
+    (¬∃ (Delta : Finset Formula), ↑Delta ⊆ Gamma ∧ ContextDerivable Delta.toList phi) →
+    SetConsistent (Gamma ∪ {phi.neg}) := by
+  intro h_no_witness
+  intro L hL
+  intro ⟨d_bot⟩
+  -- L is a List with all elements in Gamma ∪ {¬phi}
+  -- Let L' = L.filter (· ≠ phi.neg), which is ⊆ Gamma
+  -- If phi.neg ∈ L, then L is essentially L' ∪ {phi.neg}
+  -- From L ⊢ ⊥, by deduction theorem on phi.neg, we get L' ⊢ ¬¬phi = phi.neg.neg
+  -- By double negation elimination, L' ⊢ phi
+  -- This contradicts h_no_witness since L'.toFinset ⊆ Gamma
+
+  -- Extract the Gamma part of L (filter out ¬phi)
+  let L' := L.filter (· ≠ phi.neg)
+  -- L ⊆ (phi.neg) :: L' (each element is either phi.neg or in L')
+  have h_L_subset : L ⊆ phi.neg :: L' := by
+    intro ψ hψ
+    by_cases hψ_eq : ψ = phi.neg
+    · simp [hψ_eq]
+    · simp; right; exact List.mem_filter.mpr ⟨hψ, by simpa⟩
+  -- L' ⊆ Gamma (since L ⊆ Gamma ∪ {phi.neg} and we filtered out phi.neg)
+  have h_L'_sub_Gamma : ∀ ψ ∈ L', ψ ∈ Gamma := by
+    intro ψ hψ
+    have hψ_filter := List.mem_filter.mp hψ
+    have hψ_in_L := hψ_filter.1
+    have hψ_ne : ψ ≠ phi.neg := by simpa using hψ_filter.2
+    have hψ_in_union := hL ψ hψ_in_L
+    -- hψ_in_union : ψ ∈ Gamma ∪ {phi.neg}
+    simp only [Set.mem_union, Set.mem_singleton_iff] at hψ_in_union
+    cases hψ_in_union with
+    | inl h => exact h
+    | inr h => exact absurd h hψ_ne
+  -- Weaken derivation to (phi.neg :: L')
+  have d_bot' : DerivationTree (phi.neg :: L') Formula.bot :=
+    DerivationTree.weakening L (phi.neg :: L') Formula.bot d_bot h_L_subset
+  -- By deduction theorem: L' ⊢ phi.neg.neg
+  have d_neg_neg : DerivationTree L' phi.neg.neg :=
+    deduction_theorem L' phi.neg Formula.bot d_bot'
+  -- By double negation elimination: L' ⊢ phi
+  have dne : ⊢ phi.neg.neg.imp phi := Bimodal.Theorems.Propositional.double_negation phi
+  have d_phi : DerivationTree L' phi :=
+    DerivationTree.modus_ponens L' phi.neg.neg phi
+      (DerivationTree.weakening [] L' (phi.neg.neg.imp phi) dne (by simp)) d_neg_neg
+  -- This contradicts h_no_witness: L'.toFinset ⊆ Gamma and L'.toFinset.toList ⊢ phi
+  apply h_no_witness
+  use L'.toFinset
+  constructor
+  · intro ψ hψ
+    simp at hψ
+    exact h_L'_sub_Gamma ψ hψ
+  · -- Need to show L'.toFinset.toList ⊢ phi from L' ⊢ phi
+    -- Weaken from L' to L'.toFinset.toList (they may have different ordering/duplicates)
+    constructor
+    apply DerivationTree.weakening L' (L'.toFinset.toList) phi d_phi
+    intro ψ hψ
+    simp
+    exact hψ
+
 theorem infinitary_strong_completeness (Gamma : Set Formula) (phi : Formula) :
     set_semantic_consequence Gamma phi →
     ∃ (Delta : Finset Formula), ↑Delta ⊆ Gamma ∧ ContextDerivable Delta.toList phi := by
   intro h_set_entails
-  -- The key insight is that if Gamma |= phi, then:
-  -- 1. Either Gamma is finite, and we apply finite_strong_completeness
-  -- 2. Or Gamma is infinite, and we need a compactness argument
+  -- Proof by contrapositive:
+  -- Suppose no finite Delta ⊆ Gamma derives phi
+  -- Then Gamma ∪ {¬phi} is set_consistent (by helper lemma)
+  -- So some model satisfies all of Gamma ∪ {¬phi}
+  -- In particular, Gamma is satisfied but phi is false
+  -- This contradicts Gamma |= phi
 
-  -- For the infinite case, the argument is:
-  -- If no finite Delta ⊆ Gamma derives phi, then for each finite Delta,
-  -- Delta ∪ {¬phi} is consistent. By a compactness/ultraproduct argument,
-  -- this gives a model satisfying all of Gamma and ¬phi, contradicting Gamma |= phi.
+  by_contra h_no_witness
+  -- Get SetConsistent (Gamma ∪ {phi.neg})
+  have h_union_cons : SetConsistent (Gamma ∪ {phi.neg}) :=
+    no_finite_witness_implies_union_consistent Gamma phi h_no_witness
+  -- Use representation theorem: set_consistent {phi.neg} implies satisfiable
+  -- But we need the whole Gamma ∪ {phi.neg} to be satisfiable
+  -- Actually we need to show this gives a model satisfying all of Gamma ∪ {phi.neg}
 
-  -- This requires model-theoretic machinery beyond the current scope.
-  -- See Bimodal.Metalogic.Compactness for the full compactness theorem.
-  sorry
+  -- Key: Since Gamma ∪ {phi.neg} is set_consistent, we can extend any finite subset to MCS
+  -- Pick {phi.neg} ⊆ Gamma ∪ {phi.neg}
+  have h_neg_cons : SetConsistent {phi.neg} := by
+    intro L hL
+    apply h_union_cons L
+    intro ψ hψ
+    right
+    exact hL ψ hψ
+
+  -- Use representation theorem to get a model satisfying phi.neg
+  obtain ⟨family, t, h_neg_in, h_neg_true⟩ :=
+    Bimodal.Metalogic.Representation.representation_theorem phi.neg h_neg_cons
+
+  -- h_neg_true : truth_at ... t phi.neg
+  -- This means phi is false at this model/point
+  -- We need to show that all of Gamma is true at this point to get contradiction
+
+  -- The representation theorem gives us phi.neg in family.mcs t
+  -- And the truth lemma gives us truth_at ... t phi.neg
+
+  -- Now apply h_set_entails: If all of Gamma is true at (model, t), then phi is true
+  -- But phi.neg is true, so phi is false
+  -- We need: all of Gamma is true at this point
+
+  -- The problem: the MCS at t extends {phi.neg}, not necessarily Gamma ∪ {phi.neg}
+  -- We need a stronger version of the representation theorem that can handle
+  -- set_consistent sets, not just singletons
+
+  -- Alternative approach: If Gamma ∪ {phi.neg} is set_consistent, then
+  -- there exists an MCS extending Gamma ∪ {phi.neg} (by Lindenbaum's lemma for sets)
+  -- Then use the canonical model at that MCS
+
+  -- Let's use set_lindenbaum to extend Gamma ∪ {phi.neg}
+  -- But wait - set_lindenbaum requires a formula/singleton, not an arbitrary set
+  -- Actually, looking at the signature, set_lindenbaum takes any set
+
+  -- Get MCS extending Gamma ∪ {phi.neg}
+  obtain ⟨Γ_mcs, h_extends, h_is_mcs⟩ := set_lindenbaum (Gamma ∪ {phi.neg}) h_union_cons
+
+  -- h_extends : Gamma ∪ {phi.neg} ⊆ Γ_mcs
+  -- h_is_mcs : SetMaximalConsistent Γ_mcs
+
+  -- Now we need to construct a model from Γ_mcs
+  -- The canonical model construction uses IndexedMCSFamily, which builds families
+  -- indexed by ℤ with temporal coherence
+
+  -- For our purposes, we can use a simpler argument:
+  -- The key insight is that in the canonical model construction,
+  -- if phi.neg ∈ Γ_mcs (which follows from h_extends), then phi is false at that world
+
+  -- Actually, let's think about this differently
+  -- The representation theorem proves: SetConsistent {phi.neg} → exists model where phi.neg is true
+  -- But we need: set_consistent (Gamma ∪ {phi.neg}) → exists model where Gamma ∪ {phi.neg} is true
+
+  -- This is a STRONGER statement and requires a generalization of the representation theorem
+
+  -- Looking at this more carefully:
+  -- The representation theorem (line 71 of UniversalCanonicalModel.lean) says:
+  -- "SetConsistent {phi} → ∃ family, t, phi ∈ family.mcs t ∧ truth_at ... t phi"
+
+  -- We need: "SetConsistent S → ∃ model, ∀ psi ∈ S, truth_at ... psi"
+  -- This is exactly what the representation theorem gives when S is a singleton
+
+  -- For arbitrary S, the approach is:
+  -- 1. Extend S to MCS Γ using set_lindenbaum
+  -- 2. Build canonical model at Γ
+  -- 3. Truth lemma: psi ∈ Γ ↔ truth_at ... psi
+  -- 4. Since S ⊆ Γ, all of S is true
+
+  -- The issue is that the current representation_theorem constructs a family
+  -- with specific temporal coherence properties (G⊥ ∉ Γ, H⊥ ∉ Γ conditions)
+  -- For infinitary completeness, we don't need the full temporal structure
+  -- We just need a single point where the formulas are true
+
+  -- Let me check if we can use a simpler model - actually the algebraic approach!
+  -- AlgSatisfiable connects to MCS via ultrafilters
+
+  -- Actually, the cleanest approach for this proof is:
+  -- 1. Show Gamma ∪ {phi.neg} is set_consistent
+  -- 2. By Lindenbaum, extend to MCS Γ
+  -- 3. phi.neg ∈ Γ (since phi.neg ∈ Gamma ∪ {phi.neg} ⊆ Γ)
+  -- 4. By MCS negation completeness, phi ∉ Γ
+  -- 5. For any psi ∈ Gamma: psi ∈ Gamma ∪ {phi.neg} ⊆ Γ
+  -- 6. Now we need a model where Γ is satisfied
+  -- 7. The canonical model does this, but needs the G⊥/H⊥ conditions
+
+  -- For now, let's use the representation theorem with a slight modification
+  -- We'll need to show that if Gamma ⊆ Γ_mcs and phi.neg ∈ Γ_mcs, then
+  -- there's a model satisfying all of Gamma ∪ {phi.neg}
+
+  -- The key observation is that the canonical model construction,
+  -- when it succeeds (i.e., when G⊥ ∉ Γ and H⊥ ∉ Γ), gives us a model
+  -- where ALL formulas in the MCS are true (by truth lemma)
+
+  -- For formulas that don't involve temporal operators, we can use
+  -- a simpler construction. But for full generality, we need the
+  -- indexed family approach.
+
+  -- Let's try a different tactic: show that if the representation theorem
+  -- works for {phi.neg}, it essentially gives us what we need
+  -- because the MCS it produces extends {phi.neg} and the canonical model
+  -- satisfies everything in the MCS
+
+  -- Actually, looking at representation_theorem more carefully:
+  -- It produces family.mcs t which is an MCS containing phi.neg
+  -- And truth_at ... t psi ↔ psi ∈ family.mcs t (by truth lemma)
+  -- So for any psi ∈ Gamma, if psi ∈ family.mcs t, then truth_at ... t psi
+
+  -- The question is: does Gamma ⊆ family.mcs t?
+  -- Not necessarily! The representation theorem only guarantees phi.neg ∈ family.mcs t
+
+  -- We need to use set_consistent (Gamma ∪ {phi.neg}) more directly
+  -- The idea: extend Gamma ∪ {phi.neg} to an MCS, then use that MCS
+
+  -- Let's try the representation theorem for the formula phi.neg
+  -- but with the stronger hypothesis that Gamma ∪ {phi.neg} is set_consistent
+
+  -- Actually, looking at representation_theorem line 76:
+  -- "obtain ⟨Gamma, h_extends, h_mcs⟩ := set_lindenbaum {phi} h_cons"
+  -- This extends {phi} to an MCS
+
+  -- If we call set_lindenbaum with Gamma ∪ {phi.neg} instead of {phi.neg},
+  -- we get an MCS extending Gamma ∪ {phi.neg}
+
+  -- But then we still need to build the canonical model from that MCS
+  -- From Γ_mcs extending Gamma ∪ {phi.neg}:
+  have h_gamma_in_mcs : Gamma ⊆ Γ_mcs := fun ψ hψ => h_extends (Set.mem_union_left _ hψ)
+  have h_neg_in_mcs : phi.neg ∈ Γ_mcs := h_extends (Set.mem_union_right _ (Set.mem_singleton _))
+
+  -- Build the canonical model from Γ_mcs
+  -- Prove G⊥ ∉ Γ_mcs and H⊥ ∉ Γ_mcs using temporal T axioms
+  have h_no_G_bot : Formula.all_future Formula.bot ∉ Γ_mcs := by
+    -- If G⊥ ∈ Γ_mcs, then by temp_t_future (Gφ → φ), we get ⊥ ∈ Γ_mcs
+    -- But Γ_mcs is consistent, so ⊥ ∉ Γ_mcs
+    intro h_G_bot_in
+    -- We have G⊥ ∈ Γ_mcs and the axiom ⊢ G⊥ → ⊥
+    have h_axiom : ⊢ (Formula.all_future Formula.bot).imp Formula.bot :=
+      DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future Formula.bot)
+    -- By modus ponens in the MCS, ⊥ ∈ Γ_mcs
+    -- Use maximal_consistent_closed: if φ ∈ Γ and ⊢ φ → ψ, then ψ ∈ Γ
+    have h_bot_in : Formula.bot ∈ Γ_mcs := by
+      by_contra h_not
+      -- If ⊥ ∉ Γ_mcs, by maximality, insert ⊥ Γ_mcs is inconsistent
+      have h_incons : ¬SetConsistent (insert Formula.bot Γ_mcs) := h_is_mcs.2 Formula.bot h_not
+      -- But [G⊥] ⊢ ⊥ by applying the axiom
+      -- And G⊥ ∈ Γ_mcs, so we can derive ⊥ from Γ_mcs
+      -- This means Γ_mcs is inconsistent
+      apply h_is_mcs.1 [Formula.all_future Formula.bot]
+      · intro ψ hψ; simp at hψ; rw [hψ]; exact h_G_bot_in
+      · constructor
+        have h_ax' : DerivationTree [Formula.all_future Formula.bot]
+            ((Formula.all_future Formula.bot).imp Formula.bot) :=
+          DerivationTree.weakening [] _ _ h_axiom (by simp)
+        have h_assm : DerivationTree [Formula.all_future Formula.bot]
+            (Formula.all_future Formula.bot) :=
+          DerivationTree.assumption _ _ (by simp)
+        exact DerivationTree.modus_ponens _ _ _ h_ax' h_assm
+    -- But ⊥ ∈ Γ_mcs contradicts consistency (MCS cannot contain ⊥)
+    apply h_is_mcs.1 [Formula.bot]
+    · intro ψ hψ; simp at hψ; rw [hψ]; exact h_bot_in
+    · constructor
+      exact DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+
+  have h_no_H_bot : Formula.all_past Formula.bot ∉ Γ_mcs := by
+    -- Similar argument using temp_t_past: Hφ → φ
+    intro h_H_bot_in
+    have h_axiom : ⊢ (Formula.all_past Formula.bot).imp Formula.bot :=
+      DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past Formula.bot)
+    have h_bot_in : Formula.bot ∈ Γ_mcs := by
+      by_contra h_not
+      have h_incons : ¬SetConsistent (insert Formula.bot Γ_mcs) := h_is_mcs.2 Formula.bot h_not
+      apply h_is_mcs.1 [Formula.all_past Formula.bot]
+      · intro ψ hψ; simp at hψ; rw [hψ]; exact h_H_bot_in
+      · constructor
+        have h_ax' : DerivationTree [Formula.all_past Formula.bot]
+            ((Formula.all_past Formula.bot).imp Formula.bot) :=
+          DerivationTree.weakening [] _ _ h_axiom (by simp)
+        have h_assm : DerivationTree [Formula.all_past Formula.bot]
+            (Formula.all_past Formula.bot) :=
+          DerivationTree.assumption _ _ (by simp)
+        exact DerivationTree.modus_ponens _ _ _ h_ax' h_assm
+    apply h_is_mcs.1 [Formula.bot]
+    · intro ψ hψ; simp at hψ; rw [hψ]; exact h_bot_in
+    · constructor
+      exact DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+
+  -- Construct the coherent family with Γ_mcs at origin
+  let coherent := Bimodal.Metalogic.Representation.construct_coherent_family Γ_mcs h_is_mcs h_no_G_bot h_no_H_bot
+  let family := coherent.toIndexedMCSFamily
+  let model := Bimodal.Metalogic.Representation.canonical_model ℤ family
+  let history := Bimodal.Metalogic.Representation.canonical_history_family ℤ family
+
+  -- By truth lemma: for any ψ ∈ Γ_mcs, truth_at model history 0 ψ
+  -- Since phi.neg ∈ Γ_mcs:
+  have h_neg_true : truth_at model history 0 phi.neg := by
+    have h_truth_lemma := Bimodal.Metalogic.Representation.truth_lemma ℤ family 0 phi.neg
+    apply h_truth_lemma.mp
+    -- Need: phi.neg ∈ family.mcs 0
+    -- family.mcs 0 = Γ_mcs (by origin preservation)
+    have h_origin := Bimodal.Metalogic.Representation.construct_coherent_family_origin
+      Γ_mcs h_is_mcs h_no_G_bot h_no_H_bot phi.neg h_neg_in_mcs
+    exact h_origin
+
+  -- For any ψ ∈ Gamma: ψ ∈ Γ_mcs, so truth_at model history 0 ψ
+  have h_gamma_true : ∀ ψ ∈ Gamma, truth_at model history 0 ψ := by
+    intro ψ hψ
+    have h_in_mcs : ψ ∈ Γ_mcs := h_gamma_in_mcs hψ
+    have h_truth_lemma := Bimodal.Metalogic.Representation.truth_lemma ℤ family 0 ψ
+    apply h_truth_lemma.mp
+    have h_origin := Bimodal.Metalogic.Representation.construct_coherent_family_origin
+      Γ_mcs h_is_mcs h_no_G_bot h_no_H_bot ψ h_in_mcs
+    exact h_origin
+
+  -- Now apply h_set_entails: since all of Gamma is true at (model, 0), phi must be true
+  have h_phi_true : truth_at model history 0 phi :=
+    h_set_entails ℤ (Bimodal.Metalogic.Representation.UniversalCanonicalFrame ℤ) model history 0 h_gamma_true
+
+  -- But h_neg_true says phi.neg is true at (model, 0)
+  -- phi.neg = phi → ⊥, so truth_at phi.neg means: truth_at phi → truth_at ⊥
+  simp only [Formula.neg, truth_at] at h_neg_true
+  exact h_neg_true h_phi_true
 
 /--
 Special case: For finite sets (Finset), infinitary strong completeness reduces to
