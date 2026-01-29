@@ -217,7 +217,7 @@ technical_debt:
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Researched**: 2026-01-29
-- **Research**: [research-001.md](specs/764_improve_metalogic_structure_and_documentation/reports/research-001.md)
+- **Research**: [research-001.md](specs/764_improve_metalogic_structure_and_documentation/reports/research-001.md), [research-002.md](specs/764_improve_metalogic_structure_and_documentation/reports/research-002.md)
 
 **Description**: Improve structure and organization of Bimodal/Metalogic/ and create complete, accurate documentation with clear dependency flowcharts. Work systematically from deepest directories back to Metalogic/README.md. Flowcharts should show derivatives below (higher line numbers) and foundations above (smaller line numbers) in README.md documents. The top-level Metalogic/README.md should include clear high-level explanation of how the metalogic is structured and what it establishes.
 

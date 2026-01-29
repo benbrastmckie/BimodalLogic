@@ -8,12 +8,12 @@
     {
       "project_number": 765,
       "project_name": "exclude_boneyard_examples_from_sorry_count",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T22:10:38Z",
-      "last_updated": "2026-01-29T22:10:38Z",
-      "session_id": "sess_1769724638_58c5eb",
+      "last_updated": "2026-01-29T22:19:44Z",
+      "session_id": "sess_1769725167_f4911c",
       "description": "Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep command at line 850 of todo.md, (2) /review command at line 132 of review.md if applicable, (3) state-management.md documentation to reflect exclusion policy, (4) current metrics in state.json and TODO.md to reflect accurate count (~72 instead of ~322)."
     },
     {
@@ -23,14 +23,19 @@
       "language": "general",
       "priority": "medium",
       "created": "2026-01-29T22:01:58Z",
-      "last_updated": "2026-01-29T22:10:17Z",
-      "session_id": "sess_1769724430_07bf59",
-      "researched": "2026-01-29T22:10:17Z",
+      "last_updated": "2026-01-29T22:19:37Z",
+      "session_id": "sess_1769724960_ba1dc1",
+      "researched": "2026-01-29T22:19:37Z",
       "artifacts": [
         {
           "path": "specs/764_improve_metalogic_structure_and_documentation/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive research report with dependency graph, sorry analysis, documentation assessment, structural improvements, and phased implementation plan"
+        },
+        {
+          "path": "specs/764_improve_metalogic_structure_and_documentation/reports/research-002.md",
+          "type": "research",
+          "summary": "Follow-up research on Boneyard imports, FMP dependencies, and archival candidates with recovery recommendations"
         }
       ]
     },
