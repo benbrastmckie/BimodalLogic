@@ -8,12 +8,20 @@
     {
       "project_number": 752,
       "project_name": "refactor_temporary_file_handling_in_agent_system",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T15:00:21Z",
-      "last_updated": "2026-01-29T15:13:47Z",
-      "session_id": "sess_1769699615_c00b7d"
+      "last_updated": "2026-01-29T15:16:38Z",
+      "session_id": "sess_1769699615_c00b7d",
+      "researched": "2026-01-29T15:16:38Z",
+      "artifacts": [
+        {
+          "path": "specs/752_refactor_temporary_file_handling_in_agent_system/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying concurrency risks in global coordination files and recommending task-scoped file paths"
+        }
+      ]
     },
     {
       "project_number": 750,
