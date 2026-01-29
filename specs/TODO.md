@@ -340,15 +340,3 @@ technical_debt:
 
 ---
 
-### 669. Test task creation system
-- **Status**: [PLANNED]
-- **Priority**: Low
-- **Language**: meta
-- **Session**: test-session-1768239500
-- **Planned**: 2026-01-21
-- **Plan**: [implementation-001.md](specs/669_test_task_creation/plans/implementation-003.md)
-
-**Description**: Simple test to verify that task creation system is working after fixing .opencode/specs path references. Validates that the path reference fixes resolved the task creation issues.
-
----
-
