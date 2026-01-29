@@ -62,9 +62,13 @@ check_loop_guard() {
 
 # Main logic
 main() {
+    # Find marker file (task-scoped or global fallback)
+    find_marker
+
     # Check if postflight marker exists
-    if [ -f "$MARKER_FILE" ]; then
-        log_debug "Postflight marker found"
+    if [ -n "$MARKER_FILE" ] && [ -f "$MARKER_FILE" ]; then
+        log_debug "Postflight marker found at: $MARKER_FILE"
+        log_debug "Task directory: $TASK_DIR"
 
         # Check for stop_hook_active flag in marker (prevents hooks calling hooks)
         if grep -q '"stop_hook_active": true' "$MARKER_FILE" 2>/dev/null; then
@@ -94,7 +98,10 @@ main() {
 
     # No marker - allow normal stop
     log_debug "No postflight marker, allowing stop"
-    rm -f "$LOOP_GUARD_FILE"
+    # Clean up any orphaned loop guard files
+    if [ -n "$LOOP_GUARD_FILE" ] && [ -f "$LOOP_GUARD_FILE" ]; then
+        rm -f "$LOOP_GUARD_FILE"
+    fi
     echo '{}'
     exit 0
 }
