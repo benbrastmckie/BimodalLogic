@@ -29,13 +29,15 @@ technical_debt:
 
 ### 743. Restore lean-implementation-agent and skill-lean-implementation thin wrapper
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Dependencies**: Task 742
 - **Research**: [research-001.md](specs/743_restore_lean_implementation_agent_thin_wrapper/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/743_restore_lean_implementation_agent_thin_wrapper/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/743_restore_lean_implementation_agent_thin_wrapper/summaries/implementation-summary-20260129.md)
 
 **Description**: Restore lean-implementation-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-implementation from 524-line direct execution to ~100-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0), (4) completion_data generation. Follow patterns from skill-implementer and general-implementation-agent.
 
