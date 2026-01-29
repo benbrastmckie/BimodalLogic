@@ -8,13 +8,21 @@
     {
       "project_number": 765,
       "project_name": "exclude_boneyard_examples_from_sorry_count",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T22:10:38Z",
-      "last_updated": "2026-01-29T22:19:44Z",
+      "last_updated": "2026-01-29T22:22:26Z",
       "session_id": "sess_1769725167_f4911c",
-      "description": "Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep command at line 850 of todo.md, (2) /review command at line 132 of review.md if applicable, (3) state-management.md documentation to reflect exclusion policy, (4) current metrics in state.json and TODO.md to reflect accurate count (~72 instead of ~322)."
+      "description": "Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep command at line 850 of todo.md, (2) /review command at line 132 of review.md if applicable, (3) state-management.md documentation to reflect exclusion policy, (4) current metrics in state.json and TODO.md to reflect accurate count (~72 instead of ~322).",
+      "researched": "2026-01-29T22:22:26Z",
+      "artifacts": [
+        {
+          "path": "specs/765_exclude_boneyard_examples_from_sorry_count/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with implementation checklist for 5 files: todo.md, review.md, state-management.md, state.json, TODO.md"
+        }
+      ]
     },
     {
       "project_number": 764,
