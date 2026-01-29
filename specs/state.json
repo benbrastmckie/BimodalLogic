@@ -142,16 +142,16 @@
     {
       "project_number": 658,
       "project_name": "prove_indexed_family_coherence_conditions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T00:32:13Z",
+      "last_updated": "2026-01-29T00:33:57Z",
       "related_tasks": [
         654
       ],
       "researching": "2026-01-29T00:25:36Z",
-      "session_id": "sess_1769646323_6a0334",
+      "session_id": "sess_1769646818_2df0bc",
       "researched": "2026-01-29T00:28:11Z",
       "research_summary": "Research completed for indexed family coherence conditions. Analyzed four coherence condition sorries (lines 433, 439, 448, 456) in IndexedMCSFamily.lean. Identified proof strategies using temporal axioms (Temporal 4, Temporal K distribution). Forward_G and backward_H are directly provable from seed construction (5-7 hours). Forward_H and backward_G require MCS negation completeness lemma (additional 4-5 hours prerequisite). Created comprehensive report with phased proof strategy, case analysis patterns, and dependency analysis.",
       "artifacts": [
@@ -205,7 +205,8 @@
       "planned": "2026-01-29T00:32:13Z",
       "started": "2026-01-25T21:46:22Z",
       "resume_phase": 2,
-      "partial_summary": "Phase 1 complete (T-axiom closure lemmas). Phases 2-6 blocked by fundamental construction issue: independent Lindenbaum extensions prevent coherence proofs. Requires construction redesign (Option B)."
+      "partial_summary": "Phase 1 complete (T-axiom closure lemmas). Phases 2-6 blocked by fundamental construction issue: independent Lindenbaum extensions prevent coherence proofs. Requires construction redesign (Option B).",
+      "implementing": "2026-01-29T00:33:57Z"
     },
     {
       "project_number": 659,
@@ -223,11 +224,11 @@
     {
       "project_number": 660,
       "project_name": "prove_parametric_completeness_theorems",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T00:29:49Z",
+      "last_updated": "2026-01-29T00:33:44Z",
       "dependencies": [
         656,
         657,
@@ -236,7 +237,15 @@
       "related_tasks": [
         654
       ],
-      "session_id": "sess_1769646577_378d67"
+      "session_id": "sess_1769646577_378d67",
+      "researched": "2026-01-29T00:33:44Z",
+      "artifacts": [
+        {
+          "path": "specs/660_prove_parametric_completeness_theorems/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on compactness, completeness, and representation theorem relationships - compactness follows from strong completeness"
+        }
+      ]
     },
     {
       "project_number": 630,

@@ -2,7 +2,7 @@
 
 - **Task**: 658 - Prove indexed family coherence conditions
 - **Version**: 007 (Post-Research-005 - Concrete Refactoring)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 30-45 minutes
 - **Priority**: Medium
 - **Dependencies**: Task 681 (COMPLETED), Task 697 (COMPLETED)
