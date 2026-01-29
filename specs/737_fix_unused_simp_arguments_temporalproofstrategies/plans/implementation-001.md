@@ -1,7 +1,7 @@
 # Implementation Plan: Task #737
 
 - **Task**: 737 - Fix unused simp arguments in TemporalProofStrategies.lean
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Priority**: low
 - **Dependencies**: None
@@ -36,7 +36,7 @@ Remove unused `Formula.swap_temporal_involution` arguments from four simp calls 
 
 ## Implementation Phases
 
-### Phase 1: Fix all four unused simp arguments [NOT STARTED]
+### Phase 1: Fix all four unused simp arguments [COMPLETED]
 
 **Goal**: Remove `Formula.swap_temporal_involution` from the four simp calls identified by the linter
 
