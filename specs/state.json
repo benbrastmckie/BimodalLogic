@@ -44,14 +44,14 @@
     {
       "project_number": 738,
       "project_name": "port_fmp_to_parametric_architecture",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "description": "Complete phase 3 of task 660: Finite Model Property Port. Port FMP to parametric architecture with explicit cardinality bounds on finite models. This provides decidability foundation (orthogonal to completeness chain). Follow-up from task #660.",
       "parent_task": 660,
       "created": "2026-01-29T04:05:03Z",
-      "last_updated": "2026-01-29T13:18:58Z",
-      "session_id": "sess_1738179892_7bc375",
+      "last_updated": "2026-01-29T13:48:35Z",
+      "session_id": "sess_1769694325_69312e",
       "researched": "2026-01-29T13:18:58Z",
       "artifacts": [
         {
@@ -63,8 +63,14 @@
           "path": "specs/738_port_fmp_to_parametric_architecture/reports/research-002.md",
           "type": "research",
           "summary": "FMP/decidability dependency map: relationship between FMP, tableau methods, parametric architecture, and decidability chain with porting recommendations"
+        },
+        {
+          "path": "specs/738_port_fmp_to_parametric_architecture/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan covering Closure port, FiniteWorldState port, SemanticCanonicalModel port, FMP theorems, and integration"
         }
-      ]
+      ],
+      "planned": "2026-01-29T13:48:35Z"
     },
     {
       "project_number": 659,
@@ -161,7 +167,7 @@
     {
       "project_number": 624,
       "project_name": "prove_tableau_complete",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -169,8 +175,8 @@
         623
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T13:22:16Z",
-      "session_id": "sess_1769692663_757067",
+      "last_updated": "2026-01-29T13:47:25Z",
+      "session_id": "sess_1769694428_6200f0",
       "researched": "2026-01-29T13:22:16Z",
       "artifacts": [
         {
@@ -463,16 +469,16 @@
     {
       "project_number": 740,
       "project_name": "update_skill_lean_research_to_generate_project_context",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "description": "Update skill-lean-research to generate the Project Context section in lean research reports. Add context reference loading from project-overview.md, modify Stage 7 report generation to include the Project Context section as specified in report-format.md, and update .claude/context/project/lean4/agents/lean-research-flow.md Stage 5 documentation to reflect the new section. This ensures all lean research outputs include orientation information.",
       "created": "2026-01-29T01:45:00Z",
-      "last_updated": "2026-01-29T13:39:52Z",
+      "last_updated": "2026-01-29T13:48:09Z",
       "dependencies": [
         739
       ],
-      "session_id": "sess_1769693852_1d9b5f",
+      "session_id": "sess_1769694475_e877d2",
       "researched": "2026-01-29T13:39:52Z",
       "artifacts": [
         {
@@ -485,12 +491,13 @@
     {
       "project_number": 742,
       "project_name": "restore_lean_research_agent_thin_wrapper",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "description": "Restore lean-research-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-research from 408-line direct execution to ~80-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0). Follow patterns from skill-researcher and general-research-agent.",
       "created": "2026-01-29T13:39:29Z",
-      "last_updated": "2026-01-29T13:39:29Z"
+      "last_updated": "2026-01-29T13:48:31Z",
+      "session_id": "sess_1769694499_696f13"
     },
     {
       "project_number": 743,
