@@ -137,15 +137,15 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 8-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
-- **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md), [research-008.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md), [research-011.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-011.md)
-- **Plan**: [implementation-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-005.md)
+- **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md), [research-008.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md), [research-011.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-011.md), [research-012.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-012.md)
+- **Plan**: [implementation-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-006.md)
 
-**Description**: Implement MCS-Restricted Truth Lemma approach: Create MCSDerivedSemanticWorldState subtype, prove truth correspondence for MCS-derived states only (where closure_mcs_imp_iff provides biconditional), connect to sorry-free completeness.
+**Description**: Archive failed truth lemma approaches (MCSDerivedWorldState, AlgebraicSemanticBridge, HybridCompleteness) to Boneyard/Metalogic_v3/. Document `semantic_weak_completeness` as the canonical sorry-free completeness theorem. Clean historical mentions from primary Metalogic/ source files.
 
 ---
 

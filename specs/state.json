@@ -120,11 +120,11 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T21:19:56Z",
+      "last_updated": "2026-01-29T21:34:00Z",
       "session_id": "sess_1769720147_342164",
       "researched": "2026-01-29T20:41:02Z",
       "artifacts": [
@@ -174,11 +174,6 @@
           "summary": "Deep analysis of three approaches to fixing the truth lemma gap, recommending MCS-restricted approach with concrete implementation path"
         },
         {
-          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-005.md",
-          "type": "plan",
-          "summary": "MCS-Restricted Truth Lemma approach - proves truth correspondence for MCSDerivedWorldState subtype"
-        },
-        {
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/summaries/implementation-summary-20260129.md",
           "type": "summary",
           "summary": "Implementation summary documenting achievements and architectural limitations"
@@ -192,9 +187,14 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-012.md",
           "type": "research",
           "summary": "Analysis of Box semantics limitation - confirms gap is fundamental, recommends accepting semantic_weak_completeness as canonical completeness theorem"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-006.md",
+          "type": "plan",
+          "summary": "Archive failed approaches, document semantic_weak_completeness as canonical completeness theorem"
         }
       ],
-      "planned": "2026-01-29T20:46:53Z",
+      "planned": "2026-01-29T21:34:00Z",
       "started": "2026-01-29T17:25:04Z"
     },
     {
