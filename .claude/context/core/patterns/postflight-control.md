@@ -29,8 +29,12 @@ Claude Code skill returns can bypass the invoking skill and return directly to t
 ### Location
 
 ```
-specs/.postflight-pending
+specs/{N}_{SLUG}/.postflight-pending
 ```
+
+Where `{N}` is the task number and `{SLUG}` is the project name (e.g., `specs/259_prove_completeness/.postflight-pending`).
+
+This task-scoped location enables safe concurrent agent execution on different tasks while maintaining single-agent-per-task guarantees.
 
 ### Format
 
@@ -63,8 +67,11 @@ specs/.postflight-pending
 ### Creating the Marker (Before Subagent Invocation)
 
 ```bash
-# Create postflight marker
-cat > specs/.postflight-pending << 'EOF'
+# Ensure task directory exists
+mkdir -p "specs/${task_number}_${project_name}"
+
+# Create postflight marker in task directory
+cat > "specs/${task_number}_${project_name}/.postflight-pending" << 'EOF'
 {
   "session_id": "$session_id",
   "skill": "skill-lean-research",
@@ -81,32 +88,37 @@ EOF
 
 ```bash
 # Remove marker after postflight is complete
-rm -f specs/.postflight-pending
-rm -f specs/.postflight-loop-guard
+rm -f "specs/${task_number}_${project_name}/.postflight-pending"
+rm -f "specs/${task_number}_${project_name}/.postflight-loop-guard"
 ```
 
 ### Emergency Bypass (If Stuck in Loop)
 
 ```bash
 # Set stop_hook_active to force stop on next iteration
-jq '.stop_hook_active = true' specs/.postflight-pending > /tmp/marker.json && \
-  mv /tmp/marker.json specs/.postflight-pending
+marker_file=$(find specs -maxdepth 3 -name ".postflight-pending" -type f | head -1)
+if [ -n "$marker_file" ]; then
+    jq '.stop_hook_active = true' "$marker_file" > /tmp/marker.json && \
+      mv /tmp/marker.json "$marker_file"
+fi
 ```
 
 ## SubagentStop Hook Behavior
 
 The hook at `.claude/hooks/subagent-postflight.sh`:
 
-1. **Checks for marker file**: `specs/.postflight-pending`
-2. **If marker exists**:
+1. **Searches for marker file**: Uses `find specs -maxdepth 3 -name ".postflight-pending"` to locate task-scoped markers
+2. **Falls back to global marker**: For backward compatibility, checks `specs/.postflight-pending` if no task-scoped marker found
+3. **If marker exists**:
    - Checks `stop_hook_active` flag (bypass if true)
    - Checks loop guard counter (max 3 continuations)
    - Returns `{"decision": "block", "reason": "..."}` to continue execution
-3. **If no marker**: Returns `{}` to allow normal stop
+4. **If no marker**: Returns `{}` to allow normal stop
 
 ### Loop Guard
 
-To prevent infinite loops, the hook maintains a counter in `specs/.postflight-loop-guard`:
+To prevent infinite loops, the hook maintains a counter in the task directory:
+- Location: `specs/{N}_{SLUG}/.postflight-loop-guard` (same directory as marker)
 - Incremented on each blocked stop
 - After 3 continuations, cleanup and allow stop
 - Reset when marker is removed normally
@@ -121,7 +133,10 @@ To prevent infinite loops, the hook maintains a counter in `specs/.postflight-lo
 Before invoking the subagent, create the marker file:
 
 \`\`\`bash
-cat > specs/.postflight-pending << EOF
+# Ensure task directory exists
+mkdir -p "specs/${task_number}_${project_name}"
+
+cat > "specs/${task_number}_${project_name}/.postflight-pending" << EOF
 {
   "session_id": "${session_id}",
   "skill": "skill-lean-research",
@@ -153,9 +168,9 @@ Subagent writes metadata to `.return-meta.json` and returns brief summary.
 ### Stage 5: Cleanup
 
 \`\`\`bash
-rm -f specs/.postflight-pending
-rm -f specs/.postflight-loop-guard
-rm -f specs/${task_number}_*/. return-meta.json
+rm -f "specs/${task_number}_${project_name}/.postflight-pending"
+rm -f "specs/${task_number}_${project_name}/.postflight-loop-guard"
+rm -f "specs/${task_number}_${project_name}/.return-meta.json"
 \`\`\`
 
 ### Stage 6: Return Brief Summary
@@ -174,20 +189,39 @@ cat .claude/logs/subagent-postflight.log
 ### Check Marker State
 
 ```bash
-cat specs/.postflight-pending | jq .
+# Find and display current marker
+marker=$(find specs -maxdepth 3 -name ".postflight-pending" -type f | head -1)
+if [ -n "$marker" ]; then
+    echo "Marker found at: $marker"
+    cat "$marker" | jq .
+else
+    echo "No postflight marker found"
+fi
 ```
 
 ### Check Loop Guard
 
 ```bash
-cat specs/.postflight-loop-guard
+# Find and display loop guard
+guard=$(find specs -maxdepth 3 -name ".postflight-loop-guard" -type f | head -1)
+if [ -n "$guard" ]; then
+    echo "Loop guard at: $guard"
+    cat "$guard"
+else
+    echo "No loop guard found"
+fi
 ```
 
 ### Manual Cleanup (Emergency)
 
 ```bash
-rm -f specs/.postflight-pending
-rm -f specs/.postflight-loop-guard
+# Clean specific task
+rm -f "specs/${task_number}_${project_name}/.postflight-pending"
+rm -f "specs/${task_number}_${project_name}/.postflight-loop-guard"
+
+# Clean all orphaned markers (across all tasks)
+find specs -maxdepth 3 -name ".postflight-pending" -delete
+find specs -maxdepth 3 -name ".postflight-loop-guard" -delete
 ```
 
 ## Error Scenarios
@@ -207,7 +241,7 @@ rm -f specs/.postflight-loop-guard
 
 **Solution**:
 1. Press Ctrl+C to interrupt
-2. Run: `rm -f specs/.postflight-pending specs/.postflight-loop-guard`
+2. Run: `find specs -maxdepth 3 -name ".postflight-pending" -delete && find specs -maxdepth 3 -name ".postflight-loop-guard" -delete`
 3. Restart session
 
 **Prevention**: Loop guard limits to 3 continuations
@@ -218,7 +252,9 @@ rm -f specs/.postflight-loop-guard
 
 **Solution**:
 ```bash
-rm -f specs/.postflight-pending
+# Find and remove orphaned marker
+find specs -maxdepth 3 -name ".postflight-pending" -delete
+find specs -maxdepth 3 -name ".postflight-loop-guard" -delete
 ```
 
 ## Related Documentation

@@ -41,7 +41,10 @@ cat .claude/logs/subagent-postflight.log
 **Fix**:
 1. Ensure skill creates marker before subagent invocation:
 ```bash
-cat > specs/.postflight-pending << EOF
+# Ensure task directory exists
+mkdir -p "specs/${task_number}_${project_name}"
+
+cat > "specs/${task_number}_${project_name}/.postflight-pending" << EOF
 {
   "session_id": "${session_id}",
   "skill": "skill-name",
@@ -84,28 +87,30 @@ EOF
 
 **Diagnostic Steps**:
 ```bash
-# Check loop guard counter
-cat specs/.postflight-loop-guard
+# Find and check loop guard counter
+guard=$(find specs -maxdepth 3 -name ".postflight-loop-guard" -type f | head -1)
+[ -n "$guard" ] && cat "$guard"
 
-# Check marker file
-cat specs/.postflight-pending | jq .
+# Find and check marker file
+marker=$(find specs -maxdepth 3 -name ".postflight-pending" -type f | head -1)
+[ -n "$marker" ] && cat "$marker" | jq .
 
 # Check if stop_hook_active is set
-jq '.stop_hook_active' specs/.postflight-pending
+[ -n "$marker" ] && jq '.stop_hook_active' "$marker"
 ```
 
 **Immediate Fix** (Emergency):
 ```bash
-# Stop the loop by removing files
-rm -f specs/.postflight-pending
-rm -f specs/.postflight-loop-guard
+# Stop the loop by removing all orphaned markers
+find specs -maxdepth 3 -name ".postflight-pending" -delete
+find specs -maxdepth 3 -name ".postflight-loop-guard" -delete
 ```
 
 **Permanent Fix**:
 1. Verify skill removes marker after postflight:
 ```bash
-rm -f specs/.postflight-pending
-rm -f specs/.postflight-loop-guard
+rm -f "specs/${task_number}_${project_name}/.postflight-pending"
+rm -f "specs/${task_number}_${project_name}/.postflight-loop-guard"
 ```
 
 2. Verify loop guard is working (max 3 continuations)
@@ -257,8 +262,9 @@ If workflow is completely stuck:
 
 2. **Clean up marker files**:
 ```bash
-rm -f specs/.postflight-pending
-rm -f specs/.postflight-loop-guard
+# Clean all orphaned postflight markers (older than 1 hour recommended)
+find specs -maxdepth 3 -name ".postflight-pending" -delete
+find specs -maxdepth 3 -name ".postflight-loop-guard" -delete
 find specs -name ".return-meta.json" -delete
 ```
 

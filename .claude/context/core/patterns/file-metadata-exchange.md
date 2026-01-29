@@ -280,8 +280,8 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
         # Cleanup
         rm -f "$metadata_file"
-        rm -f specs/.postflight-pending
-        rm -f specs/.postflight-loop-guard
+        rm -f "specs/${task_number}_${task_slug}/.postflight-pending"
+        rm -f "specs/${task_number}_${task_slug}/.postflight-loop-guard"
 
         echo "Postflight complete: $status"
     else
