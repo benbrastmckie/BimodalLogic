@@ -1,7 +1,7 @@
 # Implementation Plan: Task #731
 
 - **Task**: 731 - Clean Bimodal documentation - remove historical comments
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Priority**: Medium
 - **Dependencies**: Task 726 (completed - MCS lemmas moved to Core)

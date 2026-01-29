@@ -26,6 +26,11 @@
           "path": "specs/731_clean_bimodal_documentation_remove_historical_comments/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase plan covering import updates, shim relocation, provenance removal, SUPERSEDED/DEPRECATED cleanup, and isolation verification"
+        },
+        {
+          "path": "specs/731_clean_bimodal_documentation_remove_historical_comments/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting 5-phase cleanup of Bimodal documentation"
         }
       ],
       "planned": "2026-01-29T00:22:50Z",

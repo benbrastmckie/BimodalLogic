@@ -15,6 +15,10 @@ This module proves that the Lindenbaum-Tarski algebra is a `BooleanAlgebra`.
 ## References
 
 - Research report: specs/700_research_algebraic_representation_theorem_proof/reports/research-002.md
+
+## Status
+
+Phase 3 of Task 700. Contains sorries pending propositional helper lemmas.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.BooleanStructure
@@ -36,7 +40,6 @@ This is well-defined on the quotient because provable equivalence respects deriv
 instance : LE LindenbaumAlg where
   le := Quotient.lift₂ (fun φ ψ => Derives φ ψ)
     (fun φ₁ φ₂ ψ₁ ψ₂ hφ hψ => by
-      -- Need to show: Derives φ₁ ψ₁ ↔ Derives φ₂ ψ₂
       apply propext
       constructor
       · intro h
@@ -105,6 +108,9 @@ Bot is the class of ⊥.
 instance : Bot LindenbaumAlg where
   bot := bot_quot
 
+-- The lattice and Boolean algebra proofs require additional propositional lemmas.
+-- For now, we provide the structure with sorries for the proofs.
+
 /--
 `a ⊓ b ≤ a`: conjunction implies first conjunct.
 -/
@@ -112,11 +118,9 @@ theorem inf_le_left_quot (a b : LindenbaumAlg) : a ⊓ b ≤ a := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  -- Need to show Derives (φ.and ψ) φ
-  -- and φ ψ = (φ.imp ψ.neg).neg
-  -- We need ⊢ (φ ∧ ψ) → φ
   unfold Derives
-  exact ⟨Bimodal.Theorems.Propositional.and_elim_left φ ψ⟩
+  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and ψ) φ
+    (Bimodal.Theorems.Propositional.lce φ ψ)⟩
 
 /--
 `a ⊓ b ≤ b`: conjunction implies second conjunct.
@@ -126,7 +130,8 @@ theorem inf_le_right_quot (a b : LindenbaumAlg) : a ⊓ b ≤ b := by
   induction b using Quotient.ind
   rename_i φ ψ
   unfold Derives
-  exact ⟨Bimodal.Theorems.Propositional.and_elim_right φ ψ⟩
+  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and ψ) ψ
+    (Bimodal.Theorems.Propositional.rce φ ψ)⟩
 
 /--
 `a ≤ b → a ≤ c → a ≤ b ⊓ c`: greatest lower bound property.
@@ -136,13 +141,9 @@ theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a 
   induction b using Quotient.ind
   induction c using Quotient.ind
   rename_i φ ψ χ
-  -- hab : Derives φ ψ
-  -- hac : Derives φ χ
-  -- Need: Derives φ (ψ.and χ)
   unfold Derives at *
-  obtain ⟨d1⟩ := hab
-  obtain ⟨d2⟩ := hac
-  exact ⟨Bimodal.Theorems.Propositional.and_intro d1 d2⟩
+  -- Need conjunction introduction: from ⊢ φ → ψ and ⊢ φ → χ, derive ⊢ φ → (ψ ∧ χ)
+  sorry
 
 /--
 `a ≤ a ⊔ b`: first disjunct implies disjunction.
@@ -151,10 +152,9 @@ theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ a ⊔ b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  -- or φ ψ = φ.neg.imp ψ
-  -- Need: Derives φ (φ.or ψ)
   unfold Derives
-  exact ⟨Bimodal.Theorems.Propositional.or_intro_left φ ψ⟩
+  -- Need disjunction introduction left
+  sorry
 
 /--
 `b ≤ a ⊔ b`: second disjunct implies disjunction.
@@ -164,7 +164,8 @@ theorem le_sup_right_quot (a b : LindenbaumAlg) : b ≤ a ⊔ b := by
   induction b using Quotient.ind
   rename_i φ ψ
   unfold Derives
-  exact ⟨Bimodal.Theorems.Propositional.or_intro_right φ ψ⟩
+  -- Need disjunction introduction right
+  sorry
 
 /--
 `a ≤ c → b ≤ c → a ⊔ b ≤ c`: least upper bound property.
@@ -174,13 +175,9 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : a 
   induction b using Quotient.ind
   induction c using Quotient.ind
   rename_i φ ψ χ
-  -- hac : Derives φ χ
-  -- hbc : Derives ψ χ
-  -- Need: Derives (φ.or ψ) χ
   unfold Derives at *
-  obtain ⟨d1⟩ := hac
-  obtain ⟨d2⟩ := hbc
-  exact ⟨Bimodal.Theorems.Propositional.or_elim d1 d2⟩
+  -- Need disjunction elimination
+  sorry
 
 /--
 `⊥ ≤ a`: bot is least element.
@@ -188,7 +185,6 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : a 
 theorem bot_le_quot (a : LindenbaumAlg) : ⊥ ≤ a := by
   induction a using Quotient.ind
   rename_i φ
-  -- Need: Derives Formula.bot φ
   unfold Derives
   exact ⟨DerivationTree.axiom [] _ (Axiom.ex_falso φ)⟩
 
@@ -198,12 +194,14 @@ theorem bot_le_quot (a : LindenbaumAlg) : ⊥ ≤ a := by
 theorem le_top_quot (a : LindenbaumAlg) : a ≤ ⊤ := by
   induction a using Quotient.ind
   rename_i φ
-  -- top_quot = ⟦Formula.bot.imp Formula.bot⟧
-  -- Need: Derives φ (Formula.bot.imp Formula.bot)
-  unfold Derives
-  -- ⊢ φ → (⊥ → ⊥) is derivable: φ implies any tautology
-  have d_id : DerivationTree [] (Formula.bot.imp Formula.bot) := Bimodal.Theorems.Propositional.identity Formula.bot
-  exact ⟨Bimodal.Theorems.Propositional.weaken_conclusion d_id φ⟩
+  unfold Derives Top.top instTopLindenbaumAlg top_quot toQuot
+  -- ⊢ φ → (⊥ → ⊥)
+  -- Derivable: from identity and weakening
+  have d_id : DerivationTree [] (Formula.bot.imp Formula.bot) :=
+    Bimodal.Theorems.Combinators.identity Formula.bot
+  have d_s : DerivationTree [] ((Formula.bot.imp Formula.bot).imp (φ.imp (Formula.bot.imp Formula.bot))) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp Formula.bot) φ)
+  exact ⟨DerivationTree.modus_ponens [] _ _ d_s d_id⟩
 
 instance : Lattice LindenbaumAlg where
   inf_le_left := inf_le_left_quot
@@ -235,16 +233,9 @@ instance : HasCompl LindenbaumAlg where
 theorem inf_compl_eq_bot_quot (a : LindenbaumAlg) : a ⊓ aᶜ = ⊥ := by
   induction a using Quotient.ind
   rename_i φ
-  -- Need: and_quot ⟦φ⟧ ⟦φ.neg⟧ = ⟦Formula.bot⟧
-  -- I.e., ⟦φ.and φ.neg⟧ = ⟦Formula.bot⟧
-  -- This means ProvEquiv (φ.and φ.neg) Formula.bot
   apply Quotient.sound
   unfold ProvEquiv Derives
-  constructor
-  · -- ⊢ (φ ∧ ¬φ) → ⊥
-    exact ⟨Bimodal.Theorems.Propositional.contradiction φ⟩
-  · -- ⊢ ⊥ → (φ ∧ ¬φ)
-    exact ⟨DerivationTree.axiom [] _ (Axiom.ex_falso (φ.and φ.neg))⟩
+  constructor <;> sorry
 
 /--
 `a ⊔ aᶜ = ⊤`: join with complement is top.
@@ -252,45 +243,12 @@ theorem inf_compl_eq_bot_quot (a : LindenbaumAlg) : a ⊓ aᶜ = ⊥ := by
 theorem sup_compl_eq_top_quot (a : LindenbaumAlg) : a ⊔ aᶜ = ⊤ := by
   induction a using Quotient.ind
   rename_i φ
-  -- Need: ⟦φ.or φ.neg⟧ = ⟦Formula.bot.imp Formula.bot⟧
-  -- This means ProvEquiv (φ.or φ.neg) (Formula.bot.imp Formula.bot)
   apply Quotient.sound
   unfold ProvEquiv Derives
-  constructor
-  · -- ⊢ (φ ∨ ¬φ) → (⊥ → ⊥)
-    -- Any formula implies a tautology
-    have d_id : DerivationTree [] (Formula.bot.imp Formula.bot) := Bimodal.Theorems.Propositional.identity Formula.bot
-    exact ⟨Bimodal.Theorems.Propositional.weaken_conclusion d_id (φ.or φ.neg)⟩
-  · -- ⊢ (⊥ → ⊥) → (φ ∨ ¬φ)
-    -- LEM is derivable in our classical logic (via Peirce)
-    have d_lem : DerivationTree [] (φ.or φ.neg) := Bimodal.Theorems.Propositional.excluded_middle φ
-    exact ⟨Bimodal.Theorems.Propositional.weaken_conclusion d_lem (Formula.bot.imp Formula.bot)⟩
-
-/-!
-## Distributivity
-
-We need to prove distributivity for the Boolean algebra structure.
--/
+  constructor <;> sorry
 
 /--
-`a ⊓ (b ⊔ c) = (a ⊓ b) ⊔ (a ⊓ c)`: distributivity of meet over join.
--/
-theorem inf_sup_distrib_quot (a b c : LindenbaumAlg) : a ⊓ (b ⊔ c) = (a ⊓ b) ⊔ (a ⊓ c) := by
-  induction a using Quotient.ind
-  induction b using Quotient.ind
-  induction c using Quotient.ind
-  rename_i φ ψ χ
-  apply Quotient.sound
-  unfold ProvEquiv Derives
-  constructor
-  · -- ⊢ φ ∧ (ψ ∨ χ) → (φ ∧ ψ) ∨ (φ ∧ χ)
-    exact ⟨Bimodal.Theorems.Propositional.and_or_distrib φ ψ χ⟩
-  · -- ⊢ (φ ∧ ψ) ∨ (φ ∧ χ) → φ ∧ (ψ ∨ χ)
-    exact ⟨Bimodal.Theorems.Propositional.or_and_distrib φ ψ χ⟩
-
-/--
-Stronger form of distributivity needed for BooleanAlgebra.
-We use the standard pattern from Mathlib.
+Stronger form of distributivity.
 -/
 theorem le_sup_inf_quot (a b c : LindenbaumAlg) : (a ⊔ b) ⊓ (a ⊔ c) ≤ a ⊔ (b ⊓ c) := by
   induction a using Quotient.ind
@@ -298,8 +256,7 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) : (a ⊔ b) ⊓ (a ⊔ c) ≤ a 
   induction c using Quotient.ind
   rename_i φ ψ χ
   unfold Derives
-  -- ⊢ (φ ∨ ψ) ∧ (φ ∨ χ) → φ ∨ (ψ ∧ χ)
-  exact ⟨Bimodal.Theorems.Propositional.or_and_distrib' φ ψ χ⟩
+  sorry
 
 /--
 SDiff placeholder for BooleanAlgebra.
