@@ -176,14 +176,15 @@ technical_debt:
 ---
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
-- **Effort**: 6 hours
-- **Status**: [IMPLEMENTING]
 - **Effort**: 8-12 hours
+- **Status**: [BLOCKED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Research**: [research-001.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260129.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/summaries/implementation-summary-20260129.md)
+- **Blocking**: IsLocallyConsistent lacks negation completeness; box quantifies over all histories
 
 **Description**: Establish sorry-free completeness using `semantic_weak_completeness` via structural induction over the subformula closure. The revised approach avoids TruthLemma.lean's architectural limitations (box/temporal sorries are omega-rule and semantic architecture issues, not missing proofs).
 

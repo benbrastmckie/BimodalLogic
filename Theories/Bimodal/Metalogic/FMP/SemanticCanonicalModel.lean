@@ -614,88 +614,73 @@ SemanticCanonicalModel equals semantic_truth_at_v2.
 The proof strategy is by structural induction on phi. For each constructor:
 - atom: Direct from valuation definition
 - bot: Both are false
-- imp: Requires showing assignment respects modus ponens
-- box: Requires modal reasoning
-- all_past/all_future: Requires temporal reasoning
+- imp: Requires mutual induction (both directions) and local consistency
+- box: Architectural limitation - box quantifies over ALL histories
+- all_past/all_future: Requires temporal reasoning over finite domain
 
-**Note**: This theorem is restricted to the case where psi = phi (the target formula)
-and works because of how the semantic model is constructed. For general psi in closure,
-the correspondence would require the full truth lemma which has open sorries.
+**ARCHITECTURAL ANALYSIS**:
 
-**Current Status**: We prove this for the specific psi = phi case where we only need
-to show that if phi is true recursively then it's marked true in the assignment.
-The reverse direction is provided by the MCS construction used in semantic_weak_completeness.
+The fundamental challenge is that `IsLocallyConsistent` only provides:
+1. Bot is false
+2. Modus ponens: imp=true AND psi=true → chi=true
+3. T-axiom: box=true → psi=true
+
+For the FORWARD direction of implication (truth_at imp → semantic imp), we need:
+- (truth_at psi → truth_at chi) → assignment(imp) = true
+
+This requires showing that if an implication is "recursively true", the assignment
+marks it true. But assignments are ARBITRARY (up to local consistency), and local
+consistency only constrains the modus ponens direction, not the converse.
+
+For MCS-derived world states, `closure_mcs_imp_iff` gives the biconditional:
+- (psi → chi) ∈ S ↔ (psi ∈ S → chi ∈ S)
+
+But arbitrary FiniteWorldStates from `IsLocallyConsistent` don't have this property.
+
+**RESOLUTION OPTIONS** (for future work):
+1. Strengthen IsLocallyConsistent to include negation completeness and full propositional closure
+2. Restrict semantic_weak_completeness to MCS-derived states (sufficient for completeness)
+3. Prove that for VALID formulas, the specific structure forces correspondence
+
+**Current Status**: This theorem is marked sorry due to the architectural gap.
+The `semantic_weak_completeness` theorem IS sorry-free and provides the main completeness
+result. This theorem is only needed to connect universal validity to semantic truth.
+
+**Note**: The `truth_at_implies_semantic_truth` theorem is the "forward truth lemma"
+for the finite model construction. The backward direction is handled implicitly by
+the MCS construction in `semantic_weak_completeness`.
 -/
 theorem truth_at_implies_semantic_truth (phi : Formula)
     (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0)
     (h_truth : truth_at (SemanticCanonicalModel phi) tau 0 phi) :
     semantic_truth_at_v2 phi (tau.states 0 ht)
       (BoundedTime.origin (temporalBound phi)) phi := by
-  -- The key insight is that we need to show if phi is true according to recursive
-  -- evaluation, then phi is true according to the shallow assignment check.
+  -- FORWARD DIRECTION: truth_at → semantic_truth_at_v2
   --
-  -- For SemanticWorldStates built from the canonical construction, the assignment
-  -- is determined by membership in a closure MCS. If phi is true recursively,
-  -- we need to show phi would be in any MCS that could give rise to this world state.
+  -- This requires showing that recursive truth evaluation matches the shallow
+  -- assignment check. The proof would use structural induction with both directions
+  -- proven simultaneously (mutual induction).
   --
-  -- However, not all SemanticWorldStates come from MCS - any locally consistent
-  -- assignment yields a valid FiniteWorldState.
+  -- However, the available `IsLocallyConsistent` properties are insufficient:
+  -- - For implication: We need negation completeness or full propositional closure
+  -- - For box: Box quantifies over ALL histories, but we only have one history's state
+  -- - For temporal: Need to reason about finite time domain bounds
   --
-  -- The approach: Use the structure of the semantic canonical model.
-  -- In SemanticCanonicalModel, the valuation semantic_valuation only defines
-  -- truth for atoms. For compound formulas, truth_at evaluates recursively.
+  -- The existing `truth_at_atom_iff_semantic` and `truth_at_bot_iff_semantic` handle
+  -- base cases. The compound cases require stronger properties than locally consistent
+  -- assignments provide.
   --
-  -- The semantic_truth_at_v2 check is: exists h_mem, w.assignment ⟨phi, h_mem⟩ = true
+  -- ARCHITECTURAL GAP: The fundamental issue is that FiniteWorldState's assignment
+  -- can be ANY locally consistent function, but semantic truth checking requires
+  -- the assignment to MATCH what recursive evaluation would produce. This is only
+  -- guaranteed for MCS-derived world states.
   --
-  -- We need to bridge these. The key observation is:
-  -- - semantic_weak_completeness proves: if ¬⊢phi then ∃w, ¬semantic_truth_at_v2 phi w _ phi
-  -- - Contrapositive: if ∀w, semantic_truth_at_v2 phi w _ phi then ⊢phi
-  -- - We want: valid phi → ∀w, semantic_truth_at_v2 phi w _ phi
+  -- For a sorry-free proof, options include:
+  -- 1. Strengthen IsLocallyConsistent (changes FiniteWorldState definition)
+  -- 2. Restrict to MCS-derived states (sufficient for completeness proof)
+  -- 3. Prove validity implies MCS membership (requires completeness - circular!)
   --
-  -- The approach is proof by contradiction within semantic_weak_completeness:
-  -- If some w has semantic_truth_at_v2 phi w _ phi = false, then w comes from an
-  -- MCS where phi.neg ∈ MCS, hence phi ∉ MCS.
-  --
-  -- But if valid phi, can we have such an MCS? If phi.neg ∈ MCS then the MCS
-  -- extended to a semantic world state should have phi false recursively too.
-  -- This would contradict valid phi.
-  --
-  -- The issue is we need to show: if phi is true at all (tau, 0) in SemanticCanonicalModel,
-  -- then no MCS can have phi.neg.
-  --
-  -- Key lemma needed: If valid phi, then {phi.neg} is inconsistent.
-  -- This is essentially soundness + valid → provable, but we're trying to prove provable!
-  --
-  -- Alternative approach: Accept that this correspondence requires the truth lemma
-  -- and use the available structure.
-  --
-  -- For now, we use a general approach based on the structure of semantic_truth_at_v2:
-  have h_phi_closure : phi ∈ closure phi := phi_mem_closure phi
-  -- We need: (tau.states 0 ht).toFiniteWorldState.assignment ⟨phi, h_phi_closure⟩ = true
-  -- This is semantic_truth_at_v2's requirement.
-  --
-  -- The proof here is delicate. We proceed by showing that if the assignment were false,
-  -- we could derive a contradiction from validity.
-  by_contra h_not_semantic
-  simp only [semantic_truth_at_v2] at h_not_semantic
-  push_neg at h_not_semantic
-  -- h_not_semantic : ∀ h_mem, ¬((tau.states 0 ht).toFiniteWorldState.models phi h_mem)
-  -- This means the assignment has phi = false.
-  -- We need to derive a contradiction from h_truth and this.
-  --
-  -- The issue is that h_truth is about recursive evaluation while h_not_semantic is about assignment.
-  -- Without the full truth lemma, we cannot directly connect these.
-  --
-  -- We need a different approach. Let's use the structure of the problem:
-  -- If validity gives us truth_at, but the assignment says false, we have a model
-  -- where recursive truth differs from assignment truth. This is exactly the gap
-  -- that the truth lemma bridges.
-  --
-  -- For the sorry-free proof, we need to avoid this gap. One way:
-  -- Restrict to formulas where truth_at = assignment truth (e.g., propositional only).
-  -- But this limits generality.
-  --
-  -- For now, we leave this as sorry and document the gap.
+  -- This sorry represents the "forward truth lemma gap" in the FMP architecture.
   sorry
 
 /--
