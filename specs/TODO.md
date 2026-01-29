@@ -121,12 +121,13 @@ technical_debt:
 ## Medium Priority
 
 ### 752. Refactor temporary file handling in agent system
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 5 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
 - **Research**: [research-001.md](specs/752_refactor_temporary_file_handling_in_agent_system/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/752_refactor_temporary_file_handling_in_agent_system/plans/implementation-001.md)
 
 **Description**: Review and improve temporary file and metadata passing techniques throughout the agent system to ensure robust performance with concurrent agents. Currently, temporary files like `specs/.postflight-pending` are created in the shared `specs/` directory, which may cause conflicts when multiple agents work simultaneously. Consider moving these files to task-specific project directories (e.g., `specs/{N}_{SLUG}/`) since at most one agent works on a task at a time. Systematically audit all temporary file usage, metadata exchange patterns, and file-based coordination mechanisms to identify and resolve potential race conditions or conflicts.
 
@@ -158,13 +159,15 @@ technical_debt:
 
 ### 751. Enhance /review with grouped interactive task proposals
 - **Effort**: 8-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Research**: [research-001.md](specs/751_enhance_review_with_grouped_interactive_task_proposals/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/751_enhance_review_with_grouped_interactive_task_proposals/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/751_enhance_review_with_grouped_interactive_task_proposals/summaries/implementation-summary-20260129.md)
 
 **Description**: Modify the /review command to always conclude with an interactive task proposal experience. Currently, task creation requires the --create-tasks flag and presents a flat numbered list. This task implements intelligent task grouping and interactive selection across 3 phases: (1) Task Grouping Logic - implement algorithm to cluster related issues by file/component area, type of fix, and priority level; (2) Interactive Selection Interface - modify Section 5.5 to always display grouped task proposals with checkboxes for groups and individual tasks; (3) Task Creation Integration - wire selected tasks to actual creation with proper dependency linking.
 

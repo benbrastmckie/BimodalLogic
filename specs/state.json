@@ -8,11 +8,11 @@
     {
       "project_number": 752,
       "project_name": "refactor_temporary_file_handling_in_agent_system",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T15:00:21Z",
-      "last_updated": "2026-01-29T15:24:29Z",
+      "last_updated": "2026-01-29T15:26:49Z",
       "session_id": "sess_1769700257_acad6f",
       "researched": "2026-01-29T15:16:38Z",
       "artifacts": [
@@ -20,8 +20,14 @@
           "path": "specs/752_refactor_temporary_file_handling_in_agent_system/reports/research-001.md",
           "type": "research",
           "summary": "Research report identifying concurrency risks in global coordination files and recommending task-scoped file paths"
+        },
+        {
+          "path": "specs/752_refactor_temporary_file_handling_in_agent_system/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan covering hook update, skill updates (7 files), documentation updates (3 files), refresh enhancement, and integration testing"
         }
-      ]
+      ],
+      "planned": "2026-01-29T15:26:49Z"
     },
     {
       "project_number": 750,
@@ -672,11 +678,11 @@
     {
       "project_number": 751,
       "project_name": "enhance_review_with_grouped_interactive_task_proposals",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T14:51:49Z",
-      "last_updated": "2026-01-29T15:21:00Z",
+      "last_updated": "2026-01-29T15:26:05Z",
       "description": "Modify the /review command to always conclude with an interactive task proposal experience. Currently, task creation requires the --create-tasks flag and presents a flat numbered list. This task implements intelligent task grouping and interactive selection across 3 phases: (1) Task Grouping Logic - implement algorithm to cluster related issues by file/component area, type of fix, and priority level; (2) Interactive Selection Interface - modify Section 5.5 to always display grouped task proposals with checkboxes for groups and individual tasks; (3) Task Creation Integration - wire selected tasks to actual creation with proper dependency linking.",
       "effort": "8-10 hours",
       "session_id": "sess_1769700036_ee9176",
@@ -691,10 +697,18 @@
           "path": "specs/751_enhance_review_with_grouped_interactive_task_proposals/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase implementation plan for grouped interactive task proposals in /review"
+        },
+        {
+          "path": "specs/751_enhance_review_with_grouped_interactive_task_proposals/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results and phase tracking"
         }
       ],
       "planned": "2026-01-29T15:11:24Z",
-      "started": "2026-01-29T15:21:00Z"
+      "started": "2026-01-29T15:21:00Z",
+      "completed": "2026-01-29T15:26:05Z",
+      "completion_summary": "Enhanced /review command with 3-tier interactive task proposals: clustering algorithm groups issues by file/component and type, AskUserQuestion provides multiSelect group selection and granularity options, and full task creation integration with state management and duplicate prevention.",
+      "claudemd_suggestions": "Updated .claude/commands/review.md with ~200 lines: added AskUserQuestion to allowed-tools, rewrote Sections 5 and 5.5 with grouping algorithm and interactive selection, added Section 5.6 for task creation from selection"
     }
   ],
   "completed_projects": [

@@ -1,0 +1,21 @@
+{
+  "status": "planned",
+  "summary": "5-phase implementation plan to move postflight coordination files from global specs/ to task-scoped specs/{N}_{SLUG}/ directories, enabling safe concurrent agent execution",
+  "artifacts": [
+    {
+      "path": "specs/752_refactor_temporary_file_handling_in_agent_system/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "5-phase plan covering hook update, skill updates (7 files), documentation updates (3 files), refresh enhancement, and integration testing"
+    }
+  ],
+  "next_steps": "Run /implement 752 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1769700257_acad6f",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5
+  }
+}
