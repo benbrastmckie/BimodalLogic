@@ -644,11 +644,11 @@
     {
       "project_number": 751,
       "project_name": "enhance_review_with_grouped_interactive_task_proposals",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T14:51:49Z",
-      "last_updated": "2026-01-29T15:09:38Z",
+      "last_updated": "2026-01-29T15:11:24Z",
       "description": "Modify the /review command to always conclude with an interactive task proposal experience. Currently, task creation requires the --create-tasks flag and presents a flat numbered list. This task implements intelligent task grouping and interactive selection across 3 phases: (1) Task Grouping Logic - implement algorithm to cluster related issues by file/component area, type of fix, and priority level; (2) Interactive Selection Interface - modify Section 5.5 to always display grouped task proposals with checkboxes for groups and individual tasks; (3) Task Creation Integration - wire selected tasks to actual creation with proper dependency linking.",
       "effort": "8-10 hours",
       "session_id": "sess_1769699363_c04c36",
@@ -658,8 +658,14 @@
           "path": "specs/751_enhance_review_with_grouped_interactive_task_proposals/reports/research-001.md",
           "type": "research",
           "summary": "Research report with analysis of current review.md structure, existing AskUserQuestion patterns, /learn grouping algorithm, and detailed implementation recommendations for 3-phase approach"
+        },
+        {
+          "path": "specs/751_enhance_review_with_grouped_interactive_task_proposals/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for grouped interactive task proposals in /review"
         }
-      ]
+      ],
+      "planned": "2026-01-29T15:11:24Z"
     }
   ],
   "completed_projects": [

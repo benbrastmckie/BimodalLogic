@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/751_enhance_review_with_grouped_interactive_task_proposals/plans/implementation-001.md",
+      "summary": "3-phase implementation plan for grouped interactive task proposals in /review"
+    }
+  ],
+  "next_steps": "Run /implement 751 to execute the plan",
   "metadata": {
     "session_id": "sess_1769699363_c04c36",
     "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.5
   }
 }
