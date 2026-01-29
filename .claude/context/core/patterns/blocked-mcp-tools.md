@@ -61,5 +61,5 @@ When upstream bugs are fixed:
 
 - `.claude/CLAUDE.md` - Main blocked tools warning in "Lean 4 Integration" section
 - `.claude/context/project/lean4/tools/mcp-tools-guide.md` - MCP tool reference
-- `.claude/agents/lean-research-agent.md` - Deprecated agent with blocked tools warning
-- `.claude/agents/lean-implementation-agent.md` - Deprecated agent with blocked tools warning
+- `.claude/agents/lean-research-agent.md` - Agent with blocked tools warning
+- `.claude/agents/lean-implementation-agent.md` - Agent with blocked tools warning

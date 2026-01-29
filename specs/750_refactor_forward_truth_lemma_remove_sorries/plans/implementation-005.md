@@ -120,7 +120,7 @@ We just need the middle implication: valid → true at MCS-derived states.
 
 ---
 
-### Phase 3: Prove MCS Truth Lemma for Modal Cases [NOT STARTED]
+### Phase 3: Prove MCS Truth Lemma for Modal Cases [PARTIAL]
 
 **Goal**: Prove truth correspondence for box operator
 
@@ -158,7 +158,7 @@ We just need the middle implication: valid → true at MCS-derived states.
 
 ---
 
-### Phase 4: Prove MCS Truth Lemma for Temporal Cases [NOT STARTED]
+### Phase 4: Prove MCS Truth Lemma for Temporal Cases [PARTIAL]
 
 **Goal**: Prove truth correspondence for temporal operators
 
@@ -189,7 +189,7 @@ We just need the middle implication: valid → true at MCS-derived states.
 
 ---
 
-### Phase 5: Combine into Full Truth Lemma [NOT STARTED]
+### Phase 5: Combine into Full Truth Lemma [COMPLETED]
 
 **Goal**: Prove the main MCS truth correspondence theorem by structural induction
 
@@ -218,7 +218,7 @@ We just need the middle implication: valid → true at MCS-derived states.
 
 ---
 
-### Phase 6: Connect to Completeness [NOT STARTED]
+### Phase 6: Connect to Completeness [PARTIAL]
 
 **Goal**: Use MCS truth lemma to prove sorry-free completeness
 

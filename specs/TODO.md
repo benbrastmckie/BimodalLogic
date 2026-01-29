@@ -150,14 +150,16 @@ technical_debt:
 
 ### 744. Update documentation for restored Lean agent architecture
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Dependencies**: Tasks 742, 743
 - **Research**: [research-001.md](specs/744_update_documentation_lean_agent_architecture/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/744_update_documentation_lean_agent_architecture/plans/implementation-001.md)
+- **Summary**: Updated documentation to reflect restoration of Lean agent delegation patterns. Removed outdated 'deprecated' and 'direct execution' references from blocked-mcp-tools.md, README.md, and thin-wrapper-skill.md.
 
 **Description**: Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.
 

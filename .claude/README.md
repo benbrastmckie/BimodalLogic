@@ -1053,9 +1053,9 @@ After setup, restart Claude Code for changes to take effect.
 
 **Note**: The project `.mcp.json` file is kept for documentation purposes and works correctly for the main conversation - only subagents have the access limitation.
 
-### Direct Execution Migration
+### Lean Agent Delegation Restoration (January 2026)
 
-Due to additional MCP bugs (#15945, #13254, #4580) causing indefinite hanging in subagents, the Lean skills (`skill-lean-research`, `skill-lean-implementation`) were refactored from the thin wrapper delegation pattern to direct execution. MCP tools now execute directly in the skill rather than in a delegated subagent, eliminating the hanging issue.
+The Lean skills (`skill-lean-research`, `skill-lean-implementation`) were temporarily refactored to direct execution due to MCP bugs (#15945, #13254, #4580) causing indefinite hanging. These issues have been resolved, and the skills now use the standard thin wrapper delegation pattern, routing to `lean-research-agent` and `lean-implementation-agent` respectively.
 
 ### Multi-Instance Optimization
 

@@ -478,17 +478,17 @@
     {
       "project_number": 744,
       "project_name": "update_documentation_lean_agent_architecture",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "description": "Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.",
       "created": "2026-01-29T13:39:29Z",
-      "last_updated": "2026-01-29T21:01:14Z",
+      "last_updated": "2026-01-29T21:07:49Z",
       "dependencies": [
         742,
         743
       ],
-      "session_id": "sess_1769720348_353e9d",
+      "session_id": "sess_1769720703_fb9339",
       "researched": "2026-01-29T20:50:40Z",
       "artifacts": [
         {
@@ -500,9 +500,18 @@
           "path": "specs/744_update_documentation_lean_agent_architecture/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase implementation plan for updating Lean agent delegation documentation"
+        },
+        {
+          "path": "specs/744_update_documentation_lean_agent_architecture/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "planned": "2026-01-29T21:01:14Z"
+      "planned": "2026-01-29T21:01:14Z",
+      "started": "2026-01-29T21:05:24Z",
+      "completed": "2026-01-29T21:07:49Z",
+      "completion_summary": "Updated documentation to reflect restoration of Lean agent delegation patterns. Removed outdated 'deprecated' and 'direct execution' references from blocked-mcp-tools.md, README.md, and thin-wrapper-skill.md.",
+      "claudemd_suggestions": "Updated blocked-mcp-tools.md (removed Deprecated from agent references), README.md (replaced Direct Execution Migration section), thin-wrapper-skill.md (removed MCP caveat and Lean Skills Exception)"
     },
     {
       "project_number": 762,
