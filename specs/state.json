@@ -50,19 +50,14 @@
       "researched": "2026-01-29T16:36:22Z",
       "artifacts": [
         {
-          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-003.md",
-          "type": "research",
-          "summary": "Analysis of algebraic representation theorem approach showing codebase already has sorry-free two-pillar architecture"
-        },
-        {
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan to refactor metalogic to Two-Pillar Architecture, removing sorries from TruthLemma and archiving superseded files"
         },
         {
-          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-004.md",
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md",
           "type": "research",
-          "summary": "Dependency analysis showing proposed archival would break completeness proofs; recommends documentation-only approach"
+          "summary": "Comprehensive analysis of metalogic architecture with dependency flow charts, mapping paths to sorry-free completeness via algebraic representation and decidability via FMP"
         }
       ],
       "planned": "2026-01-29T15:31:46Z"
