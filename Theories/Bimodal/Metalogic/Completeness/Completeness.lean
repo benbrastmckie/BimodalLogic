@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Completeness.WeakCompleteness
+import Bimodal.Metalogic.Completeness.FiniteStrongCompleteness
 
 /-!
 # Completeness Module for TM Bimodal Logic
@@ -9,10 +10,10 @@ This module serves as the root of the completeness hierarchy for TM logic.
 
 ```
 Completeness/
-├── Completeness.lean            # This file - module root
-├── WeakCompleteness.lean        # weak_completeness, provable_iff_valid
-├── FiniteStrongCompleteness.lean # (Phase 2) strong_completeness for List contexts
-└── InfinitaryStrongCompleteness.lean # (Phase 4) strong_completeness for Set contexts
+├── Completeness.lean                   # This file - module root
+├── WeakCompleteness.lean               # weak_completeness, provable_iff_valid
+├── FiniteStrongCompleteness.lean       # finite_strong_completeness (List contexts)
+├── InfinitaryStrongCompleteness.lean   # (Phase 4) Set-based contexts
 ```
 
 ## Main Results
@@ -21,9 +22,10 @@ Completeness/
 - `weak_completeness`: `⊨ φ → ContextDerivable [] φ`
 - `provable_iff_valid`: `ContextDerivable [] φ ↔ ⊨ φ`
 
-### Strong Completeness (Phases 2, 4)
-- `finite_strong_completeness`: `Γ ⊨ φ → ContextDerivable Γ φ` (finite Γ)
-- `infinitary_strong_completeness`: Set-based contexts
+### Finite-Premise Strong Completeness (Phase 2)
+- `finite_strong_completeness`: `Γ ⊨ φ → ContextDerivable Γ φ`
+- `context_provable_iff_entails`: `ContextDerivable Γ φ ↔ Γ ⊨ φ`
+- `impChain`: Helper for building implication chains
 
 ## References
 
@@ -31,5 +33,5 @@ Completeness/
 - Modal Logic, Blackburn et al., Chapter 4 (Completeness via Canonical Models)
 -/
 
--- All exports are via the import above
+-- All exports are via the imports above
 -- Users can open the namespace to access definitions
