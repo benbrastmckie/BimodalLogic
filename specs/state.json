@@ -279,10 +279,10 @@
     "total": 334
   },
   "repository_health": {
-    "last_assessed": "2026-01-29T18:38:22Z",
-    "sorry_count": 295,
+    "last_assessed": "2026-01-29T21:52:39Z",
+    "sorry_count": 314,
     "axiom_count": 10,
     "build_errors": 0,
-    "status": "manageable"
+    "status": "concerning"
   }
 }

@@ -3,7 +3,7 @@ next_project_number: 764
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-29T18:38:22Z
+  last_assessed: 2026-01-29T21:52:39Z
 task_counts:
   active: 8
   completed: 317
@@ -17,10 +17,10 @@ priority_distribution:
   medium: 4
   low: 5
 technical_debt:
-  sorry_count: 295
+  sorry_count: 314
   axiom_count: 10
   build_errors: 0
-  status: manageable
+  status: concerning
 ---
 
 # TODO
