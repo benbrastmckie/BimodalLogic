@@ -198,7 +198,7 @@ technical_debt:
 
 ### 761. Integrate TTS and STT for Claude Code and neovim
 - **Effort**: 4.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29
@@ -211,7 +211,7 @@ technical_debt:
 ## Low Priority
 
 ### 764. Improve Bimodal/Metalogic structure and documentation
-- **Effort**: 12 hours
+- **Effort**: 18-22 hours
 - **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
@@ -219,10 +219,11 @@ technical_debt:
 - **Started**: 2026-01-29
 - **Researched**: 2026-01-29
 - **Planned**: 2026-01-29
+- **Revised**: 2026-01-29
 - **Research**: [research-001.md](specs/764_improve_metalogic_structure_and_documentation/reports/research-001.md), [research-002.md](specs/764_improve_metalogic_structure_and_documentation/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/764_improve_metalogic_structure_and_documentation/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/764_improve_metalogic_structure_and_documentation/plans/implementation-002.md)
 
-**Description**: Improve structure and organization of Bimodal/Metalogic/ and create complete, accurate documentation with clear dependency flowcharts. Work systematically from deepest directories back to Metalogic/README.md. Flowcharts should show derivatives below (higher line numbers) and foundations above (smaller line numbers) in README.md documents. The top-level Metalogic/README.md should include clear high-level explanation of how the metalogic is structured and what it establishes.
+**Description**: Migrate ALL Boneyard dependencies to create self-contained Metalogic/: (1) full MCS theory migration (~500 lines), (2) full Soundness proof migration (~400 lines), (3) FMP/Closure fix, (4) document Algebraic/ as future extension, (5) comprehensive README documentation from deepest to top-level.
 
 ---
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #761 (Revision 002)
 
 - **Task**: 761 - TTS/STT Integration for Claude Code and Neovim
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Dependencies**: None (TTS hook already working, Vosk already installed)
