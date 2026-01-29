@@ -89,19 +89,21 @@ Metalogic/
 Layer 1 (Foundations):
     Core/
       │
-Layer 2 (Proof Theory):
-    Soundness/
-      │
-Layer 3 (Model Theory):
-    Representation/
-      │
-Layer 4 (Completeness):
+      ├─────────────────┐
+      │                 │
+Layer 2:          Soundness/
+    Representation/     │
+      │            (For provable_iff_valid
+Layer 3:           equivalence only)
     Completeness/
       │
-Layer 5 (Applications):
-    FMP/ ── Compactness/
+      ├─────────────────┐
+      │                 │
+Layer 4:            Compactness/
+    FMP/
+    (includes decidability)
       │
-Layer 6 (Extensions):
+Layer 5 (Extensions):
     Algebraic/
 ```
 
@@ -120,7 +122,10 @@ flowchart TD
         Soundness["`**Soundness**
         15 TM axioms
         7 derivation rules
-        Validity preservation`"]
+        Validity preservation
+
+        Note: Used for provable ↔ valid
+        equivalence, not completeness itself`"]
     end
 
     subgraph ModelTheory["Model Theory"]
@@ -132,17 +137,23 @@ flowchart TD
 
     subgraph CompletenessResults["Completeness Results"]
         Completeness["`**Completeness**
-        Weak completeness: valid → provable
-        Strong completeness: Γ ⊨ φ → Γ ⊢ φ`"]
+        Weak: valid → provable
+        Strong: Γ ⊨ φ → Γ ⊢ φ
+        Infinitary: for Set contexts`"]
     end
 
     subgraph MetalogicalApplications["Metalogical Applications"]
         FMP["`**Finite Model Property**
         Satisfiable → finite model
-        Bound: 2^(closure size)`"]
+        Bound: 2^(closure size)
+
+        Corollary: Decidability
+        of satisfiability`"]
         Compactness["`**Compactness**
-        Infinite satisfiability
-        from finite satisfiability`"]
+        Set satisfiable ↔
+        all finite subsets satisfiable
+
+        Uses: Infinitary completeness`"]
     end
 
     subgraph AlgebraicExtension["Algebraic Extension"]
@@ -155,7 +166,6 @@ flowchart TD
 
     Core --> Soundness
     Core --> Representation
-    Soundness --> Completeness
     Representation --> Completeness
     Completeness --> FMP
     Completeness --> Compactness
