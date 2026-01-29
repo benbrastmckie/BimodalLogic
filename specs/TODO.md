@@ -133,13 +133,15 @@ technical_debt:
 
 ### 735. Complete phase 5 of task 700: Ultrafilter-MCS Correspondence
 - **Effort**: 1.5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 700
 - **Created**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Research**: [research-001.md](specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/summaries/implementation-summary-20260129.md)
 
 **Description**: Complete phase 5 of task 700: Ultrafilter-MCS Correspondence. Fill ultrafilterToSet_mcs consistency proof - show that if L ⊢ ⊥ and all [φᵢ] ∈ U, then ⊥ ∈ U. Requires relating list conjunction to fold of quotients. (Follow-up from task #700)
 
@@ -159,7 +161,7 @@ technical_debt:
 
 ### 733. Ultraproduct-based proof of compactness
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -296,10 +298,11 @@ technical_debt:
 
 ### 737. Fix unused simp arguments in TemporalProofStrategies.lean
 - **Effort**: 30 min
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Source**: Review 20260129
 - **Plan**: [implementation-001.md](specs/737_fix_unused_simp_arguments_temporalproofstrategies/plans/implementation-001.md)
 

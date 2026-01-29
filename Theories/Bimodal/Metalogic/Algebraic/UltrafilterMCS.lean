@@ -260,12 +260,16 @@ theorem ultrafilterToSet_mcs (U : Ultrafilter LindenbaumAlg) :
     -- Now use this to show ⊥ ∈ U
     have h_all_in_U : ∀ ψ ∈ L, toQuot ψ ∈ U.carrier := hL
     have h_meet : List.foldl (fun acc φ => acc ⊓ toQuot φ) ⊤ L ∈ U.carrier := h_meet_in_U L h_all_in_U
-    -- The meet [⨀L] ≤ ⊥ because L ⊢ ⊥
-    -- Actually, we need: from L ⊢ ⊥, derive ⊢ (⨀L) → ⊥, i.e., [⨀L] ≤ [⊥] = ⊥
-    -- The conjunction of L is related to the fold, but this requires showing
-    -- that the fold equals the conjunction quotient, which is complex.
-    -- For now, we defer this part.
-    sorry
+    -- From L ⊢ ⊥ and fold_le_of_derives, we get fold L ≤ [⊥] = ⊥
+    have h_le_bot : List.foldl (fun acc φ => acc ⊓ toQuot φ) ⊤ L ≤ toQuot Formula.bot :=
+      fold_le_of_derives L Formula.bot d_bot
+    -- Since fold L ∈ U and fold L ≤ ⊥, by upward closure ⊥ ∈ U
+    -- Note: toQuot Formula.bot = ⊥ in the BooleanAlgebra
+    have h_bot_eq : toQuot Formula.bot = ⊥ := rfl
+    rw [h_bot_eq] at h_le_bot
+    have h_bot_in_U : (⊥ : LindenbaumAlg) ∈ U.carrier := U.mem_of_le h_meet h_le_bot
+    -- But this contradicts U.bot_not_mem
+    exact U.bot_not_mem h_bot_in_U
   · -- Maximality: φ ∉ ultrafilterToSet U implies ¬SetConsistent (insert φ (ultrafilterToSet U))
     intro φ hφ
     -- hφ : φ ∉ ultrafilterToSet U, i.e., [φ] ∉ U

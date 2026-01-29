@@ -1,7 +1,7 @@
 # Implementation Plan: Task #735
 
 - **Task**: 735 - Complete task 700 phase 5: Ultrafilter-MCS Correspondence
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Priority**: high
 - **Dependencies**: Task 700 phases 1-4 (completed)
@@ -78,7 +78,7 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
 
 ---
 
-### Phase 2: Complete the Sorry [IN PROGRESS]
+### Phase 2: Complete the Sorry [COMPLETED]
 
 **Goal**: Fill the sorry at line 162 using `fold_le_of_derives`.
 
@@ -107,7 +107,7 @@ exact U.bot_not_mem h_bot_in_U
 
 ---
 
-### Phase 3: Final Verification and Cleanup [NOT STARTED]
+### Phase 3: Final Verification and Cleanup [COMPLETED]
 
 **Goal**: Ensure the implementation is correct and the file builds cleanly.
 
