@@ -1,7 +1,7 @@
 # Implementation Plan: Task #752
 
 - **Task**: 752 - refactor_temporary_file_handling_in_agent_system
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -47,7 +47,7 @@ The research report (research-001.md) found:
 
 ## Implementation Phases
 
-### Phase 1: Update Hook Script [NOT STARTED]
+### Phase 1: Update Hook Script [IN PROGRESS]
 
 **Goal**: Modify `subagent-postflight.sh` to detect task-scoped markers using find
 

@@ -9,9 +9,26 @@
 #   {"decision": "block", "reason": "..."} - Prevents stop, forces continuation
 #   {} - Allows normal stop
 
-MARKER_FILE="specs/.postflight-pending"
-LOOP_GUARD_FILE="specs/.postflight-loop-guard"
+# Find task-scoped marker (or fallback to global for backward compatibility)
+MARKER_FILE=""
+LOOP_GUARD_FILE=""
+TASK_DIR=""
 MAX_CONTINUATIONS=3
+
+# Search for task-scoped marker first
+find_marker() {
+    local found_marker=$(find specs -maxdepth 3 -name ".postflight-pending" -type f 2>/dev/null | head -1)
+    if [ -n "$found_marker" ]; then
+        MARKER_FILE="$found_marker"
+        TASK_DIR=$(dirname "$found_marker")
+        LOOP_GUARD_FILE="$TASK_DIR/.postflight-loop-guard"
+    elif [ -f "specs/.postflight-pending" ]; then
+        # Fallback to global marker (backward compatibility during migration)
+        MARKER_FILE="specs/.postflight-pending"
+        LOOP_GUARD_FILE="specs/.postflight-loop-guard"
+        TASK_DIR="specs"
+    fi
+}
 
 # Log function for debugging
 log_debug() {

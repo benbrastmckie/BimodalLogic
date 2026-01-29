@@ -27,22 +27,6 @@ technical_debt:
 
 ## High Priority
 
-### 743. Restore lean-implementation-agent and skill-lean-implementation thin wrapper
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Dependencies**: Task 742
-- **Research**: [research-001.md](specs/743_restore_lean_implementation_agent_thin_wrapper/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/743_restore_lean_implementation_agent_thin_wrapper/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/743_restore_lean_implementation_agent_thin_wrapper/summaries/implementation-summary-20260129.md)
-
-**Description**: Restore lean-implementation-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-implementation from 524-line direct execution to ~100-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0), (4) completion_data generation. Follow patterns from skill-implementer and general-implementation-agent.
-
----
-
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
@@ -122,7 +106,7 @@ technical_debt:
 
 ### 752. Refactor temporary file handling in agent system
 - **Effort**: 5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -134,7 +118,7 @@ technical_debt:
 ---
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
-- **Effort**: TBD
+- **Effort**: 6 hours
 - **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
@@ -146,46 +130,15 @@ technical_debt:
 ---
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 6 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Research**: [research-003.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-003.md)
+- **Plan**: [implementation-001.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-001.md)
 
 **Description**: Following the contingency approach from task 745 (which kept mutual induction structure but marked backward cases as sorry with comments), refactor the forward Truth Lemma to avoid all sorries and completely remove the backward direction which is not needed for the metalogic as it stands.
-
----
-
-### 751. Enhance /review with grouped interactive task proposals
-- **Effort**: 8-10 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/751_enhance_review_with_grouped_interactive_task_proposals/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/751_enhance_review_with_grouped_interactive_task_proposals/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/751_enhance_review_with_grouped_interactive_task_proposals/summaries/implementation-summary-20260129.md)
-
-**Description**: Modify the /review command to always conclude with an interactive task proposal experience. Currently, task creation requires the --create-tasks flag and presents a flat numbered list. This task implements intelligent task grouping and interactive selection across 3 phases: (1) Task Grouping Logic - implement algorithm to cluster related issues by file/component area, type of fix, and priority level; (2) Interactive Selection Interface - modify Section 5.5 to always display grouped task proposals with checkboxes for groups and individual tasks; (3) Task Creation Integration - wire selected tasks to actual creation with proper dependency linking.
-
----
-
-### 746. Improve Bimodal/Metalogic source comments
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/746_improve_bimodal_metalogic_source_comments/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/746_improve_bimodal_metalogic_source_comments/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/746_improve_bimodal_metalogic_source_comments/summaries/implementation-summary-20260129.md)
-
-**Description**: Systematically improve comments throughout Bimodal/Metalogic/ source files to be accurate, clear, and consistent. Remove historical language comparing past attempts or otherwise presenting results in anything but a clear and direct way (avoid temporal language like 'now', 'currently', 'previously', etc.). Ensure comments explain what the code does without unnecessary meta-commentary.
 
 ---
 
@@ -210,22 +163,6 @@ technical_debt:
 - **Created**: 2026-01-29
 
 **Description**: Systematically revise /home/benjamin/Projects/ProofChecker/specs/ROAD_MAP.md given progress made in Bimodal/Metalogic/, what remains to be done, and future ambitions. Update completion status of achieved milestones, add new goals discovered during implementation, and ensure the roadmap accurately reflects the project's trajectory.
-
----
-
-### 745. Move backward Truth Lemma to Boneyard
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Related**: Task 741
-- **Research**: [research-001.md](specs/745_move_backward_truth_lemma_to_boneyard/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/745_move_backward_truth_lemma_to_boneyard/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/745_move_backward_truth_lemma_to_boneyard/summaries/implementation-summary-20260129.md)
-
-**Description**: Move backward Truth Lemma cases to Boneyard with documentation. The backward temporal cases (all_past/all_future backward directions) in TruthLemma.lean lines 423, 441 are blocked by fundamental omega-rule limitation and NOT REQUIRED for completeness. Clean up Bimodal/Metalogic/Representation/ to contain only working proofs. Move backward cases to Boneyard with clear documentation explaining they require H/G-completeness (which needs omega-rule that TM logic lacks). Update TruthLemma.lean to only expose truth_lemma_forward (the direction actually used by representation theorem). Keep TemporalCompleteness.lean infrastructure in Boneyard for reference.
 
 ---
 
@@ -282,23 +219,6 @@ technical_debt:
 
 ## Low Priority
 
-### 738. Port FMP to parametric architecture
-- **Effort**: 10-14 hours
-- **Status**: [COMPLETED]
-- **Priority**: Low
-- **Language**: lean
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Parent Task**: 660
-- **Research**: [research-001.md](specs/738_port_fmp_to_parametric_architecture/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/738_port_fmp_to_parametric_architecture/plans/implementation-002.md) (v002 - Option A)
-- **Summary**: Ported FMP to parametric architecture with BoundedTime abstraction. Created FiniteWorldState, SemanticCanonicalModel, and FiniteModelProperty modules. Key theorem: semanticWorldState_card_bound proves |worlds| ≤ 2^closureSize.
-
-**Description**: Complete phase 3 of task 660: Finite Model Property Port. Port FMP to parametric architecture with explicit cardinality bounds on finite models. This provides decidability foundation (orthogonal to completeness chain). Follow-up from task #660.
-
----
-
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
 - **Status**: [PARTIAL]
@@ -330,56 +250,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260129.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/summaries/implementation-summary-20260129.md)
 
 **Description**: Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: `Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s)` (and symmetric for G). **STATUS**: BLOCKED by fundamental omega-rule limitation - proving H-completeness requires deriving H psi from infinitely many psi instances. Supplementary research (research-002.md) confirms all alternative approaches are blocked: construction-specific proof (Lindenbaum non-deterministic), semantic bridge (circular), negation duality (doesn't extract witnesses), finite approximation (needs TM compactness). Created infrastructure in TemporalCompleteness.lean. NOT REQUIRED FOR COMPLETENESS - the representation theorem only uses truth_lemma_forward. Recommended resolution: document as known limitation.
-
----
-
-### 490. Complete decidability procedure
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-19
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-29
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 469
-- **Dependencies**: Task 607
-- **Subtasks**: 622, 623, 624, 625, 630, 631 (all completed)
-- **Research**: [research-001.md](specs/490_complete_decidability_procedure/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/490_complete_decidability_procedure/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260119.md](specs/490_complete_decidability_procedure/summaries/implementation-summary-20260119.md)
-
-**Description**: Completed decidability procedure for TM bimodal logic via 6 subtasks (622-625, 630-631). All core theorems proven: expansion_decreases_measure, tableau_complete, decide_complete. Only 1 optional sorry remains (decide_axiom_valid). Work organized in Boneyard/Metalogic_v2/Decidability/.
-
----
-
-### 623. Build FMP-tableau connection infrastructure
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-19
-- **Started**: 2026-01-19
-- **Completed**: 2026-01-29
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 490
-- **Subtasks**: 630 (completed), 631 (completed)
-- **Research**: [research-001.md](specs/623_build_fmp_tableau_connection_infrastructure/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260129.md](specs/623_build_fmp_tableau_connection_infrastructure/summaries/implementation-summary-20260129.md)
-
-**Description**: Established FMP-tableau connection infrastructure for bimodal decidability. Core modules have 0 sorries. Subtasks 630 (TaskModel extraction) and 631 (evalFormula_implies_sat) completed, enabling tableau_complete proof.
-
----
-
-### 625. Prove decide_complete
-- **Status**: [COMPLETED]
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 490
-- **Dependencies**: Task 624
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/625_prove_decide_complete/reports/research-001.md), [research-002.md](specs/625_prove_decide_complete/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/625_prove_decide_complete/plans/implementation-001.md)
-- **Summary**: Implemented decide_complete theorem using tableau_complete foundation with documented gap for proof extraction completeness
-
-**Description**: Prove the `decide_complete` theorem in Correctness.lean deriving decision procedure completeness from tableau completeness. Follows directly from tableau_complete (Task 624).
 
 ---
 
