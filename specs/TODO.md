@@ -167,10 +167,12 @@ technical_debt:
 
 ### 762. Fix planner-agent to enforce Status field in plan metadata
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
+- **Research**: [research-001.md](specs/762_fix_planner_agent_enforce_status_field/reports/research-001.md)
 
 **Description**: Move plan-format.md from "Load When Creating Plan" to "Always Load" section in planner-agent.md (line 43). Add explicit verification step in Stage 5 (around line 173) to ensure Status field exists in plan file before writing success metadata. Evidence: Task 750's v005 plan missing Status line while older plans (758, 759, 741) have it.
 
