@@ -221,17 +221,17 @@
     {
       "project_number": 659,
       "project_name": "prove_negation_completeness_lemmas",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T04:51:58Z",
+      "last_updated": "2026-01-29T04:54:10Z",
       "related_tasks": [
         654,
         656
       ],
       "session_id": "sess_1769662307_3b8f09",
-      "researched": "2026-01-29T04:47:59Z",
+      "researched": "2026-01-29T04:54:10Z",
       "artifacts": [
         {
           "path": "specs/659_prove_negation_completeness_lemmas/reports/research-001.md",
@@ -252,6 +252,11 @@
           "path": "specs/659_prove_negation_completeness_lemmas/reports/research-003.md",
           "type": "research",
           "summary": "Research on forward_H proof requirements, witness extraction analysis, and three resolution approaches for backward Truth Lemma"
+        },
+        {
+          "path": "specs/659_prove_negation_completeness_lemmas/reports/research-004.md",
+          "type": "research",
+          "summary": "Analysis of forward_H asymmetry: construction order vs persistence direction explains why Case 4 (both < 0) IS provable"
         }
       ],
       "planned": "2026-01-29T01:21:06Z",
