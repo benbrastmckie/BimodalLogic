@@ -5,9 +5,9 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 12
-  completed: 315
-  in_progress: 4
+  active: 10
+  completed: 317
+  in_progress: 3
   not_started: 5
   abandoned: 21
   total: 341
@@ -131,23 +131,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 753. Prove sorries in CoherentConstruction for standard completeness
-- **Effort**: 6-10 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Revised**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/753_prove_sorries_in_coherentconstruction/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/753_prove_sorries_in_coherentconstruction/plans/implementation-003.md)
-- **Summary**: Eliminated infrastructure sorries via sigma-type refactoring; documented 13 remaining sorries as intentional scope exclusions
-
-**Description**: Prove sorries in CoherentConstruction.lean and TaskRelation.lean with clean-break approach: (1) sigma-type chain refactoring for infrastructure sorries, (2) TaskRelation architectural simplification or deletion, (3) documented cross-origin gaps. Prioritizes quality and consistency over backwards compatibility.
-
----
-
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 8-10 hours
 - **Status**: [PLANNED]
@@ -158,22 +141,6 @@ technical_debt:
 - **Plan**: [implementation-004.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-004.md)
 
 **Description**: Implement Option 5 (Hybrid Approach): Use algebraic representation theorem as consistency witness to seed FMP construction, bypassing the failed semantic truth lemma approach. Connects ultrafilter → MCS → closure MCS → FMP countermodel.
-
----
-
-### 748. Revise ROAD_MAP.md for Metalogic progress
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Created**: 2026-01-29
-- **Planned**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/748_revise_roadmap_for_metalogic_progress/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/748_revise_roadmap_for_metalogic_progress/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/748_revise_roadmap_for_metalogic_progress/summaries/implementation-summary-20260129.md)
-
-**Description**: Systematically revise /home/benjamin/Projects/ProofChecker/specs/ROAD_MAP.md given progress made in Bimodal/Metalogic/, what remains to be done, and future ambitions. Update completion status of achieved milestones, add new goals discovered during implementation, and ensure the roadmap accurately reflects the project's trajectory.
 
 ---
 

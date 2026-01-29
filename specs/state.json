@@ -58,38 +58,6 @@
       "started": "2026-01-29T17:37:14Z"
     },
     {
-      "project_number": 753,
-      "project_name": "prove_sorries_in_coherentconstruction",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-29T16:50:59Z",
-      "last_updated": "2026-01-29T18:11:06Z",
-      "session_id": "sess_1769709527_8a6048",
-      "researched": "2026-01-29T16:56:39Z",
-      "artifacts": [
-        {
-          "path": "specs/753_prove_sorries_in_coherentconstruction/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of 10 sorries in CoherentConstruction.lean, identifying 2 critical infrastructure sorries (lines 403, 416) needed for completeness and 8 non-critical coherence case sorries"
-        },
-        {
-          "path": "specs/753_prove_sorries_in_coherentconstruction/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "Clean-break v003 plan: sigma-type refactoring, TaskRelation simplification, documented cross-origin gaps"
-        },
-        {
-          "path": "specs/753_prove_sorries_in_coherentconstruction/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting sigma-type refactoring, documentation updates, and verification results"
-        }
-      ],
-      "planned": "2026-01-29T17:51:04Z",
-      "started": "2026-01-29T17:12:53Z",
-      "completed": "2026-01-29T18:11:06Z",
-      "completion_summary": "Eliminated infrastructure sorries in CoherentConstruction.lean using sigma-type chain refactoring. The 2 sorries at lines 403/416 are now proven by carrying the MCS invariant through recursion. Added mcs_no_G_bot and mcs_no_H_bot lemmas using T-axiom reasoning. Documented remaining 13 sorries as intentional scope exclusions for cross-origin coherence cases not exercised by the completeness theorem."
-    },
-    {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
       "status": "planned",
@@ -138,38 +106,6 @@
       ],
       "planned": "2026-01-29T18:02:25Z",
       "started": "2026-01-29T17:25:04Z"
-    },
-    {
-      "project_number": 748,
-      "project_name": "revise_roadmap_for_metalogic_progress",
-      "status": "completed",
-      "language": "markdown",
-      "priority": "medium",
-      "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T18:12:20Z",
-      "session_id": "sess_1769710043_1439c8",
-      "researched": "2026-01-29T17:49:00Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/748_revise_roadmap_for_metalogic_progress/reports/research-001.md",
-          "summary": "Comprehensive analysis of ROAD_MAP.md vs current Metalogic progress"
-        },
-        {
-          "path": "specs/748_revise_roadmap_for_metalogic_progress/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for revising ROAD_MAP.md with Metalogic progress"
-        },
-        {
-          "path": "specs/748_revise_roadmap_for_metalogic_progress/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary with phase details and verification results"
-        }
-      ],
-      "planned": "2026-01-29T18:00:43Z",
-      "started": "2026-01-29T18:07:54Z",
-      "completed": "2026-01-29T18:12:20Z",
-      "completion_summary": "Revised ROAD_MAP.md to reflect Metalogic progress: added Completeness Hierarchy, Compactness, CoherentConstruction, and Algebraic sections; updated sorry tables; marked completed items; added Active Tasks section."
     },
     {
       "project_number": 741,
@@ -501,7 +437,7 @@
     }
   ],
   "task_counts": {
-    "active": 17,
+    "active": 15,
     "not_started": 8,
     "total": 334
   }
