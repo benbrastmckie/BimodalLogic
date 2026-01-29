@@ -196,7 +196,7 @@ technical_debt:
 
 ### 761. Integrate TTS and STT for Claude Code and neovim
 - **Effort**: 4.5 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29

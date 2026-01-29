@@ -1,15 +1,27 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T19:24:47Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/plans/implementation-002.md",
+      "summary": "3-phase revision plan to fix STT plugin integration - move to neotex structure, register with lazy.nvim, add which-key mappings"
+    }
+  ],
+  "next_steps": "Run /implement 761 to execute the revision plan",
   "metadata": {
     "session_id": "sess_1769725887_c59fcd",
     "agent_type": "planner-agent",
+    "duration_seconds": 47,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 1.5,
+    "revision_number": 2,
+    "fixes_issues": [
+      "STT plugin not loaded by lazy.nvim",
+      "No which-key <leader>v group definition",
+      "Plugin outside neotex structure",
+      "Vosk model not downloaded"
+    ]
   }
 }

@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T22:20:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/765_exclude_boneyard_examples_from_sorry_count/plans/implementation-001.md",
+      "summary": "2-phase implementation plan for excluding Boneyard/ and Examples/ from sorry count metrics"
+    }
+  ],
+  "next_steps": "Run /implement 765 to execute the plan",
   "metadata": {
     "session_id": "sess_1769725899_e827cf",
     "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 2,
+    "estimated_hours": 0.5
   }
 }
