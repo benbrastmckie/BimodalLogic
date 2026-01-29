@@ -107,14 +107,16 @@ technical_debt:
 
 ### 760. Determine sorry disposition: archive vs complete
 - **Effort**: 4-5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Revised**: 2026-01-29
 - **Research**: [research-001.md](specs/760_determine_sorry_disposition_archive_vs_complete/reports/research-001.md)
 - **Plan**: [implementation-004.md](specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-004.md)
+- **Summary**: [implementation-summary-20260129.md](specs/760_determine_sorry_disposition_archive_vs_complete/summaries/implementation-summary-20260129.md)
 
 **Description**: Archive sorried code to Boneyard (complementing completed Task 750). Targets: Examples/ exercise files (12 sorries), IndexedMCSFamily dead code (4), CoherentConstruction cross-origin (8), TaskRelation compositionality (5). Total: 29 sorries.
 
@@ -180,7 +182,7 @@ technical_debt:
 
 ### 761. Integrate TTS and STT for Claude Code and neovim
 - **Effort**: 4.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29
@@ -196,10 +198,11 @@ technical_debt:
 
 ### 764. Improve Bimodal/Metalogic structure and documentation
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 
 **Description**: Improve structure and organization of Bimodal/Metalogic/ and create complete, accurate documentation with clear dependency flowcharts. Work systematically from deepest directories back to Metalogic/README.md. Flowcharts should show derivatives below (higher line numbers) and foundations above (smaller line numbers) in README.md documents. The top-level Metalogic/README.md should include clear high-level explanation of how the metalogic is structured and what it establishes.
 

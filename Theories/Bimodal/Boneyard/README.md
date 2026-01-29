@@ -107,6 +107,48 @@ This approach works because:
 It proves: `(∀ w, semantic_truth_at_v2 w φ) → ⊢ φ` without needing the forward truth lemma.
 This is THE completeness theorem for this logic.
 
+### 5. Examples/ (Task 760)
+
+**Source**: Moved from `Bimodal/Examples/`
+
+**What it contains**:
+- `ModalProofs.lean` - S5 modal logic proof examples (5 sorries)
+- `ModalProofStrategies.lean` - Modal proof strategies (5 sorries)
+- `TemporalProofs.lean` - Temporal logic proof examples (2 sorries)
+
+**Why archived**:
+- These files contain intentional `sorry` placeholders for exercises
+- Exercises are pedagogical, not part of the completeness proof
+- Moving them reduces the sorry count in the main codebase
+- The sorries are straightforward to complete if needed
+
+**To restore**: Move files back to `Bimodal/Examples/` and update imports in
+`Bimodal/Examples.lean` and `Logos/Examples.lean`.
+
+### 6. Metalogic_v3/IndexedMCSFamily/ (Task 760)
+
+**Source**: Extracted from `Metalogic/Representation/IndexedMCSFamily.lean`
+
+**What it contains**:
+- `ConstructIndexedFamily.lean` - Alternative family construction (4 sorries)
+
+**Why archived**:
+- The independent Lindenbaum extension approach cannot prove coherence
+- Superseded by `CoherentConstruction.construct_coherent_family`
+- Dead code - not used anywhere in the codebase
+
+### 7. Metalogic_v3/TaskRelation/ (Task 760)
+
+**Source**: Documents sorries in `Metalogic/Representation/TaskRelation.lean`
+
+**What it documents**:
+- `Compositionality.lean` - Task relation composition cases (5 sorries)
+
+**Why these sorries remain**:
+- Cross-sign duration composition cases not exercised by completeness
+- The truth lemma uses family coherence directly, not task relation composition
+- Architectural limitation, not incomplete work
+
 ## Related Tasks
 
 - **Task 446**: Original Duration construction
@@ -118,6 +160,7 @@ This is THE completeness theorem for this logic.
 - **Task 616**: Remove false theorem semantic_task_rel_compositionality
 - **Task 626**: Review and remove unnecessary sorries (DeprecatedCompleteness)
 - **Task 750**: Archive failed truth lemma approaches (FailedTruthLemma)
+- **Task 760**: Archive sorried code (Examples, IndexedMCSFamily, TaskRelation docs)
 
 ## Status
 
@@ -128,4 +171,4 @@ For completeness proofs, use the semantic approach in `FiniteCanonicalModel.lean
 ---
 
 *Last updated: 2026-01-29*
-*Reason: Added Task 750 failed truth lemma approaches*
+*Reason: Added Task 760 archives (Examples, IndexedMCSFamily, TaskRelation)*

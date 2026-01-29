@@ -567,107 +567,14 @@ lemma mcs_at_time_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gam
 /-!
 ### The Indexed Family Construction
 
-Now we assemble everything into an IndexedMCSFamily.
+The `construct_indexed_family` function and related lemmas have been archived to
+`Boneyard/Metalogic_v3/IndexedMCSFamily/ConstructIndexedFamily.lean` by Task 760.
+
+**Reason**: The independent Lindenbaum extension approach cannot prove coherence
+conditions. Use `CoherentConstruction.construct_coherent_family` instead, which
+builds coherence into the construction and bridges to `IndexedMCSFamily` trivially.
+
+See `CoherentConstruction.lean` for the working approach.
 -/
-
-/-!
-## Alternative Construction (Incomplete)
-
-**Note**: The `construct_indexed_family` function below uses an independent Lindenbaum
-extension approach that cannot prove the required coherence conditions.
-
-**Limitation**: Independent Lindenbaum extensions at each time point can add conflicting formulas.
-If `Gφ ∈ mcs(t)` but `Gφ ∉ Gamma`, there is no guarantee `φ ∈ mcs(t')` for t' > t.
-The four coherence conditions cannot be proven after construction.
-
-**Recommended**: Use `CoherentConstruction.construct_coherent_family` instead, which builds coherence
-into the construction itself, then bridges to `IndexedMCSFamily` trivially.
--/
-
-/--
-Construct an indexed MCS family from a root MCS at the origin.
-
-**Note**: Use `CoherentConstruction.construct_coherent_family` instead for proven coherence.
-This construction's coherence conditions cannot be proven with the current approach.
-
-**Construction**:
-- `mcs(t)` = extend time_seed to MCS via Lindenbaum
-- Coherence conditions follow from seed definitions and Lindenbaum extension
-
-**Usage**: Given a consistent formula phi, extend {phi} to an MCS Gamma
-that does not contain G ⊥ or H ⊥, then `construct_indexed_family` gives
-a family where phi is true at the origin.
-
-**Hypotheses**:
-- `h_no_G_bot`: G ⊥ ∉ Gamma (ensures forward temporal extension)
-- `h_no_H_bot`: H ⊥ ∉ Gamma (ensures backward temporal extension)
-
-These conditions ensure the MCS is satisfiable in an UNBOUNDED temporal model.
-For MCS containing G ⊥ or H ⊥, a different construction (bounded endpoint) is needed.
--/
-noncomputable def construct_indexed_family
-    (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
-    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
-    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) :
-    IndexedMCSFamily D where
-  mcs := mcs_at_time D Gamma h_mcs h_no_G_bot h_no_H_bot
-  is_mcs := mcs_at_time_is_mcs D Gamma h_mcs h_no_G_bot h_no_H_bot
-
-  -- Forward G coherence: G phi ∈ mcs(t) → phi ∈ mcs(t') for t < t'
-  forward_G := by
-    intro t t' phi hlt hG
-    -- Use CoherentConstruction.construct_coherent_family for proven coherence
-    sorry
-
-  -- Backward H coherence: H phi ∈ mcs(t) → phi ∈ mcs(t') for t' < t
-  backward_H := by
-    intro t t' phi hlt hH
-    -- Use CoherentConstruction.construct_coherent_family for proven coherence
-    sorry
-
-  -- Forward H coherence: H phi ∈ mcs(t') → phi ∈ mcs(t) for t < t'
-  forward_H := by
-    intro t t' phi hlt hH
-    -- Use CoherentConstruction.construct_coherent_family for proven coherence
-    sorry
-
-  -- Backward G coherence: G phi ∈ mcs(t') → phi ∈ mcs(t) for t' < t
-  backward_G := by
-    intro t t' phi hlt hG
-    -- Use CoherentConstruction.construct_coherent_family for proven coherence
-    sorry
-
-/-!
-### Properties of the Constructed Family
--/
-
-/--
-The MCS at the origin is exactly the extended root MCS.
-
-At t = 0, time_seed returns Gamma directly, so mcs(0) is
-the Lindenbaum extension of Gamma, which contains Gamma.
--/
-lemma construct_indexed_family_origin (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
-    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
-    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma)
-    (phi : Formula) (h_phi : phi ∈ Gamma) :
-    phi ∈ (construct_indexed_family D Gamma h_mcs h_no_G_bot h_no_H_bot).mcs 0 := by
-  -- mcs(0) = extendToMCS (time_seed D Gamma 0)
-  -- time_seed D Gamma 0 = Gamma (by definition, when t = 0)
-  -- extendToMCS contains the seed
-  have h_seed : phi ∈ time_seed D Gamma 0 := by
-    simp only [time_seed, ↓reduceIte]
-    exact h_phi
-  exact mcs_at_time_contains_seed D Gamma h_mcs h_no_G_bot h_no_H_bot 0 h_seed
-
-/--
-At the origin, the constructed family's MCS extends Gamma.
--/
-lemma construct_indexed_family_origin_extends (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
-    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
-    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) :
-    Gamma ⊆ (construct_indexed_family D Gamma h_mcs h_no_G_bot h_no_H_bot).mcs 0 := by
-  intro phi h_phi
-  exact construct_indexed_family_origin D Gamma h_mcs h_no_G_bot h_no_H_bot phi h_phi
 
 end Bimodal.Metalogic.Representation

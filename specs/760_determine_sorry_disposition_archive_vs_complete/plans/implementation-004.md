@@ -1,7 +1,7 @@
 # Implementation Plan: Task #760
 
 - **Task**: 760 - Archive sorried code to Boneyard (complementing completed Task 750)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4-5 hours
 - **Priority**: Medium
 - **Dependencies**: Task 750 (COMPLETED - Boneyard/Metalogic_v3/ structure exists)
@@ -104,7 +104,7 @@ grep -r "canonical_task_rel_compositionality" Theories/ --include="*.lean"
 
 ---
 
-### Phase 2: Archive Examples/ Files (12 sorries) [IN PROGRESS]
+### Phase 2: Archive Examples/ Files (12 sorries) [COMPLETED]
 
 **Goal**: Move exercise files to Boneyard/Examples/. These are leaf files with no dependents.
 
@@ -144,7 +144,7 @@ grep -r "canonical_task_rel_compositionality" Theories/ --include="*.lean"
 
 ---
 
-### Phase 3: Archive IndexedMCSFamily Dead Code (4 sorries) [NOT STARTED]
+### Phase 3: Archive IndexedMCSFamily Dead Code (4 sorries) [COMPLETED]
 
 **Goal**: Remove unused `construct_indexed_family` and related code.
 
@@ -182,7 +182,7 @@ Research identified this as DEAD CODE - not used anywhere in the codebase.
 
 ---
 
-### Phase 4: Archive CoherentConstruction Cross-Origin Cases (8 sorries) [NOT STARTED]
+### Phase 4: Archive CoherentConstruction Cross-Origin Cases (8 sorries) [COMPLETED]
 
 **Goal**: Handle cross-origin coherence sorries.
 
@@ -213,7 +213,7 @@ Research note: These sorries are marked "NOT REQUIRED FOR COMPLETENESS" and refe
 
 ---
 
-### Phase 5: Archive TaskRelation Compositionality (5 sorries) [NOT STARTED]
+### Phase 5: Archive TaskRelation Compositionality (5 sorries) [COMPLETED]
 
 **Goal**: Extract task relation compositionality proofs to Boneyard.
 
@@ -252,7 +252,7 @@ From Task 750 insight: "compositionality [sorries] are fundamental limitations"
 
 ---
 
-### Phase 6: Update Boneyard Documentation [NOT STARTED]
+### Phase 6: Update Boneyard Documentation [COMPLETED]
 
 **Goal**: Add Task 760 entries to existing Boneyard README (created by Task 750).
 
@@ -276,7 +276,7 @@ From Task 750 insight: "compositionality [sorries] are fundamental limitations"
 
 ---
 
-### Phase 7: Final Verification [NOT STARTED]
+### Phase 7: Final Verification [COMPLETED]
 
 **Goal**: Verify clean build and document completion.
 

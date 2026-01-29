@@ -50,6 +50,7 @@ See `CoherentConstruction.lean` for the actual coherence proofs used by complete
 
 - Research report: specs/654_.../reports/research-003.md
 - Implementation plan: specs/654_.../plans/implementation-003.md
+- Boneyard docs: `Boneyard/Metalogic_v3/TaskRelation/Compositionality.lean`
 -/
 
 namespace Bimodal.Metalogic.Representation
@@ -170,7 +171,8 @@ theorem canonical_task_rel_comp (w u v : CanonicalWorld D) (d1 d2 : D)
     · -- MCS equality: requires detailed case analysis on d1, d2
       -- When d1 + d2 = 0, we have d2 = -d1
       -- The propagation conditions should compose to give equality
-      sorry -- MCS equality argument (complex case analysis)
+      -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/TaskRelation/Compositionality.lean
+      sorry
     · -- Time equality: follows from arithmetic
       rw [time_sum, hsum, add_zero]
 
@@ -183,20 +185,24 @@ theorem canonical_task_rel_comp (w u v : CanonicalWorld D) (d1 d2 : D)
       · -- G φ ∈ w.mcs → φ ∈ v.mcs
         intro φ hG
         -- Formula propagation via u
-        sorry -- Forward propagation (depends on signs of d1, d2)
+        -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/TaskRelation/Compositionality.lean
+        sorry
       · -- H φ ∈ v.mcs → φ ∈ w.mcs
         intro φ hH
         -- Formula propagation via u
-        sorry -- Backward propagation (depends on signs of d1, d2)
+        -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/TaskRelation/Compositionality.lean
+        sorry
     · -- Negative sum case
       simp only [hpos, ite_false]
       refine ⟨?_, ?_, time_sum⟩
       · -- H φ ∈ w.mcs → φ ∈ v.mcs
         intro φ hH
-        sorry -- Forward propagation for negative case
+        -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/TaskRelation/Compositionality.lean
+        sorry
       · -- G φ ∈ v.mcs → φ ∈ w.mcs
         intro φ hG
-        sorry -- Backward propagation for negative case
+        -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/TaskRelation/Compositionality.lean
+        sorry
 
 /-!
 ## Additional Task Relation Lemmas

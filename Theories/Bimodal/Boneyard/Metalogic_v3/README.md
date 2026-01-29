@@ -53,22 +53,30 @@ Contains unused Truth Lemma directions:
   - `all_past` backward case
   - `all_future` backward case
 
-## Obsoleted Code (Still in Source)
+### IndexedMCSFamily/ (Task 760)
 
-### IndexedMCSFamily.lean construct_indexed_family
+Contains the removed `construct_indexed_family` function:
 
-The `construct_indexed_family` function in `Metalogic/Representation/IndexedMCSFamily.lean`
-uses an **independent Lindenbaum extension approach** that fundamentally cannot prove the
-required coherence conditions. Its four coherence field sorries are obsoleted by
-`CoherentConstruction.construct_coherent_family`.
+- **ConstructIndexedFamily.lean**: Alternative family construction (4 sorries)
 
-**Why independent extensions fail**:
-- Each time point gets an independent Lindenbaum extension
-- Extensions can add conflicting formulas
-- No infrastructure connects mcs(t) to mcs(t')
+**Why removed**:
+- The independent Lindenbaum extension approach cannot prove coherence
+- Each time point gets an independent extension - they can conflict
+- Superseded by `CoherentConstruction.construct_coherent_family`
 
-**Status**: Code remains in place for historical reference with "SUPERSEDED" documentation.
-Use `CoherentConstruction.construct_coherent_family.toIndexedMCSFamily` instead.
+**Status**: Code extracted from `Metalogic/Representation/IndexedMCSFamily.lean` and
+archived here. Use `CoherentConstruction.construct_coherent_family` instead.
+
+### TaskRelation/ (Task 760)
+
+Documents the compositionality sorries in `TaskRelation.lean`:
+
+- **Compositionality.lean**: Task relation composition cases (5 sorries)
+
+**Why documented here**:
+- Cross-sign duration composition cases not exercised by completeness
+- The truth lemma uses family coherence directly, bypassing task relation
+- Sorries remain in source with references to this documentation
 
 ## Potential Future Use
 
