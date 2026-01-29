@@ -1,5 +1,5 @@
 ---
-next_project_number: 734
+next_project_number: 735
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -103,6 +103,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 734. Full decision procedure for Bimodal logic
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-29
+
+**Description**: Establish a full decision procedure for the Bimodal/ logic.
+
+---
 
 ### 733. Ultraproduct-based proof of compactness
 - **Effort**: TBD
