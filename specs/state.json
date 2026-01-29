@@ -135,17 +135,17 @@
     {
       "project_number": 658,
       "project_name": "prove_indexed_family_coherence_conditions",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T00:25:36Z",
+      "last_updated": "2026-01-29T00:28:11Z",
       "related_tasks": [
         654
       ],
       "researching": "2026-01-29T00:25:36Z",
       "session_id": "sess_1769646323_6a0334",
-      "researched": "2026-01-28T00:43:05Z",
+      "researched": "2026-01-29T00:28:11Z",
       "research_summary": "Research completed for indexed family coherence conditions. Analyzed four coherence condition sorries (lines 433, 439, 448, 456) in IndexedMCSFamily.lean. Identified proof strategies using temporal axioms (Temporal 4, Temporal K distribution). Forward_G and backward_H are directly provable from seed construction (5-7 hours). Forward_H and backward_G require MCS negation completeness lemma (additional 4-5 hours prerequisite). Created comprehensive report with phased proof strategy, case analysis patterns, and dependency analysis.",
       "artifacts": [
         {
@@ -187,6 +187,11 @@
           "path": "specs/658_prove_indexed_family_coherence_conditions/plans/implementation-006.md",
           "type": "plan",
           "summary": "Revised plan v6 incorporating Task 697 findings"
+        },
+        {
+          "path": "specs/658_prove_indexed_family_coherence_conditions/reports/research-005.md",
+          "type": "research",
+          "summary": "Dependency chain analysis: representation_theorem incorrectly uses superseded construct_indexed_family instead of construct_coherent_family. Documents code-documentation mismatch and refactoring plan."
         }
       ],
       "planning": "2026-01-25T21:42:13Z",
