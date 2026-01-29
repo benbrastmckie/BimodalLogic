@@ -431,12 +431,10 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       intro h_all_future
       -- NOT REQUIRED FOR COMPLETENESS - the representation theorem only uses truth_lemma_forward.
       --
-      -- BLOCKED BY OMEGA-RULE LIMITATION (Task 741):
+      -- ARCHITECTURAL LIMITATION (omega-rule):
       -- Symmetric to the all_past case. Requires G-completeness:
       --   (∀ s > t, psi ∈ mcs(s)) → G psi ∈ mcs(t)
-      -- Same omega-rule issue applies.
-      --
-      -- See: TemporalCompleteness.lean for infrastructure and detailed documentation
+      -- Same omega-rule issue - requires deriving G psi from infinitely many psi instances.
       sorry
 
 /-!

@@ -260,7 +260,7 @@ noncomputable def SemanticCanonicalModel (D : Type) [AddCommGroup D] [LinearOrde
 
 ---
 
-### Phase 5: Parametric FMP Theorems [NOT STARTED]
+### Phase 5: Parametric FMP Theorems [IN PROGRESS]
 
 **Goal**: Port FMP theorems with full parametric proofs.
 
