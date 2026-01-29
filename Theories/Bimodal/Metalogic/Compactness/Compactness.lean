@@ -97,7 +97,7 @@ theorem compactness_unsatisfiability (Gamma : Set Formula) :
   -- Unsatisfiability means Γ |= ⊥
   have h_entails_bot : set_semantic_consequence Gamma Formula.bot := by
     intro D _ _ _ F M tau t h_all
-    -- If Γ were satisfiable at this point, we'd have a contradiction
+    -- If Gamma were satisfiable here, contradiction would arise
     -- So we need to derive ⊥ from the assumption that Γ is unsatisfied
     exfalso
     apply h_unsat

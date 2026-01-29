@@ -21,9 +21,6 @@ Interior operators satisfy:
 2. **Monotone**: `a ≤ b → c(a) ≤ c(b)` (from K-distribution)
 3. **Idempotent**: `c(c(a)) = c(a)` (from 4-axiom: `Gφ → GGφ` and T-axiom)
 
-## Status
-
-Phase 4 of Task 700.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.InteriorOperators

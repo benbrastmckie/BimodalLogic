@@ -21,7 +21,7 @@ combinatorial - independent of any specific duration type.
 - `finite_model_property_constructive`: Constructive FMP with explicit bounds
 - `semanticWorldState_card_bound`: Card ≤ 2^closureSize bound
 
-## Known Sorries
+## Known Limitations
 
 - `finite_model_property_constructive`: Contains a sorry for the truth bridge
   connecting finite model truth to general `truth_at`. The bridge requires

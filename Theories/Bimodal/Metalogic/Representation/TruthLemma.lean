@@ -359,7 +359,7 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       2. Only quantify over "canonical" histories built from MCS families
       3. Add a modal accessibility predicate relating histories
 
-      **Impact**: The box case is NOT critical for the main representation theorem (Task 654),
+      **Impact**: The box case is NOT critical for the main representation theorem,
       which only needs temporal operators (G/H). The representation theorem is proven using
       the forward direction for temporal operators, which work correctly.
       -/

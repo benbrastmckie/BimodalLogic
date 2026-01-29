@@ -55,9 +55,6 @@ The algebraic approach proceeds as follows:
 - Mathlib: BooleanAlgebra, Ultrafilter, ClosureOperator
 - ProofChecker: Bimodal.ProofSystem, Bimodal.Metalogic.Core
 
-## Status
-
-Task 700 implementation.
 -/
 
 namespace Bimodal.Metalogic.Algebraic

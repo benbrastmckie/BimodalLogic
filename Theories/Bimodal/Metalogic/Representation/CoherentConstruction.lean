@@ -59,7 +59,7 @@ The following cases in `mcs_unified_chain_pairwise_coherent` have sorries that a
 **The completeness proof only uses:**
 - `forward_G` Case 1 (both >= 0): PROVEN via `mcs_forward_chain_coherent`
 - `backward_H` Case 4 (both < 0): PROVEN via `mcs_backward_chain_coherent`
-- `forward_H` Case 4 (both < 0): PROVEN via `mcs_backward_chain_H_persistence` (Task 659)
+- `forward_H` Case 4 (both < 0): PROVEN via `mcs_backward_chain_H_persistence`
 
 See `Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean` for detailed documentation
 of what would be needed to prove the remaining cases.

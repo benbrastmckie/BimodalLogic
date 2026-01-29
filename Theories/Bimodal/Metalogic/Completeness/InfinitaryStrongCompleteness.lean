@@ -249,14 +249,14 @@ theorem infinitary_strong_completeness (Gamma : Set Formula) (phi : Formula) :
 
   -- h_neg_true : truth_at ... t phi.neg
   -- This means phi is false at this model/point
-  -- We need to show that all of Gamma is true at this point to get contradiction
+  -- To get contradiction, all of Gamma must be true here
 
   -- The representation theorem gives us phi.neg in family.mcs t
   -- And the truth lemma gives us truth_at ... t phi.neg
 
   -- Now apply h_set_entails: If all of Gamma is true at (model, t), then phi is true
   -- But phi.neg is true, so phi is false
-  -- We need: all of Gamma is true at this point
+  -- Requirement: all of Gamma is true here
 
   -- The problem: the MCS at t extends {phi.neg}, not necessarily Gamma ∪ {phi.neg}
   -- We need a stronger version of the representation theorem that can handle

@@ -1,5 +1,4 @@
 -- Metalogic: Universal Parametric Canonical Model for TM Logic
--- This is the new implementation following Task 654's research recommendations
 
 -- Finite Model Property infrastructure
 import Bimodal.Metalogic.FMP
@@ -57,7 +56,7 @@ FMP/                     # Finite Model Property (Parametric)
 
 ## Status
 
-Work in progress (Task 654 for representation, Task 738 for FMP).
+Work in progress.
 -/
 
 -- Core layer (to be populated)

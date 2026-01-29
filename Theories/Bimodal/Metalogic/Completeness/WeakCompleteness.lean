@@ -193,7 +193,7 @@ theorem weak_completeness (φ : Formula) : valid φ → ContextDerivable [] φ :
   obtain ⟨family, t, h_mem, h_truth⟩ := representation_theorem φ.neg h_set_cons
   -- Step 4: h_truth says ¬φ is true at (canonical_model, canonical_history, t)
   -- This means φ is false there, contradicting validity
-  -- But validity says φ is true everywhere, including at this point
+  -- But validity says φ is true everywhere, including here
   have h_phi_valid := h_valid ℤ (UniversalCanonicalFrame ℤ)
     (canonical_model ℤ family) (canonical_history_family ℤ family) t
   -- Now we have: h_truth : truth_at ... t φ.neg and h_phi_valid : truth_at ... t φ

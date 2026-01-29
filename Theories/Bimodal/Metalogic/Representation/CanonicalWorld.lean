@@ -24,10 +24,6 @@ This allows the canonical model to be parametric over any temporal structure.
 - Basic projections and accessors
 - MCS property inheritance lemmas
 
-## References
-
-- Research report: specs/654_.../reports/research-003.md
-- Implementation plan: specs/654_.../plans/implementation-003.md
 -/
 
 namespace Bimodal.Metalogic.Representation

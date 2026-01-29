@@ -29,10 +29,6 @@ theorem representation_theorem (phi : Formula) (h_cons : SetConsistent {phi}) :
 The canonical model is already defined in TruthLemma.lean as `canonical_model`.
 This module focuses on the representation theorem that ties everything together.
 
-## References
-
-- Research report: specs/654_.../reports/research-004.md
-- Implementation plan: specs/654_.../plans/implementation-004.md
 -/
 
 namespace Bimodal.Metalogic.Representation
