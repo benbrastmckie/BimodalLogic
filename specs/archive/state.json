@@ -1,7 +1,4 @@
 {
-  "_schema_version": "1.0.0",
-  "_comment": "State tracking file for archived projects. Projects are moved here from specs/state.json when completed and archived.",
-  "_last_updated": "2026-01-28T22:43:50Z",
   "archived_projects": [],
   "completed_projects": [
     {
@@ -9471,6 +9468,46 @@
       "claudemd_suggestions": "Added typst row to Language-Based Routing table, added skill-typst-implementation to Skill-to-Agent Mapping table, added Typst Context section to context/index.md",
       "archived": "2026-01-28T19:06:51Z",
       "source": "archival"
+    },
+    {
+      "project_number": 731,
+      "project_name": "clean_bimodal_documentation_remove_historical_comments",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-01-29T00:34:56Z",
+      "completion_summary": "Cleaned Bimodal codebase documentation by removing 20 provenance comments from Core files, moving 2 compatibility shims to Boneyard/Compat, and updating all active code to use canonical Metalogic.Core namespace. Verified Boneyard isolation with only intentional re-exports remaining."
+    },
+    {
+      "project_number": 726,
+      "project_name": "move_essential_mcs_lemmas_to_core",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-01-29T00:34:56Z",
+      "completion_summary": "Moved 5 essential MCS lemmas plus deduction_theorem from Boneyard to Metalogic/Core. Eliminated all Boneyard imports from Representation layer."
+    },
+    {
+      "project_number": 727,
+      "project_name": "consolidate_set_lindenbaum",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-01-29T00:34:56Z",
+      "completion_summary": "Added deprecation notices to duplicate set_lindenbaum definitions in Boneyard/Metalogic/ files, pointing to canonical source at Metalogic.Core.MaximalConsistent. Updated Boneyard README files with deprecation documentation."
+    },
+    {
+      "project_number": 697,
+      "project_name": "fix_universalcanonicalmodel_compilation_error",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-01-29T00:34:56Z",
+      "completion_summary": "Fixed reflexive/strict semantics mismatch in TruthLemma.lean temporal cases using eq_or_lt_of_le case split with T-axiom closure lemmas for reflexive case."
+    },
+    {
+      "project_number": 630,
+      "project_name": "build_taskmodel_extraction_from_saturated_branches",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-01-29T00:34:56Z",
+      "completion_summary": "Built TaskModel extraction infrastructure with BranchTaskFrame, BranchTaskModel, and WorldHistory construction. Integrated with CountermodelExtraction for proper modal/temporal countermodel semantics. One sorry remains in truth lemma helper (mechanical proof)."
     }
   ]
 }

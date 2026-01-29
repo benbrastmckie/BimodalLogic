@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 16
-  completed: 293
+  active: 11
+  completed: 298
   in_progress: 4
   not_started: 8
   abandoned: 21
-  total: 319
+  total: 324
 priority_distribution:
   critical: 0
   high: 6
@@ -26,22 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 697. Fix UniversalCanonicalModel.lean compilation error
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-29
-- **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:413
-- **Research**: [research-001.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-001.md), [research-002.md](specs/697_fix_universalcanonicalmodel_compilation_error/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/697_fix_universalcanonicalmodel_compilation_error/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260129.md](specs/697_fix_universalcanonicalmodel_compilation_error/summaries/implementation-summary-20260129.md)
-
-**Description**: Fix the reflexive/irreflexive semantics mismatch in TruthLemma.lean. Semantics use `s ≤ t` but coherence conditions use `s < t`. Fix by splitting proof cases with `eq_or_lt_of_le` and using T-axiom closure lemmas for the reflexive case. Plan revised post-726 (MCS lemma reorganization).
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -120,56 +104,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 731. Clean Bimodal documentation - remove historical comments
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-29
-- **Related**: Task 681
-- **Research**: [research-001.md](specs/731_clean_bimodal_documentation_remove_historical_comments/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/731_clean_bimodal_documentation_remove_historical_comments/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/731_clean_bimodal_documentation_remove_historical_comments/summaries/implementation-summary-20260129.md)
-
-**Description**: Clean up Lean source code documentation in Bimodal/ theory to present only the current state with no historical mentions. **Scope change**: Remove ALL historical artifacts including: (1) provenance comments (`-- Origin: Boneyard/...`) from Core/*.lean files, (2) SUPERSEDED/DEPRECATED docblocks and markers, (3) narrative history explaining past approaches or "why we did X instead of Y", (4) references to Boneyard in active code comments. Goal is clean, present-tense documentation describing what the code IS, not where it came from or what it replaced. Also: (a) update remaining Boneyard imports in GeneralizedNecessitation.lean and Propositional.lean to use Core, (b) move compatibility shims Metalogic.lean and Metalogic_v2.lean to Boneyard/Compat/, (c) verify complete Boneyard isolation.
-
----
-
-### 726. Move essential MCS lemmas to Core
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-28
-- **Started**: 2026-01-28
-- **Completed**: 2026-01-29
-- **Parent**: Task 722
-- **Research**: [research-001.md](specs/726_move_essential_mcs_lemmas_to_core/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/726_move_essential_mcs_lemmas_to_core/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/726_move_essential_mcs_lemmas_to_core/summaries/implementation-summary-20260129.md)
-
-**Description**: Move 5 essential MCS lemmas from deprecated `Boneyard/Metalogic/Completeness.lean` to the canonical Core location (`Boneyard/Metalogic_v2/Core/MaximalConsistent.lean`). Lemmas to move: `set_mcs_closed_under_derivation`, `set_mcs_implication_property`, `set_mcs_negation_complete`, `set_mcs_all_future_all_future`, `set_mcs_all_past_all_past`. Dependencies like `deduction_theorem` and `derivation_exchange` must move first. Update re-exports in `Metalogic/Core/MaximalConsistent.lean`. Deferred from Task 722 Phase 3.
-
----
-
-### 727. Consolidate set_lindenbaum duplicates
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-28
-- **Completed**: 2026-01-29
-- **Parent**: Task 722
-- **Dependencies**: Task 726 (COMPLETED)
-- **Research**: [research-001.md](specs/727_consolidate_set_lindenbaum/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/727_consolidate_set_lindenbaum/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260129.md](specs/727_consolidate_set_lindenbaum/summaries/implementation-summary-20260129.md)
-
-**Description**: Remove duplicate `set_lindenbaum` theorem definitions from deprecated Boneyard/Metalogic/ files when those files are fully deprecated. Current duplicates: `Boneyard/Metalogic/Completeness.lean:360` and `Boneyard/Metalogic/Representation/CanonicalModel.lean:139`. Canonical source is `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean:290`, re-exported via `Metalogic/Core/MaximalConsistent.lean`. Deferred from Task 722 Phase 4.
-
----
-
 ### 700. Research algebraic representation theorem proof
 - **Effort**: 12-16 hours
 - **Status**: [IMPLEMENTING]
@@ -198,7 +132,7 @@ technical_debt:
 ---
 
 ### 658. Prove indexed family coherence conditions
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Session**: sess_1769646678_e60e81
 - **Effort**: 30-45 min
 - **Priority**: Medium
@@ -229,23 +163,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/660_prove_parametric_completeness_theorems/reports/research-001.md)
 
 **Description**: Use the representation theorem from Task 654 to prove weak and strong completeness for TM logic over arbitrary ordered additive groups. The representation theorem establishes that consistent formulas are satisfiable in the parametric canonical model. This task completes the metalogic by deriving completeness: (1) Weak completeness: if ⊨ φ then ⊢ φ, (2) Strong completeness: if Γ ⊨ φ then Γ ⊢ φ. Builds on the foundation established by Tasks 656-658. From review-20260121-task654.md future work section.
-
----
-
-### 630. Build TaskModel extraction from saturated tableau branches
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-19
-- **Completed**: 2026-01-29
-- **Parent**: Task 490
-- **Dependencies**: Task 623
-- **Related**: Tasks 624, 628
-- **Research**: [research-001.md](specs/630_build_taskmodel_extraction_from_saturated_branches/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/630_build_taskmodel_extraction_from_saturated_branches/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/630_build_taskmodel_extraction_from_saturated_branches/summaries/implementation-summary-20260129.md)
-
-**Description**: Build infrastructure to extract a proper TaskModel from a saturated open tableau branch. The bimodal logic TM uses **task frame semantics** (NOT standard Kripke semantics): TaskFrame `F = (W, D, ·)` with world states, temporal duration type D, and task relation satisfying nullity/compositionality; WorldHistory `τ: X → W` as functions from convex time domains to states; Box `□φ` quantifies over ALL world histories at time t (not worlds via accessibility relation); Temporal `Hφ`/`Gφ` quantify over ALL times in D. Currently `evalFormula` (CountermodelExtraction.lean:158-164) treats modal/temporal operators as identity. This task: (1) Extract WorldState type from branch, (2) Define task relation from modal constraints, (3) Build WorldHistory structure, (4) Prove extracted TaskFrame satisfies nullity and compositionality. Unblocks Phase 3 of Task 623 and enables Task 624 (tableau_complete).
 
 ---
 

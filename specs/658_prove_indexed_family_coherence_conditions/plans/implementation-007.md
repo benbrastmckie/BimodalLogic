@@ -41,7 +41,7 @@ This is a straightforward refactoring task: update the call site to use the cohe
 
 ## Implementation Phases
 
-### Phase 1: Update representation_theorem [NOT STARTED]
+### Phase 1: Update representation_theorem [IN PROGRESS]
 
 **Goal**: Switch from `construct_indexed_family` to `construct_coherent_family`.
 
