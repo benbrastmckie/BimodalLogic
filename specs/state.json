@@ -31,7 +31,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T20:26:56Z",
-      "last_updated": "2026-01-29T21:40:43Z",
+      "last_updated": "2026-01-29T21:44:02Z",
       "description": "Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase",
       "session_id": "sess_1769721934_352e7e",
       "researched": "2026-01-29T20:50:41Z",
@@ -42,12 +42,12 @@
           "summary": "Comprehensive categorization of 48 sorries into ARCHIVE (25), COMPLETE (12), and KEEP (11) dispositions"
         },
         {
-          "path": "specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-002.md",
+          "path": "specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-003.md",
           "type": "plan",
-          "summary": "9-phase plan to archive 48 sorries to Boneyard for clean main codebase"
+          "summary": "7-phase plan to archive 29 sorries (avoiding Task 750 overlap)"
         }
       ],
-      "planned": "2026-01-29T21:40:43Z"
+      "planned": "2026-01-29T21:44:02Z"
     },
     {
       "project_number": 759,
@@ -120,12 +120,12 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T21:34:00Z",
-      "session_id": "sess_1769720147_342164",
+      "last_updated": "2026-01-29T21:41:14Z",
+      "session_id": "sess_1769722855_42e041",
       "researched": "2026-01-29T20:41:02Z",
       "artifacts": [
         {

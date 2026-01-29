@@ -109,7 +109,7 @@ The gap in `truth_at_implies_semantic_truth` prevents proving `valid → semanti
 
 ## Implementation Phases
 
-### Phase 1: Archive MCSDerivedWorldState.lean [NOT STARTED]
+### Phase 1: Archive MCSDerivedWorldState.lean [COMPLETED]
 
 **Goal**: Move MCS-restricted truth lemma attempt to Boneyard
 
@@ -133,7 +133,7 @@ The gap in `truth_at_implies_semantic_truth` prevents proving `valid → semanti
 
 ---
 
-### Phase 2: Archive AlgebraicSemanticBridge.lean [NOT STARTED]
+### Phase 2: Archive AlgebraicSemanticBridge.lean [IN PROGRESS]
 
 **Goal**: Move algebraic-Kripke bridge attempt to Boneyard
 

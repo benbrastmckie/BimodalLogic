@@ -6,10 +6,47 @@ import Bimodal.Semantics.Validity
 /-!
 # Algebraic-Semantic Bridge
 
+**STATUS: ARCHIVED (Task 750)**
+
+## Archival Rationale
+
+This module attempted to bridge the algebraic representation theorem (which IS sorry-free)
+to standard Kripke semantics. The goal was to create a sorry-free path from algebraic
+consistency to semantic completeness.
+
+### Why This Approach Failed
+
+The fundamental obstacle is the same **Box semantics limitation** that blocks all
+"forward truth lemma" approaches:
+
+- `algTrueAt U (box psi)` means `[box psi] ∈ U` (ultrafilter membership)
+- `truth_at algModel (algHistory U) 0 (box psi)` means `forall sigma, truth_at ... sigma ... psi`
+
+The Box case requires truth at ALL histories, but we only have information about
+the single ultrafilter U. The algebraic truth predicate gives membership in ONE
+ultrafilter, while semantic Box quantifies over ALL world histories.
+
+### What Was Learned
+
+1. The algebraic representation theorem (`AlgSatisfiable ↔ AlgConsistent`) IS sorry-free
+2. The ultrafilter-MCS correspondence IS sorry-free
+3. The gap is specifically in connecting ultrafilter membership to semantic Box truth
+4. This is the same fundamental limitation as in MCSDerivedWorldState.lean
+
+### Correct Solution
+
+The sorry-free path does not require bridging to general Kripke validity.
+Use `semantic_weak_completeness` in `SemanticCanonicalModel.lean` which:
+- Works via contrapositive (unprovable -> exists countermodel)
+- Uses `semantic_truth_at_v2` (finite assignment check) not `truth_at` (recursive eval)
+- Is completely sorry-free
+
+## Original Documentation (preserved for reference)
+
 This module connects the algebraic representation theorem (which is sorry-free)
 to standard Kripke semantics, providing a sorry-free path to completeness.
 
-## Overview
+### Overview
 
 The algebraic path proves:
 ```
@@ -26,7 +63,7 @@ def valid (φ : Formula) : Prop :=
     ∀ D F M τ t, truth_at M τ t φ
 ```
 
-## Strategy
+### Original Strategy
 
 1. **Task Frame from Ultrafilter**: Define a TaskFrame where:
    - World states are `AlgWorld` (ultrafilters of Lindenbaum algebra)
@@ -38,7 +75,7 @@ def valid (φ : Formula) : Prop :=
 
 4. **Completeness**: Derive `valid φ → derivation [] φ` from the bridge
 
-## Status
+### Status (at time of archival)
 
 Contains sorries in modal/temporal cases of the truth lemma.
 The propositional fragment is complete.

@@ -3,8 +3,8 @@ import Bimodal.Metalogic.Algebraic.BooleanStructure
 import Bimodal.Metalogic.Algebraic.InteriorOperators
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 import Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
-import Bimodal.Metalogic.Algebraic.AlgebraicSemanticBridge
-import Bimodal.Metalogic.Algebraic.HybridCompleteness
+-- AlgebraicSemanticBridge.lean archived to Boneyard/Metalogic_v3/FailedTruthLemma/ (Task 750)
+-- HybridCompleteness.lean archived to Boneyard/Metalogic_v3/FailedTruthLemma/ (Task 750)
 
 /-!
 # Algebraic Representation Theorem
@@ -69,7 +69,6 @@ open Bimodal.Metalogic.Algebraic.BooleanStructure
 open Bimodal.Metalogic.Algebraic.InteriorOperators
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
 open Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
-open Bimodal.Metalogic.Algebraic.AlgebraicSemanticBridge
-open Bimodal.Metalogic.Algebraic.HybridCompleteness
+-- AlgebraicSemanticBridge and HybridCompleteness archived (Task 750)
 
 end Bimodal.Metalogic.Algebraic

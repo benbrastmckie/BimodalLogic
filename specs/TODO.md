@@ -122,7 +122,7 @@ technical_debt:
 ## Medium Priority
 
 ### 760. Determine sorry disposition: archive vs complete
-- **Effort**: 6-8 hours
+- **Effort**: 4-5 hours
 - **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
@@ -130,15 +130,15 @@ technical_debt:
 - **Started**: 2026-01-29
 - **Revised**: 2026-01-29
 - **Research**: [research-001.md](specs/760_determine_sorry_disposition_archive_vs_complete/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-003.md)
 
-**Description**: Archive all sorried code from main Bimodal/ to Boneyard/ for a clean codebase. Move ~48 sorries (ARCHIVE + COMPLETE + KEEP categories) to Boneyard where documentation can be preserved. No imports from Boneyard in main theory.
+**Description**: Archive sorried code to Boneyard (non-overlapping with Task 750). Targets: Examples/ exercise files (12 sorries), IndexedMCSFamily dead code (4), CoherentConstruction cross-origin (8), TaskRelation compositionality (5). Total: 29 sorries.
 
 ---
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 8-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29

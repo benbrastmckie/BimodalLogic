@@ -3,11 +3,50 @@ import Bimodal.Metalogic.FMP.SemanticCanonicalModel
 /-!
 # MCS-Derived World States for Truth Lemma
 
+**STATUS: ARCHIVED (Task 750)**
+
+## Archival Rationale
+
+This module was created as an attempt to prove the forward truth lemma by restricting
+to MCS-derived world states. The hypothesis was that if we only consider world states
+that are explicitly constructed from Closure Maximal Consistent sets, we could prove
+truth correspondence where the general approach fails.
+
+### Why This Approach Failed
+
+The fundamental obstacle is **Box semantics**: `truth_at M tau t (box psi)` quantifies
+over ALL world histories, not just MCS-derived ones. Even though MCS-derived states
+have the implication biconditional property, the Box case requires:
+
+  "For all histories sigma, truth_at M sigma t psi"
+
+This universally quantifies over histories that may pass through non-MCS-derived states,
+breaking the MCS restriction assumption.
+
+### What Was Learned
+
+The key insight from this investigation:
+- The contrapositive path via `semantic_weak_completeness` is the correct approach
+- It constructs countermodels from MCS when formulas are NOT provable
+- This sidesteps the forward truth lemma entirely
+- `semantic_weak_completeness` IS the sorry-free completeness result
+
+### Correct Solution
+
+Use `semantic_weak_completeness` in `SemanticCanonicalModel.lean`. It provides:
+```
+(forall w : SemanticWorldState, semantic_truth_at_v2 w phi) -> Provable phi
+```
+
+This works via contrapositive (unprovable -> exists countermodel) and is sorry-free.
+
+## Original Documentation (preserved for reference)
+
 This module defines a restricted subtype of `SemanticWorldState` that carries proof
 of derivation from a Closure Maximal Consistent set (MCS). For these states, we can
 prove a sorry-free truth correspondence theorem.
 
-## Motivation
+### Motivation
 
 The gap in `truth_at_implies_semantic_truth` exists because `IsLocallyConsistent` only
 enforces the **modus ponens direction** for implications:
@@ -18,23 +57,27 @@ But for truth correspondence, we need the **biconditional**:
 
 MCS-derived states have this biconditional via `closure_mcs_imp_iff` (proven in Closure.lean).
 
-## Main Definitions
+### Main Definitions
 
 - `MCSDerivedSemanticWorldState`: Subtype of SemanticWorldState with MCS derivation proof
 - `mcs_truth_correspondence`: Truth at position equals assignment for MCS-derived states
 
-## Why This Suffices for Completeness
+### Why This Was Thought to Suffice
 
 1. `valid phi -> Provable phi` needs: "If phi valid, then no countermodel"
 2. `semantic_weak_completeness` constructs countermodels from MCS
 3. All countermodels it produces ARE MCS-derived
 4. So: `valid phi -> true at all MCS-derived states -> Provable phi`
 
-## References
+The flaw: Step 4 requires proving `valid -> true at all MCS-derived states`,
+which still needs the forward truth lemma for Box.
+
+### References
 
 - Original gap analysis: SemanticCanonicalModel.lean lines 627-684
 - MCS implication biconditional: Closure.lean `closure_mcs_imp_iff`
 - MCS negation completeness: Closure.lean `closure_mcs_neg_complete`
+- Task 750 research-012: Analysis confirming Box limitation is fundamental
 -/
 
 namespace Bimodal.Metalogic.FMP
