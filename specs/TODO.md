@@ -1,5 +1,5 @@
 ---
-next_project_number: 754
+next_project_number: 755
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 754. Implement Option B: Forward Truth Lemma Refactoring
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Reference**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md)
+
+**Description**: Complete Option B described in /home/benjamin/Projects/ProofChecker/specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md in full rigor and to the highest quality.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -106,7 +117,7 @@ technical_debt:
 
 ### 753. Prove sorries in CoherentConstruction for standard completeness
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
