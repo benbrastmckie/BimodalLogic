@@ -6,6 +6,17 @@
   },
   "active_projects": [
     {
+      "project_number": 765,
+      "project_name": "exclude_boneyard_examples_from_sorry_count",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-29T22:10:38Z",
+      "last_updated": "2026-01-29T22:10:38Z",
+      "session_id": "sess_1769724638_58c5eb",
+      "description": "Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep command at line 850 of todo.md, (2) /review command at line 132 of review.md if applicable, (3) state-management.md documentation to reflect exclusion policy, (4) current metrics in state.json and TODO.md to reflect accurate count (~72 instead of ~322)."
+    },
+    {
       "project_number": 764,
       "project_name": "improve_metalogic_structure_and_documentation",
       "status": "researched",
@@ -14,7 +25,14 @@
       "created": "2026-01-29T22:01:58Z",
       "last_updated": "2026-01-29T22:10:17Z",
       "session_id": "sess_1769724430_07bf59",
-      "researched": "2026-01-29T22:10:17Z"
+      "researched": "2026-01-29T22:10:17Z",
+      "artifacts": [
+        {
+          "path": "specs/764_improve_metalogic_structure_and_documentation/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research report with dependency graph, sorry analysis, documentation assessment, structural improvements, and phased implementation plan"
+        }
+      ]
     },
     {
       "project_number": 761,
@@ -310,7 +328,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 765,
+  "next_project_number": 766,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
