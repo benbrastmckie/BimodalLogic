@@ -1,14 +1,14 @@
 ---
-next_project_number: 750
+next_project_number: 751
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 13
+  active: 14
   completed: 312
   in_progress: 4
-  not_started: 4
+  not_started: 5
   abandoned: 21
   total: 340
 priority_distribution:
@@ -128,6 +128,17 @@ technical_debt:
 - **Created**: 2026-01-29
 
 **Description**: Establish sorry-free completeness using `semantic_weak_completeness` which works directly with finite model truth, avoiding the truth bridge, or other methods if better.
+
+---
+
+### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-29
+
+**Description**: Following the contingency approach from task 745 (which kept mutual induction structure but marked backward cases as sorry with comments), refactor the forward Truth Lemma to avoid all sorries and completely remove the backward direction which is not needed for the metalogic as it stands.
 
 ---
 
