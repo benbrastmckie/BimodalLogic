@@ -120,11 +120,12 @@ technical_debt:
 
 ### 731. Clean Bimodal documentation - remove historical comments
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Related**: Task 681
+- **Research**: [research-001.md](specs/731_clean_bimodal_documentation_remove_historical_comments/reports/research-001.md)
 
 **Description**: Clean up Lean source code documentation in Bimodal/ theory. Remove historical comments about past attempts, comparative mentions, and implementation history from main source files. **Important context from Task 726**: Core/DeductionTheorem.lean and Core/MCSProperties.lean now contain Boneyard-origin lemmas with provenance comments (e.g., `-- Origin: Boneyard/...`); these provenance comments should be PRESERVED as they document code lineage, not removed. The cleanup focuses on: (1) removing narrative history in comments explaining "why we did X instead of Y", (2) removing references to abandoned approaches, (3) ensuring Boneyard/ is completely isolated (no imports from Boneyard in active code - already done by Task 726 for Representation/ files). Move historical context to Boneyard/ documentation where appropriate. Post-726 structure: Representation/ files now import from Core/ instead of Boneyard/.
 
