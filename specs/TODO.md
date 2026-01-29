@@ -146,7 +146,7 @@ technical_debt:
 ---
 
 ### 753. Prove sorries in CoherentConstruction for standard completeness
-- **Effort**: 12-18 hours
+- **Effort**: 6-10 hours
 - **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
@@ -154,9 +154,9 @@ technical_debt:
 - **Started**: 2026-01-29
 - **Revised**: 2026-01-29
 - **Research**: [research-001.md](specs/753_prove_sorries_in_coherentconstruction/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/753_prove_sorries_in_coherentconstruction/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](specs/753_prove_sorries_in_coherentconstruction/plans/implementation-003.md)
 
-**Description**: Prove sorries in CoherentConstruction.lean and TaskRelation.lean (15 sorries total). Revised scope focuses on chain construction refactoring and compositionality proofs; TruthLemma and FMP sorries delegated to tasks 749/750/755.
+**Description**: Prove sorries in CoherentConstruction.lean and TaskRelation.lean with clean-break approach: (1) sigma-type chain refactoring for infrastructure sorries, (2) TaskRelation architectural simplification or deletion, (3) documented cross-origin gaps. Prioritizes quality and consistency over backwards compatibility.
 
 ---
 

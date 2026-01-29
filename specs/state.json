@@ -64,7 +64,7 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T16:50:59Z",
-      "last_updated": "2026-01-29T17:42:56Z",
+      "last_updated": "2026-01-29T17:51:04Z",
       "session_id": "sess_1769706752_5bf372",
       "researched": "2026-01-29T16:56:39Z",
       "artifacts": [
@@ -74,12 +74,12 @@
           "summary": "Comprehensive analysis of 10 sorries in CoherentConstruction.lean, identifying 2 critical infrastructure sorries (lines 403, 416) needed for completeness and 8 non-critical coherence case sorries"
         },
         {
-          "path": "specs/753_prove_sorries_in_coherentconstruction/plans/implementation-002.md",
+          "path": "specs/753_prove_sorries_in_coherentconstruction/plans/implementation-003.md",
           "type": "plan",
-          "summary": "Revised 4-phase plan targeting 15 sorries in CoherentConstruction.lean and TaskRelation.lean"
+          "summary": "Clean-break v003 plan: sigma-type refactoring, TaskRelation simplification, documented cross-origin gaps"
         }
       ],
-      "planned": "2026-01-29T17:42:56Z",
+      "planned": "2026-01-29T17:51:04Z",
       "started": "2026-01-29T17:12:53Z"
     },
     {
