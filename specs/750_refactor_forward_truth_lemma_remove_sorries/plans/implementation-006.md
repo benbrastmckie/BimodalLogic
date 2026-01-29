@@ -28,9 +28,9 @@ Instead of attempting further fixes, this plan:
 
 ```
                            ┌─────────────────────────────────────┐
-                           │          COMPLETENESS              │
-                           │  semantic_weak_completeness (FMP)  │
-                           │        *** SORRY-FREE ***          │
+                           │          COMPLETENESS               │
+                           │  semantic_weak_completeness (FMP)   │
+                           │        *** SORRY-FREE ***           │
                            └───────────────────┬─────────────────┘
                                                │
                     ┌──────────────────────────┼──────────────────────────┐
