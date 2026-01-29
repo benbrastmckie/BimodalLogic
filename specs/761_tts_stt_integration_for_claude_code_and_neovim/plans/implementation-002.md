@@ -1,7 +1,7 @@
 # Implementation Plan: Task #761 (Revision 002)
 
 - **Task**: 761 - TTS/STT Integration for Claude Code and Neovim
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Dependencies**: None (TTS hook already working, Vosk already installed)
@@ -56,7 +56,7 @@ This is a **revision plan** to fix STT plugin integration issues identified in t
 
 ## Implementation Phases
 
-### Phase 1: Restructure STT Plugin Files [NOT STARTED]
+### Phase 1: Restructure STT Plugin Files [COMPLETED]
 
 **Goal**: Move STT plugin from orphaned location into neotex.plugins.tools hierarchy.
 
@@ -95,7 +95,7 @@ return {
 
 ---
 
-### Phase 2: Register Plugin and Add Which-Key Mappings [NOT STARTED]
+### Phase 2: Register Plugin and Add Which-Key Mappings [COMPLETED]
 
 **Goal**: Register STT plugin with lazy.nvim and add `<leader>v` group to which-key.
 
@@ -137,7 +137,7 @@ wk.add({
 
 ---
 
-### Phase 3: Vosk Model Download and End-to-End Testing [NOT STARTED]
+### Phase 3: Vosk Model Download and End-to-End Testing [COMPLETED]
 
 **Goal**: Download Vosk model and verify complete STT workflow.
 

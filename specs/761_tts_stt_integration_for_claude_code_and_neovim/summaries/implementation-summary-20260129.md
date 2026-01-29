@@ -1,55 +1,68 @@
-# Implementation Summary: Task #761
+# Implementation Summary: Task #761 (Revision)
 
 **Completed**: 2026-01-29
-**Duration**: ~2 hours
+**Plan Version**: implementation-002.md
+**Duration**: ~25 minutes
+
+## Overview
+
+This implementation fixed the STT plugin integration issues identified in research-003.md. The TTS hook was already working and required no changes. The STT plugin was architecturally misplaced and not discoverable by lazy.nvim.
 
 ## Changes Made
 
-Implemented TTS notifications for Claude Code completions and STT input for Neovim, both working completely offline with no cloud APIs.
+### Phase 1: Restructure STT Plugin Files
+- Created `~/.config/nvim/lua/neotex/plugins/tools/stt/` directory
+- Moved STT implementation to `~/.config/nvim/lua/neotex/plugins/tools/stt/init.lua`
+- Created lazy.nvim plugin spec at `~/.config/nvim/lua/neotex/plugins/tools/stt.lua`
+- Modified setup() to disable built-in keymaps by default (which-key manages them)
+- Removed orphaned `~/.config/nvim/lua/stt/` directory
 
-### TTS for Claude Code
+### Phase 2: Register Plugin and Add Which-Key Mappings
+- Added STT module registration in `~/.config/nvim/lua/neotex/plugins/tools/init.lua`
+- Added `<leader>v` (voice) group to which-key.lua with four mappings:
+  - `<leader>vh` - Health check
+  - `<leader>vr` - Start recording
+  - `<leader>vs` - Stop recording
+  - `<leader>vt` - Toggle recording
 
-Created a Stop hook that announces Claude Code completion via Piper TTS:
-- Detects WezTerm tab number for multi-tab workflows
-- 60-second cooldown prevents notification spam
-- Configurable via environment variables (PIPER_MODEL, TTS_COOLDOWN, TTS_ENABLED)
-- Graceful fallback when dependencies unavailable
-
-### STT for Neovim
-
-Created a Lua plugin for voice input in Neovim:
-- Uses PulseAudio parecord for audio capture
-- Vosk for offline speech recognition (~50MB model)
-- Async job pattern for non-blocking transcription
-- Keymappings: `<leader>vr` start, `<leader>vs` stop, `<leader>vt` toggle
-- Health check command for dependency verification
+### Phase 3: Vosk Model and Documentation
+- Vosk model already installed via NixOS home-manager at `~/.local/share/vosk/vosk-model-small-en-us-0.15`
+- Created symlink `vosk-model-small-en-us -> vosk-model-small-en-us-0.15` for expected path
+- Verified all dependencies: parecord, python3, vosk-transcribe.py script
+- Updated `docs/tts-stt-integration.md` with correct plugin paths
 
 ## Files Modified
 
-- `.claude/hooks/tts-notify.sh` - Created TTS notification hook script
-- `.claude/settings.json` - Added TTS hook to Stop hooks array
-- `~/.config/nvim/lua/stt/init.lua` - Created Neovim STT plugin
-- `~/.local/bin/vosk-transcribe.py` - Created Vosk transcription helper
-- `docs/tts-stt-integration.md` - Created setup and usage documentation
+| File | Change |
+|------|--------|
+| `~/.config/nvim/lua/neotex/plugins/tools/stt/init.lua` | Created - STT plugin implementation |
+| `~/.config/nvim/lua/neotex/plugins/tools/stt.lua` | Created - lazy.nvim plugin spec |
+| `~/.config/nvim/lua/neotex/plugins/tools/init.lua` | Modified - added STT plugin registration |
+| `~/.config/nvim/lua/neotex/plugins/editor/which-key.lua` | Modified - added `<leader>v` voice group |
+| `~/.local/share/vosk/vosk-model-small-en-us` | Created - symlink to versioned model |
+| `docs/tts-stt-integration.md` | Modified - updated plugin paths |
 
 ## Verification
 
-- TTS hook script verified executable with proper error handling
-- Settings.json updated with hook entry in correct location
-- STT plugin structure follows Neovim Lua plugin patterns
-- Documentation covers prerequisites, configuration, and troubleshooting
-
-## Dependencies
-
-Requires user to install via NixOS:
-- `piper-tts` and voice model (~45MB)
-- `vosk` Python package and model (~50MB)
-- `pulseaudio` for parecord
-- `alsa-utils` for aplay
+- [x] STT plugin files in correct neotex.plugins.tools location
+- [x] Lazy.nvim plugin spec follows himalaya-plugin.lua pattern
+- [x] Plugin registered in tools/init.lua
+- [x] Which-key voice group added with all four mappings
+- [x] Vosk model accessible at expected path
+- [x] All dependencies available (parecord, python3, vosk-transcribe.py)
+- [x] Documentation updated with correct paths
 
 ## Notes
 
-- Both features are independent and can be used separately
-- Total model footprint: ~95MB (well under "no local LLM" constraint)
-- All processing happens offline with no network required
-- Rollback is straightforward: remove hook entry and delete files
+- Full end-to-end testing requires Neovim restart to load the new plugin
+- TTS notifications continue to work as before (no changes made)
+- The STT plugin now follows the same pattern as himalaya-plugin.lua for consistency
+- Keymaps are centralized in which-key.lua rather than duplicated in the plugin
+
+## Testing Checklist (Manual)
+
+After Neovim restart, verify:
+1. `:Lazy` shows `stt` in loaded plugins list
+2. `<leader>v` opens voice group in which-key popup
+3. `<leader>vh` reports "All dependencies satisfied!"
+4. Recording flow works: `<leader>vr` -> speak -> `<leader>vs` -> text inserted

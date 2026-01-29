@@ -141,14 +141,21 @@ The Neovim STT plugin records audio via PulseAudio, transcribes it using Vosk, a
 
 ### Installation
 
-Add to your Neovim configuration (init.lua):
+The STT plugin is part of the neotex plugin collection. It is automatically loaded by lazy.nvim when placed in the tools directory.
+
+**Plugin location**: `~/.config/nvim/lua/neotex/plugins/tools/stt/init.lua`
+
+**Keybindings**: Configured via which-key in `~/.config/nvim/lua/neotex/plugins/editor/which-key.lua`
+
+For standalone usage without neotex, you can load the plugin directly:
 
 ```lua
 -- Load and setup STT plugin
-require('stt').setup({
+require('neotex.plugins.tools.stt').setup({
   -- Optional: customize settings
   model_path = vim.fn.expand("~/.local/share/vosk/vosk-model-small-en-us"),
   record_timeout = 30,  -- Max recording time in seconds
+  keymaps = true,  -- Enable built-in keymaps (default: false when using which-key)
 })
 ```
 
@@ -173,7 +180,7 @@ require('stt').setup({
 ### Configuration Options
 
 ```lua
-require('stt').setup({
+require('neotex.plugins.tools.stt').setup({
   -- Path to Vosk model directory
   model_path = "~/.local/share/vosk/vosk-model-small-en-us",
 
@@ -186,7 +193,8 @@ require('stt').setup({
   -- Audio sample rate (16kHz optimal for Vosk)
   sample_rate = 16000,
 
-  -- Set to false to disable default keymaps
+  -- Enable built-in keymaps (default: false)
+  -- Note: When using which-key, keymaps are managed centrally
   keymaps = true,
 })
 ```
@@ -255,7 +263,9 @@ This format is optimal for speech recognition and keeps file sizes small.
 | File | Purpose |
 |------|---------|
 | `.claude/hooks/tts-notify.sh` | Claude Code TTS hook |
-| `~/.config/nvim/lua/stt/init.lua` | Neovim STT plugin |
+| `~/.config/nvim/lua/neotex/plugins/tools/stt/init.lua` | Neovim STT plugin |
+| `~/.config/nvim/lua/neotex/plugins/tools/stt.lua` | Lazy.nvim plugin spec |
+| `~/.config/nvim/lua/neotex/plugins/editor/which-key.lua` | Keybinding configuration |
 | `~/.local/bin/vosk-transcribe.py` | Vosk transcription script |
 | `/tmp/claude-tts-last-notify` | Cooldown timestamp |
 | `/tmp/claude-tts-notify.log` | TTS notification log |
@@ -280,10 +290,12 @@ Total disk usage: ~95 MB for both features.
 
 ### Remove STT Plugin
 
-1. Remove `require('stt')` from your Neovim config
-2. Delete `~/.config/nvim/lua/stt/`
-3. Delete `~/.local/bin/vosk-transcribe.py`
-4. Optionally delete `~/.local/share/vosk/` to remove speech models
+1. Remove the STT entry from `~/.config/nvim/lua/neotex/plugins/tools/init.lua`
+2. Remove the `<leader>v` voice group from `~/.config/nvim/lua/neotex/plugins/editor/which-key.lua`
+3. Delete `~/.config/nvim/lua/neotex/plugins/tools/stt/` directory
+4. Delete `~/.config/nvim/lua/neotex/plugins/tools/stt.lua`
+5. Delete `~/.local/bin/vosk-transcribe.py`
+6. Optionally delete `~/.local/share/vosk/` to remove speech models
 
 ## See Also
 

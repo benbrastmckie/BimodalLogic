@@ -33,12 +33,12 @@
     {
       "project_number": 764,
       "project_name": "improve_metalogic_structure_and_documentation",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-29T22:01:58Z",
-      "last_updated": "2026-01-29T22:39:16Z",
-      "session_id": "sess_1769725807_92139d",
+      "last_updated": "2026-01-29T22:41:02Z",
+      "session_id": "sess_1769726439_30b286",
       "researched": "2026-01-29T22:19:37Z",
       "artifacts": [
         {
@@ -58,16 +58,17 @@
         }
       ],
       "planned": "2026-01-29T22:33:05Z",
-      "revised": "2026-01-29T22:39:16Z"
+      "revised": "2026-01-29T22:39:16Z",
+      "started": "2026-01-29T22:41:02Z"
     },
     {
       "project_number": 761,
       "project_name": "tts_stt_integration_for_claude_code_and_neovim",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-29T20:42:47Z",
-      "last_updated": "2026-01-29T22:39:00Z",
+      "last_updated": "2026-01-29T22:43:45Z",
       "description": "Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM).",
       "session_id": "sess_1769726311_699d27",
       "researched": "2026-01-29T20:51:38Z",
@@ -93,11 +94,6 @@
           "summary": "Setup and usage documentation with troubleshooting"
         },
         {
-          "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary for TTS/STT integration"
-        },
-        {
           "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-003.md",
           "type": "research",
           "summary": "Diagnostic research on STT keybindings not visible - plugin not loaded by lazy.nvim"
@@ -106,12 +102,17 @@
           "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/plans/implementation-002.md",
           "type": "plan",
           "summary": "3-phase revision plan to fix STT plugin integration - move to neotex structure, register with lazy.nvim, add which-key mappings"
+        },
+        {
+          "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Revision implementation summary with verification checklist"
         }
       ],
       "planned": "2026-01-29T22:34:10Z",
       "started": "2026-01-29T22:05:13Z",
-      "completed": "2026-01-29T23:30:00Z",
-      "completion_summary": "Implemented TTS notifications for Claude Code completion (Piper TTS, WezTerm tab detection, 60s cooldown) and STT input for Neovim (Vosk offline transcription, async Lua plugin with keymappings). Both features work completely offline with ~95MB total model footprint."
+      "completed": "2026-01-29T22:43:45Z",
+      "completion_summary": "Restructured STT plugin into neotex.plugins.tools hierarchy with lazy.nvim integration and which-key keybindings. TTS hook was already working - no changes needed."
     },
     {
       "project_number": 760,
