@@ -240,49 +240,49 @@ We now lift the logical operations to the quotient type.
 Lifted negation on the Lindenbaum algebra.
 -/
 def neg_quot : LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift (fun φ => ⟦φ.neg⟧)
+  Quotient.lift (fun φ => toQuot φ.neg)
     (fun _ _ h => Quotient.sound (provEquiv_neg_congr h))
 
 /--
 Lifted implication on the Lindenbaum algebra.
 -/
 def imp_quot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift₂ (fun φ ψ => ⟦φ.imp ψ⟧)
+  Quotient.lift₂ (fun φ ψ => toQuot (φ.imp ψ))
     (fun _ _ _ _ h1 h2 => Quotient.sound (provEquiv_imp_congr h1 h2))
 
 /--
 Lifted conjunction on the Lindenbaum algebra.
 -/
 def and_quot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift₂ (fun φ ψ => ⟦φ.and ψ⟧)
+  Quotient.lift₂ (fun φ ψ => toQuot (φ.and ψ))
     (fun _ _ _ _ h1 h2 => Quotient.sound (provEquiv_and_congr h1 h2))
 
 /--
 Lifted disjunction on the Lindenbaum algebra.
 -/
 def or_quot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift₂ (fun φ ψ => ⟦φ.or ψ⟧)
+  Quotient.lift₂ (fun φ ψ => toQuot (φ.or ψ))
     (fun _ _ _ _ h1 h2 => Quotient.sound (provEquiv_or_congr h1 h2))
 
 /--
 Lifted box on the Lindenbaum algebra.
 -/
 def box_quot : LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift (fun φ => ⟦φ.box⟧)
+  Quotient.lift (fun φ => toQuot φ.box)
     (fun _ _ h => Quotient.sound (provEquiv_box_congr h))
 
 /--
 Lifted all_future (G) on the Lindenbaum algebra.
 -/
 def G_quot : LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift (fun φ => ⟦φ.all_future⟧)
+  Quotient.lift (fun φ => toQuot φ.all_future)
     (fun _ _ h => Quotient.sound (provEquiv_all_future_congr h))
 
 /--
 Lifted all_past (H) on the Lindenbaum algebra.
 -/
 def H_quot : LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift (fun φ => ⟦φ.all_past⟧)
+  Quotient.lift (fun φ => toQuot φ.all_past)
     (fun _ _ h => Quotient.sound (provEquiv_all_past_congr h))
 
 /--
@@ -290,11 +290,11 @@ Top element of the Lindenbaum algebra: the class of ⊤ (Truth).
 
 We use (⊥ → ⊥) as the representation of Truth.
 -/
-def top_quot : LindenbaumAlg := ⟦Formula.bot.imp Formula.bot⟧
+def top_quot : LindenbaumAlg := toQuot (Formula.bot.imp Formula.bot)
 
 /--
 Bottom element of the Lindenbaum algebra: the class of ⊥.
 -/
-def bot_quot : LindenbaumAlg := ⟦Formula.bot⟧
+def bot_quot : LindenbaumAlg := toQuot Formula.bot
 
 end Bimodal.Metalogic.Algebraic.LindenbaumQuotient

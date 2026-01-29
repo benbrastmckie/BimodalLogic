@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Algebraic.InteriorOperators
-import Bimodal.Boneyard.Metalogic_v2.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.MaximalConsistent
 import Mathlib.Order.Filter.Ultrafilter
 
 /-!
