@@ -83,7 +83,7 @@ From research-001.md and research-002.md:
 
 ### Phase 2: Fix all_future forward case
 
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objectives**:
 1. Modify TruthLemma.lean lines 421-428 (all_future forward direction)

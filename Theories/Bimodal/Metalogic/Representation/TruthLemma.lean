@@ -424,12 +424,16 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
 
   | all_future psi ih =>
     constructor
-    · -- Forward: G psi ∈ mcs t → ∀ s > t, truth_at s psi
-      intro h_mem s h_t_lt
-      -- By forward_G coherence: G psi ∈ mcs t and t < s implies psi ∈ mcs s
-      have h_psi_in_s : psi ∈ family.mcs s := family.forward_G t s psi h_t_lt h_mem
-      -- Apply forward IH at time s
-      exact (ih s).mp h_psi_in_s
+    · -- Forward: G psi ∈ mcs t → ∀ s ≥ t, truth_at s psi
+      intro h_mem s h_t_le
+      rcases eq_or_lt_of_le h_t_le with rfl | h_t_lt
+      · -- Case t = s: Use T-axiom (Gφ → φ)
+        have h_psi_at_t : psi ∈ family.mcs t :=
+          mcs_closed_temp_t_future (family.is_mcs t) psi h_mem
+        exact (ih t).mp h_psi_at_t
+      · -- Case t < s: Use forward_G coherence
+        have h_psi_in_s : psi ∈ family.mcs s := family.forward_G t s psi h_t_lt h_mem
+        exact (ih s).mp h_psi_in_s
     · -- Backward: (∀ s > t, truth_at s psi) → G psi ∈ mcs t
       intro h_all_future
       -- NOT REQUIRED FOR COMPLETENESS - backward Truth Lemma not used by representation_theorem
