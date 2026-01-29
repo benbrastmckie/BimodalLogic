@@ -149,7 +149,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
-- **Research**: [research-001.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-001.md)
+- **Research**: [research-002.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-002.md)
 
 **Description**: Following the contingency approach from task 745 (which kept mutual induction structure but marked backward cases as sorry with comments), refactor the forward Truth Lemma to avoid all sorries and completely remove the backward direction which is not needed for the metalogic as it stands.
 
@@ -157,7 +157,7 @@ technical_debt:
 
 ### 751. Enhance /review with grouped interactive task proposals
 - **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -185,7 +185,7 @@ technical_debt:
 
 ### 747. Create Bimodal/Metalogic README hierarchy
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: markdown
 - **Created**: 2026-01-29

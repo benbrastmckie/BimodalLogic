@@ -7,9 +7,8 @@
     "details": "Agent started, parsing delegation context"
   },
   "metadata": {
-    "session_id": "sess_1769699363_c04c36",
-    "agent_type": "planner-agent",
+    "agent_type": "general-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
   }
 }
