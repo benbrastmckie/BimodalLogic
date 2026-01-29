@@ -7,8 +7,8 @@ This directory contains the complete metalogic infrastructure for TM bimodal log
 The metalogic proves the fundamental metatheoretic results for TM bimodal logic:
 
 1. **Soundness**: Every derivable formula is semantically valid
-2. **Completeness**: Every valid formula is derivable
-3. **Representation**: Consistent formulas have canonical models
+2. **Representation**: Consistent formulas have canonical models
+3. **Completeness**: Every valid formula is derivable (uses Representation)
 4. **Finite Model Property**: Satisfiable formulas have finite models
 5. **Compactness**: Infinite satisfiability reduces to finite satisfiability
 
@@ -20,16 +20,18 @@ theorem soundness : (Gamma ⊢ φ) → (Gamma ⊨ φ)
 ```
 All 15 TM axioms and 7 derivation rules preserve validity.
 
+### Representation (`Representation/`)
+```lean
+theorem representation_theorem : SetConsistent {φ} → satisfiable_in_canonical_model φ
+```
+Consistent formulas are satisfiable in the universal canonical model.
+
 ### Weak Completeness (`Completeness/`)
 ```lean
 theorem weak_completeness : valid φ → ContextDerivable [] φ
 theorem provable_iff_valid : ContextDerivable [] φ ↔ valid φ
 ```
-
-### Representation (`Representation/`)
-```lean
-theorem representation_theorem : SetConsistent {φ} → satisfiable_in_canonical_model φ
-```
+(Depends on Representation for canonical model construction.)
 
 ### Finite Model Property (`FMP/`)
 ```lean
@@ -73,9 +75,12 @@ Metalogic/
 ├── Compactness/       # Compactness theorem
 │   └── Compactness.lean         # (sorry-free)
 │
-└── Algebraic/         # Future extension infrastructure
-    ├── LindenbaumQuotient.lean  # Lindenbaum-Tarski algebra
-    └── UltrafilterMCS.lean      # Ultrafilter correspondence
+└── Algebraic/         # Alternative algebraic approach (sorry-free)
+    ├── LindenbaumQuotient.lean     # Quotient construction via provable equivalence
+    ├── BooleanStructure.lean       # Boolean algebra instance for quotient
+    ├── InteriorOperators.lean      # G/H as interior operators
+    ├── UltrafilterMCS.lean         # Bijection: ultrafilters <-> MCS
+    └── AlgebraicRepresentation.lean # Main representation theorem
 ```
 
 ## Dependency Layers
@@ -90,14 +95,52 @@ Layer 2 (Proof Theory):
 Layer 3 (Model Theory):
     Representation/
       │
-Layer 4 (Finiteness):
-    FMP/
+Layer 4 (Completeness):
+    Completeness/
       │
-Layer 5 (Results):
-    Completeness/ ── Compactness/
+Layer 5 (Applications):
+    FMP/ ── Compactness/
       │
 Layer 6 (Extensions):
     Algebraic/
+```
+
+### Dependency Flowchart (GitHub Rendering)
+
+```mermaid
+flowchart TD
+    subgraph "Layer 1: Foundations"
+        Core[Core/<br/>MCS theory, Lindenbaum lemma]
+    end
+
+    subgraph "Layer 2: Proof Theory"
+        Soundness[Soundness/<br/>15 axioms, 7 rules]
+    end
+
+    subgraph "Layer 3: Model Theory"
+        Representation[Representation/<br/>Canonical model construction]
+    end
+
+    subgraph "Layer 4: Completeness"
+        Completeness[Completeness/<br/>Weak & strong completeness]
+    end
+
+    subgraph "Layer 5: Applications"
+        FMP[FMP/<br/>Finite Model Property]
+        Compactness[Compactness/<br/>Compactness theorem]
+    end
+
+    subgraph "Layer 6: Extensions"
+        Algebraic[Algebraic/<br/>Alternative algebraic approach]
+    end
+
+    Core --> Soundness
+    Core --> Representation
+    Soundness --> Completeness
+    Representation --> Completeness
+    Completeness --> FMP
+    Completeness --> Compactness
+    Core --> Algebraic
 ```
 
 ## Subdirectory Summaries
@@ -107,10 +150,10 @@ Layer 6 (Extensions):
 | `Core/` | MCS theory, Lindenbaum's lemma, deduction theorem | **Sorry-free** |
 | `Soundness/` | Soundness theorem (15 axioms, 7 rules) | **Sorry-free** |
 | `Representation/` | Canonical model via indexed MCS families | Core proven |
-| `FMP/` | Finite model property with 2^n bound | Architectural sorries |
 | `Completeness/` | Weak/strong completeness hierarchy | **Sorry-free** |
+| `FMP/` | Finite model property with 2^n bound | Architectural sorries |
 | `Compactness/` | Compactness theorem | **Sorry-free** |
-| `Algebraic/` | Alternative algebraic approach | **Sorry-free** (extension) |
+| `Algebraic/` | Alternative algebraic approach | **Sorry-free** (complete) |
 
 ## Known Architectural Limitations
 

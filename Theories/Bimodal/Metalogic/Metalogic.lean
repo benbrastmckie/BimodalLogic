@@ -1,8 +1,12 @@
 -- Metalogic: TM Bimodal Logic Metalogic Infrastructure
 -- Self-contained (no Boneyard dependencies)
 
--- Finite Model Property infrastructure (includes all subdirectory dependencies)
+-- Core metalogic infrastructure (includes all subdirectory dependencies)
 import Bimodal.Metalogic.FMP
+import Bimodal.Metalogic.Completeness.Completeness
+import Bimodal.Metalogic.Compactness.Compactness
+-- Optional extension: Alternative algebraic approach
+-- import Bimodal.Metalogic.Algebraic.Algebraic
 
 /-!
 # TM Bimodal Logic Metalogic
@@ -24,7 +28,7 @@ Metalogic/
 ├── FMP/               # Finite Model Property (parametric)
 ├── Completeness/      # Weak completeness theorem
 ├── Compactness/       # Compactness theorem
-└── Algebraic/         # Alternative algebraic approach (future extension)
+└── Algebraic/         # Alternative algebraic approach (sorry-free)
 ```
 
 ## Dependency Layers
@@ -39,11 +43,11 @@ Layer 2 (Proof Theory):
 Layer 3 (Model Theory):
     Representation/
       │
-Layer 4 (Finiteness):
-    FMP/
+Layer 4 (Completeness):
+    Completeness/
       │
-Layer 5 (Results):
-    Completeness/ ── Compactness/
+Layer 5 (Applications):
+    FMP/ ── Compactness/
       │
 Layer 6 (Extensions):
     Algebraic/
@@ -63,16 +67,22 @@ theorem representation_theorem : SetConsistent {φ} → satisfiable φ
 ```
 Consistent formulas are satisfiable in the universal canonical model.
 
+### Weak Completeness (`Completeness/`)
+```lean
+theorem weak_completeness : valid φ → ContextDerivable [] φ
+theorem provable_iff_valid : ContextDerivable [] φ ↔ valid φ
+```
+(Depends on Representation for canonical model construction.)
+
 ### Finite Model Property (`FMP/`)
 ```lean
 theorem finite_model_property : satisfiable φ → ∃ finite_model, satisfiable_in φ
 theorem semanticWorldState_card_bound : card worlds ≤ 2^closureSize
 ```
 
-### Weak Completeness (`Completeness/`)
+### Compactness (`Compactness/`)
 ```lean
-theorem weak_completeness : valid φ → ContextDerivable [] φ
-theorem provable_iff_valid : ContextDerivable [] φ ↔ valid φ
+theorem compactness : (∀ finite Delta ⊆ Gamma, satisfiable Delta) → satisfiable Gamma
 ```
 
 ### Canonical Completeness Result
@@ -104,10 +114,10 @@ These are **final limitations** (not future work):
 - `Core/README.md` - MCS theory and foundational definitions
 - `Soundness/README.md` - Soundness proof organization
 - `Representation/README.md` - Canonical model construction
-- `FMP/README.md` - Finite Model Property infrastructure
 - `Completeness/README.md` - Weak completeness proof
+- `FMP/README.md` - Finite Model Property infrastructure
 - `Compactness/README.md` - Compactness theorem
-- `Algebraic/README.md` - Alternative algebraic approach (future extension)
+- `Algebraic/README.md` - Alternative algebraic approach (sorry-free)
 
 ## References
 
