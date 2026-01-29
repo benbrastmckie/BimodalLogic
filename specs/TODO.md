@@ -126,6 +126,17 @@ technical_debt:
 
 ## Medium Priority
 
+### 756. Enhance /task command with description improvement
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+
+**Description**: Add a lightweight prompt engineering step to the /task command that transforms raw user input into well-structured task descriptions. The enhancement should: (1) ensure action-oriented phrasing with clear verbs, (2) expand abbreviations and clarify vague language, (3) apply consistent formatting and grammar, (4) preserve all technical details from the original input, and (5) avoid over-engineering or changing the user's intent. The change should be contained within .claude/commands/task.md in the "Create Task Mode (Default)" section between steps 2 (parse description) and 3 (detect language).
+
+---
+
 ### 753. Prove sorries in CoherentConstruction for standard completeness
 - **Effort**: 8-12 hours
 - **Status**: [RESEARCHED]
