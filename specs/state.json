@@ -306,7 +306,7 @@
     {
       "project_number": 631,
       "project_name": "prove_evalformula_implies_satisfiable",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "parent_task": 490,
@@ -318,7 +318,7 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-29T04:47:44Z",
+      "last_updated": "2026-01-29T04:50:31Z",
       "session_id": "sess_1769662037_5bce92",
       "researched": "2026-01-29T01:18:02Z",
       "artifacts": [
@@ -326,8 +326,14 @@
           "path": "specs/631_prove_evalformula_implies_satisfiable/reports/research-001.md",
           "type": "research",
           "summary": "Research report: proved bridge is viable via saturation vacuity, 3-5 hour estimate"
+        },
+        {
+          "path": "specs/631_prove_evalformula_implies_satisfiable/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for evalFormula_implies_sat semantic bridge lemma"
         }
-      ]
+      ],
+      "planned": "2026-01-29T04:50:31Z"
     },
     {
       "project_number": 623,

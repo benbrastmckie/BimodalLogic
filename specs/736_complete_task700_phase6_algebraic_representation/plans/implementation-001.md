@@ -45,7 +45,7 @@ Key findings from research-001.md integrated into this plan:
 
 ## Implementation Phases
 
-### Phase 1: MCS-to-Ultrafilter Helper Lemmas [NOT STARTED]
+### Phase 1: MCS-to-Ultrafilter Helper Lemmas [IN PROGRESS]
 
 **Goal**: Prove that `mcsToSet` preserves all ultrafilter properties when applied to an MCS.
 
