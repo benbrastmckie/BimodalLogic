@@ -37,7 +37,6 @@ This module takes a different approach based on the Boneyard `canonical_task_rel
 
 - Boneyard `canonical_task_rel`: Completeness.lean:2055-2061
 - Boneyard `forward_extension`: Completeness.lean:2521-2581
-- Task 681 implementation plan: specs/681_*/plans/implementation-003.md
 
 ## Gaps NOT Required for Completeness
 
@@ -70,7 +69,6 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
--- NOTE: MCSProperties provides helper lemmas (previously from Boneyard).
 
 /-!
 ## Coherent Relation

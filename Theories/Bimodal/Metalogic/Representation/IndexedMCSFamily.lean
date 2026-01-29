@@ -15,11 +15,8 @@ proper formula propagation.
 
 ## Overview
 
-**Design Evolution**: Originally, TM logic used irreflexive temporal operators (G = "strictly future",
-H = "strictly past") without T-axioms. As of Task #658, we switched to REFLEXIVE temporal operators
-with T-axioms (`G phi -> phi`, `H phi -> phi`) to enable coherence proofs.
-
-**Solution**: Build a family of MCS indexed by time, where each time point has its own
+TM logic uses REFLEXIVE temporal operators with T-axioms (`G phi -> phi`, `H phi -> phi`).
+This approach builds a family of MCS indexed by time, where each time point has its own
 MCS connected to adjacent times via temporal coherence conditions.
 
 ## Main Definitions
@@ -32,16 +29,11 @@ MCS connected to adjacent times via temporal coherence conditions.
 
 ## Design Rationale
 
-With reflexive semantics (Task #658):
+With reflexive semantics:
 - T-axiom temp_t_future: `G phi -> phi` (φ includes present)
 - T-axiom temp_t_past: `H phi -> phi` (φ includes present)
 - Semantics: `G phi` at t means φ holds at all s where t ≤ s (not s > t)
 - Coherence: `G phi in MCS(t) -> phi in MCS(t')` for t < t' connects MCS across time
-
-## References
-
-- Research report: specs/654_.../reports/research-004.md (indexed family approach)
-- Implementation plan: specs/654_.../plans/implementation-004.md
 -/
 
 namespace Bimodal.Metalogic.Representation
@@ -368,9 +360,9 @@ def time_seed (Gamma : Set Formula) (t : D) : Set Formula :=
 
 The key lemma: seed sets are consistent when derived from an MCS.
 
-**Key Challenge (Task 657)**: The natural proof would derive `G ⊥ ∈ Gamma` from
-seed inconsistency, then derive `⊥` from `G ⊥`. However, TM logic has IRREFLEXIVE
-temporal operators, so `G ⊥ → ⊥` is NOT derivable (no temporal T axiom).
+**Challenge**: The natural proof would derive `G ⊥ ∈ Gamma` from seed inconsistency,
+then derive `⊥` from `G ⊥`. However, TM logic has IRREFLEXIVE temporal operators,
+so `G ⊥ → ⊥` is NOT derivable (no temporal T axiom).
 
 **Approach A (Semantic Bridge)**: Instead of syntactic derivation, we use
 semantic reasoning to show that `G ⊥ ∈ Gamma` creates a contradiction with
@@ -380,8 +372,7 @@ the canonical model construction requirements. Specifically:
 - If `G ⊥ ∈ Gamma`, then `G ⊥` must be true at time 0
 - But `G ⊥` true at time 0 means `⊥` at all times > 0, which is impossible
 
-This semantic bridge resolves the blocking issue without adding temporal T axiom.
-See: specs/657_prove_seed_consistency_temporal_k_distribution/reports/research-006.md
+This semantic bridge resolves the issue without adding temporal T axiom.
 -/
 
 open Bimodal.Semantics in
@@ -428,7 +419,7 @@ hypothesis that `G ⊥ ∉ Gamma`.
 
 **Alternative for MCS with G ⊥**: Such MCS are satisfiable at bounded endpoints.
 The completeness proof for those cases uses a different construction (singleton
-domain at the "last moment"). See research-006.md for full analysis.
+domain at the "last moment").
 -/
 lemma future_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
     (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
@@ -479,7 +470,7 @@ derive `H ⊥`. By MCS closure, `H ⊥ ∈ Gamma`, contradicting our hypothesis.
 
 **Note**: The generalized past K theorem (`L ⊢ φ → H L ⊢ H φ`) is derivable from
 temporal duality applied to `generalized_temporal_k`, but this requires infrastructure
-to apply temporal duality at the context level. See research-006 for details.
+to apply temporal duality at the context level.
 -/
 lemma past_seed_consistent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
     (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma)
@@ -580,37 +571,31 @@ Now we assemble everything into an IndexedMCSFamily.
 -/
 
 /-!
-## SUPERSEDED CONSTRUCTION
+## Alternative Construction (Incomplete)
 
 **Note**: The `construct_indexed_family` function below uses an independent Lindenbaum
-extension approach that cannot prove the required coherence conditions. This approach
-has been superseded by `CoherentConstruction.lean`.
+extension approach that cannot prove the required coherence conditions.
 
-**Why this approach fails**:
-- Independent Lindenbaum extensions at each time point can add conflicting formulas
-- If `Gφ ∈ mcs(t)` but `Gφ ∉ Gamma`, there's no guarantee `φ ∈ mcs(t')` for t' > t
-- The four coherence conditions cannot be "proven after construction"
+**Limitation**: Independent Lindenbaum extensions at each time point can add conflicting formulas.
+If `Gφ ∈ mcs(t)` but `Gφ ∉ Gamma`, there is no guarantee `φ ∈ mcs(t')` for t' > t.
+The four coherence conditions cannot be proven after construction.
 
-**Use instead**: `CoherentConstruction.construct_coherent_family` builds coherence
+**Recommended**: Use `CoherentConstruction.construct_coherent_family` instead, which builds coherence
 into the construction itself, then bridges to `IndexedMCSFamily` trivially.
-
-The sorries below match gaps in the Boneyard `canonical_task_rel` implementation
-(see `Boneyard/Metalogic_v3/README.md`).
 -/
 
 /--
 Construct an indexed MCS family from a root MCS at the origin.
 
-**SUPERSEDED**: Use `CoherentConstruction.construct_coherent_family` instead.
+**Note**: Use `CoherentConstruction.construct_coherent_family` instead for proven coherence.
 This construction's coherence conditions cannot be proven with the current approach.
-The sorries below are documented in `Boneyard/Metalogic_v3/`.
 
 **Construction**:
 - `mcs(t)` = extend time_seed to MCS via Lindenbaum
 - Coherence conditions follow from seed definitions and Lindenbaum extension
 
 **Usage**: Given a consistent formula phi, extend {phi} to an MCS Gamma
-that doesn't contain G ⊥ or H ⊥, then `construct_indexed_family` gives
+that does not contain G ⊥ or H ⊥, then `construct_indexed_family` gives
 a family where phi is true at the origin.
 
 **Hypotheses**:
@@ -631,29 +616,25 @@ noncomputable def construct_indexed_family
   -- Forward G coherence: G phi ∈ mcs(t) → phi ∈ mcs(t') for t < t'
   forward_G := by
     intro t t' phi hlt hG
-    -- SUPERSEDED by CoherentConstruction.lean
-    -- Independent Lindenbaum extensions cannot satisfy this - use construct_coherent_family instead
+    -- Use CoherentConstruction.construct_coherent_family for proven coherence
     sorry
 
   -- Backward H coherence: H phi ∈ mcs(t) → phi ∈ mcs(t') for t' < t
   backward_H := by
     intro t t' phi hlt hH
-    -- SUPERSEDED by CoherentConstruction.lean
-    -- Independent Lindenbaum extensions cannot satisfy this - use construct_coherent_family instead
+    -- Use CoherentConstruction.construct_coherent_family for proven coherence
     sorry
 
   -- Forward H coherence: H phi ∈ mcs(t') → phi ∈ mcs(t) for t < t'
   forward_H := by
     intro t t' phi hlt hH
-    -- SUPERSEDED by CoherentConstruction.lean
-    -- Independent Lindenbaum extensions cannot satisfy this - use construct_coherent_family instead
+    -- Use CoherentConstruction.construct_coherent_family for proven coherence
     sorry
 
   -- Backward G coherence: G phi ∈ mcs(t') → phi ∈ mcs(t) for t' < t
   backward_G := by
     intro t t' phi hlt hG
-    -- SUPERSEDED by CoherentConstruction.lean
-    -- Independent Lindenbaum extensions cannot satisfy this - use construct_coherent_family instead
+    -- Use CoherentConstruction.construct_coherent_family for proven coherence
     sorry
 
 /-!

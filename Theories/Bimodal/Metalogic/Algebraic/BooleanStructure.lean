@@ -82,7 +82,7 @@ instance : PartialOrder LindenbaumAlg where
 /-!
 ## Lattice Structure
 
-We now establish the lattice operations (sup = or, inf = and).
+The lattice operations are defined as: sup = or, inf = and.
 -/
 
 /--
