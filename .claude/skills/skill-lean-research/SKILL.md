@@ -22,6 +22,7 @@ Load on-demand using @-references:
 
 **Load When Creating Report**:
 - `@.claude/context/core/formats/report-format.md` - Research report structure
+- `@.claude/context/project/repo/project-overview.md` - Module dependencies for Project Context section
 
 **Load for Pattern Reference**:
 - `@.claude/context/core/patterns/jq-escaping-workarounds.md` - jq escaping patterns (Issue #1132)
@@ -222,6 +223,12 @@ mkdir -p "specs/${task_number}_${project_name}/reports"
 **Sources/Inputs**: - Mathlib, lean_leansearch, lean_loogle, etc.
 **Artifacts**: - path to this report
 **Standards**: report-format.md
+
+## Project Context
+- **Upstream Dependencies**: {Existing theorems/definitions this builds upon, e.g., "Soundness, Kripke.eval, Formula.subst"}
+- **Downstream Dependents**: {Results that will use this, e.g., "Completeness, DecidabilityTheorem"}
+- **Alternative Paths**: {Redundancy or different approaches, or "None identified"}
+- **Potential Extensions**: {New directions this enables, e.g., "Multi-modal logics, temporal operators"}
 
 ## Executive Summary
 - Key finding 1

@@ -29,11 +29,12 @@ technical_debt:
 
 ### 742. Restore lean-research-agent and skill-lean-research thin wrapper
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-29
 - **Research**: [research-001.md](specs/742_restore_lean_research_agent_thin_wrapper/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/742_restore_lean_research_agent_thin_wrapper/plans/implementation-001.md)
 
 **Description**: Restore lean-research-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-research from 408-line direct execution to ~80-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0). Follow patterns from skill-researcher and general-research-agent.
 
@@ -156,7 +157,7 @@ technical_debt:
 
 ### 740. Update skill-lean-research to generate Project Context
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: Task 739

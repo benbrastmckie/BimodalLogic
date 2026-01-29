@@ -103,6 +103,12 @@ Create directory and write report.
 **Artifacts**: - path to this report
 **Standards**: report-format.md, subagent-return.md
 
+## Project Context
+- **Upstream Dependencies**: {Existing theorems/definitions this builds upon, e.g., "Soundness, Kripke.eval, Formula.subst"}
+- **Downstream Dependents**: {Results that will use this, e.g., "Completeness, DecidabilityTheorem"}
+- **Alternative Paths**: {Redundancy or different approaches, or "None identified"}
+- **Potential Extensions**: {New directions this enables, e.g., "Multi-modal logics, temporal operators"}
+
 ## Executive Summary
 - Key finding 1
 - Key finding 2
