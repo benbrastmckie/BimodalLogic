@@ -294,11 +294,11 @@
     {
       "project_number": 616,
       "project_name": "remove_false_semantic_task_rel_compositionality",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-19T17:54:52Z",
-      "last_updated": "2026-01-26T04:33:50Z",
+      "last_updated": "2026-01-29T01:01:55Z",
       "session_id": "sess_1769402017_a5b849",
       "researched": "2026-01-19T20:08:51Z",
       "artifacts": [
@@ -311,11 +311,18 @@
           "path": "specs/616_remove_false_semantic_task_rel_compositionality/plans/implementation-001.md",
           "type": "plan",
           "summary": "2-phase implementation plan: remove false theorem with inline sorry, update Boneyard documentation"
+        },
+        {
+          "path": "specs/616_remove_false_semantic_task_rel_compositionality/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting theorem removal and documentation updates"
         }
       ],
       "description": "Remove the mathematically false theorem semantic_task_rel_compositionality and its sorry from SemanticCanonicalModel.lean. Research confirmed this theorem cannot be proven (unbounded duration sums exceed finite time domain), and it is not needed for the completeness proof which uses a different approach. Remove the false claim rather than accepting a sorry for an unprovable statement.",
       "planned": "2026-01-26T00:30:14Z",
-      "started": "2026-01-26T00:30:58Z"
+      "started": "2026-01-26T00:30:58Z",
+      "completed": "2026-01-29T01:01:55Z",
+      "completion_summary": "Removed mathematically false theorem semantic_task_rel_compositionality from SemanticCanonicalModel.lean. Sorry now inlined in SemanticCanonicalFrame definition. Updated all related documentation."
     },
     {
       "project_number": 394,

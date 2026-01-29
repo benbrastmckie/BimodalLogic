@@ -237,13 +237,15 @@ technical_debt:
 ## Low Priority
 
 ### 616. Remove false theorem semantic_task_rel_compositionality
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-19
+- **Completed**: 2026-01-29
 - **Related**: Task 608
 - **Research**: [research-001.md](specs/616_remove_false_semantic_task_rel_compositionality/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/616_remove_false_semantic_task_rel_compositionality/plans/implementation-001.md)
+- **Summary**: Removed mathematically false theorem semantic_task_rel_compositionality from SemanticCanonicalModel.lean. Sorry now inlined in SemanticCanonicalFrame definition. Updated all related documentation.
 
 **Description**: Remove the mathematically false theorem semantic_task_rel_compositionality and its sorry from SemanticCanonicalModel.lean. Research confirmed this theorem cannot be proven (unbounded duration sums exceed finite time domain), and it is not needed for the completeness proof which uses a different approach. Remove the false claim rather than accepting a sorry for an unprovable statement.
 
