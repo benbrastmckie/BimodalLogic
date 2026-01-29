@@ -86,13 +86,13 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T18:29:18Z",
-      "session_id": "sess_1769710822_3158e8",
-      "researched": "2026-01-29T17:48:01Z",
+      "last_updated": "2026-01-29T20:41:02Z",
+      "session_id": "sess_1769719016_ca96c7",
+      "researched": "2026-01-29T20:41:02Z",
       "artifacts": [
         {
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md",
@@ -143,6 +143,11 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-010.md",
           "type": "research",
           "summary": "Analysis of sorry feasibility and cleanup recommendations - sorry is architecturally blocked"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-011.md",
+          "type": "research",
+          "summary": "Deep analysis of three approaches to fixing the truth lemma gap, recommending MCS-restricted approach with concrete implementation path"
         }
       ],
       "planned": "2026-01-29T18:02:25Z",

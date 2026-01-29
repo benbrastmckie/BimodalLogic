@@ -134,11 +134,11 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 8-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
-- **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md), [research-008.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md)
+- **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md), [research-008.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md), [research-011.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-011.md)
 - **Plan**: [implementation-004.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-004.md)
 
 **Description**: Implement Option 5 (Hybrid Approach): Use algebraic representation theorem as consistency witness to seed FMP construction, bypassing the failed semantic truth lemma approach. Connects ultrafilter → MCS → closure MCS → FMP countermodel.
