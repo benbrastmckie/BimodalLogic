@@ -36,7 +36,7 @@ This implementation fixed the STT plugin integration issues identified in resear
 | File | Change |
 |------|--------|
 | `~/.config/nvim/lua/neotex/plugins/tools/stt/init.lua` | Created - STT plugin implementation |
-| `~/.config/nvim/lua/neotex/plugins/tools/stt.lua` | Created - lazy.nvim plugin spec |
+| `~/.config/nvim/lua/neotex/plugins/tools/stt-plugin.lua` | Created - lazy.nvim plugin spec (renamed from stt.lua) |
 | `~/.config/nvim/lua/neotex/plugins/tools/init.lua` | Modified - added STT plugin registration |
 | `~/.config/nvim/lua/neotex/plugins/editor/which-key.lua` | Modified - added `<leader>v` voice group |
 | `~/.local/share/vosk/vosk-model-small-en-us` | Created - symlink to versioned model |
@@ -58,6 +58,23 @@ This implementation fixed the STT plugin integration issues identified in resear
 - TTS notifications continue to work as before (no changes made)
 - The STT plugin now follows the same pattern as himalaya-plugin.lua for consistency
 - Keymaps are centralized in which-key.lua rather than duplicated in the plugin
+
+## Post-Implementation Bug Fix
+
+**Issue**: Module name collision - `stt.lua` conflicted with `stt/init.lua`
+
+When Neovim tried to `require('neotex.plugins.tools.stt')`, Lua's module loader found the spec file (`stt.lua`) before checking for `stt/init.lua`, resulting in:
+```
+Failed to run `config` for stt
+attempt to call field 'setup' (a nil value)
+```
+
+**Resolution**:
+- Renamed `stt.lua` → `stt-plugin.lua` (matches himalaya pattern)
+- Updated require path to `'neotex.plugins.tools.stt.init'` (explicit)
+- Updated `tools/init.lua` to load `stt-plugin` module
+
+This follows the established pattern from `himalaya-plugin.lua` which avoids the same collision.
 
 ## Testing Checklist (Manual)
 
