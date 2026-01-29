@@ -19,11 +19,11 @@
     {
       "project_number": 658,
       "project_name": "prove_indexed_family_coherence_conditions",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T00:33:57Z",
+      "last_updated": "2026-01-29T00:41:39Z",
       "related_tasks": [
         654
       ],
@@ -83,7 +83,9 @@
       "started": "2026-01-25T21:46:22Z",
       "resume_phase": 2,
       "partial_summary": "Phase 1 complete (T-axiom closure lemmas). Phases 2-6 blocked by fundamental construction issue: independent Lindenbaum extensions prevent coherence proofs. Requires construction redesign (Option B).",
-      "implementing": "2026-01-29T00:33:57Z"
+      "implementing": "2026-01-29T00:33:57Z",
+      "completed": "2026-01-29T00:41:39Z",
+      "completion_summary": "Completed switch of representation_theorem to use coherent construction. Phases 3-4 finished: analyzed superseded code (kept for reference), updated documentation line numbers. Build passes. Coherence proofs now definitional via CoherentConstruction.lean."
     },
     {
       "project_number": 659,
