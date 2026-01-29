@@ -123,11 +123,12 @@ technical_debt:
 
 ### 760. Determine sorry disposition: archive vs complete
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
+- **Research**: [research-001.md](specs/760_determine_sorry_disposition_archive_vs_complete/reports/research-001.md)
 
 **Description**: Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase
 
