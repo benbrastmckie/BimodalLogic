@@ -24,6 +24,11 @@
           "type": "research",
           "path": "specs/745_move_backward_truth_lemma_to_boneyard/reports/research-001.md",
           "summary": "Analysis of TruthLemma.lean structure, backward temporal cases at lines 435/459, and TemporalCompleteness.lean for moving to Boneyard"
+        },
+        {
+          "path": "specs/745_move_backward_truth_lemma_to_boneyard/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan to move backward Truth Lemma infrastructure to Boneyard and present forward-only proof cleanly"
         }
       ],
       "planned": "2026-01-29T14:25:48Z"
