@@ -72,6 +72,10 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/post-command.sh 2>/dev/null || echo '{}'"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/tts-notify.sh 2>/dev/null || echo '{}'"
           }
         ]
       }

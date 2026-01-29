@@ -1,7 +1,7 @@
 # Implementation Plan: Task #761
 
 - **Task**: 761 - TTS/STT Integration for Claude Code and Neovim
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Priority**: Medium
 - **Dependencies**: piper-tts and vosk (already installed by user)
@@ -53,7 +53,7 @@ This plan implements TTS notifications for Claude Code completions and STT input
 
 ## Implementation Phases
 
-### Phase 1: Claude Code TTS Notification Hook [NOT STARTED]
+### Phase 1: Claude Code TTS Notification Hook [COMPLETED]
 
 **Goal**: Create a Stop hook script that uses Piper TTS to announce Claude Code completion with WezTerm tab number.
 
@@ -80,7 +80,7 @@ This plan implements TTS notifications for Claude Code completions and STT input
 
 ---
 
-### Phase 2: Neovim STT Plugin [NOT STARTED]
+### Phase 2: Neovim STT Plugin [COMPLETED]
 
 **Goal**: Create a Neovim Lua plugin that records audio, transcribes via Vosk, and inserts text at cursor.
 
@@ -109,7 +109,7 @@ This plan implements TTS notifications for Claude Code completions and STT input
 
 ---
 
-### Phase 3: Integration Testing and Documentation [NOT STARTED]
+### Phase 3: Integration Testing and Documentation [COMPLETED]
 
 **Goal**: Verify end-to-end functionality and document setup/usage.
 
