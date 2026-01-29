@@ -18,7 +18,7 @@
         659
       ],
       "created": "2026-01-29T13:10:43Z",
-      "last_updated": "2026-01-29T13:54:30Z",
+      "last_updated": "2026-01-29T13:59:06Z",
       "session_id": "sess_1769694857_2d5299",
       "researched": "2026-01-29T13:16:15Z",
       "artifacts": [
@@ -36,6 +36,11 @@
           "path": "specs/741_witness_extraction_architecture_for_backward_truth_lemma/summaries/implementation-summary-20260129.md",
           "type": "summary",
           "summary": "Partial implementation: discovered omega-rule limitation blocking H/G-completeness proofs"
+        },
+        {
+          "path": "specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplementary analysis: alternatives to axiomatizing H/G-completeness all blocked; omega-rule limitation is fundamental; backward Truth Lemma not required for completeness"
         }
       ],
       "planned": "2026-01-29T13:21:10Z",

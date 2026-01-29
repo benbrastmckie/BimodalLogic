@@ -252,11 +252,11 @@ technical_debt:
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Related**: Tasks 654, 656, 659
-- **Research**: [research-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-001.md)
+- **Research**: [research-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-001.md), [research-002.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260129.md](specs/741_witness_extraction_architecture_for_backward_truth_lemma/summaries/implementation-summary-20260129.md)
 
-**Description**: Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: `Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s)` (and symmetric for G). **STATUS**: BLOCKED by omega-rule limitation - proving H-completeness requires deriving H psi from infinitely many psi instances. Created infrastructure in TemporalCompleteness.lean. NOT REQUIRED FOR COMPLETENESS - the representation theorem only uses truth_lemma_forward.
+**Description**: Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: `Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s)` (and symmetric for G). **STATUS**: BLOCKED by fundamental omega-rule limitation - proving H-completeness requires deriving H psi from infinitely many psi instances. Supplementary research (research-002.md) confirms all alternative approaches are blocked: construction-specific proof (Lindenbaum non-deterministic), semantic bridge (circular), negation duality (doesn't extract witnesses), finite approximation (needs TM compactness). Created infrastructure in TemporalCompleteness.lean. NOT REQUIRED FOR COMPLETENESS - the representation theorem only uses truth_lemma_forward. Recommended resolution: document as known limitation.
 
 ---
 
