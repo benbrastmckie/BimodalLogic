@@ -100,13 +100,21 @@
     {
       "project_number": 733,
       "project_name": "ultraproduct_based_compactness_proof",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T01:03:08Z",
-      "last_updated": "2026-01-29T04:12:35Z",
+      "last_updated": "2026-01-29T04:16:25Z",
       "description": "Provide an ultraproduct-based proof of compactness for TM logic.",
-      "session_id": "sess_1769659939_a03b28"
+      "session_id": "sess_1769659939_a03b28",
+      "researched": "2026-01-29T04:16:25Z",
+      "artifacts": [
+        {
+          "path": "specs/733_ultraproduct_based_compactness_proof/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on ultraproduct-based compactness: recommends algebraic approach via ultrafilter-MCS correspondence"
+        }
+      ]
     },
     {
       "project_number": 732,

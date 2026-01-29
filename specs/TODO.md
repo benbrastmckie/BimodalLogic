@@ -161,11 +161,12 @@ technical_debt:
 ---
 
 ### 733. Ultraproduct-based proof of compactness
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 6-10 hours
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Research**: [research-001.md](specs/733_ultraproduct_based_compactness_proof/reports/research-001.md)
 
 **Description**: Provide an ultraproduct-based proof of compactness for TM logic.
 
