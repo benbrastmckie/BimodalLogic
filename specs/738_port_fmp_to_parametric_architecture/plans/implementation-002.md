@@ -106,7 +106,7 @@ From Research 002:
 
 ---
 
-### Phase 2: BoundedTime Abstraction [NOT STARTED]
+### Phase 2: BoundedTime Abstraction [IN PROGRESS]
 
 **Goal**: Define parametric bounded time domain for arbitrary ordered group D.
 

@@ -8,7 +8,7 @@
     {
       "project_number": 745,
       "project_name": "move_backward_truth_lemma_to_boneyard",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Move backward Truth Lemma cases to Boneyard with documentation. The backward temporal cases (all_past/all_future backward directions) in TruthLemma.lean lines 423, 441 are blocked by fundamental omega-rule limitation and NOT REQUIRED for completeness. Clean up Bimodal/Metalogic/Representation/ to contain only working proofs. Move backward cases to Boneyard with clear documentation explaining they require H/G-completeness (which needs omega-rule that TM logic lacks). Update TruthLemma.lean to only expose truth_lemma_forward (the direction actually used by representation theorem). Keep TemporalCompleteness.lean infrastructure in Boneyard for reference.",
@@ -16,8 +16,16 @@
         741
       ],
       "created": "2026-01-29T14:04:25Z",
-      "last_updated": "2026-01-29T14:12:22Z",
-      "session_id": "sess_1769695929_e8dec8"
+      "last_updated": "2026-01-29T14:14:58Z",
+      "session_id": "sess_1769695929_e8dec8",
+      "researched": "2026-01-29T14:14:58Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/745_move_backward_truth_lemma_to_boneyard/reports/research-001.md",
+          "summary": "Analysis of TruthLemma.lean structure, backward temporal cases at lines 435/459, and TemporalCompleteness.lean for moving to Boneyard"
+        }
+      ]
     },
     {
       "project_number": 741,
@@ -223,7 +231,7 @@
     {
       "project_number": 625,
       "project_name": "prove_decide_complete",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -231,8 +239,16 @@
         624
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T14:11:27Z",
-      "session_id": "sess_1769695869_9c8014"
+      "last_updated": "2026-01-29T14:14:55Z",
+      "session_id": "sess_1769695869_9c8014",
+      "researched": "2026-01-29T14:14:55Z",
+      "artifacts": [
+        {
+          "path": "specs/625_prove_decide_complete/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on proving decide_complete theorem, analyzing gap between tableau completeness and proof extraction"
+        }
+      ]
     },
     {
       "project_number": 619,

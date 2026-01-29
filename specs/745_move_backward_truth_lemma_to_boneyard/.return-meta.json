@@ -1,11 +1,13 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-01-29T10:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "analyzing",
-    "details": "Completed analysis of TruthLemma.lean structure, backward cases, TemporalCompleteness.lean, and Boneyard layout. Writing research report."
-  },
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/745_move_backward_truth_lemma_to_boneyard/reports/research-001.md",
+      "summary": "Analysis of TruthLemma.lean structure, backward temporal cases at lines 435/459, and TemporalCompleteness.lean for moving to Boneyard"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1769695929_e8dec8",
     "agent_type": "lean-research-agent",
