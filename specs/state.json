@@ -8,22 +8,28 @@
     {
       "project_number": 732,
       "project_name": "complete_630_phase4_truth_lemma_proof",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Complete phase 4 of task 630: Prove mem_extractTrueAtomSet_iff helper lemma. This establishes that p ∈ extractTrueAtomSet b ↔ SignedFormula.pos (.atom p) ∈ b. The proof is mechanical (induction on branch with case splits on Formula constructors: atom, bot, imp, box, all_past, all_future for both pos and neg signs). Currently has sorry at Theories/Bimodal/Boneyard/Metalogic_v2/Decidability/BranchTaskModel.lean:269. (Follow-up from task #630)",
       "parent_task": 630,
       "created": "2026-01-29T00:41:08Z",
-      "last_updated": "2026-01-29T00:48:46Z",
-      "session_id": "sess_1769647364_7e1309",
+      "last_updated": "2026-01-29T00:52:59Z",
+      "session_id": "sess_1769647814_324385",
       "researched": "2026-01-29T00:48:46Z",
       "artifacts": [
         {
           "path": "specs/732_complete_630_phase4_truth_lemma_proof/reports/research-001.md",
           "type": "research",
           "summary": "Research report with proof strategy for mem_extractTrueAtomSet_iff lemma using generalized accumulator induction"
+        },
+        {
+          "path": "specs/732_complete_630_phase4_truth_lemma_proof/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan covering proof structure, base case, inductive setup, case splits, and verification"
         }
-      ]
+      ],
+      "planned": "2026-01-29T00:52:59Z"
     },
     {
       "project_number": 658,
@@ -541,12 +547,12 @@
     {
       "project_number": 700,
       "project_name": "research_algebraic_representation_theorem_proof",
-      "status": "partial",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-29T00:46:08Z",
-      "session_id": "sess_1769646072_699915",
+      "last_updated": "2026-01-29T00:50:54Z",
+      "session_id": "sess_1769647835_94a264",
       "description": "Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.",
       "researched": "2026-01-29T00:01:07Z",
       "artifacts": [

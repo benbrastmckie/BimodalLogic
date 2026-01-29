@@ -106,12 +106,13 @@ technical_debt:
 
 ### 732. Complete phase 4 of task 630: Truth Lemma proof
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Parent**: Task 630
 - **Research**: [research-001.md](specs/732_complete_630_phase4_truth_lemma_proof/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/732_complete_630_phase4_truth_lemma_proof/plans/implementation-001.md)
 
 **Description**: Complete phase 4 of task 630: Prove mem_extractTrueAtomSet_iff helper lemma. This establishes that p ∈ extractTrueAtomSet b ↔ SignedFormula.pos (.atom p) ∈ b. The proof is mechanical (induction on branch with case splits on Formula constructors: atom, bot, imp, box, all_past, all_future for both pos and neg signs). Currently has sorry at Theories/Bimodal/Boneyard/Metalogic_v2/Decidability/BranchTaskModel.lean:269. (Follow-up from task #630)
 
