@@ -119,7 +119,7 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 8-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -185,11 +185,12 @@ technical_debt:
 
 ### 759. Update TODO.md sorry metrics
 - **Effort**: 30 minutes
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Low
 - **Language**: meta
 - **Created**: 2026-01-29
 - **Source**: review-20260129-2
+- **Research**: [research-001.md](specs/759_update_todo_md_sorry_metrics/reports/research-001.md)
 
 **Description**: Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.
 

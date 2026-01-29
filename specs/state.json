@@ -16,7 +16,14 @@
       "description": "Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.",
       "source": "review-20260129-2",
       "session_id": "sess_1769710618_a4a7cb",
-      "researched": "2026-01-29T18:20:48Z"
+      "researched": "2026-01-29T18:20:48Z",
+      "artifacts": [
+        {
+          "path": "specs/759_update_todo_md_sorry_metrics/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of metadata sync gaps: TODO.md has stale repo-wide metrics (sorry_count 205 vs actual 275) not present in state.json, /review computes but doesn't persist, recommends adding metrics sync step to /todo command."
+        }
+      ]
     },
     {
       "project_number": 758,
