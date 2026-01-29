@@ -1,7 +1,21 @@
-# Bimodal Metalogic
+# Bimodal Metalogic (DEPRECATED)
+
+> **Note**: This is historical code preserved for reference. Active development uses `Metalogic/`.
 
 This directory contains the metalogical foundations for TM (Tense and Modality) bimodal logic,
 including soundness, completeness, representation theorems, and decidability.
+
+## Deprecated Definitions
+
+| Definition | Location | Canonical Source |
+|------------|----------|------------------|
+| `set_lindenbaum` | Completeness.lean:369 | `Metalogic.Core.MaximalConsistent` |
+| MCS lemmas | various | `Metalogic.Core.MCSProperties` |
+
+## History
+
+- Task #726: MCS lemmas moved to Core
+- Task #727: Deprecation notices added
 
 ## Current State Overview
 

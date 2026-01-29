@@ -122,7 +122,7 @@ technical_debt:
 
 ### 731. Clean Bimodal documentation - remove historical comments
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
@@ -194,22 +194,22 @@ technical_debt:
 
 ### 658. Prove indexed family coherence conditions
 - **Status**: [PLANNED]
-- **Session**: sess_1769643916_4b2ccf
-- **Effort**: 1-2 hours
+- **Session**: sess_1769645980_03ade5
+- **Effort**: 45 min - 1 hour
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
-- **Planned**: 2026-01-29 (v5)
-- **Dependencies**: Task 681 (COMPLETED)
+- **Planned**: 2026-01-29 (v6)
+- **Dependencies**: Task 681 (COMPLETED), Task 697 (COMPLETED)
 - **Related**: Task 654, Task 657, Task 700
 - **Source**: Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean:550-603
-- **Plan**: [implementation-005.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-005.md)
+- **Plan**: [implementation-006.md](specs/658_prove_indexed_family_coherence_conditions/plans/implementation-006.md)
 - **Research**: [research-001.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-001.md), [research-002.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-002.md), [research-003.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-003.md), [research-004.md](specs/658_prove_indexed_family_coherence_conditions/reports/research-004.md)
 - **Summary**: [implementation-summary-20260128.md](specs/658_prove_indexed_family_coherence_conditions/summaries/implementation-summary-20260128.md)
 
-**Description**: Complete the integration of Task 681's coherent construction into IndexedMCSFamily.lean. The sorries in `construct_indexed_family` are now SUPERSEDED by CoherentConstruction.lean. This task either removes, replaces, or wraps the superseded function based on downstream dependencies.
+**Description**: Trace the actual construction path from `representation_theorem` to verify it uses the coherent construction (Task 681). Task 697 fixed TruthLemma.lean's usage of the coherence conditions, confirming they're actively used. This task ensures the sorry-free path (via `construct_coherent_family`) is actually invoked.
 
-**Current Status**: Task 681 completed. Ready to integrate: analyze dependencies, then remove/replace/wrap `construct_indexed_family`.
+**Current Status**: Tasks 681 and 697 completed. Need to trace dependency chain from representation_theorem and ensure coherent construction is used.
 
 ---
 
