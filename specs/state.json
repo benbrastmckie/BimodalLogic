@@ -59,12 +59,12 @@
     {
       "project_number": 727,
       "project_name": "consolidate_set_lindenbaum",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T22:45:08Z",
-      "last_updated": "2026-01-29T00:13:38Z",
-      "session_id": "sess_1769645573_c1caa9",
+      "last_updated": "2026-01-29T00:19:26Z",
+      "session_id": "sess_1769645944_e36272",
       "researched": "2026-01-28T23:52:34Z",
       "artifacts": [
         {
@@ -78,7 +78,8 @@
           "summary": "4-phase revised plan: verify isolation, add deprecation notices to Boneyard only, update Boneyard READMEs, final verification"
         }
       ],
-      "planned": "2026-01-29T00:13:38Z"
+      "planned": "2026-01-29T00:13:38Z",
+      "started": "2026-01-29T00:19:26Z"
     },
     {
       "project_number": 697,

@@ -152,7 +152,7 @@ technical_debt:
 
 ### 727. Consolidate set_lindenbaum duplicates
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
