@@ -1,5 +1,5 @@
 ---
-next_project_number: 733
+next_project_number: 734
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -103,6 +103,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 733. Ultraproduct-based proof of compactness
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-29
+
+**Description**: Provide an ultraproduct-based proof of compactness for TM logic.
+
+---
 
 ### 732. Complete phase 4 of task 630: Truth Lemma proof
 - **Effort**: 1-2 hours

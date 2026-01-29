@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 733,
+      "project_name": "ultraproduct_based_compactness_proof",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-29T01:03:08Z",
+      "last_updated": "2026-01-29T01:03:08Z",
+      "description": "Provide an ultraproduct-based proof of compactness for TM logic."
+    },
+    {
       "project_number": 732,
       "project_name": "complete_630_phase4_truth_lemma_proof",
       "status": "implementing",
@@ -613,7 +623,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 733,
+  "next_project_number": 734,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
