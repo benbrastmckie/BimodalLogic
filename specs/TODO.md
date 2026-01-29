@@ -1,5 +1,5 @@
 ---
-next_project_number: 769
+next_project_number: 770
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -104,6 +104,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 769. Address remaining sorries in Bimodal/Metalogic
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-29
+
+**Description**: Address all remaining sorries in Bimodal/Metalogic/, excluding Examples/ and Boneyard/ directories. Goal is zero sorry count for the Metalogic/ directory.
+
+---
 
 ### 765. Exclude Boneyard and Examples from sorry count metrics
 - **Effort**: 1 hour
