@@ -1,7 +1,7 @@
 # Implementation Plan: Task #748
 
 - **Task**: 748 - Revise ROAD_MAP.md for Metalogic Progress
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Priority**: Medium
 - **Dependencies**: Research report research-001.md (completed)
@@ -141,7 +141,7 @@ The research report (research-001.md) provides:
 
 ---
 
-### Phase 4: Add Active Work and Future Sections [IN PROGRESS]
+### Phase 4: Add Active Work and Future Sections [COMPLETED]
 
 **Goal**: Link roadmap to current task system and future directions
 
