@@ -134,14 +134,14 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md), [research-008.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md), [research-011.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-011.md)
-- **Plan**: [implementation-004.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-004.md)
+- **Plan**: [implementation-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-005.md)
 
-**Description**: Implement Option 5 (Hybrid Approach): Use algebraic representation theorem as consistency witness to seed FMP construction, bypassing the failed semantic truth lemma approach. Connects ultrafilter → MCS → closure MCS → FMP countermodel.
+**Description**: Implement MCS-Restricted Truth Lemma approach: Create MCSDerivedSemanticWorldState subtype, prove truth correspondence for MCS-derived states only (where closure_mcs_imp_iff provides biconditional), connect to sorry-free completeness.
 
 ---
 
@@ -198,10 +198,11 @@ technical_debt:
 
 ### 761. Integrate TTS and STT for Claude Code and neovim
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 
 **Description**: Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM).
 

@@ -8,12 +8,13 @@
     {
       "project_number": 761,
       "project_name": "tts_stt_integration_for_claude_code_and_neovim",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-29T20:42:47Z",
-      "last_updated": "2026-01-29T20:42:47Z",
-      "description": "Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM)."
+      "last_updated": "2026-01-29T20:46:50Z",
+      "description": "Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM).",
+      "session_id": "sess_1769719600_0a666d"
     },
     {
       "project_number": 760,
@@ -96,11 +97,11 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T20:41:02Z",
+      "last_updated": "2026-01-29T20:46:53Z",
       "session_id": "sess_1769719016_ca96c7",
       "researched": "2026-01-29T20:41:02Z",
       "artifacts": [
@@ -135,11 +136,6 @@
           "summary": "Comprehensive options analysis evaluating syntactic completeness, algebraic bridge, FMP path, and representation path fixes"
         },
         {
-          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "Hybrid approach: ultrafilter as consistency witness to seed FMP construction, bypassing semantic truth lemma"
-        },
-        {
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-009.md",
           "type": "research",
           "summary": "Comparative analysis of Task 750 (v004) vs Task 755 (v002) with dependency flowcharts, elegance assessment, and recommendation to pursue 755 first"
@@ -158,9 +154,14 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-011.md",
           "type": "research",
           "summary": "Deep analysis of three approaches to fixing the truth lemma gap, recommending MCS-restricted approach with concrete implementation path"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-005.md",
+          "type": "plan",
+          "summary": "MCS-Restricted Truth Lemma approach - proves truth correspondence for MCSDerivedWorldState subtype"
         }
       ],
-      "planned": "2026-01-29T18:02:25Z",
+      "planned": "2026-01-29T20:46:53Z",
       "started": "2026-01-29T17:25:04Z"
     },
     {
