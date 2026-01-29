@@ -239,6 +239,18 @@ technical_debt:
 
 ---
 
+### 741. Witness extraction architecture for backward Truth Lemma
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-29
+- **Related**: Tasks 654, 656, 659
+
+**Description**: Design and implement witness extraction architecture to enable backward Truth Lemma proofs. The backward temporal cases (lines 423, 441 in TruthLemma.lean) require proving: `Hψ ∉ mcs(t) → ∃ s < t. ψ ∉ mcs(s)` (and symmetric for G). Task 659 Phase 2 assessment showed that forward_H coherence does NOT provide this—the contrapositive gives universal (∀) statements, not existential (∃) witnesses. This task explores architectural approaches: (1) direct witness construction via MCS chain properties, (2) semantic completeness argument (if ψ ∈ mcs(s) for all s < t, then Hψ ∈ mcs(t)), or (3) alternative proof strategies that bypass witness extraction. Reference: specs/659_prove_negation_completeness_lemmas/plans/implementation-002.md Phase 2 assessment.
+
+---
+
 ### 490. Complete decidability procedure
 - **Status**: [EXPANDED]
 - **Researched**: 2026-01-19
