@@ -42,7 +42,53 @@ Execute process cleanup script:
 
 Store process cleanup output for display.
 
-### Step 3: Run Directory Survey
+### Step 3: Clean Orphaned Postflight Markers
+
+Clean any orphaned postflight coordination files from the specs directory. These files should normally be cleaned up by skills after postflight completes, but may be left behind if a process is interrupted.
+
+```bash
+echo ""
+echo "=== Cleaning Orphaned Postflight Markers ==="
+echo ""
+
+# Find orphaned postflight markers (older than 1 hour)
+orphaned_pending=$(find specs -maxdepth 3 -name ".postflight-pending" -mmin +60 -type f 2>/dev/null)
+orphaned_guard=$(find specs -maxdepth 3 -name ".postflight-loop-guard" -mmin +60 -type f 2>/dev/null)
+
+# Also check for legacy global markers
+legacy_pending=""
+legacy_guard=""
+if [ -f "specs/.postflight-pending" ]; then
+    legacy_pending="specs/.postflight-pending"
+fi
+if [ -f "specs/.postflight-loop-guard" ]; then
+    legacy_guard="specs/.postflight-loop-guard"
+fi
+
+if [ -n "$orphaned_pending" ] || [ -n "$orphaned_guard" ] || [ -n "$legacy_pending" ] || [ -n "$legacy_guard" ]; then
+    if [ "$dry_run" = true ]; then
+        echo "Would delete the following orphaned markers:"
+        [ -n "$orphaned_pending" ] && echo "$orphaned_pending"
+        [ -n "$orphaned_guard" ] && echo "$orphaned_guard"
+        [ -n "$legacy_pending" ] && echo "$legacy_pending"
+        [ -n "$legacy_guard" ] && echo "$legacy_guard"
+    else
+        # Delete orphaned task-scoped markers
+        find specs -maxdepth 3 -name ".postflight-pending" -mmin +60 -delete 2>/dev/null
+        find specs -maxdepth 3 -name ".postflight-loop-guard" -mmin +60 -delete 2>/dev/null
+
+        # Delete legacy global markers
+        rm -f specs/.postflight-pending 2>/dev/null
+        rm -f specs/.postflight-loop-guard 2>/dev/null
+
+        echo "Cleaned orphaned postflight markers."
+    fi
+else
+    echo "No orphaned postflight markers found."
+fi
+```
+
+### Step 4: Run Directory Survey
 
 Show current directory status without cleaning yet:
 
@@ -55,7 +101,7 @@ This displays:
 - Breakdown by directory
 - Space that can be reclaimed
 
-### Step 4: Execute Based on Mode
+### Step 5: Execute Based on Mode
 
 #### Dry-Run Mode
 

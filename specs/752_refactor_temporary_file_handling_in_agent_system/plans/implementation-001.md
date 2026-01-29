@@ -215,7 +215,7 @@ find specs -maxdepth 3 -name ".postflight-loop-guard" -mmin +60 -delete
 
 ---
 
-### Phase 4: Enhance Cleanup Tools [NOT STARTED]
+### Phase 4: Enhance Cleanup Tools [COMPLETED]
 
 **Goal**: Update `/refresh` command to clean task-scoped markers
 
