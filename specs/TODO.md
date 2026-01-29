@@ -1,5 +1,5 @@
 ---
-next_project_number: 753
+next_project_number: 754
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -104,6 +104,17 @@ technical_debt:
 
 ## Medium Priority
 
+### 753. Prove sorries in CoherentConstruction for standard completeness
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-29
+
+**Description**: Invest in proving the sorries in CoherentConstruction since this is the shortest path to standard completeness. Risk: 20+ sorries, some mathematically challenging.
+
+---
+
 ### 752. Refactor temporary file handling in agent system
 - **Effort**: 5 hours
 - **Status**: [COMPLETED]
@@ -137,7 +148,7 @@ technical_debt:
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
-- **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md)
+- **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md)
 - **Plan**: [implementation-001.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-001.md)
 
 **Description**: Following the contingency approach from task 745 (which kept mutual induction structure but marked backward cases as sorry with comments), refactor the forward Truth Lemma to avoid all sorries and completely remove the backward direction which is not needed for the metalogic as it stands.

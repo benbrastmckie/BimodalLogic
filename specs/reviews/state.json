@@ -204,12 +204,36 @@
         "current_focus": "Phase 0 (High Priority) - Complete Core Proofs"
       },
       "session_id": "sess_1769650007_49f712"
+    },
+    {
+      "review_id": "review-20260129-2",
+      "date": "2026-01-29",
+      "scope": "all (full codebase with roadmap integration)",
+      "report_path": "specs/reviews/review-20260129-2.md",
+      "summary": {
+        "files_reviewed": 158,
+        "critical_issues": 0,
+        "high_issues": 2,
+        "medium_issues": 3,
+        "low_issues": 5
+      },
+      "tasks_created": [],
+      "registries_updated": [],
+      "roadmap_analysis": {
+        "checkboxes_total": 102,
+        "checkboxes_completed": 10,
+        "annotations_made": 0,
+        "annotations_suggested": 2,
+        "completed_tasks_reviewed": ["747", "752"],
+        "current_focus": "Phase 0 (High Priority) - Complete Core Proofs"
+      },
+      "session_id": "sess_1769704540_a39741"
     }
   ],
   "statistics": {
-    "total_reviews": 11,
+    "total_reviews": 12,
     "last_review": "2026-01-29",
-    "total_issues_found": 165,
+    "total_issues_found": 175,
     "total_tasks_created": 2
   }
 }
