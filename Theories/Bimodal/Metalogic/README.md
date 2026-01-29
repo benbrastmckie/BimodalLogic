@@ -161,19 +161,7 @@ flowchart TD
     Completeness --> Compactness
     Core --> Algebraic
 
-    classDef foundationStyle fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    classDef proofStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef modelStyle fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
-    classDef completenessStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef applicationStyle fill:#fce4ec,stroke:#880e4f,stroke-width:2px
-    classDef algebraicStyle fill:#f1f8e9,stroke:#33691e,stroke-width:2px
-
-    class Core foundationStyle
-    class Soundness proofStyle
-    class Representation modelStyle
-    class Completeness completenessStyle
-    class FMP,Compactness applicationStyle
-    class Algebraic algebraicStyle
+    classDef default fill:#fff,stroke:#333,stroke-width:2px,color:#000
 ```
 
 ## Subdirectory Summaries
