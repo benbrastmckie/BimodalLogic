@@ -8,7 +8,7 @@
     {
       "project_number": 745,
       "project_name": "move_backward_truth_lemma_to_boneyard",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Move backward Truth Lemma cases to Boneyard with documentation. The backward temporal cases (all_past/all_future backward directions) in TruthLemma.lean lines 423, 441 are blocked by fundamental omega-rule limitation and NOT REQUIRED for completeness. Clean up Bimodal/Metalogic/Representation/ to contain only working proofs. Move backward cases to Boneyard with clear documentation explaining they require H/G-completeness (which needs omega-rule that TM logic lacks). Update TruthLemma.lean to only expose truth_lemma_forward (the direction actually used by representation theorem). Keep TemporalCompleteness.lean infrastructure in Boneyard for reference.",
@@ -16,8 +16,8 @@
         741
       ],
       "created": "2026-01-29T14:04:25Z",
-      "last_updated": "2026-01-29T14:14:58Z",
-      "session_id": "sess_1769695929_e8dec8",
+      "last_updated": "2026-01-29T14:25:48Z",
+      "session_id": "sess_1769696564_aa177a",
       "researched": "2026-01-29T14:14:58Z",
       "artifacts": [
         {
@@ -25,7 +25,8 @@
           "path": "specs/745_move_backward_truth_lemma_to_boneyard/reports/research-001.md",
           "summary": "Analysis of TruthLemma.lean structure, backward temporal cases at lines 435/459, and TemporalCompleteness.lean for moving to Boneyard"
         }
-      ]
+      ],
+      "planned": "2026-01-29T14:25:48Z"
     },
     {
       "project_number": 741,
@@ -463,24 +464,30 @@
     {
       "project_number": 743,
       "project_name": "restore_lean_implementation_agent_thin_wrapper",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "high",
       "description": "Restore lean-implementation-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-implementation from 524-line direct execution to ~100-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0), (4) completion_data generation. Follow patterns from skill-implementer and general-implementation-agent.",
       "created": "2026-01-29T13:39:29Z",
-      "last_updated": "2026-01-29T14:16:35Z",
+      "last_updated": "2026-01-29T14:25:46Z",
       "dependencies": [
         742
       ],
-      "session_id": "sess_1769695967_1e92d6",
+      "session_id": "sess_1769696602_1fb9bc",
       "researched": "2026-01-29T14:16:35Z",
       "artifacts": [
         {
           "path": "specs/743_restore_lean_implementation_agent_thin_wrapper/reports/research-001.md",
           "type": "research",
           "summary": "Research report with implementation patterns from task 742, blocked tools guardrails, metadata exchange and completion_data requirements"
+        },
+        {
+          "path": "specs/743_restore_lean_implementation_agent_thin_wrapper/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for restoring lean-implementation-agent and converting skill-lean-implementation to thin wrapper"
         }
-      ]
+      ],
+      "planned": "2026-01-29T14:25:46Z"
     },
     {
       "project_number": 744,
