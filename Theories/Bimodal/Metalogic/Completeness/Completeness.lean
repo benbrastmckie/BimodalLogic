@@ -1,5 +1,7 @@
 import Bimodal.Metalogic.Completeness.WeakCompleteness
 import Bimodal.Metalogic.Completeness.FiniteStrongCompleteness
+import Bimodal.Metalogic.Completeness.InfinitaryStrongCompleteness
+import Bimodal.Metalogic.Compactness.Compactness
 
 /-!
 # Completeness Module for TM Bimodal Logic
@@ -13,7 +15,10 @@ Completeness/
 ├── Completeness.lean                   # This file - module root
 ├── WeakCompleteness.lean               # weak_completeness, provable_iff_valid
 ├── FiniteStrongCompleteness.lean       # finite_strong_completeness (List contexts)
-├── InfinitaryStrongCompleteness.lean   # (Phase 4) Set-based contexts
+└── InfinitaryStrongCompleteness.lean   # Set-based contexts, set_semantic_consequence
+
+Compactness/
+└── Compactness.lean                    # compactness theorem
 ```
 
 ## Main Results
@@ -23,9 +28,21 @@ Completeness/
 - `provable_iff_valid`: `ContextDerivable [] φ ↔ ⊨ φ`
 
 ### Finite-Premise Strong Completeness (Phase 2)
-- `finite_strong_completeness`: `Γ ⊨ φ → ContextDerivable Γ φ`
+- `finite_strong_completeness`: `Γ ⊨ φ → ContextDerivable Γ φ` (for List Γ)
 - `context_provable_iff_entails`: `ContextDerivable Γ φ ↔ Γ ⊨ φ`
 - `impChain`: Helper for building implication chains
+
+### Infinitary Strong Completeness (Phase 4)
+- `set_semantic_consequence`: Semantic consequence for Set-based contexts
+- `set_satisfiable`: Satisfiability for Set-based contexts
+- `infinitary_strong_completeness`: Set-based consequence has finite witness (axiomatized)
+- `infinitary_strong_completeness_finset`: Fully proven for finite sets
+
+### True Compactness (Phase 5)
+- `compactness`: Satisfiable iff every finite subset is satisfiable
+- `compactness_iff`: Bidirectional equivalence form
+- `compactness_entailment`: Semantic consequence has finite witness
+- `compactness_unsatisfiability`: Unsatisfiability has finite witness
 
 ## References
 

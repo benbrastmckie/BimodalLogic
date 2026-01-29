@@ -150,11 +150,11 @@
     {
       "project_number": 660,
       "project_name": "prove_parametric_completeness_theorems",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T01:05:35Z",
+      "last_updated": "2026-01-29T01:18:18Z",
       "dependencies": [
         656,
         657,
@@ -180,15 +180,22 @@
           "path": "specs/660_prove_parametric_completeness_theorems/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan covering weak completeness through true compactness for TM logic over arbitrary ordered additive groups"
+        },
+        {
+          "path": "specs/660_prove_parametric_completeness_theorems/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results for completeness hierarchy"
         }
       ],
       "planned": "2026-01-29T01:01:36Z",
-      "started": "2026-01-29T01:05:35Z"
+      "started": "2026-01-29T01:05:35Z",
+      "completed": "2026-01-29T01:18:18Z",
+      "completion_summary": "Implemented complete hierarchy of completeness theorems for TM bimodal logic: weak completeness, finite-premise strong completeness, infinitary strong completeness (axiomatized for infinite sets), and compactness. Created 5 files in Completeness/ and Compactness/ modules."
     },
     {
       "project_number": 631,
       "project_name": "prove_evalformula_implies_satisfiable",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "parent_task": 490,
@@ -200,8 +207,16 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-29T01:14:28Z",
-      "session_id": "sess_1769649253_b06f16"
+      "last_updated": "2026-01-29T01:18:02Z",
+      "session_id": "sess_1769649253_b06f16",
+      "researched": "2026-01-29T01:18:02Z",
+      "artifacts": [
+        {
+          "path": "specs/631_prove_evalformula_implies_satisfiable/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report: proved bridge is viable via saturation vacuity, 3-5 hour estimate"
+        }
+      ]
     },
     {
       "project_number": 628,
