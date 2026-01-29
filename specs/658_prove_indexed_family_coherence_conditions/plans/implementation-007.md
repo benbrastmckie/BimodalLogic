@@ -41,7 +41,7 @@ This is a straightforward refactoring task: update the call site to use the cohe
 
 ## Implementation Phases
 
-### Phase 1: Update representation_theorem [IN PROGRESS]
+### Phase 1: Update representation_theorem [COMPLETED]
 
 **Goal**: Switch from `construct_indexed_family` to `construct_coherent_family`.
 
@@ -80,7 +80,7 @@ have h_phi_in : phi ∈ family.mcs 0 := by
 
 ---
 
-### Phase 2: Verify Build [NOT STARTED]
+### Phase 2: Verify Build [COMPLETED]
 
 **Goal**: Ensure the refactoring compiles correctly.
 

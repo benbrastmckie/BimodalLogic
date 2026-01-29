@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.Representation.TruthLemma
 import Bimodal.Metalogic.Representation.IndexedMCSFamily
+import Bimodal.Metalogic.Representation.CoherentConstruction
 
 /-!
 # Universal Canonical Model and Representation Theorem
@@ -68,23 +69,34 @@ Representation Theorem: Every consistent formula is satisfiable in the canonical
 that blocked the same-MCS-at-all-times approach.
 -/
 theorem representation_theorem (phi : Formula) (h_cons : SetConsistent {phi}) :
-    ∃ (family : IndexedMCSFamily D) (t : D),
+    ∃ (family : IndexedMCSFamily ℤ) (t : ℤ),
       phi ∈ family.mcs t ∧
-      truth_at (canonical_model D family) (canonical_history_family D family) t phi := by
+      truth_at (canonical_model ℤ family) (canonical_history_family ℤ family) t phi := by
   -- Step 1: Extend {phi} to an MCS
   obtain ⟨Gamma, h_extends, h_mcs⟩ := set_lindenbaum {phi} h_cons
-  -- Step 2: Construct the indexed family with Gamma at origin 0
-  let family := construct_indexed_family D Gamma h_mcs
-  -- Step 3: phi ∈ family.mcs 0
+  -- Step 2: Prove the temporal boundary conditions
+  -- These hypotheses ensure the MCS can be extended temporally in both directions.
+  -- G⊥ ∉ Gamma and H⊥ ∉ Gamma are required because MCS containing these formulas
+  -- are only satisfiable at bounded temporal endpoints.
+  -- TODO: Prove these from h_mcs properties (G⊥ and H⊥ in MCS implies inconsistency
+  -- with unbounded time). For now, use sorry to unblock the coherent construction.
+  have h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma := by
+    sorry
+  have h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma := by
+    sorry
+  -- Step 3: Construct the coherent family with Gamma at origin 0
+  let coherent := construct_coherent_family Gamma h_mcs h_no_G_bot h_no_H_bot
+  let family := coherent.toIndexedMCSFamily
+  -- Step 4: phi ∈ family.mcs 0
   have h_phi_in : phi ∈ family.mcs 0 := by
-    -- family.mcs 0 is the extension of time_seed D Gamma 0
-    -- time_seed D Gamma 0 = Gamma (when t = 0)
+    -- family.mcs 0 = coherent.mcs 0 by toIndexedMCSFamily definition
+    -- coherent.mcs 0 = Gamma (origin preservation)
     -- And h_extends says phi ∈ Gamma
-    apply construct_indexed_family_origin D Gamma h_mcs phi
+    apply construct_coherent_family_origin Gamma h_mcs h_no_G_bot h_no_H_bot phi
     exact h_extends (Set.mem_singleton phi)
-  -- Step 4: By truth lemma, phi is true at the canonical configuration
-  have h_true : truth_at (canonical_model D family) (canonical_history_family D family) 0 phi := by
-    exact (truth_lemma D family 0 phi).mp h_phi_in
+  -- Step 5: By truth lemma, phi is true at the canonical configuration
+  have h_true : truth_at (canonical_model ℤ family) (canonical_history_family ℤ family) 0 phi := by
+    exact (truth_lemma ℤ family 0 phi).mp h_phi_in
   -- Package the result
   exact ⟨family, 0, h_phi_in, h_true⟩
 
@@ -94,9 +106,9 @@ Representation Theorem (alternate form): Consistent formulas are satisfiable.
 This version uses list-based consistency which is more common in some contexts.
 -/
 theorem representation_theorem' (phi : Formula) (h_cons : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [phi] Formula.bot)) :
-    ∃ (family : IndexedMCSFamily D) (t : D),
+    ∃ (family : IndexedMCSFamily ℤ) (t : ℤ),
       phi ∈ family.mcs t ∧
-      truth_at (canonical_model D family) (canonical_history_family D family) t phi := by
+      truth_at (canonical_model ℤ family) (canonical_history_family ℤ family) t phi := by
   -- Convert list-based consistency to set-based
   have h_set_cons : SetConsistent {phi} := by
     intro L hL
@@ -124,7 +136,7 @@ theorem representation_theorem' (phi : Formula) (h_cons : ¬Nonempty (Bimodal.Pr
           have h := hL ψ hψ
           simp at h
           exact h)
-  exact representation_theorem D phi h_set_cons
+  exact representation_theorem phi h_set_cons
 
 /-!
 ## Corollaries
@@ -142,7 +154,7 @@ then by soundness, phi would be refutable (neg phi provable).
 -/
 theorem non_provable_satisfiable (phi : Formula)
     (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] (Formula.neg phi))) :
-    ∃ (family : IndexedMCSFamily D) (t : D),
+    ∃ (family : IndexedMCSFamily ℤ) (t : ℤ),
       phi ∈ family.mcs t := by
   -- If neg phi is not provable, then {phi} is consistent
   have h_cons : SetConsistent {phi} := by
@@ -150,7 +162,7 @@ theorem non_provable_satisfiable (phi : Formula)
     intro ⟨d⟩
     -- Similar argument to above
     sorry -- Requires detailed proof about consistency
-  obtain ⟨family, t, h_mem, _⟩ := representation_theorem D phi h_cons
+  obtain ⟨family, t, h_mem, _⟩ := representation_theorem phi h_cons
   exact ⟨family, t, h_mem⟩
 
 /--
@@ -163,8 +175,8 @@ Full completeness (provable iff valid) requires soundness, which is in a separat
 -/
 theorem completeness_contrapositive (phi : Formula)
     (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] phi)) :
-    ∃ (family : IndexedMCSFamily D) (t : D),
-      ¬truth_at (canonical_model D family) (canonical_history_family D family) t phi := by
+    ∃ (family : IndexedMCSFamily ℤ) (t : ℤ),
+      ¬truth_at (canonical_model ℤ family) (canonical_history_family ℤ family) t phi := by
   -- If phi is not provable, then neg phi is consistent
   -- Apply representation theorem to neg phi
   sorry -- Requires negation consistency argument

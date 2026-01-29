@@ -37,7 +37,7 @@ Order on LindenbaumAlg: `a ≤ b` iff the underlying formulas satisfy `⊢ φ �
 
 This is well-defined on the quotient because provable equivalence respects derivability.
 -/
-instance : LE LindenbaumAlg where
+instance instLELindenbaumAlg : LE LindenbaumAlg where
   le := Quotient.lift₂ (fun φ ψ => Derives φ ψ)
     (fun φ₁ φ₂ ψ₁ ψ₂ hφ hψ => by
       apply propext
@@ -87,25 +87,25 @@ We now establish the lattice operations (sup = or, inf = and).
 /--
 Sup (join) is given by disjunction.
 -/
-instance : Sup LindenbaumAlg where
+instance instSupLindenbaumAlg : Sup LindenbaumAlg where
   sup := or_quot
 
 /--
 Inf (meet) is given by conjunction.
 -/
-instance : Inf LindenbaumAlg where
+instance instInfLindenbaumAlg : Inf LindenbaumAlg where
   inf := and_quot
 
 /--
 Top is the class of Truth.
 -/
-instance : Top LindenbaumAlg where
+instance instTopLindenbaumAlg : Top LindenbaumAlg where
   top := top_quot
 
 /--
 Bot is the class of ⊥.
 -/
-instance : Bot LindenbaumAlg where
+instance instBotLindenbaumAlg : Bot LindenbaumAlg where
   bot := bot_quot
 
 -- The lattice and Boolean algebra proofs require additional propositional lemmas.
@@ -118,7 +118,7 @@ theorem inf_le_left_quot (a b : LindenbaumAlg) : a ⊓ b ≤ a := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  unfold Derives
+  show Derives (φ.and ψ) φ
   exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and ψ) φ
     (Bimodal.Theorems.Propositional.lce φ ψ)⟩
 
@@ -129,7 +129,7 @@ theorem inf_le_right_quot (a b : LindenbaumAlg) : a ⊓ b ≤ b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  unfold Derives
+  show Derives (φ.and ψ) ψ
   exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and ψ) ψ
     (Bimodal.Theorems.Propositional.rce φ ψ)⟩
 
@@ -141,7 +141,7 @@ theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a 
   induction b using Quotient.ind
   induction c using Quotient.ind
   rename_i φ ψ χ
-  unfold Derives at *
+  show Derives φ (ψ.and χ)
   -- Need conjunction introduction: from ⊢ φ → ψ and ⊢ φ → χ, derive ⊢ φ → (ψ ∧ χ)
   sorry
 
@@ -152,8 +152,9 @@ theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ a ⊔ b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  unfold Derives
-  -- Need disjunction introduction left
+  show Derives φ (φ.or ψ)
+  -- Need disjunction introduction left: ⊢ φ → (φ ∨ ψ)
+  -- φ ∨ ψ = ¬φ → ψ, so we need ⊢ φ → (¬φ → ψ)
   sorry
 
 /--
@@ -163,9 +164,14 @@ theorem le_sup_right_quot (a b : LindenbaumAlg) : b ≤ a ⊔ b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
+  show Derives ψ (φ.or ψ)
+  -- Need disjunction introduction right: ⊢ ψ → (φ ∨ ψ)
+  -- φ ∨ ψ = ¬φ → ψ, so we need ⊢ ψ → (¬φ → ψ)
+  -- This is just weakening (prop_s): ⊢ ψ → (¬φ → ψ)
   unfold Derives
-  -- Need disjunction introduction right
-  sorry
+  have d_s : DerivationTree [] (ψ.imp (φ.neg.imp ψ)) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s ψ φ.neg)
+  exact ⟨d_s⟩
 
 /--
 `a ≤ c → b ≤ c → a ⊔ b ≤ c`: least upper bound property.
@@ -175,7 +181,7 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : a 
   induction b using Quotient.ind
   induction c using Quotient.ind
   rename_i φ ψ χ
-  unfold Derives at *
+  show Derives (φ.or ψ) χ
   -- Need disjunction elimination
   sorry
 
@@ -185,7 +191,7 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : a 
 theorem bot_le_quot (a : LindenbaumAlg) : ⊥ ≤ a := by
   induction a using Quotient.ind
   rename_i φ
-  unfold Derives
+  show Derives Formula.bot φ
   exact ⟨DerivationTree.axiom [] _ (Axiom.ex_falso φ)⟩
 
 /--
@@ -194,7 +200,7 @@ theorem bot_le_quot (a : LindenbaumAlg) : ⊥ ≤ a := by
 theorem le_top_quot (a : LindenbaumAlg) : a ≤ ⊤ := by
   induction a using Quotient.ind
   rename_i φ
-  unfold Derives Top.top instTopLindenbaumAlg top_quot toQuot
+  show Derives φ (Formula.bot.imp Formula.bot)
   -- ⊢ φ → (⊥ → ⊥)
   -- Derivable: from identity and weakening
   have d_id : DerivationTree [] (Formula.bot.imp Formula.bot) :=
@@ -203,7 +209,21 @@ theorem le_top_quot (a : LindenbaumAlg) : a ≤ ⊤ := by
     DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp Formula.bot) φ)
   exact ⟨DerivationTree.modus_ponens [] _ _ d_s d_id⟩
 
+instance : SemilatticeSup LindenbaumAlg where
+  sup := or_quot
+  le_sup_left := le_sup_left_quot
+  le_sup_right := le_sup_right_quot
+  sup_le := fun _ _ _ => sup_le_quot
+
+instance : SemilatticeInf LindenbaumAlg where
+  inf := and_quot
+  inf_le_left := inf_le_left_quot
+  inf_le_right := inf_le_right_quot
+  le_inf := fun _ _ _ => le_inf_quot
+
 instance : Lattice LindenbaumAlg where
+  sup := or_quot
+  inf := and_quot
   inf_le_left := inf_le_left_quot
   inf_le_right := inf_le_right_quot
   le_inf := fun _ _ _ => le_inf_quot
@@ -212,6 +232,8 @@ instance : Lattice LindenbaumAlg where
   sup_le := fun _ _ _ => sup_le_quot
 
 instance : BoundedOrder LindenbaumAlg where
+  top := top_quot
+  bot := bot_quot
   bot_le := bot_le_quot
   le_top := le_top_quot
 
@@ -228,34 +250,40 @@ instance : HasCompl LindenbaumAlg where
   compl := neg_quot
 
 /--
-`a ⊓ aᶜ = ⊥`: meet with complement is bot.
+`a ⊓ aᶜ ≤ ⊥`: meet with complement is at most bot.
 -/
-theorem inf_compl_eq_bot_quot (a : LindenbaumAlg) : a ⊓ aᶜ = ⊥ := by
+theorem inf_compl_le_bot_quot (a : LindenbaumAlg) : a ⊓ aᶜ ≤ ⊥ := by
   induction a using Quotient.ind
   rename_i φ
-  apply Quotient.sound
-  unfold ProvEquiv Derives
-  constructor <;> sorry
+  -- a ⊓ aᶜ = [φ ∧ ¬φ], ⊥ = [⊥]
+  -- Need: ⊢ (φ ∧ ¬φ) → ⊥
+  -- This is the principle of non-contradiction
+  show Derives (φ.and φ.neg) Formula.bot
+  sorry
 
 /--
-`a ⊔ aᶜ = ⊤`: join with complement is top.
+`⊤ ≤ a ⊔ aᶜ`: top is at most join with complement.
 -/
-theorem sup_compl_eq_top_quot (a : LindenbaumAlg) : a ⊔ aᶜ = ⊤ := by
+theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ a ⊔ aᶜ := by
   induction a using Quotient.ind
   rename_i φ
-  apply Quotient.sound
-  unfold ProvEquiv Derives
-  constructor <;> sorry
+  -- ⊤ = [⊤], a ⊔ aᶜ = [φ ∨ ¬φ]
+  -- Need: ⊢ ⊤ → (φ ∨ ¬φ)
+  -- This is the law of excluded middle
+  show Derives (Formula.bot.imp Formula.bot) (φ.or φ.neg)
+  sorry
 
 /--
-Stronger form of distributivity.
+Stronger form of distributivity: `(a ⊔ b) ⊓ (a ⊔ c) ≤ a ⊔ (b ⊓ c)`.
 -/
 theorem le_sup_inf_quot (a b c : LindenbaumAlg) : (a ⊔ b) ⊓ (a ⊔ c) ≤ a ⊔ (b ⊓ c) := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   induction c using Quotient.ind
   rename_i φ ψ χ
-  unfold Derives
+  -- Need: ⊢ ((φ ∨ ψ) ∧ (φ ∨ χ)) → (φ ∨ (ψ ∧ χ))
+  -- This is classical distributivity
+  show Derives ((φ.or ψ).and (φ.or χ)) (φ.or (ψ.and χ))
   sorry
 
 /--
@@ -271,8 +299,8 @@ instance : DistribLattice LindenbaumAlg where
 The Lindenbaum algebra is a Boolean algebra.
 -/
 instance : BooleanAlgebra LindenbaumAlg where
-  inf_compl_le_bot := fun a => by rw [inf_compl_eq_bot_quot]
-  top_le_sup_compl := fun a => by rw [sup_compl_eq_top_quot]
+  inf_compl_le_bot := inf_compl_le_bot_quot
+  top_le_sup_compl := top_le_sup_compl_quot
   sdiff_eq := fun a b => rfl
   himp := fun a b => aᶜ ⊔ b
   himp_eq := fun a b => rfl

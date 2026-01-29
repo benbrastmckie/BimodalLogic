@@ -1,5 +1,8 @@
--- Algebraic Approach to the Representation Theorem
--- Task 700: Alternative proof via Lindenbaum-Tarski algebra
+import Bimodal.Metalogic.Algebraic.LindenbaumQuotient
+import Bimodal.Metalogic.Algebraic.BooleanStructure
+import Bimodal.Metalogic.Algebraic.InteriorOperators
+import Bimodal.Metalogic.Algebraic.UltrafilterMCS
+import Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
 
 /-!
 # Algebraic Representation Theorem
@@ -56,12 +59,6 @@ The algebraic approach proceeds as follows:
 
 Task 700 implementation.
 -/
-
-import Bimodal.Metalogic.Algebraic.LindenbaumQuotient
-import Bimodal.Metalogic.Algebraic.BooleanStructure
-import Bimodal.Metalogic.Algebraic.InteriorOperators
-import Bimodal.Metalogic.Algebraic.UltrafilterMCS
-import Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
 
 namespace Bimodal.Metalogic.Algebraic
 
