@@ -59,12 +59,12 @@
     {
       "project_number": 753,
       "project_name": "prove_sorries_in_coherentconstruction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T16:50:59Z",
-      "last_updated": "2026-01-29T17:09:52Z",
-      "session_id": "sess_1769706412_b0e60b",
+      "last_updated": "2026-01-29T17:12:53Z",
+      "session_id": "sess_1769706752_5bf372",
       "researched": "2026-01-29T16:56:39Z",
       "artifacts": [
         {
@@ -78,7 +78,8 @@
           "summary": "11-phase implementation plan to achieve zero sorries in Bimodal/Metalogic/ (34 sorries across 11 files)"
         }
       ],
-      "planned": "2026-01-29T17:09:52Z"
+      "planned": "2026-01-29T17:09:52Z",
+      "started": "2026-01-29T17:12:53Z"
     },
     {
       "project_number": 752,
@@ -116,19 +117,14 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T17:11:25Z",
+      "last_updated": "2026-01-29T17:14:05Z",
       "session_id": "sess_1769706658_46025d",
       "researched": "2026-01-29T16:36:22Z",
       "artifacts": [
-        {
-          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan to refactor metalogic to Two-Pillar Architecture, removing sorries from TruthLemma and archiving superseded files"
-        },
         {
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md",
           "type": "research",
@@ -143,9 +139,14 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-007.md",
           "type": "research",
           "summary": "Relationship analysis between tasks 749 and 750 - confirms 749 should proceed as independent FMP path to sorry-free completeness"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for achieving sorry-free completeness via algebraic semantic bridge"
         }
       ],
-      "planned": "2026-01-29T15:31:46Z"
+      "planned": "2026-01-29T17:14:05Z"
     },
     {
       "project_number": 749,
@@ -523,12 +524,12 @@
     {
       "project_number": 756,
       "project_name": "enhance_task_command_with_description_improvement",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T17:05:12Z",
-      "last_updated": "2026-01-29T17:12:03Z",
-      "session_id": "sess_1769706566_144a4a",
+      "last_updated": "2026-01-29T17:13:46Z",
+      "session_id": "sess_1769706811_1a6700",
       "researched": "2026-01-29T17:12:03Z",
       "artifacts": [
         {

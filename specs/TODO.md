@@ -152,7 +152,7 @@ technical_debt:
 
 ### 756. Enhance /task command with description improvement
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -164,10 +164,11 @@ technical_debt:
 
 ### 753. Prove sorries in CoherentConstruction for standard completeness
 - **Effort**: 25-35 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Research**: [research-001.md](specs/753_prove_sorries_in_coherentconstruction/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/753_prove_sorries_in_coherentconstruction/plans/implementation-001.md)
 
@@ -205,12 +206,12 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md)
-- **Plan**: [implementation-001.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-002.md)
 
 **Description**: Following the contingency approach from task 745 (which kept mutual induction structure but marked backward cases as sorry with comments), refactor the forward Truth Lemma to avoid all sorries and completely remove the backward direction which is not needed for the metalogic as it stands.
 
