@@ -1,5 +1,5 @@
 ---
-next_project_number: 756
+next_project_number: 760
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -128,7 +128,7 @@ technical_debt:
 
 ### 756. Enhance /task command with description improvement
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -138,12 +138,13 @@ technical_debt:
 ---
 
 ### 753. Prove sorries in CoherentConstruction for standard completeness
-- **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 25-35 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Research**: [research-001.md](specs/753_prove_sorries_in_coherentconstruction/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/753_prove_sorries_in_coherentconstruction/plans/implementation-001.md)
 
 **Description**: Invest in proving the sorries in CoherentConstruction since this is the shortest path to standard completeness. Risk: 20+ sorries, some mathematically challenging.
 
@@ -166,7 +167,7 @@ technical_debt:
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
 - **Effort**: 6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29

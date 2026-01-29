@@ -6,6 +6,39 @@
   },
   "active_projects": [
     {
+      "project_number": 759,
+      "project_name": "update_todo_md_sorry_metrics",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "low",
+      "created": "2026-01-29T17:15:00Z",
+      "last_updated": "2026-01-29T17:15:00Z",
+      "description": "Update TODO.md header metrics to reflect current sorry count. Header shows sorry_count: 205 but actual count is 265. Investigate discrepancy: is this a tracking issue or were 60 sorries added recently? Update technical_debt section accordingly.",
+      "source": "review-20260129-2"
+    },
+    {
+      "project_number": 758,
+      "project_name": "audit_and_reduce_metalogic_sorries",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-29T17:15:00Z",
+      "last_updated": "2026-01-29T17:15:00Z",
+      "description": "Audit and reduce sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard). Currently 45 sorries: 33 in Representation/, remainder in Core/, Completeness/, FMP/, Algebraic/. Categorize by (a) blocking main theorem path, (b) required for full biconditional but not main result, (c) optional/exploratory. Prioritize elimination of category (a) sorries. Related: Task 750 (forward Truth Lemma refactor)",
+      "source": "review-20260129-2"
+    },
+    {
+      "project_number": 757,
+      "project_name": "fix_task_state_sync_issues",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-29T17:15:00Z",
+      "last_updated": "2026-01-29T17:15:00Z",
+      "description": "Fix task state synchronization issues from review: (1) Task 741 documented as blocked by omega-rule limitation but status shows researching - update to blocked; (2) Task 750 has planned timestamp and implementation plan but status shows researching - resolve direction; (3) Task 747 work appears complete but status shows implementing - finalize completion",
+      "source": "review-20260129-2"
+    },
+    {
       "project_number": 755,
       "project_name": "implement_option_c_forward_truth_lemma",
       "status": "not_started",
@@ -26,20 +59,26 @@
     {
       "project_number": 753,
       "project_name": "prove_sorries_in_coherentconstruction",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T16:50:59Z",
-      "last_updated": "2026-01-29T16:56:39Z",
-      "session_id": "sess_1769705524_3c2b7a",
+      "last_updated": "2026-01-29T17:09:52Z",
+      "session_id": "sess_1769706412_b0e60b",
       "researched": "2026-01-29T16:56:39Z",
       "artifacts": [
         {
           "path": "specs/753_prove_sorries_in_coherentconstruction/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of 10 sorries in CoherentConstruction.lean, identifying 2 critical infrastructure sorries (lines 403, 416) needed for completeness and 8 non-critical coherence case sorries"
+        },
+        {
+          "path": "specs/753_prove_sorries_in_coherentconstruction/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "11-phase implementation plan to achieve zero sorries in Bimodal/Metalogic/ (34 sorries across 11 files)"
         }
-      ]
+      ],
+      "planned": "2026-01-29T17:09:52Z"
     },
     {
       "project_number": 752,
@@ -111,12 +150,12 @@
     {
       "project_number": 749,
       "project_name": "establish_sorry_free_completeness_via_semantic_weak_completeness",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:48:21Z",
-      "last_updated": "2026-01-29T14:56:05Z",
-      "session_id": "sess_1769698335_fafa38",
+      "last_updated": "2026-01-29T17:08:09Z",
+      "session_id": "sess_1769706470_c7236a",
       "researched": "2026-01-29T14:56:05Z",
       "artifacts": [
         {
@@ -478,11 +517,12 @@
     {
       "project_number": 756,
       "project_name": "enhance_task_command_with_description_improvement",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T17:05:12Z",
-      "last_updated": "2026-01-29T17:05:12Z"
+      "last_updated": "2026-01-29T17:09:43Z",
+      "session_id": "sess_1769706566_144a4a"
     }
   ],
   "completed_projects": [
@@ -497,7 +537,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 757,
+  "next_project_number": 760,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

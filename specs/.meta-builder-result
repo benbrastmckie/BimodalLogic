@@ -1,0 +1,24 @@
+{
+  "status": "tasks_created",
+  "summary": "Created task #756 for enhancing /task command with description improvement via lightweight prompt engineering.",
+  "artifacts": [
+    {
+      "type": "task_entry",
+      "path": "specs/TODO.md",
+      "summary": "Task #756 added to TODO.md"
+    },
+    {
+      "type": "state_update",
+      "path": "specs/state.json",
+      "summary": "Task #756 added to active_projects"
+    }
+  ],
+  "metadata": {
+    "duration_seconds": 45,
+    "agent_type": "meta-builder-agent",
+    "mode": "prompt",
+    "tasks_created": 1,
+    "task_numbers": [756]
+  },
+  "next_steps": "Run /research 756 to analyze current /task implementation and design the description improvement logic"
+}
