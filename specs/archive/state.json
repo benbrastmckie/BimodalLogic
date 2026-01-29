@@ -9988,6 +9988,146 @@
       "subtasks": null,
       "completed": "2026-01-29T13:02:21Z",
       "completion_summary": "Proved algebraic representation theorem (AlgSatisfiable φ ↔ AlgConsistent φ) as alternative to seed-extension approach. All 6 phases complete: Lindenbaum quotient, Boolean algebra structure, interior operators for G/H, ultrafilter-MCS bijection, and main theorem. ~2020 LOC, zero sorries."
+    },
+    {
+      "project_number": 624,
+      "project_name": "prove_tableau_complete",
+      "status": "completed",
+      "language": "lean",
+      "priority": "low",
+      "parent_task": 490,
+      "dependencies": [
+        623
+      ],
+      "created": "2026-01-19T22:38:22Z",
+      "last_updated": "2026-01-29T14:08:50Z",
+      "session_id": "sess_1769695229_0b71c9",
+      "researched": "2026-01-29T13:22:16Z",
+      "artifacts": [
+        {
+          "path": "specs/624_prove_tableau_complete/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing tableau_complete proof requirements"
+        },
+        {
+          "path": "specs/624_prove_tableau_complete/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for proving tableau_complete theorem"
+        },
+        {
+          "path": "specs/624_prove_tableau_complete/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting proved theorem"
+        }
+      ],
+      "planned": "2026-01-29T13:49:51Z",
+      "started": "2026-01-29T14:00:47Z",
+      "completed": "2026-01-29T14:08:50Z",
+      "completion_summary": "Proved tableau_complete theorem with ~650 lines of helper lemmas ported from Metalogic_v2.",
+      "archived": "2026-01-29T14:30:00Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 739,
+      "project_name": "update_report_format_with_project_context_section",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-29T01:45:00Z",
+      "last_updated": "2026-01-29T13:29:23Z",
+      "session_id": "sess_1769693209_3ad7f9",
+      "planned": "2026-01-29T13:14:33Z",
+      "artifacts": [
+        {
+          "path": "specs/739_update_report_format_with_project_context_section/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "1-phase revised plan for Lean-specific Project Context section"
+        },
+        {
+          "path": "specs/739_update_report_format_with_project_context_section/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting changes"
+        }
+      ],
+      "started": "2026-01-29T13:27:09Z",
+      "completed": "2026-01-29T13:29:23Z",
+      "completion_summary": "Added Lean-specific Project Context section to report-format.md.",
+      "claudemd_suggestions": "Updated .claude/context/core/formats/report-format.md",
+      "archived": "2026-01-29T14:30:00Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 740,
+      "project_name": "update_skill_lean_research_to_generate_project_context",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "dependencies": [
+        739
+      ],
+      "created": "2026-01-29T01:45:00Z",
+      "last_updated": "2026-01-29T13:58:14Z",
+      "session_id": "sess_1769694936_0f0551",
+      "researched": "2026-01-29T13:39:52Z",
+      "artifacts": [
+        {
+          "path": "specs/740_update_skill_lean_research_to_generate_project_context/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting skill state and approach"
+        },
+        {
+          "path": "specs/740_update_skill_lean_research_to_generate_project_context/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan"
+        },
+        {
+          "path": "specs/740_update_skill_lean_research_to_generate_project_context/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification"
+        }
+      ],
+      "planned": "2026-01-29T13:49:37Z",
+      "started": "2026-01-29T13:55:51Z",
+      "completed": "2026-01-29T13:58:14Z",
+      "completion_summary": "Updated skill-lean-research to generate Project Context section.",
+      "claudemd_suggestions": "Modified skill-lean-research/SKILL.md and lean-research-flow.md",
+      "archived": "2026-01-29T14:30:00Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 742,
+      "project_name": "restore_lean_research_agent_thin_wrapper",
+      "status": "completed",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-29T13:39:29Z",
+      "last_updated": "2026-01-29T14:10:15Z",
+      "session_id": "sess_1769695517_d6dd41",
+      "researched": "2026-01-29T13:51:29Z",
+      "artifacts": [
+        {
+          "path": "specs/742_restore_lean_research_agent_thin_wrapper/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with thin wrapper pattern"
+        },
+        {
+          "path": "specs/742_restore_lean_research_agent_thin_wrapper/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan"
+        },
+        {
+          "path": "specs/742_restore_lean_research_agent_thin_wrapper/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification"
+        }
+      ],
+      "planned": "2026-01-29T13:56:59Z",
+      "started": "2026-01-29T14:05:39Z",
+      "completed": "2026-01-29T14:10:15Z",
+      "completion_summary": "Restored lean-research-agent and converted skill-lean-research to thin wrapper.",
+      "claudemd_suggestions": "Updated skill-to-agent mapping table in CLAUDE.md",
+      "archived": "2026-01-29T14:30:00Z",
+      "source": "archival"
     }
   ]
 }

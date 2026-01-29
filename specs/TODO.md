@@ -5,17 +5,17 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-17T02:30:00Z
 task_counts:
-  active: 17
-  completed: 308
+  active: 13
+  completed: 312
   in_progress: 4
-  not_started: 5
+  not_started: 4
   abandoned: 21
-  total: 336
+  total: 340
 priority_distribution:
   critical: 0
-  high: 5
-  medium: 6
-  low: 6
+  high: 4
+  medium: 4
+  low: 5
 technical_debt:
   sorry_count: 205
   axiom_count: 15
@@ -26,21 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 742. Restore lean-research-agent and skill-lean-research thin wrapper
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/742_restore_lean_research_agent_thin_wrapper/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/742_restore_lean_research_agent_thin_wrapper/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/742_restore_lean_research_agent_thin_wrapper/summaries/implementation-summary-20260129.md)
-
-**Description**: Restore lean-research-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-research from 408-line direct execution to ~80-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0). Follow patterns from skill-researcher and general-research-agent.
-
----
 
 ### 743. Restore lean-implementation-agent and skill-lean-implementation thin wrapper
 - **Effort**: 4-6 hours
@@ -154,36 +139,6 @@ technical_debt:
 - **Dependencies**: Tasks 742, 743
 
 **Description**: Update CLAUDE.md skill-to-agent mapping table to show skill-lean-research → lean-research-agent and skill-lean-implementation → lean-implementation-agent (removing direct execution notes). Update blocked-mcp-tools.md to reference restored agents. Update any other references to the deprecated/direct-execution pattern in context files.
-
----
-
-### 739. Update report-format.md with Project Context section
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Plan**: [implementation-002.md](specs/739_update_report_format_with_project_context_section/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260129.md](specs/739_update_report_format_with_project_context_section/summaries/implementation-summary-20260129.md)
-
-**Description**: Update .claude/context/core/formats/report-format.md to include a Lean-specific "Project Context" section focused on proof dependencies. The section documents upstream dependencies, downstream dependents, alternative paths, and potential extensions to help researchers understand how a topic fits into the Lean codebase. This is optional for non-Lean reports.
-
----
-
-### 740. Update skill-lean-research to generate Project Context
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Dependencies**: Task 739
-- **Created**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/740_update_skill_lean_research_to_generate_project_context/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/740_update_skill_lean_research_to_generate_project_context/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/740_update_skill_lean_research_to_generate_project_context/summaries/implementation-summary-20260129.md)
-
-**Description**: Update skill-lean-research to generate the Project Context section in lean research reports. Add context reference loading from project-overview.md, modify Stage 7 report generation to include the Project Context section as specified in report-format.md, and update .claude/context/project/lean4/agents/lean-research-flow.md Stage 5 documentation to reflect the new section. This ensures all lean research outputs include orientation information.
 
 ---
 
@@ -305,23 +260,6 @@ technical_debt:
 - **Plan**: [implementation-002.md](specs/623_build_fmp_tableau_connection_infrastructure/plans/implementation-003.md)
 
 **Description**: Build infrastructure connecting FMP bounds to tableau semantics. Phases 1-2.3 and 4 completed (expansion/saturation lemmas, branchTruthLemma). Phase 3 blocked on semantic bridge gap. Expanded into Tasks 630 (Kripke model extraction) and 631 (evalFormula_implies_sat lemma) to address the blocker.
-
----
-
-### 624. Prove tableau_complete
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Researched**: 2026-01-29
-- **Priority**: Low
-- **Language**: lean
-- **Parent**: Task 490
-- **Dependencies**: Task 623
-- **Research**: [research-001.md](specs/624_prove_tableau_complete/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/624_prove_tableau_complete/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/624_prove_tableau_complete/summaries/implementation-summary-20260129.md)
-
-**Description**: Prove the `tableau_complete` theorem in Correctness.lean connecting FMP to tableau termination. Uses infrastructure from Task 623 to show that valid formulas have closing tableaux within FMP fuel bounds.
 
 ---
 

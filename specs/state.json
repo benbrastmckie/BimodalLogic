@@ -193,45 +193,9 @@
       ]
     },
     {
-      "project_number": 624,
-      "project_name": "prove_tableau_complete",
-      "status": "completed",
-      "language": "lean",
-      "priority": "low",
-      "parent_task": 490,
-      "dependencies": [
-        623
-      ],
-      "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T14:08:50Z",
-      "session_id": "sess_1769695229_0b71c9",
-      "researched": "2026-01-29T13:22:16Z",
-      "artifacts": [
-        {
-          "path": "specs/624_prove_tableau_complete/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing tableau_complete proof requirements, comparing Metalogic vs Metalogic_v2 infrastructure"
-        },
-        {
-          "path": "specs/624_prove_tableau_complete/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for proving tableau_complete theorem connecting FMP to tableau termination"
-        },
-        {
-          "path": "specs/624_prove_tableau_complete/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting proved theorem, ported helper lemmas, and remaining gaps"
-        }
-      ],
-      "planned": "2026-01-29T13:49:51Z",
-      "started": "2026-01-29T14:00:47Z",
-      "completed": "2026-01-29T14:08:50Z",
-      "completion_summary": "Proved tableau_complete theorem with ~650 lines of helper lemmas ported from Metalogic_v2. Key lemmas: expansion_decreases_measure, applyRule_decreases_complexity. Two documented gaps remain: buildTableau_terminates (sorry) and semantic bridge (axiom)."
-    },
-    {
       "project_number": 625,
       "project_name": "prove_decide_complete",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -239,8 +203,8 @@
         624
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T14:14:55Z",
-      "session_id": "sess_1769695869_9c8014",
+      "last_updated": "2026-01-29T14:17:46Z",
+      "session_id": "sess_1769696253_abceac",
       "researched": "2026-01-29T14:14:55Z",
       "artifacts": [
         {
@@ -488,105 +452,6 @@
           "summary": "Research report on Evolution/WorldHistory containment theorem and Barcan formula proofs for Logos Dynamics"
         }
       ]
-    },
-    {
-      "project_number": 739,
-      "project_name": "update_report_format_with_project_context_section",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "description": "Update .claude/context/core/formats/report-format.md to include a new \"Project Context\" section in the research report template. The section should appear after metadata and before Executive Summary to provide early orientation. Define fields: relation to project goals, component location, relevant modules, and integration points. This provides researchers with context on how their work fits into the broader project structure.",
-      "created": "2026-01-29T01:45:00Z",
-      "last_updated": "2026-01-29T13:29:23Z",
-      "session_id": "sess_1769693209_3ad7f9",
-      "planned": "2026-01-29T13:14:33Z",
-      "artifacts": [
-        {
-          "path": "specs/739_update_report_format_with_project_context_section/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "1-phase revised plan for Lean-specific Project Context section focusing on proof dependencies"
-        },
-        {
-          "path": "specs/739_update_report_format_with_project_context_section/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting changes to report-format.md"
-        }
-      ],
-      "started": "2026-01-29T13:27:09Z",
-      "completed": "2026-01-29T13:29:23Z",
-      "completion_summary": "Added Lean-specific Project Context section to report-format.md with four dependency-focused fields (upstream dependencies, downstream dependents, alternative paths, potential extensions) and updated the example skeleton with proof relationship examples.",
-      "claudemd_suggestions": "Updated .claude/context/core/formats/report-format.md to include Project Context section for Lean research reports"
-    },
-    {
-      "project_number": 740,
-      "project_name": "update_skill_lean_research_to_generate_project_context",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "description": "Update skill-lean-research to generate the Project Context section in lean research reports. Add context reference loading from project-overview.md, modify Stage 7 report generation to include the Project Context section as specified in report-format.md, and update .claude/context/project/lean4/agents/lean-research-flow.md Stage 5 documentation to reflect the new section. This ensures all lean research outputs include orientation information.",
-      "created": "2026-01-29T01:45:00Z",
-      "last_updated": "2026-01-29T13:58:14Z",
-      "dependencies": [
-        739
-      ],
-      "session_id": "sess_1769694936_0f0551",
-      "researched": "2026-01-29T13:39:52Z",
-      "artifacts": [
-        {
-          "path": "specs/740_update_skill_lean_research_to_generate_project_context/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting current state of lean research skill, report-format.md specification, and implementation approach for adding Project Context section"
-        },
-        {
-          "path": "specs/740_update_skill_lean_research_to_generate_project_context/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase plan: update SKILL.md context refs and Stage 7 template, update lean-research-flow.md Stage 5, verify consistency"
-        },
-        {
-          "path": "specs/740_update_skill_lean_research_to_generate_project_context/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results for all three phases"
-        }
-      ],
-      "planned": "2026-01-29T13:49:37Z",
-      "started": "2026-01-29T13:55:51Z",
-      "completed": "2026-01-29T13:58:14Z",
-      "completion_summary": "Updated skill-lean-research to generate Project Context section in Lean research reports, adding context reference to project-overview.md and updating templates in both SKILL.md (Stage 7) and lean-research-flow.md (Stage 5) with all four context fields.",
-      "claudemd_suggestions": "Modified skill-lean-research/SKILL.md (added context reference, updated Stage 7 template), modified lean-research-flow.md (updated Stage 5 template)"
-    },
-    {
-      "project_number": 742,
-      "project_name": "restore_lean_research_agent_thin_wrapper",
-      "status": "completed",
-      "language": "meta",
-      "priority": "high",
-      "description": "Restore lean-research-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-research from 408-line direct execution to ~80-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0). Follow patterns from skill-researcher and general-research-agent.",
-      "created": "2026-01-29T13:39:29Z",
-      "last_updated": "2026-01-29T14:10:15Z",
-      "session_id": "sess_1769695517_d6dd41",
-      "researched": "2026-01-29T13:51:29Z",
-      "artifacts": [
-        {
-          "path": "specs/742_restore_lean_research_agent_thin_wrapper/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report with thin wrapper pattern template, blocked tools guardrails, and line-by-line mapping for skill-lean-research conversion and lean-research-agent restoration"
-        },
-        {
-          "path": "specs/742_restore_lean_research_agent_thin_wrapper/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for restoring lean-research-agent with blocked tools guardrails and converting skill-lean-research to thin wrapper"
-        },
-        {
-          "path": "specs/742_restore_lean_research_agent_thin_wrapper/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-29T13:56:59Z",
-      "started": "2026-01-29T14:05:39Z",
-      "completed": "2026-01-29T14:10:15Z",
-      "completion_summary": "Restored lean-research-agent with explicit blocked tool guardrails and converted skill-lean-research to thin wrapper delegation pattern. Updated CLAUDE.md skill-to-agent mapping.",
-      "claudemd_suggestions": "Updated skill-to-agent mapping table in CLAUDE.md (skill-lean-research now delegates to lean-research-agent instead of direct execution). Restored lean-research-agent.md and converted skill-lean-research/SKILL.md to thin wrapper pattern."
     },
     {
       "project_number": 743,
