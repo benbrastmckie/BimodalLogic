@@ -15,7 +15,7 @@ and maximal consistent sets.
 
 ## Status
 
-Phase 5 of Task 700. Contains sorries pending MCS helper lemmas.
+Contains sorries pending MCS helper lemmas.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.UltrafilterMCS

@@ -146,10 +146,11 @@ technical_debt:
 
 ### 751. Enhance /review with grouped interactive task proposals
 - **Effort**: 8-10 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Research**: [research-001.md](specs/751_enhance_review_with_grouped_interactive_task_proposals/reports/research-001.md)
 
 **Description**: Modify the /review command to always conclude with an interactive task proposal experience. Currently, task creation requires the --create-tasks flag and presents a flat numbered list. This task implements intelligent task grouping and interactive selection across 3 phases: (1) Task Grouping Logic - implement algorithm to cluster related issues by file/component area, type of fix, and priority level; (2) Interactive Selection Interface - modify Section 5.5 to always display grouped task proposals with checkboxes for groups and individual tasks; (3) Task Creation Integration - wire selected tasks to actual creation with proper dependency linking.
 

@@ -30,10 +30,10 @@ subsets of the subformula closure - and doesn't depend on the specific duration 
 - `SemanticCanonicalFrame`: TaskFrame with Int duration
 - `SemanticCanonicalModel`: TaskModel for completeness proof
 
-## Known Sorries
+## Known Limitations
 
 The compositionality axiom (`SemanticCanonicalFrame.compositionality`) is marked sorry.
-This is mathematically false for unbounded durations in finite time domain [-k, k].
+This axiom is mathematically false for unbounded durations in finite time domain [-k, k].
 The finite model is still valid for demonstrating satisfiability.
 
 ## Architecture
@@ -220,8 +220,8 @@ noncomputable def SemanticCanonicalFrame (phi : Formula) : TaskFrame Int where
   WorldState := SemanticWorldState phi
   task_rel := semantic_task_rel phi
   nullity := semantic_task_rel_nullity phi
-  -- KNOWN GAP: Compositionality is mathematically false for unbounded durations in finite time
-  -- domain [-k, k]. Sum d1 + d2 can exceed representable range [-2k, 2k]. Not needed for
+  -- Known Limitation: Compositionality is mathematically false for unbounded durations in finite
+  -- time domain [-k, k]. Sum d1 + d2 can exceed representable range [-2k, 2k]. Not needed for
   -- completeness proof which uses semantic_weak_completeness via semantic_truth_at_v2.
   compositionality := fun _ _ _ _ _ => sorry
 

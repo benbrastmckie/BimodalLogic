@@ -13,13 +13,9 @@ This module proves that the Lindenbaum-Tarski algebra is a `BooleanAlgebra`.
 - Order: `[φ] ≤ [ψ] ↔ ⊢ φ → ψ`
 - Operations are well-defined on the quotient
 
-## References
-
-- Research report: specs/700_research_algebraic_representation_theorem_proof/reports/research-002.md
-
 ## Status
 
-Phase 3 of Task 700. Contains sorries pending propositional helper lemmas.
+Contains sorries pending propositional helper lemmas.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.BooleanStructure
