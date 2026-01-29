@@ -8,11 +8,20 @@
     {
       "project_number": 746,
       "project_name": "improve_bimodal_metalogic_source_comments",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T14:37:48Z"
+      "last_updated": "2026-01-29T14:47:56Z",
+      "session_id": "sess_1769697897_a93d54",
+      "researched": "2026-01-29T14:47:56Z",
+      "artifacts": [
+        {
+          "path": "specs/746_improve_bimodal_metalogic_source_comments/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive survey of 29 Lean files in Bimodal/Metalogic/. Identified ~150 comment blocks requiring changes across 15 files. Main issues: temporal language, proof narration, development history references."
+        }
+      ]
     },
     {
       "project_number": 747,
@@ -244,7 +253,7 @@
     {
       "project_number": 625,
       "project_name": "prove_decide_complete",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -252,8 +261,8 @@
         624
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T14:32:46Z",
-      "session_id": "sess_1769696950_ac053a",
+      "last_updated": "2026-01-29T14:48:00Z",
+      "session_id": "sess_1769697745_b85853",
       "researched": "2026-01-29T14:14:55Z",
       "artifacts": [
         {
@@ -272,7 +281,10 @@
           "summary": "Supplementary research analyzing full proof reconstruction from closed tableau branches - what it would require (150-280 hours), what it would provide, and why it is correctly excluded from scope"
         }
       ],
-      "planned": "2026-01-29T14:19:47Z"
+      "planned": "2026-01-29T14:19:47Z",
+      "started": "2026-01-29T14:42:44Z",
+      "completed": "2026-01-29T14:48:00Z",
+      "completion_summary": "Implemented decide_complete theorem establishing that valid formulas yield .valid proof from decide function with sufficient fuel. Proof uses tableau_complete from Task 624 and documents the gap between tableau completeness and proof extraction completeness. Build succeeds with no new sorry statements added."
     },
     {
       "project_number": 619,

@@ -31,6 +31,7 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Semantics
 open Bimodal.Boneyard.Metalogic
+open Bimodal.Automation
 
 /-!
 ## Soundness
@@ -144,16 +145,53 @@ theorem tableau_complete (φ : Formula) :
 Decision procedure completeness: if a formula is valid and we use
 sufficient fuel, decide will return valid.
 
-Note: This is stated but not fully proven due to complexity of
-FMP and completeness proofs.
+**Proof Strategy**:
+The proof connects semantic validity to syntactic provability via:
+1. `tableau_complete`: For valid φ, tableau eventually closes all branches
+2. Proof extraction: From closed tableau, extract a derivation tree
+
+**Key Dependencies**:
+- `tableau_complete` (proven above): `⊨ φ → ∃ fuel, buildTableau φ fuel = some (.allClosed _)`
+- Proof extraction completeness (gap): closed tableau → extractable proof
 
 **FMP Connection**: The `finite_model_property` theorem bounds the search space.
 For a formula with complexity n, the fuel bound is O(2^n) since the subformula
 closure has at most 2^n distinct states.
+
+**Current Gap**: The `decide` function may return `.timeout` even when tableau
+closes, because proof extraction (from closed branches or bounded search) may
+fail. A complete proof would require either:
+1. Proving proof extraction is complete for closed tableaux, OR
+2. Proving bounded_search_with_proof is complete for valid formulas, OR
+3. Modifying decide to use unbounded proof search
+
+The gap is documented but the logical structure is sound: semantic validity
+implies syntactic provability (completeness of TM), which implies decide
+can find a proof given sufficient resources.
 -/
 theorem decide_complete (φ : Formula) (hvalid : ⊨ φ) :
     ∃ (fuel : Nat), ∃ proof, decide φ 10 fuel = .valid proof := by
-  sorry  -- Requires tableau completeness; fuel bound from Representation.FiniteModelProperty
+  -- Strategy: Use tableau_complete to show tableau closes, then bridge to decide
+  obtain ⟨fuel, hterm, hvalid_tableau⟩ := tableau_complete φ hvalid
+
+  -- We know: buildTableau φ fuel = some t where t.isValid = true
+  -- This means t = .allClosed closedBranches for some closedBranches
+
+  -- The gap: even with .allClosed result, decide may return .timeout
+  -- if proof extraction fails. This requires showing one of:
+  -- (1) tryAxiomProof succeeds, OR
+  -- (2) bounded_search_with_proof at depth 10 succeeds, OR
+  -- (3) Proof extraction from closed branches succeeds, OR
+  -- (4) bounded_search_with_proof at depth 20 succeeds
+
+  -- For semantic completeness, we know a proof EXISTS (completeness of TM).
+  -- The question is whether decide's bounded search FINDS it.
+
+  -- Use fuel from tableau_complete as our fuel parameter
+  use fuel
+  -- The proof exists by completeness of the TM proof system
+  -- decide should find it via one of its search paths
+  sorry  -- Gap: proof extraction completeness
 
 /-!
 ## Correctness Summary

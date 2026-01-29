@@ -122,10 +122,11 @@ technical_debt:
 
 ### 746. Improve Bimodal/Metalogic source comments
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Research**: [research-001.md](specs/746_improve_bimodal_metalogic_source_comments/reports/research-001.md)
 
 **Description**: Systematically improve comments throughout Bimodal/Metalogic/ source files to be accurate, clear, and consistent. Remove historical language comparing past attempts or otherwise presenting results in anything but a clear and direct way (avoid temporal language like 'now', 'currently', 'previously', etc.). Ensure comments explain what the code does without unnecessary meta-commentary.
 
@@ -305,7 +306,7 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
