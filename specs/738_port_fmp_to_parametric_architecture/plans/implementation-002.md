@@ -2,7 +2,7 @@
 
 - **Task**: 738 - Port FMP to parametric architecture with explicit cardinality bounds
 - **Version**: 002 (Revised for Option A - Full Parametric Port)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10-14 hours
 - **Priority**: medium
 - **Dependencies**: Task 660 (parent task - Phase 3)
@@ -76,7 +76,7 @@ From Research 002:
 
 ## Implementation Phases
 
-### Phase 1: Closure Infrastructure Port [NOT STARTED]
+### Phase 1: Closure Infrastructure Port [COMPLETED]
 
 **Goal**: Move closure definitions to parametric architecture with no functional changes. (Same as v001 - closure has no D dependency)
 

@@ -44,7 +44,7 @@ technical_debt:
 
 ### 743. Restore lean-implementation-agent and skill-lean-implementation thin wrapper
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-29
@@ -133,7 +133,7 @@ technical_debt:
 
 ### 745. Move backward Truth Lemma to Boneyard
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -228,10 +228,11 @@ technical_debt:
 
 ### 738. Port FMP to parametric architecture
 - **Effort**: 10-14 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Parent Task**: 660
 - **Research**: [research-001.md](specs/738_port_fmp_to_parametric_architecture/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/738_port_fmp_to_parametric_architecture/plans/implementation-002.md) (v002 - Option A)
@@ -323,7 +324,7 @@ technical_debt:
 ---
 
 ### 625. Prove decide_complete
-- **Status**: [PLANNING]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Parent**: Task 490
