@@ -80,14 +80,14 @@
     {
       "project_number": 736,
       "project_name": "complete_task700_phase6_algebraic_representation",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "description": "Complete phase 6 of task 700: Algebraic Representation Theorem. Prove ultrafilter existence (consistent_implies_satisfiable) using Zorn's lemma adaptation - for any non-⊥ element a, there exists ultrafilter containing a. Also complete mcs_ultrafilter_correspondence bijection proof. (Follow-up from task #700)",
       "parent_task": 700,
       "created": "2026-01-29T01:21:00Z",
-      "last_updated": "2026-01-29T04:43:55Z",
-      "session_id": "sess_1769661681_2bc300",
+      "last_updated": "2026-01-29T04:46:38Z",
+      "session_id": "sess_1769661973_4cb2d6",
       "researched": "2026-01-29T04:14:23Z",
       "artifacts": [
         {
@@ -101,7 +101,8 @@
           "summary": "4-phase implementation plan for completing algebraic representation theorem proofs"
         }
       ],
-      "planned": "2026-01-29T04:43:55Z"
+      "planned": "2026-01-29T04:43:55Z",
+      "started": "2026-01-29T04:46:38Z"
     },
     {
       "project_number": 733,
@@ -220,17 +221,17 @@
     {
       "project_number": 659,
       "project_name": "prove_negation_completeness_lemmas",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T04:10:01Z",
+      "last_updated": "2026-01-29T04:47:59Z",
       "related_tasks": [
         654,
         656
       ],
-      "session_id": "sess_1769659546_1f0a22",
-      "researched": "2026-01-29T01:08:47Z",
+      "session_id": "sess_1769661903_cac66e",
+      "researched": "2026-01-29T04:47:59Z",
       "artifacts": [
         {
           "path": "specs/659_prove_negation_completeness_lemmas/reports/research-001.md",
@@ -246,6 +247,11 @@
           "path": "specs/659_prove_negation_completeness_lemmas/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase plan for witness extraction lemmas and backward temporal cases"
+        },
+        {
+          "path": "specs/659_prove_negation_completeness_lemmas/reports/research-003.md",
+          "type": "research",
+          "summary": "Research on forward_H proof requirements, witness extraction analysis, and three resolution approaches for backward Truth Lemma"
         }
       ],
       "planned": "2026-01-29T01:21:06Z",
@@ -300,7 +306,7 @@
     {
       "project_number": 631,
       "project_name": "prove_evalformula_implies_satisfiable",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "parent_task": 490,
@@ -312,8 +318,8 @@
         628
       ],
       "created": "2026-01-20T01:07:10Z",
-      "last_updated": "2026-01-29T01:18:02Z",
-      "session_id": "sess_1769649253_b06f16",
+      "last_updated": "2026-01-29T04:47:44Z",
+      "session_id": "sess_1769662037_5bce92",
       "researched": "2026-01-29T01:18:02Z",
       "artifacts": [
         {
