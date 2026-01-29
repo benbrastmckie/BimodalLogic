@@ -351,6 +351,16 @@ lemma self_mem_consistent_supersets {S : Set Formula} (h : SetConsistent S) :
     S ∈ ConsistentSupersets S :=
   ⟨Set.Subset.refl S, h⟩
 
+/-!
+## DEPRECATED
+
+This `set_lindenbaum` is superseded by the canonical version at:
+- `Bimodal.Metalogic.Core.set_lindenbaum` (re-export)
+- `Bimodal.Metalogic_v2.Core.set_lindenbaum` (original)
+
+This file is preserved for historical reference only.
+-/
+
 /--
 Set-based Lindenbaum's Lemma: Every consistent set can be extended to a
 set-maximal consistent set.

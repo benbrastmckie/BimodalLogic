@@ -128,6 +128,14 @@ theorem consistent_chain_union {C : Set (Set Formula)}
 ## Lindenbaum's Lemma
 
 Every consistent set can be extended to a maximal consistent set.
+
+### DEPRECATED
+
+This `set_lindenbaum` is superseded by the canonical version at:
+- `Bimodal.Metalogic.Core.set_lindenbaum` (re-export)
+- `Bimodal.Metalogic_v2.Core.set_lindenbaum` (original)
+
+This file is preserved for historical reference only.
 -/
 
 /--
