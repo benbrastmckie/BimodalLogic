@@ -17,20 +17,21 @@
     {
       "project_number": 749,
       "project_name": "establish_sorry_free_completeness_via_semantic_weak_completeness",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:48:21Z",
-      "last_updated": "2026-01-29T14:48:21Z"
+      "last_updated": "2026-01-29T14:52:33Z",
+      "session_id": "sess_1769698335_fafa38"
     },
     {
       "project_number": 746,
       "project_name": "improve_bimodal_metalogic_source_comments",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:37:48Z",
-      "last_updated": "2026-01-29T14:51:00Z",
+      "last_updated": "2026-01-29T14:53:02Z",
       "session_id": "sess_1769698249_7e6060",
       "researched": "2026-01-29T14:47:56Z",
       "artifacts": [
@@ -38,8 +39,14 @@
           "path": "specs/746_improve_bimodal_metalogic_source_comments/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive survey of 29 Lean files in Bimodal/Metalogic/. Identified ~150 comment blocks requiring changes across 15 files. Main issues: temporal language, proof narration, development history references."
+        },
+        {
+          "path": "specs/746_improve_bimodal_metalogic_source_comments/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan to improve comments in 15 Metalogic files by removing temporal language and standardizing documentation"
         }
-      ]
+      ],
+      "planned": "2026-01-29T14:53:02Z"
     },
     {
       "project_number": 747,

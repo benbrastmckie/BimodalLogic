@@ -1,0 +1,35 @@
+{
+  "status": "tasks_created",
+  "summary": "Created task #751: Enhance /review with grouped interactive task proposals. This 3-phase task (8-10 hours) implements intelligent task grouping by component/fix type, interactive selection with checkboxes, and integration with task creation.",
+  "artifacts": [
+    {
+      "type": "task_entry",
+      "path": "specs/TODO.md",
+      "summary": "Task #751 added to TODO.md Medium Priority section"
+    },
+    {
+      "type": "state_update",
+      "path": "specs/state.json",
+      "summary": "Task #751 added to active_projects, next_project_number incremented to 752"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1769698357_62cbbf",
+    "duration_seconds": 180,
+    "agent_type": "meta-builder-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "meta", "meta-builder-agent"],
+    "mode": "prompt",
+    "tasks_created": 1,
+    "tasks": [
+      {
+        "task_number": 751,
+        "task_name": "enhance_review_with_grouped_interactive_task_proposals",
+        "priority": "medium",
+        "effort": "8-10 hours",
+        "language": "meta"
+      }
+    ]
+  },
+  "next_steps": "Run /research 751 to begin research on enhancing the /review command with grouped interactive task proposals"
+}

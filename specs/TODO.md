@@ -122,7 +122,7 @@ technical_debt:
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
@@ -155,11 +155,12 @@ technical_debt:
 
 ### 746. Improve Bimodal/Metalogic source comments
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Research**: [research-001.md](specs/746_improve_bimodal_metalogic_source_comments/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/746_improve_bimodal_metalogic_source_comments/plans/implementation-001.md)
 
 **Description**: Systematically improve comments throughout Bimodal/Metalogic/ source files to be accurate, clear, and consistent. Remove historical language comparing past attempts or otherwise presenting results in anything but a clear and direct way (avoid temporal language like 'now', 'currently', 'previously', etc.). Ensure comments explain what the code does without unnecessary meta-commentary.
 

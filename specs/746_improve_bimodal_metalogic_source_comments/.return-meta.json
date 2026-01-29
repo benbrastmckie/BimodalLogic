@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/746_improve_bimodal_metalogic_source_comments/plans/implementation-001.md",
+      "summary": "5-phase plan to improve comments in 15 Metalogic files by removing temporal language and standardizing documentation"
+    }
+  ],
+  "next_steps": "Run /implement 746 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1769698249_7e6060",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4
+  }
+}
