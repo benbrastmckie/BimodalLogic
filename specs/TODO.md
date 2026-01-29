@@ -29,7 +29,7 @@ technical_debt:
 
 ### 758. Audit and reduce Metalogic sorries
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-29
