@@ -8,11 +8,11 @@
     {
       "project_number": 731,
       "project_name": "clean_bimodal_documentation_remove_historical_comments",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T23:47:43Z",
-      "last_updated": "2026-01-29T00:20:46Z",
+      "last_updated": "2026-01-29T00:22:50Z",
       "description": "Clean up Lean source code documentation in Bimodal/ theory to present only the current state with no historical mentions. **Scope change**: Remove ALL historical artifacts including: (1) provenance comments ('-- Origin: Boneyard/...') from Core/*.lean files, (2) SUPERSEDED/DEPRECATED docblocks and markers, (3) narrative history explaining past approaches or 'why we did X instead of Y', (4) references to Boneyard in active code comments. Goal is clean, present-tense documentation describing what the code IS, not where it came from or what it replaced. Also: (a) update remaining Boneyard imports in GeneralizedNecessitation.lean and Propositional.lean to use Core, (b) move compatibility shims Metalogic.lean and Metalogic_v2.lean to Boneyard/Compat/, (c) verify complete Boneyard isolation.",
       "session_id": "sess_1769646036_61668d",
       "researched": "2026-01-29T00:11:16Z",
@@ -21,8 +21,14 @@
           "path": "specs/731_clean_bimodal_documentation_remove_historical_comments/reports/research-001.md",
           "type": "research",
           "summary": "Identifies provenance comments to preserve, SUPERSEDED markers, Boneyard imports to fix, and compatibility shims to move"
+        },
+        {
+          "path": "specs/731_clean_bimodal_documentation_remove_historical_comments/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan covering import updates, shim relocation, provenance removal, SUPERSEDED/DEPRECATED cleanup, and isolation verification"
         }
-      ]
+      ],
+      "planned": "2026-01-29T00:22:50Z"
     },
     {
       "project_number": 726,

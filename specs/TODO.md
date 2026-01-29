@@ -122,12 +122,13 @@ technical_debt:
 
 ### 731. Clean Bimodal documentation - remove historical comments
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Related**: Task 681
 - **Research**: [research-001.md](specs/731_clean_bimodal_documentation_remove_historical_comments/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/731_clean_bimodal_documentation_remove_historical_comments/plans/implementation-001.md)
 
 **Description**: Clean up Lean source code documentation in Bimodal/ theory to present only the current state with no historical mentions. **Scope change**: Remove ALL historical artifacts including: (1) provenance comments (`-- Origin: Boneyard/...`) from Core/*.lean files, (2) SUPERSEDED/DEPRECATED docblocks and markers, (3) narrative history explaining past approaches or "why we did X instead of Y", (4) references to Boneyard in active code comments. Goal is clean, present-tense documentation describing what the code IS, not where it came from or what it replaced. Also: (a) update remaining Boneyard imports in GeneralizedNecessitation.lean and Propositional.lean to use Core, (b) move compatibility shims Metalogic.lean and Metalogic_v2.lean to Boneyard/Compat/, (c) verify complete Boneyard isolation.
 

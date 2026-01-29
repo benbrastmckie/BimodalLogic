@@ -270,11 +270,11 @@ lemma mem_extractTrueAtomSet_iff (b : Branch) (p : String) :
     p ∈ extractTrueAtomSet b ↔ SignedFormula.pos (.atom p) ∈ b := by
   unfold extractTrueAtomSet
   -- Generalize with arbitrary accumulator
-  suffices ∀ acc : Finset String, p ∈ b.foldl (fun acc sf =>
+  suffices h : ∀ acc : Finset String, p ∈ b.foldl (fun acc sf =>
       match sf.sign, sf.formula with
       | .pos, .atom q => insert q acc
       | _, _ => acc) acc ↔ p ∈ acc ∨ SignedFormula.pos (.atom p) ∈ b by
-    simpa using this ∅
+    simpa using h ∅
   intro acc
   induction b generalizing acc with
   | nil => simp
@@ -291,25 +291,113 @@ lemma mem_extractTrueAtomSet_iff (b : Branch) (p : String) :
         constructor
         · intro h
           rcases h with heq | hin | hmem
-          · left; left; exact heq
-          · right; exact hin
-          · right; right; exact hmem
+          · -- p = q, so sf = pos(atom p)
+            subst heq
+            right; left
+            simp only [SignedFormula.pos, hsf]
+          · -- p ∈ acc
+            left; exact hin
+          · -- pos(atom p) ∈ rest
+            right; right; exact hmem
         · intro h
           rcases h with hin | (heq | hmem)
-          · right; left; exact hin
+          · -- p ∈ acc
+            right; left; exact hin
           · -- sf = SignedFormula.pos (.atom p)
-            simp only [SignedFormula.pos] at heq
-            left
-            simp only [hsf, SignedFormula.mk.injEq, Formula.atom.injEq] at heq
-            exact heq.2.symm
-          · right; right; exact hmem
-      | bot => simp only [ih]; tauto
-      | imp _ _ => simp only [ih]; tauto
-      | box _ => simp only [ih]; tauto
-      | H _ => simp only [ih]; tauto
-      | G _ => simp only [ih]; tauto
+            simp only [SignedFormula.pos, hsf, SignedFormula.mk.injEq, Formula.atom.injEq] at heq
+            left; exact heq.2.symm
+          · -- pos(atom p) ∈ rest
+            right; right; exact hmem
+      | bot =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
+      | imp _ _ =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
+      | box _ =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
+      | all_past _ =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
+      | all_future _ =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
     | neg =>
-      cases form <;> simp only [ih] <;> tauto
+      cases form with
+      | atom _ =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
+      | bot =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
+      | imp _ _ =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
+      | box _ =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
+      | all_past _ =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
+      | all_future _ =>
+        simp only [ih]
+        constructor
+        · intro h; rcases h with hin | hmem; left; exact hin; right; right; exact hmem
+        · intro h; rcases h with hin | (heq | hmem)
+          · left; exact hin
+          · simp only [SignedFormula.pos, hsf] at heq
+          · right; exact hmem
 
 /--
 Atom truth in extracted model: p is true at extracted world state
