@@ -1,7 +1,7 @@
 # Implementation Plan: Task #737
 
 - **Task**: 737 - Fix unused simp arguments in TemporalProofStrategies.lean
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Priority**: low
 - **Dependencies**: None

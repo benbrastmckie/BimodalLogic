@@ -299,13 +299,15 @@ technical_debt:
 
 ### 737. Fix unused simp arguments in TemporalProofStrategies.lean
 - **Effort**: 30 min
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Source**: Review 20260129
 - **Plan**: [implementation-001.md](specs/737_fix_unused_simp_arguments_temporalproofstrategies/plans/implementation-001.md)
+- **Summary**: Removed unused Formula.swap_temporal_involution arguments from 4 simp calls. Linter warnings eliminated.
 
 **Description**: Fix unused simp arguments in TemporalProofStrategies.lean. Remove Formula.swap_temporal_involution from simp calls at lines 174, 203, 242, 459 where the linter reports it is unused.
 
