@@ -1,5 +1,5 @@
 ---
-next_project_number: 752
+next_project_number: 753
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -119,6 +119,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 752. Refactor temporary file handling in agent system
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+
+**Description**: Review and improve temporary file and metadata passing techniques throughout the agent system to ensure robust performance with concurrent agents. Currently, temporary files like `specs/.postflight-pending` are created in the shared `specs/` directory, which may cause conflicts when multiple agents work simultaneously. Consider moving these files to task-specific project directories (e.g., `specs/{N}_{SLUG}/`) since at most one agent works on a task at a time. Systematically audit all temporary file usage, metadata exchange patterns, and file-based coordination mechanisms to identify and resolve potential race conditions or conflicts.
+
+---
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
 - **Effort**: TBD
