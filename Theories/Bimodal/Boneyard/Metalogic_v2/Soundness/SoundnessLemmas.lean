@@ -161,7 +161,10 @@ theorem swap_axiom_ta_valid (φ : Formula) :
   intro F M τ t
   simp only [Formula.swap_past_future, Formula.sometime_past, Formula.sometime_future, truth_at]
   intro h_swap_φ s h_s_le_t h_all_not_future
-  exact h_all_not_future t (le_refl t) h_swap_φ
+  -- h_all_not_future : ∀ u, s ≤ u → ¬(swap φ at u)
+  -- We need to show False given h_swap_φ : swap φ at t
+  -- Use u = t: need s ≤ t which is h_s_le_t
+  exact h_all_not_future t h_s_le_t h_swap_φ
 
 /--
 Temporal L axiom (TL) swaps to a valid formula: `△φ → FPφ` swaps to `△(swap φ) → P(F(swap φ))`.
@@ -378,7 +381,9 @@ private theorem axiom_temp_4_valid (φ : Formula) :
 
 private theorem axiom_temp_a_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.all_future φ.sometime_past)) := by
-  intro F M τ t; simp only [truth_at]; intro h s hts h_neg; exact h_neg t (le_refl t) h
+  -- TA: φ → G(¬H¬φ). After intro: need to show ¬H¬φ at time s ≥ t given φ at t
+  -- h_neg : ∀ r ≤ s, ¬(φ at r). Use r = t with hts : t ≤ s.
+  intro F M τ t; simp only [truth_at]; intro h s hts h_neg; exact h_neg t hts h
 
 private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
   ⟨Classical.byContradiction (fun hP => h (fun p _ => hP p)),

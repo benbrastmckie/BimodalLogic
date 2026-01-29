@@ -170,13 +170,13 @@ theorem temp_k_dist_valid (φ ψ : Formula) :
   exact h_imp_at_s h_phi_at_s
 
 /--
-Temporal 4 axiom is valid: `⊨ Fφ → FFφ`.
+Temporal 4 axiom is valid: `⊨ Fφ → FFφ` (reflexive semantics: ≤).
 -/
 theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := by
   intro T _ _ _ F M τ t
   unfold truth_at
   intro h_future s hts r hsr
-  have htr : t < r := lt_trans hts hsr
+  have htr : t ≤ r := le_trans hts hsr
   exact h_future r htr
 
 /--
@@ -193,7 +193,7 @@ theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometim
   exact h_neg_at_t h_phi
 
 /--
-TL axiom validity: `△φ → F(Pφ)` is valid in all task semantic models.
+TL axiom validity: `△φ → F(Pφ)` is valid in all task semantic models (reflexive semantics: ≤).
 -/
 theorem temp_l_valid (φ : Formula) :
     ⊨ (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
@@ -202,18 +202,19 @@ theorem temp_l_valid (φ : Formula) :
   intro h_always s hts r hrs
   simp only [Formula.always, Formula.and, Formula.neg, truth_at] at h_always
   have h1 :
-    (∀ (u : T), u < t → truth_at M τ u φ) ∧
+    (∀ (u : T), u ≤ t → truth_at M τ u φ) ∧
     ((truth_at M τ t φ →
-      (∀ (v : T), t < v → truth_at M τ v φ) → False) → False) :=
+      (∀ (v : T), t ≤ v → truth_at M τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : truth_at M τ t φ ∧ (∀ (v : T), t < v → truth_at M τ v φ) :=
+  have h2 : truth_at M τ t φ ∧ (∀ (v : T), t ≤ v → truth_at M τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
-  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
-  · exact h_past r h_lt
-  · subst h_eq; exact h_now
-  · exact h_future r h_gt
+  -- Need to show: truth_at M τ r φ, given hrs : r ≤ s and hts : t ≤ s
+  by_cases h_rt : r ≤ t
+  · exact h_past r h_rt
+  · have h_tr : t ≤ r := le_of_not_le h_rt
+    exact h_future r h_tr
 
 /--
 MF axiom validity: `□φ → □(Fφ)` is valid in all task semantic models.
@@ -256,6 +257,12 @@ theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   | temp_4 ψ => exact temp_4_valid ψ
   | temp_a ψ => exact temp_a_valid ψ
   | temp_l ψ => exact temp_l_valid ψ
+  | temp_t_future ψ =>
+    -- Gφ → φ: if φ holds at all times s ≥ t, then φ holds at t (reflexivity: t ≤ t)
+    intro T _ _ _ F M τ t; unfold truth_at; intro h; exact h t (le_refl t)
+  | temp_t_past ψ =>
+    -- Hφ → φ: if φ holds at all times s ≤ t, then φ holds at t (reflexivity: t ≤ t)
+    intro T _ _ _ F M τ t; unfold truth_at; intro h; exact h t (le_refl t)
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
 

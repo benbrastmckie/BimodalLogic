@@ -47,7 +47,7 @@
       "language": "lean",
       "priority": "high",
       "created": "2026-01-29T17:15:00Z",
-      "last_updated": "2026-01-29T18:36:53Z",
+      "last_updated": "2026-01-29T18:47:46Z",
       "description": "Audit and reduce sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard). Currently 45 sorries: 33 in Representation/, remainder in Core/, Completeness/, FMP/, Algebraic/. Categorize by (a) blocking main theorem path, (b) required for full biconditional but not main result, (c) optional/exploratory. Prioritize elimination of category (a) sorries. Related: Task 750 (forward Truth Lemma refactor)",
       "source": "review-20260129-2",
       "session_id": "sess_1769711795_52a0e1",
@@ -62,6 +62,11 @@
           "path": "specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan targeting 20 sorry reduction through proof porting, fixes, and archival"
+        },
+        {
+          "path": "specs/758_audit_and_reduce_metalogic_sorries/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting soundness port and sorry analysis"
         }
       ],
       "planned": "2026-01-29T18:28:21Z",
