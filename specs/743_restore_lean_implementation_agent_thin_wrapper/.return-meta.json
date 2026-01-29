@@ -1,15 +1,35 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+  "status": "implemented",
+  "summary": "Restored lean-implementation-agent with blocked tools guardrails. Converted skill-lean-implementation from 524-line direct execution to 355-line thin wrapper using Task tool delegation. Updated CLAUDE.md skill-to-agent mapping.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-implementation-agent.md",
+      "summary": "Restored agent with BLOCKED TOOLS section and completion_data generation"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-lean-implementation/SKILL.md",
+      "summary": "Thin wrapper skill using Task tool delegation"
+    },
+    {
+      "type": "summary",
+      "path": "specs/743_restore_lean_implementation_agent_thin_wrapper/summaries/implementation-summary-20260129.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Restored lean-implementation-agent from deprecated state with explicit blocked tools guardrails (lean_diagnostic_messages, lean_file_outline). Converted skill-lean-implementation to thin wrapper delegating via Task tool. Added metadata file exchange and completion_data generation.",
+    "claudemd_suggestions": "Updated skill-to-agent mapping table in CLAUDE.md (skill-lean-implementation now maps to lean-implementation-agent)"
   },
   "metadata": {
     "session_id": "sess_1769697031_75db55",
+    "duration_seconds": 1800,
     "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"]
-  }
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Review implementation and test with /implement on a Lean task"
 }

@@ -8,7 +8,7 @@
     {
       "project_number": 745,
       "project_name": "move_backward_truth_lemma_to_boneyard",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "description": "Move backward Truth Lemma cases to Boneyard with documentation. The backward temporal cases (all_past/all_future backward directions) in TruthLemma.lean lines 423, 441 are blocked by fundamental omega-rule limitation and NOT REQUIRED for completeness. Clean up Bimodal/Metalogic/Representation/ to contain only working proofs. Move backward cases to Boneyard with clear documentation explaining they require H/G-completeness (which needs omega-rule that TM logic lacks). Update TruthLemma.lean to only expose truth_lemma_forward (the direction actually used by representation theorem). Keep TemporalCompleteness.lean infrastructure in Boneyard for reference.",
@@ -16,7 +16,7 @@
         741
       ],
       "created": "2026-01-29T14:04:25Z",
-      "last_updated": "2026-01-29T14:30:33Z",
+      "last_updated": "2026-01-29T14:35:52Z",
       "session_id": "sess_1769697011_f6fc95",
       "researched": "2026-01-29T14:14:58Z",
       "artifacts": [
@@ -32,7 +32,8 @@
         }
       ],
       "planned": "2026-01-29T14:25:48Z",
-      "started": "2026-01-29T14:30:33Z"
+      "started": "2026-01-29T14:30:33Z",
+      "completed": "2026-01-29T14:35:52Z"
     },
     {
       "project_number": 741,
@@ -475,12 +476,12 @@
     {
       "project_number": 743,
       "project_name": "restore_lean_implementation_agent_thin_wrapper",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "description": "Restore lean-implementation-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-implementation from 524-line direct execution to ~100-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0), (4) completion_data generation. Follow patterns from skill-implementer and general-implementation-agent.",
       "created": "2026-01-29T13:39:29Z",
-      "last_updated": "2026-01-29T14:30:53Z",
+      "last_updated": "2026-01-29T14:35:54Z",
       "dependencies": [
         742
       ],
@@ -499,7 +500,10 @@
         }
       ],
       "planned": "2026-01-29T14:25:46Z",
-      "started": "2026-01-29T14:30:53Z"
+      "started": "2026-01-29T14:30:53Z",
+      "completed": "2026-01-29T14:35:54Z",
+      "completion_summary": "Restored lean-implementation-agent from deprecated state with explicit blocked tools guardrails (lean_diagnostic_messages, lean_file_outline). Converted skill-lean-implementation to thin wrapper delegating via Task tool. Added metadata file exchange and completion_data generation.",
+      "claudemd_suggestions": "Updated skill-to-agent mapping table in CLAUDE.md (skill-lean-implementation now maps to lean-implementation-agent)"
     },
     {
       "project_number": 744,

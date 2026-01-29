@@ -91,7 +91,7 @@ Connection between consistency and satisfiability.
 
 If a formula phi is consistent (i.e., [phi] is consistent), then phi is satisfiable.
 -/
-theorem consistent_implies_satisfiable (φ : Formula) (h_cons : Consistent [φ]) :
+theorem consistent_implies_satisfiable (φ : Formula) (h_cons : Completeness.Consistent [φ]) :
     formula_satisfiable φ := by
   by_contra h_not_sat
   -- If φ is not satisfiable, then ¬φ is valid
@@ -101,8 +101,8 @@ theorem consistent_implies_satisfiable (φ : Formula) (h_cons : Consistent [φ])
     intro h_phi
     apply h_not_sat
     exact ⟨D, _, _, _, F, M, τ, t, h_phi⟩
-  -- By completeness (valid_implies_derivable), we get [] ⊢ neg φ
-  have h_neg_deriv : ContextDerivable [] (Formula.neg φ) := valid_implies_derivable h_neg_valid
+  -- By weak completeness, we get [] ⊢ neg φ
+  have h_neg_deriv : ContextDerivable [] (Formula.neg φ) := weak_completeness (Formula.neg φ) h_neg_valid
   obtain ⟨d_neg⟩ := h_neg_deriv
   -- By weakening, [φ] ⊢ neg φ
   have d_neg_ctx : DerivationTree [φ] (Formula.neg φ) :=
@@ -164,7 +164,7 @@ theorem finite_model_property_constructive (φ : Formula) (h_sat : formula_satis
   -- By contrapositive of completeness, φ.neg is not provable
   have h_neg_not_deriv : ¬ContextDerivable [] (Formula.neg φ) := by
     intro h_deriv
-    exact h_neg_not_valid (derivable_implies_valid h_deriv)
+    exact h_neg_not_valid (derivable_implies_valid (Formula.neg φ) h_deriv)
 
   -- φ is not refutable
   have h_not_refutable : ¬Nonempty (⊢ φ.neg) := by
