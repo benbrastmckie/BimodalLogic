@@ -105,12 +105,13 @@ technical_debt:
 ## Medium Priority
 
 ### 735. Complete phase 5 of task 700: Ultrafilter-MCS Correspondence
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 1-2 hours
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Parent**: Task 700
 - **Created**: 2026-01-29
+- **Research**: [research-001.md](specs/735_complete_task700_phase5_ultrafilter_mcs_correspondence/reports/research-001.md)
 
 **Description**: Complete phase 5 of task 700: Ultrafilter-MCS Correspondence. Fill ultrafilterToSet_mcs consistency proof - show that if L ⊢ ⊥ and all [φᵢ] ∈ U, then ⊥ ∈ U. Requires relating list conjunction to fold of quotients. (Follow-up from task #700)
 
