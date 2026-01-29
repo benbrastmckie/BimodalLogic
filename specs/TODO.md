@@ -29,12 +29,14 @@ technical_debt:
 
 ### 742. Restore lean-research-agent and skill-lean-research thin wrapper
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Research**: [research-001.md](specs/742_restore_lean_research_agent_thin_wrapper/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/742_restore_lean_research_agent_thin_wrapper/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260129.md](specs/742_restore_lean_research_agent_thin_wrapper/summaries/implementation-summary-20260129.md)
 
 **Description**: Restore lean-research-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-research from 408-line direct execution to ~80-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0). Follow patterns from skill-researcher and general-research-agent.
 

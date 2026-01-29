@@ -1,15 +1,40 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-01-29T10:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+  "status": "implemented",
+  "summary": "Restored lean-research-agent from deprecated state with prominent BLOCKED TOOLS section. Converted skill-lean-research from 408-line direct execution to 304-line thin wrapper delegating via Task tool. Updated CLAUDE.md skill-to-agent mapping table.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-research-agent.md",
+      "summary": "Restored agent with BLOCKED TOOLS section for lean_diagnostic_messages and lean_file_outline"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-lean-research/SKILL.md",
+      "summary": "Thin wrapper that delegates to lean-research-agent via Task tool"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/CLAUDE.md",
+      "summary": "Updated skill-to-agent mapping table"
+    },
+    {
+      "type": "summary",
+      "path": "specs/742_restore_lean_research_agent_thin_wrapper/summaries/implementation-summary-20260129.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Restored lean-research-agent with explicit blocked tool guardrails and converted skill-lean-research to thin wrapper delegation pattern. Updated CLAUDE.md skill-to-agent mapping.",
+    "claudemd_suggestions": "Updated skill-to-agent mapping table in CLAUDE.md (skill-lean-research now delegates to lean-research-agent instead of direct execution). Restored lean-research-agent.md and converted skill-lean-research/SKILL.md to thin wrapper pattern."
   },
   "metadata": {
     "session_id": "sess_1769695517_d6dd41",
+    "duration_seconds": 1800,
     "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
-  }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Review implementation and test with /research command on a Lean task"
 }

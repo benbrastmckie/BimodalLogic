@@ -538,12 +538,12 @@
     {
       "project_number": 742,
       "project_name": "restore_lean_research_agent_thin_wrapper",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "description": "Restore lean-research-agent from deprecated state with explicit blocked tool guardrails. Update skill-lean-research from 408-line direct execution to ~80-line thin wrapper that delegates via Task tool. Ensure agent has: (1) BLOCKED TOOLS section warning against lean_diagnostic_messages and lean_file_outline, (2) metadata file exchange via .return-meta.json, (3) early metadata pattern (Stage 0). Follow patterns from skill-researcher and general-research-agent.",
       "created": "2026-01-29T13:39:29Z",
-      "last_updated": "2026-01-29T14:05:39Z",
+      "last_updated": "2026-01-29T14:10:15Z",
       "session_id": "sess_1769695517_d6dd41",
       "researched": "2026-01-29T13:51:29Z",
       "artifacts": [
@@ -556,10 +556,18 @@
           "path": "specs/742_restore_lean_research_agent_thin_wrapper/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for restoring lean-research-agent with blocked tools guardrails and converting skill-lean-research to thin wrapper"
+        },
+        {
+          "path": "specs/742_restore_lean_research_agent_thin_wrapper/summaries/implementation-summary-20260129.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-01-29T13:56:59Z",
-      "started": "2026-01-29T14:05:39Z"
+      "started": "2026-01-29T14:05:39Z",
+      "completed": "2026-01-29T14:10:15Z",
+      "completion_summary": "Restored lean-research-agent with explicit blocked tool guardrails and converted skill-lean-research to thin wrapper delegation pattern. Updated CLAUDE.md skill-to-agent mapping.",
+      "claudemd_suggestions": "Updated skill-to-agent mapping table in CLAUDE.md (skill-lean-research now delegates to lean-research-agent instead of direct execution). Restored lean-research-agent.md and converted skill-lean-research/SKILL.md to thin wrapper pattern."
     },
     {
       "project_number": 743,

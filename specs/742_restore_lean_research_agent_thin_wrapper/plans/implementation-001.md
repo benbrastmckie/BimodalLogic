@@ -1,7 +1,7 @@
 # Implementation Plan: Task #742
 
 - **Task**: 742 - restore_lean_research_agent_thin_wrapper
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Priority**: high
 - **Dependencies**: None
