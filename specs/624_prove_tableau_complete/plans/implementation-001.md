@@ -1,7 +1,7 @@
 # Implementation Plan: Task #624
 
 - **Task**: 624 - Prove tableau_complete
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Priority**: Low
 - **Dependencies**: Task 623 (expanded - infrastructure partially built)
@@ -47,7 +47,7 @@ Prove the `tableau_complete` theorem in `Correctness.lean` connecting FMP to tab
 
 ## Implementation Phases
 
-### Phase 1: Port Helper Lemmas for Saturation [NOT STARTED]
+### Phase 1: Port Helper Lemmas for Saturation [COMPLETED]
 
 **Goal**: Port the helper lemmas from Metalogic_v2 that support `expansion_decreases_measure`.
 
@@ -71,7 +71,7 @@ Prove the `tableau_complete` theorem in `Correctness.lean` connecting FMP to tab
 
 ---
 
-### Phase 2: Prove expansion_decreases_measure [NOT STARTED]
+### Phase 2: Prove expansion_decreases_measure [COMPLETED]
 
 **Goal**: Complete the proof of `expansion_decreases_measure` using the ported helper lemmas.
 
