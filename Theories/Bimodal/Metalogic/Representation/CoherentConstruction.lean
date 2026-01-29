@@ -676,9 +676,37 @@ lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaxi
   constructor
   -- forward_H: t < t' → Hφ ∈ mcs(t') → φ ∈ mcs(t)
   · intro h_lt φ hH
-    -- NOT REQUIRED FOR COMPLETENESS - only needed for backward Truth Lemma
-    -- See Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
-    sorry
+    unfold mcs_unified_chain at hH ⊢
+    by_cases h_t_nonneg : 0 ≤ t <;> by_cases h_t'_nonneg : 0 ≤ t' <;>
+      simp only [h_t_nonneg, h_t'_nonneg] at hH ⊢
+    · -- Case 1: t ≥ 0 and t' ≥ 0 - H doesn't persist in forward chain
+      -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
+      sorry
+    · -- Case 2: t ≥ 0 and t' < 0: contradiction since t < t'
+      simp only [not_le] at h_t'_nonneg
+      have : t' < t := lt_of_lt_of_le h_t'_nonneg h_t_nonneg
+      exact absurd h_lt (asymm this)
+    · -- Case 3: t < 0 and t' ≥ 0: cross-origin
+      -- NOT REQUIRED FOR COMPLETENESS - see Boneyard/Metalogic_v3/Coherence/CrossOriginCases.lean
+      sorry
+    · -- Case 4: Both t < 0 and t' < 0 - PROVABLE!
+      simp only [not_le] at h_t_nonneg h_t'_nonneg
+      -- Since t < t' < 0, we have |t| > |t'|, so (-t).toNat > (-t').toNat
+      have h_nat_lt : (-t').toNat < (-t).toNat := by omega
+      -- Since t < 0, we have (-t).toNat > 0
+      have h_t_pos : 0 < (-t).toNat := by omega
+      -- Let m = (-t).toNat - 1, so (-t).toNat = m + 1
+      set m := (-t).toNat - 1 with hm_def
+      have ht_eq : (-t).toNat = m + 1 := by omega
+      have h_le : (-t').toNat ≤ m := by omega
+      -- Hφ persists from (-t').toNat to m
+      have hH_m := mcs_backward_chain_H_persistence Gamma h_mcs h_no_H_bot (-t').toNat m h_le φ hH
+      -- Hφ ∈ mcs(m) → φ ∈ backward_seed(mcs(m)) → φ ∈ mcs(m+1)
+      have h_in_seed : φ ∈ backward_seed (mcs_backward_chain Gamma h_mcs h_no_H_bot m) := hH_m
+      have h_result := mcs_backward_chain_seed_containment Gamma h_mcs h_no_H_bot m h_in_seed
+      -- Rewrite the goal using ht_eq
+      rw [ht_eq]
+      exact h_result
   -- backward_G: t' < t → Gφ ∈ mcs(t') → φ ∈ mcs(t)
   · intro h_lt φ hG
     -- Key insight: Gφ at t' persists to t-1 (by G-4), then forward_G gives φ at t.

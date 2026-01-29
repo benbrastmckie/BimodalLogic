@@ -28,7 +28,7 @@ This revised plan incorporates the key discovery from research-004.md: **forward
 ### Phase 1: Prove forward_H Case 4 in CoherentConstruction.lean
 
 **Estimated effort**: 1-2 hours
-**Status**: [NOT STARTED]
+**Status**: [COMPLETED]
 
 **Objective**: Replace the blanket sorry at line 681 with case analysis, proving Case 4 (both < 0).
 
