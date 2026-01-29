@@ -69,6 +69,7 @@ namespace Bimodal.Metalogic.Representation
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
+open Bimodal.ProofSystem
 
 /-!
 ## Coherent Relation
@@ -370,6 +371,42 @@ theorem backward_extension (S : Set Formula) (h_mcs : SetMaximalConsistent S)
   · exact h_sub
 
 /-!
+## G⊥ and H⊥ Exclusion for MCS
+
+Any maximal consistent set excludes G⊥ and H⊥ due to the T-axiom.
+-/
+
+/--
+Any MCS excludes G⊥.
+
+**Proof**: If G⊥ ∈ S, then by T-axiom (Gφ → φ), we derive ⊥ ∈ S, contradicting consistency.
+-/
+lemma mcs_no_G_bot {S : Set Formula} (h_mcs : SetMaximalConsistent S) :
+    Formula.all_future Formula.bot ∉ S := by
+  intro h_G_bot
+  -- By T-axiom (temp_t_future): G⊥ → ⊥
+  have h_bot := mcs_closed_temp_t_future h_mcs Formula.bot h_G_bot
+  -- But ⊥ ∈ S contradicts consistency
+  apply h_mcs.1 [Formula.bot]
+  · intro φ hφ; simp at hφ; rw [hφ]; exact h_bot
+  · constructor
+    exact DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+
+/--
+Any MCS excludes H⊥.
+
+**Proof**: Symmetric to mcs_no_G_bot using temp_t_past axiom.
+-/
+lemma mcs_no_H_bot {S : Set Formula} (h_mcs : SetMaximalConsistent S) :
+    Formula.all_past Formula.bot ∉ S := by
+  intro h_H_bot
+  have h_bot := mcs_closed_temp_t_past h_mcs Formula.bot h_H_bot
+  apply h_mcs.1 [Formula.bot]
+  · intro φ hφ; simp at hφ; rw [hφ]; exact h_bot
+  · constructor
+    exact DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+
+/-!
 ## Coherent Family Construction for ℤ
 
 Build a CoherentIndexedFamily from a root MCS, specialized to D = ℤ.
@@ -384,23 +421,45 @@ Build a CoherentIndexedFamily from a root MCS, specialized to D = ℤ.
 -/
 
 /--
+Forward chain auxiliary: Build MCS for non-negative times, carrying the MCS invariant.
+
+Returns a sigma-type `{ S : Set Formula // SetMaximalConsistent S }` to ensure
+that at each step, we have access to the MCS proof needed for constructing the next step.
+-/
+noncomputable def mcs_forward_chain_aux (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) :
+    (n : ℕ) → { S : Set Formula // SetMaximalConsistent S }
+  | 0 => ⟨Gamma, h_mcs⟩
+  | n+1 =>
+    let ⟨S, h_S_mcs⟩ := mcs_forward_chain_aux Gamma h_mcs h_no_G_bot n
+    -- S is MCS, so by mcs_no_G_bot, G⊥ ∉ S
+    -- Therefore forward_seed S is consistent
+    let h_no_G_bot_S : Formula.all_future Formula.bot ∉ S := mcs_no_G_bot h_S_mcs
+    let h_cons := forward_seed_consistent_of_no_G_bot S h_S_mcs h_no_G_bot_S
+    ⟨extendToMCS (forward_seed S) h_cons, extendToMCS_is_mcs _ h_cons⟩
+
+/--
 Forward chain construction: Build MCS for non-negative times.
 
 At time 0, use Gamma directly.
 At time n+1, extend mcs(n) using forward_seed.
 -/
 noncomputable def mcs_forward_chain (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
-    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) : ℕ → Set Formula
-  | 0 => Gamma
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) (n : ℕ) : Set Formula :=
+  (mcs_forward_chain_aux Gamma h_mcs h_no_G_bot n).val
+
+/--
+Backward chain auxiliary: Build MCS for negative times, carrying the MCS invariant.
+-/
+noncomputable def mcs_backward_chain_aux (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) :
+    (n : ℕ) → { S : Set Formula // SetMaximalConsistent S }
+  | 0 => ⟨Gamma, h_mcs⟩
   | n+1 =>
-    let S := mcs_forward_chain Gamma h_mcs h_no_G_bot n
-    -- The forward seed of S is consistent (will prove this inductively)
-    -- For now, use extendToMCS with a sorry for consistency
-    extendToMCS (forward_seed S) (by
-      -- Need to show forward_seed S is consistent
-      -- This follows from S being MCS (induction) and G⊥ ∉ S (propagated)
-      -- Full proof requires inductive infrastructure
-      sorry)
+    let ⟨S, h_S_mcs⟩ := mcs_backward_chain_aux Gamma h_mcs h_no_H_bot n
+    let h_no_H_bot_S : Formula.all_past Formula.bot ∉ S := mcs_no_H_bot h_S_mcs
+    let h_cons := backward_seed_consistent_of_no_H_bot S h_S_mcs h_no_H_bot_S
+    ⟨extendToMCS (backward_seed S) h_cons, extendToMCS_is_mcs _ h_cons⟩
 
 /--
 Backward chain construction: Build MCS for negative times.
@@ -408,12 +467,26 @@ Backward chain construction: Build MCS for negative times.
 Similar to forward chain, but using backward_seed.
 -/
 noncomputable def mcs_backward_chain (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
-    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) : ℕ → Set Formula
-  | 0 => Gamma
-  | n+1 =>
-    let S := mcs_backward_chain Gamma h_mcs h_no_H_bot n
-    extendToMCS (backward_seed S) (by
-      sorry)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) (n : ℕ) : Set Formula :=
+  (mcs_backward_chain_aux Gamma h_mcs h_no_H_bot n).val
+
+/--
+Each element in the forward chain is an MCS.
+
+This follows directly from the sigma-type construction of mcs_forward_chain_aux.
+-/
+lemma mcs_forward_chain_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) (n : ℕ) :
+    SetMaximalConsistent (mcs_forward_chain Gamma h_mcs h_no_G_bot n) :=
+  (mcs_forward_chain_aux Gamma h_mcs h_no_G_bot n).property
+
+/--
+Each element in the backward chain is an MCS.
+-/
+lemma mcs_backward_chain_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
+    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) (n : ℕ) :
+    SetMaximalConsistent (mcs_backward_chain Gamma h_mcs h_no_H_bot n) :=
+  (mcs_backward_chain_aux Gamma h_mcs h_no_H_bot n).property
 
 /--
 Unified MCS function for ℤ.
@@ -440,18 +513,10 @@ lemma mcs_unified_chain_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsiste
     (t : ℤ) : SetMaximalConsistent (mcs_unified_chain Gamma h_mcs h_no_G_bot h_no_H_bot t) := by
   unfold mcs_unified_chain
   split_ifs with h
-  · -- t ≥ 0: mcs_forward_chain
-    induction t.toNat with
-    | zero => exact h_mcs
-    | succ n ih =>
-      unfold mcs_forward_chain
-      exact extendToMCS_is_mcs _ _
-  · -- t < 0: mcs_backward_chain
-    induction ((-t).toNat) with
-    | zero => exact h_mcs
-    | succ n ih =>
-      unfold mcs_backward_chain
-      exact extendToMCS_is_mcs _ _
+  · -- t ≥ 0: mcs_forward_chain - use the is_mcs lemma
+    exact mcs_forward_chain_is_mcs Gamma h_mcs h_no_G_bot t.toNat
+  · -- t < 0: mcs_backward_chain - use the is_mcs lemma
+    exact mcs_backward_chain_is_mcs Gamma h_mcs h_no_H_bot ((-t).toNat)
 
 /--
 Forward chain preserves forward_seed containment.
@@ -462,8 +527,11 @@ lemma mcs_forward_chain_seed_containment (Gamma : Set Formula) (h_mcs : SetMaxim
     (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) (n : ℕ) :
     forward_seed (mcs_forward_chain Gamma h_mcs h_no_G_bot n) ⊆
       mcs_forward_chain Gamma h_mcs h_no_G_bot (n + 1) := by
-  -- mcs_forward_chain _ _ _ (n + 1) = extendToMCS (forward_seed (mcs_forward_chain _ _ _ n)) _
-  simp only [mcs_forward_chain, Nat.add_eq, Nat.add_zero]
+  unfold mcs_forward_chain mcs_forward_chain_aux
+  -- Need to show forward_seed (mcs_forward_chain_aux ... n).val ⊆ (mcs_forward_chain_aux ... (n+1)).val
+  -- By definition of mcs_forward_chain_aux (n+1), the value is extendToMCS (forward_seed S) h_cons
+  -- where S = (mcs_forward_chain_aux ... n).val
+  simp only [Nat.add_eq, Nat.add_zero]
   exact extendToMCS_contains _ _
 
 /--
@@ -475,21 +543,9 @@ lemma mcs_backward_chain_seed_containment (Gamma : Set Formula) (h_mcs : SetMaxi
     (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) (n : ℕ) :
     backward_seed (mcs_backward_chain Gamma h_mcs h_no_H_bot n) ⊆
       mcs_backward_chain Gamma h_mcs h_no_H_bot (n + 1) := by
-  -- mcs_backward_chain _ _ _ (n + 1) = extendToMCS (backward_seed (mcs_backward_chain _ _ _ n)) _
-  simp only [mcs_backward_chain, Nat.add_eq, Nat.add_zero]
+  unfold mcs_backward_chain mcs_backward_chain_aux
+  simp only [Nat.add_eq, Nat.add_zero]
   exact extendToMCS_contains _ _
-
-/--
-Each element in the forward chain is an MCS.
--/
-lemma mcs_forward_chain_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
-    (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma) (n : ℕ) :
-    SetMaximalConsistent (mcs_forward_chain Gamma h_mcs h_no_G_bot n) := by
-  induction n with
-  | zero => exact h_mcs
-  | succ n _ih =>
-    unfold mcs_forward_chain
-    exact extendToMCS_is_mcs _ _
 
 /--
 G-formulas persist through the forward chain.
@@ -563,18 +619,6 @@ lemma mcs_forward_chain_coherent (Gamma : Set Formula) (h_mcs : SetMaximalConsis
 
 These mirror the forward chain lemmas but for H-formulas and the backward chain.
 -/
-
-/--
-Each element in the backward chain is an MCS.
--/
-lemma mcs_backward_chain_is_mcs (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
-    (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma) (n : ℕ) :
-    SetMaximalConsistent (mcs_backward_chain Gamma h_mcs h_no_H_bot n) := by
-  induction n with
-  | zero => exact h_mcs
-  | succ n _ih =>
-    unfold mcs_backward_chain
-    exact extendToMCS_is_mcs _ _
 
 /--
 H-formulas persist through the backward chain.

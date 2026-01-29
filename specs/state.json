@@ -30,11 +30,11 @@
     {
       "project_number": 755,
       "project_name": "implement_option_c_forward_truth_lemma",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-29T16:54:59Z",
-      "last_updated": "2026-01-29T17:48:24Z",
+      "last_updated": "2026-01-29T18:05:40Z",
       "session_id": "sess_1769708216_82cffb",
       "researched": "2026-01-29T17:27:03Z",
       "artifacts": [
@@ -44,17 +44,17 @@
           "summary": "Analysis of Option C FMP path approach to achieve sorry-free completeness via truth correspondence over subformula closure"
         },
         {
-          "path": "specs/755_implement_option_c_forward_truth_lemma/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for sorry-free completeness via FMP truth correspondence"
-        },
-        {
           "path": "specs/755_implement_option_c_forward_truth_lemma/summaries/implementation-summary-20260129.md",
           "type": "summary",
           "summary": "Detailed analysis of architectural blocker preventing sorry removal from truth_at_implies_semantic_truth"
+        },
+        {
+          "path": "specs/755_implement_option_c_forward_truth_lemma/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 5-phase plan using existing semantic_weak_completeness as sorry-free completeness"
         }
       ],
-      "planned": "2026-01-29T17:33:50Z",
+      "planned": "2026-01-29T18:05:40Z",
       "started": "2026-01-29T17:37:14Z"
     },
     {
@@ -164,37 +164,6 @@
       ],
       "planned": "2026-01-29T18:02:25Z",
       "started": "2026-01-29T17:25:04Z"
-    },
-    {
-      "project_number": 749,
-      "project_name": "establish_sorry_free_completeness_via_semantic_weak_completeness",
-      "status": "blocked",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-29T14:48:21Z",
-      "last_updated": "2026-01-29T17:56:51Z",
-      "session_id": "sess_1769708707_3aa4c6",
-      "researched": "2026-01-29T14:56:05Z",
-      "artifacts": [
-        {
-          "path": "specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/reports/research-001.md",
-          "type": "research",
-          "summary": "Analysis of semantic_weak_completeness and path to sorry-free completeness via truth bridge"
-        },
-        {
-          "path": "specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 6-phase plan using structural induction over subformula closure (avoids TruthLemma.lean architectural limitations)"
-        },
-        {
-          "path": "specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting architectural limitations blocking forward truth lemma (v002 analysis)"
-        }
-      ],
-      "planned": "2026-01-29T17:38:12Z",
-      "started": "2026-01-29T17:16:02Z",
-      "blocking_reason": "IsLocallyConsistent lacks negation completeness needed for mutual induction; box quantifies over all histories; same architectural gap as TruthLemma.lean sorries"
     },
     {
       "project_number": 747,
