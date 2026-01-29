@@ -126,7 +126,7 @@ technical_debt:
 - **Created**: 2026-01-28
 - **Related**: Task 681
 
-**Description**: Clean up Lean source code documentation in Bimodal/ theory. Remove all historical comments about past attempts, comparative mentions, and implementation history from the main source files. The Bimodal/ source code should be clearly and cleanly documented explaining only the present state of the code. Move all historical/comparative comments to Boneyard/ files with appropriate documentation. Ensure Boneyard/ is completely isolated from other Bimodal/ directories (no imports from Boneyard anywhere, no references to Boneyard in comments outside of Boneyard/).
+**Description**: Clean up Lean source code documentation in Bimodal/ theory. Remove historical comments about past attempts, comparative mentions, and implementation history from main source files. **Important context from Task 726**: Core/DeductionTheorem.lean and Core/MCSProperties.lean now contain Boneyard-origin lemmas with provenance comments (e.g., `-- Origin: Boneyard/...`); these provenance comments should be PRESERVED as they document code lineage, not removed. The cleanup focuses on: (1) removing narrative history in comments explaining "why we did X instead of Y", (2) removing references to abandoned approaches, (3) ensuring Boneyard/ is completely isolated (no imports from Boneyard in active code - already done by Task 726 for Representation/ files). Move historical context to Boneyard/ documentation where appropriate. Post-726 structure: Representation/ files now import from Core/ instead of Boneyard/.
 
 ---
 
@@ -163,12 +163,12 @@ technical_debt:
 
 ### 700. Research algebraic representation theorem proof
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-28
 - **Source**: specs/ROAD_MAP.md:291
-- **Research**: [research-001.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-001.md), [research-002.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-002.md)
+- **Research**: [research-001.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-001.md), [research-002.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-002.md), [research-003.md](specs/700_research_algebraic_representation_theorem_proof/reports/research-003.md)
 
 **Description**: Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.
 

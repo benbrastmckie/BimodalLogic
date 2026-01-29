@@ -12,7 +12,8 @@
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T23:47:43Z",
-      "last_updated": "2026-01-28T23:47:43Z"
+      "last_updated": "2026-01-29T00:07:31Z",
+      "description": "Clean up Lean source code documentation in Bimodal/ theory. Remove historical comments about past attempts, comparative mentions, and implementation history from main source files. **Important context from Task 726**: Core/DeductionTheorem.lean and Core/MCSProperties.lean now contain Boneyard-origin lemmas with provenance comments (e.g., '-- Origin: Boneyard/...'); these provenance comments should be PRESERVED as they document code lineage, not removed. The cleanup focuses on: (1) removing narrative history in comments explaining 'why we did X instead of Y', (2) removing references to abandoned approaches, (3) ensuring Boneyard/ is completely isolated (no imports from Boneyard in active code - already done by Task 726 for Representation/ files). Move historical context to Boneyard/ documentation where appropriate. Post-726 structure: Representation/ files now import from Core/ instead of Boneyard/."
     },
     {
       "project_number": 726,
@@ -49,12 +50,12 @@
     {
       "project_number": 727,
       "project_name": "consolidate_set_lindenbaum",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T22:45:08Z",
-      "last_updated": "2026-01-28T23:52:34Z",
-      "session_id": "sess_1769644149_231b16",
+      "last_updated": "2026-01-29T00:07:39Z",
+      "session_id": "sess_1769645240_99fe88",
       "researched": "2026-01-28T23:52:34Z",
       "artifacts": [
         {
@@ -621,12 +622,12 @@
     {
       "project_number": 700,
       "project_name": "research_algebraic_representation_theorem_proof",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-28T01:34:44Z",
-      "last_updated": "2026-01-29T00:01:07Z",
-      "session_id": "sess_1769644707_fe458c",
+      "last_updated": "2026-01-29T00:06:12Z",
+      "session_id": "sess_1769645156_aa34cd",
       "description": "Draw on the algebraic methods (approach 4 in /home/benjamin/Projects/ProofChecker/specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) to set out the ambition to establish the representation theorem purely algebraically, providing a more elegant proof. From ROAD_MAP.md line 291.",
       "researched": "2026-01-29T00:01:07Z",
       "artifacts": [
