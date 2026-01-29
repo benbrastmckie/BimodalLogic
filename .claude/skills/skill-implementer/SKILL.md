@@ -104,7 +104,10 @@ fi
 Create the marker file to prevent premature termination:
 
 ```bash
-cat > specs/.postflight-pending << EOF
+# Ensure task directory exists
+mkdir -p "specs/${task_number}_${project_name}"
+
+cat > "specs/${task_number}_${project_name}/.postflight-pending" << EOF
 {
   "session_id": "${session_id}",
   "skill": "skill-implementer",
@@ -342,8 +345,8 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 Remove marker and metadata files:
 
 ```bash
-rm -f specs/.postflight-pending
-rm -f specs/.postflight-loop-guard
+rm -f "specs/${task_number}_${project_name}/.postflight-pending"
+rm -f "specs/${task_number}_${project_name}/.postflight-loop-guard"
 rm -f "specs/${task_number}_${project_name}/.return-meta.json"
 ```
 

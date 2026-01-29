@@ -76,6 +76,24 @@ if [ -n "$plan_file" ] && [ -f "$plan_file" ]; then
 fi
 ```
 
+**Create Postflight Marker**:
+```bash
+# Ensure task directory exists
+mkdir -p "specs/${task_number}_${project_name}"
+
+cat > "specs/${task_number}_${project_name}/.postflight-pending" << EOF
+{
+  "session_id": "${session_id}",
+  "skill": "skill-typst-implementation",
+  "task_number": ${task_number},
+  "operation": "implement",
+  "reason": "Postflight pending: status update, artifact linking, git commit",
+  "created": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "stop_hook_active": false
+}
+EOF
+```
+
 ---
 
 ### 1. Input Validation
@@ -307,9 +325,11 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 ### 7. Cleanup
 
-Remove metadata file after postflight processing:
+Remove marker and metadata files after postflight processing:
 
 ```bash
+rm -f "specs/${task_number}_${project_name}/.postflight-pending"
+rm -f "specs/${task_number}_${project_name}/.postflight-loop-guard"
 rm -f "specs/${task_number}_${project_name}/.return-meta.json"
 ```
 

@@ -96,7 +96,7 @@ fi
 
 ---
 
-### Phase 2: Update All Skills [NOT STARTED]
+### Phase 2: Update All Skills [COMPLETED]
 
 **Goal**: Modify all 7 skill files to write markers to task-scoped directories
 
