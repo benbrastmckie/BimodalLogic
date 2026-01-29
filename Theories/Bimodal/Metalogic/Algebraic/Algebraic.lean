@@ -20,10 +20,22 @@ Algebraic/
 ├── BooleanStructure.lean        # Boolean algebra instance
 ├── InteriorOperators.lean       # G/H as interior operators (using T-axioms)
 ├── UltrafilterMCS.lean          # Bijection: ultrafilters ↔ MCS
-├── AlgebraicRepresentation.lean # Main theorem
-├── AlgebraicSemanticBridge.lean # Bridge to standard Kripke semantics
-└── HybridCompleteness.lean      # Hybrid approach: algebraic + FMP path
+└── AlgebraicRepresentation.lean # Main theorem (sorry-free)
 ```
+
+### Archived (Task 750)
+
+The following files were archived to `Boneyard/Metalogic_v3/FailedTruthLemma/`:
+- `AlgebraicSemanticBridge.lean` - Attempted bridge to Kripke semantics (blocked by Box)
+- `HybridCompleteness.lean` - Hybrid approach combining algebraic + FMP (same limitation)
+
+**Why archived**: These files attempted to connect the algebraic representation
+theorem to standard Kripke validity via a "truth lemma". This approach fails for
+Box formulas because `truth_at (box phi)` quantifies over ALL histories, while
+ultrafilter membership only provides information about ONE algebraic world.
+
+**Correct solution**: Use `semantic_weak_completeness` in `FMP/SemanticCanonicalModel.lean`,
+which works via contrapositive (unprovable -> countermodel exists) and is sorry-free.
 
 ## Mathematical Overview
 
@@ -46,7 +58,7 @@ The algebraic approach proceeds as follows:
    - Maximal consistent sets
 
 5. **Representation Theorem**: Prove satisfiability via ultrafilters:
-   - `satisfiable φ ↔ ¬(⊢ ¬φ)`
+   - `satisfiable φ ↔ ¬(⊢ ¬φ)` (SORRY-FREE)
 
 ## Design Principles
 

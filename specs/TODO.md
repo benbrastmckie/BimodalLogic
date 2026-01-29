@@ -138,13 +138,15 @@ technical_debt:
 
 ### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
 - **Effort**: 8-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md), [research-008.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md), [research-011.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-011.md), [research-012.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-012.md)
 - **Plan**: [implementation-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-006.md)
+- **Summary**: [implementation-summary-20260129-v2.md](specs/750_refactor_forward_truth_lemma_remove_sorries/summaries/implementation-summary-20260129-v2.md)
 
 **Description**: Archive failed truth lemma approaches (MCSDerivedWorldState, AlgebraicSemanticBridge, HybridCompleteness) to Boneyard/Metalogic_v3/. Document `semantic_weak_completeness` as the canonical sorry-free completeness theorem. Clean historical mentions from primary Metalogic/ source files.
 

@@ -120,11 +120,11 @@
     {
       "project_number": 750,
       "project_name": "refactor_forward_truth_lemma_remove_sorries",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:50:31Z",
-      "last_updated": "2026-01-29T21:41:14Z",
+      "last_updated": "2026-01-29T21:49:28Z",
       "session_id": "sess_1769722855_42e041",
       "researched": "2026-01-29T20:41:02Z",
       "artifacts": [
@@ -174,11 +174,6 @@
           "summary": "Deep analysis of three approaches to fixing the truth lemma gap, recommending MCS-restricted approach with concrete implementation path"
         },
         {
-          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting achievements and architectural limitations"
-        },
-        {
           "path": "Theories/Bimodal/Metalogic/FMP/MCSDerivedWorldState.lean",
           "type": "implementation",
           "summary": "MCS-derived world state subtype with sorry-free truth correspondence lemmas"
@@ -192,10 +187,22 @@
           "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-006.md",
           "type": "plan",
           "summary": "Archive failed approaches, document semantic_weak_completeness as canonical completeness theorem"
+        },
+        {
+          "path": "specs/750_refactor_forward_truth_lemma_remove_sorries/summaries/implementation-summary-20260129-v2.md",
+          "type": "summary",
+          "summary": "Documents archival of failed truth lemma approaches and designation of semantic_weak_completeness as canonical completeness theorem"
+        },
+        {
+          "path": "Theories/Bimodal/Boneyard/Metalogic_v3/FailedTruthLemma/README.md",
+          "type": "implementation",
+          "summary": "Documents why MCSDerivedWorldState, AlgebraicSemanticBridge, and HybridCompleteness approaches failed"
         }
       ],
       "planned": "2026-01-29T21:34:00Z",
-      "started": "2026-01-29T17:25:04Z"
+      "started": "2026-01-29T17:25:04Z",
+      "completed": "2026-01-29T21:49:28Z",
+      "completion_summary": "Archived 3 failed truth lemma approaches (MCSDerivedWorldState, AlgebraicSemanticBridge, HybridCompleteness) to Boneyard/Metalogic_v3/FailedTruthLemma/. Documented semantic_weak_completeness as THE canonical sorry-free completeness theorem. Updated documentation throughout Metalogic/ to mark truth lemma gap as architectural limitation, not future work."
     },
     {
       "project_number": 619,

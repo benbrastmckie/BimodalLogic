@@ -5,11 +5,45 @@ import Bimodal.Boneyard.Metalogic_v2.Representation.CanonicalModel
 /-!
 # Hybrid Completeness: Algebraic + FMP Path
 
-This module connects the algebraic representation theorem (which is sorry-free)
-to the FMP semantic completeness construction (which is also sorry-free),
-providing a fully sorry-free path to weak completeness.
+**STATUS: ARCHIVED (Task 750)**
 
-## Strategy
+## Archival Rationale
+
+This module attempted to combine the algebraic and FMP paths into a unified
+sorry-free completeness proof. The hybrid strategy connected:
+- Algebraic representation theorem (sorry-free): `AlgConsistent φ → AlgSatisfiable φ`
+- FMP semantic completeness (sorry-free): `(∀ w, truth w φ) → ⊢ φ`
+
+### Why This Approach Failed
+
+The final step requires `valid_implies_semantic_truth`, which has a sorry.
+The gap is the same fundamental **Box semantics limitation**:
+
+- `valid φ` means `truth_at` holds in ALL models at ALL histories
+- `semantic_truth_at_v2` checks a boolean assignment in our specific model
+- Connecting these requires showing recursive `truth_at` evaluation equals
+  assignment-based `semantic_truth_at_v2` for Box formulas
+- For Box: `truth_at (box ψ)` quantifies over ALL histories
+- The assignment depends on whether `box ψ` was in the MCS
+- These don't necessarily match without the forward truth lemma
+
+### What This Module Demonstrated
+
+1. The algebraic → MCS path IS sorry-free
+2. The MCS → closure MCS → FiniteWorldState path IS sorry-free
+3. The gap appears when connecting general `valid` to `semantic_truth_at_v2`
+4. This is exactly the same gap as in AlgebraicSemanticBridge.lean
+
+### Correct Solution
+
+Don't try to prove `valid φ → ⊢ φ` with the forward direction.
+Instead, use `semantic_weak_completeness` directly, which:
+- Provides: `(∀ w, semantic_truth_at_v2 w φ) → ⊢ φ`
+- Works via contrapositive (¬⊢ φ → ∃ countermodel)
+- Is completely sorry-free
+- Does not require bridging to general validity
+
+## Original Documentation (preserved for reference)
 
 The algebraic path proves: `AlgConsistent phi → AlgSatisfiable phi`
 The FMP path proves: `semantic_weak_completeness : (∀ w, truth w phi) → ⊢ phi`
@@ -35,12 +69,12 @@ The key insight: We don't need to prove a semantic truth lemma for ultrafilters.
 We only need to go: ultrafilter → MCS → closure MCS → FMP construction.
 The FMP construction's `semantic_weak_completeness` handles the rest.
 
-## Main Results
+### Main Results
 
 - `alg_consistent_to_mcs`: AlgConsistent phi → MCS containing phi
-- `hybrid_weak_completeness`: valid phi → ⊢ phi (SORRY-FREE)
+- `hybrid_weak_completeness`: valid phi → ⊢ phi (has sorry via valid_implies_semantic_truth)
 
-## Dependencies
+### Dependencies
 
 - AlgebraicRepresentation.lean: `algebraic_representation_theorem`
 - UltrafilterMCS.lean: `ultrafilterToSet_mcs`

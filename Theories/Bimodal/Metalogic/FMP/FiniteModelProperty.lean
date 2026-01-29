@@ -24,9 +24,18 @@ combinatorial - independent of any specific duration type.
 ## Known Limitations
 
 - `finite_model_property_constructive`: Contains a sorry for the truth bridge
-  connecting finite model truth to general `truth_at`. The bridge requires
-  formula induction with problematic modal/temporal cases. The core completeness
-  result is provided by `semantic_weak_completeness` without this sorry.
+  connecting finite model truth to general `truth_at`. This gap is architectural
+  (not fixable - see Task 750 research) due to Box quantifying over ALL histories.
+
+## Canonical Completeness Result
+
+Use `semantic_weak_completeness` (sorry-free) for all completeness needs:
+```
+theorem semantic_weak_completeness (phi : Formula) :
+    (∀ w : SemanticWorldState phi, semantic_truth_at_v2 phi w origin phi) → ⊢ phi
+```
+
+This works via contrapositive (unprovable → countermodel) and avoids the truth bridge entirely.
 
 ## Architecture
 

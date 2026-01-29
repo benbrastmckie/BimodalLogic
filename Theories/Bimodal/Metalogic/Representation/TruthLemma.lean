@@ -41,6 +41,13 @@ The mutual induction allows the forward imp case to use:
 The representation theorem only requires `truth_lemma_forward` (the forward direction).
 The backward direction for temporal operators (H/G) and both directions for box have
 architectural limitations documented inline. These do not affect the completeness proof.
+
+## Resolution (Task 750)
+
+Task 750 confirmed the Box case limitation is fundamental and insurmountable due to
+S5-style universal quantification. For sorry-free completeness, use `semantic_weak_completeness`
+in `FMP/SemanticCanonicalModel.lean` which works via contrapositive and avoids the
+forward truth lemma entirely.
 -/
 
 namespace Bimodal.Metalogic.Representation

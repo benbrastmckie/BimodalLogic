@@ -17,6 +17,24 @@ All other coherence cases (cross-origin, cross-modal, backward Truth Lemma) are 
 
 ## Contents
 
+### FailedTruthLemma/ (Task 750)
+
+Contains approaches that attempted to prove the "forward truth lemma" but failed
+due to the fundamental Box semantics limitation:
+
+- **MCSDerivedWorldState.lean**: MCS-restricted truth lemma attempt
+- **AlgebraicSemanticBridge.lean**: Algebraic → Kripke bridge attempt
+- **HybridCompleteness.lean**: Hybrid algebraic + FMP approach
+
+**Why archived**: All approaches failed because `truth_at (box psi)` quantifies
+over ALL histories, while MCS/ultrafilter constructions only have information
+about ONE world state.
+
+**Correct solution**: Use `semantic_weak_completeness` which works via contrapositive
+(unprovable → countermodel) and doesn't need the forward truth lemma.
+
+See `FailedTruthLemma/README.md` for full details.
+
 ### Coherence/
 
 Contains unused coherence cases from `CoherentConstruction.lean`:

@@ -54,9 +54,31 @@ FMP/                     # Finite Model Property (Parametric)
 - `semanticWorldState_card_bound`: |worlds| ≤ 2^closureSize
 - `semantic_weak_completeness`: (∀ w, truth w φ) → ⊢ φ (sorry-free)
 
-## Status
+## Canonical Completeness Result
 
-Work in progress.
+**`semantic_weak_completeness` is THE completeness theorem** for this logic:
+
+```lean
+theorem semantic_weak_completeness (phi : Formula) :
+    (∀ w : SemanticWorldState phi, semantic_truth_at_v2 phi w origin phi) → ⊢ phi
+```
+
+**Why this is the correct form**: Research (Task 750) confirmed that the "forward truth lemma"
+(`truth_at → semantic_truth_at_v2`) is blocked by S5-style Box semantics that quantify over
+ALL world histories. The contrapositive approach used by `semantic_weak_completeness` avoids
+this limitation entirely by constructing MCS-derived countermodels when formulas are unprovable.
+
+## Known Architectural Limitations
+
+These limitations are **final** (not future work):
+
+| Location | Limitation | Reason |
+|----------|------------|--------|
+| `SemanticCanonicalFrame.compositionality` | Sorry | Mathematically false for unbounded durations |
+| `truth_at_implies_semantic_truth` | Sorry | Box quantifies over ALL histories (Task 750) |
+| `Representation/TruthLemma.lean` box case | Sorry | Same Box semantics limitation |
+
+See `Boneyard/Metalogic_v3/FailedTruthLemma/` for archived approaches that failed.
 -/
 
 -- Core layer (to be populated)

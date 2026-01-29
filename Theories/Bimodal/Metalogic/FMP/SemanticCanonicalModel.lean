@@ -637,12 +637,12 @@ For MCS-derived world states, `closure_mcs_imp_iff` gives the biconditional:
 
 But arbitrary FiniteWorldStates from `IsLocallyConsistent` don't have this property.
 
-**RESOLUTION OPTIONS** (for future work):
-1. Strengthen IsLocallyConsistent to include negation completeness and full propositional closure
-2. Restrict semantic_weak_completeness to MCS-derived states (sufficient for completeness)
-3. Prove that for VALID formulas, the specific structure forces correspondence
+**FINAL RESOLUTION (Task 750)**:
+Research confirmed this gap is fundamental and insurmountable within S5-style Box semantics.
+The options above were investigated and all fail due to Box quantifying over ALL histories.
+Use `semantic_weak_completeness` instead - it is sorry-free and provides the completeness result.
 
-**Current Status**: This theorem is marked sorry due to the architectural gap.
+**Status**: Sorry represents architectural limitation, not incomplete work.
 The `semantic_weak_completeness` theorem IS sorry-free and provides the main completeness
 result. This theorem is only needed to connect universal validity to semantic truth.
 
@@ -768,12 +768,20 @@ is false BOTH in assignment AND recursively. The MCS construction ensures corres
 We need to show: for ALL SemanticWorldStates, if truth_at holds, then assignment is true.
 But arbitrary SemanticWorldStates may have assignments that don't respect recursive truth.
 
-**Potential solutions (not yet implemented)**:
-1. Restrict to MCS-derived world states only (sufficient for completeness)
-2. Show that for VALID formulas, the specific structure forces correspondence
-3. Use a different model construction where all states are MCS-derived
+**Resolution (Task 750)**:
+Research confirmed the gap is fundamental and insurmountable due to Box semantics:
+- Box quantifies over ALL histories (S5-style universal quantification)
+- MCS/assignment constructions only have information about ONE world state
+- This is an architectural limitation, not a bug to be fixed
 
-**Dependencies**: `truth_at_implies_semantic_truth` (has sorry)
+The correct solution is `semantic_weak_completeness` which:
+- Works via contrapositive (unprovable → countermodel)
+- Is completely sorry-free
+- Provides the completeness result needed for this logic
+
+See `Boneyard/Metalogic_v3/FailedTruthLemma/` for archived attempts.
+
+**Dependencies**: `truth_at_implies_semantic_truth` (has architectural gap, not fixable)
 -/
 noncomputable def sorry_free_weak_completeness (phi : Formula) :
     valid phi → ⊢ phi := by

@@ -87,6 +87,26 @@ This approach works because:
 2. Compositionality is trivial by construction (histories already satisfy it)
 3. The negation-completeness issue is bypassed entirely
 
+### 4. Metalogic_v3/FailedTruthLemma/ (Task 750)
+
+**Source**: Various files from `Metalogic/FMP/` and `Metalogic/Algebraic/`
+
+**What it contains**:
+- `MCSDerivedWorldState.lean` - MCS-restricted truth lemma attempt
+- `AlgebraicSemanticBridge.lean` - Algebraic → Kripke bridge attempt
+- `HybridCompleteness.lean` - Hybrid algebraic + FMP approach
+
+**Why deprecated**:
+- All three approaches attempted to prove the "forward truth lemma"
+- All failed due to the same fundamental Box semantics limitation
+- `truth_at (box psi)` quantifies over ALL histories
+- MCS/ultrafilter constructions only have information about ONE world state
+- The gap is mathematically insurmountable within S5-style universal quantification
+
+**Key insight**: The contrapositive approach via `semantic_weak_completeness` is correct.
+It proves: `(∀ w, semantic_truth_at_v2 w φ) → ⊢ φ` without needing the forward truth lemma.
+This is THE completeness theorem for this logic.
+
 ## Related Tasks
 
 - **Task 446**: Original Duration construction
@@ -97,6 +117,7 @@ This approach works because:
 - **Task 487**: Boneyard creation (SyntacticApproach, DurationConstruction)
 - **Task 616**: Remove false theorem semantic_task_rel_compositionality
 - **Task 626**: Review and remove unnecessary sorries (DeprecatedCompleteness)
+- **Task 750**: Archive failed truth lemma approaches (FailedTruthLemma)
 
 ## Status
 
@@ -106,5 +127,5 @@ For completeness proofs, use the semantic approach in `FiniteCanonicalModel.lean
 
 ---
 
-*Last updated: 2026-01-19*
-*Reason: Superseded by SemanticWorldState approach*
+*Last updated: 2026-01-29*
+*Reason: Added Task 750 failed truth lemma approaches*

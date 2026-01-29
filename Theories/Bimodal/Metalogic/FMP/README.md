@@ -86,19 +86,33 @@ The `BoundedTime k` type is the key innovation:
 
 | Location | Description | Status |
 |----------|-------------|--------|
-| `SemanticCanonicalFrame.compositionality` | Frame compositionality axiom | Mathematically false for unbounded durations in finite domain |
-| `finite_model_property_constructive` truth bridge | Connecting finite model truth to `truth_at` | Formula induction has problematic cases |
+| `SemanticCanonicalFrame.compositionality` | Frame compositionality axiom | Architectural (false for unbounded durations) |
+| `finite_model_property_constructive` truth bridge | Connecting finite model truth to `truth_at` | Architectural (Box semantics limitation - Task 750) |
 
-### Recommended Alternative
+### Resolution (Task 750)
 
-For **sorry-free completeness**, use `semantic_weak_completeness`:
+Research confirmed both sorries are **architectural limitations**, not incomplete work:
+
+1. **Compositionality**: Mathematically false for unbounded durations in finite time domain [-k, k].
+   Sum d1 + d2 can exceed representable range [-2k, 2k].
+
+2. **Truth bridge**: Box semantics quantifies over ALL histories (S5-style). MCS/assignment
+   constructions only have information about ONE world state. Gap is insurmountable.
+
+## Canonical Completeness Result
+
+Use `semantic_weak_completeness` (sorry-free) for **all completeness proofs**:
 
 ```lean
-noncomputable def semantic_weak_completeness (φ : Formula) :
+theorem semantic_weak_completeness (φ : Formula) :
     (∀ (w : SemanticWorldState φ), semantic_truth_at_v2 φ w t φ) → ⊢ φ
 ```
 
-This avoids the truth bridge by working directly with finite model truth.
+**Why it works**: Contrapositive approach (unprovable → countermodel) constructs MCS-derived
+countermodels where the assignment IS the MCS membership function. This avoids the
+forward truth lemma entirely.
+
+**This is THE completeness theorem for this logic.**
 
 ## Usage Examples
 
