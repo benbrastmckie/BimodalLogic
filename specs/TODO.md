@@ -41,12 +41,13 @@ technical_debt:
 
 ### 755. Implement Option C: Forward Truth Lemma Refactoring
 - **Effort**: 12 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Reference**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md)
 - **Research**: [research-001.md](specs/755_implement_option_c_forward_truth_lemma/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/755_implement_option_c_forward_truth_lemma/plans/implementation-001.md)
+- **Started**: 2026-01-29
 
 **Description**: Complete Option C in /home/benjamin/Projects/ProofChecker/specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md in full rigor to the highest quality.
 
@@ -188,15 +189,15 @@ technical_debt:
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
 - **Effort**: 6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
+- **Effort**: 8-12 hours
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
-- **Started**: 2026-01-29
 - **Research**: [research-001.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/plans/implementation-002.md)
 
-**Description**: Establish sorry-free completeness using `semantic_weak_completeness` which works directly with finite model truth, avoiding the truth bridge, or other methods if better.
+**Description**: Establish sorry-free completeness using `semantic_weak_completeness` via structural induction over the subformula closure. The revised approach avoids TruthLemma.lean's architectural limitations (box/temporal sorries are omega-rule and semantic architecture issues, not missing proofs).
 
 ---
 

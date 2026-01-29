@@ -178,11 +178,11 @@
     {
       "project_number": 749,
       "project_name": "establish_sorry_free_completeness_via_semantic_weak_completeness",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:48:21Z",
-      "last_updated": "2026-01-29T17:28:17Z",
+      "last_updated": "2026-01-29T17:38:12Z",
       "session_id": "sess_1769706942_63059b",
       "researched": "2026-01-29T14:56:05Z",
       "artifacts": [
@@ -192,17 +192,17 @@
           "summary": "Analysis of semantic_weak_completeness and path to sorry-free completeness via truth bridge"
         },
         {
-          "path": "specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for sorry-free completeness via semantic_weak_completeness"
-        },
-        {
           "path": "specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/summaries/implementation-summary-20260129.md",
           "type": "summary",
           "summary": "Implementation summary documenting the truth lemma gap blocking sorry-free completeness"
+        },
+        {
+          "path": "specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 6-phase plan using structural induction over subformula closure (avoids TruthLemma.lean architectural limitations)"
         }
       ],
-      "planned": "2026-01-29T17:10:27Z",
+      "planned": "2026-01-29T17:38:12Z",
       "started": "2026-01-29T17:16:02Z"
     },
     {
