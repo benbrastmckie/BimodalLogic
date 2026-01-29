@@ -6,6 +6,28 @@
   },
   "active_projects": [
     {
+      "project_number": 735,
+      "project_name": "complete_task700_phase5_ultrafilter_mcs_correspondence",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Complete phase 5 of task 700: Ultrafilter-MCS Correspondence. Fill ultrafilterToSet_mcs consistency proof - show that if L ⊢ ⊥ and all [φᵢ] ∈ U, then ⊥ ∈ U. Requires relating list conjunction to fold of quotients. (Follow-up from task #700)",
+      "parent_task": 700,
+      "created": "2026-01-29T01:21:00Z",
+      "last_updated": "2026-01-29T01:21:00Z"
+    },
+    {
+      "project_number": 736,
+      "project_name": "complete_task700_phase6_algebraic_representation",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Complete phase 6 of task 700: Algebraic Representation Theorem. Prove ultrafilter existence (consistent_implies_satisfiable) using Zorn's lemma adaptation - for any non-⊥ element a, there exists ultrafilter containing a. Also complete mcs_ultrafilter_correspondence bijection proof. (Follow-up from task #700)",
+      "parent_task": 700,
+      "created": "2026-01-29T01:21:00Z",
+      "last_updated": "2026-01-29T01:21:00Z"
+    },
+    {
       "project_number": 734,
       "project_name": "full_decision_procedure_bimodal_logic",
       "status": "not_started",
@@ -123,11 +145,11 @@
     {
       "project_number": 659,
       "project_name": "prove_negation_completeness_lemmas",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T01:19:12Z",
+      "last_updated": "2026-01-29T01:21:06Z",
       "related_tasks": [
         654,
         656
@@ -144,8 +166,14 @@
           "path": "specs/659_prove_negation_completeness_lemmas/reports/research-002.md",
           "type": "research",
           "summary": "Supplementary research on negation completeness usefulness and best proof approach using contrapositive plus witness extraction"
+        },
+        {
+          "path": "specs/659_prove_negation_completeness_lemmas/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan for witness extraction lemmas and backward temporal cases"
         }
-      ]
+      ],
+      "planned": "2026-01-29T01:21:06Z"
     },
     {
       "project_number": 660,
@@ -607,7 +635,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 735,
+  "next_project_number": 737,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 735
+next_project_number: 737
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -103,6 +103,30 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 735. Complete phase 5 of task 700: Ultrafilter-MCS Correspondence
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 700
+- **Created**: 2026-01-29
+
+**Description**: Complete phase 5 of task 700: Ultrafilter-MCS Correspondence. Fill ultrafilterToSet_mcs consistency proof - show that if L ⊢ ⊥ and all [φᵢ] ∈ U, then ⊥ ∈ U. Requires relating list conjunction to fold of quotients. (Follow-up from task #700)
+
+---
+
+### 736. Complete phase 6 of task 700: Algebraic Representation Theorem
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Parent**: Task 700
+- **Created**: 2026-01-29
+
+**Description**: Complete phase 6 of task 700: Algebraic Representation Theorem. Prove ultrafilter existence (consistent_implies_satisfiable) using Zorn's lemma adaptation - for any non-⊥ element a, there exists ultrafilter containing a. Also complete mcs_ultrafilter_correspondence bijection proof. (Follow-up from task #700)
+
+---
 
 ### 734. Full decision procedure for Bimodal logic
 - **Effort**: TBD
@@ -268,13 +292,14 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
 - **Related**: Tasks 654, 656
 - **Source**: Theories/Bimodal/Metalogic/Representation/TruthLemma.lean:211,219,228,237
 - **Research**: [research-001.md](specs/659_prove_negation_completeness_lemmas/reports/research-001.md), [research-002.md](specs/659_prove_negation_completeness_lemmas/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/659_prove_negation_completeness_lemmas/plans/implementation-001.md)
 
 **Description**: Prove the negation completeness lemmas required for the truth lemma backward direction. These include the imp, box, and temporal cases in the backward direction (lines 211, 219, 228, 237). Requires showing that MCS are complete with respect to negation. Not critical since the representation theorem only needs the forward direction, but would complete the full biconditional truth lemma. From review-20260121-task654.md low priority recommendations.
 
