@@ -1,7 +1,7 @@
 # Implementation Plan: Task #763
 
 - **Task**: 763 - add_plan_status_updates_skill_lean_implementation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Priority**: medium
 - **Dependencies**: None
@@ -110,7 +110,7 @@ fi
 
 ---
 
-### Phase 3: Add Postflight Partial Status Update [IN PROGRESS]
+### Phase 3: Add Postflight Partial Status Update [COMPLETED]
 
 **Goal**: Add plan file status update to [PARTIAL] in Stage 7 postflight (partial case), after the TODO.md note and before the `---` divider.
 
