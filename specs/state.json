@@ -21,6 +21,11 @@
           "path": "specs/765_exclude_boneyard_examples_from_sorry_count/reports/research-001.md",
           "type": "research",
           "summary": "Research report with implementation checklist for 5 files: todo.md, review.md, state-management.md, state.json, TODO.md"
+        },
+        {
+          "path": "specs/765_exclude_boneyard_examples_from_sorry_count/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase implementation plan for excluding Boneyard/ and Examples/ from sorry count metrics"
         }
       ],
       "planned": "2026-01-29T22:33:59Z"
