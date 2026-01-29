@@ -123,16 +123,16 @@
     {
       "project_number": 659,
       "project_name": "prove_negation_completeness_lemmas",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T01:08:47Z",
+      "last_updated": "2026-01-29T01:19:12Z",
       "related_tasks": [
         654,
         656
       ],
-      "session_id": "sess_1769648687_8a0fb9",
+      "session_id": "sess_1738127234_0ddfe6",
       "researched": "2026-01-29T01:08:47Z",
       "artifacts": [
         {
@@ -217,31 +217,6 @@
           "summary": "Research report: proved bridge is viable via saturation vacuity, 3-5 hour estimate"
         }
       ]
-    },
-    {
-      "project_number": 628,
-      "project_name": "prove_semantic_truth_implies_truth_at_upward_bridge",
-      "status": "planned",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-20T00:25:09Z",
-      "last_updated": "2026-01-29T01:16:45Z",
-      "session_id": "sess_1769562136_ef8083",
-      "researched": "2026-01-20T01:01:02Z",
-      "artifacts": [
-        {
-          "path": "specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing the upward bridge theorem with case-by-case feasibility analysis and effort estimation"
-        },
-        {
-          "path": "specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised plan recommending abandonment - architecture changed, upward bridge no longer needed"
-        }
-      ],
-      "planned": "2026-01-29T01:16:45Z",
-      "started": "2026-01-28T00:21:39Z"
     },
     {
       "project_number": 623,

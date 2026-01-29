@@ -223,20 +223,6 @@ technical_debt:
 
 ---
 
-### 628. Prove semantic_truth_implies_truth_at (upward bridge) for FMP generalization
-- **Status**: [PLANNED] → ABANDON RECOMMENDED
-- **Priority**: Low
-- **Language**: lean
-- **Created**: 2026-01-20
-- **Revised**: 2026-01-29
-- **Related**: Tasks 610, 627, 470
-- **Research**: [research-001.md](specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/plans/implementation-002.md)
-
-**Description**: **OBSOLETE**: The completeness architecture was restructured (Task 660). Weak/strong completeness are now proven via representation theorem in `Theories/Bimodal/Metalogic/Completeness/`. The upward bridge is no longer needed - the Boneyard code this task targeted is deprecated. Recommend ABANDON.
-
----
-
 ### 619. Agent system architecture upgrade (context:fork migration)
 - **Status**: [RESEARCHED]
 - **Researched**: 2026-01-28

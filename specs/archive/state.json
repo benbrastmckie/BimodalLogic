@@ -2,6 +2,32 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 628,
+      "project_name": "prove_semantic_truth_implies_truth_at_upward_bridge",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-01-20T00:25:09Z",
+      "last_updated": "2026-01-29T01:16:45Z",
+      "session_id": "sess_1769562136_ef8083",
+      "researched": "2026-01-20T01:01:02Z",
+      "artifacts": [
+        {
+          "path": "specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing the upward bridge theorem with case-by-case feasibility analysis and effort estimation"
+        },
+        {
+          "path": "specs/628_prove_semantic_truth_implies_truth_at_upward_bridge/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised plan recommending abandonment - architecture changed, upward bridge no longer needed"
+        }
+      ],
+      "planned": "2026-01-29T01:16:45Z",
+      "started": "2026-01-28T00:21:39Z",
+      "abandoned": "2026-01-29T01:20:07Z"
+    },
+    {
       "project_number": 669,
       "project_name": "test_task_creation",
       "status": "abandoned",
