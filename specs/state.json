@@ -526,12 +526,12 @@
     {
       "project_number": 762,
       "project_name": "fix_planner_agent_enforce_status_field",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T21:04:03Z",
-      "last_updated": "2026-01-29T21:12:15Z",
-      "session_id": "sess_1769720973_5c811c",
+      "last_updated": "2026-01-29T21:23:49Z",
+      "session_id": "sess_1769721704_3eb431",
       "description": "Move plan-format.md from Load When Creating Plan to Always Load section in planner-agent.md (line 43). Add explicit verification step in Stage 5 (around line 173) to ensure Status field exists in plan file before writing success metadata. Evidence: Task 750 v005 plan missing Status line while older plans (758, 759, 741) have it.",
       "researched": "2026-01-29T21:12:15Z",
       "artifacts": [
@@ -539,18 +539,24 @@
           "path": "specs/762_fix_planner_agent_enforce_status_field/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting the Status field gap in task 750 v005 plan, comparison with correct older plans, and recommended changes to planner-agent.md"
+        },
+        {
+          "path": "specs/762_fix_planner_agent_enforce_status_field/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan: update context references, add verification step, update critical requirements, verify changes"
         }
-      ]
+      ],
+      "planned": "2026-01-29T21:23:49Z"
     },
     {
       "project_number": 763,
       "project_name": "add_plan_status_updates_skill_lean_implementation",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T21:04:06Z",
-      "last_updated": "2026-01-29T21:20:44Z",
-      "session_id": "sess_1769721524_3e665d",
+      "last_updated": "2026-01-29T21:22:52Z",
+      "session_id": "sess_1769721755_8ea77d",
       "description": "Add plan status update pattern (sed commands to update - **Status**: [...] line) to skill-lean-implementation/SKILL.md in three locations: (1) Stage 2 Preflight: Update to [IMPLEMENTING] before invoking agent, (2) Stage 7 Postflight (implemented): Update to [COMPLETED], (3) Stage 7 Postflight (partial): Update to [PARTIAL]. Pattern exists in skill-implementer (lines 91-98, 265-271, 287-293), skill-latex-implementation (lines 70-76, 282-288, 304-310), skill-typst-implementation (lines 70-76, 282-288, 304-310).",
       "researched": "2026-01-29T21:15:16Z",
       "artifacts": [
@@ -564,7 +570,8 @@
           "type": "plan",
           "summary": "3-phase implementation plan to add plan status updates to skill-lean-implementation"
         }
-      ]
+      ],
+      "started": "2026-01-29T21:22:52Z"
     }
   ],
   "completed_projects": [

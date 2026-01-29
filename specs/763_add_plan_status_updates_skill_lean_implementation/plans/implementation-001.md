@@ -1,7 +1,7 @@
 # Implementation Plan: Task #763
 
 - **Task**: 763 - add_plan_status_updates_skill_lean_implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Priority**: medium
 - **Dependencies**: None
@@ -44,7 +44,7 @@ The research report identified exact insertion points:
 
 ## Implementation Phases
 
-### Phase 1: Add Preflight Status Update [NOT STARTED]
+### Phase 1: Add Preflight Status Update [COMPLETED]
 
 **Goal**: Add plan file status update to [IMPLEMENTING] in Stage 2, before the `---` divider after the TODO.md update.
 
@@ -77,7 +77,7 @@ fi
 
 ---
 
-### Phase 2: Add Postflight Completed Status Update [NOT STARTED]
+### Phase 2: Add Postflight Completed Status Update [COMPLETED]
 
 **Goal**: Add plan file status update to [COMPLETED] in Stage 7 postflight (implemented case), after the TODO.md update and before "If status is partial".
 
@@ -110,7 +110,7 @@ fi
 
 ---
 
-### Phase 3: Add Postflight Partial Status Update [NOT STARTED]
+### Phase 3: Add Postflight Partial Status Update [IN PROGRESS]
 
 **Goal**: Add plan file status update to [PARTIAL] in Stage 7 postflight (partial case), after the TODO.md note and before the `---` divider.
 
