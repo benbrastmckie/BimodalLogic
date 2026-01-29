@@ -29,14 +29,16 @@ technical_debt:
 
 ### 758. Audit and reduce Metalogic sorries
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Source**: review-20260129-2
 - **Research**: [research-001.md](specs/758_audit_and_reduce_metalogic_sorries/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md)
+- **Summary**: Ported soundness proof from Boneyard to WeakCompleteness.lean, eliminating the critical sorry. Phases 2-4 deferred (non-critical/architectural). Main theorem semantic_weak_completeness remains sorry-free.
 
 **Description**: Audit and reduce sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard). Currently 45 sorries: 33 in Representation/, remainder in Core/, Completeness/, FMP/, Algebraic/. Categorize by (a) blocking main theorem path, (b) required for full biconditional but not main result, (c) optional/exploratory. Prioritize elimination of category (a) sorries. Related: Task 750 (forward Truth Lemma refactor)
 

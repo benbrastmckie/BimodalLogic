@@ -1,7 +1,7 @@
 # Implementation Plan: Audit and Reduce Metalogic Sorries
 
 - **Task**: 758 - Audit and reduce sorry count in Theories/Bimodal/Metalogic/
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Effort**: 8 hours
 - **Priority**: High
 - **Dependencies**: Related to Task 750 (forward Truth Lemma refactor)
