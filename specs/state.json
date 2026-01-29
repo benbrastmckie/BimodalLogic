@@ -453,16 +453,24 @@
     {
       "project_number": 740,
       "project_name": "update_skill_lean_research_to_generate_project_context",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "priority": "medium",
       "description": "Update skill-lean-research to generate the Project Context section in lean research reports. Add context reference loading from project-overview.md, modify Stage 7 report generation to include the Project Context section as specified in report-format.md, and update .claude/context/project/lean4/agents/lean-research-flow.md Stage 5 documentation to reflect the new section. This ensures all lean research outputs include orientation information.",
       "created": "2026-01-29T01:45:00Z",
-      "last_updated": "2026-01-29T13:37:47Z",
+      "last_updated": "2026-01-29T13:39:52Z",
       "dependencies": [
         739
       ],
-      "session_id": "sess_1769693852_1d9b5f"
+      "session_id": "sess_1769693852_1d9b5f",
+      "researched": "2026-01-29T13:39:52Z",
+      "artifacts": [
+        {
+          "path": "specs/740_update_skill_lean_research_to_generate_project_context/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting current state of lean research skill, report-format.md specification, and implementation approach for adding Project Context section"
+        }
+      ]
     },
     {
       "project_number": 742,

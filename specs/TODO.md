@@ -155,11 +155,12 @@ technical_debt:
 
 ### 740. Update skill-lean-research to generate Project Context
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: meta
 - **Dependencies**: Task 739
 - **Created**: 2026-01-29
+- **Research**: [research-001.md](specs/740_update_skill_lean_research_to_generate_project_context/reports/research-001.md)
 
 **Description**: Update skill-lean-research to generate the Project Context section in lean research reports. Add context reference loading from project-overview.md, modify Stage 7 report generation to include the Project Context section as specified in report-format.md, and update .claude/context/project/lean4/agents/lean-research-flow.md Stage 5 documentation to reflect the new section. This ensures all lean research outputs include orientation information.
 
