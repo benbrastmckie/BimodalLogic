@@ -2,6 +2,47 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 669,
+      "project_name": "test_task_creation",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "low",
+      "created": "2026-01-21T23:01:54Z",
+      "last_updated": "2026-01-21T23:01:54Z",
+      "session_id": "test-session-1768239500",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/669_test_task_creation/plans/implementation-001.md",
+          "summary": "Test task to verify task creation system works after path fixes"
+        }
+      ],
+      "planned": "2026-01-21T23:01:54Z",
+      "abandoned": "2026-01-29T01:08:01Z"
+    },
+    {
+      "project_number": 668,
+      "project_name": "create_specs_path_migration_script",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-21T23:00:22Z",
+      "last_updated": "2026-01-21T23:00:22Z",
+      "session_id": "meta-session-1768239500",
+      "dependencies": [
+        667
+      ],
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/668_create_specs_path_migration_script/plans/implementation-001.md",
+          "summary": "Plan to create automated migration script for path references"
+        }
+      ],
+      "planned": "2026-01-21T23:00:22Z",
+      "abandoned": "2026-01-29T01:07:43Z"
+    },
+    {
       "project_number": 729,
       "project_name": "prevent_blocked_mcp_tool_calls_in_agents",
       "status": "completed",

@@ -191,10 +191,11 @@ technical_debt:
 
 ### 660. Prove parametric completeness theorems
 - **Effort**: 10-15 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-21
+- **Started**: 2026-01-29
 - **Dependencies**: Tasks 656, 657, 658
 - **Related**: Task 654
 - **Research**: [research-001.md](specs/660_prove_parametric_completeness_theorems/reports/research-001.md), [research-002.md](specs/660_prove_parametric_completeness_theorems/reports/research-002.md)
@@ -275,7 +276,7 @@ technical_debt:
 
 ### 659. Prove negation completeness lemmas
 - **Effort**: 6-10 hours
-- **Status**: [PLANNING]
+- **Status**: [RESEARCHING]
 - **Priority**: Low
 - **Language**: lean
 - **Created**: 2026-01-21
@@ -336,19 +337,6 @@ technical_debt:
 - **Dependencies**: Task 624
 
 **Description**: Prove the `decide_complete` theorem in Correctness.lean deriving decision procedure completeness from tableau completeness. Follows directly from tableau_complete (Task 624).
-
----
-
-### 668. Create specs path migration script
-- **Status**: [PLANNED]
-- **Priority**: Medium
-- **Language**: meta
-- **Session**: meta-session-1768239500
-- **Dependencies**: 667
-- **Planned**: 2026-01-21
-- **Plan**: [implementation-001.md](specs/668_create_specs_path_migration_script/plans/implementation-003.md)
-
-**Description**: Create automated Python script to detect and migrate .opencode/specs path references to specs/. Script will include safety checks, dry-run mode, backup creation, and detailed reporting. Will serve as fix for current issue and preventative tool for future migrations.
 
 ---
 

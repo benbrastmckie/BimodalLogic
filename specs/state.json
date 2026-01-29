@@ -116,24 +116,25 @@
     {
       "project_number": 659,
       "project_name": "prove_negation_completeness_lemmas",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "low",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-21T01:38:29Z",
+      "last_updated": "2026-01-29T01:05:01Z",
       "related_tasks": [
         654,
         656
-      ]
+      ],
+      "session_id": "sess_1769648687_8a0fb9"
     },
     {
       "project_number": 660,
       "project_name": "prove_parametric_completeness_theorems",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-21T01:38:29Z",
-      "last_updated": "2026-01-29T01:01:36Z",
+      "last_updated": "2026-01-29T01:05:35Z",
       "dependencies": [
         656,
         657,
@@ -142,7 +143,7 @@
       "related_tasks": [
         654
       ],
-      "session_id": "sess_1769648306_672dc7",
+      "session_id": "sess_1769648714_48ac95",
       "researched": "2026-01-29T00:40:54Z",
       "artifacts": [
         {
@@ -161,7 +162,8 @@
           "summary": "5-phase implementation plan covering weak completeness through true compactness for TM logic over arbitrary ordered additive groups"
         }
       ],
-      "planned": "2026-01-29T01:01:36Z"
+      "planned": "2026-01-29T01:01:36Z",
+      "started": "2026-01-29T01:05:35Z"
     },
     {
       "project_number": 631,
@@ -456,45 +458,6 @@
         630,
         631
       ]
-    },
-    {
-      "project_number": 668,
-      "project_name": "create_specs_path_migration_script",
-      "status": "planned",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-21T23:00:22Z",
-      "last_updated": "2026-01-21T23:00:22Z",
-      "session_id": "meta-session-1768239500",
-      "dependencies": [
-        667
-      ],
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": "specs/668_create_specs_path_migration_script/plans/implementation-001.md",
-          "summary": "Plan to create automated migration script for path references"
-        }
-      ],
-      "planned": "2026-01-21T23:00:22Z"
-    },
-    {
-      "project_number": 669,
-      "project_name": "test_task_creation",
-      "status": "planned",
-      "language": "meta",
-      "priority": "low",
-      "created": "2026-01-21T23:01:54Z",
-      "last_updated": "2026-01-21T23:01:54Z",
-      "session_id": "test-session-1768239500",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": "specs/669_test_task_creation/plans/implementation-001.md",
-          "summary": "Test task to verify task creation system works after path fixes"
-        }
-      ],
-      "planned": "2026-01-21T23:01:54Z"
     },
     {
       "project_number": 672,
