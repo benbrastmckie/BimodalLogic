@@ -86,7 +86,7 @@ From research-003.md:
 
 ---
 
-### Phase 2: Provable Equivalence and Lindenbaum Quotient [PARTIAL]
+### Phase 2: Provable Equivalence and Lindenbaum Quotient [COMPLETED]
 
 **Goal**: Define provable equivalence relation and quotient type, show it's a congruence
 
@@ -138,7 +138,7 @@ From research-003.md:
 
 ---
 
-### Phase 4: Temporal Operators as Interior Operators [PARTIAL]
+### Phase 4: Temporal Operators as Interior Operators [COMPLETED]
 
 **Goal**: Define G and H as operators on `LindenbaumAlg` and prove they are interior operators
 
