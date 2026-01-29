@@ -50,17 +50,6 @@ technical_debt:
 
 ---
 
-### 754. Implement Option B: Forward Truth Lemma Refactoring
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: High
-- **Language**: lean
-- **Reference**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md)
-
-**Description**: Complete Option B described in /home/benjamin/Projects/ProofChecker/specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md in full rigor and to the highest quality.
-
----
-
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
@@ -194,10 +183,11 @@ technical_debt:
 
 ### 749. Establish sorry-free completeness via semantic_weak_completeness
 - **Effort**: 6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
+- **Started**: 2026-01-29
 - **Research**: [research-001.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/749_establish_sorry_free_completeness_via_semantic_weak_completeness/plans/implementation-001.md)
 

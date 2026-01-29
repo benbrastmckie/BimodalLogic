@@ -48,15 +48,6 @@
       "last_updated": "2026-01-29T16:54:59Z"
     },
     {
-      "project_number": 754,
-      "project_name": "implement_option_b_forward_truth_lemma",
-      "status": "not_started",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-01-29T16:53:21Z",
-      "last_updated": "2026-01-29T16:53:21Z"
-    },
-    {
       "project_number": 753,
       "project_name": "prove_sorries_in_coherentconstruction",
       "status": "implementing",
@@ -151,12 +142,12 @@
     {
       "project_number": 749,
       "project_name": "establish_sorry_free_completeness_via_semantic_weak_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-01-29T14:48:21Z",
-      "last_updated": "2026-01-29T17:10:27Z",
-      "session_id": "sess_1769706470_c7236a",
+      "last_updated": "2026-01-29T17:16:02Z",
+      "session_id": "sess_1769706942_63059b",
       "researched": "2026-01-29T14:56:05Z",
       "artifacts": [
         {
@@ -170,7 +161,8 @@
           "summary": "6-phase implementation plan for sorry-free completeness via semantic_weak_completeness"
         }
       ],
-      "planned": "2026-01-29T17:10:27Z"
+      "planned": "2026-01-29T17:10:27Z",
+      "started": "2026-01-29T17:16:02Z"
     },
     {
       "project_number": 747,

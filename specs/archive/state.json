@@ -2,6 +2,16 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 754,
+      "project_name": "implement_option_b_forward_truth_lemma",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-01-29T16:53:21Z",
+      "last_updated": "2026-01-29T16:53:21Z",
+      "abandoned": "2026-01-29T17:17:09Z"
+    },
+    {
       "project_number": 737,
       "project_name": "fix_unused_simp_arguments_temporalproofstrategies",
       "status": "completed",
