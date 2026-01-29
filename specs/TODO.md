@@ -106,11 +106,13 @@ technical_debt:
 
 ### 739. Update report-format.md with Project Context section
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
+- **Completed**: 2026-01-29
 - **Plan**: [implementation-002.md](specs/739_update_report_format_with_project_context_section/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260129.md](specs/739_update_report_format_with_project_context_section/summaries/implementation-summary-20260129.md)
 
 **Description**: Update .claude/context/core/formats/report-format.md to include a Lean-specific "Project Context" section focused on proof dependencies. The section documents upstream dependencies, downstream dependents, alternative paths, and potential extensions to help researchers understand how a topic fits into the Lean codebase. This is optional for non-Lean reports.
 
