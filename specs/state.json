@@ -150,7 +150,7 @@
     {
       "project_number": 624,
       "project_name": "prove_tableau_complete",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "parent_task": 490,
@@ -158,8 +158,16 @@
         623
       ],
       "created": "2026-01-19T22:38:22Z",
-      "last_updated": "2026-01-29T13:18:03Z",
-      "session_id": "sess_1769692663_757067"
+      "last_updated": "2026-01-29T13:22:16Z",
+      "session_id": "sess_1769692663_757067",
+      "researched": "2026-01-29T13:22:16Z",
+      "artifacts": [
+        {
+          "path": "specs/624_prove_tableau_complete/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing tableau_complete proof requirements, comparing Metalogic vs Metalogic_v2 infrastructure"
+        }
+      ]
     },
     {
       "project_number": 625,
