@@ -1,17 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Identified 20 sorries across 5 files in Metalogic/. The sorry-free semantic_weak_completeness provides main completeness result via contrapositive. Recommended 3-phase refactoring: (1) establish sorry-free completeness path, (2) archive TaskRelation, CoherentConstruction, TruthLemma to Boneyard, (3) clean deprecated code from FMP.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/772_refactor_metalogic_sorry_free_archive_sorried_proofs/reports/research-001.md",
-      "summary": "Comprehensive analysis of all 20 sorries, their architectural causes, and detailed refactoring strategy with implementation checklist"
+      "type": "plan",
+      "path": "specs/772_refactor_metalogic_sorry_free_archive_sorried_proofs/plans/implementation-001.md",
+      "summary": "7-phase implementation plan for archiving 20 sorried proofs to Boneyard and establishing sorry-free completeness"
     }
   ],
+  "next_steps": "Run /implement 772 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769732744_ce1b0e",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1769733008_c9f54f",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 3
   }
 }
