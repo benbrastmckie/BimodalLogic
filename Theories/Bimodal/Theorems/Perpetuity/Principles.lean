@@ -704,11 +704,11 @@ noncomputable def future_k_dist (A B : Formula) :
   
   -- Step 4: Apply deduction theorem to get [G(A → B)] ⊢ GA → GB
   have step4 : [(A.imp B).all_future] ⊢ A.all_future.imp B.all_future := by
-    exact Bimodal.Metalogic.deduction_theorem [(A.imp B).all_future] A.all_future B.all_future step3_reordered
+    exact Bimodal.Metalogic.Core.deduction_theorem [(A.imp B).all_future] A.all_future B.all_future step3_reordered
   
   -- Step 5: Apply deduction theorem again to get ⊢ G(A → B) → (GA → GB)
   have step5 : [] ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future) := by
-    exact Bimodal.Metalogic.deduction_theorem [] (A.imp B).all_future (A.all_future.imp B.all_future) step4
+    exact Bimodal.Metalogic.Core.deduction_theorem [] (A.imp B).all_future (A.all_future.imp B.all_future) step4
   
   exact step5
 

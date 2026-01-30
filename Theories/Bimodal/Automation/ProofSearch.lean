@@ -321,7 +321,7 @@ def matches_axiom (φ : Formula) : Bool :=
       | _ => false
     let peirce : Bool :=
       match lhs, rhs with
-      | .imp (.imp φ ψ) φ', φ'' => eqf φ φ' && eqf φ' φ''
+      | .imp (.imp φ _ψ) φ', φ'' => eqf φ φ' && eqf φ' φ''
       | _, _ => false
     let modal_k_dist : Bool :=
       match lhs, rhs with
@@ -883,7 +883,7 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
       let visited := visited.insert key
 
       -- Try axiom match first (via matchAxiom for proof construction)
-      match hax : matchAxiom φ with
+      match _hax : matchAxiom φ with
       | some ⟨ψ, witness⟩ =>
           -- We need to verify φ = ψ to use the witness
           if heq : φ = ψ then

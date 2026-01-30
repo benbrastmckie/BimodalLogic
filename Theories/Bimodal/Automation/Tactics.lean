@@ -92,48 +92,22 @@ macro "modal_t" : tactic =>
   `(tactic| (apply DerivationTree.axiom; refine ?_))
 
 /-!
-## Phase 4: tm_auto (Aesop Integration)
+## Phase 4: tm_auto (modal_search Integration)
 
-**IMPLEMENTATION NOTE**: Aesop integration has known issues with DerivationTree goals.
+**IMPLEMENTATION NOTE**: The `tm_auto` tactic now delegates to `modal_search` instead of Aesop.
 
-**Known Issue**: Aesop has proof reconstruction errors on derivability goals:
+**Previous Issue**: Aesop had proof reconstruction errors on derivability goals:
 ```
 error: aesop: internal error during proof reconstruction: goal 501 was not normalised
 ```
 
-**Recommendation**: Use `modal_search` instead of `tm_auto`/`aesop` for derivability goals.
-`modal_search` provides reliable proof search without the Aesop proof reconstruction issues.
+**Current Implementation**: `tm_auto` now uses `modal_search` which provides reliable
+proof search without Aesop's reconstruction issues. The tactic is defined later in this
+file after `modal_search` is available (see line ~1260).
 
-**Legacy Note**: Aesop rules are defined in AesopRules.lean for forward chaining on axioms
-(MT, M4, MB, T4, TA, prop_k, prop_s). The tm_auto macro is preserved for compatibility
-but may not work reliably on all goals.
+**Legacy Note**: Aesop rules are defined in AesopRules.lean but are no longer used by
+`tm_auto`. The file is preserved for potential future use.
 -/
-
-/--
-`tm_auto` tactic - Aesop-powered TM automation.
-
-Attempts to solve TM proof goals using Aesop's best-first search with:
-1. Forward chaining for 7 proven axioms (modal_t, modal_4, modal_b, temp_4, temp_a, prop_k, prop_s)
-2. Safe apply rules for core inference (modus_ponens, modal_k, temporal_k)
-3. Normalization of derived operators (diamond, always, sometimes, sometime_past)
-
-**Example**:
-```lean
-example : ⊢ (□p → p) := by
-  tm_auto  -- Uses Aesop with TM-specific forward rules
-```
-
-**Implementation**: Aesop best-first search (max 100 rule applications).
-
-**Limitations**:
-- Excludes incomplete axioms (temp_l, modal_future, temp_future)
-- Fixed rule limit (100 applications, may timeout on complex proofs)
-- No backtracking beyond Aesop's built-in search
-
-For complex proofs, use explicit `apply_axiom` calls or manual tactics.
--/
-macro "tm_auto" : tactic =>
-  `(tactic| aesop)
 
 /-!
 ## Phase 6: assumption_search Tactic
@@ -405,7 +379,7 @@ elab "modal_4_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -455,7 +429,7 @@ elab "modal_b_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -507,7 +481,7 @@ elab "temp_4_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
@@ -558,13 +532,13 @@ elab "temp_a_tactic" : tactic => do
   let goalType ← goal.getType
 
   match goalType with
-  | .app (.app (.const ``DerivationTree _) context) formula =>
+  | .app (.app (.const ``DerivationTree _) _context) formula =>
 
     match formula with
     | .app (.app (.const ``Formula.imp _) lhs) rhs =>
 
       match rhs with
-      | .app (.const ``Formula.all_future _) sometimePastPart =>
+      | .app (.const ``Formula.all_future _) _sometimePastPart =>
 
         -- Apply axiom directly - let Lean unify the patterns
         let axiomProof ← mkAppM ``Axiom.temp_a #[lhs]
@@ -1249,6 +1223,36 @@ elab_rules : tactic
     let paramList ← params.toList.mapM parseSearchParam
     let cfg := applyParams SearchConfig.propositional paramList
     runPropositionalSearch cfg
+
+/-!
+### tm_auto Tactic Implementation
+
+Implements `tm_auto` as an alias for `modal_search` with the same syntax.
+This replaces the previous Aesop-based implementation to avoid proof reconstruction issues.
+
+**Syntax**:
+```lean
+tm_auto        -- Default depth 10
+tm_auto 5      -- Custom depth 5
+```
+
+**Implementation Note**: `tm_auto` now directly calls `runModalSearch`, making it
+functionally identical to `modal_search`. This ensures:
+- No proof reconstruction errors with DerivationTree
+- Consistent behavior across all automation tactics
+- Easy migration from old Aesop-based code
+
+**Migration**: All existing `tm_auto` usage should work without changes. For advanced
+configuration (depth, visitLimit, etc.), users can use `modal_search` directly with
+named parameters like `modal_search (depth := 20)`.
+-/
+
+syntax "tm_auto" (num)? : tactic
+
+elab_rules : tactic
+  | `(tactic| tm_auto $[$d]?) => do
+    let depth := d.map (·.getNat) |>.getD 10
+    runModalSearch { SearchConfig.default with depth := depth }
 
 /-!
 ### Phase 1.1 Tests: Verify tactic syntax and basic infrastructure

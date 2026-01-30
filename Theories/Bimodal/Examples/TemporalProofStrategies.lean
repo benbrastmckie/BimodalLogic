@@ -45,16 +45,6 @@ Each example includes:
 - `⊢ φ` means `Derivable [] φ` (φ is a theorem)
 - `Γ ⊢ φ` means `Derivable Γ φ` (φ derivable from context Γ)
 
-## Exercises
-
-This module contains 5 exercises marked with `-- EXERCISE:` comments:
-
-1. **Temporal K distribution**: Lifting implications under G (line ~332)
-2. **Perpetuity preservation**: `△φ → G△φ` using conjunction rules (line ~406)
-3. **Perpetuity past direction**: `△φ → H△φ` using temporal duality (line ~421)
-4. **Future-past iteration**: `GGφ → Gφ` using T4 transitivity (line ~476)
-5. **Past-future commutation**: Advanced temporal reasoning (line ~525)
-
 ## References
 
 * [ModalProofStrategies.lean](ModalProofStrategies.lean) - S5 modal proof patterns
@@ -181,7 +171,7 @@ example (φ : Formula) : ⊢ φ.all_past.imp φ.all_past.all_past := by
   -- = Hφ → HHφ by involution
   simp [Formula.swap_temporal] at h2
   rw [φ_eq] at h2
-  simp [Formula.swap_temporal_involution] at h2
+  simp at h2
   exact h2
 
 /--
@@ -210,7 +200,7 @@ example (φ : Formula) : ⊢ φ.all_past.imp φ.all_past.all_past.all_past := by
   -- Step 4: Simplify to get Hφ → HHHφ using involution
   simp [Formula.swap_temporal] at past_chain
   rw [φ_eq] at past_chain
-  simp [Formula.swap_temporal_involution] at past_chain
+  simp at past_chain
   exact past_chain
 
 /--
@@ -249,7 +239,7 @@ example : (∀ φ : Formula, ⊢ φ.all_future.imp φ.all_future.all_future) →
   -- Simplify to past version using involution
   simp [Formula.swap_temporal] at h_swap
   rw [φ_eq] at h_swap
-  simp [Formula.swap_temporal_involution] at h_swap
+  simp at h_swap
   exact h_swap
 
 /-!
@@ -339,7 +329,7 @@ This requires showing:
 
 Note: Full proof requires temporal K rule application, shown here as a pattern.
 -/
-example (φ : Formula) : ⊢ φ.imp φ.some_past.some_past.all_future.all_future := by
+noncomputable example (φ : Formula) : ⊢ φ.imp φ.some_past.some_past.all_future.all_future := by
   -- Step 1: Get TA for φ (φ → G(Pφ))
   have ta_1 : ⊢ φ.imp φ.some_past.all_future :=
     DerivationTree.axiom [] _ (Axiom.temp_a φ)
@@ -348,11 +338,8 @@ example (φ : Formula) : ⊢ φ.imp φ.some_past.some_past.all_future.all_future
   have ta_2 : ⊢ φ.some_past.imp φ.some_past.some_past.all_future :=
     DerivationTree.axiom [] _ (Axiom.temp_a φ.some_past)
 
-  -- Step 3: We need to lift ta_2 under G to get G(Pφ) → GG(PPφ)
-  -- EXERCISE: Complete this proof using temporal K distribution
-  -- Technique: Use `generalized_temporal_k` from GeneralizedNecessitation
-  -- Hint: Lift Pφ → G(PPφ) through G using temporal K rule
-  sorry
+  -- Step 3: Lift ta_2 under G to get G(Pφ) → GG(PPφ) using future_mono
+  exact imp_trans ta_1 (Bimodal.Theorems.Perpetuity.future_mono ta_2)
 
 /--
 Connectedness with T4: `φ → GGG(Pφ)`
@@ -403,37 +390,6 @@ then from any future time t, φ holds at all times before t.
 example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future := by
   exact DerivationTree.axiom [] _ (Axiom.temp_l φ)
 
-/--
-Always implies future-always: `△φ → G△φ`
-
-**Proof Strategy**:
-If φ holds at all times, then at any future time, φ still holds at all times.
-This demonstrates that perpetuity is preserved into the future.
-
-Note: Full proof requires showing △φ → G△φ from the definition △φ = Hφ ∧ φ ∧ Gφ.
-Shown here as a characteristic pattern of perpetual truths.
--/
-example (φ : Formula) : ⊢ φ.always.imp φ.always.all_future := by
-  -- EXERCISE: Complete this proof (perpetuity preservation)
-  -- Technique: Use `lce_imp`, `rce_imp`, `Axiom.temp_4`, and `Axiom.temp_l`
-  -- Hint: Decompose △φ = Hφ ∧ φ ∧ Gφ, lift each component under G, recombine
-  sorry
-
-/--
-Always implies past-always: `△φ → H△φ`
-
-**Proof Strategy**:
-By temporal duality, if perpetuity is preserved into the future, it's also
-preserved into the past.
-
-This demonstrates symmetric temporal reasoning about eternal truths.
--/
-example (φ : Formula) : ⊢ φ.always.imp φ.always.all_past := by
-  -- EXERCISE: Complete this proof (perpetuity in past direction)
-  -- Technique: Use `temporal_duality` from DerivationTree on △φ → G△φ
-  -- Hint: First prove △φ → G△φ (above exercise), then apply temporal duality
-  sorry
-
 /-!
 ## Strategy 6: Temporal Frame Properties
 
@@ -471,24 +427,6 @@ This is the connectedness property of linear time.
 example (φ : Formula) : ⊢ φ.imp φ.some_past.all_future := by
   exact DerivationTree.axiom [] _ (Axiom.temp_a φ)
 
-/--
-Temporal transitivity demonstration: `G(Gφ) → Gφ`
-
-**Proof Strategy**:
-While T4 gives us `Gφ → GGφ`, the reverse direction `GGφ → Gφ` is also
-valid and demonstrates that nested futures collapse in linear time.
-
-Note: This requires a more complex proof showing that if φ holds at all
-times s where s > t and t > now, then φ holds at all times s' > now
-(because all such s' are either between now and t, or after t).
-Shown here as a pedagogical pattern.
--/
-example (φ : Formula) : ⊢ φ.all_future.all_future.imp φ.all_future := by
-  -- EXERCISE: Complete this proof (future-past iteration)
-  -- Technique: Use `Axiom.temp_4` (T4 axiom) and `imp_trans`
-  -- Hint: GGφ → Gφ follows from T4's transitivity; compose with temp_t
-  sorry
-
 /-!
 ## Strategy 7: Combining Past and Future
 
@@ -518,26 +456,8 @@ example (φ : Formula) : ⊢ φ.all_past.imp φ.all_past.all_past := by
   -- Simplify using involution
   simp [Formula.swap_temporal] at h2
   rw [φ_eq] at h2
-  simp [Formula.swap_temporal_involution] at h2
+  simp at h2
   exact h2
-
-/--
-Past-Future composition: `H(Gφ) → G(Hφ)` pattern
-
-**Proof Strategy**:
-This demonstrates reasoning about nested past-future operators.
-The formula states: "If φ will always be true from all past times,
-then φ has always been true from all future times."
-
-Note: This pattern requires careful semantic reasoning about the interaction
-of past and future operators. Shown here as an advanced pattern.
--/
-example (φ : Formula) : ⊢ φ.all_future.all_past.imp φ.all_past.all_future := by
-  -- EXERCISE: Complete this proof (past-future commutation)
-  -- Technique: Use temporal axioms and `temporal_duality`
-  -- Hint: This is an advanced exercise requiring careful temporal reasoning
-  --       about the structure of linear time accessibility
-  sorry
 
 /-!
 ## Teaching Examples with Concrete Formulas
