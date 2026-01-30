@@ -8,11 +8,11 @@
     {
       "project_number": 773,
       "project_name": "update_metalogic_typst_documentation",
-      "status": "planning",
+      "status": "planned",
       "language": "typst",
       "priority": "medium",
       "created": "2026-01-30T00:45:34Z",
-      "last_updated": "2026-01-30T01:01:24Z",
+      "last_updated": "2026-01-30T01:04:17Z",
       "session_id": "sess_1769734871_612c83",
       "researched": "2026-01-30T00:49:01Z",
       "artifacts": [
@@ -20,8 +20,14 @@
           "path": "specs/773_update_metalogic_typst_documentation/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive comparison of 04-metalogic.typ (502 lines) against recent codebase changes from Tasks 750, 760, 764, 769, 772, identifying 6 sections needing updates and new content to add"
+        },
+        {
+          "path": "specs/773_update_metalogic_typst_documentation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan for updating metalogic Typst documentation to reflect semantic_weak_completeness as primary completeness theorem"
         }
-      ]
+      ],
+      "planned": "2026-01-30T01:04:17Z"
     },
     {
       "project_number": 772,
@@ -52,13 +58,13 @@
     {
       "project_number": 771,
       "project_name": "improve_typst_formatting_ams_journal_style",
-      "status": "researched",
+      "status": "planning",
       "language": "typst",
       "priority": "medium",
       "description": "Improve formatting of BimodalReference.typ to match AMS-style professional mathematics journal appearance. Current formatting resembles a college textbook. Changes needed: remove all colors except for clickable links, adopt styling closer to BimodalReference.tex (LaTeX version). Apply systematic improvements across the entire Typst project.",
       "created": "2026-01-30T00:14:14Z",
-      "last_updated": "2026-01-30T00:17:50Z",
-      "session_id": "sess_1769732112_10e2c7",
+      "last_updated": "2026-01-30T01:03:12Z",
+      "session_id": "sess_1769734979_9235be",
       "researched": "2026-01-30T00:17:50Z",
       "artifacts": [
         {

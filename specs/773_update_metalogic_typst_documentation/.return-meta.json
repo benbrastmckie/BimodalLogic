@@ -1,20 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Identified 6 sections requiring updates: Introduction framing, axiom count (14->15), representation vs semantic_weak_completeness primary path, file organization diagram (missing Soundness/Algebraic), and Implementation Status (3->20 sorries, all deprecated). The key discrepancy is that documentation presents representation_theorem as pivotal when semantic_weak_completeness is now the sorry-free primary completeness theorem.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/773_update_metalogic_typst_documentation/reports/research-001.md",
-      "summary": "Comprehensive comparison of 04-metalogic.typ (502 lines) against recent codebase changes from Tasks 750, 760, 764, 769, 772, identifying 6 sections needing updates and new content to add"
+      "type": "plan",
+      "path": "specs/773_update_metalogic_typst_documentation/plans/implementation-001.md",
+      "summary": "8-phase implementation plan for updating metalogic Typst documentation to reflect semantic_weak_completeness as primary completeness theorem"
     }
   ],
-  "next_steps": "Run /plan 773 to create implementation plan with specific Typst edits",
+  "next_steps": "Run /implement 773 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769733973_ada98a",
-    "agent_type": "general-research-agent",
+    "session_id": "sess_1769734871_612c83",
+    "agent_type": "planner-agent",
     "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 12
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 4
   }
 }

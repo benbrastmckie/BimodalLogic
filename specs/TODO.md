@@ -106,14 +106,16 @@ technical_debt:
 ## Medium Priority
 
 ### 773. Update metalogic Typst documentation to reflect recent codebase changes
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 4 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: typst
 - **Created**: 2026-01-30
 - **Started**: 2026-01-30
 - **Researched**: 2026-01-30
+- **Planned**: 2026-01-30
 - **Research**: [research-001.md](specs/773_update_metalogic_typst_documentation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/773_update_metalogic_typst_documentation/plans/implementation-001.md)
 
 **Description**: Update Theories/Bimodal/typst/chapters/04-metalogic.typ to reflect recent changes to the metalogic codebase.
 
@@ -137,7 +139,7 @@ technical_debt:
 
 ### 771. Improve Typst formatting to AMS journal style
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: Medium
 - **Language**: typst
 - **Created**: 2026-01-30

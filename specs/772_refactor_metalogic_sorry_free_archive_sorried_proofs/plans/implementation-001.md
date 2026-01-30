@@ -1,7 +1,7 @@
 # Implementation Plan: Task #772
 
 - **Task**: 772 - Refactor Metalogic for sorry-free archive sorried proofs
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Priority**: high
 - **Dependencies**: None (Task 769 already deprecated all sorried code)
