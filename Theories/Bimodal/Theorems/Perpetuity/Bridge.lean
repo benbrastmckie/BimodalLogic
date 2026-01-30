@@ -508,14 +508,14 @@ Left Conjunction Elimination (implication form): `⊢ (A ∧ B) → A`.
 -/
 def lce_imp (A B : Formula) : ⊢ (A.and B).imp A := by
   have h : [A.and B] ⊢ A := local_lce A B
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) A h
+  exact Bimodal.Metalogic.deduction_theorem [] (A.and B) A h
 
 /--
 Right Conjunction Elimination (implication form): `⊢ (A ∧ B) → B`.
 -/
 def rce_imp (A B : Formula) : ⊢ (A.and B).imp B := by
   have h : [A.and B] ⊢ B := local_rce A B
-  exact Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) B h
+  exact Bimodal.Metalogic.deduction_theorem [] (A.and B) B h
 
 /-!
 ## Decomposition Lemmas for Always Operator

@@ -372,7 +372,7 @@ example : ⊢ very_complex := by
 
 **Symptom**: `Bimodal.Automation.ProofSearch` fails to build.
 
-**Cause**: Known issue - ProofSearch is blocked pending architecture changes. See [Task 260](/specs/260_proof_search/).
+**Cause**: Known issue - ProofSearch is blocked pending architecture changes. See [Task 260](/.claude/specs/260_proof_search/).
 
 **Solution**: Use `Bimodal.Automation.Tactics` instead, which provides `modal_search` and other working tactics.
 

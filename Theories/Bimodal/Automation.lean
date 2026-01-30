@@ -14,8 +14,8 @@ Aggregates all Automation components for the Core TM logic layer.
   - `modal_search`: Bounded proof search for TM derivability goals (RECOMMENDED)
   - `temporal_search`: Proof search optimized for temporal formulas
   - `propositional_search`: Proof search for purely propositional formulas
-  - `tm_auto`: Alias for `modal_search` (previously Aesop-powered, now uses modal_search)
   - `apply_axiom`, `modal_t`: Basic axiom application tactics
+  - `tm_auto`: Aesop-powered automation (has known issues, prefer modal_search)
   - `assumption_search`: Context assumption search
 - `ProofSearch`: Native proof search functions with multiple strategies:
   - `search`: Unified interface with IDDFS, BoundedDFS, or BestFirst
@@ -59,7 +59,7 @@ example (p q : Formula) : [p, p.imp q] ⊢ q := by
 - `modal_search`: General purpose, works on all TM derivability goals
 - `temporal_search`: Prioritizes temporal rules, use for Fφ/Gφ formulas
 - `propositional_search`: Disables modal/temporal K, use for purely propositional goals
-- `tm_auto`: Alias for `modal_search` (recommended for general use)
+- `tm_auto`: Legacy Aesop wrapper, has proof reconstruction issues
 
 ## Implementation (Task 315)
 

@@ -8,29 +8,6 @@ For the complete formal specification, see **BimodalReference** ([tex](latex/Bim
 
 This README provides an overview; BimodalReference contains the detailed specification of syntax, semantics, proof theory, and metalogic.
 
-## Interactive Demo
-
-**[Demo.lean](Examples/Demo.lean)** provides a comprehensive tour of the Bimodal formalization, ideal for presentations and learning:
-
-| Section | Content |
-|---------|---------|
-| **Quick Tour** | Perpetuity principles P1-P6, soundness, deduction theorem, completeness |
-| **Interactive Exploration** | Step-by-step proof construction with modus ponens and necessitation |
-| **Decision Procedure** | Live `#eval` demonstrations with valid/invalid formula examples |
-| **Applications** | Meaningful examples (conservation of energy, lunar eclipses, mathematical truths) |
-
-### Key Results Demonstrated
-
-| Result | Statement | Status |
-|--------|-----------|--------|
-| Soundness | `(Γ ⊢ φ) → (Γ ⊨ φ)` | Proven |
-| Deduction Theorem | `((A :: Γ) ⊢ B) → (Γ ⊢ A → B)` | Proven |
-| Completeness | `valid φ → (⊢ φ)` | Proven |
-| Equivalence | `Nonempty (⊢ φ) ↔ valid φ` | Proven |
-| Decidability | `decide φ : DecisionResult φ` | Implemented |
-
-Run `lake build Bimodal.Examples.Demo` to verify the demo compiles.
-
 ## About Bimodal Logic
 
 Bimodal is a **propositional intensional logic** implementing TM (Tense and Modality).
@@ -246,8 +223,8 @@ The Bimodal library follows a layered architecture:
 | 0 | Syntax | Complete |
 | 1 | ProofSystem | Complete |
 | 2 | Semantics | Complete |
-| 3 | Metalogic | Complete (Soundness, Completeness, Deduction, Decidability) |
-| 4 | Theorems | Complete (P1-P6 perpetuity principles) |
+| 3 | Metalogic | Partial (Soundness proven) |
+| 4 | Theorems | Partial (P1-P3 complete) |
 | 5 | Automation | Partial |
 
 For detailed status, see [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md). For known limitations, see [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md).

@@ -1,5 +1,4 @@
 import Mathlib.Algebra.Order.Group.Defs
-import Mathlib.Data.Fintype.Basic
 
 /-!
 # TaskFrame - Task Frame Structure for TM Semantics
@@ -147,51 +146,5 @@ def nat_frame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D
   compositionality := fun _ _ _ _ _ _ _ => trivial
 
 end TaskFrame
-
-/-!
-# Finite Task Frames and Models
-
-This section extends task frames with explicit finiteness constraints.
-These structures bundle the finiteness property for convenience in stating
-the Finite Model Property for TM logic.
--/
-
-open TaskFrame
-
-/-- 
-A task frame with finitely many world states.
-
-This structure extends the basic `TaskFrame` with an explicit proof
-that the set of world states is finite. This is useful for stating
-the Finite Model Property and related results.
-
-**Type Parameters**:
-- `D`: Temporal duration type with ordered additive group structure
-
-**Usage**: Used to package finite model constructions like `SemanticCanonicalFrame`
-into a standard format for the Finite Model Property.
--/
-structure FiniteTaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] 
-    extends TaskFrame D where
-  /-- Proof that the set of world states is finite -/
-  finite_world : Finite WorldState
-
-namespace FiniteTaskFrame
-
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-
-/-- 
-Coercion from a finite task frame to its underlying task frame.
-This allows seamless use of existing definitions and theorems.
--/
-instance : Coe (FiniteTaskFrame D) (TaskFrame D) where
-  coe F := F.toTaskFrame
-
-/-- 
-A finite task frame provides access to its underlying frame.
--/
-def FiniteTaskFrame.toTaskFrame (F : FiniteTaskFrame D) : TaskFrame D := F.toTaskFrame
-
-end FiniteTaskFrame
 
 end Bimodal.Semantics

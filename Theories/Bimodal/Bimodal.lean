@@ -2,7 +2,7 @@
 import Bimodal.Syntax
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic.Metalogic
+import Bimodal.Metalogic
 import Bimodal.Theorems
 import Bimodal.Automation
 import Bimodal.Examples

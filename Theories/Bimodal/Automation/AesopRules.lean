@@ -7,13 +7,6 @@ import Bimodal.Theorems.GeneralizedNecessitation
 /-!
 # Aesop Rules for TM Logic
 
-**DEPRECATION NOTICE (Task 513)**: As of 2026-01-17, the `tm_auto` tactic no longer
-uses Aesop. It now delegates to `modal_search` to avoid proof reconstruction issues
-with DerivationTree. This module is preserved for:
-1. Potential future Aesop integration experiments
-2. Reference documentation of the original rule set
-3. Direct Aesop usage (not via `tm_auto`)
-
 Custom rule set for Aesop automation in bimodal TM logic.
 
 This module defines the TMLogic rule set for Aesop, providing forward chaining
@@ -36,21 +29,14 @@ The following axioms are excluded pending soundness proofs:
 ## Usage
 
 ```lean
--- DEPRECATED: tm_auto no longer uses Aesop
--- Use modal_search instead for TM automation
 example : ⊢ (□p → p) := by
-  modal_search
-
--- Direct Aesop usage (not via tm_auto)
-example : ⊢ (□p → p) := by
-  aesop (rule_sets [TMLogic])
+  tm_auto  -- Uses Aesop with TMLogic rule set
 ```
 
 ## References
 
 * [TACTIC_DEVELOPMENT.md](../../../docs/ProjectInfo/TACTIC_DEVELOPMENT.md)
 * [Axioms.lean](../ProofSystem/Axioms.lean)
-* [Task 513](../../../../specs/513_address_tm_auto_proof_reconstruction_issues/)
 -/
 
 namespace Bimodal.Automation
