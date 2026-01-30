@@ -8,22 +8,23 @@
     {
       "project_number": 777,
       "project_name": "complete_weak_completeness_sorry",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.",
       "created": "2026-01-30T02:14:06Z",
-      "last_updated": "2026-01-30T02:14:06Z"
+      "last_updated": "2026-01-30T02:17:31Z",
+      "session_id": "sess_1769739438_c1504f"
     },
     {
       "project_number": 774,
       "project_name": "restore_representation_theorem_as_under_development",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.",
       "created": "2026-01-30T01:27:04Z",
-      "last_updated": "2026-01-30T02:12:08Z",
+      "last_updated": "2026-01-30T02:18:30Z",
       "session_id": "sess_1769738898_172146",
       "researched": "2026-01-30T02:12:08Z",
       "artifacts": [
@@ -33,17 +34,17 @@
           "summary": "Analysis of 7 representation theorem files for restoration with import isolation strategy following Algebraic/ pattern"
         },
         {
-          "path": "specs/774_restore_representation_theorem_as_under_development/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for restoring representation theorem files to NEW/ directory"
-        },
-        {
           "path": "specs/774_restore_representation_theorem_as_under_development/reports/research-002.md",
           "type": "research",
           "summary": "Comprehensive analysis of Boneyard content beyond RepresentationTheorem, identifying Decidability infrastructure as high-priority candidate for Under Development restoration"
+        },
+        {
+          "path": "specs/774_restore_representation_theorem_as_under_development/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for restoring RepresentationTheorem and Decidability to UnderDevelopment/ directory"
         }
       ],
-      "planned": "2026-01-30T02:06:12Z"
+      "planned": "2026-01-30T02:18:30Z"
     },
     {
       "project_number": 619,
