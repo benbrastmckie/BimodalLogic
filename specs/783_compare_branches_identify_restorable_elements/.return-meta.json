@@ -1,30 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-01-30T12:00:00Z",
-  "completed_at": "2026-01-30T12:45:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/783_compare_branches_identify_restorable_elements/reports/research-001.md",
-      "summary": "Comprehensive branch comparison identifying 8 README files, sorry-free completeness theorem, and Soundness modularization as priority restorable elements"
+      "type": "plan",
+      "path": "specs/783_compare_branches_identify_restorable_elements/plans/implementation-001.md",
+      "summary": "3-phase plan for restoring documentation READMEs, creating UnderDevelopment/ pattern, and updating typst chapter 04"
     }
   ],
-  "next_steps": "Run /plan 783 to create implementation plan for cherry-picking valuable changes",
+  "next_steps": "Run /implement 783 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769797474_3eda90",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 2700,
+    "session_id": "sess_1769798198_bc8a9a",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 7,
-    "key_findings": [
-      "31 sorries in backup active Metalogic vs 154 on main",
-      "8 new README files documenting architecture",
-      "semantic_weak_completeness is sorry-free completeness theorem",
-      "Soundness/ modularization (853 lines)",
-      "UnderDevelopment/ pattern for isolation",
-      "Examples archival should NOT be restored",
-      "Representation/ deprecation was too aggressive"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 2
   }
 }
