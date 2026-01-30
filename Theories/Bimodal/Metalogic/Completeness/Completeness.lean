@@ -1,7 +1,9 @@
 import Bimodal.Metalogic.Completeness.WeakCompleteness
 import Bimodal.Metalogic.Completeness.FiniteStrongCompleteness
-import Bimodal.Metalogic.Completeness.InfinitaryStrongCompleteness
-import Bimodal.Metalogic.Compactness.Compactness
+-- InfinitaryStrongCompleteness archived to Boneyard/Metalogic_v4/ (Task 772)
+-- It depended on sorried representation theorem infrastructure
+-- Compactness archived to Boneyard/Metalogic_v4/ (Task 772)
+-- It depended on infinitary strong completeness
 
 /-!
 # Completeness Module for TM Bimodal Logic
@@ -14,11 +16,14 @@ This module serves as the root of the completeness hierarchy for TM logic.
 Completeness/
 ├── Completeness.lean                   # This file - module root
 ├── WeakCompleteness.lean               # weak_completeness, provable_iff_valid
-├── FiniteStrongCompleteness.lean       # finite_strong_completeness (List contexts)
-└── InfinitaryStrongCompleteness.lean   # Set-based contexts, set_semantic_consequence
+└── FiniteStrongCompleteness.lean       # finite_strong_completeness (List contexts)
 
 Compactness/
 └── Compactness.lean                    # compactness theorem
+
+Archived (Boneyard/Metalogic_v4/):
+├── InfinitaryStrongCompleteness.lean   # Depended on sorried representation theorem
+└── Compactness.lean                    # Depended on infinitary strong completeness
 ```
 
 ## Main Results
@@ -32,21 +37,21 @@ Compactness/
 - `context_provable_iff_entails`: `ContextDerivable Γ φ ↔ Γ ⊨ φ`
 - `impChain`: Helper for building implication chains
 
-### Infinitary Strong Completeness (Phase 4)
+### Infinitary Strong Completeness (ARCHIVED - Task 772)
+**Archived to Boneyard/Metalogic_v4/**: Depended on sorried representation theorem.
 - `set_semantic_consequence`: Semantic consequence for Set-based contexts
-- `set_satisfiable`: Satisfiability for Set-based contexts
-- `infinitary_strong_completeness`: Set-based consequence has finite witness (axiomatized)
-- `infinitary_strong_completeness_finset`: Fully proven for finite sets
+- `infinitary_strong_completeness`: Set-based consequence has finite witness
+The finite set specialization remains accessible via compactness.
 
-### True Compactness (Phase 5)
+### True Compactness (ARCHIVED - Task 772)
+**Archived to Boneyard/Metalogic_v4/**: Depended on infinitary strong completeness.
 - `compactness`: Satisfiable iff every finite subset is satisfiable
-- `compactness_iff`: Bidirectional equivalence form
-- `compactness_entailment`: Semantic consequence has finite witness
-- `compactness_unsatisfiability`: Unsatisfiability has finite witness
+- Finite compactness (`compactness_finset`) remains trivially true
 
 ## References
 
-- Representation theorem: `Bimodal.Metalogic.Representation.representation_theorem`
+- Semantic weak completeness: `Bimodal.Metalogic.FMP.semantic_weak_completeness` (sorry-free)
+- Task 772: Refactoring to archive sorried representation theorem infrastructure
 - Modal Logic, Blackburn et al., Chapter 4 (Completeness via Canonical Models)
 -/
 

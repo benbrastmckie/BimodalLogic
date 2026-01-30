@@ -4,7 +4,8 @@
 -- Core metalogic infrastructure (includes all subdirectory dependencies)
 import Bimodal.Metalogic.FMP
 import Bimodal.Metalogic.Completeness.Completeness
-import Bimodal.Metalogic.Compactness.Compactness
+-- Compactness archived to Boneyard/Metalogic_v4/ (Task 772)
+-- It depended on infinitary strong completeness which uses sorried representation theorem
 -- Optional extension: Alternative algebraic approach
 -- import Bimodal.Metalogic.Algebraic.Algebraic
 
@@ -24,11 +25,16 @@ The metalogic is organized into 7 subdirectories:
 Metalogic/
 ├── Core/              # Foundational definitions and MCS theory
 ├── Soundness/         # Soundness theorem (15 axioms, 7 rules)
-├── Representation/    # Canonical model construction
-├── FMP/               # Finite Model Property (parametric)
+├── Representation/    # Canonical world/family definitions (sorry-free parts)
+├── FMP/               # Finite Model Property (includes semantic completeness)
 ├── Completeness/      # Weak completeness theorem
-├── Compactness/       # Compactness theorem
 └── Algebraic/         # Alternative algebraic approach (sorry-free)
+
+Boneyard/Metalogic_v4/ (Archived - Task 772):
+├── TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean
+├── CanonicalHistory.lean, UniversalCanonicalModel.lean
+├── InfinitaryStrongCompleteness.lean
+└── Compactness.lean
 ```
 
 ## Dependency Layers
@@ -47,7 +53,7 @@ Layer 4 (Completeness):
     Completeness/
       │
 Layer 5 (Applications):
-    FMP/ ── Compactness/
+    FMP/
       │
 Layer 6 (Extensions):
     Algebraic/
@@ -61,11 +67,11 @@ theorem soundness : (Gamma ⊢ φ) → (Gamma ⊨ φ)
 ```
 Derivability implies semantic validity. All 15 TM axioms and 7 derivation rules proven sound.
 
-### Representation (`Representation/`)
-```lean
-theorem representation_theorem : SetConsistent {φ} → satisfiable φ
-```
-Consistent formulas are satisfiable in the universal canonical model.
+### Representation (Partially Archived - Task 772)
+The sorried parts of the representation theorem infrastructure have been archived to
+`Boneyard/Metalogic_v4/`. The sorry-free core definitions remain:
+- `CanonicalWorld.lean` - Canonical world state definitions
+- `IndexedMCSFamily.lean` - Indexed MCS family structure
 
 ### Weak Completeness (`Completeness/`)
 ```lean
@@ -80,10 +86,9 @@ theorem finite_model_property : satisfiable φ → ∃ finite_model, satisfiable
 theorem semanticWorldState_card_bound : card worlds ≤ 2^closureSize
 ```
 
-### Compactness (`Compactness/`)
-```lean
-theorem compactness : (∀ finite Delta ⊆ Gamma, satisfiable Delta) → satisfiable Gamma
-```
+### Compactness (ARCHIVED - Task 772)
+**Archived to Boneyard/Metalogic_v4/**: Depended on infinitary strong completeness.
+The finite compactness case (`compactness_finset`) remains trivially true.
 
 ### Canonical Completeness Result
 ```lean
@@ -100,7 +105,7 @@ These are **final limitations** (not future work):
 |----------|------------|--------|
 | `SemanticCanonicalFrame.compositionality` | Sorry | Mathematically false for unbounded durations |
 | `truth_at_implies_semantic_truth` | Sorry | Box quantifies over ALL histories (Task 750) |
-| `Representation/TruthLemma.lean` box case | Sorry | Same Box semantics limitation |
+| Archived to Boneyard/Metalogic_v4/ | 17 sorries | Representation theorem architectural limitations |
 
 ## Key Features
 
@@ -116,7 +121,6 @@ These are **final limitations** (not future work):
 - `Representation/README.md` - Canonical model construction
 - `Completeness/README.md` - Weak completeness proof
 - `FMP/README.md` - Finite Model Property infrastructure
-- `Compactness/README.md` - Compactness theorem
 - `Algebraic/README.md` - Alternative algebraic approach (sorry-free)
 
 ## References

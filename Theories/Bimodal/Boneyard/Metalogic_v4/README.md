@@ -18,6 +18,9 @@ in `FMP/SemanticCanonicalModel.lean`.
 | TaskRelation.lean | 5 | Cross-sign duration composition |
 | CoherentConstruction.lean | 8 | Cross-origin coherence |
 | TruthLemma.lean | 4 | Box (S5 semantics) + omega-rule |
+| CanonicalHistory.lean | 0 | Depends on TaskRelation (sorried compositionality) |
+| UniversalCanonicalModel.lean | 0 | Depends on TruthLemma + CoherentConstruction |
+| InfinitaryStrongCompleteness.lean | 0 | Depends on UniversalCanonicalModel |
 
 ## Why the Representation Theorem Approach Failed
 

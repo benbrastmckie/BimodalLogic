@@ -80,6 +80,21 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/tts-notify.sh 2>/dev/null || echo '{}'"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/wezterm-notify.sh 2>/dev/null || echo '{}'"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/wezterm-clear-status.sh 2>/dev/null || echo '{}'"
           }
         ]
       }
