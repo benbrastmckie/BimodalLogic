@@ -1,5 +1,5 @@
 ---
-next_project_number: 780
+next_project_number: 781
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 780. Improve Bimodal Metalogic documentation
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Created**: 2026-01-30
+
+**Description**: Systematically improve all documentation in Theories/Bimodal/Metalogic/. Current documentation is not fully accurate or complete: dependency diagrams contain errors (e.g., Compactness was archived but may still appear), and historical notes about changes should be removed to focus on presenting the current implementation directly.
+
+---
 
 ### 779. Archive weak_completeness for sorry-free Metalogic
 - **Effort**: 2 hours
