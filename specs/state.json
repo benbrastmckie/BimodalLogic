@@ -8,29 +8,36 @@
     {
       "project_number": 776,
       "project_name": "refactor_metalogic_to_zero_sorry",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "created": "2026-01-30T01:51:13Z",
-      "last_updated": "2026-01-30T01:51:13Z"
+      "last_updated": "2026-01-30T01:53:21Z",
+      "session_id": "sess_1769737988_5f5595"
     },
     {
       "project_number": 775,
       "project_name": "fix_wezterm_tab_coloring_with_claude_code_hooks",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-30T01:43:48Z",
-      "last_updated": "2026-01-30T01:50:50Z",
-      "session_id": "sess_1769737557_fabf18",
+      "last_updated": "2026-01-30T01:55:52Z",
+      "session_id": "sess_1769738035_ff8862",
       "researched": "2026-01-30T01:50:50Z",
       "artifacts": [
         {
           "path": "specs/775_fix_wezterm_tab_coloring_with_claude_code_hooks/reports/research-001.md",
           "type": "research",
           "summary": "Research report identifying root cause (stdout capture) and solution (write to pane TTY)"
+        },
+        {
+          "path": "specs/775_fix_wezterm_tab_coloring_with_claude_code_hooks/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan to fix WezTerm tab coloring by writing escape sequences to pane TTY instead of stdout"
         }
-      ]
+      ],
+      "planned": "2026-01-30T01:55:52Z"
     },
     {
       "project_number": 774,
