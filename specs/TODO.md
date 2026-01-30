@@ -29,9 +29,11 @@ technical_debt:
 
 ### 776. Refactor Metalogic to zero sorry
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
+- **Researched**: 2026-01-30
+- **Research**: [research-001.md](specs/776_refactor_metalogic_to_zero_sorry/reports/research-001.md)
 
 **Description**: Refactor the metalogic as needed to improve clarity, quality, organization, and most importantly, to remove the following sorries: (1) SemanticCanonicalModel.lean:233 - compositionality field sorry due to mathematical falsity for unbounded durations in finite time domain; (2) SemanticCanonicalModel.lean:695 - "forward truth lemma gap" inside a proof; (3) FiniteModelProperty.lean:233 - "truth bridge" gap in finite_model_property_constructive theorem. If a proof is not needed for an important metalogical result, archive it to Boneyard/ with clear documentation. If a proof is needed, prove the sorry or refactor to remove it. Goal: zero sorry count in Theories/Bimodal/Metalogic/.
 
