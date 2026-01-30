@@ -1,7 +1,7 @@
 # Implementation Plan: Task #776
 
 - **Task**: 776 - Refactor Metalogic to zero sorry
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Priority**: High
 - **Dependencies**: None (research complete)
@@ -49,7 +49,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Prepare Boneyard Structure [NOT STARTED]
+### Phase 1: Prepare Boneyard Structure [COMPLETED]
 
 **Goal**: Create the archive directory structure and header documentation
 
@@ -70,7 +70,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Archive SemanticCanonicalFrame Code [NOT STARTED]
+### Phase 2: Archive SemanticCanonicalFrame Code [IN PROGRESS]
 
 **Goal**: Move deprecated frame and model definitions to Boneyard
 

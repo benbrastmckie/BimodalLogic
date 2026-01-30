@@ -29,11 +29,12 @@ technical_debt:
 
 ### 776. Refactor Metalogic to zero sorry
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: High
 - **Language**: lean
 - **Researched**: 2026-01-30
 - **Planned**: 2026-01-30
+- **Started**: 2026-01-30
 - **Research**: [research-001.md](specs/776_refactor_metalogic_to_zero_sorry/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/776_refactor_metalogic_to_zero_sorry/plans/implementation-001.md)
 
@@ -111,13 +112,15 @@ technical_debt:
 
 ### 775. Fix WezTerm tab coloring with Claude Code hooks
 - **Effort**: 1.5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Researched**: 2026-01-30
 - **Planned**: 2026-01-30
+- **Completed**: 2026-01-30
 - **Research**: [research-001.md](specs/775_fix_wezterm_tab_coloring_with_claude_code_hooks/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/775_fix_wezterm_tab_coloring_with_claude_code_hooks/plans/implementation-001.md)
+- **Summary**: Fixed WezTerm tab coloring by modifying both hook scripts to write OSC 1337 escape sequences directly to the pane's TTY device (obtained via wezterm cli list) instead of stdout, which was being captured by Claude Code.
 
 **Description**: Diagnose and fix WezTerm tab coloring with Claude Code hooks. The hooks are intended to color tabs that need attention (if not already open) and clear the color when switching to that tab. This has not worked and the root cause needs to be identified and fixed.
 
