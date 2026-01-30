@@ -1,5 +1,5 @@
 ---
-next_project_number: 784
+next_project_number: 785
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -112,6 +112,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 784. Export .claude directory to markdown file
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-30
+
+**Description**: Export the .claude/ directory contents to a consolidated markdown file for documentation or sharing purposes.
+
+---
 
 ### 778. Remove priority system from task workflow
 - **Effort**: 4-6 hours
