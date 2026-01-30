@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "summary": "Git history analysis identified reversion target commit 08754f0b (pre-Boneyard state) and recommended full path reversion strategy for Theories/Bimodal/",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/782_revert_bimodal_metalogic_archival_refactor/reports/research-001.md",
+      "summary": "Research report with git history timeline, reversion strategy options, and risk assessment"
+    }
+  ],
+  "next_steps": "Run /plan 782 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1769794931_62b2ad",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6,
+    "key_commits": {
+      "reversion_target": "08754f0b",
+      "boneyard_creation": "e52e0fc4",
+      "semantic_completeness": "56344965",
+      "major_restructure": "2e46e80f"
+    }
+  }
+}
