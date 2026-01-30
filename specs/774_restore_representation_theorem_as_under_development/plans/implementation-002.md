@@ -97,7 +97,7 @@ Key findings from research-002.md:
 
 ---
 
-### Phase 2: Restore RepresentationTheorem Core Files [IN PROGRESS]
+### Phase 2: Restore RepresentationTheorem Core Files [COMPLETED]
 
 **Goal**: Copy and adapt the foundational RepresentationTheorem files (TaskRelation, CoherentConstruction, CanonicalHistory)
 
@@ -128,7 +128,7 @@ Key findings from research-002.md:
 
 ---
 
-### Phase 3: Restore RepresentationTheorem Truth Lemma and Model [NOT STARTED]
+### Phase 3: Restore RepresentationTheorem Truth Lemma and Model [COMPLETED]
 
 **Goal**: Copy and adapt the truth lemma, universal model, and top-level theorem files
 
@@ -163,7 +163,7 @@ Key findings from research-002.md:
 
 ---
 
-### Phase 4: Restore Decidability Infrastructure [NOT STARTED]
+### Phase 4: Restore Decidability Infrastructure [COMPLETED]
 
 **Goal**: Copy and adapt the tableau-based decision procedure files
 
@@ -211,7 +211,7 @@ Key findings from research-002.md:
 
 ---
 
-### Phase 5: Create Documentation and Import Isolation [NOT STARTED]
+### Phase 5: Create Documentation and Import Isolation [IN PROGRESS]
 
 **Goal**: Document the UnderDevelopment/ structure, enforce import isolation, and update main Metalogic
 

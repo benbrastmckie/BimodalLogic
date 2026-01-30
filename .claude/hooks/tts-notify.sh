@@ -1,25 +1,24 @@
 #!/bin/bash
 # TTS notification hook for Claude Code completion
-# Announces WezTerm tab number and completion message via Piper TTS
+# Announces WezTerm tab number via Piper TTS when Claude stops
 #
 # Integration: Called from Stop hook in .claude/settings.json
 # Requirements: piper-tts, aplay (alsa-utils), jq, wezterm
 #
 # Configuration:
 #   PIPER_MODEL - Path to piper voice model (default: ~/.local/share/piper/en_US-lessac-medium.onnx)
-#   TTS_COOLDOWN - Seconds between notifications (default: 60)
+#   TTS_COOLDOWN - Seconds between notifications (default: 10)
 #   TTS_ENABLED - Set to "0" to disable (default: 1)
 
 set -euo pipefail
 
 # Configuration with defaults
 PIPER_MODEL="${PIPER_MODEL:-$HOME/.local/share/piper/en_US-lessac-medium.onnx}"
-TTS_COOLDOWN="${TTS_COOLDOWN:-60}"
+TTS_COOLDOWN="${TTS_COOLDOWN:-10}"
 TTS_ENABLED="${TTS_ENABLED:-1}"
 
 # State files
 LAST_NOTIFY_FILE="/tmp/claude-tts-last-notify"
-LAST_STATE_FILE="/tmp/claude-tts-last-state"
 LOG_FILE="/tmp/claude-tts-notify.log"
 
 # Helper: log message
@@ -50,37 +49,14 @@ if [[ ! -f "$PIPER_MODEL" ]]; then
     exit_success
 fi
 
-# Determine current state BEFORE cooldown check
-# Check if Claude is waiting for input by looking for the prompt
-NEEDS_INPUT=false
-if [[ -n "${WEZTERM_PANE:-}" ]] && command -v wezterm &>/dev/null; then
-    # Capture last few lines of the pane to check for input prompt
-    PANE_TEXT=$(wezterm cli get-text --pane-id "$WEZTERM_PANE" 2>/dev/null || echo "")
-    if echo "$PANE_TEXT" | tail -5 | grep -qE "(Continue\?|waiting for input|>|\$)"; then
-        NEEDS_INPUT=true
-    fi
-fi
-
-# Determine current state string
-if $NEEDS_INPUT; then
-    CURRENT_STATE="needs_input"
-else
-    CURRENT_STATE="completion"
-fi
-
-# Check cooldown - but allow state transitions
+# Check cooldown (simple time-based)
 if [[ -f "$LAST_NOTIFY_FILE" ]]; then
     LAST_TIME=$(cat "$LAST_NOTIFY_FILE" 2>/dev/null || echo "0")
-    LAST_STATE=$(cat "$LAST_STATE_FILE" 2>/dev/null || echo "")
     NOW=$(date +%s)
     ELAPSED=$((NOW - LAST_TIME))
-
-    # Only apply cooldown if state hasn't changed
-    if [[ "$CURRENT_STATE" == "$LAST_STATE" ]] && (( ELAPSED < TTS_COOLDOWN )); then
-        log "Cooldown active (same state): ${ELAPSED}s < ${TTS_COOLDOWN}s - skipping notification"
+    if (( ELAPSED < TTS_COOLDOWN )); then
+        log "Cooldown active: ${ELAPSED}s < ${TTS_COOLDOWN}s - skipping notification"
         exit_success
-    elif [[ "$CURRENT_STATE" != "$LAST_STATE" ]]; then
-        log "State changed from '$LAST_STATE' to '$CURRENT_STATE' - bypassing cooldown"
     fi
 fi
 
@@ -116,15 +92,10 @@ if [[ -n "${WEZTERM_PANE:-}" ]] && command -v wezterm &>/dev/null; then
     fi
 fi
 
-# Set message based on state (NEEDS_INPUT was determined earlier)
-if $NEEDS_INPUT; then
-    # Strip ": " suffix from TAB_LABEL if present
-    TAB_ONLY="${TAB_LABEL%: }"
-    MESSAGE="${TAB_ONLY} needs input"
-else
-    # For completion, say "Tab N" instead of just "N"
-    TAB_ONLY="${TAB_LABEL%: }"
-    MESSAGE="$TAB_ONLY"
+# Simple message: just "Tab N"
+MESSAGE="${TAB_LABEL%: }"  # Strip ": " suffix if present
+if [[ -z "$MESSAGE" ]]; then
+    MESSAGE="Tab"  # Fallback if tab detection failed
 fi
 
 # Speak using piper with aplay
@@ -141,10 +112,9 @@ else
     exit_success
 fi
 
-# Update cooldown timestamp and state
+# Update cooldown timestamp
 date +%s > "$LAST_NOTIFY_FILE"
-echo "$CURRENT_STATE" > "$LAST_STATE_FILE"
 
-log "Notification sent: $MESSAGE (state: $CURRENT_STATE)"
+log "Notification sent: $MESSAGE"
 
 exit_success

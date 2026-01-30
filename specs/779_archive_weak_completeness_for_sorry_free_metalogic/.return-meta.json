@@ -1,0 +1,15 @@
+{
+  "status": "in_progress",
+  "started_at": "2026-01-30T15:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "writing_report",
+    "details": "Research complete, writing final report"
+  },
+  "metadata": {
+    "session_id": "sess_1769740541_653f21",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-lean-research"]
+  }
+}
