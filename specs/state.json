@@ -8,20 +8,26 @@
     {
       "project_number": 784,
       "project_name": "export_claude_directory_to_markdown",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-30T19:58:05Z",
-      "last_updated": "2026-01-30T20:02:04Z",
-      "session_id": "sess_1769803137_44bdb0",
+      "last_updated": "2026-01-30T20:06:17Z",
+      "session_id": "sess_1769803433_708f81",
       "researched": "2026-01-30T20:02:04Z",
       "artifacts": [
         {
           "path": "specs/784_export_claude_directory_to_markdown/reports/research-001.md",
           "type": "research",
           "summary": "Research report covering directory structure analysis, file type distribution, exclusion patterns, and implementation recommendations for markdown export"
+        },
+        {
+          "path": "specs/784_export_claude_directory_to_markdown/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for export-to-markdown.sh shell script"
         }
-      ]
+      ],
+      "planned": "2026-01-30T20:06:17Z"
     },
     {
       "project_number": 783,

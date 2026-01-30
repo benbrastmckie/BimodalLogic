@@ -1,20 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Analyzed .claude/ directory structure (243 files, 3.5MB) and identified optimal export strategy using single consolidated markdown file with hierarchical TOC",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/784_export_claude_directory_to_markdown/reports/research-001.md",
-      "summary": "Research report covering directory structure analysis, file type distribution, exclusion patterns, and implementation recommendations for markdown export"
+      "type": "plan",
+      "path": "specs/784_export_claude_directory_to_markdown/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for export-to-markdown.sh shell script"
     }
   ],
-  "next_steps": "Run /plan 784 to create implementation plan",
+  "next_steps": "Run /implement 784 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769803137_44bdb0",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1769803433_708f81",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 7
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2
   }
 }
