@@ -44,7 +44,7 @@ Archive 20 sorried proofs from Metalogic/ to Boneyard/Metalogic_v4/ while preser
 
 ## Implementation Phases
 
-### Phase 1: Create Boneyard Archive Structure [NOT STARTED]
+### Phase 1: Create Boneyard Archive Structure [COMPLETED]
 
 **Goal**: Set up Boneyard/Metalogic_v4/ directory with documentation files for the 3 files being archived
 
@@ -76,7 +76,7 @@ Archive 20 sorried proofs from Metalogic/ to Boneyard/Metalogic_v4/ while preser
 
 ---
 
-### Phase 2: Remove Archived Files from Representation/ [NOT STARTED]
+### Phase 2: Remove Archived Files from Representation/ [COMPLETED]
 
 **Goal**: Delete the sorried files from Representation/ and update module imports
 

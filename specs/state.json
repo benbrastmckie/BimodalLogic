@@ -494,12 +494,12 @@
     },
     {
       "project_number": 431,
-      "status": "planning",
+      "status": "planned",
       "project_name": "wezterm_tab_color_notification",
       "section": "Medium Priority",
       "language": "general",
       "priority": "medium",
-      "last_updated": "2026-01-30T01:13:38Z",
+      "last_updated": "2026-01-30T01:15:55Z",
       "session_id": "sess_1769735603_0578ae",
       "researched": "2026-01-30T01:15:00Z",
       "artifacts": [
@@ -512,8 +512,14 @@
           "path": "specs/431_wezterm_tab_color_notification/reports/research-002.md",
           "type": "research",
           "summary": "Extended research on TTS hook compatibility, Stop hook pattern, and implementation recommendations for non-conflicting tab notifications"
+        },
+        {
+          "path": "specs/431_wezterm_tab_color_notification/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for WezTerm tab color notifications using OSC 1337 user variables"
         }
-      ]
+      ],
+      "planned": "2026-01-30T01:15:55Z"
     },
     {
       "project_number": 672,

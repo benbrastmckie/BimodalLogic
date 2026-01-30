@@ -270,11 +270,13 @@ technical_debt:
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-30
+- **Planned**: 2026-01-30
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](specs/431_wezterm_tab_color_notification/reports/research-001.md), [research-002.md](specs/431_wezterm_tab_color_notification/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/431_wezterm_tab_color_notification/plans/implementation-001.md)
 
 **Description**: Set up WezTerm tab color notification when Claude Code needs input. Using Claude Code in neovim via a plugin and WezTerm for the terminal on NixOS (software managed in ~/.dotfiles/). Configure so that when Claude Code completes or needs input, the numbered tab in WezTerm turns a visible color to indicate which tabs need attention.
 
