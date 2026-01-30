@@ -1,5 +1,5 @@
 ---
-next_project_number: 783
+next_project_number: 784
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 783. Compare branches to identify restorable elements from backup
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Created**: 2026-01-30
+
+**Description**: Compare main branch with backup/pre-revert-782 to identify critical elements worth restoring from the backup. The backup represents the state after tasks 745-781 which progressively archived Metalogic components. Need to diff the branches and identify: (1) bug fixes or improvements that were made during those tasks, (2) documentation improvements, (3) any sorry reductions or proof completions, (4) structural improvements to Metalogic organization. Goal is to cherry-pick valuable changes back to main while avoiding the problematic archival decisions.
+
+---
 
 ### 782. Revert Bimodal theory to before archival refactor
 - **Effort**: 2 hours
