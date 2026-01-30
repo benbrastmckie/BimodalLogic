@@ -202,14 +202,5 @@ technical_debt:
 
 ## Low Priority
 
-### 767. Document TTS/STT integration and Claude Code keybinding resolution
-- **Effort**: 1 hour
-- **Status**: [NOT STARTED]
-- **Priority**: Low
-- **Language**: general
-- **Created**: 2026-01-29
-
-**Description**: Comprehensive report documenting TTS/STT integration implementation and Claude Code keybinding resolution: (1) Initial STT plugin implementation with neotex.plugins.tools structure and which-key integration, (2) Bug fixes including module name collision (stt.lua to stt-plugin.lua) and WezTerm tab detection using position instead of tab_id, (3) Keybinding attempts with leader-vv for regular Neovim and Ctrl-backslash for Claude Code compatibility, (4) Research findings on Claude Code keybindings.json limitations and greggh/claude-code.nvim terminal mode requirements, (5) Final solution with buffer-local terminal mode keybinding in TermOpen autocmd for Claude Code sidebar. Documents all implementation attempts, debugging steps, and final working configuration for future reference.
-
 ---
 
