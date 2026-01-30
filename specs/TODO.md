@@ -28,6 +28,118 @@ technical_debt:
 ## High Priority
 
 
+
+## Medium Priority
+
+### 774. Restore representation theorem as Under Development
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
+- **Priority**: Medium
+- **Language**: lean
+- **Researched**: 2026-01-30
+- **Research**: [research-001.md](specs/774_restore_representation_theorem_as_under_development/reports/research-001.md)
+
+**Description**: Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.
+
+---
+
+### 772. Refactor Metalogic for sorry-free archive sorried proofs
+- **Effort**: 3 hours
+- **Status**: [COMPLETED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-30
+- **Researched**: 2026-01-30
+- **Planned**: 2026-01-30
+- **Started**: 2026-01-30
+- **Completed**: 2026-01-30
+- **Research**: [research-001.md](specs/772_refactor_metalogic_sorry_free_archive_sorried_proofs/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/772_refactor_metalogic_sorry_free_archive_sorried_proofs/plans/implementation-001.md)
+- **Summary**: Archived 7 files (17 sorries) from Metalogic/ to Boneyard/Metalogic_v4/. Refactored WeakCompleteness.lean to use sorry-free semantic_weak_completeness. Resolved circular import dependency. Full project build passes with 3 documented architectural sorries remaining.
+
+**Description**: Refactor Bimodal/Metalogic/ to archive all sorried proofs to Boneyard/ for a sorry-free metalogic. Move TaskRelation.lean (5 sorries), CoherentConstruction.lean (8 sorries), TruthLemma.lean (4 sorries), and sorried FMP theorems to Boneyard/. Refactor weak_completeness to use semantic_weak_completeness approach instead of representation_theorem. Preserve all theorem statements and ensure build passes. Goal: zero sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard/, Examples/).
+
+---
+
+### 771. Improve Typst formatting to AMS journal style
+- **Effort**: 3 hours
+- **Status**: [COMPLETED]
+- **Priority**: Medium
+- **Language**: typst
+- **Created**: 2026-01-30
+- **Researched**: 2026-01-30
+- **Planned**: 2026-01-30
+- **Revised**: 2026-01-30
+- **Completed**: 2026-01-30
+- **Research**: [research-001.md](specs/771_improve_typst_formatting_ams_journal_style/reports/research-001.md)
+- **Plan**: [implementation-002.md](specs/771_improve_typst_formatting_ams_journal_style/plans/implementation-002.md)
+- **Summary**: Upgraded Bimodal Reference Manual from textbook-style boxed theorems to AMS journal style using ctheorems package. Migrated theorem environments to thmplain with proper typography. Converted all diagram colors to grayscale. Document compiles cleanly to 28 pages.
+
+**Description**: Upgrade Typst formatting from textbook-style (boxed theorems) to professional math journal style. Migrate from thmbox package to ctheorems with thmplain for AMS-style plain environments. Remove all visual decoration from theorem environments (no boxes, fills, strokes). Convert diagram colors to grayscale. Match appearance of Annals of Mathematics and AMS journals.
+
+---
+
+### 765. Exclude Boneyard and Examples from sorry count metrics
+- **Effort**: 1 hour
+- **Status**: [PLANNED]
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-29
+- **Started**: 2026-01-29
+- **Researched**: 2026-01-29
+- **Planned**: 2026-01-29
+- **Research**: [research-001.md](specs/765_exclude_boneyard_examples_from_sorry_count/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/765_exclude_boneyard_examples_from_sorry_count/plans/implementation-001.md)
+
+**Description**: Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep at todo.md:850, (2) /review command at review.md:132, (3) state-management.md documentation, (4) current metrics in state.json and TODO.md (~72 instead of ~322).
+
+---
+
+### 775. Fix WezTerm tab coloring with Claude Code hooks
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
+- **Priority**: Medium
+- **Language**: general
+- **Researched**: 2026-01-30
+- **Research**: [research-001.md](specs/775_fix_wezterm_tab_coloring_with_claude_code_hooks/reports/research-001.md)
+
+**Description**: Diagnose and fix WezTerm tab coloring with Claude Code hooks. The hooks are intended to color tabs that need attention (if not already open) and clear the color when switching to that tab. This has not worked and the root cause needs to be identified and fixed.
+
+---
+
+
+
+
+
+### 685. Derive world-history and Barcan theorems
+- **Effort**: 8-10 hours
+- **Status**: [RESEARCHED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-26
+- **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
+- **Research**: [research-001.md](specs/685_derive_world_history_and_barcan_theorems/reports/research-001.md)
+
+**Description**: Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.
+
+---
+
+### 619. Agent system architecture upgrade (context:fork migration)
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-28
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Blocked-By**: Empirically confirmed broken (research-005.md) - GitHub #16803
+- **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md), [research-002.md](specs/619_agent_system_architecture_upgrade/reports/research-002.md), [research-003.md](specs/619_agent_system_architecture_upgrade/reports/research-003.md), [research-004.md](specs/619_agent_system_architecture_upgrade/reports/research-004.md), [research-005.md](specs/619_agent_system_architecture_upgrade/reports/research-005.md)
+- **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-002.md)
+
+**Description**: FUTURE UPGRADE: Migrate agent system skills to use native `context: fork` frontmatter once Anthropic fixes GitHub issue #16803. Empirical testing (research-005.md) confirmed context:fork provides NO context isolation, NO tool restrictions, and NO subprocess isolation - the feature is completely non-functional. Current implementation (direct execution for Lean skills, Task delegation for others) is correct and should remain until context:fork is fixed and re-validated.
+
+---
+
+## Low Priority
+
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
@@ -102,115 +214,3 @@ technical_debt:
 **Description**: Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management
 
 ---
-
-## Medium Priority
-
-### 774. Restore representation theorem as Under Development
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
-- **Priority**: Medium
-- **Language**: lean
-- **Researched**: 2026-01-30
-- **Research**: [research-001.md](specs/774_restore_representation_theorem_as_under_development/reports/research-001.md)
-
-**Description**: Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.
-
----
-
-### 772. Refactor Metalogic for sorry-free archive sorried proofs
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Started**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/772_refactor_metalogic_sorry_free_archive_sorried_proofs/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/772_refactor_metalogic_sorry_free_archive_sorried_proofs/plans/implementation-001.md)
-- **Summary**: Archived 7 files (17 sorries) from Metalogic/ to Boneyard/Metalogic_v4/. Refactored WeakCompleteness.lean to use sorry-free semantic_weak_completeness. Resolved circular import dependency. Full project build passes with 3 documented architectural sorries remaining.
-
-**Description**: Refactor Bimodal/Metalogic/ to archive all sorried proofs to Boneyard/ for a sorry-free metalogic. Move TaskRelation.lean (5 sorries), CoherentConstruction.lean (8 sorries), TruthLemma.lean (4 sorries), and sorried FMP theorems to Boneyard/. Refactor weak_completeness to use semantic_weak_completeness approach instead of representation_theorem. Preserve all theorem statements and ensure build passes. Goal: zero sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard/, Examples/).
-
----
-
-### 771. Improve Typst formatting to AMS journal style
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: typst
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Revised**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/771_improve_typst_formatting_ams_journal_style/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/771_improve_typst_formatting_ams_journal_style/plans/implementation-002.md)
-- **Summary**: Upgraded Bimodal Reference Manual from textbook-style boxed theorems to AMS journal style using ctheorems package. Migrated theorem environments to thmplain with proper typography. Converted all diagram colors to grayscale. Document compiles cleanly to 28 pages.
-
-**Description**: Upgrade Typst formatting from textbook-style (boxed theorems) to professional math journal style. Migrate from thmbox package to ctheorems with thmplain for AMS-style plain environments. Remove all visual decoration from theorem environments (no boxes, fills, strokes). Convert diagram colors to grayscale. Match appearance of Annals of Mathematics and AMS journals.
-
----
-
-### 765. Exclude Boneyard and Examples from sorry count metrics
-- **Effort**: 1 hour
-- **Status**: [PLANNED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Researched**: 2026-01-29
-- **Planned**: 2026-01-29
-- **Research**: [research-001.md](specs/765_exclude_boneyard_examples_from_sorry_count/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/765_exclude_boneyard_examples_from_sorry_count/plans/implementation-001.md)
-
-**Description**: Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep at todo.md:850, (2) /review command at review.md:132, (3) state-management.md documentation, (4) current metrics in state.json and TODO.md (~72 instead of ~322).
-
----
-
-### 775. Fix WezTerm tab coloring with Claude Code hooks
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Priority**: Medium
-- **Language**: general
-
-**Description**: Diagnose and fix WezTerm tab coloring with Claude Code hooks. The hooks are intended to color tabs that need attention (if not already open) and clear the color when switching to that tab. This has not worked and the root cause needs to be identified and fixed.
-
----
-
-
-
-
-
-### 685. Derive world-history and Barcan theorems
-- **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-26
-- **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
-- **Research**: [research-001.md](specs/685_derive_world_history_and_barcan_theorems/reports/research-001.md)
-
-**Description**: Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.
-
----
-
-### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [RESEARCHED]
-- **Researched**: 2026-01-28
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Blocked-By**: Empirically confirmed broken (research-005.md) - GitHub #16803
-- **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md), [research-002.md](specs/619_agent_system_architecture_upgrade/reports/research-002.md), [research-003.md](specs/619_agent_system_architecture_upgrade/reports/research-003.md), [research-004.md](specs/619_agent_system_architecture_upgrade/reports/research-004.md), [research-005.md](specs/619_agent_system_architecture_upgrade/reports/research-005.md)
-- **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-002.md)
-
-**Description**: FUTURE UPGRADE: Migrate agent system skills to use native `context: fork` frontmatter once Anthropic fixes GitHub issue #16803. Empirical testing (research-005.md) confirmed context:fork provides NO context isolation, NO tool restrictions, and NO subprocess isolation - the feature is completely non-functional. Current implementation (direct execution for Lean skills, Task delegation for others) is correct and should remain until context:fork is fixed and re-validated.
-
----
-
-## Low Priority
-
----
-

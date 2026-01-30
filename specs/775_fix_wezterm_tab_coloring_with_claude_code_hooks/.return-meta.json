@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "summary": "Root cause identified: Claude Code hooks write OSC 1337 escape sequences to captured stdout (socket) instead of terminal TTY. Fix requires writing to pane TTY path from wezterm cli list.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/775_fix_wezterm_tab_coloring_with_claude_code_hooks/reports/research-001.md",
+      "summary": "Research report identifying root cause (stdout capture) and solution (write to pane TTY)"
+    }
+  ],
+  "next_steps": "Run /plan 775 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1769737557_fabf18",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7
+  }
+}

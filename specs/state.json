@@ -8,11 +8,20 @@
     {
       "project_number": 775,
       "project_name": "fix_wezterm_tab_coloring_with_claude_code_hooks",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-30T01:43:48Z",
-      "last_updated": "2026-01-30T01:43:48Z"
+      "last_updated": "2026-01-30T01:50:50Z",
+      "session_id": "sess_1769737557_fabf18",
+      "researched": "2026-01-30T01:50:50Z",
+      "artifacts": [
+        {
+          "path": "specs/775_fix_wezterm_tab_coloring_with_claude_code_hooks/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying root cause (stdout capture) and solution (write to pane TTY)"
+        }
+      ]
     },
     {
       "project_number": 774,
