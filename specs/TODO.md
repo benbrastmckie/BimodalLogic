@@ -1,5 +1,5 @@
 ---
-next_project_number: 775
+next_project_number: 776
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -166,6 +166,16 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/765_exclude_boneyard_examples_from_sorry_count/plans/implementation-001.md)
 
 **Description**: Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep at todo.md:850, (2) /review command at review.md:132, (3) state-management.md documentation, (4) current metrics in state.json and TODO.md (~72 instead of ~322).
+
+---
+
+### 775. Fix WezTerm tab coloring with Claude Code hooks
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: general
+
+**Description**: Diagnose and fix WezTerm tab coloring with Claude Code hooks. The hooks are intended to color tabs that need attention (if not already open) and clear the color when switching to that tab. This has not worked and the root cause needs to be identified and fixed.
 
 ---
 

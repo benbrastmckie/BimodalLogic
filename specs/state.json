@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 775,
+      "project_name": "fix_wezterm_tab_coloring_with_claude_code_hooks",
+      "status": "not_started",
+      "language": "general",
+      "priority": "medium",
+      "created": "2026-01-30T01:43:48Z",
+      "last_updated": "2026-01-30T01:43:48Z"
+    },
+    {
       "project_number": 774,
       "project_name": "restore_representation_theorem_as_under_development",
       "status": "researched",
@@ -321,7 +330,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 775,
+  "next_project_number": 776,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
