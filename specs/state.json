@@ -40,12 +40,12 @@
     {
       "project_number": 779,
       "project_name": "prove_weak_completeness_sorry_free",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "priority": "high",
       "description": "Prove weak_completeness sorry-free via semantic model embedding. Instead of archiving, bridge the gap between universal validity and semantic validity by: (1) Building a TaskModel from SemanticWorldState construction, (2) Proving truth correspondence in this model, (3) Instantiating the universal valid quantification with this specific model. This avoids the forward truth lemma gap because we're not relating arbitrary models to semantic truth - we're proving properties of ONE specific model constructed to have the desired truth correspondence.",
       "created": "2026-01-30T02:32:59Z",
-      "last_updated": "2026-01-30T07:19:50Z",
+      "last_updated": "2026-01-30T07:30:14Z",
       "session_id": "sess_1769757568_82ba31",
       "researched": "2026-01-30T07:48:17Z",
       "artifacts": [
@@ -63,6 +63,11 @@
           "path": "specs/779_archive_weak_completeness_for_sorry_free_metalogic/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for proving weak_completeness sorry-free via semantic model embedding"
+        },
+        {
+          "path": "specs/779_archive_weak_completeness_for_sorry_free_metalogic/summaries/implementation-summary-20260130.md",
+          "type": "summary",
+          "summary": "Detailed documentation of why the semantic model embedding approach fails - same architectural gap as forward truth lemma"
         }
       ],
       "planned": "2026-01-30T07:18:02Z",

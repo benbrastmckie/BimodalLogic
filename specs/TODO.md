@@ -47,14 +47,16 @@ technical_debt:
 
 ### 779. Prove weak_completeness sorry-free via semantic model embedding
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
 - **Planned**: 2026-01-30
+- **Blocked**: Architectural gap - assignment-based truth differs from recursive truth for non-MCS-derived world states
 - **Research**: [research-001.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-001.md), [research-002.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260130.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/summaries/implementation-summary-20260130.md)
 
 **Description**: Prove weak_completeness sorry-free via semantic model embedding. Instead of archiving, bridge the gap between universal validity and semantic validity by: (1) Building a TaskModel from SemanticWorldState construction, (2) Proving truth correspondence in this model, (3) Instantiating the universal valid quantification with this specific model. This avoids the forward truth lemma gap because we're not relating arbitrary models to semantic truth - we're proving properties of ONE specific model constructed to have the desired truth correspondence.
 
