@@ -138,13 +138,15 @@ technical_debt:
 ---
 
 ### 771. Improve Typst formatting to AMS journal style
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 1.5 hours
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: typst
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
+- **Planned**: 2026-01-30
 - **Research**: [research-001.md](specs/771_improve_typst_formatting_ams_journal_style/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/771_improve_typst_formatting_ams_journal_style/plans/implementation-001.md)
 
 **Description**: Improve formatting of BimodalReference.typ to match AMS-style professional mathematics journal appearance. Current formatting resembles a college textbook. Changes needed: remove all colors except for clickable links, adopt styling closer to BimodalReference.tex (LaTeX version). Apply systematic improvements across the entire Typst project.
 
