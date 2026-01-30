@@ -1,7 +1,7 @@
 # Implementation Plan: Task #779
 
 - **Task**: 779 - prove_weak_completeness_sorry_free
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 10 hours
 - **Priority**: High
 - **Dependencies**: None (builds on existing FMP infrastructure)
@@ -47,17 +47,17 @@ Key findings from research-002.md:
 
 ## Implementation Phases
 
-### Phase 1: Define SemanticTaskFrame and SemanticTaskModel [NOT STARTED]
+### Phase 1: Define SemanticTaskFrame and SemanticTaskModel [COMPLETED]
 
 **Goal**: Create the model construction infrastructure in a new module.
 
 **Tasks**:
-- [ ] Create `Metalogic/FMP/SemanticTaskFrame.lean` module
-- [ ] Define `SemanticTaskFrame` with `Int` as time domain and `FiniteWorldState` as world type
-- [ ] Define `SemanticTaskModel` with valuation from `FiniteWorldState.models`
-- [ ] Define `worldStateToHistory` mapping SemanticWorldState to WorldHistory
-- [ ] Prove basic frame axioms (nullity, additivity) for SemanticTaskFrame
-- [ ] Add module to FMP.lean imports
+- [x] Create `Metalogic/FMP/SemanticTaskFrame.lean` module
+- [x] Define `SemanticTaskFrame` with `Int` as time domain and `FiniteWorldState` as world type
+- [x] Define `SemanticTaskModel` with valuation from `FiniteWorldState.models`
+- [x] Define `worldStateToHistory` mapping SemanticWorldState to WorldHistory
+- [x] Prove basic frame axioms (nullity, additivity) for SemanticTaskFrame
+- [x] Add module to FMP.lean imports
 
 **Timing**: 2.5 hours
 

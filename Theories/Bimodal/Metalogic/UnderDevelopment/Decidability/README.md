@@ -99,4 +99,7 @@ ProofExtraction  CountermodelExtraction
 
 - Gore, R. (1999). Tableau Methods for Modal and Temporal Logics
 - Wu, M. Verified Decision Procedures for Modal Logics (Lean formalization)
-- Task 774: Restoration to UnderDevelopment/
+
+---
+
+*Last updated: 2026-01-30*

@@ -98,15 +98,22 @@ if [[ -z "$MESSAGE" ]]; then
     MESSAGE="Tab"  # Fallback if tab detection failed
 fi
 
-# Speak using piper with aplay
-# Use a subshell with timeout to prevent hanging
-if command -v aplay &>/dev/null; then
+# Speak using piper (synchronous, but quick - under 1 second)
+AUDIO_PLAYED=false
+if command -v paplay &>/dev/null; then
+    # paplay available (PulseAudio)
+    TEMP_WAV="/tmp/claude-tts-$RANDOM.wav"
+    if echo "$MESSAGE" | piper --model "$PIPER_MODEL" --output_file "$TEMP_WAV" 2>/dev/null; then
+        if paplay "$TEMP_WAV" 2>/dev/null; then
+            AUDIO_PLAYED=true
+        fi
+    fi
+    rm -f "$TEMP_WAV"
+elif command -v aplay &>/dev/null; then
     # aplay available (ALSA)
-    (timeout 10s bash -c "echo '$MESSAGE' | piper --model '$PIPER_MODEL' --output_file - 2>/dev/null | aplay -q 2>/dev/null" &)
-elif command -v paplay &>/dev/null; then
-    # paplay available (PulseAudio) - need to write to temp file first
-    TEMP_WAV="/tmp/claude-tts-$$.wav"
-    (timeout 10s bash -c "echo '$MESSAGE' | piper --model '$PIPER_MODEL' --output_file '$TEMP_WAV' 2>/dev/null && paplay '$TEMP_WAV' 2>/dev/null; rm -f '$TEMP_WAV'" &)
+    if echo "$MESSAGE" | piper --model "$PIPER_MODEL" --output_file - 2>/dev/null | aplay -q 2>/dev/null; then
+        AUDIO_PLAYED=true
+    fi
 else
     log "No audio player found (aplay or paplay) - skipping TTS notification"
     exit_success
@@ -115,6 +122,10 @@ fi
 # Update cooldown timestamp
 date +%s > "$LAST_NOTIFY_FILE"
 
-log "Notification sent: $MESSAGE"
+if $AUDIO_PLAYED; then
+    log "Notification sent: $MESSAGE"
+else
+    log "Audio playback failed for: $MESSAGE"
+fi
 
 exit_success

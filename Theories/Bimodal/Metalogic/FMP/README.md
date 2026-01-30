@@ -1,6 +1,6 @@
 # Parametric Finite Model Property Infrastructure
 
-**Status**: Sorry-Free (Task 776 Refactoring Complete)
+**Status**: Complete
 
 This directory contains the parametric FMP (Finite Model Property) infrastructure for TM bimodal logic.
 
@@ -34,20 +34,6 @@ countermodels where the assignment IS the MCS membership function. This avoids t
 forward truth lemma entirely.
 
 **This is THE completeness theorem for this logic.**
-
-## Archived Code
-
-Deprecated code with sorries was archived to `Boneyard/Metalogic_v4/FMP/`:
-
-| Archived | Reason | Alternative |
-|----------|--------|-------------|
-| `SemanticCanonicalFrame` | Compositionality axiom is mathematically false | Use `SemanticWorldState` directly |
-| `SemanticCanonicalModel` | Uses deprecated frame | Use `semantic_weak_completeness` |
-| `finite_model_property_constructive` | Truth bridge gap is architectural | Use `semantic_weak_completeness` |
-| `truth_at_implies_semantic_truth` | Forward truth lemma is architecturally impossible | Use contrapositive approach |
-| `sorry_free_weak_completeness` | Misnamed - depends on sorried code | Use `semantic_weak_completeness` |
-
-See `Boneyard/Metalogic_v4/FMP/README.md` for full documentation of why these sorries are unfixable.
 
 ## Key Definitions
 
@@ -104,8 +90,6 @@ theorem consistent_implies_satisfiable (phi : Formula) (h_cons : Consistent [phi
 
 ## References
 
-- Task 776: Refactor Metalogic to zero sorry
-- Task 750: Research on truth bridge gap
 - Blackburn et al., Modal Logic, Chapter 4 (Finite Model Property)
 
 ---

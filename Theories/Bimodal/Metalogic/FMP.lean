@@ -2,6 +2,7 @@ import Bimodal.Metalogic.FMP.Closure
 import Bimodal.Metalogic.FMP.BoundedTime
 import Bimodal.Metalogic.FMP.FiniteWorldState
 import Bimodal.Metalogic.FMP.SemanticCanonicalModel
+import Bimodal.Metalogic.FMP.SemanticTaskFrame
 import Bimodal.Metalogic.FMP.FiniteModelProperty
 
 /-!

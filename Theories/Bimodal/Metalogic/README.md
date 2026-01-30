@@ -1,6 +1,6 @@
 # TM Bimodal Logic Metalogic
 
-This directory contains the complete metalogic infrastructure for TM bimodal logic, including soundness, completeness, the finite model property, and compactness.
+This directory contains the metalogic infrastructure for TM bimodal logic, including soundness, completeness, and the finite model property.
 
 ## What the Metalogic Establishes
 
@@ -10,7 +10,6 @@ The metalogic proves the fundamental metatheoretic results for TM bimodal logic:
 2. **Representation**: Consistent formulas have canonical models
 3. **Completeness**: Every valid formula is derivable (uses Representation)
 4. **Finite Model Property**: Satisfiable formulas have finite models
-5. **Compactness**: Infinite satisfiability reduces to finite satisfiability
 
 ## Main Results
 
@@ -39,11 +38,6 @@ theorem finite_model_property : satisfiable φ → ∃ finite_model, satisfiable
 theorem semanticWorldState_card_bound : card worlds ≤ 2^closureSize
 ```
 
-### Compactness (`Compactness/`)
-```lean
-theorem compactness : (∀ finite Delta ⊆ Gamma, satisfiable Delta) → satisfiable Gamma
-```
-
 ## Architecture Overview
 
 ```
@@ -53,27 +47,23 @@ Metalogic/
 │   ├── DeductionTheorem.lean    # Deduction theorem
 │   └── MCSProperties.lean       # MCS lemmas
 │
-├── Soundness/         # Soundness theorem (NEW - migrated 2026-01-29)
+├── Soundness/         # Soundness theorem
 │   ├── Soundness.lean           # Main theorem + 15 axiom validity
 │   └── SoundnessLemmas.lean     # Temporal duality bridge
 │
-├── Representation/    # Canonical model construction
+├── Representation/    # Canonical model core definitions
 │   ├── IndexedMCSFamily.lean    # MCS family structure
-│   ├── CoherentConstruction.lean # Coherent family builder
-│   ├── TruthLemma.lean          # MCS ↔ truth correspondence
-│   └── UniversalCanonicalModel.lean  # Representation theorem
+│   └── CanonicalWorld.lean      # Canonical world state definitions
 │
 ├── FMP/               # Finite Model Property (parametric)
 │   ├── Closure.lean             # Subformula closure
 │   ├── SemanticCanonicalModel.lean  # Finite model construction
 │   └── FiniteModelProperty.lean # FMP theorem
 │
-├── Completeness/      # Weak and strong completeness
-│   ├── WeakCompleteness.lean    # valid → provable
-│   └── ...StrongCompleteness.lean  # Context-based versions
-│
-├── Compactness/       # Compactness theorem
-│   └── Compactness.lean
+├── Completeness/      # Weak and finite strong completeness
+│   ├── Completeness.lean           # Re-export module
+│   ├── WeakCompleteness.lean       # valid → provable
+│   └── FiniteStrongCompleteness.lean  # Context-based version
 │
 ├── Algebraic/         # Alternative algebraic approach
 │   ├── LindenbaumQuotient.lean     # Quotient construction via provable equivalence
@@ -129,11 +119,6 @@ flowchart TD
 
         Corollary: Decidability
         of satisfiability`"]
-        Compactness["`**Compactness**
-        Set satisfiable ↔
-        all finite subsets satisfiable
-
-        Uses: Infinitary completeness`"]
     end
 
     subgraph AlgebraicExtension["Algebraic Extension"]
@@ -148,7 +133,6 @@ flowchart TD
     Core --> Representation
     Representation --> Completeness
     Completeness --> FMP
-    Completeness --> Compactness
     Core --> Algebraic
 
     classDef default fill:#fff,stroke:#333,stroke-width:2px,color:#000
@@ -160,29 +144,25 @@ flowchart TD
 |-----------|---------|--------|
 | `Core/` | MCS theory, Lindenbaum's lemma, deduction theorem | Complete |
 | `Soundness/` | Soundness theorem (15 axioms, 7 rules) | Complete |
-| `Representation/` | Canonical model via indexed MCS families | Core proven |
-| `Completeness/` | Weak/strong completeness hierarchy | Complete |
-| `FMP/` | Finite model property with 2^n bound | Architectural sorries |
-| `Compactness/` | Compactness theorem | Complete |
+| `Representation/` | Canonical model core definitions | Complete |
+| `Completeness/` | Weak and finite strong completeness | Complete |
+| `FMP/` | Finite model property with 2^n bound | Complete |
 | `Algebraic/` | Alternative algebraic approach | Complete |
 | `UnderDevelopment/` | WIP approaches (isolated from main build) | Research |
 
-## Known Architectural Limitations (Task 769)
+## Known Architectural Limitations
 
-These are **final limitations** (not future work). All sorries are in deprecated code paths.
+The main build has minimal sorries:
 
-| Location | Count | Limitation | Status |
-|----------|-------|------------|--------|
-| `Representation/TaskRelation.lean` | 5 | Cross-sign duration composition | DEPRECATED |
-| `Representation/CoherentConstruction.lean` | 8 | Cross-origin coherence cases | DEPRECATED |
-| `Representation/TruthLemma.lean` | 4 | Box/temporal backward directions | DEPRECATED |
-| `FMP/SemanticCanonicalModel.lean` | 2 | Frame compositionality, truth bridge | DEPRECATED |
-| `FMP/FiniteModelProperty.lean` | 1 | FMP truth bridge | DEPRECATED |
-
-**Total**: 20 sorries, all in code paths NOT required for completeness.
+| Location | Count | Limitation |
+|----------|-------|------------|
+| `Completeness/WeakCompleteness.lean` | 1 | Truth bridge (all models -> provable) |
+| `FMP/SemanticTruthCorrespondence.lean` | 2 | Technical correspondence lemmas |
 
 **Resolution**: Use `semantic_weak_completeness` which is **completely sorry-free** and provides
 the main completeness result via a contrapositive approach that avoids these gaps entirely.
+
+Additional sorries (in `UnderDevelopment/`) are isolated from the main build.
 
 ## Key Features
 
@@ -191,28 +171,10 @@ the main completeness result via a contrapositive approach that avoids these gap
 - **Self-contained**: NO dependencies on Boneyard/ deprecated code
 - **Type-theoretic**: Uses Lean 4 typeclasses for algebraic structure
 
-## Migration Notes (2026-01-29)
-
-As of this date, the Metalogic/ directory is fully self-contained:
-- MCS theory migrated to `Core/MaximalConsistent.lean`
-- Soundness proof migrated to `Soundness/`
-- All Boneyard imports removed
-- All `Metalogic_v2` namespace references removed
-
-The Boneyard/ directory is now purely historical reference material.
-
-## Deprecation Notes (Task 769, 2026-01-30)
-
-All 20 sorries in Metalogic/ (excluding Boneyard/, Examples/) have been analyzed and deprecated:
-- Each sorry is in code that is either mathematically impossible to prove or unused by completeness
-- All deprecated theorems have comments pointing to `semantic_weak_completeness` as the alternative
-- The main completeness theorem `semantic_weak_completeness` remains completely sorry-free
-
 ## References
 
 - Modal Logic, Blackburn et al., Chapters 4-5
 - JPL Paper "The Perpetuity Calculus of Agency"
-- Research reports: Task 750 (truth bridge), Task 764 (migration), Task 769 (sorry audit)
 
 ---
 

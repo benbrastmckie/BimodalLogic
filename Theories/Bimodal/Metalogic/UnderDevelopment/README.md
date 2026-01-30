@@ -73,13 +73,11 @@ import Bimodal.Metalogic.FMP.SemanticCanonicalModel
 3. **Building individually**: `lake build Bimodal.Metalogic.UnderDevelopment.RepresentationTheorem.TaskRelation`
 4. **Testing full build**: `lake build` should NOT compile UnderDevelopment/
 
-## History
-
-- **Task 772** (2026-01-30): Original archival to Boneyard/Metalogic_v4/
-- **Task 774** (2026-01-30): Restoration to UnderDevelopment/ with import isolation
-
 ## References
 
-- Task 750: Truth bridge analysis (identified architectural limitations)
-- Task 769: Deprecation analysis with DEPRECATED markers
 - `FMP/SemanticCanonicalModel.lean`: Sorry-free completeness via contrapositive
+- Modal Logic, Blackburn et al., Chapters 4-5
+
+---
+
+*Last updated: 2026-01-30*

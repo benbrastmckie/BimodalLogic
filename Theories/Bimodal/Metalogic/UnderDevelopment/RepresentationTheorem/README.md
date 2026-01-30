@@ -98,8 +98,8 @@ TaskRelation.lean  CoherentConstruction.lean
 
 ## References
 
-- Task 750: Truth bridge analysis confirming architectural limitations
-- Task 769: Deprecation analysis
-- Task 772: Original archival
-- Task 774: Restoration to UnderDevelopment/
 - Modal Logic, Blackburn et al., Chapters 4-5
+
+---
+
+*Last updated: 2026-01-30*

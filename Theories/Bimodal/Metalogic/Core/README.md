@@ -117,7 +117,7 @@ These use the derived 4-axiom for temporal operators.
 
 ### Self-Contained MCS Theory
 
-As of 2026-01-29, the MCS theory is fully self-contained in this directory. All definitions and proofs previously in Boneyard have been migrated to `MaximalConsistent.lean`. No Boneyard imports are required.
+The MCS theory is fully self-contained in this directory. All definitions and proofs are in `MaximalConsistent.lean`.
 
 ### Deduction Theorem Complexity
 
@@ -153,4 +153,4 @@ The Core modules are prerequisites for:
 
 ---
 
-*Last updated: 2026-01-29*
+*Last updated: 2026-01-30*
